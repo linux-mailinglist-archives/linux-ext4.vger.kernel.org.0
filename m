@@ -1,300 +1,90 @@
-Return-Path: <linux-ext4+bounces-268-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-269-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BA2180174B
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Dec 2023 00:10:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DFB33801B9A
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Dec 2023 10:10:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B9AF1C20A32
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Dec 2023 23:09:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 149B21C20B4B
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Dec 2023 09:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87CCF3F8DB;
-	Fri,  1 Dec 2023 23:09:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="2Lh0KOXv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C433210A3C;
+	Sat,  2 Dec 2023 09:10:51 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-xd34.google.com (mail-io1-xd34.google.com [IPv6:2607:f8b0:4864:20::d34])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E2EC490
-	for <linux-ext4@vger.kernel.org>; Fri,  1 Dec 2023 15:09:45 -0800 (PST)
-Received: by mail-io1-xd34.google.com with SMTP id ca18e2360f4ac-7b389399dfdso91079139f.2
-        for <linux-ext4@vger.kernel.org>; Fri, 01 Dec 2023 15:09:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1701472185; x=1702076985; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=tK91MdqS5fm0oRnvLgKQFRYdiRGZaWme5xVW3QL3A7Y=;
-        b=2Lh0KOXvzfQH4SsaUnDDx1rfLTu8ygarPH9Ou1H2fqVWlBv0oh6SIjEJRyXWWiioz7
-         ltgdwDI5VTMPtzly1oJ7fZ0lCoWTYDeShnSvrnKSqc+zxv8RHaYek0XQfrDnWHEmM9gk
-         om4S7RCJrCqi1kT+jyDAXchcL6R1meLIMiraC9AdO76DUfg43WXUj3Ru9vPt2ZU+tiTT
-         bIFewBPCny+qlgc0XIP2nXccFZ1nvjWm8zTUQBV30vlk79GrBWPXzzw1C4Ubah61uuyN
-         OcDI0uIK1Ll7Htvby5CNtvQIa5RmaqXhRhBqt7P6WyVGET6M0ob+ukv6SHz994NGZXG6
-         rmHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1701472185; x=1702076985;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tK91MdqS5fm0oRnvLgKQFRYdiRGZaWme5xVW3QL3A7Y=;
-        b=jNZFNvX3EVRNVXYCsOK6eLh7Soafw7CQUn/4yYp4j+EuoZ2Vmh6ZkUaxHkH8/0oH2F
-         H2KCRmLZFQwUhTdUE7eCnAW1iQ07dLclIBojUSqLnaRZxMnQP0itwpSX3O5rDAfcOyA0
-         QRWZgx6d5pXGK4+aMEuJR6OEblXEDuWLrcYmK5haJU85wTPcnJjGadSfWuG6lEtY4/Mp
-         HTIjgOb1BQEycFSXb0mKb5onoi5zkP4Vny9Zdm8k9n41BEjYZ5wAw7vAMKNPtZvBNWAG
-         mQpfY9uDS+HmmI8qf6im4RVlB2dsF7XcTtKnOe62juyfxkST9bm8NYRvOqbdg1DTMntQ
-         2yUQ==
-X-Gm-Message-State: AOJu0Yxm9O59wlODQXdIsX3egGlJm+lxMJOR+H+uc0lrNrdXy9oXBMwx
-	M/Zt+3CoFSy3a+9myiRBEW7yQfM00M/ErI89ETc=
-X-Google-Smtp-Source: AGHT+IF5Fv/qHWzsN5yAM8N0cpxjtNfHr+HOBO4abjlkiaoJwZN+mM+A+lRjplW6QiKos9AZJq2lKw==
-X-Received: by 2002:a6b:7515:0:b0:7b4:28f8:51e with SMTP id l21-20020a6b7515000000b007b428f8051emr335842ioh.30.1701472185200;
-        Fri, 01 Dec 2023 15:09:45 -0800 (PST)
-Received: from dread.disaster.area (pa49-180-125-5.pa.nsw.optusnet.com.au. [49.180.125.5])
-        by smtp.gmail.com with ESMTPSA id e4-20020aa78c44000000b006c4d2479bf8sm3492863pfd.51.2023.12.01.15.09.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Dec 2023 15:09:44 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1r9Cdh-002bBC-2p;
-	Sat, 02 Dec 2023 10:09:41 +1100
-Date: Sat, 2 Dec 2023 10:09:41 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [RFC 2/3] ext2: Convert ext2 regular file buffered I/O to use
- iomap
-Message-ID: <ZWpntZXm32kyfX7M@dread.disaster.area>
-References: <87msv5r0uq.fsf@doe.com>
- <8734wnj53k.fsf@doe.com>
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9C38FD9;
+	Sat,  2 Dec 2023 01:10:47 -0800 (PST)
+Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Sj3w71gq7z1P8b8;
+	Sat,  2 Dec 2023 17:07:03 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Sat, 2 Dec
+ 2023 17:10:44 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<willy@infradead.org>, <akpm@linux-foundation.org>, <ritesh.list@gmail.com>,
+	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <yukuai3@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending DIO write race with buffered read
+Date: Sat, 2 Dec 2023 17:14:30 +0800
+Message-ID: <20231202091432.8349-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8734wnj53k.fsf@doe.com>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
+X-CFilter-Loop: Reflected
 
-On Thu, Nov 30, 2023 at 08:54:31AM +0530, Ritesh Harjani wrote:
-> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
-> 
-> > Christoph Hellwig <hch@infradead.org> writes:
-> >
-> >> On Wed, Nov 22, 2023 at 01:29:46PM +0100, Jan Kara wrote:
-> >>> writeback bit set. XFS plays the revalidation sequence counter games
-> >>> because of this so we'd have to do something similar for ext2. Not that I'd
-> >>> care as much about ext2 writeback performance but it should not be that
-> >>> hard and we'll definitely need some similar solution for ext4 anyway. Can
-> >>> you give that a try (as a followup "performance improvement" patch).
-> >>
-> >> Darrick has mentioned that he is looking into lifting more of the
-> >> validation sequence counter validation into iomap.
-> >>
-> >> In the meantime I have a series here that at least maps multiple blocks
-> >> inside a folio in a single go, which might be worth trying with ext2 as
-> >> well:
-> >>
-> >> http://git.infradead.org/users/hch/misc.git/shortlog/refs/heads/iomap-map-multiple-blocks
-> >
-> > Sure, thanks for providing details. I will check this.
-> >
-> 
-> So I took a look at this. Here is what I think -
-> So this is useful of-course when we have a large folio. Because
-> otherwise it's just one block at a time for each folio. This is not a
-> problem once FS buffered-io handling code moves to iomap (because we
-> can then enable large folio support to it).
-> 
-> However, this would still require us to pass a folio to ->map_blocks
-> call to determine the size of the folio (which I am not saying can't be
-> done but just stating my observations here).
-> 
-> Now coming to implementing validation seq check. I am hoping, it should
-> be straight forward at least for ext2, because it mostly just have to
-> protect against truncate operation (which can change the block mapping)...
-> 
-> ...ok so here is the PoC for seq counter check for ext2. Next let me
-> try to see if we can lift this up from the FS side to iomap - 
-> 
-> 
-> From 86b7bdf79107c3d0a4f37583121d7c136db1bc5c Mon Sep 17 00:00:00 2001
-> From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-> Subject: [PATCH] ext2: Implement seq check for mapping multiblocks in ->map_blocks
-> 
-> This implements inode block seq counter (ib_seq) which helps in validating 
-> whether the cached wpc (struct iomap_writepage_ctx) still has the valid 
-> entries or not. Block mapping can get changed say due to a racing truncate. 
-> 
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> ---
->  fs/ext2/balloc.c |  1 +
->  fs/ext2/ext2.h   |  6 ++++++
->  fs/ext2/inode.c  | 51 +++++++++++++++++++++++++++++++++++++++++++-----
->  fs/ext2/super.c  |  2 +-
->  4 files changed, 54 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext2/balloc.c b/fs/ext2/balloc.c
-> index e124f3d709b2..e97040194da4 100644
-> --- a/fs/ext2/balloc.c
-> +++ b/fs/ext2/balloc.c
-> @@ -495,6 +495,7 @@ void ext2_free_blocks(struct inode * inode, ext2_fsblk_t block,
->  	}
->  
->  	ext2_debug ("freeing block(s) %lu-%lu\n", block, block + count - 1);
-> +	ext2_inc_ib_seq(EXT2_I(inode));
->  
->  do_more:
->  	overflow = 0;
-> diff --git a/fs/ext2/ext2.h b/fs/ext2/ext2.h
-> index 677a9ad45dcb..882c14d20183 100644
-> --- a/fs/ext2/ext2.h
-> +++ b/fs/ext2/ext2.h
-> @@ -663,6 +663,7 @@ struct ext2_inode_info {
->  	struct rw_semaphore xattr_sem;
->  #endif
->  	rwlock_t i_meta_lock;
-> +	unsigned int ib_seq;
->  
->  	/*
->  	 * truncate_mutex is for serialising ext2_truncate() against
-> @@ -698,6 +699,11 @@ static inline struct ext2_inode_info *EXT2_I(struct inode *inode)
->  	return container_of(inode, struct ext2_inode_info, vfs_inode);
->  }
->  
-> +static inline void ext2_inc_ib_seq(struct ext2_inode_info *ei)
-> +{
-> +	WRITE_ONCE(ei->ib_seq, READ_ONCE(ei->ib_seq) + 1);
-> +}
-> +
->  /* balloc.c */
->  extern int ext2_bg_has_super(struct super_block *sb, int group);
->  extern unsigned long ext2_bg_num_gdb(struct super_block *sb, int group);
-> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
-> index f4e0b9a93095..a5490d641c26 100644
-> --- a/fs/ext2/inode.c
-> +++ b/fs/ext2/inode.c
-> @@ -406,6 +406,8 @@ static int ext2_alloc_blocks(struct inode *inode,
->  	ext2_fsblk_t current_block = 0;
->  	int ret = 0;
->  
-> +	ext2_inc_ib_seq(EXT2_I(inode));
-> +
->  	/*
->  	 * Here we try to allocate the requested multiple blocks at once,
->  	 * on a best-effort basis.
-> @@ -966,14 +968,53 @@ ext2_writepages(struct address_space *mapping, struct writeback_control *wbc)
->  	return mpage_writepages(mapping, wbc, ext2_get_block);
->  }
->  
-> +struct ext2_writepage_ctx {
-> +	struct iomap_writepage_ctx ctx;
-> +	unsigned int		ib_seq;
-> +};
+Hello everyone!
 
-Why copy this structure from XFS? The iomap held in ctx->iomap now
-has a 'u64 validity_cookie;' which is expressly intended to be used
-for holding this information.
+Recently, while running some pressure tests on MYSQL, noticed that
+occasionally a "corrupted data in log event" error would be reported.
+After analyzing the error, I found that extending DIO write and buffered
+read were competing, resulting in some zero-filled page end being read.
+Since ext4 buffered read doesn't hold an inode lock, and there is no
+field in the page to indicate the valid data size, it seems to me that
+it is impossible to solve this problem perfectly without changing these
+two things.
 
-And then this becomes:
+In this series, the first patch reads the inode size twice, and takes the
+smaller of the two values as the copyout limit to avoid copying data that
+was not actually read (0-padding) into the user buffer and causing data
+corruption. This greatly reduces the probability of problems under 4k
+page. However, the problem is still easily triggered under 64k page.
 
-> +static inline
-> +struct ext2_writepage_ctx *EXT2_WPC(struct iomap_writepage_ctx *ctx)
-> +{
-> +	return container_of(ctx, struct ext2_writepage_ctx, ctx);
-> +}
-> +
-> +static bool ext2_imap_valid(struct iomap_writepage_ctx *wpc, struct inode *inode,
-> +			    loff_t offset)
-> +{
-> +	if (offset < wpc->iomap.offset ||
-> +	    offset >= wpc->iomap.offset + wpc->iomap.length)
-> +		return false;
-> +
-> +	if (EXT2_WPC(wpc)->ib_seq != READ_ONCE(EXT2_I(inode)->ib_seq))
-> +		return false;
+The second patch waits for the existing dio write to complete and
+invalidate the stale page cache before performing a new buffered read
+in ext4, avoiding data corruption by copying the stale page cache to
+the user buffer. This makes it much less likely that the problem will
+be triggered in a 64k page.
 
-	if (wpc->iomap->validity_cookie != EXT2_I(inode)->ib_seq)
-		return false;
+Do we have a plan to add a lock to the ext4 buffered read or a field in
+the page that indicates the size of the valid data in the page? Or does
+anyone have a better idea?
 
-> +
-> +	return true;
-> +}
-> +
->  static int ext2_write_map_blocks(struct iomap_writepage_ctx *wpc,
->  				 struct inode *inode, loff_t offset)
->  {
-> -	if (offset >= wpc->iomap.offset &&
-> -	    offset < wpc->iomap.offset + wpc->iomap.length)
-> +	loff_t maxblocks = (loff_t)INT_MAX;
-> +	u8 blkbits = inode->i_blkbits;
-> +	u32 bno;
-> +	bool new, boundary;
-> +	int ret;
-> +
-> +	if (ext2_imap_valid(wpc, inode, offset))
->  		return 0;
->  
-> -	return ext2_iomap_begin(inode, offset, inode->i_sb->s_blocksize,
-> +	EXT2_WPC(wpc)->ib_seq = READ_ONCE(EXT2_I(inode)->ib_seq);
-> +
-> +	ret = ext2_get_blocks(inode, offset >> blkbits, maxblocks << blkbits,
-> +			      &bno, &new, &boundary, 0);
+Comments and questions are, as always, welcome.
 
-This is incorrectly ordered. ext2_get_blocks() bumps ib_seq when it
-does allocation, so the newly stored EXT2_WPC(wpc)->ib_seq is
-immediately staled and the very next call to ext2_imap_valid() will
-fail, causing a new iomap to be mapped even when not necessary.
+Baokun Li (2):
+  mm: avoid data corruption when extending DIO write race with buffered
+    read
+  ext4: avoid data corruption when extending DIO write race with
+    buffered read
 
-Indeed, we also don't hold the ei->truncate_mutex here, so the
-sampling of ib_seq could race with other allocation or truncation
-calls on this inode. That's a landmine that will eventually bite
-hard, because the sequence number returned with the iomap does not
-reflect the state of the extent tree when the iomap is created.
+ fs/ext4/file.c | 3 +++
+ mm/filemap.c   | 5 +++--
+ 2 files changed, 6 insertions(+), 2 deletions(-)
 
-If you look at the XFS code, we set iomap->validity_cookie whenever
-we call xfs_bmbt_to_iomap() to format the found/allocated extent
-into an iomap to return to the caller. The sequence number is passed
-into that function alongside the extent map by the caller, because
-when we format the extent into an iomap the caller has already dropped the
-allocation lock. We must sample the sequence number after the allocation
-but before we drop the allocation lock so that the sequence number
--exactly- matches the extent tree and the extent map we are going to
-format into the iomap, otherwise the extent we map into the iomap
-may already be stale and the validity cookie won't tell us that.
-
-i.e. the cohrenecy relationship between the validity cookie and the
-iomap must be set up from a synchronised state.  If the sequence
-number is allowed to change between mapping the extent and sampling
-the sequence number, then the extent we map and cache may already be
-invalid and this introduces the possibility that the validity cookie
-won't always catch that...
-
-> +	if (ret < 0)
-> +		return ret;
-> +	/*
-> +	 * ret can be 0 in case of a hole which is possible for mmaped writes.
-> +	 */
-> +	ret = ret ? ret : 1;
-> +	return ext2_iomap_begin(inode, offset, (loff_t)ret << blkbits,
->  				IOMAP_WRITE, &wpc->iomap, NULL);
-
-So calling ext2_iomap_begin() here might have to change. Indeed,
-given that we just allocated the blocks and we know where they are
-located, calling ext2_iomap_begin()->ext2_get_blocks() to look them
-up again just to format them into the iomap seems .... convoluted.
-
-It would be better to factor ext2_iomap_begin() into a call to
-ext2_get_blocks() and then a "ext2_blocks_to_iomap()" function to
-format the returned blocks into the iomap that is returned. Then
-ext2_write_map_blocks() can just call ext2_blocks_to_iomap() here
-and it skips the unnecessary block mapping lookup....
-
-It also means that the ib_seq returned by the allocation can be fed
-directly into the iomap->validity_cookie...
-
--Dave.
 -- 
-Dave Chinner
-david@fromorbit.com
+2.31.1
+
 
