@@ -1,82 +1,199 @@
-Return-Path: <linux-ext4+bounces-273-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-274-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64DE8801DEB
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Dec 2023 18:10:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6BF080210B
+	for <lists+linux-ext4@lfdr.de>; Sun,  3 Dec 2023 06:15:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BDD62810D0
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Dec 2023 17:10:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85C9F280F7C
+	for <lists+linux-ext4@lfdr.de>; Sun,  3 Dec 2023 05:15:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DB01C686;
-	Sat,  2 Dec 2023 17:10:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EECB10EB;
+	Sun,  3 Dec 2023 05:15:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HwPZy3lV"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="MdDOk6HV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A60F318AF6
-	for <linux-ext4@vger.kernel.org>; Sat,  2 Dec 2023 17:10:45 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 31F4EC433C7;
-	Sat,  2 Dec 2023 17:10:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1701537045;
-	bh=/go9u9e/fOcrfL8ufc7YY7zZbCRqib75ln0/i5X3s58=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=HwPZy3lV5b6jloY95xYng9NGHCO3oeL9djls+AjCllYCJpbP0/IqiLU9y0n/lFB0Z
-	 mKe0ZIQtGzCOa8dCTbu7OAA7FChvkPx7ODhKSJKoCmt3xc4rgvjpUaBk/GhseyP43T
-	 8zd8cIlBVbXVZZSZQSdg9kE7rcrLISOCV7qBNT4DVHgFwbhDjIW0APW/6G3xN/+1sj
-	 etXc8hnSl2rC5EImLULKBDkS4Qu4oIGUKrGBUaxSdw8SFryehFt5ezsQVJJW5F00wr
-	 BFAb3GeKYOsRxTrOu++gHVn8oSEs7dTIiKv90VeNRO8Zl0pu+kw7pn783zdss6T+U+
-	 YTgN97T4/tfjA==
-Date: Sat, 2 Dec 2023 09:10:44 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Brian Norris <briannorris@chromium.org>
-Cc: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] lib/ext2fs: Validity checks for
- ext2fs_inode_scan_goto_blockgroup()
-Message-ID: <20231202171044.GB36164@frogsfrogsfrogs>
-References: <20231201000126.335263-1-briannorris@chromium.org>
- <20231201162410.GA36164@frogsfrogsfrogs>
- <CA+ASDXPYufpx0uaC7iyo_cgaa_2XdR+OLBvMDKk=rpwJe1hWXQ@mail.gmail.com>
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 47482F9
+	for <linux-ext4@vger.kernel.org>; Sat,  2 Dec 2023 21:15:06 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-111-98.bstnma.fios.verizon.net [173.48.111.98])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3B35EsEm017454
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 3 Dec 2023 00:14:55 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1701580498; bh=tBVJpI+aQK5EDPRLNT/vo0HOOLjHeEtNgTuIKZIm78A=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=MdDOk6HVOLfJDpRQoe+ofzYfMlB+cKx1ixmj1DjWReQm7iHhxG8kM9xP12nWFtEyZ
+	 PXJmCnjqLj5dt0nL4rEUfyeLv/hVXcy5fD3EjjQ3bALE7KobeCNKCfPeUd0H1sg98n
+	 JGqd7RFvLd5pZ/1FOLWF4tX+UG0vnAJl54gDGR5RhjZrBYhRvQpdkZYZjz8Pim1mEX
+	 rFVuhDIzMLqr/zGqoE9auXCc8+ZwFtJf52ve5HKL45Fc1hKwDZo6aailc0wJqcBIKm
+	 zuhbqroHthO9YzLMHMflzrA8wHE+TcHpwSvO0BXZq8gG4qhA3VOPp05RlGjy+0zLt4
+	 hHpDBiomdV55A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 51C8015C0290; Sun,  3 Dec 2023 00:14:54 -0500 (EST)
+Date: Sun, 3 Dec 2023 00:14:54 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        rajesh.sivaramasubramaniom@oracle.com, junxiao.bi@oracle.com
+Subject: Re: [RESEND PATCH] debugfs/htree.c: In do_dx_hash() read hash_seed,
+ hash_version directly from superblock
+Message-ID: <20231203051454.GE509422@mit.edu>
+References: <20230824065634.2662858-1-srivathsa.d.dara@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: multipart/mixed; boundary="7XPFOp8NvGT9igiR"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CA+ASDXPYufpx0uaC7iyo_cgaa_2XdR+OLBvMDKk=rpwJe1hWXQ@mail.gmail.com>
+In-Reply-To: <20230824065634.2662858-1-srivathsa.d.dara@oracle.com>
 
-On Fri, Dec 01, 2023 at 09:30:38AM -0800, Brian Norris wrote:
-> On Fri, Dec 1, 2023 at 8:24 AM Darrick J. Wong <djwong@kernel.org> wrote:
-> > On Thu, Nov 30, 2023 at 04:01:18PM -0800, Brian Norris wrote:
-> > > This resolves issues seen in ureadahead, when it uses an old packfile
-> > > (with mismatching group indices) with a new filesystem.
-> >
-> > Say what now?  The boot time pre-caching thing Ubuntu used to have?
-> > https://manpages.ubuntu.com/manpages/trusty/man8/ureadahead.8.html
-> 
-> Sure. ChromeOS still uses it. Steven Rostedt even bothered to do a
-> talk about it recently:
-> https://eoss2023.sched.com/event/1LcMw/the-resurrection-of-ureadahead-and-speeding-up-the-boot-process-and-preloading-applications-steven-rostedt-google
 
-Wow.  I had no idea that ureadahead reads the inode blocks of a mounted
-ext* filesystem into the page cache.  Welp, it's a good thing those are
-part of the static layout.
+--7XPFOp8NvGT9igiR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Anyway, this fix looks correct to me, so I don't see any reason to hold
-this up...
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+On Thu, Aug 24, 2023 at 06:56:34AM +0000, Srivathsa Dara wrote:
+> diff --git a/debugfs/htree.c b/debugfs/htree.c
+> index 7fae7f11..2d881c74 100644
+> --- a/debugfs/htree.c
+> +++ b/debugfs/htree.c
+> @@ -316,7 +316,12 @@ void do_dx_hash(int argc, char *argv[], int sci_idx EXT2FS_ATTR((unused)),
+>  	int		hash_flags = 0;
+>  	const struct ext2fs_nls_table *encoding = NULL;
+>  
+> -	hash_seed[0] = hash_seed[1] = hash_seed[2] = hash_seed[3] = 0;
+> +	hash_seed[0] = current_fs->super->s_hash_seed[0];
+> +	hash_seed[1] = current_fs->super->s_hash_seed[1];
+> +	hash_seed[2] = current_fs->super->s_hash_seed[2];
+> +	hash_seed[3] = current_fs->super->s_hash_seed[3];
+> +
+> +	hash_version = current_fs->super->s_def_hash_version;
+>  
+>  	reset_getopt();
+>  	while ((c = getopt(argc, argv, "h:s:ce:")) != EOF) {
 
---D
+The problem with this patch is that if a file system is not opened,
+then current_fs is NULL.  As a result:
 
-> 
-> Brian
-> 
+% gdb -q debugfs
+Reading symbols from debugfs...
+(gdb) run
+Starting program: /build/e2fsprogs/debugfs/debugfs 
+[Thread debugging using libthread_db enabled]
+Using host libthread_db library "/lib/x86_64-linux-gnu/libthread_db.so.1".
+debugfs 1.47.0 (5-Feb-2023)
+debugfs:  dx_hash test1
+
+Program received signal SIGSEGV, Segmentation fault.
+0x000055555556f73d in do_dx_hash (argc=2, argv=0x5555555d38d0, sci_idx=1, infop=0x0)
+    at /usr/projects/e2fsprogs/e2fsprogs/debugfs/htree.c:343
+343             hash_seed[0] = current_fs->super->s_hash_seed[0];
+
+
+To address this, I've fixed up your patch slightly.  (See below for
+the fix up, as well as the final patch.)
+
+Also, in the future, please make sure that the first line of the
+commit is a summary of the patch, no longer than 75 characters, and
+that the text is wrapped to no more than 75 characters.  (I personally
+use 72 characters, but 75 is what suggested in the Linux Kernel's
+submitting patches documentation[1] in the "The Canonical Patch
+Format" section.)
+
+[1] https://docs.kernel.org/process/submitting-patches.html
+
+					- Ted
+
+
+
+--7XPFOp8NvGT9igiR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=fixup
+
+diff --git a/debugfs/htree.c b/debugfs/htree.c
+index ad493e8fb..a3e95ddb0 100644
+--- a/debugfs/htree.c
++++ b/debugfs/htree.c
+@@ -336,16 +336,18 @@ void do_dx_hash(int argc, char *argv[], int sci_idx EXT2FS_ATTR((unused)),
+ 	errcode_t	err;
+ 	int		c;
+ 	int		hash_version = 0;
+-	__u32		hash_seed[4];
++	__u32		hash_seed[4] = { 0, };
+ 	int		hash_flags = 0;
+ 	const struct ext2fs_nls_table *encoding = NULL;
+ 
+-	hash_seed[0] = current_fs->super->s_hash_seed[0];
+-	hash_seed[1] = current_fs->super->s_hash_seed[1];
+-	hash_seed[2] = current_fs->super->s_hash_seed[2];
+-	hash_seed[3] = current_fs->super->s_hash_seed[3];
++	if (current_fs) {
++		hash_seed[0] = current_fs->super->s_hash_seed[0];
++		hash_seed[1] = current_fs->super->s_hash_seed[1];
++		hash_seed[2] = current_fs->super->s_hash_seed[2];
++		hash_seed[3] = current_fs->super->s_hash_seed[3];
+ 
+-	hash_version = current_fs->super->s_def_hash_version;
++		hash_version = current_fs->super->s_def_hash_version;
++	}
+ 
+ 	reset_getopt();
+ 	while ((c = getopt(argc, argv, "h:s:ce:")) != EOF) {
+
+--7XPFOp8NvGT9igiR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: attachment; filename=final-patch
+
+commit 29d83fef9e6eab139516afe433c03d975e85c25b
+Author: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+Date:   Thu Aug 24 06:56:34 2023 +0000
+
+    debugfs: Use the hash_version from superblock if a file system is opened
+    
+    The debugfs program's dx_hash command computes the hash for the given
+    filename, taking the hash_seed and hash_version (i.e hash algorithm)
+    as arguments.  So the user has to refer to the superblock to get these
+    values used by the filesystem.  So if debugfs has an opened file
+    system, use those values from the current file system.
+    
+    [ Fixed patch to avoid crashing when a file system is not opened. --TYT ]
+    
+    Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+    Link: https://lore.kernel.org/r/20230824065634.2662858-1-srivathsa.d.dara@oracle.com
+    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+
+diff --git a/debugfs/htree.c b/debugfs/htree.c
+index a9f9211ba..a3e95ddb0 100644
+--- a/debugfs/htree.c
++++ b/debugfs/htree.c
+@@ -336,11 +336,18 @@ void do_dx_hash(int argc, char *argv[], int sci_idx EXT2FS_ATTR((unused)),
+ 	errcode_t	err;
+ 	int		c;
+ 	int		hash_version = 0;
+-	__u32		hash_seed[4];
++	__u32		hash_seed[4] = { 0, };
+ 	int		hash_flags = 0;
+ 	const struct ext2fs_nls_table *encoding = NULL;
+ 
+-	hash_seed[0] = hash_seed[1] = hash_seed[2] = hash_seed[3] = 0;
++	if (current_fs) {
++		hash_seed[0] = current_fs->super->s_hash_seed[0];
++		hash_seed[1] = current_fs->super->s_hash_seed[1];
++		hash_seed[2] = current_fs->super->s_hash_seed[2];
++		hash_seed[3] = current_fs->super->s_hash_seed[3];
++
++		hash_version = current_fs->super->s_def_hash_version;
++	}
+ 
+ 	reset_getopt();
+ 	while ((c = getopt(argc, argv, "h:s:ce:")) != EOF) {
+
+--7XPFOp8NvGT9igiR--
 
