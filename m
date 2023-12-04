@@ -1,95 +1,91 @@
-Return-Path: <linux-ext4+bounces-276-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-277-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8313802DC3
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Dec 2023 10:03:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 531258030C8
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Dec 2023 11:43:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 18FEBB20A2F
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Dec 2023 09:03:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 75C121C20A4F
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Dec 2023 10:43:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF4E12E6A;
-	Mon,  4 Dec 2023 09:03:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79CE21100;
+	Mon,  4 Dec 2023 10:43:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="o0GKZPum";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="GVl05G3q"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="hQ6hDs2e";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="QGcIxdZW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7A50CA8;
-	Mon,  4 Dec 2023 01:03:18 -0800 (PST)
-Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B48wdo8031622;
-	Mon, 4 Dec 2023 09:03:03 GMT
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 45888B9;
+	Mon,  4 Dec 2023 02:43:17 -0800 (PST)
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3B4AZ5Iw013596;
+	Mon, 4 Dec 2023 10:43:06 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
  subject : to : cc : references : from : in-reply-to : content-type :
  content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=6Ax4+f+MwzV4DGnyjMmazCBeZFOZlZjsyNBYtb0jBaA=;
- b=o0GKZPumoQOIdK1O0iUHEL3UKABDHzazxssS6ZYf3rTLKCpfdyt3rUevQRfcef4Oo2Wq
- FKMu+rXaytpKOqozvDELlWZkhyJ8vijCS6pu5vSS/vSG+XRsliMxb5Gnn1pJzxcbpMAb
- NMOl8YAQmDWjhT8zCqzPioTFyo7MugJGGCrsSntD/wCLBm3kdk9JsotD5N7X/tNIzmr9
- FsboE6jPnZ/c6GD1NNlvCA/7NB2HyeUJTIAZ1auF+JvEGcPqIjWCT9P68ocyznK8TjR/
- ijFs/mGNe/JvUq9bzhZlOWIlecZ2tmdUBHtQ5eXLYBnVw208VQyxhLU4bgkV3sXD6ica hA== 
+ bh=OmUuag0Qg08MEHBxj6pqWh7E6KaKOQZFiU009QSgG2E=;
+ b=hQ6hDs2eY551xQbKck8lXl21MjIQ3DWpzE91erihLDPHXTkZq/EleXArXEWalRVdcThG
+ tR6yqt88uysU9RlfuHIGBSM4wzVQRep3c/lwhOD+I6UQMOTB42eBgGJl3/aoXal9uxc2
+ FgAWrZDJ89GKeUXQ4JXx4XN9lOEe9nLB8V/omjhmmFMImjtaSoVV7jnzrFGPXvDTGOZH
+ qofvm7QXNTr+X3+1k4k+AmxxHpBe6NjM8xa6IUeY6bau840Cw8itqB/BVW2vGNrU8kE+
+ 80obBj2jMWa4t0pyiSddJWuje54Bff7AK+HPC1KjXBkh7H/03dki/rODaFXRrxSNGFQq dA== 
 Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3usavx86pb-1
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3usd41g153-4
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 04 Dec 2023 09:03:03 +0000
+	Mon, 04 Dec 2023 10:43:06 +0000
 Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B47MAcd020749;
-	Mon, 4 Dec 2023 09:03:02 GMT
-Received: from nam10-mw2-obe.outbound.protection.outlook.com (mail-mw2nam10lp2100.outbound.protection.outlook.com [104.47.55.100])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu15htpj-1
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 3B49FiSu020749;
+	Mon, 4 Dec 2023 10:36:07 GMT
+Received: from nam12-mw2-obe.outbound.protection.outlook.com (mail-mw2nam12lp2041.outbound.protection.outlook.com [104.47.66.41])
+	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3uqu15n7y0-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 04 Dec 2023 09:03:02 +0000
+	Mon, 04 Dec 2023 10:36:07 +0000
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=N4T5j9CY8Tjgi1E8Qb7mi7gxtpNYWzrszsyAg8Ay4cfq6S2vDdzwNNvnBtQvNu9wO3/wOb24nZ0Q11NYPXSiO51nVZQfvWGilHeIME1TAwXFZ0uB5jEYm131XCQn83ZF/tXe4m3yXRrIssQQho2lmOXVIPsAi6HBiWIjKHR8Xvm3MxPGtTscgwWvlkgtCxJg8O6IBMsGGzihYkQ31/ksiouyh3ZibWF6ESNrOBxQdkJDFkAwPOR7gWks1UJktycQXroWpVYx/rQbnk0fQphBPKYxJ3ztMnms5BCIuwE51lHZxrDJjBGeiwc6RQJ3jLiTsE/DsDStIYTN5VEXTrnkVw==
+ b=MGd4wrjidRMae2eYn/XSygMnmdsmoxRBZdgcrd2aXmfcDBeKI02oj50TOTUs56pmyjtzIsyO4TrRr0Ac49ggaCxQ0/ZZIWyHEpr0sgvGXJa4QFU6gcND8X5hGNX3ahKodnlEawfWvDAPVOnNCHyS8vnJfzxvoMPn/Hu2t69cVXjrpjLa0Pu/walR46vIr4S0mxyVoRG1CMJd0tyrufOOjL1DW+VQsUF5uFl4QUV6vhhrm4TPoHGCh6rQJ51N6LfHtAsn1S/PT60SdCqM/a7IcFHreYOLHW3Mveyo1GcXSmnYMxOdDHGxebSfaCFbfMCpTfEFVKD3Qmp3RvQET7qTYQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6Ax4+f+MwzV4DGnyjMmazCBeZFOZlZjsyNBYtb0jBaA=;
- b=es0ETo2owEnUzOJYFgM4lHko1lbHJxQYC26ch7Bi8OGEIPNIv31auBZqH+NrgbN3Xx+pQFs9bgOZil6iYn3HNwlY0XDcbwHnxVxp19/ujM0IRcLVMxyjEHHGweiXIexiNahj04hlMriUQSYE6p7wz4/22PLZh6UgCVrHUKkYUfgwzTVO8/2j7NQCpzDbG7/7kkkz/0QTz7f4HvAAcXKCIp/edgw31pPK+BCCWF4RZy7dPqYK8QtChnhI6mCN5USgfZzUGbAsjSg4zuY6QtGhyIBRiv3PILb8mVOdcfSb0RmKDhIqYjpndP2S3gSket7BX8YBocqgXnpmVPaJcOLVww==
+ bh=OmUuag0Qg08MEHBxj6pqWh7E6KaKOQZFiU009QSgG2E=;
+ b=Ne4OfYpIp6AOrsW93OI3t1h4q2/fgPJVqtDIStzie41M/L/0kPiUB/xsm1l3u5mFLLtt7OhvOzZQDvzGqdcLKBJAnWdYQJpa0z3bj/PzjybImcRzFyCo1LCJjNdzWNV8E3xylpRobIa6VX/e19aQOkt1OUx897lyAQoiJXDcpuzDfnq6/xJdNVfhq2Tg8xFE7fJdfczi53QcAaDGnxRZQFQeQ0nPjhf28aKaZ9NpKygQWPsXj/e4xxQt8PleDBkFyTamL3jFou9gfinP3prSHST1tohW6qsXaNwA4HsIXiSpfoXcGrCBvnqGgY6fIPvVX38Uz46Z0No6p0g082mOkA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
  dkim=pass header.d=oracle.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
  d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=6Ax4+f+MwzV4DGnyjMmazCBeZFOZlZjsyNBYtb0jBaA=;
- b=GVl05G3qmWGZ+TXD3GM1PPlqIYhOUnqelRPA9YeR15tPh152T9bEfspkPT/kc2HcHkGBVVDHJS43lrHjdW7rwaCRh+k5W1YgDVpJePCzSJARG+y/RwoZJhxDke09tsz0UfugrTC7aq47GYv34JZXpuhsEuiy39a9P+HTg+b4+gk=
+ bh=OmUuag0Qg08MEHBxj6pqWh7E6KaKOQZFiU009QSgG2E=;
+ b=QGcIxdZWC2eJDEx4y9Tpor6LhilGvVAjDAfb/NJFWFkzmRjlX54otGiy7E8zmcLeTD1cMnkzcREIZtvutf0ebG/XAJVxA1prAiHzz3z36wY2UhtmPkCDKES9xFEPbxMZT7GvN05ng+Eqoy9K90QMYDsj/rwtAyCnpmj9eWctXU0=
 Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by PH7PR10MB7107.namprd10.prod.outlook.com (2603:10b6:510:27a::7) with
+ by LV8PR10MB7726.namprd10.prod.outlook.com (2603:10b6:408:1e8::16) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.33; Mon, 4 Dec
- 2023 09:03:00 +0000
+ 2023 10:36:05 +0000
 Received: from DM6PR10MB4313.namprd10.prod.outlook.com
  ([fe80::102a:f31:30c6:3187]) by DM6PR10MB4313.namprd10.prod.outlook.com
  ([fe80::102a:f31:30c6:3187%4]) with mapi id 15.20.7046.033; Mon, 4 Dec 2023
- 09:02:59 +0000
-Message-ID: <2aced048-4d4b-4a48-9a45-049f73763697@oracle.com>
-Date: Mon, 4 Dec 2023 09:02:56 +0000
+ 10:36:05 +0000
+Message-ID: <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
+Date: Mon, 4 Dec 2023 10:36:01 +0000
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 1/7] iomap: Don't fall back to buffered write if the write
- is atomic
-To: Dave Chinner <david@fromorbit.com>
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>, Ritesh Harjani <ritesh.list@gmail.com>,
-        linux-kernel@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>,
-        linux-block@vger.kernel.org, linux-xfs@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, dchinner@redhat.com
+Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
+ DIO
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Theodore Ts'o <tytso@mit.edu>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dchinner@redhat.com
 References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <09ec4c88b565c85dee91eccf6e894a0c047d9e69.1701339358.git.ojaswin@linux.ibm.com>
- <ZWj6Tt1zKUL4WPGr@dread.disaster.area>
- <85d1b27c-f4ef-43dd-8eed-f497817ab86d@oracle.com>
- <ZWpZJicSjW2XqMmp@dread.disaster.area>
 Content-Language: en-US
 From: John Garry <john.g.garry@oracle.com>
 Organization: Oracle Corporation
-In-Reply-To: <ZWpZJicSjW2XqMmp@dread.disaster.area>
+In-Reply-To: <cover.1701339358.git.ojaswin@linux.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO6P265CA0004.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:339::20) To DM6PR10MB4313.namprd10.prod.outlook.com
+X-ClientProxiedBy: AM0PR04CA0020.eurprd04.prod.outlook.com
+ (2603:10a6:208:122::33) To DM6PR10MB4313.namprd10.prod.outlook.com
  (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -98,172 +94,283 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|PH7PR10MB7107:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc519ff0-dd37-48a7-b69d-08dbf4a7d06e
+X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|LV8PR10MB7726:EE_
+X-MS-Office365-Filtering-Correlation-Id: 0429fb91-2e18-48fa-b9fc-08dbf4b4d1ac
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info: 
-	34r7fgvcSxvBEOtjCKGY6ZcWe18g4W+OHUfGvoDv8JhxbVXFffJUvWOWMTMfwA75m6R4VxYBoXEoIXzsPQ23AjGsJaDp72BoS27tZEORL6htCRCG6VixrnEEkzsm5MkozsRRIb5SlEJrnXJn4/+4HnTh/NwS7yPtzTsDct7tky+2cl2Io+8TqJA1kqX1rSL7FOxW7fLnTu1SThZJuj7SoPOyfON37cazREAJQfF9LwP3bFY4bjCKFFepxnvQheSs+74ZXGdFBpwO9kl8c1VW16uh1r3ENcaxqUCKhxgtzkvO9GpIhtfkZbHZbJsIAsPzsw7vPW2mWn3C3B90kyPYqAp8FFglLqsuLKoqLMQKX1aFjJaxLAXOuQ1FSHHzGG667yOFpkW6m1YItCO1VtHLSKUFzMjg6ftMUsKxTqpUNnLarRKMMzdX81w7p0HJnqbj+LJKAcNTHHTPOr7ysii22rJJ/BkhCMtyVsZ7Y/PRWrCM4j+P3tztqealLvz1JiNwCY0kZvXiIXpMYkWIAyg3OcwVi4dRfRgfDuDvbFd7rzYWn8fxdhTrV40jfyIyrG3Olpaf3F06/Bb9pqYP1FBHfbSSAQJj0hoyfjMOtox2Nd3zIZeYAZ/tI34PSHkjyG9kOpfZjzmVddlqatox3p1xvQ==
+	eTwvVwjTmBa/bEKRm8/izu/1UpI1xaUlSQ3jbqQq5l8EBNLzOufthRN9TOK7/aSFMhbChGpC6NRCw6r4k7QRa9zdUdWL/QPCdPhrB4mdxaNz/UkaPljFe87h+LTPjWRXpEew63PhDrh1/jNOS2Vjf56TpiHdEAb9desU6uXVdsZ7Yh2Utt5XxLeuS39JCCS8z/MTo+0RVGJmL9dZ9RGlGjifz0XH3fZjWBBQ9BsE2cPSXx14CyuxlpMofwTb5DnlsZf3NkFZCgXuvOye2sfii0MFFRuqmA2Q8tyb9cHwVtU6uALBvFJY+C8ELQhud+aYULvOSaO2/kc57QoBgxsGURmFD+3Ww1FPnT7aRWbGVPlaI62wsim5/MKEnxmL3HPKRaY/LgMp+3dO0/MQt6qVpazWLRw1wK6FDexIxvPEMgciY5mtzjLRN1FERy+TG66cWDlH2lnQeyFbmdEOuun+PoDGL11uQ/1FooLs91Ba5HuMvANOCKKFjE9hOWi/rnJoaBhObIrUstoumdrA3dUlI/f/vabj+gVU5ITHZMTa3kQFgoZAFnyHLa6faf+tbEnta2GEgShddmjPE9CXF2u6cSIGRu26VT8RnlgQLDChOafJfSDGm69tpan+rp9i4PXfaw6QNPxZ5iuFiS1j5v2wQPkHaC3k9q9G+AuAieHOBVr99KtH6uYN45Sguw4NIBR6
 X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(39860400002)(346002)(366004)(376002)(396003)(136003)(230922051799003)(64100799003)(1800799012)(186009)(451199024)(31686004)(2616005)(4326008)(8936002)(8676002)(6512007)(6506007)(36916002)(53546011)(83380400001)(26005)(6486002)(478600001)(6666004)(66476007)(54906003)(66946007)(66556008)(316002)(6916009)(2906002)(41300700001)(36756003)(38100700002)(86362001)(31696002)(7416002)(5660300002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(396003)(376002)(136003)(366004)(346002)(39860400002)(230922051799003)(230173577357003)(230273577357003)(1800799012)(451199024)(64100799003)(186009)(41300700001)(31686004)(6666004)(31696002)(86362001)(7416002)(5660300002)(2906002)(83380400001)(4326008)(66476007)(966005)(8676002)(54906003)(66946007)(8936002)(36756003)(316002)(110136005)(66556008)(45080400002)(2616005)(6506007)(36916002)(478600001)(53546011)(6486002)(6512007)(26005)(38100700002)(45980500001)(43740500002);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?djhHUzlHcEowRXNXNjBlcFdMMDRhOHBrM0tTU0hrUWJJcFFkUlRNR09ZaUtT?=
- =?utf-8?B?dHhNaXQ0dDVVeGhLa2NSMi9oWWx6YVE0R0FkcjVkb3Y0am9URTR1NjZrdExs?=
- =?utf-8?B?ZkZMUE9ITmF1QnJPRGNtSEpvbHhtZGlzM0tabmVkV2xBMkhiVW0vaWQ5bDdY?=
- =?utf-8?B?MWVKdW5YQmwxSEd5RXFEcDdUS0s1QXI4b3N4eis5elhBS1h6SytyNkMwM0RZ?=
- =?utf-8?B?MjRlOXArTkM3RVpPNHYrczdmN1lMMEVFdUlNTi82Uy82ZjBUT3ovMzhEa2lC?=
- =?utf-8?B?SVlzY01kWU9PV2J1d1Bka1k5SnNRcktmU29rWTV2U1diYXZGNCtiMjdaanJC?=
- =?utf-8?B?Y25YQW50VXJ1NmdaMG9Ia21WMis5blVLblhUbVhmVk5rTVhDRGJ5VFErbU9R?=
- =?utf-8?B?azdFdWtsREdzUlNINXBoUlB1Q2NzSEx1YmlUejNiUEFSdWNIcmFKSjFtZ2xX?=
- =?utf-8?B?WXYyKzRxSGxZY1o2T0hqcy95KzcxazUzM2JHNStFMGJLL0VhajkvN0tudnNl?=
- =?utf-8?B?U3NSS1dUeWw3RDUrdEtPaWM0eXlnS0ZKZUM1a04wdy9FbGNaQlRWb1lSTmRV?=
- =?utf-8?B?N1JXU2NFbUpQOWFIZ1JxMWZUeE5adVU0M1FPVTZJRVVqTCtLeXUySDZURGNQ?=
- =?utf-8?B?ZzgvV2ozSllnYTdPQ2tJdkRSREVvaDYvMTNRNmlrM0MybW0zMS9IRHJJMWc5?=
- =?utf-8?B?ekMyNitIQXhZTjRaVWsvNlQ5ZDhaV0JaQUhVTDd5RTVOYTBCUHQzdk5OdTQz?=
- =?utf-8?B?NWhYMTRjMG1qNTdJR3U5TXlJRDlYbS9rMytqQTJ4a05rOUxnTjJBNkhDWTNE?=
- =?utf-8?B?U0dnTzhFUkxnai9XKzVOYXN4N0p0UERWWVVuQTJaSWRZclkyTnhuUkMyd0hl?=
- =?utf-8?B?Nk1iZnhqdy8xdERaRkp3UEpCcVNLQW9EbE9ZWGhVN0pNdUE5MlBWeVY1aDgy?=
- =?utf-8?B?eG9IN3FJQlgxcVZxNzBDUnFsdXJybjc2S2llSnJZMm1HekVUeVVHS2tUZHBR?=
- =?utf-8?B?azdsSVV0VlJxZUwyb1NCMXVseVJOTkZRV1VTdWxHallwaVV3anZma052bElP?=
- =?utf-8?B?Q0RseEgzenFhaFVIdWV6RU1NZi80dHZoOFJZeUdVMTBvY2ZPODFxK2VDSTd0?=
- =?utf-8?B?V3FRRWtZbDcxSTB3NDVpeTNmQ1VIUmdJWVVSQkQxTkhrTWpva1ZnMElvdmpF?=
- =?utf-8?B?a2Q4RXpSMnhBeXk5eGtNU2RPcmpFelRRTCtxZEExcTh2MFNuM3RlNUUzZE1u?=
- =?utf-8?B?S3ZnRlJKaGMzaTF0K280VmI4elllZW9rdXJBc0xNb3EwVS9QNVZYOHJ0SHo2?=
- =?utf-8?B?YTBleEd2UTVDT3RFcEtvYXkzeFQ3cm5qYlpWVkMvbGNuS2MzaW02Wnp4dDdl?=
- =?utf-8?B?cWEvV0g1SVc4L2RvZDdpQXExRVJlYjRGUmZxM3NqYVA1b0xYRTh1eHFja25B?=
- =?utf-8?B?ZEJxWVh4UE9sOU9acjJNNDRZWVNHV2ViVUpNb0VXUVMzUHB0cnRsVUI0aFpN?=
- =?utf-8?B?OERpeGZFYUF1YS9TeDd2WElrMEVFU1NoMVFka0Y3SEZsVml6UXNRcUJabEQ1?=
- =?utf-8?B?VFdqNmtEQkIyVnhMNzk2eXpFc3ZHR1oySWdYMDU0ejZKZGNEbURWcWpFK2F6?=
- =?utf-8?B?bTViLzVMOExWTjhmNVVEajVWU281Y0ZONlg3NEZtL2c0RGtCUEZiOEhrbklp?=
- =?utf-8?B?S21FNDZLd3pxNHFVZksyT01aMjBVUXFFdTRjc0F1SFkwMlVaYUFaZmNmZVQ5?=
- =?utf-8?B?cHdjaEZWQVNxYzlwbFJGK2M4SE5WQU53ZUdWV29RTzR4YmsrdlNKRFJ0disx?=
- =?utf-8?B?VmM4VmJac21ndys2dG4yR2VQUTJGYWp2ZFVmd25DcWV1bi9KY2pPTWVtdDRK?=
- =?utf-8?B?Z3NSY2swc2N6TlBEcUhBRHE4SzUzeERvdUxJYTV3Uy9IWHhNNGdRYy95NTBV?=
- =?utf-8?B?MDVaRFhpejZ3ZHpHUFRPYmVsSFZyaFZxcTdhREZmLzRLdEo5TU83WS9oUk84?=
- =?utf-8?B?QldDcFFZRVE4ck8xSWZyS2VNeFZjQmFnT002d3dGazdHbHc2U0VPSDQyQyty?=
- =?utf-8?B?UGh1TEJXSG9WTHBKcDRqTFJ5d09CeEhlS2xxM1MxQW8rWVA5UzdhWkJhVXNT?=
- =?utf-8?Q?AFLxnEj6WCeHqZGgsURXyWxdh?=
+	=?utf-8?B?d3F6d2dhNE95UkJzMUtFZmw4bUpJdHVhWitlbkxHa3AydkVLTWJuRHFZdnQv?=
+ =?utf-8?B?djFnNldiSERjOGIxaE9hM0dEbHJ1WWczMFdaeDNqbmVHMEVaNHlVZXBYWW1X?=
+ =?utf-8?B?L2NDWjc4bjFTVmlMNkdYdCtLQWkzcTRQaEJWSGtVNzlBTWxReituZlZOS21P?=
+ =?utf-8?B?TVNLOXhYejk0ejEzZ25DUjJZc3dDMmZUSkE5SVFpaUp5dUZoYzRqNmFLRTRx?=
+ =?utf-8?B?OEJ5cWUveVNZNFB5N25qVjNRb3AySnk4OGZRdHo3MUx0ditHY0wxWU9jYisy?=
+ =?utf-8?B?TUNxcnRIYVNxL0xqVmRtalFvVDJVMmZNbEpoeE9USUh5V0dmTDAwdUtSeldM?=
+ =?utf-8?B?aEVCdUlUSzdmdFN2V1g1d1N3RjY1TzFwdjBSRU5teFlXdkZpRlRzN0U0THVC?=
+ =?utf-8?B?VVZrNWlkZU16L3dhL0tDQmYxKzNUbmxJMENHQ3gveFh4eHlDK3RPeUZBN0Rr?=
+ =?utf-8?B?T0l5cXFTQ0ZrWGZmWnY3VXFOQmtkS0ZqdW9YOWhzeStKVHp6TnVqVDJGeVdt?=
+ =?utf-8?B?NVZZbEFaZzB2STlhQUg0YmZTZ3I3U2ZvQW1GUFhZUERYc1hvSEhyZHVXRFpr?=
+ =?utf-8?B?dFVrNExwdXJXUmQ1WjczSXlDcGFsN1pSakMxQmhMNjFwWkQyN2JoenhTSTYr?=
+ =?utf-8?B?U2pmVUtWcG12SGZnSU4rVmtLdTBGQnAzdkkvdVNXNmNRVUFJQklPcjZjY2Jm?=
+ =?utf-8?B?WWJCRnpScmVPait6N3ppSmc0RHk1SUdPcmlyaFZZWkFYLzVVbUw3VWpQeW1Q?=
+ =?utf-8?B?QitUZmdzVHF3TjFjRWlWTU1tZGliR1NjWDlHV1NHZEVBTE0xa0VjMFcvb3VC?=
+ =?utf-8?B?NUMzOUN2dW1qUHJuQ3dHWDVqWUdoY1dndVRFR0tRMVVXZmxobFdYTjRMTmJQ?=
+ =?utf-8?B?Y0orR0UxY2o3c0V2RXozZCtiSTUwQXVBUTErUHdHMUJ6Vm9QenpLdUFsZENl?=
+ =?utf-8?B?aFZiWFFJdXVwR0xPeXVHbTFZSHU1WE12Z0pXNUYyMGt3NGxnZDlGNmdLRjVt?=
+ =?utf-8?B?dU56anZYM00vUzc0NFM0MjA2NHpCUmU0NkRtVzhMbWtyb3pUSmdVRHZrT0x4?=
+ =?utf-8?B?RGczT1pVZmhwaWJ3VGpBeVQwejgxSEpzMmE0RVNBLzNTSlZtQ0VtQlZYRjJY?=
+ =?utf-8?B?RHQ0bit3S1dUSzBCbXNpWEN0RjU0TjBzUk8yakJWekNIMFN6UWwvckZ4bmtn?=
+ =?utf-8?B?MDlSc1BCR0hkTGd1bVJBSS9rQTNVY2ZZLytENCtjR1NXR1VWSnZlcmUvdnM3?=
+ =?utf-8?B?Z3BCZFFsZVVFdXNwZUF2eURPem5ZbGtqVXh3ejFVa0NtQzJYYjVjT2NlYy9r?=
+ =?utf-8?B?VTlaVVRNSWFWNmN1ZjhpYnY2Z2FOaGlKUzV1c0RMUkxGbm96OTVRSGpxY096?=
+ =?utf-8?B?TlZSbmtOUytLUlhqbmVhSzRCaVN3ZEMzRzJrQkpNa1JseFhQdWlwOVZoeDFE?=
+ =?utf-8?B?NkV5ZWE4NmovcGxxeGlCRmpzaFB3aFU1Y0lTQVZCSHdCMHdDSUdQRzhmbm56?=
+ =?utf-8?B?cnFYeW1uaWtlTDhEbUVXQ0hOK2MrNS9CcCt5T09YKyttV1BkU0JvUVlGNFdk?=
+ =?utf-8?B?TVZBck1yTkc1VnZkM2h6eEdMb0hnZUxxMVFaV3dUT2ZGRlFqWnhCakFncXNM?=
+ =?utf-8?B?R1ZhbjkyTjRkc05DVnA1ZFFQZWhOUzVNcFg1azRaWitnSS9RcHNtaW4va3d3?=
+ =?utf-8?B?czB6K0NTTUl2aXpqTjJRVkhpUGN1ZlRxNG5sK2dSRDNjc1NxWDBaL0NGN1Bi?=
+ =?utf-8?B?U3prTWkxV1JmY2E1UWx4T0RRSTJlN0s1VTRFR2c5bndRcDlFTTVuMlpvKytZ?=
+ =?utf-8?B?S2I5TzJsaVpjYTVRT0o2cXdHYXNqYzBMaGhkVnlsSGdPalZPVVd3M0Zqa2R0?=
+ =?utf-8?B?Z1Q3UkIxbENGV1JrTm5jeE1ydzdvdTVzejhZNmI0UmFkakpocG9xaVpXeWZr?=
+ =?utf-8?B?WSs2T3BsTWtnZU1aaU5kWFBVWVUyWnFablNBWFhWbDEvK3BJWk96UnhrN3Jm?=
+ =?utf-8?B?b3hsR3FuSS9vdzZKRVNqT01tc3d0Z1lXczZLekc0OTJQcG5OTm1LaWVLc0p6?=
+ =?utf-8?B?L0NscFRKUUJhbklQaDVqYS9oVUZIZm9KcDNpb0twTHh3TFRLVEFZVTg3Y1ZB?=
+ =?utf-8?Q?uF5y6TNCNPKDr3h24atEs/sLL?=
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	=?utf-8?B?aENpZTlKcEV6Y2w2dWcza05Idm01Q3hMdFJoQW1Ra1ZRcDAwN0FnbXFETWl2?=
- =?utf-8?B?YVUvRisvWStKbVAxVzlaK2c1Szc1Z3NZV3B3VVNNdWwxSEFJSGpTbUVqdHdl?=
- =?utf-8?B?OCs2UmQxVTkweDJCNTI5RExMc0NFRUJZOVNVdWg3V3JhSWM2ZjdIem5VSlBi?=
- =?utf-8?B?dGZzanhyZnFmZE4vSmlYTUd3SHhiVkdzai9semdrVFhxTDdzdnVoaXhkZHFy?=
- =?utf-8?B?VXpDYStlYVdWYWFGeGIwNk1aYjRtR0NCZDludStqTzhVTUtYdXR0aHFscDZr?=
- =?utf-8?B?QStVTkJFR3dIUnlIMFpvaEM3REI2UW43eHkwVHptdFMzSmxDS09ybHJ5SHFD?=
- =?utf-8?B?M3pIUllKNlhMYnl6MXpHY2RQM1ZXRi9mb2grNHljKzRpcU1XY1lCRExlblcx?=
- =?utf-8?B?SDIwWk41aWxkRlRrQ3RicEtlQlduMkg4bmtRM2lORWt2dldJcHg5NXRTbWNT?=
- =?utf-8?B?dlRPY2drdnNTU0dEOFB3dURyTmFEU1B2V0R5bkJnVHZ4K1V0ajRkb3l1alpt?=
- =?utf-8?B?YThmWm5VeEQ3R1NUL3oyekRpUDZnWllWZWZGUjlBa2NXZTVnTUtOeENBMnJU?=
- =?utf-8?B?TW1DZFNzOGlnWE5lSnVBcC9QbktMT2lOU1o2L2RXUEdSWWpTanhxZ0V1QnE4?=
- =?utf-8?B?SWdZUHd0M0YveU8xbTZDeTRWT2tkbUFqVjRiUTc2cWFkUG5GZXdqMjRsNnh1?=
- =?utf-8?B?b25VUWYxZkdhWllrNDZvOUd2K3BMNTRDYU9aS1B4Rzl3Mkx6cHNyQjhMWXdZ?=
- =?utf-8?B?L3huRnRIeDBaSXEzNVdaTmZQTURxc2NUVkl2TWhXenpJazMrOUhZWDRpVTZv?=
- =?utf-8?B?NUZIM0JRdG1lK0QwZXR6Wmk4YlBMTldET0ZlNVh3NlFOZUhMQSt0NlErelJ1?=
- =?utf-8?B?VlZyWEFpMno1U09uclZVQm9EU2FBaDVzVHphdjEzSTNkVm5GOU5UcUhjcEpw?=
- =?utf-8?B?VmtRdlIxZWN1UE1KcHhGT0owR09sNzJiNTlXS09rUW9vc0NPUFNnb0hVU1BG?=
- =?utf-8?B?TzJmUVVqTjNzVlpWZ3cvcExCNzBqYXA0aGRCY3k1WDBHZGpqZEZaL2IyWkZr?=
- =?utf-8?B?eEU5Q1ZRTHVRUzh4MGpRRHROaElyWG1OVmlqMkFwRjduMXdLWFdsNjdYMktO?=
- =?utf-8?B?NTNlS3lYOVNSOHRmdk9kTFNacEh5ek9WbUg3enRDREZjTExiQ2ZDZGpuR1hZ?=
- =?utf-8?B?NUtzTDM2WEZ1UW53bUR6aHFMUlpMZElCY0RsR3ZUbVJTaWpya2duczViMkdu?=
- =?utf-8?Q?ewAtyOUlEWQ3JvV?=
+	csS7oqGw1NdiV91J2nIpmF0H5yXnsUigcvqWAYvNFS7kyu8CRxgxEvDU7D/ZelSPtvbOeUaJWcS9Fp9WygfoKzQAb0YFAG6fwpLM8Nu8avcnveAPSpt8YFf/GICpi5XvY+i3yYNpdJ8dVDihjAElSviuBGOrWY3m3UWZQbhWSNaHoeuKlRvVi7T+ZCH/DOtirCQtvMC7lzRIj5kncpcM2sJinss3FRkrsWOWwNHuKAgeeeP3Ynap7uls63LWZLSBzsWv++acM7VDj9NCOHjgZBRikKekz6n6t9sRmfuvC6Q4Es4NZ8l9qm3h05t8UfzXY3dBSYKsMaMCWLFlScy46/1If3nkiLIMwWVpmL+YHG/1+4la4+6DDs8ElLMgPqBVBmTNZmSIskIiycGVxrX7Tg+/UJaFJNytakmpfDDnwj+t3THE2aJrB1Ow5SxnICBpz7N3ixTa5b9EmsI+iQm/jKUEoA7/A8v/R3pyWguKEvbFkaYez4eanT01XuLCBiG1JV1Knhy3K9SJB5dEcIr+BSLyJryZzfjQLpj/WTRvi++hTRGCPiPTXPO8VrbcDnrnWpG+gdUYwpZ8u4sAtsfCcpJ/E0pFGAXjw0IEauHPnDjl/NgVyAzkwQj7HIf/NVsNpWjbZDR945mr3lCBnmyVzFhXJ+gXqmWW7Sc7hZOUShzi+djV4PnzxW64x3MsEJYx+JgaNCa3z+Lacm2EY+g6THnevjndpVJoYoreimZ9uAr8rmA5oOyCkbsiurIk4+HKrvyYAABvvQ5zsJE5r/BOQug9LkIZm7CpZNGmnjPZypwIdJw10e8fXVlpIUCvkCmzFVMBcYjzyQTt9QIO7bgP+jGUt0/YcGfQPoFErBtGDp1pfmZ87bt+JzvdK5zLemNBQp99KcnXtLicCWt9GZTvJz2bqnOoUWLvv4z5gebKw7w=
 X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc519ff0-dd37-48a7-b69d-08dbf4a7d06e
+X-MS-Exchange-CrossTenant-Network-Message-Id: 0429fb91-2e18-48fa-b9fc-08dbf4b4d1ac
 X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 09:02:59.8968
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 04 Dec 2023 10:36:05.4092
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: FZ5RVT2qvDZV9b0xK+hFtByKHc0PBtPxKZ+T8WYjEaSLG7pz1gH0BRu/nszQzYOf/sygJdD/Tjtz2TAtgK7ABw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR10MB7107
+X-MS-Exchange-CrossTenant-UserPrincipalName: dmYuzbGNT084Ft2NB00C6levC568X6efwE43jCUOU75iRL1jhc+Gc+e+94r+Ij+buOBDZ3OnLvxkDMrGYVREig==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV8PR10MB7726
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-04_06,2023-11-30_01,2023-05-22_02
 X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 mlxlogscore=999 spamscore=0
  malwarescore=0 phishscore=0 bulkscore=0 adultscore=0 mlxscore=0
  suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311060000 definitions=main-2312040067
-X-Proofpoint-GUID: zTPwP9m2Uqz7j2Co8mc3eUPLRVA4Qj8U
-X-Proofpoint-ORIG-GUID: zTPwP9m2Uqz7j2Co8mc3eUPLRVA4Qj8U
+ engine=8.12.0-2311060000 definitions=main-2312040080
+X-Proofpoint-GUID: 7x00_rw7p0PEvOFz--OvXF5H16Skauaq
+X-Proofpoint-ORIG-GUID: 7x00_rw7p0PEvOFz--OvXF5H16Skauaq
 
-On 01/12/2023 22:07, Dave Chinner wrote:
->> Sure, and I think that we need a better story for supporting buffered IO for
->> atomic writes.
->>
->> Currently we have:
->> - man pages tell us RWF_ATOMIC is only supported for direct IO
->> - statx gives atomic write unit min/max, not explicitly telling us it's for
->> direct IO
->> - RWF_ATOMIC is ignored for !O_DIRECT
->>
->> So I am thinking of expanding statx support to enable querying of atomic
->> write capabilities for buffered IO and direct IO separately.
-> You're over complicating this way too much by trying to restrict the
-> functionality down to just what you want to implement right now.
+On 30/11/2023 13:53, Ojaswin Mujoo wrote:
+
+Thanks for putting this together.
+
+> This patch series builds on top of John Gary's atomic direct write
+> patch series [1] and enables this support in ext4. This is a 2 step
+> process:
 > 
-> RWF_ATOMIC is no different to RWF_NOWAIT. The API doesn't decide
-> what can be supported - the filesystems themselves decide what part
-> of the API they can support and implement those pieces.
+> 1. Enable aligned allocation in ext4 mballoc. This allows us to allocate
+> power-of-2 aligned physical blocks, which is needed for atomic writes.
+> 
+> 2. Hook the direct IO path in ext4 to use aligned allocation to obtain
+> physical blocks at a given alignment, which is needed for atomic IO. If
+> for any reason we are not able to obtain blocks at given alignment we
+> fail the atomic write.
 
-Sure, but for RWF_ATOMIC we still have the associated statx call to tell 
-us whether atomic writes are supported for a file and the specific range 
-capability.
+So are we supposed to be doing atomic writes on unwritten ranges only in 
+the file to get the aligned allocations?
+
+I actually tried that, and I got a WARN triggered:
+
+# mkfs.ext4 /dev/sda
+mke2fs 1.46.5 (30-Dec-2021)
+Creating filesystem with 358400 1k blocks and 89760 inodes
+Filesystem UUID: 7543a44b-2957-4ddc-9d4a-db3a5fd019c9
+Superblock backups stored on blocks:
+         8193, 24577, 40961, 57345, 73729, 204801, 221185
+
+Allocating group tables: done
+Writing inode tables: done
+Creating journal (8192 blocks): done
+Writing superblocks and filesystem accounting information: done
+
+[   12.745889] mkfs.ext4 (150) used greatest stack depth: 13304 bytes left
+# mount /dev/sda mnt
+[   12.798804] EXT4-fs (sda): mounted filesystem
+7543a44b-2957-4ddc-9d4a-db3a5fd019c9 r/w with ordered data mode. Quota
+mode: none.
+# touch mnt/file
+#
+# /test-statx -a /root/mnt/file
+statx(/root/mnt/file) = 0
+dump_statx results=5fff
+   Size: 0               Blocks: 0          IO Block: 1024    regular file
+Device: 08:00           Inode: 12          Links: 1
+Access: (0644/-rw-r--r--)  Uid:     0   Gid:     0
+Access: 2023-12-04 10:27:40.002848720+0000
+Modify: 2023-12-04 10:27:40.002848720+0000
+Change: 2023-12-04 10:27:40.002848720+0000
+  Birth: 2023-12-04 10:27:40.002848720+0000
+stx_attributes_mask=0x703874
+         STATX_ATTR_WRITE_ATOMIC set
+         unit min: 1024
+         uunit max: 524288
+Attributes: 0000000000400000 (........ ........ ........ ........
+........ .?--.... ..---... .---.-..)
+#
+
+
+
+looks ok so far, then write 4KB at offset 0:
+
+# /test-pwritev2 -a -d -p 0 -l 4096  /root/mnt/file
+file=/root/mnt/file write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
+[   46.813720] ------------[ cut here ]------------
+[   46.814934] WARNING: CPU: 1 PID: 158 at fs/ext4/mballoc.c:2991
+ext4_mb_regular_allocator+0xeca/0xf20
+[   46.816344] Modules linked in:
+[   46.816831] CPU: 1 PID: 158 Comm: test-pwritev2 Not tainted
+6.7.0-rc1-00038-gae3807f27e7d-dirty #968
+[   46.818220] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS rel-1.16.0-0-gd239552c-rebuilt.opensuse.org 04/01/2014
+[   46.819886] RIP: 0010:ext4_mb_regular_allocator+0xeca/0xf20
+[   46.820734] Code: fd ff ff f0 41 ff 81 e4 03 00 00 e9 63 fd ff ff
+90 0f 0b 90 e9 fe f3 ff ff 90 48 c7 c7 e2 7a b2 86 44 89 ca e8 f7 f1
+d2 ff 90 <0f> 0b 90 90 45 8b 44 24 3c e9 d4 f3 ff ff 4d 8b 45 08 4c 89
+c2 4d
+[   46.823577] RSP: 0018:ffffb77dc056b7c0 EFLAGS: 00010286
+[   46.824379] RAX: 0000000000000000 RBX: ffff9b2ad77dea80 RCX: 
+0000000000000000
+[   46.825458] RDX: 0000000000000001 RSI: ffff9b2b3491b5c0 RDI: 
+ffff9b2b3491b5c0
+[   46.826557] RBP: ffff9b2adc7cd000 R08: 0000000000000000 R09: 
+c0000000ffffdfff
+[   46.827634] R10: ffff9b2adcb9d780 R11: ffffb77dc056b648 R12: 
+ffff9b2ac6778000
+[   46.828714] R13: ffff9b2adc7cd000 R14: ffff9b2adc7d0000 R15: 
+000000000000002a
+[   46.829796] FS:  00007f726dece740(0000) GS:ffff9b2b34900000(0000)
+knlGS:0000000000000000
+[   46.830706] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[   46.831299] CR2: 0000000001ed72b8 CR3: 000000001c794006 CR4: 
+0000000000370ef0
+[   46.832041] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 
+0000000000000000
+[   46.832813] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 
+0000000000000400
+[   46.833546] Call Trace:
+[   46.833901]  <TASK>
+[   46.834163]  ? __warn+0x78/0x130
+[   46.834504]  ? ext4_mb_regular_allocator+0xeca/0xf20
+[   46.835037]  ? report_bug+0xf8/0x1e0
+[   46.835527]  ? console_unlock+0x45/0xd0
+[   46.835963]  ? handle_bug+0x40/0x70
+[   46.836419]  ? exc_invalid_op+0x13/0x70
+[   46.836865]  ? asm_exc_invalid_op+0x16/0x20
+[   46.837329]  ? ext4_mb_regular_allocator+0xeca/0xf20
+[   46.837852]  ext4_mb_new_blocks+0x7e8/0xe60
+[   46.838382]  ? __kmalloc+0x4b/0x130
+[   46.838824]  ? __kmalloc+0x4b/0x130
+[   46.839243]  ? ext4_find_extent+0x347/0x360
+[   46.839743]  ext4_ext_map_blocks+0xc44/0xff0
+[   46.840395]  ext4_map_blocks+0x162/0x5b0
+[   46.841010]  ? jbd2__journal_start+0x84/0x1f0
+[   46.841694]  ext4_map_blocks_aligned+0x20/0xa0
+[   46.842382]  ext4_iomap_begin+0x1e9/0x320
+[   46.843006]  iomap_iter+0x16d/0x350
+[   46.843554]  __iomap_dio_rw+0x3be/0x830
+[   46.844150]  iomap_dio_rw+0x9/0x30
+[   46.844680]  ext4_file_write_iter+0x597/0x800
+[   46.845346]  do_iter_readv_writev+0xe1/0x150
+[   46.846029]  do_iter_write+0x86/0x1f0
+[   46.846638]  vfs_writev+0x96/0x190
+[   46.847176]  ? do_pwritev+0x98/0xd0
+[   46.847721]  do_pwritev+0x98/0xd0
+[   46.848230]  ? syscall_trace_enter.isra.19+0x130/0x1b0
+[   46.849028]  do_syscall_64+0x42/0xf0
+[   46.849590]  entry_SYSCALL_64_after_hwframe+0x6f/0x77
+[   46.850405] RIP: 0033:0x7f726df9666f
+[   46.850964] Code: d5 41 54 49 89 f4 55 89 fd 53 44 89 c3 48 83 ec
+18 80 3d bb fd 0b 00 00 74 2a 45 89 c1 49 89 ca 45 31 c0 b8 48 01 00
+00 0f 05 <48> 3d 00 f0 ff ff 76 5c 48 8b 15 7a 77 0b 00 f7 d8 64 89 02
+48 83
+[   46.854020] RSP: 002b:00007fff28b9bff0 EFLAGS: 00000246 ORIG_RAX:
+0000000000000148
+[   46.855178] RAX: ffffffffffffffda RBX: 0000000000000024 RCX: 
+00007f726df9666f
+[   46.856248] RDX: 0000000000000001 RSI: 00007fff28b9c050 RDI: 
+0000000000000003
+[   46.857303] RBP: 0000000000000003 R08: 0000000000000000 R09: 
+0000000000000024
+[   46.858365] R10: 0000000000000000 R11: 0000000000000246 R12: 
+00007fff28b9c050
+[   46.859407] R13: 0000000000000001 R14: 0000000000000000 R15: 
+00007f726e08aa60
+[   46.860448]  </TASK>
+[   46.860797] ---[ end trace 0000000000000000 ]---
+[   46.861497] EXT4-fs warning (device sda):
+ext4_map_blocks_aligned:520: Returned extent couldn't satisfy
+alignment requirements
+main wrote -1 bytes at offset 0
+[   46.863855] test-pwritev2 (158) used greatest stack depth: 11920 
+bytes left
+#
+
+Please note that I tested on my own dev branch, which contains changes 
+over [1], but I expect it would not make a difference for this test.
+
 
 > 
-> TO go back to RWF_NOWAIT, for a long time we (XFS) only supported
-> RWF_NOWAIT on DIO, and buffered reads and writes were given
-> -EOPNOTSUPP by the filesystem. Then other filesystems started
-> supporting DIO with RWF_NOWAIT. Then buffered read support was added
-> to the page cache and XFS, and as other filesystems were converted
-> they removed the RWF_NOWAIT exclusion check from their read IO
-> paths.
+> Currently this RFC does not impose any restrictions for atomic and non-atomic
+> allocations to any inode,  which also leaves policy decisions to user-space
+> as much as possible. So, for example, the user space can:
 > 
-> We are now in the same place with buffered write support for
-> RWF_NOWAIT. XFS, the page cache and iomap allow buffered writes w/
-> RWF_NOWAIT, but ext4, btrfs and f2fs still all return -EOPNOTSUPP
-> because they don't support non-blocking buffered writes yet.
+>   * Do an atomic direct IO at any alignment and size provided it
+>     satisfies underlying device constraints. The only restriction for now
+>     is that it should be power of 2 len and atleast of FS block size.
 > 
-> This is the same model we should be applying with RWF_ATOMIC - we
-> know that over time we'll be able to expand support for atomic
-> writes across both direct and buffered IO, so we should not be
-> restricting the API or infrastructure to only allow RWF_ATOMIC w/
-> DIO.
-
-Agreed.
-
-> Just have the filesystems reject RWF_ATOMIC w/ -EOPNOTSUPP if
-> they don't support it,
-
-Yes, I was going to add this regardless.
-
-> and for those that do it is conditional on
-> whther the filesystem supports it for the given type of IO being
-> done.
+>   * Do any combination of non atomic and atomic writes on the same file
+>     in any order. As long as the user space is passing the RWF_ATOMIC flag
+>     to pwritev2() it is guaranteed to do an atomic IO (or fail if not
+>     possible).
 > 
-> Seriously - an application can easily probe for RWF_ATOMIC support
-> without needing information to be directly exposed in statx() - just
-> open a O_TMPFILE, issue the type of RWF_ATOMIC IO you require to be
-> supported, and if it returns -EOPNOTSUPP then it you can't use
-> RWF_ATOMIC optimisations in the application....
+> There are some TODOs on the allocator side which are remaining like...
+> 
+> 1.  Fallback to original request size when normalized request size (due to
+>      preallocation) allocation is not possible.
+> 2.  Testing some edge cases.
+> 
+> But since all the basic test scenarios were covered, hence we wanted to get
+> this RFC out for discussion on atomic write support for DIO in ext4.
+> 
+> Further points for discussion -
+> 
+> 1. We might need an inode flag to identify that the inode has blocks/extents
+> atomically allocated. So that other userspace tools do not move the blocks of
+> the inode for e.g. during resize/fsck etc.
+>    a. Should inode be marked as atomic similar to how we have IS_DAX(inode)
+>    implementation? Any thoughts?
+> 
+> 2. Should there be support for open flags like O_ATOMIC. So that in case if
+> user wants to do only atomic writes to an open fd, then all writes can be
+> considered atomic.
+> 
+> 3. Do we need to have any feature compat flags for FS? (IMO) It doesn't look
+> like since say if there are block allocations done which were done atomically,
+> it should not matter to FS w.r.t compatibility.
+> 
+> 4. Mostly aligned allocations are required when we don't have data=journal
+> mode. So should we return -EIO with data journalling mode for DIO request?
+> 
+> Script to test using pwritev2() can be found here:
+> https://urldefense.com/v3/__https://gist.github.com/OjaswinM/e67accee3cbb7832bd3f1a9543c01da9__;!!ACWV5N9M2RV99hQ!LbVSb-43597CLDmYnhgOwH6MAcikusRh75-4fUbUrA_8go3B6JL1lWJPmhij8siPJE031qtQb6-bpdLEa1qrVA$  
 
-ok, if that is the done thing.
-
-So I can't imagine that atomic write unit range will be different for 
-direct IO and buffered IO (ignoring for a moment Christoph's idea for 
-CoW always for no HW offload) when supported. But it seems that we may 
-have a scenario where statx tells is that atomic writes are supported 
-for a file, and a DIO write succeeds and a buffered IO write may return 
--EOPNOTSUPP. If that's acceptable then I'll work towards that.
-
-If we could just run statx on a file descriptor here then that would be 
-simpler...
+Please note that the posix_memalign() call in the program should PAGE align.
 
 Thanks,
 John
-
-
 
