@@ -1,218 +1,158 @@
-Return-Path: <linux-ext4+bounces-287-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-288-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C53B8053FE
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Dec 2023 13:21:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DADF2805470
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Dec 2023 13:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A18E7B20D1E
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Dec 2023 12:21:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EA671F21579
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Dec 2023 12:38:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA4DD5B5A1;
-	Tue,  5 Dec 2023 12:21:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="MbZbntuh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/yERIUnx"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A16F85C8F7;
+	Tue,  5 Dec 2023 12:38:42 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id CAE8EC6;
-	Tue,  5 Dec 2023 04:21:24 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A75501FB92;
-	Tue,  5 Dec 2023 12:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1701778882; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QLKfBbW7xxWM4CsEXWIqWY4fdOEzjqiwq5r4FFnDjsM=;
-	b=MbZbntuhGu0PcmxsNvhrDm1Nl7eikwyCVH+1Z+L5uy5XKseEEJdbyn9hHhmfdKUbFX4KoP
-	azeEpfd8Of8wjIDKG+FD+GnRsNuZaqN8Cue+sYvQZEQb8acBRnCFmqyplxlrepANjk4LPe
-	ICPNoPkBG2oNhka9IhggAro+CzEJPBw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1701778882;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QLKfBbW7xxWM4CsEXWIqWY4fdOEzjqiwq5r4FFnDjsM=;
-	b=/yERIUnxMviXTF8/0KvBEBx/xUijvqixL1zYDc2+TVi5saHdiMB15w9WqfqA/LQWm/M8bw
-	MCQKgvBBhY+GkXDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 91709138FF;
-	Tue,  5 Dec 2023 12:21:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id HWN7I8IVb2XNXAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 05 Dec 2023 12:21:22 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 11DADA07DB; Tue,  5 Dec 2023 13:21:22 +0100 (CET)
-Date: Tue, 5 Dec 2023 13:21:22 +0100
-From: Jan Kara <jack@suse.cz>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Jan Kara <jack@suse.cz>,
-	Daniel =?utf-8?B?RMOtYXo=?= <daniel.diaz@linaro.org>,
-	stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, linux@roeck-us.net, shuah@kernel.org,
-	patches@kernelci.org, lkft-triage@lists.linaro.org, pavel@denx.de,
-	jonathanh@nvidia.com, f.fainelli@gmail.com,
-	sudipm.mukherjee@gmail.com, srw@sladewatkins.net, rwarsow@gmx.de,
-	conor@kernel.org, chrubis@suse.cz, linux-ext4@vger.kernel.org,
-	Ted Tso <tytso@mit.edu>
-Subject: ext4 data corruption in 6.1 stable tree (was Re: [PATCH 5.15
- 000/297] 5.15.140-rc1 review)
-Message-ID: <20231205122122.dfhhoaswsfscuhc3@quack3>
-References: <20231124172000.087816911@linuxfoundation.org>
- <81a11ebe-ea47-4e21-b5eb-536b1a723168@linaro.org>
- <20231127155557.xv5ljrdxcfcigjfa@quack3>
- <CAEUSe7_PUdRgJpY36jZxy84CbNX5TTnynqU8derf0ZBSDtUOqw@mail.gmail.com>
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 35002C6;
+	Tue,  5 Dec 2023 04:38:37 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Sl0Sk6Q5Lz4f3jrm;
+	Tue,  5 Dec 2023 20:38:30 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 0FC731A0902;
+	Tue,  5 Dec 2023 20:38:33 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDnNw7GGW9lr8E8Cw--.35507S4;
+	Tue, 05 Dec 2023 20:38:32 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: axboe@kernel.dk,
+	roger.pau@citrix.com,
+	colyli@suse.de,
+	kent.overstreet@gmail.com,
+	joern@lazybastard.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	sth@linux.ibm.com,
+	hoeppner@linux.ibm.com,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	jejb@linux.ibm.com,
+	martin.petersen@oracle.com,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	nico@fluxnic.net,
+	xiang@kernel.org,
+	chao@kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	agruenba@redhat.com,
+	jack@suse.com,
+	konishi.ryusuke@gmail.com,
+	willy@infradead.org,
+	akpm@linux-foundation.org,
+	hare@suse.de,
+	p.raghav@samsung.com
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH -next RFC 00/14] block: don't access bd_inode directly from other modules
+Date: Tue,  5 Dec 2023 20:37:14 +0800
+Message-Id: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEUSe7_PUdRgJpY36jZxy84CbNX5TTnynqU8derf0ZBSDtUOqw@mail.gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.10
-X-Spamd-Result: default: False [-2.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com,gmx.de];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[22];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:url,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[suse.cz,linaro.org,vger.kernel.org,lists.linux.dev,linux-foundation.org,roeck-us.net,kernel.org,kernelci.org,lists.linaro.org,denx.de,nvidia.com,gmail.com,sladewatkins.net,gmx.de,mit.edu];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
+X-CM-TRANSID:cCh0CgDnNw7GGW9lr8E8Cw--.35507S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4Utry8XFW7Zr18Jr43Wrg_yoW8WF1kpr
+	y3KF1fGr1Uu347Zaya9an7tryrJw4kGay7GF17t34rZr13JryfAr4ktrW8Ja48Jr9rXr4k
+	Xw1DtryFgr10gaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4U
+	JwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	fUoL0eDUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hello!
+From: Yu Kuai <yukuai3@huawei.com>
 
-On Mon 27-11-23 11:32:12, Daniel Díaz wrote:
-> On Mon, 27 Nov 2023 at 09:56, Jan Kara <jack@suse.cz> wrote:
-> > On Fri 24-11-23 23:45:09, Daniel Díaz wrote:
-> > > On 24/11/23 11:50 a. m., Greg Kroah-Hartman wrote:
-> > > > This is the start of the stable review cycle for the 5.15.140 release.
-> > > > There are 297 patches in this series, all will be posted as a response
-> > > > to this one.  If anyone has any issues with these being applied, please
-> > > > let me know.
-> > > >
-> > > > Responses should be made by Sun, 26 Nov 2023 17:19:17 +0000.
-> > > > Anything received after that time might be too late.
-> > > >
-> > > > The whole patch series can be found in one patch at:
-> > > >     https://www.kernel.org/pub/linux/kernel/v5.x/stable-review/patch-5.15.140-rc1.gz
-> > > > or in the git tree and branch at:
-> > > >     git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-5.15.y
-> > > > and the diffstat can be found below.
-> > > >
-> > > > thanks,
-> > > >
-> > > > greg k-h
-> > >
-> > > We are noticing a regression with ltp-syscalls' preadv03:
-> >
-> > Thanks for report!
-> >
-> > > -----8<-----
-> > >   preadv03 preadv03
-> > >   preadv03_64 preadv03_64
-> > >   preadv03.c:102: TINFO: Using block size 512
-> > >   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-> > >   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-> > >   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
-> > >   preadv03.c:102: TINFO: Using block size 512
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
-> > >   preadv03.c:102: TINFO: Using block size 512
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
-> > >   preadv03.c:102: TINFO: Using block size 512
-> > >   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-> > >   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'a' expectedly
-> > >   preadv03.c:87: TPASS: preadv(O_DIRECT) read 512 bytes successfully with content 'b' expectedly
-> > >   preadv03.c:102: TINFO: Using block size 512
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
-> > >   preadv03.c:102: TINFO: Using block size 512
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:77: TFAIL: Buffer wrong at 0 have 62 expected 61
-> > >   preadv03.c:66: TFAIL: preadv(O_DIRECT) read 0 bytes, expected 512
-> > > ----->8-----
-> > >
-> > > This is seen in the following environments:
-> > > * dragonboard-845c
-> > > * juno-64k_page_size
-> > > * qemu-arm64
-> > > * qemu-armv7
-> > > * qemu-i386
-> > > * qemu-x86_64
-> > > * x86_64-clang
-> > >
-> > > and on the following RC's:
-> > > * v5.10.202-rc1
-> > > * v5.15.140-rc1
-> > > * v6.1.64-rc1
-> >
-> > Hum, even in 6.1? That's odd. Can you please test whether current upstream
-> > vanilla kernel works for you with this test? Thanks!
-> 
-> Yes, this is working for us on mainline and next:
->   https://qa-reports.linaro.org/lkft/linux-mainline-master/tests/ltp-syscalls/preadv03
->   https://qa-reports.linaro.org/lkft/linux-next-master/tests/ltp-syscalls/preadv03
-> c.fr. 6.1:
->   https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/tests/ltp-syscalls/preadv03
-> 
-> Greetings!
+Patch 1 add some bdev apis, then follow up patches will use these apis
+to avoid access bd_inode directly, and hopefully the field bd_inode can
+be removed eventually(after figure out a way for fs/buffer.c).
 
-So I've got back to this and the failure is a subtle interaction between
-iomap code and ext4 code. In particular that fact that commit 936e114a245b6
-("iomap: update ki_pos a little later in iomap_dio_complete") is not in
-stable causes that file position is not updated after direct IO write and
-thus we direct IO writes are ending in wrong locations effectively
-corrupting data. The subtle detail is that before this commit if ->end_io
-handler returns non-zero value (which the new ext4 ->end_io handler does),
-file pos doesn't get updated, after this commit it doesn't get updated only
-if the return value is < 0.
+Yu Kuai (14):
+  block: add some bdev apis
+  xen/blkback: use bdev api in xen_update_blkif_status()
+  bcache: use bdev api in read_super()
+  mtd: block2mtd: use bdev apis
+  s390/dasd: use bdev api in dasd_format()
+  scsicam: use bdev api in scsi_bios_ptable()
+  bcachefs: remove dead function bdev_sectors()
+  btrfs: use bdev apis
+  cramfs: use bdev apis in cramfs_blkdev_read()
+  erofs: use bdev api
+  ext4: use bdev apis
+  jbd2: use bdev apis
+  gfs2: use bdev api
+  nilfs2: use bdev api in nilfs_attach_log_writer()
 
-The commit got merged in 6.5-rc1 so all stable kernels that have
-91562895f803 ("ext4: properly sync file size update after O_SYNC direct
-IO") before 6.5 are corrupting data - I've noticed at least 6.1 is still
-carrying the problematic commit. Greg, please take out the commit from all
-stable kernels before 6.5 as soon as possible, we'll figure out proper
-backport once user data are not being corrupted anymore. Thanks!
+ block/bdev.c                       | 116 +++++++++++++++++++++++++++++
+ block/bio.c                        |   1 +
+ block/blk.h                        |   2 -
+ drivers/block/xen-blkback/xenbus.c |   3 +-
+ drivers/md/bcache/super.c          |  11 ++-
+ drivers/mtd/devices/block2mtd.c    |  80 +++++++++-----------
+ drivers/s390/block/dasd_ioctl.c    |   5 +-
+ drivers/scsi/scsicam.c             |   3 +-
+ fs/bcachefs/util.h                 |   5 --
+ fs/btrfs/disk-io.c                 |  68 ++++++++---------
+ fs/btrfs/volumes.c                 |  17 ++---
+ fs/btrfs/zoned.c                   |  12 ++-
+ fs/cramfs/inode.c                  |  35 +++------
+ fs/erofs/data.c                    |  17 +++--
+ fs/erofs/internal.h                |   1 +
+ fs/ext4/dir.c                      |   6 +-
+ fs/ext4/ext4_jbd2.c                |   6 +-
+ fs/ext4/super.c                    |  27 +------
+ fs/gfs2/glock.c                    |   2 +-
+ fs/gfs2/ops_fstype.c               |   2 +-
+ fs/jbd2/journal.c                  |   3 +-
+ fs/jbd2/recovery.c                 |   6 +-
+ fs/nilfs2/segment.c                |   2 +-
+ include/linux/blkdev.h             |  27 +++++++
+ include/linux/buffer_head.h        |   5 +-
+ 25 files changed, 273 insertions(+), 189 deletions(-)
 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.2
+
 
