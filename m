@@ -1,56 +1,61 @@
-Return-Path: <linux-ext4+bounces-308-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-309-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E01E805CAB
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Dec 2023 18:57:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77B9F8066BC
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Dec 2023 06:55:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C0636281EF2
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Dec 2023 17:57:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3366B28227B
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Dec 2023 05:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BB4C6A344;
-	Tue,  5 Dec 2023 17:57:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A43D1095A;
+	Wed,  6 Dec 2023 05:54:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="wT63OINb"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="AH1r7Or5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA57D6A329;
-	Tue,  5 Dec 2023 17:57:22 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D1156C433C8;
-	Tue,  5 Dec 2023 17:57:20 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1701799042;
-	bh=2gbDWzlz/2HnpVET7DLNA3XD6qtbpPe9oj2Q4zkjV3M=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=wT63OINb6S5Ij848WsI6aixbKVJlhTO9f2H0Ppqr7s/mp96Ssg/qFvvnXGxwd98a4
-	 9ygGhIW9dfqPPq0vXCHkH5vu/WzpAd01068vX9XsnIepHCxr5Slzy4dVPAKTTON5b0
-	 a9RyO7xNqN7P8tlNKAdcxDalLfu3ndq9WWESrfHM=
-Date: Wed, 6 Dec 2023 02:57:15 +0900
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Guenter Roeck <linux@roeck-us.net>
-Cc: Jan Kara <jack@suse.cz>,
-	Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
-	stable@vger.kernel.org, patches@lists.linux.dev,
-	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
-	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
-	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
-	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
-	chrubis@suse.cz, linux-ext4@vger.kernel.org,
-	Ted Tso <tytso@mit.edu>
-Subject: Re: ext4 data corruption in 6.1 stable tree (was Re: [PATCH 5.15
- 000/297] 5.15.140-rc1 review)
-Message-ID: <2023120643-evade-legal-ee74@gregkh>
-References: <20231124172000.087816911@linuxfoundation.org>
- <81a11ebe-ea47-4e21-b5eb-536b1a723168@linaro.org>
- <20231127155557.xv5ljrdxcfcigjfa@quack3>
- <CAEUSe7_PUdRgJpY36jZxy84CbNX5TTnynqU8derf0ZBSDtUOqw@mail.gmail.com>
- <20231205122122.dfhhoaswsfscuhc3@quack3>
- <4118ca20-fb7d-4e49-b08c-68fee0522d3d@roeck-us.net>
+Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DB78AD46;
+	Tue,  5 Dec 2023 21:54:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Epg/iXYkY+1k3eZKM14iUxoA+UE8xascWdRNU509WEI=; b=AH1r7Or5zoUct39UOS7X8uhjM/
+	ZiUNF74wEtopkSsYjRN4ZiT+Q5RDAfrGjr2SdG2lYRso2gu9KpXtKwk60gz8irSWJAAQdmmFCaTEL
+	SzY/rogxAQvA7E28MbalnxTm3ENVynpcioekCUIHWOMylS+mP3+gVaUE9mTXoi268lvfIjLdzx8gy
+	KJ4Ze8tYIRqVan/Kdng7awTtiEGY+yfEO2mGuyBJruCAYOU4SPpu5BrZ55s3w5ET/sudLHNfZi9Fm
+	RGHdjWS7by3ADPe4JZlkDzpRcg6HmO7sizVltW2W1zG8KT62VV/j/an1o/4xPCND1GnBbvrQyIKqD
+	pYwXk3tQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
+	id 1rAkrP-0098Oa-0t;
+	Wed, 06 Dec 2023 05:54:15 +0000
+Date: Tue, 5 Dec 2023 21:54:15 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Yu Kuai <yukuai1@huaweicloud.com>
+Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, nico@fluxnic.net, xiang@kernel.org,
+	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	agruenba@redhat.com, jack@suse.com, konishi.ryusuke@gmail.com,
+	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
+	p.raghav@samsung.com, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH -next RFC 00/14] block: don't access bd_inode directly
+ from other modules
+Message-ID: <ZXAMh02h4FAwt2FY@infradead.org>
+References: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,38 +64,17 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4118ca20-fb7d-4e49-b08c-68fee0522d3d@roeck-us.net>
+In-Reply-To: <20231205123728.1866699-1-yukuai1@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Tue, Dec 05, 2023 at 09:55:08AM -0800, Guenter Roeck wrote:
-> On Tue, Dec 05, 2023 at 01:21:22PM +0100, Jan Kara wrote:
-> [ ... ]
-> > 
-> > So I've got back to this and the failure is a subtle interaction between
-> > iomap code and ext4 code. In particular that fact that commit 936e114a245b6
-> > ("iomap: update ki_pos a little later in iomap_dio_complete") is not in
-> > stable causes that file position is not updated after direct IO write and
-> > thus we direct IO writes are ending in wrong locations effectively
-> > corrupting data. The subtle detail is that before this commit if ->end_io
-> > handler returns non-zero value (which the new ext4 ->end_io handler does),
-> > file pos doesn't get updated, after this commit it doesn't get updated only
-> > if the return value is < 0.
-> > 
-> > The commit got merged in 6.5-rc1 so all stable kernels that have
-> > 91562895f803 ("ext4: properly sync file size update after O_SYNC direct
-> > IO") before 6.5 are corrupting data - I've noticed at least 6.1 is still
-> > carrying the problematic commit. Greg, please take out the commit from all
-> > stable kernels before 6.5 as soon as possible, we'll figure out proper
-> > backport once user data are not being corrupted anymore. Thanks!
-> > 
+On Tue, Dec 05, 2023 at 08:37:14PM +0800, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
 > 
-> Thanks a lot for the update.
-> 
-> Turns out this is causing a regression in chromeos-6.1, and reverting the
-> offending patch fixes the problem. I suspect anyone running v6.1.64+ may
-> have a problem.
+> Patch 1 add some bdev apis, then follow up patches will use these apis
+> to avoid access bd_inode directly, and hopefully the field bd_inode can
+> be removed eventually(after figure out a way for fs/buffer.c).
 
-Jan, thanks for the report, and Guenter, thanks for letting me know as
-well.  I'll go queue up the fix now and push out new -rc releases.
+What tree is this against?  It fails to apply to either Jens'
+for-6.8/block or Linus tree in the very first patch.
 
-greg k-h
 
