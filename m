@@ -1,97 +1,75 @@
-Return-Path: <linux-ext4+bounces-339-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-341-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E1E808B4D
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 16:03:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29DE9808CE1
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 17:06:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E65FE282E5C
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 15:03:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 767841C20ACC
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 16:06:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D97F844395;
-	Thu,  7 Dec 2023 15:03:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3703846B82;
+	Thu,  7 Dec 2023 16:06:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="gmeyRRi/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E4031128;
-	Thu,  7 Dec 2023 07:03:15 -0800 (PST)
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id 04D90227A87; Thu,  7 Dec 2023 16:03:12 +0100 (CET)
-Date: Thu, 7 Dec 2023 16:03:11 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Christoph Hellwig <hch@lst.de>, "Darrick J. Wong" <djwong@kernel.org>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	Jens Axboe <axboe@kernel.dk>,
-	Andreas Gruenbacher <agruenba@redhat.com>,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Naohiro Aota <naohiro.aota@wdc.com>,
-	Johannes Thumshirn <jth@kernel.org>, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
-	gfs2@lists.linux.dev, Christian Brauner <brauner@kernel.org>,
-	linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [PATCH 13/14] iomap: map multiple blocks at a time
-Message-ID: <20231207150311.GA18830@lst.de>
-References: <20231207072710.176093-1-hch@lst.de> <20231207072710.176093-14-hch@lst.de> <4e4a86a0-5681-210f-0c94-263126967082@huaweicloud.com>
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 63CA2A3
+	for <linux-ext4@vger.kernel.org>; Thu,  7 Dec 2023 08:06:04 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-130-174.bstnma.fios.verizon.net [173.48.130.174])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3B7G5wYw030813
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Dec 2023 11:05:59 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1701965159; bh=8BdDr1D3xUuDvfKV4qPcVeU4Ul2r9TwrsoOPCjJK3AM=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type;
+	b=gmeyRRi/kLLUS3YirVKsvfDLfT3P1/v02NfZWE69A9I2LtQNy9rYsoLZ+INPH9iEY
+	 XaoSbWqPHylOvrZVyXGP8f+nLjiXF+O2+0Krn24HUs4xbNU+S+3YEqFBri79zsC2TJ
+	 de/VQEla2vwac+Vk/gtvTeAFrTiwbVVCWx+0tW+eBkCSsTo8s085aoBSDs2sAPjXes
+	 BBr3XF5vLzEv5mRUo3qbqkpliHLbhOa16AZEr6ynlsgW1WRJzpcaJ2VO+jcQlrXgw1
+	 5bvRMXJaT7j6JQkxRJjD5JLtEMoy5u43bMFpUBA+WqUromucekmoOzjieLbcWPBijM
+	 tB5Muzeh8T8Gg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 59A7115C057B; Thu,  7 Dec 2023 11:05:58 -0500 (EST)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext2fs: don't retry discard/zeroout repeatedly
+Date: Thu,  7 Dec 2023 11:05:53 -0500
+Message-Id: <170196512708.16594.7215006522173799558.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.31.0
+In-Reply-To: <1683695929-26972-1-git-send-email-adilger@dilger.ca>
+References: <1683695929-26972-1-git-send-email-adilger@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4e4a86a0-5681-210f-0c94-263126967082@huaweicloud.com>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, Dec 07, 2023 at 09:39:44PM +0800, Zhang Yi wrote:
-> > +	do {
-> > +		unsigned map_len;
-> > +
-> > +		error = wpc->ops->map_blocks(wpc, inode, pos);
-> > +		if (error)
-> > +			break;
-> > +		trace_iomap_writepage_map(inode, &wpc->iomap);
-> > +
-> > +		map_len = min_t(u64, dirty_len,
-> > +			wpc->iomap.offset + wpc->iomap.length - pos);
-> > +		WARN_ON_ONCE(!folio->private && map_len < dirty_len);
+
+On Tue, 09 May 2023 23:18:49 -0600, Andreas Dilger wrote:
+> Call safe_getenv(UNIX_IO_NOZEROOUT) once when the device is
+> opened and set CHANNEL_FLAG_NOZEROOUT if present instead of
+> getting uid/euid/getenv every time unix_zeroout() is called.
 > 
-> While I was debugging this series on ext4, I would suggest try to add map_len
-> or dirty_len into this trace point could be more convenient.
-
-That does seem useful, but it means we need to have an entirely new
-even class.  Can I offload this to you for inclusion in your ext4
-series? :)
-
-> > +		case IOMAP_HOLE:
-> > +			break;
+> For unix_discard() and unix_zeroout() don't continue to call
+> them if the block device doesn't support these operations.
 > 
-> BTW, I want to ask an unrelated question of this patch series. Do you
-> agree with me to add a IOMAP_DELAYED case and re-dirty folio here? The
-> background is that on ext4, jbd2 thread call ext4_normal_submit_inode_data_buffers()
-> submit data blocks in data=ordered mode, but it can only submit mapped
-> blocks, now we skip unmapped blocks and re-dirty folios in
-> ext4_do_writepages()->mpage_prepare_extent_to_map()->..->ext4_bio_write_folio().
-> So we have to inherit this logic when convert to iomap, I suppose ext4's
-> ->map_blocks() return IOMAP_DELALLOC for this case, and iomap do something
-> like:
-> 
-> +               case IOMAP_DELALLOC:
-> +                       iomap_set_range_dirty(folio, offset_in_folio(folio, pos),
-> +                                             map_len);
-> +                       folio_redirty_for_writepage(wbc, folio);
-> +                       break;
+> [...]
 
-I guess we could add it, but it feels pretty quirky to me, so it would at
-least need a very big comment.
+Applied, thanks!
 
-But I think Ted mentioned a while ago that dropping the classic
-data=ordered mode for ext4 might be a good idea eventually no that ext4
-can update the inode size at I/O completion time (Ted, correct me if
-I'm wrong).  If that's the case it might make sense to just drop the
-ordered mode instead of adding these quirks to iomap.
+[1/1] ext2fs: don't retry discard/zeroout repeatedly
+      commit: cc20e3c4320ae34dd06ec4d6a71d07aa7d6599d7
 
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
