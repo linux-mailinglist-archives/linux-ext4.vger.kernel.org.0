@@ -1,106 +1,94 @@
-Return-Path: <linux-ext4+bounces-329-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-330-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 907528080EA
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 07:41:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D2E9808132
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 07:51:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16241B20CAC
-	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 06:41:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 48AFA281B43
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Dec 2023 06:51:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CD54107B2;
-	Thu,  7 Dec 2023 06:41:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C0E913AEF;
+	Thu,  7 Dec 2023 06:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="AQCvEWvZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A4C6C137;
-	Wed,  6 Dec 2023 22:41:04 -0800 (PST)
-Received: from dggpeml500021.china.huawei.com (unknown [172.30.72.53])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4Sm4KZ5VHWz14LrF;
-	Thu,  7 Dec 2023 14:36:02 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 7 Dec 2023 14:41:01 +0800
-Message-ID: <fb79e430-97fb-176e-fc64-2c32a9d8a94f@huawei.com>
-Date: Thu, 7 Dec 2023 14:41:01 +0800
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 6766710C9
+	for <linux-ext4@vger.kernel.org>; Wed,  6 Dec 2023 22:51:05 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-122-214.bstnma.fios.verizon.net [173.48.122.214])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3B76ok0S000645
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 7 Dec 2023 01:50:47 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1701931849; bh=UfL2KoGggpRyXRxC/oRG3Gv/LsdkC3Op4OluyeXF4F4=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=AQCvEWvZ1ZNDqePQ7Faykh3MytTg4T3BXLjg8+ksZvjZdje+pz1Z5L037V5TD0reI
+	 rziH1mKOVt8Gh2vp9GOv/C2EdeONUx9PBVIqL5nOX0h9eoDoBawLPZ6ZD5u9hKAVQJ
+	 4Cg+ajzFVtW1wcgO4bBRYoWsZP4Sj3jvBD2qN3noneD+RA2cnkJhyE2uJII0gT1g4s
+	 AJ0MrEskqHXgAZEMI/JYzkyPRVexOUt7Cv0WlC8VEHiOg0hbwwkiSAUYPIle5JlC/1
+	 CysBCcPqOGppMQtHU0FO5Tb9F5IDy4GFp3wNV7p89D3izxsya6h4s0CIBongQGtAOz
+	 XrQ4be/Nwl/fA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id AE0E215C057B; Thu,  7 Dec 2023 01:50:46 -0500 (EST)
+Date: Thu, 7 Dec 2023 01:50:46 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Dave Chinner <david@fromorbit.com>, hch@lst.de,
+        Christian Brauner <brauner@kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>, Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] [RFC] iomap: Use FUA for pure data O_DSYNC DIO writes
+Message-ID: <20231207065046.GA9663@mit.edu>
+References: <20180301014144.28892-1-david@fromorbit.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Content-Language: en-US
-To: Theodore Ts'o <tytso@mit.edu>
-CC: Jan Kara <jack@suse.cz>, <linux-mm@kvack.org>,
-	<linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
-	<willy@infradead.org>, <akpm@linux-foundation.org>, <ritesh.list@gmail.com>,
-	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, <yukuai3@huawei.com>, Baokun Li
-	<libaokun1@huawei.com>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <20231205041755.GG509422@mit.edu>
- <cda525e9-0dac-9629-9c8e-d69d22811777@huawei.com>
- <20231206215529.GK509422@mit.edu>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231206215529.GK509422@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
-X-CFilter-Loop: Reflected
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20180301014144.28892-1-david@fromorbit.com>
 
-On 2023/12/7 5:55, Theodore Ts'o wrote:
-> On Tue, Dec 05, 2023 at 09:19:03PM +0800, Baokun Li wrote:
->> Thank you very much for your detailed explanation!
->> But the downstream users do have buffered reads to read the relay log
->> file, as I confirmed with bpftrace. Here's an introduction to turning on
->> relay logging, but I'm not sure if you can access this link:
->> https://blog.csdn.net/javaanddonet/article/details/112596148
-> Well, if a mysql-supplied program is trying read the relay log using a
-> buffered read, when it's being written using Direct I/O, that's a bug
-> in mysql, and it should be reported as such to the mysql folks.
-I was mistaken here, it now looks like reads and writes to the relay
-log are buffered IO, and I'm still trying to locate the issue.
->
-> It does look like there is a newer way of doing replication which
-> doesn't rely on messign with log files.   From:
->
->      https://dev.mysql.com/doc/refman/8.0/en/replication.html
->
->      MySQL 8.0 supports different methods of replication. The
->      traditional method is based on replicating events from the
->      source's binary log, and requires the log files and positions in
->      them to be synchronized between source and replica. The newer
->      method based on global transaction identifiers (GTIDs) is
->      transactional and therefore does not require working with log
->      files or positions within these files, which greatly simplifies
->      many common replication tasks. Replication using GTIDs guarantees
->      consistency between source and replica as long as all transactions
->      committed on the source have also been applied on the replica. For
->      more information about GTIDs and GTID-based replication in MySQL,
->      see Section 17.1.3, “Replication with Global Transaction
->      Identifiers”. For information on using binary log file position
->      based replication, see Section 17.1, “Configuring Replication”.
->
-> Perhaps you can try and see how mysql handles GTID-based replication
-> using bpftrace?
->
-> Cheers,
->
-> 						- Ted
-Thank you very much for your solution! I'll try it.
+On Thu, Mar 01, 2018 at 12:41:44PM +1100, Dave Chinner wrote:
+> From: Dave Chinner <dchinner@redhat.com>
+> 
+> If we are doing direct IO writes with datasync semantics, we often
+> have to flush metadata changes along with the data write. However,
+> if we are overwriting existing data, there are no metadata changes
+> that we need to flush. In this case, optimising the IO by using
+> FUA write makes sense.
+> 
+> We know from teh IOMAP_F_DIRTY flag as to whether a specific inode
+> requires a metadata flush - this is currently used by DAX to ensure
+> extent modi$fication as stable in page fault operations. For direct
+> IO writes, we can use it to determine if we need to flush metadata
+> or not once the data is on disk.
 
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+Hi,
+
+I've gotten an inquiry from some engineers at Microsoft who would
+really like it if ext4 could use FUA writes when doing O_DSYNC writes,
+since this is soemthing that SQL Server uses.  In the discussion for
+this patch series back in 2018[1], ext4 hadn't yet converted over to
+iomap for Direct I/O, and so adding this feature for ext4 wasn't
+really practical.
+
+[1] https://lore.kernel.org/all/20180319160650.mavedzwienzgwgqi@quack2.suse.cz/
+
+Today, ext4 does use iomap for DIO, but an experiment seems to
+indicate that something hasn't been wired up to enable FUA for O_DSYNC
+writes.  I've looked at fs/iomap/direct-io.c and it wasn't immediately
+obvious what I need to add to enable this feature.
+
+I was wondering if you could me some quick hints about what and where
+I should be looking?
+
+Many thanks!
+
+						- Ted
 
