@@ -1,279 +1,172 @@
-Return-Path: <linux-ext4+bounces-348-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-349-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6547A80A563
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Dec 2023 15:26:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7405780B21B
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Dec 2023 06:06:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8998F1C20CEB
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Dec 2023 14:26:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A36D1F21389
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Dec 2023 05:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 910D21DFDE;
-	Fri,  8 Dec 2023 14:26:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73BE817D0;
+	Sat,  9 Dec 2023 05:06:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l4JJUDbK"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PhQsXYTE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-x1041.google.com (mail-pj1-x1041.google.com [IPv6:2607:f8b0:4864:20::1041])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E08851987;
-	Fri,  8 Dec 2023 06:25:59 -0800 (PST)
-Received: by mail-pj1-x1041.google.com with SMTP id 98e67ed59e1d1-28a281bcb3cso659692a91.0;
-        Fri, 08 Dec 2023 06:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1702045559; x=1702650359; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Qv0/VXj9gO3IRMJ3aNrk4TuraBbkLjJrU94lN6xXrjM=;
-        b=l4JJUDbKlV9SpGBvZTqvn0iYSMAkrfTbFSLRxu1fRC+q087zVvDrr5NZPedabsbwl4
-         JN7nAivoBfwclHlaKjKFRs89dAKQ1FOyG7/cOVFdi82ALvk72408fhF1/mnX0F5Fx5gE
-         BzXZrftl3XqZHub4p3EjaZowmXnLaw4hSzt66TwQokTmTmltsQXXo9HPbBNE2pll9mSa
-         BTZ52jqquhgT9o5lLxhI+B1H+EgPyFrdQJYEUouFkOvAPjIWPcrdoSSk9pEDJGQ5eoQR
-         Ph/mRdValXXAbVr77p9ql46ZGSDUuSf2GAEpGknWqRsJa8Cr2qTViyq9JKC3egaMp9AX
-         59Xw==
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 88ABB10E6
+	for <linux-ext4@vger.kernel.org>; Fri,  8 Dec 2023 21:06:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1702098391;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zx2KXkKWGXskx9hgbxqcfFshAbEoRjOrA8XTrz3yxFs=;
+	b=PhQsXYTExo5e8bVlPB5y+OKhmJtY2xKpiIRfjSCE9bycE3lN28XrYIzKGe7RvMNF1fqDTH
+	1lE6SSRxX/zMVdazULE2irt8GPZURPza8XnWPwR4BqTB9jfDGy+F5vyztRPiNYhT57k+/Y
+	JcnuXpLSHzhwOKfRfB+sjiWE1vvAexg=
+Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
+ [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-662-hRVv3vzAMa2jFluwxUJM4Q-1; Sat, 09 Dec 2023 00:06:29 -0500
+X-MC-Unique: hRVv3vzAMa2jFluwxUJM4Q-1
+Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3b8b07fbc1dso4164278b6e.0
+        for <linux-ext4@vger.kernel.org>; Fri, 08 Dec 2023 21:06:28 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702045559; x=1702650359;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Qv0/VXj9gO3IRMJ3aNrk4TuraBbkLjJrU94lN6xXrjM=;
-        b=GlHjojsSTujubz+GLxcSNUEl0WtTctM672n5hhYcg8hrpSaZGj0y5b48d7il/ZeNxV
-         9QK+Aq7Ep1UwgJx9RrGLgHN6S0uBhtAPsbp+E/4IuhRuYR2psGskBl8GrndhfUsVRbRX
-         +UXBtfUDxKu+IWnQYji2V13243HrJftoGV6E4ElCifAjzwfy4X5yNaXpJjWnqOugvknV
-         D1uNw9AwmFJKqpf1nUfuKwygXEJzdnAYsSZDUHMwPxrFATmLoZSpb6dBD4tQsME9rnMj
-         lb9MjrErQKPYdEnzMKZAYIUgv/npDA4w3AJbJ3eryMpDEXMPBwvkOOceyUyyrYsK1LNi
-         NCMA==
-X-Gm-Message-State: AOJu0YwLVuNp6iY7YpVIuSLVjwm2UVrO5kSK4Md+jeIXeg/yr33iGjP5
-	ymhqqstM0E/eJXr6CoRW2qaaEL8/7s7xHmz2vhR2HiE642H7WO4cgY6Z3w==
-X-Google-Smtp-Source: AGHT+IHYDoDA6MQZkyMBbAbte79ulFs2tE76nYYHYQExFcv48WNXuVzBKglVwrFSez/bvdRLxmA8h0oJFnbaNQdnZKs=
-X-Received: by 2002:a17:90b:954:b0:286:f87b:ee0b with SMTP id
- dw20-20020a17090b095400b00286f87bee0bmr224657pjb.19.1702045559212; Fri, 08
- Dec 2023 06:25:59 -0800 (PST)
+        d=1e100.net; s=20230601; t=1702098380; x=1702703180;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zx2KXkKWGXskx9hgbxqcfFshAbEoRjOrA8XTrz3yxFs=;
+        b=ZqOUyvd7rcA7PElcUz5p6mX8WojjUyr85m661RAEK6gNWlE1dnjNRwlOiiWq6R5q3b
+         cUJHre4CcntMdkwHpCknCaslMCp9+H6ZWuUn0sujRYMpZh+hQrc2FQgaGsNHjR9L7vQx
+         LrRrPlBIkHmrhR5mh9+3Fk4LmMKsb5PUZQiRLZYKd4Pw/Dn2qn0FUva1lEiQx1UOyWHd
+         BbslB+CSzFVrAaBrhHDPDwKVV0c5io6M3g8U98tXmLUgoo1FAAJUBXUhYuv3MnXrxCOT
+         VlcZmavtueATZEKAtb1lw/m0JhYKZOw9MtFaykquSBjKPCeXzS4yL2vsz0Jx5Xh0PbOt
+         EOzA==
+X-Gm-Message-State: AOJu0YwIMZ5fkb7mz0Vf9ZOrZ8n3YjOFFAqeuPfTWnK0s2poMC5nFF+5
+	ovHyXK17Brvgw2xbzx3jPrV3SMPud944v4KmfKOilmkBOyEQ4uimNlRAkLrhto7Vw1xuiAtUiRN
+	/pWf6bayfUiKsMtPFXTEOiQ==
+X-Received: by 2002:a05:6808:38c4:b0:3b9:d586:f18f with SMTP id el4-20020a05680838c400b003b9d586f18fmr1730689oib.63.1702098380495;
+        Fri, 08 Dec 2023 21:06:20 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IECd3K0sY9EZGo2RH5DiJfxKjvWTvRoVlV8FXXIspjT93g5ldddKqeTGXRNnNamvgan+wi9og==
+X-Received: by 2002:a05:6808:38c4:b0:3b9:d586:f18f with SMTP id el4-20020a05680838c400b003b9d586f18fmr1730681oib.63.1702098380226;
+        Fri, 08 Dec 2023 21:06:20 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id r3-20020aa79883000000b006cbb65edcbfsm2522628pfl.12.2023.12.08.21.06.18
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Dec 2023 21:06:19 -0800 (PST)
+Date: Sat, 9 Dec 2023 13:06:16 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	Jan Kara <jack@suse.cz>, Gao Xiang <hsiangkao@linux.alibaba.com>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Subject: Re: [PATCHv3 1/2] aio-dio-write-verify: Add sync and noverify option
+Message-ID: <20231209050616.lcbfxdbqlgcskh3c@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <8379b5df9f70a1d75692e029a565199e98a535e8.1700478575.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: xingwei lee <xrivendell7@gmail.com>
-Date: Fri, 8 Dec 2023 22:12:01 +0800
-Message-ID: <CABOYnLwVDrhLB6yqqDgS7xixzo-OA=ZcJwBDoMPeQDMiFR7scA@mail.gmail.com>
-Subject: Re: divide error in mb_update_avg_fragment_size
-To: harperchen1110@gmail.com
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
-	syzkaller@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <8379b5df9f70a1d75692e029a565199e98a535e8.1700478575.git.ritesh.list@gmail.com>
 
-Hello I saw you can't reproduce this bug and I reproduce it with
-repro.c and repro.txt
-I test the repro.c in the lastest HEAD: 5e3f5b81de80c98338bcb47c233aebefee5a4801
-kernel config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=6ae1a4ee971a7305
-and the bug also existed.
+On Mon, Nov 20, 2023 at 04:49:33PM +0530, Ritesh Harjani (IBM) wrote:
+> This patch adds -S for O_SYNC and -N for noverify option to
+> aio-dio-write-verify test. We will use this for integrity
+> verification test for aio-dio.
+> 
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> ---
 
-=* repro.c =*
-// autogenerated by syzkaller (https://github.com/google/syzkaller)
+This version is good to me,
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-#define _GNU_SOURCE
+>  src/aio-dio-regress/aio-dio-write-verify.c | 29 ++++++++++++++++------
+>  1 file changed, 21 insertions(+), 8 deletions(-)
+> 
+> diff --git a/src/aio-dio-regress/aio-dio-write-verify.c b/src/aio-dio-regress/aio-dio-write-verify.c
+> index dabbfacd..a7ca8307 100644
+> --- a/src/aio-dio-regress/aio-dio-write-verify.c
+> +++ b/src/aio-dio-regress/aio-dio-write-verify.c
+> @@ -34,13 +34,16 @@
+>  
+>  void usage(char *progname)
+>  {
+> -	fprintf(stderr, "usage: %s [-t truncsize ] <-a size=N,off=M [-a ...]>  filename\n"
+> +	fprintf(stderr, "usage: %s [-t truncsize ] <-a size=N,off=M [-a ...]>  [-S] [-N] filename\n"
+>  	        "\t-t truncsize: truncate the file to a special size before AIO wirte\n"
+>  	        "\t-a: specify once AIO write size and startoff, this option can be specified many times, but less than 128\n"
+>  	        "\t\tsize=N: AIO write size\n"
+>  	        "\t\toff=M:  AIO write startoff\n"
+> -	        "e.g: %s -t 4608 -a size=4096,off=512 -a size=4096,off=4608 filename\n",
+> -	        progname, progname);
+> +			"\t-S: uses O_SYNC flag for open. By default O_SYNC is not used\n"
+> +			"\t-N: no_verify: means no write verification. By default noverify is false\n"
+> +	        "e.g: %s -t 4608 -a size=4096,off=512 -a size=4096,off=4608 filename\n"
+> +	        "e.g: %s -t 1048576 -a size=1048576 -S -N filename\n",
+> +	        progname, progname, progname);
+>  	exit(1);
+>  }
+>  
+> @@ -292,8 +295,10 @@ int main(int argc, char *argv[])
+>  	char *filename = NULL;
+>  	int num_events = 0;
+>  	off_t tsize = 0;
+> +	int o_sync = 0;
+> +	int no_verify = 0;
+>  
+> -	while ((c = getopt(argc, argv, "a:t:")) != -1) {
+> +	while ((c = getopt(argc, argv, "a:t:SN")) != -1) {
+>  		char *endp;
+>  
+>  		switch (c) {
+> @@ -308,6 +313,12 @@ int main(int argc, char *argv[])
+>  		case 't':
+>  			tsize = strtoul(optarg, &endp, 0);
+>  			break;
+> +		case 'S':
+> +			o_sync = O_SYNC;
+> +			break;
+> +		case 'N':
+> +			no_verify = 1;
+> +			break;
+>  		default:
+>  			usage(argv[0]);
+>  		}
+> @@ -324,7 +335,7 @@ int main(int argc, char *argv[])
+>  	else
+>  		usage(argv[0]);
+>  
+> -	fd = open(filename, O_DIRECT | O_CREAT | O_TRUNC | O_RDWR, 0600);
+> +	fd = open(filename, O_DIRECT | O_CREAT | O_TRUNC | O_RDWR | o_sync, 0600);
+>  	if (fd == -1) {
+>  		perror("open");
+>  		return 1;
+> @@ -342,9 +353,11 @@ int main(int argc, char *argv[])
+>  		return 1;
+>  	}
+>  
+> -	if (io_verify(fd) != 0) {
+> -		fprintf(stderr, "Data verification fails\n");
+> -		return 1;
+> +	if (no_verify == 0) {
+> +		if (io_verify(fd) != 0) {
+> +			fprintf(stderr, "Data verification fails\n");
+> +			return 1;
+> +		}
+>  	}
+>  
+>  	close(fd);
+> -- 
+> 2.41.0
+> 
+> 
 
-#include <dirent.h>
-#include <endian.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <signal.h>
-#include <stdarg.h>
-#include <stdbool.h>
-#include <stdint.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/prctl.h>
-#include <sys/stat.h>
-#include <sys/syscall.h>
-#include <sys/types.h>
-#include <sys/wait.h>
-#include <time.h>
-#include <unistd.h>
-
-static unsigned long long procid;
-
-static void sleep_ms(uint64_t ms) { usleep(ms * 1000); }
-
-static uint64_t current_time_ms(void) {
-  struct timespec ts;
-  if (clock_gettime(CLOCK_MONOTONIC, &ts)) exit(1);
-  return (uint64_t)ts.tv_sec * 1000 + (uint64_t)ts.tv_nsec / 1000000;
-}
-
-static bool write_file(const char* file, const char* what, ...) {
-  char buf[1024];
-  va_list args;
-  va_start(args, what);
-  vsnprintf(buf, sizeof(buf), what, args);
-  va_end(args);
-  buf[sizeof(buf) - 1] = 0;
-  int len = strlen(buf);
-  int fd = open(file, O_WRONLY | O_CLOEXEC);
-  if (fd == -1) return false;
-  if (write(fd, buf, len) != len) {
-    int err = errno;
-    close(fd);
-    errno = err;
-    return false;
-  }
-  close(fd);
-  return true;
-}
-
-static void kill_and_wait(int pid, int* status) {
-  kill(-pid, SIGKILL);
-  kill(pid, SIGKILL);
-  for (int i = 0; i < 100; i++) {
-    if (waitpid(-1, status, WNOHANG | __WALL) == pid) return;
-    usleep(1000);
-  }
-  DIR* dir = opendir("/sys/fs/fuse/connections");
-  if (dir) {
-    for (;;) {
-      struct dirent* ent = readdir(dir);
-      if (!ent) break;
-      if (strcmp(ent->d_name, ".") == 0 || strcmp(ent->d_name, "..") == 0)
-        continue;
-      char abort[300];
-      snprintf(abort, sizeof(abort), "/sys/fs/fuse/connections/%s/abort",
-               ent->d_name);
-      int fd = open(abort, O_WRONLY);
-      if (fd == -1) {
-        continue;
-      }
-      if (write(fd, abort, 1) < 0) {
-      }
-      close(fd);
-    }
-    closedir(dir);
-  } else {
-  }
-  while (waitpid(-1, status, __WALL) != pid) {
-  }
-}
-
-static void setup_test() {
-  prctl(PR_SET_PDEATHSIG, SIGKILL, 0, 0, 0);
-  setpgrp();
-  write_file("/proc/self/oom_score_adj", "1000");
-}
-
-static void execute_one(void);
-
-#define WAIT_FLAGS __WALL
-
-static void loop(void) {
-  int iter = 0;
-  for (;; iter++) {
-    int pid = fork();
-    if (pid < 0) exit(1);
-    if (pid == 0) {
-      setup_test();
-      execute_one();
-      exit(0);
-    }
-    int status = 0;
-    uint64_t start = current_time_ms();
-    for (;;) {
-      if (waitpid(-1, &status, WNOHANG | WAIT_FLAGS) == pid) break;
-      sleep_ms(1);
-      if (current_time_ms() - start < 5000) continue;
-      kill_and_wait(pid, &status);
-      break;
-    }
-  }
-}
-
-uint64_t r[5] = {0xffffffffffffffff, 0xffffffffffffffff, 0xffffffffffffffff,
-                 0xffffffffffffffff, 0xffffffffffffffff};
-
-void execute_one(void) {
-  intptr_t res = 0;
-  memcpy((void*)0x20000280, "cgroup.controllers\000", 19);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x20000280ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[0] = res;
-  memcpy((void*)0x20000180, "cgroup.controllers\000", 19);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x20000180ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[1] = res;
-  res = syscall(__NR_dup3, /*oldfd=*/r[1], /*newfd=*/r[0], /*flags=*/0ul);
-  if (res != -1) r[2] = res;
-  *(uint32_t*)0x20000140 = 0x20;
-  *(uint32_t*)0x20000144 = 0x8c8c;
-  *(uint32_t*)0x20000148 = 0;
-  *(uint32_t*)0x2000014c = 0;
-  *(uint32_t*)0x20000150 = 0;
-  memset((void*)0x20000154, 0, 8);
-  syscall(__NR_ioctl, /*fd=*/r[0], /*cmd=*/0x401c5820, /*arg=*/0x20000140ul);
-  sprintf((char*)0x20000040, "0x%016llx", (long long)0);
-  syscall(__NR_write, /*fd=*/r[0], /*buf=*/0x20000040ul, /*len=*/0xfea0ul);
-  memcpy((void*)0x200001c0, "cpuset.effective_cpus\000", 22);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x200001c0ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[3] = res;
-  sprintf((char*)0x20000380, "0x%016llx", (long long)0);
-  syscall(__NR_write, /*fd=*/r[3], /*buf=*/0x20000380ul, /*len=*/0x101bful);
-  syscall(__NR_ioctl, /*fd=*/r[3], /*cmd=*/0x660c, 0);
-  *(uint32_t*)0x200000c0 = 0;
-  *(uint32_t*)0x200000c4 = r[3];
-  *(uint64_t*)0x200000c8 = 7;
-  *(uint64_t*)0x200000d0 = 0;
-  *(uint64_t*)0x200000d8 = 0;
-  *(uint64_t*)0x200000e0 = 0;
-  syscall(__NR_ioctl, /*fd=*/r[2], /*cmd=*/0xc028660f, /*arg=*/0x200000c0ul);
-  syscall(__NR_writev, /*fd=*/-1, /*vec=*/0ul, /*vlen=*/0ul);
-  syscall(__NR_ioctl, /*fd=*/-1, /*cmd=*/0x40045569, /*arg=*/9ul);
-  syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0ul, /*flags=*/0x275aul,
-          /*mode=*/0ul);
-  memcpy((void*)0x20000180, "cgroup.controllers\000", 19);
-  res = syscall(__NR_openat, /*fd=*/0xffffff9c, /*file=*/0x20000180ul,
-                /*flags=*/0x275aul, /*mode=*/0ul);
-  if (res != -1) r[4] = res;
-  *(uint64_t*)0x200000c0 = 4;
-  *(uint64_t*)0x200000c8 = 0x16000000000000;
-  *(uint64_t*)0x200000d0 = 0x20;
-  syscall(__NR_ioctl, /*fd=*/r[4], /*cmd=*/0xc0185879, /*arg=*/0x200000c0ul);
-}
-int main(void) {
-  syscall(__NR_mmap, /*addr=*/0x1ffff000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x20000000ul, /*len=*/0x1000000ul, /*prot=*/7ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  syscall(__NR_mmap, /*addr=*/0x21000000ul, /*len=*/0x1000ul, /*prot=*/0ul,
-          /*flags=*/0x32ul, /*fd=*/-1, /*offset=*/0ul);
-  for (procid = 0; procid < 4; procid++) {
-    if (fork() == 0) {
-      loop();
-    }
-  }
-  sleep(1000000);
-  return 0;
-}
-
-=* repro.txt =*
-r0 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f0000000280)='cgroup.controllers\x00', 0x275a, 0x0)
-r1 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f0000000180)='cgroup.controllers\x00', 0x275a, 0x0)
-r2 = dup3(r1, r0, 0x0)
-ioctl$FS_IOC_FSSETXATTR(r0, 0x401c5820, &(0x7f0000000140)={0x20, 0x8c8c})
-write$cgroup_int(r0, &(0x7f0000000040), 0xfea0)
-r3 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f00000001c0)='cpuset.effective_cpus\x00', 0x275a, 0x0)
-write$cgroup_int(r3, &(0x7f0000000380), 0x101bf)
-ioctl$EXT4_IOC_ALLOC_DA_BLKS(r3, 0x660c)
-ioctl$EXT4_IOC_MOVE_EXT(r2, 0xc028660f, &(0x7f00000000c0)={0x0, r3, 0x7})
-writev(0xffffffffffffffff, 0x0, 0x0)
-ioctl$UI_SET_LEDBIT(0xffffffffffffffff, 0x40045569, 0x9)
-openat$cgroup_ro(0xffffffffffffff9c, 0x0, 0x275a, 0x0)
-r4 = openat$cgroup_ro(0xffffffffffffff9c,
-&(0x7f0000000180)='cgroup.controllers\x00', 0x275a, 0x0)
-ioctl$FITRIM(r4, 0xc0185879, &(0x7f00000000c0)={0x4, 0x16000000000000, 0x20})
-
-and also https://gist.github.com/xrivendell7/bad992c2b716ed14310efa2c6f878b7c
 
