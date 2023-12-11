@@ -1,209 +1,186 @@
-Return-Path: <linux-ext4+bounces-358-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-359-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9622F80CB1E
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 14:36:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 217A980CD10
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 15:07:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B710B1C20FC2
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 13:36:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB8191F21810
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 14:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88EF93F8D0;
-	Mon, 11 Dec 2023 13:36:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dzHXJRl/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UnV6mOcc";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dzHXJRl/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UnV6mOcc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F3DC487B1;
+	Mon, 11 Dec 2023 14:07:31 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 438CFCF;
-	Mon, 11 Dec 2023 05:36:26 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4568A1FB97;
-	Mon, 11 Dec 2023 13:36:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702301784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J7XMwo8gS0gIePc24K0/R+faEUaJh0tGxIvesG8PtDk=;
-	b=dzHXJRl/TnGEj/ANrtQajQOj/sJOAm018+Srhtfem0ZllUrWav8snNr36k+09tXTQiSBRu
-	kh+HxCxm5lGAeEoBN2sH1P6K8G+wsALcwv5jbpHNejzSwYNpdQmAtn8tTYpFMFjCOoa3Pa
-	srC7hJwS/0BJ/bBBBnkvXyYVpuG6SHA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702301784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J7XMwo8gS0gIePc24K0/R+faEUaJh0tGxIvesG8PtDk=;
-	b=UnV6mOccP9f7Z2PACRs+sUmwf4l6BBbSQEB01Ua9gxMuy/xUqmuO7c15Eb0Jhr/2QcFzBv
-	r1PihPp6VFggoqBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702301784; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J7XMwo8gS0gIePc24K0/R+faEUaJh0tGxIvesG8PtDk=;
-	b=dzHXJRl/TnGEj/ANrtQajQOj/sJOAm018+Srhtfem0ZllUrWav8snNr36k+09tXTQiSBRu
-	kh+HxCxm5lGAeEoBN2sH1P6K8G+wsALcwv5jbpHNejzSwYNpdQmAtn8tTYpFMFjCOoa3Pa
-	srC7hJwS/0BJ/bBBBnkvXyYVpuG6SHA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702301784;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J7XMwo8gS0gIePc24K0/R+faEUaJh0tGxIvesG8PtDk=;
-	b=UnV6mOccP9f7Z2PACRs+sUmwf4l6BBbSQEB01Ua9gxMuy/xUqmuO7c15Eb0Jhr/2QcFzBv
-	r1PihPp6VFggoqBg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 33BEC134B0;
-	Mon, 11 Dec 2023 13:36:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 1JCaDFgQd2WqWAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 11 Dec 2023 13:36:24 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B0E8FA07E3; Mon, 11 Dec 2023 14:36:19 +0100 (CET)
-Date: Mon, 11 Dec 2023 14:36:19 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ye Bin <yebin10@huawei.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jack@suse.cz
-Subject: Re: [PATCH] jbd2: fix soft lockup in
- journal_finish_inode_data_buffers()
-Message-ID: <20231211133619.3uaq4ri3r7fsdap5@quack3>
-References: <20231211112544.3879780-1-yebin10@huawei.com>
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id E9D714C3F;
+	Mon, 11 Dec 2023 06:07:22 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Spk8N3TFDz4f3kG7;
+	Mon, 11 Dec 2023 22:07:16 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id D84331A060E;
+	Mon, 11 Dec 2023 22:07:18 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDn6xGTF3dlDYFxDQ--.28013S4;
+	Mon, 11 Dec 2023 22:07:17 +0800 (CST)
+From: Yu Kuai <yukuai1@huaweicloud.com>
+To: axboe@kernel.dk,
+	roger.pau@citrix.com,
+	colyli@suse.de,
+	kent.overstreet@gmail.com,
+	joern@lazybastard.org,
+	miquel.raynal@bootlin.com,
+	richard@nod.at,
+	vigneshr@ti.com,
+	sth@linux.ibm.com,
+	hoeppner@linux.ibm.com,
+	hca@linux.ibm.com,
+	gor@linux.ibm.com,
+	agordeev@linux.ibm.com,
+	jejb@linux.ibm.com,
+	martin.petersen@oracle.com,
+	clm@fb.com,
+	josef@toxicpanda.com,
+	dsterba@suse.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	nico@fluxnic.net,
+	xiang@kernel.org,
+	chao@kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	agruenba@redhat.com,
+	jack@suse.com,
+	konishi.ryusuke@gmail.com,
+	willy@infradead.org,
+	akpm@linux-foundation.org,
+	p.raghav@samsung.com,
+	hare@suse.de
+Cc: linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org,
+	linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org,
+	linux-ext4@vger.kernel.org,
+	gfs2@lists.linux.dev,
+	linux-nilfs@vger.kernel.org,
+	yukuai3@huawei.com,
+	yukuai1@huaweicloud.com,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH RFC v2 for-6.8/block 00/18] block: don't access bd_inode directly from other modules
+Date: Mon, 11 Dec 2023 22:05:34 +0800
+Message-Id: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231211112544.3879780-1-yebin10@huawei.com>
-X-Spam-Score: 14.89
-X-Spamd-Result: default: False [8.76 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_SPAM_SHORT(2.99)[0.998];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 NEURAL_HAM_LONG(-0.23)[-0.226];
-	 R_SPF_SOFTFAIL(4.60)[~all:c];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[38.71%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spamd-Bar: ++++++++
-X-Rspamd-Server: rspamd1
-X-Spam-Flag: NO
-X-Rspamd-Queue-Id: 4568A1FB97
-X-Spam-Score: 8.76
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="dzHXJRl/";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UnV6mOcc;
-	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz;
-	dmarc=none
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDn6xGTF3dlDYFxDQ--.28013S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr48Ww4Utw47JFWDWFW7Arb_yoW5XFWfpr
+	13KF4fGr1UWryxZaya9a17tw1rG3WkGayUWFnIy34rZFW5AryfZrWktF1rJa4kXryxXr4k
+	Xw17JryrKr1jgaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvF14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26rWY6r4U
+	JwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AK
+	xVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvj
+	fUojjgUUUUU
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-On Mon 11-12-23 19:25:44, Ye Bin wrote:
-> There's issue when do io test:
-> WARN: soft lockup - CPU#45 stuck for 11s! [jbd2/dm-2-8:4170]
-> CPU: 45 PID: 4170 Comm: jbd2/dm-2-8 Kdump: loaded Tainted: G  OE
-> Call trace:
->  dump_backtrace+0x0/0x1a0
->  show_stack+0x24/0x30
->  dump_stack+0xb0/0x100
->  watchdog_timer_fn+0x254/0x3f8
->  __hrtimer_run_queues+0x11c/0x380
->  hrtimer_interrupt+0xfc/0x2f8
->  arch_timer_handler_phys+0x38/0x58
->  handle_percpu_devid_irq+0x90/0x248
->  generic_handle_irq+0x3c/0x58
->  __handle_domain_irq+0x68/0xc0
->  gic_handle_irq+0x90/0x320
->  el1_irq+0xcc/0x180
->  queued_spin_lock_slowpath+0x1d8/0x320
->  jbd2_journal_commit_transaction+0x10f4/0x1c78 [jbd2]
->  kjournald2+0xec/0x2f0 [jbd2]
->  kthread+0x134/0x138
->  ret_from_fork+0x10/0x18
-> 
-> Analyzed informations from vmcore as follows:
-> (1) There are about 5k+ jbd2_inode in 'commit_transaction->t_inode_list';
-> (2) Now is processing the 855th jbd2_inode;
-> (3) JBD2 task has TIF_NEED_RESCHED flag;
-> (4) There's no pags in address_space around the 855th jbd2_inode;
-> (5) There are some process is doing drop caches;
-> (6) Mounted with 'nodioread_nolock' option;
-> (7) 128 CPUs;
-> 
-> According to informations from vmcore we know 'journal->j_list_lock' spin lock
-> competition is fierce. So journal_finish_inode_data_buffers() maybe process
-> slowly. Theoretically, there is scheduling point in the filemap_fdatawait_range_keep_errors().
-> However, if inode's address_space has no pages which taged with PAGECACHE_TAG_WRITEBACK,
-> will not call cond_resched(). So may lead to soft lockup.
-> journal_finish_inode_data_buffers
->   filemap_fdatawait_range_keep_errors
->     __filemap_fdatawait_range
->       while (index <= end)
->         nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end, PAGECACHE_TAG_WRITEBACK);
->         if (!nr_pages)
->            break;    --> If 'nr_pages' is equal zero will break, then will not call cond_resched()
->         for (i = 0; i < nr_pages; i++)
->           wait_on_page_writeback(page);
->         cond_resched();
-> 
-> To solve above issue, add scheduling point in the journal_finish_inode_data_buffers();
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+From: Yu Kuai <yukuai3@huawei.com>
 
-Makes sense. Feel free to add:
+Changes in v2:
+ - remove some bdev apis that is not necessary;
+ - pass in offset for bdev_read_folio() and __bdev_get_folio();
+ - remove bdev_gfp_constraint() and add a new helper in fs/buffer.c to
+ prevent access bd_indoe() directly from mapping_gfp_constraint() in
+ ext4.(patch 15, 16);
+ - remove block_device_ejected() from ext4.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Noted that following is not changed yet since v1:
+- Chirstoph suggested to remove invalidate_inode_pages2() from
+xen_update_blkif_status(), however, this sync_bdev() + invalidate_bdev()
+is used from many modules, and I'll leave this for later if we want to
+kill all of them.
+- Matthew suggested that pass in valid file_ra_state for cramfs,
+however, I don't see an easy way to do this for cramfs_lookup() and
+cramfs_read_super().
 
-								Honza
+Patch 1 add some bdev apis, then follow up patches will use these apis
+to avoid access bd_inode directly, and hopefully the field bd_inode can
+be removed eventually(after figure out a way for fs/buffer.c).
 
-> ---
->  fs/jbd2/commit.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> index 9bdb377a348f..5e122586e06e 100644
-> --- a/fs/jbd2/commit.c
-> +++ b/fs/jbd2/commit.c
-> @@ -270,6 +270,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
->  			if (!ret)
->  				ret = err;
->  		}
-> +		cond_resched();
->  		spin_lock(&journal->j_list_lock);
->  		jinode->i_flags &= ~JI_COMMIT_RUNNING;
->  		smp_mb();
-> -- 
-> 2.31.1
-> 
+Yu Kuai (18):
+  block: add some bdev apis
+  xen/blkback: use bdev api in xen_update_blkif_status()
+  bcache: use bdev api in read_super()
+  mtd: block2mtd: use bdev apis
+  s390/dasd: use bdev api in dasd_format()
+  scsicam: use bdev api in scsi_bios_ptable()
+  bcachefs: remove dead function bdev_sectors()
+  bio: export bio_add_folio_nofail()
+  btrfs: use bdev apis
+  cramfs: use bdev apis in cramfs_blkdev_read()
+  erofs: use bdev api
+  gfs2: use bdev api
+  nilfs2: use bdev api in nilfs_attach_log_writer()
+  jbd2: use bdev apis
+  buffer: add a new helper to read sb block
+  ext4: use new helper to read sb block
+  ext4: remove block_device_ejected()
+  ext4: use bdev apis
+
+ block/bdev.c                       | 70 ++++++++++++++++++++++++++
+ block/bio.c                        |  1 +
+ block/blk.h                        |  2 -
+ drivers/block/xen-blkback/xenbus.c |  3 +-
+ drivers/md/bcache/super.c          | 11 ++--
+ drivers/mtd/devices/block2mtd.c    | 81 +++++++++++++-----------------
+ drivers/s390/block/dasd_ioctl.c    |  5 +-
+ drivers/scsi/scsicam.c             |  4 +-
+ fs/bcachefs/util.h                 |  5 --
+ fs/btrfs/disk-io.c                 | 71 ++++++++++++--------------
+ fs/btrfs/volumes.c                 | 17 +++----
+ fs/btrfs/zoned.c                   | 15 +++---
+ fs/buffer.c                        | 68 +++++++++++++++++--------
+ fs/cramfs/inode.c                  | 36 +++++--------
+ fs/erofs/data.c                    | 18 ++++---
+ fs/erofs/internal.h                |  2 +
+ fs/ext4/dir.c                      |  6 +--
+ fs/ext4/ext4.h                     | 13 -----
+ fs/ext4/ext4_jbd2.c                |  6 +--
+ fs/ext4/inode.c                    |  8 +--
+ fs/ext4/super.c                    | 66 ++++--------------------
+ fs/ext4/symlink.c                  |  2 +-
+ fs/gfs2/glock.c                    |  2 +-
+ fs/gfs2/ops_fstype.c               |  2 +-
+ fs/jbd2/journal.c                  |  3 +-
+ fs/jbd2/recovery.c                 |  6 +--
+ fs/nilfs2/segment.c                |  2 +-
+ include/linux/blkdev.h             | 17 +++++++
+ include/linux/buffer_head.h        | 18 ++++++-
+ 29 files changed, 301 insertions(+), 259 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.2
+
 
