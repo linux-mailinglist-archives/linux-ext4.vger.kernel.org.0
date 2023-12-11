@@ -1,101 +1,124 @@
-Return-Path: <linux-ext4+bounces-352-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-353-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ACA6980BA16
-	for <lists+linux-ext4@lfdr.de>; Sun, 10 Dec 2023 11:05:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D380D80C323
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 09:28:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B18B3B209D4
-	for <lists+linux-ext4@lfdr.de>; Sun, 10 Dec 2023 10:05:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80E7F280DE0
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 08:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F1AC8466;
-	Sun, 10 Dec 2023 10:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BFEA20DCC;
+	Mon, 11 Dec 2023 08:28:47 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f72.google.com (mail-oo1-f72.google.com [209.85.161.72])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ED9A8107
-	for <linux-ext4@vger.kernel.org>; Sun, 10 Dec 2023 02:05:22 -0800 (PST)
-Received: by mail-oo1-f72.google.com with SMTP id 006d021491bc7-58a21120248so3591766eaf.0
-        for <linux-ext4@vger.kernel.org>; Sun, 10 Dec 2023 02:05:22 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1702202722; x=1702807522;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YKXFc2v7t4kCPe8Iesh8qQND7OzFTIcop0B/KSdXasE=;
-        b=C5VALFxQ/08p4I5bXycVnDgy84FYSbZVXjOThCRbYChUwwltNenLbuBpDUitVBLLEF
-         r17ukOTnRg3wOOWzdCBdnVtF/n5UjdknCQXhy60o1S9x1PicXCUSUEChMhZ2HTN73n2j
-         psZjrKftkOXwtHlwb02bzaqxDP0FXicBEXj7ZeA8tVudpqOWeLPYZgBWJT3B1VSGcPQy
-         huXWhHxDpMXcKRtRayl1UEXFAeu88uw+2aiGYEKnfPRU7XWhK2Fo5+34Es9kKTgGT+uz
-         b+gnT0zmPonsGZIZOZQgw+JVwCyzW+wOGQfuim08xNooK+j68bk55koQDWXP1RKZbO4q
-         Ysug==
-X-Gm-Message-State: AOJu0Yy6fkpX7w+K7Nf7QAg/PePZbCfgwUou5hg/Es145Tnl4p2zqzjj
-	7YoObIWigDgc4TmRDFE6hhq7E/VBTr8sksrS8qLC5EF2YVkw
-X-Google-Smtp-Source: AGHT+IF3qDImtqdycyGXN44w/tJpzNdjGEYlzQeJZKDWqiMw1vFKoS5HQnUnTIZ/28zH/2VGVNvWbF/e0jMYVfkJJJfj3oBV+Py7
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 339F4E5;
+	Mon, 11 Dec 2023 00:28:43 -0800 (PST)
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 1E6ED1C0050; Mon, 11 Dec 2023 09:28:41 +0100 (CET)
+Date: Mon, 11 Dec 2023 09:28:40 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, Jan Kara <jack@suse.cz>,
+	Daniel =?iso-8859-1?Q?D=EDaz?= <daniel.diaz@linaro.org>,
+	stable@vger.kernel.org, patches@lists.linux.dev,
+	linux-kernel@vger.kernel.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, shuah@kernel.org, patches@kernelci.org,
+	lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
+	f.fainelli@gmail.com, sudipm.mukherjee@gmail.com,
+	srw@sladewatkins.net, rwarsow@gmx.de, conor@kernel.org,
+	chrubis@suse.cz, linux-ext4@vger.kernel.org,
+	Ted Tso <tytso@mit.edu>
+Subject: Re: ext4 data corruption in 6.1 stable tree (was Re: [PATCH 5.15
+ 000/297] 5.15.140-rc1 review)
+Message-ID: <ZXbIONRdDQx+mDwI@duo.ucw.cz>
+References: <20231124172000.087816911@linuxfoundation.org>
+ <81a11ebe-ea47-4e21-b5eb-536b1a723168@linaro.org>
+ <20231127155557.xv5ljrdxcfcigjfa@quack3>
+ <CAEUSe7_PUdRgJpY36jZxy84CbNX5TTnynqU8derf0ZBSDtUOqw@mail.gmail.com>
+ <20231205122122.dfhhoaswsfscuhc3@quack3>
+ <4118ca20-fb7d-4e49-b08c-68fee0522d3d@roeck-us.net>
+ <2023120643-evade-legal-ee74@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6870:96a1:b0:1e1:2ebc:b636 with SMTP id
- o33-20020a05687096a100b001e12ebcb636mr3312255oaq.4.1702202722216; Sun, 10 Dec
- 2023 02:05:22 -0800 (PST)
-Date: Sun, 10 Dec 2023 02:05:22 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000097ef5d060c24f422@google.com>
-Subject: [syzbot] Monthly ext4 report (Dec 2023)
-From: syzbot <syzbot+list52026f6b95687b491ce2@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="sxUy6yRUZNOMIQt4"
+Content-Disposition: inline
+In-Reply-To: <2023120643-evade-legal-ee74@gregkh>
 
-Hello ext4 maintainers/developers,
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+--sxUy6yRUZNOMIQt4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-During the period, 8 new issues were detected and 0 were fixed.
-In total, 61 issues are still open and 115 have been fixed so far.
-There are also 2 low-priority issues.
+Hi!
 
-Some of the still happening issues:
+> > > So I've got back to this and the failure is a subtle interaction betw=
+een
+> > > iomap code and ext4 code. In particular that fact that commit 936e114=
+a245b6
+> > > ("iomap: update ki_pos a little later in iomap_dio_complete") is not =
+in
+> > > stable causes that file position is not updated after direct IO write=
+ and
+> > > thus we direct IO writes are ending in wrong locations effectively
+> > > corrupting data. The subtle detail is that before this commit if ->en=
+d_io
+> > > handler returns non-zero value (which the new ext4 ->end_io handler d=
+oes),
+> > > file pos doesn't get updated, after this commit it doesn't get update=
+d only
+> > > if the return value is < 0.
+> > >=20
+> > > The commit got merged in 6.5-rc1 so all stable kernels that have
+> > > 91562895f803 ("ext4: properly sync file size update after O_SYNC dire=
+ct
+> > > IO") before 6.5 are corrupting data - I've noticed at least 6.1 is st=
+ill
+> > > carrying the problematic commit. Greg, please take out the commit fro=
+m all
+> > > stable kernels before 6.5 as soon as possible, we'll figure out proper
+> > > backport once user data are not being corrupted anymore. Thanks!
+> > >=20
+> >=20
+> > Thanks a lot for the update.
+> >=20
+> > Turns out this is causing a regression in chromeos-6.1, and reverting t=
+he
+> > offending patch fixes the problem. I suspect anyone running v6.1.64+ may
+> > have a problem.
+>=20
+> Jan, thanks for the report, and Guenter, thanks for letting me know as
+> well.  I'll go queue up the fix now and push out new -rc releases.
 
-Ref  Crashes Repro Title
-<1>  51616   Yes   possible deadlock in console_flush_all (2)
-                   https://syzkaller.appspot.com/bug?extid=f78380e4eae53c64125c
-<2>  6748    Yes   WARNING: locking bug in ext4_move_extents
-                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
-<3>  546     Yes   WARNING: locking bug in __ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
-<4>  247     Yes   WARNING: locking bug in ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
-<5>  152     No    possible deadlock in evict (3)
-                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
-<6>  115     Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<7>  47      No    KASAN: slab-use-after-free Read in check_igot_inode
-                   https://syzkaller.appspot.com/bug?extid=741810aea4ac24243b2f
-<8>  32      Yes   kernel BUG in ext4_write_inline_data_end
-                   https://syzkaller.appspot.com/bug?extid=198e7455f3a4f38b838a
-<9>  16      Yes   possible deadlock in ext4_xattr_inode_iget (2)
-                   https://syzkaller.appspot.com/bug?extid=352d78bd60c8e9d6ecdc
-<10> 13      Yes   kernel BUG in ext4_enable_quotas
-                   https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
+Would someone have a brief summary here? I see 6.1.66 is out but I
+don't see any "Fixes: 91562895f803" tags.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Plus, what is the severity of this? It is "data being corrupted when
+using O_SYNC|O_DIRECT" or does metadata somehow get corrupted, too?
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Thanks and best regards,
+								Pavel
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+--sxUy6yRUZNOMIQt4
+Content-Type: application/pgp-signature; name="signature.asc"
 
-You may send multiple commands in a single email message.
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZXbIOAAKCRAw5/Bqldv6
+8vAxAKCOJ3K0As4al5/2B9XBlV2nphZEGACeNMdfkQaFtWLePBti91xTjEsPsio=
+=qZ/a
+-----END PGP SIGNATURE-----
+
+--sxUy6yRUZNOMIQt4--
 
