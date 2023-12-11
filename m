@@ -1,194 +1,117 @@
-Return-Path: <linux-ext4+bounces-355-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-356-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 053D080C778
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 11:57:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 00C7080C7D3
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 12:22:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF0931F213C0
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 10:57:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9960B2817B4
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 11:22:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8182D63B;
-	Mon, 11 Dec 2023 10:57:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ojnCA0HE"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2195364B5;
+	Mon, 11 Dec 2023 11:22:16 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36219F;
-	Mon, 11 Dec 2023 02:57:43 -0800 (PST)
-Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBAcjic011590;
-	Mon, 11 Dec 2023 10:57:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=M1BWtUt0iko0Adg1ZOkNjmTGZ72097YAF9y4jIcKxGU=;
- b=ojnCA0HEGHQ9qrUscY1w6xO8r1ooEoc7j7AVYhWGo6ISun4rjqhl6uv3YU49EvYXryzS
- FlOIKr7WuGVwlXnQBVvMYnhtc8i28ZjbZaIDrseOd/NMRX/S75hjaFKjKMj+YggljZ3n
- QNeR15hIzHpiGAvrK+gu+QUKDQcAPl/Jwp8sKhWGnLSCXYO3r2E/Dv+bMHQ+bl3UzV9N
- uOqzK+47Sx4XeMq8oD+tzJpYe6jM/rI5/GokIvv7dOzk+Z4kwbdCmsDiohMOEdaK1XK1
- cmeSyS1+IMRLp1CUYUcAGv8pyGCiBiJmjXdM45fRChFnuB173q9vLvMhmFdne2nSfUpb Tw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0usre9u-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Dec 2023 10:57:38 +0000
-Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BBAdt9m015254;
-	Mon, 11 Dec 2023 10:57:38 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0usre9h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Dec 2023 10:57:38 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBAeHXD012585;
-	Mon, 11 Dec 2023 10:57:36 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jngtn3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Dec 2023 10:57:36 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BBAvYrf5505562
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Dec 2023 10:57:34 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CF3B620040;
-	Mon, 11 Dec 2023 10:57:34 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 1B92220043;
-	Mon, 11 Dec 2023 10:57:33 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.31.44])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 11 Dec 2023 10:57:32 +0000 (GMT)
-Date: Mon, 11 Dec 2023 16:27:30 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dchinner@redhat.com
-Subject: Re: [RFC 5/7] block: export blkdev_atomic_write_valid() and refactor
- api
-Message-ID: <ZXbrGvkJRIJmRtex@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <b53609d0d4b97eb9355987ac5ec03d4e89293b43.1701339358.git.ojaswin@linux.ibm.com>
- <cc43b1ba-e9ea-4ff1-b616-be3c11960eea@oracle.com>
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 5802FAC;
+	Mon, 11 Dec 2023 03:22:12 -0800 (PST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SpfTm691yzsRjx;
+	Mon, 11 Dec 2023 19:22:04 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id 2995918005A;
+	Mon, 11 Dec 2023 19:22:10 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 11 Dec
+ 2023 19:22:09 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <jack@suse.cz>, Ye Bin
+	<yebin10@huawei.com>
+Subject: [PATCH] jbd2: fix soft lockup in journal_finish_inode_data_buffers()
+Date: Mon, 11 Dec 2023 19:25:44 +0800
+Message-ID: <20231211112544.3879780-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <cc43b1ba-e9ea-4ff1-b616-be3c11960eea@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 2qSPiO9EIfi0hMR8TWZ7coYjvt_2Rxt6
-X-Proofpoint-GUID: wdXyzKPFaRaC5ZtASZOrE_sXJCXo-opo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-11_04,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=856
- priorityscore=1501 suspectscore=0 phishscore=0 lowpriorityscore=0
- bulkscore=0 spamscore=0 clxscore=1015 malwarescore=0 impostorscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312110087
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-On Fri, Dec 01, 2023 at 10:47:59AM +0000, John Garry wrote:
-> On 30/11/2023 13:53, Ojaswin Mujoo wrote:
-> > Export the blkdev_atomic_write_valid() function so that other filesystems
-> > can call it as a part of validating the atomic write operation.
-> > 
-> > Further, refactor the api to accept a len argument instead of iov_iter to
-> > make it easier to call from other places.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> 
-> I was actually thinking of moving this functionality to vfs and maybe also
-> calling earlier in write path, as the code is really common to blkdev and
-> FSes.
+There's issue when do io test:
+WARN: soft lockup - CPU#45 stuck for 11s! [jbd2/dm-2-8:4170]
+CPU: 45 PID: 4170 Comm: jbd2/dm-2-8 Kdump: loaded Tainted: G  OE
+Call trace:
+ dump_backtrace+0x0/0x1a0
+ show_stack+0x24/0x30
+ dump_stack+0xb0/0x100
+ watchdog_timer_fn+0x254/0x3f8
+ __hrtimer_run_queues+0x11c/0x380
+ hrtimer_interrupt+0xfc/0x2f8
+ arch_timer_handler_phys+0x38/0x58
+ handle_percpu_devid_irq+0x90/0x248
+ generic_handle_irq+0x3c/0x58
+ __handle_domain_irq+0x68/0xc0
+ gic_handle_irq+0x90/0x320
+ el1_irq+0xcc/0x180
+ queued_spin_lock_slowpath+0x1d8/0x320
+ jbd2_journal_commit_transaction+0x10f4/0x1c78 [jbd2]
+ kjournald2+0xec/0x2f0 [jbd2]
+ kthread+0x134/0x138
+ ret_from_fork+0x10/0x18
 
-This makes sense. The code to make sure the underlying device
-will be able to support this atomic write can be moved higher up in vfs.
-And then each fs can do extra fs-specific checks in their code.
+Analyzed informations from vmcore as follows:
+(1) There are about 5k+ jbd2_inode in 'commit_transaction->t_inode_list';
+(2) Now is processing the 855th jbd2_inode;
+(3) JBD2 task has TIF_NEED_RESCHED flag;
+(4) There's no pags in address_space around the 855th jbd2_inode;
+(5) There are some process is doing drop caches;
+(6) Mounted with 'nodioread_nolock' option;
+(7) 128 CPUs;
 
-> 
-> However, Christoph Hellwig was not so happy about current interface with
-> power-of-2 requirement et al, so I was going to wait until that discussion
-> is concluded before deciding.
+According to informations from vmcore we know 'journal->j_list_lock' spin lock
+competition is fierce. So journal_finish_inode_data_buffers() maybe process
+slowly. Theoretically, there is scheduling point in the filemap_fdatawait_range_keep_errors().
+However, if inode's address_space has no pages which taged with PAGECACHE_TAG_WRITEBACK,
+will not call cond_resched(). So may lead to soft lockup.
+journal_finish_inode_data_buffers
+  filemap_fdatawait_range_keep_errors
+    __filemap_fdatawait_range
+      while (index <= end)
+        nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end, PAGECACHE_TAG_WRITEBACK);
+        if (!nr_pages)
+           break;    --> If 'nr_pages' is equal zero will break, then will not call cond_resched()
+        for (i = 0; i < nr_pages; i++)
+          wait_on_page_writeback(page);
+        cond_resched();
 
-Got it, I'll leave this bit to you then :) 
+To solve above issue, add scheduling point in the journal_finish_inode_data_buffers();
 
-> 
-> Thanks,
-> John
-> 
-> > ---
-> >   block/fops.c           | 18 ++++++++++--------
-> >   include/linux/blkdev.h |  2 ++
-> >   2 files changed, 12 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/block/fops.c b/block/fops.c
-> > index 516669ad69e5..5dae95c49720 100644
-> > --- a/block/fops.c
-> > +++ b/block/fops.c
-> > @@ -41,8 +41,7 @@ static bool blkdev_dio_unaligned(struct block_device *bdev, loff_t pos,
-> >   		!bdev_iter_is_aligned(bdev, iter);
-> >   }
-> > -static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
-> > -			      struct iov_iter *iter)
-> > +bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos, size_t len)
-> >   {
-> >   	unsigned int atomic_write_unit_min_bytes =
-> >   			queue_atomic_write_unit_min_bytes(bdev_get_queue(bdev));
-> > @@ -53,16 +52,17 @@ static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
-> >   		return false;
-> >   	if (pos % atomic_write_unit_min_bytes)
-> >   		return false;
-> > -	if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
-> > +	if (len % atomic_write_unit_min_bytes)
-> >   		return false;
-> > -	if (!is_power_of_2(iov_iter_count(iter)))
-> > +	if (!is_power_of_2(len))
-> >   		return false;
-> > -	if (iov_iter_count(iter) > atomic_write_unit_max_bytes)
-> > +	if (len > atomic_write_unit_max_bytes)
-> >   		return false;
-> > -	if (pos % iov_iter_count(iter))
-> > +	if (pos % len)
-> >   		return false;
-> >   	return true;
-> >   }
-> > +EXPORT_SYMBOL_GPL(blkdev_atomic_write_valid);
-> >   #define DIO_INLINE_BIO_VECS 4
-> > @@ -81,7 +81,8 @@ static ssize_t __blkdev_direct_IO_simple(struct kiocb *iocb,
-> >   	if (blkdev_dio_unaligned(bdev, pos, iter))
-> >   		return -EINVAL;
-> > -	if (atomic_write && !blkdev_atomic_write_valid(bdev, pos, iter))
-> > +	if (atomic_write &&
-> > +	    !blkdev_atomic_write_valid(bdev, pos, iov_iter_count(iter)))
-> >   		return -EINVAL;
-> >   	if (nr_pages <= DIO_INLINE_BIO_VECS)
-> > @@ -348,7 +349,8 @@ static ssize_t __blkdev_direct_IO_async(struct kiocb *iocb,
-> >   	if (blkdev_dio_unaligned(bdev, pos, iter))
-> >   		return -EINVAL;
-> > -	if (atomic_write && !blkdev_atomic_write_valid(bdev, pos, iter))
-> > +	if (atomic_write &&
-> > +	    !blkdev_atomic_write_valid(bdev, pos, iov_iter_count(iter)))
-> >   		return -EINVAL;
-> >   	if (iocb->ki_flags & IOCB_ALLOC_CACHE)
-> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
-> > index f70988083734..5a3124fc191f 100644
-> > --- a/include/linux/blkdev.h
-> > +++ b/include/linux/blkdev.h
-> > @@ -1566,6 +1566,8 @@ static inline int early_lookup_bdev(const char *pathname, dev_t *dev)
-> >   int freeze_bdev(struct block_device *bdev);
-> >   int thaw_bdev(struct block_device *bdev);
-> > +bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos, size_t len);
-> > +
-> >   struct io_comp_batch {
-> >   	struct request *req_list;
-> >   	bool need_ts;
-> 
+Signed-off-by: Ye Bin <yebin10@huawei.com>
+---
+ fs/jbd2/commit.c | 1 +
+ 1 file changed, 1 insertion(+)
+
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 9bdb377a348f..5e122586e06e 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -270,6 +270,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
+ 			if (!ret)
+ 				ret = err;
+ 		}
++		cond_resched();
+ 		spin_lock(&journal->j_list_lock);
+ 		jinode->i_flags &= ~JI_COMMIT_RUNNING;
+ 		smp_mb();
+-- 
+2.31.1
+
 
