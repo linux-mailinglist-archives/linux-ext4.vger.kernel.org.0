@@ -1,66 +1,66 @@
-Return-Path: <linux-ext4+bounces-354-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-355-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0B0E80C758
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 11:54:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 053D080C778
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 11:57:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2F60281A2D
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 10:54:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF0931F213C0
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Dec 2023 10:57:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A60E12D628;
-	Mon, 11 Dec 2023 10:54:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E8182D63B;
+	Mon, 11 Dec 2023 10:57:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="YqMGZErW"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ojnCA0HE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AF4619A;
-	Mon, 11 Dec 2023 02:54:28 -0800 (PST)
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB8JhUs009011;
-	Mon, 11 Dec 2023 10:54:22 GMT
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B36219F;
+	Mon, 11 Dec 2023 02:57:43 -0800 (PST)
+Received: from pps.filterd (m0353726.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBAcjic011590;
+	Mon, 11 Dec 2023 10:57:39 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=yg+AOJ4pAdpNoXbdrXUMj4wiRQaG783GHe5izSwVsbE=;
- b=YqMGZErWBP2OC+aAdw3WUMoEGrVBBqwtz2sFTWfi1+5/TqSw2EW8IdZA1Tqdu0bMD0hl
- XwgDytxHL7T2eSVnQBt2RizYpCwBxYO7k7OSMku0xVh324cDd4G6aeYiSNj6A29YW5X3
- eFXSHIOUiFYsMkgOlBNKyOcqlVTU1ZLILUO0NU3CgE4zySbowBtI55G5eNx9DDvYDZDE
- 5zI/70eRLUr8Bq2UktJn6PJS5p88fAYk2sdb2Kcmpcnqr+568KtVcQ/mkf0Q8yGReyZ8
- IZosrCHOCctFIz8keCdD2l5ezWmSSRtPuZx1xBC9QI9puUBTxtSqbR0p0LgzTH0LtRmO 3g== 
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=M1BWtUt0iko0Adg1ZOkNjmTGZ72097YAF9y4jIcKxGU=;
+ b=ojnCA0HEGHQ9qrUscY1w6xO8r1ooEoc7j7AVYhWGo6ISun4rjqhl6uv3YU49EvYXryzS
+ FlOIKr7WuGVwlXnQBVvMYnhtc8i28ZjbZaIDrseOd/NMRX/S75hjaFKjKMj+YggljZ3n
+ QNeR15hIzHpiGAvrK+gu+QUKDQcAPl/Jwp8sKhWGnLSCXYO3r2E/Dv+bMHQ+bl3UzV9N
+ uOqzK+47Sx4XeMq8oD+tzJpYe6jM/rI5/GokIvv7dOzk+Z4kwbdCmsDiohMOEdaK1XK1
+ cmeSyS1+IMRLp1CUYUcAGv8pyGCiBiJmjXdM45fRChFnuB173q9vLvMhmFdne2nSfUpb Tw== 
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uwu4u1sp0-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0usre9u-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Dec 2023 10:54:21 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BBAcWtw031481;
-	Mon, 11 Dec 2023 10:54:21 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uwu4u1snq-1
+	Mon, 11 Dec 2023 10:57:38 +0000
+Received: from m0353726.ppops.net (m0353726.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BBAdt9m015254;
+	Mon, 11 Dec 2023 10:57:38 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3ux0usre9h-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Dec 2023 10:54:21 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BB90Clc004216;
-	Mon, 11 Dec 2023 10:54:20 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw4sk0enj-1
+	Mon, 11 Dec 2023 10:57:38 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BBAeHXD012585;
+	Mon, 11 Dec 2023 10:57:36 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3uw3jngtn3-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 11 Dec 2023 10:54:20 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BBAsIss45351510
+	Mon, 11 Dec 2023 10:57:36 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BBAvYrf5505562
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 11 Dec 2023 10:54:18 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 999F820049;
-	Mon, 11 Dec 2023 10:54:18 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BE16920040;
-	Mon, 11 Dec 2023 10:54:16 +0000 (GMT)
+	Mon, 11 Dec 2023 10:57:34 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id CF3B620040;
+	Mon, 11 Dec 2023 10:57:34 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 1B92220043;
+	Mon, 11 Dec 2023 10:57:33 +0000 (GMT)
 Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.31.44])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 11 Dec 2023 10:54:16 +0000 (GMT)
-Date: Mon, 11 Dec 2023 16:24:14 +0530
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Mon, 11 Dec 2023 10:57:32 +0000 (GMT)
+Date: Mon, 11 Dec 2023 16:27:30 +0530
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: John Garry <john.g.garry@oracle.com>
 Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
@@ -68,150 +68,127 @@ Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
         "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
         linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
         dchinner@redhat.com
-Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
- DIO
-Message-ID: <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Subject: Re: [RFC 5/7] block: export blkdev_atomic_write_valid() and refactor
+ api
+Message-ID: <ZXbrGvkJRIJmRtex@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
- <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 0hk_CaKg5hl9OuxCwwTAIB1EfHwqWApK
-X-Proofpoint-GUID: 6HnBDUGIbZWzEmNKTMIAYK6m4LFLD47B
-X-Proofpoint-UnRewURL: 1 URL was un-rewritten
+ <b53609d0d4b97eb9355987ac5ec03d4e89293b43.1701339358.git.ojaswin@linux.ibm.com>
+ <cc43b1ba-e9ea-4ff1-b616-be3c11960eea@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc43b1ba-e9ea-4ff1-b616-be3c11960eea@oracle.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 2qSPiO9EIfi0hMR8TWZ7coYjvt_2Rxt6
+X-Proofpoint-GUID: wdXyzKPFaRaC5ZtASZOrE_sXJCXo-opo
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2023-12-11_04,2023-12-07_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 adultscore=0 phishscore=0 mlxscore=0 malwarescore=0
- spamscore=0 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
- impostorscore=0 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2311290000 definitions=main-2312110087
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=856
+ priorityscore=1501 suspectscore=0 phishscore=0 lowpriorityscore=0
+ bulkscore=0 spamscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312110087
 
-Hi John,
-
-On Mon, Dec 04, 2023 at 02:44:36PM +0000, John Garry wrote:
-> On 04/12/2023 13:38, Ojaswin Mujoo wrote:
-> > > So are we supposed to be doing atomic writes on unwritten ranges only in the
-> > > file to get the aligned allocations?
-> > If we do an atomic write on a hole, ext4 will give us an aligned extent
-> > provided the hole is big enough to accomodate it.
+On Fri, Dec 01, 2023 at 10:47:59AM +0000, John Garry wrote:
+> On 30/11/2023 13:53, Ojaswin Mujoo wrote:
+> > Export the blkdev_atomic_write_valid() function so that other filesystems
+> > can call it as a part of validating the atomic write operation.
 > > 
-> > However, if we do an atomic write on a existing extent (written or
-> > unwritten) ext4 would check if it satisfies the alignment and length
-> > requirement and returns an error if it doesn't.
-> 
-> This seems a rather big drawback.
-
-So if I'm not wrong, we force the extent alignment as well as the size
-of the extent in xfs right. 
-
-We didn't want to overly restrict the users of atomic writes by forcing
-the extents to be of a certain alignment/size irrespective of the size
-of write. The design in this patchset provides this flexibility at the
-cost of some added precautions that the user should take (eg not doing
-an atomic write on a pre existing unaligned extent etc).
-
-However, I don't think it should be too hard to provide an optional
-forced alignment feature on top of this if there's interest in that.
-> 
-> > Since we don't have cow
-> > like functionality afaik the only way we could let this kind of write go
-> > through is by punching the pre-existing extent which is not something we
-> > can directly do in the same write operation, hence we return error.
-> 
-> Well, as you prob saw, for XFS we were relying on forcing extent alignment,
-> and not CoW (yet).
-
-That's right.
-
-> 
+> > Further, refactor the api to accept a len argument instead of iov_iter to
+> > make it easier to call from other places.
 > > 
-> > > I actually tried that, and I got a WARN triggered:
-> > > 
-> > > # mkfs.ext4 /dev/sda
-> > > mke2fs 1.46.5 (30-Dec-2021)
-> > > Creating filesystem with 358400 1k blocks and 89760 inodes
-> > > Filesystem UUID: 7543a44b-2957-4ddc-9d4a-db3a5fd019c9
-> > > Superblock backups stored on blocks:
-> > >          8193, 24577, 40961, 57345, 73729, 204801, 221185
-> > > 
-> > > Allocating group tables: done
-> > > Writing inode tables: done
-> > > Creating journal (8192 blocks): done
-> > > Writing superblocks and filesystem accounting information: done
-> > > 
-> > > [   12.745889] mkfs.ext4 (150) used greatest stack depth: 13304 bytes left
-> > > # mount /dev/sda mnt
-> > > [   12.798804] EXT4-fs (sda): mounted filesystem
-> > > 7543a44b-2957-4ddc-9d4a-db3a5fd019c9 r/w with ordered data mode. Quota
-> > > mode: none.
-> > > # touch mnt/file
-> > > #
-> > > # /test-statx -a /root/mnt/file
-> > > statx(/root/mnt/file) = 0
-> > > dump_statx results=5fff
-> > >    Size: 0               Blocks: 0          IO Block: 1024    regular file
-> > > Device: 08:00           Inode: 12          Links: 1
-> > > Access: (0644/-rw-r--r--)  Uid:     0   Gid:     0
-> > > Access: 2023-12-04 10:27:40.002848720+0000
-> > > Modify: 2023-12-04 10:27:40.002848720+0000
-> > > Change: 2023-12-04 10:27:40.002848720+0000
-> > >   Birth: 2023-12-04 10:27:40.002848720+0000
-> > > stx_attributes_mask=0x703874
-> > >          STATX_ATTR_WRITE_ATOMIC set
-> > >          unit min: 1024
-> > >          uunit max: 524288
-> > > Attributes: 0000000000400000 (........ ........ ........ ........
-> > > ........ .?--.... ..---... .---.-..)
-> > > #
-> > > 
-> > > 
-> > > 
-> > > looks ok so far, then write 4KB at offset 0:
-> > > 
-> > > # /test-pwritev2 -a -d -p 0 -l 4096  /root/mnt/file
-> > > file=/root/mnt/file write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > 
-> ...
-> 
-> > > Please note that I tested on my own dev branch, which contains changes over
-> > > [1], but I expect it would not make a difference for this test.
-> > Hmm this should not ideally happen, can you please share your test
-> > script with me if possible?
-> 
-> It's doing nothing special, just RWF_ATOMIC flag is set for DIO write:
-> 
-> https://github.com/johnpgarry/linux/blob/236870d48ecb19c1cf89dc439e188182a0524cd4/samples/vfs/test-pwritev2.c
+> I was actually thinking of moving this functionality to vfs and maybe also
+> calling earlier in write path, as the code is really common to blkdev and
+> FSes.
 
-Thanks for the script, will try to replicate this today and get back to
-you.
+This makes sense. The code to make sure the underlying device
+will be able to support this atomic write can be moved higher up in vfs.
+And then each fs can do extra fs-specific checks in their code.
 
 > 
-> > > > 
-> > > > Script to test using pwritev2() can be found here:
-> > > > https://gist.github.com/OjaswinM/e67accee3cbb7832bd3f1a9543c01da9
-> > > Please note that the posix_memalign() call in the program should PAGE align.
-> > Why do you say that? direct IO seems to be working when the userspace
-> > buffer is 512 byte aligned, am I missing something?
-> 
-> ah, sorry, if you just use 1x IOV vector then no special alignment are
-> required, so ignore this. Indeed, I need to improve kernel checks for
-> alignment anyway.
+> However, Christoph Hellwig was not so happy about current interface with
+> power-of-2 requirement et al, so I was going to wait until that discussion
+> is concluded before deciding.
+
+Got it, I'll leave this bit to you then :) 
+
 > 
 > Thanks,
 > John
 > 
-
-Regards,
-ojaswin
+> > ---
+> >   block/fops.c           | 18 ++++++++++--------
+> >   include/linux/blkdev.h |  2 ++
+> >   2 files changed, 12 insertions(+), 8 deletions(-)
+> > 
+> > diff --git a/block/fops.c b/block/fops.c
+> > index 516669ad69e5..5dae95c49720 100644
+> > --- a/block/fops.c
+> > +++ b/block/fops.c
+> > @@ -41,8 +41,7 @@ static bool blkdev_dio_unaligned(struct block_device *bdev, loff_t pos,
+> >   		!bdev_iter_is_aligned(bdev, iter);
+> >   }
+> > -static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
+> > -			      struct iov_iter *iter)
+> > +bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos, size_t len)
+> >   {
+> >   	unsigned int atomic_write_unit_min_bytes =
+> >   			queue_atomic_write_unit_min_bytes(bdev_get_queue(bdev));
+> > @@ -53,16 +52,17 @@ static bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos,
+> >   		return false;
+> >   	if (pos % atomic_write_unit_min_bytes)
+> >   		return false;
+> > -	if (iov_iter_count(iter) % atomic_write_unit_min_bytes)
+> > +	if (len % atomic_write_unit_min_bytes)
+> >   		return false;
+> > -	if (!is_power_of_2(iov_iter_count(iter)))
+> > +	if (!is_power_of_2(len))
+> >   		return false;
+> > -	if (iov_iter_count(iter) > atomic_write_unit_max_bytes)
+> > +	if (len > atomic_write_unit_max_bytes)
+> >   		return false;
+> > -	if (pos % iov_iter_count(iter))
+> > +	if (pos % len)
+> >   		return false;
+> >   	return true;
+> >   }
+> > +EXPORT_SYMBOL_GPL(blkdev_atomic_write_valid);
+> >   #define DIO_INLINE_BIO_VECS 4
+> > @@ -81,7 +81,8 @@ static ssize_t __blkdev_direct_IO_simple(struct kiocb *iocb,
+> >   	if (blkdev_dio_unaligned(bdev, pos, iter))
+> >   		return -EINVAL;
+> > -	if (atomic_write && !blkdev_atomic_write_valid(bdev, pos, iter))
+> > +	if (atomic_write &&
+> > +	    !blkdev_atomic_write_valid(bdev, pos, iov_iter_count(iter)))
+> >   		return -EINVAL;
+> >   	if (nr_pages <= DIO_INLINE_BIO_VECS)
+> > @@ -348,7 +349,8 @@ static ssize_t __blkdev_direct_IO_async(struct kiocb *iocb,
+> >   	if (blkdev_dio_unaligned(bdev, pos, iter))
+> >   		return -EINVAL;
+> > -	if (atomic_write && !blkdev_atomic_write_valid(bdev, pos, iter))
+> > +	if (atomic_write &&
+> > +	    !blkdev_atomic_write_valid(bdev, pos, iov_iter_count(iter)))
+> >   		return -EINVAL;
+> >   	if (iocb->ki_flags & IOCB_ALLOC_CACHE)
+> > diff --git a/include/linux/blkdev.h b/include/linux/blkdev.h
+> > index f70988083734..5a3124fc191f 100644
+> > --- a/include/linux/blkdev.h
+> > +++ b/include/linux/blkdev.h
+> > @@ -1566,6 +1566,8 @@ static inline int early_lookup_bdev(const char *pathname, dev_t *dev)
+> >   int freeze_bdev(struct block_device *bdev);
+> >   int thaw_bdev(struct block_device *bdev);
+> > +bool blkdev_atomic_write_valid(struct block_device *bdev, loff_t pos, size_t len);
+> > +
+> >   struct io_comp_batch {
+> >   	struct request *req_list;
+> >   	bool need_ts;
+> 
 
