@@ -1,90 +1,212 @@
-Return-Path: <linux-ext4+bounces-398-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-399-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 804EA80ED74
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 14:26:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D9A880EDC7
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 14:37:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7F5E1C20C86
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 13:26:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2F8111C20C94
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 13:37:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB27661FAD;
-	Tue, 12 Dec 2023 13:26:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EF0661FC1;
+	Tue, 12 Dec 2023 13:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="picipgXF"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hxLgSf6z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OmCjxUsg";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="hxLgSf6z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OmCjxUsg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [IPv6:2607:7c80:54:3::133])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 059CCB3;
-	Tue, 12 Dec 2023 05:25:59 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=b0EJSjGbwEr2b4Ml7A+chJ8+pEiLc4/B8ooSTDiYxzk=; b=picipgXFbvzoUhEoBG/zPnQX1q
-	HE6smIRBy5a89R9akhr+qXOZgV2ZWsX5XPLxtAEgCavvFg2RD1Nd4bY6y3UtqlfS5bvjWd1FYs03a
-	CEKxQcI96bW9kVZcHP+cYaV8hEgMc7fElg/c9Fc75ryish62M2PDTmzUmPs5fvjFZ8ka06osdMRpf
-	ASMKxc6mHhCj37Uwwthec0X8EOQOG/hGGGWoR9QRV2Bnh4w97sL+F2xaXO4b3Qr1y31RDun14/d27
-	LpamT9Qvnaapt6jca0mzWu9EovPM8+74IynFRKTN08S2sDe2pXO4Td8t8oHiM29FNbbe9flIcdz3n
-	3xcYUrag==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rD2lJ-00BnAr-2I;
-	Tue, 12 Dec 2023 13:25:25 +0000
-Date: Tue, 12 Dec 2023 05:25:25 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
-	konishi.ryusuke@gmail.com, willy@infradead.org,
-	akpm@linux-foundation.org, p.raghav@samsung.com, hare@suse.de,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v2 for-6.8/block 15/18] buffer: add a new helper to
- read sb block
-Message-ID: <ZXhfRdocHfrViOos@infradead.org>
-References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
- <20231211140753.975297-1-yukuai1@huaweicloud.com>
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 22FBE83;
+	Tue, 12 Dec 2023 05:37:15 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9BD922248E;
+	Tue, 12 Dec 2023 13:37:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702388233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IZ6pOwRrMHenyPDok7NGALB2vm7XSV6U4tFzrBw6360=;
+	b=hxLgSf6z9h03jZvvO7PR0YOlc/x5zRZLcup41syXR35KbI/psXfjhuzxBcOgmVOm2EMBU2
+	wNWZwCYha1hwtNypYDb+pEhbm89sGZzkbbDRynSKt9MhG1bGAhejuaiJRRcB7heZKDRs/y
+	jIVnG2tGaWcKJCtLp2lqIIdMBe0Peg4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702388233;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IZ6pOwRrMHenyPDok7NGALB2vm7XSV6U4tFzrBw6360=;
+	b=OmCjxUsgNAsjgrn3nr82EDbRsVuV61dMw5NAcSASRxwjgp/szboPm2CM4vBSxpxIA6ZHxh
+	vzRXh4OznlZE2fBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702388233; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IZ6pOwRrMHenyPDok7NGALB2vm7XSV6U4tFzrBw6360=;
+	b=hxLgSf6z9h03jZvvO7PR0YOlc/x5zRZLcup41syXR35KbI/psXfjhuzxBcOgmVOm2EMBU2
+	wNWZwCYha1hwtNypYDb+pEhbm89sGZzkbbDRynSKt9MhG1bGAhejuaiJRRcB7heZKDRs/y
+	jIVnG2tGaWcKJCtLp2lqIIdMBe0Peg4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702388233;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IZ6pOwRrMHenyPDok7NGALB2vm7XSV6U4tFzrBw6360=;
+	b=OmCjxUsgNAsjgrn3nr82EDbRsVuV61dMw5NAcSASRxwjgp/szboPm2CM4vBSxpxIA6ZHxh
+	vzRXh4OznlZE2fBw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8F3E6139E9;
+	Tue, 12 Dec 2023 13:37:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id ODP2IglieGXcQwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 13:37:13 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3C652A06E5; Tue, 12 Dec 2023 14:37:13 +0100 (CET)
+Date: Tue, 12 Dec 2023 14:37:13 +0100
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+	tytso@mit.edu, adilger.kernel@dilger.ca, willy@infradead.org,
+	akpm@linux-foundation.org, david@fromorbit.com, hch@infradead.org,
+	ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
+	stable@kernel.org
+Subject: Re: [RFC PATCH] mm/filemap: avoid buffered read/write race to read
+ inconsistent data
+Message-ID: <20231212133713.bihojdsnccmadcpg@quack3>
+References: <20231212093634.2464108-1-libaokun1@huawei.com>
+ <20231212124157.ew6q6jp2wsezvqzd@quack3>
+ <9fdebd0a-ac10-e193-b245-7678fa708c82@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20231211140753.975297-1-yukuai1@huaweicloud.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <9fdebd0a-ac10-e193-b245-7678fa708c82@huawei.com>
+X-Spam-Level: 
+X-Spam-Score: 0.70
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.00)[33.88%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 R_RATELIMIT(0.00)[to_ip_from(RL9mptuuj8f371ag1nhgyt86ac)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[16];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[suse.cz,kvack.org,vger.kernel.org,mit.edu,dilger.ca,infradead.org,linux-foundation.org,fromorbit.com,gmail.com,huawei.com,kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Flag: NO
 
-On Mon, Dec 11, 2023 at 10:07:53PM +0800, Yu Kuai wrote:
-> +static __always_inline int buffer_uptodate_or_error(struct buffer_head *bh)
-> +{
-> +	/*
-> +	 * If the buffer has the write error flag, data was failed to write
-> +	 * out in the block. In this case, set buffer uptodate to prevent
-> +	 * reading old data.
-> +	 */
-> +	if (buffer_write_io_error(bh))
-> +		set_buffer_uptodate(bh);
-> +	return buffer_uptodate(bh);
-> +}
+On Tue 12-12-23 21:16:16, Baokun Li wrote:
+> On 2023/12/12 20:41, Jan Kara wrote:
+> > On Tue 12-12-23 17:36:34, Baokun Li wrote:
+> > > The following concurrency may cause the data read to be inconsistent with
+> > > the data on disk:
+> > > 
+> > >               cpu1                           cpu2
+> > > ------------------------------|------------------------------
+> > >                                 // Buffered write 2048 from 0
+> > >                                 ext4_buffered_write_iter
+> > >                                  generic_perform_write
+> > >                                   copy_page_from_iter_atomic
+> > >                                   ext4_da_write_end
+> > >                                    ext4_da_do_write_end
+> > >                                     block_write_end
+> > >                                      __block_commit_write
+> > >                                       folio_mark_uptodate
+> > > // Buffered read 4096 from 0          smp_wmb()
+> > > ext4_file_read_iter                   set_bit(PG_uptodate, folio_flags)
+> > >   generic_file_read_iter            i_size_write // 2048
+> > >    filemap_read                     unlock_page(page)
+> > >     filemap_get_pages
+> > >      filemap_get_read_batch
+> > >      folio_test_uptodate(folio)
+> > >       ret = test_bit(PG_uptodate, folio_flags)
+> > >       if (ret)
+> > >        smp_rmb();
+> > >        // Ensure that the data in page 0-2048 is up-to-date.
+> > > 
+> > >                                 // New buffered write 2048 from 2048
+> > >                                 ext4_buffered_write_iter
+> > >                                  generic_perform_write
+> > >                                   copy_page_from_iter_atomic
+> > >                                   ext4_da_write_end
+> > >                                    ext4_da_do_write_end
+> > >                                     block_write_end
+> > >                                      __block_commit_write
+> > >                                       folio_mark_uptodate
+> > >                                        smp_wmb()
+> > >                                        set_bit(PG_uptodate, folio_flags)
+> > >                                     i_size_write // 4096
+> > >                                     unlock_page(page)
+> > > 
+> > >     isize = i_size_read(inode) // 4096
+> > >     // Read the latest isize 4096, but without smp_rmb(), there may be
+> > >     // Load-Load disorder resulting in the data in the 2048-4096 range
+> > >     // in the page is not up-to-date.
+> > >     copy_page_to_iter
+> > >     // copyout 4096
+> > > 
+> > > In the concurrency above, we read the updated i_size, but there is no read
+> > > barrier to ensure that the data in the page is the same as the i_size at
+> > > this point, so we may copy the unsynchronized page out. Hence adding the
+> > > missing read memory barrier to fix this.
+> > > 
+> > > This is a Load-Load reordering issue, which only occurs on some weak
+> > > mem-ordering architectures (e.g. ARM64, ALPHA), but not on strong
+> > > mem-ordering architectures (e.g. X86). And theoretically the problem
+> > AFAIK x86 can also reorder loads vs loads so the problem can in theory
+> > happen on x86 as well.
+> 
+> According to what I read in the /perfbook /at the link below,
+> 
+>  Loads Reordered After Loads does not happen on x86.
+> 
+> pdf sheet 562 corresponds to page 550,
+> 
+>    Table 15.5: Summary of Memory Ordering
+> 
+> https://mirrors.edge.kernel.org/pub/linux/kernel/people/paulmck/perfbook/perfbook-1c.2023.06.11a.pdf
 
-So - risking this blows up into a lot of nasty work: Why do we even
-clear the uptodate flag on write errors?  Doing so makes not sense to
-me as the data isn't any less uptodate just because we failed to write
-it..
+Indeed. I stand corrected! Thanks for the link.
 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
