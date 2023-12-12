@@ -1,86 +1,86 @@
-Return-Path: <linux-ext4+bounces-405-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-406-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BB1B580EEF0
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 15:38:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C56280EEF2
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 15:38:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AD23B20D8C
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 14:38:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7F2361F21225
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 14:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A8D77319D;
-	Tue, 12 Dec 2023 14:38:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A2557317D;
+	Tue, 12 Dec 2023 14:38:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nVMVQ4w5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="b7F0wFQJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nVMVQ4w5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="b7F0wFQJ"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VVEyOfVY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XmDns+b/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VVEyOfVY";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XmDns+b/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 06A768E
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Dec 2023 06:38:07 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0605DAD
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Dec 2023 06:38:28 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 827481FB45;
-	Tue, 12 Dec 2023 14:38:05 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5522922510;
+	Tue, 12 Dec 2023 14:38:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702391885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702391906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/ZOmGiL2XSwyp2RvWwhBdg1lvKKLDaZcV4wtLkchxZI=;
-	b=nVMVQ4w5IbRVEr2TDGKDgg19bX7FL7rK9Cj0a/wuKOLp5kJL7PzjwKsvtYc4FosqVsFTRz
-	WRDLd8+CRtWk8X8dCYlNECD9iGlEShUloDh3nwDyog1G5JuWx6CNLTlVmN0Mluy4DFVvO4
-	TKKk4duYS7VFghY1TuVeq85++cXbF4E=
+	bh=g0jWie4Of4VZwC2PpN/AEgLxjO5Ex/qA2QSXF4tualY=;
+	b=VVEyOfVYbTwgnpkPnni1B4hT4yK+c1o2bpHbKZk4frYffx+c51u+kE5FP0+g4OnW2qCVgC
+	QKRbY1XwVOf7c3NloL45rWI0OUweqYpMgPBpM3ZDrC4/w6NhrE2solvz9wPOJUeK63l2X4
+	QWadYrdCNzr7oMRNiEeHe4CAs3IJfpU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702391885;
+	s=susede2_ed25519; t=1702391906;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/ZOmGiL2XSwyp2RvWwhBdg1lvKKLDaZcV4wtLkchxZI=;
-	b=b7F0wFQJ9w8AR1x5USRxUO3gfR39yO6ZPjV9lZyBfSyhVnyoBX2qE4Y1WUd8o9Gb2e+OE7
-	8pz/FWQSaG9mAJAg==
+	bh=g0jWie4Of4VZwC2PpN/AEgLxjO5Ex/qA2QSXF4tualY=;
+	b=XmDns+b/kXo2+7EAuxfpV8fLuABmY2Gf0ewiAHrbCMBiVPz3a0hcfQyq342nfyei+0BY+w
+	6DtCDLxJ3480QzDg==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702391885; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702391906; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/ZOmGiL2XSwyp2RvWwhBdg1lvKKLDaZcV4wtLkchxZI=;
-	b=nVMVQ4w5IbRVEr2TDGKDgg19bX7FL7rK9Cj0a/wuKOLp5kJL7PzjwKsvtYc4FosqVsFTRz
-	WRDLd8+CRtWk8X8dCYlNECD9iGlEShUloDh3nwDyog1G5JuWx6CNLTlVmN0Mluy4DFVvO4
-	TKKk4duYS7VFghY1TuVeq85++cXbF4E=
+	bh=g0jWie4Of4VZwC2PpN/AEgLxjO5Ex/qA2QSXF4tualY=;
+	b=VVEyOfVYbTwgnpkPnni1B4hT4yK+c1o2bpHbKZk4frYffx+c51u+kE5FP0+g4OnW2qCVgC
+	QKRbY1XwVOf7c3NloL45rWI0OUweqYpMgPBpM3ZDrC4/w6NhrE2solvz9wPOJUeK63l2X4
+	QWadYrdCNzr7oMRNiEeHe4CAs3IJfpU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702391885;
+	s=susede2_ed25519; t=1702391906;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/ZOmGiL2XSwyp2RvWwhBdg1lvKKLDaZcV4wtLkchxZI=;
-	b=b7F0wFQJ9w8AR1x5USRxUO3gfR39yO6ZPjV9lZyBfSyhVnyoBX2qE4Y1WUd8o9Gb2e+OE7
-	8pz/FWQSaG9mAJAg==
+	bh=g0jWie4Of4VZwC2PpN/AEgLxjO5Ex/qA2QSXF4tualY=;
+	b=XmDns+b/kXo2+7EAuxfpV8fLuABmY2Gf0ewiAHrbCMBiVPz3a0hcfQyq342nfyei+0BY+w
+	6DtCDLxJ3480QzDg==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7745E132DC;
-	Tue, 12 Dec 2023 14:38:05 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 4694B132DC;
+	Tue, 12 Dec 2023 14:38:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id vBEdHU1weGVkVwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:38:05 +0000
+	id Agg7EWJweGWAVwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:38:26 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 27DFFA06E5; Tue, 12 Dec 2023 15:38:05 +0100 (CET)
-Date: Tue, 12 Dec 2023 15:38:05 +0100
+	id 03EAAA06E5; Tue, 12 Dec 2023 15:38:25 +0100 (CET)
+Date: Tue, 12 Dec 2023 15:38:25 +0100
 From: Jan Kara <jack@suse.cz>
 To: Zhihao Cheng <chengzhihao1@huawei.com>
 Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
 	yi.zhang@huawei.com
-Subject: Re: [PATCH 4/5] jbd2: Abort journal when detecting metadata
- writeback error of fs dev
-Message-ID: <20231212143805.annty5auy6q2uf3d@quack3>
+Subject: Re: [PATCH 5/5] ext4: Move ext4_check_bdev_write_error() into
+ nojournal mode
+Message-ID: <20231212143825.dcthdevylh3sbosa@quack3>
 References: <20231103145250.2995746-1-chengzhihao1@huawei.com>
- <20231103145250.2995746-5-chengzhihao1@huawei.com>
+ <20231103145250.2995746-6-chengzhihao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -89,80 +89,86 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231103145250.2995746-5-chengzhihao1@huawei.com>
-X-Spam-Level: 
-X-Spam-Score: 0.08
-X-Spam-Level: 
-X-Spam-Flag: NO
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [0.17 / 50.00];
+In-Reply-To: <20231103145250.2995746-6-chengzhihao1@huawei.com>
+X-Spam-Score: 14.87
+X-Spamd-Bar: ++++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=VVEyOfVY;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="XmDns+b/";
+	dmarc=none;
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [6.92 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-0.96)[-0.961];
 	 MIME_GOOD(-0.10)[text/plain];
+	 DMARC_NA(1.20)[suse.cz];
+	 R_SPF_SOFTFAIL(4.60)[~all:c];
 	 RCPT_COUNT_FIVE(0.00)[5];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email,suse.cz:email];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,huawei.com:email,suse.com:email];
+	 NEURAL_SPAM_SHORT(1.89)[0.631];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 MID_RHS_NOT_FQDN(0.50)[];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.23)[72.42%]
-X-Spam-Score: 0.17
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Score: 6.92
+X-Rspamd-Queue-Id: 5522922510
+X-Spam-Flag: NO
 
-On Fri 03-11-23 22:52:49, Zhihao Cheng wrote:
-> This is a replacement solution of commit bc71726c725767 ("ext4: abort
-> the filesystem if failed to async write metadata buffer"), JBD2 can
-> detects metadata writeback error of fs dev by 'j_fs_dev_wb_err'.
-  ^^^ detect
-
+On Fri 03-11-23 22:52:50, Zhihao Cheng wrote:
+> Since JBD2 takes care of all metadata writeback errors of fs dev,
+> ext4_check_bdev_write_error() is useful only in nojournal mode.
+> Move it into '!ext4_handle_valid(handle)' branch.
+> 
 > Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
 
-Otherwise looks good. Feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
+
 > ---
->  fs/jbd2/transaction.c | 14 ++++++++++++++
->  1 file changed, 14 insertions(+)
+>  fs/ext4/ext4_jbd2.c | 5 ++---
+>  1 file changed, 2 insertions(+), 3 deletions(-)
 > 
-> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-> index 5f08b5fd105a..cb0b8d6fc0c6 100644
-> --- a/fs/jbd2/transaction.c
-> +++ b/fs/jbd2/transaction.c
-> @@ -1231,11 +1231,25 @@ static bool jbd2_write_access_granted(handle_t *handle, struct buffer_head *bh,
->  int jbd2_journal_get_write_access(handle_t *handle, struct buffer_head *bh)
->  {
->  	struct journal_head *jh;
-> +	journal_t *journal;
->  	int rc;
+> diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
+> index d1a2e6624401..5d8055161acd 100644
+> --- a/fs/ext4/ext4_jbd2.c
+> +++ b/fs/ext4/ext4_jbd2.c
+> @@ -235,8 +235,6 @@ int __ext4_journal_get_write_access(const char *where, unsigned int line,
 >  
->  	if (is_handle_aborted(handle))
->  		return -EROFS;
+>  	might_sleep();
 >  
-> +	journal = handle->h_transaction->t_journal;
-> +	if (jbd2_check_fs_dev_write_error(journal)) {
-> +		/*
-> +		 * If the fs dev has writeback errors, it may have failed
-> +		 * to async write out metadata buffers in the background.
-> +		 * In this case, we could read old data from disk and write
-> +		 * it out again, which may lead to on-disk filesystem
-> +		 * inconsistency. Aborting journal can avoid it happen.
-> +		 */
-> +		jbd2_journal_abort(journal, -EIO);
-> +		return -EIO;
-> +	}
-> +
->  	if (jbd2_write_access_granted(handle, bh, false))
+> -	ext4_check_bdev_write_error(sb);
+> -
+>  	if (ext4_handle_valid(handle)) {
+>  		err = jbd2_journal_get_write_access(handle, bh);
+>  		if (err) {
+> @@ -244,7 +242,8 @@ int __ext4_journal_get_write_access(const char *where, unsigned int line,
+>  						  handle, err);
+>  			return err;
+>  		}
+> -	}
+> +	} else
+> +		ext4_check_bdev_write_error(sb);
+>  	if (trigger_type == EXT4_JTR_NONE || !ext4_has_metadata_csum(sb))
 >  		return 0;
->  
+>  	BUG_ON(trigger_type >= EXT4_JOURNAL_TRIGGER_COUNT);
 > -- 
 > 2.39.2
 > 
