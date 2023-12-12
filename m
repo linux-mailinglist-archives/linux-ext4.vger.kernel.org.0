@@ -1,84 +1,59 @@
-Return-Path: <linux-ext4+bounces-407-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-408-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2546080EEF7
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 15:39:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CC9680EFEB
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 16:18:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56C2D1C2092A
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 14:39:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E516CB20E91
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 15:18:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1423F745C1;
-	Tue, 12 Dec 2023 14:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 241FF75426;
+	Tue, 12 Dec 2023 15:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IsHQD5K0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D3/y1Gqv";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IsHQD5K0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D3/y1Gqv"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Q5sj5B3t"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 0334CCD
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Dec 2023 06:39:46 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 73CBD1FB45;
-	Tue, 12 Dec 2023 14:39:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702391983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0Xyk0xLc4aITEOjcb/hxvGlqTGCq+if/7Cq9DGz23vo=;
-	b=IsHQD5K0vcCfFFuoAYIm1SoGp7LNEpHSd9K2gt8AZ23TIedAvNQzacLCeYuJcBMpFDuqom
-	6WXCAk7dHr1OhC85TX0lLaKigH334zN0JwGiTUcz5Om9SCz6Dd6/Rg76Q/SZCtm9ZK5XAH
-	mZnJYzVlmnfJfaQIARWZXdoQqViXh/U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702391983;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0Xyk0xLc4aITEOjcb/hxvGlqTGCq+if/7Cq9DGz23vo=;
-	b=D3/y1Gqv2qilN2M9QBkpdCDxWrl9NCeCcF06/uXgpyyrr3N/KuzVyQ+bH1CT/VxD4HhmK4
-	p+Zd3b+MYtidWKDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702391983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0Xyk0xLc4aITEOjcb/hxvGlqTGCq+if/7Cq9DGz23vo=;
-	b=IsHQD5K0vcCfFFuoAYIm1SoGp7LNEpHSd9K2gt8AZ23TIedAvNQzacLCeYuJcBMpFDuqom
-	6WXCAk7dHr1OhC85TX0lLaKigH334zN0JwGiTUcz5Om9SCz6Dd6/Rg76Q/SZCtm9ZK5XAH
-	mZnJYzVlmnfJfaQIARWZXdoQqViXh/U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702391983;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0Xyk0xLc4aITEOjcb/hxvGlqTGCq+if/7Cq9DGz23vo=;
-	b=D3/y1Gqv2qilN2M9QBkpdCDxWrl9NCeCcF06/uXgpyyrr3N/KuzVyQ+bH1CT/VxD4HhmK4
-	p+Zd3b+MYtidWKDg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 67A2D132DC;
-	Tue, 12 Dec 2023 14:39:43 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id p55LGa9weGXzVwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:39:43 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1E6AEA06E5; Tue, 12 Dec 2023 15:39:43 +0100 (CET)
-Date: Tue, 12 Dec 2023 15:39:43 +0100
-From: Jan Kara <jack@suse.cz>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
-	yi.zhang@huawei.com
-Subject: Re: [PATCH 0/5] jbd2: Add errseq to detect writeback
-Message-ID: <20231212143943.ycy35sujw3e5cz5k@quack3>
-References: <20231103145250.2995746-1-chengzhihao1@huawei.com>
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 65871E9
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Dec 2023 07:18:42 -0800 (PST)
+Received: from cwcc.thunk.org (pool-173-48-124-235.bstnma.fios.verizon.net [173.48.124.235])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 3BCFGD14031942
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 12 Dec 2023 10:16:14 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1702394176; bh=DtgEPyOZ4y0NfYNH2YIubU5zH6WNkZa4uw9X/YrTYR4=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Q5sj5B3tLr9igBweNwduA6PZT0jYBpf0QnbgLveixW6seItI++ZBFGLTSfMerXbHS
+	 p3Njc97PdcRGIf4TKVEIgxHBmronQjNXJXkrLeyzAbdW7GV1yA6oV2+VPV1gK1ydCA
+	 plr3+UqY8u6qAlN8rPtYydnRcIslVMIPw7x6+DKRYXPcipRYnF6o/Q/c+IcjyVQ1nz
+	 xX/twG+yBdGeDtIRnBvYz8ENuccCOYcaLXXX4fUlprrqCi9h59tRVipe7VYumU3kvK
+	 SwIQLaIYDR3Ok4/grND9PhvZx+JGOPReXUzLdYhTXSVb3FEptumR75NlyxpN2qeOgl
+	 1tSRfCDMZ1iaQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id A517515C1422; Tue, 12 Dec 2023 10:16:13 -0500 (EST)
+Date: Tue, 12 Dec 2023 10:16:13 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Christoph Hellwig <hch@infradead.org>
+Cc: John Garry <john.g.garry@oracle.com>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dchinner@redhat.com
+Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
+ DIO
+Message-ID: <20231212151613.GA142380@mit.edu>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
+ <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
+ <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <c4cf3924-f67d-4f04-8460-054dbad70b93@oracle.com>
+ <ZXhb0tKFvAge/GWf@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -87,78 +62,22 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231103145250.2995746-1-chengzhihao1@huawei.com>
-X-Spam-Score: 14.71
-X-Spamd-Bar: ++++++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IsHQD5K0;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="D3/y1Gqv";
-	dmarc=none;
-	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [6.75 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-0.98)[-0.977];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 R_SPF_SOFTFAIL(4.60)[~all:c];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
-	 NEURAL_SPAM_SHORT(1.77)[0.591];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.04)[57.75%];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
-X-Spam-Score: 6.75
-X-Rspamd-Queue-Id: 73CBD1FB45
-X-Spam-Flag: NO
+In-Reply-To: <ZXhb0tKFvAge/GWf@infradead.org>
 
-On Fri 03-11-23 22:52:45, Zhihao Cheng wrote:
-> According to discussions in [1], this patchset adds errseq in journal to
-> enable JDB2 detecting meatadata writeback error of fs dev. Then, orginal
-> checking mechanism could be removed.
+On Tue, Dec 12, 2023 at 05:10:42AM -0800, Christoph Hellwig wrote:
+> On Tue, Dec 12, 2023 at 07:46:51AM +0000, John Garry wrote:
+> > It is assumed that the user will fallocate/dd the complete file before
+> > issuing atomic writes, and we will have extent alignment and length as
+> > required.
 > 
-> [1] https://lore.kernel.org/all/20230908124317.2955345-1-chengzhihao1@huawei.com/T/
+> I don't think that's a long time maintainable usage model.
 
-Thanks for the series! I'm sorry for the very delayed review. There has
-been a lot of work, conference and other stuff happening lately... Anyway
-the series looks good, I had just some language corrections.
+For databases that are trying to use this to significantly improve
+their performance by eliminating double writes, the allocation and
+writes are being done by a single process.  So for *that* use case, it
+is quite maintainable.
 
-								Honza
+Cheers,
 
-> 
-> Zhihao Cheng (5):
->   jbd2: Add errseq to detect client fs's bdev writeback error
->   jbd2: Replace journal state flag by checking errseq
->   jbd2: Remove unused 'JBD2_CHECKPOINT_IO_ERROR' and 'j_atomic_flags'
->   jbd2: Abort journal when detecting metadata writeback error of fs dev
->   ext4: Move ext4_check_bdev_write_error() into nojournal mode
-> 
->  fs/ext4/ext4_jbd2.c   |  5 ++---
->  fs/jbd2/checkpoint.c  | 11 -----------
->  fs/jbd2/journal.c     | 11 ++++++-----
->  fs/jbd2/recovery.c    |  7 +------
->  fs/jbd2/transaction.c | 14 ++++++++++++++
->  include/linux/jbd2.h  | 37 ++++++++++++++++++++++++++-----------
->  6 files changed, 49 insertions(+), 36 deletions(-)
-> 
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+						- Ted
 
