@@ -1,86 +1,85 @@
-Return-Path: <linux-ext4+bounces-402-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-403-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73A780EEEA
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 15:37:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C90180EEEE
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 15:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14B0EB20DA7
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 14:37:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17D39B20D7D
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 14:37:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D91773191;
-	Tue, 12 Dec 2023 14:36:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1047319D;
+	Tue, 12 Dec 2023 14:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UI5ail1E";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gOAqI4sC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KyfPVBKo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ao9gqyoL"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DGR0IF8i";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JOtwSDxK";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DGR0IF8i";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JOtwSDxK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id AE344FE
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Dec 2023 06:36:49 -0800 (PST)
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id ABD988F
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Dec 2023 06:37:06 -0800 (PST)
 Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DAD0A1FB50;
-	Tue, 12 Dec 2023 14:36:47 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 357B522510;
+	Tue, 12 Dec 2023 14:37:05 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702391808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702391825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fFOWlaTDd7Tb5rt5l+uicUR3k5CeZRqfh+u/fRDbsck=;
-	b=UI5ail1EpE5HAsNPaTmbBv2iVLe11+hEYmY7hkMwVuBw4cW0TdMkilk7skhzVlTD4Un+LT
-	5eDI8V0D5IKyLE/nXwvtALB/SE4b2mRMds+ZkvFAr7zzrGq/417wb9KQaD/wN2b+Dlc1KX
-	sUPccKWumjCKcVxQD8CsndD6pEXi1eI=
+	bh=b1hes3ab+Yfl1hrxn5mHuhwlgxv3Y6Ev94ah8KQzxFE=;
+	b=DGR0IF8iEz9MFYrGebtJoPC7eLvS2sOlTU6C2eGytXFDWKgjm4vl3XGwygyjJce7W7Y9m2
+	GCcWQ88gQ7wT9Pt3EjFGgyb78nDfz0ym5V1obZrs0lHReLkWv995dLdbpzX+Z0lEvTwA+s
+	j2kC537WBAAQ/GES2+hsZhtZ7MJZveM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702391808;
+	s=susede2_ed25519; t=1702391825;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fFOWlaTDd7Tb5rt5l+uicUR3k5CeZRqfh+u/fRDbsck=;
-	b=gOAqI4sC65H/wi0KSQ+wCL/H9EvQdEe5/q3i1w02gYUnCHggHwXHFOHi0W3lcIvyrignjc
-	iBsUJpgBV+xKkTBQ==
+	bh=b1hes3ab+Yfl1hrxn5mHuhwlgxv3Y6Ev94ah8KQzxFE=;
+	b=JOtwSDxKt137R8urCu0MH47qZjZUGcDwoi+XjCEJhncI32mdjkXOwbXsOTFMSUw5IujEWD
+	XU+lJn/mmo6/VLCA==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702391807; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702391825; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fFOWlaTDd7Tb5rt5l+uicUR3k5CeZRqfh+u/fRDbsck=;
-	b=KyfPVBKo0OsORRweZ87jGLONPs5NwnWkYPvXkhF0+UONoCuhaO7tTpRKYPkSyo5YNVh5ZT
-	CBinpAFOCLfvZuzdv02QecqxiirPoRj4CPVG+jFfRn04Yz0DXdOHJo4Xbyu6dVHA99HNrA
-	0BnpL1MoX1rk2JIke+0rB2wImBUNn3U=
+	bh=b1hes3ab+Yfl1hrxn5mHuhwlgxv3Y6Ev94ah8KQzxFE=;
+	b=DGR0IF8iEz9MFYrGebtJoPC7eLvS2sOlTU6C2eGytXFDWKgjm4vl3XGwygyjJce7W7Y9m2
+	GCcWQ88gQ7wT9Pt3EjFGgyb78nDfz0ym5V1obZrs0lHReLkWv995dLdbpzX+Z0lEvTwA+s
+	j2kC537WBAAQ/GES2+hsZhtZ7MJZveM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702391807;
+	s=susede2_ed25519; t=1702391825;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=fFOWlaTDd7Tb5rt5l+uicUR3k5CeZRqfh+u/fRDbsck=;
-	b=Ao9gqyoLcKghkDlhKwvxOuv8f5gjE+4JoMGYMcBY0XA174hRD6XxgTrRMwB/FKbgJXBU87
-	6IyBWRm4SMF5cWDQ==
+	bh=b1hes3ab+Yfl1hrxn5mHuhwlgxv3Y6Ev94ah8KQzxFE=;
+	b=JOtwSDxKt137R8urCu0MH47qZjZUGcDwoi+XjCEJhncI32mdjkXOwbXsOTFMSUw5IujEWD
+	XU+lJn/mmo6/VLCA==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CB969132DC;
-	Tue, 12 Dec 2023 14:36:47 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 28590132DC;
+	Tue, 12 Dec 2023 14:37:05 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id kpSwMf9veGUEVwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:36:47 +0000
+	id SjrYCRFweGUdVwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 12 Dec 2023 14:37:05 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5BA65A06E5; Tue, 12 Dec 2023 15:36:47 +0100 (CET)
-Date: Tue, 12 Dec 2023 15:36:47 +0100
+	id C785AA06E5; Tue, 12 Dec 2023 15:37:04 +0100 (CET)
+Date: Tue, 12 Dec 2023 15:37:04 +0100
 From: Jan Kara <jack@suse.cz>
 To: Zhihao Cheng <chengzhihao1@huawei.com>
 Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
 	yi.zhang@huawei.com
-Subject: Re: [PATCH 1/5] jbd2: Add errseq to detect client fs's bdev
- writeback error
-Message-ID: <20231212143647.pygpilneuonrdedq@quack3>
+Subject: Re: [PATCH 2/5] jbd2: Replace journal state flag by checking errseq
+Message-ID: <20231212143704.5sf3nrluy2klx7d4@quack3>
 References: <20231103145250.2995746-1-chengzhihao1@huawei.com>
- <20231103145250.2995746-2-chengzhihao1@huawei.com>
+ <20231103145250.2995746-3-chengzhihao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -89,30 +88,29 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231103145250.2995746-2-chengzhihao1@huawei.com>
-X-Spam-Level: ***********
-X-Spam-Score: 11.36
-X-Spam-Level: 
-X-Rspamd-Server: rspamd1
-X-Rspamd-Queue-Id: DAD0A1FB50
-X-Spam-Flag: NO
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KyfPVBKo;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Ao9gqyoL;
+In-Reply-To: <20231103145250.2995746-3-chengzhihao1@huawei.com>
+X-Spam-Score: 14.37
+X-Spamd-Bar: +++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DGR0IF8i;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=JOtwSDxK;
 	dmarc=none;
-	spf=softfail (smtp-out2.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Spamd-Result: default: False [-2.81 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [5.09 / 50.00];
 	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-0.76)[-0.756];
 	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(0.00)[suse.cz];
-	 R_SPF_SOFTFAIL(0.00)[~all];
+	 DMARC_NA(1.20)[suse.cz];
+	 R_SPF_SOFTFAIL(4.60)[~all:c];
 	 RCPT_COUNT_FIVE(0.00)[5];
+	 NEURAL_HAM_SHORT(-0.15)[-0.739];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 DKIM_TRACE(0.00)[suse.cz:+];
@@ -122,114 +120,58 @@ X-Spamd-Result: default: False [-2.81 / 50.00];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -2.81
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 5.09
+X-Rspamd-Queue-Id: 357B522510
+X-Spam-Flag: NO
 
-On Fri 03-11-23 22:52:46, Zhihao Cheng wrote:
-> Add errseq in journal, so that JBD2 can detect whether metadata is
-> successfully fallen on fs bdev. This patch adds detection in recovery
-               ^^^^^^^^^ written to
-
-> process to replace original solution(using local variable wb_err).
+On Fri 03-11-23 22:52:47, Zhihao Cheng wrote:
+> Now JBD2 detects metadata writeback error of fs dev according to errseq.
+> Replace journal state flag by checking errseq.
 > 
 > Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 > Suggested-by: Jan Kara <jack@suse.cz>
 
-Otherwise the patch looks good. Feel free to add:
+Looks good. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
+> ---
+>  fs/jbd2/journal.c | 10 +++++-----
+>  1 file changed, 5 insertions(+), 5 deletions(-)
+> 
 > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 30dec2bd2ecc..a655d9a88f79 100644
+> index a655d9a88f79..b60d19505f8a 100644
 > --- a/fs/jbd2/journal.c
 > +++ b/fs/jbd2/journal.c
-> @@ -1535,6 +1535,7 @@ static journal_t *journal_init_common(struct block_device *bdev,
->  	journal->j_fs_dev = fs_dev;
->  	journal->j_blk_offset = start;
->  	journal->j_total_len = len;
-> +	jbd2_init_fs_dev_write_error(journal);
+> @@ -1850,7 +1850,7 @@ int jbd2_journal_update_sb_log_tail(journal_t *journal, tid_t tail_tid,
 >  
->  	err = journal_load_superblock(journal);
->  	if (err)
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 01f744cb97a4..1f7664984d6e 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -289,8 +289,6 @@ int jbd2_journal_recover(journal_t *journal)
->  	journal_superblock_t *	sb;
->  
->  	struct recovery_info	info;
-> -	errseq_t		wb_err;
-> -	struct address_space	*mapping;
->  
->  	memset(&info, 0, sizeof(info));
->  	sb = journal->j_superblock;
-> @@ -308,9 +306,6 @@ int jbd2_journal_recover(journal_t *journal)
->  		return 0;
+>  	if (is_journal_aborted(journal))
+>  		return -EIO;
+> -	if (test_bit(JBD2_CHECKPOINT_IO_ERROR, &journal->j_atomic_flags)) {
+> +	if (jbd2_check_fs_dev_write_error(journal)) {
+>  		jbd2_journal_abort(journal, -EIO);
+>  		return -EIO;
 >  	}
+> @@ -2148,12 +2148,12 @@ int jbd2_journal_destroy(journal_t *journal)
 >  
-> -	wb_err = 0;
-> -	mapping = journal->j_fs_dev->bd_inode->i_mapping;
-> -	errseq_check_and_advance(&mapping->wb_err, &wb_err);
->  	err = do_one_pass(journal, &info, PASS_SCAN);
->  	if (!err)
->  		err = do_one_pass(journal, &info, PASS_REVOKE);
-> @@ -334,7 +329,7 @@ int jbd2_journal_recover(journal_t *journal)
->  	err2 = sync_blockdev(journal->j_fs_dev);
->  	if (!err)
->  		err = err2;
-> -	err2 = errseq_check_and_advance(&mapping->wb_err, &wb_err);
-> +	err2 = jbd2_check_fs_dev_write_error(journal);
->  	if (!err)
->  		err = err2;
->  	/* Make sure all replayed data is on permanent storage */
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 52772c826c86..15798f88ade4 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -998,6 +998,13 @@ struct journal_s
+>  	/*
+>  	 * OK, all checkpoint transactions have been checked, now check the
+> -	 * write out io error flag and abort the journal if some buffer failed
+> -	 * to write back to the original location, otherwise the filesystem
+> -	 * may become inconsistent.
+> +	 * writeback errseq of fs dev and abort the journal if some buffer
+> +	 * failed to write back to the original location, otherwise the
+> +	 * filesystem may become inconsistent.
 >  	 */
->  	struct block_device	*j_fs_dev;
+>  	if (!is_journal_aborted(journal) &&
+> -	    test_bit(JBD2_CHECKPOINT_IO_ERROR, &journal->j_atomic_flags))
+> +	    jbd2_check_fs_dev_write_error(journal))
+>  		jbd2_journal_abort(journal, -EIO);
 >  
-> +	/**
-> +	 * @j_fs_dev_wb_err:
-> +	 *
-> +	 * Records the errseq of the client fs's backing block device.
-> +	 */
-> +	errseq_t		j_fs_dev_wb_err;
-> +
->  	/**
->  	 * @j_total_len: Total maximum capacity of the journal region on disk.
->  	 */
-> @@ -1695,6 +1702,25 @@ static inline void jbd2_journal_abort_handle(handle_t *handle)
->  	handle->h_aborted = 1;
->  }
->  
-> +static inline void jbd2_init_fs_dev_write_error(journal_t *journal)
-> +{
-> +	struct address_space *mapping = journal->j_fs_dev->bd_inode->i_mapping;
-> +
-> +	/*
-> +	 * Save the original wb_err value of client fs's bdev mapping which
-> +	 * could be used to detect the client fs's metadata async write error.
-> +	 */
-> +	errseq_check_and_advance(&mapping->wb_err, &journal->j_fs_dev_wb_err);
-> +}
-> +
-> +static inline int jbd2_check_fs_dev_write_error(journal_t *journal)
-> +{
-> +	struct address_space *mapping = journal->j_fs_dev->bd_inode->i_mapping;
-> +
-> +	return errseq_check(&mapping->wb_err,
-> +			    READ_ONCE(journal->j_fs_dev_wb_err));
-> +}
-> +
->  #endif /* __KERNEL__   */
->  
->  /* Comparison functions for transaction IDs: perform comparisons using
+>  	if (journal->j_sb_buffer) {
 > -- 
 > 2.39.2
 > 
