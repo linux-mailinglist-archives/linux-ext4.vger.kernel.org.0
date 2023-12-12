@@ -1,72 +1,142 @@
-Return-Path: <linux-ext4+bounces-387-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-388-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3378A80E35D
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 05:37:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E92FD80E454
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 07:36:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2B414B2077E
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 04:37:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50A27282DA3
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Dec 2023 06:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2AFAC8F8;
-	Tue, 12 Dec 2023 04:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="YZTKS8kt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C076E16413;
+	Tue, 12 Dec 2023 06:36:05 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B1842A6;
-	Mon, 11 Dec 2023 20:37:00 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=UterbU1lY68chbDZ2KRFpiUZP8yEoxB+cO4YjpDyhgk=; b=YZTKS8ktQn3PVpr4ijYJlRv8d8
-	Wcxi6WSeFcE8qV1rz/zSjQoCASaX94/5/JjH22enU+grOyzAE9nzAbLPkksSyIBMH3Z6b9ITOsgjl
-	75H3pcfXBxFRObCMZVievtZQsN2oCPAVYZJVNUZWM8RlNiyQM2EEvJ/EqwVj4w4D4hqpME+/qtinO
-	TKzfYz+Sqf9ZieUatcd/hX3xNiKk8/6Pvdvm8A6kwALWaPkpi7vg+fDpZUymcLeBlb8dZLjco6+Gr
-	ZGevd+JOdMdDH9JsXAiJG4hvdkKZS/BftgjpDMEy5Z9uWeofuDkRlXi4B6IS+N/mLYpPxZ3fR1CmN
-	8L1aUoGw==;
-Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
-	id 1rCuVi-009cuU-0H; Tue, 12 Dec 2023 04:36:46 +0000
-Date: Tue, 12 Dec 2023 04:36:45 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Baokun Li <libaokun1@huawei.com>, linux-mm@kvack.org,
-	linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	akpm@linux-foundation.org, ritesh.list@gmail.com,
-	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH -RFC 0/2] mm/ext4: avoid data corruption when extending
- DIO write race with buffered read
-Message-ID: <ZXfjXZWK4HlJi6pg@casper.infradead.org>
-References: <20231202091432.8349-1-libaokun1@huawei.com>
- <20231204121120.mpxntey47rluhcfi@quack3>
- <b524ccf7-e5a0-4a55-db6e-b67989055a05@huawei.com>
- <20231204144106.fk4yxc422gppifsz@quack3>
- <70b274c2-c19a-103b-4cf4-b106c698ddcc@huawei.com>
- <20231206193757.k5cppxqew6zjmbx3@quack3>
+Received: from out30-132.freemail.mail.aliyun.com (out30-132.freemail.mail.aliyun.com [115.124.30.132])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 3EF8BC7;
+	Mon, 11 Dec 2023 22:35:59 -0800 (PST)
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046056;MF=hsiangkao@linux.alibaba.com;NM=1;PH=DS;RN=50;SR=0;TI=SMTPD_---0VyLR3Ee_1702362952;
+Received: from 30.97.49.22(mailfrom:hsiangkao@linux.alibaba.com fp:SMTPD_---0VyLR3Ee_1702362952)
+          by smtp.aliyun-inc.com;
+          Tue, 12 Dec 2023 14:35:54 +0800
+Message-ID: <1812c1bf-08b5-46a5-a633-12470e2c8f18@linux.alibaba.com>
+Date: Tue, 12 Dec 2023 14:35:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231206193757.k5cppxqew6zjmbx3@quack3>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH RFC v2 for-6.8/block 11/18] erofs: use bdev api
+To: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk, roger.pau@citrix.com,
+ colyli@suse.de, kent.overstreet@gmail.com, joern@lazybastard.org,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+ gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+ martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+ dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+ adilger.kernel@dilger.ca, agruenba@redhat.com, jack@suse.com,
+ konishi.ryusuke@gmail.com, willy@infradead.org, akpm@linux-foundation.org,
+ p.raghav@samsung.com, hare@suse.de
+Cc: linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+ xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+ linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+ gfs2@lists.linux.dev, linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+ yi.zhang@huawei.com, yangerkun@huawei.com
+References: <20231211140552.973290-1-yukuai1@huaweicloud.com>
+ <20231211140722.974745-1-yukuai1@huaweicloud.com>
+From: Gao Xiang <hsiangkao@linux.alibaba.com>
+In-Reply-To: <20231211140722.974745-1-yukuai1@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Dec 06, 2023 at 08:37:57PM +0100, Jan Kara wrote:
-> Within the same page buffered reads and writes should be consistent because
-> they are synchronized by the page lock. However once reads and writes
-> involve multiple pages, there is no serialization so you can get contents
-> of some pages before write and some pages after being written. However this
-> doesn't seem to be your particular case here. I just wanted to point out
-> that in general even buffered reads vs writes are not fully consistent.
 
-Buffered reads don't take the page/folio lock.  We only use the folio
-lock to avoid reading stale data from the page cache while we're
-fetching the data from storage.  Once the uptodate flag is set on the
-folio, we never take the folio lock for reads.
+
+On 2023/12/11 22:07, Yu Kuai wrote:
+> From: Yu Kuai <yukuai3@huawei.com>
+> 
+> Avoid to access bd_inode directly, prepare to remove bd_inode from
+> block_devcie.
+> 
+> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
+> ---
+>   fs/erofs/data.c     | 18 ++++++++++++------
+>   fs/erofs/internal.h |  2 ++
+>   2 files changed, 14 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/erofs/data.c b/fs/erofs/data.c
+> index c98aeda8abb2..8cf3618190ab 100644
+> --- a/fs/erofs/data.c
+> +++ b/fs/erofs/data.c
+> @@ -32,8 +32,7 @@ void erofs_put_metabuf(struct erofs_buf *buf)
+>   void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
+>   		  enum erofs_kmap_type type)
+>   {
+> -	struct inode *inode = buf->inode;
+> -	erofs_off_t offset = (erofs_off_t)blkaddr << inode->i_blkbits;
+> +	erofs_off_t offset = (erofs_off_t)blkaddr << buf->blkszbits;
+I'd suggest that use `buf->blkszbits` only for bdev_read_folio() since
+erofs_init_metabuf() is not always called before erofs_bread() is used.
+
+For example, buf->inode can be one of directory inodes other than
+initialized by erofs_init_metabuf().
+
+Thanks,
+Gao Xiang
+
+
+>   	pgoff_t index = offset >> PAGE_SHIFT;
+>   	struct page *page = buf->page;
+>   	struct folio *folio;
+> @@ -43,7 +42,9 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
+>   		erofs_put_metabuf(buf);
+>   
+>   		nofs_flag = memalloc_nofs_save();
+> -		folio = read_cache_folio(inode->i_mapping, index, NULL, NULL);
+> +		folio = buf->inode ?
+> +			read_mapping_folio(buf->inode->i_mapping, index, NULL) :
+> +			bdev_read_folio(buf->bdev, offset);
+>   		memalloc_nofs_restore(nofs_flag);
+>   		if (IS_ERR(folio))
+>   			return folio;
+> @@ -67,10 +68,15 @@ void *erofs_bread(struct erofs_buf *buf, erofs_blk_t blkaddr,
+>   
+>   void erofs_init_metabuf(struct erofs_buf *buf, struct super_block *sb)
+>   {
+> -	if (erofs_is_fscache_mode(sb))
+> +	if (erofs_is_fscache_mode(sb)) {
+>   		buf->inode = EROFS_SB(sb)->s_fscache->inode;
+> -	else
+> -		buf->inode = sb->s_bdev->bd_inode;
+> +		buf->bdev = NULL;
+> +		buf->blkszbits = buf->inode->i_blkbits;
+> +	} else {
+> +		buf->inode = NULL;
+> +		buf->bdev = sb->s_bdev;
+> +		buf->blkszbits = EROFS_SB(sb)->blkszbits;
+> +	}
+>   }
+>   
+>   void *erofs_read_metabuf(struct erofs_buf *buf, struct super_block *sb,
+> diff --git a/fs/erofs/internal.h b/fs/erofs/internal.h
+> index b0409badb017..c9206351b485 100644
+> --- a/fs/erofs/internal.h
+> +++ b/fs/erofs/internal.h
+> @@ -224,8 +224,10 @@ enum erofs_kmap_type {
+>   
+>   struct erofs_buf {
+>   	struct inode *inode;
+> +	struct block_device *bdev;
+>   	struct page *page;
+>   	void *base;
+> +	u8 blkszbits;
+>   	enum erofs_kmap_type kmap_type;
+>   };
+>   #define __EROFS_BUF_INITIALIZER	((struct erofs_buf){ .page = NULL })
 
