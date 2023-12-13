@@ -1,240 +1,235 @@
-Return-Path: <linux-ext4+bounces-430-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-431-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32E19810D7C
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 10:31:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8D1B8118BC
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 17:08:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 579F21C20955
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 09:31:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ABC3B20E7B
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 16:08:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0E520316;
-	Wed, 13 Dec 2023 09:31:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526AE33CD0;
+	Wed, 13 Dec 2023 16:08:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KbhyZwP7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9AB8YIfN";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KbhyZwP7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9AB8YIfN"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWvgz2QS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825C7D0;
-	Wed, 13 Dec 2023 01:31:35 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 152FF22571;
-	Wed, 13 Dec 2023 09:31:32 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702459892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
-	b=KbhyZwP76/cbjpihu41myN+ab6oR0tIVdZ1HQ5AXeYxNkTSXjPdfXEjTPAdn2heKvb8XQ/
-	p6DHP6Xv1CMgtqVlQ/DWK/4xrMfKD0+vsE1k0c9miEp9/6GNEYJ2WQEYWAWetypOilsHKz
-	8j/Fa6GHGMceN+f06TvIZBw/Js57tpM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702459892;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
-	b=9AB8YIfN7dJLjurkpS9idfIlCIeAIKpXhS9YkWAAZhEV2Ks1RQF50avcVjE1e3yDKylqcx
-	9EZoIaFCx0WpuxBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702459892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
-	b=KbhyZwP76/cbjpihu41myN+ab6oR0tIVdZ1HQ5AXeYxNkTSXjPdfXEjTPAdn2heKvb8XQ/
-	p6DHP6Xv1CMgtqVlQ/DWK/4xrMfKD0+vsE1k0c9miEp9/6GNEYJ2WQEYWAWetypOilsHKz
-	8j/Fa6GHGMceN+f06TvIZBw/Js57tpM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702459892;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
-	b=9AB8YIfN7dJLjurkpS9idfIlCIeAIKpXhS9YkWAAZhEV2Ks1RQF50avcVjE1e3yDKylqcx
-	9EZoIaFCx0WpuxBQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 01CCA13240;
-	Wed, 13 Dec 2023 09:31:32 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id vjNmAPR5eWVFYgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 09:31:32 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 9CAE7A07E0; Wed, 13 Dec 2023 10:31:31 +0100 (CET)
-Date: Wed, 13 Dec 2023 10:31:31 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-mm@kvack.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.cz, willy@infradead.org,
-	akpm@linux-foundation.org, david@fromorbit.com, hch@infradead.org,
-	ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-	stable@kernel.org
-Subject: Re: [RFC PATCH v2] mm/filemap: avoid buffered read/write race to
- read inconsistent data
-Message-ID: <20231213093131.zk6rrpdfiwf263as@quack3>
-References: <20231213062324.739009-1-libaokun1@huawei.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9EBAC
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Dec 2023 08:08:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702483711; x=1734019711;
+  h=date:from:to:cc:subject:message-id;
+  bh=n1grm3SSH67/aP4GZeiWgj4sOAKhZ7/l8kTocvrKqT0=;
+  b=kWvgz2QS5T6Ecpfc0EPVYFiRxTqJuMF2YkogfZVWUKMRvrpMsqSUS22X
+   nQqIQF1+L8EnOoHvamzLm50M95fiPKM1/3FXOQpBEHfiD5rdXtlrnAurU
+   uBwbMc9BYsHYjijgIr+1v30pJmsKB5kQ1bR7B3NlUuM3YHM435MCyYnFc
+   DZZd0vGsjPNTXbAcyzh4mbd1iIi3CcFQ4Ftmc2lgtPyz39BR1Fm3EJFxd
+   LZ2YHJv0CleLOK13OLEC66qi/dXWbPTI+XO6e7QmbjgAr2YEvrnfUkYxn
+   gTL58SsJTbvv0QK4XGBU4IyEt4GLEdihN2/Rh7MyyVFQ0jJmc4dq4KdaF
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="375136871"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="375136871"
+Received: from fmsmga007.fm.intel.com ([10.253.24.52])
+  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:08:31 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="777555017"
+X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
+   d="scan'208";a="777555017"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga007.fm.intel.com with ESMTP; 13 Dec 2023 08:08:29 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rDRme-000Kn1-1T;
+	Wed, 13 Dec 2023 16:08:28 +0000
+Date: Thu, 14 Dec 2023 00:08:22 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 6c02757c936063f0631b4e43fe156f8c8f1f351f
+Message-ID: <202312140019.mxsbgOUq-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231213062324.739009-1-libaokun1@huawei.com>
-X-Spam-Score: 13.39
-X-Spamd-Bar: +++++++++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KbhyZwP7;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9AB8YIfN;
-	dmarc=none;
-	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
-X-Rspamd-Server: rspamd2
-X-Spamd-Result: default: False [9.36 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 R_SPF_SOFTFAIL(4.60)[~all:c];
-	 R_RATELIMIT(0.00)[to_ip_from(RLipn3kch65fcrhdxgeb98n64p)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DMARC_NA(1.20)[suse.cz];
-	 NEURAL_SPAM_SHORT(3.00)[1.000];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_SPAM_LONG(1.87)[0.535];
-	 RCPT_COUNT_TWELVE(0.00)[16];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,mit.edu,dilger.ca,suse.cz,infradead.org,linux-foundation.org,fromorbit.com,gmail.com,huawei.com,kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: 9.36
-X-Rspamd-Queue-Id: 152FF22571
-X-Spam-Flag: NO
 
-On Wed 13-12-23 14:23:24, Baokun Li wrote:
-> The following concurrency may cause the data read to be inconsistent with
-> the data on disk:
-> 
->              cpu1                           cpu2
-> ------------------------------|------------------------------
->                                // Buffered write 2048 from 0
->                                ext4_buffered_write_iter
->                                 generic_perform_write
->                                  copy_page_from_iter_atomic
->                                  ext4_da_write_end
->                                   ext4_da_do_write_end
->                                    block_write_end
->                                     __block_commit_write
->                                      folio_mark_uptodate
-> // Buffered read 4096 from 0          smp_wmb()
-> ext4_file_read_iter                   set_bit(PG_uptodate, folio_flags)
->  generic_file_read_iter            i_size_write // 2048
->   filemap_read                     unlock_page(page)
->    filemap_get_pages
->     filemap_get_read_batch
->     folio_test_uptodate(folio)
->      ret = test_bit(PG_uptodate, folio_flags)
->      if (ret)
->       smp_rmb();
->       // Ensure that the data in page 0-2048 is up-to-date.
-> 
->                                // New buffered write 2048 from 2048
->                                ext4_buffered_write_iter
->                                 generic_perform_write
->                                  copy_page_from_iter_atomic
->                                  ext4_da_write_end
->                                   ext4_da_do_write_end
->                                    block_write_end
->                                     __block_commit_write
->                                      folio_mark_uptodate
->                                       smp_wmb()
->                                       set_bit(PG_uptodate, folio_flags)
->                                    i_size_write // 4096
->                                    unlock_page(page)
-> 
->    isize = i_size_read(inode) // 4096
->    // Read the latest isize 4096, but without smp_rmb(), there may be
->    // Load-Load disorder resulting in the data in the 2048-4096 range
->    // in the page is not up-to-date.
->    copy_page_to_iter
->    // copyout 4096
-> 
-> In the concurrency above, we read the updated i_size, but there is no read
-> barrier to ensure that the data in the page is the same as the i_size at
-> this point, so we may copy the unsynchronized page out. Hence adding the
-> missing read memory barrier to fix this.
-> 
-> This is a Load-Load reordering issue, which only occurs on some weak
-> mem-ordering architectures (e.g. ARM64, ALPHA), but not on strong
-> mem-ordering architectures (e.g. X86). And theoretically the problem
-> doesn't only happen on ext4, filesystems that call filemap_read() but
-> don't hold inode lock (e.g. btrfs, f2fs, ubifs ...) will have this
-> problem, while filesystems with inode lock (e.g. xfs, nfs) won't have
-> this problem.
-> 
-> Cc: stable@kernel.org
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 6c02757c936063f0631b4e43fe156f8c8f1f351f  jbd2: fix soft lockup in journal_finish_inode_data_buffers()
 
-Thanks for the fix. It looks good to me. Feel free to add:
+elapsed time: 1466m
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+configs tested: 157
+configs skipped: 1
 
-								Honza
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-> ---
-> V1->V2:
-> 	Change the comment to the one suggested by Jan Kara.	
-> 
->  mm/filemap.c | 9 +++++++++
->  1 file changed, 9 insertions(+)
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 71f00539ac00..10c4583c06ce 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -2607,6 +2607,15 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
->  			goto put_folios;
->  		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
->  
-> +		/*
-> +		 * Pairs with a barrier in
-> +		 * block_write_end()->mark_buffer_dirty() or other page
-> +		 * dirtying routines like iomap_write_end() to ensure
-> +		 * changes to page contents are visible before we see
-> +		 * increased inode size.
-> +		 */
-> +		smp_rmb();
-> +
->  		/*
->  		 * Once we start copying data, we don't want to be touching any
->  		 * cachelines that might be contended:
-> -- 
-> 2.31.1
-> 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                     nsimosci_hs_defconfig   gcc  
+arc                   randconfig-001-20231213   gcc  
+arc                   randconfig-002-20231213   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   gcc  
+arm                              allyesconfig   gcc  
+arm                         bcm2835_defconfig   clang
+arm                                 defconfig   clang
+arm                   randconfig-001-20231213   clang
+arm                   randconfig-002-20231213   clang
+arm                   randconfig-003-20231213   clang
+arm                   randconfig-004-20231213   clang
+arm                        shmobile_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20231213   clang
+arm64                 randconfig-002-20231213   clang
+arm64                 randconfig-003-20231213   clang
+arm64                 randconfig-004-20231213   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20231213   gcc  
+csky                  randconfig-002-20231213   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20231213   clang
+hexagon               randconfig-002-20231213   clang
+i386                             allmodconfig   clang
+i386                              allnoconfig   clang
+i386                             allyesconfig   clang
+i386         buildonly-randconfig-001-20231213   clang
+i386         buildonly-randconfig-002-20231213   clang
+i386         buildonly-randconfig-003-20231213   clang
+i386         buildonly-randconfig-004-20231213   clang
+i386         buildonly-randconfig-005-20231213   clang
+i386         buildonly-randconfig-006-20231213   clang
+i386                                defconfig   gcc  
+i386                  randconfig-001-20231213   clang
+i386                  randconfig-002-20231213   clang
+i386                  randconfig-003-20231213   clang
+i386                  randconfig-004-20231213   clang
+i386                  randconfig-005-20231213   clang
+i386                  randconfig-006-20231213   clang
+i386                  randconfig-011-20231213   gcc  
+i386                  randconfig-012-20231213   gcc  
+i386                  randconfig-013-20231213   gcc  
+i386                  randconfig-014-20231213   gcc  
+i386                  randconfig-015-20231213   gcc  
+i386                  randconfig-016-20231213   gcc  
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20231213   gcc  
+loongarch             randconfig-002-20231213   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                          multi_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     cu1000-neo_defconfig   clang
+mips                     cu1830-neo_defconfig   clang
+mips                 decstation_r4k_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                 randconfig-001-20231213   gcc  
+nios2                 randconfig-002-20231213   gcc  
+openrisc                         allyesconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                randconfig-001-20231213   gcc  
+parisc                randconfig-002-20231213   gcc  
+powerpc                          allmodconfig   clang
+powerpc                          allyesconfig   clang
+powerpc                     asp8347_defconfig   gcc  
+powerpc                          g5_defconfig   clang
+powerpc                 mpc836x_rdk_defconfig   clang
+powerpc                      ppc6xx_defconfig   gcc  
+powerpc               randconfig-001-20231213   clang
+powerpc               randconfig-002-20231213   clang
+powerpc               randconfig-003-20231213   clang
+powerpc                    sam440ep_defconfig   gcc  
+powerpc64             randconfig-001-20231213   clang
+powerpc64             randconfig-002-20231213   clang
+powerpc64             randconfig-003-20231213   clang
+riscv                            allmodconfig   gcc  
+riscv                            allyesconfig   gcc  
+riscv                 randconfig-001-20231213   clang
+riscv                 randconfig-002-20231213   clang
+riscv                          rv32_defconfig   clang
+s390                             allmodconfig   gcc  
+s390                             allyesconfig   gcc  
+s390                          debug_defconfig   gcc  
+s390                  randconfig-001-20231213   gcc  
+s390                  randconfig-002-20231213   gcc  
+sh                               allmodconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                         apsh4a3a_defconfig   gcc  
+sh                    randconfig-001-20231213   gcc  
+sh                    randconfig-002-20231213   gcc  
+sh                            titan_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64               randconfig-001-20231213   gcc  
+sparc64               randconfig-002-20231213   gcc  
+um                               allmodconfig   clang
+um                               allyesconfig   clang
+um                    randconfig-001-20231213   clang
+um                    randconfig-002-20231213   clang
+x86_64                            allnoconfig   gcc  
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20231213   clang
+x86_64       buildonly-randconfig-002-20231213   clang
+x86_64       buildonly-randconfig-003-20231213   clang
+x86_64       buildonly-randconfig-004-20231213   clang
+x86_64       buildonly-randconfig-005-20231213   clang
+x86_64       buildonly-randconfig-006-20231213   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20231213   gcc  
+x86_64                randconfig-002-20231213   gcc  
+x86_64                randconfig-003-20231213   gcc  
+x86_64                randconfig-004-20231213   gcc  
+x86_64                randconfig-005-20231213   gcc  
+x86_64                randconfig-006-20231213   gcc  
+x86_64                randconfig-011-20231213   clang
+x86_64                randconfig-012-20231213   clang
+x86_64                randconfig-013-20231213   clang
+x86_64                randconfig-014-20231213   clang
+x86_64                randconfig-015-20231213   clang
+x86_64                randconfig-016-20231213   clang
+x86_64                randconfig-071-20231213   clang
+x86_64                randconfig-072-20231213   clang
+x86_64                randconfig-073-20231213   clang
+x86_64                randconfig-074-20231213   clang
+x86_64                randconfig-075-20231213   clang
+x86_64                randconfig-076-20231213   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                           alldefconfig   gcc  
+xtensa                randconfig-001-20231213   gcc  
+xtensa                randconfig-002-20231213   gcc  
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
