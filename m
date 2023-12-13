@@ -1,85 +1,89 @@
-Return-Path: <linux-ext4+bounces-429-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-430-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD19810D5D
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 10:27:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32E19810D7C
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 10:31:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 62DCF281746
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 09:27:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 579F21C20955
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 09:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32A1200DA;
-	Wed, 13 Dec 2023 09:27:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A0E520316;
+	Wed, 13 Dec 2023 09:31:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VFvemXLo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1B1tCJxI";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TpR1VS5H";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8u+CRDT7"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KbhyZwP7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9AB8YIfN";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KbhyZwP7";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9AB8YIfN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id B41A7D5;
-	Wed, 13 Dec 2023 01:27:42 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [IPv6:2a07:de40:b251:101:10:150:64:1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 825C7D0;
+	Wed, 13 Dec 2023 01:31:35 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D79071FD42;
-	Wed, 13 Dec 2023 09:27:40 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 152FF22571;
+	Wed, 13 Dec 2023 09:31:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702459661; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702459892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-	b=VFvemXLo629tPCuIYNRBZ/XSV+Jp/pyfnJvCJ/RhE+N/p3jJJ7tbycmouDbzhell8yLF+Q
-	1WgB2GPPhgNbiaVyrkFo6umETjGTow2moLa2iobwR7rxXdpWDpL93EutEjN5HfCm6eEqlf
-	JsRbXd+q2BabgDJ735eNXiFgasfB498=
+	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
+	b=KbhyZwP76/cbjpihu41myN+ab6oR0tIVdZ1HQ5AXeYxNkTSXjPdfXEjTPAdn2heKvb8XQ/
+	p6DHP6Xv1CMgtqVlQ/DWK/4xrMfKD0+vsE1k0c9miEp9/6GNEYJ2WQEYWAWetypOilsHKz
+	8j/Fa6GHGMceN+f06TvIZBw/Js57tpM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702459661;
+	s=susede2_ed25519; t=1702459892;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-	b=1B1tCJxInt+13rs5oBAZV6YLFHpVhVDVCYUcHhLTFLd/luC6TW8nYlOPuHL+xkjSTCxlUe
-	zEZ77S35s2p3Y4Bw==
+	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
+	b=9AB8YIfN7dJLjurkpS9idfIlCIeAIKpXhS9YkWAAZhEV2Ks1RQF50avcVjE1e3yDKylqcx
+	9EZoIaFCx0WpuxBQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702459660; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1702459892; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-	b=TpR1VS5H5nXhddpoXWhesVJwoEAESVO+VUEHpe8h8r/vncos4CkEqoZBJz4mHG8X3uGmu0
-	x/2uPqopvKKVAM43h5PpibGyv+xZ05qFiENlyJItYAn1dOhndQzRKUXtm6N6Kw5XPs7zl6
-	JCXm/sB1OfaFpZE7UjBjJxXJqDNydUw=
+	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
+	b=KbhyZwP76/cbjpihu41myN+ab6oR0tIVdZ1HQ5AXeYxNkTSXjPdfXEjTPAdn2heKvb8XQ/
+	p6DHP6Xv1CMgtqVlQ/DWK/4xrMfKD0+vsE1k0c9miEp9/6GNEYJ2WQEYWAWetypOilsHKz
+	8j/Fa6GHGMceN+f06TvIZBw/Js57tpM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702459660;
+	s=susede2_ed25519; t=1702459892;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=KrOl+eoYRZqzUPXxqHI+9Z2AX8/dXg0cgxXIwK8DDv4=;
-	b=8u+CRDT7zaL+bxV3MIAYznIEotLGpRgj4958+NQ87j+RQ7ah8fyZMndTnKbw6ryn/9goWW
-	rKbyBVaDq3k2q1BQ==
+	bh=x6MGaSlKMS0AuPKsYuo4WMXeZr995LZPWDQ4VUOSKS4=;
+	b=9AB8YIfN7dJLjurkpS9idfIlCIeAIKpXhS9YkWAAZhEV2Ks1RQF50avcVjE1e3yDKylqcx
+	9EZoIaFCx0WpuxBQ==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C3B5B13240;
-	Wed, 13 Dec 2023 09:27:40 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 01CCA13240;
+	Wed, 13 Dec 2023 09:31:32 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id TFjELwx5eWXYYAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 09:27:40 +0000
+	id vjNmAPR5eWVFYgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 09:31:32 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3559BA07E0; Wed, 13 Dec 2023 10:27:40 +0100 (CET)
-Date: Wed, 13 Dec 2023 10:27:40 +0100
+	id 9CAE7A07E0; Wed, 13 Dec 2023 10:31:31 +0100 (CET)
+Date: Wed, 13 Dec 2023 10:31:31 +0100
 From: Jan Kara <jack@suse.cz>
-To: Suraj Jitindar Singh <surajjs@amazon.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	sjitindarsingh@smail.com, stable@vger.kernel.org
-Subject: Re: [PATCH] fs/ext4: Allow for the last group to be marked as trimmed
-Message-ID: <20231213092740.2q3lwn45hpmtqoxu@quack3>
-References: <20231213051635.37731-1-surajjs@amazon.com>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-mm@kvack.org, linux-ext4@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, willy@infradead.org,
+	akpm@linux-foundation.org, david@fromorbit.com, hch@infradead.org,
+	ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
+	stable@kernel.org
+Subject: Re: [RFC PATCH v2] mm/filemap: avoid buffered read/write race to
+ read inconsistent data
+Message-ID: <20231213093131.zk6rrpdfiwf263as@quack3>
+References: <20231213062324.739009-1-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -88,117 +92,147 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231213051635.37731-1-surajjs@amazon.com>
-X-Spam-Level: 
-X-Spam-Score: -0.60
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.60
-X-Spamd-Result: default: False [-0.60 / 50.00];
-	 ARC_NA(0.00)[];
+In-Reply-To: <20231213062324.739009-1-libaokun1@huawei.com>
+X-Spam-Score: 13.39
+X-Spamd-Bar: +++++++++
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=KbhyZwP7;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9AB8YIfN;
+	dmarc=none;
+	spf=softfail (smtp-out1.suse.de: 2a07:de40:b281:104:10:150:64:98 is neither permitted nor denied by domain of jack@suse.cz) smtp.mailfrom=jack@suse.cz
+X-Rspamd-Server: rspamd2
+X-Spamd-Result: default: False [9.36 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_SPAM_SHORT(3.00)[1.000];
+	 R_SPF_SOFTFAIL(4.60)[~all:c];
+	 R_RATELIMIT(0.00)[to_ip_from(RLipn3kch65fcrhdxgeb98n64p)];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DMARC_NA(1.20)[suse.cz];
+	 NEURAL_SPAM_SHORT(3.00)[1.000];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_SPAM_LONG(1.87)[0.535];
+	 RCPT_COUNT_TWELVE(0.00)[16];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kvack.org,vger.kernel.org,mit.edu,dilger.ca,suse.cz,infradead.org,linux-foundation.org,fromorbit.com,gmail.com,huawei.com,kernel.org];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 9.36
+X-Rspamd-Queue-Id: 152FF22571
 X-Spam-Flag: NO
 
-On Wed 13-12-23 16:16:35, Suraj Jitindar Singh wrote:
-> The ext4 filesystem tracks the trim status of blocks at the group level.
-> When an entire group has been trimmed then it is marked as such and subsequent
-> trim invocations with the same minimum trim size will not be attempted on that
-> group unless it is marked as able to be trimmed again such as when a block is
-> freed.
+On Wed 13-12-23 14:23:24, Baokun Li wrote:
+> The following concurrency may cause the data read to be inconsistent with
+> the data on disk:
 > 
-> Currently the last group can't be marked as trimmed due to incorrect logic
-> in ext4_last_grp_cluster(). ext4_last_grp_cluster() is supposed to return the
-> zero based index of the last cluster in a group. This is then used by
-> ext4_try_to_trim_range() to determine if the trim operation spans the entire
-> group and as such if the trim status of the group should be recorded.
+>              cpu1                           cpu2
+> ------------------------------|------------------------------
+>                                // Buffered write 2048 from 0
+>                                ext4_buffered_write_iter
+>                                 generic_perform_write
+>                                  copy_page_from_iter_atomic
+>                                  ext4_da_write_end
+>                                   ext4_da_do_write_end
+>                                    block_write_end
+>                                     __block_commit_write
+>                                      folio_mark_uptodate
+> // Buffered read 4096 from 0          smp_wmb()
+> ext4_file_read_iter                   set_bit(PG_uptodate, folio_flags)
+>  generic_file_read_iter            i_size_write // 2048
+>   filemap_read                     unlock_page(page)
+>    filemap_get_pages
+>     filemap_get_read_batch
+>     folio_test_uptodate(folio)
+>      ret = test_bit(PG_uptodate, folio_flags)
+>      if (ret)
+>       smp_rmb();
+>       // Ensure that the data in page 0-2048 is up-to-date.
 > 
-> ext4_last_grp_cluster() takes a 0 based group index, thus the valid values
-> for grp are 0..(ext4_get_groups_count - 1). Any group index less than
-> (ext4_get_groups_count - 1) is not the last group and must have
-> EXT4_CLUSTERS_PER_GROUP(sb) clusters. For the last group we need to calculate
-> the number of clusters based on the number of blocks in the group. Finally
-> subtract 1 from the number of clusters as zero based indexing is expected.
-> Rearrange the function slightly to make it clear what we are calculating
-> and returning.
+>                                // New buffered write 2048 from 2048
+>                                ext4_buffered_write_iter
+>                                 generic_perform_write
+>                                  copy_page_from_iter_atomic
+>                                  ext4_da_write_end
+>                                   ext4_da_do_write_end
+>                                    block_write_end
+>                                     __block_commit_write
+>                                      folio_mark_uptodate
+>                                       smp_wmb()
+>                                       set_bit(PG_uptodate, folio_flags)
+>                                    i_size_write // 4096
+>                                    unlock_page(page)
 > 
-> Reproducer:
-> // Create file system where the last group has fewer blocks than blocks per group
-> $ mkfs.ext4 -b 4096 -g 8192 /dev/nvme0n1 8191
-> $ mount /dev/nvme0n1 /mnt
+>    isize = i_size_read(inode) // 4096
+>    // Read the latest isize 4096, but without smp_rmb(), there may be
+>    // Load-Load disorder resulting in the data in the 2048-4096 range
+>    // in the page is not up-to-date.
+>    copy_page_to_iter
+>    // copyout 4096
 > 
-> Before Patch:
-> $ fstrim -v /mnt
-> /mnt: 25.9 MiB (27156480 bytes) trimmed
-> // Group not marked as trimmed so second invocation still discards blocks
-> $ fstrim -v /mnt
-> /mnt: 25.9 MiB (27156480 bytes) trimmed
+> In the concurrency above, we read the updated i_size, but there is no read
+> barrier to ensure that the data in the page is the same as the i_size at
+> this point, so we may copy the unsynchronized page out. Hence adding the
+> missing read memory barrier to fix this.
 > 
-> After Patch:
-> fstrim -v /mnt
-> /mnt: 25.9 MiB (27156480 bytes) trimmed
-> // Group marked as trimmed so second invocation DOESN'T discard any blocks
-> fstrim -v /mnt
-> /mnt: 0 B (0 bytes) trimmed
+> This is a Load-Load reordering issue, which only occurs on some weak
+> mem-ordering architectures (e.g. ARM64, ALPHA), but not on strong
+> mem-ordering architectures (e.g. X86). And theoretically the problem
+> doesn't only happen on ext4, filesystems that call filemap_read() but
+> don't hold inode lock (e.g. btrfs, f2fs, ubifs ...) will have this
+> problem, while filesystems with inode lock (e.g. xfs, nfs) won't have
+> this problem.
 > 
-> Fixes: 45e4ab320c9b ("ext4: move setting of trimmed bit into ext4_try_to_trim_range()")
-> Cc: stable@vger.kernel.org # 4.19+
-> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
+> Cc: stable@kernel.org
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Indeed. The fix looks good. Feel free to add:
+Thanks for the fix. It looks good to me. Feel free to add:
 
 Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
 > ---
->  fs/ext4/mballoc.c | 15 ++++++++++-----
->  1 file changed, 10 insertions(+), 5 deletions(-)
+> V1->V2:
+> 	Change the comment to the one suggested by Jan Kara.	
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 454d5612641ee..c15d8b6f887dd 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6731,11 +6731,16 @@ __acquires(bitlock)
->  static ext4_grpblk_t ext4_last_grp_cluster(struct super_block *sb,
->  					   ext4_group_t grp)
->  {
-> -	if (grp < ext4_get_groups_count(sb))
-> -		return EXT4_CLUSTERS_PER_GROUP(sb) - 1;
-> -	return (ext4_blocks_count(EXT4_SB(sb)->s_es) -
-> -		ext4_group_first_block_no(sb, grp) - 1) >>
-> -					EXT4_CLUSTER_BITS(sb);
-> +	unsigned long nr_clusters_in_group;
-> +
-> +	if (grp < (ext4_get_groups_count(sb) - 1))
-> +		nr_clusters_in_group = EXT4_CLUSTERS_PER_GROUP(sb);
-> +	else
-> +		nr_clusters_in_group = (ext4_blocks_count(EXT4_SB(sb)->s_es) -
-> +					ext4_group_first_block_no(sb, grp))
-> +				       >> EXT4_CLUSTER_BITS(sb);
-> +
-> +	return nr_clusters_in_group - 1;
->  }
+>  mm/filemap.c | 9 +++++++++
+>  1 file changed, 9 insertions(+)
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 71f00539ac00..10c4583c06ce 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -2607,6 +2607,15 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
+>  			goto put_folios;
+>  		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
 >  
->  static bool ext4_trim_interrupted(void)
+> +		/*
+> +		 * Pairs with a barrier in
+> +		 * block_write_end()->mark_buffer_dirty() or other page
+> +		 * dirtying routines like iomap_write_end() to ensure
+> +		 * changes to page contents are visible before we see
+> +		 * increased inode size.
+> +		 */
+> +		smp_rmb();
+> +
+>  		/*
+>  		 * Once we start copying data, we don't want to be touching any
+>  		 * cachelines that might be contended:
 > -- 
-> 2.34.1
+> 2.31.1
 > 
 -- 
 Jan Kara <jack@suse.com>
