@@ -1,143 +1,159 @@
-Return-Path: <linux-ext4+bounces-424-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-425-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFBC8810A2D
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 07:20:13 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBCA0810A8B
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 07:43:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65F3E281F46
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 06:20:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193611C20A70
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 06:43:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7041F9EF;
-	Wed, 13 Dec 2023 06:20:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7F21171B;
+	Wed, 13 Dec 2023 06:42:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="r64kdaJG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 492D49A;
-	Tue, 12 Dec 2023 22:20:02 -0800 (PST)
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4SqlhD2bxzzZcFZ;
-	Wed, 13 Dec 2023 14:19:56 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 5126114093C;
-	Wed, 13 Dec 2023 14:20:00 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Wed, 13 Dec
- 2023 14:19:59 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-mm@kvack.org>, <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<willy@infradead.org>, <akpm@linux-foundation.org>, <david@fromorbit.com>,
-	<hch@infradead.org>, <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>, <stable@kernel.org>
-Subject: [RFC PATCH v2] mm/filemap: avoid buffered read/write race to read inconsistent data
-Date: Wed, 13 Dec 2023 14:23:24 +0800
-Message-ID: <20231213062324.739009-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200C4AD;
+	Tue, 12 Dec 2023 22:42:43 -0800 (PST)
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD6RlAF022278;
+	Wed, 13 Dec 2023 06:42:25 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=9GUj/Aho7/1TYDtk21H9qY+L2WM+l5YYCwXwZpStc8c=;
+ b=r64kdaJG4nS+IPu+vyvPL88pPYTf4wOVarKYxhyEHuln+0bowUEpweWYEXFboKURLtQz
+ zX+0XArNnkgTBQxDDil62guVrYrBBdwSz10iwj92JURSxYJ6w8q2SzlUw/vsjAPVtApf
+ JrUt3ew+oX4Xck51K1DeX49Q3MS2s995pz2zoNYFX0HCshblY/6R68LoHVL5g0fDwP0y
+ ClDkBpaudbhpaTySXhlMfgKukYdXIlvqSaldP8sK09kIgwfqhPLtguqj+opkJa9DlaIQ
+ XSC5NxLrdDcV1R3aYZfJWs+Nh590BsYs0LqNBJST/XTbP1JpGL93H54JNSpqRv4EOp7a ig== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Dec 2023 06:42:25 +0000
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BD6T0Me025162;
+	Wed, 13 Dec 2023 06:42:24 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9b-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Dec 2023 06:42:24 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD5Q3YA013864;
+	Wed, 13 Dec 2023 06:42:23 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw5926bu9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 13 Dec 2023 06:42:23 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BD6gLEi43188908
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Wed, 13 Dec 2023 06:42:22 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E13E120040;
+	Wed, 13 Dec 2023 06:42:21 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 42A8420043;
+	Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.51.82])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
+Date: Wed, 13 Dec 2023 12:12:15 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: John Garry <john.g.garry@oracle.com>
+Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
+        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        dchinner@redhat.com
+Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
+ DIO
+Message-ID: <ZXlSR8CTXjkeKxwk@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1701339358.git.ojaswin@linux.ibm.com>
+ <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
+ <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
+ <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: vAkBMKIFJ8wO00RLRC6t6Gf6QM4RHrja
+X-Proofpoint-GUID: Zf8h5KpoaOoIeOwSSmnViO2i-V5AgsRi
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2023-12-12_14,2023-12-12_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
+ mlxscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
+ phishscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
+ mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2312130047
 
-The following concurrency may cause the data read to be inconsistent with
-the data on disk:
+On Mon, Dec 11, 2023 at 04:24:14PM +0530, Ojaswin Mujoo wrote:
+> > > > looks ok so far, then write 4KB at offset 0:
+> > > > 
+> > > > # /test-pwritev2 -a -d -p 0 -l 4096  /root/mnt/file
+> > > > file=/root/mnt/file write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
+> > 
+> > ...
+> > 
+> > > > Please note that I tested on my own dev branch, which contains changes over
+> > > > [1], but I expect it would not make a difference for this test.
+> > > Hmm this should not ideally happen, can you please share your test
+> > > script with me if possible?
+> > 
+> > It's doing nothing special, just RWF_ATOMIC flag is set for DIO write:
+> > 
+> > https://github.com/johnpgarry/linux/blob/236870d48ecb19c1cf89dc439e188182a0524cd4/samples/vfs/test-pwritev2.c
+> 
+> Thanks for the script, will try to replicate this today and get back to
+> you.
+> 
 
-             cpu1                           cpu2
-------------------------------|------------------------------
-                               // Buffered write 2048 from 0
-                               ext4_buffered_write_iter
-                                generic_perform_write
-                                 copy_page_from_iter_atomic
-                                 ext4_da_write_end
-                                  ext4_da_do_write_end
-                                   block_write_end
-                                    __block_commit_write
-                                     folio_mark_uptodate
-// Buffered read 4096 from 0          smp_wmb()
-ext4_file_read_iter                   set_bit(PG_uptodate, folio_flags)
- generic_file_read_iter            i_size_write // 2048
-  filemap_read                     unlock_page(page)
-   filemap_get_pages
-    filemap_get_read_batch
-    folio_test_uptodate(folio)
-     ret = test_bit(PG_uptodate, folio_flags)
-     if (ret)
-      smp_rmb();
-      // Ensure that the data in page 0-2048 is up-to-date.
+Hi John,
 
-                               // New buffered write 2048 from 2048
-                               ext4_buffered_write_iter
-                                generic_perform_write
-                                 copy_page_from_iter_atomic
-                                 ext4_da_write_end
-                                  ext4_da_do_write_end
-                                   block_write_end
-                                    __block_commit_write
-                                     folio_mark_uptodate
-                                      smp_wmb()
-                                      set_bit(PG_uptodate, folio_flags)
-                                   i_size_write // 4096
-                                   unlock_page(page)
+So I don't seem to be able to hit the warn on:
 
-   isize = i_size_read(inode) // 4096
-   // Read the latest isize 4096, but without smp_rmb(), there may be
-   // Load-Load disorder resulting in the data in the 2048-4096 range
-   // in the page is not up-to-date.
-   copy_page_to_iter
-   // copyout 4096
+$ touch mnt/testfile
+$ ./test-pwritev2 -a -d -p 0 -l 4096 mnt/testfile
 
-In the concurrency above, we read the updated i_size, but there is no read
-barrier to ensure that the data in the page is the same as the i_size at
-this point, so we may copy the unsynchronized page out. Hence adding the
-missing read memory barrier to fix this.
+	file=mnt/testfile write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
+	main wrote 4096 bytes at offset 0
 
-This is a Load-Load reordering issue, which only occurs on some weak
-mem-ordering architectures (e.g. ARM64, ALPHA), but not on strong
-mem-ordering architectures (e.g. X86). And theoretically the problem
-doesn't only happen on ext4, filesystems that call filemap_read() but
-don't hold inode lock (e.g. btrfs, f2fs, ubifs ...) will have this
-problem, while filesystems with inode lock (e.g. xfs, nfs) won't have
-this problem.
+$ filefrag -v mnt/testfile
 
-Cc: stable@kernel.org
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
-V1->V2:
-	Change the comment to the one suggested by Jan Kara.	
+	Filesystem type is: ef53
+	File size of testfile is 4096 (1 block of 4096 bytes)
+	ext:     logical_offset:        physical_offset: length:   expected: flags:
+		0:        0..       0:      32900..     32900:      1: last,eof
 
- mm/filemap.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+$ ./test-pwritev2 -a -d -p 8192 -l 8192 mnt/testfile
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 71f00539ac00..10c4583c06ce 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2607,6 +2607,15 @@ ssize_t filemap_read(struct kiocb *iocb, struct iov_iter *iter,
- 			goto put_folios;
- 		end_offset = min_t(loff_t, isize, iocb->ki_pos + iter->count);
- 
-+		/*
-+		 * Pairs with a barrier in
-+		 * block_write_end()->mark_buffer_dirty() or other page
-+		 * dirtying routines like iomap_write_end() to ensure
-+		 * changes to page contents are visible before we see
-+		 * increased inode size.
-+		 */
-+		smp_rmb();
-+
- 		/*
- 		 * Once we start copying data, we don't want to be touching any
- 		 * cachelines that might be contended:
--- 
-2.31.1
+	file=mnt/testfile write_size=8192 offset=8192 o_flags=0x4002 wr_flags=0x24
+	main wrote 8192 bytes at offset 8192
 
+$ filefrag -v mnt/testfile
+
+	Filesystem type is: ef53
+	File size of mnt/testfile is 16384 (4 blocks of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+		0:        0..       0:      32900..     32900:      1:
+		1:        2..       3:      33288..     33289:      2: 32902: last,eof
+	mnt/testfile: 2 extents found
+
+Not sure why you are hitting the WARN_ON. The tree I used is:
+
+Latest ted/dev + your atomic patchset v1 + this patchset
+
+Regards,
+ojaswin
 
