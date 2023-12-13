@@ -1,235 +1,216 @@
-Return-Path: <linux-ext4+bounces-431-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-432-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8D1B8118BC
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 17:08:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 583E2811C4A
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 19:22:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3ABC3B20E7B
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 16:08:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 472F31C2118F
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 18:22:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526AE33CD0;
-	Wed, 13 Dec 2023 16:08:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4342E5955C;
+	Wed, 13 Dec 2023 18:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kWvgz2QS"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zzu1JxWw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="krpw4KbH";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="t8yLolTk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BBuQXTUR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.151])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id EE9EBAC
-	for <linux-ext4@vger.kernel.org>; Wed, 13 Dec 2023 08:08:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1702483711; x=1734019711;
-  h=date:from:to:cc:subject:message-id;
-  bh=n1grm3SSH67/aP4GZeiWgj4sOAKhZ7/l8kTocvrKqT0=;
-  b=kWvgz2QS5T6Ecpfc0EPVYFiRxTqJuMF2YkogfZVWUKMRvrpMsqSUS22X
-   nQqIQF1+L8EnOoHvamzLm50M95fiPKM1/3FXOQpBEHfiD5rdXtlrnAurU
-   uBwbMc9BYsHYjijgIr+1v30pJmsKB5kQ1bR7B3NlUuM3YHM435MCyYnFc
-   DZZd0vGsjPNTXbAcyzh4mbd1iIi3CcFQ4Ftmc2lgtPyz39BR1Fm3EJFxd
-   LZ2YHJv0CleLOK13OLEC66qi/dXWbPTI+XO6e7QmbjgAr2YEvrnfUkYxn
-   gTL58SsJTbvv0QK4XGBU4IyEt4GLEdihN2/Rh7MyyVFQ0jJmc4dq4KdaF
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="375136871"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="375136871"
-Received: from fmsmga007.fm.intel.com ([10.253.24.52])
-  by fmsmga107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Dec 2023 08:08:31 -0800
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,10923"; a="777555017"
-X-IronPort-AV: E=Sophos;i="6.04,273,1695711600"; 
-   d="scan'208";a="777555017"
-Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
-  by fmsmga007.fm.intel.com with ESMTP; 13 Dec 2023 08:08:29 -0800
-Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rDRme-000Kn1-1T;
-	Wed, 13 Dec 2023 16:08:28 +0000
-Date: Thu, 14 Dec 2023 00:08:22 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 6c02757c936063f0631b4e43fe156f8c8f1f351f
-Message-ID: <202312140019.mxsbgOUq-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id A11302132
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Dec 2023 10:21:56 -0800 (PST)
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CA7591F455;
+	Wed, 13 Dec 2023 18:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702491694; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O/Aerd2sXG5lfnG7ZiHPzLyB2PZueQEpt0+Mt8CUEcw=;
+	b=zzu1JxWwRriosOPc5AqeFf/f+m9i+uu9l807o6a3nr7ZnQ2C5iwvpHwf5/Odsu2titc5+1
+	C6qfXUUqSF/x+tgqoFXnQPrptIntoxdqUiBrEo5/5+QBjE1qrIm1kDA2odsaZp8bCAVOFA
+	YMQJX9OuTadM7kOe8ky6R6fu2PXiDdw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702491694;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O/Aerd2sXG5lfnG7ZiHPzLyB2PZueQEpt0+Mt8CUEcw=;
+	b=krpw4KbHzpuiz/PBZYRtfGG7hEINAiU/eBDuiWe9B4O5BiFDNF6SBrF0aykn6q55LUbEHj
+	MG+X6dVh72yJaiAQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1702491689; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O/Aerd2sXG5lfnG7ZiHPzLyB2PZueQEpt0+Mt8CUEcw=;
+	b=t8yLolTkvAOWXYcv274NIfJece6Kq6uz0mJXbe96CRBncZkgDY51Hx1rlYMFvyFH0DiXZJ
+	TXGXQYI/Epwf+7GoipLv9pTAHvEPxqOAa/EFJ89ugAEaqrrEsggcESKmHcVVrs8oQHIYKv
+	8ilV6YLB9mgknnkDBYTNFQXZf+UImy0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1702491689;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=O/Aerd2sXG5lfnG7ZiHPzLyB2PZueQEpt0+Mt8CUEcw=;
+	b=BBuQXTURGix8hHMluLyrPX4enB8SwEKqaSakP6/a1wNOj17Z8+IEDA1GSnzNEg3/e5SEN5
+	3WLPP+iS7CcFkeCA==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AFB9F1391D;
+	Wed, 13 Dec 2023 18:21:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id ck6WKin2eWXmAwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 13 Dec 2023 18:21:29 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 32D9DA07E0; Wed, 13 Dec 2023 19:21:14 +0100 (CET)
+Date: Wed, 13 Dec 2023 19:21:14 +0100
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, yi.zhang@huawei.com,
+	chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [RFC PATCH 3/6] ext4: correct the hole length returned by
+ ext4_map_blocks()
+Message-ID: <20231213182114.tzwsqpeonr5ok3j2@quack3>
+References: <20231121093429.1827390-1-yi.zhang@huaweicloud.com>
+ <20231121093429.1827390-4-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231121093429.1827390-4-yi.zhang@huaweicloud.com>
+X-Spam-Level: 
+X-Spam-Score: -2.30
+X-Spam-Flag: NO
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -1.30
+X-Spamd-Result: default: False [-1.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SEM_URIBL_UNKNOWN_FAIL(0.00)[suse.com:query timed out];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 SURBL_MULTI_FAIL(0.00)[suse.com:server fail,huawei.com:server fail];
+	 BAYES_HAM(-3.00)[100.00%];
+	 SEM_URIBL_FRESH15_UNKNOWN_FAIL(0.00)[suse.com:query timed out];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 6c02757c936063f0631b4e43fe156f8c8f1f351f  jbd2: fix soft lockup in journal_finish_inode_data_buffers()
+On Tue 21-11-23 17:34:26, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> In ext4_map_blocks(), if we can't find a range of mapping in the
+> extents cache, we are calling ext4_ext_map_blocks() to search the real
+> path. But if the querying range was tail overlaped by a delayed extent,
+> we can't find it on the real extent path, so the returned hole length
+> could be larger than it really is.
+> 
+>       |          querying map          |
+>       v                                v
+>       |----------{-------------}{------|----------------}-----...
+>       ^          ^             ^^                       ^
+>       | uncached | hole extent ||     delayed extent    |
+> 
+> We have to adjust the mapping length to the next not hole extent's
+> lblk before searching the extent path.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-elapsed time: 1466m
+So I agree the ext4_ext_determine_hole() does return a hole that does not
+reflect possible delalloc extent (it doesn't even need to be straddling the
+end of looked up range, does it?). But ext4_ext_put_gap_in_cache() does
+actually properly trim the hole length in the status tree so I think the
+problem rather is that the trimming should happen in
+ext4_ext_determine_hole() instead of ext4_ext_put_gap_in_cache() and that
+will also make ext4_map_blocks() return proper hole length? And then
+there's no need for this special handling? Or am I missing something?
 
-configs tested: 157
-configs skipped: 1
+								Honza
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc  
-alpha                            allyesconfig   gcc  
-alpha                               defconfig   gcc  
-arc                              allmodconfig   gcc  
-arc                               allnoconfig   gcc  
-arc                              allyesconfig   gcc  
-arc                                 defconfig   gcc  
-arc                     nsimosci_hs_defconfig   gcc  
-arc                   randconfig-001-20231213   gcc  
-arc                   randconfig-002-20231213   gcc  
-arm                              allmodconfig   gcc  
-arm                               allnoconfig   gcc  
-arm                              allyesconfig   gcc  
-arm                         bcm2835_defconfig   clang
-arm                                 defconfig   clang
-arm                   randconfig-001-20231213   clang
-arm                   randconfig-002-20231213   clang
-arm                   randconfig-003-20231213   clang
-arm                   randconfig-004-20231213   clang
-arm                        shmobile_defconfig   gcc  
-arm64                            allmodconfig   clang
-arm64                             allnoconfig   gcc  
-arm64                               defconfig   gcc  
-arm64                 randconfig-001-20231213   clang
-arm64                 randconfig-002-20231213   clang
-arm64                 randconfig-003-20231213   clang
-arm64                 randconfig-004-20231213   clang
-csky                             allmodconfig   gcc  
-csky                              allnoconfig   gcc  
-csky                             allyesconfig   gcc  
-csky                                defconfig   gcc  
-csky                  randconfig-001-20231213   gcc  
-csky                  randconfig-002-20231213   gcc  
-hexagon                          allmodconfig   clang
-hexagon                           allnoconfig   clang
-hexagon                          allyesconfig   clang
-hexagon                             defconfig   clang
-hexagon               randconfig-001-20231213   clang
-hexagon               randconfig-002-20231213   clang
-i386                             allmodconfig   clang
-i386                              allnoconfig   clang
-i386                             allyesconfig   clang
-i386         buildonly-randconfig-001-20231213   clang
-i386         buildonly-randconfig-002-20231213   clang
-i386         buildonly-randconfig-003-20231213   clang
-i386         buildonly-randconfig-004-20231213   clang
-i386         buildonly-randconfig-005-20231213   clang
-i386         buildonly-randconfig-006-20231213   clang
-i386                                defconfig   gcc  
-i386                  randconfig-001-20231213   clang
-i386                  randconfig-002-20231213   clang
-i386                  randconfig-003-20231213   clang
-i386                  randconfig-004-20231213   clang
-i386                  randconfig-005-20231213   clang
-i386                  randconfig-006-20231213   clang
-i386                  randconfig-011-20231213   gcc  
-i386                  randconfig-012-20231213   gcc  
-i386                  randconfig-013-20231213   gcc  
-i386                  randconfig-014-20231213   gcc  
-i386                  randconfig-015-20231213   gcc  
-i386                  randconfig-016-20231213   gcc  
-loongarch                        allmodconfig   gcc  
-loongarch                         allnoconfig   gcc  
-loongarch                           defconfig   gcc  
-loongarch             randconfig-001-20231213   gcc  
-loongarch             randconfig-002-20231213   gcc  
-m68k                             allmodconfig   gcc  
-m68k                              allnoconfig   gcc  
-m68k                             allyesconfig   gcc  
-m68k                                defconfig   gcc  
-m68k                       m5249evb_defconfig   gcc  
-m68k                          multi_defconfig   gcc  
-microblaze                       allmodconfig   gcc  
-microblaze                        allnoconfig   gcc  
-microblaze                       allyesconfig   gcc  
-mips                             allyesconfig   gcc  
-mips                     cu1000-neo_defconfig   clang
-mips                     cu1830-neo_defconfig   clang
-mips                 decstation_r4k_defconfig   gcc  
-nios2                            allmodconfig   gcc  
-nios2                            allyesconfig   gcc  
-nios2                 randconfig-001-20231213   gcc  
-nios2                 randconfig-002-20231213   gcc  
-openrisc                         allyesconfig   gcc  
-parisc                           allmodconfig   gcc  
-parisc                           allyesconfig   gcc  
-parisc                randconfig-001-20231213   gcc  
-parisc                randconfig-002-20231213   gcc  
-powerpc                          allmodconfig   clang
-powerpc                          allyesconfig   clang
-powerpc                     asp8347_defconfig   gcc  
-powerpc                          g5_defconfig   clang
-powerpc                 mpc836x_rdk_defconfig   clang
-powerpc                      ppc6xx_defconfig   gcc  
-powerpc               randconfig-001-20231213   clang
-powerpc               randconfig-002-20231213   clang
-powerpc               randconfig-003-20231213   clang
-powerpc                    sam440ep_defconfig   gcc  
-powerpc64             randconfig-001-20231213   clang
-powerpc64             randconfig-002-20231213   clang
-powerpc64             randconfig-003-20231213   clang
-riscv                            allmodconfig   gcc  
-riscv                            allyesconfig   gcc  
-riscv                 randconfig-001-20231213   clang
-riscv                 randconfig-002-20231213   clang
-riscv                          rv32_defconfig   clang
-s390                             allmodconfig   gcc  
-s390                             allyesconfig   gcc  
-s390                          debug_defconfig   gcc  
-s390                  randconfig-001-20231213   gcc  
-s390                  randconfig-002-20231213   gcc  
-sh                               allmodconfig   gcc  
-sh                               allyesconfig   gcc  
-sh                         apsh4a3a_defconfig   gcc  
-sh                    randconfig-001-20231213   gcc  
-sh                    randconfig-002-20231213   gcc  
-sh                            titan_defconfig   gcc  
-sparc                            allmodconfig   gcc  
-sparc64                          allmodconfig   gcc  
-sparc64                          allyesconfig   gcc  
-sparc64               randconfig-001-20231213   gcc  
-sparc64               randconfig-002-20231213   gcc  
-um                               allmodconfig   clang
-um                               allyesconfig   clang
-um                    randconfig-001-20231213   clang
-um                    randconfig-002-20231213   clang
-x86_64                            allnoconfig   gcc  
-x86_64                           allyesconfig   clang
-x86_64       buildonly-randconfig-001-20231213   clang
-x86_64       buildonly-randconfig-002-20231213   clang
-x86_64       buildonly-randconfig-003-20231213   clang
-x86_64       buildonly-randconfig-004-20231213   clang
-x86_64       buildonly-randconfig-005-20231213   clang
-x86_64       buildonly-randconfig-006-20231213   clang
-x86_64                              defconfig   gcc  
-x86_64                randconfig-001-20231213   gcc  
-x86_64                randconfig-002-20231213   gcc  
-x86_64                randconfig-003-20231213   gcc  
-x86_64                randconfig-004-20231213   gcc  
-x86_64                randconfig-005-20231213   gcc  
-x86_64                randconfig-006-20231213   gcc  
-x86_64                randconfig-011-20231213   clang
-x86_64                randconfig-012-20231213   clang
-x86_64                randconfig-013-20231213   clang
-x86_64                randconfig-014-20231213   clang
-x86_64                randconfig-015-20231213   clang
-x86_64                randconfig-016-20231213   clang
-x86_64                randconfig-071-20231213   clang
-x86_64                randconfig-072-20231213   clang
-x86_64                randconfig-073-20231213   clang
-x86_64                randconfig-074-20231213   clang
-x86_64                randconfig-075-20231213   clang
-x86_64                randconfig-076-20231213   clang
-x86_64                          rhel-8.3-rust   clang
-xtensa                           alldefconfig   gcc  
-xtensa                randconfig-001-20231213   gcc  
-xtensa                randconfig-002-20231213   gcc  
-
+> ---
+>  fs/ext4/inode.c | 24 ++++++++++++++++++++++--
+>  1 file changed, 22 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 4ce35f1c8b0a..94e7b8500878 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -479,6 +479,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>  		    struct ext4_map_blocks *map, int flags)
+>  {
+>  	struct extent_status es;
+> +	ext4_lblk_t next;
+>  	int retval;
+>  	int ret = 0;
+>  #ifdef ES_AGGRESSIVE_TEST
+> @@ -502,8 +503,10 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>  		return -EFSCORRUPTED;
+>  
+>  	/* Lookup extent status tree firstly */
+> -	if (!(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) &&
+> -	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+> +	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+> +		goto uncached;
+> +
+> +	if (ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
+>  		if (ext4_es_is_written(&es) || ext4_es_is_unwritten(&es)) {
+>  			map->m_pblk = ext4_es_pblock(&es) +
+>  					map->m_lblk - es.es_lblk;
+> @@ -532,6 +535,23 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+>  #endif
+>  		goto found;
+>  	}
+> +	/*
+> +	 * Not found, maybe a hole, need to adjust the map length before
+> +	 * seraching the real extent path. It can prevent incorrect hole
+> +	 * length returned if the following entries have delayed only
+> +	 * ones.
+> +	 */
+> +	if (!(flags & EXT4_GET_BLOCKS_CREATE) && es.es_lblk > map->m_lblk) {
+> +		next = es.es_lblk;
+> +		if (ext4_es_is_hole(&es))
+> +			next = ext4_es_skip_hole_extent(inode, map->m_lblk,
+> +							map->m_len);
+> +		retval = next - map->m_lblk;
+> +		if (map->m_len > retval)
+> +			map->m_len = retval;
+> +	}
+> +
+> +uncached:
+>  	/*
+>  	 * In the query cache no-wait mode, nothing we can do more if we
+>  	 * cannot find extent in the cache.
+> -- 
+> 2.39.2
+> 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
