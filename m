@@ -1,159 +1,87 @@
-Return-Path: <linux-ext4+bounces-425-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-426-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBCA0810A8B
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 07:43:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232EF810CCC
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 09:52:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193611C20A70
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 06:43:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 536941C20981
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 08:52:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7F21171B;
-	Wed, 13 Dec 2023 06:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="r64kdaJG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05271EB53;
+	Wed, 13 Dec 2023 08:52:20 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 200C4AD;
-	Tue, 12 Dec 2023 22:42:43 -0800 (PST)
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD6RlAF022278;
-	Wed, 13 Dec 2023 06:42:25 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : content-type : in-reply-to :
- mime-version; s=pp1; bh=9GUj/Aho7/1TYDtk21H9qY+L2WM+l5YYCwXwZpStc8c=;
- b=r64kdaJG4nS+IPu+vyvPL88pPYTf4wOVarKYxhyEHuln+0bowUEpweWYEXFboKURLtQz
- zX+0XArNnkgTBQxDDil62guVrYrBBdwSz10iwj92JURSxYJ6w8q2SzlUw/vsjAPVtApf
- JrUt3ew+oX4Xck51K1DeX49Q3MS2s995pz2zoNYFX0HCshblY/6R68LoHVL5g0fDwP0y
- ClDkBpaudbhpaTySXhlMfgKukYdXIlvqSaldP8sK09kIgwfqhPLtguqj+opkJa9DlaIQ
- XSC5NxLrdDcV1R3aYZfJWs+Nh590BsYs0LqNBJST/XTbP1JpGL93H54JNSpqRv4EOp7a ig== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Dec 2023 06:42:25 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 3BD6T0Me025162;
-	Wed, 13 Dec 2023 06:42:24 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3uy7c58c9b-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Dec 2023 06:42:24 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 3BD5Q3YA013864;
-	Wed, 13 Dec 2023 06:42:23 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3uw5926bu9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 13 Dec 2023 06:42:23 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 3BD6gLEi43188908
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Dec 2023 06:42:22 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E13E120040;
-	Wed, 13 Dec 2023 06:42:21 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 42A8420043;
-	Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.51.82])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 13 Dec 2023 06:42:19 +0000 (GMT)
-Date: Wed, 13 Dec 2023 12:12:15 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: John Garry <john.g.garry@oracle.com>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-block@vger.kernel.org,
-        linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        dchinner@redhat.com
-Subject: Re: [RFC 0/7] ext4: Allocator changes for atomic write support with
- DIO
-Message-ID: <ZXlSR8CTXjkeKxwk@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1701339358.git.ojaswin@linux.ibm.com>
- <8c06c139-f994-442b-925e-e177ef2c5adb@oracle.com>
- <ZW3WZ6prrdsPc55Z@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <de90e79b-83f2-428f-bac6-0754708aa4a8@oracle.com>
- <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZXbqVs0TdoDcJ352@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vAkBMKIFJ8wO00RLRC6t6Gf6QM4RHrja
-X-Proofpoint-GUID: Zf8h5KpoaOoIeOwSSmnViO2i-V5AgsRi
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+Received: from mail-oa1-f70.google.com (mail-oa1-f70.google.com [209.85.160.70])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 7F732AD
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Dec 2023 00:52:17 -0800 (PST)
+Received: by mail-oa1-f70.google.com with SMTP id 586e51a60fabf-20329a8f16bso182914fac.2
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Dec 2023 00:52:17 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1702457537; x=1703062337;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=WPZq+OIEEFTX4bUJQnKfnOKPNI4qnWToRixY61oCYL7ijY/7iga+2izw60vBh434JT
+         fVZkv+lvymwwIPn0jybylfIfx8EOSh0eX/TvB8pIOq7BN6jgMEXZ3hcvrFCHq1qE7S1o
+         ppaI9a+i/5k5N7znoQM4/vifJEMN3tlTH0hypRYR1CCPSjPTFLZY0xelaM7NrUXI28fe
+         RY4tLfRXbXzAMmj7GObbjv2NnC/e8uoYwkuyjIm5fGEAIEuUf8lfMgCAlhlJ770WJFFc
+         SHRU+flHKDSnKoV7rlKLVfSdGMSDiA1/0nQPk4hCvB8yamc4H/mXDC2PAIBkIrgQovM/
+         DYwg==
+X-Gm-Message-State: AOJu0Yz4JY5mW4zBX47rcoC+pq/FGOEdQ2batOoqcaQxuFI7wKX7/cIf
+	2Hjx/ap0T0Oc6Q4Pz6COg1UgI3bd8dGeHVM+bmUsmSs8HerZ
+X-Google-Smtp-Source: AGHT+IGzn1vWQRWy4hNK47/fXNETo9pMF7OxRmF3w0I7jOqcRkx6dD72V7r0g1rmfo1M2lvpFsx36btyv4fDVet8vGSK7FV4vEgC
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.997,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2023-12-12_14,2023-12-12_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 adultscore=0
- mlxscore=0 priorityscore=1501 bulkscore=0 spamscore=0 malwarescore=0
- phishscore=0 clxscore=1015 lowpriorityscore=0 impostorscore=0
- mlxlogscore=965 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2312130047
+X-Received: by 2002:a05:6871:5b05:b0:1fa:e120:4c64 with SMTP id
+ op5-20020a0568715b0500b001fae1204c64mr8088036oac.10.1702457536123; Wed, 13
+ Dec 2023 00:52:16 -0800 (PST)
+Date: Wed, 13 Dec 2023 00:52:16 -0800
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000af990e060c604832@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Dec 11, 2023 at 04:24:14PM +0530, Ojaswin Mujoo wrote:
-> > > > looks ok so far, then write 4KB at offset 0:
-> > > > 
-> > > > # /test-pwritev2 -a -d -p 0 -l 4096  /root/mnt/file
-> > > > file=/root/mnt/file write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
-> > 
-> > ...
-> > 
-> > > > Please note that I tested on my own dev branch, which contains changes over
-> > > > [1], but I expect it would not make a difference for this test.
-> > > Hmm this should not ideally happen, can you please share your test
-> > > script with me if possible?
-> > 
-> > It's doing nothing special, just RWF_ATOMIC flag is set for DIO write:
-> > 
-> > https://github.com/johnpgarry/linux/blob/236870d48ecb19c1cf89dc439e188182a0524cd4/samples/vfs/test-pwritev2.c
-> 
-> Thanks for the script, will try to replicate this today and get back to
-> you.
-> 
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Hi John,
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-So I don't seem to be able to hit the warn on:
+#syz fix: exact-commit-title
 
-$ touch mnt/testfile
-$ ./test-pwritev2 -a -d -p 0 -l 4096 mnt/testfile
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-	file=mnt/testfile write_size=4096 offset=0 o_flags=0x4002 wr_flags=0x24
-	main wrote 4096 bytes at offset 0
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
 
-$ filefrag -v mnt/testfile
+---
+[1] I expect the commit to be present in:
 
-	Filesystem type is: ef53
-	File size of testfile is 4096 (1 block of 4096 bytes)
-	ext:     logical_offset:        physical_offset: length:   expected: flags:
-		0:        0..       0:      32900..     32900:      1: last,eof
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-$ ./test-pwritev2 -a -d -p 8192 -l 8192 mnt/testfile
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
-	file=mnt/testfile write_size=8192 offset=8192 o_flags=0x4002 wr_flags=0x24
-	main wrote 8192 bytes at offset 8192
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
 
-$ filefrag -v mnt/testfile
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
 
-	Filesystem type is: ef53
-	File size of mnt/testfile is 16384 (4 blocks of 4096 bytes)
-	 ext:     logical_offset:        physical_offset: length:   expected: flags:
-		0:        0..       0:      32900..     32900:      1:
-		1:        2..       3:      33288..     33289:      2: 32902: last,eof
-	mnt/testfile: 2 extents found
-
-Not sure why you are hitting the WARN_ON. The tree I used is:
-
-Latest ted/dev + your atomic patchset v1 + this patchset
-
-Regards,
-ojaswin
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
