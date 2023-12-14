@@ -1,89 +1,62 @@
-Return-Path: <linux-ext4+bounces-448-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-449-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45AE6813326
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Dec 2023 15:31:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD8EB81339C
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Dec 2023 15:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E59F9281D46
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Dec 2023 14:31:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1ADBA1C21AB8
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Dec 2023 14:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C52559E57;
-	Thu, 14 Dec 2023 14:31:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2477F5B5A6;
+	Thu, 14 Dec 2023 14:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wYpi3irB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TgyKssAI";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DoHozmNA";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SrX/PnBn"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Anlf8Y5Q"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 1742CA7
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Dec 2023 06:31:11 -0800 (PST)
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 819B31FDB4;
-	Thu, 14 Dec 2023 14:31:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702564269; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxNHRqpzv6OsvHKHb9vPAOYEhajh0DREFcvCYq71nGI=;
-	b=wYpi3irBcK4vxIi6n2Dqm/KOnLOhpSe1qUD4KrNaXOEP8dxB1HlpZZx0jOQEbTQreKOg/h
-	gQ/1lR8c+4rCQXu2ezEKKpslAinmSYOCg/BCqyElYuDpv+36eAnvLEg0CizFb/IwUd5h7F
-	ITocYnHXgOgO/SqT2gJ3YLZJm1W2x4k=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702564269;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxNHRqpzv6OsvHKHb9vPAOYEhajh0DREFcvCYq71nGI=;
-	b=TgyKssAIN2n4dSRMOm80YwEDAfm5ZR0v1JhXbuEBPh7xk4w26Pqwh2Tese151aTNwEC2+j
-	Cd8NVwraXbHJcxBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1702564268; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxNHRqpzv6OsvHKHb9vPAOYEhajh0DREFcvCYq71nGI=;
-	b=DoHozmNA5TGWYe2gEfevKNrfgvqXhqlmOTCUf8J+34hI8enA7xOfJaEtjgNlv7h7mQ0j69
-	3KFinMZBI+EP6Sh4hZwdxLgGMIcjoYh8PxYPD3PKb/TKvwWzEO6TY41RQZxsbidvu/w1Yq
-	3G1i4dAIcJHxtedAMcUvU92V3xuy78U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1702564268;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sxNHRqpzv6OsvHKHb9vPAOYEhajh0DREFcvCYq71nGI=;
-	b=SrX/PnBnVeMekptYYZUn1qdboAErigG1/OOo9GupKFfWVpaTzvYEyCozqCSpW49GRATtOM
-	BSbMcCcoC5nheLAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 7210A134B0;
-	Thu, 14 Dec 2023 14:31:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id KrzVG6wRe2VnGQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 14 Dec 2023 14:31:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 10162A07E0; Thu, 14 Dec 2023 15:31:08 +0100 (CET)
-Date: Thu, 14 Dec 2023 15:31:08 +0100
-From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [RFC PATCH 3/6] ext4: correct the hole length returned by
- ext4_map_blocks()
-Message-ID: <20231214143108.36ywegeshzv4j2ut@quack3>
-References: <20231121093429.1827390-1-yi.zhang@huaweicloud.com>
- <20231121093429.1827390-4-yi.zhang@huaweicloud.com>
- <20231213182114.tzwsqpeonr5ok3j2@quack3>
- <52f6786a-b936-9f79-bea0-ed54a57efd62@huaweicloud.com>
+Received: from mgamail.intel.com (mgamail.intel.com [192.55.52.93])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 9F3C3BD;
+	Thu, 14 Dec 2023 06:52:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1702565557; x=1734101557;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=ODhwqCqXmS7joN9elVUFunOPRQ2tuEhEQcIHRfDVNIw=;
+  b=Anlf8Y5QTdEFA0K+y66RMzPgbU4pgWWyOX+hp/ysaFtBKwCc0VdkRHpq
+   4LFX6+6+re3tAblSma4c5ZOC6PXBkFMl4a032Cz7FeLLH82yRFJFZYW9p
+   N6oNIPpGF6le85ljn8Hng/rnbcS2SbmyOhtKY55SD+cbf0SNyOxRtOnuw
+   pHZda6/FJfE+IWXJ0hbU59OW8oxkrG/Y40+ULapGrCZUc+ZMIAMywhLXH
+   F7K4EYk1TDALGnsC1jl7dkFWV6K+1Ygi/WO/PIIpWn09R03QYEuljnGCz
+   +Rkys7lr814WUdmenAT2sGstW80AyMxkTUxNcOYPtts5al1imE4784nqt
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="392303420"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="392303420"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmsmga102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Dec 2023 06:52:37 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,10924"; a="892491877"
+X-IronPort-AV: E=Sophos;i="6.04,275,1695711600"; 
+   d="scan'208";a="892491877"
+Received: from lkp-server02.sh.intel.com (HELO b07ab15da5fe) ([10.239.97.151])
+  by fmsmga002.fm.intel.com with ESMTP; 14 Dec 2023 06:52:34 -0800
+Received: from kbuild by b07ab15da5fe with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rDn4i-000MBk-1f;
+	Thu, 14 Dec 2023 14:52:32 +0000
+Date: Thu, 14 Dec 2023 22:51:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: Gabriel Krisman Bertazi <krisman@suse.de>, viro@zeniv.linux.org.uk,
+	ebiggers@kernel.org, jaegeuk@kernel.org, tytso@mit.edu
+Cc: oe-kbuild-all@lists.linux.dev, linux-f2fs-devel@lists.sourceforge.net,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	Gabriel Krisman Bertazi <krisman@suse.de>
+Subject: Re: [PATCH 8/8] fscrypt: Move d_revalidate configuration back into
+ fscrypt
+Message-ID: <202312142213.uyrNJniX-lkp@intel.com>
+References: <20231213234031.1081-9-krisman@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -92,185 +65,50 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <52f6786a-b936-9f79-bea0-ed54a57efd62@huaweicloud.com>
-X-Spam-Score: -0.05
-X-Spam-Level: 
-X-Spam-Score: -0.05
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.05 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 NEURAL_SPAM_SHORT(2.05)[0.684];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+In-Reply-To: <20231213234031.1081-9-krisman@suse.de>
 
-On Thu 14-12-23 17:18:45, Zhang Yi wrote:
-> On 2023/12/14 2:21, Jan Kara wrote:
-> > On Tue 21-11-23 17:34:26, Zhang Yi wrote:
-> >> From: Zhang Yi <yi.zhang@huawei.com>
-> >>
-> >> In ext4_map_blocks(), if we can't find a range of mapping in the
-> >> extents cache, we are calling ext4_ext_map_blocks() to search the real
-> >> path. But if the querying range was tail overlaped by a delayed extent,
-> >> we can't find it on the real extent path, so the returned hole length
-> >> could be larger than it really is.
-> >>
-> >>       |          querying map          |
-> >>       v                                v
-> >>       |----------{-------------}{------|----------------}-----...
-> >>       ^          ^             ^^                       ^
-> >>       | uncached | hole extent ||     delayed extent    |
-> >>
-> >> We have to adjust the mapping length to the next not hole extent's
-> >> lblk before searching the extent path.
-> >>
-> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> > 
-> > So I agree the ext4_ext_determine_hole() does return a hole that does not
-> > reflect possible delalloc extent (it doesn't even need to be straddling the
-> > end of looked up range, does it?). But ext4_ext_put_gap_in_cache() does
-> 
-> Yeah.
-> 
-> > actually properly trim the hole length in the status tree so I think the
-> > problem rather is that the trimming should happen in
-> > ext4_ext_determine_hole() instead of ext4_ext_put_gap_in_cache() and that
-> > will also make ext4_map_blocks() return proper hole length? And then
-> > there's no need for this special handling? Or am I missing something?
-> > 
-> 
-> Thanks for your suggestions. Yeah, we can trim the hole length in
-> ext4_ext_determine_hole(), but I'm a little uneasy about the race condition.
-> ext4_da_map_blocks() only hold inode lock and i_data_sem read lock while
-> inserting delay extents, and not all query path of ext4_map_blocks() hold
-> inode lock.
+Hi Gabriel,
 
-That is a good point! I think something like following could happen already
-now:
+kernel test robot noticed the following build warnings:
 
-Suppose we have a file 8192 bytes large containing just a hole.
+[auto build test WARNING on jaegeuk-f2fs/dev-test]
+[also build test WARNING on jaegeuk-f2fs/dev tytso-ext4/dev linus/master v6.7-rc5 next-20231214]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Task1					Task2
-pread(f, buf, 4096, 0)			pwrite(f, buf, 4096, 4096)
-  filemap_read()
-    filemap_get_pages()
-      filemap_create_folio()
-        filemap_read_folio()
-          ext4_mpage_readpages()
-            ext4_map_blocks()
-	      down_read(&EXT4_I(inode)->i_data_sem);
-              ext4_ext_map_blocks()
-		- finds hole 0..8192
-	        ext4_ext_put_gap_in_cache()
-		  ext4_es_find_extent_range()
-		    - finds no delalloc extent
-					  ext4_da_write_begin()
-					    ext4_da_get_block_prep()
-					      ext4_da_map_blocks()
-					        down_read(&EXT4_I(inode)->i_data_sem);
-					        ext4_ext_map_blocks()
-						  - nothing found
-						ext4_insert_delayed_block()
-						  - inserts delalloc extent
-						    to 4096-8192
-		  ext4_es_insert_extent()
-		    - inserts 0..8192 a hole overwriting delalloc extent
+url:    https://github.com/intel-lab-lkp/linux/commits/Gabriel-Krisman-Bertazi/dcache-Add-helper-to-disable-d_revalidate-for-a-specific-dentry/20231214-074322
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git dev-test
+patch link:    https://lore.kernel.org/r/20231213234031.1081-9-krisman%40suse.de
+patch subject: [PATCH 8/8] fscrypt: Move d_revalidate configuration back into fscrypt
+config: x86_64-randconfig-123-20231214 (https://download.01.org/0day-ci/archive/20231214/202312142213.uyrNJniX-lkp@intel.com/config)
+compiler: clang version 16.0.4 (https://github.com/llvm/llvm-project.git ae42196bc493ffe877a7e3dff8be32035dea4d07)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20231214/202312142213.uyrNJniX-lkp@intel.com/reproduce)
 
-> I guess the hole/delayed range could be raced by another new
-> delay allocation and changed after we first check in ext4_map_blocks(),
-> the querying range could be overlapped and became all or partial delayed,
-> so we also need to recheck the map type here if the start querying block
-> has became delayed, right?
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202312142213.uyrNJniX-lkp@intel.com/
 
-I don't think think you can fix this just by rechecking. I think we need to
-hold i_data_sem in exclusive mode when inserting delalloc extents. Because
-that operation is in fact changing state of allocation tree (although not
-on disk yet). And that will fix this race because holding i_data_sem shared
-is then enough so that delalloc state cannot change.
+All warnings (new ones prefixed by >>):
 
-Please do this as a separate patch because this will need to be backported
-to stable tree. Thanks!
+>> fs/libfs.c:1778:39: warning: unused variable 'generic_encrypted_dentry_ops' [-Wunused-const-variable]
+   static const struct dentry_operations generic_encrypted_dentry_ops = {
+                                         ^
+   1 warning generated.
 
-								Honza
 
-> >> ---
-> >>  fs/ext4/inode.c | 24 ++++++++++++++++++++++--
-> >>  1 file changed, 22 insertions(+), 2 deletions(-)
-> >>
-> >> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> >> index 4ce35f1c8b0a..94e7b8500878 100644
-> >> --- a/fs/ext4/inode.c
-> >> +++ b/fs/ext4/inode.c
-> >> @@ -479,6 +479,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
-> >>  		    struct ext4_map_blocks *map, int flags)
-> >>  {
-> >>  	struct extent_status es;
-> >> +	ext4_lblk_t next;
-> >>  	int retval;
-> >>  	int ret = 0;
-> >>  #ifdef ES_AGGRESSIVE_TEST
-> >> @@ -502,8 +503,10 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
-> >>  		return -EFSCORRUPTED;
-> >>  
-> >>  	/* Lookup extent status tree firstly */
-> >> -	if (!(EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) &&
-> >> -	    ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
-> >> +	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
-> >> +		goto uncached;
-> >> +
-> >> +	if (ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
-> >>  		if (ext4_es_is_written(&es) || ext4_es_is_unwritten(&es)) {
-> >>  			map->m_pblk = ext4_es_pblock(&es) +
-> >>  					map->m_lblk - es.es_lblk;
-> >> @@ -532,6 +535,23 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
-> >>  #endif
-> >>  		goto found;
-> >>  	}
-> >> +	/*
-> >> +	 * Not found, maybe a hole, need to adjust the map length before
-> >> +	 * seraching the real extent path. It can prevent incorrect hole
-> >> +	 * length returned if the following entries have delayed only
-> >> +	 * ones.
-> >> +	 */
-> >> +	if (!(flags & EXT4_GET_BLOCKS_CREATE) && es.es_lblk > map->m_lblk) {
-> >> +		next = es.es_lblk;
-> >> +		if (ext4_es_is_hole(&es))
-> >> +			next = ext4_es_skip_hole_extent(inode, map->m_lblk,
-> >> +							map->m_len);
-> >> +		retval = next - map->m_lblk;
-> >> +		if (map->m_len > retval)
-> >> +			map->m_len = retval;
-> >> +	}
-> >> +
-> >> +uncached:
-> >>  	/*
-> >>  	 * In the query cache no-wait mode, nothing we can do more if we
-> >>  	 * cannot find extent in the cache.
-> >> -- 
-> >> 2.39.2
-> >>
-> 
+vim +/generic_encrypted_dentry_ops +1778 fs/libfs.c
+
+608af703519a58 Daniel Rosenberg 2020-11-19  1776  
+608af703519a58 Daniel Rosenberg 2020-11-19  1777  #ifdef CONFIG_FS_ENCRYPTION
+608af703519a58 Daniel Rosenberg 2020-11-19 @1778  static const struct dentry_operations generic_encrypted_dentry_ops = {
+608af703519a58 Daniel Rosenberg 2020-11-19  1779  	.d_revalidate = fscrypt_d_revalidate,
+608af703519a58 Daniel Rosenberg 2020-11-19  1780  };
+608af703519a58 Daniel Rosenberg 2020-11-19  1781  #endif
+608af703519a58 Daniel Rosenberg 2020-11-19  1782  
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
