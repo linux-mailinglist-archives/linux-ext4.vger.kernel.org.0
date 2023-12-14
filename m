@@ -1,52 +1,44 @@
-Return-Path: <linux-ext4+bounces-441-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-442-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A468281236A
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Dec 2023 00:42:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BA398126EA
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Dec 2023 06:30:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FDA4B21199
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Dec 2023 23:42:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 152001F21A6E
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Dec 2023 05:30:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9683B79E25;
-	Wed, 13 Dec 2023 23:41:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B6863DF;
+	Thu, 14 Dec 2023 05:30:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="vj4URvfu"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [IPv6:2a07:de40:b251:101:10:150:64:2])
-	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id 583C9324D;
-	Wed, 13 Dec 2023 15:41:02 -0800 (PST)
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9C2B21FD80;
-	Wed, 13 Dec 2023 23:41:00 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 62F5D1377F;
-	Wed, 13 Dec 2023 23:41:00 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tZokEgxBemV9PgAAD6G6ig
-	(envelope-from <krisman@suse.de>); Wed, 13 Dec 2023 23:41:00 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: viro@zeniv.linux.org.uk,
-	ebiggers@kernel.org,
-	jaegeuk@kernel.org,
-	tytso@mit.edu
-Cc: linux-f2fs-devel@lists.sourceforge.net,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Gabriel Krisman Bertazi <krisman@suse.de>
-Subject: [PATCH 8/8] fscrypt: Move d_revalidate configuration back into fscrypt
-Date: Wed, 13 Dec 2023 18:40:31 -0500
-Message-ID: <20231213234031.1081-9-krisman@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20231213234031.1081-1-krisman@suse.de>
-References: <20231213234031.1081-1-krisman@suse.de>
+Received: from casper.infradead.org (casper.infradead.org [IPv6:2001:8b0:10b:1236::1])
+	by lindbergh.monkeyblade.net (Postfix) with ESMTPS id DADC9C9
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Dec 2023 21:30:43 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=YUSFa1cdq2g65yFLogoyfHTJ4BClbsI0dVC47+Abz1A=; b=vj4URvfusCAzyJaHpozs+wwj1B
+	KAMS/zsWlKd+HHowyW9NCSPEtdHFbpYmojnjEHRf0Ahe1FxNLCES8VYkeAa8XuYgYa+PYaz+spBs+
+	/+kRlfTkjVfI1DKJ1yWSuyKpr8k9OXFSE/4wKHY1XiyWTn5Ayyx/46FISJnLBpIppoDrrt6pwJ6iH
+	cm9jmNvLDqFlxVuA+uTpkWox07GPfMlNGn6kIsWz+Rw5OVOJtd+tikSz5e88pOyerRa08ThstiT2A
+	LlHh3WWVn8V9qHsWCuCXME5rexGMMI9MZ67vfqINh3wNZYePRymqc0aW7XBd9IGtSlda+7w6pO6Zp
+	E0gc9PNw==;
+Received: from willy by casper.infradead.org with local (Exim 4.94.2 #2 (Red Hat Linux))
+	id 1rDeIw-004H4x-OJ; Thu, 14 Dec 2023 05:30:39 +0000
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH] ext4: Convert ext4_da_do_write_end() to take a folio
+Date: Thu, 14 Dec 2023 05:30:35 +0000
+Message-Id: <20231214053035.1018876-1-willy@infradead.org>
+X-Mailer: git-send-email 2.37.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -54,170 +46,78 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-X-Spam-Score: -4.00
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 9C2B21FD80
-X-Spam-Flag: NO
 
-This partially reverts commit bb9cd9106b22 ("fscrypt: Have filesystems
-handle their d_ops"), which moved this handler out of fscrypt and into
-the filesystems, in preparation to support casefold and fscrypt
-combinations.  Now that we set casefolding operations through
-->s_d_op, move this back into fscrypt, where it belongs, but take care
-to handle filesystems that set their own sb->s_d_op.
+There's nothing page-specific happening in ext4_da_do_write_end();
+it's merely used for its refcount & lock, both of which are folio
+properties.  Saves four calls to compound_head().
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 ---
- fs/crypto/hooks.c       |  8 ++++++++
- fs/ext4/namei.c         |  5 -----
- fs/f2fs/namei.c         |  5 -----
- fs/libfs.c              | 19 -------------------
- fs/ubifs/dir.c          |  1 -
- include/linux/fs.h      |  1 -
- include/linux/fscrypt.h | 10 +++++-----
- 7 files changed, 13 insertions(+), 36 deletions(-)
+ fs/ext4/inode.c | 19 ++++++++++---------
+ 1 file changed, 10 insertions(+), 9 deletions(-)
 
-diff --git a/fs/crypto/hooks.c b/fs/crypto/hooks.c
-index 52504dd478d3..166837d5af29 100644
---- a/fs/crypto/hooks.c
-+++ b/fs/crypto/hooks.c
-@@ -94,6 +94,10 @@ int __fscrypt_prepare_rename(struct inode *old_dir, struct dentry *old_dentry,
- }
- EXPORT_SYMBOL_GPL(__fscrypt_prepare_rename);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 83ee4e0f46f4..216ad9bcca45 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2947,7 +2947,7 @@ static int ext4_da_should_update_i_disksize(struct folio *folio,
  
-+static const struct dentry_operations fscrypt_dentry_ops = {
-+	.d_revalidate = fscrypt_d_revalidate,
-+};
-+
- int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
- 			     struct fscrypt_name *fname)
+ static int ext4_da_do_write_end(struct address_space *mapping,
+ 			loff_t pos, unsigned len, unsigned copied,
+-			struct page *page)
++			struct folio *folio)
  {
-@@ -106,6 +110,10 @@ int __fscrypt_prepare_lookup(struct inode *dir, struct dentry *dentry,
- 		spin_lock(&dentry->d_lock);
- 		dentry->d_flags |= DCACHE_NOKEY_NAME;
- 		spin_unlock(&dentry->d_lock);
-+
-+		/* Give preference to the filesystem hooks, if any. */
-+		if (!dentry->d_op)
-+			d_set_d_op(dentry, &fscrypt_dentry_ops);
+ 	struct inode *inode = mapping->host;
+ 	loff_t old_size = inode->i_size;
+@@ -2958,12 +2958,13 @@ static int ext4_da_do_write_end(struct address_space *mapping,
+ 	 * block_write_end() will mark the inode as dirty with I_DIRTY_PAGES
+ 	 * flag, which all that's needed to trigger page writeback.
+ 	 */
+-	copied = block_write_end(NULL, mapping, pos, len, copied, page, NULL);
++	copied = block_write_end(NULL, mapping, pos, len, copied,
++			&folio->page, NULL);
+ 	new_i_size = pos + copied;
+ 
+ 	/*
+-	 * It's important to update i_size while still holding page lock,
+-	 * because page writeout could otherwise come in and zero beyond
++	 * It's important to update i_size while still holding folio lock,
++	 * because folio writeout could otherwise come in and zero beyond
+ 	 * i_size.
+ 	 *
+ 	 * Since we are holding inode lock, we are sure i_disksize <=
+@@ -2981,14 +2982,14 @@ static int ext4_da_do_write_end(struct address_space *mapping,
+ 
+ 		i_size_write(inode, new_i_size);
+ 		end = (new_i_size - 1) & (PAGE_SIZE - 1);
+-		if (copied && ext4_da_should_update_i_disksize(page_folio(page), end)) {
++		if (copied && ext4_da_should_update_i_disksize(folio, end)) {
+ 			ext4_update_i_disksize(inode, new_i_size);
+ 			disksize_changed = true;
+ 		}
  	}
- 	return err;
+ 
+-	unlock_page(page);
+-	put_page(page);
++	folio_unlock(folio);
++	folio_put(folio);
+ 
+ 	if (old_size < pos)
+ 		pagecache_isize_extended(inode, old_size, pos);
+@@ -3027,10 +3028,10 @@ static int ext4_da_write_end(struct file *file,
+ 		return ext4_write_inline_data_end(inode, pos, len, copied,
+ 						  folio);
+ 
+-	if (unlikely(copied < len) && !PageUptodate(page))
++	if (unlikely(copied < len) && !folio_test_uptodate(folio))
+ 		copied = 0;
+ 
+-	return ext4_da_do_write_end(mapping, pos, len, copied, &folio->page);
++	return ext4_da_do_write_end(mapping, pos, len, copied, folio);
  }
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 3c1208d5d85b..3f0b853a371e 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1762,11 +1762,6 @@ static struct buffer_head *ext4_lookup_entry(struct inode *dir,
- 	struct buffer_head *bh;
  
- 	err = ext4_fname_prepare_lookup(dir, dentry, &fname);
--
--	/* Case-insensitive volumes set dentry ops through sb->s_d_op. */
--	if (!dir->i_sb->s_encoding)
--		generic_set_encrypted_ci_d_ops(dentry);
--
- 	if (err == -ENOENT)
- 		return NULL;
- 	if (err)
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index 4053846e2cd3..b40c6c393bd6 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -532,11 +532,6 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 	}
- 
- 	err = f2fs_prepare_lookup(dir, dentry, &fname);
--
--	/* Case-insensitive volumes set dentry ops through sb->s_d_op. */
--	if (!dir->i_sb->s_encoding)
--		generic_set_encrypted_ci_d_ops(dentry);
--
- 	if (err == -ENOENT)
- 		goto out_splice;
- 	if (err)
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 41c02c003265..4fed170dfe49 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -1780,25 +1780,6 @@ static const struct dentry_operations generic_encrypted_dentry_ops = {
- };
- #endif
- 
--/**
-- * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
-- * @dentry:	dentry to set ops on
-- *
-- * Encryption works differently in that the only dentry operation it needs is
-- * d_revalidate, which it only needs on dentries that have the no-key name flag.
-- * The no-key flag can't be set "later", so we don't have to worry about that.
-- */
--void generic_set_encrypted_ci_d_ops(struct dentry *dentry)
--{
--#ifdef CONFIG_FS_ENCRYPTION
--	if (dentry->d_flags & DCACHE_NOKEY_NAME) {
--		d_set_d_op(dentry, &generic_encrypted_dentry_ops);
--		return;
--	}
--#endif
--}
--EXPORT_SYMBOL(generic_set_encrypted_ci_d_ops);
--
- /**
-  * inode_maybe_inc_iversion - increments i_version
-  * @inode: inode with the i_version that should be updated
-diff --git a/fs/ubifs/dir.c b/fs/ubifs/dir.c
-index 3b13c648d490..51b9a10a9851 100644
---- a/fs/ubifs/dir.c
-+++ b/fs/ubifs/dir.c
-@@ -205,7 +205,6 @@ static struct dentry *ubifs_lookup(struct inode *dir, struct dentry *dentry,
- 	dbg_gen("'%pd' in dir ino %lu", dentry, dir->i_ino);
- 
- 	err = fscrypt_prepare_lookup(dir, dentry, &nm);
--	generic_set_encrypted_ci_d_ops(dentry);
- 	if (err == -ENOENT)
- 		return d_splice_alias(NULL, dentry);
- 	if (err)
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index 887a27d07f96..e5ae21f9f637 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3201,7 +3201,6 @@ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
- 
- extern int generic_check_addressable(unsigned, u64);
- 
--extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
- extern const struct dentry_operations generic_ci_dentry_ops;
- 
- int may_setattr(struct mnt_idmap *idmap, struct inode *inode,
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 12f9e455d569..97a11280c2bd 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -961,11 +961,11 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
-  * key is available, then the lookup is assumed to be by plaintext name;
-  * otherwise, it is assumed to be by no-key name.
-  *
-- * This will set DCACHE_NOKEY_NAME on the dentry if the lookup is by no-key
-- * name.  In this case the filesystem must assign the dentry a dentry_operations
-- * which contains fscrypt_d_revalidate (or contains a d_revalidate method that
-- * calls fscrypt_d_revalidate), so that the dentry will be invalidated if the
-- * directory's encryption key is later added.
-+ * This also optionally installs a custom ->d_revalidate() method which will
-+ * invalidate the dentry if it was created without the key and the key is later
-+ * added.  If the filesystem provides its own ->d_op hooks, they will be used
-+ * instead, but then the filesystem must make sure to call fscrypt_d_revalidate
-+ * in its d_revalidate hook, to check if fscrypt considers the dentry stale.
-  *
-  * Return: 0 on success; -ENOENT if the directory's key is unavailable but the
-  * filename isn't a valid no-key name, so a negative dentry should be created;
+ /*
 -- 
-2.43.0
+2.42.0
 
 
