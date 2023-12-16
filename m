@@ -1,162 +1,138 @@
-Return-Path: <linux-ext4+bounces-473-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-474-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F20D5815406
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Dec 2023 23:56:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C3298155CE
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Dec 2023 02:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B2FDB21754
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Dec 2023 22:56:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9659FB23877
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Dec 2023 01:01:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA80B18EB8;
-	Fri, 15 Dec 2023 22:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nr+mGJVF"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EDA718AE6;
+	Sat, 16 Dec 2023 01:01:40 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F52218EAC
-	for <linux-ext4@vger.kernel.org>; Fri, 15 Dec 2023 22:56:16 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A91EC433C7;
-	Fri, 15 Dec 2023 22:56:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702680976;
-	bh=slOznQaAdlKxRyFGZYrnK6ZcEMDD98cl2AyFxTj2SEc=;
-	h=Date:Subject:From:To:Cc:In-Reply-To:References:From;
-	b=nr+mGJVFJmuuLV6joOKmRVaXv9CzxvEPe1uuvMJymTtNpGg+Z+2CRh5FSJZzVOgXR
-	 GiTlySmS3/5Zclh3ECxbWiXw4AdfqIXb7qvMk6HQMFpGbI7idvjyADDWcjK4ObEMl2
-	 +XA4FUTqiTkJtwsYbIL5bTZDkbIk01Zgn9WjCXyvm80P+UFMBjQaeeB5pM9TSbrc6i
-	 PPaT6gVzemtdbe5DIuaAYI/hl4rQ40TiKKCrtbZ0PpYLWX4Ouy6DhoNQSVJ/nHZFRg
-	 9q/ulQzFUjZwzn/ZoQ2btx2XHShk1qMiD+mXBScKJx1/boUyWb63Y0wN5AxOkCKS/u
-	 xtGEaCwi9vCUw==
-Date: Fri, 15 Dec 2023 14:56:16 -0800
-Subject: [PATCH 2/2] e2fsprogs: don't allow udisks to automount ext4
- filesystems with no prompt
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: djwong@kernel.org, tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org
-Message-ID: <170268089768.2679199.6471937911328594372.stgit@frogsfrogsfrogs>
-In-Reply-To: <170268089742.2679199.16836622895526209331.stgit@frogsfrogsfrogs>
-References: <170268089742.2679199.16836622895526209331.stgit@frogsfrogsfrogs>
-User-Agent: StGit/0.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26A8615493;
+	Sat, 16 Dec 2023 01:01:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4SsSPC4pnBz1FDwq;
+	Sat, 16 Dec 2023 08:57:51 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id A74D21402CF;
+	Sat, 16 Dec 2023 09:01:30 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 16 Dec 2023 09:01:30 +0800
+Subject: Re: [PATCH] ext4: fix inconsistent between segment fstrim and full
+ fstrim
+To: Jan Kara <jack@suse.cz>
+References: <20231214064635.4128391-1-yebin10@huawei.com>
+ <20231215114135.qwdoscxg7myw3r6x@quack3>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+From: "yebin (H)" <yebin10@huawei.com>
+Message-ID: <657CF6E9.602@huawei.com>
+Date: Sat, 16 Dec 2023 09:01:29 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+In-Reply-To: <20231215114135.qwdoscxg7myw3r6x@quack3>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
 Content-Transfer-Encoding: 7bit
-
-From: Darrick J. Wong <djwong@kernel.org>
-
-The unending stream of syzbot bug reports and overwrought filing of CVEs
-for corner case handling (i.e. things that distract from actual user
-complaints) in ext4 has generated all sorts of of overheated rhetoric
-about how every bug is a Serious Security Issue(tm) because anyone can
-craft a malicious filesystem on a USB stick, insert the stick into a
-victim machine, and mount will trigger a bug in the kernel driver that
-leads to some compromise or DoS or something.
-
-I thought that nobody would be foolish enough to automount an ext4
-filesystem.  What a fool I was!  It turns out that udisks can be told
-that it's okay to automount things, and then GNOME will do exactly that.
-Including mounting mangled ext4 filesystems!
-
-<delete angry rant about poor decisionmaking and armchair fs developers
-blasting us on X while not actually doing any of the work>
-
-Turn off /this/ idiocy by adding a udev rule to tell udisks not to
-automount ext4 filesystems.
-
-This will not stop a logged in user from unwittingly inserting a
-malicious storage device and pressing [mount] and getting breached.
-This is not a substitute for a thorough audit of all codebases.  This is
-not a substitute for lklfuse.  This does not solve the general problem
-of in-kernel fs drivers being a huge attack surface.  I just want a
-vacation from the sh*tstorm of bad ideas and threat models that I never
-agreed to support.
-
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
----
- scrub/Makefile.in   |   12 ++++++++++--
- scrub/ext4.rules.in |   13 +++++++++++++
- 2 files changed, 23 insertions(+), 2 deletions(-)
- create mode 100644 scrub/ext4.rules.in
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
 
-diff --git a/scrub/Makefile.in b/scrub/Makefile.in
-index 387f6504..d0c5c11b 100644
---- a/scrub/Makefile.in
-+++ b/scrub/Makefile.in
-@@ -18,6 +18,7 @@ CONFFILES=	e2scrub.conf
- 
- ifeq ($(HAVE_UDEV),yes)
- UDEV_RULES	= e2scrub.rules
-+UDISKS_RULES	= ext4.rules
- INSTALLDIRS_TGT	+= installdirs-udev
- INSTALL_TGT	+= install-udev
- UNINSTALL_TGT	+= uninstall-udev
-@@ -39,7 +40,7 @@ INSTALL_TGT	+= install-systemd install-libprogs
- UNINSTALL_TGT	+= uninstall-systemd uninstall-libprogs
- endif
- 
--all:: $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
-+all:: $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(UDISKS_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
- 
- e2scrub: $(DEP_SUBSTITUTE) e2scrub.in
- 	$(E) "	SUBST $@"
-@@ -111,6 +112,10 @@ install-udev: installdirs-udev
- 		$(ES) "	INSTALL $(UDEV_RULES_DIR)/$$i"; \
- 		$(INSTALL_DATA) $$i $(DESTDIR)$(UDEV_RULES_DIR)/96-$$i; \
- 	done
-+	$(Q) for i in $(UDISKS_RULES); do \
-+		$(ES) "	INSTALL $(UDEV_RULES_DIR)/$$i"; \
-+		$(INSTALL_DATA) $$i $(DESTDIR)$(UDEV_RULES_DIR)/64-$$i; \
-+	done
- 
- install-crond: installdirs-crond
- 	$(Q) if test -n "$(CRONTABS)" ; then \
-@@ -153,6 +158,9 @@ uninstall-udev:
- 	for i in $(UDEV_RULES); do \
- 		$(RM) -f $(DESTDIR)$(UDEV_RULES_DIR)/96-$$i; \
- 	done
-+	for i in $(UDISKS_RULES); do \
-+		$(RM) -f $(DESTDIR)$(UDEV_RULES_DIR)/64-$$i; \
-+	done
- 
- uninstall-crond:
- 	if test -n "$(CRONTABS)" ; then \
-@@ -181,7 +189,7 @@ uninstall: $(UNINSTALL_TGT)
- 	done
- 
- clean::
--	$(RM) -f $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
-+	$(RM) -f $(PROGS) $(MANPAGES) $(CONFFILES) $(UDEV_RULES) $(UDISKS_RULES) $(SERVICE_FILES) $(CRONTABS) $(LIBPROGS)
- 
- mostlyclean: clean
- distclean: clean
-diff --git a/scrub/ext4.rules.in b/scrub/ext4.rules.in
-new file mode 100644
-index 00000000..6fe5a7a8
---- /dev/null
-+++ b/scrub/ext4.rules.in
-@@ -0,0 +1,13 @@
-+# SPDX-License-Identifier: GPL-2.0-or-later
-+#
-+# Copyright (C) 2023 Oracle.  All rights reserved.
-+# Author: Darrick J. Wong <djwong@kernel.org>
-+#
-+# Don't let udisks automount ext4 filesystems without even asking a user.
-+# This doesn't eliminate filesystems as an attack surface; it only prevents
-+# evil maid attacks when all sessions are locked.
-+#
-+# According to http://storaged.org/doc/udisks2-api/latest/udisks.8.html,
-+# supplying UDISKS_AUTO=0 here changes the HintAuto property of the block
-+# device abstraction to mean "do not automatically start" (e.g. mount).
-+SUBSYSTEM=="block", ENV{ID_FS_TYPE}=="ext2|ext3|ext4|ext4dev|jbd", ENV{UDISKS_AUTO}="0"
+
+On 2023/12/15 19:41, Jan Kara wrote:
+> On Thu 14-12-23 14:46:35, Ye Bin wrote:
+>> There will not issue discard cmd when do segment fstrim for ext4 fs, however,
+>> if full fstrim for the same fs will issue discard cmd.
+>> Above issue may happens as follows:
+>> Precondition:
+>> 1. Fstrim range [0, 15] and [16, 31];
+>> 2. Discard granularity is 16;
+>>              Range1          Range2
+>>        1111000000000000 0000111010101011
+>> There's no free space length large or equal than 16 in 'Range1' or 'Range2'.
+>> As ext4_try_to_trim_range() only search free space among range which user
+>> specified. However, there's maximum free space length 16 in 'Range1'+ 'Range2'.
+>> To solve above issue, we need to find the longest free space to discard.
+> The patch looks good so feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+>
+> I'd just rephrase the changelog to make it a bit easier to read:
+>
+> Suppose we issue two FITRIM ioctls for ranges [0,15] and [16,31] with
+> mininum length of trimmed range set to 8 blocks. If we have say a range of
+> blocks 10-22 free, this range will not be trimmed because it straddles the
+> boundary of the two FITRIM ranges and neither part is big enough. This is a
+> bit surprising to some users that call FITRIM on smaller ranges of blocks
+> to limit impact on the system. Also XFS trims all free space extents that
+> overlap with the specified range so we are inconsistent among filesystems.
+> Let's change ext4_try_to_trim_range() to consider for trimming the whole
+> free space extent that straddles the end of specified range, not just the
+> part of it within the range.
+>
+> 								Honza
+>   
+Thank you very much for your clear explanation of the patch.  I'll 
+update patch's
+changelog and resend a version.
+>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>> ---
+>>   fs/ext4/mballoc.c | 11 ++++++++---
+>>   1 file changed, 8 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index d72b5e3c92ec..d195461123d8 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -6753,13 +6753,15 @@ static int ext4_try_to_trim_range(struct super_block *sb,
+>>   __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
+>>   __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+>>   {
+>> -	ext4_grpblk_t next, count, free_count;
+>> +	ext4_grpblk_t next, count, free_count, last, origin_start;
+>>   	bool set_trimmed = false;
+>>   	void *bitmap;
+>>   
+>> +	last = ext4_last_grp_cluster(sb, e4b->bd_group);
+>>   	bitmap = e4b->bd_bitmap;
+>> -	if (start == 0 && max >= ext4_last_grp_cluster(sb, e4b->bd_group))
+>> +	if (start == 0 && max >= last)
+>>   		set_trimmed = true;
+>> +	origin_start = start;
+>>   	start = max(e4b->bd_info->bb_first_free, start);
+>>   	count = 0;
+>>   	free_count = 0;
+>> @@ -6768,7 +6770,10 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+>>   		start = mb_find_next_zero_bit(bitmap, max + 1, start);
+>>   		if (start > max)
+>>   			break;
+>> -		next = mb_find_next_bit(bitmap, max + 1, start);
+>> +
+>> +		next = mb_find_next_bit(bitmap, last + 1, start);
+>> +		if (origin_start == 0 && next >= last)
+>> +			set_trimmed = true;
+>>   
+>>   		if ((next - start) >= minblocks) {
+>>   			int ret = ext4_trim_extent(sb, start, next - start, e4b);
+>> -- 
+>> 2.31.1
+>>
 
 
