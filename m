@@ -1,49 +1,49 @@
-Return-Path: <linux-ext4+bounces-477-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-478-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9768D816E54
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Dec 2023 13:47:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6BE3816E6E
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Dec 2023 13:49:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4212B287F73
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Dec 2023 12:47:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE7F21C24513
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Dec 2023 12:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B5113877C;
-	Mon, 18 Dec 2023 12:44:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8701C37898;
+	Mon, 18 Dec 2023 12:44:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="inFTMWD+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OfmQw63U"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C90F580E1B;
-	Mon, 18 Dec 2023 12:44:25 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E99AC433C8;
-	Mon, 18 Dec 2023 12:44:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A263A1D9;
+	Mon, 18 Dec 2023 12:44:47 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2E06C433CC;
+	Mon, 18 Dec 2023 12:44:46 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1702903465;
-	bh=1ZlmuhzqxePekzsGTHoUz811R0QevJXRnGySjT92PnA=;
+	s=k20201202; t=1702903487;
+	bh=opvvfFwUTmKB3TWvTLKn/0BYW3B9jQ3sJUfvGeY77e4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=inFTMWD+PcbRVKNImwvEM/TwVqDGjKwziGfHdtXUEuDiAcnhBwOWOdLUG1rz5QuxL
-	 /eMosKKSHSnJhN49EBZx+YTJT+2yu26mEXOa4VQRz7d5jLfmf6zOaPjIWZ39RLBI93
-	 CxPgBp62s4p6S44XQ3eCaLjcdxrHfQdPXNAwe7ShOlWRPAfdso+9/xRRZabiCPJUON
-	 AGiwr5oCsclAkfES5B9JkgigljvtVIZZcHy8A1tPjk8NCaOfCHOvrpGKGSIgIrqsnC
-	 qvjKyLa3q6LVokTh+MWTJbIPbp1cq/mZCAhUlMXNTMXp6qxsXgFSA3iLURJTjhhJeu
-	 xRmwqX3Ugmjnw==
+	b=OfmQw63U2ofJgxXMWGKcbymdNAw5ZkI5JXszBF7WoZgM6VCCoc3Q6BYC0Ef18q08+
+	 /95aO5bFDcv/a6hFOS/Pd/41hiDG5BMTYoG93L6Bd79Up90qatGwULPHCykjMnkhyO
+	 0M45O9/r5ErbPajRLY0gWIYqCdIfl50VVO/NqGSmokEVTGyVkemixwLEAGZUQ2E1PS
+	 pCA/aeRCBx3Ck5Y3AEOmxUYEUjWbRRQxSBUqQc3h5XWUVsNKJfxZJPu+SXMW2YHEcx
+	 DGPjhv6lYbbMd+bDs4RQd7FC5Ah58CLaLgsdbqjFSmM/fA6fEJwB8VyQeskh5tah3k
+	 2Pobxd9vepRug==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Zhang Yi <yi.zhang@huawei.com>,
+Cc: Ye Bin <yebin10@huawei.com>,
 	Jan Kara <jack@suse.cz>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	jack@suse.com,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 05/18] jbd2: increase the journal IO's priority
-Date: Mon, 18 Dec 2023 07:43:39 -0500
-Message-ID: <20231218124415.1379060-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 12/18] jbd2: fix soft lockup in journal_finish_inode_data_buffers()
+Date: Mon, 18 Dec 2023 07:43:46 -0500
+Message-ID: <20231218124415.1379060-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20231218124415.1379060-1-sashal@kernel.org>
 References: <20231218124415.1379060-1-sashal@kernel.org>
@@ -58,158 +58,80 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.6.7
 Content-Transfer-Encoding: 8bit
 
-From: Zhang Yi <yi.zhang@huawei.com>
+From: Ye Bin <yebin10@huawei.com>
 
-[ Upstream commit 6a3afb6ac6dfab158ebdd4b87941178f58c8939f ]
+[ Upstream commit 6c02757c936063f0631b4e43fe156f8c8f1f351f ]
 
-Current jbd2 only add REQ_SYNC for descriptor block, metadata log
-buffer, commit buffer and superblock buffer, the submitted IO could be
-throttled by writeback throttle in block layer, that could lead to
-priority inversion in some cases. The log IO looks like a kind of high
-priority metadata IO, so it should not be throttled by WBT like QOS
-policies in block layer, let's add REQ_SYNC | REQ_IDLE to exempt from
-writeback throttle, and also add REQ_META together indicates it's a
-metadata IO.
+There's issue when do io test:
+WARN: soft lockup - CPU#45 stuck for 11s! [jbd2/dm-2-8:4170]
+CPU: 45 PID: 4170 Comm: jbd2/dm-2-8 Kdump: loaded Tainted: G  OE
+Call trace:
+ dump_backtrace+0x0/0x1a0
+ show_stack+0x24/0x30
+ dump_stack+0xb0/0x100
+ watchdog_timer_fn+0x254/0x3f8
+ __hrtimer_run_queues+0x11c/0x380
+ hrtimer_interrupt+0xfc/0x2f8
+ arch_timer_handler_phys+0x38/0x58
+ handle_percpu_devid_irq+0x90/0x248
+ generic_handle_irq+0x3c/0x58
+ __handle_domain_irq+0x68/0xc0
+ gic_handle_irq+0x90/0x320
+ el1_irq+0xcc/0x180
+ queued_spin_lock_slowpath+0x1d8/0x320
+ jbd2_journal_commit_transaction+0x10f4/0x1c78 [jbd2]
+ kjournald2+0xec/0x2f0 [jbd2]
+ kthread+0x134/0x138
+ ret_from_fork+0x10/0x18
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Analyzed informations from vmcore as follows:
+(1) There are about 5k+ jbd2_inode in 'commit_transaction->t_inode_list';
+(2) Now is processing the 855th jbd2_inode;
+(3) JBD2 task has TIF_NEED_RESCHED flag;
+(4) There's no pags in address_space around the 855th jbd2_inode;
+(5) There are some process is doing drop caches;
+(6) Mounted with 'nodioread_nolock' option;
+(7) 128 CPUs;
+
+According to informations from vmcore we know 'journal->j_list_lock' spin lock
+competition is fierce. So journal_finish_inode_data_buffers() maybe process
+slowly. Theoretically, there is scheduling point in the filemap_fdatawait_range_keep_errors().
+However, if inode's address_space has no pages which taged with PAGECACHE_TAG_WRITEBACK,
+will not call cond_resched(). So may lead to soft lockup.
+journal_finish_inode_data_buffers
+  filemap_fdatawait_range_keep_errors
+    __filemap_fdatawait_range
+      while (index <= end)
+        nr_pages = pagevec_lookup_range_tag(&pvec, mapping, &index, end, PAGECACHE_TAG_WRITEBACK);
+        if (!nr_pages)
+           break;    --> If 'nr_pages' is equal zero will break, then will not call cond_resched()
+        for (i = 0; i < nr_pages; i++)
+          wait_on_page_writeback(page);
+        cond_resched();
+
+To solve above issue, add scheduling point in the journal_finish_inode_data_buffers();
+
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20231129114740.2686201-2-yi.zhang@huaweicloud.com
+Link: https://lore.kernel.org/r/20231211112544.3879780-1-yebin10@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/commit.c     |  9 +++++----
- fs/jbd2/journal.c    | 20 +++++++++++---------
- include/linux/jbd2.h |  3 +++
- 3 files changed, 19 insertions(+), 13 deletions(-)
+ fs/jbd2/commit.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-index 8d6f934c3d954..9bdb377a348fa 100644
+index 9bdb377a348fa..5e122586e06ed 100644
 --- a/fs/jbd2/commit.c
 +++ b/fs/jbd2/commit.c
-@@ -119,7 +119,7 @@ static int journal_submit_commit_record(journal_t *journal,
- 	struct commit_header *tmp;
- 	struct buffer_head *bh;
- 	struct timespec64 now;
--	blk_opf_t write_flags = REQ_OP_WRITE | REQ_SYNC;
-+	blk_opf_t write_flags = REQ_OP_WRITE | JBD2_JOURNAL_REQ_FLAGS;
- 
- 	*cbh = NULL;
- 
-@@ -395,8 +395,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC);
-+						journal->j_tail, 0);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	} else {
- 		jbd2_debug(3, "superblock not updated\n");
-@@ -715,6 +714,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 
- 			for (i = 0; i < bufs; i++) {
- 				struct buffer_head *bh = wbuf[i];
-+
- 				/*
- 				 * Compute checksum.
- 				 */
-@@ -727,7 +727,8 @@ void jbd2_journal_commit_transaction(journal_t *journal)
- 				clear_buffer_dirty(bh);
- 				set_buffer_uptodate(bh);
- 				bh->b_end_io = journal_end_buffer_io_sync;
--				submit_bh(REQ_OP_WRITE | REQ_SYNC, bh);
-+				submit_bh(REQ_OP_WRITE | JBD2_JOURNAL_REQ_FLAGS,
-+					  bh);
- 			}
- 			cond_resched();
- 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index e7aa47a02d4d6..19c69229ac6ec 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1100,8 +1100,7 @@ int __jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block)
- 	 * space and if we lose sb update during power failure we'd replay
- 	 * old transaction with possibly newly overwritten data.
- 	 */
--	ret = jbd2_journal_update_sb_log_tail(journal, tid, block,
--					      REQ_SYNC | REQ_FUA);
-+	ret = jbd2_journal_update_sb_log_tail(journal, tid, block, REQ_FUA);
- 	if (ret)
- 		goto out;
- 
-@@ -1768,8 +1767,7 @@ static int journal_reset(journal_t *journal)
- 		 */
- 		jbd2_journal_update_sb_log_tail(journal,
- 						journal->j_tail_sequence,
--						journal->j_tail,
--						REQ_SYNC | REQ_FUA);
-+						journal->j_tail, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 	return jbd2_journal_start_thread(journal);
-@@ -1791,6 +1789,11 @@ static int jbd2_write_superblock(journal_t *journal, blk_opf_t write_flags)
- 		return -EIO;
- 	}
- 
-+	/*
-+	 * Always set high priority flags to exempt from block layer's
-+	 * QOS policies, e.g. writeback throttle.
-+	 */
-+	write_flags |= JBD2_JOURNAL_REQ_FLAGS;
- 	if (!(journal->j_flags & JBD2_BARRIER))
- 		write_flags &= ~(REQ_FUA | REQ_PREFLUSH);
- 
-@@ -2045,7 +2048,7 @@ void jbd2_journal_update_sb_errno(journal_t *journal)
- 	jbd2_debug(1, "JBD2: updating superblock error (errno %d)\n", errcode);
- 	sb->s_errno    = cpu_to_be32(errcode);
- 
--	jbd2_write_superblock(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_write_superblock(journal, REQ_FUA);
- }
- EXPORT_SYMBOL(jbd2_journal_update_sb_errno);
- 
-@@ -2166,8 +2169,7 @@ int jbd2_journal_destroy(journal_t *journal)
- 				++journal->j_transaction_sequence;
- 			write_unlock(&journal->j_state_lock);
- 
--			jbd2_mark_journal_empty(journal,
--					REQ_SYNC | REQ_PREFLUSH | REQ_FUA);
-+			jbd2_mark_journal_empty(journal, REQ_PREFLUSH | REQ_FUA);
- 			mutex_unlock(&journal->j_checkpoint_mutex);
- 		} else
- 			err = -EIO;
-@@ -2468,7 +2470,7 @@ int jbd2_journal_flush(journal_t *journal, unsigned int flags)
- 	 * the magic code for a fully-recovered superblock.  Any future
- 	 * commits of data to the journal will restore the current
- 	 * s_start value. */
--	jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+	jbd2_mark_journal_empty(journal, REQ_FUA);
- 
- 	if (flags)
- 		err = __jbd2_journal_erase(journal, flags);
-@@ -2514,7 +2516,7 @@ int jbd2_journal_wipe(journal_t *journal, int write)
- 	if (write) {
- 		/* Lock to make assertions happy... */
- 		mutex_lock_io(&journal->j_checkpoint_mutex);
--		jbd2_mark_journal_empty(journal, REQ_SYNC | REQ_FUA);
-+		jbd2_mark_journal_empty(journal, REQ_FUA);
- 		mutex_unlock(&journal->j_checkpoint_mutex);
- 	}
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 52772c826c868..0fc6c1f51262f 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1374,6 +1374,9 @@ JBD2_FEATURE_INCOMPAT_FUNCS(csum2,		CSUM_V2)
- JBD2_FEATURE_INCOMPAT_FUNCS(csum3,		CSUM_V3)
- JBD2_FEATURE_INCOMPAT_FUNCS(fast_commit,	FAST_COMMIT)
- 
-+/* Journal high priority write IO operation flags */
-+#define JBD2_JOURNAL_REQ_FLAGS		(REQ_META | REQ_SYNC | REQ_IDLE)
-+
- /*
-  * Journal flag definitions
-  */
+@@ -270,6 +270,7 @@ static int journal_finish_inode_data_buffers(journal_t *journal,
+ 			if (!ret)
+ 				ret = err;
+ 		}
++		cond_resched();
+ 		spin_lock(&journal->j_list_lock);
+ 		jinode->i_flags &= ~JI_COMMIT_RUNNING;
+ 		smp_mb();
 -- 
 2.43.0
 
