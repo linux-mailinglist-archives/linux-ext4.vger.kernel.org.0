@@ -1,119 +1,64 @@
-Return-Path: <linux-ext4+bounces-501-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-502-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E5D78182F0
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 09:03:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C4C7B8193E9
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 23:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F29FA2804E4
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 08:03:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 651DF1F27256
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 22:55:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DCCF9F8;
-	Tue, 19 Dec 2023 08:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F6ED3D0AF;
+	Tue, 19 Dec 2023 22:55:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t6zZn2z3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B38C11C9F;
-	Tue, 19 Dec 2023 08:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SvTgH39gqzsS0J;
-	Tue, 19 Dec 2023 16:02:03 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0C08318001E;
-	Tue, 19 Dec 2023 16:02:19 +0800 (CST)
-Received: from [10.174.177.174] (10.174.177.174) by
- dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 16:02:18 +0800
-Message-ID: <9db31834-cbd3-c60a-3048-ef57143d8e55@huawei.com>
-Date: Tue, 19 Dec 2023 16:02:18 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B222240BE2;
+	Tue, 19 Dec 2023 22:55:12 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC1D1C433C8;
+	Tue, 19 Dec 2023 22:55:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703026512;
+	bh=MW5t6/exIbCttjI/uoABa/B9xpu348NYEe4YO75s+Hk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=t6zZn2z3m7PdGkeWMUltfF2jJFqBL6orYuCfJw1xhZ7RA25lwXFH/1pVdS4up5/e8
+	 4B1wnBM+QeQRGx3LWxmyq+L99bwdG5m4n/SOH7ysDpRzQWaSIS0RAPVM69MiAAgoOE
+	 hlBhWcWmFDk4EwA61LrkLCzGCtnPBZ5/Am0i3qUA/0yFWhahY/K36uAvaydE/RRb46
+	 kJxVzRlvDiWn/d78ZH3Gt/D6briDMOg4ITNVxWD6xuI0KfY261MHKf7Fexi0UUJLw9
+	 5RcgKa05SvuogZjIhQX7mpGSbzHy+9xVQpOQ0kvKLwUjogXRJCIf+goh1SUfud+x2J
+	 H3UzDIDFRZh7Q==
+Date: Tue, 19 Dec 2023 15:55:09 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: viro@zeniv.linux.org.uk, jaegeuk@kernel.org, tytso@mit.edu,
+	linux-f2fs-devel@lists.sourceforge.net, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 3/8] libfs: Merge encrypted_ci_dentry_ops and
+ ci_dentry_ops
+Message-ID: <20231219225509.GE38652@quark.localdomain>
+References: <20231215211608.6449-1-krisman@suse.de>
+ <20231215211608.6449-4-krisman@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH 4/4] ext4: avoid dividing by 0 in
- mb_update_avg_fragment_size() when block bitmap corrupt
-Content-Language: en-US
-To: Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20231218141814.1477338-1-libaokun1@huawei.com>
- <20231218141814.1477338-5-libaokun1@huawei.com>
- <20231218144342.2we3j2dtyedulfga@quack3>
- <20231218150905.llu5tgjgen4nxthq@quack3>
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231218150905.llu5tgjgen4nxthq@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231215211608.6449-4-krisman@suse.de>
 
-On 2023/12/18 23:09, Jan Kara wrote:
-> On Mon 18-12-23 15:43:42, Jan Kara wrote:
->> On Mon 18-12-23 22:18:14, Baokun Li wrote:
->>> When bb_free is not 0 but bb_fragments is 0, return directly to avoid
->>> system crash due to division by zero.
->> How could this possibly happen? bb_fragments is the number of free space
->> extents and bb_free is the number of free blocks. No free space extents =>
->> no free blocks seems pretty obvious? You can see the logic in
->> ext4_mb_generate_buddy()...
-> Oh, I see. This is probably about "bitmap corrupted case". But still both
-> allocation and freeing of blocks shouldn't operate on bitmaps marked as
-> corrupted so this should not happen?
->
-> 								Honza
-Yes, we should make sure that we don't allocate or free blocks in
-groups where the block bitmap has been marked as corrupt, but
-there are still some issues here:
+On Fri, Dec 15, 2023 at 04:16:03PM -0500, Gabriel Krisman Bertazi wrote:
+> +#if defined(CONFIG_FS_ENCRYPTION)
+> +	.d_revalidate = fscrypt_d_revalidate,
+> +#endif
 
-1. When a block bitmap is found to be corrupted, ext4_grp_locked_error()
-is always called first, and only after that the block bitmap of the group
-is marked as corrupted. In ext4_grp_locked_error(), the group may
-be unlocked, and then other processes may be able to access the
-corrupted bitmap. In this case, we can just put the marking of
-corruption before ext4_grp_locked_error().
+#ifdef CONFIG_FS_ENCRYPTION, since it's a bool.
 
-2. ext4_free_blocks() finds a corrupt bitmap can just return and do
-nothing, because there is no problem with not freeing an exception
-block. But mb_mark_used() has no logic for determining if a block
-bitmap is corrupt, and its caller has no error handling logic, so
-mb_mark_used() needs its caller to make sure that it doesn't allocate
-blocks in a group with a corrupted block bitmap (which is why it
-added the judgment in patch 2). However, it is possible to unlock group
-between determining whether the group is corrupt and actually calling
-mb_mark_used() to use those blocks. For example, when calling
-mb_mark_used() in ext4_mb_try_best_found(), we are determining
-whether the group's block bitmap is corrupted or not in the previous
-ext4_mb_good_group(), but we are not determining it again when using
-the blocks in ext4_mb_try_best_found(), at which point we may be
-modifying the corrupted block bitmap.
-
-3. Determine if a block bitmap is corrupted outside of a group lock
-in ext4_mb_find_by_goal().
-
-4. In ext4_mb_check_limits(), it may be possible to use the ac_b_ex
-found in group 0 while holding a lock in group 1.
-
-In addition to the above, there may be some corner cases that cause
-inconsistencies, so here we determine if bb_fragments is 0 to avoid a
-crash due to division by zero. Perhaps we could just replace
-grp->bb_free == 0 with grp->bb_fragments == 0, which wouldn't look
-so strange.
-
-Thanks!
--- 
-With Best Regards,
-Baokun Li
-.
+- Eric
 
