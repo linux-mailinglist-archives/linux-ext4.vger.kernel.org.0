@@ -1,37 +1,37 @@
-Return-Path: <linux-ext4+bounces-500-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-501-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44A3D817FC7
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 03:29:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E5D78182F0
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 09:03:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D91E01F23B72
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 02:29:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F29FA2804E4
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Dec 2023 08:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 938BB441B;
-	Tue, 19 Dec 2023 02:29:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8DCCF9F8;
+	Tue, 19 Dec 2023 08:02:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E06554409;
-	Tue, 19 Dec 2023 02:29:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B38C11C9F;
+	Tue, 19 Dec 2023 08:02:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4SvLHB6Mh1zMnyZ;
-	Tue, 19 Dec 2023 10:29:10 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SvTgH39gqzsS0J;
+	Tue, 19 Dec 2023 16:02:03 +0800 (CST)
 Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8085814068C;
-	Tue, 19 Dec 2023 10:29:09 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 0C08318001E;
+	Tue, 19 Dec 2023 16:02:19 +0800 (CST)
 Received: from [10.174.177.174] (10.174.177.174) by
  dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Dec 2023 10:29:08 +0800
-Message-ID: <7e0f5796-99eb-867d-8885-8df553de8df9@huawei.com>
-Date: Tue, 19 Dec 2023 10:29:08 +0800
+ 15.1.2507.35; Tue, 19 Dec 2023 16:02:18 +0800
+Message-ID: <9db31834-cbd3-c60a-3048-ef57143d8e55@huawei.com>
+Date: Tue, 19 Dec 2023 16:02:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -40,105 +40,80 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
  Thunderbird/102.1.2
-Subject: Re: [PATCH 3/4] ext4: avoid bb_free and bb_fragments inconsistency in
- mb_free_blocks()
+Subject: Re: [PATCH 4/4] ext4: avoid dividing by 0 in
+ mb_update_avg_fragment_size() when block bitmap corrupt
 Content-Language: en-US
-To: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
-CC: <linux-ext4@vger.kernel.org>, <adilger.kernel@dilger.ca>,
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
 	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
 	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
 	<stable@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
 References: <20231218141814.1477338-1-libaokun1@huawei.com>
- <20231218141814.1477338-4-libaokun1@huawei.com>
- <20231218151455.yqph44iz4ihsujz5@quack3>
+ <20231218141814.1477338-5-libaokun1@huawei.com>
+ <20231218144342.2we3j2dtyedulfga@quack3>
+ <20231218150905.llu5tgjgen4nxthq@quack3>
 From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20231218151455.yqph44iz4ihsujz5@quack3>
+In-Reply-To: <20231218150905.llu5tgjgen4nxthq@quack3>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500021.china.huawei.com (7.185.36.21)
 
-On 2023/12/18 23:14, Jan Kara wrote:
-> On Mon 18-12-23 22:18:13, Baokun Li wrote:
->> After updating bb_free in mb_free_blocks, it is possible to return without
->> updating bb_fragments because the block being freed is found to have
->> already been freed, which leads to inconsistency between bb_free and
->> bb_fragments.
->>
->> Since the group may be unlocked in ext4_grp_locked_error(), this can lead
->> to problems such as dividing by zero when calculating the average fragment
->> length. Therefore, to ensure consistency, move the update of bb_free to
->> after the block double-free check.
->>
->> Fixes: eabe0444df90 ("ext4: speed-up releasing blocks on commit")
->> CC: stable@vger.kernel.org # 3.10
->> Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> I agree there's no point in updating the allocation info if the bitmap is
-> corrupted. We will not try to allocate (or free) blocks in that group
-> anymore. I'm just a bit unsure about the EXT4_FC_REPLAY state where we
-> don't mark the bitmap as corrupted although some blocks were already marked
-> as freed. So in this case the free space statistics tracking will go
-> permanently wrong. I'm kind of wondering in which case does fast-commit
-> free already freed blocks. Ted, any idea?
+On 2023/12/18 23:09, Jan Kara wrote:
+> On Mon 18-12-23 15:43:42, Jan Kara wrote:
+>> On Mon 18-12-23 22:18:14, Baokun Li wrote:
+>>> When bb_free is not 0 but bb_fragments is 0, return directly to avoid
+>>> system crash due to division by zero.
+>> How could this possibly happen? bb_fragments is the number of free space
+>> extents and bb_free is the number of free blocks. No free space extents =>
+>> no free blocks seems pretty obvious? You can see the logic in
+>> ext4_mb_generate_buddy()...
+> Oh, I see. This is probably about "bitmap corrupted case". But still both
+> allocation and freeing of blocks shouldn't operate on bitmaps marked as
+> corrupted so this should not happen?
 >
 > 								Honza
-Some additional information, this judgment was introduced in
-commit 8016e29f4362 ("ext4: fast commit recovery path") in v5.10-rc1,
-at which point mb_regenerate_buddy() was called to regenerate the
-buddy when it was found to be freeing a block that had already been
-freed, so there was no problem. Until v5.11-rc1 commit 6bd97bf273bd
-("ext4: remove redundant mb_regenerate_buddy()") removes the logic
-to regenerate the buddy, it looks like the free space statistics will
-remain wrong. If this normal scenario exists, perhaps buddy should
-be regenerated here?
+Yes, we should make sure that we don't allocate or free blocks in
+groups where the block bitmap has been marked as corrupt, but
+there are still some issues here:
 
-Thanks,
-Baokun
->> ---
->>   fs/ext4/mballoc.c | 13 ++++++-------
->>   1 file changed, 6 insertions(+), 7 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index a95fa6e2b0f9..2fbee0f0f5c3 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -1892,11 +1892,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   	mb_check_buddy(e4b);
->>   	mb_free_blocks_double(inode, e4b, first, count);
->>   
->> -	this_cpu_inc(discard_pa_seq);
->> -	e4b->bd_info->bb_free += count;
->> -	if (first < e4b->bd_info->bb_first_free)
->> -		e4b->bd_info->bb_first_free = first;
->> -
->>   	/* access memory sequentially: check left neighbour,
->>   	 * clear range and then check right neighbour
->>   	 */
->> @@ -1922,9 +1917,14 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   				sb, e4b->bd_group,
->>   				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
->>   		}
->> -		goto done;
->> +		return;
->>   	}
->>   
->> +	this_cpu_inc(discard_pa_seq);
->> +	e4b->bd_info->bb_free += count;
->> +	if (first < e4b->bd_info->bb_first_free)
->> +		e4b->bd_info->bb_first_free = first;
->> +
->>   	/* let's maintain fragments counter */
->>   	if (left_is_free && right_is_free)
->>   		e4b->bd_info->bb_fragments--;
->> @@ -1949,7 +1949,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
->>   	if (first <= last)
->>   		mb_buddy_mark_free(e4b, first >> 1, last >> 1);
->>   
->> -done:
->>   	mb_set_largest_free_order(sb, e4b->bd_info);
->>   	mb_update_avg_fragment_size(sb, e4b->bd_info);
->>   	mb_check_buddy(e4b);
->> -- 
->> 2.31.1
->>
+1. When a block bitmap is found to be corrupted, ext4_grp_locked_error()
+is always called first, and only after that the block bitmap of the group
+is marked as corrupted. In ext4_grp_locked_error(), the group may
+be unlocked, and then other processes may be able to access the
+corrupted bitmap. In this case, we can just put the marking of
+corruption before ext4_grp_locked_error().
+
+2. ext4_free_blocks() finds a corrupt bitmap can just return and do
+nothing, because there is no problem with not freeing an exception
+block. But mb_mark_used() has no logic for determining if a block
+bitmap is corrupt, and its caller has no error handling logic, so
+mb_mark_used() needs its caller to make sure that it doesn't allocate
+blocks in a group with a corrupted block bitmap (which is why it
+added the judgment in patch 2). However, it is possible to unlock group
+between determining whether the group is corrupt and actually calling
+mb_mark_used() to use those blocks. For example, when calling
+mb_mark_used() in ext4_mb_try_best_found(), we are determining
+whether the group's block bitmap is corrupted or not in the previous
+ext4_mb_good_group(), but we are not determining it again when using
+the blocks in ext4_mb_try_best_found(), at which point we may be
+modifying the corrupted block bitmap.
+
+3. Determine if a block bitmap is corrupted outside of a group lock
+in ext4_mb_find_by_goal().
+
+4. In ext4_mb_check_limits(), it may be possible to use the ac_b_ex
+found in group 0 while holding a lock in group 1.
+
+In addition to the above, there may be some corner cases that cause
+inconsistencies, so here we determine if bb_fragments is 0 to avoid a
+crash due to division by zero. Perhaps we could just replace
+grp->bb_free == 0 with grp->bb_fragments == 0, which wouldn't look
+so strange.
+
+Thanks!
+-- 
+With Best Regards,
+Baokun Li
+.
 
