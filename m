@@ -1,44 +1,44 @@
-Return-Path: <linux-ext4+bounces-538-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-539-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 389E081BA23
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Dec 2023 16:04:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2ADA581BA24
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Dec 2023 16:04:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7EA428B77C
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Dec 2023 15:04:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB8FE28B614
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Dec 2023 15:04:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A381B5822D;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70B458231;
 	Thu, 21 Dec 2023 15:02:50 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B021955E71;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0203255E77;
 	Thu, 21 Dec 2023 15:02:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Swttc05bVzvSHn;
-	Thu, 21 Dec 2023 23:01:44 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4SwttG23vZz1R5cP;
+	Thu, 21 Dec 2023 23:01:26 +0800 (CST)
 Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id B490C180069;
-	Thu, 21 Dec 2023 23:02:39 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 433D51A0190;
+	Thu, 21 Dec 2023 23:02:41 +0800 (CST)
 Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
  (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Dec
- 2023 23:02:39 +0800
+ 2023 23:02:40 +0800
 From: Baokun Li <libaokun1@huawei.com>
 To: <linux-ext4@vger.kernel.org>
 CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
 	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
 	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>, <stable@vger.kernel.org>
-Subject: [PATCH v2 4/8] ext4: avoid bb_free and bb_fragments inconsistency in mb_free_blocks()
-Date: Thu, 21 Dec 2023 23:05:54 +0800
-Message-ID: <20231221150558.2740823-5-libaokun1@huawei.com>
+	<libaokun1@huawei.com>
+Subject: [PATCH v2 7/8] ext4: avoid allocating blocks from corrupted group in ext4_mb_find_by_goal()
+Date: Thu, 21 Dec 2023 23:05:57 +0800
+Message-ID: <20231221150558.2740823-8-libaokun1@huawei.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20231221150558.2740823-1-libaokun1@huawei.com>
 References: <20231221150558.2740823-1-libaokun1@huawei.com>
@@ -53,68 +53,42 @@ Content-Type: text/plain
 X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
  dggpeml500021.china.huawei.com (7.185.36.21)
 
-After updating bb_free in mb_free_blocks, it is possible to return without
-updating bb_fragments because the block being freed is found to have
-already been freed, which leads to inconsistency between bb_free and
-bb_fragments.
+Places the logic for checking if the group's block bitmap is corrupt under
+the protection of the group lock to avoid allocating blocks from the group
+with a corrupted block bitmap.
 
-Since the group may be unlocked in ext4_grp_locked_error(), this can lead
-to problems such as dividing by zero when calculating the average fragment
-length. Hence move the update of bb_free to after the block double-free
-check guarantees that the corresponding statistics are updated only after
-the core block bitmap is modified.
-
-Fixes: eabe0444df90 ("ext4: speed-up releasing blocks on commit")
-CC: stable@vger.kernel.org # 3.10
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/mballoc.c | 15 ++++++++-------
- 1 file changed, 8 insertions(+), 7 deletions(-)
+ fs/ext4/mballoc.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index f6131ba514c8..1f15774971d7 100644
+index 2bb29f0077bd..b862ca2750fd 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -1910,11 +1910,6 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- 	mb_check_buddy(e4b);
- 	mb_free_blocks_double(inode, e4b, first, count);
+@@ -2340,12 +2340,10 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
+ 	if (err)
+ 		return err;
  
--	this_cpu_inc(discard_pa_seq);
--	e4b->bd_info->bb_free += count;
--	if (first < e4b->bd_info->bb_first_free)
--		e4b->bd_info->bb_first_free = first;
+-	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info))) {
+-		ext4_mb_unload_buddy(e4b);
+-		return 0;
+-	}
 -
- 	/* access memory sequentially: check left neighbour,
- 	 * clear range and then check right neighbour
- 	 */
-@@ -1941,10 +1936,16 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- 				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 		} else {
- 			mb_regenerate_buddy(e4b);
-+			goto check;
- 		}
--		goto done;
-+		return;
- 	}
- 
-+	this_cpu_inc(discard_pa_seq);
-+	e4b->bd_info->bb_free += count;
-+	if (first < e4b->bd_info->bb_first_free)
-+		e4b->bd_info->bb_first_free = first;
+ 	ext4_lock_group(ac->ac_sb, group);
++	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
++		goto out;
 +
- 	/* let's maintain fragments counter */
- 	if (left_is_free && right_is_free)
- 		e4b->bd_info->bb_fragments--;
-@@ -1969,9 +1970,9 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- 	if (first <= last)
- 		mb_buddy_mark_free(e4b, first >> 1, last >> 1);
- 
--done:
- 	mb_set_largest_free_order(sb, e4b->bd_info);
- 	mb_update_avg_fragment_size(sb, e4b->bd_info);
-+check:
- 	mb_check_buddy(e4b);
- }
+ 	max = mb_find_extent(e4b, ac->ac_g_ex.fe_start,
+ 			     ac->ac_g_ex.fe_len, &ex);
+ 	ex.fe_logical = 0xDEADFA11; /* debug value */
+@@ -2378,6 +2376,7 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
+ 		ac->ac_b_ex = ex;
+ 		ext4_mb_use_best_found(ac, e4b);
+ 	}
++out:
+ 	ext4_unlock_group(ac->ac_sb, group);
+ 	ext4_mb_unload_buddy(e4b);
  
 -- 
 2.31.1
