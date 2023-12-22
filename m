@@ -1,151 +1,90 @@
-Return-Path: <linux-ext4+bounces-540-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-541-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55F4081BA27
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Dec 2023 16:05:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B0A481C233
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 01:07:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 826411C25B1D
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Dec 2023 15:05:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3431F2585D
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 00:07:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8DCF4627F0;
-	Thu, 21 Dec 2023 15:02:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D279338D;
+	Fri, 22 Dec 2023 00:07:15 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF4CD37168;
-	Thu, 21 Dec 2023 15:02:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.254])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4SwtvM1GGXzsSd5;
-	Thu, 21 Dec 2023 23:02:23 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id BD5B218001D;
-	Thu, 21 Dec 2023 23:02:41 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Thu, 21 Dec
- 2023 23:02:41 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>
-Subject: [PATCH v2 8/8] ext4: mark the group block bitmap as corrupted before reporting an error
-Date: Thu, 21 Dec 2023 23:05:58 +0800
-Message-ID: <20231221150558.2740823-9-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20231221150558.2740823-1-libaokun1@huawei.com>
-References: <20231221150558.2740823-1-libaokun1@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8391873
+	for <linux-ext4@vger.kernel.org>; Fri, 22 Dec 2023 00:07:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fcbbd1dbaso13009075ab.0
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Dec 2023 16:07:13 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1703203633; x=1703808433;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+        b=EZjLHlppna34bGdJ7GacstItNLYxZcGvYULj+vJ1Lr9WgtFBlTbVr+v32I2EnTiSEf
+         hJjytBVvr8kV/wjSZArnLYYABmRckU7RtJBkc46RFO1XMo+R0O8WNAg6tJwIBeSExb3h
+         C9UQJshcPaSugM7XwQHUCLs3L2G5OaNT5DNRmS5rsJnesAPDC3795yzhmaOKQLqCoIpT
+         mwoUaX0lfIOZ2Pbr5t1O8cPY+OSUmIE14I8dbr/xLnUbJQFhhxro7wU0/M1MHenS+ZcA
+         SXEmIiXLDUE62/ZXfwxLmXZNgmDzzMBfXRLIaBbOcf5LKN8QfGHqx5+Tz+mySd7XRiIb
+         Op2g==
+X-Gm-Message-State: AOJu0Yw8dE/cmBXQv4HP3OTUfs1COMahE+oFm2uZW3+rkGYnEv5lP8lD
+	V/NEhEbgfoiZIa/QmYa0rOn4JCSCnOBXCGDs83waRVzPTN9H
+X-Google-Smtp-Source: AGHT+IGp4EqZUrHByv3JGf43xAerJwTcxk7SI0VR2iqYxAwG4CXwcStL3oz6hWVlRYsEgalewjyBe1u+W1Enno9VvFUHqbv56nQK
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-Received: by 2002:a05:6e02:1d0c:b0:35f:d4dc:1b1e with SMTP id
+ i12-20020a056e021d0c00b0035fd4dc1b1emr54224ila.5.1703203633408; Thu, 21 Dec
+ 2023 16:07:13 -0800 (PST)
+Date: Thu, 21 Dec 2023 16:07:13 -0800
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008cb1ee060d0dffa7@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Otherwise unlocking the group in ext4_grp_locked_error may allow other
-processes to modify the core block bitmap that is known to be corrupt.
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
+
+#syz fix: exact-commit-title
+
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+
 ---
- fs/ext4/mballoc.c | 23 +++++++++++------------
- 1 file changed, 11 insertions(+), 12 deletions(-)
+[1] I expect the commit to be present in:
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index b862ca2750fd..c43eefebdaa3 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -564,14 +564,14 @@ static void mb_free_blocks_double(struct inode *inode, struct ext4_buddy *e4b,
- 
- 			blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
- 			blocknr += EXT4_C2B(EXT4_SB(sb), first + i);
-+			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(sb, e4b->bd_group,
- 					      inode ? inode->i_ino : 0,
- 					      blocknr,
- 					      "freeing block already freed "
- 					      "(bit %u)",
- 					      first + i);
--			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 		}
- 		mb_clear_bit(first + i, e4b->bd_info->bb_bitmap);
- 	}
-@@ -1926,14 +1926,13 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
- 		blocknr = ext4_group_first_block_no(sb, e4b->bd_group);
- 		blocknr += EXT4_C2B(sbi, block);
- 		if (!(sbi->s_mount_state & EXT4_FC_REPLAY)) {
-+			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(sb, e4b->bd_group,
- 					      inode ? inode->i_ino : 0,
- 					      blocknr,
- 					      "freeing already freed block (bit %u); block bitmap corrupt.",
- 					      block);
--			ext4_mark_group_bitmap_corrupted(
--				sb, e4b->bd_group,
--				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 		} else {
- 			mb_regenerate_buddy(e4b);
- 			goto check;
-@@ -2410,12 +2409,12 @@ void ext4_mb_simple_scan_group(struct ext4_allocation_context *ac,
- 
- 		k = mb_find_next_zero_bit(buddy, max, 0);
- 		if (k >= max) {
-+			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
-+					e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(ac->ac_sb, e4b->bd_group, 0, 0,
- 				"%d free clusters of order %d. But found 0",
- 				grp->bb_counters[i], i);
--			ext4_mark_group_bitmap_corrupted(ac->ac_sb,
--					 e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			break;
- 		}
- 		ac->ac_found++;
-@@ -2466,12 +2465,12 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 			 * free blocks even though group info says we
- 			 * have free blocks
- 			 */
-+			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
- 					"group info. But bitmap says 0",
- 					free);
--			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			break;
- 		}
- 
-@@ -2497,12 +2496,12 @@ void ext4_mb_complex_scan_group(struct ext4_allocation_context *ac,
- 		if (WARN_ON(ex.fe_len <= 0))
- 			break;
- 		if (free < ex.fe_len) {
-+			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
-+					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			ext4_grp_locked_error(sb, e4b->bd_group, 0, 0,
- 					"%d free clusters as per "
- 					"group info. But got %d blocks",
- 					free, ex.fe_len);
--			ext4_mark_group_bitmap_corrupted(sb, e4b->bd_group,
--					EXT4_GROUP_INFO_BBITMAP_CORRUPT);
- 			/*
- 			 * The number of free blocks differs. This mostly
- 			 * indicate that the bitmap is corrupt. So exit
--- 
-2.31.1
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
