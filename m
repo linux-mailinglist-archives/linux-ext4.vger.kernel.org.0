@@ -1,90 +1,92 @@
-Return-Path: <linux-ext4+bounces-541-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-542-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B0A481C233
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 01:07:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A5D881C4CF
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 06:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B3431F2585D
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 00:07:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC6CB1C24EA4
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 05:58:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D279338D;
-	Fri, 22 Dec 2023 00:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401DA63A4;
+	Fri, 22 Dec 2023 05:58:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GQy7cwG1"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8391873
-	for <linux-ext4@vger.kernel.org>; Fri, 22 Dec 2023 00:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fcbbd1dbaso13009075ab.0
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Dec 2023 16:07:13 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1703203633; x=1703808433;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-        b=EZjLHlppna34bGdJ7GacstItNLYxZcGvYULj+vJ1Lr9WgtFBlTbVr+v32I2EnTiSEf
-         hJjytBVvr8kV/wjSZArnLYYABmRckU7RtJBkc46RFO1XMo+R0O8WNAg6tJwIBeSExb3h
-         C9UQJshcPaSugM7XwQHUCLs3L2G5OaNT5DNRmS5rsJnesAPDC3795yzhmaOKQLqCoIpT
-         mwoUaX0lfIOZ2Pbr5t1O8cPY+OSUmIE14I8dbr/xLnUbJQFhhxro7wU0/M1MHenS+ZcA
-         SXEmIiXLDUE62/ZXfwxLmXZNgmDzzMBfXRLIaBbOcf5LKN8QfGHqx5+Tz+mySd7XRiIb
-         Op2g==
-X-Gm-Message-State: AOJu0Yw8dE/cmBXQv4HP3OTUfs1COMahE+oFm2uZW3+rkGYnEv5lP8lD
-	V/NEhEbgfoiZIa/QmYa0rOn4JCSCnOBXCGDs83waRVzPTN9H
-X-Google-Smtp-Source: AGHT+IGp4EqZUrHByv3JGf43xAerJwTcxk7SI0VR2iqYxAwG4CXwcStL3oz6hWVlRYsEgalewjyBe1u+W1Enno9VvFUHqbv56nQK
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DDC611B;
+	Fri, 22 Dec 2023 05:58:35 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99CFFC433C8;
+	Fri, 22 Dec 2023 05:58:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1703224715;
+	bh=koP/w5X1JGxFG62V66WQtMlBBjy2n7pRoumVVE4mK80=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GQy7cwG1M88/K4d1kfWky7jNIGI7tpT0spjp/jAvD4QZp16fVYGC9b1SZ2QKclslh
+	 Ku2WJTeg+6Fsa9rWOY0g7+z84e3sazJAIZxbMKPas3Omckh3RVzp337rdShFREn+xy
+	 2BYpycRrCGrXOnEJUFK4ddmQ7W6rlm+E8vdh5AxqnGhVJmPKTPeRUCTbclKMvatjlb
+	 ePwzcXji3riCebA0kDYWjA7mk+DO9O44vDAd+GZr480nTlD4J503jBEpA8jnkBYRVe
+	 9SqQzm+J9gU3vQ/VPwLpwE8Rsc7Cgg19XytcVkXbSlgKb9JXT/prBp/3BiRkepZOVv
+	 ZQS3xWLM2ciKg==
+Date: Thu, 21 Dec 2023 23:58:30 -0600
+From: Eric Biggers <ebiggers@kernel.org>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Gabriel Krisman Bertazi <krisman@suse.de>, jaegeuk@kernel.org,
+	tytso@mit.edu, linux-f2fs-devel@lists.sourceforge.net,
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2 8/8] fscrypt: Move d_revalidate configuration back
+ into fscrypt
+Message-ID: <20231222055830.GA97172@quark.localdomain>
+References: <20231215211608.6449-1-krisman@suse.de>
+ <20231215211608.6449-9-krisman@suse.de>
+ <20231221073940.GC1674809@ZenIV>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d0c:b0:35f:d4dc:1b1e with SMTP id
- i12-20020a056e021d0c00b0035fd4dc1b1emr54224ila.5.1703203633408; Thu, 21 Dec
- 2023 16:07:13 -0800 (PST)
-Date: Thu, 21 Dec 2023 16:07:13 -0800
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000008cb1ee060d0dffa7@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231221073940.GC1674809@ZenIV>
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Thu, Dec 21, 2023 at 07:39:40AM +0000, Al Viro wrote:
+> Hmm...  Could we simply set ->s_d_op to &fscrypt_dentry_ops in non-ci case
+> *AND* have __fscrypt_prepare_lookup() clear DCACHE_OP_REVALIDATE in case
+> when it's not setting DCACHE_NOKEY_NAME and ->d_op->d_revalidate is
+> equal to fscrypt_d_revalidate?  I mean,
+> 
+> 	spin_lock(&dentry->d_lock);
+>         if (fname->is_nokey_name)
+>                 dentry->d_flags |= DCACHE_NOKEY_NAME;
+>         else if (dentry->d_flags & DCACHE_OP_REVALIDATE &&
+> 		 dentry->d_op->d_revalidate == fscrypt_d_revalidate)
+> 		dentry->d_flags &= ~DCACHE_OP_REVALIDATE;
+> 	spin_unlock(&dentry->d_lock);
+> 
+> here + always set ->s_d_op for ext4 and friends (conditional upon
+> the CONFIG_UNICODE).
+> 
+> No encryption - fine, you get ->is_nokey_name false from the very
+> beginning, DCACHE_OP_REVALIDATE is cleared and VFS won't ever call
+> ->d_revalidate(); not even the first time.  
+> 
+> Yes, you pay minimal price in dentry_unlink_inode() when we hit
+>         if (dentry->d_op && dentry->d_op->d_iput)
+> and bugger off after the second fetch instead of the first one.
+> I would be quite surprised if it turns out to be measurable,
+> but if it is, we can always add DCACHE_OP_IPUT to flags.
+> Similar for ->d_op->d_release (called in the end of
+> __dentry_kill()).  Again, that only makes sense if we get
+> a measurable overhead from that.
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+fscrypt_prepare_lookup() handles unencrypted directories inline, without calling
+__fscrypt_prepare_lookup() which is only for encrypted directories.  So the
+logic to clear DCACHE_OP_REVALIDATE would need to be there too.
 
-#syz fix: exact-commit-title
-
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
-
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+- Eric
 
