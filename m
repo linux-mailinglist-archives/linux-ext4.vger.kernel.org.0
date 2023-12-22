@@ -1,92 +1,81 @@
-Return-Path: <linux-ext4+bounces-542-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-543-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A5D881C4CF
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 06:58:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFA1881CF63
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 21:54:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CC6CB1C24EA4
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 05:58:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC9F0B216A3
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Dec 2023 20:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 401DA63A4;
-	Fri, 22 Dec 2023 05:58:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA29F2C1A7;
+	Fri, 22 Dec 2023 20:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GQy7cwG1"
+	dkim=pass (2048-bit key) header.d=fisica.ufpr.br header.i=@fisica.ufpr.br header.b="tKCqG+cS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from hoggar.fisica.ufpr.br (hoggar.fisica.ufpr.br [200.238.171.242])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7DDC611B;
-	Fri, 22 Dec 2023 05:58:35 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99CFFC433C8;
-	Fri, 22 Dec 2023 05:58:33 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703224715;
-	bh=koP/w5X1JGxFG62V66WQtMlBBjy2n7pRoumVVE4mK80=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GQy7cwG1M88/K4d1kfWky7jNIGI7tpT0spjp/jAvD4QZp16fVYGC9b1SZ2QKclslh
-	 Ku2WJTeg+6Fsa9rWOY0g7+z84e3sazJAIZxbMKPas3Omckh3RVzp337rdShFREn+xy
-	 2BYpycRrCGrXOnEJUFK4ddmQ7W6rlm+E8vdh5AxqnGhVJmPKTPeRUCTbclKMvatjlb
-	 ePwzcXji3riCebA0kDYWjA7mk+DO9O44vDAd+GZr480nTlD4J503jBEpA8jnkBYRVe
-	 9SqQzm+J9gU3vQ/VPwLpwE8Rsc7Cgg19XytcVkXbSlgKb9JXT/prBp/3BiRkepZOVv
-	 ZQS3xWLM2ciKg==
-Date: Thu, 21 Dec 2023 23:58:30 -0600
-From: Eric Biggers <ebiggers@kernel.org>
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Gabriel Krisman Bertazi <krisman@suse.de>, jaegeuk@kernel.org,
-	tytso@mit.edu, linux-f2fs-devel@lists.sourceforge.net,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2 8/8] fscrypt: Move d_revalidate configuration back
- into fscrypt
-Message-ID: <20231222055830.GA97172@quark.localdomain>
-References: <20231215211608.6449-1-krisman@suse.de>
- <20231215211608.6449-9-krisman@suse.de>
- <20231221073940.GC1674809@ZenIV>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F472EAE1;
+	Fri, 22 Dec 2023 20:54:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fisica.ufpr.br
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fisica.ufpr.br
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=fisica.ufpr.br;
+	s=201705; t=1703278082;
+	bh=q3OzFWPO+ENYkqlKVON5NJjRKEPNk55kel2L5hD2Hy4=;
+	h=Date:From:To:Subject:From;
+	b=tKCqG+cSTYg034mNMHyiwb+uOmqDyE4SvLD0SbyrF9IPT759RNU0y9r+6qV+Dny6D
+	 +Hi+OcJqeiyXwN9iwzp9zmj+R3DsWkJiJAvuJ5zUGJ7DhUqbvAwOIpJ24p0zoCqvdn
+	 +hlwcIamQMiBsDOPs539URbcn1z4DrU2ecyK//3ktzP3lToaOwkRZtIz2oYCQdcUo+
+	 M4t41GEv5Sdxw41Qsml9TcasJ64EPjSXJAQp7LtEmaOHWGF5crM8vRVLfUO9yAFHyx
+	 o2cdVldQJX1wuKl4NyT3oKIaXefK6MisqRD65xUg0Bh6eCPG2R+7RTKv7yQVJoMHiC
+	 TnKaHWDWpigNw==
+Received: by hoggar.fisica.ufpr.br (Postfix, from userid 577)
+	id 11BD59A0B4A46; Fri, 22 Dec 2023 17:48:01 -0300 (-03)
+Date: Fri, 22 Dec 2023 17:48:01 -0300
+From: Carlos Carvalho <carlos@fisica.ufpr.br>
+To: linux-ext4@vger.kernel.org, linux-raid@vger.kernel.org
+Subject: parity raid and ext4 get stuck in writes
+Message-ID: <ZYX2AS8isUHtbMXe@fisica.ufpr.br>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20231221073940.GC1674809@ZenIV>
 
-On Thu, Dec 21, 2023 at 07:39:40AM +0000, Al Viro wrote:
-> Hmm...  Could we simply set ->s_d_op to &fscrypt_dentry_ops in non-ci case
-> *AND* have __fscrypt_prepare_lookup() clear DCACHE_OP_REVALIDATE in case
-> when it's not setting DCACHE_NOKEY_NAME and ->d_op->d_revalidate is
-> equal to fscrypt_d_revalidate?  I mean,
-> 
-> 	spin_lock(&dentry->d_lock);
->         if (fname->is_nokey_name)
->                 dentry->d_flags |= DCACHE_NOKEY_NAME;
->         else if (dentry->d_flags & DCACHE_OP_REVALIDATE &&
-> 		 dentry->d_op->d_revalidate == fscrypt_d_revalidate)
-> 		dentry->d_flags &= ~DCACHE_OP_REVALIDATE;
-> 	spin_unlock(&dentry->d_lock);
-> 
-> here + always set ->s_d_op for ext4 and friends (conditional upon
-> the CONFIG_UNICODE).
-> 
-> No encryption - fine, you get ->is_nokey_name false from the very
-> beginning, DCACHE_OP_REVALIDATE is cleared and VFS won't ever call
-> ->d_revalidate(); not even the first time.  
-> 
-> Yes, you pay minimal price in dentry_unlink_inode() when we hit
->         if (dentry->d_op && dentry->d_op->d_iput)
-> and bugger off after the second fetch instead of the first one.
-> I would be quite surprised if it turns out to be measurable,
-> but if it is, we can always add DCACHE_OP_IPUT to flags.
-> Similar for ->d_op->d_release (called in the end of
-> __dentry_kill()).  Again, that only makes sense if we get
-> a measurable overhead from that.
+This is finally a summary of a long standing problem. When lots of writes to
+many files are sent in a short time the kernel gets stuck and stops sending
+write requests to the disks. Sometimes it recovers and finally sends the
+modified pages to permanent storage, sometimes not and eventually other
+functions degrade and the machine crashes.
 
-fscrypt_prepare_lookup() handles unencrypted directories inline, without calling
-__fscrypt_prepare_lookup() which is only for encrypted directories.  So the
-logic to clear DCACHE_OP_REVALIDATE would need to be there too.
+A simple way to reproduce: expand a kernel source tree, like
+xzcat linux-6.5.tar.xz | tar x -f -
 
-- Eric
+With the default vm settings for dirty_background_ratio and dirty_ratio this
+will finish quickly with ~1.5GB of dirty pages in ram and ~100k inodes to be
+written and the kernel gets stuck.
+
+The bug exists in all 6.* kernels; I've tested the latest release of all
+6.[1-6]. However some conditions must exist for the problem to appear:
+
+- there must be many inodes to be flushed; just many bytes in a few files don't
+  show the problem
+- it happens only with ext4 on a parity raid array
+
+I've moved one of our arrays to xfs and everything works fine, so it's either
+specific to ext4 or xfs is not affected. When the lockup happens the flush
+kworker starts using 100% cpu permanently. I have not observed the bug in
+raid10, only in raid[56].
+
+The problem is more easily triggered with 6.[56] but 6.1 is also affected.
+
+Limiting dirty_bytes and dirty_background_bytes to low values reduce the
+probability of lockup, probably because the process generating writes is
+stopped before too many files are created.
 
