@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-559-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-560-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2CE4E81D48D
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Dec 2023 15:22:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7699681D4EA
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Dec 2023 16:47:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6837A283250
-	for <lists+linux-ext4@lfdr.de>; Sat, 23 Dec 2023 14:22:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0ECBC1F2225B
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Dec 2023 15:47:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C9E10961;
-	Sat, 23 Dec 2023 14:22:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A65FC0D;
+	Sat, 23 Dec 2023 15:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qDjrmQYs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JZXZbu5g"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE9410940
-	for <linux-ext4@vger.kernel.org>; Sat, 23 Dec 2023 14:22:17 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 505F4C433CC
-	for <linux-ext4@vger.kernel.org>; Sat, 23 Dec 2023 14:22:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6473BFBE8
+	for <linux-ext4@vger.kernel.org>; Sat, 23 Dec 2023 15:47:14 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D3A04C433CB
+	for <linux-ext4@vger.kernel.org>; Sat, 23 Dec 2023 15:47:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703341337;
-	bh=KPymVG2NK6C4lDS2IurlYFpxqczXXIBSdjcDyGqeROg=;
+	s=k20201202; t=1703346433;
+	bh=3Pmd7Ee63xZL/mxxaFdP8/vzewqxhss/D8biYjc57O0=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=qDjrmQYseT2IlrOK8CKVwk22TVjHFAjJarn4IoXGqa5ZR0CpF5iKwC1yA+OGEuUuC
-	 XwwLAAx+I47eNF6sMV841FYVPTDJBbYbuBzqPXClwub1os+UdXFAVw5s6+E1WMoiGd
-	 3QOcGNZFijhyxATLIkJ0q2wTVKUh/qIW0HJMmLSpAWrhNPI2RBPxpzopoeTR69kYSf
-	 IRHJZ2eFRpjYQoLdNZDF9/j+9CiTG+5YYcpsON8lxXsyCt/2aloozI4bR+bkl9WoAQ
-	 EGYA28Vzza8mwU+Okn/uFjXiOuQTjQ562ivNmwjM64N3k5LCYU04SkqLK7lgsysC7D
-	 ZccMVWlWb2V1A==
+	b=JZXZbu5gAFU/d97ZUFIjLEyu8Ob+ihZqZR8Obc8s9MH74BbbUAeiV4ohA5zyBHV1D
+	 TtKdrLRdiGz/1jsIeLxAQQy9ANoMdQa+UMxBW4oBB2HiL0ZrwXjMIgCMVqMX6rtp74
+	 +WYglJcpymU0CnC8klW7yLMTPWUV6sF4l4fZxEdQO7Th7ulEXGnI+qy+INyfPlcQkB
+	 2cbVsnl2FYV//RcU8/5b5ua8dTPFBJi/99vcSf8BL02TsuS5+6Bt3ZHLydTC0yz8zJ
+	 IDtrRr1cGgGxqndBdO55259HVUBu7f6wesIWWUILWUlYla08P5E0+pq35zjH/WlTeD
+	 DwHUnACXhJd+Q==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 3AFF9C53BCD; Sat, 23 Dec 2023 14:22:17 +0000 (UTC)
+	id BB83DC53BD4; Sat, 23 Dec 2023 15:47:13 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date: Sat, 23 Dec 2023 14:22:16 +0000
+Date: Sat, 23 Dec 2023 15:47:13 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -46,14 +46,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: glandvador@yahoo.com
+X-Bugzilla-Who: carlos@fisica.ufpr.br
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-UaJSV65JhI@https.bugzilla.kernel.org/>
+Message-ID: <bug-217965-13602-zpf1S2I81X@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
 References: <bug-217965-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,17 +69,45 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
---- Comment #50 from Eduard Kohler (glandvador@yahoo.com) ---
-After Andreas comment, I throw a look to the raid wiki and changed the
-stripe/stride values:
+--- Comment #51 from carlos@fisica.ufpr.br ---
+bugzilla-daemon@kernel.org (bugzilla-daemon@kernel.org) wrote on Fri, Dec 2=
+2,
+2023 at 10:48:39PM -03:
+> https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
+>=20
+> Andreas Dilger (adilger.kernelbugzilla@dilger.ca) changed:
+>=20
+>            What    |Removed                     |Added
+> -------------------------------------------------------------------------=
+---
+>                  CC|                            |adilger.kernelbugzilla@d=
+ilg
+>                    |                            |er.ca
+>=20
+> --- Comment #48 from Andreas Dilger (adilger.kernelbugzilla@dilger.ca) ---
+> Independent of the fixes to the mballoc code to improve the allocation
+> performance, I'm wondering about the ''RAID stride'' values in use here.
+> The "stride" value is intended to be the size of one complete set of
+> disks (e.g. 128KiB chunk size * 8 data disks =3D 1MiB).  The filesystem
+> doesn't see the parity disks, so the number of those disks does not
+> matter to ext4.=20
+>=20
+> It seems in all these cases that the stripe/stride is strange.  I can't
+> see any value to setting stride to (almost) 128MB, especially not on a
+> RAID-1 system.   Were these values automatically generated by mke2fs,
+> or entered manually?  If manually, why was that value chosen?   If there
+> is something unclear in the documentation it should be fixed, and the
+> same if there is something wrong in mke2fs detection of the geometry.
+>=20
+>     > By default the FS is mounted with stripe=3D1280 because it's on a r=
+aid6.
+>     > Remounting with stripe=3D0 works around the problem. Excellent!
+>=20
+> Carlos, how many data disks in this system?  Do you have 5x 256KiB or
+> 10x 128KiB *data* disks, plus 2 *parity* disks?
 
-tune2fs -E stride=3D32,stripe-width=3D32 /dev/md0p1
-
-which may or may not be optimal for a RAID1.
-
-Running a 6.5.12 kernel (fedora released one, not the previous compiled one=
-).
-And it also makes the issue go away.
+There are 10 data disks. The stride, determined automatically by mke2fs, is
+correct since the chunk is 512KiB.
 
 --=20
 You may reply to this email to add a comment.
