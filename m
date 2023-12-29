@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-579-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-580-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5185F820186
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Dec 2023 22:06:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 026D182021E
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Dec 2023 23:11:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 82F891C2134C
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Dec 2023 21:06:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 36098B2232F
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Dec 2023 22:11:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 656DC14291;
-	Fri, 29 Dec 2023 21:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA7FB14A98;
+	Fri, 29 Dec 2023 22:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="F21oXg/W"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JBV2s6Nj"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB0E214A92
-	for <linux-ext4@vger.kernel.org>; Fri, 29 Dec 2023 21:05:57 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 5CDB1C433CC
-	for <linux-ext4@vger.kernel.org>; Fri, 29 Dec 2023 21:05:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3589B1428E
+	for <linux-ext4@vger.kernel.org>; Fri, 29 Dec 2023 22:11:01 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B59E8C433CC
+	for <linux-ext4@vger.kernel.org>; Fri, 29 Dec 2023 22:11:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1703883957;
-	bh=39HaQlLhVNJSmmRxf3SfulMH1K8OYe4nQci+H5XJeNo=;
+	s=k20201202; t=1703887861;
+	bh=A74AHSOBgMwAvqXEJUGegPQKddwWDBDRNrfhqBJXliM=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=F21oXg/W+ipdZXSJqNfXsHwIq2UTHAD7yEhhg1/xs0wrS7A9HKoBtdH0Z+bpDBaJT
-	 nX9n4roIE+bJcEdU8buOsHqqoMv6G1Q1rUK1AgC58FY7NXXmF0ERmjhw6R/dYDSZV8
-	 APAfWIe6tQSaH0VOGOG2dum8Rrx49w1d12egbNA1ZLsY9IwUlXwvOFzaXYpYmkHC8g
-	 HcYyTGRq38EC3P7P7XQuMGK8vD1x9Qrgx7nExYwfh/xZVg1mZ4LKNFwy6zTE3677yH
-	 tAVXXWPi8fhXs11S1JsjFizLA02BDiLeF8dOKEEYqQa67NDpwApEhLSfT3GHSJ2GVj
-	 9VtP6KnKbJVjQ==
+	b=JBV2s6NjSOVcOPZyrXBxdEn5Qk69ZyHP3TVJxKkwaZEbMDI3AI99RKllZu/0Gocar
+	 eR9pSS9ryGikL5VTrEl0NrG7Sl4EQKUPjPw3gWoSBGpBr7AjiH8zcas44Zt/R4/76U
+	 /enHX0gES1RMFQxbdPkTv/8tr3FoKeZFNxr0W9ThkMb1kaNMi+B3bdA7hYISslEm1a
+	 gp+ilB41GGELaevUZdl32WNigzdb7Sxp7oeMSzTh1fKD2fxWWTzuRcuLP79oQaVRQu
+	 lwNI3ka9/bXFqsGrxsO5IEad4PQ1cnvAjroeLBKy5Frq/9ch1MS3MihYS6KRZEPJOY
+	 CvqxyLxKEZDTg==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 48BCBC53BD4; Fri, 29 Dec 2023 21:05:57 +0000 (UTC)
+	id A3E84C53BD4; Fri, 29 Dec 2023 22:11:01 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date: Fri, 29 Dec 2023 21:05:56 +0000
+Date: Fri, 29 Dec 2023 22:11:01 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -53,7 +53,7 @@ X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-1VtZ2o5BpL@https.bugzilla.kernel.org/>
+Message-ID: <bug-217965-13602-iHwkOx12yp@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
 References: <bug-217965-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -69,32 +69,21 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
---- Comment #54 from Matthew Stapleton (matthew4196@gmail.com) ---
-(In reply to Ojaswin Mujoo from comment #46)
-> Hello,
->=20
-> I've posted a patch that, as per my understanding of the issue, should be
-> able to fix the halt in kernels above 6.5
->=20
-> As I was not able to completely replicate the issue, I relied on the prob=
-es
-> and other logs collected to root cause this, so I'd really appreciate if =
-the
-> folks here can help test this on their setups where the issue was being
-> observed.
->=20
-> Link to patch:
-> https://lore.kernel.org/linux-ext4/cover.1702455010.git.ojaswin@linux.ibm.
-> com/T/#t
->=20
-> Regards,
-> ojaswin
+--- Comment #55 from Matthew Stapleton (matthew4196@gmail.com) ---
+It looks like reversing the changes made in
+7e170922f06bf46effa7c57f6035fc463d6edc7e also fixed the problem (I didn't
+notice before that the names were changed in the very next commit as well).=
+=20=20
 
-It looks like that patch has fixed the problem for my system.  Thanks.  I s=
-till
-haven't checked if disabling CR1_5 from
-7e170922f06bf46effa7c57f6035fc463d6edc7e also resolves the problem, although
-I'm still planning to try that out as well.
+in fs/ext4/mballoc.c:
+Commenting out new_cr =3D CR_GOAL_LEN_SLOW in function:
+ext4_mb_choose_next_group_goal_fast wasn't enough to fix it so then I did t=
+he
+following as well which fixed the problem:
+commented out the call to ext4_mb_choose_next_group_best_avail in function:
+ext4_mb_choose_next_group
+commented out the code to "Reset goal length to original goal length before
+falling into CR_GOAL_LEN_SLOW"
 
 --=20
 You may reply to this email to add a comment.
