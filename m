@@ -1,123 +1,166 @@
-Return-Path: <linux-ext4+bounces-584-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-585-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C842E8203E0
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Dec 2023 08:09:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A0AE820DD8
+	for <lists+linux-ext4@lfdr.de>; Sun, 31 Dec 2023 21:39:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 106E4B21299
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Dec 2023 07:09:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0E8652824B2
+	for <lists+linux-ext4@lfdr.de>; Sun, 31 Dec 2023 20:39:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0691F1FAF;
-	Sat, 30 Dec 2023 07:09:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1290BA31;
+	Sun, 31 Dec 2023 20:39:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HnNsYJlE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEF5F1843
-	for <linux-ext4@vger.kernel.org>; Sat, 30 Dec 2023 07:09:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T2CzP0Ds3z4f3l12
-	for <linux-ext4@vger.kernel.org>; Sat, 30 Dec 2023 15:09:21 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 876981A0532
-	for <linux-ext4@vger.kernel.org>; Sat, 30 Dec 2023 15:09:26 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgA3iA4hwo9ln8obFA--.40130S4;
-	Sat, 30 Dec 2023 15:09:26 +0800 (CST)
-From: yangerkun <yangerkun@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: boyu.mt@taobao.com,
-	linux-ext4@vger.kernel.org,
-	yangerkun@huawei.com
-Subject: [PATCH] ext4: clear EXT4_GROUP_INFO_WAS_TRIMMED_BIT even mount with discard
-Date: Sat, 30 Dec 2023 15:06:54 +0800
-Message-Id: <20231230070654.178638-1-yangerkun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57AF9BA22
+	for <linux-ext4@vger.kernel.org>; Sun, 31 Dec 2023 20:39:04 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C7D38C433C7;
+	Sun, 31 Dec 2023 20:39:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1704055143;
+	bh=00Y7g+olzX4bppVZYA1ttdwIS+tHcsXT9ycYWSH7Kk8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=HnNsYJlEcpPPekBjBK33Lkcb7/bHvyu3ejoH4oMUfxENek+lBKYzi44OYkbsj/u7A
+	 LMw+XQE+nu3g2ihZAOTJD5okSVmY++cEqrGvUpH7pzeXRlytQB5XgDMlH5Gg9sXill
+	 h5R6S57vmdGyTCCKKeTn4Vg6MNgn6ZCnsPz7YMw3t+aRJzPfJmyyy9FqIf+ZKxhfuN
+	 baUv6tE6Ftr+nOVV6sWLvtzBl3zD/2KhPucRXRHw8JyXsAAeG08QH/2SjkIcMMDs5P
+	 lNoRGI2EWa4ob2qTqo+oBbCoPPm2HEmIyhLwMkWu1SRjw2kDs9AWxOFJpLoRYf7cyg
+	 VD5m/7R2KJQYg==
+Date: Sun, 31 Dec 2023 12:39:03 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org, Neal Gompa <neal@gompa.dev>
+Subject: [PATCH 3/2] e2scrub_fail: move executable script to /usr/libexec
+Message-ID: <20231231203903.GC36164@frogsfrogsfrogs>
+References: <170268089742.2679199.16836622895526209331.stgit@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgA3iA4hwo9ln8obFA--.40130S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7CFy7Jw18Zr45Xr4rKry3Arb_yoW8uw48pr
-	ZxKr1ayw4Yqr109anrWw40qayfGw48Gw1UGrWSgr4UArWfKFySgFnFk3W5AFyjgFWxA3Wq
-	vFs8W345CFyxu37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUgCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-	z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-	AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-	IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s
-	0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsG
-	vfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <170268089742.2679199.16836622895526209331.stgit@frogsfrogsfrogs>
 
-Commit 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in
-ext4_group_info") speed up fstrim by skipping trim trimmed group. We
-also has the chance to clear trimmed once there exists some block free
-for this group(mount without discard), and the next trim for this group
-will work well too.
+From: Darrick J. Wong <djwong@kernel.org>
 
-For mount with discard, we will issue dicard when we free blocks, so
-leave trimmed flag keep alive to skip useless trim trigger from
-userspace seems reasonable. But for some case like ext4 build on
-dm-thinpool(ext4 blocksize 4K, pool blocksize 128K), discard from ext4
-maybe unaligned for dm thinpool, and thinpool will just finish this
-discard(see process_discard_bio when begein equals to end) without
-actually process discard. For this case, trim from userspace can really
-help us to free some thinpool block.
+Per FHS 3.0, non-PATH executable binaries are supposed to live under
+/usr/libexec, not /usr/lib.  e2scrub_fail is an executable script, so
+move it to libexec in case some distro some day tries to mount /usr/lib
+as noexec or something.  Also, there's no reason why these scripts need
+to be put under an arch-dependent path.
 
-So convert to clear trimmed flag for all case no matter mounted with
-discard or not.
-
-Fixes: 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in ext4_group_info")
-Signed-off-by: yangerkun <yangerkun@huaweicloud.com>
+Cc: Neal Gompa <neal@gompa.dev>
+Link: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch04s07.html
+Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 ---
- fs/ext4/mballoc.c | 10 ++++------
- 1 file changed, 4 insertions(+), 6 deletions(-)
+ MCONFIG.in                     |    2 +-
+ debian/e2fsprogs.install       |    4 ++--
+ scrub/Makefile.in              |   10 +++++-----
+ scrub/e2scrub_all.cron.in      |    2 +-
+ scrub/e2scrub_fail@.service.in |    2 +-
+ util/subst.conf.in             |    2 +-
+ 6 files changed, 11 insertions(+), 11 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index d72b5e3c92ec..69240ae775f1 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3855,11 +3855,8 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
- 	/*
- 	 * Clear the trimmed flag for the group so that the next
- 	 * ext4_trim_fs can trim it.
--	 * If the volume is mounted with -o discard, online discard
--	 * is supported and the free blocks will be trimmed online.
- 	 */
--	if (!test_opt(sb, DISCARD))
--		EXT4_MB_GRP_CLEAR_TRIMMED(db);
-+	EXT4_MB_GRP_CLEAR_TRIMMED(db);
+diff --git a/MCONFIG.in b/MCONFIG.in
+index 82c75a28..2b1872fa 100644
+--- a/MCONFIG.in
++++ b/MCONFIG.in
+@@ -34,7 +34,7 @@ man8dir = $(mandir)/man8
+ infodir = @infodir@
+ datadir = @datadir@
+ pkgconfigdir = $(libdir)/pkgconfig
+-pkglibdir = $(libdir)/e2fsprogs
++pkglibexecdir = @libexecdir@/e2fsprogs
  
- 	if (!db->bb_free_root.rb_node) {
- 		/* No more items in the per group rb tree
-@@ -6481,8 +6478,9 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
- 					 " group:%u block:%d count:%lu failed"
- 					 " with %d", block_group, bit, count,
- 					 err);
--		} else
--			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
-+		}
-+
-+		EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
+ HAVE_UDEV = @have_udev@
+ UDEV_RULES_DIR = @pkg_udev_rules_dir@
+diff --git a/debian/e2fsprogs.install b/debian/e2fsprogs.install
+index 8cf07a6f..b50078d3 100755
+--- a/debian/e2fsprogs.install
++++ b/debian/e2fsprogs.install
+@@ -16,8 +16,8 @@ sbin/resize2fs
+ sbin/tune2fs
+ usr/bin/chattr
+ usr/bin/lsattr
+-[linux-any] usr/lib/*/e2fsprogs/e2scrub_all_cron
+-[linux-any] usr/lib/*/e2fsprogs/e2scrub_fail
++[linux-any] usr/libexec/e2fsprogs/e2scrub_all_cron
++[linux-any] usr/libexec/e2fsprogs/e2scrub_fail
+ usr/sbin/e2freefrag
+ [linux-any] usr/sbin/e4crypt
+ [linux-any] usr/sbin/e4defrag
+diff --git a/scrub/Makefile.in b/scrub/Makefile.in
+index d0c5c11b..c97a1dd5 100644
+--- a/scrub/Makefile.in
++++ b/scrub/Makefile.in
+@@ -95,8 +95,8 @@ installdirs-crond:
+ 	$(Q) $(MKDIR_P) $(DESTDIR)$(CROND_DIR)
  
- 		ext4_lock_group(sb, block_group);
- 		mb_free_blocks(inode, &e4b, bit, count_clusters);
--- 
-2.39.2
-
+ installdirs-libprogs:
+-	$(E) "	MKDIR_P $(pkglibdir)"
+-	$(Q) $(MKDIR_P) $(DESTDIR)$(pkglibdir)
++	$(E) "	MKDIR_P $(pkglibexecdir)"
++	$(Q) $(MKDIR_P) $(DESTDIR)$(pkglibexecdir)
+ 
+ installdirs-systemd:
+ 	$(E) "	MKDIR_P $(SYSTEMD_SYSTEM_UNIT_DIR)"
+@@ -125,8 +125,8 @@ install-crond: installdirs-crond
+ 
+ install-libprogs: $(LIBPROGS) installdirs-libprogs
+ 	$(Q) for i in $(LIBPROGS); do \
+-		$(ES) "	INSTALL $(pkglibdir)/$$i"; \
+-		$(INSTALL_PROGRAM) $$i $(DESTDIR)$(pkglibdir)/$$i; \
++		$(ES) "	INSTALL $(pkglibexecdir)/$$i"; \
++		$(INSTALL_PROGRAM) $$i $(DESTDIR)$(pkglibexecdir)/$$i; \
+ 	done
+ 
+ install-systemd: $(SERVICE_FILES) installdirs-systemd
+@@ -169,7 +169,7 @@ uninstall-crond:
+ 
+ uninstall-libprogs:
+ 	for i in $(LIBPROGS); do \
+-		$(RM) -f $(DESTDIR)$(pkglibdir)/$$i; \
++		$(RM) -f $(DESTDIR)$(pkglibexecdir)/$$i; \
+ 	done
+ 
+ uninstall-systemd:
+diff --git a/scrub/e2scrub_all.cron.in b/scrub/e2scrub_all.cron.in
+index 395fb2ab..8e2640d4 100644
+--- a/scrub/e2scrub_all.cron.in
++++ b/scrub/e2scrub_all.cron.in
+@@ -1,2 +1,2 @@
+-30 3 * * 0 root test -e /run/systemd/system || SERVICE_MODE=1 @pkglibdir@/e2scrub_all_cron
++30 3 * * 0 root test -e /run/systemd/system || SERVICE_MODE=1 @pkglibexecdir@/e2scrub_all_cron
+ 10 3 * * * root test -e /run/systemd/system || SERVICE_MODE=1 @root_sbindir@/e2scrub_all -A -r
+diff --git a/scrub/e2scrub_fail@.service.in b/scrub/e2scrub_fail@.service.in
+index ae65a1da..462daee2 100644
+--- a/scrub/e2scrub_fail@.service.in
++++ b/scrub/e2scrub_fail@.service.in
+@@ -4,7 +4,7 @@ Documentation=man:e2scrub(8)
+ 
+ [Service]
+ Type=oneshot
+-ExecStart=@pkglibdir@/e2scrub_fail "%f"
++ExecStart=@pkglibexecdir@/e2scrub_fail "%f"
+ User=mail
+ Group=mail
+ SupplementaryGroups=systemd-journal
+diff --git a/util/subst.conf.in b/util/subst.conf.in
+index 0da45541..5af5e356 100644
+--- a/util/subst.conf.in
++++ b/util/subst.conf.in
+@@ -23,4 +23,4 @@ root_sbindir		@root_sbindir@
+ root_bindir		@root_bindir@
+ libdir			@libdir@
+ $exec_prefix		@exec_prefix@
+-pkglibdir		@libdir@/e2fsprogs
++pkglibexecdir		@libexecdir@/e2fsprogs
 
