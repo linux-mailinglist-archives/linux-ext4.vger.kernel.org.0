@@ -1,200 +1,241 @@
-Return-Path: <linux-ext4+bounces-586-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-587-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91F68820EDB
-	for <lists+linux-ext4@lfdr.de>; Sun, 31 Dec 2023 22:38:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 298BE8213AA
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jan 2024 13:06:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B411D1C21931
-	for <lists+linux-ext4@lfdr.de>; Sun, 31 Dec 2023 21:38:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 990661F216AF
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jan 2024 12:06:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B76A0BE4A;
-	Sun, 31 Dec 2023 21:38:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 146D63C32;
+	Mon,  1 Jan 2024 12:06:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B2F5BA22
-	for <linux-ext4@vger.kernel.org>; Sun, 31 Dec 2023 21:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gompa.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-3368b9bbeb4so7693203f8f.2
-        for <linux-ext4@vger.kernel.org>; Sun, 31 Dec 2023 13:38:34 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3653120E8
+	for <linux-ext4@vger.kernel.org>; Mon,  1 Jan 2024 12:06:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-35fc70bd879so87391105ab.3
+        for <linux-ext4@vger.kernel.org>; Mon, 01 Jan 2024 04:06:21 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704058712; x=1704663512;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IdIs1O+r7kZjJrH8PQm4fqC+1kfv7ZmjoC9GEn/liLc=;
-        b=qaStv/fvuBj7xWoPZ9YC0wHqDMrmk2XNHn9l2mMSW6K1CCwYxzrLsx/X/cjF0MHd7i
-         yz5rVpbbM0mzBhf2C0MH5kFd38QTvAhoAB1YkKdbhnGViUT/Fo10XR6SlA13CesC1Ti/
-         RN7dvvTHL/i7kQvg0ruY2NxEWaVW0Fz2lpc8t2mWTxZeE1fYoBh0J/TmbGiobs4JNKSS
-         Kkl/glPUWWBJ1sxyeL8Tae+Tvevg7qQ8vOAC9ywx+RbBmtMGCOySHOGTWP/+pSwyWrnt
-         8jn7lwweV70LXJT5d92VsQ3biUihhckTP9hQiThSjvXVPEGOrGi9EEAR1k5EQKLQlYSw
-         WfqQ==
-X-Gm-Message-State: AOJu0Yyn80SlY4LAhj9xdO1whrK/rqJmPnd2taJzGw18l49c0QgGKDjD
-	q1W/B0UiZgdwB2hNnPbkdW9MGgm7A7Y35A==
-X-Google-Smtp-Source: AGHT+IFIO0eRibTvS8pwHOWMO45GrY276zFLk7TNA62c79ing/zmw1XfkJhZftzkM8Rq3lYROaC1yA==
-X-Received: by 2002:a05:6000:100d:b0:336:a125:5392 with SMTP id a13-20020a056000100d00b00336a1255392mr3120930wrx.272.1704058712266;
-        Sun, 31 Dec 2023 13:38:32 -0800 (PST)
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
-        by smtp.gmail.com with ESMTPSA id s20-20020a056402015400b005530cb1464bsm13885786edu.15.2023.12.31.13.38.32
-        for <linux-ext4@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 31 Dec 2023 13:38:32 -0800 (PST)
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a2331e7058aso974211166b.2
-        for <linux-ext4@vger.kernel.org>; Sun, 31 Dec 2023 13:38:32 -0800 (PST)
-X-Received: by 2002:a17:906:a00b:b0:a27:d914:8fba with SMTP id
- p11-20020a170906a00b00b00a27d9148fbamr391751ejy.114.1704058711759; Sun, 31
- Dec 2023 13:38:31 -0800 (PST)
+        d=1e100.net; s=20230601; t=1704110781; x=1704715581;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=53Pb5CeqIXJeHNJ+8UaYnsfD0jt31nkDn8D1hLApyeY=;
+        b=w3FhVfvbO53vdnR+GszuXb/9g5738c6wqGoasvvZrXq0UaNIhV302OrJ7AizqLaRQ1
+         QSZ1APavsItY4bQYf4YstGIlC4Whr9fpizc40kY+yYYVvuD/K6LW+ndneh3YDc2wJFP8
+         K8n6jotP28Za5BNMO4o6+GY/OxgRSoxgsmotRCM1zYcq7oVl3vwrHikYs1Ps8jJVXNlk
+         KUcxrVeSXkEsoyUVp41w9MFa90XHCBgKxohrhlAu5ojl3NR7WarfGpAbfACl8qrEjwmz
+         2XFMtqQbwYyirLQIbpJTBRUizUZbDjE1Or/PgYPwOY1S7BuRY9Q4QNcyq33Fi8icHx/I
+         MY0Q==
+X-Gm-Message-State: AOJu0YyzVeVKe/uIj0Xo5LPIOsfUj4tqodqkG0Vb2YHf62EJLh9o5H7L
+	UBhKYDLD9lzLXvqS+fp6xbZP5v/iRaDdOT2NcEWGC1FnoC8k
+X-Google-Smtp-Source: AGHT+IH/jiId/5WfHRbtSh3/vils7PMse8le5A5EZVnCpvkVaV6ktO6+XPEKJ+JMLiji5Q1OeuhJUDGZj99HVOxkZ+y7lD5I8E9C
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <170268089742.2679199.16836622895526209331.stgit@frogsfrogsfrogs> <20231231203903.GC36164@frogsfrogsfrogs>
-In-Reply-To: <20231231203903.GC36164@frogsfrogsfrogs>
-From: Neal Gompa <neal@gompa.dev>
-Date: Sun, 31 Dec 2023 16:37:54 -0500
-X-Gmail-Original-Message-ID: <CAEg-Je9cJU_QH1Yt0m3Ghf34THQC9FtMe-0ahnAdzpRdQndGnw@mail.gmail.com>
-Message-ID: <CAEg-Je9cJU_QH1Yt0m3Ghf34THQC9FtMe-0ahnAdzpRdQndGnw@mail.gmail.com>
-Subject: Re: [PATCH 3/2] e2scrub_fail: move executable script to /usr/libexec
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: tytso@mit.edu, linux-ext4@vger.kernel.org
+X-Received: by 2002:a05:6e02:1bcb:b0:35f:f65e:c33 with SMTP id
+ x11-20020a056e021bcb00b0035ff65e0c33mr2001101ilv.4.1704110781406; Mon, 01 Jan
+ 2024 04:06:21 -0800 (PST)
+Date: Mon, 01 Jan 2024 04:06:21 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c8a56a060de13553@google.com>
+Subject: [syzbot] [ext4?] INFO: task hung in ext4_quota_write
+From: syzbot <syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Sun, Dec 31, 2023 at 3:39=E2=80=AFPM Darrick J. Wong <djwong@kernel.org>=
- wrote:
->
-> From: Darrick J. Wong <djwong@kernel.org>
->
-> Per FHS 3.0, non-PATH executable binaries are supposed to live under
-> /usr/libexec, not /usr/lib.  e2scrub_fail is an executable script, so
-> move it to libexec in case some distro some day tries to mount /usr/lib
-> as noexec or something.  Also, there's no reason why these scripts need
-> to be put under an arch-dependent path.
->
-> Cc: Neal Gompa <neal@gompa.dev>
-> Link: https://refspecs.linuxfoundation.org/FHS_3.0/fhs/ch04s07.html
-> Signed-off-by: Darrick J. Wong <djwong@kernel.org>
-> ---
->  MCONFIG.in                     |    2 +-
->  debian/e2fsprogs.install       |    4 ++--
->  scrub/Makefile.in              |   10 +++++-----
->  scrub/e2scrub_all.cron.in      |    2 +-
->  scrub/e2scrub_fail@.service.in |    2 +-
->  util/subst.conf.in             |    2 +-
->  6 files changed, 11 insertions(+), 11 deletions(-)
->
-> diff --git a/MCONFIG.in b/MCONFIG.in
-> index 82c75a28..2b1872fa 100644
-> --- a/MCONFIG.in
-> +++ b/MCONFIG.in
-> @@ -34,7 +34,7 @@ man8dir =3D $(mandir)/man8
->  infodir =3D @infodir@
->  datadir =3D @datadir@
->  pkgconfigdir =3D $(libdir)/pkgconfig
-> -pkglibdir =3D $(libdir)/e2fsprogs
-> +pkglibexecdir =3D @libexecdir@/e2fsprogs
->
->  HAVE_UDEV =3D @have_udev@
->  UDEV_RULES_DIR =3D @pkg_udev_rules_dir@
-> diff --git a/debian/e2fsprogs.install b/debian/e2fsprogs.install
-> index 8cf07a6f..b50078d3 100755
-> --- a/debian/e2fsprogs.install
-> +++ b/debian/e2fsprogs.install
-> @@ -16,8 +16,8 @@ sbin/resize2fs
->  sbin/tune2fs
->  usr/bin/chattr
->  usr/bin/lsattr
-> -[linux-any] usr/lib/*/e2fsprogs/e2scrub_all_cron
-> -[linux-any] usr/lib/*/e2fsprogs/e2scrub_fail
-> +[linux-any] usr/libexec/e2fsprogs/e2scrub_all_cron
-> +[linux-any] usr/libexec/e2fsprogs/e2scrub_fail
->  usr/sbin/e2freefrag
->  [linux-any] usr/sbin/e4crypt
->  [linux-any] usr/sbin/e4defrag
-> diff --git a/scrub/Makefile.in b/scrub/Makefile.in
-> index d0c5c11b..c97a1dd5 100644
-> --- a/scrub/Makefile.in
-> +++ b/scrub/Makefile.in
-> @@ -95,8 +95,8 @@ installdirs-crond:
->         $(Q) $(MKDIR_P) $(DESTDIR)$(CROND_DIR)
->
->  installdirs-libprogs:
-> -       $(E) "  MKDIR_P $(pkglibdir)"
-> -       $(Q) $(MKDIR_P) $(DESTDIR)$(pkglibdir)
-> +       $(E) "  MKDIR_P $(pkglibexecdir)"
-> +       $(Q) $(MKDIR_P) $(DESTDIR)$(pkglibexecdir)
->
->  installdirs-systemd:
->         $(E) "  MKDIR_P $(SYSTEMD_SYSTEM_UNIT_DIR)"
-> @@ -125,8 +125,8 @@ install-crond: installdirs-crond
->
->  install-libprogs: $(LIBPROGS) installdirs-libprogs
->         $(Q) for i in $(LIBPROGS); do \
-> -               $(ES) " INSTALL $(pkglibdir)/$$i"; \
-> -               $(INSTALL_PROGRAM) $$i $(DESTDIR)$(pkglibdir)/$$i; \
-> +               $(ES) " INSTALL $(pkglibexecdir)/$$i"; \
-> +               $(INSTALL_PROGRAM) $$i $(DESTDIR)$(pkglibexecdir)/$$i; \
->         done
->
->  install-systemd: $(SERVICE_FILES) installdirs-systemd
-> @@ -169,7 +169,7 @@ uninstall-crond:
->
->  uninstall-libprogs:
->         for i in $(LIBPROGS); do \
-> -               $(RM) -f $(DESTDIR)$(pkglibdir)/$$i; \
-> +               $(RM) -f $(DESTDIR)$(pkglibexecdir)/$$i; \
->         done
->
->  uninstall-systemd:
-> diff --git a/scrub/e2scrub_all.cron.in b/scrub/e2scrub_all.cron.in
-> index 395fb2ab..8e2640d4 100644
-> --- a/scrub/e2scrub_all.cron.in
-> +++ b/scrub/e2scrub_all.cron.in
-> @@ -1,2 +1,2 @@
-> -30 3 * * 0 root test -e /run/systemd/system || SERVICE_MODE=3D1 @pkglibd=
-ir@/e2scrub_all_cron
-> +30 3 * * 0 root test -e /run/systemd/system || SERVICE_MODE=3D1 @pkglibe=
-xecdir@/e2scrub_all_cron
->  10 3 * * * root test -e /run/systemd/system || SERVICE_MODE=3D1 @root_sb=
-indir@/e2scrub_all -A -r
-> diff --git a/scrub/e2scrub_fail@.service.in b/scrub/e2scrub_fail@.service=
-.in
-> index ae65a1da..462daee2 100644
-> --- a/scrub/e2scrub_fail@.service.in
-> +++ b/scrub/e2scrub_fail@.service.in
-> @@ -4,7 +4,7 @@ Documentation=3Dman:e2scrub(8)
->
->  [Service]
->  Type=3Doneshot
-> -ExecStart=3D@pkglibdir@/e2scrub_fail "%f"
-> +ExecStart=3D@pkglibexecdir@/e2scrub_fail "%f"
->  User=3Dmail
->  Group=3Dmail
->  SupplementaryGroups=3Dsystemd-journal
-> diff --git a/util/subst.conf.in b/util/subst.conf.in
-> index 0da45541..5af5e356 100644
-> --- a/util/subst.conf.in
-> +++ b/util/subst.conf.in
-> @@ -23,4 +23,4 @@ root_sbindir          @root_sbindir@
->  root_bindir            @root_bindir@
->  libdir                 @libdir@
->  $exec_prefix           @exec_prefix@
-> -pkglibdir              @libdir@/e2fsprogs
-> +pkglibexecdir          @libexecdir@/e2fsprogs
+Hello,
 
-Looks great to me.
+syzbot found the following issue on:
 
-Reviewed-by: Neal Gompa <neal@gompa.dev>
+HEAD commit:    f5837722ffec Merge tag 'mm-hotfixes-stable-2023-12-27-15-0..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=126518f9e80000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=f8e72bae38c079e4
+dashboard link: https://syzkaller.appspot.com/bug?extid=a43d4f48b8397d0e41a9
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15ca19a1e80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13177855e80000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/82ead61bb986/disk-f5837722.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/3f5c4dfe98d4/vmlinux-f5837722.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0522c559ed12/bzImage-f5837722.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/dae235506b29/mount_1.gz
+
+Bisection is inconclusive: the issue happens on the oldest tested release.
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12ed91c9e80000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=11ed91c9e80000
+console output: https://syzkaller.appspot.com/x/log.txt?x=16ed91c9e80000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
+
+INFO: task syz-executor323:5064 blocked for more than 143 seconds.
+      Not tainted 6.7.0-rc7-syzkaller-00016-gf5837722ffec #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor323 state:D stack:19696 pid:5064  tgid:5064  ppid:5062   flags:0x00004006
+Call Trace:
+ <TASK>
+ context_switch kernel/sched/core.c:5376 [inline]
+ __schedule+0x1961/0x4ab0 kernel/sched/core.c:6688
+ __schedule_loop kernel/sched/core.c:6763 [inline]
+ schedule+0x149/0x260 kernel/sched/core.c:6778
+ io_schedule+0x8c/0x100 kernel/sched/core.c:8998
+ bit_wait_io+0x12/0xc0 kernel/sched/wait_bit.c:209
+ __wait_on_bit_lock+0xd1/0x530 kernel/sched/wait_bit.c:90
+ out_of_line_wait_on_bit_lock+0x1d4/0x250 kernel/sched/wait_bit.c:117
+ lock_buffer include/linux/buffer_head.h:404 [inline]
+ ext4_quota_write+0x37c/0x580 fs/ext4/super.c:7251
+ qtree_write_dquot+0x243/0x530 fs/quota/quota_tree.c:431
+ v2_write_dquot+0x120/0x190 fs/quota/quota_v2.c:358
+ dquot_commit+0x3c4/0x520 fs/quota/dquot.c:512
+ ext4_write_dquot+0x1f2/0x2c0 fs/ext4/super.c:6877
+ mark_dquot_dirty fs/quota/dquot.c:372 [inline]
+ mark_all_dquot_dirty fs/quota/dquot.c:410 [inline]
+ dquot_alloc_inode+0x69f/0xb70 fs/quota/dquot.c:1780
+ ext4_xattr_inode_alloc_quota fs/ext4/xattr.c:932 [inline]
+ ext4_xattr_set_entry+0xaf3/0x3fc0 fs/ext4/xattr.c:1715
+ ext4_xattr_block_set+0x6a2/0x35e0 fs/ext4/xattr.c:1970
+ ext4_xattr_set_handle+0xcdf/0x1570 fs/ext4/xattr.c:2456
+ ext4_xattr_set+0x241/0x3d0 fs/ext4/xattr.c:2558
+ __vfs_setxattr+0x460/0x4a0 fs/xattr.c:201
+ __vfs_setxattr_noperm+0x12e/0x5e0 fs/xattr.c:235
+ vfs_setxattr+0x221/0x420 fs/xattr.c:322
+ do_setxattr fs/xattr.c:630 [inline]
+ setxattr+0x25d/0x2f0 fs/xattr.c:653
+ path_setxattr+0x1c0/0x2a0 fs/xattr.c:672
+ __do_sys_setxattr fs/xattr.c:688 [inline]
+ __se_sys_setxattr fs/xattr.c:684 [inline]
+ __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:684
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0x45/0x110 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
+RIP: 0033:0x7faba3ffbd99
+RSP: 002b:00007ffea2f3e548 EFLAGS: 00000246 ORIG_RAX: 00000000000000bc
+RAX: ffffffffffffffda RBX: 0030656c69662f2e RCX: 00007faba3ffbd99
+RDX: 0000000020000380 RSI: 0000000020000340 RDI: 00000000200002c0
+RBP: 00007faba40705f0 R08: 0000000000000000 R09: 00005555570644c0
+R10: 000000000000ffed R11: 0000000000000246 R12: 00007ffea2f3e570
+R13: 00007ffea2f3e798 R14: 431bde82d7b634db R15: 00007faba404503b
+ </TASK>
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffffffff8d92dae0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:301 [inline]
+ #0: ffffffff8d92dae0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:747 [inline]
+ #0: ffffffff8d92dae0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6614
+2 locks held by getty/4822:
+ #0: ffff88814b3dc0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
+ #1: ffffc90002efe2f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b4/0x1e10 drivers/tty/n_tty.c:2201
+6 locks held by syz-executor323/5064:
+ #0: ffff88801da0e418 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:404
+ #1: ffff888078454000 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_lock include/linux/fs.h:802 [inline]
+ #1: ffff888078454000 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: vfs_setxattr+0x1e1/0x420 fs/xattr.c:321
+ #2: ffff888078453cc8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+ #2: ffff888078453cc8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_xattr_set_handle+0x277/0x1570 fs/ext4/xattr.c:2371
+ #3: ffffffff8da82710 (dquot_srcu){.+.+}-{0:0}, at: srcu_lock_acquire include/linux/srcu.h:116 [inline]
+ #3: ffffffff8da82710 (dquot_srcu){.+.+}-{0:0}, at: srcu_read_lock include/linux/srcu.h:215 [inline]
+ #3: ffffffff8da82710 (dquot_srcu){.+.+}-{0:0}, at: dquot_alloc_inode+0x1ab/0xb70 fs/quota/dquot.c:1758
+ #4: ffff88807879c0a8 (&dquot->dq_lock){+.+.}-{3:3}, at: dquot_commit+0x5b/0x520 fs/quota/dquot.c:505
+ #5: ffff88801da0e210 (&s->s_dquot.dqio_sem){++++}-{3:3}, at: v2_write_dquot+0x90/0x190 fs/quota/quota_v2.c:356
+
+=============================================
+
+NMI backtrace for cpu 0
+CPU: 0 PID: 29 Comm: khungtaskd Not tainted 6.7.0-rc7-syzkaller-00016-gf5837722ffec #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2d0 lib/dump_stack.c:106
+ nmi_cpu_backtrace+0x498/0x4d0 lib/nmi_backtrace.c:113
+ nmi_trigger_cpumask_backtrace+0x198/0x310 lib/nmi_backtrace.c:62
+ trigger_all_cpu_backtrace include/linux/nmi.h:160 [inline]
+ check_hung_uninterruptible_tasks kernel/hung_task.c:222 [inline]
+ watchdog+0xfaf/0xff0 kernel/hung_task.c:379
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+Sending NMI from CPU 0 to CPUs 1:
+NMI backtrace for cpu 1
+CPU: 1 PID: 48 Comm: kworker/u4:3 Not tainted 6.7.0-rc7-syzkaller-00016-gf5837722ffec #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/17/2023
+Workqueue: events_unbound toggle_allocation_gate
+RIP: 0010:native_save_fl arch/x86/include/asm/irqflags.h:26 [inline]
+RIP: 0010:arch_local_save_flags arch/x86/include/asm/irqflags.h:67 [inline]
+RIP: 0010:arch_local_irq_save arch/x86/include/asm/irqflags.h:103 [inline]
+RIP: 0010:lock_acquire+0x176/0x530 kernel/locking/lockdep.c:5750
+Code: 8d bc 24 80 00 00 00 4c 89 fb 48 c1 eb 03 42 80 3c 2b 00 74 08 4c 89 ff e8 c7 59 7d 00 48 c7 84 24 80 00 00 00 00 00 00 00 9c <8f> 84 24 80 00 00 00 42 80 3c 2b 00 74 08 4c 89 ff e8 04 59 7d 00
+RSP: 0018:ffffc90000b8f798 EFLAGS: 00000246
+RAX: 0000000000000000 RBX: 1ffff92000171f04 RCX: ffffffff816d25b4
+RDX: 0000000000000000 RSI: ffffffff8bbde140 RDI: ffffffff8bbde100
+RBP: ffffc90000b8f8e8 R08: ffffffff8f00c16f R09: 1ffffffff1e0182d
+R10: dffffc0000000000 R11: fffffbfff1e0182e R12: 1ffff92000171efc
+R13: dffffc0000000000 R14: 0000000000000000 R15: ffffc90000b8f820
+FS:  0000000000000000(0000) GS:ffff8880b9900000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055f3ecba5680 CR3: 000000000d731000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <NMI>
+ </NMI>
+ <TASK>
+ __mutex_lock_common kernel/locking/mutex.c:603 [inline]
+ __mutex_lock+0x136/0xd60 kernel/locking/mutex.c:747
+ arch_jump_label_transform_queue+0x59/0xf0 arch/x86/kernel/jump_label.c:136
+ __jump_label_update+0x177/0x3a0 kernel/jump_label.c:475
+ static_key_disable_cpuslocked+0xce/0x1b0 kernel/jump_label.c:235
+ static_key_disable+0x1a/0x20 kernel/jump_label.c:243
+ toggle_allocation_gate+0x1b8/0x250 mm/kfence/core.c:835
+ process_one_work kernel/workqueue.c:2627 [inline]
+ process_scheduled_works+0x90f/0x1420 kernel/workqueue.c:2700
+ worker_thread+0xa5f/0x1000 kernel/workqueue.c:2781
+ kthread+0x2d3/0x370 kernel/kthread.c:388
+ ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x11/0x20 arch/x86/entry/entry_64.S:242
+ </TASK>
+INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.110 msecs
 
 
---=20
-=E7=9C=9F=E5=AE=9F=E3=81=AF=E3=81=84=E3=81=A4=E3=82=82=E4=B8=80=E3=81=A4=EF=
-=BC=81/ Always, there's only one truth!
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
