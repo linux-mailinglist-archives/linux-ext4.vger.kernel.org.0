@@ -1,90 +1,90 @@
-Return-Path: <linux-ext4+bounces-626-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-627-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 378A1821C35
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 14:07:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1169E821C45
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 14:11:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4940C1C21FE8
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 13:07:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B45FB2824D2
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 13:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A908F9D2;
-	Tue,  2 Jan 2024 13:07:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931E4F9EA;
+	Tue,  2 Jan 2024 13:11:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z6wpNsQ2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="r2RZobTY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z6wpNsQ2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="r2RZobTY"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AqoAD0/X";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6LeTzK6+";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="3NAA7Elk";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wj0yvUrD"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BEB0F9C4;
-	Tue,  2 Jan 2024 13:06:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF019F9D6;
+	Tue,  2 Jan 2024 13:11:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id B082F1FCF9;
-	Tue,  2 Jan 2024 13:06:56 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C0BFD1FCFA;
+	Tue,  2 Jan 2024 13:10:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704200816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1704201059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N1HK5st0fjaPdug9MxLaEr7IcyAcjUJdi+MRE5GHHGs=;
-	b=Z6wpNsQ2HKtELcdmv+yjRWtIvj3Ifwl+6HM1EUbOv+kh86MCgfAZ9LmpE+GpJBKdi0yoc8
-	HBADIoRmDXl4eb1NMqfJRu2eBzCojJTplxCoZYa4u2TrjOxgQ8yYmaLuLMuBdN1PDcSXrY
-	luDW+mANvmJGaL8ctxbCREyqnLWe4fE=
+	bh=ewOagNDatWoGcLk4sHCd4WMmPbxbCyW84Y0Oe5vxbh8=;
+	b=AqoAD0/XtGHHD1ttzdpii3VJOQjFFURgPWyvtRMoCNytCGQpOzWta0Kwg4yipRwG4jlLRE
+	2nN9mLe5OcaAUGKeao5wXmoyO+WU1nin7+oMICY3lDxUlMGSCBFIJbhp5UrMDR5MGuDF0W
+	qQS6GkeSJ/0XbxP0FWr3WpxCCGW/+kM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704200816;
+	s=susede2_ed25519; t=1704201059;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N1HK5st0fjaPdug9MxLaEr7IcyAcjUJdi+MRE5GHHGs=;
-	b=r2RZobTY6VJjm0gY36hXLiUeGIId6dHnVWXCxVYx9dg+E82A/VeRjkhp4HgJwyLpL/HfpH
-	wxVxQEB/d1ah73BA==
+	bh=ewOagNDatWoGcLk4sHCd4WMmPbxbCyW84Y0Oe5vxbh8=;
+	b=6LeTzK6+5PJmKAk5IbKjxzs9zbX4klIOA9knYjt6WnhBbZBg/c0tYiBDqFIZNcuY8QM5FX
+	baDhaZAZvLWFgEAw==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704200816; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1704201058; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N1HK5st0fjaPdug9MxLaEr7IcyAcjUJdi+MRE5GHHGs=;
-	b=Z6wpNsQ2HKtELcdmv+yjRWtIvj3Ifwl+6HM1EUbOv+kh86MCgfAZ9LmpE+GpJBKdi0yoc8
-	HBADIoRmDXl4eb1NMqfJRu2eBzCojJTplxCoZYa4u2TrjOxgQ8yYmaLuLMuBdN1PDcSXrY
-	luDW+mANvmJGaL8ctxbCREyqnLWe4fE=
+	bh=ewOagNDatWoGcLk4sHCd4WMmPbxbCyW84Y0Oe5vxbh8=;
+	b=3NAA7ElkfkvzRKGYWeEVWgtQOkp1oTuAlyECSeeCfqhpSUdGNdLgSpMCgP5k6y8RKokzXj
+	TvBb1AozTmsyEa5BM6jpkUnL6nYfNKl+zaLH/ykKG6JniTQWR/3O04P5yvNZ7KvX65ta1B
+	4BFZkGZQtjQT1gimps0aU/xhgKym+9A=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704200816;
+	s=susede2_ed25519; t=1704201058;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=N1HK5st0fjaPdug9MxLaEr7IcyAcjUJdi+MRE5GHHGs=;
-	b=r2RZobTY6VJjm0gY36hXLiUeGIId6dHnVWXCxVYx9dg+E82A/VeRjkhp4HgJwyLpL/HfpH
-	wxVxQEB/d1ah73BA==
+	bh=ewOagNDatWoGcLk4sHCd4WMmPbxbCyW84Y0Oe5vxbh8=;
+	b=wj0yvUrDjCoo8w8zi3CydzQsB5lYANagpLlJaguN3/0dsZ6cY3u+s18woiXVGhLk2eymrf
+	Mj9xPTgIvD2EflCQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A555513AC6;
-	Tue,  2 Jan 2024 13:06:56 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B1C1713AC6;
+	Tue,  2 Jan 2024 13:10:58 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id okJdKHAKlGU3SgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 02 Jan 2024 13:06:56 +0000
+	id dCtiK2ILlGVCSwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 02 Jan 2024 13:10:58 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5B919A07EF; Tue,  2 Jan 2024 14:06:41 +0100 (CET)
-Date: Tue, 2 Jan 2024 14:06:41 +0100
+	id 3ADC3A07EF; Tue,  2 Jan 2024 14:10:58 +0100 (CET)
+Date: Tue, 2 Jan 2024 14:10:58 +0100
 From: Jan Kara <jack@suse.cz>
 To: Kemeng Shi <shikemeng@huaweicloud.com>
 Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 7/8] ext4: remove unused return value of
- ext4_mb_release_group_pa
-Message-ID: <20240102130641.5mzf24ydmov3itxi@quack3>
+Subject: Re: [PATCH 8/8] ext4: remove unnecessary parameter "needed" in
+ ext4_discard_preallocations
+Message-ID: <20240102131058.3ue6phafczjezlic@quack3>
 References: <20231125161143.3945726-1-shikemeng@huaweicloud.com>
- <20231125161143.3945726-8-shikemeng@huaweicloud.com>
+ <20231125161143.3945726-9-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -93,87 +93,72 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20231125161143.3945726-8-shikemeng@huaweicloud.com>
-X-Spam-Level: *
+In-Reply-To: <20231125161143.3945726-9-shikemeng@huaweicloud.com>
 X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Z6wpNsQ2;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=r2RZobTY
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.01 / 50.00];
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spamd-Bar: /
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [0.08 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
 	 MIME_GOOD(-0.10)[text/plain];
 	 RCPT_COUNT_FIVE(0.00)[5];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 DKIM_TRACE(0.00)[suse.cz:+];
 	 MX_GOOD(-0.01)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,huaweicloud.com:email,suse.com:email];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,huaweicloud.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 MID_RHS_NOT_FQDN(0.50)[];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[40.57%]
-X-Spam-Score: -1.01
-X-Rspamd-Queue-Id: B082F1FCF9
-X-Spam-Flag: NO
+	 BAYES_HAM(-0.11)[65.92%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=3NAA7Elk;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wj0yvUrD
+X-Spam-Score: 0.08
+X-Rspamd-Queue-Id: C0BFD1FCFA
 
-On Sun 26-11-23 00:11:42, Kemeng Shi wrote:
-> Remove unused return value of ext4_mb_release_group_pa.
+On Sun 26-11-23 00:11:43, Kemeng Shi wrote:
+> The "needed" controls the number of ext4_prealloc_space to discard in
+> ext4_discard_preallocations. Function ext4_discard_preallocations is
+> supposed to discard all non-used preallocated blocks when "needed"
+> is 0 and now ext4_discard_preallocations is always called with "needed"
+> = 0. Remove unnecessary parameter "needed" and remove all non-used
+> preallocated spaces in ext4_discard_preallocations to simplify the
+> code.
+> 
+> Note: If count of non-used preallocated spaces could be more than
+> UINT_MAX, there was a memory leak as some non-used preallocated
+> spaces are left unused and this commit will fix it. Otherwise,
+> there is no behavior change.
 > 
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Looks good. Feel free to add:
+Looks good, just one nit:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> @@ -5491,15 +5491,12 @@ void ext4_discard_preallocations(struct inode *inode, unsigned int needed)
+>  	mb_debug(sb, "discard preallocation for inode %lu\n",
+>  		 inode->i_ino);
+>  	trace_ext4_discard_preallocations(inode,
+> -			atomic_read(&ei->i_prealloc_active), needed);
+> -
+> -	if (needed == 0)
+> -		needed = UINT_MAX;
+> +			atomic_read(&ei->i_prealloc_active), 0);
+
+There's no point in always returning 0 in the tracepoint so I'd just update
+it to not print the 'needed' value as well.
 
 								Honza
-
-> ---
->  fs/ext4/mballoc.c | 6 ++----
->  1 file changed, 2 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 1ed6d1d5a..e6561a09d 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -5330,7 +5330,7 @@ ext4_mb_release_inode_pa(struct ext4_buddy *e4b, struct buffer_head *bitmap_bh,
->  	atomic_add(free, &sbi->s_mb_discarded);
->  }
->  
-> -static noinline_for_stack int
-> +static noinline_for_stack void
->  ext4_mb_release_group_pa(struct ext4_buddy *e4b,
->  				struct ext4_prealloc_space *pa)
->  {
-> @@ -5344,13 +5344,11 @@ ext4_mb_release_group_pa(struct ext4_buddy *e4b,
->  	if (unlikely(group != e4b->bd_group && pa->pa_len != 0)) {
->  		ext4_warning(sb, "bad group: expected %u, group %u, pa_start %llu",
->  			     e4b->bd_group, group, pa->pa_pstart);
-> -		return 0;
-> +		return;
->  	}
->  	mb_free_blocks(pa->pa_inode, e4b, bit, pa->pa_len);
->  	atomic_add(pa->pa_len, &EXT4_SB(sb)->s_mb_discarded);
->  	trace_ext4_mballoc_discard(sb, NULL, group, bit, pa->pa_len);
-> -
-> -	return 0;
->  }
->  
->  /*
-> -- 
-> 2.30.0
-> 
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
