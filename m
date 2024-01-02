@@ -1,140 +1,182 @@
-Return-Path: <linux-ext4+bounces-619-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-620-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E71F7821C03
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 13:45:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E89A821C1F
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 14:00:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 730591F24DA4
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 12:45:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C4C51C21ED4
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jan 2024 13:00:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7211E12E5E;
-	Tue,  2 Jan 2024 12:42:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84246F9CC;
+	Tue,  2 Jan 2024 13:00:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DqM8gO8a";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YSEWdZ6X";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bszH1oMV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wP5jwO0z"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A847F156F4;
-	Tue,  2 Jan 2024 12:42:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4CD51x7lz4f3nK9;
-	Tue,  2 Jan 2024 20:42:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id DF7041A0803;
-	Tue,  2 Jan 2024 20:42:18 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgBnwUGUBJRl+EvDFQ--.31823S29;
-	Tue, 02 Jan 2024 20:42:18 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ritesh.list@gmail.com,
-	hch@infradead.org,
-	djwong@kernel.org,
-	willy@infradead.org,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com,
-	wangkefeng.wang@huawei.com
-Subject: [RFC PATCH v2 25/25] ext4: enable large folio for regular file with iomap buffered IO path
-Date: Tue,  2 Jan 2024 20:39:18 +0800
-Message-Id: <20240102123918.799062-26-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240102123918.799062-1-yi.zhang@huaweicloud.com>
-References: <20240102123918.799062-1-yi.zhang@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C216F9D2;
+	Tue,  2 Jan 2024 13:00:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8E5F921EB7;
+	Tue,  2 Jan 2024 13:00:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704200447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LOBRnj/7Vs57t/uFTKL7wGB7NFXlu9ZAT6BxFnJuEWU=;
+	b=DqM8gO8atjYerO6U9emHONbUTxioXoLtPhlXwz4D0QJ79uUay3wtGsr05Zef6lJe5Ar/i9
+	F5Kd3C1JWw4AqD8S6UQzlzC2jPUHdT57TpUeji1Dlh9Gj/fiA16aR5B+NMrj42oaTmbLcD
+	xUKLTzNL2aXCNdDYN42loSsBKyiJM8M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704200447;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LOBRnj/7Vs57t/uFTKL7wGB7NFXlu9ZAT6BxFnJuEWU=;
+	b=YSEWdZ6XD9UQTQ0Z/tipdEBfWyHDr/ROihBIjPzGj7sR25/Y5OUbjDAhKJfiTDPzMUivN1
+	nAd6k5y+uKOf+qAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704200446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LOBRnj/7Vs57t/uFTKL7wGB7NFXlu9ZAT6BxFnJuEWU=;
+	b=bszH1oMVaNvMGb/TCE/TvM9Jdk6Kjq+H1uPFPUw3wJFGpQjYqsAoHy4NbUGLJqto46UIjI
+	pfOS2JKyq6nxyK/gSjmAjDCaDovYk087aUJeR2/Yxo6wNpz31F5xdcQ4+kNNaZhROx2auG
+	pLDytBJJs2a2coowEXus5NYHdQpvfxc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704200446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=LOBRnj/7Vs57t/uFTKL7wGB7NFXlu9ZAT6BxFnJuEWU=;
+	b=wP5jwO0zswn8TCbKcR10qms9amI0Je9khH7bsS2mxXJKLpUSd6pMHl/6qqW3bA3hh88T+A
+	4F3mt7SM7T9EIGAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 825511340C;
+	Tue,  2 Jan 2024 13:00:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 9DbOH/4IlGWtSAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 02 Jan 2024 13:00:46 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2F4F0A07EF; Tue,  2 Jan 2024 14:00:46 +0100 (CET)
+Date: Tue, 2 Jan 2024 14:00:46 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/8] ext4: remove unused return value of __mb_check_buddy
+Message-ID: <20240102130046.uc4iubviimhgpmis@quack3>
+References: <20231125161143.3945726-1-shikemeng@huaweicloud.com>
+ <20231125161143.3945726-2-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBnwUGUBJRl+EvDFQ--.31823S29
-X-Coremail-Antispam: 1UD129KBjvJXoW7uw4DXFWfXF47Jw4xAr48Xrb_yoW8Zw4xpr
-	nIk3WrGrW8X34q9an3Kry7Zr1jqa18K3yUurWS9w1DuFZrJa4IgF4jkF1xAF48trW8A3yS
-	qF4Ikr15Zw13C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW5JVW7JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUl
-	2NtUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20231125161143.3945726-2-shikemeng@huaweicloud.com>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: ****
+X-Spam-Score: 4.30
+X-Spamd-Result: default: False [4.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_SPAM(5.10)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Flag: NO
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Sun 26-11-23 00:11:36, Kemeng Shi wrote:
+> Remove unused return value of __mb_check_buddy.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-After we convert buffered IO path to iomap for regular files, we can
-enable large foilo for them together, that should be able to bring a lot
-of performance gains for large IO.
+Looks good. Feel free to add:
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/ialloc.c      | 4 +++-
- fs/ext4/inode.c       | 4 +++-
- fs/ext4/move_extent.c | 1 +
- 3 files changed, 7 insertions(+), 2 deletions(-)
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 956b9d69c559..5a22fe5aa46b 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1336,8 +1336,10 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 		}
- 	}
- 
--	if (ext4_should_use_buffered_iomap(inode))
-+	if (ext4_should_use_buffered_iomap(inode)) {
- 		ext4_set_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP);
-+		mapping_set_large_folios(inode->i_mapping);
-+	}
- 
- 	if (ext4_handle_valid(handle)) {
- 		ei->i_sync_tid = handle->h_transaction->t_tid;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 2d2b8f2b634d..49a5b9b85407 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5319,8 +5319,10 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 	if (ret)
- 		goto bad_inode;
- 
--	if (ext4_should_use_buffered_iomap(inode))
-+	if (ext4_should_use_buffered_iomap(inode)) {
- 		ext4_set_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP);
-+		mapping_set_large_folios(inode->i_mapping);
-+	}
- 
- 	if (S_ISREG(inode->i_mode)) {
- 		inode->i_op = &ext4_file_inode_operations;
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index 7a9ca71d4cac..aecd6112d8a2 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -560,6 +560,7 @@ static int ext4_disable_buffered_iomap_aops(struct inode *inode)
- 	truncate_inode_pages(inode->i_mapping, 0);
- 
- 	ext4_clear_inode_state(inode, EXT4_STATE_BUFFERED_IOMAP);
-+	mapping_clear_large_folios(inode->i_mapping);
- 	ext4_set_aops(inode);
- 	filemap_invalidate_unlock(inode->i_mapping);
- 
+								Honza
+
+> ---
+>  fs/ext4/mballoc.c | 7 +++----
+>  1 file changed, 3 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 454d56126..9f9b8dd06 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -677,7 +677,7 @@ do {									\
+>  	}								\
+>  } while (0)
+>  
+> -static int __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+> +static void __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  				const char *function, int line)
+>  {
+>  	struct super_block *sb = e4b->bd_sb;
+> @@ -696,7 +696,7 @@ static int __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  	void *buddy2;
+>  
+>  	if (e4b->bd_info->bb_check_counter++ % 10)
+> -		return 0;
+> +		return;
+>  
+>  	while (order > 1) {
+>  		buddy = mb_find_buddy(e4b, order, &max);
+> @@ -758,7 +758,7 @@ static int __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  
+>  	grp = ext4_get_group_info(sb, e4b->bd_group);
+>  	if (!grp)
+> -		return NULL;
+> +		return;
+>  	list_for_each(cur, &grp->bb_prealloc_list) {
+>  		ext4_group_t groupnr;
+>  		struct ext4_prealloc_space *pa;
+> @@ -768,7 +768,6 @@ static int __mb_check_buddy(struct ext4_buddy *e4b, char *file,
+>  		for (i = 0; i < pa->pa_len; i++)
+>  			MB_CHECK_ASSERT(mb_test_bit(k + i, buddy));
+>  	}
+> -	return 0;
+>  }
+>  #undef MB_CHECK_ASSERT
+>  #define mb_check_buddy(e4b) __mb_check_buddy(e4b,	\
+> -- 
+> 2.30.0
+> 
+> 
 -- 
-2.39.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
