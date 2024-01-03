@@ -1,132 +1,137 @@
-Return-Path: <linux-ext4+bounces-661-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-662-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C8DE822E3C
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 14:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 426378236F8
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 22:14:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F10141F243E2
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 13:28:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C91701F259F8
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 21:14:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50796199B6;
-	Wed,  3 Jan 2024 13:28:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605331D55B;
+	Wed,  3 Jan 2024 21:14:41 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from server.interlinx.bc.ca (mail.interlinx.bc.ca [69.165.217.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C35199B2;
-	Wed,  3 Jan 2024 13:28:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T4rBt4xr0zZgRh;
-	Wed,  3 Jan 2024 21:28:22 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 406BA1404F8;
-	Wed,  3 Jan 2024 21:28:36 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Wed, 3 Jan 2024 21:28:35 +0800
-Subject: Re: [linus:master] [jbd2] 6a3afb6ac6: fileio.latency_95th_ms 92.5%
- regression
-To: Jan Kara <jack@suse.cz>
-CC: kernel test robot <oliver.sang@intel.com>, <oe-lkp@lists.linux.dev>,
-	<lkp@intel.com>, <linux-kernel@vger.kernel.org>, Theodore Ts'o
-	<tytso@mit.edu>, <linux-ext4@vger.kernel.org>, <ying.huang@intel.com>,
-	<feng.tang@intel.com>, <fengwei.yin@intel.com>, <yukuai3@huawei.com>
-References: <202401021525.a27b9444-oliver.sang@intel.com>
- <dcc72d34-89e1-6181-3556-a1a981256cc6@huawei.com>
- <20240103094907.iupboelwjxi243h3@quack3>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <5fb892c2-a532-84bf-fbe2-148b32079fa4@huawei.com>
-Date: Wed, 3 Jan 2024 21:28:35 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78AFF1DA21
+	for <linux-ext4@vger.kernel.org>; Wed,  3 Jan 2024 21:14:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=interlinx.bc.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=interlinx.bc.ca
+Received: from pc.interlinx.bc.ca (pc.interlinx.bc.ca [IPv6:fd31:aeb1:48df:0:3b14:e643:83d8:7017])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by server.interlinx.bc.ca (Postfix) with ESMTPSA id 5E933226D4
+	for <linux-ext4@vger.kernel.org>; Wed,  3 Jan 2024 16:14:37 -0500 (EST)
+Message-ID: <536d25b24364eaf11a38b47e853008c3115d82b8.camel@interlinx.bc.ca>
+Subject: e2scrub finds corruption immediately after mounting
+From: "Brian J. Murrell" <brian@interlinx.bc.ca>
+To: linux-ext4@vger.kernel.org
+Date: Wed, 03 Jan 2024 16:14:36 -0500
+Autocrypt: addr=brian@interlinx.bc.ca; prefer-encrypt=mutual;
+ keydata=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
+Content-Type: multipart/signed; micalg="pgp-sha256";
+	protocol="application/pgp-signature"; boundary="=-hC3Inkwl1GALNa9mwju4"
+User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240103094907.iupboelwjxi243h3@quack3>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
 
-On 2024/1/3 17:49, Jan Kara wrote:
-> Hello!
-> 
-> On Wed 03-01-24 11:31:39, Zhang Yi wrote:
->> On 2024/1/2 15:31, kernel test robot wrote:
->>>
->>>
->>> Hello,
->>>
->>> kernel test robot noticed a 92.5% regression of fileio.latency_95th_ms on:
->>
->> This seems a little weird, the tests doesn't use blk-cgroup, and the patch
->> increase IO priority in WBT, so there shouldn't be any negative influence in
->> theory.
-> 
-> I don't have a great explanation either but there could be some impact e.g.
-> due to a different request merging of IO done by JBD2 vs the flush worker or
-> something like that. Note that the throughput reduction is only 5.7% so it
-> is not huge.
 
-Yeah, make sense, this should be one explanation that can be thought of at
-the moment.
+--=-hC3Inkwl1GALNa9mwju4
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-> 
->> I've tested sysbench on my machine with Intel Xeon Gold 6240 CPU,
->> 400GB memory with HDD disk, and couldn't reproduce this regression.
->>
->> ==
->> Without 6a3afb6ac6 ("jbd2: increase the journal IO's priority")
->> ==
->>
->>  $ sysbench fileio --events=0 --threads=128 --time=600 --file-test-mode=seqwr --file-total-size=68719476736 --file-io-mode=sync --file-num=1024 run
->>
->>   sysbench 1.1.0-df89d34 (using bundled LuaJIT 2.1.0-beta3)
->>
->>   Running the test with following options:
->>   Number of threads: 128
->>   Initializing random number generator from current time
->>
->>
->>   Extra file open flags: (none)
->>   1024 files, 64MiB each
->>   64GiB total file size
->>   Block size 16KiB
->>   Periodic FSYNC enabled, calling fsync() each 100 requests.
->>   Calling fsync() at the end of test, Enabled.
->>   Using synchronous I/O mode
->>   Doing sequential write (creation) test
->>   Initializing worker threads...
->>
->>   Threads started!
->>
->>
->>   Throughput:
->>            read:  IOPS=0.00 0.00 MiB/s (0.00 MB/s)
->>            write: IOPS=31961.19 499.39 MiB/s (523.65 MB/s)
->>            fsync: IOPS=327500.24
-> 
-> Well, your setup seems to be very different from what LKP was using. You
-> are achieving ~500 MB/s (likely because all the files fit into the cache
-> and more or less even within the dirty limit of the page cache) while LKP
-> run achieves only ~54 MB/s (i.e., we are pretty much bound by the rather
-> slow disk). I'd try running with something like 32GB of RAM to really see
-> the disk speed impact...
-> 
+I am trying to migrate from lvcheck
+(https://github.com/BryanKadzban/lvcheck) to using the officially
+supported e2scrub[_all] kit.
 
-I'm afraid I missed the vmstat.io.bo changes, I will limit the dirty ratio
-and test it again tomorrow.
+I am finding that e2scrub very often (much more than lvcheck even)
+finds corruption and wants me to do an offline e2fsck.  Not only does
+it do this immediately after booting a system that includes filesystem
+checks (that were caused by e2scrub previously setting a filesystem to
+be checked on next boot), but it happens immediately after I run an
+e2fsck and then mount the filesystem, even without any activity on it.
+Observe:
 
-Thanks,
-Yi.
+# umount /opt
+# e2fsck -y /dev/rootvol_tmp/almalinux8_opt=20
+e2fsck 1.45.6 (20-Mar-2020)
+/dev/mapper/rootvol_tmp-almalinux8_opt: clean, 1698/178816 files,
+482404/716800 blocks
+# e2scrub /dev/rootvol_tmp/almalinux8_opt=20
+  Logical volume "almalinux8_opt.e2scrub" created.
+e2fsck 1.45.6 (20-Mar-2020)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/rootvol_tmp/almalinux8_opt.e2scrub: 1698/178816 files (86.9% non-
+contiguous), 482404/716800 blocks
+/dev/rootvol_tmp/almalinux8_opt: Scrub succeeded.
+tune2fs 1.45.6 (20-Mar-2020)
+Setting current mount count to 0
+Setting time filesystem last checked to Wed Jan  3 11:37:04 2024
+
+  Logical volume "almalinux8_opt.e2scrub" successfully removed.
+# mount /opt
+# e2scrub /dev/rootvol_tmp/almalinux8_opt=20
+  Logical volume "almalinux8_opt.e2scrub" created.
+e2fsck 1.45.6 (20-Mar-2020)
+Pass 1: Checking inodes, blocks, and sizes
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+/dev/rootvol_tmp/almalinux8_opt.e2scrub: 1698/178816 files (86.9% non-
+contiguous), 482404/716800 blocks
+/dev/rootvol_tmp/almalinux8_opt: Scrub FAILED due to corruption!=20
+Unmount and run e2fsck -y.
+tune2fs 1.45.6 (20-Mar-2020)
+Setting filesystem error flag to force fsck.
+  Logical volume "almalinux8_opt.e2scrub" successfully removed.
+
+So as you can see, I unmount /opt, run an e2fsck -y on it to clean it
+and then before mounting run e2scrub and it finds the filesystem clean.
+Good so far.
+
+I then mount it and then immediately run another e2scrub on it and that
+finds it dirty and wants me to unmount and run another e2fsck -y on it.
+But how can that be?  Surely an e2scrub on a freshly cleaned and
+mounted filesystem (with no activity on it in between) should be clean,
+yes?
+
+Cheers,
+b.
+
+
+--=-hC3Inkwl1GALNa9mwju4
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCAAdFiEE8B/A+mOVz5cTNBuZ2sHQNBbLyKAFAmWVzjwACgkQ2sHQNBbL
+yKCTEAf9HIT8ErfiTz1Wbu1SnR1evMr7HhFqzcsiBBQkAdFIrG4MsRjjJvsz+PUe
+BApA7T/eb4wXarTMzQaGEQ2ut5xMd0GdUAafyzati1NNShQccgZciB//gBt+Ntjb
+nz9d2z6ONcnZJRtDgtOGysMhaJiiD58AbmuSYQWuGZ2THtjUJsZJrZnLOk8QlUGs
+4SH0H9woD7xGlohGulIBXXW1th88Qmy/aVZQGHrjC86AafDds8QjcUts3MhCuSm0
+rx4K5g1TezB3mUeBiiF7KIMxxSdE5JIyP4IZWSCa3unQyAtof9WtKF6fe/u3N0JJ
+P+uNY9qsPZ7vmVH6a5sFKuh4O9uPnA==
+=GfRF
+-----END PGP SIGNATURE-----
+
+--=-hC3Inkwl1GALNa9mwju4--
 
