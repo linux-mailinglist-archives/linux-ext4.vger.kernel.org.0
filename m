@@ -1,47 +1,48 @@
-Return-Path: <linux-ext4+bounces-660-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-661-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ED54822E21
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 14:21:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C8DE822E3C
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 14:28:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2654428514D
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 13:21:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F10141F243E2
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 13:28:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C97199A9;
-	Wed,  3 Jan 2024 13:21:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50796199B6;
+	Wed,  3 Jan 2024 13:28:41 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA2FB1947B;
-	Wed,  3 Jan 2024 13:20:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4r2B0dB3z4f3lfZ;
-	Wed,  3 Jan 2024 21:20:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id BC6371A0AB2;
-	Wed,  3 Jan 2024 21:20:55 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgAHVw00X5VlKmyqFQ--.15497S3;
-	Wed, 03 Jan 2024 21:20:53 +0800 (CST)
-Subject: Re: [RFC PATCH v2 05/25] ext4: make ext4_map_blocks() distinguish
- delalloc only extent
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C35199B2;
+	Wed,  3 Jan 2024 13:28:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T4rBt4xr0zZgRh;
+	Wed,  3 Jan 2024 21:28:22 +0800 (CST)
+Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
+	by mail.maildlp.com (Postfix) with ESMTPS id 406BA1404F8;
+	Wed,  3 Jan 2024 21:28:36 +0800 (CST)
+Received: from [10.174.176.34] (10.174.176.34) by
+ canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Wed, 3 Jan 2024 21:28:35 +0800
+Subject: Re: [linus:master] [jbd2] 6a3afb6ac6: fileio.latency_95th_ms 92.5%
+ regression
 To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, ritesh.list@gmail.com, hch@infradead.org,
- djwong@kernel.org, willy@infradead.org, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
-References: <20240102123918.799062-1-yi.zhang@huaweicloud.com>
- <20240102123918.799062-6-yi.zhang@huaweicloud.com>
- <20240103113131.z4jhwim7bzynhrlx@quack3>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <62da3bfb-6d50-2eb9-1b9a-13f5287f562d@huaweicloud.com>
-Date: Wed, 3 Jan 2024 21:20:51 +0800
+CC: kernel test robot <oliver.sang@intel.com>, <oe-lkp@lists.linux.dev>,
+	<lkp@intel.com>, <linux-kernel@vger.kernel.org>, Theodore Ts'o
+	<tytso@mit.edu>, <linux-ext4@vger.kernel.org>, <ying.huang@intel.com>,
+	<feng.tang@intel.com>, <fengwei.yin@intel.com>, <yukuai3@huawei.com>
+References: <202401021525.a27b9444-oliver.sang@intel.com>
+ <dcc72d34-89e1-6181-3556-a1a981256cc6@huawei.com>
+ <20240103094907.iupboelwjxi243h3@quack3>
+From: Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <5fb892c2-a532-84bf-fbe2-148b32079fa4@huawei.com>
+Date: Wed, 3 Jan 2024 21:28:35 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 Precedence: bulk
@@ -50,119 +51,82 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240103113131.z4jhwim7bzynhrlx@quack3>
-Content-Type: text/plain; charset=utf-8
+In-Reply-To: <20240103094907.iupboelwjxi243h3@quack3>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgAHVw00X5VlKmyqFQ--.15497S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZFWxGw47CFy5AF43trWkZwb_yoW5Zw48pa
-	95AF1UKan8Ww1UuayIqF1UJr1UKa1Fkay7Cr4rtryFkasxGr1fKFn09FsxZFWDtrWxJF1U
-	XFW5t3WUCanIkFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ canpemm500005.china.huawei.com (7.192.104.229)
 
-On 2024/1/3 19:31, Jan Kara wrote:
-> On Tue 02-01-24 20:38:58, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
+On 2024/1/3 17:49, Jan Kara wrote:
+> Hello!
+> 
+> On Wed 03-01-24 11:31:39, Zhang Yi wrote:
+>> On 2024/1/2 15:31, kernel test robot wrote:
+>>>
+>>>
+>>> Hello,
+>>>
+>>> kernel test robot noticed a 92.5% regression of fileio.latency_95th_ms on:
 >>
->> Add a new map flag EXT4_MAP_DELAYED to indicate the mapping range is a
->> delayed allocated only (not unwritten) one, and making
->> ext4_map_blocks() can distinguish it, no longer mixing it with holes.
+>> This seems a little weird, the tests doesn't use blk-cgroup, and the patch
+>> increase IO priority in WBT, so there shouldn't be any negative influence in
+>> theory.
+> 
+> I don't have a great explanation either but there could be some impact e.g.
+> due to a different request merging of IO done by JBD2 vs the flush worker or
+> something like that. Note that the throughput reduction is only 5.7% so it
+> is not huge.
+
+Yeah, make sense, this should be one explanation that can be thought of at
+the moment.
+
+> 
+>> I've tested sysbench on my machine with Intel Xeon Gold 6240 CPU,
+>> 400GB memory with HDD disk, and couldn't reproduce this regression.
 >>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> One small comment below.
-> 
->> ---
->>  fs/ext4/ext4.h    | 4 +++-
->>  fs/ext4/extents.c | 5 +++--
->>  fs/ext4/inode.c   | 2 ++
->>  3 files changed, 8 insertions(+), 3 deletions(-)
+>> ==
+>> Without 6a3afb6ac6 ("jbd2: increase the journal IO's priority")
+>> ==
 >>
->> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->> index a5d784872303..55195909d32f 100644
->> --- a/fs/ext4/ext4.h
->> +++ b/fs/ext4/ext4.h
->> @@ -252,8 +252,10 @@ struct ext4_allocation_request {
->>  #define EXT4_MAP_MAPPED		BIT(BH_Mapped)
->>  #define EXT4_MAP_UNWRITTEN	BIT(BH_Unwritten)
->>  #define EXT4_MAP_BOUNDARY	BIT(BH_Boundary)
->> +#define EXT4_MAP_DELAYED	BIT(BH_Delay)
->>  #define EXT4_MAP_FLAGS		(EXT4_MAP_NEW | EXT4_MAP_MAPPED |\
->> -				 EXT4_MAP_UNWRITTEN | EXT4_MAP_BOUNDARY)
->> +				 EXT4_MAP_UNWRITTEN | EXT4_MAP_BOUNDARY |\
->> +				 EXT4_MAP_DELAYED)
->>  
->>  struct ext4_map_blocks {
->>  	ext4_fsblk_t m_pblk;
->> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->> index 0892d0568013..fc69f13cf510 100644
->> --- a/fs/ext4/extents.c
->> +++ b/fs/ext4/extents.c
->> @@ -4073,9 +4073,10 @@ static void ext4_ext_determine_hole(struct inode *inode,
->>  	} else if (in_range(map->m_lblk, es.es_lblk, es.es_len)) {
->>  		/*
->>  		 * Straddle the beginning of the queried range, it's no
->> -		 * longer a hole, adjust the length to the delayed extent's
->> -		 * after map->m_lblk.
->> +		 * longer a hole, mark it is a delalloc and adjust the
->> +		 * length to the delayed extent's after map->m_lblk.
->>  		 */
->> +		map->m_flags |= EXT4_MAP_DELAYED;
+>>  $ sysbench fileio --events=0 --threads=128 --time=600 --file-test-mode=seqwr --file-total-size=68719476736 --file-io-mode=sync --file-num=1024 run
+>>
+>>   sysbench 1.1.0-df89d34 (using bundled LuaJIT 2.1.0-beta3)
+>>
+>>   Running the test with following options:
+>>   Number of threads: 128
+>>   Initializing random number generator from current time
+>>
+>>
+>>   Extra file open flags: (none)
+>>   1024 files, 64MiB each
+>>   64GiB total file size
+>>   Block size 16KiB
+>>   Periodic FSYNC enabled, calling fsync() each 100 requests.
+>>   Calling fsync() at the end of test, Enabled.
+>>   Using synchronous I/O mode
+>>   Doing sequential write (creation) test
+>>   Initializing worker threads...
+>>
+>>   Threads started!
+>>
+>>
+>>   Throughput:
+>>            read:  IOPS=0.00 0.00 MiB/s (0.00 MB/s)
+>>            write: IOPS=31961.19 499.39 MiB/s (523.65 MB/s)
+>>            fsync: IOPS=327500.24
 > 
-> I wouldn't set delalloc bit here. If there's delalloc extent containing
-> lblk now, it means the caller of ext4_map_blocks() is not holding i_rwsem
-> (otherwise we would have found already in ext4_map_blocks()) and thus
-> delalloc info is unreliable anyway. So I wouldn't bother. But it's worth a
-> comment here like:
-> 
-> 		/*
-> 		 * There's delalloc extent containing lblk. It must have
-> 		 * been added after ext4_map_blocks() checked the extent
-> 		 * status tree so we are not holding i_rwsem and delalloc
-> 		 * info is only stabilized by i_data_sem we are going to
-> 		 * release soon. Don't modify the extent status tree and
-> 		 * report extent as a hole.
-> 		 */
+> Well, your setup seems to be very different from what LKP was using. You
+> are achieving ~500 MB/s (likely because all the files fit into the cache
+> and more or less even within the dirty limit of the page cache) while LKP
+> run achieves only ~54 MB/s (i.e., we are pretty much bound by the rather
+> slow disk). I'd try running with something like 32GB of RAM to really see
+> the disk speed impact...
 > 
 
-Yeah, the delalloc info is still unreliable. Thanks for the advice, I
-will revise it in my next iteration along with your advice in patch 03.
+I'm afraid I missed the vmstat.io.bo changes, I will limit the dirty ratio
+and test it again tomorrow.
 
 Thanks,
 Yi.
-
-> 
->>  		len = es.es_lblk + es.es_len - map->m_lblk;
->>  		goto out;
->>  	} else {
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 1b5e6409f958..c141bf6d8db2 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -515,6 +515,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
->>  			map->m_len = retval;
->>  		} else if (ext4_es_is_delayed(&es) || ext4_es_is_hole(&es)) {
->>  			map->m_pblk = 0;
->> +			map->m_flags |= ext4_es_is_delayed(&es) ?
->> +					EXT4_MAP_DELAYED : 0;
->>  			retval = es.es_len - (map->m_lblk - es.es_lblk);
->>  			if (retval > map->m_len)
->>  				retval = map->m_len;
->> -- 
->> 2.39.2
->>
-
 
