@@ -1,43 +1,45 @@
-Return-Path: <linux-ext4+bounces-641-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-645-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7663822729
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 03:51:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CD4E1822731
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 03:52:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F87A284A9B
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 02:51:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14238284ACC
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jan 2024 02:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B80E04A21;
-	Wed,  3 Jan 2024 02:51:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D82618042;
+	Wed,  3 Jan 2024 02:51:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA3417984;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CA0217981;
 	Wed,  3 Jan 2024 02:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4Z3M276Lz4f3mW9;
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T4Z3M49rrz4f3mWP;
 	Wed,  3 Jan 2024 10:50:55 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0AF2F1A01CA;
+	by mail.maildlp.com (Postfix) with ESMTP id 5373A1A09A9;
 	Wed,  3 Jan 2024 10:50:57 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgD3U0SNy5RlDGn8FQ--.36935S2;
-	Wed, 03 Jan 2024 10:50:55 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgD3U0SNy5RlDGn8FQ--.36935S3;
+	Wed, 03 Jan 2024 10:50:57 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 0/5] More unit test for mballoc
-Date: Wed,  3 Jan 2024 18:48:55 +0800
-Message-Id: <20240103104900.464789-1-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 1/5] ext4: Add unit test for test_free_blocks_simple
+Date: Wed,  3 Jan 2024 18:48:56 +0800
+Message-Id: <20240103104900.464789-2-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20240103104900.464789-1-shikemeng@huaweicloud.com>
+References: <20240103104900.464789-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -45,136 +47,160 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgD3U0SNy5RlDGn8FQ--.36935S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxKF47Wr4rKF1fZF1kGw4DJwb_yoW7Cr43pa
-	9Fkrn8Kr1UGrnFvan3C3sruw1ftw10ya1UXryrtry2gF93W3sFyF1qgryYk34vgF1kZw1q
-	vF18uFW7ua9FqFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgD3U0SNy5RlDGn8FQ--.36935S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr17AFyUGFW7tryxGF45Jrb_yoWrXFyUpa
+	98AF1F9r45WFsrWa1fJ39Fv3WfWw1vvrWkJryfW345XF4xAr9xJ3WkKF1rta1rtFWxXF1a
+	v3Z0vFy7Cr47Ca7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E
-	3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
-	xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
-	0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
-	80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
-	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
-	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
-	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
-	IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2
-	z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0miiDUUUUU==
+	8IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_Jrv_JF4l8cAvFVAK
+	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+	x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
+	84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
+	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUIksgUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-This series covers more function to mark on-disk bitmap. Besides, some
-code which is relevant to buddy cache is also tested.
-Before more work is done, I want to be sure I'm not on a wrong
-direction!
+Add unit test for test_free_blocks_simple.
 
-v1->v2:
--Fix unused variable warning which is reported at
-https://lore.kernel.org/lkml/202311260042.kMxL6DnL-lkp@intel.com/T/
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+---
+ fs/ext4/mballoc-test.c | 96 ++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 96 insertions(+)
 
-Kunit test result is as following:
-# ./tools/testing/kunit/kunit.py run --kunitconfig=fs/ext4/.kunitconfig --raw_output
-[18:39:42] Configuring KUnit Kernel ...
-Regenerating .config ...
-Populating config with:
-$ make ARCH=um O=.kunit olddefconfig
-[18:39:45] Building KUnit Kernel ...
-Populating config with:
-$ make ARCH=um O=.kunit olddefconfig
-Building with:
-$ make ARCH=um O=.kunit --jobs=88
-[18:39:57] Starting KUnit Kernel (1/1)...
-KTAP version 1
-1..2
-    KTAP version 1
-    # Subtest: ext4_mballoc_test
-    # module: ext4
-    1..6
-        KTAP version 1
-        # Subtest: test_new_blocks_simple
-        ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-    # test_new_blocks_simple: pass:3 fail:0 skip:0 total:3
-    ok 1 test_new_blocks_simple
-        KTAP version 1
-        # Subtest: test_free_blocks_simple
-        ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-    # test_free_blocks_simple: pass:3 fail:0 skip:0 total:3
-    ok 2 test_free_blocks_simple
-        KTAP version 1
-        # Subtest: test_mb_generate_buddy
-        ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-    # test_mb_generate_buddy: pass:3 fail:0 skip:0 total:3
-    ok 3 test_mb_generate_buddy
-        KTAP version 1
-        # Subtest: test_mb_mark_used
-        ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
- # SKIP blocksize exceeds pagesize
-    # test_mb_mark_used: pass:2 fail:0 skip:1 total:3
-    ok 4 test_mb_mark_used
-        KTAP version 1
-        # Subtest: test_mb_free_blocks
-        ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
- # SKIP blocksize exceeds pagesize
-    # test_mb_free_blocks: pass:2 fail:0 skip:1 total:3
-    ok 5 test_mb_free_blocks
-        KTAP version 1
-        # Subtest: test_mark_diskspace_used
-        ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 2 block_bits=12 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-        ok 3 block_bits=16 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
-    # test_mark_diskspace_used: pass:3 fail:0 skip:0 total:3
-    ok 6 test_mark_diskspace_used
-# ext4_mballoc_test: pass:6 fail:0 skip:0 total:6
-# Totals: pass:16 fail:0 skip:2 total:18
-ok 1 ext4_mballoc_test
-    KTAP version 1
-    # Subtest: ext4_inode_test
-    # module: ext4_inode_test
-    1..1
-        KTAP version 1
-        # Subtest: inode_test_xtimestamp_decoding
-        ok 1 1901-12-13 Lower bound of 32bit < 0 timestamp, no extra bits
-        ok 2 1969-12-31 Upper bound of 32bit < 0 timestamp, no extra bits
-        ok 3 1970-01-01 Lower bound of 32bit >=0 timestamp, no extra bits
-        ok 4 2038-01-19 Upper bound of 32bit >=0 timestamp, no extra bits
-        ok 5 2038-01-19 Lower bound of 32bit <0 timestamp, lo extra sec bit on
-        ok 6 2106-02-07 Upper bound of 32bit <0 timestamp, lo extra sec bit on
-        ok 7 2106-02-07 Lower bound of 32bit >=0 timestamp, lo extra sec bit on
-        ok 8 2174-02-25 Upper bound of 32bit >=0 timestamp, lo extra sec bit on
-        ok 9 2174-02-25 Lower bound of 32bit <0 timestamp, hi extra sec bit on
-        ok 10 2242-03-16 Upper bound of 32bit <0 timestamp, hi extra sec bit on
-        ok 11 2242-03-16 Lower bound of 32bit >=0 timestamp, hi extra sec bit on
-        ok 12 2310-04-04 Upper bound of 32bit >=0 timestamp, hi extra sec bit on
-        ok 13 2310-04-04 Upper bound of 32bit>=0 timestamp, hi extra sec bit 1. 1 ns
-        ok 14 2378-04-22 Lower bound of 32bit>= timestamp. Extra sec bits 1. Max ns
-        ok 15 2378-04-22 Lower bound of 32bit >=0 timestamp. All extra sec bits on
-        ok 16 2446-05-10 Upper bound of 32bit >=0 timestamp. All extra sec bits on
-    # inode_test_xtimestamp_decoding: pass:16 fail:0 skip:0 total:16
-    ok 1 inode_test_xtimestamp_decoding
-# Totals: pass:16 fail:0 skip:0 total:16
-ok 2 ext4_inode_test
-[18:39:57] Elapsed time: 14.400s total, 2.940s configuring, 11.343s building, 0.074s running
-
-Kemeng Shi (5):
-  ext4: Add unit test for test_free_blocks_simple
-  ext4: Add unit test of ext4_mb_generate_buddy
-  ext4: Add unit test for mb_mark_used
-  ext4: Add unit test for mb_free_blocks
-  ext4: Add unit test for ext4_mb_mark_diskspace_used
-
- fs/ext4/mballoc-test.c | 502 +++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 502 insertions(+)
-
+diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
+index f94901fd3..3aac42ea6 100644
+--- a/fs/ext4/mballoc-test.c
++++ b/fs/ext4/mballoc-test.c
+@@ -5,6 +5,7 @@
+ 
+ #include <kunit/test.h>
+ #include <kunit/static_stub.h>
++#include <linux/random.h>
+ 
+ #include "ext4.h"
+ 
+@@ -112,6 +113,13 @@ static void mbt_ctx_mark_used(struct super_block *sb, ext4_group_t group,
+ 	mb_set_bits(grp_ctx->bitmap_bh.b_data, start, len);
+ }
+ 
++static void *mbt_ctx_bitmap(struct super_block *sb, ext4_group_t group)
++{
++	struct mbt_grp_ctx *grp_ctx = MBT_GRP_CTX(sb, group);
++
++	return grp_ctx->bitmap_bh.b_data;
++}
++
+ /* called after mbt_init_sb_layout */
+ static int mbt_ctx_init(struct super_block *sb)
+ {
+@@ -297,6 +305,93 @@ static void test_new_blocks_simple(struct kunit *test)
+ 		"unexpectedly get block when no block is available");
+ }
+ 
++#define TEST_RANGE_COUNT 8
++
++struct test_range {
++	ext4_grpblk_t start;
++	ext4_grpblk_t len;
++};
++
++static void
++mbt_generate_test_ranges(struct super_block *sb, struct test_range *ranges,
++			 int count)
++{
++	ext4_grpblk_t start, len, max;
++	int i;
++
++	max = EXT4_CLUSTERS_PER_GROUP(sb) / count;
++	for (i = 0; i < count; i++) {
++		start = get_random_u32() % max;
++		len = get_random_u32() % max;
++		len = min(len, max - start);
++
++		ranges[i].start = start + i * max;
++		ranges[i].len = len;
++	}
++}
++
++static void
++validate_free_blocks_simple(struct kunit *test, struct super_block *sb,
++			    ext4_group_t goal_group, ext4_grpblk_t start,
++			    ext4_grpblk_t len)
++{
++	void *bitmap;
++	ext4_grpblk_t bit, max = EXT4_CLUSTERS_PER_GROUP(sb);
++	ext4_group_t i;
++
++	for (i = 0; i < ext4_get_groups_count(sb); i++) {
++		if (i == goal_group)
++			continue;
++
++		bitmap = mbt_ctx_bitmap(sb, i);
++		bit = mb_find_next_zero_bit(bitmap, max, 0);
++		KUNIT_ASSERT_EQ_MSG(test, bit, max,
++				    "free block on unexpected group %d", i);
++	}
++
++	bitmap = mbt_ctx_bitmap(sb, goal_group);
++	bit = mb_find_next_zero_bit(bitmap, max, 0);
++	KUNIT_ASSERT_EQ(test, bit, start);
++
++	bit = mb_find_next_bit(bitmap, max, bit + 1);
++	KUNIT_ASSERT_EQ(test, bit, start + len);
++}
++
++static void
++test_free_blocks_simple_range(struct kunit *test, ext4_group_t goal_group,
++			      ext4_grpblk_t start, ext4_grpblk_t len)
++{
++	struct super_block *sb = (struct super_block *)test->priv;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	struct inode inode = { .i_sb = sb, };
++	ext4_fsblk_t block;
++
++	if (len == 0)
++		return;
++
++	block = ext4_group_first_block_no(sb, goal_group) +
++		EXT4_C2B(sbi, start);
++	ext4_free_blocks_simple(&inode, block, len);
++	validate_free_blocks_simple(test, sb, goal_group, start, len);
++	mbt_ctx_mark_used(sb, goal_group, 0, EXT4_CLUSTERS_PER_GROUP(sb));
++}
++
++static void test_free_blocks_simple(struct kunit *test)
++{
++	struct super_block *sb = (struct super_block *)test->priv;
++	ext4_grpblk_t max = EXT4_CLUSTERS_PER_GROUP(sb);
++	ext4_group_t i;
++	struct test_range ranges[TEST_RANGE_COUNT];
++
++	for (i = 0; i < ext4_get_groups_count(sb); i++)
++		mbt_ctx_mark_used(sb, i, 0, max);
++
++	mbt_generate_test_ranges(sb, ranges, TEST_RANGE_COUNT);
++	for (i = 0; i < TEST_RANGE_COUNT; i++)
++		test_free_blocks_simple_range(test, TEST_GOAL_GROUP,
++			ranges[i].start, ranges[i].len);
++}
++
+ static const struct mbt_ext4_block_layout mbt_test_layouts[] = {
+ 	{
+ 		.blocksize_bits = 10,
+@@ -334,6 +429,7 @@ KUNIT_ARRAY_PARAM(mbt_layouts, mbt_test_layouts, mbt_show_layout);
+ 
+ static struct kunit_case mbt_test_cases[] = {
+ 	KUNIT_CASE_PARAM(test_new_blocks_simple, mbt_layouts_gen_params),
++	KUNIT_CASE_PARAM(test_free_blocks_simple, mbt_layouts_gen_params),
+ 	{}
+ };
+ 
 -- 
 2.30.0
 
