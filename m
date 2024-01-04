@@ -1,134 +1,106 @@
-Return-Path: <linux-ext4+bounces-664-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-665-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B29B8823B97
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 05:55:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 80AD8823BCE
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 06:38:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B6FF1C24629
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 04:55:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C6551C2490B
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 05:38:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3907A125B9;
-	Thu,  4 Jan 2024 04:55:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D24E0179BA;
+	Thu,  4 Jan 2024 05:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ta9Pu8Lj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="E5hSBD1T"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCF1F1D68A
-	for <linux-ext4@vger.kernel.org>; Thu,  4 Jan 2024 04:55:41 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 15F95C433C7;
-	Thu,  4 Jan 2024 04:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61BA418EBE
+	for <linux-ext4@vger.kernel.org>; Thu,  4 Jan 2024 05:38:37 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPS id E2B50C433CC
+	for <linux-ext4@vger.kernel.org>; Thu,  4 Jan 2024 05:38:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1704344141;
-	bh=gdCtb7p5/FMsr3W0D5Vf+boic8g9KjCvs1CjiHtWKjw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ta9Pu8Lj3T7FaWXIHuaFcTw2r3aMKnNyzPM8Rtc9vRq8UKsuU7Qra94A2YZ3UjIml
-	 ia6jLdUyZ1GjN5O25Q/S4GV02uCHEffOLRcDLpTzKPimCEgiCOyVpBRX/OFRllRtTB
-	 op9A12mM16e5095FBVIQ3tUpeiHbANLHUCf9vEfUur5Bx32ycYoPgTkmCDmkn5DxSf
-	 dYEdpzxw+QpFnqL26dHS1gBnD9bC+qZki5Ud0wvdnHug5wCdowz53X5Flgqbv5JRTD
-	 esLoMn1zBv2yiGgeKytg286AGmVDNfXgYh/1aAwLb4zjU5Q1UNbckvH6See1yEh/g9
-	 kKxlgSRTJuXDg==
-Date: Wed, 3 Jan 2024 20:55:40 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: e2scrub finds corruption immediately after mounting
-Message-ID: <20240104045540.GD36164@frogsfrogsfrogs>
-References: <536d25b24364eaf11a38b47e853008c3115d82b8.camel@interlinx.bc.ca>
+	s=k20201202; t=1704346716;
+	bh=NUqRJIbij3iPXqplD7hcP/Z66Ir0hE4wJeBiScpw1pA=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=E5hSBD1T/XEoAiSKyx8Mb/AaC7hph7t0VbCmJ5inBIkYcW3xfdoXO1SDz6H7m4yVN
+	 NEqq+onVzvf/3Hr4X9WsW5VZBBxUjoKbBRiUcT+rdI3fqn2U3vDam4TARexZ/Amd5c
+	 LluG0tCfoh0utth7ZuW38Ku9GF4jLvUMWXWZgNjGqsyOpEz5QzDPbjxd7fpFNd8Pmw
+	 UvglnqS/3u2E0QopZLn6i24KP6AnHVDlghBCRuOMb3Wz6LBTaYFGnx/xhNIkPCknL5
+	 Vh/zcHT+W2cxnscAJsByKt2Pi+3hLscGn0gaIgkOX/RKTdw0+sYLSE/j080k2yKH1B
+	 Eq0WuMs2Y2iEQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id CEBD8C4332E; Thu,  4 Jan 2024 05:38:36 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
+Date: Thu, 04 Jan 2024 05:38:36 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: ojaswin.mujoo@ibm.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-217965-13602-oNiK3hL8DX@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
+References: <bug-217965-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <536d25b24364eaf11a38b47e853008c3115d82b8.camel@interlinx.bc.ca>
 
-On Wed, Jan 03, 2024 at 04:14:36PM -0500, Brian J. Murrell wrote:
-> I am trying to migrate from lvcheck
-> (https://github.com/BryanKadzban/lvcheck) to using the officially
-> supported e2scrub[_all] kit.
-> 
-> I am finding that e2scrub very often (much more than lvcheck even)
-> finds corruption and wants me to do an offline e2fsck.  Not only does
-> it do this immediately after booting a system that includes filesystem
-> checks (that were caused by e2scrub previously setting a filesystem to
-> be checked on next boot), but it happens immediately after I run an
-> e2fsck and then mount the filesystem, even without any activity on it.
-> Observe:
-> 
-> # umount /opt
-> # e2fsck -y /dev/rootvol_tmp/almalinux8_opt 
-> e2fsck 1.45.6 (20-Mar-2020)
-> /dev/mapper/rootvol_tmp-almalinux8_opt: clean, 1698/178816 files,
-> 482404/716800 blocks
-> # e2scrub /dev/rootvol_tmp/almalinux8_opt 
->   Logical volume "almalinux8_opt.e2scrub" created.
-> e2fsck 1.45.6 (20-Mar-2020)
-> Pass 1: Checking inodes, blocks, and sizes
-> Pass 2: Checking directory structure
-> Pass 3: Checking directory connectivity
-> Pass 4: Checking reference counts
-> Pass 5: Checking group summary information
-> /dev/rootvol_tmp/almalinux8_opt.e2scrub: 1698/178816 files (86.9% non-
-> contiguous), 482404/716800 blocks
-> /dev/rootvol_tmp/almalinux8_opt: Scrub succeeded.
-> tune2fs 1.45.6 (20-Mar-2020)
-> Setting current mount count to 0
-> Setting time filesystem last checked to Wed Jan  3 11:37:04 2024
-> 
->   Logical volume "almalinux8_opt.e2scrub" successfully removed.
-> # mount /opt
-> # e2scrub /dev/rootvol_tmp/almalinux8_opt 
->   Logical volume "almalinux8_opt.e2scrub" created.
-> e2fsck 1.45.6 (20-Mar-2020)
-> Pass 1: Checking inodes, blocks, and sizes
-> Pass 2: Checking directory structure
-> Pass 3: Checking directory connectivity
-> Pass 4: Checking reference counts
-> Pass 5: Checking group summary information
-> /dev/rootvol_tmp/almalinux8_opt.e2scrub: 1698/178816 files (86.9% non-
-> contiguous), 482404/716800 blocks
-> /dev/rootvol_tmp/almalinux8_opt: Scrub FAILED due to corruption! 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
 
-Curious.  Normally e2scrub will run e2fsck twice: Once in journal-only
-preen mode to replay the journal, then again with -fy to perform the
-full filesystem (snapshot) check.
+--- Comment #61 from Ojaswin Mujoo (ojaswin.mujoo@ibm.com) ---
+Hi Matthew, thanks for confirming. So as pointed out in comment 9 [1], for =
+the
+above steps to disable CR_BEST_AVAIL_LEN code did not fix the issue. My
+suspicion is that this issue can occur either in CR_GOAL_LEN_FAST or
+CR_BEST_AVAIL_LEN lookup, depending on the block groups being searched.
+Probably for you, it was occurring during CR_BEST_AVAIL_LEN lookup and hence
+disabling that code fixed it.=20
 
-I wonder if you would paste the output of
-"bash -x e2scrub /dev/rootvol_tmp/almalinux8_opt" here?  I'd be curious
-to see what the command flow is.
+Further, as Carlos pointed out above, they are able to see this in all 6.*
+kernels which means this is happening before CR_BEST_AVAIL_LEN was introduc=
+ed
+however it seems to be much easier to trigger in 6.5+ kernels. Now, assuming
+the above theory is correct, then in cases where this is triggered from
+CR_GOAL_LEN_FAST, it should ideally happen easily in pre 6.5 kernels as wel=
+l,
+but it doesn't, which makes me think that there might be some other related
+changes in 6.5 that might be making it easier to trigger.
 
-Assuming that 1.47.0 doesn't magically fix it. :)
+I'll try to play around a bit more with this. Also, as for higher CPU usage,
+how high are we talking about? So CR_BEST_AVAIL_LEN does add some extra cyc=
+les
+at the cost of generally faster allocation in fragmented filesystems, howev=
+er
+since you have disabled it we shouldn't ideally be seeing it. Also, does the
+CPU util consistently drop when you commented out that code?
 
-> Unmount and run e2fsck -y.
-> tune2fs 1.45.6 (20-Mar-2020)
-> Setting filesystem error flag to force fsck.
->   Logical volume "almalinux8_opt.e2scrub" successfully removed.
-> 
-> So as you can see, I unmount /opt, run an e2fsck -y on it to clean it
-> and then before mounting run e2scrub and it finds the filesystem clean.
-> Good so far.
-> 
-> I then mount it and then immediately run another e2scrub on it and that
-> finds it dirty and wants me to unmount and run another e2fsck -y on it.
-> But how can that be?  Surely an e2scrub on a freshly cleaned and
-> mounted filesystem (with no activity on it in between) should be clean,
-> yes?
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D217965#c9
 
-Right.  Unless something's broken in e2fsck. :/
+--=20
+You may reply to this email to add a comment.
 
---D
-
-> 
-> Cheers,
-> b.
-> 
-
-
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
