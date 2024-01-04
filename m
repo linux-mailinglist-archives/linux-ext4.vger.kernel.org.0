@@ -1,185 +1,141 @@
-Return-Path: <linux-ext4+bounces-678-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-679-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DDF18240A0
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 12:29:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B5F18240AD
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 12:32:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5C6BD1C23B47
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 11:29:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DAA0285C02
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jan 2024 11:32:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B74D21369;
-	Thu,  4 Jan 2024 11:29:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wsQKzVwT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QnmhJ6W9";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wsQKzVwT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QnmhJ6W9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4F5621118;
+	Thu,  4 Jan 2024 11:32:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38ABD2134A;
-	Thu,  4 Jan 2024 11:28:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9EE851F805;
-	Thu,  4 Jan 2024 11:28:55 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704367735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
-	b=wsQKzVwTEzNXMrID3WBUT2cACh+KzJec60Ql22fl5N5QaM5/2vK+qfg2IueeonhI3lc8Nw
-	H4SFayUpxnCxSkdcbmYEGhQVwnDAKL/rHBCVpvzBMWMnq8D8tcrV6BiP5OkgTLI5R6djXs
-	huBK7ewNueIlSgrTFcVmz95tuQULxHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704367735;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
-	b=QnmhJ6W9z9hciG62uLQwn7l6XDnoT7FgUsOy4cuGf7GKqEjXmnN5qYZJx69CAE4e0wLDCV
-	6voNpMi3rZDHXuCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1704367735; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
-	b=wsQKzVwTEzNXMrID3WBUT2cACh+KzJec60Ql22fl5N5QaM5/2vK+qfg2IueeonhI3lc8Nw
-	H4SFayUpxnCxSkdcbmYEGhQVwnDAKL/rHBCVpvzBMWMnq8D8tcrV6BiP5OkgTLI5R6djXs
-	huBK7ewNueIlSgrTFcVmz95tuQULxHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1704367735;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=id+paq71QAy1mcff5/EB3PkmVyeX2lIOxwmUvRxr4fA=;
-	b=QnmhJ6W9z9hciG62uLQwn7l6XDnoT7FgUsOy4cuGf7GKqEjXmnN5qYZJx69CAE4e0wLDCV
-	6voNpMi3rZDHXuCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 89DFF13722;
-	Thu,  4 Jan 2024 11:28:55 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BsajIXeWlmXXBQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 04 Jan 2024 11:28:55 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 273FFA07EF; Thu,  4 Jan 2024 12:28:55 +0100 (CET)
-Date: Thu, 4 Jan 2024 12:28:55 +0100
-From: Jan Kara <jack@suse.cz>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
-	kent.overstreet@gmail.com, joern@lazybastard.org,
-	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
-	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
-	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
-	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
-	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
-	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
-	willy@infradead.org, akpm@linux-foundation.org, hare@suse.de,
-	p.raghav@samsung.com, linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org,
-	linux-bcache@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-s390@vger.kernel.org, linux-scsi@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-erofs@lists.ozlabs.org,
-	linux-ext4@vger.kernel.org, linux-nilfs@vger.kernel.org,
-	yukuai3@huawei.com, yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v3 for-6.8/block 04/17] mtd: block2mtd: use bdev apis
-Message-ID: <20240104112855.uci45hhqaiitmsir@quack3>
-References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085712.1766333-5-yukuai1@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D44D210F4;
+	Thu,  4 Jan 2024 11:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4T5PYB3DcmzWlkW;
+	Thu,  4 Jan 2024 19:31:10 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id B3708140487;
+	Thu,  4 Jan 2024 19:31:52 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 4 Jan 2024 19:31:52 +0800
+Message-ID: <6c93726b-75b8-a6a6-34d3-d0f6c7a1f35d@huawei.com>
+Date: Thu, 4 Jan 2024 19:31:51 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20231221085712.1766333-5-yukuai1@huaweicloud.com>
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.61
-X-Spamd-Bar: +
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [1.61 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 BAYES_HAM(-0.08)[63.79%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 R_RATELIMIT(0.00)[to_ip_from(RLhr85cyeg3mfw7iggddtjdkgs)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[48];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,infradead.org,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=wsQKzVwT;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QnmhJ6W9
-X-Spam-Level: *
-X-Rspamd-Queue-Id: 9EE851F805
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH v2 3/8] ext4: regenerate buddy after block freeing failed
+ if under fc replay
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>, Baokun
+ Li <libaokun1@huawei.com>
+References: <20231221150558.2740823-1-libaokun1@huawei.com>
+ <20231221150558.2740823-4-libaokun1@huawei.com>
+ <20240104103336.fjwhqiv2maezquef@quack3>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240104103336.fjwhqiv2maezquef@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Thu 21-12-23 16:56:59, Yu Kuai wrote:
-> From: Yu Kuai <yukuai3@huawei.com>
-> 
-> On the one hand covert to use folio while reading bdev inode, on the
-> other hand prevent to access bd_inode directly.
-> 
-> Signed-off-by: Yu Kuai <yukuai3@huawei.com>
-...
-> +		for (p = folio_address(folio); p < max; p++)
->  			if (*p != -1UL) {
-> -				lock_page(page);
-> -				memset(page_address(page), 0xff, PAGE_SIZE);
-> -				set_page_dirty(page);
-> -				unlock_page(page);
-> -				balance_dirty_pages_ratelimited(mapping);
-> +				folio_lock(folio);
-> +				memset(folio_address(folio), 0xff,
-> +				       folio_size(folio));
-> +				folio_mark_dirty(folio);
-> +				folio_unlock(folio);
-> +				bdev_balance_dirty_pages_ratelimited(bdev);
+On 2024/1/4 18:33, Jan Kara wrote:
+> On Thu 21-12-23 23:05:53, Baokun Li wrote:
+>> This reverts [Fixes] under fast commit replay. When we are freeing blocks
+>> that have already been freed, the buddy may be corrupted, and we need to
+>> regenerate the buddy when the fast commit is being replayed in order to
+>> avoid using an corrupted buddy, since it will not mark the group block
+>> bitmap as corrupted at that point.
+> I'd rephrase the changelog as:
+>
+> This mostly reverts commit 6bd97bf273bd ("ext4: remove redundant
+> mb_regenerate_buddy()") and reintroduces mb_regenerate_buddy(). Based on
+> code in mb_free_blocks(), fast commit replay can end up marking as free
+> blocks that are already marked as such. This causes corruption of the
+> buddy bitmap so we need to regenerate it in that case.
+>
+> Otherwise the patch looks good to me so feel free to add:
+>
+> Reviewed-by: Jan Kara <jack@suse.cz>
+>
+> 								Honza
+Hello Honza, Happy New Year!
 
-Rather then creating this bdev_balance_dirty_pages_ratelimited() just for
-MTD perhaps we can have here (and in other functions):
+Thank you very much for your review!
+This changelog looks a lot more relevant!
+  I will use this changelog in the next version.
+>> Reported-by: Jan Kara <jack@suse.cz>
+>> Fixes: 6bd97bf273bd ("ext4: remove redundant mb_regenerate_buddy()")
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/mballoc.c | 20 ++++++++++++++++++++
+>>   1 file changed, 20 insertions(+)
+>>
+>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>> index a95fa6e2b0f9..f6131ba514c8 100644
+>> --- a/fs/ext4/mballoc.c
+>> +++ b/fs/ext4/mballoc.c
+>> @@ -1233,6 +1233,24 @@ void ext4_mb_generate_buddy(struct super_block *sb,
+>>   	atomic64_add(period, &sbi->s_mb_generation_time);
+>>   }
+>>   
+>> +static void mb_regenerate_buddy(struct ext4_buddy *e4b)
+>> +{
+>> +	int count;
+>> +	int order = 1;
+>> +	void *buddy;
+>> +
+>> +	while ((buddy = mb_find_buddy(e4b, order++, &count)))
+>> +		mb_set_bits(buddy, 0, count);
+>> +
+>> +	e4b->bd_info->bb_fragments = 0;
+>> +	memset(e4b->bd_info->bb_counters, 0,
+>> +		sizeof(*e4b->bd_info->bb_counters) *
+>> +		(e4b->bd_sb->s_blocksize_bits + 2));
+>> +
+>> +	ext4_mb_generate_buddy(e4b->bd_sb, e4b->bd_buddy,
+>> +		e4b->bd_bitmap, e4b->bd_group, e4b->bd_info);
+>> +}
+>> +
+>>   /* The buddy information is attached the buddy cache inode
+>>    * for convenience. The information regarding each group
+>>    * is loaded via ext4_mb_load_buddy. The information involve
+>> @@ -1921,6 +1939,8 @@ static void mb_free_blocks(struct inode *inode, struct ext4_buddy *e4b,
+>>   			ext4_mark_group_bitmap_corrupted(
+>>   				sb, e4b->bd_group,
+>>   				EXT4_GROUP_INFO_BBITMAP_CORRUPT);
+>> +		} else {
+>> +			mb_regenerate_buddy(e4b);
+>>   		}
+>>   		goto done;
+>>   	}
+>> -- 
+>> 2.31.1
+>>
 
-				...
-				mapping = folio_mapping(folio);
-				folio_unlock(folio);
-				if (mapping)
-					balance_dirty_pages_ratelimited(mapping);
-
-What do you think? Because when we are working with the folios it is rather
-natural to use their mapping for dirty balancing?
-
-								Honza
+Thanks again!
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Baokun Li
+.
+
 
