@@ -1,87 +1,109 @@
-Return-Path: <linux-ext4+bounces-725-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-706-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C46B824E80
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 07:11:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E04D6824C78
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 02:23:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17E7B285314
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 06:11:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E0DF21C21B25
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 01:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 620E31DDFA;
-	Fri,  5 Jan 2024 06:10:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="VzS7OQo0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38E51FB4;
+	Fri,  5 Jan 2024 01:23:05 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37711D690;
-	Fri,  5 Jan 2024 06:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=dSHA2/+sx7Ginf1zZQjwMoxOOLN3aAKl+o5J049zcoQ=; b=VzS7OQo05vKzjkbMgtDbyoqlq1
-	xMjqJoHMrYZx0z8X2pzLagECzGMwlohl9ymKqBvvmtpDIlsWY6AG4N/f1Z7a0npjBNyE4ZwknljfO
-	Adoqi4XTmVgFGXh4zBStmNMnqV7aBBtXocYkaX6HML2N7/QqnRhhdS2TWAoeezhinIAaanN7Ej7dv
-	hxVnm2Vk5habqISRNzPmh9q8JmfV7hW/bJTp3S/nkUAXM07TMl3K+hndw/tt6Sa2uemEb90WWvc6e
-	e9D7SiAdy2v6KE4fIeq1gb230I0mhq6ROH5a4jotGgz0Zrj+acjX4nO0JO/pnPZhJ1+dxysUg9Aw0
-	JvaSlTvg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1rLdPN-00G2Yc-1R;
-	Fri, 05 Jan 2024 06:10:17 +0000
-Date: Thu, 4 Jan 2024 22:10:17 -0800
-From: Christoph Hellwig <hch@infradead.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Yu Kuai <yukuai1@huaweicloud.com>, axboe@kernel.dk,
-	roger.pau@citrix.com, colyli@suse.de, kent.overstreet@gmail.com,
-	joern@lazybastard.org, miquel.raynal@bootlin.com, richard@nod.at,
-	vigneshr@ti.com, sth@linux.ibm.com, hoeppner@linux.ibm.com,
-	hca@linux.ibm.com, gor@linux.ibm.com, agordeev@linux.ibm.com,
-	jejb@linux.ibm.com, martin.petersen@oracle.com, clm@fb.com,
-	josef@toxicpanda.com, dsterba@suse.com, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, nico@fluxnic.net, xiang@kernel.org,
-	chao@kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.com, konishi.ryusuke@gmail.com, willy@infradead.org,
-	akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
-	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
-	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
-	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
-	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
-	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
-	yi.zhang@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH RFC v3 for-6.8/block 04/17] mtd: block2mtd: use bdev apis
-Message-ID: <ZZedSYAedA05Oex2@infradead.org>
-References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
- <20231221085712.1766333-5-yukuai1@huaweicloud.com>
- <20240104112855.uci45hhqaiitmsir@quack3>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13D94410;
+	Fri,  5 Jan 2024 01:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5m0y0dW5z4f3l8W;
+	Fri,  5 Jan 2024 09:22:58 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DA62B1A017D;
+	Fri,  5 Jan 2024 09:22:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP4 (Coremail) with SMTP id gCh0CgBXZUXyWZdl68i0Fg--.35140S2;
+	Fri, 05 Jan 2024 09:22:59 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ojaswin@linux.ibm.com
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3 0/9] Some random cleanups to mballoc
+Date: Fri,  5 Jan 2024 17:20:53 +0800
+Message-Id: <20240105092102.496631-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240104112855.uci45hhqaiitmsir@quack3>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBXZUXyWZdl68i0Fg--.35140S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww4xWrWrAr4xAF1DKr4rKrg_yoW8Xr4rpr
+	sxCr43Ww18Z345CFsrWw4qqw1fGw1xCFWUX3WSgwn7XF9xZF1fGFsrtF4F9FyrXrW0gFnx
+	Zr42vr15Gr1xua7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkFb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+	8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E
+	3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
+	xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
+	0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
+	80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42
+	IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E
+	87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07j-6pPUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Thu, Jan 04, 2024 at 12:28:55PM +0100, Jan Kara wrote:
-> What do you think? Because when we are working with the folios it is rather
-> natural to use their mapping for dirty balancing?
+This series contains some random cleanups to mballoc. No function change
+is intended except patch 8 may fix a potential memleak if non-used
+preallocation spaces of inode could be greater than UNIT_MAX.
+More details can be found in respective patches. Thanks!
 
-The real problem is that block2mtd pokes way to deep into block
-internals.
+v1->v2:
+-Collect RVB from Jan.
+-Remove 'needed' in trace_ext4_discard_preallocations.
 
-I think the saviour here is Christians series to replace the bdev handle
-with a struct file, which will allow to use the normal file write path
-here and get rid of the entire layering volation.
+v2->v3:
+-Collect RVB from Jan and Ojaswin.
+-Fix commit message in patch 2.
+
+Kemeng Shi (9):
+  ext4: remove unused return value of __mb_check_buddy
+  ext4: remove unused parameter ngroup in ext4_mb_choose_next_group_*()
+  ext4: remove unneeded return value of ext4_mb_release_context
+  ext4: remove unused ext4_allocation_context::ac_groups_considered
+  ext4: remove unused return value of ext4_mb_release
+  ext4: remove unused return value of ext4_mb_release_inode_pa
+  ext4: remove unused return value of ext4_mb_release_group_pa
+  ext4: remove unnecessary parameter "needed" in
+    ext4_discard_preallocations
+  ext4: remove 'needed' in trace_ext4_discard_preallocations
+
+ fs/ext4/ext4.h              |  4 +--
+ fs/ext4/extents.c           | 10 ++++----
+ fs/ext4/file.c              |  2 +-
+ fs/ext4/indirect.c          |  2 +-
+ fs/ext4/inode.c             |  6 ++---
+ fs/ext4/ioctl.c             |  2 +-
+ fs/ext4/mballoc.c           | 49 ++++++++++++++-----------------------
+ fs/ext4/mballoc.h           |  1 -
+ fs/ext4/move_extent.c       |  4 +--
+ fs/ext4/super.c             |  2 +-
+ include/trace/events/ext4.h | 11 +++------
+ 11 files changed, 38 insertions(+), 55 deletions(-)
+
+-- 
+2.30.0
 
 
