@@ -1,90 +1,122 @@
-Return-Path: <linux-ext4+bounces-705-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-719-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7BE60824C06
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 01:07:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14521824D77
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 04:33:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A3B31F2306C
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 00:07:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193861C21BD2
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 03:33:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED0A3FD4;
-	Fri,  5 Jan 2024 00:07:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76A4525B;
+	Fri,  5 Jan 2024 03:33:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BFE03C24
-	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 00:07:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3604ae9e876so7627045ab.0
-        for <linux-ext4@vger.kernel.org>; Thu, 04 Jan 2024 16:07:17 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704413236; x=1705018036;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
-        b=MrEEaiz/9e3we8y0fDFI3Z0zjdSNXOxkidS91UOEzPpRzQDVc3hYq31NxXeBsiMTm1
-         XDXUcVxcdmKMo9u7LY79bkH0sQE/tJi4urekze92PvY83xXWeRHY/dI6Zmjw/vwyOYKR
-         Vl+tlF7zAWFX30igljqNSHcKCcLiVhLQ6Zq+jlr9J3BKIaoL8QQEYLzbJ3s1jy5KWC1D
-         bGKivt7ATiQ25qPMe6xBTtwROIlrt04FtnuEgAhOjkOsEe6u6SQHIhUKLzUbLuQsicYu
-         /iw4lTh9a6tlXPG7UYXXz9a2THkJSBHTfr5hgUS97Px/ANhFLDUa0GLCzrYkVXok/gIo
-         btUQ==
-X-Gm-Message-State: AOJu0YxdkV7q6Lk3IpKS0Ig5KpM/0to3vyBQMZwa+L84K8rGO4HPywIv
-	nOB/HXeawbzR5qwR58mXt38y+jsQGRcEmBZsfo07FQ8oOXEA
-X-Google-Smtp-Source: AGHT+IG8XWLl04pnC8v+zbeKvvM9XWF9CjqAwYsPkD2ltAuLqhA4qsL+OXQEDBWqdmTt2aYEJSMATbN7UElsfDu2UI5kUPCgAS0S
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2714410
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 03:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5pvD2YW3z4f3pJ7
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:12 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 18D041A08E1
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:18 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgDn6hByeJdlyaRBFg--.23173S4;
+	Fri, 05 Jan 2024 11:33:15 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH v3 0/6] ext4: make ext4_map_blocks() recognize delalloc only extent
+Date: Fri,  5 Jan 2024 11:30:12 +0800
+Message-Id: <20240105033018.1665752-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c8f:b0:35f:c723:1f62 with SMTP id
- w15-20020a056e021c8f00b0035fc7231f62mr149481ill.0.1704413236853; Thu, 04 Jan
- 2024 16:07:16 -0800 (PST)
-Date: Thu, 04 Jan 2024 16:07:16 -0800
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000888720060e27a1cc@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDn6hByeJdlyaRBFg--.23173S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7WF4xCrWfCw4kGFyxAr18Zrb_yoW8tw4kpF
+	Z3Cr13Gws0gw17Wa9xZw47Gr1F9an7GF4UGry7Gr1kJrWUAry8WFs7K3WF9Fy3ArWxJF1a
+	qF4Ut34kua4rC37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+	xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbE_M3UUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+v2->v3:
+ - Rename ext4_ext_determine_hole() to ext4_ext_determine_insert_hole()
+   and keep setting of 'map' inside ext4_ext_map_blocks().
+ - Don't set EXT4_MAP_DELAYED in ext4_ext_determine_insert_hole()
+   because it's unreliable, and revise the comments.
+v1->v2:
+ - Fix a long standing race issue between determine hole and inserting
+   new delalloc extent analyzed by Jan Kara.
+ - Change method of adjusting hole length, instead of skip holes in
+   ext4_map_blocks(), now we find delalloc and correct length and type
+   in ext4_ext_determine_hole().
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+v2: https://lore.kernel.org/linux-ext4/20231223110223.3650717-1-yi.zhang@huaweicloud.com/
+v1: https://lore.kernel.org/linux-ext4/20231121093429.1827390-1-yi.zhang@huaweicloud.com/
 
-#syz fix: exact-commit-title
+Hello, all!
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+I'm working on switching ext4 buffer IO from buffer_head to iomap
+and enable large folio on regular file recently [1], this patch set
+is one of a preparation of this work. It first fix a long standing race
+issue between bmap querying and adding new delalloc extents, then
+correct the hole length returned by ext4_map_blocks() when user querying
+map type and blocks range, after that, make this function and
+ext4_set_iomap() are able to distinguish delayed allocated only mapping
+from hole, finally BTW cleanup the ext4_iomap_begin_report().
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+This preparation patch set changes the ext4 map -> iomap converting logic
+in ext4_set_iomap(), so that the later buffer IO conversion can use this
+helper to connect iomap frame. This patch set is already passed
+'kvm-xfstests -g auto' tests.
 
----
-[1] I expect the commit to be present in:
+Thanks,
+Yi.
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+[1] https://lore.kernel.org/linux-ext4/20240102123918.799062-1-yi.zhang@huaweicloud.com/
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+Zhang Yi (6):
+  ext4: refactor ext4_da_map_blocks()
+  ext4: convert to exclusive lock while inserting delalloc extents
+  ext4: correct the hole length returned by ext4_map_blocks()
+  ext4: add a hole extent entry in cache after punch
+  ext4: make ext4_map_blocks() distinguish delalloc only extent
+  ext4: make ext4_set_iomap() recognize IOMAP_DELALLOC map type
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+ fs/ext4/ext4.h    |   4 +-
+ fs/ext4/extents.c | 114 +++++++++++++++++++++++++++++-----------------
+ fs/ext4/inode.c   |  84 +++++++++++-----------------------
+ 3 files changed, 103 insertions(+), 99 deletions(-)
 
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+-- 
+2.39.2
 
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
 
