@@ -1,33 +1,33 @@
-Return-Path: <linux-ext4+bounces-711-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-715-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBBE5824C82
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 02:24:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 023DE824C8B
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 02:25:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C1B6B24071
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 01:24:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A81691F23533
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 01:25:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1512C53B9;
-	Fri,  5 Jan 2024 01:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32A871E533;
+	Fri,  5 Jan 2024 01:23:08 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D25546A1;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C96346B3;
 	Fri,  5 Jan 2024 01:23:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5m0z6xy5z4f3lY3;
-	Fri,  5 Jan 2024 09:22:59 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T5m0y5WZgz4f3lwP;
+	Fri,  5 Jan 2024 09:22:58 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id BF2211A0B7F;
-	Fri,  5 Jan 2024 09:23:01 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 1B12E1A0531;
+	Fri,  5 Jan 2024 09:23:02 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgBXZUXyWZdl68i0Fg--.35140S8;
+	by APP4 (Coremail) with SMTP id gCh0CgBXZUXyWZdl68i0Fg--.35140S9;
 	Fri, 05 Jan 2024 09:23:01 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
@@ -36,9 +36,9 @@ To: tytso@mit.edu,
 	ojaswin@linux.ibm.com
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 6/9] ext4: remove unused return value of ext4_mb_release_inode_pa
-Date: Fri,  5 Jan 2024 17:20:59 +0800
-Message-Id: <20240105092102.496631-7-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 7/9] ext4: remove unused return value of ext4_mb_release_group_pa
+Date: Fri,  5 Jan 2024 17:21:00 +0800
+Message-Id: <20240105092102.496631-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240105092102.496631-1-shikemeng@huaweicloud.com>
 References: <20240105092102.496631-1-shikemeng@huaweicloud.com>
@@ -49,10 +49,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBXZUXyWZdl68i0Fg--.35140S8
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFyfCw4DtFW7WF43WFW5Awb_yoWDWwc_GF
-	yjyr4xGryfZ34fu3Z5K345tFZYkan3Zr13ZF4rtrZ5Z3WrXan5uw1DArn8CrW7Ww4xCFy3
-	Crn7Jr18KFWSgjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID:gCh0CgBXZUXyWZdl68i0Fg--.35140S9
+X-Coremail-Antispam: 1UD129KBjvdXoWrtr4fGF45tF4UXFWxZF1xAFb_yoWkKFb_Ca
+	4UXr4kA343A3s293WrJry3t3yqkan2vr9rur4rKrZ3AF1rW3ZxAw1DZrsxA397ua10ka43
+	GF93Zry8GFZYqjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbS8YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
 	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
 	xGYIkIc2x26280x7IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC
@@ -68,36 +68,42 @@ X-Coremail-Antispam: 1UD129KBjvdXoWrKFyfCw4DtFW7WF43WFW5Awb_yoWDWwc_GF
 	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jstxDUUUUU=
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Remove unused return value of ext4_mb_release_inode_pa
+Remove unused return value of ext4_mb_release_group_pa.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/mballoc.c | 4 +---
- 1 file changed, 1 insertion(+), 3 deletions(-)
+ fs/ext4/mballoc.c | 6 ++----
+ 1 file changed, 2 insertions(+), 4 deletions(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 8d6246db3..1ed6d1d5a 100644
+index 1ed6d1d5a..e6561a09d 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -5278,7 +5278,7 @@ static void ext4_mb_new_preallocation(struct ext4_allocation_context *ac)
-  * the caller MUST hold group/inode locks.
-  * TODO: optimize the case when there are no in-core structures yet
-  */
+@@ -5330,7 +5330,7 @@ ext4_mb_release_inode_pa(struct ext4_buddy *e4b, struct buffer_head *bitmap_bh,
+ 	atomic_add(free, &sbi->s_mb_discarded);
+ }
+ 
 -static noinline_for_stack int
 +static noinline_for_stack void
- ext4_mb_release_inode_pa(struct ext4_buddy *e4b, struct buffer_head *bitmap_bh,
- 			struct ext4_prealloc_space *pa)
+ ext4_mb_release_group_pa(struct ext4_buddy *e4b,
+ 				struct ext4_prealloc_space *pa)
  {
-@@ -5328,8 +5328,6 @@ ext4_mb_release_inode_pa(struct ext4_buddy *e4b, struct buffer_head *bitmap_bh,
- 		 */
+@@ -5344,13 +5344,11 @@ ext4_mb_release_group_pa(struct ext4_buddy *e4b,
+ 	if (unlikely(group != e4b->bd_group && pa->pa_len != 0)) {
+ 		ext4_warning(sb, "bad group: expected %u, group %u, pa_start %llu",
+ 			     e4b->bd_group, group, pa->pa_pstart);
+-		return 0;
++		return;
  	}
- 	atomic_add(free, &sbi->s_mb_discarded);
+ 	mb_free_blocks(pa->pa_inode, e4b, bit, pa->pa_len);
+ 	atomic_add(pa->pa_len, &EXT4_SB(sb)->s_mb_discarded);
+ 	trace_ext4_mballoc_discard(sb, NULL, group, bit, pa->pa_len);
 -
 -	return 0;
  }
  
- static noinline_for_stack int
+ /*
 -- 
 2.30.0
 
