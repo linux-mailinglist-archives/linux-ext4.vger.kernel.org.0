@@ -1,34 +1,34 @@
-Return-Path: <linux-ext4+bounces-719-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-716-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14521824D77
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 04:33:36 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 14159824D75
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 04:33:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193861C21BD2
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 03:33:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3A99C1C21C8D
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 03:33:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C76A4525B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3383D4405;
 	Fri,  5 Jan 2024 03:33:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF2714410
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF252440E
 	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 03:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5pvD2YW3z4f3pJ7
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5pvD5DYpz4f3pJJ
 	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:12 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 18D041A08E1
+	by mail.maildlp.com (Postfix) with ESMTP id 741B31A0A77
 	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:18 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6hByeJdlyaRBFg--.23173S4;
-	Fri, 05 Jan 2024 11:33:15 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDn6hByeJdlyaRBFg--.23173S5;
+	Fri, 05 Jan 2024 11:33:18 +0800 (CST)
 From: Zhang Yi <yi.zhang@huaweicloud.com>
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -38,10 +38,12 @@ Cc: tytso@mit.edu,
 	yi.zhang@huaweicloud.com,
 	chengzhihao1@huawei.com,
 	yukuai3@huawei.com
-Subject: [PATCH v3 0/6] ext4: make ext4_map_blocks() recognize delalloc only extent
-Date: Fri,  5 Jan 2024 11:30:12 +0800
-Message-Id: <20240105033018.1665752-1-yi.zhang@huaweicloud.com>
+Subject: [PATCH v3 1/6] ext4: refactor ext4_da_map_blocks()
+Date: Fri,  5 Jan 2024 11:30:13 +0800
+Message-Id: <20240105033018.1665752-2-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240105033018.1665752-1-yi.zhang@huaweicloud.com>
+References: <20240105033018.1665752-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -49,73 +51,104 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDn6hByeJdlyaRBFg--.23173S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF4xCrWfCw4kGFyxAr18Zrb_yoW8tw4kpF
-	Z3Cr13Gws0gw17Wa9xZw47Gr1F9an7GF4UGry7Gr1kJrWUAry8WFs7K3WF9Fy3ArWxJF1a
-	qF4Ut34kua4rC37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
-	xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbE_M3UUUUU==
+X-CM-TRANSID:cCh0CgDn6hByeJdlyaRBFg--.23173S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxJr17JF15uw4DuryfZr4rAFb_yoW8uFy7pr
+	9IkF93Wr1UXwnYgF4Iqr1UXF1fKa4YqrWDGrZ3Ww18Ary8AwnagFn8tF1fKa4rtrZ7ZF1Y
+	qF4rKry5uw15GrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9m14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
+	x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
+	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
+	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
+	IY67AKxVWUXVWUAwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0
+	Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxGrwCFx2
+	IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v2
+	6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
+	AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
+	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
+	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUkPEfUUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-v2->v3:
- - Rename ext4_ext_determine_hole() to ext4_ext_determine_insert_hole()
-   and keep setting of 'map' inside ext4_ext_map_blocks().
- - Don't set EXT4_MAP_DELAYED in ext4_ext_determine_insert_hole()
-   because it's unreliable, and revise the comments.
-v1->v2:
- - Fix a long standing race issue between determine hole and inserting
-   new delalloc extent analyzed by Jan Kara.
- - Change method of adjusting hole length, instead of skip holes in
-   ext4_map_blocks(), now we find delalloc and correct length and type
-   in ext4_ext_determine_hole().
+From: Zhang Yi <yi.zhang@huawei.com>
 
-v2: https://lore.kernel.org/linux-ext4/20231223110223.3650717-1-yi.zhang@huaweicloud.com/
-v1: https://lore.kernel.org/linux-ext4/20231121093429.1827390-1-yi.zhang@huaweicloud.com/
+Refactor and cleanup ext4_da_map_blocks(), reduce some unnecessary
+parameters and branches, no logic changes.
 
-Hello, all!
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inode.c | 39 +++++++++++++++++----------------------
+ 1 file changed, 17 insertions(+), 22 deletions(-)
 
-I'm working on switching ext4 buffer IO from buffer_head to iomap
-and enable large folio on regular file recently [1], this patch set
-is one of a preparation of this work. It first fix a long standing race
-issue between bmap querying and adding new delalloc extents, then
-correct the hole length returned by ext4_map_blocks() when user querying
-map type and blocks range, after that, make this function and
-ext4_set_iomap() are able to distinguish delayed allocated only mapping
-from hole, finally BTW cleanup the ext4_iomap_begin_report().
-
-This preparation patch set changes the ext4 map -> iomap converting logic
-in ext4_set_iomap(), so that the later buffer IO conversion can use this
-helper to connect iomap frame. This patch set is already passed
-'kvm-xfstests -g auto' tests.
-
-Thanks,
-Yi.
-
-[1] https://lore.kernel.org/linux-ext4/20240102123918.799062-1-yi.zhang@huaweicloud.com/
-
-Zhang Yi (6):
-  ext4: refactor ext4_da_map_blocks()
-  ext4: convert to exclusive lock while inserting delalloc extents
-  ext4: correct the hole length returned by ext4_map_blocks()
-  ext4: add a hole extent entry in cache after punch
-  ext4: make ext4_map_blocks() distinguish delalloc only extent
-  ext4: make ext4_set_iomap() recognize IOMAP_DELALLOC map type
-
- fs/ext4/ext4.h    |   4 +-
- fs/ext4/extents.c | 114 +++++++++++++++++++++++++++++-----------------
- fs/ext4/inode.c   |  84 +++++++++++-----------------------
- 3 files changed, 103 insertions(+), 99 deletions(-)
-
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 61277f7f8722..5b0d3075be12 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1704,7 +1704,6 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+ 	/* Lookup extent status tree firstly */
+ 	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
+ 		if (ext4_es_is_hole(&es)) {
+-			retval = 0;
+ 			down_read(&EXT4_I(inode)->i_data_sem);
+ 			goto add_delayed;
+ 		}
+@@ -1749,26 +1748,9 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+ 		retval = ext4_ext_map_blocks(NULL, inode, map, 0);
+ 	else
+ 		retval = ext4_ind_map_blocks(NULL, inode, map, 0);
+-
+-add_delayed:
+-	if (retval == 0) {
+-		int ret;
+-
+-		/*
+-		 * XXX: __block_prepare_write() unmaps passed block,
+-		 * is it OK?
+-		 */
+-
+-		ret = ext4_insert_delayed_block(inode, map->m_lblk);
+-		if (ret != 0) {
+-			retval = ret;
+-			goto out_unlock;
+-		}
+-
+-		map_bh(bh, inode->i_sb, invalid_block);
+-		set_buffer_new(bh);
+-		set_buffer_delay(bh);
+-	} else if (retval > 0) {
++	if (retval < 0)
++		goto out_unlock;
++	if (retval > 0) {
+ 		unsigned int status;
+ 
+ 		if (unlikely(retval != map->m_len)) {
+@@ -1783,11 +1765,24 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+ 				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+ 		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+ 				      map->m_pblk, status);
++		goto out_unlock;
+ 	}
+ 
++add_delayed:
++	/*
++	 * XXX: __block_prepare_write() unmaps passed block,
++	 * is it OK?
++	 */
++	retval = ext4_insert_delayed_block(inode, map->m_lblk);
++	if (retval)
++		goto out_unlock;
++
++	map_bh(bh, inode->i_sb, invalid_block);
++	set_buffer_new(bh);
++	set_buffer_delay(bh);
++
+ out_unlock:
+ 	up_read((&EXT4_I(inode)->i_data_sem));
+-
+ 	return retval;
+ }
+ 
 -- 
 2.39.2
 
