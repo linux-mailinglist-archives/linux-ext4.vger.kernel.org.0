@@ -1,34 +1,34 @@
-Return-Path: <linux-ext4+bounces-717-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-721-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E44D824D76
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 04:33:30 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EAA7824D7B
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 04:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 914F71C21D50
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 03:33:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 01D14286EDA
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 03:33:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D7DB5234;
-	Fri,  5 Jan 2024 03:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B53539C;
+	Fri,  5 Jan 2024 03:33:25 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B0B442C
-	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 03:33:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E557446B3
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 03:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4T5pvF0jMsz4f3pJQ
-	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:13 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T5pvH64WFz4f3kjD
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:15 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id CD5F11A0851
-	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 32C4E1A0B27
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 11:33:19 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDn6hByeJdlyaRBFg--.23173S6;
-	Fri, 05 Jan 2024 11:33:18 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgDn6hByeJdlyaRBFg--.23173S7;
+	Fri, 05 Jan 2024 11:33:19 +0800 (CST)
 From: Zhang Yi <yi.zhang@huaweicloud.com>
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -38,9 +38,9 @@ Cc: tytso@mit.edu,
 	yi.zhang@huaweicloud.com,
 	chengzhihao1@huawei.com,
 	yukuai3@huawei.com
-Subject: [PATCH v3 2/6] ext4: convert to exclusive lock while inserting delalloc extents
-Date: Fri,  5 Jan 2024 11:30:14 +0800
-Message-Id: <20240105033018.1665752-3-yi.zhang@huaweicloud.com>
+Subject: [PATCH v3 3/6] ext4: correct the hole length returned by ext4_map_blocks()
+Date: Fri,  5 Jan 2024 11:30:15 +0800
+Message-Id: <20240105033018.1665752-4-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240105033018.1665752-1-yi.zhang@huaweicloud.com>
 References: <20240105033018.1665752-1-yi.zhang@huaweicloud.com>
@@ -51,13 +51,13 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDn6hByeJdlyaRBFg--.23173S6
-X-Coremail-Antispam: 1UD129KBjvJXoWxJw4DZFy8uF4kXr1fZry3XFb_yoW5Zr4kpr
-	ZIkFyfCr1UW3ykuayIqr17XF1xG3WUJFW7GFZxGF4UZFyUAFnaqF1jyF1aqFyftrZ7AF4Y
-	qFW0qry5uayUCrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:cCh0CgDn6hByeJdlyaRBFg--.23173S7
+X-Coremail-Antispam: 1UD129KBjvJXoW3Gr1UCF4DJw13Xw47uFyrCrg_yoW7KFWrpF
+	Wfury5Gws8W34q93yxAF48Zr1rC3W8CrW7JrZ3Kr1SyF15Jr48WF18KF12vFZ3tFWrJF1Y
+	vr4jya4UCanIkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUU9m14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
+	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
 	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
@@ -67,108 +67,183 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxJw4DZFy8uF4kXr1fZry3XFb_yoW5Zr4kpr
 	6r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67
 	AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IY
 	s7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr
-	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUI4E_UUUUU=
+	0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JULtxhUUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
 From: Zhang Yi <yi.zhang@huawei.com>
 
-ext4_da_map_blocks() only hold i_data_sem in shared mode and i_rwsem
-when inserting delalloc extents, it could be raced by another querying
-path of ext4_map_blocks() without i_rwsem, .e.g buffered read path.
-Suppose we buffered read a file containing just a hole, and without any
-cached extents tree, then it is raced by another delayed buffered write
-to the same area or the near area belongs to the same hole, and the new
-delalloc extent could be overwritten to a hole extent.
+In ext4_map_blocks(), if we can't find a range of mapping in the
+extents cache, we are calling ext4_ext_map_blocks() to search the real
+path and ext4_ext_determine_hole() to determine the hole range. But if
+the querying range was partially or completely overlaped by a delalloc
+extent, we can't find it in the real extent path, so the returned hole
+length could be incorrect.
 
- pread()                           pwrite()
-  filemap_read_folio()
-   ext4_mpage_readpages()
-    ext4_map_blocks()
-     down_read(i_data_sem)
-     ext4_ext_determine_hole()
-     //find hole
-     ext4_ext_put_gap_in_cache()
-      ext4_es_find_extent_range()
-      //no delalloc extent
-                                    ext4_da_map_blocks()
-                                     down_read(i_data_sem)
-                                     ext4_insert_delayed_block()
-                                     //insert delalloc extent
-      ext4_es_insert_extent()
-      //overwrite delalloc extent to hole
+Fortunately, ext4_ext_put_gap_in_cache() have already handle delalloc
+extent, but it searches start from the expanded hole_start, doesn't
+start from the querying range, so the delalloc extent found could not be
+the one that overlaped the querying range, plus, it also didn't adjust
+the hole length. Let's just remove ext4_ext_put_gap_in_cache(), handle
+delalloc and insert adjusted hole extent in ext4_ext_determine_hole().
 
-This race could lead to inconsistent delalloc extents tree and
-incorrect reserved space counter. Fix this by converting to hold
-i_data_sem in exclusive mode when adding a new delalloc extent in
-ext4_da_map_blocks().
-
-Cc: stable@vger.kernel.org
 Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 Suggested-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Jan Kara <jack@suse.cz>
 ---
- fs/ext4/inode.c | 25 +++++++++++--------------
- 1 file changed, 11 insertions(+), 14 deletions(-)
+ fs/ext4/extents.c | 111 +++++++++++++++++++++++++++++-----------------
+ 1 file changed, 70 insertions(+), 41 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 5b0d3075be12..142c67f5c7fc 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1703,10 +1703,8 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index d5efe076d3d3..e0b7e48c4c67 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -2229,7 +2229,7 @@ static int ext4_fill_es_cache_info(struct inode *inode,
  
- 	/* Lookup extent status tree firstly */
- 	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
--		if (ext4_es_is_hole(&es)) {
--			down_read(&EXT4_I(inode)->i_data_sem);
-+		if (ext4_es_is_hole(&es))
- 			goto add_delayed;
--		}
  
- 		/*
- 		 * Delayed extent could be allocated by fallocate.
-@@ -1748,8 +1746,10 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
- 		retval = ext4_ext_map_blocks(NULL, inode, map, 0);
- 	else
- 		retval = ext4_ind_map_blocks(NULL, inode, map, 0);
--	if (retval < 0)
--		goto out_unlock;
-+	if (retval < 0) {
-+		up_read(&EXT4_I(inode)->i_data_sem);
-+		return retval;
-+	}
- 	if (retval > 0) {
- 		unsigned int status;
- 
-@@ -1765,24 +1765,21 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
- 				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
- 		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
- 				      map->m_pblk, status);
--		goto out_unlock;
-+		up_read(&EXT4_I(inode)->i_data_sem);
-+		return retval;
- 	}
-+	up_read(&EXT4_I(inode)->i_data_sem);
- 
- add_delayed:
--	/*
--	 * XXX: __block_prepare_write() unmaps passed block,
--	 * is it OK?
--	 */
-+	down_write(&EXT4_I(inode)->i_data_sem);
- 	retval = ext4_insert_delayed_block(inode, map->m_lblk);
-+	up_write(&EXT4_I(inode)->i_data_sem);
- 	if (retval)
--		goto out_unlock;
-+		return retval;
- 
- 	map_bh(bh, inode->i_sb, invalid_block);
- 	set_buffer_new(bh);
- 	set_buffer_delay(bh);
--
--out_unlock:
--	up_read((&EXT4_I(inode)->i_data_sem));
- 	return retval;
+ /*
+- * ext4_ext_determine_hole - determine hole around given block
++ * ext4_ext_find_hole - find hole around given block according to the given path
+  * @inode:	inode we lookup in
+  * @path:	path in extent tree to @lblk
+  * @lblk:	pointer to logical block around which we want to determine hole
+@@ -2241,9 +2241,9 @@ static int ext4_fill_es_cache_info(struct inode *inode,
+  * The function returns the length of a hole starting at @lblk. We update @lblk
+  * to the beginning of the hole if we managed to find it.
+  */
+-static ext4_lblk_t ext4_ext_determine_hole(struct inode *inode,
+-					   struct ext4_ext_path *path,
+-					   ext4_lblk_t *lblk)
++static ext4_lblk_t ext4_ext_find_hole(struct inode *inode,
++				      struct ext4_ext_path *path,
++				      ext4_lblk_t *lblk)
+ {
+ 	int depth = ext_depth(inode);
+ 	struct ext4_extent *ex;
+@@ -2270,30 +2270,6 @@ static ext4_lblk_t ext4_ext_determine_hole(struct inode *inode,
+ 	return len;
  }
+ 
+-/*
+- * ext4_ext_put_gap_in_cache:
+- * calculate boundaries of the gap that the requested block fits into
+- * and cache this gap
+- */
+-static void
+-ext4_ext_put_gap_in_cache(struct inode *inode, ext4_lblk_t hole_start,
+-			  ext4_lblk_t hole_len)
+-{
+-	struct extent_status es;
+-
+-	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
+-				  hole_start + hole_len - 1, &es);
+-	if (es.es_len) {
+-		/* There's delayed extent containing lblock? */
+-		if (es.es_lblk <= hole_start)
+-			return;
+-		hole_len = min(es.es_lblk - hole_start, hole_len);
+-	}
+-	ext_debug(inode, " -> %u:%u\n", hole_start, hole_len);
+-	ext4_es_insert_extent(inode, hole_start, hole_len, ~0,
+-			      EXTENT_STATUS_HOLE);
+-}
+-
+ /*
+  * ext4_ext_rm_idx:
+  * removes index from the index block.
+@@ -4062,6 +4038,69 @@ static int get_implied_cluster_alloc(struct super_block *sb,
+ 	return 0;
+ }
+ 
++/*
++ * Determine hole length around the given logical block, first try to
++ * locate and expand the hole from the given @path, and then adjust it
++ * if it's partially or completely converted to delayed extents, insert
++ * it into the extent cache tree if it's indeed a hole, finally return
++ * the length of the determined extent.
++ */
++static ext4_lblk_t ext4_ext_determine_insert_hole(struct inode *inode,
++						  struct ext4_ext_path *path,
++						  ext4_lblk_t lblk)
++{
++	ext4_lblk_t hole_start, len;
++	struct extent_status es;
++
++	hole_start = lblk;
++	len = ext4_ext_find_hole(inode, path, &hole_start);
++again:
++	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
++				  hole_start + len - 1, &es);
++	if (!es.es_len)
++		goto insert_hole;
++
++	/*
++	 * There's a delalloc extent in the hole, handle it if the delalloc
++	 * extent is in front of, behind and straddle the queried range.
++	 */
++	if (lblk >= es.es_lblk + es.es_len) {
++		/*
++		 * The delalloc extent is in front of the queried range,
++		 * find again from the queried start block.
++		 */
++		len -= lblk - hole_start;
++		hole_start = lblk;
++		goto again;
++	} else if (in_range(lblk, es.es_lblk, es.es_len)) {
++		/*
++		 * The delalloc extent containing lblk, it must have been
++		 * added after ext4_map_blocks() checked the extent status
++		 * tree, adjust the length to the delalloc extent's after
++		 * lblk.
++		 */
++		len = es.es_lblk + es.es_len - lblk;
++		return len;
++	} else {
++		/*
++		 * The delalloc extent is partially or completely behind
++		 * the queried range, update hole length until the
++		 * beginning of the delalloc extent.
++		 */
++		len = min(es.es_lblk - hole_start, len);
++	}
++
++insert_hole:
++	/* Put just found gap into cache to speed up subsequent requests */
++	ext_debug(inode, " -> %u:%u\n", hole_start, len);
++	ext4_es_insert_extent(inode, hole_start, len, ~0, EXTENT_STATUS_HOLE);
++
++	/* Update hole_len to reflect hole size after lblk */
++	if (hole_start != lblk)
++		len -= lblk - hole_start;
++
++	return len;
++}
+ 
+ /*
+  * Block allocation/map/preallocation routine for extents based files
+@@ -4179,22 +4218,12 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+ 	 * we couldn't try to create block if create flag is zero
+ 	 */
+ 	if ((flags & EXT4_GET_BLOCKS_CREATE) == 0) {
+-		ext4_lblk_t hole_start, hole_len;
++		ext4_lblk_t len;
+ 
+-		hole_start = map->m_lblk;
+-		hole_len = ext4_ext_determine_hole(inode, path, &hole_start);
+-		/*
+-		 * put just found gap into cache to speed up
+-		 * subsequent requests
+-		 */
+-		ext4_ext_put_gap_in_cache(inode, hole_start, hole_len);
++		len = ext4_ext_determine_insert_hole(inode, path, map->m_lblk);
+ 
+-		/* Update hole_len to reflect hole size after map->m_lblk */
+-		if (hole_start != map->m_lblk)
+-			hole_len -= map->m_lblk - hole_start;
+ 		map->m_pblk = 0;
+-		map->m_len = min_t(unsigned int, map->m_len, hole_len);
+-
++		map->m_len = min_t(unsigned int, map->m_len, len);
+ 		goto out;
+ 	}
  
 -- 
 2.39.2
