@@ -1,147 +1,321 @@
-Return-Path: <linux-ext4+bounces-714-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-726-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A4DE4824C86
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 02:25:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C90D98251B7
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 11:18:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 106FDB24C0F
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 01:25:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E11451C22FDB
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jan 2024 10:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 026FE1DFDA;
-	Fri,  5 Jan 2024 01:23:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1B6324B52;
+	Fri,  5 Jan 2024 10:17:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jNco0foW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cxW0xp/c";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jNco0foW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cxW0xp/c"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7472B46B8;
-	Fri,  5 Jan 2024 01:23:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4T5m0z2XrNz4f3mHv;
-	Fri,  5 Jan 2024 09:22:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id AA78A1A0A41;
-	Fri,  5 Jan 2024 09:23:02 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP4 (Coremail) with SMTP id gCh0CgBXZUXyWZdl68i0Fg--.35140S11;
-	Fri, 05 Jan 2024 09:23:02 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ojaswin@linux.ibm.com
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 9/9] ext4: remove 'needed' in trace_ext4_discard_preallocations
-Date: Fri,  5 Jan 2024 17:21:02 +0800
-Message-Id: <20240105092102.496631-10-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240105092102.496631-1-shikemeng@huaweicloud.com>
-References: <20240105092102.496631-1-shikemeng@huaweicloud.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 917D124B43
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Jan 2024 10:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 675151F851;
+	Fri,  5 Jan 2024 10:17:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704449844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9qvKjZI9M1hUYrPHDsPcw/RqWaUFmKECe5In8f1xpw=;
+	b=jNco0foWbibkmIeeEGOynOb585j5UihzgnoNpsPIRAkbuH+ri3D1LGETlOZVKA4SmwlM0C
+	TF0nldeQM6NWiDhAHnVpJqKnob7NHieUlKAk5YnTKftqbUaD6R2MPtFYH7bGopyv7mAfl9
+	KWXiUQ3vYk7vfoXlCavqS+/rThF0hMs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704449844;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9qvKjZI9M1hUYrPHDsPcw/RqWaUFmKECe5In8f1xpw=;
+	b=cxW0xp/cdt5ERFufznpGuAxCYHan3+VIRKVios9JNqd0T9uBU64lpMt0N/lHJdHWoANuGC
+	Wf1LcJ3orkRh8cDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704449844; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9qvKjZI9M1hUYrPHDsPcw/RqWaUFmKECe5In8f1xpw=;
+	b=jNco0foWbibkmIeeEGOynOb585j5UihzgnoNpsPIRAkbuH+ri3D1LGETlOZVKA4SmwlM0C
+	TF0nldeQM6NWiDhAHnVpJqKnob7NHieUlKAk5YnTKftqbUaD6R2MPtFYH7bGopyv7mAfl9
+	KWXiUQ3vYk7vfoXlCavqS+/rThF0hMs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704449844;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J9qvKjZI9M1hUYrPHDsPcw/RqWaUFmKECe5In8f1xpw=;
+	b=cxW0xp/cdt5ERFufznpGuAxCYHan3+VIRKVios9JNqd0T9uBU64lpMt0N/lHJdHWoANuGC
+	Wf1LcJ3orkRh8cDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 56C5B13C99;
+	Fri,  5 Jan 2024 10:17:24 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id SzQsFTTXl2XIXAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 05 Jan 2024 10:17:24 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D646AA07EF; Fri,  5 Jan 2024 11:17:23 +0100 (CET)
+Date: Fri, 5 Jan 2024 11:17:23 +0100
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: Re: [PATCH v3 3/6] ext4: correct the hole length returned by
+ ext4_map_blocks()
+Message-ID: <20240105101723.gl5ew2mkhtn4nyyg@quack3>
+References: <20240105033018.1665752-1-yi.zhang@huaweicloud.com>
+ <20240105033018.1665752-4-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBXZUXyWZdl68i0Fg--.35140S11
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr43tF4fZrykCw4fAw13Jwb_yoW8tw1rpr
-	nrA3W8Ww43Z39Y9a1xZw18Zr45Zay09anrJrWSgw1UZF9rJF93KrnFqr1jyFyrArZYkFWS
-	va4a9Fy5Zw18W37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBIb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
-	FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3w
-	A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
-	3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY
-	6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aV
-	CY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0TqcUUUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240105033018.1665752-4-yi.zhang@huaweicloud.com>
+X-Spam-Level: 
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=jNco0foW;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="cxW0xp/c"
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[8];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 URIBL_BLOCKED(0.00)[suse.com:email,huawei.com:email,suse.cz:dkim,suse.cz:email];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -4.01
+X-Rspamd-Queue-Id: 675151F851
+X-Spam-Flag: NO
 
-As 'needed' to trace_ext4_discard_preallocations is always 0 which
-is meaningless. Just remove it.
+On Fri 05-01-24 11:30:15, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> In ext4_map_blocks(), if we can't find a range of mapping in the
+> extents cache, we are calling ext4_ext_map_blocks() to search the real
+> path and ext4_ext_determine_hole() to determine the hole range. But if
+> the querying range was partially or completely overlaped by a delalloc
+> extent, we can't find it in the real extent path, so the returned hole
+> length could be incorrect.
+> 
+> Fortunately, ext4_ext_put_gap_in_cache() have already handle delalloc
+> extent, but it searches start from the expanded hole_start, doesn't
+> start from the querying range, so the delalloc extent found could not be
+> the one that overlaped the querying range, plus, it also didn't adjust
+> the hole length. Let's just remove ext4_ext_put_gap_in_cache(), handle
+> delalloc and insert adjusted hole extent in ext4_ext_determine_hole().
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> Suggested-by: Jan Kara <jack@suse.cz>
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Suggested-by: Jan Kara <jack@suse.cz>
+Thanks! Looks good. Feel free to add:
+
 Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mballoc.c           |  5 ++---
- include/trace/events/ext4.h | 11 ++++-------
- 2 files changed, 6 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 0e6beb3b4..091a832a8 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5481,9 +5481,8 @@ void ext4_discard_preallocations(struct inode *inode)
- 	struct rb_node *iter;
- 	int err;
- 
--	if (!S_ISREG(inode->i_mode)) {
-+	if (!S_ISREG(inode->i_mode))
- 		return;
--	}
- 
- 	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
- 		return;
-@@ -5491,7 +5490,7 @@ void ext4_discard_preallocations(struct inode *inode)
- 	mb_debug(sb, "discard preallocation for inode %lu\n",
- 		 inode->i_ino);
- 	trace_ext4_discard_preallocations(inode,
--			atomic_read(&ei->i_prealloc_active), 0);
-+			atomic_read(&ei->i_prealloc_active));
- 
- repeat:
- 	/* first, collect all pa's in the inode */
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index 65029dfb9..a697f4b77 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -772,15 +772,14 @@ TRACE_EVENT(ext4_mb_release_group_pa,
- );
- 
- TRACE_EVENT(ext4_discard_preallocations,
--	TP_PROTO(struct inode *inode, unsigned int len, unsigned int needed),
-+	TP_PROTO(struct inode *inode, unsigned int len),
- 
--	TP_ARGS(inode, len, needed),
-+	TP_ARGS(inode, len),
- 
- 	TP_STRUCT__entry(
- 		__field(	dev_t,		dev		)
- 		__field(	ino_t,		ino		)
- 		__field(	unsigned int,	len		)
--		__field(	unsigned int,	needed		)
- 
- 	),
- 
-@@ -788,13 +787,11 @@ TRACE_EVENT(ext4_discard_preallocations,
- 		__entry->dev	= inode->i_sb->s_dev;
- 		__entry->ino	= inode->i_ino;
- 		__entry->len	= len;
--		__entry->needed	= needed;
- 	),
- 
--	TP_printk("dev %d,%d ino %lu len: %u needed %u",
-+	TP_printk("dev %d,%d ino %lu len: %u",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
--		  (unsigned long) __entry->ino, __entry->len,
--		  __entry->needed)
-+		  (unsigned long) __entry->ino, __entry->len)
- );
- 
- TRACE_EVENT(ext4_mb_discard_preallocations,
+								Honza
+
+> ---
+>  fs/ext4/extents.c | 111 +++++++++++++++++++++++++++++-----------------
+>  1 file changed, 70 insertions(+), 41 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index d5efe076d3d3..e0b7e48c4c67 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -2229,7 +2229,7 @@ static int ext4_fill_es_cache_info(struct inode *inode,
+>  
+>  
+>  /*
+> - * ext4_ext_determine_hole - determine hole around given block
+> + * ext4_ext_find_hole - find hole around given block according to the given path
+>   * @inode:	inode we lookup in
+>   * @path:	path in extent tree to @lblk
+>   * @lblk:	pointer to logical block around which we want to determine hole
+> @@ -2241,9 +2241,9 @@ static int ext4_fill_es_cache_info(struct inode *inode,
+>   * The function returns the length of a hole starting at @lblk. We update @lblk
+>   * to the beginning of the hole if we managed to find it.
+>   */
+> -static ext4_lblk_t ext4_ext_determine_hole(struct inode *inode,
+> -					   struct ext4_ext_path *path,
+> -					   ext4_lblk_t *lblk)
+> +static ext4_lblk_t ext4_ext_find_hole(struct inode *inode,
+> +				      struct ext4_ext_path *path,
+> +				      ext4_lblk_t *lblk)
+>  {
+>  	int depth = ext_depth(inode);
+>  	struct ext4_extent *ex;
+> @@ -2270,30 +2270,6 @@ static ext4_lblk_t ext4_ext_determine_hole(struct inode *inode,
+>  	return len;
+>  }
+>  
+> -/*
+> - * ext4_ext_put_gap_in_cache:
+> - * calculate boundaries of the gap that the requested block fits into
+> - * and cache this gap
+> - */
+> -static void
+> -ext4_ext_put_gap_in_cache(struct inode *inode, ext4_lblk_t hole_start,
+> -			  ext4_lblk_t hole_len)
+> -{
+> -	struct extent_status es;
+> -
+> -	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
+> -				  hole_start + hole_len - 1, &es);
+> -	if (es.es_len) {
+> -		/* There's delayed extent containing lblock? */
+> -		if (es.es_lblk <= hole_start)
+> -			return;
+> -		hole_len = min(es.es_lblk - hole_start, hole_len);
+> -	}
+> -	ext_debug(inode, " -> %u:%u\n", hole_start, hole_len);
+> -	ext4_es_insert_extent(inode, hole_start, hole_len, ~0,
+> -			      EXTENT_STATUS_HOLE);
+> -}
+> -
+>  /*
+>   * ext4_ext_rm_idx:
+>   * removes index from the index block.
+> @@ -4062,6 +4038,69 @@ static int get_implied_cluster_alloc(struct super_block *sb,
+>  	return 0;
+>  }
+>  
+> +/*
+> + * Determine hole length around the given logical block, first try to
+> + * locate and expand the hole from the given @path, and then adjust it
+> + * if it's partially or completely converted to delayed extents, insert
+> + * it into the extent cache tree if it's indeed a hole, finally return
+> + * the length of the determined extent.
+> + */
+> +static ext4_lblk_t ext4_ext_determine_insert_hole(struct inode *inode,
+> +						  struct ext4_ext_path *path,
+> +						  ext4_lblk_t lblk)
+> +{
+> +	ext4_lblk_t hole_start, len;
+> +	struct extent_status es;
+> +
+> +	hole_start = lblk;
+> +	len = ext4_ext_find_hole(inode, path, &hole_start);
+> +again:
+> +	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
+> +				  hole_start + len - 1, &es);
+> +	if (!es.es_len)
+> +		goto insert_hole;
+> +
+> +	/*
+> +	 * There's a delalloc extent in the hole, handle it if the delalloc
+> +	 * extent is in front of, behind and straddle the queried range.
+> +	 */
+> +	if (lblk >= es.es_lblk + es.es_len) {
+> +		/*
+> +		 * The delalloc extent is in front of the queried range,
+> +		 * find again from the queried start block.
+> +		 */
+> +		len -= lblk - hole_start;
+> +		hole_start = lblk;
+> +		goto again;
+> +	} else if (in_range(lblk, es.es_lblk, es.es_len)) {
+> +		/*
+> +		 * The delalloc extent containing lblk, it must have been
+> +		 * added after ext4_map_blocks() checked the extent status
+> +		 * tree, adjust the length to the delalloc extent's after
+> +		 * lblk.
+> +		 */
+> +		len = es.es_lblk + es.es_len - lblk;
+> +		return len;
+> +	} else {
+> +		/*
+> +		 * The delalloc extent is partially or completely behind
+> +		 * the queried range, update hole length until the
+> +		 * beginning of the delalloc extent.
+> +		 */
+> +		len = min(es.es_lblk - hole_start, len);
+> +	}
+> +
+> +insert_hole:
+> +	/* Put just found gap into cache to speed up subsequent requests */
+> +	ext_debug(inode, " -> %u:%u\n", hole_start, len);
+> +	ext4_es_insert_extent(inode, hole_start, len, ~0, EXTENT_STATUS_HOLE);
+> +
+> +	/* Update hole_len to reflect hole size after lblk */
+> +	if (hole_start != lblk)
+> +		len -= lblk - hole_start;
+> +
+> +	return len;
+> +}
+>  
+>  /*
+>   * Block allocation/map/preallocation routine for extents based files
+> @@ -4179,22 +4218,12 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>  	 * we couldn't try to create block if create flag is zero
+>  	 */
+>  	if ((flags & EXT4_GET_BLOCKS_CREATE) == 0) {
+> -		ext4_lblk_t hole_start, hole_len;
+> +		ext4_lblk_t len;
+>  
+> -		hole_start = map->m_lblk;
+> -		hole_len = ext4_ext_determine_hole(inode, path, &hole_start);
+> -		/*
+> -		 * put just found gap into cache to speed up
+> -		 * subsequent requests
+> -		 */
+> -		ext4_ext_put_gap_in_cache(inode, hole_start, hole_len);
+> +		len = ext4_ext_determine_insert_hole(inode, path, map->m_lblk);
+>  
+> -		/* Update hole_len to reflect hole size after map->m_lblk */
+> -		if (hole_start != map->m_lblk)
+> -			hole_len -= map->m_lblk - hole_start;
+>  		map->m_pblk = 0;
+> -		map->m_len = min_t(unsigned int, map->m_len, hole_len);
+> -
+> +		map->m_len = min_t(unsigned int, map->m_len, len);
+>  		goto out;
+>  	}
+>  
+> -- 
+> 2.39.2
+> 
 -- 
-2.30.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
