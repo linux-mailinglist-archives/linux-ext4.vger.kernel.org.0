@@ -1,111 +1,235 @@
-Return-Path: <linux-ext4+bounces-736-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-737-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB11826F01
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jan 2024 13:53:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8209C827615
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jan 2024 18:15:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 671EEB2131A
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jan 2024 12:53:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EB8911F233C3
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Jan 2024 17:15:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5FEC4175D;
-	Mon,  8 Jan 2024 12:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 184EF54750;
+	Mon,  8 Jan 2024 17:15:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ki3VV2lW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3u+5h8VJ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ki3VV2lW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3u+5h8VJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from server.interlinx.bc.ca (mail.interlinx.bc.ca [69.165.217.196])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1B9941766
-	for <linux-ext4@vger.kernel.org>; Mon,  8 Jan 2024 12:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=interlinx.bc.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=interlinx.bc.ca
-Received: from pc.interlinx.bc.ca (pc.interlinx.bc.ca [IPv6:fd31:aeb1:48df:0:3b14:e643:83d8:7017])
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAA4354662
+	for <linux-ext4@vger.kernel.org>; Mon,  8 Jan 2024 17:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by server.interlinx.bc.ca (Postfix) with ESMTPSA id 86ED225B84
-	for <linux-ext4@vger.kernel.org>; Mon,  8 Jan 2024 07:52:33 -0500 (EST)
-Message-ID: <01b2c55a334cf970e49958a5f932d5822bfa74b4.camel@interlinx.bc.ca>
-Subject: Re: e2scrub finds corruption immediately after mounting
-From: "Brian J. Murrell" <brian@interlinx.bc.ca>
-To: linux-ext4@vger.kernel.org
-Date: Mon, 08 Jan 2024 07:52:33 -0500
-In-Reply-To: <cf4fb33f3a60629d3b6108c1c206aa5b931d8498.camel@interlinx.bc.ca>
-References: <536d25b24364eaf11a38b47e853008c3115d82b8.camel@interlinx.bc.ca>
-	 <20240104045540.GD36164@frogsfrogsfrogs>
-	 <cf4fb33f3a60629d3b6108c1c206aa5b931d8498.camel@interlinx.bc.ca>
-Autocrypt: addr=brian@interlinx.bc.ca; prefer-encrypt=mutual;
- keydata=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
-Content-Type: multipart/signed; micalg="pgp-sha256";
-	protocol="application/pgp-signature"; boundary="=-8kxlQ/ZrVWx/ue1dE+no"
-User-Agent: Evolution 3.50.2 (3.50.2-1.fc39) 
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9B01F21D81;
+	Mon,  8 Jan 2024 17:15:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704734106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wr6NEoBhGORJ7z25w5NDPO6t9R4UmpbPXzDDaTnPue0=;
+	b=Ki3VV2lWyAW1blB7+tOIlCCTh44RpnRWVmmG/T8Wr4VcKeLZQjcJwJf9oUYlGn7U72OCOa
+	A5aOWKKKEmbIMLwuvMlkOwVVY80y2WEKXQBHTSvgzfFPR4vrDX1xAv9kkEhcqJRk5F0q7A
+	ix6KBjK0Z/c9k7U4dGaBfWmVXcmKT0I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704734106;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wr6NEoBhGORJ7z25w5NDPO6t9R4UmpbPXzDDaTnPue0=;
+	b=3u+5h8VJs1EFWO6FTyZc8BljjLgvzjl/PVfGEMse9nq3mIY28rbEyxZ+87T7lERZw+uM/k
+	U65pknEXnJyGOMCw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1704734106; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wr6NEoBhGORJ7z25w5NDPO6t9R4UmpbPXzDDaTnPue0=;
+	b=Ki3VV2lWyAW1blB7+tOIlCCTh44RpnRWVmmG/T8Wr4VcKeLZQjcJwJf9oUYlGn7U72OCOa
+	A5aOWKKKEmbIMLwuvMlkOwVVY80y2WEKXQBHTSvgzfFPR4vrDX1xAv9kkEhcqJRk5F0q7A
+	ix6KBjK0Z/c9k7U4dGaBfWmVXcmKT0I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1704734106;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wr6NEoBhGORJ7z25w5NDPO6t9R4UmpbPXzDDaTnPue0=;
+	b=3u+5h8VJs1EFWO6FTyZc8BljjLgvzjl/PVfGEMse9nq3mIY28rbEyxZ+87T7lERZw+uM/k
+	U65pknEXnJyGOMCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E5641392C;
+	Mon,  8 Jan 2024 17:15:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id FD+4IpotnGV+LQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 08 Jan 2024 17:15:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 33D74A07EB; Mon,  8 Jan 2024 18:15:06 +0100 (CET)
+Date: Mon, 8 Jan 2024 18:15:06 +0100
+From: Jan Kara <jack@suse.cz>
+To: Fengnan Chang <changfengnan@bytedance.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v6] ext4: improve trim efficiency
+Message-ID: <20240108171506.k47t4qztbbhulsp3@quack3>
+References: <20230901092820.33757-1-changfengnan@bytedance.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20230901092820.33757-1-changfengnan@bytedance.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
+On Fri 01-09-23 17:28:20, Fengnan Chang wrote:
+> In commit a015434480dc("ext4: send parallel discards on commit
+> completions"), issue all discard commands in parallel make all
+> bios could merged into one request, so lowlevel drive can issue
+> multi segments in one time which is more efficiency, but commit
+> 55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread contex")
+> seems broke this way, let's fix it.
+> 
+> In my test:
+> 1. create 10 normal files, each file size is 10G.
+> 2. deallocate file, punch a 16k holes every 32k.
+> 3. trim all fs.
+> the time of fstrim fs reduce from 6.7s to 1.3s.
+> 
+> Signed-off-by: Fengnan Chang <changfengnan@bytedance.com>
 
---=-8kxlQ/ZrVWx/ue1dE+no
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+This seems to have fallen through the cracks... I'm sorry for that.
 
-On Thu, 2024-01-04 at 09:13 -0500, Brian J. Murrell wrote:
-> On Wed, 2024-01-03 at 20:55 -0800, Darrick J. Wong wrote:
-> > Curious.=C2=A0 Normally e2scrub will run e2fsck twice: Once in journal-
-> > only
-> > preen mode to replay the journal, then again with -fy to perform
-> > the
-> > full filesystem (snapshot) check.
->=20
-> It is doing that.=C2=A0 I suspect the first e2fsck is silent.
->=20
-> > I wonder if you would paste the output of
-> > "bash -x e2scrub /dev/rootvol_tmp/almalinux8_opt" here?=C2=A0 I'd be
-> > curious
-> > to see what the command flow is.
->=20
-> Sure.
+>  static int ext4_try_to_trim_range(struct super_block *sb,
+>  		struct ext4_buddy *e4b, ext4_grpblk_t start,
+>  		ext4_grpblk_t max, ext4_grpblk_t minblocks)
+>  __acquires(ext4_group_lock_ptr(sb, e4b->bd_group))
+>  __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+>  {
+> -	ext4_grpblk_t next, count, free_count;
+> +	ext4_grpblk_t next, count, free_count, bak;
+>  	void *bitmap;
+> +	struct ext4_free_data *entry = NULL, *fd, *nfd;
+> +	struct list_head discard_data_list;
+> +	struct bio *discard_bio = NULL;
+> +	struct blk_plug plug;
+> +	ext4_group_t group = e4b->bd_group;
+> +	struct ext4_free_extent ex;
+> +	bool noalloc = false;
+> +	int ret = 0;
+> +
+> +	INIT_LIST_HEAD(&discard_data_list);
+>  
+>  	bitmap = e4b->bd_bitmap;
+>  	start = max(e4b->bd_info->bb_first_free, start);
+>  	count = 0;
+>  	free_count = 0;
+>  
+> +	blk_start_plug(&plug);
+>  	while (start <= max) {
+>  		start = mb_find_next_zero_bit(bitmap, max + 1, start);
+>  		if (start > max)
+>  			break;
+> +		bak = start;
+>  		next = mb_find_next_bit(bitmap, max + 1, start);
+> -
+>  		if ((next - start) >= minblocks) {
+> -			int ret = ext4_trim_extent(sb, start, next - start, e4b);
+> +			/* when only one segment, there is no need to alloc entry */
+> +			noalloc = (free_count == 0) && (next >= max);
 
-Was the bash -x output useful in any way, or was any of the information
-I supplied in my other replies on this list:
+Is the single extent case really worth the complications to save one
+allocation? I don't think it is but maybe I'm missing something. Otherwise
+the patch looks good to me!
 
-https://lore.kernel.org/linux-ext4/51aa3ceea05945c9f28e884bc2f43a249ef7e23e=
-.camel@interlinx.bc.ca/
-https://lore.kernel.org/linux-ext4/be5e8488f8484194889216603d2aba2812c6adcb=
-.camel@interlinx.bc.ca/
+								Honza
 
-useful including the test of 1.47.0 being able to reproduce the
-behaviour?
-
-Any thoughts on how to proceed?
-
-Cheers,
-b.
-
-
---=-8kxlQ/ZrVWx/ue1dE+no
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCAAdFiEE8B/A+mOVz5cTNBuZ2sHQNBbLyKAFAmWb8BEACgkQ2sHQNBbL
-yKCQJAf/fWueY2pwIb0/OxtDqrqPWkUgks+Me5kJ40sp0flFsxFGP+463krvExh4
-xfbfEqCFwKDUALYFJ0nv9gIjplYEWo0eRWBSDwcn2QmBS4Pv9cxEED+y/zulZP2M
-wWcbirAFiW268WyKRyTcGyavAHzIlQWHm2W7XrwFQcuhTnXVz7wi3Kiwbox+zQhu
-i5YvbSN6/bH9jMfZrEWJTb4+yFAFk8/+/QHffBRK/UfuItmKOB1gd2c+BD/A+aYo
-fzsZ/iEuAEXBASfb9qh3BOxmPyyh2byrt29VW6nHvW3pCiYacsuBpHexUC0okKxo
-nrWJxkDpq6UZ33rUBp1RKLB7DfxnOA==
-=zhSO
------END PGP SIGNATURE-----
-
---=-8kxlQ/ZrVWx/ue1dE+no--
+>  
+> -			if (ret && ret != -EOPNOTSUPP)
+> +			trace_ext4_trim_extent(sb, group, start, next - start);
+> +			ex.fe_start = start;
+> +			ex.fe_group = group;
+> +			ex.fe_len = next - start;
+> +			/*
+> +			 * Mark blocks used, so no one can reuse them while
+> +			 * being trimmed.
+> +			 */
+> +			mb_mark_used(e4b, &ex);
+> +			ext4_unlock_group(sb, group);
+> +			ret = ext4_issue_discard(sb, group, start, next - start, &discard_bio);
+> +			if (!noalloc) {
+> +				entry = kmem_cache_alloc(ext4_free_data_cachep,
+> +							GFP_NOFS|__GFP_NOFAIL);
+> +				entry->efd_start_cluster = start;
+> +				entry->efd_count = next - start;
+> +				list_add_tail(&entry->efd_list, &discard_data_list);
+> +			}
+> +			ext4_lock_group(sb, group);
+> +			if (ret < 0)
+>  				break;
+>  			count += next - start;
+>  		}
+> @@ -6959,6 +6950,22 @@ __releases(ext4_group_lock_ptr(sb, e4b->bd_group))
+>  			break;
+>  	}
+>  
+> +	if (discard_bio) {
+> +		ext4_unlock_group(sb, e4b->bd_group);
+> +		submit_bio_wait(discard_bio);
+> +		bio_put(discard_bio);
+> +		ext4_lock_group(sb, e4b->bd_group);
+> +	}
+> +	blk_finish_plug(&plug);
+> +
+> +	if (noalloc && free_count)
+> +		mb_free_blocks(NULL, e4b, bak, free_count);
+> +
+> +	list_for_each_entry_safe(fd, nfd, &discard_data_list, efd_list) {
+> +		mb_free_blocks(NULL, e4b, fd->efd_start_cluster, fd->efd_count);
+> +		kmem_cache_free(ext4_free_data_cachep, fd);
+> +	}
+> +
+>  	return count;
+>  }
+>  
+> -- 
+> 2.20.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
