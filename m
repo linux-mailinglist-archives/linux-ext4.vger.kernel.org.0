@@ -1,136 +1,105 @@
-Return-Path: <linux-ext4+bounces-757-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-758-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04BE982897D
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jan 2024 16:55:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C7F7828C6E
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jan 2024 19:21:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2B24B1C2453F
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jan 2024 15:55:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BD1028CFF4
+	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jan 2024 18:21:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4102D39FEB;
-	Tue,  9 Jan 2024 15:55:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QfN1a3v9"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A2413D0D9;
+	Tue,  9 Jan 2024 18:20:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D35B3987C
-	for <linux-ext4@vger.kernel.org>; Tue,  9 Jan 2024 15:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-40d6b4e2945so37321565e9.0
-        for <linux-ext4@vger.kernel.org>; Tue, 09 Jan 2024 07:55:10 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1704815709; x=1705420509; darn=vger.kernel.org;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=qBvYOhDE9HUrUc9mYwWMMBbTnM22iB1JVQDEJBHJ+AE=;
-        b=QfN1a3v9TizzCYERhqEdZwr8GVH0ki981jl/5xCzQokijFcf5HbR4I1YWotwu68mEA
-         9PuYJjDHPA7m4c56HOphHtUxe5dIMR7y1xYvlZPUbJtCRawd+QYMamjGvLyRzg4WKvEW
-         IspcmbWIewNcEEca6UQR4iioihnumkQEHkB1Ew1zBNwT6l3hBfRY14X48wE2Mi6Y/j8/
-         GLKIxAeeZXZTlN5ve7FJvcld/h0sCdAHLOkas+YCndNHSbCRGGbz8qPeNXmsGncwleF8
-         C9e2AH2/8bp0p25eKxkI2U7b+HTn+fmi8i/iw+bG0WxeWG11GRL5YOUl06tgmZkS7Y6i
-         ejyg==
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C4763C092
+	for <linux-ext4@vger.kernel.org>; Tue,  9 Jan 2024 18:20:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3606b8d9c64so28288485ab.1
+        for <linux-ext4@vger.kernel.org>; Tue, 09 Jan 2024 10:20:32 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1704815709; x=1705420509;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qBvYOhDE9HUrUc9mYwWMMBbTnM22iB1JVQDEJBHJ+AE=;
-        b=fvtlXPNup9D2KJ5EXEHERRAxJValTMuu8gkGiRYmAJZF9qiQ2ycuNMiwlD074puowm
-         HlRFbDTzEbzZpfpoW5aQh248u4Di0DsHhXMTIOjPlgIpK5mjvuC4sWhk0epipRQBmghP
-         9JoEEUnM0EajtHU/XE6AhBuDDp44YtqBbuxH4+yDUF53wBbl+D2y9ttY0q8+AObrJCfb
-         WCnyNhG++gEadqQW36XGU/pLXuMzsY1VmoQoxZ74V0ffYht8GNB0Hcz8GgN3rnfieRR3
-         R8rrV2Pkc5e1E+MkJ6rxkLYy+kSDH2r3X9RyI8ru8UlCjdk1CZtYOtcyxsig+oeNebAw
-         mfmw==
-X-Gm-Message-State: AOJu0YwmedPw34UBVhKkcBdzhSZrbyryn3unO0kaNY80ZBXKitHikxAJ
-	mvx9eRpMbWqd2+r5BishqIl+BtlMS64=
-X-Google-Smtp-Source: AGHT+IF7fupE6C7zHAneqfLt1rer485kVuOBybNRefiGhokQ9e5Q4yAFfsWri+BH6P8K3AS4yx/sTQ==
-X-Received: by 2002:a1c:7508:0:b0:40e:3c23:77f5 with SMTP id o8-20020a1c7508000000b0040e3c2377f5mr2068699wmc.72.1704815708980;
-        Tue, 09 Jan 2024 07:55:08 -0800 (PST)
-Received: from x1 ([2a02:2e02:45a:4d00:96e7:bff:fe65:b0ad])
-        by smtp.gmail.com with ESMTPSA id m1-20020a05600c4f4100b0040d5b849f38sm15483472wmq.0.2024.01.09.07.55.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Jan 2024 07:55:08 -0800 (PST)
-From: Free Ekanayaka <free.ekanayaka@gmail.com>
-To: Jan Kara <jack@suse.cz>, Dave Chinner <david@fromorbit.com>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: direct I/O: ext4 seems to not honor RWF_DSYNC when journal is
- disabled
-In-Reply-To: <20240109135950.wb2lyclqxvnfzwbk@quack3>
-References: <87ttscddv4.fsf@x1.mail-host-address-is-not-set>
- <87il8nhxdm.fsf@x1.mail-host-address-is-not-set>
- <20240108213112.m3f5djzesbvrc3rd@quack3>
- <ZZziDCELOmXK/zDP@dread.disaster.area>
- <20240109135950.wb2lyclqxvnfzwbk@quack3>
-Date: Tue, 09 Jan 2024 15:57:19 +0000
-Message-ID: <877ckio5y8.fsf@x1.mail-host-address-is-not-set>
+        d=1e100.net; s=20230601; t=1704824431; x=1705429231;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=J70jJVi/+Y+keEkrfKVYDadyIqz0xF8h9WQxMmW5dyY=;
+        b=uGdd6q13IbI2F1YU3V9uuaiSK5jm+EB9sdz8kcXULVvmnhRPwHGdcKDR//93+ZYv21
+         fWlbaJzqa9uyfllpbxO/vDxqtL0FnE7YRPpLVCDhud1NY3orEIoIEuLU8MQJEipB2RI4
+         5aocpM/lRJ1utzahcrLucsi1tyeMwMrtSqt2bErBGReaUuYoSGaD3fmbAf8ShTWbYF72
+         /OxqsS6Vv4/zozKwt0KlH9qwC9VarudNXHxfTwS31uaaki+Vdx3ooh4uSbfZKEQYBW9f
+         VR98w7DXCBb07DWsWvPakMSy6PFYTnOKP5UEwhmS//wBoXoHpbbmKMuFB3utO97USdqV
+         VFNw==
+X-Gm-Message-State: AOJu0YwcnmgdFBE+cuf9Xjd8l6iGL4DaiQSmfQUzT84xZKuQAhjmrbXr
+	xT0enkUKc/fEZvVrgW5w4iHt5lzQXmRSHLZXTVEWPLvEM0Z8
+X-Google-Smtp-Source: AGHT+IG/COheHNYeBQtfOtXP9dCRJQZnibbLZJu1agfESiN8WjSdJtg42/URP9tkcKLI2Bea6eApoJIUAV0kqD5YFYVCd1jmz/HV
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:2191:b0:35f:cd35:f07e with SMTP id
+ j17-20020a056e02219100b0035fcd35f07emr693570ila.6.1704824431598; Tue, 09 Jan
+ 2024 10:20:31 -0800 (PST)
+Date: Tue, 09 Jan 2024 10:20:31 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a662b7060e875ef7@google.com>
+Subject: [syzbot] Monthly ext4 report (Jan 2024)
+From: syzbot <syzbot+list33d242e0a922ac751421@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Jan Kara <jack@suse.cz> writes:
+Hello ext4 maintainers/developers,
 
-[...]
->> I suspect correct crash recovery behaviour here requires
->> multiple cache flushes to ensure the correct ordering or data vs
->> metadata updates. i.e:
->> 
->> 	....
->> 	data write completes
->> 	fdatasync()
->> 	  cache flush to ensure data is on disk
->> 	  if (dirty metadata) {
->> 		issue metadata write(s) for extent records and inode
->> 		....
->> 		metadata write(s) complete
->> 		cache flush to ensure metadata is on disk
->> 	  }
->> 
->> If we don't flush the cache between the data write and the metadata
->> write(s) that marks the extent as written, we could have a state
->> after a power fail where the metadata writes hit the disk
->> before the data write and after the system comes back up that file
->> now it exposes stale data to the user.
->
-> So when we are journalling, we end up doing this (we flush data disk before
-> writing and flushing the transaction commit block in jbd2). When we are not
-> doing journalling (which is the case here), our crash consistency
-> guarantees are pretty weak. We want to guarantee that if fsync(2)
-> successfully completed on the file before the crash, user should see the
-> data there. But not much more - i.e., stale data exposure in case of crash
-> is fully within what sysadmin should expect from a filesystem without a
-> journal.
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-Right, which is exectly the tradeoff I need. Weaker guarantees for lower
-latency.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 35 issues are still open and 116 have been fixed so far.
+There are also 2 low-priority issues.
 
-All I need is that RWF_DSYNC holds up the promise that once I see a
-successful io_uring completion entry, than I'm sure that the data has
-made it to disk and it would survive a power loss.
+Some of the still happening issues:
 
-> After all even if we improved fsync(2) as you suggest, we'd still
-> have normal page writeback where we'd have to separate data & metadata
-> writes with cache flushes and I don't think the performace overhead is
-> something people would be willing to pay.
->
-> So yes, nojournal mode is unsafe in case of crash. It is there for people
-> not caring about the filesystem after the crash, single user filesystems
-> doing data verification in userspace and similar special usecases. Still, I
-> think we want at least minimum fsync(2) guarantees if nothing else for
-> backwards compatibility with ext2.
+Ref  Crashes Repro Title
+<1>  7311    Yes   WARNING: locking bug in ext4_move_extents
+                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<2>  597     Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<3>  293     Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<4>  155     No    possible deadlock in evict (3)
+                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<5>  132     Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<6>  78      Yes   INFO: rcu detected stall in clock_adjtime (2)
+                   https://syzkaller.appspot.com/bug?extid=628d3507228ad7472be1
+<7>  22      Yes   possible deadlock in ext4_xattr_inode_iget (2)
+                   https://syzkaller.appspot.com/bug?extid=352d78bd60c8e9d6ecdc
+<8>  17      Yes   INFO: rcu detected stall in sys_unlink (3)
+                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
+<9>  17      Yes   kernel BUG in __ext4_journal_stop
+                   https://syzkaller.appspot.com/bug?extid=bdab24d5bf96d57c50b0
+<10> 16      Yes   kernel BUG in ext4_enable_quotas
+                   https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
 
-I'm doing data verification in user space indeed. As sad, the file has
-been pre-allocated posix_fallocate() and fsync'ed (along with its
-dir), so no metadata changes will occur, just the bare write.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-FWIW the use case is writing the log for an implementation of the Raft
-consensus algorithm. So basically a series of sequential writes.
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
