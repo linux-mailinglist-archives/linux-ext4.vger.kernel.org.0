@@ -1,159 +1,213 @@
-Return-Path: <linux-ext4+bounces-775-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-776-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECF1D82B4F8
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jan 2024 19:59:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C57582B75B
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jan 2024 23:58:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5786B2239D
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jan 2024 18:59:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 101711C24026
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jan 2024 22:58:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA54654BD7;
-	Thu, 11 Jan 2024 18:59:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D13A155C2E;
+	Thu, 11 Jan 2024 22:58:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="ZkTHIsZp"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fnwHOf7b";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vlESKhfa";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fnwHOf7b";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="vlESKhfa"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5FF524A8
-	for <linux-ext4@vger.kernel.org>; Thu, 11 Jan 2024 18:59:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-116-100.bstnma.fios.verizon.net [173.48.116.100])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40BIxUMO029748
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 11 Jan 2024 13:59:31 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1704999572; bh=gcMsWKBHfHITg90LTV5PJyLcI8YcXQhS+yVAEbZ7a1Q=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=ZkTHIsZpdNnL3WQfqmiUyWvO6IYSdWBC+aI5ThXCi3D8fYjJnstaa3jiX1WBQIW/+
-	 ROdWOY8SsW1AuFec7bsdnroWT6Xaiqq8hmyCEGrjfEAtA1/zGcN1O/SHgWkxTZjNe6
-	 wb5K4/M1wEwd/XsVhNWafA96OJLmu9LODNO3Ej1uYV2gXPceYgIwDqegUZ7VUXsyOD
-	 UO5q3RGUneAIHALri3/jZKdBGK+x5fRDH13GOjcb1h1JM8KdqIUwF7efTUKQmICeuk
-	 2xv0jeyfQdUy9hSMHbPe16KIPlyQWyVswJ1IhRtzshh30lwIqQ/YDQGTlOo4DjvA1o
-	 q+n/LZ3so5Cng==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 12EBB15C0276; Thu, 11 Jan 2024 13:59:30 -0500 (EST)
-Date: Thu, 11 Jan 2024 13:59:30 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Allen <allen.lkml@gmail.com>
-Cc: linux-ext4@vger.kernel.org, jack@suse.cz,
-        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        stable@vger.kernel.org, Allen Pais <apais@linux.microsoft.com>,
-        kelseysteele@linux.microsoft.com, tyhicks@linux.microsoft.com
-Subject: Re: EXT4-fs: Intermitent segfault with memory corruption
-Message-ID: <20240111185930.GA911245@mit.edu>
-References: <CAOMdWS+A8-5yT+_O+7xmyVvAfZmEsDr7nDwWHtLWLeefmDFqOA@mail.gmail.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76E8A58114;
+	Thu, 11 Jan 2024 22:58:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 138F01F74A;
+	Thu, 11 Jan 2024 22:58:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705013916; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ta9IdNZqtCCoKDFw9Ha2hukayZYjXb1Cd+I4SdTh7EI=;
+	b=fnwHOf7baa/u9PG6d2dI3pDtz3BV3ue214lU4HH3qyqdTBp7oSC8EXYZ/w0lt2iytgyRq2
+	lFjb1jKzvaY/sooANIMbb/DcPAF1+b66ovjpqknq8UZWiTSkCvo61aDLLYkkIvPAMWRPp+
+	6fzepX1SmkfGim1wbzdbFLTko7g3JWs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705013916;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ta9IdNZqtCCoKDFw9Ha2hukayZYjXb1Cd+I4SdTh7EI=;
+	b=vlESKhfayfoLOjVUoUqAei5fr+UtHtF7Wa16/zemvgxV9oCbX2bUWjLeTnWdbKQ4XOF+rx
+	xEmrdWejX/4z2+Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1705013916; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ta9IdNZqtCCoKDFw9Ha2hukayZYjXb1Cd+I4SdTh7EI=;
+	b=fnwHOf7baa/u9PG6d2dI3pDtz3BV3ue214lU4HH3qyqdTBp7oSC8EXYZ/w0lt2iytgyRq2
+	lFjb1jKzvaY/sooANIMbb/DcPAF1+b66ovjpqknq8UZWiTSkCvo61aDLLYkkIvPAMWRPp+
+	6fzepX1SmkfGim1wbzdbFLTko7g3JWs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1705013916;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=ta9IdNZqtCCoKDFw9Ha2hukayZYjXb1Cd+I4SdTh7EI=;
+	b=vlESKhfayfoLOjVUoUqAei5fr+UtHtF7Wa16/zemvgxV9oCbX2bUWjLeTnWdbKQ4XOF+rx
+	xEmrdWejX/4z2+Dg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8E66013946;
+	Thu, 11 Jan 2024 22:58:35 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /azCFZtyoGVILwAAD6G6ig
+	(envelope-from <krisman@suse.de>); Thu, 11 Jan 2024 22:58:35 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: viro@zeniv.linux.org.uk,
+	ebiggers@kernel.org,
+	jaegeuk@kernel.org,
+	tytso@mit.edu
+Cc: linux-f2fs-devel@lists.sourceforge.net,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	amir73il@gmail.com,
+	Gabriel Krisman Bertazi <krisman@suse.de>
+Subject: [PATCH v3 00/10] Set casefold/fscrypt dentry operations through sb->s_d_op
+Date: Thu, 11 Jan 2024 19:58:06 -0300
+Message-ID: <20240111225816.18117-1-krisman@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAOMdWS+A8-5yT+_O+7xmyVvAfZmEsDr7nDwWHtLWLeefmDFqOA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=fnwHOf7b;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=vlESKhfa
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.49 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[lists.sourceforge.net,vger.kernel.org,gmail.com,suse.de];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 0.49
+X-Rspamd-Queue-Id: 138F01F74A
+X-Spam-Flag: NO
 
-On Thu, Jan 11, 2024 at 07:26:06AM -0800, Allen wrote:
-> 
-> I hope this email finds you well. We are reaching out to report a
-> persistent issue that we have been facing on Windows Subsystem for
-> Linux (WSL)[1] with various kernel versions. We have encountered the
-> problem on kernel versions v5.15, v6.1, v6.6 stable kernels, and also
-> the current upstream kernel. While the issue takes longer to reproduce
-> on v5.15, it is consistently observable across these versions.
+Hi,
 
-You've tried reproducing (successfully) the problem across multiple
-kernel versions.  Have you tried reproducing this on multiple
-different hardware platforms?  e.g., with different desktops and/or
-servers, and with different storage devices?
+Thank you, Eric and Al, for your feedback on the previous version.
 
-The symptoms you are reporting are very highly correlated with
-hardware problems, or in the case where you are running under
-virtualization, with bugs in the VMM and/or the host OS's storage
-stack.
+This version has some big changes: instead of only configuring on the
+case-insensitive case, we do it for case-sensitive fscrypt as well, and
+disable d_revalidate as needed.  This pretty much reverses the way
+fscrypt operated (only enable d_revalidate for dentries that require
+it), but has the advantage we can be consistent among variations of
+case-insensitive/sensitive, encrypted/unencrypted configurations.
 
-In particular, these errors:
+You'll find the code is simpler than v1 and v2.  I dropped the dcache
+patch because now we always try to disable DCACHE_OP_REVALIDATE while
+holding the d_lock already, so I do it inline; I also changed the way we
+drop d_revalidate when the key is made available, because we couldn't
+really do it the way I originally proposed on the RCU case, which would
+require falling back to non-RCU lookup just to disable d_revalidate; I
+also included a patch fixing the overlayfs issue that I mentioned on the
+previous thread.  While unrelated to the rest of the patchset, it is a
+quick fix that I might merge earlier if you are happy with it.
 
-> EXT4-fs error (device sdc): ext4_find_dest_de:2092: inode #32168:
-> block 2334198: comm dpkg: bad entry in directory: rec_len is smaller
-> than minimal - offset=0, inode=0, rec_len=0, size=4084 fake=0
-> 
-> and
-> 
-> EXT4-fs warning (device sdc): dx_probe:890: inode #27771: comm dpkg:
-> dx entry: limit 0 != root limit 508
-> EXT4-fs warning (device sdc): dx_probe:964: inode #27771: comm dpkg:
-> Corrupt directory, running e2fsck is recommended
-> EXT4-fs error (device sdc): ext4_empty_dir:3098: inode #27753: block
-> 133944722: comm dpkg: bad entry in directory: rec_len is smaller than
-> minimal - offset=0, inode=0, rec_len=0, size=4096 fake=0
+More details can be found in the per-patch changelog.
 
-... sesem to hint that ext4 has read a directory block where all or
-part of its contents have been replaced with all zeros (hence the
-record length, or the hash tree index, is zero).  That typically is
-caused by a hardware and/or VMM problem.
+This survived fstests on ext4 and f2fs.  I also verified that fscrypt
+continues to work when combined to overlayfs as Eric requested.
 
-> or we see a segfault message where the source can change depending on
-> which command we're testing with (dpkg, apt, gcc..):
-> 
-> dpkg[135]: segfault at 0 ip 00007f9209eb6a19 sp 00007ffd8a6a0b08 error
-> 4 in libc-2.31.so[7f9209d6e000+159000] likely on CPU 1 (core 0, socket
-> 0)
+..
+original cover letter:
 
-And this could very well be because a data block has been replaced
-with garbage, or the wrong data block, or all zeroes.
+When case-insensitive and fscrypt were adapted to work together, we moved the
+code that sets the dentry operations for case-insensitive dentries(d_hash and
+d_compare) to happen from a helper inside ->lookup.  This is because fscrypt
+wants to set d_revalidate only on some dentries, so it does it only for them in
+d_revalidate.
 
-It might also be load related --- that is, the problem only shows up
-the system is more heavily loaded, which might explain when enabling
-debugging causes the problem to be harder to reproduce.
+But, case-insensitive hooks are actually set on all dentries in the filesystem,
+so the natural place to do it is through s_d_op and let d_alloc handle it [1].
+In addition, doing it inside the ->lookup is a problem for case-insensitive
+dentries that are not created through ->lookup, like those coming
+open-by-fhandle[2], which will not see the required d_ops.
 
+This patchset therefore reverts to using sb->s_d_op to set the dentry operations
+for case-insensitive filesystems.  In order to set case-insensitive hooks early
+and not require every dentry to have d_revalidate in case-insensitive
+filesystems, it introduces a patch suggested by Al Viro to disable d_revalidate
+on some dentries on the fly.
 
-I am very doubtful that the problem is in the ext4 code proper,
-especially since no one else has reported this problem, and at $WORK,
-we are running continuous testing where we are running fstests runs on
-ext4 against a wide range of hardware (e.g., HDD's, SSD's, iscsi,
-etc.) and hardware platforms (arm64 and x86).  And that's just for our
-data center kernels which are based on various LTS kernels.  For
-Google's Compute Optimized OS, which is used in both 1st party and 3rd
-party VM's in Google Cloud VM's, we are doing similar testing using
-gce-xfstests[1] on a continuous basis, and we haven't seen the kind of
-bugs that you are reporting.
+It survives fstests encrypt and quick groups without regressions.  Based on
+v6.7-rc1.
 
-[1] https://thunk.org/gce-xfstests.
+[1] https://lore.kernel.org/linux-fsdevel/20231123195327.GP38156@ZenIV/
+[2] https://lore.kernel.org/linux-fsdevel/20231123171255.GN38156@ZenIV/
 
-For that matter, I am regularly running gce-xfstests for ext4's
-upstream development, and other ext4 developers run fstests using
-kvm-xfstests and fstests on a varriety of different hardware devices
-and virtualization environments.  So that tends to suggest that the
-problem is either in the hardware or virtualization environment (WSL)
-that you are using.
+Gabriel Krisman Bertazi (10):
+  ovl: Reject mounting case-insensitive filesystems
+  fscrypt: Share code between functions that prepare lookup
+  fscrypt: Drop d_revalidate for valid dentries during lookup
+  fscrypt: Drop d_revalidate once the key is added
+  libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
+  libfs: Add helper to choose dentry operations at mount
+  ext4: Configure dentry operations at dentry-creation time
+  f2fs: Configure dentry operations at dentry-creation time
+  ubifs: Configure dentry operations at dentry-creation time
+  libfs: Drop generic_set_encrypted_ci_d_ops
 
+ fs/ceph/dir.c           |  2 +-
+ fs/ceph/file.c          |  2 +-
+ fs/crypto/hooks.c       | 62 +++++++++++++++++++++--------------------
+ fs/ext4/namei.c         |  1 -
+ fs/ext4/super.c         |  1 +
+ fs/f2fs/namei.c         |  1 -
+ fs/f2fs/super.c         |  1 +
+ fs/libfs.c              | 61 +++++++++++-----------------------------
+ fs/overlayfs/params.c   | 13 +++++++--
+ fs/ubifs/dir.c          |  1 -
+ fs/ubifs/super.c        |  1 +
+ include/linux/fs.h      | 11 +++++++-
+ include/linux/fscrypt.h | 51 ++++++++++++++++++++-------------
+ 13 files changed, 106 insertions(+), 102 deletions(-)
 
-So to that end, you might want to consider running some lower-level
-tests --- for example using fio with data verification enabled.  We
-also get a huge amount of mileage using fstests to detect problems
-lower in the file system stack.  This is why we use fstests/xfstests
-on ext4 for essentially every single storage device (such as iSCSI,
-HDD, Flash, etc.)  So setting up fstesets on a variety of file systems
-and storage devices is not a bad idea.
+-- 
+2.43.0
 
-It shouldn't be difficult to take the test appliance in
-kvm-xfstests[2][3] and getting it to work under WSL.  (For example,
-over the holidays, I've gotten fstests running on MacOS on a Macbook
-Air M2 15" using the hvf framework.)  However, I suggest that you
-focus on lower-level block and memory stress testing before worrying
-about how to run fstests under WSL.
-
-[2] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-quickstart.md
-[3] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
-
-Cheers,
-
-					- Ted
 
