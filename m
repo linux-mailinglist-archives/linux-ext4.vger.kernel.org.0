@@ -1,36 +1,46 @@
-Return-Path: <linux-ext4+bounces-826-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-827-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD0EB82EFB0
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 14:26:28 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAA6C82EFB7
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 14:29:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7326F285B47
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 13:26:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 53DF41F23BBC
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 13:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157221BC55;
-	Tue, 16 Jan 2024 13:26:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7A6B1BC55;
+	Tue, 16 Jan 2024 13:29:38 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from server.interlinx.bc.ca (mail.interlinx.bc.ca [69.165.217.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73910EEAB
-	for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 13:26:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17ECA1BDC2
+	for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 13:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=interlinx.bc.ca
 Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=interlinx.bc.ca
 Received: from pc.interlinx.bc.ca (pc.interlinx.bc.ca [IPv6:fd31:aeb1:48df:0:3b14:e643:83d8:7017])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits))
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by server.interlinx.bc.ca (Postfix) with ESMTPSA id 3C4502ABB1
-	for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 08:26:15 -0500 (EST)
-Message-ID: <42bc44533e997531baa79c73867a942504122886.camel@interlinx.bc.ca>
-Subject: Protecting lost+found from rmdir by directory owner?
+	by server.interlinx.bc.ca (Postfix) with ESMTPSA id 7DB1A2ABB2
+	for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 08:29:35 -0500 (EST)
+Message-ID: <06a0a26e6e055981cd116c006341f468205d363b.camel@interlinx.bc.ca>
+Subject: Re: e2scrub finds corruption immediately after mounting
 From: "Brian J. Murrell" <brian@interlinx.bc.ca>
 To: linux-ext4@vger.kernel.org
-Date: Tue, 16 Jan 2024 08:26:14 -0500
+Date: Tue, 16 Jan 2024 08:29:35 -0500
+In-Reply-To: <89CC4453-BFA0-485C-8532-B0B38D60B6D4@dilger.ca>
+References: <536d25b24364eaf11a38b47e853008c3115d82b8.camel@interlinx.bc.ca>
+	 <20240104045540.GD36164@frogsfrogsfrogs>
+	 <cf4fb33f3a60629d3b6108c1c206aa5b931d8498.camel@interlinx.bc.ca>
+	 <01b2c55a334cf970e49958a5f932d5822bfa74b4.camel@interlinx.bc.ca>
+	 <20240109060629.GA722946@frogsfrogsfrogs>
+	 <20240110053135.GB722946@frogsfrogsfrogs>
+	 <36ab91c95ce476cdf38977c8f2a8ca4c4fdf2a47.camel@interlinx.bc.ca>
+	 <20240110180614.GE722946@frogsfrogsfrogs>
+	 <89CC4453-BFA0-485C-8532-B0B38D60B6D4@dilger.ca>
 Autocrypt: addr=brian@interlinx.bc.ca; prefer-encrypt=mutual;
  keydata=mQINBFJXCMcBEADE0HqaCnLZu2Iesx727mXjyJIX6KFGmGiE5eXBcLApM5gtrQM5x+82h1iKze30VR9UKNzHz50m6dvUxXz2IhN+uprfSNtooWU5Lp6YO8wZoicCWU+oJbQC/BvYIiHK6WpuSFhGY7GVtbP64nn9T+V/56FQcMV3htP1Ttb3fK4+b4GKU5VlDgk8VkURi/aZfKP34rFZyxAXKhG+wSgQCyRZihy6WWIKYhhgXnpMlPX1GqXaZZcIiZwk+/YXo33rXPscC0pnOHtpZAOzMo8YeDmmlBjVjrno2aLqxOOIKYrtGk7yyZArxqeLdOdFuQnp/zwWnWlVSiuqStTpY18hNlMx2R43aj/APy8lLNsvgDUIeErkjpePXB86qoTds7+smw9u0BRGwX2aaaHvd2iIInFwjm/VazWbv7cQPNpWeR0+pDuTLIop6qkvInPc7FkQJEsiFJGrFP4kslFCgkpUovxsCdYs5Re4kJmGZ7QNgr2TVvUjW0NRQiKDfqQxP5rMPeSSatpgk1m7qXCOGefp71fkh9u/xViDzeCIyPpS0cySAGrVkhgKcNi1JVs0bW4zp7rA3klKqvnfoQKsqNDmp9kWgMB/3qtTU2pkUnO5lfCeOlZTWZw801420Kx/fWxj0JuLMfxH07/F9JA1u97yRIWlXraPbWMXfeeKlZY+3YG+gQARAQABtClCcmlhbiBKLiBNdXJyZWxsIDxicmlhbkBicmlhbi5tdXJyZWxsLmNhPokCTgQTAQgAOBYhBAMAmivcnutVhqR+1xzy2ObpTg0YBQJfqq9JAhsDBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAAAoJEBzy2ObpTg0YFUAP/iM3LG3+WalZS+QV99Rf6XSNGrvc/1IpfAK7YHTCES3bUt1KrhM2sYJBHnx75FpWY33/Wp/aKApQvJ1AV/uDcOz0lfdH4nN9TB3zerG7H9bPt+P5myc7vo5hp
 	6ypq6ytifbpKDIJoxUVqGhXIm4r7aF+FBOh6iVCW0Urd/ELsdxv9xzTyvalmyOPYy9J5J3GWda9+MKdI53wyJSlcqFnG2VhOyLC+3+gYwpt6CAXh3QxFp61BzOn6RBUrXkD4Olock+4yMgCobnCTjfyawd8vmkvNsmNFBg+w+sevgAuV9nzNni+Jug1KYVzqMrrwSrDiVJYQSXsky0U8TcUfnRO89ISFylediS6L2t3+lGQvf0JZ5hBD2sc01jx2hj5EQTKftWKQEEAGm1l8jeZDWOims9JJzgJYS6Suu7NIzizmO1OlFA+Bozf8jZpAg3qknKz1I4bS9lIov6wU49lP7fkRsvhf6G2AM2xZ1w4ydbcRrbOnzJVqnYnJrxypG3ODNF5Op6PCUYgSI0NiEIEeNMZEmBcy3YkR4NueGj1892QAqtOb+i4ys1LUVPm6JBathZ47Br1KZ0xYzNW7n6vrVHj//Uw2nutFRPA4gpksBomxFJ47yAWPS02qoRdyXa4Ejke53b7DEKA+H3hHTQACeM0L9xhhKqgxVn7lRapLpiLekkJtCNCcmlhbiBKLiBNdXJyZWxsIDxicmlhbkBtdXJyZWxsLmNhPokCOAQTAQIAIgUCUlcXXgIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQHPLY5ulODRi7fQ//TKq+ilyhgYN7m1BL+pxdslB1pKmurIBZd4wLppzQINQpG5sLFlKdARvD9l0GtJETKP31HhDPvvFQK8cZYfSsm+gt9lGVW/wtEo19fINeU3FYh5aLhR5n7nFArBMSMbWn9MsQMlUoMLvnGvs4TjYe9aDKsYUzIpoqgmVySr1+g/aSi4ZjyKmdiw9bcQdIUm0TyuaoHDDNvYIRd06n0wD2PdHkX1VPojCaqSBMb0G4vxsNGW3MMRe6tszF+O3o0xCTI5mAVCrXh7buwR6GsQam6j048fAGxJAXV+tngCwLgq0P8a39lt
@@ -39,7 +49,7 @@ Autocrypt: addr=brian@interlinx.bc.ca; prefer-encrypt=mutual;
 	tpe4ttU3863tqWjvfRcdd5UQAJ6G/2JSereq9AUR+hp2Ay0mtp+ErWIq/ynXkrUWwTMD9UQVikpTbfrdh9jPBTCm8/JN0VoTj4XYwcASvvWxjsdSx4Jd5VOGklb1RlowpRgmpYt68CRKfBIHyrP2w+NNN9mq10RMj8WLHrCCtuixDrHnQmf3IAPom/Km3TmCPBia4kkx6mfdsN7G96SQHjPsGwwj2QNYQufKEjXPnhEp8Z9JIy40gFIXn9jEGaavW1C/2gmeC6Joe+NbkA3FscMbYzAK0EvjCe06M+ReJHIj702q6FqqhrTfPW6JFcHCxR9y16hpW8WroSfahxRV4MikJOwi0NdXY7Mi6HHuYZPQEXdmSb1GjZWgn83TlnrYKQVd4/7Fgt1kbRs97wr1okD0a/QvimKVwLOKlxmTqS1q+5qgcud6aWUu3dfIBsW0CblRv50DHySFhMp7JsWrZ776OSHmgSqh/RBTfc0vwu8q37hiOMjNY02LetUHVzFkXDlLHQ1OpuZnkE0RdJydB+ET1mhOLYpkoqV86MCMjCFxi/dwOuDjOZHRFAf7DhJH6GlXEjr5ZAAZRoNp2XZTPJQwF7oFmPXxe7/4nT32Pl0qu+nbt5m3HEwy9i3p2BFsNv/3HWmvjcNSfpQ7Nu3Wxcrpyw6Xqai7tJjjFaOLvo5Pz4jU87Y5Bout3z1R2I54GD4FuQENBFJXFA4BCACqOEdaaQwxVnbUnl3CfdPELFN35FQBjck3KQ9KE44Pfd4ZvG+xUlu0BUot4j3T8mMPRfEvM4lBYcL8BNIE+k9qCARPxv1aPPPiBvIk2ollxclPBwy4Cc3bg1kLgwcADxO1UU5kQS96zfhF/f4swY1gKD7WiYtfU3KdaJvd7s7lq9dE5HQFMctsBwLlFrlAxi2NugxMwc24AWXLB0HJM9ja16JUtkYfwS14ZH+qYiHcqIKtPezVLq8lq1BwC3EMsrxz13sfQ9zePJz40CaO+
 	+/KZ3yZJE1C1IG1vphQ9S18Egc/cOtr+3IleKSpRXtvyu3E7NaH8e+mdJZN+IfJkznjABEBAAGJAh8EGAECAAkFAlJXFA4CGwwACgkQHPLY5ulODRh9nRAAwlNsQjXocO4tzO0SczBHFpRSEvGRpM4CEhBO60h9G//UIdRfAslxpYXlOOZ8yrNYCRk9wD2kwiJVq/BvZpVt0TBqbpI9xcEHxL9JsDSCNz9oaik+HyOsNKkVTwvC8fs49xuJ47mwNXRHk307e3V7KTQGTb3jnhr28xTA2f7GS+htAaN9Ptf74sVxoHEAseNDAFGw51/TLhPmfnjXUFSr++KmcAzD96UOgC9pobCislZO3VBVimKOGJonlwUx4Ix8Eos5IWTg0yJXSI2ho2U/bOtaAkJjL92RWcO6BapF/dGHUH6yW7iu6O2ftx4nLTCet9z6fm0CNEX8T5ksNtPrxq/xUKViv7245yPaZtdASq0BkvEHKFROdnhuAX9qPvFTtrNXuX2dUIJSewS/IVdy4g3thpZ+tTpepoObpmGtssXXBvrPIg1HcQXmX0k9G0c+WkB9FvwKARbcOjaJdQv7OOwudd+Y8kVeSOnEHN0ECyEh2vAM4oEHp1i5tf/jvBviN9sP8vCE7JHBkMwEVZARNC0bNeOsFjTgUDpO725j7ya/MR3+qECizlQrL+r3Yf1m1LbKh2JTZuk4rNi2g37M0jiLm+QBnnI8UmfMTPsfmabRWfH98+EEbEqvvt74RMkphf4MKM39dtCp5KymE3yYEDVRVzggMKG6YgPxwdAuRXY=
 Content-Type: multipart/signed; micalg="pgp-sha256";
-	protocol="application/pgp-signature"; boundary="=-AvpWgjlYzZShx7dJKyXD"
+	protocol="application/pgp-signature"; boundary="=-3FVaH3R3FIueayOYrkR0"
 User-Agent: Evolution 3.50.3 (3.50.3-1.fc39) 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -49,44 +59,66 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
 
---=-AvpWgjlYzZShx7dJKyXD
+--=-3FVaH3R3FIueayOYrkR0
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-Let's say I create a new ext4 filesystem for exclusive use by alice and
-when I mount it, say, on /mnt/alice I set the permissions so that alice
-can work in that directory:
+On Wed, 2024-01-10 at 16:43 -0700, Andreas Dilger wrote:
+>=20
+> Hello Brian, long time no see!
 
-# mkfs.ext4 /dev/foo
-# mount /dev/foo /mnt/alice
-# chown alice:alice /mnt/alice
-# chmod 775 /mnt/alice
+Hi Andreas.  Indeed, it has been a while.  :-)
 
-But now /mnt/alice/lost+found is at the mercy of alice since she has
-write permission for /mnt/alice.
+> I was wondering if this might be a case where e2fsck removed the
+> journal
+> on an ext4 filesystem, and then it wasn't recreated (e.g. if e2fsck
+> was
+> killed before it finished cleanly).
+>=20
+> However, looking at the features enabled on the filesystem, it
+> definitely
+> looks like this was originally formatted as ext4.
 
-[How] can I protect /mnt/alice/lost+found from removal by alice?
+I suspect you mean s/4/2/ above?
 
-Thoughts?
+> Many of these features can be enabled on an existing filesystem, like
+> has_journal (ext3/4 journal), extents (improved large file
+> allocation),
+> huge_file (> 2TB files), dir_nlink (> 32000 subdirs) if you want
+> them.
+> I _think_ uninit_bg (e2fsck skip unused metadata may) is included
+> here.
+>=20
+> Some cannot be enabled on an existing filesystem like flex_bg
+> (localized
+> metadata), and extra_isize (fast xattrs).
+>=20
+> Whether that is worthwhile for you to enable, or just
+> backup/reformat/sync
+> is up to you.
 
+Indeed.  I did simply re-create and copy as suggested by the wiki
+entry.
+
+Cheers,
 b.
 
 
---=-AvpWgjlYzZShx7dJKyXD
+--=-3FVaH3R3FIueayOYrkR0
 Content-Type: application/pgp-signature; name="signature.asc"
 Content-Description: This is a digitally signed message part
 
 -----BEGIN PGP SIGNATURE-----
 
-iQEzBAABCAAdFiEE8B/A+mOVz5cTNBuZ2sHQNBbLyKAFAmWmg/YACgkQ2sHQNBbL
-yKCecAgAmQW3eoI7vJn8/Bdl0T1OZxTMzYsoIL1zwS/7Awn/K+n9Pdt7ZvRrFIFU
-rP1r0q4k0KzfG1MlwA/g4DwRwky+BjCGvWzcRquCTRfsxyfZxusqlglZov6wQ33j
-VQQ2Kq0VyONisOmSBJw5sS6ob1ZBHMKBYXQHmC02LHORkPIRcBmwuDRgHkykzbSE
-/IP0eYRn7VEubfPefjh7GHE5BI4+R5WEg10YGSj1bDcraLpWQbZhPYy0pxg5tkQh
-FujL+xa5LgHczzGW6iZvmYSKdEKqfHETmmtzMax2kxE2Wz/P2twLcFU9MCdXdlsL
-MfWpeP+EX+jKK3qpeTLi4WgeNlEOtA==
-=93rX
+iQEzBAABCAAdFiEE8B/A+mOVz5cTNBuZ2sHQNBbLyKAFAmWmhL8ACgkQ2sHQNBbL
+yKBwiggAg+vU3AT34Sefc4cBtkIcDs3IWRgCOcJv/o6B1pZW+qg1T72Bp+tXNE+F
+HE1s2VrcSZ0iztoRGfbjwCuQVjNEvobJoLZC3zDpxhk6KDxbsk/ZBNfsqJgEP/kS
+NV0GaU4FcZeLMGq7QDyl1h/CS4qGw3SDnCC7D/t889KtxtDQL3Dos2MCxDAmbS3V
+D3GxE4ZeBdINDs2xthDtOQB/M/nGpbBYhvEhOajNd7RtUzTWa+UaQkD+PvV/Oq54
+GKZOne68oPpxP9aXAU3qcsXooLp8Vk13VR+rZfiETUWzc84w9pkwTIMr8R32g1iZ
+PPWey7x4WyLV4OgJsbNoE9AIaVQYYA==
+=fKER
 -----END PGP SIGNATURE-----
 
---=-AvpWgjlYzZShx7dJKyXD--
+--=-3FVaH3R3FIueayOYrkR0--
 
