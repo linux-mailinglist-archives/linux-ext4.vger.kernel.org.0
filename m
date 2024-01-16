@@ -1,186 +1,122 @@
-Return-Path: <linux-ext4+bounces-797-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-798-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D67E82E6AD
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 02:23:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4099D82E6CD
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 02:26:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 190651F2355E
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 01:23:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAE13284FC6
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 01:26:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F77A1CAA1;
-	Tue, 16 Jan 2024 01:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDD9B1F934;
+	Tue, 16 Jan 2024 01:06:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WznZUAov"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hIl94zSn"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB3811CA92;
-	Tue, 16 Jan 2024 01:05:13 +0000 (UTC)
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9A0BDC433C7;
-	Tue, 16 Jan 2024 01:05:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78847200B6;
+	Tue, 16 Jan 2024 01:06:02 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DC9AFC43601;
+	Tue, 16 Jan 2024 01:06:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705367113;
-	bh=DqdkWkIcPE3aOFCahzfD8/SmXMRL77M1gUKv/jubbWs=;
+	s=k20201202; t=1705367161;
+	bh=slCWQua5Ofr/CDphaEtI0JKb5XW9EN4uTZ0kQljgZuU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=WznZUAovP7tJhPA2+44EeFEFGC4Cz97/GLQNxVNh9zCaSxHqdQpJazKdXzRlOwaDr
-	 MBk1WvWTIsemSuGpBifzKoCo6Q+6d1OYH60xLIuQNcPNGQXUDqwcBaK0K1vp3DGxEa
-	 4ANDUmZFUUz6rvzlvGAItLeRbMizRd+UMmqdg6K3dMtx86sKFlgsHeO465v460MZMV
-	 GGiJA5VnpJBomixLNT4xwfbsB8togjQNR4Y8DHG+bpoQDwcdvoRjIoL7pdvLGFl3e/
-	 QMU3NRvCYMS/XuAKsaAFnoA0Gwvw9AHw7W0yicI6fEdcJ0eJEl9//w9qr+lXVPizsg
-	 M+6/8a5Df+t5A==
+	b=hIl94zSnLeWcFR6ojY4YsTY8SNiPEbCJMWmDEFLGPTCbxr+FdZTXRRxExGbVSvhtA
+	 zxGhYv1SyXY4gjrjFSpqFZ9PdnyWMDfMwlqU3Ir5c3zCMhEeEJqJLBJolPounzz2SH
+	 UjZRwrdvTYBhkW96mbqWUEcZ7AWf6q5WCtRGDxWPXw9/iAkDf3eDZXXRnkw58XAJrr
+	 E+wOslSPxIG3jVehid8njmK5smad8UCf59FUTOzJrSZEEABVvxyWv1XsZh5FOdDoNc
+	 bHgUAs1kJO4mZr+k5V5qGGCcK5B2DPmZgo3IYCm7HzIKHLUT5B04XbcZXS1sa9CAPX
+	 oeCGa/i/iNnjg==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>,
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Ritesh Harjani <ritesh.list@gmail.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 21/21] ext4: avoid online resizing failures due to oversized flex bg
-Date: Mon, 15 Jan 2024 20:03:58 -0500
-Message-ID: <20240116010422.217925-21-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 10/19] ext4: enable dioread_nolock as default for bs < ps case
+Date: Mon, 15 Jan 2024 20:05:05 -0500
+Message-ID: <20240116010532.218428-10-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240116010422.217925-1-sashal@kernel.org>
-References: <20240116010422.217925-1-sashal@kernel.org>
+In-Reply-To: <20240116010532.218428-1-sashal@kernel.org>
+References: <20240116010532.218428-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.7
+X-stable-base: Linux 6.6.12
 Content-Transfer-Encoding: 8bit
 
-From: Baokun Li <libaokun1@huawei.com>
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-[ Upstream commit 5d1935ac02ca5aee364a449a35e2977ea84509b0 ]
+[ Upstream commit e89fdcc425b6feea4dfb33877e9256757905d763 ]
 
-When we online resize an ext4 filesystem with a oversized flexbg_size,
+dioread_nolock was originally disabled as a default option for bs < ps
+scenarios due to a data corruption issue. Since then, we've had some
+fixes in this area which address such issues. Enable dioread_nolock by
+default and remove the experimental warning message for bs < ps path.
 
-     mkfs.ext4 -F -G 67108864 $dev -b 4096 100M
-     mount $dev $dir
-     resize2fs $dev 16G
+dioread for bs < ps has been tested on a 64k pagesize machine using:
 
-the following WARN_ON is triggered:
-==================================================================
-WARNING: CPU: 0 PID: 427 at mm/page_alloc.c:4402 __alloc_pages+0x411/0x550
-Modules linked in: sg(E)
-CPU: 0 PID: 427 Comm: resize2fs Tainted: G  E  6.6.0-rc5+ #314
-RIP: 0010:__alloc_pages+0x411/0x550
-Call Trace:
- <TASK>
- __kmalloc_large_node+0xa2/0x200
- __kmalloc+0x16e/0x290
- ext4_resize_fs+0x481/0xd80
- __ext4_ioctl+0x1616/0x1d90
- ext4_ioctl+0x12/0x20
- __x64_sys_ioctl+0xf0/0x150
- do_syscall_64+0x3b/0x90
-==================================================================
+kvm-xfstest -C 3 -g auto
 
-This is because flexbg_size is too large and the size of the new_group_data
-array to be allocated exceeds MAX_ORDER. Currently, the minimum value of
-MAX_ORDER is 8, the minimum value of PAGE_SIZE is 4096, the corresponding
-maximum number of groups that can be allocated is:
+with the following configs:
 
- (PAGE_SIZE << MAX_ORDER) / sizeof(struct ext4_new_group_data) ≈ 21845
+64k adv bigalloc_4k bigalloc_64k data_journal encrypt
+dioread_nolock dioread_nolock_4k ext3 ext3conv nojournal
 
-And the value that is down-aligned to the power of 2 is 16384. Therefore,
-this value is defined as MAX_RESIZE_BG, and the number of groups added
-each time does not exceed this value during resizing, and is added multiple
-times to complete the online resizing. The difference is that the metadata
-in a flex_bg may be more dispersed.
+And no new regressions were seen compared to baseline kernel.
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20231023013057.2117948-4-libaokun1@huawei.com
+Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Link: https://lore.kernel.org/r/20231101154717.531865-1-ojaswin@linux.ibm.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/resize.c | 25 +++++++++++++++++--------
- 1 file changed, 17 insertions(+), 8 deletions(-)
+ fs/ext4/super.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
 
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 0a57b199883c..e168a9f59600 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -218,10 +218,17 @@ struct ext4_new_flex_group_data {
- 						   in the flex group */
- 	__u16 *bg_flags;			/* block group flags of groups
- 						   in @groups */
-+	ext4_group_t resize_bg;			/* number of allocated
-+						   new_group_data */
- 	ext4_group_t count;			/* number of groups in @groups
- 						 */
- };
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index d062383ea50e..99c8ae97112c 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2785,15 +2785,6 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
+ 		return -EINVAL;
+ 	}
  
-+/*
-+ * Avoiding memory allocation failures due to too many groups added each time.
-+ */
-+#define MAX_RESIZE_BG				16384
-+
- /*
-  * alloc_flex_gd() allocates a ext4_new_flex_group_data with size of
-  * @flexbg_size.
-@@ -236,14 +243,18 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size)
- 	if (flex_gd == NULL)
- 		goto out3;
+-	if (ctx_test_mount_opt(ctx, EXT4_MOUNT_DIOREAD_NOLOCK)) {
+-		int blocksize =
+-			BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
+-		if (blocksize < PAGE_SIZE)
+-			ext4_msg(NULL, KERN_WARNING, "Warning: mounting with an "
+-				 "experimental mount option 'dioread_nolock' "
+-				 "for blocksize < PAGE_SIZE");
+-	}
+-
+ 	err = ext4_check_test_dummy_encryption(fc, sb);
+ 	if (err)
+ 		return err;
+@@ -4402,7 +4393,7 @@ static void ext4_set_def_opts(struct super_block *sb,
+ 	    ((def_mount_opts & EXT4_DEFM_NODELALLOC) == 0))
+ 		set_opt(sb, DELALLOC);
  
--	flex_gd->count = flexbg_size;
--	flex_gd->groups = kmalloc_array(flexbg_size,
-+	if (unlikely(flexbg_size > MAX_RESIZE_BG))
-+		flex_gd->resize_bg = MAX_RESIZE_BG;
-+	else
-+		flex_gd->resize_bg = flexbg_size;
-+
-+	flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
- 					sizeof(struct ext4_new_group_data),
- 					GFP_NOFS);
- 	if (flex_gd->groups == NULL)
- 		goto out2;
+-	if (sb->s_blocksize == PAGE_SIZE)
++	if (sb->s_blocksize <= PAGE_SIZE)
+ 		set_opt(sb, DIOREAD_NOLOCK);
+ }
  
--	flex_gd->bg_flags = kmalloc_array(flexbg_size, sizeof(__u16),
-+	flex_gd->bg_flags = kmalloc_array(flex_gd->resize_bg, sizeof(__u16),
- 					  GFP_NOFS);
- 	if (flex_gd->bg_flags == NULL)
- 		goto out1;
-@@ -1602,8 +1613,7 @@ static int ext4_flex_group_add(struct super_block *sb,
- 
- static int ext4_setup_next_flex_gd(struct super_block *sb,
- 				    struct ext4_new_flex_group_data *flex_gd,
--				    ext4_fsblk_t n_blocks_count,
--				    unsigned int flexbg_size)
-+				    ext4_fsblk_t n_blocks_count)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_super_block *es = sbi->s_es;
-@@ -1627,7 +1637,7 @@ static int ext4_setup_next_flex_gd(struct super_block *sb,
- 	BUG_ON(last);
- 	ext4_get_group_no_and_offset(sb, n_blocks_count - 1, &n_group, &last);
- 
--	last_group = group | (flexbg_size - 1);
-+	last_group = group | (flex_gd->resize_bg - 1);
- 	if (last_group > n_group)
- 		last_group = n_group;
- 
-@@ -2130,8 +2140,7 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
- 	/* Add flex groups. Note that a regular group is a
- 	 * flex group with 1 group.
- 	 */
--	while (ext4_setup_next_flex_gd(sb, flex_gd, n_blocks_count,
--					      flexbg_size)) {
-+	while (ext4_setup_next_flex_gd(sb, flex_gd, n_blocks_count)) {
- 		if (time_is_before_jiffies(last_update_time + HZ * 10)) {
- 			if (last_update_time)
- 				ext4_msg(sb, KERN_INFO,
 -- 
 2.43.0
 
