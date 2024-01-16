@@ -1,113 +1,104 @@
-Return-Path: <linux-ext4+bounces-830-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-831-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B136582F4D6
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 20:02:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36EAA82FC55
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 23:18:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 563F9285A8B
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 19:02:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B188528F606
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 22:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF00D1D526;
-	Tue, 16 Jan 2024 19:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTyE/atv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34B425115;
+	Tue, 16 Jan 2024 20:47:48 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542A91C2A9;
-	Tue, 16 Jan 2024 19:02:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB2B24B4F;
+	Tue, 16 Jan 2024 20:47:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705431739; cv=none; b=uce+FqrPtapkUdryQpGrncLUlmbfwgeAmb5v3w3bsNLcg+QzLyJ4y7PNXt+j/9l9BJu5M9lAIa7mqCItByI9X7XWBxR1xSo7reqw5PfhMuYDoVuwg4mqb76Xfg/JysbS44l1PAlr3rnw+XjGO+e4d+7WnR34S3JvyEP845Qdzzo=
+	t=1705438068; cv=none; b=NcXCCsYZIU1zcw+YoLBMgJVCBGzJygE5qE7PUelFVnCEvumT7w1mGTEzTUGR0wzVrZaOxZrx7Fva2U3PScIxNYQLXXP9ffzczgBse/+WFI5I4xVnaEfZ3cyJFE7I3YEGjFn5bnjKuT6RtTXfa5QH7GLEzw1Q5uZ/9Ko3YLULLcc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705431739; c=relaxed/simple;
-	bh=B7KdqtNAr+YKsv310derD9kBElqfPUpwakSS4/1H6EE=;
-	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
-	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=no83Gx6vndgaYlptA+2sif2Zm6isuYHSUJNc2qPzwCk7z7mf5QTyHMobs1oQVkl9WSUWbvuljzQQVX2uTt9COxDfq/R4kphMvHDFuzk3E2hs0IIM/gNR1GwlL4iy9M+5QYX108a7470iQLzaVoBb7/j7SmXssxPY8uGl0QpJHjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTyE/atv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 04F44C433A6;
-	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1705431739;
-	bh=B7KdqtNAr+YKsv310derD9kBElqfPUpwakSS4/1H6EE=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=fTyE/atvgWNfwbRtGAK9G4fT+t48V9auXl/dM9UBC1XrAORjlIi5Sk5uxCY3mFft3
-	 W12nOB+vt1pk5Y5eQJ7cHfFOmJkPJvsHoFOtfCATr1XDymAjtZjtVYC3E2dIzth+Qy
-	 a/qruXUyLG6BjMYwosh2gTkz6FHXILkeyFqWgyx3t/FxkHad7dz59tKTRafdDZjRJk
-	 AGM0FQc2faIf3FMg3SordWsvUL52JNTkbE8fbXumy3MdLuYzhyjFm7S2YwlFRNgejh
-	 I/IEI9/XBi42QIjbpG5427aZzPNdGx4KjJLsJdGw6CTUT/pyMBXvGbG6FHIzLMYGxz
-	 y9NrZ/egbUVBA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D51F4D8C9A0;
-	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1705438068; c=relaxed/simple;
+	bh=YAynCo2jCo1SBMeSdNvw/ZTOAkwEklo1Cis4GBlNb8w=;
+	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
+	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=rw8isBgEtY5aLXZiJPA2LLEtWqPHJqF4FtetoV+EOl5K19SHW6YqdmWRYa5kCeoYoyzdVr1rR9bXd8D9sCNoyBhx6T8ZnOGFOyO3UHRf1LTPIAx0ZhwySxO9hlMDVyhXB/LtlY6q0C+4+PD72ks/jweXmqUXHjsk2kk8nLp1hu4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
+Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
+	id 717211C007D; Tue, 16 Jan 2024 21:47:45 +0100 (CET)
+Date: Tue, 16 Jan 2024 21:47:44 +0100
+From: Pavel Machek <pavel@denx.de>
+To: Sasha Levin <sashal@kernel.org>
+Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Ritesh Harjani <ritesh.list@gmail.com>,
+	Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH AUTOSEL 6.1 08/14] ext4: enable dioread_nolock as default
+ for bs < ps case
+Message-ID: <ZabrcCOi/hIsKk5I@duo.ucw.cz>
+References: <20240116010642.218876-1-sashal@kernel.org>
+ <20240116010642.218876-8-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
- case-insensitive ext4 and f2fs
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <170543173886.30188.17408872425977441156.git-patchwork-notify@kernel.org>
-Date: Tue, 16 Jan 2024 19:02:18 +0000
-References: <20230816050803.15660-1-krisman@suse.de>
-In-Reply-To: <20230816050803.15660-1-krisman@suse.de>
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
- ebiggers@kernel.org, jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
-
-Hello:
-
-This series was applied to jaegeuk/f2fs.git (dev)
-by Gabriel Krisman Bertazi <krisman@suse.de>:
-
-On Wed, 16 Aug 2023 01:07:54 -0400 you wrote:
-> Hi,
-> 
-> This is v6 of the negative dentry on case-insensitive directories.
-> Thanks Eric for the review of the last iteration.  This version
-> drops the patch to expose the helper to check casefolding directories,
-> since it is not necessary in ecryptfs and it might be going away.  It
-> also addresses some documentation details, fix a build bot error and
-> simplifies the commit messages.  See the changelog in each patch for
-> more details.
-> 
-> [...]
-
-Here is the summary with links:
-  - [f2fs-dev,v6,1/9] ecryptfs: Reject casefold directory inodes
-    https://git.kernel.org/jaegeuk/f2fs/c/cd72c7ef5fed
-  - [f2fs-dev,v6,2/9] 9p: Split ->weak_revalidate from ->revalidate
-    (no matching commit)
-  - [f2fs-dev,v6,3/9] fs: Expose name under lookup to d_revalidate hooks
-    (no matching commit)
-  - [f2fs-dev,v6,4/9] fs: Add DCACHE_CASEFOLDED_NAME flag
-    (no matching commit)
-  - [f2fs-dev,v6,5/9] libfs: Validate negative dentries in case-insensitive directories
-    (no matching commit)
-  - [f2fs-dev,v6,6/9] libfs: Chain encryption checks after case-insensitive revalidation
-    (no matching commit)
-  - [f2fs-dev,v6,7/9] libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
-    (no matching commit)
-  - [f2fs-dev,v6,8/9] ext4: Enable negative dentries on case-insensitive lookup
-    (no matching commit)
-  - [f2fs-dev,v6,9/9] f2fs: Enable negative dentries on case-insensitive lookup
-    (no matching commit)
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
+Content-Type: multipart/signed; micalg=pgp-sha1;
+	protocol="application/pgp-signature"; boundary="PokFs8UU5Lo898VR"
+Content-Disposition: inline
+In-Reply-To: <20240116010642.218876-8-sashal@kernel.org>
 
 
+--PokFs8UU5Lo898VR
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+
+Hi!
+>=20
+> [ Upstream commit e89fdcc425b6feea4dfb33877e9256757905d763 ]
+>=20
+> dioread_nolock was originally disabled as a default option for bs < ps
+> scenarios due to a data corruption issue. Since then, we've had some
+> fixes in this area which address such issues. Enable dioread_nolock by
+> default and remove the experimental warning message for bs < ps path.
+>=20
+> dioread for bs < ps has been tested on a 64k pagesize machine using:
+>=20
+> kvm-xfstest -C 3 -g auto
+>=20
+> with the following configs:
+>=20
+> 64k adv bigalloc_4k bigalloc_64k data_journal encrypt
+> dioread_nolock dioread_nolock_4k ext3 ext3conv nojournal
+>=20
+> And no new regressions were seen compared to baseline kernel.
+
+But no fixes, either, so not suitable for stable.
+
+BR,
+								Pavel
+
+--=20
+DENX Software Engineering GmbH,        Managing Director: Erika Unter
+HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+
+--PokFs8UU5Lo898VR
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZabrcAAKCRAw5/Bqldv6
+8pEoAJ9B7sSIOwhORDquvlzFSPG1vIO9KQCfbSnHoQRHfgdwGANc61ccILgvHAw=
+=ZMOC
+-----END PGP SIGNATURE-----
+
+--PokFs8UU5Lo898VR--
 
