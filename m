@@ -1,112 +1,123 @@
-Return-Path: <linux-ext4+bounces-791-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-792-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91ECA82E669
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 02:16:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BC2382E68D
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 02:19:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19EC41F2206A
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 01:16:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2069528809A
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 01:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C936510971;
-	Tue, 16 Jan 2024 01:03:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 037801B945;
+	Tue, 16 Jan 2024 01:04:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HHczpjS3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F7E101E8
-	for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 01:02:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.252])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TDW1773jXzvTrQ;
-	Tue, 16 Jan 2024 09:01:31 +0800 (CST)
-Received: from kwepemd200008.china.huawei.com (unknown [7.221.188.40])
-	by mail.maildlp.com (Postfix) with ESMTPS id 2088C180071;
-	Tue, 16 Jan 2024 09:02:55 +0800 (CST)
-Received: from [10.174.177.210] (10.174.177.210) by
- kwepemd200008.china.huawei.com (7.221.188.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.2.1258.28; Tue, 16 Jan 2024 09:02:54 +0800
-Message-ID: <4284c67d-eefd-d4eb-2df3-d863ca4651b4@huawei.com>
-Date: Tue, 16 Jan 2024 09:02:53 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818CC1B80F;
+	Tue, 16 Jan 2024 01:04:57 +0000 (UTC)
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2038CC433F1;
+	Tue, 16 Jan 2024 01:04:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705367097;
+	bh=SxnoDFwYsSeODzj6GXJyn6joxPm56j1x0ydoIT61rG8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=HHczpjS3488rJYwki+tMvqihjHmoqe8DqoKmv8JvkCEFrmDVokxqF+pkJ8xLptuQz
+	 Vld3X7OvfNhqy0StXhRI/dWpoUxV4oWfTM/vPMFm4NpN99pH5kWjx66RdvwMRHAkIs
+	 aXJ2JIjFN943CDzCqOWJsgIFMIp8yOGxDYrEIWyAZJXeTAqZC6KDjbrXtQYLNfpYnd
+	 UkRteN2TpgSRa463AOllQEo8TCkZAt0lXLCwjCbX++DIoE+nEH2Ag4bt+HhMAFrieg
+	 nABsNpjoFfaoOqqDJuMB1gE8DiVV5Ljvr8/O4fJk95iQZ4iyQq2TKGP2LATpcRCOc/
+	 3JrWZiTnuy0dg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Ritesh Harjani <ritesh.list@gmail.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Sasha Levin <sashal@kernel.org>,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.7 11/21] ext4: enable dioread_nolock as default for bs < ps case
+Date: Mon, 15 Jan 2024 20:03:48 -0500
+Message-ID: <20240116010422.217925-11-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240116010422.217925-1-sashal@kernel.org>
+References: <20240116010422.217925-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] ext4: clear EXT4_GROUP_INFO_WAS_TRIMMED_BIT even mount
- with discard
-To: yangerkun <yangerkun@huaweicloud.com>, <tytso@mit.edu>,
-	<adilger.kernel@dilger.ca>
-CC: <boyu.mt@taobao.com>, <linux-ext4@vger.kernel.org>
-References: <20231230070654.178638-1-yangerkun@huaweicloud.com>
-From: yangerkun <yangerkun@huawei.com>
-In-Reply-To: <20231230070654.178638-1-yangerkun@huaweicloud.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.7
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd200008.china.huawei.com (7.221.188.40)
 
-Ping...
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-在 2023/12/30 15:06, yangerkun 写道:
-> Commit 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in
-> ext4_group_info") speed up fstrim by skipping trim trimmed group. We
-> also has the chance to clear trimmed once there exists some block free
-> for this group(mount without discard), and the next trim for this group
-> will work well too.
-> 
-> For mount with discard, we will issue dicard when we free blocks, so
-> leave trimmed flag keep alive to skip useless trim trigger from
-> userspace seems reasonable. But for some case like ext4 build on
-> dm-thinpool(ext4 blocksize 4K, pool blocksize 128K), discard from ext4
-> maybe unaligned for dm thinpool, and thinpool will just finish this
-> discard(see process_discard_bio when begein equals to end) without
-> actually process discard. For this case, trim from userspace can really
-> help us to free some thinpool block.
-> 
-> So convert to clear trimmed flag for all case no matter mounted with
-> discard or not.
-> 
-> Fixes: 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in ext4_group_info")
-> Signed-off-by: yangerkun <yangerkun@huaweicloud.com>
-> ---
->   fs/ext4/mballoc.c | 10 ++++------
->   1 file changed, 4 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index d72b5e3c92ec..69240ae775f1 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3855,11 +3855,8 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
->   	/*
->   	 * Clear the trimmed flag for the group so that the next
->   	 * ext4_trim_fs can trim it.
-> -	 * If the volume is mounted with -o discard, online discard
-> -	 * is supported and the free blocks will be trimmed online.
->   	 */
-> -	if (!test_opt(sb, DISCARD))
-> -		EXT4_MB_GRP_CLEAR_TRIMMED(db);
-> +	EXT4_MB_GRP_CLEAR_TRIMMED(db);
->   
->   	if (!db->bb_free_root.rb_node) {
->   		/* No more items in the per group rb tree
-> @@ -6481,8 +6478,9 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->   					 " group:%u block:%d count:%lu failed"
->   					 " with %d", block_group, bit, count,
->   					 err);
-> -		} else
-> -			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
-> +		}
-> +
-> +		EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
->   
->   		ext4_lock_group(sb, block_group);
->   		mb_free_blocks(inode, &e4b, bit, count_clusters);
+[ Upstream commit e89fdcc425b6feea4dfb33877e9256757905d763 ]
+
+dioread_nolock was originally disabled as a default option for bs < ps
+scenarios due to a data corruption issue. Since then, we've had some
+fixes in this area which address such issues. Enable dioread_nolock by
+default and remove the experimental warning message for bs < ps path.
+
+dioread for bs < ps has been tested on a 64k pagesize machine using:
+
+kvm-xfstest -C 3 -g auto
+
+with the following configs:
+
+64k adv bigalloc_4k bigalloc_64k data_journal encrypt
+dioread_nolock dioread_nolock_4k ext3 ext3conv nojournal
+
+And no new regressions were seen compared to baseline kernel.
+
+Suggested-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Link: https://lore.kernel.org/r/20231101154717.531865-1-ojaswin@linux.ibm.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/super.c | 11 +----------
+ 1 file changed, 1 insertion(+), 10 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c5fcf377ab1f..783a755078cf 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2793,15 +2793,6 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
+ 		return -EINVAL;
+ 	}
+ 
+-	if (ctx_test_mount_opt(ctx, EXT4_MOUNT_DIOREAD_NOLOCK)) {
+-		int blocksize =
+-			BLOCK_SIZE << le32_to_cpu(sbi->s_es->s_log_block_size);
+-		if (blocksize < PAGE_SIZE)
+-			ext4_msg(NULL, KERN_WARNING, "Warning: mounting with an "
+-				 "experimental mount option 'dioread_nolock' "
+-				 "for blocksize < PAGE_SIZE");
+-	}
+-
+ 	err = ext4_check_test_dummy_encryption(fc, sb);
+ 	if (err)
+ 		return err;
+@@ -4410,7 +4401,7 @@ static void ext4_set_def_opts(struct super_block *sb,
+ 	    ((def_mount_opts & EXT4_DEFM_NODELALLOC) == 0))
+ 		set_opt(sb, DELALLOC);
+ 
+-	if (sb->s_blocksize == PAGE_SIZE)
++	if (sb->s_blocksize <= PAGE_SIZE)
+ 		set_opt(sb, DIOREAD_NOLOCK);
+ }
+ 
+-- 
+2.43.0
+
 
