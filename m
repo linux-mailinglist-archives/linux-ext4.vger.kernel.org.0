@@ -1,109 +1,113 @@
-Return-Path: <linux-ext4+bounces-829-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-830-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ECFF82F1FF
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 16:57:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B136582F4D6
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 20:02:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D7401F23FF2
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 15:57:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 563F9285A8B
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 19:02:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B77D91C692;
-	Tue, 16 Jan 2024 15:57:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF00D1D526;
+	Tue, 16 Jan 2024 19:02:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="UZWKnw/v"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTyE/atv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25DFE1C68C
-	for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 15:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1d47fae33e0so422435ad.0
-        for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 07:57:19 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1705420639; x=1706025439; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=P4RhZpXa8cxxbTmltT2uMDAVbFEnYgLBeqxEfdznCVE=;
-        b=UZWKnw/vXxHat+l12OSCVaBua2SyQ57xqGYCJMHMHIWDKQF+c7W0Y34z4gi3XZjqsx
-         1KL8CPmEZd1WPVdsXqRqjkIXRbXy/2iBXDEizTgNjk+B7rpCDQWaHW4+4DTuE1yNvM8t
-         Wg0N+spvT2vJlU0TsKnvBCIU37aoNW4Tr+SwbAwcHHaqvUXpOz8NoqxtQHp+EjnyeX9m
-         E4HzE/h6VGYv4spbNDLQ+7p0ooiT2aUvZuHcT45/gryJ936btvdVeN683KbjbfrIn9ck
-         3IDRlkW22b+W6nI1p9jB7y8pPeyUEMpEKWmd4vloaoPRriB4mQ6OEC9TQkD5tCWVnaEF
-         8lTA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1705420639; x=1706025439;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=P4RhZpXa8cxxbTmltT2uMDAVbFEnYgLBeqxEfdznCVE=;
-        b=Q4TRHj2i2LNB/fPgz6bx/BtsJfu+asTALe1hMNBA4wB463doFR3xYlhsSvWrfgpH1e
-         ACR+G1wB2ZHbT6LNq8P9CigC2rISwzIDC+XtXI2jo6pGJWXNXUVupJvm9V1FTkWzQOiB
-         Pz3kQFaWNN1z8qpHVc3aW03+YSqKGeo3DxyjM7sYbXiGgI7k1PGzApv2KLTN/2Wq8hhl
-         sXfd1oT4f6rJAuPHZFrGDQ3FEQSOEtfiN6P1Qis9ezf6q9CjeDGv8bRWpt+KMoPuz7qU
-         aGScKoHDsuTVyZt0n/XvgbnaRhOwkRjjfjWz8GReS9XG2wA11WwfCVl6PBEfGHA8pEZD
-         yYVQ==
-X-Gm-Message-State: AOJu0YwGdqhlmzU/d+YTaPcNPu3YtRgyJ7DNja2k/J95up8O/AfW7aUG
-	8D8LUrGYeNmVUaODERTXrGli1wsB7liaN009QEUZns0ZKZ3e
-X-Google-Smtp-Source: AGHT+IGrbyVr57m05yfAu8DAczpHcQVB3Lxz6qUfOyq8g85sgXMAGkQW1/TuqiYzaCrBBz1c4ENLyLiHyHXiDaYhel4=
-X-Received: by 2002:a17:903:248:b0:1d5:c390:af86 with SMTP id
- j8-20020a170903024800b001d5c390af86mr334255plh.25.1705420639260; Tue, 16 Jan
- 2024 07:57:19 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 542A91C2A9;
+	Tue, 16 Jan 2024 19:02:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1705431739; cv=none; b=uce+FqrPtapkUdryQpGrncLUlmbfwgeAmb5v3w3bsNLcg+QzLyJ4y7PNXt+j/9l9BJu5M9lAIa7mqCItByI9X7XWBxR1xSo7reqw5PfhMuYDoVuwg4mqb76Xfg/JysbS44l1PAlr3rnw+XjGO+e4d+7WnR34S3JvyEP845Qdzzo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1705431739; c=relaxed/simple;
+	bh=B7KdqtNAr+YKsv310derD9kBElqfPUpwakSS4/1H6EE=;
+	h=Received:DKIM-Signature:Received:Content-Type:MIME-Version:
+	 Content-Transfer-Encoding:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=no83Gx6vndgaYlptA+2sif2Zm6isuYHSUJNc2qPzwCk7z7mf5QTyHMobs1oQVkl9WSUWbvuljzQQVX2uTt9COxDfq/R4kphMvHDFuzk3E2hs0IIM/gNR1GwlL4iy9M+5QYX108a7470iQLzaVoBb7/j7SmXssxPY8uGl0QpJHjE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTyE/atv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 04F44C433A6;
+	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1705431739;
+	bh=B7KdqtNAr+YKsv310derD9kBElqfPUpwakSS4/1H6EE=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=fTyE/atvgWNfwbRtGAK9G4fT+t48V9auXl/dM9UBC1XrAORjlIi5Sk5uxCY3mFft3
+	 W12nOB+vt1pk5Y5eQJ7cHfFOmJkPJvsHoFOtfCATr1XDymAjtZjtVYC3E2dIzth+Qy
+	 a/qruXUyLG6BjMYwosh2gTkz6FHXILkeyFqWgyx3t/FxkHad7dz59tKTRafdDZjRJk
+	 AGM0FQc2faIf3FMg3SordWsvUL52JNTkbE8fbXumy3MdLuYzhyjFm7S2YwlFRNgejh
+	 I/IEI9/XBi42QIjbpG5427aZzPNdGx4KjJLsJdGw6CTUT/pyMBXvGbG6FHIzLMYGxz
+	 y9NrZ/egbUVBA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D51F4D8C9A0;
+	Tue, 16 Jan 2024 19:02:18 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000743ce2060060e5ce@google.com> <000000000000f447a1060f11e6ed@google.com>
-In-Reply-To: <000000000000f447a1060f11e6ed@google.com>
-From: Aleksandr Nogikh <nogikh@google.com>
-Date: Tue, 16 Jan 2024 16:57:07 +0100
-Message-ID: <CANp29Y7P2rNrriEFKZAOy=UZJ+D_khwS-rY4C9Xhy-ymeTBEBA@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] INFO: task hung in find_inode_fast (2)
-To: syzbot <syzbot+adfd362e7719c02b3015@syzkaller.appspotmail.com>
-Cc: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Subject: Re: [f2fs-dev] [PATCH v6 0/9] Support negative dentries on
+ case-insensitive ext4 and f2fs
+From: patchwork-bot+f2fs@kernel.org
+Message-Id: 
+ <170543173886.30188.17408872425977441156.git-patchwork-notify@kernel.org>
+Date: Tue, 16 Jan 2024 19:02:18 +0000
+References: <20230816050803.15660-1-krisman@suse.de>
+In-Reply-To: <20230816050803.15660-1-krisman@suse.de>
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+ ebiggers@kernel.org, jaegeuk@kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net
 
-#syz fix: fs: Block writes to mounted block devices
+Hello:
 
-On Tue, Jan 16, 2024 at 4:37=E2=80=AFPM syzbot
-<syzbot+adfd362e7719c02b3015@syzkaller.appspotmail.com> wrote:
->
-> syzbot suspects this issue was fixed by commit:
->
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
->
->     fs: Block writes to mounted block devices
->
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D17852f7be8=
-0000
-> start commit:   2a5a4326e583 Merge tag 'scsi-misc' of git://git.kernel.or=
-g..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Dd5e7bcb9a41fc=
-9b3
-> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dadfd362e7719c02=
-b3015
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D11d27994680=
-000
->
-> If the result looks correct, please mark the issue as fixed by replying w=
-ith:
->
-> #syz fix: fs: Block writes to mounted block devices
->
-> For information about bisection process see: https://goo.gl/tpsmEJ#bisect=
-ion
->
+This series was applied to jaegeuk/f2fs.git (dev)
+by Gabriel Krisman Bertazi <krisman@suse.de>:
+
+On Wed, 16 Aug 2023 01:07:54 -0400 you wrote:
+> Hi,
+> 
+> This is v6 of the negative dentry on case-insensitive directories.
+> Thanks Eric for the review of the last iteration.  This version
+> drops the patch to expose the helper to check casefolding directories,
+> since it is not necessary in ecryptfs and it might be going away.  It
+> also addresses some documentation details, fix a build bot error and
+> simplifies the commit messages.  See the changelog in each patch for
+> more details.
+> 
+> [...]
+
+Here is the summary with links:
+  - [f2fs-dev,v6,1/9] ecryptfs: Reject casefold directory inodes
+    https://git.kernel.org/jaegeuk/f2fs/c/cd72c7ef5fed
+  - [f2fs-dev,v6,2/9] 9p: Split ->weak_revalidate from ->revalidate
+    (no matching commit)
+  - [f2fs-dev,v6,3/9] fs: Expose name under lookup to d_revalidate hooks
+    (no matching commit)
+  - [f2fs-dev,v6,4/9] fs: Add DCACHE_CASEFOLDED_NAME flag
+    (no matching commit)
+  - [f2fs-dev,v6,5/9] libfs: Validate negative dentries in case-insensitive directories
+    (no matching commit)
+  - [f2fs-dev,v6,6/9] libfs: Chain encryption checks after case-insensitive revalidation
+    (no matching commit)
+  - [f2fs-dev,v6,7/9] libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
+    (no matching commit)
+  - [f2fs-dev,v6,8/9] ext4: Enable negative dentries on case-insensitive lookup
+    (no matching commit)
+  - [f2fs-dev,v6,9/9] f2fs: Enable negative dentries on case-insensitive lookup
+    (no matching commit)
+
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
+
 
