@@ -1,111 +1,121 @@
-Return-Path: <linux-ext4+bounces-833-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-835-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7940D82FFD3
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jan 2024 06:28:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1989B8304CE
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jan 2024 12:56:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A79201C23F8C
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jan 2024 05:28:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB9091F24F16
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jan 2024 11:56:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 219816AD6;
-	Wed, 17 Jan 2024 05:28:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Y/8u8NK/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D16491DFDC;
+	Wed, 17 Jan 2024 11:56:06 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48556611A
-	for <linux-ext4@vger.kernel.org>; Wed, 17 Jan 2024 05:28:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7814E1DFCF
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Jan 2024 11:56:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705469323; cv=none; b=ucmWt7yKLVS6snkT6Cne5UVxZG3LxwVCkOJde7EpB3pGQ39ot9yb9D96KmehbAusogIah1O+64GExhyjhxGamIs+A9fkPVZ0oNd4F9TvvTc3DxYB1nUfCVnO91hl8/M0TSVbk6ww3L7FsOJbU8ddEsfshlZXrQemux8qSsEoplU=
+	t=1705492566; cv=none; b=faBEaMdv/g6NgNW0ZISVEqtuUl+r7HsiRQ/iO03Zby3lM9TezP/G3EQKYQEO6oWWo33i2lIK61BaA1F51XaIXWdLPNk2N6bBu2VQcBacXMNuEIOuipMaq/xNGavSmRcKSP8wNy7GmkkLaTyA8PTXilaDbufrSe5ei7PUUfugAxo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705469323; c=relaxed/simple;
-	bh=dJdfnjCYIHQvovHWk7nGZ4qUL1Z6hZWzTRPmsxja+3o=;
-	h=Received:DKIM-Signature:Received:Date:From:To:Cc:Subject:
-	 Message-ID:References:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=HT6HfT1poULpQuIjsQmRCq23z0z7TGOaOVOPQD1UxOOGhcUE5DBO5kkG49SFYIkQwCRt8C53hJdL8V891MD5ZXtVSqR2JgxCA2jfRde9MCLxtun9lJU9WEeX67lSfDVo16NFRJwVM47MZbihSo4yZ2Oj8TZkOjoaTiFhlkq8w6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Y/8u8NK/; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-112-211.bstnma.fios.verizon.net [173.48.112.211])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 40H5SLlT005871
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 17 Jan 2024 00:28:24 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1705469304; bh=I0rFGlBN3UecdQ8QGELeVe4qCm5v9+9UkvSYQC4qiJ0=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Y/8u8NK/+E1GFfr8Vd8YjJdSAbfV7/RHey2EHT0hDdfaQXTLSFVEFRFPkg/kyXAQS
-	 Ivx79yKlehsZDhWhdVMxEutKyympswpX4rbqyeC6VnEg+PRtN8fkR0UIXY5apJj1XU
-	 +4e28lIFAD7BP4plqtIQ1RLtJz0imVMW0L6SwxK9LETGkrHj5TIbNZnKv2rceSiZfC
-	 gG0ePFlHufvYelwcYKQqhQMAHLBpCpSo+YBhTNkOyYai/JOka2Jrg1el9dBn7F3htM
-	 btuPyvJKO6AcvZzULq6HmZFgap7UKIaLUJ2N6z30Zj8oE5AkmUZC4y1GN1om+MAupi
-	 b+3tAooQJ3SLg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 9002415C0278; Wed, 17 Jan 2024 00:28:21 -0500 (EST)
-Date: Wed, 17 Jan 2024 00:28:21 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Brian J. Murrell" <brian@interlinx.bc.ca>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: Protecting lost+found from rmdir by directory owner?
-Message-ID: <20240117052821.GK911245@mit.edu>
-References: <42bc44533e997531baa79c73867a942504122886.camel@interlinx.bc.ca>
+	s=arc-20240116; t=1705492566; c=relaxed/simple;
+	bh=yta4a/lm1v9dJabha7/osqqliA6xtmI1QbzgXS7WPT4=;
+	h=Received:Received:Received:From:To:Cc:Subject:Date:Message-Id:
+	 X-Mailer:MIME-Version:Content-Transfer-Encoding:X-CM-TRANSID:
+	 X-Coremail-Antispam:Sender:X-CM-SenderInfo; b=OO7Vx1vCdckvKnRArXFxkjaH7X0rwCQ23uJQQQJ1GWtxz8wRBs/eTnTAaZI6SAeXnmjeE8R/dqheOTmfUeecElTQbANDPujdTOTdXGRqWpoZ3a7jSWAR2TRetD58Cyb0zuOQu5IGnrzbeDZQlu5Jt+eQjfGEGp8dczMfTel6RN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TFPTj4jYlz4f3lVk
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Jan 2024 19:55:53 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id BDB161A0171
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Jan 2024 19:55:59 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAn9g5JwKdlTAVxBA--.18229S4;
+	Wed, 17 Jan 2024 19:55:59 +0800 (CST)
+From: yangerkun <yangerkun@huawei.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz
+Cc: linux-ext4@vger.kernel.org,
+	yangerkun@huawei.com,
+	yangerkun@huaweicloud.com
+Subject: [PATCH 1/2] ext4: remove unused buddy_loaded in ext4_mb_seq_groups_show
+Date: Wed, 17 Jan 2024 19:52:22 +0800
+Message-Id: <20240117115223.80253-1-yangerkun@huawei.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <42bc44533e997531baa79c73867a942504122886.camel@interlinx.bc.ca>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAn9g5JwKdlTAVxBA--.18229S4
+X-Coremail-Antispam: 1UD129KBjvJXoWrtr4rZry7ZF47KF1kJF43Jrb_yoW8JrWrpF
+	sxCF12kry5Wr1UCr4DC3yUWa4rKw1xu348Gr93Wr1F9Fy7Jry0gFyaqF1j9F15CFWrXF1S
+	vw1Y9r15Ar4fCw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvCb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0aVACjI8F5VA0II8E6IAqYI8I648v4I1l
+	42xK82IYc2Ij64vIr41l42xK82IY64kExVAvwVAq07x20xyl4I8I3I0E4IkC6x0Yz7v_Jr
+	0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY
+	17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
+	C0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7IU173ktUUUUU==
+Sender: yangerkun@huaweicloud.com
+X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
 
-On Tue, Jan 16, 2024 at 08:26:14AM -0500, Brian J. Murrell wrote:
-> Let's say I create a new ext4 filesystem for exclusive use by alice and
-> when I mount it, say, on /mnt/alice I set the permissions so that alice
-> can work in that directory:
-> 
-> # mkfs.ext4 /dev/foo
-> # mount /dev/foo /mnt/alice
-> # chown alice:alice /mnt/alice
-> # chmod 775 /mnt/alice
-> 
-> But now /mnt/alice/lost+found is at the mercy of alice since she has
-> write permission for /mnt/alice.
-> 
-> [How] can I protect /mnt/alice/lost+found from removal by alice?
+We can just first call ext4_mb_unload_buddy, then copy information from
+ext4_group_info. So remove this unused value.
 
-You can't.  Note that if /lost+found is missing, e2fsck will try to
-recreate it if it finds orphaned inodes (e.g., inodes that aren't
-connected to the the directory tree).  The reason why mke2fs
-pre-creates the lost+found directory is adds a bit more reliability,
-in the case where there are no free inodes or free blocks to create
-the lost+found directory.  There's also a very tiny risk where if the
-file system is horrendously corrupted, asking e2fsck to recreate
-lost+found is one more thing that could potentially go wrong.
+Signed-off-by: yangerkun <yangerkun@huawei.com>
+---
+ fs/ext4/mballoc.c | 9 ++-------
+ 1 file changed, 2 insertions(+), 7 deletions(-)
 
-On the other hand, if the file system is created exclusively for
-alice, and she remotes lost+found, in the rare case where something
-goes horrendously wrong, she's the only person who would suffer.
-Ultimately, just like we can't protect users from yanking out USB
-drives before unounting them and waiting for the writes to complete,
-sometimes asking users to take personal responsibility is the best
-policy.
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index f44f668e407f..139f232bdbb5 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2990,8 +2990,7 @@ static int ext4_mb_seq_groups_show(struct seq_file *seq, void *v)
+ {
+ 	struct super_block *sb = pde_data(file_inode(seq->file));
+ 	ext4_group_t group = (ext4_group_t) ((unsigned long) v);
+-	int i;
+-	int err, buddy_loaded = 0;
++	int i, err;
+ 	struct ext4_buddy e4b;
+ 	struct ext4_group_info *grinfo;
+ 	unsigned char blocksize_bits = min_t(unsigned char,
+@@ -3021,14 +3020,10 @@ static int ext4_mb_seq_groups_show(struct seq_file *seq, void *v)
+ 			seq_printf(seq, "#%-5u: I/O error\n", group);
+ 			return 0;
+ 		}
+-		buddy_loaded = 1;
++		ext4_mb_unload_buddy(&e4b);
+ 	}
+ 
+ 	memcpy(&sg, grinfo, i);
+-
+-	if (buddy_loaded)
+-		ext4_mb_unload_buddy(&e4b);
+-
+ 	seq_printf(seq, "#%-5u: %-5u %-5u %-5u [", group, sg.info.bb_free,
+ 			sg.info.bb_fragments, sg.info.bb_first_free);
+ 	for (i = 0; i <= 13; i++)
+-- 
+2.39.2
 
-And for most users, the case that they might accidentally type a
-command like "rm * -i" or someone who believes advice from irc that
-"rm -rf ~/" is a way to "Read Mail Really Fast", is probably much more
-likely than the file system gets so badly corrupted that /lost+found
-is going to make that much of a difference.  And that's what backups
-are for in any case, right?  :-)
-
-Cheers,
-
-					- Ted
 
