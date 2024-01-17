@@ -1,104 +1,157 @@
-Return-Path: <linux-ext4+bounces-831-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-832-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 36EAA82FC55
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 23:18:12 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E19582FED4
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jan 2024 03:31:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B188528F606
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jan 2024 22:18:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EC2011F21C63
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jan 2024 02:31:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E34B425115;
-	Tue, 16 Jan 2024 20:47:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2088D17E9;
+	Wed, 17 Jan 2024 02:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="nGkknhTh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from jabberwock.ucw.cz (jabberwock.ucw.cz [46.255.230.98])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FB2B24B4F;
-	Tue, 16 Jan 2024 20:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.255.230.98
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18A881C05
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Jan 2024 02:31:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705438068; cv=none; b=NcXCCsYZIU1zcw+YoLBMgJVCBGzJygE5qE7PUelFVnCEvumT7w1mGTEzTUGR0wzVrZaOxZrx7Fva2U3PScIxNYQLXXP9ffzczgBse/+WFI5I4xVnaEfZ3cyJFE7I3YEGjFn5bnjKuT6RtTXfa5QH7GLEzw1Q5uZ/9Ko3YLULLcc=
+	t=1705458670; cv=none; b=JRJYRgd27042DtxjJbhCxa+Uk4lTBadnpvFxRSg1W59nQdbBdRrDCGjolKqSxld33DDiGJSoRnwb1sLlC3wcukAXiz1wKcuqFsQ3hGYw4eLadGUVi5kFu/aMTEdynIPZCFDrF4ibI0QGgKcIK00b7UGagnGgVSpbK9Gb8JlvnCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705438068; c=relaxed/simple;
-	bh=YAynCo2jCo1SBMeSdNvw/ZTOAkwEklo1Cis4GBlNb8w=;
-	h=Received:Date:From:To:Cc:Subject:Message-ID:References:
-	 MIME-Version:Content-Type:Content-Disposition:In-Reply-To; b=rw8isBgEtY5aLXZiJPA2LLEtWqPHJqF4FtetoV+EOl5K19SHW6YqdmWRYa5kCeoYoyzdVr1rR9bXd8D9sCNoyBhx6T8ZnOGFOyO3UHRf1LTPIAx0ZhwySxO9hlMDVyhXB/LtlY6q0C+4+PD72ks/jweXmqUXHjsk2kk8nLp1hu4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de; spf=fail smtp.mailfrom=denx.de; arc=none smtp.client-ip=46.255.230.98
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=denx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=denx.de
-Received: by jabberwock.ucw.cz (Postfix, from userid 1017)
-	id 717211C007D; Tue, 16 Jan 2024 21:47:45 +0100 (CET)
-Date: Tue, 16 Jan 2024 21:47:44 +0100
-From: Pavel Machek <pavel@denx.de>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	Theodore Ts'o <tytso@mit.edu>, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.1 08/14] ext4: enable dioread_nolock as default
- for bs < ps case
-Message-ID: <ZabrcCOi/hIsKk5I@duo.ucw.cz>
-References: <20240116010642.218876-1-sashal@kernel.org>
- <20240116010642.218876-8-sashal@kernel.org>
+	s=arc-20240116; t=1705458670; c=relaxed/simple;
+	bh=RZ+/hp8wxfGouZs1mW+AxUmCKjIkVcr2VGvjFlEmqyc=;
+	h=Received:DKIM-Signature:X-Google-DKIM-Signature:
+	 X-Gm-Message-State:X-Google-Smtp-Source:X-Received:Received:From:
+	 Message-Id:Content-Type:Mime-Version:Subject:Date:In-Reply-To:Cc:
+	 To:References:X-Mailer; b=AUlXaOzckRhr3vQIq7pbnIrE6z00gaL9f4TFqQBCUMtUadNpsPFQ/t2m/FahJ8CHGZwqHSts7y32+LyfW0L7Gbv+Mu57LLaTxDtUAzz55TpoZl/y/hy1cr34FRiy/IpUDjP+mq/qeLfGBEkm3tvG0Re4W/+acwFdfOC5Z4gRkoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=nGkknhTh; arc=none smtp.client-ip=209.85.161.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-598699c0f1eso4694770eaf.2
+        for <linux-ext4@vger.kernel.org>; Tue, 16 Jan 2024 18:31:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1705458667; x=1706063467; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOsZtK3oVYN2VorMLkNQ/SgGxv0pIUS90T6LHVIxPYQ=;
+        b=nGkknhTh/iFPN6oO7Qx0GXQR2DIVK5TJ6mHpX610wKhu4UOdZVte9k6etCIx97LWAE
+         FpHKpoSi/bxqBbLQniFulf+af4QCjJ2danvI0IEDWrdkiIP0w2qkGRIbvK1vpZhlVVJU
+         AcGUyePGNvcJ8sIJKCS6DpAL9vQaCq6VbF82DmFrl2RmH4v+r+//eliF4GaOzcvv4x65
+         OOwyuyI4x2peWZK/2M/HRHRL0YNgHvtivp1j5WkOgUaJvfQ+zqaBHIhMRJ9mAwUGaxwD
+         sQOTGktnsS2o8l2YruMbtgVn5C8W6/E/qBaMct96oLq9gcy2pYdRfHY44W4RlRTnXuZd
+         tVOg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705458667; x=1706063467;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qOsZtK3oVYN2VorMLkNQ/SgGxv0pIUS90T6LHVIxPYQ=;
+        b=tQnsSu0gOBFGiJGov50ygk6JMQrvwPw4p/5+8qFTP5eHA9te+WXgfq5vfNfozjcjtz
+         nKJgp7yyS33hhdBiUWCGtlte/fxDnCZyB3p4LZkmNCxfk98pKKmwMNm2RJ6dE27l85H1
+         qtB5i6osNfSggzjaURaHYNsI2ocB93Sex12R5y+4yi1PjhqbHISqB3CYtRi15jnxgW9h
+         Zp8ni5p6AXmvaLG/AvJF9DeyRG77JH+e7/GlvvHsKvqHXort5bdqeGbwXA+hA/mDJMGI
+         /IqJPjaXg06seIKfdtrZWY6qGEq4fysGNPM8iBiM2w8EiIOxY6WvcfSK0OLVuDF5xvOG
+         uG8g==
+X-Gm-Message-State: AOJu0YyALfzQoZJQiJUNFmvrDLTj1YIR8SZ/2rvWLd2d1ISKCZRL220i
+	dCPGHPZpWTMsJVXH01K2+QQD9ryuaTpbYjtzJ6O7Sej+Cuw=
+X-Google-Smtp-Source: AGHT+IGR1DFIo/gFXGbwbwSusuE/hn3y6znHjeZCcdemFAruzGU6LkEJAoC0dPr+/6bLp9Zx4NV1ZQ==
+X-Received: by 2002:a05:6359:594:b0:176:2f2:1c5a with SMTP id ee20-20020a056359059400b0017602f21c5amr1336190rwb.30.1705458666974;
+        Tue, 16 Jan 2024 18:31:06 -0800 (PST)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id s123-20020a632c81000000b005ca5619a764sm10574950pgs.11.2024.01.16.18.31.05
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Tue, 16 Jan 2024 18:31:06 -0800 (PST)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <4F9ECC50-EE67-44D6-816D-81F6EB840A69@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_750805AA-7EA4-401C-8400-BECA3CEEE5B4";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha1;
-	protocol="application/pgp-signature"; boundary="PokFs8UU5Lo898VR"
-Content-Disposition: inline
-In-Reply-To: <20240116010642.218876-8-sashal@kernel.org>
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: Protecting lost+found from rmdir by directory owner?
+Date: Tue, 16 Jan 2024 19:31:03 -0700
+In-Reply-To: <42bc44533e997531baa79c73867a942504122886.camel@interlinx.bc.ca>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>
+To: "Brian J. Murrell" <brian@interlinx.bc.ca>
+References: <42bc44533e997531baa79c73867a942504122886.camel@interlinx.bc.ca>
+X-Mailer: Apple Mail (2.3273)
 
 
---PokFs8UU5Lo898VR
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+--Apple-Mail=_750805AA-7EA4-401C-8400-BECA3CEEE5B4
+Content-Transfer-Encoding: 7bit
+Content-Type: text/plain;
+	charset=us-ascii
 
-Hi!
->=20
-> [ Upstream commit e89fdcc425b6feea4dfb33877e9256757905d763 ]
->=20
-> dioread_nolock was originally disabled as a default option for bs < ps
-> scenarios due to a data corruption issue. Since then, we've had some
-> fixes in this area which address such issues. Enable dioread_nolock by
-> default and remove the experimental warning message for bs < ps path.
->=20
-> dioread for bs < ps has been tested on a 64k pagesize machine using:
->=20
-> kvm-xfstest -C 3 -g auto
->=20
-> with the following configs:
->=20
-> 64k adv bigalloc_4k bigalloc_64k data_journal encrypt
-> dioread_nolock dioread_nolock_4k ext3 ext3conv nojournal
->=20
-> And no new regressions were seen compared to baseline kernel.
+On Jan 16, 2024, at 6:26 AM, Brian J. Murrell <brian@interlinx.bc.ca> wrote:
+> 
+> Let's say I create a new ext4 filesystem for exclusive use by alice and
+> when I mount it, say, on /mnt/alice I set the permissions so that alice
+> can work in that directory:
+> 
+> # mkfs.ext4 /dev/foo
+> # mount /dev/foo /mnt/alice
+> # chown alice:alice /mnt/alice
+> # chmod 775 /mnt/alice
+> 
+> But now /mnt/alice/lost+found is at the mercy of alice since she has
+> write permission for /mnt/alice.
+> 
+> [How] can I protect /mnt/alice/lost+found from removal by alice?
 
-But no fixes, either, so not suitable for stable.
+You might be able to mark the directory with "chattr +a lost+found"
+(append only) so that new files can be written there but not deleted
+even with malice, except by the root user.  Not 100% sure that
 
-BR,
-								Pavel
+It would be useful to have a patch that allowed that directory to be
+renamed ".lost+found" so that it is not visible in normal "ls" by
+users, but still available for e2fsck to store files if needed, since
+it would be very unlikely to be deleted in the first place if hidden.
 
---=20
-DENX Software Engineering GmbH,        Managing Director: Erika Unter
-HRB 165235 Munich, Office: Kirchenstr.5, D-82194 Groebenzell, Germany
+I'd expect that it would be a few lines patch to e2fsck to check both
+names, and a new mke2fs option like "-E hidden_lost_found" and allow
+it to be renamed by "mv" on existing filesystems.
 
---PokFs8UU5Lo898VR
-Content-Type: application/pgp-signature; name="signature.asc"
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_750805AA-7EA4-401C-8400-BECA3CEEE5B4
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
 -----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
 
-iF0EABECAB0WIQRPfPO7r0eAhk010v0w5/Bqldv68gUCZabrcAAKCRAw5/Bqldv6
-8pEoAJ9B7sSIOwhORDquvlzFSPG1vIO9KQCfbSnHoQRHfgdwGANc61ccILgvHAw=
-=ZMOC
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmWnO+cACgkQcqXauRfM
+H+CXkA/9EVh+z5XCj7fythD1k9uyGNNAl1w4f3bHZ2antLfgglzLDtEJdqZ0FwxI
+uIY3XV8P+sLNC8oD+9mfndxJym/6frpQ3ulfy/I7Rl41K6cv9Qg3MUIQ9MepcN9G
+58ZpsN6qlVXBS4mFZkDNO5cKOU6qn8XDsOw/NnfQjBjCLfP3sGF4IKHiAzR9Nofk
+WGtpc9wpMGB3oRC2hraQpS40xsJq857Xm3skFNmHutz06rGwZys17nn1G7nPau1H
+o7pP3jBy56lBLw3vTR9lwzzQ7YPwFyOyVu4AtCzVmvNmIGdgLL7B1LcqCibT9RVy
+VbSEeE/f46Y6RtkPzF7TsSoggeuxuyffEyp8aOmGDw+yUk74g4azqm4PNZoFqZ24
+iJxobmUMaJe+mu45Abmj1+eSJXKgMEmvgNic8ZQcxKLLqwLtb/UCzK8pkDTT81eg
+g5lEF7SYULCR/3gPEV+8CaYpatls9gBiF4OJfawtzC8mKts4FbFFyjfZTbo3ACyE
+DV7+4aRHoX5ftLHWAy0zyIdEu69V+QCAqq2PTv0O+NYXLpoMpEuCoHup4ybJQFsH
+iTnSpnQrEVT0JN8Txp5vDxRW0twAzMiFTslX6rp+Gf4F380sEw3Da9D02LM7tbfa
+fpBvdbSfBzfo20T4vZkrsVc0yV5QQ61PdUupWqNd5M7Hj7wsR+0=
+=6oS8
 -----END PGP SIGNATURE-----
 
---PokFs8UU5Lo898VR--
+--Apple-Mail=_750805AA-7EA4-401C-8400-BECA3CEEE5B4--
 
