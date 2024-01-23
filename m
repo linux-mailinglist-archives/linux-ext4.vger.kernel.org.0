@@ -1,131 +1,167 @@
-Return-Path: <linux-ext4+bounces-864-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-865-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8990836344
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jan 2024 13:31:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A12FA837D89
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jan 2024 02:26:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27CC11C2358A
-	for <lists+linux-ext4@lfdr.de>; Mon, 22 Jan 2024 12:31:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6288AB30BAB
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jan 2024 01:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CD33C46C;
-	Mon, 22 Jan 2024 12:31:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 406AA1586E3;
+	Tue, 23 Jan 2024 00:28:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="eQHr8rK1"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 816933B194;
-	Mon, 22 Jan 2024 12:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7389A1586C0
+	for <linux-ext4@vger.kernel.org>; Tue, 23 Jan 2024 00:28:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1705926668; cv=none; b=MeWje550DJWHZuB5j27t6PE/Mxbh6/OuE8SVYp6NH1n2sGMLd0bWVUGpyrI4CosDZJtllYI9Fl6JrgJr3Jf+13KZbkEKf+3PxZo2eP89LULT3rSBzT/JvEvmIFL/XmznIvkv8DFy15OZPHCRFSsdguzp1A9Rv5cRdMpCSFpOkL4=
+	t=1705969735; cv=none; b=IWmWHzz0OnwLO5afnA37IoV9TkNAA+o7shm2AvBlrIYGXG5dIbFM5/ddjZfSH7u5NfK+7LqwQFiHlvpOT/NbfNbcZibfOdNoJV999VCJ9XDaojMvy44TJpYN2eVK/VtrmtPG+hWf0ZHYa3fLCqEsfkiN7ZUPQpfWdilEPz8mFW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1705926668; c=relaxed/simple;
-	bh=PzVDQgEDXAINlYBLlMfa+i8t8rPrBLpAvoIASPJEaJ0=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ONbNYTKlbN6Tv57i5WhPPSj8hlRo1VANe0bBe68eurwIzLFQV8zBZ97h9870Au34UiYrliCDKPuKo4UJbCArP8V+5+A3/2lDOrQw+Arrni5iS3NCIaOhev0xVecamaUkLZULiX2NTI5KvmPC+8X+MUZrPkrem1U+Km62gL/NstE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TJTwz0Vzmz1FJgF;
-	Mon, 22 Jan 2024 20:26:43 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 894181A0172;
-	Mon, 22 Jan 2024 20:31:02 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 22 Jan
- 2024 20:31:01 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
-	<libaokun1@huawei.com>, <stable@kernel.org>
-Subject: [PATCH] ext4: correct best extent lstart adjustment logic
-Date: Mon, 22 Jan 2024 20:33:32 +0800
-Message-ID: <20240122123332.555370-1-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1705969735; c=relaxed/simple;
+	bh=TZe3odnvBVyfJhPUF1EWalH3cmWYwjoOXmYkt8y83LM=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=m7RkofCUTH9OkadARRIYyH05TjBlOklnKCzfkEDtOAE0cksSSdUDMOTIYMDQH5XhzX8yslIY4devVJGpGqLoW/nJEmYXCBu6xpxt+lqbCUQq7cCjtUdNVEWZfrc3Eh8ETjsbE/v4+WvaLucvSVc5xguLVqVoIdkQdW8CkmoqU2g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=eQHr8rK1; arc=none smtp.client-ip=209.85.216.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-29065efa06fso1927266a91.1
+        for <linux-ext4@vger.kernel.org>; Mon, 22 Jan 2024 16:28:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1705969734; x=1706574534; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C4oSe2hXJ7pk/KBc8BZUNuxdPjm8v3u2X/zj6TSNySI=;
+        b=eQHr8rK1pXHDUT50RVrwiy+mFABk4BVUlZ8EGtAUzckPC8XjwoN3Y/YvOngdCTBAho
+         rdgcWm229QFuNWJ57i+i6dI7AVJLhEX/KS77ylf1sB+NuJd60QQuB2lgH9fHTIbPfluA
+         sJIq2IBhTOtgVt67ULQxSpbGAzIFfekBCxzBE=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1705969734; x=1706574534;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C4oSe2hXJ7pk/KBc8BZUNuxdPjm8v3u2X/zj6TSNySI=;
+        b=ECmVyGOxbvlysixF8V3t/3civOBM+NSK95u19HPBlLQTqUZ0+yqX4asqQ+5KflJVTn
+         BuNeglgPIsSn5bvFwyW+ITIbNe9XrOBeuOv5KQOYKr9aGsAIYF4uiRliSM6j+TCDDfXx
+         vI0lsVG4xKO1yj0MwfApXTcPfI+i0BXt5fkq5dQo3EHjF8h85Bx7rpekftcJryf+kTzz
+         qmBnPFpxh1r4h8QMyryYpbGGeaYHyxfL42FwTrRXXRizkUlUv4F0sHTp5ATj2G+j33rU
+         RML59mkeomLOOPYpk9FWWMc2B5RLI8XDzjMDTXBR1o1Kxv//7W0he45wss8mIc2mc3wv
+         AjZQ==
+X-Gm-Message-State: AOJu0YzYHb2xbyHM00oxsxIh6B9MpRNZ4DRZdIwrte94ABsVWEmNLE/y
+	eXvCosqsr2MPeke1alFt3CuQwo3qWiHiEx1fUb2dvPequz2l9uCDOqeyfyoKog==
+X-Google-Smtp-Source: AGHT+IHE5VXPJ/SZ+DavCtR+nc5HV020yIw7EPe5k+TCBXO0lsqqdgfChhmXqbcMCwKngkP/Y8KKVQ==
+X-Received: by 2002:a17:90b:890:b0:28d:f5db:70b8 with SMTP id bj16-20020a17090b089000b0028df5db70b8mr2628693pjb.37.1705969733837;
+        Mon, 22 Jan 2024 16:28:53 -0800 (PST)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id px7-20020a17090b270700b002905f7b522fsm6607168pjb.15.2024.01.22.16.28.37
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 22 Jan 2024 16:28:49 -0800 (PST)
+From: Kees Cook <keescook@chromium.org>
+To: linux-hardening@vger.kernel.org
+Cc: Kees Cook <keescook@chromium.org>,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 18/82] ext4: Refactor intentional wrap-around calculation
+Date: Mon, 22 Jan 2024 16:26:53 -0800
+Message-Id: <20240123002814.1396804-18-keescook@chromium.org>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240122235208.work.748-kees@kernel.org>
+References: <20240122235208.work.748-kees@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2310; i=keescook@chromium.org;
+ h=from:subject; bh=TZe3odnvBVyfJhPUF1EWalH3cmWYwjoOXmYkt8y83LM=;
+ b=owEBbQKS/ZANAwAKAYly9N/cbcAmAcsmYgBlrwgFt+QnG4/gVyM/p6dahmulSl2Pw5idqpssJ
+ WhpHokSfNyJAjMEAAEKAB0WIQSlw/aPIp3WD3I+bhOJcvTf3G3AJgUCZa8IBQAKCRCJcvTf3G3A
+ Jl0BD/9Pq5dTMm0CvjsiDWoQ1WYiyg9B+Wl+VgmLFVzKjTb9Vbh+kZ7941xqPmleNwKfc28+892
+ k4xn+mthv04qX2uimn/Qxjevj5zYOceZihc2UW0aNLwGjkCTcYf14TAqaqQEzY7CcT24cglyiO5
+ sAUegw6S1rR6HqbuscZpd/dXrpaO81EMLwSbRGZi3FqURQTL1lOYbAFnSbaeyjK1T+WvPo3Tvdi
+ bPw2D9CRzN8q7pCQ6GsS0KY5B/yrr2zfrDGPaJreRhHTFuSdAZSEkysMuZkh+09ROe0Ss9ZBn8p
+ hING4Os64RCt1A1dyf6aoekoS1gD7Bda/KFFuVORIFi+czT3KD7fxOgIP6bzVzJuvzyZr9Qvryg
+ U4SmUZ6o20SC8pHtGRXWjFaGRzD6X6vE+C4oyTPPSfSfQWpv2QtBL03gFWxw2HtV0DZ1GGQuq/1
+ DvxQN/zBq1TSF0FtacemCsLl0BgDUR/C17WpAzCJ9tGVne9mzmTk9BFdjDKogCgs3z5wmtoWu8j
+ kv4pRr+lwm8I1atVSuTFQmEAM5OAJQNbwSe9X9Nsk+2qe1BbHtdiWdWdLpQNwgtq8xk26tFWEnu
+ adPmFtAIUM4nZUezpakHIvAcpSJslW4W08o27WMIZYogw/W5ZfRKPfTZ8o+D1TiEUlqygb7gZOE swUqE8VtwkrZLTw==
+X-Developer-Key: i=keescook@chromium.org; a=openpgp; fpr=A5C3F68F229DD60F723E6E138972F4DFDC6DC026
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml500021.china.huawei.com (7.185.36.21)
 
-When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
-adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
-extent did not completely cover the original request after adjusting the
-best extent lstart in ext4_mb_new_inode_pa() as follows:
+In an effort to separate intentional arithmetic wrap-around from
+unexpected wrap-around, we need to refactor places that depend on this
+kind of math. One of the most common code patterns of this is:
 
-  original request: 2/10(8)
-  normalized request: 0/64(64)
-  best extent: 0/9(9)
+	VAR + value < VAR
 
-When we check if best ex can be kept at start of goal, ac_o_ex.fe_logical
-is 2 less than the adjusted best extent logical end 9, so we think the
-adjustment is done. But obviously 0/9(9) doesn't cover 2/10(8), so we
-should determine here if the original request logical end is less than or
-equal to the adjusted best extent logical end.
+Notably, this is considered "undefined behavior" for signed and pointer
+types, which the kernel works around by using the -fno-strict-overflow
+option in the build[1] (which used to just be -fwrapv). Regardless, we
+want to get the kernel source to the position where we can meaningfully
+instrument arithmetic wrap-around conditions and catch them when they
+are unexpected, regardless of whether they are signed[2], unsigned[3],
+or pointer[4] types.
 
-Moreover, the best extent len is not modified during the adjustment
-process, and it is already checked by the previous assertion, so replace
-the check for fe_len with a check for the best extent logical end.
+Refactor open-coded unsigned wrap-around addition test to use
+check_add_overflow(), retaining the result for later usage (which removes
+the redundant open-coded addition). This paves the way to enabling the
+wrap-around sanitizers in the future.
 
-Cc: stable@kernel.org
-Fixes: 93cdf49f6eca ("ext4: Fix best extent lstart adjustment logic in ext4_mb_new_inode_pa()")
-Signed-off-by: yangerkun <yangerkun@huawei.com>
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Link: https://git.kernel.org/linus/68df3755e383e6fecf2354a67b08f92f18536594 [1]
+Link: https://github.com/KSPP/linux/issues/26 [2]
+Link: https://github.com/KSPP/linux/issues/27 [3]
+Link: https://github.com/KSPP/linux/issues/344 [4]
+Cc: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
+Signed-off-by: Kees Cook <keescook@chromium.org>
 ---
- fs/ext4/mballoc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+ fs/ext4/extents.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index f44f668e407f..fa5977fe8d72 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -5146,6 +5146,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			.fe_len = ac->ac_orig_goal_len,
- 		};
- 		loff_t orig_goal_end = extent_logical_end(sbi, &ex);
-+		loff_t o_ex_end = extent_logical_end(sbi, &ac->ac_o_ex);
- 
- 		/* we can't allocate as much as normalizer wants.
- 		 * so, found space must get proper lstart
-@@ -5161,7 +5162,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		 * 1. Check if best ex can be kept at end of goal (before
- 		 *    cr_best_avail trimmed it) and still cover original start
- 		 * 2. Else, check if best ex can be kept at start of goal and
--		 *    still cover original start
-+		 *    still cover original end
- 		 * 3. Else, keep the best ex at start of original request.
- 		 */
- 		ex.fe_len = ac->ac_b_ex.fe_len;
-@@ -5171,7 +5172,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_g_ex.fe_logical;
--		if (ac->ac_o_ex.fe_logical < extent_logical_end(sbi, &ex))
-+		if (o_ex_end <= extent_logical_end(sbi, &ex))
- 			goto adjust_bex;
- 
- 		ex.fe_logical = ac->ac_o_ex.fe_logical;
-@@ -5179,7 +5180,7 @@ ext4_mb_new_inode_pa(struct ext4_allocation_context *ac)
- 		ac->ac_b_ex.fe_logical = ex.fe_logical;
- 
- 		BUG_ON(ac->ac_o_ex.fe_logical < ac->ac_b_ex.fe_logical);
--		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
-+		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
- 		BUG_ON(extent_logical_end(sbi, &ex) > orig_goal_end);
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 01299b55a567..aa30b2c75959 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -1920,6 +1920,7 @@ static unsigned int ext4_ext_check_overlap(struct ext4_sb_info *sbi,
+ 					   struct ext4_extent *newext,
+ 					   struct ext4_ext_path *path)
+ {
++	ext4_lblk_t sum;
+ 	ext4_lblk_t b1, b2;
+ 	unsigned int depth, len1;
+ 	unsigned int ret = 0;
+@@ -1943,14 +1944,14 @@ static unsigned int ext4_ext_check_overlap(struct ext4_sb_info *sbi,
  	}
  
+ 	/* check for wrap through zero on extent logical start block*/
+-	if (b1 + len1 < b1) {
++	if (check_add_overflow(b1, len1, &sum)) {
+ 		len1 = EXT_MAX_BLOCKS - b1;
+ 		newext->ee_len = cpu_to_le16(len1);
+ 		ret = 1;
+ 	}
+ 
+ 	/* check for overlap */
+-	if (b1 + len1 > b2) {
++	if (sum > b2) {
+ 		newext->ee_len = cpu_to_le16(b2 - b1);
+ 		ret = 1;
+ 	}
 -- 
-2.31.1
+2.34.1
 
 
