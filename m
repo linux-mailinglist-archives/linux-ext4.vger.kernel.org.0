@@ -1,101 +1,89 @@
-Return-Path: <linux-ext4+bounces-921-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-922-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 909E283D2FD
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Jan 2024 04:41:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 050CF83D637
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Jan 2024 10:26:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32961B26625
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Jan 2024 03:41:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C652B284AB
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Jan 2024 09:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18573AD5C;
-	Fri, 26 Jan 2024 03:41:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE60F200D2;
+	Fri, 26 Jan 2024 08:54:51 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 739558F6D
-	for <linux-ext4@vger.kernel.org>; Fri, 26 Jan 2024 03:41:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A44B020B14;
+	Fri, 26 Jan 2024 08:54:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706240473; cv=none; b=V6i8GwFaEZh7/b+4VusguMrNoTDZ/fjmdy/eg+yken3wJiU65KVp/nQscu8gzd88aWlSUKfVoQALDWbSNQNF7ZWyR49c/yDpb/4L46Mfxb8UyzxW0h7K7bxFFG+Hq9uCLn1lOsMCtqPPesCHHf8BJuaFwA/ef194nMigNA8GUFs=
+	t=1706259291; cv=none; b=oY3wRH+X76uazoxb3UpUfrCvd1zhghGd1d8DJP5WrImR/QKnXOxOI/GxEH4cJU72u4TRcdSD0JUkuHxIK5QOO/ru5DbXn1on3XXwjDubX9qlJYchRxE4YoIaylaVTkaM/lNbjSa3s+2jja03eqcSCSMb7Ui0k4VZ8BDRqu/b3oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706240473; c=relaxed/simple;
-	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=b1k8ChIQSVq8a3qTtsjwi3DQ0uEgVEtKYpb8eCqhxnXQ7QCEBdzEtIhl3KHghvPvcdTJKDz3ePz67HmfgsUgn4xLuuSjRK9rN/tf1Asz+Z8Sa9ntEriQZbOL+gDGhKung5q/i6VJYcUoXdxxl35EZcDuRZgiSkK0MPx5T714Now=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-361a954c3e6so529825ab.0
-        for <linux-ext4@vger.kernel.org>; Thu, 25 Jan 2024 19:41:12 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706240471; x=1706845271;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=LguU7PPwZFQKfeVodp7yp9aNP0X3ngbWBeoAxNyuSY/d+W7+ry9BDka7aauttwP7ZB
-         qoy/cqSviXxLv3lZQJXtUqkox8IyrJyDtJShCyrOMSGgz4601QN5cBDQghELZifwmsyB
-         YXljOpAEEoTUoZYtHgPkApVmyMFnrNYnzS2qgUcfVp8SIMsiMYe4wRjkaVgOCXkIStZH
-         SKYKkNB6gaPtoe7rTe12nU4GMK7Zw3Nk2H1Kj2101CKnMtmfKT8vPa90cr68FjsyY155
-         z9H6CXVvWDFGvbZqinx3ksnT4FYElWWQDsnbBPZZQ+1I9XP7u4eSw9LsZ78fBSLIHD59
-         D/vg==
-X-Gm-Message-State: AOJu0YwOhO9sqZVL1Uk3UM42SVh65Zksl/jJzhL1YcTczn/hW/qcOfTU
-	SOXocZzCR89AMt09c/mO/ejDN6SKpyiGjANY8dbFoZjVwtY4ssF78i/ErmWaOlLgl7d/KT+pcQZ
-	qIk9gvU8RToojf1E7BbiYpBJhJD7mTQTgJd6X7CsMD0JhGk/puFo5O4U=
-X-Google-Smtp-Source: AGHT+IFz0qxmvUVhvPOqgIrXUDDVpxna4jQPfuOBVEfPvyygebPqZl5fDHsA4+R5BZ5kDHAvmukq1PwEVID+8OKOegIa7MVTh2wE
+	s=arc-20240116; t=1706259291; c=relaxed/simple;
+	bh=UaRre/FakXrgK4o/iIKNgZyz3bmMRWSu1KsXcDAgIaE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=tzDInq0VQ3QtObFNMB57funLCEPIaL/rhLXtARaaWWYbdioeov2zdR2Er1wcKqrP4vj64ULbrlyVGgHlIxdNcZe5GZfLVFvt3jOcguiZninFXK4GJbiL0mxZmbiLnPczoQ5BhAEEZi83n6VV74r7t0vKA0A7cJq+RoZCrFZ11E4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4TLs0l2mzczvTs9;
+	Fri, 26 Jan 2024 16:53:11 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id ABC541404FC;
+	Fri, 26 Jan 2024 16:54:45 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
+ (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Fri, 26 Jan
+ 2024 16:54:45 +0800
+From: Baokun Li <libaokun1@huawei.com>
+To: <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<yukuai3@huawei.com>, <libaokun1@huawei.com>
+Subject: [PATCH 0/7] ext4: avoid sysfs variables overflow causing BUG_ON/SOOB
+Date: Fri, 26 Jan 2024 16:57:09 +0800
+Message-ID: <20240126085716.1363019-1-libaokun1@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:144b:b0:35f:a338:44ae with SMTP id
- p11-20020a056e02144b00b0035fa33844aemr106434ilo.3.1706240471688; Thu, 25 Jan
- 2024 19:41:11 -0800 (PST)
-Date: Thu, 25 Jan 2024 19:41:11 -0800
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000376be5060fd11135@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+Hello everyone,
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+This patchset is intended to avoid variables that can be modified via sysfs
+from overflowing when stored or used and thus causing various problems.
 
-#syz fix: exact-commit-title
+"kvm-xfstests -c ext4/all -g auto" has been executed with no new failures.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+Baokun Li (7):
+  ext4: avoid overflow when setting values via sysfs
+  ext4: refactor out ext4_generic_attr_store()
+  ext4: refactor out ext4_generic_attr_show()
+  ext4: add positive int attr pointer to avoid sysfs variables overflow
+  ext4: fix slab-out-of-bounds in
+    ext4_mb_find_good_group_avg_frag_lists()
+  ext4: set type of ac_groups_linear_remaining to __u32 to avoid
+    overflow
+  ext4: set the type of max_zeroout to unsigned int to avoid overflow
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+ fs/ext4/extents.c |   6 +-
+ fs/ext4/mballoc.c |   2 +
+ fs/ext4/mballoc.h |   2 +-
+ fs/ext4/sysfs.c   | 159 +++++++++++++++++++++++++---------------------
+ 4 files changed, 92 insertions(+), 77 deletions(-)
 
----
-[1] I expect the commit to be present in:
+-- 
+2.31.1
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
 
