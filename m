@@ -1,66 +1,70 @@
-Return-Path: <linux-ext4+bounces-1011-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1012-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ECA984149E
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 21:45:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A2EB58414DA
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 22:07:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2269FB2420A
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 20:45:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F9C428768F
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 21:07:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E3615A486;
-	Mon, 29 Jan 2024 20:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45736158D87;
+	Mon, 29 Jan 2024 21:06:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b="ZWoyjvOU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpout.efficios.com (smtpout.efficios.com [167.114.26.122])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30B5F15698F;
-	Mon, 29 Jan 2024 20:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741DA157E72;
+	Mon, 29 Jan 2024 21:06:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=167.114.26.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706561064; cv=none; b=mB0D5ErWv7hCzsWIQ2xIB2JwkC5492XoGf+rI+A9Zj2goYjKqR9mMRvOa21861ZN367Tacua5th8JcfvTgNoHdbdfiogOHojxmD7Qy4cat+RnELHxpxidmzu20AvrU8wGuxJBloPt3UR42tfObOkynsl1mRbAf6ISfPhxjH48v0=
+	t=1706562413; cv=none; b=YirjOv4koDJYCbaNhyahLl5OyNVwpE0JxG59e/nGE7NYIspQdxR5pPCMbGhf7BLpeEXxNSWgQ2uJ2SF4GvkrX3sq7s9fkaLl3XxToDEAz0Jrbau0Aquyrc2ulSPspWo4MKLC9rcqY//skr9db9ccrjIrgXhaJ8xSRAJypwW0t9A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706561064; c=relaxed/simple;
-	bh=S9Le+RDOZE+/jyLKuh6bypOJf7kdPy6re1UaYeEIlBU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ew6tIDYMTaZvNqlCqgKDEtsa3lvZYFCJdeKijNlegIHCJDtpl0Qzlk8P5St644RjropghmobDXjjYqHXq6Qv7frUHAFYepJHEVuVy8yNmMQZhTdj0e4yqidjc7LtYV9Ip+OiEgPYLZi/AneNHN2/hi1MUCDr5ja17GIaj9cRh0M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AD35221E90;
-	Mon, 29 Jan 2024 20:44:21 +0000 (UTC)
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 10E8012FF7;
-	Mon, 29 Jan 2024 20:44:20 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id GGCcLSQOuGX/DAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Mon, 29 Jan 2024 20:44:20 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: ebiggers@kernel.org,
-	viro@zeniv.linux.org.uk,
-	jaegeuk@kernel.org,
-	tytso@mit.edu
-Cc: amir73il@gmail.com,
+	s=arc-20240116; t=1706562413; c=relaxed/simple;
+	bh=huTRzi08F0C7MipcdwWe4Ussu/u99HDe6usjofLClk8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=pdH8ZxBjF459CKT+NL7owV6R+YPjRHYFgdT8WO2mtfqEfDccKE36H44qqCmfxDtCyCmZA+Y5UjJ2FL1hsm9yKYG+IVnnSPtZkv3Exlb0L/xEzIfxfHihj+xNUgc1YqDbNYc9hGvIJiG8GBezDnHSNIG3zkB5IdgvhOa0mmccfBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com; spf=pass smtp.mailfrom=efficios.com; dkim=pass (2048-bit key) header.d=efficios.com header.i=@efficios.com header.b=ZWoyjvOU; arc=none smtp.client-ip=167.114.26.122
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=efficios.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=efficios.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=efficios.com;
+	s=smtpout1; t=1706562410;
+	bh=huTRzi08F0C7MipcdwWe4Ussu/u99HDe6usjofLClk8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=ZWoyjvOUAKRorOkBf1VRCuUe3muZT9Jazkxz9NgPX6vA5tHzdv9fZAMvOwYQUQFS/
+	 ykyGlVWSZVdQ0AmTeMSrDjJkEHWdN1z2Rkg+mdr/4zNt3mUu8G59Y1UA3dQ176ZmpR
+	 XNnmvuPAdpd+gxgklREaTW4KM1V+5TYa9+K78amLQzWaxBqWfXKQpPUZi200cIw2Ld
+	 Z3msxyPrO6jmtz8APzkLg3rQ9tiibW5MVa2+hL9owNVSrTbGjPvM2VkNg7OI3Jte1b
+	 FXwljb10nWNnW/XdQvOwCcgvrIynWSjuNs5CGDe0uL9fagDqdafBZW/LVhSU2RA7Ha
+	 tXwBGOdG23nsA==
+Received: from thinkos.internal.efficios.com (192-222-143-198.qc.cable.ebox.net [192.222.143.198])
+	by smtpout.efficios.com (Postfix) with ESMTPSA id 4TP17t2bfzzVJ6;
+	Mon, 29 Jan 2024 16:06:50 -0500 (EST)
+From: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+To: Dan Williams <dan.j.williams@intel.com>,
+	Vishal Verma <vishal.l.verma@intel.com>,
+	Dave Jiang <dave.jiang@intel.com>
+Cc: linux-kernel@vger.kernel.org,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Jan Kara <jack@suse.com>,
 	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	Gabriel Krisman Bertazi <krisman@suse.de>
-Subject: [PATCH v5 12/12] libfs: Drop generic_set_encrypted_ci_d_ops
-Date: Mon, 29 Jan 2024 17:43:30 -0300
-Message-ID: <20240129204330.32346-13-krisman@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240129204330.32346-1-krisman@suse.de>
-References: <20240129204330.32346-1-krisman@suse.de>
+	Andrew Morton <akpm@linux-foundation.org>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	linux-mm@kvack.org,
+	linux-arch@vger.kernel.org,
+	Matthew Wilcox <willy@infradead.org>,
+	nvdimm@lists.linux.dev,
+	linux-cxl@vger.kernel.org
+Subject: [RFC PATCH 4/7] ext2: Use dax_is_supported()
+Date: Mon, 29 Jan 2024 16:06:28 -0500
+Message-Id: <20240129210631.193493-5-mathieu.desnoyers@efficios.com>
+X-Mailer: git-send-email 2.39.2
+In-Reply-To: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
+References: <20240129210631.193493-1-mathieu.desnoyers@efficios.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,84 +72,58 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: AD35221E90
-X-Spam-Flag: NO
 
-No filesystems depend on it anymore, and it is generally a bad idea.
-Since all dentries should have the same set of dentry operations in
-case-insensitive filesystems, it should be propagated through ->s_d_op.
+Use dax_is_supported() to validate whether the architecture has
+virtually aliased caches at mount time.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
+This is relevant for architectures which require a dynamic check
+to validate whether they have virtually aliased data caches
+(ARCH_HAS_CACHE_ALIASING_DYNAMIC=y).
+
+Fixes: d92576f1167c ("dax: does not work correctly with virtual aliasing caches")
+Signed-off-by: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>
+Cc: Jan Kara <jack@suse.com>
+Cc: linux-ext4@vger.kernel.org
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mm@kvack.org
+Cc: linux-arch@vger.kernel.org
+Cc: Dan Williams <dan.j.williams@intel.com>
+Cc: Vishal Verma <vishal.l.verma@intel.com>
+Cc: Dave Jiang <dave.jiang@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>
+Cc: nvdimm@lists.linux.dev
+Cc: linux-cxl@vger.kernel.org
 ---
- fs/libfs.c         | 34 ----------------------------------
- include/linux/fs.h |  1 -
- 2 files changed, 35 deletions(-)
+ fs/ext2/super.c | 14 +++++++-------
+ 1 file changed, 7 insertions(+), 7 deletions(-)
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 0aa388ee82ff..35124987f162 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -1788,40 +1788,6 @@ static const struct dentry_operations generic_encrypted_dentry_ops = {
- };
- #endif
- 
--/**
-- * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
-- * @dentry:	dentry to set ops on
-- *
-- * Casefolded directories need d_hash and d_compare set, so that the dentries
-- * contained in them are handled case-insensitively.  Note that these operations
-- * are needed on the parent directory rather than on the dentries in it, and
-- * while the casefolding flag can be toggled on and off on an empty directory,
-- * dentry_operations can't be changed later.  As a result, if the filesystem has
-- * casefolding support enabled at all, we have to give all dentries the
-- * casefolding operations even if their inode doesn't have the casefolding flag
-- * currently (and thus the casefolding ops would be no-ops for now).
-- *
-- * Encryption works differently in that the only dentry operation it needs is
-- * d_revalidate, which it only needs on dentries that have the no-key name flag.
-- * The no-key flag can't be set "later", so we don't have to worry about that.
-- */
--void generic_set_encrypted_ci_d_ops(struct dentry *dentry)
--{
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (dentry->d_sb->s_encoding) {
--		d_set_d_op(dentry, &generic_ci_dentry_ops);
--		return;
--	}
+diff --git a/fs/ext2/super.c b/fs/ext2/super.c
+index 01f9addc8b1f..0398e7a90eb6 100644
+--- a/fs/ext2/super.c
++++ b/fs/ext2/super.c
+@@ -585,13 +585,13 @@ static int parse_options(char *options, struct super_block *sb,
+ 			set_opt(opts->s_mount_opt, XIP);
+ 			fallthrough;
+ 		case Opt_dax:
+-#ifdef CONFIG_FS_DAX
+-			ext2_msg(sb, KERN_WARNING,
+-		"DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
+-			set_opt(opts->s_mount_opt, DAX);
+-#else
+-			ext2_msg(sb, KERN_INFO, "dax option not supported");
 -#endif
--#ifdef CONFIG_FS_ENCRYPTION
--	if (dentry->d_flags & DCACHE_NOKEY_NAME) {
--		d_set_d_op(dentry, &generic_encrypted_dentry_ops);
--		return;
--	}
--#endif
--}
--EXPORT_SYMBOL(generic_set_encrypted_ci_d_ops);
--
- /**
-  * generic_set_sb_d_ops - helper for choosing the set of
-  * filesystem-wide dentry operations for the enabled features
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c985d9392b61..c0cfc53f95bb 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3201,7 +3201,6 @@ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
++			if (dax_is_supported()) {
++				ext2_msg(sb, KERN_WARNING,
++					 "DAX enabled. Warning: EXPERIMENTAL, use at your own risk");
++				set_opt(opts->s_mount_opt, DAX);
++			} else {
++				ext2_msg(sb, KERN_INFO, "dax option not supported");
++			}
+ 			break;
  
- extern int generic_check_addressable(unsigned, u64);
- 
--extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
- extern void generic_set_sb_d_ops(struct super_block *sb);
- 
- static inline bool sb_has_encoding(const struct super_block *sb)
+ #if defined(CONFIG_QUOTA)
 -- 
-2.43.0
+2.39.2
 
 
