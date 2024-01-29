@@ -1,181 +1,227 @@
-Return-Path: <linux-ext4+bounces-993-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-994-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EAED3840102
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 10:11:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D52A8403A7
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 12:17:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2E13281440
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 09:11:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1669E281EAF
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 11:17:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0434754F94;
-	Mon, 29 Jan 2024 09:11:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E5BC5B5C5;
+	Mon, 29 Jan 2024 11:17:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HZ6pE+Rt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="h09jdlhK";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="BC2+x4sm";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YZlwMf79"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xZZzXE9F";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TPfLB/H6";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="PoVBNPnA";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7Mj6ZCOB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83B6E54F8C;
-	Mon, 29 Jan 2024 09:11:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D135B5B0;
+	Mon, 29 Jan 2024 11:17:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706519493; cv=none; b=AdMsm2fXLWajQqt9dm8E4nbf9hj7jmNjai8xOwpNZ7m+wQ8RayMWpjDDIkmDy2nsmxu3pWS1ZAH6o30vX2LhH+8pDIFAsEuGBKBYUVAEo102Lby71nvFVpwtzA2eJSCSIbfOY3/02iAx/zG2+mpb0vCgQPB/T1v2NfUR9Vw/q1k=
+	t=1706527038; cv=none; b=afxnNy067UacS3it6WWg+Cbig9YEvt+Hd03wzeXE7U1A+bm1KqsMCD0Dr+ChjagvaoCYkmMxKRPYlz/WN147U39C/zqDEHNrl4yhJsfjQ3N1v7tnzIAz3q4Mt4r5sZBbq2Cz3Xa7xgmtvCtXsaHuO4PLz6mj9sWj9/PcpsLQSms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706519493; c=relaxed/simple;
-	bh=SkU+4puXs9RlrYoDZRgwJtwVqUJoQoVPHNtzgNj9Kvo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EHgyQcd34rC1vuEKE8jvmo7+w6wJq85CP4I0xvt9FB5kWwOdcBtTAyjcBwDIVUEiEYhALiNxyqSaLv4q6Ugr/T6lw3U75BNz93Vyfk3OGm3DED8Poh4CU5HcFMl8sOQVguIF6YDRIV2RltGRim7cVmz4RHbtSwMpDqZAoqv66/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HZ6pE+Rt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=h09jdlhK; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=BC2+x4sm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YZlwMf79; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	s=arc-20240116; t=1706527038; c=relaxed/simple;
+	bh=TLgpO6bVDu9ZlVqcFU4FafX5DCbdfjLdFbKgel+FKYU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=jPJPsb3IXkb7FcHUfARyHv4ICXckI84dK1CDX0y0vx5iT+i7ujj19LQBbKsH/UtVTIUjb8C3Wl1UMFp6XwoEg8m0HLHKvYCQXEN04lYJegvWt+Y4r75XbaBXdfrZ95RpgXkdJXE8AXjH9NoQq9h+YYz5QG6e5MbpS5422chJiC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xZZzXE9F; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TPfLB/H6; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=PoVBNPnA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7Mj6ZCOB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B8E5D222B3;
-	Mon, 29 Jan 2024 09:11:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706519486; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E4B821FCF1;
+	Mon, 29 Jan 2024 11:17:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706527032; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A8GvLPqduJNitmI5aRLyKcNYHGU+7vaJTqPL4qbrFKw=;
-	b=HZ6pE+RteqaZgQZg1veKrD0/wQGt8n5hwiJVscdTGrfs/isLk06BSRTYKv3pYNjUQd697j
-	tv4t7QfDZceBEWvzhfqLFIfqk31dIYYCmS6MdHVkh2sy70qTZQUBLhA9jj8V62zPzpsTip
-	ofzdSAO1N3hpnW3h0ZKJjzESyT0fK7c=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706519486;
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=xZZzXE9FPxklhaBAQaNEXhq57XfZ/zvUUnLnHBy5k5aH48GMgnBndK4GcCt8x8JvUc0b0C
+	ErCL4/QC1X1sbaeJ1linBFlqssKhuDtXid4UHjUYW1IWOaJvL4Yu/Qi4l3Q7tHEi6RNpp2
+	1bAOxzOc/wuLbHtdRpfgQ98ldPCEpHk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706527032;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A8GvLPqduJNitmI5aRLyKcNYHGU+7vaJTqPL4qbrFKw=;
-	b=h09jdlhKn6aA99PiGp1XOL096Rn2AVbgoIKPjACmWHBjOhG/dqMAfEFJ16eVTf8TdxxhDa
-	aMc+cFk5RRbyWXDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706519484; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=TPfLB/H6ODAApTu47ef39If6dMD1R6esFRLjFzVSvK78IISfh8/IRBIloLOGHnBHtmfJmj
+	42lokxVYcC4MplAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706527031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A8GvLPqduJNitmI5aRLyKcNYHGU+7vaJTqPL4qbrFKw=;
-	b=BC2+x4smJMaL3TEBpzZrqnRysAAMkY7buB7eJGoMXdZYfroUpXLpMauysBqbaHhGAfMyop
-	fBfqkiCrPPxsIyBt5kmotUkBwDHHIAmPePesrCvvKlmzkM5iox0RMAppZP6d8ElG+WnK/4
-	8GnU77korjeWVLP0GdGCYequu40Zw0o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706519484;
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=PoVBNPnAFcEjNxVTjiLj0YQz0Xeis1CLqSXpsycLRHOfmtlDoZACul/XUYpx51bAkXCOon
+	PTScF7ShVV/VHYyGeMDrTSBZEvglLlomoX6CGmXspZ5/8aah56c50QE3ciLXz9Svi4E/Zy
+	D+pBcB33tGQ2ZPEnfatC+uBaqZaN1c4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706527031;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=A8GvLPqduJNitmI5aRLyKcNYHGU+7vaJTqPL4qbrFKw=;
-	b=YZlwMf79pBmijH0L3mj2uH5SRu4Q61fZIS2sdwcsNnOypSGJqHkFe2/nApxOSPTYFTD6sn
-	B/p3EoRaK6/xGyBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	bh=ucSmWZC5i1uAfzHbYBObRHzIlIbwMfDip4/fjgCGR6E=;
+	b=7Mj6ZCOBJ1dAnAIkM332zqR6kRe4Fy/5r8V/Jl1lSHcrOLWGRQuLv3yjs0M13EjwRDlkYh
+	OsxUgAxJ+Fxkq8BQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id A960D13911;
-	Mon, 29 Jan 2024 09:11:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id s9dOKbxrt2WUPwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 29 Jan 2024 09:11:24 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 57483A0807; Mon, 29 Jan 2024 10:11:24 +0100 (CET)
-Date: Mon, 29 Jan 2024 10:11:24 +0100
-From: Jan Kara <jack@suse.cz>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Roman Smirnov <r.smirnov@omp.ru>, stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, lvc-project@linuxtesting.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>
-Subject: Re: [PATCH 5.10/5.15 v2 0/1 RFC] mm/truncate: fix WARNING in
- ext4_set_page_dirty()
-Message-ID: <20240129091124.vbyohvklcfkrpbyp@quack3>
-References: <20240125130947.600632-1-r.smirnov@omp.ru>
- <ZbJrAvCIufx1K2PU@casper.infradead.org>
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6A1D613647;
+	Mon, 29 Jan 2024 11:17:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XmwxFjeJt2VnCQAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Mon, 29 Jan 2024 11:17:11 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id 86d7b1fb;
+	Mon, 29 Jan 2024 11:17:04 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Daniel Dawson <danielcdawson@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,  Andreas Dilger
+ <adilger.kernel@dilger.ca>,  linux-ext4@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [inline_data] ext4: Stale flags before sync when convert to
+ non-inline
+In-Reply-To: <a25e5ee6-70c2-421f-92c2-407b43a7c61e@gmail.com> (Daniel Dawson's
+	message of "Sun, 28 Jan 2024 04:06:38 -0800")
+References: <5189fe60-c3e3-4bc6-89d4-1033cf4337c3@gmail.com>
+	<358aaf68-0618-41e6-9adf-04e211eb690e@gmail.com>
+	<87jznyr6xd.fsf@suse.de>
+	<a25e5ee6-70c2-421f-92c2-407b43a7c61e@gmail.com>
+Date: Mon, 29 Jan 2024 11:17:04 +0000
+Message-ID: <87frygqthr.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbJrAvCIufx1K2PU@casper.infradead.org>
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=BC2+x4sm;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=YZlwMf79
-X-Spamd-Result: default: False [-2.81 / 50.00];
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[16];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCPT_COUNT_FIVE(0.00)[5];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.998];
+	 FREEMAIL_TO(0.00)[gmail.com];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
+	 RCVD_TLS_LAST(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[];
 	 BAYES_HAM(-3.00)[100.00%]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: B8E5D222B3
-X-Spam-Level: 
-X-Spam-Score: -2.81
 X-Spam-Flag: NO
 
-On Thu 25-01-24 14:06:58, Matthew Wilcox wrote:
-> On Thu, Jan 25, 2024 at 01:09:46PM +0000, Roman Smirnov wrote:
-> > Syzkaller reports warning in ext4_set_page_dirty() in 5.10 and 5.15
-> > stable releases. It happens because invalidate_inode_page() frees pages
-> > that are needed for the system. To fix this we need to add additional
-> > checks to the function. page_mapped() checks if a page exists in the 
-> > page tables, but this is not enough. The page can be used in other places:
-> > https://elixir.bootlin.com/linux/v6.8-rc1/source/include/linux/page_ref.h#L71
-> > 
-> > Kernel outputs an error line related to direct I/O:
-> > https://syzkaller.appspot.com/text?tag=CrashLog&x=14ab52dac80000
-> 
-> OK, this is making a lot more sense.
-> 
-> The invalidate_inode_page() path (after the page_mapped check) calls
-> try_to_release_page() which strips the buffers from the page.
-> __remove_mapping() tries to freeze the page and presuambly fails.
+Daniel Dawson <danielcdawson@gmail.com> writes:
 
-Yep, likely.
+> I didn't see your message until now. Sorry.
+>
+> On 1/24/24 9:13 AM, Luis Henriques wrote:
+>> Bellow, I'm inlining a patch that started as debug patch that I've used =
+to
+>> try to understand what was going on.  It seems to workaround that bug, b=
+ut
+>> I know it's not a real fix -- I don't yet understand what's going on.
+>
+> Thanks for this. I'm not sure if you meant to say you think it works arou=
+nd the
+> present issue. I just tested it, and it does not. In case you missed the =
+start
 
-> ext4 is checking there are still buffer heads attached to the page.
-> I'm not sure why it's doing that; it's legitimate to strip the
-> bufferheads from a page and then reattach them later (if they're
-> attached to a dirty page, they are created dirty).
+I was referring to the bugzilla bug [1] I've been looking into recently.
+My patch was a debug patch for that bug, but it definitely does not fix
+the issue you're reporting.  Sorry for mixing up everything and confusing
+everyone ;-)
 
-Well, we really need to track dirtiness on per fs-block basis in ext4
-(which makes a difference when blocksize < page size). For example for
-delayed block allocation we reserve exactly as many blocks as we need
-(which need not be all the blocks in the page e.g. when writing just one
-block in the middle of a large hole). So when all buffers would be marked
-as dirty we would overrun our reservation. Hence at the moment of dirtying
-we really need buffers to be attached to the page and stay there until the
-page is written back.
- 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D200681
+
+> of the thread, here is the test I gave for triggering the issue:
+>
+> $ rm -f test-file; dd if=3D/dev/zero of=3Dtest-file bs=3D64 count=3D3 sta=
+tus=3Dnone;
+> lsattr test-file
+>
+> Instead of writing the file all at once, it splits it into 3 writes, wher=
+e the
+> first is small enough to make the file inline, and then it becomes
+> non-inline. Ideally, the output should be
+>
+> --------------e------- test-file
+>
+> but delayed allocation means it instead shows
+>
+> ------------------N--- test-file
+>
+> until sync. I also gave this code for testing SEEK_HOLE:
+>
+> https://gist.github.com/ddawson/22cfd4cac32916f6f1dcc86f90eed21a
+>
+>> Regarding your specific usecase, I can reproduce it and, unfortunately, I
+>> don't thing Ted's suggestion will fix it as I don't even see
+>> ext4_iomap_begin_report() being executed at all.
+>
+> To be clear, that function is called in a few specific circumstances, suc=
+h as
+> when lseek() is called with SEEK_HOLE or SEEK_DATA, or with FIEMAP. When I
+> traced the kernel myself, I did see it being executed from the lseek() ca=
+ll. The
+> changes are to address the file not yet being converted from inline, wher=
+e the
+> contents are still written where the map would otherwise be. If you treat=
+ it as
+> the map, you get nonsense. Something else needs to be done.
+>
+> I'm not clear on whether his proposed changes would then allow an applica=
+tion to
+> function properly under such a condition, but it should at least *not* gi=
+ve
+> ENOENT.
+>
+> After testing what I think are the changes he proposed, I find it doesn't
+> work. If I remove the "&& iomap->type =3D=3D IOMAP_HOLE", lseek() no long=
+er gives an
+> error, but instead returns 0, which I'm pretty sure won't work for the af=
+fected
+> use case. Either way, I'm not sure I interpreted his description of the c=
+hanges
+> correctly.
+
+Sure, I can understand under which circumstances ext4_iomap_begin_report()
+can be executed.  What I meant was that, for your very simple test case
+(using 'dd' and 'lsattr'), this function will not be executed and thus the
+suggested fix will still show the 'N' in the file attributes.
+
+Anyway, thanks a lot for the extra information your providing here.  I'll
+try to find some time in the next few days to keep debugging the issue and
+hopefully get some more useful info (and, who knows! a patch).
+
+Cheers,
+--=20
+Lu=C3=ADs
 
