@@ -1,186 +1,201 @@
-Return-Path: <linux-ext4+bounces-998-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-999-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18EC284138D
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 20:34:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C9CE841477
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 21:43:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2C2A28A9FF
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 19:34:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 284071F22449
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 20:43:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 300295644E;
-	Mon, 29 Jan 2024 19:34:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B73C1534EB;
+	Mon, 29 Jan 2024 20:43:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Akdljbtn";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SRLQhXt3";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="WkNFisM6";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="t5FAcg/7"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Y13LX74e";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JjqX9IRl";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Y13LX74e";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="JjqX9IRl"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE84948790;
-	Mon, 29 Jan 2024 19:34:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D98773F9F3;
+	Mon, 29 Jan 2024 20:43:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706556855; cv=none; b=JRfxduaWuJrE8IAwFuj4x+9Ah5V3MWgcOnEBt2THY9oTXGVFB6Jq5F47S3LRe2/qsBM65dN1l/uMkXlxP7VbV4xqG+jztlTyjoOBuhwpHEPHbAHW8FsoATg68T/iD0FHCHmEPSp/06t/SaUvzDpRFd8a3kcFi9vvCqcO0TFQoiY=
+	t=1706561018; cv=none; b=ufJmZsCAFfb0wkQg2MlnbTc7kVgrqY3t166UZkUzUqGGWfwSfDAwSEo50UAyfu0B6WaErX7RP13NcDfc4ATjDdSLAVPInYhJDOHcdOC2urwWJtx9wBNHBVlzQ4nJUfLE7Um9y4l40qPFn6brqPX84TrqK8ygaqU179bEVEnpCCo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706556855; c=relaxed/simple;
-	bh=uHM5m2K+Q/d8fvb+2LX/cQgLqj6Atsg102NmIArIBUQ=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=g/8YqpcjlrCaypZVLaC1ghDowCk3Pc4t9tmKevXJU+4S3DBo/BqHASVoeHLXpmqv1OPhAO16eQrR3FHJJlGbyKHqUXdO10qC+uZa/sYdG9rj4gRzPzLh7gaDQNTMDO+nuh5qz7OE6zN+nE6BQ71jKIjFWS8dVxqKuDUNehWDy88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Akdljbtn; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SRLQhXt3; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=WkNFisM6; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=t5FAcg/7; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1706561018; c=relaxed/simple;
+	bh=zWnTQls7zJksGdbaIzsnftEf+GfNWBHBMg8G8QqUrOE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=q4Hebqv+PhhoAq80GSt941XGjiVJNJR2wKKf2xeyIybMUzGjMgzJVj5faqIDMIt49xfoD4iV0hWvpJEBNjvZ1zFIc38cb8kt7VNNHY+2+UNnIQUbF2OF04xZiMHkWWAVfEilOxvz0nyxTNRxa9agb+MNgFAujzQzyezcyufkymo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Y13LX74e; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JjqX9IRl; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Y13LX74e; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=JjqX9IRl; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id DB74A1F804;
-	Mon, 29 Jan 2024 19:34:10 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 02B9621E90;
+	Mon, 29 Jan 2024 20:43:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706556851; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OKQR5gl8Z8oP7RS5Lte3WVwl5Sgn5t9EAu+p+g9JCHs=;
-	b=Akdljbtn+F93q9XccTDO0Lr/Xh7tqJkwWJDtW0bqAGII9RD9cQA0gKip5uOQ9NG9p9VgXa
-	6EzIRQ9nUwsAWKs0K/CYZQRU6Mye6EY5ZERlaegAYcm3noPDsDRIlUfX+uYwzjspMJhtL4
-	UAtLQz/pROzwSPbEbQkSlVKq5evXzUs=
+	t=1706561015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gafjaukDasr5oQuNWIkTl8VbHZftkVo7vNgh9ZWycDc=;
+	b=Y13LX74e6Iz11+VN5UxxZlMdkJ11bbWANbBANCg5zX3m9OJDPXXOmKBL2A2QCz/iX1tpi+
+	YrBSuL32IUAW0Ur8mcCFsvZIStwK8p8nHMCITudkbOgykzCraNwyHhSm8vwloD7dz4Ko/i
+	kD4o4kYMe2Tgw6V2pvEJc6tBraAJtZ8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706556851;
+	s=susede2_ed25519; t=1706561015;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OKQR5gl8Z8oP7RS5Lte3WVwl5Sgn5t9EAu+p+g9JCHs=;
-	b=SRLQhXt36qU0Qn/7dGzH033vFIufR8Dc08GWj2lS8xYmSkhF2//42gBAFjOKMLSl09HovF
-	Wy7SE0jAQEEJo+DA==
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gafjaukDasr5oQuNWIkTl8VbHZftkVo7vNgh9ZWycDc=;
+	b=JjqX9IRlapCI+n7hKlhomBoPixESwOWCP9ECYF+pjnOo66jIzgQii+7HZdrL735VLpQs9Y
+	YWXlPdScEox3ZlBQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1706556850; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OKQR5gl8Z8oP7RS5Lte3WVwl5Sgn5t9EAu+p+g9JCHs=;
-	b=WkNFisM6pCijBZtZpRAOSWgcOdAoa3Awt9MJVTg4BTCcNZAMy7fhuBBM9GBKseoeXH50Yn
-	FixiX75q/F10zpdnkx/YvAjLr/T8IoND0S3PiAUFwillO81LQDNffKr9HZ7Y5juIA70AL4
-	VkItiClDIPcynZKxhRbmNuzLQZNRw2Q=
+	t=1706561015; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gafjaukDasr5oQuNWIkTl8VbHZftkVo7vNgh9ZWycDc=;
+	b=Y13LX74e6Iz11+VN5UxxZlMdkJ11bbWANbBANCg5zX3m9OJDPXXOmKBL2A2QCz/iX1tpi+
+	YrBSuL32IUAW0Ur8mcCFsvZIStwK8p8nHMCITudkbOgykzCraNwyHhSm8vwloD7dz4Ko/i
+	kD4o4kYMe2Tgw6V2pvEJc6tBraAJtZ8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1706556850;
+	s=susede2_ed25519; t=1706561015;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OKQR5gl8Z8oP7RS5Lte3WVwl5Sgn5t9EAu+p+g9JCHs=;
-	b=t5FAcg/7BbqBPNoSmmVOUL1IJTyZv6Nb1gDjGcM7hds4ZFAjRIBroTsdu5VPHY3QOXDFl9
-	YizM3mCMpbFicmCA==
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=gafjaukDasr5oQuNWIkTl8VbHZftkVo7vNgh9ZWycDc=;
+	b=JjqX9IRlapCI+n7hKlhomBoPixESwOWCP9ECYF+pjnOo66jIzgQii+7HZdrL735VLpQs9Y
+	YWXlPdScEox3ZlBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3DC6B13647;
-	Mon, 29 Jan 2024 19:34:09 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7E51012FF7;
+	Mon, 29 Jan 2024 20:43:34 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id FcSFOLH9t2W4fQAAD6G6ig
-	(envelope-from <krisman@suse.de>); Mon, 29 Jan 2024 19:34:09 +0000
+	id YoUnEfYNuGW5DAAAD6G6ig
+	(envelope-from <krisman@suse.de>); Mon, 29 Jan 2024 20:43:34 +0000
 From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: viro@zeniv.linux.org.uk,  jaegeuk@kernel.org,  tytso@mit.edu,
-  linux-ext4@vger.kernel.org,  linux-f2fs-devel@lists.sourceforge.net,
-  linux-fsdevel@vger.kernel.org,  amir73il@gmail.com
-Subject: Re: [PATCH v3 04/10] fscrypt: Drop d_revalidate once the key is added
-In-Reply-To: <20240127071742.GE11935@sol.localdomain> (Eric Biggers's message
-	of "Fri, 26 Jan 2024 23:17:42 -0800")
-Organization: SUSE
-References: <20240119184742.31088-1-krisman@suse.de>
-	<20240119184742.31088-5-krisman@suse.de>
-	<20240125031251.GC52073@sol.localdomain>
-	<875xzhxizb.fsf@mailhost.krisman.be>
-	<20240127071742.GE11935@sol.localdomain>
-Date: Mon, 29 Jan 2024 16:34:07 -0300
-Message-ID: <87zfwo2ats.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+To: ebiggers@kernel.org,
+	viro@zeniv.linux.org.uk,
+	jaegeuk@kernel.org,
+	tytso@mit.edu
+Cc: amir73il@gmail.com,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	Gabriel Krisman Bertazi <krisman@suse.de>
+Subject: [PATCH v5 00/12] Set casefold/fscrypt dentry operations through sb->s_d_op
+Date: Mon, 29 Jan 2024 17:43:18 -0300
+Message-ID: <20240129204330.32346-1-krisman@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out2.suse.de;
+Content-Transfer-Encoding: 8bit
+Authentication-Results: smtp-out1.suse.de;
 	none
 X-Spam-Level: 
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
+X-Spam-Score: 0.70
+X-Spamd-Result: default: False [0.70 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 FROM_HAS_DN(0.00)[];
 	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
 	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 HAS_ORG_HEADER(0.00)[];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-0.997];
-	 RCPT_COUNT_SEVEN(0.00)[8];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 MID_CONTAINS_FROM(1.00)[];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 FREEMAIL_CC(0.00)[zeniv.linux.org.uk,kernel.org,mit.edu,vger.kernel.org,lists.sourceforge.net,gmail.com];
+	 FREEMAIL_CC(0.00)[gmail.com,vger.kernel.org,lists.sourceforge.net,suse.de];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[34.53%]
+	 BAYES_HAM(-3.00)[100.00%]
 X-Spam-Flag: NO
 
-Eric Biggers <ebiggers@kernel.org> writes:
+Hi,
 
-> On Thu, Jan 25, 2024 at 05:20:56PM -0300, Gabriel Krisman Bertazi wrote:
->> Eric Biggers <ebiggers@kernel.org> writes:
->> 
->> > On Fri, Jan 19, 2024 at 03:47:36PM -0300, Gabriel Krisman Bertazi wrote:
->> >> /*
->> >>  * When d_splice_alias() moves a directory's no-key alias to its plaintext alias
->> >>  * as a result of the encryption key being added, DCACHE_NOKEY_NAME must be
->> >>  * cleared.  Note that we don't have to support arbitrary moves of this flag
->> >>  * because fscrypt doesn't allow no-key names to be the source or target of a
->> >>  * rename().
->> >>  */
->> >>  static inline void fscrypt_handle_d_move(struct dentry *dentry)
->> >>  {
->> >>  	dentry->d_flags &= ~DCACHE_NOKEY_NAME;
->> >> +
->> >> +	/*
->> >> +	 * Save the d_revalidate call cost during VFS operations.  We
->> >> +	 * can do it because, when the key is available, the dentry
->> >> +	 * can't go stale and the key won't go away without eviction.
->> >> +	 */
->> >> +	if (dentry->d_op && dentry->d_op->d_revalidate == fscrypt_d_revalidate)
->> >> +		dentry->d_flags &= ~DCACHE_OP_REVALIDATE;
->> >>  }
->> >
->> > Is there any way to optimize this further for the case where fscrypt is not
->> > being used?  This is called unconditionally from d_move().  I've generally been
->> > trying to avoid things like this where the fscrypt support slows things down for
->> > everyone even when they're not using the feature.
->> 
->> The problem would be figuring out whether the filesystem has fscrypt
->> enabled.  I think we can rely on sb->s_cop always being set:
->> 
->> if (sb->s_cop)
->>    fscrypt_handle_d_move(dentry);
->> 
->> What do you think?
->
-> That's better, I just wonder if there's an even better way.  Do you need to do
-> this for dentries that don't have DCACHE_NOKEY_NAME set?  If not, it would be
-> more efficient to test for DCACHE_NOKEY_NAME before clearing the flags.
+Sorry for the quick respin. The only difference from v4 is that we
+change the way we check for relevant dentries during a d_move, as
+suggested by Eric.
 
-I like that.  We don't need it for dentries without DCACHE_NOKEY_NAME,
-because those dentries have the d_revalidate disabled at lookup-time.
+The v5 of this patchset addresses the issues Eric pointed out in the
+previous version.  The patch merging the fscrypt lookup helpers was
+completely rewritten to avoid the race condition; We also now return
+immediately from __fscrypt_handle_d_move; Finally, the overlayfs patch
+message was improved.  Further details can be found on the changelog of
+each patch.
 
-I raced my v4 with your comment, but I'll spin a v5 folding in this
-suggestion shortly.
+As usual, this survived fstests on ext4 and f2fs.
+
+---
+original cover letter:
+
+When case-insensitive and fscrypt were adapted to work together, we moved the
+code that sets the dentry operations for case-insensitive dentries(d_hash and
+d_compare) to happen from a helper inside ->lookup.  This is because fscrypt
+wants to set d_revalidate only on some dentries, so it does it only for them in
+d_revalidate.
+
+But, case-insensitive hooks are actually set on all dentries in the filesystem,
+so the natural place to do it is through s_d_op and let d_alloc handle it [1].
+In addition, doing it inside the ->lookup is a problem for case-insensitive
+dentries that are not created through ->lookup, like those coming
+open-by-fhandle[2], which will not see the required d_ops.
+
+This patchset therefore reverts to using sb->s_d_op to set the dentry operations
+for case-insensitive filesystems.  In order to set case-insensitive hooks early
+and not require every dentry to have d_revalidate in case-insensitive
+filesystems, it introduces a patch suggested by Al Viro to disable d_revalidate
+on some dentries on the fly.
+
+It survives fstests encrypt and quick groups without regressions.  Based on
+v6.7-rc1.
+
+[1] https://lore.kernel.org/linux-fsdevel/20231123195327.GP38156@ZenIV/
+[2] https://lore.kernel.org/linux-fsdevel/20231123171255.GN38156@ZenIV/
+
+Gabriel Krisman Bertazi (12):
+  ovl: Reject mounting over case-insensitive directories
+  fscrypt: Factor out a helper to configure the lookup dentry
+  fscrypt: Call fscrypt_prepare_lookup_dentry on unencrypted dentries
+  fscrypt: Drop d_revalidate for valid dentries during lookup
+  fscrypt: Drop d_revalidate once the key is added
+  fscrypt: Ignore plaintext dentries during d_move
+  libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
+  libfs: Add helper to choose dentry operations at mount-time
+  ext4: Configure dentry operations at dentry-creation time
+  f2fs: Configure dentry operations at dentry-creation time
+  ubifs: Configure dentry operations at dentry-creation time
+  libfs: Drop generic_set_encrypted_ci_d_ops
+
+ fs/crypto/hooks.c       | 28 +++-----------
+ fs/ext4/namei.c         |  1 -
+ fs/ext4/super.c         |  1 +
+ fs/f2fs/namei.c         |  1 -
+ fs/f2fs/super.c         |  1 +
+ fs/libfs.c              | 62 +++++++++---------------------
+ fs/overlayfs/params.c   | 14 +++++--
+ fs/ubifs/dir.c          |  1 -
+ fs/ubifs/super.c        |  1 +
+ include/linux/fs.h      | 11 +++++-
+ include/linux/fscrypt.h | 83 ++++++++++++++++++++++++++++++-----------
+ 11 files changed, 108 insertions(+), 96 deletions(-)
 
 -- 
-Gabriel Krisman Bertazi
+2.43.0
+
 
