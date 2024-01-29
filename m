@@ -1,348 +1,152 @@
-Return-Path: <linux-ext4+bounces-991-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-992-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29DFB83F87E
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Jan 2024 18:15:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1398E83FD2E
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 05:21:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D537F283385
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Jan 2024 17:15:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C36A6284CCF
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 04:21:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDC72D61B;
-	Sun, 28 Jan 2024 17:15:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB2852030A;
+	Mon, 29 Jan 2024 04:21:14 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B552C68B
-	for <linux-ext4@vger.kernel.org>; Sun, 28 Jan 2024 17:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8942314AAA;
+	Mon, 29 Jan 2024 04:21:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706462136; cv=none; b=ThgWEm59dTSLRzmD7J0U9aB4rAOGhvlXxTvI7HgwT8hiHubaeuvyIXP3akiTFNoM7HrnwyOu3SNu/mLKOq9WPCiyFjvJLPvzjfqJV3mnNi+2NFGo4oyq0/RV9NpzOaDiq3P0dQkLnwag77JcyRTOnnsH0pyRMF/h66iCORmKTgs=
+	t=1706502074; cv=none; b=O21hvGkGh1AC0260mqyRrWj7y0+UFS2YTL1xAZ+lX/6BxJD5iJ2/QpApfQR29oOzC27ms7T9VHKCk2wjfD8tKvwEmKlNyRTBqcF8VkzfrAogX+KkipSqrJBhuJ3gCwjP6nKN0Bx5Sjf2jAsRgZ8s1HbWT4C5TNF0kdNz1vnfHpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706462136; c=relaxed/simple;
-	bh=+zrBjFindhrESH6cAboGHlXNnse2qCiGYhqwEb++LfE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ORGyzO8AOna/M7aIUZJ/u4oEurxe1jbh9tJMreZuLgb69BjmhYZp05WVE1VCxEhzHyaD7QrS1kI8m5KZxBOAa5Pu1s9TU9BDMxiGrRIq/al0ud3VU/igXVCAztEFnXRDRecenPGZTUq61iuvTwHHFKwuyuQx7+cNqtkfQ8698Ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3637f816dbcso960265ab.1
-        for <linux-ext4@vger.kernel.org>; Sun, 28 Jan 2024 09:15:33 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706462133; x=1707066933;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=c+H37VIGcLKynHUks8NE6DOEj+DkzkDkIEx9kZaSeIE=;
-        b=LimsJOiDtE2jSLN3a6bZL1uOFb3b0tPM6DXbiE7wd7Y1T1ywkJDExN9ZjB3I7wGoUn
-         hNGYrgX4ZaFlBG2lSyoK7YxewmA2VBgAJBdHGPY0vl2jJI+JOL1HQPHN48Sa9X3miG5f
-         zS+m3Rdr8CBzNz9ffOjSsCKcJ90d2Jsbf/dzb79QML6Bq65Rvo5YS9sdXtXIGejdJAGS
-         Wwtqy6DZFVZ3xefFJr2pBm1+iIHry7jLNN3RitpgB3tV56aGxjSxAHJSTyjhcRUNF/3o
-         S4yu7T7JJ2ui5VWnMdn8RQiufQ+gYYJVQeokIACEKjvn5bCNquZe1i23Bc5sCfbwnHVe
-         GopA==
-X-Gm-Message-State: AOJu0YzCQEQ0jfVxhTbgL/FxpLwHb4gxf+70rCfPKZTZ83Bq8RQtLG/J
-	bX89dztz6PmX+7lchTTzXznwYhmnX86WvUQAG7CbosKrlcxMA5WHwAUUzzWU700uDU0tierRJGS
-	Kcf7hagY0apSQiFvpfup+1mH3nWAxh7SL/yw+4FY9q4YoEO/v60AzZ4o=
-X-Google-Smtp-Source: AGHT+IEBFkHGM+HzFZBmrXopcOpu4jtcg689Mg+VSwWrRJcAYgfksgEGx9R6qLV1QGK9HFhUyWSD+0YGycrAellb0IOWv81DibwO
+	s=arc-20240116; t=1706502074; c=relaxed/simple;
+	bh=p9WW5tw9S4aGXrjQWbwDneSN3suFm+njtOg9nHFdRRg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VkFQriJ8vTZDCUn5pPIfGKeDFJpmi8iUvxnlPHKY+ptx0TblM4sek4qQyFo9kvw1Nwk/az7EQ2cGMp8RmmHvWYFooKLOwusi8gABeXiLMmD28UZ8AZw6TYPFzNnukMNE/JTy5HrFz19HpjHJdfaL2Sy/sZVjXIPrsXeuxnbFplE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
+X-AuditID: a67dfc5b-d6dff70000001748-0b-65b727aa4de6
+Date: Mon, 29 Jan 2024 13:20:52 +0900
+From: Byungchul Park <byungchul@sk.com>
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
+	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+	will@kernel.org, rostedt@goodmis.org, joel@joelfernandes.org,
+	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
+	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+	hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
+	jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
+	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
+	ngupta@vflare.org, linux-block@vger.kernel.org,
+	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
+	viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
+	dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+	dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+	melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com,
+	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
+	longman@redhat.com, hdanton@sina.com, her0gyugyu@gmail.com
+Subject: Re: [PATCH v11 14/26] locking/lockdep, cpu/hotplus: Use a weaker
+ annotation in AP thread
+Message-ID: <20240129042052.GA64402@system.software.com>
+References: <20240124115938.80132-1-byungchul@sk.com>
+ <20240124115938.80132-15-byungchul@sk.com>
+ <87il3ggfz9.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:b45:b0:362:b1a9:4aef with SMTP id
- f5-20020a056e020b4500b00362b1a94aefmr418263ilu.5.1706462133341; Sun, 28 Jan
- 2024 09:15:33 -0800 (PST)
-Date: Sun, 28 Jan 2024 09:15:33 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000047d819061004ad6c@google.com>
-Subject: [syzbot] [ext4?] [nilfs?] INFO: task hung in migrate_pages_batch
-From: syzbot <syzbot+ee2ae68da3b22d04cd8d@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, akpm@linux-foundation.org, 
-	konishi.ryusuke@gmail.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, linux-nilfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu, willy@infradead.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87il3ggfz9.ffs@tglx>
+User-Agent: Mutt/1.9.4 (2018-02-28)
+X-Brightmail-Tracker: H4sIAAAAAAAAA03SX0xTVxzAcc+5f9vQ5a5DPZOXpcbgMPh/22/L5pa9eJOFzW08aTZt5EYa
+	StWLouhcYFZT/k6IUK3oSjGlgW6OwhwT0QKBUv9Ah9UhAgo2bo1UMmabVbAbF7LMl5NPzvmd
+	b87D4SntLLOMN5j2SbJJb9SxalodSapLb0z9WVrbMr4SKsvWQvSphYbaC24WAj80IXC3FmEI
+	92yG32KTCGZuDlBgrQ4gqBsfpaC1dwxBh+sbFm6FXoJgdIoFf3UpC0frL7Dw6+NZDCM1VRia
+	PBlw/YQDgzf+Ow3WMAtnrEfx3PIHhrizkQNn4QqYcNk4mB1fB/6xOwx0DK+C0+dGWLjc4aeh
+	t20Cw61LtSyMuf9h4HpvHw2BynIGvn/iYOFxzEmBMzrFwaDXjuFH81zo+F8JBnzlXgzHzzdj
+	CN5tR3DF8gCDx32Hhe7oJIYWTzUFzxp6EExURDg4Vhbn4ExRBYLSYzU0DDz3MWAeeQNm/q5l
+	P3hH7J6cokRzywGxI2anxWsOIv5iG+VE85VhTrR79ostrjSx/nIYi3XTUUb0NBazome6ihNL
+	IkEsPunv58S+UzO0GApa8ZaUrep3sySjIV+S12zaoc4ebTuF99QkHYzcDqFCdFVVgnieCBtJ
+	xPlxCVLN09vvQoppYQUZae2cNyukkqGhOKU4WVhJmgeH500JfjUJOD5U/Iqwk9x92MkoSY0A
+	xOrLVKgVDpHWksXKhEZ4mfhPh+iFm2lkKBHGygglpJCGBK9sqwQdqbKYWcWLheXEe9GHFx7W
+	riIDz0wLfpV0uoboE0iwvVC1vVC1/V+1I6oRaQ2m/Fy9wbhxdXaByXBw9c7duR409yedR2a3
+	taHpwOddSOCRLknDF12UtIw+P68gtwsRntIla+Kv/yRpNVn6gkOSvHu7vN8o5XWhFJ7WLdWs
+	jx3I0gq79PukHEnaI8n/nWJetawQHb6d3rPtfqL+0aL0tyvvGbvf6jp5OHeD6VPHDcvZDHZ9
+	7CvQrwrLDU1b5GtrzpJ7qVtd34W2lz088tqfJ89TXyY+SmTuHXMXZ/LqtD5fOZ/y9dPS9h0V
+	S5ds+uwTO725UkwO5uieNz/a0GB5kOH9dtKUfen+8pzim4NfvBnf+7686L0+HZ2XrV+XRsl5
+	+n8BEUqc/48DAAA=
+X-Brightmail-Tracker: H4sIAAAAAAAAA02Sa0yTZxTH8zzvtQ0lrxXYo/ipTkG8YaLLibhF/aDv3OZGojFRozT6Co2A
+	rkUUExIYlSCoERKoVsZqWQqpKFAK4gWsEKnVCAgMCgGErskkXOrUEisXpS6Lfjn55Zz/73z6
+	85RyhFnKa1LTJG2qOlnFymn57rictdao21LsG4sMCi/Egv9tHg2l1VUsdN66gaDKno1h7NFO
+	6JueQDDzrIMCQ3EnguujQxTY24YRNFX+xkK3NxR6/D4WXMUFLOSUV7PwfHwWw2BJEYYbtp/g
+	6WUzBkfgHxoMYyxcM+TghfESQ8Bi5cCStQI8lUYOZkc3gGu4l4HW310MNA2shqtlgyzcb3LR
+	0NbowdB9t5SF4aoPDDxte0xDZ+FFBm5OmVkYn7ZQYPH7OOhymDDU6Be+5b6ZZ8B50YEh989a
+	DD399xA0541gsFX1stDqn8BQZyum4H3FIwSeS5McnLsQ4OBa9iUEBedKaOiYczKgH9wEM+9K
+	2a1xYuuEjxL1dafFpmkTLT4xE/GOcYgT9c0DnGiynRLrKmPE8vtjWLz+2s+INut5VrS9LuLE
+	/MkeLE61t3Pi4ysztOjtMeBflu2XbzkqJWvSJe367xLkSUONV/DJkpAzk395URZ6IMtHMp4I
+	G4mjvRIFmRZWkEH7w0/MClHE7Q5QQQ4Toklt18AnpgSXnHSatwd5sXCE9P/9kMlHPK8QgBic
+	e4KoFM4Se354MKEQFhHXVS/9nxlD3PNjOBihhEhSMc8H1zJBRYry9GyQw4XlxNHgxJeRwviF
+	bfzCNn62TYiyojBNanqKWpO8aZ3ueFJGqubMuiMnUmxooXeWzNnCRvS2e2cLEnikClHw2Q2S
+	klGn6zJSWhDhKVWYIrCqXlIqjqozzkraE4e1p5IlXQuK5GnVV4pd+6QEpZCoTpOOS9JJSfv/
+	FfOypVloZKo36vupkPXfeGIjVptDk0aWGH/enrtSxTpNZfrMgh3NOS1r+m/nJe4vT9y1dWOM
+	sa/NF+F17/3aExh99e2vpbM/krK4FxQ3PncgdN/40Olw/qD935cHK87X/LDZF71neeSh+giT
+	fnrzIqPc3Vf3R/zetDlr5q2MgdoXo8fiNQnblqhoXZJ6Qwyl1ak/AnGPtF9zAwAA
+X-CFilter-Loop: Reflected
 
-Hello,
+On Fri, Jan 26, 2024 at 06:30:02PM +0100, Thomas Gleixner wrote:
+> On Wed, Jan 24 2024 at 20:59, Byungchul Park wrote:
+> 
+> Why is lockdep in the subsystem prefix here? You are changing the CPU
+> hotplug (not hotplus) code, right?
 
-syzbot found the following issue on:
+I will fix the typo ;( Thank you.
 
-HEAD commit:    0802e17d9aca Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=10832107e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=f9616b7e180577ba
-dashboard link: https://syzkaller.appspot.com/bug?extid=ee2ae68da3b22d04cd8d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=163043bfe80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1306c1e3e80000
+I referred to the commit cb92173d1f047. I will remove the prefix if the
+way is more desirable.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/e84e45f27a78/disk-0802e17d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a8b16d2fc3b1/vmlinux-0802e17d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4c7ac36b3de1/Image-0802e17d.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/e31cee0eb927/mount_10.gz
+> > cb92173d1f0 ("locking/lockdep, cpu/hotplug: Annotate AP thread") was
+> > introduced to make lockdep_assert_cpus_held() work in AP thread.
+> >
+> > However, the annotation is too strong for that purpose. We don't have to
+> > use more than try lock annotation for that.
+> 
+> This lacks a proper explanation why this is too strong.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ee2ae68da3b22d04cd8d@syzkaller.appspotmail.com
+rwsem_acquire() implies:
 
-INFO: task syz-executor439:7446 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor439 state:D stack:0     pid:7446  tgid:7429  ppid:6155   flags:0x0000000d
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1354/0x2360 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6778
- io_schedule+0x8c/0x12c kernel/sched/core.c:8998
- folio_wait_bit_common+0x65c/0xb90 mm/filemap.c:1273
- folio_wait_bit+0x30/0x40 mm/filemap.c:1412
- folio_wait_writeback+0x14c/0x3bc mm/page-writeback.c:3065
- migrate_folio_unmap mm/migrate.c:1191 [inline]
- migrate_pages_batch+0xc1c/0x25b0 mm/migrate.c:1680
- migrate_pages_sync mm/migrate.c:1873 [inline]
- migrate_pages+0x1bf8/0x3114 mm/migrate.c:1955
- do_mbind mm/mempolicy.c:1344 [inline]
- kernel_mbind mm/mempolicy.c:1486 [inline]
- __do_sys_mbind mm/mempolicy.c:1560 [inline]
- __se_sys_mbind mm/mempolicy.c:1556 [inline]
- __arm64_sys_mbind+0x1410/0x18e8 mm/mempolicy.c:1556
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task segctord:7440 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:segctord        state:D stack:0     pid:7440  tgid:7440  ppid:2      flags:0x00000008
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1354/0x2360 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6778
- io_schedule+0x8c/0x12c kernel/sched/core.c:8998
- folio_wait_bit_common+0x65c/0xb90 mm/filemap.c:1273
- __folio_lock+0x2c/0x3c mm/filemap.c:1611
- folio_lock include/linux/pagemap.h:1031 [inline]
- nilfs_lookup_dirty_data_buffers+0x2b0/0x7e8 fs/nilfs2/segment.c:727
- nilfs_segctor_scan_file+0x1e4/0xcdc fs/nilfs2/segment.c:1084
- nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1206 [inline]
- nilfs_segctor_collect fs/nilfs2/segment.c:1533 [inline]
- nilfs_segctor_do_construct+0x16ec/0x6560 fs/nilfs2/segment.c:2081
- nilfs_segctor_construct+0x110/0x768 fs/nilfs2/segment.c:2415
- nilfs_segctor_thread_construct fs/nilfs2/segment.c:2523 [inline]
- nilfs_segctor_thread+0x3d4/0xd74 fs/nilfs2/segment.c:2606
- kthread+0x288/0x310 kernel/kthread.c:388
- ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
-INFO: task syz-executor439:7442 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor439 state:D stack:0     pid:7442  tgid:7441  ppid:6156   flags:0x0000000d
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1354/0x2360 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6778
- wb_wait_for_completion+0x154/0x29c fs/fs-writeback.c:192
- sync_inodes_sb+0x220/0x944 fs/fs-writeback.c:2758
- sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
- iterate_supers+0xd4/0x188 fs/super.c:971
- ksys_sync+0xb4/0x1cc fs/sync.c:102
- __arm64_sys_sync+0x14/0x24 fs/sync.c:113
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor439:7445 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor439 state:D stack:0     pid:7445  tgid:7444  ppid:6160   flags:0x0000000d
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1354/0x2360 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6778
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
- rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
- __down_write_common kernel/locking/rwsem.c:1306 [inline]
- __down_write kernel/locking/rwsem.c:1315 [inline]
- down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
- bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
- sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
- iterate_supers+0xd4/0x188 fs/super.c:971
- ksys_sync+0xb4/0x1cc fs/sync.c:102
- __arm64_sys_sync+0x14/0x24 fs/sync.c:113
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor439:7450 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor439 state:D stack:0     pid:7450  tgid:7448  ppid:6153   flags:0x0000000d
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1354/0x2360 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6778
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
- rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
- __down_write_common kernel/locking/rwsem.c:1306 [inline]
- __down_write kernel/locking/rwsem.c:1315 [inline]
- down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
- bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
- sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
- iterate_supers+0xd4/0x188 fs/super.c:971
- ksys_sync+0xb4/0x1cc fs/sync.c:102
- __arm64_sys_sync+0x14/0x24 fs/sync.c:113
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor439:7451 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor439 state:D stack:0     pid:7451  tgid:7449  ppid:6154   flags:0x0000000d
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1354/0x2360 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6778
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
- rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
- __down_write_common kernel/locking/rwsem.c:1306 [inline]
- __down_write kernel/locking/rwsem.c:1315 [inline]
- down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
- bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
- sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
- iterate_supers+0xd4/0x188 fs/super.c:971
- ksys_sync+0xb4/0x1cc fs/sync.c:102
- __arm64_sys_sync+0x14/0x24 fs/sync.c:113
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
-INFO: task syz-executor439:7460 blocked for more than 143 seconds.
-      Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor439 state:D stack:0     pid:7460  tgid:7456  ppid:6161   flags:0x0000000d
-Call trace:
- __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
- context_switch kernel/sched/core.c:5376 [inline]
- __schedule+0x1354/0x2360 kernel/sched/core.c:6688
- __schedule_loop kernel/sched/core.c:6763 [inline]
- schedule+0xb8/0x19c kernel/sched/core.c:6778
- schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
- rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
- __down_write_common kernel/locking/rwsem.c:1306 [inline]
- __down_write kernel/locking/rwsem.c:1315 [inline]
- down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
- bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
- sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
- iterate_supers+0xd4/0x188 fs/super.c:971
- ksys_sync+0xb4/0x1cc fs/sync.c:102
- __arm64_sys_sync+0x14/0x24 fs/sync.c:113
- __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
- el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+   1. might be a waiter on contention of the lock.
+   2. enter to the critical section of the lock.
 
-Showing all locks held in the system:
-1 lock held by khungtaskd/29:
- #0: ffff80008e6c48c0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:300
-2 locks held by kworker/u4:3/41:
- #0: ffff0000c1c3a138 ((wq_completion)writeback){+.+.}-{0:0}, at: process_one_work+0x560/0x1204 kernel/workqueue.c:2600
- #1: ffff8000943f7c20 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0}, at: process_one_work+0x5a0/0x1204 kernel/workqueue.c:2602
-2 locks held by getty/5863:
- #0: ffff0000d255f0a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
- #1: ffff800094e702f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x41c/0x1228 drivers/tty/n_tty.c:2201
-1 lock held by segctord/7440:
- #0: ffff0000c7ade2a0 (&nilfs->ns_segctor_sem){++++}-{3:3}, at: nilfs_transaction_lock+0x178/0x33c fs/nilfs2/segment.c:357
-2 locks held by syz-executor439/7442:
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_lock+0x160/0x328 fs/super.c:117
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
-2 locks held by syz-executor439/7445:
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_lock+0x160/0x328 fs/super.c:117
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
-2 locks held by syz-executor439/7450:
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_lock+0x160/0x328 fs/super.c:117
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
-2 locks held by syz-executor439/7451:
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_lock+0x160/0x328 fs/super.c:117
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
-2 locks held by syz-executor439/7460:
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_lock fs/super.c:58 [inline]
- #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_lock+0x160/0x328 fs/super.c:117
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
- #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
+All we need in here is to act 2, not 1. That's why I suggested trylock
+version of annotation for that purpose.
 
-=============================================
+Now that dept partially replies on lockdep annotaions for the waiters
+and events, dept is interpeting rwsem_acquire() as a potential waiter
+and reports a deadlock by the wait.
 
+Of course, the first priority should be not to change the current
+behavior. I think the change from non-trylock to trylock for the
+annotation won't. Or am I missing something?
 
+	Byungchul
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> > Furthermore, now that Dept was introduced, false positive alarms was
+> > reported by that. Replaced it with try lock annotation.
+> 
+> I still have zero idea what this is about.
+> 
+> Thanks,
+> 
+>         tglx
 
