@@ -1,232 +1,420 @@
-Return-Path: <linux-ext4+bounces-996-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-997-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0954C840ADB
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 17:10:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBFF8410C4
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 18:32:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6579B28B6E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 16:10:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFA5A1F21844
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jan 2024 17:32:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5634F155A45;
-	Mon, 29 Jan 2024 16:09:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22A3076C9F;
+	Mon, 29 Jan 2024 17:31:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="XEmM3qYl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pHOAXzVZ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="v0bghz1e";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="o2TK9+Jj"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Zz75F49i"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lf1-f44.google.com (mail-lf1-f44.google.com [209.85.167.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD764155A28;
-	Mon, 29 Jan 2024 16:09:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A8F376C63;
+	Mon, 29 Jan 2024 17:31:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706544586; cv=none; b=ZQWSodWlVuwPIjs1DnpOoDuKdALpB09Y7bgGwhqpCEt5ErGb+eWL4u85ooZhIuImqDJMPIBXDrJ1vD9kfxIQp/vJP4Kj2aoRmo7jYlzV9K35ivJ7uzUzMuRy1qfq28iocVsoiRY07h0sxsz0PWEKRGsg95DpqBbFKFykdXSX1Sw=
+	t=1706549507; cv=none; b=jOSPGbCev5C1BdIB/vpGwLNzTrDSG6Ah2LsTLy+HBoFiSvPqaSpOmkNzrDWO3cy+c2szPGrRuAtOG/cfryAYyPsEUiM3OxRP2XqIPdZ5/0anq+DXoRqL704tFJAi/RPnMkJg8LP+mfe+BtdW4CNC+hflvYJjBpFq6cO2X+1RwAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706544586; c=relaxed/simple;
-	bh=hNsaj1rxxwQWYa7Z7f8gZ5X4GBVhrlEGD+oqwl6NJL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NDDnbf61n0w46pMCWsNAhngSgrKuqoxhJtEEZXsS1hfL1dQlNrNZgOehLZsGP5NBc1Xytr0TnGYFV+XhsSnh8FmtoFTfx8LxAfFPpLaAtlwadR4ubQQLHXWEDVr3oyrWzVcNxaYTLg7Lj3nlx/HoGm96YyuoGkcKfWULgTHYgJg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=XEmM3qYl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pHOAXzVZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=v0bghz1e; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=o2TK9+Jj; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BD34C1F7F6;
-	Mon, 29 Jan 2024 16:09:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706544582; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=XEmM3qYlI0CUrEqb7kPUhszOWOQHrlokbHhrZc7EGwa2SHsGXXDHs28Y1liMhb8eVSRDeO
-	zatQeIr5WQa7C018hiHg56nH3gGKBWdULRUkIytPR2X8MllN8+cuqIC1jlmM9H7jAE4AEK
-	FizcKVhqgW1iD6E/ABYBy/eaXsx6HxA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706544582;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=pHOAXzVZkyeIJmcfgNypcReo3Jf9iwdmiAJjbf9PZXcOsFH1rsl1yy9JI5Ch2qME7PBVfo
-	x7CM5qd5SElWPxDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706544580; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=v0bghz1eqSg+/3eBpgiT5psyrda9f5aC+lV5JzdkYb2pQcpf8whF4MwtOFF1+nwpPoZfYI
-	KbB9mB8y4ZcLBV2pgYTRKbwoZe9O2ilikNY2Mtihm1Zz592TvhQ+xEEVq0S1ExdH7wUPkL
-	uuMBhbM3mblZ9tOrhFRxTnLP+JkzkKU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706544580;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0q2MLUrv1k7d9D5+/BdCoPmlbiZZ17Ok8bpHpkSmRSY=;
-	b=o2TK9+JjZ+NMF9RV1bTujh4tyCF2Ql59qLB7eN/Mzp3OOKiLYgY59GiPARiAgNiFdm1hIV
-	MtBKvHGUbHtJZeBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id ACF4D132FA;
-	Mon, 29 Jan 2024 16:09:40 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id v5ItKsTNt2V/JAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 29 Jan 2024 16:09:40 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1B926A0807; Mon, 29 Jan 2024 17:09:39 +0100 (CET)
-Date: Mon, 29 Jan 2024 17:09:39 +0100
-From: Jan Kara <jack@suse.cz>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, Roman Smirnov <r.smirnov@omp.ru>,
-	stable@vger.kernel.org,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Alexey Khoroshilov <khoroshilov@ispras.ru>,
-	Sergey Shtylyov <s.shtylyov@omp.ru>,
-	Karina Yankevich <k.yankevich@omp.ru>, lvc-project@linuxtesting.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.com>
-Subject: Re: [PATCH 5.10/5.15 v2 0/1 RFC] mm/truncate: fix WARNING in
- ext4_set_page_dirty()
-Message-ID: <20240129160939.jgrhzrh5l2paezvp@quack3>
-References: <20240125130947.600632-1-r.smirnov@omp.ru>
- <ZbJrAvCIufx1K2PU@casper.infradead.org>
- <20240129091124.vbyohvklcfkrpbyp@quack3>
- <Zbe5NBKrugBpRpM-@casper.infradead.org>
+	s=arc-20240116; t=1706549507; c=relaxed/simple;
+	bh=yihK/WiheHr+M7FeWjmo/5MSPccdhJfgnWNCvCFcUaY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=UsrHvF68cdUeVEMKGjtFOpDthIs92bVhbvLX9LOo7nitUKOuD8lTuNsKO9ijT3DtT/5Ql3zBkpQpZEZFNQmhWS6OcnRS4lHjCh1GC7XECRBbUDFfwKZhzTPvarCczmEjW13f9sauLU1YDqSaEcRO9YThLHidyI1yvBYL+0jAJFg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Zz75F49i; arc=none smtp.client-ip=209.85.167.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f44.google.com with SMTP id 2adb3069b0e04-510f37d673aso1978748e87.0;
+        Mon, 29 Jan 2024 09:31:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1706549503; x=1707154303; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Do+30ZjldJkOOFALkF49apSqQIhe35ps7eq5uqUhCqQ=;
+        b=Zz75F49i75aTX5ChQK2XJGPVKK7q25hQkYkX07ToOxPXk0t+p+1kk+GEanMWF5zxdb
+         BZhfUKJBvWJFLlLmwHiMvRw4NkQKkRg9AEIkvukuzWx+1Lzrdr9YyTmh2F6WEgzyoruN
+         xj1eaSRT3EiYS9uz88QNZ3FQq1BFot7dO6j1tO5ZJOWM0EfywpC1gFvjS9AHFRWRVVUF
+         OgOkwlD4oy7oIOjDz4g7hLbke0bFDeJFNhc8exzMJfNXk0DK4D1KOA1sfyRhbpC8O5Lh
+         4po+2Oy+UxwmgyJeiLuz6Lq9W9OSBI7YG2dBNVal3d4sp08uijQFjR6mdmUiEGsYmCIA
+         8yCQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706549503; x=1707154303;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Do+30ZjldJkOOFALkF49apSqQIhe35ps7eq5uqUhCqQ=;
+        b=PA8EfrgI9ASW9XbEKnMEJiF5YtOgoAK/5wWj0K1GqebK6TyXL+Ep8lQamoPjIaCBDy
+         RC643toyfMZ0POIpPPBq1mWCWR6rIgipnRFQ+NSwpAzmQ3DXfPGtVJAQif5Mx6dEbFiR
+         DhDNg4bGFLem258TjfVEcfsgpmQMJGTWCzXhCTG3KEM4Epz9s6DkdqmEhy3ge1ZgvURz
+         M+UE4+5k5gNZ5NVYonhewCw34VZBZkA/HY6J/cJ1GO7Hk19IV21LVJD65kaS8FdH+uAA
+         w2FoeONCheqwk9u/66mLixNSupEu0wUyu0TyL7z/YAVebcX3xB8bxLA+O91dPImzT8zC
+         vD3g==
+X-Gm-Message-State: AOJu0Ywt57Xb2ygZk/c0eF21G0PFFnEEIV8Jetkc/jj0B4NNKPEBCq8I
+	4NYFgDSBSxl07JmdauoCb7KKXSOFWfxJSaLQJMBZxs5d7r5x7LdF+zh43civxFdsKigF2CpZ9rR
+	UH6b8S1lBe+xxGML2nbMjHYsHO2s=
+X-Google-Smtp-Source: AGHT+IFLzBH2fvhEsoU+Ej+vPJtfZDQEZY0q0N2YVNdijcR+H+XqmXGS5K8vJa0o39r/ucRoCdt+9GJLIbTg06vavnw=
+X-Received: by 2002:ac2:4911:0:b0:510:b1b:5db3 with SMTP id
+ n17-20020ac24911000000b005100b1b5db3mr4808091lfi.67.1706549502982; Mon, 29
+ Jan 2024 09:31:42 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zbe5NBKrugBpRpM-@casper.infradead.org>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=v0bghz1e;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=o2TK9+Jj
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[17];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email,syzkaller.appspot.com:url,bootlin.com:url];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.01
-X-Rspamd-Queue-Id: BD34C1F7F6
-X-Spam-Flag: NO
+References: <00000000000047d819061004ad6c@google.com>
+In-Reply-To: <00000000000047d819061004ad6c@google.com>
+From: Ryusuke Konishi <konishi.ryusuke@gmail.com>
+Date: Tue, 30 Jan 2024 02:31:25 +0900
+Message-ID: <CAKFNMomm3CwGT5SJaVwTwDYj3n34+ZyPsKnvpWgFAgoXLQRMEw@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] [nilfs?] INFO: task hung in migrate_pages_batch
+To: syzbot <syzbot+ee2ae68da3b22d04cd8d@syzkaller.appspotmail.com>
+Cc: adilger.kernel@dilger.ca, akpm@linux-foundation.org, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, linux-nilfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu, willy@infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 29-01-24 14:41:56, Matthew Wilcox wrote:
-> On Mon, Jan 29, 2024 at 10:11:24AM +0100, Jan Kara wrote:
-> > On Thu 25-01-24 14:06:58, Matthew Wilcox wrote:
-> > > On Thu, Jan 25, 2024 at 01:09:46PM +0000, Roman Smirnov wrote:
-> > > > Syzkaller reports warning in ext4_set_page_dirty() in 5.10 and 5.15
-> > > > stable releases. It happens because invalidate_inode_page() frees pages
-> > > > that are needed for the system. To fix this we need to add additional
-> > > > checks to the function. page_mapped() checks if a page exists in the 
-> > > > page tables, but this is not enough. The page can be used in other places:
-> > > > https://elixir.bootlin.com/linux/v6.8-rc1/source/include/linux/page_ref.h#L71
-> > > > 
-> > > > Kernel outputs an error line related to direct I/O:
-> > > > https://syzkaller.appspot.com/text?tag=CrashLog&x=14ab52dac80000
-> > > 
-> > > OK, this is making a lot more sense.
-> > > 
-> > > The invalidate_inode_page() path (after the page_mapped check) calls
-> > > try_to_release_page() which strips the buffers from the page.
-> > > __remove_mapping() tries to freeze the page and presuambly fails.
-> > 
-> > Yep, likely.
-> > 
-> > > ext4 is checking there are still buffer heads attached to the page.
-> > > I'm not sure why it's doing that; it's legitimate to strip the
-> > > bufferheads from a page and then reattach them later (if they're
-> > > attached to a dirty page, they are created dirty).
-> > 
-> > Well, we really need to track dirtiness on per fs-block basis in ext4
-> > (which makes a difference when blocksize < page size). For example for
-> > delayed block allocation we reserve exactly as many blocks as we need
-> > (which need not be all the blocks in the page e.g. when writing just one
-> > block in the middle of a large hole). So when all buffers would be marked
-> > as dirty we would overrun our reservation. Hence at the moment of dirtying
-> > we really need buffers to be attached to the page and stay there until the
-> > page is written back.
-> 
-> Thanks for the clear explanation!
-> 
-> Isn't the correct place to ensure that this is true in
-> ext4_release_folio()?  I think all paths to remove buffer_heads from a
-> folio go through ext4_release_folio() and so it can be prohibited here
-> if the folio is part of a delalloc extent?
+On Mon, Jan 29, 2024 at 2:15=E2=80=AFAM syzbot
+<syzbot+ee2ae68da3b22d04cd8d@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot found the following issue on:
+>
+> HEAD commit:    0802e17d9aca Merge branch 'for-next/core' into for-kernel=
+ci
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux=
+.git for-kernelci
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D10832107e8000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3Df9616b7e18057=
+7ba
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dee2ae68da3b22d0=
+4cd8d
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Deb=
+ian) 2.40
+> userspace arch: arm64
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D163043bfe80=
+000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1306c1e3e8000=
+0
+>
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/e84e45f27a78/dis=
+k-0802e17d.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/a8b16d2fc3b1/vmlinu=
+x-0802e17d.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/4c7ac36b3de1/I=
+mage-0802e17d.gz.xz
+> mounted in repro: https://storage.googleapis.com/syzbot-assets/e31cee0eb9=
+27/mount_10.gz
+>
+> IMPORTANT: if you fix the issue, please add the following tag to the comm=
+it:
+> Reported-by: syzbot+ee2ae68da3b22d04cd8d@syzkaller.appspotmail.com
+>
+> INFO: task syz-executor439:7446 blocked for more than 143 seconds.
+>       Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor439 state:D stack:0     pid:7446  tgid:7429  ppid:6155  =
+ flags:0x0000000d
+> Call trace:
+>  __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+>  context_switch kernel/sched/core.c:5376 [inline]
+>  __schedule+0x1354/0x2360 kernel/sched/core.c:6688
+>  __schedule_loop kernel/sched/core.c:6763 [inline]
+>  schedule+0xb8/0x19c kernel/sched/core.c:6778
+>  io_schedule+0x8c/0x12c kernel/sched/core.c:8998
+>  folio_wait_bit_common+0x65c/0xb90 mm/filemap.c:1273
+>  folio_wait_bit+0x30/0x40 mm/filemap.c:1412
+>  folio_wait_writeback+0x14c/0x3bc mm/page-writeback.c:3065
+>  migrate_folio_unmap mm/migrate.c:1191 [inline]
+>  migrate_pages_batch+0xc1c/0x25b0 mm/migrate.c:1680
+>  migrate_pages_sync mm/migrate.c:1873 [inline]
+>  migrate_pages+0x1bf8/0x3114 mm/migrate.c:1955
+>  do_mbind mm/mempolicy.c:1344 [inline]
+>  kernel_mbind mm/mempolicy.c:1486 [inline]
+>  __do_sys_mbind mm/mempolicy.c:1560 [inline]
+>  __se_sys_mbind mm/mempolicy.c:1556 [inline]
+>  __arm64_sys_mbind+0x1410/0x18e8 mm/mempolicy.c:1556
+>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+>  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+>  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+>  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+>  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+>  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+> INFO: task segctord:7440 blocked for more than 143 seconds.
+>       Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:segctord        state:D stack:0     pid:7440  tgid:7440  ppid:2     =
+ flags:0x00000008
+> Call trace:
+>  __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+>  context_switch kernel/sched/core.c:5376 [inline]
+>  __schedule+0x1354/0x2360 kernel/sched/core.c:6688
+>  __schedule_loop kernel/sched/core.c:6763 [inline]
+>  schedule+0xb8/0x19c kernel/sched/core.c:6778
+>  io_schedule+0x8c/0x12c kernel/sched/core.c:8998
+>  folio_wait_bit_common+0x65c/0xb90 mm/filemap.c:1273
+>  __folio_lock+0x2c/0x3c mm/filemap.c:1611
+>  folio_lock include/linux/pagemap.h:1031 [inline]
+>  nilfs_lookup_dirty_data_buffers+0x2b0/0x7e8 fs/nilfs2/segment.c:727
+>  nilfs_segctor_scan_file+0x1e4/0xcdc fs/nilfs2/segment.c:1084
+>  nilfs_segctor_collect_blocks fs/nilfs2/segment.c:1206 [inline]
+>  nilfs_segctor_collect fs/nilfs2/segment.c:1533 [inline]
+>  nilfs_segctor_do_construct+0x16ec/0x6560 fs/nilfs2/segment.c:2081
+>  nilfs_segctor_construct+0x110/0x768 fs/nilfs2/segment.c:2415
+>  nilfs_segctor_thread_construct fs/nilfs2/segment.c:2523 [inline]
+>  nilfs_segctor_thread+0x3d4/0xd74 fs/nilfs2/segment.c:2606
+>  kthread+0x288/0x310 kernel/kthread.c:388
+>  ret_from_fork+0x10/0x20 arch/arm64/kernel/entry.S:857
+> INFO: task syz-executor439:7442 blocked for more than 143 seconds.
+>       Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor439 state:D stack:0     pid:7442  tgid:7441  ppid:6156  =
+ flags:0x0000000d
+> Call trace:
+>  __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+>  context_switch kernel/sched/core.c:5376 [inline]
+>  __schedule+0x1354/0x2360 kernel/sched/core.c:6688
+>  __schedule_loop kernel/sched/core.c:6763 [inline]
+>  schedule+0xb8/0x19c kernel/sched/core.c:6778
+>  wb_wait_for_completion+0x154/0x29c fs/fs-writeback.c:192
+>  sync_inodes_sb+0x220/0x944 fs/fs-writeback.c:2758
+>  sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
+>  iterate_supers+0xd4/0x188 fs/super.c:971
+>  ksys_sync+0xb4/0x1cc fs/sync.c:102
+>  __arm64_sys_sync+0x14/0x24 fs/sync.c:113
+>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+>  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+>  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+>  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+>  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+>  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+> INFO: task syz-executor439:7445 blocked for more than 143 seconds.
+>       Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor439 state:D stack:0     pid:7445  tgid:7444  ppid:6160  =
+ flags:0x0000000d
+> Call trace:
+>  __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+>  context_switch kernel/sched/core.c:5376 [inline]
+>  __schedule+0x1354/0x2360 kernel/sched/core.c:6688
+>  __schedule_loop kernel/sched/core.c:6763 [inline]
+>  schedule+0xb8/0x19c kernel/sched/core.c:6778
+>  schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
+>  rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
+>  __down_write_common kernel/locking/rwsem.c:1306 [inline]
+>  __down_write kernel/locking/rwsem.c:1315 [inline]
+>  down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
+>  bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
+>  sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
+>  iterate_supers+0xd4/0x188 fs/super.c:971
+>  ksys_sync+0xb4/0x1cc fs/sync.c:102
+>  __arm64_sys_sync+0x14/0x24 fs/sync.c:113
+>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+>  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+>  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+>  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+>  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+>  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+> INFO: task syz-executor439:7450 blocked for more than 143 seconds.
+>       Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor439 state:D stack:0     pid:7450  tgid:7448  ppid:6153  =
+ flags:0x0000000d
+> Call trace:
+>  __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+>  context_switch kernel/sched/core.c:5376 [inline]
+>  __schedule+0x1354/0x2360 kernel/sched/core.c:6688
+>  __schedule_loop kernel/sched/core.c:6763 [inline]
+>  schedule+0xb8/0x19c kernel/sched/core.c:6778
+>  schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
+>  rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
+>  __down_write_common kernel/locking/rwsem.c:1306 [inline]
+>  __down_write kernel/locking/rwsem.c:1315 [inline]
+>  down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
+>  bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
+>  sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
+>  iterate_supers+0xd4/0x188 fs/super.c:971
+>  ksys_sync+0xb4/0x1cc fs/sync.c:102
+>  __arm64_sys_sync+0x14/0x24 fs/sync.c:113
+>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+>  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+>  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+>  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+>  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+>  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+> INFO: task syz-executor439:7451 blocked for more than 143 seconds.
+>       Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor439 state:D stack:0     pid:7451  tgid:7449  ppid:6154  =
+ flags:0x0000000d
+> Call trace:
+>  __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+>  context_switch kernel/sched/core.c:5376 [inline]
+>  __schedule+0x1354/0x2360 kernel/sched/core.c:6688
+>  __schedule_loop kernel/sched/core.c:6763 [inline]
+>  schedule+0xb8/0x19c kernel/sched/core.c:6778
+>  schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
+>  rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
+>  __down_write_common kernel/locking/rwsem.c:1306 [inline]
+>  __down_write kernel/locking/rwsem.c:1315 [inline]
+>  down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
+>  bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
+>  sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
+>  iterate_supers+0xd4/0x188 fs/super.c:971
+>  ksys_sync+0xb4/0x1cc fs/sync.c:102
+>  __arm64_sys_sync+0x14/0x24 fs/sync.c:113
+>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+>  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+>  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+>  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+>  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+>  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+> INFO: task syz-executor439:7460 blocked for more than 143 seconds.
+>       Not tainted 6.7.0-rc8-syzkaller-g0802e17d9aca #0
+> "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+> task:syz-executor439 state:D stack:0     pid:7460  tgid:7456  ppid:6161  =
+ flags:0x0000000d
+> Call trace:
+>  __switch_to+0x314/0x560 arch/arm64/kernel/process.c:556
+>  context_switch kernel/sched/core.c:5376 [inline]
+>  __schedule+0x1354/0x2360 kernel/sched/core.c:6688
+>  __schedule_loop kernel/sched/core.c:6763 [inline]
+>  schedule+0xb8/0x19c kernel/sched/core.c:6778
+>  schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6835
+>  rwsem_down_write_slowpath+0xcfc/0x1aa0 kernel/locking/rwsem.c:1178
+>  __down_write_common kernel/locking/rwsem.c:1306 [inline]
+>  __down_write kernel/locking/rwsem.c:1315 [inline]
+>  down_write+0xb4/0xc0 kernel/locking/rwsem.c:1580
+>  bdi_down_write_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  sync_inodes_sb+0x208/0x944 fs/fs-writeback.c:2756
+>  sync_inodes_one_sb+0x58/0x70 fs/sync.c:77
+>  iterate_supers+0xd4/0x188 fs/super.c:971
+>  ksys_sync+0xb4/0x1cc fs/sync.c:102
+>  __arm64_sys_sync+0x14/0x24 fs/sync.c:113
+>  __invoke_syscall arch/arm64/kernel/syscall.c:37 [inline]
+>  invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:51
+>  el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:136
+>  do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:155
+>  el0_svc+0x54/0x158 arch/arm64/kernel/entry-common.c:678
+>  el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:696
+>  el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:595
+>
+> Showing all locks held in the system:
+> 1 lock held by khungtaskd/29:
+>  #0: ffff80008e6c48c0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0=
+xc/0x44 include/linux/rcupdate.h:300
+> 2 locks held by kworker/u4:3/41:
+>  #0: ffff0000c1c3a138 ((wq_completion)writeback){+.+.}-{0:0}, at: process=
+_one_work+0x560/0x1204 kernel/workqueue.c:2600
+>  #1: ffff8000943f7c20 ((work_completion)(&(&wb->dwork)->work)){+.+.}-{0:0=
+}, at: process_one_work+0x5a0/0x1204 kernel/workqueue.c:2602
+> 2 locks held by getty/5863:
+>  #0: ffff0000d255f0a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+=
+0x3c/0x4c drivers/tty/tty_ldsem.c:340
+>  #1: ffff800094e702f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_r=
+ead+0x41c/0x1228 drivers/tty/n_tty.c:2201
+> 1 lock held by segctord/7440:
+>  #0: ffff0000c7ade2a0 (&nilfs->ns_segctor_sem){++++}-{3:3}, at: nilfs_tra=
+nsaction_lock+0x178/0x33c fs/nilfs2/segment.c:357
+> 2 locks held by syz-executor439/7442:
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_l=
+ock fs/super.c:58 [inline]
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_loc=
+k+0x160/0x328 fs/super.c:117
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_w=
+rite_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inode=
+s_sb+0x208/0x944 fs/fs-writeback.c:2756
+> 2 locks held by syz-executor439/7445:
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_l=
+ock fs/super.c:58 [inline]
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_loc=
+k+0x160/0x328 fs/super.c:117
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_w=
+rite_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inode=
+s_sb+0x208/0x944 fs/fs-writeback.c:2756
+> 2 locks held by syz-executor439/7450:
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_l=
+ock fs/super.c:58 [inline]
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_loc=
+k+0x160/0x328 fs/super.c:117
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_w=
+rite_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inode=
+s_sb+0x208/0x944 fs/fs-writeback.c:2756
+> 2 locks held by syz-executor439/7451:
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_l=
+ock fs/super.c:58 [inline]
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_loc=
+k+0x160/0x328 fs/super.c:117
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_w=
+rite_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inode=
+s_sb+0x208/0x944 fs/fs-writeback.c:2756
+> 2 locks held by syz-executor439/7460:
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: __super_l=
+ock fs/super.c:58 [inline]
+>  #0: ffff0000c5e920e0 (&type->s_umount_key#64){++++}-{3:3}, at: super_loc=
+k+0x160/0x328 fs/super.c:117
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: bdi_down_w=
+rite_wb_switch_rwsem fs/fs-writeback.c:364 [inline]
+>  #1: ffff0000c9d147d0 (&bdi->wb_switch_rwsem){+.+.}-{3:3}, at: sync_inode=
+s_sb+0x208/0x944 fs/fs-writeback.c:2756
+>
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+>
+>
+>
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+>
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+>
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+>
+> If you want syzbot to run the reproducer, reply with:
+> #syz test: git://repo/address.git branch-or-commit-hash
+> If you attach or paste a git patch, syzbot will apply it before testing.
+>
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+>
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+>
+> If you want to undo deduplication, reply with:
+> #syz undup
 
-OK, I tried to keep it simple but now I have to go into more intricate
-details of GUP and the IO path so please bear with me. Normally, how things
-happen on write or page_mkwrite time is:
+The hang of this report seems to be due to an issue of nilfs2 side.  I
+will fix it.
 
-lock_page(page)
-check we have buffers, create if not
-do stuff with page
-mark appropriate buffers (and thus the page) dirty
-unlock_page(page)
-
-Now the page and buffers are dirty so nothing can be freed as reclaim
-doesn't touch such pages (and neither does try_to_free_buffers()). So we
-are safe until page writeback time.
-
-But GUP users such as direct IO are different. They do the page_mkwrite()
-dance at GUP time so we are fine at that moment. But on direct IO
-completion they recheck page dirty bits and call set_page_dirty() *again*
-if they find the page has been cleaned in the mean time. And this is where
-the problem really happens. If writeback of the pages serving as direct IO
-buffer happen while the IO is running, buffers get cleaned, and can be
-reclaimed, and we then hit the warning in ext4_set_page_dirty().
-
-So what we really need is "don't reclaim page buffers if the page is pinned
-by GUP". This is what MM checks in recent kernels (since d824ec2a15467 "mm:
-do not reclaim private data from pinned page") and the patch discussed here
-is effectively an equivalent of it for stable. So AFAICT it really closes
-all the problematic paths. Sure we could implement that check in
-ext4_release_folio() but I don't think there's a great reason for that.
-
-And yes, technically I assume we could reconstruct the buffer state from
-other data structures if we find the buffers are missing. But in
-ext4_set_page_dirty() that is not easily possible as it may be called in
-softirq context. And elsewhere it is prone to hiding other bugs we may
-introduce. So just not stripping the buffer heads when the page is pinned
-is by far the easiest solution for ext4, in particular for stable...
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Ryusuke Konishi
 
