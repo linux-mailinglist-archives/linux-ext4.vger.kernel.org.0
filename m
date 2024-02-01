@@ -1,75 +1,92 @@
-Return-Path: <linux-ext4+bounces-1051-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1052-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 543D8845063
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 05:43:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C31E684528F
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 09:20:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 185732874F6
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 04:43:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EA5C285290
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 08:20:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDC8E3B190;
-	Thu,  1 Feb 2024 04:42:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04719159574;
+	Thu,  1 Feb 2024 08:20:07 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from verein.lst.de (verein.lst.de [213.95.11.211])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 532F23BB21;
-	Thu,  1 Feb 2024 04:42:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4AD1C158D76
+	for <linux-ext4@vger.kernel.org>; Thu,  1 Feb 2024 08:20:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706762572; cv=none; b=NnpcOhV8od123owkjn8OpXpBq1a+IY+Lrd7btQlkD94g1+v+ClSAK0GQt2RKqbaqY2q0UT22KA1lEN86ldob0ozxv7tvKkKuwT+ea4Wj90VCxkyo1xDIzyim5pDAmLDKnUWJB97h5OOvRAAwlmdsiP2Y5766qdajJ6TLp5lPeCM=
+	t=1706775606; cv=none; b=jIzRUluK6XkaJXe2SZEzVOWZSx0N2qagjklwQdZ3F5wc9nt+zR1uBAE2uRVWdWwQYohKZXksEDzCE6PTd1oDuHdlRWp+6Ium0TYk+cQs8rLo0nmlLrzED4IyGcAy6i/t4q1WglA6gRXGdKkWtAe1aO+9VOgOKm5jv+sYs4EHoCU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706762572; c=relaxed/simple;
-	bh=MhL63WgwsFxDJhAoegljqRueB5JQHLx3QCQjicgGBoY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SBduv3Cf475tJgiu9G/ajlPKkwMo8d6iI0u18G/oDRKk5gPjowmGLzbZq5YRZEgHmiR03On7VKAYlkf2cG0mFsAJzax4/qGoX5ALeN8l5roDsjbgIdh16eY+nv47aESjHF/tZbuxZ8952nggETDvl8PMOBiPgkGzP1rnUZVdTaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
-Received: by verein.lst.de (Postfix, from userid 2407)
-	id AE27468AFE; Thu,  1 Feb 2024 05:42:46 +0100 (CET)
-Date: Thu, 1 Feb 2024 05:42:46 +0100
-From: Christoph Hellwig <hch@lst.de>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 1/3] fs: Introduce buffered_write_operations
-Message-ID: <20240201044246.GA14117@lst.de>
-References: <20240130055414.2143959-1-willy@infradead.org> <20240130055414.2143959-2-willy@infradead.org> <20240130081252.GC22621@lst.de> <ZbsfuaANd4DIVb4w@casper.infradead.org>
+	s=arc-20240116; t=1706775606; c=relaxed/simple;
+	bh=IT+/IznFUZfP8voVJHxGSDhujN2yYOYuh0E8y5jDUBw=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=RdPfpB8QO7PF6nuN3FhijuJ3ubdNCsxZqGP9m04o2QqaH0AFxoZnfpK0MOjzCmBIcemuqjznwPqS5hPRaJqgn21RR2q4TqPmrEAhvN/jDGP/MfyVcrWXClnmSpl72G7O3JlHlOE5LJteNh6f5WYIaZaFS3VUm7eMXV4AqpuQJd8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-360c3346ecbso5367915ab.1
+        for <linux-ext4@vger.kernel.org>; Thu, 01 Feb 2024 00:20:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1706775604; x=1707380404;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=oj5sIJNV5dqs7fT2C4aqfxRFgCGhxW6XP8G9oXlz16I=;
+        b=bxtyJP+NK3JKFEOZsLKK54LGLKbAVqyWL9NUsJniUMOpkmvws9wOvGglZkJvICW3Vb
+         9NRDGeAtdEnXjK2R+VpdeJNs3qa5sNpMaSwxy0z1BBoJEYHYX4YfiEMCd6XOgqyfGqOa
+         oyFUynu9cTSZnLrZbJip2OalgD2xAaRLr3pITYGYe2ID4DR5l2FnBmXUYy8b1J1L9mPj
+         zlGhLd9ZHTpk/8lQEIKUg76fuHtB37KWEnkDRyCMGCixkPDMsLdRFbT2xWPWdavQkHbm
+         RpjUmT9CFYwHbhWESJ+/FB61BYuE2LAc7YK4vHGAyo5dKiQhM6H6Vic/uwuz0cask8Fr
+         ogZQ==
+X-Gm-Message-State: AOJu0Ywh1xs85SmdTYwOFOHuAVIcdSwBvZiAQB4On7AxqvtXQZqzENM/
+	enccEQZ+1qAu8yR0hzEJMQ/qjZZtEddThpjA6rvEZL/tx7wNkEh1JjvZ0h2VGBirGMXGhKBiG/0
+	gkF1t3hA02jnN37h6Y5OHgYt47ITI5K1C/54AbPxNdLruZ7y+V7bsUjs=
+X-Google-Smtp-Source: AGHT+IGMneXP1VwttEU6QqMbn9Gto8Ha2qHva7b18FS6I488vw1v7coYv7Pm5/27FVSdHOXBwv51x8UF1Ur1lNgCzbwHZrnXMOmr
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZbsfuaANd4DIVb4w@casper.infradead.org>
-User-Agent: Mutt/1.5.17 (2007-11-01)
+X-Received: by 2002:a05:6e02:1d01:b0:363:9d58:805b with SMTP id
+ i1-20020a056e021d0100b003639d58805bmr115442ila.3.1706775604492; Thu, 01 Feb
+ 2024 00:20:04 -0800 (PST)
+Date: Thu, 01 Feb 2024 00:20:04 -0800
+In-Reply-To: <000000000000b62cdb05f7dfab8b@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000009e002e06104da983@google.com>
+Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in ext4_convert_inline_data_nolock
+From: syzbot <syzbot+db6caad9ebd2c8022b41@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
+	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, nogikh@google.com, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Feb 01, 2024 at 04:36:09AM +0000, Matthew Wilcox wrote:
-> +static struct folio *iomap_write_begin(struct iomap_iter *iter, loff_t pos,
-> +               size_t len)
-> 
-> with corresponding changes.  Again, ends up looking slightly cleaner.
+syzbot suspects this issue was fixed by commit:
 
-iomap also really needs some tweaks to the naming in the area as a
-__foo function calling foo as the default is horrible.  I'll take a
-look at your patches and can add that on top.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-> f2fs also doesn't seem terribly objectional; passing rpages between
-> begin & end.
-> 
-> ocfs2 is passing a ocfs2_write_ctxt between the two.
+    fs: Block writes to mounted block devices
 
-Well, it might be the intended purpose, but as-is it is horribly
-inefficient - they need to do a dynamic allocation for every
-page they iterate over.  So all of them are candidates for an
-iterator model that does this allocation once per write.
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1606d4ffe80000
+start commit:   3a93e40326c8 Merge tag 'for-linus' of git://git.kernel.org..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9c35b3803e5ad668
+dashboard link: https://syzkaller.appspot.com/bug?extid=db6caad9ebd2c8022b41
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a2cd05c80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158e1f29c80000
 
-But maybe this isn't the time to deal with that and we should just leave
-it in place.
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
