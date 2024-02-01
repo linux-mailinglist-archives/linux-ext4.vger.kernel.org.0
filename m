@@ -1,162 +1,151 @@
-Return-Path: <linux-ext4+bounces-1054-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1055-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 959848453A3
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 10:19:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B0868455FD
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 12:09:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BB1041C24342
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 09:19:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B72AC1C23882
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 11:09:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFEF115B972;
-	Thu,  1 Feb 2024 09:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CF915B995;
+	Thu,  1 Feb 2024 11:08:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="r+/j3u7G";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jK2sjdPz";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="r+/j3u7G";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jK2sjdPz"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="AM+J8TzO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A159B15B11D;
-	Thu,  1 Feb 2024 09:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4FB3A1C3;
+	Thu,  1 Feb 2024 11:08:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706779108; cv=none; b=EGqfVGeQdFPr/7wALmmPeh4qRvPSw5PBg1jKXWsbd/aLyGExln4ycCq1KeBe8aLGpsq9oMB8J7vBSb+NLouUiV4vVGa64I2BLKay/y1mAahZwL/BL9mxOcdApEWFPslAiXtR+foVbhqM5R5FME5gqoxb3QUVBVO3D2OdylTYbnc=
+	t=1706785735; cv=none; b=MNWeGrfZuNTIKKF6UikhK0yM5KnfM0frw+7dgzqm9BvFZjVUNJdTcRbc+mVVTbdyYyRbdXzWfaDjKf6qtEtAGtrvTVJP2hBu0ClCRHEwQ7kDWiMg1NofT7PGdMqe+jukGW3c8iqaiZ33ddeSBJzATS55u9I4X73iaS4ELKn3NTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706779108; c=relaxed/simple;
-	bh=sh56VmbZjgCgtQLhnGvOJhwkTWdus+n0lPyfuAk31KM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Fta46xeOywjPxr3Bo8iTUnlQPRmVkkyi6aCKRNa2GY+b/32HXcb4jGZUWx89JqM7Evqm+uayCgxPf2rFuOhIoCmFkU6yr1Bw/S1mTl+sgimNpbPg5t01lbq3VRe7GZ1Kxtm8YWpVZTtD/8U19Gh6Aoe2YmO2HUrnvbITHfXwFZE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=r+/j3u7G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jK2sjdPz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=r+/j3u7G; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jK2sjdPz; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9310D1FB94;
-	Thu,  1 Feb 2024 09:18:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706779104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxXi/fOaMgCDFHXrPY+RQgE8sSdBP+ESghM8RbqJyJI=;
-	b=r+/j3u7GdyDVTtLA782A2TcNcvVZsQBBXbNxhS1vGQ5fZm/ENNlGmmaCoZMRFjhQqUeWdj
-	ChKJVt9rQmGKpKVJcPd97+JSdkOQWcc7BMfrpPxbtHoIU3lhLiDU9obujxe4ODbWRVdBq0
-	SebmrCPQ1eP6a/OzE9YoZ+FhK2SH6Hk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706779104;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxXi/fOaMgCDFHXrPY+RQgE8sSdBP+ESghM8RbqJyJI=;
-	b=jK2sjdPzWLqVSArvaC2rvz/uMdFLG33ySQa+U2Rn5qmugHH2b1/CRmBMPArm0dVCxo7uEm
-	oOnbBirY2UhM/jDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706779104; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxXi/fOaMgCDFHXrPY+RQgE8sSdBP+ESghM8RbqJyJI=;
-	b=r+/j3u7GdyDVTtLA782A2TcNcvVZsQBBXbNxhS1vGQ5fZm/ENNlGmmaCoZMRFjhQqUeWdj
-	ChKJVt9rQmGKpKVJcPd97+JSdkOQWcc7BMfrpPxbtHoIU3lhLiDU9obujxe4ODbWRVdBq0
-	SebmrCPQ1eP6a/OzE9YoZ+FhK2SH6Hk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706779104;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=zxXi/fOaMgCDFHXrPY+RQgE8sSdBP+ESghM8RbqJyJI=;
-	b=jK2sjdPzWLqVSArvaC2rvz/uMdFLG33ySQa+U2Rn5qmugHH2b1/CRmBMPArm0dVCxo7uEm
-	oOnbBirY2UhM/jDw==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8234A13594;
-	Thu,  1 Feb 2024 09:18:24 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Zsp/H+Bhu2XGTwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 01 Feb 2024 09:18:24 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3A3A3A0809; Thu,  1 Feb 2024 10:18:24 +0100 (CET)
-Date: Thu, 1 Feb 2024 10:18:24 +0100
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+db6caad9ebd2c8022b41@syzkaller.appspotmail.com>
-Cc: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org,
-	jack@suse.cz, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in
- ext4_convert_inline_data_nolock
-Message-ID: <20240201091824.xat4nseembst5qoj@quack3>
-References: <000000000000b62cdb05f7dfab8b@google.com>
- <0000000000009e002e06104da983@google.com>
+	s=arc-20240116; t=1706785735; c=relaxed/simple;
+	bh=6bpSokjHon0c17IYlPlXNa4vGCmRvq0YvKBR2clqsoE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=U8ufSA9CSOM7ljA/8YsCibTMeqb/m6m4PmpFMI331CS4TXEtfhKq1Kf1dE0z3boi/WGus/t16a7rIQPu70JjFoLgu0ohhnn7PcNQ6zv1JawpI+ElNqH5tylr+dsem7kmQ07kBk2haDGtJJ0dxQ7nUAJTs2QKJQM9r0Tb7R1pNFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=AM+J8TzO; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 411B2JW8011863;
+	Thu, 1 Feb 2024 11:08:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=pp1; bh=XqPVJ7jlVkPhIr1he1/ixfWoyCjmJKYn9ah2UgfTpeA=;
+ b=AM+J8TzOYzY1e10ffbkDCfOAGOXAwUknOUBblxTtGDUT9UNirIvi4jKMwVY4rCfrMCdC
+ b4sbdD3HX0QBU1X1CbUx4MX/ZA5XtOv8hxHd59EnLa98ei18cvCk8vV2/CCmx677HiQ9
+ 2qG5jAvIA3n9JupOIkSVQhvtD91do5cvr9A7oj4hVo7orMg//j+g9nri0Endg529ZB68
+ Ck/lavquz9MF0dDs6es/A+kk+657MlEdu03vvN1xHi6ZpeZ3rC27kEC+7uQo6HzSK0yX
+ 5Wp1Vid4EcUF6fw2JkXw8j7Syu7b03zV9t5L7Rm79Se2UHWrt4pAov3qymSmsiH56Gr9 8w== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0a2r848j-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 11:08:41 +0000
+Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 411B3a6C014658;
+	Thu, 1 Feb 2024 11:08:41 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w0a2r8488-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 11:08:41 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4118U9Pm007196;
+	Thu, 1 Feb 2024 11:08:40 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3vwev2k96s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 01 Feb 2024 11:08:39 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 411B8ckn6685294
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 1 Feb 2024 11:08:38 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 26DDE20043;
+	Thu,  1 Feb 2024 11:08:38 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0859220040;
+	Thu,  1 Feb 2024 11:08:36 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu,  1 Feb 2024 11:08:35 +0000 (GMT)
+Date: Thu, 1 Feb 2024 16:38:33 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+        adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, yukuai3@huawei.com, stable@kernel.org
+Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
+Message-ID: <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240122123332.555370-1-libaokun1@huawei.com>
+ <20240131124636.gmxaiex6yqrhvxcj@quack3>
+ <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: t0l8mDG-kyFUd1bHDF_sa6q-Ab2sEpc_
+X-Proofpoint-ORIG-GUID: _qNtGuRtMSpxbzZrfIeiGohSONdM0oVw
+X-Proofpoint-UnRewURL: 0 URL was un-rewritten
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000009e002e06104da983@google.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.10 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=9c35b3803e5ad668];
-	 TAGGED_RCPT(0.00)[db6caad9ebd2c8022b41];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.10
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-01-31_10,2024-01-31_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 phishscore=0
+ priorityscore=1501 spamscore=0 bulkscore=0 malwarescore=0 clxscore=1011
+ adultscore=0 impostorscore=0 lowpriorityscore=0 mlxscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2402010089
 
-On Thu 01-02-24 00:20:04, syzbot wrote:
-> syzbot suspects this issue was fixed by commit:
-> 
-> commit 6f861765464f43a71462d52026fbddfc858239a5
-> Author: Jan Kara <jack@suse.cz>
-> Date:   Wed Nov 1 17:43:10 2023 +0000
-> 
->     fs: Block writes to mounted block devices
-> 
-> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=1606d4ffe80000
-> start commit:   3a93e40326c8 Merge tag 'for-linus' of git://git.kernel.org..
-> git tree:       upstream
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=9c35b3803e5ad668
-> dashboard link: https://syzkaller.appspot.com/bug?extid=db6caad9ebd2c8022b41
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11a2cd05c80000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=158e1f29c80000
-> 
-> If the result looks correct, please mark the issue as fixed by replying with:
+Hi Baokun, Jan
 
-Yep, the reproducer seems to mess with the loop device itself.
- 
-#syz fix: fs: Block writes to mounted block devices
+Thanks for the CC, I somehow missed this patch.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+As described in the discussion Jan linked [1] , there is a known bug in the
+normalize code (which i should probably get back to now ) where we sometimes
+end up with a goal range which doesn't completely cover the original extent and
+this was causing issues when we tried to cover the complete original request in
+the PA window adjustment logic. That and to minimize fragmentation, we ended up
+going with the logic we have right now.
+
+In short, I agree that in the example Baokun pointed out, it is not optimal to
+have to make an allocation request twice when we can get it in one go.
+
+I also think Baokun is correct that if keeping the best extent at the end doesn't 
+cover the original start, then any other case should not lead to it overflowing out
+of goal extent, including the case where original extent is overflowing goal extent.
+
+So, as mentioned, it boils down to a trade off between multiple allocations and slightly 
+increased fragmentation. iiuc preallocations are anyways dropped when the file closes
+so I think it shouldn't hurt too much fragmentation wise to prioritize less
+allocations. What are your thoughts on this Jan, Baokun?
+
+Coming to the code, the only thing I think might cause an issue is the following line:
+
+-		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
++		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
+
+So as discussed towards the end here [1] we could have ac_o_ex that
+overflows the goal and hence would be beyond the best length. I'll try
+to look into the normalize logic to fix this however till then, I think
+we should not have this BUG_ON since it would crash the kernel if this
+happens.
+
+Rest of it looks good to me.
+
+Regards,
+Ojaswin
+
+[1]
+https://lore.kernel.org/all/Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
 
