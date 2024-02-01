@@ -1,179 +1,123 @@
-Return-Path: <linux-ext4+bounces-1056-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1057-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9326284566E
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 12:46:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C49368457E6
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 13:35:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C8D11F2289C
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 11:46:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 00F301C2565D
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Feb 2024 12:35:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BABF12CDB4;
-	Thu,  1 Feb 2024 11:46:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pinzLHWf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lnggnc1M";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pinzLHWf";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lnggnc1M"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2430B8662E;
+	Thu,  1 Feb 2024 12:35:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7519315CD4F;
-	Thu,  1 Feb 2024 11:46:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C4786626;
+	Thu,  1 Feb 2024 12:34:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706787978; cv=none; b=sSVC3b+l2To/IktB5qgAots1I1qwrgs+wDn2l8fpjRVyFjoQ9i3nLwYkWrA1PJbyPIXwaiRDInh3Kl+M/Fbo2Uh175r2QQbi4F69QFTcH+M3ilF6CbExH8PY197acZ0McaYxMg07uBJnwlRWemblxkGs9+gVtG6iAYp7wr1kla4=
+	t=1706790902; cv=none; b=UWix29YnGXKNqJV6frEqcywWf8ABoR4JbeXCPBlf87SZWgxubrS8sxKpQqUx1LoByxHyE8cP+COR9TtFKgoiXqi7SM8iBb51BLl5P76GBiPtAlu39t4zF3jJdWksd/NbxK+R21mrQAQqJxHPhCelvFK3JIIMpO6kXhBO8zVoyXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706787978; c=relaxed/simple;
-	bh=dyKu5gOYG3cW5DXvumuesAjji+Qtsbt9OWZDBgfLJqM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T298njXX6WlMTD55aKoHFmsad3VZH+tRpb/6QAFabPns6Oa+rxmY3HuGFk14ZEh+taL0vlqukIyXwzk1ptmUWjTG1g2ictPVXjjOjKC23ydsiftkpmFGWidyN0CIi8bgmHVsk15TCvsFmIqyGryyqP3L3AkGqUp8HOnF0NNyd8A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pinzLHWf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lnggnc1M; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pinzLHWf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lnggnc1M; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 82CC31FD10;
-	Thu,  1 Feb 2024 11:46:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706787974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
-	b=pinzLHWf1il9zaWdKxJkCHCBr7aivvFibDksAUlodXEo41flY61nY0P4kYe0CYq0wRKXCb
-	OspTgEi3WvETNKDWQu19lIIqL7e/66KyDZpxM6pReNXATKbdtrZYWmbxxSBD2jiSCaUo5+
-	1Acr8Tp1EHnJIfeUbPM6Yx4Watfhx2M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706787974;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
-	b=lnggnc1MoaFNuSxrKNE2CoZOyW5RR4F5jYb9k4H1XgS3OW/Bq/x0SYVqDlMIS8LJ9uLSY2
-	Xx8wcEfwpI4VHCCw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1706787974; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
-	b=pinzLHWf1il9zaWdKxJkCHCBr7aivvFibDksAUlodXEo41flY61nY0P4kYe0CYq0wRKXCb
-	OspTgEi3WvETNKDWQu19lIIqL7e/66KyDZpxM6pReNXATKbdtrZYWmbxxSBD2jiSCaUo5+
-	1Acr8Tp1EHnJIfeUbPM6Yx4Watfhx2M=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1706787974;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=uhi8t6NDbG3WnRa+lrhzLoNDE+1STw2ZJvyqnqre/Ew=;
-	b=lnggnc1MoaFNuSxrKNE2CoZOyW5RR4F5jYb9k4H1XgS3OW/Bq/x0SYVqDlMIS8LJ9uLSY2
-	Xx8wcEfwpI4VHCCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 72DAE13672;
-	Thu,  1 Feb 2024 11:46:14 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Y5MGHIaEu2VqKwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 01 Feb 2024 11:46:14 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 1B371A0809; Thu,  1 Feb 2024 12:46:14 +0100 (CET)
-Date: Thu, 1 Feb 2024 12:46:14 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Baokun Li <libaokun1@huawei.com>, Jan Kara <jack@suse.cz>,
-	linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, yukuai3@huawei.com,
-	stable@kernel.org
-Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
-Message-ID: <20240201114614.4jkvi2c6buuovsj7@quack3>
-References: <20240122123332.555370-1-libaokun1@huawei.com>
- <20240131124636.gmxaiex6yqrhvxcj@quack3>
- <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
- <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+	s=arc-20240116; t=1706790902; c=relaxed/simple;
+	bh=pgvxh8iwZDY76Bk5zc0MOB5kIp6sgO3F/tNC3N2l0s0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Ct17NNkebg9NlPFytLTEkH/vfgLOqD8n9NVm5uAJX2Ek+v7a2P9fXZ1dS8WB9e/QhHunD0U0PrYDfJxyTDwS1orCj//tzOhL7IhdQhCed+0bc0zmMYm4l14jM4oK9p8PfckgTq3YYJfM1MzHT0U/S7XpnkH8A1jPVYpLrTdl6eA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4TQddM3VsQz1vsxv;
+	Thu,  1 Feb 2024 20:34:31 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0F7E41400D4;
+	Thu,  1 Feb 2024 20:34:57 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 1 Feb 2024 20:34:56 +0800
+Message-ID: <0ab855b2-e484-e571-d6d2-7f4789f4ef77@huawei.com>
+Date: Thu, 1 Feb 2024 20:34:56 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] ext4: correct best extent lstart adjustment logic
+Content-Language: en-US
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>,
+	<stable@kernel.org>, Baokun Li <libaokun1@huawei.com>
+References: <20240122123332.555370-1-libaokun1@huawei.com>
+ <20240131124636.gmxaiex6yqrhvxcj@quack3>
+ <3630fa7f-b432-7afd-5f79-781bc3b2c5ea@huawei.com>
+ <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+From: Baokun Li <libaokun1@huawei.com>
 In-Reply-To: <Zbt7setS4c/Q4fyv@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=pinzLHWf;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=lnggnc1M
-X-Spamd-Result: default: False [1.69 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[huawei.com,suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Score: 1.69
-X-Rspamd-Queue-Id: 82CC31FD10
-X-Spam-Level: *
-X-Spam-Flag: NO
-X-Spamd-Bar: +
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-Hi guys!
+On 2024/2/1 19:08, Ojaswin Mujoo wrote:
 
-On Thu 01-02-24 16:38:33, Ojaswin Mujoo wrote:
+Hi Ojaswin, Jan
+
+> Hi Baokun, Jan
+>
 > Thanks for the CC, I somehow missed this patch.
-> 
+>
 > As described in the discussion Jan linked [1] , there is a known bug in the
 > normalize code (which i should probably get back to now ) where we sometimes
 > end up with a goal range which doesn't completely cover the original extent and
 > this was causing issues when we tried to cover the complete original request in
 > the PA window adjustment logic. That and to minimize fragmentation, we ended up
 > going with the logic we have right now.
-> 
-> In short, I agree that in the example Baokun pointed out, it is not
-> optimal to have to make an allocation request twice when we can get it in
-> one go.
-> 
-> I also think Baokun is correct that if keeping the best extent at the end
-> doesn't cover the original start, then any other case should not lead to
-> it overflowing out of goal extent, including the case where original
-> extent is overflowing goal extent.
-
-Right, it was not obvious to me yesterday but when I've now reread how the
-normalization shifts the goal window, it is obvious.
-
-> So, as mentioned, it boils down to a trade off between multiple allocations and slightly 
+>
+> In short, I agree that in the example Baokun pointed out, it is not optimal to
+> have to make an allocation request twice when we can get it in one go.
+>
+> I also think Baokun is correct that if keeping the best extent at the end doesn't
+> cover the original start, then any other case should not lead to it overflowing out
+> of goal extent, including the case where original extent is overflowing goal extent.
+>
+> So, as mentioned, it boils down to a trade off between multiple allocations and slightly
 > increased fragmentation. iiuc preallocations are anyways dropped when the file closes
 > so I think it shouldn't hurt too much fragmentation wise to prioritize less
 > allocations. What are your thoughts on this Jan, Baokun?
+>
+> Coming to the code, the only thing I think might cause an issue is the following line:
+>
+> -		BUG_ON(ac->ac_o_ex.fe_len > ac->ac_b_ex.fe_len);
+> +		BUG_ON(o_ex_end > extent_logical_end(sbi, &ex));
+>
+> So as discussed towards the end here [1] we could have ac_o_ex that
+> overflows the goal and hence would be beyond the best length. I'll try
+> to look into the normalize logic to fix this however till then, I think
+> we should not have this BUG_ON since it would crash the kernel if this
+> happens.
+>
+> Rest of it looks good to me.
+>
+> Regards,
+> Ojaswin
+>
+> [1]
+> https://lore.kernel.org/all/Y+UzQJRIJEiAr4Z4@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
+I will remove the problematic BUG_ON and add some comments in
+the next version.
 
-OK, I'm fine with the Baokun's change if we remove the problematic BUG_ON.
-
-								Honza
+Thanks to Ojaswin and Jan for the review!
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Baokun Li
+.
 
