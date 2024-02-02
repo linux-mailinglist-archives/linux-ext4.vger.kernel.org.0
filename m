@@ -1,162 +1,139 @@
-Return-Path: <linux-ext4+bounces-1063-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1064-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE6A846BE8
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 10:27:37 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 47DB98470F0
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 14:15:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 770961F2D2EB
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 09:27:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D13D1C23F82
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 13:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B4947992E;
-	Fri,  2 Feb 2024 09:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F4B20F7;
+	Fri,  2 Feb 2024 13:15:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aKgvQAD3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 705CB7A728
-	for <linux-ext4@vger.kernel.org>; Fri,  2 Feb 2024 09:24:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721DB1755A
+	for <linux-ext4@vger.kernel.org>; Fri,  2 Feb 2024 13:15:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706865875; cv=none; b=AhBhzKK0CYHLLNQUJPTfoSR0P+8PNdqUULWsWeRUh4UKfrPt68UnLG+RybGuaR/KewKY+tLUsxGlntP18cRcKedFj+9EFR7dIo2tj/s+T3GYa5tHexNjGb8mWd+Fj6/xq81NIkzGN1yGyExrzNg72anyPoF/Z6jUwD7eFkedhbk=
+	t=1706879740; cv=none; b=HoA6/8IIDwT+O/OvratLID7vPg22dXjeVCSnoXcgxTgBmJn1bDLxTVcqHD9mKIOTchOQI3kvvxlMNHIgWnhTMT3+bQ8zAv+Lk89DePEIST58pacExnO1ppf2e+bNODJLqsrWDrwb6q9PNGixByxy9ppRe4rcZo98nqiP8KkyyyM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706865875; c=relaxed/simple;
-	bh=KpO7yKY6sxbBzQ3uJr1u4FkYuO/0+Q+j+vxxKbE63hE=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=awwMihFFubfRYUSAH0dHLNPmp8P4EW7A7XZkMik2MvZsD5f6Z09LYRgHcbmGb0dbqalb5KJuML9wb1DKlVy9BBCKlYqrrBq9Ea4V7K77fVFyN9pVeNbUAxV3ttFe5kPAfRQhrvVGTI4kKgK5XAZ97d1uZ73t6EWtOsofviaG3Gg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363b685b342so633085ab.3
-        for <linux-ext4@vger.kernel.org>; Fri, 02 Feb 2024 01:24:29 -0800 (PST)
+	s=arc-20240116; t=1706879740; c=relaxed/simple;
+	bh=WfittIrkOYFPzk2rCzCMPIcDdcjW8IBbvJaYm8qMAgw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=kwws6fbMdIacvo7lHRP7Sb8K2Fi/fp1gJwAUJqK5C/DVKPTHQ2t1aqGvVItGnmM+b3XmjhXJyI/rXfoTUdB7ufCk+L8uqOnpBIM8bMNrIA/AKpGR8+w6EsWJ28FXSk5xzKoCtgpjrZye9PSi2xSi5zUo4CfgriogNH61pCYZ4Bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aKgvQAD3; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1706879737;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Om98aIFFkI/6GP1+GxMYTlvJbRDlSfik3uOG+O17X4g=;
+	b=aKgvQAD3ekR+hIVUi3npGisPdSalNEOEyLbvkzRTWMt73Z1y9IFz2kZKePv2pcZ9EpxaX5
+	qPZv6WnslkUpkPjBc9Xg5W7lfd5p15HOYwFh74EYi/9T34iAyrvvsD2O1GCW22V2DKyFDy
+	7UTstKUnIaASETINJXamurhiKHzmBCc=
+Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
+ [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-655-tdkBFNBcNiWi_l-8jgummg-1; Fri, 02 Feb 2024 08:15:36 -0500
+X-MC-Unique: tdkBFNBcNiWi_l-8jgummg-1
+Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2962056d9e7so1513671a91.0
+        for <linux-ext4@vger.kernel.org>; Fri, 02 Feb 2024 05:15:35 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706865867; x=1707470667;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=WPtIpSzuSpFtfcglYU7ZOgBzedE9MgV+9Ht7eXOMfdY=;
-        b=VRgAAK4KvYJYMx22NFgaiRE2XvgJt2w50jjbiR2s4LGMAOhsy+FdHVFrVLiUBLLcOA
-         pk/20sufnKXJbR+rZE9xGscNTJKjc4H/qCeE6iq12FWZnZp+luawVrc93evT30USGv9v
-         YTQy8tUtFFU0+ktULjEYbpNo/OmsDFG4yaO83tAcvX7hQcsG8CrZl6GYe+Q5gXnG1+xd
-         zeB2UOzHpM7Tvg9BrC73ia1jW9iBofSJyA2M9e5dz1DPkezmi8OAwuoTMkuXaxxGMR+P
-         SLih7e/fSj0gndBLFpER33Q5ik/aV1Czvo2r6VJrVUdW0sfDHC/0RLiaAhh1jEbDA2X0
-         ELvA==
-X-Gm-Message-State: AOJu0YzOQf1ZdRoizI0Vvr4j+MPl0IUVqKsNLUtPd4SLCdU3ag8naydY
-	07F3I47idUPx8gW6lrnsUcS5jMbQVKiqLxX9xUre3KMPxmK+3bkrqoAgjw0uU+VX571y7Dg+hhV
-	UjBG2oGGUVCxQOUS3mnrY0OFXyARHTPzpUNn7uU60kWdlw2Cn58z/ZnQ=
-X-Google-Smtp-Source: AGHT+IFrqpxbgQOf8vCr0HY4EsOrYMQFMnr67z/eqirSmcXeyRBL5epRfdoHP++TUkOMJuJHsdvoDs7OL6lnAiRvkTjIGy/IQl+j
+        d=1e100.net; s=20230601; t=1706879735; x=1707484535;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Om98aIFFkI/6GP1+GxMYTlvJbRDlSfik3uOG+O17X4g=;
+        b=XiqoPXPKUUg7g9L3K5+tMXydKQJKmXgssojM8Iu6u2KoVNZ2UDiLIbnfezcjze5+MR
+         mWuX+5+8ASUzmU9ioOEg+MbTIrYk66lmt+Qmh4ydjB5SnD0vATwPLgMCsKJv2Dx629Yh
+         NcmriibktPhj5E8g1ESDlYbMJWAqjl9YoBG4/cZRwGay9GZ0hEZtmfMsy0zR7Ie6Kl+B
+         yOcg31z/qwGRRhtSRdzeU5hjtYDcBKjtTJIWL8jnEdn1q8x+mIvKfgH+leceMvX8TQeM
+         U+GM/g1uBEFiTzEfcIhuBz3fgPkLYrkM3eIno/jsg1x9GGrz5CUsBZAOQ4SsFXG1bbtT
+         /W0A==
+X-Gm-Message-State: AOJu0YylfRS2Q9vJ9IPGkJmo0P95qw6+Udl3mYZSDdwaj9oXLUfp8xWC
+	F0N9zhj0jlpWQPP4mxQjc3mMHNz44adtlJngUSyJ3idTRLMmX9EVTYIT/U6OKEHUiUJQH6zhMhP
+	JzsH8sMUlIFStOu369p5+PahlgrcAVwInU6OvXaRIj/WNCeAdhd7AKOKtjbs=
+X-Received: by 2002:a17:90a:f2c3:b0:295:f71e:3a06 with SMTP id gt3-20020a17090af2c300b00295f71e3a06mr6890437pjb.37.1706879734989;
+        Fri, 02 Feb 2024 05:15:34 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IESKt+htB2oRD/ZBm6B+Z2qtwGgVmuYLz7kVncIgWy6iO+xKstkduRtDJICrHHcBplt8x8wdw==
+X-Received: by 2002:a17:90a:f2c3:b0:295:f71e:3a06 with SMTP id gt3-20020a17090af2c300b00295f71e3a06mr6890417pjb.37.1706879734682;
+        Fri, 02 Feb 2024 05:15:34 -0800 (PST)
+X-Forwarded-Encrypted: i=0; AJvYcCWIzUg0CcSOoymOl+qsJHYkEuF6rR0jBZXMtQjg4aOLxSOAmBGnA37fbEHjil5RXWPyzuIUgwQAtKvm0iC7+U+WonOiDMYLRloQygZ4+urVSshxp/SJeSbxnA==
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id rr7-20020a17090b2b4700b0029612f113b3sm1725674pjb.47.2024.02.02.05.15.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Feb 2024 05:15:34 -0800 (PST)
+Date: Fri, 2 Feb 2024 21:15:29 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Eric Whitney <enwlinux@gmail.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu
+Subject: Re: [PATCH] generic/459: don't run on non-journaled ext4 file systems
+Message-ID: <20240202131529.jn5z64qfm5r5ibte@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20240124195306.1177737-1-enwlinux@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a6d:b0:363:7b21:c860 with SMTP id
- w13-20020a056e021a6d00b003637b21c860mr371640ilv.4.1706865866841; Fri, 02 Feb
- 2024 01:24:26 -0800 (PST)
-Date: Fri, 02 Feb 2024 01:24:26 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000ac258b061062ad8d@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data_end (2)
-From: syzbot <syzbot+0c89d865531d053abb2d@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240124195306.1177737-1-enwlinux@gmail.com>
 
-Hello,
+On Wed, Jan 24, 2024 at 02:53:06PM -0500, Eric Whitney wrote:
+> generic/459 fails when run on an ext4 file system created without a
+> journal or when its journal has not been loaded at mount time.
+> 
+> The test expects that a file system that it has been unable to freeze
+> will be automatically remounted read only.  However, the default error
+> handling policy for ext4 is to continue when possible after errors.
+> 
+> A workaround was added to the test in the past to force ext4 to
+> perform a read only remount in order to meet the test's expectations.
+> The touch command was used to create a new file after a freeze failure.
+> This forces ext4 to start a new journal transaction, where it discovers
+> the journal has previously aborted due to lack of space, and triggers
+> special case error handling that results in a read only remount.
+> 
+> The workaround requires a journal.  Since ext4 is behaving as designed,
+> prevent the test from running if there isn't one.
+> 
+> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
+> ---
+>  tests/generic/459 | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
+> diff --git a/tests/generic/459 b/tests/generic/459
+> index c3f0b2b0..63fbbc9b 100755
+> --- a/tests/generic/459
+> +++ b/tests/generic/459
+> @@ -49,6 +49,11 @@ _require_command "$THIN_CHECK_PROG" thin_check
+>  _require_freeze
+>  _require_odirect
+>  
+> +# non-journaled ext4 won't remount read only after freeze failure
+> +if [ "$FSTYP" == "ext4" ]; then
+> +	_require_metadata_journaling
 
-syzbot found the following issue on:
+I'm wondering ... won't other fs need this, besides ext4?
 
-HEAD commit:    6764c317b6bb Merge tag 'scsi-fixes' of git://git.kernel.or..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=132faab7e80000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=2c0ac5dfae6ecc58
-dashboard link: https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> +fi
+> +
+>  vgname=vg_$seq
+>  lvname=lv_$seq
+>  poolname=pool_$seq
+> -- 
+> 2.30.2
+> 
+> 
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/90c636d7609b/disk-6764c317.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9d76784c4adc/vmlinux-6764c317.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4fa116a29660/bzImage-6764c317.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0c89d865531d053abb2d@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inline.c:763!
-invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 1 PID: 11999 Comm: syz-executor.1 Not tainted 6.8.0-rc2-syzkaller-00055-g6764c317b6bb #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
-RIP: 0010:ext4_write_inline_data_end+0x550/0xc20 fs/ext4/inline.c:763
-Code: 25 28 00 00 00 0f 85 1d 06 00 00 48 81 c4 b0 00 00 00 44 89 f0 5b 5d 41 5c 41 5d 41 5e 41 5f e9 46 d6 87 08 e8 21 65 4c ff 90 <0f> 0b e8 19 65 4c ff 4d 8d 7c 24 34 4c 89 e7 e8 5c 3c 7c ff be 04
-RSP: 0018:ffffc90004a3f928 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880452c82b0 RCX: ffffffff82400124
-RDX: ffff888020358000 RSI: ffffffff8240049f RDI: 0000000000000001
-RBP: 0000000000000020 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000004 R12: ffffea00013a6980
-R13: 0000000000000020 R14: ffff8880452c8050 R15: ffffc90004a3f978
-FS:  00007f1365d136c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fb7e6f02425 CR3: 0000000028762000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- ext4_write_end+0x4af/0xed0 fs/ext4/inode.c:1284
- generic_perform_write+0x33b/0x620 mm/filemap.c:3941
- ext4_buffered_write_iter+0x11f/0x3d0 fs/ext4/file.c:299
- ext4_file_write_iter+0x819/0x1960 fs/ext4/file.c:698
- call_write_iter include/linux/fs.h:2085 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x6e1/0x1110 fs/read_write.c:590
- ksys_write+0x12f/0x260 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd8/0x270 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6f/0x77
-RIP: 0033:0x7f136507dda9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f1365d130c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f13651abf80 RCX: 00007f136507dda9
-RDX: 0000000000000020 RSI: 00000000200002c0 RDI: 0000000000000005
-RBP: 00007f13650ca47a R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f13651abf80 R15: 00007ffc77beff18
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_write_inline_data_end+0x550/0xc20 fs/ext4/inline.c:763
-Code: 25 28 00 00 00 0f 85 1d 06 00 00 48 81 c4 b0 00 00 00 44 89 f0 5b 5d 41 5c 41 5d 41 5e 41 5f e9 46 d6 87 08 e8 21 65 4c ff 90 <0f> 0b e8 19 65 4c ff 4d 8d 7c 24 34 4c 89 e7 e8 5c 3c 7c ff be 04
-RSP: 0018:ffffc90004a3f928 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff8880452c82b0 RCX: ffffffff82400124
-RDX: ffff888020358000 RSI: ffffffff8240049f RDI: 0000000000000001
-RBP: 0000000000000020 R08: 0000000000000001 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000004 R12: ffffea00013a6980
-R13: 0000000000000020 R14: ffff8880452c8050 R15: ffffc90004a3f978
-FS:  00007f1365d136c0(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffb08627d58 CR3: 0000000028762000 CR4: 0000000000350ef0
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
