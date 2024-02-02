@@ -1,139 +1,252 @@
-Return-Path: <linux-ext4+bounces-1064-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1065-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47DB98470F0
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 14:15:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 843AF847231
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 15:50:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D13D1C23F82
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 13:15:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15B2BB24FA7
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Feb 2024 14:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70F4B20F7;
-	Fri,  2 Feb 2024 13:15:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 216A3144612;
+	Fri,  2 Feb 2024 14:50:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aKgvQAD3"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="bGr7+y1B";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="7kn5qUrm";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="HMD9QmEp";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BMFy8QsL"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 721DB1755A
-	for <linux-ext4@vger.kernel.org>; Fri,  2 Feb 2024 13:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD4EF2B9A1;
+	Fri,  2 Feb 2024 14:50:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1706879740; cv=none; b=HoA6/8IIDwT+O/OvratLID7vPg22dXjeVCSnoXcgxTgBmJn1bDLxTVcqHD9mKIOTchOQI3kvvxlMNHIgWnhTMT3+bQ8zAv+Lk89DePEIST58pacExnO1ppf2e+bNODJLqsrWDrwb6q9PNGixByxy9ppRe4rcZo98nqiP8KkyyyM=
+	t=1706885414; cv=none; b=UyOidQTAE5xrbMGbpPIpxer1Q5F2EBuhfP385zn9SmD4cArYtgZxUrAIW8f6s1Vwin8InP+PKl6LWUsrd3yeEHVtb3+YKFPafdeDjUe9KOglQ2aCjORFghsoLeG/ZwFnt67Kyro3u0upx+5OYOCQ5iTecFBN6DEvizuYTIiAZAo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1706879740; c=relaxed/simple;
-	bh=WfittIrkOYFPzk2rCzCMPIcDdcjW8IBbvJaYm8qMAgw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kwws6fbMdIacvo7lHRP7Sb8K2Fi/fp1gJwAUJqK5C/DVKPTHQ2t1aqGvVItGnmM+b3XmjhXJyI/rXfoTUdB7ufCk+L8uqOnpBIM8bMNrIA/AKpGR8+w6EsWJ28FXSk5xzKoCtgpjrZye9PSi2xSi5zUo4CfgriogNH61pCYZ4Bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aKgvQAD3; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1706879737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	s=arc-20240116; t=1706885414; c=relaxed/simple;
+	bh=mRdvIIWBCR0d0xr1Is9uy1juXRhkWDy1ZbV+L8VMd68=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=oWifpCZy2y0XipyQUMiuA99DXVLxLt1uLR9SWNPbPtI3aM66w4rbCPzAe8A7IxU7KPMBGSDxfML+AididgNGSqe9FFQ2ceFn3D5b2rRgQOvyWn3rgbJJsmshUye+Nhd12jot/bGUSGzQM5ILUKVUxLCBdXBbkz56EPk0Go5tG0c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=bGr7+y1B; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=7kn5qUrm; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=HMD9QmEp; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BMFy8QsL; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DEF39221DE;
+	Fri,  2 Feb 2024 14:50:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706885411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Om98aIFFkI/6GP1+GxMYTlvJbRDlSfik3uOG+O17X4g=;
-	b=aKgvQAD3ekR+hIVUi3npGisPdSalNEOEyLbvkzRTWMt73Z1y9IFz2kZKePv2pcZ9EpxaX5
-	qPZv6WnslkUpkPjBc9Xg5W7lfd5p15HOYwFh74EYi/9T34iAyrvvsD2O1GCW22V2DKyFDy
-	7UTstKUnIaASETINJXamurhiKHzmBCc=
-Received: from mail-pj1-f69.google.com (mail-pj1-f69.google.com
- [209.85.216.69]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-655-tdkBFNBcNiWi_l-8jgummg-1; Fri, 02 Feb 2024 08:15:36 -0500
-X-MC-Unique: tdkBFNBcNiWi_l-8jgummg-1
-Received: by mail-pj1-f69.google.com with SMTP id 98e67ed59e1d1-2962056d9e7so1513671a91.0
-        for <linux-ext4@vger.kernel.org>; Fri, 02 Feb 2024 05:15:35 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1706879735; x=1707484535;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Om98aIFFkI/6GP1+GxMYTlvJbRDlSfik3uOG+O17X4g=;
-        b=XiqoPXPKUUg7g9L3K5+tMXydKQJKmXgssojM8Iu6u2KoVNZ2UDiLIbnfezcjze5+MR
-         mWuX+5+8ASUzmU9ioOEg+MbTIrYk66lmt+Qmh4ydjB5SnD0vATwPLgMCsKJv2Dx629Yh
-         NcmriibktPhj5E8g1ESDlYbMJWAqjl9YoBG4/cZRwGay9GZ0hEZtmfMsy0zR7Ie6Kl+B
-         yOcg31z/qwGRRhtSRdzeU5hjtYDcBKjtTJIWL8jnEdn1q8x+mIvKfgH+leceMvX8TQeM
-         U+GM/g1uBEFiTzEfcIhuBz3fgPkLYrkM3eIno/jsg1x9GGrz5CUsBZAOQ4SsFXG1bbtT
-         /W0A==
-X-Gm-Message-State: AOJu0YylfRS2Q9vJ9IPGkJmo0P95qw6+Udl3mYZSDdwaj9oXLUfp8xWC
-	F0N9zhj0jlpWQPP4mxQjc3mMHNz44adtlJngUSyJ3idTRLMmX9EVTYIT/U6OKEHUiUJQH6zhMhP
-	JzsH8sMUlIFStOu369p5+PahlgrcAVwInU6OvXaRIj/WNCeAdhd7AKOKtjbs=
-X-Received: by 2002:a17:90a:f2c3:b0:295:f71e:3a06 with SMTP id gt3-20020a17090af2c300b00295f71e3a06mr6890437pjb.37.1706879734989;
-        Fri, 02 Feb 2024 05:15:34 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IESKt+htB2oRD/ZBm6B+Z2qtwGgVmuYLz7kVncIgWy6iO+xKstkduRtDJICrHHcBplt8x8wdw==
-X-Received: by 2002:a17:90a:f2c3:b0:295:f71e:3a06 with SMTP id gt3-20020a17090af2c300b00295f71e3a06mr6890417pjb.37.1706879734682;
-        Fri, 02 Feb 2024 05:15:34 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCWIzUg0CcSOoymOl+qsJHYkEuF6rR0jBZXMtQjg4aOLxSOAmBGnA37fbEHjil5RXWPyzuIUgwQAtKvm0iC7+U+WonOiDMYLRloQygZ4+urVSshxp/SJeSbxnA==
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id rr7-20020a17090b2b4700b0029612f113b3sm1725674pjb.47.2024.02.02.05.15.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Feb 2024 05:15:34 -0800 (PST)
-Date: Fri, 2 Feb 2024 21:15:29 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Eric Whitney <enwlinux@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH] generic/459: don't run on non-journaled ext4 file systems
-Message-ID: <20240202131529.jn5z64qfm5r5ibte@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240124195306.1177737-1-enwlinux@gmail.com>
+	bh=U5AGzqGQFFXmMwVA4kAP4RP63hmICs6T3j3mdDSSjX0=;
+	b=bGr7+y1BSUxED48XSOHudVg8YMKPcHZyd7MQELl+Vi77liXl9JQMvlOKt+zkNUeqTnX6TA
+	c/jqWKq/wkBC2KjkOUnvhkika7/RhK87Tz9KboIYyk/DruchabIa+Ggp+J9JgHxvgcYYPi
+	19qGZetyhTKZSQzs3GUUA54D78Jl3iE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706885411;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U5AGzqGQFFXmMwVA4kAP4RP63hmICs6T3j3mdDSSjX0=;
+	b=7kn5qUrm7OM+VyJatmGdpZaAc5UtUmU42BBpCnrTjqtBiH47O0nOzq5BNopQv8PqZZso4T
+	k72nMvnDnGnFiADA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1706885410; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U5AGzqGQFFXmMwVA4kAP4RP63hmICs6T3j3mdDSSjX0=;
+	b=HMD9QmEp0Qsc5pL+YMFSkodu7eGebFvqI17xsrAWn2uIXO3TJ8PDsBuTIkf+fdRJ9Sp9zo
+	QhmwyZHTqz/fAGysjhH4G+CBQWLS3rBqJA5WsnWg2JiMxjXItzsNwZZUct1v+9Z9RXn819
+	mz2x059Q2w8fx3eaO9uBiJn94pP6Pto=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1706885410;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=U5AGzqGQFFXmMwVA4kAP4RP63hmICs6T3j3mdDSSjX0=;
+	b=BMFy8QsLyL6nQlKMWpxkvkUyOdNhPFR1/+2gv4MqLqFn+PpTQx8ZdyUL3cPofrLPIXr0xp
+	aonjsYoluSeXqxDg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4390E13A58;
+	Fri,  2 Feb 2024 14:50:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id YDwpOiEBvWXjJgAAD6G6ig
+	(envelope-from <krisman@suse.de>); Fri, 02 Feb 2024 14:50:09 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eric Biggers <ebiggers@kernel.org>, brauner@kernel.org,
+ viro@zeniv.linux.org.uk
+Cc: jaegeuk@kernel.org,  tytso@mit.edu,  amir73il@gmail.com,
+  linux-ext4@vger.kernel.org,  linux-f2fs-devel@lists.sourceforge.net,
+  linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v5 04/12] fscrypt: Drop d_revalidate for valid dentries
+ during lookup
+In-Reply-To: <20240201032433.GB1526@sol.localdomain> (Eric Biggers's message
+	of "Wed, 31 Jan 2024 19:24:33 -0800")
+Organization: SUSE
+References: <20240129204330.32346-1-krisman@suse.de>
+	<20240129204330.32346-5-krisman@suse.de>
+	<20240131004724.GC2020@sol.localdomain>
+	<871q9x2vwj.fsf@mailhost.krisman.be>
+	<20240201032433.GB1526@sol.localdomain>
+Date: Fri, 02 Feb 2024 11:50:07 -0300
+Message-ID: <87le82yl7k.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240124195306.1177737-1-enwlinux@gmail.com>
+Content-Type: text/plain
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=HMD9QmEp;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=BMFy8QsL
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-6.51 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
+	 HAS_ORG_HEADER(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FREEMAIL_CC(0.00)[kernel.org,mit.edu,gmail.com,vger.kernel.org,lists.sourceforge.net];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Score: -6.51
+X-Rspamd-Queue-Id: DEF39221DE
+X-Spam-Flag: NO
 
-On Wed, Jan 24, 2024 at 02:53:06PM -0500, Eric Whitney wrote:
-> generic/459 fails when run on an ext4 file system created without a
-> journal or when its journal has not been loaded at mount time.
-> 
-> The test expects that a file system that it has been unable to freeze
-> will be automatically remounted read only.  However, the default error
-> handling policy for ext4 is to continue when possible after errors.
-> 
-> A workaround was added to the test in the past to force ext4 to
-> perform a read only remount in order to meet the test's expectations.
-> The touch command was used to create a new file after a freeze failure.
-> This forces ext4 to start a new journal transaction, where it discovers
-> the journal has previously aborted due to lack of space, and triggers
-> special case error handling that results in a read only remount.
-> 
-> The workaround requires a journal.  Since ext4 is behaving as designed,
-> prevent the test from running if there isn't one.
-> 
-> Signed-off-by: Eric Whitney <enwlinux@gmail.com>
-> ---
->  tests/generic/459 | 5 +++++
->  1 file changed, 5 insertions(+)
-> 
-> diff --git a/tests/generic/459 b/tests/generic/459
-> index c3f0b2b0..63fbbc9b 100755
-> --- a/tests/generic/459
-> +++ b/tests/generic/459
-> @@ -49,6 +49,11 @@ _require_command "$THIN_CHECK_PROG" thin_check
->  _require_freeze
->  _require_odirect
->  
-> +# non-journaled ext4 won't remount read only after freeze failure
-> +if [ "$FSTYP" == "ext4" ]; then
-> +	_require_metadata_journaling
+Eric Biggers <ebiggers@kernel.org> writes:
 
-I'm wondering ... won't other fs need this, besides ext4?
+> On Wed, Jan 31, 2024 at 03:35:40PM -0300, Gabriel Krisman Bertazi wrote:
+>> Eric Biggers <ebiggers@kernel.org> writes:
+>> 
+>> > On Mon, Jan 29, 2024 at 05:43:22PM -0300, Gabriel Krisman Bertazi wrote:
+>> >> Unencrypted and encrypted-dentries where the key is available don't need
+>> >> to be revalidated with regards to fscrypt, since they don't go stale
+>> >> from under VFS and the key cannot be removed for the encrypted case
+>> >> without evicting the dentry.  Mark them with d_set_always_valid, to
+>> >
+>> > "d_set_always_valid" doesn't appear in the diff itself.
+>> >
+>> >> diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
+>> >> index 4aaf847955c0..a22997b9f35c 100644
+>> >> --- a/include/linux/fscrypt.h
+>> >> +++ b/include/linux/fscrypt.h
+>> >> @@ -942,11 +942,22 @@ static inline int fscrypt_prepare_rename(struct inode *old_dir,
+>> >>  static inline void fscrypt_prepare_lookup_dentry(struct dentry *dentry,
+>> >>  						 bool is_nokey_name)
+>> >>  {
+>> >> -	if (is_nokey_name) {
+>> >> -		spin_lock(&dentry->d_lock);
+>> >> +	spin_lock(&dentry->d_lock);
+>> >> +
+>> >> +	if (is_nokey_name)
+>> >>  		dentry->d_flags |= DCACHE_NOKEY_NAME;
+>> >> -		spin_unlock(&dentry->d_lock);
+>> >> +	else if (dentry->d_flags & DCACHE_OP_REVALIDATE &&
+>> >> +		 dentry->d_op->d_revalidate == fscrypt_d_revalidate) {
+>> >> +		/*
+>> >> +		 * Unencrypted dentries and encrypted dentries where the
+>> >> +		 * key is available are always valid from fscrypt
+>> >> +		 * perspective. Avoid the cost of calling
+>> >> +		 * fscrypt_d_revalidate unnecessarily.
+>> >> +		 */
+>> >> +		dentry->d_flags &= ~DCACHE_OP_REVALIDATE;
+>> >>  	}
+>> >> +
+>> >> +	spin_unlock(&dentry->d_lock);
+>> >
+>> > This makes lookups in unencrypted directories start doing the
+>> > spin_lock/spin_unlock pair.  Is that really necessary?
+>> >
+>> > These changes also make the inline function fscrypt_prepare_lookup() very long
+>> > (when including the fscrypt_prepare_lookup_dentry() that's inlined into it).
+>> > The rule that I'm trying to follow is that to the extent that the fscrypt helper
+>> > functions are inlined, the inline part should be a fast path for unencrypted
+>> > directories.  Encrypted directories should be handled out-of-line.
+>> >
+>> > So looking at the original fscrypt_prepare_lookup():
+>> >
+>> > 	static inline int fscrypt_prepare_lookup(struct inode *dir,
+>> > 						 struct dentry *dentry,
+>> > 						 struct fscrypt_name *fname)
+>> > 	{
+>> > 		if (IS_ENCRYPTED(dir))
+>> > 			return __fscrypt_prepare_lookup(dir, dentry, fname);
+>> >
+>> > 		memset(fname, 0, sizeof(*fname));
+>> > 		fname->usr_fname = &dentry->d_name;
+>> > 		fname->disk_name.name = (unsigned char *)dentry->d_name.name;
+>> > 		fname->disk_name.len = dentry->d_name.len;
+>> > 		return 0;
+>> > 	}
+>> >
+>> > If you could just add the DCACHE_OP_REVALIDATE clearing for dentries in
+>> > unencrypted directories just before the "return 0;", hopefully without the
+>> > spinlock, that would be good.  Yes, that does mean that
+>> > __fscrypt_prepare_lookup() will have to handle it too, for the case of dentries
+>> > in encrypted directories, but that seems okay.
+>> 
+>> ok, will do.  IIUC, we might be able to do without the d_lock
+>> provided there is no store tearing.
+>> 
+>> But what was the reason you need the d_lock to set DCACHE_NOKEY_NAME
+>> during lookup?  Is there a race with parallel lookup setting d_flag that
+>> I couldn't find? Or is it another reason?
+>
+> d_flags is documented to be protected by d_lock.  So for setting
+> DCACHE_NOKEY_NAME, fs/crypto/ just does the safe thing of taking d_lock.  I
+> never really looked into whether the lock can be skipped there (i.e., whether
+> anything else can change d_flags while ->lookup is running), since this code
+> only ran for no-key names, for which performance isn't really important.
 
-> +fi
-> +
->  vgname=vg_$seq
->  lvname=lv_$seq
->  poolname=pool_$seq
-> -- 
-> 2.30.2
-> 
-> 
+Yes, I was looking for the actual race that could happen here, and
+couldn't find one. As far as I understand it, the only thing that could
+see the dentry during a lookup would be a parallel lookup, but those
+will be held waiting for completion in d_alloc_parallel, and won't touch
+d_flags.  Currently, right after this code, we call d_set_d_op() in
+generic_set_encrypted_ci_d_ops(), which will happily write d_flags without
+the d_lock. If this is a problem here, we have a problem there.
 
+What I really don't want to do is keep the lock for DCACHE_NOKEY_NAME,
+but drop it for unsetting DCACHE_OP_REVALIDATE right in the same field,
+without a good reason.  I get the argument that unencrypted
+dentries are a much hotter path and we care more.  But the locking rules
+of ->d_lookup don't change for both cases.
+
+So, I'd rather drop the d_lock entirely in this path, not only for the
+hunk I'm proposing.  It would be good to get an actual confirmation from
+Al or Christian, though.
+
+CC'ing Christian.
+
+-- 
+Gabriel Krisman Bertazi
 
