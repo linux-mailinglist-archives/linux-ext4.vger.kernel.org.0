@@ -1,88 +1,58 @@
-Return-Path: <linux-ext4+bounces-1122-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1123-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0F7484A91F
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 23:22:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA49D84A948
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 23:27:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 10C0D1C27CBF
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 22:22:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 08D291C262F9
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 22:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22B071DA52;
-	Mon,  5 Feb 2024 22:18:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13E7B1DA4F;
+	Mon,  5 Feb 2024 22:27:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="V8iRoTdT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VOz8cddh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D301A4BAAA
-	for <linux-ext4@vger.kernel.org>; Mon,  5 Feb 2024 22:18:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5191DA2E;
+	Mon,  5 Feb 2024 22:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707171484; cv=none; b=B8WQWeK6f3EGpIrNwBTQngI25jQsdDMaULbbF6drGsXE68lhQWxdA/jUATt0mC53yl5Cx4nHzS0kSoBQh/t7AGYji+qyKQmJriv3+SNlcTMGiCGC35U16QuJVsTQAABbv4Hhpry3rltvyqTX+2h2LTCKLQKFjNXvPDObkW763mw=
+	t=1707172053; cv=none; b=bGtuY5Ppyxrhsd7saKUYBojtx+QgETQZ/peQZUYtk5pHevh3JYRKgdVqbT/HIwSbsZfYJKbab0rjqoJh4BvGSNckcal/Dyxhq1EJim8rr/2v1DnhXAGJyoHwNVIm3KZorMY50njCLfMrSuVRFOZvcWaF+2NmSq8/gfAVckZvmNo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707171484; c=relaxed/simple;
-	bh=WFirQiv/bif0ORcBDskVBLI31abXA7X4de7fsW5AqyE=;
+	s=arc-20240116; t=1707172053; c=relaxed/simple;
+	bh=VgPZEFsjPxFWOJWslIFFnnk8V9OLOMScwT6wloqjZW4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jnZu14kVQH/eBKd4AIgN5kCk87ti+0ZoDxoatY4aoqolpPWi0a1MAWy2IYTjyj/HHt/8RKOermrvoj85o9Glbf/2UdaACNEdKOyIqrFI4H16G0HHWNWkeEJBKt3ykJUr2SCkLut9lTgRE02+s4qtMs7LiBe+ApFiwJuL9QBc0xw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=V8iRoTdT; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1d7881b1843so43923515ad.3
-        for <linux-ext4@vger.kernel.org>; Mon, 05 Feb 2024 14:18:02 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1707171482; x=1707776282; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RQ2KX6PtmVgxF5myahHQmzeyx34uFsn54JKIPJOPSpQ=;
-        b=V8iRoTdTMUO1v76w5YIHp3hWgXPOLsK29pk1c4BMkXiQN2bAdsfgsmtkbQR+mZokXx
-         9dcy48l0wmpecdAfa1JPnGt2sdOdbXDnTK/GLxyxor/G3HYrVcbPJF2L43Yn5Cbqw6sq
-         FC6VEqFOvOdkZmaZksrEUlNrnULcqL/lBxRSmqKD9nqc1+xcDyeaAJ0OKV3qvC+Y/kyb
-         O208mg75XQFaQMJd4QzqSSHptgcy6O0CmZo1zHo1OErnm667MCTzHno2yUcGHxNF3Owi
-         MNsOySirEtorWUMCv3ccYgKy9IUfHuZqJdJCuPCBFy45jeFL2OiE8D1Lfcf84t7eDrnq
-         CgqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707171482; x=1707776282;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RQ2KX6PtmVgxF5myahHQmzeyx34uFsn54JKIPJOPSpQ=;
-        b=iZ7T+jRXjhZUMgS2bB1SQpB/3xy3tZmKNKk42UigzekwWmCvX5q+KNk22zH4w2IV18
-         QbfGOznDgez9hwZ2Rb7Ndv1zHw04ZCvwfzigIdTKsX0bFht53Wrfdd6402iQ90Wi1MUi
-         iLVNG6kD5R2VcseWQc40dIISO7HVRR4+Og2RrRH6oEAYINxOiohwLjVORwSEj5FKZVbK
-         AfCPwKUnXFqSI0GmlBbziFNn5MynWinpcEGonFHdTkG6HSIQlC1QTrtifuPAeCCRjYaN
-         rFYPjrFMBvg3XzdK8Wm9/HuakgZRblMjULuCVrzoxaE7GqQ7gDkePA2m4HUX71pWTyaG
-         fVUg==
-X-Gm-Message-State: AOJu0YzlYQxEtVbCZtMlFMNQEklWCuMZWF5MHrxrg0IG4SC7Xweohpve
-	LDpflW8QFt5QWc1lNVhrbMCsi7l69Qpf526tkvAAwBRk9ooaHfwThXhz556yPME=
-X-Google-Smtp-Source: AGHT+IGukEyR/oTSk6uDnfCM3DsGByrIPzirka2urPJDZhACgRtMbr5HUrwSDj+XoBjd9qAvrwVMBA==
-X-Received: by 2002:a17:902:ac88:b0:1d7:428f:50fd with SMTP id h8-20020a170902ac8800b001d7428f50fdmr906434plr.31.1707171482093;
-        Mon, 05 Feb 2024 14:18:02 -0800 (PST)
-X-Forwarded-Encrypted: i=0; AJvYcCU821uwUmfcCx4HStlzYkKkb4zVsnGy/9OCw3fqzMV3pdkmOcH6fejWbcoRuKEJA9x6kHl3OVFRo10vz1oQ8DrabMiV/k2fsF6ZrY3ertY6MX0BBQmKfYZJY1XVKj1F06TdPsTKwO16gabTa8v6wD9gV1799mlzzg0pEGyAltTMq3TX3ohmHxgHVwsTNBSO05Wq5T9BN/+cIjJi4XBn5lOcVfcxrafPv1hl4w9DaMRmdAnuSH7sL8Du1Sq4Nf5aq+I7fABRffRs+Bsj/LLKtv6YnTvg0hqMfeV8565M+4VOdEsP4fY3e97vf2QFc6FNoigP94GZrQs3hjEKCLWIodngZwfwUbcTL9zyaOcZ/dDkWLPn126gMdV+
-Received: from dread.disaster.area (pa49-181-38-249.pa.nsw.optusnet.com.au. [49.181.38.249])
-        by smtp.gmail.com with ESMTPSA id r17-20020a170903015100b001d92f2129dasm369262plc.233.2024.02.05.14.18.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 05 Feb 2024 14:18:01 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rX7Hq-002Z3q-0O;
-	Tue, 06 Feb 2024 09:17:58 +1100
-Date: Tue, 6 Feb 2024 09:17:58 +1100
-From: Dave Chinner <david@fromorbit.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zm053e7rvBOl8Sl/JmnZhr8MJEFTR2JSVB9qhmJhj82YBMSsn2H+Ra65yjYGS6xyANvb3On88Dy/LVx2bXmdiO0ZzKWqgIKnndH0VipoTEqe4B28v8vEwwOgayzKzy/vLF+r5vf12a4+E0Gu4ZgKLpTUf8GIel+sCAFAq+bTs0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VOz8cddh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DF1E5C433F1;
+	Mon,  5 Feb 2024 22:27:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1707172052;
+	bh=VgPZEFsjPxFWOJWslIFFnnk8V9OLOMScwT6wloqjZW4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VOz8cddhQO2oXsZMmqmj55BZxz+lfOZdddnWRhBGgH7aV5jO4z2FqiK0E2dKU+R+z
+	 aIfBUn7anrIwfu3ZmJmCe6AszeJq3Lp7YaEuAqeF22fNX2snhvzz+flnhsB6q8Pxf3
+	 OhMs0ff2cjcSyxXEkmADZjphuugzq11kOuzEYUdBH94IN4czgJQW+d5fhCk6gfOkRb
+	 +azugqWICyfKC28Od1OVebgk+hgPHUYM5KOh+SwVZf4NmyZNny9Ndok2zPrEopikjw
+	 rt1EicSQSBaGcNb+Jz04rcgqydQ80BKVacIx/NPpDm+9icGQ+U8sdGv03UNqqdZb5+
+	 CL1u8ieD9T2Jw==
+Date: Mon, 5 Feb 2024 14:27:32 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
 To: Kent Overstreet <kent.overstreet@linux.dev>
 Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org,
 	linux-ext4@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
 	Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.or
-Subject: Re: [PATCH 2/6] fs: FS_IOC_GETUUID
-Message-ID: <ZcFelmKPb374aebH@dread.disaster.area>
+	Theodore Ts'o <tytso@mit.edu>, Josef Bacik <josef@toxicpanda.com>
+Subject: Re: [PATCH 4/6] fs: FS_IOC_GETSYSFSNAME
+Message-ID: <20240205222732.GO616564@frogsfrogsfrogs>
 References: <20240205200529.546646-1-kent.overstreet@linux.dev>
- <20240205200529.546646-3-kent.overstreet@linux.dev>
+ <20240205200529.546646-5-kent.overstreet@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -91,18 +61,18 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240205200529.546646-3-kent.overstreet@linux.dev>
+In-Reply-To: <20240205200529.546646-5-kent.overstreet@linux.dev>
 
-On Mon, Feb 05, 2024 at 03:05:13PM -0500, Kent Overstreet wrote:
-> Add a new generic ioctls for querying the filesystem UUID.
+On Mon, Feb 05, 2024 at 03:05:15PM -0500, Kent Overstreet wrote:
+> Add a new ioctl for getting the sysfs name of a filesystem - the path
+> under /sys/fs.
 > 
-> These are lifted versions of the ext4 ioctls, with one change: we're not
-> using a flexible array member, because UUIDs will never be more than 16
-> bytes.
+> This is going to let us standardize exporting data from sysfs across
+> filesystems, e.g. time stats.
 > 
-> This patch adds a generic implementation of FS_IOC_GETFSUUID, which
-> reads from super_block->s_uuid; FS_IOC_SETFSUUID is left for individual
-> filesystems to implement.
+> The returned path will always be of the form "$FSTYP/$SYSFS_IDENTIFIER",
+> where the sysfs identifier may be a UUID (for bcachefs) or a device name
+> (xfs).
 > 
 > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
 > Cc: Christian Brauner <brauner@kernel.org>
@@ -110,41 +80,40 @@ On Mon, Feb 05, 2024 at 03:05:13PM -0500, Kent Overstreet wrote:
 > Cc: Dave Chinner <dchinner@redhat.com>
 > Cc: "Darrick J. Wong" <djwong@kernel.org>
 > Cc: Theodore Ts'o <tytso@mit.edu>
-> Cc: linux-fsdevel@vger.kernel.or
-> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: Josef Bacik <josef@toxicpanda.com>
 > ---
->  fs/ioctl.c              | 16 ++++++++++++++++
->  include/uapi/linux/fs.h | 16 ++++++++++++++++
->  2 files changed, 32 insertions(+)
+>  fs/ioctl.c              | 17 +++++++++++++++++
+>  include/linux/fs.h      |  1 +
+>  include/uapi/linux/fs.h |  5 +++++
+>  3 files changed, 23 insertions(+)
 > 
 > diff --git a/fs/ioctl.c b/fs/ioctl.c
-> index 76cf22ac97d7..858801060408 100644
+> index 858801060408..cb3690811d3d 100644
 > --- a/fs/ioctl.c
 > +++ b/fs/ioctl.c
-> @@ -763,6 +763,19 @@ static int ioctl_fssetxattr(struct file *file, void __user *argp)
->  	return err;
+> @@ -776,6 +776,20 @@ static int ioctl_getfsuuid(struct file *file, void __user *argp)
+>  	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
 >  }
 >  
-> +static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> +static int ioctl_getfssysfsname(struct file *file, void __user *argp)
+
+ackpthspacesplease.
+
+"ioctl_get_fs_sysfs_name"?
+
 > +{
 > +	struct super_block *sb = file_inode(file)->i_sb;
 > +
-> +	if (WARN_ON(sb->s_uuid_len > sizeof(sb->s_uuid)))
-> +		sb->s_uuid_len = sizeof(sb->s_uuid);
-
-A "get"/read only ioctl should not be change superblock fields -
-this is not the place for enforcing superblock filed constraints.
-Make a helper function super_set_uuid(sb, uuid, uuid_len) for the
-filesystems to call that does all the validity checking and then
-sets the superblock fields appropriately.
-
+> +	if (!strlen(sb->s_sysfs_name))
+> +		return -ENOIOCTLCMD;
 > +
-> +	struct fsuuid2 u = { .fsu_len = sb->s_uuid_len, };
-> +	memcpy(&u.fsu_uuid[0], &sb->s_uuid, sb->s_uuid_len);
+> +	struct fssysfsname u = {};
+> +
+> +	snprintf(u.name, sizeof(u.name), "%s/%s", sb->s_type->name, sb->s_sysfs_name);
 
-	if (!u.fsu_len)
-		return -ENOENT;
-	memcpy(&u.fsu_uuid[0], &sb->s_uuid, u.fsu_len);
+Does this actually guarantee that there will be a trailing null in the
+output?  It's really stupid that GETFSLABEL can return an unterminated
+string if the label is exactly the size of the char array.
 
 > +
 > +	return copy_to_user(argp, &u, sizeof(u)) ? -EFAULT : 0;
@@ -153,60 +122,68 @@ sets the superblock fields appropriately.
 >  /*
 >   * do_vfs_ioctl() is not for drivers and not intended to be EXPORT_SYMBOL()'d.
 >   * It's just a simple helper for sys_ioctl and compat_sys_ioctl.
-> @@ -845,6 +858,9 @@ static int do_vfs_ioctl(struct file *filp, unsigned int fd,
->  	case FS_IOC_FSSETXATTR:
->  		return ioctl_fssetxattr(filp, argp);
+> @@ -861,6 +875,9 @@ static int do_vfs_ioctl(struct file *filp, unsigned int fd,
+>  	case FS_IOC_GETFSUUID:
+>  		return ioctl_getfsuuid(filp, argp);
 >  
-> +	case FS_IOC_GETFSUUID:
-> +		return ioctl_getfsuuid(filp, argp);
+> +	case FS_IOC_GETFSSYSFSNAME:
+
+File System Ioctl Get File System System File System Name.
+
+Yuck.
+
+FS_IOC_GETSYSFSPATH?
+
+Also, do we want to establish that this works for /sys/fs and
+/sys/kernel/debug at the same time?
+
+> +		return ioctl_getfssysfsname(filp, argp);
 > +
 >  	default:
 >  		if (S_ISREG(inode->i_mode))
 >  			return file_ioctl(filp, cmd, argp);
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index ff41ea6c3a9c..7f23f593f17c 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -1258,6 +1258,7 @@ struct super_block {
+>  	char			s_id[32];	/* Informational name */
+>  	uuid_t			s_uuid;		/* UUID */
+>  	u8			s_uuid_len;	/* Default 16, possibly smaller for weird filesystems */
+> +	char			s_sysfs_name[UUID_STRING_LEN + 1];
+>  
+>  	unsigned int		s_max_links;
+>  
 > diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
-> index 48ad69f7722e..0389fea87db5 100644
+> index 0389fea87db5..6dd14a453277 100644
 > --- a/include/uapi/linux/fs.h
 > +++ b/include/uapi/linux/fs.h
-> @@ -64,6 +64,20 @@ struct fstrim_range {
->  	__u64 minlen;
+> @@ -78,6 +78,10 @@ struct fsuuid2 {
+>  	__u8        fsu_uuid[16];
 >  };
 >  
-> +/*
-> + * We include a length field because some filesystems (vfat) have an identifier
-> + * that we do want to expose as a UUID, but doesn't have the standard length.
-> + *
-> + * We use a fixed size buffer beacuse this interface will, by fiat, never
-> + * support "UUIDs" longer than 16 bytes; we don't want to force all downstream
-> + * users to have to deal with that.
-> + */
-> +struct fsuuid2 {
-> +	__u32       fsu_len;
-> +	__u32       fsu_flags;
-> +	__u8        fsu_uuid[16];
+> +struct fssysfsname {
+> +	__u8			name[64];
 > +};
-
-Nobody in userspace will care that this is "version 2" of the ext4
-ioctl. I'd just name it "fs_uuid" as though the ext4 version didn't
-ever exist.
-
 > +
 >  /* extent-same (dedupe) ioctls; these MUST match the btrfs ioctl definitions */
 >  #define FILE_DEDUPE_RANGE_SAME		0
 >  #define FILE_DEDUPE_RANGE_DIFFERS	1
-> @@ -215,6 +229,8 @@ struct fsxattr {
->  #define FS_IOC_FSSETXATTR		_IOW('X', 32, struct fsxattr)
->  #define FS_IOC_GETFSLABEL		_IOR(0x94, 49, char[FSLABEL_MAX])
+> @@ -231,6 +235,7 @@ struct fsxattr {
 >  #define FS_IOC_SETFSLABEL		_IOW(0x94, 50, char[FSLABEL_MAX])
-> +#define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
-> +#define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
+>  #define FS_IOC_GETFSUUID		_IOR(0x94, 51, struct fsuuid2)
+>  #define FS_IOC_SETFSUUID		_IOW(0x94, 52, struct fsuuid2)
+> +#define FS_IOC_GETFSSYSFSNAME		_IOR(0x94, 53, struct fssysfsname)
 
-0x94 is the btrfs ioctl space, not the VFS space - why did you
-choose that? That said, what is the VFS ioctl space identifier? 'v',
-perhaps?
+0x94 is btrfs, don't add things to their "name" space.
 
--Dave.
+--D
 
--- 
-Dave Chinner
-david@fromorbit.com
+>  
+>  /*
+>   * Inode flags (FS_IOC_GETFLAGS / FS_IOC_SETFLAGS)
+> -- 
+> 2.43.0
+> 
+> 
 
