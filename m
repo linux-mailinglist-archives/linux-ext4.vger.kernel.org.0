@@ -1,56 +1,61 @@
-Return-Path: <linux-ext4+bounces-1112-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1113-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8707A849F86
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 17:32:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B14D849F87
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 17:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 079C4B243F0
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 16:32:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EDF241F22677
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 16:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691532E636;
-	Mon,  5 Feb 2024 16:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A188D2E636;
+	Mon,  5 Feb 2024 16:33:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hvSGc/3D"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="nE3v+/WT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD8AB3FB37;
-	Mon,  5 Feb 2024 16:32:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AB7B3CF4B
+	for <linux-ext4@vger.kernel.org>; Mon,  5 Feb 2024 16:33:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707150758; cv=none; b=HP1NgFoPnZMEVJhfCFnOsvbApkK0wtQ+oLllBGiKmAT52LntBDzRKgltah7KcBNZnDMKsiXFUOmo7JR8aWP2ulxkzRKf2ljUxmk78E0xFLHmvMol9eZK+ACyh04lYbpQLbG/6LX9KTGRxuDldwZ5tu4ZKnXMYLqJQ8byGPhuvnw=
+	t=1707150799; cv=none; b=JtbpJaFCtKm2bVirSKc65NIDb0GJNIsGKj9tUzFfytGqVFmi/CAsd3ClUgcBrO2PPe2r/0QYQEBNaBpRouWCTAlysN4G7P5WRSQGzq8gA57qeJaGhVVjCxcFzoEllPq2qHZyo3HAW9PvzP4APSIzcs5aPBtrxnz8Ldzo4vMIZGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707150758; c=relaxed/simple;
-	bh=UENOyErWeXOKGzE/txIIQKgGGewal06VF9cF2c3y61U=;
+	s=arc-20240116; t=1707150799; c=relaxed/simple;
+	bh=2cQXhUPiMEW3Ok85h1EHeLAdBpbDxsZrxdUiLgoGxIQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uGl1jjI3KujxQFknUjhXlVIG23oiKmvjnUSv8vQbG8Haxd7hrMfDd39ufWkb5p86SttaBIF4+rv2hFna/GsGvXt6J8mSvz9VbrnHjJHXhSracXgsSFR8NPsdSy1I/ofOY6vMalPbB/Z1E2SLS8ieKS619LM6i2edZSJds936ICU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hvSGc/3D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 58C29C433C7;
-	Mon,  5 Feb 2024 16:32:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707150757;
-	bh=UENOyErWeXOKGzE/txIIQKgGGewal06VF9cF2c3y61U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hvSGc/3Dlfv0kiw+lX4rntbpb9Y/BTbqFQg+Hz/RYVyIZOvHx0mU9OvmPoMl5Qyjp
-	 GDVaLC29Z8GFDl8GvbyNEX5xthITMTnHpGGxD1z3xDHu79x+cVrHYA5NDVNLX9q0y9
-	 nI9H82cXeVyGGyfMieWS4WJv43OmgiZia19fgTTVZ5YURus4Ps2arkqwbDXVlhbo86
-	 uWvfeGUiYScS2EGXnF2cEO1X5gDn5HY4jfn/iFDEwVeciyIs2HCcsyRRbDRiZABxJF
-	 4zSfGPHcPhfG45HB28xSJxsWvpc89z2FuR7z1GndU1MjwWGD7zgVo4eKXcFLN+DdvQ
-	 AvFvWPJuwSQ6w==
-Date: Mon, 5 Feb 2024 08:32:36 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Eric Whitney <enwlinux@gmail.com>
-Cc: Zorro Lang <zlang@redhat.com>, fstests@vger.kernel.org,
-	linux-ext4@vger.kernel.org, tytso@mit.edu
-Subject: Re: [PATCH] generic/459: don't run on non-journaled ext4 file systems
-Message-ID: <20240205163236.GH6188@frogsfrogsfrogs>
-References: <20240124195306.1177737-1-enwlinux@gmail.com>
- <20240202131529.jn5z64qfm5r5ibte@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <Zb09Jy8KyxoBAnEN@debian-BULLSEYE-live-builder-AMD64>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZvU4jXq/+2uC2KMScs9YuFX6kxxCiYwKaeqjMImRsPv0oCdgQ1dE/JTI+kflI6qOkZivumCx92H3hotwAUzF05+yXJZOdRVE/rpjUAv/lYaVGkvXu1YBNkulm2nliBRWZOO5Vskut5tDxM/ttB8eZcX4bUjqaLaawXVj9BK+jAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=nE3v+/WT; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-236.bstnma.fios.verizon.net [173.48.82.236])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 415GWnNj014106
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 5 Feb 2024 11:32:50 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1707150772; bh=a9P4gllJIaKyhZehWwj32p0bctAew6koUJX5fapQ3pQ=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=nE3v+/WT01Gk5V/Z68qPKmJcM7hU6ejzRJNb5gfCRDRr0HScBgSzNJukgqr/k+WWD
+	 rRoJJmzmB3fH1Krx1choGfJD9GfDXIG0u+d4aloWquXQuYOj67M5jEEX7/KDOOM2U8
+	 srGpfV2gk3U51xYuSpkrLmlDojg2+2aHrxoV60sWXTekEc2DjptjmjkkkzbrmjBHO6
+	 YA155/K7Ggk38BKkPTOmRzkfmDAidILGgFd1KOxJCou/DoMyL3vK8/EYWbYvrwVHsK
+	 H9RqCdUnL3r/a16CoFcJdL7zQ+AJVeERboPxKV0QgpLH3ukrC1POhSkKpZCxbtNK++
+	 2LnW75jaVcM6g==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id B733815C02FD; Mon,  5 Feb 2024 11:32:49 -0500 (EST)
+Date: Mon, 5 Feb 2024 11:32:49 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, jack@suse.cz,
+        ritesh.list@gmail.com, john.g.garry@oracle.com, djwong@kernel.org
+Subject: Re: Running out of inode flags in ext4
+Message-ID: <20240205163249.GE119530@mit.edu>
+References: <ZcCztkt8KtMrsvPp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,86 +64,31 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zb09Jy8KyxoBAnEN@debian-BULLSEYE-live-builder-AMD64>
+In-Reply-To: <ZcCztkt8KtMrsvPp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 
-On Fri, Feb 02, 2024 at 02:06:15PM -0500, Eric Whitney wrote:
-> * Zorro Lang <zlang@redhat.com>:
-> > On Wed, Jan 24, 2024 at 02:53:06PM -0500, Eric Whitney wrote:
-> > > generic/459 fails when run on an ext4 file system created without a
-> > > journal or when its journal has not been loaded at mount time.
-> > > 
-> > > The test expects that a file system that it has been unable to freeze
-> > > will be automatically remounted read only.  However, the default error
-> > > handling policy for ext4 is to continue when possible after errors.
-> > > 
-> > > A workaround was added to the test in the past to force ext4 to
-> > > perform a read only remount in order to meet the test's expectations.
-> > > The touch command was used to create a new file after a freeze failure.
-> > > This forces ext4 to start a new journal transaction, where it discovers
-> > > the journal has previously aborted due to lack of space, and triggers
-> > > special case error handling that results in a read only remount.
-> > > 
-> > > The workaround requires a journal.  Since ext4 is behaving as designed,
-> > > prevent the test from running if there isn't one.
-> > > 
-> > > Signed-off-by: Eric Whitney <enwlinux@gmail.com>
-> > > ---
-> > >  tests/generic/459 | 5 +++++
-> > >  1 file changed, 5 insertions(+)
-> > > 
-> > > diff --git a/tests/generic/459 b/tests/generic/459
-> > > index c3f0b2b0..63fbbc9b 100755
-> > > --- a/tests/generic/459
-> > > +++ b/tests/generic/459
-> > > @@ -49,6 +49,11 @@ _require_command "$THIN_CHECK_PROG" thin_check
-> > >  _require_freeze
-> > >  _require_odirect
-> > >  
-> > > +# non-journaled ext4 won't remount read only after freeze failure
-> > > +if [ "$FSTYP" == "ext4" ]; then
-> > > +	_require_metadata_journaling
-> > 
-> > I'm wondering ... won't other fs need this, besides ext4?
+On Mon, Feb 05, 2024 at 03:38:54PM +0530, Ojaswin Mujoo wrote:
+> Hi folks,
 > 
-> Thanks for looking at this patch.
+> I'm trying to rework the ext4 atomic write patchset so we have similar
+> semantics as discussed here [1], which would look something like:
 > 
-> I'd been mainly concerned with ext4, but since you mention it, ext2 and ext3
-> ought to be added as well, since the failure behavior is similar.
+> 1. we call FS_IOC_FSSETXATTR to enable atomic write on inode
 > 
-> The check for metadata journaling is limited to just ext4 here because the
-> commit history for this test appears to suggest the touch command workaround
-> is specific to ext4.  Perhaps the test should unconditionally require metadata
-> journaling for all file system types, but given that I don't work with many
-> other file systems I was uncomfortable asserting that in this patch.  If
-> freezing any file system requires a metadata journal, then it would make
-> sense to do that.
+> 2. In the setxattr path, we need to mark the inode with
+> atomic_write_enabled. XFS does it via an on disk inode flag which is
+> straightforward enough 
 > 
-> Your thoughts?
+> However, on ext4 we are almost out of 32 bits of inode flags and I don't
+> think it's possible to add any flags2 field or something (iiuc, ondisk
+> indoe doesn't have scope for expansion).
 
-ext2 never had journalling, so requiring metadata journalling
-effectively _notruns this test.
+We still have some unused flags.  For example,
+0x01000000. 0x04000000. and 0x08000000 are still unused.  We are
+starting to get close to full, so we need to be a bit careful since it
+is very much a limited resource.  But we're not yet at the point where
+we need to worry about trying to reuse flags like EXT4_EOFBLOCKS_FL.
 
-I don't think there's any harm done if you shortcut
-"if [[ $FSTYP == ext* ]];..." to stop this test on ext2 and ext3-nojournal
-as well.
+Cheers,
 
-That said, the exact behavior of filesystems during freeze is undefined,
-so I think the only option is whackamole _notrun-listing. :/
-
---D
-
-> Eric
-> 
-> > 
-> > > +fi
-> > > +
-> > >  vgname=vg_$seq
-> > >  lvname=lv_$seq
-> > >  poolname=pool_$seq
-> > > -- 
-> > > 2.30.2
-> > > 
-> > > 
-> > 
-> 
+							- Ted
 
