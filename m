@@ -1,58 +1,58 @@
-Return-Path: <linux-ext4+bounces-1101-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1102-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6D7D849A1B
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 13:27:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B5E9849A1F
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 13:28:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93365283B81
-	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 12:27:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB0491C22BA0
+	for <lists+linux-ext4@lfdr.de>; Mon,  5 Feb 2024 12:28:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E93D61BC39;
-	Mon,  5 Feb 2024 12:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAFA51BC26;
+	Mon,  5 Feb 2024 12:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AUEG5oas"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bYYKABlK"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 645A01BC2C;
-	Mon,  5 Feb 2024 12:27:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7DE1BC2A;
+	Mon,  5 Feb 2024 12:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707136056; cv=none; b=bF0Ds2jzLNzh1C4j1eXb9YtDWHr0R/tQA+Z4ugvA0nEFrnHhNSEj4UIekW6cpXyDybqZzBJ+I+IHtrwWQyU+eR/i2BjRbl8WzvA6dOo/xeP7puBOLWKqhFXxa6S20BlcEODJuZdGbC5LoQ9ySVpUFLIWB5WpXbjNNzyGb7g39IA=
+	t=1707136080; cv=none; b=iXb13FHY7GEdnmRzqPxmQZ0yyuehyopK+myGkCbyWRR9VMj0DO5SPeZcUuzFV1Qa3ZSh1t8dRFflMQSo8v7DZYQGqly1H+/Ha53aHeOrrvlmB/q/J17ITTWu34ysrfsBhfwBmWLkFHRT7hnaAjU1aeILU7aHZxcCi43zDqKZ7Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707136056; c=relaxed/simple;
-	bh=nJ/nnlSkragXyTOmo6McsmZA0UzJBKHw10J1qbwURTg=;
+	s=arc-20240116; t=1707136080; c=relaxed/simple;
+	bh=RKPf8kkr32aRIXh/yMQJha3cALSjOW0Xvoobpu3PQ9g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=inzOlNKX2wQGg+tdD4vm3/BJPugmbK20g3bTvBUvC90HaXo7MJVzS0GkoAmub71mOaVbzijSHl7XLa0arlhbiWZD3hrraLhr4etkuvq1Oc6nAxXKYKhcKE1A1KSqoda8M7XHit/nUjumpJw/uYv79xSZTcD9xK9lqLxAQCeMVbs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AUEG5oas; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 21DFBC433F1;
-	Mon,  5 Feb 2024 12:27:33 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=P8XJjmNv+VtJu5V2xGtzQvSwOjwTbM/RJ+9eY2QdzVADzGRxZg/LAXarhL/ijwicy+5xF9ZhBgNfJoiH3v+3LRyH390oYLoydVxmDpwSJwoWrhSJ9xF5mNbR5oL6e98t9/Yn3TJYhmHPgB3KF1P1F8waoOoenwiJKaaESvPl4lg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bYYKABlK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 99EC0C433F1;
+	Mon,  5 Feb 2024 12:27:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707136056;
-	bh=nJ/nnlSkragXyTOmo6McsmZA0UzJBKHw10J1qbwURTg=;
+	s=k20201202; t=1707136079;
+	bh=RKPf8kkr32aRIXh/yMQJha3cALSjOW0Xvoobpu3PQ9g=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AUEG5oasPhkwQER7wdC7h5vu8Z11xpTgVtgTuo0LQuV3rxlcz1x80nybh03Akeenc
-	 UCKt6n9XpoogKF8etuEMHpVVS2Sc8yjI9UbB3Of2SSzQOU5yZl8bYVSlo4HBjsp4Rg
-	 C/QPzV1jAeOe/dnuJeazG5aoTYXFfT4Ft+ysk8yJIJL0axlPZlInloAkHjQG6fBkvt
-	 yD+wlG/Q6KHFo9/za4VOgFwTaEhjJJNCgzM9pzE6W+n5RpoXY+aoUpz2eKLQ2/RheE
-	 qU580Yn/BIe4RBYOxfElXvz8c+OyqLxrVC/yLkFyqxwRXvJEZBwkIoeBoJqOMhm9+w
-	 YqQV7WgMvSiOA==
-Date: Mon, 5 Feb 2024 13:27:31 +0100
+	b=bYYKABlKNaNTUjNG6Vg+3WijT2Hgs5IX68pFABMhEeMl+SMqVKbTr638rRxoUwv06
+	 HH+nsujlcftjw2R9Y31kcQyEGk/xbAxO0vcbS07iBdiFOnqE93VrfFLYTKIVGFxRLA
+	 6xZbQnXQJKMFcp2B7dCQhiRmEKaAFumRRti4Rv3lflTsswQXj1CXcrAOJZGxZNKDr0
+	 6DOWsfcCqYwvTancUhrafd1j0LX4yhaFIekc3MY1ZCD2pOKcSLpSb6p+ToPOsVP6Pl
+	 QWay5MNEz/WEOrAxBW3BwP4juxVgj3UWE7YMupfcihuRlxaSGIqAHqXvQxlwURqsTg
+	 U9gwnKPueaHfA==
+Date: Mon, 5 Feb 2024 13:27:55 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: Al Viro <viro@zeniv.linux.org.uk>
 Cc: linux-fsdevel@vger.kernel.org, 
 	Linus Torvalds <torvalds@linux-foundation.org>, linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org, 
 	Miklos Szeredi <miklos@szeredi.hu>, linux-cifs@vger.kernel.org
-Subject: Re: [PATCH 04/13] exfat: move freeing sbi, upcase table and dropping
- nls into rcu-delayed helper
-Message-ID: <20240205-plant-seufzen-3c25de168ea8@brauner>
+Subject: Re: [PATCH 05/13] hfsplus: switch to rcu-delayed unloading of nls
+ and freeing ->s_fs_info
+Message-ID: <20240205-endung-verjagen-d9db2027384a@brauner>
 References: <20240204021436.GH2087318@ZenIV>
  <20240204021739.1157830-1-viro@zeniv.linux.org.uk>
- <20240204021739.1157830-4-viro@zeniv.linux.org.uk>
+ <20240204021739.1157830-5-viro@zeniv.linux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,18 +61,14 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240204021739.1157830-4-viro@zeniv.linux.org.uk>
+In-Reply-To: <20240204021739.1157830-5-viro@zeniv.linux.org.uk>
 
-On Sun, Feb 04, 2024 at 02:17:30AM +0000, Al Viro wrote:
-> That stuff can be accessed by ->d_hash()/->d_compare(); as it is, we have
-> a hard-to-hit UAF if rcu pathwalk manages to get into ->d_hash() on a filesystem
-> that is in process of getting shut down.
-> 
-> Besides, having nls and upcase table cleanup moved from ->put_super() towards
-> the place where sbi is freed makes for simpler failure exits.
+On Sun, Feb 04, 2024 at 02:17:31AM +0000, Al Viro wrote:
+> ->d_hash() and ->d_compare() use those, so we need to delay freeing
+> them.
 > 
 > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
 > ---
 
-Acked-by: Christian Brauner <brauner@kernel.org>
+Reviewed-by: Christian Brauner <brauner@kernel.org>
 
