@@ -1,139 +1,237 @@
-Return-Path: <linux-ext4+bounces-1133-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1134-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29C7D84ADD7
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 06:16:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9ACA84AFE2
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 09:25:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6F37728329C
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 05:16:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 944001C2310D
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 08:25:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 330E67FBB9;
-	Tue,  6 Feb 2024 05:13:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A376112B15E;
+	Tue,  6 Feb 2024 08:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Q10NdY6h"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P5FcuUUb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E427A7D3FD;
-	Tue,  6 Feb 2024 05:13:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F2D812AAF6;
+	Tue,  6 Feb 2024 08:24:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707196424; cv=none; b=UwbewxC+v8y+LDWt9Twm8CtAKXePDTnCtTuku4g5wYiaK7BnGKXKAxEScdrWKnYltZFkCy+gsn2SUY6dB1f4LrQtw/flG5IKYR4XRv8NMmWlCcjX+bA9tqpMQ28VPqECl4WSZc47EeTDUhtV6UTc7W6qbH1QIbQTACBzX9W0TCU=
+	t=1707207900; cv=none; b=jl2+M6kP8lo38Fd3gH6Whnr2FgRrxLMgm+ntLN/YmI+UXYIwGa91Jx5o9qhQ69dkJlicnZD8/+2yTQxSLRDb7Y0bAbH/r8KQoYeiOCsySP+R5x5V9KoUmJThiRym4bjGmwqOsBG7URDvgWfvnCb3nl3MTonSp9Zk7eEos9ttgv0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707196424; c=relaxed/simple;
-	bh=KcejBt6m6WW24dlygJMSgWuNQ4QwpdxGa69ZoW05pVU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qBS3BF82MwAzcOu+GUUGQfOQW1IuWKCf+n3/mJyUQAiBa2cm+ZYcHBowR0etD+fqOSXxEPa0Du3rrVb3NFDLmIfsSz0BLffuYGHPeMoGhTY2HvGYEpd24E2hwd1DXMWbDalnqQa+197foPe7GotkvF6eauS6rMSIyXLUUnCslVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Q10NdY6h; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 4164mO34000522;
-	Tue, 6 Feb 2024 05:13:34 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=eHOC51YpZavXtHoIhO78ks21jAV+zrX5MTEl3C2U9/g=;
- b=Q10NdY6hC7OgEdSwjyeEFQ8+g366yrB/bTq+QaPK/UKASvpOlgMhgN9bo64vF8D7LLqE
- 2klI4sVIiurC4FsPb9e6pyxA/aNPlzwFRcqJNbxULzm7+3l7wUP9/oGUzfyhfMS1SKYW
- lYpewdOYEPbjOQyQf1wHhx2VaXstU8mxvV/DdAwv1c3senE4IizpkinTlPaoY3PrPRKl
- 61BPFlKvBdqhPt1prU/MHbsR6+K/MvS5RsR+2qJbupiqiQ7cFTKCKoxbRpn/4IVYDyQ1
- OEB+5nLRVcDYTv1wmLCRDKBF/xWCGgfzhdMhck09JRKsBJGcNRYRaQge3q4Trlk4ikRK RQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3e2c8g75-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 05:13:34 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 4165CWaT016606;
-	Tue, 6 Feb 2024 05:13:34 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3w3e2c8g6x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 05:13:33 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4161v16C008971;
-	Tue, 6 Feb 2024 05:13:33 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3w206yd5m0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 06 Feb 2024 05:13:33 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4165DV5W21037616
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 6 Feb 2024 05:13:31 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 36F1A2004B;
-	Tue,  6 Feb 2024 05:13:31 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 87CAA20040;
-	Tue,  6 Feb 2024 05:13:29 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue,  6 Feb 2024 05:13:29 +0000 (GMT)
-Date: Tue, 6 Feb 2024 10:43:27 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-        g@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, jack@suse.cz,
-        ritesh.list@gmail.com, john.g.garry@oracle.com, djwong@kernel.org
-Subject: Re: Running out of inode flags in ext4
-Message-ID: <ZcG/96H2zWmtSnyC@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <ZcCztkt8KtMrsvPp@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20240205163249.GE119530@mit.edu>
+	s=arc-20240116; t=1707207900; c=relaxed/simple;
+	bh=X/L1gjIUUtX0kI2V+7LgpEWJjGlNkaFiW5R2AxG8xts=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ct8kwR9ocu8MtifYp/k5RphWRHhDGeuchTNBH1uRfP/+A1dfE4pXVUQY7ZhqwAqXO8MvOp1meqXS6PP6QRRKOAlHMvNEhN3fw6LSax//uoUKpN2Sw5uxJjh4ikou/xDiDU57dqtj7xcgABq+P+PfNdqrTBz495vy2y3MBm+d9K8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P5FcuUUb; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-783d4b3ad96so340510385a.3;
+        Tue, 06 Feb 2024 00:24:58 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1707207897; x=1707812697; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=xJnh/hZwLgWNEfFoS0DdwaPWX2fntWPodX2RriYMeW8=;
+        b=P5FcuUUbyQLdEdm2FzuwsUlN+uuNNETGSb8E0uCPEO7s1gXTsk/fQ5RAlDsY6REOGP
+         YZOpJ66IOCThCukZCoykJmZIl5ULj8RRLdiRvctD5PFCL3kPJbohzoDvJssdN4uIyGFa
+         L8j09rMqAgKKUiUn7Z6seDPScja9CsVI8j/AYICVo/PBpfBjBsYG0agm3BZGifmpdYmh
+         +wsVVZW9Qzd70w6eYc7TfcHZG09a4xkMMxH90wj7qFlBDN6WjXICcYCQGjRvoDZewYhG
+         fXgxn6+iXRTVRFQfzj0VZcJwjFY+WBvaqOusWrXwUa/YvQuteMu47tOMgQ+vb7bbT+lZ
+         +mqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707207897; x=1707812697;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=xJnh/hZwLgWNEfFoS0DdwaPWX2fntWPodX2RriYMeW8=;
+        b=GUoxlwySZJC2V4tMm7NAvNRTuBQIlmHPHQpJEX0bABMKPnh/cZ9r+w8NXAouaduaLk
+         Zuoi4qRNnVwy28RpCQVPuF9sHqvCqPvb6KKhWaojEwDE10Lk+oP+bJmfWROPmxa7P0d9
+         ndx05NtNLv5axv5GlBmMfQcFJ/NWfYlEFfE4UPHSJfDFVnMr8O2zvkHQwYQcPvRiesMU
+         mKBFK3TJX6ZO+6Qb5tJ9xojx/bDObgm5i/ai/mkNAcqhPIa/HCHXeD8P3OZC5D73ODV2
+         /XWfY90vq1GsUWVbEOaU5jAXu6i5tLrTl584Ctl97PE3QjoJfu3ofqAr7xm1ukChkL7c
+         h8hg==
+X-Gm-Message-State: AOJu0Yx2VnfzIxhiGDb9Looeo29ybnGQlFSGJ/IZ864Ra6d5EbrHC1S7
+	YUF29qCvoqIiMuOaqYuX+bSLu0cVlUVjQHiUdBYHYewkxT4cunVbHV8fqpCGS+OQVhO1fMNItHz
+	KadUsHcPe+1ATMolcV3Du5sUfV9s=
+X-Google-Smtp-Source: AGHT+IGXqi4PAj7TUaBvOsy8jESmmmnmPMJhVrfK/FpfU5yWKUUDHXIKx2eSRTrGXTZRCuV+q1/jMEgqnONnIm2x0TU=
+X-Received: by 2002:ad4:5de3:0:b0:68c:805e:e354 with SMTP id
+ jn3-20020ad45de3000000b0068c805ee354mr2122756qvb.38.1707207897461; Tue, 06
+ Feb 2024 00:24:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240205163249.GE119530@mit.edu>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 42qMiBVFOtOwJR5lR-BXEHEGpMhIHrTw
-X-Proofpoint-ORIG-GUID: r_R6959xudH6emLxUp6n4Amda9nwKPeD
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-02-05_18,2024-01-31_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- priorityscore=1501 bulkscore=0 phishscore=0 mlxscore=0 suspectscore=0
- impostorscore=0 spamscore=0 clxscore=1031 adultscore=0 mlxlogscore=550
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2402060034
+References: <20240205200529.546646-1-kent.overstreet@linux.dev>
+ <20240205200529.546646-3-kent.overstreet@linux.dev> <ZcFelmKPb374aebH@dread.disaster.area>
+ <l2zdnuczo24zxc6z6hh7q5mmux3wr5iltscnrc7axdugt6ct2k@qzrpj6vc2ct5>
+In-Reply-To: <l2zdnuczo24zxc6z6hh7q5mmux3wr5iltscnrc7axdugt6ct2k@qzrpj6vc2ct5>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 6 Feb 2024 10:24:45 +0200
+Message-ID: <CAOQ4uxjvEL4P4vV5SKpHVS5DtOwKpxAn4n4+Kfqawcu+H-MC5g@mail.gmail.com>
+Subject: Re: [PATCH 2/6] fs: FS_IOC_GETUUID
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Dave Chinner <dchinner@redhat.com>, 
+	"Darrick J. Wong" <djwong@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.or, 
+	Miklos Szeredi <miklos@szeredi.hu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Feb 05, 2024 at 11:32:49AM -0500, Theodore Ts'o wrote:
-> On Mon, Feb 05, 2024 at 03:38:54PM +0530, Ojaswin Mujoo wrote:
-> > Hi folks,
-> > 
-> > I'm trying to rework the ext4 atomic write patchset so we have similar
-> > semantics as discussed here [1], which would look something like:
-> > 
-> > 1. we call FS_IOC_FSSETXATTR to enable atomic write on inode
-> > 
-> > 2. In the setxattr path, we need to mark the inode with
-> > atomic_write_enabled. XFS does it via an on disk inode flag which is
-> > straightforward enough 
-> > 
-> > However, on ext4 we are almost out of 32 bits of inode flags and I don't
-> > think it's possible to add any flags2 field or something (iiuc, ondisk
-> > indoe doesn't have scope for expansion).
-> 
-> We still have some unused flags.  For example,
-> 0x01000000. 0x04000000. and 0x08000000 are still unused.  We are
-> starting to get close to full, so we need to be a bit careful since it
-> is very much a limited resource.  But we're not yet at the point where
-> we need to worry about trying to reuse flags like EXT4_EOFBLOCKS_FL.
-Hi Ted,
+On Tue, Feb 6, 2024 at 12:49=E2=80=AFAM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
+>
+> On Tue, Feb 06, 2024 at 09:17:58AM +1100, Dave Chinner wrote:
+> > On Mon, Feb 05, 2024 at 03:05:13PM -0500, Kent Overstreet wrote:
+> > > Add a new generic ioctls for querying the filesystem UUID.
+> > >
+> > > These are lifted versions of the ext4 ioctls, with one change: we're =
+not
+> > > using a flexible array member, because UUIDs will never be more than =
+16
+> > > bytes.
+> > >
+> > > This patch adds a generic implementation of FS_IOC_GETFSUUID, which
+> > > reads from super_block->s_uuid; FS_IOC_SETFSUUID is left for individu=
+al
+> > > filesystems to implement.
+> > >
 
-Thats true, i don't even know how I missed that :) Sorry for the noise.
+It's fine to have a generic implementation, but the filesystem should
+have the option to opt-in for a specific implementation.
 
-Regards,
-ojaswin
-> 
-> Cheers,
-> 
-> 							- Ted
+There are several examples, even with xfs and btrfs where ->s_uuid
+does not contain the filesystem's UUID or there is more than one
+uuid and ->s_uuid is not the correct one to expose to the user.
+
+A model like ioctl_[gs]etflags() looks much more appropriate
+and could be useful for network filesystems/FUSE as well.
+
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > Cc: Christian Brauner <brauner@kernel.org>
+> > > Cc: Jan Kara <jack@suse.cz>
+> > > Cc: Dave Chinner <dchinner@redhat.com>
+> > > Cc: "Darrick J. Wong" <djwong@kernel.org>
+> > > Cc: Theodore Ts'o <tytso@mit.edu>
+> > > Cc: linux-fsdevel@vger.kernel.or
+> > > Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> > > ---
+> > >  fs/ioctl.c              | 16 ++++++++++++++++
+> > >  include/uapi/linux/fs.h | 16 ++++++++++++++++
+> > >  2 files changed, 32 insertions(+)
+> > >
+> > > diff --git a/fs/ioctl.c b/fs/ioctl.c
+> > > index 76cf22ac97d7..858801060408 100644
+> > > --- a/fs/ioctl.c
+> > > +++ b/fs/ioctl.c
+> > > @@ -763,6 +763,19 @@ static int ioctl_fssetxattr(struct file *file, v=
+oid __user *argp)
+> > >     return err;
+> > >  }
+> > >
+> > > +static int ioctl_getfsuuid(struct file *file, void __user *argp)
+> > > +{
+> > > +   struct super_block *sb =3D file_inode(file)->i_sb;
+> > > +
+> > > +   if (WARN_ON(sb->s_uuid_len > sizeof(sb->s_uuid)))
+> > > +           sb->s_uuid_len =3D sizeof(sb->s_uuid);
+> >
+> > A "get"/read only ioctl should not be change superblock fields -
+> > this is not the place for enforcing superblock filed constraints.
+> > Make a helper function super_set_uuid(sb, uuid, uuid_len) for the
+> > filesystems to call that does all the validity checking and then
+> > sets the superblock fields appropriately.
+>
+> *nod* good thought...
+>
+> > > +struct fsuuid2 {
+> > > +   __u32       fsu_len;
+> > > +   __u32       fsu_flags;
+> > > +   __u8        fsu_uuid[16];
+> > > +};
+> >
+> > Nobody in userspace will care that this is "version 2" of the ext4
+> > ioctl. I'd just name it "fs_uuid" as though the ext4 version didn't
+> > ever exist.
+>
+> I considered that - but I decided I wanted the explicit versioning,
+> because too often we live with unfixed mistakes because versioning is
+> ugly, or something?
+>
+> Doing a new revision of an API should be a normal, frequent thing, and I
+> want to start making it a convention.
+>
+> >
+> > > +
+> > >  /* extent-same (dedupe) ioctls; these MUST match the btrfs ioctl def=
+initions */
+> > >  #define FILE_DEDUPE_RANGE_SAME             0
+> > >  #define FILE_DEDUPE_RANGE_DIFFERS  1
+> > > @@ -215,6 +229,8 @@ struct fsxattr {
+> > >  #define FS_IOC_FSSETXATTR          _IOW('X', 32, struct fsxattr)
+> > >  #define FS_IOC_GETFSLABEL          _IOR(0x94, 49, char[FSLABEL_MAX])
+> > >  #define FS_IOC_SETFSLABEL          _IOW(0x94, 50, char[FSLABEL_MAX])
+> > > +#define FS_IOC_GETFSUUID           _IOR(0x94, 51, struct fsuuid2)
+> > > +#define FS_IOC_SETFSUUID           _IOW(0x94, 52, struct fsuuid2)
+> >
+> > 0x94 is the btrfs ioctl space, not the VFS space - why did you
+> > choose that? That said, what is the VFS ioctl space identifier? 'v',
+> > perhaps?
+>
+> "Promoting ioctls from fs to vfs without revising and renaming
+> considered harmful"... this is a mess that could have been avoided if we
+> weren't taking the lazy route.
+>
+> And 'v' doesn't look like it to me, I really have no idea what to use
+> here. Does anyone?
+>
+
+All the other hoisted FS_IOC_* use the original fs ioctl namespace they
+came from. Although it is not an actual hoist, I'd use:
+
+struct fsuuid128 {
+       __u32       fsu_len;
+       __u32       fsu_flags;
+       __u8        fsu_uuid[16];
+};
+
+#define FS_IOC_GETFSUUID              _IOR('f', 45, struct fsuuid128)
+#define FS_IOC_SETFSUUID              _IOW('f', 46, struct fsuuid128)
+
+Technically, could also overload EXT4_IOC_[GS]ETFSUUID numbers
+because of the different type:
+
+#define FS_IOC_GETFSUUID              _IOR('f', 44, struct fsuuid128)
+#define FS_IOC_SETFSUUID              _IOW('f', 44, struct fsuuid128)
+
+and then ext4 can follow up with this patch, because as far as I can tell,
+the ext4 implementation is already compatible with the new ioctls.
+
+Thanks,
+Amir.
+
+--- a/fs/ext4/ioctl.c
++++ b/fs/ext4/ioctl.c
+@@ -1613,8 +1613,10 @@ static long __ext4_ioctl(struct file *filp,
+unsigned int cmd, unsigned long arg)
+                return ext4_ioctl_setlabel(filp,
+                                           (const void __user *)arg);
+
++       case FS_IOC_GETFSUUID:
+         case EXT4_IOC_GETFSUUID:
+                 return ext4_ioctl_getuuid(EXT4_SB(sb), (void __user *)arg)=
+;
++       case FS_IOC_SETFSUUID:
+         case EXT4_IOC_SETFSUUID:
+                 return ext4_ioctl_setuuid(filp, (const void __user *)arg);
 
