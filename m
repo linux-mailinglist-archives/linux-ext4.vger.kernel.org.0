@@ -1,119 +1,159 @@
-Return-Path: <linux-ext4+bounces-1135-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1136-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7AAA84B0A0
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 10:03:25 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B717F84B486
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 13:09:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DD7FE1C2298D
-	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 09:03:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA2CB1C23D54
+	for <lists+linux-ext4@lfdr.de>; Tue,  6 Feb 2024 12:09:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73E72130AD3;
-	Tue,  6 Feb 2024 09:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C71D1332A8;
+	Tue,  6 Feb 2024 12:05:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="sBYs4aO+"
+	dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b="GYpnH/eD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
+Received: from smtp-fw-2101.amazon.com (smtp-fw-2101.amazon.com [72.21.196.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D66D12D162
-	for <linux-ext4@vger.kernel.org>; Tue,  6 Feb 2024 09:00:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 137021CFB2;
+	Tue,  6 Feb 2024 12:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=72.21.196.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707210024; cv=none; b=t1WD39IXpCvz8Boriw7NTyTuZvRElHMYJ22KZeNz0yAjvKAoHCsiFLpnVP8xIIR7lg0gGbQzYxQNT5ecqCfep4Uz/NFjyY3H7DdfB4MvgTHeonQ4VvDFCJ/5DixUXgsKHZqOa/ry+Rmp5cgawSU2ROrUs0nZn02IY583UjnDGuo=
+	t=1707221113; cv=none; b=b2AvxcQ8qWZbCyJt1P1KFzWBYomE9CTFovqIrr2c5H4z+VBUuJHSY1yWt7JJ2z82ZPnD8ExEBWb0ZKOsN2gDfVTVNjkziYr7bRlGu82aUVp7GaCQHA4ESjOq4+YQLfwyx/jyfzM4kg6V11SIaBMXMc6kPKRRcFUigW9sczeJZTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707210024; c=relaxed/simple;
-	bh=SxQjK5o9m31vC6NqNadgVRjnw+ctZnP6AU8Uj28TlSI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ojQHBRpdDUDr9SGosf2124u9J6ZF/zaFkpefmKPPpJZdiyh33YD6K6iHrGm9mcW1CmyqR/0bb5+TMOvpUBQzLsAFA03ewpCBvuGXjk1NxuGHUhP6bfZ3iv2OzGL/0A+oXzyek6KSUuw71Mejso15AQYn1/23h2H7hwob7xkA3KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=sBYs4aO+; arc=none smtp.client-ip=91.218.175.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Tue, 6 Feb 2024 04:00:13 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1707210019;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZBttTWG6B/hRu2GKdAEHTEeg0dT4Isyo/6hlXj+LQvY=;
-	b=sBYs4aO+Y++ATlpT84BjTAhvWvoR0GYL0haejynyHKmKzxc28Vx8Pg51rmmqil7SzLhoiI
-	d5AdLXPE5ZwYz5sYyDaH9a+hTGsy6CsjgIIEBWj6XRBCRXJAap7LePIe9HRmGU7MVsnI1A
-	zn+Kynfd1VuvtLUGES2isUkNIiqoSYY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
-	Dave Chinner <dchinner@redhat.com>, "Darrick J. Wong" <djwong@kernel.org>, 
-	Theodore Ts'o <tytso@mit.edu>, linux-fsdevel@vger.kernel.or, Miklos Szeredi <miklos@szeredi.hu>
-Subject: Re: [PATCH 2/6] fs: FS_IOC_GETUUID
-Message-ID: <nmmxuryl7shlwionp6htpiifwosyl53hwbeurkcwkxwxb4ikdk@yxmtogitrx5w>
-References: <20240205200529.546646-1-kent.overstreet@linux.dev>
- <20240205200529.546646-3-kent.overstreet@linux.dev>
- <ZcFelmKPb374aebH@dread.disaster.area>
- <l2zdnuczo24zxc6z6hh7q5mmux3wr5iltscnrc7axdugt6ct2k@qzrpj6vc2ct5>
- <CAOQ4uxjvEL4P4vV5SKpHVS5DtOwKpxAn4n4+Kfqawcu+H-MC5g@mail.gmail.com>
+	s=arc-20240116; t=1707221113; c=relaxed/simple;
+	bh=OQelbDLj+bOqEsxF27nP9h9zyIA5fWUq7YJwu9ZforE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=iAhkOUwc/AZfyo+FGZlLe6q/JtJnDfd/a0yy+dcOFhqHb5oJIMmh4CnjxrSYLhKwPMzSw0NFs5gr4ZHQZjLHC0GvTA1y+/xenJNoLWsa9Y4Q4LT+yMOthnSbPw9Kn0I+8z4Ojgm0vyqVz/jYqK7vg3Ut3lzc8f5BHTUiXLkFxAA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de; spf=pass smtp.mailfrom=amazon.de; dkim=pass (1024-bit key) header.d=amazon.de header.i=@amazon.de header.b=GYpnH/eD; arc=none smtp.client-ip=72.21.196.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=amazon.de; i=@amazon.de; q=dns/txt; s=amazon201209;
+  t=1707221111; x=1738757111;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=gl74gCBZa9uoUIx5/l/r/zJQe58dVCOTIWPMT3ZpBb4=;
+  b=GYpnH/eDCxGpPjmlDwvV8Ko/OpMqq1TQiF37NHOrXzuF7pDzFgCtlfsD
+   A9mVXjRqrCPoYtfBndw3b8P+tszEqc+oOBDbb/NKNhTxgDgpQziYAVFR6
+   pDk+Wvhqg5cGer/w3lOk9xNnfawYKT8miuHGhAH7xWk8E/CqGbR0at++m
+   k=;
+X-IronPort-AV: E=Sophos;i="6.05,247,1701129600"; 
+   d="scan'208";a="379254368"
+Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-west-2.prod.farcaster.email.amazon.dev) ([10.43.8.6])
+  by smtp-border-fw-2101.iad2.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 06 Feb 2024 12:05:08 +0000
+Received: from EX19MTAUWC002.ant.amazon.com [10.0.38.20:31351]
+ by smtpin.naws.us-west-2.prod.farcaster.email.amazon.dev [10.0.4.177:2525] with esmtp (Farcaster)
+ id c9cfb521-cea1-4196-a5b8-62dd92c7f18e; Tue, 6 Feb 2024 12:05:07 +0000 (UTC)
+X-Farcaster-Flow-ID: c9cfb521-cea1-4196-a5b8-62dd92c7f18e
+Received: from EX19D001UWB002.ant.amazon.com (10.13.138.54) by
+ EX19MTAUWC002.ant.amazon.com (10.250.64.143) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 6 Feb 2024 12:05:07 +0000
+Received: from EX19MTAUWA001.ant.amazon.com (10.250.64.204) by
+ EX19D001UWB002.ant.amazon.com (10.13.138.54) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 6 Feb 2024 12:05:06 +0000
+Received: from dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (10.15.57.183)
+ by mail-relay.amazon.com (10.250.64.204) with Microsoft SMTP Server id
+ 15.2.1118.40 via Frontend Transport; Tue, 6 Feb 2024 12:05:06 +0000
+Received: by dev-dsk-mheyne-1b-c1362c4d.eu-west-1.amazon.com (Postfix, from userid 5466572)
+	id 436D196C; Tue,  6 Feb 2024 12:05:06 +0000 (UTC)
+From: Maximilian Heyne <mheyne@amazon.de>
+To: 
+CC: <ravib@amazon.com>, Maximilian Heyne <mheyne@amazon.de>, Theodore Ts'o
+	<tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+	<linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH] ext4: fix corruption during on-line resize
+Date: Tue, 6 Feb 2024 12:05:04 +0000
+Message-ID: <20240206120504.122870-1-mheyne@amazon.de>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxjvEL4P4vV5SKpHVS5DtOwKpxAn4n4+Kfqawcu+H-MC5g@mail.gmail.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 7bit
 
-On Tue, Feb 06, 2024 at 10:24:45AM +0200, Amir Goldstein wrote:
-> On Tue, Feb 6, 2024 at 12:49 AM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Tue, Feb 06, 2024 at 09:17:58AM +1100, Dave Chinner wrote:
-> > > On Mon, Feb 05, 2024 at 03:05:13PM -0500, Kent Overstreet wrote:
-> > > > Add a new generic ioctls for querying the filesystem UUID.
-> > > >
-> > > > These are lifted versions of the ext4 ioctls, with one change: we're not
-> > > > using a flexible array member, because UUIDs will never be more than 16
-> > > > bytes.
-> > > >
-> > > > This patch adds a generic implementation of FS_IOC_GETFSUUID, which
-> > > > reads from super_block->s_uuid; FS_IOC_SETFSUUID is left for individual
-> > > > filesystems to implement.
-> > > >
-> 
-> It's fine to have a generic implementation, but the filesystem should
-> have the option to opt-in for a specific implementation.
-> 
-> There are several examples, even with xfs and btrfs where ->s_uuid
-> does not contain the filesystem's UUID or there is more than one
-> uuid and ->s_uuid is not the correct one to expose to the user.
+We observed a corruption during on-line resize of a file system that is
+larger than 16 TiB with 4k block size. With having more then 2^32 blocks
+resize_inode is turned off by default by mke2fs. The issue can be
+reproduced on a smaller file system for convenience by explicitly
+turning off resize_inode. An on-line resize across an 8 GiB boundary (the
+size of a meta block group in this setup) then leads to a corruption:
 
-Yeah, some of you were smoking some good stuff from the stories I've
-been hearing...
+  dev=/dev/<some_dev> # should be >= 16 GiB
+  mkdir -p /corruption
+  /sbin/mke2fs -t ext4 -b 4096 -O ^resize_inode $dev $((2 * 2**21 - 2**15))
+  mount -t ext4 $dev /corruption
 
-> A model like ioctl_[gs]etflags() looks much more appropriate
-> and could be useful for network filesystems/FUSE as well.
+  dd if=/dev/zero bs=4096 of=/corruption/test count=$((2*2**21 - 4*2**15))
+  sha1sum /corruption/test
+  # 79d2658b39dcfd77274e435b0934028adafaab11  /corruption/test
 
-A filesystem needs to store two UUIDs (that identify the filesystem as a
-whole).
+  /sbin/resize2fs $dev $((2*2**21))
+  # drop page cache to force reload the block from disk
+  echo 1 > /proc/sys/vm/drop_caches
 
- - Your internal UUID, which can never change because it's referenced in
-   various other on disk data structures
- - Your external UUID, which identifies the filesystem to the outside
-   world. Users want to be able to change this - which is why it has to
-   be distinct from the internal UUID.
+  sha1sum /corruption/test
+  # 3c2abc63cbf1a94c9e6977e0fbd72cd832c4d5c3  /corruption/test
 
-The internal UUID must never be exposed to the outside world, and that
-includes the VFS; storing your private UUID in sb->s_uuid is wrong -
-separation of concerns.
+2^21 = 2^15*2^6 equals 8 GiB whereof 2^15 is the number of blocks per
+block group and 2^6 are the number of block groups that make a meta
+block group.
 
-yes, I am aware of fscrypt, and yes, someone's going to have to fix
-that.
+The last checksum might be different depending on how the file is laid
+out across the physical blocks. The actual corruption occurs at physical
+block 63*2^15 = 2064384 which would be the location of the backup of the
+meta block group's block descriptor. During the on-line resize the file
+system will be converted to meta_bg starting at s_first_meta_bg which is
+2 in the example - meaning all block groups after 16 GiB. However, in
+ext4_flex_group_add we might add block groups that are not part of the
+first meta block group yet. In the reproducer we achieved this by
+substracting the size of a whole block group from the point where the
+meta block group would start. This must be considered when updating the
+backup block group descriptors to follow the non-meta_bg layout. The fix
+is to add a test whether the group to add is already part of the meta
+block group or not.
 
-This interface is only for the external/public UUID.
+Signed-off-by: Maximilian Heyne <mheyne@amazon.de>
+---
+ fs/ext4/resize.c | 4 +++-
+ 1 file changed, 3 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index 4d4a5a32e310..3433e83bb7a3 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -1602,7 +1602,9 @@ static int ext4_flex_group_add(struct super_block *sb,
+ 		int gdb_num = group / EXT4_DESC_PER_BLOCK(sb);
+ 		int gdb_num_end = ((group + flex_gd->count - 1) /
+ 				   EXT4_DESC_PER_BLOCK(sb));
+-		int meta_bg = ext4_has_feature_meta_bg(sb);
++		unsigned long metagroup = group / EXT4_DESC_PER_BLOCK(sb);
++		int meta_bg = ext4_has_feature_meta_bg(sb) &&
++			      metagroup >= le32_to_cpu(es->s_first_meta_bg);
+ 		sector_t padding_blocks = meta_bg ? 0 : sbi->s_sbh->b_blocknr -
+ 					 ext4_group_first_block_no(sb, 0);
+ 
+-- 
+2.40.1
+
+
+
+
+Amazon Development Center Germany GmbH
+Krausenstr. 38
+10117 Berlin
+Geschaeftsfuehrung: Christian Schlaeger, Jonathan Weiss
+Eingetragen am Amtsgericht Charlottenburg unter HRB 149173 B
+Sitz: Berlin
+Ust-ID: DE 289 237 879
+
+
+
 
