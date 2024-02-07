@@ -1,45 +1,46 @@
-Return-Path: <linux-ext4+bounces-1145-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1146-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7626084D39E
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Feb 2024 22:22:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5B1D84D3A1
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Feb 2024 22:22:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17792B235B1
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Feb 2024 21:22:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D0181F28960
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Feb 2024 21:22:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6BD9112880B;
-	Wed,  7 Feb 2024 21:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF1B129A73;
+	Wed,  7 Feb 2024 21:21:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0oCBi/M"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PAFYfNq2"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDED2127B6C;
-	Wed,  7 Feb 2024 21:21:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEB47127B65;
+	Wed,  7 Feb 2024 21:21:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707340906; cv=none; b=h5jd2gu2DDZgXSfNHFGJBXpKCq59+PLQz8JzFblEOpwHJY8mSSA/QTgJ7iXTOKvE1U6MzfFhH3vTbGxMznJG9K+MNSyYItK+wChL9AVrDNJGkTsnKqfWcsCZLUn2K3wJJRYXc/8rFlCWEn+qp+Ow+R3Z5hs5ISAnKebwYL7OJdU=
+	t=1707340907; cv=none; b=fg10CV1SDWkFVDBkf86/4fbXD5sueEA7WRP0J/uCm56Mt1UX/+ipq+J6R9xJfWV0CIDrO60dhvHVqn82Sl9NppX+3C0tfsA4pOkfor7lcNHOJmXxgOcIo3OXQKQwwX8+hURwAda+DAAwrwcxwlm3yL4bjcfUCW6yciIdvMTnZiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707340906; c=relaxed/simple;
-	bh=QEQla7/E0WGVlzTVcKJms8qCBSJAPwsPNjB7NzxVYtY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KaGhdnB1DwERehefZExCJMmXHUk0hM1oYier/hDeuJo4DvAUxuu7N9WqUJnP5J2++Hi/ynmVZ/IaF2bK4/UthPDR6O3+gZmAU9XoO1ebnusZ7fliPbPthkPnrFm7YKu8vQt5ZwfZOVmycWyYZPd0BH7gtlWqi1qOz4dEPRufWRw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y0oCBi/M; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DFCDC43390;
-	Wed,  7 Feb 2024 21:21:44 +0000 (UTC)
+	s=arc-20240116; t=1707340907; c=relaxed/simple;
+	bh=2LEkafcFSIj0xn1I3aY/1pa7Uaf1dn6f66qCYxrGj+o=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ZQgXo1lwKzMKoaR+7roSgPRk6jbxFzCuwi+amm/0NYj/9MotXwOIw0K/uNVl4i0TvS/OIFtyVKIBhxM+b3ixWwuAv5LbG3Nivs6gA3xkm+ZwA2i4JlDt9h0DYam4c6U2qIy1KgTPKMMz4qp43AxYMD2OixU7dQrFwDsldtRjhm4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PAFYfNq2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BD56DC433F1;
+	Wed,  7 Feb 2024 21:21:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707340905;
-	bh=QEQla7/E0WGVlzTVcKJms8qCBSJAPwsPNjB7NzxVYtY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Y0oCBi/MObR6R+EF8IdoYsWhzDpq4I/4Idh76nFl0uzXNgU2yf0Mb4U1b2gaDT8/u
-	 4UUP4G+CfJ3eUdXaYGPj+ODhNQd6d1//l9OAOFye5xFA3/76boF3n8LmtYUWtYKdT8
-	 fUOa46KIxX6iBpnwe1IDuTts5RxRbYv3gTudtzYb2Ae9eK/dN34zunr0e++2JBTAx9
-	 c89t0FdSSzR71QY/jA6s7Biv+m3CsyrFIM54ZsIzQk/d8W34G6WJ0fx/0o4RtQn6Jh
-	 pIlJ5fNBizF7g5SO0C+5//7d77eTsZpdoxON1Dy/c7c5v30YkACNu1JwQJhqM6hTkQ
-	 8/HnOau49j8Ew==
+	s=k20201202; t=1707340906;
+	bh=2LEkafcFSIj0xn1I3aY/1pa7Uaf1dn6f66qCYxrGj+o=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=PAFYfNq2KJdn2QUGVbPtq0sZnIBfUp+g7cHOf2+AeaKt/PT+4TttFy3ALmilw+EGE
+	 o5M7Jc4hbyMlH9F7VLrrAjJyTdbB03oClLu2LxN7urJQOB8H+mIOr69FdPSg/py7e8
+	 DpOhuhGtR5xdUMyntiE2dd6dQeTJrxSC5J+Ct9B6NmNfEN5hTd1k7Lf59uYzZDEeJX
+	 HAAjFpKYYgmdYE2SfG67k46nRbgh1bBuh0QwS5rvDToqaZUj3j3bNCLl1L/Wgo3nYA
+	 oi/mS0zmlLGrFAuIngU+j7bARwtQKtNTJQONU0Bui6XIqFV5hqJdT+3DX4yLjJ8cVZ
+	 2jlaCBCoof9Hw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,10 +50,12 @@ Cc: Baokun Li <libaokun1@huawei.com>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.7 01/44] ext4: avoid dividing by 0 in mb_update_avg_fragment_size() when block bitmap corrupt
-Date: Wed,  7 Feb 2024 16:20:28 -0500
-Message-ID: <20240207212142.1399-1-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.7 02/44] ext4: avoid allocating blocks from corrupted group in ext4_mb_try_best_found()
+Date: Wed,  7 Feb 2024 16:20:29 -0500
+Message-ID: <20240207212142.1399-2-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240207212142.1399-1-sashal@kernel.org>
+References: <20240207212142.1399-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -66,33 +69,60 @@ Content-Transfer-Encoding: 8bit
 
 From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit 993bf0f4c393b3667830918f9247438a8f6fdb5b ]
+[ Upstream commit 4530b3660d396a646aad91a787b6ab37cf604b53 ]
 
-Determine if bb_fragments is 0 instead of determining bb_free to eliminate
-the risk of dividing by zero when the block bitmap is corrupted.
+Determine if the group block bitmap is corrupted before using ac_b_ex in
+ext4_mb_try_best_found() to avoid allocating blocks from a group with a
+corrupted block bitmap in the following concurrency and making the
+situation worse.
+
+ext4_mb_regular_allocator
+  ext4_lock_group(sb, group)
+  ext4_mb_good_group
+   // check if the group bbitmap is corrupted
+  ext4_mb_complex_scan_group
+   // Scan group gets ac_b_ex but doesn't use it
+  ext4_unlock_group(sb, group)
+                           ext4_mark_group_bitmap_corrupted(group)
+                           // The block bitmap was corrupted during
+                           // the group unlock gap.
+  ext4_mb_try_best_found
+    ext4_lock_group(ac->ac_sb, group)
+    ext4_mb_use_best_found
+      mb_mark_used
+      // Allocating blocks in block bitmap corrupted group
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20240104142040.2835097-6-libaokun1@huawei.com
+Link: https://lore.kernel.org/r/20240104142040.2835097-7-libaokun1@huawei.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/mballoc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/mballoc.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index ab023d709f72..a85017a78fc8 100644
+index a85017a78fc8..2541647ba5dd 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -842,7 +842,7 @@ mb_update_avg_fragment_size(struct super_block *sb, struct ext4_group_info *grp)
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	int new_order;
- 
--	if (!test_opt2(sb, MB_OPTIMIZE_SCAN) || grp->bb_free == 0)
-+	if (!test_opt2(sb, MB_OPTIMIZE_SCAN) || grp->bb_fragments == 0)
+@@ -2282,6 +2282,9 @@ void ext4_mb_try_best_found(struct ext4_allocation_context *ac,
  		return;
  
- 	new_order = mb_avg_fragment_size_order(sb,
+ 	ext4_lock_group(ac->ac_sb, group);
++	if (unlikely(EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)))
++		goto out;
++
+ 	max = mb_find_extent(e4b, ex.fe_start, ex.fe_len, &ex);
+ 
+ 	if (max > 0) {
+@@ -2289,6 +2292,7 @@ void ext4_mb_try_best_found(struct ext4_allocation_context *ac,
+ 		ext4_mb_use_best_found(ac, e4b);
+ 	}
+ 
++out:
+ 	ext4_unlock_group(ac->ac_sb, group);
+ 	ext4_mb_unload_buddy(e4b);
+ }
 -- 
 2.43.0
 
