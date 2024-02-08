@@ -1,111 +1,87 @@
-Return-Path: <linux-ext4+bounces-1172-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1173-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6AD884DB82
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Feb 2024 09:35:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 948FE84E450
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Feb 2024 16:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0ABA71C23CDA
-	for <lists+linux-ext4@lfdr.de>; Thu,  8 Feb 2024 08:35:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3376B1F2809A
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Feb 2024 15:50:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F926A35A;
-	Thu,  8 Feb 2024 08:35:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E14C7CF2B;
+	Thu,  8 Feb 2024 15:50:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="3plkq6QD"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="M7U7blLo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB526A348;
-	Thu,  8 Feb 2024 08:35:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12CB87C0B1
+	for <linux-ext4@vger.kernel.org>; Thu,  8 Feb 2024 15:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707381330; cv=none; b=bx93e7qKm2k3kl4x0ddv10n1zelCM8Z60uglYz46wRxIyQO/gZlnVGyL0VhmtxsB4v8nEnIkCO/Ux2WbJpR5YqO6GbXliXFp8M55HxgC14y0oGjBNQCnUs6nTFm2lwaFiz4kAvvJ9vEIkhn8pD3hzW1dSVeYT86MmkQl3RohmVs=
+	t=1707407421; cv=none; b=j6un6KqfTjs8iKYTFx6/tTCNpTSn4nmo/t4Lci72RkJaswjUjb9MmXX4AI7Ej1xpu8yfrQnZl6VS/8nRevYYIGywhpsROc0/tjEmNqF8I8x3oO5tjk5YTOEwNqfewlwrBgYgj0FY7YIpExs36lcAtyoxxM2b2QOylyukWtWveLA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707381330; c=relaxed/simple;
-	bh=i+4EJdQagleZnPVT30vGe5GcWcJwF8pGXhFiUpMrbvY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iy+Zyt+UwUxf+vzgLv026Hi0M967HJDFnXHn9LnWNiWR9DWf4oMVY0GO/kMG3gU7brNp2R0L0cei/W27OtXJG0xOEdU+YRIIqkmVcccMSCwTTZoRGMYfHjiGmB4xUWxSejYrbExha6wDWtPb7pmNmyKoBMAWUn3leKIPgLMVJ6I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=3plkq6QD; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707381326;
-	bh=i+4EJdQagleZnPVT30vGe5GcWcJwF8pGXhFiUpMrbvY=;
-	h=From:To:Cc:Subject:Date:From;
-	b=3plkq6QDr0KOy28qxSuhelZKegSfVyetRK0espglhhTPRrjhskVEOF277eHOzNNhc
-	 cT9FPWkDWXEMKwTZeW6tdmbDpcYNBcQI4xwZWfALjXBGLakRYhKwPboOJ1R4H6gfqI
-	 D2j6rF6/afCXS2ZCg0xF299yv4kU3WCugaK0azfcIF9q+pvDF5W5ygHgH6MBobhh6m
-	 fj4MEcfJ6aMiqYEMWdtwZoPQ5vsGpUwdANodbM61JLsgTvqO1APzCdpdWWOFRjd+vp
-	 VRwzyvpOTTL8IvTORtJmiWsCAyBz2ssuRdi2JrX1ukKJWEfYgZ3V0hnVWDFUFRw/xb
-	 ZXOoZMfrImINQ==
-Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 764EE3782098;
-	Thu,  8 Feb 2024 08:35:21 +0000 (UTC)
-From: Eugen Hristev <eugen.hristev@collabora.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel@collabora.co,
-	eugen.hristev@collabora.com,
-	Gabriel Krisman Bertazi <krisman@collabora.com>,
-	Eric Biggers <ebiggers@google.com>
-Subject: [RESEND PATCH v9] ext4: Log error when lookup of encoded dentry fails
-Date: Thu,  8 Feb 2024 10:35:11 +0200
-Message-Id: <20240208083511.270636-1-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1707407421; c=relaxed/simple;
+	bh=WSy+Q3kL6s6Tm7tFF/EMEz4Q1UDDpZkZpnF97BK9YRY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=qXf7fD0Paacqqmbz8r1vGETCbQ959v5gkgdlf7WFkly0OJwg/vnJ/XUiflOogYlcY5XQFc7Z27w3iuhTBGSUakJUD392l+5cBqbF6SLCdauExVLxPnN7wSHoI7tl/ww51RJK2yQp5K5gqSb6sgpLOvjHkZHE94iKUA81Ne4D7S4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=M7U7blLo; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-236.bstnma.fios.verizon.net [173.48.82.236])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 418Fo8Y6003263
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 8 Feb 2024 10:50:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1707407411; bh=jjTySAmDWazBdRiROCnsHtSBLtmQJE1TyJgEElvUuLw=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=M7U7blLoexAxafygQsjGYvwmlDic0VmlQwo7b6iN3mr9eWarfIk1m/H8AaaEoSDpD
+	 C+D9W0ata2vr9HUMluq1FBtBcILlqANzUSIkTURPZZUtskkQSa/Sk10t9DBaHomw4+
+	 9BvYJJXnRKEQTPh6TohkEKXa/mg8RInV2OusmjuXotvIr1J6j7QM8O6vdGr8575jpi
+	 dEoVxnM8HLPJWmxPxAiJYWQ4bhaDkE0mIBxOeKAbDh2LrjGjpIwYqLH0dW3B5Je8bj
+	 K5+iFXPBiMPdKBowXXknB7d0MNLP1CAht4s7J83ji33Bb4qC7F9GXYtE9UG+jtFfTx
+	 YqRsfrUmF2bUQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id DDD9115C02FD; Thu,  8 Feb 2024 10:50:07 -0500 (EST)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: linux-ext4@vger.kernel.org, Li Dongyang <dongyangli@ddn.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger@dilger.ca, emoly@whamcloud.com
+Subject: Re: [PATCH] e2image: correct group descriptors size in ext2fs_image_super_read()
+Date: Thu,  8 Feb 2024 10:50:05 -0500
+Message-ID: <170740737332.1017699.9884744937933019259.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20230714005958.442487-1-dongyangli@ddn.com>
+References: <20230714005958.442487-1-dongyangli@ddn.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-If the volume is in strict mode, ext4_ci_compare can report a broken
-encoding name.  This will not trigger on a bad lookup, which is caught
-earlier, only if the actual disk name is bad.
+On Fri, 14 Jul 2023 10:59:58 +1000, Li Dongyang wrote:
+> In function ext2fs_image_super_read(), the size of block group
+> descriptors should be (fs->blocksize * fs->desc_blocks), but not
+> (fs->blocksize * fs->group_desc_count).
+> 
+> 
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
----
-Hello,
+Applied, thanks!
 
-I am trying to respin the series here :
-https://www.spinics.net/lists/linux-ext4/msg85081.html
+[1/1] e2image: correct group descriptors size in ext2fs_image_super_read()
+      commit: 633ab26eefe1b037eaba82d9a3555eb712c82345
 
-To make it easier to apply I split it into smaller chunks which address
-one single thing.
+(Note: this patch was white-space damaged so I had to apply it by hand.)
 
-This patch simply adds an error message in the UNICODE path.
-
- fs/ext4/namei.c | 3 +++
- 1 file changed, 3 insertions(+)
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 6e7af8dc4dde..7d357c417475 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1477,6 +1477,9 @@ static bool ext4_match(struct inode *parent,
- 			 * only case where it happens is on a disk
- 			 * corruption or ENOMEM.
- 			 */
-+			if (ret == -EINVAL)
-+				EXT4_ERROR_INODE(parent,
-+					"Directory contains filename that is invalid UTF-8");
- 			return false;
- 		}
- 		return ret;
+Best regards,
 -- 
-2.34.1
-
+Theodore Ts'o <tytso@mit.edu>
 
