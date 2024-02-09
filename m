@@ -1,136 +1,207 @@
-Return-Path: <linux-ext4+bounces-1182-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1183-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E318684F486
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Feb 2024 12:23:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BE7D84F487
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Feb 2024 12:23:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82092B2A32C
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Feb 2024 11:23:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 998DF1F2A08E
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Feb 2024 11:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4FA2E652;
-	Fri,  9 Feb 2024 11:21:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0C382E858;
+	Fri,  9 Feb 2024 11:21:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ScLg6ycF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nX05Qnqg";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ScLg6ycF";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="nX05Qnqg"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="S5rqwisB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="w8PUnKa/"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D752E84A
-	for <linux-ext4@vger.kernel.org>; Fri,  9 Feb 2024 11:21:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84B82D04F
+	for <linux-ext4@vger.kernel.org>; Fri,  9 Feb 2024 11:21:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707477671; cv=none; b=P0nleSRuNlP8Y66VSOpnETsRueg19Gh0svpmVzjYVUWtA0gwJpVVv2V7kBa64nZub9MalKDBaff3OoZ1TO9tiIkijpbaiGIDUGGIkCshYYbpbHNbxxz/4DwwmrQfxHsKhUM9f0r5mV7T9AePkU7v0pQ2OKnV4HX87NgPa8KMphY=
+	t=1707477673; cv=none; b=DZqXYBEjU1YtA1rj6t+HIdfX44JTQ+q4py4QeuGnkhlN3W6iFjEFFLKDWyvUuMFnLueEQJbmWnZm8685Ckh9S95+3TOHqXHSvpY2dXpN/JHvqAD1YNzTxGzasO3pnw51aNKd+x2t0jfaFUE1O6aMnTAsB9xNA6u3F39GcjhWgrI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707477671; c=relaxed/simple;
-	bh=kkkrl6TbbDWN1p2zN/ySEtF7x54/GGpgvIUOu2I+3fM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=p5y2nte8Nc3ELWICIRA93gOsYNpW6yyNiWHiAPIe4AWTgpVrYmmQtDFFGWM2ndGjJTpu9oapLEYDy28X9e/x9EH28o//Ss6k8SVtUseMcbZeQsArUcvPSKneIOSGzgExuP0O5WAakSd6EUohEg8zAXxXApDZAPVtL4jEwVZTp9s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ScLg6ycF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nX05Qnqg; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ScLg6ycF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=nX05Qnqg; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1707477673; c=relaxed/simple;
+	bh=QKsz8+4nVeQbBno3VOSz24JxTTH1VtojewFqvVVQ7ek=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=AG9HUEW3uAAki3/0amxsXZtZ4y4vUfT6PylO7CQKjYZhYKkRmQUC7QxA/AsEw6WLGyoM0H42Ccyz//CrPLTTTXOQ6kFZHLlUDGUvTRWYlua+UUqVFWz353VtCXjbarP7Ac5onAToNrswqKUs9bNM/7Ffj+/yOtUgjFSqmmWqqiI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=S5rqwisB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=w8PUnKa/; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D68F41F803;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D33EB1F7F9;
 	Fri,  9 Feb 2024 11:21:07 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1707477667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ircD6G08W42YsOAwaerWh9twZj91K6+3eLcVfarhVCQ=;
-	b=ScLg6ycFKDjkUsj90niWGBD0bZL3sgGM0tcAm82Y/7BDPSUWkVwN0Hu3SxsgJZGdoADyDI
-	2EM8pt87l/RbxEOQXWi0QLnj2XD62wyo09xBAsLHNFrgckIcGmJ5DbZH5Q7q10b/7OWyun
-	SBSwivh9F0BwEq11N2gWvRvPHO93KFY=
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gNrqiNAaZMWCvNANNKTPlOJbjUtw7A2fXJ/3W2rPMWw=;
+	b=S5rqwisBgsFtNHcwRMP5Zg5GRJ/gyBWREuK7jNRGspjU6JE6lL69bwCZ/c+6xQ0wOeNE4s
+	izJcyVVlWJ6qwQvBPECHh33s7Ze/FlGX5msZP6tPMslaJcSO5OzyjjlLeX2IrRWtDfRkSW
+	Rr27mJY4Tc7fpdg8dI/xHXjGOAHbW74=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1707477667;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ircD6G08W42YsOAwaerWh9twZj91K6+3eLcVfarhVCQ=;
-	b=nX05QnqgG7AzvhOHqo9jonuhvl9Vp4ihE3xicj3QxTfzpx7HRbBkcQjsZFYaSiVixhZ5WT
-	6b5wB886zwrywuDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707477667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ircD6G08W42YsOAwaerWh9twZj91K6+3eLcVfarhVCQ=;
-	b=ScLg6ycFKDjkUsj90niWGBD0bZL3sgGM0tcAm82Y/7BDPSUWkVwN0Hu3SxsgJZGdoADyDI
-	2EM8pt87l/RbxEOQXWi0QLnj2XD62wyo09xBAsLHNFrgckIcGmJ5DbZH5Q7q10b/7OWyun
-	SBSwivh9F0BwEq11N2gWvRvPHO93KFY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707477667;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ircD6G08W42YsOAwaerWh9twZj91K6+3eLcVfarhVCQ=;
-	b=nX05QnqgG7AzvhOHqo9jonuhvl9Vp4ihE3xicj3QxTfzpx7HRbBkcQjsZFYaSiVixhZ5WT
-	6b5wB886zwrywuDg==
+	 mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gNrqiNAaZMWCvNANNKTPlOJbjUtw7A2fXJ/3W2rPMWw=;
+	b=w8PUnKa/I2ae5M1MxrY5pJGatJBTncwpd2YTNosXHy9iJ70jI/OicdxG0a3X0KWxgVRlaB
+	FnT5P9BeXbZ82iAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C71B313A2C;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BB699139E7;
 	Fri,  9 Feb 2024 11:21:07 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id UxlPMKMKxmWiNQAAD6G6ig
+	id EDi7LaMKxmWcNQAAD6G6ig
 	(envelope-from <jack@suse.cz>); Fri, 09 Feb 2024 11:21:07 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 6A76AA0809; Fri,  9 Feb 2024 12:21:07 +0100 (CET)
+	id 6F973A05C4; Fri,  9 Feb 2024 12:21:07 +0100 (CET)
 From: Jan Kara <jack@suse.cz>
 To: Ted Tso <tytso@mit.edu>
 Cc: <linux-ext4@vger.kernel.org>,
 	Jan Kara <jack@suse.cz>
-Subject: [PATCH 0/3] ext4: Create EA inodes outside of buffer lock
-Date: Fri,  9 Feb 2024 12:20:58 +0100
-Message-Id: <20240209111418.22308-1-jack@suse.cz>
+Subject: [PATCH 1/3] ext4: Fold quota accounting into ext4_xattr_inode_lookup_create()
+Date: Fri,  9 Feb 2024 12:20:59 +0100
+Message-Id: <20240209112107.10585-1-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240209111418.22308-1-jack@suse.cz>
+References: <20240209111418.22308-1-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=554; i=jack@suse.cz; h=from:subject:message-id; bh=kkkrl6TbbDWN1p2zN/ySEtF7x54/GGpgvIUOu2I+3fM=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBlxgqU2Mw0ocgbmWlfhOxRCEY2BxwR5Jqje+Dcp6OW XykkPYmJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZcYKlAAKCRCcnaoHP2RA2WHECA Dmkot3H58LqSVUfze9yD15rzfanNYzLEIOlqwFqhtwoN4eQAHgJY4t2CgfAwx1HeGPi2SZMscRFLKZ 0SUkOmgaa0qMGA3pa/78jJe6Z2as8kgjDTl4eLrfk6M266P+DQ4+gnvCnS4xQFJzVAt05YL5IUPfvJ xp3BuIoiOt4cKpAifEcYQI5+OoyGQGb8ozeBflPso99IKR4SCFdXr9ylKriE9KwdmDrkx5akcW8PrU jZhtBQ7q1uE5xgb9vPZBvUvQKaVz4UPqcQVxK99NLdq+qY2BILyNBiYsA9BBR3Ru/MIvnrREdX019t n6wRYYrlJ44VcKD2maT846UVPIAPSL
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3247; i=jack@suse.cz; h=from:subject; bh=QKsz8+4nVeQbBno3VOSz24JxTTH1VtojewFqvVVQ7ek=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBlxgqac55kL12p7NCMxxSulcKzF7ADQLTzretxdZOC nfs+IEKJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZcYKmgAKCRCcnaoHP2RA2b9TCA C/AAYpEJqDNOP0I1OxWVmRhy0cfNVHJI9RPWty8FKADxAyd+35YqwAB24fOmRr9uarLwsOjaRuzV4j aBDMynb3esRzDIWCFnFRtusKNQnqAAwFXo+EJH7as7C5QyBbtQ2Be08uEW1WTgF8ejr8zoIo9nh0gc Lz96AaIvvZ1f7H/DeqZV82QY3a5F40X6d43OsTC6Me8coiZs1DQTcYwgmABoPpwK0X/xfYWf/G7qzN LZxb2K/czv7NEoD+GkCCk/u3uAM9WDSO+0wgRimQYoG2a0MHLeb8IyLNuI+Vv66ck/Um73MGARVtp3 qQOtI+6f8dv17M87Ja+uoxq0wQDzBA
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
 Authentication-Results: smtp-out2.suse.de;
 	none
-X-Spam-Level: ***
-X-Spam-Score: 3.70
-X-Spamd-Result: default: False [3.70 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 R_MISSING_CHARSET(2.50)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 TO_DN_SOME(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 MID_CONTAINS_FROM(1.00)[];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.00)[36.79%]
+X-Spamd-Result: default: False [-4.00 / 50.00];
+	 REPLY(-4.00)[]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: D33EB1F7F9
+X-Spam-Level: 
+X-Spam-Score: -4.00
 X-Spam-Flag: NO
 
-Hello,
+When allocating EA inode, quota accounting is done just before
+ext4_xattr_inode_lookup_create(). Logically these two operations belong
+together so just fold quota accounting into
+ext4_xattr_inode_lookup_create(). We also make
+ext4_xattr_inode_lookup_create() return the looked up / created inode to
+convert the function to a more standard calling convention.
 
-ext4_xattr_set_entry() creates new EA inodes while holding buffer lock on the
-external xattr block. This is problematic as it nests all the allocation
-locking (which acquires locks on other buffers) under the buffer lock. This can
-even deadlock when the filesystem is corrupted and e.g. quota file is setup to
-contain xattr block as data block as syzbot has spotted. This series moves
-the allocation of EA inode to happen outside of the buffer lock which is
-generally more sensible and also fixes the syzbot reproducer.
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/xattr.c | 50 ++++++++++++++++++++++++-------------------------
+ 1 file changed, 24 insertions(+), 26 deletions(-)
 
-								Honza
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index 82dc5e673d5c..146690c10c73 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -1565,46 +1565,49 @@ ext4_xattr_inode_cache_find(struct inode *inode, const void *value,
+ /*
+  * Add value of the EA in an inode.
+  */
+-static int ext4_xattr_inode_lookup_create(handle_t *handle, struct inode *inode,
+-					  const void *value, size_t value_len,
+-					  struct inode **ret_inode)
++static struct inode *ext4_xattr_inode_lookup_create(handle_t *handle,
++		struct inode *inode, const void *value, size_t value_len)
+ {
+ 	struct inode *ea_inode;
+ 	u32 hash;
+ 	int err;
+ 
++	/* Account inode & space to quota even if sharing... */
++	err = ext4_xattr_inode_alloc_quota(inode, value_len);
++	if (err)
++		return ERR_PTR(err);
++
+ 	hash = ext4_xattr_inode_hash(EXT4_SB(inode->i_sb), value, value_len);
+ 	ea_inode = ext4_xattr_inode_cache_find(inode, value, value_len, hash);
+ 	if (ea_inode) {
+ 		err = ext4_xattr_inode_inc_ref(handle, ea_inode);
+-		if (err) {
+-			iput(ea_inode);
+-			return err;
+-		}
+-
+-		*ret_inode = ea_inode;
+-		return 0;
++		if (err)
++			goto out_err;
++		return ea_inode;
+ 	}
+ 
+ 	/* Create an inode for the EA value */
+ 	ea_inode = ext4_xattr_inode_create(handle, inode, hash);
+-	if (IS_ERR(ea_inode))
+-		return PTR_ERR(ea_inode);
++	if (IS_ERR(ea_inode)) {
++		ext4_xattr_inode_free_quota(inode, NULL, value_len);
++		return ea_inode;
++	}
+ 
+ 	err = ext4_xattr_inode_write(handle, ea_inode, value, value_len);
+ 	if (err) {
+ 		if (ext4_xattr_inode_dec_ref(handle, ea_inode))
+ 			ext4_warning_inode(ea_inode, "cleanup dec ref error %d", err);
+-		iput(ea_inode);
+-		return err;
++		goto out_err;
+ 	}
+ 
+ 	if (EA_INODE_CACHE(inode))
+ 		mb_cache_entry_create(EA_INODE_CACHE(inode), GFP_NOFS, hash,
+ 				      ea_inode->i_ino, true /* reusable */);
+-
+-	*ret_inode = ea_inode;
+-	return 0;
++	return ea_inode;
++out_err:
++	iput(ea_inode);
++	ext4_xattr_inode_free_quota(inode, NULL, value_len);
++	return ERR_PTR(err);
+ }
+ 
+ /*
+@@ -1712,16 +1715,11 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
+ 	if (i->value && in_inode) {
+ 		WARN_ON_ONCE(!i->value_len);
+ 
+-		ret = ext4_xattr_inode_alloc_quota(inode, i->value_len);
+-		if (ret)
+-			goto out;
+-
+-		ret = ext4_xattr_inode_lookup_create(handle, inode, i->value,
+-						     i->value_len,
+-						     &new_ea_inode);
+-		if (ret) {
++		new_ea_inode = ext4_xattr_inode_lookup_create(handle, inode,
++					i->value, i->value_len);
++		if (IS_ERR(new_ea_inode)) {
++			ret = PTR_ERR(new_ea_inode);
+ 			new_ea_inode = NULL;
+-			ext4_xattr_inode_free_quota(inode, NULL, i->value_len);
+ 			goto out;
+ 		}
+ 	}
+-- 
+2.35.3
+
 
