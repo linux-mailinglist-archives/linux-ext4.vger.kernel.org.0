@@ -1,64 +1,101 @@
-Return-Path: <linux-ext4+bounces-1197-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1198-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C048C8510AF
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 11:24:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D43E185154B
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 14:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C72871C20FD8
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 10:24:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0533C1C20D21
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 13:34:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5ED811803D;
-	Mon, 12 Feb 2024 10:24:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB0803FB1F;
+	Mon, 12 Feb 2024 13:23:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="cU4TXmjb"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rqVzJaxC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="LAWNKNui";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QenqSsS6";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z2CxIUZW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDE221B273;
-	Mon, 12 Feb 2024 10:24:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B23A3EA6C;
+	Mon, 12 Feb 2024 13:23:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707733469; cv=none; b=gNzRYnBl/3XMjT/hcywxLONmnxEfBUYS5eVMDS1QYZq/XJz3HtQnZVGZ2v2SFs07Nq2pDAXSJ75g8QtwOnmvKSBW8m+X2ssr+Nk8F5y7iAneDY5AEx18U2ct9JvIx+fnVwQtUF25OTJBAEbBE8+YNv/HRCoTENHVfCUP+GXDUPw=
+	t=1707744234; cv=none; b=mHJC2Y4Rjhp+G8df3NxKr2uPHTlc2z1agubHzp50+5pEWaddm0soC4OXkb/ePLNnaOYwqs/ea2zgfDhRi942yMTyulbMKsFUTa6gawJysklVIuxEHQdT1pBAKG50yTyA+4dcTaYH+78sN0ssGzKFUnMk4HH1yEgczQfidkOxDVQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707733469; c=relaxed/simple;
-	bh=/IkSyB87unJUMSt0t7EdxVIcPTv7ssGTsQqsknTFmlY=;
+	s=arc-20240116; t=1707744234; c=relaxed/simple;
+	bh=wSQR6gsLt3mG1V9dqLVK5pFi2KxJsal8RGKoLPtALr0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=d+uEu6+DM3xkIITz60myBUYuZD+f0Ze0hkMfRlFG5XkbiOVTc51JDLuFLYwAj4gYq5hDN0dBax+nwcaX3QYsPMTSQSvRURwpTZZNSpIH2jjOVhLm0GhZVy/HUYAdEG1rXkq+hSIGapItyF0lUU3SfehxDVtssxceLD/6w/ypsI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=cU4TXmjb; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=rjQFj2Y3qw5mwmHLRiMU4jGR0CXRoHG5WfGG9b74Q3A=; b=cU4TXmjbQ8YvfC7Gfc1RedGceJ
-	Nj46EdFUx5xoSvev+Uh4BQgqZ9PYjSYA8R+mWQItKpbzvniRq5InhuKK62Z+U/1jKU0tqDl3g278M
-	fuPxpYzV934A1mAgdh6elHtOrQCPkkd0WuvYIFGyWupR4VzF5bGOuYhJvWrB1dUCgcjCEkOGFdY2k
-	mDsG0ROIYyWy/9lD43cV2s4vO9UAldXJvp3WeXE1oTwki+pqrdahMa5w5QLzSZcUROEhiLjl14anp
-	RWz39xL4+AD/11nI7O0Ni8kvXrWei6D76bGYnVBQQQQ/RmAHUEGWYu3GffRIfh85bD3WJ7t5sz7UE
-	TsLNwc6g==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rZTU6-0000000Adzq-18Cf;
-	Mon, 12 Feb 2024 10:24:22 +0000
-Date: Mon, 12 Feb 2024 10:24:22 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>,
-	Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org,
-	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com, wangkefeng.wang@huawei.com
-Subject: Re: [RFC PATCH v3 00/26] ext4: use iomap for regular file's buffered
- IO path and enable large foilo
-Message-ID: <Zcnx1pP_iZBf6Y-t@casper.infradead.org>
-References: <20240212061842.GB6180@frogsfrogsfrogs>
- <87ttmef3fp.fsf@doe.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=jn12mqPRbA1SLU/N7hp2YzQBolq70qrerdX+4jaWusaYB/x98AAS7FvvsdVruaydP5ykM04IDuO5jhrYRhJO/hAOctov5ZGetpR0Ug8fw2/5xYck2VGZKL/56tIomdSCR5f8TAuaqADu14+JazHkkegwf6RKAPS2/5QnM5xtAj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rqVzJaxC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=LAWNKNui; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QenqSsS6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z2CxIUZW; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D65AC1F769;
+	Mon, 12 Feb 2024 13:23:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707744231; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6JkVcVZxZODTrdG1g0ooZoXOZDuPkKduhykZYkAPZq0=;
+	b=rqVzJaxCdss1LH04Ym0CSvcK1bTB8gJFNIk2lAhgvX5fjUFzj7Dg3DdLLCCOg0V4lYdLWs
+	CgkoAWZdqii+TPi8rkGW/iyTNDtzCagSFSYUzFL9aza2gPvsnBLkGbbagpydFIpmdgP7B5
+	xcAYcxkNug71WtwxO/W5QaYO2p757e8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707744231;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6JkVcVZxZODTrdG1g0ooZoXOZDuPkKduhykZYkAPZq0=;
+	b=LAWNKNuiVW4v0he9H+338pFeDaR3AkSJbgtJM4XXJN4C7PNo0dRI+DqZTaVNile5q4A09o
+	m9fcthPQed1LZlCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707744230; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6JkVcVZxZODTrdG1g0ooZoXOZDuPkKduhykZYkAPZq0=;
+	b=QenqSsS6WZz7R2n1edat8BSuvZw7dvJwhuZ12pO0+w9nLYSI81tVqJFvo6R4qT/RV34PrQ
+	pnVoCp8yq9M5m0//ZOn2aFY9hbTpcDgNZMESiR7YACmh4F/Qn/tjq3LKO3UbQVvpTPEpOx
+	vk5/M9VPy/x2M+FRFp8FmUCwTwwjt84=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707744230;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6JkVcVZxZODTrdG1g0ooZoXOZDuPkKduhykZYkAPZq0=;
+	b=Z2CxIUZWdkji8Ocyn1ByKhfdkz5/yPGJBn/RAhpLA4pnQldJ1LqF9DLBe3a4SRqEvN6j5D
+	/jKnZ7TshS67a2Dg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id C5C0213212;
+	Mon, 12 Feb 2024 13:23:50 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id vdoEMOYbymUtMwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 12 Feb 2024 13:23:50 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 56EA3A0809; Mon, 12 Feb 2024 14:23:50 +0100 (CET)
+Date: Mon, 12 Feb 2024 14:23:50 +0100
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+693985588d7a5e439483@syzkaller.appspotmail.com>
+Cc: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org,
+	jack@suse.cz, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev, nathan@kernel.org, ndesaulniers@google.com,
+	syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Subject: Re: [syzbot] [ext4?] kernel BUG in ext4_enable_quotas
+Message-ID: <20240212132350.ipdht3ttxyivl33p@quack3>
+References: <0000000000000126ec05ffd5a528@google.com>
+ <0000000000002903a406110849e9@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -67,54 +104,64 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87ttmef3fp.fsf@doe.com>
+In-Reply-To: <0000000000002903a406110849e9@google.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: *
+X-Spam-Score: 1.69
+X-Spamd-Result: default: False [1.69 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.01)[51.36%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c];
+	 TAGGED_RCPT(0.00)[693985588d7a5e439483];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 R_RATELIMIT(0.00)[to_ip_from(RL9mptuuj8f371ag1nhgyt86ac)];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,syzkaller.appspot.com:url];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
 
-On Mon, Feb 12, 2024 at 02:46:10PM +0530, Ritesh Harjani wrote:
-> "Darrick J. Wong" <djwong@kernel.org> writes:
-> > though iirc willy never got the performance to match because iomap
+On Sat 10-02-24 06:59:05, syzbot wrote:
+> syzbot suspects this issue was fixed by commit:
 > 
-> Ohh, can you help me provide details on what performance benchmark was
-> run? I can try and run them when I rebase.
-
-I didn't run a benchmark, we just knew what would happen (on rotating
-storage anyway).
-
-> > didn't have a mechanism for the caller to tell it "run the IO now even
-> > though you don't have a complete page, because the indirect block is the
-> > next block after the 11th block".
+> commit 6f861765464f43a71462d52026fbddfc858239a5
+> Author: Jan Kara <jack@suse.cz>
+> Date:   Wed Nov 1 17:43:10 2023 +0000
 > 
-> Do you mean this for a large folio? I still didn't get the problem you
-> are referring here. Can you please help me explain why could that be a
-> problem?
+>     fs: Block writes to mounted block devices
+> 
+> bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=147e5b20180000
+> start commit:   89bf6209cad6 Merge tag 'devicetree-fixes-for-6.5-2' of git..
+> git tree:       upstream
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=1b32f62c755c3a9c
+> dashboard link: https://syzkaller.appspot.com/bug?extid=693985588d7a5e439483
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11ba1fefa80000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1636640fa80000
+> 
+> If the result looks correct, please mark the issue as fixed by replying with:
+ 
+The syzbot reproducer seems to mess with multiple ext4 mounts stacked on
+one another and the loop device as well. Quite likely it managed to corrupt
+the mounted filesystem. So:
 
-A classic ext2 filesystem lays out a 16kB file like this (with 512
-byte blocks):
+#syz fix: fs: Block writes to mounted block devices
 
-file offset	disk block
-0-6KiB		1000-1011
-6KiB-16KiB	1013-1032
-
-What's in block 1012?  The indirect block!  The block which tells ext2
-that blocks 12-31 of the file are in disk blocks 1013-1032.  So we can't
-issue the read for them until we've finished the read for block 1012.
-
-Buffer heads have a solution for this, BH_Boundary.  ext2 sets it for
-block 11 which prompts mpage.c to submit the read immediately (see
-the various calls to buffer_boundary()).  Then ext2 will submit the read
-for block 1012 and the two reads will be coalesced by the IO scheduler.
-So we still end up doing two reads instead of one, but that's
-unavoidable because fragmentation might have meant that 6KiB-16KiB were
-not stored at 1013-1032.
-
-There's no equivalent iomap solution.  What needs to happen is:
-
- - iomap_folio_state->read_bytes_pending needs to be initialised to
-   folio_size(), not 0.
- - Remove "ifs->read_bytes_pending += plen" from iomap_readpage_iter()
- - Subtract plen in the iomap_block_needs_zeroing() case
- - Submit a bio at the end of each iomap_readpage_iter() call
-
-Now iomap will behave the same way as mpage, only without needing a
-flag to do it (instead it will assume that the filesystem coalesces
-adjacent ranges, which it should do anyway for good performance).
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
