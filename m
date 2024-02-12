@@ -1,94 +1,77 @@
-Return-Path: <linux-ext4+bounces-1192-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1193-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B5E1850C6D
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 01:00:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC1AA850D6F
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 07:02:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE23528282B
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 00:00:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C9D41F23460
+	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 06:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24C1F503;
-	Mon, 12 Feb 2024 00:00:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 576A57462;
+	Mon, 12 Feb 2024 06:02:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kePfteA4"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC2E53AC
-	for <linux-ext4@vger.kernel.org>; Mon, 12 Feb 2024 00:00:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A82C6FAD;
+	Mon, 12 Feb 2024 06:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707696006; cv=none; b=s5htZvQ7s1amLv6+O3fDkYCcWZFrsrbhuUGlCU/IAc9YoveLrwn33aWjmys79v9kEpNveHE49n2K3wgwPnf7feb2raJgggNeOBjD4vruEPmMskyKZ5q5lFHDL1JR+0npMfUVekCCgRJhYQQa5EmJWamljOdZoE9mfGNiCCg3zG0=
+	t=1707717755; cv=none; b=WYfZkGDOM/lAl84M8v3fO6txltruFrFGq4fkRifNCKSCLhXajPztiR8kIKWkLzSbr/NNDCrxLPtR9vQ8MEnb29AzApBY9AkDVyTeNXgywNsfcsLmnNoEFzIVHTH4H8JchBN6hNSXbipu2p4+JLnVBPW33erp7sLl3MEmBiZd8+4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707696006; c=relaxed/simple;
-	bh=JQH3bGP0Sfaxj2eCFe5H9MccjiugtupxIysd0pL4ZXw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=IDJxFQc+xZ3ntblmy6XxUl1fEHCDtDm0L5yfVSG1B3JPISvEClmYC5fqRV9WPdy/o+1lHiY3izGBC4BqpwS3Gco/utUNL0xpyAAXd0HAbwpRPUpmXbDzks/zzr4f6CzoIrV2PPXoHU11MZNgtIwQUTmmc+5VsJUm0XdKni++Gf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-363dfabfb34so24648165ab.1
-        for <linux-ext4@vger.kernel.org>; Sun, 11 Feb 2024 16:00:04 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1707696004; x=1708300804;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QEtJpQMQObyxFAndxkl3jMzodLW4BfLQf1d+4n4EzAA=;
-        b=GnSiLgHugh61xBqHKS89ALh6K7fgTC0jXpkRW/GaiifZ78PxnrXxEGC1DGn3eawhF5
-         KAi/5YO7d1KQAumqLf5iJ5zIeseCQsZ2JXBFQaqBTqOEHK7AijkUSB6yJeCl72hmCquf
-         5SXUxqbIgzNIFJNvVrhd3uOTZ5ZADeLoIvQ6TkbxRVukd5XHwOZ4LOYvLSzgR9B5Nyp0
-         xkjCitSUgtnBLSySXORFnVNiwe6Z1Dgd1OZXGscHE1yV8Qa+PP1leyfXzBDNqJpd7wgR
-         ybMPUZwBxyTsMHmz1kzPpUR9cEk5xp7jI63st1to/SC0063kOLjepnM4wSeQxBhpCY0m
-         fTgw==
-X-Forwarded-Encrypted: i=1; AJvYcCWgCjE2Uw8v9pCo5yuKpJDrPLJMGf5o+dhmUdrcNJDmLx2km3idGtIdBYIqJ+wb6bHRobdrQbHcxdfTZPWMPFoEcIcPBqdx99WtYQ==
-X-Gm-Message-State: AOJu0Yx9HYMs4hB8nVrRmbdxMWRePaVbn/TL7AxwG2i3bQW7uOE51Odr
-	6u3/lDQNcBadjZeAcTU3XEZTdDCnI02CmJgw06A/X9UrImFFrtuCKg4VvPieu1W7NsxBMx8zXCQ
-	wC1YLczRUirFSvc45tIJCYyvUYeqm6nHJNqv8WKbha8GllxCQy9BXnRY=
-X-Google-Smtp-Source: AGHT+IEKIuOMw8JbKg2Kv6fI5S3YSY+xiVn8YLrrANJRKL7SuSEdLpBJbWMZECkqP3yzIeQ6TZFBLMUg7q2TJNYj4CqXCoNyoERc
+	s=arc-20240116; t=1707717755; c=relaxed/simple;
+	bh=r3ujuO0COn4/CEoshVZMVfrelu9cvXTDs8XEyBmSehc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=U3EeHKa+VVD3tDINz+cZEAuwdvJJBUM6RYCfqrUUJA3Py1rAelK4rTJHItP/qzqHqK673YmM2wtUyWWN+jthURMrUD80B/FOwVG4Fhy7Js8h53v5Qrrbhii3gknxtXrNaM2cIO5dLjdhmvZ+epAyj40ouLPO9RdiziRgs6r+A/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kePfteA4; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=r3ujuO0COn4/CEoshVZMVfrelu9cvXTDs8XEyBmSehc=; b=kePfteA4/7o2gcIXYog6poOr3S
+	0tmBFcKXTWgy4TVcMkJclzXQOn4QaOwg3CZw471H/pmqhJWuHjm0TslkfDBg8z2Nngn1Ueaj2cKwG
+	OBep0doQKEKjr/Ylus4Whg2547R6xFVEvss7s+qxGcijQcBgAd1JQ6g2JrYA99tduET/bbkEFkFNi
+	pJ7nM1AImpwhGN8me5OZ57BoIjStSGZCv9KFJXzFQSc7Nuc1LMYth6Y8fNFl2gFlQaxMWYxdUqkVu
+	kSwGJ3xlP65zYhoF3AoIL6596ty3N105npaBY78uVbxhnL4AHAdexHfox9AoaP1ViGipDnG2pO4dx
+	dzRMzbEA==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rZPOd-00000004NKX-2W3E;
+	Mon, 12 Feb 2024 06:02:27 +0000
+Date: Sun, 11 Feb 2024 22:02:27 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+	hch@infradead.org, djwong@kernel.org, willy@infradead.org,
+	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [RFC PATCH v3 08/26] iomap: add pos and dirty_len into
+ trace_iomap_writepage_map
+Message-ID: <Zcm0c7aMoWp7mPST@infradead.org>
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+ <20240127015825.1608160-9-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d84:b0:363:e232:23c6 with SMTP id
- h4-20020a056e021d8400b00363e23223c6mr486052ila.5.1707696004388; Sun, 11 Feb
- 2024 16:00:04 -0800 (PST)
-Date: Sun, 11 Feb 2024 16:00:04 -0800
-In-Reply-To: <000000000000e17185060c8caaad@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000b9df7e061123f594@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in lock_two_nondirectories
-From: syzbot <syzbot+2c4a3b922a860084cc7f@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	eadavis@qq.com, jack@suse.cz, libaokun1@huawei.com, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
-	viro@zeniv.linux.org.uk, willy@infradead.org, yangerkun@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240127015825.1608160-9-yi.zhang@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-syzbot suspects this issue was fixed by commit:
+Looks good:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+Reviewed-by: Christoph Hellwig <hch@lst.de>
 
-    fs: Block writes to mounted block devices
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=15477434180000
-start commit:   a39b6ac3781d Linux 6.7-rc5
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=e043d554f0a5f852
-dashboard link: https://syzkaller.appspot.com/bug?extid=2c4a3b922a860084cc7f
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1687292ee80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16d8adbce80000
-
-If the result looks correct, please mark the issue as fixed by replying with:
-
-#syz fix: fs: Block writes to mounted block devices
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Can you submit this for inclusion in the vfs tree?
 
