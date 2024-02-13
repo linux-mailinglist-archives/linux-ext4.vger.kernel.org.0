@@ -1,127 +1,94 @@
-Return-Path: <linux-ext4+bounces-1201-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1202-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D32C8517C1
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 16:16:59 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58BD48524F6
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 02:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C8D2B21BE4
-	for <lists+linux-ext4@lfdr.de>; Mon, 12 Feb 2024 15:16:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1CC8B2253E
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 01:04:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5DF3C48D;
-	Mon, 12 Feb 2024 15:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="X5naKi5g";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wvaAtq9g"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE1F212BF10;
+	Tue, 13 Feb 2024 00:24:06 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 833861DFD9;
-	Mon, 12 Feb 2024 15:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C78B312BEAE
+	for <linux-ext4@vger.kernel.org>; Tue, 13 Feb 2024 00:24:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707751005; cv=none; b=AzrgTtK71O9YRdcVUfPQFFnOpjcahObwyhW06TqlKb1ReCR75bxFiBgNLKK6mVe95Fy60KmBK/fFC9Ljdb0LNAe2uLkcmB4FhvhJSmL3D8iCySebt5cP2OQSIkL93jMtLNFG3tTgr30jD5fHPO1930EJsFy1GG4kb7j6RIr6i74=
+	t=1707783846; cv=none; b=ZaZpg1D2mLCc/ZVvjokgnL3BUeEdci72AvERoK09ORcRy+tPKdpmC34MMq4oD162UwbFBmYQKeNhqrwAVCM+BYeUnzBRvQIfokaG/XPzG31M32YdGH/F+WhP4ff5C33xFxwcdJFSXkIaaCtZv2XdvUZ3IAxDrveNWKRZR37o0B4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707751005; c=relaxed/simple;
-	bh=3chvmobw0WIhPXp502BMUquxmX0WkgFAgr4Y5a+BiK4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=E12dH9Twj5lcQMU9sGIbIdvXe/rO7jxaQ3uGY3fyrMxW2/8CM5aXvZ5/SVnW1pWcHc+a6vCuxJskKY2FxaoezZNSxJWbW76EOVvosdPFpF3Hiqtps8RGGJXP2y91mRMlV+o6kq/V157GS2ZC7SwzOoMio2SgjCzO2aBMFqQkQt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=X5naKi5g; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wvaAtq9g; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1707751001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C0+9xXf1xmlpe5oi4tOOoKsJ9pZFh5ERW9flQIZRs88=;
-	b=X5naKi5gLpvZkYPThLTAQgcrOgmy7YnG179d5g9Zp0omwvh7aQLVvP0+Rlpn18mGTFxMVS
-	jb2OZM69peAkDCL3yF1jhi9jdM6PGkhHzdqiyNkma8rajbUwpx+HZjDXUlKVpumyENxaZ2
-	LPo4BLCgiNACH4nQjgU9UuW+MEmyXZH1whNpAhisf6WmczXagVYIkUzTeheK86QtZWf9U6
-	3XJjiQDuJAWk7KCjGTytUpoi1cc/0Ph1Fc7WGqbAhlZSwzb/k+buVyjqd2knVFJJqEtp9Y
-	Fj381DdX3HHi1MwyJ1buO9ZUt/ECWBEkvtQedGK44DUkGfRizsz9fRj14/9l8Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1707751001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=C0+9xXf1xmlpe5oi4tOOoKsJ9pZFh5ERW9flQIZRs88=;
-	b=wvaAtq9gXWu+gOMPiuUPNIHogxDOFBTHTovmSRErtvucLMRbKc+sW6mcVW7KPtOAn9Jr0c
-	FJrzz2lzCTOfMLBw==
-To: Byungchul Park <byungchul@sk.com>
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
- torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
- linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
- linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
- will@kernel.org, rostedt@goodmis.org, joel@joelfernandes.org,
- sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
- johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
- willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
- gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
- akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
- hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
- jglisse@redhat.com, dennis@kernel.org, cl@linux.com, penberg@kernel.org,
- rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
- linux-block@vger.kernel.org, josef@toxicpanda.com,
- linux-fsdevel@vger.kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz,
- jlayton@kernel.org, dan.j.williams@intel.com, hch@infradead.org,
- djwong@kernel.org, dri-devel@lists.freedesktop.org,
- rodrigosiqueiramelo@gmail.com, melissa.srw@gmail.com,
- hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com, chris.p.wilson@intel.com,
- gwan-gyeong.mun@intel.com, max.byungchul.park@gmail.com,
- boqun.feng@gmail.com, longman@redhat.com, hdanton@sina.com,
- her0gyugyu@gmail.com
-Subject: Re: [PATCH v11 14/26] locking/lockdep, cpu/hotplus: Use a weaker
- annotation in AP thread
-In-Reply-To: <20240130025836.GA49173@system.software.com>
-References: <20240124115938.80132-1-byungchul@sk.com>
- <20240124115938.80132-15-byungchul@sk.com> <87il3ggfz9.ffs@tglx>
- <20240130025836.GA49173@system.software.com>
-Date: Mon, 12 Feb 2024 16:16:41 +0100
-Message-ID: <871q9hlnl2.ffs@tglx>
+	s=arc-20240116; t=1707783846; c=relaxed/simple;
+	bh=dqTQI63+ZqDNKjpAbbZCxeV49nIfSpoeFvQR60x/Qw4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=IEISpU858jztWHTvMVqNMHqNHMvoFlPk5EP/PqYRTaEO5n63DlegzK05h5POR0B/Jt+XNoMtt6Zg7NsXYMtwzLiY9Gd/DwjPF4gxtTDR958AbjzWEn6gzh9g6wKFzW0GWwjQpyGmdFMreA9vjmOF/vhuCo5x9zBifSgHu2sd01E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-363bc80467bso22104245ab.1
+        for <linux-ext4@vger.kernel.org>; Mon, 12 Feb 2024 16:24:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707783844; x=1708388644;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qiXaK9TFzZAPYPnTyw0VSmUtJHPDIyF9ZuwGBaLUHN4=;
+        b=GBb1Z1Eyu2xgtb+trNF8nuOFl7nN5sbzLVNOGm+4qQxNJcU8bf+CuFG55wIjTSdiEr
+         mTdhERM0+/CdJhabxtXpuisNM2FhuYj1vPGIw6dBcuOTOyqKIShfttwXOn923mKUxJ8+
+         gOaOzx0y0eti5PVhPyWR2/QNZyfr6lCXogPSdhQiFC1n9zS/Hi+EQiQAjIeEsuzLb9iQ
+         1Ffq3Cardxlu+5l3O8PqO7/0oe6vPLSJZdj6mRlw1EA6FAyXjIDSitHM7MBwWQL26Qf/
+         bjnfF7FFeryPCfcZ3rmmLPxO4t2Nj4l6NNXr1A6qdGM756DHlMz1tiMi1d3096UsBjE8
+         9XEg==
+X-Forwarded-Encrypted: i=1; AJvYcCXkb7gMOpwEOGlqs0AFVVxdvgZ8cepPDT7IRsffRKqOSUhbW3VxP5tApAj2fzwFEJM/aGTuzfVR0nfPck0HSLYePJ7NL2dLXU2MFg==
+X-Gm-Message-State: AOJu0YyM2/P99JYT55tN451yOZs3NJDzti/IpQcOA6TTYXsNBIFoCZkT
+	c0ZcoqBPmjlJ9tPfLG+CDzyXMy8RNzG6Hc2w6bUM808liaFNAXG9CShelokpxjDCMfA8iM4G5O6
+	D4vgPV/zJmWoLsOsZiB3j3vX3mNgK5g0bpXD1EmMcgXySAKDRMmwdQvk=
+X-Google-Smtp-Source: AGHT+IF6MxRdyVnerz3TZh0IMvFhTsYoobPC91qocz9bxduYTKyDy5vR6SC+Hzhdc924TduO/JMxFxAP1kD/Km0bsBVcWg9yuwkk
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+X-Received: by 2002:a05:6e02:1789:b0:363:8b04:6df7 with SMTP id
+ y9-20020a056e02178900b003638b046df7mr80908ilu.0.1707783844004; Mon, 12 Feb
+ 2024 16:24:04 -0800 (PST)
+Date: Mon, 12 Feb 2024 16:24:03 -0800
+In-Reply-To: <0000000000001f0b970605c39a7e@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000600b5d06113869f0@google.com>
+Subject: Re: [syzbot] [ext4?] general protection fault in utf8nlookup
+From: syzbot <syzbot+9cf75dc581fb4307d6dd@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
+	ebiggers@google.com, ebiggers@kernel.org, jack@suse.cz, krisman@collabora.com, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, 
+	twuufnxlz@gmail.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Jan 30 2024 at 11:58, Byungchul Park wrote:
-> On Fri, Jan 26, 2024 at 06:30:02PM +0100, Thomas Gleixner wrote:
->> On Wed, Jan 24 2024 at 20:59, Byungchul Park wrote:
->> 
->> Why is lockdep in the subsystem prefix here? You are changing the CPU
->> hotplug (not hotplus) code, right?
->> 
->> > cb92173d1f0 ("locking/lockdep, cpu/hotplug: Annotate AP thread") was
->> > introduced to make lockdep_assert_cpus_held() work in AP thread.
->> >
->> > However, the annotation is too strong for that purpose. We don't have to
->> > use more than try lock annotation for that.
->> 
->> This lacks a proper explanation why this is too strong.
->> 
->> > Furthermore, now that Dept was introduced, false positive alarms was
->> > reported by that. Replaced it with try lock annotation.
->> 
->> I still have zero idea what this is about.
->
-> 1. can track PG_locked that is a potential deadlock trigger.
->
->    https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
+syzbot suspects this issue was fixed by commit:
 
-Sure, but that wants to be explicitely explained in the changelog and
-not with a link. 'Now that Dept was introduced ...' is not an
-explanation.
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Thanks,
+    fs: Block writes to mounted block devices
 
-        tglx
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=17547fd4180000
+start commit:   e42bebf6db29 Merge tag 'efi-fixes-for-v6.6-1' of git://git..
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df91a3034fe3f122
+dashboard link: https://syzkaller.appspot.com/bug?extid=9cf75dc581fb4307d6dd
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1374a174680000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=12b12928680000
 
+If the result looks correct, please mark the issue as fixed by replying with:
 
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
