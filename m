@@ -1,141 +1,207 @@
-Return-Path: <linux-ext4+bounces-1203-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1204-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAC028526FC
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 02:50:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3533C85274D
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 03:13:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C0371F25CBA
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 01:50:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 858D01F23857
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 02:13:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A1F618AE8;
-	Tue, 13 Feb 2024 01:33:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAC781C13;
+	Tue, 13 Feb 2024 02:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dqPJlW7j";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fASBLpnQ";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="dqPJlW7j";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="fASBLpnQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from invmail4.hynix.com (exvmail4.skhynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1FD418059;
-	Tue, 13 Feb 2024 01:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DDFF15A8;
+	Tue, 13 Feb 2024 02:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707788004; cv=none; b=ifshXZGkWDxmSXekUdDgBY77Q7eiAlB8pHCd6kfbVQddtabzR5IUieRRcWFwzNbQ5tVEA+M1WiO8gLmF+Ul458SwtqtiF6EGrNNF9fej5awEquVU9sEJYriBGeoCDTyDykVuARvZVzpZl8xFV0fL3vur5kjtiVy9ZikW7YNGttM=
+	t=1707790415; cv=none; b=eHOu5SYjLrjjd1RVCMxFFugSBp5rWx/vABYf3elfYGgEJME8z9HxXgoiDXhqZPHjbv7w3FRLqyj4zTP8ZuYbpRYBVjaKXIdghfZ51MZXxktTMcfVIaIhj5NgehM1aDMzF9I12XXg4WF10KBE1sdD7KLGW8D2Nakl2WEzy9A1vHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707788004; c=relaxed/simple;
-	bh=oMSbIyb+LZ3e01aikg72/MR6b0mA4KQo1k/aocJA1wM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Any6deIM5bvBg19UphHBdErRDDbWUOozAsupX99DQ9F3gvGahat0P+qO2XEHiJSjwGxqWRR6vmLU3SFF3hFCc5yCCn8wq0OCAAqWKtle6N7mlKKJ5BpnImbxy+t2qZ63o0+0jukqoqiMWQ8X7z1uq6vIL/YXunRDpf88whyGSK8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-64-65cac3510c41
-Date: Tue, 13 Feb 2024 10:18:04 +0900
-From: Byungchul Park <byungchul@sk.com>
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: linux-kernel@vger.kernel.org, kernel_team@skhynix.com,
-	torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
-	linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-	will@kernel.org, rostedt@goodmis.org, joel@joelfernandes.org,
-	sashal@kernel.org, daniel.vetter@ffwll.ch, duyuyang@gmail.com,
-	johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
-	willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
-	gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
-	akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
-	hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
-	jglisse@redhat.com, dennis@kernel.org, cl@linux.com,
-	penberg@kernel.org, rientjes@google.com, vbabka@suse.cz,
-	ngupta@vflare.org, linux-block@vger.kernel.org,
-	josef@toxicpanda.com, linux-fsdevel@vger.kernel.org,
-	viro@zeniv.linux.org.uk, jack@suse.cz, jlayton@kernel.org,
-	dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
-	dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
-	melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com,
-	chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
-	max.byungchul.park@gmail.com, boqun.feng@gmail.com,
-	longman@redhat.com, hdanton@sina.com, her0gyugyu@gmail.com
-Subject: Re: [PATCH v11 14/26] locking/lockdep, cpu/hotplus: Use a weaker
- annotation in AP thread
-Message-ID: <20240213011804.GA4147@system.software.com>
-References: <20240124115938.80132-1-byungchul@sk.com>
- <20240124115938.80132-15-byungchul@sk.com>
- <87il3ggfz9.ffs@tglx>
- <20240130025836.GA49173@system.software.com>
- <871q9hlnl2.ffs@tglx>
+	s=arc-20240116; t=1707790415; c=relaxed/simple;
+	bh=f9Q1bWLEzbbsAhp7nJxkHkdQFLYCGdX+j1umZutzTNg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jvWzx7svHvuYPxONZG1W1+MAJzYD3+bOwIVT3g1/CwEFX+Pt/6vlmWyKa/wYfaKsB9wbzrxG1mHFU6pFwiimQNGXoAvNDjpC7kxqXUhxezEX9bYt863yDlazIzx2/vmxtUIikdI3FBBmPOeGzR/bcoxO7JH2hKL8SxwSxHtitQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dqPJlW7j; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fASBLpnQ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=dqPJlW7j; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=fASBLpnQ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 17E5B21CE5;
+	Tue, 13 Feb 2024 02:13:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707790411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eW78Xuqcn60yMHNbU4RXHh3/QH4X8hmzi2JDB8FI7H8=;
+	b=dqPJlW7jRXJ3k4MaObms8lmszxZQ+4H9u4M8uoLMHQLSwgFTV4sBZMV3wvnhVhfyPYVsla
+	/z7zwD8nC6YmRwSDP3+APqCzBMBbeZ/5sfHGxOKnfC2co1CZgYRClxhu93NyVBPsNmRAWo
+	o0MbBZP2x4QsCZjBH3iB4HGkr5fMpK0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707790411;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eW78Xuqcn60yMHNbU4RXHh3/QH4X8hmzi2JDB8FI7H8=;
+	b=fASBLpnQuV23Hh+1jQN6Fv5mwW10avjKOiG9MCrllN4S9iyf145/m87TxMBfeSktIRNTVJ
+	QFus0V2P/ZK++VDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1707790411; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eW78Xuqcn60yMHNbU4RXHh3/QH4X8hmzi2JDB8FI7H8=;
+	b=dqPJlW7jRXJ3k4MaObms8lmszxZQ+4H9u4M8uoLMHQLSwgFTV4sBZMV3wvnhVhfyPYVsla
+	/z7zwD8nC6YmRwSDP3+APqCzBMBbeZ/5sfHGxOKnfC2co1CZgYRClxhu93NyVBPsNmRAWo
+	o0MbBZP2x4QsCZjBH3iB4HGkr5fMpK0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1707790411;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=eW78Xuqcn60yMHNbU4RXHh3/QH4X8hmzi2JDB8FI7H8=;
+	b=fASBLpnQuV23Hh+1jQN6Fv5mwW10avjKOiG9MCrllN4S9iyf145/m87TxMBfeSktIRNTVJ
+	QFus0V2P/ZK++VDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C314813A4B;
+	Tue, 13 Feb 2024 02:13:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id zKRmKUrQymX6dwAAD6G6ig
+	(envelope-from <krisman@suse.de>); Tue, 13 Feb 2024 02:13:30 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: ebiggers@kernel.org,
+	viro@zeniv.linux.org.uk
+Cc: jaegeuk@kernel.org,
+	tytso@mit.edu,
+	amir73il@gmail.com,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org,
+	Gabriel Krisman Bertazi <krisman@suse.de>
+Subject: [PATCH v6 00/10] Set casefold/fscrypt dentry operations through sb->s_d_op
+Date: Mon, 12 Feb 2024 21:13:11 -0500
+Message-ID: <20240213021321.1804-1-krisman@suse.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <871q9hlnl2.ffs@tglx>
-User-Agent: Mutt/1.9.4 (2018-02-28)
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SbUxTVxjHc86999zbxi53FfUMkm2WyQyLiobNZ4vZzJZlN3vLlhk/6KI0
-	cCONQEmrKHsLykuYIBMMLy3ElGpqAwhSDMGXshZioTSDCkyQQTcYBJm8RLbiGAxWSsz8cvLL
-	ef7PL/8Pj8CoV7lIQZd2QjakaVM0RMkqZzZU7/i8vUuO65wEKC6Mg+Bf+SxUNdQR8NfXIqi7
-	cQbD1N0PYGBhGsHSTz0MlJf6EVSPjjBwwxNA4LSfJdA3/hz0B+cIeEsLCGRfbiBw79EyhuGy
-	Egy1jk/Ad8GKwbU4yUL5FIHK8mwceh5iWLTV8GDL2gZjdjMPy6O7wRu4z4Fz6DUwXRomcMfp
-	ZcHTMoah71YVgUDdKgc+TycL/uLzHFybtRJ4tGBjwBac46HXZcFwPSckyvtzhYOO8y4MeVca
-	MfQ/uI2gNf83DI66+wTag9MYmhylDPxz9S6CsaIZHnILF3moPFOEoCC3jIWefzs4yBl+HZb+
-	riL735Lap+cYKafplORcsLBSl5VKN80jvJTTOsRLFsdJqckeK12+M4Wl6vkgJzlqvieSY76E
-	l87N9GNptrublzorllhpvL8cfxZ1SLkvSU7RZciGXW8nKJOv9w2Q9NvK0/UWmoWqhXNIIVAx
-	nlqfdOOn3Jb9mKwxK26jtcU/MGtMxFfp4OBimCPE7bSxdyjMjOhVUr/13TXeKCbSB7+7uTVW
-	iXupO/Aw7FSLbkR9jfvX/5+nXtM4u74bSwdXpkIZIcRR9OpKuI5C1FB7d204skmMpq7mjlBE
-	GarWpKAXXSZmvecL1G0fZC8g0fyM1vyM1vy/1oKYGqTWpWWkanUp8TuTM9N0p3cm6lMdKHSW
-	tm+XD7egef8XbUgUkGaDKuGVLlnNaTOMmaltiAqMJkLVW9Epq1VJ2syvZIP+qOFkimxsQ1EC
-	q9mi2rNwKkktHtOekI/LcrpseDrFgiIyCyW9/M7E8QMNv0bb4wYujahLN25qTkj+Q2y5V08i
-	8wZ6X6x4z1PwS/6Ooq09+kn2YC532POkpHB1gn9/tMzdU2l682jMxwc/TPxGv+xrXYn+8tND
-	lS1fR03o52K+27U3XrH11ktXsszG9o/2benb/kaEyvej6WKzc/bx2c17AjFHfnam+8c0rDFZ
-	uzuWMRi1/wG/hCFpkgMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA02SW0yTWRDHPee70ljzbcV4AvpgFXYDETVZ4kSNtwc9MdHogxr1QRr4Io3c
-	bAVFswZtUbygYgS0oBbQgtBFKYZ4q3IJl9IVkBLAikRYohARUCkRQbTFGH2Z/DLz/03mYURG
-	1cMFiNq4g7IuThOj5hWsYstKw+JtNY3yUpthAWScWwqe0TQWcu9YeWgpLUFgvXccw0DtRugY
-	G0Qw8ayZgezMFgR5Pa8YuFfXjcBedIIHV98saPMM8+DIPMuDoeAOD8/fTWLoyrqEocS2GZwX
-	8zFUjr9lIXuAh5xsA/aWfgzjlmIBLClB0FtkEmCyZxk4uts5qLnm4MDuDoWr17t4eGx3sFB3
-	vxeD62EuD93Wbxw46xpYaMlI5+DfoXwe3o1ZGLB4hgVorTRjuGv0bjv5aYqD+vRKDCdvlmFo
-	e/EIwZO01xhs1nYeajyDGMptmQx8KaxF0Hv+vQCp58YFyDl+HsHZ1CwWmr/Wc2DsCoeJz7n8
-	2pW0ZnCYocbyQ9Q+ZmZpYz6hD0yvBGp84hao2ZZIy4tCaMHjAUzzPno4ais+zVPbx0sCPfO+
-	DdOhpiaBNlyZYGlfWzbeOm+3YlWUHKNNknVLVkcoou+6OviER4rDpWaSgvLEM8hPJNLfpNrw
-	gfcxKwWRkowLjI956U/S2Tk+zf7SX6Ss1T3NjORQkJb89T6eLUWSF/9XcT5WSstJVXc/9rFK
-	qkLEWbb2R/8P4rjax/5wQ0jn1IA3I3o5kBROTZ/gJ6lJUVPJdGSOtJBUVtTji0hp+s02/Wab
-	ftlmxBQjf21cUqxGGxMept8fnRynPRwWGR9rQ97Hs/wzmXEfjbo2ViNJROqZyohFjbKK0yTp
-	k2OrEREZtb+y9UqDrFJGaZKPyLr4vbrEGFlfjQJFVj1XuWmnHKGS9mkOyvtlOUHW/Zxi0S8g
-	BR0NfenelLrtWemt9Kr5K54Wbnid67i8ne6JdBlHhwpHnBXXpIIbUrQ5eKr9zdEsu9YY7FwT
-	rwxOSEs3tY59211vmvyUrGXCT1wP+8/oloJw6ayOdZp5UbcrckaSQp2LrV/6L+wgWosnIHEL
-	0P5Tgce6RmrX7DpQNto3o/N588ztalYfrVkWwuj0mu/gxPrBdAMAAA==
-X-CFilter-Loop: Reflected
+Content-Transfer-Encoding: 8bit
+X-Spam-Level: 
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=dqPJlW7j;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=fASBLpnQ
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.49 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 R_MISSING_CHARSET(2.50)[];
+	 BROKEN_CONTENT_TYPE(1.50)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[kernel.org,mit.edu,gmail.com,vger.kernel.org,lists.sourceforge.net,suse.de];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: 0.49
+X-Rspamd-Queue-Id: 17E5B21CE5
+X-Spam-Flag: NO
 
-On Mon, Feb 12, 2024 at 04:16:41PM +0100, Thomas Gleixner wrote:
-> On Tue, Jan 30 2024 at 11:58, Byungchul Park wrote:
-> > On Fri, Jan 26, 2024 at 06:30:02PM +0100, Thomas Gleixner wrote:
-> >> On Wed, Jan 24 2024 at 20:59, Byungchul Park wrote:
-> >> 
-> >> Why is lockdep in the subsystem prefix here? You are changing the CPU
-> >> hotplug (not hotplus) code, right?
-> >> 
-> >> > cb92173d1f0 ("locking/lockdep, cpu/hotplug: Annotate AP thread") was
-> >> > introduced to make lockdep_assert_cpus_held() work in AP thread.
-> >> >
-> >> > However, the annotation is too strong for that purpose. We don't have to
-> >> > use more than try lock annotation for that.
-> >> 
-> >> This lacks a proper explanation why this is too strong.
-> >> 
-> >> > Furthermore, now that Dept was introduced, false positive alarms was
-> >> > reported by that. Replaced it with try lock annotation.
-> >> 
-> >> I still have zero idea what this is about.
-> >
-> > 1. can track PG_locked that is a potential deadlock trigger.
-> >
-> >    https://lore.kernel.org/lkml/1674268856-31807-1-git-send-email-byungchul.park@lge.com/
-> 
-> Sure, but that wants to be explicitely explained in the changelog and
-> not with a link. 'Now that Dept was introduced ...' is not an
-> explanation.
+Hi,
 
-Admit. I will fix it from the next spin. Thanks.
+v6 of this patchset applying the comments from Eric and the suggestion from
+Christian. Thank you for your feedback.
 
-	Byungchul
+Eric, since this is getting close to merging, how do you want to handle
+it? I will take patch 1 through my tree already, are you fine if I merge
+this through unicode or do you want to take it through fscrypt?
+
+As usual, this survived fstests on ext4 and f2fs.
+
+Thank you,
+
+---
+original cover letter:
+
+When case-insensitive and fscrypt were adapted to work together, we moved the
+code that sets the dentry operations for case-insensitive dentries(d_hash and
+d_compare) to happen from a helper inside ->lookup.  This is because fscrypt
+wants to set d_revalidate only on some dentries, so it does it only for them in
+d_revalidate.
+
+But, case-insensitive hooks are actually set on all dentries in the filesystem,
+so the natural place to do it is through s_d_op and let d_alloc handle it [1].
+In addition, doing it inside the ->lookup is a problem for case-insensitive
+dentries that are not created through ->lookup, like those coming
+open-by-fhandle[2], which will not see the required d_ops.
+
+This patchset therefore reverts to using sb->s_d_op to set the dentry operations
+for case-insensitive filesystems.  In order to set case-insensitive hooks early
+and not require every dentry to have d_revalidate in case-insensitive
+filesystems, it introduces a patch suggested by Al Viro to disable d_revalidate
+on some dentries on the fly.
+
+It survives fstests encrypt and quick groups without regressions.  Based on
+v6.7-rc1.
+
+[1] https://lore.kernel.org/linux-fsdevel/20231123195327.GP38156@ZenIV/
+[2] https://lore.kernel.org/linux-fsdevel/20231123171255.GN38156@ZenIV/
+
+Gabriel Krisman Bertazi (10):
+  ovl: Always reject mounting over case-insensitive directories
+  fscrypt: Factor out a helper to configure the lookup dentry
+  fscrypt: Drop d_revalidate for valid dentries during lookup
+  fscrypt: Drop d_revalidate once the key is added
+  libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
+  libfs: Add helper to choose dentry operations at mount-time
+  ext4: Configure dentry operations at dentry-creation time
+  f2fs: Configure dentry operations at dentry-creation time
+  ubifs: Configure dentry operations at dentry-creation time
+  libfs: Drop generic_set_encrypted_ci_d_ops
+
+ fs/crypto/hooks.c       | 15 ++++------
+ fs/ext4/namei.c         |  1 -
+ fs/ext4/super.c         |  1 +
+ fs/f2fs/namei.c         |  1 -
+ fs/f2fs/super.c         |  1 +
+ fs/libfs.c              | 62 +++++++++++------------------------------
+ fs/overlayfs/params.c   | 14 ++++++++--
+ fs/ubifs/dir.c          |  1 -
+ fs/ubifs/super.c        |  1 +
+ include/linux/fs.h      | 11 +++++++-
+ include/linux/fscrypt.h | 61 +++++++++++++++++++++++++++++++++++-----
+ 11 files changed, 100 insertions(+), 69 deletions(-)
+
+-- 
+2.43.0
+
 
