@@ -1,100 +1,100 @@
-Return-Path: <linux-ext4+bounces-1228-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1229-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F8BD853661
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 17:44:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A40B85368E
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 17:49:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 383C928CB00
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 16:44:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EC7A1C217F5
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 16:49:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB7895F866;
-	Tue, 13 Feb 2024 16:44:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2BEF5FF17;
+	Tue, 13 Feb 2024 16:47:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yFOTRpEs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="C9ZCRDpn";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fYscvBW0";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oJa3cnAe"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bZGOzY/U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKyzF7I2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bZGOzY/U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OKyzF7I2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D47185DF05;
-	Tue, 13 Feb 2024 16:44:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7D645FEF6;
+	Tue, 13 Feb 2024 16:47:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707842648; cv=none; b=AZGQgHtjDXwnNp8ygaXVbPqTFvE5Zw672XliZiKdDbH4oFAMLzj8RUsJIk0pvlnIZZmEMmCT//iqwRQhj/SNl//n9aoAg3qA8kupvMhRCefuOQSH5KxFz8cr6ikBiYDrH4DrjU5Kf0ntF79K2SuzBCCBVPS0l5VPQ6Z0skiX4q0=
+	t=1707842844; cv=none; b=hqiR8hMLFjay8ntEZnIxPfkstn4ZKcswRtlG9PTN0cvBWnPwgaXmnWr/UKcCRwp2Y19zjO/suk6fEppKUfPN2IWMfoicJ4oVsyfj0jrsbXRLsaLjUVIwzCDgJGWPcLITpNV92hCoFX8kNz5xAWtapw4flGpNw4tMrh2enLBSm6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707842648; c=relaxed/simple;
-	bh=BIw4eDY+yiYJj2TXjDx68WGzcvejATb1x7mhn036r24=;
+	s=arc-20240116; t=1707842844; c=relaxed/simple;
+	bh=lMuuoAlD9aAlJ2tMUAOTkGkO745CkEARAiifW3gVgLA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TJQY/OEkJMtMbDG+ubvGmYwIwXwshHycL2WW/kD1anM8c4h/pQ5LkAKJbKTFCI/UaD6WzjbVoP4gl0phPBfPxTz/tkT95cQQ1DaTbMzfDIvrMB0bABcNVeJr6FV6lRj0PbesNKl16s4dWujyfvzge49jbcazCho9eayQhSYHjSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yFOTRpEs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=C9ZCRDpn; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fYscvBW0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oJa3cnAe; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=ECLmHKUF6U7WVp27t86Wg8XDkmxvwBxf1LdNHbirwNx74dBWReJ/26SVr1tIEkGrAReFMeNcK+c+AfTA7YmrgWHQIhKCME12/CcOukpiT/RDhf/IDkcHaObm04lxtTIQN2aH/S+AIjfaCxfRAbCAs4dRubQEsTgorwd0YFzn1MU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bZGOzY/U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKyzF7I2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bZGOzY/U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OKyzF7I2; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CAF5521D04;
-	Tue, 13 Feb 2024 16:44:02 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B8EB21FCEA;
+	Tue, 13 Feb 2024 16:47:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707842643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707842839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=yFOTRpEsQsI9W13Gb5rsvObCah43piNM8xmeZ2T7Mhy82/CPK6mQxxAdPZjPLBhTjpZqh/
-	/jluPSQpfe5lwMzL1zBMDk5IG2CIHeFhvJsFXTZY0zvI1RH05IlJB0SBXT3yyttmxgyNbI
-	IOrEvZ5YxLpqSwBZUPUcUzY/LiaGN04=
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=bZGOzY/UIbjRAREUz1NSzrhOM5R3yIO8T4PFGpl7GPBecM5XgHdDXv4zmEkfShOQ9iGrfO
+	QQa2P3PIAR22BEFlTZUC33shLVUG49psKzqLkTx7adsaFNA4p2TzT5O0jp+Sa6Y1amrAxv
+	za97fneNFhOJo1PaIEDW9DPi721xV/c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707842643;
+	s=susede2_ed25519; t=1707842839;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=C9ZCRDpnM7zNu6CTb0iijZU9efSFXKs4xsT2Dpq3jcSzT+29KrNnRQMrJ+kgcvhInI+mx/
-	8dVs9pHXG/JC9JCw==
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=OKyzF7I2xqaBySBJh//PoWUHCl0f2DsplS3XEzdcSgdn3qpUqRQWPQpLYj8cpLe0wOgvyE
+	v8eKesUc1a/j+TAQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707842642; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1707842839; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=fYscvBW0UgkMswdDVGpsxrdsWFvm6T5lbhIoK3M2U7mxLNn+T4F2Vw3+3sImqfbjAYCeg/
-	X41d8X8MUgYG9k9ZpaX3EK/dsZdx0sh+5hYtLvKeCjcedzRl60aPLLDKRFkQkN2kjqQCaA
-	8eVSumy+NCnSzW45IuFSQ5qxc5h8FZE=
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=bZGOzY/UIbjRAREUz1NSzrhOM5R3yIO8T4PFGpl7GPBecM5XgHdDXv4zmEkfShOQ9iGrfO
+	QQa2P3PIAR22BEFlTZUC33shLVUG49psKzqLkTx7adsaFNA4p2TzT5O0jp+Sa6Y1amrAxv
+	za97fneNFhOJo1PaIEDW9DPi721xV/c=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707842642;
+	s=susede2_ed25519; t=1707842839;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3UQOz75ggfLw1WB47VC2EzAGSHOnNFvfwVqTF6Fqtqs=;
-	b=oJa3cnAeSalrpjlNHcGXSvnr70yH4UmF+HojnNLB+mJn/e1mhA9Q6MjhDhUeGLj4LlJF81
-	yybHAbg5NhfpMCDw==
+	bh=y47o/y5NIvk4vOfnPZ2qEDutF6P7mev6M9MfWBPW2uk=;
+	b=OKyzF7I2xqaBySBJh//PoWUHCl0f2DsplS3XEzdcSgdn3qpUqRQWPQpLYj8cpLe0wOgvyE
+	v8eKesUc1a/j+TAQ==
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id BC5751329E;
-	Tue, 13 Feb 2024 16:44:02 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id AB90F1329E;
+	Tue, 13 Feb 2024 16:47:19 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([10.150.64.162])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id xq/1LVKcy2UdDwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 16:44:02 +0000
+	id jrvbKRedy2XnDwAAn2gu4w
+	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 16:47:19 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 65B47A0809; Tue, 13 Feb 2024 17:44:02 +0100 (CET)
-Date: Tue, 13 Feb 2024 17:44:02 +0100
+	id 61CF8A0809; Tue, 13 Feb 2024 17:47:19 +0100 (CET)
+Date: Tue, 13 Feb 2024 17:47:19 +0100
 From: Jan Kara <jack@suse.cz>
 To: Baokun Li <libaokun1@huawei.com>
 Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
 	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
 	yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
 	yukuai3@huawei.com
-Subject: Re: [PATCH 3/7] ext4: refactor out ext4_generic_attr_show()
-Message-ID: <20240213164402.u7pph3egnguxv7du@quack3>
+Subject: Re: [PATCH 2/7] ext4: refactor out ext4_generic_attr_store()
+Message-ID: <20240213164719.w4pwobwndkfvupgi@quack3>
 References: <20240126085716.1363019-1-libaokun1@huawei.com>
- <20240126085716.1363019-4-libaokun1@huawei.com>
+ <20240126085716.1363019-3-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -103,21 +103,25 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240126085716.1363019-4-libaokun1@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
+In-Reply-To: <20240126085716.1363019-3-libaokun1@huawei.com>
 X-Spam-Level: 
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="bZGOzY/U";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OKyzF7I2
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
 	 TO_DN_SOME(0.00)[];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
 	 RCPT_COUNT_SEVEN(0.00)[11];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
 	 BAYES_HAM(-3.00)[100.00%];
 	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	 FROM_HAS_DN(0.00)[];
 	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
@@ -125,136 +129,99 @@ X-Spamd-Result: default: False [-2.30 / 50.00];
 	 MIME_GOOD(-0.10)[text/plain];
 	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 MID_RHS_NOT_FQDN(0.50)[];
 	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
 	 RCVD_TLS_ALL(0.00)[];
 	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: -2.51
+X-Rspamd-Queue-Id: B8EB21FCEA
 X-Spam-Flag: NO
 
-On Fri 26-01-24 16:57:12, Baokun Li wrote:
-> Refactor out the function ext4_generic_attr_show() to handle the reading
+On Fri 26-01-24 16:57:11, Baokun Li wrote:
+> Refactor out the function ext4_generic_attr_store() to handle the setting
 > of values of various common types, with no functional changes.
 > 
 > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/sysfs.c | 74 +++++++++++++++++++++----------------------------
->  1 file changed, 32 insertions(+), 42 deletions(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index 834f9a0eb641..a5d657fa05cb 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -366,13 +366,42 @@ static ssize_t __print_tstamp(char *buf, __le32 lo, __u8 hi)
->  #define print_tstamp(buf, es, tstamp) \
->  	__print_tstamp(buf, (es)->tstamp, (es)->tstamp ## _hi)
->  
-> +static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
-> +				      struct ext4_sb_info *sbi, char *buf)
-> +{
+...
+> -static ssize_t ext4_attr_store(struct kobject *kobj,
+> -			       struct attribute *attr,
+> -			       const char *buf, size_t len)
+> +static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+> +				       struct ext4_sb_info *sbi,
+> +				       const char *buf, size_t len)
+>  {
+> -	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
+> -						s_kobj);
+> -	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
+> -	void *ptr = calc_ptr(a, sbi);
+> -	unsigned long t;
+>  	int ret;
+> +	unsigned long t;
 > +	void *ptr = calc_ptr(a, sbi);
 > +
 > +	if (!ptr)
 > +		return 0;
-> +
-> +	switch (a->attr_id) {
-> +	case attr_inode_readahead:
-> +	case attr_pointer_ui:
-> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> +			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
-> +		return sysfs_emit(buf, "%u\n", *((unsigned int *) ptr));
-> +	case attr_pointer_ul:
-> +		return sysfs_emit(buf, "%lu\n", *((unsigned long *) ptr));
-> +	case attr_pointer_u8:
-> +		return sysfs_emit(buf, "%u\n", *((unsigned char *) ptr));
-> +	case attr_pointer_u64:
-> +		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> +			return sysfs_emit(buf, "%llu\n", le64_to_cpup(ptr));
-> +		return sysfs_emit(buf, "%llu\n", *((unsigned long long *) ptr));
-> +	case attr_pointer_string:
-> +		return sysfs_emit(buf, "%.*s\n", a->attr_size, (char *) ptr);
-> +	case attr_pointer_atomic:
-> +		return sysfs_emit(buf, "%d\n", atomic_read((atomic_t *) ptr));
+> +	ret = kstrtoul(skip_spaces(buf), 0, &t);
+
+The refactorization is nice but I'd keep the string to number conversion
+inside the switch so that we can distinguish uint and ulong cases.
+
+								Honza
+
+> +	if (ret)
+> +		return ret;
+>  
+>  	switch (a->attr_id) {
+> -	case attr_reserved_clusters:
+> -		return reserved_clusters_store(sbi, buf, len);
+>  	case attr_pointer_ui:
+> -		if (!ptr)
+> -			return 0;
+> -		ret = kstrtoul(skip_spaces(buf), 0, &t);
+> -		if (ret)
+> -			return ret;
+>  		if (t != (unsigned int)t)
+>  			return -EINVAL;
+>  		if (a->attr_ptr == ptr_ext4_super_block_offset)
+> @@ -471,19 +467,30 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+>  			*((unsigned int *) ptr) = t;
+>  		return len;
+>  	case attr_pointer_ul:
+> -		if (!ptr)
+> -			return 0;
+> -		ret = kstrtoul(skip_spaces(buf), 0, &t);
+> -		if (ret)
+> -			return ret;
+>  		*((unsigned long *) ptr) = t;
+>  		return len;
 > +	}
 > +	return 0;
 > +}
 > +
->  static ssize_t ext4_attr_show(struct kobject *kobj,
->  			      struct attribute *attr, char *buf)
->  {
->  	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
->  						s_kobj);
->  	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
-> -	void *ptr = calc_ptr(a, sbi);
->  
->  	switch (a->attr_id) {
->  	case attr_delayed_allocation_blocks:
-> @@ -391,45 +420,6 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  		return sysfs_emit(buf, "%llu\n",
->  				(unsigned long long)
->  			percpu_counter_sum(&sbi->s_sra_exceeded_retry_limit));
-> -	case attr_inode_readahead:
-> -	case attr_pointer_ui:
-> -		if (!ptr)
-> -			return 0;
-> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return sysfs_emit(buf, "%u\n",
-> -					le32_to_cpup(ptr));
-> -		else
-> -			return sysfs_emit(buf, "%u\n",
-> -					*((unsigned int *) ptr));
-> -	case attr_pointer_ul:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%lu\n",
-> -				*((unsigned long *) ptr));
-> -	case attr_pointer_u8:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%u\n",
-> -				*((unsigned char *) ptr));
-> -	case attr_pointer_u64:
-> -		if (!ptr)
-> -			return 0;
-> -		if (a->attr_ptr == ptr_ext4_super_block_offset)
-> -			return sysfs_emit(buf, "%llu\n",
-> -					le64_to_cpup(ptr));
-> -		else
-> -			return sysfs_emit(buf, "%llu\n",
-> -					*((unsigned long long *) ptr));
-> -	case attr_pointer_string:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%.*s\n", a->attr_size,
-> -				(char *) ptr);
-> -	case attr_pointer_atomic:
-> -		if (!ptr)
-> -			return 0;
-> -		return sysfs_emit(buf, "%d\n",
-> -				atomic_read((atomic_t *) ptr));
->  	case attr_feature:
->  		return sysfs_emit(buf, "supported\n");
->  	case attr_first_error_time:
-> @@ -438,9 +428,9 @@ static ssize_t ext4_attr_show(struct kobject *kobj,
->  		return print_tstamp(buf, sbi->s_es, s_last_error_time);
->  	case attr_journal_task:
->  		return journal_task_show(sbi, buf);
+> +static ssize_t ext4_attr_store(struct kobject *kobj,
+> +			       struct attribute *attr,
+> +			       const char *buf, size_t len)
+> +{
+> +	struct ext4_sb_info *sbi = container_of(kobj, struct ext4_sb_info,
+> +						s_kobj);
+> +	struct ext4_attr *a = container_of(attr, struct ext4_attr, attr);
+> +
+> +	switch (a->attr_id) {
+> +	case attr_reserved_clusters:
+> +		return reserved_clusters_store(sbi, buf, len);
+>  	case attr_inode_readahead:
+>  		return inode_readahead_blks_store(sbi, buf, len);
+>  	case attr_trigger_test_error:
+>  		return trigger_test_error(sbi, buf, len);
 > +	default:
-> +		return ext4_generic_attr_show(a, sbi, buf);
+> +		return ext4_generic_attr_store(a, sbi, buf, len);
 >  	}
-> -
 > -	return 0;
 >  }
 >  
->  static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+>  static void ext4_sb_release(struct kobject *kobj)
 > -- 
 > 2.31.1
 > 
