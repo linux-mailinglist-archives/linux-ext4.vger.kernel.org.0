@@ -1,221 +1,118 @@
-Return-Path: <linux-ext4+bounces-1214-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1215-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C9B785276D
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 03:14:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43260852809
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 05:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7ADE1C23258
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 02:14:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EF871C22D90
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 04:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26124690;
-	Tue, 13 Feb 2024 02:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 557F711725;
+	Tue, 13 Feb 2024 04:44:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Q5qpj6UY";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="F0snALmO";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Q5qpj6UY";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="F0snALmO"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="FO3zXqG/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7338A937;
-	Tue, 13 Feb 2024 02:14:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 386AD1119F;
+	Tue, 13 Feb 2024 04:44:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707790446; cv=none; b=ZbkPJgbR9r4Ar6xGmh0IWnGYinbikgUcYR/oPp1uGfmnrZcv1i5bQ1oKejGZKFXKmFJuNlNwR0hFHgQBvy44R5sSztusdDsCxnM/QzicnL+fVciXcCdptlc47599utaXDxqfCWlb19kHNBOETUuHDgdMVATAAbCRsrOAT149pCI=
+	t=1707799474; cv=none; b=t1RzCbmgjwnajJgSeqBEgI+3ONDIEn6vXLVYSUiqBAOblZZH0Ez9T3XdbFsAGUFVCrD4LLcyhQcYlBGjcviK6u8ZfCtIxNRGeraHMWYIkAHm2MOFw5DTVH4s1Thuas6xCtiSY9NLlrzTxYuvKxx04zfJX2wmppBqbbIA1ZUxBKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707790446; c=relaxed/simple;
-	bh=KOnqlMNszEIlSwX+P2d5aY5eD+NpqDq/T3vISrCyP7Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dH7giyPYIfeZ5OT/VPo2f4851iA6lNFQ60qvD8AQf5/f+KuJNZkFAjJDQPMF2EG3xCBD63kUjSwzdMNxrIlnPYflJ7Mk+a5abDBujzENpdFNUjbNDOU6ftnsPRpdkgYk9+6HugBV9scEs1dnaj7vSk+M8tCdqbf+1ddXH/ydl/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Q5qpj6UY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=F0snALmO; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Q5qpj6UY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=F0snALmO; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	s=arc-20240116; t=1707799474; c=relaxed/simple;
+	bh=gnalbakfUEoOVuduLGkajwEg9F3QSmxtaFgbnbfzLCg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JCkJDkPCh5y7CeBoLYP8MGsUvy44QwfDyk2GyRuyVoHUk9xIOQ40aCi7QVciWHce74UizGgUCwBG+/6L4j1nrSKqBlPGrrLi4qOLLnt04rqCKH4HHL1GHBuY7szOTKZw21YJOzko9Odj3kY6KxmXoUGg+DEL5Ru8QUvWh+TFXZA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=FO3zXqG/; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707799465;
+	bh=gnalbakfUEoOVuduLGkajwEg9F3QSmxtaFgbnbfzLCg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=FO3zXqG/u0XUNzD7u/XRn6hsYQgbLHIKn7VBtzv1ogBR6c1s7hpxxn8ePE0/FcXzy
+	 svO99ZISnkx8X5b2W7WUDPDd/lrLIm+wMAouCKv2rf2dZIhHrJxqRcS3jlRxUIU/Tq
+	 L5XEKFCNde8m/eP4QyRKASXFVjF2PdTWXBCkqws4lpLUOff1GFaGHQfYZNXg0j85i8
+	 cYIgYlM6BEbDBZZWo+CD/pfsj7yeAvWI/DlBJYmwJ+Y7uvLCwDcCgzzSzIPr6RfigF
+	 S2o12acOiDEHMtfdtnAzZgyHR+lAB/0UutA1i+4CmUKFIXiwjNvspFJUFgJgQLrTQG
+	 0ofxPSOZUnOjA==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 146A621E2B;
-	Tue, 13 Feb 2024 02:14:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707790443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fmdpLcH0KspyYreOUudTmM94kWGbFgdXTKIvo+uwB7A=;
-	b=Q5qpj6UYl5fG7t1w15t0BgBKVCItOlkcNRz2sYya+Xq/fytdDuCK7a8238Q1ZHc5UKu6NH
-	nw1pw+xbvguisi/oBj7GNjdwjRLxdwtcRxS/vV8R8QEzDdP1ugm02hNwlzSbvrmlMTeVOj
-	Y85ebNHqC0AFQzJ4PSGWWIXHqVvQQM0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707790443;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fmdpLcH0KspyYreOUudTmM94kWGbFgdXTKIvo+uwB7A=;
-	b=F0snALmO1EucW+Hag0frlR+scJlsml5SdSWgTcFk+tmHC8Wklxz+U0TLEAzBonPpfmQ7BK
-	iszs7d6nUyF256AQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1707790443; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fmdpLcH0KspyYreOUudTmM94kWGbFgdXTKIvo+uwB7A=;
-	b=Q5qpj6UYl5fG7t1w15t0BgBKVCItOlkcNRz2sYya+Xq/fytdDuCK7a8238Q1ZHc5UKu6NH
-	nw1pw+xbvguisi/oBj7GNjdwjRLxdwtcRxS/vV8R8QEzDdP1ugm02hNwlzSbvrmlMTeVOj
-	Y85ebNHqC0AFQzJ4PSGWWIXHqVvQQM0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1707790443;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fmdpLcH0KspyYreOUudTmM94kWGbFgdXTKIvo+uwB7A=;
-	b=F0snALmO1EucW+Hag0frlR+scJlsml5SdSWgTcFk+tmHC8Wklxz+U0TLEAzBonPpfmQ7BK
-	iszs7d6nUyF256AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CE63B13A4B;
-	Tue, 13 Feb 2024 02:14:02 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Jho4LGrQymU1eAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Tue, 13 Feb 2024 02:14:02 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: ebiggers@kernel.org,
-	viro@zeniv.linux.org.uk
-Cc: jaegeuk@kernel.org,
-	tytso@mit.edu,
-	amir73il@gmail.com,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org,
-	Gabriel Krisman Bertazi <krisman@suse.de>
-Subject: [PATCH v6 10/10] libfs: Drop generic_set_encrypted_ci_d_ops
-Date: Mon, 12 Feb 2024 21:13:21 -0500
-Message-ID: <20240213021321.1804-11-krisman@suse.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240213021321.1804-1-krisman@suse.de>
-References: <20240213021321.1804-1-krisman@suse.de>
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id B67EF378203B;
+	Tue, 13 Feb 2024 04:44:20 +0000 (UTC)
+Message-ID: <1b7d51df-4995-4a4a-8ec4-f1ea4975e44c@collabora.com>
+Date: Tue, 13 Feb 2024 06:44:16 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: ***
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=Q5qpj6UY;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=F0snALmO
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.49 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLsauj8dn5fwzrhashi71pkysg)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[kernel.org,mit.edu,gmail.com,vger.kernel.org,lists.sourceforge.net,suse.de];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: 3.49
-X-Rspamd-Queue-Id: 146A621E2B
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RESEND PATCH v9 1/3] libfs: Introduce case-insensitive string
+ comparison helper
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jaegeuk@kernel.org,
+ chao@kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ jack@suse.cz, linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ kernel@collabora.com, Gabriel Krisman Bertazi <krisman@collabora.com>,
+ Eric Biggers <ebiggers@google.com>
+References: <20240208064334.268216-1-eugen.hristev@collabora.com>
+ <20240208064334.268216-2-eugen.hristev@collabora.com>
+ <87ttmivm1i.fsf@mailhost.krisman.be>
+ <ff492e0f-3760-430e-968a-8b2adab13f3f@collabora.com>
+ <87plx5u2do.fsf@mailhost.krisman.be>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <87plx5u2do.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-No filesystems depend on it anymore, and it is generally a bad idea.
-Since all dentries should have the same set of dentry operations in
-case-insensitive capable filesystems, it should be propagated through
-->s_d_op.
+On 2/9/24 16:40, Gabriel Krisman Bertazi wrote:
+> Eugen Hristev <eugen.hristev@collabora.com> writes:
+> 
+>> On 2/8/24 20:38, Gabriel Krisman Bertazi wrote:
+> 
+>>> (untested)
+>>
+>> I implemented your suggestion, but any idea about testing ? I ran smoke on xfstests
+>> and it appears to be fine, but maybe some specific test case might try the
+>> different paths here ?
+> 
+> Other than running the fstests quick group for each affected filesystems
+> looking for regressions, the way I'd do it is create a few files and
+> look them up with exact and inexact name matches.  While doing that,
+> observe through bpftrace which functions got called and what they
+> returned.
+> 
+> Here, since you are testing the uncached lookup, you want to make sure
+> to drop the cached version prior to each lookup.
+> 
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
----
- fs/libfs.c         | 34 ----------------------------------
- include/linux/fs.h |  1 -
- 2 files changed, 35 deletions(-)
 
-diff --git a/fs/libfs.c b/fs/libfs.c
-index 0aa388ee82ff..35124987f162 100644
---- a/fs/libfs.c
-+++ b/fs/libfs.c
-@@ -1788,40 +1788,6 @@ static const struct dentry_operations generic_encrypted_dentry_ops = {
- };
- #endif
- 
--/**
-- * generic_set_encrypted_ci_d_ops - helper for setting d_ops for given dentry
-- * @dentry:	dentry to set ops on
-- *
-- * Casefolded directories need d_hash and d_compare set, so that the dentries
-- * contained in them are handled case-insensitively.  Note that these operations
-- * are needed on the parent directory rather than on the dentries in it, and
-- * while the casefolding flag can be toggled on and off on an empty directory,
-- * dentry_operations can't be changed later.  As a result, if the filesystem has
-- * casefolding support enabled at all, we have to give all dentries the
-- * casefolding operations even if their inode doesn't have the casefolding flag
-- * currently (and thus the casefolding ops would be no-ops for now).
-- *
-- * Encryption works differently in that the only dentry operation it needs is
-- * d_revalidate, which it only needs on dentries that have the no-key name flag.
-- * The no-key flag can't be set "later", so we don't have to worry about that.
-- */
--void generic_set_encrypted_ci_d_ops(struct dentry *dentry)
--{
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (dentry->d_sb->s_encoding) {
--		d_set_d_op(dentry, &generic_ci_dentry_ops);
--		return;
--	}
--#endif
--#ifdef CONFIG_FS_ENCRYPTION
--	if (dentry->d_flags & DCACHE_NOKEY_NAME) {
--		d_set_d_op(dentry, &generic_encrypted_dentry_ops);
--		return;
--	}
--#endif
--}
--EXPORT_SYMBOL(generic_set_encrypted_ci_d_ops);
--
- /**
-  * generic_set_sb_d_ops - helper for choosing the set of
-  * filesystem-wide dentry operations for the enabled features
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index c985d9392b61..c0cfc53f95bb 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -3201,7 +3201,6 @@ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
- 
- extern int generic_check_addressable(unsigned, u64);
- 
--extern void generic_set_encrypted_ci_d_ops(struct dentry *dentry);
- extern void generic_set_sb_d_ops(struct super_block *sb);
- 
- static inline bool sb_has_encoding(const struct super_block *sb)
--- 
-2.43.0
+Hello Gabriel,
 
+With the changes you suggested, I get these errors now :
+
+[  107.409410] EXT4-fs error (device sda1): ext4_lookup:1816: inode #521217: comm
+ls: 'CUC' linked to parent dir
+ls: cannot access '/media/CI_dir/CUC': Structure needs cleaning
+total 8
+drwxr-xr-x 2 root root 4096 Feb 12 11:51 .
+drwxr-xr-x 4 root root 4096 Feb 12 11:47 ..
+-????????? ? ?    ?       ?            ? CUC
+
+Do you have any idea about what is wrong ?
+
+Thanks,
+Eugen
 
