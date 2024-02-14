@@ -1,276 +1,173 @@
-Return-Path: <linux-ext4+bounces-1230-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1231-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0533A8536AE
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 17:58:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD3948556D4
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 00:03:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29D9E1C2319C
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Feb 2024 16:58:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA1751C20D20
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Feb 2024 23:03:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6C0A5FB94;
-	Tue, 13 Feb 2024 16:58:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EEDD128378;
+	Wed, 14 Feb 2024 23:03:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZAYaUhvN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kDPKGOiG";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UcCKUZfJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jsFOrGhF"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="EW+PAO8w"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31E8660241;
-	Tue, 13 Feb 2024 16:58:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AB084502D
+	for <linux-ext4@vger.kernel.org>; Wed, 14 Feb 2024 23:03:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707843495; cv=none; b=emkZvdaC9mVShDaaAEXFvHlCZo215b/3KOgourBAi5rC2ZhgAl7wix5Nk4m9vCdY2aPnPeLX4M0eIlQ3ePtMCKlXJ9b75mO7J1+BNULQxyFS6HejERv1LA8MHy6xAAGCGtQn1zC1Moh0b2EI9IYYJBJWqxs1C04lkTEmzXZFLX4=
+	t=1707951787; cv=none; b=H5ssKx7H9aCdQsmTl4sBsvjwYFIJKfyEkiGJGuGB9vKYnyK70O/q0A7w81tzCGgD2hnuYSXA2RG6AqZLBM3rieXNDSd+VH0ga0+TkhG918L82v3JQCwH3dsF5VvNmAHnPY8GhX1BLjOp7X8aKk5GYiAxeehpxf82GUy/fyfyLNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707843495; c=relaxed/simple;
-	bh=1kPoM7mZIIwydFIJLphtxyj9PWUrvsLk9s5/kBBQ/Uo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lbbu0gFAxoG6efgjgxJelm0BVQ2Zd+lldzfCx2Lm6lsXgR0kr/SPRUbtHE5xSQU1qBSucJGXPQVckdrOZRw9zEVbkxTfMHSeaiKsJoX12CJY58pAQy5WHzYmo6lXljOzI+vjt8Mup+JW6PxwazYtsSoKs1HRX6HUBFQpR7bcCY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZAYaUhvN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kDPKGOiG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UcCKUZfJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jsFOrGhF; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E05CA1FCE8;
-	Tue, 13 Feb 2024 16:58:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707843491; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N841xdJKomiyZQlx/u13JNWKGG1AmBMzEzrwG9MLa+Q=;
-	b=ZAYaUhvN5i2lv/ydKS1Ks12M1eguZmwwAJX3LELH8cEqHwmMnVo6tkqiuZbn2KI2xi6B9q
-	z4su5T/33umCnNdYml2assfoLbWbZFSNqcyyCC34N79l4N4eDUXQcaYFWk+SpTnhYVkJh8
-	jF/jnIdY5zir68xxzFU1NS0ThZGElUY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707843491;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N841xdJKomiyZQlx/u13JNWKGG1AmBMzEzrwG9MLa+Q=;
-	b=kDPKGOiGjS8VMgLE/RbXD6exsvUhQhnMHvD8RVtndvSsh2VBxvbM/SYMKxuYF6tH5LRx2n
-	STB3WfqQYmePuhDQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1707843490; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N841xdJKomiyZQlx/u13JNWKGG1AmBMzEzrwG9MLa+Q=;
-	b=UcCKUZfJGxJ0HZI1z7IDjthzeQOy/HgFQG4G9+iT6QooZv0UpShZ5/1bseR8aCcwbTkznr
-	A7CD1VeDdPrrdheXVfzM2KSk5aSqhb7hqxo1h13LRhqwPU7J2x9OIWeJeuxZMv7T23nBip
-	hwwuBXsdvvGEs7bHPd3AZNczqwKfGOw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1707843490;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=N841xdJKomiyZQlx/u13JNWKGG1AmBMzEzrwG9MLa+Q=;
-	b=jsFOrGhF69+Rj/4GLnifEpR7+kwqRafT+9h1BaWgFRM02QPTCQCAie/KZDm5v68DhzoQSY
-	kXo/8NMD7c2/nZAA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id CBC6713583;
-	Tue, 13 Feb 2024 16:58:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id Oe+9MaKfy2VIEgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 13 Feb 2024 16:58:10 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5FE59A0809; Tue, 13 Feb 2024 17:58:10 +0100 (CET)
-Date: Tue, 13 Feb 2024 17:58:10 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com, stable@vger.kernel.org
-Subject: Re: [PATCH 4/7] ext4: add positive int attr pointer to avoid sysfs
- variables overflow
-Message-ID: <20240213165810.3k4lnxaqzdwrdj35@quack3>
-References: <20240126085716.1363019-1-libaokun1@huawei.com>
- <20240126085716.1363019-5-libaokun1@huawei.com>
+	s=arc-20240116; t=1707951787; c=relaxed/simple;
+	bh=i+Ad/00mN9dOyBean527HT2Uzd4VmZRyOlvkxqF9GHg=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=tRWDGSSnb+9OsgLXiI+3Bimouom3pfKBBPS4h3kIsBTgDFWc18M5BpzbLUbEvXP07swFJrspk8RPDgGQ07DLCNheiVqqWO5TpJbwA/uWQSlSerjeh9PV42oguB+n/E9B4uiUQKw7cSJe5mlYakenudWc1Hd8rtRtkZTllzMJmug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=EW+PAO8w; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-59a31c14100so112043eaf.0
+        for <linux-ext4@vger.kernel.org>; Wed, 14 Feb 2024 15:03:03 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1707951783; x=1708556583; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=n3DFzFU68c6gu5CpuxPYUGTqf5vyth9/IogRH8pIwYg=;
+        b=EW+PAO8wr32sLgHPn2PJHXhmagM29Vhi6emubf9ccxejsf+ZWPsgixVuGd3xc3alsR
+         QAMmWSHpsy4JwsWssCWxDz4Mx8E651tRWPvQYe4I3PwVAhIYessRLecXFqESekOHfGY0
+         JvyyfKPxlBoXm+/OOWX3LjSUq+zcYArJMh+d4ihSVlsnrncry7i/JU5CidTaEGsXh3OO
+         QviqlxG6eT/lB/4hPADrfrBDQJrZIWYPoYc9b/GLpfs/FoZlHGFvY6c9lMi7XDcYYUJ+
+         E+CHh3wIJHB8iUAi+M/T12AC8BKrWHZh8qnYpgD2w7NMZfcB9xX+TJHHIMTwXErs+jsE
+         igYg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1707951783; x=1708556583;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=n3DFzFU68c6gu5CpuxPYUGTqf5vyth9/IogRH8pIwYg=;
+        b=fxMsWQUBh6fgNhKStoITglA2evdM7A9w/NExgixDjxD6LZveROK4vEEGx7jaghygtv
+         QTFLQ4uCuhG3l67kM7lfufsPxzU2/jSLsFsDwQN03DxeT//zVQYhV0G0n5MilQnv5d5e
+         9x/dUjTbTl6Rb7xp7SZs8F7t6fDiirZbV9XFMlmoc0pXABOeHf18A/l5k1cCqhjS+tUN
+         Ww6yQps7s73/haf8g32B2c5AKQkte4U0HstLNaiwBGM7o8+VhZ15i3Qa4P8vYMidE/7T
+         7RoJf8Gk9itNBZiNG7S46BLyUz46qaHJXv9+wLrNvqHUDDa2jbrMgqee2KvdMpkwO8gt
+         MvSg==
+X-Forwarded-Encrypted: i=1; AJvYcCUp2CEF6hJltk4hMg3bpGpfE1pWroNwpHvdzp7aCUbno06hNUIydvOy444vQRv0tuSwIDNvTFQbwER1stoHzSMagWUFitpewcwvpw==
+X-Gm-Message-State: AOJu0Yxe/olh6cGDp1W9nV8AovOeBw7kcScPEE/zdMb9f9Trs/wBLf4P
+	mnzvyit7qELwMwX5LqTmVxgHS10ZamcaQd8ux9xh3jxgmX0xgYwhUyOqD/UBwBP6aJ33uG8k8Ft
+	d
+X-Google-Smtp-Source: AGHT+IEYPZupQVY1eRYHpqj7a65VaqXPFhx3JkwFGc754Cs/QpbzGyu8NBED0f5oIMc8cFuJ91BzKA==
+X-Received: by 2002:a05:6358:e497:b0:178:7d98:f7ab with SMTP id by23-20020a056358e49700b001787d98f7abmr4447563rwb.15.1707951782833;
+        Wed, 14 Feb 2024 15:03:02 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWcasXtaRydyLK8Nk00xICmt/jYHwzDZIRB2OKdSHUtYPS1Ss00zV/GCRvCCdbYo9/CGiOgN42H3xEQLJziMfokA7Cil374MphEoA==
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id it18-20020a056a00459200b006e118d2db93sm712785pfb.125.2024.02.14.15.03.01
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Wed, 14 Feb 2024 15:03:02 -0800 (PST)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <4AC7AEC3-25FC-4147-9C62-2CE5A1686199@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_B704EF62-C594-4F51-9EC4-2B34EFFEB9F3";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240126085716.1363019-5-libaokun1@huawei.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UcCKUZfJ;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jsFOrGhF
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Score: -2.51
-X-Rspamd-Queue-Id: E05CA1FCE8
-X-Spam-Flag: NO
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH] ext4: Don't report EOPNOTSUPP errors from discard
+Date: Wed, 14 Feb 2024 16:01:57 -0700
+In-Reply-To: <20240213101601.17463-1-jack@suse.cz>
+Cc: Ted Tso <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org
+To: Jan Kara <jack@suse.cz>
+References: <20240213101601.17463-1-jack@suse.cz>
+X-Mailer: Apple Mail (2.3273)
 
-On Fri 26-01-24 16:57:13, Baokun Li wrote:
-> We can easily trigger a BUG_ON by using the following commands:
-> 
->     mount /dev/$disk /tmp/test
->     echo 2147483650 > /sys/fs/ext4/$disk/mb_group_prealloc
->     echo test > /tmp/test/file && sync
-> 
-> ==================================================================
-> kernel BUG at fs/ext4/mballoc.c:2029!
-> invalid opcode: 0000 [#1] PREEMPT SMP PTI
-> CPU: 3 PID: 320 Comm: kworker/u36:1 Not tainted 6.8.0-rc1 #462
-> RIP: 0010:mb_mark_used+0x358/0x370
-> [...]
-> Call Trace:
->  ext4_mb_use_best_found+0x56/0x140
->  ext4_mb_complex_scan_group+0x196/0x2f0
->  ext4_mb_regular_allocator+0xa92/0xf00
->  ext4_mb_new_blocks+0x302/0xbc0
->  ext4_ext_map_blocks+0x95a/0xef0
->  ext4_map_blocks+0x2b1/0x680
->  ext4_do_writepages+0x733/0xbd0
-> [...]
-> ==================================================================
-> 
-> In ext4_mb_normalize_group_request():
->     ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc;
-> 
-> Here fe_len is of type int, but s_mb_group_prealloc is of type unsigned
-> int, so setting s_mb_group_prealloc to 2147483650 overflows fe_len to a
-> negative number, which ultimately triggers a BUG_ON() in mb_mark_used().
-> 
-> Therefore, we add attr_pointer_pi (aka positive int attr pointer) with a
-> value range of 0-INT_MAX to avoid the above problem. In addition to the
-> mb_group_prealloc sysfs interface, the following interfaces also have uint
-> to int conversions that result in overflows, and are also fixed.
-> 
->   err_ratelimit_burst
->   msg_ratelimit_burst
->   warning_ratelimit_burst
->   err_ratelimit_interval_ms
->   msg_ratelimit_interval_ms
->   warning_ratelimit_interval_ms
->   mb_best_avail_max_trim_order
-> 
-> CC: stable@vger.kernel.org
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-I don't think you need to change s_mb_group_prealloc here and then restrict
-it even further in the next patch. I'd just leave it alone here.
+--Apple-Mail=_B704EF62-C594-4F51-9EC4-2B34EFFEB9F3
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Also I think that limiting mb_best_avail_max_trim_order to 64 instead of
-INT_MAX will make us more resilient to surprises in the future :) But I
-don't really insist.
+On Feb 13, 2024, at 3:16 AM, Jan Kara <jack@suse.cz> wrote:
+>=20
+> When ext4 is mounted without journal, with discard mount option, and =
+on
+> a device not supporting trim, we print error for each and every freed
+> extent. This is not only useless but actively harmful. Instead ignore
+> the EOPNOTSUPP error. Trim is only advisory anyway and when the
+> filesystem has journal we silently ignore trim error as well.
+>=20
 
-								Honza
-
+> Signed-off-by: Jan Kara <jack@suse.cz>
 > ---
->  fs/ext4/sysfs.c | 25 +++++++++++++++++--------
->  1 file changed, 17 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-> index a5d657fa05cb..6f9f96e00f2f 100644
-> --- a/fs/ext4/sysfs.c
-> +++ b/fs/ext4/sysfs.c
-> @@ -30,6 +30,7 @@ typedef enum {
->  	attr_first_error_time,
->  	attr_last_error_time,
->  	attr_feature,
-> +	attr_pointer_pi,
->  	attr_pointer_ui,
->  	attr_pointer_ul,
->  	attr_pointer_u64,
-> @@ -178,6 +179,9 @@ static struct ext4_attr ext4_attr_##_name = {			\
->  #define EXT4_RO_ATTR_ES_STRING(_name,_elname,_size)			\
->  	EXT4_ATTR_STRING(_name, 0444, _size, ext4_super_block, _elname)
->  
-> +#define EXT4_RW_ATTR_SBI_PI(_name,_elname)      \
-> +	EXT4_ATTR_OFFSET(_name, 0644, pointer_pi, ext4_sb_info, _elname)
-> +
->  #define EXT4_RW_ATTR_SBI_UI(_name,_elname)	\
->  	EXT4_ATTR_OFFSET(_name, 0644, pointer_ui, ext4_sb_info, _elname)
->  
-> @@ -213,17 +217,17 @@ EXT4_RW_ATTR_SBI_UI(mb_max_to_scan, s_mb_max_to_scan);
->  EXT4_RW_ATTR_SBI_UI(mb_min_to_scan, s_mb_min_to_scan);
->  EXT4_RW_ATTR_SBI_UI(mb_order2_req, s_mb_order2_reqs);
->  EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
-> -EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
-> +EXT4_RW_ATTR_SBI_PI(mb_group_prealloc, s_mb_group_prealloc);
->  EXT4_RW_ATTR_SBI_UI(mb_max_linear_groups, s_mb_max_linear_groups);
->  EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
->  EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
-> -EXT4_RW_ATTR_SBI_UI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
-> -EXT4_RW_ATTR_SBI_UI(err_ratelimit_burst, s_err_ratelimit_state.burst);
-> -EXT4_RW_ATTR_SBI_UI(warning_ratelimit_interval_ms, s_warning_ratelimit_state.interval);
-> -EXT4_RW_ATTR_SBI_UI(warning_ratelimit_burst, s_warning_ratelimit_state.burst);
-> -EXT4_RW_ATTR_SBI_UI(msg_ratelimit_interval_ms, s_msg_ratelimit_state.interval);
-> -EXT4_RW_ATTR_SBI_UI(msg_ratelimit_burst, s_msg_ratelimit_state.burst);
-> -EXT4_RW_ATTR_SBI_UI(mb_best_avail_max_trim_order, s_mb_best_avail_max_trim_order);
-> +EXT4_RW_ATTR_SBI_PI(err_ratelimit_interval_ms, s_err_ratelimit_state.interval);
-> +EXT4_RW_ATTR_SBI_PI(err_ratelimit_burst, s_err_ratelimit_state.burst);
-> +EXT4_RW_ATTR_SBI_PI(warning_ratelimit_interval_ms, s_warning_ratelimit_state.interval);
-> +EXT4_RW_ATTR_SBI_PI(warning_ratelimit_burst, s_warning_ratelimit_state.burst);
-> +EXT4_RW_ATTR_SBI_PI(msg_ratelimit_interval_ms, s_msg_ratelimit_state.interval);
-> +EXT4_RW_ATTR_SBI_PI(msg_ratelimit_burst, s_msg_ratelimit_state.burst);
-> +EXT4_RW_ATTR_SBI_PI(mb_best_avail_max_trim_order, s_mb_best_avail_max_trim_order);
->  #ifdef CONFIG_EXT4_DEBUG
->  EXT4_RW_ATTR_SBI_UL(simulate_fail, s_simulate_fail);
->  #endif
-> @@ -376,6 +380,7 @@ static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
->  
->  	switch (a->attr_id) {
->  	case attr_inode_readahead:
-> +	case attr_pointer_pi:
->  	case attr_pointer_ui:
->  		if (a->attr_ptr == ptr_ext4_super_block_offset)
->  			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
-> @@ -448,6 +453,10 @@ static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
->  		return ret;
->  
->  	switch (a->attr_id) {
-> +	case attr_pointer_pi:
-> +		if ((int)t < 0)
-> +			return -EINVAL;
-> +		fallthrough;
->  	case attr_pointer_ui:
->  		if (t != (unsigned int)t)
->  			return -EINVAL;
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> fs/ext4/mballoc.c | 8 +++++++-
+> 1 file changed, 7 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index e4f7cf9d89c4..aed620cf4d40 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -6488,7 +6488,13 @@ static void ext4_mb_clear_bb(handle_t *handle, =
+struct inode *inode,
+> 		if (test_opt(sb, DISCARD)) {
+> 			err =3D ext4_issue_discard(sb, block_group, bit,
+> 						 count_clusters, NULL);
+> -			if (err && err !=3D -EOPNOTSUPP)
+> +			/*
+> +			 * Ignore EOPNOTSUPP error. This is consistent =
+with
+> +			 * what happens when using journal.
+> +			 */
+> +			if (err =3D=3D -EOPNOTSUPP)
+> +				err =3D 0;
+> +			if (err)
+
+I don't see how this patch is actually changing whether the error =
+message
+is printed?  Previously, if "err" was set and err was -EOPNOTSUPP the
+message was skipped.  Now it is doing the same thing in a different way?
+
+The "err" value is overwritten 50 lines later on without being used:
+
+        err =3D ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
+
+so the setting "err =3D 0" doesn't really affect the later code either.
+What am I missing?
+
+Cheers, Andreas
+
+
+
+--Apple-Mail=_B704EF62-C594-4F51-9EC4-2B34EFFEB9F3
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmXNRmUACgkQcqXauRfM
+H+C8eRAAjGZln6nX+nfX3THOmJ6QSNO4b9k8MmbFYKbY0FRXroS9b1S4zjOSYVy5
+JODdoeBEWnYwqH2Gtz7KaQAn/SsGnSYhlFfwB61H85sLD6Vw0zggOCySByRHx+HP
+bLoJuMmCGcA0SZSv/l94/zsHXjrnMhIrDd2DU+hLimcee8X71u9ExwE2DuR/44jK
+7NQIWJ+cKwBDNvZx2ioV3J/Oz9kvARc5gssM5jKCIkiCFmPBZs14uBxgEKTjwdqt
+VHQVYrBj3YruLZt6MLASkHAMrVAwMwfium8VqOrii/hAgQfPHOIg17fP7m+2mCER
+Lj94CL40nGfzGKLmfqXOE3uDPLz7NAFb48l9uVQGWoR7H2FSpp/YITa0KCGNTF+X
+lwCBtVGPESs9HxeiO9XCy/Dgj1ZFLq36kNTcQhkWcOr+pAHJdKlnZIWP2U++1yCW
+w3DVEDea8XCOkrnXIJ8LGM4B3/RTWp/khcRKfV7AfBTGqzKFxUfq0Yl4k5fZwf71
+AyCxYyjXF3Am3pG8LzNCyGpYW58vuhgWK6uVVyMGVkl80VDnF7Q7lYY7do9eo3x/
+W6i7vW9JoevIF7AiZ8FNjHRQ+KNwZl7YFUWVWjAVgRvftgpUHefaHI9LpR7S5/jb
+qImY6Am6YxFMtwIRcuy3075Gs0H4fshkKj/1dUIMLI91ub3ngTA=
+=4z1W
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_B704EF62-C594-4F51-9EC4-2B34EFFEB9F3--
 
