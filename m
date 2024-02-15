@@ -1,172 +1,193 @@
-Return-Path: <linux-ext4+bounces-1245-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1246-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20F498559D7
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 05:30:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51EDF855E79
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 10:46:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4E7C1F29546
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 04:30:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 08C91285792
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 09:46:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98A2618035;
-	Thu, 15 Feb 2024 04:27:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2EB58AC0;
+	Thu, 15 Feb 2024 09:46:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ZZgwhKJI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xiRiY+h5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qm1+ORO3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xiRiY+h5";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Qm1+ORO3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBE2DDD9;
-	Thu, 15 Feb 2024 04:27:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05E9258ABA
+	for <linux-ext4@vger.kernel.org>; Thu, 15 Feb 2024 09:46:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707971279; cv=none; b=GTKFYL/PedXKZfTpol8bPnfAnDBLlyKZnRGPHFdYAzN/h8LLleJ/awIZ3tx5NtOcjMjGtYZNCmu5ePhbkKMG9VmFO2i9OYXpLq5P0dhM9z6UAxQ7Nm5V8Abokrgj7ShGeEQ7QU4rQ7klMujD6te5fvBmy13zCApaSrUO52Z5rXY=
+	t=1707990404; cv=none; b=ElCAWbq7bMbYp+XkiSfE5xKZCRqvqjD/mqMBhccebCQSONuSDehg7pMUYDsIn5qTafVObg++719+njyyHdn2q9mfCPW48vLkFJJexZu9RvAR9IkWDNW+qVdP+EcaWih4wRmxChztUSxKM9lI0+snG1hyQ0UtFSeBrNBIzLO+SZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707971279; c=relaxed/simple;
-	bh=PJX9nxRLEeoQwdUnmOqN3H2dctwppjpelMENczAYtJo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CagqRbVWCCHxrMGLpwy8rs9FAXVIKfopvmExIAr1jEQNbg3OlHPqMPzFkZgPAmlqAishRYAUrwm7Lz6Jo322E4HrOQl01ixgv8y3z2U/IKkUC8jo51FMrz7L6ugotJJmGZ2lD3PUQHv1Vzedsg7yGyBAX2upvuUQEPYe/L9Brmo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ZZgwhKJI; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1707971275;
-	bh=PJX9nxRLEeoQwdUnmOqN3H2dctwppjpelMENczAYtJo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ZZgwhKJIFf7Dca21dG8DyHBxCG7bWPazxrJMg8S4zPiqK4NyHGXStqH798q6X2cxx
-	 4l7xgMRSV6+GrS1inT20T5fnzEcYwB7j3ghvjeHSqUOBp9t/CLLhIA3NB4erz9eGVi
-	 gU7VI1U0B0g0X24tsdadh7um1UwOWVg3Ll1ULT16GCBCCCP0cI+yLou3c30j4X/0/c
-	 +A/4kmGzuhn/aWqS2mS7rBvstcJ6S2O9lWFenRIIJFMoCRNTsHJnCqes4YDVMHiFPn
-	 ZgsAzzWYxSH/K6amRz67PxQ5wkBGgljYH22Gees/i08csya0NDHbv/utwrVfguLKma
-	 cl165W1QtuAtQ==
-Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
+	s=arc-20240116; t=1707990404; c=relaxed/simple;
+	bh=BvjUmFwdMDbZWV3C5wRSgsKswtLnytjyzn3VrP65EnA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=noxiBMB21xI8PkAQsMSffvGijAvBpOzRi/6ShJEKvbIALDVJrBnmMov44KGtdD5mXU9mCdaOx0P+HpwOIUmS/KtPIN9RHZsv59re4rw85Nsp6zQRhVEzFHVO82tvjXzrmj8XXs8m58nz3YlE6ciJXkfBFf3ZNRAPt7x+hb4CKmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xiRiY+h5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qm1+ORO3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xiRiY+h5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Qm1+ORO3; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 32B3137820A1;
-	Thu, 15 Feb 2024 04:27:50 +0000 (UTC)
-From: Eugen Hristev <eugen.hristev@collabora.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	jaegeuk@kernel.org,
-	chao@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel@collabora.com,
-	eugen.hristev@collabora.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	krisman@suse.de,
-	Gabriel Krisman Bertazi <krisman@collabora.com>,
-	Eric Biggers <ebiggers@google.com>
-Subject: [PATCH v10 8/8] f2fs: Move CONFIG_UNICODE defguards into the code flow
-Date: Thu, 15 Feb 2024 06:26:54 +0200
-Message-Id: <20240215042654.359210-9-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240215042654.359210-1-eugen.hristev@collabora.com>
-References: <20240215042654.359210-1-eugen.hristev@collabora.com>
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 061061F871;
+	Thu, 15 Feb 2024 09:46:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707990400; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5YQpsCxpz5tl5mfNjog6f/M40RmnMX7Ya7dvyX3p6rE=;
+	b=xiRiY+h5P5h4oK3kkc19lLlIRBJA3dtaaViBIZVvT3aRwl7yTxYLHCYjRsAVa7E8mdo0S5
+	GKSiDgwYYigLjjuiPENbrnjY1bjMwlvq0z06fWgFg9g5yh8AfIMV9YDxT43iQxkvwKqhkQ
+	oCu0Pau1uKbyQmHfHs0mSnwZU7skJ9Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707990400;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5YQpsCxpz5tl5mfNjog6f/M40RmnMX7Ya7dvyX3p6rE=;
+	b=Qm1+ORO3Q0+hWx8m+3FJ1YrxBhT2bPmX6aKkRY+4hKNKe9wdhXQoWji8yjLsNJfW37h28+
+	qwL1P4fZPbqsV6Cw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1707990400; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5YQpsCxpz5tl5mfNjog6f/M40RmnMX7Ya7dvyX3p6rE=;
+	b=xiRiY+h5P5h4oK3kkc19lLlIRBJA3dtaaViBIZVvT3aRwl7yTxYLHCYjRsAVa7E8mdo0S5
+	GKSiDgwYYigLjjuiPENbrnjY1bjMwlvq0z06fWgFg9g5yh8AfIMV9YDxT43iQxkvwKqhkQ
+	oCu0Pau1uKbyQmHfHs0mSnwZU7skJ9Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1707990400;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=5YQpsCxpz5tl5mfNjog6f/M40RmnMX7Ya7dvyX3p6rE=;
+	b=Qm1+ORO3Q0+hWx8m+3FJ1YrxBhT2bPmX6aKkRY+4hKNKe9wdhXQoWji8yjLsNJfW37h28+
+	qwL1P4fZPbqsV6Cw==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id EFF451346A;
+	Thu, 15 Feb 2024 09:46:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id rqWMOn/dzWUGawAAn2gu4w
+	(envelope-from <jack@suse.cz>); Thu, 15 Feb 2024 09:46:39 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9DF80A0809; Thu, 15 Feb 2024 10:46:35 +0100 (CET)
+Date: Thu, 15 Feb 2024 10:46:35 +0100
+From: Jan Kara <jack@suse.cz>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: Don't report EOPNOTSUPP errors from discard
+Message-ID: <20240215094635.p5anw5w36snmqwsh@quack3>
+References: <20240213101601.17463-1-jack@suse.cz>
+ <4AC7AEC3-25FC-4147-9C62-2CE5A1686199@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4AC7AEC3-25FC-4147-9C62-2CE5A1686199@dilger.ca>
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xiRiY+h5;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Qm1+ORO3
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 061061F871
+X-Spam-Level: 
+X-Spam-Score: -2.81
+X-Spam-Flag: NO
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Wed 14-02-24 16:01:57, Andreas Dilger wrote:
+> On Feb 13, 2024, at 3:16 AM, Jan Kara <jack@suse.cz> wrote:
+> > 
+> > When ext4 is mounted without journal, with discard mount option, and on
+> > a device not supporting trim, we print error for each and every freed
+> > extent. This is not only useless but actively harmful. Instead ignore
+> > the EOPNOTSUPP error. Trim is only advisory anyway and when the
+> > filesystem has journal we silently ignore trim error as well.
+> > 
+> 
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> > fs/ext4/mballoc.c | 8 +++++++-
+> > 1 file changed, 7 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> > index e4f7cf9d89c4..aed620cf4d40 100644
+> > --- a/fs/ext4/mballoc.c
+> > +++ b/fs/ext4/mballoc.c
+> > @@ -6488,7 +6488,13 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
+> > 		if (test_opt(sb, DISCARD)) {
+> > 			err = ext4_issue_discard(sb, block_group, bit,
+> > 						 count_clusters, NULL);
+> > -			if (err && err != -EOPNOTSUPP)
+> > +			/*
+> > +			 * Ignore EOPNOTSUPP error. This is consistent with
+> > +			 * what happens when using journal.
+> > +			 */
+> > +			if (err == -EOPNOTSUPP)
+> > +				err = 0;
+> > +			if (err)
+> 
+> I don't see how this patch is actually changing whether the error message
+> is printed?  Previously, if "err" was set and err was -EOPNOTSUPP the
+> message was skipped.  Now it is doing the same thing in a different way?
+> 
+> The "err" value is overwritten 50 lines later on without being used:
+> 
+>         err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
+> 
+> so the setting "err = 0" doesn't really affect the later code either.
+> What am I missing?
 
-Instead of a bunch of ifdefs, make the unicode built checks part of the
-code flow where possible, as requested by Torvalds.
+Yeah, the code flow is a bit contrived. The error message gets printed by
+ext4_std_error() at the end of ext4_mb_clear_bb(). I don't think there's
+any ext4_handle_dirty_metadata() call in the current version of
+ext4_mb_clear_bb()...
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
-Reviewed-by: Chao Yu <chao@kernel.org>
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-[eugen.hristev@collabora.com: port to 6.8-rc3]
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
----
- fs/f2fs/namei.c | 10 ++++------
- fs/f2fs/super.c |  8 ++++----
- 2 files changed, 8 insertions(+), 10 deletions(-)
+								Honza
 
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index ba11298b7837..c317bfd1c344 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -577,8 +577,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		goto out_iput;
- 	}
- out_splice:
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (!inode && IS_CASEFOLDED(dir)) {
-+	if (IS_ENABLED(CONFIG_UNICODE) && !inode && IS_CASEFOLDED(dir)) {
- 		/* Eventually we want to call d_add_ci(dentry, NULL)
- 		 * for negative dentries in the encoding case as
- 		 * well.  For now, prevent the negative dentry
-@@ -587,7 +586,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		trace_f2fs_lookup_end(dir, dentry, ino, err);
- 		return NULL;
- 	}
--#endif
-+
- 	new = d_splice_alias(inode, dentry);
- 	trace_f2fs_lookup_end(dir, !IS_ERR_OR_NULL(new) ? new : dentry,
- 				ino, IS_ERR(new) ? PTR_ERR(new) : err);
-@@ -640,16 +639,15 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
- 	f2fs_delete_entry(de, page, dir, inode);
- 	f2fs_unlock_op(sbi);
- 
--#if IS_ENABLED(CONFIG_UNICODE)
- 	/* VFS negative dentries are incompatible with Encoding and
- 	 * Case-insensitiveness. Eventually we'll want avoid
- 	 * invalidating the dentries here, alongside with returning the
- 	 * negative dentries at f2fs_lookup(), when it is better
- 	 * supported by the VFS for the CI case.
- 	 */
--	if (IS_CASEFOLDED(dir))
-+	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
- 		d_invalidate(dentry);
--#endif
-+
- 	if (IS_DIRSYNC(dir))
- 		f2fs_sync_fs(sbi->sb, 1);
- fail:
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 1b718bebfaa1..07c54981cb6b 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -312,7 +312,7 @@ struct kmem_cache *f2fs_cf_name_slab;
- static int __init f2fs_create_casefold_cache(void)
- {
- 	f2fs_cf_name_slab = f2fs_kmem_cache_create("f2fs_casefolded_name",
--							F2FS_NAME_LEN);
-+						   F2FS_NAME_LEN);
- 	return f2fs_cf_name_slab ? 0 : -ENOMEM;
- }
- 
-@@ -1360,13 +1360,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		return -EINVAL;
- 	}
- #endif
--#if !IS_ENABLED(CONFIG_UNICODE)
--	if (f2fs_sb_has_casefold(sbi)) {
-+
-+	if (!IS_ENABLED(CONFIG_UNICODE) && f2fs_sb_has_casefold(sbi)) {
- 		f2fs_err(sbi,
- 			"Filesystem with casefold feature cannot be mounted without CONFIG_UNICODE");
- 		return -EINVAL;
- 	}
--#endif
-+
- 	/*
- 	 * The BLKZONED feature indicates that the drive was formatted with
- 	 * zone alignment optimization. This is optional for host-aware
+> 
+> Cheers, Andreas
+> 
+> 
+
+
 -- 
-2.34.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
