@@ -1,113 +1,132 @@
-Return-Path: <linux-ext4+bounces-1236-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1237-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DB17855850
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 01:31:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C34978559B6
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 05:27:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C600B1F24E07
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 00:31:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 584C31F294DB
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Feb 2024 04:27:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D3F1EC7;
-	Thu, 15 Feb 2024 00:31:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3A08C1E;
+	Thu, 15 Feb 2024 04:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bv/HFUun"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="OA/uhMmf"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E922A383;
-	Thu, 15 Feb 2024 00:31:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A039B3FC2;
+	Thu, 15 Feb 2024 04:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1707957108; cv=none; b=ZITgFw53i+pwh60isKrFumJjdCKUzlYSG6dqs70LsgOIu74vwnLJ9JHpyzwbGfpXJTfRyTXf01x+a27z3hDtUG1LmtMIoXU4MVwFDvScPdR9QWW7UONtwSIwR9dgxwV3dMBqNjdj3Mry1/rjEC7JLbOqu3Cjzo4QKVcT1KVZ4cw=
+	t=1707971235; cv=none; b=T6rjws5H/JRZhzi1PaUkDuPNndGA/26/IXE2K1NRxuyBRSQ1+excY0QiaZpf1BFr3zSDMwwL2p59pZv8cQGRwfpKKUyNaYKMEXshYtVOn5vZc+3VM9dbAdPrelfojOP5Q38/UDkV+VwyeIkuX6qiq1FBhXbemHmRSzVfqWkb5kA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1707957108; c=relaxed/simple;
-	bh=ESmguzP9p5Vb3BIlWMztnff8iFe4Ik5fJ9lnfbBSnVo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ztxnt/G8/2oi2TbDPdXQ6dhOJXCP1YHcc83Imc6sE5ieqYbHZ4MAQ9EkdDhUicphobyW4ER7V0XYBGFmvOX8s1TJ613aw7dZuvx7jDYtGFdlh5BfOW5CTKzxMHPF9Bdj70Np0QCY8+GJTw+BQe6dfy8Wy/BL4jBxRCja8sjm8ac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bv/HFUun; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16EC8C433C7;
-	Thu, 15 Feb 2024 00:31:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1707957107;
-	bh=ESmguzP9p5Vb3BIlWMztnff8iFe4Ik5fJ9lnfbBSnVo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bv/HFUunSaRB22PFp19/BYYmt9hml0jZfI6CdYPDndHjPVVN2GKlV0ui2tbV/H7K0
-	 1kGNM22DNhFN9oFGOMEdzzaBsG61upFSppIE4Cv7v16legfIqzSsrRVw/Y2ttXqZaf
-	 gDcKPuVOL21Xio1umjYuf/ZryFcpAsbb3SMhOSg4CE20vFugZvF9V4nJ+mteUuy+oX
-	 i4rZWdpzS8DOvssG1jPYFrWNcH5Qt8W+ky0SBdvWaqwXFYA2U57UHaY8ywmuVjvVFT
-	 G/u8/Gg3GMpVrOMIv2Eg1TWXEGt4FvlxrwhIhjL7IlRS8AanN1ywg6LcMoAFFk0zKy
-	 xXekXDgmjDUkw==
-Date: Wed, 14 Feb 2024 16:31:45 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: viro@zeniv.linux.org.uk, jaegeuk@kernel.org, tytso@mit.edu,
-	amir73il@gmail.com, linux-ext4@vger.kernel.org,
+	s=arc-20240116; t=1707971235; c=relaxed/simple;
+	bh=tQGS++QsKX4V8fgN6HgD2SBMUmY3q2X6YeBS6EZkOno=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Gtdbug1DHJURIRVt3dSIyiwUjFnaLr9Qqgnt6BF1POwAKedDJwRyzspOQt32DAEDeg+QDnkwLQlU/ebB7W/M1wQfBgwkMGz/wV5xoaQFsG18a17HiP87n07QxvkYG9LVbwIz+bAzZWHIcZAYvtEknXETII46n3xakhpkRGd/rtU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=OA/uhMmf; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1707971231;
+	bh=tQGS++QsKX4V8fgN6HgD2SBMUmY3q2X6YeBS6EZkOno=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OA/uhMmfKTb+Iz2xz+8XQR2v5h6L+UVZQd3uJ/aJB+/Y2G7zxsw41lsJwHgkYUm20
+	 1enisnrGRX+sCrZ0FzJMYPtbpZ6xyXM0dQ/zZpf+8hdvFTF6MDPighQY8W3AilG+wt
+	 /Uf9OG/SrI8symQsoYkI+g82DfiplKVd+Pf5SNPqq1Wgq3l7mmdrFudPTguKzyM1da
+	 Sxlq5jFQjfClSpTtfdTBq0QeUEgS8GRyc2DjuZNx7Yae0Y1IgEt5LFqJWZ5dbHJXL2
+	 fFtZa3YcmBF6OXsNQ+rKCvuQ7lTwJbq8isWaA3TKuOYRoMuP9ghCYfBFFrvTwxlFOb
+	 cPjIQfJJFFf6A==
+Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 157A3378203F;
+	Thu, 15 Feb 2024 04:27:06 +0000 (UTC)
+From: Eugen Hristev <eugen.hristev@collabora.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org
-Subject: Re: [PATCH v6 04/10] fscrypt: Drop d_revalidate once the key is added
-Message-ID: <20240215003145.GK1638@sol.localdomain>
-References: <20240213021321.1804-1-krisman@suse.de>
- <20240213021321.1804-5-krisman@suse.de>
- <20240215001631.GI1638@sol.localdomain>
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel@collabora.com,
+	eugen.hristev@collabora.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	krisman@suse.de
+Subject: [PATCH v10 0/8] 
+Date: Thu, 15 Feb 2024 06:26:46 +0200
+Message-Id: <20240215042654.359210-1-eugen.hristev@collabora.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240215001631.GI1638@sol.localdomain>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 14, 2024 at 04:16:31PM -0800, Eric Biggers wrote:
-> On Mon, Feb 12, 2024 at 09:13:15PM -0500, Gabriel Krisman Bertazi wrote:
-> > From fscrypt perspective, once the key is available, the dentry will
-> > remain valid until evicted for other reasons, since keyed dentries don't
-> > require revalidation and, if the key is removed, the dentry is
-> > forcefully evicted.  Therefore, we don't need to keep revalidating them
-> > repeatedly.
-> > 
-> > Obviously, we can only do this if fscrypt is the only thing requiring
-> > revalidation for a dentry.  For this reason, we only disable
-> > d_revalidate if the .d_revalidate hook is fscrypt_d_revalidate itself.
-> > 
-> > It is safe to do it here because when moving the dentry to the
-> > plain-text version, we are holding the d_lock.  We might race with a
-> > concurrent RCU lookup but this is harmless because, at worst, we will
-> > get an extra d_revalidate on the keyed dentry, which is will find the
-> > dentry is valid.
-> > 
-> > Finally, now that we do more than just clear the DCACHE_NOKEY_NAME in
-> > fscrypt_handle_d_move, skip it entirely for plaintext dentries, to avoid
-> > extra costs.
-> > 
-> > Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
-> 
-> I think this explanation misses an important point, which is that it's only
-> *directories* where a no-key dentry can become the regular dentry.  The VFS does
-> the move because it only allows one dentry to exist per directory.
-> 
-> For nondirectories, the dentries don't get reused and this patch is irrelevant.
-> 
-> (Of course, there's no point in making fscrypt_handle_d_move() check whether the
-> dentry is a directory, since checking DCACHE_NOKEY_NAME is sufficient.)
-> 
-> The diff itself looks good -- thanks.
-> 
+Hello,
 
-Also, do I understand correctly that this patch is a performance optimization,
-not preventing a performance regression?  The similar patch that precedes this
-one, "fscrypt: Drop d_revalidate for valid dentries during lookup", is about
-preventing a performance regression on dentries that aren't no-key.  This patch
-looks deceptively similar, but it only affects no-key directory dentries, which
-we were already doing the fscrypt_d_revalidate for, even after the move to the
-plaintext name.  It's probably still a worthwhile optimization to stop doing the
-fscrypt_d_revalidate when a directory dentry gets moved like that.  But I want
-to make sure I'm correctly understanding each patch.
+I am trying to respin the series here :
+https://www.spinics.net/lists/linux-ext4/msg85081.html
 
-- Eric
+I resent some of the v9 patches and got some reviews from Gabriel,
+I did changes as requesteid and here is v10.
+
+Changes in v10:
+- reworked a bit the comparison helper to improve performance by
+first performing the exact lookup.
+
+
+* Original commit letter
+
+The case-insensitive implementations in f2fs and ext4 have quite a bit
+of duplicated code.  This series simplifies the ext4 version, with the
+goal of extracting ext4_ci_compare into a helper library that can be
+used by both filesystems.  It also reduces the clutter from many
+codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
+the codeflow now.
+
+While there, I noticed we can leverage the utf8 functions to detect
+encoded names that are corrupted in the filesystem. Therefore, it also
+adds an ext4 error on that scenario, to mark the filesystem as
+corrupted.
+
+This series survived passes of xfstests -g quick.
+
+Gabriel Krisman Bertazi (8):
+  ext4: Simplify the handling of cached insensitive names
+  f2fs: Simplify the handling of cached insensitive names
+  libfs: Introduce case-insensitive string comparison helper
+  ext4: Reuse generic_ci_match for ci comparisons
+  f2fs: Reuse generic_ci_match for ci comparisons
+  ext4: Log error when lookup of encoded dentry fails
+  ext4: Move CONFIG_UNICODE defguards into the code flow
+  f2fs: Move CONFIG_UNICODE defguards into the code flow
+
+ fs/ext4/crypto.c   |  19 ++-----
+ fs/ext4/ext4.h     |  35 +++++++-----
+ fs/ext4/namei.c    | 129 ++++++++++++++++-----------------------------
+ fs/ext4/super.c    |   4 +-
+ fs/f2fs/dir.c      | 105 +++++++++++-------------------------
+ fs/f2fs/f2fs.h     |  17 +++++-
+ fs/f2fs/namei.c    |  10 ++--
+ fs/f2fs/recovery.c |   5 +-
+ fs/f2fs/super.c    |   8 +--
+ fs/libfs.c         |  80 ++++++++++++++++++++++++++++
+ include/linux/fs.h |   4 ++
+ 11 files changed, 211 insertions(+), 205 deletions(-)
+
+-- 
+2.34.1
+
 
