@@ -1,93 +1,187 @@
-Return-Path: <linux-ext4+bounces-1256-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1257-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C28C858D92
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Feb 2024 07:55:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7FF3858DA5
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Feb 2024 08:28:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D1EA2825EE
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Feb 2024 06:55:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 17386B21AC7
+	for <lists+linux-ext4@lfdr.de>; Sat, 17 Feb 2024 07:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED43B1CABA;
-	Sat, 17 Feb 2024 06:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B3F51CD03;
+	Sat, 17 Feb 2024 07:28:20 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4677F1CA9B
-	for <linux-ext4@vger.kernel.org>; Sat, 17 Feb 2024 06:55:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242A0149E08;
+	Sat, 17 Feb 2024 07:28:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708152906; cv=none; b=O1ePcWsrlhi1YLcGsMfoEWwb2r8DO2Z2jbIsdtFWUClCkslCELcEoHV435VTD4awbSzxHfBwM4ROzIWkKNKE9ldG0tqlHmKvMRLHHd1L3ggvNzwOaUUlab4f7Vd3449HuPY+UWd6HsaN8LcgbWtUjx3fMvxkoDRdOWSfpZXrosU=
+	t=1708154900; cv=none; b=f8oOSnOpYxDEJlAjjR1jfHjIrtSSo26K6hbZ/cPEh19AtIrKod358EFwiObuotDip3jDjeWyHIbxeDUyDcW/yePbOzKepIsUPWlYZaSI1bqWVpWlcfL/ni4tBr9D0xHOJ1dH8/7Q0keKi572wpyKc/1AwnsSu9uSDo++2623qec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708152906; c=relaxed/simple;
-	bh=XCKmRa8OvWWr/wpERXwIUEIe4VxxedApN8DupDmFWFg=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=QgVtX9g6MG3VZ8oqaFiU/T1QKH7NuIgOmSEc4npVkWCsX6R5CbW9HFScSopwGJ6N6bs1yOBZnEAQRhNVOWJmExQ6qTNRYry87b4IO5STbHdeM+siVgTBe6sjdJZiuSXzT94LoClvhYD2zECCT6217dmNqDV40fbrdxAFe/uT5GY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-363ca646a1dso24439845ab.0
-        for <linux-ext4@vger.kernel.org>; Fri, 16 Feb 2024 22:55:05 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1708152904; x=1708757704;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=eE/v1a6EPuJ4IWbbdsxCBh4oB8voPOR3Qt95C7NeL9M=;
-        b=q5XM0QrkTn6j6WTeRvZ1pAXjKP1SyomegxplMxC7lWH2zdLq7p2sjQG8EF6UjCP4nM
-         ISfs3Q/pYmVAQo7PvzvMVuCoOgBRkZtLlr7ALkVrEOPzpuQ/BvegGh7+eQFWS2pr/niO
-         eFSzdQc0278q3seS6Y068Z0WanxjR005Ih8Stwb4IhU1ecG+r7euikrL14usmQDqLen7
-         8kQ0t2MRwxTQhL56G19cTNakpDxdFOg1VXKe6Aw3rbatCcNDaCGEVO6Mn6qtgtI74FRu
-         BwRlh5eKTcjN08uJ72dXEQSQFllClRJ/sy6cFsac6PqM6UCx+P7w/iiaeLe4vT6m/l2p
-         o7pQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWIH0SXEfaEi1jI7PIoleixYOZJsa0Rx1a81CKtTOKZVrSLmr0h2t9XDoJIUSxJzNXMAiairTmP2BNNm/paLGi4f24RKlGYhyOj6Q==
-X-Gm-Message-State: AOJu0YyGFDgPpSLzdMJowg2CRIrZrSzEcPK00jDC0A1SgI0pWcmFWp2P
-	l1y4kWhR7ra+iCzTMFWmeb4CWGw5fQVviGaTqbedCXbPxzVmjzfagVQ33lUeYlEwGANjIqKb4ex
-	KCYtjO/ul3q5/A+jccLg6ABgq5m9R2Xjfv0Q85pdzCNwwKc2LhGcKl7A=
-X-Google-Smtp-Source: AGHT+IEsTWnd3Zmtdyp3LBGnhw/QBCcmSqa++u4WlR6/Mep/n6UHU5tUgL+YBVoPEHfe9m2ZELZURir5PEUKbFB0otAf5ThLEN7F
+	s=arc-20240116; t=1708154900; c=relaxed/simple;
+	bh=+p1cAQFkW6JV/8e9SmwOxLpJ5j837xQISfc1CCJ0plI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=MgfqtYEBbPTc0S3UD6j3zQvJF9zlwRKsIhR2kHtcsPbjyDtb/Q7CjWC9YUTDP0Ce/BirreOJFz11yDMyxzM7cnA2xxdLrzos5Dd6/OmhQSt1xplO/JMB2eA4kACH/MsyD0WXhhhbUbX6odx5jC/STxn9zE87VEfv78sxSXQ57gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TcKc60Gj9z1Q8yN;
+	Sat, 17 Feb 2024 15:07:02 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 8F9701A0172;
+	Sat, 17 Feb 2024 15:09:07 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 17 Feb 2024 15:09:06 +0800
+Message-ID: <81081ec9-3aab-ecd1-c2f6-9a3835ea4fda@huawei.com>
+Date: Sat, 17 Feb 2024 15:09:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:16ca:b0:365:1f2b:7be8 with SMTP id
- 10-20020a056e0216ca00b003651f2b7be8mr2901ilx.5.1708152904555; Fri, 16 Feb
- 2024 22:55:04 -0800 (PST)
-Date: Fri, 16 Feb 2024 22:55:04 -0800
-In-Reply-To: <0000000000000d7d6e05fb6bd2d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000001924f506118e5748@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_search_dir
-From: syzbot <syzbot+34a0f26f0f61c4888ea4@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	jack@suse.cz, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
-	yebin10@huawei.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 1/7] ext4: avoid overflow when setting values via sysfs
+Content-Language: en-US
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-2-libaokun1@huawei.com>
+ <20240213160554.35cpsfqqeqpgtux2@quack3>
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240213160554.35cpsfqqeqpgtux2@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-syzbot suspects this issue was fixed by commit:
+On 2024/2/14 0:05, Jan Kara wrote:
+> On Fri 26-01-24 16:57:10, Baokun Li wrote:
+>> When setting values of type unsigned int through sysfs, we use kstrtoul()
+>> to parse it and then truncate part of it as the final set value, when the
+>> set value is greater than UINT_MAX, the set value will not match what we
+>> see because of the truncation. As follows:
+>>
+>>    $ echo 4294967296 > /sys/fs/ext4/sda/mb_max_linear_groups
+>>    $ cat /sys/fs/ext4/sda/mb_max_linear_groups
+>>      0
+>>
+>> So when the value set is outside the variable type range, -EINVAL is
+>> returned to avoid the inconsistency described above. In addition, a
+>> judgment is added to avoid setting s_resv_clusters less than 0.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>> ---
+>>   fs/ext4/sysfs.c | 4 +++-
+>>   1 file changed, 3 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+>> index 6d332dff79dd..3671a8aaf4af 100644
+>> --- a/fs/ext4/sysfs.c
+>> +++ b/fs/ext4/sysfs.c
+>> @@ -104,7 +104,7 @@ static ssize_t reserved_clusters_store(struct ext4_sb_info *sbi,
+>>   	int ret;
+>>   
+>>   	ret = kstrtoull(skip_spaces(buf), 0, &val);
+>> -	if (ret || val >= clusters)
+>> +	if (ret || val >= clusters || (s64)val < 0)
+>>   		return -EINVAL;
+> This looks a bit pointless, doesn't it? 'val' is u64, clusters is u64. We
+> know that val < clusters so how could (s64)val be < 0?
+When clusters is bigger than LLONG_MAX, (s64)val may be less than 0.
+Of course we don't have such a large storage device yet, so it's only
+theoretically possible to overflow here. But the previous patches in this
+patch set were intended to ensure that the values set via sysfs did not
+exceed the range of the variable type, so I've modified that here as well.
+>
+>> @@ -463,6 +463,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+>>   		ret = kstrtoul(skip_spaces(buf), 0, &t);
+>>   		if (ret)
+>>   			return ret;
+>> +		if (t != (unsigned int)t)
+>> +			return -EINVAL;
+>>   		if (a->attr_ptr == ptr_ext4_super_block_offset)
+>>   			*((__le32 *) ptr) = cpu_to_le32(t);
+>>   		else
+> I kind of agree with Alexey that using kstrtouint() here instead would look
+> nicer. And it isn't like you have to define many new variables. You just
+> need unsigned long for attr_pointer_ul and unsigned int for
+> attr_pointer_ui.
+>
+> 								Honza
+If we use both kstrtouint() and kstrtoul(), then we need to add
+kstrtouint() or kstrtoul() to each case, which would be a lot of
+duplicate code as follows:
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+                                        struct ext4_sb_info *sbi,
+                                        const char *buf, size_t len)
+{
+         int ret;
+         unsigned int t;
+         unsigned long lt;
+         void *ptr = calc_ptr(a, sbi);
 
-    fs: Block writes to mounted block devices
+         if (!ptr)
+                 return 0;
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=12d6758a180000
-start commit:   7475e51b8796 Merge tag 'net-6.7-rc2' of git://git.kernel.o..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d05dd66e2eb2c872
-dashboard link: https://syzkaller.appspot.com/bug?extid=34a0f26f0f61c4888ea4
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10221a14e80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112fd18f680000
+         switch (a->attr_id) {
+         case attr_group_prealloc:
+                 ret = kstrtouint(skip_spaces(buf), 0, &t);
+                 if (ret)
+                         return ret;
+                 if (t > sbi->s_clusters_per_group)
+                         return -EINVAL;
+                 return len;
+         case attr_pointer_pi:
+                 ret = kstrtouint(skip_spaces(buf), 0, &t);
+                 if (ret)
+                         return ret;
+                 if ((int)t < 0)
+                         return -EINVAL;
+                 return len;
+         case attr_pointer_ui:
+                 ret = kstrtouint(skip_spaces(buf), 0, &t);
+                 if (ret)
+                         return ret;
+                 if (t != (unsigned int)t)
+                         return -EINVAL;
+                 if (a->attr_ptr == ptr_ext4_super_block_offset)
+                         *((__le32 *) ptr) = cpu_to_le32(t);
+                 else
+                         *((unsigned int *) ptr) = t;
+                 return len;
+         case attr_pointer_ul:
+                 ret = kstrtoul(skip_spaces(buf), 0, &lt);
+                 if (ret)
+                         return ret;
+                 *((unsigned long *) ptr) = lt;
+                 return len;
+         }
+         return 0;
 
-If the result looks correct, please mark the issue as fixed by replying with:
+}
 
-#syz fix: fs: Block writes to mounted block devices
+Also, both kstrtouint() and kstrtoul() are based on the kstrtoull()
+implementation, so it feels better to opencode kstrtoul() and
+kstrtouint() to reduce duplicate code.
+Why is it better to distinguish uint and ulong cases here?
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Thanks for your review!
+Happy Chinese New Year!
+-- 
+With Best Regards,
+Baokun Li
+.
 
