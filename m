@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-1262-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1263-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E1D4858F2C
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Feb 2024 12:54:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DBA5859424
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Feb 2024 03:36:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1AD031C20CBA
-	for <lists+linux-ext4@lfdr.de>; Sat, 17 Feb 2024 11:54:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CD1A1F21CEC
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Feb 2024 02:36:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98DBE6A011;
-	Sat, 17 Feb 2024 11:54:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 056A915C8;
+	Sun, 18 Feb 2024 02:36:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 431FB69D3A
-	for <linux-ext4@vger.kernel.org>; Sat, 17 Feb 2024 11:53:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84CC81F
+	for <linux-ext4@vger.kernel.org>; Sun, 18 Feb 2024 02:36:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708170840; cv=none; b=iN8dl35TNaHjK1EiNjveVlclvgd8MIWVsNImGWNJzd1oXWSmjkf8SRw52quOTx/SMk2iLF0ipiHW5z/JqjjxL4L85IUyHvPQ1smTxgcxJJL2bXhhvAt6CVqITjPsDbLaOCA4LTP4UXGDlO9Rk09QA38VOQumec4bjtfxw5ArSjM=
+	t=1708223793; cv=none; b=nY0WbgpVJiloN+GrRCXh5F6bEOPiTm1CNaid+jzSEDID/2B6LGFAJvZ+pwYRZ2K81BR8+e551MnZaktfRgnPQePlnE5rsihZkMFdmDDxmC9fhv7IB7RFunqZhMIaM0LyoUEfFQm3+NqvUyaxUraE9xoikFRF+GhUmEgsENCNe0Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708170840; c=relaxed/simple;
-	bh=88cz6DznqWfqUTaCB+8gM+sK3rPSemLz/6lakdJp33s=;
+	s=arc-20240116; t=1708223793; c=relaxed/simple;
+	bh=/zGdM83v//sphRScl5OLUS5tiZ5NdqDhM8Grzm4+cMo=;
 	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=JahiukK/wKCWby12JcPAsFEkopAzTrFfWj3wkVnEVUDzvWmbUyF3eWEk0Z4P7htiIfG5Y8A3PdkrJWROFuewZVl/eNwf/irSjPE6xkhvnM6WuMWVPKS/y13Nl2Bp1/RpEZMUMc6oxp67p3ET4cavx9ISqYMcUNCFQwHXAFhiRH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+	 In-Reply-To:Content-Type; b=nq1MI6S5PQeEw+/keVjxp8SQz9wD8AvDtQMiQ7Dmv3SFrg/BN9UsX2IVxNAMSShr8O5SZ5NRoc+IGEaydCy788UyYk1yyUJTo9hFbBCFAS/OfKXIIJOkI2Yw7pR7k/ZEfjvzNG15f8rmrivPIR/oYchV5EzpLxcCULd/7ZVAuP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TcRsZ4Rrpz1FKhk;
-	Sat, 17 Feb 2024 19:49:06 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4Tcq5z04fgzbcKq;
+	Sun, 18 Feb 2024 10:16:07 +0800 (CST)
 Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 189321400D2;
-	Sat, 17 Feb 2024 19:53:54 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 76A8214011B;
+	Sun, 18 Feb 2024 10:16:41 +0800 (CST)
 Received: from [10.174.176.34] (10.174.176.34) by
  canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sat, 17 Feb 2024 19:53:53 +0800
-Subject: Re: [PATCH] ext4: Don't report EOPNOTSUPP errors from discard
+ 15.1.2507.35; Sun, 18 Feb 2024 10:16:41 +0800
+Subject: Re: [PATCH] ext4: Verify s_clusters_per_group even without bigalloc
 To: Jan Kara <jack@suse.cz>
 CC: <linux-ext4@vger.kernel.org>, Ted Tso <tytso@mit.edu>
-References: <20240213101601.17463-1-jack@suse.cz>
+References: <20240213101515.17328-1-jack@suse.cz>
 From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <9acdeec0-e5d6-4139-329d-57f1f4dee1a5@huawei.com>
-Date: Sat, 17 Feb 2024 19:53:53 +0800
+Message-ID: <d448648e-29dd-6f43-d141-f424c594fae2@huawei.com>
+Date: Sun, 18 Feb 2024 10:16:40 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 Precedence: bulk
@@ -54,48 +54,61 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240213101601.17463-1-jack@suse.cz>
+In-Reply-To: <20240213101515.17328-1-jack@suse.cz>
 Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  canpemm500005.china.huawei.com (7.192.104.229)
 
-On 2024/2/13 18:16, Jan Kara wrote:
-> When ext4 is mounted without journal, with discard mount option, and on
-> a device not supporting trim, we print error for each and every freed
-> extent. This is not only useless but actively harmful. Instead ignore
-> the EOPNOTSUPP error. Trim is only advisory anyway and when the
-> filesystem has journal we silently ignore trim error as well.
+Hello!
+
+On 2024/2/13 18:15, Jan Kara wrote:
+> Currently we ignore s_clusters_per_group field in the on-disk superblock
+> if bigalloc feature is not enabled. However e2fsprogs don't even open
+> the filesystem is s_clusters_per_group is invalid. This results in an
+                 ^^
+                 if
+> odd state where kernel happily works with the filesystem while even
+> e2fsck refuses to touch it. Verify that s_clusters_per_group is valid
+> even if bigalloc feature is not enabled to make things consistent. Due
+> to current e2fsprogs behavior it is unlikely there are filesystems out
+> in the wild (except for intentionally fuzzed ones) with invalid
+> s_clusters_per_group counts.
 > 
-
-Make sense, call ext4_std_error() since EOPNOTSUPP is really harmful.
-
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
 > Signed-off-by: Jan Kara <jack@suse.cz>
 > ---
->  fs/ext4/mballoc.c | 8 +++++++-
->  1 file changed, 7 insertions(+), 1 deletion(-)
+>  fs/ext4/super.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index e4f7cf9d89c4..aed620cf4d40 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -6488,7 +6488,13 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  		if (test_opt(sb, DISCARD)) {
->  			err = ext4_issue_discard(sb, block_group, bit,
->  						 count_clusters, NULL);
-> -			if (err && err != -EOPNOTSUPP)
-> +			/*
-> +			 * Ignore EOPNOTSUPP error. This is consistent with
-> +			 * what happens when using journal.
-> +			 */
-> +			if (err == -EOPNOTSUPP)
-> +				err = 0;
-> +			if (err)
->  				ext4_msg(sb, KERN_WARNING, "discard request in"
->  					 " group:%u block:%d count:%lu failed"
->  					 " with %d", block_group, bit, count,
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 0f931d0c227d..522683075067 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -4451,7 +4451,15 @@ static int ext4_handle_clustersize(struct super_block *sb)
+>  				 sbi->s_blocks_per_group);
+>  			return -EINVAL;
+>  		}
+> -		sbi->s_clusters_per_group = sbi->s_blocks_per_group;
+> +		sbi->s_clusters_per_group =
+> +			le32_to_cpu(es->s_clusters_per_group);
+> +		if (sbi->s_blocks_per_group != sbi->s_clusters_per_group) {
+> +			ext4_msg(sb, KERN_ERR, "blocks per group (%lu) and "
+> +				 "clusters per group (%lu) inconsistent",
+> +				 sbi->s_blocks_per_group,
+> +				 sbi->s_clusters_per_group);
+> +			return -EINVAL;
+> +		}
+
+This is almost the same with the code snippet in bigalloc branch, would
+it be better to factor them out and reuse this hunk in both branch, just
+like the check e2fsprogs does?
+
+Thanks,
+Yi.
+
+>  		sbi->s_cluster_bits = 0;
+>  	}
+>  	sbi->s_cluster_ratio = clustersize / sb->s_blocksize;
 > 
 
