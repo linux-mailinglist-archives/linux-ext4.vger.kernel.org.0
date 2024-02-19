@@ -1,275 +1,187 @@
-Return-Path: <linux-ext4+bounces-1281-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1282-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F84285A69F
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Feb 2024 15:56:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E37285A974
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Feb 2024 17:59:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19A181F222D3
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Feb 2024 14:56:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7D69B2178D
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Feb 2024 16:59:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DBCE39FC5;
-	Mon, 19 Feb 2024 14:55:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5985D44388;
+	Mon, 19 Feb 2024 16:59:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="avRGE7em";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rslRCV1q";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="avRGE7em";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="rslRCV1q"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ca9iegZ+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WIaFzA04";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ca9iegZ+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="WIaFzA04"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45183383BB;
-	Mon, 19 Feb 2024 14:55:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D3E40BEF
+	for <linux-ext4@vger.kernel.org>; Mon, 19 Feb 2024 16:59:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708354541; cv=none; b=nk1or6aC+cWM0r/XjhgFzyexkHLwCpl1pfjOF8BsI+PqCB3ZuUN0A7TJU2jbEf07zC4EU5hz0Oqd/stG7CYyVDrGZXP8mkT7+LnMTkPGNielsR0VUI/7LzhhS2UJhVTI3kHvZGP8uck/29BlEog4aVl+mllI1UfFcDSXRl71iHo=
+	t=1708361962; cv=none; b=G9J8yD98D6n12XzRye66lVrhl5ZbEPFqPmIrkLwPD3QVyAnf1JxhfsGjIbD8yOpnTCd+Rl5bu6qrZkMWi5wJXaGyfEY8+wSSB0VSFCIDGptrsvqT48syIoefGFb4o7OA1CpapMFykQBENNcmcqWfysl/n4L2xzJCBqWpJskTbs4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708354541; c=relaxed/simple;
-	bh=9wlvF0ScyfXlUKJvQHCY1lykuhVQIEGLiokTklW2Gwg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=FELljpqdP/M9Sl1zVIleM3Y1kOII/TdnTJ7XRJBnWxabU2OSSlhNE6l5rHVjG3TLJ2YGpOD2Jebi1q7RBECYUdnnQ2rVVAleE1jhZ3TURzYDTwTgBNnre633kB3H0GUfuCViXMvIXMUGblDBSWIrHkxL8wDuVe43ON0Vyl+f9CI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=avRGE7em; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rslRCV1q; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=avRGE7em; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=rslRCV1q; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	s=arc-20240116; t=1708361962; c=relaxed/simple;
+	bh=frYXtZHPBTVTmumrvadz0GHkuzrTxG5w+sCpMtDA2h4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BHRvx9i4x4AcyXbAKy2/nydcZ0i+9jdQ7l5nvfZXo4NJ1bMZ84xCQ0DwI3G5dgih45qe0vGeNS3rZFcHi1r5KP0hPWQIJWbKNclCZGxhJdyAmw5IeJE+iRII+5/SbC/l9ihsjQkqfcNggau94hRi+EPBUCfrG1YLEZVsOFwhtMg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ca9iegZ+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WIaFzA04; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ca9iegZ+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=WIaFzA04; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3C6691F808;
-	Mon, 19 Feb 2024 14:55:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708354537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0B1661F80E;
+	Mon, 19 Feb 2024 16:59:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708361959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=avRGE7emlGK5R4lKzhzXy/KUzSRA9hYSOhJA+eAltWjJCyHVXalS5saGrIkYiu+wgD7sOc
-	efDfHL+rhifvUvdMglnmWCmNC4sF0j1btEHVDdD5UXpdqoKcObGkAmPtWS5tSzReR4ZMq7
-	vAEJSswwKYtR/sc0qtxRNpeHQ7mzxqY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708354537;
+	bh=6uBbudS1gtwKw0eu0a8pkhpaKCNj4+tMftlyqLwF15U=;
+	b=ca9iegZ+boNSsXEysebb4Av80hLufcOqmHFUIems7JgiFSBBtL1CiYT1gCkTsfXPp3HW0T
+	SjOviVOiCMNH/EzsFKTqiz8FFINRjztii+WotUruuMZBbJ9IF8JtVHWIG2n/UA4Qy2ZBDv
+	hRUYdfnF8XtIHQZdn6Z2CTBsAfUaAD4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708361959;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=rslRCV1qhQjgRNyL9E23Je3vLima4yq+nmbzcAsktechQjpAwDAIxEfRX3o2Vb+ufEz+3U
-	oCsAEYa/ATeNNfDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708354537; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	bh=6uBbudS1gtwKw0eu0a8pkhpaKCNj4+tMftlyqLwF15U=;
+	b=WIaFzA04XeeAMu2nWGVTB9dbD9la+eKjfamR9KSzH9na03gsXufYRt6/uoCi10PxhtVRf+
+	ETnlSDdNOfKTW+Dg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1708361959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=avRGE7emlGK5R4lKzhzXy/KUzSRA9hYSOhJA+eAltWjJCyHVXalS5saGrIkYiu+wgD7sOc
-	efDfHL+rhifvUvdMglnmWCmNC4sF0j1btEHVDdD5UXpdqoKcObGkAmPtWS5tSzReR4ZMq7
-	vAEJSswwKYtR/sc0qtxRNpeHQ7mzxqY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708354537;
+	bh=6uBbudS1gtwKw0eu0a8pkhpaKCNj4+tMftlyqLwF15U=;
+	b=ca9iegZ+boNSsXEysebb4Av80hLufcOqmHFUIems7JgiFSBBtL1CiYT1gCkTsfXPp3HW0T
+	SjOviVOiCMNH/EzsFKTqiz8FFINRjztii+WotUruuMZBbJ9IF8JtVHWIG2n/UA4Qy2ZBDv
+	hRUYdfnF8XtIHQZdn6Z2CTBsAfUaAD4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1708361959;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Vbja5lMg+1Mwqzz2hVATSrE04xaNuRS9E3B10FLnVis=;
-	b=rslRCV1qhQjgRNyL9E23Je3vLima4yq+nmbzcAsktechQjpAwDAIxEfRX3o2Vb+ufEz+3U
-	oCsAEYa/ATeNNfDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	bh=6uBbudS1gtwKw0eu0a8pkhpaKCNj4+tMftlyqLwF15U=;
+	b=WIaFzA04XeeAMu2nWGVTB9dbD9la+eKjfamR9KSzH9na03gsXufYRt6/uoCi10PxhtVRf+
+	ETnlSDdNOfKTW+Dg==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EA12513647;
-	Mon, 19 Feb 2024 14:55:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +d5pMuhr02UhaAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Mon, 19 Feb 2024 14:55:36 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
- Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v10 3/8] libfs: Introduce case-insensitive string
- comparison helper
-In-Reply-To: <50d2afaa-fd7e-4772-ac84-24e8994bfba8@collabora.com> (Eugen
-	Hristev's message of "Mon, 19 Feb 2024 06:22:37 +0200")
-Organization: SUSE
-References: <20240215042654.359210-1-eugen.hristev@collabora.com>
-	<20240215042654.359210-4-eugen.hristev@collabora.com>
-	<87zfw0bd6y.fsf@mailhost.krisman.be>
-	<50d2afaa-fd7e-4772-ac84-24e8994bfba8@collabora.com>
-Date: Mon, 19 Feb 2024 09:55:31 -0500
-Message-ID: <87msrwbj18.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E96FA139C6;
+	Mon, 19 Feb 2024 16:59:18 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id pe74OOaI02WHNgAAn2gu4w
+	(envelope-from <jack@suse.cz>); Mon, 19 Feb 2024 16:59:18 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 91EC1A0807; Mon, 19 Feb 2024 17:59:18 +0100 (CET)
+Date: Mon, 19 Feb 2024 17:59:18 +0100
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huawei.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+	Ted Tso <tytso@mit.edu>
+Subject: Re: [PATCH] ext4: Verify s_clusters_per_group even without bigalloc
+Message-ID: <20240219165918.4fkei72hlcjxs4ol@quack3>
+References: <20240213101515.17328-1-jack@suse.cz>
+ <d448648e-29dd-6f43-d141-f424c594fae2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Level: 
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d448648e-29dd-6f43-d141-f424c594fae2@huawei.com>
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=avRGE7em;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=rslRCV1q
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.51 / 50.00];
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=ca9iegZ+;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=WIaFzA04
+X-Spamd-Result: default: False [0.17 / 50.00];
 	 ARC_NA(0.00)[];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
 	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
 	 TO_DN_SOME(0.00)[];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 MIME_GOOD(-0.10)[text/plain];
-	 HAS_ORG_HEADER(0.00)[];
 	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
 	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,collabora.com:email];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 MID_RHS_NOT_FQDN(0.50)[];
 	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -4.51
-X-Rspamd-Queue-Id: 3C6691F808
+	 BAYES_HAM(-0.02)[54.04%];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Score: 0.17
+X-Rspamd-Queue-Id: 0B1661F80E
+X-Spam-Level: 
 X-Spam-Flag: NO
+X-Spamd-Bar: /
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+On Sun 18-02-24 10:16:40, Zhang Yi wrote:
+> Hello!
+> 
+> On 2024/2/13 18:15, Jan Kara wrote:
+> > Currently we ignore s_clusters_per_group field in the on-disk superblock
+> > if bigalloc feature is not enabled. However e2fsprogs don't even open
+> > the filesystem is s_clusters_per_group is invalid. This results in an
+>                  ^^
+>                  if
+> > odd state where kernel happily works with the filesystem while even
+> > e2fsck refuses to touch it. Verify that s_clusters_per_group is valid
+> > even if bigalloc feature is not enabled to make things consistent. Due
+> > to current e2fsprogs behavior it is unlikely there are filesystems out
+> > in the wild (except for intentionally fuzzed ones) with invalid
+> > s_clusters_per_group counts.
+> > 
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/ext4/super.c | 10 +++++++++-
+> >  1 file changed, 9 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 0f931d0c227d..522683075067 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -4451,7 +4451,15 @@ static int ext4_handle_clustersize(struct super_block *sb)
+> >  				 sbi->s_blocks_per_group);
+> >  			return -EINVAL;
+> >  		}
+> > -		sbi->s_clusters_per_group = sbi->s_blocks_per_group;
+> > +		sbi->s_clusters_per_group =
+> > +			le32_to_cpu(es->s_clusters_per_group);
+> > +		if (sbi->s_blocks_per_group != sbi->s_clusters_per_group) {
+> > +			ext4_msg(sb, KERN_ERR, "blocks per group (%lu) and "
+> > +				 "clusters per group (%lu) inconsistent",
+> > +				 sbi->s_blocks_per_group,
+> > +				 sbi->s_clusters_per_group);
+> > +			return -EINVAL;
+> > +		}
+> 
+> This is almost the same with the code snippet in bigalloc branch, would
+> it be better to factor them out and reuse this hunk in both branch, just
+> like the check e2fsprogs does?
 
-> On 2/16/24 18:12, Gabriel Krisman Bertazi wrote:
->> Eugen Hristev <eugen.hristev@collabora.com> writes:
->> 
->>> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->>>
->>> generic_ci_match can be used by case-insensitive filesystems to compare
->>> strings under lookup with dirents in a case-insensitive way.  This
->>> function is currently reimplemented by each filesystem supporting
->>> casefolding, so this reduces code duplication in filesystem-specific
->>> code.
->>>
->>> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
->>> [eugen.hristev@collabora.com: rework to first test the exact match]
->>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
->>> ---
->>>  fs/libfs.c         | 80 ++++++++++++++++++++++++++++++++++++++++++++++
->>>  include/linux/fs.h |  4 +++
->>>  2 files changed, 84 insertions(+)
->>>
->>> diff --git a/fs/libfs.c b/fs/libfs.c
->>> index bb18884ff20e..82871fa1b066 100644
->>> --- a/fs/libfs.c
->>> +++ b/fs/libfs.c
->>> @@ -1773,6 +1773,86 @@ static const struct dentry_operations generic_ci_dentry_ops = {
->>>  	.d_hash = generic_ci_d_hash,
->>>  	.d_compare = generic_ci_d_compare,
->>>  };
->>> +
->>> +/**
->>> + * generic_ci_match() - Match a name (case-insensitively) with a dirent.
->>> + * This is a filesystem helper for comparison with directory entries.
->>> + * generic_ci_d_compare should be used in VFS' ->d_compare instead.
->>> + *
->>> + * @parent: Inode of the parent of the dirent under comparison
->>> + * @name: name under lookup.
->>> + * @folded_name: Optional pre-folded name under lookup
->>> + * @de_name: Dirent name.
->>> + * @de_name_len: dirent name length.
->>> + *
->>> + *
->> 
->> Since this need a respin, mind dropping the extra empty line here?
->> 
->>> + * Test whether a case-insensitive directory entry matches the filename
->>> + * being searched.  If @folded_name is provided, it is used instead of
->>> + * recalculating the casefold of @name.
->>> + *
->>> + * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
->>> + * < 0 on error.
->>> + */
->>> +int generic_ci_match(const struct inode *parent,
->>> +		     const struct qstr *name,
->>> +		     const struct qstr *folded_name,
->>> +		     const u8 *de_name, u32 de_name_len)
->>> +{
->>> +	const struct super_block *sb = parent->i_sb;
->>> +	const struct unicode_map *um = sb->s_encoding;
->>> +	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
->>> +	struct qstr dirent = QSTR_INIT(de_name, de_name_len);
->>> +	int res;
->>> +
->>> +	if (IS_ENCRYPTED(parent)) {
->>> +		const struct fscrypt_str encrypted_name =
->>> +			FSTR_INIT((u8 *) de_name, de_name_len);
->>> +
->>> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
->>> +			return -EINVAL;
->>> +
->>> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
->>> +		if (!decrypted_name.name)
->>> +			return -ENOMEM;
->>> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
->>> +						&decrypted_name);
->>> +		if (res < 0)
->>> +			goto out;
->>> +		dirent.name = decrypted_name.name;
->>> +		dirent.len = decrypted_name.len;
->>> +	}
->>> +
->>> +	/*
->>> +	 * Attempt a case-sensitive match first. It is cheaper and
->>> +	 * should cover most lookups, including all the sane
->>> +	 * applications that expect a case-sensitive filesystem.
->>> +	 *
->> 
->> 
->>> +	 * This comparison is safe under RCU because the caller
->>> +	 * guarantees the consistency between str and len. See
->>> +	 * __d_lookup_rcu_op_compare() for details.
->>> +	 */
->> 
->> This paragraph doesn't really make sense here.  It is originally from
->> the d_compare hook, which can be called under RCU, but there is no RCU
->> here.  Also, here we are comparing the dirent with the
->> name-under-lookup, name which is already safe.
->> 
->> 
->>> +	if (folded_name->name) {
->>> +		if (dirent.len == folded_name->len &&
->>> +		    !memcmp(folded_name->name, dirent.name, dirent.len)) {
->>> +			res = 1;
->>> +			goto out;
->>> +		}
->>> +		res = !utf8_strncasecmp_folded(um, folded_name, &dirent);
->> 
->> Hmm, second thought on this.  This will ignore errors from utf8_strncasecmp*,
->> which CAN happen for the first time here, if the dirent itself is
->> corrupted on disk (exactly why we have patch 6).  Yes, ext4_match will drop the
->> error, but we want to propagate it from here, such that the warning on
->> patch 6 can trigger.
->> 
->> This is why I did that match dance on the original submission.  Sorry
->> for suggesting it.  We really want to get the error from utf8 and
->> propagate it if it is negative. basically:
->> 
->>         res > 0: match
->>         res == 0: no match.
->>         res < 0: propagate error and let the caller handle it
->
-> In that case I will revert to the original v9 implementation and send a v11 to
-> handle that.
+Yeah, good point. Let me send v2.
 
-Please, note that the memcmp optimization is still valid. On match, we
-know the name is valid utf8.  It is just a matter of propagating the
-error code from utf8 to the caller if we need to call it.
-
+								Honza
 -- 
-Gabriel Krisman Bertazi
- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
