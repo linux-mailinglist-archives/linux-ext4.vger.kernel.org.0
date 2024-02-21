@@ -1,155 +1,85 @@
-Return-Path: <linux-ext4+bounces-1352-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1353-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D1E6785E56A
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 19:21:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 31C1A85E9A3
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 22:12:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B512B21D9F
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 18:21:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7300B23877
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 21:12:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ECB485272;
-	Wed, 21 Feb 2024 18:20:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B041272DE;
+	Wed, 21 Feb 2024 21:11:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Vaj9bjbF";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="PvnPjN/6";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Vaj9bjbF";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="PvnPjN/6"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="jZB4DMWP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A583C84FA5
-	for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 18:20:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08F2126F37
+	for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 21:11:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708539658; cv=none; b=raIMWMs4Xns9dBK0hbzx58n3RPZM5zH2Mj9DLYCHLXF1+VgAGzJfwUv4ctG+zdt6UZMhIgwOsy+53S+les6wkJwEgh96T7vbeN4f2yGx2rckgl7GY6CKE68zCFhhN9ONAUBork5ywqqnGiRqITDyrfQkRAmuBj/HeSHxof/PEH0=
+	t=1708549906; cv=none; b=P4/hisnKZhWO1W2VimcHgfGVuCeszJGS4zJUFFGmJEGSwQotKzE8pZwjq4qevONODlhmWC2pmyk/KenaKXVBy1SsvzwNU4KqaNIaDuT08Nsvgyj8r5Gfkjvj5p3443YPo5gdNI+X+fkmTlM19EuIsLmCMKCl+RMjrs0qa23BhME=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708539658; c=relaxed/simple;
-	bh=uYmLucUZjz0oG8EuH8T/hqYgaM0eG9dlBgFGWNFzHk0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=V4msEWHBT3ZulyhEodq3lBGlXE+KK0Gr9qyom3/Xk/94UaiVv4BJz5sjlQ5rmWv6OBBlkByaYoLvxKABHoKxkvKLowBuVDJzeOS2uhzG7udZYA5jrbTN1/IwLorbz+wMRZ0hbwRBSLYrf0eJREWl83dwQHbZ58v1bI++OIBQ7OM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Vaj9bjbF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=PvnPjN/6; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Vaj9bjbF; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=PvnPjN/6; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CFC5A1F831;
-	Wed, 21 Feb 2024 18:20:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708539654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=mFEKpRet8Zl7lbJAcM3uFw9uObfTgGdoQrbnAzpKcG4=;
-	b=Vaj9bjbFTFyAO3M5V0hm22l9zpTYQDWu8wICe2pqmzENxV2JCk/jVtti96GJX2wgc9tzUp
-	E0U2NMAVnmhLsRtOj2pqfvC+SspgS01rpr0tnWNH401J4K2VtQdp5ewjxJaP/BrjD6O7QI
-	MNLsm2ay+D5galtjh+LcS3JQpI5T2j4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708539654;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=mFEKpRet8Zl7lbJAcM3uFw9uObfTgGdoQrbnAzpKcG4=;
-	b=PvnPjN/6c8nbnVBNE4UV1u9+gtMVUTxcXcoC1/xlLEAvHGgDiVsWPbkIhmF2FmM16PAMOs
-	Zx4buRm5jhR6x3AQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1708539654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=mFEKpRet8Zl7lbJAcM3uFw9uObfTgGdoQrbnAzpKcG4=;
-	b=Vaj9bjbFTFyAO3M5V0hm22l9zpTYQDWu8wICe2pqmzENxV2JCk/jVtti96GJX2wgc9tzUp
-	E0U2NMAVnmhLsRtOj2pqfvC+SspgS01rpr0tnWNH401J4K2VtQdp5ewjxJaP/BrjD6O7QI
-	MNLsm2ay+D5galtjh+LcS3JQpI5T2j4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1708539654;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=mFEKpRet8Zl7lbJAcM3uFw9uObfTgGdoQrbnAzpKcG4=;
-	b=PvnPjN/6c8nbnVBNE4UV1u9+gtMVUTxcXcoC1/xlLEAvHGgDiVsWPbkIhmF2FmM16PAMOs
-	Zx4buRm5jhR6x3AQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 84F7613A69;
-	Wed, 21 Feb 2024 18:20:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fmSVHAY/1mW0OQAAD6G6ig
-	(envelope-from <lhenriques@suse.de>); Wed, 21 Feb 2024 18:20:54 +0000
-Received: from localhost (brahms.olymp [local])
-	by brahms.olymp (OpenSMTPD) with ESMTPA id e622371e;
-	Wed, 21 Feb 2024 18:20:49 +0000 (UTC)
-From: Luis Henriques <lhenriques@suse.de>
-To: linux-ext4@vger.kernel.org
-Cc: Christian Brauner <brauner@kernel.org>
-Subject: fstest generic/696 failure on ext4 fs with quotas+idmap
-Date: Wed, 21 Feb 2024 18:20:49 +0000
-Message-ID: <87jzmxisqm.fsf@suse.de>
+	s=arc-20240116; t=1708549906; c=relaxed/simple;
+	bh=rAu5hXr+IvzK37PAMawmi9KH/zsDUxlgco15ekjwJT8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ircfz+WGWYz8OZc3PFeH+JUbRQJDEgXnPu3SDTW52j9UEtYVvHrqNCK6FdBSX7rspcRx0t4ZbW9OGicM3KDpFb5nLKezIzTqDjFRWFwVxn8Trxy3pl0KzCGrR3iHRQCqoxDSGy6H/MWHdCx5AQQM4J86A6yjcm0ezUTqcxWJOTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=jZB4DMWP; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-198.bstnma.fios.verizon.net [173.48.102.198])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41LLBaOf020463
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 21 Feb 2024 16:11:38 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1708549898; bh=4IF/TDEtjz8qAqYX7SwNgWqDwz8pWojSp1bTx/j4EbU=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=jZB4DMWP69jlCM/e4U4e7+qKnmkgA2EEM3Oa4BDGQLneJA1CdPBxHPIxA9nNELB8p
+	 g1Hae55HBsj2v0/ckDnBLI0BYrPN2kD6wk+8x9IX3ol8QdTrv5gHfM5YXNVee5x7eg
+	 y3LdPlEmBpjyx8rYqokHVfOmnqjGO6ZYsWihBRppN+5Fkoz2O0iawxmCFQKybb267i
+	 XAFAeyPrAc4D6ZjD9txeE5ZUngBf3JFrCjdNTJSnu/82uAT36SXXjg76S6CaWQLCD0
+	 z3ppkcppVm/8GOuMO71XQVxpRPz4VV60lgT8Cq+FhqByakMeqE1zURrPQHli4bfnUO
+	 ebuU0QXoqYICQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 4F59215C0336; Wed, 21 Feb 2024 16:11:36 -0500 (EST)
+Date: Wed, 21 Feb 2024 16:11:36 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Jan Kara <jack@suse.cz>
+Cc: Michael Opdenacker <michael.opdenacker@bootlin.com>,
+        linux-ext4@vger.kernel.org
+Subject: Re: Why isn't ext2 deprecated over ext4?
+Message-ID: <20240221211136.GA633176@mit.edu>
+References: <bcaf9066-bb4a-4db3-b423-c9871b6b5a2f@bootlin.com>
+ <20240221110043.mj4v25a2mtmo54bw@quack3>
+ <192cb320-2ded-4761-b0c9-3e273931f6f6@bootlin.com>
+ <20240221165805.plnkvymjzqts2l6r@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-0.11 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[4];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWO(0.00)[2];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_LAST(0.00)[];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-0.01)[49.79%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -0.11
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240221165805.plnkvymjzqts2l6r@quack3>
 
-Hi!
+On Wed, Feb 21, 2024 at 05:58:05PM +0100, Jan Kara wrote:
+> Hum, so I didn't quite think through my comment about on disk format :).
+> When you create filesystem with larger inodes, mke2fs will indeed create
+> inodes with extra timestamp fields etc. ext4 driver will recognize them
+> and use them, however ext2 driver happily ignores them (I thought we refuse
+> to mount such filesystem but we don't because of the way how large inodes
+> were defined in the ondisk format).
 
-The fstest generic/696 (and 697) fail on ext4 when the filesystem is
-created with quota support (-O quota).  It's really easy to reproduce, and
-it fails when doing the idmapped tests (setgid_create_umask_idmapped() and
-setgid_create_umask_idmapped_in_userns()).
+Well, if we *cared* we could backport the support for the expanded
+timestamps to ext2.  I'm not sure it's worth the effort, but it's not
+that hard....
 
-The failure happens when the test does an openat() with O_TMPFILE:
-
-  ext4_tmpfile()
-    __ext4_new_inode()
-      dquot_initialize()
-        dqget()
-
-and at this point the error occurs:
-
-	if (!qid_has_mapping(sb->s_user_ns, qid))
-		return ERR_PTR(-EINVAL);
-
-qid is '-1', which is invalid, but I'm failing to understand if it should
-really be invalid or if dqget() should handle this invalid qid some other
-way.  Earlier, __ext4_new_inode() called inode_init_owner(), which indeed
-sets inode->i_uid with '-1'.
-
-I've been trying to figure it out, but it's very tricky to follow all the
-details, so I decided to ask here and see if anyone has any idea.  Is this
-a known issue?  Maybe the issue is with the test itself, and not with
-ext4, quota or idmapped code.
-
-Cheers,
---=20
-Lu=C3=ADs
+					- Ted
 
