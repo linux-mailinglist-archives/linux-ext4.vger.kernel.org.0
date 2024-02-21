@@ -1,126 +1,182 @@
-Return-Path: <linux-ext4+bounces-1335-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1336-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF09085D743
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 12:41:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FE3B85E11C
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 16:30:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 717FA1F239E0
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 11:41:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BC6281F24C30
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 15:29:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1646B45010;
-	Wed, 21 Feb 2024 11:40:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3079B80601;
+	Wed, 21 Feb 2024 15:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mY8F8WMU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail.thelounge.net (mail.thelounge.net [91.118.73.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 662D64176C
-	for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 11:39:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.118.73.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1112E6994A
+	for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 15:29:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708515601; cv=none; b=bSBfeMR78hrbsjOZABV7y+G7HtN+ch2weFXrT/4kUPG1pomf/52OrRFR2q7wRNrUjw3RrWjr+syWilbCKsI5olH9yBykcQP6GnRpoolWasmetEvsjwLwK9Gc1/BYX+gm/hWwKSL3epfs5FsV7EYi5VqfviivBwnK78tzcXqJ8do=
+	t=1708529394; cv=none; b=JcnBbUoTW3N51CuyiYtm0znaEAekJpgwos7kQBZN6rc7D7Qj3cMVBrGuQr52EQ24arFE/01MYqyiPGTtJc4i2vFvddM0WaaTvbIL7BNNLZ9zmys5xBuzepP0FRmXsttnJOv8WA3CihQy3eqZHdDDoEc5dS9bfGemohF237S8zs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708515601; c=relaxed/simple;
-	bh=LK5N98RAL9ZnNVq4NNRJKmXZHVHDgxWHV2h9/TAJ4UA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=supAjkEi5Q8YxwmX9ECsu89B6HbO8/6K3rM8jpRorrzJ6b/c8Ehbe3g45V4kz9xGxeqqVc/pn7sXK09l7C2Bu9+f17R41FLI5CmI6YofseMK+9aqi/t/SINc9efL6Ade4oI4veqdOA/vbHfhpFQ4zzpiNSmGXqVjJ/UNDA0wRv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net; spf=pass smtp.mailfrom=thelounge.net; arc=none smtp.client-ip=91.118.73.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thelounge.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thelounge.net
-Received: from [10.10.10.2] (rh.vpn.thelounge.net [10.10.10.2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: h.reindl@thelounge.net)
-	by mail.thelounge.net (THELOUNGE MTA) with ESMTPSA id 4TfvT70nn4zXLP
-	for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 12:39:55 +0100 (CET)
-Message-ID: <4b40056d-9b55-48b2-86f0-b91207e9abb7@thelounge.net>
-Date: Wed, 21 Feb 2024 12:39:54 +0100
+	s=arc-20240116; t=1708529394; c=relaxed/simple;
+	bh=McD08Fm0GKyHx5pDyFguClvfLzsv8XC1Md3ptow+aZQ=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=iZSXlfC/ZlmeMQLJMbk6CJDO3zVDFeQv2ZNaCZFHI0RiS3qz24F7+DrVVS7dbfz5XEG0rWcRVXuUwGv5zXGaV3IGvIJuOkeK8yBnXQ4Kb8/5yW4Edr8iuMWHc/31jjrzu7HEpVe8tY03mzNYIKzV41KeHcW6r0VwWssaPjL2SFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mY8F8WMU; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-55f50cf2021so1199462a12.1
+        for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 07:29:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708529391; x=1709134191; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=9uJN+tmnHDtLaxl7AyczUM64h9qG1TszIsWP+NAZ7yw=;
+        b=mY8F8WMUeDRuktPA/ZgVDv7sKB+z+WCfacbEwVSbksiDLiQGCHH/tE8tVtLcbPyQu+
+         lxvD3UzXPc6GGi85YVIEQRPl6JMOYg5V+S+zCrlIylhzsAElUTBHSi9KZX9k5P7+UoRH
+         2b963AfHB9FwZsFwpVbFqmjHJdN2fCezAoXWf6CTNr/xZjRnTDE6FxOrERrFnkE+Ixve
+         9Yl3ujarDmzzCcBnFxEe0lF6Q7WK7qwNmD2k3UVDFj9kNDN5P7NUxPprrWbCg+ZhF8nJ
+         nu60//hNdc+bpL8xWLyXnQ+ksyR5mBzz8ueB6khVCgtibnGxwkGXxJACw5ppvNXZ4Ilk
+         4OgA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708529391; x=1709134191;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=9uJN+tmnHDtLaxl7AyczUM64h9qG1TszIsWP+NAZ7yw=;
+        b=c39j+wkK2+3BogNvhoJOPtctbuI7sykiAW8VpO4EBgXft08c+Ao4chGnC/Tjv63qHc
+         pYuuDP5m75L7W4fPiDS1h421Si6Yxx5+IUwZ5izz2cm2e+AwOih+Ud2RMzX4Ppg2QGb5
+         7T+XcZXRA+MT2og/NbN6hYHrtJosgfC213lJ4O7YSvuBbgHOcWaHr/s5taWa5WGWKg+2
+         KsBKzaJNdURU13BdzuQJfARp2Fr5th5HekUoiibZK92NrWe8xsEsU0eaqH9+9WDWAp5S
+         wCorRfCsSd6MJAIDt/PGLh8mD8ro/WmOG8wCBVXNzhupGh8WRQW7nsH3MCiVo2HeIZww
+         SsLg==
+X-Gm-Message-State: AOJu0YxBCprg5zPA8oxfJhQlE7tycSd9IOmVc5QUoI+LEyQAR9jfsxJI
+	6bjbBsmHXW6+Kv1iO26rt8ks3E7VnLofZZTw4Cc880DYtot6+/tN81zOJe6Lqtx7GFD5qvsF+JN
+	FaxAFPl6Ge36zJ9eAIrR2mIMY7HT6Qe+yGDgVeljX
+X-Google-Smtp-Source: AGHT+IGiNd8itQkh8ZHpPsNXoJxPdx5gGCBpV1gU9J+xM8w1mgVsdwELYelrWrNEq2ww3fOjqee7U6srGGJ5tbIYVzM=
+X-Received: by 2002:aa7:d483:0:b0:564:26d9:b4ac with SMTP id
+ b3-20020aa7d483000000b0056426d9b4acmr6464433edr.41.1708529390830; Wed, 21 Feb
+ 2024 07:29:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: Why isn't ext2 deprecated over ext4?
-Content-Language: en-US
-To: linux-ext4@vger.kernel.org
-References: <bcaf9066-bb4a-4db3-b423-c9871b6b5a2f@bootlin.com>
- <20240221110043.mj4v25a2mtmo54bw@quack3>
-From: Reindl Harald <h.reindl@thelounge.net>
-Autocrypt: addr=h.reindl@thelounge.net; keydata=
- xsDNBFq9ahEBDADEQKxJxY4WUy7Ukg6JbzwAUI+VQYpnRuFKLIvcU+2x8zzf8cLaPUiNhJKN
- 3fD8fhCc2+nEcSVwLDMoVZfsg3BKM/uE/d2XNb3K4s13g3ggSYW9PCeOrbcRwuIvK5gsUqbj
- vXSAOcrR7gz/zD6wTYSNnaj+VO4gsoeCzBkjy9RQlHBfW+bkW3coDCK7DocqmSRTNRYrkZNR
- P1HJBUvK3YOSawbeEa8+l7EbHiW+sdlc79qi8dkHavn/OqiNJQErQQaS9FGR7pA5SvMvG5Wq
- 22I8Ny00RPhUOMbcNTOIGUY/ZP8KPm5mPfa9TxrJXavpGL2S1DE/q5t4iJb4GfsEMVCNCw9E
- 6TaW7x6t1885YF/IZITaOzrROfxapsi/as+aXrJDuUq09yBCimg19mXurnjiYlJmI6B0x7S9
- wjCGP+aZqhqW9ghirM82U/CVeBQx7afi29y6bogjl6eBP7Z3ZNmwRBC3H23FcoloJMXokUm3
- p2DiTcs2XViKlks6Co/TqFEAEQEAAc0mUmVpbmRsIEhhcmFsZCA8aC5yZWluZGxAdGhlbG91
- bmdlLm5ldD7CwREEEwEIADsCGyMFCwkIBwIGFQoJCAsCBBYCAwECHgECF4AWIQSdK0bNvBQK
- NnU65NczF01aWJK3uAUCWr1qowIZAQAKCRAzF01aWJK3uEznDACGncwi0KfKOltOBmzIQNIn
- 7kPOBFU8KGIjONpg/5r82zwDEpFOTKw+hCttokV6+9K+j8Iut0u9o7iSQNA70cXqkaqPndxB
- uRIi/L6nm2ZlUMvQj9QD5U+mdTtSQH5WrC5lo2RYT2sTWoAFQ6CSnxxJd9Ud7rjbDy7GRnwv
- IRMfFJZtTf6HAKj8dZecwnBaHqgZQgRAhdsUtH8ejDsWlfxW1Qp3+Vq008OE3XXOFQX5qXWK
- MESOnTtGMq1mU/Pesmyp0+z58l6HyUmcoWruyAmjX7yGQPOT5APg2LFpMHA6LIu40mbb/pfg
- 5am8LWLBXQRCP1D/XLOuQ5DO6mWY0rtQ8ztZ5Wihi5qA9QKcJxmZcdmurlaxi3mavR3VgCIc
- 3hDPcvUqBwB5boNZspowYoHQ21g9qyFHOyeS69SNYhsHPCTr6+mSyn+p4ou4JTKiDRR16q5X
- hHfXO9Ao9zvVVhuw+P4YySmTRRlgJtcneniH8CBbr9PsjzhVcX2RkOCC+ObOwM0EWr1qEQEM
- ANIkbSUr1zk5kE8aXQgt4NFRfkngeDLrvxEgaiTZp93oSkd7mYDVBE3bA4g4tng2WPQL+vnb
- 371eaROa+C7/6CNYJorBx79l+J5qZGXiW56btJEIER0R5yuxIZ9CH+qyO1X47z8chbHHuWrZ
- bTyq4eDrF7dTnEKIHFH9wF15yfKuiSuUg4I2Gdk9eg4vv9Eyy/RypBPDrjoQmfsKJjKN81Hy
- AP6hP9hXL4Wd68VBFBpFCb+5diP+CKo+3xSZr4YUNr3AKFt/19j2jJ8LWqt0Gyf87rUIzAN8
- TgLKITW8kH8J1hiy/ofOyMH1AgBJNky1YHPZU3z1FWgqeTCwlCiPd6cQfuTXrIFP1dHciLpj
- 8haE7f2d4mIHPEFcUXTL0R6J1G++7/EDxDArUJ9oUYygVLQ0/LnCPWMwh7xst8ER994l9li3
- PA9k9zZ3OYmcmB7iqIB+R7Z8gLbqjS+JMeyqKuWzU5tvV9H3LbOw86r2IRJp3J7XxaXigJJY
- 7HoOBA8NwQARAQABwsD2BBgBCAAgFiEEnStGzbwUCjZ1OuTXMxdNWliSt7gFAlq9ahECGwwA
- CgkQMxdNWliSt7hVMwwAmzm7mHYGuChRV3hbI3fjzH+S6+QtiAH0uPrApvTozu8u72pcuvJW
- J4qyK5V/0gsFS8pwdC9dfF8FGMDbHprs6wK0rMqaDawAL8xWKvmyi6ZLsjVScA6aM307CEVr
- v5FJiibO+te+FkzaO9+axEjloSQ9DbJHbE3Sh7tLhpBmDQVBCzfSV7zQtsy9L3mDKJf7rW+z
- hqO9JA885DHHsVPPhA9mNgfRvzQJn/3fFFzqmRVf7mgBV8Wn8aepEUGAd2HzVAb3f1+TS04P
- +RI8qKoqeVdZlbwJD59XUDJrnetQrBEfhEd8naW8mHyEWHVJZnSTUIfPz2sneW1Zu2XkfqwV
- eW+IyDAcYyTXqnEGdFSEgwgzliPJDWm5CHbsU++7Kzar5d5flRgGbtcxqkpl8j0N0BUlN4fA
- cTqn2HJNlhMSV0ZocQ0888Zaq2S5totXr7yuiDzwrp70m9bJY+VPDjaUtWruf2Yiez3EAhtU
- K4rYsjPimkSIVdrNM//wVKdCTbO+
-Organization: the lounge interactive design
-In-Reply-To: <20240221110043.mj4v25a2mtmo54bw@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: JunChao Sun <sunjunchao2870@gmail.com>
+Date: Wed, 21 Feb 2024 23:29:39 +0800
+Message-ID: <CAHB1NahoCEsw-vtu=6AUgG8oL0tTVV3gbP121zTgvdBzrMUo8w@mail.gmail.com>
+Subject: A problem about BLK_OPEN_RESTRICT_WRITES
+To: Ext4 Developers List <linux-ext4@vger.kernel.org>
+Cc: Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+
+Hi
+
+I saw that ext4 has supported BLK_OPEN_RESTRICT_WRITES in commits
+aca740cecbe("fs: open block device after superblock creation")  and
+afde134b5bd0("ext4: Block writes to journal device"). I'm not certain
+whether these commits caused the following issue.
+
+Environment:
+6.8.0-rc3-00279-g4a7bbe7519b6-dirty(commit 4a7bbe7519b6a5).
+sjc@sjc-laptop:~/linux$ mkfs.ext4 -V
+mke2fs 1.47.0 (5-Feb-2023)
+Using EXT2FS Library version 1.47.0
+sjc@sjc-laptop:~/linux$ mount -V
+mount from util-linux 2.39.1 (libmount 2.39.1: selinux, smack, btrfs,
+verity, namespaces, idmapping, assert, debug)
+
+Problem:
+When I mounted the ext4 file system in the qemu system, I encountered
+the following error:
+root@q:~/linux# mount -t ext4 ext4.img  /mnt/ext4/
+[  848.897532] loop1: detected capacity change from 0 to 2097152
+[  848.905535] /dev/loop1: Can't open blockdev
+mount: /mnt/ext4: /dev/loop1 already mounted or mount point busy.
+       dmesg(1) may have more information after failed mount system call.
+
+I reviewed the relevant code and found that the mount program first
+calls the openat system call to open the /dev/loop1 file, followed by
+the mount system call (with /dev/loop1 as the first parameter).
+
+As for the former openat system call, it eventually reaches the chain
+of (vfs_open->do_dentry_open->blkdev_open->bdev_open_by_dev->bdev_claim_write_access).
+In bdev_claim_write_access, the following logic applies:
+            /* Claim exclusive or shared write access. */
+            if (mode & BLK_OPEN_RESTRICT_WRITES)
+                    bdev_block_writes(bdev);
+            else if (mode & BLK_OPEN_WRITE)
+                    bdev->bd_writers++;
+The argument mode here doesn't set BLK_OPEN_RESTRICT_WRITES flag, so
+goes bdev->bd_writers++.
+
+And in the latter mount system call, the following logic is followed:
+(vfs_get_tree->get_tree_bdev->setup_bdev_super->bdev_open_by_dev->bdev_may_open).
+In bdev_may_open, the following logic applies:
+            if (mode & BLK_OPEN_RESTRICT_WRITES && bdev->bd_writers > 0)
+                    return false;
+
+Due to the fact that the argument mode has already been set with the
+BLK_OPEN_RESTRICT_WRITES flag in the setup_bdev_super function, and
+since bdev->bd_writers is already 1 at this point, the function
+returns false. This ultimately leads to the mount system call
+returning the EBUSY error.
+
+Is this indeed a problem, or is there a misunderstanding in my
+comprehension? If it is indeed a problem, can we resolve it by
+removing the BLK_OPEN_RESTRICT_WRITES from the sb_open_mode macro
+definition?
+
+At last, here is a partial output of the trace captured using the
+strace command:
+
+openat(AT_FDCWD, "/home/sjc/linux/ext4.img", O_RDWR|O_CLOEXEC) = 3
+openat(AT_FDCWD, "/dev/loop1", O_RDWR|O_CLOEXEC) = 4
+ioctl(4, LOOP_CONFIGURE, {fd=3, block_size=0, info={lo_offset=0, lo_[
+891.723213] /dev/loop1: Can't open blockdev
+number=0, lo_flags=LO_FLAGS_AUTOCLEAR,
+lo_file_name="/home/sjc/linux/ext4.img", ...}}) = 0
+close(3)                                = 0
+newfstatat(AT_FDCWD, "/dev/loop1", {st_mode=S_IFBLK|0600,
+st_rdev=makedev(0x7, 0x1), ...}, 0) = 0
+openat(AT_FDCWD, "/sys/dev/block/7:1", O_RDONLY|O_CLOEXEC) = 3
+openat(3, "loop/autoclear", O_RDONLY|O_CLOEXEC) = 5
+fcntl(5, F_GETFL)                       = 0x8000 (flags O_RDONLY|O_LARGEFILE)
+newfstatat(5, "", {st_mode=S_IFREG|0444, st_size=4096, ...}, AT_EMPTY_PATH) = 0
+read(5, "1\n", 4096)                    = 2
+close(5)                                = 0
+openat(3, "ro", O_RDONLY|O_CLOEXEC)     = 5
+fcntl(5, F_GETFL)                       = 0x8000 (flags O_RDONLY|O_LARGEFILE)
+newfstatat(5, "", {st_mode=S_IFREG|0444, st_size=4096, ...}, AT_EMPTY_PATH) = 0
+read(5, "0\n", 4096)                    = 2
+close(5)                                = 0
+close(3)                                = 0
+statx(AT_FDCWD, "/sbin/mount.ext4",
+AT_STATX_DONT_SYNC|AT_NO_AUTOMOUNT, STATX_TYPE|STATX_MODE|STATX_INO,
+0x7ffd6c0b8ce0) = -1 ENOENT (No such file or directory)
+statx(AT_FDCWD, "/sbin/fs.d/mount.ext4",
+AT_STATX_DONT_SYNC|AT_NO_AUTOMOUNT, STATX_TYPE|STATX_MODE|STATX_INO,
+0x7ffd6c0b8ce0) = -1 ENOENT (No such file or directory)
+statx(AT_FDCWD, "/sbin/fs/mount.ext4",
+AT_STATX_DONT_SYNC|AT_NO_AUTOMOUNT, STATX_TYPE|STATX_MODE|STATX_INO,
+0x7ffd6c0b8ce0) = -1 ENOENT (No such file or directory)
+newfstatat(AT_FDCWD, "/run/mount/utab", {st_mode=S_IFREG|0644,
+st_size=0, ...}, AT_SYMLINK_NOFOLLOW) = 0
+newfstatat(AT_FDCWD, "/run/mount/utab", {st_mode=S_IFREG|0644,
+st_size=0, ...}, 0) = 0
+geteuid()                               = 0
+getegid()                               = 0
+getuid()                                = 0
+getgid()                                = 0
+access("/run/mount/utab", R_OK|W_OK)    = 0
+mount("/dev/loop1", "/mnt/ext4", "ext4", 0, NULL) = -1 EBUSY (Device
+or resource busy)
 
 
-
-Am 21.02.24 um 12:00 schrieb Jan Kara:
-> Hello,
-> 
-> On Wed 21-02-24 10:33:04, Michael Opdenacker wrote:
->> I'm wondering why ext2 isn't marked as deprecated yet as it has 32 bit dates
->> and dates will rollover in 2038 (in 14 years from now!).
->>
->> I'm asking because ext4, when used without a journal, seems to be a worthy
->> replacement and has 64 bit dates.
->>
->> I'll be happy to send a patch to fs/ext2/Kconfig to warn users.
-> 
-> For all practical purposes I agree we expect users to use ext4 driver on a
-> filesystem without a journal instead of ext2 driver. We are still keeping
-> ext2 around mostly as a simple reference filesystem for other fs
-> developers. I agree we should improve the kconfig text to reference users
-> to ext4.
-> 
-> Regarding y2038 problem - this is really the matter of on-disk format as
-> created by mke2fs, not so much of the kernel driver. And the kernel will be
-> warning about that when you mount ext2 so I don't think special handling is
-> needed for that.
-
-you shouldn't create filesystems with a on-disk format that don't 
-support 64bit timestamps no matter how small the filesystem is
-
-the arguments on this list where "such a small filesystem isn't expected 
-to be still used in 2038" which is nonsense in case of a /boot FS in a 
-virtual machine
-
-our whole servers already survived 16 years and 30 dist-upgrades
+Best regards.
 
