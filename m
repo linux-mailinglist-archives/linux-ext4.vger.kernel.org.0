@@ -1,64 +1,62 @@
-Return-Path: <linux-ext4+bounces-1353-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1354-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31C1A85E9A3
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 22:12:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70F3B85EB39
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 22:47:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7300B23877
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 21:12:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EAC1628233F
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Feb 2024 21:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17B041272DE;
-	Wed, 21 Feb 2024 21:11:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0357B128373;
+	Wed, 21 Feb 2024 21:46:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="jZB4DMWP"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="eP/0nrEB"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08F2126F37
-	for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 21:11:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4B57127B66
+	for <linux-ext4@vger.kernel.org>; Wed, 21 Feb 2024 21:46:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708549906; cv=none; b=P4/hisnKZhWO1W2VimcHgfGVuCeszJGS4zJUFFGmJEGSwQotKzE8pZwjq4qevONODlhmWC2pmyk/KenaKXVBy1SsvzwNU4KqaNIaDuT08Nsvgyj8r5Gfkjvj5p3443YPo5gdNI+X+fkmTlM19EuIsLmCMKCl+RMjrs0qa23BhME=
+	t=1708551997; cv=none; b=fKkuRPzm0KTYY1W0zC+OJS6OEkg/Cx8/a8zSgYB9WpHgs8h+k1EmJeXpxRQ0aUnBxB4lgG4BM+KyA4Q7/PPI79nw3tH14XTKLoaJyBZBIIs3Khk9nSztkXQMYFPEUPsDFcteXdbFDHCSYzaqSh6veNNz6ZeUpRY47ZCvQzsJ9L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708549906; c=relaxed/simple;
-	bh=rAu5hXr+IvzK37PAMawmi9KH/zsDUxlgco15ekjwJT8=;
+	s=arc-20240116; t=1708551997; c=relaxed/simple;
+	bh=GHL7pKies6DxjBtJXbeq94J76LxJe7B4UO2yc0XNjLE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ircfz+WGWYz8OZc3PFeH+JUbRQJDEgXnPu3SDTW52j9UEtYVvHrqNCK6FdBSX7rspcRx0t4ZbW9OGicM3KDpFb5nLKezIzTqDjFRWFwVxn8Trxy3pl0KzCGrR3iHRQCqoxDSGy6H/MWHdCx5AQQM4J86A6yjcm0ezUTqcxWJOTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=jZB4DMWP; arc=none smtp.client-ip=18.9.28.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=YAsUpmNz1WSJRmhY9q7126piqiot397YFkBNvFs7LaLGxahfGn6xtMWcaQcyyWo9HEGBhGBC3aya/76Zy1jBWxc+mOEYWwltBmSmP9sXlEBkxGCS+wyOiwgj34PjHCMDw0b4fVSVfmeQ+E5D16maecl9odqx15tiPkB2lJya0lY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=eP/0nrEB; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-102-198.bstnma.fios.verizon.net [173.48.102.198])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41LLBaOf020463
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41LLkQOT011479
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 21 Feb 2024 16:11:38 -0500
+	Wed, 21 Feb 2024 16:46:27 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1708549898; bh=4IF/TDEtjz8qAqYX7SwNgWqDwz8pWojSp1bTx/j4EbU=;
+	t=1708551988; bh=LYdKru+0kSq2j54g/XhCijm2qWmvTfLfKFGcIx7cmeU=;
 	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=jZB4DMWP69jlCM/e4U4e7+qKnmkgA2EEM3Oa4BDGQLneJA1CdPBxHPIxA9nNELB8p
-	 g1Hae55HBsj2v0/ckDnBLI0BYrPN2kD6wk+8x9IX3ol8QdTrv5gHfM5YXNVee5x7eg
-	 y3LdPlEmBpjyx8rYqokHVfOmnqjGO6ZYsWihBRppN+5Fkoz2O0iawxmCFQKybb267i
-	 XAFAeyPrAc4D6ZjD9txeE5ZUngBf3JFrCjdNTJSnu/82uAT36SXXjg76S6CaWQLCD0
-	 z3ppkcppVm/8GOuMO71XQVxpRPz4VV60lgT8Cq+FhqByakMeqE1zURrPQHli4bfnUO
-	 ebuU0QXoqYICQ==
+	b=eP/0nrEBP3brTgRP8Lj6g0lu6i2QAbrFC8WPL6GqKNbGmkn/ivSrPkKhRzziipPXe
+	 RajQ3VKPg+vbOc/KhU5qrq0jrjkEP4jMU0912IaeskgIdpImYA3m4FNtb5bYQmcSMt
+	 s+aBBvv3aseJacZmM0ZgvgQ+79DPA5gJXpL3OcZ9i+B92JSYSOV7ybAfKBxboblFT2
+	 2F8YwK03C7UFPsfkzaMGTVe6lR8ZCgUeVu0imfVpr8Ch+7nksITNMyphd8RWTXUkmv
+	 j7tVYmoBvvCtefYd/OBtvGm75QIs0JRA3fd0/0onu2t78NfiQwgG8CbixaM+rkn7UP
+	 aj4SyRBBoNAkA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 4F59215C0336; Wed, 21 Feb 2024 16:11:36 -0500 (EST)
-Date: Wed, 21 Feb 2024 16:11:36 -0500
+	id 68CBC15C0336; Wed, 21 Feb 2024 16:46:26 -0500 (EST)
+Date: Wed, 21 Feb 2024 16:46:26 -0500
 From: "Theodore Ts'o" <tytso@mit.edu>
 To: Jan Kara <jack@suse.cz>
-Cc: Michael Opdenacker <michael.opdenacker@bootlin.com>,
-        linux-ext4@vger.kernel.org
-Subject: Re: Why isn't ext2 deprecated over ext4?
-Message-ID: <20240221211136.GA633176@mit.edu>
-References: <bcaf9066-bb4a-4db3-b423-c9871b6b5a2f@bootlin.com>
- <20240221110043.mj4v25a2mtmo54bw@quack3>
- <192cb320-2ded-4761-b0c9-3e273931f6f6@bootlin.com>
- <20240221165805.plnkvymjzqts2l6r@quack3>
+Cc: JunChao Sun <sunjunchao2870@gmail.com>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: A problem about BLK_OPEN_RESTRICT_WRITES
+Message-ID: <20240221214626.GB633176@mit.edu>
+References: <CAHB1NahoCEsw-vtu=6AUgG8oL0tTVV3gbP121zTgvdBzrMUo8w@mail.gmail.com>
+ <20240221161954.zwx34k5rvoevpe7o@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -67,19 +65,29 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240221165805.plnkvymjzqts2l6r@quack3>
+In-Reply-To: <20240221161954.zwx34k5rvoevpe7o@quack3>
 
-On Wed, Feb 21, 2024 at 05:58:05PM +0100, Jan Kara wrote:
-> Hum, so I didn't quite think through my comment about on disk format :).
-> When you create filesystem with larger inodes, mke2fs will indeed create
-> inodes with extra timestamp fields etc. ext4 driver will recognize them
-> and use them, however ext2 driver happily ignores them (I thought we refuse
-> to mount such filesystem but we don't because of the way how large inodes
-> were defined in the ondisk format).
+On Wed, Feb 21, 2024 at 05:19:54PM +0100, Jan Kara wrote:
+> 
+> No. Cases like above are the reason why there's still a config option
+> CONFIG_BLK_DEV_WRITE_MOUNTED and it defaults to 'y'. We need to be fixing
+> userspace - util-linux in this case - to avoid having writeable file handle
+> open to block devices that are being mounted.
 
-Well, if we *cared* we could backport the support for the expanded
-timestamps to ext2.  I'm not sure it's worth the effort, but it's not
-that hard....
+Note also that at least as far as ext4 is concerned, I don't recommend
+that people use CONFIG_BLK_DEV_WRITE_MOUNTED on production systems.
+This will break programs like tune2fs operating on mounted file
+systems.  There is a plan to add super to allow various superblock
+tuning operations to bet set via ioctls, much like the new ioctl's
+which allow the label and uuid to be set via an ioctl.  This will
+require users upgrade to newer kerrnels and newer versions of
+e2fsprogs, so it will a while before we're at that point.
+
+For now, the main use of CONFIG_BLK_DEV_WRITE_MOUNTED is to prevent
+tools like syzbot from issuing false positives; I don't recommend that
+it be used in other situations.
+
+Cheers,
 
 					- Ted
 
