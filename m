@@ -1,64 +1,63 @@
-Return-Path: <linux-ext4+bounces-1366-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1369-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E48A85FD28
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 16:55:24 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CBD1A85FD3C
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 16:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95EB11C25090
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 15:55:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0831B1C2553F
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 15:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92026152DF6;
-	Thu, 22 Feb 2024 15:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5697C15099C;
+	Thu, 22 Feb 2024 15:55:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="MNaqjWLp"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="XEWO5WzO"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5976C14E2EC
-	for <linux-ext4@vger.kernel.org>; Thu, 22 Feb 2024 15:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6215B154C15
+	for <linux-ext4@vger.kernel.org>; Thu, 22 Feb 2024 15:55:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617299; cv=none; b=sN0AWPy8VwlgCy/88hI+ifhrdw8RHZUDIsZgjiRwAFYecgvQL4P/FmfXGPAN82qqbrXP4XiBtuTMc49Ppy/2iVtKe6O0X0+HtQCsnaQwM5sCpEKym3Ef6hjD0ZQdgxybeESZZIze9GwOmg5PhjWcOKw+SgZ2/suuwOE7FP0ykMc=
+	t=1708617313; cv=none; b=R2tN4UEZybl3x5HyLa0Wm8QIZ5y6JSWqFL8w0/H8qcBHU0weZXloPGOXe5ePjZJzhKggYHmuansMEwXA3pRh++YkrsCg4DzJ48liptLgCK1P4zKP2o0oFNGMCgJRX1H0aE+JeZyR79nVYfzTLJ8AK8h7U6AD63k1uSm2LiQbW3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617299; c=relaxed/simple;
-	bh=JfkoAz50awV0qbSc4V8fA6NAcDNFyoem9HJGiEOJz1I=;
+	s=arc-20240116; t=1708617313; c=relaxed/simple;
+	bh=hspY6RH3t+LGEJg8cjSeq222SIA1BCVbAIFaMEKIwYA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=HEC3wPvkoLQoSoWxEIFWIthjSaxXGK1+2an2lZsg88fiUKpiveFEIVDSrWh/6pBEZte22wZ1J4+1Gr4tWJfFhGxMcNqsYBdF+iiwh8ODuGrJX6nkGBUs9a1u/zvRo81l9JqOAM2AfW5UDjq8prv7D3RdlX/OEJhRPLcbf59CC10=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=MNaqjWLp; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=fvTFy7atEmu7OtskcKzfjyG6JQo8cz6EwuHM9A/VRer7NGlVfqMfDHz9nTn6J5yjRzaPPcfMuQxQxRyvYY5zMl+l+xlNX8NJFs7LTeqMRn4EjdgHKhz8lSkdrvgwZjtna4JaraetyvwtWqkUEx+pSpG6sxsRsoYCnHSSi1uEERY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=XEWO5WzO; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-102-198.bstnma.fios.verizon.net [173.48.102.198])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41MFsgVA030847
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41MFsgsx030846
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 22 Feb 2024 10:54:43 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1708617284; bh=va26ubDfjVqf3AasDsVt7PlhmdIYT6yVBEJCl7RCZ30=;
+	t=1708617284; bh=RsU6dWPMTxtwXU+swsq0FRs5IS4Rl+7HRm70Qkf2hj8=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=MNaqjWLpudSxaj/AaFOC0P7YTx4DaEB9lUWtJ3bsQpzmFPpTc8hk5Ls1gHY3ECQK8
-	 rRwsrKFot3+in98amj+uWbVshXUHdDJemZztPzallI9sPZRRYvmC/TZYMuCwkgUj1E
-	 segZ5B/e0HUAprShlmxk0U8aGUHPKEDCwcnpSSPqfP0BN7Qc+EpOT5joJ+2bHLMbCJ
-	 21jhUKZsQtMdecOkhy/PIIATYkDYxc7kRA9LUG/riPsSDlYD+V0Z3zdpGcmQJGwcuW
-	 BT6iXzAXBLv1Krn1gFR/ieEF353VA1+SupSoa0/+Emto3+Aztn9tjGm3/PJ7IV/yfD
-	 60Ye/VLMWg5MA==
+	b=XEWO5WzOrJD4P3WTr+0iAwiP5oa3eULhymabj6h6MebNMwLHpWAdSYWKyawEiEvQq
+	 2CNsAd78kuRrjvJ4abVjvg8IbRVuw2hhinnIteptVGNlQJw9AKeUcW0mtaek7MjwvU
+	 /MAMmcab75V8BAX68+ac1soaADmqrwCs3bsQcHC4h85GohUgLqUULt0BirYZUt+vq2
+	 tTVx2twSEln2ncgCn1iThhSoE7dVzopvlE9Di3HrXw13Nk/8wtyQFDrvfs0m1ohvhg
+	 FXR7bfwBR1pFHv3N/3YEbD+/mWYkK4r+AVLYm1tZRdj7JrofGCEZ6notT+lia7ebBi
+	 ufDYzjIl0RWgg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 40DD215C1489; Thu, 22 Feb 2024 10:54:40 -0500 (EST)
+	id 42DCE15C14B5; Thu, 22 Feb 2024 10:54:40 -0500 (EST)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        Ye Bin <yebin10@huawei.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-kernel@vger.kernel.org,
-        jack@suse.cz
-Subject: Re: [PATCH] ext4: forbid commit inconsistent quota data when errors=remount-ro
-Date: Thu, 22 Feb 2024 10:54:35 -0500
-Message-ID: <170861726752.823885.428276685390671750.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz,
+        yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4: add a hint for block bitmap corrupt state in mb_groups
+Date: Thu, 22 Feb 2024 10:54:36 -0500
+Message-ID: <170861726752.823885.5003769926749986066.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240119062908.3598806-1-yebin10@huawei.com>
-References: <20240119062908.3598806-1-yebin10@huawei.com>
+In-Reply-To: <20240119061154.1525781-1-yi.zhang@huaweicloud.com>
+References: <20240119061154.1525781-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -69,25 +68,20 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Fri, 19 Jan 2024 14:29:08 +0800, Ye Bin wrote:
-> There's issue as follows When do IO fault injection test:
-> Quota error (device dm-3): find_block_dqentry: Quota for id 101 referenced but not present
-> Quota error (device dm-3): qtree_read_dquot: Can't read quota structure for id 101
-> Quota error (device dm-3): do_check_range: Getting block 2021161007 out of range 1-186
-> Quota error (device dm-3): qtree_read_dquot: Can't read quota structure for id 661
-> 
-> Now, ext4_write_dquot()/ext4_acquire_dquot()/ext4_release_dquot() may commit
-> inconsistent quota data even if process failed. This may lead to filesystem
-> corruption.
-> To ensure filesystem consistent when errors=remount-ro there is need to call
-> ext4_handle_error() to abort journal.
+On Fri, 19 Jan 2024 14:11:54 +0800, Zhang Yi wrote:
+> If one group is marked as block bitmap corrupted, its free blocks cannot
+> be used and its free count is also deducted from the global
+> sbi->s_freeclusters_counter. User might be confused about the absent
+> free space because we can't query the information about corrupted block
+> groups except unreliable error messages in syslog. So add a hint to show
+> block bitmap corrupted groups in mb_groups.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: forbid commit inconsistent quota data when errors=remount-ro
-      commit: d8b945fa475f13d787df00c26a6dc45a3e2e1d1d
+[1/1] ext4: add a hint for block bitmap corrupt state in mb_groups
+      commit: 68ee261fb15457ecb17e3683cb4e6a4792ca5b71
 
 Best regards,
 -- 
