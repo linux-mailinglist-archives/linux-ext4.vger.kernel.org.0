@@ -1,63 +1,66 @@
-Return-Path: <linux-ext4+bounces-1367-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1370-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BBA1485FD2C
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 16:55:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDE8C85FD3D
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 16:56:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 710E2288421
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 15:55:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42B64B2872A
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Feb 2024 15:56:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D10EB1534E5;
-	Thu, 22 Feb 2024 15:54:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9311509A8;
+	Thu, 22 Feb 2024 15:55:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="GdflzDcm"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="PxY2RfhA"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEAF01509A2
-	for <linux-ext4@vger.kernel.org>; Thu, 22 Feb 2024 15:54:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F4D14E2EE
+	for <linux-ext4@vger.kernel.org>; Thu, 22 Feb 2024 15:55:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708617299; cv=none; b=FZqy5WZhHuwS4Ci7aKdipXzZGQwekqh19gyPgeIweCo9quzriQnzLNSnGRAoGsk4VH9te7mmKE0c37lhD1mebleXmn4/MBeJHQ34ls89pOqq0NKKWlevJ5k/xlLUjimcQmqvZO8tM6Jl3kRsO8LWGsQeTQTUG8AjVMOPkloIzlg=
+	t=1708617320; cv=none; b=NOzznFeIgiFYIp4TQcRZWO4ed5TJHVTrWrlID0iBo9NyqCbaeN92qcEs6Rya9a30Dii+I/VkP5Kkl2y95xcCqfBNJSMjp9y4dr/iN6cHHkfaiwbvYRijIQMoCyeiHR/LfwPuanPWuSjZp8Yp+zk7h97X7wrR9Lb8Fm5cdgCRLvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708617299; c=relaxed/simple;
-	bh=PnGGD+pWCV95jZ6yeUKOt7CKn6Qva1qmwYV1aXNCv1s=;
+	s=arc-20240116; t=1708617320; c=relaxed/simple;
+	bh=/sAuWoxygbHnz3bPYEk5pc98OZZN/efFuyFbLWL+ycI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uJmY4ZmA0A2Q1QJbwlUd8BS5/TUL6g7/oLpBZ34Tjvrk52tgjNGO1V0162IhU6TKMGNJERzShETVZ7eVgpOpf0quxJRY9RKwejcQpxEB3jLsPiak7ZpLZVeDpQEVdj/Lf+6TAJJKR7Kqsg05lGTZffSwrPbhgdqoQwChqEdlHaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=GdflzDcm; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=rpA9mgbSSB4omzBc22Sp3PUayyrzZfAf0j6kDqXBV2tQNNEVTZFrsW8YMciaRoivFGvF9DCxBGj8w3zivROyrkqpQbGZ2L/fEigXpcIIADALztQaIZ4+NV/GLRnzPjI1oF/VMNcvzPXou3YZ1oVj3PIfBZ8z0Dd6xnbu5cABnX8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=PxY2RfhA; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-102-198.bstnma.fios.verizon.net [173.48.102.198])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41MFseg4030788
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41MFseXX030787
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 22 Feb 2024 10:54:41 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1708617282; bh=C/YFDNBRkYuaikGOFxg/FhnZW5EUxFBJ12Fm4X+ibBw=;
+	t=1708617283; bh=Tw39zUJjdOXe0uc8tGlhBxpYxPbuviy9TTm3QaYl5P4=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=GdflzDcmzVbJf2ljL3WupIZiHWqoG/MnjoPa7O57hP+gH6U2QH0saBNV5WUt6gmy2
-	 +0ScZq6A4ot0TMUTX1XwbB28x0N4LlzkbVZZ5/T0RE/TvsYRqNJilmPYxmp4wrjcKN
-	 uwlXCVz1XN9QA3PzSnepnrlHqwNyXe8mULLmT9jfMKfE/47jeRDj8+b/Lc9VGZL2W8
-	 V8ePPs9ADaHMXogs7hiccWOlmgK7T9/rbx3E+pL2HkKIymuzpnlQVulXUlXnl12GUr
-	 V02IQf7MKEnVd3s6zZJ7mc/jx370DWg01+3/ooDP1x7dwGppQ6JiyndArnICdNFVeN
-	 /3R44Dm7S3THQ==
+	b=PxY2RfhAxGuhzUwdu0P3DJ6S97aV0dSUEXsmJ7GlKiVF21cUmtEwPyWvz2y4hnDiG
+	 bvOh4O2+YQbraST+paOtrw4GDht926QQ04i/OgeT/7vHJmluJdsbtCoX/9A9Z90r68
+	 yMTcQHjRL1QIOktmobcK3rClwOy7DSgH+tuxthOmmwmvg9+jdWdj1AZegYAXSXSIO9
+	 SGGTdo1+4kOOQqwnpb3FLCa2HOE9T/7excuepn4mBEs7EKLkDNCqsyMuY1Y5awNqmy
+	 PU+PJhS4Xfuu+l+qFD89in/j+aPydLrT3K4cRCFdI65MEZC1cUvl+8V4RIXzTO3H9R
+	 wJzKafkwl/ayQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 3639615C13EA; Thu, 22 Feb 2024 10:54:40 -0500 (EST)
+	id 3887415C1414; Thu, 22 Feb 2024 10:54:40 -0500 (EST)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        Zhang Yi <yi.zhang@huawei.com>
-Subject: Re: [PATCH v2] ext4: Verify s_clusters_per_group even without bigalloc
-Date: Thu, 22 Feb 2024 10:54:30 -0500
-Message-ID: <170861726754.823885.15911575133715045976.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca, jack@suse.cz,
+        ritesh.list@gmail.com, ojaswin@linux.ibm.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+        stable@kernel.org
+Subject: Re: [PATCH v2] ext4: correct best extent lstart adjustment logic
+Date: Thu, 22 Feb 2024 10:54:31 -0500
+Message-ID: <170861726753.823885.11358303915766853695.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240219171033.22882-1-jack@suse.cz>
-References: <20240219171033.22882-1-jack@suse.cz>
+In-Reply-To: <20240201141845.1879253-1-libaokun1@huawei.com>
+References: <20240201141845.1879253-1-libaokun1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,23 +71,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 19 Feb 2024 18:10:33 +0100, Jan Kara wrote:
-> Currently we ignore s_clusters_per_group field in the on-disk superblock
-> if bigalloc feature is not enabled. However e2fsprogs don't even open
-> the filesystem if s_clusters_per_group is invalid. This results in an
-> odd state where kernel happily works with the filesystem while even
-> e2fsck refuses to touch it. Verify that s_clusters_per_group is valid
-> even if bigalloc feature is not enabled to make things consistent. Due
-> to current e2fsprogs behavior it is unlikely there are filesystems out
-> in the wild (except for intentionally fuzzed ones) with invalid
-> s_clusters_per_group counts.
+On Thu, 01 Feb 2024 22:18:45 +0800, Baokun Li wrote:
+> When yangerkun review commit 93cdf49f6eca ("ext4: Fix best extent lstart
+> adjustment logic in ext4_mb_new_inode_pa()"), it was found that the best
+> extent did not completely cover the original request after adjusting the
+> best extent lstart in ext4_mb_new_inode_pa() as follows:
+> 
+>   original request: 2/10(8)
+>   normalized request: 0/64(64)
+>   best extent: 0/9(9)
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: Verify s_clusters_per_group even without bigalloc
-      commit: 1f85b452e07c370448fb4eb4472cd55fc6bf115c
+[1/1] ext4: correct best extent lstart adjustment logic
+      commit: 4fbf8bc733d14bceb16dda46a3f5e19c6a9621c5
 
 Best regards,
 -- 
