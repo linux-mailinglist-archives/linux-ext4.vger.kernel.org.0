@@ -1,201 +1,203 @@
-Return-Path: <linux-ext4+bounces-1377-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1378-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 969F786123D
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Feb 2024 14:08:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D850862224
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Feb 2024 03:00:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BA980286125
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Feb 2024 13:08:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 366861C20BE8
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Feb 2024 02:00:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAABC7E595;
-	Fri, 23 Feb 2024 13:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y3IdjOZC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OCcpkhuv";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Y3IdjOZC";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OCcpkhuv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60002DDD1;
+	Sat, 24 Feb 2024 01:59:58 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FBC81DA26
-	for <linux-ext4@vger.kernel.org>; Fri, 23 Feb 2024 13:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1EB2DDA5;
+	Sat, 24 Feb 2024 01:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708693677; cv=none; b=HAPS9L+b10ZnEdlvt/9nvmxfEvLz+9nvpsW9gxQSotoZhgxh5GWnREDTSO/PaHSkuohy0uCEowlgrkiDEeR/rNtU6yv15yvR9pVrh5qAXL5pYlwsjQErySEC6qmA6KyQOHNqhihJahWtLgpzlFULHij6vOhQrP0QG4L0N1TKRf0=
+	t=1708739998; cv=none; b=cptkBh1qpzCdnfk3C+/qBFHp/3c/XURQY/Fc6p5nD81OfIwdxVrDjpaNxyZk4H8oYYTyr7Gd38CRqXAMJpLhGpmK0ksr6DK5WZYIt0jK+gxe/GWgadpO7+dVpMtMfYd+YBOkN47Yg9y/YmR6E0dVQ7GIV9PNXGXB2kOFU/XNnFY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708693677; c=relaxed/simple;
-	bh=zn9uQuyEX7txlwbSXWGdj8zxBpBEpfvbrAsghdUsigA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tdh6vCvcDKzose9noXPj9tGFB/5cQDOzsxjyYpCYsvvCbRGxupPAiUHQi4BPxK9X3isPv3VLXYFpeh5/5s2+OnkVEYCc9BgxqBOC/1kbguwZU7asCXpoXJrXbFexBC3CJd0qTGqHD3IeZ/OBYCgya29GAso5w7gtFy5Y2Y+D9mk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y3IdjOZC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OCcpkhuv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Y3IdjOZC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OCcpkhuv; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 698FE1FC0A;
-	Fri, 23 Feb 2024 13:07:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708693673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KmZ6I4GhxwyZIfulEpCtItz+J/91AmC7k1rH37f25LY=;
-	b=Y3IdjOZCm7+xKgJSGNx5d3vJmjkaIk95ePjEsYudgM2B7ZJPFna5HAw1nB342KCJa6Nxvi
-	sKubjV21dkVPZyculHASIsB/AktiSIB+1NAro1HKswTw4tO03loWYxA39khzboaEpC3LlQ
-	Jgcm0Jo3o+53wc96uTwrlZONNqzEsnE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708693673;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KmZ6I4GhxwyZIfulEpCtItz+J/91AmC7k1rH37f25LY=;
-	b=OCcpkhuvqlSaICC6K3K34oGg/XNP6GUj8fuFgd2mWbgBpbwNDahjPOiiGejvlH2lPYleDj
-	UQe7r42JVAmV1yBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1708693673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KmZ6I4GhxwyZIfulEpCtItz+J/91AmC7k1rH37f25LY=;
-	b=Y3IdjOZCm7+xKgJSGNx5d3vJmjkaIk95ePjEsYudgM2B7ZJPFna5HAw1nB342KCJa6Nxvi
-	sKubjV21dkVPZyculHASIsB/AktiSIB+1NAro1HKswTw4tO03loWYxA39khzboaEpC3LlQ
-	Jgcm0Jo3o+53wc96uTwrlZONNqzEsnE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1708693673;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KmZ6I4GhxwyZIfulEpCtItz+J/91AmC7k1rH37f25LY=;
-	b=OCcpkhuvqlSaICC6K3K34oGg/XNP6GUj8fuFgd2mWbgBpbwNDahjPOiiGejvlH2lPYleDj
-	UQe7r42JVAmV1yBA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5D32B13776;
-	Fri, 23 Feb 2024 13:07:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id gWezFqmY2GVpcwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Fri, 23 Feb 2024 13:07:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 01250A07D1; Fri, 23 Feb 2024 14:07:52 +0100 (CET)
-Date: Fri, 23 Feb 2024 14:07:52 +0100
-From: Jan Kara <jack@suse.cz>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: Don't report EOPNOTSUPP errors from discard
-Message-ID: <20240223130752.5borutcggb53i3m2@quack3>
-References: <20240213101601.17463-1-jack@suse.cz>
- <4AC7AEC3-25FC-4147-9C62-2CE5A1686199@dilger.ca>
- <20240215094635.p5anw5w36snmqwsh@quack3>
- <AF20B4C9-57F1-40B6-B095-621B59D9B2E7@dilger.ca>
+	s=arc-20240116; t=1708739998; c=relaxed/simple;
+	bh=mnMiHBn0y39a92eL4ZSkfvmb1Sgg82b+E2Gq5G6h6yM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rR1d32R/7XQyCIeR6aWSh9Llqj16r9lHWmkuqxy6/nrK2LFuU6pazIjFOHDAcQ0SpaZ9UK4tKh6EivdDoXa3P1A3M4wZKuA4FMtqjlwu/GgCcksWrcOJXFtTdNgtd3RLenHY3X7NI6zyLTuq3F5p9IMfMsUyFlTg1FjMr+RSABw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4ThVQN1HKCz18MJM;
+	Sat, 24 Feb 2024 09:58:04 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0C87E1400DD;
+	Sat, 24 Feb 2024 09:59:47 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sat, 24 Feb 2024 09:59:46 +0800
+Message-ID: <cdebc1cc-68cf-e429-42a4-4eaeb72c3aec@huawei.com>
+Date: Sat, 24 Feb 2024 09:59:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <AF20B4C9-57F1-40B6-B095-621B59D9B2E7@dilger.ca>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spamd-Result: default: False [-2.60 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.60
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH 1/7] ext4: avoid overflow when setting values via sysfs
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <chengzhihao1@huawei.com>,
+	<yukuai3@huawei.com>, Baokun Li <libaokun1@huawei.com>
+References: <20240126085716.1363019-1-libaokun1@huawei.com>
+ <20240126085716.1363019-2-libaokun1@huawei.com>
+ <20240213160554.35cpsfqqeqpgtux2@quack3>
+ <81081ec9-3aab-ecd1-c2f6-9a3835ea4fda@huawei.com>
+ <20240223115443.spaztzcv7llmfl77@quack3>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240223115443.spaztzcv7llmfl77@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Thu 22-02-24 14:23:38, Andreas Dilger wrote:
-> On Feb 15, 2024, at 2:46 AM, Jan Kara <jack@suse.cz> wrote:
-> > 
-> > On Wed 14-02-24 16:01:57, Andreas Dilger wrote:
-> >> On Feb 13, 2024, at 3:16 AM, Jan Kara <jack@suse.cz> wrote:
-> >>> 
-> >>> When ext4 is mounted without journal, with discard mount option, and on
-> >>> a device not supporting trim, we print error for each and every freed
-> >>> extent. This is not only useless but actively harmful. Instead ignore
-> >>> the EOPNOTSUPP error. Trim is only advisory anyway and when the
-> >>> filesystem has journal we silently ignore trim error as well.
-> >>> 
-> >> 
-> >>> Signed-off-by: Jan Kara <jack@suse.cz>
-> >>> ---
-> >>> fs/ext4/mballoc.c | 8 +++++++-
-> >>> 1 file changed, 7 insertions(+), 1 deletion(-)
-> >>> 
-> >>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> >>> index e4f7cf9d89c4..aed620cf4d40 100644
-> >>> --- a/fs/ext4/mballoc.c
-> >>> +++ b/fs/ext4/mballoc.c
-> >>> @@ -6488,7 +6488,13 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
-> >>> 		if (test_opt(sb, DISCARD)) {
-> >>> 			err = ext4_issue_discard(sb, block_group, bit,
-> >>> 						 count_clusters, NULL);
-> >>> -			if (err && err != -EOPNOTSUPP)
-> >>> +			/*
-> >>> +			 * Ignore EOPNOTSUPP error. This is consistent with
-> >>> +			 * what happens when using journal.
-> >>> +			 */
-> >>> +			if (err == -EOPNOTSUPP)
-> >>> +				err = 0;
-> >>> +			if (err)
-> >> 
-> >> I don't see how this patch is actually changing whether the error message
-> >> is printed?  Previously, if "err" was set and err was -EOPNOTSUPP the
-> >> message was skipped.  Now it is doing the same thing in a different way?
-> >> 
-> >> The "err" value is overwritten 50 lines later on without being used:
-> >> 
-> >>        err = ext4_handle_dirty_metadata(handle, NULL, bitmap_bh);
-> >> 
-> >> so the setting "err = 0" doesn't really affect the later code either.
-> >> What am I missing?
-> > 
-> > Yeah, the code flow is a bit contrived. The error message gets printed by
-> > ext4_std_error() at the end of ext4_mb_clear_bb(). I don't think there's
-> > any ext4_handle_dirty_metadata() call in the current version of
-> > ext4_mb_clear_bb()...
-> 
-> I had meant to reply on this thread sooner...
-> 
-> Does this mean that no error will be returned at all from FSTRIM?
+On 2024/2/23 19:54, Jan Kara wrote:
+> On Sat 17-02-24 15:09:06, Baokun Li wrote:
+>> On 2024/2/14 0:05, Jan Kara wrote:
+>>> On Fri 26-01-24 16:57:10, Baokun Li wrote:
+>>>> When setting values of type unsigned int through sysfs, we use kstrtoul()
+>>>> to parse it and then truncate part of it as the final set value, when the
+>>>> set value is greater than UINT_MAX, the set value will not match what we
+>>>> see because of the truncation. As follows:
+>>>>
+>>>>     $ echo 4294967296 > /sys/fs/ext4/sda/mb_max_linear_groups
+>>>>     $ cat /sys/fs/ext4/sda/mb_max_linear_groups
+>>>>       0
+>>>>
+>>>> So when the value set is outside the variable type range, -EINVAL is
+>>>> returned to avoid the inconsistency described above. In addition, a
+>>>> judgment is added to avoid setting s_resv_clusters less than 0.
+>>>>
+>>>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+>>>> ---
+>>>>    fs/ext4/sysfs.c | 4 +++-
+>>>>    1 file changed, 3 insertions(+), 1 deletion(-)
+>>>>
+>>>> diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
+>>>> index 6d332dff79dd..3671a8aaf4af 100644
+>>>> --- a/fs/ext4/sysfs.c
+>>>> +++ b/fs/ext4/sysfs.c
+>>>> @@ -104,7 +104,7 @@ static ssize_t reserved_clusters_store(struct ext4_sb_info *sbi,
+>>>>    	int ret;
+>>>>    	ret = kstrtoull(skip_spaces(buf), 0, &val);
+>>>> -	if (ret || val >= clusters)
+>>>> +	if (ret || val >= clusters || (s64)val < 0)
+>>>>    		return -EINVAL;
+>>> This looks a bit pointless, doesn't it? 'val' is u64, clusters is u64. We
+>>> know that val < clusters so how could (s64)val be < 0?
+>> When clusters is bigger than LLONG_MAX, (s64)val may be less than 0.
+>> Of course we don't have such a large storage device yet, so it's only
+>> theoretically possible to overflow here. But the previous patches in this
+>> patch set were intended to ensure that the values set via sysfs did not
+>> exceed the range of the variable type, so I've modified that here as well.
+> Well, my point was that the on disk format is limited to much less than
+> 2^63 blocks. But I guess having the additional check does not matter.
+OK.
+>>>> @@ -463,6 +463,8 @@ static ssize_t ext4_attr_store(struct kobject *kobj,
+>>>>    		ret = kstrtoul(skip_spaces(buf), 0, &t);
+>>>>    		if (ret)
+>>>>    			return ret;
+>>>> +		if (t != (unsigned int)t)
+>>>> +			return -EINVAL;
+>>>>    		if (a->attr_ptr == ptr_ext4_super_block_offset)
+>>>>    			*((__le32 *) ptr) = cpu_to_le32(t);
+>>>>    		else
+>>> I kind of agree with Alexey that using kstrtouint() here instead would look
+>>> nicer. And it isn't like you have to define many new variables. You just
+>>> need unsigned long for attr_pointer_ul and unsigned int for
+>>> attr_pointer_ui.
+>> If we use both kstrtouint() and kstrtoul(), then we need to add
+>> kstrtouint() or kstrtoul() to each case, which would be a lot of
+>> duplicate code as follows:
+> Well, it is 5 more lines if I'm counting right :) (3x 3 lines of conversion
+> - 2x 2 lines of boundary checks). I kind of find it easier to oversee the
+> boundary checks when everything is together at each parameter. But frankly
+> this is a bit of nitpicking so if you feel strongly about this I won't
+> insist.
+Makes sense, there may be some implicit checks that look unintuitive
+this way in the original patch. Now keep the string to number conversion
+inside the switch does look better. Let me send v2.
+>> static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
+>>                                         struct ext4_sb_info *sbi,
+>>                                         const char *buf, size_t len)
+>> {
+>>          int ret;
+>>          unsigned int t;
+>>          unsigned long lt;
+>>          void *ptr = calc_ptr(a, sbi);
+>>
+>>          if (!ptr)
+>>                  return 0;
+>>
+>>          switch (a->attr_id) {
+>>          case attr_group_prealloc:
+>>                  ret = kstrtouint(skip_spaces(buf), 0, &t);
+>>                  if (ret)
+>>                          return ret;
+>>                  if (t > sbi->s_clusters_per_group)
+>>                          return -EINVAL;
+>>                  return len;
+>>          case attr_pointer_pi:
+>>                  ret = kstrtouint(skip_spaces(buf), 0, &t);
+>>                  if (ret)
+>>                          return ret;
+>>                  if ((int)t < 0)
+>>                          return -EINVAL;
+>>                  return len;
+>>          case attr_pointer_ui:
+>>                  ret = kstrtouint(skip_spaces(buf), 0, &t);
+>>                  if (ret)
+>>                          return ret;
+>>                  if (t != (unsigned int)t)
+>>                          return -EINVAL;
+> 		  ^^^ this can go away
+I forgot to delete this, thanks!
+>>                  if (a->attr_ptr == ptr_ext4_super_block_offset)
+>>                          *((__le32 *) ptr) = cpu_to_le32(t);
+>>                  else
+>>                          *((unsigned int *) ptr) = t;
+>>                  return len;
+>>          case attr_pointer_ul:
+>>                  ret = kstrtoul(skip_spaces(buf), 0, &lt);
+>>                  if (ret)
+>>                          return ret;
+>>                  *((unsigned long *) ptr) = lt;
+>>                  return len;
+>>          }
+>>          return 0;
+>>
+>> }
+>>
+>> Also, both kstrtouint() and kstrtoul() are based on the kstrtoull()
+>> implementation, so it feels better to opencode kstrtoul() and
+>> kstrtouint() to reduce duplicate code.
+>> Why is it better to distinguish uint and ulong cases here?
+> Hopefully explained above :)
+>
+>
+> 								Honza
+Yes, now I understand what you're considering. 😊
 
-This path is not about FITRIM ioctl but about 'discard' mount option. So in
-this case there's nobody to return error to.
-
-> That means userspace will just keep pounding this ioctl indefinitely
-> and never get a notification that it is the wrong thing to do.
-> 
-> I'd think it would instead be better to also skip the ext4_std_error()
-> in case of -EOPNOTSUPP but still return the error code to the caller
-> so that they can make a better decision next time.
-
-I agree this might make sense.
-
-								Honza
+Thank you for your explanation!
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+With Best Regards,
+Baokun Li
+.
 
