@@ -1,131 +1,92 @@
-Return-Path: <linux-ext4+bounces-1390-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1391-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 070028677D3
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Feb 2024 15:10:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C813867A2C
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Feb 2024 16:26:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BCE6B26D10
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Feb 2024 14:10:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D86F1C23146
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Feb 2024 15:26:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8EE012C556;
-	Mon, 26 Feb 2024 14:06:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B900812BF29;
+	Mon, 26 Feb 2024 15:25:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RyguRwkX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D51C912BF3D;
-	Mon, 26 Feb 2024 14:06:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9053612AAC8;
+	Mon, 26 Feb 2024 15:25:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1708956382; cv=none; b=DgAB7Z+cXdFkVu/iOVxVWi3JlTCKHy3KbWMgYjgWAPqOH/H0u2IZuZ3V7Ka7v1QInMuAZrng8RDzz4YFf6ljIq8VUvMoexqTED/ecg2pq/vlQ1uWTJuHFCq7DhqnZhWLp19jNWpJE/1iRJu/bgLa9KhoWfT1mCUeSJcEGtYVFAQ=
+	t=1708961148; cv=none; b=Jkzf8IyQgLrONUL5PWNz57EDebqnRMVA+Fdqz4QvwRuiGzIDXWLoc28FYF5M4C2NRcieSgR9GKnVjo6muNXYBtH87K4kYhM/pelKQITmzLdnZ0aOciwJ2Er0Pz2BZ1Zc85u3c+bfkwsXlhKgUcdNfBCietdB1lZPmMOBYyhyvD8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1708956382; c=relaxed/simple;
-	bh=FYCrbv8lR+vqpkF25UfiF/snYND+v7+9Kz2QpvWdZ5A=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=C6ew6GWLfrN50FkS6CAgbEWpjIS4jkncmgGAahcyEa4tlR0/TiMkcDdPr6gjhRbHNKSW8ihWmQm27MwOQmAuTOswe7yg7hsmMHSih+s9V5EZa4QnYkHyoGRdUwrzKaEnYR5G2+TQmc58evQuP36Hs8Zp8i3754E8qJFN1WNLElY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4Tk2R709B5z2BdgF;
-	Mon, 26 Feb 2024 22:04:03 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 679D21A016C;
-	Mon, 26 Feb 2024 22:06:16 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 26 Feb 2024 22:06:15 +0800
-Subject: Re: [PATCH] ext4: remove unused parameter biop in
- ext4_issue_discard()
-To: Wenchao Hao <haowenchao2@huawei.com>, Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-CC: <louhongxiang@huawei.com>
-References: <20240226081731.3224470-1-haowenchao2@huawei.com>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <71d17598-c39b-9e11-03f0-cb344a24d8a5@huawei.com>
-Date: Mon, 26 Feb 2024 22:06:15 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1708961148; c=relaxed/simple;
+	bh=35PpGcNElBfhbkjp86sPv570xrDAxjARvJldXaJsLJ0=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=uFX69m0RQt2C30j9CeVFbUTqkY0q2MUVMMtbqx0p9XqM0aN9W3bjaOgOfgJhVZoU77KvtviJahfaOlgcD20up93bbmdubXp9vMx78jaZu9LIZZrig1KrCfk/GDP/Nzjt0DThfL44ttCwvGyQC0KPRmMj7xXkpMeJUJeQsJNIdj8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RyguRwkX; arc=none smtp.client-ip=209.85.210.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e457fab0e2so1932924b3a.0;
+        Mon, 26 Feb 2024 07:25:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1708961145; x=1709565945; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=F8NKzZ475Ed0sOpYbcC1ZbHtZtsQL/sozjb3F+5kRmI=;
+        b=RyguRwkXkeDbLi/gmyI8h8saaDb7mBBb8kXslI4rV5y4KqpCGKtU8CT6VAoxfQ4g2X
+         ysr3DgPY+fanh3NAhHE7GB233tSo5nshJpIhrSOOtLZyHjQ5UQHrQVo//H5Mo4L5lX1j
+         4gSQY1+PDQasmv1JCjKHCqvpeoJ0mUzPyArHu3rYm7t9uqNTfRipvoenjOg8yDwABdhe
+         Gvk6t273TQyyv/bSTJ4at3638qTKxkrLI1G4q/wmHVJg+jD/AAPVuZErdcPwJtg8Phcv
+         /2ehxB5EdKiPwimFC4pr0TTX8jmKYQoK4Gi47dPWIzcPq10ozZg6O02hdp9DgXa4hTAS
+         jzbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1708961145; x=1709565945;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=F8NKzZ475Ed0sOpYbcC1ZbHtZtsQL/sozjb3F+5kRmI=;
+        b=kt3PAKtaFqpCIWneyRXzsMVLt84QBG9a+7FrsTKPfmSXJhylkftiT1q6vDIm/D6d5O
+         2dDdtM1LHXLO9/vIxFMd+ojh5onROdc/90P0Pf++574nkinyUrgarr/bFqm3jWxmNoPx
+         KpcQvM5x2sOuv4gkP48eya/Y/LZH1KISpkVu36U0gy6a4ft4hgONx773gv2UR6Y/LMYz
+         AeTx4rf9ddhsJP6p7tBye8FXB/c7yc2kGlWkruQwg1/FzLVnLphazfAjAmJBsq81Qyik
+         0bzviE2IOatJ3VU0iw8nHj3GkFoXOrvvanF3aSb5kbf7EQ4PMAW7us5NzQNMO8IZCYv+
+         18UA==
+X-Forwarded-Encrypted: i=1; AJvYcCXk/39xpRQehujapChuotdGNyD0KXJ9oj2aj1JCoiHsPUGA7ST2ad5e00CAMIw/RBAjSOZKFfKvKO+8L1FNtJtpE/CedVRy5jPr4Ik32dN6K9q3gHq41xz4OlgDyh9gvkDaQcBWZnfZuw==
+X-Gm-Message-State: AOJu0Yz+AMHnDKyp9ofKLzQB/YtRJzPvYzy6PIisCmxsVH3jFXJIKuxw
+	4pAfQ9PGAwMa5vUFJY2D+gucsdTBT6IG+JtZXJlRcKdOEC3d/CDW
+X-Google-Smtp-Source: AGHT+IH7O66PS1kSAdFwBUsTZAkLBVJQ014OLt0Vyy8s/hru2LcBTua4x8Y9mwKONnJDFaVy1ImQOA==
+X-Received: by 2002:a05:6a00:a0a:b0:6e4:fdb5:fd99 with SMTP id p10-20020a056a000a0a00b006e4fdb5fd99mr6690577pfh.5.1708961145032;
+        Mon, 26 Feb 2024 07:25:45 -0800 (PST)
+Received: from dw-tp ([171.76.80.106])
+        by smtp.gmail.com with ESMTPSA id r11-20020aa79ecb000000b006e484e13454sm4170729pfq.32.2024.02.26.07.25.42
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 26 Feb 2024 07:25:44 -0800 (PST)
+Date: Mon, 26 Feb 2024 20:55:40 +0530
+Message-Id: <875xyb1c3v.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Wenchao Hao <haowenchao2@huawei.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: louhongxiang@huawei.com, Wenchao Hao <haowenchao2@huawei.com>
+Subject: Re: [PATCH] ext4: remove unused parameter biop in ext4_issue_discard()
+In-Reply-To: <20240226081731.3224470-1-haowenchao2@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240226081731.3224470-1-haowenchao2@huawei.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- canpemm500005.china.huawei.com (7.192.104.229)
 
-On 2024/2/26 16:17, Wenchao Hao wrote:
+Wenchao Hao <haowenchao2@huawei.com> writes:
+
 > all caller of ext4_issue_discard() would set biop to NULL since
 > 'commit 55cdd0af2bc5 ("ext4: get discard out of jbd2 commit kthread
 > contex")', it's unnecessary to keep this parameter any more.
-> 
+>
 > Signed-off-by: Wenchao Hao <haowenchao2@huawei.com>
 
-Thanks for the patch, it looks good to me.
+Nice little cleanup. Feel free to add - 
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-> ---
->  fs/ext4/mballoc.c | 16 +++++-----------
->  1 file changed, 5 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index d72b5e3c92ec..1590ee3f4603 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3807,8 +3807,7 @@ int ext4_mb_release(struct super_block *sb)
->  }
->  
->  static inline int ext4_issue_discard(struct super_block *sb,
-> -		ext4_group_t block_group, ext4_grpblk_t cluster, int count,
-> -		struct bio **biop)
-> +		ext4_group_t block_group, ext4_grpblk_t cluster, int count)
->  {
->  	ext4_fsblk_t discard_block;
->  
-> @@ -3817,13 +3816,8 @@ static inline int ext4_issue_discard(struct super_block *sb,
->  	count = EXT4_C2B(EXT4_SB(sb), count);
->  	trace_ext4_discard_blocks(sb,
->  			(unsigned long long) discard_block, count);
-> -	if (biop) {
-> -		return __blkdev_issue_discard(sb->s_bdev,
-> -			(sector_t)discard_block << (sb->s_blocksize_bits - 9),
-> -			(sector_t)count << (sb->s_blocksize_bits - 9),
-> -			GFP_NOFS, biop);
-> -	} else
-> -		return sb_issue_discard(sb, discard_block, count, GFP_NOFS, 0);
-> +
-> +	return sb_issue_discard(sb, discard_block, count, GFP_NOFS, 0);
->  }
->  
->  static void ext4_free_data_in_buddy(struct super_block *sb,
-> @@ -6475,7 +6469,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  	} else {
->  		if (test_opt(sb, DISCARD)) {
->  			err = ext4_issue_discard(sb, block_group, bit,
-> -						 count_clusters, NULL);
-> +						 count_clusters);
->  			if (err && err != -EOPNOTSUPP)
->  				ext4_msg(sb, KERN_WARNING, "discard request in"
->  					 " group:%u block:%d count:%lu failed"
-> @@ -6726,7 +6720,7 @@ __acquires(bitlock)
->  	 */
->  	mb_mark_used(e4b, &ex);
->  	ext4_unlock_group(sb, group);
-> -	ret = ext4_issue_discard(sb, group, start, count, NULL);
-> +	ret = ext4_issue_discard(sb, group, start, count);
->  	ext4_lock_group(sb, group);
->  	mb_free_blocks(NULL, e4b, start, ex.fe_len);
->  	return ret;
-> 
 
