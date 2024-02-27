@@ -1,152 +1,116 @@
-Return-Path: <linux-ext4+bounces-1404-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1405-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76442868BFC
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 10:17:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7754869176
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 14:14:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16BE6B21A88
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 09:17:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 14C441C26546
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 13:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6769C135A6A;
-	Tue, 27 Feb 2024 09:17:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1444213B280;
+	Tue, 27 Feb 2024 13:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="MJF2+Dbp"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="Ok8r1ZdE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2839F537F3
-	for <linux-ext4@vger.kernel.org>; Tue, 27 Feb 2024 09:17:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31A013AA35
+	for <linux-ext4@vger.kernel.org>; Tue, 27 Feb 2024 13:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.177.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709025438; cv=none; b=kHsmelwG9r/bbAfpHHLANqoE8bz/6EZ4GARbJo/mlmXxFNKEIDEL3OBuRCH5HH9KNhVsmeVcIKIGrZUeYFv86sxP3f6F/oSFd91EwOVoevLZWKx7AueEWqixiD4VAneR2BaHt9m0AP4XmJkwLqZpbW+0dyk9FZVgSPraV0eB5ZM=
+	t=1709039635; cv=none; b=gc4Cbs6UEM5IDfUX7yH6yjcSxa4HKJ/GA9g1RvBVXsYxf0OQO6UCvi5HzuNPhn/fT4vaSKdmrvnSNVhtGanIiliZK48qVn/dd50srsZ3sQCEAZ17jWTWcbHewNMdkzxPzlgqrgpAMsttxCgojf8IBaGQRlK085zAzZFmGPEoM1g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709025438; c=relaxed/simple;
-	bh=nj2yHnFQ+uo/AvszXEg+SH6tfnqtd/ozyP2hEU54SL8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=IBB4OpLZxDqmbaJE31pgkJBDg+JWp+IY8s/jngz+cuPkfJpyZ6EXBFhx5DVII+b91HvuGVYN8nO25v3xpBcV7bDsH96NOnIxHsog9n4NoMrtcKs8lxR8qzWSWR4v3uL72N93q0vvZTH02zUC06E/NPy7OEqZgTaxRhiGWXLUUw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=MJF2+Dbp; arc=none smtp.client-ip=209.85.128.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-412a3903586so15377185e9.3
-        for <linux-ext4@vger.kernel.org>; Tue, 27 Feb 2024 01:17:16 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1709025435; x=1709630235; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=diggtj8WfVHmGY/2jyxXjIr6GbLKJAvO81RCvtP7dCs=;
-        b=MJF2+Dbpc6EDbN/n8S3r/hhKk2v4SsATFi0HjO75IROv7Sbx+g/FiMdCqkJ9/aWTkI
-         U3mDqeybKeqz3qWMJ8HegbwY0Pyozhe9WgO67SgsLmvQbcBqyY4RfyJN7YyVm1Ifbi6d
-         yzj8ILNlZeFiROn5SaSWN6vwX6mSxu4r9wGkIPBAxl3HQ0xLtX8DEFKCwaXoieCXWqCu
-         JVXsTTuZFJqzwL/hgdr5vLcs/AWYaCBiPz8GWRpQeGvjPZxB5IukPPcYpnRJMyD7cQsg
-         9T0yTbtypq0xAuWTjVhdAy5cdidfy3pUD/h0QBqbx4/htdZ6ZZW9bx+xE/4xTkDQhODK
-         RiDA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709025435; x=1709630235;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=diggtj8WfVHmGY/2jyxXjIr6GbLKJAvO81RCvtP7dCs=;
-        b=L4HJFKL+st9CVQVUlHLMpeAGMtP/b+gt88mMvUKAlMsVWnEqqHDjaXlCtFVOs+9/Eh
-         fdU7vJhmTGeKFAOD10es7KjUaUvoAuG+zdqYirNYq5JfYqnJ3EUlPoeYbGdEwsJzg+T8
-         Uxa5hwv/cczsfClhWzlgPK2Grwn3DJsAJECpS3QgWwYYQQJ6Quwg9mIFqhED9lkPVQtO
-         JXCOJxf0TMoRdMB/tAiYI8KfoBwuY/BlstQJsqcovTZEeOSl/xn3uWZ4Q4tMILsLH3mn
-         cX5AHVuA0DdOal1tvy/w0/zuUgXUA88kcZb81IaLFM4Fpf7wxuYDymEZ+aIRg7/E7Lt6
-         Uchw==
-X-Gm-Message-State: AOJu0YwgUeG+kyeLs3z9FqFj2yWbXopOKmACCh1juXUNSUdAeoAT8jDT
-	Dxw9M/gmNJ61+MqF2Ukbi2HN4JvCrGWZYSac7b3xyvEfUe/xQ9TcqKUQcj1wLTs=
-X-Google-Smtp-Source: AGHT+IEsffzlnfjEvS1AfFSGZ5OnULwmw2+Yx8Y3nPVaNF614kvV93P0X/qNsTFl86hByxR5wNcQJg==
-X-Received: by 2002:adf:ecc5:0:b0:33d:282c:af48 with SMTP id s5-20020adfecc5000000b0033d282caf48mr6055317wro.69.1709025435509;
-        Tue, 27 Feb 2024 01:17:15 -0800 (PST)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id ay25-20020a5d6f19000000b0033da430f286sm11011148wrb.69.2024.02.27.01.17.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 27 Feb 2024 01:17:15 -0800 (PST)
-Date: Tue, 27 Feb 2024 12:17:11 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: jack@suse.cz
-Cc: linux-ext4@vger.kernel.org
-Subject: [bug report] ext4: do not create EA inode under buffer lock
-Message-ID: <6e5f8a70-1cba-41fa-98f3-2ef3bcc29017@moroto.mountain>
+	s=arc-20240116; t=1709039635; c=relaxed/simple;
+	bh=WQHmBMw/po0dZD8MJ/cpYcIogz4s7nOg9ipiJgBEQHI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=szshWVYW4vb+8JAg/wPZBr6vhYY2DCveW9uyLJyJn2BHuZkcAUCkk386QU+Xo0DTQXPjP5SG9JyZx8FBjHOjVXviYnDaAjqn0VKi3UrKVvXU6Vu2fDTFAxYZ17CS3JoUipUcnJdAKA1OgEbkuWl+gfDQfYsuxpPUydGpUC4N8N4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=Ok8r1ZdE; arc=none smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246631.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 41R9ItVU000780;
+	Tue, 27 Feb 2024 13:13:49 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=/njIASSv7F6paA7qHQSr/oE0nYWdhOwr6Q567iOml9U=;
+ b=Ok8r1ZdEdNcxSolKpLsR6TX0dfL5k/4MkzEX7p+MluvUjfkYbfh8kaEFn3OyCXCQuEGZ
+ P2w92BBLXJzc8G2kd6TCeuk/naoyy3fLOTltHDrwj6l4o8/SaoGCig3ppw21baDdrvEt
+ DyFnusw8dkX0w8Y2yt0YChWe/yEHVzkMDMMIQXMk75plObcEvHsCc9z10xygBlVbGs5V
+ nQtVkENHtVzZE4Bz5PhLtdS4dvtKJZHDNeENivYONALD8VwWBo0Mv8yG1y/ltdDDJCOF
+ Yfdtq458dQxCL8EWkdGGm9h3Ohgu0UtxE9TK0N2jHIO3zFJZHmmJAVqjGduVVNE3IEBB Rw== 
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wf784fat8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 Feb 2024 13:13:49 +0000
+Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 41RBfl6m019175;
+	Tue, 27 Feb 2024 13:13:48 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wgbdk0qb9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 27 Feb 2024 13:13:48 +0000
+Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 41RDDmYY026047;
+	Tue, 27 Feb 2024 13:13:48 GMT
+Received: from sridara-s.osdevelopmeniad.oraclevcn.com (sridara-s.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.75])
+	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wgbdk0qb0-1;
+	Tue, 27 Feb 2024 13:13:48 +0000
+From: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca,
+        rajesh.sivaramasubramaniom@oracle.com, junxiao.bi@oracle.com
+Subject: [PATCH] ext4: Enable meta_bg only when new desc blocks are needed
+Date: Tue, 27 Feb 2024 13:13:29 +0000
+Message-Id: <20240227131329.2608466-1-srivathsa.d.dara@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-02-26_11,2024-02-27_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 bulkscore=0
+ mlxlogscore=999 malwarescore=0 phishscore=0 mlxscore=0 suspectscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2402270102
+X-Proofpoint-GUID: Fjx2eVWfdSxVwvRDXtebNAOWd3y7sKZO
+X-Proofpoint-ORIG-GUID: Fjx2eVWfdSxVwvRDXtebNAOWd3y7sKZO
 
-Hello Jan Kara,
+This patch addresses an issue observed when resize_inode is disabled
+and an online extension of a filesysyem is performed. When a filesystem
+is expanded to a size that does not require a addition of a new
+descriptor block, the meta_bg feature is being enabled even though no
+part of the filesystem uses this layout.
 
-The patch ea554578483b: "ext4: do not create EA inode under buffer
-lock" from Feb 9, 2024 (linux-next), leads to the following Smatch
-static checker warning:
+This patch ensures that the meta_bg feature is only enabled if
+any of the added block groups utilize meta_bg layout.
 
-	fs/ext4/xattr.c:2265 ext4_xattr_ibody_set()
-	warn: duplicate check 'error' (previous on line 2255)
+Signed-off-by: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+---
+ fs/ext4/resize.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-fs/ext4/xattr.c
-    2232 int ext4_xattr_ibody_set(handle_t *handle, struct inode *inode,
-    2233                                 struct ext4_xattr_info *i,
-    2234                                 struct ext4_xattr_ibody_find *is)
-    2235 {
-    2236         struct ext4_xattr_ibody_header *header;
-    2237         struct ext4_xattr_search *s = &is->s;
-    2238         struct inode *ea_inode = NULL;
-    2239         int error;
-    2240 
-    2241         if (!EXT4_INODE_HAS_XATTR_SPACE(inode))
-    2242                 return -ENOSPC;
-    2243 
-    2244         /* If we need EA inode, prepare it before locking the buffer */
-    2245         if (i->value && i->in_inode) {
-    2246                 WARN_ON_ONCE(!i->value_len);
-    2247 
-    2248                 ea_inode = ext4_xattr_inode_lookup_create(handle, inode,
-    2249                                         i->value, i->value_len);
-    2250                 if (IS_ERR(ea_inode))
-    2251                         return PTR_ERR(ea_inode);
-    2252         }
-    2253         error = ext4_xattr_set_entry(i, s, handle, inode, ea_inode,
-    2254                                      false /* is_block */);
-    2255         if (error) {
-                     ^^^^^
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index 928700d57eb6..99b52f26e818 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -1996,7 +1996,7 @@ int ext4_resize_fs(struct super_block *sb, ext4_fsblk_t n_blocks_count)
+ 		}
+ 	}
+ 
+-	if ((!resize_inode && !meta_bg) || n_blocks_count == o_blocks_count) {
++	if ((!resize_inode && !meta_bg && n_desc_blocks > o_desc_blocks) || n_blocks_count == o_blocks_count) {
+ 		err = ext4_convert_meta_bg(sb, resize_inode);
+ 		if (err)
+ 			goto out;
+-- 
+2.39.3
 
-    2256                 if (ea_inode) {
-    2257                         int error2;
-    2258 
-    2259                         error2 = ext4_xattr_inode_dec_ref(handle, ea_inode);
-    2260                         if (error2)
-    2261                                 ext4_warning_inode(ea_inode, "dec ref error=%d",
-    2262                                                    error2);
-    2263 
-    2264                         /* If there was an error, revert the quota charge. */
---> 2265                         if (error)
-                                     ^^^^^
-We know "error" is non-zero.  I'm not sure whether to delete this check
-or change "error" to "error2".
-
-    2266                                 ext4_xattr_inode_free_quota(inode, ea_inode,
-    2267                                                     i_size_read(ea_inode));
-    2268                         iput(ea_inode);
-    2269                 }
-    2270                 return error;
-    2271         }
-    2272         header = IHDR(inode, ext4_raw_inode(&is->iloc));
-    2273         if (!IS_LAST_ENTRY(s->first)) {
-    2274                 header->h_magic = cpu_to_le32(EXT4_XATTR_MAGIC);
-    2275                 ext4_set_inode_state(inode, EXT4_STATE_XATTR);
-    2276         } else {
-    2277                 header->h_magic = cpu_to_le32(0);
-    2278                 ext4_clear_inode_state(inode, EXT4_STATE_XATTR);
-    2279         }
-    2280         iput(ea_inode);
-    2281         return 0;
-    2282 }
-
-regards,
-dan carpenter
 
