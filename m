@@ -1,122 +1,195 @@
-Return-Path: <linux-ext4+bounces-1392-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1393-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76A27868901
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 07:36:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53555868A32
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 08:51:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F36B0B23439
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 06:36:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAA751F222DE
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 07:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E97441A84;
-	Tue, 27 Feb 2024 06:36:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TAON0pAS"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E2FD54FA4;
+	Tue, 27 Feb 2024 07:51:52 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C443B256A;
-	Tue, 27 Feb 2024 06:36:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7907A52F92;
+	Tue, 27 Feb 2024 07:51:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709015776; cv=none; b=RZvLjTOmmXN7l3vp76yBzZcuuqSoI7/h277gHpbLs6xc7rJ6wd3mottmqzdTtHqhLbfqJ+e7uR2cXRPdX64yDe+tRMdXOBA8tQE/vNTLVcHU/wcE+VqJeyYgb1DdnG7ls1qLyw9fctLP0BxCzFFs4OZDuAXbWNO4QDQnt4LaNXk=
+	t=1709020312; cv=none; b=BXmDxCV9bdlEaCfh+WRSw5AW0slddfXdVtchcQ2L3y9M1xJKO+lnfoNIpmSI8ElGtwk/ZBJuUNLw3acQg71DOGMWZ57EZ/ZYhpnyuaPJcNKPtGWiCqVcmj+bJhKV9Yw4FUcjGTAuS/Rie5EsKe3FJx5HhL8iv3MDBVzCF+SDt34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709015776; c=relaxed/simple;
-	bh=BnWI1QlWvLT8QiqmYWbI9nYOFqfqKjduJfF+ni+ECWU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kqlQCdHjIsgkIGJelIUmEt98ajOScQfyZjc0HBKvXHE0r9lP0A+zM6p+LybYXlH3UyHA1zG/KIjOXdMz+hSLDmG4Xbgcckg/B2JRHIf7aYSKIJ1gLAVo5RC6+ZIstZYPwDiXBNhwmU3SO0rZ+hdbEwzGWYYPpHUNjRHZLmcmMf4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TAON0pAS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0B0E8C433C7;
-	Tue, 27 Feb 2024 06:36:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1709015776;
-	bh=BnWI1QlWvLT8QiqmYWbI9nYOFqfqKjduJfF+ni+ECWU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TAON0pASJNwPRPdlYDWOlNy5thVAd1zfXGGDMD9tvgdhVDaM5MNasI2hsJeAog4tq
-	 7CTK3YUoVpDtoSiwjBCcs1j8vsWNtuNltYFB2rpX5BA8lpn/ER+fi+uVYOiaslWRaB
-	 XPj3t5FLRAz5a4gWlqFvqfHWQNMawq6j6zD6CqvUGJ5fmaW9ltX7XUqs0garIZvcAE
-	 r/1CDWmMln2ZZ5SQzUh1yg3TkgSgQvG07KDx7Dn5Yr5UCvCMi2QH8Z/wIrLCX2XwrE
-	 F9TjgMeBF2H5Lxr7j46Wnvh/8W/qUtLTUWQRcH3QLnYc5/msk+7Cw58aZIFQhiiARk
-	 tYei7ksoL52xQ==
-Date: Mon, 26 Feb 2024 22:36:14 -0800
-From: Eric Biggers <ebiggers@kernel.org>
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: viro@zeniv.linux.org.uk, jaegeuk@kernel.org, tytso@mit.edu,
-	amir73il@gmail.com, linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org, brauner@kernel.org
-Subject: Re: [PATCH v7 00/10] Set casefold/fscrypt dentry operations through
- sb->s_d_op
-Message-ID: <20240227063614.GB1126@sol.localdomain>
-References: <20240221171412.10710-1-krisman@suse.de>
+	s=arc-20240116; t=1709020312; c=relaxed/simple;
+	bh=TFqOwc2aOQP4CIgMGbjw84ou/9XfyykH27j7p3Ed0r0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=aLHfmgjQ7H+T98xk+6DLYRSuq89iARjQzo6zea5gRmeWERubGK6yeR50hzFy0qMuR8PV3M+emYhCKifh0R42j5NMH0EhUQNkhb+DlQG4SD5WBaSG2/hl5ujXu1nxo5k3CX/rIrbXecyMMbZkEX2ZmNY8WENd37QjAF/+dkGI70o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.112])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TkV4W6FSlz1h0B8;
+	Tue, 27 Feb 2024 15:49:31 +0800 (CST)
+Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
+	by mail.maildlp.com (Postfix) with ESMTPS id B24E71400F4;
+	Tue, 27 Feb 2024 15:51:45 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml500021.china.huawei.com (7.185.36.21) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 27 Feb 2024 15:51:45 +0800
+Message-ID: <d957454e-6516-f7e5-57fb-63f4687325ed@huawei.com>
+Date: Tue, 27 Feb 2024 15:51:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240221171412.10710-1-krisman@suse.de>
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.1.2
+Subject: Re: [PATCH] ext4: fix uninitialized ratelimit_state->lock access in
+ __ext4_fill_super()
+To: <linux-ext4@vger.kernel.org>
+CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
+	<ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
+	<yi.zhang@huawei.com>, <yangerkun@huawei.com>, <yukuai3@huawei.com>, Baokun
+ Li <libaokun1@huawei.com>
+References: <20240102133730.1098120-1-libaokun1@huawei.com>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20240102133730.1098120-1-libaokun1@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml500021.china.huawei.com (7.185.36.21)
 
-On Wed, Feb 21, 2024 at 12:14:02PM -0500, Gabriel Krisman Bertazi wrote:
-> 
-> When case-insensitive and fscrypt were adapted to work together, we moved the
-> code that sets the dentry operations for case-insensitive dentries(d_hash and
-> d_compare) to happen from a helper inside ->lookup.  This is because fscrypt
-> wants to set d_revalidate only on some dentries, so it does it only for them in
-> d_revalidate.
-> 
-> But, case-insensitive hooks are actually set on all dentries in the filesystem,
-> so the natural place to do it is through s_d_op and let d_alloc handle it [1].
-> In addition, doing it inside the ->lookup is a problem for case-insensitive
-> dentries that are not created through ->lookup, like those coming
-> open-by-fhandle[2], which will not see the required d_ops.
-> 
-> This patchset therefore reverts to using sb->s_d_op to set the dentry operations
-> for case-insensitive filesystems.  In order to set case-insensitive hooks early
-> and not require every dentry to have d_revalidate in case-insensitive
-> filesystems, it introduces a patch suggested by Al Viro to disable d_revalidate
-> on some dentries on the fly.
-> 
-> It survives fstests encrypt and quick groups without regressions.  Based on
-> v6.7-rc1.
-> 
-> [1] https://lore.kernel.org/linux-fsdevel/20231123195327.GP38156@ZenIV/
-> [2] https://lore.kernel.org/linux-fsdevel/20231123171255.GN38156@ZenIV/
-> 
-> Gabriel Krisman Bertazi (10):
->   ovl: Always reject mounting over case-insensitive directories
->   fscrypt: Factor out a helper to configure the lookup dentry
->   fscrypt: Drop d_revalidate for valid dentries during lookup
->   fscrypt: Drop d_revalidate once the key is added
->   libfs: Merge encrypted_ci_dentry_ops and ci_dentry_ops
->   libfs: Add helper to choose dentry operations at mount-time
->   ext4: Configure dentry operations at dentry-creation time
->   f2fs: Configure dentry operations at dentry-creation time
->   ubifs: Configure dentry operations at dentry-creation time
->   libfs: Drop generic_set_encrypted_ci_d_ops
-> 
->  fs/crypto/hooks.c       | 15 ++++------
->  fs/ext4/namei.c         |  1 -
->  fs/ext4/super.c         |  1 +
->  fs/f2fs/namei.c         |  1 -
->  fs/f2fs/super.c         |  1 +
->  fs/libfs.c              | 62 +++++++++++---------------------------
->  fs/overlayfs/params.c   | 14 +++++++--
->  fs/ubifs/dir.c          |  1 -
->  fs/ubifs/super.c        |  1 +
->  include/linux/fs.h      | 11 ++++++-
->  include/linux/fscrypt.h | 66 ++++++++++++++++++++++++++++++++++++-----
->  11 files changed, 105 insertions(+), 69 deletions(-)
-> 
+A gentle ping.
 
-Looks good,
+On 2024/1/2 21:37, Baokun Li wrote:
+> In the following concurrency we will access the uninitialized rs->lock:
+>
+> ext4_fill_super
+>    ext4_register_sysfs
+>     // sysfs registered msg_ratelimit_interval_ms
+>                               // Other processes modify rs->interval to
+>                               // non-zero via msg_ratelimit_interval_ms
+>    ext4_orphan_cleanup
+>      ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
+>        __ext4_msg
+>          ___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state)
+>            if (!rs->interval)  // do nothing if interval is 0
+>              return 1;
+>            raw_spin_trylock_irqsave(&rs->lock, flags)
+>              raw_spin_trylock(lock)
+>                _raw_spin_trylock
+>                  __raw_spin_trylock
+>                    spin_acquire(&lock->dep_map, 0, 1, _RET_IP_)
+>                      lock_acquire
+>                        __lock_acquire
+>                          register_lock_class
+>                            assign_lock_key
+>                              dump_stack();
+>    ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
+>      raw_spin_lock_init(&rs->lock);
+>      // init rs->lock here
+>
+> and get the following dump_stack:
+>
+> =========================================================
+> INFO: trying to register non-static key.
+> The code is fine but needs lockdep annotation, or maybe
+> you didn't initialize this object before use?
+> turning off the locking correctness validator.
+> CPU: 12 PID: 753 Comm: mount Tainted: G E 6.7.0-rc6-next-20231222 #504
+> [...]
+> Call Trace:
+>   dump_stack_lvl+0xc5/0x170
+>   dump_stack+0x18/0x30
+>   register_lock_class+0x740/0x7c0
+>   __lock_acquire+0x69/0x13a0
+>   lock_acquire+0x120/0x450
+>   _raw_spin_trylock+0x98/0xd0
+>   ___ratelimit+0xf6/0x220
+>   __ext4_msg+0x7f/0x160 [ext4]
+>   ext4_orphan_cleanup+0x665/0x740 [ext4]
+>   __ext4_fill_super+0x21ea/0x2b10 [ext4]
+>   ext4_fill_super+0x14d/0x360 [ext4]
+> [...]
+> =========================================================
+>
+> Normally interval is 0 until s_msg_ratelimit_state is initialized, so
+> ___ratelimit() does nothing. But registering sysfs precedes initializing
+> rs->lock, so it is possible to change rs->interval to a non-zero value
+> via the msg_ratelimit_interval_ms interface of sysfs while rs->lock is
+> uninitialized, and then a call to ext4_msg triggers the problem by
+> accessing an uninitialized rs->lock. Therefore register sysfs after all
+> initializations are complete to avoid such problems.
+>
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>   fs/ext4/super.c | 22 ++++++++++------------
+>   1 file changed, 10 insertions(+), 12 deletions(-)
+>
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index 0980845c8b8f..1db23b0e8a4f 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5564,19 +5564,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>   	if (err)
+>   		goto failed_mount6;
+>   
+> -	err = ext4_register_sysfs(sb);
+> -	if (err)
+> -		goto failed_mount7;
+> -
+>   	err = ext4_init_orphan_info(sb);
+>   	if (err)
+> -		goto failed_mount8;
+> +		goto failed_mount7;
+>   #ifdef CONFIG_QUOTA
+>   	/* Enable quota usage during mount. */
+>   	if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
+>   		err = ext4_enable_quotas(sb);
+>   		if (err)
+> -			goto failed_mount9;
+> +			goto failed_mount8;
+>   	}
+>   #endif  /* CONFIG_QUOTA */
+>   
+> @@ -5602,7 +5598,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>   		ext4_msg(sb, KERN_INFO, "recovery complete");
+>   		err = ext4_mark_recovery_complete(sb, es);
+>   		if (err)
+> -			goto failed_mount10;
+> +			goto failed_mount9;
+>   	}
+>   
+>   	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
+> @@ -5619,15 +5615,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>   	atomic_set(&sbi->s_warning_count, 0);
+>   	atomic_set(&sbi->s_msg_count, 0);
+>   
+> +	/* Register sysfs after all initializations are complete. */
+> +	err = ext4_register_sysfs(sb);
+> +	if (err)
+> +		goto failed_mount9;
+> +
+>   	return 0;
+>   
+> -failed_mount10:
+> +failed_mount9:
+>   	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
+> -failed_mount9: __maybe_unused
+> +failed_mount8: __maybe_unused
+>   	ext4_release_orphan_info(sb);
+> -failed_mount8:
+> -	ext4_unregister_sysfs(sb);
+> -	kobject_put(&sbi->s_kobj);
+>   failed_mount7:
+>   	ext4_unregister_li_request(sb);
+>   failed_mount6:
 
-Reviewed-by: Eric Biggers <ebiggers@google.com>
 
-- Eric
 
