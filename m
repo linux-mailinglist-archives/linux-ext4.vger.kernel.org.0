@@ -1,201 +1,180 @@
-Return-Path: <linux-ext4+bounces-1412-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1413-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C8D686A3F0
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Feb 2024 00:49:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D5E86A4C0
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Feb 2024 02:10:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0CF661F24A99
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Feb 2024 23:49:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 80A7EB263AE
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Feb 2024 01:10:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF525674B;
-	Tue, 27 Feb 2024 23:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KK8acMoU";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2cN0mEgy";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="KK8acMoU";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2cN0mEgy"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6CC15AF;
+	Wed, 28 Feb 2024 01:10:32 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09C2D56442;
-	Tue, 27 Feb 2024 23:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 392B7EBB;
+	Wed, 28 Feb 2024 01:10:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709077741; cv=none; b=lI9uUmOcK9IseT0qo7dbmi5jG1/eOl+BhPgCMMJjWLJORzz+tPlI1AnmNzstTXjr2hXB4ycD3NEXg5Z8BrCOym5MINcbHX2KDNe6HvBpmOr35u9Op4/kIDDDm3TAfSm6Odj9jpFNmKOwwsJve6uQ1vhTa89t25mPwcm3Ef8WE9o=
+	t=1709082632; cv=none; b=IkdiPz4rmTIwuuSiRigKilzIE+TZX/wcu1AVL9/2H+HRiUr8SfbfxgUBALWZ5SITlT0GR+DbfobhyY3LpnzdSMRNHvGyC86XV6gyNz8ZIdp02+nb9hEKVdZNA4RmU0zKf6IZPJw0opTCLobfjwx7O0/LJobdOib9C1yxy1X4O0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709077741; c=relaxed/simple;
-	bh=Y+/rFevpzvhdvuWiKxENTvkTi0r9cvuGobLI8jzXRS4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=YVFpKwh9v+TQ+p1VCTP/FzE5kfA0KM5Us/PPEbRuyMmDhOAqcqkFiYjERrbG/8XyxVrJQN/o0RpeLmc9tB9gEuQ/418KDbhcxL0FH/WXEjoHwHsLaChCqvqK7Yblj+QLu8OXXEFrFKqBru25DodRmVqr/c0bH0PJQqRJ0OC/PeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KK8acMoU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2cN0mEgy; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=KK8acMoU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2cN0mEgy; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 10AB72280F;
-	Tue, 27 Feb 2024 23:48:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709077738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M15oWz8K/quZkZ3iAaKhipWnksYJwmCDDGkA7L4LZ0E=;
-	b=KK8acMoUR0AjvMtcekxBOz3P1kONZ68wdHPOpT25umpGKSP/8GQU+w7zr45xgr5Aa2Jrqs
-	ZibILliWKdwCWqzrtN8Wjgd4BFFCi4qE6i3sQdXY5O2qmHFfAEJ2AWatTKNY+4sjkP4YYI
-	tvBE63uXD2AOc+kAksuf1/s8f16bvlM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709077738;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M15oWz8K/quZkZ3iAaKhipWnksYJwmCDDGkA7L4LZ0E=;
-	b=2cN0mEgyIxHnuVoRqLmvobEJxkpbPFxvJ5MoFqUajy4zDFLuRS94mXa4yKKdoYr6a34nNn
-	KgckqqnWIC1WBKAw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709077738; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M15oWz8K/quZkZ3iAaKhipWnksYJwmCDDGkA7L4LZ0E=;
-	b=KK8acMoUR0AjvMtcekxBOz3P1kONZ68wdHPOpT25umpGKSP/8GQU+w7zr45xgr5Aa2Jrqs
-	ZibILliWKdwCWqzrtN8Wjgd4BFFCi4qE6i3sQdXY5O2qmHFfAEJ2AWatTKNY+4sjkP4YYI
-	tvBE63uXD2AOc+kAksuf1/s8f16bvlM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709077738;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M15oWz8K/quZkZ3iAaKhipWnksYJwmCDDGkA7L4LZ0E=;
-	b=2cN0mEgyIxHnuVoRqLmvobEJxkpbPFxvJ5MoFqUajy4zDFLuRS94mXa4yKKdoYr6a34nNn
-	KgckqqnWIC1WBKAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BE61113ABA;
-	Tue, 27 Feb 2024 23:48:57 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id xBoaKOl03mVJOQAAD6G6ig
-	(envelope-from <krisman@suse.de>); Tue, 27 Feb 2024 23:48:57 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: Eric Biggers <ebiggers@kernel.org>, tytso@mit.edu,
-  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz
-Subject: Re: [PATCH v12 0/8] Cache insensitive cleanup for ext4/f2fs
-In-Reply-To: <20240220085235.71132-1-eugen.hristev@collabora.com> (Eugen
-	Hristev's message of "Tue, 20 Feb 2024 10:52:27 +0200")
-Organization: SUSE
-References: <20240220085235.71132-1-eugen.hristev@collabora.com>
-Date: Tue, 27 Feb 2024 18:48:56 -0500
-Message-ID: <87r0gx4gev.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1709082632; c=relaxed/simple;
+	bh=gaprHsvvpzB2Qhz4D0S6l9iNs4rVT1XQlJS6wlttrQM=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=d9yAfh4lzLKKfDWvF9KwRx0THqjA2Smq92U/+IvBOeyrHpB9hC8zjwgOzumZrkjKFMytmTY+uKFdLKa8H4rmYEEiFFnFKIC+J0z7SipJNV6xEowCbSrfvQVqSLLHMaVro1AbO80gdspcP4WJWTFtxM44Wzqod9LuL8MqnyF6hh0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tkx9V0nGzz4f3k6L;
+	Wed, 28 Feb 2024 09:10:22 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 724411A0C09;
+	Wed, 28 Feb 2024 09:10:25 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgCH2Wv_h95lMzTKFQ--.64760S2;
+	Wed, 28 Feb 2024 09:10:25 +0800 (CST)
+Subject: Re: [PATCH] ext4: kunit: use dynamic inode allocation
+To: Arnd Bergmann <arnd@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
+ Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: Arnd Bergmann <arnd@arndb.de>,
+ "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240227161548.2929881-1-arnd@kernel.org>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <9a83d019-b0c7-5a00-c2af-7115bd596c71@huaweicloud.com>
+Date: Wed, 28 Feb 2024 09:10:23 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 HAS_ORG_HEADER(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Flag: NO
+In-Reply-To: <20240227161548.2929881-1-arnd@kernel.org>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCH2Wv_h95lMzTKFQ--.64760S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF45WrWUCFWxuw48Xr48Crg_yoW5tr1fpa
+	nxCF1Ykr45Wrykuw4I9r4UZr1Sga18XrW8tryfW3yjqFW3XrySkF1ktF18ZF1xtr48Xw42
+	v3WjvFyDursru37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-> Hello,
->
-> I am trying to respin the series here :
-> https://www.spinics.net/lists/linux-ext4/msg85081.html
 
-This has a reviewed-by tag from Eric, but since its been years and we've
-been going through more changes now, I'd ask you to drop the r-b until
-Eric has had a chance to review it and give a new tag.
+on 2/28/2024 12:15 AM, Arnd Bergmann wrote:
+> From: Arnd Bergmann <arnd@arndb.de>
+> 
+> Storing an inode structure on the stack pushes some functions over the warning
+> limit for stack frame size:
+> 
+> In file included from fs/ext4/mballoc.c:7039:
+> fs/ext4/mballoc-test.c:506:13: error: stack frame size (1032) exceeds limit (1024) in 'test_mark_diskspace_used' [-Werror,-Wframe-larger-than]
+>   506 | static void test_mark_diskspace_used(struct kunit *test)
+>       |             ^
+> 
+> Use kunit_kzalloc() for all inodes. There may be a better way to do it by
+> preallocating the inode, which would result in a larger rework.
+> 
+> Fixes: 2b81493f8eb6 ("ext4: Add unit test for ext4_mb_mark_diskspace_used")
+> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
+> ---
+>  fs/ext4/mballoc-test.c | 27 +++++++++++++++++++++------
+>  1 file changed, 21 insertions(+), 6 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
+> index 12d0b22cabe1..3b43301054b6 100644
+> --- a/fs/ext4/mballoc-test.c
+> +++ b/fs/ext4/mballoc-test.c
+> @@ -332,14 +332,19 @@ static void mbt_kunit_exit(struct kunit *test)
+>  static void test_new_blocks_simple(struct kunit *test)
+>  {
+>  	struct super_block *sb = (struct super_block *)test->priv;
+> -	struct inode inode = { .i_sb = sb, };
+> +	struct inode *inode;
+>  	struct ext4_allocation_request ar;
+>  	ext4_group_t i, goal_group = TEST_GOAL_GROUP;
+>  	int err = 0;
+>  	ext4_fsblk_t found;
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>  
+> -	ar.inode = &inode;
+> +	inode = kunit_kzalloc(test, sizeof(*inode), GFP_KERNEL);
+> +	if (!inode)
+> +		return;
+> +
+> +	inode->i_sb = sb;
+> +	ar.inode = inode;
+>  
+>  	/* get block at goal */
+>  	ar.goal = ext4_group_first_block_no(sb, goal_group);
+> @@ -441,15 +446,20 @@ test_free_blocks_simple_range(struct kunit *test, ext4_group_t goal_group,
+>  {
+>  	struct super_block *sb = (struct super_block *)test->priv;
+>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+> -	struct inode inode = { .i_sb = sb, };
+> +	struct inode *inode;
+>  	ext4_fsblk_t block;
+>  
+> +	inode = kunit_kzalloc(test, sizeof(*inode), GFP_KERNEL);
+> +	if (!inode)
+> +		return;
+> +	inode->i_sb = sb;
+> +
+>  	if (len == 0)
+>  		return;
+>  
+>  	block = ext4_group_first_block_no(sb, goal_group) +
+>  		EXT4_C2B(sbi, start);
+> -	ext4_free_blocks_simple(&inode, block, len);
+> +	ext4_free_blocks_simple(inode, block, len);
+>  	validate_free_blocks_simple(test, sb, goal_group, start, len);
+>  	mbt_ctx_mark_used(sb, goal_group, 0, EXT4_CLUSTERS_PER_GROUP(sb));
+>  }
+> @@ -506,16 +516,21 @@ test_mark_diskspace_used_range(struct kunit *test,
+>  static void test_mark_diskspace_used(struct kunit *test)
+>  {
+>  	struct super_block *sb = (struct super_block *)test->priv;
+> -	struct inode inode = { .i_sb = sb, };
+> +	struct inode *inode;
+>  	struct ext4_allocation_context ac;
+>  	struct test_range ranges[TEST_RANGE_COUNT];
+>  	int i;
+>  
+>  	mbt_generate_test_ranges(sb, ranges, TEST_RANGE_COUNT);
+>  
+> +	inode = kunit_kzalloc(test, sizeof(*inode), GFP_KERNEL);
+> +	if (!inode)
+> +		return;
+> +	inode->i_sb = sb;
+> +
+>  	ac.ac_status = AC_STATUS_FOUND;
+>  	ac.ac_sb = sb;
+> -	ac.ac_inode = &inode;
+> +	ac.ac_inode = inode;
+>  	for (i = 0; i < TEST_RANGE_COUNT; i++)
+>  		test_mark_diskspace_used_range(test, &ac, ranges[i].start,
+>  					       ranges[i].len);
+> 
+Thanks for the fix. Feel free to add:
 
-Thanks,
+Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-> I resent some of the v9 patches and got some reviews from Gabriel,
-> I did changes as requested and here is v12.
->
-> Changes in v12:
-> - revert to v10 comparison with propagating the error code from utf comparison
->
-> Changes in v11:
-> - revert to the original v9 implementation for the comparison helper.
->
-> Changes in v10:
-> - reworked a bit the comparison helper to improve performance by
-> first performing the exact lookup.
->
->
-> * Original commit letter
->
-> The case-insensitive implementations in f2fs and ext4 have quite a bit
-> of duplicated code.  This series simplifies the ext4 version, with the
-> goal of extracting ext4_ci_compare into a helper library that can be
-> used by both filesystems.  It also reduces the clutter from many
-> codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
-> the codeflow now.
->
-> While there, I noticed we can leverage the utf8 functions to detect
-> encoded names that are corrupted in the filesystem. Therefore, it also
-> adds an ext4 error on that scenario, to mark the filesystem as
-> corrupted.
->
-> This series survived passes of xfstests -g quick.
->
->
-> Gabriel Krisman Bertazi (8):
->   ext4: Simplify the handling of cached insensitive names
->   f2fs: Simplify the handling of cached insensitive names
->   libfs: Introduce case-insensitive string comparison helper
->   ext4: Reuse generic_ci_match for ci comparisons
->   f2fs: Reuse generic_ci_match for ci comparisons
->   ext4: Log error when lookup of encoded dentry fails
->   ext4: Move CONFIG_UNICODE defguards into the code flow
->   f2fs: Move CONFIG_UNICODE defguards into the code flow
->
->  fs/ext4/crypto.c   |  19 ++-----
->  fs/ext4/ext4.h     |  35 +++++++-----
->  fs/ext4/namei.c    | 129 ++++++++++++++++-----------------------------
->  fs/ext4/super.c    |   4 +-
->  fs/f2fs/dir.c      | 105 +++++++++++-------------------------
->  fs/f2fs/f2fs.h     |  17 +++++-
->  fs/f2fs/namei.c    |  10 ++--
->  fs/f2fs/recovery.c |   5 +-
->  fs/f2fs/super.c    |   8 +--
->  fs/libfs.c         |  85 +++++++++++++++++++++++++++++
->  include/linux/fs.h |   4 ++
->  11 files changed, 216 insertions(+), 205 deletions(-)
-
--- 
-Gabriel Krisman Bertazi
 
