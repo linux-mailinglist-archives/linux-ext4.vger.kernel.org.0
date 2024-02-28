@@ -1,214 +1,162 @@
-Return-Path: <linux-ext4+bounces-1414-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1415-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA96C86AA78
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Feb 2024 09:53:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F7F486B70B
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Feb 2024 19:19:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E5E22857A2
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Feb 2024 08:53:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD6C71F2746D
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Feb 2024 18:19:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDFFC2D61A;
-	Wed, 28 Feb 2024 08:53:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B3724085D;
+	Wed, 28 Feb 2024 18:19:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fTGyl+jW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f172.google.com (mail-vk1-f172.google.com [209.85.221.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A97C2D604;
-	Wed, 28 Feb 2024 08:53:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE0DA79B72
+	for <linux-ext4@vger.kernel.org>; Wed, 28 Feb 2024 18:19:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709110421; cv=none; b=KWG7I93jmhcbzz52vPSmRZ/pASas2GLaKaC6XbsVgZqa4TVIx0YCZfVt2OM4+QnPY0PYAPv/ZvfBw42Q1nj5jTfUzYsusBNUmN3+B9OnUTjpVOzfd2OKfZd7t36ihsKl5UweKAOYF8Huk02Mfh3atPM+6uaV76OR4Tu0/9WlJaM=
+	t=1709144388; cv=none; b=uQsVTL0slD1TNYh+9LVLeLZRmRjeyc1k7sdKVvSo6LskJ3UCXdjp9FS+JbE4pX2fpzcmC+BiumC3cA7kJm8Es5uSxVGe3yVVPp9Fr1ZmdsVCWqRAeD4+lCAnr0VHjYAehdwwuO8clkEp3KDvThU84Gs5HwhSJ/R/m2eCKFQ44gk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709110421; c=relaxed/simple;
-	bh=LmMn4l1GClZilnMTAowDg6HVHEvvOnMdx2YPGsYQJJE=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=dPUJ4hSltk7sFEhkgCSuV6FJQi9ZQkNurciFwsbIDDG0wgQE4pzkKvSsjOIDCyasxzdnitlT/5BSk9R2BH9AabdlGKY9+F2MjazCNA5pYfwLMhVDW/wibwnQDBw5P9+UzS/QbRzWLdc0pmH8N1d5fkwn3N3evS92YkjtFwg+dvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Tl7Rv0pkKz4f3kKQ;
-	Wed, 28 Feb 2024 16:53:31 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 722071A0172;
-	Wed, 28 Feb 2024 16:53:34 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+RGM9N5lUE2aFQ--.30440S3;
-	Wed, 28 Feb 2024 16:53:34 +0800 (CST)
-Subject: Re: [RFC PATCH v3 07/26] iomap: don't increase i_size if it's not a
- write operation
-To: Christoph Hellwig <hch@infradead.org>, djwong@kernel.org,
- Dave Chinner <david@fromorbit.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
- ritesh.list@gmail.com, willy@infradead.org, zokeefe@google.com,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
- wangkefeng.wang@huawei.com
-References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
- <20240127015825.1608160-8-yi.zhang@huaweicloud.com>
- <ZcsCP4h-ExNOcdD6@infradead.org>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <9b0040ef-3d9d-6246-4bdd-82b9a8f55fa2@huaweicloud.com>
-Date: Wed, 28 Feb 2024 16:53:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1709144388; c=relaxed/simple;
+	bh=2MVim7vcg6zG4dgwBgUbb92jix69yhKFoBEDtfHIlx0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=JJAgZpIKr7vtKH08BlV3mYswHgsrSuyOp43EF5JNBjbBKj4zLf4qi/f0L6nm6FCi3cEp6zkLVYCoKiHV/2+neCOmiUrNEX7xleGR5UhEhLstbIqqVJttEr5wRry/L1z7RwX4ZF9LW9AffHoB1wtLIgpyP7P5wP/gSTSSUePP5wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fTGyl+jW; arc=none smtp.client-ip=209.85.221.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-vk1-f172.google.com with SMTP id 71dfb90a1353d-4d345250ee1so143943e0c.1
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Feb 2024 10:19:46 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1709144386; x=1709749186; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=rOb8MfNZpuDqY+iVoOY3+5jM0jnMc/9y7kDjWXkTChA=;
+        b=fTGyl+jWZKuNVXVlziCkxVyDtGfD/58/xoSGoZ4LFETp28tg0CcD5+WXaiW6I2wdVe
+         phfQYoohOOB63REVdW0RnjSPi2zN578AuljSdFQTHpPMozWhakXrOecR4imWh/jQy9S/
+         l61GCO8vz/x7Go6WefOTf5O84gNL86DLufEWQEVKlEDdU5FUG9gyZ7DJi9612q0oXGYG
+         BeHM8kdmQq6SwbH+YkXqZeQnHj7byAlg6NGawe7CATQPsqdCbIW4Pj+3rLd3WBPw54KH
+         JZBiK/G+hCph9dvqQ7YweeseMs5Z6B2IVlyGhv7HoqS2Meuuuoq0kYAuGOV0zVacA7HS
+         JI1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709144386; x=1709749186;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rOb8MfNZpuDqY+iVoOY3+5jM0jnMc/9y7kDjWXkTChA=;
+        b=D5IWcjnNLGy1Igd93C+6wety7YvvpBecBSNz41mVQCEjm1ZIzchHqvPaocy414bJeV
+         wsusweK1GHvy2uUBjWOb4sChRRvwtKL7YZNAyLenmhZZlNL8gkpa4VLFL9rnvSqOiMIn
+         9mkvEaLBN8XwWBiUE8g2kqDMQNopQUzw8Zqf0DE6IO268/a/P1YY6x8ivj95oNSpvMsF
+         OERPguirN7NWMphOFS/glXa15xbirsSftW65jVXDrC7MJjuOeQafG1Llan6OPxlhB4so
+         cLtXIIBEXnym4/TKieCNhWwVdLLzgAiymB+CKesJY8+SYZ2sf5t3wl3SmdEzlJAYKAFo
+         bCbA==
+X-Forwarded-Encrypted: i=1; AJvYcCUaZjkI31kazpE3U0rORI0fZx43S2Cwu7TaBKEaoxvYlXu3vNxMuC/x6ojYi10Q2R+CGiwMsXCEXIekt8tnE03M8hxQybHgBYpoFA==
+X-Gm-Message-State: AOJu0YwCtbSPOU+jLvGXI9++8QbJLmAikV7HDpJpp7AIDdWRfjhSisu3
+	2VWl+hKfWaAAMfRfToujL+vIuWn/dJR5PDZolloqUdEJVrkpyIcIi/i4WaUIx6l5nQamFOsIUEW
+	jxG+nojHTCwAECPYpM2jz1FxnigbTYAWMZumI/g==
+X-Google-Smtp-Source: AGHT+IFB+2S0GYpst6g5ZGStxLrP8Q9KlA5OQ64ZDp8HQVnU2Dqyt80rQZdiONkWN0JJ7/Bm8xb9EvTiMZllPIL1o7o=
+X-Received: by 2002:a1f:4f41:0:b0:4d3:35ac:3553 with SMTP id
+ d62-20020a1f4f41000000b004d335ac3553mr375587vkb.10.1709144385319; Wed, 28 Feb
+ 2024 10:19:45 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZcsCP4h-ExNOcdD6@infradead.org>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn+RGM9N5lUE2aFQ--.30440S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3AF4fXry7uF47AFy5Zw13urg_yoW7GF4rpF
-	909F4jkan7t3yfWr1kZFs5Xry0vwsaqF4UCry7KrW3Z3Z8JFyIgF17uFWYkFWUXr9xAr1a
-	qF4vva4fuF1UCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
-	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UZ18PUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Wed, 28 Feb 2024 23:49:34 +0530
+Message-ID: <CA+G9fYvnjDcmVBPwbPwhFDMewPiFj6z69iiPJrjjCP4Z7Q4AbQ@mail.gmail.com>
+Subject: fs: ext4_mballoc_test: Internal error: Oops: map_id_range_down (kernel/user_namespace.c:318)
+To: open list <linux-kernel@vger.kernel.org>, linux-ext4 <linux-ext4@vger.kernel.org>, 
+	linux-fsdevel@vger.kernel.org, lkft-triage@lists.linaro.org
+Cc: Jan Kara <jack@suse.cz>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	"Theodore Ts'o" <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>, Randy Dunlap <rdunlap@infradead.org>, 
+	shikemeng@huaweicloud.com, Arnd Bergmann <arnd@arndb.de>, 
+	Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/2/13 13:46, Christoph Hellwig wrote:
-> Wouldn't it make more sense to just move the size manipulation to the
-> write-only code?  An untested version of that is below.  With this
-> the naming of the status variable becomes even more confusing than
-> it already is, maybe we need to do a cleanup of the *_write_end
-> calling conventions as it always returns the passed in copied value
-> or 0.
-> 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index 3dab060aed6d7b..8401a9ca702fc0 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -876,34 +876,13 @@ static size_t iomap_write_end(struct iomap_iter *iter, loff_t pos, size_t len,
->  		size_t copied, struct folio *folio)
->  {
->  	const struct iomap *srcmap = iomap_iter_srcmap(iter);
-> -	loff_t old_size = iter->inode->i_size;
-> -	size_t ret;
-> -
-> -	if (srcmap->type == IOMAP_INLINE) {
-> -		ret = iomap_write_end_inline(iter, folio, pos, copied);
-> -	} else if (srcmap->flags & IOMAP_F_BUFFER_HEAD) {
-> -		ret = block_write_end(NULL, iter->inode->i_mapping, pos, len,
-> -				copied, &folio->page, NULL);
-> -	} else {
-> -		ret = __iomap_write_end(iter->inode, pos, len, copied, folio);
-> -	}
-> -
-> -	/*
-> -	 * Update the in-memory inode size after copying the data into the page
-> -	 * cache.  It's up to the file system to write the updated size to disk,
-> -	 * preferably after I/O completion so that no stale data is exposed.
-> -	 */
-> -	if (pos + ret > old_size) {
-> -		i_size_write(iter->inode, pos + ret);
-> -		iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-> -	}
+Kunit ext4_mballoc_test tests found following kernel oops on Linux next.
+All ways reproducible on all the architectures and steps to reproduce shared
+in the bottom of this email.
 
-I've recently discovered that if we don't increase i_size in
-iomap_zero_iter(), it would break fstests generic/476 on xfs. xfs
-depends on iomap_zero_iter() to increase i_size in some cases.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
- generic/476 75s ... _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
- (see /home/zhangyi/xfstests-dev/results//xfs/generic/476.full for details)
+Test log:
+---------
+<6>[   14.297909]     KTAP version 1
+<6>[   14.298306]     # Subtest: ext4_mballoc_test
+<6>[   14.299114]     # module: ext4
+<6>[   14.300048]     1..6
+<6>[   14.301204]         KTAP version 1
+<6>[   14.301853]         # Subtest: test_new_blocks_simple
+<1>[   14.308203] Unable to handle kernel paging request at virtual
+address dfff800000000000
+<1>[   14.309700] KASAN: null-ptr-deref in range
+[0x0000000000000000-0x0000000000000007]
+<1>[   14.310671] Mem abort info:
+<1>[   14.311141]   ESR = 0x0000000096000004
+<1>[   14.312969]   EC = 0x25: DABT (current EL), IL = 32 bits
+<1>[   14.313566]   SET = 0, FnV = 0
+<1>[   14.314228]   EA = 0, S1PTW = 0
+<1>[   14.314750]   FSC = 0x04: level 0 translation fault
+<1>[   14.316382] Data abort info:
+<1>[   14.316838]   ISV = 0, ISS = 0x00000004, ISS2 = 0x00000000
+<1>[   14.317742]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+<1>[   14.318637]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+<1>[   14.319975] [dfff800000000000] address between user and kernel
+address ranges
+<0>[   14.322307] Internal error: Oops: 0000000096000004 [#1] PREEMPT SMP
+<4>[   14.324184] Modules linked in:
+<4>[   14.326693] CPU: 1 PID: 104 Comm: kunit_try_catch Tainted: G
+            N 6.8.0-rc6-next-20240228 #1
+<4>[   14.327913] Hardware name: linux,dummy-virt (DT)
+<4>[   14.329173] pstate: 11400009 (nzcV daif +PAN -UAO -TCO +DIT
+-SSBS BTYPE=--)
+<4>[ 14.330117] pc : map_id_range_down (kernel/user_namespace.c:318)
+<4>[ 14.331618] lr : make_kuid (kernel/user_namespace.c:415)
+<trim>
+<4>[   14.344145] Call trace:
+<4>[ 14.344565] map_id_range_down (kernel/user_namespace.c:318)
+<4>[ 14.345378] make_kuid (kernel/user_namespace.c:415)
+<4>[ 14.345998] inode_init_always (include/linux/fs.h:1375 fs/inode.c:174)
+<4>[ 14.346696] alloc_inode (fs/inode.c:268)
+<4>[ 14.347353] new_inode_pseudo (fs/inode.c:1007)
+<4>[ 14.348016] new_inode (fs/inode.c:1033)
+<4>[ 14.348644] ext4_mb_init (fs/ext4/mballoc.c:3404 fs/ext4/mballoc.c:3719)
+<4>[ 14.349312] mbt_kunit_init (fs/ext4/mballoc-test.c:57
+fs/ext4/mballoc-test.c:314)
+<4>[ 14.349983] kunit_try_run_case (lib/kunit/test.c:388 lib/kunit/test.c:443)
+<4>[ 14.350696] kunit_generic_run_threadfn_adapter (lib/kunit/try-catch.c:30)
+<4>[ 14.351530] kthread (kernel/kthread.c:388)
+<4>[ 14.352168] ret_from_fork (arch/arm64/kernel/entry.S:861)
+<0>[ 14.353385] Code: 52808004 b8236ae7 72be5e44 b90004c4 (38e368a1)
+All code
+========
+   0: 52808004 mov w4, #0x400                  // #1024
+   4: b8236ae7 str w7, [x23, x3]
+   8: 72be5e44 movk w4, #0xf2f2, lsl #16
+   c: b90004c4 str w4, [x6, #4]
+  10:* 38e368a1 ldrsb w1, [x5, x3] <-- trapping instruction
 
- _check_xfs_filesystem: filesystem on /dev/pmem2 is inconsistent (r)
- *** xfs_repair -n output ***
- Phase 1 - find and verify superblock...
- Phase 2 - using internal log
-         - zero log...
-         - scan filesystem freespace and inode maps...
- sb_fdblocks 10916, counted 10923
-         - found root inode chunk
- ...
+Code starting with the faulting instruction
+===========================================
+   0: 38e368a1 ldrsb w1, [x5, x3]
+<4>[   14.354545] ---[ end trace 0000000000000000 ]---
 
-After debugging and analysis, I found the root cause of the problem is
-related to the pre-allocations of xfs. xfs pre-allocates some blocks to
-reduce fragmentation during buffer append writing, then if we write new
-data or do file copy(reflink) after the end of the pre-allocating range,
-xfs would zero-out and write back the pre-allocate space(e.g.
-xfs_file_write_checks() -> xfs_zero_range()), so we have to update
-i_size before writing back in iomap_zero_iter(), otherwise, it will
-result in stale delayed extent.
+Links:
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240228/testrun/22877850/suite/log-parser-test/test/check-kernel-bug/log
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240228/testrun/22877850/suite/log-parser-test/tests/
+ - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240228/testrun/22877850/suite/log-parser-test/test/check-kernel-bug-43e0665fdb2d5768ac093e1634e6d9a7c65ff1b6a66af7d0c12b3bce5ca7e717/details/
 
-For more details, let's think about this case,
-1. Buffered write from range [A, B) of an empty file foo, and
-   xfs_buffered_write_iomap_begin() prealloc blocks for it, then create
-   a delayed extent from [A, D).
-2. Write back process map blocks but only convert above delayed extent
-   from [A, C) since the lack of a contiguous physical blocks, now we
-   have a left over delayed extent from [C, D), and the file size is B.
-3. Copy range from another file to range [E, F), then
-   xfs_reflink_zero_posteof() would zero-out post eof range [B, E), it
-   writes zero, dirty and write back [C, E).
-4. Since we don't update i_size in iomap_zero_iter()，the writeback
-   doesn't write anything back, also doesn't convert the delayed extent.
-   After copy range, the file size will update to F.
-5. Finally, the delayed extent becomes stale, and the free blocks count
-   becomes incorrect.
+Steps to reproduce:
+ - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2czN4PCDk4BIKg76qUnQE4WkNny/reproducer
 
-So, we have to handle above case for xfs. I suppose we could keep
-increasing i_size if the zeroed folio is entirely outside of i_size,
-make sure we could write back and allocate blocks for the
-zeroed & delayed extent, something like below, any suggestions ?
-
-
-@@ -1390,6 +1390,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
-
- 	do {
- 		struct folio *folio;
-+		loff_t old_size;
- 		int status;
- 		size_t offset;
- 		size_t bytes = min_t(u64, SIZE_MAX, length);
-@@ -1408,6 +1409,28 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
- 		folio_mark_accessed(folio);
-
- 		bytes = iomap_write_end(iter, pos, bytes, bytes, folio);
-+
-+		/*
-+		 * If folio is entirely outside of i_size, update the
-+		 * in-memory inode size after zeroing the data in the page
-+		 * cache to prevent the write-back process from not writing
-+		 * back zeroed pages.
-+		 */
-+		old_size = iter->inode->i_size;
-+		if (pos + bytes > old_size) {
-+			size_t offset = offset_in_folio(folio, old_size);
-+			pgoff_t end_index = old_size >> PAGE_SHIFT;
-+
-+			if (folio->index > end_index ||
-+			    (folio->index == end_index && offset == 0)) {
-+				i_size_write(iter->inode, pos + bytes);
-+				iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
-+			}
-+		}
-+		__iomap_put_folio(iter, pos, bytes, folio);
-+		if (old_size < pos)
-+			pagecache_isize_extended(iter->inode, old_size, pos);
-+
- 		if (WARN_ON_ONCE(bytes == 0))
- 			return -EIO;
-
-Thansk,
-Yi.
-
+--
+Linaro LKFT
+https://lkft.linaro.org
 
