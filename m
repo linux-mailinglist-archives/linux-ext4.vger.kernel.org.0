@@ -1,111 +1,106 @@
-Return-Path: <linux-ext4+bounces-1423-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1424-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 127DD86C092
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 07:10:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91CFC86C327
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 09:09:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1080289AC7
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 06:10:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D0991F239D3
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 08:09:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A6FF3C463;
-	Thu, 29 Feb 2024 06:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47D66481CE;
+	Thu, 29 Feb 2024 08:09:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WgqGxR8x"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="RVC5HiSq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB0D3C460
-	for <linux-ext4@vger.kernel.org>; Thu, 29 Feb 2024 06:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9A046556
+	for <linux-ext4@vger.kernel.org>; Thu, 29 Feb 2024 08:09:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709187026; cv=none; b=bgtO4CAujM30CZNTccNi5cX0CE2SeNbKZ7BAf5HaZv4QFnvEelliXN7IYmeWuKjtIKObeKyCszVhTuM+fGMFVHw/9Ij4f+MKXkyjocL1tXXraZqep1o1zrm5B2ngVjsb5ywN5Y+5OHzNEpt4VGTSy0I+B0/beEHjne/+rrWaKXU=
+	t=1709194163; cv=none; b=Zks2jbsmMbBylmp6BflMhmMAgv7m3ZAMZ04ODLJeqkSxOWLRIjA96Kao1vrSvEg6SZxiSNAAvy98npGopaNw8XyIC0dcSpZBt/pJTbF6KlghhGzO3nNvGqSYHlkUiYXV30COTFOzYd2Pga1RMc0JnIF6vjaAw2F3/bncPOoPsnE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709187026; c=relaxed/simple;
-	bh=DA5WdiM8ZRvQEhZnLVTdgjNusGo7/jHQEtqlalujZbE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AJkqhL9quh3sfDuVXSZqrh1mq77e7SLQBPAx4T+TJfCsHW0Dai2Lnhd/K/nO0RizIBABRGSdoiWGNY7+/hmI/jtcBu8/E9fgIDQfia+gf4nseommn8ubmPrxK8FsWVCVoUh9cPK8ZqdLq1TsPpDNRk7C87WORKzYcThUhG9KtsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WgqGxR8x; arc=none smtp.client-ip=209.85.210.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e57a3bf411so317199b3a.0
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Feb 2024 22:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709187023; x=1709791823; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=10b0aqwZV7A1WQecO+FEcQ0s2q0Z9fMjf242h06tF/A=;
-        b=WgqGxR8xRjGRu35JL1xjLltLnCuufmXvJU9bOhqJKbpbbUexCI93SYqHFbF0xkI3We
-         YGy1+kwkqatt//QgAgFOKWNTVUnPeeriaH/XVa5Va9W71YgLiam8vBlY5e0wkXE3Jc4W
-         nM73b4YBagagvAdQsk9yU44AlQdn1TqDggcjaxi+FiQlUYoZCLyIA7QC4veCusuQbkx5
-         gOFqHeC27ZAFcTl+07RyIrdlmiBrcX3/yp7GTSDxPn219Gp5FziLlBF4tqMiCzOCcTEW
-         5bv/xiBroLswN3SUJqS9o/w3QyjYHwD6CG8YpSgpvQnrwgPDYub7h98mEfUkol+M8YsI
-         nSUg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709187023; x=1709791823;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=10b0aqwZV7A1WQecO+FEcQ0s2q0Z9fMjf242h06tF/A=;
-        b=jVy6cSUy/1w02BBZX2ieJJkWsVq/6rqCCRqm9p6CBwMbXeOfx0R4XU5m5hLFHBqQ/D
-         Oi/e0Fo+rTXbh6dgCw05ghxanbZpx7tZkCtq5yAz5ofIoH1rlwX1/f7UfQaGKYrQu5g1
-         yFrrsng2irvG6lwqWX7yRL4tzyrMpLFjwQZ1u/5txnjwRZBsHjhx4myKOWMaiwSI0KGc
-         x2p7Qt4/XbRwSQKEnEzPmYrDXJCF/5tUf4eVGmaRMyk2iHbShqhyCNkjUWr9MDRkGG9j
-         /9BijNRoVz6RYSCqZgANO0HNDq08SmfnKP36D4wfUb76Y1JwPvgtTHpx8UA6fFjDISFV
-         m9bw==
-X-Gm-Message-State: AOJu0Yxj9wN2rBASL/JlEag0Bg3EUKkgrro/48tjma9uWI8t1NLVtbuN
-	0ok2S6fKnCAkrwf/CsTTybTX3H4B5gVKihSxwbQNn8LhNCZz+d2XbEPvpFTVZGU=
-X-Google-Smtp-Source: AGHT+IH6Pkztg1wJtfh3X6LzsfmDptdJVhhNBuRERGcxrsVNIfOA3eut0DCOZihhFAVf4y1mNjX53Q==
-X-Received: by 2002:aa7:9f0b:0:b0:6e5:696d:9eb8 with SMTP id g11-20020aa79f0b000000b006e5696d9eb8mr1250804pfr.3.1709187023487;
-        Wed, 28 Feb 2024 22:10:23 -0800 (PST)
-Received: from dw-tp.. ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id c25-20020a62e819000000b006e506ff670fsm448996pfi.147.2024.02.28.22.10.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 22:10:22 -0800 (PST)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH 2/2] ext4: Remove PAGE_MASK dependency on mpage_submit_folio
-Date: Thu, 29 Feb 2024 11:40:14 +0530
-Message-ID: <d6eadb090334ea49ceef4e643b371fabfcea328f.1709182251.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cff4953b5c9306aba71e944ab176a5d396b9a1b7.1709182250.git.ritesh.list@gmail.com>
-References: <cff4953b5c9306aba71e944ab176a5d396b9a1b7.1709182250.git.ritesh.list@gmail.com>
+	s=arc-20240116; t=1709194163; c=relaxed/simple;
+	bh=Nf2BX4WBdYo+WUvwb7etgTe/KIm3yi1SETywrZlcWrk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=RRFBBRob3X95UXMLzNC/v9dzDwCyXbuu9vyivpyrFqDbrtPr8isQ9HHV3EAwQZRR884/JZZMThOfnbbNI57a67EKvbGh//QxpRUFiPKKmsI+FckJi1jPpD7QOkjy4RQ6dpgFwYbhHCwu3kYoz4njDSqbyjpxaknB4HZ70qch6ho=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=RVC5HiSq; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (c-73-8-226-230.hsd1.il.comcast.net [73.8.226.230])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 41T899wV016987
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 29 Feb 2024 03:09:10 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1709194151; bh=QqIRc0mPpcip4J3TaeIY6KvwuBzqghkm+QuNDcPFQow=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=RVC5HiSqldEmd6bzJC3Mzc731NtThWMFxSMVM5ZlqDWWNmiF390siOFXswAy8vCrl
+	 n1t0ZhY8Z5bd90gYGtj8v4UdCatevdG56E7GCHkxgqQHyqhmDB8OTGrjTandyE89aO
+	 HOuifQD4saaP9Bdtpx/i12VhuIITVftxnNyUg+qDSVKbOI703Eu1r6BdzKGaAxOnrK
+	 4cuMvMWlfw6islBTLlx9L6YQ3L/Nvia+p1WCj+oHAFCVFpvxHXMwgLr7SId26e803A
+	 mPeIYuA7lf3Y22+bdNw52NE0oRUV3YZdKU5rg1D0Ey4kKn9b5cINFS7rwzN8GUoFtS
+	 vV3eZ+++h7QsA==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id D3572340440; Thu, 29 Feb 2024 02:09:08 -0600 (CST)
+Date: Thu, 29 Feb 2024 02:07:59 -0600
+From: "Theodore Tso" <tytso@mit.edu>
+To: Phillip Susi <phill@thesusis.net>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] [RFC] Fix jbd2 to stop waking up sleeping disks on sync
+Message-ID: <20240229080759.GB57093@macsyma.local>
+References: <20240227212546.110340-1-phill@thesusis.net>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240227212546.110340-1-phill@thesusis.net>
 
-This patch simply removes the PAGE_MASK dependency since
-mpage_submit_folio() is already converted to work with folio.
+On Tue, Feb 27, 2024 at 04:25:46PM -0500, Phillip Susi wrote:
+> I noticed that every time I sync ( which happens automatically when
+> you suspend to ram ), ext4 issues a flush to the block device, even
+> though there have been no writes to flush.  This appears to be because
+> jbd2_trans_will_send_data_barrier() returns a 0 when no transaction
+> has been started.  The intent appears to be that a transaction that
+> has completed should return 0, and that when there is NO transaction,
+> it should return a 1, but the tests were in the wrong order, leading
+> to the 0 to be returned before checking for the absense of a
+> transaction at all.  Reversing the order allows my disk to remain in
+> runtime_pm when syncing.
+> 
+> I *think* this is correct, but I'm not very familliar with jbd2, so it
+> may have unintended consequences.  What do you think?
 
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- fs/ext4/inode.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Yeah, this change is going to problems.  The basic idea here is if
+when we request that a transaction to commit, will it issue a a
+commit?  If so, then fsync(2) doesn't need to issue a barrier (i.e., a
+cache flush command).
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index bab9223d94ac..e8b0773e5d2d 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1865,7 +1865,7 @@ static int mpage_submit_folio(struct mpage_da_data *mpd, struct folio *folio)
- 	len = folio_size(folio);
- 	if (folio_pos(folio) + len > size &&
- 	    !ext4_verity_in_progress(mpd->inode))
--		len = size & ~PAGE_MASK;
-+		len = size & (len - 1);
- 	err = ext4_bio_write_folio(&mpd->io_submit, folio, len);
- 	if (!err)
- 		mpd->wbc->nr_to_write--;
--- 
-2.39.2
+So for example, if a database does an overwriting write to a file
+block which is already allocated, and then follows it up with a
+fdatasync(2), there won't be any need to make any metadata changes as
+part of writing out the changed block.  Hence, we won't need to start
+a new jbd2 transaction, and in that case, current transaction has
+already commited, so the jbd2 layer won't need to do anything, and so
+it won't have issued a commit.  In that case,
+jbd2_trans_will_send_data_barrier() needs to return false, so that
+fdatasync(2) will actually issue a cache flush command.
 
+The patch you've proposed will cause fdatasync(2) to not issue a
+barrier, which could lead to the write to the database file getting
+lost after a power fail event, which would make the database
+adminisrtator very sad.
+
+Cheers,
+
+					- Ted
 
