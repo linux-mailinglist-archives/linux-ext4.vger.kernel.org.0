@@ -1,242 +1,112 @@
-Return-Path: <linux-ext4+bounces-1421-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1422-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 68F7C86BE63
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 02:39:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D444986C091
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 07:10:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9A4171C21E5E
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 01:39:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E842289BCC
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 06:10:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC3232E40F;
-	Thu, 29 Feb 2024 01:39:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E5293BBFD;
+	Thu, 29 Feb 2024 06:10:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AsSP+umK"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gLpM2LI2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ED282D05D
-	for <linux-ext4@vger.kernel.org>; Thu, 29 Feb 2024 01:38:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E0363BBF4
+	for <linux-ext4@vger.kernel.org>; Thu, 29 Feb 2024 06:10:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709170740; cv=none; b=A1XUyzXDzzNoPCi6DPa83bEojLXq27/wpFoWccDW8FMq1Q5h/OJsb/0tiCW7aAMf6J7RfbYNZ25IPwIeuZrA6BW6ADOfi/oUL7DzX6CjusFLHmPkWT8JGaOl5LhCikF1poQa0QVFt2CSefCaUxGZrBBamxSrrH2edUUETInWcKU=
+	t=1709187024; cv=none; b=DtpaTp109s8bX2qVZkrkb2MCnqa29TojEurx+5qx8ENGz9rS/zRNY/6s5E0tpcylPkvhy8fyL1/dckrcOPkmGyYW1GNn3P6jFVYwWgk3EwJ6LCWokb8WF2S8xPTdwNYykm8bIVlOqh+9Ucgg/k6hLzxKorFne6Q76Uat6w0/Fkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709170740; c=relaxed/simple;
-	bh=UPsyAzFMRABJKfND0Izh3TINv5pbspyHYDz+sEhUpSg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=I3CAxBAEOs3jG9rn+gcebnLoWl1AAMGtRqBxSrltJXk+Tkk1D9U8snfmhL2h8VJyZwg7b+1yH4ci9WKUV3iPZMSfzJW8HyS/TaYljmdVlQDbem2hILFDh3nqQOWMN/ox/AGKS08NIcs5sJaw4RcUg6Exzk1x37o8N+Z8osGnGxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AsSP+umK; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1709170737;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EEeQkB95h/ydVzYCSEU8UvyiVcNyESf8j4dt1oMJMIE=;
-	b=AsSP+umKcCAeVXFyNfoDH6hwxI4/QFzkzvcg0EzcQyRu6JJbwFjIirD+M6vQ35lN1+VIQB
-	R2tgr2IxR0k1dvcbyUDFyCb7CO1OxhDNj5e9aTXLyJKauUVZtHaIslJmMJeYOK0ihfzoxb
-	9K+53EWsdVvBVEKl/EGFJONKDsxpoEk=
-Received: from mail-oi1-f200.google.com (mail-oi1-f200.google.com
- [209.85.167.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-pwVl3GrGMBCPiBh3ovTDWw-1; Wed, 28 Feb 2024 20:38:53 -0500
-X-MC-Unique: pwVl3GrGMBCPiBh3ovTDWw-1
-Received: by mail-oi1-f200.google.com with SMTP id 5614622812f47-3c1a4222aa2so420671b6e.0
-        for <linux-ext4@vger.kernel.org>; Wed, 28 Feb 2024 17:38:53 -0800 (PST)
+	s=arc-20240116; t=1709187024; c=relaxed/simple;
+	bh=5mtKV3lq32PRHhvk5ozP22Uq/yyEIZ/zp9p0r0Gxp58=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=awcWEM6vAvXMtK82cHtN8OjynntkZKAsPlco3GIGnjGOybM0dGvhvjBWtOIDCVfMXkWep0h7IadBFEjATOsNQuh5+ZKvzOFcRgs0dXPXr8uIKhtjLprt1TTDPS3COFpxi8ZbDi96wf5yatUPPQvgXufI0S4xEfaeyReKVIwpm/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gLpM2LI2; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e55afcf513so306623b3a.1
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Feb 2024 22:10:23 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709187021; x=1709791821; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Q5P8oG1c/7DSESFr6JtoQmKhazwi5rpIXaMqKZ57x4o=;
+        b=gLpM2LI249tXMRigMw2S5H52XsInSDWOgB5G5znFuVaMCcQLNCGwSspYCHxJau9xZL
+         FP+DDJIJHiw+aLlShaym3inFLUsRhZad/hv1ZZja3cQNJ0AX8TgK9raVGPjC/2BJRwVM
+         XPXI/u8WYwzb0WZlAWEBIhoUcswW6YIivHJUa7d67CPAAbQ5SUzRJmzqB5yLq3J+yIAv
+         F2QhgczIlzflT2BSKB/gS3UaH28vS8ulXVwcxG27twrcGWcUR84CoW2dHpvZS73LKMNM
+         51n4a2Wpli0/fWgSmspYmvMgRgF+33SLBY6ePEqKWgFL38x5+PghvEwpSSuDQzWOWkpc
+         1HHQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709170733; x=1709775533;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EEeQkB95h/ydVzYCSEU8UvyiVcNyESf8j4dt1oMJMIE=;
-        b=cBUjc5w4xujbJ7rp+eRnVqer8DeCLuhdsXaLObJIRW9GjLKrZzDziBo/dLpFUw0q+C
-         hxuMM/IIivekmofxYKaawqyr1UrkzrfQ+dCN5v3xt3x7eHHU6Xk4CLsSgeEuL5rwMNQz
-         xdpcprgrsoBsdnaFSX0JPavDsw4LMUjxjYKL2mmH7FnqkgLzT+zpK91x5h3ft3VP4Dvr
-         JBWYBetfUteQG2JhFEPC2paxQFKd1QPF9L1RMUZs2Kl7/gMEhEHFU65DNwCkyuVR8Ruz
-         p6bNe/yBegV0f7wN0kxETAgroecXj1LV/C1RRBUFooy2l9uizXZ9m3TusKGYMlsllx73
-         timw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/2xN2wNKMsh74KQMbZxg0a8khvgMDR3uRGXgJgbQScUEZrbXkxp35K/gParmrSgUN3iXF4f9Q5MbMipUPFtsAWUWl73oYqSSJRA==
-X-Gm-Message-State: AOJu0Yyxiiw1B4LYBoT5IMUVY9WurByv3XvRCdLQt+MCBANP0/5Z3shd
-	HMZ7s3UP2vcReyOu3NHtr39aYOH5dHPtv2CsysCdAibZweecF57Eiyw1ZBWg1AGdINlJdCtf6Nj
-	64gmXY55TEnVBSdUGsDVYafu4ZmxhwLbh+YDnlCNigFWYU1tmL/zQQCE5LcSlGNarDOCUHQ==
-X-Received: by 2002:a05:6808:2219:b0:3c1:c202:ed53 with SMTP id bd25-20020a056808221900b003c1c202ed53mr959409oib.44.1709170732818;
-        Wed, 28 Feb 2024 17:38:52 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IFDi4s0RXs79xYyW9nGTl/246WfdfXb9pjLope7l8Q9DyWiNClhKd8eWDSYmqjxmMO863CZ7A==
-X-Received: by 2002:a05:6808:2219:b0:3c1:c202:ed53 with SMTP id bd25-20020a056808221900b003c1c202ed53mr959400oib.44.1709170732540;
-        Wed, 28 Feb 2024 17:38:52 -0800 (PST)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id c11-20020a63da0b000000b005bd980cca56sm132958pgh.29.2024.02.28.17.38.50
+        d=1e100.net; s=20230601; t=1709187021; x=1709791821;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Q5P8oG1c/7DSESFr6JtoQmKhazwi5rpIXaMqKZ57x4o=;
+        b=qEbA5Hg92oTnfRPoZc8Fdlfcreb+ZM32YElxFSE2zVRGnQe4wpO0psVZ1hOZZRRFqF
+         GWm1GZ6XjrWF4XLS1jJpk6PsJifevKe3hJCA4hJrOzb46W2avF3IL+tXEqIiIRyco8uE
+         FTbaLr9UZJKpnNR9kMZb28bg1V/C05CxKeZxYfxYmwGpzH8cbX9FqbN8TFxWYN5wP9f3
+         teN0ggBrqiEPCQzgc3pS+VQX9WLhXtXRXpD+LHQtfwwT7rVYQOgjQ+J2fkRoYkMeWWV4
+         jh1n05WrA6BwJYyVZQvrPAVs/IYA8UXche+DkGbdkHT/6Y4P6MtMFRCo3L1ktgMb1eKz
+         qkKw==
+X-Gm-Message-State: AOJu0YzQuceMa7+j/rkcu+P5F+z85cD/Bc+6c2c7/o+ANKaLpcn3mxgn
+	i9oUhsrrkhVJ5xS694y6sZYKuLmDoCet6q1oz6qKEzL+j5fGtLFE58KF07MlzEc=
+X-Google-Smtp-Source: AGHT+IH2N5ueCq5ZEixlBtgShNVlRSJHHHpe2VGnG01ji6ImzEE6ScvhimLTxAuAYFnX8R06oKiqNg==
+X-Received: by 2002:a05:6a00:4fc5:b0:6e4:d3b1:76ca with SMTP id le5-20020a056a004fc500b006e4d3b176camr1451309pfb.16.1709187021483;
+        Wed, 28 Feb 2024 22:10:21 -0800 (PST)
+Received: from dw-tp.. ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id c25-20020a62e819000000b006e506ff670fsm448996pfi.147.2024.02.28.22.10.19
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 28 Feb 2024 17:38:52 -0800 (PST)
-Date: Thu, 29 Feb 2024 09:38:48 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Suraj Jitindar Singh <surajjs@amazon.com>
-Cc: fstests@vger.kernel.org, sjitindarsingh@gmail.com,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4/060: Test marking last group as trimmed
-Message-ID: <20240229013848.3kqkj6sytp7xs3oh@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <20240228211612.2602355-1-surajjs@amazon.com>
+        Wed, 28 Feb 2024 22:10:20 -0800 (PST)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: Jan Kara <jack@suse.cz>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	stable@kernel.org
+Subject: [PATCH 1/2] ext4: Fixes len calculation in mpage_journal_page_buffers
+Date: Thu, 29 Feb 2024 11:40:13 +0530
+Message-ID: <cff4953b5c9306aba71e944ab176a5d396b9a1b7.1709182250.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228211612.2602355-1-surajjs@amazon.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Feb 28, 2024 at 01:16:12PM -0800, Suraj Jitindar Singh wrote:
-> Regression test for upstream commit added in v6.8-rc1:
-> 7c784d624819a ext4: allow for the last group to be marked as trimmed
-> 
-> Which fixes bug introduced by upstream commit in v6.6-rc2:
-> 45e4ab320c9b5 ext4: move setting of trimmed bit into ext4_try_to_trim_range()
-> 
-> Applicable to kernels 4.19..6.7:
-> Kernel		Bug Introduced			Bug Fixed
-> 		kver      - commit sha		kver      - commit sha
-> 4.19		v4.19.296 - d61445f6a5c57	v4.19.307 - 5b6a7f323b533
-> 5.4		v5.4.258  - 4db34feaf2977	v5.4.269  - a7edaf40fccae
-> 5.10		v5.10.198 - c502b09d9befc	v5.10.210 - fa94912241835
-> 5.15		v5.15.134 - a9d3bb58da959	v5.15.149 - cb904f5c71629
-> 6.1		v6.1.56   - b4d5db1c77fac	v6.1.76   - 852b6b2a2f7b7
-> 6.6		v6.6-rc2  - 45e4ab320c9b5	v6.6.15   - da9008da96404
-> 6.7		v6.6-rc2  - 45e4ab320c9b5	v6.7.3    - 73986e8d2808c
-> 
-> Signed-off-by: Suraj Jitindar Singh <surajjs@amazon.com>
-> ---
->  tests/ext4/060     | 62 ++++++++++++++++++++++++++++++++++++++++++++++
->  tests/ext4/060.out |  2 ++
+Truncate operation can race with writeback, in which inode->i_size can get
+truncated and therefore size - folio_pos() can be negative. This fixes the
+len calculation. However this path doesn't get easily triggered even
+with data journaling.
 
-Great, a new ext4 case :) CC ext4 list to get more review :)
+Cc:  <stable@kernel.org> # v6.5
+Fixes: 80be8c5cc925 ("Fixes: ext4: Make mpage_journal_page_buffers use folio")
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+---
+ fs/ext4/inode.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
->  2 files changed, 64 insertions(+)
->  create mode 100755 tests/ext4/060
->  create mode 100644 tests/ext4/060.out
-> 
-> diff --git a/tests/ext4/060 b/tests/ext4/060
-> new file mode 100755
-> index 00000000..cc5f3819
-> --- /dev/null
-> +++ b/tests/ext4/060
-> @@ -0,0 +1,62 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +#
-> +# FS QA Test No. 309
-> +#
-> +# Regression test for upstream commit added in v6.8-rc1:
-> +# 7c784d624819a ext4: allow for the last group to be marked as trimmed
-> +#
-> +# Which fixes bug introduced by upstream commit in v6.6-rc2:
-> +# 45e4ab320c9b5 ext4: move setting of trimmed bit into ext4_try_to_trim_range()
-> +#
-> +# Applicable to kernels 4.19..6.7:
-> +# Kernel	Bug Introduced			Bug Fixed
-> +#		kver      - commit sha		kver      - commit sha
-> +# 4.19		v4.19.296 - d61445f6a5c57	v4.19.307 - 5b6a7f323b533
-> +# 5.4		v5.4.258  - 4db34feaf2977	v5.4.269  - a7edaf40fccae
-> +# 5.10		v5.10.198 - c502b09d9befc	v5.10.210 - fa94912241835
-> +# 5.15		v5.15.134 - a9d3bb58da959	v5.15.149 - cb904f5c71629
-> +# 6.1		v6.1.56   - b4d5db1c77fac	v6.1.76   - 852b6b2a2f7b7
-> +# 6.6		v6.6-rc2  - 45e4ab320c9b5	v6.6.15   - da9008da96404
-> +# 6.7		v6.6-rc2  - 45e4ab320c9b5	v6.7.3    - 73986e8d2808c
-> +
-> +. ./common/preamble
-> +_begin_fstest auto
-> +
-> +# Override the default cleanup function.
-> +_cleanup()
-> +{
-> +    _scratch_unmount
-
-This cleanup is useless, the SCRATCH_DEV will be unmounted and checked by default,
-so you can remove this specific _cleanup if you don't need other cleanup steps.
-
-> +}
-> +
-> +# Import common functions.
-> +. ./common/filter
-> +
-> +# real QA test starts here
-> +_supported_fs ext4
-
-fstrim isn't an ext4 specific operation. Can this case be a generic case?
-And you can have:
-
-[[ "$FSTYP" =~ ext[0-9]+ ]] && _fixed_by_kernel_commit 7c784d624819a \
-	ext4: allow for the last group to be marked as trimmed
-
-> +
-> +_require_scratch
-> +_require_fstrim
-> +
-> +# Make an ext4 fs where the last group has fewer blocks than blocks per group
-> +blksz=$(_get_page_size)
-> +blocks_per_group=8192
-> +
-> +$MKFS_EXT4_PROG -F -b $blksz -g $blocks_per_group $SCRATCH_DEV $(( blocks_per_group - 1 )) >>$seqres.full 2>&1
-
-Can it be replaced by _scratch_mkfs_sized? e.g.
-
-MKFS_OPTIONS="-b $blksz -g $blocks_per_group" _scratch_mkfs_sized $(( blocks_per_group - 1 )) >> $seqres.full 2>&1
-
-If you don't mind the effection of $MKFS_OPTIONS outside, you can keep it:
-MKFS_OPTIONS="-b $blksz -g $blocks_per_group $MKFS_OPTIONS" ....
-
-And of course better to check if the mkfs fails or not:
-
-... _scratch_mkfs_sized .... || _fail "......"
-
-It also helps to make this case be generic.
-
-> +_scratch_mount
-> +
-> +$FSTRIM_PROG -v $SCRATCH_MNT >>$seqres.full 2>&1
-
-Due to _require_fstrim only checks [ -z "$FSTRIM_PROG" ], the fstrim might still not
-be supported by the SCRATCH_DEV, so we can check at here:
-
-$FSTRIM_PROG -v $SCRATCH_MNT >>$seqres.full 2>&1 || _notrun "FSTRIM not supported"
-
-> +# If we have the fix commit then the above trim command should have marked the
-> +# group as trimmed and subsequent trim operations shouldn't discard anything.
-> +# If we don't have the fix commit then the group won't have been marked as
-> +# trimmed and the below trim operation will discard more than 0.
-> +bytes=$($FSTRIM_PROG -v $SCRATCH_MNT | tee -a $seqres.full | _filter_fstrim)
-> +if [ $bytes -gt 0 ]; then
-> +	status=1
-> +	echo "Final group in filesystem not marked as trimmed after trimming entire fs."
-> +else
-> +	status=0
-> +	echo "Final group in filesystem correctly marked as trimmed after trimming entire fs."
-> +fi
-
-How about simplify this part as:
-
-  $FSTRIM_PROG -v $SCRATCH_MNT | _filter_scratch
-
-It will get "SCRATCH_MNT: 0 B (0 bytes) trimmed" as golden image (in .out file).
-So if it's "0", then the test will fail by the golden image broken.
-
-> +
-> +exit
-> diff --git a/tests/ext4/060.out b/tests/ext4/060.out
-> new file mode 100644
-> index 00000000..f3457134
-> --- /dev/null
-> +++ b/tests/ext4/060.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 060
-> +Final group in filesystem correctly marked as trimmed after trimming entire fs.
-> -- 
-> 2.34.1
-> 
-> 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 537803250ca9..bab9223d94ac 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -2334,7 +2334,7 @@ static int mpage_journal_page_buffers(handle_t *handle,
+ 
+ 	if (folio_pos(folio) + len > size &&
+ 	    !ext4_verity_in_progress(inode))
+-		len = size - folio_pos(folio);
++		len = size & (len - 1);
+ 
+ 	return ext4_journal_folio_buffers(handle, folio, len);
+ }
+-- 
+2.39.2
 
 
