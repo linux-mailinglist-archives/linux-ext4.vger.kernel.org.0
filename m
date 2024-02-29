@@ -1,118 +1,77 @@
-Return-Path: <linux-ext4+bounces-1430-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1432-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32BE86C85D
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 12:46:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5459186CB66
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 15:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 99B741F247EA
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 11:46:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BACF1F2515F
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Feb 2024 14:24:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F32367D09B;
-	Thu, 29 Feb 2024 11:45:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440F11361D3;
+	Thu, 29 Feb 2024 14:23:44 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from vps.thesusis.net (vps.thesusis.net [34.202.238.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206917C6D2;
-	Thu, 29 Feb 2024 11:45:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 796DC12F58D
+	for <linux-ext4@vger.kernel.org>; Thu, 29 Feb 2024 14:23:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.202.238.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709207137; cv=none; b=FkwW9lJP2IkkEs2JpH/KlataUMMQuMAxX5At28vnfOjXvdTF95uIv5dA4+1l9vUVzU/86h3DApvlNzmy+z5eC181oB5hQLF3nnBNdmcDzMmjwu/09iuPEizAQWJ0TQJDU0AmpW+HCa+p2LcUeY+Pc3Xvf1CVIhrSdK28Nv0c4XY=
+	t=1709216624; cv=none; b=mdTW2XNEHI1u9G1i8IK/ywF6HXx+9yGHYfSYBlru3HYYHROEvG6gX4+cYC7vfoMmr6E2yP9SBBz0zsxQhFYPslK4RQKfmCFkoTQNdjv84ZTZKUENhQxZvX17/9+C1RVIJO9edxwosFFxVH9MJcCBnPNBVYlxOlBwveuewoxtFqQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709207137; c=relaxed/simple;
-	bh=jsKCtJRRKaJUiyg4hQpnl4lXKjzxpQzJM96ZLAswM1U=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nTJk4a7ox/Ysm5+VTRp66E6CKzWiemB1swaS/Comtsy6GX8qN7jhGJNTsTGBDAIBsGvm1ASv7MaG3wyqth0mLE+yKSt3kuPJMJQYDFVF9OnHYQGV0DHhuyhP32TdWHp8ZMvFQmQKP7FKYEhlTv7X6mG9rP6JO6qi7QfUKb0mtsw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Tlq9J2Zkdz1Q9Mp;
-	Thu, 29 Feb 2024 19:43:16 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9670D140390;
-	Thu, 29 Feb 2024 19:45:32 +0800 (CST)
-Received: from huawei.com (10.175.104.67) by kwepemm600013.china.huawei.com
- (7.193.23.68) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 29 Feb
- 2024 19:45:31 +0800
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-To: <brauner@kernel.org>, <david@fromorbit.com>, <djwong@kernel.org>,
-	<jack@suse.cz>, <tytso@mit.edu>
-CC: <linux-xfs@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-	<yi.zhang@huawei.com>
-Subject: [PATCH RFC 2/2] ext4: Optimize endio process for DIO overwrites
-Date: Thu, 29 Feb 2024 19:38:49 +0800
-Message-ID: <20240229113849.2222577-3-chengzhihao1@huawei.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240229113849.2222577-1-chengzhihao1@huawei.com>
-References: <20240229113849.2222577-1-chengzhihao1@huawei.com>
+	s=arc-20240116; t=1709216624; c=relaxed/simple;
+	bh=Z/Ix3tOT6a0nAt88mwf6cU0mTWv1qJyE2c4TbTKeo8c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AGoaN5t2H85mp5sc+WOG3AiDm55/HAmUIsNYrBz+9VazKlsvO3i2gfIpgIYvO1p6jtFQYri21u8SM35dwKpCjliyW18TB/wa5DXYCavm27uGyE5ZZcOr15qPqwdpTLR25eg+mZcP6uAVifCILm8N/MOsCFcc9cud8Wz4zu0AuDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thesusis.net; spf=pass smtp.mailfrom=thesusis.net; arc=none smtp.client-ip=34.202.238.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=thesusis.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=thesusis.net
+Received: by vps.thesusis.net (Postfix, from userid 1000)
+	id A25DB27856; Thu, 29 Feb 2024 09:23:35 -0500 (EST)
+From: Phillip Susi <phill@thesusis.net>
+To: Theodore Tso <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] [RFC] Fix jbd2 to stop waking up sleeping disks on sync
+In-Reply-To: <20240229080759.GB57093@macsyma.local>
+References: <20240227212546.110340-1-phill@thesusis.net>
+ <20240229080759.GB57093@macsyma.local>
+Date: Thu, 29 Feb 2024 09:23:35 -0500
+Message-ID: <87edcv1h94.fsf@vps.thesusis.net>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- kwepemm600013.china.huawei.com (7.193.23.68)
 
-In DIO overwriting case, there is no need to convert unwritten exntents
-and ext4_handle_inode_extension() can be ignored, which means that endio
-process can be executed under irq context. Since commit 240930fb7e6b5
-("ext4: dio take shared inode lock when overwriting preallocated blocks")
-has provided a method to judge whether overwriting is happening, just do
-nothing in endio process if DIO overwriting happens.
-This patch enables ext4 processing endio under irq context in DIO
-overwriting case, which brings a performance improvement in the
-following fio test on a x86 physical machine with nvme when irq
-and fio run on the same cpu:
+"Theodore Tso" <tytso@mit.edu> writes:
 
-Test: fio -direct=1 -iodepth=128 -rw=randwrite -ioengine=libaio -bs=4k
--size=2G -numjobs=1 -overwrite=1 -time_based -runtime=60 -group_reporting
--filename=/test/test -name=Rand_write_Testing --cpus_allowed=1
+> Yeah, this change is going to problems.  The basic idea here is if
+> when we request that a transaction to commit, will it issue a a
+> commit?  If so, then fsync(2) doesn't need to issue a barrier (i.e., a
+> cache flush command).
+>
+> So for example, if a database does an overwriting write to a file
+> block which is already allocated, and then follows it up with a
+> fdatasync(2), there won't be any need to make any metadata changes as
+> part of writing out the changed block.  Hence, we won't need to start
+> a new jbd2 transaction, and in that case, current transaction has
+> already commited, so the jbd2 layer won't need to do anything, and so
+> it won't have issued a commit.  In that case,
+> jbd2_trans_will_send_data_barrier() needs to return false, so that
+> fdatasync(2) will actually issue a cache flush command.
+>
+> The patch you've proposed will cause fdatasync(2) to not issue a
+> barrier, which could lead to the write to the database file getting
+> lost after a power fail event, which would make the database
+> adminisrtator very sad.
 
-before: 953 MiB/s  after: 1350 MiB/s, ~41% perf improvement.
-
-Suggested-by: Zhang Yi <yi.zhang@huawei.com>
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
----
- fs/ext4/file.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 54d6ff22585c..411a05c6b96e 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -503,6 +503,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 	loff_t offset = iocb->ki_pos;
- 	size_t count = iov_iter_count(from);
- 	const struct iomap_ops *iomap_ops = &ext4_iomap_ops;
-+	const struct iomap_dio_ops *iomap_dops = &ext4_dio_write_ops;
- 	bool extend = false, unwritten = false;
- 	bool ilock_shared = true;
- 	int dio_flags = 0;
-@@ -572,9 +573,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		ext4_journal_stop(handle);
- 	}
- 
--	if (ilock_shared && !unwritten)
-+	if (ilock_shared && !unwritten) {
- 		iomap_ops = &ext4_iomap_overwrite_ops;
--	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
-+		iomap_dops = NULL;
-+		dio_flags = IOMAP_DIO_MAY_INLINE_COMP;
-+	}
-+	ret = iomap_dio_rw(iocb, from, iomap_ops, iomap_dops,
- 			   dio_flags, NULL, 0);
- 	if (ret == -ENOTBLK)
- 		ret = 0;
--- 
-2.39.2
-
+So because no metadata changed, jbd2 will not issue a barrier to end the
+transaction?  How can we fix this then?  Is there some way that jbd2 can
+know whether file data has been written, and thus, issue the barrier to
+close the transaction?
 
