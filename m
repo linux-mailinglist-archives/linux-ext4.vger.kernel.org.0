@@ -1,236 +1,121 @@
-Return-Path: <linux-ext4+bounces-1445-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1449-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44DAE86D86D
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Mar 2024 01:41:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0792186D9FC
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Mar 2024 04:20:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C87C61F239AB
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Mar 2024 00:41:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1C9881C20EA2
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Mar 2024 03:20:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FB41747D;
-	Fri,  1 Mar 2024 00:41:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="RUc4p1qK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A57E141744;
+	Fri,  1 Mar 2024 03:20:09 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D9A54C99
-	for <linux-ext4@vger.kernel.org>; Fri,  1 Mar 2024 00:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46CC8405CB;
+	Fri,  1 Mar 2024 03:20:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709253659; cv=none; b=YGn9qQy7UCn9zx84+7kp+nFDwwCMOOrL46bAD1M4Xe6EZOldzCPHWdQi8KPgqr9j4o0uGbTummbY9s43IyjShatXCUSa1E418wSGiwKtxrHFEsT7bxGIK4rCUhwbg8A31khAr9sSsrncy3iAs/RDvBZbCnp5T53nGu4a7QmpRRk=
+	t=1709263209; cv=none; b=A3yThXoWDWZWxiIv7mAliuRwqQ5E7Yo6560GnpvYuhBBunGRIBQ7y2GL2UkXNzZZ3Ns6WovtCnonBoLmHyLAY+DX/o4l/UB4vl8DhYUGogiiPMzPnFQ57H+sOp4UjDGogGabC6jfcVU9F+YyLNYnJUZWnWs/MScJoh+UCOgJlTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709253659; c=relaxed/simple;
-	bh=Jd55ktx7sIvEBT3eIFkfgxP4nZ+VdQo972+ClU6asOM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Lbc+VLef1c3b2s55SzZBBv6ABD6Wh19dEa9jaLAIsJSEZszYwk3/lg4Fv7Wk7DUcxjUn5cKYJWeqW9Ur7tKPdw4CVdSGCdws7vF9Yg26kTclcMq3INyf/ncC9ZG9cRfpZf6f30GKpiE2DcHbyjpUgLZvE01qcvO99Lw02cbsvzw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=RUc4p1qK; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e5a50d91b4so937995b3a.2
-        for <linux-ext4@vger.kernel.org>; Thu, 29 Feb 2024 16:40:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1709253656; x=1709858456; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=kfSdJtng8toNd1HcgJhNo8INQxZO5f83GRD0aHxNifg=;
-        b=RUc4p1qKmj962PYnox1SZNSUSj04bVdEguBT5lWMAAeHx7mLna89MVimkGihnnwevq
-         jbX0lNdIilTcfxbkGrnwUGGMbrKNrz7T/UGyNt3/Sm4Ee1l6CizK9IDuPIcvyt+58wVK
-         ecR7/VbKL4IaHEg7JgxjdpKTusOHtwMN9xINjoRaWz0o6EiwExSnNE/nRloezuzi8auo
-         PG4K+EGGnbSgq74Y9/g6wTxCBfTpbIxS3zGEDpCh1S19Z0cpyoeXSw66XSD4iy3XN8DL
-         F0bSZPdDQzC6aXIoJOyTD043jONo9zWrVsdRdPRnCNvPnAPpPmhLOClXbYCF9HWrmVp5
-         sNLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709253656; x=1709858456;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kfSdJtng8toNd1HcgJhNo8INQxZO5f83GRD0aHxNifg=;
-        b=s3EIP45v2ybKLphVQOSo+wHgH6u2rrhn7Q5A9htl86/PguwC6bpmBTvCpkH9h8xmVN
-         mlsqXfancrgLS9GGCvZCpR/mHzT2Tr+/vXBMYLq8fROWC9NLU4q+zL9CYtoqyq9CTb3F
-         LswVUJf6l7Qz70VgADrK+AX1IQmOMt7oHjjn06srOYK3Tm5AP7g3aV9Bap3/Zb6qIoVZ
-         eCfNeeEaOAOUac5amxPIoVEqayUB16l+5d0s3RjsZTQxQ9I2m4nTrtFTbAyyTCv92CKb
-         lux8mFNhYjekSPOeKCsRzWncbjpVTJMGZErcPPUIrkzbS4ilnyVwHg8IIf3CinvnFw0G
-         6Jyg==
-X-Forwarded-Encrypted: i=1; AJvYcCUyYEcLb+6lDKpMb5t2APZ+c+D8d2eTG5DOcwHkmWsbGVLUj4tjXYb+SQYT1314RDtbWaAk29JEE9OnmPSskejW0N509zbtN8P+Mw==
-X-Gm-Message-State: AOJu0YwtW5ggD/bEm8mZc+jsRo8sbFAiY2thj1NvB4vESBm804JEim3N
-	8ZNW9Eh5Bv0eZ3vjQ6XhU9nE3FI57d1oALvLrIh+yDa9wpGegQYFghOJstGAwbU=
-X-Google-Smtp-Source: AGHT+IG9nkRVk+NgGLMyPlKdjw+Y3IsswCmGwjGEj2FO0wwKgpYsp4rScEINGBD3rE4r1rC3yAQIBg==
-X-Received: by 2002:a05:6a00:4f94:b0:6e4:ea68:633f with SMTP id ld20-20020a056a004f9400b006e4ea68633fmr366985pfb.20.1709253656373;
-        Thu, 29 Feb 2024 16:40:56 -0800 (PST)
-Received: from dread.disaster.area (pa49-181-247-196.pa.nsw.optusnet.com.au. [49.181.247.196])
-        by smtp.gmail.com with ESMTPSA id y13-20020aa7854d000000b006e56cc934b8sm1837363pfn.154.2024.02.29.16.40.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Feb 2024 16:40:55 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rfqxJ-00DKr4-1Q;
-	Fri, 01 Mar 2024 11:40:53 +1100
-Date: Fri, 1 Mar 2024 11:40:53 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: Zhihao Cheng <chengzhihao1@huawei.com>
-Cc: brauner@kernel.org, djwong@kernel.org, jack@suse.cz, tytso@mit.edu,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	yi.zhang@huawei.com
-Subject: Re: [PATCH RFC 1/2] iomap: Add a IOMAP_DIO_MAY_INLINE_COMP flag
-Message-ID: <ZeEkFUCUQ4eR7AlX@dread.disaster.area>
-References: <20240229113849.2222577-1-chengzhihao1@huawei.com>
- <20240229113849.2222577-2-chengzhihao1@huawei.com>
+	s=arc-20240116; t=1709263209; c=relaxed/simple;
+	bh=Dz0XRmkbchTi9//0KHWboxe68ipFLFpvysUBofhP67c=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=nJrm4emEuvkiL/tqcuu9r4dBXC6XEtGk4cra8Ppr08DLLL4o1v5j3HZ5JF2kGa3XXBJgzQIwR3QZn/fPBAtz1oGZolX/FNGS6FEq4YHMrkWNNgTD7kMCW1EDY9Fbe7nYOrpyb695GgNH+DfCci1gmVBzHo7L7gkHEoFS5uWsesw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TmCy33gwNz4f3m7B;
+	Fri,  1 Mar 2024 11:19:55 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DCB351A0B4F;
+	Fri,  1 Mar 2024 11:20:02 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgBHmGpeSeFl6DqnFg--.7387S2;
+	Fri, 01 Mar 2024 11:20:00 +0800 (CST)
+Subject: Re: ext4_mballoc_test: Internal error: Oops: map_id_range_down
+ (kernel/user_namespace.c:318)
+To: Guenter Roeck <linux@roeck-us.net>, =?UTF-8?Q?Daniel_D=c3=adaz?=
+ <daniel.diaz@linaro.org>, Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: open list <linux-kernel@vger.kernel.org>,
+ linux-ext4 <linux-ext4@vger.kernel.org>, linux-fsdevel@vger.kernel.org,
+ lkft-triage@lists.linaro.org, Jan Kara <jack@suse.cz>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>,
+ Christian Brauner <brauner@kernel.org>, Randy Dunlap
+ <rdunlap@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
+ Dan Carpenter <dan.carpenter@linaro.org>
+References: <CA+G9fYvnjDcmVBPwbPwhFDMewPiFj6z69iiPJrjjCP4Z7Q4AbQ@mail.gmail.com>
+ <CAEUSe79PhGgg4-3ucMAzSE4fgXqgynAY_t8Xp+yiuZsw4Aj1jg@mail.gmail.com>
+ <7e1c18e3-7523-4fe6-affe-d3f143ad79e3@roeck-us.net>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <be57cb0f-faaf-ba19-ea8e-8c1ed341d2d3@huaweicloud.com>
+Date: Fri, 1 Mar 2024 11:19:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229113849.2222577-2-chengzhihao1@huawei.com>
+In-Reply-To: <7e1c18e3-7523-4fe6-affe-d3f143ad79e3@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgBHmGpeSeFl6DqnFg--.7387S2
+X-Coremail-Antispam: 1UD129KBjvdXoW7GFyDAF1fKr17XF18CFW8tFb_yoWDCFg_uF
+	W3uw1DWr1kJF409anxAFnIkFsxGFZ8XF1rX348J3y3uw1rJryrArn3Cr93Was7uFWxXrsI
+	kr1q93Z2qw4UujkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIkYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_
+	GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Thu, Feb 29, 2024 at 07:38:48PM +0800, Zhihao Cheng wrote:
-> It will be more efficient to execute quick endio process(eg. non-sync
-> overwriting case) under irq process rather than starting a worker to
-> do it.
-> Add a flag to control DIO to be finished inline(under irq context), which
-> can be used for non-sync overwriting case.
-> Besides, skip invalidating pages if DIO is finished inline, which will
-> keep the same logic with dio_bio_end_aio in non-sync overwriting case.
+
+
+on 2/29/2024 3:33 AM, Guenter Roeck wrote:
+> On 2/28/24 11:26, Daniel Díaz wrote:
+>> Hello!
+>>
+>> On Wed, 28 Feb 2024 at 12:19, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+>>> Kunit ext4_mballoc_test tests found following kernel oops on Linux next.
+>>> All ways reproducible on all the architectures and steps to reproduce shared
+>>> in the bottom of this email.
+>>>
+>>> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+>>>
 > 
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> [ ... ]
+> 
+>> +Guenter. Just the thing we were talking about, at about the same time.
+>>
+> 
+> Good that others see the same problem. Thanks a lot for reporting!
+> 
+> Guenter
+> 
+Hi everyone, thanks for the report. I try to fix the reported issues with [1]
+which works fine in my vm. Of course, it needs more interview before being
+applied. Please let me if it works fine in case anyone have interest to test
+it in advance.
+Thanks!
 
-A nice idea, but I don't think an ext4 specific API flag is the
-right way to go about enabling this. The iomap dio code knows if
-the write is pure overwrite already - we have the IOMAP_F_DIRTY flag
-for that, and we combine this with IOMAP_DIO_WRITE_THROUGH to do the
-pure overwrite FUA optimisations.
+Kemeng
 
-That is:
+[1] https://lore.kernel.org/linux-ext4/20240301120816.22581-1-shikemeng@huaweicloud.com/T/#mfbfb65f0a2b9092eea5d4fea7166c46aaa878215
 
-		/*
-                 * Use a FUA write if we need datasync semantics, this is a pure
-                 * data IO that doesn't require any metadata updates (including
-                 * after IO completion such as unwritten extent conversion) and
-                 * the underlying device either supports FUA or doesn't have
-                 * a volatile write cache. This allows us to avoid cache flushes
-                 * on IO completion. If we can't use writethrough and need to
-                 * sync, disable in-task completions as dio completion will
-                 * need to call generic_write_sync() which will do a blocking
-                 * fsync / cache flush call.
-                 */
-                if (!(iomap->flags & (IOMAP_F_SHARED|IOMAP_F_DIRTY)) &&
-                    (dio->flags & IOMAP_DIO_WRITE_THROUGH) &&
-                    (bdev_fua(iomap->bdev) || !bdev_write_cache(iomap->bdev)))
-                        use_fua = true;
-
-Hence if we want to optimise pure overwrites that have no data sync
-requirements, we already have the detection and triggers in place to
-do this. We just need to change the way we set up the IO flags to
-allow write-through (i.e. non-blocking IO completions) to use inline
-completions.
-
-In __iomap_dio_rw():
-
-+	/* Always try to complete inline. */
-+	dio->flags |= IOMAP_DIO_INLINE_COMP;
-	if (iov_iter_rw(iter) == READ) {                                         
--               /* reads can always complete inline */                           
--               dio->flags |= IOMAP_DIO_INLINE_COMP;
-....
-
-	} else {
-+		/* Always try write-through semantics. If we can't
-+		 * use writethough, it will be disabled along with
-+		 * IOMAP_DIO_INLINE_COMP before dio completion is run
-+		 * so it can be deferred to a task completion context
-+		 * appropriately.
-+		 */
-+               dio->flags |= IOMAP_DIO_WRITE | IOMAP_DIO_WRITE_THROUGH;
-		iomi.flags |= IOMAP_WRITE;
--               dio->flags |= IOMAP_DIO_WRITE;
-.....
-		/* for data sync or sync, we need sync completion processing */
-                if (iocb_is_dsync(iocb)) {
-                        dio->flags |= IOMAP_DIO_NEED_SYNC;
-
--                      /*
--                       * For datasync only writes, we optimistically try using
--                       * WRITE_THROUGH for this IO. This flag requires either
--                       * FUA writes through the device's write cache, or a
--                       * normal write to a device without a volatile write
--                       * cache. For the former, Any non-FUA write that occurs
--                       * will clear this flag, hence we know before completion
--                       * whether a cache flush is necessary.
--                       */
--                       if (!(iocb->ki_flags & IOCB_SYNC))
--                               dio->flags |= IOMAP_DIO_WRITE_THROUGH;
-+			* For sync writes we know we are going to need
-+			* blocking completion processing, so turn off
-+			* writethrough now.
-+			*/
-			if (iocb->ki_flags & IOCB_SYNC) {
-				dio->flags &= ~(IOMAP_DIO_WRITE_THROUGH |
-						IOMAP_DIO_INLINE_COMP);
-			}
-                }
-
-This then sets up iomap_dio_bio_iter() to be able to determine if
-the iomap returned is for a pure overwrite and allow for the use of
-inline write completions.
-
-	/*
-	 * If we have a pure overwrite, we know that IO completion
-	 * will not block and so we can use write through completion
-	 * semantics and complete the write inline. If it's not a
-	 * pure overwrite, make sure that we always defer
-	 * completions to a task context.
-	 */
-	if (dio->flags & IOMAP_DIO_WRITE_THROUGH) {
-		if (iomap->flags & (IOMAP_F_SHARED|IOMAP_F_DIRTY)) {
-			dio->flags &= ~(IOMAP_DIO_WRITE_THROUGH |
-					IOMAP_DIO_INLINE_COMP);
-		} else if ((dio->flags & IOMAP_DIO_NEED_SYNC) &&
-			   (bdev_fua(iomap->bdev) ||
-			    !bdev_write_cache(iomap->bdev))) {
-			/*
-			 * Use REQ_FUA for datasync overwrites to
-			 * avoid cache flushes on IO completion on
-			 * devices that support FUA or don't have
-			 * volatile caches.
-			 */
-			use_fua = true;
-		}
-	}
-
-
-and iomap_dio_bio_opflags() gets changed to also clear
-IOMAP_DIO_INLINE_COMP when it clears IOMAP_DIO_WRITE_THROUGH....
-
-That then makes all pure overwrites for every filesystem do inline
-completions without changing calling conventions. i.e. it's up to
-the filesystem ->iomap_begin callouts to indicate whether the write
-mapping returned requires blocking operations to be done in IO
-completion (i.e. set the IOMAP_F_DIRTY flag) appropriately.
-
-However, this does mean that any spinlock taken in the ->end_io()
-callbacks now needs to be irq safe. e.g. in xfs_dio_write_end_io()
-the spinlock protection around inode size updates will need to use
-an irq safe locking, as will the locking in the DIO submission path
-that it serialises against in xfs_file_write_checks(). That probably
-is best implemented as a separate spinlock.
-
-There will also be other filesystems that need to set IOMAP_F_DIRTY
-unconditionally (e.g. zonefs) because they always take blocking
-locks in their ->end_io callbacks and so must always run in task
-context...
-
-Cheers,
-
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
 
