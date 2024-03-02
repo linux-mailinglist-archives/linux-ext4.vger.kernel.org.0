@@ -1,211 +1,193 @@
-Return-Path: <linux-ext4+bounces-1464-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1465-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5CC8886E4A8
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Mar 2024 16:48:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D38A86EF2B
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Mar 2024 08:42:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7140B2296B
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Mar 2024 15:47:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AC531C216F7
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Mar 2024 07:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96DB670CB8;
-	Fri,  1 Mar 2024 15:47:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A836012B70;
+	Sat,  2 Mar 2024 07:42:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZUYjZh2B";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Njz2vMVw";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ZUYjZh2B";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Njz2vMVw"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NVYKv2ZE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8571241A92;
-	Fri,  1 Mar 2024 15:47:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6014125B2;
+	Sat,  2 Mar 2024 07:42:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709308063; cv=none; b=V0MPvh6ZjLTluoNvyIh/bk7NqysHSzGzffjAmIOFe5ajhnUlrHebbbWLl4ZiBWUdShVNJcvnNS0T0/hIgWFfQ/TVF1g1piwq5432xf6iizRaabdh13862IBcquRJTrNEiMLn9AaNWVJvH+/Voh/8IbKVdfkwJQbw42Qd6UV60L0=
+	t=1709365348; cv=none; b=u4sYg5pArqXVw2k7BVUYWEtAgRjmXKaaADK1QsEe6GQaEFH0BcYsA93Y376IB+yVlsg9+iCiLsJ3zxkbzPbCE5vltsRu6V9xDPrjbTmjzlRl1OiBuQC45UgMabf5Kr1N6p7eL11zgQkF5CeUMfbcO5rfyLn6lxczc85+0BeqxXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709308063; c=relaxed/simple;
-	bh=UbKKEL1rphpwXYNJhxPqYWQmsVIuTy1Je/zhOiQE+rg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=XgqNCvHhIBSDlOhDt71LbtBiUiYlgTGUqMdpslAatpe200XsutdNORtWsTjBMkYVeCbmdG2zPh8uj9coeUvK5QXRWUIAwLJMfKvcZqmMI7NP9oKM1egoJxoJcCsbr5rgUGKk5so1UE1jBnIN0lHWuzFHVovq/Q0U13qt851OLQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZUYjZh2B; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Njz2vMVw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ZUYjZh2B; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Njz2vMVw; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1AA6333C1D;
-	Fri,  1 Mar 2024 15:47:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709308059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
-	b=ZUYjZh2BNJSW5AkzZ3ZlouuZvUyfyvNHSf76o50yzJGSqAgYF7/jAqx0HgvRnOtkGurRqy
-	Cj/eKp67j8S4yh++P4XCMAzf8yyxUkhYZrWfnG6i9e21vJRufqmD9qLH5pcp2/vxuoUTNx
-	Y2fDfdTErUhz8BhkDvgOaJqif3ZbX2U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709308059;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
-	b=Njz2vMVwxy+5Ywh8aIY6fbVt941PiO8oEpQSFaXtp5Ano/7yQ/49L3FMQ/U3v8gLtL+8ZL
-	jheXYJCjYGR271AA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1709308059; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
-	b=ZUYjZh2BNJSW5AkzZ3ZlouuZvUyfyvNHSf76o50yzJGSqAgYF7/jAqx0HgvRnOtkGurRqy
-	Cj/eKp67j8S4yh++P4XCMAzf8yyxUkhYZrWfnG6i9e21vJRufqmD9qLH5pcp2/vxuoUTNx
-	Y2fDfdTErUhz8BhkDvgOaJqif3ZbX2U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1709308059;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=52/83A0/AWTduQELOCqefhOgT0I/R+gHx6/VTGttMF0=;
-	b=Njz2vMVwxy+5Ywh8aIY6fbVt941PiO8oEpQSFaXtp5Ano/7yQ/49L3FMQ/U3v8gLtL+8ZL
-	jheXYJCjYGR271AA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 504D513A80;
-	Fri,  1 Mar 2024 15:47:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id kmlFEJr44WUbBAAAD6G6ig
-	(envelope-from <lhenriques@suse.de>); Fri, 01 Mar 2024 15:47:38 +0000
-Received: from localhost (brahms.olymp [local])
-	by brahms.olymp (OpenSMTPD) with ESMTPA id f956f462;
-	Fri, 1 Mar 2024 15:47:37 +0000 (UTC)
-From: Luis Henriques <lhenriques@suse.de>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Theodore Ts'o <tytso@mit.edu>,  Andreas Dilger
- <adilger.kernel@dilger.ca>,  Alexander Viro <viro@zeniv.linux.org.uk>,
-  Jan Kara <jack@suse.cz>,  Miklos Szeredi <miklos@szeredi.hu>,  Amir
- Goldstein <amir73il@gmail.com>,  linux-ext4@vger.kernel.org,
-  linux-fsdevel@vger.kernel.org,  linux-unionfs@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/3] ext4: fix mount parameters check for empty values
-In-Reply-To: <20240301-spalten-impfschutz-4118b8fcf5b3@brauner> (Christian
-	Brauner's message of "Fri, 1 Mar 2024 14:36:55 +0100")
-References: <20240229163011.16248-1-lhenriques@suse.de>
-	<20240229163011.16248-3-lhenriques@suse.de>
-	<20240301-spalten-impfschutz-4118b8fcf5b3@brauner>
-Date: Fri, 01 Mar 2024 15:47:37 +0000
-Message-ID: <87edcu9co6.fsf@suse.de>
+	s=arc-20240116; t=1709365348; c=relaxed/simple;
+	bh=egQfzR9n2T7+euYgtQ2R2+NxC3oTiAP1hGg0IqRUGhE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=K4JO7ujDm4Zy5G9NxNrZfLlbGYnGHZ62jEbuD0rb538qp/yU1v9Ewljpusnldel9mM6MnF8FKmnI9vdXi8EAYPtrwW2Tg2WIqMlgMihkwgNbKsBhELBJsgUJsESBrLvmY1VTmAK5qzPdrPuaTDCStpjxnhgaX+yT6fhPPY0KIBQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NVYKv2ZE; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6e5629d5237so2911984b3a.3;
+        Fri, 01 Mar 2024 23:42:26 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709365345; x=1709970145; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=x1MHxTCslTHTnx3xWuCfr0MVVso4bcAgE6PXu4BxIrE=;
+        b=NVYKv2ZEotGBbAEDq36kFWUt798Vu8ae9eY4NdoD9arZSSIfia7+WBMrwBQhdBVA6P
+         eDg1IjiQwoDbPwcWj5Pd5Tdy5sNWJlRbrik+szNIRR3A0ygBJfX3WdE9t1SUy4QeQ2p9
+         U0hnZGToZj0BCgGs+xudUhRTMFZisQsk11lB1cMYjWs6wZzA8XMGxHY18pZMTya3cLbR
+         NdacDTF8KNyeTgemlsekrhbjqFDrklUZt610ICJhPlsu+7BC7FHCcvzUo9z7PZ/CoMw4
+         tjVVy/cWlap7XiHdEp7qd7eSVcQDlIOPdyyRTeE6f49EdmaeKMOulFoc4BfsMSZPBsf0
+         cRYw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709365345; x=1709970145;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=x1MHxTCslTHTnx3xWuCfr0MVVso4bcAgE6PXu4BxIrE=;
+        b=B+xGaHLUMGzFM6JwBmYsOO0+e0fQ0Rqzu5oV+zHFXAMG4q5pbtolSwlM830ekJMQmQ
+         ZMPI1NBcbiy4pnU/0at+pU2RW7AbxW9y1s9w1sLbTALuxmItUxI/GcE8O6zFxuO9vzu/
+         wfBPgUh1Zxsz9OLwq9aWTMopkNzO2RfuF1ArsyVTvG4pTgVKvI3AD9RL1qqeMG0Z2fWH
+         CUnlDnNjwWOpwTUF1sM/fdPvRA1Z8BEAfvah3YDcKtAA0tXEwnCaQtW303FL5y/d+xmN
+         U9kej5jZTARe1SdaGjutX2OtSqx/EEeLa7SwJ0KEdAf4YW88ezxYs1fuHGOUQhQFgQJ8
+         j0+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWtqZgYJfJLiMrACjnremjB1CPcPBAf2Haecmxap+eC73rpzT/RbCUMQJwKBq7uYYk9g338Pg8laPuQE8Mkq0ynC3r8k5G0Fp8va+Nwbzz0y8lvFbYAiFB6t+chK2WTJnuJDAw5ePgUJA==
+X-Gm-Message-State: AOJu0YyLUWeDPmWi4t3Rx9p1re7hcvN/HIHkoeoVxl5pjt4EIjAmyU9s
+	qTB7Oe8Hb9zopjcbamaYd8HvdcD0AgZARu7Rz9RPkybF2Rcp0HlypKeoQQLy
+X-Google-Smtp-Source: AGHT+IGxEAGHU8iFmIkI9IaatCGYlh3vesVByMqHYIf1eRM4W0xbZ2kigB146iIWUsC6lWBgkMnO2A==
+X-Received: by 2002:a05:6a00:2354:b0:6e4:6ca5:30b7 with SMTP id j20-20020a056a00235400b006e46ca530b7mr4173722pfj.34.1709365344807;
+        Fri, 01 Mar 2024 23:42:24 -0800 (PST)
+Received: from dw-tp.. ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id x11-20020aa784cb000000b006e45c5d7720sm4138206pfn.93.2024.03.01.23.42.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 01 Mar 2024 23:42:24 -0800 (PST)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	John Garry <john.g.garry@oracle.com>,
+	linux-kernel@vger.kernel.org,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [RFC 0/9] ext4: Add direct-io atomic write support using fsawu
+Date: Sat,  2 Mar 2024 13:11:57 +0530
+Message-ID: <cover.1709356594.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ZUYjZh2B;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=Njz2vMVw
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-6.51 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[4];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[11];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 RCVD_TLS_LAST(0.00)[];
-	 FREEMAIL_CC(0.00)[mit.edu,dilger.ca,zeniv.linux.org.uk,suse.cz,szeredi.hu,gmail.com,vger.kernel.org];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Score: -6.51
-X-Rspamd-Queue-Id: 1AA6333C1D
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
 
-Christian Brauner <brauner@kernel.org> writes:
+Hello all,
 
-> On Thu, Feb 29, 2024 at 04:30:09PM +0000, Luis Henriques wrote:
->> Now that parameters that have the flag 'fs_param_can_be_empty' set and
->> their value is NULL are handled as 'flag' type, we need to properly check
->> for empty (NULL) values.
->>=20
->> Signed-off-by: Luis Henriques <lhenriques@suse.de>
->> ---
->>  fs/ext4/super.c | 4 ++--
->>  1 file changed, 2 insertions(+), 2 deletions(-)
->>=20
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index 0f931d0c227d..44ba2212dfb3 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -2183,12 +2183,12 @@ static int ext4_parse_param(struct fs_context *f=
-c, struct fs_parameter *param)
->>  	switch (token) {
->>  #ifdef CONFIG_QUOTA
->>  	case Opt_usrjquota:
->> -		if (!*param->string)
->> +		if (!param->string)
->>  			return unnote_qf_name(fc, USRQUOTA);
->
-> I fail to understand how that can happen. Currently both of these
-> options are parsed as strings via:
->
-> #define fsparam_string_empty(NAME, OPT) \
->         __fsparam(fs_param_is_string, NAME, OPT, fs_param_can_be_empty, N=
-ULL)
->
->
-> So if someone sets fsconfig(..., FSCONFIG_SET_STRING, "usrquota", NULL, .=
-..)
-> we give an immediate
->
->         case FSCONFIG_SET_STRING:
->                 if (!_key || !_value || aux) return -EINVAL;
->
-> from fsconfig() so we know that param->string cannot be NULL. If that
-> were the case we'd NULL deref in fs_param_is_string():
->
-> int fs_param_is_string(struct p_log *log, const struct fs_parameter_spec =
-*p,
->                        struct fs_parameter *param, struct fs_parse_result=
- *result)
-> {
->         if (param->type !=3D fs_value_is_string ||
->             (!*param->string && !(p->flags & fs_param_can_be_empty)))
->
-> So you're check above seems wrong. If I'm mistaken, please explain, how
-> this can happen in detail.
+This RFC series adds support for atomic writes to ext4 direct-io using
+filesystem atomic write unit. It's built on top of John's "block atomic
+write v5" series which adds RWF_ATOMIC flag interface to pwritev2() and enables
+atomic write support in underlying device driver and block layer.
 
-I hope my reply to the previous patch helps clarifying this issue (which
-is quite confusing, and I'm probably  the confused one!).  To summarize,
-fsconfig() will (or can) get this parameter as a flag, not as string.
+This series uses the same RWF_ATOMIC interface for adding atomic write support
+to ext4's direct-io path. One can utilize it by 2 of the methods explained below.
+((1)mkfs.ext4 -b <BS>, (2) with bigalloc).
 
-Cheers,
---=20
-Lu=C3=ADs
+Filesystem atomic write unit (fsawu):
+============================================
+Atomic writes within ext4 can be supported using below 3 methods -
+1. On a large pagesize system (e.g. Power with 64k pagesize or aarch64 with 64k pagesize),
+   we can mkfs using different blocksizes. e.g. mkfs.ext4 -b <4k/8k/16k/32k/64k).
+   Now if the underlying HW device supports atomic writes, than a corresponding
+   blocksize can be chosen as a filesystem atomic write unit (fsawu) which
+   should be within the underlying hw defined [awu_min, awu_max] range.
+   For such filesystem, fsawu_[min|max] both are equal to blocksize (e.g. 16k)
+
+   On a smaller pagesize system this can be utilized when support for LBS is
+   complete (on ext4).
+
+2. EXT4 already supports a feature called bigalloc. In that ext4 can handle
+   allocation in cluster size units. So for e.g. we can create a filesystem with
+   4k blocksize but with 64k clustersize. Such a configuration can also be used
+   to support atomic writes if the underlying hw device supports it.
+   In such case the fsawu_min will most likely be the filesystem blocksize and
+   fsawu_max will mostly likely be the cluster size.
+
+   So a user can do an atomic write of any size between [fsawu_min, fsawu_max]
+   range as long as it satisfies other constraints being laid out by HW device
+   (or by software stack) to support atomic writes.
+   e.g. len should be a power of 2, pos % len should be naturally
+   aligned and [start | end] (phys offsets) should not straddle over
+   an atomic write boundary.
+
+3. EXT4 mballoc can be made aware of doing aligned block allocation for e.g. by
+   utilizing cr-0 allocation criteria. With this support, we won't be needing
+   to format a new filesystem and hopefully when the support for this in mballoc
+   is done, it can utilize the same interface/helper routines laid out in this
+   patch series. There is work going on in this aspect too in parallel [2]
+
+
+Purpose of an early RFC:
+(note only minimal testing has been done on this).
+========================
+Other than getting early review comments on the design, hopefully it should also
+help folks in their discussion at LSFMM since there are various topic proposals
+out there regarding atomic write support in xfs and ext4 [3][4].
+
+
+How to utilize this support:
+===========================
+1. mkfs.ext4 -b 4096 -C 65536 /dev/<sdb> (scsi_debug or device with atomic write)
+   or mkfs.ext4 -b <BS=16k> if your platform supports it.
+2. mount /dev/sdb /mnt
+3. touch /mnt/f1
+4. chattr +W /mnt/f1
+5. xfs_io -dc "pwrite <pos> <len>" /mnt/f1
+
+
+References:
+===========
+[1]: https://lore.kernel.org/all/20240226173612.1478858-1-john.g.garry@oracle.com/
+[2]: https://lore.kernel.org/linux-ext4/cover.1701339358.git.ojaswin@linux.ibm.com/
+[3]: https://www.spinics.net/lists/linux-xfs/msg81086.html
+[4]: https://www.spinics.net/lists/linux-fsdevel/msg265226.html
+
+John Garry (1):
+  fs: Add FS_XFLAG_ATOMICWRITES flag
+
+Ritesh Harjani (IBM) (7):
+  fs: Reserve inode flag FS_ATOMICWRITES_FL for atomic writes
+  iomap: Add atomic write support for direct-io
+  ext4: Add statx and other atomic write helper routines
+  ext4: Adds direct-io atomic writes checks
+  ext4: Add an inode flag for atomic writes
+  ext4: Enable FMODE_CAN_ATOMIC_WRITE in open for direct-io
+  ext4: Adds atomic writes using fsawu
+
+Ritesh Harjani (IBM) (1):
+  e2fsprogs/chattr: Supports atomic writes attribute
+
+ fs/ext4/ext4.h           | 87 +++++++++++++++++++++++++++++++++++++++-
+ fs/ext4/file.c           | 38 ++++++++++++++++--
+ fs/ext4/inode.c          | 16 ++++++++
+ fs/ext4/ioctl.c          | 11 +++++
+ fs/ext4/super.c          |  1 +
+ fs/ioctl.c               |  4 ++
+ fs/iomap/direct-io.c     | 75 ++++++++++++++++++++++++++++++++--
+ fs/iomap/trace.h         |  3 +-
+ include/linux/fileattr.h |  4 +-
+ include/linux/iomap.h    |  1 +
+ include/uapi/linux/fs.h  |  2 +
+ 11 files changed, 232 insertions(+), 10 deletions(-)
+
+--
+2.39.2
+
 
