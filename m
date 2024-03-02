@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-1477-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1478-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03E8886EFC6
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Mar 2024 10:21:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8726986EFC8
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Mar 2024 10:22:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AD9CB2510A
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Mar 2024 09:21:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B93561C21C76
+	for <lists+linux-ext4@lfdr.de>; Sat,  2 Mar 2024 09:22:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BE22168A8;
-	Sat,  2 Mar 2024 09:21:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 584DA17985;
+	Sat,  2 Mar 2024 09:21:25 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B2A412E48;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3791134DE;
 	Sat,  2 Mar 2024 09:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709371284; cv=none; b=Z7rwgjTqC7UMHBLutnkLHzLQoRcn0e1KHJUj6YCbWfUlEO2xOWi7S4dBHFyWx2QrkYPY0azej674QklWRir8wkvSPTmUgFGvrhT+9XPD5UIUQ+G8N+ogZxit1yJei78bC5sb8NYDDCPDiYhr3dpPBhhM/ejF6MKKvnxj9fE0bHQ=
+	t=1709371285; cv=none; b=l+SEGhq/4SLaVGu1/Na6BHVoPSbCCBGVcN7TttrzAjjx9Fw2O4z6OwJ3tBA5gxU2h6WNavuWmgm6BIjgc1XScuYb3X5Z44Z9clgT6lkgyO6OxeNt7fyzWnoLAqlIp2vRgBRITlKtDTELvDs0r1xZjtBkcxdsaS239tKjUASx8n8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709371284; c=relaxed/simple;
-	bh=/LhgKrGSOiaYrC11cugO+xFYJU1yWEdd+eAWZriHGQQ=;
+	s=arc-20240116; t=1709371285; c=relaxed/simple;
+	bh=5hzRnUh34nUYKLiZt7NaTdrTOrhwlApFtHI+0BahY4k=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=HBwLW9WcsIcxgcTITS+FszO1wale/3e8QZg3YCDQ8KQorT1hqMqpLpnjvLjNTbZVLZWda9kCpoc1kLhNSeyBWtkHbHE3MDIgw+wWKpPKSwVLAw1WndbMDiRKJo/7Xh9+YRY+axll+QSfD/XJdt27UchzGxpbZqLD9KaEKfYKzFQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=TbqrehMGgtf3o62Ifr5K+7uZdCBapqug8KgNgOJstE/dIZZtR+YVQN/PaRyLyKedaThy2AI9SVUkg4EFf+k4OR9zADI6rcVHQtofuezJHTN26qXGqGKEcSUFdjY+JF5nFrR2nMoNwbW6wj1XpLEwhyX4kmnhQxzLOZ28bxiKB/Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4TmzwM0Zfrz4f3jct;
-	Sat,  2 Mar 2024 17:21:07 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4TmzwP2TfCz4f3jqt;
+	Sat,  2 Mar 2024 17:21:09 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 63EAB1A0BDF;
+	by mail.maildlp.com (Postfix) with ESMTP id C001C1A0175;
 	Sat,  2 Mar 2024 17:21:12 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.101.6])
-	by APP4 (Coremail) with SMTP id gCh0CgA3imyE7+Jld1cqFw--.52350S3;
+	by APP4 (Coremail) with SMTP id gCh0CgA3imyE7+Jld1cqFw--.52350S4;
 	Sat, 02 Mar 2024 17:21:12 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
@@ -47,9 +47,9 @@ Cc: linux-ext4@vger.kernel.org,
 	daniel.diaz@linaro.org,
 	linux@roeck-us.net,
 	brauner@kernel.org
-Subject: [PATCH v3 1/3] ext4: alloc test super block from sget
-Date: Sun,  3 Mar 2024 02:17:53 +0800
-Message-Id: <20240302181755.9192-2-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 2/3] ext4: hold group lock in ext4 kunit test
+Date: Sun,  3 Mar 2024 02:17:54 +0800
+Message-Id: <20240302181755.9192-3-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240302181755.9192-1-shikemeng@huaweicloud.com>
 References: <20240302181755.9192-1-shikemeng@huaweicloud.com>
@@ -60,13 +60,13 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgA3imyE7+Jld1cqFw--.52350S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxGF1rGw1DCr18uw1fJF47Jwb_yoWrWFyrpa
-	43AFyFkr48uF4q9an7JFykXr1S9a109ryDGrWI9w15JayYgry8GFWvyF1jyrWFqrWxGFZ3
-	ZF1UKrWUCr4UGa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:gCh0CgA3imyE7+Jld1cqFw--.52350S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7tw1UuFyUArWrur17KFyUJrb_yoW8ArW8pa
+	nxCrn0kF45Wr1kuw47G3y0q3Z7Kw4kuw18GrWfCw1fArWfJr9rCF98twnIgr48tF4xXF45
+	A3Z0vry3Crs7uaUanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8IrcIa0xkI8VA2jI8067AKxVWUGwA2048vs2IY020Ec7CjxVAFwI0_JFI_Gr1l8cAvFVAK
+	8IrcIa0xkI8VA2jI8067AKxVWUXwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK
 	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4
 	x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
 	z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
@@ -76,139 +76,56 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxGF1rGw1DCr18uw1fJF47Jwb_yoWrWFyrpa
 	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7
 	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
 	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jTrWwUUUUU=
+	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jguciUUUUU=
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-This fix the oops in ext4 unit test which is cuased by NULL sb.s_user_ns
-as following:
-<4>[ 14.344565] map_id_range_down (kernel/user_namespace.c:318)
-<4>[ 14.345378] make_kuid (kernel/user_namespace.c:415)
-<4>[ 14.345998] inode_init_always (include/linux/fs.h:1375 fs/inode.c:174)
-<4>[ 14.346696] alloc_inode (fs/inode.c:268)
-<4>[ 14.347353] new_inode_pseudo (fs/inode.c:1007)
-<4>[ 14.348016] new_inode (fs/inode.c:1033)
-<4>[ 14.348644] ext4_mb_init (fs/ext4/mballoc.c:3404 fs/ext4/mballoc.c:3719)
-<4>[ 14.349312] mbt_kunit_init (fs/ext4/mballoc-test.c:57
-fs/ext4/mballoc-test.c:314)
-<4>[ 14.349983] kunit_try_run_case (lib/kunit/test.c:388 lib/kunit/test.c:443)
-<4>[ 14.350696] kunit_generic_run_threadfn_adapter (lib/kunit/try-catch.c:30)
-<4>[ 14.351530] kthread (kernel/kthread.c:388)
-<4>[ 14.352168] ret_from_fork (arch/arm64/kernel/entry.S:861)
-<0>[ 14.353385] Code: 52808004 b8236ae7 72be5e44 b90004c4 (38e368a1)
-
-Alloc test super block from sget to properly initialize test super block
-to fix the issue.
+Although there is no concurrent block allocation/free in unit test,
+internal functions mb_mark_used and mb_free_blocks assert group
+lock is always held. Acquire group before calling mb_mark_used and
+mb_free_blocks in unit test to avoid the assertion.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 Reported-by: Guenter Roeck <linux@roeck-us.net>
 ---
- fs/ext4/mballoc-test.c | 55 ++++++++++++++++++++++++++++++------------
- 1 file changed, 39 insertions(+), 16 deletions(-)
+ fs/ext4/mballoc-test.c | 9 +++++++++
+ 1 file changed, 9 insertions(+)
 
 diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index 12d0b22cabe1..9d061f80f150 100644
+index 9d061f80f150..4d9eb4807c98 100644
 --- a/fs/ext4/mballoc-test.c
 +++ b/fs/ext4/mballoc-test.c
-@@ -21,16 +21,28 @@ struct mbt_ctx {
- };
- 
- struct mbt_ext4_super_block {
--	struct super_block sb;
-+	struct ext4_super_block es;
-+	struct ext4_sb_info sbi;
- 	struct mbt_ctx mbt_ctx;
- };
- 
--#define MBT_CTX(_sb) (&(container_of((_sb), struct mbt_ext4_super_block, sb)->mbt_ctx))
-+#define MBT_SB(_sb) (container_of((_sb)->s_fs_info, struct mbt_ext4_super_block, sbi))
-+#define MBT_CTX(_sb) (&MBT_SB(_sb)->mbt_ctx)
- #define MBT_GRP_CTX(_sb, _group) (&MBT_CTX(_sb)->grp_ctx[_group])
- 
- static const struct super_operations mbt_sops = {
- };
- 
-+static void mbt_kill_sb(struct super_block *sb)
-+{
-+	generic_shutdown_super(sb);
-+}
+@@ -701,7 +701,10 @@ test_mb_mark_used_range(struct kunit *test, struct ext4_buddy *e4b,
+ 	ex.fe_start = start;
+ 	ex.fe_len = len;
+ 	ex.fe_group = TEST_GOAL_GROUP;
 +
-+static struct file_system_type mbt_fs_type = {
-+	.name			= "mballoc test",
-+	.kill_sb		= mbt_kill_sb,
-+};
++	ext4_lock_group(sb, TEST_GOAL_GROUP);
+ 	mb_mark_used(e4b, &ex);
++	ext4_unlock_group(sb, TEST_GOAL_GROUP);
+ 
+ 	mb_set_bits(bitmap, start, len);
+ 	/* bypass bb_free validatoin in ext4_mb_generate_buddy */
+@@ -761,7 +764,9 @@ test_mb_free_blocks_range(struct kunit *test, struct ext4_buddy *e4b,
+ 	if (len == 0)
+ 		return;
+ 
++	ext4_lock_group(sb, e4b->bd_group);
+ 	mb_free_blocks(NULL, e4b, start, len);
++	ext4_unlock_group(sb, e4b->bd_group);
+ 
+ 	mb_clear_bits(bitmap, start, len);
+ 	/* bypass bb_free validatoin in ext4_mb_generate_buddy */
+@@ -805,7 +810,11 @@ static void test_mb_free_blocks(struct kunit *test)
+ 	ex.fe_start = 0;
+ 	ex.fe_len = EXT4_CLUSTERS_PER_GROUP(sb);
+ 	ex.fe_group = TEST_GOAL_GROUP;
 +
- static int mbt_mb_init(struct super_block *sb)
- {
- 	int ret;
-@@ -72,43 +84,54 @@ static void mbt_mb_release(struct super_block *sb)
- 	kfree(sb->s_bdev);
- }
- 
-+static int mbt_set(struct super_block *sb, void *data)
-+{
-+	return 0;
-+}
++	ext4_lock_group(sb, TEST_GOAL_GROUP);
+ 	mb_mark_used(&e4b, &ex);
++	ext4_unlock_group(sb, TEST_GOAL_GROUP);
 +
- static struct super_block *mbt_ext4_alloc_super_block(void)
- {
--	struct ext4_super_block *es = kzalloc(sizeof(*es), GFP_KERNEL);
--	struct ext4_sb_info *sbi = kzalloc(sizeof(*sbi), GFP_KERNEL);
--	struct mbt_ext4_super_block *fsb = kzalloc(sizeof(*fsb), GFP_KERNEL);
-+	struct mbt_ext4_super_block *fsb;
-+	struct super_block *sb;
-+	struct ext4_sb_info *sbi;
- 
--	if (fsb == NULL || sbi == NULL || es == NULL)
-+	fsb = kzalloc(sizeof(*fsb), GFP_KERNEL);
-+	if (fsb == NULL)
-+		return NULL;
-+
-+	sb = sget(&mbt_fs_type, NULL, mbt_set, 0, NULL);
-+	if (IS_ERR(sb))
- 		goto out;
- 
-+	sbi = &fsb->sbi;
-+
- 	sbi->s_blockgroup_lock =
- 		kzalloc(sizeof(struct blockgroup_lock), GFP_KERNEL);
- 	if (!sbi->s_blockgroup_lock)
--		goto out;
-+		goto out_deactivate;
- 
- 	bgl_lock_init(sbi->s_blockgroup_lock);
- 
--	sbi->s_es = es;
--	fsb->sb.s_fs_info = sbi;
-+	sbi->s_es = &fsb->es;
-+	sb->s_fs_info = sbi;
- 
--	return &fsb->sb;
-+	up_write(&sb->s_umount);
-+	return sb;
- 
-+out_deactivate:
-+	deactivate_locked_super(sb);
- out:
- 	kfree(fsb);
--	kfree(sbi);
--	kfree(es);
- 	return NULL;
- }
- 
- static void mbt_ext4_free_super_block(struct super_block *sb)
- {
--	struct mbt_ext4_super_block *fsb =
--		container_of(sb, struct mbt_ext4_super_block, sb);
-+	struct mbt_ext4_super_block *fsb = MBT_SB(sb);
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 
- 	kfree(sbi->s_blockgroup_lock);
--	kfree(sbi->s_es);
--	kfree(sbi);
-+	deactivate_super(sb);
- 	kfree(fsb);
- }
+ 	grp->bb_free = 0;
+ 	memset(bitmap, 0xff, sb->s_blocksize);
  
 -- 
 2.30.0
