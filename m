@@ -1,82 +1,83 @@
-Return-Path: <linux-ext4+bounces-1500-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1501-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572B78709ED
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 19:55:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CBCB8709EF
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 19:55:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1108D282034
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 18:55:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F6561C21620
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 18:55:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5D478B4D;
-	Mon,  4 Mar 2024 18:55:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75A4578B4C;
+	Mon,  4 Mar 2024 18:55:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KgAIaxqk"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BxyIwQi0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
+Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A6E7869A;
-	Mon,  4 Mar 2024 18:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 818BE4D599;
+	Mon,  4 Mar 2024 18:55:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709578513; cv=none; b=uOZqgIwmLTgqvPYVDPWzqpYUxABevEDS2yl7auSmC+JAdbxo0ji8tj7fdF0IEHbTd8kbkgVDuKo72nL9w/OafN0QHKu2WAAQU+361zeuevH5heN/JtbN+c5DDuBG2hwzAEv7ZBAhGcCI+s24zG4qzyi2I1bludaaj+GZh7W6ye0=
+	t=1709578533; cv=none; b=N357JqNchj+H5tWcJLAZ/I/5M2BjVFKtT6zpYaISAvWTuqpBIrZ5PC2zs3tgGXyfpKlIFkJYBbPukXo9hH5m12bV7aodq8Wz2EINyTRsyG9bKcLkmkfYIw4pu4ocEz7Rkydz5Ukh+Ic81Gl1BF4Fs3WBQw+dZbQ2RMRkQltZ8OY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709578513; c=relaxed/simple;
-	bh=FnMJwlF96DcVWB+BQrfRhd3D153RPZF0wsf8N0ZsOEs=;
+	s=arc-20240116; t=1709578533; c=relaxed/simple;
+	bh=5yBHoiNu9VfZV0hM6h9eesyVOJ26EoSf7Q0OFY+WqCA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TclRMtPGSnRyEccwldi4FeO6m2vbER+j87xkQrOkRr5E0D3ImMsCkD9Aq3ewqtGDc5Viz+ne+kATQ4o7y0Pz6QObgQDHzKH7dM9Q93TE2M8foWxLXkSxxPN3MzWfwri+rQ0E0HIJcBbyoleXMLcxawyjG/zaYC7lo8shoNxBG3M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KgAIaxqk; arc=none smtp.client-ip=209.85.215.173
+	 Content-Type:Content-Disposition:In-Reply-To; b=hAR+CNTOn6kpY1coGwueLLNtF12zD7rfyu5GSQrNWo/CVneBsefsJ0FSLK+mLlhTKuiSQn2z4IL74/EfvTyHTW8eCu3wE01vGv81uL/lfR0R25yMthTY/U7RZQ5D887/Ku559ImBQIIKOLewj4m9jq51nCLYMMRyhUgsOMK+GSk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BxyIwQi0; arc=none smtp.client-ip=209.85.216.45
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce2aada130so4261168a12.1;
-        Mon, 04 Mar 2024 10:55:11 -0800 (PST)
+Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-29b2c48fa3dso1289564a91.1;
+        Mon, 04 Mar 2024 10:55:31 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709578511; x=1710183311; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1709578531; x=1710183331; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=G6EsCuzkrFIZIDT8fk6rKphRBaaZIClz4Nc3Ii64mzk=;
-        b=KgAIaxqkDsGlDo3Y+myadGOk4X4D13rh2P2BYzM7fb+6RkJ3PrD26574I3oxKxK/AZ
-         9X8lwhOOwZLGSWjAesYQRNX/SGyI0Iz/gnBGUTrCLOVD92MfBnTf4M7gKyF9IbysOw/F
-         qS0MoJvlCEW8KFbeJLEVJoBdhoJL9zla4TSB8L/2/2yzkPGOSF2+bSJRXKW/wDjPjppS
-         QG+G11EdQ+TYtoKOd7Y8bOxM0j96MZXleiKYBxcf2H/0wciqYQ3MY1gKZ/X9CnLTytYm
-         WglBrv+oN490htb8IX31PrMbmJLPuhOmGssbhwlZ7LSwhdsZTXWRr4j2Z9gb0CP8ungd
-         1LeA==
+        bh=gR9my6EaMtG7U6QVaXDmcb/8/H1dbFGvOn9fySmbC+Y=;
+        b=BxyIwQi0++Lni/aH9x3Lbew8m/WwaA4wdnO3pfe0Y5VWo+vyf6aw8ZPhI5ZWuetn2h
+         eWdIAgRZd3F4wscIEg2Xkk5xZYxKv2rv17++DSqhQbWIxoQdHR48N6FpAhDj9mAJXXLf
+         Vy1MrMpf8eslEwSeY79DU7JrMyhEXjftXgpLMSakMGI+GvlxHOmlghC0jOt9hmCfKS0C
+         pH/o8diZPvUTCH7Bzdh9X3P5ZITNawlAB1KR5Q6+NqVgXgYIKDieIBPPNV0O4HuVJIlh
+         iZIcF47wNBqpqOixBj9K8EJvL4HIx0lLH9BHe0/W+6VMnPiB9XKfocypCiR8KL21Pr+8
+         PPNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709578511; x=1710183311;
+        d=1e100.net; s=20230601; t=1709578531; x=1710183331;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=G6EsCuzkrFIZIDT8fk6rKphRBaaZIClz4Nc3Ii64mzk=;
-        b=YIa88kI9uIsMSZs08OFfF2mhJgTIMd9bRJ0ov/vb35nrWsJan2BXsQXi/HryepK4lW
-         sc0LuTGW9nsO3G1EpzOmUimorHczpHQGgoISrRFKxMI8vwL5R8xS2jbvFZOV7s8seHbG
-         W5ihhHlf8YrVnkIQRFxvbdXcnWqQPP4iFH1qQKzn691cxEFr0sLKhLefNHWErnk1JQuq
-         4iFKEFJZs+gT+N4HpX0unTd2IHmATUsseLC/ZtSe3JAcRt1UJs7Xr+gMfowWRLkWt8VG
-         PLzg4xMNyyeXRa0YvU5WztP1whDKQhDy2KnIneqVtaLxttN5aZk7W2RghYwIQaZogsp9
-         Cvig==
-X-Forwarded-Encrypted: i=1; AJvYcCULv/jpj3KHeRvKw35Mb3YOzG/6KQ9V37RHv24c+k7NtwRbXOK1ug5nyKznfneKUNzNJH5pXHdIK/+sWRFlKYp3M+SVp1Y+UDurQc+x+3dWxWaJPiTiZr91MRb3Uq8n+a6pwW2redlN9Q==
-X-Gm-Message-State: AOJu0Yw3Lhgzi9M4GRnFzDdmgbJNlrfKLgRFvfJ1262s/RWpad+Hbj4u
-	Yc8mkOlAf+dvFWEYjKqtS2sPRlz01svZ/BbG6MKInjPNhoDtSSfw
-X-Google-Smtp-Source: AGHT+IGEV8X5x9DFe43MYukPtpQZXMccwF6MU3Mn6iCy5ifFI6glQlajApV8FrTi5WS/KJBkDsG4ng==
-X-Received: by 2002:a17:90a:b881:b0:29a:8c78:9a7 with SMTP id o1-20020a17090ab88100b0029a8c7809a7mr6590744pjr.40.1709578511285;
-        Mon, 04 Mar 2024 10:55:11 -0800 (PST)
+        bh=gR9my6EaMtG7U6QVaXDmcb/8/H1dbFGvOn9fySmbC+Y=;
+        b=rILAQEqR9iUGj7+SA7rXFEEZE71FZVhYdclv/Aie16rCmXd/mO15L3QY46+8o/FKEw
+         GC7VwYTFladiy44elwMwgLOm+n6YKq79iBkGCpIqxtGi7TARnZgKXYozInD+ZRy00BDy
+         00e8D0SF2hS2pzUf+BvMTQ8a8IpGaWgWCVffBz8onmEF5e7R6y9ZW4ghuYREVS+V1HkE
+         fp1fiJqiFiloKoamwzcXxHGFrn7b5aGCsEgeT0qq9rh+6KCaMoStnvGjHW0rSFJk1cAX
+         mRc26eWvj1Yqq2JRzZxBRS6PQDZ0xy5IbY+MTIWN4wg8oRr68t/iKxuiM9S00lUxmFxC
+         4d4g==
+X-Forwarded-Encrypted: i=1; AJvYcCUaOjIiB8+EN2rWRfjH0WENbJyOWQ/Pxyx678kUBUMXVvTnMwI2+FYEBWYbqj7JrR/L+sFWD9XhLZTdyV5GBnba+H/B+a8UiIfncvFeOR06lLjCrFBXxy09QtREZ5Z6gXPygLcWNwDelQ==
+X-Gm-Message-State: AOJu0YyTa3qPdpWBzDf02g4lYSjCZficn2qPZ2H7eG5WSWzOd2uK8yG/
+	qoUNdQiL43qynGbdBVjw/VObe6RykOeYEW725D+pnSMfsSrx1F+7
+X-Google-Smtp-Source: AGHT+IEUKC0aSErDIE6jhb7NmrIXbIyIir/FEmedrm91wyIBSngot/MMeStKpdS95a9cHlBGdh0Kwg==
+X-Received: by 2002:a17:90a:c3:b0:29a:ae40:9e10 with SMTP id v3-20020a17090a00c300b0029aae409e10mr7028152pjd.17.1709578530775;
+        Mon, 04 Mar 2024 10:55:30 -0800 (PST)
 Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id sw14-20020a17090b2c8e00b0029abf47ec7fsm10487219pjb.0.2024.03.04.10.55.09
+        by smtp.gmail.com with ESMTPSA id kn11-20020a17090b480b00b00299101c1341sm8290581pjb.18.2024.03.04.10.55.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 10:55:10 -0800 (PST)
+        Mon, 04 Mar 2024 10:55:30 -0800 (PST)
 Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 4 Mar 2024 10:55:09 -0800
+Date: Mon, 4 Mar 2024 10:55:29 -0800
 From: Guenter Roeck <linux@roeck-us.net>
 To: Kemeng Shi <shikemeng@huaweicloud.com>
 Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org, naresh.kamboju@linaro.org,
 	daniel.diaz@linaro.org, brauner@kernel.org
-Subject: Re: [PATCH v4 0/3] Fix crashes and warnings in ext4 unit test
-Message-ID: <8d0506f8-7df2-45f6-85a4-2a0075b00050@roeck-us.net>
+Subject: Re: [PATCH v4 1/3] ext4: alloc test super block from sget
+Message-ID: <8268a3ec-51c5-4447-93b5-bc96fadb8feb@roeck-us.net>
 References: <20240304163543.6700-1-shikemeng@huaweicloud.com>
+ <20240304163543.6700-2-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -85,19 +86,32 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240304163543.6700-1-shikemeng@huaweicloud.com>
+In-Reply-To: <20240304163543.6700-2-shikemeng@huaweicloud.com>
 
-On Tue, Mar 05, 2024 at 12:35:40AM +0800, Kemeng Shi wrote:
-> v3->v4:
-> -fix that sbi->s_dirtyclusters_counter is used before
-> initialization.
+On Tue, Mar 05, 2024 at 12:35:41AM +0800, Kemeng Shi wrote:
+> This fix the oops in ext4 unit test which is cuased by NULL sb.s_user_ns
+> as following:
+> <4>[ 14.344565] map_id_range_down (kernel/user_namespace.c:318)
+> <4>[ 14.345378] make_kuid (kernel/user_namespace.c:415)
+> <4>[ 14.345998] inode_init_always (include/linux/fs.h:1375 fs/inode.c:174)
+> <4>[ 14.346696] alloc_inode (fs/inode.c:268)
+> <4>[ 14.347353] new_inode_pseudo (fs/inode.c:1007)
+> <4>[ 14.348016] new_inode (fs/inode.c:1033)
+> <4>[ 14.348644] ext4_mb_init (fs/ext4/mballoc.c:3404 fs/ext4/mballoc.c:3719)
+> <4>[ 14.349312] mbt_kunit_init (fs/ext4/mballoc-test.c:57
+> fs/ext4/mballoc-test.c:314)
+> <4>[ 14.349983] kunit_try_run_case (lib/kunit/test.c:388 lib/kunit/test.c:443)
+> <4>[ 14.350696] kunit_generic_run_threadfn_adapter (lib/kunit/try-catch.c:30)
+> <4>[ 14.351530] kthread (kernel/kthread.c:388)
+> <4>[ 14.352168] ret_from_fork (arch/arm64/kernel/entry.S:861)
+> <0>[ 14.353385] Code: 52808004 b8236ae7 72be5e44 b90004c4 (38e368a1)
 > 
+> Alloc test super block from sget to properly initialize test super block
+> to fix the issue.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
 
-I see no more ext4 related crashes, unit test failures, or tracebacks
-with this version of the series applied on top of next-20240304.
-
-I'll send Tested-by: tags as response to the individual patches.
-
-Thanks,
-Guenter
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 
