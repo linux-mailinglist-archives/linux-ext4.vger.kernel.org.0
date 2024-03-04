@@ -1,117 +1,147 @@
-Return-Path: <linux-ext4+bounces-1497-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1498-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D133486FF10
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 11:31:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECC2E870450
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 15:37:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 712831F22F9A
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 10:31:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A5841C20D1B
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 14:37:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7317429CF9;
-	Mon,  4 Mar 2024 10:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 931F941775;
+	Mon,  4 Mar 2024 14:37:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CHE0NiyM"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Prx35QaI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+Received: from mail-qt1-f174.google.com (mail-qt1-f174.google.com [209.85.160.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACCE01756F;
-	Mon,  4 Mar 2024 10:31:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 916C83CF68;
+	Mon,  4 Mar 2024 14:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709548286; cv=none; b=S92R//hnssHOyiN8JxfIFUQgI3SOg8GdcjNBhvk/7ZvmNkOEF+KV+feW4TI0YLg5C5JxxMJXVU5HWrYO3q/agienndHsB3Bp5DrfgClRNG5hW9oD9y2c+BtfJBLqGPdf1Dstf97qBfippg2ej3yvrESKt05pY4dmefCrGM8XF2Q=
+	t=1709563020; cv=none; b=TQ2h56SvD/Ku+Bpxnc3X2MKPmgAjoEXJPyZL6Fh+rusd/PeFtGvCC4ZPwoWEXZlxjzv6DUbdUoDRNh7fYGQ26ZS5T50bEVfBblaQw7Qevqrq0+CAZB65VWnl8FA7poiHuFNWlhRkI4h4EefbUxOT77EUX4+QFghLgOlPK1hGEM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709548286; c=relaxed/simple;
-	bh=lNPwMDdZ8aL1Wr12Rp0wfGSShllnVM3A4M0wxiP5tl0=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=FHeSqaQlIeCVQ+J/RIw7CcfzgMPs8xEkisg7nGCTAevpr+1ncfG1tqwOTiof15yvcwf/LlLJhN6++8KTS11hExWpp9tgLe5LNh2FlER05O2iFGOFCOSZ36DdbfsDaZ/2K8PCch7BM01IS7il9FryYs6Tesx6W22VQbZKPfGiXgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CHE0NiyM; arc=none smtp.client-ip=209.85.214.171
+	s=arc-20240116; t=1709563020; c=relaxed/simple;
+	bh=7Q8u//I0NChFb/SG3nPqpu2hUZlVNJ0AXcNfX8C2AG4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=hDlJH8Wmfp7lDJsoJzjDI32dxZ0lrjrlBDSNOLYWqEdQyb7sR5MwCxcYTzlem/qIfu3lcq8Tv8+aKWFmdHjHSivlYtNcFnT4eOvWLAUXnU1PQvchPz4UjGIlPjzFQg0i5Mcu4No7TG+KegjPHIUWKNkh8PEaoHaG5FjxQ2C7aG8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Prx35QaI; arc=none smtp.client-ip=209.85.160.174
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dc13fb0133so31189835ad.3;
-        Mon, 04 Mar 2024 02:31:23 -0800 (PST)
+Received: by mail-qt1-f174.google.com with SMTP id d75a77b69052e-42e8758fd52so34266951cf.1;
+        Mon, 04 Mar 2024 06:36:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709548282; x=1710153082; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=64zcOG6BSjkI7rSmLTRy2iBdJj50IWiO7CuBZCeR9EE=;
-        b=CHE0NiyMweT8NCHmAeDcQOAZStFiXVcn++P9ClUcrfkM510IPFzGo1Hl3nCWQXeMT0
-         cbJ8vePq8hCo9OKVzoDfhBNibycGDqqZb/r3RT082aOX1Zcx3JUNwBnWRveM1rMi/Lid
-         cL+LjqOjyeW1YPB4OPXDV7BUj9BZN6UWIXwx214IWxYvFhKh+5ulvHHKWWgXH37rxizA
-         Cw4v8p4lyxbG2jTWPlvTaNMP9KyECAV42KrrccuonQGyf9muLxAKdDZUwh1Oe9L2N5EZ
-         Q+IdLW5GCAzm4rYGRxViLkktnXHvhQQ7IcJPUxDPaPHIs49qSmGk2wgXLx1sT8FakOQU
-         2yEA==
+        d=gmail.com; s=20230601; t=1709563017; x=1710167817; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Ueg1LzXX/gmckj0YGtUgOHDVn1Q5Y8WQ6pvHjt3CJBY=;
+        b=Prx35QaIQB1wnZH/u+yaDhzUv3T+PMePLJatRTyQuy/7fIGvZgTd4NDYTwq0GfUjgp
+         wKmWpb+1L0MkHGvBdgUox13Q3LvEkIMhenxPva8HqY6Q6OWM0eT6jZOZ3vJv0NKVwm7u
+         DcnGjE2sc0Iiz9e/1nAu+B+rgY0hqmUkSNtNMe/tisECw90KqyJvlGA6mJdzdbeUeAEX
+         Wp88abgbC/5eINlom2F/wQjNTKF5HqDIszetg7lOb90kzuI5JvEWmGtrD45FFHhW6dvt
+         jd0ciKtXTWnOBt1SMOm8jjTvgH1fdptNAoz+P2D+i/B6ShC7bEMl+Aft6CbodbHMXLUo
+         oV9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709548282; x=1710153082;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=64zcOG6BSjkI7rSmLTRy2iBdJj50IWiO7CuBZCeR9EE=;
-        b=JZEI2kN38OQ8Eku0Lc77fw/7oEW84i/38JuDIAcKRN3JxRKkOK5ZF/yBsZh0TXWA2q
-         F6QocCNOmNT1kBAVLcGKIlukMGMPlZ0zUa53oCdSCaBZR4Low2YghB6oj1edON7BRntL
-         Cx8VPm03CkTxSIke5AptiW2JdeTksH8DX9WHwyScxy0gxgt2joGqpr7XJQdPiI3haI+a
-         sTlJVM3X4VqfcCU2pMlE/4NLz3Ty1oc5mGE2BrgVb8xyPQQi4qrFdN9DhVgiNpMlxLbs
-         AYENYzk+zoKfOMi1eey31lTyVk1/rp7BwZy+Mh/N/QI2HWgP2ReIPq7TPpjwxJY1px1n
-         IeKA==
-X-Forwarded-Encrypted: i=1; AJvYcCXtkVkkX6lrmi3o66CXMFicsjg1PRT1URjPC7blyLyxBvC54Mzp7H8tAZZLWxGkoRPk3L/AoMz15g5Jv9quT3ISCTd8XyfG/GJpBgXUCaOGE1LKRc/rXVfCbyTSZcr+PmDkRYLb3mDLBg==
-X-Gm-Message-State: AOJu0YyFjr3LBIeDNneJkxzjpj+eOfC1qo/HAMW9fxH3VIP3tr5RmTtI
-	qv9pgcRAIubM7+oPD8AwI+h6eG1kunJt4TozDSyuzhGksRjBFw8Xxh48twP2dLs=
-X-Google-Smtp-Source: AGHT+IFePQs/iCup0WOHrdtkHWUadj5YrNqikiU4egQU8fkAHr2Gt4LqqbldfvaQlJ2u6vQgIvPa6A==
-X-Received: by 2002:a17:903:32c8:b0:1dc:fadb:4b1a with SMTP id i8-20020a17090332c800b001dcfadb4b1amr5619103plr.54.1709548282035;
-        Mon, 04 Mar 2024 02:31:22 -0800 (PST)
-Received: from dw-tp ([129.41.58.7])
-        by smtp.gmail.com with ESMTPSA id m18-20020a170902f21200b001da34166cd2sm8176787plc.180.2024.03.04.02.31.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 02:31:21 -0800 (PST)
-Date: Mon, 04 Mar 2024 16:01:16 +0530
-Message-Id: <87bk7u47bf.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, Dave Chinner <david@fromorbit.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 3/8] iomap: Add atomic write support for direct-io
-In-Reply-To: <7ca900f8-2d19-44dc-9241-6208b155d950@oracle.com>
+        d=1e100.net; s=20230601; t=1709563017; x=1710167817;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Ueg1LzXX/gmckj0YGtUgOHDVn1Q5Y8WQ6pvHjt3CJBY=;
+        b=YmEJiSEizrJgG/EsFYTFPEFtzoYIRxei3b+5dHZZTyW9vWTDPIhS7jUV/ZUOSAZpjT
+         BtKOWXjWUbWJK32TbfPck+DvKAR31AbY/2ksqigfxes3xPLTo5wqFOM7rGn8BpoBobXK
+         5QB5grCb3DDW5MqszOlHX+ueaihnTkvu8FHYssLRB8hewdHv+TPEu6i9lOUvfqVYe+vr
+         VtY4CEnArlT5IDEeU4p6kFGEz3k6dj826Epvk6OHn9n8pWuRvVG+93EAZPEHMn/VYmRe
+         Lr07tzIU+nfPVxPjFGEoUT7dlkLYifCt+GJL34F9nDJOVBR0z8WZWQKFavrzniCsHbcj
+         s4CQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXtwi1tZu/f69wfqcCMEt542e97TzLOYfPudA2kvtjxQ9F+UnEef8EpSm7owTT8p2mJBUWs6+yWOPuDHB88mW9jxeY6jOC/2/ScqIX/ZQSKUMPSF7uwj9veixL6uCXLtxUntzG7BS/ZD6z3ZSFW6Srdo2GW0srLKvN4SAsGSltyhaoXjR+sgNb6/4ZzydD6EyeP8cxEWFauttemq261Y/Fw
+X-Gm-Message-State: AOJu0Yyd4kCb7fs3nKoG026reYWPDbcNaqxc4/ztgmAQ8j1gncIFl0HP
+	Zbgz2LV71DMVU6BDclohx3N5BrnQNW0bAzV86cLZFFy8O5ipy+T3qBqFmQ1hVbmBCzJbdhHjgRN
+	Sl1UGpyeE6zqFC4NOyI+AgBJNMBZypf3ihWg=
+X-Google-Smtp-Source: AGHT+IHz5+H37MGVV7IGn2MGmA63Pt/2gNaEx+CQKMOYep0lh2b/cdqPyygE9RKmyqzM791YiilhqAporHp9m7ClBYg=
+X-Received: by 2002:ac8:5e46:0:b0:42e:f4aa:e737 with SMTP id
+ i6-20020ac85e46000000b0042ef4aae737mr2336629qtx.50.1709563017482; Mon, 04 Mar
+ 2024 06:36:57 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+References: <20240204021436.GH2087318@ZenIV> <20240204021739.1157830-1-viro@zeniv.linux.org.uk>
+ <20240204021739.1157830-11-viro@zeniv.linux.org.uk> <20240205-gesponnen-mahnmal-ad1aef11676a@brauner>
+ <CAJfpegtJtrCTeRCT3w3qCLWsoDopePwUXmL5O9JtJfSJg17LNg@mail.gmail.com>
+In-Reply-To: <CAJfpegtJtrCTeRCT3w3qCLWsoDopePwUXmL5O9JtJfSJg17LNg@mail.gmail.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Mon, 4 Mar 2024 16:36:46 +0200
+Message-ID: <CAOQ4uxhBwmZ1LDcWD6jdaheUkDQAQUTeSNNMygRAg3v_0H5sDQ@mail.gmail.com>
+Subject: Re: [PATCH 11/13] fuse: fix UAF in rcu pathwalks
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Christian Brauner <brauner@kernel.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	linux-fsdevel@vger.kernel.org, Linus Torvalds <torvalds@linux-foundation.org>, 
+	linux-ext4@vger.kernel.org, linux-nfs@vger.kernel.org, 
+	linux-cifs@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-John Garry <john.g.garry@oracle.com> writes:
-
->>>
->>> https://urldefense.com/v3/__https://lore.kernel.org/linux-fsdevel/20240124142645.9334-1-john.g.garry@oracle.com/__;!!ACWV5N9M2RV99hQ!PqMMFBeUqdWwlm0AxVyI_Vr1HPajTQ6AG2_GwK_IrhBSa-Wnz4cc-1w0LEFyTXY9Q9gT0WwhxvXloSqnOHb6Btg$
->>>
->>> and now this one.
->>>
->>> Can the two of you please co-ordinate your efforts and based your
->>> filesysetm work off the same iomap infrastructure changes?
->> 
->> Sure Dave, make sense. But we are cc'ing each other in this effort
->> together so that we are aware of what is being worked upon.
+On Mon, Feb 5, 2024 at 3:52=E2=80=AFPM Miklos Szeredi <miklos@szeredi.hu> w=
+rote:
 >
-> Just cc'ing is not enough. I was going to send my v2 for XFS/iomap 
-> support today. I didn't announce that as I did not think that I had to. 
-
-ok. Let me take care of this next time to avoid any overlapping change
-hitting the mailing list to avoid double reviews/competing changes from
-2 people. Hopefully I can find you on xfs IRC channel in case if I would
-like to post anything in the related/overlapping area . My handle is riteshh. 
-
-> Admittedly it will be effectively an RFC, as the forcealign feature (now 
-> included) is not mature. But it's going to be a bit awkward to have 2x 
-> overlapping series' sent to the list.
+> On Mon, 5 Feb 2024 at 13:31, Christian Brauner <brauner@kernel.org> wrote=
+:
+> >
+> > On Sun, Feb 04, 2024 at 02:17:37AM +0000, Al Viro wrote:
+> > > ->permission(), ->get_link() and ->inode_get_acl() might dereference
+> > > ->s_fs_info (and, in case of ->permission(), ->s_fs_info->fc->user_ns
+> > > as well) when called from rcu pathwalk.
+> > >
+> > > Freeing ->s_fs_info->fc is rcu-delayed; we need to make freeing ->s_f=
+s_info
+> > > and dropping ->user_ns rcu-delayed too.
+> > >
+> > > Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
+> > > ---
+> >
+> > Reviewed-by: Christian Brauner <brauner@kernel.org>
 >
-> FWIW, I think that it's better to send series based on top of other 
-> series, rather than cherry-picking necessary parts of other series (when 
-> posting)
+> Acked-by: Miklos Szeredi <mszeredi@redhat.com>
 >
 
-Ok. Sure John. Make sense. Now that I understood what I am looking for
-in from iomap side of the changes, I can provide my review comments to
-your series, whenever you post them.
+Miklos,
 
-Thanks for your feedback.
+FYI, this is now merged and conflicts with:
 
--ritesh
+dc076c73b9f9 ("fuse: implement ioctls to manage backing files")
+
+from fuse/for-next:
+
+--- a/fs/fuse/inode.c
++++ b/fs/fuse/inode.c
+@@@ -1373,7 -1398,9 +1405,13 @@@ EXPORT_SYMBOL_GPL(fuse_send_init)
+  void fuse_free_conn(struct fuse_conn *fc)
+  {
+        WARN_ON(!list_empty(&fc->devices));
+++<<<<<<< HEAD
+ +      kfree(fc);
+++=3D=3D=3D=3D=3D=3D=3D
++       if (IS_ENABLED(CONFIG_FUSE_PASSTHROUGH))
++               fuse_backing_files_free(fc);
++       kfree_rcu(fc, rcu);
+++>>>>>>> fuse/for-next
+  }
+  EXPORT_SYMBOL_GPL(fuse_free_conn);
+
+Note that fuse_backing_files_free() calls
+fuse_backing_id_free() =3D> fuse_backing_free() =3D> kfree_rcu()
+
+Should we move fuse_backing_files_free() into
+fuse_conn_put() above fuse_dax_conn_free()?
+
+That will avoid the merge conflict and still be correct. no?
+
+Thanks,
+Amir.
 
