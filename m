@@ -1,267 +1,177 @@
-Return-Path: <linux-ext4+bounces-1489-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1490-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6A5486F999
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 06:33:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DDA086FA17
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 07:34:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 568891F21045
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 05:33:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6C800B20C23
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 06:34:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05D27BA2D;
-	Mon,  4 Mar 2024 05:33:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WQcL/Rwz"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D893111A0;
+	Mon,  4 Mar 2024 06:33:52 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB1E24C64;
-	Mon,  4 Mar 2024 05:33:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E01B010A10;
+	Mon,  4 Mar 2024 06:33:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709530419; cv=none; b=iB755XMzGdWwENqbHxN3k//rglWzDKDue+tPHfR7r+mBKtLjmt0pByZIK927H9S1IxnQoayUe+BRrMFcQ7cV/O0egPVVXgGvXLrOVyGRtDvKmZcRuRifipNPMwS+gEXV+o91ZCeVFYljnCz74m3NPrwLrE1SlgBS2M3fpt502Vo=
+	t=1709534032; cv=none; b=ZefgRtUAWkUtuPJ5kjBqrVNreDERY8YtEOHyMVMyvS2q0ud2gQgFB/WvZ3B/9oMoyrzHEaQ6CLeH6OIiAidczmFd0FIx4i/ixG9flyG/PSbqdKgon33hpZLGNh70wXDBN8PbOBFwBOfmxlSP7NSROjUiU5mFw6BgaHA8mgR4vbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709530419; c=relaxed/simple;
-	bh=39apz2RIGrko8XHZbaGJZ+Fl2vLUYS5jFil+wlmcMcs=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=oNNAle6YpbeunJhlXsrtfmO8YYcTbBWXDkQaVMR/kTYFyaBi7Z+ltU4lQki9Qr8lReUTtP4+f1hc6h1UC9wscSvaeyZhuwwhSgE7sLJRrJfY7BzxbeINP2O2nNtTHIbqtsm//yK+zusTK2OSBMmitiNdTW63O0ivKQd8rJjef6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WQcL/Rwz; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1dca160163dso39697815ad.3;
-        Sun, 03 Mar 2024 21:33:37 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709530416; x=1710135216; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=XRgqB8lnh2BNgRkdsh5T5T6fC6NhqpxcVe+MwI/3eLQ=;
-        b=WQcL/RwzQ0MeTM7ssqF6snnu4b1tUEwEaYw6epi0/wEK2qQUbIQp6pNR8cEy+WPoHX
-         bi4yW7T3XeiY4K6Xz0qaviTXeTQhIJAoayE5FzRHOz/XywB9KjFaWJyLohEZSVgi0kie
-         6erTLncUUJEMpp3BckxClt14HGuEr7i0m7a1iv+5dirRospUTihRDydgeR7lbrJI1a0S
-         /kPVQClptrwpNAUPboJEnmypru35yUXORmBzIs2Mp3nS2ackmj/km5W+3YgV9E14RGlb
-         2xKe3SU9BKnYuHfuV5YiEAv3f1LE8rAlAtu79eTZxLG3lXz6PV5qCShyejBNAYMueAYZ
-         J+MQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709530416; x=1710135216;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XRgqB8lnh2BNgRkdsh5T5T6fC6NhqpxcVe+MwI/3eLQ=;
-        b=jQJfci6nyKD5/RAeDgnhDdQCPoJOtbaKEycOhU3DNOvisYRTJkidfuljVg0/QMNblC
-         tp472zn0S6ObCB7rbF5UK3XkLGVE4cP4tko8vTmCA/v8XsDj3wIMyuKM7fO3oCXMeqkA
-         e0e+oP31BbhyuyapMEnfxBs5lwjFbBLW+RGmXP+l9fhFX1klCKD2+k38ubTWtWV+MSvv
-         xxAUeKU/8Y49IMtLn3bu/1fShrnNqZxWaIoxikn7uw4AlfR1SFynYuvs1NX2wBGVQW9R
-         trslwoqo1Ub95Bjc6oG+qe7SfGPXvzGXEEcu03kjUzkitvzIp4TiVP5OeAqufHqsvUqF
-         ieSw==
-X-Forwarded-Encrypted: i=1; AJvYcCV2Uud6S+rk2menXDyoFOcYxvKQ+34HciEjL87P73Ey+AJd+Yhij6BLIYxJwxRcm5VjohlA6kpGSed6p9zmq8GFM8Szcrm2rlBr85BDCHNqt7TIt15mKFC33HoT7msc7adO9qqoI+U4RA==
-X-Gm-Message-State: AOJu0YwzwrLIz28v1HiWh4gKVF6To5QY5RifkPwD0ZI3S8K64XoRaDIb
-	2F7/cLYG02LPqaEoFHjMqkR8QVVGBG8wkQskqVePzAbE99+BJF5ORA4ggUelwGs=
-X-Google-Smtp-Source: AGHT+IEeMfdwuDck5FOv5XpWhwXL28cQZZM5tnNWM1NakbkXHjnWbgc1FmA2NEsMuqsMtLcTOiQvyw==
-X-Received: by 2002:a17:902:e5ca:b0:1dc:b7d2:3fc3 with SMTP id u10-20020a170902e5ca00b001dcb7d23fc3mr10471639plf.68.1709530416283;
-        Sun, 03 Mar 2024 21:33:36 -0800 (PST)
-Received: from dw-tp ([129.41.58.7])
-        by smtp.gmail.com with ESMTPSA id t2-20020a170902e84200b001db45855528sm7504197plg.198.2024.03.03.21.33.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Mar 2024 21:33:35 -0800 (PST)
-Date: Mon, 04 Mar 2024 11:03:24 +0530
-Message-Id: <87frx64l3v.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, John Garry <john.g.garry@oracle.com>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 3/8] iomap: Add atomic write support for direct-io
-In-Reply-To: <ZeUhCbT4sbucOT3L@dread.disaster.area>
+	s=arc-20240116; t=1709534032; c=relaxed/simple;
+	bh=WRrLMBUeGs4Z+7mBNZqfHwhqMfVZ1MqNODPVECCY+Qg=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=m0vHIMiUt+1IeRdcunhJ6bBbpWKkYh/U0jqKTqOxw7ofPc0s7uSFB9Xl1S1mxaNMaKi/QEF+muW7xyjD8/Kjk/NZlk7FQ0DnAINxvZ8GZdNvLhqeHzwaNdYhT0GHnQV2uPkCavDE756SyIqo4mylCe5AJqrQdZUPCjCS9pwnTBk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Tp86B6DdKz4f3l2R;
+	Mon,  4 Mar 2024 14:33:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 3E0291A017A;
+	Mon,  4 Mar 2024 14:33:44 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgCH2GpFa+Vlc3zwFw--.11474S2;
+	Mon, 04 Mar 2024 14:33:42 +0800 (CST)
+Subject: Re: [PATCH v3 0/3] Fix crashes and warning in ext4 unit test
+To: Guenter Roeck <linux@roeck-us.net>, tytso@mit.edu,
+ adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ naresh.kamboju@linaro.org, daniel.diaz@linaro.org, brauner@kernel.org
+References: <20240302181755.9192-1-shikemeng@huaweicloud.com>
+ <77c5b612-83f1-40b6-95f2-f3962bb2de5c@roeck-us.net>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <c5f0f654-2eed-4900-c9ce-c668d77379bf@huaweicloud.com>
+Date: Mon, 4 Mar 2024 14:33:41 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-
-Dave Chinner <david@fromorbit.com> writes:
-
-> On Sat, Mar 02, 2024 at 01:12:00PM +0530, Ritesh Harjani (IBM) wrote:
->> This adds direct-io atomic writes support in iomap. This adds -
->> 1. IOMAP_ATOMIC flag for iomap iter.
->> 2. Sets REQ_ATOMIC to bio opflags.
->> 3. Adds necessary checks in iomap_dio code to ensure a single bio is
->>    submitted for an atomic write request. (since we only support ubuf
->>    type iocb). Otherwise return an error EIO.
->> 4. Adds a common helper routine iomap_dio_check_atomic(). It helps in
->>    verifying mapped length and start/end physical offset against the hw
->>    device constraints for supporting atomic writes.
->> 
->> This patch is based on a patch from John Garry <john.g.garry@oracle.com>
->> which adds such support of DIO atomic writes to iomap.
-
-Please note this comment above. I will refer this in below comments.
-
->> 
->> Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->> ---
->>  fs/iomap/direct-io.c  | 75 +++++++++++++++++++++++++++++++++++++++++--
->>  fs/iomap/trace.h      |  3 +-
->>  include/linux/iomap.h |  1 +
->>  3 files changed, 75 insertions(+), 4 deletions(-)
->
-> Ugh. Now we have two competing sets of changes to bring RWF_ATOMIC
-> support to iomap. One from John here:
-
-Not competing changes (and neither that was the intention). As you see I have
-commented above saying that this patch is based on a previous patch in
-iomap from John. 
-
-So why did I send this one?  
-1. John's latest patch series v5 was on "block atomic writes" [1], which
-does not have these checks in iomap (as it was not required). 
-
-2. For sake of completeness for ext4 atomic write support, I needed to
-include this change along with this series. I have also tried to address all
-the review comments he got on [2] (along with an extra function iomap_dio_check_atomic())
-
-[1]: https://lore.kernel.org/all/20240226173612.1478858-1-john.g.garry@oracle.com/
-[2]: https://lore.kernel.org/linux-fsdevel/20240124142645.9334-1-john.g.garry@oracle.com/
-
->
-> https://lore.kernel.org/linux-fsdevel/20240124142645.9334-1-john.g.garry@oracle.com/
->
-> and now this one.
->
-> Can the two of you please co-ordinate your efforts and based your
-> filesysetm work off the same iomap infrastructure changes?
-
-Sure Dave, make sense. But we are cc'ing each other in this effort
-together so that we are aware of what is being worked upon. 
-
-And as I mentioned, this change is not competing with John's change. If
-at all it is only complementing his initial change, since this iomap change
-addresses review comments from others on the previous one and added one
-extra check (on mapped physical extent) which I wanted people to provide feedback on.
-
->
-> .....
->
->> @@ -356,6 +360,11 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
->>  	if (need_zeroout) {
->>  		/* zero out from the start of the block to the write offset */
->>  		pad = pos & (fs_block_size - 1);
->> +		if (unlikely(pad && atomic_write)) {
->> +			WARN_ON_ONCE("pos not atomic write aligned\n");
->> +			ret = -EINVAL;
->> +			goto out;
->> +		}
->
-> This atomic IO should have been rejected before it even got to
-> the layers where the bios are being built. If the IO alignment is
-> such that it does not align to filesystem allocation constraints, it
-> should be rejected at the filesystem ->write_iter() method and not
-> even get to the iomap layer.
-
-I had added this mainly from iomap sanity checking perspective. 
-We are offloading some checks to be made by the filesystem before
-submitting the I/O request to iomap. 
-These "common" checks in iomap layer are mainly to provide sanity checking
-to make sure FS did it's job, before iomap could form/process the bios and then
-do submit_bio to the block layer. 
+MIME-Version: 1.0
+In-Reply-To: <77c5b612-83f1-40b6-95f2-f3962bb2de5c@roeck-us.net>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCH2GpFa+Vlc3zwFw--.11474S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxCryfCF4ftw4kCrWxuF48Zwb_yoWrZr1kpr
+	18tFW5KrWrJrn7J3W3Jw1UJry3ta1Iy3WUGrn7GF15CF1UGr1jvr1jqrWjgryDtr48Xw1j
+	q3srWw1j9w1UJw7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
 
 
->
-> .....
->
->> @@ -516,6 +535,44 @@ static loff_t iomap_dio_iter(const struct iomap_iter *iter,
->>  	}
->>  }
->>  
->> +/*
->> + * iomap_dio_check_atomic:	DIO Atomic checks before calling bio submission.
->> + * @iter:			iomap iterator
->> + * This function is called after filesystem block mapping and before bio
->> + * formation/submission. This is the right place to verify hw device/block
->> + * layer constraints to be followed for doing atomic writes. Hence do those
->> + * common checks here.
->> + */
->> +static bool iomap_dio_check_atomic(struct iomap_iter *iter)
->> +{
->> +	struct block_device *bdev = iter->iomap.bdev;
->> +	unsigned long long map_len = iomap_length(iter);
->> +	unsigned long long start = iomap_sector(&iter->iomap, iter->pos)
->> +						<< SECTOR_SHIFT;
->> +	unsigned long long end = start + map_len - 1;
->> +	unsigned int awu_min =
->> +			queue_atomic_write_unit_min_bytes(bdev->bd_queue);
->> +	unsigned int awu_max =
->> +			queue_atomic_write_unit_max_bytes(bdev->bd_queue);
->> +	unsigned long boundary =
->> +			queue_atomic_write_boundary_bytes(bdev->bd_queue);
->> +	unsigned long mask = ~(boundary - 1);
->> +
->> +
->> +	/* map_len should be same as user specified iter->len */
->> +	if (map_len < iter->len)
->> +		return false;
->> +	/* start should be aligned to block device min atomic unit alignment */
->> +	if (!IS_ALIGNED(start, awu_min))
->> +		return false;
->> +	/* If top bits doesn't match, means atomic unit boundary is crossed */
->> +	if (boundary && ((start | mask) != (end | mask)))
->> +		return false;
->> +
->> +	return true;
->> +}
->
-> I think you are re-implementing stuff that John has already done at
-> higher layers and in a generic manner. i.e.
-> generic_atomic_write_valid() in this patch:
->
-> https://lore.kernel.org/linux-fsdevel/20240226173612.1478858-4-john.g.garry@oracle.com/
->
-> We shouldn't be getting anywhere near the iomap layer if the IO is
-> not properly aligned to atomic IO constraints...
+on 3/3/2024 11:33 PM, Guenter Roeck wrote:
+> On 3/2/24 10:17, Kemeng Shi wrote:
+>> v2->v3:
+>> -fix warning that sb->s_umount is still held when unit test finishs
+>> -fix warning that sbi->s_freeclusters_counter is used before
+>> initialization.
+>>
+>> v1->v2:
+>> -properly handle error from sget()
+>>
+>> Previously, the new mballoc unit tests are only tested by running
+>> "./tools/testing/kunit/kunit.py run ..." in which case only rare configs
+>> are enabled.
+>> This series fixes issues when more debug configs are enabled. Fixes are
+>> tested with and without kunit_tool [1].
+>>
+>> [1] https://docs.kernel.org/dev-tools/kunit/run_manual.html
+>>
+>> Kemeng Shi (3):
+>>    ext4: alloc test super block from sget
+>>    ext4: hold group lock in ext4 kunit test
+>>    ext4: initialize sbi->s_freeclusters_counter before use in kunit test
+>>
+>>   fs/ext4/mballoc-test.c | 77 ++++++++++++++++++++++++++++++++----------
+>>   1 file changed, 60 insertions(+), 17 deletions(-)
+>>
+> 
+> I still see crashes with this version. Some examples below.
+> 
+Thanks so much for the test and report. It's likely cuased by using
+sbi->s_dirtyclusters_counter uninitialized. Will fix it in next
+version.
 
-So current generic_atomic_write_valid() function mainly checks alignment
-w.r.t logical offset and iter->len. 
+Kemeng
+> Guenter
+> 
+> ---
+> mips:
+> 
+>         KTAP version 1
+>         # Subtest: test_mark_diskspace_used
+> CPU 0 Unable to handle kernel paging request at virtual address 00780000, epc == 807a4b28, ra == 807a4c20
+> Oops[#1]:
+> CPU: 0 PID: 112 Comm: kunit_try_catch Tainted: G                 N 6.8.0-rc6-next-20240301-11397-g2cd922b7255b #1
+> Hardware name: mti,malta
+> $ 0   : 00000000 00000001 00780000 00000000
+> $ 4   : 811c6de0 00000000 00000001 00000000
+> $ 8   : 00000005 00000000 82f0cc00 00000001
+> $12   : ffffffff 00000002 00000000 fff80000
+> $16   : 82d99558 811c6de0 00000000 00000020
+> $20   : 811c0000 00000000 00000001 00000000
+> $24   : 00000000 80415884
+> $28   : 82f1c000 82f1f9f8 00000000 807a4c20
+> Hi    : 00000000
+> Lo    : 00002128
+> epc   : 807a4b28 percpu_counter_add_batch+0x7c/0x224
+> ra    : 807a4c20 percpu_counter_add_batch+0x174/0x224
+> Status: 1000a402    KERNEL EXL
+> Cause : 00800008 (ExcCode 02)
+> BadVA : 00780000
+> PrId  : 00019300 (MIPS 24Kc)
+> Modules linked in:
+> Process kunit_try_catch (pid: 112, threadinfo=82f1c000, task=82c2cec0, tls=00000000)
+> Stack : 82d99400 b332f3f3 00000000 b332f3f3 82f1fb20 811c0000 00000000 00000000
+>         811c0000 82d99400 82d63800 00000008 00000000 80414ac4 00000000 801a4aa4
+>         00000001 00000000 00000020 00000001 00000000 82f1fa70 00000000 00000023
+>         00000080 82f1fb20 82f1fb20 00000380 82c2cec0 00000000 00000000 b332f3f3
+>         82f1fae0 00000025 82d63800 821bbc08 00000001 00000001 821f12a8 82f0cc00
+>         ...
+> Call Trace:
+> [<807a4b28>] percpu_counter_add_batch+0x7c/0x224
+> [<80414ac4>] ext4_mb_mark_diskspace_used+0x25c/0x26c
+> [<80414ba4>] test_mark_diskspace_used+0xd0/0x308
+> [<806e8fe0>] kunit_try_run_case+0x70/0x204
+> [<806eb1dc>] kunit_generic_run_threadfn_adapter+0x1c/0x28
+> [<80162be0>] kthread+0x128/0x150
+> [<80103038>] ret_from_kernel_thread+0x14/0x1c
+> Code: 02242021  8c820000  00431021 <8c5e0000> 001e17c3  03d5a021  00523021  029e902b  02469021
+> ---[ end trace 0000000000000000 ]---
+> 
+> Various arm emulations:
+> [    6.617298]         # Subtest: test_mark_diskspace_used
+> [    6.620243]         ok 1 block_bits=10 cluster_bits=3 blocks_per_group=8192 group_count=4 desc_size=64
+> [    6.622190] 8<--- cut here ---
+> [    6.622374] Unable to handle kernel paging request at virtual address 0a3f6000 when read
+> [    6.622549] [0a3f6000] *pgd=00000000
+> [    6.622960] Internal error: Oops: 5 [#1] SMP ARM
+> [    6.623138] Modules linked in:
+> [    6.623342] CPU: 0 PID: 187 Comm: kunit_try_catch Tainted: G                 N 6.8.0-rc6-next-20240301-11397-g2cd922b7255b #1
+> [    6.623573] Hardware name: Freescale i.MX6 Ultralite (Device Tree)
+> [    6.623738] PC is at percpu_counter_add_batch+0x2c/0x110
+> [    6.624171] LR is at percpu_counter_add_batch+0xa8/0x110
+> 
+> 
 
-What this function was checking was on the physical block offset and
-mapped extent length. Hence it was made after iomap_iter() call.
-i.e. ...
-
- +	/* map_len should be same as user specified iter->len */
- +	if (map_len < iter->len)
- +		return false;
- +	/* start should be aligned to block device min atomic unit alignment */
- +	if (!IS_ALIGNED(start, awu_min))
- +		return false;
-
-
-But I agree, that maybe we can improve generic_atomic_write_valid()
-to be able to work on both logical and physical offset and
-iter->len + mapped len. 
-
-Let me think about it. 
-
-However, the point on which I would like a feedback from others is - 
-1. After filesystem has returned the mapped extent in iomap_iter() call,
-iomap will be forming a bio to be sent to the block layer.
-So do we agree to add a check here in iomap layer to verify that the
-mapped physical start and len should satisfy the requirements for doing
-atomic writes?
-
->
-> So, yeah, can you please co-ordinate the development of this
-> patchset with John and the work that has already been done to
-> support this functionality on block devices and XFS?
-
-We actually are in a way. If you see this ext4 series is sitting on top of
-John's v5 series of "block atomic write". This patch [1] ([RFC 5/8] part
-of this series), in ext4 does use generic_atomic_write_valid() function
-for DIO atomic write validity.
-
-[1]: https://lore.kernel.org/linux-ext4/e332979deb70913c2c476a059b09015904a5b007.1709361537.git.ritesh.list@gmail.com/T/#u
-
-
-Thanks for your review!
-
--ritesh
 
