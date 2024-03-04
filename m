@@ -1,121 +1,103 @@
-Return-Path: <linux-ext4+bounces-1499-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1500-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AD50F8707D6
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 18:01:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 572B78709ED
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 19:55:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DF9121C235BC
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 17:01:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1108D282034
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Mar 2024 18:55:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EBC9604AF;
-	Mon,  4 Mar 2024 17:01:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE5D478B4D;
+	Mon,  4 Mar 2024 18:55:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="ftkDgRLz"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KgAIaxqk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f44.google.com (mail-wm1-f44.google.com [209.85.128.44])
+Received: from mail-pg1-f173.google.com (mail-pg1-f173.google.com [209.85.215.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0A6A5FBB0
-	for <linux-ext4@vger.kernel.org>; Mon,  4 Mar 2024 17:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02A6E7869A;
+	Mon,  4 Mar 2024 18:55:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709571677; cv=none; b=SEzQ2vgDGmFZVbrWaWL7jyj6yFCARyEzj5sX9oWtfKbYnSvwN+gqEoA7yRbNc9GExLPG8yg7UVwXBL4PVKRIGGpSlqR0rg0IcK/mysfD1kTTx4aIjSaN5rRnXNMbpnvKu0jLDR35k6CTkdlPp8GTUTjvnyfOLMYjRHDO8nw2nS0=
+	t=1709578513; cv=none; b=uOZqgIwmLTgqvPYVDPWzqpYUxABevEDS2yl7auSmC+JAdbxo0ji8tj7fdF0IEHbTd8kbkgVDuKo72nL9w/OafN0QHKu2WAAQU+361zeuevH5heN/JtbN+c5DDuBG2hwzAEv7ZBAhGcCI+s24zG4qzyi2I1bludaaj+GZh7W6ye0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709571677; c=relaxed/simple;
-	bh=Y1hODsyOTqk2qNlu5XLNFWyxBpWwax0wrwGYV8h0bf8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jc8pScauEG3XI+tADOpMG5G3Q1c7Uus/OhB6q+JXyOvUfyCa0oWPkPUfhmVV2xOFN1J9nRrGJbG1QSfAXl9lT59LguqdnqJndWjyTn7X57Qt9u4vBmGwaurkKxcEO+O2TmKvMVJMG5WzWjbLMbAOhwWWNbEOHTU1NAqTqp/hMwQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=ftkDgRLz; arc=none smtp.client-ip=209.85.128.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wm1-f44.google.com with SMTP id 5b1f17b1804b1-412e6ba32easo5883885e9.0
-        for <linux-ext4@vger.kernel.org>; Mon, 04 Mar 2024 09:01:15 -0800 (PST)
+	s=arc-20240116; t=1709578513; c=relaxed/simple;
+	bh=FnMJwlF96DcVWB+BQrfRhd3D153RPZF0wsf8N0ZsOEs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TclRMtPGSnRyEccwldi4FeO6m2vbER+j87xkQrOkRr5E0D3ImMsCkD9Aq3ewqtGDc5Viz+ne+kATQ4o7y0Pz6QObgQDHzKH7dM9Q93TE2M8foWxLXkSxxPN3MzWfwri+rQ0E0HIJcBbyoleXMLcxawyjG/zaYC7lo8shoNxBG3M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KgAIaxqk; arc=none smtp.client-ip=209.85.215.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f173.google.com with SMTP id 41be03b00d2f7-5ce2aada130so4261168a12.1;
+        Mon, 04 Mar 2024 10:55:11 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1709571674; x=1710176474; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=s/uotU1HGCeXUT4H5saUqikW28hMXwwL7oNQgmFD0EY=;
-        b=ftkDgRLzdt3TOkpuSPtEhIa8mNuW44Q1s/dMB9989NckTQdAQOTkHz8VkbjJfgtBcN
-         OOuUZy/qAeJ6l9Ml/MopbxazrybNVMvVekbKFcdc2qv1hs5cBSs24zl3vpVKHdI6PGEU
-         YzVnE/Y+Tldeq5YJizSLoExKhEucKfdnmD1NyA/ZUXnqHaqwBvt46fqGOQ8MxQ1JLOmg
-         gIR0NZrQnqe+pnqVNgM1xkWoQC8h2yu7VFMlxgp4B4ZsDdk8Cvy9lGIRWjxqqOyQsK3S
-         h3vyeTQhvAq8w/6NeELLB7eLSVoTqWZIRV8h+DG275N9IldIeAD268Prr91OR15hJlW6
-         Gl5Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709571674; x=1710176474;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=gmail.com; s=20230601; t=1709578511; x=1710183311; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=s/uotU1HGCeXUT4H5saUqikW28hMXwwL7oNQgmFD0EY=;
-        b=opUMpaTF+eQQ/N+y3NytAr3uKxA/NIG6e617E2chaE/OBdtXgJ9NVvkHkvNYRHgpKB
-         lm7NC0zcVdM++0Y2sLs8rs4wnsAOfOuXoFsM147KM+zJzuAoiwhr/QuiAO057JjKpjPw
-         7B6fS/WeAGEX50sOK9pRauDzsO6yiqVdByuQyJkv/K5VimyBpQ3mpeqyyoJaJgWAzKgp
-         vVqLEhz1p0wi1kIdXl4z8Qf/DFnvfGShkGXDyvU5z8lGGmBUXeLpxmlsTTXfqDiH2+ms
-         LoIk9cQhbgKZoXeWYHqWrtaMQl51/T9UjBpU572be2Ikm5cgb65BkmEy/rVT1tm0T4fZ
-         TgkA==
-X-Gm-Message-State: AOJu0YweibnuMzy+75itNtgb5uWz5/7kT0PoqZ+WTrpkH6XDHRzD5j2l
-	/fKqhSWryJ+8tqU+u/iOAH8jyaMjSS4vAu4fFBJ+HyfKJvPLg9EXs+DcNqjO2NVxhNJe9gMtbsZ
-	mK5k=
-X-Google-Smtp-Source: AGHT+IGZzfhyMUkVQDEbxidUeo+sp6ipbXiw/f98kRVENVpcTyhXxPwrE0AypKvSiUcuMEpZK88sqQ==
-X-Received: by 2002:a05:600c:458f:b0:412:bfa1:2139 with SMTP id r15-20020a05600c458f00b00412bfa12139mr6919053wmo.37.1709571674138;
-        Mon, 04 Mar 2024 09:01:14 -0800 (PST)
-Received: from fedora.fritz.box (aftr-82-135-80-152.dynamic.mnet-online.de. [82.135.80.152])
-        by smtp.gmail.com with ESMTPSA id i4-20020a05600c354400b004101f27737asm18520049wmq.29.2024.03.04.09.01.12
+        bh=G6EsCuzkrFIZIDT8fk6rKphRBaaZIClz4Nc3Ii64mzk=;
+        b=KgAIaxqkDsGlDo3Y+myadGOk4X4D13rh2P2BYzM7fb+6RkJ3PrD26574I3oxKxK/AZ
+         9X8lwhOOwZLGSWjAesYQRNX/SGyI0Iz/gnBGUTrCLOVD92MfBnTf4M7gKyF9IbysOw/F
+         qS0MoJvlCEW8KFbeJLEVJoBdhoJL9zla4TSB8L/2/2yzkPGOSF2+bSJRXKW/wDjPjppS
+         QG+G11EdQ+TYtoKOd7Y8bOxM0j96MZXleiKYBxcf2H/0wciqYQ3MY1gKZ/X9CnLTytYm
+         WglBrv+oN490htb8IX31PrMbmJLPuhOmGssbhwlZ7LSwhdsZTXWRr4j2Z9gb0CP8ungd
+         1LeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709578511; x=1710183311;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=G6EsCuzkrFIZIDT8fk6rKphRBaaZIClz4Nc3Ii64mzk=;
+        b=YIa88kI9uIsMSZs08OFfF2mhJgTIMd9bRJ0ov/vb35nrWsJan2BXsQXi/HryepK4lW
+         sc0LuTGW9nsO3G1EpzOmUimorHczpHQGgoISrRFKxMI8vwL5R8xS2jbvFZOV7s8seHbG
+         W5ihhHlf8YrVnkIQRFxvbdXcnWqQPP4iFH1qQKzn691cxEFr0sLKhLefNHWErnk1JQuq
+         4iFKEFJZs+gT+N4HpX0unTd2IHmATUsseLC/ZtSe3JAcRt1UJs7Xr+gMfowWRLkWt8VG
+         PLzg4xMNyyeXRa0YvU5WztP1whDKQhDy2KnIneqVtaLxttN5aZk7W2RghYwIQaZogsp9
+         Cvig==
+X-Forwarded-Encrypted: i=1; AJvYcCULv/jpj3KHeRvKw35Mb3YOzG/6KQ9V37RHv24c+k7NtwRbXOK1ug5nyKznfneKUNzNJH5pXHdIK/+sWRFlKYp3M+SVp1Y+UDurQc+x+3dWxWaJPiTiZr91MRb3Uq8n+a6pwW2redlN9Q==
+X-Gm-Message-State: AOJu0Yw3Lhgzi9M4GRnFzDdmgbJNlrfKLgRFvfJ1262s/RWpad+Hbj4u
+	Yc8mkOlAf+dvFWEYjKqtS2sPRlz01svZ/BbG6MKInjPNhoDtSSfw
+X-Google-Smtp-Source: AGHT+IGEV8X5x9DFe43MYukPtpQZXMccwF6MU3Mn6iCy5ifFI6glQlajApV8FrTi5WS/KJBkDsG4ng==
+X-Received: by 2002:a17:90a:b881:b0:29a:8c78:9a7 with SMTP id o1-20020a17090ab88100b0029a8c7809a7mr6590744pjr.40.1709578511285;
+        Mon, 04 Mar 2024 10:55:11 -0800 (PST)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id sw14-20020a17090b2c8e00b0029abf47ec7fsm10487219pjb.0.2024.03.04.10.55.09
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 04 Mar 2024 09:01:13 -0800 (PST)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] ext4: Remove unneeded if checks before kfree
-Date: Mon,  4 Mar 2024 17:55:08 +0100
-Message-ID: <20240304165507.156076-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+        Mon, 04 Mar 2024 10:55:10 -0800 (PST)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Mon, 4 Mar 2024 10:55:09 -0800
+From: Guenter Roeck <linux@roeck-us.net>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, naresh.kamboju@linaro.org,
+	daniel.diaz@linaro.org, brauner@kernel.org
+Subject: Re: [PATCH v4 0/3] Fix crashes and warnings in ext4 unit test
+Message-ID: <8d0506f8-7df2-45f6-85a4-2a0075b00050@roeck-us.net>
+References: <20240304163543.6700-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240304163543.6700-1-shikemeng@huaweicloud.com>
 
-kfree already checks if its argument is NULL. This fixes two
-Coccinelle/coccicheck warnings reported by ifnullfree.cocci.
+On Tue, Mar 05, 2024 at 12:35:40AM +0800, Kemeng Shi wrote:
+> v3->v4:
+> -fix that sbi->s_dirtyclusters_counter is used before
+> initialization.
+> 
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/ext4/super.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+I see no more ext4 related crashes, unit test failures, or tracebacks
+with this version of the series applied on top of next-20240304.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 0f931d0c227d..9b7a0b4f2d3d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2079,8 +2079,7 @@ static int unnote_qf_name(struct fs_context *fc, int qtype)
- {
- 	struct ext4_fs_context *ctx = fc->fs_private;
- 
--	if (ctx->s_qf_names[qtype])
--		kfree(ctx->s_qf_names[qtype]);
-+	kfree(ctx->s_qf_names[qtype]);
- 
- 	ctx->s_qf_names[qtype] = NULL;
- 	ctx->qname_spec |= 1 << qtype;
-@@ -2485,8 +2484,7 @@ static int parse_options(struct fs_context *fc, char *options)
- 			param.size = v_len;
- 
- 			ret = ext4_parse_param(fc, &param);
--			if (param.string)
--				kfree(param.string);
-+			kfree(param.string);
- 			if (ret < 0)
- 				return ret;
- 		}
--- 
-2.44.0
+I'll send Tested-by: tags as response to the individual patches.
 
+Thanks,
+Guenter
 
