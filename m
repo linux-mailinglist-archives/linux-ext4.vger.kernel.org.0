@@ -1,165 +1,95 @@
-Return-Path: <linux-ext4+bounces-1519-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1520-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 651F187212E
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Mar 2024 15:12:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD4B9872582
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Mar 2024 18:17:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 975AA1C21D07
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Mar 2024 14:12:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF265B219CA
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Mar 2024 17:17:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229368662A;
-	Tue,  5 Mar 2024 14:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31F36168DE;
+	Tue,  5 Mar 2024 17:16:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R2mixKG7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lIPfLtV7";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="R2mixKG7";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lIPfLtV7"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JmvmU7oi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AEAB86122;
-	Tue,  5 Mar 2024 14:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 050E017583;
+	Tue,  5 Mar 2024 17:16:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709647945; cv=none; b=m7QmT790jO419AuGovyxwPfTSG89Zo/lHtniEMadpyaLFf0wSwouK10Fv4h7VdLg+BJL6r2qBUkF9k1xO1hjhaIrCh1GN3XhzA/uyEntd89VwAGg3e8e/HsiJEEuvD109y7LKnLIAXoD2Pq/1Xe1sqLSQ9dT1U++Bse/JimNtUA=
+	t=1709659012; cv=none; b=ZEkPZzVfJ/IXxM+fQpg3TOG3sGXhb0D5v06bZd4Mwqk+6u8Vi5A4MSQ5Qp0SXEiy0RkVMVpzJZ2y6gBQ7xIw7PGqDTk+QXYIW2F/Yjnt05ZAgPipACLyFyyFfGLKrqcwT+E1g39w15IfRQ/SgFdFnrL/vUJOsTZlShhrfXelv3E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709647945; c=relaxed/simple;
-	bh=WMOyx1/2arZ861ZCxC5DQk646BMeZvDgyCfKFVfevyM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Va18BQnZIXjBCW3+7JHXBAvaPGbQ4d1E9i0DUeY3XsRoszO8aU3VqmIG6HhRmC3B+r2L9pNkDu8WrXKboC99YjI/m2VzaiBV9xhdDF8JwfTX5gqHVB3o3oJkaV/rVDBl++aG5bYBWWaqOVrb0lghB8kEhiYlVxQVnCbDb12XiAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R2mixKG7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lIPfLtV7; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=R2mixKG7; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lIPfLtV7; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9A2776B3B9;
-	Tue,  5 Mar 2024 14:12:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709647941; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mVMBkO26srIvGNGxarIEl9k+TtBSK7K2iz5x0GMIPNI=;
-	b=R2mixKG7Zh6QZR/Qh41CErDOndna+q/VFmZRP/msuxr/i8gbGrsUqZ9iwhPKkl5v78NzEZ
-	WuKruK8UmBU4Uf3kt00M+/036KT46+co0g4T1MFJX8Rmukk/XxrVsaXb23+Wd9Z5U/Ysk/
-	3QbUeHu1mp71P437KM70146pVvtdIlw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709647941;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mVMBkO26srIvGNGxarIEl9k+TtBSK7K2iz5x0GMIPNI=;
-	b=lIPfLtV7U5aiOgX1FD84+no+5Dr9oyBWTCe+LcMVgXMb2DJm6O5FH80xG29ngUWag9mYE2
-	sHkKBVYNTJWdHeDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1709647941; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mVMBkO26srIvGNGxarIEl9k+TtBSK7K2iz5x0GMIPNI=;
-	b=R2mixKG7Zh6QZR/Qh41CErDOndna+q/VFmZRP/msuxr/i8gbGrsUqZ9iwhPKkl5v78NzEZ
-	WuKruK8UmBU4Uf3kt00M+/036KT46+co0g4T1MFJX8Rmukk/XxrVsaXb23+Wd9Z5U/Ysk/
-	3QbUeHu1mp71P437KM70146pVvtdIlw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1709647941;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=mVMBkO26srIvGNGxarIEl9k+TtBSK7K2iz5x0GMIPNI=;
-	b=lIPfLtV7U5aiOgX1FD84+no+5Dr9oyBWTCe+LcMVgXMb2DJm6O5FH80xG29ngUWag9mYE2
-	sHkKBVYNTJWdHeDA==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 8CFC813A5D;
-	Tue,  5 Mar 2024 14:12:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id I/BkIkUo52VtQwAAn2gu4w
-	(envelope-from <jack@suse.cz>); Tue, 05 Mar 2024 14:12:21 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 31BF0A0650; Tue,  5 Mar 2024 15:12:21 +0100 (CET)
-Date: Tue, 5 Mar 2024 15:12:21 +0100
-From: Jan Kara <jack@suse.cz>
-To: chengming.zhou@linux.dev
-Cc: jack@suse.com, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org, vbabka@suse.cz, roman.gushchin@linux.dev,
-	Xiongwei.Song@windriver.com,
-	Chengming Zhou <zhouchengming@bytedance.com>
-Subject: Re: [PATCH] ext2: remove SLAB_MEM_SPREAD flag usage
-Message-ID: <20240305141221.um4zuvnro7tg5fgq@quack3>
-References: <20240224134816.829424-1-chengming.zhou@linux.dev>
+	s=arc-20240116; t=1709659012; c=relaxed/simple;
+	bh=Pe1mj1wbiAHxITTX6lSOwpMRXgsL0p/qN+SI6tCSYvA=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=hiOCJjqa7317WMG6emNsGQugFPzj4LjSKdWp0p1Ocd/h0tan+wGtJsURBDNs7xGUrkfDmkA5i2fAFwV+1GLxURddMcIrosbs9qQI1LWNq4f2Aq10lJoM2OM9eaYGP7bYXCNQSXc6Gl9sfAQd1u+wDVYKpedM8U4nNaZwwtFa/ew=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JmvmU7oi; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so4608082a12.0;
+        Tue, 05 Mar 2024 09:16:49 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709659009; x=1710263809; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=mqClEImGAVR+13GNNVSvl83oypLG5Air8fAgJUs1O7A=;
+        b=JmvmU7oiQhDUmHuTZLfjWGvKVVVtk95ExO55jyolEQWRWZyQmxQenpNWwdja/M2Qkr
+         UjhiprMAVNXFdrpQR0swlXcFXDOMqtrkDGgBby9+cw3jex/AIedV5VNdfdQ91CRbVEFg
+         LKabh6RQBSWZZYI1hjksb6p9gO1RDW9xYz/MzDXpIv0LitgLIBt1VHNhV93r8DJdeCx0
+         9Eg0cKHyMNt8axB3p99n5XC5SzPLRYIH4JPpP2tAlMc4fYH3RX66p1udS+KzsWbiugUU
+         Wi0FYXhzfs8cN+Vz2GNNSL/phWPB3LLuIWYeLtu56iMJeltpNG75eMKjvYAYNqG0Esuw
+         eh2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709659009; x=1710263809;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=mqClEImGAVR+13GNNVSvl83oypLG5Air8fAgJUs1O7A=;
+        b=U2sK4JGphsh692tIvcfKp2Ux2N9ptVuBpSyDen2MQAMm8C5S63fZtSXQsM29QnYU3X
+         z17iVhsslNdD9tQVIaZsAb8PG20xympn6h9/jY8+SLAVn/cnMOeDcsa1gySyuKsM+LgO
+         3uEosxFwIIs9zYjsPq4zXDhcXC8V49rdJ7mebNZw7XsN+9G/bn09lGHRIPv+Ke6edJ6/
+         jSf5T/h9iHcHDg/r24IRRySJC0Lwz3OXsqVDIjYuG+mbQSnaksaUtxd7pKIh9sRsadjy
+         vjiqvxtAnuHNuVMou0iDB5oIjG4QbvRwsfG0M72hViwuLUf9rGQmvipwZSUmSSfow5dF
+         CDNQ==
+X-Forwarded-Encrypted: i=1; AJvYcCU0z/HMregEClH/oyp3zjaW9Fqul5OpsxkHjvthxrGr+A3FJHw6VGxy7M5lH8MaAhe2sSo00QwuhA3P6MzjoXDE7OSrZ2VfpSozsBAg
+X-Gm-Message-State: AOJu0YyYj70P0NNfp4a1IRtIQ9zzbG/vUJqi/NfnpJiNf8un/7svY+Jl
+	laP3RdP9C74KZYM9dXm8vKWRbpj0YmEkT11Zxi5nsyJv4Ma6TF3467gYNiKb
+X-Google-Smtp-Source: AGHT+IH1kSZpwLX3zfvS6Xwbl4F5xCu1KzWtdKW2+cKMba+Ej84ubqK8d8trKshlOE0U7ade3M0p8w==
+X-Received: by 2002:a17:90a:9b0b:b0:29a:2788:c9d1 with SMTP id f11-20020a17090a9b0b00b0029a2788c9d1mr10048469pjp.39.1709659009154;
+        Tue, 05 Mar 2024 09:16:49 -0800 (PST)
+Received: from dw-tp ([171.76.83.125])
+        by smtp.gmail.com with ESMTPSA id t18-20020a170902d21200b001dca6d1d574sm10773585ply.302.2024.03.05.09.16.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 05 Mar 2024 09:16:48 -0800 (PST)
+Date: Tue, 05 Mar 2024 22:46:43 +0530
+Message-Id: <878r2w4n0k.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Thorsten Blum <thorsten.blum@toblux.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, Thorsten Blum <thorsten.blum@toblux.com>
+Subject: Re: [PATCH] ext4: Remove unneeded if checks before kfree
+In-Reply-To: <20240304165507.156076-2-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240224134816.829424-1-chengming.zhou@linux.dev>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spamd-Result: default: False [-2.46 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 RCPT_COUNT_SEVEN(0.00)[9];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-2.86)[99.42%]
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spam-Score: -2.46
 
-On Sat 24-02-24 13:48:16, chengming.zhou@linux.dev wrote:
-> From: Chengming Zhou <zhouchengming@bytedance.com>
-> 
-> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
-> its usage so we can delete it from slab. No functional change.
-> 
-> Signed-off-by: Chengming Zhou <zhouchengming@bytedance.com>
+Thorsten Blum <thorsten.blum@toblux.com> writes:
 
-Thanks. I've added the patch to my tree.
-
-								Honza
-
+> kfree already checks if its argument is NULL. This fixes two
+> Coccinelle/coccicheck warnings reported by ifnullfree.cocci.
+>
+> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
 > ---
->  fs/ext2/super.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext2/super.c b/fs/ext2/super.c
-> index 6d8587505cea..7162c61c0402 100644
-> --- a/fs/ext2/super.c
-> +++ b/fs/ext2/super.c
-> @@ -213,8 +213,7 @@ static int __init init_inodecache(void)
->  {
->  	ext2_inode_cachep = kmem_cache_create_usercopy("ext2_inode_cache",
->  				sizeof(struct ext2_inode_info), 0,
-> -				(SLAB_RECLAIM_ACCOUNT|SLAB_MEM_SPREAD|
-> -					SLAB_ACCOUNT),
-> +				SLAB_RECLAIM_ACCOUNT|SLAB_ACCOUNT,
->  				offsetof(struct ext2_inode_info, i_data),
->  				sizeof_field(struct ext2_inode_info, i_data),
->  				init_once);
-> -- 
-> 2.40.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+>  fs/ext4/super.c | 6 ++----
+>  1 file changed, 2 insertions(+), 4 deletions(-)
+>
+
+Sure. Thanks for your patch. 
+Looks good to me. Feel free to add - 
+
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
