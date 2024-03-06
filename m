@@ -1,178 +1,145 @@
-Return-Path: <linux-ext4+bounces-1554-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1555-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A390C873537
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Mar 2024 12:00:00 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6E50873559
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Mar 2024 12:09:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3074A1F23FB8
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Mar 2024 11:00:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E8B62829E0
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Mar 2024 11:09:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D189663102;
-	Wed,  6 Mar 2024 10:59:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABB5D763FC;
+	Wed,  6 Mar 2024 11:09:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="biMJIoh/"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jbIQAJkQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49A7604D5
-	for <linux-ext4@vger.kernel.org>; Wed,  6 Mar 2024 10:59:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB637745E0;
+	Wed,  6 Mar 2024 11:09:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709722755; cv=none; b=hsEf6LTmk5rZ9MSXlklmxKp/OdlxSBURQKust7zaJ4RroQjAhEK2YhSslhcy81jfUv8JhnVfBtvZ4onGn5JrCCsIjIbJJ6d3RcgZizwweXbAHh1ScmPi3mLkcEO4eIu7NnTItFfreXkCwNLN8oxdOL881/80r+sWKd/uCUmUSZo=
+	t=1709723367; cv=none; b=ilmt9Jg9aCgh9L/Hnpto8TNuz6MD31v59rmpL/a2Yct0dB70/mYy6j4MwYcvhmgGn6jKDFi2vzqaUU43x/0heEYLqW+n8VYBjXwYq1atyeRTGlyPJLx00OYGjvRQ8m6Llpxvka3y2npQq64NxTBxtOufGjxIoS8ZGiylFeYEcms=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709722755; c=relaxed/simple;
-	bh=zaXvKaorrrCyipP+9H3KeoIuEMKMNGtAb136852yvMs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=INnm5tFKzIkYWaXIb9gqNBrQQ+trTjIxtBz364C2yavHrDOpdXsu6CqwZz/DP/dbCNvqdwziuAO1lg1eGIQBjHbJ36a+nct86CSAMJ5xG96+RHz39xG2F4EXAKp9PGjipBVNFEMkIThBRdrYIoLNUiFMTgctlU8uW6JQfMkLU5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=biMJIoh/; arc=none smtp.client-ip=209.85.210.41
+	s=arc-20240116; t=1709723367; c=relaxed/simple;
+	bh=wfchAnSpZhoq9w6pqknAMA6sRlQ5/ydgV1sHI2Pc4x0=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=XLJ6ddym/OUuiVLnx+Hp5JD5WdJDrEzHg8yjz64PNZNoE+DDjaCXZmugbbRlXTChyCoIWJlxsl3TZ/Q6b5f2O/I3TVqbdc3VdNQLZYjGHX/XSR9hDCTAHhwLdEE6gt8CKJQ0zXGER7UqmT9B0bWci4nvnWmyvOuDKtf4ssKbz/o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jbIQAJkQ; arc=none smtp.client-ip=209.85.214.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e4e8be9c85so1097049a34.3
-        for <linux-ext4@vger.kernel.org>; Wed, 06 Mar 2024 02:59:13 -0800 (PST)
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dcc7f4717fso66612875ad.0;
+        Wed, 06 Mar 2024 03:09:25 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709722752; x=1710327552; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=k7WDrH9ecfdKhKPXS0pZAyDS0/o1hY/uAjYt83vHTV4=;
-        b=biMJIoh/0KMKjE2u5/sOK4WX6D5CoheRPmEGbqqaoIHoamrsbk4RRVzpmAI+fMO2si
-         L9NUUkMYuOVBrRnd4B42Quj83GeKLUq99oppKNJNSTK8McZT7YuNET0zlJ6tDfXdWH4m
-         S/Bde5vUPcxv65DFXie4sQTfgW/zjD2uERd7f7KxB5UlIV7DtEmeKwtWHV+ocgzVuDGr
-         3IWzS8QxIX7KBejb9QJXqAFueKaWYqczOHA3MQNulb6FvD5C4k0HyaLBjzIL8//dS8H/
-         omnaNytvf0gyH+L8yF4/Eu1T4V3wb3bRgMhA5TGl+wtV/b475M0+Om5B1qr1juXGT6Pq
-         Xegw==
+        d=gmail.com; s=20230601; t=1709723364; x=1710328164; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=PBoe297NLuGYbL60WKlTKgt6ML8FWLv2cO3sE0MvVJI=;
+        b=jbIQAJkQrggNPOUj2LEJ7/2bgr/dmBHWetKatbMqxCUwNSNlnV8KMK7LDwW1hHRlyg
+         s+KbUh5c1XwJc3UEn4os/fr8rZ0UZVvHH7FCBiUccFHkdhs8bUaEyID7a7/P/NBK6HgS
+         ckK9QL4E7LM6lzCB7gkLiQ3DwyWuJ9lo68wHL/R5qJ3uCPU5gGPxqUzStxhyh8jiBrHr
+         fOaGSBo78m1Snqo8DT0kKU49tH81og6A39vfL9AIxd4WJKcDdOryPGXiPyNdxUwJxwxF
+         ANALo3ID7vca+/GQD/pN5nGlqk35KcgMCHO79/8uwPDSidaBgbUZ81MDFEOww4CADJV9
+         AvtQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709722752; x=1710327552;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k7WDrH9ecfdKhKPXS0pZAyDS0/o1hY/uAjYt83vHTV4=;
-        b=PGe75IeXWZTv2ufOuI6hQRBEN3Z9vmxQwK+SHOPN/3Z1Foqe1Oq0spmrWaGcP66jrE
-         wdjyv1l7WS3IdVFMM6swcps6UCfPOyNcKf/Xq2lIWZYK6xCM8gFo6r1/wm8lT5rzDUCK
-         3Y+j2jYXihCbOtomcHm+JKGmaXF9lnjlXep6kZQBXD+0xeQZT70nlhvOiUo4wMh6ebRy
-         HKFJXcXg6p3clhQTh4O9Bg3x1Q92QFCC05QVUmYfZp2SSrfOCsqPJPkvZX+qP7Hlu8Hb
-         xwFhj9VRREqw8AVo95UzHsrpcgotlaJpfwJYG5y8ygGhswPM6IINJNr6gGskGCPiUNCH
-         6rtg==
-X-Gm-Message-State: AOJu0YwiXH9MEu0LYAV5q4eumL9xbiBbxyN2lSLpGjDhr+tVoZi/baVm
-	NjeKiM6BHtOELI4zrkYb4iAByILMNyiVmmAI/XuRkDjpAWJgYe6gYpBdAMeuGtY=
-X-Google-Smtp-Source: AGHT+IGfmf4HM3hXxRItimR1SlkoKFqx1vqXbUyzjo+5fiiwooUcfRpjAYMTyB8WRE6fZh8V9Rk7tQ==
-X-Received: by 2002:a05:6830:1d62:b0:6e4:8d2d:64e5 with SMTP id l2-20020a0568301d6200b006e48d2d64e5mr4373718oti.13.1709722751761;
-        Wed, 06 Mar 2024 02:59:11 -0800 (PST)
-Received: from dw-tp.. ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id r31-20020a63fc5f000000b005dc3fc53f19sm10514431pgk.7.2024.03.06.02.59.09
+        d=1e100.net; s=20230601; t=1709723364; x=1710328164;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PBoe297NLuGYbL60WKlTKgt6ML8FWLv2cO3sE0MvVJI=;
+        b=uLfi5yxiEhJK6P2/B/97nIWtKhpQNuh7sBXVUUbP/XG03sS1EpDPtoibXgfdcKNsme
+         nmEcf7QP/cXLxCGDZVwxSSaiZphYOVGYZ4jLQBIwNdURO9P67Hatm58PVrfgO+fVU9ZI
+         XiJd2fP0a/uQIy4wxFVybP1lbQr8JbIJ+p9AljXXYGRfAtLUN5eD3paGkRHc3FCwIMer
+         aqHenJtDnG1Rv6xZPdKN7pZFb+WnshqIKh80tW9A4Cm929fanHnu2EZfpZ5ozvOiTod8
+         6VCKItJfgbKdN6KAIK8DX+yyAvj/sYX4OtZ5pJTtW4Jms52SywwdUjeTPRHKW9PaP5b6
+         LU2g==
+X-Forwarded-Encrypted: i=1; AJvYcCVxdUiUO4vKjguLlVzQkmnL10VO0wbkzqR4JF+PEYt5brr4SRwOaag5FwgDCFYhuVk7jxZPj9yd5oRBnBQsKP86afUwYQ0SpPvBoA==
+X-Gm-Message-State: AOJu0YzSuu0Un5QcETIdK0fnDw8tC90F9NXDDVtD9Zt8n3YT0RD5IUoC
+	FtFtVlzExawOByGPbJtU4HZIN+SPXtNJyo9Xo08FrkYY8R/ef32Lxys9PYw0CXQ=
+X-Google-Smtp-Source: AGHT+IFyzL/WTr93rRFCL0u84YjmMmbhZw7ocawk8y05EWyU60nUgRNUfZPL6wBlD4fb2SoidpEl0w==
+X-Received: by 2002:a17:903:1104:b0:1dc:cbc0:1971 with SMTP id n4-20020a170903110400b001dccbc01971mr5144326plh.49.1709723364374;
+        Wed, 06 Mar 2024 03:09:24 -0800 (PST)
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id w17-20020a170902e89100b001dcfc8a5fafsm8215516plg.96.2024.03.06.03.09.21
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 06 Mar 2024 02:59:11 -0800 (PST)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH] kvm-xfstests: Add 1k config for ext2
-Date: Wed,  6 Mar 2024 16:29:05 +0530
-Message-ID: <c5dea04b0e955402258835f2c880ceaf3b1f0ab5.1709721921.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.44.0
+        Wed, 06 Mar 2024 03:09:23 -0800 (PST)
+Date: Wed, 06 Mar 2024 16:39:20 +0530
+Message-Id: <87le6vpqfz.fsf@doe.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: lsf-pc@lists.linux-foundation.org
+Cc: linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>, linux-ext4@vger.kernel.org
+Subject: Re: [LSF/MM/BPF TOPIC]: Challenges and Ideas in Transitioning EXT* and other FS to iomap
+In-Reply-To: <87y1ba17x0.fsf@doe.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-This adds 1k config option in test-appliance for ext2.
-This will come in handy for testing bs < ps path for ext2
-for e.g. it's useful in testing iomap bufferd-io work going 
-on for ext2.
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- test-appliance/files/root/fs/ext2/cfg/1k      |  4 ++++
- .../files/root/fs/ext2/cfg/1k.exclude         | 19 +++++++++++++++++++
- .../files/root/fs/ext2/cfg/all.list           |  1 +
- test-appliance/files/root/fs/ext2/config      |  6 ++++--
- 4 files changed, 28 insertions(+), 2 deletions(-)
- create mode 100644 test-appliance/files/root/fs/ext2/cfg/1k
- create mode 100644 test-appliance/files/root/fs/ext2/cfg/1k.exclude
+> "Ritesh Harjani (IBM)" <ritesh.list@gmail.com> writes:
+>
+> ++ linux-ext4
+>
+>> In continuation from last year's efforts on conversion of ext* filesystems to iomap,
+>> I would like to propose an LSFMM session on the said topic. Last year's session
+>> was mainly centered around documentation discussion around iomap (so that it can help others
+>> converting their filesystems to iomap), and I think we now have a kernelnewbies page [1] 
+>> which can provide good details on how one can start transitioning their filesystem to iomap
+>> interface.
+>>
+>> Note, ext2/ext4 filesystems direct-io path now utilizes iomap where ext2
+>> DIO conversion happened last year during LSFMM [2] [3]. I have also submitted patches
+>> for ext2 buffered-io path for regular files to move to iomap and thereby enabling
+>> large folio support to it. Along similar lines there are also patches around EXT4
+>> buffered-io conversion to iomap.
+>>
+>> Some of the challenges
+>> =======================
+>> 1. For EXT2 directory handling which uses page cache and buffer heads, moving that path to 
+>>    iomap has challenges with writeback path since iomap also uses folio->private to keep some 
+>>    of its internal state (iomap_folio_state).
+>> 2. One other thing which was pointed out by Matthew is the BH_Boundary handling currently missing
+>>    in iomap. This can lead to non-optimized data I/O patterns causing performance penalty. 
+>> 3. Filesystems need a mechanism to validate cached logical->physical block translations 
+>>    in iomap writeback code (can this be lifted to common code?)
+>> 4. Another missing piece from iomap is the metadata handling for filesystems. There is no
+>>    interface which iomap provides that the FS can utilize to move away from buffer heads
+>>    for its metadata operations. It can be argued that it is not the responsibility of iomap, however
+>>    filesystems do need a mechanism for their metadata handling operations.
+>>
+>> Proposal
+>> =========
+>> In this talk I would like to discuss about the efforts, challenges & the lessons learnt in doing the conversion of
+>> ext2's DIO and buffered-io paths to iomap, which might help others in conversion of their filesystem.
+>> I would also like to have a discussion on the current open challenges we have in converting ext2 (buffered-io path) 
+>> and discuss on what ideas people have, which we can consider for transitioning ext* and other filesystems to iomap. 
+>>
+>> PS: As we speak, I am in the process of rebasing ext2 bufferred-io path to latest upstream kernel. 
+>> It's mostly done and I am also looking into some of the open problems listed by community. 
 
-diff --git a/test-appliance/files/root/fs/ext2/cfg/1k b/test-appliance/files/root/fs/ext2/cfg/1k
-new file mode 100644
-index 0000000..d669104
---- /dev/null
-+++ b/test-appliance/files/root/fs/ext2/cfg/1k
-@@ -0,0 +1,4 @@
-+SIZE=small
-+export EXT_MKFS_OPTIONS="-b 1024"
-+export EXT_MOUNT_OPTIONS=""
-+TESTNAME="Ext2 1k block"
-diff --git a/test-appliance/files/root/fs/ext2/cfg/1k.exclude b/test-appliance/files/root/fs/ext2/cfg/1k.exclude
-new file mode 100644
-index 0000000..215dd2c
---- /dev/null
-+++ b/test-appliance/files/root/fs/ext2/cfg/1k.exclude
-@@ -0,0 +1,19 @@
-+// exclude file for ext2/1k copied from ext4/1k
-+
-+// The test fails due to too many block group descriptors when the
-+// block size is 1k
-+ext4/033
-+
-+// This test tries to create 65536 directories, and with 1k blocks,
-+// and long names, we run out of htree depth
-+ext4/045
-+
-+// This test creates too many inodes on when the block size is 1k
-+// without using special mkfs.ext4 options to change the inode size.
-+// This test is a bit bogus anyway, and uses a bunch of magic calculations
-+// where it's not clear what it was originally trying to test in the
-+// first place.  So let's just skip it for now.
-+generic/273
-+
-+// This test creates too many extended attributes to fit in a 1k block
-+generic/454
-diff --git a/test-appliance/files/root/fs/ext2/cfg/all.list b/test-appliance/files/root/fs/ext2/cfg/all.list
-index 4ad96d5..2d0e07f 100644
---- a/test-appliance/files/root/fs/ext2/cfg/all.list
-+++ b/test-appliance/files/root/fs/ext2/cfg/all.list
-@@ -1 +1,2 @@
- default
-+1k
-diff --git a/test-appliance/files/root/fs/ext2/config b/test-appliance/files/root/fs/ext2/config
-index e2ad484..a2a333c 100644
---- a/test-appliance/files/root/fs/ext2/config
-+++ b/test-appliance/files/root/fs/ext2/config
-@@ -28,6 +28,7 @@ function format_filesystem()
- 
- function setup_mount_opts()
- {
-+    export MKFS_OPTIONS="-q $EXT_MKFS_OPTIONS"
-     if test -n "$MNTOPTS" ; then
- 	if test -n "$EXT_MOUNT_OPTIONS" ; then
-             export EXT_MOUNT_OPTIONS="$EXT_MOUNT_OPTIONS,$MNTOPTS"
-@@ -39,12 +40,12 @@ function setup_mount_opts()
- 
- function get_mkfs_opts()
- {
--    echo "$MKFS_OPTIONS"
-+    echo "$EXT_MKFS_OPTIONS"
- }
- 
- function show_mkfs_opts()
- {
--    echo MKFS_OPTIONS: "$MKFS_OPTIONS"
-+    echo EXT_MKFS_OPTIONS: "$EXT_MKFS_OPTIONS"
- }
- 
- function show_mount_opts()
-@@ -60,5 +61,6 @@ function test_name_alias()
- function reset_vars()
- {
-     unset EXT_MOUNT_OPTIONS
-+    unset EXT_MKFS_OPTIONS
-     unset MKFS_OPTIONS
- }
--- 
-2.39.2
 
+I have rebased the RFC over the latest upstream and implemented the seq
+counter approach that was roughly discussed in the RFC patch here [1].
+Please find the latest tree at my github [2], in case if anyone is
+interested in checking it out.
+
+Currently I am running some tests on this tree as we speak. Post that
+will look into BH_Boundary problem.
+
+[1]: https://lore.kernel.org/all/8734wnj53k.fsf@doe.com/
+[2]: https://github.com/riteshharjani/linux/commits/ext2-iomap-lsfmm-rfcv2/
+
+-ritesh
+
+>>
+>>
+>> References
+>> ============
+>> [1]: https://kernelnewbies.org/KernelProjects/iomap
+>> [2]: https://lore.kernel.org/linux-ext4/cover.1682069716.git.ritesh.list@gmail.com/
+>> [3]: https://lwn.net/Articles/935934/
+>> [4]: https://lore.kernel.org/linux-ext4/cover.1700505907.git.ritesh.list@gmail.com/
 
