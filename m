@@ -1,116 +1,146 @@
-Return-Path: <linux-ext4+bounces-1569-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1570-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89322875F25
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 09:10:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A83F687614E
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 10:53:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BADB21C223A0
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 08:10:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D641B20C28
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 09:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8E6351021;
-	Fri,  8 Mar 2024 08:10:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 613DF537EF;
+	Fri,  8 Mar 2024 09:53:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mCRR1Bsf"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XtH6iBRE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EEFFE50A64;
-	Fri,  8 Mar 2024 08:10:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21F3535BC;
+	Fri,  8 Mar 2024 09:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709885427; cv=none; b=g7DV5jU4f1KC9Y6nGuTdz1Mu/5WcvDaCi6mR+PpC7BrZWZBPxOGjWy5vvT/d66HVlhIXVqPVsUncYVOdUlmu3ohc4Os3JC1vddsqebh5JP8jzpuRui2jOTuwM+yZIzNw8ZmzMmV8OB3h9Mw4T5XRvMHQ9ORX/8Y9BcXsMZdFMbE=
+	t=1709891611; cv=none; b=PySgpcBlh6DCNMHyzvpl974gTy4VHGU9N2NTDBUxgn4hUl3TyD5QD5hWAfvFCoRSrYM2B4vjBLthLGPeobnGuRwIjXLmoT393YjiO+4Xu2Ne80ywSJKAJoN4dn4SENP1q2F1k8+5nR5WBVMdW1xZQki1d9sr2HwcXmCzCgSEFi0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709885427; c=relaxed/simple;
-	bh=QjZEM1MYYmI+IOq2vcxJk/pRuJdvqllvHwDZJOPw12A=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=nZLM7TNIyLJ5TtqDQSIjiZTvb3g7Z/vJ073FzWkAaOwzMmuGNUprHEYPC7/HQhVZtCuseBEmDESt+Imv3eJ+RiSF3LvEzSS8STGn44I0TAguIaJbHr5lIBRUXCys1GxML2VCw4hLIhrQzUA8Mb1BO4xEJ6EuwUkN0hxpXdKu9H8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mCRR1Bsf; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1dcc7f4717fso4793975ad.0;
-        Fri, 08 Mar 2024 00:10:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709885424; x=1710490224; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=hcM7FrNQHVQGFhkrY8ckS/fCn/8FtV3DNgN4UpFrLKE=;
-        b=mCRR1Bsf/OP3MzNpufC9OjgT8kP5rXBIs/lHwa0nhYRGNLd+w9VQj6A05hDRGPSzTe
-         D/f+ZUiyGFcBgJFtAZ9JtHRyEASljabTqO9H3rXun5nfZlAMSQqPPNVQWIt7dr9++NAi
-         +D6VdfU7ulWgOVZLnesu4isGFD/iEZqgeJpwQSUxuliI2jtt2ZvQuS92F9Zx/E9bh5PS
-         JFJlfn8cZvDC7Bcmyx/cpFahcE26PkDV6cKdVtrPswRVGDazcYv0wwezCIyrzAgv9Wm+
-         0D4e7T0MC2AadWm3MFm48YPWor/bpZyvUNsnOkeVqJQd+CV/Hxow3QmhGQwR956LXygb
-         Ou3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709885424; x=1710490224;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hcM7FrNQHVQGFhkrY8ckS/fCn/8FtV3DNgN4UpFrLKE=;
-        b=dVsWAtpLx1Rsj//zukwoffKOKNhTXUuMqvFG2HJO9mStyK+NNyTr3rtYkxx/Beapu5
-         jvYlSIv1Spqg+klkGQeEYDSkJv7Io/j53jpmlb79IFnTzSHq7SpnKUTEl3G0umWxll43
-         Aid+i3A0k6cjxQ4oJmMI496XXQ4MahKwOmziuB5WiTuYWMST0Rnb620Q4TKJ2ixkkBrw
-         hpr6iIBbBWF8VxsYQSBPG6c29QEzpAzeAxjWShblfvjagTX2Ni7yPK6HVXjf8Qwra1h0
-         LcxNVyI3C6f62oeLW4T8MWEZ6Jp2cmmf2EkVt7yGyTM9LM84smWQ4Mzoxp4ZDX0RciXl
-         9vQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWV4iYJb8r4GEvTpbphO+Gm9ShHWo35qrkr46SHq7jYjD4L0oVAZQqBjTdFTGuUuo+LsN2GIxANY/4oh//8of4PuZbHERK4H9AG+3aHSXsodl1tpwJME5+EVeZEx5LGtPpGX3AanpUFvNF3lP4KWRA2+NvsaTX0JP7lgqXf+iYsHgsOK5Me3rw=
-X-Gm-Message-State: AOJu0YziyaOsJTdImpaTwfKpaHOgtcRqWzfsQ8mJZyx2/5rPx/Yb6x0S
-	UOnMBNGMNsYdgTeyiQfsKOnSvVYCqhAGgui55Mzhst8fhNjsLidWfRe+WtlP
-X-Google-Smtp-Source: AGHT+IGrBuaPbsZ3jHUc+Hl21nNzlKHS6HWAKWT/9bvJ4uIRvOv547zmcLIbLtccSHPy4ErvBnLWfw==
-X-Received: by 2002:a17:903:1104:b0:1dc:cbc0:1971 with SMTP id n4-20020a170903110400b001dccbc01971mr11852309plh.49.1709885424308;
-        Fri, 08 Mar 2024 00:10:24 -0800 (PST)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id x1-20020a170902a38100b001dd1bdee6d9sm8857439pla.31.2024.03.08.00.10.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 00:10:23 -0800 (PST)
-Date: Fri, 08 Mar 2024 13:40:19 +0530
-Message-Id: <87r0glp2j8.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org
-Subject: Re: [RFC 4/8] ext4: Add statx and other atomic write helper routines
-In-Reply-To: <e06621b2-8b33-41ec-a049-1befe83cdb5c@oracle.com>
+	s=arc-20240116; t=1709891611; c=relaxed/simple;
+	bh=QmRLKVLKdt30yVzpTeSE0AYS+PV/cT94dyjGByHQZGI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rkG5ZmLzU7dlBOOFMZNfXgKaXHZLC2fISJRJS9z4sGZLzxMfBt8hvvRNl2JqEmugwYIVAnxoVqczBGT9CJEuGXRbPm5PiVktKuzMzOMp2MjPqg8MMhqiDu22Zsj9ImYWVBFqFJcs+8Dl8yIszRjlkSpATb03MN86bNdspdDnoL8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XtH6iBRE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4F71FC43399;
+	Fri,  8 Mar 2024 09:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1709891611;
+	bh=QmRLKVLKdt30yVzpTeSE0AYS+PV/cT94dyjGByHQZGI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=XtH6iBREN3fVVbo0N98tpdhelBvJwfta1zM+gE/yvF18IO5iE87HFY4lXF56SGXBC
+	 kfA/twpwFNN6zkz9o5kHiYAIigkaQWNx1W625GlLF0ECkUajoYcHp+5D7ex0cpOEUd
+	 sEYKQ3DkTH72v7llSvb3nIRzJsR/IxsWbzs/xRevqAVtCc30bIc8TcGQUFjcwuWW27
+	 OHAKUnSrl2Vq3SBUSQXLvr2Op7avFBjDWLafKD56EP9l5GOtlMwkAs3Cz/C/qTaV7A
+	 iXKRr01hwuLcx5zDqGxrCDLJoW9eIw/4OwGCpqHmra+EUNn0rnVAQduOepaSxxcbHI
+	 SuzZNHn2+YKkA==
+Date: Fri, 8 Mar 2024 10:53:25 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Jan Kara <jack@suse.cz>
+Cc: Luis Henriques <lhenriques@suse.de>, Theodore Ts'o <tytso@mit.edu>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Miklos Szeredi <miklos@szeredi.hu>, Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] fs_parser: handle parameters that can be empty and
+ don't have a value
+Message-ID: <20240308-fahrdienst-torten-eae8f3eed3b4@brauner>
+References: <20240229163011.16248-1-lhenriques@suse.de>
+ <20240229163011.16248-2-lhenriques@suse.de>
+ <20240301-gegossen-seestern-683681ea75d1@brauner>
+ <87il269crs.fsf@suse.de>
+ <20240307151356.ishrtxrsge2i5mjn@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240307151356.ishrtxrsge2i5mjn@quack3>
 
-John Garry <john.g.garry@oracle.com> writes:
+On Thu, Mar 07, 2024 at 04:13:56PM +0100, Jan Kara wrote:
+> On Fri 01-03-24 15:45:27, Luis Henriques wrote:
+> > Christian Brauner <brauner@kernel.org> writes:
+> > 
+> > > On Thu, Feb 29, 2024 at 04:30:08PM +0000, Luis Henriques wrote:
+> > >> Currently, only parameters that have the fs_parameter_spec 'type' set to
+> > >> NULL are handled as 'flag' types.  However, parameters that have the
+> > >> 'fs_param_can_be_empty' flag set and their value is NULL should also be
+> > >> handled as 'flag' type, as their type is set to 'fs_value_is_flag'.
+> > >> 
+> > >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> > >> ---
+> > >>  fs/fs_parser.c | 3 ++-
+> > >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> > >> 
+> > >> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+> > >> index edb3712dcfa5..53f6cb98a3e0 100644
+> > >> --- a/fs/fs_parser.c
+> > >> +++ b/fs/fs_parser.c
+> > >> @@ -119,7 +119,8 @@ int __fs_parse(struct p_log *log,
+> > >>  	/* Try to turn the type we were given into the type desired by the
+> > >>  	 * parameter and give an error if we can't.
+> > >>  	 */
+> > >> -	if (is_flag(p)) {
+> > >> +	if (is_flag(p) ||
+> > >> +	    (!param->string && (p->flags & fs_param_can_be_empty))) {
+> > >>  		if (param->type != fs_value_is_flag)
+> > >>  			return inval_plog(log, "Unexpected value for '%s'",
+> > >>  				      param->key);
+> > >
+> > > If the parameter was derived from FSCONFIG_SET_STRING in fsconfig() then
+> > > param->string is guaranteed to not be NULL. So really this is only
+> > > about:
+> > >
+> > > FSCONFIG_SET_FD
+> > > FSCONFIG_SET_BINARY
+> > > FSCONFIG_SET_PATH
+> > > FSCONFIG_SET_PATH_EMPTY
+> > >
+> > > and those values being used without a value. What filesystem does this?
+> > > I don't see any.
+> > >
+> > > The tempting thing to do here is to to just remove fs_param_can_be_empty
+> > > from every helper that isn't fs_param_is_string() until we actually have
+> > > a filesystem that wants to use any of the above as flags. Will lose a
+> > > lot of code that isn't currently used.
+> > 
+> > Right, I find it quite confusing and I may be fixing the issue in the
+> > wrong place.  What I'm seeing with ext4 when I mount a filesystem using
+> > the option '-o usrjquota' is that fs_parse() will get:
+> > 
+> >  * p->type is set to fs_param_is_string
+> >    ('p' is a struct fs_parameter_spec, ->type is a function)
+> >  * param->type is set to fs_value_is_flag
+> >    ('param' is a struct fs_parameter, ->type is an enum)
+> > 
+> > This is because ext4 will use the __fsparam macro to set define a
+> > fs_param_spec as a fs_param_is_string but will also set the
+> > fs_param_can_be_empty; and the fsconfig() syscall will get that parameter
+> > as a flag.  That's why param->string will be NULL in this case.
+> 
+> So I'm a bit confused here. Valid variants of these quota options are like
+> "usrjquota=<filename>" (to set quota file name) or "usrjquota=" (to clear
+> quota file name). The variant "usrjquota" should ideally be rejected
+> because it doesn't make a good sense and only adds to confusion. Now as far
+> as I'm reading fs/ext4/super.c: parse_options() (and as far as my testing
+> shows) this is what is happening so what is exactly the problem you're
+> trying to fix?
 
-> On 02/03/2024 07:42, Ritesh Harjani (IBM) wrote:
->>   	}
->>   
->> +	if (request_mask & STATX_WRITE_ATOMIC) {
->> +		unsigned int fsawu_min = 0, fsawu_max = 0;
->> +
->> +		/*
->> +		 * Get fsawu_[min|max] value which we can advertise to userspace
->> +		 * in statx call, if we support atomic writes using
->> +		 * EXT4_MF_ATOMIC_WRITE_FSAWU.
->> +		 */
->> +		if (ext4_can_atomic_write_fsawu(inode->i_sb)) {
->
-> To me, it does not make sense to fill this in unless 
-> EXT4_INODE_ATOMIC_WRITE is also set for the inode.
->
-
-I was thinking advertising filesystem atomic write unit on an inode
-could still be advertized. But I don't have any strong objection either.
-We can advertize this values only when the inode has the atomic write
-attribute enabled. I think this makes more sense. 
-
-Thanks
--ritesh
-
-
->> +			ext4_atomic_write_fsawu(inode->i_sb, &fsawu_min,
->> +						&fsawu_max);
->> +		}
->> +
->> +		generic_fill_statx_atomic_writes(stat, fsawu_min, fsawu_max);
->> +	}
->> +
->>   	flags = ei->i_flags & EXT4_FL_USER_VISIBLE;
+mount(8) has no way of easily knowing that for something like
+mount -o usrjquota /dev/sda1 /mnt that "usrjquota" is supposed to be
+set as an empty string via FSCONFIG_SET_STRING. For mount(8) it is
+indistinguishable from a flag because it's specified without an
+argument. So mount(8) passes FSCONFIG_SET_FLAG and it seems strange that
+we should require mount(8) to know what mount options are strings or no.
+I've ran into this issue before myself when using the mount api
+programatically.
 
