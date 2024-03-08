@@ -1,246 +1,241 @@
-Return-Path: <linux-ext4+bounces-1575-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1576-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34EAA876BCE
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 21:26:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E9F876DCD
+	for <lists+linux-ext4@lfdr.de>; Sat,  9 Mar 2024 00:10:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F82EB2155A
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 20:26:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A30D51F2234A
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 23:10:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2515D460;
-	Fri,  8 Mar 2024 20:25:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2363D0A4;
+	Fri,  8 Mar 2024 23:09:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HIIiIm6p"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gq700ToO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZypliiXG";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gq700ToO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZypliiXG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265FC51C33;
-	Fri,  8 Mar 2024 20:25:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543AC208CE;
+	Fri,  8 Mar 2024 23:09:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709929555; cv=none; b=G7VRtmKlInVK6bliE48K/4YWBPThhN3B1ptC3zLWBeU7GNIvtL9HR+A7CQmc8Uwp2KqxBXG528OjEO6k55LWqMEeb3bJoeyp+Qeal2SxUmz54YnKc2E3pssMn4Xd+17RZISzJZjs7p/YjcjbWjIvJw2bhtODEXWSsR9BfMk7lbw=
+	t=1709939358; cv=none; b=LcNsDTbXg79fTitZ7kXLaKfeAZmZVhVgcUzN5p3GUvsZcG0bdFUeA+ytp/FYWVXtIFGGPDJiBtGzkLR7eolVQIKWMMVz6ykC1ImETAjRNo7SMOmKT56R1a1ks1saNFHBnknDdB+MlDcjL0YFE6lMppPfG/l9vNsjRHYMWTg1Lkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709929555; c=relaxed/simple;
-	bh=rJdPwcztBz8X4vt5HGAw0qqMXtzhifyWt9yLAdzhfTI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=P+OuuACXxj6Sl9PwqlX0Z3I9hf6Nf+cQ7UF9UICmW49Ox4N7Wk+vWf6iAcacxyJ884QhWFr+S+aZLRbIwhQFE9pxJsucZV/8S1sw8DOtorVodQJ9cqS8GkPHf215q1PbLQsAds4PW0djMWPiUB9xltJJHtXrTeFxIisfFku56m8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HIIiIm6p; arc=none smtp.client-ip=209.85.215.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so2102814a12.1;
-        Fri, 08 Mar 2024 12:25:53 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1709929553; x=1710534353; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GXaGS2OWhnhbczoRRrQrWo6yetFGH8X8azzOfrjbE6g=;
-        b=HIIiIm6pEhD2EzqpccRMPkzBVIOq/NRQ76OKeQM3Tqz3oH4nbWd8aupHlYC5Qz/Yww
-         4pu+tCLO7+wIM4JbpBFGTg18R98ch3blbJIsNIwv/aZ12EAEzQJ/n6EGNjvt7vFL8iop
-         +dh1oElFvfkaohWBfmSA0zeIvHJsGJ5Qr/bwrH/l2QL+kVrcBW3K3ETXr/gJnnXS4Ue8
-         8LpP7VWQvs9EbrHr4MFgjoaaAgEISHGEf5AGDmsx+4YBX8lVnon66O2DikGc33GqHbSa
-         P2L8+kSzrpRC/O/3iOWDJ4QGYzKA6twSKmPhFdd0uyZ+2Pq3sdC5L3Oy8rD7vJDxYv34
-         MkiA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709929553; x=1710534353;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GXaGS2OWhnhbczoRRrQrWo6yetFGH8X8azzOfrjbE6g=;
-        b=FxsDVVfasyO8SWPEw2V2y8t/u7QtQJXccjPa/+vxClCi6aq5QXf59Ymve723ZLIEfQ
-         afvr/2rF/qgPaLJynDNSHdy3LdPXI5YE0wfZ2h+T2I1H0/6hDRMbT89OMLC27WloYV0u
-         k23OH6ovqbWU/cgSK1DcJJ6j0U4jsninLnMBTz3XH3rg4gC3tek9exN3G5uD/9n2AjV7
-         eo5r0/epeid8H1anEtvIowQZPtbPhqoAnGRKKt2IdvYdG6ykOZWCF18kBJlQSie3SAiJ
-         UGKamOmJkE1vVUL4ld7Z0oXii3ozMMjxZckf8RQg2LpY7sHjqcJc772owkYeHOeArn3U
-         s3+A==
-X-Forwarded-Encrypted: i=1; AJvYcCX0YZveGJ3RM8GI0qBcnzIkiY22PCb0av/lpmwZpy3oqbhAuVgZPOf8fQiCc9vi8g91vcAZ7umb4Kfw6I17wbwupSvn7uhqKsdh8VjlMNUCQMm85f1IwmOs4JJW5S5QKLJnHcnfGvJlsXDADafuzI8zCcSua03RRKLcenYo1FDT7ITtXamxYm8=
-X-Gm-Message-State: AOJu0YyR4ts+jLJgNyjT9gYVtZDs8NpbjLWA+uc9CpHiOBTyk0ki9P2t
-	vXeyh236gJrGMI4zD7XSdIJQGh96IMwEMFNCuiYnirBGFpdWc93a
-X-Google-Smtp-Source: AGHT+IF4C0L0MiiUU+0bie1dyOAt1ABfQ6/ycb8CLKRaB7hHeTGez0urqm3/an0rbiHzL1EqsyqpHw==
-X-Received: by 2002:a17:90a:ad0c:b0:29b:b15d:5353 with SMTP id r12-20020a17090aad0c00b0029bb15d5353mr278722pjq.31.1709929553345;
-        Fri, 08 Mar 2024 12:25:53 -0800 (PST)
-Received: from dw-tp.. ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id ob4-20020a17090b390400b0029ba7731d38sm147186pjb.7.2024.03.08.12.25.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 08 Mar 2024 12:25:52 -0800 (PST)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>,
-	linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>,
+	s=arc-20240116; t=1709939358; c=relaxed/simple;
+	bh=uPDgocnQQrZ4D7QPIXZ8K5iRdz2hoop3D6Q5l3W5h8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=PMbhwnciaaCQhzCYp3x6O4/hoNNEOqs1LZ9N6jSGyXJ/g+PVaiZ6Gs75DY03jIFiBBUoyXVMzQI3Q0l4ogDf2RL2smb+jmz0BHbPTnm5YQM3x2mzQMe15anp6aUFtf0C436WeKze0u3Z3mqO8zwWvkhVNkO9d5KixYlNS/3bx1o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gq700ToO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZypliiXG; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gq700ToO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZypliiXG; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3949921C39;
+	Fri,  8 Mar 2024 23:09:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709939352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BvfLiMqpWucVsTphMQYe1S3iLVe6cZt6/GQD9xs+uRA=;
+	b=gq700ToOxZSByI70IHNrAJJc9Q0oefQc3qa/M7VC9VI+NB36V2+hQOcy9Ayyr9cuDu9dX7
+	1hUwov8OQFqA3VuLe4Idvd9udHoTUaFtYmquMwrIj4CiKtcIVN73taR6k64IZW8DE39udx
+	pd/IFFQEAf1GKSa9MLBNbFrn+nkh9kM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709939352;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BvfLiMqpWucVsTphMQYe1S3iLVe6cZt6/GQD9xs+uRA=;
+	b=ZypliiXGdw+CjKkXjWKoNFfJdYX5x29swUB5Tn6q8QAZ0UcPWqqQZz533Qft6vsn8ODDUo
+	jtStRPOLDAsb6TBw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1709939352; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BvfLiMqpWucVsTphMQYe1S3iLVe6cZt6/GQD9xs+uRA=;
+	b=gq700ToOxZSByI70IHNrAJJc9Q0oefQc3qa/M7VC9VI+NB36V2+hQOcy9Ayyr9cuDu9dX7
+	1hUwov8OQFqA3VuLe4Idvd9udHoTUaFtYmquMwrIj4CiKtcIVN73taR6k64IZW8DE39udx
+	pd/IFFQEAf1GKSa9MLBNbFrn+nkh9kM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1709939352;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BvfLiMqpWucVsTphMQYe1S3iLVe6cZt6/GQD9xs+uRA=;
+	b=ZypliiXGdw+CjKkXjWKoNFfJdYX5x29swUB5Tn6q8QAZ0UcPWqqQZz533Qft6vsn8ODDUo
+	jtStRPOLDAsb6TBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2C15713310;
+	Fri,  8 Mar 2024 23:09:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id MEm+Cpia62UoUAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 08 Mar 2024 23:09:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CB523A0807; Sat,  9 Mar 2024 00:09:11 +0100 (CET)
+Date: Sat, 9 Mar 2024 00:09:11 +0100
+From: Jan Kara <jack@suse.cz>
+To: Luis Henriques <lhenriques@suse.de>
+Cc: Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
 	Theodore Ts'o <tytso@mit.edu>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	linux-kernel@vger.kernel.org,
-	Dave Chinner <david@fromorbit.com>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [RFC] ext4: Add support for ext4_map_blocks_atomic()
-Date: Sat,  9 Mar 2024 01:55:42 +0530
-Message-ID: <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
-References: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Miklos Szeredi <miklos@szeredi.hu>,
+	Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/3] fs_parser: handle parameters that can be empty and
+ don't have a value
+Message-ID: <20240308230911.r5a4xn6f5vp24hil@quack3>
+References: <20240229163011.16248-1-lhenriques@suse.de>
+ <20240229163011.16248-2-lhenriques@suse.de>
+ <20240301-gegossen-seestern-683681ea75d1@brauner>
+ <87il269crs.fsf@suse.de>
+ <20240307151356.ishrtxrsge2i5mjn@quack3>
+ <20240308-fahrdienst-torten-eae8f3eed3b4@brauner>
+ <87a5n9t4le.fsf@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87a5n9t4le.fsf@suse.de>
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -7.80
+X-Spamd-Result: default: False [-7.80 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLY(-4.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[kernel.org,suse.cz,mit.edu,dilger.ca,zeniv.linux.org.uk,szeredi.hu,gmail.com,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-Currently ext4 exposes [fsawu_min, fsawu_max] size as
-[blocksize, clustersize] (given the hw block device constraints are
-larger than FS atomic write units).
+On Fri 08-03-24 10:12:13, Luis Henriques wrote:
+> Christian Brauner <brauner@kernel.org> writes:
+> 
+> > On Thu, Mar 07, 2024 at 04:13:56PM +0100, Jan Kara wrote:
+> >> On Fri 01-03-24 15:45:27, Luis Henriques wrote:
+> >> > Christian Brauner <brauner@kernel.org> writes:
+> >> > 
+> >> > > On Thu, Feb 29, 2024 at 04:30:08PM +0000, Luis Henriques wrote:
+> >> > >> Currently, only parameters that have the fs_parameter_spec 'type' set to
+> >> > >> NULL are handled as 'flag' types.  However, parameters that have the
+> >> > >> 'fs_param_can_be_empty' flag set and their value is NULL should also be
+> >> > >> handled as 'flag' type, as their type is set to 'fs_value_is_flag'.
+> >> > >> 
+> >> > >> Signed-off-by: Luis Henriques <lhenriques@suse.de>
+> >> > >> ---
+> >> > >>  fs/fs_parser.c | 3 ++-
+> >> > >>  1 file changed, 2 insertions(+), 1 deletion(-)
+> >> > >> 
+> >> > >> diff --git a/fs/fs_parser.c b/fs/fs_parser.c
+> >> > >> index edb3712dcfa5..53f6cb98a3e0 100644
+> >> > >> --- a/fs/fs_parser.c
+> >> > >> +++ b/fs/fs_parser.c
+> >> > >> @@ -119,7 +119,8 @@ int __fs_parse(struct p_log *log,
+> >> > >>  	/* Try to turn the type we were given into the type desired by the
+> >> > >>  	 * parameter and give an error if we can't.
+> >> > >>  	 */
+> >> > >> -	if (is_flag(p)) {
+> >> > >> +	if (is_flag(p) ||
+> >> > >> +	    (!param->string && (p->flags & fs_param_can_be_empty))) {
+> >> > >>  		if (param->type != fs_value_is_flag)
+> >> > >>  			return inval_plog(log, "Unexpected value for '%s'",
+> >> > >>  				      param->key);
+> >> > >
+> >> > > If the parameter was derived from FSCONFIG_SET_STRING in fsconfig() then
+> >> > > param->string is guaranteed to not be NULL. So really this is only
+> >> > > about:
+> >> > >
+> >> > > FSCONFIG_SET_FD
+> >> > > FSCONFIG_SET_BINARY
+> >> > > FSCONFIG_SET_PATH
+> >> > > FSCONFIG_SET_PATH_EMPTY
+> >> > >
+> >> > > and those values being used without a value. What filesystem does this?
+> >> > > I don't see any.
+> >> > >
+> >> > > The tempting thing to do here is to to just remove fs_param_can_be_empty
+> >> > > from every helper that isn't fs_param_is_string() until we actually have
+> >> > > a filesystem that wants to use any of the above as flags. Will lose a
+> >> > > lot of code that isn't currently used.
+> >> > 
+> >> > Right, I find it quite confusing and I may be fixing the issue in the
+> >> > wrong place.  What I'm seeing with ext4 when I mount a filesystem using
+> >> > the option '-o usrjquota' is that fs_parse() will get:
+> >> > 
+> >> >  * p->type is set to fs_param_is_string
+> >> >    ('p' is a struct fs_parameter_spec, ->type is a function)
+> >> >  * param->type is set to fs_value_is_flag
+> >> >    ('param' is a struct fs_parameter, ->type is an enum)
+> >> > 
+> >> > This is because ext4 will use the __fsparam macro to set define a
+> >> > fs_param_spec as a fs_param_is_string but will also set the
+> >> > fs_param_can_be_empty; and the fsconfig() syscall will get that parameter
+> >> > as a flag.  That's why param->string will be NULL in this case.
+> >> 
+> >> So I'm a bit confused here. Valid variants of these quota options are like
+> >> "usrjquota=<filename>" (to set quota file name) or "usrjquota=" (to clear
+> >> quota file name). The variant "usrjquota" should ideally be rejected
+> >> because it doesn't make a good sense and only adds to confusion. Now as far
+> >> as I'm reading fs/ext4/super.c: parse_options() (and as far as my testing
+> >> shows) this is what is happening so what is exactly the problem you're
+> >> trying to fix?
+> >
+> > mount(8) has no way of easily knowing that for something like
+> > mount -o usrjquota /dev/sda1 /mnt that "usrjquota" is supposed to be
+> > set as an empty string via FSCONFIG_SET_STRING. For mount(8) it is
+> > indistinguishable from a flag because it's specified without an
+> > argument. So mount(8) passes FSCONFIG_SET_FLAG and it seems strange that
+> > we should require mount(8) to know what mount options are strings or no.
+> > I've ran into this issue before myself when using the mount api
+> > programatically.
+> 
+> Right.  A simple usecase is to try to do:
+> 
+>   mount -t ext4 -o usrjquota= /dev/sda1 /mnt/
+> 
+> It will fail, and this has been broken for a while.
 
-That means a user should be allowed to -
-1. pwrite 0 4k /mnt/test/f1
-2. pwrite 0 16k /mnt/test/f1
+I see. But you have to have new enough mount that is using fsconfig, don't
+you? Because for me in my test VM this works just fine...
 
-w/o this patch the second atomic write will fail. Since current
-ext4_map_blocks() will just return the already allocated extent length
-to the iomap (which is less than the user requested write length).
+But anyway, I get the point. Thanks for educating me :)
 
-So add ext4_map_blocks_atomic() function which can allocate full
-requested length for doing an atomic write before returning to iomap.
-With this we have - 
-
-1. touch /mnt1/test/f2
-2. chattr +W /mnt1/test/f2
-3. xfs_io -dc "pwrite -b 4k -A -V 1 0 4k" /mnt1/test/f2
-	wrote 4096/4096 bytes at offset 0
-	4 KiB, 1 ops; 0.0320 sec (124.630 KiB/sec and 31.1575 ops/sec)
-4. filefrag -v /mnt1/test/f2
-	Filesystem type is: ef53
-	File size of /mnt1/test/f2 is 4096 (1 block of 4096 bytes)
-	 ext:     logical_offset:        physical_offset: length:   expected: flags:
-	   0:        0..       0:       9728..      9728:      1:             last,eof
-	/mnt1/test/f2: 1 extent found
-5. xfs_io -dc "pwrite -b 16k -A -V 1 0 16k" /mnt1/test/f2
-	wrote 16384/16384 bytes at offset 0
-	16 KiB, 1 ops; 0.0337 sec (474.637 KiB/sec and 29.6648 ops/sec)
-6. filefrag -v /mnt1/test/f2
-	Filesystem type is: ef53
-	File size of /mnt1/test/f2 is 16384 (4 blocks of 4096 bytes)
-	 ext:     logical_offset:        physical_offset: length:   expected: flags:
-	   0:        0..       3:       9728..      9731:      4:             last,eof
-	/mnt1/test/f2: 1 extent found
-
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
-
-Please note, that this is very minimal tested. But it serves as a PoC of what
-can be done within ext4 to allow the usecase which John pointed out.
-
-This also shows that every filesystem can have a different ways of doing aligned
-allocations to support atomic writes. So lifting extent size hints to iomap
-perhaps might become very XFS centric? Althouh as long as other filesystems are 
-not forced to follow that, I don't think it should be a problem.
-
-
- fs/ext4/ext4.h  |  2 ++
- fs/ext4/inode.c | 40 +++++++++++++++++++++++++++++++++++++---
- 2 files changed, 39 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 529ca32b9813..1e9adc5d6569 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -3702,6 +3702,8 @@ extern int ext4_convert_unwritten_io_end_vec(handle_t *handle,
- 					     ext4_io_end_t *io_end);
- extern int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 			   struct ext4_map_blocks *map, int flags);
-+extern int ext4_map_blocks_atomic(handle_t *handle, struct inode *inode,
-+				  struct ext4_map_blocks *map, int flags);
- extern int ext4_ext_calc_credits_for_single_extent(struct inode *inode,
- 						   int num,
- 						   struct ext4_ext_path *path);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index ea009ca9085d..db273c7faf36 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -453,6 +453,29 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
- }
- #endif /* ES_AGGRESSIVE_TEST */
- 
-+int ext4_map_blocks_atomic(handle_t *handle, struct inode *inode,
-+			   struct ext4_map_blocks *map, int flags)
-+{
-+	unsigned int mapped_len = 0, m_len = map->m_len;
-+	ext4_lblk_t m_lblk = map->m_lblk;
-+	int ret;
-+
-+	WARN_ON(!(flags & EXT4_GET_BLOCKS_CREATE));
-+
-+	do {
-+		ret = ext4_map_blocks(handle, inode, map, flags);
-+		if (ret < 0)
-+			return ret;
-+		mapped_len += map->m_len;
-+		map->m_lblk += map->m_len;
-+		map->m_len = m_len - mapped_len;
-+	} while (mapped_len < m_len);
-+
-+	map->m_lblk = m_lblk;
-+	map->m_len = mapped_len;
-+	return mapped_len;
-+}
-+
- /*
-  * The ext4_map_blocks() function tries to look up the requested blocks,
-  * and returns if the blocks are already mapped.
-@@ -3315,7 +3338,10 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
- 	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
- 		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
- 
--	ret = ext4_map_blocks(handle, inode, map, m_flags);
-+	if (flags & IOMAP_ATOMIC)
-+		ret = ext4_map_blocks_atomic(handle, inode, map, m_flags);
-+	else
-+		ret = ext4_map_blocks(handle, inode, map, m_flags);
- 
- 	/*
- 	 * We cannot fill holes in indirect tree based inodes as that could
-@@ -3339,6 +3365,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	int ret;
- 	struct ext4_map_blocks map;
- 	u8 blkbits = inode->i_blkbits;
-+	unsigned int orig_len;
- 
- 	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
- 		return -EINVAL;
-@@ -3352,6 +3379,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	map.m_lblk = offset >> blkbits;
- 	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
- 			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
-+	orig_len = map.m_len;
- 
- 	if (flags & IOMAP_WRITE) {
- 		/*
-@@ -3362,9 +3390,15 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 		 */
- 		if (offset + length <= i_size_read(inode)) {
- 			ret = ext4_map_blocks(NULL, inode, &map, 0);
--			if (ret > 0 && (map.m_flags & EXT4_MAP_MAPPED))
--				goto out;
-+			if (map.m_flags & EXT4_MAP_MAPPED) {
-+				if ((flags & IOMAP_ATOMIC && ret >= orig_len) ||
-+				   (!(flags & IOMAP_ATOMIC) && ret > 0))
-+					goto out;
-+
-+			}
- 		}
-+		WARN_ON(map.m_lblk != offset >> blkbits);
-+		map.m_len = orig_len;
- 		ret = ext4_iomap_alloc(inode, &map, flags);
- 	} else {
- 		ret = ext4_map_blocks(NULL, inode, &map, 0);
+								Honza
 -- 
-2.39.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
