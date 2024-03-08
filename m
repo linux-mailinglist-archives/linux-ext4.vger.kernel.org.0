@@ -1,95 +1,246 @@
-Return-Path: <linux-ext4+bounces-1574-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1575-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DC018765F9
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 15:06:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 34EAA876BCE
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 21:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77641B229B3
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 14:06:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F82EB2155A
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 20:26:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE773FE22;
-	Fri,  8 Mar 2024 14:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B2515D460;
+	Fri,  8 Mar 2024 20:25:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HIIiIm6p"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+Received: from mail-pg1-f172.google.com (mail-pg1-f172.google.com [209.85.215.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5C13FB8D
-	for <linux-ext4@vger.kernel.org>; Fri,  8 Mar 2024 14:06:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 265FC51C33;
+	Fri,  8 Mar 2024 20:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709906767; cv=none; b=jZsTowuz9nHzYG5grgONA7nL7cO92P8YZj/xvJGU2wnQGVbtGO9YFCpk0kv1vp9amPpPo6LuQrTCr1P9aI8q77Fzo/UiaKjNM1IigqX8xzWlpTBv4KlcJtXjNhzn9SVMKjocyMBq1xEeedLzIvJiKum6cMyHj1frG+EUTsups0A=
+	t=1709929555; cv=none; b=G7VRtmKlInVK6bliE48K/4YWBPThhN3B1ptC3zLWBeU7GNIvtL9HR+A7CQmc8Uwp2KqxBXG528OjEO6k55LWqMEeb3bJoeyp+Qeal2SxUmz54YnKc2E3pssMn4Xd+17RZISzJZjs7p/YjcjbWjIvJw2bhtODEXWSsR9BfMk7lbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709906767; c=relaxed/simple;
-	bh=zNrlmpuYJ8G3ByJX69mziNbz97dnw1BgMjXDQs2S2wI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=m+VI+XrY10nt6ZM7VURkBqLByhCEeIUDyyxP4XJI6gdeqsGdrxieQ4ZH3wqqeVLlUhJzCYzQVRIDlNvN5knIfwoCRzx5/vM26yBVlRQOcW3OjdTvXmbH+h9aBEoAF23QKzOefXs6Yu61hh1Th1gqJLXyvyKNykyqJDIp9cg87e0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8414a39b7so150067339f.0
-        for <linux-ext4@vger.kernel.org>; Fri, 08 Mar 2024 06:06:05 -0800 (PST)
+	s=arc-20240116; t=1709929555; c=relaxed/simple;
+	bh=rJdPwcztBz8X4vt5HGAw0qqMXtzhifyWt9yLAdzhfTI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=P+OuuACXxj6Sl9PwqlX0Z3I9hf6Nf+cQ7UF9UICmW49Ox4N7Wk+vWf6iAcacxyJ884QhWFr+S+aZLRbIwhQFE9pxJsucZV/8S1sw8DOtorVodQJ9cqS8GkPHf215q1PbLQsAds4PW0djMWPiUB9xltJJHtXrTeFxIisfFku56m8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HIIiIm6p; arc=none smtp.client-ip=209.85.215.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f172.google.com with SMTP id 41be03b00d2f7-5dbd519bde6so2102814a12.1;
+        Fri, 08 Mar 2024 12:25:53 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1709929553; x=1710534353; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GXaGS2OWhnhbczoRRrQrWo6yetFGH8X8azzOfrjbE6g=;
+        b=HIIiIm6pEhD2EzqpccRMPkzBVIOq/NRQ76OKeQM3Tqz3oH4nbWd8aupHlYC5Qz/Yww
+         4pu+tCLO7+wIM4JbpBFGTg18R98ch3blbJIsNIwv/aZ12EAEzQJ/n6EGNjvt7vFL8iop
+         +dh1oElFvfkaohWBfmSA0zeIvHJsGJ5Qr/bwrH/l2QL+kVrcBW3K3ETXr/gJnnXS4Ue8
+         8LpP7VWQvs9EbrHr4MFgjoaaAgEISHGEf5AGDmsx+4YBX8lVnon66O2DikGc33GqHbSa
+         P2L8+kSzrpRC/O/3iOWDJ4QGYzKA6twSKmPhFdd0uyZ+2Pq3sdC5L3Oy8rD7vJDxYv34
+         MkiA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1709906764; x=1710511564;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zvlBPUPaepY/McwwPG60npSspOFuJcNnGlH0w8W6gto=;
-        b=jA/iclt6GaZ9KoOOfWAMgR7girAfATwvLh6Jzn0Lf680rPz1flQ/fV8G2DH/GYqK+F
-         8Bc79elUKxhsrAnUPv7LBa6h7IsdFNOWWT9JJ2EUhSUIxt2Xgmrn1et/pG6rvlbzcFlX
-         acIjDIfkdppfWYB7pJn97oqNV62cKQ6KabzTZAzM+1x1Gyqz13lU7bnm4YkiGl0Vqszw
-         P01obD+9V+1flDotlUfjcFvKYZIeRTycUpUYHSrQeY4LR9Yot8ScMmiOGEVkD4P0fQhw
-         ke08cbbbfdgZ+gn4guTApPbQVRbkXGcx5a4g5udm+MchTdSlgxYX0cgqK0WJf5Qmkpp3
-         kdOg==
-X-Forwarded-Encrypted: i=1; AJvYcCWRbRrkxH15rTB53VGdVbfraSfqdlxwDsTS8H8ikS9+mWxEe3r1lruifgGvsdHzXyuWPXYqJHHjvszCZolNWBGk+2HdYg77SwA1mA==
-X-Gm-Message-State: AOJu0Yz1TxCkctwoYkT2xylITl/1qsAFWqvdnL2gED61lsVd37VG5Yr6
-	9ewlpnjeCxbonad6gJs4Fk2zfXIA3ME2fzrI5VtdpPXkJXRxi++DgczKa5hPyK+fa3wfQ/Oedkf
-	YWFLgEoY2rC4Mz7Jhv4gwPSvB37BPqFQF+aDc7GnErwDy/IGVx+AsmEU=
-X-Google-Smtp-Source: AGHT+IF1WLhPpfhqCphP2CD7iN4hnYxZm1j+JuQK/5RtpPGczjcKUuxFnYYjuIv1GYRpdfCn64PfCc7DUclSl0eWcsRbgc5nfjvG
+        d=1e100.net; s=20230601; t=1709929553; x=1710534353;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GXaGS2OWhnhbczoRRrQrWo6yetFGH8X8azzOfrjbE6g=;
+        b=FxsDVVfasyO8SWPEw2V2y8t/u7QtQJXccjPa/+vxClCi6aq5QXf59Ymve723ZLIEfQ
+         afvr/2rF/qgPaLJynDNSHdy3LdPXI5YE0wfZ2h+T2I1H0/6hDRMbT89OMLC27WloYV0u
+         k23OH6ovqbWU/cgSK1DcJJ6j0U4jsninLnMBTz3XH3rg4gC3tek9exN3G5uD/9n2AjV7
+         eo5r0/epeid8H1anEtvIowQZPtbPhqoAnGRKKt2IdvYdG6ykOZWCF18kBJlQSie3SAiJ
+         UGKamOmJkE1vVUL4ld7Z0oXii3ozMMjxZckf8RQg2LpY7sHjqcJc772owkYeHOeArn3U
+         s3+A==
+X-Forwarded-Encrypted: i=1; AJvYcCX0YZveGJ3RM8GI0qBcnzIkiY22PCb0av/lpmwZpy3oqbhAuVgZPOf8fQiCc9vi8g91vcAZ7umb4Kfw6I17wbwupSvn7uhqKsdh8VjlMNUCQMm85f1IwmOs4JJW5S5QKLJnHcnfGvJlsXDADafuzI8zCcSua03RRKLcenYo1FDT7ITtXamxYm8=
+X-Gm-Message-State: AOJu0YyR4ts+jLJgNyjT9gYVtZDs8NpbjLWA+uc9CpHiOBTyk0ki9P2t
+	vXeyh236gJrGMI4zD7XSdIJQGh96IMwEMFNCuiYnirBGFpdWc93a
+X-Google-Smtp-Source: AGHT+IF4C0L0MiiUU+0bie1dyOAt1ABfQ6/ycb8CLKRaB7hHeTGez0urqm3/an0rbiHzL1EqsyqpHw==
+X-Received: by 2002:a17:90a:ad0c:b0:29b:b15d:5353 with SMTP id r12-20020a17090aad0c00b0029bb15d5353mr278722pjq.31.1709929553345;
+        Fri, 08 Mar 2024 12:25:53 -0800 (PST)
+Received: from dw-tp.. ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id ob4-20020a17090b390400b0029ba7731d38sm147186pjb.7.2024.03.08.12.25.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 08 Mar 2024 12:25:52 -0800 (PST)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: John Garry <john.g.garry@oracle.com>,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Cc: Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	linux-kernel@vger.kernel.org,
+	Dave Chinner <david@fromorbit.com>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [RFC] ext4: Add support for ext4_map_blocks_atomic()
+Date: Sat,  9 Mar 2024 01:55:42 +0530
+Message-ID: <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.44.0
+In-Reply-To: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
+References: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:16c2:b0:476:beb4:7470 with SMTP id
- g2-20020a05663816c200b00476beb47470mr4277jat.3.1709906764014; Fri, 08 Mar
- 2024 06:06:04 -0800 (PST)
-Date: Fri, 08 Mar 2024 06:06:04 -0800
-In-Reply-To: <0000000000005b767405ffd4e4ec@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000044b90e061326b102@google.com>
-Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_xattr_inode_iget (2)
-From: syzbot <syzbot+352d78bd60c8e9d6ecdc@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
-	elic@nvidia.com, jack@suse.cz, jasowang@redhat.com, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, mst@redhat.com, 
-	nathan@kernel.org, ndesaulniers@google.com, parav@nvidia.com, 
-	syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-syzbot suspects this issue was fixed by commit:
+Currently ext4 exposes [fsawu_min, fsawu_max] size as
+[blocksize, clustersize] (given the hw block device constraints are
+larger than FS atomic write units).
 
-commit 6f861765464f43a71462d52026fbddfc858239a5
-Author: Jan Kara <jack@suse.cz>
-Date:   Wed Nov 1 17:43:10 2023 +0000
+That means a user should be allowed to -
+1. pwrite 0 4k /mnt/test/f1
+2. pwrite 0 16k /mnt/test/f1
 
-    fs: Block writes to mounted block devices
+w/o this patch the second atomic write will fail. Since current
+ext4_map_blocks() will just return the already allocated extent length
+to the iomap (which is less than the user requested write length).
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f08e0a180000
-start commit:   610a9b8f49fb Linux 6.7-rc8
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=56c2c781bb4ee18
-dashboard link: https://syzkaller.appspot.com/bug?extid=352d78bd60c8e9d6ecdc
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a4d65ee80000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1715ad7ee80000
+So add ext4_map_blocks_atomic() function which can allocate full
+requested length for doing an atomic write before returning to iomap.
+With this we have - 
 
-If the result looks correct, please mark the issue as fixed by replying with:
+1. touch /mnt1/test/f2
+2. chattr +W /mnt1/test/f2
+3. xfs_io -dc "pwrite -b 4k -A -V 1 0 4k" /mnt1/test/f2
+	wrote 4096/4096 bytes at offset 0
+	4 KiB, 1 ops; 0.0320 sec (124.630 KiB/sec and 31.1575 ops/sec)
+4. filefrag -v /mnt1/test/f2
+	Filesystem type is: ef53
+	File size of /mnt1/test/f2 is 4096 (1 block of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+	   0:        0..       0:       9728..      9728:      1:             last,eof
+	/mnt1/test/f2: 1 extent found
+5. xfs_io -dc "pwrite -b 16k -A -V 1 0 16k" /mnt1/test/f2
+	wrote 16384/16384 bytes at offset 0
+	16 KiB, 1 ops; 0.0337 sec (474.637 KiB/sec and 29.6648 ops/sec)
+6. filefrag -v /mnt1/test/f2
+	Filesystem type is: ef53
+	File size of /mnt1/test/f2 is 16384 (4 blocks of 4096 bytes)
+	 ext:     logical_offset:        physical_offset: length:   expected: flags:
+	   0:        0..       3:       9728..      9731:      4:             last,eof
+	/mnt1/test/f2: 1 extent found
 
-#syz fix: fs: Block writes to mounted block devices
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+---
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+Please note, that this is very minimal tested. But it serves as a PoC of what
+can be done within ext4 to allow the usecase which John pointed out.
+
+This also shows that every filesystem can have a different ways of doing aligned
+allocations to support atomic writes. So lifting extent size hints to iomap
+perhaps might become very XFS centric? Althouh as long as other filesystems are 
+not forced to follow that, I don't think it should be a problem.
+
+
+ fs/ext4/ext4.h  |  2 ++
+ fs/ext4/inode.c | 40 +++++++++++++++++++++++++++++++++++++---
+ 2 files changed, 39 insertions(+), 3 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 529ca32b9813..1e9adc5d6569 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3702,6 +3702,8 @@ extern int ext4_convert_unwritten_io_end_vec(handle_t *handle,
+ 					     ext4_io_end_t *io_end);
+ extern int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 			   struct ext4_map_blocks *map, int flags);
++extern int ext4_map_blocks_atomic(handle_t *handle, struct inode *inode,
++				  struct ext4_map_blocks *map, int flags);
+ extern int ext4_ext_calc_credits_for_single_extent(struct inode *inode,
+ 						   int num,
+ 						   struct ext4_ext_path *path);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index ea009ca9085d..db273c7faf36 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -453,6 +453,29 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
+ }
+ #endif /* ES_AGGRESSIVE_TEST */
+ 
++int ext4_map_blocks_atomic(handle_t *handle, struct inode *inode,
++			   struct ext4_map_blocks *map, int flags)
++{
++	unsigned int mapped_len = 0, m_len = map->m_len;
++	ext4_lblk_t m_lblk = map->m_lblk;
++	int ret;
++
++	WARN_ON(!(flags & EXT4_GET_BLOCKS_CREATE));
++
++	do {
++		ret = ext4_map_blocks(handle, inode, map, flags);
++		if (ret < 0)
++			return ret;
++		mapped_len += map->m_len;
++		map->m_lblk += map->m_len;
++		map->m_len = m_len - mapped_len;
++	} while (mapped_len < m_len);
++
++	map->m_lblk = m_lblk;
++	map->m_len = mapped_len;
++	return mapped_len;
++}
++
+ /*
+  * The ext4_map_blocks() function tries to look up the requested blocks,
+  * and returns if the blocks are already mapped.
+@@ -3315,7 +3338,10 @@ static int ext4_iomap_alloc(struct inode *inode, struct ext4_map_blocks *map,
+ 	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		m_flags = EXT4_GET_BLOCKS_IO_CREATE_EXT;
+ 
+-	ret = ext4_map_blocks(handle, inode, map, m_flags);
++	if (flags & IOMAP_ATOMIC)
++		ret = ext4_map_blocks_atomic(handle, inode, map, m_flags);
++	else
++		ret = ext4_map_blocks(handle, inode, map, m_flags);
+ 
+ 	/*
+ 	 * We cannot fill holes in indirect tree based inodes as that could
+@@ -3339,6 +3365,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 	int ret;
+ 	struct ext4_map_blocks map;
+ 	u8 blkbits = inode->i_blkbits;
++	unsigned int orig_len;
+ 
+ 	if ((offset >> blkbits) > EXT4_MAX_LOGICAL_BLOCK)
+ 		return -EINVAL;
+@@ -3352,6 +3379,7 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 	map.m_lblk = offset >> blkbits;
+ 	map.m_len = min_t(loff_t, (offset + length - 1) >> blkbits,
+ 			  EXT4_MAX_LOGICAL_BLOCK) - map.m_lblk + 1;
++	orig_len = map.m_len;
+ 
+ 	if (flags & IOMAP_WRITE) {
+ 		/*
+@@ -3362,9 +3390,15 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
+ 		 */
+ 		if (offset + length <= i_size_read(inode)) {
+ 			ret = ext4_map_blocks(NULL, inode, &map, 0);
+-			if (ret > 0 && (map.m_flags & EXT4_MAP_MAPPED))
+-				goto out;
++			if (map.m_flags & EXT4_MAP_MAPPED) {
++				if ((flags & IOMAP_ATOMIC && ret >= orig_len) ||
++				   (!(flags & IOMAP_ATOMIC) && ret > 0))
++					goto out;
++
++			}
+ 		}
++		WARN_ON(map.m_lblk != offset >> blkbits);
++		map.m_len = orig_len;
+ 		ret = ext4_iomap_alloc(inode, &map, flags);
+ 	} else {
+ 		ret = ext4_map_blocks(NULL, inode, &map, 0);
+-- 
+2.39.2
+
 
