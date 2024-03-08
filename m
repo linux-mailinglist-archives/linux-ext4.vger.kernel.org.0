@@ -1,145 +1,95 @@
-Return-Path: <linux-ext4+bounces-1573-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1574-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C2D8764CC
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 14:12:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DC018765F9
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 15:06:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A88891C21C99
-	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 13:12:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77641B229B3
+	for <lists+linux-ext4@lfdr.de>; Fri,  8 Mar 2024 14:06:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 877D1225CE;
-	Fri,  8 Mar 2024 13:12:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WfVPzb0F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CE773FE22;
+	Fri,  8 Mar 2024 14:06:07 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 306EB1D545
-	for <linux-ext4@vger.kernel.org>; Fri,  8 Mar 2024 13:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D5C13FB8D
+	for <linux-ext4@vger.kernel.org>; Fri,  8 Mar 2024 14:06:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709903536; cv=none; b=sohMxSgsYgY0QeYW09efgYTu/gTyNaeELnMboVZNiQ59H3WpN5QUa70z5Q+PsVBpS+Ors+YtitzjdNZPWcH1ZvaAREaBOWyIpcrOpJzEgQ7YZVM8Sa60c7PrlYuoV2vPVon3LWb8JC7dHE+BbuVYxoTFEawAzfVArSyiLLQpKAA=
+	t=1709906767; cv=none; b=jZsTowuz9nHzYG5grgONA7nL7cO92P8YZj/xvJGU2wnQGVbtGO9YFCpk0kv1vp9amPpPo6LuQrTCr1P9aI8q77Fzo/UiaKjNM1IigqX8xzWlpTBv4KlcJtXjNhzn9SVMKjocyMBq1xEeedLzIvJiKum6cMyHj1frG+EUTsups0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709903536; c=relaxed/simple;
-	bh=M/siBoaxJHa7HVIH2CEV14U2OIqpl83thqP8KbS0Ok4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BqPUHJivonvlFYq29NMqeCSzsSoxMzGMhNMvK7cBQrgtwk+ZnzZAQPTMntglvRK3OY9oro1ot4TIqzd00FKEv2jNQHetoWaZ7XBVI8Y6576bCvNrKfxvRHuGpxsn8J3poT+RmKYEQgS5U0OblLsjHwqnwUEXZUYc43DZmTO3pm0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WfVPzb0F; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 428D25RI031876;
-	Fri, 8 Mar 2024 13:12:09 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=lHI/LgskLkA6CgQeCwHRgclJREKlGdK98tSQIEIkVFs=;
- b=WfVPzb0FCr5v2s/QEEtWTiLp44WoivbWhVFK3eo14vHN3HgvxB0wPqlDwrB6D9yAlZEG
- 6APs0upG4TKBxe6owvcTXga1kKJLBMN+JAoq0flRqDJ86cPd+YjItntWKvQXtdb2VhZm
- v4rUb5F/pb1j/iqlypsvAfdm6XZa0EBAca3f+Gimu+Pynd3EGS/wixwFBPmWXjly5aZb
- Ddo2zP+Gpmwc5nQBCrgiMWR4hxi9zFsxzIQgCK8p0ux4LoBGymIyS2xUdjsVoZumYSmw
- SE3S2jviEBzLuYjGeboka6QXnv5p9REp8Hmn74mwsNn1zt8i/RHXsAJ2fwPvjBbiWv2K Gw== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wr36xr6t8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 13:12:08 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 428AmK7j006051;
-	Fri, 8 Mar 2024 13:11:54 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wmeetmt1p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 08 Mar 2024 13:11:54 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 428DBpla39256462
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 8 Mar 2024 13:11:53 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E6EAC20043;
-	Fri,  8 Mar 2024 13:11:50 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 02BC420040;
-	Fri,  8 Mar 2024 13:11:50 +0000 (GMT)
-Received: from [9.43.33.218] (unknown [9.43.33.218])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri,  8 Mar 2024 13:11:49 +0000 (GMT)
-Message-ID: <76e1e3a2-78f6-40fc-bb9c-4d4f87003eb6@linux.ibm.com>
-Date: Fri, 8 Mar 2024 18:41:48 +0530
+	s=arc-20240116; t=1709906767; c=relaxed/simple;
+	bh=zNrlmpuYJ8G3ByJX69mziNbz97dnw1BgMjXDQs2S2wI=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=m+VI+XrY10nt6ZM7VURkBqLByhCEeIUDyyxP4XJI6gdeqsGdrxieQ4ZH3wqqeVLlUhJzCYzQVRIDlNvN5knIfwoCRzx5/vM26yBVlRQOcW3OjdTvXmbH+h9aBEoAF23QKzOefXs6Yu61hh1Th1gqJLXyvyKNykyqJDIp9cg87e0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c8414a39b7so150067339f.0
+        for <linux-ext4@vger.kernel.org>; Fri, 08 Mar 2024 06:06:05 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1709906764; x=1710511564;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=zvlBPUPaepY/McwwPG60npSspOFuJcNnGlH0w8W6gto=;
+        b=jA/iclt6GaZ9KoOOfWAMgR7girAfATwvLh6Jzn0Lf680rPz1flQ/fV8G2DH/GYqK+F
+         8Bc79elUKxhsrAnUPv7LBa6h7IsdFNOWWT9JJ2EUhSUIxt2Xgmrn1et/pG6rvlbzcFlX
+         acIjDIfkdppfWYB7pJn97oqNV62cKQ6KabzTZAzM+1x1Gyqz13lU7bnm4YkiGl0Vqszw
+         P01obD+9V+1flDotlUfjcFvKYZIeRTycUpUYHSrQeY4LR9Yot8ScMmiOGEVkD4P0fQhw
+         ke08cbbbfdgZ+gn4guTApPbQVRbkXGcx5a4g5udm+MchTdSlgxYX0cgqK0WJf5Qmkpp3
+         kdOg==
+X-Forwarded-Encrypted: i=1; AJvYcCWRbRrkxH15rTB53VGdVbfraSfqdlxwDsTS8H8ikS9+mWxEe3r1lruifgGvsdHzXyuWPXYqJHHjvszCZolNWBGk+2HdYg77SwA1mA==
+X-Gm-Message-State: AOJu0Yz1TxCkctwoYkT2xylITl/1qsAFWqvdnL2gED61lsVd37VG5Yr6
+	9ewlpnjeCxbonad6gJs4Fk2zfXIA3ME2fzrI5VtdpPXkJXRxi++DgczKa5hPyK+fa3wfQ/Oedkf
+	YWFLgEoY2rC4Mz7Jhv4gwPSvB37BPqFQF+aDc7GnErwDy/IGVx+AsmEU=
+X-Google-Smtp-Source: AGHT+IF1WLhPpfhqCphP2CD7iN4hnYxZm1j+JuQK/5RtpPGczjcKUuxFnYYjuIv1GYRpdfCn64PfCc7DUclSl0eWcsRbgc5nfjvG
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: Avoid excessive credit estimate in ext4_tmpfile()
-Content-Language: en-GB
-To: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-References: <20240307115320.28949-1-jack@suse.cz>
-From: Disha Goel <disgoel@linux.ibm.com>
-In-Reply-To: <20240307115320.28949-1-jack@suse.cz>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: -_u_siEOdArZ7SgwKiwykJDLtxr947S0
-X-Proofpoint-GUID: -_u_siEOdArZ7SgwKiwykJDLtxr947S0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-08_08,2024-03-06_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 spamscore=0
- bulkscore=0 mlxlogscore=999 impostorscore=0 lowpriorityscore=0
- suspectscore=0 clxscore=1011 priorityscore=1501 malwarescore=0
- adultscore=0 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403080106
+X-Received: by 2002:a05:6638:16c2:b0:476:beb4:7470 with SMTP id
+ g2-20020a05663816c200b00476beb47470mr4277jat.3.1709906764014; Fri, 08 Mar
+ 2024 06:06:04 -0800 (PST)
+Date: Fri, 08 Mar 2024 06:06:04 -0800
+In-Reply-To: <0000000000005b767405ffd4e4ec@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000044b90e061326b102@google.com>
+Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_xattr_inode_iget (2)
+From: syzbot <syzbot+352d78bd60c8e9d6ecdc@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, axboe@kernel.dk, brauner@kernel.org, 
+	elic@nvidia.com, jack@suse.cz, jasowang@redhat.com, 
+	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev, mst@redhat.com, 
+	nathan@kernel.org, ndesaulniers@google.com, parav@nvidia.com, 
+	syzkaller-bugs@googlegroups.com, trix@redhat.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On 07/03/24 5:23 pm, Jan Kara wrote:
+syzbot suspects this issue was fixed by commit:
 
-> A user with minimum journal size (1024 blocks these days) complained
-> about the following error triggered by generic/697 test in
-> ext4_tmpfile():
->
-> run fstests generic/697 at 2024-02-28 05:34:46
-> JBD2: vfstest wants too many credits credits:260 rsv_credits:0 max:256
-> EXT4-fs error (device loop0) in __ext4_new_inode:1083: error 28
->
-> Indeed the credit estimate in ext4_tmpfile() is huge.
-> EXT4_MAXQUOTAS_INIT_BLOCKS() is 219, then 10 credits from ext4_tmpfile()
-> itself and then ext4_xattr_credits_for_new_inode() adds more credits
-> needed for security attributes and ACLs. Now the
-> EXT4_MAXQUOTAS_INIT_BLOCKS() is in fact unnecessary because we've
-> already initialized quotas with dquot_init() shortly before and so
-> EXT4_MAXQUOTAS_TRANS_BLOCKS() is enough (which boils down to 3 credits).
->
-> Fixes: af51a2ac36d1 ("ext4: ->tmpfile() support")
-> Signed-off-by: Jan Kara <jack@suse.cz>
+commit 6f861765464f43a71462d52026fbddfc858239a5
+Author: Jan Kara <jack@suse.cz>
+Date:   Wed Nov 1 17:43:10 2023 +0000
 
-Thanks for the fix patch. I have tested the patch on a power machine with smaller
-disk and journal size, generic/697 test passed (for both bs<ps and bs=ps) and no
-longer seeing the error.
+    fs: Block writes to mounted block devices
 
-Feel free to add:
-Tested-by: Disha Goel<disgoel@linux.ibm.com>
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14f08e0a180000
+start commit:   610a9b8f49fb Linux 6.7-rc8
+git tree:       upstream
+kernel config:  https://syzkaller.appspot.com/x/.config?x=56c2c781bb4ee18
+dashboard link: https://syzkaller.appspot.com/bug?extid=352d78bd60c8e9d6ecdc
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a4d65ee80000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1715ad7ee80000
 
-> ---
->   fs/ext4/namei.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 05b647e6bc19..58fee3c6febc 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -2898,7 +2898,7 @@ static int ext4_tmpfile(struct mnt_idmap *idmap, struct inode *dir,
->   	inode = ext4_new_inode_start_handle(idmap, dir, mode,
->   					    NULL, 0, NULL,
->   					    EXT4_HT_DIR,
-> -			EXT4_MAXQUOTAS_INIT_BLOCKS(dir->i_sb) +
-> +			EXT4_MAXQUOTAS_TRANS_BLOCKS(dir->i_sb) +
->   			  4 + EXT4_XATTR_TRANS_BLOCKS);
->   	handle = ext4_journal_current_handle();
->   	err = PTR_ERR(inode);
+If the result looks correct, please mark the issue as fixed by replying with:
+
+#syz fix: fs: Block writes to mounted block devices
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
