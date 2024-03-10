@@ -1,134 +1,277 @@
-Return-Path: <linux-ext4+bounces-1582-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1583-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 263D8876EDB
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Mar 2024 03:59:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 277FE877535
+	for <lists+linux-ext4@lfdr.de>; Sun, 10 Mar 2024 04:03:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9387D1F21A77
-	for <lists+linux-ext4@lfdr.de>; Sat,  9 Mar 2024 02:59:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2C971B21814
+	for <lists+linux-ext4@lfdr.de>; Sun, 10 Mar 2024 03:03:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 266F82D610;
-	Sat,  9 Mar 2024 02:58:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9974C1097B;
+	Sun, 10 Mar 2024 03:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Uz7nMHEx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0FC125CA
-	for <linux-ext4@vger.kernel.org>; Sat,  9 Mar 2024 02:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09B3B101D0
+	for <linux-ext4@vger.kernel.org>; Sun, 10 Mar 2024 03:02:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1709953136; cv=none; b=Ldr6DSfRDpMoDWF/QE4OxADev6R8z4tfEvxZzwdzFWntI8PmNN33N/EAyu0z62Fv+4jSf2eoxrsGj6MC+Iyo6LUPYcWWwKtLMMe0/GImPmgkeNm6zj7Fh03VTejNrStTfcRlyqth3rrKUfr+dn+a8aHvUbGzyCmX4zWMYCPaVj0=
+	t=1710039775; cv=none; b=MisTQTJydpPbJ/bhr62FOpoTAR3jSq+GrVQfUBds+ZlLMucbFyw/T3sLOdBSExpVANUM6jHWZpyn8klF7xJzYmQalKY6H6Zx2KThvU+gq6yfnCqJAI7czMwN+14VCf+3frXeiFiqcXNUAX6LeCAd5GrfJD81D66cBoe2VzUfVIA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1709953136; c=relaxed/simple;
-	bh=fTOJz/7Qltq2II958YVp1HuudpVUlzahHp0kdbpfaug=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=uIhfYGXnx7x55y4uYpB52NY0q8RgiPNBrmsxI9a97YFcnM28GepGN7656iNkvJqRlOob5UmmCVUVFpG/TXiWNI5DqZNI94CtOQhiAv3uDZaYkQ94QD9LDAswtMcUAtxs/5AP76R5M3UvF6Q/3CEkT6Y69MNFM5ccHODQJX8BaJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4Ts73Z2Pprz1Q9VC;
-	Sat,  9 Mar 2024 10:56:42 +0800 (CST)
-Received: from canpemm500005.china.huawei.com (unknown [7.192.104.229])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8AD8D140121;
-	Sat,  9 Mar 2024 10:58:43 +0800 (CST)
-Received: from [10.174.176.34] (10.174.176.34) by
- canpemm500005.china.huawei.com (7.192.104.229) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 9 Mar 2024 10:58:42 +0800
-Subject: Re: [PATCH] ext4: remove unreachable discard code
-To: Keith Busch <kbusch@meta.com>, <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.com>, Keith Busch
-	<kbusch@kernel.org>
-References: <20240309000943.1400879-1-kbusch@meta.com>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <77b00f09-63d4-6e32-df8e-e83487fbb8b8@huawei.com>
-Date: Sat, 9 Mar 2024 10:58:42 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1710039775; c=relaxed/simple;
+	bh=602QfW/WtvnUQP4vfVpzq2nImxYKBHWm14MWylKnxco=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=NCObO2s09g+GvuJo543woN2+KFewZU4LI80fQyg7/mqGrbSkwFCfo6syn8IF0fAE1EuFBaP6hk9dfU9fZb5apSud0kabpjqkEMTdRvdE80d997Hcuu/bI0C60eKo33oJAmQ4bFNgApmUtxF8zQXwY2oDAzLAdTkVMv6WP6IqWoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Uz7nMHEx; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710039773; x=1741575773;
+  h=date:from:to:cc:subject:message-id;
+  bh=602QfW/WtvnUQP4vfVpzq2nImxYKBHWm14MWylKnxco=;
+  b=Uz7nMHExuX7K1O0XTt6okojk1SYLA+tEQm4C8s+zmPQv29+dYVW5H7VL
+   8/9cP4XPRPnBfeHhsV4jx7SeHM79WwWCL8ByG6MJYzszytd18ZmMD9cfh
+   mf8DNgbQuKys9aGozRxMNk05nQjC2lIVYrYDMxQ7CqiFg8/tPIei7zFwK
+   HiS0g7dC9V9yIzZDKXb7jCMR08GqEW2Q+qahho7CZqgmnkotbdRf+W4By
+   e0epl2AMuLbZbGKzRyw7ktcf7Df+qX6R2KfXQDex50w0qpyj8htJlKtQh
+   RIEUE6VR7/hUA+VQ23G92KEel4AYfL5dkKd5FoxdZLE1wyK3xJ/ClKzgV
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11008"; a="4899438"
+X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
+   d="scan'208";a="4899438"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 09 Mar 2024 19:02:52 -0800
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,113,1708416000"; 
+   d="scan'208";a="10742674"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 09 Mar 2024 19:02:51 -0800
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rj9Sa-0007rR-1J;
+	Sun, 10 Mar 2024 03:02:48 +0000
+Date: Sun, 10 Mar 2024 11:01:49 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 0ecae5410ab526225293d2591ca4632b22c2fd8c
+Message-ID: <202403101145.8orwIg2P-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240309000943.1400879-1-kbusch@meta.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500005.china.huawei.com (7.192.104.229)
 
-On 2024/3/9 8:09, Keith Busch wrote:
-> From: Keith Busch <kbusch@kernel.org>
-> 
-> There are no more ext4_issue_discard() users that track their own bio.
-> Remove the unused parameter and the dead code that handles it.
-> 
-> Signed-off-by: Keith Busch <kbusch@kernel.org>
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 0ecae5410ab526225293d2591ca4632b22c2fd8c  ext4: initialize sbi->s_freeclusters_counter and sbi->s_dirtyclusters_counter before use in kunit test
 
-Hello Keith!
+elapsed time: 725m
 
-Wenchao Hao has already submitted the same patch.
+configs tested: 188
+configs skipped: 3
 
-https://lore.kernel.org/linux-ext4/20240226081731.3224470-1-haowenchao2@huawei.com/
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thanks,
-Yi.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240310   gcc  
+arc                   randconfig-002-20240310   gcc  
+arc                        vdk_hs38_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240310   gcc  
+arm                   randconfig-002-20240310   gcc  
+arm                   randconfig-003-20240310   gcc  
+arm                   randconfig-004-20240310   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                            allyesconfig   clang
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240310   clang
+arm64                 randconfig-002-20240310   gcc  
+arm64                 randconfig-003-20240310   clang
+arm64                 randconfig-004-20240310   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240310   gcc  
+csky                  randconfig-002-20240310   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240310   clang
+hexagon               randconfig-002-20240310   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240309   clang
+i386         buildonly-randconfig-001-20240310   clang
+i386         buildonly-randconfig-002-20240309   clang
+i386         buildonly-randconfig-002-20240310   clang
+i386         buildonly-randconfig-003-20240309   gcc  
+i386         buildonly-randconfig-003-20240310   clang
+i386         buildonly-randconfig-004-20240309   gcc  
+i386         buildonly-randconfig-004-20240310   clang
+i386         buildonly-randconfig-005-20240309   gcc  
+i386         buildonly-randconfig-006-20240309   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240309   gcc  
+i386                  randconfig-002-20240309   gcc  
+i386                  randconfig-003-20240309   clang
+i386                  randconfig-003-20240310   clang
+i386                  randconfig-004-20240309   clang
+i386                  randconfig-005-20240309   clang
+i386                  randconfig-006-20240309   gcc  
+i386                  randconfig-011-20240309   gcc  
+i386                  randconfig-011-20240310   clang
+i386                  randconfig-012-20240309   gcc  
+i386                  randconfig-012-20240310   clang
+i386                  randconfig-013-20240309   clang
+i386                  randconfig-013-20240310   clang
+i386                  randconfig-014-20240309   clang
+i386                  randconfig-014-20240310   clang
+i386                  randconfig-015-20240309   clang
+i386                  randconfig-015-20240310   clang
+i386                  randconfig-016-20240309   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240310   gcc  
+loongarch             randconfig-002-20240310   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5208evb_defconfig   gcc  
+m68k                       m5249evb_defconfig   gcc  
+m68k                          multi_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                     cu1000-neo_defconfig   gcc  
+mips                           ip22_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240310   gcc  
+nios2                 randconfig-002-20240310   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240310   gcc  
+parisc                randconfig-002-20240310   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                    mvme5100_defconfig   gcc  
+powerpc               randconfig-001-20240310   gcc  
+powerpc               randconfig-002-20240310   clang
+powerpc               randconfig-003-20240310   clang
+powerpc64             randconfig-001-20240310   gcc  
+powerpc64             randconfig-002-20240310   gcc  
+powerpc64             randconfig-003-20240310   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240310   gcc  
+riscv                 randconfig-002-20240310   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240310   clang
+s390                  randconfig-002-20240310   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                             espt_defconfig   gcc  
+sh                 kfr2r09-romimage_defconfig   gcc  
+sh                    randconfig-001-20240310   gcc  
+sh                    randconfig-002-20240310   gcc  
+sh                          rsk7264_defconfig   gcc  
+sh                           se7750_defconfig   gcc  
+sh                             sh03_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240310   gcc  
+sparc64               randconfig-002-20240310   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240310   gcc  
+um                    randconfig-002-20240310   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240310   clang
+x86_64       buildonly-randconfig-002-20240310   gcc  
+x86_64       buildonly-randconfig-003-20240310   clang
+x86_64       buildonly-randconfig-004-20240310   gcc  
+x86_64       buildonly-randconfig-005-20240310   clang
+x86_64       buildonly-randconfig-006-20240310   gcc  
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240310   clang
+x86_64                randconfig-002-20240310   gcc  
+x86_64                randconfig-003-20240310   gcc  
+x86_64                randconfig-004-20240310   gcc  
+x86_64                randconfig-005-20240310   clang
+x86_64                randconfig-006-20240310   gcc  
+x86_64                randconfig-011-20240310   gcc  
+x86_64                randconfig-012-20240310   clang
+x86_64                randconfig-013-20240310   clang
+x86_64                randconfig-014-20240310   gcc  
+x86_64                randconfig-015-20240310   clang
+x86_64                randconfig-016-20240310   gcc  
+x86_64                randconfig-071-20240310   gcc  
+x86_64                randconfig-072-20240310   gcc  
+x86_64                randconfig-073-20240310   gcc  
+x86_64                randconfig-074-20240310   gcc  
+x86_64                randconfig-075-20240310   clang
+x86_64                randconfig-076-20240310   gcc  
+x86_64                          rhel-8.3-rust   clang
+x86_64                               rhel-8.3   gcc  
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240310   gcc  
+xtensa                randconfig-002-20240310   gcc  
 
-> ---
->  fs/ext4/mballoc.c | 15 ++++-----------
->  1 file changed, 4 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index e4f7cf9d89c45..6314a2b000fd8 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -3829,8 +3829,7 @@ void ext4_mb_release(struct super_block *sb)
->  }
->  
->  static inline int ext4_issue_discard(struct super_block *sb,
-> -		ext4_group_t block_group, ext4_grpblk_t cluster, int count,
-> -		struct bio **biop)
-> +		ext4_group_t block_group, ext4_grpblk_t cluster, int count)
->  {
->  	ext4_fsblk_t discard_block;
->  
-> @@ -3839,13 +3838,7 @@ static inline int ext4_issue_discard(struct super_block *sb,
->  	count = EXT4_C2B(EXT4_SB(sb), count);
->  	trace_ext4_discard_blocks(sb,
->  			(unsigned long long) discard_block, count);
-> -	if (biop) {
-> -		return __blkdev_issue_discard(sb->s_bdev,
-> -			(sector_t)discard_block << (sb->s_blocksize_bits - 9),
-> -			(sector_t)count << (sb->s_blocksize_bits - 9),
-> -			GFP_NOFS, biop);
-> -	} else
-> -		return sb_issue_discard(sb, discard_block, count, GFP_NOFS, 0);
-> +	return sb_issue_discard(sb, discard_block, count, GFP_NOFS, 0);
->  }
->  
->  static void ext4_free_data_in_buddy(struct super_block *sb,
-> @@ -6487,7 +6480,7 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->  	} else {
->  		if (test_opt(sb, DISCARD)) {
->  			err = ext4_issue_discard(sb, block_group, bit,
-> -						 count_clusters, NULL);
-> +						 count_clusters);
->  			if (err && err != -EOPNOTSUPP)
->  				ext4_msg(sb, KERN_WARNING, "discard request in"
->  					 " group:%u block:%d count:%lu failed"
-> @@ -6738,7 +6731,7 @@ __acquires(bitlock)
->  	 */
->  	mb_mark_used(e4b, &ex);
->  	ext4_unlock_group(sb, group);
-> -	ret = ext4_issue_discard(sb, group, start, count, NULL);
-> +	ret = ext4_issue_discard(sb, group, start, count);
->  	ext4_lock_group(sb, group);
->  	mb_free_blocks(NULL, e4b, start, ex.fe_len);
->  	return ret;
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
