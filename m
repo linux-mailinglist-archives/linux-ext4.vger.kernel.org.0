@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-1585-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1586-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 69FCA877B55
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 08:31:47 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E71FF877B5C
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 08:34:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9B99E1C20D58
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 07:31:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249831C20DFD
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 07:34:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33D71107A6;
-	Mon, 11 Mar 2024 07:31:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA13107A6;
+	Mon, 11 Mar 2024 07:34:52 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C59F9D3;
-	Mon, 11 Mar 2024 07:31:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED463101E2;
+	Mon, 11 Mar 2024 07:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710142300; cv=none; b=B5VTk+bjGW+BQXt7JbB9O7LnawEALAP8XPM2c/NXwxije+9dIYDCtA097dw3af54YWblpSTs7pAV6/OWi1GnF/ys+gol2wGo9ngK5QXmFcMF89489aBeovN+Xds4bIfambQ82SWWArxFRCfv9kE3iUqhJNBRNpLLhbPpSXbiT6I=
+	t=1710142492; cv=none; b=VW0zExQzZZ1xGnQTbAL/8+T1CQ9EbNY5UeGa4WQ4Erk4r7G7PHHmrdIBgh3oFQ257Z8ivCFkmCkZ3JjI7ZP/25SaVc25i2bmmSk68+J9SioxGvLFUARpVJbhAFLb14UoxC0iGBt3E/Uh4qrd6QI5jof9Lblz1m7SkimzLE9c9oE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710142300; c=relaxed/simple;
-	bh=4vkHIMU5sLhEQ25bNI/O3AvT4oBOKoIMinDU+cLJS8Y=;
+	s=arc-20240116; t=1710142492; c=relaxed/simple;
+	bh=F2WA+jUmwJpqPaJEyz8sihZHlVo/f0+UuPqLqVKOfRI=;
 	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=T/CdEizTt6tR6R16PKFgDZcTzq/al6I8vloUo6a5n6rGeYDBB2Xcu2Vf8oFCKPkeRazwnOkBUsM0zzENx9Ith4H3TPnfiFj7pBoH75bv+NXaOzjHhC3srq6ek/ceq9nWgKYlFn9/QD/vQ92I2DqTm3J3EXzOKV1MP3dy0WlOeZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 In-Reply-To:Content-Type; b=uptkpw/WWs0r5/4dOSd2CVxgHdaoRwhE8I+ymdnDeBapOghdwA1ir3mayXRh7cP9D7Knmj7/mmTZ0PGI4TKsiFYDQrAIMp64JLohA1sOTphpuKkcsgWC17v08Lwu6b7dupI1bDIzjbz2kxx3cNzNvlq1xUIoIcDJpfYAVx+tmWE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TtT103btZz2Bfqg;
-	Mon, 11 Mar 2024 15:29:08 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TtT6Y0dCSzbcy2;
+	Mon, 11 Mar 2024 15:33:57 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id DB6641A0178;
-	Mon, 11 Mar 2024 15:31:33 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id A20AA140FC8;
+	Mon, 11 Mar 2024 15:34:41 +0800 (CST)
 Received: from [10.174.178.46] (10.174.178.46) by
  kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 15:31:33 +0800
+ 15.1.2507.35; Mon, 11 Mar 2024 15:34:40 +0800
 Subject: Re: [PATCH RFC] ext4: Validate inode pa before using preallocation
  blocks
 To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>
 CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>
+	<yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>
 References: <20240311063843.2431708-1-chengzhihao1@huawei.com>
 From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <24740a61-d379-b9b5-2e08-07f7a4597fa2@huawei.com>
-Date: Mon, 11 Mar 2024 15:31:32 +0800
+Message-ID: <5be2ccf9-18f7-38b2-8081-8916d2b8689b@huawei.com>
+Date: Mon, 11 Mar 2024 15:34:40 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 Precedence: bulk
@@ -59,7 +59,7 @@ MIME-Version: 1.0
 In-Reply-To: <20240311063843.2431708-1-chengzhihao1@huawei.com>
 Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 
 ÔÚ 2024/3/11 14:38, Zhihao Cheng Ð´µÀ:
@@ -112,25 +112,6 @@ X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
 > detected, stop using inode preallocation, drop invalid pa to avoid it
 > being used again, mark group block bitmap as corrupted to avoid allocating
 > from the erroneous group.
-
-After marking group block bitmap corrupted, mpage_map_and_submit_extent 
-returns -EFSCORRUPTED from ext4_map_blocks -> ext4_ext_map_blocks -> 
-ext4_mb_new_blocks -> ext4_mb_regular_allocator -> ext4_mb_find_by_goal 
--> ext4_mb_load_buddy -> ext4_mb_init_cache -> ext4_wait_block_bitmap -> 
-  ext4_validate_block_bitmap-> EXT4_MB_GRP_BBITMAP_CORRUPT(grp).
-I think the checking 'EXT4_MB_GRP_BBITMAP_CORRUPT(e4b->bd_info)' is not 
-needed in ext4_mb_load_buddy, because all callers have checked it before 
-using e4b. In this case(ext4_mb_regular_allocator), goal group could be 
-skipped if it is corrupted, so ext4_mb_find_by_goal should load 
-buddy(ext4_mb_load_buddy) without checking corrupted and then check 
-corrupted with returning 0. But we can't delete the 
-checking(EXT4_MB_GRP_BBITMAP_CORRUPT(grp)) directly from 
-ext4_validate_block_bitmap, because some ext4_wait_block_bitmap callers 
-may still need it. IOW, there are some logic pathes need the checking, 
-but some don't need.
-
-Above problem is independent with the problem solved by this patch, so I 
-send out the patch.
 > 
 > Fetch a reproducer in Link.
 > 
@@ -141,5 +122,7 @@ send out the patch.
 > ---
 >   fs/ext4/mballoc.c | 128 +++++++++++++++++++++++++++++++++++-----------
 >   1 file changed, 98 insertions(+), 30 deletions(-)
-> 
+
+Add Jan.
+
 
