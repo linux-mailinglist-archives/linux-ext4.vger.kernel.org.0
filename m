@@ -1,53 +1,57 @@
-Return-Path: <linux-ext4+bounces-1586-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1587-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E71FF877B5C
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 08:34:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 51F38877B78
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 08:55:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 249831C20DFD
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 07:34:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2AF4282336
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 07:55:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEA13107A6;
-	Mon, 11 Mar 2024 07:34:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD74711181;
+	Mon, 11 Mar 2024 07:55:38 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga02-in.huawei.com (szxga02-in.huawei.com [45.249.212.188])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED463101E2;
-	Mon, 11 Mar 2024 07:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C71F1C33;
+	Mon, 11 Mar 2024 07:55:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710142492; cv=none; b=VW0zExQzZZ1xGnQTbAL/8+T1CQ9EbNY5UeGa4WQ4Erk4r7G7PHHmrdIBgh3oFQ257Z8ivCFkmCkZ3JjI7ZP/25SaVc25i2bmmSk68+J9SioxGvLFUARpVJbhAFLb14UoxC0iGBt3E/Uh4qrd6QI5jof9Lblz1m7SkimzLE9c9oE=
+	t=1710143738; cv=none; b=TyESY5/3Gdc4xdXC//ilmlY9HnDz3AAtqh1i8EjBwGqs9wbI+HUkB9sGNE+5Q6n97+RPeQLXgHg7xCKSqb0K939Wii0JNyW+QeiBdOA4QrYsNfbOFYdhoMFCy+KDIv2P9fM9VgTiG4GO6ooCb++3QXTRoViWm9/84eVBJl6xXyU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710142492; c=relaxed/simple;
-	bh=F2WA+jUmwJpqPaJEyz8sihZHlVo/f0+UuPqLqVKOfRI=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=uptkpw/WWs0r5/4dOSd2CVxgHdaoRwhE8I+ymdnDeBapOghdwA1ir3mayXRh7cP9D7Knmj7/mmTZ0PGI4TKsiFYDQrAIMp64JLohA1sOTphpuKkcsgWC17v08Lwu6b7dupI1bDIzjbz2kxx3cNzNvlq1xUIoIcDJpfYAVx+tmWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.188
+	s=arc-20240116; t=1710143738; c=relaxed/simple;
+	bh=/qk/PxlGm1WvdPUtKgJrgC5mcmmOT+1hrUu8hH8Vgts=;
+	h=Subject:From:To:CC:References:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=E4Z2PE1wAv1syUwA6UzdbbR61zS5RVPoXYm97MSlm0bPbm8ecOWPORlxl4I1qzg5Ii3OrI2qCFOrb24vQiBsLoZPB7ChZzHfDl+aG5R9+Q+8TEAAI+SsxQn0gCS7iI3QoAVQ8GplGnLWLISUiQXNv3zjtNR9C4bTcnU90reCR3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga02-in.huawei.com (SkyGuard) with ESMTP id 4TtT6Y0dCSzbcy2;
-	Mon, 11 Mar 2024 15:33:57 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TtTXf6503z1h1v9;
+	Mon, 11 Mar 2024 15:53:06 +0800 (CST)
 Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id A20AA140FC8;
-	Mon, 11 Mar 2024 15:34:41 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 1043B1402E1;
+	Mon, 11 Mar 2024 15:55:32 +0800 (CST)
 Received: from [10.174.178.46] (10.174.178.46) by
  kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 11 Mar 2024 15:34:40 +0800
-Subject: Re: [PATCH RFC] ext4: Validate inode pa before using preallocation
- blocks
-To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<yi.zhang@huawei.com>, Jan Kara <jack@suse.cz>
-References: <20240311063843.2431708-1-chengzhihao1@huawei.com>
+ 15.1.2507.35; Mon, 11 Mar 2024 15:55:31 +0800
+Subject: Re: [PATCH RFC 1/2] iomap: Add a IOMAP_DIO_MAY_INLINE_COMP flag
 From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <5be2ccf9-18f7-38b2-8081-8916d2b8689b@huawei.com>
-Date: Mon, 11 Mar 2024 15:34:40 +0800
+To: Dave Chinner <david@fromorbit.com>
+CC: <brauner@kernel.org>, <djwong@kernel.org>, <jack@suse.cz>,
+	<tytso@mit.edu>, <linux-xfs@vger.kernel.org>,
+	<linux-fsdevel@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-ext4@vger.kernel.org>, <yi.zhang@huawei.com>
+References: <20240229113849.2222577-1-chengzhihao1@huawei.com>
+ <20240229113849.2222577-2-chengzhihao1@huawei.com>
+ <ZeEkFUCUQ4eR7AlX@dread.disaster.area>
+ <3de3ede5-31e0-2b7b-f523-9fd22090401f@huawei.com>
+Message-ID: <8263025e-15e6-fbc7-2826-f6f9ac3d9043@huawei.com>
+Date: Mon, 11 Mar 2024 15:55:30 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
  Thunderbird/68.5.0
 Precedence: bulk
@@ -56,73 +60,146 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240311063843.2431708-1-chengzhihao1@huawei.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
+In-Reply-To: <3de3ede5-31e0-2b7b-f523-9fd22090401f@huawei.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemm600013.china.huawei.com (7.193.23.68)
 
-�� 2024/3/11 14:38, Zhihao Cheng д��:
-> In ext4 continue & no-journal mode, physical blocks could be allocated
-> more than once (caused by writing extent entries failed & reclaiming
-> extent cache) in preallocation process, which could trigger a BUG_ON
-> (pa->pa_free < len) in ext4_mb_use_inode_pa().
+在 2024/3/1 18:02, Zhihao Cheng 写道:
+> 在 2024/3/1 8:40, Dave Chinner 写道:
 > 
->   kernel BUG at fs/ext4/mballoc.c:4681!
->   invalid opcode: 0000 [#1] PREEMPT SMP
->   CPU: 3 PID: 97 Comm: kworker/u8:3 Not tainted 6.8.0-rc7
->   RIP: 0010:ext4_mb_use_inode_pa+0x1b6/0x1e0
->   Call Trace:
->    ext4_mb_use_preallocated.constprop.0+0x19e/0x540
->    ext4_mb_new_blocks+0x220/0x1f30
->    ext4_ext_map_blocks+0xf3c/0x2900
->    ext4_map_blocks+0x264/0xa40
->    ext4_do_writepages+0xb15/0x1400
->    do_writepages+0x8c/0x260
->    writeback_sb_inodes+0x224/0x720
->    wb_writeback+0xd8/0x580
->    wb_workfn+0x148/0x820
+Hi Dave. Friendly ping.
+> Hi Dave, thanks for your detailed and nice suggestions, I have a few 
+> questions below.
+>> On Thu, Feb 29, 2024 at 07:38:48PM +0800, Zhihao Cheng wrote:
+>>> It will be more efficient to execute quick endio process(eg. non-sync
+>>> overwriting case) under irq process rather than starting a worker to
+>>> do it.
+>>> Add a flag to control DIO to be finished inline(under irq context), 
+>>> which
+>>> can be used for non-sync overwriting case.
+>>> Besides, skip invalidating pages if DIO is finished inline, which will
+>>> keep the same logic with dio_bio_end_aio in non-sync overwriting case.
+>>>
+>>> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+>>
+>> A nice idea, but I don't think an ext4 specific API flag is the
+>> right way to go about enabling this. The iomap dio code knows if
+>> the write is pure overwrite already - we have the IOMAP_F_DIRTY flag
+>> for that, and we combine this with IOMAP_DIO_WRITE_THROUGH to do the
+>> pure overwrite FUA optimisations.
+>>
+>> That is:
+>>
+>>         /*
+>>                   * Use a FUA write if we need datasync semantics, 
+>> this is a pure
+>>                   * data IO that doesn't require any metadata updates 
+>> (including
+>>                   * after IO completion such as unwritten extent 
+>> conversion) and
+>>                   * the underlying device either supports FUA or 
+>> doesn't have
+>>                   * a volatile write cache. This allows us to avoid 
+>> cache flushes
+>>                   * on IO completion. If we can't use writethrough and 
+>> need to
+>>                   * sync, disable in-task completions as dio 
+>> completion will
+>>                   * need to call generic_write_sync() which will do a 
+>> blocking
+>>                   * fsync / cache flush call.
+>>                   */
+>>                  if (!(iomap->flags & (IOMAP_F_SHARED|IOMAP_F_DIRTY)) &&
+>>                      (dio->flags & IOMAP_DIO_WRITE_THROUGH) &&
+>>                      (bdev_fua(iomap->bdev) || 
+>> !bdev_write_cache(iomap->bdev)))
+>>                          use_fua = true;
+>>
+>> Hence if we want to optimise pure overwrites that have no data sync
+>> requirements, we already have the detection and triggers in place to
+>> do this. We just need to change the way we set up the IO flags to
+>> allow write-through (i.e. non-blocking IO completions) to use inline
+>> completions.
+>>
+>> In __iomap_dio_rw():
+>>
+>> +    /* Always try to complete inline. */
+>> +    dio->flags |= IOMAP_DIO_INLINE_COMP;
+>>     if (iov_iter_rw(iter) == READ) {
+>> -               /* reads can always complete inline */
+>> -               dio->flags |= IOMAP_DIO_INLINE_COMP;
+>> ....
+>>
+>>     } else {
+>> +        /* Always try write-through semantics. If we can't
+>> +         * use writethough, it will be disabled along with
+>> +         * IOMAP_DIO_INLINE_COMP before dio completion is run
+>> +         * so it can be deferred to a task completion context
+>> +         * appropriately.
+>> +         */
+>> +               dio->flags |= IOMAP_DIO_WRITE | IOMAP_DIO_WRITE_THROUGH;
 > 
-> Details are shown as following:
+> There is a behavior change here, if we set IOMAP_DIO_WRITE_THROUGH 
+> unconditionally, non-datasync IO will be set with REQ_FUA, which means 
+> that device will flush writecache for each IO, will it affect the 
+> performance in non-sync dio case?
+>>         iomi.flags |= IOMAP_WRITE;
+>> -               dio->flags |= IOMAP_DIO_WRITE;
+>> .....
+>>         /* for data sync or sync, we need sync completion processing */
+>>                  if (iocb_is_dsync(iocb)) {
+>>                          dio->flags |= IOMAP_DIO_NEED_SYNC;
+>>
+>> -                      /*
+>> -                       * For datasync only writes, we optimistically 
+>> try using
+>> -                       * WRITE_THROUGH for this IO. This flag 
+>> requires either
+>> -                       * FUA writes through the device's write cache, 
+>> or a
+>> -                       * normal write to a device without a volatile 
+>> write
+>> -                       * cache. For the former, Any non-FUA write 
+>> that occurs
+>> -                       * will clear this flag, hence we know before 
+>> completion
+>> -                       * whether a cache flush is necessary.
+>> -                       */
+>> -                       if (!(iocb->ki_flags & IOCB_SYNC))
+>> -                               dio->flags |= IOMAP_DIO_WRITE_THROUGH;
+>> +            * For sync writes we know we are going to need
+>> +            * blocking completion processing, so turn off
+>> +            * writethrough now.
+>> +            */
+>>             if (iocb->ki_flags & IOCB_SYNC) {
+>>                 dio->flags &= ~(IOMAP_DIO_WRITE_THROUGH |
+>>                         IOMAP_DIO_INLINE_COMP);
+>>             }
+>>                  }
+>>
 > 
-> 0. Given a file with i_size=4096 with one mapped block
-> 1. Write block no 1, blocks 1~3 are preallocated.
->     ext4_ext_map_blocks
->      ext4_mb_normalize_request
->       size = 16 * 1024
->       size = end - start // Allocate 3 blocks (bs = 4096)
->      ext4_mb_regular_allocator
->       ext4_mb_regular_allocator
->       ext4_mb_regular_allocator
->       ext4_mb_use_inode_pa
->        pa->pa_free -= len // 3 - 1 = 2
-> 2. Extent buffer head is written failed, es cache and buffer head are
->     reclaimed.
-> 3. Write blocks 1~3
->     ext4_ext_map_blocks
->      newex.ee_len = 3
->      ext4_ext_check_overlap // Find nothing, there should have been block 1
->      allocated = map->m_len  // 3
->      ext4_mb_new_blocks
->       ext4_mb_use_preallocated
->        ext4_mb_use_inode_pa
->         BUG_ON(pa->pa_free < len) // 2 < 3!
+> [...]
+>>
+>> However, this does mean that any spinlock taken in the ->end_io()
+>> callbacks now needs to be irq safe. e.g. in xfs_dio_write_end_io()
+>> the spinlock protection around inode size updates will need to use
+>> an irq safe locking, as will the locking in the DIO submission path
+>> that it serialises against in xfs_file_write_checks(). That probably
+>> is best implemented as a separate spinlock.
+>>
+>> There will also be other filesystems that need to set IOMAP_F_DIRTY
+>> unconditionally (e.g. zonefs) because they always take blocking
+>> locks in their ->end_io callbacks and so must always run in task
+>> context...
+> Should we add a new flag(eg. IOMAP_F_ENDIO_IRQ ?) to indicate that the 
+> endio cannot be done under irq? Because I think IOMAP_F_DIRTY means that 
+> the metadata needs to be written, if we add a new semantics(endio must 
+> be done in defered work) for this flag, the code will looks a little 
+> complicated.
 > 
-> Fix it by adding validation checking for inode pa. If invalid pa is
-> detected, stop using inode preallocation, drop invalid pa to avoid it
-> being used again, mark group block bitmap as corrupted to avoid allocating
-> from the erroneous group.
 > 
-> Fetch a reproducer in Link.
-> 
-> Cc: stable@vger.kernel.org
-> Link: https://bugzilla.kernel.org/show_bug.cgi?id=218576
-> Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->   fs/ext4/mballoc.c | 128 +++++++++++++++++++++++++++++++++++-----------
->   1 file changed, 98 insertions(+), 30 deletions(-)
-
-Add Jan.
+> .
 
 
