@@ -1,114 +1,199 @@
-Return-Path: <linux-ext4+bounces-1602-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1603-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3D3B8790FB
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 10:30:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 41C3C87920D
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 11:31:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 537FC1F22E28
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 09:30:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD4C41F2345D
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 10:31:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CDD78280;
-	Tue, 12 Mar 2024 09:29:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 064BB54FA1;
+	Tue, 12 Mar 2024 10:31:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="sbpwajHY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="bG8jPD7s";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="sbpwajHY";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="bG8jPD7s"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE09078288
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Mar 2024 09:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D86102572;
+	Tue, 12 Mar 2024 10:31:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710235771; cv=none; b=PGcthl/cMbMwv4HpT8kz2KeQA/ggIvOOfza52RzmMqFqcqQc3bo1O70ugDPl+Dqa5ePawiCVoFI97BrgU74S7yuV0fZHZ2RyOtGPVugOPeV/Z3Vpy4A7AEOneD/8Lvw/9dGG+nINPNnZxvlU6vBZ1arYgsyB4t7SDlm2gDdNhwc=
+	t=1710239473; cv=none; b=lVVUzfn5nEI8zIREf4fUJ839D2H3YX3D1p6dQwzhsI0k2AbnSWVfV3uTK39EP8r1Hr0khHZ9rJ1xI83Wq+N/xo5e83MKnBV/OUn7MEsyF4GQxtnDuv+vOjN30V64cma6J64PtOaWA0nK4DkUdKr7O40rN17yW3kpoovk/9fAjoY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710235771; c=relaxed/simple;
-	bh=ehWpkfkMr4Exik6vYYe2yGX8sbZqG5YleARftCleK0U=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=nmH2oR3vOFaiZ9qx/32IBpBSsCUM62hpBUzImS11Bd3HqyNJ5ZqLd5u6+zhhQ0Y1+AKtV/wPBH2pl+aE9iDHbTalc16Oum3kMJNw71oCwVYWawzRBRmE1OgKFT65etrcJtlIuzcFhUcs4hT+GYED9Ny53g0O38uZPLqfQmk+GcM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c8a98e52b5so236741139f.1
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Mar 2024 02:29:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710235769; x=1710840569;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=XFetsjEr0kUioGW5XrIiMJoGBxEPtRzAwYLRDfXTaMY=;
-        b=IgXwvYtwhxn3D0LdQ5o2tR+01zOT6askq3iGv8Cih91sxdj+0OQBU704k30zW4qCxp
-         nMWtBOE6rgGPGs6mSphbUKhU8vmmPjqguCHDu4bGSGLU1GH/a1IrD4kDNZE6LwftQ0G5
-         4PMlvYnXjorhmtlNhYVsPoewbahNmR+yQHU4jyjEgu4CwLVWieilGYLlR6mAmv43Tdf8
-         cJVuFyOgKQXDoikJLoI/XeUPA+TMan7QLpFqK/BMS2KXWy21SOHjRtJpLD7Poy08cysf
-         vujbEsNwnRRwt+q3+Lkk/IVqmbM31LnAwatxoH9ng6qR2qdJgatHPOpLQO2njsln55WL
-         DpJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXPObZAuEky3hB+ZA1lEkFHcr8hNLRzmG5AQV8QNXxsXwtD29ODDI0HqTS1EPaYOm+XPNi8p1QapJ2OIpVGSrmeLbR3By7pd8RhUg==
-X-Gm-Message-State: AOJu0YzlVwMjuPywqmlDV0rTRnDf7t0jqFLNUcGDjuAH+ARCeXsDcDtH
-	QjFh/8HhvnxZf54L+mqW2ge6jhIcxWtxj8vnTHLlO5Ul08yvUfc9w4mO9gF4R9rAdaAL/Y3qHq1
-	z04A+8/wliH7FRt2adb2JvuXtaFi45bG4LGk+TWpjQL5mJs74SZXXliA=
-X-Google-Smtp-Source: AGHT+IHhz/Axrt0zZCKf3PniY1Mh1aydPtxkbDwqNPaTDtF0sB8pBoy7STMPAKzoXmjYPCvamqPfzoT6Mma8+3/tz7bzOG/dk9wy
+	s=arc-20240116; t=1710239473; c=relaxed/simple;
+	bh=oVUL+dBKPkx7whFrUnaDiNXKFRtCaIYHoGoThqj/yr0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=NkAFsc2E7tDGFW/5/am1lSMmXZ38+fsY4EaFP8wxjvelnmLRJ7JvCjF5TVYPgxNJOHPXMiGrYPscG39+eAryZup0JZMMGhunJoPazts+kUetWkLTlxRZF2vB+99AfalUU2KnH9rr+OJqrsze6U9Ui1g30m4p2eQ9LMafA8l4cyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=sbpwajHY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=bG8jPD7s; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=sbpwajHY; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=bG8jPD7s; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0E2BA21B2F;
+	Tue, 12 Mar 2024 10:31:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710239470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3g+9XDNAwrGk3S9VJmZo4QqhJtERU4mDvEOCPEzW4NE=;
+	b=sbpwajHYnwHRMCqlSIkDUAN1/WurUClOQDc/Wj3aeyHJE+ihctUMvLjr9os6AMsVHeQxGM
+	oeN139zVyoSVrReO7S/OlhL1WKshW+Thq2auIK8Ef+12ym4hHx/9se9FFCjFVI5N1YhNqQ
+	NHo3tgCE66TadWUzcUb8VUxKw4Ggy5c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710239470;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3g+9XDNAwrGk3S9VJmZo4QqhJtERU4mDvEOCPEzW4NE=;
+	b=bG8jPD7s+P/CqQVv0b+NqS7Z8e091PsGQdV+t2WV916clig/B0VUNGklGKBgcpy7BnPWvI
+	BRJuQxJmze0IKRCQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710239470; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3g+9XDNAwrGk3S9VJmZo4QqhJtERU4mDvEOCPEzW4NE=;
+	b=sbpwajHYnwHRMCqlSIkDUAN1/WurUClOQDc/Wj3aeyHJE+ihctUMvLjr9os6AMsVHeQxGM
+	oeN139zVyoSVrReO7S/OlhL1WKshW+Thq2auIK8Ef+12ym4hHx/9se9FFCjFVI5N1YhNqQ
+	NHo3tgCE66TadWUzcUb8VUxKw4Ggy5c=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710239470;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=3g+9XDNAwrGk3S9VJmZo4QqhJtERU4mDvEOCPEzW4NE=;
+	b=bG8jPD7s+P/CqQVv0b+NqS7Z8e091PsGQdV+t2WV916clig/B0VUNGklGKBgcpy7BnPWvI
+	BRJuQxJmze0IKRCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 43E7613795;
+	Tue, 12 Mar 2024 10:31:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pxc0De0u8GW7TAAAD6G6ig
+	(envelope-from <lhenriques@suse.de>); Tue, 12 Mar 2024 10:31:09 +0000
+Received: from localhost (brahms.olymp [local])
+	by brahms.olymp (OpenSMTPD) with ESMTPA id a69ac89a;
+	Tue, 12 Mar 2024 10:31:08 +0000 (UTC)
+From: Luis Henriques <lhenriques@suse.de>
+To: Christian Brauner <brauner@kernel.org>
+Cc: Miklos Szeredi <miklos@szeredi.hu>,  Theodore Ts'o <tytso@mit.edu>,
+  Andreas Dilger <adilger.kernel@dilger.ca>,  Alexander Viro
+ <viro@zeniv.linux.org.uk>,  Jan Kara <jack@suse.cz>,  Amir Goldstein
+ <amir73il@gmail.com>,  linux-ext4@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-unionfs@vger.kernel.org,
+  linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
+ parameters
+In-Reply-To: <20240312-orten-erbsen-2105c134762e@brauner> (Christian Brauner's
+	message of "Tue, 12 Mar 2024 09:47:52 +0100")
+References: <20240307160225.23841-1-lhenriques@suse.de>
+	<20240307160225.23841-4-lhenriques@suse.de>
+	<CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
+	<87le6p6oqe.fsf@suse.de>
+	<CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
+	<20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
+	<CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
+	<20240312-orten-erbsen-2105c134762e@brauner>
+Date: Tue, 12 Mar 2024 10:31:08 +0000
+Message-ID: <87h6hbhhcj.fsf@brahms.olymp>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1506:b0:476:d5dc:b729 with SMTP id
- b6-20020a056638150600b00476d5dcb729mr93611jat.4.1710235768831; Tue, 12 Mar
- 2024 02:29:28 -0700 (PDT)
-Date: Tue, 12 Mar 2024 02:29:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007bfda60613734bdf@google.com>
-Subject: [syzbot] Monthly ext4 report (Mar 2024)
-From: syzbot <syzbot+list9a35871b40c53fa1b44b@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[4];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-0.997];
+	 RCPT_COUNT_SEVEN(0.00)[11];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_LAST(0.00)[];
+	 FREEMAIL_CC(0.00)[szeredi.hu,mit.edu,dilger.ca,zeniv.linux.org.uk,suse.cz,gmail.com,vger.kernel.org];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-Hello ext4 maintainers/developers,
+Christian Brauner <brauner@kernel.org> writes:
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+> On Mon, Mar 11, 2024 at 03:39:39PM +0100, Miklos Szeredi wrote:
+>> On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wro=
+te:
+>>=20
+>> > Yeah, so with that I do agree. But have you read my reply to the other
+>> > thread? I'd like to hear your thoughs on that. The problem is that
+>> > mount(8) currently does:
+>> >
+>> > fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) =3D -1 EINVAL (In=
+valid argument)
+>> >
+>> > for both -o usrjquota and -o usrjquota=3D
+>>=20
+>> For "-o usrjquota" this seems right.
+>>=20
+>> For "-o usrjquota=3D" it doesn't.  Flags should never have that "=3D", so
+>> this seems buggy in more than one ways.
+>>=20
+>> > So we need a clear contract with userspace or the in-kernel solution
+>> > proposed here. I see the following options:
+>> >
+>> > (1) Userspace must know that mount options such as "usrjquota" that can
+>> >     have no value must be specified as "usrjquota=3D" when passed to
+>> >     mount(8). This in turn means we need to tell Karel to update
+>> >     mount(8) to recognize this and infer from "usrjquota=3D" that it m=
+ust
+>> >     be passed as FSCONFIG_SET_STRING.
+>>=20
+>> Yes, this is what I'm thinking.  Of course this only works if there
+>> are no backward compatibility issues, if "-o usrjquota" worked in the
+>> past and some systems out there relied on this, then this is not
+>> sufficient.
+>
+> Ok, I spoke to Karel and filed:
+>
+> https://github.com/util-linux/util-linux/issues/2837
+>
+> So this should get sorted soon.
 
-During the period, 1 new issues were detected and 0 were fixed.
-In total, 24 issues are still open and 130 have been fixed so far.
+OK, so I if I understand it correctly I can drop all these changes as
+there's nothing else to be done from the kernel, right?
 
-Some of the still happening issues:
+(I'll still send out a patch to move the fsparam_string_empty() helper to
+a generic header.)
 
-Ref  Crashes Repro Title
-<1>  8629    Yes   WARNING: locking bug in ext4_move_extents
-                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
-<2>  697     Yes   WARNING: locking bug in __ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
-<3>  401     Yes   WARNING: locking bug in ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
-<4>  173     No    possible deadlock in evict (3)
-                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
-<5>  81      No    WARNING in ext4_write_inode (2)
-                   https://syzkaller.appspot.com/bug?extid=748cc361874fca7d33cc
-<6>  23      No    possible deadlock in ext4_da_get_block_prep
-                   https://syzkaller.appspot.com/bug?extid=a86b193140e10df1aff2
-<7>  22      No    possible deadlock in start_this_handle (4)
-                   https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
-<8>  18      Yes   INFO: rcu detected stall in sys_unlink (3)
-                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
-<9>  18      Yes   kernel BUG in __ext4_journal_stop
-                   https://syzkaller.appspot.com/bug?extid=bdab24d5bf96d57c50b0
-<10> 7       Yes   kernel BUG in ext4_write_inline_data_end (2)
-                   https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
+And thanks everyone for your reviews.
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Cheers,
+--=20
+Lu=C3=ADs
 
