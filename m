@@ -1,176 +1,114 @@
-Return-Path: <linux-ext4+bounces-1599-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1600-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E30D2878851
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 19:54:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A65878FF3
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 09:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8168C1F21525
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Mar 2024 18:54:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 14B7AB21208
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 08:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D069858229;
-	Mon, 11 Mar 2024 18:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A18E677F1F;
+	Tue, 12 Mar 2024 08:47:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yl3wj+Gr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aQ4JHdPE";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yl3wj+Gr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="aQ4JHdPE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EWAKYj9H"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5877E58217
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Mar 2024 18:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1507D77F0A;
+	Tue, 12 Mar 2024 08:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710182796; cv=none; b=g3rEeYqrRlKFUxLysAGKTG5NRElf1nq9yl8BZuDsf9SEexOhuI2FADTanfa4kwPes0ZnC2ygXWlRCXVec5uTquQtoultzrx3+1dv728vwCCihk/QfPfGz3nu6G8dy7L35vWA7CjolQhqlL08c4Dmjw8d8oIz13//DRTbzf0DqZA=
+	t=1710233278; cv=none; b=FDtTJOdkVn90V+P/2dRqVEV67wkQ471IykrA+MQHo5IyKx8tpBP1oavz/e2hwjStOinmFL8gILTVRCRyBZM5sxIyBRTESIjECqSdiIW3Vm9D8M2saUIvkdgdfPFhGhJvHHEJVeRdY8TMVuTLa8YNY5vwkvbAm9NIMND6bv5PZ/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710182796; c=relaxed/simple;
-	bh=iIJu6VClFmpMaYfjO1EcyezbYRVbfl3WJA5BI2WOS6Y=;
+	s=arc-20240116; t=1710233278; c=relaxed/simple;
+	bh=USx0cA5m8QHpw1Pr8TQY0RJPdw62miN7yco5K9ORroc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ex/IZIfNQHzAyq7FUyHDiDwwEfUA00eomDhpYslbShC/zhc6hiBJq2baAsYmgo9kbNVcQHoNOPcZzzZtMUxORBcszTc0IDeBejShd4m8AftimDj2jd9F2if8kvN7Q6IA1GDSeu1na2jesPUmRMgM7aI6Zx8aRyHedBKLZ8VGyAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yl3wj+Gr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aQ4JHdPE; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yl3wj+Gr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=aQ4JHdPE; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4087B5C9EF;
-	Mon, 11 Mar 2024 18:46:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710182791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WiQxqgWogAFp/GY7O8rn4PPuWeX7LuuENSQMFjC0nkQ=;
-	b=yl3wj+GrLC4h2LpaKbZU/rxgYgUTxVuFdYym4Uj+TLpdGjhSDmL1rkHdKWZ8/tFRmnAIm2
-	5sc4dIdf4atU4fJ1x9ZXu2U4W7vva1bAnZjoimE+5H91fSDwTyo/mACOm/lvirg/rTi7pS
-	MYTyR1nXVOdT6K6qlS6ruvoBnqR8AuI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710182791;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WiQxqgWogAFp/GY7O8rn4PPuWeX7LuuENSQMFjC0nkQ=;
-	b=aQ4JHdPErTpxZ53wEPtYAuGCZYR2PFSqJUiS6W9AZLrsobW3tgZ3ce99z6r8zgXcNerNO8
-	h8FPU7evtY/vteBA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710182791; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WiQxqgWogAFp/GY7O8rn4PPuWeX7LuuENSQMFjC0nkQ=;
-	b=yl3wj+GrLC4h2LpaKbZU/rxgYgUTxVuFdYym4Uj+TLpdGjhSDmL1rkHdKWZ8/tFRmnAIm2
-	5sc4dIdf4atU4fJ1x9ZXu2U4W7vva1bAnZjoimE+5H91fSDwTyo/mACOm/lvirg/rTi7pS
-	MYTyR1nXVOdT6K6qlS6ruvoBnqR8AuI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710182791;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WiQxqgWogAFp/GY7O8rn4PPuWeX7LuuENSQMFjC0nkQ=;
-	b=aQ4JHdPErTpxZ53wEPtYAuGCZYR2PFSqJUiS6W9AZLrsobW3tgZ3ce99z6r8zgXcNerNO8
-	h8FPU7evtY/vteBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 364A113695;
-	Mon, 11 Mar 2024 18:46:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iNU+DYdR72XOQQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 11 Mar 2024 18:46:31 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C3ED2A080A; Mon, 11 Mar 2024 19:46:30 +0100 (CET)
-Date: Mon, 11 Mar 2024 19:46:30 +0100
-From: Jan Kara <jack@suse.cz>
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 2/2] ext4: Remove PAGE_MASK dependency on
- mpage_submit_folio
-Message-ID: <20240311184630.lhlwntksaoskcco6@quack3>
-References: <cff4953b5c9306aba71e944ab176a5d396b9a1b7.1709182250.git.ritesh.list@gmail.com>
- <d6eadb090334ea49ceef4e643b371fabfcea328f.1709182251.git.ritesh.list@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ErcfkoKr2o70Jkbr6FOA6bK/zNJt0b7UzIr30VCFAQ2xIGsrW2lz3/TTlJZc8TSa/L2F2L21Gddl/y5b8n4QW0N+WJp1G/JOP8BE8odr8yiXjiEVXmbaUGyPlXfvg88M/1hv/ZoJo9TKk/O1Xk46OxPmdUR42Q4ZZYdNIu+cSTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EWAKYj9H; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D66D3C433F1;
+	Tue, 12 Mar 2024 08:47:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710233277;
+	bh=USx0cA5m8QHpw1Pr8TQY0RJPdw62miN7yco5K9ORroc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EWAKYj9H+Jl9xOXothDdY5tMH9XlzGG4elGZJeXi/nnLM/yVM/KEmOdv2iDrF/Urz
+	 66jfhi5uf2BQm1imtI3BPT/Rdt0h1eP00J6xHGyNpbJgjqXrcvx18qyh270VBRWddy
+	 lFh5TtVBKFUusVgjEyO5JVaEaE+LChqLJzoF+zSeas7zXX7jtgZWhg7y3Ojj4RwHmt
+	 jrwzieTtOKzCXv4pE0qCqQW9EU4MNb1jWTG/8hzGK3XmkLuNelSUUNh5Qm52Z65N1V
+	 tDH8K20rvOnEr96pQJV1W8ncB3+Oh8lbJK6qvBCzfQEA5wRE40OzA/5YWBrwkKGmmc
+	 PUoY8wqM/HY4g==
+Date: Tue, 12 Mar 2024 09:47:52 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Miklos Szeredi <miklos@szeredi.hu>
+Cc: Luis Henriques <lhenriques@suse.de>, Theodore Ts'o <tytso@mit.edu>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Jan Kara <jack@suse.cz>, Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
+ parameters
+Message-ID: <20240312-orten-erbsen-2105c134762e@brauner>
+References: <20240307160225.23841-1-lhenriques@suse.de>
+ <20240307160225.23841-4-lhenriques@suse.de>
+ <CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
+ <87le6p6oqe.fsf@suse.de>
+ <CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
+ <20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
+ <CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <d6eadb090334ea49ceef4e643b371fabfcea328f.1709182251.git.ritesh.list@gmail.com>
-X-Spamd-Bar: /
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=yl3wj+Gr;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=aQ4JHdPE
-X-Spamd-Result: default: False [-0.78 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 TO_DN_SOME(0.00)[];
-	 DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.97)[86.87%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[3];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,suse.cz:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Level: 
-X-Spam-Score: -0.78
-X-Rspamd-Queue-Id: 4087B5C9EF
-X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+In-Reply-To: <CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
 
-On Thu 29-02-24 11:40:14, Ritesh Harjani (IBM) wrote:
-> This patch simply removes the PAGE_MASK dependency since
-> mpage_submit_folio() is already converted to work with folio.
+On Mon, Mar 11, 2024 at 03:39:39PM +0100, Miklos Szeredi wrote:
+> On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wrote:
 > 
-> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/inode.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+> > Yeah, so with that I do agree. But have you read my reply to the other
+> > thread? I'd like to hear your thoughs on that. The problem is that
+> > mount(8) currently does:
+> >
+> > fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) = -1 EINVAL (Invalid argument)
+> >
+> > for both -o usrjquota and -o usrjquota=
 > 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index bab9223d94ac..e8b0773e5d2d 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1865,7 +1865,7 @@ static int mpage_submit_folio(struct mpage_da_data *mpd, struct folio *folio)
->  	len = folio_size(folio);
->  	if (folio_pos(folio) + len > size &&
->  	    !ext4_verity_in_progress(mpd->inode))
-> -		len = size & ~PAGE_MASK;
-> +		len = size & (len - 1);
->  	err = ext4_bio_write_folio(&mpd->io_submit, folio, len);
->  	if (!err)
->  		mpd->wbc->nr_to_write--;
-> -- 
-> 2.39.2
+> For "-o usrjquota" this seems right.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> For "-o usrjquota=" it doesn't.  Flags should never have that "=", so
+> this seems buggy in more than one ways.
+> 
+> > So we need a clear contract with userspace or the in-kernel solution
+> > proposed here. I see the following options:
+> >
+> > (1) Userspace must know that mount options such as "usrjquota" that can
+> >     have no value must be specified as "usrjquota=" when passed to
+> >     mount(8). This in turn means we need to tell Karel to update
+> >     mount(8) to recognize this and infer from "usrjquota=" that it must
+> >     be passed as FSCONFIG_SET_STRING.
+> 
+> Yes, this is what I'm thinking.  Of course this only works if there
+> are no backward compatibility issues, if "-o usrjquota" worked in the
+> past and some systems out there relied on this, then this is not
+> sufficient.
+
+Ok, I spoke to Karel and filed:
+
+https://github.com/util-linux/util-linux/issues/2837
+
+So this should get sorted soon.
+
+> > https://github.com/brauner/man-pages-md/blob/main/fsconfig.md
+> 
+> What's the plan with these?  It would be good if "man fsconfig" would
+> finally work.
+
+Yeah, I have this on my todo list but it hasn't been high-prio for me
+and it is just so so nice to update the manpages in markdown.
 
