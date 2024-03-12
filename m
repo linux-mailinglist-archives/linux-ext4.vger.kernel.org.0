@@ -1,124 +1,114 @@
-Return-Path: <linux-ext4+bounces-1601-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1602-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DB6D3878FFE
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 09:51:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3D3B8790FB
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 10:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 185AE1C21583
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 08:51:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 537FC1F22E28
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Mar 2024 09:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F01B777F11;
-	Tue, 12 Mar 2024 08:50:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GkTfJF0x"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84CDD78280;
+	Tue, 12 Mar 2024 09:29:31 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65B876997B;
-	Tue, 12 Mar 2024 08:50:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE09078288
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Mar 2024 09:29:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710233458; cv=none; b=bMm4eYorRAKv8drpXfxIJLrm+t+tVIAwra9At5Ado5qcHqyOQO7+ZTH6JPfQ1HVSAOrw8TaNfKfezxQR8AnQuS5+u9ZWYxQ/ZiVehohk6OBJTDHLyooYUA6wydcvmUpfSL1kmeKNwYCnn44O55gvaZxzz1ztpY1oyOCBjIX2zJ4=
+	t=1710235771; cv=none; b=PGcthl/cMbMwv4HpT8kz2KeQA/ggIvOOfza52RzmMqFqcqQc3bo1O70ugDPl+Dqa5ePawiCVoFI97BrgU74S7yuV0fZHZ2RyOtGPVugOPeV/Z3Vpy4A7AEOneD/8Lvw/9dGG+nINPNnZxvlU6vBZ1arYgsyB4t7SDlm2gDdNhwc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710233458; c=relaxed/simple;
-	bh=UkEHwkFP0GJ42KgigzEfzH5VwwhLCveVEoSZfymiQ7Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=r59yekzAP2gr7C15HvzRvxvdq3+Ysx4YQGpAtEh89XpCXZrCtB0jxuwlimIfYEcTuxx43mL8S5pMEgx/iKpyRRfg7Lutb/h/v0Dd3eE6DoS28oyVtwc0aRkWgPKMU395o1I0B/E1/MHkYp2LHUWIwxWCmqbe5K5aD9L0z32Lvmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GkTfJF0x; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEC3EC433C7;
-	Tue, 12 Mar 2024 08:50:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710233457;
-	bh=UkEHwkFP0GJ42KgigzEfzH5VwwhLCveVEoSZfymiQ7Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=GkTfJF0x5UxRgfSyApu4CDiDhrydZ3Zrc4DOd5q55HaVgK7X6kzKBcCWgc/oGyF80
-	 OwBnxAh/BNFL52qSaDo5H6jvVtoTm7pNGMoW5IjEyBaGgvYz4zuTXkYwZiAbu60cR1
-	 Oz2eZYI00wzaFViL+zuME5oxOv9bvtjPejiH6qAP3LBXtYibsYqG7pcYiZh8jd0lqR
-	 KHnrLnU1UavaZOvzTDiw3M7K1eR7RFML0kApzy32kIZW9SZ0dVO1PA/uTizKLyKRg9
-	 rjC6sHtQphD5LTZ4PUp4zxxG4VwlFLyknhRX6owfpn0r/C3t+4u/CIbVNdTxLIyxm6
-	 byTbLk3UW5xkQ==
-Date: Tue, 12 Mar 2024 09:50:46 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: Miklos Szeredi <miklos@szeredi.hu>, 
-	Luis Henriques <lhenriques@suse.de>, Theodore Ts'o <tytso@mit.edu>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Amir Goldstein <amir73il@gmail.com>, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-unionfs@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] ovl: fix the parsing of empty string mount
- parameters
-Message-ID: <20240312-gaukeln-mehrpolig-8e8fb77f221d@brauner>
-References: <20240307160225.23841-1-lhenriques@suse.de>
- <20240307160225.23841-4-lhenriques@suse.de>
- <CAJfpegtQSi0GFzUEDqdeOAq7BN2KvDV8i3oBFvPOCKfJJOBd2g@mail.gmail.com>
- <87le6p6oqe.fsf@suse.de>
- <CAJfpeguN9nMJGJzx8sgwP=P9rJFVkYF5rVZOi_wNu7mj_jfBsA@mail.gmail.com>
- <20240311-weltmeere-gesiegt-798c4201c3f8@brauner>
- <CAJfpegsn-jMY2J8Wd2Q9qmZFqxR6fAwZ4auoK+-uyxaK+F-0rw@mail.gmail.com>
- <20240311180127.4qdr6ln2xf6vviu3@quack3>
+	s=arc-20240116; t=1710235771; c=relaxed/simple;
+	bh=ehWpkfkMr4Exik6vYYe2yGX8sbZqG5YleARftCleK0U=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=nmH2oR3vOFaiZ9qx/32IBpBSsCUM62hpBUzImS11Bd3HqyNJ5ZqLd5u6+zhhQ0Y1+AKtV/wPBH2pl+aE9iDHbTalc16Oum3kMJNw71oCwVYWawzRBRmE1OgKFT65etrcJtlIuzcFhUcs4hT+GYED9Ny53g0O38uZPLqfQmk+GcM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c8a98e52b5so236741139f.1
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Mar 2024 02:29:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710235769; x=1710840569;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XFetsjEr0kUioGW5XrIiMJoGBxEPtRzAwYLRDfXTaMY=;
+        b=IgXwvYtwhxn3D0LdQ5o2tR+01zOT6askq3iGv8Cih91sxdj+0OQBU704k30zW4qCxp
+         nMWtBOE6rgGPGs6mSphbUKhU8vmmPjqguCHDu4bGSGLU1GH/a1IrD4kDNZE6LwftQ0G5
+         4PMlvYnXjorhmtlNhYVsPoewbahNmR+yQHU4jyjEgu4CwLVWieilGYLlR6mAmv43Tdf8
+         cJVuFyOgKQXDoikJLoI/XeUPA+TMan7QLpFqK/BMS2KXWy21SOHjRtJpLD7Poy08cysf
+         vujbEsNwnRRwt+q3+Lkk/IVqmbM31LnAwatxoH9ng6qR2qdJgatHPOpLQO2njsln55WL
+         DpJw==
+X-Forwarded-Encrypted: i=1; AJvYcCXPObZAuEky3hB+ZA1lEkFHcr8hNLRzmG5AQV8QNXxsXwtD29ODDI0HqTS1EPaYOm+XPNi8p1QapJ2OIpVGSrmeLbR3By7pd8RhUg==
+X-Gm-Message-State: AOJu0YzlVwMjuPywqmlDV0rTRnDf7t0jqFLNUcGDjuAH+ARCeXsDcDtH
+	QjFh/8HhvnxZf54L+mqW2ge6jhIcxWtxj8vnTHLlO5Ul08yvUfc9w4mO9gF4R9rAdaAL/Y3qHq1
+	z04A+8/wliH7FRt2adb2JvuXtaFi45bG4LGk+TWpjQL5mJs74SZXXliA=
+X-Google-Smtp-Source: AGHT+IHhz/Axrt0zZCKf3PniY1Mh1aydPtxkbDwqNPaTDtF0sB8pBoy7STMPAKzoXmjYPCvamqPfzoT6Mma8+3/tz7bzOG/dk9wy
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240311180127.4qdr6ln2xf6vviu3@quack3>
+X-Received: by 2002:a05:6638:1506:b0:476:d5dc:b729 with SMTP id
+ b6-20020a056638150600b00476d5dcb729mr93611jat.4.1710235768831; Tue, 12 Mar
+ 2024 02:29:28 -0700 (PDT)
+Date: Tue, 12 Mar 2024 02:29:28 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007bfda60613734bdf@google.com>
+Subject: [syzbot] Monthly ext4 report (Mar 2024)
+From: syzbot <syzbot+list9a35871b40c53fa1b44b@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 11, 2024 at 07:01:27PM +0100, Jan Kara wrote:
-> On Mon 11-03-24 15:39:39, Miklos Szeredi wrote:
-> > On Mon, 11 Mar 2024 at 14:25, Christian Brauner <brauner@kernel.org> wrote:
-> > 
-> > > Yeah, so with that I do agree. But have you read my reply to the other
-> > > thread? I'd like to hear your thoughs on that. The problem is that
-> > > mount(8) currently does:
-> > >
-> > > fsconfig(3, FSCONFIG_SET_FLAG, "usrjquota", NULL, 0) = -1 EINVAL (Invalid argument)
-> > >
-> > > for both -o usrjquota and -o usrjquota=
-> > 
-> > For "-o usrjquota" this seems right.
-> > 
-> > For "-o usrjquota=" it doesn't.  Flags should never have that "=", so
-> > this seems buggy in more than one ways.
-> > 
-> > > So we need a clear contract with userspace or the in-kernel solution
-> > > proposed here. I see the following options:
-> > >
-> > > (1) Userspace must know that mount options such as "usrjquota" that can
-> > >     have no value must be specified as "usrjquota=" when passed to
-> > >     mount(8). This in turn means we need to tell Karel to update
-> > >     mount(8) to recognize this and infer from "usrjquota=" that it must
-> > >     be passed as FSCONFIG_SET_STRING.
-> > 
-> > Yes, this is what I'm thinking.  Of course this only works if there
-> > are no backward compatibility issues, if "-o usrjquota" worked in the
-> > past and some systems out there relied on this, then this is not
-> > sufficient.
-> 
-> No, "-o usrjquota" never worked and I'm inclined to keep refusing this
-> variant as IMHO it is confusing.
+Hello ext4 maintainers/developers,
 
-Tbh, I'm not too sure that having empty string options was a good idea
-even though it can be useful. I think it would've been better if we had
-used a specific phantom value to signify this. But yes, I just filed an
-issue on util-linux to get this fixed. I think we should also
-util-linux and Karel's up for handling this.
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-> 
-> > > In any case, we need to document what we want:
-> > >
-> > > https://github.com/brauner/man-pages-md/blob/main/fsconfig.md
-> > 
-> > What's the plan with these?  It would be good if "man fsconfig" would
-> > finally work.
-> 
-> Yes, merging these into official manpages would be nice.
+During the period, 1 new issues were detected and 0 were fixed.
+In total, 24 issues are still open and 130 have been fixed so far.
 
-I'll try to get around to it.
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  8629    Yes   WARNING: locking bug in ext4_move_extents
+                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
+<2>  697     Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<3>  401     Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<4>  173     No    possible deadlock in evict (3)
+                   https://syzkaller.appspot.com/bug?extid=dd426ae4af71f1e74729
+<5>  81      No    WARNING in ext4_write_inode (2)
+                   https://syzkaller.appspot.com/bug?extid=748cc361874fca7d33cc
+<6>  23      No    possible deadlock in ext4_da_get_block_prep
+                   https://syzkaller.appspot.com/bug?extid=a86b193140e10df1aff2
+<7>  22      No    possible deadlock in start_this_handle (4)
+                   https://syzkaller.appspot.com/bug?extid=cf0b4280f19be4031cf2
+<8>  18      Yes   INFO: rcu detected stall in sys_unlink (3)
+                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
+<9>  18      Yes   kernel BUG in __ext4_journal_stop
+                   https://syzkaller.appspot.com/bug?extid=bdab24d5bf96d57c50b0
+<10> 7       Yes   kernel BUG in ext4_write_inline_data_end (2)
+                   https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
