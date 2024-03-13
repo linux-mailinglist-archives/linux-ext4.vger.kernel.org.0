@@ -1,98 +1,99 @@
-Return-Path: <linux-ext4+bounces-1607-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1608-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93D9087B0E2
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 20:03:59 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2844787B0E7
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 20:04:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0144B1F23EBE
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 19:03:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 765521F21CF2
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 19:04:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAFD2605CC;
-	Wed, 13 Mar 2024 18:13:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26CAB6BFBA;
+	Wed, 13 Mar 2024 18:14:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="wjV4GhcV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="8hcOaIzC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="juFvqmo5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DPCdJLh9"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rkzru4SG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SigSCt3t";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Rkzru4SG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SigSCt3t"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 45DEA605CA
-	for <linux-ext4@vger.kernel.org>; Wed, 13 Mar 2024 18:13:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C63BA6BFB0
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Mar 2024 18:14:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710353605; cv=none; b=JsKBrPxsEetL7IJSaudq0pNCHE28Ik47fP1KMMTccNvHBbwSK/pIKvVypv0djtsfUXvGUMl1LHOVWwYkRRLQnc5p6bwpgDihoYpguDvSP2WfwrLsKiZvmicFlAyBOHqb5FnyzDcnC1urX4tYjUCWLtUa8lgWek9D0O5DWtG2+tQ=
+	t=1710353688; cv=none; b=Pxm9w5uJ6Yj6pWuLfKeEIhXLNlOBjFp+1EXkcLAAN+IK6wGwCWUT73K4llRWKt1JNDJvLkttT4LqSPyBfN+3eFB+2/1UygB/FwRYgS7kyjJlXZCwFDX4A3ifNz0Mg1qvrsFb4NVf85RZvmbmNLAaWSCtcVPGXXM2xIA+685lYdc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710353605; c=relaxed/simple;
-	bh=tjWv8OVv4VDAUvmm4Sp1QfQ2u3buI82S3iG+A+sCYEM=;
+	s=arc-20240116; t=1710353688; c=relaxed/simple;
+	bh=BANLva09jaSGqHimtTGct7WtSecUwJ2DSe7VDtABGxU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OYF4UyDYiXr0HUIXq1puws6Ze5wufr8JVhW/I52FDOsFk7z7WAJkc1FVJF28AWr1SBIKNxBs+uHibe/CLTJ+5OPSYn81YlM50l0K2YD5sKZtLEP0BQyLLJPwceTWbmhRDxaSfU5PRz5EWwqEqFTUsEWYUCAzo4vxN7kn6m6DCcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=wjV4GhcV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=8hcOaIzC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=juFvqmo5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DPCdJLh9; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=EypjI/5Xce1aFVFX6NaRAudStDkyfyvlbiAyKajsOtA7pvDo2lW8f1SljSa/3bR9SkiLtxiFHhRpKmwP3TLfX5cZfWQAeZMXDj8ULpPrmjBJOfO4GlSPUY8vqghxblc1gutaQY5HBVaDoQA5Ou+NcP5leqDmoyXpcVN4ijNxdSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rkzru4SG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SigSCt3t; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Rkzru4SG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SigSCt3t; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 70F4E1F7A1;
-	Wed, 13 Mar 2024 18:13:19 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BF47421CAB;
+	Wed, 13 Mar 2024 18:14:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710353600; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1710353684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3ufZvLwcVzv82NhqhC6sQviY8/HulsWupAS5LjO+grk=;
-	b=wjV4GhcVz+RynU3Wc/jeWZ7haszSAuMhljQ0MZFZFSGSxCK5RuAhf0ZDFB/77nXozbL81d
-	mSVN87INrjqMcJrUhqRmPA4eHFijgQTalAlHRC1xtoO4KR+xhFOaOMjbR63oJm95xg8pS2
-	y19uX4/bmjnCi6vkqAcUmbQrOVeedbE=
+	bh=O1E9XCa2aZWVC3y2LL8Tf1FxJVNzZKJ6pqhtOyQ/Atk=;
+	b=Rkzru4SGNiWb6kMGz05vnnnZwffvIKkME9Fxw3KFa6CelP2PQe+vus38yvlKvhSi/zxL8O
+	muNCAgInIrcN9TDxHSLO8HhqJA2Cj67f8uZ+UcorDIZhkUxH6YgOM4j+8gjOPLbegYHNi4
+	Tl934DbyYSbQEDvWel51FZB+G30Aox4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710353600;
+	s=susede2_ed25519; t=1710353684;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3ufZvLwcVzv82NhqhC6sQviY8/HulsWupAS5LjO+grk=;
-	b=8hcOaIzCmpk/oIund2IHJXE1elNgLSEuVg6Pjom7BlDwBCgPnUXFAscf1/xEfOMVvq/SLs
-	iT1mGxXzGsZFd5Dg==
+	bh=O1E9XCa2aZWVC3y2LL8Tf1FxJVNzZKJ6pqhtOyQ/Atk=;
+	b=SigSCt3tPZZgDJTGhMABZb7RNb9m15UwJdDd9y5weNlyqibQ/w3IJnwun5TpdZRSTgJ+tp
+	/0T0POXnVX63srBQ==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710353599; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1710353684; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3ufZvLwcVzv82NhqhC6sQviY8/HulsWupAS5LjO+grk=;
-	b=juFvqmo5qa4O2lxbUtDtUrOefN6CJ7Tw+JmBVJieUSekc3NBXpS3Gw3iY4Hhx9ncilnIzz
-	KrC4AEgPvMu53NkRiKlgm2463+DaX8IYwSKkcWSDTn4yluLMkOlKdHHGWJOPzvKZIukbOc
-	rGccS9TRN6yb2KjJDtTrShyIiQzVOHo=
+	bh=O1E9XCa2aZWVC3y2LL8Tf1FxJVNzZKJ6pqhtOyQ/Atk=;
+	b=Rkzru4SGNiWb6kMGz05vnnnZwffvIKkME9Fxw3KFa6CelP2PQe+vus38yvlKvhSi/zxL8O
+	muNCAgInIrcN9TDxHSLO8HhqJA2Cj67f8uZ+UcorDIZhkUxH6YgOM4j+8gjOPLbegYHNi4
+	Tl934DbyYSbQEDvWel51FZB+G30Aox4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710353599;
+	s=susede2_ed25519; t=1710353684;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=3ufZvLwcVzv82NhqhC6sQviY8/HulsWupAS5LjO+grk=;
-	b=DPCdJLh9dTTozGkuPgImY1zHn9m87xnmBlolVYOG1Fv3zSUqFYw2R3zgIHOT/lSRKk3yOZ
-	iLGlcEwcejhjF3DQ==
+	bh=O1E9XCa2aZWVC3y2LL8Tf1FxJVNzZKJ6pqhtOyQ/Atk=;
+	b=SigSCt3tPZZgDJTGhMABZb7RNb9m15UwJdDd9y5weNlyqibQ/w3IJnwun5TpdZRSTgJ+tp
+	/0T0POXnVX63srBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 623671397F;
-	Wed, 13 Mar 2024 18:13:19 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B10C01397F;
+	Wed, 13 Mar 2024 18:14:44 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id SDD0F7/s8WWcLQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 13 Mar 2024 18:13:19 +0000
+	id 0Vw2KxTt8WUBLgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 13 Mar 2024 18:14:44 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E6E6CA07D9; Wed, 13 Mar 2024 19:13:18 +0100 (CET)
-Date: Wed, 13 Mar 2024 19:13:18 +0100
+	id 2C2B9A07D9; Wed, 13 Mar 2024 19:14:44 +0100 (CET)
+Date: Wed, 13 Mar 2024 19:14:44 +0100
 From: Jan Kara <jack@suse.cz>
 To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
 Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>,
 	Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/2] ext4: set FMODE_CAN_ODIRECT instead of a dummy
+Subject: Re: [PATCH 2/2] ext2: set FMODE_CAN_ODIRECT instead of a dummy
  direct_IO method
-Message-ID: <20240313181318.2blrwlbjth34ukps@quack3>
+Message-ID: <20240313181444.3m2px4k74eq3e27y@quack3>
 References: <e5797bb597219a49043e53e4e90aa494b97dc328.1709215665.git.ritesh.list@gmail.com>
+ <94f78492f55c3f421359fb6e0d8fab6e79ea17b2.1709215665.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -101,119 +102,106 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <e5797bb597219a49043e53e4e90aa494b97dc328.1709215665.git.ritesh.list@gmail.com>
+In-Reply-To: <94f78492f55c3f421359fb6e0d8fab6e79ea17b2.1709215665.git.ritesh.list@gmail.com>
 X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=juFvqmo5;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=DPCdJLh9
-X-Spamd-Result: default: False [-1.31 / 50.00];
+X-Spamd-Bar: /
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Rkzru4SG;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=SigSCt3t
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [0.48 / 50.00];
 	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	 TO_DN_SOME(0.00)[];
 	 RCVD_COUNT_THREE(0.00)[3];
 	 DKIM_TRACE(0.00)[suse.cz:+];
 	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
 	 FREEMAIL_TO(0.00)[gmail.com];
 	 FROM_EQ_ENVFROM(0.00)[];
 	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
+	 BAYES_HAM(-0.01)[46.11%];
 	 ARC_NA(0.00)[];
 	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 URIBL_BLOCKED(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,lst.de:email];
 	 FROM_HAS_DN(0.00)[];
 	 RCPT_COUNT_THREE(0.00)[4];
 	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	 TO_MATCH_ENVRCPT_ALL(0.00)[];
 	 TAGGED_RCPT(0.00)[];
 	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
 	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,lst.de:email,suse.cz:email,suse.cz:dkim];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.com:email];
 	 FUZZY_BLOCKED(0.00)[rspamd.com];
 	 MID_RHS_NOT_FQDN(0.50)[];
 	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Score: -1.31
-X-Rspamd-Queue-Id: 70F4E1F7A1
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Score: 0.48
+X-Rspamd-Queue-Id: BF47421CAB
 X-Spam-Flag: NO
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-On Thu 29-02-24 19:54:12, Ritesh Harjani (IBM) wrote:
-> From: Christoph Hellwig <hch@lst.de>
-> 
+On Thu 29-02-24 19:54:13, Ritesh Harjani (IBM) wrote:
 > Since commit a2ad63daa88b ("VFS: add FMODE_CAN_ODIRECT file flag") file
 > systems can just set the FMODE_CAN_ODIRECT flag at open time instead of
 > wiring up a dummy direct_IO method to indicate support for direct I/O.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
-> [RH: Rebased to upstream]
 > Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Looks good! Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+Thanks. I'll take this into my tree once the merge window closes.
 
 								Honza
 
 > ---
-> Stumbled upon [1], while I was trying to enable this flag in ext4_file_open().
-> Looks like it might have slipped through the cracks.
-> Hence sending this patch with Christoph as the author.
-> [1]: https://lore.kernel.org/linux-ext4/20230612053731.585947-1-hch@lst.de/
+>  fs/ext2/file.c  | 8 +++++++-
+>  fs/ext2/inode.c | 2 --
+>  2 files changed, 7 insertions(+), 3 deletions(-)
 > 
->  fs/ext4/file.c  | 2 +-
->  fs/ext4/inode.c | 4 ----
->  2 files changed, 1 insertion(+), 5 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 54d6ff22585c..965febab1d04 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -886,7 +886,7 @@ static int ext4_file_open(struct inode *inode, struct file *filp)
->  	}
->  
->  	filp->f_mode |= FMODE_NOWAIT | FMODE_BUF_RASYNC |
-> -			FMODE_DIO_PARALLEL_WRITE;
-> +			FMODE_DIO_PARALLEL_WRITE | FMODE_CAN_ODIRECT;
->  	return dquot_file_open(inode, filp);
+> diff --git a/fs/ext2/file.c b/fs/ext2/file.c
+> index 4ddc36f4dbd4..10b061ac5bc0 100644
+> --- a/fs/ext2/file.c
+> +++ b/fs/ext2/file.c
+> @@ -302,6 +302,12 @@ static ssize_t ext2_file_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  	return generic_file_write_iter(iocb, from);
 >  }
 >  
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 2ccf3b5e3a7c..60a03b2ca178 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -3530,7 +3530,6 @@ static const struct address_space_operations ext4_aops = {
->  	.bmap			= ext4_bmap,
->  	.invalidate_folio	= ext4_invalidate_folio,
->  	.release_folio		= ext4_release_folio,
+> +static int ext2_file_open(struct inode *inode, struct file *filp)
+> +{
+> +	filp->f_mode |= FMODE_CAN_ODIRECT;
+> +	return dquot_file_open(inode, filp);
+> +}
+> +
+>  const struct file_operations ext2_file_operations = {
+>  	.llseek		= generic_file_llseek,
+>  	.read_iter	= ext2_file_read_iter,
+> @@ -311,7 +317,7 @@ const struct file_operations ext2_file_operations = {
+>  	.compat_ioctl	= ext2_compat_ioctl,
+>  #endif
+>  	.mmap		= ext2_file_mmap,
+> -	.open		= dquot_file_open,
+> +	.open		= ext2_file_open,
+>  	.release	= ext2_release_file,
+>  	.fsync		= ext2_fsync,
+>  	.get_unmapped_area = thp_get_unmapped_area,
+> diff --git a/fs/ext2/inode.c b/fs/ext2/inode.c
+> index 5a4272b2c6b0..6f719d784eb9 100644
+> --- a/fs/ext2/inode.c
+> +++ b/fs/ext2/inode.c
+> @@ -965,7 +965,6 @@ const struct address_space_operations ext2_aops = {
+>  	.write_begin		= ext2_write_begin,
+>  	.write_end		= ext2_write_end,
+>  	.bmap			= ext2_bmap,
 > -	.direct_IO		= noop_direct_IO,
+>  	.writepages		= ext2_writepages,
 >  	.migrate_folio		= buffer_migrate_folio,
->  	.is_partially_uptodate  = block_is_partially_uptodate,
->  	.error_remove_folio	= generic_error_remove_folio,
-> @@ -3547,7 +3546,6 @@ static const struct address_space_operations ext4_journalled_aops = {
->  	.bmap			= ext4_bmap,
->  	.invalidate_folio	= ext4_journalled_invalidate_folio,
->  	.release_folio		= ext4_release_folio,
-> -	.direct_IO		= noop_direct_IO,
->  	.migrate_folio		= buffer_migrate_folio_norefs,
->  	.is_partially_uptodate  = block_is_partially_uptodate,
->  	.error_remove_folio	= generic_error_remove_folio,
-> @@ -3564,7 +3562,6 @@ static const struct address_space_operations ext4_da_aops = {
->  	.bmap			= ext4_bmap,
->  	.invalidate_folio	= ext4_invalidate_folio,
->  	.release_folio		= ext4_release_folio,
-> -	.direct_IO		= noop_direct_IO,
->  	.migrate_folio		= buffer_migrate_folio,
->  	.is_partially_uptodate  = block_is_partially_uptodate,
->  	.error_remove_folio	= generic_error_remove_folio,
-> @@ -3573,7 +3570,6 @@ static const struct address_space_operations ext4_da_aops = {
+>  	.is_partially_uptodate	= block_is_partially_uptodate,
+> @@ -974,7 +973,6 @@ const struct address_space_operations ext2_aops = {
 >  
->  static const struct address_space_operations ext4_dax_aops = {
->  	.writepages		= ext4_dax_writepages,
+>  static const struct address_space_operations ext2_dax_aops = {
+>  	.writepages		= ext2_dax_writepages,
 > -	.direct_IO		= noop_direct_IO,
 >  	.dirty_folio		= noop_dirty_folio,
->  	.bmap			= ext4_bmap,
->  	.swap_activate		= ext4_iomap_swap_activate,
+>  };
+>  
 > -- 
 > 2.39.2
 > 
