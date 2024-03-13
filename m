@@ -1,210 +1,218 @@
-Return-Path: <linux-ext4+bounces-1609-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1610-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0826087B15D
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 20:14:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3E1B87B2F5
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 21:40:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 73FBF1F25C78
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 19:14:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E78921C22850
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 20:40:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 737246350A;
-	Wed, 13 Mar 2024 18:41:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA7753E39;
+	Wed, 13 Mar 2024 20:39:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="flm0orjv";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qhC4Ji5v"
+	dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b="oGg3g8eW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2121A38C3;
-	Wed, 13 Mar 2024 18:41:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710355291; cv=fail; b=clpJZtJOzaMJcL4rE1sFt/uchZMe4Cu+5BKk5foCoangiIwKPflZ8ZWUQVbd/bpnXxHVdmaAqKHG775jKqKTH2/Efa91veEpbozxV22PYlHPZXB4UdW+izXOSp/zeiby/gUQmGgC8sG+X07mV6HfYzNCozrq94uekLVcXiEmA2s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710355291; c=relaxed/simple;
-	bh=zXNgd5vL0dE0Cj5OTcrUqOTeHkkOH/3PcOduUM0yy7I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=ryRHl3M7p6/OvgiBISjV89Dh4zYjAO/MhblEUEGhTSiCLAEhDlboeEImNZ0eMYdcSwmVcROrE2TAlpeUfSayR9tHdmxa/kknKDAlPwGJpxp/sfeOFijWbH104hM6uPfHhiNAyXxquC7QCyCpXy7ap/pGe0FnmUUxeteTpH/wNYM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=flm0orjv; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=qhC4Ji5v; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0333521.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42DHxd4r022142;
-	Wed, 13 Mar 2024 18:41:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=corp-2023-11-20;
- bh=lJkY/+T6J/1Fyz2mB8gOdqFRsQ0HJYrFjwY+9sK/HMA=;
- b=flm0orjvrGnSX+Ppp8+ij1PZdMamp7WRWPpMqxYSuTjwBBw/llMIX0/A0deTIagEmpgm
- XKQzFJ9WmnQv9xtH4Yo17ncpoobwyqI8pM1YWG7jOZoZrAK+NIVB/uYZlqtSyxCG++eg
- WoklbLvXh0jiaQV3ghJk8anMnGrECCelr1qsJ6O+sDvR16GZuA/I4Pxu9VcFo+3blWYa
- lNf5v1k2tuRHWJtQDXo4yMi8bQRN5auQUXiMhIwemPZuaLxFgOCJWonAnG/Y53Ykh6z8
- 1KBqWVntkR0rFd+GUa6T/4EKQIeoaPlJOyvTPuAjT3oo3Hw/5kWYO+wqrSAPaMXz9uR8 ug== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrepd1meh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Mar 2024 18:41:01 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42DH5ul7038449;
-	Wed, 13 Mar 2024 18:41:00 GMT
-Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2168.outbound.protection.outlook.com [104.47.55.168])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre798p6s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 13 Mar 2024 18:41:00 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GMRUqHwwXM71onhXJ0hNgyCnNX85GeqWP5xBL0/B2NsNscFmQ94Od0ziZUUt99yfW+ImSlQN2PuDhEpBI4ODfV+tlaoasTxV+eodYE9rgJx+i3Rb0l1bEPenieS4JOvML+wbD3zKwzQGNjNPPocjP61Myg39NuCU2hPp4M2WMU/wyNZID5g3fUohvSD8zcTtpkoQvJ2V7MHBkLDtosOFcRRbKwxYY1Nab30kFnvb4li1AUu1U9xAOyEx+DtSG2CIDlPpI2PuYWDrkMeeTgpnkYvJOGmmP+KREanG72adxBi0vWLuvwiZRleR6SvijVryV5rXh00Jf4TfVR50r7kvUQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=lJkY/+T6J/1Fyz2mB8gOdqFRsQ0HJYrFjwY+9sK/HMA=;
- b=Q178uYZannbZGabA75lzPV3gGtVqRj6ISaghXpHgwy+4kja/Mg8Qu3giH0zd2geJvxDOq+Rijv9NZgwQmNcIpyGw8UvjjGKod++OQp0JrJuQaFdHXaHZWh3o2YI+49JiQliTCv9KTiF2/WHYV+1KI04RjoEvLOwV8EWhdEK1rpyL08ZaAebd975IfCNvaTvQmSDJZQI8M2YX0MXrCvJPlM9f4pC3UEhTM2RTT8Pg2RbgfgrWWPbqsTFG0YlDBESuoxAGGtgTORoCUafVLXKZk/Qsp59qzm3sIelojr73VlcXedwji64lD+xEjVfHKNQ6scCJzYiGjgoGuZbCfGvLvw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC09653395
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Mar 2024 20:39:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710362383; cv=none; b=VwS4tUj+QQPK3MC6+k3uZjJ5eBbdm6+xql4YxoHp+qeYMeE2br/AHNn77vseQTWE3HQqVxpNmKa5+k4Vino7HySAgadTdM3Bw9MeNvB6mORoHqkQyjg2HiiaA4bICaTjG4pJ6ZAGAXt6lX11xxeDoQGqB8m6OhYieOSd4IGMwj4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710362383; c=relaxed/simple;
+	bh=5NYy5F9GaegC1adFOjJmjFtFKrgOGt8L8XjVO8/x/uA=;
+	h=Date:To:Cc:Subject:From:References:In-Reply-To:Message-Id:
+	 MIME-Version:Content-Type; b=Mqhqj0vuw/DMNdysySqlm2Eo1TUwJjHuggkulyhZfVTuC7zO8QWMs/y40cEUsxU0Qkp8ClVWFddKLxfgZa0kAkzdgEzdOA/IA4XIs0q+7eL5M4TUKwbKCivCWG97R12wfXTtUemZjQamMFCS+xpRzqfRuSF6JbVp36ne0kT24+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org; spf=pass smtp.mailfrom=mforney.org; dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b=oGg3g8eW; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mforney.org
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dddbe47ac1so3306025ad.1
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Mar 2024 13:39:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=lJkY/+T6J/1Fyz2mB8gOdqFRsQ0HJYrFjwY+9sK/HMA=;
- b=qhC4Ji5vX4ZAulKdIZkhvUW/YT1C6wstpdyjxwqCXe8qhk/L2YMy+3qEHJHI8tZI8AlTYDlpXbQ9mSqnWuANas2bcBdGLmcrlNky8YAhXlAe2yCbXSnh96Rlapctvzn3MshjsPVf5l/+LR+nE+HlFYZrthdlggOnc+VvGU8JN/A=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by BLAPR10MB5139.namprd10.prod.outlook.com (2603:10b6:208:307::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Wed, 13 Mar
- 2024 18:40:58 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::ae68:7d51:133f:324%4]) with mapi id 15.20.7362.035; Wed, 13 Mar 2024
- 18:40:58 +0000
-Message-ID: <9fdf92e9-ad77-4184-9418-8a209e24ec20@oracle.com>
-Date: Wed, 13 Mar 2024 18:40:53 +0000
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC] ext4: Add support for ext4_map_blocks_atomic()
-Content-Language: en-US
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-        Matthew Wilcox <willy@infradead.org>,
-        "Darrick J . Wong" <djwong@kernel.org>,
-        Luis Chamberlain
- <mcgrof@kernel.org>, linux-kernel@vger.kernel.org,
-        Dave Chinner <david@fromorbit.com>
-References: <e4bd58d4-723f-4c94-bf46-826bceeb6a8d@oracle.com>
- <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <3a417188e5abe3048afac3d31ebbf11588b6d68d.1709927824.git.ritesh.list@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: AM0PR02CA0223.eurprd02.prod.outlook.com
- (2603:10a6:20b:28f::30) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+        d=mforney.org; s=google; t=1710362381; x=1710967181; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:user-agent:message-id
+         :in-reply-to:references:from:subject:cc:to:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
+        b=oGg3g8eW7Ecp6k8wTelqVv/haRgZlmM6e3mOz4fH3MX5P7S1NTqPknDMwduj0Pg/FZ
+         HobP8nODlrlprSh3M7un8SCqPHk7+oXlnQ1CFsofWx01Wg8Ng2kxzU1uZGWOe6WwOEFd
+         7i2wUNhZ7VM/pNrl6AgYhTjHRJ32pPr/5KpgfJk+uM8+xqTD6X+TfFwt2YHqa3S1oQ5h
+         Sy/cPOLRColvjjkGi6mUB6npaUbh3BkcVFFPBxQqvCjAeEaIT9IuEjjErb9j3zfo2cbx
+         7j3m18w5/KIZUz6Sh1I+HbVQAXODZmHU1BmUQI2RLnlW0kR15vHARi1uE11lZYmYjYlb
+         GJYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710362381; x=1710967181;
+        h=content-transfer-encoding:mime-version:user-agent:message-id
+         :in-reply-to:references:from:subject:cc:to:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
+        b=kW28lpoSFYMBXh3UiazKwja1j9kTUxxkKxFr86L/zelHldhQY6SPkMoiVBijoqBjNX
+         EHjWKSzEJcRJYHYygSKf4kPwlDHvpwPycR7U8Hqu1HJqkQP5S5y1kmlFi6s1rD9rr5WI
+         CdmarnuwNL0tWt8Hp1X8wnbpfdGlVwWh3zngkR240BPk2lsDShcruVhOY2wAJ52f4nG6
+         VO2UunuVWkLhYQsHdYXV63LYs/6SULfregJ+NBvoARY1aY4jokByUXge4x9P443i/kEV
+         pnWzGt3lLQmwl4+nLlGLizQDVaxSJ1zigcpj6oEaXGjN6Cgt48YlhhOJ+I2zNqe4dM9R
+         S7Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCXBJy8NHzuW88PxyI/MqTyKxKINb53wcwWqcJk1BJdBNtuBoDydSo9Ns2NfMigl2dPoN15ptjTbCBXEw/jPRDL5PtP/uB3dWuLseQ==
+X-Gm-Message-State: AOJu0Yx6AtxhccRSOvEengP+t1uYIVDxOIryLoW/gPQmjl2hOt54vu4n
+	me4E7rHYhqpZTdeL2rU0jfpt5iNKSosGq0mxNOWIhsY7HDnHx107usZ23LRRN88=
+X-Google-Smtp-Source: AGHT+IE/KQaRwJCmaxE7HGMWWWwC9HUvtwPSaTkkWMsQzRjSycKrqz980rtkW102JSTf6os/v9ns7A==
+X-Received: by 2002:a17:902:ea05:b0:1dd:a12e:15c8 with SMTP id s5-20020a170902ea0500b001dda12e15c8mr5302773plg.33.1710362380873;
+        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
+Received: from localhost ([2601:647:6400:20b0:16dd:a9ff:fee7:6b79])
+        by smtp.gmail.com with ESMTPSA id b6-20020a170902d50600b001db693d89fdsm22392plg.179.2024.03.13.13.39.40
+        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
+        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
+Date: Wed, 13 Mar 2024 13:40:46 -0700
+To: Jan Kara <jack@suse.cz>
+Cc: Theodore Ts'o <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>,
+ Max Kellermann <max.kellermann@ionos.com>, Xiubo Li <xiubli@redhat.com>,
+ Ilya Dryomov <idryomov@gmail.com>, Jeff Layton <jlayton@kernel.org>, Jan
+ Kara <jack@suse.com>, Dave Kleikamp <shaggy@kernel.org>,
+ ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, Yang Xu
+ <xuyang2018.jy@fujitsu.com>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+From: Michael Forney <mforney@mforney.org>
+References: <20231011100541.sfn3prgtmp7hk2oj@quack3>
+ <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
+ <20231011120655.ndb7bfasptjym3wl@quack3>
+ <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
+ <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
+ <20231011135922.4bij3ittlg4ujkd7@quack3>
+ <20231011-braumeister-anrufen-62127dc64de0@brauner>
+ <20231011170042.GA267994@mit.edu> <20231011172606.mztqyvclq6hq2qa2@quack3>
+ <20231012142918.GB255452@mit.edu> <20231012144246.h3mklfe52gwacrr6@quack3>
+In-Reply-To: <20231012144246.h3mklfe52gwacrr6@quack3>
+Message-Id: <28DSITL9912E1.2LSZUVTGTO52Q@mforney.org>
+User-Agent: mblaze/1.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|BLAPR10MB5139:EE_
-X-MS-Office365-Filtering-Correlation-Id: 7cd0f647-77a3-47c8-b682-08dc438d1f72
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	q9WEEfRZ/JpJ6e1DIvTkG9E3KJFCd0WPpl3U/k6axKC8wFoGFrgeefEKv9MwvTi0xKkmwxquZ3XvPOl1jHtO664TUi3o1zGATm7Q+Eb0ARuCiq7LVFO6ckvfnEWWZO0hyIEci/20cJ3i+dC4m+Igb4DjFx9xtW+D74ZnXsqWJsQaFfXQP+K/zkeEEKEZBzezsd4rMktGBKPdzNYoYqzW1cJUFisWsJ0+QWGZylOWOg1OMsQ+1rHO4jkMSQoJy61TOQG26wMvyLk68e3qe/GJ9GMC8wYNDPlXwhR5jBPZB7KTrLDBA2aBNHdh6NARLKczjOCyi9ZlcgKFVkYU0jzz5WtuYu+auoMkqGA6MxzLfLdNDlIuG9HU9LQtuih1kmxupw6mD6DpgR5JkMnHQScmmpEy3bKeYV9NSpArwcn6qVfWLxfc4YSkBKHvr9UOqIff30BpFyOl+gv7OJweg7kkKP8WsWWKuOXARMF28826Qc23+AUClcRHKHyDufMJxnBs4HETRPw/xUe+cCW0FGFnuXyfMEOTfyh3gfrNGQpvH+hgjll0tM18YGlLV+bBA26hsMC7TAxQInypqJRmbPhAk7JGyXSWblEy29bz9ci+LvtHBxqUjztdvu8BvcJDNMPb
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?utf-8?B?QTR0ZjRrN1djM256RDRpT0UrdzlTOUVnTmNhVkZ1c0pNQjUxVTZWYndBZXJk?=
- =?utf-8?B?OWpCNGIxY0VLNUhYSXk5RDM4UlBsM1BMVTJIK2xlbFA4Ky9ZUlkrWjkyY1Ir?=
- =?utf-8?B?WTd0ZTBCVmtScXpRWXYxOXBwTkFKZEVGWnlGNVVsQ0Y2eWwwNWRrR2wvVkcr?=
- =?utf-8?B?N1VvcFQyL3l0MGY5YXFaaFBQYTJSdURCZ1QzRFpBODNBcW9TOVViQUYrT1Az?=
- =?utf-8?B?NUJ5cUxzN2ZZYzJXcG9NaFdxWDBjZG5rdGJQUjdEb3hGY2JNMzlyeS9qRFFF?=
- =?utf-8?B?Y1h6OUlIRm42NThTOHJYR1FnSEwyRlVtei8zNWlxSjZJUW4xRDRxK1lRNzE1?=
- =?utf-8?B?N1dkdlE0Uis4cjN5ZHh1QnpkemlEU2hZKzNLclpGb0Q3OGVKMDgwL1Bud29a?=
- =?utf-8?B?R0ZtNzAvL0d1ZXVoYlFRRFJQZEdzMnJWSkpaRWR1YTNOdkttRjNJQzBySU9L?=
- =?utf-8?B?TGZ1VTZ6V2JBQXVtSUxXM21mSVh6dlpNbC9TWmpvWm95SEpmWnRkS0kwVlEw?=
- =?utf-8?B?dHhna1JNVEpUcGpyODZDNlpaU0lYK3djSlA2QlRrbHNRUGNkZnpNMmh1VUJI?=
- =?utf-8?B?bzdRd0orWFk4d2h5NWQ2UVc4cmFnVExaY1gydDJKV3ZjNmM3aVB4dUZQblFv?=
- =?utf-8?B?bFZ3WkJIMmYvL1lVM0xoeUQ0clU0UGphTVI2cDdxSnNGMFhxMnVlOGtJNG43?=
- =?utf-8?B?U3RTTUw5VXdXMUo3SGZ6QWdmcDMxcGNVbjNIT2VzZTdWOWZhR0FPQnBTdlJq?=
- =?utf-8?B?a0FwVzZ5Ti9HVUxIMU1XUWxUWWZMWGxES1FKM1RYenJzejVSUm9LNVJXNjB6?=
- =?utf-8?B?NmQwZTNEd0d4VmhHcVY0WGVrNzY3UzdiY3B4c1ZPTnhiZlhVeEhPc25MQm1o?=
- =?utf-8?B?UThkZ0pDMkNKVUVFeXZTMGYybS82bVhrVmV2Nml6Y3dvcGRrRzVkSGNxVThq?=
- =?utf-8?B?eU9jQnVPckNCZnh2ZHJiZ1JQbksrbU9zM2luRGFIbm0vSGdQY3JpMzd6ZFh0?=
- =?utf-8?B?cWxWYndKUlZLQ05XSEkzVGlCNld5bGpBRlFQVUtTOFlEWmdrZzFGbmhVSTlh?=
- =?utf-8?B?QUsydnlqNStvQWRyOEM1Wkxhb0U4SzVBbHhvL2ozVVlIY3ZVa1k4Q2t3RERI?=
- =?utf-8?B?QTd3NDJUc3FmZDBHaTROUTNVREc1R1duRTFyRU1oTGMxQnozRlprMWNUS3Ey?=
- =?utf-8?B?MXdHSGJWa1lUeVdFQng4UXRZMHpxVXlkaGxYaWxZcWZvYUQ5UklDU3pTamZI?=
- =?utf-8?B?NzlBV2xOS1hIM21RN2pwTElFZmJrWU5WSWNQdnJoTW5ndXVOOTJVYUs2REU1?=
- =?utf-8?B?S2MxRWNObTRSNGNRZzRyVnd4bTNyWDIvTjcrZ3pVQUs3ZjdsWTFidmlZZVI3?=
- =?utf-8?B?UkZiMkNHQTI5ekYvSldGOW53RzBZeXd6LzJDQzgvVnVEeDRnZ3hFMFEvb29O?=
- =?utf-8?B?Zkh0VHY2QjFoZmdZUzVhdUFFak9tVUdjZzdFR05lRlRmL0FBWjVMUVc2OEoz?=
- =?utf-8?B?YVkwZmdpYUpLd00vNWNmQSt3Zmo1bVVnMFVRVVBUaTVWWkRjbW55aisrT2Zk?=
- =?utf-8?B?T05INnUyQ2hQVUZoUHFhMGRxcnBvaXQ4MVNGNzZnL0NiemtXWHdtcmp1bXl5?=
- =?utf-8?B?VDRYZkN4WlZyVjM1Rnp0ZXhPcUJUZUxSdlU5V1ZiaE1KWGNNU0F6T0t6VG5k?=
- =?utf-8?B?cE9IQ0NlMkhERHB6cGdlNVJjWGNrU2xvdTF2Z2Q4aGNCM2laVURUYVd6Rk4w?=
- =?utf-8?B?Y2lNVlhDblNSSWlGdUxNdG50ekNSblNIUmhyZmlsQTh0TjNnVEtRdnAyZjI2?=
- =?utf-8?B?UVRiT09wbkFpZXdJUWVqSHd3T1NTekpVKzVZYTJFVTV6b0dqRXI0RkdFcmlO?=
- =?utf-8?B?bXlOZFhHaWlzN0k0S0dEU0NXSkRDZjFXS1FCV0l0b3B5OTNRcjQ4Qm1VS0g3?=
- =?utf-8?B?SklTenZpMUVuZXRKbTA1Q3lTRnZmMlVvckFCY0l5eEtLdlNHaGVTbnRDbk9J?=
- =?utf-8?B?bXhBcmg4SitrSFR0S0dYb3c0N0ZIRUF0WHFPZGkyQnJ1TnpPUVVRV2EyeUgx?=
- =?utf-8?B?b3o1QUQ3TmZ3N2E2STFDOFhhR1A2MHZwZTQ2QTNpb29MWWo3SHJvN1RPdEx5?=
- =?utf-8?B?NG8xNEQ0MGNoVjA1RWh6Wk43Z2tCTVBSdG5hMTQvU2dBQzNtWlVaSXE0dHVH?=
- =?utf-8?B?ekE9PQ==?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	f9Y4crBH3OjBspOIv82bY4SdR5iqb2QlLBvQD1F5P7F5pqGtqEsVojP0rjYl4/ZnX6glURO7eUL+XelIYmFezrxJ1lZtBLCDXldFr9bBjOR3M4QsbOXcQ3iUSSifINO9RUG+mEHQW3SC7ldv04boE/hQGQHDHBP4S1WC59IHPfIsc47Be7e4VDDxnByc3vvD341Q3dGO4omL1LcUXDNHnRkOkDpzwZLgf6aGy+OcbMlpHW/CvOFfyrEpd1xm0LAioQNNtl92548b3NAeuBREI6RQq3KozAyrSLrQapF+9jIqqxcBng/sF3Tlgq+ANH75W4Bt+HlzF3mdzeu7LOBOtF/yrDpReigklbZ964QdTHYlKguYiYv9rs4fGybEAixJfxMOS/xpeUnw+K2iA+dSmMeXPbmWSZVBMXuIuinUV2DzP+7lW1VD/0ty/5BltXg6hOJerzJtG7iTNlNJFvIXra+OebivYe2GvN9CPeWhAH2moJFsdAGRb/o+8kKCWSaEnjUF6TxnassmUV9D5uQggg/KIO14AF/86HOlKXRi3atIV+KuiLtwd4EttLTldAh0a17xpOIUlCnnH7TMOOBRHI4HbDqjr5KnnGomDHhF9G4=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 7cd0f647-77a3-47c8-b682-08dc438d1f72
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Mar 2024 18:40:57.9966
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: IT9aGkXAkvoJEiejJjCanUOURo/waghsV+emYmX5HnHKwwYVsJO78kavDzSQf2FrUheUA77tD8cbA6/A+v3qKQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BLAPR10MB5139
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-13_09,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 phishscore=0 suspectscore=0
- malwarescore=0 spamscore=0 mlxscore=0 adultscore=0 mlxlogscore=999
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403130143
-X-Proofpoint-ORIG-GUID: GRwdCk6eRfdZCC-IUFDrl4KfNjT7CSXL
-X-Proofpoint-GUID: GRwdCk6eRfdZCC-IUFDrl4KfNjT7CSXL
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
 
-On 08/03/2024 20:25, Ritesh Harjani (IBM) wrote:
+Jan Kara <jack@suse.cz> wrote:
+> On Thu 12-10-23 10:29:18, Theodore Ts'o wrote:
+> > On Wed, Oct 11, 2023 at 07:26:06PM +0200, Jan Kara wrote:
+> > > I don't think this is accurate. posix_acl_create() needs unmasked 'mo=
+de'
+> > > because instead of using current_umask() for masking it wants to use
+> > > whatever is stored in the ACLs as an umask.
+> > >=20
+> > > So I still think we need to keep umask handling in both posix_acl_cre=
+ate()
+> > > and vfs_prepare_mode(). But filesystem's only obligation would be to =
+call
+> > > posix_acl_create() if the inode is IS_POSIXACL. No more caring about =
+when
+> > > to apply umask and when not based on config or mount options.
+> >=20
+> > Ah, right, thanks for the clarification.  I *think* the following
+> > patch in the ext4 dev branch (not yet in Linus's tree, but it should
+> > be in linux-next) should be harmless, though, right?  And once we get
+> > the changes in vfs_prepare_mode() we can revert in ext4 --- or do
+> > folks I think I should just drop it from the ext4 dev branch now?
+>=20
+> It definitely does no harm. As you say, you can revert it once the VFS
+> changes land if you want.
 
-Hi Ritesh,
+I've been debugging why flatpak was always considering its database
+corrupted, and found this commit to be the source of the issue.
 
-> Currently ext4 exposes [fsawu_min, fsawu_max] size as
-> [blocksize, clustersize] (given the hw block device constraints are
-> larger than FS atomic write units).
-> 
-> That means a user should be allowed to -
-> 1. pwrite 0 4k /mnt/test/f1
-> 2. pwrite 0 16k /mnt/test/f1
-> 
+$ ostree --repo=3Drepo --mode=3Dbare-user-only init
+$ mkdir tree && umask 0 && ln -s target tree/symlink && umask 022
+$ ostree --repo=3Drepo commit --branch=3Dfoo tree/
+c508e0564267b376661889b9016f8438bd6d39412078838f78856383fdd8ac2f
+$ ostree --repo=3Drepo fsck
+Validating refs...
+Validating refs in collections...
+Enumerating commits...
+Verifying content integrity of 1 commit objects...
+fsck objects (1/4) [=3D=3D=3D          ]  25%
+error: In commits c508e0564267b376661889b9016f8438bd6d39412078838f78856383f=
+dd8ac2f: fsck content object a6b40a5400ed082fbe067d2c8397aab54046a089768651=
+c392a36db46d24c1cd: Corrupted file object; checksum expected=3D'a6b40a5400e=
+d082fbe067d2c8397aab54046a089768651c392a36db46d24c1cd'
+actual=3D'6bdc88f9722f96dbd51735e381f8a1b0e01363e1d7ee2edbb474c091f83c3987'=
 
-Previously you have mentioned 2 or 3 methods in which ext4 could support 
-atomic writes. To avoid doubt, is this patch for the "Add intelligence 
-in multi-block allocator of ext4 to provide aligned allocations (this 
-option won't require any formatting)" method mentioned at 
-https://lore.kernel.org/linux-fsdevel/8734tb0xx7.fsf@doe.com/
+$
 
-and same as method 3 at 
-https://lore.kernel.org/linux-fsdevel/cover.1709356594.git.ritesh.list@gmail.com/? 
+Turns out that symlinks are inheriting umask on my system (which
+has CONFIG_EXT4_FS_POSIX_ACL=3Dn):
 
+$ umask 022
+$ ln -s target symlink
+$ ls -l symlink
+lrwxr-xr-x    1 michael  michael           6 Mar 13 13:28 symlink -> target=
 
-Thanks,
-John
+$
+
+Looking at the referenced functions, posix_acl_create() returns
+early before applying umask for symlinks, but ext4_init_acl() now
+applies the umask unconditionally.
+
+After reverting this commit, it works correctly. I am also unable
+to reproduce the mentioned issue with O_TMPFILE after reverting the
+commit. It seems that the bug was fixed properly in ac6800e279a2
+('fs: Add missing umask strip in vfs_tmpfile'), and all branches
+that have this ext4_init_acl patch already had ac6800e279a2 backported.
+
+So I think this patch should be reverted, since the bug was already
+fixed and it breaks symlink modes. If not, it should at least be
+changed to not to apply the umask to symlinks.
+
+> > commit 484fd6c1de13b336806a967908a927cc0356e312
+> > Author: Max Kellermann <max.kellermann@ionos.com>
+> > Date:   Tue Sep 19 10:18:23 2023 +0200
+> >=20
+> >     ext4: apply umask if ACL support is disabled
+> >    =20
+> >     The function ext4_init_acl() calls posix_acl_create() which is
+> >     responsible for applying the umask.  But without
+> >     CONFIG_EXT4_FS_POSIX_ACL, ext4_init_acl() is an empty inline functi=
+on,
+> >     and nobody applies the umask.
+> >    =20
+> >     This fixes a bug which causes the umask to be ignored with O_TMPFIL=
+E
+> >     on ext4:
+> >    =20
+> >      https://github.com/MusicPlayerDaemon/MPD/issues/558
+> >      https://bugs.gentoo.org/show_bug.cgi?id=3D686142#c3
+> >      https://bugzilla.kernel.org/show_bug.cgi?id=3D203625
+> >    =20
+> >     Reviewed-by: "J. Bruce Fields" <bfields@redhat.com>
+> >     Cc: stable@vger.kernel.org
+> >     Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
+> >     Link: https://lore.kernel.org/r/20230919081824.1096619-1-max.keller=
+mann@ionos.com
+> >     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+> >=20
+> > diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
+> > index 0c5a79c3b5d4..ef4c19e5f570 100644
+> > --- a/fs/ext4/acl.h
+> > +++ b/fs/ext4/acl.h
+> > @@ -68,6 +68,11 @@ extern int ext4_init_acl(handle_t *, struct inode *,=
+ struct inode *);
+> >  static inline int
+> >  ext4_init_acl(handle_t *handle, struct inode *inode, struct inode *dir=
+)
+> >  {
+> > +	/* usually, the umask is applied by posix_acl_create(), but if
+> > +	   ext4 ACL support is disabled at compile time, we need to do
+> > +	   it here, because posix_acl_create() will never be called */
+> > +	inode->i_mode &=3D ~current_umask();
+> > +
+> >  	return 0;
+> >  }
+> >  #endif  /* CONFIG_EXT4_FS_POSIX_ACL */
 
