@@ -1,218 +1,253 @@
-Return-Path: <linux-ext4+bounces-1610-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1611-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3E1B87B2F5
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 21:40:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 81EF487B521
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 00:17:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E78921C22850
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 20:40:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 31EA62873CC
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Mar 2024 23:17:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CA7753E39;
-	Wed, 13 Mar 2024 20:39:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E84CC5D732;
+	Wed, 13 Mar 2024 23:17:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b="oGg3g8eW"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GqWrSyHq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="i9lzNmZ8";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="GqWrSyHq";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="i9lzNmZ8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC09653395
-	for <linux-ext4@vger.kernel.org>; Wed, 13 Mar 2024 20:39:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3A4741C6A;
+	Wed, 13 Mar 2024 23:17:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710362383; cv=none; b=VwS4tUj+QQPK3MC6+k3uZjJ5eBbdm6+xql4YxoHp+qeYMeE2br/AHNn77vseQTWE3HQqVxpNmKa5+k4Vino7HySAgadTdM3Bw9MeNvB6mORoHqkQyjg2HiiaA4bICaTjG4pJ6ZAGAXt6lX11xxeDoQGqB8m6OhYieOSd4IGMwj4=
+	t=1710371825; cv=none; b=XMNZMLFV9xIEKE/zu2VH0bN/KV3LHcSrg31E8dEZwO2oc+ODFsKM9jLPFXP7Vx5bnK8o8bwAnqJxaygz+bzLpgkV/BBGZIyFkA1wfyoGA/AEUf+/810O3yNtqT0wNmvO642pkyg+hrqj4+VEhmgW8/I/UGvIgHgWIwsFMzHQzuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710362383; c=relaxed/simple;
-	bh=5NYy5F9GaegC1adFOjJmjFtFKrgOGt8L8XjVO8/x/uA=;
-	h=Date:To:Cc:Subject:From:References:In-Reply-To:Message-Id:
-	 MIME-Version:Content-Type; b=Mqhqj0vuw/DMNdysySqlm2Eo1TUwJjHuggkulyhZfVTuC7zO8QWMs/y40cEUsxU0Qkp8ClVWFddKLxfgZa0kAkzdgEzdOA/IA4XIs0q+7eL5M4TUKwbKCivCWG97R12wfXTtUemZjQamMFCS+xpRzqfRuSF6JbVp36ne0kT24+M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org; spf=pass smtp.mailfrom=mforney.org; dkim=pass (2048-bit key) header.d=mforney.org header.i=@mforney.org header.b=oGg3g8eW; arc=none smtp.client-ip=209.85.214.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mforney.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mforney.org
-Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dddbe47ac1so3306025ad.1
-        for <linux-ext4@vger.kernel.org>; Wed, 13 Mar 2024 13:39:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mforney.org; s=google; t=1710362381; x=1710967181; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:references:from:subject:cc:to:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
-        b=oGg3g8eW7Ecp6k8wTelqVv/haRgZlmM6e3mOz4fH3MX5P7S1NTqPknDMwduj0Pg/FZ
-         HobP8nODlrlprSh3M7un8SCqPHk7+oXlnQ1CFsofWx01Wg8Ng2kxzU1uZGWOe6WwOEFd
-         7i2wUNhZ7VM/pNrl6AgYhTjHRJ32pPr/5KpgfJk+uM8+xqTD6X+TfFwt2YHqa3S1oQ5h
-         Sy/cPOLRColvjjkGi6mUB6npaUbh3BkcVFFPBxQqvCjAeEaIT9IuEjjErb9j3zfo2cbx
-         7j3m18w5/KIZUz6Sh1I+HbVQAXODZmHU1BmUQI2RLnlW0kR15vHARi1uE11lZYmYjYlb
-         GJYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710362381; x=1710967181;
-        h=content-transfer-encoding:mime-version:user-agent:message-id
-         :in-reply-to:references:from:subject:cc:to:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JrhTyp84sWHbOiBAqJX2C5jIkkkaEpg/S6Nrn3IynAs=;
-        b=kW28lpoSFYMBXh3UiazKwja1j9kTUxxkKxFr86L/zelHldhQY6SPkMoiVBijoqBjNX
-         EHjWKSzEJcRJYHYygSKf4kPwlDHvpwPycR7U8Hqu1HJqkQP5S5y1kmlFi6s1rD9rr5WI
-         CdmarnuwNL0tWt8Hp1X8wnbpfdGlVwWh3zngkR240BPk2lsDShcruVhOY2wAJ52f4nG6
-         VO2UunuVWkLhYQsHdYXV63LYs/6SULfregJ+NBvoARY1aY4jokByUXge4x9P443i/kEV
-         pnWzGt3lLQmwl4+nLlGLizQDVaxSJ1zigcpj6oEaXGjN6Cgt48YlhhOJ+I2zNqe4dM9R
-         S7Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCXBJy8NHzuW88PxyI/MqTyKxKINb53wcwWqcJk1BJdBNtuBoDydSo9Ns2NfMigl2dPoN15ptjTbCBXEw/jPRDL5PtP/uB3dWuLseQ==
-X-Gm-Message-State: AOJu0Yx6AtxhccRSOvEengP+t1uYIVDxOIryLoW/gPQmjl2hOt54vu4n
-	me4E7rHYhqpZTdeL2rU0jfpt5iNKSosGq0mxNOWIhsY7HDnHx107usZ23LRRN88=
-X-Google-Smtp-Source: AGHT+IE/KQaRwJCmaxE7HGMWWWwC9HUvtwPSaTkkWMsQzRjSycKrqz980rtkW102JSTf6os/v9ns7A==
-X-Received: by 2002:a17:902:ea05:b0:1dd:a12e:15c8 with SMTP id s5-20020a170902ea0500b001dda12e15c8mr5302773plg.33.1710362380873;
-        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
-Received: from localhost ([2601:647:6400:20b0:16dd:a9ff:fee7:6b79])
-        by smtp.gmail.com with ESMTPSA id b6-20020a170902d50600b001db693d89fdsm22392plg.179.2024.03.13.13.39.40
-        (version=TLS1_2 cipher=ECDHE-ECDSA-CHACHA20-POLY1305 bits=256/256);
-        Wed, 13 Mar 2024 13:39:40 -0700 (PDT)
-Date: Wed, 13 Mar 2024 13:40:46 -0700
-To: Jan Kara <jack@suse.cz>
-Cc: Theodore Ts'o <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>,
- Max Kellermann <max.kellermann@ionos.com>, Xiubo Li <xiubli@redhat.com>,
- Ilya Dryomov <idryomov@gmail.com>, Jeff Layton <jlayton@kernel.org>, Jan
- Kara <jack@suse.com>, Dave Kleikamp <shaggy@kernel.org>,
- ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-ext4@vger.kernel.org, jfs-discussion@lists.sourceforge.net, Yang Xu
- <xuyang2018.jy@fujitsu.com>, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
- support is disabled
-From: Michael Forney <mforney@mforney.org>
-References: <20231011100541.sfn3prgtmp7hk2oj@quack3>
- <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
- <20231011120655.ndb7bfasptjym3wl@quack3>
- <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
- <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
- <20231011135922.4bij3ittlg4ujkd7@quack3>
- <20231011-braumeister-anrufen-62127dc64de0@brauner>
- <20231011170042.GA267994@mit.edu> <20231011172606.mztqyvclq6hq2qa2@quack3>
- <20231012142918.GB255452@mit.edu> <20231012144246.h3mklfe52gwacrr6@quack3>
-In-Reply-To: <20231012144246.h3mklfe52gwacrr6@quack3>
-Message-Id: <28DSITL9912E1.2LSZUVTGTO52Q@mforney.org>
-User-Agent: mblaze/1.2
+	s=arc-20240116; t=1710371825; c=relaxed/simple;
+	bh=8lzW/AQHC+tREFa+aWy43EFhJt/UIZCWdjroRaubi+I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=P2Ze8fyoAq/ek7gTAxuPBaFPQmtMN5Sjeq4ZCRWDO+viSkSqbNkzsdNjzc4aVV8ijaC554Uuiw0Q7Ljsuideoll48+T2a85lBF7kOQnS8U0Mh/ntMmKyYkbpu5nRgr+2F3w/sKOW5qb0Gc0V0/+85Ltr8RzM4Eb3i0wsE304SG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GqWrSyHq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=i9lzNmZ8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=GqWrSyHq; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=i9lzNmZ8; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id BAF6821C8B;
+	Wed, 13 Mar 2024 23:17:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710371821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j7RbUqbuA7M29O8XyGy5jta6BO+8xzgDHtTQ2mM79V8=;
+	b=GqWrSyHqcJY1yQWvgbV+eS7TGk3R1eowFEWk8qH++wqW1XOoog8N1CRLbQ/5syORsdTWs2
+	E3Sw0PmY8ySJuHqw2q8llZjFUnrCE1+vOZZHrnVxpz8ejlZlK1C5janPKENqbus7Frm9lT
+	HFEJEruoNqLwoAeqYWOs99xStMyqLcQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710371821;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j7RbUqbuA7M29O8XyGy5jta6BO+8xzgDHtTQ2mM79V8=;
+	b=i9lzNmZ8JB8vdNSz3LV4JUZq2HVGHzkH69nJEdM9rL25pEZfNX8gmbKBMpZ68Bw6enKDBi
+	5e0qyiWiCOXTJoBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710371821; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j7RbUqbuA7M29O8XyGy5jta6BO+8xzgDHtTQ2mM79V8=;
+	b=GqWrSyHqcJY1yQWvgbV+eS7TGk3R1eowFEWk8qH++wqW1XOoog8N1CRLbQ/5syORsdTWs2
+	E3Sw0PmY8ySJuHqw2q8llZjFUnrCE1+vOZZHrnVxpz8ejlZlK1C5janPKENqbus7Frm9lT
+	HFEJEruoNqLwoAeqYWOs99xStMyqLcQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710371821;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j7RbUqbuA7M29O8XyGy5jta6BO+8xzgDHtTQ2mM79V8=;
+	b=i9lzNmZ8JB8vdNSz3LV4JUZq2HVGHzkH69nJEdM9rL25pEZfNX8gmbKBMpZ68Bw6enKDBi
+	5e0qyiWiCOXTJoBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 80CC213977;
+	Wed, 13 Mar 2024 23:17:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 3BhxGe0z8mU0BQAAD6G6ig
+	(envelope-from <krisman@suse.de>); Wed, 13 Mar 2024 23:17:01 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
+  jaegeuk@kernel.org,  chao@kernel.org,
+  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  kernel@collabora.com,
+  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
+ Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [PATCH v13 3/9] libfs: Introduce case-insensitive string
+ comparison helper
+In-Reply-To: <20240305101608.67943-4-eugen.hristev@collabora.com> (Eugen
+	Hristev's message of "Tue, 5 Mar 2024 12:16:02 +0200")
+Organization: SUSE
+References: <20240305101608.67943-1-eugen.hristev@collabora.com>
+	<20240305101608.67943-4-eugen.hristev@collabora.com>
+Date: Wed, 13 Mar 2024 19:16:56 -0400
+Message-ID: <87il1pk9hz.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -4.30
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 HAS_ORG_HEADER(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%]
+X-Spam-Flag: NO
 
-Jan Kara <jack@suse.cz> wrote:
-> On Thu 12-10-23 10:29:18, Theodore Ts'o wrote:
-> > On Wed, Oct 11, 2023 at 07:26:06PM +0200, Jan Kara wrote:
-> > > I don't think this is accurate. posix_acl_create() needs unmasked 'mo=
-de'
-> > > because instead of using current_umask() for masking it wants to use
-> > > whatever is stored in the ACLs as an umask.
-> > >=20
-> > > So I still think we need to keep umask handling in both posix_acl_cre=
-ate()
-> > > and vfs_prepare_mode(). But filesystem's only obligation would be to =
-call
-> > > posix_acl_create() if the inode is IS_POSIXACL. No more caring about =
-when
-> > > to apply umask and when not based on config or mount options.
-> >=20
-> > Ah, right, thanks for the clarification.  I *think* the following
-> > patch in the ext4 dev branch (not yet in Linus's tree, but it should
-> > be in linux-next) should be harmless, though, right?  And once we get
-> > the changes in vfs_prepare_mode() we can revert in ext4 --- or do
-> > folks I think I should just drop it from the ext4 dev branch now?
->=20
-> It definitely does no harm. As you say, you can revert it once the VFS
-> changes land if you want.
+Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-I've been debugging why flatpak was always considering its database
-corrupted, and found this commit to be the source of the issue.
+> From: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
+> generic_ci_match can be used by case-insensitive filesystems to compare
+> strings under lookup with dirents in a case-insensitive way.  This
+> function is currently reimplemented by each filesystem supporting
+> casefolding, so this reduces code duplication in filesystem-specific
+> code.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> [eugen.hristev@collabora.com: rework to first test the exact match]
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+> ---
+>  fs/libfs.c         | 81 ++++++++++++++++++++++++++++++++++++++++++++++
+>  include/linux/fs.h |  4 +++
+>  2 files changed, 85 insertions(+)
+>
+> diff --git a/fs/libfs.c b/fs/libfs.c
+> index c297953db948..c107c24f33b9 100644
+> --- a/fs/libfs.c
+> +++ b/fs/libfs.c
+> @@ -1776,6 +1776,87 @@ static const struct dentry_operations generic_ci_dentry_ops = {
+>  	.d_revalidate = fscrypt_d_revalidate,
+>  #endif
+>  };
+> +
+> +/**
+> + * generic_ci_match() - Match a name (case-insensitively) with a dirent.
+> + * This is a filesystem helper for comparison with directory entries.
+> + * generic_ci_d_compare should be used in VFS' ->d_compare instead.
+> + *
+> + * @parent: Inode of the parent of the dirent under comparison
+> + * @name: name under lookup.
+> + * @folded_name: Optional pre-folded name under lookup
+> + * @de_name: Dirent name.
+> + * @de_name_len: dirent name length.
+> + *
+> + * Test whether a case-insensitive directory entry matches the filename
+> + * being searched.  If @folded_name is provided, it is used instead of
+> + * recalculating the casefold of @name.
+> + *
+> + * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
+> + * < 0 on error.
+> + */
+> +int generic_ci_match(const struct inode *parent,
+> +		     const struct qstr *name,
+> +		     const struct qstr *folded_name,
+> +		     const u8 *de_name, u32 de_name_len)
+> +{
+> +	const struct super_block *sb = parent->i_sb;
+> +	const struct unicode_map *um = sb->s_encoding;
+> +	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
+> +	struct qstr dirent = QSTR_INIT(de_name, de_name_len);
+> +	int res, match = 0;
+> +
+> +	if (IS_ENCRYPTED(parent)) {
+> +		const struct fscrypt_str encrypted_name =
+> +			FSTR_INIT((u8 *) de_name, de_name_len);
+> +
+> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
+> +			return -EINVAL;
+> +
+> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
+> +		if (!decrypted_name.name)
+> +			return -ENOMEM;
+> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
+> +						&decrypted_name);
+> +		if (res < 0)
+> +			goto out;
+> +		dirent.name = decrypted_name.name;
+> +		dirent.len = decrypted_name.len;
+> +	}
+> +
+> +	/*
+> +	 * Attempt a case-sensitive match first. It is cheaper and
+> +	 * should cover most lookups, including all the sane
+> +	 * applications that expect a case-sensitive filesystem.
+> +	 */
+> +	if (folded_name->name) {
+> +		if (dirent.len == folded_name->len &&
+> +		    !memcmp(folded_name->name, dirent.name, dirent.len)) {
+> +			match = 1;
+> +			goto out;
+> +		}
+> +		res = utf8_strncasecmp_folded(um, folded_name, &dirent);
+> +	} else {
+> +		if (dirent.len == name->len &&
+> +		    !memcmp(name->name, dirent.name, dirent.len) &&
+> +		    (!sb_has_strict_encoding(sb) || !utf8_validate(um, name))) {
+> +			match = 1;
+> +			goto out;
+> +		}
+> +		res = utf8_strncasecmp(um, name, &dirent);
+> +	}
+> +
+> +out:
+> +	kfree(decrypted_name.name);
 
-$ ostree --repo=3Drepo --mode=3Dbare-user-only init
-$ mkdir tree && umask 0 && ln -s target tree/symlink && umask 022
-$ ostree --repo=3Drepo commit --branch=3Dfoo tree/
-c508e0564267b376661889b9016f8438bd6d39412078838f78856383fdd8ac2f
-$ ostree --repo=3Drepo fsck
-Validating refs...
-Validating refs in collections...
-Enumerating commits...
-Verifying content integrity of 1 commit objects...
-fsck objects (1/4) [=3D=3D=3D          ]  25%
-error: In commits c508e0564267b376661889b9016f8438bd6d39412078838f78856383f=
-dd8ac2f: fsck content object a6b40a5400ed082fbe067d2c8397aab54046a089768651=
-c392a36db46d24c1cd: Corrupted file object; checksum expected=3D'a6b40a5400e=
-d082fbe067d2c8397aab54046a089768651c392a36db46d24c1cd'
-actual=3D'6bdc88f9722f96dbd51735e381f8a1b0e01363e1d7ee2edbb474c091f83c3987'=
+> +	if (match) /* matched by direct comparison */
+> +		return 1;
+> +	else if (!res) /* matched by utf8 comparison */
+> +		return 1;
+> +	else if (res < 0) /* error on utf8 comparison */
+> +		return res;
+> +	return 0; /* no match */
+> +}
 
-$
+I think I've made this comment before, but I'd prefer this to be written
+in a much simpler way
 
-Turns out that symlinks are inheriting umask on my system (which
-has CONFIG_EXT4_FS_POSIX_ACL=3Dn):
+if (res < 0)
+   return res;
+return (match || !res);
 
-$ umask 022
-$ ln -s target symlink
-$ ls -l symlink
-lrwxr-xr-x    1 michael  michael           6 Mar 13 13:28 symlink -> target=
+Other than that, this looks good to me.
 
-$
-
-Looking at the referenced functions, posix_acl_create() returns
-early before applying umask for symlinks, but ext4_init_acl() now
-applies the umask unconditionally.
-
-After reverting this commit, it works correctly. I am also unable
-to reproduce the mentioned issue with O_TMPFILE after reverting the
-commit. It seems that the bug was fixed properly in ac6800e279a2
-('fs: Add missing umask strip in vfs_tmpfile'), and all branches
-that have this ext4_init_acl patch already had ac6800e279a2 backported.
-
-So I think this patch should be reverted, since the bug was already
-fixed and it breaks symlink modes. If not, it should at least be
-changed to not to apply the umask to symlinks.
-
-> > commit 484fd6c1de13b336806a967908a927cc0356e312
-> > Author: Max Kellermann <max.kellermann@ionos.com>
-> > Date:   Tue Sep 19 10:18:23 2023 +0200
-> >=20
-> >     ext4: apply umask if ACL support is disabled
-> >    =20
-> >     The function ext4_init_acl() calls posix_acl_create() which is
-> >     responsible for applying the umask.  But without
-> >     CONFIG_EXT4_FS_POSIX_ACL, ext4_init_acl() is an empty inline functi=
-on,
-> >     and nobody applies the umask.
-> >    =20
-> >     This fixes a bug which causes the umask to be ignored with O_TMPFIL=
-E
-> >     on ext4:
-> >    =20
-> >      https://github.com/MusicPlayerDaemon/MPD/issues/558
-> >      https://bugs.gentoo.org/show_bug.cgi?id=3D686142#c3
-> >      https://bugzilla.kernel.org/show_bug.cgi?id=3D203625
-> >    =20
-> >     Reviewed-by: "J. Bruce Fields" <bfields@redhat.com>
-> >     Cc: stable@vger.kernel.org
-> >     Signed-off-by: Max Kellermann <max.kellermann@ionos.com>
-> >     Link: https://lore.kernel.org/r/20230919081824.1096619-1-max.keller=
-mann@ionos.com
-> >     Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-> >=20
-> > diff --git a/fs/ext4/acl.h b/fs/ext4/acl.h
-> > index 0c5a79c3b5d4..ef4c19e5f570 100644
-> > --- a/fs/ext4/acl.h
-> > +++ b/fs/ext4/acl.h
-> > @@ -68,6 +68,11 @@ extern int ext4_init_acl(handle_t *, struct inode *,=
- struct inode *);
-> >  static inline int
-> >  ext4_init_acl(handle_t *handle, struct inode *inode, struct inode *dir=
-)
-> >  {
-> > +	/* usually, the umask is applied by posix_acl_create(), but if
-> > +	   ext4 ACL support is disabled at compile time, we need to do
-> > +	   it here, because posix_acl_create() will never be called */
-> > +	inode->i_mode &=3D ~current_umask();
-> > +
-> >  	return 0;
-> >  }
-> >  #endif  /* CONFIG_EXT4_FS_POSIX_ACL */
+-- 
+Gabriel Krisman Bertazi
 
