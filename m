@@ -1,262 +1,128 @@
-Return-Path: <linux-ext4+bounces-1635-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1636-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EFE287BD0A
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 13:51:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B5B987BD47
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 14:08:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 071F61F222EC
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 12:51:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 259A72853C9
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 13:08:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C418E59161;
-	Thu, 14 Mar 2024 12:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 273705B5B6;
+	Thu, 14 Mar 2024 13:08:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tfXvYe6q";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JgvZ0+NR";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tfXvYe6q";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JgvZ0+NR"
+	dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b="AdKXiqpb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EC7318E20;
-	Thu, 14 Mar 2024 12:50:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B05C85A7AE
+	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 13:08:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710420660; cv=none; b=PZx5uQiOvwkjPA574fiz7+aa6TZmF5ZbQ2DtraYl5398mJtYWMOkNKOVJ5b8LF0OlbAlSvQVWTq9igtjDxETCuEybZJA6m7BjcNfoeYnYqrgs2CJm3ZQ9MoAfHtwMIgmHz10unidgOqjHwszzNxQ0sphEQXjrOp7MVyomq/gi8A=
+	t=1710421699; cv=none; b=TQPQGwb8Ke7pTRxi1q59Z0psx/xMFf0mGMv20CZasXNQMg/Q4R/JhBIHeuNK56SufNdM6S1xfSPCKM+LpofJiJrRYL1KkAzfdrzBIsO8xCaA/fn4aiIXiiFXo2oIu16cohmt9p8b+58gPzrR1f015MBEYdr7F94PnZ6RZy/GxFA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710420660; c=relaxed/simple;
-	bh=LSRB++TWHz6SdMwzx8ZmAqfTuUlUBjxPfPFRxob96mc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RkCdThIN2kARQb2SYE4HoNg3fi9siNvFm1mvEJAEqF8VpVnl8ZnNYhfVT56DmLPJcs5gBImIuWWSqMziA+q9612u7Z/a6aOl0cVw9zXWwdbzBlV75XR/9V1ZiufI00gjCUeR7/SH4c9d+ivtmCbyQx5yMA+Hb9Dl7z+nU01oFbE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tfXvYe6q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JgvZ0+NR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tfXvYe6q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JgvZ0+NR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 58F7521D20;
-	Thu, 14 Mar 2024 12:50:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710420654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZdctWDhd2pnna23oUKV11hCUoIkdth6KOWFyYEMCnCo=;
-	b=tfXvYe6q2KG8F7ZyLFgysEOCTLisPwVSg75RbLwFXS+fNfgvUbbv8g03Nekyp/UQ7+WO8P
-	pvmq5p1zh7gS56R9jMqEFesDCx89ZrZsLe2anNbJ463JcRTXtGOhjlAGABM393DLSdfFJj
-	5ZT9NtlfYdJIbECuUATAtL83rVHrVqU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710420654;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZdctWDhd2pnna23oUKV11hCUoIkdth6KOWFyYEMCnCo=;
-	b=JgvZ0+NRRpzVY4o7498hMNGuCOoug2RvsmIi0jBsM6+fxIcKL68hl8hQe9VfNtm6fapbh9
-	Tj46h2JzBo9OJmDA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710420654; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZdctWDhd2pnna23oUKV11hCUoIkdth6KOWFyYEMCnCo=;
-	b=tfXvYe6q2KG8F7ZyLFgysEOCTLisPwVSg75RbLwFXS+fNfgvUbbv8g03Nekyp/UQ7+WO8P
-	pvmq5p1zh7gS56R9jMqEFesDCx89ZrZsLe2anNbJ463JcRTXtGOhjlAGABM393DLSdfFJj
-	5ZT9NtlfYdJIbECuUATAtL83rVHrVqU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710420654;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZdctWDhd2pnna23oUKV11hCUoIkdth6KOWFyYEMCnCo=;
-	b=JgvZ0+NRRpzVY4o7498hMNGuCOoug2RvsmIi0jBsM6+fxIcKL68hl8hQe9VfNtm6fapbh9
-	Tj46h2JzBo9OJmDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 464631386E;
-	Thu, 14 Mar 2024 12:50:54 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4yogEa7y8mXrfgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 12:50:54 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E1A88A07D9; Thu, 14 Mar 2024 13:50:49 +0100 (CET)
-Date: Thu, 14 Mar 2024 13:50:49 +0100
-From: Jan Kara <jack@suse.cz>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, adobriyan@gmail.com,
-	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, stable@vger.kernel.org
-Subject: Re: [PATCH v2 4/9] ext4: fix slab-out-of-bounds in
- ext4_mb_find_good_group_avg_frag_lists()
-Message-ID: <20240314125049.ym7u7o4cwybizuyl@quack3>
-References: <20240227091148.178435-1-libaokun1@huawei.com>
- <20240227091148.178435-5-libaokun1@huawei.com>
- <20240314103056.rykwi2hhfm7v575a@quack3>
- <50f9333b-831a-8b4b-a6f2-ae79ab46a88b@huawei.com>
- <20240314120011.xggrokdfuu6fh4uv@quack3>
- <d166d7e6-bc55-8718-19a9-6bd97f4bd032@huawei.com>
+	s=arc-20240116; t=1710421699; c=relaxed/simple;
+	bh=f1RjpYk+wUVGcUzWsEOUuhMJaZVlrsH0nJwtARIVQis=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MxTJhqbXZa9XoDB31+ZoWPKGYd7RHLQHPNnhJIzM4aFtwuzjOmfRyiZJ+Rc3spILj+saQo+hAN5OCCPz/KQ5AAbi710MmGzlq4y4D7YRq4FKQB+K2xSM3Q7HXbKx3c8UaiFIur/OduK6rZjX9tA0bEQLBUmeCCaR0Ve/5zGFeIM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com; spf=pass smtp.mailfrom=ionos.com; dkim=pass (2048-bit key) header.d=ionos.com header.i=@ionos.com header.b=AdKXiqpb; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ionos.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ionos.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d41f33eb05so10420821fa.0
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 06:08:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ionos.com; s=google; t=1710421696; x=1711026496; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7F+GMfmTIeHQjgM+fN0XugEriGVcEET+uvRlxfdDDkg=;
+        b=AdKXiqpbZbTRHaHNMUfFQIz7Cos0PIjajNXdkrEmCIer4vIXHcyZm9IIwDrOhv8RIz
+         NHcV2ARyBMypBYLHttp9otFiT7wszy9N2U0UbX77I6hPBoUH9BflyydkFgGEjj9rOljo
+         sH4oE2gfBTnNQqQiWC7v+s1hdf6bBzIi8hK7yKVDaPrkmwEHzmWY/VSePDH/g7afRl9d
+         Oqrcg3MUpsu3Gd9tbaiNIEhrS0ixRDv1zjIels9DnZuZmrA1JfIaoCKMlooI6WOcx9x3
+         5uQuTETc/ZSy9iN4PsL3XAjox3HCGuShOPQEmQWGs4+rRrv74dmYhtcDrNraSVlzLxdV
+         BCVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710421696; x=1711026496;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7F+GMfmTIeHQjgM+fN0XugEriGVcEET+uvRlxfdDDkg=;
+        b=b1ZuGayNA7MuDr1gawtAZC3EhOhAix1WcfH1LWBwjQgy/8kIxur4cGEgE/tOs8o9kR
+         lG7GBIO2fxWk33pYG7Rf8AIurDpdMPxCrHXHBJ1mLXNb8/gBbVOoh+XNR8vvwC3dqQxU
+         UeJah+OLZLknyHGYrqd7X2x2Pe2K2gzmkOWlX6zdu+OLrLpUrHtDiTQHTEqIVfKNmFtz
+         u4BwAWAER5a5G6hd7zJdAdmRtsf8jdDC5k/Vv/pMBDoBVEAiDx1iSYqiuE6CmsgNwwmZ
+         fRC53DgZaEWZ1w1ZKAtAXcIykOn4m3CpycZ7MGp4stl+NFDXSJ8QRtiHDYacsYIy0CXO
+         PgYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWXhN9xAE3PhaKbTOFMGbWS1RsrWGfLiQDtxbHnbsGvyvhr6W+NMXV8sHHRY+iTYSXUeGBEBITxgsCC9guvfW+Cjq5ueD9tCnOXnA==
+X-Gm-Message-State: AOJu0Yzjg3ydjzht5yT2GdDAmnATLNcoaFHJZhJp9Gta6zeLkTJhw+Yr
+	S2pMuk3RqRK0Ny+tfka0AuF18Sjlk7vmNZZyKZ6IuZAx4uiZ4cHA0f3vh1WWpsUcOgd6t3Zi1IP
+	piJbett69K4HnR5GdHqAVGxBy/Mx/QLAxR1kSyw==
+X-Google-Smtp-Source: AGHT+IFHtrfJtNBtI2EsrPtjKBAkxhfSnsboFEe2tmEPRF+rDfTqUN6uL/var8SH6nCXb1/uJK+v42k/DM67/PYhulU=
+X-Received: by 2002:a2e:be90:0:b0:2d4:6aba:f1a3 with SMTP id
+ a16-20020a2ebe90000000b002d46abaf1a3mr1474815ljr.6.1710421695825; Thu, 14 Mar
+ 2024 06:08:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d166d7e6-bc55-8718-19a9-6bd97f4bd032@huawei.com>
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,linux.ibm.com,huawei.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+References: <20231011100541.sfn3prgtmp7hk2oj@quack3> <CAKPOu+_xdFALt9sgdd5w66Ab6KTqiy8+Z0Yd3Ss4+92jh8nCwg@mail.gmail.com>
+ <20231011120655.ndb7bfasptjym3wl@quack3> <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
+ <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
+ <20231011135922.4bij3ittlg4ujkd7@quack3> <20231011-braumeister-anrufen-62127dc64de0@brauner>
+ <20231011170042.GA267994@mit.edu> <20231011172606.mztqyvclq6hq2qa2@quack3>
+ <20231012142918.GB255452@mit.edu> <20231012144246.h3mklfe52gwacrr6@quack3> <28DSITL9912E1.2LSZUVTGTO52Q@mforney.org>
+In-Reply-To: <28DSITL9912E1.2LSZUVTGTO52Q@mforney.org>
+From: Max Kellermann <max.kellermann@ionos.com>
+Date: Thu, 14 Mar 2024 14:08:04 +0100
+Message-ID: <CAKPOu+910gjDp9Lk3sW=CmTM8j_FHEYyfH-kQKz-piRJHkQiDw@mail.gmail.com>
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+To: Michael Forney <mforney@mforney.org>
+Cc: Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>, Christian Brauner <brauner@kernel.org>, 
+	Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, Jeff Layton <jlayton@kernel.org>, 
+	Jan Kara <jack@suse.com>, Dave Kleikamp <shaggy@kernel.org>, ceph-devel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	jfs-discussion@lists.sourceforge.net, Yang Xu <xuyang2018.jy@fujitsu.com>, 
+	linux-fsdevel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu 14-03-24 20:37:38, Baokun Li wrote:
-> On 2024/3/14 20:00, Jan Kara wrote:
-> > On Thu 14-03-24 19:24:56, Baokun Li wrote:
-> > > Hi Jan,
-> > > 
-> > > On 2024/3/14 18:30, Jan Kara wrote:
-> > > > On Tue 27-02-24 17:11:43, Baokun Li wrote:
-> > > > 
-> > > > 
-> > > > At 4k block size, the length of the s_mb_avg_fragment_size list is 14,
-> > > > but an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds
-> > > > to be triggered by an attempt to access an element at index 29.
-> > > > 
-> > > > Add a new attr_id attr_clusters_in_group with values in the range
-> > > > [0, sbi->s_clusters_per_group] and declare mb_group_prealloc as
-> > > > that type to fix the issue. In addition avoid returning an order
-> > > > from mb_avg_fragment_size_order() greater than MB_NUM_ORDERS(sb)
-> > > > and reduce some useless loops.
-> > > > 
-> > > > Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
-> > > > CC: stable@vger.kernel.org
-> > > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > > > Looks good. Just one nit below. Otherwise feel free to add:
-> > > > 
-> > > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > > > 
-> > > > > ---
-> > > > >    fs/ext4/mballoc.c |  6 ++++++
-> > > > >    fs/ext4/sysfs.c   | 13 ++++++++++++-
-> > > > >    2 files changed, 18 insertions(+), 1 deletion(-)
-> > > > > 
-> > > > > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> > > > > index 85a91a61b761..7ad089df2408 100644
-> > > > > --- a/fs/ext4/mballoc.c
-> > > > > +++ b/fs/ext4/mballoc.c
-> > > > > @@ -831,6 +831,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
-> > > > >    		return 0;
-> > > > >    	if (order == MB_NUM_ORDERS(sb))
-> > > > >    		order--;
-> > > > > +	if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
-> > > > > +		order = MB_NUM_ORDERS(sb) - 1;
-> > > > >    	return order;
-> > > > >    }
-> > > > > @@ -1057,6 +1059,10 @@ static void ext4_mb_choose_next_group_best_avail(struct ext4_allocation_context
-> > > > >    			ac->ac_flags |= EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED;
-> > > > >    			return;
-> > > > >    		}
-> > > > > +
-> > > > > +		/* Skip some unnecessary loops. */
-> > > > > +		if (unlikely(i > MB_NUM_ORDERS(ac->ac_sb)))
-> > > > > +			i = MB_NUM_ORDERS(ac->ac_sb);
-> > > > How can this possibly trigger now? MB_NUM_ORDERS is sb->s_blocksize_bits +
-> > > > 2. 'i' is starting at fls(ac->ac_g_ex.fe_len) and ac_g_ex.fe_len shouldn't
-> > > > be larger than clusters per group, hence fls() should be less than
-> > > > sb->s_blocksize_bits? Am I missing something? And if yes, we should rather
-> > > > make sure 'order' is never absurdly big?
-> > > > 
-> > > > I suspect this code is defensive upto a point of being confusing :)
-> > > > 
-> > > > Honza
-> > > Yes, this is indeed defensive code! Only walk into this branch when
-> > > WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)) is triggered.
-> > > As previously mentioned by ojaswin in the following link:
-> > > 
-> > > "The reason for this is that otherwise when order is large eg 29,
-> > > we would unnecessarily loop from i=29 to i=13 while always
-> > > looking at the same avg_fragment_list[13]."
-> > > 
-> > > Link：https://lore.kernel.org/lkml/ZdQ7FEA7KC4eAMpg@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/
-> > > 
-> > > Thank you so much for the review! ღ( ´･ᴗ･` )
-> > Thanks for the link. So what Ojaswin has suggested has been slightly
-> > different though. He suggested to trim the order before the for loop, not
-> > after the first iteration as you do which is what was confusing me. I'd
-> > even suggest to replace your check with:
-> > 
-> >          /*
-> >           * mb_avg_fragment_size_order() returns order in a way that makes
-> >           * retrieving back the length using (1 << order) inaccurate. Hence, use
-> >           * fls() instead since we need to know the actual length while modifying
-> >           * goal length.
-> >           */
-> > -       order = fls(ac->ac_g_ex.fe_len) - 1;
-> > +	order = min(fls(ac->ac_g_ex.fe_len), MB_NUM_ORDERS(ac->ac_sb)) - 1;
-> >          min_order = order - sbi->s_mb_best_avail_max_trim_order;
-> >          if (min_order < 0)
-> >                  min_order = 0;
-> > 
-> > 								Honza
-> Yes, I changed it that way because it only happens when an exception
-> somewhere causes fe_len to be a huge value. I think in this case we
-> should report the exception via WARN_ON_ONCE(), and trimming the
-> order before the for loop will bypass WARN_ON_ONCE and not report
-> any errors.
+On Wed, Mar 13, 2024 at 9:39=E2=80=AFPM Michael Forney <mforney@mforney.org=
+> wrote:
+> Turns out that symlinks are inheriting umask on my system (which
+> has CONFIG_EXT4_FS_POSIX_ACL=3Dn):
+>
+> $ umask 022
+> $ ln -s target symlink
+> $ ls -l symlink
+> lrwxr-xr-x    1 michael  michael           6 Mar 13 13:28 symlink -> targ=
+et
+> $
+>
+> Looking at the referenced functions, posix_acl_create() returns
+> early before applying umask for symlinks, but ext4_init_acl() now
+> applies the umask unconditionally.
 
-Fair enough. Then:
-         /*
-          * mb_avg_fragment_size_order() returns order in a way that makes
-          * retrieving back the length using (1 << order) inaccurate. Hence, use
-          * fls() instead since we need to know the actual length while modifying
-          * goal length.
-          */
-	order = fls(ac->ac_g_ex.fe_len) - 1;
-+	if (WARN_ON_ONCE(order > MB_NUM_ORDERS(ac->ac_sb) - 1))
-+		order = MB_NUM_ORDERS(ac->ac_sb) - 1;
-        min_order = order - sbi->s_mb_best_avail_max_trim_order;
-        if (min_order < 0)
-                min_order = 0;
+Indeed, I forgot to exclude symlinks from this - sorry for the breakage.
 
-Still much less confusing...
+> After reverting this commit, it works correctly. I am also unable
+> to reproduce the mentioned issue with O_TMPFILE after reverting the
+> commit. It seems that the bug was fixed properly in ac6800e279a2
+> ('fs: Add missing umask strip in vfs_tmpfile'), and all branches
+> that have this ext4_init_acl patch already had ac6800e279a2 backported.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+I can post a patch that adds the missing check or a revert - what do
+the FS maintainers prefer?
+
+(There was a bug with O_TMPFILE ignoring umasks years ago - I first
+posted the patch in 2018 or so - but by the time my patch actually got
+merged, the bug had already been fixed somewhere else IIRC.)
+
+Max
 
