@@ -1,160 +1,144 @@
-Return-Path: <linux-ext4+bounces-1652-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1653-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE52587C26F
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 19:12:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B6587C29B
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 19:25:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BAA81C21325
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 18:12:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7B2D5B21B4E
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 18:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3DF574BFB;
-	Thu, 14 Mar 2024 18:12:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 834E374BFA;
+	Thu, 14 Mar 2024 18:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zuah9+n/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="98NEdqPy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zuah9+n/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="98NEdqPy"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="F9fRpw4C"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6401A38EC
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 18:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2D3A73161;
+	Thu, 14 Mar 2024 18:25:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710439935; cv=none; b=WNlyDw+WrRyWZ3c81QUXxZ4MNIonJU27ledNBoZGOmpgdDWIInHePEE7jaS1+Dr7/dKEw6ZshQ3cbn8iZLYRZIcvJHpw8/fy+riEUlceOVrAzHP8SbINDBGNqBtiQponQl2LPRAVkjKXSv9x2Qh3UcKXuXyP0aE5Gc1bwMMCqiQ=
+	t=1710440730; cv=none; b=GMTPZlnLzgQQmAX6dDbfodQZDJuei19q3P1fZ89fVPJ7TbCzrfguRCCwgxZrPKgepSpxYVjrJ4R/HqKVrsCusvwNNLpfZAKLTxN+0ZuY437w4P74DlM/7p0DpnOJXMVQKvaUiTENlVzx/YvuFMZbAZeknYNNWaHQlt1231WApgc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710439935; c=relaxed/simple;
-	bh=I3RsAzEiN+D2JxK3362Z5SAwxf1kR3mQuFfUVqEThB4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ep0EnwRemsR4jwwTY3ITWrcyi4mLnggUIouQ1CpeNYCT5442UZSJ+apd61XaBFgftFFpaiVfH1VzpD+epFns5TkI56qBywmJMudWz0pf2Z3owOcVZ3gceZyHEaK67FtI7HkHjAhgYn9fSM2TDpOPbaET6S4yFP4yVplYq6vyHLE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zuah9+n/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=98NEdqPy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zuah9+n/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=98NEdqPy; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F9181F893;
-	Thu, 14 Mar 2024 18:12:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710439924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
-	b=Zuah9+n/0MoMKFsbbjG5tjAtZunda5enfoLJb/TNeE/nmmeYgEA7raCF9EJk4Jbef0UEnr
-	/a8MahPykmysUhDc3KC+RA+iabuncp44xvcbWbLhk/g1h242cCY1ChHPo/c5bHLRgbYls5
-	+SLPupBjmeuKUUWlResvBLJI6uC3bwk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710439924;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
-	b=98NEdqPyRBLS4QrewM4H+jSDOPAAGjLatFjIrPkww7mEzEo4NSub3hgtzlbmJwyLiEXTnw
-	T3N7roehfG+xeaBg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710439924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
-	b=Zuah9+n/0MoMKFsbbjG5tjAtZunda5enfoLJb/TNeE/nmmeYgEA7raCF9EJk4Jbef0UEnr
-	/a8MahPykmysUhDc3KC+RA+iabuncp44xvcbWbLhk/g1h242cCY1ChHPo/c5bHLRgbYls5
-	+SLPupBjmeuKUUWlResvBLJI6uC3bwk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710439924;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
-	b=98NEdqPyRBLS4QrewM4H+jSDOPAAGjLatFjIrPkww7mEzEo4NSub3hgtzlbmJwyLiEXTnw
-	T3N7roehfG+xeaBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 727EA1368C;
-	Thu, 14 Mar 2024 18:12:04 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id G7yxG/Q982VRXwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 18:12:04 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0D78FA07D9; Thu, 14 Mar 2024 19:12:04 +0100 (CET)
-Date: Thu, 14 Mar 2024 19:12:04 +0100
-From: Jan Kara <jack@suse.cz>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-	syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
-Subject: Re: [PATCH 2/3] ext4: Do not create EA inode under buffer lock
-Message-ID: <20240314181204.shdck2lv4v7ogdzj@quack3>
-References: <20240209111418.22308-1-jack@suse.cz>
- <20240209112107.10585-2-jack@suse.cz>
- <20240229155917.GA1146088@mit.edu>
+	s=arc-20240116; t=1710440730; c=relaxed/simple;
+	bh=8E0Cp30XGVgnf21bVDVFgdL/HtepvKVS2jpePHJilms=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=YOSOD/5tBCEDW4XStA4Nl+Ibp5HTOeH2e0uy+fp0FsQxp9QMOjBRpDlYFDkSuq/nc+iuT5yflC25HUJX5Ftj8jqLmCEdLkAufxEVNooDIwzbtinU01IcZT1Y0OQE+x+OZ6T+fzibcXN3xCPG/LEAyVWbfd68biitRJY+pdjmWro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=F9fRpw4C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6DB89C433F1;
+	Thu, 14 Mar 2024 18:25:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1710440729;
+	bh=8E0Cp30XGVgnf21bVDVFgdL/HtepvKVS2jpePHJilms=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=F9fRpw4Cat7wPAJ76UK/GohqRcuhcwKVKchiU7Jt9+gsBFkbnEJbrExxJOgU+KOYs
+	 wYYU1XcfGfWr5f+aNjVwCQX9+Heqd5wqkABXalkhz3epd9KkvIWWoiYOLHptXKUVPU
+	 /ZZqTAcI8Sb9x+PihV98tcKBHqKLQnY63QKG4FoY=
+Date: Thu, 14 Mar 2024 11:25:23 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: cheung wall <zzqq0103.hey@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: WARNING in __kthread_create_on_node
+Message-Id: <20240314112523.35feba8252931c912dc00bbf@linux-foundation.org>
+In-Reply-To: <CAKHoSAtC3NzC6c-uA=Ruzn81psVTAX-60Fw51OscpnpeJ2S29g@mail.gmail.com>
+References: <CAKHoSAtC3NzC6c-uA=Ruzn81psVTAX-60Fw51OscpnpeJ2S29g@mail.gmail.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240229155917.GA1146088@mit.edu>
-X-Spam-Score: -0.02
-X-Spamd-Result: default: False [-0.02 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.72)[83.64%];
-	 FROM_HAS_DN(0.00)[];
-	 RCPT_COUNT_THREE(0.00)[4];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[a43d4f48b8397d0e41a9];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Thu 29-02-24 10:59:17, Theodore Ts'o wrote:
-> On Fri, Feb 09, 2024 at 12:21:00PM +0100, Jan Kara wrote:
-> > ext4_xattr_set_entry() creates new EA inodes while holding buffer lock
-> > on the external xattr block. This is problematic as it nests all the
-> > allocation locking (which acquires locks on other buffers) under the
-> > buffer lock. This can even deadlock when the filesystem is corrupted and
-> > e.g. quota file is setup to contain xattr block as data block. Move the
-> > allocation of EA inode out of ext4_xattr_set_entry() into the callers.
-> > 
-> > Reported-by: syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
-> > Signed-off-by: Jan Kara <jack@suse.cz>
+(cc linux-ext4)
+
+Interesting.
+
+On Thu, 14 Mar 2024 22:23:54 +0800 cheung wall <zzqq0103.hey@gmail.com> wrote:
+
+> Hello,
 > 
-> In my testing I've found that this is causing a regression for
-> ext4/026 in the encrypt configuration.  This can be replicated using
-> "kvm-xfstests -c encrypt ext4/026.   Logs follow below.
+> when using Healer to fuzz the latest Linux Kernel, the following crash
 > 
-> I'll try to take a closer look, but I may end up deciding to drop this
-> patch or possible the whole patch series until we can figure out
-> what's going on.
-
-OK, I've found the problem. I'll rebase patches on top of rc1 when it
-happens and send fixed version. Thanks for catching this!
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> was triggered on:
+> 
+> 
+> HEAD commit: e8f897f4afef0031fe618a8e94127a0934896aba  (tag: v6.8)
+> 
+> git tree: upstream
+> 
+> console output: https://pastebin.com/raw/4dqjbmVn
+> 
+> kernel config: https://pastebin.com/raw/enVJCL3u
+> 
+> C reproducer: https://pastebin.com/raw/wdKP6g0V
+> 
+> Syzlang reproducer: https://pastebin.com/raw/wfptradq
+> 
+> If you fix this issue, please add the following tag to the commit:
+> 
+> Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
+> 
+> ----------------------------------------------------------
+> 
+> ------------[ cut here ]------------
+> different return values (11 and 6) from vsnprintf("kmmpd-%.*s", ...)
+> WARNING: CPU: 0 PID: 18743 at lib/kasprintf.c:30
+> kvasprintf+0x14e/0x160 lib/kasprintf.c:30
+> Modules linked in:
+> CPU: 0 PID: 18743 Comm: syz-executor.0 Not tainted 6.8.0 #1
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+> RIP: 0010:kvasprintf+0x14e/0x160 lib/kasprintf.c:30
+> Code: 5b 5d 41 5c 41 5d 41 5e 41 5f e9 e8 2f 2d 02 e8 08 54 43 ff 90
+> 48 c7 c7 40 62 fe a1 4c 89 e9 44 89 e2 89 ee e8 d3 62 13 ff 90 <0f> 0b
+> 90 90 eb 99 e8 27 96 12 02 0f 1f 80 00 00 00 00 90 90 90 90
+> RSP: 0018:ffff88810485f760 EFLAGS: 00010286
+> RAX: 0000000000000000 RBX: 1ffff1102090beec RCX: ffffffff9eb67582
+> RDX: ffff888104dfe600 RSI: 0000000000000000 RDI: 0000000000000001
+> RBP: 000000000000000b R08: 0000000000000001 R09: ffffed10235c5121
+> R10: 0000000000000000 R11: 000000002d2d2d2d R12: 0000000000000006
+> R13: ffffffffa1f42a20 R14: ffff888100b62900 R15: 000000000000000c
+> FS:  00007f8db8f7e640(0000) GS:ffff88811ae00000(0000) knlGS:0000000000000000
+> loop2: detected capacity change from 0 to 512
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: 00007ffcd493ab98 CR3: 00000001063fe004 CR4: 0000000000770ef0
+> PKRU: 55555554
+> Call Trace:
+>  <TASK>
+> loop3: detected capacity change from 0 to 512
+>  __kthread_create_on_node+0x17f/0x3c0 kernel/kthread.c:444
+>  kthread_create_on_node+0xbf/0x100 kernel/kthread.c:512
+> loop1: detected capacity change from 0 to 512
+>  ext4_multi_mount_protect+0x953/0xb10 fs/ext4/mmp.c:392
+>  __ext4_fill_super fs/ext4/super.c:5363 [inline]
+>  ext4_fill_super+0xa76d/0xc290 fs/ext4/super.c:5703
+>  get_tree_bdev+0x35a/0x5d0 fs/super.c:1614
+>  vfs_get_tree+0x8c/0x320 fs/super.c:1779
+>  do_new_mount fs/namespace.c:3352 [inline]
+>  path_mount+0x6b3/0x1db0 fs/namespace.c:3679
+>  do_mount fs/namespace.c:3692 [inline]
+>  __do_sys_mount fs/namespace.c:3898 [inline]
+>  __se_sys_mount fs/namespace.c:3875 [inline]
+>  __x64_sys_mount+0x286/0x310 fs/namespace.c:3875
+>  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>  do_syscall_64+0xb3/0x1b0 arch/x86/entry/common.c:83
+>  entry_SYSCALL_64_after_hwframe+0x6f/0x77
+> RIP: 0033:0x7f8db9410dfe
+> Code: 48 c7 c0 ff ff ff ff eb aa e8 be 0d 00 00 66 2e 0f 1f 84 00 00
+> 00 00 00 0f 1f 40 00 f3 0f 1e fa 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d
+> 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+> RSP: 002b:00007f8db8f7de38 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+> RAX: ffffffffffffffda RBX: 00000000000004b4 RCX: 00007f8db9410dfe
+> RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007f8db8f7de90
+> RBP: 00007f8db8f7ded0 R08: 00007f8db8f7ded0 R09: 0000000000004500
+> R10: 0000000000004500 R11: 0000000000000246 R12: 0000000020000040
+> R13: 0000000020000500 R14: 00007f8db8f7de90 R15: 0000000020000540
+>  </TASK>
+> ---[ end trace 0000000000000000 ]---
 
