@@ -1,204 +1,128 @@
-Return-Path: <linux-ext4+bounces-1622-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1623-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72A6987B971
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 09:44:32 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ACA687BA71
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 10:32:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2D2D628345C
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 08:44:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD0CA1C221FF
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 09:32:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287656BB4B;
-	Thu, 14 Mar 2024 08:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFFB76CDBF;
+	Thu, 14 Mar 2024 09:31:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="Q6SN+s3y"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="fKOaFeXh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1918EEC4;
-	Thu, 14 Mar 2024 08:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62AA6E5E0
+	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 09:31:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.165.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710405860; cv=none; b=CvhC17+5WJx53JZmyxKj3EPjcRhFGefCIMNS4weqgMaD3h1Yk6NQQN3DLwNP4V4CpgvO4emy2IoUTOBjmr2RXCAi+vzK2BPw9bVF5hXej4uICXS0s5hAU9zJNg0S+oWHgnL3tpnaodes9eIaqN1hRAFydq/kFGP450SCHjWrTrE=
+	t=1710408697; cv=none; b=LYzzH66VaruH1+uSBCDdvDmllW5Y4FOzXn1hzQEQYVapgZlNsTcsnHeJFyDWiIqJmAN18XL7RRX2twwrmtvlBMo1A5NLn6VlCM/ttt1i3Bzfq8T/ekF8SFHfogskHxcbuNLydW6DLs8yc6fRnN8/7NpjAr+dgRIJzeIaNdLkZBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710405860; c=relaxed/simple;
-	bh=+BX7gnL09c5lxHYhdPdiCZcTTqc7o9DwYCU15DVX9kY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=FyXCHn2rPay2Lv8CvTq917mCXFWKseKmbMtNjq1flkRUoysK+VIUIjLaq8+M0hxsRTxcrO21RC2sbHOTR960xrMgORxV21cB3CjZMzhmmulfb1tZcqvrWPd4uRue0+WGfNhzYZvgPVL2jafuO4Q7F+KwSsZCMnSLeRceCk8nHvU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=Q6SN+s3y; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710405857;
-	bh=+BX7gnL09c5lxHYhdPdiCZcTTqc7o9DwYCU15DVX9kY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=Q6SN+s3y4Cu4ar2ldP89W3O7Lw7mEHkWAUdl6vWphpO0XissCZeODmz+8Ogsa6BAb
-	 WRl+OqGyNI/Ug+SuR2XvowOAOS3rIDmgVlopvj+FQ96O62xOfBKhVT79dDQ6pgtzLR
-	 NEAM/Q8cMDgd9XjxqRqGgitDSIug8Ryz7wWLcu/ciapk2Edx8C6ZCsCDut6lx5EIob
-	 lCXsb7D5kbrrGXkFk1CNzfUUF522ujk7Bb75Q1LVPpYzo3pdgWHbIIhaHfEsyyzWjx
-	 aZu1gsLeJGAR0EKDZORhJUfkIzWAamSDFFMBbS9TrDq0NjGfD1QOOio+kHu6f5JVuN
-	 rrXOmYLpNBlhA==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 7DD54378105A;
-	Thu, 14 Mar 2024 08:44:12 +0000 (UTC)
-Message-ID: <aaa4561e-fd23-4b21-8963-7ba4cc99eed3@collabora.com>
-Date: Thu, 14 Mar 2024 10:44:09 +0200
+	s=arc-20240116; t=1710408697; c=relaxed/simple;
+	bh=J9RXwTPmFoJKDKUunbn7j5jjS/Z1SmvbH3lMkCrgSWY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HE2FST5WtAK4la/WUwnMb556r+Hs030+pb8KfJNVPUXNXl6TBn9d56f4vvp7GwxWO5AZ0tLBw3M62wG8GOzloN/U/BYDjaxT9V8hYxlH8IfVpptFYwKXpyF+4YxOGKN1Qq+n+MD25ItThMksb30puh/eL3ElFCw7EsknFjTEa/A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=fKOaFeXh; arc=none smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246627.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42E7nCvJ015163;
+	Thu, 14 Mar 2024 09:31:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : mime-version : content-transfer-encoding;
+ s=corp-2023-11-20; bh=yLURkSUt8sDw8aT9AP29hZBFamqMks3yvUMQSIK14mg=;
+ b=fKOaFeXhkmZ8xV+3h9YUMHc9tpAGD2JfuxbhnXldLioJQJrZemolB16SnrlDFw1aJxzJ
+ lTt2iM/A4GSHyYWmoxtX44opGvKaFKgiz7g1tCsZgGD975tl5hJgzqPiQxEzF0eLfnHT
+ Ezma/yzdeZPL1PDDtrWzOe31NxFGrkZwmMKWvbKfydBYxRhZyHeQqhz6lTyJxmgA+boV
+ PPX0pYf1km6jUNo61HB2RiYRC5bsu2drLRvJb8bEIN+SXh/XkJF50A6BFBuBM+fTaPdZ
+ ma8pCgXAHG1lW5yGX6mX503ds8RL17js2Blt/BOK978V9BMEFOutTdd2DCfJ3LnpIt0n kA== 
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.appoci.oracle.com [130.35.100.223])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wrec2jykb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 14 Mar 2024 09:31:32 +0000
+Received: from pps.filterd (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42E9UgL1009089;
+	Thu, 14 Mar 2024 09:31:31 GMT
+Received: from pps.reinject (localhost [127.0.0.1])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3wre7gbab9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 14 Mar 2024 09:31:31 +0000
+Received: from iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42E9VVkC038530;
+	Thu, 14 Mar 2024 09:31:31 GMT
+Received: from sridara-s.osdevelopmeniad.oraclevcn.com (sridara-s.allregionaliads.osdevelopmeniad.oraclevcn.com [100.100.252.75])
+	by iadpaimrmta01.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTP id 3wre7gbab5-1;
+	Thu, 14 Mar 2024 09:31:31 +0000
+From: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu, rajesh.sivaramasubramaniom@oracle.com,
+        junxiao.bi@oracle.com
+Subject: [RESEND PATCH] e2fsprogs: misc/mke2fs.8.in: Correct valid cluster-size values
+Date: Thu, 14 Mar 2024 09:31:27 +0000
+Message-Id: <20240314093127.2100974-1-srivathsa.d.dara@oracle.com>
+X-Mailer: git-send-email 2.39.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 2/9] f2fs: Simplify the handling of cached insensitive
- names
-Content-Language: en-US
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- jaegeuk@kernel.org, chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, Gabriel Krisman Bertazi <krisman@collabora.com>
-References: <20240305101608.67943-1-eugen.hristev@collabora.com>
- <20240305101608.67943-3-eugen.hristev@collabora.com>
- <87edcdk8li.fsf@mailhost.krisman.be>
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <87edcdk8li.fsf@mailhost.krisman.be>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_07,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 spamscore=0
+ mlxlogscore=999 bulkscore=0 phishscore=0 malwarescore=0 mlxscore=0
+ suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2311290000 definitions=main-2403140066
+X-Proofpoint-ORIG-GUID: oarwaRE29yyKL0OU3vrqypu6AcOEZMAe
+X-Proofpoint-GUID: oarwaRE29yyKL0OU3vrqypu6AcOEZMAe
 
-On 3/14/24 01:36, Gabriel Krisman Bertazi wrote:
-> Eugen Hristev <eugen.hristev@collabora.com> writes:
-> 
->> +void f2fs_free_casefolded_name(struct f2fs_filename *fname)
->> +{
->> +	unsigned char *buf = (unsigned char *)fname->cf_name.name;
->> +
->> +	kmem_cache_free(f2fs_cf_name_slab, buf);
->> +	fname->cf_name.name = NULL;
-> 
-> In my previous review, I mentioned you could drop the "if (buf)" check
-> here *if and only if* you used kfree. By doing an unchecked kmem_cache_free
-> like this, you will immediately hit an Oops in the first lookup (see below).
-> 
-> Please, make sure you actually stress test this patchset with fstests
-> against both f2fs and ext4 before sending each new version.
+According to the mke2fs man page, the supported cluster-size values
+for an ext4 filesystem are 2048 to 256M bytes. However, this is not
+the case.
 
-I did run the xfstests, however, maybe I did not run the full suite, or maybe I am
-running it in a wrong way ?
-How are you running the kvm-xfstests with qemu ? Can you share your command
-arguments please ?
+When mkfs is run to create a filesystem with following specifications:
+* 1k blocksize and cluster-size greater than 32M
+* 2k blocksize and cluster-size greater than 64M
+* 4k blocksize and cluster-size greater than 128M
+mkfs fails with "Invalid argument passed to ext2 library while trying
+to create journal" error. In general, when the cluster-size to blocksize
+ratio is greater than 32k, mkfs fails with this error.
 
-Thanks
+Went through the code and found out that the function
+`ext2fs_new_range()` is the source of this error. This is because when
+the cluster-size to blocksize ratio exceeds 32k, the length argument
+to the function `ext2fs_new_range()` results in 0. Hence, the error.
 
-> 
-> Thanks,
-> 
-> 
-> [   74.202044] F2FS-fs (loop0): Using encoding defined by superblock: utf8-12.1.0 with flags 0x0
-> [   74.206592] F2FS-fs (loop0): Found nat_bits in checkpoint
-> [   74.221467] F2FS-fs (loop0): Mounted with checkpoint version = 3e684111
-> FSTYP         -- f2fs
-> PLATFORM      -- Linux/x86_64 sle15sp5 6.7.0-gf27274eae416 #8 SMP PREEMPT_DYNAMIC Thu Mar 14 00:22:47 CET 2024
-> MKFS_OPTIONS  -- -O encrypt /dev/loop1
-> MOUNT_OPTIONS -- -o acl,user_xattr /dev/loop1 /root/work/scratch
-> 
-> [   75.038385] F2FS-fs (loop1): Found nat_bits in checkpoint
-> [   75.054311] F2FS-fs (loop1): Mounted with checkpoint version = 6b9fbccb
-> [   75.176328] F2FS-fs (loop0): Using encoding defined by superblock: utf8-12.1.0 with flags 0x0
-> [   75.179261] F2FS-fs (loop0): Found nat_bits in checkpoint
-> [   75.194264] F2FS-fs (loop0): Mounted with checkpoint version = 3e684114
-> f2fs/001 1s ... [   75.570867] run fstests f2fs/001 at 2024-03-14 00:24:33
-> [   75.753604] BUG: unable to handle page fault for address: fffff14ad2000008
-> [   75.754209] #PF: supervisor read access in kernel mode
-> [   75.754647] #PF: error_code(0x0000) - not-present page
-> [   75.755077] PGD 0 P4D 0 
-> [   75.755300] Oops: 0000 [#1] PREEMPT SMP NOPTI
-> [   75.755683] CPU: 0 PID: 2740 Comm: xfs_io Not tainted 6.7.0-gf27274eae416 #8
-> [   75.756266] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS unknown 2/2/2022
-> [   75.756911] RIP: 0010:kmem_cache_free+0x6a/0x320
-> [   75.757309] Code: 80 48 01 d8 0f 82 b4 02 00 00 48 c7 c2 00 00 00 80 48 2b 15 f8 c2 18 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 d6 c2 18 01 <48> 8b 50 08 49 89 c6 f6 c2 01 0f 85 ea 01 00 00 0f 1f 44 00 00 49
-> [   75.758834] RSP: 0018:ffffa59bc231bb10 EFLAGS: 00010286
-> [   75.759270] RAX: fffff14ad2000000 RBX: 0000000000000000 RCX: 0000000000000000
-> [   75.759860] RDX: 0000620400000000 RSI: 0000000000000000 RDI: ffff9dfc80043600
-> [   75.760450] RBP: ffffa59bc231bb30 R08: ffffa59bc231b9a0 R09: 00000000000003fa
-> [   75.761037] R10: 00000000000fd024 R11: 0000000000000107 R12: ffff9dfc80043600
-> [   75.761626] R13: ffffffff8404dc7a R14: 0000000000000000 R15: ffff9dfc8f1aa000
-> [   75.762221] FS:  00007f9601efb780(0000) GS:ffff9dfcfbc00000(0000) knlGS:0000000000000000
-> [   75.762888] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   75.763372] CR2: fffff14ad2000008 CR3: 0000000111750000 CR4: 0000000000750ef0
-> [   75.763962] PKRU: 55555554
-> [   75.764194] Call Trace:
-> [   75.764435]  <TASK>
-> [   75.764677]  ? __die_body+0x1a/0x60
-> [   75.764982]  ? page_fault_oops+0x154/0x440
-> [   75.765335]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.765760]  ? search_module_extables+0x46/0x70
-> [   75.766149]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.766548]  ? fixup_exception+0x22/0x300
-> [   75.766892]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.767292]  ? exc_page_fault+0xa6/0x140
-> [   75.767633]  ? asm_exc_page_fault+0x22/0x30
-> [   75.767995]  ? f2fs_free_filename+0x2a/0x40
-> [   75.768362]  ? kmem_cache_free+0x6a/0x320
-> [   75.768703]  ? f2fs_free_filename+0x2a/0x40
-> [   75.769061]  f2fs_free_filename+0x2a/0x40
-> [   75.769403]  f2fs_lookup+0x19f/0x380
-> [   75.769712]  __lookup_slow+0x8b/0x130
-> [   75.770034]  walk_component+0xfc/0x170
-> [   75.770353]  path_lookupat+0x69/0x140
-> [   75.770664]  filename_lookup+0xe1/0x1c0
-> [   75.770991]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.771393]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.771792]  ? do_wp_page+0x3f6/0xbf0
-> [   75.772109]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.772523]  ? preempt_count_add+0x70/0xa0
-> [   75.772902]  ? vfs_statx+0x89/0x180
-> [   75.773224]  vfs_statx+0x89/0x180
-> [   75.773530]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.773939]  vfs_fstatat+0x80/0xa0
-> [   75.774237]  __do_sys_newfstatat+0x26/0x60
-> [   75.774595]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.775021]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.775448]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.775878]  ? do_user_addr_fault+0x563/0x7c0
-> [   75.776273]  ? srso_alias_return_thunk+0x5/0xfbef5
-> [   75.776699]  do_syscall_64+0x50/0x110
-> [   75.777028]  entry_SYSCALL_64_after_hwframe+0x6e/0x76
-> [   75.777479] RIP: 0033:0x7f9601b07aea
-> [   75.777793] Code: ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 41 89 ca b8 06 01 00 00 0f 05 <3d> 00 f0 ff ff 77 07 31 c0 c3 0f 1f 40 00 48 8b 15 01 23 0e 00 f7
-> [   75.779391] RSP: 002b:00007ffc160eaae8 EFLAGS: 00000246 ORIG_RAX: 0000000000000106
-> [   75.780050] RAX: ffffffffffffffda RBX: 0000000000000042 RCX: 00007f9601b07aea
-> [   75.780663] RDX: 00007ffc160eab80 RSI: 00007ffc160ecb88 RDI: 00000000ffffff9c
-> [   75.781278] RBP: 00007ffc160ead20 R08: 00007ffc160ead20 R09: 0000000000000000
-> [   75.781902] R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffc160eae70
-> [   75.782532] R13: 00007ffc160ecb88 R14: 00007ffc160eae70 R15: 0000000000000020
-> [   75.783150]  </TASK>
-> [   75.783349] Modules linked in:
-> [   75.783628] CR2: fffff14ad2000008
-> [   75.783918] ---[ end trace 0000000000000000 ]---
-> [   75.784315] RIP: 0010:kmem_cache_free+0x6a/0x320
-> [   75.784718] Code: 80 48 01 d8 0f 82 b4 02 00 00 48 c7 c2 00 00 00 80 48 2b 15 f8 c2 18 01 48 01 d0 48 c1 e8 0c 48 c1 e0 06 48 03 05 d6 c2 18 01 <48> 8b 50 08 49 89 c6 f6 c2 01 0f 85 ea 01 00 00 0f 1f 44 00 00 49
-> [   75.786294] RSP: 0018:ffffa59bc231bb10 EFLAGS: 00010286
-> [   75.786747] RAX: fffff14ad2000000 RBX: 0000000000000000 RCX: 0000000000000000
-> [   75.787369] RDX: 0000620400000000 RSI: 0000000000000000 RDI: ffff9dfc80043600
-> [   75.788016] RBP: ffffa59bc231bb30 R08: ffffa59bc231b9a0 R09: 00000000000003fa
-> [   75.788672] R10: 00000000000fd024 R11: 0000000000000107 R12: ffff9dfc80043600
-> [   75.789296] R13: ffffffff8404dc7a R14: 0000000000000000 R15: ffff9dfc8f1aa000
-> [   75.789938] FS:  00007f9601efb780(0000) GS:ffff9dfcfbc00000(0000) knlGS:0000000000000000
-> [   75.790677] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [   75.791212] CR2: fffff14ad2000008 CR3: 0000000111750000 CR4: 0000000000750ef0
-> [   75.791862] PKRU: 55555554
-> [   75.792112] Kernel panic - not syncing: Fatal exception
-> [   75.792797] Kernel Offset: 0x2a00000 from 0xffffffff81000000 (relocation range: 0xffffffff80000000-0xffffffffbfffffff)
-> 
-> 
+This patch corrects the valid cluster-size values.
+---
+ misc/mke2fs.8.in | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in
+index e6bfc6d6..b5b02144 100644
+--- a/misc/mke2fs.8.in
++++ b/misc/mke2fs.8.in
+@@ -230,9 +230,9 @@ test is used instead of a fast read-only test.
+ .TP
+ .B \-C " cluster-size"
+ Specify the size of cluster in bytes for filesystems using the bigalloc
+-feature.  Valid cluster-size values are from 2048 to 256M bytes per
+-cluster.  This can only be specified if the bigalloc feature is
+-enabled.  (See the
++feature.  Valid cluster-size values are from 2048 to 128M bytes per 
++cluster based on filesystem blocksize. This can only be specified if the
++bigalloc feature is enabled.  (See the
+ .B ext4 (5)
+ man page for more details about bigalloc.)   The default cluster size if
+ bigalloc is enabled is 16 times the block size.
+-- 
+2.31.1
 
 
