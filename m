@@ -1,133 +1,160 @@
-Return-Path: <linux-ext4+bounces-1651-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1652-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3B7887C0A5
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 16:52:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE52587C26F
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 19:12:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7342F284A24
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 15:52:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1BAA81C21325
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 18:12:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A939273175;
-	Thu, 14 Mar 2024 15:52:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3DF574BFB;
+	Thu, 14 Mar 2024 18:12:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BIiQTPyi"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zuah9+n/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="98NEdqPy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zuah9+n/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="98NEdqPy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5C0618E20;
-	Thu, 14 Mar 2024 15:52:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D6401A38EC
+	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 18:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710431550; cv=none; b=ZuPNhW1lt6pg+equOXJk5I0OT7amyY5cg3qmgyg1b3efYVuPmHVhHzeULEheYnXuogzkfEXtuXFZwMfUGw/d37Ty08FLdJhj95L7o/FkCR6ZijAAXQfbEQPsEFP8wXZ2KgzwaOHvOBTCw9LzeEjwPgNV+9ShtUU8fCluwytodh4=
+	t=1710439935; cv=none; b=WNlyDw+WrRyWZ3c81QUXxZ4MNIonJU27ledNBoZGOmpgdDWIInHePEE7jaS1+Dr7/dKEw6ZshQ3cbn8iZLYRZIcvJHpw8/fy+riEUlceOVrAzHP8SbINDBGNqBtiQponQl2LPRAVkjKXSv9x2Qh3UcKXuXyP0aE5Gc1bwMMCqiQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710431550; c=relaxed/simple;
-	bh=Z7TYGBPOoIBukUksfxYV+hx+h1FdGbsx9QGwkRCvrGg=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=QCVOpWP7+M5cTu5s4Vn/OFX5inafWyo8rabSEHZKkx98nw5FZRcY+0Q3I3j/F3usx8kZTqC1igQnQi8fLNBIEXZ7sBSRmH4N4dlN9iMZHYmwsSLI9HAapgyqr4CtLGffjT4JrQVLu1JY0z1S+VpJriM/u7e+HiXyw1WCK1Tb07M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BIiQTPyi; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so953637b3a.1;
-        Thu, 14 Mar 2024 08:52:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710431548; x=1711036348; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Cx2Q7SMtzb14PMck/KCjjiXpz4N8Haj7beKabn3YkmM=;
-        b=BIiQTPyi83wvGqe5NSs/I2S1XNat2Lg7BcGn2/MWOLPPqXFlvZQaYbDMuKZYgGRJIP
-         6P9nWHNaPftNKj/CzSQf6rsLJtdXESVKpq30sG63aR5O1B7PuvwATFHa7VkKuHn8zTWQ
-         BH+k93J/hnjS2DvzGaBDlEy7tMoyhQYQZNIs4O6M6/NTltN+TZHcg6annhXkPKawtnW+
-         YDlIJVs0tj/GnV9ictxghxz5ggPEITACstAsFrHLqHR0U+wbrQ4BA9Kw3/KcUNhMonjL
-         ljV7m0QSv4r6KWj7rInT5gultg/tdHA1mcOIe9imDLRn8fP6QKWm7v0sWElH+z7JIdpy
-         +cvw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710431548; x=1711036348;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Cx2Q7SMtzb14PMck/KCjjiXpz4N8Haj7beKabn3YkmM=;
-        b=RM3g49vgmtExzIKtO0jGTQMjkM9VU2JWKIH5C4tDnakeShxLJ2/plaRZHWRl3fUzau
-         FS9xEd//YnQDto77+17LGk//yoQ+0VrtzxuTscB2soItucCjcEaklAsW7XLS8GK+85vG
-         Ystrvhved8RGxHEseqwoIYfmMFcFjXh1KTCfBdAf7dPzIzZkHaGJNCDkwOnri2omcU9O
-         cm7OWMTumylk0RneoyoQLjFZ/HggakQU6FnB7PBK95ZrYbFoLJA8Em5nAiw/zOVZ2RkM
-         vptBFfrsWrH/YaLv2DFkl6mzf7cP9bBm0EjogSGcb6N75oE/ulqqY/jMTMUkS999RVZX
-         z50w==
-X-Forwarded-Encrypted: i=1; AJvYcCX72WV6JGK+i7w1mgXYxof+8Sa9h1Tq8J+f7+KwegfXDJMxEHnqRx0DHjew2gbi8l5p8FyYvVXtq5f9131u5qDQkfmmGPOmT6x83QEImky3hMPKDkcL93w+i/OAPJDgHxZ6XecpfXvaek8nVE4mREIIOgQII1QOpQPs9pAbPBzPHD7LNx40Bq8=
-X-Gm-Message-State: AOJu0Yys5VKQl/ZokUlDEuACT/Tu0ZxGeZZLwjfcWjf7R84bGwLq2K3L
-	MF8MhVk3YJJQFM79wgN9NC1RV40193ibwtne1omqRnv1AtQNClfq
-X-Google-Smtp-Source: AGHT+IFYLPUsIucrzPsDiX/M3/odhTswA8YDYlkZ8C6cNzRTo6gKZotrBhRFjmfYzK6sXU/NLDCy2w==
-X-Received: by 2002:a05:6a21:7898:b0:1a3:46fd:6e2d with SMTP id bf24-20020a056a21789800b001a346fd6e2dmr565925pzc.7.1710431548067;
-        Thu, 14 Mar 2024 08:52:28 -0700 (PDT)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id p24-20020a056a0026d800b006e650049472sm1632118pfw.123.2024.03.14.08.52.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Mar 2024 08:52:27 -0700 (PDT)
-Date: Thu, 14 Mar 2024 21:22:14 +0530
-Message-Id: <87r0gcn74h.fsf@doe.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org, Dave Chinner <david@fromorbit.com>
-Subject: Re: [RFC] ext4: Add support for ext4_map_blocks_atomic()
-In-Reply-To: <9fdf92e9-ad77-4184-9418-8a209e24ec20@oracle.com>
+	s=arc-20240116; t=1710439935; c=relaxed/simple;
+	bh=I3RsAzEiN+D2JxK3362Z5SAwxf1kR3mQuFfUVqEThB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Ep0EnwRemsR4jwwTY3ITWrcyi4mLnggUIouQ1CpeNYCT5442UZSJ+apd61XaBFgftFFpaiVfH1VzpD+epFns5TkI56qBywmJMudWz0pf2Z3owOcVZ3gceZyHEaK67FtI7HkHjAhgYn9fSM2TDpOPbaET6S4yFP4yVplYq6vyHLE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zuah9+n/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=98NEdqPy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zuah9+n/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=98NEdqPy; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F9181F893;
+	Thu, 14 Mar 2024 18:12:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710439924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
+	b=Zuah9+n/0MoMKFsbbjG5tjAtZunda5enfoLJb/TNeE/nmmeYgEA7raCF9EJk4Jbef0UEnr
+	/a8MahPykmysUhDc3KC+RA+iabuncp44xvcbWbLhk/g1h242cCY1ChHPo/c5bHLRgbYls5
+	+SLPupBjmeuKUUWlResvBLJI6uC3bwk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710439924;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
+	b=98NEdqPyRBLS4QrewM4H+jSDOPAAGjLatFjIrPkww7mEzEo4NSub3hgtzlbmJwyLiEXTnw
+	T3N7roehfG+xeaBg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710439924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
+	b=Zuah9+n/0MoMKFsbbjG5tjAtZunda5enfoLJb/TNeE/nmmeYgEA7raCF9EJk4Jbef0UEnr
+	/a8MahPykmysUhDc3KC+RA+iabuncp44xvcbWbLhk/g1h242cCY1ChHPo/c5bHLRgbYls5
+	+SLPupBjmeuKUUWlResvBLJI6uC3bwk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710439924;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wnjOmLO3dTDNSu+w7TnTHKL7kmqQPx7WGrTR993wbEo=;
+	b=98NEdqPyRBLS4QrewM4H+jSDOPAAGjLatFjIrPkww7mEzEo4NSub3hgtzlbmJwyLiEXTnw
+	T3N7roehfG+xeaBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 727EA1368C;
+	Thu, 14 Mar 2024 18:12:04 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id G7yxG/Q982VRXwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 14 Mar 2024 18:12:04 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0D78FA07D9; Thu, 14 Mar 2024 19:12:04 +0100 (CET)
+Date: Thu, 14 Mar 2024 19:12:04 +0100
+From: Jan Kara <jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+	syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
+Subject: Re: [PATCH 2/3] ext4: Do not create EA inode under buffer lock
+Message-ID: <20240314181204.shdck2lv4v7ogdzj@quack3>
+References: <20240209111418.22308-1-jack@suse.cz>
+ <20240209112107.10585-2-jack@suse.cz>
+ <20240229155917.GA1146088@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240229155917.GA1146088@mit.edu>
+X-Spam-Score: -0.02
+X-Spamd-Result: default: False [-0.02 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.72)[83.64%];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[4];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[a43d4f48b8397d0e41a9];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-John Garry <john.g.garry@oracle.com> writes:
+On Thu 29-02-24 10:59:17, Theodore Ts'o wrote:
+> On Fri, Feb 09, 2024 at 12:21:00PM +0100, Jan Kara wrote:
+> > ext4_xattr_set_entry() creates new EA inodes while holding buffer lock
+> > on the external xattr block. This is problematic as it nests all the
+> > allocation locking (which acquires locks on other buffers) under the
+> > buffer lock. This can even deadlock when the filesystem is corrupted and
+> > e.g. quota file is setup to contain xattr block as data block. Move the
+> > allocation of EA inode out of ext4_xattr_set_entry() into the callers.
+> > 
+> > Reported-by: syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> 
+> In my testing I've found that this is causing a regression for
+> ext4/026 in the encrypt configuration.  This can be replicated using
+> "kvm-xfstests -c encrypt ext4/026.   Logs follow below.
+> 
+> I'll try to take a closer look, but I may end up deciding to drop this
+> patch or possible the whole patch series until we can figure out
+> what's going on.
 
-> On 08/03/2024 20:25, Ritesh Harjani (IBM) wrote:
->
-> Hi Ritesh,
->
->> Currently ext4 exposes [fsawu_min, fsawu_max] size as
->> [blocksize, clustersize] (given the hw block device constraints are
->> larger than FS atomic write units).
->> 
->> That means a user should be allowed to -
->> 1. pwrite 0 4k /mnt/test/f1
->> 2. pwrite 0 16k /mnt/test/f1
->> 
->
-> Previously you have mentioned 2 or 3 methods in which ext4 could support 
-> atomic writes. To avoid doubt, is this patch for the "Add intelligence 
-> in multi-block allocator of ext4 to provide aligned allocations (this 
-> option won't require any formatting)" method mentioned at 
-> https://lore.kernel.org/linux-fsdevel/8734tb0xx7.fsf@doe.com/
->
-> and same as method 3 at 
-> https://lore.kernel.org/linux-fsdevel/cover.1709356594.git.ritesh.list@gmail.com/? 
+OK, I've found the problem. I'll rebase patches on top of rc1 when it
+happens and send fixed version. Thanks for catching this!
 
-Hi John,
-
-No. So this particular patch to add ext4_map_blocks_atomic() method is
-only to support the usecase which you listed should work for a good user
-behaviour. This is because, with bigalloc we advertizes fsawu_min and
-fsawu_max as [blocksize, clustersize]
-i.e. 
-
-That means a user should be allowed to -
-1. pwrite 0 4k /mnt/test/f1
-followed by 
-2. pwrite 0 16k /mnt/test/f1
-
-
-So earlier we were failing the second 16k write at an offset where there
-is already an existing extent smaller that 16k (that was because of the
-assumption that the most of the users won't do such a thing).
-
-But for a more general usecase, it is not difficult to support the
-second 16k write in such a way for atomic writes with bigalloc,
-so this patch just adds that support to this series.     
-
--ritesh 
-
-
->
->
-> Thanks,
-> John
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
