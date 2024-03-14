@@ -1,96 +1,173 @@
-Return-Path: <linux-ext4+bounces-1646-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1648-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33EAA87BE85
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 15:10:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0537887BF21
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 15:41:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6F2C31C217E4
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 14:10:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 708EC1F24161
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 14:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8315873516;
-	Thu, 14 Mar 2024 14:07:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53E8C70CAB;
+	Thu, 14 Mar 2024 14:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="h76XgWmU";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VJUlb3WV";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="h76XgWmU";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="VJUlb3WV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B59971B43;
-	Thu, 14 Mar 2024 14:07:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 245E31A38EB;
+	Thu, 14 Mar 2024 14:41:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710425279; cv=none; b=fws0i2xgLc8UDQ7c7PIZaF7eMVWksJH2qbqI6hseTBOgYO68ss6fU4vFsH3ePLyvJ5myFqIbHj8q5SW9KR8ZQP6saq4c3ov7aw5MuftOWQCsFzDJV3w/sCShAq7MgUT6oacW00lGRuyDdQA06tZ4ItooCwTpnIROMN6mpjh6E6s=
+	t=1710427275; cv=none; b=MOVW22AlfYWYwiZ8YfeC6PAxnVEfMv9hjNNNZDBOytGklCWamnVYO8D7CG5aPocI8m1v1IiqtYcWWpbjfhDz4ypgePtQ5tW/uswRQZZU45vvWuGT7kRh+WVvLe6soBNIwVKgY2z9KBbCFORjZSc6sKoVZyXxFGgq8K11RG+rJGo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710425279; c=relaxed/simple;
-	bh=P7knyHnbZndkT96HWjKBGpGhwkiQR62ld119bnhrD7E=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=nQ7jUGWUPmDuED21i4Ztomv3k+ssI2CXWW88JJbotEh9+6lLD17ZBvXxKTls2mp+4Lf0f+RiSc7PShfuzkUieME3v7RrEixSk2a6C9rFIWqV+8E6Jx+ucBSmtTGAo5xfvuJnb6nRZYs80xvqagRY4e2Vww3F5UxZXx7AqXeZWZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TwTgY6b3Lz1xr7B;
-	Thu, 14 Mar 2024 22:06:01 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7195C1A016C;
-	Thu, 14 Mar 2024 22:07:48 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Thu, 14 Mar
- 2024 22:07:47 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <ojaswin@linux.ibm.com>, <adobriyan@gmail.com>,
-	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, <libaokun1@huawei.com>
-Subject: [PATCH v3 9/9] ext4: clean up s_mb_rb_lock to fix build warnings with C=1
-Date: Thu, 14 Mar 2024 22:09:06 +0800
-Message-ID: <20240314140906.3064072-10-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240314140906.3064072-1-libaokun1@huawei.com>
-References: <20240314140906.3064072-1-libaokun1@huawei.com>
+	s=arc-20240116; t=1710427275; c=relaxed/simple;
+	bh=ELF+f59TJxIixei3mfagGQm1K4qILIyFUQQgSq9dK7c=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=bM1b7DCmElVWRszV/9xFyZbFHq4xyUrdJmhjmZMmfmzNAPP1GwSbpObji1sY3nUqfLRSyH95Sf5BAjEnV4mKsfmZPpwySCFJveSxZBDcxBmPQ6S8r0fki9RZRCEbo1NCKgJN24qGMpiBqTx4uum2D8tR7JEiaY4Ap0Q8rfYWtsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=h76XgWmU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VJUlb3WV; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=h76XgWmU; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=VJUlb3WV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 25C1621C9E;
+	Thu, 14 Mar 2024 14:41:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710427272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wG9JWTLr5OXP9cpOv1POjmlWyamPW2vvqR6gpOJQVKc=;
+	b=h76XgWmUuxD9NXfXtIABjc5MVcushaKkbp0RLa2pms+DJzgvB31t8KJVU0rWB/x5cxLsgL
+	KABCxIEL4knvNdzp/A6HzmKl/D80cWe5XlqlyuoPvf4sWj2K74Yq7M6HSXDdrt7KmS2iCQ
+	StrF15jx+2qnyO91mhz4PR2lY4kvC+o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710427272;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wG9JWTLr5OXP9cpOv1POjmlWyamPW2vvqR6gpOJQVKc=;
+	b=VJUlb3WVZyBIo1LiKEClrxGqh+X6nWYh7RohFOX/imEfxp0zFRsZb6b43gJ0aph1QknH/0
+	bSEU6/FVoLybigDA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710427272; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wG9JWTLr5OXP9cpOv1POjmlWyamPW2vvqR6gpOJQVKc=;
+	b=h76XgWmUuxD9NXfXtIABjc5MVcushaKkbp0RLa2pms+DJzgvB31t8KJVU0rWB/x5cxLsgL
+	KABCxIEL4knvNdzp/A6HzmKl/D80cWe5XlqlyuoPvf4sWj2K74Yq7M6HSXDdrt7KmS2iCQ
+	StrF15jx+2qnyO91mhz4PR2lY4kvC+o=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710427272;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=wG9JWTLr5OXP9cpOv1POjmlWyamPW2vvqR6gpOJQVKc=;
+	b=VJUlb3WVZyBIo1LiKEClrxGqh+X6nWYh7RohFOX/imEfxp0zFRsZb6b43gJ0aph1QknH/0
+	bSEU6/FVoLybigDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D67551368B;
+	Thu, 14 Mar 2024 14:41:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id vqwTLocM82W+GgAAD6G6ig
+	(envelope-from <krisman@suse.de>); Thu, 14 Mar 2024 14:41:11 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
+  jaegeuk@kernel.org,  chao@kernel.org,
+  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  kernel@collabora.com,
+  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
+ Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [PATCH v13 2/9] f2fs: Simplify the handling of cached
+ insensitive names
+In-Reply-To: <aaa4561e-fd23-4b21-8963-7ba4cc99eed3@collabora.com> (Eugen
+	Hristev's message of "Thu, 14 Mar 2024 10:44:09 +0200")
+Organization: SUSE
+References: <20240305101608.67943-1-eugen.hristev@collabora.com>
+	<20240305101608.67943-3-eugen.hristev@collabora.com>
+	<87edcdk8li.fsf@mailhost.krisman.be>
+	<aaa4561e-fd23-4b21-8963-7ba4cc99eed3@collabora.com>
+Date: Thu, 14 Mar 2024 10:41:10 -0400
+Message-ID: <8734sskha1.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=h76XgWmU;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=VJUlb3WV
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.63 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 HAS_ORG_HEADER(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_TWELVE(0.00)[14];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 NEURAL_HAM_SHORT(-0.20)[-0.995];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.12)[88.41%]
+X-Spam-Score: -2.63
+X-Rspamd-Queue-Id: 25C1621C9E
+X-Spam-Flag: NO
 
-Running sparse (make C=1) on mballoc.c we get the following warning:
+Eugen Hristev <eugen.hristev@collabora.com> writes:
 
- fs/ext4/mballoc.c:3194:13: warning: context imbalance in
-  'ext4_mb_seq_structs_summary_start' - wrong count at exit
+>> Please, make sure you actually stress test this patchset with fstests
+>> against both f2fs and ext4 before sending each new version.
+>
+> I did run the xfstests, however, maybe I did not run the full suite, or maybe I am
+> running it in a wrong way ?
 
-This is because __acquires(&EXT4_SB(sb)->s_mb_rb_lock) was called in
-ext4_mb_seq_structs_summary_start(), but s_mb_rb_lock was removed in commit
-83e80a6e3543 ("ext4: use buckets for cr 1 block scan instead of rbtree"),
-so remove the __acquires to silence the warning.
+No worries.  Did you manage to reproduce it?
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/mballoc.c | 1 -
- 1 file changed, 1 deletion(-)
+> How are you running the kvm-xfstests with qemu ? Can you share your command
+> arguments please ?
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 48afe5aa228c..b3d616f055b0 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3190,7 +3190,6 @@ int ext4_seq_mb_stats_show(struct seq_file *seq, void *offset)
- }
- 
- static void *ext4_mb_seq_structs_summary_start(struct seq_file *seq, loff_t *pos)
--__acquires(&EXT4_SB(sb)->s_mb_rb_lock)
- {
- 	struct super_block *sb = pde_data(file_inode(seq->file));
- 	unsigned long position;
+I don't use kvm-xfstests.  I run ./check directly:
+
+export SCRATCH_DEV=/dev/loop1
+export SCRATCH_MNT=$BASEMNT/scratch
+export TEST_DEV=/dev/loop0
+export TEST_DIR=$BASEMNT/test
+export RESULT_BASE=${BASEMNT}/results
+export REPORT_DIR=${BASEMNT}/report
+export FSTYP=f2fs
+
+mkfs.f2fs -f -C utf8 -O casefold ${TEST_DEV}
+
+./check -g encrypt,quick
+
 -- 
-2.31.1
-
+Gabriel Krisman Bertazi
 
