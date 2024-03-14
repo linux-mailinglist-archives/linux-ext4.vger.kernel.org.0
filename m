@@ -1,66 +1,65 @@
-Return-Path: <linux-ext4+bounces-1615-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1616-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F40E87B6F6
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 04:55:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 682AC87B6F9
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 04:55:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92F971C213EC
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 03:55:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 116921F22041
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 03:55:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B56CA6F;
-	Thu, 14 Mar 2024 03:55:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 819FC1078F;
+	Thu, 14 Mar 2024 03:55:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="dr5/Oo6J"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="ZabXn/OF"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 278239454
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 03:55:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94E23101C5
+	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 03:55:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710388512; cv=none; b=iZZ4qqVlzf35wecJJe2zbxrf0hBEtxtimCgF/vA6ewgXVv9i3HQAG/8gTwnP5MlsmMsHQVxOzfklx2zoP0hajiz19qat1tYO8ONhE/T6WmAQnbIcw0eQHm6KmfAH7U4S8ZsXq+tY0Pntf4lwcjnkXYfWaw8fyVwNUbegsxfFbKM=
+	t=1710388521; cv=none; b=gmmhbN2a/l5c5IjRb6qfvUpWGgjhQMMQ3YbGQDCkyw28GRvjpInNXa+1J6lXLtgH/8za6mIQzAT4fQY12bVBuaXidP34b92Mw7Fdioc2gDipSOOALRGetn5iEj4z6xm1lgOeEgC43Ysu9OG4FuxlSJhS4EP47jLWxRNMlUWaTm0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710388512; c=relaxed/simple;
-	bh=TSjb5kKr71IZo4aIoklR+N5ASgrPafOemLfJHoCPdY0=;
+	s=arc-20240116; t=1710388521; c=relaxed/simple;
+	bh=o0u4X2jNDbOyRKysJjoIWsJgSwgTwIvOc0vUAWG6eqU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=emjv9zc6IVAuZ4rQ8zFYF7iW5jSwA2xm4AmaykWC3O0hFNGUnuEJMOhCGuoTtMg8jYotIsMPvTurpRsAI4xg1whA2DVc3c2TVwoAncomgziuHkuoEFRqAx/4bPo0kknmjsZr+h/HJsnVTgx8mA5VBKp9hQVtljbodx+3irTIzsE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=dr5/Oo6J; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=kRmUl/KS6Ebwm5vcb9Y634KWfXudCW4TXNJ1AZY4Fn3auVfvX5uPlVTA/vvdp9pJuexW/q6xhpzdcE4dCUAcMM7WUG7+1MFSXsgSTRUAzWhp3+bzxo0Ugjug53PYVToLV0vt2NpnuN1rwwgzVMOx7OyVwS+s3H0En8GFkIs9uBo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=ZabXn/OF; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-116-252.bstnma.fios.verizon.net [173.48.116.252])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 42E3snPd003036
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 42E3sni5003034
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 13 Mar 2024 23:54:50 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1710388491; bh=AvNLx2MZZmUfIZ52kPuRs6GSVepWGaRvDEyCw/zq9bQ=;
+	t=1710388492; bh=YVbFWRJQkDqctnAz51Shq00+jF2NkfwWusf8wTaeR6I=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=dr5/Oo6JqmMBORYUCELRUyJmbwUEKTdYoS2KcLEOn2iiTl/YWMSAkuYnV9N6feDEO
-	 9josqWyqZiJYUshwztT+e12vGO4eUSac4/fNi5ELJeeStJiOOI4dODvZEmbGLEaDzs
-	 BWdCMlN15Pyqa63r0Kv61SGk/+Ja5zNF+JovGOd1D9GDFHl7Fe2mzAWEzF8QMG81Ty
-	 FenpUDXbf9p1c265gQCepP62c1lhbJthqLaz/mCNmfG1Ldgq+VYGY0jQq3YYPlFV0W
-	 Y0rEjMGJ0bQcXFp4FpMsUUUMspXUlw1iVWHmmeFFcAWQ8vERqEVL6RMVmNgL4YfHBg
-	 3GYItVLaHRtMw==
+	b=ZabXn/OFXZSjveLkcQrmlB6GEhy76220sVRpm/XUCEWvMnmugNW345qUrdlQi4WvX
+	 koYxBbkMkCHEveLMRTzjPMTcHfHgAyiVJgS88wqo6XE76a+zOy6P9R4I4uFr5ytW0Q
+	 7JOYXqE1brIknKGx6n+BJYKoFvMmcSaLl7nGX7nnK5LHqTTfqYWf6fmQB2tZd8Fzp9
+	 Pbcyba/fRRokaoFoYDJ8KMgK0oVRQ54c2w2WVGoj/WMflwMptRUbw79DmGEZB5t4Pc
+	 JMzQONy2n+ckYRHThroRnnqSh8WHyBDBrORQHXB5mpaHDJ+w6byODTui3vzVUUTgPS
+	 k8b8ryrrpfbXQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id E9ED415C0225; Wed, 13 Mar 2024 23:54:48 -0400 (EDT)
+	id EB70D15C0276; Wed, 13 Mar 2024 23:54:48 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Andreas Dilger <adilger.kernel@dilger.ca>,
-        Kemeng Shi <shikemeng@huaweicloud.com>,
-        Arnd Bergmann <arnd@kernel.org>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Arnd Bergmann <arnd@arndb.de>,
-        "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: kunit: use dynamic inode allocation
-Date: Wed, 13 Mar 2024 23:54:41 -0400
-Message-ID: <171038847843.855927.17076324311685588663.b4-ty@mit.edu>
+To: adilger.kernel@dilger.ca, chengming.zhou@linux.dev
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, linux-mm@kvack.org, vbabka@suse.cz,
+        roman.gushchin@linux.dev, Xiongwei.Song@windriver.com,
+        Chengming Zhou <zhouchengming@bytedance.com>
+Subject: Re: [PATCH] ext4: remove SLAB_MEM_SPREAD flag usage
+Date: Wed, 13 Mar 2024 23:54:42 -0400
+Message-ID: <171038847843.855927.15942631846474053923.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240227161548.2929881-1-arnd@kernel.org>
-References: <20240227161548.2929881-1-arnd@kernel.org>
+In-Reply-To: <20240224134822.829456-1-chengming.zhou@linux.dev>
+References: <20240224134822.829456-1-chengming.zhou@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -71,21 +70,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 27 Feb 2024 17:15:39 +0100, Arnd Bergmann wrote:
-> Storing an inode structure on the stack pushes some functions over the warning
-> limit for stack frame size:
+On Sat, 24 Feb 2024 13:48:22 +0000, chengming.zhou@linux.dev wrote:
+> The SLAB_MEM_SPREAD flag is already a no-op as of 6.8-rc1, remove
+> its usage so we can delete it from slab. No functional change.
 > 
-> In file included from fs/ext4/mballoc.c:7039:
-> fs/ext4/mballoc-test.c:506:13: error: stack frame size (1032) exceeds limit (1024) in 'test_mark_diskspace_used' [-Werror,-Wframe-larger-than]
->   506 | static void test_mark_diskspace_used(struct kunit *test)
->       |             ^
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] ext4: kunit: use dynamic inode allocation
-      commit: d60c53694c6ff560963590971720d632bb3d481e
+[1/1] ext4: remove SLAB_MEM_SPREAD flag usage
+      commit: 708623737b0a28aff33bff0237862a2e08bc5c97
 
 Best regards,
 -- 
