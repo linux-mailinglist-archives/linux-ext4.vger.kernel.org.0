@@ -1,117 +1,101 @@
-Return-Path: <linux-ext4+bounces-1654-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1655-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C20B287C4C7
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 22:31:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D253187C6AE
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Mar 2024 01:10:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F346C1C21759
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Mar 2024 21:31:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B89C81C21413
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Mar 2024 00:10:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BFE97641D;
-	Thu, 14 Mar 2024 21:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PDPZENDG"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 425C2802;
+	Fri, 15 Mar 2024 00:10:18 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83BF276038
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 21:31:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F159635
+	for <linux-ext4@vger.kernel.org>; Fri, 15 Mar 2024 00:10:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710451908; cv=none; b=metZkrlbhZgoLQgAI6qIyTg6L23NVFSCzHpNWr8TDOXgUXDTbI0FyCgVxjQEjVDwYAXaEEyFDZHURTf81K0qtYJM56P2LUYUmj0dsQPpxb/4PLQOPGqmjVD2v9g3kmx+NC4DZOZFSF7CxtgKx9ycE8wicTi4ZF3hszvJzl7hdLM=
+	t=1710461418; cv=none; b=SUXb+FrQVGpWXVLPxDkqHcZaOP3orE/KigB53MNlVePvVJnVdpKE7QwuOllOXQCvipPHJlYTuaCFVj1n/5gNbJnHWRWdiglBZVzjBgf2N/UCyu198qP6czsTWyDhuWTB1IRpkDFyEmA7ysbnv56NDWHiBi1129hjqMPCHSujHy8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710451908; c=relaxed/simple;
-	bh=0F47dTbiyuueDJP4eDDQg1fohSzWHHddPD+5OgpktOA=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=CR/QQ9MOrXif2vJtDyniMF/Cahiq3auqifdqztFSnrWLf0v0gnOkJJhJnErBJFxUKIHHWzCP4iLIfA74iAbSx0iAfWc0hd8qaIDYfhQswbA9ncU4PWMjZtn5Kf3PNf1NNjDXllU4Szjmz9GIRUWK7wXQsENp5yQVLu/HYvWl9Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PDPZENDG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 05978C43394
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 21:31:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710451908;
-	bh=0F47dTbiyuueDJP4eDDQg1fohSzWHHddPD+5OgpktOA=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=PDPZENDGMTwFPbTbGrPqdMFtsgvwaHFfJTR0dbDMmSFd5Yb1C3iZxO5sCGhgJxnEb
-	 Fftr8h+mTmSgkQaZwItZlJjBLc8744LUtk2o1/SfIwx9nqUCxPyVIz1RlMZKe5bD91
-	 7e0zirSxsGg7DkZ0x9qhMDMi9jSdYr4ZHyquPhGt0105c1G8iglUvP90pKpQzx9xWM
-	 Oh5ZOJw8oE1N+2E/3Q/0m0HGvLFtDz+Rj8qGmqmKawLzirMwXX+R+b/GExG3ouGBkf
-	 VqJEknQz4UvdDhF5wRB0ZW6yXzjjqTwzFDiG/UzVDAprUmtjpBpcSHNlLhMzUUx7Ks
-	 Y9RuGCtQvWvNg==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id EC2BCC53BD3; Thu, 14 Mar 2024 21:31:47 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 205197] kernel BUG at fs/ext4/extents_status.c:884
-Date: Thu, 14 Mar 2024 21:31:47 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-205197-13602-0dwx5XEBQm@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-205197-13602@https.bugzilla.kernel.org/>
-References: <bug-205197-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1710461418; c=relaxed/simple;
+	bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=FlDWBGr3IktaFDSyb6XRbG4FVDH/Hey+yQ26GPPhcjZ0w8hGO9dYAfuz47qfIzX3oy1exNodgJKHP/E2H2hzaI+60+g37EVe8ILj+WvAczDeBbaqsn0ldqr6IbIklp0Tms1v0yhX/lk4XYIC63K5YHVdInnEECqx9M3ECXbqZxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3667abe113fso19576995ab.1
+        for <linux-ext4@vger.kernel.org>; Thu, 14 Mar 2024 17:10:16 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710461416; x=1711066216;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+        b=LZN6NjwyvRsr1abYpMyRSm91MRc2b/T2PoGS1/TXGe/o143M7k8kU8k7fuPz2+r7r4
+         QvKt+Q71fS2yZu645p/kPJDTJW0Au5MC30YcEtkIsmluGdyKpuTu+ZPjBB5WBJJjSpAZ
+         vqgP9MpvkZ7DEsD+AF8wNRhIODZZu+q6lthzLQfKL7YV7M5/rslcUWdPfNkQN2Z0l7ei
+         hMHbvGGXfjr8axBqUVz6oWMgT1rPSkT9PHQj1ccD0oZJOc9kczytSioz665o0BRstcu3
+         2UPDnLQGM20dYncS3RLbyT8PyltNbg4gDac489TZV74Pqdv8/4yifbSQWP44hMoEPJBy
+         GRjA==
+X-Forwarded-Encrypted: i=1; AJvYcCUnVW3abXwzy6dvh2sYEaklPR/q58BBk9WvBidaOfrB0lWsI2pT1kPzEUXCBRGizMe7zLOH2E1UeESEEEXm75z/clR8Jx/i3HCxAw==
+X-Gm-Message-State: AOJu0YxixnaRpiWySbTNa68iFpZ1MXZnYhP7Ed4y6/jkHWdbThc7re4c
+	nK7njRxt8jxGyL8XmZt7dEdUDGR3IobUdYEZeCR4tCoFA6f2+NdaG7qs7Z5fiyXk79/CYb1oGP8
+	2NuJi1GcH3hh2SBW7vdw4glCOfSiszAvDv0ygcNT9q72GruGIcbFo02A=
+X-Google-Smtp-Source: AGHT+IEwia3UBhvywO+h+u2pfZqh0yKTnkD0W9jpgVSgia1FcpQaoAm3+nW32+O04ra6I7mwds9hpKK7s+2ic/riJCglBAUa7ZfJ
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1d16:b0:366:7922:950e with SMTP id
+ i22-20020a056e021d1600b003667922950emr87913ila.6.1710461415855; Thu, 14 Mar
+ 2024 17:10:15 -0700 (PDT)
+Date: Thu, 14 Mar 2024 17:10:15 -0700
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000182dd10613a7d554@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D205197
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
---- Comment #6 from Theodore Tso (tytso@mit.edu) ---
-The reason why no one has paid much attention to it is because the bug is
-reported against a very old kernel, and upstream developers generally only
-worry about the upstream kernel.  Companies which insist on using old stable
-kernels need to either engage paid support (e.g., contacting Red Hat if you=
- are
-using RHEL, etc.) or have their own kernel developers on staff to debug the
-problem.  Upstream developers are volunteers don't have the time to provide
-free support to companies that are using old kernels.  In general, at the
-minimum we ask kernel engineers working on these kernels to try to reproduce
-the problem on the latest upstream kernel, and if they can't.... maybe they
-should work on using a newer upstream kernel, or they should figure out how=
- to
-backport fixes to old LTS kernels.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-Also, it seems... weird.... that you can't look at the hex dump.  The kerne=
-l is
-able to mount the kernel, so you have access to the encryption key, or at
-least, to a block device which has the encryption key set up by your user
-space.   So you should be able to run e2fsck -fn /dev/hdXX.  This would help
-provide a hint to the nature of the corruption, so that we could try to
-reproduce the problem on an upstream kernel.   But what we really don't have
-time to do is to hand-hold users who don't know how to run fsck or apply ke=
-rnel
-patches, and trying to run test kernels.
+#syz fix: exact-commit-title
 
-If you can let us know what you actually can do, perhaps we might bend the
-rules and try to give you some debugging help.  But it will only be on a be=
-st
-efforts basis, and when we have time, since after all, we're volunteers....
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
---=20
-You may reply to this email to add a comment.
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
