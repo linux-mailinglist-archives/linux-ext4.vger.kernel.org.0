@@ -1,133 +1,115 @@
-Return-Path: <linux-ext4+bounces-1660-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1661-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDDE187CD16
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Mar 2024 13:14:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B632787CE60
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Mar 2024 14:53:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFFE51C217FD
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Mar 2024 12:14:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD8231C2187F
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Mar 2024 13:53:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B70B31BF5D;
-	Fri, 15 Mar 2024 12:14:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87FD436AF1;
+	Fri, 15 Mar 2024 13:52:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bn16yoKp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kqzhkH+o"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DEB51C69C
-	for <linux-ext4@vger.kernel.org>; Fri, 15 Mar 2024 12:14:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0028D1BF28;
+	Fri, 15 Mar 2024 13:52:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710504873; cv=none; b=HE7YMYwqlh/IWsX2iR0t0QYnl7cLk5BTquJtwvquxflLeqbNdBfPUcSxNTaAGtAjOha7oytfEJ6uB/jYNwec2yvr29KRLWYd5pdyomwe44SePmAajpyl157IYCo5Zs3DtVH/pHjG99vrRs2Kosg1rpxxCVOY4M4I6dMxhM/5pC8=
+	t=1710510751; cv=none; b=tyK6kWTR47P7OgCXIoVttOsR01TODiI4PMzcjQEGrtSmNJ2JpA7UnPg6d+RnZ6TMDVVyq26BMWDveuUrc3wd6Y+VmBb9+MycYL3euGtha0eHBCKLDCmHlMGO14B/6rIaXkOIQ0ckZBBvNZN9TjT3xFBNSSlwR6p9NThL7GqJMLo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710504873; c=relaxed/simple;
-	bh=xCGXjGXnxTA6xM+opL1uV4ex8paT2SIXUOHG7nqEAhY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=cEN1/OpUQT9nldIBsDGhKlWqusbhqd1gzOZjJcM/joODW1fHd0uplreunRWUUwjbmoh5H6SdjNfxEeJ/X/c8zbz1DWxuQ4MUqsFgKAq5FW4oxSJ+nYlUolhEww3/beI6YqvIKn5PkGBtiny3fdyTIdIIu0Z4YC3jpLmtGnrPD/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bn16yoKp; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id CDAA1C43390
-	for <linux-ext4@vger.kernel.org>; Fri, 15 Mar 2024 12:14:32 +0000 (UTC)
+	s=arc-20240116; t=1710510751; c=relaxed/simple;
+	bh=AwIVao3rL1Q0k95nqbmA9y6yqrp6LGbk8gB2bmRe7uc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=taeTNxw00RvkGCdDWgHYwcqBVGsdzARCzw0oCSyNtTH/T0wY42HvbhKhmBE094zugFdz8huq37O8rhfasfNTHFPbUf1P4PpUJWgbZrMvc+J8qK2KED6/hyRw8h5vY14n16ph1MfwcVgr1vOCT5tCxtW2SXifB6SfeCnIl/ttje8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kqzhkH+o; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B09DAC433F1;
+	Fri, 15 Mar 2024 13:52:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710504872;
-	bh=xCGXjGXnxTA6xM+opL1uV4ex8paT2SIXUOHG7nqEAhY=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Bn16yoKpK1nD8kUxzpdjM+QxA/NaX7C1pv81u3zRKxrhfJrw0sqmUg3rT1TJP3NCb
-	 Q0/AE/yR5ga0rBPxYihoM1aML0L+/0XSwjeim2Agx5hW6AFDX+P5X2aVUWhz4u/IYu
-	 /IsnZFDQ4scWQcL3M5tacxYs640/VpsSS+5/CTR8i+8Rjr/cVsfoWxZekWwYz19kgI
-	 F0X8US13jWAiAK/Va9hveibz+VMikhV8kmMy360RISbyJiL2Q3FjLnwGj/LedmZVYF
-	 7WMNhN+u9ki1K3yBzsJ2aSgfHRqsQwSdA1BQvb4jWCOj+ZHWnkp044xiowori9sOrF
-	 VRJr16oru8UJg==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id C45C7C53BD0; Fri, 15 Mar 2024 12:14:32 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 205197] kernel BUG at fs/ext4/extents_status.c:884
-Date: Fri, 15 Mar 2024 12:14:32 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: antony.ambrose@in.bosch.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P1
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-205197-13602-BV4AeT3Ahn@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-205197-13602@https.bugzilla.kernel.org/>
-References: <bug-205197-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=k20201202; t=1710510750;
+	bh=AwIVao3rL1Q0k95nqbmA9y6yqrp6LGbk8gB2bmRe7uc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=kqzhkH+oA5Y2fdTLJi8P7w3/r/btamKmCo690KIn0ZIru45tU+mFtEtMiGSX5ypl3
+	 eag+OprokOmKCLgl2aoLS2XP8c22mUJCeYuhzqPDQKZKotfiaHFSMbXoHafhzQ0lUF
+	 b0ir/DnTenexQYigIBvpmNaNILaV6Ms5+c50uObeXes8h8ocxmea6QGAv9wWj1fKus
+	 iJ2l+PrwBcmk9hOfcK2YZhzxZsRpnlzO7bVQpYkBGQiqv2S9F6m15Cfcf8rnMFUoOh
+	 1fpt0GgXfkjKW4maiZuN4RnGAx7JVqk09IsKrg3GpmBhIfJ+InRsJWFbse65QceJTs
+	 JaRfYJRY7AatQ==
+Date: Fri, 15 Mar 2024 14:52:24 +0100
+From: Christian Brauner <brauner@kernel.org>
+To: Max Kellermann <max.kellermann@ionos.com>
+Cc: Michael Forney <mforney@mforney.org>, Jan Kara <jack@suse.cz>, 
+	Theodore Ts'o <tytso@mit.edu>, Xiubo Li <xiubli@redhat.com>, Ilya Dryomov <idryomov@gmail.com>, 
+	Jeff Layton <jlayton@kernel.org>, Jan Kara <jack@suse.com>, Dave Kleikamp <shaggy@kernel.org>, 
+	ceph-devel@vger.kernel.org, linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	jfs-discussion@lists.sourceforge.net, Yang Xu <xuyang2018.jy@fujitsu.com>, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v2] fs/{posix_acl,ext2,jfs,ceph}: apply umask if ACL
+ support is disabled
+Message-ID: <20240315-hasst-anmachen-4c9e89a56840@brauner>
+References: <CAKPOu+-hLrrpZShHh0o6uc_KMW91suEd0_V_uzp5vMf4NM-8yw@mail.gmail.com>
+ <CAKPOu+_0yjg=PrwAR8jKok8WskjdDEJOBtu3uKR_4Qtp8b7H1Q@mail.gmail.com>
+ <20231011135922.4bij3ittlg4ujkd7@quack3>
+ <20231011-braumeister-anrufen-62127dc64de0@brauner>
+ <20231011170042.GA267994@mit.edu>
+ <20231011172606.mztqyvclq6hq2qa2@quack3>
+ <20231012142918.GB255452@mit.edu>
+ <20231012144246.h3mklfe52gwacrr6@quack3>
+ <28DSITL9912E1.2LSZUVTGTO52Q@mforney.org>
+ <CAKPOu+910gjDp9Lk3sW=CmTM8j_FHEYyfH-kQKz-piRJHkQiDw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAKPOu+910gjDp9Lk3sW=CmTM8j_FHEYyfH-kQKz-piRJHkQiDw@mail.gmail.com>
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D205197
+On Thu, Mar 14, 2024 at 02:08:04PM +0100, Max Kellermann wrote:
+> On Wed, Mar 13, 2024 at 9:39 PM Michael Forney <mforney@mforney.org> wrote:
+> > Turns out that symlinks are inheriting umask on my system (which
+> > has CONFIG_EXT4_FS_POSIX_ACL=n):
+> >
+> > $ umask 022
+> > $ ln -s target symlink
+> > $ ls -l symlink
+> > lrwxr-xr-x    1 michael  michael           6 Mar 13 13:28 symlink -> target
+> > $
+> >
+> > Looking at the referenced functions, posix_acl_create() returns
+> > early before applying umask for symlinks, but ext4_init_acl() now
+> > applies the umask unconditionally.
+> 
+> Indeed, I forgot to exclude symlinks from this - sorry for the breakage.
+> 
+> > After reverting this commit, it works correctly. I am also unable
+> > to reproduce the mentioned issue with O_TMPFILE after reverting the
+> > commit. It seems that the bug was fixed properly in ac6800e279a2
+> > ('fs: Add missing umask strip in vfs_tmpfile'), and all branches
+> > that have this ext4_init_acl patch already had ac6800e279a2 backported.
+> 
+> I can post a patch that adds the missing check or a revert - what do
+> the FS maintainers prefer?
 
---- Comment #7 from Antony Amburose (antony.ambrose@in.bosch.com) ---
-Thank you for the response. I understand now , why there was not much atten=
-tion
-to this issue. Sorry for providing a minimal information in the first
-communication...
- We have back-ported the interesting changes from upstream (~70 of them) an=
-d=20
-could still see the problem. I have reported the issue based on old kernel =
-to
-have the continuity. The old  issue reported as well seen while mounting an
-encrypted sd card and we have also seen this on an encrypted volume, but its
-onboard storage. I thought it is logical to continue the discussion here as=
- you
-had given some debugging hints and issue did not progress as the old report=
-er
-could not reproduce the problem but we could even after backporting the cha=
-nge.
-I will create the bug based on the latest kernel in future. Thanks for the
-hint.=20
+If it works correctly with a revert we should remove the code rather
+than adding more code to handle a special case.
 
-The issue could be reproduced in a sequence where we interrupt the power. F=
-rom
-our decade long experience working with ext4, we have never seen an issue w=
-here
-we could corrupt the ext4 volume in a way that it is not mountable  by
-executing a power loss sequence. That was main reason to report the issue to
-the community experts. Ofcourse we have some paid support and also inhouse
-kernel engineers, and I thought it is also better to report to the community
-experts as the old bug is still open and we have a reliable reproduction .My
-current assumption is either that we have a problem with our sequence or
-problem with handling encrypted ext4 partition.
+> 
+> (There was a bug with O_TMPFILE ignoring umasks years ago - I first
+> posted the patch in 2018 or so - but by the time my patch actually got
+> merged, the bug had already been fixed somewhere else IIRC.)
 
-Regarding our knowhow and usage of tooling , we can work with the hex dump =
-and
-understand the ext4 disk layout and also work with the e2fsprogs to debug t=
-he
-problem. Hence, we expect only some debugging hints and direction and hopef=
-ully
-we try to solve the issues together.
+Yeah, we fixed it a while ago and then I added generic VFS level umask
+handling but POSIX ACL are hurting us because they're a massive layering
+violation on that front.
 
-As the device resets cyclically , we could not hook into the device and get=
- the
-/dev/sdXX . The existing tooling only get the encrypted data .We will try to
-resolve this situation and somehow get the hex dump and provide more detail=
-s on
-the nature of corruption and will also provide the fsck output.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
