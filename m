@@ -1,359 +1,217 @@
-Return-Path: <linux-ext4+bounces-1674-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1675-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD93687E2D4
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Mar 2024 05:45:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 555C587E4E6
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Mar 2024 09:23:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4DAAC1F2170F
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Mar 2024 04:45:32 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A36C4B21507
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Mar 2024 08:23:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4ECF1F951;
-	Mon, 18 Mar 2024 04:45:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E329D2577D;
+	Mon, 18 Mar 2024 08:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dNGWUBWZ"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="FfEDTYp7";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="gMYZzZKw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31F1B1AAD7
-	for <linux-ext4@vger.kernel.org>; Mon, 18 Mar 2024 04:45:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710737127; cv=none; b=Yjt+WnDjZ2XMzDUtoxW+dK+t7X94oPj/A5tWayHd5JqoUA4Kz9o7UZ4HQ2Ju2A1tJjEKu69JmFnWFyZJTGHW7ccVsM28e9zAAvtq+d4K8RXNj9OXHjRNf+jB4XZICn7GC9WwYvkwn+sZh+DYx4nTm7b37T8WFsH4KSOFZDY82ks=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710737127; c=relaxed/simple;
-	bh=75da4kLHgoMXaOOKZ5Q9MjACcC8zUJj9n94D/8MnHpE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=eICZCTnMD6SbOuZcZ+Mfqp5mNpUXoHXRJ+c8wSa8AR+4L9VtTz68+OySGG9ZssA2+h2bBIg8kmf8xy3MImCv1JB1KuqreE6uCIxJF0+UCaA72oX5ee7m8/tF+PPZlqywr7o1E/3apNkI3+sPC5mPKvf2rlqrxmU42RWPzk38Zr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dNGWUBWZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BEC17C433B2
-	for <linux-ext4@vger.kernel.org>; Mon, 18 Mar 2024 04:45:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710737126;
-	bh=75da4kLHgoMXaOOKZ5Q9MjACcC8zUJj9n94D/8MnHpE=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=dNGWUBWZLogtgjGu+qVlN0oHGfplv39ffD95yMK34EmQXX8Ju7NvzU5gJnM4KCYF5
-	 tYhRtfkvEONyGzWHnJKcWsEFcNnFzx7XZPB1q54pTwrDey9Sl7IA+l11OpBL0JyRaL
-	 3yJYZdIuP/ZoT5JUAPebnm5GMQDV4EARYUo3TeGom/9jQ2dT+Z97KsXWq7hanisb7Z
-	 XlsB7nAT2qrdDLX0A50U0/QjjbO5z2RmRGeobX2/lEojPY+ptbcFzhJYntKSqNgPx9
-	 2YuYEQNbss9plaPZDV9/YXV9ChPlcXkP2VFQtwFapfADJ7tI4OpqgNyclkm3e3KjSk
-	 qNHxrG0DlJMUw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id B688FC53BD3; Mon, 18 Mar 2024 04:45:26 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 217965] ext4(?) regression since 6.5.0 on sata hdd
-Date: Mon, 18 Mar 2024 04:45:26 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: bugzilla@eyal.emu.id.au
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-217965-13602-0pfvbRXyV2@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-217965-13602@https.bugzilla.kernel.org/>
-References: <bug-217965-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8526A25761;
+	Mon, 18 Mar 2024 08:22:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710750178; cv=fail; b=MNIZNPP5EQ9dIi/jGprtSHFLJ48wiyTOrJNBXaoN3ycPz7mb8TR17U+WX+UtGSUcg1q4s1BbnQYa5djCV6sa2qDXRenqv+4CjN8eXMTX/MJ2YjBQ7VUkq95LlryBzL3TVBYczY6YYfn7A0wIYNN5j9HDcYu0L7Ay1r/ArX6aecs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710750178; c=relaxed/simple;
+	bh=kvh5bYj2UOOLlygYWHkLdeqrnvzecXzULgobk+CowwE=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=ftn8G7yu8RB3/qhBJeCh1XcVbgVv/PXcPl150iMpV/e/XsaF0J8H+Eqv6MjhdIS/3OZguydtCc7TGtYrJ1iaDuM/ynfmec/ByaIe7yjzX4OHhOvDeGgQuUFRE3LOpkbt5DIxL0EjoSjNVoHdGNy7sQeYMNVdf+aL+eMn7ahinig=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=FfEDTYp7; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=gMYZzZKw; arc=fail smtp.client-ip=205.220.165.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246629.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42I1ivQi013876;
+	Mon, 18 Mar 2024 08:22:36 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=OJc1p1mlrvcq9sj36YhT7AeKN+ohSmachMj64NenxFI=;
+ b=FfEDTYp7/Sh++7P4XKNMDfdo7oL4PtGf5cdUyOXgkWH6b34LwEYc3Ed33BWsS4E5KodF
+ fkcgCHjUIOTYDUKkwp4sUAVB9nvsQ/CQsfCK0B/1hTLtCGf75zzDqdEjJRA0JJmA3L5r
+ jxNcgqhkc2QpVQCJJN7S3+nYNvg6NWMa6Gy3KyKXcozZ+vfd9ICL64D855HpZYTbVsZt
+ pNJZ30BpxD+4hlMNYEVVowqM1AmnB/0uvGYC8htRrj2YyzEj4Njm7IISioUrKR0NU/Av
+ pW0CgGeUqFCLbZq6PdYPUq1i6AyqST92JHP3fROGw2iLSwcPxSdCEVNrY8eoSr1JPK4M LA== 
+Received: from phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta01.appoci.oracle.com [138.1.114.2])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww3aaacmp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Mar 2024 08:22:35 +0000
+Received: from pps.filterd (phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42I76M0H007572;
+	Mon, 18 Mar 2024 08:22:35 GMT
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2168.outbound.protection.outlook.com [104.47.59.168])
+	by phxpaimrmta01.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1v4jge8-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Mar 2024 08:22:35 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=oZvVnRpbduuldYP6vVeIVyVeFg5jAkT28JzTTMcQ9AsoD/Lf9jeIoByIiKQ5edNQ29jaDqYG6hKMiaNOMt8QF9hCYyfWTH0YA45yIrKoHyhQikLbUbdIqTRMXrEGC9ZfjZWXeTWPw2htg5iR3nFWb8j7/R6g31Yt0bytlOWMXO+UF+tRcMjZ/8CgLlUAxpQamiLFn1fecxBvXtlql1yN0mot6hy74drZpQ3APo5b4iNtDU7nua/uD0H6RXeXbuAMe+LwvkEwsbMSpDvwYFzeJnFYwNXBjy1waYrJoynwe04JLtPtuI+fuMWNPTlh+dcEfTdYSut6nvEUmDVfR2kPFg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=OJc1p1mlrvcq9sj36YhT7AeKN+ohSmachMj64NenxFI=;
+ b=bpwDGPpBPi+66Y6dYSATgcshRXVlmU8LCO8dQRQUIMsiYNcA6nsklU71adapcOnSxaHY43TLIxCC2S6vEmRxyYi5NSDnDRS7RsKvceEsfmJtJyI7E5KZ+XUAIpBq9kLRE5405ID6rLbklmXULnpilWPbSyVoE4TZue68wQwnHFlnpV0CSt0jod0wGr3/+Q2V/cUQmoEMXhZQ+BXqgeFU3QF+fAasFkMziJY71USQyjmRpEI70DQnoTA4G+zhvj+J2nWJUBChQs8+m/t9XPu/xQru37RY4sxJQCAKfsP3VmMHoXTO3c5PCtVLTmV0G0JJF6dHL/qQ1mNiJ/NKB+DLWg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=OJc1p1mlrvcq9sj36YhT7AeKN+ohSmachMj64NenxFI=;
+ b=gMYZzZKwEWbkcf4EfDVXFs08Qchfq7efgGhLX/uV93rXWZI7Dpp9yjexI0xY411tEH2Hx8q1/iTOs82TMzxSZYl03AQu44Xv8OqUHnpXlQLIiBXJ616CAqhApgsLSsx6lp98qN90/wOK0VJKRwIuMq5osOQO5uKD1Bnevcmk6Y8=
+Received: from CH2PR10MB4312.namprd10.prod.outlook.com (2603:10b6:610:7b::9)
+ by BN0PR10MB5093.namprd10.prod.outlook.com (2603:10b6:408:12d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Mon, 18 Mar
+ 2024 08:22:33 +0000
+Received: from CH2PR10MB4312.namprd10.prod.outlook.com
+ ([fe80::3dc4:7751:97e:42a1]) by CH2PR10MB4312.namprd10.prod.outlook.com
+ ([fe80::3dc4:7751:97e:42a1%6]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 08:22:33 +0000
+Message-ID: <22a24d3c-9d0e-410b-a49c-b89d0c00ccd8@oracle.com>
+Date: Mon, 18 Mar 2024 08:22:15 +0000
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] ext4: Add support for ext4_map_blocks_atomic()
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+        Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+        Matthew Wilcox <willy@infradead.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        Luis Chamberlain
+ <mcgrof@kernel.org>, linux-kernel@vger.kernel.org,
+        Dave Chinner <david@fromorbit.com>
+References: <87r0gcn74h.fsf@doe.com>
+Content-Language: en-US
+From: John Garry <john.g.garry@oracle.com>
+Organization: Oracle Corporation
+In-Reply-To: <87r0gcn74h.fsf@doe.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: LO4P123CA0192.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:1a4::17) To DM6PR10MB4313.namprd10.prod.outlook.com
+ (2603:10b6:5:212::20)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PR10MB4312:EE_|BN0PR10MB5093:EE_
+X-MS-Office365-Filtering-Correlation-Id: 20fa7458-8ced-4366-188f-08dc4724884f
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	d46pMXD/81JWNnbYg04e6ioezls+Fe13xoxuhQA/KRg0g/2BhfVQY1ZLC94k6BBxOo15JBqbwaCTFUjRnnp+412zKNjK50SPcWgBbh7/olS1h6WAJKW9BMPWEiWvi2xbOMO6NtOqFIRfxrJ95YIx0zLKs0fxAUdj8hXiADwgYiW3XpVkMESgSHceP4EFgNEy2T7PjZGRmLw5sfO/QtKAihXsKtlnXROqYVhXEVnAolGJaOzCnq81VufRMWkunQxCuYzPvwqI5S0Nm7rTgf2loUPGL8705FgES4ICffRuWE3Dx/Knw/Tnkh/c7YwZi/k9nkBogCbKeWW1pZRfH6sWHcZrdl3RXApAFFCSYXlG9OrreAMrYpUaNVtgBQdqBTzQLIPqQ3OX/kvrownnqHnFhADJQAnC+PcxgAVlT9WHFM7WSHAV3nT9CzkVC0RviFchkw2bPSuWn3WOIOX1ppcEwpVtMJN13hcrnau6jlRprEJ+CqVKSQwI784QLpxg98nbM384DvTN4H4/y+baDxo1+E+lQ2u/04Q3PqtC2eJqunnYY3wG7AIkLLRXG63Pb0jbSMc59S5kGxGWrl1X9wQt3HdIbynW4ekZSUpmTEsSEZpZyPXG9cRwI0RXWORm+BCP
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CH2PR10MB4312.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?VmxvS1JzcnhRQTNTdkxhZ2lCNW9vbmJXZnc2cnA2SGt5SHR4ZDRIZ3pnTFg1?=
+ =?utf-8?B?d05Bc29VRjVkaTdSSHFWd0l4NWtjTlVHNXBSb2szZCtGazlJRkJEbEtQQ1Z3?=
+ =?utf-8?B?NWVHMTRXYmtzSEZKMjdybWJLWjdOZnliQkxtNTE3U3Q4R2JicWhWdHdNNHVI?=
+ =?utf-8?B?dVcwdnBydFk5d0R2RnZoMlI1a0hqS1lwcStlSlJlR25tVmFTcGladFp1Nit0?=
+ =?utf-8?B?eSs1bGhKaWdXWHowV1lqNVNuV3RZUDFCbmN6TkZVKzNDMGJvT3pGWUwxYnpT?=
+ =?utf-8?B?dWNIT1hjSEs5STdoQVVNaW5nQWQ1ZGtJRm5TWTJadGdudmY5cmdlTHg0dTZN?=
+ =?utf-8?B?YkJmMHB2RFlOdFNzSU1LVDBYajBrYWpyVmE4S1lpSlRxQlREZUNWNzhrY08v?=
+ =?utf-8?B?Y1NHbmsxeDBOSU1yNVN3UVVySmlPa1ExTVI3WUVDUEUrNkl0Y3NPdXpYRW16?=
+ =?utf-8?B?S0huaDRnYWhXeGdsRm0vRDk3d1lRSC9rK2dSZmNWK2JZemtjd2h5Z3ZmUmJ6?=
+ =?utf-8?B?VUlEY1ExWmdneGNOdVI4emxlNFVKcnE0ODY0WEwyNUFZTmM4bGFwcFhUam1j?=
+ =?utf-8?B?UXpkSlhmYytpanV0Yk16TVhtd1pIQ0xpK2VIa1Y3TjdZcUpXcGxsTlo4WEw1?=
+ =?utf-8?B?aUNyU0hGaTFJeHVTcnBmYytldVJLZXI0L1ZYTGdqcXVSSlI5WndpMDVxNTJD?=
+ =?utf-8?B?M0ptZTFmMlFXNUVQKzVocFNPMjM1TDY1N2U4UlFmMlZVMjluUVNadHYxN1Bp?=
+ =?utf-8?B?c29ORTdTdHFkQmhCQ3MyTFBGL2lrTStZTXZGcGlmODlidDJvM1hEYm1rNE9V?=
+ =?utf-8?B?Z3lrcFFYcjlBUGJidXNySXdtbzBDMVlhdTJWM1hmdk16WG1ZTi9uOHdVK2Jl?=
+ =?utf-8?B?UW1GYVF4bEVtZ3NlcGVKOXJncHo3VjF6cU8rZkZJeHhRMGVHOXNwSHovY3Bv?=
+ =?utf-8?B?TWF1U1FxTmpLSHFTNGU2YmFUWDYzb3g3bk9LNnhZdHBnTXJYcmxWNkhMT2dF?=
+ =?utf-8?B?QS8vVTVzdmw1c2ljUkt3Z2lRVmJ0bFl6RXJJNVBFQzNTSWR5UDZzSi92OEFv?=
+ =?utf-8?B?V2NmRm9ocUU2Y1A2TWZSK2VCd1RhZ2ZiSlFNZnl3QUVsQ2Faam1wMTA2OGRH?=
+ =?utf-8?B?RVd6OGhJZzc0emppV0RpRlZTV2t0L2tERWp4a3oxcVJLM2NKcmhnNmpVbDlL?=
+ =?utf-8?B?YXNuWjlHREpmbzZVdlMxcHRXck1VcS9xaGxXTHhvcG1NVFRMbCs1dkpycFNq?=
+ =?utf-8?B?eFVIRnVxL0krdGNsTlp4ZHBob2V6YWJhUUNPdmhHUGpjL2w0MXFOVVlJZXVB?=
+ =?utf-8?B?cGZRY1dmU2Rmeld0d3lRK2tES3cwVWhkK0pSVHZRbmNoSHg1Q0VTanI2djcv?=
+ =?utf-8?B?anNrTkw4cHIvcFNSNGdNQ2FENlN2RVA3NjZkLzdqeVhUZlIxdFdtNGxKWnNR?=
+ =?utf-8?B?WmFaY1ZLRE5mSGwzS0RvN3BQUFdiMFVCSW03WnRaMXJxaHRKYzgzZXlRQ2NR?=
+ =?utf-8?B?Y1ZvUFU3cTJ2QklWR2VGYURCYWZ5RDBueUtOK2NCa3NTM2p2UkRkd0pwWnl0?=
+ =?utf-8?B?dXRJS3E4QXVqQTBSLy9GaDFUV1pzbTVTU2lSMGU0YjltWFFHRkcva0JYUHBT?=
+ =?utf-8?B?UjVHelhJOWVvMlY5dWRidmFGeXRmck42TUhEM0VJN1NTME9IeDQwMDh4UkY2?=
+ =?utf-8?B?OWFSWjNwbGVhTXJ4ZkNBUDFiUnlYYWZYZ3k5dWMxZmZOL29iamc3VnFDaUox?=
+ =?utf-8?B?WXovczBkYVdvQkQvQmtvWjVpa2pKZ0lvd1dRdWw4ZU9sd2pOZVM3M2FITXhv?=
+ =?utf-8?B?c201N3phM25XNXp2UmNZMFZ0L3dPb3NmSitqVDR1dkRUMlJQa0daTUo1VGVa?=
+ =?utf-8?B?bmY5dGJncTVqN1FNbGRzcVZabllMUEtzSEtlWWpDSzlZSi9wL1JML3l2bU5u?=
+ =?utf-8?B?UWlSVFNmYitjeVZqZXRhNzdFbmlYV0hHZW03Vld2V2tCMzdJMlY3Sm5DN0xm?=
+ =?utf-8?B?dnk0Y29FYUpUQzFndHdOTW9wVENLNXZ6cFB5NHBCbGU3R3pEYzZGQXhiK050?=
+ =?utf-8?B?R0hOanVMUkpuTlpZbVZlYXpyUE5tdWxHWi9hVkNqRTJxTzhna0liL0xKR1ZG?=
+ =?utf-8?Q?MnqAPgKidFBtSWkjaqbf2Xu6t?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	a6SjIs3vCbSviNngVL8Y1XPeTIDjmmRZ03Pp64jGb46VmreWNXORqJX4oGyr7AoEEannj1kK0zjyelY7irtchXCZiHCGdNW7mdaQuOJvrwIWfkGxX5j8Q+PhhUG8Pc5ArVmZUh9GcWiBrtufDpa4LVEV2GZu2ZNyFPV+/UECmzDbPQWEeJTSWfRqcCSGhjIKhKweLmpUGkQfaH8QlTHVRnhvueVJkU2fOL9sHFF6S58eWqXbuPK/fvhOS7RyFVQkHeWeZ4CUuF5CItB8iMPl6G0GkvPVVOewROW5q+Enfs5IXzCK8Dp2bCc32w7WRL9CUTxhl4C9e2jcuXAcQFKmt3NBRP2jqo+StpitfshZY26Wz1m239t8vudBL9f9cP8SbPTYzbc3pdqTAetfz8t0wv7W8sgpHP9sLahVq3W7xRwoHabi1d1B73rWRD5PTHtrGPZ9cUe3uV7A+EAVpEVHgWWTCXLqmUiG2uSuxP8p487yPFcR9DKRdjf4k0atA3wakIZioQ2y3iQgHG42yqhQfzvfKR//AMCA4Z+1OGL7Fg25S8eja8qNjs/qWbKlLS3wP3ML1RH6emzbyM5P/3QVUFy/ZX6eoXH11PCCdyicRmM=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 20fa7458-8ced-4366-188f-08dc4724884f
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 08:22:33.2366
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: j6LZJyJ1wN1AmV4rnXaTpn1YgCSIsd8gSFU0jP4ZfOs08jV0gJUau+fi0gl/chZxiEww26UtWOZ2bcfNfDTBCA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5093
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-17_12,2024-03-18_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 bulkscore=0 mlxlogscore=999
+ malwarescore=0 adultscore=0 suspectscore=0 mlxscore=0 phishscore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403180061
+X-Proofpoint-ORIG-GUID: 3Xwjhr8jy25G0GTl6TJ4r9KTj7lr6zgV
+X-Proofpoint-GUID: 3Xwjhr8jy25G0GTl6TJ4r9KTj7lr6zgV
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D217965
+On 14/03/2024 15:52, Ritesh Harjani (IBM) wrote:
+>> and same as method 3 at
+>> https://urldefense.com/v3/__https://lore.kernel.org/linux-fsdevel/cover.1709356594.git.ritesh.list@gmail.com/?__;!!ACWV5N9M2RV99hQ!Pb-HbBdm2OWUIGDFfG1OkemtRSy2LyHsc5s6WiyTtGHW4uGWV6sMkoVjmknmBydf_i6TF_CDqp7dR0Y-CGY8EIc$   
+> Hi John,
+> 
+> No. So this particular patch to add ext4_map_blocks_atomic() method is
+> only to support the usecase which you listed should work for a good user
+> behaviour. This is because, with bigalloc we advertizes fsawu_min and
+> fsawu_max as [blocksize, clustersize]
+> i.e.
+> 
+> That means a user should be allowed to -
+> 1. pwrite 0 4k /mnt/test/f1
+> followed by
+> 2. pwrite 0 16k /mnt/test/f1
+> 
+> 
+> So earlier we were failing the second 16k write at an offset where there
+> is already an existing extent smaller that 16k (that was because of the
+> assumption that the most of the users won't do such a thing).
+> 
+> But for a more general usecase, it is not difficult to support the
+> second 16k write in such a way for atomic writes with bigalloc,
+> so this patch just adds that support to this series.
 
---- Comment #69 from Eyal Lebedinsky (bugzilla@eyal.emu.id.au) ---
-Seeing this last comment (#68), I wondered if the fix is included in my lat=
-est
-kernel. Or do I have a different problem?
+Is there some reason for which the generic iomap solution in 
+https://lore.kernel.org/linux-xfs/20240304130428.13026-1-john.g.garry@oracle.com/ 
+won't work? That is, you would just need to set iomap->extent_shift 
+appropriately. I will note that we gate this feature on XFS based on 
+forcealign enabled for the inode - I am not sure if you would want this 
+always for bigalloc.
 
-After just updating my fedora 38 to kernel 6.7.9 I did NOT do the remount a=
-nd
-repeated my original problematic test.
-    $ uname -s
-    Linux e7.eyal.emu.id.au 6.7.9-100.fc38.x86_64 #1 SMP PREEMPT_DYNAMIC Wed
-Mar  6 19:31:16 UTC 2024 x86_64 GNU/Linux
-    $ mount|grep data1
-    /dev/md127 on /data1 type ext4 (rw,noatime,stripe=3D640)
-
-I rsync a directory (262GB, 8,911,139 files) from an SSD to a raid6 (7x12TB=
- =3D>
-60TB fs). Both are ext4.
-    $ sudo time rsync -aHSK --stats --progress
-/data/no-backup/old-backups/tapes /data1/no-backup/really-not/old-backups/
-
-What I see is that once meminfo shows the limit (4GB) was reached, the kwor=
-ker
-kicks in at 100% CPU.
-At that point iostat shows activity on the array dropping, from about 160MB=
-/s
-to very little (with an occasional burst of a few MB/s).
-
-```
-10:12:33 2024-03-18
-10:12:33 Device             tps    kB_read/s    kB_wrtn/s    kB_dscd/s=20=
-=20=20
-kB_read    kB_wrtn    kB_dscd
-[trimmed]
-10:17:13 md127             0.00         0.00         0.00         0.00=20=
-=20=20=20=20=20=20=20=20
-0          0          0
-10:17:23 md127            34.40       137.60         0.00         0.00=20=
-=20=20=20=20=20
-1376          0          0  <<< rsync starts
-10:17:33 md127          2346.30       747.20      8638.00         0.00=20=
-=20=20=20=20=20
-7472      86380          0
-10:17:43 md127          7067.10       431.60    133644.40         0.00=20=
-=20=20=20=20=20
-4316    1336444          0
-10:17:53 md127          1692.80       578.80      7015.20         0.00=20=
-=20=20=20=20=20
-5788      70152          0
-10:18:03 md127          2439.20       169.60     32071.20         0.00=20=
-=20=20=20=20=20
-1696     320712          0
-10:18:13 md127           274.00         4.00      2242.00         0.00=20=
-=20=20=20=20=20=20=20
-40      22420          0
-10:18:23 md127          3172.70        17.60     56828.00         0.00=20=
-=20=20=20=20=20=20
-176     568280          0
-10:18:33 md127           416.20         0.80      1664.80         0.00=20=
-=20=20=20=20=20=20=20=20
-8      16648          0
-10:18:43 md127            18.70         0.40        76.40         0.00=20=
-=20=20=20=20=20=20=20=20
-4        764          0
-10:18:53 md127             6.50         0.00        30.80         0.00=20=
-=20=20=20=20=20=20=20=20
-0        308          0
-10:19:03 md127             4.80         0.00        40.00         0.00=20=
-=20=20=20=20=20=20=20=20
-0        400          0
-10:19:13 md127             5.70         0.00        63.60         0.00=20=
-=20=20=20=20=20=20=20=20
-0        636          0
-10:19:23 md127             2.60         0.00        54.80         0.00=20=
-=20=20=20=20=20=20=20=20
-0        548          0
-10:19:33 md127             7.40         0.00       243.20         0.00=20=
-=20=20=20=20=20=20=20=20
-0       2432          0
-10:19:43 md127             5.20         0.00        75.60         0.00=20=
-=20=20=20=20=20=20=20=20
-0        756          0
-10:19:53 md127             3.80         0.00        20.40         0.00=20=
-=20=20=20=20=20=20=20=20
-0        204          0
-10:20:03 md127             2.00         0.00        13.20         0.00=20=
-=20=20=20=20=20=20=20=20
-0        132          0
-10:20:13 md127             3.90         0.00        29.20         0.00=20=
-=20=20=20=20=20=20=20=20
-0        292          0
-10:20:23 md127             3.80         0.00        19.60         0.00=20=
-=20=20=20=20=20=20=20=20
-0        196          0
-
-At the same time meminfo shows:
-2024-03-18 10:17:04 Dirty:     11220 kB  Buffers:    829988 kB  MemFree:=20=
-=20=20
-670576 kB
-2024-03-18 10:17:14 Dirty:     10784 kB  Buffers:    830016 kB  MemFree:=20=
-=20=20
-631500 kB
-2024-03-18 10:17:24 Dirty:    750616 kB  Buffers:    875592 kB  MemFree:=20=
-=20=20
-654236 kB
-2024-03-18 10:17:34 Dirty:   2757048 kB  Buffers:    972948 kB  MemFree:=20=
-=20=20
-600636 kB
-2024-03-18 10:17:44 Dirty:   2855196 kB  Buffers:   1046736 kB  MemFree:=20=
-=20=20
-551940 kB
-2024-03-18 10:17:54 Dirty:   4104524 kB  Buffers:   1127200 kB  MemFree:=20=
-=20=20
-538136 kB
-2024-03-18 10:18:04 Dirty:   4390504 kB  Buffers:   1155588 kB  MemFree:=20=
-=20=20
-600828 kB
-2024-03-18 10:18:14 Dirty:   4518280 kB  Buffers:   1161916 kB  MemFree:=20=
-=20=20
-580176 kB
-2024-03-18 10:18:24 Dirty:   4356952 kB  Buffers:   1185872 kB  MemFree:=20=
-=20=20
-543072 kB
-2024-03-18 10:18:34 Dirty:   4559504 kB  Buffers:   1196396 kB  MemFree:=20=
-=20=20
-518872 kB
-2024-03-18 10:18:44 Dirty:   4567212 kB  Buffers:   1197060 kB  MemFree:=20=
-=20=20
-606572 kB
-2024-03-18 10:18:54 Dirty:   4567592 kB  Buffers:   1197084 kB  MemFree:=20=
-=20=20
-611440 kB
-... and stays there until ...
-
-I then killed the copy (14,296MB copied). The writing to the array remained
-very low, the kernel thread stayed at 100%
-and meminfo drained very slowly. Access to the array is now slow with some
-hiccups.
-
-2024-03-18 10:35:24 Dirty:   4484720 kB  Buffers:   4984308 kB  MemFree:=20=
-=20=20
-820532 kB   <<< rsync killed
-2024-03-18 10:35:34 Dirty:   4484436 kB  Buffers:   4984348 kB  MemFree:=20=
-=20=20
-851288 kB
-2024-03-18 10:35:44 Dirty:   4483992 kB  Buffers:   4984368 kB  MemFree:=20=
-=20=20
-817516 kB
-2024-03-18 10:35:54 Dirty:   4483780 kB  Buffers:   4984400 kB  MemFree:=20=
-=20=20
-803156 kB
-2024-03-18 10:36:04 Dirty:   4483704 kB  Buffers:   4984460 kB  MemFree:=20=
-=20=20
-809956 kB
-2024-03-18 10:36:14 Dirty:   4479416 kB  Buffers:   4984496 kB  MemFree:=20=
-=20=20
-832980 kB
-2024-03-18 10:36:24 Dirty:   4474312 kB  Buffers:   4984528 kB  MemFree:=20=
-=20=20
-881464 kB
-2024-03-18 10:36:34 Dirty:   4474260 kB  Buffers:   4984568 kB  MemFree:=20=
-=20=20
-840444 kB
-2024-03-18 10:36:44 Dirty:   4474132 kB  Buffers:   4984600 kB  MemFree:=20=
-=20=20
-843524 kB
-2024-03-18 10:36:54 Dirty:   4474292 kB  Buffers:   4984640 kB  MemFree:=20=
-=20=20
-841004 kB
-2024-03-18 10:37:04 Dirty:   4474052 kB  Buffers:   4984680 kB  MemFree:=20=
-=20=20
-834148 kB
-2024-03-18 10:37:14 Dirty:   4473688 kB  Buffers:   4984712 kB  MemFree:=20=
-=20=20
-853200 kB
-2024-03-18 10:37:24 Dirty:   4473448 kB  Buffers:   4984752 kB  MemFree:=20=
-=20=20
-782540 kB
-2024-03-18 10:37:34 Dirty:   4473288 kB  Buffers:   4984776 kB  MemFree:=20=
-=20=20
-786100 kB
-2024-03-18 10:37:44 Dirty:   3871768 kB  Buffers:   4984972 kB  MemFree:=20=
-=20=20
-846020 kB
-2024-03-18 10:37:54 Dirty:   3871612 kB  Buffers:   4985020 kB  MemFree:=20=
-=20=20
-826664 kB
-2024-03-18 10:38:04 Dirty:   3871736 kB  Buffers:   4985052 kB  MemFree:=20=
-=20=20
-826084 kB
-2024-03-18 10:38:14 Dirty:   3871184 kB  Buffers:   4985100 kB  MemFree:=20=
-=20=20
-876572 kB
-2024-03-18 10:38:24 Dirty:   3870936 kB  Buffers:   4985140 kB  MemFree:=20=
-=20=20
-918944 kB
-2024-03-18 10:38:34 Dirty:   3648080 kB  Buffers:   4985256 kB  MemFree:=20=
-=20=20
-901336 kB
-2024-03-18 10:38:44 Dirty:   3556612 kB  Buffers:   4985316 kB  MemFree:=20=
-=20=20
-902532 kB
-2024-03-18 10:38:54 Dirty:   3551636 kB  Buffers:   4985364 kB  MemFree:=20=
-=20=20
-837816 kB
-2024-03-18 10:39:04 Dirty:   3551968 kB  Buffers:   4985468 kB  MemFree:=20=
-=20=20
-823392 kB
-2024-03-18 10:39:14 Dirty:   2835648 kB  Buffers:   4985656 kB  MemFree:=20=
-=20=20
-629428 kB
-...
-2024-03-18 11:05:25 Dirty:   2737096 kB  Buffers:   4993860 kB  MemFree:=20=
-=20=20
-599424 kB   <<< 30m later
-2024-03-18 11:35:25 Dirty:   2573748 kB  Buffers:   5001184 kB  MemFree:=20=
-=20=20
-612288 kB   <<< again
-2024-03-18 12:05:26 Dirty:   2432572 kB  Buffers:   5007704 kB  MemFree:=20=
-=20=20
-663928 kB   <<< again
-2024-03-18 12:35:27 Dirty:   2145348 kB  Buffers:   3707492 kB  MemFree:=20=
-=20=20
-588464 kB   <<< again
-2024-03-18 13:05:27 Dirty:   2017848 kB  Buffers:   3718936 kB  MemFree:=20=
-=20=20
-585500 kB   <<< again
-2024-03-18 13:35:28 Dirty:   1822436 kB  Buffers:   3746824 kB  MemFree:=20=
-=20=20
-565560 kB   <<< again
-2024-03-18 14:05:29 Dirty:   1595088 kB  Buffers:   3799124 kB  MemFree:=20=
-=20=20
-544504 kB   <<< again
-2024-03-18 14:35:29 Dirty:   1498416 kB  Buffers:   3816868 kB  MemFree:=20=
-=20
-3883524 kB   <<< again
-2024-03-18 15:05:30 Dirty:   1387140 kB  Buffers:   3835824 kB  MemFree:=20=
-=20
-3266060 kB   <<< again
-...
-2024-03-18 15:32:51 Dirty:   1284940 kB  Buffers:   3850936 kB  MemFree:=20=
-=20
-3088904 kB   <<< finally
-2024-03-18 15:33:01 Dirty:    933268 kB  Buffers:   3851144 kB  MemFree:=20=
-=20
-3098840 kB
-2024-03-18 15:33:11 Dirty:     51956 kB  Buffers:   3851248 kB  MemFree:=20=
-=20
-3095456 kB
-2024-03-18 15:33:21 Dirty:     51968 kB  Buffers:   3851284 kB  MemFree:=20=
-=20
-3059212 kB
-2024-03-18 15:33:31 Dirty:     52032 kB  Buffers:   3851308 kB  MemFree:=20=
-=20
-3085352 kB
-2024-03-18 15:33:41 Dirty:       172 kB  Buffers:   3851336 kB  MemFree:=20=
-=20
-3090912 kB
-2024-03-18 15:33:51 Dirty:        64 kB  Buffers:   3851368 kB  MemFree:=20=
-=20
-3030584 kB
-```
-
-So over 5 hours to copy this small part (14GB of 262GB) of the data.
-
-Is this expected? Is this a fundamental "feature" of ext4? Or of raid6?
-When I did do "sudo mount -o remount,stripe=3D0 /data1" the copy progressed
-nicely with good
-writing speed.
-
-I have logs of the progress of this test at 10s intervals.
-
-Regards
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Thanks,
+John
 
