@@ -1,262 +1,338 @@
-Return-Path: <linux-ext4+bounces-1686-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1687-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B7E787FBE7
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Mar 2024 11:37:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 951FD87FCC1
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Mar 2024 12:25:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C81A2283891
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Mar 2024 10:37:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FA851F23481
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Mar 2024 11:25:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 144837E111;
-	Tue, 19 Mar 2024 10:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 223B47EF18;
+	Tue, 19 Mar 2024 11:25:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GyegJSBd"
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="h+VMSu4X";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Ovh+nBi9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9A655C3C;
-	Tue, 19 Mar 2024 10:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710844620; cv=none; b=XEN3ekU2rGhaG7TPMk8WOVJoTClwECksDtnDFyzymoXhTywN1aoGETjsrikOpjcfZPqfJNAXFZshgBMtGMgHKDgyTsA1jmIhMfTn4weSK8nYFEAk1lboQDJsB10cMHswHKLkgm98iN3nA0D/rMWZdruunwsvEMpqgHdkgMq3vzc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710844620; c=relaxed/simple;
-	bh=mGctuonGgrj/mW/NYRMJLbhJEWslrS7zVEwK8aHOuCw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VhxTwSEEq+FG1qgJNXY+qBaUBqI7jSykGGibTUWSVjqB2xmc+Yg7K6cXKXMFjnn4EuOHcH6MRxItcCRrBEQWqPsKPzAL2KglQTIHl+mEwaJgkiDftGmaPgyLw3mdbS7ssCnFd03bm9jRmBAKmlmIq0RBkdYIsqZWBkDZssX+wEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GyegJSBd; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42J92QTk004438;
-	Tue, 19 Mar 2024 10:36:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=B8+KhgXOB0lAYx60bbFxRx9Im3wx7n/N2fAX73+k61o=;
- b=GyegJSBdFJs20ZnrIN+wJ04TrbEyXcpYBuE8bAgvQl0e/KqU+MY/RnCeNSQlggU9YoyN
- iRI6JvbBfitbMAFjASdYLHjkpnYdwco13oYHBiFONJHZ0HzKrObhZFf869RFigxmZJPt
- MK6snIT92xQ5h7V5INx9DwRf+d2PWeBBV76ivgRDFgYhdCx9tx1UdyEby34o1TEToO5/
- +quZrGWhgLPiVZvaFzLS300QpnJF1CA56nLqAeO6A61/ndgknoP5dQ1kmp8Mr/DHB+ai
- Wj9VWJmBtQJqkMKrYdcng2NTRG3/aI/8f/qgswTDr6ejrncnCQZ4Vnw2ODuyq53vPsFd yw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy7qmrghx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 10:36:46 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42JAYU8u019894;
-	Tue, 19 Mar 2024 10:36:45 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy7qmrghu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 10:36:45 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42J9oMJJ017194;
-	Tue, 19 Mar 2024 10:36:45 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrt71m2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 10:36:44 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JAafcM41550198
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 10:36:43 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3F81720040;
-	Tue, 19 Mar 2024 10:36:41 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F47B2004F;
-	Tue, 19 Mar 2024 10:36:38 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 19 Mar 2024 10:36:38 +0000 (GMT)
-Date: Tue, 19 Mar 2024 16:06:35 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Jan Kara <jack@suse.cz>
-Cc: Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-        adobriyan@gmail.com, linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, stable@vger.kernel.org
-Subject: Re: [PATCH v3 4/9] ext4: fix slab-out-of-bounds in
- ext4_mb_find_good_group_avg_frag_lists()
-Message-ID: <Zflqs3riUr6dGWLn@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240314140906.3064072-1-libaokun1@huawei.com>
- <20240314140906.3064072-5-libaokun1@huawei.com>
- <Zfg19s2+fn9QYnUQ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20240318152509.5tdmkojnhd3gqxqu@quack3>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759067EF1F
+	for <linux-ext4@vger.kernel.org>; Tue, 19 Mar 2024 11:25:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710847519; cv=fail; b=NqpG6ObzzUNinXtSFzVSBaQxWrD6NyU9hcFzFOV33cCftYfMbgXtzEtlLlq202f70Lf3RafoTlLXU3TtDUj2OZ72RjhYRlq4/1TkoIudfxRPpoKvxfJovNfEGq5GmA2qdk/DHwgu2+6sp9GtQQR1xlXQZHNM6JcMS8M6RqkdiLE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710847519; c=relaxed/simple;
+	bh=ul8n0mDUgBBYVeuTyGEldZNDPBoOx4OfWQEKt+p9gUk=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=immCxDIwLpflWGU5LqbqAwk2chxy5+/tAEzb3SEllh4H5oyq4+1Yn+ilqpyoJ6WmQ5tq0sdlAAqbiaPWCecgUr2vK8PcKk/etHF3DRYU5NByvq86u/CQGyjA+pQv3DigorDAXlZzJ6YP8/Tll42ysccFkRNDlDFs/3dhukZddYU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=h+VMSu4X; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Ovh+nBi9; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JAIWjh014212;
+	Tue, 19 Mar 2024 11:25:13 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=from : to : cc :
+ subject : date : message-id : references : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=SAmoQyAM1V7SBs1uHxuxXSn8Gtv7H+E+NqNAiKChNfI=;
+ b=h+VMSu4XVaTM8A4PIEyxAvMiyUVSHoLmk1L/8ygmtiqsxsskjDB/cgD5ZQ7ip5NCUUy4
+ p/Ud2LHXvlCc3zaxntLH42IVgpXcGUMAjozuKp0bYWQBbmSqQXgQeL+UOO+72nBXTuOv
+ ldIspJ1lg22873MlP1UY2yE0t48n8Pcs+mksO16+pgyuwwz54wO+qKx73eW3Sg/4RtnI
+ cN8yOfclikPGZ7R3E53aWd7rjbOwswLC2uPcR5F5sb9VIzlYr24iD8/K2k+uIWU6+p9C
+ gQesKc+itsdm22VJiCHmqe0ub/AfCOpJH323ckIT0PEDZH/K6nI3s6CsVBWDfjCqLGFJ yg== 
+Received: from iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta02.appoci.oracle.com [147.154.18.20])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww1udd97a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Mar 2024 11:25:12 +0000
+Received: from pps.filterd (iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42JB3NZc003679;
+	Tue, 19 Mar 2024 11:25:12 GMT
+Received: from nam10-dm6-obe.outbound.protection.outlook.com (mail-dm6nam10lp2100.outbound.protection.outlook.com [104.47.58.100])
+	by iadpaimrmta02.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1v63qd1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Mar 2024 11:25:12 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fEx8g0Pq7B7fTZlA10YZjqynMpLrMxeEzU7PhL/4SUVKxRoEYyMtAcF/32LAnmyRovaZVlyc0+C86mn3+sscquHXWg+sVnx2acQNpWuzrM1bGFMI/rbZAHiKg3KACjiXjrLatUFE4WQ0P4I1L0uqDiNPS5izsWlI9xQukRGjZlg3LWii9q0NXiVrtKE1FUhw0+3zGDzZ/volX168p+WTrrogEYo6fwV0zSbobyQJ7a5G06epuvHMrB0CV6WsBFj03VYW4uVJh35MALcTVMZytqhOSDQE68CGUt3Ns2Q6xXLR69GSrrLJsyfC/GxkUKPVIzQhjpIACigHIB191STygw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=SAmoQyAM1V7SBs1uHxuxXSn8Gtv7H+E+NqNAiKChNfI=;
+ b=NAQsAPSSCciHOdZ/7Ka8EA+oIoTPnFUt0JL20iv4aUk85GrBwpTHvZYPNffPN8PBLE02oW6e/zt5KuGbol6w/ZIgoguslsh8t1knI+ijqjvLdBol8foSp1mYFmSELxWIzUlHCiAURaDYb2M1ZCqFeyjLM1ZVo4+upwZQ3Cu47JiLDVJBKSnQ6Q2t8ZiwqxGb+ZeOu8yW9JKkvYpusO4SvlMn2nvusdh+9jMy5ka2pDoAUHLmM2kU0ovOYbqglJbH3oeKYrJJyOOUPB9lL3+iqAfElalEnD+NmliBehPG0BVWMvGyn8KxMB/pvrAQ78Aic+LFybyYnV7o7eU2ZJQXRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=SAmoQyAM1V7SBs1uHxuxXSn8Gtv7H+E+NqNAiKChNfI=;
+ b=Ovh+nBi9eqV1M4UVqSgdc0520Rp+TzE4UssbBJQDl2Mo7IJX0JnR2f+tjvZ9S/Y5ttU9O9pPrQ3d0dfPVcyBppyoLppaAvsEgyMRJlq4JEFIqfFXmxofExltluUwEVbeAwwnd0WZpMreV0Qk3abBoPbwNpiphhWIV5cHUsKr8Fo=
+Received: from DM6PR10MB4347.namprd10.prod.outlook.com (2603:10b6:5:211::11)
+ by MW5PR10MB5714.namprd10.prod.outlook.com (2603:10b6:303:19b::19) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Tue, 19 Mar
+ 2024 11:25:10 +0000
+Received: from DM6PR10MB4347.namprd10.prod.outlook.com
+ ([fe80::5f3c:2ca7:f67c:d071]) by DM6PR10MB4347.namprd10.prod.outlook.com
+ ([fe80::5f3c:2ca7:f67c:d071%7]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 11:25:09 +0000
+From: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+To: Andreas Dilger <adilger@dilger.ca>
+CC: Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Theodore Ts'o
+	<tytso@mit.edu>,
+        Rajesh Sivaramasubramaniom
+	<rajesh.sivaramasubramaniom@oracle.com>,
+        Junxiao Bi <junxiao.bi@oracle.com>
+Subject: RE: [External] : Re: [RESEND PATCH] e2fsprogs: misc/mke2fs.8.in:
+ Correct valid cluster-size values
+Thread-Topic: [External] : Re: [RESEND PATCH] e2fsprogs: misc/mke2fs.8.in:
+ Correct valid cluster-size values
+Thread-Index: AQHadyBCRLBfhfgGbEmuJj3RvbVnuLE+63sw
+Date: Tue, 19 Mar 2024 11:25:09 +0000
+Message-ID: 
+ <DM6PR10MB4347C97E2645B45A66CA0D76A02C2@DM6PR10MB4347.namprd10.prod.outlook.com>
+References: <20240314093127.2100974-1-srivathsa.d.dara@oracle.com>
+ <CE93B29C-6A50-46D2-95DA-956D1F6A4104@dilger.ca>
+In-Reply-To: <CE93B29C-6A50-46D2-95DA-956D1F6A4104@dilger.ca>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DM6PR10MB4347:EE_|MW5PR10MB5714:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ idph2D1ud2Wd7i0EUznixHnnQegkMpLFKUwV3u9wefFbFKooC8JGqQD8rgt1Vl0wAe/pHo1eGiNv+4edCj0opY8Jpj+s7WWSFB2OSTURSsJNCfMIQJlrFm/YOyfxHfOx9be4Xnsqq5CMcRZoSxvVpv+xoJ2K693k3JsHvTRLQb0R6mWH7vBwEeTTt8k5B2UGRLHeZXer1Rbr/UPekF6sYn0Y44SiSlAVzZummxmdI56aut1GtSJiUdxa0DgBMPpPlmqD3wJY935Kh4LaTWcP84DuhMlRBwAR3WQ/Tj3GeIpwLch5mGnhs8pnJpqESmCmILuqxPjU5hgX2/BkBCSSsu5z2olkcHwsL2ZpNIO1+ebw/ZM7oJtDeWXm1W1V0jKaBN3n/tJtSxrhnehHvcLQiOwdwJwuolnz0eqtNYNLWkx/2w5edqqzXAlOjtJ7SvW/sa1D5sR0SIzHPDHZ6fJrCmKPHWs0qNG9kUAMvwDEOIbgN5G2ZGMhcB7Vd57x7Iy9zyDjspijgkXaA1BgNyvJ1heDuwu/6iX5L4w9Cyvdq+mrsmeYxdX/VOqU8dW7UPBe4v2D3savV2JjpVAphcgYyCPAG7F1bff5AgX+ZEpOsFajx2vMmFQrFNmTVLOky0eJdgAVdqgtHIEJGWiFhLyfiIkBJykaQf13H/NXhJuu/Z0=
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4347.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?us-ascii?Q?MoDQ490YNeeh7VeO///OzPy6RoTCnPReXiv6HNM+5i+hJY6K4TTMrsP0L8wY?=
+ =?us-ascii?Q?STXIZuNOn1CwWHlc9uGbYW2zLyRsxAcZaG6Ec+NsCaEG7WJcmX/Pd9yteytF?=
+ =?us-ascii?Q?GlshDkaFFZQPsxWMZvJgRWS+1q3LCFKpjMyjv1MQL3uzPpnAxej89k8ASiAQ?=
+ =?us-ascii?Q?/Kf39VLYL82VwD900x4OT4Mqvcxh6uhRiVfwxsUkOMuKAIIELK5dt/NA/4f2?=
+ =?us-ascii?Q?msQkTvK6HwVVU9JPmow1KzKH8RTfMbedzhSquBPdKz/0b1I10bqhflEouRDe?=
+ =?us-ascii?Q?/M/ZfffFfcGYDEkG5sPWiWAoxvmvUXy35AixwwhpJywS4Zn0jGcDOeg5R/vM?=
+ =?us-ascii?Q?snAJVSSIgmZaxwGaDlJodETTpd3WSEsNpottBI/ZP5G76ycjnFlLUb/un1Tv?=
+ =?us-ascii?Q?IWfHFqGvdSYPlsWvFlTiYoaQss7FbIrzmytKYFRYZZs3bNIkRgkbzm55dXHf?=
+ =?us-ascii?Q?8Z/EXJOanSvzC6P7aPxNo2GRNyMcrt3XRdCj5bZmt/MSYjRIOHIKKRuvvLf6?=
+ =?us-ascii?Q?gyjxuH9ZDcorZ/PYDsVTmpIhaxHJ2gTh/2rgV5SCbFI4BP7S1ekXyRT0Cbmc?=
+ =?us-ascii?Q?sLUU4IxXfTBPQjHj2PIkev80/El14iPWlC4l9rWWxAE+j2UOHNjNgJPMk8/c?=
+ =?us-ascii?Q?TTi8eKaiukW52A3cgXoHHEr0hTPGMz3zI9f0mGw1f61zxHinqrzkaHJ6Ofoi?=
+ =?us-ascii?Q?+MQWYaRCXY0f7x9v/y7niZ08eUNIr/lCM/Ft2Q5Qs+UBKI3inc9pQ1YANQea?=
+ =?us-ascii?Q?G6axcLbbUES+aZxvTBQYBVjMHI7hWl45PfLjjyPQkeGNYd/TvQeKpu7eoky9?=
+ =?us-ascii?Q?bYOXERSxcM4g8H2ZJL0UiFz8mZ9r+Y/zovLkH5T8UIvuGlTsNM4Ad6DoqRKr?=
+ =?us-ascii?Q?1d+27oiS9m67mPXdTro4eOrfK1m900194RG61sRcoWmBwO7oGxWKEnK8L86d?=
+ =?us-ascii?Q?Lu7BYQBG5ltwYyFRpYS5pIIXuJpGVDzIUnayvEefxzg+i5Puze3dvm1N0Z5Z?=
+ =?us-ascii?Q?W1JilEo7WQ5mUn+L13Ao+qFQAKCDfXiLhrKWb7mAP59DviBqAPbk6m8TarZn?=
+ =?us-ascii?Q?WrdcU3HLHhU8EHjYeYzNr8/TXCpQtj5767TrlLuCb7KaaXJD1s9NEfTMQ4PU?=
+ =?us-ascii?Q?ly+X2vhHG+9VZ60iShpIWyfySksGqadjmtLNyL1ql86gfqalEpgO6ssa7DCx?=
+ =?us-ascii?Q?IiEG3Xk6Wqy+0152kQ72Cv158xpi4d+e35HVQfE+CgwyCDJ1KSXrBASi/x2x?=
+ =?us-ascii?Q?EekD0z7Ta9gyPwOpUsVGSConCuxcUaPAC7T4FxJ9Ot5gvV1g6GH+l+OVIuzC?=
+ =?us-ascii?Q?US346ThGZyjKnSBfuarKWCspfLb3O2ueD1l2uwlshQLcKI3bM5U0UVkBs6mn?=
+ =?us-ascii?Q?3iNd4qbBQcWEsZ4WryKdSvGpElX0jUBSy2Ec2Q9LMk4gbEdHgXgAhEKuk43e?=
+ =?us-ascii?Q?KwzQ8p2SHVCS4hcaLV/4DN3iAb5/tDjsGeAp+w4iKFRSc7wOpdZ0VLy/r4ik?=
+ =?us-ascii?Q?L8GVFBGjEopIOXcVO2VF4eOKnCM481E86jf4/nFbztg+r7H4LhBvSRRNR+QO?=
+ =?us-ascii?Q?iGe/OrRPMHLhQdq08BHrFxp1Erx6F/vjDm+gSJqXVidQIsLzxz5EJJVUTxHo?=
+ =?us-ascii?Q?iA=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318152509.5tdmkojnhd3gqxqu@quack3>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: P_CCjEgNLiVYFwOyN9fvGEpt6O4f7w8q
-X-Proofpoint-ORIG-GUID: oh2ivtND1E1sShnlKIonyFatVwNS8jpY
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	PZJkJBaLxUq+txl97wpifnTyhbu09RP1vPTacRltMwI5Lq0pbrqZlQFPnOHsYFSiSGtF48kNW+KdWwHYC5/x1aa6xk9W1HWpANoCr+xH3SJzwS9MdyVuA4gQsveG2J6sSJyLHskYQmCK/LFzLiyih3JELX3kLiIIc/JJsG4XqgPW7livuFAZJkfTIXjSIAwaME+hBs4i+iEQeCQwbd9FxAI2XPk2P46Tseyw8wwIDoQ2J8gDPYWAGFCh63vzLP0tBb9AYULi1ykK2CNbtjMhIKtldvmFBkQrcupHlk/0SBxQUCsEzzhHcRYw3foAFVHGd9GDnqwBub+SdlySRDI7lS1UYPZmJwDwamAZ5qfWji1LEaR7p5QlXgNxgzqrtnP3xMvKMJRKPAPgSejQBR76Mjxq8DjbeyYDHHtD4D1uyIzkGuMUtj94sgfiT5YTPvIo4DODo5ZJYGsA7sNlGqnel48sh8C1IlHv6B19DFrPMKtQpIDhd4v8oUioQ5kGFPn22U3QHOQlp/lu6jyzZ3qk31SBnVJrEYrqSdSdW58V0wP33jVHYxxe83NryIwTxXDb4IsJqx3YeswpH/NwToCsjwGxXLZ3O4RDwmnuMsGE5II=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4347.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 37425c8d-02a9-49f8-dd14-08dc48073c90
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2024 11:25:09.7301
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: 1lO4wbeNeFpTKiZ/K1KDY0VZhee9OnaYkWGdqf6zxPko0Ay8m62wNqOcpwf4PEtaLcx0nhWQAx2D2L1x9LlAZwlxkLVqMdqhSAWzTHc09NE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW5PR10MB5714
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
- mlxlogscore=999 suspectscore=0 clxscore=1015 spamscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403190081
+ definitions=2024-03-19_01,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 suspectscore=0 mlxscore=0 adultscore=0
+ spamscore=0 bulkscore=0 mlxlogscore=999 malwarescore=0 phishscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403140000
+ definitions=main-2403190088
+X-Proofpoint-GUID: n2FVGCiC2otEx8XV7dOw_0I78xi781Ts
+X-Proofpoint-ORIG-GUID: n2FVGCiC2otEx8XV7dOw_0I78xi781Ts
 
-On Mon, Mar 18, 2024 at 04:25:09PM +0100, Jan Kara wrote:
-> On Mon 18-03-24 18:09:18, Ojaswin Mujoo wrote:
-> > On Thu, Mar 14, 2024 at 10:09:01PM +0800, Baokun Li wrote:
-> > > We can trigger a slab-out-of-bounds with the following commands:
-> > > 
-> > >     mkfs.ext4 -F /dev/$disk 10G
-> > >     mount /dev/$disk /tmp/test
-> > >     echo 2147483647 > /sys/fs/ext4/$disk/mb_group_prealloc
-> > >     echo test > /tmp/test/file && sync
-> > > 
-> > > ==================================================================
-> > > BUG: KASAN: slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
-> > > Read of size 8 at addr ffff888121b9d0f0 by task kworker/u2:0/11
-> > > CPU: 0 PID: 11 Comm: kworker/u2:0 Tainted: GL 6.7.0-next-20240118 #521
-> > > Call Trace:
-> > >  dump_stack_lvl+0x2c/0x50
-> > >  kasan_report+0xb6/0xf0
-> > >  ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
-> > >  ext4_mb_regular_allocator+0x19e9/0x2370 [ext4]
-> > >  ext4_mb_new_blocks+0x88a/0x1370 [ext4]
-> > >  ext4_ext_map_blocks+0x14f7/0x2390 [ext4]
-> > >  ext4_map_blocks+0x569/0xea0 [ext4]
-> > >  ext4_do_writepages+0x10f6/0x1bc0 [ext4]
-> > > [...]
-> > > ==================================================================
-> > > 
-> > > The flow of issue triggering is as follows:
-> > > 
-> > > // Set s_mb_group_prealloc to 2147483647 via sysfs
-> > > ext4_mb_new_blocks
-> > >   ext4_mb_normalize_request
-> > >     ext4_mb_normalize_group_request
-> > >       ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc
-> > >   ext4_mb_regular_allocator
-> > >     ext4_mb_choose_next_group
-> > >       ext4_mb_choose_next_group_best_avail
-> > >         mb_avg_fragment_size_order
-> > >           order = fls(len) - 2 = 29
-> > >         ext4_mb_find_good_group_avg_frag_lists
-> > >           frag_list = &sbi->s_mb_avg_fragment_size[order]
-> > >           if (list_empty(frag_list)) // Trigger SOOB!
-> > > 
-> > > At 4k block size, the length of the s_mb_avg_fragment_size list is 14,
-> > > but an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds
-> > > to be triggered by an attempt to access an element at index 29.
-> > > 
-> > > Add a new attr_id attr_clusters_in_group with values in the range
-> > > [0, sbi->s_clusters_per_group] and declare mb_group_prealloc as
-> > > that type to fix the issue. In addition avoid returning an order
-> > > from mb_avg_fragment_size_order() greater than MB_NUM_ORDERS(sb)
-> > > and reduce some useless loops.
-> > > 
-> > > Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
-> > > CC: stable@vger.kernel.org
-> > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > > ---
-> > >  fs/ext4/mballoc.c |  4 ++++
-> > >  fs/ext4/sysfs.c   | 13 ++++++++++++-
-> > >  2 files changed, 16 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> > > index 12b3f196010b..48afe5aa228c 100644
-> > > --- a/fs/ext4/mballoc.c
-> > > +++ b/fs/ext4/mballoc.c
-> > > @@ -831,6 +831,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
-> > >     return 0;
-> > >   if (order == MB_NUM_ORDERS(sb))
-> > >     order--;
-> > > + if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
-> > > +   order = MB_NUM_ORDERS(sb) - 1;
-> > 
-> > Hey Baokun,
-> > 
-> > Thanks for fixing this. This patch looks good to me, feel free to add:
-> > 
-> > Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > 
-> > my comments after this are less about the patch and more about some
-> > thoughts on the working of average fragment lists.
-> > 
-> > So going through the v2 and this patch got me thinking about what really
-> > is going to happen when a user tries to allocate 32768 blocks which is also 
-> > the maximum value we could have in say ac->ac_g_ex.fe_len.
-> > 
-> > When this happens, ext4_mb_regular_allocator() will directly set the
-> > criteria as CR_GOAL_LEN_FAST. Now, we'll follow:
-> > 
-> > ext4_mb_choose_next_group_goal_fast()
-> >   for (i=mb_avg_fragment_size_order(); i < MB_NUM_ORDERS; i++) { .. }
-> > 
-> > Here, mb_avg_fragment_siz_order() will do something like:
-> > 
-> >   order = fls(32768) - 2 = 14
-> >   ...
-> >   if (order == MB_NUM_ORDERS(sb))
-> >     order--;
-> > 
-> >   return order;
-> > 
-> > And we'll look in the fragment list[13] and since none of the groups
-> > there would have 32768 blocks free (since we dont track it here) we'll
-> > unnecessarily traverse the full list before falling to CR_BEST_AVAIL_LEN
-> > (this will become a noop due to the way order and min_order
-> > are calculated) and eventually to CR_GOAL_LEN_SLOW where we might get
-> > something or end up splitting.
-> 
-> Yeah, agreed this looks a bit suboptimal. I'm just not 100% sure whether
-> we'll ever generate a request to allocate 32768 blocks - that would need
-> verification with tracing - because I have some vague recollection I once
-> arrived at conclusion this is not possible.
+>=20
+>=20
+> -----Original Message-----
+> From: Andreas Dilger <adilger@dilger.ca>=20
+> Sent: Saturday, March 16, 2024 3:02 AM
+> To: Srivathsa Dara <srivathsa.d.dara@oracle.com>
+> Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>;=20
+> 	Theodore Ts'o <tytso@mit.edu>; Rajesh Sivaramasubramaniom=20
+> 	<rajesh.sivaramasubramaniom@oracle.com>;=20
+> 	Junxiao Bi <junxiao.bi@oracle.com>
+> Re: [RESEND PATCH] e2fsprogs: misc/mke2fs.8.in: Correct valid cluster-siz=
+e values
+>=20
+> On Mar 14, 2024, at 3:31 AM, Srivathsa Dara <srivathsa.d.dara@oracle.com>=
+ wrote:
+> >=20
+> > According to the mke2fs man page, the supported cluster-size values=20
+> > for an ext4 filesystem are 2048 to 256M bytes. However, this is not=20
+> > the case.
+> >=20
+> > When mkfs is run to create a filesystem with following specifications:
+> > * 1k blocksize and cluster-size greater than 32M
+> > * 2k blocksize and cluster-size greater than 64M
+> > * 4k blocksize and cluster-size greater than 128M mkfs fails with=20
+> > "Invalid argument passed to ext2 library while trying to create=20
+> > journal" error. In general, when the cluster-size to blocksize ratio=20
+> > is greater than 32k, mkfs fails with this error.
+> >=20
+> > Went through the code and found out that the function=20
+> > `ext2fs_new_range()` is the source of this error. This is because when=
+=20
+> > the cluster-size to blocksize ratio exceeds 32k, the length argument=20
+> > to the function `ext2fs_new_range()` results in 0. Hence, the error.
+> >=20
+> > This patch corrects the valid cluster-size values.
+> > ---
+> > misc/mke2fs.8.in | 6 +++---
+> > 1 file changed, 3 insertions(+), 3 deletions(-)
+> >=20
+> > diff --git a/misc/mke2fs.8.in b/misc/mke2fs.8.in index=20
+> > e6bfc6d6..b5b02144 100644
+> > --- a/misc/mke2fs.8.in
+> > +++ b/misc/mke2fs.8.in
+> > @@ -230,9 +230,9 @@ test is used instead of a fast read-only test.
+> > .TP
+> > .B \-C " cluster-size"
+> > Specify the size of cluster in bytes for filesystems using the=20
+> > bigalloc -feature.  Valid cluster-size values are from 2048 to 256M=20
+> > bytes per -cluster.  This can only be specified if the bigalloc=20
+> > feature is -enabled.  (See the
+> > +feature.  Valid cluster-size values are from 2048 to 128M bytes per=20
+> > +cluster based on filesystem blocksize. This can only be specified if=20
+> > +the bigalloc feature is enabled.  (See the
+> > .B ext4 (5)
+>=20
+>=20
+> This is an improvement, but doesn't really explain the details of the lim=
+its.
+> Instead of "based on filesystem blocksize." I think writing "between 2-32=
+768=20
+> times the filesystem blocksize." or similar would be more clear and expla=
+in=20
+> how the actual limits relate to the blocksize.
 
-Ahh, right! I see the following line in mpage_add_bh_to_extent():
+Hi, Andreas. Thank you for the comment. Here are the details:
 
-	/* Don't go larger than mballoc is willing to allocate */
-	if (map->m_len >= MAX_WRITEPAGES_EXTENT_LEN)
-		return false;
+The function ext2fs_new_range() is causing the error. This function gets=20
+called while creating the journal inode.
+The purpose of ext2fs_new_range() is to return atleast requested amount of=
+=20
+free memory.
 
-Where MAX_WRITEPAGES_EXTENT_LEN is 2048 ie 8MB on 4k filesystem. As pointed out
-by your comment there, it seems to come from the fact that we have some restrictions 
-in ext4_mb_normalize_range() which don't allow us to go beyond 8MB length. I think
-I was also looking at that code sometime back and it really needs some rework, I'll 
-try to test a few things out.
+Following is case, where the function returns successfully:
 
-So yep, in the usual paths we shouldn't be sending a request as big as 32768 blocks
-but it's still possible with group prealloc with s_mb_group_prealloc set to 32768.
+Breakpoint 5, ext2fs_new_range (fs=3Dfs@entry=3D0x555555779070,=20
+flags=3Dflags@entry=3D0, goal=3D131072, len=3Dlen@entry=3D32768,
+    map=3Dmap@entry=3D0x0, pblk=3Dpblk@entry=3D0x7fffffffd120, plen=3D0x7ff=
+fffffd128)=20
+at alloc.c:407
+=20
+If we observe we can see that the argument length is positive value (32768)=
+,=20
+hence the function allocates atleast requested amount of memory and returns=
+=20
+successfully.
+=20
+Now, lets look at the function arguments, when it is returning error:
+=20
+Breakpoint 5, ext2fs_new_range (fs=3Dfs@entry=3D0x555555779070,=20
+flags=3Dflags@entry=3D0,
+    goal=3D262144, len=3Dlen@entry=3D0, map=3Dmap@entry=3D0x0,=20
+pblk=3Dpblk@entry=3D0x7fffffffd140,
+    plen=3D0x7fffffffd148) at alloc.c:407
+=20
+The length argument is 0. Therefore, function is returning an error.
+=20
+The value of len argument is calculate based on the values of blocksize,=20
+cluster_size.
 
-Anyways, thanks for pointing this out, I'll try to look into the code path more to see
-how we can optimize it better and maybe if we can lift the 2048 block restriction.
+Following are steps through which len value is calculated:
 
-Regards,
-ojaswin
+len =3D EXT_INIT_MAX_LEN & ~EXT2FS_CLUSTER_MASK(fs);
 
-> 
-> > I think something more optimal would be to:
-> > 
-> > 1. Add another entry to average fragment lists for completely empty
-> > groups. (As a sidenote i think we should use something like MB_NUM_FRAG_ORDER
-> > instead of MB_NUM_ORDERS in calculating limits related to average
-> > fragment lists since the NUM_ORDERS seems to be the buddy max order ie
-> > 8192 blocks only valid for CR_POWER2 and shouldn't really limit the
-> > fragment size lists)
-> 
-> I guess the thinking was that you can never get larger than
-> 1<<(MB_NUM_ORDERS-1) chunk from mballoc so there's no point to keep
-> fragment lists of such chunks?
-> 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+* EXT_INIT_MAX_LEN =3D 1 << 15
+* EXT2FS_CLUSTER_MASK(fs) =3D ((1 << (fs)->cluster_ratio_bits) - 1)
+* fs->cluster_ratio_bits =3D super->s_log_cluster_size - super->s_log_block=
+_size;
+* super->s_log_cluster_size =3D int_log2(cluster_size >> EXT2_MIN_CLUSTER_L=
+OG_SIZE);
+					where EXT2_MIN_CLUSTER_LOG_SIZE =3D 10
+* super->s_log_block_size =3D int_log2(blocksize >> EXT2_MIN_BLOCK_LOG_SIZE=
+)
+				where EXT2_MIN_BLOCK_LOG_SIZE =3D  10
+
+Following table which gives len value, for different combinations of=20
+blocksize and clustersize:
+
+A =3D blocksize
+B =3D clustersize
+C =3D s_log_block_size
+D =3D s_log_cluster_size
+E =3D D - C
+F =3D ((1<<E)-1)
+len =3D (32768 & ~F)
+
+len is passed as argument to ext2fs_new_range().
+
+Failure cases:
+------------------------------------------
+A   | B   | C   | D   | E   | F     | len
+------------------------------------------
+1k    64m   0     16    16    65535    0    =20
+
+1k   128m   0     17    17    131071   0
+
+1k   256m   0     18    18    262143   0
+
+2k   128m   1     17    16    65535    0
+
+2k   256m   1     18    17    131071   0
+
+4k   256m   2     18    16    65535    0
+
+successful cases:
+
+1k   32m    0     15    15    32767   32768
+
+2k   64m    1     16    15    32767   32768
+
+4k   128m   2     17    15    32767   32768
+
+=20
+For successful cases, len is valid value (len>0), whereas for the
+failed case length is zero. Hence, the error 'Invalid Argument'.
+
+The conclusion is that mkfs.ext4 fails for all the cases, where
+the ratio of cluster_size to blocksize is greaterthan or equal to 2^16.
+
+>=20
+> Cheers, Andreas
+
+Thanks, Srivathsa
 
