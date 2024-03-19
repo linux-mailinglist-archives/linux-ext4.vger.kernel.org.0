@@ -1,148 +1,138 @@
-Return-Path: <linux-ext4+bounces-1683-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1684-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 41BFB87F311
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Mar 2024 23:23:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037EA87F739
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Mar 2024 07:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C66A41F21B2B
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Mar 2024 22:23:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 354EC1C219F0
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Mar 2024 06:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E6345A0FB;
-	Mon, 18 Mar 2024 22:23:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBB5B48CFC;
+	Tue, 19 Mar 2024 06:22:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="hhfOO/cn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g2VVEZhJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f42.google.com (mail-oo1-f42.google.com [209.85.161.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92AA459B64
-	for <linux-ext4@vger.kernel.org>; Mon, 18 Mar 2024 22:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5424153378
+	for <linux-ext4@vger.kernel.org>; Tue, 19 Mar 2024 06:22:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710800581; cv=none; b=BPeLIMvvR9Xwf3PmrG5RBkPoSn/fkbhOh5I/y+sre626EBoFVGdP2D9dPuJVOGkRmaEGNyz5ATy3/LRTEBjahJQe42o3RnLzP4t6IyRq+rb5HLwOBZTJEdVX1EvJhoEzop4g6meFvUv4WxRmcfoyHf1VD6yupuw2cgia7ZR3ZwY=
+	t=1710829363; cv=none; b=TWYlvWqYRJRQqHDDmp6Y66bD954qgHCkKA+mj4lZ5Kqs6Rz8e5U5ddQ5D3ual3jVo6N4GrTkqZI+heg1tS07Y7h3RyLKWtQNv2UyBP2rDw2cabWemo8cwgExPiAWh3vpzDmi+sx2oeCEFZSiCQ8g+YbY8QQJL1Ajd5JlUmi/+PU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710800581; c=relaxed/simple;
-	bh=NqI0VTZW80xtuCGyeObiIog7FSq9YX7JYVoRKPWyAsA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VbQWXiJDfy+YtRI4k3qsQxEHc9fmGDNgSRyH8LgU0+IkY1g2BmoWvAS6wRHWlxXUh1qOc8msIkX2MxpuLSRaRCOnsrfs0zWXC6TMXKuZ1J0qWawnkJuznDNfy2jZHQrWrxAAlaZkgywFdW4zFlMRpkMRLlL9g0zmjpHWf1QsIqI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=hhfOO/cn; arc=none smtp.client-ip=209.85.161.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-oo1-f42.google.com with SMTP id 006d021491bc7-5a4a2d99598so1012334eaf.2
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Mar 2024 15:22:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1710800578; x=1711405378; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=oCCQCvkYtGuuihvS9ju13jWtjvlJYDKT9jyxnBBJm5s=;
-        b=hhfOO/cnoOU3wnrH1TbsSuGUEZTtNBJPUDUIbIAw5mre3kMg5Q2CKR2Kyj5ZdgPqYj
-         L59Hc5IG1vEkH6kMNEMU+NGk4dmZokTStw+YOyuNaRBD9KaavjAG3GAo+VWrvcIt0ezv
-         J6zCf3W+rPjJKZhIdewcStElPotBuTlh+jd+U0/2gHu52tCxBqzm9o6s7Kr1FX/KMnCh
-         pcTWN+t2vHrFJq0yxrqcgf/6RWQ5L5Y1y54x+MjP24en8VttiVvw1Iy7Ges0vbru+9o9
-         qAZM6/TgKk30AlXLTRsze7+vMESCdieBkoMP5z88IMY3EmGxscSo2HXrqy8HTEfuhyvQ
-         dDbg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710800578; x=1711405378;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oCCQCvkYtGuuihvS9ju13jWtjvlJYDKT9jyxnBBJm5s=;
-        b=I0Ivl3q70YNzKsx/W1cN8CBxlyJBPtCdm9686DWLEOMjuFVCZXiYFAymqLXpWSATKA
-         HURl17aGk+NiP5Oaf6dbkzjqCkKbArTrpVauTZPCs2bUgDpih38WmxM/iya6DUhEMNks
-         f/Mqhv9m90UWr/j3l1sGIeBBRZiuJgP0JmlYmAfLcmaCz7AHXjiup8H0CJk2pgiUW2Kw
-         iZFiN9C0YHbE0e7KhcYPVQEAM3D8JnwgxKgx0ccr05I6IqBfVFPIe9nAGnvEo927nIVd
-         ZYhoUJYjMWgBhWzUB7Wo9MJTa4l+R06qcvTs3bFjFIXq3pY5UgPZEdPWzlZhzrV+9tNy
-         gMCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWpgU/3xkR5m+7QOO6u3QSE6eqWWlv/nkkZzWoegKsKE2kwWPHMHZPbLHaPDVsirmZQpCjsa5wnDwnj8oO+b98ci/nRemoBoD711g==
-X-Gm-Message-State: AOJu0YyIwJGZ5XP1Q13kNt66mUxc+YN4lKFIYJRjwV5wsJQFc9Jxpt9q
-	CDTiDonRAn0PR4k9abavIBpwmg3A2QTWUmr7PsPgoHFmtTaskukxrYIGTlVHGKU=
-X-Google-Smtp-Source: AGHT+IHyckCjaxFsQHMtIDAZv7wEdAat6m2tUFjdH9I1ji+XQfTeAoj5hu9HAz770Ekw5+eb0V75BA==
-X-Received: by 2002:a05:6358:3389:b0:17e:8e40:47f5 with SMTP id i9-20020a056358338900b0017e8e4047f5mr8624180rwd.11.1710800578468;
-        Mon, 18 Mar 2024 15:22:58 -0700 (PDT)
-Received: from dread.disaster.area (pa49-180-185-123.pa.nsw.optusnet.com.au. [49.180.185.123])
-        by smtp.gmail.com with ESMTPSA id k12-20020aa790cc000000b006e71cd9c02bsm3240212pfk.129.2024.03.18.15.22.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 15:22:57 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1rmLNf-003nTk-25;
-	Tue, 19 Mar 2024 09:22:55 +1100
-Date: Tue, 19 Mar 2024 09:22:55 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Kiselev, Oleg" <okiselev@amazon.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Theodore Ts'o <tytso@mit.edu>,
-	"torvalds@linux-foundation.org" <torvalds@linux-foundation.org>,
-	"linux-fsdevel@vger.kernel.org" <linux-fsdevel@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH 3/3] ext4: Add support for FS_IOC_GETFSSYSFSPATH
-Message-ID: <Zfi+v/9vF+mfZ4Bl@dread.disaster.area>
-References: <20240315035308.3563511-1-kent.overstreet@linux.dev>
- <20240315035308.3563511-4-kent.overstreet@linux.dev>
- <20240315164550.GD324770@mit.edu>
- <l3dzlrzaekbxjryazwiqtdtckvl4aundfmwff2w4exuweg4hbc@2zsrlptoeufv>
- <A0A342BA-631D-4D6E-B6D2-692A45509F63@amazon.com>
+	s=arc-20240116; t=1710829363; c=relaxed/simple;
+	bh=Bl7MIJyB//o01ewlBZlUgO4wFPfhjKb6CVzGD67KLvs=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GFOhVfbLCg/rB4Y9D3H6bQgczt7WpaaGprvxl+/b8yeDJv6vHsahzqsQB1YLzp/IXfwNf0LEIhchAcA/H0p0GxGhlN1nbTJ1IcMvwiop24W7jfd7FqJvt+8plQDjeYqcF4p+ewKmCIsQEi1WHxH57hF6CeG5ikXrXa63Pm97F8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g2VVEZhJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D4779C433C7
+	for <linux-ext4@vger.kernel.org>; Tue, 19 Mar 2024 06:22:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710829362;
+	bh=Bl7MIJyB//o01ewlBZlUgO4wFPfhjKb6CVzGD67KLvs=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=g2VVEZhJo7M3WzBIFYBrPLfykMKnEb0DDgwBjDWgEycofr6FETfu1s1MJtsWZAG4y
+	 EBQ/Wz/VV1bfchdnEJOJTmGCmIXVWDKeCbyJ1Lzyv9+fgY79ex3ui3W4eMSObZIiWo
+	 zneTMo0h/jXCvq0t7DD2rh0wi6KmH0iCCE3uzxkxuzeSxvpftr8/m4jW2ATjrYIGP/
+	 jGfgxKSOo2CTJmPSBfP1bNhfmrtzdSKfkoUGK3sBOhf3YBHmAw8HtjHA/gBYYz+ONO
+	 KujYgGYCsYvj41b8/VwGqk3vcUDnp4+Zkja8gZk/maoA4pbKO/il0rPIctFKKZyas0
+	 SD+AJnSuZ3hhw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id BBCD4C53BD4; Tue, 19 Mar 2024 06:22:42 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 218601] Regression - dd if=/dev/zero of=/zero causes
+ shift-out-of-bounds &&  NULL pointer dereference, address: 0000000000000003
+Date: Tue, 19 Mar 2024 06:22:42 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: colin.kernel@i-pentest.info
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-218601-13602-LvqzgibOrV@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-218601-13602@https.bugzilla.kernel.org/>
+References: <bug-218601-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <A0A342BA-631D-4D6E-B6D2-692A45509F63@amazon.com>
 
-On Mon, Mar 18, 2024 at 09:51:04PM +0000, Kiselev, Oleg wrote:
-> On 3/15/24, 09:51, "Kent Overstreet" <kent.overstreet@linux.dev <mailto:kent.overstreet@linux.dev>> wrote:
-> > On Fri, Mar 15, 2024 at 12:45:50PM -0400, Theodore Ts'o wrote:
-> > > On Thu, Mar 14, 2024 at 11:53:02PM -0400, Kent Overstreet wrote:
-> > > > the new sysfs path ioctl lets us get the /sys/fs/ path for a given
-> > > > filesystem in a fs agnostic way, potentially nudging us towards
-> > > > standarizing some of our reporting.
-> > > >
-> > > > --- a/fs/ext4/super.c
-> > > > +++ b/fs/ext4/super.c
-> > > > @@ -5346,6 +5346,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
-> > > > sb->s_quota_types = QTYPE_MASK_USR | QTYPE_MASK_GRP | QTYPE_MASK_PRJ;
-> > > > #endif
-> > > > super_set_uuid(sb, es->s_uuid, sizeof(es->s_uuid));
-> > > > + super_set_sysfs_name_bdev(sb);
-> > >
-> > > Should we perhaps be hoisting this call up to the VFS layer, so that
-> > > all file systems would benefit?
-> >
-> >
-> > I did as much hoisting as I could. For some filesystems (single device
-> > filesystems) the sysfs name is the block device, for the multi device
-> > filesystems I've looked at it's the UUID.
-> 
-> Why not use the fs UUID for all cases, single device and multi device?
+https://bugzilla.kernel.org/show_bug.cgi?id=3D218601
 
-Because the sysfs directory heirachy has already been defined for
-many filesystems, and technically sysfs represents a KABI that we
-can't just break for the hell of it.
+--- Comment #6 from Colin (colin.kernel@i-pentest.info) ---
+Firstly, apologies for any incorrectness - the commit reference link did not
+accept inputs that were 'probably this sha' or similar - it was not meant in
+malice or laziness, but admittedly I was very tiered as a result of the
+unpredictability of this issue.=20
 
-e.g. changing everything to use uuid will break fstests
-infrastructure because it assumes that it can derive the sysfs dir
-location for the filesystem from the *device name* the filesystem is
-mounted on. btrfs has a special implementation of that derivation
-that runs the btrfs command to retreive the UUID of the filesysem.
+I suspect this may actually be dead hardware but it's hard to tell. If some=
+body
+is  interested in exploring this issue further feel free to provide instruc=
+tion
+over the next few days, otherwise I'll buy a new motherboard / RMA the
+processor if the motherboard does not fix the issue. I value both my and al=
+l of
+your time, so buying new equipment in the hopes that I'm rid of the problem=
+ is
+my preference unless there's some burning desire for further exploration.
 
-So, yes, while we could technically change it, we break anything in
-userspace that has introduced a dependency on bdev name as the sysfs
-fs identifier. We're not going to break userspace like this,
-especially as it is trivial to avoid.
+Here are some facts:
 
-Cheers,
+- `stress-ng --class cpu --seq 32` reliably crashes the machine in less tha=
+n 60
+seconds with the error message 'stress-ng: fail:  [2701] af-alg: ctr(twofis=
+h):
+decrypted data different from original data (possible kernel bug)', as well=
+ as
+other algos (pcbc(fcrypt), cbc(sm4) etc) noting `dd if=3D/dev/zero` is not
+cryptographic. I routinely checksum files with sha and do not notice any
+inconsistencies.
+- I have tried vanilla kernels inc. 6.0.1 and 6.8, `dd` _seems_ to fail fas=
+ter
+with more recent kernels, but maybe that's just due to a small test sample
+size.
+- I have been unable to crash Windows using Prime95 (24h) Furmark (24h) nor=
+ dd,
+nor am I aware of any errors from either tool. Windows install routinely BS=
+OD,
+but went away as soon as I switched to a different USB stick both freshly
+flashed - it's possible this is related, but it could also be a bad USB.
+- The motherboard is an ASUS Prime Z790-P WiFi D4 LGA 1700, the processor a
+13900k, I have been experiencing the issue for about 12 months, seemingly it
+has become more frequent lately
+- I cannot visually see any problems with the motherboard, no bloated
+capacitors as far as I can tell.
+- I have replaced the RAM, PSU, SSDs (w/ an non-samsung model) and removed =
+all
+aux cards, with the exception of onboard wifi6 which cannot be removed
+- Memtest86+ was run with my original 128G ram configuration on 2x24h occas=
+ions
+and did not yield any errors indicating cpu<>memory integrity is not the is=
+sue
 
-Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
