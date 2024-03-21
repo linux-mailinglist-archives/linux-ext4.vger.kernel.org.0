@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-1723-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1724-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EB1C885B66
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Mar 2024 16:07:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E76B885D4F
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Mar 2024 17:21:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51030286CB1
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Mar 2024 15:07:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FE391C2177B
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Mar 2024 16:21:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18DF28613B;
-	Thu, 21 Mar 2024 15:07:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5690512CDB5;
+	Thu, 21 Mar 2024 16:20:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SJyodYrB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aCsCejnM"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 946851E879
-	for <linux-ext4@vger.kernel.org>; Thu, 21 Mar 2024 15:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D330012CDAA
+	for <linux-ext4@vger.kernel.org>; Thu, 21 Mar 2024 16:20:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711033653; cv=none; b=U3hDlsKUjRpj6OtG8KjlD9n05izVjgm6d9CJGdDgQ6t/VAj0hJU6zzt5N+VJ7nx5l/sATFPRsHq5PL4es80JnKL7rP9KOotwHWj7Fp99LhN63SyABdackrtuOea9pLgxLV2fdOJSFBFR1jy8Y3mLX/tpV7dJL4dg/KgMJUD7uYs=
+	t=1711038055; cv=none; b=utaoRaph/pC92uanofpmlJZomLEf0MX92OC4utrOs/k+AZ1/5IKe7z2C/RXzQ2XTaT8ffgdzhuw/VmGqUl62paFAkXQbl7zxZ4xcnuDBE+2x9PMH9Zt4HzhG68wySuZjRQEMqLh19qpnPaWZ/H1AUNLgS+Ou8azzI9+xMwr7K5E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711033653; c=relaxed/simple;
-	bh=ASTf40wPIqP9787tuNZCMrJBRjtGnY8j3VLC0DujcJA=;
+	s=arc-20240116; t=1711038055; c=relaxed/simple;
+	bh=65M/wcOA1OqruO2xxJDahgb2SpPOe9U/pJrNvp/OfzU=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=sHZ0/Gbpthbu4vdnxIAt3NRezaNtIEfBzp/61ErbrEbwex9UFh+Nb9Jl8zOJXqqZh8HDLLYrkhp61jGS+oMM4T+1nMo+GgEn7SuW2afD5oWdBLMAJANFulrTVdNQ2q3zP23J9Y8CK6GpGRheWqMAo9H0LWek3kN+tRKt667UhRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SJyodYrB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 25D32C433A6
-	for <linux-ext4@vger.kernel.org>; Thu, 21 Mar 2024 15:07:32 +0000 (UTC)
+	 Content-Type:MIME-Version; b=pmVH/NpE5cyOJM41qLXIyG/imyguEqZWWEBMUtKiRU0w8I64J/SO8HwacI17It27th9APY7YTWr5vpnp21/wmMkFNmt2ipZyupgwEHFhymyURbkpd0GYkyqxzDs9HL17UVwg97DgVjvgm27ae+rIGFoZXoj9vHkanqnTnIz5cCw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aCsCejnM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6DAE9C433A6
+	for <linux-ext4@vger.kernel.org>; Thu, 21 Mar 2024 16:20:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711033652;
-	bh=ASTf40wPIqP9787tuNZCMrJBRjtGnY8j3VLC0DujcJA=;
+	s=k20201202; t=1711038055;
+	bh=65M/wcOA1OqruO2xxJDahgb2SpPOe9U/pJrNvp/OfzU=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=SJyodYrBFe+fBLZndC5DBUgDt7YoOJk+xiU7ZIeSk/+iYMZpXN/RpcV9zK8g5ps+1
-	 V2TPJH1rxt414lnRlZCVUo6QtKw08EWvLEcPc04wAuDFaZ1Cd5ebXm8W/627x4U4wr
-	 1WDedCPUvMWHAS3Fe2fE2/gSAdwOQpk/QwkLKbEHxk9lEVsnUpiGS0nCId9pLFbAt2
-	 s8dTsroG8LQTmG6hUh4wGGuAgzaYjn70ipufOUTh8u4mYl9nlYojziFYLXwpV+8nRg
-	 qwVUIG76SynAa0U06dXnOao3j9wZkYjLnq/3+tVLr4WE3jo7NW2U60UqL9+jKQQbiA
-	 jc7iFffv1OaAQ==
+	b=aCsCejnMAymq7BdsKm+GqXSxnvp+SzLgPIzlYECUnXcbJoQEesOAzbGSpD0XRpBOB
+	 L0TV3z26oUnoQhAc8ly4qqR79FxM+ddlkCKqHlLvPyC8QrRlSMUy7A/S69YWB9nSQt
+	 GTTXhSOLT4iRxtBGS+sm4O8L/NM58f8i2eODaLxf+/7RhfifVSKCUATRwhneIe3SSN
+	 A/9kS6z0Y4HofKcsHBkjgybh2H0rTRKhBjK5UabDMM12yarTnAL/W6viOmrQDHeF0i
+	 mFmq27A6XOzElnZjkefOrH+y+mSYfl7xxDyXYMaC4Tl/UTU2uoOSwzEKVAEDM9mRX7
+	 KZ71bg96CscmA==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 1DB65C53BC6; Thu, 21 Mar 2024 15:07:32 +0000 (UTC)
+	id 62D44C53BD5; Thu, 21 Mar 2024 16:20:55 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 218601] Regression - dd if=/dev/zero of=/zero causes
  shift-out-of-bounds &&  NULL pointer dereference, address: 0000000000000003
-Date: Thu, 21 Mar 2024 15:07:31 +0000
+Date: Thu, 21 Mar 2024 16:20:55 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -56,14 +56,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: kernel@nerdbynature.de
+X-Bugzilla-Who: kbusch@kernel.org
 X-Bugzilla-Status: NEW
 X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-218601-13602-RaA6w7hQmg@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-218601-13602-IYdXNRkSPk@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-218601-13602@https.bugzilla.kernel.org/>
 References: <bug-218601-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -79,18 +79,14 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D218601
 
-Christian Kujau (kernel@nerdbynature.de) changed:
+--- Comment #11 from Keith Busch (kbusch@kernel.org) ---
+(In reply to Colin from comment #9)
+> Created attachment 306016 [details]
+> kernel 6.8.1 dmesg of stress-ng
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |kernel@nerdbynature.de
-
---- Comment #10 from Christian Kujau (kernel@nerdbynature.de) ---
-> Building the linux kernel was segfaulting at different locations,=20
-> I ended up building it on another machine.
-
-Not good. Maybe swap/remove some RAM modules. See also:
-https://bitwizard.nl/sig11/
+Doesn't look like the same failure as the first attachment. Maybe your hard=
+ware
+really is broken.
 
 --=20
 You may reply to this email to add a comment.
