@@ -1,108 +1,131 @@
-Return-Path: <linux-ext4+bounces-1736-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1729-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62ED0886FEA
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 16:43:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B4D78867B6
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 08:59:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 03D8A1F22D58
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 15:43:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA40428653F
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 07:59:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E4B535A8;
-	Fri, 22 Mar 2024 15:43:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BWBIYBOg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C121A14014;
+	Fri, 22 Mar 2024 07:59:08 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f46.google.com (mail-io1-f46.google.com [209.85.166.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B212453395;
-	Fri, 22 Mar 2024 15:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C63E134A3;
+	Fri, 22 Mar 2024 07:59:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711122190; cv=none; b=X7qn1yhXwRp6+p3EMg1cgHMDV/ioWzSBR2GvjuC4D1Xgmi/Irnob1UKF8qRSF8JKHym4KSUVBExyL2V2bdcP3LptgnSxuy233mECgzbvzDGiqppRWA+lkLK9zvUSRWuFp4YH02ocfOPJXgouoOPsODa2Pk4r9HLU8Z1tzIM5+sg=
+	t=1711094348; cv=none; b=hnI+aTTZsLX4VeazKbM5po41sRKyOKSkFzqnW0BL4klnMiOnWklKdjixIQVGLyeAoYylCqUEMliDb5jOICV8ru2ROsEGSj2G1JjEvJAVy+/YXvD84xUNsMGA3d3M8ZgVdgJF85spx5oVSxNQ5wcJoavknBpgePrmGMz1qdc/y/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711122190; c=relaxed/simple;
-	bh=Weycm4kqEPwh63+mxtksApHa+dqQabudom9GeH64K0E=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n7LBsMKCqE5c7F29iRGxkd+m1SntfPVWtBf6Q6OWANesnNT1fmX40bAFlEn7qrFy2W0csX4ce7t8Wz4SuDzXgD3Q62cdqXsEAIxzjbiYKWu0SdC4e/xNPngjSc3zbMOVNL5ums03senK4ETpRnA4zYtxFoXr93k8upj9L5p6dL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BWBIYBOg; arc=none smtp.client-ip=209.85.166.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f46.google.com with SMTP id ca18e2360f4ac-7d026c0a08aso73732639f.1;
-        Fri, 22 Mar 2024 08:43:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711122187; x=1711726987; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=MxRAWuLAmkBRUhkW64V55k5e3EH9DGdSK68BU70KiTs=;
-        b=BWBIYBOgWOBOMmqolmOQ2C1QO144sjn+Sju4Ga1G5MD4bnRFkxxIK4bbnDLuBdZUr0
-         /oRA4LN7Glu292htol9nh+lJgRKqftMjxYLkBizBcLBwvnZt7r8itv7Y5/uaj+v+DBos
-         EIK2erxCLnl0YwFDspc10XPjeUWc23aLccZRgCqrFqoMJFBlfT8d1FqfudzWLgtzScC4
-         WJ/7Xghe0NCfjP8YZ9bk2DrrOwjrWNZaAf15qUfCIjDkCS/osjcrQ+JYsqOR8xPb0Cc1
-         0gw0injEytIyyZ5nW1Z5AI7C6utkDushBaZjX3ubMHrd2hlN1wxps0lnX7/0Ao4m06l5
-         IVKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711122187; x=1711726987;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=MxRAWuLAmkBRUhkW64V55k5e3EH9DGdSK68BU70KiTs=;
-        b=Nt7k0MY39i7xiVspcmDfcb5cZyaL+cM3Xk4xQA/KXB15G8RqdvAlo5YhX+LwzfOmTq
-         LGAr3ufM89gJZVpn826OWYDe3M9e8zrTHKJ6sOZjJXOk/sifLVCWLF6/9/Bcu/ATpyey
-         MglIQzbuFbs7L2c+0TIZR7JwiWQ8kxTXGAyhuClUm4SlREbwwlkiGBS2inMsy/SzS5Qy
-         fVe7TkzGk1R8QXlQu9yePYcu3UjDwtd5VdVVcvdiHlzw0AFEuLbfnTdi+RS1ssWH9Qaw
-         winIJiDlh9yrtIDed5cmYx3rDnzPQaHoRLO04kg5uNjnakyf5CiwyAvrXjPfU7SkWdhE
-         W2xg==
-X-Forwarded-Encrypted: i=1; AJvYcCXQq4MWBJ7Qs8K4BE1cB0sAdSGyxOzW+98vU+PTZcenl7Zdj4hTZUmWZwVsl1WiSfQXYUsYB4XCwWMSme+RuylM3Xad3lPPTyfsViNfEHi9npxTvE0QNlvxezw+S9KTqHcVI1UdNb6qjg==
-X-Gm-Message-State: AOJu0Yx8LqAGXHIpAL0unE1aYtBCvsl+dEHvb0ief2C9OnVPcNBrh+wp
-	tH59zgtf06iBbyET2BEGrkOGfej6fGuRnjQHIQIrzDAyIKlVI8ntgPQhiknA
-X-Google-Smtp-Source: AGHT+IFzk9z5MujRXMni5Ei3qd9UMZrhATLBX0KZNoNgLLoyCg4V3O1H+oYkUD62bAfsx7CtdQJefQ==
-X-Received: by 2002:a05:6358:7f1c:b0:17e:c5b9:5f6d with SMTP id p28-20020a0563587f1c00b0017ec5b95f6dmr3479648rwn.14.1711121872997;
-        Fri, 22 Mar 2024 08:37:52 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id 31-20020a63185f000000b005dc389409c1sm1688906pgy.93.2024.03.22.08.37.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 22 Mar 2024 08:37:52 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Fri, 22 Mar 2024 08:37:51 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	s=arc-20240116; t=1711094348; c=relaxed/simple;
+	bh=UzGKJnZTJL1hg3BZWLblMPlF3l/gSCV6CLIGlIgt5UQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=oIaxmNf9lue52IgfqES2GoOSBAvp8Xh4E26Gp+rN0LeVwcyVaGS8yd6UFqrarrVRxSmTYXwQWHQeulsWdMpaUxCUD9kLAFqISFIUAfp3xsHT2fOWOXuk/Lz6S+n8rvdTaOtg95WBkMuHisUmKS5J++IfSRJhLPoSxjLlE3etEtQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V1F8M0Xjxz4f3k6h;
+	Fri, 22 Mar 2024 15:58:59 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id F33911A0B59;
+	Fri, 22 Mar 2024 15:59:02 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.101.6])
+	by APP1 (Coremail) with SMTP id cCh0CgDXpxBFOv1l+23fHg--.60357S2;
+	Fri, 22 Mar 2024 15:59:02 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux@roeck-us.net
+Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: implement filesystem specific alloc_inode in unit
- test
-Message-ID: <8725e7d8-722e-43de-9458-dc9a48b93481@roeck-us.net>
-References: <20240322165518.8147-1-shikemeng@huaweicloud.com>
+Subject: [PATCH] ext4: implement filesystem specific alloc_inode in unit test
+Date: Sat, 23 Mar 2024 00:55:18 +0800
+Message-Id: <20240322165518.8147-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240322165518.8147-1-shikemeng@huaweicloud.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgDXpxBFOv1l+23fHg--.60357S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7WFWDXr4UKr1UAr1rXF43Wrg_yoW8Xw1Dpr
+	sxCryYkFs8WFZFga1fKry5Zw1fKa1Ig3yUJrWSgw1Sqry3GFy8tFn8tr17AF18JrW8JayF
+	vF4qkF47ur4xGaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkIb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+	8lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_
+	tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26r
+	xl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv
+	0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z2
+	80aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28I
+	cxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2
+	IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI
+	42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42
+	IY6xAIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2
+	z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU0miiDUUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Sat, Mar 23, 2024 at 12:55:18AM +0800, Kemeng Shi wrote:
-> We expect inode with ext4_info_info type as following:
-> mbt_kunit_init
->   mbt_mb_init
->     ext4_mb_init
->       ext4_mb_init_backend
->         sbi->s_buddy_cache = new_inode(sb);
->         EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
-> 
-> Implement alloc_inode ionde with ext4_inode_info type to avoid
-> out-of-bounds write.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> Reported-by: Guenter Roeck <linux@roeck-us.net>
+We expect inode with ext4_info_info type as following:
+mbt_kunit_init
+  mbt_mb_init
+    ext4_mb_init
+      ext4_mb_init_backend
+        sbi->s_buddy_cache = new_inode(sb);
+        EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
 
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Implement alloc_inode ionde with ext4_inode_info type to avoid
+out-of-bounds write.
 
-Guenter
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Reported-by: Guenter Roeck <linux@roeck-us.net>
+---
+ fs/ext4/mballoc-test.c | 24 ++++++++++++++++++++++++
+ 1 file changed, 24 insertions(+)
+
+diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
+index 044ca5238f41..49aabcfe6b46 100644
+--- a/fs/ext4/mballoc-test.c
++++ b/fs/ext4/mballoc-test.c
+@@ -30,7 +30,31 @@ struct mbt_ext4_super_block {
+ #define MBT_CTX(_sb) (&MBT_SB(_sb)->mbt_ctx)
+ #define MBT_GRP_CTX(_sb, _group) (&MBT_CTX(_sb)->grp_ctx[_group])
+ 
++static struct inode *mbt_alloc_inode(struct super_block *sb)
++{
++	struct ext4_inode_info *ei;
++
++	ei = kmalloc(sizeof(struct ext4_inode_info), GFP_KERNEL);
++	if (!ei)
++		return NULL;
++
++	INIT_LIST_HEAD(&ei->i_orphan);
++	init_rwsem(&ei->xattr_sem);
++	init_rwsem(&ei->i_data_sem);
++	inode_init_once(&ei->vfs_inode);
++	ext4_fc_init_inode(&ei->vfs_inode);
++
++	return &ei->vfs_inode;
++}
++
++static void mbt_free_inode(struct inode *inode)
++{
++	kfree(EXT4_I(inode));
++}
++
+ static const struct super_operations mbt_sops = {
++	.alloc_inode	= mbt_alloc_inode,
++	.free_inode	= mbt_free_inode,
+ };
+ 
+ static void mbt_kill_sb(struct super_block *sb)
+-- 
+2.30.0
+
 
