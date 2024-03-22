@@ -1,205 +1,176 @@
-Return-Path: <linux-ext4+bounces-1739-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1741-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6DAB8874BF
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 23:11:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92CFA88759E
+	for <lists+linux-ext4@lfdr.de>; Sat, 23 Mar 2024 00:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1739B1C202F5
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 22:11:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 16AAE1F23E10
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 23:10:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA1E781742;
-	Fri, 22 Mar 2024 22:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 971CB82892;
+	Fri, 22 Mar 2024 23:09:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="i+DCSaHC";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="iMJ5N/8y";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="i+DCSaHC";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="iMJ5N/8y"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="LGFiwTyg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B187280059;
-	Fri, 22 Mar 2024 22:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6335A82893
+	for <linux-ext4@vger.kernel.org>; Fri, 22 Mar 2024 23:09:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711145500; cv=none; b=lPMfhFf11QGBQzO8sIYW0tpjEIiUxxDvWJKcWxJoh7rh0Elz58Uo8gD1rjIr65kEkxp5ZgaPE8S6+7T5eV+wvwiq7D5bm5cC8F3PkDDywUchJHZg94v1+HO+CJnXZJi4xBrGl7jgKt6lPfS93pYizk6F7xMukdJ0W775wgsHYoY=
+	t=1711148997; cv=none; b=qEFLZret46bDW8EzRtfLocVDhgRiSbvnMFNWID7xUbwdMlvkEXR3mhu9xim8qoBz6/ZTzKOhmz/JGRx0Y0ns82OZwNEdR+S8EraEvBdoQEFbr+XZ63J+MzVG6GDS2SHda1pMtOZACmoPrf1UEtW0UXrAir/aKJVNxoY6m1E3cFo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711145500; c=relaxed/simple;
-	bh=mtr17MhmRQz+7hZNY3mNWDm7X7H/pBoEUAZnkiSDZWI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=lF+LDNFwuB29Wf7M9HfEiVdQl5y52HVoydykvFLf5fdnkcfMM+rweSlOfGBJVOinqHTLc1hYL0z/lAwUf10E4oWBEh0EKGbfopXZTlUseeSRmdb7/VC2nC1KW5LHqzBwl8MJboC6F8Yu/tk1EY7GPNkS/scXqHWlrBEC40gEhSo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=i+DCSaHC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=iMJ5N/8y; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=i+DCSaHC; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=iMJ5N/8y; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DF29C38A8F;
-	Fri, 22 Mar 2024 22:11:36 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711145496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aTZ09ncmKCd8WkUQEbzrII1H6hejyxJNsILQlSmmkc0=;
-	b=i+DCSaHCastt8j3z9SusKvybZUMm+JTSJQd4EcxLc2dhlAZj06dj7Js9m1BwY/qgfj73wV
-	CKeniWdM4e0/nu6HyO5IHta94rFjYi0htoAsWPXea4Lp/RdvdpLIXtaQSy7WLavxztp46p
-	vJUFt6NzRnckQxP2fXoOrbW+ghNMYPg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711145496;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aTZ09ncmKCd8WkUQEbzrII1H6hejyxJNsILQlSmmkc0=;
-	b=iMJ5N/8yUDUsqNpMRpxpGOdi4bp5VNayAK61HozHKt8IRaaoQwNuSxZbf9UMLzsu+h8pF0
-	vTgiKlp/xqEyVtDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711145496; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aTZ09ncmKCd8WkUQEbzrII1H6hejyxJNsILQlSmmkc0=;
-	b=i+DCSaHCastt8j3z9SusKvybZUMm+JTSJQd4EcxLc2dhlAZj06dj7Js9m1BwY/qgfj73wV
-	CKeniWdM4e0/nu6HyO5IHta94rFjYi0htoAsWPXea4Lp/RdvdpLIXtaQSy7WLavxztp46p
-	vJUFt6NzRnckQxP2fXoOrbW+ghNMYPg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711145496;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aTZ09ncmKCd8WkUQEbzrII1H6hejyxJNsILQlSmmkc0=;
-	b=iMJ5N/8yUDUsqNpMRpxpGOdi4bp5VNayAK61HozHKt8IRaaoQwNuSxZbf9UMLzsu+h8pF0
-	vTgiKlp/xqEyVtDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A7C3C132FF;
-	Fri, 22 Mar 2024 22:11:36 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8ov9IhgC/mUEHgAAD6G6ig
-	(envelope-from <krisman@suse.de>); Fri, 22 Mar 2024 22:11:36 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev via Linux-f2fs-devel <linux-f2fs-devel@lists.sourceforge.net>
-Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,  linux-fsdevel@vger.kernel.org,
-  Eugen Hristev <eugen.hristev@collabora.com>,  brauner@kernel.org,
-  jack@suse.cz,  Eric Biggers <ebiggers@google.com>,
-  linux-kernel@vger.kernel.org,  viro@zeniv.linux.org.uk,
-  kernel@collabora.com,  Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [f2fs-dev] [PATCH v10 7/8] ext4: Move CONFIG_UNICODE defguards
- into the code flow
-In-Reply-To: <20240215042654.359210-8-eugen.hristev@collabora.com> (Eugen
-	Hristev via Linux-f2fs-devel's message of "Thu, 15 Feb 2024 06:26:53
-	+0200")
-References: <20240215042654.359210-1-eugen.hristev@collabora.com>
-	<20240215042654.359210-8-eugen.hristev@collabora.com>
-Date: Fri, 22 Mar 2024 18:11:35 -0400
-Message-ID: <87ttkx9aso.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711148997; c=relaxed/simple;
+	bh=jeRa4DLXFpSDpuRSoBN3nhwwrFS7Vdvq6WsBPRRQVYA=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=IyHKdMHwvlijtSIoaSNe+I5phA9sPNzfjorO6j1/1uOsCAlo1BYUzJQWQodlA61RSG6NSYFHzSo3q7aWDahhreqwFKRrrSl7F56M310Lk1oS86uYy/WJpuBUlvRXB3rYCwpsshlLyWIMittJgME9DMG5Oqp7w/ePOiYevjrQc2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=LGFiwTyg; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-430ca04b09bso19291901cf.1
+        for <linux-ext4@vger.kernel.org>; Fri, 22 Mar 2024 16:09:54 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1711148993; x=1711753793; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=UgF3TbhMPygJT52i6+DbefarjcSqH9PqI9CndRYXlNM=;
+        b=LGFiwTygt0n3GVdKf5Tnb/sPtgAFF+XR7zYZXAS24EPpZd5RsaCSxmCUQ8Silrgd/+
+         9uRqKR19DgZTpleDoOCJEkf07WH7nYgpqpPYXXtgNJ2fuWoQk1aXr9AG5SdU4swZnF5A
+         jFTgnoeZ1YnoXDjP1fRfO4nAqMcREOY0adQoDF6dxkA+dK/t3DzzCaxZjgGXlOpUGOQy
+         qe2mgiM+3zzXhbVt9ttD1opq4pe4q86CT6s7nyKbRMMMrAyVi3NR6S+6rHr2vJf7UFA2
+         Vk9Xyq6r8o7TMhrJcCWdaAe2PeF9hzgSiQ9evd4dopWaAgxufbVrDiYuuR485SpDKAb6
+         SrVQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711148993; x=1711753793;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=UgF3TbhMPygJT52i6+DbefarjcSqH9PqI9CndRYXlNM=;
+        b=i7jtzZO2zddr4bojIeFNSRsgrgsWJJ7kM86yCOp5zEApszhg2HIVPnmi+61V0G4a6N
+         HS2iCl5Ly4RinlebA6cvLp7uH7E24U6WGMoRM6Exd8soDOOHgOY2+3/O1w3XAC+daSlr
+         hQ+LsrwZ319fMYHX7FHe0d5lyI+iEfsX2P4Z92Pgw9bwaI7RgECTUXJxQqSS356GKNap
+         oTX6MLo52kI25VPOBWBCwgwcntUWGWR3F3qIhmR3rmcKYUbYxfyf7VVNAQo1Dy2lR5L6
+         Zzh4FYZHNvyDZmoUAiH3Q0cR/vVTFRUc93ZlxYr0pYvsO/xYfnHrxosYiyWw4UBaSU9S
+         DXFQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUBrFg68/6bYMdqxGRCy69SedwTj1t1+Ora4NavyB3NVy4oox1wPye67UCB9OB3I/38z4+a4lgQ7W3Ii20SvTZlnvpHjkz48gR1yA==
+X-Gm-Message-State: AOJu0YxhExRTyI273qzX39LcrCh/dF5yly2M+OFofuOBI0YNmpRoibMM
+	qzrH5qeDBBFzgKEx/bcCqVEcTblih9YkeKlLbUydj/MFOcnJTRON/cKXABnwLvFlNhwyYZEBDbk
+	e
+X-Google-Smtp-Source: AGHT+IHspXHKhz8WInyW4vAxHJQUDuGtWZzH6YtVqtNIFEMIDwzLF/84EH/yEaD/1c+LSyHKkBcfGA==
+X-Received: by 2002:a05:6a21:33a2:b0:1a1:48aa:2827 with SMTP id yy34-20020a056a2133a200b001a148aa2827mr1151796pzb.39.1711148534968;
+        Fri, 22 Mar 2024 16:02:14 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id t184-20020a625fc1000000b006e7243bbd35sm304301pfb.172.2024.03.22.16.02.13
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Fri, 22 Mar 2024 16:02:13 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <157E2709-34C2-4C45-BF68-BF55780480A6@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=i+DCSaHC;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="iMJ5N/8y"
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.04 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_TWELVE(0.00)[15];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.53)[80.55%]
-X-Spam-Score: -4.04
-X-Rspamd-Queue-Id: DF29C38A8F
-X-Spam-Flag: NO
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 3/3] ext4: Add support for FS_IOC_GETFSSYSFSPATH
+Date: Fri, 22 Mar 2024 17:03:03 -0600
+In-Reply-To: <20240315035308.3563511-4-kent.overstreet@linux.dev>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>,
+ linux-fsdevel <linux-fsdevel@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+ Christian Brauner <brauner@kernel.org>,
+ Theodore Ts'o <tytso@mit.edu>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>
+To: Kent Overstreet <kent.overstreet@linux.dev>
+References: <20240315035308.3563511-1-kent.overstreet@linux.dev>
+ <20240315035308.3563511-4-kent.overstreet@linux.dev>
+X-Mailer: Apple Mail (2.3273)
 
-Eugen Hristev via Linux-f2fs-devel
-<linux-f2fs-devel@lists.sourceforge.net> writes:
 
-> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> Instead of a bunch of ifdefs, make the unicode built checks part of the
-> code flow where possible, as requested by Torvalds.
->
-> Reviewed-by: Eric Biggers <ebiggers@google.com>
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> [eugen.hristev@collabora.com: port to 6.8-rc3]
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+--Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Mar 14, 2024, at 9:53 PM, Kent Overstreet <kent.overstreet@linux.dev> =
+wrote:
+>=20
+> the new sysfs path ioctl lets us get the /sys/fs/ path for a given
+> filesystem in a fs agnostic way, potentially nudging us towards
+> standarizing some of our reporting.
+
+I find it ironic that we are adding an ioctl to be able to get the
+sysfs path, which was originally created to avoid adding ioctls...
+But, the days of jumping through hoops to find stuff in sysfs for
+each filesystem arrived long ago, so we may as well make it easier. :-)
+
+Cheers, Andreas
+
+>=20
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Cc: "Theodore Ts'o" <tytso@mit.edu>
+> Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+> Cc: linux-ext4@vger.kernel.org
 > ---
->  fs/ext4/crypto.c | 19 +++----------------
->  fs/ext4/ext4.h   | 33 +++++++++++++++++++++------------
->  fs/ext4/namei.c  | 14 +++++---------
->  fs/ext4/super.c  |  4 +---
->  4 files changed, 30 insertions(+), 40 deletions(-)
->
-> diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
-> index 7ae0b61258a7..1d2f8b79529c 100644
-> --- a/fs/ext4/crypto.c
-> +++ b/fs/ext4/crypto.c
-> @@ -31,12 +31,7 @@ int ext4_fname_setup_filename(struct inode *dir, const struct qstr *iname,
->  
->  	ext4_fname_from_fscrypt_name(fname, &name);
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	err = ext4_fname_setup_ci_filename(dir, iname, fname);
-> -	if (err)
-> -		ext4_fname_free_filename(fname);
-> -#endif
-> -	return err;
-> +	return ext4_fname_setup_ci_filename(dir, iname, fname);
-
-This shouldn't remove the error path.  It effectively reintroduces the
-memory leak fixed by commit 7ca4b085f430 ("ext4: fix memory leaks in
-ext4_fname_{setup_filename,prepare_lookup}").
-
-This patch was only about inlining the codeguards, so it shouldn't be
-changing the logic.
-
->  }
->  
->  int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
-> @@ -51,12 +46,7 @@ int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
->  
->  	ext4_fname_from_fscrypt_name(fname, &name);
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
-> -	if (err)
-> -		ext4_fname_free_filename(fname);
-> -#endif
-> -	return err;
-> +	return ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
->  }
-
-likewise
+> fs/ext4/super.c | 1 +
+> 1 file changed, 1 insertion(+)
+>=20
+> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> index f5e5a44778cf..cb82b23a4d98 100644
+> --- a/fs/ext4/super.c
+> +++ b/fs/ext4/super.c
+> @@ -5346,6 +5346,7 @@ static int __ext4_fill_super(struct fs_context =
+*fc, struct super_block *sb)
+> 	sb->s_quota_types =3D QTYPE_MASK_USR | QTYPE_MASK_GRP | =
+QTYPE_MASK_PRJ;
+> #endif
+> 	super_set_uuid(sb, es->s_uuid, sizeof(es->s_uuid));
+> +	super_set_sysfs_name_bdev(sb);
+>=20
+> 	INIT_LIST_HEAD(&sbi->s_orphan); /* unlinked but open files */
+> 	mutex_init(&sbi->s_orphan_lock);
+> --
+> 2.43.0
+>=20
 
 
--- 
-Gabriel Krisman Bertazi
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmX+DicACgkQcqXauRfM
+H+CJgw/+PaOI0yH8X6md/q6dpGtw7cT+GJNkNUqlr1yw/LAXo5PILhX8BoeGtNn0
+xVUkNjlKa5esWlZzNALY9MVdlc3Vnrqny11EzovQn9cS046ZGOfPgKJr3rHxND0B
+Uik9qVHxqimn5XPydHnHw0ieGMSSEqCnMWTjx+AydPcETDakFYTefQdUSk5tQoGK
+1XuLbZI4m+7waWOA0UPCx79n/qHr9cRvBCbGDrIorO6/A59w+k/bawKY06z0gUu0
+/eERceymgH28673XZX464zh8es0u8D82gpN84SM6awJbWF/1btgM41WVuQMRQml7
+kZk3uHXy1OFz3Va4WDA2pgROcuBVCbjC+50iE2zJ7NH6qAOiITsxpvzk2C8zf62x
+Xnu4MPZff989gurDKSjtmvzdZ1tUoQpVxb5uSLqDNar0Z6GI+IGCUdkXNH6hGb1T
+hspCIGhg1xzDud3/HTHnjzQswYM2A750U/b2FwBTnig8DVjpcca5qsRqkj4KEo/H
+NAK6xP4g3Lhw/b5tBwCRwvH5cgtmiW37WuKk+RFpIILXHxo0FHOPvNQ1CrF8Hwk2
+Q7MJ2XdscsCaUfkVYKCRITjGtPqtgBBsaOteo+2eP2zMHgYW4DSA/qOiHtVUj2wJ
+L/cX1nOSkk2LQlphDL3eOLa0C+8Az0j7w2kzeYHw5ELW8neQc6Q=
+=ABi7
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_9A948BF3-167F-40B7-B1E4-3D6BCCDB7976--
 
