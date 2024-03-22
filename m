@@ -1,332 +1,102 @@
-Return-Path: <linux-ext4+bounces-1726-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1728-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20AD885D65
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Mar 2024 17:27:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A66688659A
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 04:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A1C71F25FCE
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Mar 2024 16:27:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19F9F285EB8
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 03:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B9112CDB2;
-	Thu, 21 Mar 2024 16:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ns0O9nov";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="GTgb3BrN"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054E06ABA;
+	Fri, 22 Mar 2024 03:43:13 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3097012CD92
-	for <linux-ext4@vger.kernel.org>; Thu, 21 Mar 2024 16:26:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9FD4A3E
+	for <linux-ext4@vger.kernel.org>; Fri, 22 Mar 2024 03:43:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711038422; cv=none; b=ow1DfqkA44S6+MKQ9SlWlm+OaAIhzxIUkw1O59yfgHA1mTb6OVEnvIPYfvjKcAdjN5jPVo9xJfx8Pn5QebrCfI02sPxgzh98iGl6KTBPGoPQulTYohdb/Z38gs/h/hLXippnNy/ETu9rKXhPVdaVYT1RS/6KqEQkNFrs8cbFg3c=
+	t=1711078992; cv=none; b=J8NLdwj8bNYZIeawMBOPoYibsQHRE4PkmUQTo/1HzIJgCF8DRT1zoU/vFf74/3w4cpwYMN44r6e7CrxKDlw/3fhVdRwADEesyWZsr3hrKj6gPlDVVbd5LNqMv9ZcKD+1c+aeJXGloLsND6U98h0Xw7Wx255wUnPKsGw9+lVO3OQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711038422; c=relaxed/simple;
-	bh=ClY6cQFMnvWLVjruwU9YSCebXdQId/RvOEE/t9FoEmk=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=D33pkZFpiKWaLxrOcpIMUEyOsPZT1JbSw+90G/NNRxvIZr9IgPjmai+K7KBXb7jBsmDx3CLALPL1GJBxfiE/4pEf44vz1xCS9rKJNvag8DmoXw7YrxTP7TSqPCfMelcEVjun5zHW/LLe0z/WxeAx7cgeOA0Y/MVXwG+k0gJmE4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ns0O9nov; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=GTgb3BrN; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 3EC6C5D12B;
-	Thu, 21 Mar 2024 16:26:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1711038418; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kVngoSeA8RjsfEjYVya+ELfn11nCfGBON8hhUhYQ8sQ=;
-	b=ns0O9novQXT0kjvXmw97iv9g7Tm6QJT7kyuIdrwAyFmbbVshkI7YprTBaa6uNxieeYcyPu
-	OQTu9DXL+03KBLgdX1GWpm3JTmgmieBnIMG5lkVPeDsbUxAJ/mXBGdVFAaAmmQrKUw02Iv
-	FdS9YBbZX7744rFEvKo5bUAIOY8qGxA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1711038418;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kVngoSeA8RjsfEjYVya+ELfn11nCfGBON8hhUhYQ8sQ=;
-	b=GTgb3BrNP19E8oyjxhqiD6MxGgSBlh85TnmzZ/eUGhmGJ8b2btQKXbwjJ5CBj2Ac0iO95v
-	vD36oFkLqrCCn1BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2DE8E138A1;
-	Thu, 21 Mar 2024 16:26:58 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0wAvC9Jf/GWyGQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Mar 2024 16:26:58 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CCB83A0811; Thu, 21 Mar 2024 17:26:57 +0100 (CET)
-From: Jan Kara <jack@suse.cz>
-To: Ted Tso <tytso@mit.edu>
-Cc: <linux-ext4@vger.kernel.org>,
-	Jan Kara <jack@suse.cz>,
-	syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
-Subject: [PATCH 2/2] ext4: Do not create EA inode under buffer lock
-Date: Thu, 21 Mar 2024 17:26:50 +0100
-Message-Id: <20240321162657.27420-2-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240209111418.22308-1-jack@suse.cz>
-References: <20240209111418.22308-1-jack@suse.cz>
+	s=arc-20240116; t=1711078992; c=relaxed/simple;
+	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Liyjp2DMgSWMELwchD2YyN3jyX3SPnvzMmgTG9AJ826dTuDxFIbak8TCqBLKHMo/umsLOp/VFSpxqLEp3/XU1YICDHCiKaXPuxyb5eIjKRFJeLuFlPfbzKr0RXq4ysOvD/9hy8zdDcY+Kx5rk30ZXMD2it1C39Sfmv4gpVH6W4I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c9aa481ce4so157893039f.3
+        for <linux-ext4@vger.kernel.org>; Thu, 21 Mar 2024 20:43:11 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711078990; x=1711683790;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=i1+BSG+yf77aRDBFYfOl+kxcNQOym5D/L1KiqL31XWoyZHEc3k2z/lhHogG9frmLnf
+         /YKnZTDH13s72JxmPb8FdaPR3PCtKgmW2M0vsEaUQaiY1msw3O1xWYG+Y7u2AHBl8kwJ
+         4WWULkhW2u5GsRuKuwlLRdl8i7tV4UQOI0XSSkzZUC701ScLe4Mgtsd9IZbcW6K1FR/m
+         +IUpVyO0751gQcWPvOa6ZFeb4WiEm1ge5P635oBw/H6Qb/7oByydWttSJdV2mpOS8Itq
+         j7mHcZS6NDZJY9RtsnycpQul/UBEIFYXRZz2zB6q452MzJc4+UV6W9KqmtLpRrvIf7U7
+         D9Sw==
+X-Forwarded-Encrypted: i=1; AJvYcCV/uvaUM6+h4NDzeJUoYwPktyAkD0ywhlkrPei2x0ZrWj3oGDlq9uSI3iNzb6sYZR6it+KVQq57wzi3EdHjk9lcK7S7dscZJz0j0A==
+X-Gm-Message-State: AOJu0YyOeX5nCmcQCO4RmgxcFXax8418BC1wAujKPPkL7lPiAnJ2ETVA
+	2Ft8dTZJ+ZIFoAoYyrFavgis7PdSX7ivwFGFP0KWlkQK0pcZshRl7FWMUQsOpdhTW8yKtQuJscl
+	ME+MwzsF4kT6AIP0Qt+qnhztjpFLdxuCdAdxaqd6LEa5LRe0m2TnbpaY=
+X-Google-Smtp-Source: AGHT+IEHxk8xSCWHhcDoCB7Keif1EAn8Bc3Wm7anJiX6s4lQ7mGl+EfpLANtSBAw8oWfeCh6UDat/0XrKUqX/usRC3mv5voXUGuX
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=7166; i=jack@suse.cz; h=from:subject; bh=ClY6cQFMnvWLVjruwU9YSCebXdQId/RvOEE/t9FoEmk=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBl/F/KRGa3Jlh5Go0PUomyG5Al2XcWrktQ2M+wUi8X 4wUPtmGJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZfxfygAKCRCcnaoHP2RA2bOaB/ 4mgzHhzOyV3JFm4Caw1ovpK1HYEoqEzWv5BGzpL5T/RMk7yPEfX1j2U3i8EUYYdIZ8NKbhNGLzJBMT WTZ+FhlPa0RBrUp2+E/m/xAkD7ZiA7CxY5LSlk9UmIewI5ph/dNT7urDnDdvBasB+9tIDFUsw+ulqS E75nZ4FWi2Md3xet/Q8vw14d6uTbogeUNK6n5pJBpjYS0YjCtoxEmTo/EPIv2VD+BkkhFX/+HVcSL5 +95JPVsSExh8EFy/D6hXtt8wW3xae2a38qEmEGlCBkjkz21gWWgmXeSdkx5v91XBcHAyeLgzh3nGQi luv4e7n72UstHfmdvorH6x2JJLh1Av
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	 TAGGED_RCPT(0.00)[a43d4f48b8397d0e41a9];
-	 REPLY(-4.00)[]
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: 3EC6C5D12B
-X-Spam-Flag: NO
+X-Received: by 2002:a05:6638:270b:b0:474:c3b5:a8b7 with SMTP id
+ m11-20020a056638270b00b00474c3b5a8b7mr68265jav.6.1711078990482; Thu, 21 Mar
+ 2024 20:43:10 -0700 (PDT)
+Date: Thu, 21 Mar 2024 20:43:10 -0700
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000069222e0614379f1f@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-ext4_xattr_set_entry() creates new EA inodes while holding buffer lock
-on the external xattr block. This is problematic as it nests all the
-allocation locking (which acquires locks on other buffers) under the
-buffer lock. This can even deadlock when the filesystem is corrupted and
-e.g. quota file is setup to contain xattr block as data block. Move the
-allocation of EA inode out of ext4_xattr_set_entry() into the callers.
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Reported-by: syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
-Signed-off-by: Jan Kara <jack@suse.cz>
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
+
+#syz fix: exact-commit-title
+
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+
 ---
- fs/ext4/xattr.c | 113 +++++++++++++++++++++++-------------------------
- 1 file changed, 53 insertions(+), 60 deletions(-)
+[1] I expect the commit to be present in:
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 146690c10c73..04f90df8dbae 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -1619,6 +1619,7 @@ static struct inode *ext4_xattr_inode_lookup_create(handle_t *handle,
- static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 				struct ext4_xattr_search *s,
- 				handle_t *handle, struct inode *inode,
-+				struct inode *new_ea_inode,
- 				bool is_block)
- {
- 	struct ext4_xattr_entry *last, *next;
-@@ -1626,7 +1627,6 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 	size_t min_offs = s->end - s->base, name_len = strlen(i->name);
- 	int in_inode = i->in_inode;
- 	struct inode *old_ea_inode = NULL;
--	struct inode *new_ea_inode = NULL;
- 	size_t old_size, new_size;
- 	int ret;
- 
-@@ -1711,38 +1711,11 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 			old_ea_inode = NULL;
- 			goto out;
- 		}
--	}
--	if (i->value && in_inode) {
--		WARN_ON_ONCE(!i->value_len);
--
--		new_ea_inode = ext4_xattr_inode_lookup_create(handle, inode,
--					i->value, i->value_len);
--		if (IS_ERR(new_ea_inode)) {
--			ret = PTR_ERR(new_ea_inode);
--			new_ea_inode = NULL;
--			goto out;
--		}
--	}
- 
--	if (old_ea_inode) {
- 		/* We are ready to release ref count on the old_ea_inode. */
- 		ret = ext4_xattr_inode_dec_ref(handle, old_ea_inode);
--		if (ret) {
--			/* Release newly required ref count on new_ea_inode. */
--			if (new_ea_inode) {
--				int err;
--
--				err = ext4_xattr_inode_dec_ref(handle,
--							       new_ea_inode);
--				if (err)
--					ext4_warning_inode(new_ea_inode,
--						  "dec ref new_ea_inode err=%d",
--						  err);
--				ext4_xattr_inode_free_quota(inode, new_ea_inode,
--							    i->value_len);
--			}
-+		if (ret)
- 			goto out;
--		}
- 
- 		ext4_xattr_inode_free_quota(inode, old_ea_inode,
- 					    le32_to_cpu(here->e_value_size));
-@@ -1866,7 +1839,6 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
- 	ret = 0;
- out:
- 	iput(old_ea_inode);
--	iput(new_ea_inode);
- 	return ret;
- }
- 
-@@ -1929,9 +1901,21 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 	size_t old_ea_inode_quota = 0;
- 	unsigned int ea_ino;
- 
--
- #define header(x) ((struct ext4_xattr_header *)(x))
- 
-+	/* If we need EA inode, prepare it before locking the buffer */
-+	if (i->value && i->in_inode) {
-+		WARN_ON_ONCE(!i->value_len);
-+
-+		ea_inode = ext4_xattr_inode_lookup_create(handle, inode,
-+					i->value, i->value_len);
-+		if (IS_ERR(ea_inode)) {
-+			error = PTR_ERR(ea_inode);
-+			ea_inode = NULL;
-+			goto cleanup;
-+		}
-+	}
-+
- 	if (s->base) {
- 		int offset = (char *)s->here - bs->bh->b_data;
- 
-@@ -1940,6 +1924,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 						      EXT4_JTR_NONE);
- 		if (error)
- 			goto cleanup;
-+
- 		lock_buffer(bs->bh);
- 
- 		if (header(s->base)->h_refcount == cpu_to_le32(1)) {
-@@ -1966,7 +1951,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 			}
- 			ea_bdebug(bs->bh, "modifying in-place");
- 			error = ext4_xattr_set_entry(i, s, handle, inode,
--						     true /* is_block */);
-+					     ea_inode, true /* is_block */);
- 			ext4_xattr_block_csum_set(inode, bs->bh);
- 			unlock_buffer(bs->bh);
- 			if (error == -EFSCORRUPTED)
-@@ -2034,29 +2019,13 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 		s->end = s->base + sb->s_blocksize;
- 	}
- 
--	error = ext4_xattr_set_entry(i, s, handle, inode, true /* is_block */);
-+	error = ext4_xattr_set_entry(i, s, handle, inode, ea_inode,
-+				     true /* is_block */);
- 	if (error == -EFSCORRUPTED)
- 		goto bad_block;
- 	if (error)
- 		goto cleanup;
- 
--	if (i->value && s->here->e_value_inum) {
--		/*
--		 * A ref count on ea_inode has been taken as part of the call to
--		 * ext4_xattr_set_entry() above. We would like to drop this
--		 * extra ref but we have to wait until the xattr block is
--		 * initialized and has its own ref count on the ea_inode.
--		 */
--		ea_ino = le32_to_cpu(s->here->e_value_inum);
--		error = ext4_xattr_inode_iget(inode, ea_ino,
--					      le32_to_cpu(s->here->e_hash),
--					      &ea_inode);
--		if (error) {
--			ea_inode = NULL;
--			goto cleanup;
--		}
--	}
--
- inserted:
- 	if (!IS_LAST_ENTRY(s->first)) {
- 		new_bh = ext4_xattr_block_cache_find(inode, header(s->base),
-@@ -2209,17 +2178,16 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 
- cleanup:
- 	if (ea_inode) {
--		int error2;
--
--		error2 = ext4_xattr_inode_dec_ref(handle, ea_inode);
--		if (error2)
--			ext4_warning_inode(ea_inode, "dec ref error=%d",
--					   error2);
-+		if (error) {
-+			int error2;
- 
--		/* If there was an error, revert the quota charge. */
--		if (error)
-+			error2 = ext4_xattr_inode_dec_ref(handle, ea_inode);
-+			if (error2)
-+				ext4_warning_inode(ea_inode, "dec ref error=%d",
-+						   error2);
- 			ext4_xattr_inode_free_quota(inode, ea_inode,
- 						    i_size_read(ea_inode));
-+		}
- 		iput(ea_inode);
- 	}
- 	if (ce)
-@@ -2277,14 +2245,38 @@ int ext4_xattr_ibody_set(handle_t *handle, struct inode *inode,
- {
- 	struct ext4_xattr_ibody_header *header;
- 	struct ext4_xattr_search *s = &is->s;
-+	struct inode *ea_inode = NULL;
- 	int error;
- 
- 	if (!EXT4_INODE_HAS_XATTR_SPACE(inode))
- 		return -ENOSPC;
- 
--	error = ext4_xattr_set_entry(i, s, handle, inode, false /* is_block */);
--	if (error)
-+	/* If we need EA inode, prepare it before locking the buffer */
-+	if (i->value && i->in_inode) {
-+		WARN_ON_ONCE(!i->value_len);
-+
-+		ea_inode = ext4_xattr_inode_lookup_create(handle, inode,
-+					i->value, i->value_len);
-+		if (IS_ERR(ea_inode))
-+			return PTR_ERR(ea_inode);
-+	}
-+	error = ext4_xattr_set_entry(i, s, handle, inode, ea_inode,
-+				     false /* is_block */);
-+	if (error) {
-+		if (ea_inode) {
-+			int error2;
-+
-+			error2 = ext4_xattr_inode_dec_ref(handle, ea_inode);
-+			if (error2)
-+				ext4_warning_inode(ea_inode, "dec ref error=%d",
-+						   error2);
-+
-+			ext4_xattr_inode_free_quota(inode, ea_inode,
-+						    i_size_read(ea_inode));
-+			iput(ea_inode);
-+		}
- 		return error;
-+	}
- 	header = IHDR(inode, ext4_raw_inode(&is->iloc));
- 	if (!IS_LAST_ENTRY(s->first)) {
- 		header->h_magic = cpu_to_le32(EXT4_XATTR_MAGIC);
-@@ -2293,6 +2285,7 @@ int ext4_xattr_ibody_set(handle_t *handle, struct inode *inode,
- 		header->h_magic = cpu_to_le32(0);
- 		ext4_clear_inode_state(inode, EXT4_STATE_XATTR);
- 	}
-+	iput(ea_inode);
- 	return 0;
- }
- 
--- 
-2.35.3
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
