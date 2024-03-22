@@ -1,102 +1,170 @@
-Return-Path: <linux-ext4+bounces-1728-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1730-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A66688659A
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 04:43:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 610B1886839
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 09:31:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19F9F285EB8
-	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 03:43:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAC5C1F245E4
+	for <lists+linux-ext4@lfdr.de>; Fri, 22 Mar 2024 08:31:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 054E06ABA;
-	Fri, 22 Mar 2024 03:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AA6D168A8;
+	Fri, 22 Mar 2024 08:31:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="hn0WYqOz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C9FD4A3E
-	for <linux-ext4@vger.kernel.org>; Fri, 22 Mar 2024 03:43:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BCB8830;
+	Fri, 22 Mar 2024 08:31:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711078992; cv=none; b=J8NLdwj8bNYZIeawMBOPoYibsQHRE4PkmUQTo/1HzIJgCF8DRT1zoU/vFf74/3w4cpwYMN44r6e7CrxKDlw/3fhVdRwADEesyWZsr3hrKj6gPlDVVbd5LNqMv9ZcKD+1c+aeJXGloLsND6U98h0Xw7Wx255wUnPKsGw9+lVO3OQ=
+	t=1711096299; cv=none; b=D6HBMM6h9YjzmgkPalLRwlZ9sHrhOEH3NU4tRYZ9VrrRyagd1ucIXXsuAaD4hdpRzqZAuW5mJxM84VcfVaBiDYrtaxsjT2yvy/DLAEtLosG0ybOQ556TOXGsK3gULu9vIFM6WgtxcLsVUrMOP5YrdN3eWFwdTMihJVBZVb/r/n0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711078992; c=relaxed/simple;
-	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Liyjp2DMgSWMELwchD2YyN3jyX3SPnvzMmgTG9AJ826dTuDxFIbak8TCqBLKHMo/umsLOp/VFSpxqLEp3/XU1YICDHCiKaXPuxyb5eIjKRFJeLuFlPfbzKr0RXq4ysOvD/9hy8zdDcY+Kx5rk30ZXMD2it1C39Sfmv4gpVH6W4I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c9aa481ce4so157893039f.3
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Mar 2024 20:43:11 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711078990; x=1711683790;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=i1+BSG+yf77aRDBFYfOl+kxcNQOym5D/L1KiqL31XWoyZHEc3k2z/lhHogG9frmLnf
-         /YKnZTDH13s72JxmPb8FdaPR3PCtKgmW2M0vsEaUQaiY1msw3O1xWYG+Y7u2AHBl8kwJ
-         4WWULkhW2u5GsRuKuwlLRdl8i7tV4UQOI0XSSkzZUC701ScLe4Mgtsd9IZbcW6K1FR/m
-         +IUpVyO0751gQcWPvOa6ZFeb4WiEm1ge5P635oBw/H6Qb/7oByydWttSJdV2mpOS8Itq
-         j7mHcZS6NDZJY9RtsnycpQul/UBEIFYXRZz2zB6q452MzJc4+UV6W9KqmtLpRrvIf7U7
-         D9Sw==
-X-Forwarded-Encrypted: i=1; AJvYcCV/uvaUM6+h4NDzeJUoYwPktyAkD0ywhlkrPei2x0ZrWj3oGDlq9uSI3iNzb6sYZR6it+KVQq57wzi3EdHjk9lcK7S7dscZJz0j0A==
-X-Gm-Message-State: AOJu0YyOeX5nCmcQCO4RmgxcFXax8418BC1wAujKPPkL7lPiAnJ2ETVA
-	2Ft8dTZJ+ZIFoAoYyrFavgis7PdSX7ivwFGFP0KWlkQK0pcZshRl7FWMUQsOpdhTW8yKtQuJscl
-	ME+MwzsF4kT6AIP0Qt+qnhztjpFLdxuCdAdxaqd6LEa5LRe0m2TnbpaY=
-X-Google-Smtp-Source: AGHT+IEHxk8xSCWHhcDoCB7Keif1EAn8Bc3Wm7anJiX6s4lQ7mGl+EfpLANtSBAw8oWfeCh6UDat/0XrKUqX/usRC3mv5voXUGuX
+	s=arc-20240116; t=1711096299; c=relaxed/simple;
+	bh=eHe9zDfIr5wP83EpR+ZDJ3x9229GvW/zs00EBspiMKE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cu/4ujT3Y5JT6l/MMnmJ1cTi9/903SaFQ+h/kIowXF3qp8TjSu2tN40x+KwKa9E2bwEYhdclvL7Gf3eEhsZ9Fb79LbiMEDmJpaxIY4BqiO8K/RkKIst/SlnznWYP/ITOeRFslHHWxlOJOMxYZ6xfoUpL7FsifXYbjqF6/YTcXYw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=hn0WYqOz; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42M7FtZi030082;
+	Fri, 22 Mar 2024 08:31:28 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=+q4qti6zuThwqHyOnyddfu8tq7886ArbT3m1RqvkUrs=;
+ b=hn0WYqOzHa2rGTYLcjwT1rS/1/ur6GiT0I4FthlhgwVQgSiBAJIQB9IIs6KlcagybXyH
+ Mjt9ukiXeG++SUwIxliVtzfZFvQgTS/CQgcXfW/MFAE/SRVk5cG4dr1QWvM69tudKWnf
+ 7rJhJCAOsOdXtVQqLSxeea555XjjeG8+KVGii1WJ/kaqFdsKYl5nm2cw+wbmZsmTblze
+ VVF9iJUNeZx0u19ZOShJ+ztI4wR0J3QfuDReqY+le9IWutRLzU4Iu+HjdiVpA22EF72P
+ 7nERD6hykq8czCYpoZgIqVYm44Bsb1I68EJ+WmyNg8GuJcuSfDCP69mQdnl9Ft9Uq1JN wA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x155w067f-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 08:31:28 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42M8VR1B002551;
+	Fri, 22 Mar 2024 08:31:27 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x155w067a-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 08:31:27 +0000
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42M5TH5g023286;
+	Fri, 22 Mar 2024 08:31:26 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x0x14jjgg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 22 Mar 2024 08:31:26 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42M8VM8l45941242
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 22 Mar 2024 08:31:24 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 39CC720049;
+	Fri, 22 Mar 2024 08:31:22 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2704620040;
+	Fri, 22 Mar 2024 08:31:20 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.0.231])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 22 Mar 2024 08:31:19 +0000 (GMT)
+Date: Fri, 22 Mar 2024 14:01:17 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Frederick Lawler <fred@cloudflare.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        Jan Kara <jack@suse.cz>, glandvador@yahoo.com, bugzilla@eyal.emu.id.au,
+        kernel-team@cloudflare.com
+Subject: Re: [PATCH 0/1] Fix for recent bugzilla reports related to long
+ halts during block allocation
+Message-ID: <Zf1B1cPj/aO21pjZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1702455010.git.ojaswin@linux.ibm.com>
+ <170476879011.637731.13228432208887255974.b4-ty@mit.edu>
+ <ZfsUaicHDpOtkkVv@CMGLRV3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:270b:b0:474:c3b5:a8b7 with SMTP id
- m11-20020a056638270b00b00474c3b5a8b7mr68265jav.6.1711078990482; Thu, 21 Mar
- 2024 20:43:10 -0700 (PDT)
-Date: Thu, 21 Mar 2024 20:43:10 -0700
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000069222e0614379f1f@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfsUaicHDpOtkkVv@CMGLRV3>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: pDfVLUMb_l8o_s8_IasYDkMP05vUFJax
+X-Proofpoint-GUID: XiPpAx2Lj5o9BGRQ5rb7wowVYbOfMA0B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-22_05,2024-03-21_02,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 suspectscore=0
+ spamscore=0 adultscore=0 bulkscore=0 phishscore=0 priorityscore=1501
+ mlxlogscore=999 clxscore=1011 impostorscore=0 lowpriorityscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403220061
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Wed, Mar 20, 2024 at 11:52:58AM -0500, Frederick Lawler wrote:
+> Hi Theodore and Ojaswin,
+> 
+> On Mon, Jan 08, 2024 at 09:53:18PM -0500, Theodore Ts'o wrote:
+> > 
+> > On Fri, 15 Dec 2023 16:49:49 +0530, Ojaswin Mujoo wrote:
+> > > This patch intends to fix the recent bugzilla [1] report where the
+> > > kworker flush thread seemed to be taking 100% CPU utilizationa and was
+> > > slowing down the whole system. The backtrace indicated that we were
+> > > stuck in mballoc allocation path. The issue was only seen kernel 6.5+
+> > > and when ext4 was mounted with -o stripe (or stripe option was
+> > > implicitly added due us mkfs flags used).
+> > > 
+> > > [...]
+> > 
+> > Applied, thanks!
+> 
+> I backported this patch to at least 6.6 and tested on our fleet of
+> software RAID 0 NVME SSD nodes. This change worked very nicely
+> for us. We're interested in backporting this to at least 6.6.
+> 
+> I tried looking at xfstests, and didn't really see a good match
+> (user error?) to validate the fix via that. So I'm a little unclear what
+> the path forward here is.
+> 
+> Although we experienced this issue in 6.1, I didn't backport to 6.1 and
+> test to verify this also works there, however, setting stripe to 0 did in
+> the 6.1 case.
+> 
+> Best,
+> Fred
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Hi Fred,
 
-#syz fix: exact-commit-title
+If I understand correctly, you are looking for a test case which you
+could use to confirm if the issue exists and if the backport is solving
+it, right?
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+Actually, I was never able to replicate this at my end so I had to rely
+on people hitting the bug to confirm if it works. I did set out to write
+a testcase that could help us reliably replicate this issue but it needs
+a very specially crafted FS that is a bit difficult to achieve from user
+space. I was using debugfs to create an FS that could hit it but I kept 
+running into issues where it won't mount etc. Maybe there's a better 
+way to craft such an FS that I'm not aware of.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+One more option is that maybe we can have KUnit test for this in the
+mballoc code but I'd need to read some more about the kunit
+infrastructure to see if it's possible/feasible.
 
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+Regards,
+ojaswin
+> 
+> > 
+> > [1/1] ext4: fallback to complex scan if aligned scan doesn't work
+> >       commit: a26b6faf7f1c9c1ba6edb3fea9d1390201f2ed50
+> > 
+> > Best regards,
+> > -- 
+> > Theodore Ts'o <tytso@mit.edu>
 
