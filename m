@@ -1,349 +1,167 @@
-Return-Path: <linux-ext4+bounces-1747-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1748-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9CC0888ABB4
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Mar 2024 18:31:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7887A88AE60
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Mar 2024 19:33:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C16311C3E313
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Mar 2024 17:31:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 160C91FA2584
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Mar 2024 18:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3974312FF7C;
-	Mon, 25 Mar 2024 16:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873E884A2B;
+	Mon, 25 Mar 2024 18:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="mrFZOgOi";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="4/Yvcn8T";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="BWf6VYBA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="xCG5b50G"
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="cYD3LThD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-io1-f49.google.com (mail-io1-f49.google.com [209.85.166.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4EB150248;
-	Mon, 25 Mar 2024 16:26:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B56473163
+	for <linux-ext4@vger.kernel.org>; Mon, 25 Mar 2024 18:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711384004; cv=none; b=fAbMRFZgFlRDQ2YjHTcxLvlWjKEDpKOtimuoaae6iGYeozFz9YsbldzltK8YGTgQgEBGHp+GvhR4Fg2/O4g8HzVBLR/bAHbxvMU+5NXk86nfWaLRVqbKX+iLvLu+9AIorQskeRl9eJ0JP4Yli1W/Xw8lS3cbrcHv96BWqBELLlI=
+	t=1711390385; cv=none; b=N1Tty/X+XhD2+6aQk7Ae5BtJFWBidATlBd5biTiQPTYsV6a3AZK3Wt4SLgwzJU9ku1eVMzA8UaGYOqnhQRFZ35XeU+2wxvBe7ufuFZapO2KVQIO+6yZOFDCuZEg9e+q544vFEVFdflri8GpSlgtM6powr8AUknk54PGLMw1nkss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711384004; c=relaxed/simple;
-	bh=V6sqoAqJ7i7dh2ESkwK1PkgUFkhkxCtWlGMo+TiLqjs=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ctwXfwhyIAUebLfo5tXBrsQvM08/MkN01zTfgPGtb5ZB2Yukxn0fpsstpcGglidkZSbFn1K3w3uL9bL+fn2Pd8qWQKIr5MYOozdSi4tNRMUD8hXcYgmI16TKO7K26o3WA479fDIfsiEe9IB/sx47g5WY4RQLjQTree/QfmVluaI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=mrFZOgOi; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=4/Yvcn8T; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=BWf6VYBA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=xCG5b50G; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id C6EAC5C90A;
-	Mon, 25 Mar 2024 16:26:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711384000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WThhszHeU//Rn2fJzvzyuvkfkPtE9gPEySysSjnivks=;
-	b=mrFZOgOi12pLbOQ7oT+rnFcub4rPm5E4q3euVX0uV9bVmaxKCBrpH+cuI7LW2ePTT+y0Pn
-	47A4RAjy6JfQP1785AKY9hgvthTUj0JJSjLnpRytu0/zl90tK6VQK8lkhvklvEGQMrwIuo
-	DuVw0XoyZm9e3z6xu0bWexaG+pSYtIg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711384000;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WThhszHeU//Rn2fJzvzyuvkfkPtE9gPEySysSjnivks=;
-	b=4/Yvcn8TXQcPf0e7bI1evj/lQ1gd5qTsHIdEsmEoHKb1RD+PH/igWmNL7PXvGE0ozNAoLg
-	a8e+fxnRq3534MDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1711383998; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WThhszHeU//Rn2fJzvzyuvkfkPtE9gPEySysSjnivks=;
-	b=BWf6VYBAVqOASPU5DE5X9OS5DTw31U7zWNlXe2sk9i54kNcyf1Vlg8ljhDSimFLfmHxlE7
-	GyFOev61YoGQrPaBKEDd/1uck5Pf33OVIo2HJYZ8ZlJNfxYzC67qwGYobTfQs40LMMEIRB
-	ESClhQqgeX2uxL3Q96lgSdETTC98R6I=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1711383998;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=WThhszHeU//Rn2fJzvzyuvkfkPtE9gPEySysSjnivks=;
-	b=xCG5b50G7PvmnwFPyZTszr5GBE229eX2pzuy/JVPVUQT3YjHh//PS5TiP9+312Xm2nAIUs
-	AImV+/iM4oNd6zAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8496213503;
-	Mon, 25 Mar 2024 16:26:38 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 00xLGr6lAWaZFwAAD6G6ig
-	(envelope-from <krisman@suse.de>); Mon, 25 Mar 2024 16:26:38 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: tytso@mit.edu,  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
- Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v14 8/9] ext4: Move CONFIG_UNICODE defguards into the
- code flow
-In-Reply-To: <20240320084622.46643-9-eugen.hristev@collabora.com> (Eugen
-	Hristev's message of "Wed, 20 Mar 2024 10:46:21 +0200")
-References: <20240320084622.46643-1-eugen.hristev@collabora.com>
-	<20240320084622.46643-9-eugen.hristev@collabora.com>
-Date: Mon, 25 Mar 2024 12:26:37 -0400
-Message-ID: <87edbynupu.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1711390385; c=relaxed/simple;
+	bh=WjGma3kLFLe5YvQWuoHM/Ro3EyqnqLh5sSD/9vJovxg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HlJj/NKrICc7ZLp0xYl1unh3qoL7VRvHcnuRtiekqMxsgP1j0ZhyUZZ4hc99+hC99BrMc7Y8vYpqbHu5BQri4cHNvD6OyNDP0iJG3pDMBLdJiq1vamfWb8qArO9qG9F1Be+lRAyU39ApTfD7acC89Jisxv79PQ2h5MmYFotgUV0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=cYD3LThD; arc=none smtp.client-ip=209.85.166.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-io1-f49.google.com with SMTP id ca18e2360f4ac-7cc5fdb0148so185100439f.3
+        for <linux-ext4@vger.kernel.org>; Mon, 25 Mar 2024 11:13:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1711390382; x=1711995182; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=wSAZR9Vt2Q5o0+5V5RZYkh5l63Ssoo3HvBsqSbE2JvY=;
+        b=cYD3LThDCY2HRZ4XaJl0qb5/m7/UuUArsxk7q6HSklIa4h77pe6mgREU3xTLq48iLm
+         n0RkZJEO8WKHvNoRK6BwbAtA1p3w/2VSTQzzCDb6k8NN3yXadttYWDOjCjbPfASV4mN/
+         xE4qsdH0N0oIpsyCbvpT4JR4fMH1I9xnDSs5RgBsFSKtLTwszfCTnKRsCFbHWnwkeKEm
+         9n6xY9YxEoFhVNldSNBjQLU7yZ47xgec2937a68Av/BeRKMYU7QudJuXMSRDO1uqZFXM
+         OQfhhvXfHomS7zLGX3XHPy/aOqI0N28+/nLIcvCIWF0UHuAz95awwW4efJUnUPvPhSeK
+         EzmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711390382; x=1711995182;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=wSAZR9Vt2Q5o0+5V5RZYkh5l63Ssoo3HvBsqSbE2JvY=;
+        b=MhVyGlzhJmcr7vIYWZD2F4X0e5tI/HO3ezt/ZWvd3KEKwhwgXvIb+9Ctaaheb+Kib5
+         BDWkcB5zYHUUR1JUMipD3F+dE+ardbbvxjZ5Xn2nQ7T+48srXG6oxBnaUfCs4Cl86bH+
+         a/se9XCuCF9J2v8w6jFr6+TEzNOLQcsEj1qgdNHH+UovUYd/XKd20M1OHHQqxWfN/Ju0
+         Cs7oJoBppz+Zupfd88pPvKhBEOKO3WzlAy5aV/FFJSuhXN6uxmW+2zbFpCNXswpuRA7a
+         3p/0Kk3XnnFzoq2qzKL9+2t70wOLKAFckSYbVe0wYDkbEbWj4wcdBucm/hhjqDkaRozH
+         +G/A==
+X-Forwarded-Encrypted: i=1; AJvYcCUsVuaGGjHvo1BnHHQoUE2gd4p7wnMUp+trmmWzxkGOQq8m22sp0X06s5iIbD9NEtG/bR9W2GS4Sq10YMKJwynnH6pT7aeTU7xC0w==
+X-Gm-Message-State: AOJu0YxOD3fCxXj6vUG3x3D2Np5CLRIqZ8ufzDQPVtdz/y8xQQ9h5iVM
+	AX5T/a/a+sgdUR/Oif+U5gorLbEt074kp+rTFus+yGEV1J0PnWzf4MhzZvoXqxM=
+X-Google-Smtp-Source: AGHT+IG9xwHF3fNymQJbxJun7y4cLuwksrTJ9sJhMxnIaoGig5IF3zdZeyGfbkfQJnnpy4r1l1tvQQ==
+X-Received: by 2002:a6b:7b0c:0:b0:7cb:f395:47a8 with SMTP id l12-20020a6b7b0c000000b007cbf39547a8mr9179021iop.16.1711390382256;
+        Mon, 25 Mar 2024 11:13:02 -0700 (PDT)
+Received: from CMGLRV3 ([2a09:bac5:9478:4be::79:22])
+        by smtp.gmail.com with ESMTPSA id r14-20020a056638100e00b0047d69cc97d1sm173364jab.40.2024.03.25.11.13.01
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 25 Mar 2024 11:13:01 -0700 (PDT)
+Date: Mon, 25 Mar 2024 13:12:59 -0500
+From: Frederick Lawler <fred@cloudflare.com>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+	Ritesh Harjani <ritesh.list@gmail.com>,
+	linux-kernel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+	glandvador@yahoo.com, bugzilla@eyal.emu.id.au,
+	kernel-team@cloudflare.com
+Subject: Re: [PATCH 0/1] Fix for recent bugzilla reports related to long
+ halts during block allocation
+Message-ID: <ZgG+q0dujYQR8/0q@CMGLRV3>
+References: <cover.1702455010.git.ojaswin@linux.ibm.com>
+ <170476879011.637731.13228432208887255974.b4-ty@mit.edu>
+ <ZfsUaicHDpOtkkVv@CMGLRV3>
+ <Zf1B1cPj/aO21pjZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 NEURAL_HAM_SHORT(-0.20)[-0.999];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 RCPT_COUNT_TWELVE(0.00)[14];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[collabora.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zf1B1cPj/aO21pjZ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+On Fri, Mar 22, 2024 at 02:01:17PM +0530, Ojaswin Mujoo wrote:
+> On Wed, Mar 20, 2024 at 11:52:58AM -0500, Frederick Lawler wrote:
+> > Hi Theodore and Ojaswin,
+> > 
+> > On Mon, Jan 08, 2024 at 09:53:18PM -0500, Theodore Ts'o wrote:
+> > > 
+> > > On Fri, 15 Dec 2023 16:49:49 +0530, Ojaswin Mujoo wrote:
+> > > > This patch intends to fix the recent bugzilla [1] report where the
+> > > > kworker flush thread seemed to be taking 100% CPU utilizationa and was
+> > > > slowing down the whole system. The backtrace indicated that we were
+> > > > stuck in mballoc allocation path. The issue was only seen kernel 6.5+
+> > > > and when ext4 was mounted with -o stripe (or stripe option was
+> > > > implicitly added due us mkfs flags used).
+> > > > 
+> > > > [...]
+> > > 
+> > > Applied, thanks!
+> > 
+> > I backported this patch to at least 6.6 and tested on our fleet of
+> > software RAID 0 NVME SSD nodes. This change worked very nicely
+> > for us. We're interested in backporting this to at least 6.6.
+> > 
+> > I tried looking at xfstests, and didn't really see a good match
+> > (user error?) to validate the fix via that. So I'm a little unclear what
+> > the path forward here is.
+> > 
+> > Although we experienced this issue in 6.1, I didn't backport to 6.1 and
+> > test to verify this also works there, however, setting stripe to 0 did in
+> > the 6.1 case.
+> > 
+> > Best,
+> > Fred
+> 
+> Hi Fred,
+> 
+> If I understand correctly, you are looking for a test case which you
+> could use to confirm if the issue exists and if the backport is solving
+> it, right?
 
-> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> Instead of a bunch of ifdefs, make the unicode built checks part of the
-> code flow where possible, as requested by Torvalds.
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> [eugen.hristev@collabora.com: port to 6.8-rc3]
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-> ---
->  fs/ext4/crypto.c | 19 +++----------------
->  fs/ext4/ext4.h   | 33 +++++++++++++++++++++------------
->  fs/ext4/namei.c  | 14 +++++---------
->  fs/ext4/super.c  |  4 +---
->  4 files changed, 30 insertions(+), 40 deletions(-)
->
-> diff --git a/fs/ext4/crypto.c b/fs/ext4/crypto.c
-> index 7ae0b61258a7..1d2f8b79529c 100644
-> --- a/fs/ext4/crypto.c
-> +++ b/fs/ext4/crypto.c
-> @@ -31,12 +31,7 @@ int ext4_fname_setup_filename(struct inode *dir, const struct qstr *iname,
->  
->  	ext4_fname_from_fscrypt_name(fname, &name);
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	err = ext4_fname_setup_ci_filename(dir, iname, fname);
-> -	if (err)
-> -		ext4_fname_free_filename(fname);
-> -#endif
-> -	return err;
-> +	return ext4_fname_setup_ci_filename(dir, iname, fname);
->  }
+Not quite. I made an assumption that having a test was a requirement
+for backporting the patch. I know some other file systems prefer a few
+loops of kdevops to backport patches, and was curious if that's a similar
+flow for ext4. I only backported the patch to 6.6 and ensured that our
+affected nodes perform as expected with it.
 
-Oops. I ended up replying to v10 but it still applies in the latest
-version. copying it here for reference:
+> 
+> Actually, I was never able to replicate this at my end so I had to rely
+> on people hitting the bug to confirm if it works. I did set out to write
+> a testcase that could help us reliably replicate this issue but it needs
+> a very specially crafted FS that is a bit difficult to achieve from user
+> space. I was using debugfs to create an FS that could hit it but I kept 
+> running into issues where it won't mount etc. Maybe there's a better 
+> way to craft such an FS that I'm not aware of.
+> 
+> One more option is that maybe we can have KUnit test for this in the
+> mballoc code but I'd need to read some more about the kunit
+> infrastructure to see if it's possible/feasible.
+> 
 
-  This shouldn't remove the error path.  It effectively reintroduces the
-  memory leak fixed by commit 7ca4b085f430 ("ext4: fix memory leaks in
-  ext4_fname_{setup_filename,prepare_lookup}").
+I think kunit is an interesting idea. One thing to keep in mind is that
+mocking is going to be the real problem with that approach. And with
+more mocking may mean more brittle tests.
 
-  This patch was only about inlining the codeguards, so it shouldn't be
-  changing the logic.
-
->  int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
-> @@ -51,12 +46,7 @@ int ext4_fname_prepare_lookup(struct inode *dir, struct dentry *dentry,
->  
->  	ext4_fname_from_fscrypt_name(fname, &name);
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	err = ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
-> -	if (err)
-> -		ext4_fname_free_filename(fname);
-> -#endif
-> -	return err;
-> +	return ext4_fname_setup_ci_filename(dir, &dentry->d_name, fname);
->  }
->  
->  void ext4_fname_free_filename(struct ext4_filename *fname)
-> @@ -70,10 +60,7 @@ void ext4_fname_free_filename(struct ext4_filename *fname)
->  	fname->usr_fname = NULL;
->  	fname->disk_name.name = NULL;
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	kfree(fname->cf_name.name);
-> -	fname->cf_name.name = NULL;
-> -#endif
-> +	ext4_fname_free_ci_filename(fname);
->  }
->  
->  static bool uuid_is_zero(__u8 u[16])
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 4061d11b9763..c68f48f706cd 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -2740,8 +2740,25 @@ ext4_fsblk_t ext4_inode_to_goal_block(struct inode *);
->  
->  #if IS_ENABLED(CONFIG_UNICODE)
->  extern int ext4_fname_setup_ci_filename(struct inode *dir,
-> -					 const struct qstr *iname,
-> -					 struct ext4_filename *fname);
-> +					const struct qstr *iname,
-> +					struct ext4_filename *fname);
-> +
-> +static inline void ext4_fname_free_ci_filename(struct ext4_filename *fname)
-> +{
-> +	kfree(fname->cf_name.name);
-> +	fname->cf_name.name = NULL;
-> +}
-> +#else
-> +static inline int ext4_fname_setup_ci_filename(struct inode *dir,
-> +					       const struct qstr *iname,
-> +					       struct ext4_filename *fname)
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void ext4_fname_free_ci_filename(struct ext4_filename *fname)
-> +{
-> +}
->  #endif
->  
->  /* ext4 encryption related stuff goes here crypto.c */
-> @@ -2764,16 +2781,11 @@ static inline int ext4_fname_setup_filename(struct inode *dir,
->  					    int lookup,
->  					    struct ext4_filename *fname)
->  {
-> -	int err = 0;
->  	fname->usr_fname = iname;
->  	fname->disk_name.name = (unsigned char *) iname->name;
->  	fname->disk_name.len = iname->len;
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	err = ext4_fname_setup_ci_filename(dir, iname, fname);
-> -#endif
-> -
-> -	return err;
-> +	return ext4_fname_setup_ci_filename(dir, iname, fname);
->  }
->  
->  static inline int ext4_fname_prepare_lookup(struct inode *dir,
-> @@ -2785,10 +2797,7 @@ static inline int ext4_fname_prepare_lookup(struct inode *dir,
->  
->  static inline void ext4_fname_free_filename(struct ext4_filename *fname)
->  {
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	kfree(fname->cf_name.name);
-> -	fname->cf_name.name = NULL;
-> -#endif
-> +	ext4_fname_free_ci_filename(fname);
->  }
->  
->  static inline int ext4_ioctl_get_encryption_pwsalt(struct file *filp,
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 3268cf45d9db..a5d9e5b01015 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -1834,8 +1834,7 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
->  		}
->  	}
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> -	if (!inode && IS_CASEFOLDED(dir)) {
-> +	if (IS_ENABLED(CONFIG_UNICODE) && !inode && IS_CASEFOLDED(dir)) {
->  		/* Eventually we want to call d_add_ci(dentry, NULL)
->  		 * for negative dentries in the encoding case as
->  		 * well.  For now, prevent the negative dentry
-> @@ -1843,7 +1842,7 @@ static struct dentry *ext4_lookup(struct inode *dir, struct dentry *dentry, unsi
->  		 */
->  		return NULL;
->  	}
-> -#endif
-> +
->  	return d_splice_alias(inode, dentry);
->  }
->  
-> @@ -3173,16 +3172,14 @@ static int ext4_rmdir(struct inode *dir, struct dentry *dentry)
->  	ext4_fc_track_unlink(handle, dentry);
->  	retval = ext4_mark_inode_dirty(handle, dir);
->  
-> -#if IS_ENABLED(CONFIG_UNICODE)
->  	/* VFS negative dentries are incompatible with Encoding and
->  	 * Case-insensitiveness. Eventually we'll want avoid
->  	 * invalidating the dentries here, alongside with returning the
->  	 * negative dentries at ext4_lookup(), when it is better
->  	 * supported by the VFS for the CI case.
->  	 */
-> -	if (IS_CASEFOLDED(dir))
-> +	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
->  		d_invalidate(dentry);
-> -#endif
->  
->  end_rmdir:
->  	brelse(bh);
-> @@ -3284,16 +3281,15 @@ static int ext4_unlink(struct inode *dir, struct dentry *dentry)
->  		goto out_trace;
->  
->  	retval = __ext4_unlink(dir, &dentry->d_name, d_inode(dentry), dentry);
-> -#if IS_ENABLED(CONFIG_UNICODE)
-> +
->  	/* VFS negative dentries are incompatible with Encoding and
->  	 * Case-insensitiveness. Eventually we'll want avoid
->  	 * invalidating the dentries here, alongside with returning the
->  	 * negative dentries at ext4_lookup(), when it is  better
->  	 * supported by the VFS for the CI case.
->  	 */
-> -	if (IS_CASEFOLDED(dir))
-> +	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
->  		d_invalidate(dentry);
-> -#endif
->  
->  out_trace:
->  	trace_ext4_unlink_exit(dentry, retval);
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 215b4614eb15..179083728b4b 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -3609,14 +3609,12 @@ int ext4_feature_set_ok(struct super_block *sb, int readonly)
->  		return 0;
->  	}
->  
-> -#if !IS_ENABLED(CONFIG_UNICODE)
-> -	if (ext4_has_feature_casefold(sb)) {
-> +	if (!IS_ENABLED(CONFIG_UNICODE) && ext4_has_feature_casefold(sb)) {
->  		ext4_msg(sb, KERN_ERR,
->  			 "Filesystem with casefold feature cannot be "
->  			 "mounted without CONFIG_UNICODE");
->  		return 0;
->  	}
-> -#endif
->  
->  	if (readonly)
->  		return 1;
-
--- 
-Gabriel Krisman Bertazi
+> Regards,
+> ojaswin
+> > 
+> > > 
+> > > [1/1] ext4: fallback to complex scan if aligned scan doesn't work
+> > >       commit: a26b6faf7f1c9c1ba6edb3fea9d1390201f2ed50
+> > > 
+> > > Best regards,
+> > > -- 
+> > > Theodore Ts'o <tytso@mit.edu>
 
