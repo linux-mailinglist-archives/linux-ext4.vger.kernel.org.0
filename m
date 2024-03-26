@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-1754-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1756-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 430D188C3FE
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Mar 2024 14:46:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EFA88C404
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Mar 2024 14:46:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9B273307621
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Mar 2024 13:46:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 767FEB2314B
+	for <lists+linux-ext4@lfdr.de>; Tue, 26 Mar 2024 13:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C45CF12BEB5;
-	Tue, 26 Mar 2024 13:42:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C99112C7E6;
+	Tue, 26 Mar 2024 13:42:26 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5149B1272C8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87AB4763F1;
 	Tue, 26 Mar 2024 13:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711460544; cv=none; b=IBI3fcRQug8SZ/SAzjtGdJZgwjqpzKG/wi/zy5X9r54e4nfkHTGVibzx1U00IJ6Kl89r8Qg6Ur1hvu3fIBfOa546sSfX4rwh2s2V1pMtg1Xtwg6KSWu8YhDAS9rH0Q3D1XjpRqYv+HEXAOSX2E0FYsSGyQ9mju2xoM7g5bex3PA=
+	t=1711460545; cv=none; b=fvWqDdo2YaB69ZlWYGktmWnp7wb+WQ9JDjZmJmNfTms0RPtja+MiBnjwdoFRLWs2Fb+hlYiYQZGWt7zg7cmqEvmXIwEg6XKt5gZs6wjKtKL5sKklzpU/5QCAF101pAGQUi246r03OgA95OYbP9iCFSVaDqQMbaf4fpzlyorFYl4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711460544; c=relaxed/simple;
-	bh=qva94EqQbwbclDVGd6PSU0SSsWbOGjVW93NiGTSeRWc=;
+	s=arc-20240116; t=1711460545; c=relaxed/simple;
+	bh=9cvyClmLimCu7FtlKLhwseURsexrxNIs8oFN5K4ObEU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jhCpXqoj/wsDdoI6XFl70Vd6lS/02KJ6sUzAFgdYEdlDU4PtjcKu0xUBlv6KWq7eMo2B45MrnhukwcBcfOhO9ETBIQJkGgKKicL9BFrnEL+x3QANVhtOJVCe6fcKfKO9vS+sP4Ejuh3vJvVBg1ofBd3uNOpDd2ULVrcGhGiL99o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=V/mLDv2dtfOUrrDdvI+Gk3Y6mgqmANJxr4xipNyIZa+O7a7lT8XWu4OfePI1glE7p07pmuMQWJjRBKWVkLd3B8Al31jLZSdhIMzazjBImX7MeoeM+IrnFnoB5Ei/jkRr8VD/nzp5nNxRVwB/q/0dKWCII4aAthCzB9n/en5J2yQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4V3rZX5MtZz4f3jcn;
-	Tue, 26 Mar 2024 21:42:12 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V3rZW1JH6z4f3mJ2;
+	Tue, 26 Mar 2024 21:42:11 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id EABC51A0B26;
-	Tue, 26 Mar 2024 21:42:18 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4B26C1A01A7;
+	Tue, 26 Mar 2024 21:42:19 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgCHowy00AJmmQiSIA--.63567S5;
-	Tue, 26 Mar 2024 21:42:18 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgCHowy00AJmmQiSIA--.63567S6;
+	Tue, 26 Mar 2024 21:42:19 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca,
@@ -46,9 +46,9 @@ To: tytso@mit.edu,
 Cc: jack@suse.cz,
 	ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com
-Subject: [PATCH 3/5] ext4: call ext4_mb_mark_free_simple in mb_mark_used to clear bits
-Date: Wed, 27 Mar 2024 05:38:21 +0800
-Message-Id: <20240326213823.528302-4-shikemeng@huaweicloud.com>
+Subject: [PATCH 4/5] ext4: use correct criteria name instead stale integer number in comment
+Date: Wed, 27 Mar 2024 05:38:22 +0800
+Message-Id: <20240326213823.528302-5-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240326213823.528302-1-shikemeng@huaweicloud.com>
 References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
@@ -59,160 +59,108 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCHowy00AJmmQiSIA--.63567S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxAFWxWw4fZF1fuF1furWfZrb_yoWrWr17pF
-	W3ZrWfGr40vwn29F4UG3WjgF1F93y8ta45Jas3Ww1rWwnxJryFvFn5KF13Z3WvvrZ3XFyF
-	yr4UuFy3Krs7KFDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBjb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:cCh0CgCHowy00AJmmQiSIA--.63567S6
+X-Coremail-Antispam: 1UD129KBjvJXoWxGryxJw1Dury3Xw13KF4DJwb_yoW5uF4rp3
+	9ayF18Kw4SgF13u393Ga1jg3W8Gw4I9F1UWryF9w17uFyaqr93tFWDKFW0yFy0vr4rZ3Wr
+	XFy7Xw48CF1S93DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB2b4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
-	8IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK
-	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4
-	x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-	z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v2
-	6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwI
-	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j2FAJUUUUU=
+	8IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAv
+	FVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJw
+	A2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE
+	3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr2
+	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
+	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
+	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
+	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0x
+	vE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE
+	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6x
+	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUxD7aUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Function ext4_mb_mark_free_simple could search order for bit clearing in
-O(1) cost while mb_mark_used will search order in O(distance from chunk
-order to target order) and introduce unnecessary bit flips.
-
-Consider we have 4 continuous free bits and going to mark bit 0-2 inuse.
-initial state of buddy bitmap:
-order 2 |           0           |
-order 1 |     1     |     1     |
-order 0 |  1  |  1  |  1  |  1  |
-
-mark whole chunk inuse
-order 2 |           1           |
-order 1 |     1     |     1     |
-order 0 |  1  |  1  |  1  |  1  |
-
-split chunk to order 1
-order 2 |           1           |
-order 1 |     0     |     0     |
-order 0 |  1  |  1  |  1  |  1  |
-
-set the first bit in order 1 to mark bit 0-1 inuse
-set the second bit in order 1 for split
-order 2 |           1           |
-order 1 |     1     |     1     |
-order 0 |  1  |  1  |  1  |  1  |
-
-step 3: split the second bit in order 1 to order 0
-order 2 |           1           |
-order 1 |     1     |     1     |
-order 0 |  1  |  1  |  0  |  0  |
-
-step 4: set the third bit in order 0 to mark bit 2 inuse.
-order 2 |           1           |
-order 1 |     1     |     1     |
-order 0 |  1  |  1  |  1  |  0  |
-There are two unnecessary splits and three unnecessary bit flips.
-
-With ext4_mb_mark_free_simple, we will clear the 4th bit in order 0
-with O(1) search and no extra bit flip.
-
-The cost estimated by test_mb_mark_used_cost is as following:
-Before (three runs of test):
-    # test_mb_mark_used_cost: costed jiffies 311
-    # test_mb_mark_used_cost: costed jiffies 304
-    # test_mb_mark_used_cost: costed jiffies 305
-    # test_mb_mark_used_cost: costed jiffies 323
-    # test_mb_mark_used_cost: costed jiffies 317
-    # test_mb_mark_used_cost: costed jiffies 317
-After (three runs of test):
-    # test_mb_mark_used_cost: costed jiffies 166
-    # test_mb_mark_used_cost: costed jiffies 152
-    # test_mb_mark_used_cost: costed jiffies 159
-    # test_mb_mark_used_cost: costed jiffies 138
-    # test_mb_mark_used_cost: costed jiffies 149
+Use correct criteria name instead stale integer number in comment
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc.c | 37 ++++++++++++++++++++-----------------
- 1 file changed, 20 insertions(+), 17 deletions(-)
+ fs/ext4/ext4.h    | 15 ++++++++++++---
+ fs/ext4/mballoc.c | 14 ++++++++------
+ fs/ext4/mballoc.h |  4 ++--
+ 3 files changed, 22 insertions(+), 11 deletions(-)
 
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 023571f8dd1b..9b90013c59a3 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -213,11 +213,20 @@ enum criteria {
+ #define EXT4_MB_USE_RESERVED		0x2000
+ /* Do strict check for free blocks while retrying block allocation */
+ #define EXT4_MB_STRICT_CHECK		0x4000
+-/* Large fragment size list lookup succeeded at least once for cr = 0 */
++/*
++ * Large fragment size list lookup succeeded at least once for cr =
++ * CR_POWER2_ALIGNED
++ */
+ #define EXT4_MB_CR_POWER2_ALIGNED_OPTIMIZED		0x8000
+-/* Avg fragment size rb tree lookup succeeded at least once for cr = 1 */
++/*
++ * Avg fragment size rb tree lookup succeeded at least once for cr =
++ * CR_GOAL_LEN_FAST
++ */
+ #define EXT4_MB_CR_GOAL_LEN_FAST_OPTIMIZED		0x00010000
+-/* Avg fragment size rb tree lookup succeeded at least once for cr = 1.5 */
++/*
++ * Avg fragment size rb tree lookup succeeded at least once for cr =
++ * CR_BEST_AVAIL_LEN
++ */
+ #define EXT4_MB_CR_BEST_AVAIL_LEN_OPTIMIZED		0x00020000
+ 
+ struct ext4_allocation_request {
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a61fc52956b2..62d468379722 100644
+index 62d468379722..0f8a34513bf6 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -2040,13 +2040,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
- 	int ord;
- 	int mlen = 0;
- 	int max = 0;
--	int cur;
- 	int start = ex->fe_start;
- 	int len = ex->fe_len;
- 	unsigned ret = 0;
- 	int len0 = len;
- 	void *buddy;
--	bool split = false;
-+	int ord_start, ord_end;
- 
- 	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
- 	BUG_ON(e4b->bd_group != ex->fe_group);
-@@ -2071,16 +2070,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
- 
- 	/* let's maintain buddy itself */
- 	while (len) {
--		if (!split)
--			ord = mb_find_order_for_block(e4b, start);
-+		ord = mb_find_order_for_block(e4b, start);
- 
- 		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
- 			/* the whole chunk may be allocated at once! */
- 			mlen = 1 << ord;
--			if (!split)
--				buddy = mb_find_buddy(e4b, ord, &max);
--			else
--				split = false;
-+			buddy = mb_find_buddy(e4b, ord, &max);
- 			BUG_ON((start >> ord) >= max);
- 			mb_set_bit(start >> ord, buddy);
- 			e4b->bd_info->bb_counters[ord]--;
-@@ -2094,20 +2089,28 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
- 		if (ret == 0)
- 			ret = len | (ord << 16);
- 
--		/* we have to split large buddy */
- 		BUG_ON(ord <= 0);
- 		buddy = mb_find_buddy(e4b, ord, &max);
- 		mb_set_bit(start >> ord, buddy);
- 		e4b->bd_info->bb_counters[ord]--;
- 
--		ord--;
--		cur = (start >> ord) & ~1U;
--		buddy = mb_find_buddy(e4b, ord, &max);
--		mb_clear_bit(cur, buddy);
--		mb_clear_bit(cur + 1, buddy);
--		e4b->bd_info->bb_counters[ord]++;
--		e4b->bd_info->bb_counters[ord]++;
--		split = true;
-+		ord_start = (start >> ord) << ord;
-+		ord_end = ord_start + (1 << ord);
-+		if (start > ord_start)
-+			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
-+						 ord_start, start - ord_start,
-+						 e4b->bd_info);
-+
-+		if (start + len < ord_end) {
-+			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
-+						 start + len,
-+						 ord_end - (start + len),
-+						 e4b->bd_info);
-+			break;
-+		}
-+
-+		len = start + len - ord_end;
-+		start = ord_end;
+@@ -1131,8 +1131,9 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
+ 		ext4_mb_choose_next_group_best_avail(ac, new_cr, group);
+ 	} else {
+ 		/*
+-		 * TODO: For CR=2, we can arrange groups in an rb tree sorted by
+-		 * bb_free. But until that happens, we should never come here.
++		 * TODO: For CR=CR_GOAL_LEN_SLOW, we can arrange groups in an
++		 * rb tree sorted by bb_free. But until that happens, we should
++		 * never come here.
+ 		 */
+ 		WARN_ON(1);
  	}
- 	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
+@@ -3444,10 +3445,11 @@ static int ext4_mb_init_backend(struct super_block *sb)
+ 	}
+ 	if (sbi->s_mb_prefetch > ext4_get_groups_count(sb))
+ 		sbi->s_mb_prefetch = ext4_get_groups_count(sb);
+-	/* now many real IOs to prefetch within a single allocation at cr=0
+-	 * given cr=0 is an CPU-related optimization we shouldn't try to
+-	 * load too many groups, at some point we should start to use what
+-	 * we've got in memory.
++	/*
++	 * now many real IOs to prefetch within a single allocation at
++	 * cr=CR_POWER2_ALIGNED. Given cr=CR_POWER2_ALIGNED is an CPU-related
++	 * optimization we shouldn't try to load too many groups, at some point
++	 * we should start to use what we've got in memory.
+ 	 * with an average random access time 5ms, it'd take a second to get
+ 	 * 200 groups (* N with flex_bg), so let's make this limit 4
+ 	 */
+diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
+index 56938532b4ce..042437d8860f 100644
+--- a/fs/ext4/mballoc.h
++++ b/fs/ext4/mballoc.h
+@@ -187,8 +187,8 @@ struct ext4_allocation_context {
+ 	struct ext4_free_extent ac_f_ex;
+ 
+ 	/*
+-	 * goal len can change in CR1.5, so save the original len. This is
+-	 * used while adjusting the PA window and for accounting.
++	 * goal len can change in CR_BEST_AVAIL_LEN, so save the original len.
++	 * This is used while adjusting the PA window and for accounting.
+ 	 */
+ 	ext4_grpblk_t	ac_orig_goal_len;
  
 -- 
 2.30.0
