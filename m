@@ -1,127 +1,106 @@
-Return-Path: <linux-ext4+bounces-1765-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1766-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0822A89025A
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Mar 2024 15:55:43 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72D1B89072A
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Mar 2024 18:29:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9BE051F2321E
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Mar 2024 14:55:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EA2D1B21C2C
+	for <lists+linux-ext4@lfdr.de>; Thu, 28 Mar 2024 17:29:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9ABC7E56E;
-	Thu, 28 Mar 2024 14:55:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CAE97FBB5;
+	Thu, 28 Mar 2024 17:29:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ii/vC0jb"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="T0x3smgN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32CFA2D044
-	for <linux-ext4@vger.kernel.org>; Thu, 28 Mar 2024 14:55:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6782D42A86
+	for <linux-ext4@vger.kernel.org>; Thu, 28 Mar 2024 17:29:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711637723; cv=none; b=RVBshxg4K6Al3Iu5k6oIrBZkTCGCKlqUhrViR/D/71sDajOnpRulN9w8Y9E87GBCKJH3Aye9mFAUJQsBh5COwrxvWHDSWgNLwB2yjI3zm50yGoAxcMSnAmFrFF9Y4oguqeuqCxaM/nFQ5m+BB29YH1CFn1JdL09fw644yTJFOYY=
+	t=1711646987; cv=none; b=cj3YWrwz8v6Cp97hCp8wPKTbRyr7MdlJA3sfG6wAmBcq7AYWFtW8rn0xqgIvdAPB+S+bcn3z7PuYQe2IrmaoobcjRltasAbXFPPBeo4pVtY7A7HQRqMQz7hbSrxxXnuIGBsBaAlJpphv6EoN7YHps4GsnH1Hdjhb3ufuAAXFMkw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711637723; c=relaxed/simple;
-	bh=VfbFI4lp11UJ8RvqxHSEWWnVhW4KQ5jTlFh3Wjq1z1s=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=saG8zNasaA/iSe+g4DetKQbKXhfe/9oHfQ98a0SO7DQORyyzlOz8d90sHDBNfbyvsJGx3IPLGzk84Bfs75uyW3fN2mohaL19raQlKuPkVqBibrZH3sA1amDANZF/CeQltG2x67UWJ6at4+Set7pwsY+SwOZbojYVEznN4evYVJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ii/vC0jb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id BD080C433C7
-	for <linux-ext4@vger.kernel.org>; Thu, 28 Mar 2024 14:55:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711637722;
-	bh=VfbFI4lp11UJ8RvqxHSEWWnVhW4KQ5jTlFh3Wjq1z1s=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=ii/vC0jbT6qRUGM3fGR9dajEN56JvrpaPcnKbA3+hZ0e+zsDKngKrWqSZlfaOngqg
-	 +dZzpiQua2QCl/Rx5ejtBRTrB6p+1iAPuCxgSmP9JQ6t2K3CHDaGrGjzKiwqMyssgP
-	 05euw4VmTz0rqjjkbTKS/P3P4pVSmzEIP8QGVTFtN2Lidm2YFqTuVOx1KMMAssg7ds
-	 Kw1RhLRRB/NNgTjY+vDSZnSx0Wu9LbsycjPGLZuhGKC9y3UXUqUa0qEM40ZzS+lEKX
-	 oewNt+JwxkeK0sS9F6Sqz9/XBtr6cjNTt30CGdXk6Xll5RR+HD+kwSdPaiOZ9sPNnk
-	 RNqhaGodnVubg==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id B5123C53BD0; Thu, 28 Mar 2024 14:55:22 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 218648] ext4: previously opened file remains writeable on
- readonly ext4 filesystem; Data loss.
-Date: Thu, 28 Mar 2024 14:55:22 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-218648-13602-n7LY5ZJJYn@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-218648-13602@https.bugzilla.kernel.org/>
-References: <bug-218648-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1711646987; c=relaxed/simple;
+	bh=bJeyLyTUanKc6gmWlaDBgJMEoRLjWZQ10a7FSTj9o3E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AMJXo1V+ubHAzxFFzWoUE6XvBX/acqGGdMc0q+MKqtXkYAsEZC8yL0EFswSkGMnNjWLxiwZf+IXCK+oblW6jmxnxbLXEp5WAxB7ldOqIHRiMhdEAlPstGR69AzEJl4HfU/AbC8AHrbFzsxvUi3XQK6oyG7RSoEcp3Wsvu6EWLaA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=T0x3smgN; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711646983;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=fCEM6vBjsKoj5ztRKEN5xpFexqa95kalZoYFnFSgWO4=;
+	b=T0x3smgNMwDwwDNmPhqlDSd2coKgbf7rsZf+EWIIKqmQdEjFWMrENBt0dQ0WjfC1fLYNb+
+	ADvGHoH6K9VrLBD5IgeK5bGJfcFkzHARomXnS068RhLZeJs9BtP51wDb/rSrrG+YD/2DF4
+	0zeACNLBeG+yCBkuOFBtdiRvQyzGU4c=
+From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger@dilger.ca>
+Cc: linux-ext4@vger.kernel.org,
+	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Subject: [PATCH e2fsprogs 0/4] quota-related e2fsck fixes and tests
+Date: Thu, 28 Mar 2024 17:29:36 +0000
+Message-ID: <20240328172940.1609-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218648
+Hi!
 
-Theodore Tso (tytso@mit.edu) changed:
+I'm sending two fixes to e2fsck that are related with quota handling.  The
+fixes are the first two patches, the other two are test cases for these
+fixes.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |tytso@mit.edu
+The first patch is actually re-send, which Andreas Dilger had already kindly
+reviewed and suggested to add a test for it.  One (important!) thing I
+forgot to mention and to include in that initial email was that there _is_
+already a test case for it: it's in the fstests suite, ext4/014.  That's how
+I found the issue initially.  Thus, my test case for e2fsck is nothing but a
+filesystem generated with a simplified version of that test.
 
---- Comment #1 from Theodore Tso (tytso@mit.edu) ---
-Normally, if there is a file opened for writing when there is an attempt to
-remount a file system read-only via a command, e.g., "mount -o remount,ro
-/dev/sdc", the remount with fail with EBUSY.
+As for the second issue, it was also found by an fstest, ext4/019, and the
+test I'm sending is also based on it.
 
-The problem is what should we do if the block device has failed or otherwise
-disappeared.   In that situation, we can either do absolutely nothing
-("errors=3Dcontinue"), panic and halt the system ("errors=3Dpanic"), or rem=
-ount the
-file-system ("errors=3Dremount-ro").  However, what should be done if there=
- is a
-file descriptor open for writing?
+Cheers,
+-- 
+Luis
 
-1) We could fail the remount, which would mean that the file system would
-continue to be mounted read/write, which would cause the behavior to devolv=
-e to
-"errors=3Dcontinue".
+Luis Henriques (SUSE) (4):
+  e2fsck: update quota accounting after directory optimization
+  e2fsck: update quota when deallocating a bad inode
+  tests: new test to check quota after directory optimization
+  tests: new test to check quota after a bad inode deallocation
 
-2) We could force the file system to be read-only, but any file descriptors
-that are still would be still open --- but attempts to write to the file wi=
-ll
-fail with EIO.
+ e2fsck/pass2.c                          |  33 +++++++++++++------
+ e2fsck/rehash.c                         |  27 ++++++++++++----
+ tests/f_quota_deallocate_inode/expect.1 |  18 +++++++++++
+ tests/f_quota_deallocate_inode/expect.2 |   7 +++++
+ tests/f_quota_deallocate_inode/image.gz | Bin 0 -> 11594 bytes
+ tests/f_quota_deallocate_inode/name     |   1 +
+ tests/f_quota_shrinkdir/expect.1        |  40 ++++++++++++++++++++++++
+ tests/f_quota_shrinkdir/expect.2        |   7 +++++
+ tests/f_quota_shrinkdir/image.gz        | Bin 0 -> 11453 bytes
+ tests/f_quota_shrinkdir/name            |   1 +
+ 10 files changed, 118 insertions(+), 16 deletions(-)
+ create mode 100644 tests/f_quota_deallocate_inode/expect.1
+ create mode 100644 tests/f_quota_deallocate_inode/expect.2
+ create mode 100644 tests/f_quota_deallocate_inode/image.gz
+ create mode 100644 tests/f_quota_deallocate_inode/name
+ create mode 100644 tests/f_quota_shrinkdir/expect.1
+ create mode 100644 tests/f_quota_shrinkdir/expect.2
+ create mode 100644 tests/f_quota_shrinkdir/image.gz
+ create mode 100644 tests/f_quota_shrinkdir/name
 
-We've chosen because it's the best we can do.  We can refuse a remount
-read-only if it is initiated by the system administrator, if a user yanks t=
-he
-USB thumb drive out of the laptop, or a terrorist slams a plain into the
-machine room at the Pentagon, it's not like the kernel can stop something l=
-ike
-that from happening.   ("I'm sorry Hal, I'm afraid I can't allow you to do =
-that
-ala the movie "2001: A Spacey Odessey" is not yet a thing; although maybe
-sometime soon our AI Overlords will have that power.  :-)
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
