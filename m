@@ -1,79 +1,88 @@
-Return-Path: <linux-ext4+bounces-1775-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1776-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39938891252
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 05:11:14 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76B8E891409
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 08:14:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E458328989B
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 04:11:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFC95B23083
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 07:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 157703A1DC;
-	Fri, 29 Mar 2024 04:11:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811253FBB6;
+	Fri, 29 Mar 2024 07:14:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Bsc6whB1"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="asHzqvwe"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26E68383A5
-	for <linux-ext4@vger.kernel.org>; Fri, 29 Mar 2024 04:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DB693FB97;
+	Fri, 29 Mar 2024 07:14:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711685467; cv=none; b=l7k1axi7bv7m9aMYryD2i8KziCPFIMwYLhVyzTnHgg+cUJYdj8Zgo/i4lmjZyS2ZGtEsXUBpq+IonTSkdbdmwNwSme3WLxqEUxRLlGmVAYTFpQNxhV81k74Jl989exD8zp+Z4NffsDw0oGkOkQeGjQi6ngqsLmJenSFFf1R3qPY=
+	t=1711696468; cv=none; b=clXGAbRHRBAWt/lEwaFxNtGNs4S3Dj3htsEcDbUvFIlk7FI+inbrc86VVHGNOfj23ndM3UwaRREIiH0iOcscwGMtKJRfqYVOg1gWR4xt+bEcippFj/sBtvZiSAmuGjqWgIxmgKkfgQd/Y5RDmmUgKW0ER3jaiubAOJGqH7zJSUk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711685467; c=relaxed/simple;
-	bh=Sej1B+KPaAd1YJSUCEcu/2wZgvFA6dEVc0yLCqlWKKc=;
+	s=arc-20240116; t=1711696468; c=relaxed/simple;
+	bh=XwpcPuEhfNnZeIlXZpZM8WFDw8TjiTSemeZAA/NgeZk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XOJ3inSSdfNBNA90Ul5qHTGakTkhOo6MnObJonIYforNCZE1IcnjSphEWhCJ10fuzszLzbPk3eT5LAKZamkecXxHQe4+523Ghib1FjKUKe4Kc7VYxT8lBTJFhAma+dmoZVv1kpmpFWQoa97awrqbBz82OWy/pEJ1rGHUCG1sDAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Bsc6whB1; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1def89f0cfdso21258335ad.0
-        for <linux-ext4@vger.kernel.org>; Thu, 28 Mar 2024 21:11:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1711685465; x=1712290265; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=bUIGGacJ5zX9tZrBNytRyyuYA7UqfnaLQvQzbVYvhP4=;
-        b=Bsc6whB1aT4BfVf2DYDvvXHdKALklrXOeLkXkrHf34upWS1iCcvc6AAISo9LKFWhsO
-         8lXeGDDPpfXbS8Thj6efTHMD9vImhs4EFze6Ek8JpC2MksAythzgnyOd97cOh+1Gwup0
-         lSGn8Z5ESeQZk11+HXsYWo94aZqhiZmqL1Kjc=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711685465; x=1712290265;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=bUIGGacJ5zX9tZrBNytRyyuYA7UqfnaLQvQzbVYvhP4=;
-        b=w64pkM4z2ZwWQyWoDk5mxkg+vqENAGm6iyyhw6hByJn/rYeARjeJ8ubJ1y4YGhXth2
-         e8vQesgWDtfdITDd+/2exl9Jb8torkTxA1B24nx6hW+qCcJAT/i4QlBjBCrpNLpy389P
-         PIWDF2R2C42m4t8cnJBsELpNQRea6SROA/APGaRtR9LmddAzH/309XaztPC/rXw9ihnt
-         5C1ckEg6ghMsHPt+YBd86RiACBQo3bXMSbbmYrgRDNEcIbGQw/U87rKNt95osJ9E4hyR
-         LHVClBVEC/uDzWWjY4fIS/crN2qtpwCGm7G0D4QLwttdEnb+bSnf/hjLu7ohOqUtJghw
-         WiQA==
-X-Forwarded-Encrypted: i=1; AJvYcCV2zd9wE5G/S2JB+SnmMT1hUCaO6fpDFSdZ6rK5zXpddiDLsfXBXxNcdMNmjiiY4/SoV6FJ8764lt2NV3uxUVSWIxkVIBTXviP5iA==
-X-Gm-Message-State: AOJu0Yzq2oKblObZR9Cc5j2dVDASDeJuwbbiMYfOxB0Fko7NgnMXx79j
-	Vuk14oVmrC1++lN7wasVuM5qauxxAS6u8DevOWqLXCAuHt1+UhpLp5iR1zbjNpGpCU/++6CUFWo
-	=
-X-Google-Smtp-Source: AGHT+IF11IWkI0TTAlwnE00yKbuCp0K/lKMT2EevXSIyOW0sCRAJmY0MqvYYhF8S0cgcHj6ziGPeig==
-X-Received: by 2002:a17:902:cf04:b0:1e0:137e:cd66 with SMTP id i4-20020a170902cf0400b001e0137ecd66mr2022268plg.30.1711685465594;
-        Thu, 28 Mar 2024 21:11:05 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s2-20020a170902c64200b001e0e8e4f7e3sm2474716pls.206.2024.03.28.21.11.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 28 Mar 2024 21:11:05 -0700 (PDT)
-Date: Thu, 28 Mar 2024 21:11:04 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ext4: replace deprecated strncpy with alternatives
-Message-ID: <202403282109.D174F1CE@keescook>
-References: <20240321-strncpy-fs-ext4-file-c-v1-1-36a6a09fef0c@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dwtyD7h+Wmd4k56oaqV/rE6SZxVMmjmUM3sKWMBTGsY9DhHNWJPARQlNDCuHnZIpGV8i/XXq+idwfnbQgi4af8xguKDlZMgXubxTJVzTTIPz4xAH43tbmcx9Iad2W5vhgmJucryRWru1QclSZGQ1EO8YQDISCRND/ZP2dmNJf20=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=asHzqvwe; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42T6qls9025950;
+	Fri, 29 Mar 2024 07:14:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
+ subject : message-id : references : mime-version : content-type :
+ in-reply-to; s=pp1; bh=g/O51oeJGtQl1vH1UnX1c2dlOHF4t0y6H623R0jRn4c=;
+ b=asHzqvwex1ok7qCXNJ/MzzD70HxZWsEOGOMAuYxttzkwaI8A9i4ik8bpFYxQLNHFW26z
+ q3G0cLIU8tNMNbP6y/YEAYcHP7vH8Pz9bHzDIjat8fEVetED0cPQAXvTos3aKmB8lWN3
+ oSjJ+R/bCD0UcLBmbNJ/e6zO5NDN7lbQj0Tw+UbePOz4Szxl0ZarHYfib3z/sRIu0YmB
+ e13rSQtTGAs0EkAYXeb41QZoDN0GlgG/dIonYmuutLftXwQC7E/QZriUVZl/Os2ZEJ4I
+ AnnR3vvfrE1uuqh3CGXitRws+RuY3GnSNq/6/WBKLV2et+zEg6p3R6qCkonKYTBh1ZB2 Jw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rrng18x-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:14:14 +0000
+Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42T7EDt5031473;
+	Fri, 29 Mar 2024 07:14:13 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3x5rrng18v-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:14:13 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42T65k56012975;
+	Fri, 29 Mar 2024 07:14:13 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3x29t12sh0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Mar 2024 07:14:12 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42T7E8sv45809920
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 29 Mar 2024 07:14:11 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id DA6392004B;
+	Fri, 29 Mar 2024 07:14:08 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 376912004D;
+	Fri, 29 Mar 2024 07:14:07 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.43.115.153])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 29 Mar 2024 07:14:07 +0000 (GMT)
+Date: Fri, 29 Mar 2024 12:44:04 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jack@suse.cz, ritesh.list@gmail.com
+Subject: Re: [PATCH 5/5] ext4: expand next_linear_group to remove repeat
+ check for linear scan.
+Message-ID: <ZgZqPJbEBG09dzSh@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
+ <20240326213823.528302-6-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -82,89 +91,140 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240321-strncpy-fs-ext4-file-c-v1-1-36a6a09fef0c@google.com>
+In-Reply-To: <20240326213823.528302-6-shikemeng@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: eyKq2AJ_nUi955UZeqJaSicD4fLNOCZu
+X-Proofpoint-ORIG-GUID: ezamj0hqSWa2mObJbOyAsOLXMamtGcx4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-29_06,2024-03-28_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 lowpriorityscore=0 mlxlogscore=999
+ spamscore=0 clxscore=1011 mlxscore=0 impostorscore=0 malwarescore=0
+ phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403210000 definitions=main-2403290060
 
-On Thu, Mar 21, 2024 at 01:03:10AM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
+On Wed, Mar 27, 2024 at 05:38:23AM +0800, Kemeng Shi wrote:
+> Expand next_linear_group to remove repat check for linear scan.
 > 
-> in file.c:
-> s_last_mounted is marked as __nonstring meaning it does not need to be
-> NUL-terminated. Let's instead use strtomem_pad() to copy bytes from the
-> string source to the byte array destination -- while also ensuring to
-> pad with zeroes.
-> 
-> in ioctl.c:
-> We can drop the memset and size argument in favor of using the new
-> 2-argument version of strscpy_pad() -- which was introduced with Commit
-> e6584c3964f2f ("string: Allow 2-argument strscpy()"). This guarantees
-> NUL-termination and NUL-padding on the destination buffer -- which seems
-> to be a requirement judging from this comment:
-> 
-> |	static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label)
-> |	{
-> |		char label[EXT4_LABEL_MAX + 1];
-> |
-> |		/*
-> |		 * EXT4_LABEL_MAX must always be smaller than FSLABEL_MAX because
-> |		 * FSLABEL_MAX must include terminating null byte, while s_volume_name
-> |		 * does not have to.
-> |		 */
-> 
-> in super.c:
-> s_first_error_func is marked as __nonstring meaning we can take the same
-> approach as in file.c; just use strtomem_pad()
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 > ---
-> Note: build-tested only.
+>  fs/ext4/mballoc.c | 37 ++++++-------------------------------
+>  1 file changed, 6 insertions(+), 31 deletions(-)
 > 
-> Found with: $ rg "strncpy\("
-> ---
->  fs/ext4/file.c  | 3 +--
->  fs/ext4/ioctl.c | 3 +--
->  fs/ext4/super.c | 7 +++----
->  3 files changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 54d6ff22585c..c675c0eb5f7e 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -844,8 +844,7 @@ static int ext4_sample_last_mounted(struct super_block *sb,
->  	if (err)
->  		goto out_journal;
->  	lock_buffer(sbi->s_sbh);
-> -	strncpy(sbi->s_es->s_last_mounted, cp,
-> -		sizeof(sbi->s_es->s_last_mounted));
-> +	strtomem_pad(sbi->s_es->s_last_mounted, cp, 0);
->  	ext4_superblock_csum_set(sb);
->  	unlock_buffer(sbi->s_sbh);
->  	ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 7160a71044c8..dab7acd49709 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1150,9 +1150,8 @@ static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label
->  	 */
->  	BUILD_BUG_ON(EXT4_LABEL_MAX >= FSLABEL_MAX);
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 0f8a34513bf6..561780a274cd 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -1075,31 +1075,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
+>   return 1;
+>  }
 >  
-> -	memset(label, 0, sizeof(label));
->  	lock_buffer(sbi->s_sbh);
-> -	strncpy(label, sbi->s_es->s_volume_name, EXT4_LABEL_MAX);
-> +	strscpy_pad(label, sbi->s_es->s_volume_name);
->  	unlock_buffer(sbi->s_sbh);
+> -/*
+> - * Return next linear group for allocation. If linear traversal should not be
+> - * performed, this function just returns the same group
+> - */
+> -static ext4_group_t
+> -next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
+> -     ext4_group_t ngroups)
+> -{
+> - if (!should_optimize_scan(ac))
+> -   goto inc_and_return;
+> -
+> - if (ac->ac_groups_linear_remaining) {
+> -   ac->ac_groups_linear_remaining--;
+> -   goto inc_and_return;
+> - }
+> -
+> - return group;
+> -inc_and_return:
+> - /*
+> -  * Artificially restricted ngroups for non-extent
+> -  * files makes group > ngroups possible on first loop.
+> -  */
+> - return group + 1 >= ngroups ? 0 : group + 1;
+> -}
+> -
+>  /*
+>   * ext4_mb_choose_next_group: choose next group for allocation.
+>   *
+> @@ -1118,12 +1093,12 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
+>  {
+>   *new_cr = ac->ac_criteria;
+>  
+> - if (!should_optimize_scan(ac) || ac->ac_groups_linear_remaining) {
+> -   *group = next_linear_group(ac, *group, ngroups);
+> -   return;
+> - }
+> -
+> - if (*new_cr == CR_POWER2_ALIGNED) {
+> + if (!should_optimize_scan(ac))
+> +   *group = *group + 1 >= ngroups ? 0 : *group + 1;
+> + else if (ac->ac_groups_linear_remaining) {
+> +   ac->ac_groups_linear_remaining--;
+> +   *group = *group + 1 >= ngroups ? 0 : *group + 1;
+> + } else if (*new_cr == CR_POWER2_ALIGNED) {
 
-The only reason I can imagine the memset() being split here is to keep
-it out of the spinlock. For a non-fast-path ioctl, I can't imagine this
-being a meaningful reduction in lock contention, though.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Hi Kemeng, thanks for the cleanups
 
--- 
-Kees Cook
+I feel that open coding this logic and having a single if for linear scan and
+non linear scan cases is making the code a bit more harder to follow and we are
+losing some comments as well.
+
+Since our main aim is to avoid the double checking, maybe we can keep
+next_linear_group() strictly for getting the next linear group correctly and
+rest of the checks outside. So something like:
+
+static ext4_group_t
+next_linear_group(ext4_group_t group, ext4_group_t ngroups)
+{
+
+  /*
+   * Artificially restricted ngroups for non-extent
+   * files makes group > ngroups possible on first loop.
+   */
+  return group + 1 >= ngroups ? 0 : group + 1;
+}
+
+static void ext4_mb_choose_next_group(...)
+{
+  ...
+
+  /*
+   * Fallback to linear scan when optimized scanning is disabled
+   */
+  if (!should_optimize_scan(ac)) {
+    *group = next_linear_group(*group, ngroups);
+    return;
+  }
+
+  /*
+   * Optimized scanning can return non adjacent groups which can cause
+   * seek overhead for rotational disks. So try few linear groups before 
+   * trying optimized scan.
+   */
+  if (ac->ac_groups_linear_remaining) {
+    *group = next_linear_group(*group, ngroups);
+    ac->ac_groups_linear_remaining--;
+    return;
+  }
+  
+  ...
+}
+
+Let me know your thought. 
+
+Regards,
+ojaswin
+
+>     ext4_mb_choose_next_group_p2_aligned(ac, new_cr, group);
+>   } else if (*new_cr == CR_GOAL_LEN_FAST) {
+>     ext4_mb_choose_next_group_goal_fast(ac, new_cr, group);
+> -- 
+> 2.30.0
+> 
+
+
+
 
