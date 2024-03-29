@@ -1,94 +1,109 @@
-Return-Path: <linux-ext4+bounces-1780-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1781-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31F7D89155B
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 10:07:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85F73891C33
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 14:44:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDE471F2184C
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 09:07:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 269591F21CFE
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 13:44:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED79836119;
-	Fri, 29 Mar 2024 09:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0075147C9F;
+	Fri, 29 Mar 2024 12:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SEOHPQc8"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qWVUGIPK"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 775CC2BD1F
-	for <linux-ext4@vger.kernel.org>; Fri, 29 Mar 2024 09:06:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2EAD31802AB;
+	Fri, 29 Mar 2024 12:41:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711703219; cv=none; b=nX5ZzbS6eUeEMJg5ekjfvpgm/RjKwG5EmjKl0OWWt4TfphCgSuoD14JfYsGHSLcPUzlVVub5ICwjr+3XOrZQ6jzy6oCtbabCaJac+34XBUOkDg2HCbmeF5QuDc/OskNkYiR4p47tx6j/yE+rQfRQaLUvg8+tPVuOCDgsetHFZaI=
+	t=1711716092; cv=none; b=ZrPT2/q3KNCvKpZoB8DIV8907d8Wk18iyoiR76NHDIJwRE1vxmFs04U0fcmYLwX/Hx+9fScJIyiT2MJNc9mg7iHxoXJAgg3soC9IDKkHGSuzgMNbvLD7zBSS9op68sAk/Hnv/Ilhq00FAwMH5glF8jlnVRFvB5bDn95AzvLWsyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711703219; c=relaxed/simple;
-	bh=e1YUSllUBm8mAxt505xld/h45ZyXrkPqV+O9OFpn+Sw=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=kqwZ8WhRGI/UpEslhT8RixbyqXDSKyqE1d1puzb1/NgFG5JZSYb51/54MMZXlCh0aEqB3ntVJcHheAZdW92OKp+oTpAwQMFYGqQMV36hudn1vra6DZzMsnOb42L803k4L2TUJoS2dLL/RIq0faU5+5/KsXvyRTHCJ+gGJ1Ru73k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SEOHPQc8; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 168B0C43390
-	for <linux-ext4@vger.kernel.org>; Fri, 29 Mar 2024 09:06:59 +0000 (UTC)
+	s=arc-20240116; t=1711716092; c=relaxed/simple;
+	bh=JTtVBTjZRyZo1TDLtUH8GKP/+2mYYK4X37r/4pXMPnw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=JlfitG3Aczm5Nfqg6YInytJEBbcloxaHDQMY5J44Wqz9mqNzE4OPhrVDJm6p+TxUeVLfkdpWClzVxfU4K/J5soZhStVRrPR0ZXhHuycJdnB2qy6kkGWm8z95HvjqjafR2fi5c3s371IhZ3amYjRbJYrVEiT+H3T01fTdbmmUaNs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qWVUGIPK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E67DC433F1;
+	Fri, 29 Mar 2024 12:41:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711703219;
-	bh=e1YUSllUBm8mAxt505xld/h45ZyXrkPqV+O9OFpn+Sw=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=SEOHPQc80IagmQMQHOBuwqWMW4eD+Alb+4EdKp9udOs/kIL8C+9OsHEM5zl5hfv8u
-	 +wR0wIpZLpCdxX1KPNhj6NBrdYhEupv56tKHKrDqlHvkvGi7qu33qVzpAz6/CT41Kq
-	 dd+dFu9UWNjbqEKMVIHIzBR+rlHvBZRmJAw1mPq0KvYwanH2Qgqu7bY1xc2NVwAcOC
-	 vBo2nE+qFNifWT1at1N8+XDvYAp8sfZ0UPznIB/L4ZNHIGT9tZ8HYuZ07TNGfgVNOG
-	 eRAKdYbNPU1oBry9/nAyJkbcj5D5vQZZyQ6hv1Mhf6ehnE3F7JB+612LX+Za1LYRD/
-	 YOMl2gDa3JlUA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 07564C53BD1; Fri, 29 Mar 2024 09:06:59 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 218648] ext4: previously opened file remains writeable on
- readonly ext4 filesystem; Data loss.
-Date: Fri, 29 Mar 2024 09:06:58 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: aros@gmx.com
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: ANSWERED
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status resolution
-Message-ID: <bug-218648-13602-58X3QxHM6h@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-218648-13602@https.bugzilla.kernel.org/>
-References: <bug-218648-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=k20201202; t=1711716092;
+	bh=JTtVBTjZRyZo1TDLtUH8GKP/+2mYYK4X37r/4pXMPnw=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=qWVUGIPKqf9DlF6HbxwxexAG1i5uwGzfuXOACrTNkFfUFolJXsjL2rjHsC4SrwcIH
+	 OlIiResLICpX2l4g09+vDZ3K6BbltaTFzr05AGbQPy5GmhW9vlYPcpUItZLoZ9QY9i
+	 9Qj8djeo0EIXdOo03lEQ2MumvB/TRbo2SwDPggQrtsGAlTbyfuEVpggGuFEgyrpybe
+	 x6isz6wsf7LFHOqMGtYIvo6hm5ZkxVBnID0HMkOX2M89TTn23PPdbFk9pjtr4kRErL
+	 YfZqgILny7EFH0AjA2ARJyh06zNFUP/doCzOt+41J4+r25pvDH7EKTtxQ9I8BEEbQM
+	 8zR5CmxLbuDSA==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org
+Cc: Zhang Yi <yi.zhang@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Sasha Levin <sashal@kernel.org>,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH AUTOSEL 6.8 50/98] ext4: add a hint for block bitmap corrupt state in mb_groups
+Date: Fri, 29 Mar 2024 08:37:21 -0400
+Message-ID: <20240329123919.3087149-50-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240329123919.3087149-1-sashal@kernel.org>
+References: <20240329123919.3087149-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-stable: review
+X-Patchwork-Hint: Ignore
+X-stable-base: Linux 6.8.2
+Content-Transfer-Encoding: 8bit
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218648
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Artem S. Tashkinov (aros@gmx.com) changed:
+[ Upstream commit 68ee261fb15457ecb17e3683cb4e6a4792ca5b71 ]
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-             Status|NEW                         |RESOLVED
-         Resolution|---                         |ANSWERED
+If one group is marked as block bitmap corrupted, its free blocks cannot
+be used and its free count is also deducted from the global
+sbi->s_freeclusters_counter. User might be confused about the absent
+free space because we can't query the information about corrupted block
+groups except unreliable error messages in syslog. So add a hint to show
+block bitmap corrupted groups in mb_groups.
 
---=20
-You may reply to this email to add a comment.
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://lore.kernel.org/r/20240119061154.1525781-1-yi.zhang@huaweicloud.com
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Signed-off-by: Sasha Levin <sashal@kernel.org>
+---
+ fs/ext4/mballoc.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index e4f7cf9d89c45..6d0969e15d23d 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -3059,7 +3059,10 @@ static int ext4_mb_seq_groups_show(struct seq_file *seq, void *v)
+ 	for (i = 0; i <= 13; i++)
+ 		seq_printf(seq, " %-5u", i <= blocksize_bits + 1 ?
+ 				sg.info.bb_counters[i] : 0);
+-	seq_puts(seq, " ]\n");
++	seq_puts(seq, " ]");
++	if (EXT4_MB_GRP_BBITMAP_CORRUPT(&sg.info))
++		seq_puts(seq, " Block bitmap corrupted!");
++	seq_puts(seq, "\n");
+ 
+ 	return 0;
+ }
+-- 
+2.43.0
+
 
