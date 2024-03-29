@@ -1,200 +1,101 @@
-Return-Path: <linux-ext4+bounces-1769-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1771-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3472B89072D
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Mar 2024 18:30:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 63757890EF3
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 01:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 573D61C295FF
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Mar 2024 17:30:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 946D91C22357
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 00:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05608626D;
-	Thu, 28 Mar 2024 17:29:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qm9ejvIf"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56511EDB;
+	Fri, 29 Mar 2024 00:11:19 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-178.mta1.migadu.com (out-178.mta1.migadu.com [95.215.58.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F266E7EF00
-	for <linux-ext4@vger.kernel.org>; Thu, 28 Mar 2024 17:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEDCCA34
+	for <linux-ext4@vger.kernel.org>; Fri, 29 Mar 2024 00:11:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711646989; cv=none; b=orjTL9Sq4ZDQPNaDy/GI+21Ux9VJSjY4er1uCXhboQDEd/RQUCiqhPJnO6UsNtvMkSnz4YoO3D4oW2ESOIfffAltVTHgxZBT140ZdOtQDpLuyOia87YwNcgzz8/ZwBcJSnxk5aNiINdxGjTaGYdDt8mgxkqZCGTOqIDG/8wqqVg=
+	t=1711671079; cv=none; b=Z0GpsgGX6WFCNU8m2Ybhcq+UxgsWOFapDl4hHMaI1A30DrGM2I+famT2LI1CoRj6Ld/vRe7f3Ih3tbXNm4pyhQwrnw+Pk6pi7LYAjL7M8lYe0wLxyNwUUmGfHZ/NzZgmsICALClmQmnhd5uU08KyAnjZJ7IWkb1zHDVJg5kJmTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711646989; c=relaxed/simple;
-	bh=pNAKtrIVYsR9WuMDS7UeRJdP/IFpGkoXl9Ggzowl4Rk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=RREsfKPMo+Fmot7MPd3r13Ea/UAFDRy0n0byo0AoGRLqB4feDVuyw8LDDkaBiqbu/0YvRaPti7goD3GuI18cfjFkv5RDgXIWnSv4Ie6QK5Smk1rpVnJjP+83hzz47sU7bDJS+iryd17z7a7zfJhb1M8k+X/KIDnE07tNJiZUXxU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qm9ejvIf; arc=none smtp.client-ip=95.215.58.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1711646985;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4d5yxLDZOYtkaoRdt4QlJaQrk8CcY5+L3UcAiDJim3k=;
-	b=qm9ejvIfKJev2MZ0yIW3Bm3hC4pSvQOrY/PrhyXmmPes3OPW8QzeIyEcgz+ffCREwTYlFF
-	uBrIVIRc95wbeTYVougMhdSr350E2y7IC7mon7tbzPjyOsorTExtuFzzZ89ZxsnujCU0cN
-	F4VLQxM8T5XBh4SDt0PWCAA0b3KGebY=
-From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger@dilger.ca>
-Cc: linux-ext4@vger.kernel.org,
-	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Subject: [PATCH 4/4] tests: new test to check quota after a bad inode deallocation
-Date: Thu, 28 Mar 2024 17:29:40 +0000
-Message-ID: <20240328172940.1609-5-luis.henriques@linux.dev>
-In-Reply-To: <20240328172940.1609-1-luis.henriques@linux.dev>
-References: <20240328172940.1609-1-luis.henriques@linux.dev>
+	s=arc-20240116; t=1711671079; c=relaxed/simple;
+	bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=J4VEnUKx92rQYaKAzgOAzUc+6vWm+HHlKD5/gJgTOQRKTxK95DR9naZWvZeO0i2HmzvJ+NKjSXPxNbngymHvmFIirdl8tEwlmeZEqiuEKXbNyar3UZgpLFszE752lqT1hnJmF8alsLcB1GbSyoY7k3CmmIAuEOgYs+SgLf2aDLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7cc7a6a043bso170757339f.0
+        for <linux-ext4@vger.kernel.org>; Thu, 28 Mar 2024 17:11:17 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1711671077; x=1712275877;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CPKlspD/ZSfWixUM8SglUnOrdGxitKBWwWP9lEY6reA=;
+        b=DYNwAvDZBhdhtEIdAyJBQEZF4urPFfouda7ZIvwHojaFSvExuselcEgvXN5AqUV5tC
+         sq7FGX533ASBLC2YSxGXzFf9qo6gzV+a3KpX6woBTXK6vP2lyzrsu+MAnrJQ0BJ7x+nm
+         eu+XIqJluCrenZKCr5RFzgtAF7TqR0mqEbZRZm4EkuYRuvHlT0d29rq/Us+DSJ7hSC4h
+         NgAtvtJZPWzM0xiAMeXcELLgL5ZV4grBklnZNdUV7eONP9JMUiFy7dfUInE3a9azHTa7
+         qYzMptL3dCgR/ylk6qrhfK5ZLGMprcb+L1zSzBcXqUPEbLehKBs+D/4er9UpAaC0FzoZ
+         M3sw==
+X-Forwarded-Encrypted: i=1; AJvYcCVU7q3OEyoweg2LYy9H/5nQB9pBH4DteePv2MH4x9UoRSuwzNgYlx2eZbGZvBm2ptPkrwYVZmjTCd9xsIrpektrYm6FdvEUSok/HA==
+X-Gm-Message-State: AOJu0YwWCK97kbWIhOACTlv2mhDId6b9n+whkQ80IEj6fOo5zs23M/3B
+	P6d4zCFH4a1PUu/6pl1GBUhhDvsZUp7o4T5UoKvJam6PeJR9e0EoBdEBsVUfBMXt84fqBlU1Spl
+	yJn/fyLf0i6vO1Ck94D4N60Hhs6b/0civnyveJrfpZTNTx4V+fxAgcwA=
+X-Google-Smtp-Source: AGHT+IFkuzBOXLL0qovYepiBhl4jyh5xiqBtn4XTNWP9BC4uhLKwBQok6OoN5qt/kdcWfaL0mr2Wio+as2oxhYmU6Eq/0T3j6aeR
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-Received: by 2002:a05:6602:2c90:b0:7cc:8980:5ae4 with SMTP id
+ i16-20020a0566022c9000b007cc89805ae4mr21732iow.2.1711671076996; Thu, 28 Mar
+ 2024 17:11:16 -0700 (PDT)
+Date: Thu, 28 Mar 2024 17:11:16 -0700
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000008461a90614c17a44@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-This new test validates e2fsck by verifying that quota is updated after a bad
-inode is deallocated.  It mimics fstest ext4/019 by including a filesystem image
-where a symbolic link was created to an existing file, using a long symlink
-name.  This symbolic link was then wiped with:
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-  # debugfs -w -R 'zap -f /testlink 0' f_testnew/image
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+#syz fix: exact-commit-title
+
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+
 ---
- tests/f_quota_deallocate_inode/expect.1 |  18 ++++++++++++++++++
- tests/f_quota_deallocate_inode/expect.2 |   7 +++++++
- tests/f_quota_deallocate_inode/image.gz | Bin 0 -> 11594 bytes
- tests/f_quota_deallocate_inode/name     |   1 +
- 4 files changed, 26 insertions(+)
- create mode 100644 tests/f_quota_deallocate_inode/expect.1
- create mode 100644 tests/f_quota_deallocate_inode/expect.2
- create mode 100644 tests/f_quota_deallocate_inode/image.gz
- create mode 100644 tests/f_quota_deallocate_inode/name
+[1] I expect the commit to be present in:
 
-diff --git a/tests/f_quota_deallocate_inode/expect.1 b/tests/f_quota_deallocate_inode/expect.1
-new file mode 100644
-index 000000000000..2b2f128dbb57
---- /dev/null
-+++ b/tests/f_quota_deallocate_inode/expect.1
-@@ -0,0 +1,18 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Symlink /testlink (inode #14) is invalid.
-+Clear? yes
-+
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+[QUOTA WARNING] Usage inconsistent for ID 0:actual (15360, 4) != expected (16384, 5)
-+Update quota info for quota type 0? yes
-+
-+[QUOTA WARNING] Usage inconsistent for ID 0:actual (15360, 4) != expected (16384, 5)
-+Update quota info for quota type 1? yes
-+
-+
-+test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-+test_filesys: 13/256 files (15.4% non-contiguous), 1157/8192 blocks
-+Exit status is 1
-diff --git a/tests/f_quota_deallocate_inode/expect.2 b/tests/f_quota_deallocate_inode/expect.2
-new file mode 100644
-index 000000000000..802317949959
---- /dev/null
-+++ b/tests/f_quota_deallocate_inode/expect.2
-@@ -0,0 +1,7 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+test_filesys: 13/256 files (15.4% non-contiguous), 1157/8192 blocks
-+Exit status is 0
-diff --git a/tests/f_quota_deallocate_inode/image.gz b/tests/f_quota_deallocate_inode/image.gz
-new file mode 100644
-index 0000000000000000000000000000000000000000..798a72c3a0da0323fc55c5e034f778e967394c81
-GIT binary patch
-literal 11594
-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
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-literal 0
-HcmV?d00001
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
-diff --git a/tests/f_quota_deallocate_inode/name b/tests/f_quota_deallocate_inode/name
-new file mode 100644
-index 000000000000..396887c16f84
---- /dev/null
-+++ b/tests/f_quota_deallocate_inode/name
-@@ -0,0 +1 @@
-+update quota when deallocating bad inode
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
