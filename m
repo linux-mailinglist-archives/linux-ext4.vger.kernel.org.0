@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-1787-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1789-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 175D3891E26
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 15:34:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF1DA891ED5
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 15:53:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8399287525
-	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 14:34:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D1A08B316B2
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Mar 2024 14:43:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A37F1A8AEF;
-	Fri, 29 Mar 2024 12:48:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A481AEE22;
+	Fri, 29 Mar 2024 12:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="l1deteBt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="URHnPX3b"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A766D1A8ADD;
-	Fri, 29 Mar 2024 12:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15D351509AE;
+	Fri, 29 Mar 2024 12:49:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711716495; cv=none; b=F00UlhUpqJRe84FCY2u9Eqipf72whkF8mK8lgIIRFlQVIGR9TySORVpfCeoph1wEZ9+0jR/o+jFlPJYZxt7vsrnl0855lVVrqzv22KMgfNNdgF8F2RHcJzbuBRqsPJecw5RDLNVHAzZmUGdjB5oU8Aa0SuQ6buTqXA5yAXJGvRo=
+	t=1711716565; cv=none; b=NhtID47pJjW2UZJ6x4rkUdBlDGc7dPTdDdlZbKsaLdzfM2GyuJQW370dRSSt2IWjgUUNyedLNgGwTks7VqC37qAWNGdI0DT5Iy+AXsxmnmYMGRYo/xQxOb3a8H5WO7TCBlMv77AWgjV6gN8mG3yqSORmVJ+jaWBRDyJ/yUJnnjU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711716495; c=relaxed/simple;
-	bh=790L5DcyYpXic9NyR2FrfOdsWnJbrgJGrM1mO+umhWI=;
+	s=arc-20240116; t=1711716565; c=relaxed/simple;
+	bh=Ldw/Jr0Rp6CMECGFlRRAVxq0+27Oh8758I6LOt3oF0U=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BITDzz7PUurxH4zHPl30pngaGcZ2Wd2u1BKhHfa0Vcg9rVmUao0eKC4q77LMCasVApYbmeHSUwtp7ulpFvx4rWzaCHROUXLWl3msL5vysSmoIyYmZGJkP8nsYB/5dyXQ0Xx2fiyDD2LxzOyjamHVgl/zfMczgnkdT4eHPU9Yibs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=l1deteBt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7654EC43390;
-	Fri, 29 Mar 2024 12:48:14 +0000 (UTC)
+	 MIME-Version; b=XfFVIiTV/nyOaDgJB66SExBessJxt5sc5AQWp20TyikB2832uOsZoEd98+cxX8OwLSGbcwqsWHKuwfxkevtUmDv+KP95PELDtp7171GCMyRlAyaRwY70txm9nTZZp3DkoJfl9ZPvTVlAslub9IAF+eFfN358AGVn1wCtfLWY+JE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=URHnPX3b; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6296C433C7;
+	Fri, 29 Mar 2024 12:49:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1711716495;
-	bh=790L5DcyYpXic9NyR2FrfOdsWnJbrgJGrM1mO+umhWI=;
+	s=k20201202; t=1711716564;
+	bh=Ldw/Jr0Rp6CMECGFlRRAVxq0+27Oh8758I6LOt3oF0U=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=l1deteBtSoRFwczbP3qQ+xoO09TWM29HbzrKgQf153t8K0HuUYUaprXNPhRGraicq
-	 GCiKQDZVMzu8e/3H/Ib9c++TiRev6byrBgoNe/k9EVRoIl70WQYUI7bAJgNN+hA+GX
-	 Yg2lTBZXjEhapVkRXJJeoWws+/JaDMS54NlXygiMM6ogw0izQN7ZatTtLq6/QT3xWh
-	 15UySqtkmJua9J2yNau+SHqJeV5s8+LatSId8yna5Lw2qnaatbv7LP7kIfoA/lW6Ok
-	 cj8jr7w/CeEDQ7Fdhmk/PCipFmZyL0tIzM+UabZ3ksDPocXj5PKGrWZrIcdPBbszl+
-	 cfh81WBludSXQ==
+	b=URHnPX3beId/yH/uJZnHCuoIm+q+vSc0hCFELKkXSBz9KsrV941DrgvaKEavvjlBj
+	 F41P9q/Z1h685/1p79NXsgrHVDnCowsc3ukXO/Tm1uGNY/zh67gVogF0iW1xJI8EYA
+	 hcC5UOB/pX6uBnsPWaLf+KxWDBa6JT5BGOoX+Louesw0szFctPqX+g3a1BWFSjmthP
+	 ufP7b62CdDrgWTZp0PZc9hVe/Z8ww5P06oD7hOy6WxabDrhZlrQ0BlbK6DIYobgEHE
+	 xc6r8QcE24u1RY58cGsGd7L4vURWbvwaJtgLvpn9/+KMlt1fcosfmAOH5yfgmardp5
+	 SLtQP+ei8JwIA==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +50,12 @@ Cc: Zhang Yi <yi.zhang@huawei.com>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 14/34] ext4: add a hint for block bitmap corrupt state in mb_groups
-Date: Fri, 29 Mar 2024 08:47:15 -0400
-Message-ID: <20240329124750.3092394-14-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.10 12/31] ext4: add a hint for block bitmap corrupt state in mb_groups
+Date: Fri, 29 Mar 2024 08:48:29 -0400
+Message-ID: <20240329124903.3093161-12-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240329124750.3092394-1-sashal@kernel.org>
-References: <20240329124750.3092394-1-sashal@kernel.org>
+In-Reply-To: <20240329124903.3093161-1-sashal@kernel.org>
+References: <20240329124903.3093161-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 5.15.153
+X-stable-base: Linux 5.10.214
 Content-Transfer-Encoding: 8bit
 
 From: Zhang Yi <yi.zhang@huawei.com>
@@ -88,10 +88,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index a254c2ba03576..e670b5628ddfa 100644
+index 61988b7b5be77..85f12e8dc96d7 100644
 --- a/fs/ext4/mballoc.c
 +++ b/fs/ext4/mballoc.c
-@@ -2950,7 +2950,10 @@ static int ext4_mb_seq_groups_show(struct seq_file *seq, void *v)
+@@ -2591,7 +2591,10 @@ static int ext4_mb_seq_groups_show(struct seq_file *seq, void *v)
  	for (i = 0; i <= 13; i++)
  		seq_printf(seq, " %-5u", i <= blocksize_bits + 1 ?
  				sg.info.bb_counters[i] : 0);
