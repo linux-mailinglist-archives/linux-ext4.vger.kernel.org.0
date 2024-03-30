@@ -1,138 +1,117 @@
-Return-Path: <linux-ext4+bounces-1792-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1794-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 930EC8929AB
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Mar 2024 09:04:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC11B892B11
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Mar 2024 13:10:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 13D371F22014
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Mar 2024 08:04:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6BE9C1F227BD
+	for <lists+linux-ext4@lfdr.de>; Sat, 30 Mar 2024 12:10:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E98D979E0;
-	Sat, 30 Mar 2024 08:04:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629D339846;
+	Sat, 30 Mar 2024 12:10:40 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15E141C0DE5
-	for <linux-ext4@vger.kernel.org>; Sat, 30 Mar 2024 08:04:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D219B3308A;
+	Sat, 30 Mar 2024 12:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711785858; cv=none; b=iK8EB34F+fwUDHaUTYBkBg88ITg0qU0pJj6zB+H08EOPYNOsiio5emlvF82g3W72Xc4ihv2jpQ3IucCmNYNrEo0NrfzNVYViqFGpNQfGB/dm8g9IxtlxjAVd3O+wFc0EXDt5y4LlZ1BK3uTtLXX40ep0d9XgsIPlfX5mxEdtE8c=
+	t=1711800640; cv=none; b=pNuhuwHPJKg59ewr0SsrEsIAQQPIS9uSYVvMU/N2+62RA0Qe4zYSzwWuvgf8+9ft4gnH28ka01dm53ByfDXqf66ND/wlFc1SrOUMAHMacrF9mv1o2/po3kumIiG/YET20G9He7cNEnwr8en9Z+kVwh6Al3GaM1TwnzNQhPR7bVw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711785858; c=relaxed/simple;
-	bh=aNNgKrlB9TLwdmUDHleqTAzZkpPBKhO1F1BOcLb73Aw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=R4YJxo2bsjlLORxtoQTgh7rE0Z8EvZfOAQy2OVMbza1Q5t4VJsRkvJaybUzheGkL1Mgq0nys8/sX7hu98lxzq60YBRxGq8chtdirrbVjoJ2X6PTSxs7EDmGjHWSyOJVXN0viOLsrnUQROjjEdkQS8K8VLYkeBHm7w3aYE9pYOaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4V68qQ5m6yz1R92k;
-	Sat, 30 Mar 2024 16:01:22 +0800 (CST)
-Received: from kwepemd200008.china.huawei.com (unknown [7.221.188.40])
-	by mail.maildlp.com (Postfix) with ESMTPS id 3947D1A0172;
-	Sat, 30 Mar 2024 16:04:05 +0800 (CST)
-Received: from [10.174.177.210] (10.174.177.210) by
- kwepemd200008.china.huawei.com (7.221.188.40) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Sat, 30 Mar 2024 16:04:04 +0800
-Message-ID: <7953c617-2f74-faa4-2aa4-c6ef9de2c28e@huawei.com>
-Date: Sat, 30 Mar 2024 16:04:03 +0800
+	s=arc-20240116; t=1711800640; c=relaxed/simple;
+	bh=a+LNOdkQlYnSt/8ppmspGPD5Pv/kj3Xgnu7c4yJ9ic8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ljSoKX0x7m3xK44r3m2lL0ucS8IExoXrI8S65Z5cZZ91+N9rT7BJ7/PYdj6RcoglMcTTs67EC94R3jvJ6cjQeTL9JT49dZ2ZoK+unmvOZ4looRdFc5gLwhw6Oj/EIUTVVxmvCX/rJ3KS8eVTO7vwFjujzGW3uH+vfvUrZC1+O48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V6GLq3Mpxz4f3jQY;
+	Sat, 30 Mar 2024 20:10:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 93F8E1A0232;
+	Sat, 30 Mar 2024 20:10:31 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAn+REsAQhmkPEjIg--.10652S4;
+	Sat, 30 Mar 2024 20:10:27 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH 0/7] ext4: support adding multi-delalloc blocks
+Date: Sat, 30 Mar 2024 20:02:29 +0800
+Message-Id: <20240330120236.3789589-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] ext4: clear EXT4_GROUP_INFO_WAS_TRIMMED_BIT even mount
- with discard
-To: Jan Kara <jack@suse.cz>, yangerkun <yangerkun@huaweicloud.com>, "Theodore
- Y . Ts'o" <tytso@mit.edu>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <boyu.mt@taobao.com>,
-	<linux-ext4@vger.kernel.org>
-References: <20231230070654.178638-1-yangerkun@huaweicloud.com>
- <20240221111852.olo7jeycctz7xntj@quack3>
-From: yangerkun <yangerkun@huawei.com>
-In-Reply-To: <20240221111852.olo7jeycctz7xntj@quack3>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemd200008.china.huawei.com (7.221.188.40)
+X-CM-TRANSID:cCh0CgAn+REsAQhmkPEjIg--.10652S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry3JrWkZw1ftw13GF1kGrg_yoW8JFWfpF
+	WS9a4Sgr48Ww1aga1fAa1UJF45Xw4fCr4UG343tw18ZrWDZFyfXFsrKF1F9ayrJrZ3ZFn0
+	qF1a9ry8u3Wjk37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCF04k20xvY0x0EwIxG
+	rwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4
+	vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IY
+	x2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26c
+	xKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjfUoOJ5UUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Hi, Ted,
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Ping for this patch.
+Hello!
 
+This patch series is the part 2 prepartory changes of the buffered IO
+iomap conversion, I picked them out from my buffered IO iomap conversion
+RFC series v3[1], and add bigalloc feature support.
 
-在 2024/2/21 19:18, Jan Kara 写道:
-> On Sat 30-12-23 15:06:54, yangerkun wrote:
->> Commit 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in
->> ext4_group_info") speed up fstrim by skipping trim trimmed group. We
->> also has the chance to clear trimmed once there exists some block free
->> for this group(mount without discard), and the next trim for this group
->> will work well too.
->>
->> For mount with discard, we will issue dicard when we free blocks, so
->> leave trimmed flag keep alive to skip useless trim trigger from
->> userspace seems reasonable. But for some case like ext4 build on
->> dm-thinpool(ext4 blocksize 4K, pool blocksize 128K), discard from ext4
->> maybe unaligned for dm thinpool, and thinpool will just finish this
->> discard(see process_discard_bio when begein equals to end) without
->> actually process discard. For this case, trim from userspace can really
->> help us to free some thinpool block.
->>
->> So convert to clear trimmed flag for all case no matter mounted with
->> discard or not.
->>
->> Fixes: 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in ext4_group_info")
->> Signed-off-by: yangerkun <yangerkun@huaweicloud.com>
-> 
-> Thanks for the fix. It looks good. Feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> 								Honza
-> 
->> ---
->>   fs/ext4/mballoc.c | 10 ++++------
->>   1 file changed, 4 insertions(+), 6 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index d72b5e3c92ec..69240ae775f1 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -3855,11 +3855,8 @@ static void ext4_free_data_in_buddy(struct super_block *sb,
->>   	/*
->>   	 * Clear the trimmed flag for the group so that the next
->>   	 * ext4_trim_fs can trim it.
->> -	 * If the volume is mounted with -o discard, online discard
->> -	 * is supported and the free blocks will be trimmed online.
->>   	 */
->> -	if (!test_opt(sb, DISCARD))
->> -		EXT4_MB_GRP_CLEAR_TRIMMED(db);
->> +	EXT4_MB_GRP_CLEAR_TRIMMED(db);
->>   
->>   	if (!db->bb_free_root.rb_node) {
->>   		/* No more items in the per group rb tree
->> @@ -6481,8 +6478,9 @@ static void ext4_mb_clear_bb(handle_t *handle, struct inode *inode,
->>   					 " group:%u block:%d count:%lu failed"
->>   					 " with %d", block_group, bit, count,
->>   					 err);
->> -		} else
->> -			EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
->> +		}
->> +
->> +		EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
->>   
->>   		ext4_lock_group(sb, block_group);
->>   		mb_free_blocks(inode, &e4b, bit, count_clusters);
->> -- 
->> 2.39.2
->>
->>
+The first 6 patches make ext4_insert_delayed_block() call path support
+inserting multi-delalloc blocks once a time, and the last patch makes
+ext4_da_map_blocks() buffer_head unaware.
+
+This patch set has been passed 'kvm-xfstests -g auto' tests, I hope it
+could be reviewed and merged first.
+
+[1] https://lore.kernel.org/linux-ext4/20240127015825.1608160-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
+Zhang Yi (7):
+  ext4: trim delalloc extent
+  ext4: drop iblock parameter
+  ext4: make ext4_es_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_reserve_space() reserve multi-clusters
+  ext4: factor out check for whether a cluster is allocated
+  ext4: make ext4_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_map_blocks() buffer_head unaware
+
+ fs/ext4/extents_status.c    |  63 +++++++++-----
+ fs/ext4/extents_status.h    |   5 +-
+ fs/ext4/inode.c             | 165 ++++++++++++++++++++++--------------
+ include/trace/events/ext4.h |  26 +++---
+ 4 files changed, 162 insertions(+), 97 deletions(-)
+
+-- 
+2.39.2
+
 
