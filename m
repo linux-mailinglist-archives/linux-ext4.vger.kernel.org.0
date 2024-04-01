@@ -1,179 +1,226 @@
-Return-Path: <linux-ext4+bounces-1807-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1808-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AFF089429E
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 18:54:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3417A8945C3
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 21:51:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F39E1C21DA2
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 16:54:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B52811F21ED2
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 19:51:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07DB4481D1;
-	Mon,  1 Apr 2024 16:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFB9535CE;
+	Mon,  1 Apr 2024 19:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hgjCCtEH"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="OBDf9WPn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
+Received: from mail-pf1-f173.google.com (mail-pf1-f173.google.com [209.85.210.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB86340876
-	for <linux-ext4@vger.kernel.org>; Mon,  1 Apr 2024 16:54:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 170AF535D9
+	for <linux-ext4@vger.kernel.org>; Mon,  1 Apr 2024 19:50:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711990458; cv=none; b=bCRJR03oDHJugWMbHMjigeQIlaJvYKwnWI9WQMx5y7O2wPKNMrO5uy8Sx/5vul0GQOIgE0I+WIOvof8ghYw/5JXB5IE1z+MOc+o32v7QXcP4qXy0V24BT5LnmzGHx3HXihl2gIx0iOOyUAPws5LVayCYXTbjvzc4Usq4X0nmIt8=
+	t=1712001027; cv=none; b=ogCPUuF2dhWwTt8icoOIC1TUbVU/0o0/t6EgQCrfI5BQOHXezqrhVt+O3kqTuCBkFSorEzhPsbtsEXP/BXYSqD8CBHF8STHreOwtMykuARr4dp2FcXFua8rASvdS/eOZYVj/Ou6nn/+UGMHNL+xLvnBNKB4VYkt/HZ2xkLq9nzc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711990458; c=relaxed/simple;
-	bh=QLTiEQJr39IsJ/FiZGXezMsTuhj4pjP3wWx6s2/+4FI=;
-	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=YWcRC7dVRIbUyWJ4nD1GuPuO249P/yqjcNypsKYyU34cgx6R/SxsfbCxvGMfjPtfvC5D21uy7+DRS5LMUkkhIFqYtceDka28F5++qqZdjShckcf1Ue9QLTY1Nf9XigXyqaSwAVMjXgUQeeyeQTLtYG7HwuJeAgCaKxbORmfXIMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hgjCCtEH; arc=none smtp.client-ip=209.85.219.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6990deb60bfso1246026d6.0
-        for <linux-ext4@vger.kernel.org>; Mon, 01 Apr 2024 09:54:16 -0700 (PDT)
+	s=arc-20240116; t=1712001027; c=relaxed/simple;
+	bh=dJGg+mIOgeL46nEEawfzYt2qIZ2gFeAyu9Kfo2vIZNk=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=o2JIvxh7ax9ldYzbNBwiJsiGgJUJkxA72x0VE24BXqcd/NEx6vk8s2G2RdQxA7vI+KHJ2pfyg7ytosT0ZwryfoJ3qK3OU96rQQMTvFdoQ57PFqgluk0BAkzkK/4n/87rOCeOeVsXK6aaxHXIEvgqPVqsmo1hxRgAcMhX8XGwK0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=OBDf9WPn; arc=none smtp.client-ip=209.85.210.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pf1-f173.google.com with SMTP id d2e1a72fcca58-6eaf7c97738so1623547b3a.2
+        for <linux-ext4@vger.kernel.org>; Mon, 01 Apr 2024 12:50:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1711990456; x=1712595256; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:to:subject:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ybhi4jaHijQngTMm4QlwojYi/3qBYJnAzGp4n70iaag=;
-        b=hgjCCtEHB/FHIqQjA/KKwECIPDjLdWmgpW0BT1bkiGi6mgcd4M76KCujjkb2YbSzDj
-         CFrgZEX9GylGzoWRI8Gk/qrnlv35555uMS9ojk0iYXdepOiutzrQSoqC7bCYFXDxX8os
-         r7+NfnS46GdDmbhTG4brR+dfqGBgUz/Eb9bxjGnsutnE74dEt86QP9F0AaEANIZD8I9z
-         HfZVCAwhGI3MbgwlIYx2h1nn6oJ0yT7JKHtso+RIayEptJL2vD1uBCn+4ym+M4Nhzs9S
-         zAfUQcPXmCTYTVJvKA+CZHSKSVo6+GWp7hGZt9VJ6UBQBINSKEnJx0ZQeRBljO+DVEZY
-         FJBw==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712001023; x=1712605823; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ai2elRcw+h2bUT55LJF1cfd2ThQtPMogV+QXzs1JjM0=;
+        b=OBDf9WPnDPpvNZ3wcz4qGHPep05WP/UAtouC6CEQ/HE4gVegy5HacLsFUkMHbea6KD
+         V3L6xl2636XvcdxFC4cXHiUWxfSRlDxtLoBoB493C9xY0HtvkPuyh5KxQngry7mFRHeI
+         5O3AUaGrp282Kb/BCflq4P3HUUcu6KHp3keOcvgqxEi0L7poL/TwcXoXzIK+oE/Au8Hx
+         HWS61bFuQ6focoeKzg4/dSQTaXvlkqwDN6PILQtK+2Ayn2gYBhbt5H/rm9fNhtvnXR/w
+         UDLwA5PxSBb0O1cdc1JwZamVwLvhXOPhkiXamHKkpbiLIhwJ8OixddgbJjVJic8lRkc8
+         W7cg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711990456; x=1712595256;
-        h=content-transfer-encoding:in-reply-to:mime-version:user-agent:date
-         :message-id:from:references:to:subject:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ybhi4jaHijQngTMm4QlwojYi/3qBYJnAzGp4n70iaag=;
-        b=L9XAfWkxP7PG9vGe9+hGjdiw0Law8sA6K6i3BIYw3lShwYxErd6vdGL4SKHxhZGs2N
-         RpkB/Dn8HfXIFBFLFuYuaD/WWe1QRX5EMM5kbRDELvi1eZcHhjmwdt/v3NAkI7AzrjcM
-         s5QKeq9NEVb2N6xChNmmzgh0bvBfJ/BqGRiHm1sNGAmKLgC/GU0BGOTZWqJjQ4JEh3s5
-         AhWZWa2rnRpCuDE9up4uN++1Uchut5GW3bS92rhXzeM+5I1wD+AwFPNAmfLmDtSJ55BS
-         akdXAKR17mMQqPNgM525Ga0Vvd9q2BHIZLD/yl34oJj1245j6z+sH3e8ZD1rECQRIGpO
-         SYDg==
-X-Gm-Message-State: AOJu0YxfvP3ip9d5q4yOBy5IS+YgLEdHZcnvV4L2cSSyEkkCxRyRbC2c
-	1utPnlIgnfwKmJcdSGEYJxGrNghZbJP+B30xlxV087sgz0Ueq+bJFJ+RFsi5TNs=
-X-Google-Smtp-Source: AGHT+IHiWq2AkPSum9phcJ75FdBIh2moDnPWCbESRne3+KsLwPMZtxZJ+r/RMZtG9n7f/ZJZf3IrEQ==
-X-Received: by 2002:ad4:4b2c:0:b0:696:7b38:cfce with SMTP id s12-20020ad44b2c000000b006967b38cfcemr9904223qvw.48.1711990455702;
-        Mon, 01 Apr 2024 09:54:15 -0700 (PDT)
-Received: from [192.168.0.41] (97-116-107-164.mpls.qwest.net. [97.116.107.164])
-        by smtp.gmail.com with ESMTPSA id jt12-20020a05621427ec00b00696766401adsm4683056qvb.38.2024.04.01.09.54.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 01 Apr 2024 09:54:15 -0700 (PDT)
-Subject: Re: noacl and nouser_xattr
-To: linux-ext4@vger.kernel.org
-References: <528A2397.8030402@me.umn.edu> <528A5CFC.1060706@redhat.com>
-From: Paul Markfort <paulfm.mn@gmail.com>
-Message-ID: <2291ff18-9aaf-4b2a-023c-cf3abcef5a70@gmail.com>
-Date: Mon, 1 Apr 2024 11:54:13 -0500
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101
- Firefox/119.0
+        d=1e100.net; s=20230601; t=1712001023; x=1712605823;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ai2elRcw+h2bUT55LJF1cfd2ThQtPMogV+QXzs1JjM0=;
+        b=RaCdjCWC3xsKZ0VYrOc6Tew9NWP+ESrsabydMqNqn6/AbBS4i2wj0qdVT/CjVUsSoS
+         sbKtBtgX+tk4PHAJn61LBGL+2bnXH4fXrHYkijRuXSBPFIu0ZVsEGeKbEbd+eiaVa+hm
+         iYL01k15bB3BHu/Qmkex3Xb/YwIqJ4nKnhV5j4/xGkUvOpPldnxOozE0+lEL56dthxCx
+         VpfZnxZdQA6A3WV5LYMtOF7aTWM0LTGie7UppXOWj0siRztX4wYeby1lvHtdX/QZ90NG
+         SfuY9VxOvzhsdgJr+brNMjHC3r1hjcPnB7mvGiW371tlEuVmpVdWKbJsTRyzdWRlPAL6
+         231g==
+X-Forwarded-Encrypted: i=1; AJvYcCUelMEjayGhYQILFsXy+tWfGc5c/gi4XCUS57VnNEOouyKcYEclMntUl23sBu2Uwd4HiXQNHidTK1MmbbuaH7PkOrsNBkz4XGE2fg==
+X-Gm-Message-State: AOJu0YwFhY5YzlsMkwMHmmg9fLjgVJAen4V1GJda9t6SkcJB/hrjFMCv
+	UefZJoY0/dXGavkubg4Wm5xWBgzqseDXJUY4pTk7TEhnry0q+Wi06mKcvlP63/w=
+X-Google-Smtp-Source: AGHT+IFrhsdoCilPuvUE110WyrRKWnx2gYLufajp3EvIkGFDSE0yHr1Sarv2Hmi2Suiy6B1LQnRb6w==
+X-Received: by 2002:a05:6a00:240a:b0:6eb:2e47:62c0 with SMTP id z10-20020a056a00240a00b006eb2e4762c0mr5179439pfh.2.1712001023230;
+        Mon, 01 Apr 2024 12:50:23 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id r2-20020aa78b82000000b006eaf43bbcb5sm5045454pfd.114.2024.04.01.12.50.21
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 01 Apr 2024 12:50:22 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <098B73D9-5D47-48A0-91F9-EACD1E1581ED@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_A2302E43-3836-4935-8BF9-1FD6D36E47FB";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <528A5CFC.1060706@redhat.com>
-Content-Type: text/plain; charset=windows-1252; format=flowed
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH 1/4] e2fsck: update quota accounting after directory
+ optimization
+Date: Mon, 1 Apr 2024 13:52:07 -0600
+In-Reply-To: <20240328172940.1609-2-luis.henriques@linux.dev>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org
+To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+References: <20240328172940.1609-1-luis.henriques@linux.dev>
+ <20240328172940.1609-2-luis.henriques@linux.dev>
+X-Mailer: Apple Mail (2.3273)
+
+
+--Apple-Mail=_A2302E43-3836-4935-8BF9-1FD6D36E47FB
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Mar 28, 2024, at 11:29 AM, Luis Henriques (SUSE) =
+<luis.henriques@linux.dev> wrote:
+>=20
+> In "Pass 3A: Optimizing directories", a directory may have it's size =
+reduced.
+> If that happens and quota is enabled in the filesystem, the quota =
+information
+> will be incorrect because it doesn't take the rehash into account.  =
+This issue
+> was detected by running fstest ext4/014.
+>=20
+> This patch simply updates the quota data accordingly, after the =
+directory is
+> written and it's size has been updated.
+>=20
+> Link: https://bugzilla.kernel.org/show_bug.cgi?id=3D218626
+> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+
+> ---
+> e2fsck/rehash.c | 27 +++++++++++++++++++++------
+> 1 file changed, 21 insertions(+), 6 deletions(-)
+>=20
+> diff --git a/e2fsck/rehash.c b/e2fsck/rehash.c
+> index c1da7d52724e..4847d172e5fe 100644
+> --- a/e2fsck/rehash.c
+> +++ b/e2fsck/rehash.c
+> @@ -987,14 +987,18 @@ errcode_t e2fsck_rehash_dir(e2fsck_t ctx, =
+ext2_ino_t ino,
+> {
+> 	ext2_filsys 		fs =3D ctx->fs;
+> 	errcode_t		retval;
+> -	struct ext2_inode 	inode;
+> +	struct ext2_inode_large	inode;
+> 	char			*dir_buf =3D 0;
+> 	struct fill_dir_struct	fd =3D { NULL, NULL, 0, 0, 0, NULL,
+> 				       0, 0, 0, 0, 0, 0 };
+> 	struct out_dir		outdir =3D { 0, 0, 0, 0 };
+> -	struct name_cmp_ctx name_cmp_ctx =3D {0, NULL};
+> +	struct name_cmp_ctx	name_cmp_ctx =3D {0, NULL};
+> +	__u64			osize;
+>=20
+> -	e2fsck_read_inode(ctx, ino, &inode, "rehash_dir");
+> +	e2fsck_read_inode_full(ctx, ino, EXT2_INODE(&inode),
+> +			       sizeof(inode), "rehash_dir");
+> +
+> +	osize =3D EXT2_I_SIZE(&inode);
+>=20
+> 	if (ext2fs_has_feature_inline_data(fs->super) &&
+> 	   (inode.i_flags & EXT4_INLINE_DATA_FL))
+> @@ -1013,7 +1017,7 @@ errcode_t e2fsck_rehash_dir(e2fsck_t ctx, =
+ext2_ino_t ino,
+> 	fd.ino =3D ino;
+> 	fd.ctx =3D ctx;
+> 	fd.buf =3D dir_buf;
+> -	fd.inode =3D &inode;
+> +	fd.inode =3D EXT2_INODE(&inode);
+> 	fd.dir =3D ino;
+> 	if (!ext2fs_has_feature_dir_index(fs->super) ||
+> 	    (inode.i_size / fs->blocksize) < 2)
+> @@ -1092,14 +1096,25 @@ resort:
+> 			goto errout;
+> 	}
+>=20
+> -	retval =3D write_directory(ctx, fs, &outdir, ino, &inode, =
+fd.compress);
+> +	retval =3D write_directory(ctx, fs, &outdir, ino, =
+EXT2_INODE(&inode),
+> +				 fd.compress);
+> 	if (retval)
+> 		goto errout;
+>=20
+> +	if ((osize > EXT2_I_SIZE(&inode)) &&
+> +	    (ino !=3D quota_type2inum(PRJQUOTA, fs->super)) &&
+> +	    (ino !=3D fs->super->s_orphan_file_inum) &&
+> +	    (ino =3D=3D EXT2_ROOT_INO || ino >=3D =
+EXT2_FIRST_INODE(ctx->fs->super)) &&
+> +	    !(inode.i_flags & EXT4_EA_INODE_FL)) {
+> +		quota_data_sub(ctx->qctx, &inode,
+> +			       ino, osize - EXT2_I_SIZE(&inode));
+> +	}
+> +
+> 	if (ctx->options & E2F_OPT_CONVERT_BMAP)
+> 		retval =3D e2fsck_rebuild_extents_later(ctx, ino);
+> 	else
+> -		retval =3D e2fsck_check_rebuild_extents(ctx, ino, =
+&inode, pctx);
+> +		retval =3D e2fsck_check_rebuild_extents(ctx, ino,
+> +						      =
+EXT2_INODE(&inode), pctx);
+> errout:
+> 	ext2fs_free_mem(&dir_buf);
+> 	ext2fs_free_mem(&fd.harray);
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_A2302E43-3836-4935-8BF9-1FD6D36E47FB
 Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
 
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
 
-It took long enough to remove these options - I finally ran into it in 6.4.0 (still was working in the previous kernel I was using: 5.14).  If I had not remembered that they were going to be removed someday, I would have never figured out how to fix the updated system so it would boot properly (no error messages that I could see mentioned acls nor user_xattr options).
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYLEGgACgkQcqXauRfM
+H+Av/xAAq4camu7y1nOaxY114JfnXcgVw5Yw8IdakEkMGfFZHmy3rHkMv3Xbye1V
+Fx/A2gbC31nOxG3a8Ck+nV73Kublmzl95dag1tnMSmr0AqTdzlTbqymHv5stjELv
+tSIF3wvWfmTzXAVGFx19JNTlbErZ2x0ctQpZi15CV+sQ6lI1hZgHMsC/JSLQKirL
+zdQH5EpUiUR1/jIEUi1YcxqbkR2J+94TBe26ZR9KyD/p/bp9dJEXMKA7e35+C/CZ
+SsHE7+JiCRJvVeRvEMEfwKHZhSNd6ztdQ5mp5vcTLinsmrAqc5jFBLUhJS6iKUcf
+kD3zBGzlsUyH4pqGmWCNnlJL5k3BGIW/hlqFJMyroLWGFXAPQ4OlaVux5qtv+xUI
+UAWie7nxW9t4O0843DLYzVSwrpnN3wWrh99aVa7otMBvwEKZj2H9BJFRYc4YLPdu
+hIKU9egix7Qu4TmIsJalB4/RH0jl3m77Y6tpmiIwl3KFC158tqZNqsIEKCXoG7Iv
+TxIfJpUNPu4wEr8r8xPvWutZGHXIP5NVrOztdmU0WPFc2yt5cqLKxxabDcQ/NGil
+8TcBg4xfa/E7s0MuNmQgNdyB9QKJM0Rzm0HctQMdZQVoULezOYyz+rzQRmHLhPg9
+oNmtUwa+B4DsRU34oPRGyEXUrKnSL/SenplVQjJZJFIePu8wO+4=
+=HsB4
+-----END PGP SIGNATURE-----
 
-Also, the man page for ext(2,3,4) still insists these options are valid.
-The man page lists itself as:
-E2fsprogs version 1.47.0                    February 2023                                    EXT4(5)
-
-The options themselves should be recognized (but ignored) so they are not a serious error (they should report a WARNING when used - both noacl and acl options should report a WARNING that they are ignored, and that acl is assumed).
-This should be the case with ANY option that is no longer supported (warning, but ignored).
-
-Additionally, mount should report their state when you query the mount options (on any FS that always supports acl and user_xattr),
-particularly when one uses: mount -v
-Besides helping the person who is trying to turn them off notice that they are still on, it will also let people who expect them to be on verify that they are on.
-
-Personally, I still would want the option of mounting a local filesystem noacl (which I can effectively do with ZFS).
-And I have seen many posts online of others who want that option.  But I understand if it is to complicated to give admins a way to turn it on and off.
-
-
-quote from the ext4 man page:
-Mount options for ext4
-        The ext4 file system is an advanced level of the ext3 file system which  incorporates  scala-
-        bility and reliability enhancements for supporting large file system.
-
-        The  options  journal_dev,  journal_path,  norecovery, noload, data, commit, orlov, oldalloc,
-        [no]user_xattr, [no]acl, bsddf, minixdf, debug, errors, data_err, grpid, bsdgroups,  nogrpid,
-        sysvgroups,  resgid,  resuid, sb, quota, noquota, nouid32, grpquota, usrquota, usrjquota, gr-
-        pjquota, and jqfmt are backwardly compatible with ext3 or ext2.
-
-
-
-Note about paulfm@me.umn.edu:  paulfm@me.umn.edu went away as a valid email address, several years ago.
-please contact me at the email this was sent from (if there are any old questions that bounced, you can send them to me).
-
-
-On 2013-11-18 12:31 PM, Eric Sandeen wrote:
-> On 11/18/13, 8:26 AM, Paul FM wrote:
->>
->> Yes - I need noacl and nouser_xattr
->>
->> How about documenting your intent to remove them in the man pages.
->>
->> acl support and user_xattr support need to be off on the / and /usr
->> filesystems to simplify security. Actually I want a way to turn off
->> ALL extended attribute support on any filesystem.  How about noxattr
->> (which would turn off ALL extended attribute support including acls).
->> I also use nosuid on filesystems that shouldn't have any suid files.
->>
->> This is to follow the security principal - "If you aren't using it
->> and don't need it - turn it off".
-> 
-> FWIW, it still can be disabled at build time via CONFIG_EXT3_FS_POSIX_ACL
-> 
-> But if you are using a distro kernel that turns that on, I see
-> your point about noacl.
-> 
-> However, I'm not sure how nouser_xattr comes into the argument?
-> xattrs by themselves are just metadata; they don't impact security
-> control unless they are a special kind of xattrs (i.e. acls).
-> 
-> Thanks,
-> -Eric
-> 
->> The simple Posix/Unix permissions are more than enough security
->> control in almost every situation I have run into (only wish I could
->> use them in Windows).
->>
->> Having worked extensively with ACLS on Windows (and some older Main
->> Frame OSes) - I note that ACL's add a level of complexity to security
->> that actually makes for less security.  I see the need to support
->> them in Unix/Linux - but they should be OFF unless someone
->> specifically wants to use them (at least don't make them hard to turn
->> off).
->>
->> Just try auditing the security of a windows filesystem if you don't
->> think ACL's add extreme complexity (I gave up - I just forcibily set
->> all the ACL's myself by script using the unix Owner,Group,Other
->> concepts as a model to simplify what I am setting).
->>
->>
->>
->>
-> 
-> 
-
--- 
---------------------------------------------------------
-The views and opinions expressed above are strictly
-those of the author(s).  The content of this message has
-not been reviewed nor approved by any entity whatsoever.
---------------------------------------------------------
-Paul FM         Info: http://paulfm.com/~paulfm/
---------------------------------------------------------
+--Apple-Mail=_A2302E43-3836-4935-8BF9-1FD6D36E47FB--
 
