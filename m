@@ -1,165 +1,90 @@
-Return-Path: <linux-ext4+bounces-1805-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1806-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6C2389386D
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 08:34:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CB13893C32
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 16:24:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26DD4B212FC
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 06:34:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D9061C20C29
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 14:24:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 706F59468;
-	Mon,  1 Apr 2024 06:33:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7528641740;
+	Mon,  1 Apr 2024 14:24:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="W6LUUvI+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8761113;
-	Mon,  1 Apr 2024 06:33:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABB023FBBD
+	for <linux-ext4@vger.kernel.org>; Mon,  1 Apr 2024 14:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711953218; cv=none; b=Vgr2kdJYcewgfFTCqIjKa+xDrH6Qjim4UvTwP/V3CxvGNs10JqQjub5IWk0hbglvrb3f6VjPH1ltNcrIW/CtB6RruSJBysxtxaPRC5v8L0RFmP6NunTWX2siBA6luqJMg3Zp+VODu6BDn7EAZuC+BHAsI0BjgwzVnbSluqfMRIg=
+	t=1711981439; cv=none; b=Vbcug3xfkhXL0WVCjF/N2dtJmO66tXBlufsY1t1MQ+TfNWaqr512kQTpOCZPcQpAYcI4K2jqa49sIpB1J6uelN3t1rXHVPwkvALAyIPz12c0eFwuTBOUUmmN92eT8Wd6+8jlUuJI3qobilRluHr2QfG6GEZCdWjWwAHKHiDXpgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711953218; c=relaxed/simple;
-	bh=PNG4VBts3Kg/mNdlbfPTrsTGd5iVBdJf5h8l6k0u7bw=;
-	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=nHIGgNC49rhWKbvwH28jU0VT7o+reFvF8XbjkhJPJxp+FvunYEUxxYqsrzHcivOCWycKSzinqYhy5uk30VhLhunv8fyH5MZZuLsEct38QhXzdgVQTkiBKpSL2oyvTUBDS3x04oVlmmKKgyYbn7j3teLB14QTt9Z5heNoNX//4As=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.194])
-	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4V7Lk72Wzpz1QBw6;
-	Mon,  1 Apr 2024 14:30:55 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id B21E41402E2;
-	Mon,  1 Apr 2024 14:33:26 +0800 (CST)
-Received: from [10.174.178.185] (10.174.178.185) by
- canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 1 Apr 2024 14:33:26 +0800
-Subject: Re: [PATCH] jbd2: use shrink_type type instead of bool type for
- __jbd2_journal_clean_checkpoint_list()
-To: "Darrick J. Wong" <djwong@kernel.org>
-References: <20240401011614.3650958-1-yebin10@huawei.com>
- <20240401024417.GA739535@frogsfrogsfrogs>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <jack@suse.cz>
-From: "yebin (H)" <yebin10@huawei.com>
-Message-ID: <660A5535.7080005@huawei.com>
-Date: Mon, 1 Apr 2024 14:33:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
- Thunderbird/38.1.0
+	s=arc-20240116; t=1711981439; c=relaxed/simple;
+	bh=GYqoCIrUSMqT/WrYlqYEW8WIHKXahVEyEOqT1UBvxK8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=OCYHjrnLezSfANr28qwRSHjn8M4oQRJP9NY/ZFUBzO8V68zOQ5/SNgwSAL4tWEQz3z66iSLxVyljMdFL0E1NqofijdlAOQ/LXdfHheVLMpOmSP8sqDqa8Djzr2x28ViXdxksElk4fjEMdhhOEV5WW/NcHBZS9nKFs/74hQEwNtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=W6LUUvI+; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1711981434;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1aQUhHQQfMXDd8XlpsAJbPmuvmkL70g2nOgoG1dTV7Q=;
+	b=W6LUUvI+oi40lw+OPN8G7sKtP8W9p2tAdlMgddaNEeCX4JLFCLYokDk9CJfarlt0gwsfHO
+	AW2NZmYzbeQif1A8KyVOHH2Y8XuiIRqUsFSb/z/dVqUSjyoVbuihcLxCs5sJRjgnOpS09w
+	45j9MRZsXqhnBgTNEYwiu1rAtMP/M/A=
+From: Luis Henriques <luis.henriques@linux.dev>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Wang Jianjian <wangjianjian0@foxmail.com>,  Ext4 Developers List
+ <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 2/2] ext4: Add correct group descriptors and reserved
+ GDT blocks to system zone
+In-Reply-To: <20230817170557.GA3435781@mit.edu> (Theodore Ts'o's message of
+	"Thu, 17 Aug 2023 13:05:57 -0400")
+References: <tencent_D744D1450CC169AEA77FCF0A64719909ED05@qq.com>
+	<20230817170557.GA3435781@mit.edu>
+Date: Mon, 01 Apr 2024 15:23:52 +0100
+Message-ID: <87ttkl6u13.fsf@brahms.olymp>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240401024417.GA739535@frogsfrogsfrogs>
-Content-Type: text/plain; charset="windows-1252"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- canpemm500010.china.huawei.com (7.192.105.118)
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
+"Theodore Ts'o" <tytso@mit.edu> writes:
 
-
-On 2024/4/1 10:44, Darrick J. Wong wrote:
-> On Mon, Apr 01, 2024 at 09:16:14AM +0800, Ye Bin wrote:
->> "enum shrink_type" can clearly express the meaning of the parameter of
->> __jbd2_journal_clean_checkpoint_list(), and there is no need to use the
->> bool type.
->>
->> Signed-off-by: Ye Bin <yebin10@huawei.com>
->> ---
->>   fs/jbd2/checkpoint.c | 9 +++------
->>   fs/jbd2/commit.c     | 2 +-
->>   include/linux/jbd2.h | 4 +++-
->>   3 files changed, 7 insertions(+), 8 deletions(-)
->>
->> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
->> index 1c97e64c4784..d6e8b80a4078 100644
->> --- a/fs/jbd2/checkpoint.c
->> +++ b/fs/jbd2/checkpoint.c
->> @@ -337,8 +337,6 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
->>   
->>   /* Checkpoint list management */
->>   
->> -enum shrink_type {SHRINK_DESTROY, SHRINK_BUSY_STOP, SHRINK_BUSY_SKIP};
->> -
->>   /*
->>    * journal_shrink_one_cp_list
->>    *
->> @@ -476,17 +474,16 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
->>    *
->>    * Called with j_list_lock held.
->>    */
->> -void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy)
->> +void __jbd2_journal_clean_checkpoint_list(journal_t *journal,
->> +					  enum shrink_type type)
->>   {
->>   	transaction_t *transaction, *last_transaction, *next_transaction;
->> -	enum shrink_type type;
->>   	bool released;
->>   
->>   	transaction = journal->j_checkpoint_transactions;
->>   	if (!transaction)
->>   		return;
->>   
->> -	type = destroy ? SHRINK_DESTROY : SHRINK_BUSY_STOP;
-> What is supposed to happen if the caller passes in SHRINK_BUSY_SKIP?
+> On Thu, Aug 03, 2023 at 12:28:40AM +0800, Wang Jianjian wrote:
+>> When setup_system_zone, flex_bg is not initialzied so it is always 1.
+>> ext4_num_base_meta_blocks() returns the meta blocks in this group
+>> including reserved GDT blocks, so let's use this helper.
+>> 
+>> Signed-off-by: Wang Jianjian <wangjianjian0@foxmail.com>
 >
-> --D
+> Thanks for the patch.  I ended up collapsing the two patches into a
+> single one, and then fixed up some checkpatch errors.
 
-If SHRING_BUSY_SKIP is passed, the buffers in use will be skipped during traversal
-and release.Currently, SHRINKING_BUSY_SKIP is used in the memory reclamation process.
+Sorry for revisiting this old thread, but it looks like these patches
+(commit 68228da51c9a "ext4: add correct group descriptors and reserved GDT
+blocks to system zone") broke fstest ext4/059.
 
->>   	last_transaction = transaction->t_cpprev;
->>   	next_transaction = transaction;
->>   	do {
->> @@ -527,7 +524,7 @@ void jbd2_journal_destroy_checkpoint(journal_t *journal)
->>   			spin_unlock(&journal->j_list_lock);
->>   			break;
->>   		}
->> -		__jbd2_journal_clean_checkpoint_list(journal, true);
->> +		__jbd2_journal_clean_checkpoint_list(journal, SHRINK_DESTROY);
->>   		spin_unlock(&journal->j_list_lock);
->>   		cond_resched();
->>   	}
->> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
->> index 5e122586e06e..78ebd04ac97d 100644
->> --- a/fs/jbd2/commit.c
->> +++ b/fs/jbd2/commit.c
->> @@ -501,7 +501,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->>   	 * frees some memory
->>   	 */
->>   	spin_lock(&journal->j_list_lock);
->> -	__jbd2_journal_clean_checkpoint_list(journal, false);
->> +	__jbd2_journal_clean_checkpoint_list(journal, SHRINK_BUSY_STOP);
->>   	spin_unlock(&journal->j_list_lock);
->>   
->>   	jbd2_debug(3, "JBD2: commit phase 1\n");
->> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
->> index 971f3e826e15..58a961999d70 100644
->> --- a/include/linux/jbd2.h
->> +++ b/include/linux/jbd2.h
->> @@ -1434,7 +1434,9 @@ void jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block);
->>   extern void jbd2_journal_commit_transaction(journal_t *);
->>   
->>   /* Checkpoint list management */
->> -void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy);
->> +enum shrink_type {SHRINK_DESTROY, SHRINK_BUSY_STOP, SHRINK_BUSY_SKIP};
->> +
->> +void __jbd2_journal_clean_checkpoint_list(journal_t *journal, enum shrink_type type);
->>   unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal, unsigned long *nr_to_scan);
->>   int __jbd2_journal_remove_checkpoint(struct journal_head *);
->>   int jbd2_journal_try_remove_checkpoint(struct journal_head *jh);
->> -- 
->> 2.31.1
->>
->>
-> .
->
+A (very!) quick look seems to show that it's related with the very fact
+that sbi->s_es->s_reserved_gdt_blocks are now taken into account to
+compute the number of blocks (which is the point of the patch, of course).
+Maybe the test needs to be fixed, as it messes up with the GDT reserved
+blocks...?
 
+Cheers,
+-- 
+Luis
 
