@@ -1,173 +1,144 @@
-Return-Path: <linux-ext4+bounces-1801-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1802-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C19B8931D3
-	for <lists+linux-ext4@lfdr.de>; Sun, 31 Mar 2024 16:03:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B35338936AD
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 03:15:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 92A7C1C21560
-	for <lists+linux-ext4@lfdr.de>; Sun, 31 Mar 2024 14:03:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 16DC7281E60
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Apr 2024 01:15:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCD70144D2A;
-	Sun, 31 Mar 2024 14:03:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FD4510F1;
+	Mon,  1 Apr 2024 01:15:29 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBEDF144D23
-	for <linux-ext4@vger.kernel.org>; Sun, 31 Mar 2024 14:03:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D02C6623;
+	Mon,  1 Apr 2024 01:15:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1711893818; cv=none; b=lEyQL/IS4gm1hHtDN2vZttx/MfUQLddoucKeJrLDap2SFzrpTk5B72srPjVdyctVczDZ1YWFRorapudLMgWf/ucoU8Qw3UV4gINvKQe8y0nJsShXNuLxOvYLpjq5DCDLjpl+H1toN+NErbn/svcW/MmMeFSRYPlTJ318S58N6Xo=
+	t=1711934128; cv=none; b=TBCKmgTOtL/Nh6Dpd3IQZBjeN4hyImksGMT5SkVmIP9N7QnLwmMHTtkGg1oowIa2qHGDWPBZudAyENmaamKf66p+dnKAZBx/6OHkQgRF16YbFX3ViIyu+u9GOjYyyESa/Dwqe2xqUHONs8KeOCAQW92m9O5tAnsUMOWi0b0uLK4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1711893818; c=relaxed/simple;
-	bh=wUSW9LqsrSAUirjrhNY5njzAOVEfjesshfnxele6fVo=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=gWHLow8DND6aeSrWqshIphFDwszIzM/wDvSzdSPOpB6zjfXDyfjE7gSjPGooNinUgs7mI2eI0+bzlXK22Yex/92rHD5EfKSxhSxIRe6uphFanfjaNlz6K4+BGx8CnApwlSOi/ebZZ807dwcyfYTrZws2VqzZLupOuFxxOdM++x4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cf179c3da4so373539439f.2
-        for <linux-ext4@vger.kernel.org>; Sun, 31 Mar 2024 07:03:36 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1711893816; x=1712498616;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YzeZFeJOoWqOq3H/iqGThuQgA4nu8lolb31b+7mSRYE=;
-        b=OyI85YKJdRDs2XJBmNz8h8LWtsKIxxfFmMS3fpd7I+yUCEuGJgDzHAK+cNSSpJs1HI
-         HMBCVYEu0b2wBKWwi0NcGJC84a94E0ENgu6R5+Qi+HZlNvFCnXrawQsk7SkMkAnLehlf
-         IAVaQt2Aj2vFqSDjRNezG30N9oed+54M6FQHZ23+O6QqkZWuRlaHr4SUGETsCgV6clHW
-         kGGTISxELXddFAQM8zwxpn1W5lG53XV0sfcQWpEvqN0iZMfOsjryn1FKV4E7AcWuxGhK
-         FBCczCVtH8H81ZLh9icVY5VhcGLB2VSQTu5256oTdsQCRJK1o3Y1QOPHx1ORnHPobipo
-         ZLXA==
-X-Forwarded-Encrypted: i=1; AJvYcCWSZyN607SrPnqgkrn9qbYrYYMJ3m/wJZ1Hw7pUXVFnpbb7BXZnYb7jaMztPd9u5wj0vtk3jHYtsYWmwqEWbiW5AeJaJPVtdbEWfg==
-X-Gm-Message-State: AOJu0YyfsWn4jiB3/bP0bG0jUd11ceBYwvf0XQ3/fLF/2tzdOV4vYkJ7
-	4XQDLnGzM5YOkMAL2XQQZfwBjoZCqF3hMkk04APFAWZwhluTfiY5FyquO+E/QMwkwgpX1+zrNTu
-	zeGQ2S2pEOQmVQBJeXj2JuCDwJL3VFufZMXN0b2wRWSxdlL7LbJ2d6Xg=
-X-Google-Smtp-Source: AGHT+IGqn+NPemPvC+MYYH5SobrE+soYgZw4OQfVWD89IxCSHPuK1TcUjPFTYZqB4aAD0fQEkC7FzvqKqzri7lcDPCu+WviptI9e
+	s=arc-20240116; t=1711934128; c=relaxed/simple;
+	bh=fgQe0/aBIES9eFP65AXme2aY3ok9U8Xyc+o1r2tMMmE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=NgDnfKZWmKJeU6rMO+gEo95+SUR+bHuIVPAJzLqTmJ0AJIk8kvkfenFLyLexLC6KdfjnRlJU6kv1vUcY5dd1vTXE/P489M2nQ71EU0lvTq1QuxZSaqYpinoUCV1i40DopAHXOUDJ7KTPSQiYgOORwueHPAwteiPtCKL5CxaBQbc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.44])
+	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4V7Chx0Sd7z1wp74;
+	Mon,  1 Apr 2024 09:14:25 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id 62B001402D0;
+	Mon,  1 Apr 2024 09:15:16 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 1 Apr
+ 2024 09:15:15 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <jack@suse.cz>, Ye Bin
+	<yebin10@huawei.com>
+Subject: [PATCH] jbd2: use shrink_type type instead of bool type for __jbd2_journal_clean_checkpoint_list()
+Date: Mon, 1 Apr 2024 09:16:14 +0800
+Message-ID: <20240401011614.3650958-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:340f:b0:7cc:66b1:fa95 with SMTP id
- n15-20020a056602340f00b007cc66b1fa95mr162643ioz.3.1711893816083; Sun, 31 Mar
- 2024 07:03:36 -0700 (PDT)
-Date: Sun, 31 Mar 2024 07:03:36 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000cd1b930614f5568f@google.com>
-Subject: [syzbot] [ext4?] WARNING: locking bug in ext4_xattr_inode_iget (2)
-From: syzbot <syzbot+c2275f11e063b8f99825@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-Hello,
+"enum shrink_type" can clearly express the meaning of the parameter of
+__jbd2_journal_clean_checkpoint_list(), and there is no need to use the
+bool type.
 
-syzbot found the following issue on:
-
-HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=10a6d421180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
-dashboard link: https://syzkaller.appspot.com/bug?extid=c2275f11e063b8f99825
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=155b2029180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=129bead9180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/8e035569ef03/mount_1.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c2275f11e063b8f99825@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-Looking for class "&ea_inode->i_rwsem" with key ext4_fs_type, but found a different class "&sb->s_type->i_mutex_key" with the same key
-WARNING: CPU: 0 PID: 9266 at kernel/locking/lockdep.c:935 look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:932
-Modules linked in:
-CPU: 0 PID: 9266 Comm: syz-executor362 Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-pstate: 604000c5 (nZCv daIF +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:932
-lr : look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:932
-sp : ffff80009cd170e0
-x29: ffff80009cd170e0 x28: dfff800000000000 x27: ffff7000139a2ea0
-x26: ffff80009341f300 x25: ffff80009341f000 x24: 0000000000000000
-x23: ffff7000139a2e58 x22: 0000000000000000 x21: ffff80008f027b98
-x20: ffff0000de282200 x19: ffff800092024890 x18: 1ffff000139a2e5c
-x17: 0000000000000000 x16: ffff80008ad6b09c x15: 0000000000000001
-x14: 1fffe00036800002 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000002 x10: 0000000000ff0100 x9 : a911bda9a52fff00
-x8 : a911bda9a52fff00 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff80009cd169d8 x4 : ffff80008ed822c0 x3 : ffff8000805ba130
-x2 : 0000000000000001 x1 : 0000000100000000 x0 : 0000000000000000
-Call trace:
- look_up_lock_class+0xec/0x158 kernel/locking/lockdep.c:932
- register_lock_class+0x8c/0x6ac kernel/locking/lockdep.c:1284
- __lock_acquire+0x184/0x763c kernel/locking/lockdep.c:5014
- lock_acquire+0x23c/0x71c kernel/locking/lockdep.c:5754
- down_write+0x50/0xc0 kernel/locking/rwsem.c:1579
- inode_lock include/linux/fs.h:804 [inline]
- ext4_xattr_inode_iget+0x344/0x4dc fs/ext4/xattr.c:461
- ext4_xattr_inode_get+0x12c/0x37c fs/ext4/xattr.c:535
- ext4_xattr_block_get fs/ext4/xattr.c:613 [inline]
- ext4_xattr_get+0x5d0/0x6f4 fs/ext4/xattr.c:714
- ext4_xattr_trusted_get+0x40/0x54 fs/ext4/xattr_trusted.c:27
- __vfs_getxattr+0x394/0x3c0 fs/xattr.c:424
- vfs_getxattr+0x268/0x2c4 fs/xattr.c:457
- do_getxattr+0x1e4/0x480 fs/xattr.c:739
- getxattr fs/xattr.c:772 [inline]
- path_getxattr+0x29c/0x388 fs/xattr.c:788
- __do_sys_lgetxattr fs/xattr.c:806 [inline]
- __se_sys_lgetxattr fs/xattr.c:803 [inline]
- __arm64_sys_lgetxattr+0xa0/0xb8 fs/xattr.c:803
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 57
-hardirqs last  enabled at (57): [<ffff8000809fe3d0>] kasan_quarantine_put+0x1a0/0x1c8 mm/kasan/quarantine.c:234
-hardirqs last disabled at (56): [<ffff8000809fe268>] kasan_quarantine_put+0x38/0x1c8 mm/kasan/quarantine.c:207
-softirqs last  enabled at (8): [<ffff80008003165c>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (6): [<ffff800080031628>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-
-======================================================
-
-
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/jbd2/checkpoint.c | 9 +++------
+ fs/jbd2/commit.c     | 2 +-
+ include/linux/jbd2.h | 4 +++-
+ 3 files changed, 7 insertions(+), 8 deletions(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
+index 1c97e64c4784..d6e8b80a4078 100644
+--- a/fs/jbd2/checkpoint.c
++++ b/fs/jbd2/checkpoint.c
+@@ -337,8 +337,6 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
+ 
+ /* Checkpoint list management */
+ 
+-enum shrink_type {SHRINK_DESTROY, SHRINK_BUSY_STOP, SHRINK_BUSY_SKIP};
+-
+ /*
+  * journal_shrink_one_cp_list
+  *
+@@ -476,17 +474,16 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+  *
+  * Called with j_list_lock held.
+  */
+-void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy)
++void __jbd2_journal_clean_checkpoint_list(journal_t *journal,
++					  enum shrink_type type)
+ {
+ 	transaction_t *transaction, *last_transaction, *next_transaction;
+-	enum shrink_type type;
+ 	bool released;
+ 
+ 	transaction = journal->j_checkpoint_transactions;
+ 	if (!transaction)
+ 		return;
+ 
+-	type = destroy ? SHRINK_DESTROY : SHRINK_BUSY_STOP;
+ 	last_transaction = transaction->t_cpprev;
+ 	next_transaction = transaction;
+ 	do {
+@@ -527,7 +524,7 @@ void jbd2_journal_destroy_checkpoint(journal_t *journal)
+ 			spin_unlock(&journal->j_list_lock);
+ 			break;
+ 		}
+-		__jbd2_journal_clean_checkpoint_list(journal, true);
++		__jbd2_journal_clean_checkpoint_list(journal, SHRINK_DESTROY);
+ 		spin_unlock(&journal->j_list_lock);
+ 		cond_resched();
+ 	}
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 5e122586e06e..78ebd04ac97d 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -501,7 +501,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 	 * frees some memory
+ 	 */
+ 	spin_lock(&journal->j_list_lock);
+-	__jbd2_journal_clean_checkpoint_list(journal, false);
++	__jbd2_journal_clean_checkpoint_list(journal, SHRINK_BUSY_STOP);
+ 	spin_unlock(&journal->j_list_lock);
+ 
+ 	jbd2_debug(3, "JBD2: commit phase 1\n");
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 971f3e826e15..58a961999d70 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1434,7 +1434,9 @@ void jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block);
+ extern void jbd2_journal_commit_transaction(journal_t *);
+ 
+ /* Checkpoint list management */
+-void __jbd2_journal_clean_checkpoint_list(journal_t *journal, bool destroy);
++enum shrink_type {SHRINK_DESTROY, SHRINK_BUSY_STOP, SHRINK_BUSY_SKIP};
++
++void __jbd2_journal_clean_checkpoint_list(journal_t *journal, enum shrink_type type);
+ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal, unsigned long *nr_to_scan);
+ int __jbd2_journal_remove_checkpoint(struct journal_head *);
+ int jbd2_journal_try_remove_checkpoint(struct journal_head *jh);
+-- 
+2.31.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
