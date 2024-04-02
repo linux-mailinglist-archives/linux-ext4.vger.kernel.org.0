@@ -1,114 +1,156 @@
-Return-Path: <linux-ext4+bounces-1824-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1825-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98A82895672
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Apr 2024 16:17:24 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 854A289589B
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Apr 2024 17:49:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 536AF283331
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Apr 2024 14:17:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F6A928C850
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Apr 2024 15:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 141C48615C;
-	Tue,  2 Apr 2024 14:17:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECE5C1332A1;
+	Tue,  2 Apr 2024 15:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ENyzKiD1"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PI5xi3Zy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-174.mta1.migadu.com (out-174.mta1.migadu.com [95.215.58.174])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 380EF80BEE
-	for <linux-ext4@vger.kernel.org>; Tue,  2 Apr 2024 14:17:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8340C131751;
+	Tue,  2 Apr 2024 15:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712067439; cv=none; b=N3U/d8rdEsdbO9vTzJK8y0xgfVuiKScmvRwqNy2M0/G7C8jvscMp1Bm+h3By1NXdK5TknC5A/lhwrhddpdb3U42Do1Oz5fR4F0hdEDX3tUUU8u1A7OCOurUEreBGpfEKitR/n7L36yXQnlqeX6rPLFKXum1Ih70yxXkZyJTrtC4=
+	t=1712072932; cv=none; b=ak8xXkgXcZ/FTMVu1OXoCc9x1oRXLO2oA6utX9s4XlL0Awwy0f+iJaeraVH+4u+dMt7QHOxvFc630OVMfA/O4Vqv6oGLNYKH4Yv2LeR68xMaAy+UYwq1k5TZO14QBYAkGFAkvYR2MnrI6DDR9gpgMpKnzg86EmG/H2z5CWJoVzA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712067439; c=relaxed/simple;
-	bh=qdU1LPMTceUbpTDIyrS+WI7iP0WL7bUg/Qbw9gO2TAY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Qzobva9CMz6SIJOy5BuLl45cw7sUs8cyxJeQtCoGlucVJqwa0iHYBbt9kaYm4qMx1Dp/jPEOafbF8HwHD6N6Q2JQdrVRKBeH2AYvkhE3yjn9txYbslPRbOvxnHrRscDIWdrPKhcac6q5N/4reMm2tt2boguHal0vFXgDKK1FvLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ENyzKiD1; arc=none smtp.client-ip=95.215.58.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1712067434;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EDKfFI/MK59Eu0ZaaJodaZdy/viIMVvvTLPpgbuTNEQ=;
-	b=ENyzKiD1nYXvLZiEOspnzvQ9JhGrWP5bfuVM2oKEpGg4pNvMIaaocTXhw4rnnKBxGF7lSg
-	yPb4+i3877lztLgK3rr0fQmi9zN2VdjcqrQp/SbS0dfpe/JS/Z5jWpXWYOQe2J5f+k0ULj
-	2yYssK48KQlIJ6t1LGH6ISmAAYQjhso=
-From: Luis Henriques <luis.henriques@linux.dev>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: Theodore Ts'o <tytso@mit.edu>,  linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/4] tests: new test to check quota after directory
- optimization
-In-Reply-To: <D4FC7B67-F06B-493C-BCB7-29BD4A7D255F@dilger.ca> (Andreas
-	Dilger's message of "Mon, 1 Apr 2024 15:01:33 -0600")
-References: <20240328172940.1609-1-luis.henriques@linux.dev>
-	<20240328172940.1609-4-luis.henriques@linux.dev>
-	<D4FC7B67-F06B-493C-BCB7-29BD4A7D255F@dilger.ca>
-Date: Tue, 02 Apr 2024 15:17:10 +0100
-Message-ID: <87il0zhms9.fsf@brahms.olymp>
+	s=arc-20240116; t=1712072932; c=relaxed/simple;
+	bh=3Q4sw2WXlvOL56uRd8hcDkbPNnR7p5wFvWwXppPSe2U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=b+Kc+m5Awuz4DZD5oX/vW9MOTHcGbDc4LDtRXzcI2AE1SyIrYHqp2ZW5umNe9Ps0U2l9c8MZsC8DEdNKH3Bu2xiv6N6J3PaufLYvFIiqqrUQET2gYygHQJJ7fnWSVBXHVQkPGrXrBvrMfLVoozCXOnazxpZrAWBAQVQGWYnEBvc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PI5xi3Zy; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712072928;
+	bh=3Q4sw2WXlvOL56uRd8hcDkbPNnR7p5wFvWwXppPSe2U=;
+	h=From:To:Cc:Subject:Date:From;
+	b=PI5xi3ZycfvN4c9ep2fl6zXkWItHP4JowiwSlBcekvXuv+387JU5aaViZoOZiQxcY
+	 KXPq0fzMtqwFNcYQdmx41zEs70JREAPN9TUs3o5ozIszcmS6Bptwi9z1Lu3ATVk4B6
+	 MgqN8T5PoAbXhyNwEEjSucXtOtesYNy4HFvq25d1k33pXfm+4xTfeGVjIjdIDj/FHL
+	 jFq1RxQ8Ai4ME2kV0BdRjMYOj+NTmtDibf+zOL6QI0UMXJKGa4ZvIrlqZbMOdTWulW
+	 D3vawV71c3/oRq6OGFlpOr5rS9fuXPBvGiXFyWz/8IMW6jovaYklSo9TN83IgZW1hR
+	 8ukjO3YmuytlQ==
+Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 8ACDD3780C39;
+	Tue,  2 Apr 2024 15:48:47 +0000 (UTC)
+From: Eugen Hristev <eugen.hristev@collabora.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel@collabora.com,
+	eugen.hristev@collabora.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	krisman@suse.de
+Subject: [PATCH v15 0/9] Cache insensitive cleanup for ext4/f2fs
+Date: Tue,  2 Apr 2024 18:48:33 +0300
+Message-Id: <20240402154842.508032-1-eugen.hristev@collabora.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-Andreas Dilger <adilger@dilger.ca> writes:
+Hello,
 
-> On Mar 28, 2024, at 11:29 AM, Luis Henriques (SUSE) <luis.henriques@linux.dev> wrote:
->> 
->> This new test validates e2fsck by verifying that quota data is updated
->> after a directory optimization is performed.  It mimics fstest ext4/014
->> by including a filesystem image where a file is created inside a new
->> directory on the filesystem root and then root block 0 is wiped:
->> 
->>  # debugfs -w -R 'zap -f / 0' f_testnew/image
->
-> I appreciate the test case, and I hate to be difficult, but IMHO this
-> test case is not ideal.  It is *still* reporting quota inconsistency
-> at the end, so it is difficult to see whether the patch is actually
-> improving anything or not?
+I am trying to respin the series here :
+https://www.spinics.net/lists/linux-ext4/msg85081.html
 
-Maybe I misunderstood how the tests really work.  Here's what I
-understood:
+I resent some of the v9 patches and got some reviews from Gabriel,
+I did changes as requested and here is v15.
 
-e2fsck is run twice.  During the first run the filesystem is recovered.
-And that's the output of expect.1 -- it reports the quota inconsistency
-because quota data needs to be fixed.  And it is fixed in that first run,
-where e2fsck returns '1' ("File system errors corrected").  The second
-time e2fsck is run (expect.2) it will do nothing, and '0' is returned
-because the filesystem hasn't been modified.
+Changes in v15:
+- fix wrong check `ret<0` in 7/9
+- fix memleak reintroduced in 8/9
 
-Without the first patch in this series the second time e2fsck is executed
-it will still fail and report inconsistencies because the first time the
-fix wasn't correct.  (And after this second time the filesystem should
-actually be corrected, a third run of e2fsck should return '0'.)
+Changes in v14:
+- fix wrong kfree unchecked call
+- changed the return code in 3/8
 
-> This is because the image is testing a number of different things at
-> once (repairing the root inode, superblock, etc).  IMHO, it would be
-> better to have this test be specific to the directory shrink issue
-> (e.g. a large directory is created, many files are deleted from it,
-> then optimized), and ideally have a non-root user, group, and project
-> involved so that it is verifying that all of the quotas are updated.
+Changes in v13:
+- removed stray wrong line in 2/8
+- removed old R-b as it's too long since they were given
+- removed check for null buff in 2/8
+- added new patch `f2fs: Log error when lookup of encoded dentry fails` as suggested
+- rebased on unicode.git for-next branch
 
-Right, that makes sense.  However, I'm failing to narrow the test to that
-specific case.  I've tried to create a bunch of files in a directory and
-used the debugfs 'kill_file' to remove files from that directory.
-However, in that case e2fsck isn't reporting quota inconsistencies as I
-would expect.  Which may hint at yet more quota-related bugs.  But I'm
-still looking.
+Changes in v12:
+- revert to v10 comparison with propagating the error code from utf comparison
 
-Cheers,
+Changes in v11:
+- revert to the original v9 implementation for the comparison helper.
+
+Changes in v10:
+- reworked a bit the comparison helper to improve performance by
+first performing the exact lookup.
+
+
+* Original commit letter
+
+The case-insensitive implementations in f2fs and ext4 have quite a bit
+of duplicated code.  This series simplifies the ext4 version, with the
+goal of extracting ext4_ci_compare into a helper library that can be
+used by both filesystems.  It also reduces the clutter from many
+codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
+the codeflow now.
+
+While there, I noticed we can leverage the utf8 functions to detect
+encoded names that are corrupted in the filesystem. Therefore, it also
+adds an ext4 error on that scenario, to mark the filesystem as
+corrupted.
+
+This series survived passes of xfstests -g quick.
+
+Eugen Hristev (1):
+  f2fs: Log error when lookup of encoded dentry fails
+
+Gabriel Krisman Bertazi (8):
+  ext4: Simplify the handling of cached insensitive names
+  f2fs: Simplify the handling of cached insensitive names
+  libfs: Introduce case-insensitive string comparison helper
+  ext4: Reuse generic_ci_match for ci comparisons
+  f2fs: Reuse generic_ci_match for ci comparisons
+  ext4: Log error when lookup of encoded dentry fails
+  ext4: Move CONFIG_UNICODE defguards into the code flow
+  f2fs: Move CONFIG_UNICODE defguards into the code flow
+
+ fs/ext4/crypto.c   |  10 +---
+ fs/ext4/ext4.h     |  35 +++++++-----
+ fs/ext4/namei.c    | 129 ++++++++++++++++-----------------------------
+ fs/ext4/super.c    |   4 +-
+ fs/f2fs/dir.c      | 108 ++++++++++++-------------------------
+ fs/f2fs/f2fs.h     |  16 +++++-
+ fs/f2fs/namei.c    |  10 ++--
+ fs/f2fs/recovery.c |   5 +-
+ fs/f2fs/super.c    |   8 +--
+ fs/libfs.c         |  77 +++++++++++++++++++++++++++
+ include/linux/fs.h |   4 ++
+ 11 files changed, 210 insertions(+), 196 deletions(-)
+
 -- 
-Luis
+2.34.1
 
 
