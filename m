@@ -1,211 +1,262 @@
-Return-Path: <linux-ext4+bounces-1844-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1845-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D35E89652E
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 09:00:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A3928966F2
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 09:45:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5293B223FD
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 06:59:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE2D9287060
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 07:45:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3F6C5CDE1;
-	Wed,  3 Apr 2024 06:57:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD9867A14;
+	Wed,  3 Apr 2024 07:45:32 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5397B5C8ED;
-	Wed,  3 Apr 2024 06:57:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C13B5D903
+	for <linux-ext4@vger.kernel.org>; Wed,  3 Apr 2024 07:45:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712127478; cv=none; b=fmS2yZdWT3k4FZeTcnwLbp87irQbAxSiEtsGZWtbh4XxkMPlz/2QuE6Bs6A1cOeyym64le2mGhp1+DYmzqSwtxgaJuTFa4jrvNkH9afseHD44gIawYYfyo24iZPbDFal3m5BHZLIkvrAolqf+NOaG6o0gTh82AXvWP+Ux7TXsy8=
+	t=1712130331; cv=none; b=ViKBDwUxvLpRWB/YwZj5Phmuv2C7hxIDP9Q7m61P9VofZh0g+PNKkG0sokq3STfGxgEgxzlbfBbMkMDE2XFyP+0WBKB7X6hK5eNkDllUiUMC2mQZ58ujqlud9HOMrDfPpexwp7daw5HG0czir0tuTQSZs4PDjziJfkqXnTZFeds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712127478; c=relaxed/simple;
-	bh=oviP/wQRuYdF7r0IFB/Nl/AStCyZNPngIcFJmBU4VRg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=J9w+I2RjC3IQPRAVKe2sX+n0e4NKW45uXFPulMsgvb2gHSrDyeSNcya1ZgBD8wTUVYUXz6vDKpgtfOoYu43zRXHEINqUziJaeuof5S5TFfkHfqX9hX1zQ96HrgbMVLqXDBhpiM5k539BmBsiFe+s8vu9npDt0B1jkqMC41dkktg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4V8bDD4P6Bz4f3k6Z;
-	Wed,  3 Apr 2024 14:57:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id D23B71A0DBE;
-	Wed,  3 Apr 2024 14:57:52 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP3 (Coremail) with SMTP id _Ch0CgA39p3w_QxmnsAcIw--.36513S2;
-	Wed, 03 Apr 2024 14:57:52 +0800 (CST)
-Subject: Re: [PATCH 5/5] ext4: expand next_linear_group to remove repeat check
- for linear scan.
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, jack@suse.cz, ritesh.list@gmail.com
-References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
- <20240326213823.528302-6-shikemeng@huaweicloud.com>
- <ZgZqPJbEBG09dzSh@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <dd5fd548-bd92-197a-a4e3-7bac173bbd19@huaweicloud.com>
-Date: Wed, 3 Apr 2024 14:57:52 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1712130331; c=relaxed/simple;
+	bh=pWuz467CjJSWVxTNOZfQnY/x4aIclO9FZQFSkSMa9gA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=a8eCyiBr6hfWvq/LtiQ1j15BWcsaiEHg9TF0h1X5rCqEu4xVDeyw/RaCuvmErc8EcV8Ip2gZI8PlFA7WfE6fNyphJ2fe/8Ap4kQezNpnzns5ozRWzH64HJxkC5P6Qxx9EySxaOSMRn4TbSxyFBHOWbL/h41p0lCwMsz0yK+q3I8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c8a960bd9eso534660939f.0
+        for <linux-ext4@vger.kernel.org>; Wed, 03 Apr 2024 00:45:29 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712130329; x=1712735129;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=l2M+8Zlt/7oWg+Ej7ANcfvSDt2vVUYRFfyU8+IioC+Q=;
+        b=kLpnJ33MXrz01J/xGRJXcWgTUz5v5Q0C0QzLw7b9NfoZBFsq5MRAX2dvCHQ7MUleAx
+         nq5cnfUIRgJcsDipjhd8RhTMQOrlOXPvu74sJpltUyfUkGoCoag7OC+CmiWQTM7qApDS
+         i5bZ53uvaMWyBNJeisCM8HkZdJAUbSfDZmU56wOuYJC15YoqxjVU6OrGlujiW7Y3iyr6
+         b8TDJaJwieba/rwZL775ABvYX8HE+05uCA+XOL9jInFEHv9vvqFG/1/0pjtY+5BqdFjN
+         /UqaNahXKWN3mzPlZb08HBrhz/5eG+uVjbZ7Z2CPJo3erzddl1qZbUaOZRnLE03b1QDa
+         GATA==
+X-Forwarded-Encrypted: i=1; AJvYcCViMCwxQrTEQtiAV9NCxu3pMjY+wnXHOjxMAnaBqGqHUxN/pXPlDDbaGaNafC8k+M9FW+5a0AHj5064gBfo3/RqybpK57+1Bf8ARg==
+X-Gm-Message-State: AOJu0YxX8g+g1D6e/Nvni4d/uiJRNKGnHZd8FADZSgD/ccb4QpIE8cOt
+	O0WsqawL91h1Xyvzss68tqiNsfXfINxqBEaV4ph6ypP0FNEasf6kMh1UMDafD/Yv2z3aXDAgAqx
+	lnBpSQwIbb3f/4X7H/6uvW1A7S4pZF3kdanpGSuSAe2cxDQacqzeN9Yo=
+X-Google-Smtp-Source: AGHT+IGXNzQ9scnHjWCWfluczGbPD1Us3zL7TVHdJn2HNIvSYo3wofDu76xzt8p7II4xXFfNWyDgkG02R+ZiVgR6Znb9JOeLvM6U
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZgZqPJbEBG09dzSh@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgA39p3w_QxmnsAcIw--.36513S2
-X-Coremail-Antispam: 1UD129KBjvJXoWxCr47Cr4kGFy7CrWxZFW5Wrg_yoWrJr48pr
-	s7JFy7ur17XryDGFZrXa9YqF1Sqw18GF4UJryfK3s3tFnxCrn8JFW2yr109Fy7CFsrCr1x
-	Xr45AF1UC3ZxCFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVW3JVWrJr1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-Received: by 2002:a05:6e02:1785:b0:368:c9e2:b372 with SMTP id
+ y5-20020a056e02178500b00368c9e2b372mr889614ilu.0.1712130329291; Wed, 03 Apr
+ 2024 00:45:29 -0700 (PDT)
+Date: Wed, 03 Apr 2024 00:45:29 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000163e1406152c6877@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in ext4_xattr_inode_iget (3)
+From: syzbot <syzbot+ee72b9a7aad1e5a77c5c@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11a1e52d180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1a07d5da4eb21586
+dashboard link: https://syzkaller.appspot.com/bug?extid=ee72b9a7aad1e5a77c5c
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12407f45180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=140d9db1180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/b42ab0fd4947/disk-fe46a7dd.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/b8a6e7231930/vmlinux-fe46a7dd.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/4fbf3e4ce6f8/bzImage-fe46a7dd.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/5d293cee060a/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ee72b9a7aad1e5a77c5c@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
+------------------------------------------------------
+syz-executor545/5275 is trying to acquire lock:
+ffff888077730400 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
+ffff888077730400 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: ext4_xattr_inode_iget+0x173/0x440 fs/ext4/xattr.c:461
+
+but task is already holding lock:
+ffff888077730c88 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x1ba0/0x29d0 fs/ext4/inode.c:5417
+
+which lock already depends on the new lock.
 
 
+the existing dependency chain (in reverse order) is:
 
-on 3/29/2024 3:14 PM, Ojaswin Mujoo wrote:
-> On Wed, Mar 27, 2024 at 05:38:23AM +0800, Kemeng Shi wrote:
->> Expand next_linear_group to remove repat check for linear scan.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/ext4/mballoc.c | 37 ++++++-------------------------------
->>  1 file changed, 6 insertions(+), 31 deletions(-)
->>
->> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
->> index 0f8a34513bf6..561780a274cd 100644
->> --- a/fs/ext4/mballoc.c
->> +++ b/fs/ext4/mballoc.c
->> @@ -1075,31 +1075,6 @@ static inline int should_optimize_scan(struct ext4_allocation_context *ac)
->>   return 1;
->>  }
->>  
->> -/*
->> - * Return next linear group for allocation. If linear traversal should not be
->> - * performed, this function just returns the same group
->> - */
->> -static ext4_group_t
->> -next_linear_group(struct ext4_allocation_context *ac, ext4_group_t group,
->> -     ext4_group_t ngroups)
->> -{
->> - if (!should_optimize_scan(ac))
->> -   goto inc_and_return;
->> -
->> - if (ac->ac_groups_linear_remaining) {
->> -   ac->ac_groups_linear_remaining--;
->> -   goto inc_and_return;
->> - }
->> -
->> - return group;
->> -inc_and_return:
->> - /*
->> -  * Artificially restricted ngroups for non-extent
->> -  * files makes group > ngroups possible on first loop.
->> -  */
->> - return group + 1 >= ngroups ? 0 : group + 1;
->> -}
->> -
->>  /*
->>   * ext4_mb_choose_next_group: choose next group for allocation.
->>   *
->> @@ -1118,12 +1093,12 @@ static void ext4_mb_choose_next_group(struct ext4_allocation_context *ac,
->>  {
->>   *new_cr = ac->ac_criteria;
->>  
->> - if (!should_optimize_scan(ac) || ac->ac_groups_linear_remaining) {
->> -   *group = next_linear_group(ac, *group, ngroups);
->> -   return;
->> - }
->> -
->> - if (*new_cr == CR_POWER2_ALIGNED) {
->> + if (!should_optimize_scan(ac))
->> +   *group = *group + 1 >= ngroups ? 0 : *group + 1;
->> + else if (ac->ac_groups_linear_remaining) {
->> +   ac->ac_groups_linear_remaining--;
->> +   *group = *group + 1 >= ngroups ? 0 : *group + 1;
->> + } else if (*new_cr == CR_POWER2_ALIGNED) {
-> 
-> 
-> Hi Kemeng, thanks for the cleanups
-> 
-> I feel that open coding this logic and having a single if for linear scan and
-> non linear scan cases is making the code a bit more harder to follow and we are
-> losing some comments as well.
-> 
-> Since our main aim is to avoid the double checking, maybe we can keep
-> next_linear_group() strictly for getting the next linear group correctly and
-> rest of the checks outside. So something like:
-> 
-> static ext4_group_t
-> next_linear_group(ext4_group_t group, ext4_group_t ngroups)
-> {
-> 
->   /*
->    * Artificially restricted ngroups for non-extent
->    * files makes group > ngroups possible on first loop.
->    */
->   return group + 1 >= ngroups ? 0 : group + 1;
-> }
-> 
-> static void ext4_mb_choose_next_group(...)
-> {
->   ...
-> 
->   /*
->    * Fallback to linear scan when optimized scanning is disabled
->    */
->   if (!should_optimize_scan(ac)) {
->     *group = next_linear_group(*group, ngroups);
->     return;
->   }
-> 
->   /*
->    * Optimized scanning can return non adjacent groups which can cause
->    * seek overhead for rotational disks. So try few linear groups before 
->    * trying optimized scan.
->    */
->   if (ac->ac_groups_linear_remaining) {
->     *group = next_linear_group(*group, ngroups);
->     ac->ac_groups_linear_remaining--;
->     return;
->   }
->   
->   ...
-> }
-> 
-> Let me know your thought. 
-This make senses to me. I will do in next version. Thanks for the advise.
+-> #1 (&ei->i_data_sem/3){++++}-{3:3}:
+       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+       ext4_update_i_disksize fs/ext4/ext4.h:3383 [inline]
+       ext4_xattr_inode_write fs/ext4/xattr.c:1446 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1594 [inline]
+       ext4_xattr_set_entry+0x3a14/0x3cf0 fs/ext4/xattr.c:1719
+       ext4_xattr_ibody_set+0x126/0x380 fs/ext4/xattr.c:2287
+       ext4_xattr_set_handle+0x98d/0x1480 fs/ext4/xattr.c:2444
+       ext4_xattr_set+0x149/0x380 fs/ext4/xattr.c:2558
+       __vfs_setxattr+0x176/0x1e0 fs/xattr.c:200
+       __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:234
+       __vfs_setxattr_locked+0x182/0x260 fs/xattr.c:295
+       vfs_setxattr+0x146/0x350 fs/xattr.c:321
+       do_setxattr+0x146/0x170 fs/xattr.c:629
+       setxattr+0x15d/0x180 fs/xattr.c:652
+       path_setxattr+0x179/0x1e0 fs/xattr.c:671
+       __do_sys_lsetxattr fs/xattr.c:694 [inline]
+       __se_sys_lsetxattr fs/xattr.c:690 [inline]
+       __x64_sys_lsetxattr+0xc1/0x160 fs/xattr.c:690
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
-Kemeng
-> 
-> Regards,
-> ojaswin
-> 
->>     ext4_mb_choose_next_group_p2_aligned(ac, new_cr, group);
->>   } else if (*new_cr == CR_GOAL_LEN_FAST) {
->>     ext4_mb_choose_next_group_goal_fast(ac, new_cr, group);
->> -- 
->> 2.30.0
->>
-> 
-> 
-> 
+-> #0 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+       inode_lock include/linux/fs.h:793 [inline]
+       ext4_xattr_inode_iget+0x173/0x440 fs/ext4/xattr.c:461
+       ext4_xattr_inode_get+0x16c/0x870 fs/ext4/xattr.c:535
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2640 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
+       ext4_expand_extra_isize_ea+0x1367/0x1ae0 fs/ext4/xattr.c:2834
+       __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:5789
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5832 [inline]
+       __ext4_mark_inode_dirty+0x55a/0x860 fs/ext4/inode.c:5910
+       ext4_setattr+0x1c14/0x29d0 fs/ext4/inode.c:5420
+       notify_change+0x745/0x11c0 fs/attr.c:497
+       do_truncate+0x15c/0x220 fs/open.c:65
+       handle_truncate fs/namei.c:3300 [inline]
+       do_open fs/namei.c:3646 [inline]
+       path_openat+0x24b9/0x2990 fs/namei.c:3799
+       do_filp_open+0x1dc/0x430 fs/namei.c:3826
+       do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+       do_sys_open fs/open.c:1421 [inline]
+       __do_sys_openat fs/open.c:1437 [inline]
+       __se_sys_openat fs/open.c:1432 [inline]
+       __x64_sys_openat+0x175/0x210 fs/open.c:1432
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
 
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem/3);
+                               lock(&ea_inode->i_rwsem#8/1);
+                               lock(&ei->i_data_sem/3);
+  lock(&ea_inode->i_rwsem#8/1);
+
+ *** DEADLOCK ***
+
+5 locks held by syz-executor545/5275:
+ #0: ffff888022da6420 (sb_writers#4){.+.+}-{0:0}, at: do_open fs/namei.c:3635 [inline]
+ #0: ffff888022da6420 (sb_writers#4){.+.+}-{0:0}, at: path_openat+0x1fba/0x2990 fs/namei.c:3799
+ #1: ffff888077730e00 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
+ #1: ffff888077730e00 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: do_truncate+0x14b/0x220 fs/open.c:63
+ #2: ffff888077730fa0 (mapping.invalidate_lock){++++}-{3:3}, at: filemap_invalidate_lock include/linux/fs.h:838 [inline]
+ #2: ffff888077730fa0 (mapping.invalidate_lock){++++}-{3:3}, at: ext4_setattr+0xdfd/0x29d0 fs/ext4/inode.c:5378
+ #3: ffff888077730c88 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x1ba0/0x29d0 fs/ext4/inode.c:5417
+ #4: ffff888077730ac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
+ #4: ffff888077730ac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5829 [inline]
+ #4: ffff888077730ac8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4cf/0x860 fs/ext4/inode.c:5910
+
+stack backtrace:
+CPU: 1 PID: 5275 Comm: syz-executor545 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+ down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+ inode_lock include/linux/fs.h:793 [inline]
+ ext4_xattr_inode_iget+0x173/0x440 fs/ext4/xattr.c:461
+ ext4_xattr_inode_get+0x16c/0x870 fs/ext4/xattr.c:535
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2640 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
+ ext4_expand_extra_isize_ea+0x1367/0x1ae0 fs/ext4/xattr.c:2834
+ __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:5789
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:5832 [inline]
+ __ext4_mark_inode_dirty+0x55a/0x860 fs/ext4/inode.c:5910
+ ext4_setattr+0x1c14/0x29d0 fs/ext4/inode.c:5420
+ notify_change+0x745/0x11c0 fs/attr.c:497
+ do_truncate+0x15c/0x220 fs/open.c:65
+ handle_truncate fs/namei.c:3300 [inline]
+ do_open fs/namei.c:3646 [inline]
+ path_openat+0x24b9/0x2990 fs/namei.c:3799
+ do_filp_open+0x1dc/0x430 fs/namei.c:3826
+ do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_openat fs/open.c:1437 [inline]
+ __se_sys_openat fs/open.c:1432 [inline]
+ __x64_sys_openat+0x175/0x210 fs/open.c:1432
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7fc7c030b2e9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffc3c4a0608 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
+RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007fc7c030b2e9
+RDX: 0000000000143362 RSI: 00000000200000c0 RDI: 00000000ffffff9c
+RBP: 6c6c616c65646f6e R08: 00007ffc3c4a0640 R09: 00007ffc3c4a0640
+R10: 000000000a000000 R11: 0000000000000246 R12: 00007ffc3c4a062c
+R13: 0000000000000040 R14: 431bde82d7b634db R15: 00007ffc3c4a0660
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
