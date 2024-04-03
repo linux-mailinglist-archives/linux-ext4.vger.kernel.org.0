@@ -1,262 +1,193 @@
-Return-Path: <linux-ext4+bounces-1845-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1846-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A3928966F2
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 09:45:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E4F53896BC9
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 12:13:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE2D9287060
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 07:45:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A3A0292D90
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 10:13:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FD9867A14;
-	Wed,  3 Apr 2024 07:45:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A7113A259;
+	Wed,  3 Apr 2024 10:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z2+aO1up";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wnvQ48cR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C13B5D903
-	for <linux-ext4@vger.kernel.org>; Wed,  3 Apr 2024 07:45:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECDB1384B0;
+	Wed,  3 Apr 2024 10:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712130331; cv=none; b=ViKBDwUxvLpRWB/YwZj5Phmuv2C7hxIDP9Q7m61P9VofZh0g+PNKkG0sokq3STfGxgEgxzlbfBbMkMDE2XFyP+0WBKB7X6hK5eNkDllUiUMC2mQZ58ujqlud9HOMrDfPpexwp7daw5HG0czir0tuTQSZs4PDjziJfkqXnTZFeds=
+	t=1712139087; cv=none; b=kxPswvkWnqap0gRoQDSNN5gZNeTJyLIHjHv+17yY0UbMrJCcOOaeNvx+AnlQ4u0KU3pE1wVGo2Au/3VUmfLe2MFU2hhQMRZYj7hNXn8alIRhvtdy+HtreuY3SDsmDXmdvDhBunkXVy31mMYPbvm034ytlKA3ZDwkixj7K0RKKOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712130331; c=relaxed/simple;
-	bh=pWuz467CjJSWVxTNOZfQnY/x4aIclO9FZQFSkSMa9gA=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=a8eCyiBr6hfWvq/LtiQ1j15BWcsaiEHg9TF0h1X5rCqEu4xVDeyw/RaCuvmErc8EcV8Ip2gZI8PlFA7WfE6fNyphJ2fe/8Ap4kQezNpnzns5ozRWzH64HJxkC5P6Qxx9EySxaOSMRn4TbSxyFBHOWbL/h41p0lCwMsz0yK+q3I8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7c8a960bd9eso534660939f.0
-        for <linux-ext4@vger.kernel.org>; Wed, 03 Apr 2024 00:45:29 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712130329; x=1712735129;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l2M+8Zlt/7oWg+Ej7ANcfvSDt2vVUYRFfyU8+IioC+Q=;
-        b=kLpnJ33MXrz01J/xGRJXcWgTUz5v5Q0C0QzLw7b9NfoZBFsq5MRAX2dvCHQ7MUleAx
-         nq5cnfUIRgJcsDipjhd8RhTMQOrlOXPvu74sJpltUyfUkGoCoag7OC+CmiWQTM7qApDS
-         i5bZ53uvaMWyBNJeisCM8HkZdJAUbSfDZmU56wOuYJC15YoqxjVU6OrGlujiW7Y3iyr6
-         b8TDJaJwieba/rwZL775ABvYX8HE+05uCA+XOL9jInFEHv9vvqFG/1/0pjtY+5BqdFjN
-         /UqaNahXKWN3mzPlZb08HBrhz/5eG+uVjbZ7Z2CPJo3erzddl1qZbUaOZRnLE03b1QDa
-         GATA==
-X-Forwarded-Encrypted: i=1; AJvYcCViMCwxQrTEQtiAV9NCxu3pMjY+wnXHOjxMAnaBqGqHUxN/pXPlDDbaGaNafC8k+M9FW+5a0AHj5064gBfo3/RqybpK57+1Bf8ARg==
-X-Gm-Message-State: AOJu0YxX8g+g1D6e/Nvni4d/uiJRNKGnHZd8FADZSgD/ccb4QpIE8cOt
-	O0WsqawL91h1Xyvzss68tqiNsfXfINxqBEaV4ph6ypP0FNEasf6kMh1UMDafD/Yv2z3aXDAgAqx
-	lnBpSQwIbb3f/4X7H/6uvW1A7S4pZF3kdanpGSuSAe2cxDQacqzeN9Yo=
-X-Google-Smtp-Source: AGHT+IGXNzQ9scnHjWCWfluczGbPD1Us3zL7TVHdJn2HNIvSYo3wofDu76xzt8p7II4xXFfNWyDgkG02R+ZiVgR6Znb9JOeLvM6U
+	s=arc-20240116; t=1712139087; c=relaxed/simple;
+	bh=5sRrnYDlue/R5LusQUCeZ/NavfccssSP+9n69xB5wWw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qrpdjCD2QAOdZeosU+NXWhpnZ+JGiD+4Cm2PDSwLhP6T0wBjgDwwsylSZQWFucD4woXUbs3fjMZy1ZczQsdevNHdjdR6nar9aaJ+Wqz9Ni/QMeFWdi3g9hE7crmhnRnTGDwbdGmq0C1bFy9thPY0IYBbQVQAqplf5/p+Ib0WsNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z2+aO1up; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wnvQ48cR; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 9C5B7351E8;
+	Wed,  3 Apr 2024 10:11:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712139082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CkZ1VVg9ohX4ltkkDD2gbJ9aeiuQeuh/sj7CBEgj02E=;
+	b=z2+aO1upxP0Dtv/e0dL6o2l/3/HPyczzG4WtExN2l+nxV4ZfIcZP20g3GYzIop8ngtxKd+
+	Gk/nP6Nhw2ctnnBwGuBI1352c1O55tuqunf9MRuTEiwoYNGgg7diKvRpNUHnZFNMkEbUrC
+	xnTeA3vJBLpk21yGudhndrUXti5l7lM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712139082;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=CkZ1VVg9ohX4ltkkDD2gbJ9aeiuQeuh/sj7CBEgj02E=;
+	b=wnvQ48cRBCiLzfckmj/+hToHbmtprvv2CnNCO0GuyvGUFvojM4l2VjFMl0Ayc5JvIHpfHh
+	3RM3xsHxjAJ3FRBQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=none
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 90AD51331E;
+	Wed,  3 Apr 2024 10:11:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id BahFI0orDWYGCQAAn2gu4w
+	(envelope-from <jack@suse.cz>); Wed, 03 Apr 2024 10:11:22 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 3F94CA0814; Wed,  3 Apr 2024 12:11:22 +0200 (CEST)
+Date: Wed, 3 Apr 2024 12:11:22 +0200
+From: Jan Kara <jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
+	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] jbd2: avoid mount failed when commit block is partial
+ submitted
+Message-ID: <20240403101122.rmffivvvf4a33qis@quack3>
+References: <20240402090951.527619-1-yebin10@huawei.com>
+ <20240402134240.5he4mxei3nvzolb3@quack3>
+ <20240403033742.GE1189142@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1785:b0:368:c9e2:b372 with SMTP id
- y5-20020a056e02178500b00368c9e2b372mr889614ilu.0.1712130329291; Wed, 03 Apr
- 2024 00:45:29 -0700 (PDT)
-Date: Wed, 03 Apr 2024 00:45:29 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000163e1406152c6877@google.com>
-Subject: [syzbot] [ext4?] possible deadlock in ext4_xattr_inode_iget (3)
-From: syzbot <syzbot+ee72b9a7aad1e5a77c5c@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240403033742.GE1189142@mit.edu>
+X-Spam-Score: -1.61
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-1.61 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCPT_COUNT_FIVE(0.00)[6];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 MX_GOOD(-0.01)[];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 R_DKIM_NA(2.20)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:98:from];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+X-Spam-Level: 
+X-Rspamd-Queue-Id: 9C5B7351E8
 
-Hello,
+On Tue 02-04-24 23:37:42, Theodore Ts'o wrote:
+> On Tue, Apr 02, 2024 at 03:42:40PM +0200, Jan Kara wrote:
+> > On Tue 02-04-24 17:09:51, Ye Bin wrote:
+> > > We encountered a problem that the file system could not be mounted in
+> > > the power-off scenario. The analysis of the file system mirror shows that
+> > > only part of the data is written to the last commit block.
+> > > To solve above issue, if commit block checksum is incorrect, check the next
+> > > block if has valid magic and transaction ID. If next block hasn't valid
+> > > magic or transaction ID then just drop the last transaction ignore checksum
+> > > error. Theoretically, the transaction ID maybe occur loopback, which may cause
+> > > the mounting failure.
+> > > 
+> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
+> > 
+> > So this is curious. The commit block data is fully within one sector and
+> > the expectation of the journaling is that either full sector or nothing is
+> > written. So what kind of storage were you using that it breaks these
+> > expectations?
+> 
+> I suppose if the physical sector size is 512 bytes, and the file
+> system block is 4k, I suppose it's possible that on a crash, that part
+> of the 4k commit block could be written.
 
-syzbot found the following issue on:
+I was thinking about that as well but the commit block looks like:
 
-HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=11a1e52d180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1a07d5da4eb21586
-dashboard link: https://syzkaller.appspot.com/bug?extid=ee72b9a7aad1e5a77c5c
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12407f45180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=140d9db1180000
+truct commit_header {
+        __be32          h_magic;
+        __be32          h_blocktype;
+        __be32          h_sequence;
+        unsigned char   h_chksum_type;
+        unsigned char   h_chksum_size;
+        unsigned char   h_padding[2];
+        __be32          h_chksum[JBD2_CHECKSUM_BYTES];
+        __be64          h_commit_sec;
+        __be32          h_commit_nsec;
+};
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/b42ab0fd4947/disk-fe46a7dd.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/b8a6e7231930/vmlinux-fe46a7dd.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/4fbf3e4ce6f8/bzImage-fe46a7dd.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/5d293cee060a/mount_0.gz
+where JBD2_CHECKSUM_BYTES is 8. So all the data in the commit block
+including the checksum is in the first 60 bytes. Hence I would be really
+surprised if some storage can tear that...
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ee72b9a7aad1e5a77c5c@syzkaller.appspotmail.com
+Hence either Ye Bin is running on some really exotic storage or the storage
+/ CPU in fact flipped bits somewhere so that the checksum didn't match or
+the commit block was in fact not written now but it was a leftover from
+previous journal use and h_sequence happened to match. Very unlikely but
+depending on how exactly they do their powerfail testing I can imagine it
+would be possible with enough tries...
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-syzkaller-08951-gfe46a7dd189e #0 Not tainted
-------------------------------------------------------
-syz-executor545/5275 is trying to acquire lock:
-ffff888077730400 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
-ffff888077730400 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: ext4_xattr_inode_iget+0x173/0x440 fs/ext4/xattr.c:461
+> In *practice* though, this
+> is super rare.  That's because on many modern HDD's, the physical
+> sector size is 4k (because the ECC overhead is much lower), even if
+> the logical sector size is 512 byte (for Windows 98 compatibility).
+> And even on HDD's where the physical sector size is really 512 bytes,
+> the way the sectors are laid out in a serpentine fashion, it is
+> *highly* likely that 4k write won't get torn.
+> 
+> And while this is *possible*, it's also possible that some kind of I/O
+> transfer error --- such as some bit flips which breaks the checksum on
+> the commit block, but also trashes the tid of the subsequent block,
+> such that your patch gets tricked into thinking that this is the
+> partial last commit, when in fact it's not the last commit, thus
+> causing the journal replay abort early.  If that's case, it's much
+> safer to force fsck to be run to detect any inconsistency that might
+> result.
 
-but task is already holding lock:
-ffff888077730c88 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x1ba0/0x29d0 fs/ext4/inode.c:5417
+Yeah, I agree in these cases of a corrupted journal it seems dangerous to
+just try to continue without fsck based on some heuristics.
 
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #1 (&ei->i_data_sem/3){++++}-{3:3}:
-       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
-       ext4_update_i_disksize fs/ext4/ext4.h:3383 [inline]
-       ext4_xattr_inode_write fs/ext4/xattr.c:1446 [inline]
-       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1594 [inline]
-       ext4_xattr_set_entry+0x3a14/0x3cf0 fs/ext4/xattr.c:1719
-       ext4_xattr_ibody_set+0x126/0x380 fs/ext4/xattr.c:2287
-       ext4_xattr_set_handle+0x98d/0x1480 fs/ext4/xattr.c:2444
-       ext4_xattr_set+0x149/0x380 fs/ext4/xattr.c:2558
-       __vfs_setxattr+0x176/0x1e0 fs/xattr.c:200
-       __vfs_setxattr_noperm+0x127/0x5e0 fs/xattr.c:234
-       __vfs_setxattr_locked+0x182/0x260 fs/xattr.c:295
-       vfs_setxattr+0x146/0x350 fs/xattr.c:321
-       do_setxattr+0x146/0x170 fs/xattr.c:629
-       setxattr+0x15d/0x180 fs/xattr.c:652
-       path_setxattr+0x179/0x1e0 fs/xattr.c:671
-       __do_sys_lsetxattr fs/xattr.c:694 [inline]
-       __se_sys_lsetxattr fs/xattr.c:690 [inline]
-       __x64_sys_lsetxattr+0xc1/0x160 fs/xattr.c:690
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
--> #0 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
-       inode_lock include/linux/fs.h:793 [inline]
-       ext4_xattr_inode_iget+0x173/0x440 fs/ext4/xattr.c:461
-       ext4_xattr_inode_get+0x16c/0x870 fs/ext4/xattr.c:535
-       ext4_xattr_move_to_block fs/ext4/xattr.c:2640 [inline]
-       ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
-       ext4_expand_extra_isize_ea+0x1367/0x1ae0 fs/ext4/xattr.c:2834
-       __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:5789
-       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5832 [inline]
-       __ext4_mark_inode_dirty+0x55a/0x860 fs/ext4/inode.c:5910
-       ext4_setattr+0x1c14/0x29d0 fs/ext4/inode.c:5420
-       notify_change+0x745/0x11c0 fs/attr.c:497
-       do_truncate+0x15c/0x220 fs/open.c:65
-       handle_truncate fs/namei.c:3300 [inline]
-       do_open fs/namei.c:3646 [inline]
-       path_openat+0x24b9/0x2990 fs/namei.c:3799
-       do_filp_open+0x1dc/0x430 fs/namei.c:3826
-       do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
-       do_sys_open fs/open.c:1421 [inline]
-       __do_sys_openat fs/open.c:1437 [inline]
-       __se_sys_openat fs/open.c:1432 [inline]
-       __x64_sys_openat+0x175/0x210 fs/open.c:1432
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&ei->i_data_sem/3);
-                               lock(&ea_inode->i_rwsem#8/1);
-                               lock(&ei->i_data_sem/3);
-  lock(&ea_inode->i_rwsem#8/1);
-
- *** DEADLOCK ***
-
-5 locks held by syz-executor545/5275:
- #0: ffff888022da6420 (sb_writers#4){.+.+}-{0:0}, at: do_open fs/namei.c:3635 [inline]
- #0: ffff888022da6420 (sb_writers#4){.+.+}-{0:0}, at: path_openat+0x1fba/0x2990 fs/namei.c:3799
- #1: ffff888077730e00 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
- #1: ffff888077730e00 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: do_truncate+0x14b/0x220 fs/open.c:63
- #2: ffff888077730fa0 (mapping.invalidate_lock){++++}-{3:3}, at: filemap_invalidate_lock include/linux/fs.h:838 [inline]
- #2: ffff888077730fa0 (mapping.invalidate_lock){++++}-{3:3}, at: ext4_setattr+0xdfd/0x29d0 fs/ext4/inode.c:5378
- #3: ffff888077730c88 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x1ba0/0x29d0 fs/ext4/inode.c:5417
- #4: ffff888077730ac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
- #4: ffff888077730ac8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5829 [inline]
- #4: ffff888077730ac8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4cf/0x860 fs/ext4/inode.c:5910
-
-stack backtrace:
-CPU: 1 PID: 5275 Comm: syz-executor545 Not tainted 6.8.0-syzkaller-08951-gfe46a7dd189e #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
- down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
- inode_lock include/linux/fs.h:793 [inline]
- ext4_xattr_inode_iget+0x173/0x440 fs/ext4/xattr.c:461
- ext4_xattr_inode_get+0x16c/0x870 fs/ext4/xattr.c:535
- ext4_xattr_move_to_block fs/ext4/xattr.c:2640 [inline]
- ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
- ext4_expand_extra_isize_ea+0x1367/0x1ae0 fs/ext4/xattr.c:2834
- __ext4_expand_extra_isize+0x346/0x480 fs/ext4/inode.c:5789
- ext4_try_to_expand_extra_isize fs/ext4/inode.c:5832 [inline]
- __ext4_mark_inode_dirty+0x55a/0x860 fs/ext4/inode.c:5910
- ext4_setattr+0x1c14/0x29d0 fs/ext4/inode.c:5420
- notify_change+0x745/0x11c0 fs/attr.c:497
- do_truncate+0x15c/0x220 fs/open.c:65
- handle_truncate fs/namei.c:3300 [inline]
- do_open fs/namei.c:3646 [inline]
- path_openat+0x24b9/0x2990 fs/namei.c:3799
- do_filp_open+0x1dc/0x430 fs/namei.c:3826
- do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __x64_sys_openat+0x175/0x210 fs/open.c:1432
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd5/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fc7c030b2e9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffc3c4a0608 EFLAGS: 00000246 ORIG_RAX: 0000000000000101
-RAX: ffffffffffffffda RBX: 0031656c69662f2e RCX: 00007fc7c030b2e9
-RDX: 0000000000143362 RSI: 00000000200000c0 RDI: 00000000ffffff9c
-RBP: 6c6c616c65646f6e R08: 00007ffc3c4a0640 R09: 00007ffc3c4a0640
-R10: 000000000a000000 R11: 0000000000000246 R12: 00007ffc3c4a062c
-R13: 0000000000000040 R14: 431bde82d7b634db R15: 00007ffc3c4a0660
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
