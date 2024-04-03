@@ -1,169 +1,92 @@
-Return-Path: <linux-ext4+bounces-1834-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1835-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3661D8958D3
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Apr 2024 17:51:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F34CD8962FB
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 05:31:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 677D81C23FBD
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Apr 2024 15:51:54 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 60393286D76
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 03:31:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 208FC13CF91;
-	Tue,  2 Apr 2024 15:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C34A374CF;
+	Wed,  3 Apr 2024 03:30:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ojBkiOGE"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uAAEV/1P"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DD0139585;
-	Tue,  2 Apr 2024 15:49:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A6DF94085A;
+	Wed,  3 Apr 2024 03:30:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712072942; cv=none; b=OlqFKJeIx9EmF4ZxMaixRgciEEVqsGtAz8rrojGARjAAoYZrzmkSViWZKECp20ucUCXRtV8PmeqSG4znX1PpMzZgejeqtSO419OYzFuEF+iAV8bLgFVZDZRyeO2QeVFWdJ6F8lfgy5WjZm8ciFDU90wGQ9zswI00kO5dC/mCXDk=
+	t=1712115057; cv=none; b=efX0nxd3Sl25GLBVn6b+YKQPcIrWZv17nKqxiPFF/Px0HDQVybMA4gWzhC+tXuE6bq5eMNMCAQJUrRLZVeuoUfeKZ/D3UpAbLv0Az4BnLbTNVLBwADFl3GNz5NjByLL4XlVC3ukdmHFu10ttsSRdSvsh3QsK4uNHNsQvTf3VSmk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712072942; c=relaxed/simple;
-	bh=NYwDnN28mEZsfcXBv2JU5FVxAioxdPfAjfdUmE66h5Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kqvJNa8xSzhVqWq4Z/1eaFVzm1/VKAorNEworZ6OU/ep+XdI1i/4W02LtdanC1ZCzNA/JTGglNVKhY4Q1pM/M4OTgi1WQLLoV5zo5nleQ4xx/f1iIWXVMWxVDS4oHm9uGjVZptuLNc7kqq8LGpma1+8N9ope3PXIZGLDEKg0vdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ojBkiOGE; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1712072939;
-	bh=NYwDnN28mEZsfcXBv2JU5FVxAioxdPfAjfdUmE66h5Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=ojBkiOGEd8EryBXKAd1A3l+NAwTMwOHa6mKZLdO8lS5qjUHZhyZCR6XBbQ9y43WN/
-	 GRxroD/u5YECm9ZHmyi4n23vp3p6mdumSQqQq/drrpVQFokwZlkP6GhtLk62oBDxMe
-	 AOY6bRpu0vJoL75ZYoNv1To3WBxNDEl9xUc9fPbQJA4XHnJZ0K3czPpt9oroMH/aGz
-	 WlhHmyQRtMLKerwc9F2+k91p56aT/kHBx2Qx5gQpI2RMv+st5DaC1n2U2t6qsahW28
-	 pzuMV6Mka7xjfWcn/kELQpIyjUi4KffCOabcFge2nUm0IFDtM6sU7uHvni4mQOZgB/
-	 FpdkZ+bOeJR1Q==
-Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 51E52378212E;
-	Tue,  2 Apr 2024 15:48:58 +0000 (UTC)
-From: Eugen Hristev <eugen.hristev@collabora.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	jaegeuk@kernel.org,
-	chao@kernel.org,
+	s=arc-20240116; t=1712115057; c=relaxed/simple;
+	bh=aUHCt2G7OXXo2o4YJpgKFb2OWsCjhGSf+zKg2+GPiFU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qQsBfRJ2p5A6cXElYBw1ZgxmJzhQk113uwbbVlQ6aa2GMH/FWR7Sca0RCIIC45cwAvUur1av/kDEU68e8y8eQDyXWXkRno2w3rp6bAuywM36CL73xy+jxjAaw8pdWedXxtVU8FTOX2IoXR/FA/CfG9fjuGOYZQaKyW86AHtv6f8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uAAEV/1P; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C3129C433F1;
+	Wed,  3 Apr 2024 03:30:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1712115057;
+	bh=aUHCt2G7OXXo2o4YJpgKFb2OWsCjhGSf+zKg2+GPiFU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=uAAEV/1P7uecv9LxBjxJwaDuB2DRliq+mLbtBH9a5/NTqmXTxKzZcVLyIjR7h9nSu
+	 RavWKK8nGD3a5I6ZXc5gfgy2LALZOYSpW7/4TrWkzA82V1l+cZvrkNIMW2b1vhxqqe
+	 Kso9i34D4Pvnz3sLruOqRQ8siwwmLZwVkNmcAfKQEbe8WYWdesfZdW2m/64pN/xuGQ
+	 N+CIMfgrTwjWlJSCPriefrDG1SbvppJhHi4iZ5JqCUMZki6fw0N2TwdUItWBhitd9U
+	 13eCEPhcqGY3M3Z9piSfZV7WgYBFuS1Eq7pX1POdh+k8gCSo5wVktHhTKcAwBbU5xx
+	 HNgLbEV1k7FxQ==
+Date: Tue, 2 Apr 2024 20:30:55 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	jaegeuk@kernel.org, chao@kernel.org,
 	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel@collabora.com,
-	eugen.hristev@collabora.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	krisman@suse.de,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	jack@suse.cz, krisman@suse.de,
 	Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH v15 9/9] f2fs: Move CONFIG_UNICODE defguards into the code flow
-Date: Tue,  2 Apr 2024 18:48:42 +0300
-Message-Id: <20240402154842.508032-10-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240402154842.508032-1-eugen.hristev@collabora.com>
+Subject: Re: [PATCH v15 2/9] f2fs: Simplify the handling of cached
+ insensitive names
+Message-ID: <20240403033055.GD2576@sol.localdomain>
 References: <20240402154842.508032-1-eugen.hristev@collabora.com>
+ <20240402154842.508032-3-eugen.hristev@collabora.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240402154842.508032-3-eugen.hristev@collabora.com>
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+On Tue, Apr 02, 2024 at 06:48:35PM +0300, Eugen Hristev wrote:
+> diff --git a/fs/f2fs/recovery.c b/fs/f2fs/recovery.c
+> index d0f24ccbd1ac..7e53abf6d216 100644
+> --- a/fs/f2fs/recovery.c
+> +++ b/fs/f2fs/recovery.c
+> @@ -153,11 +153,8 @@ static int init_recovered_filename(const struct inode *dir,
+>  		if (err)
+>  			return err;
+>  		f2fs_hash_filename(dir, fname);
+> -#if IS_ENABLED(CONFIG_UNICODE)
+>  		/* Case-sensitive match is fine for recovery */
+> -		kmem_cache_free(f2fs_cf_name_slab, fname->cf_name.name);
+> -		fname->cf_name.name = NULL;
+> -#endif
+> +		f2fs_free_casefolded_name(fname);
+>  	} else {
+>  		f2fs_hash_filename(dir, fname);
+>  	}
 
-Instead of a bunch of ifdefs, make the unicode built checks part of the
-code flow where possible, as requested by Torvalds.
+This change makes the declaration of f2fs_cf_name_slab in recovery.c
+unnecessary.  It can be removed.
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-[eugen.hristev@collabora.com: port to 6.8-rc3]
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
----
- fs/f2fs/namei.c | 10 ++++------
- fs/f2fs/super.c |  8 ++++----
- 2 files changed, 8 insertions(+), 10 deletions(-)
-
-diff --git a/fs/f2fs/namei.c b/fs/f2fs/namei.c
-index f7f63a567d86..5da1aae7d23a 100644
---- a/fs/f2fs/namei.c
-+++ b/fs/f2fs/namei.c
-@@ -576,8 +576,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		goto out_iput;
- 	}
- out_splice:
--#if IS_ENABLED(CONFIG_UNICODE)
--	if (!inode && IS_CASEFOLDED(dir)) {
-+	if (IS_ENABLED(CONFIG_UNICODE) && !inode && IS_CASEFOLDED(dir)) {
- 		/* Eventually we want to call d_add_ci(dentry, NULL)
- 		 * for negative dentries in the encoding case as
- 		 * well.  For now, prevent the negative dentry
-@@ -586,7 +585,7 @@ static struct dentry *f2fs_lookup(struct inode *dir, struct dentry *dentry,
- 		trace_f2fs_lookup_end(dir, dentry, ino, err);
- 		return NULL;
- 	}
--#endif
-+
- 	new = d_splice_alias(inode, dentry);
- 	trace_f2fs_lookup_end(dir, !IS_ERR_OR_NULL(new) ? new : dentry,
- 				ino, IS_ERR(new) ? PTR_ERR(new) : err);
-@@ -639,16 +638,15 @@ static int f2fs_unlink(struct inode *dir, struct dentry *dentry)
- 	f2fs_delete_entry(de, page, dir, inode);
- 	f2fs_unlock_op(sbi);
- 
--#if IS_ENABLED(CONFIG_UNICODE)
- 	/* VFS negative dentries are incompatible with Encoding and
- 	 * Case-insensitiveness. Eventually we'll want avoid
- 	 * invalidating the dentries here, alongside with returning the
- 	 * negative dentries at f2fs_lookup(), when it is better
- 	 * supported by the VFS for the CI case.
- 	 */
--	if (IS_CASEFOLDED(dir))
-+	if (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir))
- 		d_invalidate(dentry);
--#endif
-+
- 	if (IS_DIRSYNC(dir))
- 		f2fs_sync_fs(sbi->sb, 1);
- fail:
-diff --git a/fs/f2fs/super.c b/fs/f2fs/super.c
-index 313024f5c90c..c4325cc066c6 100644
---- a/fs/f2fs/super.c
-+++ b/fs/f2fs/super.c
-@@ -306,7 +306,7 @@ struct kmem_cache *f2fs_cf_name_slab;
- static int __init f2fs_create_casefold_cache(void)
- {
- 	f2fs_cf_name_slab = f2fs_kmem_cache_create("f2fs_casefolded_name",
--							F2FS_NAME_LEN);
-+						   F2FS_NAME_LEN);
- 	return f2fs_cf_name_slab ? 0 : -ENOMEM;
- }
- 
-@@ -1354,13 +1354,13 @@ static int parse_options(struct super_block *sb, char *options, bool is_remount)
- 		return -EINVAL;
- 	}
- #endif
--#if !IS_ENABLED(CONFIG_UNICODE)
--	if (f2fs_sb_has_casefold(sbi)) {
-+
-+	if (!IS_ENABLED(CONFIG_UNICODE) && f2fs_sb_has_casefold(sbi)) {
- 		f2fs_err(sbi,
- 			"Filesystem with casefold feature cannot be mounted without CONFIG_UNICODE");
- 		return -EINVAL;
- 	}
--#endif
-+
- 	/*
- 	 * The BLKZONED feature indicates that the drive was formatted with
- 	 * zone alignment optimization. This is optional for host-aware
--- 
-2.34.1
-
+- Eric
 
