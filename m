@@ -1,193 +1,144 @@
-Return-Path: <linux-ext4+bounces-1846-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1847-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4F53896BC9
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 12:13:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F0A98972D9
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 16:40:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A3A0292D90
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 10:13:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7058A1C268D9
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Apr 2024 14:40:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2A7113A259;
-	Wed,  3 Apr 2024 10:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 132E6149003;
+	Wed,  3 Apr 2024 14:40:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="z2+aO1up";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wnvQ48cR"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="1WMBwuQg";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1j4fSfPP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECDB1384B0;
-	Wed,  3 Apr 2024 10:11:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1642958203;
+	Wed,  3 Apr 2024 14:40:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712139087; cv=none; b=kxPswvkWnqap0gRoQDSNN5gZNeTJyLIHjHv+17yY0UbMrJCcOOaeNvx+AnlQ4u0KU3pE1wVGo2Au/3VUmfLe2MFU2hhQMRZYj7hNXn8alIRhvtdy+HtreuY3SDsmDXmdvDhBunkXVy31mMYPbvm034ytlKA3ZDwkixj7K0RKKOc=
+	t=1712155208; cv=none; b=E7xvv8H4iH8AAW7YF+aN0e7VWKaim0PAENkxFqI6Vwg5RGAFmEDu23G52p1x2qwTOi1wNu/JPmjolX5bAbyfIhSnbX/7naYP7vUPOsu8CWXN7EPysR1fex5Eglq+8T0lQWV9m0uKuFvjJydgOxOPkIJ/oviTgarerU43jsO/CsM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712139087; c=relaxed/simple;
-	bh=5sRrnYDlue/R5LusQUCeZ/NavfccssSP+9n69xB5wWw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qrpdjCD2QAOdZeosU+NXWhpnZ+JGiD+4Cm2PDSwLhP6T0wBjgDwwsylSZQWFucD4woXUbs3fjMZy1ZczQsdevNHdjdR6nar9aaJ+Wqz9Ni/QMeFWdi3g9hE7crmhnRnTGDwbdGmq0C1bFy9thPY0IYBbQVQAqplf5/p+Ib0WsNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=z2+aO1up; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wnvQ48cR; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
+	s=arc-20240116; t=1712155208; c=relaxed/simple;
+	bh=uKHh7k0GJP4j01baq9WegVjq8qw85xaG5tTV6U2NN20=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=uSrBL4+biaYz4PHg/dBJGb+KmNtbTPCZuszbEEt6eUBT6XziYyitS4YOk/W71EJemugJd2eLSH8ZEVD9ZMxRHcLk6TO9odAwfmvzFX5KRN7IyQK+eCdceqGjPnScGykYXPcSeSvPwQVLXvpWbAOg3YfDHQAgkPxUUSaFJbP5ZVE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=1WMBwuQg; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1j4fSfPP; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9C5B7351E8;
-	Wed,  3 Apr 2024 10:11:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712139082; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 381865CDA1;
+	Wed,  3 Apr 2024 14:40:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1712155205; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CkZ1VVg9ohX4ltkkDD2gbJ9aeiuQeuh/sj7CBEgj02E=;
-	b=z2+aO1upxP0Dtv/e0dL6o2l/3/HPyczzG4WtExN2l+nxV4ZfIcZP20g3GYzIop8ngtxKd+
-	Gk/nP6Nhw2ctnnBwGuBI1352c1O55tuqunf9MRuTEiwoYNGgg7diKvRpNUHnZFNMkEbUrC
-	xnTeA3vJBLpk21yGudhndrUXti5l7lM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712139082;
+	bh=vg01ihmdMVYCcMWpiDO8wUezeruG1JoTh7eUEiDh8b0=;
+	b=1WMBwuQgKWXff/t00TI4vFVa432ksxn76MjdXvNwvOEqlfev7LMCS6Jbd/0Fya7i/hOES1
+	a1CJgDcQ6AvK1r7EGUvS7tk72YgfbmKDfmRHyVlZYQPOqX7NjsaNumL3ZfSuypxNvDMmXD
+	p/R/48iIWZdH4MzxmQ8sg+i36IQi3Wo=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1712155205;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=CkZ1VVg9ohX4ltkkDD2gbJ9aeiuQeuh/sj7CBEgj02E=;
-	b=wnvQ48cRBCiLzfckmj/+hToHbmtprvv2CnNCO0GuyvGUFvojM4l2VjFMl0Ayc5JvIHpfHh
-	3RM3xsHxjAJ3FRBQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=none
+	bh=vg01ihmdMVYCcMWpiDO8wUezeruG1JoTh7eUEiDh8b0=;
+	b=1j4fSfPPBkMW+IsWTbUTExt+0KmxtV9CIOp0hik5GPmobg+PelWQIGVwj3vxm8/yztIuPJ
+	sC+C3te25NJAu0BA==
+Authentication-Results: smtp-out2.suse.de;
+	none
 Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 90AD51331E;
-	Wed,  3 Apr 2024 10:11:22 +0000 (UTC)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E867013357;
+	Wed,  3 Apr 2024 14:40:04 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id BahFI0orDWYGCQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Wed, 03 Apr 2024 10:11:22 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3F94CA0814; Wed,  3 Apr 2024 12:11:22 +0200 (CEST)
-Date: Wed, 3 Apr 2024 12:11:22 +0200
-From: Jan Kara <jack@suse.cz>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.cz>, Ye Bin <yebin10@huawei.com>,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] jbd2: avoid mount failed when commit block is partial
- submitted
-Message-ID: <20240403101122.rmffivvvf4a33qis@quack3>
-References: <20240402090951.527619-1-yebin10@huawei.com>
- <20240402134240.5he4mxei3nvzolb3@quack3>
- <20240403033742.GE1189142@mit.edu>
+	id p4ljMkRqDWagZAAAn2gu4w
+	(envelope-from <krisman@suse.de>); Wed, 03 Apr 2024 14:40:04 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: Eugen Hristev <eugen.hristev@collabora.com>,  tytso@mit.edu,
+  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
+  jaegeuk@kernel.org,  chao@kernel.org,
+  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
+  brauner@kernel.org,  jack@suse.cz,  linux-kernel@vger.kernel.org,
+  viro@zeniv.linux.org.uk,  kernel@collabora.com,  Gabriel Krisman Bertazi
+ <krisman@collabora.com>
+Subject: Re: [f2fs-dev] [PATCH v15 6/9] ext4: Log error when lookup of
+ encoded dentry fails
+In-Reply-To: <20240403042231.GH2576@sol.localdomain> (Eric Biggers's message
+	of "Tue, 2 Apr 2024 21:22:31 -0700")
+Organization: SUSE
+References: <20240402154842.508032-1-eugen.hristev@collabora.com>
+	<20240402154842.508032-7-eugen.hristev@collabora.com>
+	<20240403042231.GH2576@sol.localdomain>
+Date: Wed, 03 Apr 2024 10:39:59 -0400
+Message-ID: <8734s24iio.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240403033742.GE1189142@mit.edu>
-X-Spam-Score: -1.61
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-1.61 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 RCPT_COUNT_FIVE(0.00)[6];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 MX_GOOD(-0.01)[];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 R_DKIM_NA(2.20)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 ARC_NA(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:98:from];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:98:from]
+Content-Type: text/plain
+X-Spamd-Result: default: False [-0.73 / 50.00];
+	BAYES_HAM(-0.43)[78.40%];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	HAS_ORG_HEADER(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:rdns,imap2.dmz-prg2.suse.org:helo]
+X-Spam-Score: -0.73
 X-Spam-Level: 
-X-Rspamd-Queue-Id: 9C5B7351E8
+X-Spam-Flag: NO
 
-On Tue 02-04-24 23:37:42, Theodore Ts'o wrote:
-> On Tue, Apr 02, 2024 at 03:42:40PM +0200, Jan Kara wrote:
-> > On Tue 02-04-24 17:09:51, Ye Bin wrote:
-> > > We encountered a problem that the file system could not be mounted in
-> > > the power-off scenario. The analysis of the file system mirror shows that
-> > > only part of the data is written to the last commit block.
-> > > To solve above issue, if commit block checksum is incorrect, check the next
-> > > block if has valid magic and transaction ID. If next block hasn't valid
-> > > magic or transaction ID then just drop the last transaction ignore checksum
-> > > error. Theoretically, the transaction ID maybe occur loopback, which may cause
-> > > the mounting failure.
-> > > 
-> > > Signed-off-by: Ye Bin <yebin10@huawei.com>
-> > 
-> > So this is curious. The commit block data is fully within one sector and
-> > the expectation of the journaling is that either full sector or nothing is
-> > written. So what kind of storage were you using that it breaks these
-> > expectations?
-> 
-> I suppose if the physical sector size is 512 bytes, and the file
-> system block is 4k, I suppose it's possible that on a crash, that part
-> of the 4k commit block could be written.
+Eric Biggers <ebiggers@kernel.org> writes:
 
-I was thinking about that as well but the commit block looks like:
+> On Tue, Apr 02, 2024 at 06:48:39PM +0300, Eugen Hristev via Linux-f2fs-devel wrote:
+>> From: Gabriel Krisman Bertazi <krisman@collabora.com>
+>> 
 
-truct commit_header {
-        __be32          h_magic;
-        __be32          h_blocktype;
-        __be32          h_sequence;
-        unsigned char   h_chksum_type;
-        unsigned char   h_chksum_size;
-        unsigned char   h_padding[2];
-        __be32          h_chksum[JBD2_CHECKSUM_BYTES];
-        __be64          h_commit_sec;
-        __be32          h_commit_nsec;
-};
+> I'm seeing this error when the volume is *not* in strict mode and a file has a
+> name that is not valid UTF-8.  That doesn't seem to be working as
+> intended.
+>
+>     mkfs.ext4 -F -O casefold /dev/vdb
+>     mount /dev/vdb /mnt
+>     mkdir /mnt/dir
+>     chattr +F /mnt/dir
+>     touch /mnt/dir/$'\xff'
 
-where JBD2_CHECKSUM_BYTES is 8. So all the data in the commit block
-including the checksum is in the first 60 bytes. Hence I would be really
-surprised if some storage can tear that...
+Yes.  This should work without warnings.  When not in strict mode,
+/mnt/dir/$'\xff' is just a valid filename which can only be
+looked up with an exact-match name-under-lookup.
 
-Hence either Ye Bin is running on some really exotic storage or the storage
-/ CPU in fact flipped bits somewhere so that the checksum didn't match or
-the commit block was in fact not written now but it was a leftover from
-previous journal use and h_sequence happened to match. Very unlikely but
-depending on how exactly they do their powerfail testing I can imagine it
-would be possible with enough tries...
+The issue is that we must propagate errors from utf8_strncasecmp in
+generic_ci_match only if we are in strict mode.  If not on strict mode, we
+need to return not-match on error.
 
-> In *practice* though, this
-> is super rare.  That's because on many modern HDD's, the physical
-> sector size is 4k (because the ECC overhead is much lower), even if
-> the logical sector size is 512 byte (for Windows 98 compatibility).
-> And even on HDD's where the physical sector size is really 512 bytes,
-> the way the sectors are laid out in a serpentine fashion, it is
-> *highly* likely that 4k write won't get torn.
-> 
-> And while this is *possible*, it's also possible that some kind of I/O
-> transfer error --- such as some bit flips which breaks the checksum on
-> the commit block, but also trashes the tid of the subsequent block,
-> such that your patch gets tricked into thinking that this is the
-> partial last commit, when in fact it's not the last commit, thus
-> causing the journal replay abort early.  If that's case, it's much
-> safer to force fsck to be run to detect any inconsistency that might
-> result.
-
-Yeah, I agree in these cases of a corrupted journal it seems dangerous to
-just try to continue without fsck based on some heuristics.
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Gabriel Krisman Bertazi
 
