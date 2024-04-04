@@ -1,179 +1,101 @@
-Return-Path: <linux-ext4+bounces-1858-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1859-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EE6E8988B0
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 15:22:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F8B38988E5
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 15:37:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C8A11C21262
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 13:22:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F81C1C24EAF
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 13:37:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B1DE1272B7;
-	Thu,  4 Apr 2024 13:22:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E446412837A;
+	Thu,  4 Apr 2024 13:37:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tfKqhYH4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xdAFOZPO";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dvyHCJsy";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oYgUJsxZ"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="dObrsTg4"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out203-205-251-53.mail.qq.com (out203-205-251-53.mail.qq.com [203.205.251.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D140D18AF6;
-	Thu,  4 Apr 2024 13:22:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F321512836B
+	for <linux-ext4@vger.kernel.org>; Thu,  4 Apr 2024 13:37:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712236947; cv=none; b=paE//nkJxZidCTG7708iP9Yfhr1Fh0VB3BQVEjjGhNYbxA9ObEjjCewEe6/SAodu3qScXY/pgTL2ak2adR89ZBdmI9y39N4quLvWqvJgAWcy3K71qXRNVPrKij8InGfn1Urccb1sSjtHvCq/GuGigAt6hYUtGpjO5nJVhWfVSP8=
+	t=1712237842; cv=none; b=Cu6G+hyTnvYX8wK3GU33do1EoDXBW3BQdmmhWyqm2fxaTLZP3JbKk448FJD0mV9o7sE84QKzTgrPE6pEWSkm8BzFocIpUNe1fgi1mXtfXUarpL8hsOVSigM8D3l1fzY2xrY2aCGSLK0DCA67jxDsVeJRs8SuiOEO7xLIWqBT+ak=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712236947; c=relaxed/simple;
-	bh=C26GEQmF0yzY1/2yRCLUfSnRdKRPVpkt0GKXY7N2i6c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hy2u1VQ5qCltvAGjS8ybZ5vYWVn78z64yLs/qsVAHb6QDTfiXFtXCz2lvXLuLdpLfK0LvUfsGJGMKR3aLWVogK9djMBoknWukG2FPP56jEMlev9htGXY1NFvB9TUirT2cRdMg5tDEcr9xg1GQD+hbePaTIy2yk7VyrFV/yTnx20=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tfKqhYH4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xdAFOZPO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dvyHCJsy; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oYgUJsxZ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E9DFD37C07;
-	Thu,  4 Apr 2024 13:22:21 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712236942; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/FqFHP02mrX+zb0ebadzMDbBlUgI5RchQt3YBs3WUxg=;
-	b=tfKqhYH49ZKwp6JFjF1nBhUyw3A3pcPFd82ZbW+3rf4Prf1MB2/6xpT8KIwD20SgLfQa0B
-	DrxnyIGwTlbELdtC3RcQRHeNqy4jB5EDks8Z1S6DJvUx+ZyyNhsXMbb/eoGA0K98wz5rMy
-	JYMPkhQ1L2l5aehUru10Hz8jclbVhFc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712236942;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/FqFHP02mrX+zb0ebadzMDbBlUgI5RchQt3YBs3WUxg=;
-	b=xdAFOZPOEirLRBQ+BGXTV8I5Mm1McFa1POU8Rq8494K59qhfTxI4b+hQThb0bYgVKyyucL
-	GNNdckKZxydS8BBg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712236941; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/FqFHP02mrX+zb0ebadzMDbBlUgI5RchQt3YBs3WUxg=;
-	b=dvyHCJsym86I5CcEDMyI4bQgEIqWyqzeLaQ8lKiUtNVXego3AImrJnTqBMmzdvKZUdqiIZ
-	96JoEHHPKdbgCapUUTmI8U3P/17UGeTkQ1Eq5lf7BmLpax+MdrhIcNsm9vXkC5Sv7+XFX6
-	uLD5v9TAUsr+sTRBa71PbL3Q0alphAc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712236941;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=/FqFHP02mrX+zb0ebadzMDbBlUgI5RchQt3YBs3WUxg=;
-	b=oYgUJsxZzwFadcRpmIklMOwdhQkmVvEtm8S6HnsTuyky+j83w9dpDOxgYfO95zNpt79KSN
-	jyUhIn0Po0bbxrAg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id DE6D4139E8;
-	Thu,  4 Apr 2024 13:22:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 8llLNo2pDmYbcgAAn2gu4w
-	(envelope-from <jack@suse.cz>); Thu, 04 Apr 2024 13:22:21 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 844AEA0816; Thu,  4 Apr 2024 15:22:21 +0200 (CEST)
-Date: Thu, 4 Apr 2024 15:22:21 +0200
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jack@suse.cz, ojaswin@linux.ibm.com,
-	ritesh.list@gmail.com
-Subject: Re: [PATCH 1/5] ext4: keep "prefetch_grp" and "nr" consistent
-Message-ID: <20240404132221.uliif3mw7acy7t7l@quack3>
-References: <20240326213823.528302-1-shikemeng@huaweicloud.com>
- <20240326213823.528302-2-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1712237842; c=relaxed/simple;
+	bh=940cLlbzV8VFpgJm1FQEG99fePaOqfrVaVB+HvJoX+A=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=EmMcgfY4uZt6BXdg6HfTPE6DDTPxnU2MOVZW0aAmeK+TCarp/rwdBsRWFcX0qslxD5IuQuK+SSCoqPnBcwEKporHNRsDMv7KnDP/n2qiBHh1AWtaNZA5BZlqDVaUVsbgSa0xsPWH7O4ABE7m3p6NT7L5KlfabbQrOO4Vduy1ALM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=dObrsTg4; arc=none smtp.client-ip=203.205.251.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1712237831;
+	bh=+0TAgpTSkgu3idk7K76VlB30Cdq8PeIbrSWtdBOwwSw=;
+	h=From:To:Cc:Subject:Date;
+	b=dObrsTg4rL1NAxTmqRFUCEmXjmKRAt5hzPCQu/CSLde97clitDnFf2mUFM5PEnxf5
+	 E/eCpPHyZrxBp0jNzJNQs4cz6OZtUKVIwDb0HTNUc1vWaR+fCGZtX3hreBGXXANxhv
+	 8he8wkuTKb99hSResSdPwUBMDhjBA2KAYzietKJ4=
+Received: from fedora.. ([120.244.21.52])
+	by newxmesmtplogicsvrsza1-0.qq.com (NewEsmtp) with SMTP
+	id 94A25686; Thu, 04 Apr 2024 21:37:10 +0800
+X-QQ-mid: xmsmtpt1712237830tmpzoxaxw
+Message-ID: <tencent_1D453DB77B0F2091CB4A68568A77627D4E08@qq.com>
+X-QQ-XMAILINFO: MyzgKsCjKVjegBKYzzElLS6RaXh/RgkJaJ/aA+2JBzSP2GhRSxz5bgyJLScDqy
+	 vFNtYOmuSoXRIXWVXhZ2plgFUJMqXx2L0VNA0A+thFR5cCtXtSL8r67wFWeOldxcQO+8PuH7pWGu
+	 rkzyxWdzsiy/8lzn6opDxU1FE8OzhMPVO5CdZCZr0tUSOovXPmrbzd0sW/jI0/B6ZFoXXJIOmmpo
+	 qbuKGGGKwKkN3gpmhPBe0Nt8vX48WTGSzaIr+9w70xWhKd0zmr+KKxjPA8sOwYfhA6m+YOkOCpzr
+	 neRI+wD8n+jpXloEX1jzSF2ak5pYtEMrGuqRihZnVmi4EG+0Fnx60CtAcSYiuRL6oUffcBU8EPB9
+	 T+oT72KSgaZukLDrw/7AayKHiC+LrRrdim8c2MJ7QXXsRDRl2rxJ/V3wu/ixrzOc6h4wUcIMuXZr
+	 aKWTj81MtEffBszLWLhlieG7ElJ6atmiJDeyRo7670S4H0J7yECnRoVj95b4rvsycA/as4jv7wbs
+	 WZiZOyFKRjqJ8fhJ6NRcmPQp0NtGMtbw+QZFe98K9zW+X0in96Kvos8Pnl3Bq19go9jtbtEW6hLJ
+	 ERrgUWnQYLsXFjHx5pR7yVwuXmPZuLbgg3ok01GYt5TmyvB33p/R8zna2Q5UubC8cVjuAXDH7MEK
+	 fcUrXZkKu4DEYLAK/77tR5xaudXdGBsubhZM2sD/G/BxukgeTu/UHaKrqbNJ7nJrQhvgxtBeiwbd
+	 Jvqy0P54MlvadJ0nI3759tGBTp6D1ewN+YzUV4fUUPwHpX9SOTR84ZbceVRNQ1yc1YePv/3ScfM3
+	 teX/X4vjSvHSftzyISNeR40tZMx7MJreLOtmd5POicMFfe0TQ2mZfmBUsrNgQAmh29J1lNwqo9Ai
+	 42oFXciOV7bmORprOQj9am+/32aZuXYzDUDxYImFK/+WQYN1WfbtobkE5ZDF058NzfQ0qYiX9UwT
+	 23htecyd2GbaK6XWX7SamwqgsFGhukKFaXRiU8t2BnDCBLIHFQOC/2AKY1+I/Rz4DfArTflys=
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Wang Jianjian <wangjianjian0@foxmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: Wang Jianjian <wangjianjian0@foxmail.com>
+Subject: [PATCH] jbd2: Add a comment for incorrect tag size
+Date: Thu,  4 Apr 2024 21:36:54 +0800
+X-OQ-MSGID: <20240404133654.46748-1-wangjianjian0@foxmail.com>
+X-Mailer: git-send-email 2.34.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240326213823.528302-2-shikemeng@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: 0.70
-X-Spam-Level: 
-X-Spamd-Result: default: False [0.70 / 50.00];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	BAYES_HAM(-0.00)[39.50%];
-	TAGGED_RCPT(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,suse.cz,linux.ibm.com,gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email]
+Content-Transfer-Encoding: 8bit
 
-On Wed 27-03-24 05:38:19, Kemeng Shi wrote:
-> Keep "prefetch_grp" and "nr" consistent to avoid to call
-> ext4_mb_prefetch_fini with non-prefetched groups.
-> When we step into next criteria, "prefetch_grp" is set to prefetch start
-> of new criteria while "nr" is number of the prefetched group in previous
-> criteria. If previous criteria and next criteria are both inexpensive
-> (< CR_GOAL_LEN_SLOW) and prefetch_ios reachs sbi->s_mb_prefetch_limit
-> in previous criteria, "prefetch_grp" and "nr" will be inconsistent and
-> may introduce unexpected cost to do ext4_mb_init_group for non-prefetched
-> groups.
-> Reset "nr" to 0 when we reset "prefetch_grp" to start of prefech in next
-> criteria to ensure "prefetch_grp" and "nr" are consistent.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+journal_tag_t has already counted the checksum size, however, for
+compatibility reason, we don't fix this bug and keep it as is.
 
-Looks good. Feel free to add:
+Signed-off-by: Wang Jianjian <wangjianjian0@foxmail.com>
+---
+ fs/jbd2/journal.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/mballoc.c | 1 +
->  1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 12b3f196010b..a61fc52956b2 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2856,6 +2856,7 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  		group = ac->ac_g_ex.fe_group;
->  		ac->ac_groups_linear_remaining = sbi->s_mb_max_linear_groups;
->  		prefetch_grp = group;
-> +		nr = 0;
->  
->  		for (i = 0, new_cr = cr; i < ngroups; i++,
->  		     ext4_mb_choose_next_group(ac, &new_cr, &group, ngroups)) {
-> -- 
-> 2.30.0
-> 
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index b6c114c11b97..b5e614818e8b 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -2698,6 +2698,10 @@ size_t journal_tag_bytes(journal_t *journal)
+ 
+ 	sz = sizeof(journal_block_tag_t);
+ 
++	/*
++	 * journal_block_tag_t has already counted checksum size
++	 * but for compatibility reason, we keep it as is.
++	 */
+ 	if (jbd2_has_feature_csum2(journal))
+ 		sz += sizeof(__u16);
+ 
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.3
+
 
