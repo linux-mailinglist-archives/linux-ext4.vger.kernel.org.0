@@ -1,103 +1,126 @@
-Return-Path: <linux-ext4+bounces-1871-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1872-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E0BA899141
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 00:24:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CDAAC899149
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 00:29:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B79ED1F2307B
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 22:24:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D59DB218CC
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 22:29:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD6D213C3D8;
-	Thu,  4 Apr 2024 22:24:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED37013C677;
+	Thu,  4 Apr 2024 22:28:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X1VdbGSV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MRSqA7hR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f48.google.com (mail-pj1-f48.google.com [209.85.216.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E08E13473D
-	for <linux-ext4@vger.kernel.org>; Thu,  4 Apr 2024 22:24:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DCA513C3E3;
+	Thu,  4 Apr 2024 22:28:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712269463; cv=none; b=MMStwMdampXMAG3IxB7jNSK555clnYHRGAlKHOKgO2DD0d1eVdpbPhh1A6T7El0vutlhCRah+VDHHaYqcx5snM5zfTKQEcojG0RYt+Dj3AH5C4lAG6N3+DiUOc0uu3R2R1qZKOiVURjsz472pm+Voy+YTuaYn65zuZE35F2+LeI=
+	t=1712269734; cv=none; b=hANRIifNB+HXylYHuvET0X97q9/GQHeui2+Eyp2nbvGbCjyRmSCIOZZJATaZKxIl/iyMfcTHMy8YbVs3xMmUqkrPQ2BCpsaa8JiQKLPGc9Mx/5ot5effze349o9vKHAQIzjS+fO4F3Vo3cMcM017IaD5vxs4W7mM/gfgptkLT30=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712269463; c=relaxed/simple;
-	bh=k1TXt+CdYZOaX0qdAy2cb+IiqakRxh6JueoWsKsfE7A=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=R9syVh3WnST+aCY1ZJ8S4QoIJQFLS5EeXCTWHG5MFKvHveyW1EeJZdgkjdy89KlgCW14mGeLp3SkjqwBNLg4Th6Gtp+Ing/UABMw1GuBabotgWcLie6dBJ4qT43Y/Wvryme0QscCvClJNUydUVWsYuypLwqi2qFkO4neDQOCb68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X1VdbGSV; arc=none smtp.client-ip=209.85.216.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f48.google.com with SMTP id 98e67ed59e1d1-2a2ec65332fso679371a91.1
-        for <linux-ext4@vger.kernel.org>; Thu, 04 Apr 2024 15:24:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712269461; x=1712874261; darn=vger.kernel.org;
-        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=P6ihik6rGPARI0TewqlgGNLWtE3Rk9/DaD0Q3aQRpMY=;
-        b=X1VdbGSVjWZmJtwa4f1FbQwroDMxa6YyYm1Mi54uz03rKDVtwwuNT2diFcDqwglVUU
-         MJRhziNooVZd7EMN88I+AOzrZD2SCh7lqvTKo0duRchWgLmS5bQA0HQG9ZGIhc4jjQXM
-         NykVsErG9DcnBuF/CYOREOWpYfso4bLmxNrf/CrVmzhcWKq3Gyc1xwmZv6+ElHKedKHe
-         CemmygRgs0gyNbbO+K0FApJlQE8OggGwp2GL27wVp2PhovdLKuP6V/cFVHlLMpBWvVbE
-         TH0qJtFaVjTR8tr2BmOvRJVUeJgAieTbpZ7RO73If8kSUZnb1WBk1CemdkXp/gc/Dvwe
-         M1WA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712269461; x=1712874261;
-        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=P6ihik6rGPARI0TewqlgGNLWtE3Rk9/DaD0Q3aQRpMY=;
-        b=YpalE5j42EeuPuqGaCh8tARpG6VyjSHYBGE7Dmr9mDou+vJMueQ0bIM0fBllyNjdnU
-         qL1C4hLB6Qgzw5c6HVNrs3tmgZf/EqhhZKMshFiMwdM25ND/X0sqjjJ9GtvNCz5WybMw
-         O5el3bPh79vIvxX79hkr3xo86CRU6lxRrwhpGAnUvEiNM3neLQT/LO4RUXRgCiPQZ2Tw
-         FryeDPk35SrE+N9ohnxRoT/9LGu7jn5TWnadwgP1LGCvPQeV5wwJlKqbUAmJ6gJoorn9
-         99o3yIg//OmouRMMbZaViyUnscsnbEPVhHV5CEyG6IoHWty5hFpQWHCR5ywZMVJf8sxb
-         MREQ==
-X-Gm-Message-State: AOJu0YwXN0TNzKUNHvnOI2YjJR5rhD0Zj/cFmeRjb7lsU2QVhyay4WwN
-	Mdmlzhy6M0IwXeQyN3GdkrAUZEjiEQQ4sMHjzS/dFrhTqYNpghUVntR98XME60pCBItd9zguzU/
-	urUSAqpaDFbn+1n1QkIt9f5HqEQ1k3Q4rjaM=
-X-Google-Smtp-Source: AGHT+IEwH8nrD6AAONkqZ7lUoBI8Z1nceU4zqFD26ttBYDzqRX2H9pH1tezzofFPy+gDOf9DZdkHdNGNZl45sr3zqp4=
-X-Received: by 2002:a17:90b:205:b0:2a2:f281:66ed with SMTP id
- fy5-20020a17090b020500b002a2f28166edmr1045989pjb.21.1712269460830; Thu, 04
- Apr 2024 15:24:20 -0700 (PDT)
+	s=arc-20240116; t=1712269734; c=relaxed/simple;
+	bh=RxUgTHy6Q08KN0jBS41CMT9Ci5RsJ+C8p9GGt3Gfp6o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Mh1BbqtBN2L8XTewRgd7Ph4tuUeSTYKLrZVt+dlUUInGYTmtkm2VJLg0AjD19+bpma3ONgEitDbYW8d6gCRE5SMV2c5ElHw/RImYrmE7gxFmbflAJRB56tiTlNFA44g4J3kp2BYAJGvQdVeeTecLXQNZHIrSmt3Dk/KfiuMq6XY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MRSqA7hR; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Thu, 4 Apr 2024 18:28:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712269730;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=cfxyCzvtzmWi1KSrX/XZIalfQOEPT3xbF6m5fU6kp1Y=;
+	b=MRSqA7hRXbZz0tmIJVXahqUTpqENt47k4TugvBcfJSyR0Cm1gh2WA4N6yRjmSx7aVgCNTP
+	AtxKikLCy/Cnvx95nkww4y4oLedWDdmjqq1jSIM2X6aubg8cqXD8PoPTacuEpfuX2MFiLW
+	VByPFt5v8rdJJuUvwqP0pi7SRB4TFpA=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org, 
+	joro@8bytes.org, will@kernel.org, trond.myklebust@hammerspace.com, 
+	anna@kernel.org, arnd@arndb.de, herbert@gondor.apana.org.au, davem@davemloft.net, 
+	jikos@kernel.org, benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
+	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, vbabka@suse.cz, 
+	edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, iommu@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, linux-crypto@vger.kernel.org, 
+	bpf@vger.kernel.org, linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-mm@kvack.org, netdev@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+Message-ID: <qwwylzjcezfdyznm25epghmynvybgnzw2cmwahsyvwtqjrptsl@xdag7w65kn7b>
+References: <20240404165404.3805498-1-surenb@google.com>
+ <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+ <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+ <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Hanasaki Jiji <hanasaki@gmail.com>
-Date: Thu, 4 Apr 2024 18:23:44 -0400
-Message-ID: <CAMr-kF3yY6zYi2ZBXG7g77zaG2qzA9B294cqL=B7HOtkXYhOeA@mail.gmail.com>
-Subject: ext4 e2fsck error interpretation and howto fix? expecting 249045418
- actual extent phys 249045427 log 1 len 2
-To: linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-Hello all,
+On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrote:
+> On Thu, Apr 4, 2024 at 10:08 AM Suren Baghdasaryan <surenb@google.com> wrote:
+> >
+> > On Thu, Apr 4, 2024 at 10:04 AM Matthew Wilcox <willy@infradead.org> wrote:
+> > >
+> > > On Thu, Apr 04, 2024 at 09:54:04AM -0700, Suren Baghdasaryan wrote:
+> > > > +++ b/include/linux/dma-fence-chain.h
+> > > > @@ -86,10 +86,7 @@ dma_fence_chain_contained(struct dma_fence *fence)
+> > > >   *
+> > > >   * Returns a new struct dma_fence_chain object or NULL on failure.
+> > > >   */
+> > > > -static inline struct dma_fence_chain *dma_fence_chain_alloc(void)
+> > > > -{
+> > > > -     return kmalloc(sizeof(struct dma_fence_chain), GFP_KERNEL);
+> > > > -};
+> > > > +#define dma_fence_chain_alloc()      kmalloc(sizeof(struct dma_fence_chain), GFP_KERNEL)
+> > >
+> > > You've removed some typesafety here.  Before, if I wrote:
+> > >
+> > >         struct page *page = dma_fence_chain_alloc();
+> > >
+> > > the compiler would warn me that I've done something stupid.  Now it
+> > > can't tell.  Suggest perhaps:
+> > >
+> > > #define dma_fence_chain_alloc()                                           \
+> > >         (struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain), \
+> > >                                                 GFP_KERNEL)
+> > >
+> > > but maybe there's a better way of doing that.  There are a few other
+> > > occurrences of the same problem in this monster patch.
+> >
+> > Got your point.
+> 
+> Ironically, checkpatch generates warnings for these type casts:
+> 
+> WARNING: unnecessary cast may hide bugs, see
+> http://c-faq.com/malloc/mallocnocast.html
+> #425: FILE: include/linux/dma-fence-chain.h:90:
+> + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),
+> GFP_KERNEL))
+> 
+> I guess I can safely ignore them in this case (since we cast to the
+> expected type)?
 
-I have an ext4 filesystem with e2fsck reporting many of the below
-lines.  Neither e2fsck nor fsck fix the issue.
-Repeated runs result in the same errors.
+Correct, it's not hiding bugs in this case, it's adding type safety.
 
-kernel version = linux-image-6.1.0-18-amd64 / Debian Bookworm
-
-Your help understanding the output and help fixing are very much appreciated.
-
-Thank you,
-
-==== e2fsck output ====
-62264184(d): expecting 249045418 actual extent phys 249045427 log 1 len 2
-62264185(d): expecting 249045419 actual extent phys 249045429 log 1 len 2
-62266954(d): expecting 249045453 actual extent phys 249045486 log 1 len 3
-...
-/dev/...: ***** FILE SYSTEM WAS MODIFIED *****
-
-     5123698 inodes used (8.01%, out of 64004096)
-        3791 non-contiguous files (0.1%)
-        3725 non-contiguous directories (0.1%)
-             # of inodes with ind/dind/tind blocks: 0/0/0
-             Extent depth histogram: 5112072/403
-...
+checkpatch is definitely not authoritative, you really have to use your
+own judgement with it
 
