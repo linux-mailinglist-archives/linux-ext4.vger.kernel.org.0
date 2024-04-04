@@ -1,183 +1,252 @@
-Return-Path: <linux-ext4+bounces-1866-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1867-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 147A2898D00
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 19:09:16 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 47BDB898D25
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 19:23:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFCA72857FA
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 17:09:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1065289E53
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 17:23:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58D5C12DDBF;
-	Thu,  4 Apr 2024 17:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3486312D201;
+	Thu,  4 Apr 2024 17:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="jC5EaRQM"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="JqGheVtk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f180.google.com (mail-yb1-f180.google.com [209.85.219.180])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77C2E12BF22
-	for <linux-ext4@vger.kernel.org>; Thu,  4 Apr 2024 17:08:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9388914A8B
+	for <linux-ext4@vger.kernel.org>; Thu,  4 Apr 2024 17:23:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712250539; cv=none; b=aprB0+vada2zHPGUoIai4+TNTXbxJHjxebVEFKIeppKMDyeH2drHvXZiaN+7V33YEqV1Q8P9522MJlHSLlvyL46z8icShqZj52kmG5Cn3zBR+fwT9jeUfCQ952X88m9j4strGLfKE9P69eZpxJPD1tkgeuI3VwsCEUlB/5+Jnuo=
+	t=1712251414; cv=none; b=hggAi2/FA6ozHdm1VvS2myUpupKy4ODAkoIl+g0oEwCclmo5IWvl9xTTDvHCMxLr8cKVqqPFi2xJO5D6q/+3UHgrp/3pD0rH/t0laYMYjfuaminjeVoeMOIvQBOE50DitHXpakCfahZ/zXSAM66RfXm3A/9okhblQLW47Nsffaw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712250539; c=relaxed/simple;
-	bh=qIeHxQSzEKN+T+ZMX5PFicsmdKmy6EfcZQYdz44LOBA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YHv0JIEMhOmecHQWz+Vfjm4iHLZ1i/vN4mCT6AWDQ5ZGITkz8pCMfgWOCmRvp1HoDSPFqjh0CKbvM0birW6sgmMQUIzG7LhXmCc7mL0gyu7Tc0YOtSNilbYNnmrJjdGKKtor+xtXAsjikYoFZm+95AegTnfbaZWwCThILTzEEzk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=jC5EaRQM; arc=none smtp.client-ip=209.85.219.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-yb1-f180.google.com with SMTP id 3f1490d57ef6-dcc7cdb3a98so1284144276.2
-        for <linux-ext4@vger.kernel.org>; Thu, 04 Apr 2024 10:08:57 -0700 (PDT)
+	s=arc-20240116; t=1712251414; c=relaxed/simple;
+	bh=/ERZcV89deQEGOScIgYObnKqWyzgP9IRdSFv/05OtyA=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=oy+3+fY3AfwPeAUP1gniVqYIP5OKyIxwVslHs1PxOM36Ya7rpb6s7euYbHjL8uDi5YvCTIeUi/Z7c5wuYIXVnt9XkGU3Bz6fz7tb9VRtUTXYsU72+ZEFZ8OtqmXazYdu6Js0/ihYV6A9d6FbIWL341+PnPaxw5fBP/PfM3cmfKE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=JqGheVtk; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1e28856ed7aso9293965ad.0
+        for <linux-ext4@vger.kernel.org>; Thu, 04 Apr 2024 10:23:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1712250536; x=1712855336; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KuDs1drwJi9Z+z9OuWkhK3ckPKS9r4/p1uVUkFqevFk=;
-        b=jC5EaRQMXoWxXcT/PNqSjrcsftwnvseB5AtKBg2vqgAyyLVQgp20SRegZq7YLIrdO/
-         HTQWScQM/DW37R2IYh+dwMOL2ayL0pQIQzYyP1lXQTLRA97VQiYJ9PHXRyMfJ/Z9ZvVJ
-         oFpUWCWEB1bSpDEyqEQ7RCqnI1td28ZhCzX2yYyMeaCp+6hQUqHZ6EtZjij0pKovvOgy
-         stCx6Jb+d1gT/UvnialtOoZLUIi5qkRs+J/dXYzAxsZr67uO7BH+bPTh4Ub09lLJuNIn
-         17mjFsnILx+0qC4dxBW5VMWwIa7xznM4mAxRt/Jwv9KrNYGo+0DSWcP592JJrWie/m+S
-         e2vQ==
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712251410; x=1712856210; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cb9tMr2Ueop+PkfQHR3vRIKn8fg1o9ItUdFKJmhbC0k=;
+        b=JqGheVtk1hnkE688ybj38ZPdF7q7QJ4WE9DRnX1AqpZt9OjPW8kK2KGOxAOSfVTMar
+         4hcIj18GrnNaHewVtxIcvmXOUzIr52SpggPFyZv91/pMNVmXtcmWQf1PI9Mv6Onpyfyy
+         hHTvOGxvk/M7EaxMF25cZv4q+qJb5dHg3xXzQjZdeuPdHOJwsbAs1miAl3nNwFgqbBMu
+         YWDFY4FQi93mC74O47nolqKGS23PYuojOo88NuPA3EXq8cqoFwbcQBoveuaOqWUobXfu
+         JtWlNMW3iav6+1whLsvBLnfOTRAJ6I1AAjydcJ8mM0VgcMebpgcj5pLjfE/31A8hqtOE
+         M5Og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712250536; x=1712855336;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=KuDs1drwJi9Z+z9OuWkhK3ckPKS9r4/p1uVUkFqevFk=;
-        b=tNSMiI4+Zrp6ek0HDRxe0mq/gjEjl0+9nErUyMseAeRto2gnlgn8bC5bVnKi/DpgTi
-         iSkBRH45FNP43p1k41UxjC+pNhhmIk/3uOLitaTPJvSor3vcib21QuL9JDvJRdB9Kda+
-         +cUny/m1qcrLiWPJ6ADuxj/i3oZ7ZEA5/Zd9bl05EwetWCymWZaO7/gW7V0R+UmNkQZY
-         16VuEZVEKE8S6CkXjMsHuePRPFXkvNUy1q4OsO54yxnaOFoNWXlAOU2fUS0cshOjlRVs
-         c6FBgMCF9/OxsLw7PCU0TPCozU1g4HOOkqgxSFIT9M3HYY6YarWTllGdq+Qh/47j8bK0
-         Vzxg==
-X-Forwarded-Encrypted: i=1; AJvYcCVTQvyMoPSZ/Jyo4OTrwSZZWtuK4qjN3xxs0ZKELtu9aVWnt2eRZCWYFp35VNQXTMglEFBAUeLF/rCMTDYc2NaqpmbewS/IX/wZxA==
-X-Gm-Message-State: AOJu0YzNNBpSEPSRBf1BHzQjZ8bng1QvleIgUzPdlyUlGUfDPLwUecY4
-	qaei0lV3QGx0RW1xNoL7ycZ/2JulBqbGCdv/v5Vwsdx2buEeacL13ax56Tl9HKqCpL3/dV23zW4
-	vnXiYUW/9k+FAxjE0Ph01mCJ8C1nwtSMl8296
-X-Google-Smtp-Source: AGHT+IFt2ASldzAexjX0sPM2NMrH0Lqtd66mUXGVX9ZgF2XSVZKC+BEFwLxb4crFlAjVgX0qYdICDkkyaJeo+de/1Hw=
-X-Received: by 2002:a25:ac19:0:b0:dcb:b072:82d5 with SMTP id
- w25-20020a25ac19000000b00dcbb07282d5mr3065164ybi.64.1712250536330; Thu, 04
- Apr 2024 10:08:56 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1712251410; x=1712856210;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Cb9tMr2Ueop+PkfQHR3vRIKn8fg1o9ItUdFKJmhbC0k=;
+        b=ngx+YXMdvlA67ZsJYgZnVFI2tiMKHFu5eNMqG8jYuWix5fZUPtW/fN6tG1TAZqvWLd
+         S/Pi1ub1fMf1wKLSCAFl/vJPFN/TTVJAaQZ4ioVrjDr1TVAzG0xrGZ6ksANEARUHlgfW
+         LmEqGwNgpTIbYqes5FRyZ66QavJoPaDHntFrImn6mAazI3T/Z0cCMrwduX+uZdEkADgS
+         2FhvMvWDulDPknN9YTN+hqBrQrFImCj/a48zUW+UHVilgn4jRvLpNElK+4kRZbIVyo5G
+         PWPuTT5mbQaXqR0Ie+HjQzcvlX48N25AYeoo05nB37EKDovGB053tEoAAce/DjO5iMYu
+         qoQw==
+X-Forwarded-Encrypted: i=1; AJvYcCWemAvsdavLL4RaN9gI3ro6V8XCT4zRXeF1Fd+l+Xx3HaEKJl0hos2GVLu5x3ApSjUbGnFbZjqChYxVYDhow2mAhhYojSi+/tAIuA==
+X-Gm-Message-State: AOJu0Yyd5QikfKC2b40nwP5dd97LZeZnPij/VLsDgSEPaJPP4C3IWHmX
+	VVojiMk1RfJsPrCv4qzRLNxSb3xKfyuHAbsYRFYrghAnUbbSMJyAf44LqQn2Dz1k+mYAzVN6eFO
+	p
+X-Google-Smtp-Source: AGHT+IHVRDDylRnTtoXC814H5qoF/f53046x51Z7fremjqsHr0FyQ+dmVd/hf/8dYnQavq4GuSWmFA==
+X-Received: by 2002:a17:902:a3cf:b0:1e2:8c26:3264 with SMTP id q15-20020a170902a3cf00b001e28c263264mr2751509plb.36.1712251410076;
+        Thu, 04 Apr 2024 10:23:30 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id u16-20020a1709026e1000b001e27e52a7e4sm5837041plk.285.2024.04.04.10.23.29
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Thu, 04 Apr 2024 10:23:29 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <04E748F4-0CE8-4376-B9E7-F1798EE84F67@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_29909484-59C8-4939-8E4F-3DD950891FD2";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
-In-Reply-To: <Zg7dmp5VJkm1nLRM@casper.infradead.org>
-From: Suren Baghdasaryan <surenb@google.com>
-Date: Thu, 4 Apr 2024 10:08:45 -0700
-Message-ID: <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
-Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
- the call site
-To: Matthew Wilcox <willy@infradead.org>
-Cc: akpm@linux-foundation.org, joro@8bytes.org, will@kernel.org, 
-	trond.myklebust@hammerspace.com, anna@kernel.org, arnd@arndb.de, 
-	herbert@gondor.apana.org.au, davem@davemloft.net, jikos@kernel.org, 
-	benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
-	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
-	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
-	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
-	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
-	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
-	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
-	netdev@vger.kernel.org, linux-security-module@vger.kernel.org, 
-	kent.overstreet@linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2 2/4] e2fsck: update quota when deallocating a bad inode
+Date: Thu, 4 Apr 2024 11:25:32 -0600
+In-Reply-To: <20240404111032.10427-3-luis.henriques@linux.dev>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ linux-ext4@vger.kernel.org
+To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+References: <20240404111032.10427-1-luis.henriques@linux.dev>
+ <20240404111032.10427-3-luis.henriques@linux.dev>
+X-Mailer: Apple Mail (2.3273)
+
+
+--Apple-Mail=_29909484-59C8-4939-8E4F-3DD950891FD2
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-On Thu, Apr 4, 2024 at 10:04=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
-> wrote:
->
-> On Thu, Apr 04, 2024 at 09:54:04AM -0700, Suren Baghdasaryan wrote:
-> > +++ b/include/linux/dma-fence-chain.h
-> > @@ -86,10 +86,7 @@ dma_fence_chain_contained(struct dma_fence *fence)
-> >   *
-> >   * Returns a new struct dma_fence_chain object or NULL on failure.
-> >   */
-> > -static inline struct dma_fence_chain *dma_fence_chain_alloc(void)
-> > -{
-> > -     return kmalloc(sizeof(struct dma_fence_chain), GFP_KERNEL);
-> > -};
-> > +#define dma_fence_chain_alloc()      kmalloc(sizeof(struct dma_fence_c=
-hain), GFP_KERNEL)
->
-> You've removed some typesafety here.  Before, if I wrote:
->
->         struct page *page =3D dma_fence_chain_alloc();
->
-> the compiler would warn me that I've done something stupid.  Now it
-> can't tell.  Suggest perhaps:
->
-> #define dma_fence_chain_alloc()                                          =
- \
->         (struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),=
- \
->                                                 GFP_KERNEL)
->
-> but maybe there's a better way of doing that.  There are a few other
-> occurrences of the same problem in this monster patch.
+On Apr 4, 2024, at 5:10 AM, Luis Henriques (SUSE) =
+<luis.henriques@linux.dev> wrote:
+>=20
+> If a bad inode is found it will be deallocated.  However, if the =
+filesystem has
+> quota enabled, the quota information isn't being updated accordingly.  =
+This
+> issue was detected by running fstest ext4/019.
+>=20
+> This patch fixes the issue by decreasing the inode count from the
+> quota and, if blocks are also being released, also subtract them as =
+well.
+>=20
+> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+> ---
+> e2fsck/pass2.c | 33 +++++++++++++++++++++++----------
+> 1 file changed, 23 insertions(+), 10 deletions(-)
+>=20
+> diff --git a/e2fsck/pass2.c b/e2fsck/pass2.c
+> index b91628567a7f..e16b488af643 100644
+> --- a/e2fsck/pass2.c
+> +++ b/e2fsck/pass2.c
+> @@ -1859,12 +1859,13 @@ static int deallocate_inode_block(ext2_filsys =
+fs,
 
-Got your point.
+I'd hoped you might include a better comment for this function, but the =
+code
+itself looks OK.
 
->
-> > +++ b/include/linux/hid_bpf.h
-> > @@ -149,10 +149,7 @@ static inline int hid_bpf_connect_device(struct hi=
-d_device *hdev) { return 0; }
-> >  static inline void hid_bpf_disconnect_device(struct hid_device *hdev) =
-{}
-> >  static inline void hid_bpf_destroy_device(struct hid_device *hid) {}
-> >  static inline void hid_bpf_device_init(struct hid_device *hid) {}
-> > -static inline u8 *call_hid_bpf_rdesc_fixup(struct hid_device *hdev, u8=
- *rdesc, unsigned int *size)
-> > -{
-> > -     return kmemdup(rdesc, *size, GFP_KERNEL);
-> > -}
-> > +#define call_hid_bpf_rdesc_fixup(_hdev, _rdesc, _size) kmemdup(_rdesc,=
- *(_size), GFP_KERNEL)
->
-> here
->
-> > -static inline handle_t *jbd2_alloc_handle(gfp_t gfp_flags)
-> > -{
-> > -     return kmem_cache_zalloc(jbd2_handle_cache, gfp_flags);
-> > -}
-> > +#define jbd2_alloc_handle(_gfp_flags)        kmem_cache_zalloc(jbd2_ha=
-ndle_cache, _gfp_flags)
->
-> here
->
-> > +++ b/include/linux/skmsg.h
-> > @@ -410,11 +410,8 @@ void sk_psock_stop_verdict(struct sock *sk, struct=
- sk_psock *psock);
-> >  int sk_psock_msg_verdict(struct sock *sk, struct sk_psock *psock,
-> >                        struct sk_msg *msg);
-> >
-> > -static inline struct sk_psock_link *sk_psock_init_link(void)
-> > -{
-> > -     return kzalloc(sizeof(struct sk_psock_link),
-> > -                    GFP_ATOMIC | __GFP_NOWARN);
-> > -}
-> > +#define sk_psock_init_link() \
-> > +             kzalloc(sizeof(struct sk_psock_link), GFP_ATOMIC | __GFP_=
-NOWARN)
->
-> here
->
-> ... I kind of gave up at this point.  You'll want to audit for yourself
-> anyway ;-)
+Reviewed-by: Andreas Dilger <adilger@dilger.ca>
 
-Yes, I'll go over it and will make the required changes. Thanks for
-looking into it!
-Suren.
+> static void deallocate_inode(e2fsck_t ctx, ext2_ino_t ino, char* =
+block_buf)
+> {
+> 	ext2_filsys fs =3D ctx->fs;
+> -	struct ext2_inode	inode;
+> +	struct ext2_inode_large	inode;
+> 	struct problem_context	pctx;
+> 	__u32			count;
+> 	struct del_block	del_block;
+>=20
+> -	e2fsck_read_inode(ctx, ino, &inode, "deallocate_inode");
+> +	e2fsck_read_inode_full(ctx, ino, EXT2_INODE(&inode),
+> +			       sizeof(inode), "deallocate_inode");
+> 	clear_problem_context(&pctx);
+> 	pctx.ino =3D ino;
+>=20
+> @@ -1874,29 +1875,29 @@ static void deallocate_inode(e2fsck_t ctx, =
+ext2_ino_t ino, char* block_buf)
+> 	e2fsck_read_bitmaps(ctx);
+> 	ext2fs_inode_alloc_stats2(fs, ino, -1, =
+LINUX_S_ISDIR(inode.i_mode));
+>=20
+> -	if (ext2fs_file_acl_block(fs, &inode) &&
+> +	if (ext2fs_file_acl_block(fs, EXT2_INODE(&inode)) &&
+> 	    ext2fs_has_feature_xattr(fs->super)) {
+> 		pctx.errcode =3D ext2fs_adjust_ea_refcount3(fs,
+> -				ext2fs_file_acl_block(fs, &inode),
+> +				ext2fs_file_acl_block(fs, =
+EXT2_INODE(&inode)),
+> 				block_buf, -1, &count, ino);
+> 		if (pctx.errcode =3D=3D EXT2_ET_BAD_EA_BLOCK_NUM) {
+> 			pctx.errcode =3D 0;
+> 			count =3D 1;
+> 		}
+> 		if (pctx.errcode) {
+> -			pctx.blk =3D ext2fs_file_acl_block(fs, &inode);
+> +			pctx.blk =3D ext2fs_file_acl_block(fs, =
+EXT2_INODE(&inode));
+> 			fix_problem(ctx, PR_2_ADJ_EA_REFCOUNT, &pctx);
+> 			ctx->flags |=3D E2F_FLAG_ABORT;
+> 			return;
+> 		}
+> 		if (count =3D=3D 0) {
+> 			ext2fs_block_alloc_stats2(fs,
+> -				  ext2fs_file_acl_block(fs, &inode), =
+-1);
+> +				  ext2fs_file_acl_block(fs, =
+EXT2_INODE(&inode)), -1);
+> 		}
+> -		ext2fs_file_acl_block_set(fs, &inode, 0);
+> +		ext2fs_file_acl_block_set(fs, EXT2_INODE(&inode), 0);
+> 	}
+>=20
+> -	if (!ext2fs_inode_has_valid_blocks2(fs, &inode))
+> +	if (!ext2fs_inode_has_valid_blocks2(fs, EXT2_INODE(&inode)))
+> 		goto clear_inode;
+>=20
+> 	/* Inline data inodes don't have blocks to iterate */
+> @@ -1921,10 +1922,22 @@ static void deallocate_inode(e2fsck_t ctx, =
+ext2_ino_t ino, char* block_buf)
+> 		ctx->flags |=3D E2F_FLAG_ABORT;
+> 		return;
+> 	}
+> +
+> +	if ((ino !=3D quota_type2inum(PRJQUOTA, fs->super)) &&
+> +	    (ino !=3D fs->super->s_orphan_file_inum) &&
+> +	    (ino =3D=3D EXT2_ROOT_INO || ino >=3D =
+EXT2_FIRST_INODE(ctx->fs->super)) &&
+> +	    !(inode.i_flags & EXT4_EA_INODE_FL)) {
+> +		if (del_block.num > 0)
+> +			quota_data_sub(ctx->qctx, &inode, ino,
+> +				       del_block.num * =
+EXT2_CLUSTER_SIZE(fs->super));
+> +		quota_data_inodes(ctx->qctx, (struct ext2_inode_large =
+*)&inode,
+> +				  ino, -1);
+> +	}
+> +
+> clear_inode:
+> 	/* Inode may have changed by block_iterate, so reread it */
+> -	e2fsck_read_inode(ctx, ino, &inode, "deallocate_inode");
+> -	e2fsck_clear_inode(ctx, ino, &inode, 0, "deallocate_inode");
+> +	e2fsck_read_inode(ctx, ino, EXT2_INODE(&inode), =
+"deallocate_inode");
+> +	e2fsck_clear_inode(ctx, ino, EXT2_INODE(&inode), 0, =
+"deallocate_inode");
+> }
+>=20
+> /*
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_29909484-59C8-4939-8E4F-3DD950891FD2
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYO4owACgkQcqXauRfM
+H+ArRQ/9GLbcyZP+Nu+glWMh5jTKs1ZHRlibcUNxYPNr1aQjKx3DlbId2tmnfPh4
+Jyod75T9Q+wcUDeGcgWoUPI1Lm3c99twDLWFFllCswN1MUStZBc4lvpCjJS+Z8Ur
+CLpbJ6jyC/0/4uck8/GtrIJplWqct+dOFMACW/ilq9Px/J2/P1POUBK0olxg1Vzb
+uJKWVGsZaP4w/xSXnazdU+UhHlSbGXld75pFYwIC98eTKfXl/50iFuxabX1t4ifG
+lDrNx1fMHI9vKGumRfGE7SVPGqbKi6zNHitpMv8f85VTcLzMjh+CHm7En+bwCA0G
+4W4f6pSm9Y646vzsw9oowHYzau3zJdGbmyyeg97Q4B1Q5t00bL/cAmo7ZO2mWFH/
+9LazzRdLyTfy9urDnc8PsSF3AgKifnOZPv1IMs5MJ2IHHq4fUA2jqOBV1yrqY5gE
+YbZ8OaHiNYL6xR2iyFk7+UNT8HylZhfJCffcdur3AyBNj5drX+tfo67tvGDJPi79
+Vz2xJ9ZelJQwQZ8wmBpJSb7qd/W8ZmSlNKheoCZ59WKR8brdq2fseM7Sw8gX7UZl
+61E9eB/algOWGdCubazATB1EgfvQqZBMzPEc2O6bKv+TP+VnoLKjGutqDYJ3uOcD
+H6d3rJZltU2K18eTqe+nIxZ1goZQJHvDtFs9aEvAsIuUg4bsruQ=
+=P8OP
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_29909484-59C8-4939-8E4F-3DD950891FD2--
 
