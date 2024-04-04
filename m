@@ -1,186 +1,181 @@
-Return-Path: <linux-ext4+bounces-1877-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1878-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FED18991C4
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 01:05:26 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDF598991F9
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 01:16:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 25A3C285F5C
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 23:05:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 342191F22A01
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Apr 2024 23:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A5C513C3CD;
-	Thu,  4 Apr 2024 23:05:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00BBA13C691;
+	Thu,  4 Apr 2024 23:16:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="Bcky6LVO";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="0e/jlncX";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="CcbL799t";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TN73Rs8E"
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="GhQB4Lr2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com [209.85.219.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329F0130A76;
-	Thu,  4 Apr 2024 23:05:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C8DC13C3FA
+	for <linux-ext4@vger.kernel.org>; Thu,  4 Apr 2024 23:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712271916; cv=none; b=jE2CVIx+tSwjs6MZy9lq6/IPTBQkll+qkGySl4RqQ3bhx7Gvsb5TT8U0qBTCCykSodeX/CU2YgU20RdaYIcPn57/aelKC3+JXjJPZZtAwC1d0uX7LwZ+bhDvQ4r9pMoy8epD2xCc8WDqosP4qpf2dvyISJzJvfAMEDDIyAA6CkU=
+	t=1712272591; cv=none; b=CfMCvdH+SRAaF++JRPSZ2ddO3bgt/h3LIC/4yh3BjP/6EFfsZ4DZZZPpxrvCu9HPQGPLFCL86CRgXTlrsEu1GWfsRuGL+cT0xrDgEAgwwc4BXxKT5sYPKH4y2/EDiPwcas7unKVgR8DkD0mBZOhyqnB7Tne5JV1223cDyNw0vEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712271916; c=relaxed/simple;
-	bh=b1kCDBDvOShJK96rPcAUIog34L3Yk7Ibpoxk4AGUui8=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=AvJgldvXUy40WrHZlo84UY2KrY9/tZbigvmDtibDPMcfLY3+BW21MEphhDvfGYw34Ij/bBPrQfnzVQ6a2BXou1T1GOy3tJaOFZonKONMkuH7IWpyJ8YI11twDTAeoi9A/hOAAhKkRDwda+J651fe3XGXZvi7N0qGtZn1PIsDl6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=Bcky6LVO; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=0e/jlncX; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=CcbL799t; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TN73Rs8E; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0D2011F456;
-	Thu,  4 Apr 2024 23:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712271913; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=Bcky6LVOBlzfTS5gWcWJtwJoeaVRF90KYZbI6vpJ8CCT6ir5JPTKTwDJyWdiHbZz/AJWfe
-	7lfOEV+kOTlohOmZP9kox8debfyLNarmyf6IjLrEYaohaJxXViW/5kmKz4X25+3fY5xzP2
-	Gajbvsr4Sp/EM9pRbA3XUSKL0Snpll0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712271913;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=0e/jlncXZbZB5g91s3iKziBK5JWfQTxctQIKX14WlY1m7nd4/hgKhFOUyeN3yVJ6C5K/dN
-	bSP1nK3RbXXE/iBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712271912; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=CcbL799tKj3KExxNjYWMJZnMhI7aNJaApzcwMuzj6pe5Lfc3RrWTSYvrgOaU9jYw2hvGMB
-	Ec/U5HZ9zU4KmsF8HTXAT6J3aI+xLBkfsih5ZFg0/8A8DG6w2pk4HvwC/rWPagu3RO3o7y
-	RFSwlYH3rXU32IcPH05Lg7fJ55k78R4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712271912;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7VE3ztJCG2vuXZkOYNMILtCyLk93dzgPNmKlKaF1EYA=;
-	b=TN73Rs8EamcWeu9yssAmGKbtBok/WbaXA9BgRNDFMilXw3WQ+E6MN86mAkGQXPQ7Cbr6cl
-	3KFzZaJo/fEknkCg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id B0A5B139E8;
-	Thu,  4 Apr 2024 23:05:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id mA7jHicyD2YpIgAAn2gu4w
-	(envelope-from <krisman@suse.de>); Thu, 04 Apr 2024 23:05:11 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: Eric Biggers <ebiggers@kernel.org>,  tytso@mit.edu,
-  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  brauner@kernel.org,  jack@suse.cz,  linux-kernel@vger.kernel.org,
-  viro@zeniv.linux.org.uk,  kernel@collabora.com
-Subject: Re: [f2fs-dev] [PATCH v15 7/9] f2fs: Log error when lookup of
- encoded dentry fails
-In-Reply-To: <e6d1ad0b-719a-4693-bd34-bea3cf6e4fa2@collabora.com> (Eugen
-	Hristev's message of "Thu, 4 Apr 2024 17:50:29 +0300")
-References: <20240402154842.508032-1-eugen.hristev@collabora.com>
-	<20240402154842.508032-8-eugen.hristev@collabora.com>
-	<20240403042503.GI2576@sol.localdomain>
-	<e6d1ad0b-719a-4693-bd34-bea3cf6e4fa2@collabora.com>
-Date: Thu, 04 Apr 2024 19:05:10 -0400
-Message-ID: <87v84w3f15.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1712272591; c=relaxed/simple;
+	bh=APEooEWI1lH4C+bL4GyHHSZ5KchOvO14ONUoet0RRr0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cRhfsrWfcvdf0Ws96JVvKVoHN3/I2B8uhIH1HC8icJnJpLFDJAZE6NTTvJ6FuoenNMJAKf6xDpxocsLnRIXUUx/BlU4N7Picvo/uSE03JEJ8JAhR5jvfkQQXqK4CUvaR9DmjF2JOSKJ24c6j5wHWVN+8zfkPYiUS/yKigm3Iumw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=GhQB4Lr2; arc=none smtp.client-ip=209.85.219.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dcd7c526cc0so1638546276.1
+        for <linux-ext4@vger.kernel.org>; Thu, 04 Apr 2024 16:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1712272588; x=1712877388; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=px33Bjt2eInHJiP0NeuRgUTO3pjhGqqLrEOvRjM23DI=;
+        b=GhQB4Lr2TOfRJr0yIbGk1UCRhhyf/EKVpCXPZqXmV/XkgG3+Ip4CUhh5q4gr0g9aWQ
+         bi/MtONwHxDMZ2USmEekynhmPdIj7XimYzkMyO6YIhdhd8laosX9Kqavzc0sEGt4s393
+         x3jIewExo36NNhoGC8fa0dDVejtUCmH++FNYSfkbwZ/UmhgU1sdlt3bN2hQJz5ko/8/2
+         ObAiMXaSN6L+F4xGADKQcR60IRWI0WYZxrQoJLkbTK4kPXRxqPMACqxkEQFVlYIVb5E4
+         NZ/mGrhb+ljA8cMBS1XGt9r2KxFFWpC0uxhpGDOwu+7sHOeMPE3IS3bKmZETlEo4VFCK
+         XvLw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712272588; x=1712877388;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=px33Bjt2eInHJiP0NeuRgUTO3pjhGqqLrEOvRjM23DI=;
+        b=SEYh0xr7x6l8GzwQw0+VrfYLHDo2bNpz3ZKD6kioeH6aZAilA0s62ByNU3gNHR16Em
+         PzBQ7nE2BH4M5kPUua/anqTiQN1fOkbrZ+4aWU6+nvASyMkAFNKZttgKVetnSjotRpxt
+         IA7djbfNALOjdokYD5e/pX+7eUoaEXaqRczYJmksZlBNGI/aM1pwpJQeMh7OCxLBASLS
+         GrKiWNZSqlJB7npbnpp9jOIoMOsEL84JzTxqYndfzrx6Me7uzgrxZLWsX7pa7Haf55eT
+         lGDMr4SBD2WZ/kyofll6ekEtBzssGK2yUpVuSMBNsXYtiaM2c8JL2KPCAJZ/pNUNcLiE
+         oF/Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUAx7rqdDIMqJ2YhS/A+aJe+HxsU0/NKqfip+Y9+pXYQU8P2wYYZ46eokmwGF+jByIB3llGEjkxHpPD9uFzVp2sQrqm576bMFG9jA==
+X-Gm-Message-State: AOJu0YwpeND+lRpxVZkQI3MPldcnadNo6T0DakAbO0FNtB+fqTLbphh7
+	rykCWYBu/MOpfed+UgJ5C6DMM4p9UejGQHkrehY/jXlIkMM/S62RDmQ2/ojxO5wzVLTt8WZ8yIL
+	owYKpM/fWC3mSteR6mOj1P3jY0IMd+61ttbsI
+X-Google-Smtp-Source: AGHT+IFqOT0sdB5Mq8Em3ez8wUqwsDenflcnFBaGGydYTj8cPQz4oQR3/fK7VmQ9yLCyTSRCqikRdMTTYcQR8Kj+db8=
+X-Received: by 2002:a25:c7c6:0:b0:dcc:d5aa:af36 with SMTP id
+ w189-20020a25c7c6000000b00dccd5aaaf36mr1095387ybe.44.1712272587959; Thu, 04
+ Apr 2024 16:16:27 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[14];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:email,collabora.com:email]
+References: <20240404165404.3805498-1-surenb@google.com> <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+ <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+ <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
+ <Zg8qstJNfK07siNn@casper.infradead.org> <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
+ <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org> <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
+In-Reply-To: <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Thu, 4 Apr 2024 16:16:15 -0700
+Message-ID: <CAJuCfpF10COO2nh1nt3CcaZOFe4iSXszsup+a0qAEQ1ngyy5tQ@mail.gmail.com>
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+To: Kent Overstreet <kent.overstreet@linux.dev>
+Cc: Andrew Morton <akpm@linux-foundation.org>, Matthew Wilcox <willy@infradead.org>, joro@8bytes.org, 
+	will@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org, 
+	arnd@arndb.de, herbert@gondor.apana.org.au, davem@davemloft.net, 
+	jikos@kernel.org, benjamin.tissoires@redhat.com, tytso@mit.edu, jack@suse.com, 
+	dennis@kernel.org, tj@kernel.org, cl@linux.com, jakub@cloudflare.com, 
+	penberg@kernel.org, rientjes@google.com, iamjoonsoo.kim@lge.com, 
+	vbabka@suse.cz, edumazet@google.com, kuba@kernel.org, pabeni@redhat.com, 
+	iommu@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-acpi@vger.kernel.org, 
+	acpica-devel@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-crypto@vger.kernel.org, bpf@vger.kernel.org, 
+	linux-input@vger.kernel.org, linux-ext4@vger.kernel.org, linux-mm@kvack.org, 
+	netdev@vger.kernel.org, linux-security-module@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
-
-> On 4/3/24 07:25, Eric Biggers wrote:
->> On Tue, Apr 02, 2024 at 06:48:40PM +0300, Eugen Hristev via Linux-f2fs-devel wrote:
->>> If the volume is in strict mode, generi c_ci_compare can report a broken
->>> encoding name.  This will not trigger on a bad lookup, which is caught
->>> earlier, only if the actual disk name is bad.
->>>
->>> Suggested-by: Gabriel Krisman Bertazi <krisman@suse.de>
->>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
->>> ---
->>>  fs/f2fs/dir.c | 15 ++++++++++-----
->>>  1 file changed, 10 insertions(+), 5 deletions(-)
->>>
->>> diff --git a/fs/f2fs/dir.c b/fs/f2fs/dir.c
->>> index 88b0045d0c4f..64286d80dd30 100644
->>> --- a/fs/f2fs/dir.c
->>> +++ b/fs/f2fs/dir.c
->>> @@ -192,11 +192,16 @@ static inline int f2fs_match_name(const struct inode *dir,
->>>  	struct fscrypt_name f;
->>>  
->>>  #if IS_ENABLED(CONFIG_UNICODE)
->>> -	if (fname->cf_name.name)
->>> -		return generic_ci_match(dir, fname->usr_fname,
->>> -					&fname->cf_name,
->>> -					de_name, de_name_len);
->>> -
->>> +	if (fname->cf_name.name) {
->>> +		int ret = generic_ci_match(dir, fname->usr_fname,
->>> +					   &fname->cf_name,
->>> +					   de_name, de_name_len);
->>> +		if (ret == -EINVAL)
->>> +			f2fs_warn(F2FS_SB(dir->i_sb),
->>> +				"Directory contains filename that is invalid UTF-8");
->>> +
->> 
->> Shouldn't this use f2fs_warn_ratelimited?
+On Thu, Apr 4, 2024 at 4:01=E2=80=AFPM Kent Overstreet
+<kent.overstreet@linux.dev> wrote:
 >
-> f2fs_warn_ratelimited appears to be very new in the kernel,
+> On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
+> > On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@linu=
+x.dev> wrote:
+> >
+> > > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
+> > > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrote:
+> > > > > Ironically, checkpatch generates warnings for these type casts:
+> > > > >
+> > > > > WARNING: unnecessary cast may hide bugs, see
+> > > > > http://c-faq.com/malloc/mallocnocast.html
+> > > > > #425: FILE: include/linux/dma-fence-chain.h:90:
+> > > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chai=
+n),
+> > > > > GFP_KERNEL))
+> > > > >
+> > > > > I guess I can safely ignore them in this case (since we cast to t=
+he
+> > > > > expected type)?
+> > > >
+> > > > I find ignoring checkpatch to be a solid move 99% of the time.
+> > > >
+> > > > I really don't like the codetags.  This is so much churn, and it co=
+uld
+> > > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending o=
+n
+> > > > whether we wanted to profile this function or its caller.  vmalloc
+> > > > has done it this way since 2008 (OK, using __builtin_return_address=
+())
+> > > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
+> > >
+> > > Except you can't. We've been over this; using that approach for traci=
+ng
+> > > is one thing, using it for actual accounting isn't workable.
+> >
+> > I missed that.  There have been many emails.  Please remind us of the
+> > reasoning here.
 >
-> Krisman do you think you can rebase your for-next on top of latest such that this
-> function is available ? I am basing the series on your for-next
-> branch.
+> I think it's on the other people claiming 'oh this would be so easy if
+> you just do it this other way' to put up some code - or at least more
+> than hot takes.
+>
+> But, since you asked - one of the main goals of this patchset was to be
+> fast enough to run in production, and if you do it by return address
+> then you've added at minimum a hash table lookup to every allocate and
+> free; if you do that, running it in production is completely out of the
+> question.
+>
+> Besides that - the issues with annotating and tracking the correct
+> callsite really don't go away, they just shift around a bit. It's true
+> that the return address approach would be easier initially, but that's
+> not all we're concerned with; we're concerned with making sure
+> allocations get accounted to the _correct_ callsite so that we're giving
+> numbers that you can trust, and by making things less explicit you make
+> that harder.
+>
+> Additionally: the alloc_hooks() macro is for more than this. It's also
+> for more usable fault injection - remember every thread we have where
+> people are begging for every allocation to be __GFP_NOFAIL - "oh, error
+> paths are hard to test, let's just get rid of them" - never mind that
+> actually do have to have error paths - but _per callsite_ selectable
+> fault injection will actually make it practical to test memory error
+> paths.
+>
+> And Kees working on stuff that'll make use of the alloc_hooks() macro
+> for segregating kmem_caches.
 
-I try to make unicode/for-next a non-rebase branch, and I don't want to
-pollute the tree with an unecessary backmerge.  Instead, why not base
-your work on a more recent branch, since it has no dependencies on
-anything from unicode/for-next?
+Yeah, that pretty much summarizes it. Note that we don't have to make
+the conversions in this patch and accounting will still work but then
+all allocations from different callers will be accounted to the helper
+function and that's less useful than accounting at the call site.
+It's a sizable churn but the conversions are straight-forward and we
+do get accurate, performant and easy to use memory accounting.
 
--- 
-Gabriel Krisman Bertazi
+>
+> This is all stuff that I've explained before; let's please dial back on
+> the whining - or I'll just bookmark this for next time...
 
