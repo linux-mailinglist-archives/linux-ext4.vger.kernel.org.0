@@ -1,240 +1,165 @@
-Return-Path: <linux-ext4+bounces-1883-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1885-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83873899A05
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 11:56:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B5D3899C8C
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 14:14:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70571C21D61
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 09:56:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1528B284032
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 12:14:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCE21649A7;
-	Fri,  5 Apr 2024 09:53:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B8D7116C877;
+	Fri,  5 Apr 2024 12:14:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0AXR3Sr9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mv3acM2x";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z0+7rq6f";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lVccGfCI"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="iGQlbNEX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4C7161318;
-	Fri,  5 Apr 2024 09:53:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 256F516C852;
+	Fri,  5 Apr 2024 12:14:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712310815; cv=none; b=mIY19KJ4UI01mSUrK/lBBv8QwjcJFR/GcJ6feTqejR8OgeII6d1QwMKbqIJTyzfDe2X7g00bTfU0bh5S7h+NSCXlfxA62h9QQpRYFxXo7OHTIxC2zyX5YlvA7BynzOoUeIx5UKv0uZ6mblIOhEjhQ3rfAySQg7m8fsf0PYzEYx8=
+	t=1712319246; cv=none; b=EEVmpaEaLYXwOBQ3gGfREdaVG15ZLNzUQnVmT/T6+TLLegeWoGqByd4e56RCzU+acf76neD4Sf9cE0uf5Bc5TDr1s36FzRHsj6wFLzixRUepmxtqUxOU0646J47mgwwFK3z6dQgItxB/TFTWMsm/2j5/MgZxwuaTGzcY5tZ0lmM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712310815; c=relaxed/simple;
-	bh=iG4O7MMO9gnBVtJZSYs1Hq2UvQRfp2O+8N10zEhPJQc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=DTPANW0a0wV97PEgXPLudGyv3gNtEeQLhpJBkNuIi948I7CrYZ9fV9IXUO9CHKdzxmRFDqRx0rKF1oJDd3VteF75R6+ZlJBtipMSwfwrUNbT5Fxu40VGFfJ1EKKvwLJtoCIlZQ86OWSzO0Xlf9VMAHYCMnI1p2jWMX1LE6MYm2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0AXR3Sr9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mv3acM2x; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z0+7rq6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lVccGfCI; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	s=arc-20240116; t=1712319246; c=relaxed/simple;
+	bh=2daGheRm0uXiCuDJJyljgieXxs67abLqxPGSfK/8mhY=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z3436wa33JnilVM5CvHnZY9hfkakcPpFCu4hGezuQd67LjpbAhQ89gEH07Pl8Yq4n5kvfxLRr5iv3YiUv3JiXoVkA3xlIT+c5ZSVtMGJwNeQ3hHehoC1P0Xuz4q1/keh/wei4CLRmVCyMNW76SjVJTopCNtBoYOc2o3SwNOt3Uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=iGQlbNEX; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1712319241;
+	bh=2daGheRm0uXiCuDJJyljgieXxs67abLqxPGSfK/8mhY=;
+	h=From:To:Cc:Subject:Date:From;
+	b=iGQlbNEXxP5v0qaD7xtPldYxUHkT7lbfQj62HSkTccTr/2WeJpRCxCD9/BthkOzRG
+	 TgUbetxkDo9pLtb1hPSYsn83K/1KKkKKQRBpReW5EKnNyFIoLkEScDzlkTRA1UJ9Mr
+	 DWVKUHEB/zobSNALpWsyvoxlQlJvsUun0VxtF1VAOcbj8IMMFhhrI9l2aX6Zjy6xuK
+	 jH7YA9ygISpfpa8rWriqCfj2Y4jcLxMqRxy8YKdB7yYqc/MYo9vsdpOdR/A1OSHRip
+	 SjvKLvx/R57WKy8poxdO8+TeszWDZcMUcF4YNi1PUeivj/XQfeCvlXTnWjl0F7/gks
+	 KQoNRs0F1K3QQ==
+Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 65BF721A2E;
-	Fri,  5 Apr 2024 09:53:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712310809; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
-	b=0AXR3Sr9XfI+c7rTPImw5uCIqUd0/09qhqdILdsZtrOOOTHNThWW8IWO2LavomosrDlGR4
-	r5zcQ7aU/RB1e9VhO2PeMNtjvZCEdKzHqupTEPNLaoS68JZ7HFWh4OFd1ckPqsmFOlBB7H
-	mcwM4kvxTwfCAYfvPvAMLZZtKWx5vB8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712310809;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
-	b=mv3acM2xzaAtD0goPoMaKRbxprQYlRRQRdWeBSj+XgsIgB6XYwFswsOsyAWM2lrdH+uuj0
-	DSsBpoDlTl2n1rDQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712310808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
-	b=Z0+7rq6fcjYyrOGJFwhu7EPjxeB2YzEP6/GI4QJE77wXmTpoCFc1mE9dE1Bj/PEGY1tu49
-	ESTilKNYDaC1JrKhdHCnLw44UtjznYqGrEfN+CtNGBPA2Dt9MhQgjmAw2Ok0XXX+qUvUQJ
-	M0o1kG24lT0V2nbGjew3Qb50utPv0T0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712310808;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
-	b=lVccGfCILCM4svVbHjo2v2GSsNkbxp/3kUm/GIkdwdP1GGRDcHYdF3Ew32qMBI0ItKMWtc
-	2n16V0vgVrwCANAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5716C139F1;
-	Fri,  5 Apr 2024 09:53:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id 2Ig+FRjKD2a3YAAAn2gu4w
-	(envelope-from <jack@suse.cz>); Fri, 05 Apr 2024 09:53:28 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0505DA0814; Fri,  5 Apr 2024 11:53:27 +0200 (CEST)
-Date: Fri, 5 Apr 2024 11:53:27 +0200
-From: Jan Kara <jack@suse.cz>
-To: Suren Baghdasaryan <surenb@google.com>
-Cc: Kent Overstreet <kent.overstreet@linux.dev>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>, joro@8bytes.org,
-	will@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
-	arnd@arndb.de, herbert@gondor.apana.org.au, davem@davemloft.net,
-	jikos@kernel.org, benjamin.tissoires@redhat.com, tytso@mit.edu,
-	jack@suse.com, dennis@kernel.org, tj@kernel.org, cl@linux.com,
-	jakub@cloudflare.com, penberg@kernel.org, rientjes@google.com,
-	iamjoonsoo.kim@lge.com, vbabka@suse.cz, edumazet@google.com,
-	kuba@kernel.org, pabeni@redhat.com, iommu@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
-	linux-arch@vger.kernel.org, linux-crypto@vger.kernel.org,
-	bpf@vger.kernel.org, linux-input@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-mm@kvack.org,
-	netdev@vger.kernel.org, linux-security-module@vger.kernel.org
-Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
- the call site
-Message-ID: <20240405095327.ufsimeplwahh6mem@quack3>
-References: <20240404165404.3805498-1-surenb@google.com>
- <Zg7dmp5VJkm1nLRM@casper.infradead.org>
- <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
- <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
- <Zg8qstJNfK07siNn@casper.infradead.org>
- <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
- <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
- <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
- <CAJuCfpF10COO2nh1nt3CcaZOFe4iSXszsup+a0qAEQ1ngyy5tQ@mail.gmail.com>
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2DF77378212E;
+	Fri,  5 Apr 2024 12:14:00 +0000 (UTC)
+From: Eugen Hristev <eugen.hristev@collabora.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	jaegeuk@kernel.org,
+	chao@kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	kernel@collabora.com,
+	eugen.hristev@collabora.com,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	krisman@suse.de,
+	ebiggers@kernel.org
+Subject: [PATCH v16 0/9] Cache insensitive cleanup for ext4/f2fs
+Date: Fri,  5 Apr 2024 15:13:23 +0300
+Message-Id: <20240405121332.689228-1-eugen.hristev@collabora.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJuCfpF10COO2nh1nt3CcaZOFe4iSXszsup+a0qAEQ1ngyy5tQ@mail.gmail.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[39];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLinodumkc3pofpwycnya9d5a9)];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[c-faq.com:url,suse.com:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,linux.dev:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
 
-On Thu 04-04-24 16:16:15, Suren Baghdasaryan wrote:
-> On Thu, Apr 4, 2024 at 4:01 PM Kent Overstreet
-> <kent.overstreet@linux.dev> wrote:
-> >
-> > On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
-> > > On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
-> > >
-> > > > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
-> > > > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrote:
-> > > > > > Ironically, checkpatch generates warnings for these type casts:
-> > > > > >
-> > > > > > WARNING: unnecessary cast may hide bugs, see
-> > > > > > http://c-faq.com/malloc/mallocnocast.html
-> > > > > > #425: FILE: include/linux/dma-fence-chain.h:90:
-> > > > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),
-> > > > > > GFP_KERNEL))
-> > > > > >
-> > > > > > I guess I can safely ignore them in this case (since we cast to the
-> > > > > > expected type)?
-> > > > >
-> > > > > I find ignoring checkpatch to be a solid move 99% of the time.
-> > > > >
-> > > > > I really don't like the codetags.  This is so much churn, and it could
-> > > > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending on
-> > > > > whether we wanted to profile this function or its caller.  vmalloc
-> > > > > has done it this way since 2008 (OK, using __builtin_return_address())
-> > > > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
-> > > >
-> > > > Except you can't. We've been over this; using that approach for tracing
-> > > > is one thing, using it for actual accounting isn't workable.
-> > >
-> > > I missed that.  There have been many emails.  Please remind us of the
-> > > reasoning here.
-> >
-> > I think it's on the other people claiming 'oh this would be so easy if
-> > you just do it this other way' to put up some code - or at least more
-> > than hot takes.
-> >
-> > But, since you asked - one of the main goals of this patchset was to be
-> > fast enough to run in production, and if you do it by return address
-> > then you've added at minimum a hash table lookup to every allocate and
-> > free; if you do that, running it in production is completely out of the
-> > question.
-> >
-> > Besides that - the issues with annotating and tracking the correct
-> > callsite really don't go away, they just shift around a bit. It's true
-> > that the return address approach would be easier initially, but that's
-> > not all we're concerned with; we're concerned with making sure
-> > allocations get accounted to the _correct_ callsite so that we're giving
-> > numbers that you can trust, and by making things less explicit you make
-> > that harder.
-> >
-> > Additionally: the alloc_hooks() macro is for more than this. It's also
-> > for more usable fault injection - remember every thread we have where
-> > people are begging for every allocation to be __GFP_NOFAIL - "oh, error
-> > paths are hard to test, let's just get rid of them" - never mind that
-> > actually do have to have error paths - but _per callsite_ selectable
-> > fault injection will actually make it practical to test memory error
-> > paths.
-> >
-> > And Kees working on stuff that'll make use of the alloc_hooks() macro
-> > for segregating kmem_caches.
-> 
-> Yeah, that pretty much summarizes it. Note that we don't have to make
-> the conversions in this patch and accounting will still work but then
-> all allocations from different callers will be accounted to the helper
-> function and that's less useful than accounting at the call site.
-> It's a sizable churn but the conversions are straight-forward and we
-> do get accurate, performant and easy to use memory accounting.
+Hello,
 
-OK, fair enough. I guess I can live with the allocation macros in jbd2 if
-type safety is preserved. But please provide a short summary of why we need
-these macros (e.g. instead of RET_IP approach) in the changelog (or at
-least a link to some email explaining this if the explanation would get too
-long). Because I was wondering about the same as Andrew (and yes, this is
-because I wasn't really following the huge discussion last time).
+I am trying to respin the series here :
+https://www.spinics.net/lists/linux-ext4/msg85081.html
 
-								Honza
+I resent some of the v9 patches and got some reviews from Gabriel,
+I did changes as requested and here is v16.
+
+Changes in v16:
+- rewrote patch 2/9 without `match`
+- changed to return value in generic_ci_match coming from utf8 compare only in
+strict mode.
+- changed f2fs_warn to *_ratelimited in 7/9
+- removed the declaration of f2fs_cf_name_slab in recovery.c as it's no longer
+needed.
+
+Changes in v15:
+- fix wrong check `ret<0` in 7/9
+- fix memleak reintroduced in 8/9
+
+Changes in v14:
+- fix wrong kfree unchecked call
+- changed the return code in 3/8
+
+Changes in v13:
+- removed stray wrong line in 2/8
+- removed old R-b as it's too long since they were given
+- removed check for null buff in 2/8
+- added new patch `f2fs: Log error when lookup of encoded dentry fails` as suggested
+- rebased on unicode.git for-next branch
+
+Changes in v12:
+- revert to v10 comparison with propagating the error code from utf comparison
+
+Changes in v11:
+- revert to the original v9 implementation for the comparison helper.
+
+Changes in v10:
+- reworked a bit the comparison helper to improve performance by
+first performing the exact lookup.
+
+
+* Original commit letter
+
+The case-insensitive implementations in f2fs and ext4 have quite a bit
+of duplicated code.  This series simplifies the ext4 version, with the
+goal of extracting ext4_ci_compare into a helper library that can be
+used by both filesystems.  It also reduces the clutter from many
+codeguards for CONFIG_UNICODE; as requested by Linus, they are part of
+the codeflow now.
+
+While there, I noticed we can leverage the utf8 functions to detect
+encoded names that are corrupted in the filesystem. Therefore, it also
+adds an ext4 error on that scenario, to mark the filesystem as
+corrupted.
+
+This series survived passes of xfstests -g quick.
+
+Eugen Hristev (1):
+  f2fs: Log error when lookup of encoded dentry fails
+
+Gabriel Krisman Bertazi (8):
+  ext4: Simplify the handling of cached insensitive names
+  f2fs: Simplify the handling of cached insensitive names
+  libfs: Introduce case-insensitive string comparison helper
+  ext4: Reuse generic_ci_match for ci comparisons
+  f2fs: Reuse generic_ci_match for ci comparisons
+  ext4: Log error when lookup of encoded dentry fails
+  ext4: Move CONFIG_UNICODE defguards into the code flow
+  f2fs: Move CONFIG_UNICODE defguards into the code flow
+
+ fs/ext4/crypto.c   |  10 +---
+ fs/ext4/ext4.h     |  35 +++++++-----
+ fs/ext4/namei.c    | 129 ++++++++++++++++-----------------------------
+ fs/ext4/super.c    |   4 +-
+ fs/f2fs/dir.c      | 108 ++++++++++++-------------------------
+ fs/f2fs/f2fs.h     |  16 +++++-
+ fs/f2fs/namei.c    |  10 ++--
+ fs/f2fs/recovery.c |   9 +---
+ fs/f2fs/super.c    |   8 +--
+ fs/libfs.c         |  73 +++++++++++++++++++++++++
+ include/linux/fs.h |   4 ++
+ 11 files changed, 206 insertions(+), 200 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.34.1
+
 
