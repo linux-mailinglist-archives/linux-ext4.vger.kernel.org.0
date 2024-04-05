@@ -1,34 +1,34 @@
-Return-Path: <linux-ext4+bounces-1902-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1903-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF0D1899F78
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 16:24:24 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3635C899F79
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 16:24:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8583B2840DB
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 14:24:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A3811C227BA
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 14:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26ADE16EBE8;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F62216EBEE;
 	Fri,  5 Apr 2024 14:24:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="hZhCit3V"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="XdiI7Noc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE5E16EBEE
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 124EA16EBEF
 	for <linux-ext4@vger.kernel.org>; Fri,  5 Apr 2024 14:24:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712327053; cv=none; b=n/jRHTjb5LE2UDbNdTcaffGyNkOXCHaJgd7QmwN+SrAnvhSSKkfLUGeChOT5nyobPFRcGhHeqRZOFm9EUC4q6/mhXkuBnxuJuIQ0lglAUgf2AgQJATXcbvDgke2dSIMhaL+QRwxpthEpC0l9qst6ld3Uidn8tSCme8UGsgG8DzA=
+	t=1712327054; cv=none; b=YRfluLUHJOLGLjEch2fUwq+WVmSmYtSOz9JeXrSSB04ttaNjBynMsKq7/wUYaD4SkyR90c8yRMC3VS71MHKlhKeL++2+S6s+fhqiR1bBkyN6hKlWj2VgZ5RujEmhipM3VYViecY9coEGf+a6MqIDblAoO3r9MSb0bIWeQC+UIpA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712327053; c=relaxed/simple;
-	bh=wKemBMY8CuyogRcNlPvt0OFO7viiLuThmcGKiyyXoxE=;
+	s=arc-20240116; t=1712327054; c=relaxed/simple;
+	bh=pNAKtrIVYsR9WuMDS7UeRJdP/IFpGkoXl9Ggzowl4Rk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=L8q4mYe51p41z6d2x+a7H3gQCTcLTCZdtjvjEwbdDFeHMe9Gn2iTMUUtng9x1LhnCWMZfDHTPGlzbP1f8s78UXYN1XLTqYB7qDCA1vBlXLjMDSiQbrqwuCbqRugETmFZk9AYt9ts6mxrJbLKz52Z+TBdKbMZcXmyFY64Zvu0gYs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=hZhCit3V; arc=none smtp.client-ip=95.215.58.183
+	 MIME-Version; b=jUJHZoc54pu/X2FnCElzwtTT+T8GEsPp72yfZb6v74cRQbQCtTQ+Jum70TlOxNEu1k4iJXp1wTMDeWIjEN7vOCeJAWdJ+Lde7DZT3sI3N8JMvU+9EtRSrbz9++jVb5W2FYitz24/OOQubjJjLEXJR4u8/2vZiq0Fq/mHUC/ROxE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=XdiI7Noc; arc=none smtp.client-ip=95.215.58.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
@@ -38,18 +38,18 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uu4jMZtAqF2jfhYct7x3/bM+bfcCRqhTVsT6Ei2gC34=;
-	b=hZhCit3Vo4gDHENYXY9ESLPtdCnJSftmsDb5g/GgMaCBUehQQ4aXttHnz7A2uOOYiEs/c3
-	Ij/M27SUs/di16mBXFXs83UtDI18VWbkoAFpZ5qrpdlVAmUvtW6Q1lK7+UNr3/Gk9e4FeD
-	NaMHfN4KqjX9BgXMWchjMid9WZmeJtk=
+	bh=4d5yxLDZOYtkaoRdt4QlJaQrk8CcY5+L3UcAiDJim3k=;
+	b=XdiI7Noc4j2oZTxh/cjzedgwKX6Aj4fZEuse4v63Cj8eeU9XPK6xZ4stxX5s4J492C369O
+	GaMcWKHOe7c/40SVQm4Bw/d/92iB5M5lCR0pda8JmKT0hnsa1OUM3mayy7P9dVo9BjAS0Y
+	+OAX+2AAxZK0O0a8bAujTEgQLG8ZTMA=
 From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
 To: Theodore Ts'o <tytso@mit.edu>,
 	Andreas Dilger <adilger@dilger.ca>
 Cc: linux-ext4@vger.kernel.org,
 	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Subject: [PATCH v3 3/4] tests: new test to check quota after directory optimization
-Date: Fri,  5 Apr 2024 15:24:04 +0100
-Message-ID: <20240405142405.12312-4-luis.henriques@linux.dev>
+Subject: [PATCH v3 4/4] tests: new test to check quota after a bad inode deallocation
+Date: Fri,  5 Apr 2024 15:24:05 +0100
+Message-ID: <20240405142405.12312-5-luis.henriques@linux.dev>
 In-Reply-To: <20240405142405.12312-1-luis.henriques@linux.dev>
 References: <20240405142405.12312-1-luis.henriques@linux.dev>
 Precedence: bulk
@@ -61,122 +61,140 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-This new test validates e2fsck by verifying that quota data is updated after a
-directory optimization is performed.  This issue was initially found by fstest
-ext4/014, and this test was based on it.  It includes a filesystem image where
-the lost+found directory is unlinked after a new link to it is created:
+This new test validates e2fsck by verifying that quota is updated after a bad
+inode is deallocated.  It mimics fstest ext4/019 by including a filesystem image
+where a symbolic link was created to an existing file, using a long symlink
+name.  This symbolic link was then wiped with:
 
-  # debugfs -w -R "ln lost+found foo" f_testnew/image
-  # debugfs -w -R "unlink lost+found" f_testnew/image
+  # debugfs -w -R 'zap -f /testlink 0' f_testnew/image
 
 Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
 ---
- tests/f_quota_shrinkdir/expect.1 |  18 ++++++++++++++++++
- tests/f_quota_shrinkdir/expect.2 |   7 +++++++
- tests/f_quota_shrinkdir/image.gz | Bin 0 -> 10761 bytes
- tests/f_quota_shrinkdir/name     |   1 +
+ tests/f_quota_deallocate_inode/expect.1 |  18 ++++++++++++++++++
+ tests/f_quota_deallocate_inode/expect.2 |   7 +++++++
+ tests/f_quota_deallocate_inode/image.gz | Bin 0 -> 11594 bytes
+ tests/f_quota_deallocate_inode/name     |   1 +
  4 files changed, 26 insertions(+)
- create mode 100644 tests/f_quota_shrinkdir/expect.1
- create mode 100644 tests/f_quota_shrinkdir/expect.2
- create mode 100644 tests/f_quota_shrinkdir/image.gz
- create mode 100644 tests/f_quota_shrinkdir/name
+ create mode 100644 tests/f_quota_deallocate_inode/expect.1
+ create mode 100644 tests/f_quota_deallocate_inode/expect.2
+ create mode 100644 tests/f_quota_deallocate_inode/image.gz
+ create mode 100644 tests/f_quota_deallocate_inode/name
 
-diff --git a/tests/f_quota_shrinkdir/expect.1 b/tests/f_quota_shrinkdir/expect.1
+diff --git a/tests/f_quota_deallocate_inode/expect.1 b/tests/f_quota_deallocate_inode/expect.1
 new file mode 100644
-index 000000000000..e4fc48ea6f90
+index 000000000000..2b2f128dbb57
 --- /dev/null
-+++ b/tests/f_quota_shrinkdir/expect.1
++++ b/tests/f_quota_deallocate_inode/expect.1
 @@ -0,0 +1,18 @@
 +Pass 1: Checking inodes, blocks, and sizes
 +Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+/lost+found not found.  Create? yes
++Symlink /testlink (inode #14) is invalid.
++Clear? yes
 +
-+Pass 3A: Optimizing directories
++Pass 3: Checking directory connectivity
 +Pass 4: Checking reference counts
 +Pass 5: Checking group summary information
-+[QUOTA WARNING] Usage inconsistent for ID 0:actual (3072, 3) != expected (13312, 2)
++[QUOTA WARNING] Usage inconsistent for ID 0:actual (15360, 4) != expected (16384, 5)
 +Update quota info for quota type 0? yes
 +
-+[QUOTA WARNING] Usage inconsistent for ID 0:actual (3072, 3) != expected (13312, 2)
++[QUOTA WARNING] Usage inconsistent for ID 0:actual (15360, 4) != expected (16384, 5)
 +Update quota info for quota type 1? yes
 +
 +
 +test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-+test_filesys: 12/256 files (16.7% non-contiguous), 1145/8192 blocks
++test_filesys: 13/256 files (15.4% non-contiguous), 1157/8192 blocks
 +Exit status is 1
-diff --git a/tests/f_quota_shrinkdir/expect.2 b/tests/f_quota_shrinkdir/expect.2
+diff --git a/tests/f_quota_deallocate_inode/expect.2 b/tests/f_quota_deallocate_inode/expect.2
 new file mode 100644
-index 000000000000..fcb2cb81441e
+index 000000000000..802317949959
 --- /dev/null
-+++ b/tests/f_quota_shrinkdir/expect.2
++++ b/tests/f_quota_deallocate_inode/expect.2
 @@ -0,0 +1,7 @@
 +Pass 1: Checking inodes, blocks, and sizes
 +Pass 2: Checking directory structure
 +Pass 3: Checking directory connectivity
 +Pass 4: Checking reference counts
 +Pass 5: Checking group summary information
-+test_filesys: 12/256 files (16.7% non-contiguous), 1145/8192 blocks
++test_filesys: 13/256 files (15.4% non-contiguous), 1157/8192 blocks
 +Exit status is 0
-diff --git a/tests/f_quota_shrinkdir/image.gz b/tests/f_quota_shrinkdir/image.gz
+diff --git a/tests/f_quota_deallocate_inode/image.gz b/tests/f_quota_deallocate_inode/image.gz
 new file mode 100644
-index 0000000000000000000000000000000000000000..1fee3ca9c9b4cb61974be54b063c8f9e1ba49da1
+index 0000000000000000000000000000000000000000..798a72c3a0da0323fc55c5e034f778e967394c81
 GIT binary patch
-literal 10761
-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
+literal 11594
+zcmeI%eNYqUx&UyiRgMQsPLKCM5rNy&@i@JTaO(gyn54Bwu%aS@KoXLGC`cj%3rjQ*
+zg2hU`eAU`Q6+=`M67t1|OCTYMNYyF=B1u;HiWUXBD+!3pM<Bb`+nL^fZpZWAnK|C<
+zpU=B9@B9At*>|63*0<;ne|Yru^5mt<QqvMs4lQ{;=yG8#(4PN9*SUP@$xXViE`Pne
+zK0NZ1cQ*uWjI00T&$OjGws9}5lt>bmzrFo={>8rrML%Ee8uX`}&l>)HyIhiM`?l!8
+zzr9U)`^DDT9B%VE?Pm3~_)+VS*Q)$^^N!t~t4cW<+s=aa??*fw9p6o9CU1POevfa^
+zM=hi06`Q<TXR<xAFb!_H|JRX}p!APutBE?Jrw3Os_l&O0`{~@6H}6N!s8ZdNjyUej
+zy&-dDYv=QUpv|(O@oztewg~QC=u5T=Zj8EA9W%S9i1~xR6qUSe`CAz)_(IuGWp~|^
+zf``>Javj^&Upu34uyNu=H+g|lU0?oQys&q7E7rKEE_>OXx~;@y{7=~fQSTZsSrM3<
+zr^-4+iJ<IQ^7?C(0u8or#C*xvyOeD$;Ani)9T6vY36?Xe81q=W<*2=FwDzsZ2VM4{
+zARgwwmTL`6D(IaWSXCQ^i><<)qRj$Fbz#@SmO-Uge!)WXVnW7~l2PHofL2?0u_awq
+z-iv{}iKqp0UJ@>vHz-|g7pH}vO!Iem$GMm;5a%`p;P=Kt@;k<Gds0%c4<5Fna`+a$
+zuwDK0JWlb%X`Ng)=27*sXJCTa#Lk|G%yGN@W50GrD&QFUg&)TlPXPCS@)ly}45E-h
+zoQl`X;Gu<;H-$gMbZlr=d9!c#OS6@pflb*`21h+m@6hVR`1A~(-sbSt4P%x|>O{Js
+zYvyd;lx-AW9N|?0X*pKI!X#GMH^9Lx59Wf8XY?&ls-Z2nf*P+Y3}vzia_Up}E+HcX
+z-_2Ezh}RQVRP1V*pQk(zT3jrnPD>`z?_hZS6Gu;u-|O99KbjF1Ks)R5K{bMnyc{3b
+zh^SZkcwQT~5|bcmlZ_;RNZIFzZRr7V2kNhn%Sp{5&4{(2{eTF6dGd4D?y4ZpOtClb
+z(W3_^Ln^kX*JG@}M5~=}Z~d)}OY5;^X5n=^Ar5~Fp(Hq5<aj>n`)lxV_kkO8e+p=D
+zmn`S(^NV&Rj0!>%0^+g)W;auc2&cr$)~qU*UuFN&KH0Rbp#3B8h+k|c^hfZ3B6<V#
+zA0S&16U7FKe6ZT?p~D3bo=HeJGJNOE)RV`d<;0Pn6$C?Wr-`s-x^1NN<D|O{BWm4;
+z;c=Rb+Bm!rnVcLEa<HPxlJ2x4hN)lLM=FMray7T+o)wmgS)5!VkgJ)Q%UaC4<>qAp
+zmtcj;M^BTLF4ji#dzNuR@WTaV*0Y2!3r+-BJX_Bp>oM7eAn^ICEnXMhX{|)l9PN+4
+zeD$)5p+Qcl%HeI@+Q&Y2a|ZluA}+)<Sw`-boCCurXj+HMEalmXG5k2LE(<T5wuBG6
+zYAwgRD)HX-wy1*kOX??wrh*0{>^BXS_;i^i%?wVo;?|A@-#xGLK*$Ry!YgL!`NGuh
+zNdYMsofQ_^(AI-DuAF&dnGxwnic{VHG6)PE!?{=h7q@-sHG!8fxHuQa`y7N>y!)IU
+z>+Qfi77UrEY)|8`ni*l(Eqr((J_jtGQRz71e)Wvkg6$p-Fpjy1@MY(r&*1As$*8fN
+zcVd2a7Ei>`@`5oX6dZ_^FvkLCep;%=$V&43l{56L#cCx9>wTFWf*pM^33PY$;EC!)
+zIVHKPx>>t!08i{#5Uc%{;1;(v)@7!Q;PG$P=uhzGMh82Po50__sbQvY_$u1ChWsgu
+zsglIHiAMq#1Fp+p6MCMXrc<8c29TAds@3p2zyVP-S021y_T+IFa5rODo!UGAPoSmz
+z6rF63q7Qz_=ZPXy%sH?Q)e~jItQ5!vE<i8YGXw`)^rkQ*37sOU$&q4t#5=R8@MiRp
+zJzk*K?`6rS;c)bseWw8UIL`#Z2wGxK7I0epDQjbq0U%OPtEXFJHi!ThqSf}Jjw^XI
+zimV733*4HK`?;erZ@)olS;bNtxk#g?O)1%c@PPdeJ+@aUr<lZue@8<LMia^mgxiLx
+zx6-eKa$cRHKhiF`%RdMA`o$L+pVF?m%WiT`(;Ca`t|IB+E<bvw=>@n=5x2o~7u>0!
+z$xPqTbY@8)N1@3Xsx~Wg%tSz?;SJSV>4=#R<_)Q=EP}+vTmZMD-|!Eo?e#K;f=5Ym
+zA7-Vo2BeZM`%o*PYIYGni&W!7FO%JdR<k?#2T0PY_y}pOIR?GP=aZ_dsC1|aeuQ4&
+zr>8~r$i^U7_$x3iEjEfn+pU`56!te{*NHfxU2+B+>Q^wMwUGQgBga?;#!fI6jCznY
+z!E!O4_+Z3K9klKCJO1=k>vZzdQ(lq}GyN~91#3OyGrM9cO5$_0h@L5$wYhsznx+!0
+zV=D`Lq?L1n_fdIp&S*N)HF#(y&8sU$+q>?pGSmLumfEhtg_B)`ty6NpZZg`^=ix;j
+zThAJsyFFR4sl&VM*ALfPy;bpR2A}fHe<+;e*SoDP6+`s6@WF%u^0Q6&!s+8;ZxNhU
+z&D)76$2u!iS{UkbVCjp~!V$4ed#EO2>x&zp7#;2_smd737NNo$!bVKBIs0a6xzFoQ
+z(KmVY9&5CC)e4s~w-trE>Nh6jWo97w`@muEm_n!s`I^{RT32BVM-Bm5x;AE{N}dEi
+z<nPyMm{BSPWI~V@qJEDg*mxS)r)wCFUJq3w-|@qB;BX9A#WRK=41g_)sfDyiF|lbl
+z%BGk#QBjPjCGYi>6HJB32f!Y|HFAuvDic|a-mymuG~_6;qQ^9bxS}_SDt$CdsWQeQ
+zi*}kor;oJAxu)enqCmT;&SvBxIjF<_siQtGnxYgNBajr}sG}_}vcl+(#G;6OH-lzS
+zbiyw*mz8phX+OGP|IE>VMGKV%qX~uVbcaqU{d5G|QDQ#1Ms^zf#4qkF`x33iU3v#R
+z>=#o6{TV#yw?7;jVxOZmm&=}UzM?h6)P2wSo(9IqJ_PxSNRF8X%xc0Ej9EDVGXa|>
+zVn}UPplpYRHDvJFOOU&m3Xu2F`~4S#<R$D8ejKSSNV=QT#Q!^~F-R3=a!1GcyGYGG
+zv1O|D#&YyW{ytJ`)xHRY0!~F=@<T~Y&B_#06S4&z?60Yc?NNCcT{#2&${O>v^UMLr
+z4NRJd4uOi#Q?*7VNY_cSRn$Q3jD*Bd{Z`c&+$778i|0497ni-s`TGy|mj3*k-uB1$
+ziE=lU2lOs*(0jkXw8Gp8kMob~E;FgOjSXlWAJEk>=_(ln9R+eld%2R;$Q6E)PP#`K
+z41I`}^Eo=jFw-XCnYFNysMw?8L7qUeu6CGilQqE(AX{*e9Oqj{fWqJl_QL`>nK@=&
+z51&P)_AEgSnJ$*~Kpt=rz!XUJ@hqvzJdc8QzMxu9wbZ%7H|*JrXp7Wlo`o0C0(+uE
+zk{3^rip@Rn&-UYv%bTPuvkHdLO3k%AdWGp3u$@6Q$Yk&=T4+ylNU?aKREDTfwLOOs
+zRj{(4{mswlD3^!;?5%(J+~4FIg0sg@wm+^XwlU+wjAwvo-4!OyUsjDgL;s6^$UEw`
+z`G4ywChN9o3fQK*v`2mxE<tOEt;6xPMmnrOoB27q>S3y_E(*Cu)D1IIjOWlQK3Ave
+zuA7A(p(pGK0tq?ZSDFb|qYd_BBDz=-VXlSy&~x@90wtNnlK7jCqgU-;2(IdBW6*CE
+zm28v5^>y_WTBNy>M>W*3ATIpCp2mo&fc^p;awwH`7RVPaLu>7sj;l(g!EAwT!0vZ$
+zttdFNMzJz5W;N#ot^RMOZD5AqzO$TOn%rHrj(vw#SFY5Wez%E0Y1L*q2wQ<Nn$}81
+zj5>H25No&!I%2W|291z((I<{j=klroz65@n7UyNUh1T<rrR}RUC!=5U52i88>ipnd
+z^auVClG2A2A@M^_qgVJ}kgitI=%zmS7qpn4oW|&>OMx=sR&X~-RmJj`c$k|(#%@Jw
+zpzi;4jr_>pTF+9?o;Nu;e|K;BA^LT(A+wjy)MN(5kN2N)f6tJ9`Q|cS>gtV4f8dr-
+z-wv=emJx~v`;Q)o>U6WpL;YTb6}m4+@BqUXi@u|*QoLialT3a*N4Y0lix<vAPdQ$m
+z3|{WWAGW^d%}{SH%C>*I@@!~wL}g%(y>xR8b>Hu<!x{W12wZpTOTPCIxXaX9$w}~y
+z@)iGtIh|8D1)Ks-0jGddz$xGqa0)mDoB~b(r+`zyDc}@v3OEIv0!{&^fK%XKNMKSp
+k(f<Db{OruXh^uso|3WKwF7^L|z}z2?A5?k2O3x+#4eAK~X#fBK
 
 literal 0
 HcmV?d00001
 
-diff --git a/tests/f_quota_shrinkdir/name b/tests/f_quota_shrinkdir/name
+diff --git a/tests/f_quota_deallocate_inode/name b/tests/f_quota_deallocate_inode/name
 new file mode 100644
-index 000000000000..8772ae5c814b
+index 000000000000..396887c16f84
 --- /dev/null
-+++ b/tests/f_quota_shrinkdir/name
++++ b/tests/f_quota_deallocate_inode/name
 @@ -0,0 +1 @@
-+update quota on directory optimization
++update quota when deallocating bad inode
 
