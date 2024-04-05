@@ -1,146 +1,240 @@
-Return-Path: <linux-ext4+bounces-1882-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1883-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF8618994C7
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 07:41:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83873899A05
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 11:56:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CFC128820A
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 05:41:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A70571C21D61
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 09:56:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A70402232B;
-	Fri,  5 Apr 2024 05:41:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BCE21649A7;
+	Fri,  5 Apr 2024 09:53:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kWuJ6oCO"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0AXR3Sr9";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mv3acM2x";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z0+7rq6f";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="lVccGfCI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qk1-f171.google.com (mail-qk1-f171.google.com [209.85.222.171])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B463C1CFB5
-	for <linux-ext4@vger.kernel.org>; Fri,  5 Apr 2024 05:41:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B4C7161318;
+	Fri,  5 Apr 2024 09:53:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712295692; cv=none; b=YSGxl9PfxPY8JiLzB/1wXDas5UnxELzKqLCFO2W0sWwfcS5YbNpVVDWSLqwJrUPCJ/RBPqNnhNRLiO1W3tNV98Oeah0+42xkPYqirNQDZlNwEC1lLhX1cTQhmaIpGtfMuOJn6TRdIWfsNVmNnBw6c/6m+hKJbTKRzT9bV3o0y7M=
+	t=1712310815; cv=none; b=mIY19KJ4UI01mSUrK/lBBv8QwjcJFR/GcJ6feTqejR8OgeII6d1QwMKbqIJTyzfDe2X7g00bTfU0bh5S7h+NSCXlfxA62h9QQpRYFxXo7OHTIxC2zyX5YlvA7BynzOoUeIx5UKv0uZ6mblIOhEjhQ3rfAySQg7m8fsf0PYzEYx8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712295692; c=relaxed/simple;
-	bh=f1IdB37wETlUiYibOa4XaON0zQjdQA1tgNosopu1vg4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ES6yW9kieSd0P7zCVBNCV/bPS0Q4k0CeUH4SJMlOgXM2R/V798MGo2VAD3BczgV3T+tZRsMeegY8WPt7V/edJn9XQhYRK9El33bCHi2AI6lWP6XKJZ2hENfTu2jVdg37h2HBU8hiI7Yp6WgR9wD1l3uEO07xp82E/tRVdklHEO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kWuJ6oCO; arc=none smtp.client-ip=209.85.222.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f171.google.com with SMTP id af79cd13be357-78bc322a55cso112702485a.1
-        for <linux-ext4@vger.kernel.org>; Thu, 04 Apr 2024 22:41:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712295689; x=1712900489; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:disposition-notification-to
-         :from:content-language:references:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=CZnMpFCZuRTOi4y4AOZ9fdJBdsfzeGtIWt2Xq4UzeJ8=;
-        b=kWuJ6oCO7G6EEB9mSxcLYse6/dGatu4w5U2Myq0qqbOdzWRvenDwsm+PVhgrUbwyY3
-         oP32XC3FEWk04nPA/rTviRJJ1MWfN2VE2bMcQbXi+6/AlkJiYr++RtyH9UwZ0aqC5gkH
-         VAJfrnqPHfB6oFS4cXuROIOscXX+W2xJH6g8q3S3L/uoXwj4Fos2zcSizOBGRN3qj7/j
-         G61fFGCKb0RaXbjJK1piRvySHBPHIxLWN3xTUoEpFRPLVGfyOZ2sxB+Zkd1gMjcArvKT
-         WOj7Fk/IORwNqgp5vCWGPqIP5qJzbfgv4OKjI6CCvVA9wfkn5EdEtMZ65+UG/SMAl0wu
-         zEYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712295689; x=1712900489;
-        h=content-transfer-encoding:in-reply-to:disposition-notification-to
-         :from:content-language:references:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CZnMpFCZuRTOi4y4AOZ9fdJBdsfzeGtIWt2Xq4UzeJ8=;
-        b=tiD8+Qtw6fqxH/tRVybYeZlGymICoS67Iy1mO7GC/m7WdVsr+R+qWrOxWaycUMZkMU
-         uxjkhkRjHtMMLGFQM8NxaPqZVWUIwWFQBJuBJFdPWZWIIMoQCiVrTfR9YKAKkc834XOk
-         LSey3MtskL5APChsiEfrywOQHTH9flqneT0pF+8N3eTL39uCqXx0XOZ6ux78vZufNzz2
-         JRshiykg+o1C1y8VhkD4LYoDShk+xhuTPh0CxBT4ZLlMcd0irtu380EFnRGXz7PCL3/y
-         ru+iZlOiH6datCZLfTP2bFx6vZhkNnxa6Gwcy1wjOn6q2V3ZYzGWaNiW7X4tsL4WRIn4
-         gOdA==
-X-Gm-Message-State: AOJu0Yx57h1jASJOS8Z+znQSyzKulhVyU6ntNtUmyePD1n9neK8Itrvb
-	ogBIHFpG73934zqfRi9ZAve2v0ekhvSbmf0VjhpFGeaDctHvIC2n0XH4mbPq
-X-Google-Smtp-Source: AGHT+IEJHbLlHjXjivyzJ3CUZX5wZzYEooCV+F5Ynek7aXZGvGCXF8iYKi3VSMdJu12mrOlsAruspA==
-X-Received: by 2002:a05:620a:1581:b0:78a:5c9e:b606 with SMTP id d1-20020a05620a158100b0078a5c9eb606mr468425qkk.49.1712295688825;
-        Thu, 04 Apr 2024 22:41:28 -0700 (PDT)
-Received: from [10.1.1.128] (pool-71-179-102-161.bltmmd.fios.verizon.net. [71.179.102.161])
-        by smtp.gmail.com with ESMTPSA id m7-20020a05620a214700b0078bcbec8693sm365285qkm.91.2024.04.04.22.41.28
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Thu, 04 Apr 2024 22:41:28 -0700 (PDT)
-Message-ID: <ebbeb7b6-e93b-45f8-bea5-d1cfc8db7892@gmail.com>
-Date: Fri, 5 Apr 2024 01:41:27 -0400
+	s=arc-20240116; t=1712310815; c=relaxed/simple;
+	bh=iG4O7MMO9gnBVtJZSYs1Hq2UvQRfp2O+8N10zEhPJQc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DTPANW0a0wV97PEgXPLudGyv3gNtEeQLhpJBkNuIi948I7CrYZ9fV9IXUO9CHKdzxmRFDqRx0rKF1oJDd3VteF75R6+ZlJBtipMSwfwrUNbT5Fxu40VGFfJ1EKKvwLJtoCIlZQ86OWSzO0Xlf9VMAHYCMnI1p2jWMX1LE6MYm2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0AXR3Sr9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mv3acM2x; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z0+7rq6f; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=lVccGfCI; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 65BF721A2E;
+	Fri,  5 Apr 2024 09:53:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712310809; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
+	b=0AXR3Sr9XfI+c7rTPImw5uCIqUd0/09qhqdILdsZtrOOOTHNThWW8IWO2LavomosrDlGR4
+	r5zcQ7aU/RB1e9VhO2PeMNtjvZCEdKzHqupTEPNLaoS68JZ7HFWh4OFd1ckPqsmFOlBB7H
+	mcwM4kvxTwfCAYfvPvAMLZZtKWx5vB8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712310809;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
+	b=mv3acM2xzaAtD0goPoMaKRbxprQYlRRQRdWeBSj+XgsIgB6XYwFswsOsyAWM2lrdH+uuj0
+	DSsBpoDlTl2n1rDQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712310808; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
+	b=Z0+7rq6fcjYyrOGJFwhu7EPjxeB2YzEP6/GI4QJE77wXmTpoCFc1mE9dE1Bj/PEGY1tu49
+	ESTilKNYDaC1JrKhdHCnLw44UtjznYqGrEfN+CtNGBPA2Dt9MhQgjmAw2Ok0XXX+qUvUQJ
+	M0o1kG24lT0V2nbGjew3Qb50utPv0T0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712310808;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=kxLJbVvPYqfzG83pwvoYNu5wMFXj9ZScFtz4XZeGAUk=;
+	b=lVccGfCILCM4svVbHjo2v2GSsNkbxp/3kUm/GIkdwdP1GGRDcHYdF3Ew32qMBI0ItKMWtc
+	2n16V0vgVrwCANAQ==
+Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id 5716C139F1;
+	Fri,  5 Apr 2024 09:53:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap2.dmz-prg2.suse.org with ESMTPSA
+	id 2Ig+FRjKD2a3YAAAn2gu4w
+	(envelope-from <jack@suse.cz>); Fri, 05 Apr 2024 09:53:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0505DA0814; Fri,  5 Apr 2024 11:53:27 +0200 (CEST)
+Date: Fri, 5 Apr 2024 11:53:27 +0200
+From: Jan Kara <jack@suse.cz>
+To: Suren Baghdasaryan <surenb@google.com>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Matthew Wilcox <willy@infradead.org>, joro@8bytes.org,
+	will@kernel.org, trond.myklebust@hammerspace.com, anna@kernel.org,
+	arnd@arndb.de, herbert@gondor.apana.org.au, davem@davemloft.net,
+	jikos@kernel.org, benjamin.tissoires@redhat.com, tytso@mit.edu,
+	jack@suse.com, dennis@kernel.org, tj@kernel.org, cl@linux.com,
+	jakub@cloudflare.com, penberg@kernel.org, rientjes@google.com,
+	iamjoonsoo.kim@lge.com, vbabka@suse.cz, edumazet@google.com,
+	kuba@kernel.org, pabeni@redhat.com, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-acpi@vger.kernel.org, acpica-devel@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-crypto@vger.kernel.org,
+	bpf@vger.kernel.org, linux-input@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-mm@kvack.org,
+	netdev@vger.kernel.org, linux-security-module@vger.kernel.org
+Subject: Re: [PATCH 1/1] mm: change inlined allocation helpers to account at
+ the call site
+Message-ID: <20240405095327.ufsimeplwahh6mem@quack3>
+References: <20240404165404.3805498-1-surenb@google.com>
+ <Zg7dmp5VJkm1nLRM@casper.infradead.org>
+ <CAJuCfpHbTCwDERz+Hh+aLZzNdtSFKA+Q7sW-xzvmFmtyHCqROg@mail.gmail.com>
+ <CAJuCfpHy5Xo76S7h9rEuA3cQ1pVqurL=wmtQ2cx9-xN1aa_C_A@mail.gmail.com>
+ <Zg8qstJNfK07siNn@casper.infradead.org>
+ <jb25mtkveqf63bv74jhynf6ncxmums5s37esveqsv52yurh4z7@5q55ttv34bia>
+ <20240404154150.c25ba3a0b98023c8c1eff3a4@linux-foundation.org>
+ <jpaw4hdd73ngt7mvtcdryqscivx6m2ic76ikfkcopceb47becp@vox5czt5bec3>
+ <CAJuCfpF10COO2nh1nt3CcaZOFe4iSXszsup+a0qAEQ1ngyy5tQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: ext4 e2fsck error interpretation and howto fix? expecting
- 249045418 actual extent phys 249045427 log 1 len 2
-To: linux-ext4@vger.kernel.org
-References: <CAMr-kF3yY6zYi2ZBXG7g77zaG2qzA9B294cqL=B7HOtkXYhOeA@mail.gmail.com>
- <20240405042014.GD13376@mit.edu>
-Content-Language: en-US
-From: "hanasaki@gmail.com" <hanasaki@gmail.com>
-Disposition-Notification-To: "hanasaki@gmail.com" <hanasaki@gmail.com>
-In-Reply-To: <20240405042014.GD13376@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAJuCfpF10COO2nh1nt3CcaZOFe4iSXszsup+a0qAEQ1ngyy5tQ@mail.gmail.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[39];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLinodumkc3pofpwycnya9d5a9)];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[c-faq.com:url,suse.com:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,linux.dev:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-Hello Theodore,
+On Thu 04-04-24 16:16:15, Suren Baghdasaryan wrote:
+> On Thu, Apr 4, 2024 at 4:01 PM Kent Overstreet
+> <kent.overstreet@linux.dev> wrote:
+> >
+> > On Thu, Apr 04, 2024 at 03:41:50PM -0700, Andrew Morton wrote:
+> > > On Thu, 4 Apr 2024 18:38:39 -0400 Kent Overstreet <kent.overstreet@linux.dev> wrote:
+> > >
+> > > > On Thu, Apr 04, 2024 at 11:33:22PM +0100, Matthew Wilcox wrote:
+> > > > > On Thu, Apr 04, 2024 at 03:17:43PM -0700, Suren Baghdasaryan wrote:
+> > > > > > Ironically, checkpatch generates warnings for these type casts:
+> > > > > >
+> > > > > > WARNING: unnecessary cast may hide bugs, see
+> > > > > > http://c-faq.com/malloc/mallocnocast.html
+> > > > > > #425: FILE: include/linux/dma-fence-chain.h:90:
+> > > > > > + ((struct dma_fence_chain *)kmalloc(sizeof(struct dma_fence_chain),
+> > > > > > GFP_KERNEL))
+> > > > > >
+> > > > > > I guess I can safely ignore them in this case (since we cast to the
+> > > > > > expected type)?
+> > > > >
+> > > > > I find ignoring checkpatch to be a solid move 99% of the time.
+> > > > >
+> > > > > I really don't like the codetags.  This is so much churn, and it could
+> > > > > all be avoided by just passing in _RET_IP_ or _THIS_IP_ depending on
+> > > > > whether we wanted to profile this function or its caller.  vmalloc
+> > > > > has done it this way since 2008 (OK, using __builtin_return_address())
+> > > > > and lockdep has used _THIS_IP_ / _RET_IP_ since 2006.
+> > > >
+> > > > Except you can't. We've been over this; using that approach for tracing
+> > > > is one thing, using it for actual accounting isn't workable.
+> > >
+> > > I missed that.  There have been many emails.  Please remind us of the
+> > > reasoning here.
+> >
+> > I think it's on the other people claiming 'oh this would be so easy if
+> > you just do it this other way' to put up some code - or at least more
+> > than hot takes.
+> >
+> > But, since you asked - one of the main goals of this patchset was to be
+> > fast enough to run in production, and if you do it by return address
+> > then you've added at minimum a hash table lookup to every allocate and
+> > free; if you do that, running it in production is completely out of the
+> > question.
+> >
+> > Besides that - the issues with annotating and tracking the correct
+> > callsite really don't go away, they just shift around a bit. It's true
+> > that the return address approach would be easier initially, but that's
+> > not all we're concerned with; we're concerned with making sure
+> > allocations get accounted to the _correct_ callsite so that we're giving
+> > numbers that you can trust, and by making things less explicit you make
+> > that harder.
+> >
+> > Additionally: the alloc_hooks() macro is for more than this. It's also
+> > for more usable fault injection - remember every thread we have where
+> > people are begging for every allocation to be __GFP_NOFAIL - "oh, error
+> > paths are hard to test, let's just get rid of them" - never mind that
+> > actually do have to have error paths - but _per callsite_ selectable
+> > fault injection will actually make it practical to test memory error
+> > paths.
+> >
+> > And Kees working on stuff that'll make use of the alloc_hooks() macro
+> > for segregating kmem_caches.
+> 
+> Yeah, that pretty much summarizes it. Note that we don't have to make
+> the conversions in this patch and accounting will still work but then
+> all allocations from different callers will be accounted to the helper
+> function and that's less useful than accounting at the call site.
+> It's a sizable churn but the conversions are straight-forward and we
+> do get accurate, performant and easy to use memory accounting.
 
-Thank you so very much! - Arigato!
+OK, fair enough. I guess I can live with the allocation macros in jbd2 if
+type safety is preserved. But please provide a short summary of why we need
+these macros (e.g. instead of RET_IP approach) in the changelog (or at
+least a link to some email explaining this if the explanation would get too
+long). Because I was wondering about the same as Andrew (and yes, this is
+because I wasn't really following the huge discussion last time).
 
- >> Theodore Ts'o <tytso@mit.edu>
-
-On 4/5/24 00:20, Theodore Ts'o wrote:
-> On Thu, Apr 04, 2024 at 06:23:44PM -0400, Hanasaki Jiji wrote:
->> Hello all,
->>
->> I have an ext4 filesystem with e2fsck reporting many of the below
->> lines.  Neither e2fsck nor fsck fix the issue.
->> Repeated runs result in the same errors.
->>
->> kernel version = linux-image-6.1.0-18-amd64 / Debian Bookworm
->>
->> Your help understanding the output and help fixing are very much appreciated.
->>
->> Thank you,
->>
->> ==== e2fsck output ====
->> 62264184(d): expecting 249045418 actual extent phys 249045427 log 1 len 2
->> 62264185(d): expecting 249045419 actual extent phys 249045429 log 1 len 2
->> 62266954(d): expecting 249045453 actual extent phys 249045486 log 1 len 3
-> 
-> These aren't problems.  You enabled a debugging feature, via "-E
-> fragcheck".  Quoting from the man page:
-> 
->         fragcheck
->                During  pass 1, print a detailed report of any discontiguous
-> 	      blocks for files in the file system.
-> 
-> 
-> This is intended for use by developers who are trying to assess
-> various different block allocation algorithms' fragmentation
-> resistance.
-> 
-> The (d) means directory, and due to how files tend to get added to
-> directories, directories are almost certainly going to be
-> discontiguous, and with hashed tree indexes, this isn't a performance
-> issue.  So arguably fragcheck should really skip printing messages
-> about directories.  That being said, given pretty much any workload,
-> and utilization approaching 100%, a certain amount of file
-> fragmentation is inevitable, so using fragcheck to assess the
-> fragmentation resistance of a particular change in a block allocation
-> algorithm can only be done using a fixed workload to avoid comparing
-> apples versus oranges.
-> 
-> In any case, unless you are an ext4 developer actively doing block
-> allocation work, you really shouldn't be using -E fragcheck.
-> 
-> Cheers,
-> 
-> 					- Ted
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
