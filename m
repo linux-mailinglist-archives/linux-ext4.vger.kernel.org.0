@@ -1,178 +1,247 @@
-Return-Path: <linux-ext4+bounces-1904-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1905-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C004C89A29D
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 18:37:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE59A89A454
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 20:41:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 075F4B241FD
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 16:37:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D26741C22488
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 18:41:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB22416F275;
-	Fri,  5 Apr 2024 16:37:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5799E17334F;
+	Fri,  5 Apr 2024 18:41:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W/kTTz5a";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="riYSMPLf";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="W/kTTz5a";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="riYSMPLf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UgcQ26Xe"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879BB50A98;
-	Fri,  5 Apr 2024 16:37:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 112C517278E;
+	Fri,  5 Apr 2024 18:41:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712335043; cv=none; b=UGiuKnTwTr35EEUIs3X3JS8E8fWvy73pFikU1dA4G02eyyqM+YlbfJmAQk5c+R0sMV6FifzxuMYdS4dCZy1Es+lm6e/zytJNXmBYyC+hHmsXgS7oy+fZ/PdXU1jmBCIxQEVKJxikzFJ9N7QTvRjPOm2FLu7NG1MqLZL9s8/uKiY=
+	t=1712342469; cv=none; b=D45fagc6O+iRTcgEY1xczqb4kRCWXE3U6bogsPNBWZiqhv+Rdnmh+qalgbD8wi0dobf7PDYI87TJjUVoB9Rwz8MRHC3txgfCQ+SRoVajMclxQUN1n/FaCc+cXW1D65QnHzciDatfBmlL9CvBky9Rv2YiuibMAoaMHpZXcSpYR8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712335043; c=relaxed/simple;
-	bh=fbRV8D+g8Pp361DpMzV4d80YR3tASUfH1VeZ1zh+ic4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=OPbCvtKiX2OJCOsVHPGyULSOqp8v8LE+EaV3/Y3YtGb3QbMxs3JdB5My8EyHoyq7dANVgfRD/TnPaMltVIj1AODetOXZdgp27N3DNIKe2uWH62mT6GY1caZjAyjfoFcmZG9Bvl6IVQb/I/hZ8ZPmsGEW5WoHPfr2J0XkY6BoCE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W/kTTz5a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=riYSMPLf; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=W/kTTz5a; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=riYSMPLf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 417FD21ABB;
-	Fri,  5 Apr 2024 16:37:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712335034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=W/kTTz5a0vf6qCbYd530AH8Ld3LbgdAvwrl0o7mQRnx++sK7lsXO8cVDnspMF3EtOiFfjQ
-	WLF1c0RrSGfafJ5DK84sZcOqa+r0iDAUUK5jXG/Eaq1O4tbnQKhwe9egaX0XsVi2stjctD
-	S8iinN3fNaL1br9CIG528txeUo1AqHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712335034;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=riYSMPLfFTJTaeD9N5m3QqVojPpAR+UoMNiolx4g/5uczTHbCJoXBox2cOjheK1LSwgJ/W
-	pjdwpvQXkjkVpWAQ==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="W/kTTz5a";
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=riYSMPLf
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1712335034; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=W/kTTz5a0vf6qCbYd530AH8Ld3LbgdAvwrl0o7mQRnx++sK7lsXO8cVDnspMF3EtOiFfjQ
-	WLF1c0RrSGfafJ5DK84sZcOqa+r0iDAUUK5jXG/Eaq1O4tbnQKhwe9egaX0XsVi2stjctD
-	S8iinN3fNaL1br9CIG528txeUo1AqHk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1712335034;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9b6bVC5wHtPZFe+lwb/5F0DCN1XHlga3Dp0t9Yx4D6E=;
-	b=riYSMPLfFTJTaeD9N5m3QqVojPpAR+UoMNiolx4g/5uczTHbCJoXBox2cOjheK1LSwgJ/W
-	pjdwpvQXkjkVpWAQ==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id E3926139E8;
-	Fri,  5 Apr 2024 16:37:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id dhBHK7koEGblbwAAn2gu4w
-	(envelope-from <krisman@suse.de>); Fri, 05 Apr 2024 16:37:13 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: Matthew Wilcox <willy@infradead.org>,  tytso@mit.edu,
-  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,
-  ebiggers@kernel.org
-Subject: Re: [PATCH v16 0/9] Cache insensitive cleanup for ext4/f2fs
-In-Reply-To: <ec3a3946-d6d6-40e1-8645-34b258d8b507@collabora.com> (Eugen
-	Hristev's message of "Fri, 5 Apr 2024 16:02:15 +0300")
-References: <20240405121332.689228-1-eugen.hristev@collabora.com>
-	<Zg_sF1uPG4gdnJxI@casper.infradead.org>
-	<ec3a3946-d6d6-40e1-8645-34b258d8b507@collabora.com>
-Date: Fri, 05 Apr 2024 12:37:12 -0400
-Message-ID: <87le5r3gw7.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1712342469; c=relaxed/simple;
+	bh=gInCOA+sfPewoaseFEvU8tzLuv1U9E3UhaEqPuZNAw0=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=cpyJrN5S8dWy/MXIP8Pm6NpK0QPYAgLWfonP9+Il8Oww3whd3feExCE8fUSfnb/4KNnQ0e6LfeEvhWaoz4YqfkZZFc6aD1XkYQG4yf59o37JiZ/YdBI/jKl4rTHc2w/A5XscM5myumpEYWBlsy8WT1v3XbRtJy1RhltL36jhW8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UgcQ26Xe; arc=none smtp.client-ip=209.85.208.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d8129797fcso32652371fa.1;
+        Fri, 05 Apr 2024 11:41:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712342466; x=1712947266; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=eVlxOZUtKUrfgHZukB+ngKkuy1iBG6tY8rl6phcN1Bo=;
+        b=UgcQ26XeP3BsHY3BHV7bXxCGW+e4FV2KC3+fHgSFbXyelB7ha99dgP8HhlHrsni3Oi
+         Dz1lP5HX1tfB6HuHKV7tIBEn7TZHgCcOHpScsgvVo8C3kJiOUDqMAs4xX42w/h2KkVAR
+         Kq6Iy612NWyS0Wq0SxwPSvQhTFPls6ATZRlTcYmayi+utl8knLeU2FcdL70PDIznpvoj
+         1e3giabiUotdP8VnOhjxHQ8sI8wFpziqpLwn3mI90ZPCFfIiOMKHOfz+cRPTyMMmXh8m
+         3nT2KL/KD6HAuQOOsL+QsxFPsUm2zOv0x4dFVmLvkrlKAsgkzXiz57+j4WMrJVkDydbc
+         ervA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712342466; x=1712947266;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=eVlxOZUtKUrfgHZukB+ngKkuy1iBG6tY8rl6phcN1Bo=;
+        b=fmQMxyGvP+llQVowXdY61J3SSrWModa46D1aj4J8GRD1McVbeuh0yAlNVSx+t0s7rw
+         /V4Liv/cHnJSG+X0x/Ej48gsev5teA7jdVVkLqf8yzEfEmKRmaSrvwQm3tl9tqpbXXyO
+         0EIXMPNexLIW7MBMRXMM/1cF5evLCDlnKid4tl+n9dg13fLosj0Vzt432Y6yf19MrVit
+         PhYYoUmNA93w33VnWtABkiYqc+Csivu7Ia/N2iv+2sbaPcVYTJexb3MLyQ1A3jeGaWp0
+         8DO5x+iu1QDX0iN88kgHT1rAMxvmOPjjpiXyLG2Lct6eX+AQCyb7cDRVkWj43kmlfbaN
+         RU6A==
+X-Forwarded-Encrypted: i=1; AJvYcCWtkAnYwWu86baireE0AWEMjJuQg2RRt3Okl7Ap+9HlFU+w62ZMXt9biHBsk8YbOp5K+mwAueRWc0z5SMxfthxyfiLW8+kdpnNKCWPMStT4mJIUkcwd+mdRpqLi6EZN17mL3pfwxBsX8g==
+X-Gm-Message-State: AOJu0YzMuV2PB1IQ0GboMBllEveatW78BioM7mDS0JdgV+Aed/queUUw
+	lMEPC54KDZWSZDaATeUf40rUFeEIx0yjQpc1hUHIwHqd4UepEmEn
+X-Google-Smtp-Source: AGHT+IGBcuQYWYXn+Fnf2i2A3BrvKvhz1jRcgJNoH2q9Bcwfs3czJqByLoIPjxPS3JpVqjT9jyUr7A==
+X-Received: by 2002:a2e:3210:0:b0:2d7:aaf:54ab with SMTP id y16-20020a2e3210000000b002d70aaf54abmr1809661ljy.38.1712342465860;
+        Fri, 05 Apr 2024 11:41:05 -0700 (PDT)
+Received: from cherry.localnet ([178.69.224.101])
+        by smtp.gmail.com with ESMTPSA id c12-20020a05651c014c00b002d80a2da6d2sm236545ljd.129.2024.04.05.11.41.04
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 05 Apr 2024 11:41:05 -0700 (PDT)
+From: Artem Sadovnikov <ancowi69@gmail.com>
+To: Mikhail Ukhin <mish.uxin2012@yandex.ru>, Theodore Ts'o <tytso@mit.edu>
+Cc: stable@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Michail Ivanov <iwanov-23@bk.ru>, Pavel Koshutin <koshutin.pavel@yandex.ru>,
+ lvc-project@linuxtesting.org
+Subject: Re: [PATCH] ext4: fix i_data_sem unlock order in ext4_ind_migrate()
+Date: Fri, 05 Apr 2024 21:40:14 +0300
+Message-ID: <1845977.e0hk0VWMCB@cherry>
+In-Reply-To: <20240405022651.GB13376@mit.edu>
+References:
+ <20240404095000.5872-1-mish.uxin2012@yandex.ru>
+ <20240405022651.GB13376@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:98:from];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.de:dkim,wikipedia.org:url];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 417FD21ABB
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -4.51
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+On Friday, April 5, 2024 5:26:51=E2=80=AFAM MSK Theodore Ts'o wrote:
+>=20
+> This doesn't make any sense.  Lock order matters; the order in which
+> you unlock shouldn't (and doesn't) make a difference.  This is also
+> something which lockdep doesn't complain about --- because it's not a
+> problem.
+>=20
+> So how was this "found by syzkaller"?
+>=20
+> 					- Ted
 
-> On 4/5/24 15:18, Matthew Wilcox wrote:
->> On Fri, Apr 05, 2024 at 03:13:23PM +0300, Eugen Hristev wrote:
->>> Hello,
->>>
->>> I am trying to respin the series here :
->>> https://www.spinics.net/lists/linux-ext4/msg85081.html
->> 
->> The subject here is "Cache insensitive cleanup for ext4/f2fs".
->> Cache insensitive means something entirely different
->> https://en.wikipedia.org/wiki/Cache-oblivious_algorithm
->> 
->> I suspect you mean "Case insensitive".
->
-> You are correct, I apologize for the typo.
+This issue only occurs when CONFIG_PROVE_LOCKING is set, in which case=20
+jbd2_might_wait_for_commit macro will lock jbd2_handle in jbd2_journal_stop=
+=20
+function, which, while i_data_sem is locked, will trigger lockdep, because=
+=20
+jbd2_journal_start function might also lock on same jbd2_handle at the same=
+=20
+time
 
-Heh. I completely missed it in the previous submissions. I guess we both
-just mentally auto-corrected.
+Without CONFIG_PROVE_LOCKING this issue is not possible because=20
+jbd2_journal_stop never calls jbd2_might_wait_for_commit
 
-Since we are here, I think I contributed to the typo in the cover letter
-with the summary lines of patch 1 and 2.  Differently from the rest of
-the series, these two are actually working on a "cache of
-casefolded strings".  But their summary lines are misleading.
+Since syzkaller report was local and wasn't inserted in initial patch messa=
+ge,=20
+I will put it in this message
+It wasn't been able to create a reproducer for that problem, so there's onl=
+y a=20
+crash report
 
-Can you rename them to:
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D
+WARNING: possible circular locking dependency detected
+5.10.208-syzkaller #0 Not tainted
+=2D-----------------------------------------------------
+syz-fuzzer/1080 is trying to acquire lock:
+ffff88810b09e8e0 (jbd2_handle){++++}-{0:0}, at: jbd2_log_wait_commit+0x142/=
+0x430=20
+fs/jbd2/journal.c:693
 
-[PATCH v16 1/9] ext4: Simplify the handling of cached casefolded names
-[PATCH v16 2/9] f2fs: Simplify the handling of cached casefolded names
+but task is already holding lock:
+ffff88805eec5c78 (&ei->i_data_sem){++++}-{3:3}, at: ext4_ind_migrate+0x2fe/=
+0x840=20
+fs/ext4/migrate.c:633
 
-From a quick look, the series is looking good and the strict mode issue
-pointed in the last iteration seems fixed, though I didn't run it yet.
-I'll take a closer look later today and fully review.
+which lock already depends on the new lock.
 
--- 
-Gabriel Krisman Bertazi
+
+the existing dependency chain (in reverse order) is:
+
+=2D> #1 (&ei->i_data_sem){++++}-{3:3}:
+       down_read+0x96/0x420 kernel/locking/rwsem.c:1504
+       ext4_da_map_blocks fs/ext4/inode.c:1776 [inline]
+       ext4_da_get_block_prep+0x5b4/0x11a0 fs/ext4/inode.c:1857
+       ext4_block_write_begin+0x479/0x1230 fs/ext4/inode.c:1076
+       ext4_da_write_begin+0x3ca/0x1060 fs/ext4/inode.c:3063
+       generic_perform_write+0x210/0x500 mm/filemap.c:3336
+       ext4_buffered_write_iter+0x232/0x4a0 fs/ext4/file.c:269
+       ext4_file_write_iter+0x429/0x1420 fs/ext4/file.c:683
+       call_write_iter include/linux/fs.h:1962 [inline]
+       new_sync_write+0x427/0x660 fs/read_write.c:518
+       vfs_write+0x774/0xab0 fs/read_write.c:605
+       ksys_write+0x12d/0x260 fs/read_write.c:658
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x62/0xc7
+
+=2D> #0 (jbd2_handle){++++}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:2988 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3113 [inline]
+       validate_chain kernel/locking/lockdep.c:3729 [inline]
+       __lock_acquire+0x29c4/0x53c0 kernel/locking/lockdep.c:4955
+       lock_acquire kernel/locking/lockdep.c:5566 [inline]
+       lock_acquire+0x19f/0x4a0 kernel/locking/lockdep.c:5531
+       jbd2_log_wait_commit+0x177/0x430 fs/jbd2/journal.c:696
+       jbd2_journal_stop+0x5b0/0xde0 fs/jbd2/transaction.c:1933
+       __ext4_journal_stop+0xde/0x1f0 fs/ext4/ext4_jbd2.c:127
+       ext4_ind_migrate+0x402/0x840 fs/ext4/migrate.c:666
+       ext4_ioctl_setflags+0xaef/0xc70 fs/ext4/ioctl.c:459
+       __ext4_ioctl+0x3742/0x4e20 fs/ext4/ioctl.c:870
+       vfs_ioctl fs/ioctl.c:48 [inline]
+       __do_sys_ioctl fs/ioctl.c:753 [inline]
+       __se_sys_ioctl fs/ioctl.c:739 [inline]
+       __x64_sys_ioctl+0x19a/0x210 fs/ioctl.c:739
+       do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+       entry_SYSCALL_64_after_hwframe+0x62/0xc7
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->i_data_sem);
+  lock(jbd2_handle);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-fuzzer/1080:
+ #0: ffff88810bc42460 (sb_writers#4){.+.+}-{0:0}, at: __ext4_ioctl+0x76a/0x=
+4e20=20
+fs/ext4/ioctl.c:861
+ #1: ffff88805eec5e88 (&type->i_mutex_dir_key#3){++++}-{3:3}, at: inode_loc=
+k=20
+include/linux/fs.h:774 [inline]
+ #1: ffff88805eec5e88 (&type->i_mutex_dir_key#3){++++}-{3:3}, at:=20
+__ext4_ioctl+0x799/0x4e20 fs/ext4/ioctl.c:865
+ #2: ffff88810bc44ac0 (&sbi->s_writepages_rwsem){++++}-{0:0}, at:=20
+ext4_ind_migrate+0x237/0x840 fs/ext4/migrate.c:625
+ #3: ffff88805eec5c78 (&ei->i_data_sem){++++}-{3:3}, at: ext4_ind_migrate+0=
+x2fe/
+0x840 fs/ext4/migrate.c:633
+
+stack backtrace:
+CPU: 0 PID: 1080 Comm: syz-fuzzer Not tainted 5.10.208-syzkaller #0
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.12.0-1=20
+04/01/2014
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x107/0x167 lib/dump_stack.c:118
+ check_noncircular+0x26c/0x320 kernel/locking/lockdep.c:2123
+ check_prev_add kernel/locking/lockdep.c:2988 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3113 [inline]
+ validate_chain kernel/locking/lockdep.c:3729 [inline]
+ __lock_acquire+0x29c4/0x53c0 kernel/locking/lockdep.c:4955
+ lock_acquire kernel/locking/lockdep.c:5566 [inline]
+ lock_acquire+0x19f/0x4a0 kernel/locking/lockdep.c:5531
+ jbd2_log_wait_commit+0x177/0x430 fs/jbd2/journal.c:696
+ jbd2_journal_stop+0x5b0/0xde0 fs/jbd2/transaction.c:1933
+ __ext4_journal_stop+0xde/0x1f0 fs/ext4/ext4_jbd2.c:127
+ ext4_ind_migrate+0x402/0x840 fs/ext4/migrate.c:666
+ ext4_ioctl_setflags+0xaef/0xc70 fs/ext4/ioctl.c:459
+ __ext4_ioctl+0x3742/0x4e20 fs/ext4/ioctl.c:870
+ vfs_ioctl fs/ioctl.c:48 [inline]
+ __do_sys_ioctl fs/ioctl.c:753 [inline]
+ __se_sys_ioctl fs/ioctl.c:739 [inline]
+ __x64_sys_ioctl+0x19a/0x210 fs/ioctl.c:739
+ do_syscall_64+0x33/0x40 arch/x86/entry/common.c:46
+ entry_SYSCALL_64_after_hwframe+0x62/0xc7
+RIP: 0033:0x49e0bb
+Code: e8 0a 4b fc ff eb 88 cc cc cc cc cc cc cc cc e8 1b 8f fc ff 48 8b 7c =
+24 10=20
+48 8b 74 24 18 48 8b 54 24 20 48 8b 44 24 08 0f 05 <48> 3d 01 f0 ff ff 76 2=
+0 48=20
+c7 44 24 28 ff ff ff ff 48 c7 44 24 30
+RSP: 002b:000000c002b65ae8 EFLAGS: 00000212 ORIG_RAX: 0000000000000010
+RAX: ffffffffffffffda RBX: 000000c000025000 RCX: 000000000049e0bb
+RDX: 000000c002b65b64 RSI: 0000000040086602 RDI: 000000000000001b
+RBP: 000000c002b65b28 R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000212 R12: 000000c02b38c840
+R13: 0000000000000001 R14: 000000c018a321a0 R15: ffffffffffffffff
+
+
 
