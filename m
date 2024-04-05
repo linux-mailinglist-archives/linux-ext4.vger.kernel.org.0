@@ -1,33 +1,34 @@
-Return-Path: <linux-ext4+bounces-1899-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1900-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C56B899F75
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 16:24:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 98F00899F76
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 16:24:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9C6E284099
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 14:24:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 50936284102
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 14:24:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1326116EBF9;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B759116EC02;
 	Fri,  5 Apr 2024 14:24:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="OWn1TK++"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="GehEy9or"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-181.mta1.migadu.com (out-181.mta1.migadu.com [95.215.58.181])
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F1BFE16EBE4
-	for <linux-ext4@vger.kernel.org>; Fri,  5 Apr 2024 14:24:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 872A016EBE8
+	for <linux-ext4@vger.kernel.org>; Fri,  5 Apr 2024 14:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712327052; cv=none; b=EptVsfwox16KrqhEDrpN0cB3lRla3BQkCGXigYvkAOyLuZjoLXhgLm8ihJuBSOUKUyDvrW3CmlOcA7kTvWb5yT6sjCCVU18g/YbKJY+MCpaxm85uCsTwMAs8+aiTqhxoe9PhYqXv/rirG08Ak3RGyMIn/uLYoz1DbTg946FQEvU=
+	t=1712327053; cv=none; b=JVunROVnB4CodkHSMUi3gkCpv9vZQuXXbrj1jvDWbPM8ajeibJnUnVyB01jFOwan5Y8FBVxFp337spS7ncYdE9dpduKvw07wsykNMhAqgsdvf5m6zZ97PL7Sfk9TnR4mUI/monBvOLflFvc8P3ynB4R4Z+ZY9o6QqZFGu8/VVls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712327052; c=relaxed/simple;
-	bh=bSxDohV6I9Ag7iM0mRoQhr/kHjXdQz6A8jb69OmR5gQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=f1lzI9G5IZDBrFUqML7BVjLtMld8TG6xSKh35Wi5L74J+cs1QRej95rss623lNOW80gvZn9YMn+8DN+W6WiVaFw+u47n0RMlz/qu7RgHsb3AW99V8R26iIEZTxk7bp/U08P0dyzP/3VnqV+Bb5YfJz7OaYOcP3xKJkwOsmOQTBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=OWn1TK++; arc=none smtp.client-ip=95.215.58.181
+	s=arc-20240116; t=1712327053; c=relaxed/simple;
+	bh=2R4bn6h/V9QwnqF8wFmKHZ/kWIHOLLv5epWCfrESK1A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=WmI79UX8pWYtmW0SdWIqLCwEir843X1xSXA43mqQo7sy0qxzsv1yUZLC91m0QISgoi1EgRXFVBfxVfoZFZwApRkuRg6jcNyUNd2OdjRBCjzOUyhwiTlypnG18C35xCibpvjBINyu2ftBglgAKRtpQ4VUnwspxIxXv+wieRYDXC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=GehEy9or; arc=none smtp.client-ip=95.215.58.186
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
@@ -35,19 +36,22 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
 	t=1712327049;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=7ZOhTJGJDPoNxUxhoO+bOJZmD1tGctAf1VAwvjRojXU=;
-	b=OWn1TK++ik3GxPVtWyD+K0HB1BWspDb4937u6+AcB9F7edkPIdADTbK2gHpmotHn74JpYL
-	I/XnkSODqggONlo9n998tGMfN6bAPq4eJiA3q9cLQKiB6LmgGALYkffGDNSLeABlh9lA2X
-	c7VSrjWhotGqHuwjKej6dD1Vy+FPSXA=
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WhnFM4FfFSVqaDsm4zl/Ss6PMlAqm2ARJf8bLZnxGKQ=;
+	b=GehEy9orb6IBMwrVfiZKS+Swt93Pd852Awsk4SJYrTeD0dUofhk3AEzqttQ0piwgHio9TH
+	Q/51z0dztbDfXsLh+iy41ilSvPoCptRWVNQ6TJCLX5Gm2jNmvcfcCmJI/SIK4hnxvnDLJ0
+	PrnrSu91RhqBAldbEjaGuVd42Cn746k=
 From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
 To: Theodore Ts'o <tytso@mit.edu>,
 	Andreas Dilger <adilger@dilger.ca>
 Cc: linux-ext4@vger.kernel.org,
 	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Subject: [PATCH e2fsprogs v3 0/4] quota-related e2fsck fixes and tests
-Date: Fri,  5 Apr 2024 15:24:01 +0100
-Message-ID: <20240405142405.12312-1-luis.henriques@linux.dev>
+Subject: [PATCH v3 1/4] e2fsck: update quota accounting after directory optimization
+Date: Fri,  5 Apr 2024 15:24:02 +0100
+Message-ID: <20240405142405.12312-2-luis.henriques@linux.dev>
+In-Reply-To: <20240405142405.12312-1-luis.henriques@linux.dev>
+References: <20240405142405.12312-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,60 +61,81 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Hi!
+In "Pass 3A: Optimizing directories", a directory may have it's size reduced.
+If that happens and quota is enabled in the filesystem, the quota information
+will be incorrect because it doesn't take the rehash into account.  This issue
+was detected by running fstest ext4/014.
 
-Changes since v2:
+This patch simply updates the quota data accordingly, after the directory is
+written and it's size has been updated.
 
-Added deallocate_inode() documentation, as suggested by Andreas Dilger
-(and using text he provided).
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=218626
+Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+---
+ e2fsck/rehash.c | 27 +++++++++++++++++++++------
+ 1 file changed, 21 insertions(+), 6 deletions(-)
 
-And, for reference, here's the cover-letter from v2:
-
-I'm (re)sending two fixes to e2fsck that are related with quota handling.
-The fixes are the first two patches, the other two are test cases for these
-fixes.
-
-As I mentioned in v1, the issues were found using fstests ext4/014 and
-ext4/019.  And the only thing in this series that changed from v1 was the
-first test ("tests: new test to check quota after directory optimization"),
-which is now using a much simplified version of the testcase.
-
-Note that, since the first two patches didn't change, they have already a
-
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
-
-which I'm not including in the patches themselves.  Should I?  Or is that
-better left for the maintainer (eventually) applying them?
-
-Cheers,
--- 
-Luis
-
-
-Luis Henriques (SUSE) (4):
-  e2fsck: update quota accounting after directory optimization
-  e2fsck: update quota when deallocating a bad inode
-  tests: new test to check quota after directory optimization
-  tests: new test to check quota after a bad inode deallocation
-
- e2fsck/pass2.c                          |  43 ++++++++++++++++++------
- e2fsck/rehash.c                         |  27 +++++++++++----
- tests/f_quota_deallocate_inode/expect.1 |  18 ++++++++++
- tests/f_quota_deallocate_inode/expect.2 |   7 ++++
- tests/f_quota_deallocate_inode/image.gz | Bin 0 -> 11594 bytes
- tests/f_quota_deallocate_inode/name     |   1 +
- tests/f_quota_shrinkdir/expect.1        |  18 ++++++++++
- tests/f_quota_shrinkdir/expect.2        |   7 ++++
- tests/f_quota_shrinkdir/image.gz        | Bin 0 -> 10761 bytes
- tests/f_quota_shrinkdir/name            |   1 +
- 10 files changed, 105 insertions(+), 17 deletions(-)
- create mode 100644 tests/f_quota_deallocate_inode/expect.1
- create mode 100644 tests/f_quota_deallocate_inode/expect.2
- create mode 100644 tests/f_quota_deallocate_inode/image.gz
- create mode 100644 tests/f_quota_deallocate_inode/name
- create mode 100644 tests/f_quota_shrinkdir/expect.1
- create mode 100644 tests/f_quota_shrinkdir/expect.2
- create mode 100644 tests/f_quota_shrinkdir/image.gz
- create mode 100644 tests/f_quota_shrinkdir/name
-
+diff --git a/e2fsck/rehash.c b/e2fsck/rehash.c
+index c1da7d52724e..4847d172e5fe 100644
+--- a/e2fsck/rehash.c
++++ b/e2fsck/rehash.c
+@@ -987,14 +987,18 @@ errcode_t e2fsck_rehash_dir(e2fsck_t ctx, ext2_ino_t ino,
+ {
+ 	ext2_filsys 		fs = ctx->fs;
+ 	errcode_t		retval;
+-	struct ext2_inode 	inode;
++	struct ext2_inode_large	inode;
+ 	char			*dir_buf = 0;
+ 	struct fill_dir_struct	fd = { NULL, NULL, 0, 0, 0, NULL,
+ 				       0, 0, 0, 0, 0, 0 };
+ 	struct out_dir		outdir = { 0, 0, 0, 0 };
+-	struct name_cmp_ctx name_cmp_ctx = {0, NULL};
++	struct name_cmp_ctx	name_cmp_ctx = {0, NULL};
++	__u64			osize;
+ 
+-	e2fsck_read_inode(ctx, ino, &inode, "rehash_dir");
++	e2fsck_read_inode_full(ctx, ino, EXT2_INODE(&inode),
++			       sizeof(inode), "rehash_dir");
++
++	osize = EXT2_I_SIZE(&inode);
+ 
+ 	if (ext2fs_has_feature_inline_data(fs->super) &&
+ 	   (inode.i_flags & EXT4_INLINE_DATA_FL))
+@@ -1013,7 +1017,7 @@ errcode_t e2fsck_rehash_dir(e2fsck_t ctx, ext2_ino_t ino,
+ 	fd.ino = ino;
+ 	fd.ctx = ctx;
+ 	fd.buf = dir_buf;
+-	fd.inode = &inode;
++	fd.inode = EXT2_INODE(&inode);
+ 	fd.dir = ino;
+ 	if (!ext2fs_has_feature_dir_index(fs->super) ||
+ 	    (inode.i_size / fs->blocksize) < 2)
+@@ -1092,14 +1096,25 @@ resort:
+ 			goto errout;
+ 	}
+ 
+-	retval = write_directory(ctx, fs, &outdir, ino, &inode, fd.compress);
++	retval = write_directory(ctx, fs, &outdir, ino, EXT2_INODE(&inode),
++				 fd.compress);
+ 	if (retval)
+ 		goto errout;
+ 
++	if ((osize > EXT2_I_SIZE(&inode)) &&
++	    (ino != quota_type2inum(PRJQUOTA, fs->super)) &&
++	    (ino != fs->super->s_orphan_file_inum) &&
++	    (ino == EXT2_ROOT_INO || ino >= EXT2_FIRST_INODE(ctx->fs->super)) &&
++	    !(inode.i_flags & EXT4_EA_INODE_FL)) {
++		quota_data_sub(ctx->qctx, &inode,
++			       ino, osize - EXT2_I_SIZE(&inode));
++	}
++
+ 	if (ctx->options & E2F_OPT_CONVERT_BMAP)
+ 		retval = e2fsck_rebuild_extents_later(ctx, ino);
+ 	else
+-		retval = e2fsck_check_rebuild_extents(ctx, ino, &inode, pctx);
++		retval = e2fsck_check_rebuild_extents(ctx, ino,
++						      EXT2_INODE(&inode), pctx);
+ errout:
+ 	ext2fs_free_mem(&dir_buf);
+ 	ext2fs_free_mem(&fd.harray);
 
