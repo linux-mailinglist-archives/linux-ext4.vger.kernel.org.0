@@ -1,104 +1,146 @@
-Return-Path: <linux-ext4+bounces-1907-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1908-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D470C89A5EE
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 23:08:37 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0BAC89ADE5
+	for <lists+linux-ext4@lfdr.de>; Sun,  7 Apr 2024 03:37:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B6761C21070
-	for <lists+linux-ext4@lfdr.de>; Fri,  5 Apr 2024 21:08:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 55F7C1F21F00
+	for <lists+linux-ext4@lfdr.de>; Sun,  7 Apr 2024 01:37:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C438174EFB;
-	Fri,  5 Apr 2024 21:08:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b="hpiQA8ev"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 038B2139B;
+	Sun,  7 Apr 2024 01:37:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from forward100c.mail.yandex.net (forward100c.mail.yandex.net [178.154.239.211])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43CF0174ECB;
-	Fri,  5 Apr 2024 21:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.154.239.211
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C464A3D;
+	Sun,  7 Apr 2024 01:37:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712351307; cv=none; b=HIC2x6LCeqMRV+vbI3ILoMyDLjBZoGG0rE73dr7s23fyvPGIVlWJDGtKgdwFVQA4X7bYtXA0Gt3YAprYrYKYCCc/MPb9tcQ7wBzKWfqveDQdCiRgvATwC3VR4kuHEWbXh8PslBvLmfcaXUkKBxP5NAVInqXG/nl9tf+o02FxKAY=
+	t=1712453858; cv=none; b=EZflgd4QANDVUSfR9GQmSG7dhDeXq9AKfp4lBTo3sIvYVKFvjXSTSRVC0vMG8B4zX7pQeUaFVRyYQn7kS6aQgvg6/2NAep0YwHhWhUlG87/lmohi2Ex5JXnEfoaSTvlgkWLJOPQAHZNuBXeReulQbEXw52bBdTb8yz2xHF58Fug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712351307; c=relaxed/simple;
-	bh=BuUaqwqRMooOCayqSdCfqcPUua5XUE2+B4+1D+Bpq+g=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=G32+GWMb62yRDDZgjWZZKOLJiOdyFcqcLTRSI2pBRmzUa3NQRSE6A8kGab/vvJsmBIU+O2dVHGOYAIaP1bq7xQTjXQf5opvzsm8rS/ALXJyB8XyssCHnH/MwPUIRHPBFwGWdoa0k1Ov//l89q4BnUcamZ5bs86ENHTZcYruWo/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru; spf=pass smtp.mailfrom=yandex.ru; dkim=pass (1024-bit key) header.d=yandex.ru header.i=@yandex.ru header.b=hpiQA8ev; arc=none smtp.client-ip=178.154.239.211
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=yandex.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yandex.ru
-Received: from mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net (mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net [IPv6:2a02:6b8:c0c:410d:0:640:81ab:0])
-	by forward100c.mail.yandex.net (Yandex) with ESMTPS id EAC2B608FF;
-	Sat,  6 Apr 2024 00:08:20 +0300 (MSK)
-Received: by mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net (smtp/Yandex) with ESMTPSA id 58dgY40f2mI0-s2z5ewZt;
-	Sat, 06 Apr 2024 00:08:20 +0300
-X-Yandex-Fwd: 1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yandex.ru; s=mail;
-	t=1712351300; bh=ankcvjCnWYEl74QlyFijcb2pcN+AU5nXfIOxKz9HVUs=;
-	h=Message-Id:Date:Cc:Subject:To:From;
-	b=hpiQA8evIJLZ4olpHFL2cQ7I03vbuDXkgHOLLB/mqNk3Wo8SF4TSZiwF+2K0q/Nh6
-	 /fVWGp+IFFs1PKipv7/RJfusYMvKU4nU2m0BZmYTYqCHhjWhwTZjka8jR7GNGKVS2f
-	 gftU5k1NiwGNjMKMrSCXRJwFMVypvj3iGpjFnMyg=
-Authentication-Results: mail-nwsmtp-smtp-production-main-54.iva.yp-c.yandex.net; dkim=pass header.i=@yandex.ru
-From: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Mikhail Ukhin <mish.uxin2012@yandex.ru>,
-	stable@vger.kernel.org,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Michail Ivanov <iwanov-23@bk.ru>,
-	Pavel Koshutin <koshutin.pavel@yandex.ru>,
-	lvc-project@linuxtesting.org,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	Artem Sadovnikov <ancowi69@gmail.com>
-Subject: [PATCH v2] ext4: fix i_data_sem unlock order in ext4_ind_migrate()
-Date: Sat,  6 Apr 2024 00:08:03 +0300
-Message-Id: <20240405210803.9152-1-mish.uxin2012@yandex.ru>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1712453858; c=relaxed/simple;
+	bh=c1enYxmckCFSDF0gcBrMDou3Ryj6fP6EGhPtfOBUhiQ=;
+	h=Subject:To:References:CC:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=PXbXWrV90rumcvl6pv4IosHo4CfWdlx+/8qlLz3SR5FBal/i223C5x7dBlk3qctq/wRsROrBOTiAwR2+VN5rITYvy0gwbZRZ01zEoo63azvTHPyTgOJh/fqoHVT27SbRDWTVDuS4RAa1Ov6mtmN76aQ3NfNemZ4RVKLOAODNvKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4VBvt94KdbzNmxs;
+	Sun,  7 Apr 2024 09:35:13 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id 10403140158;
+	Sun,  7 Apr 2024 09:37:26 +0800 (CST)
+Received: from [10.174.178.185] (10.174.178.185) by
+ canpemm500010.china.huawei.com (7.192.105.118) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 7 Apr 2024 09:37:25 +0800
+Subject: Re: [PATCH] jbd2: avoid mount failed when commit block is partial
+ submitted
+To: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
+References: <20240402090951.527619-1-yebin10@huawei.com>
+ <20240402134240.5he4mxei3nvzolb3@quack3> <20240403033742.GE1189142@mit.edu>
+ <20240403101122.rmffivvvf4a33qis@quack3>
+CC: <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+From: "yebin (H)" <yebin10@huawei.com>
+Message-ID: <6611F8D5.3030403@huawei.com>
+Date: Sun, 7 Apr 2024 09:37:25 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:38.0) Gecko/20100101
+ Thunderbird/38.1.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240403101122.rmffivvvf4a33qis@quack3>
+Content-Type: text/plain; charset="windows-1252"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-Fuzzing reports a possible deadlock in jbd2_log_wait_commit.
 
-The problem occurs in ext4_ind_migrate due to an incorrect order of
-unlocking of the journal and write semaphores - the order of unlocking
-must be the reverse of the order of locking.
 
-Found by Linux Verification Center (linuxtesting.org) with syzkaller.
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
-Signed-off-by: Mikhail Ukhin <mish.uxin2012@yandex.ru>
----
- v2: New addresses have been added and Ritesh Harjani has been noted as a
- reviewer.
- fs/ext4/migrate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-index b0ea646454ac..59290356aa5b 100644
---- a/fs/ext4/migrate.c
-+++ b/fs/ext4/migrate.c
-@@ -663,8 +663,8 @@ int ext4_ind_migrate(struct inode *inode)
- 	if (unlikely(ret2 && !ret))
- 		ret = ret2;
- errout:
--	ext4_journal_stop(handle);
- 	up_write(&EXT4_I(inode)->i_data_sem);
-+	ext4_journal_stop(handle);
- out_unlock:
- 	percpu_up_write(&sbi->s_writepages_rwsem);
- 	return ret;
--- 
-2.25.1
+On 2024/4/3 18:11, Jan Kara wrote:
+> On Tue 02-04-24 23:37:42, Theodore Ts'o wrote:
+>> On Tue, Apr 02, 2024 at 03:42:40PM +0200, Jan Kara wrote:
+>>> On Tue 02-04-24 17:09:51, Ye Bin wrote:
+>>>> We encountered a problem that the file system could not be mounted in
+>>>> the power-off scenario. The analysis of the file system mirror shows that
+>>>> only part of the data is written to the last commit block.
+>>>> To solve above issue, if commit block checksum is incorrect, check the next
+>>>> block if has valid magic and transaction ID. If next block hasn't valid
+>>>> magic or transaction ID then just drop the last transaction ignore checksum
+>>>> error. Theoretically, the transaction ID maybe occur loopback, which may cause
+>>>> the mounting failure.
+>>>>
+>>>> Signed-off-by: Ye Bin <yebin10@huawei.com>
+>>> So this is curious. The commit block data is fully within one sector and
+>>> the expectation of the journaling is that either full sector or nothing is
+>>> written. So what kind of storage were you using that it breaks these
+>>> expectations?
+>> I suppose if the physical sector size is 512 bytes, and the file
+>> system block is 4k, I suppose it's possible that on a crash, that part
+>> of the 4k commit block could be written.
+> I was thinking about that as well but the commit block looks like:
+>
+> truct commit_header {
+>          __be32          h_magic;
+>          __be32          h_blocktype;
+>          __be32          h_sequence;
+>          unsigned char   h_chksum_type;
+>          unsigned char   h_chksum_size;
+>          unsigned char   h_padding[2];
+>          __be32          h_chksum[JBD2_CHECKSUM_BYTES];
+>          __be64          h_commit_sec;
+>          __be32          h_commit_nsec;
+> };
+>
+> where JBD2_CHECKSUM_BYTES is 8. So all the data in the commit block
+> including the checksum is in the first 60 bytes. Hence I would be really
+> surprised if some storage can tear that...
+This issue has been encountered a few times in the context of eMMC 
+devices. The vendor
+has confirmed that only 512-byte atomicity can be ensured in the firmware.
+Although the valid data is only 60 bytes, the entire commit block is 
+used for calculating
+the checksum.
+jbd2_commit_block_csum_verify:
+...
+calculated = jbd2_chksum(j, j->j_csum_seed, buf, j->j_blocksize);
+...
+>
+> Hence either Ye Bin is running on some really exotic storage or the storage
+> / CPU in fact flipped bits somewhere so that the checksum didn't match or
+> the commit block was in fact not written now but it was a leftover from
+> previous journal use and h_sequence happened to match. Very unlikely but
+> depending on how exactly they do their powerfail testing I can imagine it
+> would be possible with enough tries...
+>
+>> In *practice* though, this
+>> is super rare.  That's because on many modern HDD's, the physical
+>> sector size is 4k (because the ECC overhead is much lower), even if
+>> the logical sector size is 512 byte (for Windows 98 compatibility).
+>> And even on HDD's where the physical sector size is really 512 bytes,
+>> the way the sectors are laid out in a serpentine fashion, it is
+>> *highly* likely that 4k write won't get torn.
+>>
+>> And while this is *possible*, it's also possible that some kind of I/O
+>> transfer error --- such as some bit flips which breaks the checksum on
+>> the commit block, but also trashes the tid of the subsequent block,
+>> such that your patch gets tricked into thinking that this is the
+>> partial last commit, when in fact it's not the last commit, thus
+>> causing the journal replay abort early.  If that's case, it's much
+>> safer to force fsck to be run to detect any inconsistency that might
+>> result.
+> Yeah, I agree in these cases of a corrupted journal it seems dangerous to
+> just try to continue without fsck based on some heuristics.
+>
+> 								Honza
 
 
