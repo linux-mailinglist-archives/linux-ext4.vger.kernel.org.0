@@ -1,257 +1,192 @@
-Return-Path: <linux-ext4+bounces-1919-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1920-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47E5789CAD2
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Apr 2024 19:31:28 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3C8189CD0D
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Apr 2024 22:51:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7F7C3B24D1B
-	for <lists+linux-ext4@lfdr.de>; Mon,  8 Apr 2024 17:31:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 28B281F22AA7
+	for <lists+linux-ext4@lfdr.de>; Mon,  8 Apr 2024 20:51:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CB76143C64;
-	Mon,  8 Apr 2024 17:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D331146D7A;
+	Mon,  8 Apr 2024 20:51:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="tnqnRbDq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="A4ro0jLC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gEBNZHNU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hCELz8T9"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="jxx1QSbd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7E9C7460;
-	Mon,  8 Apr 2024 17:31:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1E137E8
+	for <linux-ext4@vger.kernel.org>; Mon,  8 Apr 2024 20:51:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712597479; cv=none; b=djETH7C+qbncEFTj3unNf8NQ2qoR10KPwFrx4aND21G4eRf1qDbUkEhKIWRaDdcUPz9V+8lRmwuo/JvitWSB74ZsR4sOW+6GhAe7WFuIXQFTpYlHUp89GaPD6RkeqNiXa3AFUSP5S8L6hQI0IiSPOTxhPbukIEWZOJak/MrmWIs=
+	t=1712609491; cv=none; b=TkLXY1pO+sBb0udIRZQMK9UWFwb4feAkEMxplNi1cr0VJfOvUoa+KtWJ7MLj0aLktgvCj0zpdSLZG3JELEUY+uthJOcA78tbSKZSXx8P0doOHLZ1Z41VSOBeo9fTtcc5RRxdDrtjcIlWj9jfLkC07sFonIHJEaPHREPmbyIppp0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712597479; c=relaxed/simple;
-	bh=QmunCE9r7aHe7NyWJn9cE2x8M9nPtBbMsTDcmO+sWXg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hod8LCaC8nxMzI+XtoIvjwWnkmyoLcFdU6L/zCPg/5YoRNDKpTEmul0MqNldxB3XU88wP5QQWDfZQ7swKNqnRVdq8J9wWFe82O952gtU5HvAPnEt+poDZF4pX0Y8eEbG/NCVbNC6v/oMInGA/J2gmM3UCBBVrY4B7jOmbX4NGjQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=tnqnRbDq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=A4ro0jLC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gEBNZHNU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hCELz8T9; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap2.dmz-prg2.suse.org (imap2.dmz-prg2.suse.org [10.150.64.98])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E51EF204A8;
-	Mon,  8 Apr 2024 17:31:15 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712597476; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e8wSl4Qy94bbQ6nWeZXuT+KUZw5twMVN28n0HjkxqKs=;
-	b=tnqnRbDq+tNxbDlOlgflkL2rqKcbFO55lax68gpXnk6O49o8qu+r5pLjXDMpT31pYbpbxN
-	zKUTPwULTLXsrSfwmZWv0dfPn2obORmpWS6w26cGutz7y6pkQG/AXoLzp09onMH0JNmT0U
-	Sx0Q69QoWh5teP4+vCIk7CYw+fjffOg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712597476;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e8wSl4Qy94bbQ6nWeZXuT+KUZw5twMVN28n0HjkxqKs=;
-	b=A4ro0jLCGk6EuBbFXbxwbmBYJn7gY5Xym76CuSSPbi4stYUcl0K6qyyZ4AfpfcloqBeB1M
-	+aGjPKGZwPXiXYBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1712597475; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e8wSl4Qy94bbQ6nWeZXuT+KUZw5twMVN28n0HjkxqKs=;
-	b=gEBNZHNU0j4nSxpXR59U7TFYTL4Ky/M0+W5r/j9CGVkNoUFCXUwf2zkt4cb7l/XKPRo7eR
-	bGuv70x8C89K0A0BDaxTgL3SxmbP5DfTfQwE6MTVPTZ2Dua1QQVLiwAevS3kV6Joj4Pl1n
-	eWfusq3WxdYcRKlHFQBAO/GYeFkmpC4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1712597475;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=e8wSl4Qy94bbQ6nWeZXuT+KUZw5twMVN28n0HjkxqKs=;
-	b=hCELz8T9RLbBU2K991ulmNxj2s/PPlVwK3kpb3mJcO28abuMm8dU1/lO3X8jLt9aw2P5qH
-	HMEKjUrjpqhMkiAg==
-Received: from imap2.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap2.dmz-prg2.suse.org (Postfix) with ESMTPS id D63BC13A92;
-	Mon,  8 Apr 2024 17:31:15 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap2.dmz-prg2.suse.org with ESMTPSA
-	id /pxNNOMpFGY6GQAAn2gu4w
-	(envelope-from <jack@suse.cz>); Mon, 08 Apr 2024 17:31:15 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 92012A0814; Mon,  8 Apr 2024 19:31:07 +0200 (CEST)
-Date: Mon, 8 Apr 2024 19:31:07 +0200
-From: Jan Kara <jack@suse.cz>
-To: Ye Bin <yebin10@huawei.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, jack@suse.cz
-Subject: Re: [PATCH v2 2/2] jbd2: add prefix 'jbd2' for 'shrink_type'
-Message-ID: <20240408173107.zq3sus2qq3ln5dth@quack3>
-References: <20240407065355.1528580-1-yebin10@huawei.com>
- <20240407065355.1528580-3-yebin10@huawei.com>
+	s=arc-20240116; t=1712609491; c=relaxed/simple;
+	bh=gA5+mgRbd8KHD3NrqPJs62fIL5mvl9EFenbUqxGvdPQ=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=sIWpC9Ag8cjQH0wlaemU76i1uInCr5YjOB3kv8m3pQHNBQcXEXXi3Hl2gJnsCxBZE3jEzogaOkKgvY8NGh5SBmnSkextnmoEkDmiWgj+wa8/YbKc1tIr0bs5/ml/VbPNZ6Q8wWnVtPFQFzsOVjHhyU4CxbGvs0PxiMIj5jtgXWM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=jxx1QSbd; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7d096c4d664so128933839f.3
+        for <linux-ext4@vger.kernel.org>; Mon, 08 Apr 2024 13:51:28 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1712609488; x=1713214288; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0GQJkNeijGqducYJoywocnozwcnYBFnNqziHT4xxFK0=;
+        b=jxx1QSbd6VrgPfPWT00RK2FMXT3MNuwb9pMOgnk8NTkcl0mqw3eV3kfuM9l97aZ4OK
+         1z2xB3BHdG1PaEm228/8Nv7W/G9Dk3aB0SY9rGweWo6oYC4aVZ+AUhhpZwLgaAbdtJhT
+         HQgR+/E3rAJTA6qLvbZvPoh6t/KDMzYWbufYA8/0b7GMfETT2IBsEs44f/OUR9OjD5oi
+         UO6QevG8TlEUzsNdLnasReSDbqPJs+yazAFG2P2huqRskQ7fXy1o92XkjCt9IYKeFM3S
+         a7vfXKw4cEVaJcMprdGAMB5/57eajnC6LHKXWBex2poMwXS4hQmWgQjeL5YZSMtIf89a
+         0Dpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712609488; x=1713214288;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=0GQJkNeijGqducYJoywocnozwcnYBFnNqziHT4xxFK0=;
+        b=UiTLGVzE85gMhP71fSXRwP5sFJB/RlGt8kVcgznMAOaj5dhqJiaBjig+JlJDtFHFNm
+         s/oTSp/a0BDHfjKuozMKVZ3eiOHtcjbf466EkBYw5G4Vw2KYF8FQ5fWBRZr1QPBRN8sn
+         /dJ9dnEk4yBE2QhQKaes5dyJhuo3Tw1YFI7e+73SD8TsygusQDlGd5wwAImwV14djtzS
+         6kCsBEKtcNTejVafJ8LxAw7ln9bHxjxfbK23soriqxK7+6ZNSsyiaQeMmq3Khlp+PIvJ
+         fq7Lnw3TQdF9yT0W7B2SFCzVdtqpr+0JiF3zVeCH0aL7BAcZowGwyCEBcM9VqT/FRkHd
+         oueQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXtQq+sP8DaIwcwZpNmCWMyS37ybD628EmAWMg369AeAZRbcgWSj1AqNkK7zWMn4nNeWwo1MWF02Z8/QRGuRu4/ru/pJzOwyUMN0w==
+X-Gm-Message-State: AOJu0Yy81inVnKFXgcSZuxeIUDktd0/z2DdQWvKSkzvJehsvyLQOQWOf
+	/VDs1FZZgQSm8y6nF06lFWM7vP4qvyW2W4GW7ZfixfOognoLGH4BqeoSgfhkcsM=
+X-Google-Smtp-Source: AGHT+IF4QJqYVi9ApOkA8E3b9TSz96XIMFC1mOP6p8SxBzZGQ9WTobj9E5A0oxjNQskr+m4Qbmk+Zg==
+X-Received: by 2002:a05:6e02:160f:b0:36a:12d5:d422 with SMTP id t15-20020a056e02160f00b0036a12d5d422mr10788232ilu.27.1712609487957;
+        Mon, 08 Apr 2024 13:51:27 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id b29-20020a63715d000000b005dc507e8d13sm6783905pgn.91.2024.04.08.13.51.26
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 08 Apr 2024 13:51:27 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <9859512C-90E0-42AE-BF14-71E4D28B7A1D@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_CCF1F3B7-06D4-4FB8-818C-06A6DC175F1B";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240407065355.1528580-3-yebin10@huawei.com>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,imap2.dmz-prg2.suse.org:helo,imap2.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:email]
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: =?utf-8?Q?Re=3A_=5BPATCH=5D_ext4=3A_extents=3A_Remove_unnecessary?=
+ =?utf-8?Q?_=E2=80=98NULL=E2=80=99_values_from_ablocks?=
+Date: Mon, 8 Apr 2024 14:51:23 -0600
+In-Reply-To: <20240402024804.29411-1-zeming@nfschina.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+To: Li zeming <zeming@nfschina.com>
+References: <20240402024804.29411-1-zeming@nfschina.com>
+X-Mailer: Apple Mail (2.3273)
 
-On Sun 07-04-24 14:53:55, Ye Bin wrote:
-> As 'shrink_type' is exported. The module prefix 'jbd2' is added to
-> distinguish from memory reclamation.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-Looks good. Feel free to add:
+--Apple-Mail=_CCF1F3B7-06D4-4FB8-818C-06A6DC175F1B
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+On Apr 1, 2024, at 8:48 PM, Li zeming <zeming@nfschina.com> wrote:
+>=20
+> ablocks is assigned first, so it does not need to initialize the
+> assignment.
 
-								Honza
+While it is true that "ablocks" is currently set before use,
+this is happening a long way away from the variable declaration
+and also "ablocks" is used after the "cleanup:" label error case:
 
+cleanup:
+        if (bh) {
+                if (buffer_locked(bh))
+                        unlock_buffer(bh);
+                brelse(bh);
+        }
+
+        if (err) {
+                /* free all allocated blocks in error case */
+                for (i =3D 0; i < depth; i++) {
+                        if (!ablocks[i])
+                                continue;
+                        ext4_free_blocks(handle, inode, NULL, =
+ablocks[i], 1,
+                                         EXT4_FREE_BLOCKS_METADATA);
+                }
+        }
+        kfree(ablocks);
+
+So there is definitely a risk that a code change in the future
+would introduce hard-to-debug problems, crashes, or even just
+spurious static code analysis warnings.  My recommendation would
+be to keep this 1-cycle local variable initialization in place
+rather than spend hours or days trying to debug and fix a crash
+here in the future.
+
+Cheers, Andreas
+
+>=20
+> Signed-off-by: Li zeming <zeming@nfschina.com>
 > ---
->  fs/jbd2/checkpoint.c | 22 +++++++++++-----------
->  fs/jbd2/commit.c     |  2 +-
->  include/linux/jbd2.h |  4 ++--
->  3 files changed, 14 insertions(+), 14 deletions(-)
-> 
-> diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-> index 80c0ab98bc63..951f78634adf 100644
-> --- a/fs/jbd2/checkpoint.c
-> +++ b/fs/jbd2/checkpoint.c
-> @@ -348,7 +348,7 @@ int jbd2_cleanup_journal_tail(journal_t *journal)
->   * Called with j_list_lock held.
->   */
->  static unsigned long journal_shrink_one_cp_list(struct journal_head *jh,
-> -						enum shrink_type type,
-> +						enum jbd2_shrink_type type,
->  						bool *released)
->  {
->  	struct journal_head *last_jh;
-> @@ -365,12 +365,12 @@ static unsigned long journal_shrink_one_cp_list(struct journal_head *jh,
->  		jh = next_jh;
->  		next_jh = jh->b_cpnext;
->  
-> -		if (type == SHRINK_DESTROY) {
-> +		if (type == JBD2_SHRINK_DESTROY) {
->  			ret = __jbd2_journal_remove_checkpoint(jh);
->  		} else {
->  			ret = jbd2_journal_try_remove_checkpoint(jh);
->  			if (ret < 0) {
-> -				if (type == SHRINK_BUSY_SKIP)
-> +				if (type == JBD2_SHRINK_BUSY_SKIP)
->  					continue;
->  				break;
->  			}
-> @@ -437,7 +437,7 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
->  		tid = transaction->t_tid;
->  
->  		freed = journal_shrink_one_cp_list(transaction->t_checkpoint_list,
-> -						   SHRINK_BUSY_SKIP, &released);
-> +						   JBD2_SHRINK_BUSY_SKIP, &released);
->  		nr_freed += freed;
->  		(*nr_to_scan) -= min(*nr_to_scan, freed);
->  		if (*nr_to_scan == 0)
-> @@ -470,20 +470,20 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
->   * journal_clean_checkpoint_list
->   *
->   * Find all the written-back checkpoint buffers in the journal and release them.
-> - * If 'type' is SHRINK_DESTROY, release all buffers unconditionally. If 'type'
-> - * is SHRINK_BUSY_STOP, will stop release buffers if encounters a busy buffer.
-> - * To avoid wasting CPU cycles scanning the buffer list in some cases, don't
-> - * pass SHRINK_BUSY_SKIP 'type' for this function.
-> + * If 'type' is JBD2_SHRINK_DESTROY, release all buffers unconditionally. If
-> + * 'type' is JBD2_SHRINK_BUSY_STOP, will stop release buffers if encounters a
-> + * busy buffer. To avoid wasting CPU cycles scanning the buffer list in some
-> + * cases, don't pass JBD2_SHRINK_BUSY_SKIP 'type' for this function.
->   *
->   * Called with j_list_lock held.
->   */
->  void __jbd2_journal_clean_checkpoint_list(journal_t *journal,
-> -					  enum shrink_type type)
-> +					  enum jbd2_shrink_type type)
->  {
->  	transaction_t *transaction, *last_transaction, *next_transaction;
->  	bool released;
->  
-> -	WARN_ON_ONCE(type == SHRINK_BUSY_SKIP);
-> +	WARN_ON_ONCE(type == JBD2_SHRINK_BUSY_SKIP);
->  
->  	transaction = journal->j_checkpoint_transactions;
->  	if (!transaction)
-> @@ -529,7 +529,7 @@ void jbd2_journal_destroy_checkpoint(journal_t *journal)
->  			spin_unlock(&journal->j_list_lock);
->  			break;
->  		}
-> -		__jbd2_journal_clean_checkpoint_list(journal, SHRINK_DESTROY);
-> +		__jbd2_journal_clean_checkpoint_list(journal, JBD2_SHRINK_DESTROY);
->  		spin_unlock(&journal->j_list_lock);
->  		cond_resched();
->  	}
-> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> index 78ebd04ac97d..65c857ab49ec 100644
-> --- a/fs/jbd2/commit.c
-> +++ b/fs/jbd2/commit.c
-> @@ -501,7 +501,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->  	 * frees some memory
->  	 */
->  	spin_lock(&journal->j_list_lock);
-> -	__jbd2_journal_clean_checkpoint_list(journal, SHRINK_BUSY_STOP);
-> +	__jbd2_journal_clean_checkpoint_list(journal, JBD2_SHRINK_BUSY_STOP);
->  	spin_unlock(&journal->j_list_lock);
->  
->  	jbd2_debug(3, "JBD2: commit phase 1\n");
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 58a961999d70..7479f64c0939 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1434,9 +1434,9 @@ void jbd2_update_log_tail(journal_t *journal, tid_t tid, unsigned long block);
->  extern void jbd2_journal_commit_transaction(journal_t *);
->  
->  /* Checkpoint list management */
-> -enum shrink_type {SHRINK_DESTROY, SHRINK_BUSY_STOP, SHRINK_BUSY_SKIP};
-> +enum jbd2_shrink_type {JBD2_SHRINK_DESTROY, JBD2_SHRINK_BUSY_STOP, JBD2_SHRINK_BUSY_SKIP};
->  
-> -void __jbd2_journal_clean_checkpoint_list(journal_t *journal, enum shrink_type type);
-> +void __jbd2_journal_clean_checkpoint_list(journal_t *journal, enum jbd2_shrink_type type);
->  unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal, unsigned long *nr_to_scan);
->  int __jbd2_journal_remove_checkpoint(struct journal_head *);
->  int jbd2_journal_try_remove_checkpoint(struct journal_head *jh);
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> fs/ext4/extents.c | 2 +-
+> 1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 4ab96f01a6f31..caace8c3fd3c1 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -1061,7 +1061,7 @@ static int ext4_ext_split(handle_t *handle, =
+struct inode *inode,
+> 	int i =3D at, k, m, a;
+> 	ext4_fsblk_t newblock, oldblock;
+> 	__le32 border;
+> -	ext4_fsblk_t *ablocks =3D NULL; /* array of allocated blocks */
+> +	ext4_fsblk_t *ablocks; /* array of allocated blocks */
+> 	gfp_t gfp_flags =3D GFP_NOFS;
+> 	int err =3D 0;
+> 	size_t ext_size =3D 0;
+> --
+> 2.18.2
+>=20
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_CCF1F3B7-06D4-4FB8-818C-06A6DC175F1B
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmYUWMsACgkQcqXauRfM
+H+AYaA//Rjy57wP3qnb5jAHgZuDjT3i/v8+fsVS1RgwE8rxxYv9/mYtKf61rYRDu
+izHM2b6nfL7h6AhQ3FujUVeLjrls/cU37NEgRxVSk/WS2gEBEBeetkx1Si3Zf+n4
+aYB28C5r9evolTzngj9J15z0bUWD3cLPxsChiso1C7nUgeLZAYZrKCbfOqlzEw1Y
+Nr16drdtDmXO1mNO4Dy32CvmfNFOvC2OH/YE7XnXsXZUAFpEcYsu/pkT4i8VyHFr
+3KkO/VidRvd3NMtFSNc8LDMeDSddkwOQ7/zotVg6fLaoTYYONrOG1onHdUAHcirz
+o7y9CSLfr8njV/xSX4UAFM/hItkmS+2sqS8RhNqSNH7x44sGxgQzfW9L7lapavtp
+LZElZe3ELP6s1V5ESDhyaa2aoI45JApSuyShH9SXIQy+ySW2irhhJ39VaZEISa1i
+y8HsNUGMes2QnsfNPUoa8uKDKJSVWaARnc9lktoqSHJlACtIhyKaI+4hCC9ZAius
+vJdEuYnAAapjl4V7ZGkiOmWtF0Lfhvg5Qv6ZSRjlCMFiSgM7EoTqfX4RXZD1/D6B
+pZpQCmKciwPyUGpfE8LpY1QzTHX2Ww/0ApPqWXVXSCwpvG50k9H/X8WjovV2/p57
+TFdXwvON3v8xfpascASCDRijVFvWnVZ3mp0Z+N26Kve+5prulaE=
+=m3wu
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_CCF1F3B7-06D4-4FB8-818C-06A6DC175F1B--
 
