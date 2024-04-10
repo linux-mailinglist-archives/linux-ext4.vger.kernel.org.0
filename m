@@ -1,126 +1,78 @@
-Return-Path: <linux-ext4+bounces-1937-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1938-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB78289E89F
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 05:59:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 534F889EDBB
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 10:36:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3A24BB228EB
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 03:59:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 08BD91F21A45
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 08:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74EC5C133;
-	Wed, 10 Apr 2024 03:59:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CC1A154C0F;
+	Wed, 10 Apr 2024 08:36:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CKPJgLKU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26BF0BA50;
-	Wed, 10 Apr 2024 03:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21F2154BFF
+	for <linux-ext4@vger.kernel.org>; Wed, 10 Apr 2024 08:36:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712721582; cv=none; b=sWiOMMy4h0dorXN04ilMPwbtl0dS8kiWSM4xz4+PslsTB6uDfDWnVPw/ZDIqc/U1wWm7eGwJJkD6UiAiXXIerHZOhMBA0M1AntfP+xqL1CnFZregHR79OI8vxRPNt/tWD+f+2uvkniISLKrV/4JKc4X1IxumeeUVLIF1PpxO+CE=
+	t=1712738201; cv=none; b=YjPB09ByaPQv8/KOnNbqTpB1E90pipnqqCjTmhDe6a8GAoD61m74RnlJ1N8QftL1AHvKYXfQsD7mlc9xB2vRiIL5obYTsosACCmnH1++mF6xotqgoMgl7b8Y4HGXqIeDcwPtRNwoe2MkKE92CiXHJHxBPLe6WbhegHiCQWIRuWE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712721582; c=relaxed/simple;
-	bh=9rHGw5V0Ol3Lhkbimgh3tQnQF9hRbuE4XOHEAH47S2g=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=TUfKhhRrL3bjicoptO+AQkmkk0mJ4BYk95ynWvwD+aftaf9LkmBALSoKAS2bFUImW95MUglbV5RkXgHQCgYv0hSy3e6T8H4KnwuOaYr2Kp3J5Y+rMvQ4/ik6S4+YVwuedASep+WFWVIsKUnrtW6LSxxGWBiqm439OaS80RdlTUs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VDpxF6q15z4f3jR9;
-	Wed, 10 Apr 2024 11:59:29 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C010D1A0175;
-	Wed, 10 Apr 2024 11:59:36 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgBXKBGmDhZmfidUJg--.28978S3;
-	Wed, 10 Apr 2024 11:59:35 +0800 (CST)
-Subject: Re: [PATCH 0/7] ext4: support adding multi-delalloc blocks
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240330120236.3789589-1-yi.zhang@huaweicloud.com>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <ccf1b9d9-1126-963e-f6eb-becdbafb81f0@huaweicloud.com>
-Date: Wed, 10 Apr 2024 11:59:33 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1712738201; c=relaxed/simple;
+	bh=QdvJRYaCxb2oe+NVB6ePydDfNz+e1cwK5ickVVXPU98=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=AeF1qvyDBYBzP3/VXokuJs5IN7ZCon5a7fbCKXbil5HSDtS9ec9d9nCBk51+/0Gk63qV1QKUkLDmqKCafZdJrevbC/E/5x76qlH3UtLoTHf7eXK5RYla0clfsl9qVmpH9QXymh/cLyoarpEXxrPVorXkxBeZP1XzJJ8jwTCiIas=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CKPJgLKU; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1712738196;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=8CVhH7oCfqIEkL1gu8mqGf3SToX40Lwl3RcKtDsE118=;
+	b=CKPJgLKUUTjKE/LpKWSxBUIDYBlHMhRIvYGIGmn4JDvpGXQ5xCUtXyBlXt3wteFykAdXAM
+	jIbKqlOoI+dA7LBc/tk6x6a56VHBLdQKPzQxF8oD58OCJFCNux1WD+thexmHVOK3B911FJ
+	6PXZK/P0jtHBUeN7gAGUvujtoI3cEKk=
+From: Luis Henriques <luis.henriques@linux.dev>
+To: "wangjianjian (C)" <wangjianjian3@huawei.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,  Wang Jianjian
+ <wangjianjian0@foxmail.com>,  Ext4 Developers List
+ <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH 2/2] ext4: Add correct group descriptors and reserved
+ GDT blocks to system zone
+In-Reply-To: <01581bdd-bbab-48e7-bffb-6d3e50f39398@huawei.com> (wangjianjian's
+	message of "Sun, 7 Apr 2024 18:13:20 +0800")
+References: <tencent_D744D1450CC169AEA77FCF0A64719909ED05@qq.com>
+	<20230817170557.GA3435781@mit.edu> <87ttkl6u13.fsf@brahms.olymp>
+	<01581bdd-bbab-48e7-bffb-6d3e50f39398@huawei.com>
+Date: Wed, 10 Apr 2024 09:36:33 +0100
+Message-ID: <87seztwr5a.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240330120236.3789589-1-yi.zhang@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgBXKBGmDhZmfidUJg--.28978S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7ZF1rKF18Aw4xCrykZryDGFg_yoW8WF4UpF
-	WS9FWftr48Ww1S9Fs3Ar4DGr15Zw4xCr15Ga4aq348ZrWUAFyfXrnrKFyF9as7JrZ7AF1U
-	XF17K34Uu3Wqk37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkYb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwCI42IY6x
-	AIw20EY4v20xvaj40_Wr1j6rW3Jr1lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280
-	aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On 2024/3/30 20:02, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Hello!
-> 
-> This patch series is the part 2 prepartory changes of the buffered IO
-> iomap conversion, I picked them out from my buffered IO iomap conversion
-> RFC series v3[1], and add bigalloc feature support.
-> 
-> The first 6 patches make ext4_insert_delayed_block() call path support
-> inserting multi-delalloc blocks once a time, and the last patch makes
-> ext4_da_map_blocks() buffer_head unaware.
-> 
-> This patch set has been passed 'kvm-xfstests -g auto' tests, I hope it
-> could be reviewed and merged first.
-> 
+On Sun 07 Apr 2024 06:13:20 PM +08, wangjianjian (C) wrote;
 
-I've found an incorrect delalloc reserve space count and incorrect extent
-type issue in the current ext4 code while improving my iomap conversion.
-I'd suggest to fix this issue first, so please drop this series and look
-at my v2 series for details.
+> Hi,
+> Let me test it and fix it if it fails.
 
-Thanks,
-Yi.
+Thank you for looking into this.  I'll also see if I can find out more
+details on this.
 
-> [1] https://lore.kernel.org/linux-ext4/20240127015825.1608160-1-yi.zhang@huaweicloud.com/
-> 
-> Thanks,
-> Yi.
-> 
-> Zhang Yi (7):
->   ext4: trim delalloc extent
->   ext4: drop iblock parameter
->   ext4: make ext4_es_insert_delayed_block() insert multi-blocks
->   ext4: make ext4_da_reserve_space() reserve multi-clusters
->   ext4: factor out check for whether a cluster is allocated
->   ext4: make ext4_insert_delayed_block() insert multi-blocks
->   ext4: make ext4_da_map_blocks() buffer_head unaware
-> 
->  fs/ext4/extents_status.c    |  63 +++++++++-----
->  fs/ext4/extents_status.h    |   5 +-
->  fs/ext4/inode.c             | 165 ++++++++++++++++++++++--------------
->  include/trace/events/ext4.h |  26 +++---
->  4 files changed, 162 insertions(+), 97 deletions(-)
-> 
-
+Cheers,
+-- 
+Luis
 
