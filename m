@@ -1,188 +1,199 @@
-Return-Path: <linux-ext4+bounces-2006-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2007-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B798B89FB3C
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 17:13:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97F7989FEB3
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 19:36:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BA06289EE9
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 15:13:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4C403288C23
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 17:36:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58CF2173330;
-	Wed, 10 Apr 2024 15:11:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 904FC17F386;
+	Wed, 10 Apr 2024 17:36:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Wo/su6ux";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pwQ8usD0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 458B216E86D;
-	Wed, 10 Apr 2024 15:11:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12ED11779B4;
+	Wed, 10 Apr 2024 17:36:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712761918; cv=none; b=NpVPGmPM0khC8QPlIHBhr8ZOS3KH0XEHwfgOYi86YaIjSwrP0VGC6IWfW80O8lARyR6W7nziakFqw+u0QtAFdJgPV7u2MIun3npDJYyZzhUhFU+1RT7Xzius/iCkSJ81azTk63cLSOnFj9QLjkxZ15rYWL0eoHQ4rlWGrA8y2JQ=
+	t=1712770571; cv=none; b=ufmzr/kxYKt4NTP9Vv/eyTUSMaAz2nDiGNT+ZRYVTmMm1G/mQsE14HMOrFdWgvhHIM5FJDKArOnrFEXbSj0bgtL4EKpga4XvUrbH1K7UQLRwes1vtQswpNIqRC9ztZKUYjB7XbjU8znidFZTGR/kkgr3JHiRrWt6kt9tmREXylg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712761918; c=relaxed/simple;
-	bh=Py1SPSnSmM02LNWBuDSfAjgXNIjhNrL3rfUfwdnJBrY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YVOWR7apHBEkCLnAWoEGBoO3etQ9MMyJcE+DBGa9wu0pma5PiNTeIYWLqJIbySyhw1+40+gJB773w9wIfwEVXYSGz/ZF/VFpW1a1VGSp0fayVx+SxJIbLBOzl4IjinvWPWf7M4J97Mkq1MaatMQ8eLdBeD5DEujgF18fl8DfRh8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VF5rx0bFsz4f3kjK;
-	Wed, 10 Apr 2024 23:11:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id E3E851A0E02;
-	Wed, 10 Apr 2024 23:11:51 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgAn9g4orBZmFSt+Jg--.51485S9;
-	Wed, 10 Apr 2024 23:11:51 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ritesh.list@gmail.com,
-	hch@infradead.org,
-	djwong@kernel.org,
-	david@fromorbit.com,
-	willy@infradead.org,
-	zokeefe@google.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com,
-	wangkefeng.wang@huawei.com
-Subject: [RFC PATCH v4 34/34] ext4: add mount option for buffered IO iomap path
-Date: Wed, 10 Apr 2024 23:03:13 +0800
-Message-Id: <20240410150313.2820364-6-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240410142948.2817554-1-yi.zhang@huaweicloud.com>
-References: <20240410142948.2817554-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1712770571; c=relaxed/simple;
+	bh=s7AlPHnjW1gFs3weqR//JnIAW3hG+/Mp+aTuvYmxgTU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p2+x3X32CoKrZ801XtkYFNGmkdaDWfFjB3IA9loQOFj+haLX+43yX/Qrqx0UVHKz2mKYkJhVdUEuz67bSAPtr4mMpb+FH5h03XTzcdKa4Z0aPLJ98l6kBSsGYiWHwwnMnpqbGgQrgr1WO8tVj0ye7KrJMr1S9CA6R6ITlRItAw4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Wo/su6ux; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pwQ8usD0; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3395033A89;
+	Wed, 10 Apr 2024 17:36:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
+	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
+	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
+	JIolcEC5hlnuCvCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=Wo/su6uxAz3KDCet7sG1IMbLmZNu/s492NxBN+stUG6oo2qYtuABn+4iFfLZA7KwEty81H
+	IdrOqxowTjwdMcGmvVJuVhd3KhUwlHGwlvUKUWet7620GxVeKx3CiehY9/HodlAMarXBGu
+	QKA3ILsUtN07gfz8aoS5W8ffx3zw7mU=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712770567;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0ZHHE5aOwQ1Ezn/ab1buAuDtcCLPcpIIchKLIUxoBbM=;
+	b=pwQ8usD0NAyGD6U1k6UXV+bVfsviAAMcwHC0rXMTXFxYTDSQht5I5OMD0LYFtofyWnG5ZB
+	JIolcEC5hlnuCvCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFAAD13691;
+	Wed, 10 Apr 2024 17:36:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 20hgOgbOFmZrWQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 10 Apr 2024 17:36:06 +0000
+Date: Wed, 10 Apr 2024 19:28:37 +0200
+From: David Sterba <dsterba@suse.cz>
+To: Jan Kara <jack@suse.cz>
+Cc: Matthew Wilcox <willy@infradead.org>, Yu Kuai <yukuai1@huaweicloud.com>,
+	axboe@kernel.dk, roger.pau@citrix.com, colyli@suse.de,
+	kent.overstreet@gmail.com, joern@lazybastard.org,
+	miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+	sth@linux.ibm.com, hoeppner@linux.ibm.com, hca@linux.ibm.com,
+	gor@linux.ibm.com, agordeev@linux.ibm.com, jejb@linux.ibm.com,
+	martin.petersen@oracle.com, clm@fb.com, josef@toxicpanda.com,
+	dsterba@suse.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+	nico@fluxnic.net, xiang@kernel.org, chao@kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.com, konishi.ryusuke@gmail.com,
+	akpm@linux-foundation.org, hare@suse.de, p.raghav@samsung.com,
+	linux-block@vger.kernel.org, linux-kernel@vger.kernel.org,
+	xen-devel@lists.xenproject.org, linux-bcache@vger.kernel.org,
+	linux-mtd@lists.infradead.org, linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org, linux-bcachefs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, yukuai3@huawei.com,
+	yi.zhang@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH RFC v3 for-6.8/block 09/17] btrfs: use bdev apis
+Message-ID: <20240410172837.GO3492@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20231221085712.1766333-1-yukuai1@huaweicloud.com>
+ <20231221085712.1766333-10-yukuai1@huaweicloud.com>
+ <ZYcZi5YYvt5QHrG9@casper.infradead.org>
+ <20240104114958.f3cit5q7syp3tn3a@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAn9g4orBZmFSt+Jg--.51485S9
-X-Coremail-Antispam: 1UD129KBjvJXoWxCw13GF15ur4fGw47KF4kWFg_yoWrJr4xp3
-	s0gFWrGw1vvryj9FWI9Fs3Xr1Sya1Fka1UCrW09w17XFZrAryIgFyfKF1akF4aqrW8XFyI
-	qF1rKF17WFW2krDanT9S1TB71UUUUUDqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQFb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r126r1DMcIj6I8E87Iv67AKxVW8JVWxJwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lF7xvrVCFI7AF6II2Y40_Zr0_Gr1UM4x0x7Aq67
-	IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kIc2xKxwCF04k20xvY0x0EwIxGrwCF
-	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
-	v26r106r1rMI8E67AF67kF1VAFwI0_GFv_WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
-	67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4
-	v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr1j6F4UJwCI42IY6I8E87Iv6xkF7I0E
-	14v26rxl6s0DYxBIdaVFxhVjvjDU0xZFpf9x0ziBWlDUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240104114958.f3cit5q7syp3tn3a@quack3>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Flag: NO
+X-Spam-Score: -2.50
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.50 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[49];
+	TO_DN_SOME(0.00)[];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_ALL(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLtpaten8pmzgjg419jubxqoa7)];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[infradead.org,huaweicloud.com,kernel.dk,citrix.com,suse.de,gmail.com,lazybastard.org,bootlin.com,nod.at,ti.com,linux.ibm.com,oracle.com,fb.com,toxicpanda.com,suse.com,zeniv.linux.org.uk,kernel.org,fluxnic.net,mit.edu,dilger.ca,linux-foundation.org,samsung.com,vger.kernel.org,lists.xenproject.org,lists.infradead.org,lists.ozlabs.org,huawei.com];
+	RCVD_COUNT_TWO(0.00)[2];
+	TAGGED_RCPT(0.00)[];
+	MID_RHS_MATCH_FROM(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Thu, Jan 04, 2024 at 12:49:58PM +0100, Jan Kara wrote:
+> On Sat 23-12-23 17:31:55, Matthew Wilcox wrote:
+> > On Thu, Dec 21, 2023 at 04:57:04PM +0800, Yu Kuai wrote:
+> > > @@ -3674,16 +3670,17 @@ struct btrfs_super_block *btrfs_read_dev_one_super(struct block_device *bdev,
+> > >  		 * Drop the page of the primary superblock, so later read will
+> > >  		 * always read from the device.
+> > >  		 */
+> > > -		invalidate_inode_pages2_range(mapping,
+> > > -				bytenr >> PAGE_SHIFT,
+> > > +		invalidate_bdev_range(bdev, bytenr >> PAGE_SHIFT,
+> > >  				(bytenr + BTRFS_SUPER_INFO_SIZE) >> PAGE_SHIFT);
+> > >  	}
+> > >  
+> > > -	page = read_cache_page_gfp(mapping, bytenr >> PAGE_SHIFT, GFP_NOFS);
+> > > -	if (IS_ERR(page))
+> > > -		return ERR_CAST(page);
+> > > +	nofs_flag = memalloc_nofs_save();
+> > > +	folio = bdev_read_folio(bdev, bytenr);
+> > > +	memalloc_nofs_restore(nofs_flag);
+> > 
+> > This is the wrong way to use memalloc_nofs_save/restore.  They should be
+> > used at the point that the filesystem takes/releases whatever lock is
+> > also used during reclaim.  I don't know btrfs well enough to suggest
+> > what lock is missing these annotations.
+> 
+> In principle I agree with you but in this particular case I agree the ask
+> is just too big. I suspect it is one of btrfs btree locks or maybe
+> chunk_mutex but I doubt even btrfs developers know and maybe it is just a
+> cargo cult. And it is not like this would be the first occurence of this
+> anti-pattern in btrfs - see e.g. device_list_add(), add_missing_dev(),
+> btrfs_destroy_delalloc_inodes() (here the wrapping around
+> invalidate_inode_pages2() looks really weird), and many others...
 
-Add buffered_io_iomap mount option to enable buffered IO iomap path for
-regular file, this option is disabled by default now.
-
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/ext4.h  |  1 +
- fs/ext4/inode.c |  2 ++
- fs/ext4/super.c | 16 +++++++++++++++-
- 3 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 4e7667b21c2f..fef609e6ba7d 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1254,6 +1254,7 @@ struct ext4_inode_info {
- 						    * scanning in mballoc
- 						    */
- #define EXT4_MOUNT2_ABORT		0x00000100 /* Abort filesystem */
-+#define EXT4_MOUNT2_BUFFERED_IOMAP	0x00000200 /* Use iomap for buffered IO */
- 
- #define clear_opt(sb, opt)		EXT4_SB(sb)->s_mount_opt &= \
- 						~EXT4_MOUNT_##opt
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 269503749ef5..c930108f11dd 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5120,6 +5120,8 @@ bool ext4_should_use_buffered_iomap(struct inode *inode)
- {
- 	struct super_block *sb = inode->i_sb;
- 
-+	if (!test_opt2(sb, BUFFERED_IOMAP))
-+		return false;
- 	if (ext4_has_feature_inline_data(sb))
- 		return false;
- 	if (ext4_has_feature_verity(sb))
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 6410918161a0..c8b691e605f1 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1685,7 +1685,7 @@ enum {
- 	Opt_dioread_nolock, Opt_dioread_lock,
- 	Opt_discard, Opt_nodiscard, Opt_init_itable, Opt_noinit_itable,
- 	Opt_max_dir_size_kb, Opt_nojournal_checksum, Opt_nombcache,
--	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan,
-+	Opt_no_prefetch_block_bitmaps, Opt_mb_optimize_scan, Opt_buffered_iomap,
- 	Opt_errors, Opt_data, Opt_data_err, Opt_jqfmt, Opt_dax_type,
- #ifdef CONFIG_EXT4_DEBUG
- 	Opt_fc_debug_max_replay, Opt_fc_debug_force
-@@ -1828,6 +1828,7 @@ static const struct fs_parameter_spec ext4_param_specs[] = {
- 	fsparam_flag	("no_prefetch_block_bitmaps",
- 						Opt_no_prefetch_block_bitmaps),
- 	fsparam_s32	("mb_optimize_scan",	Opt_mb_optimize_scan),
-+	fsparam_flag	("buffered_iomap",	Opt_buffered_iomap),
- 	fsparam_string	("check",		Opt_removed),	/* mount option from ext2/3 */
- 	fsparam_flag	("nocheck",		Opt_removed),	/* mount option from ext2/3 */
- 	fsparam_flag	("reservation",		Opt_removed),	/* mount option from ext2/3 */
-@@ -1922,6 +1923,8 @@ static const struct mount_opts {
- 	{Opt_nombcache, EXT4_MOUNT_NO_MBCACHE, MOPT_SET},
- 	{Opt_no_prefetch_block_bitmaps, EXT4_MOUNT_NO_PREFETCH_BLOCK_BITMAPS,
- 	 MOPT_SET},
-+	{Opt_buffered_iomap, EXT4_MOUNT2_BUFFERED_IOMAP,
-+	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
- #ifdef CONFIG_EXT4_DEBUG
- 	{Opt_fc_debug_force, EXT4_MOUNT2_JOURNAL_FAST_COMMIT,
- 	 MOPT_SET | MOPT_2 | MOPT_EXT4_ONLY},
-@@ -2408,6 +2411,11 @@ static int ext4_parse_param(struct fs_context *fc, struct fs_parameter *param)
- 			return -EINVAL;
- 		}
- 		return 0;
-+	case Opt_buffered_iomap:
-+		ext4_msg(NULL, KERN_WARNING,
-+			 "iomap for buffered enabled. Warning: EXPERIMENTAL, use at your own risk");
-+		ctx_set_mount_opt2(ctx, EXT4_MOUNT2_BUFFERED_IOMAP);
-+		return 0;
- 	}
- 
- 	/*
-@@ -2838,6 +2846,12 @@ static int ext4_check_opt_consistency(struct fs_context *fc,
- 			    !(sbi->s_mount_opt2 & EXT4_MOUNT2_DAX_INODE))) {
- 			goto fail_dax_change_remount;
- 		}
-+
-+		if (ctx_test_mount_opt2(ctx, EXT4_MOUNT2_BUFFERED_IOMAP) &&
-+		    !test_opt2(sb, BUFFERED_IOMAP)) {
-+			ext4_msg(NULL, KERN_ERR, "can't enable iomap for buffered IO on remount");
-+			return -EINVAL;
-+		}
- 	}
- 
- 	return ext4_check_quota_consistency(fc, sb);
--- 
-2.39.2
-
+The pattern is intentional and a temporary solution before we could
+implement the scoped NOFS. Functions calling allocations get converted
+from GFP_NOFS to GFP_KERNEL but in case they're called from a context
+that either holds big locks or can recursively enter the filesystem then
+it's protected by the memalloc calls. This should not be surprising.
+What may not be obvious is which locks or kmalloc calling functions it
+could be, this depends on the analysis of the function call chain and
+usually there's enough evidence why it's needed.
 
