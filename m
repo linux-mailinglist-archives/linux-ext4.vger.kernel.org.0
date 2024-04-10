@@ -1,132 +1,122 @@
-Return-Path: <linux-ext4+bounces-1926-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-1927-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81E6889E4F4
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Apr 2024 23:30:08 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C98ED89E885
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 05:51:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D844282B01
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Apr 2024 21:30:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 269EAB217F7
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Apr 2024 03:51:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D4C0158A2E;
-	Tue,  9 Apr 2024 21:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="VJCJkhDg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B455C144;
+	Wed, 10 Apr 2024 03:50:53 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 241E815885B
-	for <linux-ext4@vger.kernel.org>; Tue,  9 Apr 2024 21:29:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927F35256;
+	Wed, 10 Apr 2024 03:50:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712698194; cv=none; b=FPOs06LtZiK402I8hp5s/XBbwnX8wMtAPwyCgpGbssR6gU5Qv3n7O5xCQLL5KoDHWFpdyXlIHEWqrC4OJaFTl2VOy3Z8OuLSEtcTrzYx9Rwk+GpcDFDecSw0G9uRHlYrNBsVRCPJDBwaaNNbrZXupzPGs0Ypch3XlnfOm4bINSo=
+	t=1712721052; cv=none; b=VCOCZ/P4TANTAEZO3EEIYJ/zvch5L/usoRDpV1lmrlGoejm/RH6jKXH6iakd0rU9lIsDwP5x9mQdXXkRwu4KF0Ilz3DyOVCU7L2i2dHmIpmMuPf7yxkNsttstSSLA4Ojwwic5LdaQUYGphTDvEebS+bQ6VulYC2FSWPbnerNy2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712698194; c=relaxed/simple;
-	bh=Ubqqm63lKdnzIJduqL2oJ1Vi2+iIgr/cKwTszXup7q0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uAtmeF7iTvu5TWIfFqfVEtR93ftx8dChwinqslqBWNm4OCaWrpm4iWW1q46/26Kg1HzvMQD8srPu7cOsmOIfXURZ8m8mlcQS4ZcQWFlouOtepSvWiXUUy80nQsl5Iln9ssDz6Wbs36z0EtXcvFrdtj9iCkeIBlvuqn5z8W6PY7c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=VJCJkhDg; arc=none smtp.client-ip=209.85.210.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6eaf1005fcaso4202321b3a.3
-        for <linux-ext4@vger.kernel.org>; Tue, 09 Apr 2024 14:29:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1712698191; x=1713302991; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
-        b=VJCJkhDga/OfKWeKbdrV+Saj9YmigCMLGWF6BfgnQH3eH/S5yBIWflk+OPpwtREuOe
-         sCZzrABd56f1+kvK3UE8lUjqkbdw9/DIVfraZRmuWWGFbeUgR5nF1Jggriy2kyc8BiT3
-         WG0uqYH+QFP3PCBjxaLWrN9sbyBXT4g4Gjvx+s2sjOqCW92mtMNHWnyE+tbS9iOmvjtL
-         83ocso+vIOzA3YcvmGz8c5BsZDEQZ1yPXn1dlslF78q4D70zvWDphBajBYEfoPJVIDLd
-         tOuVrVGhru5QLUAMuspZ6FEnkvqGtKz1qHoqCWn6fMtLS5aODbw1gspxqRiPljuVMG94
-         tlxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712698191; x=1713302991;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lppOhDLhaTktGl6lazMPAeBs02NfwHMeHSnwbowOWTw=;
-        b=PKkl1aP+pgfPJheHmgquAnwr945HCBWJSmFAbpQEgcxEARcDhHq0oEZ/7c3fzixE47
-         lksm69H2vEhOf5Z61NnyIlPN/BQnEsrME4/AzHy3WYJ0bIiHojU7p3ubp9HZZKYuDQoU
-         W+VLODhaCYqxYR9QaLX0tJOPAqbU9m8J3LYS/7oDr/7NV7n3NxvIVaA1H7PosoSl4NNF
-         HbQHpTND8KxqSvyVZutFejRONKgM2vYqHAcCrF9IG/baOTHrPuQHJU2dGXpsinO9Qjff
-         kmYeYv+UtwfJ3acdXKPZhRt8XMuTVXBcy9EBMNKGqrkNMz6sanAWE5ms7LoGqmCVilG8
-         pbIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJXopbEYKpxVmmJud88+IiVtKytJk/21l6vSW/i61bwDzJ8apxUAcY4sGyFy9VBAam7IQEPeeaqSIBgdEZOjnI4eaVix+hqHK18A==
-X-Gm-Message-State: AOJu0YxT20CE1hs4vcCb/wmmMl1oZ+4vEtGpvEBQa8WGayvZNEprUpOK
-	MihocHA4oEJMNB/ubY0pZpvv99R9pIaS11nfzizmjhVTdqUDmw2MBMHsuq+4CCI=
-X-Google-Smtp-Source: AGHT+IFvOqPyH50nuc2JACoXyF6q2DKJ9ivcnsRna4tGd1/cjZ8p4v7GhrD65qleDU/qtwwIyhj4CQ==
-X-Received: by 2002:a05:6a00:14d1:b0:6ec:faef:dd28 with SMTP id w17-20020a056a0014d100b006ecfaefdd28mr932086pfu.23.1712698191116;
-        Tue, 09 Apr 2024 14:29:51 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-56-237.pa.nsw.optusnet.com.au. [49.181.56.237])
-        by smtp.gmail.com with ESMTPSA id x12-20020a056a00270c00b006ed048a7323sm8006356pfv.86.2024.04.09.14.29.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 09 Apr 2024 14:29:50 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1ruJ2J-009xO3-3A;
-	Wed, 10 Apr 2024 07:29:47 +1000
-Date: Wed, 10 Apr 2024 07:29:47 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: syzbot <syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com>
-Cc: chandan.babu@oracle.com, dwmw2@infradead.org,
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-mtd@lists.infradead.org,
-	linux-xfs@vger.kernel.org, richard@nod.at,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ext4?] [jffs2?] [xfs?] kernel BUG in
- unrefer_xattr_datum
-Message-ID: <ZhWzS47ZvqF2WriS@dread.disaster.area>
-References: <0000000000002444e20615a20456@google.com>
+	s=arc-20240116; t=1712721052; c=relaxed/simple;
+	bh=yeB6z5EAfe7IOQv8OW6VQNX7Eu6xtR4ZEQqtzaQ7UDo=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=n5cCvGgaIvanlw8IfjG6xNs2k4o8E0MW6nGpA+ogwZuWXBEqg6m0yBUtzk7w3iB4DmD96gSZqdaE++vsFPS3niGqOt1we/fRQn1e80CtYqxI9XV8BQAYBs9xXYH6do3CwjT0zf1+XafYIi3QwwKAHmgx6O9vyqA1aZIeVlppc+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VDpl221dJz4f3m6g;
+	Wed, 10 Apr 2024 11:50:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id E476A1A0BE8;
+	Wed, 10 Apr 2024 11:50:46 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBGADBZmy5ZTJg--.21880S4;
+	Wed, 10 Apr 2024 11:50:45 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH v2 0/9] ext4: support adding multi-delalloc blocks
+Date: Wed, 10 Apr 2024 11:41:54 +0800
+Message-Id: <20240410034203.2188357-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0000000000002444e20615a20456@google.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHGBGADBZmy5ZTJg--.21880S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Wry7tF13Xw1DJw4rGw47XFb_yoW8WrWDpF
+	WfKF4rXr4UWr1agan3Aa1UGr4Fqw4fCrW7G343tw1UZrWUZFyfZFsrKF1F9ayrJrZ3uF1Y
+	qF129rykua1qka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyG14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vI
+	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
+	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0
+	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
+	AvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7Cj
+	xVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Mon, Apr 08, 2024 at 09:04:18PM -0700, syzbot wrote:
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
-> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-> console output: https://syzkaller.appspot.com/x/log.txt?x=1562c52d180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
-> dashboard link: https://syzkaller.appspot.com/bug?extid=b417f0468b73945887f0
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm64
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14e74805180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1613cca9180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
-> mounted in repro #1: https://storage.googleapis.com/syzbot-assets/f039597bec42/mount_0.gz
-> mounted in repro #2: https://storage.googleapis.com/syzbot-assets/b3fe5cff7c96/mount_4.gz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+b417f0468b73945887f0@syzkaller.appspotmail.com
-> 
-> jffs2: nextblock 0x0001d000, expected at 0001f000
-> jffs2: argh. node added in wrong place at 0x0001e03c(2)
-> jffs2: nextblock 0x0001d000, expected at 0001f000
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Nothing to do with XFS or ext4 - they are simply being mounted with
-invalid mount options at the same time.
+Hello!
 
-#syz set subsystems: jffs2
+This patch series is the part 2 prepartory changes of the buffered IO
+iomap conversion, I picked them out from my buffered IO iomap conversion
+RFC series v3[1], add a fix for an issue found in current ext4 code,and
+also add bigalloc feature support. Please look the following patches for
+details.
+
+The first 2 patches fix an incorrect delalloc reserved blocks count
+issue, the second 6 patches make ext4_insert_delayed_block() call path
+support inserting multi-delalloc blocks once a time, and the last patch
+makes ext4_da_map_blocks() buffer_head unaware, prepared for iomap.
+
+This patch set has been passed 'kvm-xfstests -g auto' tests, I hope it
+could be reviewed and merged first.
+
+[1] https://lore.kernel.org/linux-ext4/20240127015825.1608160-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
+Zhang Yi (9):
+  ext4: factor out a common helper to query extent map
+  ext4: check the extent status again before inserting delalloc block
+  ext4: trim delalloc extent
+  ext4: drop iblock parameter
+  ext4: make ext4_es_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_reserve_space() reserve multi-clusters
+  ext4: factor out check for whether a cluster is allocated
+  ext4: make ext4_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_map_blocks() buffer_head unaware
+
+ fs/ext4/extents_status.c    |  63 ++++++----
+ fs/ext4/extents_status.h    |   5 +-
+ fs/ext4/inode.c             | 240 +++++++++++++++++++++++-------------
+ include/trace/events/ext4.h |  26 ++--
+ 4 files changed, 213 insertions(+), 121 deletions(-)
 
 -- 
-Dave Chinner
-david@fromorbit.com
+2.39.2
+
 
