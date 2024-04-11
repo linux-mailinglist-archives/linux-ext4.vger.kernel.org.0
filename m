@@ -1,175 +1,286 @@
-Return-Path: <linux-ext4+bounces-2037-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2038-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED95A8A1C0C
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Apr 2024 19:38:22 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C96E88A1DCF
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Apr 2024 20:19:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6758B1F22684
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Apr 2024 17:38:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 425B21F265D4
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Apr 2024 18:19:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5AAAD1514E6;
-	Thu, 11 Apr 2024 16:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC88F58213;
+	Thu, 11 Apr 2024 17:29:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YNd/H66f"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jPtlbLJq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f53.google.com (mail-qv1-f53.google.com [209.85.219.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FEB72E415;
-	Thu, 11 Apr 2024 16:07:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712851634; cv=none; b=adb0ZqSr1BWcGS2n54N+w6iCH4eWCaKObJKd+6pGsRl5Q3lK39lwzc3761x6VP+dM1cuqyMX5iNLrnoDjuYG+5gAtCZcqXonHp7DoxRNhpjyNKQF5tTRIU4GnvEaWTQFF9OT6Cx1UnboWmQjj5Peg0gFx+/wDs1RQgvbanGrvPQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712851634; c=relaxed/simple;
-	bh=5PGOcfSSdDYshGRmZx13mgK8FTOFF2BORnZNhaSwLC4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=XbGI3dR5Jy9auYArWmgzeztJsgvex4aQsrJcLTu0KseE4BGatY1lpar90KSbW8ixm1IJcat8q1KC0ojhJASoUFtK6yfraxMQiQ7sJH9Ju+pmes//C5KypH+C9YIqWgyhEkWcAfOOqtsmZq/to/5vq5yFLridirwVAyheX8w65dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YNd/H66f; arc=none smtp.client-ip=209.85.219.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f53.google.com with SMTP id 6a1803df08f44-69629b4ae2bso223296d6.3;
-        Thu, 11 Apr 2024 09:07:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1712851632; x=1713456432; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vCJL7Yhjai6trMhKxfXz5O8cCLAAGPaww8mADW8uTPk=;
-        b=YNd/H66fgtx61ngunZcjWPx1iYIFMoGis/uPkUeU5fl0pTfwZMNwDrMWfB2xojO5Lp
-         84d9PQ/+rVPBXAkM6UbRqn4zXQGHPlXxEUHbdTgTEFqyxak48aZ6BlqvSZgE4qcTv49C
-         sjYr8VqxWs+WXZVe+UPb9+d33ymwDVO91XSr5kVM/JR3t2CU8RHdt0LL+oZF+0jhc6e5
-         w+poypX43o7BTcYfCJAhkZ27RBYywfdtni5kVKY6VwAxkorKLTGrDW45ptmMJ8H5kONV
-         zZlTyqzNFNMLF7ZjyLdmS9QdTxA+w3kSxkISrQhZHf91oIoOrTTG9TKAjK7ybn2zBjO7
-         O5tQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712851632; x=1713456432;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vCJL7Yhjai6trMhKxfXz5O8cCLAAGPaww8mADW8uTPk=;
-        b=V7n4IbtBTN635XUX191CRCxccuTbWH7Xua6NSA8qyBKB2AVBP7t2akx990ZU5SYiZ6
-         5SWuH6UuCSQtiIel20oear+ECHGy6S0cBUJZzvyapf19+KdMna8xrGu/f8lrdoCyLS6m
-         PyBRGZakEV+LvnNOeb6W4tiykC8bUWUzRlKrXioSX6WEgAu2OGSAgF4Yuf1l1q3h51xm
-         zqleX5uVGa9W8TutQGf0qksBBF1Mu7n9xrcQd3eV8k7nH2bz0GrFlA71WyvFy0fMoUdV
-         OY0F0US0iFZh8LzdRizz3dpVJkqN4tlUaPds0Z1LMAuRMmaiaJNVEQ/TjcQZ9FCxE6o9
-         Ddmw==
-X-Forwarded-Encrypted: i=1; AJvYcCV6PJ68Mo1pDfSv6v4aq/HIfKiYx++e7bSFT70ISioN82kPkKWCBrR9JKPdp5cP4gjam7bKopJojFdFiFYjO4LFHz/7lVUGyoDP+LcQ2NLeNo8DK9dIcIZhzaf17Ae5X5na0Ff8IdYv2AqC9oAGMXCgYkiDFAD4aUv1yv8D46j9wuSj0wiE/1M=
-X-Gm-Message-State: AOJu0YxasVzQKRXK9KF8C45+YibQKcVy9o/yApSvWXP4pnt1c4MA/1cy
-	AO3xvVwN/d0mwLbwCSkL5YgkOTh+ePlmdoJoGQlCg1N8P86FDLJzWgrUrpe8chr8+eJzM9cvFrb
-	ET/dfHkr0YUlXR8AbFind7VPSB1Q=
-X-Google-Smtp-Source: AGHT+IHGB8ZcfvsLjGVcI1/X1Vol3VjdRqvuRMFmABVLbUb66s7gO1K52gIUaCsdklEC72iOo7wpwSMBZ7zYSw5fRkU=
-X-Received: by 2002:ad4:53c7:0:b0:699:1877:b0fb with SMTP id
- k7-20020ad453c7000000b006991877b0fbmr129384qvv.3.1712851632384; Thu, 11 Apr
- 2024 09:07:12 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B993858217;
+	Thu, 11 Apr 2024 17:29:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.14
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712856553; cv=fail; b=NobCcxjX6Ly4c5QGgmeOnWE1wuHoBSvb5JkRc6lP/+mAd8k5o6VhB55SDq9R2icxTb896wLaZfIRgoIKlkQJjmpzcYW9+pNuhc3YDK74Rcko/JLGISXtzzXDRnVkQgxXa8pEZ7TKgoBXNAT6rrk5/GVNLtFTJpRd9DTvRCUBj6Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712856553; c=relaxed/simple;
+	bh=S9++cmKNM/rfK9pr5dA1AGUTHSGzVrAMCzjI17M7qRo=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=RCNziwYDgBDXHkFPCQpcTx7s+VApU38UQ6UzHtNp0qCFe2Xc9l2N1rZzLafYCrvzS2mub3blfND0fLTRp0jRL4+Z34c5EygFECN0nJF+mtxJhDnR4AHDTU4GK1KRs3dXty1+t0dTjh+2jc8/zJru2eEV6OpE2LZPVMQNTAAQVM4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jPtlbLJq; arc=fail smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1712856552; x=1744392552;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=S9++cmKNM/rfK9pr5dA1AGUTHSGzVrAMCzjI17M7qRo=;
+  b=jPtlbLJqWjmpB0KnmGClYKvFk91oi+TE+Rmmx4ebOTN2JyTs0EbyTjjY
+   0uur/mNMgK0UzkoX+JoSDYbIOkY6ivB6WVBzmVIzWvMo4akK6Ksu+y81f
+   J2JsS91bVVgcs3CwrHDVVVKXigz9aLW6R8JkjyUmrdaLK9wHJbt1gFL/S
+   JxU/L1EuG4dleppMPRQjcUfpmnB4MSPANydziDy05RNlhQMMLPabWTVjY
+   7t5KE1a5RT1gh7kUOrLGTrCnqpixqA4UBSzksjx23eHCRYQX7WQKaOvqd
+   Ybe693JfnPxjsU26irbM8vrno/Q0F8wuKpYu6vC8QyQp+vojlSD34iXwS
+   w==;
+X-CSE-ConnectionGUID: YQoV2SXQT5KOsvPhpUKIqg==
+X-CSE-MsgGUID: LVGo6vfoTHiO2L0cYhj4qA==
+X-IronPort-AV: E=McAfee;i="6600,9927,11041"; a="8506394"
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="8506394"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 11 Apr 2024 10:29:11 -0700
+X-CSE-ConnectionGUID: 8QFyS1sVR6W3dZhI0DAebA==
+X-CSE-MsgGUID: oEmW3R15QZyBwkghcc0HXQ==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,193,1708416000"; 
+   d="scan'208";a="21411876"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 11 Apr 2024 10:29:11 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Apr 2024 10:29:10 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Thu, 11 Apr 2024 10:29:10 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Thu, 11 Apr 2024 10:29:10 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.101)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Thu, 11 Apr 2024 10:29:01 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fdUR+y+IoIqvmgavyE4X9vMC0Y4u5k2S3PCn71CejsHnwJhDDcNtNRstWywJm3DkMCPmR+kans+5pGMEQnfsUseArlTyApgRtUZPkFyXNvC4NpNmqAWAMl8+7M+s+NpTetf9suWRGCprTfkLitesABAliw//6Pq2pbfzBcGBL9VFsFHKzjLdSzEU2hRQ/sSMWwtekfV/Dt9DLFi9kxL3Mjxo1R3jiUYs8AL07Ou0mEbsCvU0IrxQJajquDq3aj3b3McbfgE06OB0SDcBCg8aGdWLtkuKus4U7nOv5qV6sSI/43znm9UooNM9m23qjH+6o++YhTLOI0cofvFRnfboMg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=UDlisLhg/qeB79/wN7QJRy6mLSejkFg73v8CPcA6afM=;
+ b=JE7rAwI2CVrwxQKy1/KUwOBB/n/FeZLy2n9Poppp1aiZAZHrkQAOhhCP7mEe1Jpy94FHP1QuXu45KTHeJDz76zsAJZbHZ9mW3sq1JGIgDa/bCKGv2sY3MufTXV3N49cff8++MGw3ZnhzLNYF/FT1MoKPa/whvQk0+g+yJm/9UVT00q63Z2WAbFAEA9f/syJyEp14w+dOvasdMzAMjLczW/96N6YTxhL4VICj8CjM8vC5dMO1aGIA8VPeaItl7MByK/72KhxVvsRHWsW3qf8XyFpZYxqFA6pSEhhcdiVCDksDU8tEd6fhOTO/jr5Zk2+KBhfKEh9lJkUUY5f4ALnFSA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by DS7PR11MB7690.namprd11.prod.outlook.com (2603:10b6:8:e6::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7452.21; Thu, 11 Apr
+ 2024 17:28:59 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7430.045; Thu, 11 Apr 2024
+ 17:28:59 +0000
+Date: Thu, 11 Apr 2024 10:28:56 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Alistair Popple <apopple@nvidia.com>, <linux-mm@kvack.org>
+CC: <david@fromorbit.com>, <dan.j.williams@intel.com>, <jhubbard@nvidia.com>,
+	<rcampbell@nvidia.com>, <willy@infradead.org>, <jgg@nvidia.com>,
+	<linux-fsdevel@vger.kernel.org>, <jack@suse.cz>, <djwong@kernel.org>,
+	<hch@lst.de>, <david@redhat.com>, <ruansy.fnst@fujitsu.com>,
+	<nvdimm@lists.linux.dev>, <linux-xfs@vger.kernel.org>,
+	<linux-ext4@vger.kernel.org>, <jglisse@redhat.com>, Alistair Popple
+	<apopple@nvidia.com>
+Subject: Re: [RFC 00/10] fs/dax: Fix FS DAX page reference counts
+Message-ID: <66181dd83f74e_15786294e8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <cover.fe275e9819458a4bbb9451b888cafb88af8867d4.1712796818.git-series.apopple@nvidia.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <cover.fe275e9819458a4bbb9451b888cafb88af8867d4.1712796818.git-series.apopple@nvidia.com>
+X-ClientProxiedBy: MW4PR04CA0204.namprd04.prod.outlook.com
+ (2603:10b6:303:86::29) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000042c9190615cdb315@google.com> <20240411121319.adhz4ylacbv6ocuu@quack3>
-In-Reply-To: <20240411121319.adhz4ylacbv6ocuu@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 11 Apr 2024 19:07:00 +0300
-Message-ID: <CAOQ4uxi9L_Rs7q=fcLGqJMx15jLAArOWGwGfdCL8LOUCPR3L+w@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
-To: Jan Kara <jack@suse.cz>
-Cc: syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>, 
-	linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, repnop@google.com, 
-	syzkaller-bugs@googlegroups.com, Gabriel Krisman Bertazi <krisman@suse.de>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DS7PR11MB7690:EE_
+X-MS-Office365-Filtering-Correlation-Id: 63bd6b9f-9f8c-4638-ab9b-08dc5a4cdf71
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: WiRmj26CgOxN5tpZWTlzt4UGLiAkEMhFzNHmLaZ7bIBEashbOLrOEj0iWGkEOhUlerre2QA2epUp1Mi7of/5YMzZokrh0M+zqL5v8iU0hhBVe8I6yKyhGq2OuxnRaAalN7wvEPNw83OzMqDbY3FJc8cWZe7caXP5vZD53cKlZudalfoesnYaEcX8GWnnJNTd9iHFldSwDWGYuMbzveCqq3ntlIlVkUMMoD5DLBEPdAaqQnxxYYdZ0RPq6vYMIZmIAm3VF/tqm0iXa5hBvia1z6kVbgnf/3tgY8yx3FdiK3V+Aw+AygEoZJWmKog2aFgKVrZLFU0B4hHBjfv/OkY/p2uA9H0Q0kHZIT/1eFxxXlV/9GNLc5nmvAZYeY4DA+3uE2MsocrckofzfXgldHxotoPaChtEDcGz0rm5II2SoBwnDNbBj5I+vKYuh4BSGaSNmtYvc/OVNfInOBwSxQBVBwneEjNyDYDy+8CFBSv9BKusXDYt2HixvXJLpgAnDU9VBiCl6UBRLUcnzspJaDOEOxrz6byhL3XoVEooGWx2pBPZlHFyXWmfN2YCBPLUpM0pdkx7QIQcy6HMQzTIhWj934Xhx/blDda7xD6z/xsFI9EAFWuUCqzLb3oRp0i8n5LiAn1/5ZMwV378QexoQSWbRRqUbInXdBxiV2H6T5bGKXE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?bEx1THEwdlZjeDlLckFqbWVNWngvcWlrTVdtM2dFSnBqU3o0d0RjempMbUxl?=
+ =?utf-8?B?c3N2NVpieXgyQnErTzY4SEVLL2p4ZVc5S2pDV0hYdjcxZnRGT3dydXpTVE4y?=
+ =?utf-8?B?VjBkMk9hSlJNM1NnMVlacWhkQitiZXgzZHlKVGdmVklhUVIrVEtldnA0RStm?=
+ =?utf-8?B?cFRlZmNCN1JENzFRWWZCRHdvckoyL2E5RjNobHVoNVVXNGZ5L2RqN0tlTXYv?=
+ =?utf-8?B?QUhyMW9hYTNuUXd2RU5ZYXpRT0lUNVpyanRaWTVGalkraVhrOTgrYiszQW9k?=
+ =?utf-8?B?NUIrODRnQlhRVVQ5eW5VRjZoQjlwV1RTRUZwZUhGVUFDZ2NZdVFBZ0hmbkpy?=
+ =?utf-8?B?dnhXdHlSa1lJNE56SjJveWIvdDltV0VZZGNkaGNwZndONDJoYUg5Y0QxOGJi?=
+ =?utf-8?B?WWVRUTdYbnlmYkw5Wjljclcvdlo0SEttRU5yTTFUcm00Um5XK0xVcFZRTHFr?=
+ =?utf-8?B?dEdrdFJERnJUeHkxenBFcGJVR1BpOHdOckhFUW0yS25CNkFKTTR3cDZhYXJw?=
+ =?utf-8?B?RFVxdC9URlF0cG02c1lXZzRXMWxMNlE4enpYdkhZTWZKM0Rqc0dyaStsV21r?=
+ =?utf-8?B?MnIwam1XSktieENMQzkxT0hKUHhHcXdONFdwTm56MWNJOE05VFoyMU9uQWdn?=
+ =?utf-8?B?QUU3MWZwM2hXZVB5c0UwRms4b245MEljcUZUZ2VvamxIRmJITnNjL0c1T0ph?=
+ =?utf-8?B?cGkyeE02Q2RqZUVTL0NYQ2V5ZkVyZHpXSWtZbi9aNitYVUR6Q3NZZ1RKSks0?=
+ =?utf-8?B?NnZ1UTBOQ24zQy9CNmR1TjAxVlBTc202QzFqbkkwSExVNlBtL1pvd1krR0x3?=
+ =?utf-8?B?WStqTUlWencxTG05aW5YOWoyRGJwdTFuOEJCTVdMWmxZTy9lOStQbVhaSlRo?=
+ =?utf-8?B?ZHpIN2tXZlVwQkZhSVpMSFZ6M0cyWi9jc0R0NzZ0azFCS1V2Um1NMGxDTWVm?=
+ =?utf-8?B?Z2wrSHpWUzRacUdMQjhITnU2czFXY1krTUVWT1BTbzBibktUOXlFL3NXQk1Z?=
+ =?utf-8?B?N08zLytDWW10SnBOY0huV1V6a3VpRDlreFloT1AwRzBINnQzcnFaU2c5dGVy?=
+ =?utf-8?B?THlyaU5hVy9hb0UxSnV0UW9MK2lvQUNEYm41U0RUZk11cVV4NGdTWXF6QUdZ?=
+ =?utf-8?B?ZU5kR25yZG5SZVlnb3dPQnR0OUwwYlNMUm1yYzRQdktrRzJGWHRnK3FDNW50?=
+ =?utf-8?B?UVEra0lKQm5ka3N4cTZON05hZXRjdWxIc3hvUENGM1FENzBMLzhHK2ZhTnlU?=
+ =?utf-8?B?aW10ek13T2FJVWl6TU1mYzlZUXpKd2o0bTRHOWk0V2dBakc4NkNzaGdrUmlT?=
+ =?utf-8?B?UWVWcGxkQ2k3aU9yVHkzQ25jUE1IV2VFd3BwTEF1dTljaTdEVVZONVZGMEVy?=
+ =?utf-8?B?bk56a0NWbDNWS1JVbU9Xc3V2eFVwSXZBQUYvL1FOaWlRWldVSDdnR2FnWnI4?=
+ =?utf-8?B?Q2NySVM5SnB2REsxZ3NkdE5ybkJXeThHZ21QYzlIVS9obDgrSVUzcUo3YVR6?=
+ =?utf-8?B?akovN0JvUTNNTDhaRnIzeDkxdmtUYVRRcm5CTHFwdmNEdlcwL3lFb1R3VWFY?=
+ =?utf-8?B?b0hEY3l5dzFyeU9FTjJqclVuNmVDN2llcDFydWpuUVpTdXV6bkJBVzQwQlpk?=
+ =?utf-8?B?clFaUFViR1EzL3Myc2VCUFJnYnF1ZWRteTF2MGwyYWRYMnJkMU5qdmJEQnB0?=
+ =?utf-8?B?R1kwWGNlOEZzMVFodXY2TVhERkpDT2hLNEpQbFdtVHo5d2tSbnpTSmpkU1NO?=
+ =?utf-8?B?Qy9DdWdiNzZTdWs4aDlFTjF2QWQ2eEIxNUhWYXJLNGlDRUpYdXhuOGpGN3VE?=
+ =?utf-8?B?QUtVNXorUk5kWDF0U2o1UWVBQ1MyaDZHcG92QnVNZWdpOWFjdFRUNHFXQXdZ?=
+ =?utf-8?B?ZlRYdGFTc2g1UXJ1OENSOTNPVXdiRllMUkRENGJVb1FxZEdXSE9mSE5jU1M3?=
+ =?utf-8?B?cjZ0Uk9ZeUVWakxrajdJNU1rMTUxcVkzY1R4MWR6VkdOZkdVbms1cmlWOHVV?=
+ =?utf-8?B?Z3YxRk12WHkrVXk5TCtaZmo3dUtZRlFrdG9YODNkc2xkTCt5Wm1VNFBHaUZS?=
+ =?utf-8?B?b1ZTNlVCcTdEQS9GTHIwU2ZxL0daeXJSY08xWXFqaTZmM1RCbVNydUJkVk85?=
+ =?utf-8?B?V1ZRZk80aHplTVBMSlI4aGQyM1BQbHJYREJtRXJvMktjeHpaREZGTW1VVFNY?=
+ =?utf-8?B?amc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 63bd6b9f-9f8c-4638-ab9b-08dc5a4cdf71
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Apr 2024 17:28:59.4520
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: dG7IIX+yg/cPcvIVeEK/kPEX2yMZ9aUQ/n0dWG06aAnV6fXNkTRq7OwGG7XbF7D4Gwhc+PtXxZ5869rhtrTc40tUQD2twv+JUgJNFwLdzok=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR11MB7690
+X-OriginatorOrg: intel.com
 
-On Thu, Apr 11, 2024 at 3:13=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 11-04-24 01:11:20, syzbot wrote:
-> > Hello,
-> >
-> > syzbot found the following issue on:
-> >
-> > HEAD commit:    6ebf211bb11d Add linux-next specific files for 20240410
-> > git tree:       linux-next
-> > console+strace: https://syzkaller.appspot.com/x/log.txt?x=3D12be955d180=
-000
-> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D16ca158ef7e=
-08662
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D5e3f9b2a67b45=
-f16d4e6
-> > compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for D=
-ebian) 2.40
-> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D13c911751=
-80000
-> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D1621af9d180=
-000
-> >
-> > Downloadable assets:
-> > disk image: https://storage.googleapis.com/syzbot-assets/b050f81f73ed/d=
-isk-6ebf211b.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/412c9b9a536e/vmli=
-nux-6ebf211b.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/016527216c47=
-/bzImage-6ebf211b.xz
-> > mounted in repro: https://storage.googleapis.com/syzbot-assets/75ad050c=
-9945/mount_0.gz
-> >
-> > IMPORTANT: if you fix the issue, please add the following tag to the co=
-mmit:
-> > Reported-by: syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com
-> >
-> > Quota error (device loop0): do_check_range: Getting block 0 out of rang=
-e 1-5
-> > EXT4-fs error (device loop0): ext4_release_dquot:6905: comm kworker/u8:=
-4: Failed to release dquot type 1
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > BUG: KASAN: slab-use-after-free in fsnotify+0x2a4/0x1f70 fs/notify/fsno=
-tify.c:539
-> > Read of size 8 at addr ffff88802f1dce80 by task kworker/u8:4/62
-> >
-> > CPU: 0 PID: 62 Comm: kworker/u8:4 Not tainted 6.9.0-rc3-next-20240410-s=
-yzkaller #0
-> > Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS=
- Google 03/27/2024
-> > Workqueue: events_unbound quota_release_workfn
-> > Call Trace:
-> >  <TASK>
-> >  __dump_stack lib/dump_stack.c:88 [inline]
-> >  dump_stack_lvl+0x241/0x360 lib/dump_stack.c:114
-> >  print_address_description mm/kasan/report.c:377 [inline]
-> >  print_report+0x169/0x550 mm/kasan/report.c:488
-> >  kasan_report+0x143/0x180 mm/kasan/report.c:601
-> >  fsnotify+0x2a4/0x1f70 fs/notify/fsnotify.c:539
-> >  fsnotify_sb_error include/linux/fsnotify.h:456 [inline]
-> >  __ext4_error+0x255/0x3b0 fs/ext4/super.c:843
-> >  ext4_release_dquot+0x326/0x450 fs/ext4/super.c:6903
-> >  quota_release_workfn+0x39f/0x650 fs/quota/dquot.c:840
-> >  process_one_work kernel/workqueue.c:3218 [inline]
-> >  process_scheduled_works+0xa2c/0x1830 kernel/workqueue.c:3299
-> >  worker_thread+0x86d/0xd70 kernel/workqueue.c:3380
-> >  kthread+0x2f0/0x390 kernel/kthread.c:389
-> >  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
-> >  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-> >  </TASK>
->
-> Amir, I believe this happens on umount when the filesystem calls
-> fsnotify_sb_error() after calling fsnotify_sb_delete(). In theory these t=
-wo
-> calls can even run in parallel and fsnotify() can be holding
-> fsnotify_sb_info pointer while fsnotify_sb_delete() is freeing it so we
-> need to figure out some proper synchronization for that...
+Alistair Popple wrote:
+> FS DAX pages have always maintained their own page reference counts
+> without following the normal rules for page reference counting. In
+> particular pages are considered free when the refcount hits one rather
+> than zero and refcounts are not added when mapping the page.
 
-Is it really needed to handle any for non SB_ACTIVE sb?
-How about something like this?
-Is that enough? or more synchronization is needed?
+> Tracking this requires special PTE bits (PTE_DEVMAP) and a secondary
+> mechanism for allowing GUP to hold references on the page (see
+> get_dev_pagemap). However there doesn't seem to be any reason why FS
+> DAX pages need their own reference counting scheme.
 
-#syz test: https://github.com/amir73il/linux fsnotify-fixes
+This is fair. However, for anyone coming in fresh to this situation
+maybe some more "how we get here" history helps. That longer story is
+here:
 
-Thanks,
-Amir.
+http://lore.kernel.org/all/166579181584.2236710.17813547487183983273.stgit@dwillia2-xfh.jf.intel.com/
+
+> This RFC is an initial attempt at removing the special reference
+> counting and instead refcount FS DAX pages the same as normal pages.
+> 
+> There are still a couple of rough edges - in particular I haven't
+> completely removed the devmap PTE bit references from arch specific
+> code and there is probably some more cleanup of dev_pagemap reference
+> counting that could be done, particular in mm/gup.c. I also haven't
+> yet compiled on anything other than x86_64.
+> 
+> Before continuing further with this clean-up though I would appreciate
+> some feedback on the viability of this approach and any issues I may
+> have overlooked, as I am not intimately familiar with FS DAX code (or
+> for that matter the FS layer in general).
+> 
+> I have of course run some basic testing which didn't reveal any
+> problems.
+
+FWIW I see the following with the ndctl/dax test-suite (double-checked
+that vanilla v6.6 passes). I will take a look at the patches, but in the
+meantime...
+
+# meson test -C build --suite ndctl:dax
+ninja: no work to do.
+ninja: Entering directory `/root/git/ndctl/build'
+[1/70] Generating version.h with a custom command
+ 1/13 ndctl:dax / daxdev-errors.sh          OK              14.46s
+ 2/13 ndctl:dax / multi-dax.sh              OK               2.70s
+ 3/13 ndctl:dax / sub-section.sh            OK               7.21s
+ 4/13 ndctl:dax / dax-dev                   OK               0.08s
+[5/13] 🌖 ndctl:dax / dax-ext4.sh                            0/600s
+
+...that last test crashed with:
+
+ EXT4-fs (pmem0): mounted filesystem 2adea02a-a791-4714-be40-125afd16634b r/w with ordered
+ota mode: none.
+ page:ffffea0005f00000 refcount:0 mapcount:0 mapping:ffff8882a8a6be10 index:0x5800 pfn:0x1
+
+ head:ffffea0005f00000 order:9 entire_mapcount:0 nr_pages_mapped:0 pincount:0
+ aops:ext4_dax_aops ino:c dentry name:"image"
+ flags: 0x4ffff800004040(reserved|head|node=0|zone=4|lastcpupid=0x1ffff)
+ page_type: 0xffffffff()
+ raw: 004ffff800004040 ffff888202681520 0000000000000000 ffff8882a8a6be10
+ raw: 0000000000005800 0000000000000000 00000000ffffffff 0000000000000000
+ page dumped because: VM_BUG_ON_FOLIO(((unsigned int) folio_ref_count(folio) + 127u <= 127
+
+ ------------[ cut here ]------------
+ kernel BUG at include/linux/mm.h:1419!
+ invalid opcode: 0000 [#1] PREEMPT SMP PTI
+ CPU: 0 PID: 1415 Comm: dax-pmd Tainted: G           OE    N 6.6.0+ #209
+ Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-3.fc38 05/24/2023
+ RIP: 0010:dax_insert_pfn_pmd+0x41c/0x430
+ Code: 89 c1 41 b8 01 00 00 00 48 89 ea 4c 89 e6 4c 89 f7 e8 18 8a c7 ff e9 e0 fc ff ff 48
+c b3 48 89 c7 e8 a4 53 f7 ff <0f> 0b e8 0d ba a8 00 48 8b 15 86 8a 62 01 e9 89 fc ff ff 90
+
+ RSP: 0000:ffffc90001d57b68 EFLAGS: 00010246
+ RAX: 000000000000005c RBX: ffffea0005f00000 RCX: 0000000000000000
+ RDX: 0000000000000000 RSI: ffffffffb3749a15 RDI: 00000000ffffffff
+ RBP: ffff8882982c07e0 R08: 00000000ffffdfff R09: 0000000000000001
+ R10: 00000000ffffdfff R11: ffffffffb3a771c0 R12: 800000017c0008e7
+ R13: 8000000000000025 R14: ffff888202a395f8 R15: ffffea0005f00000
+ FS:  00007fdaa00e3d80(0000) GS:ffff888477000000(0000) knlGS:0000000000000000
+ CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+ CR2: 00007fda9f800000 CR3: 0000000296224000 CR4: 00000000000006f0
+ DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+ DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+ Call Trace:
+  <TASK>
+  ? die+0x32/0x80
+  ? do_trap+0xd6/0x100
+  ? dax_insert_pfn_pmd+0x41c/0x430
+  ? dax_insert_pfn_pmd+0x41c/0x430
+  ? do_error_trap+0x81/0x110
+  ? dax_insert_pfn_pmd+0x41c/0x430
+  ? exc_invalid_op+0x4c/0x60
+  ? dax_insert_pfn_pmd+0x41c/0x430
+  ? asm_exc_invalid_op+0x16/0x20
+  ? dax_insert_pfn_pmd+0x41c/0x430
+  ? dax_insert_pfn_pmd+0x41c/0x430
+  dax_fault_iter+0x5d0/0x700
+  dax_iomap_pmd_fault+0x212/0x450
+  ext4_dax_huge_fault+0x1dc/0x470
+  __handle_mm_fault+0x808/0x13e0
+  handle_mm_fault+0x178/0x3e0
+  do_user_addr_fault+0x186/0x830
+  exc_page_fault+0x6f/0x1d0
+  asm_exc_page_fault+0x22/0x30
+ RIP: 0033:0x7fdaa072d009
 
