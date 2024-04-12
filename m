@@ -1,128 +1,185 @@
-Return-Path: <linux-ext4+bounces-2063-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2064-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E73D68A31A6
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 16:57:20 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 108E88A324C
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 17:23:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 230551C21E54
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 14:57:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E2FAB242FE
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 15:23:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AE161474D9;
-	Fri, 12 Apr 2024 14:57:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5D8F148FF4;
+	Fri, 12 Apr 2024 15:22:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nt4w8qTi"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dHfLhXt+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7oESxyKH";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dHfLhXt+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7oESxyKH"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17734146D5F;
-	Fri, 12 Apr 2024 14:57:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6120B14883A;
+	Fri, 12 Apr 2024 15:22:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712933832; cv=none; b=mSdT2+h+kWerK01iz1QKTN2v4H4hfZLZzECabDVR4wz26dnI5VeJzcU20b91OYZcItd2SXG/4209Bg14cQloMxhldCe7lQ2T4G1HOaLaNmnk8S1i0YWJQVr342ONvIOknbMsjZwFV/SJ4toLolRgC39m/AkIvqGjPd70bBSgyXc=
+	t=1712935334; cv=none; b=UJ3dBWz4Q2h5SMhHurkq1GHW226fKui3NvZFDcdWwVfp+AreCfHgw5VLsuMJxlqhYczR6bxY0xr4JVkt3fzP1lD//pJluXFYkXEmY3Sq5iQW2rQ2j9UZ8VwRE5wK58SLiJ0zEt7hzeW6XnAq29DnIv1HcYL9sqEj+vPF9nT/rzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712933832; c=relaxed/simple;
-	bh=DJu1ruU/2it86iiNywivAApRohuSOMQ8YBfr0G0U1I0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=b3PUz5iEbBF4FmW9B1t2cdCU2ZlNGl+jFcoTOuYDEWvmPvdmi/LXRPy1qHbavNyJW6PYIckh8UE3TzLp5c2sgHw7RN+i14XnibMtTtsX98i6YbEb6ysiey6/03WeWvGy62++1NRuqnu6l6qIFedeCugujproIo+29Qgw6zXV0dk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nt4w8qTi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35DF7C113CC;
-	Fri, 12 Apr 2024 14:57:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1712933831;
-	bh=DJu1ruU/2it86iiNywivAApRohuSOMQ8YBfr0G0U1I0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=nt4w8qTilNtnTpj+xcg/r10zFAbZ06lS+wtFg87+RHnE3WtDCh8TGLMCaNTQikjYb
-	 K89hammQ+9ArbQuNifV0ERov/6nTbmJ9lfWFoOvYUuz4GmQy4XAAJNPl95xB2XvSCf
-	 PXi611njBptUD7MhZC0wSX8nf5yZB4/W2CBiuh6o7AMvOJAeMJa8fjnDLbtyYP1Kor
-	 sFCXU2KeZDt/goItO7y2Ka65dfDl+vQr/PJFHwowE4a92VseemlxgStSzdVCzI4218
-	 WwEY6gqJkcO746T5h1SBP3hH+TcsKP0gEvULkwGlsijEgVi1Rgyg/mNtsYltkuVJaw
-	 uoIuTqwqHLmzQ==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger
- <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, Conor Dooley
- <conor@kernel.org>
-Subject: riscv32 EXT4 splat, 6.8 regression?
-Date: Fri, 12 Apr 2024 16:57:08 +0200
-Message-ID: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+	s=arc-20240116; t=1712935334; c=relaxed/simple;
+	bh=BvHPHN8fOa7EW5Y5iMhwD3d+SLjl19jOc6gJ/tU9ku4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pE2zs4jRXS2eB3CS2HCp7s3TaBcs8SHFhLNynb5zFuDsChLU5eUARip+Ta2cnQI4Zw/KKUTi2ZWZCzTy9hT4BUygN2NNxJHdh7Z2c9FivhLHp5YTbEybapbkJp/bDQ6WW1V7SxTUTda+sfLuA5P10MbXnRQfEyivqtDACm5YPWk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dHfLhXt+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7oESxyKH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dHfLhXt+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7oESxyKH; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A8CE338405;
+	Fri, 12 Apr 2024 15:22:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712935328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IC6E9bO8ytOyXP9Gha3+QfcN0HdacgeeixK9ev2ZVE4=;
+	b=dHfLhXt+oafE8lHfYHjX6le7winvuajKwY05JhjjVbNfZCkhHc9ZKQ0RJvCbA+dWjvBNw3
+	LPvedgvHiGpR464a2sQUo7rILDyyOq95ZAFaYuJesGafOpuRDIM51OTUW8/mzTq365buJa
+	P9IIQknnm088ShJgoRrO142ub13XIF4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712935328;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IC6E9bO8ytOyXP9Gha3+QfcN0HdacgeeixK9ev2ZVE4=;
+	b=7oESxyKH6MgNpHewLYE5ihQlUjAOKGGynQJ/OGqt3k0zupKvXDFBOmtcf185gBClkKbm4U
+	P86WYmrj8CAfDoCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1712935328; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IC6E9bO8ytOyXP9Gha3+QfcN0HdacgeeixK9ev2ZVE4=;
+	b=dHfLhXt+oafE8lHfYHjX6le7winvuajKwY05JhjjVbNfZCkhHc9ZKQ0RJvCbA+dWjvBNw3
+	LPvedgvHiGpR464a2sQUo7rILDyyOq95ZAFaYuJesGafOpuRDIM51OTUW8/mzTq365buJa
+	P9IIQknnm088ShJgoRrO142ub13XIF4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1712935328;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=IC6E9bO8ytOyXP9Gha3+QfcN0HdacgeeixK9ev2ZVE4=;
+	b=7oESxyKH6MgNpHewLYE5ihQlUjAOKGGynQJ/OGqt3k0zupKvXDFBOmtcf185gBClkKbm4U
+	P86WYmrj8CAfDoCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 977D01377F;
+	Fri, 12 Apr 2024 15:22:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id qVT4JKBRGWa1BAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 12 Apr 2024 15:22:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2B0A8A071E; Fri, 12 Apr 2024 17:22:08 +0200 (CEST)
+Date: Fri, 12 Apr 2024 17:22:08 +0200
+From: Jan Kara <jack@suse.cz>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: linux-mm@kvack.org, david@fromorbit.com, dan.j.williams@intel.com,
+	jhubbard@nvidia.com, rcampbell@nvidia.com, willy@infradead.org,
+	jgg@nvidia.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	djwong@kernel.org, hch@lst.de, david@redhat.com,
+	ruansy.fnst@fujitsu.com, nvdimm@lists.linux.dev,
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	jglisse@redhat.com
+Subject: Re: [RFC 04/10] fs/dax: Don't track page mapping/index
+Message-ID: <20240412152208.m25mjo3xjfyawcaj@quack3>
+References: <cover.fe275e9819458a4bbb9451b888cafb88af8867d4.1712796818.git-series.apopple@nvidia.com>
+ <322065d373bb6571b700dba4450f1759b304644a.1712796818.git-series.apopple@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <322065d373bb6571b700dba4450f1759b304644a.1712796818.git-series.apopple@nvidia.com>
+X-Spam-Flag: NO
+X-Spam-Score: -3.80
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[18];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,nvidia.com:email]
 
-Hi!
+On Thu 11-04-24 10:57:25, Alistair Popple wrote:
+> The page->mapping and page->index fields are normally used by the
+> pagecache and rmap for looking up virtual mappings of pages. FS DAX
+> implements it's own kind of page cache and rmap look ups so these
+> fields are unnecessary. They are currently only used to detect
+> error/warning conditions which should never occur.
+> 
+> A future change will change the way shared mappings are detected by
+> doing normal page reference counting instead, so remove the
+> unnecessary checks.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+...
+> -/*
+> - * When it is called in dax_insert_entry(), the shared flag will indicate that
+> - * whether this entry is shared by multiple files.  If so, set the page->mapping
+> - * PAGE_MAPPING_DAX_SHARED, and use page->share as refcount.
+> - */
+> -static void dax_associate_entry(void *entry, struct address_space *mapping,
+> -		struct vm_area_struct *vma, unsigned long address, bool shared)
+> -{
+> -	unsigned long size = dax_entry_size(entry), pfn, index;
+> -	int i = 0;
+> -
+> -	if (IS_ENABLED(CONFIG_FS_DAX_LIMITED))
+> -		return;
+> -
+> -	index = linear_page_index(vma, address & ~(size - 1));
+> -	for_each_mapped_pfn(entry, pfn) {
+> -		struct page *page = pfn_to_page(pfn);
+> -
+> -		if (shared) {
+> -			dax_page_share_get(page);
+> -		} else {
+> -			WARN_ON_ONCE(page->mapping);
+> -			page->mapping = mapping;
+> -			page->index = index + i++;
+> -		}
+> -	}
+> -}
 
-I've been looking at an EXT4 splat on riscv32, that LKFT found [1]:
+Hum, but what about existing uses of folio->mapping and folio->index in
+fs/dax.c? AFAICT this patch breaks them. What am I missing? How can this
+ever work?
 
-  | EXT4-fs (vda): mounted filesystem 13697a42-d10e-4a9e-8e56-cb9083be92f9 =
-ro with ordered data mode. Quota mode: disabled.
-  | VFS: Mounted root (ext4 filesystem) readonly on device 254:0.
-  | Unable to handle kernel NULL pointer dereference at virtual address 000=
-00006
-  | Oops [#1]
-  | Modules linked in:
-  | CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.8.0 #41
-  | Hardware name: riscv-virtio,qemu (DT)
-  | epc : ext4_search_dir+0x52/0xe4
-  |  ra : __ext4_find_entry+0x1d6/0x578
-  | epc : c035b60e ra : c035b876 sp : c253fc10
-  |  gp : c21a7380 tp : c25c8000 t0 : 44c0657f
-  |  t1 : 0000000c t2 : 1de5b089 s0 : c253fc50
-  |  s1 : 00000000 a0 : fffffffc a1 : fffff000
-  |  a2 : 00000000 a3 : c29c04f8 a4 : c253fd00
-  |  a5 : 00000000 a6 : c253fcfc a7 : fffffff3
-  |  s2 : 00001000 s3 : 00000000 s4 : 00001000
-  |  s5 : c29c04f8 s6 : c292db40 s7 : c253fcfc
-  |  s8 : fffffff7 s9 : c253fd00 s10: fffff000
-  |  s11: c292db40 t3 : 00000007 t4 : 5e8b4525
-  |  t5 : 00000000 t6 : 00000000
-  | status: 00000120 badaddr: 00000006 cause: 0000000d
-  | [<c035b60e>] ext4_search_dir+0x52/0xe4
-  | [<c035b876>] __ext4_find_entry+0x1d6/0x578
-  | [<c035bcaa>] ext4_lookup+0x92/0x200
-  | [<c0295c14>] __lookup_slow+0x8e/0x142
-  | [<c029943a>] walk_component+0x104/0x174
-  | [<c0299f18>] path_lookupat+0x78/0x182
-  | [<c029b24c>] filename_lookup+0x96/0x158
-  | [<c029b346>] kern_path+0x38/0x56
-  | [<c0c1bee4>] init_mount+0x46/0x96
-  | [<c0c2ae1c>] devtmpfs_mount+0x44/0x7a
-  | [<c0c01c26>] prepare_namespace+0x226/0x27c
-  | [<c0c01130>] kernel_init_freeable+0x27e/0x2a0
-  | [<c0b78402>] kernel_init+0x2a/0x158
-  | [<c0b82bf2>] ret_from_fork+0xe/0x20
-  | Code: 84ae a809 d303 0044 949a 0f63 0603 991a fd63 0584 (c603) 0064=20
-  | ---[ end trace 0000000000000000 ]---
-  | Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x000000=
-0b
-
-This was not present in 6.7. Bisection wasn't really helpful (to me at
-least); I got it down to commit c604110e662a ("Merge tag 'vfs-6.8.misc'
-of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs"), and when I
-revert the commits in the vfs merge the splat went away, but I *really*
-struggle to see how those are related...
-
-What I see in ext4_search_dir() is that search_buf is 0xfffff000, and at
-some point the address wraps to zero, and boom. I doubt that 0xfffff000
-is a sane address.
-
-Maybe this is something the the fs folks can spot directly? In the
-meantime I'll continue to dig...
-
-
-Thanks, and have a nice weeked!
-Bj=C3=B6rn
-
-
-[1] https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.8.y/build/v6=
-.8.4-281-g6d08df6c401e/testrun/23369914/suite/log-parser-test/tests/
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
