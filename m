@@ -1,294 +1,347 @@
-Return-Path: <linux-ext4+bounces-2055-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2056-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A9788A2794
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 09:07:09 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A2C38A2882
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 09:53:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B549C288082
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 07:07:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3FF9F286BBA
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 07:53:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 921F650A66;
-	Fri, 12 Apr 2024 07:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14ED94D9F0;
+	Fri, 12 Apr 2024 07:53:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="LLBXWU+8"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dZLBX1lD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2061.outbound.protection.outlook.com [40.107.237.61])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1C9847A6A;
-	Fri, 12 Apr 2024 07:03:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.61
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712905388; cv=fail; b=oakC+y6Nxq1m0023gmQ9HalgrZPfWda63e2GZoc2P4qP4zO12pBOF0SiUEiEj+sh0E3ZhOJdBKeniV/2kdYzbLF2WRrtcgRQa9horj4igbIW06Fu+O5ZphpE/Br0p7YKjIOwQzGM5dxzVOdy9ygD2m/XF+NEqy8DIFYXGNSj+7o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712905388; c=relaxed/simple;
-	bh=vrrOPxPnsD5MugYxTOl27CG5P5KN0cN+J0Omq6LaviY=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=uKDImimyXu5ETlro2mxYbNsabIi4vu3YdrM/BjbSU8WcoKZdWDxtx353xYt18XjwskO+/YlFV3HR055sA7KbTc5KrcxgFxwsn6EH1RMqvx7fvaWqL6HdaSMyojuYb1TAfh8NKpdvBmT7UekT4wpAJbJ4ibneoh8MUkCJzcC2rr0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=LLBXWU+8; arc=fail smtp.client-ip=40.107.237.61
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=HfLZXjF3oGm+jv5LxFifQEgsbXsoV8KERCG349O0BzC8XnI//sFFy3kZVmpDX09WX9pKEE2PSmFkplXcpUi6qt/aGZvHmx7pZJRAYAiVt8kd0uO9rsgNIT8sPzIhHnpF5FeAMI98N3zTjmvOoLRoduIdON+CuggX5JaISoV69kPrDWBVHG9oNQKnyVRaATTmFkR7WqrwLLqBh4BAEooDEobrR2TvgRrEIIW+C7/qgfvaoxnwK0QcJdCrLDyW1kMTTnH+cMWFoRBgNVH8CXn2VAdQkcVaXhzuKpdfgR4vl10pPKEPLl36ZgE/iRHmrjr+rq7lfEz02uJ/DUZucR9NfA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=HPdlyirbUElXOTD4vWRwifD/f73CKWirrEdF1g1xxF8=;
- b=ZtI51DbR3K7pt+ZlkVeB+g139igSeyp9s4585mDE0SI52zrqD3JEoCl4xIV2Q78v/S+TIEFyCPeGSsDjswT9pULFmsJmO40Ga/Smi1P7nd9fCy1S7vvHCKWuNuMzcInC+FaiEzKCbuSBdKiXTnfU/MdNX1o7hM1GtPhkK8Tlv1solAn53v66T9QwCJfZ34HLm3DCzhxA+sYsiauOlNXcnUfaZXB16HD0cBRzEmTqEDdCuwuqE3H0kdYc9ijOFya/z0dZGq6Q1ZmVX8aC9yXRgLH78HtG3RpPxAYBqSZsDCgB+vCIEwc0AhPnIWqGjwV5afQlFS/mMsuiTJMO5lzyZA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=HPdlyirbUElXOTD4vWRwifD/f73CKWirrEdF1g1xxF8=;
- b=LLBXWU+88KnL5Olhe+Qs1xan7N5s0NpnoIxIJsGH8JQ9PEPOhKSAfnNfHZ3l0xlK1KX0iDLv06LcgLJwL4sT0scXSxlvQJUWTIfqqak5CH4HWzfC/DO3AmhRh5TQOZAl5jXxG0It7dMrWb2l4BRIbH+6CuKd2FpVqBN0v8ogRnqLSMF3Q1KoYDsx5EYUOWjT1Mk36GXbmpF5RmR9yentlYsjuHUesEAzNfL3peYbPzr67Nj9l6gRx3EII1Tc/lemxdhLWeowGJGCO0u2qHgXK2/lIGIG3dNXhui5Qyw2GW7Exj2Dut5yU47M69QhkodorxR5lcagfgvS67eD5vxCFA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
- CY8PR12MB7194.namprd12.prod.outlook.com (2603:10b6:930:5a::19) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.55; Fri, 12 Apr 2024 07:02:59 +0000
-Received: from DS0PR12MB7726.namprd12.prod.outlook.com
- ([fe80::80b6:af9b:3a9a:9309]) by DS0PR12MB7726.namprd12.prod.outlook.com
- ([fe80::80b6:af9b:3a9a:9309%7]) with mapi id 15.20.7409.055; Fri, 12 Apr 2024
- 07:02:59 +0000
-References: <cover.fe275e9819458a4bbb9451b888cafb88af8867d4.1712796818.git-series.apopple@nvidia.com>
- <66181dd83f74e_15786294e8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <87frvr5has.fsf@nvdebian.thelocal>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Alistair Popple <apopple@nvidia.com>
-To: Alistair Popple <apopple@nvidia.com>
-Cc: Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
- david@fromorbit.com, jhubbard@nvidia.com, rcampbell@nvidia.com,
- willy@infradead.org, jgg@nvidia.com, linux-fsdevel@vger.kernel.org,
- jack@suse.cz, djwong@kernel.org, hch@lst.de, david@redhat.com,
- ruansy.fnst@fujitsu.com, nvdimm@lists.linux.dev,
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, jglisse@redhat.com
-Subject: Re: [RFC 00/10] fs/dax: Fix FS DAX page reference counts
-Date: Fri, 12 Apr 2024 16:55:31 +1000
-In-reply-to: <87frvr5has.fsf@nvdebian.thelocal>
-Message-ID: <877ch35ahu.fsf@nvdebian.thelocal>
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: SY6PR01CA0064.ausprd01.prod.outlook.com
- (2603:10c6:10:ea::15) To CY8PR12MB7705.namprd12.prod.outlook.com
- (2603:10b6:930:84::9)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D65B92E3FD;
+	Fri, 12 Apr 2024 07:53:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1712908393; cv=none; b=MCpaA25HkKXb8+Gut294PASFWlsc/Siiik93B7oIr6Kh2FpRJBlSsFmJv62vBQ3KipPsMu+dTyCN8soIx1J4oHAZIsPTOoQm6QuNEOY6Pyb9Z899ZM2SiscIe/WsbOuE6KfZl45ZRblbNnPutecHy94QDzINb2izrnSufLIUox4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1712908393; c=relaxed/simple;
+	bh=7AB25A/V09XlHNs7lPaNZ3EFvGY/JQHIdAe7QEQ2SD0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ciLF9xw8/Vth1WKA8+Gy7vc3/3+gbFdpc5kvDXKNZiPAyJTmZBLHGm8Asq9csgccdddSE52XSmqX/ss0DsyAzHsvFy15ff+KBz/GElP3t8ydGayS1YC0Mcali1h0F+EGptaM8FDX6Dvo588TVhEOVSqWpgkCvQmGqxTDN/nx7F0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dZLBX1lD; arc=none smtp.client-ip=209.85.160.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4347dadc2cfso3997901cf.3;
+        Fri, 12 Apr 2024 00:53:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1712908391; x=1713513191; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=sqcmPBebDiY4QLcoIlCZmHKpMW9s+14LtH6kQjNjSCg=;
+        b=dZLBX1lDFfFSbVBX2RYtLHVm3a8TyTl9iYAyMRppATZhTFH2oUUxFL12uMMVkdMp6i
+         cRNTOKRA0DbPQwRoUrc7I/ZJZqJneAFNk2EMvEP7PrBuIA4Q0fUxCSG0Z9BuYitIbSs/
+         p3zC2Bwj1h0xqsTP7edJOurnwDANtMW1geTqMtuTeTFi28MHrQjaLceHV0B9zkfOZX3p
+         ubxsNaHoZrwK6JgdtLFl+pxMIIl6dxQRWu21J1tqFajeMt3B2Df0H5/o/lbOsmFnH1ya
+         fGNzRMbZAOWCGLASh1xNbXcVL74MYKKKu4/7b2tdmEkwUqs21Xa2lY8eQzrZw6bJaZ8s
+         cjFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1712908391; x=1713513191;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=sqcmPBebDiY4QLcoIlCZmHKpMW9s+14LtH6kQjNjSCg=;
+        b=TZXytvQtyTu3PrDSh+Czl3kcAMFD+HDEIAY4nTy3GzPSi5+BS3s+9hCDrfxMIJ051c
+         eRU50eqjDemal37e0OVju6N2X/LCArSHK6l6GIcseP7nq3ARaTZkDJbLxwGykbsLjufQ
+         1v8OSA0wBnIW7PqBA6h+w3F/pZjRVIkexQ9Wbueq1QGrC+f7uu19AtjrmyIE25UPDxyf
+         bUN1xf65GlUUfcBIqdb2tP/zeCSYmv4ak5mRja9XldSh0BqzrukXfJGpMcDgUSbpkFOw
+         EuXdP2cPJOxDuVoXtC+gpe/ThgbwsiqlMEQRGFt3MiZwZjYcOEhwTSjoX1NyTraoUnUv
+         C6XQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNtbI7iK9YumH7Zn1p6gqlFvcef4eBhBBA8wrKUi5idoe61kNn042/OVJaIBiOHnhrG/KMbZd14svMpRBTvquZiBKW8ShSdqF/qr/X5hnIh8iVVOMblWDW702M2Omq+zI4cwsk6UP5K1EsHbAKtjWr5xJWTQaaHs4Q7V78Axz4U8CLCyMWArs=
+X-Gm-Message-State: AOJu0Yw14NC2QYMoxqObw/nBN3OeLCzdnA47IId/L4pyVqUst3mv118c
+	p/2DXWjHrlPTypt4JqWHqXkeH4/YGVVlc7QRwbYFOWokEUt4egO1vJPlNVEOyVZjQB9+dRZs50M
+	MXPSE5gO5yJFnu3iKPg8Jhnf4Eiw=
+X-Google-Smtp-Source: AGHT+IFpqZiQTFT2ho41y9YKmKKL18+nC7uhM5EXxW4vHfIUzGSQevTZi1rkMbcHClmFb+FhhvNVaXfiAfEct7nXv+A=
+X-Received: by 2002:ac8:6210:0:b0:436:8612:ba21 with SMTP id
+ ks16-20020ac86210000000b004368612ba21mr1448815qtb.68.1712908390559; Fri, 12
+ Apr 2024 00:53:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|CY8PR12MB7194:EE_
-X-MS-Office365-Filtering-Correlation-Id: 1e460ca0-f880-427d-33b6-08dc5abe95a8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	ft9XzJ5ZJ2rRlUVlF475wSn43Fbu/PyNMlNgXBrCT0cbFFBhHKhSZHEJnAUJ3XHFl++wu/PUme/7xnz4TP6BMXzGL0ZA6K8YmXDgAeCl5G8CafO7FNV4PH9Tks9r/W1YXOpQbK5GDI5b5YTkkh4K7r9xQuLBKH8hMuA9+0oM5NQ0HQ6LzZM+8skyoyfbVX7+2PDAJfmtlRNV3BhHWUXV3s0vpnWwtc680/RC8E6ULQc0VWgrTA4bdIfpXk3vqD6VYE0O1iV1Q/dSkZ/FoWsOHb/XlBMJVndo/p2ezVmIMO7gA4lfoVLYGpDz5J45PFcWljVTVkxxS0zl615E58nD6SJMy2wDXSc/62GnMCaA7GKYWzcW05JT1YhOl2ezNX2T6EBIogvKNZlpK3NexzDaDZHIcOHHZlUlQW2ZNETFo4AdATM0MQ5cqJjVKxnWZ7FQkY3MG4pUvnI0U8ZZ8jiJNhBWe5CBAO9cx+fPqpFIoryjnU5voZ9L+B5EqNyqK2+aDcDuwLulgGcEpIN0da/vARBAAkqhlc39xcDwivhdgzPdKu4QsXjnnR/AeuQqsGl32fcrl6Q6LfoEvLcTCXuVYP9p+pkY2oVuOWiIbaB4b6k8sWmh3Og39/SI4OAWd3Ekht62298N82yEOCDQ9bLa1dmdilhcM5W3Jxpv/GMCo8M=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(7416005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bHdBR0xjeks2QmMyRXN2UFd5ZzkySHJHV2NURXFOV3E1Z3Y3bDBSVFBpVDlU?=
- =?utf-8?B?bmJKVG5RaTU1S3N0d1pBQUJXYlBQK0RsSGRTR2NNaGlEd0tBQTdqUURTNEJQ?=
- =?utf-8?B?TElpYzJHaEwyeUdaeWxOWTkvaDJ3akgwakx2VnJFWUFhanR3RWQySUdrVVIv?=
- =?utf-8?B?T3UrUFd6WlRjQ1pnUlRYNVNmYU5Tc0ZJMjMrWmlXbENXdjN0ZjQwcE5IVnox?=
- =?utf-8?B?b3E3L1YyTFZtem1RQTNIWTVFaHhmeURHQWtXM3FlUndDbnlHSHlpbDBKOFZE?=
- =?utf-8?B?UEVZRlNHQWUyYVJzTTJYbDM0MithdUJCeStaTFhqek1HeXpmRE5BVlc0Ull4?=
- =?utf-8?B?eVBoOFEyMGphM3pNaUorbHkxaFE1bU45UDZmNHBGSk9QbW5aZkRGUDlCTWc2?=
- =?utf-8?B?RDllZUZYTHFncEZwYjFob3JKc1I5T2pNcnA4VmFFLzBBTUV1UlFaeUFkTFdP?=
- =?utf-8?B?cTlZbExWTFZrVzB3UnMwT1NLZnk4RDA4cEdWdHRtYjNlNW5qQ0pBdnpuVmN1?=
- =?utf-8?B?d21scUdKbWxNT1JYMkc0aFA4M1BmQWNHK2pnL0tlY3pVb2ozbVBvR3NXNjl1?=
- =?utf-8?B?UWx1blppVG1sS3FmYmt5aWZTbjBJQ2VHc2pxRldKYmp1UzhJdktxNDZYbEFD?=
- =?utf-8?B?bkZ1SGtNM0xNTGZYVUpHekdUWjhTOUwya2J4WnJySnEvOGcwQkJBOFRjNTdO?=
- =?utf-8?B?eHkybERJOUxCdzhHN2U0TlluTEF2bXJaY3lSUTdBUG92U24rTm1DQlBEdFdw?=
- =?utf-8?B?Y285UDVQMHFaQWV2U3psWUhOYy9SWVlnVkgzb2VuSnZuNzcrYVp3LzRPWUhV?=
- =?utf-8?B?S0lJMFRJc0FjYVVUUzYzcUl4dXVkZUpmY1Voc3BHa1ljaEhXY2F4ajZEeURl?=
- =?utf-8?B?QmVZTGpndUFuaXl6SVBBSFVrWkhMWUlaN3BBTy9Da3NQaVR1bWp5VmxDNHJ0?=
- =?utf-8?B?d1FibHh3TDBaRzlOWjlHcUh6bHhNSW1sa256Si9laHU0dzg5VkVIK04rL3JB?=
- =?utf-8?B?Z3czTUwrTUQyeFZOdXdmV0puYXVuV3QzOGdqd1g5V3JVSlZUeklIZ1RwV2xW?=
- =?utf-8?B?d1BWU20wUytabmR4QkRqUHJObkVJemJYbFJWbzVBR09hREs5Sy9iUnE4NjU5?=
- =?utf-8?B?clZyd2JCSmR6REJvVkpOU3h1dW4yck9EbTRWYUVRUkFrbVFVekJ6dnIwcDJz?=
- =?utf-8?B?VW1rdmNJazhWQk9ab1BKV1o0alpKVTFXdTFyUERNUGlWL0VmVWNCR1RGcE1C?=
- =?utf-8?B?RXJOclVlM21OcUovSWhaN2pxREtGY0JyMGpPeWpXWkQrMjQ1VG1XSEV0MkRB?=
- =?utf-8?B?dGxCdnpmRzR3bFdXdlEyWFYzdzVGYUdSRFNaQ1lsKzk1ZkMyaHlPUmQwOS9l?=
- =?utf-8?B?Si9NSUFUbkI3dnNtdno5Sm5CYXh1TTA0c3ZRSHAyWjBiQWkyUjE2eXBmSlhW?=
- =?utf-8?B?ZlJuOExhTmc1QW1WWVlQSTBCWTlWTjBlWUtoU0h4b3NlcFIva3ZXb2pEVSty?=
- =?utf-8?B?R1NSWW41QkJVVnZQRnlHTDA4SDdEVklZNDFvM0podE1XVW5GZDhFdHRKREZ2?=
- =?utf-8?B?bXVVZ0JHOTZnY2huYXBMaVMwZEFldlV1aFY3RkpDMUE1bUZiVURZZU44MXlE?=
- =?utf-8?B?Y3dCSUFTN0JKdzdQT0VuTElNalFQeE81cWhpVHRXYnpObnhkRi8vcWdYMG9S?=
- =?utf-8?B?MklFTGxXK2ZqRzZidVBDZEtqSFlpY1cwd2s0b0NJVERVSzd4OWZFeTVzcmtX?=
- =?utf-8?B?K3F5NmdjbXAweGovSkhZU1NmZWh5aVdlWkE5eWQyM2djUUU4NWNySzVaVlQz?=
- =?utf-8?B?bjI2Y0FIQU05dVNtT2RDY3hIeWk1N0lKQjB6ci9RTUszd1dEK3p0Snp0cFEw?=
- =?utf-8?B?Y3ZIc2dnTmt3RWNtVmh0TmUyOHFhWHg4NG0zZVdjYXJ0T2kxQW9UQ2pabVpP?=
- =?utf-8?B?MmNzV0tsckR2SURIRUVIMnc3VzUwTFZIZW05RWVDcWhGbDcwYjlVMEMyZXVy?=
- =?utf-8?B?V0diUFAxcWwwMC9vQXBZbnY3RmlKMEI4bnBsc2EvVUFYRktwT0gzK2luZ0Fm?=
- =?utf-8?B?Ym1LT3NFZmlGTmRFNWZicEpjMmFHQUh0cm9mVXovdThoa1lJMWh6OW5EQW5C?=
- =?utf-8?Q?BRrxtVxclUfPAJPS6gV7LejF1?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 1e460ca0-f880-427d-33b6-08dc5abe95a8
-X-MS-Exchange-CrossTenant-AuthSource: CY8PR12MB7705.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 12 Apr 2024 07:02:58.9117
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: s2/65vmx2oXqtBMkUi01YCbuSolMN0aGFX8qpS0sqbneGtiFlvWS91NyZ8keY1BVveMkaVIQ2H+XHeTFMQ4mfQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR12MB7194
+References: <CAOQ4uxi9L_Rs7q=fcLGqJMx15jLAArOWGwGfdCL8LOUCPR3L+w@mail.gmail.com>
+ <0000000000003b04040615d7afde@google.com>
+In-Reply-To: <0000000000003b04040615d7afde@google.com>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Fri, 12 Apr 2024 10:52:59 +0300
+Message-ID: <CAOQ4uxjY_On6FkkR1YHT2TSUhq=JX2X9ChPg9XgjJuQoAZ3hzg@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] KASAN: slab-use-after-free Read in fsnotify
+To: syzbot <syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com>
+Cc: jack@suse.cz, krisman@suse.de, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	repnop@google.com, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Thu, Apr 11, 2024 at 11:06=E2=80=AFPM syzbot
+<syzbot+5e3f9b2a67b45f16d4e6@syzkaller.appspotmail.com> wrote:
+>
+> Hello,
+>
+> syzbot tried to test the proposed patch but the build/boot failed:
+>
+> viperboard
+> [    7.499011][    T1] usbcore: registered new interface driver dln2
+> [    7.500804][    T1] usbcore: registered new interface driver pn533_usb
+> [    7.507181][    T1] nfcsim 0.2 initialized
+> [    7.508964][    T1] usbcore: registered new interface driver port100
+> [    7.511844][    T1] usbcore: registered new interface driver nfcmrvl
+> [    7.519814][    T1] Loading iSCSI transport class v2.0-870.
+> [    7.539126][    T1] virtio_scsi virtio0: 1/0/0 default/read/poll queue=
+s
+> [    7.550224][    T1] ------------[ cut here ]------------
+> [    7.551264][    T1] refcount_t: decrement hit 0; leaking memory.
+> [    7.552627][    T1] WARNING: CPU: 0 PID: 1 at lib/refcount.c:31 refcou=
+nt_warn_saturate+0xfa/0x1d0
+> [    7.554218][    T1] Modules linked in:
+> [    7.554791][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc=
+3-syzkaller-00014-geb06a4b6cca5 #0
+> [    7.556609][    T1] Hardware name: Google Google Compute Engine/Google=
+ Compute Engine, BIOS Google 03/27/2024
+> [    7.558128][    T1] RIP: 0010:refcount_warn_saturate+0xfa/0x1d0
+> [    7.559937][    T1] Code: b2 00 00 00 e8 87 70 e7 fc 5b 5d c3 cc cc cc=
+ cc e8 7b 70 e7 fc c6 05 0c 5d e5 0a 01 90 48 c7 c7 40 4b 1f 8c e8 17 ee a9=
+ fc 90 <0f> 0b 90 90 eb d9 e8 5b 70 e7 fc c6 05 e9 5c e5 0a 01 90 48 c7 c7
+> [    7.563097][    T1] RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
+> [    7.564240][    T1] RAX: 6f40bd285f2a6000 RBX: ffff888147ed00fc RCX: f=
+fff8880166d0000
+> [    7.565743][    T1] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0=
+000000000000000
+> [    7.567236][    T1] RBP: 0000000000000004 R08: ffffffff815800a2 R09: f=
+ffffbfff1c39af8
+> [    7.568531][    T1] R10: dffffc0000000000 R11: fffffbfff1c39af8 R12: f=
+fffea000503edc0
+> [    7.570021][    T1] R13: ffffea000503edc8 R14: 1ffffd4000a07db9 R15: 0=
+000000000000000
+> [    7.571764][    T1] FS:  0000000000000000(0000) GS:ffff8880b9400000(00=
+00) knlGS:0000000000000000
+> [    7.573270][    T1] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    7.574232][    T1] CR2: ffff88823ffff000 CR3: 000000000e134000 CR4: 0=
+0000000003506f0
+> [    7.575566][    T1] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0=
+000000000000000
+> [    7.576737][    T1] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0=
+000000000000400
+> [    7.578004][    T1] Call Trace:
+> [    7.578712][    T1]  <TASK>
+> [    7.579189][    T1]  ? __warn+0x163/0x4e0
+> [    7.580052][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
+> [    7.580896][    T1]  ? report_bug+0x2b3/0x500
+> [    7.581593][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
+> [    7.582383][    T1]  ? handle_bug+0x3e/0x70
+> [    7.583169][    T1]  ? exc_invalid_op+0x1a/0x50
+> [    7.584335][    T1]  ? asm_exc_invalid_op+0x1a/0x20
+> [    7.585285][    T1]  ? __warn_printk+0x292/0x360
+> [    7.586058][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
+> [    7.586882][    T1]  ? refcount_warn_saturate+0xf9/0x1d0
+> [    7.587666][    T1]  __free_pages_ok+0xc60/0xd90
+> [    7.588339][    T1]  make_alloc_exact+0xa3/0xf0
+> [    7.589220][    T1]  vring_alloc_queue_split+0x20a/0x600
+> [    7.590378][    T1]  ? __pfx_vring_alloc_queue_split+0x10/0x10
+> [    7.591429][    T1]  ? vp_find_vqs+0x4c/0x4e0
+> [    7.592174][    T1]  ? virtscsi_probe+0x3ea/0xf60
+> [    7.592853][    T1]  ? virtio_dev_probe+0x991/0xaf0
+> [    7.593892][    T1]  ? really_probe+0x2b8/0xad0
+> [    7.594581][    T1]  ? driver_probe_device+0x50/0x430
+> [    7.595325][    T1]  vring_create_virtqueue_split+0xc6/0x310
+> [    7.596200][    T1]  ? ret_from_fork+0x4b/0x80
+> [    7.597705][    T1]  ? __pfx_vring_create_virtqueue_split+0x10/0x10
+> [    7.599051][    T1]  vring_create_virtqueue+0xca/0x110
+> [    7.599905][    T1]  ? __pfx_vp_notify+0x10/0x10
+> [    7.600626][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.601770][    T1]  setup_vq+0xe9/0x2d0
+> [    7.602429][    T1]  ? __pfx_vp_notify+0x10/0x10
+> [    7.603153][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.604003][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.604758][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.605623][    T1]  vp_setup_vq+0xbf/0x330
+> [    7.606388][    T1]  ? __pfx_vp_config_changed+0x10/0x10
+> [    7.607239][    T1]  ? ioread16+0x2f/0x90
+> [    7.608129][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.609047][    T1]  vp_find_vqs_msix+0x8b2/0xc80
+> [    7.609880][    T1]  vp_find_vqs+0x4c/0x4e0
+> [    7.610578][    T1]  virtscsi_init+0x8db/0xd00
+> [    7.611247][    T1]  ? __pfx_virtscsi_init+0x10/0x10
+> [    7.612058][    T1]  ? __pfx_default_calc_sets+0x10/0x10
+> [    7.612860][    T1]  ? scsi_host_alloc+0xa57/0xea0
+> [    7.613671][    T1]  ? vp_get+0xfd/0x140
+> [    7.614243][    T1]  virtscsi_probe+0x3ea/0xf60
+> [    7.614969][    T1]  ? __pfx_virtscsi_probe+0x10/0x10
+> [    7.615847][    T1]  ? kernfs_add_one+0x156/0x8b0
+> [    7.616678][    T1]  ? virtio_no_restricted_mem_acc+0x9/0x10
+> [    7.617627][    T1]  ? virtio_features_ok+0x10c/0x270
+> [    7.618392][    T1]  virtio_dev_probe+0x991/0xaf0
+> [    7.619262][    T1]  ? __pfx_virtio_dev_probe+0x10/0x10
+> [    7.620216][    T1]  really_probe+0x2b8/0xad0
+> [    7.621124][    T1]  __driver_probe_device+0x1a2/0x390
+> [    7.621980][    T1]  driver_probe_device+0x50/0x430
+> [    7.622710][    T1]  __driver_attach+0x45f/0x710
+> [    7.623413][    T1]  ? __pfx___driver_attach+0x10/0x10
+> [    7.624299][    T1]  bus_for_each_dev+0x239/0x2b0
+> [    7.625118][    T1]  ? __pfx___driver_attach+0x10/0x10
+> [    7.625993][    T1]  ? __pfx_bus_for_each_dev+0x10/0x10
+> [    7.626858][    T1]  ? do_raw_spin_unlock+0x13c/0x8b0
+> [    7.627837][    T1]  bus_add_driver+0x347/0x620
+> [    7.628735][    T1]  driver_register+0x23a/0x320
+> [    7.629982][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
+> [    7.631006][    T1]  virtio_scsi_init+0x65/0xe0
+> [    7.631802][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
+> [    7.632612][    T1]  do_one_initcall+0x248/0x880
+> [    7.633404][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
+> [    7.634540][    T1]  ? __pfx_do_one_initcall+0x10/0x10
+> [    7.635786][    T1]  ? lockdep_hardirqs_on_prepare+0x43d/0x780
+> [    7.636889][    T1]  ? __pfx_parse_args+0x10/0x10
+> [    7.637652][    T1]  ? do_initcalls+0x1c/0x80
+> [    7.638456][    T1]  ? rcu_is_watching+0x15/0xb0
+> [    7.639227][    T1]  do_initcall_level+0x157/0x210
+> [    7.640192][    T1]  do_initcalls+0x3f/0x80
+> [    7.640818][    T1]  kernel_init_freeable+0x435/0x5d0
+> [    7.641593][    T1]  ? __pfx_kernel_init_freeable+0x10/0x10
+> [    7.642546][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
+> [    7.643506][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.644295][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.645313][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.646036][    T1]  kernel_init+0x1d/0x2b0
+> [    7.646660][    T1]  ret_from_fork+0x4b/0x80
+> [    7.647368][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.648542][    T1]  ret_from_fork_asm+0x1a/0x30
+> [    7.649812][    T1]  </TASK>
+> [    7.650346][    T1] Kernel panic - not syncing: kernel: panic_on_warn =
+set ...
+> [    7.651620][    T1] CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.9.0-rc=
+3-syzkaller-00014-geb06a4b6cca5 #0
+> [    7.653389][    T1] Hardware name: Google Google Compute Engine/Google=
+ Compute Engine, BIOS Google 03/27/2024
+> [    7.655321][    T1] Call Trace:
+> [    7.655801][    T1]  <TASK>
+> [    7.656252][    T1]  dump_stack_lvl+0x241/0x360
+> [    7.657006][    T1]  ? __pfx_dump_stack_lvl+0x10/0x10
+> [    7.657825][    T1]  ? __pfx__printk+0x10/0x10
+> [    7.658542][    T1]  ? _printk+0xd5/0x120
+> [    7.659343][    T1]  ? vscnprintf+0x5d/0x90
+> [    7.659705][    T1]  panic+0x349/0x860
+> [    7.659705][    T1]  ? __warn+0x172/0x4e0
+> [    7.659705][    T1]  ? __pfx_panic+0x10/0x10
+> [    7.659705][    T1]  ? show_trace_log_lvl+0x4e6/0x520
+> [    7.659705][    T1]  ? ret_from_fork_asm+0x1a/0x30
+> [    7.659705][    T1]  __warn+0x346/0x4e0
+> [    7.659705][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
+> [    7.659705][    T1]  report_bug+0x2b3/0x500
+> [    7.659705][    T1]  ? refcount_warn_saturate+0xfa/0x1d0
+> [    7.659705][    T1]  handle_bug+0x3e/0x70
+> [    7.659705][    T1]  exc_invalid_op+0x1a/0x50
+> [    7.659705][    T1]  asm_exc_invalid_op+0x1a/0x20
+> [    7.659705][    T1] RIP: 0010:refcount_warn_saturate+0xfa/0x1d0
+> [    7.659705][    T1] Code: b2 00 00 00 e8 87 70 e7 fc 5b 5d c3 cc cc cc=
+ cc e8 7b 70 e7 fc c6 05 0c 5d e5 0a 01 90 48 c7 c7 40 4b 1f 8c e8 17 ee a9=
+ fc 90 <0f> 0b 90 90 eb d9 e8 5b 70 e7 fc c6 05 e9 5c e5 0a 01 90 48 c7 c7
+> [    7.659705][    T1] RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
+> [    7.659705][    T1] RAX: 6f40bd285f2a6000 RBX: ffff888147ed00fc RCX: f=
+fff8880166d0000
+> [    7.659705][    T1] RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0=
+000000000000000
+> [    7.659705][    T1] RBP: 0000000000000004 R08: ffffffff815800a2 R09: f=
+ffffbfff1c39af8
+> [    7.659705][    T1] R10: dffffc0000000000 R11: fffffbfff1c39af8 R12: f=
+fffea000503edc0
+> [    7.659705][    T1] R13: ffffea000503edc8 R14: 1ffffd4000a07db9 R15: 0=
+000000000000000
+> [    7.659705][    T1]  ? __warn_printk+0x292/0x360
+> [    7.659705][    T1]  ? refcount_warn_saturate+0xf9/0x1d0
+> [    7.659705][    T1]  __free_pages_ok+0xc60/0xd90
+> [    7.659705][    T1]  make_alloc_exact+0xa3/0xf0
+> [    7.659705][    T1]  vring_alloc_queue_split+0x20a/0x600
+> [    7.659705][    T1]  ? __pfx_vring_alloc_queue_split+0x10/0x10
+> [    7.659705][    T1]  ? vp_find_vqs+0x4c/0x4e0
+> [    7.659705][    T1]  ? virtscsi_probe+0x3ea/0xf60
+> [    7.659705][    T1]  ? virtio_dev_probe+0x991/0xaf0
+> [    7.659705][    T1]  ? really_probe+0x2b8/0xad0
+> [    7.659705][    T1]  ? driver_probe_device+0x50/0x430
+> [    7.659705][    T1]  vring_create_virtqueue_split+0xc6/0x310
+> [    7.659705][    T1]  ? ret_from_fork+0x4b/0x80
+> [    7.659705][    T1]  ? __pfx_vring_create_virtqueue_split+0x10/0x10
+> [    7.659705][    T1]  vring_create_virtqueue+0xca/0x110
+> [    7.659705][    T1]  ? __pfx_vp_notify+0x10/0x10
+> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.659705][    T1]  setup_vq+0xe9/0x2d0
+> [    7.659705][    T1]  ? __pfx_vp_notify+0x10/0x10
+> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.659705][    T1]  vp_setup_vq+0xbf/0x330
+> [    7.659705][    T1]  ? __pfx_vp_config_changed+0x10/0x10
+> [    7.659705][    T1]  ? ioread16+0x2f/0x90
+> [    7.659705][    T1]  ? __pfx_virtscsi_ctrl_done+0x10/0x10
+> [    7.709861][    T1]  vp_find_vqs_msix+0x8b2/0xc80
+> [    7.709861][    T1]  vp_find_vqs+0x4c/0x4e0
+> [    7.709861][    T1]  virtscsi_init+0x8db/0xd00
+> [    7.709861][    T1]  ? __pfx_virtscsi_init+0x10/0x10
+> [    7.709861][    T1]  ? __pfx_default_calc_sets+0x10/0x10
+> [    7.709861][    T1]  ? scsi_host_alloc+0xa57/0xea0
+> [    7.709861][    T1]  ? vp_get+0xfd/0x140
+> [    7.709861][    T1]  virtscsi_probe+0x3ea/0xf60
+> [    7.709861][    T1]  ? __pfx_virtscsi_probe+0x10/0x10
+> [    7.709861][    T1]  ? kernfs_add_one+0x156/0x8b0
+> [    7.709861][    T1]  ? virtio_no_restricted_mem_acc+0x9/0x10
+> [    7.709861][    T1]  ? virtio_features_ok+0x10c/0x270
+> [    7.709861][    T1]  virtio_dev_probe+0x991/0xaf0
+> [    7.709861][    T1]  ? __pfx_virtio_dev_probe+0x10/0x10
+> [    7.709861][    T1]  really_probe+0x2b8/0xad0
+> [    7.709861][    T1]  __driver_probe_device+0x1a2/0x390
+> [    7.709861][    T1]  driver_probe_device+0x50/0x430
+> [    7.709861][    T1]  __driver_attach+0x45f/0x710
+> [    7.709861][    T1]  ? __pfx___driver_attach+0x10/0x10
+> [    7.709861][    T1]  bus_for_each_dev+0x239/0x2b0
+> [    7.709861][    T1]  ? __pfx___driver_attach+0x10/0x10
+> [    7.709861][    T1]  ? __pfx_bus_for_each_dev+0x10/0x10
+> [    7.709861][    T1]  ? do_raw_spin_unlock+0x13c/0x8b0
+> [    7.709861][    T1]  bus_add_driver+0x347/0x620
+> [    7.709861][    T1]  driver_register+0x23a/0x320
+> [    7.709861][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
+> [    7.709861][    T1]  virtio_scsi_init+0x65/0xe0
+> [    7.709861][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
+> [    7.709861][    T1]  do_one_initcall+0x248/0x880
+> [    7.709861][    T1]  ? __pfx_virtio_scsi_init+0x10/0x10
+> [    7.709861][    T1]  ? __pfx_do_one_initcall+0x10/0x10
+> [    7.709861][    T1]  ? lockdep_hardirqs_on_prepare+0x43d/0x780
+> [    7.709861][    T1]  ? __pfx_parse_args+0x10/0x10
+> [    7.709861][    T1]  ? do_initcalls+0x1c/0x80
+> [    7.709861][    T1]  ? rcu_is_watching+0x15/0xb0
+> [    7.709861][    T1]  do_initcall_level+0x157/0x210
+> [    7.709861][    T1]  do_initcalls+0x3f/0x80
+> [    7.709861][    T1]  kernel_init_freeable+0x435/0x5d0
+> [    7.709861][    T1]  ? __pfx_kernel_init_freeable+0x10/0x10
+> [    7.709861][    T1]  ? __pfx_lockdep_hardirqs_on_prepare+0x10/0x10
+> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.709861][    T1]  kernel_init+0x1d/0x2b0
+> [    7.709861][    T1]  ret_from_fork+0x4b/0x80
+> [    7.709861][    T1]  ? __pfx_kernel_init+0x10/0x10
+> [    7.709861][    T1]  ret_from_fork_asm+0x1a/0x30
+> [    7.709861][    T1]  </TASK>
+> [    7.709861][    T1] Kernel Offset: disabled
+> [    7.709861][    T1] Rebooting in 86400 seconds..
+>
+>
 
-Alistair Popple <apopple@nvidia.com> writes:
+Not sure what this is about.
+Let's try again after rebase to current master:
 
-> Dan Williams <dan.j.williams@intel.com> writes:
->
->> Alistair Popple wrote:
->>> FS DAX pages have always maintained their own page reference counts
->>> without following the normal rules for page reference counting. In
->>> particular pages are considered free when the refcount hits one rather
->>> than zero and refcounts are not added when mapping the page.
->>
->>> Tracking this requires special PTE bits (PTE_DEVMAP) and a secondary
->>> mechanism for allowing GUP to hold references on the page (see
->>> get_dev_pagemap). However there doesn't seem to be any reason why FS
->>> DAX pages need their own reference counting scheme.
->>
->> This is fair. However, for anyone coming in fresh to this situation
->> maybe some more "how we get here" history helps. That longer story is
->> here:
->>
->> http://lore.kernel.org/all/166579181584.2236710.17813547487183983273.stg=
-it@dwillia2-xfh.jf.intel.com/
->
-> Good idea.
->
->>> This RFC is an initial attempt at removing the special reference
->>> counting and instead refcount FS DAX pages the same as normal pages.
->>>=20
->>> There are still a couple of rough edges - in particular I haven't
->>> completely removed the devmap PTE bit references from arch specific
->>> code and there is probably some more cleanup of dev_pagemap reference
->>> counting that could be done, particular in mm/gup.c. I also haven't
->>> yet compiled on anything other than x86_64.
->>>=20
->>> Before continuing further with this clean-up though I would appreciate
->>> some feedback on the viability of this approach and any issues I may
->>> have overlooked, as I am not intimately familiar with FS DAX code (or
->>> for that matter the FS layer in general).
->>>=20
->>> I have of course run some basic testing which didn't reveal any
->>> problems.
->>
->> FWIW I see the following with the ndctl/dax test-suite (double-checked
->> that vanilla v6.6 passes). I will take a look at the patches, but in the
->> meantime...
->
-> Hmmm...
->
->> # meson test -C build --suite ndctl:dax
->> ninja: no work to do.
->> ninja: Entering directory `/root/git/ndctl/build'
->> [1/70] Generating version.h with a custom command
->>  1/13 ndctl:dax / daxdev-errors.sh          OK              14.46s
->>  2/13 ndctl:dax / multi-dax.sh              OK               2.70s
->>  3/13 ndctl:dax / sub-section.sh            OK               7.21s
->>  4/13 ndctl:dax / dax-dev                   OK               0.08s
->> [5/13] =F0=9F=8C=96 ndctl:dax / dax-ext4.sh                            0=
-/600s
->
-> ...thanks for pasting that output. Turns out I didn't have destructive
-> testing enabled during the build so hadn't noticed these tests were not
-> running. It would be nice if these were reported as skipped when not
-> enabled rather than hidden.
->
-> With that fixed I'm seeing a couple of kernel warnings (and I think I
-> know why), so it might be worth holding off looking at this too closely
-> until I've fixed these.
+#syz test: https://github.com/amir73il/linux fsnotify-fixes
 
-Ok, I think I found the dragons you were talking about earlier for
-device-dax. I completely broke that because as you've already pointed
-out pmd_trans_huge() won't filter out DAX pages. That's fine for FS DAX
-(because the pages are essentially normal pages now anyway), but we
-don't have a PMD equivalent of vm_normal_page() which leads to all sorts
-of issues for DEVDAX.
-
-So I will probably have to add something like that unless we only need
-to support large (pmd/pud) mappings of DEVDAX pages on systems with
-CONFIG_ARCH_HAS_PTE_SPECIAL in which case I guess we could just filter
-based on pte_special().
-
->> ...that last test crashed with:
->>
->>  EXT4-fs (pmem0): mounted filesystem 2adea02a-a791-4714-be40-125afd16634=
-b r/w with ordered
->> ota mode: none.
->>  page:ffffea0005f00000 refcount:0 mapcount:0 mapping:ffff8882a8a6be10 in=
-dex:0x5800 pfn:0x1
->>
->>  head:ffffea0005f00000 order:9 entire_mapcount:0 nr_pages_mapped:0 pinco=
-unt:0
->>  aops:ext4_dax_aops ino:c dentry name:"image"
->>  flags: 0x4ffff800004040(reserved|head|node=3D0|zone=3D4|lastcpupid=3D0x=
-1ffff)
->>  page_type: 0xffffffff()
->>  raw: 004ffff800004040 ffff888202681520 0000000000000000 ffff8882a8a6be1=
-0
->>  raw: 0000000000005800 0000000000000000 00000000ffffffff 000000000000000=
-0
->>  page dumped because: VM_BUG_ON_FOLIO(((unsigned int) folio_ref_count(fo=
-lio) + 127u <=3D 127
->>
->>  ------------[ cut here ]------------
->>  kernel BUG at include/linux/mm.h:1419!
->>  invalid opcode: 0000 [#1] PREEMPT SMP PTI
->>  CPU: 0 PID: 1415 Comm: dax-pmd Tainted: G           OE    N 6.6.0+ #209
->>  Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS edk2-20230524-=
-3.fc38 05/24/2023
->>  RIP: 0010:dax_insert_pfn_pmd+0x41c/0x430
->>  Code: 89 c1 41 b8 01 00 00 00 48 89 ea 4c 89 e6 4c 89 f7 e8 18 8a c7 ff=
- e9 e0 fc ff ff 48
->> c b3 48 89 c7 e8 a4 53 f7 ff <0f> 0b e8 0d ba a8 00 48 8b 15 86 8a 62 01=
- e9 89 fc ff ff 90
->>
->>  RSP: 0000:ffffc90001d57b68 EFLAGS: 00010246
->>  RAX: 000000000000005c RBX: ffffea0005f00000 RCX: 0000000000000000
->>  RDX: 0000000000000000 RSI: ffffffffb3749a15 RDI: 00000000ffffffff
->>  RBP: ffff8882982c07e0 R08: 00000000ffffdfff R09: 0000000000000001
->>  R10: 00000000ffffdfff R11: ffffffffb3a771c0 R12: 800000017c0008e7
->>  R13: 8000000000000025 R14: ffff888202a395f8 R15: ffffea0005f00000
->>  FS:  00007fdaa00e3d80(0000) GS:ffff888477000000(0000) knlGS:00000000000=
-00000
->>  CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
->>  CR2: 00007fda9f800000 CR3: 0000000296224000 CR4: 00000000000006f0
->>  DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
->>  DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
->>  Call Trace:
->>   <TASK>
->>   ? die+0x32/0x80
->>   ? do_trap+0xd6/0x100
->>   ? dax_insert_pfn_pmd+0x41c/0x430
->>   ? dax_insert_pfn_pmd+0x41c/0x430
->>   ? do_error_trap+0x81/0x110
->>   ? dax_insert_pfn_pmd+0x41c/0x430
->>   ? exc_invalid_op+0x4c/0x60
->>   ? dax_insert_pfn_pmd+0x41c/0x430
->>   ? asm_exc_invalid_op+0x16/0x20
->>   ? dax_insert_pfn_pmd+0x41c/0x430
->>   ? dax_insert_pfn_pmd+0x41c/0x430
->>   dax_fault_iter+0x5d0/0x700
->>   dax_iomap_pmd_fault+0x212/0x450
->>   ext4_dax_huge_fault+0x1dc/0x470
->>   __handle_mm_fault+0x808/0x13e0
->>   handle_mm_fault+0x178/0x3e0
->>   do_user_addr_fault+0x186/0x830
->>   exc_page_fault+0x6f/0x1d0
->>   asm_exc_page_fault+0x22/0x30
->>  RIP: 0033:0x7fdaa072d009
-
+Thanks,
+Amir.
 
