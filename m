@@ -1,174 +1,138 @@
-Return-Path: <linux-ext4+bounces-2072-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2073-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B5A8A3A21
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 03:30:45 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BE108A3B08
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 06:36:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDA191F22C13
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 01:30:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D052A1C22A8E
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 04:36:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96720FBEA;
-	Sat, 13 Apr 2024 01:30:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 359771802B;
+	Sat, 13 Apr 2024 04:36:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="TbnQtMH6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A034C97;
-	Sat, 13 Apr 2024 01:30:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85F7B746E
+	for <linux-ext4@vger.kernel.org>; Sat, 13 Apr 2024 04:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712971829; cv=none; b=kX24NzR4fn61zW9qFw3L/EvK3IIhi9Dtp4SLnYO3bttovQ8YaSnQyUezD/pS1kvwSmTMwy/PQvXQ3qA4f32/LuTpq2iqAgAl4ydfpsMWGX0MrY8+akaQjUCnpNZZ2KIHqN9ZyOjmbtt5dZWh5jjBTtiAPAh8RnKB6oxT8k9LKeI=
+	t=1712982979; cv=none; b=N/ipVeuhFxj7PVWYOtPXwqc6NlJOITpPHSrbKtYOoZ0/SbEolmUhZ+LWkbnm3hdA+Ve3WmaAX2HAyY/ucWGa3ky4n/ECNsnZBsK3RYAQuUxncNDL5G4DA2WxpWrHg6fu8Fx6nHHvo6ANlj5RPfebeestrfbdphRJU/SvcD2x9QM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712971829; c=relaxed/simple;
-	bh=uAF58WQTwC70AQ4e42dMPhlqM+08OPyMWwp4j46ePBw=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f1va6SUpX6V+FNKDT/KzBJ5OT5krpVaGH4XjnpyOOjf+SSTlp+cv4J54AZv6s1SuzrWBt/IdGEpdHa21LB/Jv+Av6syAbHQ4GHhm9MdLufz+QkaA32NEqOzHr7zrnKG69Tsmlw1jYmCwhB+v0U5eZkgoyqzzKOxYoVTPR46TqEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VGbQK4bmKz1hwV8;
-	Sat, 13 Apr 2024 09:27:21 +0800 (CST)
-Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
-	by mail.maildlp.com (Postfix) with ESMTPS id A60D31A0172;
-	Sat, 13 Apr 2024 09:30:15 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
- (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Sat, 13 Apr
- 2024 09:30:15 +0800
-From: Ye Bin <yebin10@huawei.com>
-To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
-CC: <linux-kernel@vger.kernel.org>, <jack@suse.cz>, Ye Bin
-	<yebin10@huawei.com>
-Subject: [PATCH v2] jbd2: avoid mount failed when commit block is partial submitted
-Date: Sat, 13 Apr 2024 09:30:56 +0800
-Message-ID: <20240413013056.1830515-1-yebin10@huawei.com>
-X-Mailer: git-send-email 2.31.1
+	s=arc-20240116; t=1712982979; c=relaxed/simple;
+	bh=fbIpJRyqCzHbHwHwiGGAvD34UuOfNcgBOS9zc+epVds=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i36xNUsOTt0mHA24hHXP9oqDyud84p8BqvxLKygZuJc/NqIKqFRP22rjGejJq/6XZrPM+RmlKJYCvNxohYP5sdjZEV7iX9fSkDAaZAiWXQ7iCaHd4PYfGyI7wQqzW6uZCjHajzNN68eFJZ4NBr8989gdK5Lhsf3YcOjPhgHgvzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=TbnQtMH6; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43D4ZgBU018660
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 13 Apr 2024 00:35:44 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1712982946; bh=/B4pXAPsMRR82DA1Wh7RuqgKoBHilarf9qCJOIPKqF4=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=TbnQtMH6TFa+kLU/M/0hqC87t19sYAJN33+wvj898a7IJ849R+CNp8YkoxJc/Eeqm
+	 I2PCmWvJ0bGYq9M9QpnVJo0D7W+DMRoH2GHhUJAP5O8E8XWOtKLsZlCprWefjOuJpC
+	 zsYq77DgwqdyyjzyOGaLj+eVsx7pFRn771AUsyRhDjbuR5qA+8fLh273p/m7yumP98
+	 djtYmjbKvdy3xFtzs0yaGDs2tVDUtytiErDSfYlSXQUDHzYXGGstKUVL6NVEF2ie/f
+	 Qe78Fkdk33nf6FYe0NcVWu+C/fZdkYwQQ1tQRiic7WUtjR7NLiVjj3mdNn2fty2KSS
+	 LXpNi5K/SoXmw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 2A66215C0CB5; Sat, 13 Apr 2024 00:35:42 -0400 (EDT)
+Date: Sat, 13 Apr 2024 00:35:42 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>
+Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
+        Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+        linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+        Conor Dooley <conor@kernel.org>,
+        Anders Roxell <anders.roxell@linaro.org>
+Subject: Re: riscv32 EXT4 splat, 6.8 regression?
+Message-ID: <20240413043542.GE187181@mit.edu>
+References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+ <20240412154342.GA1310856@mit.edu>
+ <87a5lyecuw.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- canpemm500010.china.huawei.com (7.192.105.118)
+In-Reply-To: <87a5lyecuw.fsf@all.your.base.are.belong.to.us>
 
-We encountered a problem that the file system could not be mounted in
-the power-off scenario. The analysis of the file system mirror shows that
-only part of the data is written to the last commit block.
-The valid data of the commit block is concentrated in the first sector.
-However, the data of the entire block is involved in the checksum calculation.
-For different hardware, the minimum atomic unit may be different.
-If the checksum of a committed block is incorrect, clear the data except the
-'commit_header' and then calculate the checksum. If the checkusm is correct,
-it is considered that the block is partially committed. However, if there are
-valid description/revoke blocks, it is considered that the data is abnormal
-and the log replay is stopped.
+On Fri, Apr 12, 2024 at 06:59:19PM +0200, Björn Töpel wrote:
+> 
+>   $ pipx install tuxrun
+> 
+> if you're on Debian.
+> 
+> Then you can get the splat by running:
+> 
+>   $ tuxrun  --runtime docker --device qemu-riscv32 --kernel https://storage.tuxsuite.com/public/linaro/lkft/builds/2esMBaAMQJpcmczj0aL94fp4QnP/Image.gz --parameters SKIPFILE=skipfile-lkft.yaml --parameters SHARD_NUMBER=10 --parameters SHARD_INDEX=1 --image docker.io/linaro/tuxrun-dispatcher:v0.66.1 --tests ltp-controllers
 
-Signed-off-by: Ye Bin <yebin10@huawei.com>
----
- fs/jbd2/recovery.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 48 insertions(+)
+Yeah, what I was hoping for was a shell script or a .c file hich was
+the reproducer, because that way I can run the test in my test infrastructure [1]
 
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 1f7664984d6e..eb0e026f3109 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -443,6 +443,27 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
- 	return provided == cpu_to_be32(calculated);
- }
- 
-+static bool jbd2_commit_block_csum_partial_verify(journal_t *j, void *buf)
-+{
-+	struct commit_header *h;
-+	__be32 provided;
-+	__u32 calculated;
-+	void *tmpbuf;
-+
-+	tmpbuf = kzalloc(j->j_blocksize, GFP_KERNEL);
-+	if (!tmpbuf)
-+		return false;
-+
-+	memcpy(tmpbuf, buf, sizeof(struct commit_header));
-+	h = tmpbuf;
-+	provided = h->h_chksum[0];
-+	h->h_chksum[0] = 0;
-+	calculated = jbd2_chksum(j, j->j_csum_seed, tmpbuf, j->j_blocksize);
-+	kfree(tmpbuf);
-+
-+	return provided == cpu_to_be32(calculated);
-+}
-+
- static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
- 				      journal_block_tag3_t *tag3,
- 				      void *buf, __u32 sequence)
-@@ -479,6 +500,7 @@ static int do_one_pass(journal_t *journal,
- 	int			descr_csum_size = 0;
- 	int			block_error = 0;
- 	bool			need_check_commit_time = false;
-+	bool                    has_partial_commit = false;
- 	__u64			last_trans_commit_time = 0, commit_time;
- 
- 	/*
-@@ -590,6 +612,14 @@ static int do_one_pass(journal_t *journal,
- 					next_log_block);
- 			}
- 
-+			if (pass == PASS_SCAN && has_partial_commit) {
-+				pr_err("JBD2: Detect validate descriptor block %lu after incomplete commit block\n",
-+				       next_log_block);
-+				err = -EFSBADCRC;
-+				brelse(bh);
-+				goto failed;
-+			}
-+
- 			/* If it is a valid descriptor block, replay it
- 			 * in pass REPLAY; if journal_checksums enabled, then
- 			 * calculate checksums in PASS_SCAN, otherwise,
-@@ -810,6 +840,14 @@ static int do_one_pass(journal_t *journal,
- 			if (pass == PASS_SCAN &&
- 			    !jbd2_commit_block_csum_verify(journal,
- 							   bh->b_data)) {
-+				if (jbd2_commit_block_csum_partial_verify(
-+								  journal,
-+								  bh->b_data)) {
-+					pr_notice("JBD2: Find incomplete commit block in transaction %u block %lu\n",
-+						  next_commit_ID, next_log_block);
-+					has_partial_commit = true;
-+					goto chksum_ok;
-+				}
- 			chksum_error:
- 				if (commit_time < last_trans_commit_time)
- 					goto ignore_crc_mismatch;
-@@ -824,6 +862,7 @@ static int do_one_pass(journal_t *journal,
- 				}
- 			}
- 			if (pass == PASS_SCAN) {
-+			chksum_ok:
- 				last_trans_commit_time = commit_time;
- 				head_block = next_log_block;
- 			}
-@@ -843,6 +882,15 @@ static int do_one_pass(journal_t *journal,
- 					  next_log_block);
- 				need_check_commit_time = true;
- 			}
-+
-+			if (pass == PASS_SCAN && has_partial_commit) {
-+				pr_err("JBD2: Detect validate revoke block %lu after incomplete commit block\n",
-+				       next_log_block);
-+				err = -EFSBADCRC;
-+				brelse(bh);
-+				goto failed;
-+			}
-+
- 			/* If we aren't in the REVOKE pass, then we can
- 			 * just skip over this block. */
- 			if (pass != PASS_REVOKE) {
--- 
-2.31.1
+[1] https://github.com/tytso/xfstests-bld/blob/master/Documentation/kvm-xfstests.md
 
+I'm sure there are plenty of nice things about tuxrun, but with
+kvm-xfstests I can easily get a shell so I can run the test sccript by
+hand, perhaps with strace so I can see what is going on.  Or I attach
+gdb to the kernel via "gdb /path/to/vmlinux" and "target remote
+localhost:7499".
+
+I'm guessing that "ltp-controllers" means that the test might be from
+the Linux Test Project?  If so, that's great because I've added ltp
+support to my test infrastructure (which also supports blktests,
+phoronix test suite, and can be run on gce and on android devices in
+addition to qemu, and on the arm64, i386, and x86_64 architectures).
+
+> Build with "make ARCH=riscv CROSS_COMPILE=riscv64-linux-gnu-", and make
+> sure to have the riscv64 cross-compilation support (yes, same toolchain
+> for rv32!).
+> 
+> It's when the rootfs is mounted, and the kernel is looking an init.
+
+Hmm, so this happening as soon as the VM starts, before actually
+starting to run any tests?  Is it possible for you to send me the
+rootfs as a downloading image, as opposed to my trying to paw through
+the docker image?
+
+> I'll keep debugging -- it was more if anyone had seen it before. I'll
+> try to reproduce on some other 32b platform as well.
+
+Well, it's not happening on my rootfs on i386 using my test infrastructure:
+
+% cd /usr/projects/linux/ext4
+% git checkout v6.8
+% install-kconfig --arch i386
+% kbuild --arch i386
+% kvm-xfstests shell
+    ...
+root@kvm-xfstests:~# cd ltp
+root@kvm-xfstests:~# ./runltp
+
+(I don't have ltp support fully automated the way I can run blktests
+using "kvm-xfstests --blktests" or run xfstests via "gce-xfstests -c
+ext4/all -g auto".  The main missing is teaching ltp to create an
+junit xml results file so that the test results can be summarized and
+so the test results can be more easily summarized and compared against
+past runs on different kernel versions.)
+
+Anyway, if you can send me your rootfs, I can try to take a look at it.
+
+       	       	       	    	      - Ted
 
