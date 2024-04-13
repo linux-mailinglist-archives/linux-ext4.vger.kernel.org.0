@@ -1,86 +1,51 @@
-Return-Path: <linux-ext4+bounces-2071-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2072-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED2B38A38AA
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 00:51:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39B5A8A3A21
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 03:30:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2164285790
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Apr 2024 22:51:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDA191F22C13
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 01:30:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FA521494A1;
-	Fri, 12 Apr 2024 22:51:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="vqbtfDFh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96720FBEA;
+	Sat, 13 Apr 2024 01:30:29 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F50E1487CD
-	for <linux-ext4@vger.kernel.org>; Fri, 12 Apr 2024 22:50:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6A034C97;
+	Sat, 13 Apr 2024 01:30:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1712962261; cv=none; b=DCp+ZdBNYyA+kuZvRFdASkkFZGc3kUdFe+oz/7kEFE82xhhBBfLJT1QpbJKC8azObksqNsvW1+Lw6X42RAZk1/XTJN4RwJUrOelGe/WDaWBloicnJ1Jx1ba2SiK/4NhqQ/LWZ9Tu6e7qS2cNooBLn8rAYT1+Yjc9ZnXiAyXBRmc=
+	t=1712971829; cv=none; b=kX24NzR4fn61zW9qFw3L/EvK3IIhi9Dtp4SLnYO3bttovQ8YaSnQyUezD/pS1kvwSmTMwy/PQvXQ3qA4f32/LuTpq2iqAgAl4ydfpsMWGX0MrY8+akaQjUCnpNZZ2KIHqN9ZyOjmbtt5dZWh5jjBTtiAPAh8RnKB6oxT8k9LKeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1712962261; c=relaxed/simple;
-	bh=wzHFPfAyYIm56eipbp/ckevoI92cV1TIIuBMAdOOBEM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CzQfZ82Zkx47btO0EGrnoQlURs3V3x4uekA677VWzqxznWZMrW+jfgDLScoS8+pemNYe9cPEtokUPl1ykq+KV1AkxAPeYBNgaFH/noZlOs1kT8EZhPiPAkVbTtp4MdyRNppthA6tL65+ludhgUVb4ndDiRO8usbJsGMh4iVDpk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=vqbtfDFh; arc=none smtp.client-ip=209.85.208.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56e69a51a33so1378191a12.1
-        for <linux-ext4@vger.kernel.org>; Fri, 12 Apr 2024 15:50:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1712962258; x=1713567058; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mh6mJZXAndRjR9bEU8O8LAe21t8oF3so4wv78/G3xZM=;
-        b=vqbtfDFhmOQJ0isjr3cSDEdD3x7dXXDB272jIxeGzr8vUz4nEWpYDFgU7jT7DJUXyS
-         VbEnApPpe0Sw8qbTw4owFya6KzX+VI8LFlrKnPiI2bCaZRZ4gxmQk0wi0pWCbD3tkUlh
-         QB3wYy+nrkAuz+iD23GCayvCYhNncZBZF+U3jiZ2ug07QBmCyAHAdKSsfyaAzoEIgyV6
-         d+axuAoFsyvIq+bqNIVj14K9CoCT3V6zK8bXxO87x5fIHj0w8hoGb9zrhZaGL60GVgiq
-         ommQQ1ynql2VCn81faYNBwNLcaO4YSBgCnYrLboVH1p3jeRKDbKcgcRwNhdpxY3OTxQe
-         EUuA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1712962258; x=1713567058;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mh6mJZXAndRjR9bEU8O8LAe21t8oF3so4wv78/G3xZM=;
-        b=ngyJPjLNGeIs7BxO8fZ0/yLD8LwY6eKJSOg4BAUp2Df1e3ZQh0bDAmJxKx7VwrbPYz
-         cScz4jLjsghjcr2dYmc5TB3uQtGC0IJRCG2IEv3EZW5BE83cVRbKX/X48sZ4BCSf9Lkg
-         n6Nnamac5eKOVcyrftUzQqMAgmxQWHk6J5Ve1P3WRzV4ErwbjUsxeCMbvTUKJoauuF7u
-         bQ83829xsrbxFZLGFoty89WFBYtY9OHeyTRjqIlB+hfcs7K8syjIufaF/PrrIi8GnzyM
-         O7ao2FJNwBfUyjCuVM/omfuh8dnb0d58jCDJNrasoUqK3vOp3x9ThNDdthJKfnUl3GBb
-         LAsg==
-X-Forwarded-Encrypted: i=1; AJvYcCVX2hwI3iqI97i//G+lflacFoSRCcPKnMBm0hiXdxBzf2e8dCLV4gcU4VcDcX9xiicU0fVMfzeAjZmVlX1+FaArqM21FxRoWQ95ag==
-X-Gm-Message-State: AOJu0Yw6qpWw2HPM0YdEDB2xdgTBCYrKqwDGb8nDeJEqn6LJ/aMg+aSY
-	cm3EQnltBN6+y/5MkGqpyBrr2dfa1RSCS9nh6FDIOqlYXxSgc4yEWIKd7dZ/Dp57/4OZH4DfvKn
-	rQkQ=
-X-Google-Smtp-Source: AGHT+IFhEKXPD/C6gQXJekuRmCuYLbsgI+4dXDo7rs/HRaOvtR9yeQEfNKXhQUTWIQ/RBraxSKdOhQ==
-X-Received: by 2002:a50:875d:0:b0:56e:2bfa:c7e0 with SMTP id 29-20020a50875d000000b0056e2bfac7e0mr2654142edv.13.1712962258444;
-        Fri, 12 Apr 2024 15:50:58 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id h29-20020a0564020e9d00b0056fffcb76e1sm918637eda.75.2024.04.12.15.50.57
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Apr 2024 15:50:58 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: thorsten.blum@toblux.com
-Cc: adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	ritesh.list@gmail.com,
-	tytso@mit.edu
-Subject: [RESEND PATCH] ext4: Remove unneeded if checks before kfree
-Date: Sat, 13 Apr 2024 00:50:27 +0200
-Message-ID: <20240412225026.207063-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240317153638.2136-2-thorsten.blum@toblux.com>
-References: <20240317153638.2136-2-thorsten.blum@toblux.com>
+	s=arc-20240116; t=1712971829; c=relaxed/simple;
+	bh=uAF58WQTwC70AQ4e42dMPhlqM+08OPyMWwp4j46ePBw=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f1va6SUpX6V+FNKDT/KzBJ5OT5krpVaGH4XjnpyOOjf+SSTlp+cv4J54AZv6s1SuzrWBt/IdGEpdHa21LB/Jv+Av6syAbHQ4GHhm9MdLufz+QkaA32NEqOzHr7zrnKG69Tsmlw1jYmCwhB+v0U5eZkgoyqzzKOxYoVTPR46TqEM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4VGbQK4bmKz1hwV8;
+	Sat, 13 Apr 2024 09:27:21 +0800 (CST)
+Received: from canpemm500010.china.huawei.com (unknown [7.192.105.118])
+	by mail.maildlp.com (Postfix) with ESMTPS id A60D31A0172;
+	Sat, 13 Apr 2024 09:30:15 +0800 (CST)
+Received: from huawei.com (10.175.127.227) by canpemm500010.china.huawei.com
+ (7.192.105.118) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Sat, 13 Apr
+ 2024 09:30:15 +0800
+From: Ye Bin <yebin10@huawei.com>
+To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <jack@suse.cz>, Ye Bin
+	<yebin10@huawei.com>
+Subject: [PATCH v2] jbd2: avoid mount failed when commit block is partial submitted
+Date: Sat, 13 Apr 2024 09:30:56 +0800
+Message-ID: <20240413013056.1830515-1-yebin10@huawei.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -88,41 +53,122 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ canpemm500010.china.huawei.com (7.192.105.118)
 
-kfree already checks if its argument is NULL. This fixes two
-Coccinelle/coccicheck warnings reported by ifnullfree.cocci.
+We encountered a problem that the file system could not be mounted in
+the power-off scenario. The analysis of the file system mirror shows that
+only part of the data is written to the last commit block.
+The valid data of the commit block is concentrated in the first sector.
+However, the data of the entire block is involved in the checksum calculation.
+For different hardware, the minimum atomic unit may be different.
+If the checksum of a committed block is incorrect, clear the data except the
+'commit_header' and then calculate the checksum. If the checkusm is correct,
+it is considered that the block is partially committed. However, if there are
+valid description/revoke blocks, it is considered that the data is abnormal
+and the log replay is stopped.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
- fs/ext4/super.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+ fs/jbd2/recovery.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 0f931d0c227d..9b7a0b4f2d3d 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -2079,8 +2079,7 @@ static int unnote_qf_name(struct fs_context *fc, int qtype)
- {
- 	struct ext4_fs_context *ctx = fc->fs_private;
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index 1f7664984d6e..eb0e026f3109 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -443,6 +443,27 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
+ 	return provided == cpu_to_be32(calculated);
+ }
  
--	if (ctx->s_qf_names[qtype])
--		kfree(ctx->s_qf_names[qtype]);
-+	kfree(ctx->s_qf_names[qtype]);
++static bool jbd2_commit_block_csum_partial_verify(journal_t *j, void *buf)
++{
++	struct commit_header *h;
++	__be32 provided;
++	__u32 calculated;
++	void *tmpbuf;
++
++	tmpbuf = kzalloc(j->j_blocksize, GFP_KERNEL);
++	if (!tmpbuf)
++		return false;
++
++	memcpy(tmpbuf, buf, sizeof(struct commit_header));
++	h = tmpbuf;
++	provided = h->h_chksum[0];
++	h->h_chksum[0] = 0;
++	calculated = jbd2_chksum(j, j->j_csum_seed, tmpbuf, j->j_blocksize);
++	kfree(tmpbuf);
++
++	return provided == cpu_to_be32(calculated);
++}
++
+ static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
+ 				      journal_block_tag3_t *tag3,
+ 				      void *buf, __u32 sequence)
+@@ -479,6 +500,7 @@ static int do_one_pass(journal_t *journal,
+ 	int			descr_csum_size = 0;
+ 	int			block_error = 0;
+ 	bool			need_check_commit_time = false;
++	bool                    has_partial_commit = false;
+ 	__u64			last_trans_commit_time = 0, commit_time;
  
- 	ctx->s_qf_names[qtype] = NULL;
- 	ctx->qname_spec |= 1 << qtype;
-@@ -2485,8 +2484,7 @@ static int parse_options(struct fs_context *fc, char *options)
- 			param.size = v_len;
+ 	/*
+@@ -590,6 +612,14 @@ static int do_one_pass(journal_t *journal,
+ 					next_log_block);
+ 			}
  
- 			ret = ext4_parse_param(fc, &param);
--			if (param.string)
--				kfree(param.string);
-+			kfree(param.string);
- 			if (ret < 0)
- 				return ret;
- 		}
++			if (pass == PASS_SCAN && has_partial_commit) {
++				pr_err("JBD2: Detect validate descriptor block %lu after incomplete commit block\n",
++				       next_log_block);
++				err = -EFSBADCRC;
++				brelse(bh);
++				goto failed;
++			}
++
+ 			/* If it is a valid descriptor block, replay it
+ 			 * in pass REPLAY; if journal_checksums enabled, then
+ 			 * calculate checksums in PASS_SCAN, otherwise,
+@@ -810,6 +840,14 @@ static int do_one_pass(journal_t *journal,
+ 			if (pass == PASS_SCAN &&
+ 			    !jbd2_commit_block_csum_verify(journal,
+ 							   bh->b_data)) {
++				if (jbd2_commit_block_csum_partial_verify(
++								  journal,
++								  bh->b_data)) {
++					pr_notice("JBD2: Find incomplete commit block in transaction %u block %lu\n",
++						  next_commit_ID, next_log_block);
++					has_partial_commit = true;
++					goto chksum_ok;
++				}
+ 			chksum_error:
+ 				if (commit_time < last_trans_commit_time)
+ 					goto ignore_crc_mismatch;
+@@ -824,6 +862,7 @@ static int do_one_pass(journal_t *journal,
+ 				}
+ 			}
+ 			if (pass == PASS_SCAN) {
++			chksum_ok:
+ 				last_trans_commit_time = commit_time;
+ 				head_block = next_log_block;
+ 			}
+@@ -843,6 +882,15 @@ static int do_one_pass(journal_t *journal,
+ 					  next_log_block);
+ 				need_check_commit_time = true;
+ 			}
++
++			if (pass == PASS_SCAN && has_partial_commit) {
++				pr_err("JBD2: Detect validate revoke block %lu after incomplete commit block\n",
++				       next_log_block);
++				err = -EFSBADCRC;
++				brelse(bh);
++				goto failed;
++			}
++
+ 			/* If we aren't in the REVOKE pass, then we can
+ 			 * just skip over this block. */
+ 			if (pass != PASS_REVOKE) {
 -- 
-2.44.0
+2.31.1
 
 
