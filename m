@@ -1,171 +1,162 @@
-Return-Path: <linux-ext4+bounces-2075-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2076-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E895A8A3D03
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 16:43:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0BEC8A3E68
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 22:19:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0D1921C20B44
-	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 14:43:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61E99B21331
+	for <lists+linux-ext4@lfdr.de>; Sat, 13 Apr 2024 20:19:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 033C743ADF;
-	Sat, 13 Apr 2024 14:43:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6949623BE;
+	Sat, 13 Apr 2024 20:19:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0b1WjH7d";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="TGTnmWCA"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="S1gt+E5s"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2083.outbound.protection.outlook.com [40.107.236.83])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AE51DDF1;
-	Sat, 13 Apr 2024 14:43:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713019406; cv=none; b=b1AV9WOjGDqAsyiSYqJeGWy6oEp4/Xb1Cu60d0mKGAUqWQb0A+CX7acdpDK9DJ9lQbVTpAgJ92B3+Q4t87IaQeP+oUfHJ1tGp+IUeLXSnP4yyK++f3mtHD207liJAstyepCDbMi07rex6Ibc1tR/bCdBbGrrckvEQAqUmtciwVI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713019406; c=relaxed/simple;
-	bh=F3WSVlUVeB9L++bk4Ow6JCLg2bFHCz7po4reWSuVgdM=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mTc/b6uf5MdDkKUZvH8GbWguY1+VDGvkckr4qN6tZ6aMS8g4Ll+fwkwpcgHVjGxyfWuQCI/EOtuCZ3yfT95ohE3f2cVD5wT+xmIMyrn3kp31VPU3UdvmjiLKZrvVohPYcYzeu0J/kn2rPZcUh69QTWseMpDrw2ZiSMDkmAt7v1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0b1WjH7d; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=TGTnmWCA; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Sat, 13 Apr 2024 16:43:18 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713019401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=94QYgK1moV3EtlUcP69QNbkfRF65WDHcbcu3aXuhzMA=;
-	b=0b1WjH7dMokMw4gA5sphaavop2jbUouwWon4BETiEJ3Auh4mkbDA6CaWbyUNg2HXh5x6sV
-	ONFBFVjW0E764jN462mFwDfHi2QRFkYfyeIHxJcy3VbT1aBnTVP5C58iksUwVE6rUrLEKJ
-	5MlqE2iqe6pljzIGKfUbctAoWA2M34tOOrMm3oVsdNYvuv4Pxq5J39z0MKV5uCYzKKqh3U
-	80jVJeaID7Ii+A4CUhy9Q4fzgdYP/hww5l96idQt9myulM92AIR61c34rdO2vrrS2KQlcV
-	/KP8sifRsZXoC18ILZxYH35jCImumZRAwqv918IPuYpQQPJGbQyHNSiefxQk3w==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713019401;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=94QYgK1moV3EtlUcP69QNbkfRF65WDHcbcu3aXuhzMA=;
-	b=TGTnmWCAiCLkdCMHYZVFT8OBvD3zVHceh/mgLEaqFERDP2BwWHD5eEVTI9rdWYMR4gvfxq
-	35B6dGXcXkTn8uDA==
-From: Nam Cao <namcao@linutronix.de>
-To: =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-Cc: linux-fsdevel@vger.kernel.org, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, "Theodore
- Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- linux-ext4@vger.kernel.org, Conor Dooley <conor@kernel.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <20240413164318.7260c5ef@namcao>
-In-Reply-To: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C2423FB1B;
+	Sat, 13 Apr 2024 20:19:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.83
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713039561; cv=fail; b=TJryRx/eUV/tWaJjBRsrcL8WKqNUM+kLzH5KRgi4YIc4EVHjJ3clvQzVF8WPtEpyxF7zNbfv9noO4RSbeV5CSSnjcrRSPk/b/9OppkgiveAQ+CF7BHKukUULZhQhlgetBTlA75Rnx5mTCXz+bOoVoJzQ1Wt/ssMkA4JuKzhLnMM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713039561; c=relaxed/simple;
+	bh=zGZuhCT5BB2nu0Oww5Quh7YbhDxRC7bMaGOi3wj/Pys=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=G+miTS9hKr4mnK9dOBW0DcX4LnZHTqySaUpdvdWGOMETdmdpJvptC0lrxwFJqwefcTdkXQrp/ZQ/IHTG3DJNGj9drJCBcj+oNotVQ5527A6Ilh8JKRYunZvrGl6GJdnABYcc3i0RIUQf7UZ7yPoEC8o5NAQBFpn9Wh6lXM0NgLA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=S1gt+E5s; arc=fail smtp.client-ip=40.107.236.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=WjyOuacicaImabQUJAX/6YEdWgNtGFMjIhlrq1Qi9Sn/j/S8b0vn9dVdNH7K4XdKSXZvLR4DNVzZm48HcT9wQ+UgRroak27aiPHncMiSCLR7R5hQXTTqIPsKur/qaeDBQQhx9KwvhigXUQP6CYdQUHDhjrMCUjED08X5p5biUaZHHeZCzlYtawCsVBX18Z02WTVddV1tbFU3MkTxgX8L2PTEB5WpltCQ+tO8SqR8PMayI+1I/+JYxm/gffWbSaLUhGW44/6ZmE1wqKg1nF2+Fzqv2+haT1b16epUQahuT60GRV7cfqCNz6N6OBESkAbR7rC+YfmgcFaDapeyo4ZYUw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+3zxVzi717mniQ/Q0oMNOWrjnz0YowOHXKweMRWRf2A=;
+ b=QvoZUTmxTTkQ7dSKKgSTBsedeACNxSFGVH8g1cCGlwQPvyBkb7k33lqYC/Cw5cv3T0lC2070Q0D9GKGCbx8ibEdKUl3qAVMkL8Y24HrhPh5UpnnJRcqDCiJqQYITkLLGNZ1zpNb0mmyrpKATCgFAisbcq18EsPJoSk8bTXHwLtUHvlQQR5dil+cQBsl6ETzGiDbT1FLFxLgNkcS0Bw9z9Oj3GGCk1vxPEvNCchX+uZ5V8RkR1AnMVIQftibJCRX1QbUunslaunWu5SIIO9PMSatvLskPeKsGQHuUqMnQadyh0uioH3Nis/lCnni6g0j9/RFdLP+MLcHJ8XSciPcGhA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.117.160) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+3zxVzi717mniQ/Q0oMNOWrjnz0YowOHXKweMRWRf2A=;
+ b=S1gt+E5sjQ0n/mnP9KindQdJwUd4B/5ET3sFiwYbc2pd1o7VGfYubayqC3Wjp/JNLceLKM0yBPwWXxO4+HoRQLG5Ge+zMgXxskzYL1CTHBMf6o+xLZ7R+/T8/trchy1KC45UfZqwMtHMbgKzF/pE2ldUducqhWXnwDhC02XlwG9ah734Adx2nTr8wNMgAQOEbsEKHS+O5yOYpDc7J5eGJy6/MJEJ1KCnlAN7Ob3c4PkGi3V0LORrHtrCAWGirKulT9k2qN7IQvG1tBTmY/muhtSWCakWoGABH8hBXLuYbTjnbvzFhcNJvOskWnigwdWC0lygNeXVHWh0mDW4zqmS1Q==
+Received: from CH5PR02CA0011.namprd02.prod.outlook.com (2603:10b6:610:1ed::28)
+ by MW4PR12MB5601.namprd12.prod.outlook.com (2603:10b6:303:168::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.46; Sat, 13 Apr
+ 2024 20:19:15 +0000
+Received: from CH2PEPF0000013E.namprd02.prod.outlook.com
+ (2603:10b6:610:1ed:cafe::a5) by CH5PR02CA0011.outlook.office365.com
+ (2603:10b6:610:1ed::28) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7472.31 via Frontend
+ Transport; Sat, 13 Apr 2024 20:19:13 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.117.160) by
+ CH2PEPF0000013E.mail.protection.outlook.com (10.167.244.70) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7452.22 via Frontend Transport; Sat, 13 Apr 2024 20:19:13 +0000
+Received: from rnnvmail201.nvidia.com (10.129.68.8) by mail.nvidia.com
+ (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Sat, 13 Apr
+ 2024 13:19:08 -0700
+Received: from [10.110.48.28] (10.126.231.35) by rnnvmail201.nvidia.com
+ (10.129.68.8) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Sat, 13 Apr
+ 2024 13:19:08 -0700
+Message-ID: <748fb175-3c5b-4571-9278-1580747a746a@nvidia.com>
+Date: Sat, 13 Apr 2024 13:19:07 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 05/10] fs/dax: Refactor wait for dax idle page
+To: Alistair Popple <apopple@nvidia.com>, <linux-mm@kvack.org>
+CC: <david@fromorbit.com>, <dan.j.williams@intel.com>, <rcampbell@nvidia.com>,
+	<willy@infradead.org>, <jgg@nvidia.com>, <linux-fsdevel@vger.kernel.org>,
+	<jack@suse.cz>, <djwong@kernel.org>, <hch@lst.de>, <david@redhat.com>,
+	<ruansy.fnst@fujitsu.com>, <nvdimm@lists.linux.dev>,
+	<linux-xfs@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+	<jglisse@redhat.com>
+References: <cover.fe275e9819458a4bbb9451b888cafb88af8867d4.1712796818.git-series.apopple@nvidia.com>
+ <db13f495fc0addcff12b6b065b7a6b25f09c4be7.1712796818.git-series.apopple@nvidia.com>
+Content-Language: en-US
+From: John Hubbard <jhubbard@nvidia.com>
+In-Reply-To: <db13f495fc0addcff12b6b065b7a6b25f09c4be7.1712796818.git-series.apopple@nvidia.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: rnnvmail201.nvidia.com (10.129.68.8) To
+ rnnvmail201.nvidia.com (10.129.68.8)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CH2PEPF0000013E:EE_|MW4PR12MB5601:EE_
+X-MS-Office365-Filtering-Correlation-Id: df4664b5-8e54-4f1c-aaec-08dc5bf6fc45
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JCG8VNVq3BgIUuqErCw/53Eji52ytM24/Md0+CfvPjXUK7QVKMMhdL9wKkim3ucARZ8HwtviCb08624wWXf+G3EHdbzRcbCM8qi0gjD+jjf1ODv+KQNf/Otmgs7gr8EAQKViendJkpC3v/OzQS8UahdoR1jBWz3Rjs8uXFlspusuKr9Vr5/qMuS3qDElfbjenWzCYpYD7Kzn0sKgXvN00WJ9eF7i/ncIVebuP7eVDRcsInpoEqYJvKHp4zzIFIkcIPyUDRXQq6JYdfgW0VWxCBDv6x/Vxv4LIzc8cTsJhY7hSyvheuBIRzOrOBWlTKKuYPlLfbUf+hpUEguEa1ZF9j+FJWy4C6XjFQwPN1CeCtHvZXVQ6p78poVfPmJbBv3xonqTMDn+m8uCWjE4cdosRG2b5vKJJ2n1VUVyoALamx09vAKBVdbpqXlHM4RzSMP8fe1/bqy1IWFnvE77CxgrcdxR1Kpsd1SpanDWCulEgDMekf8TzFH8NakR8e/TKs4jELzeqcB+HPP7MFqS5QhX/S8QeX2/M5wOyn6xL9ui4uLlcEONAD3bkG0APt5eV1hFY45KAoE+h2iVv4mwIj0C7AiaBpIqHk+OCyhCW66NSZYlKGCP6VrCo4yE+qCQvBkAq4Tc+Fq8qpcwkdMQhHqvAc2eg1yOeIET3o5VvzIa6ouQyoi8sdCOEokN3xxmjpuXYj349NnMpnwyZWQsmY+CVfEy0uNezdtiF+PKOUGA4ACJ19wCudIvoHd5Qf0fScQW
+X-Forefront-Antispam-Report:
+	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Apr 2024 20:19:13.0711
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: df4664b5-8e54-4f1c-aaec-08dc5bf6fc45
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH2PEPF0000013E.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5601
 
-On 2024-04-12 Bj=C3=B6rn T=C3=B6pel wrote:
-> Hi!
->=20
-> I've been looking at an EXT4 splat on riscv32, that LKFT found [1]:
->=20
->   | EXT4-fs (vda): mounted filesystem 13697a42-d10e-4a9e-8e56-cb9083be92f=
-9 ro with ordered data mode. Quota mode: disabled.
->   | VFS: Mounted root (ext4 filesystem) readonly on device 254:0.
->   | Unable to handle kernel NULL pointer dereference at virtual address 0=
-0000006
->   | Oops [#1]
->   | Modules linked in:
->   | CPU: 1 PID: 1 Comm: swapper/0 Not tainted 6.8.0 #41
->   | Hardware name: riscv-virtio,qemu (DT)
->   | epc : ext4_search_dir+0x52/0xe4
->   |  ra : __ext4_find_entry+0x1d6/0x578
->   | epc : c035b60e ra : c035b876 sp : c253fc10
->   |  gp : c21a7380 tp : c25c8000 t0 : 44c0657f
->   |  t1 : 0000000c t2 : 1de5b089 s0 : c253fc50
->   |  s1 : 00000000 a0 : fffffffc a1 : fffff000
->   |  a2 : 00000000 a3 : c29c04f8 a4 : c253fd00
->   |  a5 : 00000000 a6 : c253fcfc a7 : fffffff3
->   |  s2 : 00001000 s3 : 00000000 s4 : 00001000
->   |  s5 : c29c04f8 s6 : c292db40 s7 : c253fcfc
->   |  s8 : fffffff7 s9 : c253fd00 s10: fffff000
->   |  s11: c292db40 t3 : 00000007 t4 : 5e8b4525
->   |  t5 : 00000000 t6 : 00000000
->   | status: 00000120 badaddr: 00000006 cause: 0000000d
->   | [<c035b60e>] ext4_search_dir+0x52/0xe4
->   | [<c035b876>] __ext4_find_entry+0x1d6/0x578
->   | [<c035bcaa>] ext4_lookup+0x92/0x200
->   | [<c0295c14>] __lookup_slow+0x8e/0x142
->   | [<c029943a>] walk_component+0x104/0x174
->   | [<c0299f18>] path_lookupat+0x78/0x182
->   | [<c029b24c>] filename_lookup+0x96/0x158
->   | [<c029b346>] kern_path+0x38/0x56
->   | [<c0c1bee4>] init_mount+0x46/0x96
->   | [<c0c2ae1c>] devtmpfs_mount+0x44/0x7a
->   | [<c0c01c26>] prepare_namespace+0x226/0x27c
->   | [<c0c01130>] kernel_init_freeable+0x27e/0x2a0
->   | [<c0b78402>] kernel_init+0x2a/0x158
->   | [<c0b82bf2>] ret_from_fork+0xe/0x20
->   | Code: 84ae a809 d303 0044 949a 0f63 0603 991a fd63 0584 (c603) 0064=20
->   | ---[ end trace 0000000000000000 ]---
->   | Kernel panic - not syncing: Attempted to kill init! exitcode=3D0x0000=
-000b
->=20
-> This was not present in 6.7. Bisection wasn't really helpful (to me at
-> least); I got it down to commit c604110e662a ("Merge tag 'vfs-6.8.misc'
-> of git://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs"), and when I
-> revert the commits in the vfs merge the splat went away, but I *really*
-> struggle to see how those are related...
->=20
-> What I see in ext4_search_dir() is that search_buf is 0xfffff000, and at
-> some point the address wraps to zero, and boom. I doubt that 0xfffff000
-> is a sane address.
+On 4/10/24 5:57 PM, Alistair Popple wrote:
+...
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index 22cd990..bced4d4 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -212,6 +212,17 @@ int dax_zero_range(struct inode *inode, loff_t pos, loff_t len, bool *did_zero,
+>   int dax_truncate_page(struct inode *inode, loff_t pos, bool *did_zero,
+>   		const struct iomap_ops *ops);
+>   
+> +static inline int dax_wait_page_idle(struct page *page,
+> +				void (cb)(struct inode *),
+> +				struct inode *inode)
+> +{
+> +	int ret;
+> +
+> +	ret = ___wait_var_event(page, page_ref_count(page) == 1,
+> +				TASK_INTERRUPTIBLE, 0, 0, cb(inode));
+> +	return ret;
+> +}
 
-I have zero knowledge about file system, but I think it's an integer
-overflow problem. The calculation of "dlimit" overflow and dlimit wraps
-around, this leads to wrong comparison later on.
+Or just:
+{
+	return ___wait_var_event(page, page_ref_count(page) == 1,
+			TASK_INTERRUPTIBLE, 0, 0, cb(inode));
+}
 
-I guess that explains why your bisect and Conor's bisect results are
-strange: the bug has been here for quite some time, but it only appears
-when "dlimit" happens to overflow.
+...yes?
 
-It can be fixed by re-arrange the comparisons a bit. Can you give the
-below patch a try?
 
-Best regards,
-Nam
+thanks,
+-- 
+John Hubbard
+NVIDIA
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 05b647e6bc19..71b88b33b676 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1532,15 +1532,13 @@ int ext4_search_dir(struct buffer_head *bh, char *s=
-earch_buf, int buf_size,
- 		    unsigned int offset, struct ext4_dir_entry_2 **res_dir)
- {
- 	struct ext4_dir_entry_2 * de;
--	char * dlimit;
- 	int de_len;
-=20
- 	de =3D (struct ext4_dir_entry_2 *)search_buf;
--	dlimit =3D search_buf + buf_size;
--	while ((char *) de < dlimit - EXT4_BASE_DIR_LEN) {
-+	while ((char *) de - search_buf < buf_size - EXT4_BASE_DIR_LEN) {
- 		/* this code is executed quadratically often */
- 		/* do minimal checking `by hand' */
--		if (de->name + de->name_len <=3D dlimit &&
-+		if (de->name + de->name_len - search_buf <=3D buf_size &&
- 		    ext4_match(dir, fname, de)) {
- 			/* found a match - just to be sure, do
- 			 * a full check */
 
