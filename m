@@ -1,209 +1,212 @@
-Return-Path: <linux-ext4+bounces-2092-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2093-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 164BC8A5703
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Apr 2024 18:05:06 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FEA98A5C77
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Apr 2024 22:51:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 995E51F22E7A
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Apr 2024 16:05:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 93A311C21FF8
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Apr 2024 20:51:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F9497F7FF;
-	Mon, 15 Apr 2024 16:04:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D990B15698B;
+	Mon, 15 Apr 2024 20:51:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UDD9FIlL"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jCDxu5B2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C285478C88;
-	Mon, 15 Apr 2024 16:04:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713197094; cv=none; b=jwYqpZxchoolH8PXD8ilCw9LXF2FCf/q/R+nh7RRFXfv3sC+/VWKDSlW8U4kjaxN77UiLyZpvCPE+19cdCs8aO5bJO9Pryb93KtXSBG7vTk31myW5YpKkIduuV8OFMnCBh41MvxXW/ON6Y5Sf5HEnNIoBLvYfw90UER3+lWMrpU=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713197094; c=relaxed/simple;
-	bh=vFMJFGnJyanRDxAtVKIrLAB0ePFQhQ+GU0wvYeD6asg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=P+rmSpMm5uF0xf8M5YWnl5Koe5mP7zLYZoYPUeP3X+N7BjvYN1G9xQjIe6s8YRBQ/FftE1ecrDt6rubMDNBr8qKfzzfe7SE5HKdWSc0NjAegXca3f3iG91hp6x6fGCwf5nvON9rUfetIsdplNIuwgoSkL32hUxXREn8I9y8ORJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UDD9FIlL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CDBE1C113CC;
-	Mon, 15 Apr 2024 16:04:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713197094;
-	bh=vFMJFGnJyanRDxAtVKIrLAB0ePFQhQ+GU0wvYeD6asg=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=UDD9FIlLCszfXS3i6dFnz0lKTpcFcfRbhntScaXy5d8gUHRFxwjLQKQaZfNwW2Ryh
-	 7nRQd01d/K8fA8QLWuhYIw7RomrBeK7/cl3xRKTz859GMQynZORYQCqiO75PMqkdRf
-	 +BUTAh6yr/W/nmyKW9FwVXMQZdPmytnIP1dup0cjPAjff97Tbvon/QKh1vsF+nMtzB
-	 ObuR8kiYpMWR1zegA/rSJZN3pZbbndudpyNlwyYZ66r11OncXDF2bF2KoIjP2+aI73
-	 LIjIcUHWh+XmybbioeXlZgeGhS+U01be1Eu0rrhDk3YdVgzMEpKB2Wa6V2P4LD2Va8
-	 5N+mVpwTelLeg==
-From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Andreas Dilger <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>,
- Nam Cao <namcao@linutronix.de>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>,
- linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
- Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
- <conor@kernel.org>, "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- Anders Roxell <anders.roxell@linaro.org>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-In-Reply-To: <20240415-festland-unattraktiv-2b5953a6dbc9@brauner>
-References: <878r1ibpdn.fsf@all.your.base.are.belong.to.us>
- <20240413164318.7260c5ef@namcao>
- <22E65CA5-A2C0-44A3-AB01-7514916A18FC@dilger.ca>
- <20240414021555.GQ2118490@ZenIV>
- <887E261B-3C76-4CD9-867B-5D087051D004@dilger.ca>
- <87v84kujec.fsf@all.your.base.are.belong.to.us>
- <20240415-festland-unattraktiv-2b5953a6dbc9@brauner>
-Date: Mon, 15 Apr 2024 18:04:50 +0200
-Message-ID: <87le5e393x.fsf@all.your.base.are.belong.to.us>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7D6156971;
+	Mon, 15 Apr 2024 20:51:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1713214302; cv=fail; b=UE/qCt7eCggslzClD9kuYtcJbwEkdmtfObvbrDCmwUR//7r0glI/1W43hhRsOm5DZdGJqWGEn3hLTpR42DeLx1BVT4omCGHg/9WlYnVShr3T2VayeDhOe6fjVLNRsNYMHiz7yVYDwr/UZnShE9ZGBY9kGl+443IotpX5hXOtVPg=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1713214302; c=relaxed/simple;
+	bh=V+VtO9918jh2ofjDYvfuxld9MD6XOlCWB0W/LGkQRJY=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=TYAk250AjUu6ru/D1zka3+mHMq5txb2GLwr0/58aRtY9UDPjPTQCCPdxp48PxnQqrnsIO+mmiJTGBgFxmbRpDteokZUIPj1EVTKBggJTmmlb58mxhs2VuSH55Bz9/JlqSr8F8iTswrQXl9qvMqmjRiGL2u/Wdpw1jiCy5KWwBZo=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jCDxu5B2; arc=fail smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1713214301; x=1744750301;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=V+VtO9918jh2ofjDYvfuxld9MD6XOlCWB0W/LGkQRJY=;
+  b=jCDxu5B2t0xZzoc6qOHp4jXf07xXYmd+pis9ZKP/wa5TzH++lGhBA6eJ
+   ieN2vxUDTUmOvOe6CX5kJb8N+bnHOQbp/zjskqrTh/e0KlZUn3Qr6ePFI
+   pyASPNj6v5Y4Jr3lziHCoqZOYT2duTcfT/TQn0VT2nhAbe+BTtrNJ8I9C
+   4ajlhIvcZih/NggyfoXMbHvaV7hATR1e2huCy1/OlsOb1W/aRW6mr6gvT
+   LlVCHeTQOdgpnhSZfFEp7hty9ksvIg/j2DiVAJdhA4R0lrYuOAvHWPOGY
+   YiEtKtXCUsCK/OT2n51KIqeIoaFJtrxBxSKjxtHe9fuQrjOBNSpw4xCnp
+   w==;
+X-CSE-ConnectionGUID: Ya2HzES3QkiMsuYkGIju3w==
+X-CSE-MsgGUID: GO6aQVInR0W63e/J+zIZMg==
+X-IronPort-AV: E=McAfee;i="6600,9927,11045"; a="34010243"
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="34010243"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Apr 2024 13:51:40 -0700
+X-CSE-ConnectionGUID: +Ilv/g7sRPS38n1GPvbHwQ==
+X-CSE-MsgGUID: K92rYIN9TiCwojUGm8EKQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,203,1708416000"; 
+   d="scan'208";a="21928560"
+Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
+  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Apr 2024 13:51:40 -0700
+Received: from fmsmsx610.amr.corp.intel.com (10.18.126.90) by
+ fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 15 Apr 2024 13:51:38 -0700
+Received: from fmsedg601.ED.cps.intel.com (10.1.192.135) by
+ fmsmsx610.amr.corp.intel.com (10.18.126.90) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 15 Apr 2024 13:51:38 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (192.55.55.70) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 15 Apr 2024 13:51:38 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JavcYxK2hTOf458zWNV/bfpr2BP3so7CnRYdn4JPNahDE7ByN1yp1yeCKbOD2i3dyKOvdzBDRPs7IM2Etruzl03jnAWTKFL5U0ahIcZDu2Ry4YpKjLvBdC98IeRn0QPWjGAk8asyMmKoI9TG3ZqVAUjv4zfzlpDHDSWeQcnZlSvyf8FGbc7J13ttedqwsjBUXMrcEmzuTS7MG7P92dy+oKRZXXoY0MqBl0NFGjMIdDEEzBgNCplh4mBbBoKR/gUkpku6M1a7tf2p0nVqZVxeqLi0DIKI853p+QsTNTGrBVv8YSYqDkPDlbAc+d19A5wn1XDq7saBPS/TOmgFGCvcdw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=NvqcZRBsCA8jLb3hZfwTo53YaA3KioLwntO2Rzj9NEo=;
+ b=ilrNbrRtNF0F26odArBQH1q7vVW9U/JQs/gRdweZFi19OSRBFvDphHsdexF27Thj7ayIenYKbSSOTNNKe0FaNoRJoBdSh847Z+lFpgMGnprUe/pUUdrMJuBsY5fZw0ls8Wa4BCxPx4hlAUYC52nwNbGKPqhUtQ+/fCQvi1IYW2GnVmHBBaWaM3cLKmqH1JMNZmZd7zUjtlbK7xJKiEKkb0q+IWb8f7PmGu3Yc19cSO/VTzGlRYndsxgLFwuNX9d8h7umQy37xUepk53PxR5BxY0H+nOIJXhMq+vVin+UKrEVX+gWXwzgmXI4Lq1CU8R+1eEyUGZIywGOTVbuPgKwLQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by IA0PR11MB7883.namprd11.prod.outlook.com (2603:10b6:208:3de::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.41; Mon, 15 Apr
+ 2024 20:51:36 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7452.046; Mon, 15 Apr 2024
+ 20:51:36 +0000
+Date: Mon, 15 Apr 2024 13:51:33 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Alistair Popple <apopple@nvidia.com>, Dan Williams
+	<dan.j.williams@intel.com>
+CC: <linux-mm@kvack.org>, <david@fromorbit.com>, <jhubbard@nvidia.com>,
+	<rcampbell@nvidia.com>, <willy@infradead.org>, <jgg@nvidia.com>,
+	<linux-fsdevel@vger.kernel.org>, <jack@suse.cz>, <djwong@kernel.org>,
+	<hch@lst.de>, <david@redhat.com>, <ruansy.fnst@fujitsu.com>,
+	<nvdimm@lists.linux.dev>, <linux-xfs@vger.kernel.org>,
+	<linux-ext4@vger.kernel.org>, <jglisse@redhat.com>
+Subject: Re: [RFC 04/10] fs/dax: Don't track page mapping/index
+Message-ID: <661d9355239bc_4d56129485@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+References: <cover.fe275e9819458a4bbb9451b888cafb88af8867d4.1712796818.git-series.apopple@nvidia.com>
+ <322065d373bb6571b700dba4450f1759b304644a.1712796818.git-series.apopple@nvidia.com>
+ <20240412152208.m25mjo3xjfyawcaj@quack3>
+ <66197008db9fc_36222e294b8@dwillia2-xfh.jf.intel.com.notmuch>
+ <878r1f2jko.fsf@nvdebian.thelocal>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <878r1f2jko.fsf@nvdebian.thelocal>
+X-ClientProxiedBy: MW4PR03CA0312.namprd03.prod.outlook.com
+ (2603:10b6:303:dd::17) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|IA0PR11MB7883:EE_
+X-MS-Office365-Filtering-Correlation-Id: fe954ff9-bdf4-4cbb-57dd-08dc5d8dd757
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: m952VCJDnxv9xvLKM7ulwPzqNX9vv5CicAqvQCEMgbnY2rINnTUH9vMX7k5KAlDI1CFQhTftHjwJ/DK6I7xMfbklqPLZL1vuTeKSmyfpotcb4OlApJmI6EfjprY9j/y80KR53jOQkvyGoS1ZTUCRfiQoq6DpDzlYzaPAaI3j7JTbBIz55kW/QSqwRTkbl7KAHJ3xD9h4E9HumnNzRXhysyvpZeywwL85WdBAao56CraDBqMwZEwe6upqrkT5D3OjTMXJV6PRFXA0DinSbgKxOQEMYnaKK06WiULsEu7qf8ZHdjcEKQOYIJxpaBAiz0dS413UmBpQNHM0yjzzmm6cHbXo3mY4Q3EZv6HVssLY7Oz29pAjl3ViPphBSgsTPeWfTz5R2DeJgcF8dFtzV1jC3yTiKRnRm+W9vmI2RuPKyhHPQzqU/LuXdgZs939o+ONE+flpQqRjqtLisbI7p/C51DLjOpkAXsTkHqA8JlxAm+JGfXQmJqJSj0eYF6rf+TqGE8l0fx0n2RsqS+899xeDQhAGyVLgHBoDyH0Xf9r73werABlJuNzrdnHf6wCt55awlBvCV0mafEtnC/w9qg8UIUfW7c9ePk1X00v3Gn2jFNcOltWyUfCG2MMwSHJq0GP8KtAiN0ps9Vg2+eRiBeQtc0z920Ll0GVeyTYkGZNeV+w=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?XHiiGmP+OTm5MPixlclP5AYnjK6Q5imTeixxYawG+Sysk6lfL2yVQ96ZoMBm?=
+ =?us-ascii?Q?ewpOmgX9oXc7I2Ps+VERKwX6t/WEVvkItcP82TQ8LHZ+PlPjS3/gNHR3Nanh?=
+ =?us-ascii?Q?BjsFm9GgCtAfmGdnIzzimlSTQZ4OBGOyKfZJlAjAQBx37zD1wJi3mo7SgPiX?=
+ =?us-ascii?Q?Azo75fnJhd4mQcS1s2waKIff1SGPyPmJ+zb7SkIOVCsEz30o6R/MfwwfyXU+?=
+ =?us-ascii?Q?BVt+DsR1GIGyO4W7qxQO2fBGwmXmqn3ABYg57Nr1e+1SRDPrUPIrqvlYPB1x?=
+ =?us-ascii?Q?DlDBe3Mur6pHb+TGJw1yV2VOq2UlbJb54WHdVhoyunsx3qyHsOfqnw7biR1R?=
+ =?us-ascii?Q?e3wP7aRpjsK7RgkQT0l85PHAtFO1gNbDyslS/yHaU0q7fDglvJh9rLINn5TN?=
+ =?us-ascii?Q?pSLoKfIPxEg7rY/42R9/K5HR1mHiOv6l0V2hnuQ43u0niXHOJRssSepjcDn6?=
+ =?us-ascii?Q?lu1vBTN96d5RxYT4taoXmaW5X8gc+LisVERbdITMqjAi9XKIuXKxjzuC0BBi?=
+ =?us-ascii?Q?WwzNrgRNu5Dvjdn3bZUiR2F/lfFUgAnZkUynPLHG2RJVkxtHjyQG9IIcNBrX?=
+ =?us-ascii?Q?x+D880B1YIi47aU+WHEXzXSpV/KoBYwrdra+OrF6jQ1tQ+b7lhTP00ZVtMJM?=
+ =?us-ascii?Q?g19zsf2C9KxIgoPbalXgfOegyakCXVN/G6JEvRK7M+LPo3yVpA+enIz5PCFG?=
+ =?us-ascii?Q?JX7GIPoFcMiHpjUU6vOlAC0iPJ1vpbYxLN4AvgacbrgtaZWZxaPTr7/yFXsq?=
+ =?us-ascii?Q?DuGcf8uBHUs8qZ0SW12Jg3f+aMxtwozc8fwtJiUmhXjwgKsymAQJGnJ/5Ens?=
+ =?us-ascii?Q?8Lmq6KSdwU/ul+YUKI6Mj7SnOFwEgV9+B/mjmrBGWGIsC7seBfl+iPyGu40u?=
+ =?us-ascii?Q?AVGlWo4gu7HWEtz0x+MMalKV4mBa00v/QLgB1uW9n5e8zxuBeayK1FwPk0Bx?=
+ =?us-ascii?Q?O5sHbb/G+MHBBUvHOjiYD//bnytyvAJPtHOIHo4IvIJUOYgixb9YuiK1KmzT?=
+ =?us-ascii?Q?w22nCTqGA9UzoU3qANtGBP+4ONeJm63emXGcdeoF29kkDm9L9ZLQ71CP+QEc?=
+ =?us-ascii?Q?1SifI2Do159qstrEiyE20+aFU8FetW5kaHTOj3Iuk38xMgsNHqF9zHx0GTeF?=
+ =?us-ascii?Q?ygWCUyfJ1q61tfs5ypXtMN9BKOLDIm1jUOG+RXw3lRqOEk4vm5jGsQ666wU7?=
+ =?us-ascii?Q?mrhK6wNoO97GftxKR+w3GTMAlh2y2IbmzlZpSUPyk03QtoQNN1+1u0wb6k5X?=
+ =?us-ascii?Q?das9+txZJV0SEr/DC8tiD9KQnCBXr9MmgzugoTEgxD8upGRxduecNtZygcdb?=
+ =?us-ascii?Q?4b1DXoial+EUzikn3g237fQjJdA6nlm6RDWvaX4wzxCl7aigl3cCqFxQ70h8?=
+ =?us-ascii?Q?r2TSy1hs2+DvqWOug7VLcfu0ysxYMMXyDHb2Eic/n1kWrKrTmEYyfFT2PMl7?=
+ =?us-ascii?Q?/tQWCE8x6m58eSL4fGeNSnmV7eZuVKdJenyB8UrC39K1mzLgtgogVuJEOTu4?=
+ =?us-ascii?Q?hjY/p3EnYOI9sjkUgWUPAIXmSz+KToWQOsDrRVPUguydfL1ADt73vjPRi8XQ?=
+ =?us-ascii?Q?loMiVnobXkiEqCtw/PY4Cdj3bGxHqMFQD5TaWRPmO/Zh7TFDnlHxJzXHVqeJ?=
+ =?us-ascii?Q?UQ=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: fe954ff9-bdf4-4cbb-57dd-08dc5d8dd757
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Apr 2024 20:51:36.5592
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ZIKl96O+i+I/7FHFYIy+aV+XSakK0jGrjFKdf2XYegzZpb0yPepIUS7CD40T3DXHIlwwbZLSlHbulGfDkiiK1eUpSFHiqxVjL28dHMQt130=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR11MB7883
+X-OriginatorOrg: intel.com
 
-Christian Brauner <brauner@kernel.org> writes:
+Alistair Popple wrote:
+> I was initially concerned about these cases because I was wondering if
+> folio subpages could ever get different mappings and the shared case
+> implied they could. But it seems that's xfs specific and there is a
+> separate mechanism to deal with looking up ->mapping/index for that. So
+> I guess we should still be able to safely store this on the folio
+> head. I will double check and update this change.
+> 
 
-> On Sun, Apr 14, 2024 at 04:08:11PM +0200, Bj=C3=B6rn T=C3=B6pel wrote:
->> Andreas Dilger <adilger@dilger.ca> writes:
->>=20
->> > On Apr 13, 2024, at 8:15 PM, Al Viro <viro@zeniv.linux.org.uk> wrote:
->> >>=20
->> >> On Sat, Apr 13, 2024 at 07:46:03PM -0600, Andreas Dilger wrote:
->> >>=20
->> >>> As to whether the 0xfffff000 address itself is valid for riscv32 is
->> >>> outside my realm, but given that RAM is cheap it doesn't seem unlike=
-ly
->> >>> to have 4GB+ of RAM and want to use it all.  The riscv32 might consi=
-der
->> >>> reserving this page address from allocation to avoid similar issues =
-in
->> >>> other parts of the code, as is done with the NULL/0 page address.
->> >>=20
->> >> Not a chance.  *Any* page mapped there is a serious bug on any 32bit
->> >> box.  Recall what ERR_PTR() is...
->> >>=20
->> >> On any architecture the virtual addresses in range (unsigned long)-51=
-2..
->> >> (unsigned long)-1 must never resolve to valid kernel objects.
->> >> In other words, any kind of wraparound here is asking for an oops on
->> >> attempts to access the elements of buffer - kernel dereference of
->> >> (char *)0xfffff000 on a 32bit box is already a bug.
->> >>=20
->> >> It might be getting an invalid pointer, but arithmetical overflows
->> >> are irrelevant.
->> >
->> > The original bug report stated that search_buf =3D 0xfffff000 on entry,
->> > and I'd quoted that at the start of my email:
->> >
->> > On Apr 12, 2024, at 8:57 AM, Bj=C3=B6rn T=C3=B6pel <bjorn@kernel.org> =
-wrote:
->> >> What I see in ext4_search_dir() is that search_buf is 0xfffff000, and=
- at
->> >> some point the address wraps to zero, and boom. I doubt that 0xfffff0=
-00
->> >> is a sane address.
->> >
->> > Now that you mention ERR_PTR() it definitely makes sense that this last
->> > page HAS to be excluded.
->> >
->> > So some other bug is passing the bad pointer to this code before this
->> > error, or the arch is not correctly excluding this page from allocatio=
-n.
->>=20
->> Yeah, something is off for sure.
->>=20
->> (FWIW, I manage to hit this for Linus' master as well.)
->>=20
->> I added a print (close to trace_mm_filemap_add_to_page_cache()), and for
->> this BT:
->>=20
->>   [<c01e8b34>] __filemap_add_folio+0x322/0x508
->>   [<c01e8d6e>] filemap_add_folio+0x54/0xce
->>   [<c01ea076>] __filemap_get_folio+0x156/0x2aa
->>   [<c02df346>] __getblk_slow+0xcc/0x302
->>   [<c02df5f2>] bdev_getblk+0x76/0x7a
->>   [<c03519da>] ext4_getblk+0xbc/0x2c4
->>   [<c0351cc2>] ext4_bread_batch+0x56/0x186
->>   [<c036bcaa>] __ext4_find_entry+0x156/0x578
->>   [<c036c152>] ext4_lookup+0x86/0x1f4
->>   [<c02a3252>] __lookup_slow+0x8e/0x142
->>   [<c02a6d70>] walk_component+0x104/0x174
->>   [<c02a793c>] path_lookupat+0x78/0x182
->>   [<c02a8c7c>] filename_lookup+0x96/0x158
->>   [<c02a8d76>] kern_path+0x38/0x56
->>   [<c0c1cb7a>] init_mount+0x5c/0xac
->>   [<c0c2ba4c>] devtmpfs_mount+0x44/0x7a
->>   [<c0c01cce>] prepare_namespace+0x226/0x27c
->>   [<c0c011c6>] kernel_init_freeable+0x286/0x2a8
->>   [<c0b97ab8>] kernel_init+0x2a/0x156
->>   [<c0ba22ca>] ret_from_fork+0xe/0x20
->>=20
->> I get a folio where folio_address(folio) =3D=3D 0xfffff000 (which is
->> broken).
->>=20
->> Need to go into the weeds here...
->
-> I don't see anything obvious that could explain this right away. Did you
-> manage to reproduce this on any other architecture and/or filesystem?
->
-> Fwiw, iirc there were a bunch of fs/buffer.c changes that came in
-> through the mm/ layer between v6.7 and v6.8 that might also be
-> interesting. But really I'm poking in the dark currently.
+I think there is path to store this information only on the folio head.
+However, ugh, I think this is potentially another "head" of the
+pmd_devmap() hydra.
 
-Thanks for getting back! Spent some more time one it today.
+pmd_devmap() taught the core-mm to treat dax_pmds indentically to
+thp_pmds *except* for the __split_huge_pmd() case:
 
-It seems that the buddy allocator *can* return a page with a VA that can
-wrap (0xfffff000 -- pointed out by Nam and myself).
+   5c7fb56e5e3f mm, dax: dax-pmd vs thp-pmd vs hugetlbfs-pmd
 
-Further, it seems like riscv32 indeed inserts a page like that to the
-buddy allocator, when the memblock is free'd:
+Later on pmd migration entries joined pmd_devmap() in skipping splits:
 
-  | [<c024961c>] __free_one_page+0x2a4/0x3ea
-  | [<c024a448>] __free_pages_ok+0x158/0x3cc
-  | [<c024b1a4>] __free_pages_core+0xe8/0x12c
-  | [<c0c1435a>] memblock_free_pages+0x1a/0x22
-  | [<c0c17676>] memblock_free_all+0x1ee/0x278
-  | [<c0c050b0>] mem_init+0x10/0xa4
-  | [<c0c1447c>] mm_core_init+0x11a/0x2da
-  | [<c0c00bb6>] start_kernel+0x3c4/0x6de
+   84c3fc4e9c56 mm: thp: check pmd migration entry in common path
 
-Here, a page with VA 0xfffff000 is a added to the freelist. We were just
-lucky (unlucky?) that page was used for the page cache.
+Unfortunately, pmd_devmap() stopped being considered for skipping
+splits here:
 
-A nasty patch like:
---8<--
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 549e76af8f82..a6a6abbe71b0 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -2566,6 +2566,9 @@ void __init set_dma_reserve(unsigned long new_dma_res=
-erve)
- void __init memblock_free_pages(struct page *page, unsigned long pfn,
- 							unsigned int order)
- {
-+	if ((long)page_address(page) =3D=3D 0xfffff000L) {
-+		return; // leak it
-+	}
-=20
- 	if (IS_ENABLED(CONFIG_DEFERRED_STRUCT_PAGE_INIT)) {
- 		int nid =3D early_pfn_to_nid(pfn);
---8<--
+   7f7609175ff2 mm/huge_memory: remove stale locking logic from __split_huge_pmd()
 
-...and it's gone.
+Likely __split_huge_pmd_locked() grew support for pmd migration handling
+and forgot about the pmd_devmap() case.
 
-I need to think more about what a proper fix is. Regardless; Christian,
-Al, and Ted can all relax. ;-)
+So now Linux has been allowing FSDAX pmd splits since v5.18... but with
+no reports of any issues. Likely this is benefiting from the fact that
+the preconditions for splitting are rarely if ever satisfied because
+FSDAX mappings are never anon, and establishing the mapping in the first
+place requires a 2MB aligned file extent and that is likely never
+fractured.
 
-
-Bj=C3=B6rn
+Same for device-dax where the fracturing *should* not be allowed, but I
+will feel better with focus tests to go after mremap() cases that would
+attempt to split the page.
 
