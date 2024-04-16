@@ -1,50 +1,54 @@
-Return-Path: <linux-ext4+bounces-2108-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2109-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49EC28A717B
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Apr 2024 18:33:18 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88FB28A71CD
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Apr 2024 19:00:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A26C0B2121B
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Apr 2024 16:33:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 454FB2834A6
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Apr 2024 17:00:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD832374EB;
-	Tue, 16 Apr 2024 16:33:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E2F0132484;
+	Tue, 16 Apr 2024 17:00:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YtqvXTIW"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nt9mrA1v"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CB3FF4E7;
-	Tue, 16 Apr 2024 16:33:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F6112AAE3;
+	Tue, 16 Apr 2024 17:00:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713285185; cv=none; b=s8pwpq6n6NsXFN0BGpXliKNQhp8JXF07TG+obAhtHNJL5esQUXuFP83KH4PRelg3iriavFqXViT0y9TAYtifxCDIJm3Q2Ia0nx5Qbsds8Zw+x1z2OUQM0HXF5a/dif8hTv7ussB//4311UdvBEMVC/TlcbZ+NZZTbf4mg4KPyxc=
+	t=1713286834; cv=none; b=AwYV2HB1lRHn0SvCCuHpZXnl3nCZTKIkxmKHDIi6rEy3ZkTe4Ov5+N4mx2oO6ypjUcctm3t8SCmctXS3J0PSfNtIwWcE6PiU/RisEqE3MYdVjQx7TytL3Mmrn6n51HDQiyOcbCxsmAqGeplGL6aJSYzub6TtyKhnSdmXq54hhMU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713285185; c=relaxed/simple;
-	bh=gTJHR1KdErAk/qzXo5EJZZiXgCceiHY4vGZi+g7gbDI=;
+	s=arc-20240116; t=1713286834; c=relaxed/simple;
+	bh=+eKfqkqGNqkcZA+3CL0j3nQn92dxN0Kh6lLW/1pOGwk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=uX/Ehk+X8ROePKpNbLh0hrBuTff2WuB7F7Qalic4AavQToWJFPW5K4Aa66TVz8GnclLbUWt3Cs4LMr+5emwoUYxuDLIyDQ5ak/EH2CiK/CVceOIdbHhtBXo27DPd3WCJQbKAguzDDNKzEZY0Ygx0swICzUWc3lITUhCmDJhhLxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YtqvXTIW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D926C113CE;
-	Tue, 16 Apr 2024 16:32:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1713285184;
-	bh=gTJHR1KdErAk/qzXo5EJZZiXgCceiHY4vGZi+g7gbDI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=YtqvXTIWp4JmR1FEXjRm/DaLcxcqVbM2sHNsTceCNUlja61mLU46RASB4axT8jg7S
-	 ccSAtBcXO0XJgcAOAkoSXCk08wv1/gy8wYOwNQKVpNrnIWb1U96Y0fr1kbgyU4fuSM
-	 LDei7oagYypXMxOvgDkPZQ34bTr9dFttMUMB/hKcpj5EezRXogMzMk+ZFPnCCpGH0+
-	 /JF9F1R7RPCGjHwJCNQHo0pzQdq0BwDUuRvACQZ0id1Qh2GX6bTVvG1fVIVdX1v12L
-	 t7hmZH/NYURJMwWh2rUMqairNtEvXdZJNhrJA4dZinneJD+IcysEK6n3rjvUQaYSpk
-	 neOgd64QhpAxw==
-Date: Tue, 16 Apr 2024 19:31:54 +0300
-From: Mike Rapoport <rppt@kernel.org>
-To: Nam Cao <namcao@linutronix.de>
-Cc: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
+	 Content-Type:Content-Disposition:In-Reply-To; b=b73xnWD2C8HNFDyQPm8n6TECcBbUTUi416YzV5zvtBmMFGTLex6IFEHi+sJqiPffF9GBi60O6R3M1JVSs1c1cZLtV54svYtnVkF3qeMTdABcb5EXZqRt4c8a9Vgu6FwIa1iGenrBDUtN0wje2Y8+fJPiLp6URnMxLEDHkjpzuak=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nt9mrA1v; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=KRNBS/nNdDiPqgsHkyKzXY05QuyaoZshBLw+Rc9FXMA=; b=nt9mrA1vsAaOvdbNnhltvUwu9v
+	eWZR64hdT0sHaVKkAKmAe02tetl0haDxBjBnAHLphqFzp/yy5osgH3yZyN6EMx70yH1d9DLHOvVrz
+	dlRSWUeki4/Q/6FdINSaH5XHgpn18Dmc7bkQlSk/Sg9c13cunns8wBOiCeumO9xQ5x0BAtn5G/uU/
+	xnQs8dh9gnYgu2MH0woQlj+GOoe6kRJfmSNBff0Hup94JBNpjrNs0La/eiMr7DSYEkpv1GiMYVo3T
+	yqk61h9eHqECcuvHQGIgfFsTqPQCz0ZDqgjczHx4LBks0gwP9I1Os4OQf9wpGT5Ee1lDF7iiYEL7s
+	zChMYYyQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rwmAX-00000000yWu-3TaB;
+	Tue, 16 Apr 2024 17:00:29 +0000
+Date: Tue, 16 Apr 2024 18:00:29 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: Nam Cao <namcao@linutronix.de>,
+	=?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
 	Christian Brauner <brauner@kernel.org>,
 	Andreas Dilger <adilger@dilger.ca>,
 	Al Viro <viro@zeniv.linux.org.uk>,
@@ -54,11 +58,10 @@ Cc: =?iso-8859-1?Q?Bj=F6rn_T=F6pel?= <bjorn@kernel.org>,
 	linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>,
 	Ext4 Developers List <linux-ext4@vger.kernel.org>,
 	Conor Dooley <conor@kernel.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
 	Anders Roxell <anders.roxell@linaro.org>,
 	Alexandre Ghiti <alex@ghiti.fr>
 Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <Zh6n-nvnQbL-0xss@kernel.org>
+Message-ID: <Zh6urRin2-wVxNeq@casper.infradead.org>
 References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
  <8734rlo9j7.fsf@all.your.base.are.belong.to.us>
  <Zh6KNglOu8mpTPHE@kernel.org>
@@ -66,91 +69,47 @@ References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
  <20240416173030.257f0807@namcao>
  <87v84h2tee.fsf@all.your.base.are.belong.to.us>
  <20240416181944.23af44ee@namcao>
+ <Zh6n-nvnQbL-0xss@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240416181944.23af44ee@namcao>
+In-Reply-To: <Zh6n-nvnQbL-0xss@kernel.org>
 
-On Tue, Apr 16, 2024 at 06:19:44PM +0200, Nam Cao wrote:
-> On 2024-04-16 Björn Töpel wrote:
-> > Nam Cao <namcao@linutronix.de> writes:
-> > 
-> > > Fixed version:
-> > >
-> > > diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> > > index fa34cf55037b..af4192bc51d0 100644
-> > > --- a/arch/riscv/mm/init.c
-> > > +++ b/arch/riscv/mm/init.c
-> > > @@ -245,6 +245,7 @@ static void __init setup_bootmem(void)
-> > >  	 * be done as soon as the kernel mapping base address is determined.
-> > >  	 */
-> > >  	if (!IS_ENABLED(CONFIG_64BIT)) {
-> > > +		memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
-> > >  		max_mapped_addr = __pa(~(ulong)0);
-> > >  		if (max_mapped_addr == (phys_ram_end - 1))
-> > >  			memblock_set_current_limit(max_mapped_addr - 4096);  
-> > 
-> > Nice!
-> > 
-> > Can't we get rid of the if-statement, and max_mapped_address as well?
+On Tue, Apr 16, 2024 at 07:31:54PM +0300, Mike Rapoport wrote:
+> > @@ -238,17 +237,9 @@ static void __init setup_bootmem(void)
+> >  	/*
+> >  	 * memblock allocator is not aware of the fact that last 4K bytes of
+> >  	 * the addressable memory can not be mapped because of IS_ERR_VALUE
+> > -	 * macro. Make sure that last 4k bytes are not usable by memblock
+> > -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
+> > -	 * kernel, this problem can't happen here as the end of the virtual
+> > -	 * address space is occupied by the kernel mapping then this check must
+> > -	 * be done as soon as the kernel mapping base address is determined.
+> > +	 * macro. Make sure that last 4k bytes are not usable by memblock.
+> >  	 */
 > 
-> I don't see why not :D
+> It's not only memblock, but buddy as well, so maybe
 > 
-> Best regards,
-> Nam
+> 	/*
+> 	 * The last 4K bytes of the addressable memory can not be used
+> 	 * because of IS_ERR_VALUE macro. Make sure that last 4K bytes are
+> 	 * not usable by kernel memory allocators.
+> 	 */
 > 
-> diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-> index fa34cf55037b..f600cfee0aef 100644
-> --- a/arch/riscv/mm/init.c
-> +++ b/arch/riscv/mm/init.c
-> @@ -197,7 +197,6 @@ early_param("mem", early_mem);
->  static void __init setup_bootmem(void)
->  {
->  	phys_addr_t vmlinux_end = __pa_symbol(&_end);
-> -	phys_addr_t max_mapped_addr;
->  	phys_addr_t phys_ram_end, vmlinux_start;
->  
->  	if (IS_ENABLED(CONFIG_XIP_KERNEL))
-> @@ -238,17 +237,9 @@ static void __init setup_bootmem(void)
->  	/*
->  	 * memblock allocator is not aware of the fact that last 4K bytes of
->  	 * the addressable memory can not be mapped because of IS_ERR_VALUE
-> -	 * macro. Make sure that last 4k bytes are not usable by memblock
-> -	 * if end of dram is equal to maximum addressable memory.  For 64-bit
-> -	 * kernel, this problem can't happen here as the end of the virtual
-> -	 * address space is occupied by the kernel mapping then this check must
-> -	 * be done as soon as the kernel mapping base address is determined.
-> +	 * macro. Make sure that last 4k bytes are not usable by memblock.
->  	 */
-
-It's not only memblock, but buddy as well, so maybe
-
-	/*
-	 * The last 4K bytes of the addressable memory can not be used
-	 * because of IS_ERR_VALUE macro. Make sure that last 4K bytes are
-	 * not usable by kernel memory allocators.
-	 */
-
-> -	if (!IS_ENABLED(CONFIG_64BIT)) {
-> -		max_mapped_addr = __pa(~(ulong)0);
-> -		if (max_mapped_addr == (phys_ram_end - 1))
-> -			memblock_set_current_limit(max_mapped_addr - 4096);
-> -	}
-> +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
-
-Ack.
-
->  	min_low_pfn = PFN_UP(phys_ram_base);
->  	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
+> > -	if (!IS_ENABLED(CONFIG_64BIT)) {
+> > -		max_mapped_addr = __pa(~(ulong)0);
+> > -		if (max_mapped_addr == (phys_ram_end - 1))
+> > -			memblock_set_current_limit(max_mapped_addr - 4096);
+> > -	}
+> > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
 > 
+> Ack.
 
--- 
-Sincerely yours,
-Mike.
+Can this go to generic code instead of letting architecture maintainers
+fall over it?
 
