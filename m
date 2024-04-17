@@ -1,157 +1,88 @@
-Return-Path: <linux-ext4+bounces-2120-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2122-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21B068A77D4
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Apr 2024 00:36:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A2AB8A7A4E
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Apr 2024 04:04:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B402F1F231D4
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Apr 2024 22:36:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5A8541C21478
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Apr 2024 02:04:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E8D13281D;
-	Tue, 16 Apr 2024 22:36:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F419546A4;
+	Wed, 17 Apr 2024 02:03:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Te4SEjdi";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="1JReEmpz"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="VNoW96Sx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB3C339FCF;
-	Tue, 16 Apr 2024 22:36:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B587184F
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Apr 2024 02:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713307005; cv=none; b=tm4sBpkVgDSYSRjEVakhNiod1gJxOOdMuBKgXHVJnnGeY+MiLSp+pWUFis/AnLm7shEys67oM4bgGnsUYRqjNtgNZcu9wiGGmq5fY3nDT12/52UuHfNPSIrKg5cI3dffcWYNpS8C5RHvG6ZkpNvCr1ctGTn1gXpgmNNE/yebkDY=
+	t=1713319437; cv=none; b=E1dKjCiUXHO1aJSbjHJNKp5cInpDVj4qByFT+kTFw8eD9o2vErMGjLtHN247hs/LAugAlxpMSv8DW4menRLy31hEXF1V1OZLDJ/WY4ezg7V8V4HY31Q+/kmETI8T4bxc63yQxq3sexER4MDSWbsNPZWkGlPX9isVlLlcK/SOkds=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713307005; c=relaxed/simple;
-	bh=cSZY4ae4WAsue7NUAkAfbZWkSc+q0D62ObnXm+tgL3M=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SgPbXCljHZ7oLoPKirQ0K7lA/0DlF2HrrUOYrwD/tddxxqibJtQwmlhmeJ1eRSbRoHPNdSZ3WfCHm+yl15NG5OYjxDA1uG7kZaVJYNU1qtBeIiYclaYdDD+53UImNp94NthJS9CckibZC6q2OdBbLMO64a9/YE5GN//J/3itbec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Te4SEjdi; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=1JReEmpz; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Wed, 17 Apr 2024 00:36:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1713307001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZvuIWFJvCJMoa+9u4CC8L6s+esR9l0aMrumFrkL3xew=;
-	b=Te4SEjdiIAtRl+sEaU2CE61/pWstSBJTyTvMhF0hRKt8Wb0II71K0I5eG60ljuA0kMImWq
-	KKyacGeI2WuzzTMdaJJ8MZe8SHKLLYhuzudTyxKuF+BtfxH1/2Ro1FT/EGVLWPxSVJpPCN
-	gQaCZC2X1aCeyUjRILimEQQmdYe93+dFDoADfCE8OCkq1a9uc0HeRrLvDYd/NVTT7Us+cX
-	xcWl6fRlolFTM+jNzsJ21OrVltzZcx073fs5K8/brt9q27dRRLN7LkLMS0xKSY77/+owMi
-	fGTD1V45mheTt9xeiXzrhDhQ9QLaLJDn1bIdJAnkUAL5eAnnRHSiuKQh1ZPKgw==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1713307001;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ZvuIWFJvCJMoa+9u4CC8L6s+esR9l0aMrumFrkL3xew=;
-	b=1JReEmpzYenEyEPAqS7pF0uHMdoMdU/dE8wUr66hmDgCzsuooa4j1F8ymBqQjiWzrxxjf+
-	eXAqVLKEyOsjtuDA==
-From: Nam Cao <namcao@linutronix.de>
-To: Mike Rapoport <rppt@kernel.org>
-Cc: Matthew Wilcox <willy@infradead.org>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
- <bjorn@kernel.org>, Christian Brauner <brauner@kernel.org>, Andreas Dilger
- <adilger@dilger.ca>, Al Viro <viro@zeniv.linux.org.uk>, linux-fsdevel
- <linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Linux Kernel
- Mailing List <linux-kernel@vger.kernel.org>,
- linux-riscv@lists.infradead.org, Theodore Ts'o <tytso@mit.edu>, Ext4
- Developers List <linux-ext4@vger.kernel.org>, Conor Dooley
- <conor@kernel.org>, Anders Roxell <anders.roxell@linaro.org>, Alexandre
- Ghiti <alex@ghiti.fr>
-Subject: Re: riscv32 EXT4 splat, 6.8 regression?
-Message-ID: <20240417003639.13bfd801@namcao>
-In-Reply-To: <Zh7Ey507KXIak8NW@kernel.org>
-References: <20240416-deppen-gasleitung-8098fcfd6bbd@brauner>
-	<8734rlo9j7.fsf@all.your.base.are.belong.to.us>
-	<Zh6KNglOu8mpTPHE@kernel.org>
-	<20240416171713.7d76fe7d@namcao>
-	<20240416173030.257f0807@namcao>
-	<87v84h2tee.fsf@all.your.base.are.belong.to.us>
-	<20240416181944.23af44ee@namcao>
-	<Zh6n-nvnQbL-0xss@kernel.org>
-	<Zh6urRin2-wVxNeq@casper.infradead.org>
-	<Zh7Ey507KXIak8NW@kernel.org>
+	s=arc-20240116; t=1713319437; c=relaxed/simple;
+	bh=1XzjegvPAYAR/PeCCef+KBVLIhN1N8p1kZsqnJnrdEo=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ZZPqRcAEkkTyU+UtB8WVgfTK6ZWPSNhmLdMyyhQ4GkE85IjEfWKOXzyM7rkoAsWUOSdIrm/UcjeaprYAdqfjR7L3RzZjc5EqjOuLlHK2tVOAM1iVnoo4ipmd3aVOrsxLXpECC7+04vy2xa/e8hMoyGx1o8Fv+fx/x5ypYHFHlCM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=VNoW96Sx; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43H23gpR013703
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Apr 2024 22:03:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1713319424; bh=W3lSvbwG0bHzMp6ogtXSABzTIiRXFz7a638i511ln6w=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=VNoW96SxdsmsD8LaTs3DthcDpPv0EMtM5DJpU04G8vgYWDzSCKXlJ5WYa4B/1JBJ+
+	 MaWHnLTT8LXRL7Ql1CwLBvUNiJzkJA8F5T6DPRt7DbzgCZ+3r/fxfYGNoB5OthJDaf
+	 t68lRdeJq+5FyRqbYwubqIdYsoDss4icV0tVzKjptn30rv5GyZpGzcqzq52nz8Kui2
+	 7R56j1aeFYJ9QbWmsHmow5uoMQGmk5iL6OzF/xXM+F3eSwuyHRRvlm8Xm7jEBCR1oj
+	 qm8yVFZGQy0iMs2uAWLUlRcYQe/DskpfNLbC1EgEq3ykwC9TULC4Um3PkXOoYwbFTy
+	 FWHqD9N5EBJqQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id B9C3C15C0CBA; Tue, 16 Apr 2024 22:03:41 -0400 (EDT)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] misc: add 2038 timestamp support
+Date: Tue, 16 Apr 2024 22:03:30 -0400
+Message-ID: <171328638215.2734906.13266270872317257455.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20230927054016.16645-1-adilger@dilger.ca>
+References: <20230927054016.16645-1-adilger@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 2024-04-16 Mike Rapoport wrote:
-> On Tue, Apr 16, 2024 at 06:00:29PM +0100, Matthew Wilcox wrote:
-> > On Tue, Apr 16, 2024 at 07:31:54PM +0300, Mike Rapoport wrote:
-> > > > -	if (!IS_ENABLED(CONFIG_64BIT)) {
-> > > > -		max_mapped_addr = __pa(~(ulong)0);
-> > > > -		if (max_mapped_addr == (phys_ram_end - 1))
-> > > > -			memblock_set_current_limit(max_mapped_addr - 4096);
-> > > > -	}
-> > > > +	memblock_reserve(__pa(-PAGE_SIZE), PAGE_SIZE);
-> > > 
-> > > Ack.
-> > 
-> > Can this go to generic code instead of letting architecture maintainers
-> > fall over it?
+
+On Tue, 26 Sep 2023 23:40:16 -0600, Andreas Dilger wrote:
+> The ext4 kernel code implemented support for s_mtime_hi,
+> s_wtime_hi, and related timestamp fields to avoid timestamp
+> overflow in 2038, but similar handling is not in e2fsprogs.
 > 
-> Yes, it's just have to happen before setup_arch() where most architectures
-> enable memblock allocations.
+> Add helper macros for the superblock _hi timestamp fields
+> ext2fs_super_tstamp_get() and ext2fs_super_tstamp_set().
+> 
+> [...]
 
-This also works, the reported problem disappears.
+Applied, thanks!
 
-However, I am confused about one thing: doesn't this make one page of
-physical memory inaccessible?
-
-Is it better to solve this by setting max_low_pfn instead? Then at
-least the page is still accessible as high memory.
+[1/1] misc: add post-2038 timestamp support to e2fsprogs
+      commit: ca8bc9240a00665dd4c96de350e610add8543a08
 
 Best regards,
-Nam
-
-diff --git a/arch/riscv/mm/init.c b/arch/riscv/mm/init.c
-index fa34cf55037b..6e3130cae675 100644
---- a/arch/riscv/mm/init.c
-+++ b/arch/riscv/mm/init.c
-@@ -197,7 +197,6 @@ early_param("mem", early_mem);
- static void __init setup_bootmem(void)
- {
- 	phys_addr_t vmlinux_end = __pa_symbol(&_end);
--	phys_addr_t max_mapped_addr;
- 	phys_addr_t phys_ram_end, vmlinux_start;
- 
- 	if (IS_ENABLED(CONFIG_XIP_KERNEL))
-@@ -235,23 +234,9 @@ static void __init setup_bootmem(void)
- 	if (IS_ENABLED(CONFIG_64BIT))
- 		kernel_map.va_pa_offset = PAGE_OFFSET - phys_ram_base;
- 
--	/*
--	 * memblock allocator is not aware of the fact that last 4K bytes of
--	 * the addressable memory can not be mapped because of IS_ERR_VALUE
--	 * macro. Make sure that last 4k bytes are not usable by memblock
--	 * if end of dram is equal to maximum addressable memory.  For 64-bit
--	 * kernel, this problem can't happen here as the end of the virtual
--	 * address space is occupied by the kernel mapping then this check must
--	 * be done as soon as the kernel mapping base address is determined.
--	 */
--	if (!IS_ENABLED(CONFIG_64BIT)) {
--		max_mapped_addr = __pa(~(ulong)0);
--		if (max_mapped_addr == (phys_ram_end - 1))
--			memblock_set_current_limit(max_mapped_addr - 4096);
--	}
--
- 	min_low_pfn = PFN_UP(phys_ram_base);
--	max_low_pfn = max_pfn = PFN_DOWN(phys_ram_end);
-+	max_pfn = PFN_DOWN(phys_ram_end);
-+	max_low_pfn = min(max_pfn, PFN_DOWN(__pa(-PAGE_SIZE)));
- 	high_memory = (void *)(__va(PFN_PHYS(max_low_pfn)));
- 
- 	dma32_phys_limit = min(4UL * SZ_1G, (unsigned long)PFN_PHYS(max_low_pfn));
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
