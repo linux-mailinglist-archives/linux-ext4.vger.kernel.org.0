@@ -1,63 +1,63 @@
-Return-Path: <linux-ext4+bounces-2124-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2128-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 008F68A7A51
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Apr 2024 04:04:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2BB888A7A55
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Apr 2024 04:04:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3259E1C210F2
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Apr 2024 02:04:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D5641C214C9
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Apr 2024 02:04:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EDD96AAD;
-	Wed, 17 Apr 2024 02:03:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1B74C8C;
+	Wed, 17 Apr 2024 02:04:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="cWzCY3Uz"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Etk/1xvY"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 991C264C
-	for <linux-ext4@vger.kernel.org>; Wed, 17 Apr 2024 02:03:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A47979C2
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Apr 2024 02:04:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713319439; cv=none; b=HXoWjp43D7ywQRM4Xb5f1bN8/YrLpZtgCnYF03Y9CgOw02D/lyUy3lkgEessejHd0tmK/yzVlyZKfPTcUn0kCARmoU6R0OaL8EbHAhaJJDUfLiVwPzmwUjeT0aYjwKlXYg+7oRpynVLOBEsoJVH97iOz3L2qcVdeJ7XHki20QEU=
+	t=1713319447; cv=none; b=ZJGBbDnS1TB+12p4tvHHm992FnsFZveTiezhRjJ7edR5orOBHLhMu7G7V/nTn+PQ35HYC/1PebQlxlhoXEVA55GHTbwg53xZ6fpVOZdViDG4rLYKx0stBU+HbYMUBP2WxvYxEBIn4yb10yFLYYZWhRNah/i6ctEl95dryODxcF4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713319439; c=relaxed/simple;
-	bh=evfIT0siSKMcRgPuDFowYfcazjKqxWDZrGgnne/Fs1w=;
+	s=arc-20240116; t=1713319447; c=relaxed/simple;
+	bh=7Vu4BLM05UB8isNOTSyilz76Pnlf3a6yF69XeIw4xnw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=L1Efml0wslm/02bL/rGudoKMHADlkY5oCK56s0e07hHakxhlRDjxhddUzl+9SLmMVnnIwsw4ZwHZH0aaFePLgwBZa0a73IpGFKnaWztWj3dabhLTbOtNq5JBmWwgxFEA66mwvowxLy7O1lH4YdGZJQgSBc1HUY75CUUmBVggPV8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=cWzCY3Uz; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=Mi6JJ5IMUpWFgNcPE14HQNlKf3Kr77UU1IuxfcaM7fD2IIKrlW+OXDDQu0LG247jWoP6IEXmaesTS5Q62K8bRxDx9cCO7ahpY4YOq0/O1shQmSC75Vkpp3xIwccD9d9bqj/EKOEeZuiR38jLeOgGMgz7Frd6wRM1Ixp7r+u3SAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Etk/1xvY; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43H23g3H013701
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43H23idW013750
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Apr 2024 22:03:43 -0400
+	Tue, 16 Apr 2024 22:03:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1713319423; bh=YNRPqkRYKIZj+F2cbFoyhjusRmK9L7Vq3s+Uuss5GU4=;
+	t=1713319426; bh=rRGK71B8f/EjGaAjE6qOAb7usp+7M6oQuhchRdljNTs=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=cWzCY3UzRKn3BF3mzvyecWPlLScjXnCtL+LhEY1LdUacV6Je23X+U9WEzSdz0Y2Vb
-	 fSbEsbD/BjAfPXa5TTh2rA+ipqowQZBUOsRluzfC4GjXCJhmCJWI7HYSD2aEexfJUT
-	 zFYe2eaVz2N7LabTUeCN+R34+T2Pjhim0p6/upbK2WHo7gL2BfxwSBPRcdgh7K2jvq
-	 n76YyZ1tDML+Xa8jPL73lApo36iGyYVntY6Vom9Q3sis5n2WTf+USwMbsSXIkM2fbC
-	 R3M41hwbnUra/Ez8fdgfk+MBT8kD/LdzgiY5gMFsY9HXG1Ztwuf/+JE//RW4rOdBbn
-	 E4rxiYnpbiA1g==
+	b=Etk/1xvYI5zZ3mY7ZLb0kw1H6m+sy2kC8ewWcrDpBbxzdENoLMT/gIOQWYxhermAk
+	 PwbEFiGgJoBlQwB21Ww14eVMrGYBYGYUM+cREfzjaJ3EHvCEfV/P9bXJ65cnK0/0X5
+	 1EtkDimPGntLcXdfd0aaXAIO1eUjl01fUARdJ420TiSaAMugk9laq8zgBTa2kw0yyJ
+	 /TQMkkxx/ljDLueGuA0wS+6jy+2vPBrG6dvsrd+phuekuVZ5R9KVUqJ2LeAU3q3InM
+	 YC8cEYhK0FPfA8tWehm1MOLzRLsTz2w8X6C0RkGYchqiRbqo3Lw/8HEOuyKsBMp1yJ
+	 jp5o+JePdjk0g==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id C365115C0CD7; Tue, 16 Apr 2024 22:03:41 -0400 (EDT)
+	id C5E2A15C0CDC; Tue, 16 Apr 2024 22:03:41 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, Eric Biggers <ebiggers@kernel.org>
-Cc: "Theodore Ts'o" <tytso@mit.edu>,
-        Paulo Antonio Alvarez <pauloaalvarez@gmail.com>
-Subject: Re: [e2fsprogs PATCH] libext2fs: fix ext2fs_get_device_size2() return value on Windows
-Date: Tue, 16 Apr 2024 22:03:34 -0400
-Message-ID: <171328638214.2734906.2248501686414066065.b4-ty@mit.edu>
+To: Andreas Dilger <adilger@dilger.ca>,
+        "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH e2fsprogs v3 0/4] quota-related e2fsck fixes and tests
+Date: Tue, 16 Apr 2024 22:03:35 -0400
+Message-ID: <171328638216.2734906.7692057117929527358.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20230301034518.373859-1-ebiggers@kernel.org>
-References: <20230301034518.373859-1-ebiggers@kernel.org>
+In-Reply-To: <20240405142405.12312-1-luis.henriques@linux.dev>
+References: <20240405142405.12312-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,17 +68,26 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 28 Feb 2023 19:45:18 -0800, Eric Biggers wrote:
-> Creating a file system on Windows without a pre-existing file stopped
-> working because the Windows version of ext2fs_get_device_size2() doesn't
-> return ENOENT if the file doesn't exist.  Fix this.
+On Fri, 05 Apr 2024 15:24:01 +0100, Luis Henriques (SUSE) wrote:
+> Changes since v2:
 > 
+> Added deallocate_inode() documentation, as suggested by Andreas Dilger
+> (and using text he provided).
 > 
+> And, for reference, here's the cover-letter from v2:
+> 
+> [...]
 
 Applied, thanks!
 
-[1/1] libext2fs: fix ext2fs_get_device_size2() return value on Windows
-      commit: 72e30620b1ebd4742a8cda6cd4220a5423ca3180
+[1/4] e2fsck: update quota accounting after directory optimization
+      commit: eb782652045e67a5379dd319613b0d3d924901dd
+[2/4] e2fsck: update quota when deallocating a bad inode
+      commit: eb0680deb908d7da399dd331b7aa35cc1a4dfa2d
+[3/4] tests: new test to check quota after directory optimization
+      commit: 7805308b7a111c3943d92eab412b048d059ce108
+[4/4] tests: new test to check quota after a bad inode deallocation
+      commit: c6070404a2bed3ff675fc6500828ab6acee985f1
 
 Best regards,
 -- 
