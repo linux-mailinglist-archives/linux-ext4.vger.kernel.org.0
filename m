@@ -1,123 +1,89 @@
-Return-Path: <linux-ext4+bounces-2142-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2143-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA9968A9D39
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Apr 2024 16:36:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43B358A9D46
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Apr 2024 16:39:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D928C1C212CA
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Apr 2024 14:36:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED5121F21D18
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Apr 2024 14:39:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 408A8168AE1;
-	Thu, 18 Apr 2024 14:36:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 26036161935;
+	Thu, 18 Apr 2024 14:39:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="VJTJeU1G"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="dwh0Q1Fb"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C1C058129
-	for <linux-ext4@vger.kernel.org>; Thu, 18 Apr 2024 14:36:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1F3115AD88
+	for <linux-ext4@vger.kernel.org>; Thu, 18 Apr 2024 14:39:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713450985; cv=none; b=C1jZuxgkdM9995WwGFxJ8srwWdX8q/IpihfKkyeiiBALcJ77AerwldY6uA0Jr0HQx4jNxtSTtXyIblnzqGPqZfEjk8XJRKut428bd+aaucAcZl8n3SM5n8IEjP8ABrAJlYPEQ5R3t+bt9xSioilH/gTxsXbus6JPde+QGS0reEE=
+	t=1713451176; cv=none; b=C7CS2nn1kgh7wo5paAE2Wttdhdc564UM2txj2sYRGOwbXFFsXj1djrwquF4UkeHkxZv6EAC/zgGhJFLWd7OZSdNAkXoaVQi7v194qsin0B6RTIhtv0yyKqPS5hnQvkD7YoIYYXnXQh2Q1m/YBZjAW3EDPB1Qkjfzvu/lKz7139Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713450985; c=relaxed/simple;
-	bh=CZZ34PA4WEnHfZ9uZWoE5nxNfLXHrAE2rmo0mDIrwBQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=o/RYZkAwDrGigMdXy8/zh3vbZezACWi89f3IIrauHPsQfNSPVqEdhMeLnkB23noO/s5p/vKxyN/FReUkcRKhrjCPbgp0pIueSFKonbW8iVjxhO8UOHx1xqNa0H5kDgLXmCqld9xnXBbcSssFW9KcKwQ2Fj1HNTNszA35Wd5GzLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=VJTJeU1G; arc=none smtp.client-ip=18.9.28.11
+	s=arc-20240116; t=1713451176; c=relaxed/simple;
+	bh=9onWRlQXZ6y8wf9f3R0IimZTzT926H8muDPhJ2fcPJQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=iTL3w+RgJuYME/sLmDMlUcMBsdbDiBsBDWCjb0aOnpK/CkQQD73QdnGS5tjxYg0mNC0cWgFAvhcgoRfOXrkYYmeef26ueksxZBe1UYZUCjfu+UOiUe4r35RgJSb+Tpvj4X+xe4Dj0Y9AeUWA4AaFTH6Hlw/QSnrf965PIdWU7+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=dwh0Q1Fb; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43IEaBYl008799
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43IEdMMW010585
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 18 Apr 2024 10:36:12 -0400
+	Thu, 18 Apr 2024 10:39:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1713450973; bh=AjlLNVZP0b+GOkuCzi2ztc2velPCCkSgy+cHakxx5P4=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=VJTJeU1GH8UYLSD93RA90F8X3/eiMIlvFdeJK4qoCzx//i1wozIyJS5p9DQuvvDQ1
-	 R9HQHzdo4XE7VVYbpCkR4ftPwpcr6YwZeuBv4P4qU1SNcZ6BxD88kRk+7xB1RXZIHD
-	 bnIgghDHzEJtwPYWDGuXgWRQ3qhX4Wv8/Wy12Ck1AggpPD4hAI3dsAbAAn49E4hgK/
-	 EeLyX1ywtsDO+lnmaGSjiNHIug/EBF1WkSOB7RzEk5YVpc3KNE9++hTtmxqWD0YR5b
-	 gJPXM1chBPZKOoJhb1w0VHr9rpWfl1ghw59DMDf44AxaQZATuU/sBBeEbjzpYzr2VG
-	 QsU/U5NYv4sQg==
+	t=1713451164; bh=u5kBnX8uW7WJccju1kpTUs0+vfktGb4ko5jTKCnLiG0=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=dwh0Q1FboIcdbvbBNVBZxFmy4I1eouNFfH0EKfUJ8zrSQBmz+hEZDqvVVP4mDBwCS
+	 o1QOv/AK+yuAQkuAPnl7yKpkO9NhRsSyWBy4PT7G3vtK7ph5Z8Qt5vpVVMLqe8eil4
+	 fTdsqWskoyXg/UmPuL4TV7m057smNlEVuAH1nqsM4Aed6RZlZBnLO/tfoSXAHewe5m
+	 i4HWJj+hVPwzINZCf6v/PCpwiICTkV63sJteJjWljzI3IEWvvCJA83x5ZWDLg45SDg
+	 qE3XD8zi7ycjF1GKyH2pYQwvxuP+IFLFrusLfid14ubcQbbOSLNZAMyuP2ueG/tINv
+	 fM121S6cbuMRQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id A87E715C0CBA; Thu, 18 Apr 2024 10:36:11 -0400 (EDT)
-Date: Thu, 18 Apr 2024 10:36:11 -0400
+	id 5CF8415C0CBA; Thu, 18 Apr 2024 10:39:22 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: [PATCH] misc: add 2038 timestamp support
-Message-ID: <20240418143611.GA3373668@mit.edu>
-References: <20230927054016.16645-1-adilger@dilger.ca>
+To: Jakub Wilk <jwilk@jwilk.net>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH e2fsprogs] e4crypt: fix spurious "Success" error message
+Date: Thu, 18 Apr 2024 10:39:17 -0400
+Message-ID: <171345110558.3373948.7028509495340755466.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20231227080805.6801-1-jwilk@jwilk.net>
+References: <20231227080805.6801-1-jwilk@jwilk.net>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20230927054016.16645-1-adilger@dilger.ca>
-
-On Tue, Sep 26, 2023 at 11:40:16PM -0600, Andreas Dilger wrote:
-> The ext4 kernel code implemented support for s_mtime_hi,
-> s_wtime_hi, and related timestamp fields to avoid timestamp
-> overflow in 2038, but similar handling is not in e2fsprogs.
-> ...
-
-Hey Andreas,
-
-I had recently taken this patch, but I've since found that it was
-causing a number of problems.  These have been fixed on the next
-branch, but if you have your own build of e2fsprogs, you might want to
-make sure you have these two fixups.  The second is especially
-important if you plan to use debugfs's set_super_value command on
-customer file systems....
-
-In the future, I strongly suggest that large patches to e2fsprogs are
-run with make check run with trees built with "configure
---enable-ubsan" and "configure -enable-asan".  If you have a github
-account, pushing the changes so that the github actions will do a CI
-using github actions to make sure that there aren't build problems on
-i386, Windows, MacOS, and Android is also a good thing to do.
-
-Cheers,
-						- Ted
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
 
-commit 5b599a325c1af94111940c14d888ade937f29d19
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Wed Apr 17 23:47:02 2024 -0400
+On Wed, 27 Dec 2023 09:08:05 +0100, Jakub Wilk wrote:
+> Before:
+> 
+>     # e4crypt set_policy 0000000000000000 /dev/null
+>     /dev/null is not a directory
+>     /dev/null: Success
+> 
+> After:
+> 
+> [...]
 
-    Fix 32-bit build and test failures
-    
-    Commit ca8bc9240a00 ("Add post-2038 timestamp support to e2fsprogs")
-    was never built or tested on a 32-bit.  It introduced some build
-    problems when time_t is a 32-bit integer, and it exposed some test
-    bugs.  Fix them.
-    
-    Fixes: ca8bc9240a00 ("Add post-2038 timestamp support to e2fsprogs")
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Applied, thanks!
 
-commit 9103e1e792170a836884db4ee9f2762bf1684f09
-Author: Theodore Ts'o <tytso@mit.edu>
-Date:   Thu Apr 18 10:04:27 2024 -0400
+[1/1] e4crypt: fix spurious "Success" error message
+      commit: 1275bbaaea7ffd42346789f945c2f4dcddbfbbc8
 
-    debugfs: fix set_field's handling of timestamps
-    
-    How timestamps are encoded in inodes and superblocks are different.
-    Unfortunately, commit ca8bc9240a00 which added post-2038 timestamps
-    was (a) overwriting adjacent superblock fields and/or attempting
-    unaligned writes to a 8-bit field from a 32-bit pointer, and (b) using
-    the incorrect encoding for timestamps stored in inodes.  Fix both of
-    these issues, which were found thanks to UBSAN.
-    
-    Fixes: ca8bc9240a00 ("Add post-2038 timestamp support to e2fsprogs")
-    Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
