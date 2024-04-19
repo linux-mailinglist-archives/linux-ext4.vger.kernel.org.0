@@ -1,102 +1,100 @@
-Return-Path: <linux-ext4+bounces-2149-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2150-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F2C8AA750
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 05:44:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68F4F8AA775
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 05:50:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51B361C20BBC
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 03:44:21 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2395A286362
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 03:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C318F5B;
-	Fri, 19 Apr 2024 03:44:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BAC77E591;
+	Fri, 19 Apr 2024 03:46:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="SgDW/Mxg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD32079CC
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Apr 2024 03:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A17367D09A
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Apr 2024 03:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713498254; cv=none; b=jG9fB9GFz1L44IM1hUdQvnqJxT5h6mra/lpUBAGgvJUGkEy/1SGNu2e3VwZF+0vNDxWIwVdBy2SFWJmeAEpX2v5IqL4a+MY0hh/N+iyjD2QnCZm8d7vPpXe2d1k7ebfPkiS0adDeIquU4t7Xy3RmN4zu0d/ypvsqG+HAun91fZI=
+	t=1713498376; cv=none; b=lrVVRpEUo/eqMxz0HuXpzIiON4nU1q48e3rkOO1g5Sm2JCMNBIA/CWy/qKGarVf4X7WQryx9T+uuynI79d8KcblvzPoeqJolv6mCdMAdXj1D6FxF2aFXcMUlRB+oKRhv5TMcWzQV7pjhqVWEc30R/9pKZVarOX5MptGYbZ5P0T4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713498254; c=relaxed/simple;
-	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Jo5Q/Vomw5HJEthFgGyJVz2LJQwWKwlLneZN9B/UlcFpIoZcj80mqQt1N3Nmjr8frjqH6EOV4gQzXAZlqBG/5yIsglHHQad/c1n3nFfX51fIattwS0cMJHqavDCbgVM2+exJ8FKarY5xGu2h2I9HMxoM7uibyRCIJefS1nN6N5U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5f08fdba8so280192639f.0
-        for <linux-ext4@vger.kernel.org>; Thu, 18 Apr 2024 20:44:12 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1713498252; x=1714103052;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=ZKldTnszGRRRefS3Z4W1gbcYjIiooP9oywKoSfZmGNLLKHhRk7M7Y0I8Fpg8i1rwzv
-         GMiOPe34aS01P2bMAMtb5l1vThJdZuRTy0Keg4ODFgne3BAdAbQqtgU5Bh6HREZI6CNv
-         E2hAhRPLnJVhAn0xeE3gugTRAiAV2QknuOWoMXoyQzs0ko5jd61hkqez5sGL71St4DP8
-         IcFCr5BgFTvwmi8TCisWhTBSBO0yn7v4D/4iyV0uF7DmxsuilMOfUdBcn+TOiJbLbSM4
-         YFjyrPdiVevs4tQWlKXJEj9+ty0kSYmvrbb3JtzEPW/krtPOGXZvxmth4onJ6guLR9O6
-         2JXg==
-X-Forwarded-Encrypted: i=1; AJvYcCUBdTKbgVjhJGfbTrEurzcH+nNeSePKjVNTY6ArUh9yT1HFWfNhrqXce7DxCyhTxe0aXSCi34QgexGU9u1nwQ5BYd9PyEwNSiBtiA==
-X-Gm-Message-State: AOJu0Yy5mEgLf/bfGm/k0mFhyN8pCMZM5Q3tGQxxTEngOpdQAqQJldIM
-	z6R+AUCtyPbiSqAhI+lySNAaHIRg4X0FXJmy++8oEFERdCTHhnhI/FlvIyqEaBkM3TucOfhArUH
-	voUAibti2/jtqzEhaicUBSyDZAvk//c5R5ccV2XY3JrH+5d0nt/+AUtI=
-X-Google-Smtp-Source: AGHT+IH3iHj+p778Prfz/op9yzVlc6IHlFlrPUAXxBsVYGX2Oi9UKR/mPnmrlFcE5vwiibiZppLH/ePr4F6EWdAQHqQL9B0e0mpp
+	s=arc-20240116; t=1713498376; c=relaxed/simple;
+	bh=c+/gPco6T74bdTFn27KewBMzb9DuoS0GHSVLy2ogqJg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=LH2QcLZMGg2gS+Yv6z9CLtylABqW8zhAFl2itWFvYzvDSYtEs4Me8TwXlzAPXI5aFaAk6YAlLss6Nc0f2ZmR2Ynb0i6p+h2n6JwDlSuQ1MtPa3PO0PckqNI8Tc1N+5M5n+85clswH2iKk/eyRfgge9wR27TwUYiIWPa2nPWKKfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=SgDW/Mxg; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 43J3k8m7008113
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 18 Apr 2024 23:46:09 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1713498369; bh=OG99fuhJ3C63Vt4bVzVyCks1BEcUeZ9E1hEobP0lekc=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=SgDW/MxgP39rlwwdSj26zouSLMZxOBOaec4FwMFv4axq6MjBjGgyYZqBRGpERH6iE
+	 jwF0EmvP8FTHkcOsV78c63KLJcZOl1lJGegD5HmuxTZmRFD+aSf8x2R/+KN6T1ZI+R
+	 g97IHTaMkhik73WEJ7+flyiKOvqGQPVzUo944kkJY4u88T1mJWwLqx+IR8fs9HPFvq
+	 XkYb+C9emMz76impi/lshbWKEJH3tKbayWVlvhR/AaHZN/WAJOMZdnEpU9QK7PhJpz
+	 8FY0M30H0yQFGg+j4qGGqua2w1Mu2uL2AiJ3aDEKm6SvtVYuhxJnKbLej45MVnNFFg
+	 lXEMCRFEmCCMA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 19D4115C0CBA; Thu, 18 Apr 2024 23:46:08 -0400 (EDT)
+Date: Thu, 18 Apr 2024 23:46:08 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: Re: [PATCH] misc: add 2038 timestamp support
+Message-ID: <20240419034608.GC3374174@mit.edu>
+References: <20230927054016.16645-1-adilger@dilger.ca>
+ <20240418143611.GA3373668@mit.edu>
+ <E44A9FB1-280E-4EB7-9092-856E200EE500@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:37a6:b0:482:fa6e:648c with SMTP id
- w38-20020a05663837a600b00482fa6e648cmr91745jal.3.1713498251939; Thu, 18 Apr
- 2024 20:44:11 -0700 (PDT)
-Date: Thu, 18 Apr 2024 20:44:11 -0700
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000a1618b06166ae6d9@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <E44A9FB1-280E-4EB7-9092-856E200EE500@dilger.ca>
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+On Thu, Apr 18, 2024 at 04:04:10PM -0600, Andreas Dilger wrote:
+> 
+> I've never used Github actions for this. If I fork tytso/e2fsprogs and
+> push to adilger/e2fsprogs, are those actions automated already with a
+> config file inside the repo, or do I need to set that up myself?
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Github actions should be enabled by default (although enterprise
+accounts can have the default changed or prohibited by the enterprise
+administrator's policy).
 
-#syz fix: exact-commit-title
+The config file is checked into the repo at .github/workflows/ci.yml
+so if you fork the repo, you should get it.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+> PS: the kernel.org repo looks like it has not been updated in 4 months,
+> despite emails that you have landed patches. I was pulling from there
+> and didn't notice until now that you have been pushing only to github.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+I don't update kernel.org as frequently as github, but I suspect the
+issue is that you were probably looking at the master branch, and the
+updates were going on the next branch.  When I'm processing a large
+number of patches, sometimes I don't update master until I'm really
+confident everything is in great shape to update the master branch to
+point at next.
 
----
-[1] I expect the commit to be present in:
+It's just that April has been super crazy busy me for me, so master
+lagged next by a few weeks.
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+Cheers,
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+						- Ted
 
