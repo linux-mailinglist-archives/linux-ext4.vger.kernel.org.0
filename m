@@ -1,110 +1,102 @@
-Return-Path: <linux-ext4+bounces-2148-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2149-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F224C8AA703
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 04:39:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15F2C8AA750
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 05:44:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9EA5F283A93
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 02:39:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51B361C20BBC
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Apr 2024 03:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92F1153A1;
-	Fri, 19 Apr 2024 02:39:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74C318F5B;
+	Fri, 19 Apr 2024 03:44:14 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC529372;
-	Fri, 19 Apr 2024 02:39:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD32079CC
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Apr 2024 03:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713494352; cv=none; b=JJO2B7yYMxsrjZf5lerMOKjcz9lS3t04P4rtADZ3heZADRcdnd5k3iqVlu4f75IkOdbUX94nAVyUSGXoUI4eYeSe5lX2jrU64uly3pk4o2tIIWyBxX9SJvtA1+ZDjLwaLsJQAne+6Lrje8wVYnCcKdc7dkZlMQfLZ4TnS8sQh6s=
+	t=1713498254; cv=none; b=jG9fB9GFz1L44IM1hUdQvnqJxT5h6mra/lpUBAGgvJUGkEy/1SGNu2e3VwZF+0vNDxWIwVdBy2SFWJmeAEpX2v5IqL4a+MY0hh/N+iyjD2QnCZm8d7vPpXe2d1k7ebfPkiS0adDeIquU4t7Xy3RmN4zu0d/ypvsqG+HAun91fZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713494352; c=relaxed/simple;
-	bh=9dEafjMPmsvuMRFpGECnHFXu2SS68ra4H3QM8YdyOuo=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=AfK7OdYxE56xop2GduSZoU97qg6jFseGJ2ztjJMQKgqWRFZW4ZoM8jNSy9WCWnZ/xuR1Z6EzDbYerqyji21A3q5zVDSrtZfqrmCqGLWQ0kEPLdB/8Khk9Sj7myJuW07isObLqs6Q/7hzM4if+OQq3OtRNS9ffkntnX/iu65x2/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VLJk730plz4f3jqr;
-	Fri, 19 Apr 2024 10:38:55 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 1E6511A0572;
-	Fri, 19 Apr 2024 10:39:00 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGBFB2SFmC8VxKQ--.51816S4;
-	Fri, 19 Apr 2024 10:38:59 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [PATCH] ext4: remove the redundant folio_wait_stable()
-Date: Fri, 19 Apr 2024 10:30:05 +0800
-Message-Id: <20240419023005.2719050-1-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1713498254; c=relaxed/simple;
+	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Jo5Q/Vomw5HJEthFgGyJVz2LJQwWKwlLneZN9B/UlcFpIoZcj80mqQt1N3Nmjr8frjqH6EOV4gQzXAZlqBG/5yIsglHHQad/c1n3nFfX51fIattwS0cMJHqavDCbgVM2+exJ8FKarY5xGu2h2I9HMxoM7uibyRCIJefS1nN6N5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-7d5f08fdba8so280192639f.0
+        for <linux-ext4@vger.kernel.org>; Thu, 18 Apr 2024 20:44:12 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1713498252; x=1714103052;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=ZKldTnszGRRRefS3Z4W1gbcYjIiooP9oywKoSfZmGNLLKHhRk7M7Y0I8Fpg8i1rwzv
+         GMiOPe34aS01P2bMAMtb5l1vThJdZuRTy0Keg4ODFgne3BAdAbQqtgU5Bh6HREZI6CNv
+         E2hAhRPLnJVhAn0xeE3gugTRAiAV2QknuOWoMXoyQzs0ko5jd61hkqez5sGL71St4DP8
+         IcFCr5BgFTvwmi8TCisWhTBSBO0yn7v4D/4iyV0uF7DmxsuilMOfUdBcn+TOiJbLbSM4
+         YFjyrPdiVevs4tQWlKXJEj9+ty0kSYmvrbb3JtzEPW/krtPOGXZvxmth4onJ6guLR9O6
+         2JXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUBdTKbgVjhJGfbTrEurzcH+nNeSePKjVNTY6ArUh9yT1HFWfNhrqXce7DxCyhTxe0aXSCi34QgexGU9u1nwQ5BYd9PyEwNSiBtiA==
+X-Gm-Message-State: AOJu0Yy5mEgLf/bfGm/k0mFhyN8pCMZM5Q3tGQxxTEngOpdQAqQJldIM
+	z6R+AUCtyPbiSqAhI+lySNAaHIRg4X0FXJmy++8oEFERdCTHhnhI/FlvIyqEaBkM3TucOfhArUH
+	voUAibti2/jtqzEhaicUBSyDZAvk//c5R5ccV2XY3JrH+5d0nt/+AUtI=
+X-Google-Smtp-Source: AGHT+IH3iHj+p778Prfz/op9yzVlc6IHlFlrPUAXxBsVYGX2Oi9UKR/mPnmrlFcE5vwiibiZppLH/ePr4F6EWdAQHqQL9B0e0mpp
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHGBFB2SFmC8VxKQ--.51816S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7JFyUKF13GrWkWr17Cr1kAFb_yoWDtwcEg3
-	y8Xa1rXa4fXrn3Ars3AF15Zrna9F1kWw17uF4FyFySvFy5Jas5CwnYyrn8CrWxWr4Y9rs8
-	Zr47XrWS9rykXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbwkFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_GcCE
-	3s1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-	1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-	cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-	ACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1l42xK82IYc2Ij64vIr41l
-	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-	cVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI
-	8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VU1a9aPUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Received: by 2002:a05:6638:37a6:b0:482:fa6e:648c with SMTP id
+ w38-20020a05663837a600b00482fa6e648cmr91745jal.3.1713498251939; Thu, 18 Apr
+ 2024 20:44:11 -0700 (PDT)
+Date: Thu, 18 Apr 2024 20:44:11 -0700
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000a1618b06166ae6d9@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-From: Zhang Yi <yi.zhang@huawei.com>
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-__filemap_get_folio() with FGP_WRITEBEGIN parameter has already wait
-for stable folio, so remove the redundant folio_wait_stable() in
-ext4_da_write_begin(), it was left over from the commit cc883236b792
-("ext4: drop unnecessary journal handle in delalloc write") that
-removed the retry getting page logic.
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-Fixes: cc883236b792 ("ext4: drop unnecessary journal handle in delalloc write")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+#syz fix: exact-commit-title
+
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+
 ---
- fs/ext4/inode.c | 3 ---
- 1 file changed, 3 deletions(-)
+[1] I expect the commit to be present in:
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 537803250ca9..6de6bf57699b 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2887,9 +2887,6 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
- 	if (IS_ERR(folio))
- 		return PTR_ERR(folio);
- 
--	/* In case writeback began while the folio was unlocked */
--	folio_wait_stable(folio);
--
- #ifdef CONFIG_FS_ENCRYPTION
- 	ret = ext4_block_write_begin(folio, pos, len, ext4_da_get_block_prep);
- #else
--- 
-2.39.2
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
