@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-2168-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2167-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F0908B01AA
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Apr 2024 08:19:51 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 167508B01A8
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Apr 2024 08:19:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 50B641C221B9
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Apr 2024 06:19:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4C7FCB2274B
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Apr 2024 06:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 675CC157463;
-	Wed, 24 Apr 2024 06:19:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D58E4156F40;
+	Wed, 24 Apr 2024 06:19:13 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 140E1156C62;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BC4E156C5F;
 	Wed, 24 Apr 2024 06:19:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1713939554; cv=none; b=SyzNVS5lmdJ5ag2+/KqTGaN3ZYI5vlph7n9ceS5nFdJSYWjLGiPNHKoR/fjD3bpD85jgMd33z+zpZwV6+0rqeJQ9gnK9oz49qrkKy5jKWgWscT2Qarwkrxom9OOSxfScKGvyM6LXmjNunDXj4uPbZm8yWdUKKyMJCd3IslsbKg4=
+	t=1713939553; cv=none; b=AJuAG0OsPD3LbAqRLeJ6A9GAOWseVlPQ3zWCTgccWMkybwWaGf6DJli9C8Q9Yjtp735WaSxwrVMTRLLyrNN5nwaBJ1ShxA8opNcoSzbE82rBNdbLce5hO6cdCalVHeQs2X82HmN+mQy3fgPcOksI3FD10d62RsvoXjbESXDMlg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1713939554; c=relaxed/simple;
-	bh=DRLKy6PWpcyAW3cnassTtwoi1nM6lNE0qZRpoZdKvMk=;
+	s=arc-20240116; t=1713939553; c=relaxed/simple;
+	bh=xrcKKyueyRmWYlrLSjxKDPS0MeWA/AvpTFX4TJN6LYU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=YcxHTHmIVckzv2CRabi8uuxs7K7tj+Szzg5EEaqItrYhpylHj1XNf9fd+XYn19Sm1FrvuZ0+pLb52cw5xVKJxMtC7OLpppZvwrpHY/njKGOhslSXh79PCzqYNepmddLJPyKDOcvRv7EEwzBZBHukXD3+h5ctvpC86cpShvTil90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=LALr25LtyaKchOU74LbtgtJ4Ygv97rUA5mqFkX7PuPJjajfnh82TnkZKAa88SqNJGroIwXHa1eJps7JSt8FUXFIo52GyvPAm0fEUGC3hRiUmu/9djSfReEH0QjjFYxK243R5f5HO7Xmta1uVCbQ+xvZWxHjNayCvmhzINV6A6og=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VPTMm30K6z4f3jHV;
-	Wed, 24 Apr 2024 14:19:00 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VPTMl0n15z4f3n6M;
+	Wed, 24 Apr 2024 14:18:59 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id ECC381A115C;
-	Wed, 24 Apr 2024 14:19:07 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 4D3CF1A0572;
+	Wed, 24 Apr 2024 14:19:08 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGRJZpChmpfZBKw--.32510S4;
-	Wed, 24 Apr 2024 14:19:07 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgBHGRJZpChmpfZBKw--.32510S5;
+	Wed, 24 Apr 2024 14:19:08 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca,
@@ -46,9 +46,9 @@ To: tytso@mit.edu,
 Cc: jack@suse.cz,
 	ojaswin@linux.ibm.com,
 	ritesh.list@gmail.com
-Subject: [PATCH v3 2/5] ext4: add test_mb_mark_used_cost to estimate cost of mb_mark_used
-Date: Wed, 24 Apr 2024 14:19:01 +0800
-Message-Id: <20240424061904.987525-3-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 3/5] ext4: call ext4_mb_mark_free_simple to free continuous bits in found chunk
+Date: Wed, 24 Apr 2024 14:19:02 +0800
+Message-Id: <20240424061904.987525-4-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240424061904.987525-1-shikemeng@huaweicloud.com>
 References: <20240424061904.987525-1-shikemeng@huaweicloud.com>
@@ -59,13 +59,13 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHGRJZpChmpfZBKw--.32510S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7uF4fJr1xury7Aw48WryxAFb_yoW5Jr4kpa
-	yjkF1Ykr4rWws7uw4fGws7Ww1rKw4kZr48GryxWr9YqF47AFyfC3Z7tFn8Gr48trs7Xrn8
-	uFyqqFy7G397CFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUXw
-	A2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
+X-CM-TRANSID:cCh0CgBHGRJZpChmpfZBKw--.32510S5
+X-Coremail-Antispam: 1UD129KBjvJXoWxAFy8Jr4rtr15tr17Cr1UAwb_yoW5Zr48pF
+	43GrW3Gr4rJr929FsrCr1qg34rKw4vyFy5GayfWw1rKFnxAr9Yvr95GrnxZ34kJrWfJ3W0
+	ya1UurW5Gw47Ka7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvGb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUWw
+	A2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxS
 	w2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxV
 	W8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v2
 	6rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMc
@@ -75,85 +75,103 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7uF4fJr1xury7Aw48WryxAFb_yoW5Jr4kpa
 	17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcV
 	C0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY
 	6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa
-	73UjIFyTuYvjxU2_MaUUUUU
+	73UjIFyTuYvjxUFYFCUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Add test_mb_mark_used_cost to estimate cost of mb_mark_used
+In mb_mark_used, we will find free chunk and mark it inuse. For chunk
+in mid of passed range, we could simply mark whole chunk inuse. For chunk
+at end of range, we may need to mark a continuous bits at end of part of
+chunk inuse and keep rest part of chunk free. To only mark a part of
+chunk inuse, we firstly mark whole chunk inuse and then mark a continuous
+range at end of chunk free.
+Function mb_mark_used does several times of "mb_find_buddy; mb_clear_bit;
+..." to mark a continuous range free which can be done by simply calling
+ext4_mb_mark_free_simple which free continuous bits in a more effective
+way.
+Just call ext4_mb_mark_free_simple in mb_mark_used to use existing and
+effective code to free continuous blocks in chunk at end of passed range.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/mballoc-test.c | 52 ++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 52 insertions(+)
+ fs/ext4/mballoc.c | 38 +++++++++++++++++++++-----------------
+ 1 file changed, 21 insertions(+), 17 deletions(-)
 
-diff --git a/fs/ext4/mballoc-test.c b/fs/ext4/mballoc-test.c
-index 044ca5238f41..df482782d695 100644
---- a/fs/ext4/mballoc-test.c
-+++ b/fs/ext4/mballoc-test.c
-@@ -859,6 +859,56 @@ static void test_mb_free_blocks(struct kunit *test)
- 	ext4_mb_unload_buddy(&e4b);
- }
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index a61fc52956b2..5acf413808a2 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2040,13 +2040,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+ 	int ord;
+ 	int mlen = 0;
+ 	int max = 0;
+-	int cur;
+ 	int start = ex->fe_start;
+ 	int len = ex->fe_len;
+ 	unsigned ret = 0;
+ 	int len0 = len;
+ 	void *buddy;
+-	bool split = false;
++	int ord_start, ord_end;
  
-+#define COUNT_FOR_ESTIMATE 100000
-+static void test_mb_mark_used_cost(struct kunit *test)
-+{
-+	struct ext4_buddy e4b;
-+	struct super_block *sb = (struct super_block *)test->priv;
-+	struct ext4_free_extent ex;
-+	int ret;
-+	struct test_range ranges[TEST_RANGE_COUNT];
-+	int i, j;
-+	unsigned long start, end, all = 0;
+ 	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
+ 	BUG_ON(e4b->bd_group != ex->fe_group);
+@@ -2071,16 +2070,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+ 
+ 	/* let's maintain buddy itself */
+ 	while (len) {
+-		if (!split)
+-			ord = mb_find_order_for_block(e4b, start);
++		ord = mb_find_order_for_block(e4b, start);
+ 
+ 		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
+ 			/* the whole chunk may be allocated at once! */
+ 			mlen = 1 << ord;
+-			if (!split)
+-				buddy = mb_find_buddy(e4b, ord, &max);
+-			else
+-				split = false;
++			buddy = mb_find_buddy(e4b, ord, &max);
+ 			BUG_ON((start >> ord) >= max);
+ 			mb_set_bit(start >> ord, buddy);
+ 			e4b->bd_info->bb_counters[ord]--;
+@@ -2094,20 +2089,29 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+ 		if (ret == 0)
+ 			ret = len | (ord << 16);
+ 
+-		/* we have to split large buddy */
+ 		BUG_ON(ord <= 0);
+ 		buddy = mb_find_buddy(e4b, ord, &max);
+ 		mb_set_bit(start >> ord, buddy);
+ 		e4b->bd_info->bb_counters[ord]--;
+ 
+-		ord--;
+-		cur = (start >> ord) & ~1U;
+-		buddy = mb_find_buddy(e4b, ord, &max);
+-		mb_clear_bit(cur, buddy);
+-		mb_clear_bit(cur + 1, buddy);
+-		e4b->bd_info->bb_counters[ord]++;
+-		e4b->bd_info->bb_counters[ord]++;
+-		split = true;
++		ord_start = (start >> ord) << ord;
++		ord_end = ord_start + (1 << ord);
++		/* first chunk */
++		if (start > ord_start)
++			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
++						 ord_start, start - ord_start,
++						 e4b->bd_info);
 +
-+	/* buddy cache assumes that each page contains at least one block */
-+	if (sb->s_blocksize > PAGE_SIZE)
-+		kunit_skip(test, "blocksize exceeds pagesize");
-+
-+	ret = ext4_mb_load_buddy(sb, TEST_GOAL_GROUP, &e4b);
-+	KUNIT_ASSERT_EQ(test, ret, 0);
-+
-+	ex.fe_group = TEST_GOAL_GROUP;
-+	for (j = 0; j < COUNT_FOR_ESTIMATE; j++) {
-+		mbt_generate_test_ranges(sb, ranges, TEST_RANGE_COUNT);
-+		start = jiffies;
-+		for (i = 0; i < TEST_RANGE_COUNT; i++) {
-+			if (ranges[i].len == 0)
-+				continue;
-+
-+			ex.fe_start = ranges[i].start;
-+			ex.fe_len = ranges[i].len;
-+			ext4_lock_group(sb, TEST_GOAL_GROUP);
-+			mb_mark_used(&e4b, &ex);
-+			ext4_unlock_group(sb, TEST_GOAL_GROUP);
++		/* last chunk */
++		if (start + len < ord_end) {
++			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
++						 start + len,
++						 ord_end - (start + len),
++						 e4b->bd_info);
++			break;
 +		}
-+		end = jiffies;
-+		all += (end - start);
-+
-+		for (i = 0; i < TEST_RANGE_COUNT; i++) {
-+			if (ranges[i].len == 0)
-+				continue;
-+
-+			ext4_lock_group(sb, TEST_GOAL_GROUP);
-+			mb_free_blocks(NULL, &e4b, ranges[i].start,
-+				       ranges[i].len);
-+			ext4_unlock_group(sb, TEST_GOAL_GROUP);
-+		}
-+	}
-+
-+	kunit_info(test, "costed jiffies %lu\n", all);
-+	ext4_mb_unload_buddy(&e4b);
-+}
-+
- static const struct mbt_ext4_block_layout mbt_test_layouts[] = {
- 	{
- 		.blocksize_bits = 10,
-@@ -901,6 +951,8 @@ static struct kunit_case mbt_test_cases[] = {
- 	KUNIT_CASE_PARAM(test_mb_mark_used, mbt_layouts_gen_params),
- 	KUNIT_CASE_PARAM(test_mb_free_blocks, mbt_layouts_gen_params),
- 	KUNIT_CASE_PARAM(test_mark_diskspace_used, mbt_layouts_gen_params),
-+	KUNIT_CASE_PARAM_ATTR(test_mb_mark_used_cost, mbt_layouts_gen_params,
-+			      { .speed = KUNIT_SPEED_SLOW }),
- 	{}
- };
++		len = start + len - ord_end;
++		start = ord_end;
+ 	}
+ 	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
  
 -- 
 2.30.0
