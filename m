@@ -1,60 +1,101 @@
-Return-Path: <linux-ext4+bounces-2188-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2189-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id F310E8B232E
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 15:53:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 507A48B25C2
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 17:56:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 257E9B22CE0
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 13:53:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B9AB71F228CB
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 15:56:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97CFA149DE5;
-	Thu, 25 Apr 2024 13:53:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90E9514C594;
+	Thu, 25 Apr 2024 15:56:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NL2h/pvk"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DgRuxTSK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oCaagx+/";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DgRuxTSK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oCaagx+/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E898D1494D2;
-	Thu, 25 Apr 2024 13:53:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7715E1CF8A;
+	Thu, 25 Apr 2024 15:56:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714053223; cv=none; b=Knv1k21y9IyeLgOl6X/VCorbL1B1zsBiBB+5929X9wsC8KxFN2CeRHYOw8MFbPEhLQpp3rezh91AfcFPaeo3IaCQtHL4uNRXpcj263O+jmGO6Oo13kPuCi+ipYAgMvOEOUE1V0uo+tgOJT5dRVf5xc5x29o2FXPiT+EMytyWk80=
+	t=1714060605; cv=none; b=mOPicmK/HOWCgM21zPWDXKpprijRgj4pGXl7gKma+hHGDg3gFk09N4qyK5LM7O6Zsb92ouKU8QywHlS4mu91NS8rda2JYahnA2nauVpvD2sQaP0Qkn8HxS7TWp1vTy43tzDJAAMSuKHDmVwPGA9tdlAyoFeLihPKwUNwLoQ2Klo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714053223; c=relaxed/simple;
-	bh=kTygqRn5TnrYiQq0EdL4g698bxw2DbF8Yc06ogmZQjk=;
+	s=arc-20240116; t=1714060605; c=relaxed/simple;
+	bh=rminTBqlI9Ejh5/fJ6myvWUCTfKYJWGA04MMjsdiw9o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=EEssbvq+4G1A4TZKermktnh7rLGvuKUeei3QECMTRIYfuBFIFZI4L8vHtoAt098syTFMkSEp+w2ThsK0w6RsPJ7yTres85yM96lrBfAoodAigokme+wyhG6h/9QzA+YbwRSoOL69X1yToJnrY5BYH1gSw3teIShUo2Y+6dG8mt8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NL2h/pvk; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=5Wpcc2EluftTR3n+n1SeM6zbEpUWGx7QYSyu+jsGwMo=; b=NL2h/pvkiBcr+1dzLWdofK3E0b
-	sGfVi0Z4TZXvobq8MGiOimgjeTOXNDUIERbQH9ACUcD80ZDv15pW+25HpFYLPPbgaET0O9p5KlygX
-	/YwTAWH5i0VoYkpWU/YUmLjb0uRXo8tMKymVfT9ulCeTXNA4QUqkIItp4xqdvwOmJTUWUo1qCLQcb
-	RD3aA4Ps/SXf38DC1rrFmiBCirMkTktH8MXECpuUOB+IHrPeZm0vWlZq0vPaRsVbieJCcjhozR40h
-	y1GvB3/jgIwfWxLdqS+I+TB/OFKZyEovpxsVOzWW3iat/OX/VQX683/LgNCSGHt4GeOOvZsNdrZgN
-	ZqhHHHaQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rzzXZ-000000039NX-2m4Q;
-	Thu, 25 Apr 2024 13:53:33 +0000
-Date: Thu, 25 Apr 2024 14:53:33 +0100
-From: Matthew Wilcox <willy@infradead.org>
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>
-Subject: Re: [RFCv3 6/7] iomap: Optimize iomap_read_folio
-Message-ID: <ZipgXVyehTovrRmp@casper.infradead.org>
-References: <cover.1714046808.git.ritesh.list@gmail.com>
- <a01641c22af0856fa2b19ab00a6660706056666d.1714046808.git.ritesh.list@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WxXmoe/oWTRkPxQ5TMfRT7fB+tQ8OiARVRVxmbJpLd/qF871+PS/+Oml9v4aTa7+E7QE/bRWZPiZN5oXbOjZ0NVl+71ocIxOvabQSX/534eO8/dKi+0QEJIu86Y3xssJIcRhU+Hw8VWsbsQc8CdAlNcwD8rzj9vzm95GaPYK29s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DgRuxTSK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oCaagx+/; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DgRuxTSK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oCaagx+/; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 54BBF33F1F;
+	Thu, 25 Apr 2024 15:56:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714060601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/Q9m8/hk1j+u8N+t6hPEwgeP01chLTSivyKGByuv6ng=;
+	b=DgRuxTSKp4+3uQrw3RPS6ZCzegxf7Yw8dw8Rb6SG6VqWFzO5NAGc0cP2n76FwIK7ynZcmz
+	Ney5MVb114c3Ad1rLG+4i9spTtobD5fPbEEuMsetF2ttQuXWpaSFs1LJhffL0stUf52Jj9
+	pPVay+pp0l03Rb3TS/QOPI9oLcqMReE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714060601;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/Q9m8/hk1j+u8N+t6hPEwgeP01chLTSivyKGByuv6ng=;
+	b=oCaagx+/fKSnXJyLknWs05M0hCLQ+NLfz9l5RBD6xgkqmeXLfzHVXByckDa46NQiemPg/g
+	T7Lo76ja+dtFe+Bg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1714060601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/Q9m8/hk1j+u8N+t6hPEwgeP01chLTSivyKGByuv6ng=;
+	b=DgRuxTSKp4+3uQrw3RPS6ZCzegxf7Yw8dw8Rb6SG6VqWFzO5NAGc0cP2n76FwIK7ynZcmz
+	Ney5MVb114c3Ad1rLG+4i9spTtobD5fPbEEuMsetF2ttQuXWpaSFs1LJhffL0stUf52Jj9
+	pPVay+pp0l03Rb3TS/QOPI9oLcqMReE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1714060601;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/Q9m8/hk1j+u8N+t6hPEwgeP01chLTSivyKGByuv6ng=;
+	b=oCaagx+/fKSnXJyLknWs05M0hCLQ+NLfz9l5RBD6xgkqmeXLfzHVXByckDa46NQiemPg/g
+	T7Lo76ja+dtFe+Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4BC0C1393C;
+	Thu, 25 Apr 2024 15:56:41 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id D4p2Ejl9Kma8GgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 25 Apr 2024 15:56:41 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id D2C73A0861; Thu, 25 Apr 2024 17:56:40 +0200 (CEST)
+Date: Thu, 25 Apr 2024 17:56:40 +0200
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2 3/9] ext4: trim delalloc extent
+Message-ID: <20240425155640.ktvqqwhteitysaby@quack3>
+References: <20240410034203.2188357-1-yi.zhang@huaweicloud.com>
+ <20240410034203.2188357-4-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,24 +104,102 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <a01641c22af0856fa2b19ab00a6660706056666d.1714046808.git.ritesh.list@gmail.com>
+In-Reply-To: <20240410034203.2188357-4-yi.zhang@huaweicloud.com>
+X-Spam-Level: ****
+X-Spamd-Result: default: False [4.30 / 50.00];
+	BAYES_SPAM(5.10)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Spam-Score: 4.30
+X-Spam-Flag: NO
 
-On Thu, Apr 25, 2024 at 06:58:50PM +0530, Ritesh Harjani (IBM) wrote:
-> +static loff_t iomap_read_folio_iter(const struct iomap_iter *iter,
-> +		struct iomap_readpage_ctx *ctx)
-> +{
-> +	struct folio *folio = ctx->cur_folio;
-> +	size_t pos = offset_in_folio(folio, iter->pos);
+On Wed 10-04-24 11:41:57, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> The cached delalloc or hole extent should be trimed to the map->map_len
+> if we map delalloc blocks in ext4_da_map_blocks(). But it doesn't
+> trigger any issue now because the map->m_len is always set to one and we
+> always insert one delayed block once a time. Fix this by trim the extent
+> once we get one from the cached extent tree, prearing for mapping a
+> extent with multiple delalloc blocks.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-"pos" is position in file.  You should call this 'offset'.
+Well, but we already do the trimming in ext4_da_map_blocks(), don't we? You
+just move it to a different place... Or do you mean that we actually didn't
+set 'map' at all in some cases and now we do? In either case the 'map'
+handling looks a bit sloppy in ext4_da_map_blocks() as e.g. the
+'add_delayed' case doesn't seem to bother with properly setting 'map' based
+on what it does. So maybe we should clean that up to always set 'map' just
+before returning at the same place where we update the 'bh'? And maybe bh
+update could be updated in some common helper because it's content is
+determined by the 'map' content?
 
-> +	loff_t length = min_t(loff_t, folio_size(folio) - pos,
-> +			      iomap_length(iter));
-> +	loff_t done, ret;
+								Honza
+
+> ---
+>  fs/ext4/inode.c | 14 ++++++++++----
+>  1 file changed, 10 insertions(+), 4 deletions(-)
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 118b0497a954..e4043ddb07a5 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -1734,6 +1734,11 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>  
+>  	/* Lookup extent status tree firstly */
+>  	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
+> +		retval = es.es_len - (iblock - es.es_lblk);
+> +		if (retval > map->m_len)
+> +			retval = map->m_len;
+> +		map->m_len = retval;
 > +
-> +	for (done = 0; done < length; done += ret) {
-> +		ret = iomap_readpage_iter(iter, ctx, done);
-> +		if (ret <= 0)
-> +			return ret;
-> +	}
+>  		if (ext4_es_is_hole(&es))
+>  			goto add_delayed;
+>  
+> @@ -1750,10 +1755,6 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>  		}
+>  
+>  		map->m_pblk = ext4_es_pblock(&es) + iblock - es.es_lblk;
+> -		retval = es.es_len - (iblock - es.es_lblk);
+> -		if (retval > map->m_len)
+> -			retval = map->m_len;
+> -		map->m_len = retval;
+>  		if (ext4_es_is_written(&es))
+>  			map->m_flags |= EXT4_MAP_MAPPED;
+>  		else if (ext4_es_is_unwritten(&es))
+> @@ -1788,6 +1789,11 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>  	 * whitout holding i_rwsem and folio lock.
+>  	 */
+>  	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
+> +		retval = es.es_len - (iblock - es.es_lblk);
+> +		if (retval > map->m_len)
+> +			retval = map->m_len;
+> +		map->m_len = retval;
+> +
+>  		if (!ext4_es_is_hole(&es)) {
+>  			up_write(&EXT4_I(inode)->i_data_sem);
+>  			goto found;
+> -- 
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
