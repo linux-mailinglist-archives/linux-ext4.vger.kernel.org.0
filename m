@@ -1,207 +1,169 @@
-Return-Path: <linux-ext4+bounces-2177-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2178-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7563E8B179B
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 01:59:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 245DB8B1854
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 03:07:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E2F591F24A2E
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Apr 2024 23:59:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A3A0B24A06
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 01:07:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8201F16F27B;
-	Wed, 24 Apr 2024 23:59:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="X33Hq1IQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BF011711;
+	Thu, 25 Apr 2024 01:07:35 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8C616F278
-	for <linux-ext4@vger.kernel.org>; Wed, 24 Apr 2024 23:59:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F5A10A0A
+	for <linux-ext4@vger.kernel.org>; Thu, 25 Apr 2024 01:07:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714003178; cv=none; b=ak+GHi5aOiXvsJkIrDNA9N5NwiKA0hNFlPlUxakIRujwt5JBEbAyw7OWIrFJhA1ZoP2+LzEHxt+rPtvE+9ZQbsCN2MrQL10OXNsiQ/6D+ldmNvpSBlXgN4sPJELfe72pri0ai6/e2+RTJeLgBPcIsEzIDC3ThAdpD9jlRYiLDM0=
+	t=1714007254; cv=none; b=icdYGpnIYbZAphGK8oIwd7ByeMfTMbaBxVLtcDsbPGhve7MPN2WO1Iwrc4o823ym/ATZ0hwH/GDRW0ubNrNAAIzWVgDUh/W2zP1XuIQ13fSPC7370Ycc7tIFhPRjwcoP7zq8LVqmYwHObk1DY1nMuDTlDgkeU0DGfVijUdFt90s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714003178; c=relaxed/simple;
-	bh=Uzop+8nHAYmdh8DmhRqPSaymG2Yn4AxmfS9aV6Tem4M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Dj3mgXw8BXOycwwO6Y1X/3gHp35kulkyzV7z+JJg7Uz8Bcnlgz+DiNG5o9mb4j2jxFLHPSS7gGFiv70Jd5xD70V31QRQSsnw+KU95bV0E0qYXALS6J66xN1h+Se1pUTfKW/t/gXohZTHuGOGYiqfD84FGUt+bZ0oYYPsAAL6bhQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=X33Hq1IQ; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e5715a9ebdso3116425ad.2
-        for <linux-ext4@vger.kernel.org>; Wed, 24 Apr 2024 16:59:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1714003176; x=1714607976; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=RCTonMb076AQlhzsCPqQ1hCXHyvjA1NeoSKo3KByWoA=;
-        b=X33Hq1IQzOICmGTYIjPJPy3NJcsMLvLP6BF0lVRWo2t0lityPVZWuUHC44FngdY7Gn
-         ZRJ9UAssKOY7m8s/NibWsWXfZvg7mVXjvLJbgmH7JCRnzQlQKMYG8GbtXBrjc/NHjVyX
-         2alyDuLOKvey549zk+KvXWfDaWd62/5X5K8DU=
+	s=arc-20240116; t=1714007254; c=relaxed/simple;
+	bh=oXD77TlEA+KoDVeVhKX9xrXf+Cy7+f6lUcx09x4ptI0=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZU798ftJaSuTKjbTN+6nHJV3qxcKhSX3t+umEprUMLEM8bphGMq7LEZJwJX265XRisMFZh0Ojn5uKv2l6k0LufSncOuOWeas8hJjeBDm3o5LOeH6yhQmfa7e06K5wg+eLH8v3K0BSNlUo369rr1eP8xJZ41lbMEoP3LBx5LHUFM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7ddf0219685so51654539f.3
+        for <linux-ext4@vger.kernel.org>; Wed, 24 Apr 2024 18:07:33 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714003176; x=1714607976;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RCTonMb076AQlhzsCPqQ1hCXHyvjA1NeoSKo3KByWoA=;
-        b=vaK6Xxug4DRyc7zDkuC4/QvHmZVzbZqz8/jY/fJvXknWOiAEma6H7KVkAgG8SGXern
-         7zicXiMVdDJ8zQEiF2X/KhIgAy/EUa0w7tKEHGRrO/ThtSkwaWfvYHhxL1ZK/InnoWYa
-         WRjS4sLD8tB5ZHVNGHriZrZ16pV/IhLLGKMjnIPeLyFs3KzAXKb/V3/4ujWsXO7kT7by
-         zR5xmZ7iWI1m+ptYJa0gchUweYeBnAKIQVNrI/s21YVkK/6/7SmAkYaCerQvr/U2/2Ly
-         jq6pKWe5Cl3X1thxRB6FcWwh6N8hSa8X3U504O98bYjGbVDN55mYT7ZLZkyjlc+lZEkZ
-         zlrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXxJ8ik6P/EtL8SpFEupyAY5E0Fm4oZZ23JKI95um/EcMfJdGUNCnbBnUW/S+Y4I7dlKCpGx0zWjiTzVqY/83RtxocmZiGqDMiDWQ==
-X-Gm-Message-State: AOJu0Ywr9GohI7gxvJcfa2z8beON87JWS5xyT84tJsa2EMbGlwTjlWZR
-	9/DvqiyPzqrNFCUfX3f5sVzcbyw+cYzAxfK+LfqEOxOIdFtCc3QxUxx6ZL8s9Q==
-X-Google-Smtp-Source: AGHT+IHKqaR8hPRcwls+numOGMFqe07vfLrEj7Bd42CbrHC0kpIWlHWWHQMzzOVPRn+FCg+DWi9LVQ==
-X-Received: by 2002:a17:902:d486:b0:1e5:8175:4968 with SMTP id c6-20020a170902d48600b001e581754968mr5306181plg.9.1714003175958;
-        Wed, 24 Apr 2024 16:59:35 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id j12-20020a170902da8c00b001e27557050dsm12540139plx.178.2024.04.24.16.59.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 24 Apr 2024 16:59:35 -0700 (PDT)
-Date: Wed, 24 Apr 2024 16:59:35 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Justin Stitt <justinstitt@google.com>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] ext4: replace deprecated strncpy with alternatives
-Message-ID: <202404241658.E0A17DE2E@keescook>
-References: <20240321-strncpy-fs-ext4-file-c-v1-1-36a6a09fef0c@google.com>
+        d=1e100.net; s=20230601; t=1714007252; x=1714612052;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CN7foOohRk9vq2WfV4A1ZYhtMDIkqy+Gz3ButiULe+w=;
+        b=rGONZKGe4vbq+81wt5k5oh2VL31MK04YaC33cccNxS1qvJn4UrPLuPOirbR1tJo5KA
+         PDmjJN3IpJZOuHGdVD/QIGiBFEh1UHsX8I8EALDr5XGo1DAgj4+PGSvnvc2hZ9Q9ZiRa
+         oszdYHYP4Rugvo/nGeSDrVYAlOX4w6cEJxWh/qqRCNzcVXh6NCSdm6n3cgc8cbScekRo
+         rfUEDjtOQwop6yJzqqXEH8NyFfYm95QDkh+pj5abUwqsYLTxiqwwocKqMsWkpOkVdQz5
+         DueEynKeAUIiMOqhMgLBlNzQ0G1Er/Owi5yVqNbc9f36yknKyW4Y0rGqqH35bhfqbX6C
+         vVRw==
+X-Forwarded-Encrypted: i=1; AJvYcCUi2K0m2VvzhjQZLdWaiDevxqbp3Cak1h0Zc3/hVpkwBIWB3JQ9+1WFvTnTNWtiPawPBYRIU6UW5XTWpDXJCv7AvA7lpDKtrdHMgQ==
+X-Gm-Message-State: AOJu0YwpjMcVrzTkGbv4kcuRXjf5Sxz/o6OiIfb/7ETYdLRIy1g0n7E4
+	ekRQy5gP5D+4vaXVBIvQRJU/+3z1xw4mp01ofVxdAZdcZ8xTQhsszYp9KoZ2hVMg6JtjRX8nQ4C
+	lvBMgRub2gFwFkXJRw7DFx4rGXEqFJYBRyvIYJWh07N8cW3248MYvreA=
+X-Google-Smtp-Source: AGHT+IE3a2tP38RQ+zKNUzmeTK0UIwp2l4ksdYXzw9xJQwy2OVsrBiLsWJ+Nuyem1mhBpOOsQXBG83GjM0e6TYwvz5SWMHufRCuN
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321-strncpy-fs-ext4-file-c-v1-1-36a6a09fef0c@google.com>
+X-Received: by 2002:a05:6602:2dc9:b0:7d5:d9ec:2ea1 with SMTP id
+ l9-20020a0566022dc900b007d5d9ec2ea1mr185239iow.4.1714007252664; Wed, 24 Apr
+ 2024 18:07:32 -0700 (PDT)
+Date: Wed, 24 Apr 2024 18:07:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000007010c50616e169f4@google.com>
+Subject: [syzbot] [ext4?] WARNING: locking bug in find_lock_lowest_rq
+From: syzbot <syzbot+9a3a26ce3bf119f0190b@syzkaller.appspotmail.com>
+To: jack@suse.com, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 21, 2024 at 01:03:10AM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> in file.c:
-> s_last_mounted is marked as __nonstring meaning it does not need to be
-> NUL-terminated. Let's instead use strtomem_pad() to copy bytes from the
-> string source to the byte array destination -- while also ensuring to
-> pad with zeroes.
-> 
-> in ioctl.c:
-> We can drop the memset and size argument in favor of using the new
-> 2-argument version of strscpy_pad() -- which was introduced with Commit
-> e6584c3964f2f ("string: Allow 2-argument strscpy()"). This guarantees
-> NUL-termination and NUL-padding on the destination buffer -- which seems
-> to be a requirement judging from this comment:
-> 
-> |	static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label)
-> |	{
-> |		char label[EXT4_LABEL_MAX + 1];
-> |
-> |		/*
-> |		 * EXT4_LABEL_MAX must always be smaller than FSLABEL_MAX because
-> |		 * FSLABEL_MAX must include terminating null byte, while s_volume_name
-> |		 * does not have to.
-> |		 */
-> 
-> in super.c:
-> s_first_error_func is marked as __nonstring meaning we can take the same
-> approach as in file.c; just use strtomem_pad()
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Hello,
 
-Hi Ted, are you able to pick this up for the ext4 tree? If it makes it
-easier, I can carry it in my tree instead...
+syzbot found the following issue on:
 
-Thanks!
+HEAD commit:    977b1ef51866 Merge tag 'block-6.9-20240420' of git://git.k..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1455666f180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d239903bd07761e5
+dashboard link: https://syzkaller.appspot.com/bug?extid=9a3a26ce3bf119f0190b
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d69c27180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d5920d180000
 
--Kees
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/08d7b6e107aa/disk-977b1ef5.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/9c5e543ffdcf/vmlinux-977b1ef5.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/04a6d79d2f69/bzImage-977b1ef5.xz
 
-> ---
-> Note: build-tested only.
-> 
-> Found with: $ rg "strncpy\("
-> ---
->  fs/ext4/file.c  | 3 +--
->  fs/ext4/ioctl.c | 3 +--
->  fs/ext4/super.c | 7 +++----
->  3 files changed, 5 insertions(+), 8 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index 54d6ff22585c..c675c0eb5f7e 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -844,8 +844,7 @@ static int ext4_sample_last_mounted(struct super_block *sb,
->  	if (err)
->  		goto out_journal;
->  	lock_buffer(sbi->s_sbh);
-> -	strncpy(sbi->s_es->s_last_mounted, cp,
-> -		sizeof(sbi->s_es->s_last_mounted));
-> +	strtomem_pad(sbi->s_es->s_last_mounted, cp, 0);
->  	ext4_superblock_csum_set(sb);
->  	unlock_buffer(sbi->s_sbh);
->  	ext4_handle_dirty_metadata(handle, NULL, sbi->s_sbh);
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index 7160a71044c8..dab7acd49709 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1150,9 +1150,8 @@ static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label
->  	 */
->  	BUILD_BUG_ON(EXT4_LABEL_MAX >= FSLABEL_MAX);
->  
-> -	memset(label, 0, sizeof(label));
->  	lock_buffer(sbi->s_sbh);
-> -	strncpy(label, sbi->s_es->s_volume_name, EXT4_LABEL_MAX);
-> +	strscpy_pad(label, sbi->s_es->s_volume_name);
->  	unlock_buffer(sbi->s_sbh);
->  
->  	if (copy_to_user(user_label, label, sizeof(label)))
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index cfb8449c731f..de16d045ca05 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -6130,8 +6130,8 @@ static void ext4_update_super(struct super_block *sb)
->  			__ext4_update_tstamp(&es->s_first_error_time,
->  					     &es->s_first_error_time_hi,
->  					     sbi->s_first_error_time);
-> -			strncpy(es->s_first_error_func, sbi->s_first_error_func,
-> -				sizeof(es->s_first_error_func));
-> +			strtomem_pad(es->s_first_error_func,
-> +				     sbi->s_first_error_func, 0);
->  			es->s_first_error_line =
->  				cpu_to_le32(sbi->s_first_error_line);
->  			es->s_first_error_ino =
-> @@ -6144,8 +6144,7 @@ static void ext4_update_super(struct super_block *sb)
->  		__ext4_update_tstamp(&es->s_last_error_time,
->  				     &es->s_last_error_time_hi,
->  				     sbi->s_last_error_time);
-> -		strncpy(es->s_last_error_func, sbi->s_last_error_func,
-> -			sizeof(es->s_last_error_func));
-> +		strtomem_pad(es->s_last_error_func, sbi->s_last_error_func, 0);
->  		es->s_last_error_line = cpu_to_le32(sbi->s_last_error_line);
->  		es->s_last_error_ino = cpu_to_le32(sbi->s_last_error_ino);
->  		es->s_last_error_block = cpu_to_le64(sbi->s_last_error_block);
-> 
-> ---
-> base-commit: a4145ce1e7bc247fd6f2846e8699473448717b37
-> change-id: 20240321-strncpy-fs-ext4-file-c-c983d942dd39
-> 
-> Best regards,
-> --
-> Justin Stitt <justinstitt@google.com>
-> 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+9a3a26ce3bf119f0190b@syzkaller.appspotmail.com
 
--- 
-Kees Cook
+------------[ cut here ]------------
+DEBUG_LOCKS_WARN_ON(1)
+WARNING: CPU: 0 PID: 11 at kernel/locking/lockdep.c:232 hlock_class kernel/locking/lockdep.c:232 [inline]
+WARNING: CPU: 0 PID: 11 at kernel/locking/lockdep.c:232 check_wait_context kernel/locking/lockdep.c:4773 [inline]
+WARNING: CPU: 0 PID: 11 at kernel/locking/lockdep.c:232 __lock_acquire+0x573/0x1fd0 kernel/locking/lockdep.c:5087
+Modules linked in:
+CPU: 0 PID: 11 Comm: kworker/u8:1 Not tainted 6.9.0-rc4-syzkaller-00266-g977b1ef51866 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
+RIP: 0010:hlock_class kernel/locking/lockdep.c:232 [inline]
+RIP: 0010:check_wait_context kernel/locking/lockdep.c:4773 [inline]
+RIP: 0010:__lock_acquire+0x573/0x1fd0 kernel/locking/lockdep.c:5087
+Code: 00 00 83 3d ee 8f 36 0e 00 75 23 90 48 c7 c7 40 b7 ca 8b 48 c7 c6 e0 b9 ca 8b e8 f8 f6 e5 ff 48 ba 00 00 00 00 00 fc ff df 90 <0f> 0b 90 90 90 31 db 48 81 c3 c4 00 00 00 48 89 d8 48 c1 e8 03 0f
+RSP: 0018:ffffc900001070d0 EFLAGS: 00010046
+RAX: 006b76d8e1927600 RBX: 0000000000001b80 RCX: ffff8880172abc00
+RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 000000000000001e R08: ffffffff81588072 R09: 1ffff1101728519a
+R10: dffffc0000000000 R11: ffffed101728519b R12: 0000000000000001
+R13: ffff8880172abc00 R14: 000000000000001e R15: ffff8880172ac7e8
+FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffdb8988bb8 CR3: 000000002e4fc000 CR4: 0000000000350ef0
+Call Trace:
+ <TASK>
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
+ _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
+ raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
+ _double_lock_balance kernel/sched/sched.h:2714 [inline]
+ double_lock_balance kernel/sched/sched.h:2759 [inline]
+ find_lock_lowest_rq+0x1e1/0x670 kernel/sched/rt.c:1942
+ push_rt_task+0x13f/0x7f0 kernel/sched/rt.c:2075
+ push_rt_tasks kernel/sched/rt.c:2125 [inline]
+ task_woken_rt+0x14c/0x220 kernel/sched/rt.c:2425
+ ttwu_do_activate+0x338/0x7e0 kernel/sched/core.c:3805
+ ttwu_queue kernel/sched/core.c:4057 [inline]
+ try_to_wake_up+0x88b/0x1470 kernel/sched/core.c:4378
+ autoremove_wake_function+0x16/0x110 kernel/sched/wait.c:384
+ __wake_up_common kernel/sched/wait.c:89 [inline]
+ __wake_up_common_lock+0x132/0x1e0 kernel/sched/wait.c:106
+ sub_reserved_credits fs/jbd2/transaction.c:213 [inline]
+ start_this_handle+0x1db0/0x22a0 fs/jbd2/transaction.c:442
+ jbd2_journal_start_reserved+0xe8/0x300 fs/jbd2/transaction.c:624
+ __ext4_journal_start_reserved+0x237/0x460 fs/ext4/ext4_jbd2.c:161
+ ext4_convert_unwritten_io_end_vec+0x34/0x170 fs/ext4/extents.c:4877
+ ext4_end_io_end fs/ext4/page-io.c:186 [inline]
+ ext4_do_flush_completed_IO fs/ext4/page-io.c:259 [inline]
+ ext4_end_io_rsv_work+0x36c/0x6f0 fs/ext4/page-io.c:273
+ process_one_work kernel/workqueue.c:3254 [inline]
+ process_scheduled_works+0xa12/0x17c0 kernel/workqueue.c:3335
+ worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
+ kthread+0x2f2/0x390 kernel/kthread.c:388
+ ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
