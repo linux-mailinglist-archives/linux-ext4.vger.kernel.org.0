@@ -1,169 +1,191 @@
-Return-Path: <linux-ext4+bounces-2178-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2179-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 245DB8B1854
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 03:07:49 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17EFE8B1B33
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 08:45:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A3A0B24A06
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 01:07:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48EDE1C20F26
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Apr 2024 06:45:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32BF011711;
-	Thu, 25 Apr 2024 01:07:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87B405A10A;
+	Thu, 25 Apr 2024 06:45:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72F5A10A0A
-	for <linux-ext4@vger.kernel.org>; Thu, 25 Apr 2024 01:07:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C21053E15
+	for <linux-ext4@vger.kernel.org>; Thu, 25 Apr 2024 06:45:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714007254; cv=none; b=icdYGpnIYbZAphGK8oIwd7ByeMfTMbaBxVLtcDsbPGhve7MPN2WO1Iwrc4o823ym/ATZ0hwH/GDRW0ubNrNAAIzWVgDUh/W2zP1XuIQ13fSPC7370Ycc7tIFhPRjwcoP7zq8LVqmYwHObk1DY1nMuDTlDgkeU0DGfVijUdFt90s=
+	t=1714027504; cv=none; b=F/YvTsJtQgSSiOLtCdQ/8Fp3M9v1v/Ecv4ogHOA1shHptCQ8ViOxWFPb73DlsjXPvb967fRgvh3AC/uRw02C5NwNdw50x0b24w2D6+K+2AXpt178iWkMz2pHnXg11jLlxn2I6/BZYO3Jo4YyES66qhobnc0hZR6Zl+hsNJJBBck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714007254; c=relaxed/simple;
-	bh=oXD77TlEA+KoDVeVhKX9xrXf+Cy7+f6lUcx09x4ptI0=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZU798ftJaSuTKjbTN+6nHJV3qxcKhSX3t+umEprUMLEM8bphGMq7LEZJwJX265XRisMFZh0Ojn5uKv2l6k0LufSncOuOWeas8hJjeBDm3o5LOeH6yhQmfa7e06K5wg+eLH8v3K0BSNlUo369rr1eP8xJZ41lbMEoP3LBx5LHUFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7ddf0219685so51654539f.3
-        for <linux-ext4@vger.kernel.org>; Wed, 24 Apr 2024 18:07:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714007252; x=1714612052;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CN7foOohRk9vq2WfV4A1ZYhtMDIkqy+Gz3ButiULe+w=;
-        b=rGONZKGe4vbq+81wt5k5oh2VL31MK04YaC33cccNxS1qvJn4UrPLuPOirbR1tJo5KA
-         PDmjJN3IpJZOuHGdVD/QIGiBFEh1UHsX8I8EALDr5XGo1DAgj4+PGSvnvc2hZ9Q9ZiRa
-         oszdYHYP4Rugvo/nGeSDrVYAlOX4w6cEJxWh/qqRCNzcVXh6NCSdm6n3cgc8cbScekRo
-         rfUEDjtOQwop6yJzqqXEH8NyFfYm95QDkh+pj5abUwqsYLTxiqwwocKqMsWkpOkVdQz5
-         DueEynKeAUIiMOqhMgLBlNzQ0G1Er/Owi5yVqNbc9f36yknKyW4Y0rGqqH35bhfqbX6C
-         vVRw==
-X-Forwarded-Encrypted: i=1; AJvYcCUi2K0m2VvzhjQZLdWaiDevxqbp3Cak1h0Zc3/hVpkwBIWB3JQ9+1WFvTnTNWtiPawPBYRIU6UW5XTWpDXJCv7AvA7lpDKtrdHMgQ==
-X-Gm-Message-State: AOJu0YwpjMcVrzTkGbv4kcuRXjf5Sxz/o6OiIfb/7ETYdLRIy1g0n7E4
-	ekRQy5gP5D+4vaXVBIvQRJU/+3z1xw4mp01ofVxdAZdcZ8xTQhsszYp9KoZ2hVMg6JtjRX8nQ4C
-	lvBMgRub2gFwFkXJRw7DFx4rGXEqFJYBRyvIYJWh07N8cW3248MYvreA=
-X-Google-Smtp-Source: AGHT+IE3a2tP38RQ+zKNUzmeTK0UIwp2l4ksdYXzw9xJQwy2OVsrBiLsWJ+Nuyem1mhBpOOsQXBG83GjM0e6TYwvz5SWMHufRCuN
+	s=arc-20240116; t=1714027504; c=relaxed/simple;
+	bh=wF50bLnfJdfbhaI1FqktJjQmuR4UDrRIOuTf//v6304=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=dxDgDxBHj+PbrMSHD8fMOqiPMWyR0YJCVFIhg6v+jfSyOJgEV01HU2H/lqyf1MxKthV2jlNRLLutW/VVbg0naKm6A2MP7CzVK9xoLSjqsCu+8KyUVjTNhIFB8nhUv2xb0V7Vibg5O8qqwqsW78Kx1STnpe4udqNHpLYEIIhtuxM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VQ5v35874z4f3nJk
+	for <linux-ext4@vger.kernel.org>; Thu, 25 Apr 2024 14:44:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id EEC091A0175
+	for <linux-ext4@vger.kernel.org>; Thu, 25 Apr 2024 14:44:56 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RHn+ylmNN+dKw--.60887S4;
+	Thu, 25 Apr 2024 14:44:56 +0800 (CST)
+From: Ye Bin <yebin@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org
+Cc: jack@suse.cz,
+	Ye Bin <yebin10@huawei.com>
+Subject: [PATCH v3] jbd2: avoid mount failed when commit block is partial submitted
+Date: Thu, 25 Apr 2024 14:45:15 +0800
+Message-Id: <20240425064515.836633-1-yebin@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:2dc9:b0:7d5:d9ec:2ea1 with SMTP id
- l9-20020a0566022dc900b007d5d9ec2ea1mr185239iow.4.1714007252664; Wed, 24 Apr
- 2024 18:07:32 -0700 (PDT)
-Date: Wed, 24 Apr 2024 18:07:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000007010c50616e169f4@google.com>
-Subject: [syzbot] [ext4?] WARNING: locking bug in find_lock_lowest_rq
-From: syzbot <syzbot+9a3a26ce3bf119f0190b@syzkaller.appspotmail.com>
-To: jack@suse.com, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RHn+ylmNN+dKw--.60887S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxCryxGrWkWryrZw48AF1rXrb_yoWrGr1fpw
+	4UA3ZxKFWDur12vFn3Jr4DXFya9a1vya4DWrsFkwn5Za9xGrZ7Kr97tF1aqrW5tF93Z3sa
+	9F15ArWqkw12k37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUgKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCj
+	c4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4
+	CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1x
+	MIIF0xvE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJV
+	Cq3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBI
+	daVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
+X-CM-SenderInfo: p1hex046kxt4xhlfz01xgou0bp/
 
-Hello,
+From: Ye Bin <yebin10@huawei.com>
 
-syzbot found the following issue on:
+We encountered a problem that the file system could not be mounted in
+the power-off scenario. The analysis of the file system mirror shows that
+only part of the data is written to the last commit block.
+The valid data of the commit block is concentrated in the first sector.
+However, the data of the entire block is involved in the checksum calculation.
+For different hardware, the minimum atomic unit may be different.
+If the checksum of a committed block is incorrect, clear the data except the
+'commit_header' and then calculate the checksum. If the checkusm is correct,
+it is considered that the block is partially committed. However, if there are
+valid description/revoke blocks, it is considered that the data is abnormal
+and the log replay is stopped.
 
-HEAD commit:    977b1ef51866 Merge tag 'block-6.9-20240420' of git://git.k..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=1455666f180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d239903bd07761e5
-dashboard link: https://syzkaller.appspot.com/bug?extid=9a3a26ce3bf119f0190b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10d69c27180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10d5920d180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/08d7b6e107aa/disk-977b1ef5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/9c5e543ffdcf/vmlinux-977b1ef5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/04a6d79d2f69/bzImage-977b1ef5.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+9a3a26ce3bf119f0190b@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-DEBUG_LOCKS_WARN_ON(1)
-WARNING: CPU: 0 PID: 11 at kernel/locking/lockdep.c:232 hlock_class kernel/locking/lockdep.c:232 [inline]
-WARNING: CPU: 0 PID: 11 at kernel/locking/lockdep.c:232 check_wait_context kernel/locking/lockdep.c:4773 [inline]
-WARNING: CPU: 0 PID: 11 at kernel/locking/lockdep.c:232 __lock_acquire+0x573/0x1fd0 kernel/locking/lockdep.c:5087
-Modules linked in:
-CPU: 0 PID: 11 Comm: kworker/u8:1 Not tainted 6.9.0-rc4-syzkaller-00266-g977b1ef51866 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
-RIP: 0010:hlock_class kernel/locking/lockdep.c:232 [inline]
-RIP: 0010:check_wait_context kernel/locking/lockdep.c:4773 [inline]
-RIP: 0010:__lock_acquire+0x573/0x1fd0 kernel/locking/lockdep.c:5087
-Code: 00 00 83 3d ee 8f 36 0e 00 75 23 90 48 c7 c7 40 b7 ca 8b 48 c7 c6 e0 b9 ca 8b e8 f8 f6 e5 ff 48 ba 00 00 00 00 00 fc ff df 90 <0f> 0b 90 90 90 31 db 48 81 c3 c4 00 00 00 48 89 d8 48 c1 e8 03 0f
-RSP: 0018:ffffc900001070d0 EFLAGS: 00010046
-RAX: 006b76d8e1927600 RBX: 0000000000001b80 RCX: ffff8880172abc00
-RDX: dffffc0000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: 000000000000001e R08: ffffffff81588072 R09: 1ffff1101728519a
-R10: dffffc0000000000 R11: ffffed101728519b R12: 0000000000000001
-R13: ffff8880172abc00 R14: 000000000000001e R15: ffff8880172ac7e8
-FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffdb8988bb8 CR3: 000000002e4fc000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5754
- _raw_spin_lock_nested+0x31/0x40 kernel/locking/spinlock.c:378
- raw_spin_rq_lock_nested+0x2a/0x140 kernel/sched/core.c:559
- _double_lock_balance kernel/sched/sched.h:2714 [inline]
- double_lock_balance kernel/sched/sched.h:2759 [inline]
- find_lock_lowest_rq+0x1e1/0x670 kernel/sched/rt.c:1942
- push_rt_task+0x13f/0x7f0 kernel/sched/rt.c:2075
- push_rt_tasks kernel/sched/rt.c:2125 [inline]
- task_woken_rt+0x14c/0x220 kernel/sched/rt.c:2425
- ttwu_do_activate+0x338/0x7e0 kernel/sched/core.c:3805
- ttwu_queue kernel/sched/core.c:4057 [inline]
- try_to_wake_up+0x88b/0x1470 kernel/sched/core.c:4378
- autoremove_wake_function+0x16/0x110 kernel/sched/wait.c:384
- __wake_up_common kernel/sched/wait.c:89 [inline]
- __wake_up_common_lock+0x132/0x1e0 kernel/sched/wait.c:106
- sub_reserved_credits fs/jbd2/transaction.c:213 [inline]
- start_this_handle+0x1db0/0x22a0 fs/jbd2/transaction.c:442
- jbd2_journal_start_reserved+0xe8/0x300 fs/jbd2/transaction.c:624
- __ext4_journal_start_reserved+0x237/0x460 fs/ext4/ext4_jbd2.c:161
- ext4_convert_unwritten_io_end_vec+0x34/0x170 fs/ext4/extents.c:4877
- ext4_end_io_end fs/ext4/page-io.c:186 [inline]
- ext4_do_flush_completed_IO fs/ext4/page-io.c:259 [inline]
- ext4_end_io_rsv_work+0x36c/0x6f0 fs/ext4/page-io.c:273
- process_one_work kernel/workqueue.c:3254 [inline]
- process_scheduled_works+0xa12/0x17c0 kernel/workqueue.c:3335
- worker_thread+0x86d/0xd70 kernel/workqueue.c:3416
- kthread+0x2f2/0x390 kernel/kthread.c:388
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
+Signed-off-by: Ye Bin <yebin10@huawei.com>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/jbd2/recovery.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 48 insertions(+)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index 1f7664984d6e..594bf02a709f 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -443,6 +443,27 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
+ 	return provided == cpu_to_be32(calculated);
+ }
+ 
++static bool jbd2_commit_block_csum_verify_partial(journal_t *j, void *buf)
++{
++	struct commit_header *h;
++	__be32 provided;
++	__u32 calculated;
++	void *tmpbuf;
++
++	tmpbuf = kzalloc(j->j_blocksize, GFP_KERNEL);
++	if (!tmpbuf)
++		return false;
++
++	memcpy(tmpbuf, buf, sizeof(struct commit_header));
++	h = tmpbuf;
++	provided = h->h_chksum[0];
++	h->h_chksum[0] = 0;
++	calculated = jbd2_chksum(j, j->j_csum_seed, tmpbuf, j->j_blocksize);
++	kfree(tmpbuf);
++
++	return provided == cpu_to_be32(calculated);
++}
++
+ static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
+ 				      journal_block_tag3_t *tag3,
+ 				      void *buf, __u32 sequence)
+@@ -479,6 +500,7 @@ static int do_one_pass(journal_t *journal,
+ 	int			descr_csum_size = 0;
+ 	int			block_error = 0;
+ 	bool			need_check_commit_time = false;
++	bool                    has_partial_commit = false;
+ 	__u64			last_trans_commit_time = 0, commit_time;
+ 
+ 	/*
+@@ -590,6 +612,14 @@ static int do_one_pass(journal_t *journal,
+ 					next_log_block);
+ 			}
+ 
++			if (pass == PASS_SCAN && has_partial_commit) {
++				pr_err("JBD2: Detect validate descriptor block %lu after incomplete commit block\n",
++				       next_log_block);
++				err = -EFSBADCRC;
++				brelse(bh);
++				goto failed;
++			}
++
+ 			/* If it is a valid descriptor block, replay it
+ 			 * in pass REPLAY; if journal_checksums enabled, then
+ 			 * calculate checksums in PASS_SCAN, otherwise,
+@@ -810,6 +840,14 @@ static int do_one_pass(journal_t *journal,
+ 			if (pass == PASS_SCAN &&
+ 			    !jbd2_commit_block_csum_verify(journal,
+ 							   bh->b_data)) {
++				if (jbd2_commit_block_csum_verify_partial(
++								  journal,
++								  bh->b_data)) {
++					pr_notice("JBD2: Find incomplete commit block in transaction %u block %lu\n",
++						  next_commit_ID, next_log_block);
++					has_partial_commit = true;
++					goto chksum_ok;
++				}
+ 			chksum_error:
+ 				if (commit_time < last_trans_commit_time)
+ 					goto ignore_crc_mismatch;
+@@ -824,6 +862,7 @@ static int do_one_pass(journal_t *journal,
+ 				}
+ 			}
+ 			if (pass == PASS_SCAN) {
++			chksum_ok:
+ 				last_trans_commit_time = commit_time;
+ 				head_block = next_log_block;
+ 			}
+@@ -843,6 +882,15 @@ static int do_one_pass(journal_t *journal,
+ 					  next_log_block);
+ 				need_check_commit_time = true;
+ 			}
++
++			if (pass == PASS_SCAN && has_partial_commit) {
++				pr_err("JBD2: Detect validate revoke block %lu after incomplete commit block\n",
++				       next_log_block);
++				err = -EFSBADCRC;
++				brelse(bh);
++				goto failed;
++			}
++
+ 			/* If we aren't in the REVOKE pass, then we can
+ 			 * just skip over this block. */
+ 			if (pass != PASS_REVOKE) {
+-- 
+2.31.1
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
