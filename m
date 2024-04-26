@@ -1,182 +1,178 @@
-Return-Path: <linux-ext4+bounces-2197-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2198-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 519C48B3448
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 11:38:37 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06A998B36C1
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 13:55:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA2A0288B4A
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 09:38:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A4201C20F9D
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 11:55:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2C0C13F42F;
-	Fri, 26 Apr 2024 09:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E948145354;
+	Fri, 26 Apr 2024 11:55:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IcDuYQwB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E852644368;
-	Fri, 26 Apr 2024 09:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835D213CF99;
+	Fri, 26 Apr 2024 11:55:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714124312; cv=none; b=or6VyF4pyKtd5VMVBLkMo4umxZ7uBjgKZzbaUkV/r8ZZoCXrDftiMjUiCbYCt4ggztMjaX+vX71B0dWIzfG7wD3qMCAZKk7a9wTFV3fpx+/CHBGKN5jWM7/bjbSsm8kcD/xVGob/+9abFVpdbSiZIN15T9tZrk/7F6aEvKp39GU=
+	t=1714132528; cv=none; b=DBvg7C5MzPvnv/0DcCTG0HbGO88YMlOq4lVYmlt/j0elgWd2rvIxUE5uoOftsIoIVQQsmTnC8nO2KAtqmKIOI+8H333N3kk/3iTMwDInhC9zVkC92XOA2buoX2iCf0JOOZ7P/4B+LhXTP1d/GCop5iTiUXu95zgi5zuFwteXWR8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714124312; c=relaxed/simple;
-	bh=HMXR4k8kWf2/LoJg9F4zyai4/xuY8MTcQIgUBq+lZyg=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=hd9hzMheulJl30hnqTmlRxsPcMK7KBa1UaVms8hWbsTTrcQ5oVL4S8+b/f4MinYJJBMtbX9Ip6qNuuJ74p1MmZwKqhcFkKEn01qG0Oekk4ACaYOfy6cm0oiChEdpkHJ4u2g8xZzCUuFFEc7iRJ5T3ugwFnv/Qu4jaxIt8kJ7kxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VQnhr2KBDz4f3m81;
-	Fri, 26 Apr 2024 17:38:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 3F82A1A017C;
-	Fri, 26 Apr 2024 17:38:25 +0800 (CST)
-Received: from [10.174.176.34] (unknown [10.174.176.34])
-	by APP1 (Coremail) with SMTP id cCh0CgAX5g4Pditms6EDLA--.28068S3;
-	Fri, 26 Apr 2024 17:38:25 +0800 (CST)
-Subject: Re: [PATCH v2 3/9] ext4: trim delalloc extent
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240410034203.2188357-1-yi.zhang@huaweicloud.com>
- <20240410034203.2188357-4-yi.zhang@huaweicloud.com>
- <20240425155640.ktvqqwhteitysaby@quack3>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <acd4e7c9-c68b-9edc-bba4-dce5e8ce7879@huaweicloud.com>
-Date: Fri, 26 Apr 2024 17:38:23 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1714132528; c=relaxed/simple;
+	bh=r8Yt3anXN1vUUKfLUBfHTd3DWwQ6mszASIVqJfELd2Y=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=YfRbYLbnTiHvLiwAC71MQRcFN31sITbBwPwlcLeVxPcqtCXvv5EnTSsqOwQARS5jAekInLyJkvhP3/wVLyhZbaF0Jq0UpI0giM5vD13LptV/YssMBOdKsNvbs97+vR23uY+fD/baNcziQTmxuLs3J5EZ/P7sBCy+y8T+sgU6Y5I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IcDuYQwB; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1e36b7e7dd2so17381615ad.1;
+        Fri, 26 Apr 2024 04:55:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714132526; x=1714737326; darn=vger.kernel.org;
+        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=5JEso13ULMuURfYi/Pq/VHWb8qnGq4WPHzsbPJPnYSY=;
+        b=IcDuYQwB5F5NMx1cHgDv88uIZq4xBIeY8860qz8czb6L3OGCk0AzBGDpMtUvhzWJ5g
+         oy2QK6YeEQE1R7QmnZSh0jriVpzKMyvnpfwdrnywt+3DHeJe9inNpPS2VFJ1IRymDhoq
+         wH7I5zsnsLFveZLhQcVLl6zSAP0lcsJEj/d9QEXLj+LfcghfkrZ3n0ogoQTegThOXzaa
+         jJNQWw0Lvf8p3+MTmzwpYJDSs78RGMZzWPDJ6HB02HLXaiwIcaZrCxDdxZvjdnTllfmk
+         DtAoh7S5WfQL7Kk2709d3BXYaqVFcyxMsYZEha7jowd+/+fSvXMqsxbJafi5TS7WkxN9
+         tR7A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714132526; x=1714737326;
+        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5JEso13ULMuURfYi/Pq/VHWb8qnGq4WPHzsbPJPnYSY=;
+        b=JCzX/YeX4sQ/fPRWIHSSgE32bdeyhuDEK+IbB/ebW0JdqTuL1RNfrdofto7cVRTtRw
+         iobs2gzF0PA0MycjiNl9aN2yjb2BL9LDCymlPwqq5y4fpIGUVPTeOstMFT7im+tDDAmH
+         sNzVOlCGkDtLupLLEAlCG+WNr4WYnFT7NauTsSAgmr1IkH2QOxgHaYXucuu8IAvDaDAl
+         fgvEDttnfY7G2gBCYvXetvZUVYH+h0qaKpqCfXLTOAqBw0ExzyJvfM0+KFqNak+50VsN
+         F9pUYtApQAx5JkfOE7yI5/91IFNUykbY/gpTMxhTE0swmXh1mJT3efFJ+JWs1QzONolb
+         UMjg==
+X-Forwarded-Encrypted: i=1; AJvYcCXcX3T8FwFcANOb0K+Dpuz3C4dfjcho34J6Iy6/WMR6NExTc72dsWixZ5C1auN0cO0HnSf35+bHFoSLguUMYm9ZMdzVqqIU64oaq51Tdy3JbeOAfLa7XOBzVdyQ+SZCT9lE1PBgT9LyJw==
+X-Gm-Message-State: AOJu0YxDDDyNKyjDG+0d38hmnI/4MP0qaBMnt3rcol7XPxPjLTHXlkLc
+	Fd93GxeEk0S6PnYFq0Z6On9iV0KYfbpk2AnqUHZ908ED45SAmxLk
+X-Google-Smtp-Source: AGHT+IFtJ+Gpm3oDitTkbUHH52GvIU+9HkHSBaiQPMMFJTKHjouSTLIyggXLWnO2qxHj1zJvDnv66w==
+X-Received: by 2002:a17:902:f68d:b0:1e8:418b:7640 with SMTP id l13-20020a170902f68d00b001e8418b7640mr2415097plg.48.1714132525737;
+        Fri, 26 Apr 2024 04:55:25 -0700 (PDT)
+Received: from dw-tp ([171.76.87.172])
+        by smtp.gmail.com with ESMTPSA id q16-20020a17090311d000b001e9685ad053sm10214490plh.248.2024.04.26.04.55.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 26 Apr 2024 04:55:24 -0700 (PDT)
+Date: Fri, 26 Apr 2024 17:25:09 +0530
+Message-Id: <87il04nxsy.fsf@gmail.com>
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org, djwong@kernel.org, david@fromorbit.com, willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com, yi.zhang@huaweicloud.com, chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [PATCH v4 01/34] ext4: factor out a common helper to query extent map
+In-Reply-To: <20240410142948.2817554-2-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-In-Reply-To: <20240425155640.ktvqqwhteitysaby@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgAX5g4Pditms6EDLA--.28068S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZryDXFW5tr4kWrykZF48Xrb_yoWrGF4xp3
-	92kF1rGr4fW34xua1xtF15XF1Fgw1UKF47Kr4rKr1Yva4DGFyfKFyDAa12yFy8trs3JFs5
-	XFWjq348Can2yrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
-	c7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UWE__UUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/4/25 23:56, Jan Kara wrote:
-> On Wed 10-04-24 11:41:57, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> The cached delalloc or hole extent should be trimed to the map->map_len
->> if we map delalloc blocks in ext4_da_map_blocks(). But it doesn't
->> trigger any issue now because the map->m_len is always set to one and we
->> always insert one delayed block once a time. Fix this by trim the extent
->> once we get one from the cached extent tree, prearing for mapping a
->> extent with multiple delalloc blocks.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Well, but we already do the trimming in ext4_da_map_blocks(), don't we? You
-> just move it to a different place... Or do you mean that we actually didn't
-> set 'map' at all in some cases and now we do? 
+Zhang Yi <yi.zhang@huaweicloud.com> writes:
 
-Yeah, now we only trim map len if we found an unwritten extent or written
-extent in the cache, this isn't okay if we found a hole and
-ext4_insert_delayed_block() and ext4_da_map_blocks() support inserting
-map->len blocks. If we found a hole which es->es_len is shorter than the
-length we want to write, we could delay more blocks than we expected.
+> From: Zhang Yi <yi.zhang@huawei.com>
+>
+> Factor out a new common helper ext4_map_query_blocks() from the
+> ext4_da_map_blocks(), it query and return the extent map status on the
+> inode's extent path, no logic changes.
+>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/ext4/inode.c | 57 +++++++++++++++++++++++++++----------------------
+>  1 file changed, 32 insertions(+), 25 deletions(-)
 
-Please assume we write data [A, C) to a file that contains a hole extent
-[A, B) and a written extent [B, D) in cache.
+Looks good to me. Straight forward refactoring.
+Feel free to add - 
 
-                      A     B  C  D
-before da write:   ...hhhhhh|wwwwww....
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Then we will get extent [A, B), we should trim map->m_len to B-A before
-inserting new delalloc blocks, if not, the range [B, C) is duplicated.
-
-> In either case the 'map'
-> handling looks a bit sloppy in ext4_da_map_blocks() as e.g. the
-> 'add_delayed' case doesn't seem to bother with properly setting 'map' based
-> on what it does. So maybe we should clean that up to always set 'map' just
-> before returning at the same place where we update the 'bh'? And maybe bh
-> update could be updated in some common helper because it's content is
-> determined by the 'map' content?
-> 
-
-I agree with you, it looks that we should always revise the map->m_len
-once we found an extent from the cache, and then do corresponding handling
-according to the extent type. so it's hard to put it to a common place.
-But we can merge the handling of written and unwritten extent, I've moved
-the bh updating into ext4_da_get_block_prep() and do some cleanup in
-patch 9, please look at that patch, does it looks fine to you?
-
-Thanks,
-Yi.
-
-> 								Honza
-> 
->> ---
->>  fs/ext4/inode.c | 14 ++++++++++----
->>  1 file changed, 10 insertions(+), 4 deletions(-)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 118b0497a954..e4043ddb07a5 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -1734,6 +1734,11 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
->>  
->>  	/* Lookup extent status tree firstly */
->>  	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
->> +		retval = es.es_len - (iblock - es.es_lblk);
->> +		if (retval > map->m_len)
->> +			retval = map->m_len;
->> +		map->m_len = retval;
->> +
->>  		if (ext4_es_is_hole(&es))
->>  			goto add_delayed;
->>  
->> @@ -1750,10 +1755,6 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
->>  		}
->>  
->>  		map->m_pblk = ext4_es_pblock(&es) + iblock - es.es_lblk;
->> -		retval = es.es_len - (iblock - es.es_lblk);
->> -		if (retval > map->m_len)
->> -			retval = map->m_len;
->> -		map->m_len = retval;
->>  		if (ext4_es_is_written(&es))
->>  			map->m_flags |= EXT4_MAP_MAPPED;
->>  		else if (ext4_es_is_unwritten(&es))
->> @@ -1788,6 +1789,11 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
->>  	 * whitout holding i_rwsem and folio lock.
->>  	 */
->>  	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
->> +		retval = es.es_len - (iblock - es.es_lblk);
->> +		if (retval > map->m_len)
->> +			retval = map->m_len;
->> +		map->m_len = retval;
->> +
->>  		if (!ext4_es_is_hole(&es)) {
->>  			up_write(&EXT4_I(inode)->i_data_sem);
->>  			goto found;
->> -- 
->> 2.39.2
->>
-
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 537803250ca9..6a41172c06e1 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -453,6 +453,35 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
+>  }
+>  #endif /* ES_AGGRESSIVE_TEST */
+>  
+> +static int ext4_map_query_blocks(handle_t *handle, struct inode *inode,
+> +				 struct ext4_map_blocks *map)
+> +{
+> +	unsigned int status;
+> +	int retval;
+> +
+> +	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+> +		retval = ext4_ext_map_blocks(handle, inode, map, 0);
+> +	else
+> +		retval = ext4_ind_map_blocks(handle, inode, map, 0);
+> +
+> +	if (retval <= 0)
+> +		return retval;
+> +
+> +	if (unlikely(retval != map->m_len)) {
+> +		ext4_warning(inode->i_sb,
+> +			     "ES len assertion failed for inode "
+> +			     "%lu: retval %d != map->m_len %d",
+> +			     inode->i_ino, retval, map->m_len);
+> +		WARN_ON(1);
+> +	}
+> +
+> +	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+> +			EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+> +	ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+> +			      map->m_pblk, status);
+> +	return retval;
+> +}
+> +
+>  /*
+>   * The ext4_map_blocks() function tries to look up the requested blocks,
+>   * and returns if the blocks are already mapped.
+> @@ -1744,33 +1773,11 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>  	down_read(&EXT4_I(inode)->i_data_sem);
+>  	if (ext4_has_inline_data(inode))
+>  		retval = 0;
+> -	else if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+> -		retval = ext4_ext_map_blocks(NULL, inode, map, 0);
+>  	else
+> -		retval = ext4_ind_map_blocks(NULL, inode, map, 0);
+> -	if (retval < 0) {
+> -		up_read(&EXT4_I(inode)->i_data_sem);
+> -		return retval;
+> -	}
+> -	if (retval > 0) {
+> -		unsigned int status;
+> -
+> -		if (unlikely(retval != map->m_len)) {
+> -			ext4_warning(inode->i_sb,
+> -				     "ES len assertion failed for inode "
+> -				     "%lu: retval %d != map->m_len %d",
+> -				     inode->i_ino, retval, map->m_len);
+> -			WARN_ON(1);
+> -		}
+> -
+> -		status = map->m_flags & EXT4_MAP_UNWRITTEN ?
+> -				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
+> -		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
+> -				      map->m_pblk, status);
+> -		up_read(&EXT4_I(inode)->i_data_sem);
+> -		return retval;
+> -	}
+> +		retval = ext4_map_query_blocks(NULL, inode, map);
+>  	up_read(&EXT4_I(inode)->i_data_sem);
+> +	if (retval)
+> +		return retval;
+>  
+>  add_delayed:
+>  	down_write(&EXT4_I(inode)->i_data_sem);
+> -- 
+> 2.39.2
 
