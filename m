@@ -1,212 +1,216 @@
-Return-Path: <linux-ext4+bounces-2199-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2200-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35DDE8B374A
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 14:31:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C32168B3792
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 14:57:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DFDE1284F08
-	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 12:31:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E66261C21EC4
+	for <lists+linux-ext4@lfdr.de>; Fri, 26 Apr 2024 12:57:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E57AB1465A6;
-	Fri, 26 Apr 2024 12:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 088A2146A9E;
+	Fri, 26 Apr 2024 12:57:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cCRwoqPL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="irte/VU8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f178.google.com (mail-pg1-f178.google.com [209.85.215.178])
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EADC91FC4;
-	Fri, 26 Apr 2024 12:31:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E51F13D500;
+	Fri, 26 Apr 2024 12:57:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714134704; cv=none; b=dx3eE5CG07U1SSvGJVqNxdTdR6Uns9LvqiCpTHIirHJjx/jpZL4ZPOResOsVZi3KOkbVDyIKqL53ewGP1OS17sFdu+BXEM0uZ2nEKKzl6erkXFtrrUzBnPNz+/6LZCQ/u0Q9mRFy7qcvzjixiG1n8r6OORxl4jLdLu73p5gEAtU=
+	t=1714136263; cv=none; b=fSwML+u4HuycwgQaos22dQ9D1b+4Y/MkPrlkavqdtZKt0fF/9Mw02D+M1/xONMUYmn3hjTdKz0aQipSqWYYUVvSI91fD18/9C0VqAH49pKFe8MGfgybbRl0dgiJx40AcL7vun61gT6QCtwGPWwRTYKBLHPgtL4sUDvM3OE6XmSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714134704; c=relaxed/simple;
-	bh=YiNnz+/Lu7XW/l9qCAF8dwwGvrtUSUSbywiQs82oG18=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=lM5PnyrOBDXGr+P+XoJmXSs+Zy41VZEE0JmxUBprkYOxaZQqu1P1w3pcw0mxV/TlCb3p03S1EF7D149qfOg/QOv/F5dq/VzULJNWMqB/2qUPw24ooohqM1A50RUzj3IWZez14wTQa4ITlRAorljMu0mmpuN4e7XEOnCj0+xBM5I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cCRwoqPL; arc=none smtp.client-ip=209.85.215.178
+	s=arc-20240116; t=1714136263; c=relaxed/simple;
+	bh=fHszdicZzvlPouapKh0LnGP2m9geUO4FdHcDyOTbn3o=;
+	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=E6vFXWaobDoxLkWCW2B8oCHyZKR8FzOvoeXgnKwtQD0j032Uy0RxQStI6Yrs/+HYZ/Md9vVpjDlUvKTKLKvP3OsTycvd1l+9ip7y54ktMmC5+79aM65ulqcv9AxcVXFzahe113O7TrctAN0GHh4m5m8kkhHSd0T8/OhjXY88UdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=irte/VU8; arc=none smtp.client-ip=209.85.215.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f178.google.com with SMTP id 41be03b00d2f7-5d3912c9a83so1327986a12.3;
-        Fri, 26 Apr 2024 05:31:42 -0700 (PDT)
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-5dbcfa0eb5dso1762084a12.3;
+        Fri, 26 Apr 2024 05:57:41 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714134702; x=1714739502; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1714136261; x=1714741061; darn=vger.kernel.org;
         h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=J8Us4I6GJMAPX/prvPDNnLBblFA4s8DcYEpyh+B6ghE=;
-        b=cCRwoqPL7Dve9jDUK7qOCpaweiPea3vNWqq2sLSojR1+IEgtuc2aVyrHfuN3b6I7H7
-         6D3nNzPqLQlktC2Hhyi0pLPGkCMSoVuhm0frjKrC65JOmqu2TtffWVppBONENAHNOn1A
-         wx3ECT9hdFyykm5tFAbCL6ANBANlg1Jl7MPV7Nlq+w93RaH8fziR/1R1W1ZsZmA/KXD0
-         MuZJw+PbhNQBLAsVlWrN/l1g7dwbnd6SMqod05UOqqeHEju9o1Dkgyjq26FBy2Wp8prz
-         QLcgst5gO29Cd5TQEVibXRmNGzMLFoqFfdFc0VDqCxC94dODYsI75VD5XpHDPYTFxz3X
-         B2UQ==
+        bh=endWZFs/huUwpiPXnvyhJNr3iwSnVQvC+T17t46UJ4o=;
+        b=irte/VU8y9BjJTSwwf2KYeipvVjTGRIWiVox4HYUuibr3z6KGX0bHzlPaBeF8MN04y
+         twEl6AfSpaGz2B15cOm/ibY90kIA6bkVpWmzNcWoYJ8OxX/MeW8QBJw42pGfCBUXmwLs
+         if7x+g2j5TFnWhhtzU6BunYMwz24qoFPfwhVQgEttkt577HAMl9uYaxmBgU0cu6L40MX
+         NHmKuCMKuA3wEGFsCWhHaUjKMFlZLH5C4z4zeNZffzbSH2BwMppWPxxD/j9NBFqTcay5
+         x1mBdNnF3FKOPm1NtMNzteWZgRAw9IohKdtWPPQtkBaPpnNurdVahFp4iBMvBptUPHIw
+         Mlww==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714134702; x=1714739502;
+        d=1e100.net; s=20230601; t=1714136261; x=1714741061;
         h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=J8Us4I6GJMAPX/prvPDNnLBblFA4s8DcYEpyh+B6ghE=;
-        b=CxNeMqBaTdfh8+vNeKioiuMKtiiie5RtPxBFKBmJNI57cwpwkM0NO/++hH4CXvflp8
-         rLYGJQxqFps/PtDhf8yMrnxQMncSeSmgRZhJFlMipFux8SqbWHB+A/fHN9ixZU08Eu12
-         SJBVfwKfcxBxmkswqwLOSeNuXebY9U6fgoc3PtUayydeJr4mW0HHxB+QdglMsKDhGWAn
-         DTlb5uVCDfx4lisX3cLAjZGMqFOsxPtw22I2a0Ry2RlJnrQCebKKQOKPH8ATACJ9ByUm
-         TIONfgYqDg9LGKhhvAxFGvxNxe02x4IC+o5dA1F8bdMYZBBmkb+CcdN9BnG2Zl0eT995
-         1Kvw==
-X-Forwarded-Encrypted: i=1; AJvYcCU3IzSrr3828JN8KFWmtgCg8poeTAiyRNbP5x1dTC1HCyNKVe3mFAR6XueymLUd34EMS9mw2AZs9ZiXjyEJ0scISNrUkC3AaAtoYSOeyTsjfUURXA+0YtluISFdoSKFjKfqiuw4/k9bFw==
-X-Gm-Message-State: AOJu0YyyKgB9lW8ReQqBTo+ftBYpu9m4y+qukX1cb+kknhbeaKQcdq5Y
-	R4KElvxj+XNtjp1LI6v4DlF3lsKTNcCVnzcYC56/JuSuS1EMLkQe
-X-Google-Smtp-Source: AGHT+IEyOzmKwpDmulsfDNoUUZ4lLr23Xmfs3rqvSkEEanKKcGelrlV3zG53JyLe5jufdjgg9tzgjw==
-X-Received: by 2002:a17:90b:489:b0:2a4:f53d:e6bc with SMTP id bh9-20020a17090b048900b002a4f53de6bcmr2579977pjb.15.1714134702100;
-        Fri, 26 Apr 2024 05:31:42 -0700 (PDT)
+        bh=endWZFs/huUwpiPXnvyhJNr3iwSnVQvC+T17t46UJ4o=;
+        b=WFluaFsIckIb79Fa/zWYHJYjeVrJ32RGxSgmGisKCskVsslBdCLTMIfYocnM1tUELW
+         BQShPTSC7vnESMyh29xAk2Q/02WrFFThFm2GK8cKGsBazBYSsnvk5/7pmRey8HLTYFln
+         8SnrHJmP+WII8HWPaZNrnc5EIkv8i6yiyoVGr/QBs//tKUPFqU4aHC6tj5chpz5lR8uV
+         Qc/BDgrc/OSTPcPle8jS7DJ/Vb15ERkkwPhiD7jwSCKZLl0D9l6ohzhCCOCbv2qjQ5Oi
+         btOS/Ar8Uo39DaW44j8NkV+4CxQ7aPk0MUdwSdN+cS4NIWLb2JSpX80uu8FydJ/EujO1
+         mk8g==
+X-Forwarded-Encrypted: i=1; AJvYcCWI1xe7kjsGgKR/7MfjZvR4oLwZyoXIzqUDJUwOdF+8FG+090VDy7dHExmAYiLzQH3/K0wC75zOlX1H9tGqAr3Pp0opHPaxLZUP65IXOoLmqdCwlXky3CtJyNRs6dg+TmZGeVhEPsHL7Q==
+X-Gm-Message-State: AOJu0YwvkAKAJ2ck5qTWlR3b24kE1MINV9a7PV6junVWLUNWfYAcqm4D
+	ZaNBLvvIjzXBBtIzTZMZBNAI2qEh3SDJIQbrRYL2MVQM08pFfOJh
+X-Google-Smtp-Source: AGHT+IEQAPUV/KA5Lz34E4irpjiyAsv33koqvqCYKYdiaGY5Yw7DPqFcAt70S4/nUSAiR+Zq1QnoMg==
+X-Received: by 2002:a17:90a:67c6:b0:2ae:6e36:af21 with SMTP id g6-20020a17090a67c600b002ae6e36af21mr2412507pjm.25.1714136261420;
+        Fri, 26 Apr 2024 05:57:41 -0700 (PDT)
 Received: from dw-tp ([171.76.87.172])
-        by smtp.gmail.com with ESMTPSA id p4-20020a17090ac00400b002a3a154b974sm14510942pjt.55.2024.04.26.05.31.35
+        by smtp.gmail.com with ESMTPSA id eu6-20020a17090af94600b002aeb05d6e97sm6334259pjb.21.2024.04.26.05.57.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 26 Apr 2024 05:31:39 -0700 (PDT)
-Date: Fri, 26 Apr 2024 18:01:33 +0530
-Message-Id: <87frv8nw4a.fsf@gmail.com>
+        Fri, 26 Apr 2024 05:57:40 -0700 (PDT)
+Date: Fri, 26 Apr 2024 18:27:30 +0530
+Message-Id: <87frv8z3gl.fsf@gmail.com>
 From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
 Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org, djwong@kernel.org, david@fromorbit.com, willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com, yi.zhang@huaweicloud.com, chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
 Subject: Re: [PATCH v4 02/34] ext4: check the extent status again before inserting delalloc block
-In-Reply-To: <20240410142948.2817554-3-yi.zhang@huaweicloud.com>
+In-Reply-To: <87frv8nw4a.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 
-Zhang Yi <yi.zhang@huaweicloud.com> writes:
+Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
 
-> From: Zhang Yi <yi.zhang@huawei.com>
+> Zhang Yi <yi.zhang@huaweicloud.com> writes:
 >
-> Now we lookup extent status entry without holding the i_data_sem before
-> inserting delalloc block, it works fine in buffered write path and
-> because it holds i_rwsem and folio lock, and the mmap path holds folio
-> lock, so the found extent locklessly couldn't be modified concurrently.
-> But it could be raced by fallocate since it allocate block whitout
-> holding i_rwsem and folio lock.
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Now we lookup extent status entry without holding the i_data_sem before
+>> inserting delalloc block, it works fine in buffered write path and
+>> because it holds i_rwsem and folio lock, and the mmap path holds folio
+>> lock, so the found extent locklessly couldn't be modified concurrently.
+>> But it could be raced by fallocate since it allocate block whitout
+>> holding i_rwsem and folio lock.
+>>
+>> ext4_page_mkwrite()             ext4_fallocate()
+>>  block_page_mkwrite()
+>>   ext4_da_map_blocks()
+>>    //find hole in extent status tree
+>>                                  ext4_alloc_file_blocks()
+>>                                   ext4_map_blocks()
+>>                                    //allocate block and unwritten extent
+>>    ext4_insert_delayed_block()
+>>     ext4_da_reserve_space()
+>>      //reserve one more block
+>>     ext4_es_insert_delayed_block()
+>>      //drop unwritten extent and add delayed extent by mistake
+>>
+>> Then, the delalloc extent is wrong until writeback, the one more
+>> reserved block can't be release any more and trigger below warning:
+>>
+>>  EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
+>>
+>> Hold i_data_sem in write mode directly can fix the problem, but it's
+>> expansive, we should keep the lockless check and check the extent again
+>> once we need to add an new delalloc block.
 >
-> ext4_page_mkwrite()             ext4_fallocate()
->  block_page_mkwrite()
->   ext4_da_map_blocks()
->    //find hole in extent status tree
->                                  ext4_alloc_file_blocks()
->                                   ext4_map_blocks()
->                                    //allocate block and unwritten extent
->    ext4_insert_delayed_block()
->     ext4_da_reserve_space()
->      //reserve one more block
->     ext4_es_insert_delayed_block()
->      //drop unwritten extent and add delayed extent by mistake
+> Hi Zhang, 
 >
-> Then, the delalloc extent is wrong until writeback, the one more
-> reserved block can't be release any more and trigger below warning:
+> It's a nice finding. I was wondering if this was caught in any of the
+> xfstests?
 >
->  EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
+> I have reworded some of the commit message, feel free to use it if you
+> think this version is better. The use of which path uses which locks was
+> a bit confusing in the original commit message.
 >
-> Hold i_data_sem in write mode directly can fix the problem, but it's
-> expansive, we should keep the lockless check and check the extent again
-> once we need to add an new delalloc block.
+> <reworded from your original commit msg>
+>
+> ext4_da_map_blocks(), first looks up the extent status tree for any
+> extent entry with i_data_sem held in read mode. It then unlocks
+> i_data_sem, if it can't find an entry and take this lock in write
+> mode for inserting a new da entry.
 
-Hi Zhang, 
+Sorry about this above paragraph. I messed this paragraph.
+Here is the correct version of this.
 
-It's a nice finding. I was wondering if this was caught in any of the
-xfstests?
+ext4_da_map_blocks looks up for any extent entry in the extent status
+tree (w/o i_data_sem) and then the looks up for any ondisk extent
+mapping (with i_data_sem in read mode).
 
-I have reworded some of the commit message, feel free to use it if you
-think this version is better. The use of which path uses which locks was
-a bit confusing in the original commit message.
+If it finds a hole in the extent status tree or if it couldn't find any
+entry at all, it then takes the i_data_sem in write mode to add a da entry
+into the extent status tree. This can actually race with page mkwrite
+& fallocate path. 
 
-<reworded from your original commit msg>
-
-ext4_da_map_blocks(), first looks up the extent status tree for any
-extent entry with i_data_sem held in read mode. It then unlocks
-i_data_sem, if it can't find an entry and take this lock in write
-mode for inserting a new da entry.
-
-This is ok between -
-1. ext4 buffered-write path v/s ext4_page_mkwrite(), because of the
-folio lock
-2. ext4 buffered write path v/s ext4 fallocate because of the inode
-lock.
-
-But this can race between ext4_page_mkwrite() & ext4 fallocate path - 
-
- ext4_page_mkwrite()             ext4_fallocate()
-  block_page_mkwrite()
-   ext4_da_map_blocks()
-    //find hole in extent status tree
-                                  ext4_alloc_file_blocks()
-                                   ext4_map_blocks()
-                                    //allocate block and unwritten extent
-    ext4_insert_delayed_block()
-     ext4_da_reserve_space()
-      //reserve one more block
-     ext4_es_insert_delayed_block()
-      //drop unwritten extent and add delayed extent by mistake
-
-Then, the delalloc extent is wrong until writeback and the extra
-reserved block can't be released any more and it triggers below warning:
-
-  EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
-
-This patch fixes the problem by looking up extent status tree again
-while the i_data_sem is held in write mode. If it still can't find
-any entry, then we insert a new da entry into the extent status tree.
+Note that this is ok between...  <and the rest can remain same>
 
 >
-> Cc: stable@vger.kernel.org
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->  fs/ext4/inode.c | 19 +++++++++++++++++++
->  1 file changed, 19 insertions(+)
+> This is ok between -
+> 1. ext4 buffered-write path v/s ext4_page_mkwrite(), because of the
+> folio lock
+> 2. ext4 buffered write path v/s ext4 fallocate because of the inode
+> lock.
 >
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 6a41172c06e1..118b0497a954 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1737,6 +1737,7 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
->  		if (ext4_es_is_hole(&es))
->  			goto add_delayed;
->  
-> +found:
->  		/*
->  		 * Delayed extent could be allocated by fallocate.
->  		 * So we need to check it.
-> @@ -1781,6 +1782,24 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
->  
->  add_delayed:
->  	down_write(&EXT4_I(inode)->i_data_sem);
-> +	/*
-> +	 * Lookup extents tree again under i_data_sem, make sure this
-> +	 * inserting delalloc range haven't been delayed or allocated
-> +	 * whitout holding i_rwsem and folio lock.
-> +	 */
-
-page fault path (ext4_page_mkwrite does not take i_rwsem) and fallocate
-path (no folio lock) can race. Make sure we lookup the extent status
-tree here again while i_data_sem is held in write mode, before inserting
-a new da entry in the extent status tree.
 
 
-> +	if (ext4_es_lookup_extent(inode, iblock, NULL, &es)) {
-> +		if (!ext4_es_is_hole(&es)) {
-> +			up_write(&EXT4_I(inode)->i_data_sem);
-> +			goto found;
-> +		}
-> +	} else if (!ext4_has_inline_data(inode)) {
-> +		retval = ext4_map_query_blocks(NULL, inode, map);
-> +		if (retval) {
-> +			up_write(&EXT4_I(inode)->i_data_sem);
-> +			return retval;
-> +		}
-> +	}
-> +
->  	retval = ext4_insert_delayed_block(inode, map->m_lblk);
->  	up_write(&EXT4_I(inode)->i_data_sem);
->  	if (retval)
-> -- 
-> 2.39.2
+> But this can race between ext4_page_mkwrite() & ext4 fallocate path - 
+>
+>  ext4_page_mkwrite()             ext4_fallocate()
+>   block_page_mkwrite()
+>    ext4_da_map_blocks()
+>     //find hole in extent status tree
+>                                   ext4_alloc_file_blocks()
+>                                    ext4_map_blocks()
+>                                     //allocate block and unwritten extent
+>     ext4_insert_delayed_block()
+>      ext4_da_reserve_space()
+>       //reserve one more block
+>      ext4_es_insert_delayed_block()
+>       //drop unwritten extent and add delayed extent by mistake
+>
+> Then, the delalloc extent is wrong until writeback and the extra
+> reserved block can't be released any more and it triggers below warning:
+>
+>   EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
+>
+> This patch fixes the problem by looking up extent status tree again
+> while the i_data_sem is held in write mode. If it still can't find
+> any entry, then we insert a new da entry into the extent status tree.
+>
+>>
+>> Cc: stable@vger.kernel.org
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>>  fs/ext4/inode.c | 19 +++++++++++++++++++
+>>  1 file changed, 19 insertions(+)
+>>
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 6a41172c06e1..118b0497a954 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -1737,6 +1737,7 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>>  		if (ext4_es_is_hole(&es))
+>>  			goto add_delayed;
+>>  
+>> +found:
+>>  		/*
+>>  		 * Delayed extent could be allocated by fallocate.
+>>  		 * So we need to check it.
+>> @@ -1781,6 +1782,24 @@ static int ext4_da_map_blocks(struct inode *inode, sector_t iblock,
+>>  
+>>  add_delayed:
+>>  	down_write(&EXT4_I(inode)->i_data_sem);
+>> +	/*
+>> +	 * Lookup extents tree again under i_data_sem, make sure this
+>> +	 * inserting delalloc range haven't been delayed or allocated
+>> +	 * whitout holding i_rwsem and folio lock.
+>> +	 */
+>
+> page fault path (ext4_page_mkwrite does not take i_rwsem) and fallocate
+> path (no folio lock) can race. Make sure we lookup the extent status
+> tree here again while i_data_sem is held in write mode, before inserting
+> a new da entry in the extent status tree.
+>
+>
+
+
+-ritesh
 
