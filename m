@@ -1,61 +1,62 @@
-Return-Path: <linux-ext4+bounces-2217-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2218-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 870838B4423
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Apr 2024 06:47:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6B6F8B442B
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Apr 2024 06:54:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9AD3B22246
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Apr 2024 04:47:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 731BE2836F0
+	for <lists+linux-ext4@lfdr.de>; Sat, 27 Apr 2024 04:54:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77D423EA96;
-	Sat, 27 Apr 2024 04:47:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5845C3EA64;
+	Sat, 27 Apr 2024 04:54:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="OBY8m/D7"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dXQAAuPQ"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880973D0C2;
-	Sat, 27 Apr 2024 04:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB8493F8DE;
+	Sat, 27 Apr 2024 04:54:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714193226; cv=none; b=MJyEf6RehSeQ6o6eOm5xqn6kUpdtcrAVNS7h6pxZDz6xZfd6ROqzXLnhCLOlm2H3dexZT9mygXx9tR7SLc/l38n5K2zUrN1SSVL6A0SCI5mSjJgitO692sr++jWGq4w7s27WcxPPQOt47hZnuY0CUlT8gEt16l85SZc6fgBnTNM=
+	t=1714193687; cv=none; b=F1Rtxjis+6G3zn/3XhuciGrft/vp2eXS4mmq4gPTNUSj5skfv3rf39wDe+uNgtLM8M76DpHcm9qYeKGUQ+mygoYjgmL0V/KQngS3PF7V8k4K/7u/YCibEWfA7qX9PeMAcabzpGz1S6cqx+iLczRbD2N6dLGLBIV3kYn7LBpbHYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714193226; c=relaxed/simple;
-	bh=LRCIkuejIh2ioIHP5AzHL7iNdWGaOmpp8+XXWy0KtuY=;
+	s=arc-20240116; t=1714193687; c=relaxed/simple;
+	bh=T0E7237sTqU8019u+o+Ijw9ffYKvcV9l5H6YU5Q+Rw8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=oInT/+/IL6sqA+bJT7Fcq173XDT302+FVMobaDp75vdLv1J8zZiPcLa1EjOb/ubUaed7Z2GEUhSXNNgzhjOfyQfxNR6O2euwh19kExUZJLNIQJkFzW/dheCFPdfMlFK3vxqXF0FZkOWZyWa3ZccuTzeBcRm/xATWXJ5GV6bXZok=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=OBY8m/D7; arc=none smtp.client-ip=198.137.202.133
+	 Content-Type:Content-Disposition:In-Reply-To; b=FhWoTGJpRQT8cx5N+81qOQh/Jj35yx0z2UP2SQ1H1Sy1MrjKGfXGBgIKCYEoxhOXKnqc/lhZbgqpQNawt+4K2iv+5BwKYBgDNLLk2n6xfQXNINhZPMe9lZJ6b+Y5FB4/rHO33iMlQn6B0Mph7lrBjFcD61ajRhMOdLZObksMArM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=dXQAAuPQ; arc=none smtp.client-ip=198.137.202.133
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
 	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=6xpU9VR8a6K2/jLYXQfcQD1fDuHqlmP2r7odFKj3g8U=; b=OBY8m/D7mwHz4ZirDPL3GuMhrA
-	1nIRnLfqU1zETqu5iRU3Xu42z5jxSSK1IGacS68+brIzlm3Q4G/lkhEyqC4y6zcOXJoKUDLf+CwWe
-	LWZV/4oJydHICNuF4Lggf02Wy+tRXvF8/lwYWM44ZCNSpI3XkhJQ4WD/cinz4zdBGqGNR+9JxVwvG
-	81RoL+92Bvo4nmcNzMOlQeKnCDjAaeESx6cBSekseILTgr9zON0w1d6Hjcf8WK2kCihgtHLOLvWac
-	RvfODVaiBpLNzqjK29Y061Mabsq4tVTI1QN4IdSJuUW62Ct3bhpgH4U60zksZext7EUEI5Sghc0lR
-	mhlZBx3Q==;
+	bh=hLV5QPd5z0nCLUjuiZ+ELPGlM0plNku5O42nbTYtdzg=; b=dXQAAuPQjzRpB6bwPw0jMYh78z
+	XxOnSmi9yZC+HQ5q2PzZJYVtKPkZ7y1st4MIL1hmqPZYjil4p762Kk4B2+TJ6KcWPL0obftUv9k63
+	5+ZJg4gkXTKAKmBGB5Tn2uByVNU4GeOBAdUSriLj+uSvNeG8OTtFA152HtTMjxyp9RUVgYnN95DgG
+	Uze+wv3nz6L/2zJkzPwajHu3BaG149HD+MN4iyiZcMWvhFZ5xTm5b5FIexcGfqsZ6LMB31S3XwRRp
+	wbbX6E0cYBjH92VUSchvdsiAhBwzGqoxWJGOenZcu2ZajO1fYqlvEcmZ5EMNRCmweht16eAUi+Ihz
+	4inuVCEQ==;
 Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1s0Zxn-0000000EonU-2S8c;
-	Sat, 27 Apr 2024 04:47:03 +0000
-Date: Fri, 26 Apr 2024 21:47:03 -0700
+	id 1s0a5G-0000000EpPt-1ATz;
+	Sat, 27 Apr 2024 04:54:46 +0000
+Date: Fri, 26 Apr 2024 21:54:46 -0700
 From: Christoph Hellwig <hch@infradead.org>
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-	"Darrick J . Wong" <djwong@kernel.org>,
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>
 Subject: Re: [RFCv3 7/7] iomap: Optimize data access patterns for filesystems
  with indirect mappings
-Message-ID: <ZiyDRw5zuF-jcBhZ@infradead.org>
-References: <cover.1714046808.git.ritesh.list@gmail.com>
- <4e2752e99f55469c4eb5f2fe83e816d529110192.1714046808.git.ritesh.list@gmail.com>
+Message-ID: <ZiyFFsPlgODpc-e3@infradead.org>
+References: <Zivu0gzb4aiazSNu@casper.infradead.org>
+ <871q6symrz.fsf@gmail.com>
+ <Ziv-U8-Rt9md-Npv@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,21 +65,23 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <4e2752e99f55469c4eb5f2fe83e816d529110192.1714046808.git.ritesh.list@gmail.com>
+In-Reply-To: <Ziv-U8-Rt9md-Npv@casper.infradead.org>
 X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Thu, Apr 25, 2024 at 06:58:51PM +0530, Ritesh Harjani (IBM) wrote:
-> Currently the bios for reads within iomap are only submitted at
-> 2 places -
-> 1. If we cannot merge the new req. with previous bio, only then we
->    submit the previous bio.
-> 2. Submit the bio at the end of the entire read processing.
+On Fri, Apr 26, 2024 at 08:19:47PM +0100, Matthew Wilcox wrote:
+> > ...One small problem which I see with this approach is - we might have
+> > some non-zero value in ifs->r_b_p when ifs_free() gets called and it
+> > might give a warning of non-zero ifs->r_b_p, because we updated
+> > ifs->r_b_p during writes to a non-zero value, but the reads
+> > never happend. Then during a call to ->release_folio, it will complain
+> > of a non-zero ifs->r_b_p.
 > 
-> This means for filesystems with indirect block mapping, we call into
-> ->iomap_begin() again w/o submitting the previous bios. That causes
-> unoptimized data access patterns for blocks which are of BH_Boundary type.
+> Yes, we'll have to remove that assertion.  I don't think that's a
+> problem, do you?
 
-The same is true for extent mappings.  And it's not ideal there either,
-although it only inreases the bio submission latency.
+Or refine it, as the parts not read shoud not be uptodate either?
 
+Either way I had another idea to simplify things a bit, but this might
+end up beeing even simpler, so I'll stop the hacking on my version
+for now.
 
