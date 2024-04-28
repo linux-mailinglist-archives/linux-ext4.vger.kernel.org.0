@@ -1,165 +1,219 @@
-Return-Path: <linux-ext4+bounces-2223-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2224-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09E968B481D
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Apr 2024 22:56:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8B73D8B4941
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Apr 2024 05:00:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EE65281F46
-	for <lists+linux-ext4@lfdr.de>; Sat, 27 Apr 2024 20:56:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AEE3282527
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Apr 2024 03:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E753B145352;
-	Sat, 27 Apr 2024 20:56:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30C8623A0;
+	Sun, 28 Apr 2024 03:00:46 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3534F3BB47
-	for <linux-ext4@vger.kernel.org>; Sat, 27 Apr 2024 20:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354E315A4;
+	Sun, 28 Apr 2024 03:00:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714251392; cv=none; b=cJwy0O4UJAdFXFgNW8GftBjQcGUvyOXU2BMS1oSUEpQiAlzy7W6vp81UqkVBd3Ga1kimJDuJXBKG4qgvRR01beI7WEtMIwn/1x3gxCkfFQvWXoAXOR8v2uoF8spPlIcZISFZcfZTL4aoDXL2/KcSQPpsZ6S/CsiNm/dNDluzX8w=
+	t=1714273245; cv=none; b=AtYHAVfTU51MnHV8H5gyhNoDSAEC6R7DjM9Jp5jvYT1zG2th7w89Kti5xVOfli1tPGs19WCDv8zJj1E3MFM95v2JuRUTYxWpe1xVxTCVA9MK8HW7Zx9mdkzK2adChWOEEibM50vubtpzt0GhZxPFFqCF/LHkv2hA3V0f2WSfIKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714251392; c=relaxed/simple;
-	bh=SXBDt/tXhe8yHeCZSNhUdbtsnbLRFiv+J8g8wxqfyms=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HQB3e1Llre0q1hzR3sbavBQQk1WMLqgvv3dXjHDKx3aD5MAI2V1npWhHxqBN16hRmj/NQorX6hEWgjZ7K2KTmJPm6OnLYwjjuF5/h3ec9d3oeZgs7DQrJ2D5DWVAs0DJOsa+aVgA8UDtwLty4kXjC+BgheykYKJpqO/t4ZADBBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7dda529a35cso370217039f.3
-        for <linux-ext4@vger.kernel.org>; Sat, 27 Apr 2024 13:56:31 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714251390; x=1714856190;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=aph8BzeaCP77y4YkYzRI5C4FzA/l0mFEaM4HbBnRcJ4=;
-        b=PARgvZvTrrUVLXD/6Y0daTavsiOtmyeYKkdR6RNkI43NOWn//BA4kTRmViqKwKBiXr
-         1Y5mpFREFupG7/7EssspWOnlxdM8iHbrkC36Em1pXU/KcnIeNXfelyTBNH6p7+WdNKRt
-         s++hvXI67TUNW+O7POW82zsglyjVs+rWKZsEuxkTyE93Nt+6u1+QKoIc22sNeIALJQFe
-         8/rJ1MXPcuBD5fFvBsJrZ4PVz/ZRdPDtzZsuYDcRxBhLmxQCWpI2Pno1kP7sWKdE/gXg
-         81gdwO6UqrygAYMj+7YZRABh/J+XSNmZbARhh87QGUsOrU3PSAa8zS8/ltyyANqBXWcO
-         hjxg==
-X-Forwarded-Encrypted: i=1; AJvYcCXBBbvQ2ZuKiAZWceIgIwVmICU9kpU99u++hqy6DNKauMHMIsy/RJLH6zIB58Gu3EDBk4JnHn9U1L9TggZP2GlKsRYIwZIlDw//tg==
-X-Gm-Message-State: AOJu0YwLbYH1PZV2hZnPmIgMz+WdhLZnA8OCBaeBwK0GXUQ6earqsqBo
-	5j2vaG6SX5CtfhYxkuvBCjiMSliVGuY0kGci1iBciGg0V8dMC0sjYvK3nYarElWEyFRYvqZDYvj
-	N+7BnaqhMJOp2ETV1Cxnnj8UuOY/fEo96uOJune2m9qZ6F8EBsRcjO/Y=
-X-Google-Smtp-Source: AGHT+IFli9g1nJXLITboKUO/l0E1EGDb6Ejedwh95f+Oq5z5H24DKD4rSlGEpQ2SWzqzqt8PGsCiNWpkp2Alyn4j9jGZ7a4Jkqu0
+	s=arc-20240116; t=1714273245; c=relaxed/simple;
+	bh=41rAsJkcpFZicCZ5C/YdKJs+Eb6L27orELFLu/9Wo6A=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=YRUZDENt3HfRBU6xJby8G5WcRxzqSggnG3ZMEmcum2sea0gca4rFDgwi+TkjTe93lSg2s0FhWg/S4tROdrNCv2iOYSqJUrUAbEXHIeKBX/y4JvWc6TEFLdykMyVafSCELBHJs5faAtYTmWtpk/atB29kRMET7odihojujjGnaII=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VRrmv5HQZz4f3kjL;
+	Sun, 28 Apr 2024 11:00:31 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 77C5F1A0905;
+	Sun, 28 Apr 2024 11:00:39 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP2 (Coremail) with SMTP id Syh0CgBHaw7Uuy1mTwCoLQ--.14367S3;
+	Sun, 28 Apr 2024 11:00:39 +0800 (CST)
+Subject: Re: [PATCH v4 02/34] ext4: check the extent status again before
+ inserting delalloc block
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ jack@suse.cz, hch@infradead.org, djwong@kernel.org, david@fromorbit.com,
+ willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com,
+ chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
+References: <87cyqcyt6t.fsf@gmail.com>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <3243c67d-e783-4ec5-998f-0b6170f36e35@huaweicloud.com>
+Date: Sun, 28 Apr 2024 11:00:36 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1683:b0:487:2616:534b with SMTP id
- f3-20020a056638168300b004872616534bmr512517jat.6.1714251390520; Sat, 27 Apr
- 2024 13:56:30 -0700 (PDT)
-Date: Sat, 27 Apr 2024 13:56:30 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000301d7b06171a41e3@google.com>
-Subject: [syzbot] [ext4?] WARNING in __ext4_journal_start_sb
-From: syzbot <syzbot+85d8bf8b2759214b194b@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+In-Reply-To: <87cyqcyt6t.fsf@gmail.com>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgBHaw7Uuy1mTwCoLQ--.14367S3
+X-Coremail-Antispam: 1UD129KBjvJXoW3Jw47Gr1rXrW7tryxAFy7Wrg_yoW7Aw4Up3
+	90k3WUKr4kXw1kCan7t3Z5Xr10ga18tF4agr13Kr1UZFZ0yFyxWFnFqF15uFyYkrs7Jr1j
+	vayY9ryxua4UJ3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a
+	6rW5MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UZ18PUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Hello,
+On 2024/4/27 0:39, Ritesh Harjani (IBM) wrote:
+> Zhang Yi <yi.zhang@huaweicloud.com> writes:
+> 
+>> On 2024/4/26 20:57, Ritesh Harjani (IBM) wrote:
+>>> Ritesh Harjani (IBM) <ritesh.list@gmail.com> writes:
+>>>
+>>>> Zhang Yi <yi.zhang@huaweicloud.com> writes:
+>>>>
+>>>>> From: Zhang Yi <yi.zhang@huawei.com>
+>>>>>
+>>>>> Now we lookup extent status entry without holding the i_data_sem before
+>>>>> inserting delalloc block, it works fine in buffered write path and
+>>>>> because it holds i_rwsem and folio lock, and the mmap path holds folio
+>>>>> lock, so the found extent locklessly couldn't be modified concurrently.
+>>>>> But it could be raced by fallocate since it allocate block whitout
+>>>>> holding i_rwsem and folio lock.
+>>>>>
+>>>>> ext4_page_mkwrite()             ext4_fallocate()
+>>>>>  block_page_mkwrite()
+>>>>>   ext4_da_map_blocks()
+>>>>>    //find hole in extent status tree
+>>>>>                                  ext4_alloc_file_blocks()
+>>>>>                                   ext4_map_blocks()
+>>>>>                                    //allocate block and unwritten extent
+>>>>>    ext4_insert_delayed_block()
+>>>>>     ext4_da_reserve_space()
+>>>>>      //reserve one more block
+>>>>>     ext4_es_insert_delayed_block()
+>>>>>      //drop unwritten extent and add delayed extent by mistake
+>>>>>
+>>>>> Then, the delalloc extent is wrong until writeback, the one more
+>>>>> reserved block can't be release any more and trigger below warning:
+>>>>>
+>>>>>  EXT4-fs (pmem2): Inode 13 (00000000bbbd4d23): i_reserved_data_blocks(1) not cleared!
+>>>>>
+>>>>> Hold i_data_sem in write mode directly can fix the problem, but it's
+>>>>> expansive, we should keep the lockless check and check the extent again
+>>>>> once we need to add an new delalloc block.
+>>>>
+>>>> Hi Zhang, 
+>>>>
+>>>> It's a nice finding. I was wondering if this was caught in any of the
+>>>> xfstests?
+>>>>
+>>
+>> Hi, Ritesh
+>>
+>> I caught this issue when I tested my iomap series in generic/344 and
+>> generic/346. It's easy to reproduce because the iomap's buffered write path
+>> doesn't hold folio lock while inserting delalloc blocks, so it could be raced
+>> by the mmap page fault path. But the buffer_head's buffered write path can't
+>> trigger this problem,
+> 
+> ya right! That's the difference between how ->map_blocks() is called
+> between buffer_head v/s iomap path. In iomap the ->map_blocks() call
+> happens first to map a large extent and then it iterate over all the
+> locked folios covering the mapped extent for doing writes.
+> Whereas in buffer_head while iterating, we first instantiate/lock the
+> folio and then call ->map_blocks() to map an extent for the given folio.
+> 
+> ... So this opens up this window for a race between iomap buffered write
+> path v/s page mkwrite path for inserting delalloc blocks entries.
+> 
+>> the race between buffered write path and fallocate path
+>> was discovered while I was analyzing the code, so I'm not sure if it could
+>> be caught by xfstests now, at least I haven't noticed this problem so far.
+>>
+> 
+> Did you mean the race between page fault path and fallocate path here?
+> Because buffered write path and fallocate path should not have any race
+> since both takes the inode_lock. I guess you meant page fault path and
+> fallocate path for which you wrote this patch too :)
 
-syzbot found the following issue on:
+Yep.
 
-HEAD commit:    6a71d2909427 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=125b5ae7180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fca646cf17cc616b
-dashboard link: https://syzkaller.appspot.com/bug?extid=85d8bf8b2759214b194b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d1eb73180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=171c9a80980000
+> 
+> I am surprised, why we cannot see the this race between page mkwrite and
+> fallocate in fstests for inserting da entries to extent status cache.
+> Because the race you identified looks like a legitimate race and is
+> mostly happening since ext4_da_map_blocks() was not doing the right
+> thing.
+> ... looking at the src/holetest, it doesn't really excercise this path.
+> So maybe we can writing such fstest to trigger this race.
+> 
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c77d21fa1405/disk-6a71d290.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/429fcd369816/vmlinux-6a71d290.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d3d8a4b85112/Image-6a71d290.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/19eeb68a57c8/mount_0.gz
+I guess the stress tests and smoke tests in fstests have caught it,
+e.g. generic/476. Since there is only one error message in ext4_destroy_inode()
+when the race issue happened, we can't detect it unless we go and check the logs
+manually.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+85d8bf8b2759214b194b@syzkaller.appspotmail.com
+I suppose we need to add more warnings, something like this, how does it sound?
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 9973 at fs/ext4/ext4_jbd2.c:73 __ext4_journal_start_sb+0x444/0x92c fs/ext4/ext4_jbd2.c:105
-Modules linked in:
-CPU: 0 PID: 9973 Comm: syz-executor391 Not tainted 6.9.0-rc4-syzkaller-g6a71d2909427 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 80401005 (Nzcv daif +PAN -UAO -TCO -DIT +SSBS BTYPE=--)
-pc : __ext4_journal_start_sb+0x444/0x92c fs/ext4/ext4_jbd2.c:105
-lr : ext4_journal_check_start fs/ext4/ext4_jbd2.c:73 [inline]
-lr : __ext4_journal_start_sb+0x440/0x92c fs/ext4/ext4_jbd2.c:105
-sp : ffff80009c0474b0
-x29: ffff80009c0474c0 x28: 1fffe00018de8cc7 x27: dfff800000000000
-x26: 0000000070818001 x25: ffff0000c6f46638 x24: ffff0000c6f46000
-x23: 0000000000000001 x22: 0000000000000000 x21: 0000000000000000
-x20: ffffffffffffffe2 x19: ffff0000d9ac6280 x18: 1fffe000367b9596
-x17: ffff80008ee7d000 x16: ffff800080332544 x15: 0000000000000001
-x14: 1fffe0001b750b2b x13: 0000000000000000 x12: 0000000000000000
-x11: ffff60001b750b2c x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : ffff0000dbfe8000 x7 : ffff800080c13aac x6 : 0000000000000008
-x5 : 0000000000000000 x4 : 0000000000000001 x3 : 0000000000000000
-x2 : 0000000000000000 x1 : 0000000000000001 x0 : 0000000000000000
-Call trace:
- __ext4_journal_start_sb+0x444/0x92c fs/ext4/ext4_jbd2.c:105
- ext4_sample_last_mounted fs/ext4/file.c:837 [inline]
- ext4_file_open+0x3c8/0x590 fs/ext4/file.c:866
- do_dentry_open+0x778/0x12b4 fs/open.c:955
- vfs_open+0x7c/0x90 fs/open.c:1089
- do_open fs/namei.c:3642 [inline]
- path_openat+0x1f6c/0x2830 fs/namei.c:3799
- do_filp_open+0x1bc/0x3cc fs/namei.c:3826
- do_sys_openat2+0x124/0x1b8 fs/open.c:1406
- do_sys_open fs/open.c:1421 [inline]
- __do_sys_openat fs/open.c:1437 [inline]
- __se_sys_openat fs/open.c:1432 [inline]
- __arm64_sys_openat+0x1f0/0x240 fs/open.c:1432
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-irq event stamp: 186
-hardirqs last  enabled at (185): [<ffff800080c164c4>] seqcount_lockdep_reader_access+0x80/0x100 include/linux/seqlock.h:74
-hardirqs last disabled at (186): [<ffff80008ae6da08>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:470
-softirqs last  enabled at (8): [<ffff800080031848>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (6): [<ffff800080031814>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c8b691e605f1..4b6fd9b63b12 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1255,6 +1255,8 @@ static void ext4_percpu_param_destroy(struct ext4_sb_info *sbi)
+ 	percpu_counter_destroy(&sbi->s_freeclusters_counter);
+ 	percpu_counter_destroy(&sbi->s_freeinodes_counter);
+ 	percpu_counter_destroy(&sbi->s_dirs_counter);
++	WARN_ON_ONCE(!ext4_forced_shutdown(sbi->s_sb) &&
++		     percpu_counter_sum(&sbi->s_dirtyclusters_counter));
+ 	percpu_counter_destroy(&sbi->s_dirtyclusters_counter);
+ 	percpu_counter_destroy(&sbi->s_sra_exceeded_retry_limit);
+ 	percpu_free_rwsem(&sbi->s_writepages_rwsem);
+@@ -1476,7 +1478,8 @@ static void ext4_destroy_inode(struct inode *inode)
+ 		dump_stack();
+ 	}
+
+-	if (EXT4_I(inode)->i_reserved_data_blocks)
++	if (!ext4_forced_shutdown(inode->i_sb) &&
++	    WARN_ON_ONCE(EXT4_I(inode)->i_reserved_data_blocks))
+ 		ext4_msg(inode->i_sb, KERN_ERR,
+ 			 "Inode %lu (%p): i_reserved_data_blocks (%u) not cleared!",
+ 			 inode->i_ino, EXT4_I(inode),
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+Thanks,
+Yi.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+>>>> I have reworded some of the commit message, feel free to use it if you
+>>>> think this version is better. The use of which path uses which locks was
+>>>> a bit confusing in the original commit message.
+>>>>
+>>
+>> Thanks for the message improvement, it looks more clear then mine, I will
+>> use it.
+>>
+> 
+> Glad, it was helpful.
+> 
+> -ritesh
+> 
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
