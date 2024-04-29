@@ -1,56 +1,55 @@
-Return-Path: <linux-ext4+bounces-2232-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2233-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA7058B56A4
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 13:31:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A83C18B5793
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 14:13:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D82BEB2563D
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 11:30:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 216781F24254
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 12:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA584502A;
-	Mon, 29 Apr 2024 11:29:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296CE7E111;
+	Mon, 29 Apr 2024 12:09:55 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C8367537EC;
-	Mon, 29 Apr 2024 11:29:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6067D3E0;
+	Mon, 29 Apr 2024 12:09:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714390144; cv=none; b=NjN4Qxm+0s5XajKPyEjJnK1rL1VaDfDGrPdFSDUbtMvmSGPmIkl6tLBV1AlwoX/V8H2sRa/OksZlI/Mtx+SFXtDyPi6B6QLH+BAJ1f1CH92PKymsQYFVem1crCImH3psByDiJTnVrQc1uEGBPwP6KQjFkdprcaFXYWc30B4hQjo=
+	t=1714392594; cv=none; b=Zwm7stsfPJcLTD2sq7sRh/QUOegsB5HVwex0TSP86FGQs3ziC2JD4+xEX9rB2tcOjXLXptfAhUPLBvcGY30O/IunnUc+LhItHyM7jubZa052sRkIzvuOaoQ5BxRvlCIxflWBoSJV6RNijiCsrz2xOxldWPMHI2xiJdCoJKfr2NY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714390144; c=relaxed/simple;
-	bh=Q4YhIWurI1eqly+A5hDZxZhbfpMnuu6xWDxs0fo7FOI=;
+	s=arc-20240116; t=1714392594; c=relaxed/simple;
+	bh=TUCu9XVhEOju+HxGzwiVcDLCjAEKpa8UzsEieUNRn9o=;
 	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=N8zBLJNoFeeZYVQlyIDbsR+GvA64mjfyKhE21QSCHVWQC53I112E+Zhoz5Z4XArecn87IWn/o1CMNpO2aVvhOLRhzXhexgBPN0gzwB2bTLrxfj3QbGP/cXw6oIFVUBB3BiPS6MfzS1dxKTxwrGkOxsglyWTH9XDv42/MksFBtDI=
+	 In-Reply-To:Content-Type; b=eadTpxbCzPFGYOoM+OUVMgdC852sqYXV+F7dawJ6i7ODFI1WW1PIfnUIED9ksTR7j3P7QSl4Zrcumz4ydUyy15b8zMRhVNptsPC/ds+eYzLUtZ8ECTwZC+N8Qe/Ukcw2ylk/p5Sw/HDwG4Q5GyvyPMSRt9asdWXAzM1fLJCeh/s=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VSh110pF6z4f3k5r;
-	Mon, 29 Apr 2024 19:28:53 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VShw258fhz4f3tNT;
+	Mon, 29 Apr 2024 20:09:38 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 23F2E1A0175;
-	Mon, 29 Apr 2024 19:28:58 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 289D41A0DB9;
+	Mon, 29 Apr 2024 20:09:48 +0800 (CST)
 Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP2 (Coremail) with SMTP id Syh0CgBHaw54hC9mo0AoLg--.8933S3;
-	Mon, 29 Apr 2024 19:28:57 +0800 (CST)
-Subject: Re: [PATCH v2 3/9] ext4: trim delalloc extent
+	by APP2 (Coremail) with SMTP id Syh0CgAXOQwKji9mt_kqLg--.29450S3;
+	Mon, 29 Apr 2024 20:09:48 +0800 (CST)
+Subject: Re: [PATCH v2 5/9] ext4: make ext4_es_insert_delayed_block() insert
+ multi-blocks
 To: Jan Kara <jack@suse.cz>
 Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, tytso@mit.edu,
  adilger.kernel@dilger.ca, yi.zhang@huawei.com, chengzhihao1@huawei.com,
  yukuai3@huawei.com
 References: <20240410034203.2188357-1-yi.zhang@huaweicloud.com>
- <20240410034203.2188357-4-yi.zhang@huaweicloud.com>
- <20240425155640.ktvqqwhteitysaby@quack3>
- <acd4e7c9-c68b-9edc-bba4-dce5e8ce7879@huaweicloud.com>
- <20240429102550.sx4vdl75whxovmc2@quack3>
+ <20240410034203.2188357-6-yi.zhang@huaweicloud.com>
+ <20240429091638.bghtdkbufbmhlw3r@quack3>
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <9d4d958b-7b70-c8f5-e091-174a99f506b6@huaweicloud.com>
-Date: Mon, 29 Apr 2024 19:28:56 +0800
+Message-ID: <cf125f2c-d2f0-57f8-ee6f-9a93b9f5828d@huaweicloud.com>
+Date: Mon, 29 Apr 2024 20:09:46 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 Precedence: bulk
@@ -59,94 +58,169 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240429102550.sx4vdl75whxovmc2@quack3>
+In-Reply-To: <20240429091638.bghtdkbufbmhlw3r@quack3>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgBHaw54hC9mo0AoLg--.8933S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxZF18JFyfAr13GF4DXFW5Jrb_yoW5Ary3p3
-	s2kF15Ga1xK3WI9FZ2vF1UX3WFkw18JF4jqws8WryUZFyqgFyfGFyDJa1j9FykXr4fGF4Y
-	vFWUtF97u3ZFvaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+X-CM-TRANSID:Syh0CgAXOQwKji9mt_kqLg--.29450S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxuFykCFyUtry3tr15Jry7KFg_yoW7Aw1Upr
+	Z8tF18Ca1UXw109F92qw1jqr1aqa1DJrWUGwsaqw13ZF98XFyfKF1DKF1FvFW0vr4xJ3ZI
+	qFy5Cw17uan09a7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUk0b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
-	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrJr0_WFyUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv
+	6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrR6zUUUUU
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/4/29 18:25, Jan Kara wrote:
-> On Fri 26-04-24 17:38:23, Zhang Yi wrote:
->> On 2024/4/25 23:56, Jan Kara wrote:
->>> On Wed 10-04-24 11:41:57, Zhang Yi wrote:
->>>> From: Zhang Yi <yi.zhang@huawei.com>
->>>>
->>>> The cached delalloc or hole extent should be trimed to the map->map_len
->>>> if we map delalloc blocks in ext4_da_map_blocks(). But it doesn't
->>>> trigger any issue now because the map->m_len is always set to one and we
->>>> always insert one delayed block once a time. Fix this by trim the extent
->>>> once we get one from the cached extent tree, prearing for mapping a
->>>> extent with multiple delalloc blocks.
->>>>
->>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->>>
->>> Well, but we already do the trimming in ext4_da_map_blocks(), don't we? You
->>> just move it to a different place... Or do you mean that we actually didn't
->>> set 'map' at all in some cases and now we do? 
+On 2024/4/29 17:16, Jan Kara wrote:
+> On Wed 10-04-24 11:41:59, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
 >>
->> Yeah, now we only trim map len if we found an unwritten extent or written
->> extent in the cache, this isn't okay if we found a hole and
->> ext4_insert_delayed_block() and ext4_da_map_blocks() support inserting
->> map->len blocks. If we found a hole which es->es_len is shorter than the
->> length we want to write, we could delay more blocks than we expected.
+>> Rename ext4_es_insert_delayed_block() to ext4_es_insert_delayed_extent()
+>> and pass length parameter to make it insert multi delalloc blocks once a
+>> time. For the case of bigalloc, expand the allocated parameter to
+>> lclu_allocated and end_allocated. lclu_allocated indicates the allocate
+>> state of the cluster which containing the lblk, end_allocated represents
+>> the end, and the middle clusters must be unallocated.
 >>
->> Please assume we write data [A, C) to a file that contains a hole extent
->> [A, B) and a written extent [B, D) in cache.
->>
->>                       A     B  C  D
->> before da write:   ...hhhhhh|wwwwww....
->>
->> Then we will get extent [A, B), we should trim map->m_len to B-A before
->> inserting new delalloc blocks, if not, the range [B, C) is duplicated.
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 > 
-> Thanks for explanation!
+> Looks mostly good, just one comment below:
+> 
+>> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+>> index 4a00e2f019d9..2320b0d71001 100644
+>> --- a/fs/ext4/extents_status.c
+>> +++ b/fs/ext4/extents_status.c
+>> @@ -2052,34 +2052,42 @@ bool ext4_is_pending(struct inode *inode, ext4_lblk_t lblk)
+>>  }
+>>  
+>>  /*
+>> - * ext4_es_insert_delayed_block - adds a delayed block to the extents status
+>> - *                                tree, adding a pending reservation where
+>> - *                                needed
+>> + * ext4_es_insert_delayed_extent - adds some delayed blocks to the extents
+>> + *                                 status tree, adding a pending reservation
+>> + *                                 where needed
+>>   *
+>>   * @inode - file containing the newly added block
+>> - * @lblk - logical block to be added
+>> - * @allocated - indicates whether a physical cluster has been allocated for
+>> - *              the logical cluster that contains the block
+>> + * @lblk - start logical block to be added
+>> + * @len - length of blocks to be added
+>> + * @lclu_allocated/end_allocated - indicates whether a physical cluster has
+>> + *                                 been allocated for the logical cluster
+>> + *                                 that contains the block
+> 						        ^^^^ "start / end
+> block" to make it clearer...
+> 
+>> -void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
+>> -				  bool allocated)
+>> +void ext4_es_insert_delayed_extent(struct inode *inode, ext4_lblk_t lblk,
+>> +				   ext4_lblk_t len, bool lclu_allocated,
+>> +				   bool end_allocated)
+>>  {
+>>  	struct extent_status newes;
+>> +	ext4_lblk_t end = lblk + len - 1;
+>>  	int err1 = 0, err2 = 0, err3 = 0;
+>>  	struct extent_status *es1 = NULL;
+>>  	struct extent_status *es2 = NULL;
+>> -	struct pending_reservation *pr = NULL;
+>> +	struct pending_reservation *pr1 = NULL;
+>> +	struct pending_reservation *pr2 = NULL;
+>>  
+>>  	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+>>  		return;
+>>  
+>> -	es_debug("add [%u/1) delayed to extent status tree of inode %lu\n",
+>> -		 lblk, inode->i_ino);
+>> +	es_debug("add [%u/%u) delayed to extent status tree of inode %lu\n",
+>> +		 lblk, len, inode->i_ino);
+>> +	if (!len)
+>> +		return;
+>>  
+>>  	newes.es_lblk = lblk;
+>> -	newes.es_len = 1;
+>> +	newes.es_len = len;
+>>  	ext4_es_store_pblock_status(&newes, ~0, EXTENT_STATUS_DELAYED);
+>> -	trace_ext4_es_insert_delayed_block(inode, &newes, allocated);
+>> +	trace_ext4_es_insert_delayed_extent(inode, &newes, lclu_allocated,
+>> +					    end_allocated);
+>>  
+>>  	ext4_es_insert_extent_check(inode, &newes);
+>>  
+>> @@ -2088,11 +2096,15 @@ void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
+>>  		es1 = __es_alloc_extent(true);
+>>  	if ((err1 || err2) && !es2)
+>>  		es2 = __es_alloc_extent(true);
+>> -	if ((err1 || err2 || err3) && allocated && !pr)
+>> -		pr = __alloc_pending(true);
+>> +	if (err1 || err2 || err3) {
+>> +		if (lclu_allocated && !pr1)
+>> +			pr1 = __alloc_pending(true);
+>> +		if (end_allocated && !pr2)
+>> +			pr2 = __alloc_pending(true);
+>> +	}
+>>  	write_lock(&EXT4_I(inode)->i_es_lock);
+>>  
+>> -	err1 = __es_remove_extent(inode, lblk, lblk, NULL, es1);
+>> +	err1 = __es_remove_extent(inode, lblk, end, NULL, es1);
+>>  	if (err1 != 0)
+>>  		goto error;
+>>  	/* Free preallocated extent if it didn't get used. */
+>> @@ -2112,13 +2124,22 @@ void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
+>>  		es2 = NULL;
+>>  	}
+>>  
+>> -	if (allocated) {
+>> -		err3 = __insert_pending(inode, lblk, &pr);
+>> +	if (lclu_allocated) {
+>> +		err3 = __insert_pending(inode, lblk, &pr1);
+>>  		if (err3 != 0)
+>>  			goto error;
+>> -		if (pr) {
+>> -			__free_pending(pr);
+>> -			pr = NULL;
+>> +		if (pr1) {
+>> +			__free_pending(pr1);
+>> +			pr1 = NULL;
+>> +		}
+>> +	}
+>> +	if (end_allocated) {
+> 
+> So there's one unclear thing here: What if 'lblk' and 'end' are in the same
+> cluster? We don't want two pending reservation structures for the cluster.
+> __insert_pending() already handles this gracefully but perhaps we don't
+> need to allocate 'pr2' in that case and call __insert_pending() at all? I
+> think it could be easily handled by something like:
+> 
+> 	if (EXT4_B2C(lblk) == EXT4_B2C(end))
+> 		end_allocated = false;
+> 
+> at appropriate place in ext4_es_insert_delayed_extent().
 > 
 
-Current change log is not clear enough now, I will put this explanation
-into the changelog in my nextn iteratio, make it easier to understand.
+I've done the check "EXT4_B2C(lblk) == EXT4_B2C(end)" in the caller
+ext4_insert_delayed_blocks() in patch 8, becasue there is no need to check
+the allocation state if they are in the same cluster, so it could make sure
+that end_allocated is always false when 'lblk' and 'end' are in the same
+cluster. So I suppose check and set it here again maybe redundant, how about
+add a wanging here in ext4_es_insert_delayed_extent(), like:
 
->>> In either case the 'map'
->>> handling looks a bit sloppy in ext4_da_map_blocks() as e.g. the
->>> 'add_delayed' case doesn't seem to bother with properly setting 'map' based
->>> on what it does. So maybe we should clean that up to always set 'map' just
->>> before returning at the same place where we update the 'bh'? And maybe bh
->>> update could be updated in some common helper because it's content is
->>> determined by the 'map' content?
->>>
->>
->> I agree with you, it looks that we should always revise the map->m_len
->> once we found an extent from the cache, and then do corresponding handling
->> according to the extent type. so it's hard to put it to a common place.
->> But we can merge the handling of written and unwritten extent, I've moved
->> the bh updating into ext4_da_get_block_prep() and do some cleanup in
->> patch 9, please look at that patch, does it looks fine to you?
-> 
-> Oh, yes, what patch 9 does improve things significantly and it addresses my
-> concern. So feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> Maybe in the changelog you can just mention that the remaining cases not
-> setting map->m_len will be handled in patch 9.
-> 
+	WARN_ON_ONCE((EXT4_B2C(sbi, lblk) == EXT4_B2C(sbi, end)) &&
+		     end_allocated);
 
-Sure.
+and modify the 'lclu_allocated/end_allocated' parameter comments, note that
+end_allocated should always be set to false if the extent is in one cluster.
+Is it fine?
 
 Thanks,
 Yi.
