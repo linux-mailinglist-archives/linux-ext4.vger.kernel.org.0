@@ -1,105 +1,103 @@
-Return-Path: <linux-ext4+bounces-2237-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2238-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23F088B5EF6
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 18:27:44 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3363F8B5F56
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 18:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 28088B23C98
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 16:27:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 56CB91C219C2
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 16:47:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511A184D1D;
-	Mon, 29 Apr 2024 16:27:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 431D48614B;
+	Mon, 29 Apr 2024 16:46:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Oa/2UJmv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pM8rDZ55";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Oa/2UJmv";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pM8rDZ55"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CKZ18j6U";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d+GkVceN";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IVG+Vq5B";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="kDnWDRBe"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04F2084A30;
-	Mon, 29 Apr 2024 16:27:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11EDD84FDB;
+	Mon, 29 Apr 2024 16:46:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714408050; cv=none; b=faZBGbo+hMd+9PdK58qqdYImgHwSGNkTKGsIbJ0854Yejk1jge3uCcJsHMJZflYotQrX+6nLdc879jQfjD55dHSpHUP0xpJhgZ52lg+PMlYBhTOFqCdfy13eyUwz9Iyjl5fGvCSMYpr3zUjZEaAG/wNk4RRAU7rlQNMlyJ+FA0U=
+	t=1714409212; cv=none; b=TXgBX5YwsImvrHcH7e3HGr/pdX/KEpkIbs6k0H/3VvwjZBrDZ6EWsXFyfeRkU/4fYzc0J0dnVvuX1ldCtm4i0oo4T3uPLlXeoRZGvbiehH+SJbC1qI3HD549rlTLV5tY4qL78Ydm8L/kbnEaE2uu5AiCdPkkmeaxWRmBKELM08Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714408050; c=relaxed/simple;
-	bh=P9PlTcI0sAwPhQz/iv/gS1BiAKtJJIPZh4QaaugdsM8=;
+	s=arc-20240116; t=1714409212; c=relaxed/simple;
+	bh=RS/Nzkow4JdCZb3e2G1q+ZkbngBwp1eF3Py2i9zh+zs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kcMnhbrrSCuX/E/f8uq4A7vOuBuEqrb5cy76/aZz7LnHlLEmo+4TQPfK9J1PQm/MiPt4jGUVZlbIQJIvB/wAFdCrUPWsBlLW7cJvc6UFNLaIaONV03zhn6VrEK0OdrC027R4EV/6vuv0p4QdcyR1d7mLX0NaKRTR5krR9hYVqyg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Oa/2UJmv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pM8rDZ55; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Oa/2UJmv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pM8rDZ55; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=W7JcZrtbkgVaGbb+q6Up2wAaq9Zdtbs41L97xT/O8TU1gpT303Wqhl0dhC/krsB8tkQorKTZFXes2/VseNCada6J42dkEY4rz0CVTypm+vbWvTQt3oON0cudwJxn5uELom82X5aIijbNjwAjfym2wAVz17uDZpa4VHPndOXFWoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CKZ18j6U; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d+GkVceN; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IVG+Vq5B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=kDnWDRBe; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 7FDBC33938;
-	Mon, 29 Apr 2024 16:27:26 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AC73533948;
+	Mon, 29 Apr 2024 16:46:48 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714408046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1714409209; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DA0UakU/4/IzIxfK8LkcUEKuRjE5564S3GFhJSkZNCI=;
-	b=Oa/2UJmvnUZV4aHfO8rPcxUWLGwR0jF8UPRGPbJmvbw5hdLvHekfa6imNlfft1DJV+6Er1
-	Rm2LnaItDQ7KWDBHtnwTdsKrwijOLuHl3RaYGAmaHcIOlD1/cegDuRHhUpWuLcMeXmkQqr
-	4Ckjyx6EEf65hwAsdKeIBMwbalpwIzc=
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=CKZ18j6UJq+6XAMMI4K75K+U5rNPzWcV/mUuowFFuvT7re/vmVq+vciKBJxomQAfagA9mY
+	UummKYf0o2A9Gehug7E5A3dPY8jsYWUOOqtZpCYFGqLqHlB3gwt1AO9n7hUvPaRdfMcSOT
+	4M4yv/LtVBM1w/JalV3CAIePS9vFhWs=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714408046;
+	s=susede2_ed25519; t=1714409209;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DA0UakU/4/IzIxfK8LkcUEKuRjE5564S3GFhJSkZNCI=;
-	b=pM8rDZ550zjK+fM4380W1eoh+8M9z1CqTS2Rnb0fyb47JAc3QC3thPcGHnqudgBgTh3OSx
-	CKb3yuL+n0qxI/Cw==
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=d+GkVceNa0zY5w/3bWdmRLA/mRvJuT6vhguUMLkzaCULG3/zj9NatBInitzt2xmiVMfJxq
+	QM0wRDHF7facwjDw==
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=IVG+Vq5B;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=kDnWDRBe
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714408046; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1714409208; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DA0UakU/4/IzIxfK8LkcUEKuRjE5564S3GFhJSkZNCI=;
-	b=Oa/2UJmvnUZV4aHfO8rPcxUWLGwR0jF8UPRGPbJmvbw5hdLvHekfa6imNlfft1DJV+6Er1
-	Rm2LnaItDQ7KWDBHtnwTdsKrwijOLuHl3RaYGAmaHcIOlD1/cegDuRHhUpWuLcMeXmkQqr
-	4Ckjyx6EEf65hwAsdKeIBMwbalpwIzc=
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=IVG+Vq5BLjyk2Wc/JVJqFA9PYCKOu7JZED4PD8UczFD04JQRajzDMeU3KG6Llv0EfdSKl4
+	Dz6of0Cnj7F/TWfvprKJQhEKBOJ+xStB8kNFnZA97sTQwDxt+vmcF2AcwOKXpBlRTGfaIi
+	oBxIu3lOIsWrvFstFnkcpty2loBuvms=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714408046;
+	s=susede2_ed25519; t=1714409208;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=DA0UakU/4/IzIxfK8LkcUEKuRjE5564S3GFhJSkZNCI=;
-	b=pM8rDZ550zjK+fM4380W1eoh+8M9z1CqTS2Rnb0fyb47JAc3QC3thPcGHnqudgBgTh3OSx
-	CKb3yuL+n0qxI/Cw==
+	bh=ox2K85a+e+AMe/QfYeCjJEP5BT9IuE0nXUiZQg7af6o=;
+	b=kDnWDRBe9PNt4LuyCW+2B+jrl4w9Y4UZqNsdyiR17PoEyDgGK8BYSHgo5d4K2dlmni0TUx
+	gEJ8iWcI6viBKTBQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6EA29139DE;
-	Mon, 29 Apr 2024 16:27:26 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9630F138A7;
+	Mon, 29 Apr 2024 16:46:48 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fmL+Gm7KL2aCMgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 29 Apr 2024 16:27:26 +0000
+	id OwZkJPjOL2bvOAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 29 Apr 2024 16:46:48 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id DF5B2A082F; Mon, 29 Apr 2024 18:27:25 +0200 (CEST)
-Date: Mon, 29 Apr 2024 18:27:25 +0200
+	id 3A76AA082F; Mon, 29 Apr 2024 18:46:48 +0200 (CEST)
+Date: Mon, 29 Apr 2024 18:46:48 +0200
 From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, yi.zhang@huawei.com,
-	chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2 5/9] ext4: make ext4_es_insert_delayed_block() insert
- multi-blocks
-Message-ID: <20240429162725.rzj43hscw6to7xed@quack3>
-References: <20240410034203.2188357-1-yi.zhang@huaweicloud.com>
- <20240410034203.2188357-6-yi.zhang@huaweicloud.com>
- <20240429091638.bghtdkbufbmhlw3r@quack3>
- <cf125f2c-d2f0-57f8-ee6f-9a93b9f5828d@huaweicloud.com>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, jack@suse.cz, ojaswin@linux.ibm.com,
+	ritesh.list@gmail.com
+Subject: Re: [PATCH v3 3/5] ext4: call ext4_mb_mark_free_simple to free
+ continuous bits in found chunk
+Message-ID: <20240429164648.juifmjsm7qb3d4ev@quack3>
+References: <20240424061904.987525-1-shikemeng@huaweicloud.com>
+ <20240424061904.987525-4-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -108,94 +106,154 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <cf125f2c-d2f0-57f8-ee6f-9a93b9f5828d@huaweicloud.com>
+In-Reply-To: <20240424061904.987525-4-shikemeng@huaweicloud.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.51
+X-Rspamd-Action: no action
+X-Rspamd-Queue-Id: AC73533948
 X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.51 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
+	MX_GOOD(-0.01)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huawei.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,vger.kernel.org,suse.cz,linux.ibm.com,gmail.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
 
-On Mon 29-04-24 20:09:46, Zhang Yi wrote:
-> On 2024/4/29 17:16, Jan Kara wrote:
-> > On Wed 10-04-24 11:41:59, Zhang Yi wrote:
-> >> From: Zhang Yi <yi.zhang@huawei.com>
-> >>
-> >> Rename ext4_es_insert_delayed_block() to ext4_es_insert_delayed_extent()
-> >> and pass length parameter to make it insert multi delalloc blocks once a
-> >> time. For the case of bigalloc, expand the allocated parameter to
-> >> lclu_allocated and end_allocated. lclu_allocated indicates the allocate
-> >> state of the cluster which containing the lblk, end_allocated represents
-> >> the end, and the middle clusters must be unallocated.
-> >>
-> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-...
-> >> @@ -2112,13 +2124,22 @@ void ext4_es_insert_delayed_block(struct inode *inode, ext4_lblk_t lblk,
-> >>  		es2 = NULL;
-> >>  	}
-> >>  
-> >> -	if (allocated) {
-> >> -		err3 = __insert_pending(inode, lblk, &pr);
-> >> +	if (lclu_allocated) {
-> >> +		err3 = __insert_pending(inode, lblk, &pr1);
-> >>  		if (err3 != 0)
-> >>  			goto error;
-> >> -		if (pr) {
-> >> -			__free_pending(pr);
-> >> -			pr = NULL;
-> >> +		if (pr1) {
-> >> +			__free_pending(pr1);
-> >> +			pr1 = NULL;
-> >> +		}
-> >> +	}
-> >> +	if (end_allocated) {
-> > 
-> > So there's one unclear thing here: What if 'lblk' and 'end' are in the same
-> > cluster? We don't want two pending reservation structures for the cluster.
-> > __insert_pending() already handles this gracefully but perhaps we don't
-> > need to allocate 'pr2' in that case and call __insert_pending() at all? I
-> > think it could be easily handled by something like:
-> > 
-> > 	if (EXT4_B2C(lblk) == EXT4_B2C(end))
-> > 		end_allocated = false;
-> > 
-> > at appropriate place in ext4_es_insert_delayed_extent().
-> > 
+On Wed 24-04-24 14:19:02, Kemeng Shi wrote:
+> In mb_mark_used, we will find free chunk and mark it inuse. For chunk
+> in mid of passed range, we could simply mark whole chunk inuse. For chunk
+> at end of range, we may need to mark a continuous bits at end of part of
+> chunk inuse and keep rest part of chunk free. To only mark a part of
+> chunk inuse, we firstly mark whole chunk inuse and then mark a continuous
+> range at end of chunk free.
+> Function mb_mark_used does several times of "mb_find_buddy; mb_clear_bit;
+> ..." to mark a continuous range free which can be done by simply calling
+> ext4_mb_mark_free_simple which free continuous bits in a more effective
+> way.
+> Just call ext4_mb_mark_free_simple in mb_mark_used to use existing and
+> effective code to free continuous blocks in chunk at end of passed range.
 > 
-> I've done the check "EXT4_B2C(lblk) == EXT4_B2C(end)" in the caller
-> ext4_insert_delayed_blocks() in patch 8, becasue there is no need to check
-> the allocation state if they are in the same cluster, so it could make sure
-> that end_allocated is always false when 'lblk' and 'end' are in the same
-> cluster. So I suppose check and set it here again maybe redundant, how about
-> add a wanging here in ext4_es_insert_delayed_extent(), like:
-> 
-> 	WARN_ON_ONCE((EXT4_B2C(sbi, lblk) == EXT4_B2C(sbi, end)) &&
-> 		     end_allocated);
-> 
-> and modify the 'lclu_allocated/end_allocated' parameter comments, note that
-> end_allocated should always be set to false if the extent is in one cluster.
-> Is it fine?
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Yes, that is a good solution as well!
+I don't know with this patch. It looks correct to me. I don't find either
+the old or the new version dramatically better so I'd say I'll leave it
+upto Ted whether he finds this new version better or not...
+
+In case Ted decides to take this patch, feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> ---
+>  fs/ext4/mballoc.c | 38 +++++++++++++++++++++-----------------
+>  1 file changed, 21 insertions(+), 17 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index a61fc52956b2..5acf413808a2 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2040,13 +2040,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>  	int ord;
+>  	int mlen = 0;
+>  	int max = 0;
+> -	int cur;
+>  	int start = ex->fe_start;
+>  	int len = ex->fe_len;
+>  	unsigned ret = 0;
+>  	int len0 = len;
+>  	void *buddy;
+> -	bool split = false;
+> +	int ord_start, ord_end;
+>  
+>  	BUG_ON(start + len > (e4b->bd_sb->s_blocksize << 3));
+>  	BUG_ON(e4b->bd_group != ex->fe_group);
+> @@ -2071,16 +2070,12 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>  
+>  	/* let's maintain buddy itself */
+>  	while (len) {
+> -		if (!split)
+> -			ord = mb_find_order_for_block(e4b, start);
+> +		ord = mb_find_order_for_block(e4b, start);
+>  
+>  		if (((start >> ord) << ord) == start && len >= (1 << ord)) {
+>  			/* the whole chunk may be allocated at once! */
+>  			mlen = 1 << ord;
+> -			if (!split)
+> -				buddy = mb_find_buddy(e4b, ord, &max);
+> -			else
+> -				split = false;
+> +			buddy = mb_find_buddy(e4b, ord, &max);
+>  			BUG_ON((start >> ord) >= max);
+>  			mb_set_bit(start >> ord, buddy);
+>  			e4b->bd_info->bb_counters[ord]--;
+> @@ -2094,20 +2089,29 @@ static int mb_mark_used(struct ext4_buddy *e4b, struct ext4_free_extent *ex)
+>  		if (ret == 0)
+>  			ret = len | (ord << 16);
+>  
+> -		/* we have to split large buddy */
+>  		BUG_ON(ord <= 0);
+>  		buddy = mb_find_buddy(e4b, ord, &max);
+>  		mb_set_bit(start >> ord, buddy);
+>  		e4b->bd_info->bb_counters[ord]--;
+>  
+> -		ord--;
+> -		cur = (start >> ord) & ~1U;
+> -		buddy = mb_find_buddy(e4b, ord, &max);
+> -		mb_clear_bit(cur, buddy);
+> -		mb_clear_bit(cur + 1, buddy);
+> -		e4b->bd_info->bb_counters[ord]++;
+> -		e4b->bd_info->bb_counters[ord]++;
+> -		split = true;
+> +		ord_start = (start >> ord) << ord;
+> +		ord_end = ord_start + (1 << ord);
+> +		/* first chunk */
+> +		if (start > ord_start)
+> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
+> +						 ord_start, start - ord_start,
+> +						 e4b->bd_info);
+> +
+> +		/* last chunk */
+> +		if (start + len < ord_end) {
+> +			ext4_mb_mark_free_simple(e4b->bd_sb, e4b->bd_buddy,
+> +						 start + len,
+> +						 ord_end - (start + len),
+> +						 e4b->bd_info);
+> +			break;
+> +		}
+> +		len = start + len - ord_end;
+> +		start = ord_end;
+>  	}
+>  	mb_set_largest_free_order(e4b->bd_sb, e4b->bd_info);
+>  
+> -- 
+> 2.30.0
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
