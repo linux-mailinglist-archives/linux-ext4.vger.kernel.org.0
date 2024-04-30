@@ -1,263 +1,164 @@
-Return-Path: <linux-ext4+bounces-2239-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2240-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C8678B61CB
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 21:14:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 426818B6B57
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Apr 2024 09:19:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6059DB21A90
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Apr 2024 19:14:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED8C32828B7
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Apr 2024 07:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E24BD13A3E5;
-	Mon, 29 Apr 2024 19:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SNAulEN4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PS0vxXgk";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SNAulEN4";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PS0vxXgk"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A28E33D3A0;
+	Tue, 30 Apr 2024 07:19:26 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E13413AA3B
-	for <linux-ext4@vger.kernel.org>; Mon, 29 Apr 2024 19:14:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1024179BE
+	for <linux-ext4@vger.kernel.org>; Tue, 30 Apr 2024 07:19:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714418081; cv=none; b=Ov0Z2G5E2YX6v1sYyhrUjuDl8rV4j4Tes7EprBV5uV3uIN010mX8P/GtGsHHjUAcLcdGq2Eo0TN4wPF7g+tGtdZfw/rtbXAUl6GXZBP4pE4QUuMdrtRZMi6rynbBvI7JDSe3fy6ehT5R7RSW3ZbzZlbkPmyV3LUYxkOsHw7SLqU=
+	t=1714461566; cv=none; b=Ue7FvCvYss5hvv/AA88rbcme3enTw6kHBSr4NblBJtubYUF2+n3GEHN2nQDu18eazyIAWPbOY/uAL3rZcXwFFpdg8qAHpwN6lLi5atHZKaCKm0B8zFZepCT5BlVewM7k74XMkl0UV6N7vUkeeHaFRrB3Du9hpwaQjV3qqCePBc4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714418081; c=relaxed/simple;
-	bh=tPgwfVCZ1oO04ZmZGBatUOhV8UHLGPCJoU9dSZXKy7Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KKNb2Fw479oykDWVm4ZvdICasb0mKwwP4IC9TbtBGqxxouqZunyxgaU+s0HTBkyWjr+VyFOXMfQmv014hgLqxvrvr/STq+LUfCD01FzT6ixjP2x5GbxydwZsr4m3cJkCIXUUvX6dNGUjwKOYtAP10RLrWvqLrVZhWys0VSIKC+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SNAulEN4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PS0vxXgk; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SNAulEN4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PS0vxXgk; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 8A43B1F749;
-	Mon, 29 Apr 2024 19:14:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714418077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pQ4IZMoknWGNdFBkSUXkqOI79EqGmB7kS7uyLyNU7BQ=;
-	b=SNAulEN4mXUktPKUJZnnqXdna2yQrSd8IuWqnHfIPsImqqM8WjTJcJoZ6wT53NFebe311L
-	mKkh9LawXEbZTCF0B5dfek+fprPXuYkaBXJLSe5rvJJKU12jfpR3YxhXFdlaAva1rv5tAF
-	WDbhehDhP8ZUhZ51frcBQgJzs7oi62E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714418077;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pQ4IZMoknWGNdFBkSUXkqOI79EqGmB7kS7uyLyNU7BQ=;
-	b=PS0vxXgk5P/rbSI9HsHJ5C+Io/TjQ2FX9D2PDawSd+mne7nNI/QDNxf/5oP4+HR1qYh8gs
-	bviwAXKo7P7CqMCQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1714418077; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pQ4IZMoknWGNdFBkSUXkqOI79EqGmB7kS7uyLyNU7BQ=;
-	b=SNAulEN4mXUktPKUJZnnqXdna2yQrSd8IuWqnHfIPsImqqM8WjTJcJoZ6wT53NFebe311L
-	mKkh9LawXEbZTCF0B5dfek+fprPXuYkaBXJLSe5rvJJKU12jfpR3YxhXFdlaAva1rv5tAF
-	WDbhehDhP8ZUhZ51frcBQgJzs7oi62E=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1714418077;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=pQ4IZMoknWGNdFBkSUXkqOI79EqGmB7kS7uyLyNU7BQ=;
-	b=PS0vxXgk5P/rbSI9HsHJ5C+Io/TjQ2FX9D2PDawSd+mne7nNI/QDNxf/5oP4+HR1qYh8gs
-	bviwAXKo7P7CqMCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 814D7138A7;
-	Mon, 29 Apr 2024 19:14:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 8BiNH53xL2bkZgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 29 Apr 2024 19:14:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 27D57A082F; Mon, 29 Apr 2024 21:14:37 +0200 (CEST)
-Date: Mon, 29 Apr 2024 21:14:37 +0200
-From: Jan Kara <jack@suse.cz>
-To: Ye Bin <yebin@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	jack@suse.cz, Ye Bin <yebin10@huawei.com>
-Subject: Re: [PATCH v3] jbd2: avoid mount failed when commit block is partial
- submitted
-Message-ID: <20240429191437.2pxfg43hgdmkgl2m@quack3>
-References: <20240425064515.836633-1-yebin@huaweicloud.com>
+	s=arc-20240116; t=1714461566; c=relaxed/simple;
+	bh=hxT/zLuKhrvHe7RPN8WZzTXZWdbXsb/k35ynlb8Z3Pg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u5s7RYryi5I7uEuECRmoElBw1lGSY5aEvIyqRXWXNYo6OueAQiBqQ6ojOh5ZBng3Vmce2L6+V31dtrRGPSIiA7FSGp1Jt31ovqByhQ0jmEzzKq3wY+LR8aRXwgZhy0AxEoEwDSGj2a3r9u15GBS0nFsv/kKtHF2jiB88/Q93N8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7dec39bc0a4so247338439f.1
+        for <linux-ext4@vger.kernel.org>; Tue, 30 Apr 2024 00:19:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714461563; x=1715066363;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=MilV/OT5yB6oxIhM5AEKqTMjTfTZzcUIfcce2zIqJ1c=;
+        b=Ots9EB8iDzlTWAYuHdHzO+ED5AS2wOPnzWyJqYs91e2ueNOLh64B3WZAYa8U+rltFW
+         E4CQMUowzzYexiDPUDyz6gqbLnswUndsV03HDy7snLlrNoIna+j12FF+0drHuAZZchId
+         /xyLPhFDAUDJaI8wfBEJkSuNzF4q4+gY6FbGrkxIvAmlByRlCPPhis/wh5HwFk9yRms8
+         1GMyrbYUpJ1CUBFb3+QExlrBuJgMef3BJ8Ux9DVHcipaKEjBm3aTtMdNL+/mhdgUn8mo
+         x1LDSYrFzXb7MYndQdv1lK1EUn7KIxRWheEM6oVfvnTmq3KF9Bbzm6Atha0fZKXbTSqA
+         cOgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXPCyfQCsQvy2O2kxKhvd7Tn/vZOA51jzLDIcifYUWWSErbMxObz74gtQCwLSJj4lG6XyW67ifteAHJCzmc+3IMVSdj97G9EMskeA==
+X-Gm-Message-State: AOJu0YzLUYdBFiAVJjaqPJ0dgtRLDb32nwxh+Q2hpyu4V0BPVlujhVKw
+	NsBPmeBoaf+5nihbKwWa35U5DRYxO/V9vDvfgvl2eQ04RbMJ9SP1ZHEbIkszTkiYqVTh+X0+JSQ
+	FyFWgndY9XcoVxocD6t/ExF6QzGJHi6vp8MCoTpx3pWBCCfErTh/jI6M=
+X-Google-Smtp-Source: AGHT+IGgQeMK7yo6qNA9ufhuJLGl26ukQfJcIw3uhyA5Onhx9759iNoff+GML/M45UsGCt5soJ+8qvuc7a8V64pq4N2jOgVdP4h0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240425064515.836633-1-yebin@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Received: by 2002:a05:6602:2cd4:b0:7da:b30e:df80 with SMTP id
+ j20-20020a0566022cd400b007dab30edf80mr104935iow.0.1714461563073; Tue, 30 Apr
+ 2024 00:19:23 -0700 (PDT)
+Date: Tue, 30 Apr 2024 00:19:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000072c6ba06174b30b7@google.com>
+Subject: [syzbot] [ext4?] WARNING in mb_cache_destroy
+From: syzbot <syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu 25-04-24 14:45:15, Ye Bin wrote:
-> From: Ye Bin <yebin10@huawei.com>
-> 
-> We encountered a problem that the file system could not be mounted in
-> the power-off scenario. The analysis of the file system mirror shows that
-> only part of the data is written to the last commit block.
-> The valid data of the commit block is concentrated in the first sector.
-> However, the data of the entire block is involved in the checksum calculation.
-> For different hardware, the minimum atomic unit may be different.
-> If the checksum of a committed block is incorrect, clear the data except the
-> 'commit_header' and then calculate the checksum. If the checkusm is correct,
-> it is considered that the block is partially committed. However, if there are
-> valid description/revoke blocks, it is considered that the data is abnormal
-> and the log replay is stopped.
-> 
-> Signed-off-by: Ye Bin <yebin10@huawei.com>
+Hello,
 
-The patch as a fix looks good. Feel free to add:
+syzbot found the following issue on:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+HEAD commit:    b947cc5bf6d7 Merge tag 'erofs-for-6.9-rc7-fixes' of git://..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=11175d5f180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
+dashboard link: https://syzkaller.appspot.com/bug?extid=dd43bd0f7474512edc47
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11d2957f180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1620ca40980000
 
-I'd just note that the maze of branches and gotos in do_one_pass() is
-becoming very hard to follow so ideally we should come up with some
-refactoring of the function so that it is easier to follow. But that's
-definitely something for a separate patch.
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7318118d629d/disk-b947cc5b.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/88b2ce2fc8ea/vmlinux-b947cc5b.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/3f3ffc239871/bzImage-b947cc5b.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/224b657d209f/mount_0.gz
 
-								Honza
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+dd43bd0f7474512edc47@syzkaller.appspotmail.com
 
-> ---
->  fs/jbd2/recovery.c | 48 ++++++++++++++++++++++++++++++++++++++++++++++
->  1 file changed, 48 insertions(+)
-> 
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 1f7664984d6e..594bf02a709f 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -443,6 +443,27 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
->  	return provided == cpu_to_be32(calculated);
->  }
->  
-> +static bool jbd2_commit_block_csum_verify_partial(journal_t *j, void *buf)
-> +{
-> +	struct commit_header *h;
-> +	__be32 provided;
-> +	__u32 calculated;
-> +	void *tmpbuf;
-> +
-> +	tmpbuf = kzalloc(j->j_blocksize, GFP_KERNEL);
-> +	if (!tmpbuf)
-> +		return false;
-> +
-> +	memcpy(tmpbuf, buf, sizeof(struct commit_header));
-> +	h = tmpbuf;
-> +	provided = h->h_chksum[0];
-> +	h->h_chksum[0] = 0;
-> +	calculated = jbd2_chksum(j, j->j_csum_seed, tmpbuf, j->j_blocksize);
-> +	kfree(tmpbuf);
-> +
-> +	return provided == cpu_to_be32(calculated);
-> +}
-> +
->  static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
->  				      journal_block_tag3_t *tag3,
->  				      void *buf, __u32 sequence)
-> @@ -479,6 +500,7 @@ static int do_one_pass(journal_t *journal,
->  	int			descr_csum_size = 0;
->  	int			block_error = 0;
->  	bool			need_check_commit_time = false;
-> +	bool                    has_partial_commit = false;
->  	__u64			last_trans_commit_time = 0, commit_time;
->  
->  	/*
-> @@ -590,6 +612,14 @@ static int do_one_pass(journal_t *journal,
->  					next_log_block);
->  			}
->  
-> +			if (pass == PASS_SCAN && has_partial_commit) {
-> +				pr_err("JBD2: Detect validate descriptor block %lu after incomplete commit block\n",
-> +				       next_log_block);
-> +				err = -EFSBADCRC;
-> +				brelse(bh);
-> +				goto failed;
-> +			}
-> +
->  			/* If it is a valid descriptor block, replay it
->  			 * in pass REPLAY; if journal_checksums enabled, then
->  			 * calculate checksums in PASS_SCAN, otherwise,
-> @@ -810,6 +840,14 @@ static int do_one_pass(journal_t *journal,
->  			if (pass == PASS_SCAN &&
->  			    !jbd2_commit_block_csum_verify(journal,
->  							   bh->b_data)) {
-> +				if (jbd2_commit_block_csum_verify_partial(
-> +								  journal,
-> +								  bh->b_data)) {
-> +					pr_notice("JBD2: Find incomplete commit block in transaction %u block %lu\n",
-> +						  next_commit_ID, next_log_block);
-> +					has_partial_commit = true;
-> +					goto chksum_ok;
-> +				}
->  			chksum_error:
->  				if (commit_time < last_trans_commit_time)
->  					goto ignore_crc_mismatch;
-> @@ -824,6 +862,7 @@ static int do_one_pass(journal_t *journal,
->  				}
->  			}
->  			if (pass == PASS_SCAN) {
-> +			chksum_ok:
->  				last_trans_commit_time = commit_time;
->  				head_block = next_log_block;
->  			}
-> @@ -843,6 +882,15 @@ static int do_one_pass(journal_t *journal,
->  					  next_log_block);
->  				need_check_commit_time = true;
->  			}
-> +
-> +			if (pass == PASS_SCAN && has_partial_commit) {
-> +				pr_err("JBD2: Detect validate revoke block %lu after incomplete commit block\n",
-> +				       next_log_block);
-> +				err = -EFSBADCRC;
-> +				brelse(bh);
-> +				goto failed;
-> +			}
-> +
->  			/* If we aren't in the REVOKE pass, then we can
->  			 * just skip over this block. */
->  			if (pass != PASS_REVOKE) {
-> -- 
-> 2.31.1
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+loop0: detected capacity change from 512 to 64
+EXT4-fs (loop0): unmounting filesystem 00000000-0000-0000-0000-000000000000.
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5075 at fs/mbcache.c:419 mb_cache_destroy+0x224/0x290 fs/mbcache.c:419
+Modules linked in:
+CPU: 0 PID: 5075 Comm: syz-executor199 Not tainted 6.9.0-rc6-syzkaller-00005-gb947cc5bf6d7 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+RIP: 0010:mb_cache_destroy+0x224/0x290 fs/mbcache.c:419
+Code: 24 08 4c 89 f6 e8 9c e6 ff ff eb 05 e8 45 3b 6e ff 4c 8b 34 24 49 39 ee 74 33 e8 37 3b 6e ff e9 6a fe ff ff e8 2d 3b 6e ff 90 <0f> 0b 90 eb 83 44 89 e9 80 e1 07 80 c1 03 38 c1 0f 8c 58 ff ff ff
+RSP: 0018:ffffc90003677a88 EFLAGS: 00010293
+RAX: ffffffff8227d393 RBX: 0000000000000002 RCX: ffff88807c9ebc00
+RDX: 0000000000000000 RSI: 0000000000000002 RDI: 0000000000000001
+RBP: ffff88801aeb3858 R08: ffffffff8227d312 R09: 1ffff1100dd2e204
+R10: dffffc0000000000 R11: ffffed100dd2e205 R12: 1ffff1100dd2e200
+R13: ffff88806e971020 R14: ffff88806e971000 R15: dffffc0000000000
+FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055ec96f85460 CR3: 000000000e134000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_put_super+0x6d4/0xcd0 fs/ext4/super.c:1375
+ generic_shutdown_super+0x136/0x2d0 fs/super.c:641
+ kill_block_super+0x44/0x90 fs/super.c:1675
+ ext4_kill_sb+0x68/0xa0 fs/ext4/super.c:7327
+ deactivate_locked_super+0xc4/0x130 fs/super.c:472
+ cleanup_mnt+0x426/0x4c0 fs/namespace.c:1267
+ task_work_run+0x24f/0x310 kernel/task_work.c:180
+ exit_task_work include/linux/task_work.h:38 [inline]
+ do_exit+0xa1b/0x27e0 kernel/exit.c:878
+ do_group_exit+0x207/0x2c0 kernel/exit.c:1027
+ __do_sys_exit_group kernel/exit.c:1038 [inline]
+ __se_sys_exit_group kernel/exit.c:1036 [inline]
+ __x64_sys_exit_group+0x3f/0x40 kernel/exit.c:1036
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf5/0x240 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f4207bbec89
+Code: Unable to access opcode bytes at 0x7f4207bbec5f.
+RSP: 002b:00007ffd518b18c8 EFLAGS: 00000246 ORIG_RAX: 00000000000000e7
+RAX: ffffffffffffffda RBX: 0000000000000001 RCX: 00007f4207bbec89
+RDX: 000000000000003c RSI: 00000000000000e7 RDI: 0000000000000001
+RBP: 00007f4207c3b390 R08: ffffffffffffffb8 R09: 00007ffd518b19a0
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007f4207c3b390
+R13: 0000000000000000 R14: 00007f4207c3c100 R15: 00007f4207b8cf60
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
