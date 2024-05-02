@@ -1,63 +1,62 @@
-Return-Path: <linux-ext4+bounces-2264-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2265-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F06748B9CE7
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 16:54:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7B798BA132
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 22:00:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 913361F248BA
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 14:54:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B9E3B21B34
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 20:00:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33DFF153BD1;
-	Thu,  2 May 2024 14:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D3E17F37D;
+	Thu,  2 May 2024 20:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="M7sU3oSX"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="MWZ1FIWC"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97E76153800
-	for <linux-ext4@vger.kernel.org>; Thu,  2 May 2024 14:54:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2768F42AB6
+	for <linux-ext4@vger.kernel.org>; Thu,  2 May 2024 20:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714661661; cv=none; b=LOiWkzCJBco7IN6TeTmh/+KIIGUCRPFGOm2v3ncwPNl8ECCZh/mxFKMxLXiQZjwgSerWl0NL+/XDJ7ssD8FDfFL43EJuC177lzdRKzz35EJMOg8ozs1j48ZU7H4l4GAwxHNDcdYgCd+fR8WG5ri0AkCRJfxLBjPJOOc4RUSFEUI=
+	t=1714680023; cv=none; b=TuzQbj9LmgF0oZLE3PCqVswHMpZfm7t9poU2En+6X0lWlKh5vAJAsUmtiJIlicCunyyMfQAIpNSlp4mYcBSaXL3hKIBF5Ki16y3SWfyEcwUch5qLXLNB+20QmMIWBlLex0t3C6HTnuFu8Y/Y6bbL1RGsYwAo60sq+tUXEcEYFxY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714661661; c=relaxed/simple;
-	bh=OaW31qptMjA9bhBKnFUvOwMMG3sEYZNZJ0eZydOX4dY=;
+	s=arc-20240116; t=1714680023; c=relaxed/simple;
+	bh=/2UMkj4TSE0Swg1tFoO0nTCt60O0QLQmo2br5v99vPw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KRNiEw92o8dYu9eoINDI5jeOgPfMlocrM/r3VfEsZjb3iS6CRGGaBSky4UTnKW5GMsi3N+XlrKNipqrILi148YtoezVOk/+XaNTiKCIxN3L1kqzXd9No+2A4YInyIV979whrWe/5p+Jyhlwg/HOjjDmf287+kaOr8QCQvpbvHFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=M7sU3oSX; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=Kw8HvmLW8+FPf7J0kPNgzKoPeseg0Za9+FBXE/3oT/SSDFVlbcI9MhUHZzR1FZIhSZP0b/IiPqE747jdf4XBcVaraLTEww48qtSBsVLVfg3FNKKYB62R4dyw4VYCuSLLA2cplNINk/JNODbhtxil+NThEgGbLC6UAPW5txHP7po=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=MWZ1FIWC; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 442Es7cM001670
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 442K0D99006121
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 2 May 2024 10:54:08 -0400
+	Thu, 2 May 2024 16:00:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1714661651; bh=bpdiTxn4cY7rUmkakPzNGP9RmxQ9dkHRORP+u9bct2g=;
+	t=1714680015; bh=yTb51h5cBnmCMcQ2qs+2+BXv9WOQoRbasDnjd4e0svQ=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=M7sU3oSXh2ROzvhJlb177GgRr+7hHhB9dJuDgoIdpQHy12jaKF6uPjD0TXJKyo8zB
-	 U4UXka81xfvhJbL/yg7Z+fzMqyxinHU6E101c1KPGo92U6eeSlYRlbfshgj3pNo2mS
-	 F+JAzYkxmNDBnj0dTOE0AOAoRbh5OaiMw6qVYiSGZmmOnRzWzmRCjH95xBSCRGaEJY
-	 dm2dFQhzEDk38y9OVH6ZCE3HPXEALSOUvrjiRcXj/fYMmILc98lWA2Yf3u9zzzFGGK
-	 9mq/FVq7Wm5tMMejd73+gSyF7Qujc4tXTW4+KpzFtuyeVg8Em7e3THM6l4rXPeIXF3
-	 nhTyHiOWBUqOQ==
+	b=MWZ1FIWCNK99K/AuOEehGE/ds6OLm2kVR7we5Z1iP7QYULzL1tF3dEIcQ0gzBXPev
+	 hJ9BQSPC/mSZZsq7+esOZbdIN0z7xVSE+ttts+KPZIq/33Y+j0c3LnjuU0QM33CYOW
+	 kQi3S8tlgtRUo3K2hm5w22rpzTtDl0Ra1MHKQBPhfi+nvpU7sbGUxh1AjcG8ZS2wtf
+	 /n9phFEqmY4Rp9LLwTsbiFhqGBYcQtIUJfFkHM5OLCKlLDWRhOm5LovMCO2paE1GIK
+	 MmJPpiAAOt+jgAMm92/eQSXZg+MhUYCuWZBOrh24E8c5Ye8IfI6FOrPjSE3zbLXMcl
+	 666NWicnGaAQw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 6093715C02BB; Thu,  2 May 2024 10:54:07 -0400 (EDT)
+	id A9D0415C02BB; Thu,  2 May 2024 16:00:13 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-        Christoph Hellwig <hch@lst.de>
-Subject: Re: [PATCH 1/2] ext4: set FMODE_CAN_ODIRECT instead of a dummy direct_IO method
-Date: Thu,  2 May 2024 10:54:04 -0400
-Message-ID: <171466162130.2959204.6437256169207302775.b4-ty@mit.edu>
+To: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4: Avoid excessive credit estimate in ext4_tmpfile()
+Date: Thu,  2 May 2024 16:00:08 -0400
+Message-ID: <171467920458.2990800.4376695200797934645.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <e5797bb597219a49043e53e4e90aa494b97dc328.1709215665.git.ritesh.list@gmail.com>
-References: <e5797bb597219a49043e53e4e90aa494b97dc328.1709215665.git.ritesh.list@gmail.com>
+In-Reply-To: <20240307115320.28949-1-jack@suse.cz>
+References: <20240307115320.28949-1-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,17 +67,21 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 29 Feb 2024 19:54:12 +0530, Ritesh Harjani (IBM) wrote:
-> Since commit a2ad63daa88b ("VFS: add FMODE_CAN_ODIRECT file flag") file
-> systems can just set the FMODE_CAN_ODIRECT flag at open time instead of
-> wiring up a dummy direct_IO method to indicate support for direct I/O.
+On Thu, 07 Mar 2024 12:53:20 +0100, Jan Kara wrote:
+> A user with minimum journal size (1024 blocks these days) complained
+> about the following error triggered by generic/697 test in
+> ext4_tmpfile():
 > 
+> run fstests generic/697 at 2024-02-28 05:34:46
+> JBD2: vfstest wants too many credits credits:260 rsv_credits:0 max:256
+> EXT4-fs error (device loop0) in __ext4_new_inode:1083: error 28
 > 
+> [...]
 
 Applied, thanks!
 
-[1/2] ext4: set FMODE_CAN_ODIRECT instead of a dummy direct_IO method
-      commit: a0c7cce824a54dbb83bb722df19f1ddcfa5f8d25
+[1/1] ext4: Avoid excessive credit estimate in ext4_tmpfile()
+      commit: 35a1f12f0ca857fee1d7a04ef52cbd5f1f84de13
 
 Best regards,
 -- 
