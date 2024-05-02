@@ -1,169 +1,86 @@
-Return-Path: <linux-ext4+bounces-2258-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2259-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 913318B93CB
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 06:12:03 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A1D78B9451
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 07:45:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6F8A1C21925
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 04:12:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79802B21AF5
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 05:45:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C661BF3B;
-	Thu,  2 May 2024 04:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D82320B3E;
+	Thu,  2 May 2024 05:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SZDdX0d1"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DMR9I+e6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B695E1865A;
-	Thu,  2 May 2024 04:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B6C31E494;
+	Thu,  2 May 2024 05:45:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714623115; cv=none; b=DxJ/OlIA2d7PwegFo0Ki7M7BGxjBRXltFTVAY9x7q0ddLVY2nTQR1JbqLCcjCgTRh0P66nlI/uOtlk1DXaIrwl/vXR6OzVFnOor+I3tWpUFhXNS48x5lVsBTjnebSL3Yh5Dd//DoiS3MFTcPQdnOvsTcJ7TsnFjUtNRW6z8wpew=
+	t=1714628709; cv=none; b=KP+ZDS+vXLH8TqmN/Se/uKX+PNpml2upBRHHGPUfkDliuBZ7zLfLqdSG8J2ENWoCwTaa/4morETyO5BbjZYMQTeigcLRp8H+7zjb9nDZfv2KSLA/dk+yEN8xSvrA16rQbIConXvzMBbZmxL6CSavGYgOuzmq8ztWlcX8ecNsJZo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714623115; c=relaxed/simple;
-	bh=9P2xg7FQQsOTqsM9+ldNhqpV6mM5zpq+Ljk3LmOB/qU=;
-	h=Date:Message-Id:From:To:Cc:Subject:In-Reply-To; b=r2kBmjmYVn4NCyZKXc29iEixED7Sd5mRKlchuNdCatFKV2Ze+QW60x7cHdKZy2Ihc9OeI+M9EIiI0Ty4xcDhF6RgioHHQTzXvW8OvDrCESYXzIB6iVhAf+NZj9aOs/tYUI4n2V7zkl9qqCHK8hAcbrqw+t9rCEiXmTuYBcFW9Co=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SZDdX0d1; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6f07de6ab93so7003090b3a.2;
-        Wed, 01 May 2024 21:11:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1714623113; x=1715227913; darn=vger.kernel.org;
-        h=in-reply-to:subject:cc:to:from:message-id:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=d/pO3KnwV5/hmCMrLfPzaasia4xkM57wUS++D9NkkGM=;
-        b=SZDdX0d18CUSTMLrCSPYdQI/+aBPoUswr8jpOm9j3R8K7UR9/mQHkotu5BFhEikQ6I
-         DtLczDuLv3HUDLgynG1J6jpHe22vAdhDu5pcPH4nchVK+r8MlwBjHCRSm7SCWJI3y8Rn
-         hPraL6ksyvTnrz807oOwbGYXHiPlyPJwFNz+yO6FflNnrVepMqtGAZbENEOpLKmkUxlX
-         AI7b9WxetdnkHEY3JGQOzZWx27EJEkToacVo76QEUdhh6j+RC/o/TeUmgeBSx/CcJ3bn
-         1BYRGPSqAqagKENYCtMa/zXhYquYyAOER0BIGf7MfHuQdd+sQZ+KFbtC562tZdVxcv+M
-         26Gw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714623113; x=1715227913;
-        h=in-reply-to:subject:cc:to:from:message-id:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=d/pO3KnwV5/hmCMrLfPzaasia4xkM57wUS++D9NkkGM=;
-        b=l8dsh5TVvrHS2mssEOs3rFCcmEyzo4QtFwaeunaY0XW+X2eThwNdj/7yA26MrM8QD9
-         8eqEbUgyO3DPaG9EFyFZzkFSYQKGnnwXQGA3P7gDoV+lxd2gbVdYD+SglYZsrqzqsHVr
-         tUTxQd8olu3WTHaCVGYLMc/574ewkqsuXCDSeFrwd1Ud41I7iR5rLCVYkRnqtvp3E9Pw
-         3aJbp4/8Y1uPCvF6b5kB3OHjsAaVwupf2mOfDq1pEDODovr10GaeY9mdAJGk3+T+f41S
-         28PVo9R+6/6kqmQ/Po+r4UOaqTLvmPbmwVYSXObqUwQWWQXqk3bdqfKG8ui0OMn/kR+y
-         AITA==
-X-Forwarded-Encrypted: i=1; AJvYcCUBVIZhKXRzAbANF8FebYQBgCqWNmGOM6NDYKUYW8YgNLAS9YZ06rfRW15mcdlZtB2bcC23IDYsB6OENfPnSTaxC2yR1UV04rLn8mSCARGEaOC12aZGi54lwcH/vWZ8FkJhT5niH6VCrS1fFLDxBJs1KwJ1W6J4sZimeJs5v9pOSeDPslBmRuI=
-X-Gm-Message-State: AOJu0YwckLwEsq0kJ0WXRp1TJkl071TDigRPuE7v9cWUz7JGNaDfKfwV
-	5u16zYh811pwvdbHe96au1b12CuXhLPc+U0Giy3trZLc7z0XhXu9
-X-Google-Smtp-Source: AGHT+IHBezvM4qNTsf04QOHARohIj7h1mUhy1D38HBCSojZX6TJxw+sBESjB8870/wRg2sNyBm0Xjw==
-X-Received: by 2002:a05:6a21:8189:b0:1af:63f2:bc62 with SMTP id pd9-20020a056a21818900b001af63f2bc62mr4674374pzb.15.1714623112936;
-        Wed, 01 May 2024 21:11:52 -0700 (PDT)
-Received: from dw-tp ([129.41.58.7])
-        by smtp.gmail.com with ESMTPSA id b11-20020a170902d50b00b001eb2f4648d3sm169228plg.228.2024.05.01.21.11.46
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 01 May 2024 21:11:52 -0700 (PDT)
-Date: Thu, 02 May 2024 09:41:39 +0530
-Message-Id: <87a5l8am4k.fsf@gmail.com>
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, hch@infradead.org, djwong@kernel.org, willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com, wangkefeng.wang@huawei.com
-Subject: Re: [PATCH v4 02/34] ext4: check the extent status again before inserting delalloc block
-In-Reply-To: <ZjLG9PK0uMFgSqhj@dread.disaster.area>
+	s=arc-20240116; t=1714628709; c=relaxed/simple;
+	bh=IXN/mfvF6cGl3Hq0J/SzZeRjYZXcjAMPFguqTJ2l1N4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JeLW9FokrHLFTAZS5NX7yFJmuN44QufARK4rS1AdBOClCBhjFQ5owoWxdtO2OV2iFhCpHFuqg1QvprIVPbvRvbRZEOTkVn5lN9jbbWZqkDdP6Wgo6dWjxALk11TWycwXvpWog6GMp4RVuZi8lBGyIPMiud+0N62ExxLIl6/gNTw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DMR9I+e6; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=xk8NY8yS0I7BW3IiVNcNaWblOMXw9d4l6MbCzMzN5rM=; b=DMR9I+e6ihjS8ejEzjOFgU2Ctk
+	u4cIMWc9s/FKldKGzPfscbmSGHFhGa28QkRh/0/kIdOwQPs7pGZgZbMdSnhhCP1W1d72xzP7Cg6V4
+	EbNh/6ZZH36I4f9JX6U4y0Rg0Kz+/qdu8aOA3mnWICgmOuUC8UBl1C51IHUzghjcasWYrFlijEWZP
+	KOhKLMoWHxMroa6TljN910WxGRerxgTesBKlhzo17vAPKKkYs/s495zTUG6Mn59ZN5r5q5WsSVCjn
+	Yr9YDbAqFD6gWFIyYjtGqt3a8rUHXi/BLmFxEMNIsM5KIVzcH9xk2zYpZQW2msWjITM26JHxV89UB
+	CikSHXMQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s2PFi-0000000BYGx-2wbq;
+	Thu, 02 May 2024 05:45:06 +0000
+Date: Wed, 1 May 2024 22:45:06 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Jeremy Bongio <bongiojp@gmail.com>
+Cc: Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-api@vger.kernel.org,
+	linux-block@vger.kernel.org, Jeremy Bongio <jbongio@google.com>
+Subject: Re: [RFC PATCH 1/1] Remove buffered failover for ext4 and block fops
+ direct writes.
+Message-ID: <ZjMoYkUsQnd33mXm@infradead.org>
+References: <20240501231533.3128797-1-bongiojp@gmail.com>
+ <20240501231533.3128797-2-bongiojp@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240501231533.3128797-2-bongiojp@gmail.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-Dave Chinner <david@fromorbit.com> writes:
+On Wed, May 01, 2024 at 04:15:33PM -0700, Jeremy Bongio wrote:
+> From: Jeremy Bongio <jbongio@google.com>
+> 
+> ext4 and block fops would both failover to syncronous, buffered writes if
+> the direct IO results in a short write where only a portion of the request
+> was completed.
+> 
+> This patch changes the behavior to simply return the number of bytes
+> written if the direct write is short.
 
-> On Wed, May 01, 2024 at 05:49:50PM +0530, Ritesh Harjani wrote:
->> Dave Chinner <david@fromorbit.com> writes:
->> 
->> > On Wed, Apr 10, 2024 at 10:29:16PM +0800, Zhang Yi wrote:
->> >> From: Zhang Yi <yi.zhang@huawei.com>
->> >> 
->> >> Now we lookup extent status entry without holding the i_data_sem before
->> >> inserting delalloc block, it works fine in buffered write path and
->> >> because it holds i_rwsem and folio lock, and the mmap path holds folio
->> >> lock, so the found extent locklessly couldn't be modified concurrently.
->> >> But it could be raced by fallocate since it allocate block whitout
->> >> holding i_rwsem and folio lock.
->> >> 
->> >> ext4_page_mkwrite()             ext4_fallocate()
->> >>  block_page_mkwrite()
->> >>   ext4_da_map_blocks()
->> >>    //find hole in extent status tree
->> >>                                  ext4_alloc_file_blocks()
->> >>                                   ext4_map_blocks()
->> >>                                    //allocate block and unwritten extent
->> >>    ext4_insert_delayed_block()
->> >>     ext4_da_reserve_space()
->> >>      //reserve one more block
->> >>     ext4_es_insert_delayed_block()
->> >>      //drop unwritten extent and add delayed extent by mistake
->> >
->> > Shouldn't this be serialised by the file invalidation lock?  Hole
->> > punching via fallocate must do this to avoid data use-after-free
->> > bugs w.r.t racing page faults and all the other fallocate ops need
->> > to serialise page faults to avoid page cache level data corruption.
->> > Yet here we see a problem resulting from a fallocate operation
->> > racing with a page fault....
->> 
->> IIUC, fallocate operations which invalidates the page cache contents needs
->> to take th invalidate_lock in exclusive mode to prevent page fault
->> operations from loading pages for stale mappings (blocks which were
->> marked free might get reused). This can cause stale data exposure.
->> 
->> Here the fallocate operation require allocation of unwritten extents and
->> does not require truncate of pagecache range. So I guess, it is not
->> strictly necessary to hold the invalidate lock here.
->
-> True, but you can make exactly the same argument for write() vs
-> fallocate(). Yet this path in ext4_fallocate() locks out 
-> concurrent write()s and waits for DIOs in flight to drain. What
-> makes buffered writes triggered by page faults special?
->
-> i.e. if you are going to say "we don't need serialisation between
-> writes and fallocate() allocating unwritten extents", then why is it
-> still explicitly serialising against both buffered and direct IO and
-> not just truncate and other fallocate() operations?
->
->> But I see XFS does take IOLOCK_EXCL AND MMAPLOCK_EXCL even for this operation.
->
-> Yes, that's the behaviour preallocation has had in XFS since we
-> introduced the MMAPLOCK almost a decade ago. This was long before
-> the file_invalidation_lock() was even a glimmer in Jan's eye.
->
-> btrfs does the same thing, for the same reasons. COW support makes
-> extent tree manipulations excitingly complex at times...
->
->> I guess we could use the invalidate lock for fallocate operation in ext4
->> too. However, I think we still require the current patch. The reason is
->> ext4_da_map_blocks() call here first tries to lookup the extent status
->> cache w/o any i_data_sem lock in the fastpath. If it finds a hole, it
->> takes the i_data_sem in write mode and just inserts an entry into extent
->> status cache w/o re-checking for the same under the exclusive lock. 
->> ...So I believe we still should have this patch which re-verify under
->> the write lock if whether any other operation has inserted any entry
->> already or not.
->
-> Yup, I never said the code in the patch is wrong or unnecessary; I'm
-> commenting on the high level race condition that lead to the bug
-> beting triggered. i.e. that racing data modification operations with
-> low level extent manipulations is often dangerous and a potential
-> source of very subtle, hard to trigger, reproduce and debug issues
-> like the one reported...
->
+Please don't combine ext4 and block changes in a single patch.  Please
+also explain why you want to change things.
 
-Yes, thanks for explaining and commenting on the high level design.
-It was indeed helpful. And I agree with your comment on, we can refactor
-out the common operations from fallocate path and use invalidate lock to
-protect against data modification (page fault) and extent manipulation
-path (fallocate operations).
+AFAIK this is simply the historic behavior of the old direct I/O code
+that's been around forever.  I think the XFS semantics make a lot more
+sense, but people might rely on this one way or another.
 
-
--ritesh
 
