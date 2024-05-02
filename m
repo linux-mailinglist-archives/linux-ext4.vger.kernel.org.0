@@ -1,62 +1,64 @@
-Return-Path: <linux-ext4+bounces-2265-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2266-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7B798BA132
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 22:00:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAEF08BA131
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 22:00:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8B9E3B21B34
-	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 20:00:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1FDC1F21DC8
+	for <lists+linux-ext4@lfdr.de>; Thu,  2 May 2024 20:00:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32D3E17F37D;
-	Thu,  2 May 2024 20:00:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A791469D2F;
+	Thu,  2 May 2024 20:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="MWZ1FIWC"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="X123wMgu"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2768F42AB6
-	for <linux-ext4@vger.kernel.org>; Thu,  2 May 2024 20:00:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE6D42AB6
+	for <linux-ext4@vger.kernel.org>; Thu,  2 May 2024 20:00:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714680023; cv=none; b=TuzQbj9LmgF0oZLE3PCqVswHMpZfm7t9poU2En+6X0lWlKh5vAJAsUmtiJIlicCunyyMfQAIpNSlp4mYcBSaXL3hKIBF5Ki16y3SWfyEcwUch5qLXLNB+20QmMIWBlLex0t3C6HTnuFu8Y/Y6bbL1RGsYwAo60sq+tUXEcEYFxY=
+	t=1714680027; cv=none; b=mcyaefgPla4Bh/AAXJN+FcnPPNTTaGhMQ3AbfZJDD2KSPweEPl939B12k4Ulwh3jVeCIu9Feg+iVEyYQApXGejXnLOb7qyz4rZRq0tmkaC7W1xs3fD/HvvkvcCeNbpquGmA65kaHcYADDqIwozhDpJfv+nFtTnGP+48jxTWLF3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714680023; c=relaxed/simple;
-	bh=/2UMkj4TSE0Swg1tFoO0nTCt60O0QLQmo2br5v99vPw=;
+	s=arc-20240116; t=1714680027; c=relaxed/simple;
+	bh=y1KpRPxi6UUt4YkKUpOu2IplpTg2KomJhl1wC4mF4bU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Kw8HvmLW8+FPf7J0kPNgzKoPeseg0Za9+FBXE/3oT/SSDFVlbcI9MhUHZzR1FZIhSZP0b/IiPqE747jdf4XBcVaraLTEww48qtSBsVLVfg3FNKKYB62R4dyw4VYCuSLLA2cplNINk/JNODbhtxil+NThEgGbLC6UAPW5txHP7po=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=MWZ1FIWC; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=cZ7kXbQ790O96QZ1IJ5Kz6y5Jl7aed/Y4qLU9ROTz/8zPpX9uQ5aCdIY+hBnjpDMCyKrycYMWySvGNKcF00YCy4hKYbRxfKY8+GrC3S40HDHsEsXvnaFZK+oRIB8TdojqrRo2aot3MqLLDI/bUObgT5XyiGaCduXrsM4juiZP08=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=X123wMgu; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 442K0D99006121
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 442K0DZn006120
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Thu, 2 May 2024 16:00:14 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1714680015; bh=yTb51h5cBnmCMcQ2qs+2+BXv9WOQoRbasDnjd4e0svQ=;
+	t=1714680016; bh=Lrv6PuMICPe45nG6IQNLMoZGE1syVHnTdlOolvBM938=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=MWZ1FIWCNK99K/AuOEehGE/ds6OLm2kVR7we5Z1iP7QYULzL1tF3dEIcQ0gzBXPev
-	 hJ9BQSPC/mSZZsq7+esOZbdIN0z7xVSE+ttts+KPZIq/33Y+j0c3LnjuU0QM33CYOW
-	 kQi3S8tlgtRUo3K2hm5w22rpzTtDl0Ra1MHKQBPhfi+nvpU7sbGUxh1AjcG8ZS2wtf
-	 /n9phFEqmY4Rp9LLwTsbiFhqGBYcQtIUJfFkHM5OLCKlLDWRhOm5LovMCO2paE1GIK
-	 MmJPpiAAOt+jgAMm92/eQSXZg+MhUYCuWZBOrh24E8c5Ye8IfI6FOrPjSE3zbLXMcl
-	 666NWicnGaAQw==
+	b=X123wMguaUunrJAloOWDa77yy2QIb7fV4Lgd//omVBOnCzEKInzMUh12QOivEBuIW
+	 7BxQ+0LT75xnhak8Ykd37+bu89qUcxfh3LXaNdutZG+Mt3lltQUfB71svFj0Mj3kxK
+	 86u12oPqVW0CDEW2ou9UN5aeAUY3XpvlCMC47jXe5dXbIjoZqqeWo9Pew3mWSflAaC
+	 jsJQmXepkk5uj1bRw+lR1eQugF3tKInwK6caDvF7nZQ8NUJ+wfopUppkPWUa7n6Qop
+	 WCeQ6/U5GoWKekPC22Ez4QJzLG2dxDYP/KjVYZaaSrsVYGZeGWUuvghjS+Yj7FPau6
+	 DGJciBMtLNPsQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id A9D0415C02BB; Thu,  2 May 2024 16:00:13 -0400 (EDT)
+	id AD8EA15C02BE; Thu,  2 May 2024 16:00:13 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: Avoid excessive credit estimate in ext4_tmpfile()
-Date: Thu,  2 May 2024 16:00:08 -0400
-Message-ID: <171467920458.2990800.4376695200797934645.b4-ty@mit.edu>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        ritesh.list@gmail.com
+Subject: Re: [RESEND PATCH] ext4: Remove unneeded if checks before kfree
+Date: Thu,  2 May 2024 16:00:10 -0400
+Message-ID: <171467920457.2990800.8945743113092787242.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240307115320.28949-1-jack@suse.cz>
-References: <20240307115320.28949-1-jack@suse.cz>
+In-Reply-To: <20240412225026.207063-2-thorsten.blum@toblux.com>
+References: <20240317153638.2136-2-thorsten.blum@toblux.com> <20240412225026.207063-2-thorsten.blum@toblux.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -67,21 +69,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 07 Mar 2024 12:53:20 +0100, Jan Kara wrote:
-> A user with minimum journal size (1024 blocks these days) complained
-> about the following error triggered by generic/697 test in
-> ext4_tmpfile():
+On Sat, 13 Apr 2024 00:50:27 +0200, Thorsten Blum wrote:
+> kfree already checks if its argument is NULL. This fixes two
+> Coccinelle/coccicheck warnings reported by ifnullfree.cocci.
 > 
-> run fstests generic/697 at 2024-02-28 05:34:46
-> JBD2: vfstest wants too many credits credits:260 rsv_credits:0 max:256
-> EXT4-fs error (device loop0) in __ext4_new_inode:1083: error 28
 > 
-> [...]
 
 Applied, thanks!
 
-[1/1] ext4: Avoid excessive credit estimate in ext4_tmpfile()
-      commit: 35a1f12f0ca857fee1d7a04ef52cbd5f1f84de13
+[1/1] ext4: Remove unneeded if checks before kfree
+      commit: ea7d09ad7c280122a322f408672ab8d75c1a0e30
 
 Best regards,
 -- 
