@@ -1,84 +1,91 @@
-Return-Path: <linux-ext4+bounces-2277-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2278-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C4ED8BA5E3
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 06:03:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3F888BA5E5
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 06:08:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA9041C21B5F
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 04:03:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 160A71C22128
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 04:08:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80508208D4;
-	Fri,  3 May 2024 04:03:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEA6208D0;
+	Fri,  3 May 2024 04:08:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="WofocYPb"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="YZPQPLbp"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39E6614F62
-	for <linux-ext4@vger.kernel.org>; Fri,  3 May 2024 04:03:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F40E2033A
+	for <linux-ext4@vger.kernel.org>; Fri,  3 May 2024 04:08:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714708998; cv=none; b=m7WyU3DDQhbI4pukfpgJQr1uDxZ83qI0nG6ZP4eQDrSZQhG7aK5n9H8KcVLnphW5neddiMtQ3rcy0kXj9JxvJcSGuUBuXAOh0WLVSvCEybtVdvKCuW37ZMqoQAUlUCwysbJwSfqFojHtCoJ02WFVuD/PLwrdK8SAKOrpbyoHhdw=
+	t=1714709294; cv=none; b=pvaGfadkcA5ydQpBhRtbN7DHcTUvPoziPB0BcBDLUPW31rMNk9l1yr4uXpAPVhzYePZORFVVr7yrJYWTogkTBL5d+qwyZqmEAqItV8m5DTfumtRMHOdCnPSo0bTyoS5b9e7xdHj+QpaMQZ8rJt1Vm65Zr44UqJ/Qvl1+rkx/+yM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714708998; c=relaxed/simple;
-	bh=QHI7qxmZ3pVo1EDO9y63ULw/ecTtmkPNG26tMMD8Tp8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eBYu+PLWHdX5xehMRlF5u/RMfdCy1N8qAkfiHR2Jui7jp04JbFpsVjc7heFLtjUb26iYfFJz5atqwXmI9Cyp8ZrfeE3tahF6uY5qD2+sv5ob4jjruU7aYHeHd/bIUCbU2HPWLsTUrOTYD/ArPufI7rDu00LPDBr66NpKrk4xDe4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=WofocYPb; arc=none smtp.client-ip=18.9.28.11
+	s=arc-20240116; t=1714709294; c=relaxed/simple;
+	bh=SWsxKJEgzvpXcQlXwJrcVy/rjJDeDt64dglUtgj9IUU=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=naqNORO3vfh2vbZZJ15IzNLsxCM0MMgmUNa8t6cg9/0SZW5ddidABPlpCvxXkqpkrwCZ3JMdbz7/RFv3fV+3rtTJRNDVHg4qJ0TQDocVab0pAGvYMiFLwXhYiRMm6pOdK/dWwh80R/AR6o2iyX7vosHzrl0Q6xmCSBKjdDlxe1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=YZPQPLbp; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 443436iZ020721
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44347jF6022592
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 00:03:07 -0400
+	Fri, 3 May 2024 00:07:46 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1714708988; bh=PIpM6tSkGUdXZHHO8c6hBO2TK/zSLrjVgDNkWnZ3pT0=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=WofocYPbweNaGNKPlGVmIotOIUU9P1InKGh9ruMsT4SFnc9SI+0akYPGVKq9hHC4n
-	 lNGOxzNkl4vD6Kbhrp2gNxU/QsTnLZB+FrSrwXjzbVdH6ZSrnVaqEFTsbLaQ6dAkcW
-	 sGzaMXIQGt+8q0h1a7A88zCj63a6Jq2tAolzIrtbKul4HJ216rKjknUG7Q+Z2sKQZy
-	 7kCqz8bCnl3oqBP+gI35TKfjyAcfVe44uW/mIC4sAJY9pUsG6VgtdrEZTjsZkRjE6T
-	 aepsBzm9Bi6Wr7tTSoDvV64vIxEQ+ncjBs72C+r/5S1kzYaZ8kKl3Gn5vEm2Y8uTd6
-	 Vt2iMo/7l4ILQ==
+	t=1714709268; bh=6W4nY6I7f9qgNvQB4sn4R6qrO7L3wg8HX6T3Kp+J8gs=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=YZPQPLbpf74mDXdM+rn2mIT+rSu5A01rigdaQ6qqozJUoEwxKq/T994h/k3EI9HdH
+	 CkD+g98QiL1JVK+YRmFxyO6g6W7kcYoj9S1hiiWAaLTbQ4XeESp4RUTEirQHjPBj7Z
+	 7SYxF9tRtrGn+rmciZL3lnarQ3wbay+Mbca9iV3CFmkYlYA6VdIVo3PzX7fWa3oi08
+	 MeD3Ed4I97ie44F/acz1ffFeHrqEdWj1GewdkkA95hZgC+Sh36gnFrANgKthpQEeDT
+	 j53m3rLbl1m/orgKMCu5/eejtkGngzk1f/C5je8NMRSMw4ajxQHyD/8XHRIoLCHS9n
+	 LRKT/0rsKZGxA==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 2CDBE15C02BB; Fri,  3 May 2024 00:03:06 -0400 (EDT)
-Date: Fri, 3 May 2024 00:03:06 -0400
+	id A07B215C02BB; Fri,  3 May 2024 00:07:45 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org,
-        syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
-Subject: Re: [PATCH 2/2] ext4: Do not create EA inode under buffer lock
-Message-ID: <20240503040306.GH1743554@mit.edu>
-References: <20240209111418.22308-1-jack@suse.cz>
- <20240321162657.27420-2-jack@suse.cz>
+To: adilger.kernel@dilger.ca, linux@roeck-us.net,
+        Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: implement filesystem specific alloc_inode in unit test
+Date: Fri,  3 May 2024 00:07:43 -0400
+Message-ID: <171470925416.3028448.14729984123074119208.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240322165518.8147-1-shikemeng@huaweicloud.com>
+References: <20240322165518.8147-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240321162657.27420-2-jack@suse.cz>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 21, 2024 at 05:26:50PM +0100, Jan Kara wrote:
-> ext4_xattr_set_entry() creates new EA inodes while holding buffer lock
-> on the external xattr block. This is problematic as it nests all the
-> allocation locking (which acquires locks on other buffers) under the
-> buffer lock. This can even deadlock when the filesystem is corrupted and
-> e.g. quota file is setup to contain xattr block as data block. Move the
-> allocation of EA inode out of ext4_xattr_set_entry() into the callers.
+
+On Sat, 23 Mar 2024 00:55:18 +0800, Kemeng Shi wrote:
+> We expect inode with ext4_info_info type as following:
+> mbt_kunit_init
+>   mbt_mb_init
+>     ext4_mb_init
+>       ext4_mb_init_backend
+>         sbi->s_buddy_cache = new_inode(sb);
+>         EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
 > 
-> Reported-by: syzbot+a43d4f48b8397d0e41a9@syzkaller.appspotmail.com
-> Signed-off-by: Jan Kara <jack@suse.cz>
+> [...]
 
-Applied, thanks.
+Applied, thanks!
 
-					- Ted
+[1/1] ext4: implement filesystem specific alloc_inode in unit test
+      commit: a11adf7be9d8baefe798eab49c356ab8e3924f0e
+
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
