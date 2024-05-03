@@ -1,102 +1,102 @@
-Return-Path: <linux-ext4+bounces-2272-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2273-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 402348BA5A3
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 05:23:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9E7A98BA5C6
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 05:44:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9F1B284963
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 03:23:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D718E1C22718
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 03:44:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7B91C6A7;
-	Fri,  3 May 2024 03:23:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81B581F959;
+	Fri,  3 May 2024 03:44:21 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6296818B14;
-	Fri,  3 May 2024 03:22:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05C157C97
+	for <linux-ext4@vger.kernel.org>; Fri,  3 May 2024 03:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714706583; cv=none; b=nYDYmbcoib5GSmvuArzzrkOzCt++bNNyUoATQ7aBxJjFChRm62vPi0ItL2elZmpX/7NyJExHTGYzHw5zMuDQXBYPAy24GvChfOXu9mfHxn4qubolRYNqKu6WGQsBl1wCRbsfJDgz0hr4A6+w3UCMucgRCMjKDa0IDUDkLPFR6as=
+	t=1714707861; cv=none; b=NtWwwDe9DbFqy5gNNQqVPo2OQnri1p/XtfY2Vh/uqtDN18GvWJGH8J/tb7IJsIKLiXGOszxM3rE3w4QtcETSQFYCWdVbw3QOlj2thUQt7fcxvbx6YJtt5NjsTkzxvk5Oi6YIdq177nX/aUdc495Td+ciqjqjGvi585G/CSw/b2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714706583; c=relaxed/simple;
-	bh=idI6eieR2CBoSNPC1vrjhWeBcTDoMr2hD/PKRvyomvk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nQDGE8YtOwfHfRmGku6IOqMo8qPYnSF6mrLck2+MMHBUzGBXq2x/gktqqJ2YSzSuAvnAR6bUqg2zR3Q1rvSj12iFKckUQ3IRpeQZ13hjg8MBfuASgKlJuzS1uWS+A/v3PIjmorkDx07c05608v+8APLtuB//Qj8Qw/G+em2B+Kk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VVx2L5lD9z4f3jZ0;
-	Fri,  3 May 2024 11:22:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id EAAB91A0175;
-	Fri,  3 May 2024 11:22:55 +0800 (CST)
-Received: from [10.174.177.174] (unknown [10.174.177.174])
-	by APP1 (Coremail) with SMTP id cCh0CgAn+RGMWDRmkfpxLg--.60224S3;
-	Fri, 03 May 2024 11:22:55 +0800 (CST)
-Message-ID: <d21357da-70c0-52c7-9087-8b4ee106a49a@huaweicloud.com>
-Date: Fri, 3 May 2024 11:22:52 +0800
+	s=arc-20240116; t=1714707861; c=relaxed/simple;
+	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=fz7TT3H7DSvBTLyl1OYZpfcRZZ3hzzBpVlW4roVRoje1uk2lRtPZmYVbfMJJI+upsiGWM0gBV7R7nfw8RjGIPi3LWpFZEyX4D3bLXRPAoLk5BHbhGeUqw47BM0yPFArNZUw6m8V9NMqIaEF5n2NMIdMnZOq9WONzjcbR6bowQmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7dab89699a8so924956239f.2
+        for <linux-ext4@vger.kernel.org>; Thu, 02 May 2024 20:44:19 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714707859; x=1715312659;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=RcPXjnn6vvxoNfBjGUcNoQEUo8j8tpWqgpqvx7MOcBLPZQ80cO+jQ2Di1Jf4C6U8iX
+         7yY9862zYV4iE9bjTRqCBpGB6g36cEWgoMpffCvwhUqwwm4M3pxg+k9kOH6kwyO+bn/R
+         IpdQIFouTzlu/ihluOzaAE6bCeSOCecx7WlBPpaBmdUhvECKZbArM/3NTq8Y1kYigCKx
+         86h+dfLnByy/iHDvKkEuMB+tRzvtg7tmNk0VOp6/iHKX+ntHFGfjodolairYxXEs8vLE
+         vvfTpvwIlvcustbFS6bUYQEDpnGMsja4i7VxcPI0F5YNnR54G8ohlbBbkK121db7GX16
+         VYDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV6lb09fiLO4NOtwK9ujsVLhQxvcadz8UHHuVxibwg2z11l7UnDopc7HVUeudxog8eSGYaSOQTezDp4NNl4qsS8cC/QOrCsCKuFrA==
+X-Gm-Message-State: AOJu0Yx+o9hDEO76toJlOtuXf+6R/rnXZ/W3DPV0xVMENSchfwkVz7BA
+	Q1kbZwMVFqh7VLozTnfPdx5tSdjx4jrVY6UDOpqiuFO+i2nd0A+L+R3EEs5qcnQzEFMZjJmBDlz
+	IuuQ3Ll1LxRFQUzXmp/nKG/iKKUNqp7RolUJbk4gzPxscL5usMEry8j8=
+X-Google-Smtp-Source: AGHT+IF6jdtVimKJ3sPtIlW6psc1aZK/nSNQxAxNcKk6WGV4mZGOrwytWBePLmVCVM24GexqMQgZkn/SIF5cdqAA9s2wWfiSdIMn
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.1.2
-Subject: Re: [PATCH v4 0/9] ext4: avoid sysfs variables overflow causing
- BUG_ON/SOOB
-Content-Language: en-US
-To: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Cc: adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
- ojaswin@linux.ibm.com, adobriyan@gmail.com, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, libaokun@huaweicloud.com
-References: <20240319113325.3110393-1-libaokun1@huawei.com>
- <985285f6-973b-30d5-4742-29cf5e8c0e27@huaweicloud.com>
- <8cf61cfc-8717-ee33-c94f-959212ce9c85@huaweicloud.com>
- <20240503031455.GF1743554@mit.edu>
-From: Baokun Li <libaokun@huaweicloud.com>
-In-Reply-To: <20240503031455.GF1743554@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgAn+RGMWDRmkfpxLg--.60224S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYg7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E
-	6xAIw20EY4v20xvaj40_JFC_Wr1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28Cjx
-	kF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8I
-	cVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2js
-	IEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE
-	5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeV
-	CFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxG
-	xcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrw
-	CFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE
-	14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2
-	IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxK
-	x2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
-	AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbXdbUUUUUU==
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
+X-Received: by 2002:a05:6638:3f0f:b0:487:5b21:e66f with SMTP id
+ ck15-20020a0566383f0f00b004875b21e66fmr65625jab.0.1714707859267; Thu, 02 May
+ 2024 20:44:19 -0700 (PDT)
+Date: Thu, 02 May 2024 20:44:19 -0700
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000d873390617848870@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/5/3 11:14, Theodore Ts'o wrote:
-> On Fri, May 03, 2024 at 10:03:04AM +0800, Baokun Li wrote:
->> Hi Ted,
->>
->> Would you consider merging in this patchset in the current merge
->> window? I would appreciate it if you could.
-> Yes, in fact it's next on my review list.  I've been working through
-> the patches on ext4's patchwork site roughly in chronological order
-> (focusing first on fixes and those that have been reviewed by other
-> folks).
->
-> Cheers,
->
-> 					- Ted
-Thanks a million for your work!
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Cheers,
-Baokun
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
+#syz fix: exact-commit-title
+
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
+
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+
+---
+[1] I expect the commit to be present in:
+
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
