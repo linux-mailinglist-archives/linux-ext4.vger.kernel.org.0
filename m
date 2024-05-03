@@ -1,91 +1,108 @@
-Return-Path: <linux-ext4+bounces-2278-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2279-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3F888BA5E5
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 06:08:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 284748BA9E0
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 11:29:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 160A71C22128
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 04:08:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDF9B1F2167D
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 May 2024 09:29:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BEA6208D0;
-	Fri,  3 May 2024 04:08:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D34414F9C6;
+	Fri,  3 May 2024 09:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="YZPQPLbp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="klHerOiJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F40E2033A
-	for <linux-ext4@vger.kernel.org>; Fri,  3 May 2024 04:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C28D14A0B1;
+	Fri,  3 May 2024 09:29:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714709294; cv=none; b=pvaGfadkcA5ydQpBhRtbN7DHcTUvPoziPB0BcBDLUPW31rMNk9l1yr4uXpAPVhzYePZORFVVr7yrJYWTogkTBL5d+qwyZqmEAqItV8m5DTfumtRMHOdCnPSo0bTyoS5b9e7xdHj+QpaMQZ8rJt1Vm65Zr44UqJ/Qvl1+rkx/+yM=
+	t=1714728551; cv=none; b=oG+sSP5SBZUTWgWKF+Id8yMjZMzrEPqwNApZEnFdHOHTbSAXNPwiOCb9ZzfxGWSbJOeBqAYW1TsTk5epiDqiy2yMBzSt2+iWW0EWUIT2t5Jl+ajRr/tpIaoiJaJOIwAVm88SRpi5vDEbDmdGfpWkH7khH0zT7XaRHYIoXI+WmBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714709294; c=relaxed/simple;
-	bh=SWsxKJEgzvpXcQlXwJrcVy/rjJDeDt64dglUtgj9IUU=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=naqNORO3vfh2vbZZJ15IzNLsxCM0MMgmUNa8t6cg9/0SZW5ddidABPlpCvxXkqpkrwCZ3JMdbz7/RFv3fV+3rtTJRNDVHg4qJ0TQDocVab0pAGvYMiFLwXhYiRMm6pOdK/dWwh80R/AR6o2iyX7vosHzrl0Q6xmCSBKjdDlxe1M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=YZPQPLbp; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44347jF6022592
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 May 2024 00:07:46 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1714709268; bh=6W4nY6I7f9qgNvQB4sn4R6qrO7L3wg8HX6T3Kp+J8gs=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=YZPQPLbpf74mDXdM+rn2mIT+rSu5A01rigdaQ6qqozJUoEwxKq/T994h/k3EI9HdH
-	 CkD+g98QiL1JVK+YRmFxyO6g6W7kcYoj9S1hiiWAaLTbQ4XeESp4RUTEirQHjPBj7Z
-	 7SYxF9tRtrGn+rmciZL3lnarQ3wbay+Mbca9iV3CFmkYlYA6VdIVo3PzX7fWa3oi08
-	 MeD3Ed4I97ie44F/acz1ffFeHrqEdWj1GewdkkA95hZgC+Sh36gnFrANgKthpQEeDT
-	 j53m3rLbl1m/orgKMCu5/eejtkGngzk1f/C5je8NMRSMw4ajxQHyD/8XHRIoLCHS9n
-	 LRKT/0rsKZGxA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id A07B215C02BB; Fri,  3 May 2024 00:07:45 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: adilger.kernel@dilger.ca, linux@roeck-us.net,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: implement filesystem specific alloc_inode in unit test
-Date: Fri,  3 May 2024 00:07:43 -0400
-Message-ID: <171470925416.3028448.14729984123074119208.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240322165518.8147-1-shikemeng@huaweicloud.com>
-References: <20240322165518.8147-1-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1714728551; c=relaxed/simple;
+	bh=9mHY/g/RwNp8N2deb74gRi1TdCW+Iz+e+kCjmQrwbwE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=knZCim6BGIgn7F2ue/0rrhxOdCZ22RkVwJb45bQ28vl73SENGL9kjtdEiNfiPB9uzxAASRxTtCl9fsCkYKKCWS/cvNeDp8zRQkqnOM4yF/m+joo4r9Oiqld4SOhOEL7bFM+bivenwJcNBCfMOKZUDM+PrpQhETi+xArhcYx9GY8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=klHerOiJ; arc=none smtp.client-ip=209.85.210.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-6f4496af4cdso658949b3a.0;
+        Fri, 03 May 2024 02:29:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1714728548; x=1715333348; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+7eTUo6HCimJIoCI/EZ9sqrcxu6m9Vj2eA2Iv6aCqfs=;
+        b=klHerOiJYhsbXpHDeAszHyAUVSRI35FXW0gqTU8KjUcsObmMe+DOBVU3YaCuTYaSey
+         p4jMLIAY1tsdTpmxiHuxdIbjpfP5HwkZwD5iN6KqsFpap3ZlwUouqRk/n/fB99qOl8yw
+         AODv3rWRQwgtBsoUH/mWa5BboNuyz2iiolvBYHsyNcSS6vlmQbKXjHQZvWtQ3Xsx7NIE
+         EpioLd6A8fp/3x62UE3UZjbj+4L9upOWMvpUo8M9Reo2Zea1CtjKSqVO3DOOX3rPlPXF
+         O4JbIGqOUuf2FZ/zse6dHERHvqG27Q12U60qEHEh2ZEBGTdeZ06gK1HyVRkp6BaVmvrr
+         nCFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1714728548; x=1715333348;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=+7eTUo6HCimJIoCI/EZ9sqrcxu6m9Vj2eA2Iv6aCqfs=;
+        b=vcLA//HslrZMDgJZAUzyxesnsxrkCM6yiiziItXWMr+gZildjdH57KBLCasn+CuC0A
+         g7/19w9+5/OZtN2FFdu46GNaEyuAVJZyKhIjhJBu+x37mlys7QX8u9x+iUUjIcPvSMi5
+         /xu2Ix6Ji9F3WtgQXQ3j7El0zpW3x5AJmCuO+O6nBUmyeUrC6wpyuV9oDI48Jm/CJ8k3
+         aMD4tXakqb/JnxUJKoLbtMrH5RXmVfuEim1ZKAqzQvXtfHedScsBP8SVGOteOV4bg+Bj
+         /708MeqHogmFx81hxoW+px93soD/tHP9axii7pagOEtvAtByqOlsCMMys+6qux4r1hAM
+         bNUA==
+X-Gm-Message-State: AOJu0YzfnKS746cQsxtgaz1ZBMESsO8swC5aJll2S808L6QFznHXOiOI
+	43YsfnNJc0ouKbhkeoKrAbD8YWRyHjt2I5fTMhJCq75se9Dx2uKfLzkhoA==
+X-Google-Smtp-Source: AGHT+IFEwb1sNPcruL4LJiJFDy7A9Ztz0W0T2/+EU4vXLds+DEET0sE0nZTUy2IaNgfIT/ytYC3qnA==
+X-Received: by 2002:a05:6a21:78a1:b0:1a3:df1d:deba with SMTP id bf33-20020a056a2178a100b001a3df1ddebamr2501668pzc.31.1714728548505;
+        Fri, 03 May 2024 02:29:08 -0700 (PDT)
+Received: from dw-tp.. ([171.76.87.126])
+        by smtp.gmail.com with ESMTPSA id q5-20020a17090311c500b001e41ffb9de7sm2802168plh.28.2024.05.03.02.29.06
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 03 May 2024 02:29:07 -0700 (PDT)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	Jan Kara <jack@suse.cz>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [PATCH] ext2: Remove LEGACY_DIRECT_IO dependency
+Date: Fri,  3 May 2024 14:58:52 +0530
+Message-ID: <f3303addc0b5cd7e5760beb2374b7e538a49d898.1714727887.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+commit fb5de4358e1a ("ext2: Move direct-io to use iomap"), converted
+ext2 direct-io to iomap which killed the call to blockdev_direct_IO().
+So let's remove LEGACY_DIRECT_IO config dependency from ext2 Kconfig.
 
-On Sat, 23 Mar 2024 00:55:18 +0800, Kemeng Shi wrote:
-> We expect inode with ext4_info_info type as following:
-> mbt_kunit_init
->   mbt_mb_init
->     ext4_mb_init
->       ext4_mb_init_backend
->         sbi->s_buddy_cache = new_inode(sb);
->         EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
-> 
-> [...]
+Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+---
+ fs/ext2/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
 
-Applied, thanks!
+diff --git a/fs/ext2/Kconfig b/fs/ext2/Kconfig
+index d6cfb1849580..d5bce83ad905 100644
+--- a/fs/ext2/Kconfig
++++ b/fs/ext2/Kconfig
+@@ -3,7 +3,6 @@ config EXT2_FS
+ 	tristate "Second extended fs support (DEPRECATED)"
+ 	select BUFFER_HEAD
+ 	select FS_IOMAP
+-	select LEGACY_DIRECT_IO
+ 	help
+ 	  Ext2 is a standard Linux file system for hard disks.
 
-[1/1] ext4: implement filesystem specific alloc_inode in unit test
-      commit: a11adf7be9d8baefe798eab49c356ab8e3924f0e
+--
+2.44.0
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
 
