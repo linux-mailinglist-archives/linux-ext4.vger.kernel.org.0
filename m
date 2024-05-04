@@ -1,152 +1,206 @@
-Return-Path: <linux-ext4+bounces-2294-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2296-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90A888BB9F4
-	for <lists+linux-ext4@lfdr.de>; Sat,  4 May 2024 10:05:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CDBA8BBC7D
+	for <lists+linux-ext4@lfdr.de>; Sat,  4 May 2024 16:42:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C87ACB21AC0
-	for <lists+linux-ext4@lfdr.de>; Sat,  4 May 2024 08:05:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7660282788
+	for <lists+linux-ext4@lfdr.de>; Sat,  4 May 2024 14:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B7FF14F78;
-	Sat,  4 May 2024 08:05:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 479823B29D;
+	Sat,  4 May 2024 14:42:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b="jUyeUf66"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6199111AA;
-	Sat,  4 May 2024 08:05:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Received: from mister-muffin.de (mister-muffin.de [144.76.155.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E42622F00
+	for <linux-ext4@vger.kernel.org>; Sat,  4 May 2024 14:42:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.155.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714809929; cv=none; b=e81La9ZsdjKchRdPd6bkPtgRkLfVg0hQyDtIT6eP8S3JKR71qVZ/s+akHD60gMMO9pH9U4dFHm6ptzWAegSjyLi2zXedPfMEdr0G5jBKss6P7CBG/0XOu2r2vRRYW7sB6qZ9Q7US4TozU2e+wye50u1NzWntZZetW5afisMPci4=
+	t=1714833767; cv=none; b=bt5GqpCiLZOkF0mPsbI4jCxQtxUSNhEEuTFH1/rVzKyM/y8sFXW5eWuef6G4E7oCRgsxYMxiUuooHrVTMLfdu+Cy5SLl1ugIYeE7cHl3DLpFFL8MhO8Gm4qqckhKzj1mgC9zC4xMx/RCJacmNvViUsC11EFgMrXk7BPrfEVTGTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714809929; c=relaxed/simple;
-	bh=PqEHoe9X1I+B/sJzkfzuM0O55hXfopFksPoGm8W8qGQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=nFBxsIXI4xeCLfQOZAH5jelT4RdEkysMFiSP9twE1OKpICRnFNEApX1Ox8hmfHaS9fVx6ysem3qi2JrYF8xhnaOdrpG8VpIsHFg3ADFGWeQham4iWzFHO4zbEqlizxe1IJP7Lvy16S1m6BM5E/BONTysn/V8gahAoYC9zuI3S5A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VWgFj05NJz4f3jZ7;
-	Sat,  4 May 2024 16:05:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 328261A0179;
-	Sat,  4 May 2024 16:05:18 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgCXaBE57DVmKbDhLg--.23467S6;
-	Sat, 04 May 2024 16:05:18 +0800 (CST)
-From: libaokun@huaweicloud.com
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ritesh.list@gmail.com,
-	linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com,
-	yangerkun@huawei.com,
-	libaokun@huaweicloud.com,
-	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH 2/2] ext4: propagate errors from ext4_sb_bread() in ext4_xattr_block_cache_find()
-Date: Sat,  4 May 2024 15:55:26 +0800
-Message-Id: <20240504075526.2254349-3-libaokun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240504075526.2254349-1-libaokun@huaweicloud.com>
-References: <20240504075526.2254349-1-libaokun@huaweicloud.com>
+	s=arc-20240116; t=1714833767; c=relaxed/simple;
+	bh=NZAlC+VfeNY8Uo4/rEESESaDZ1CWN7kU4D4ghCz1Omk=;
+	h=Content-Type:MIME-Version:Content-Disposition:From:To:Subject:
+	 Date:Message-ID; b=qmsgOCW3dARdl7+c6yd+Q1sIs+V3wJfrtAEWv+jUPUdlGpxAv3B+bkI2ANyIX9bwOQJcWUhrp6sWJwUA5I82897i2PJ8zr9p+uQWvXxiP4kIy0FMHy4prRztkqJSDDl/xnYSdRKi5EBUurRFT+62CMa81NFcFN5VDCbQnaNjvfQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de; spf=pass smtp.mailfrom=mister-muffin.de; dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b=jUyeUf66; arc=none smtp.client-ip=144.76.155.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mister-muffin.de
+Received: from localhost (ip2504e6e1.dynamic.kabel-deutschland.de [37.4.230.225])
+	by mister-muffin.de (Postfix) with ESMTPSA id 6734A28B
+	for <linux-ext4@vger.kernel.org>; Sat,  4 May 2024 16:32:51 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mister-muffin.de;
+	s=mail; t=1714833171;
+	bh=NZAlC+VfeNY8Uo4/rEESESaDZ1CWN7kU4D4ghCz1Omk=;
+	h=From:To:Subject:Date:From;
+	b=jUyeUf66XzwCpFGLujc/vaUjJq2Vn0brQv0JvYnynR7X4r9ej59hi8rhF/iTYx572
+	 l+7Wl5afQgLIJ0athLbmJ9qLhbRdNtXw2E44docBkdRAbtO1zkIfkvOvSVYEGV63fu
+	 OhR/5NtdxN3ggY4edKBDpIe6Do0IjfaxLdo5hW+w=
+Content-Type: multipart/signed; micalg="pgp-sha512"; protocol="application/pgp-signature"; boundary="===============5291737487209645571=="
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCXaBE57DVmKbDhLg--.23467S6
-X-Coremail-Antispam: 1UD129KBjvJXoW7KF17Zw4UZr18JF18tF4DCFg_yoW8tw4xpr
-	y3KryrtrW0gFy3uay3tF1UZw1fuan7GF4UKrW7K34rZa4UXw1SgFyIq3Z0vFyj9rZ7X3ZF
-	qF4qk34Uu3W5C3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPl14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWUuVWrJwAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
-	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7M4kE6xkIj40Ew7xC0wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC2
-	0s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI
-	0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv2
-	0xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2js
-	IE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZF
-	pf9x0JUBmhrUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/
+Content-Disposition: inline
+From: Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+To: linux-ext4@vger.kernel.org
+Subject: created ext4 disk image differs depending on the underlying filesystem
+Date: Sat, 04 May 2024 16:32:50 +0200
+Message-ID: <171483317081.2626447.5951155062757257572@localhost>
+User-Agent: alot/0.10
 
-From: Baokun Li <libaokun1@huawei.com>
+--===============5291737487209645571==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
-In ext4_xattr_block_cache_find(), when ext4_sb_bread() returns an error,
-we will either continue to find the next ea block or return NULL to try to
-insert a new ea block. But whether ext4_sb_bread() returns -EIO or -ENOMEM,
-the next operation is most likely to fail with the same error. So propagate
-the error returned by ext4_sb_bread() to make ext4_xattr_block_set() fail
-to reduce pointless operations.
+Hi,
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
----
- fs/ext4/xattr.c | 25 ++++++++++++++-----------
- 1 file changed, 14 insertions(+), 11 deletions(-)
+I originally observed this issue when creating ext4 disk images on a 9p
+filesystem which differed from the images I created on a tmpfs. I observed =
+that
+the difference also exists when the underlying file system is fat32, so I'm
+using this as an example here. For what it's worth, the ext4 filesystem ima=
+ges
+created on a tmpfs are identical to those created on an ext4 fs. To demonst=
+rate
+the issue, please see the script at the end of this mail (it requires sudo =
+to
+mount and unmount the fat32 disk image). As you can see from the printed
+hashes, the disk images produced outside the fat32 disk are always identica=
+l as
+expected. The diff between the reproducible images and those stored on fat3=
+2 is
+also very short but I don't know what data is stored at those points:
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 9fdd13422073..11742e1f16d7 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2059,8 +2059,13 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
- 
- inserted:
- 	if (!IS_LAST_ENTRY(s->first)) {
--		new_bh = ext4_xattr_block_cache_find(inode, header(s->base),
--						     &ce);
-+		new_bh = ext4_xattr_block_cache_find(inode, header(s->base), &ce);
-+		if (IS_ERR(new_bh)) {
-+			error = PTR_ERR(new_bh);
-+			new_bh = NULL;
-+			goto cleanup;
-+		}
-+
- 		if (new_bh) {
- 			/* We found an identical block in the cache. */
- 			if (new_bh == bs->bh)
-@@ -3090,8 +3095,8 @@ ext4_xattr_cmp(struct ext4_xattr_header *header1,
-  *
-  * Find an identical extended attribute block.
-  *
-- * Returns a pointer to the block found, or NULL if such a block was
-- * not found or an error occurred.
-+ * Returns a pointer to the block found, or NULL if such a block was not
-+ * found, or an error pointer if an error occurred while reading ea block.
-  */
- static struct buffer_head *
- ext4_xattr_block_cache_find(struct inode *inode,
-@@ -3113,13 +3118,11 @@ ext4_xattr_block_cache_find(struct inode *inode,
- 
- 		bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
- 		if (IS_ERR(bh)) {
--			if (PTR_ERR(bh) == -ENOMEM) {
--				mb_cache_entry_put(ea_block_cache, ce);
--				return NULL;
--			}
--			bh = NULL;
--			EXT4_ERROR_INODE(inode, "block %lu read error",
--					 (unsigned long)ce->e_value);
-+			if (PTR_ERR(bh) != -ENOMEM)
-+				EXT4_ERROR_INODE(inode, "block %lu read error",
-+						 (unsigned long)ce->e_value);
-+			mb_cache_entry_put(ea_block_cache, ce);
-+			return bh;
- 		} else if (ext4_xattr_cmp(header, BHDR(bh)) == 0) {
- 			*pce = ce;
- 			return bh;
--- 
-2.39.2
+@@ -85,7 +85,7 @@
+ 00000540: 0000 0000 0000 0000 0000 0000 0000 1000  ................
+ 00000550: 0000 0000 0000 0000 0000 0000 2000 2000  ............ . .
+ 00000560: 0200 0000 0000 0000 0000 0000 0000 0000  ................
+-00000570: 0000 0000 0401 0000 8c04 0000 0000 0000  ................
++00000570: 0000 0000 0401 0000 4900 0000 0000 0000  ........I.......
+ 00000580: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+ 00000590: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+ 000005a0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+@@ -125,9 +125,9 @@
+ 000007c0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+ 000007d0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+ 000007e0: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+-000007f0: 0000 0000 0000 0000 0000 0000 264c 0251  ............&L.Q
++000007f0: 0000 0000 0000 0000 0000 0000 64ca bba5  ............d...
+ 00000800: 1200 0000 2200 0000 3200 0000 9d03 7300  ...."...2.....s.
+-00000810: 0200 0000 0000 0000 babb 8a41 7300 2004  ...........As. .
++00000810: 0200 0400 0000 0000 babb 8a41 7300 69f5  ...........As.i.
+ 00000820: 0000 0000 0000 0000 0000 0000 0000 0000  ................
+ 00000830: 0000 0000 0000 0000 bc7a 6e31 0000 0000  .........zn1....
+ 00000840: 0000 0000 0000 0000 0000 0000 0000 0000  ................
 
+Any idea what is going on? Is there a better way to diff two ext4 disk imag=
+es
+than diffing the xxd output? If I try diffing the dumpe2fs output I get the=
+se
+differences:
+
+@@ -32,7 +32,7 @@
+ Maximum mount count:      -1
+ Last checked:             Fri May  3 16:14:49 2024
+ Check interval:           0 (<none>)
+-Lifetime writes:          1164 kB
++Lifetime writes:          73 kB
+ Reserved blocks uid:      0 (user root)
+ Reserved blocks gid:      0 (group root)
+ First inode:              11
+@@ -44,7 +44,7 @@
+ Directory Hash Seed:      0b7f9cfd-0113-486c-a453-4f5483bd486b
+ Journal backup:           inode blocks
+ Checksum type:            crc32c
+-Checksum:                 0x51024c26
++Checksum:                 0xa5bbca64
+ Checksum seed:            0xf81d767d
+ Orphan file inode:        12
+ Journal features:         (none)
+@@ -56,7 +56,7 @@
+ Journal start:            0
+=20
+=20
+-Group 0: (Blocks 1-2047) csum 0x0420
++Group 0: (Blocks 1-2047) csum 0xf569 [ITABLE_ZEROED]
+   Primary superblock at 1, Group descriptors at 2-2
+   Reserved GDT blocks at 3-17
+   Block bitmap at 18 (+17), csum 0x7abcbbba
+
+Why would these bits differ depending on the filesystem on which the disk i=
+mage
+is stored? Is there a way to equalize this information so that the disk ima=
+ge
+looks the same independent on the underlying filesystem?
+
+Thanks!
+
+cheers, josch
+
+#!/bin/sh
+set -eu
+mkfs() {
+	imgpath=3D"$1"
+	rm -f "$imgpath"
+	dd if=3D/dev/zero of=3D"$imgpath" bs=3D1024 count=3D2048 2>/dev/null
+	echo H4sIAAAAAAAAA+3OQQrCMBCF4Vl7ihwho9PkPKVEtJgU2rjo7a240JXSRSnC/20ew5vFy=
+/P5ekulzUk24xfB7JkaG/+ZL3oUtaCnYE2IUZZbTcX57Sa93afajs5JP0zd5cvfr/5P5bkbSk2l=
+HvZeAgAAAAAAAAAAAAAAAABY4wEWZDwwACgAAA=3D=3D \
+	| base64 -d \
+	| env LC_ALL=3DC.UTF-8 SOURCE_DATE_EPOCH=3D1714745689 /sbin/mke2fs -d - \
+		-q -F -o Linux -T ext4 -O metadata_csum,64bit \
+		-U 0b7f9cfd-0113-486c-a453-4f5483bd486b \
+		-E hash_seed=3D0b7f9cfd-0113-486c-a453-4f5483bd486b \
+		-b 1024 "$imgpath"
+	md5sum "$imgpath"
+}
+
+mkfs "/dev/shm/disk.ext4"
+mkfs disk.ext4
+
+rm -f fat32.img
+mkdir -p mnt
+dd if=3D/dev/zero of=3Dfat32.img bs=3D1024 count=3D65536 2>/dev/null
+/sbin/mkfs.vfat -F 32 fat32.img
+sudo mount -o rw,umask=3D0000 fat32.img mnt
+mkfs mnt/disk.ext4
+bash -c 'diff -u <(xxd mnt/disk.ext4) <(xxd disk.ext4) || true'
+bash -c 'diff -u <(/sbin/dumpe2fs mnt/disk.ext4) <(/sbin/dumpe2fs disk.ext4=
+) || true'
+sudo umount mnt
+mkfs disk.ext4
+mkfs "/dev/shm/disk.ext4"
+rm "/dev/shm/disk.ext4" disk.ext4 fat32.img
+rmdir mnt
+--===============5291737487209645571==
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Description: signature
+Content-Type: application/pgp-signature; name="signature.asc"; charset="us-ascii"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElFhU6KL81LF4wVq58sulx4+9g+EFAmY2Rw8ACgkQ8sulx4+9
+g+EgwxAAixKFTjRPvk1WI+G5pcpCJUdXM7DP4pbwBaEN5qtvBl2mQlfqT18akynH
+c/DCtIgFwV0TU0cqwSO6HegAUWwo87PiPVBY7RiZT9xHz/n2PdSgR4vv5eua8oH4
+s9jNzvy51WFFp3HUHAlYQVWzjttYmf900Vcsf3sGGeoJjnSi9CZjceS7E/1qCtgW
++XEFB3OeTOMl6gw/Y7tP91tqHztG8OMq0HeArgcKgSr1qIUpJSQ3wentBWglOncD
+5GeZMFick3ETG3rT3n+UE8Z+ETQNbbo2i7QR/kRWsdcP5vcUUiMynjrxEXPLdSBY
+opTVWTmfhmRLqFZu5Jb2KYgt6IBmeQblB64LzHU0Ud7oW/rKEY2c2DyQjnN8S9Bv
+nLM9zA+K19N3fdYiwQCOX1p4SvgUVzywdtyVg/XcNhAQqt3rX5QHoeDYMc0BcF2o
+e8PKWBwJE0jH7F5r5qCj4TRdLTL6a8ZTDz8Ijb7hpnbfXqJjv8e/s35upQ55X/Nm
+miYViEOe9Ee+vxFm4/g5dvWfMWTPWv807Uy22/XltiGFT2E912whRCcAXaW+uWB/
+2p1rlIlYdMD0PemA+q+YNIGj43BeW5VCi1EuQGyx4uftFM6j9M6Tq1ydFdbpFkeL
+ld66pOh8xfk4TWBCb81GpT0HsgurmzMPOOTilWoa8lDCF4obBII=
+=9rT8
+-----END PGP SIGNATURE-----
+
+--===============5291737487209645571==--
 
