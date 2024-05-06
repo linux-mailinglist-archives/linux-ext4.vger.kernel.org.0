@@ -1,104 +1,90 @@
-Return-Path: <linux-ext4+bounces-2334-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2335-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 461D38BD659
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 22:40:47 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B8E278BD825
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 May 2024 01:20:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F25BE28308A
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 20:40:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44A701F23BEC
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 23:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AAC015B98B;
-	Mon,  6 May 2024 20:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1CBD15D5DE;
+	Mon,  6 May 2024 23:19:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UN2x9JeH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="W9JuPY1B";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UN2x9JeH";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="W9JuPY1B"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="3FD5U7Cb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7F8D15B549;
-	Mon,  6 May 2024 20:40:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A025615D5C8
+	for <linux-ext4@vger.kernel.org>; Mon,  6 May 2024 23:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715028028; cv=none; b=YgT10e697C9x6KHDooQIEobSZt2g9nHxT5VRFrAziklNNpzycuWJ7D8kd/gkCwIpZ5sarmwRfH5EpkX6N/SCSHAI7YDinqosYoTygrnEV5PQOqfLAcs2XkQYWpe1rc/MDMcXii4TsnhY9YeL7BeyrOMbpiSjeltU+w/5jLTxo80=
+	t=1715037590; cv=none; b=ZpqQccgKZgoIcuzO6rm/SWe1TVh65vcoPRWmvD8lKZwpCRNWggqHq6oR1Yk1L3fJpqCg7MuaHWmmVqkKBERzv9bnCUWBQnRx0k3DX3I/GOqSbeaoXXRFO0ATMn0wp0iKr9qBj2iCYlbMhZA3jy2APU7FF87C9vCTp7HieOfQWpk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715028028; c=relaxed/simple;
-	bh=bRrCAjz06oRrHO3hwsFHYzBBQ0U89GRMr5rX6rOxpqQ=;
+	s=arc-20240116; t=1715037590; c=relaxed/simple;
+	bh=UlWB0PiVSaH0032zuWaMnJnFtUn4gBJA/x7Nb2BvVA0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XZ/DzkiqriZofYghp/VIm6g3rtkvkgnrVt9ndi+HlW4LUC06c0GWr9SIt0xykGhOOSVoBmprwjKr5Sswf0ADUgFeVvq499P0fvX2RGeygNcCfU4Lu7OdgMBacYwzqZvmxFbLyQK8LNwcOyYbtRVa9PjttxtlLHiy9s9iiaJWLaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UN2x9JeH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=W9JuPY1B; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UN2x9JeH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=W9JuPY1B; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0668221901;
-	Mon,  6 May 2024 20:40:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715028024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4xZPg8EegazAFh05UDpFoYCCWIO3q0gdW8OkIjEIjWs=;
-	b=UN2x9JeHQu+msfuPtXlQDHwMPlE4Z0fA2u6utIs0yiKJcSw4+ePgOXHnWTWUz7W8hwGkxr
-	vdNoFVUZ3Q3gQvU6DNftgwo/mq8I7pn2uuimVaIplrtVaDNE+WVu2bClF8C01AksHHxmKH
-	NFHxZ1AdEgARMqUE83yLC6gsun0nBGI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715028024;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4xZPg8EegazAFh05UDpFoYCCWIO3q0gdW8OkIjEIjWs=;
-	b=W9JuPY1BS9V6wwG3Y2jogIyPRn68vPaJIs29b8f7p9eN+bn99JbMYjf+AkwfmhOxi+tfi7
-	HWZtIDmEFEqOybDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=UN2x9JeH;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=W9JuPY1B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715028024; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4xZPg8EegazAFh05UDpFoYCCWIO3q0gdW8OkIjEIjWs=;
-	b=UN2x9JeHQu+msfuPtXlQDHwMPlE4Z0fA2u6utIs0yiKJcSw4+ePgOXHnWTWUz7W8hwGkxr
-	vdNoFVUZ3Q3gQvU6DNftgwo/mq8I7pn2uuimVaIplrtVaDNE+WVu2bClF8C01AksHHxmKH
-	NFHxZ1AdEgARMqUE83yLC6gsun0nBGI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715028024;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=4xZPg8EegazAFh05UDpFoYCCWIO3q0gdW8OkIjEIjWs=;
-	b=W9JuPY1BS9V6wwG3Y2jogIyPRn68vPaJIs29b8f7p9eN+bn99JbMYjf+AkwfmhOxi+tfi7
-	HWZtIDmEFEqOybDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E82241386E;
-	Mon,  6 May 2024 20:40:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 33qpODdAOWYOZwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 06 May 2024 20:40:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 362CCA1306; Mon,  6 May 2024 22:40:23 +0200 (CEST)
-Date: Mon, 6 May 2024 22:40:23 +0200
-From: Jan Kara <jack@suse.cz>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com,
-	Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH 2/2] ext4: propagate errors from ext4_sb_bread() in
- ext4_xattr_block_cache_find()
-Message-ID: <20240506204023.l74kejvjlinufuei@quack3>
-References: <20240504075526.2254349-1-libaokun@huaweicloud.com>
- <20240504075526.2254349-3-libaokun@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=EsBqgKXDndatdiBZOKyJN1iuqtDPqwROl12LAAMAxXrWVoKjaZVpeR+NgeikVaHqHxSuMTMkT6jOdClMbXtvgDGicqBqZELqIAjMbtEGAEccVROuaHmjMfBfxdGSSX8h4LECHQDJ4fTO0lO4A95MzMZWKLVF9MVd0imuDcyk6KA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=3FD5U7Cb; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1e65a1370b7so22854355ad.3
+        for <linux-ext4@vger.kernel.org>; Mon, 06 May 2024 16:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1715037588; x=1715642388; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=JfmNU7T7Zux55fuk0/ynp0mrkZlbfnBJFtPeSgTSd88=;
+        b=3FD5U7CbJLQePT0BVWtbdUWUvNlloshl2hpcD7m8GUCOz/x3Ie0qubI88eKXWyi3tN
+         xVKrt4PGH8AFFza0HFc0Etym+7KyuREUD42JdQ+0HeuQKqG79jQ0q5U7j7GNxIn/6qpf
+         Ty2OSULrRXd1/gk6aFzdSOy7o6TRyRpXOpVvMyoIv5L2Kdm0CpQKsObv8e8VbQ4B2AEo
+         MRB/ME6Xw0bz+bZ5DFTAMoQlJ6MG6Ccn+LHLQE4S1/bklb8OXhmq+HOe4bsc0TtNbmQp
+         /DqOPMHMDaL5xZurWAlriSsnOGG1FDncVpcJWErtU+Af7jLuq9604TxCW/7smTBG9rnh
+         oGPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715037588; x=1715642388;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=JfmNU7T7Zux55fuk0/ynp0mrkZlbfnBJFtPeSgTSd88=;
+        b=svi5yuwyfhzNxAUohbDQ7T7aqW/ktc2+CNg5MysuGRTUtslwq49f134ZZRVEvk9RN3
+         t6WNloZql/D2X4FSYfZkg2u0MuPjDy1MCJdldWhiuqo2sc26K3NwWvAh5phQPZpIPA4v
+         rnzFaRATw703FiIOmWMMQA2MBlm/3RI5zjw8iyp/I6smDmKkrAdpEenNMPGfFmP6ppkw
+         wVMLWIo35qohLiNHGPU/PP/5M4P14rex9gQQzp5o2v4P43R0I2VCXnKttvM/fvGRDBfN
+         xeqLEnxtWZzBVgISDJWIjcaYcPn3b9OL9AW5SoBHdDZ7bLK12v/3A+Jiz729DknCMtIU
+         s6bw==
+X-Gm-Message-State: AOJu0Ywy32t6jdHhY6NHa5fv2UEgWyS1Rm4fJsgCw4YFfQ9d0MKg+giQ
+	euQ5ZS+EdscCbYBU1ysRJ3qUEF1/i5ja7A/mnBFVZhnMgOHVmGmzv2vfrreuPcI=
+X-Google-Smtp-Source: AGHT+IGTdCbkJ6dCeXIlEqW0jHcIBzUUTSQchp3eoxUw0itjwcXxpPE+rnXs+G996BJVeTg/0lgcEQ==
+X-Received: by 2002:a17:902:ecc7:b0:1eb:dae:bdab with SMTP id a7-20020a170902ecc700b001eb0daebdabmr16603631plh.46.1715037587536;
+        Mon, 06 May 2024 16:19:47 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
+        by smtp.gmail.com with ESMTPSA id i12-20020a17090332cc00b001ecd2c44ae0sm8800306plr.4.2024.05.06.16.19.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 06 May 2024 16:19:47 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1s47cW-0064gO-0e;
+	Tue, 07 May 2024 09:19:44 +1000
+Date: Tue, 7 May 2024 09:19:44 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+	hch@infradead.org, djwong@kernel.org, willy@infradead.org,
+	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+	yukuai3@huawei.com, wangkefeng.wang@huawei.com
+Subject: Re: [RFC PATCH v4 24/34] ext4: implement buffered write iomap path
+Message-ID: <ZjllkHuyOedA/Tzg@dread.disaster.area>
+References: <20240410142948.2817554-1-yi.zhang@huaweicloud.com>
+ <20240410142948.2817554-25-yi.zhang@huaweicloud.com>
+ <ZjH5Ia+dWGss5Duv@dread.disaster.area>
+ <ZjH+QFVXLlcDkSdh@dread.disaster.area>
+ <96bbdb25-b420-67b1-d4c4-b838a5c70f9f@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -107,119 +93,153 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240504075526.2254349-3-libaokun@huaweicloud.com>
-X-Spam-Flag: NO
-X-Spam-Score: -2.51
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 0668221901
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[10];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,huawei.com:email,huaweicloud.com:email]
+In-Reply-To: <96bbdb25-b420-67b1-d4c4-b838a5c70f9f@huaweicloud.com>
 
-On Sat 04-05-24 15:55:26, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
+On Mon, May 06, 2024 at 07:44:44PM +0800, Zhang Yi wrote:
+> On 2024/5/1 16:33, Dave Chinner wrote:
+> > On Wed, May 01, 2024 at 06:11:13PM +1000, Dave Chinner wrote:
+> >> On Wed, Apr 10, 2024 at 10:29:38PM +0800, Zhang Yi wrote:
+> >>> From: Zhang Yi <yi.zhang@huawei.com>
+> >>>
+> >>> Implement buffered write iomap path, use ext4_da_map_blocks() to map
+> >>> delalloc extents and add ext4_iomap_get_blocks() to allocate blocks if
+> >>> delalloc is disabled or free space is about to run out.
+> >>>
+> >>> Note that we always allocate unwritten extents for new blocks in the
+> >>> iomap write path, this means that the allocation type is no longer
+> >>> controlled by the dioread_nolock mount option. After that, we could
+> >>> postpone the i_disksize updating to the writeback path, and drop journal
+> >>> handle in the buffered dealloc write path completely.
+> > .....
+> >>> +/*
+> >>> + * Drop the staled delayed allocation range from the write failure,
+> >>> + * including both start and end blocks. If not, we could leave a range
+> >>> + * of delayed extents covered by a clean folio, it could lead to
+> >>> + * inaccurate space reservation.
+> >>> + */
+> >>> +static int ext4_iomap_punch_delalloc(struct inode *inode, loff_t offset,
+> >>> +				     loff_t length)
+> >>> +{
+> >>> +	ext4_es_remove_extent(inode, offset >> inode->i_blkbits,
+> >>> +			DIV_ROUND_UP_ULL(length, EXT4_BLOCK_SIZE(inode->i_sb)));
+> >>>  	return 0;
+> >>>  }
+> >>>  
+> >>> +static int ext4_iomap_buffered_write_end(struct inode *inode, loff_t offset,
+> >>> +					 loff_t length, ssize_t written,
+> >>> +					 unsigned int flags,
+> >>> +					 struct iomap *iomap)
+> >>> +{
+> >>> +	handle_t *handle;
+> >>> +	loff_t end;
+> >>> +	int ret = 0, ret2;
+> >>> +
+> >>> +	/* delalloc */
+> >>> +	if (iomap->flags & IOMAP_F_EXT4_DELALLOC) {
+> >>> +		ret = iomap_file_buffered_write_punch_delalloc(inode, iomap,
+> >>> +			offset, length, written, ext4_iomap_punch_delalloc);
+> >>> +		if (ret)
+> >>> +			ext4_warning(inode->i_sb,
+> >>> +			     "Failed to clean up delalloc for inode %lu, %d",
+> >>> +			     inode->i_ino, ret);
+> >>> +		return ret;
+> >>> +	}
+> >>
+> >> Why are you creating a delalloc extent for the write operation and
+> >> then immediately deleting it from the extent tree once the write
+> >> operation is done?
+> > 
+> > Ignore this, I mixed up the ext4_iomap_punch_delalloc() code
+> > directly above with iomap_file_buffered_write_punch_delalloc().
+> > 
+> > In hindsight, iomap_file_buffered_write_punch_delalloc() is poorly
+> > named, as it is handling a short write situation which requires
+> > newly allocated delalloc blocks to be punched.
+> > iomap_file_buffered_write_finish() would probably be a better name
+> > for it....
+> > 
+> >> Also, why do you need IOMAP_F_EXT4_DELALLOC? Isn't a delalloc iomap
+> >> set up with iomap->type = IOMAP_DELALLOC? Why can't that be used?
+> > 
+> > But this still stands - the first thing
+> > iomap_file_buffered_write_punch_delalloc() is:
+> > 
+> > 	if (iomap->type != IOMAP_DELALLOC)
+> >                 return 0;
+> > 
 > 
-> In ext4_xattr_block_cache_find(), when ext4_sb_bread() returns an error,
-> we will either continue to find the next ea block or return NULL to try to
-> insert a new ea block. But whether ext4_sb_bread() returns -EIO or -ENOMEM,
-> the next operation is most likely to fail with the same error. So propagate
-> the error returned by ext4_sb_bread() to make ext4_xattr_block_set() fail
-> to reduce pointless operations.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Thanks for the suggestion, the delalloc and non-delalloc write paths
+> share the same ->iomap_end() now (i.e. ext4_iomap_buffered_write_end()),
+> I use the IOMAP_F_EXT4_DELALLOC to identify the write path.
 
-Looks good. Feel free to add:
+Again, you don't need that. iomap tracks newly allocated
+IOMAP_DELALLOC extents via the IOMAP_F_NEW flag that should be
+getting set in the ->iomap_begin() call when it creates a new
+delalloc extent.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Please look at the second check in
+iomap_file_buffered_write_punch_delalloc():
 
-								Honza
+	if (iomap->type != IOMAP_DELALLOC)
+                return 0;
 
-> ---
->  fs/ext4/xattr.c | 25 ++++++++++++++-----------
->  1 file changed, 14 insertions(+), 11 deletions(-)
-> 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 9fdd13422073..11742e1f16d7 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -2059,8 +2059,13 @@ ext4_xattr_block_set(handle_t *handle, struct inode *inode,
->  
->  inserted:
->  	if (!IS_LAST_ENTRY(s->first)) {
-> -		new_bh = ext4_xattr_block_cache_find(inode, header(s->base),
-> -						     &ce);
-> +		new_bh = ext4_xattr_block_cache_find(inode, header(s->base), &ce);
-> +		if (IS_ERR(new_bh)) {
-> +			error = PTR_ERR(new_bh);
-> +			new_bh = NULL;
-> +			goto cleanup;
-> +		}
-> +
->  		if (new_bh) {
->  			/* We found an identical block in the cache. */
->  			if (new_bh == bs->bh)
-> @@ -3090,8 +3095,8 @@ ext4_xattr_cmp(struct ext4_xattr_header *header1,
->   *
->   * Find an identical extended attribute block.
->   *
-> - * Returns a pointer to the block found, or NULL if such a block was
-> - * not found or an error occurred.
-> + * Returns a pointer to the block found, or NULL if such a block was not
-> + * found, or an error pointer if an error occurred while reading ea block.
->   */
->  static struct buffer_head *
->  ext4_xattr_block_cache_find(struct inode *inode,
-> @@ -3113,13 +3118,11 @@ ext4_xattr_block_cache_find(struct inode *inode,
->  
->  		bh = ext4_sb_bread(inode->i_sb, ce->e_value, REQ_PRIO);
->  		if (IS_ERR(bh)) {
-> -			if (PTR_ERR(bh) == -ENOMEM) {
-> -				mb_cache_entry_put(ea_block_cache, ce);
-> -				return NULL;
-> -			}
-> -			bh = NULL;
-> -			EXT4_ERROR_INODE(inode, "block %lu read error",
-> -					 (unsigned long)ce->e_value);
-> +			if (PTR_ERR(bh) != -ENOMEM)
-> +				EXT4_ERROR_INODE(inode, "block %lu read error",
-> +						 (unsigned long)ce->e_value);
-> +			mb_cache_entry_put(ea_block_cache, ce);
-> +			return bh;
->  		} else if (ext4_xattr_cmp(header, BHDR(bh)) == 0) {
->  			*pce = ce;
->  			return bh;
-> -- 
-> 2.39.2
-> 
+        /* If we didn't reserve the blocks, we're not allowed to punch them. */
+        if (!(iomap->flags & IOMAP_F_NEW))
+                return 0;
+
+> For
+> non-delalloc path, If we have allocated more blocks and copied less, we
+> should truncate extra blocks that newly allocated by ->iomap_begin().
+
+Why? If they were allocated as unwritten, then you can just leave
+them there as unwritten extents, same as XFS. Keep in mind that if
+we get a short write, it is extremely likely the application is
+going to rewrite the remaining data immediately, so if we allocated
+blocks they are likely to still be needed, anyway....
+
+> If we use IOMAP_DELALLOC, we can't tell if the blocks are
+> pre-existing or newly allocated, we can't truncate the
+> pre-existing blocks, so I have to introduce IOMAP_F_EXT4_DELALLOC.
+> But if we split the delalloc and non-delalloc handler, we could
+> drop IOMAP_F_EXT4_DELALLOC.
+
+As per above: IOMAP_F_NEW tells us -exactly- this.
+
+IOMAP_F_NEW should be set on any newly allocated block - delalloc or
+real - because that's the flag that tells the iomap infrastructure
+whether zero-around is needed for partial block writes. If ext4 is
+not setting this flag on delalloc regions allocated by
+->iomap_begin(), then that's a serious bug.
+
+> I also checked xfs, IIUC, xfs doesn't free the extra blocks beyond EOF
+> in xfs_buffered_write_iomap_end() for non-delalloc case since they will
+> be freed by xfs_free_eofblocks in some other inactive paths, like
+> xfs_release()/xfs_inactive()/..., is that right?
+
+XFS doesn't care about real blocks beyond EOF existing -
+xfs_free_eofblocks() is an optimistic operation that does not
+guarantee that it will remove blocks beyond EOF. Similarly, we don't
+care about real blocks within EOF because we alway allocate data
+extents as unwritten, so we don't have any stale data exposure
+issues to worry about on short writes leaving allocated blocks
+behind.
+
+OTOH, delalloc extents without dirty page cache pages over them
+cannot be allowed to exist. Without dirty pages, there is no trigger
+to convert those to real extents (i.e. nothing to write back). Hence
+the only sane thing that can be done with them on a write error or
+short write is remove them in the context where they were created.
+
+This is the only reason that the
+iomap_file_buffered_write_punch_delalloc() exists - it abstracts
+this nasty corner case away from filesystems that support delalloc
+so they don't have to worry about getting this right. That's whole
+point of having delalloc aware infrastructure - individual
+filesysetms don't need to handle all these weird corner cases
+themselves because the infrastructure takes care of them...
+
+-Dave.
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Dave Chinner
+david@fromorbit.com
 
