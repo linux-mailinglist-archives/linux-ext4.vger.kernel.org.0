@@ -1,44 +1,45 @@
-Return-Path: <linux-ext4+bounces-2314-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2315-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 22A078BCDFF
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 14:33:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7A78BCEB3
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 15:05:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBDFB1F24114
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 12:33:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFA5A283777
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 13:05:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92E751DA58;
-	Mon,  6 May 2024 12:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A6974BF8;
+	Mon,  6 May 2024 13:05:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 980C4748F;
-	Mon,  6 May 2024 12:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5B644C66;
+	Mon,  6 May 2024 13:05:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714998797; cv=none; b=GrP2ozyHrK5tt22LFqWEZk/5u7QJfgniweu8f8+ebO+ZoL50DDMuZPpXvSA2VJ3FichLBNMKKbLUU+3V3YVbWgwp+IzB3alk8RFc+mgYUyO9DiApWSQDycjZVKN7dg/qqxbtuc3NHv0rIgkWKYcgC31SmDZEELGQwNWGrwqypPQ=
+	t=1715000732; cv=none; b=rIGRcKfNEHVT2ridJiTzJcvCrruAObbh+uDEMnwWCzP/uerbnlIFxlFCxemF352itBrG23fFCDKsBT4u6/lkQ2J0G4yJXrS1sSRSGmBPsR8nH5nbDB8TJSgVY6XJ/sZzlx/iFGobswHQVC/kkntce9jHiiCQtJeYZ739s11Xvvg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714998797; c=relaxed/simple;
-	bh=DEA1KM0ghvQd+HuV8xLB5tsfrrm9padoKe5B5fuFlsE=;
+	s=arc-20240116; t=1715000732; c=relaxed/simple;
+	bh=o/sXgNc3t4AhEHZQzACRVWndIPoft8f4vqB8PGglIIo=;
 	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=GR6KNQrJLoxZgefgdSmG4YcIsPXsa2v+8rsSGSoHTNnv8pPDPy/jndbPidrM5xMHVcGImZlXD5/Gp8qAsLBDw/MYOJdTPHxB4zkiEU9ZUeXjSVsighvHE6TkJK16iBveieoj157kHbpZLsO6zVQMennsQ/3hwlwHpUk1o+fBPxQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=MaSh/EytpS1MUuZ7I5L+h84RV0eMnIldDzu6OB8PmbvnlkR6qUYGzsSCoCiixCLfl+RHLVNcRAoDSRy/9ZYELugyHedNwABglla1RS2+/RZUucRV7PN2h79SaHr455ydDqe9j5XwesPTf+uwogOzjac9ZaIn9PwvnySM5lqsZaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VY15q13XZz4f3l85;
-	Mon,  6 May 2024 20:33:03 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VY1q04Xwqz4f3jd5;
+	Mon,  6 May 2024 21:05:16 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 642991A058D;
-	Mon,  6 May 2024 20:33:08 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id CBBD31A0572;
+	Mon,  6 May 2024 21:05:24 +0800 (CST)
 Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP2 (Coremail) with SMTP id Syh0CgDH6w4CzjhmXgPPMA--.59039S3;
-	Mon, 06 May 2024 20:33:08 +0800 (CST)
-Subject: Re: [RFC PATCH v4 27/34] ext4: implement zero_range iomap path
+	by APP2 (Coremail) with SMTP id Syh0CgAnmAuS1ThmXifRMA--.45497S3;
+	Mon, 06 May 2024 21:05:24 +0800 (CST)
+Subject: Re: [RFC PATCH v4 29/34] ext4: fall back to buffer_head path for
+ defrag
 To: Dave Chinner <david@fromorbit.com>
 Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
@@ -47,11 +48,11 @@ Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
  yukuai3@huawei.com, wangkefeng.wang@huawei.com
 References: <20240410142948.2817554-1-yi.zhang@huaweicloud.com>
- <20240410142948.2817554-28-yi.zhang@huaweicloud.com>
- <ZjIN9nuV6SaNODfE@dread.disaster.area>
+ <20240410150313.2820364-1-yi.zhang@huaweicloud.com>
+ <ZjIMQTAtxZ0NhCD2@dread.disaster.area>
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <f59c3015-7029-9cd0-f5f0-087dfc1f24d0@huaweicloud.com>
-Date: Mon, 6 May 2024 20:33:06 +0800
+Message-ID: <5dbb3021-b92e-2e53-7eee-5a6595a5ad03@huaweicloud.com>
+Date: Mon, 6 May 2024 21:05:22 +0800
 User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
  Thunderbird/78.12.0
 Precedence: bulk
@@ -60,18 +61,18 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZjIN9nuV6SaNODfE@dread.disaster.area>
+In-Reply-To: <ZjIMQTAtxZ0NhCD2@dread.disaster.area>
 Content-Type: text/plain; charset=utf-8
 Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgDH6w4CzjhmXgPPMA--.59039S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1ktFWkGF4ktw15AF45Awb_yoW8Grykpr
-	Z5KFy8Kr12gr97uFZ2gFZrXryFya13Gw48WrW3Jrn8Z343WryxKFyjgF1093W8X3y7A340
-	vF1UW34Igw15AFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+X-CM-TRANSID:Syh0CgAnmAuS1ThmXifRMA--.45497S3
+X-Coremail-Antispam: 1UD129KBjvdXoW7Jr4kGw4xCryrur4xWFW8Crg_yoWDWwcE9F
+	yrCrWDCw1UJF4xZrsI9rs8KFs2kr4UWr4qqryUXrnFy34FyrZ5XFsYk3yqk34rtFWxuFn0
+	kwn3ZF40vr9rXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbIAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
 	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
 	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
 	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
@@ -79,49 +80,36 @@ X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1ktFWkGF4ktw15AF45Awb_yoW8Grykpr
 	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
 	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
 	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UZ18PUUUUU=
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUFDGOUUUUU
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/5/1 17:40, Dave Chinner wrote:
-> On Wed, Apr 10, 2024 at 10:29:41PM +0800, Zhang Yi wrote:
+On 2024/5/1 17:32, Dave Chinner wrote:
+> On Wed, Apr 10, 2024 at 11:03:08PM +0800, Zhang Yi wrote:
 >> From: Zhang Yi <yi.zhang@huawei.com>
 >>
->> Add ext4_iomap_zero_range() for the zero_range iomap path, it zero out
->> the mapped blocks, all work have been done in iomap_zero_range(), so
->> call it directly.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->> ---
->>  fs/ext4/inode.c | 9 +++++++++
->>  1 file changed, 9 insertions(+)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 9d694c780007..5af3b8acf1b9 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -4144,6 +4144,13 @@ static int __ext4_block_zero_page_range(handle_t *handle,
->>  	return err;
->>  }
->>  
->> +static int ext4_iomap_zero_range(struct inode *inode,
->> +				 loff_t from, loff_t length)
->> +{
->> +	return iomap_zero_range(inode, from, length, NULL,
->> +				&ext4_iomap_buffered_read_ops);
->> +}
+>> Online defrag doesn't support iomap path yet, we have to fall back to
+>> buffer_head path for the inode which has been using iomap. Changing
+>> active inode is dangerous, before we start, we must hold the inode lock
+>> and the mapping->invalidate_lock, and writeback all dirty folios and
+>> drop the inode's pagecache.
 > 
-> Zeroing is a buffered write operation, not a buffered read
-> operation. It runs though iomap_write_begin(), so needs all the
-> stale iomap detection stuff to be set up for correct operation.
+> Even then, I don't think this is obviously safe. We went through
+> this with DAX and we couldn't make it work safely.
+> 
+> Just return EOPNOTSUPP to the online defrag ioctl if iomap is in use
+> - that avoids all the excitement involved in doing dangerous things
+> like swapping aops structures on actively referenced inodes...
 > 
 
-Yeah, right, thanks for point this out. Although we can guarantee
-that the zeroing is a partial block overwrite and no need to
-allocate new blocks on ext4, use ext4_iomap_buffered_read_ops is
-not appropriate, I'll use write ops instead.
+Okay, this is just a temporary solution to support defrag. I've been
+looking at how to support defrag for iomap recently, I hope it could
+be supported in the near future, so let's drop this dangerous
+operation.
 
 Thanks,
 Yi.
+
+
 
 
