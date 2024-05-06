@@ -1,94 +1,159 @@
-Return-Path: <linux-ext4+bounces-2300-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2301-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D94BF8BC3D4
-	for <lists+linux-ext4@lfdr.de>; Sun,  5 May 2024 22:59:15 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 735C18BC4F8
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 02:59:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8F65D1F2212F
-	for <lists+linux-ext4@lfdr.de>; Sun,  5 May 2024 20:59:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE5631C209AF
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 00:59:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC88376033;
-	Sun,  5 May 2024 20:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59133B781;
+	Mon,  6 May 2024 00:59:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DC17580E
-	for <linux-ext4@vger.kernel.org>; Sun,  5 May 2024 20:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197EB38F91
+	for <linux-ext4@vger.kernel.org>; Mon,  6 May 2024 00:59:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1714942745; cv=none; b=cAcr6B8RzJkFDNFYj+ZxLQG1v+ofQG5aSyuq3ElgKSaHltOKD7T2QQarzz6B8wrJafvUc60g2mU33SDeAa9fe1SlEwoYsb2M4sDgWibTFPKfnfpfVQe3Cwj1j5qPIXSMNAaDAvTddFH7qmAYZCnPi1ppj3/Xgey6HArp1rBEZyg=
+	t=1714957170; cv=none; b=Af5rMmLOBXne/078U/8pI3iAYww0D/IcM6I+DM/rxHAtPAuQGEWTgL3LnqrnUbesHsCoDaFusdndSNmsc8zI2bTjrxK9y9wKvj4FrcDU26ja+iBOBXF+TlfL63/8SBAigVrRYpoScyyOPfiTWMl81uhKIXXzV8rvoS26oVZVHw4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1714942745; c=relaxed/simple;
-	bh=MuUD9FFWuXSGLaTNUDVSvdvJhbVmlVaZRI2izi/lgkw=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=m7rSUKECiEUaKubOs4t9dMS1yA81ULf4ozto6DdIbVP3dEJtECneB7VBUk0xV6nWum/KOGAhl9wASVyzNTsAf+nbUvC4zF/C3gify0KlDuVdPBPcowRXVtRizfhag9ocWznWfHxbLcyO7N5m6WyOSC3g8ypyjpDCSu7u07gBlPQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7dea5889eb7so143713239f.1
-        for <linux-ext4@vger.kernel.org>; Sun, 05 May 2024 13:59:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1714942743; x=1715547543;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3XZzzFIOk0q1XGbjNkVkwmB0Rx4sKexxyAZqWMu5IjM=;
-        b=BZkwrMllYpnHGHp3Q4GfcqTTMFrqTE1dgTgMhVD3OuTzNDuVLKI0eT9rgQXYnfKwwt
-         67d2/Xles8sEpkRgR5Ur6wucvAGTba14w/8BAsWeQC4geRblHVgoVJ+X5j2xK3LzSZGw
-         lOVLnlvqxNumsb2lAa0mtIZzrGpEZqqBN12aI0cDiH1JTUqXmwaQVaVBw6eD0BlPQgw2
-         UuvmTNkCpk8N+2CPLu4CDzhd+FQbZrTuZAwtuLXWQ7Wcsk73BxjBtodMq/pW1uMg9qrA
-         xiDyMuKkD0aQRIyPbl0hTvWbaa4u0pjQU4F2K4XVKHtw4s1YzwIUqby1fH8o220mLHD8
-         dXPA==
-X-Forwarded-Encrypted: i=1; AJvYcCXgt+jhxUQWID4vafmsKL7w7HQUZnKVyqAez2h5agTXQgSgHcMWaSRhEes5AkuM0gAHkntLiDagpXySf6/0Jxq/S5kwmPypNuhSrQ==
-X-Gm-Message-State: AOJu0Yxzqo3Sf19HVTluDZoG+Wuhz0OR1lnG3PpFpweKLoCl5LoV9CAh
-	yVlfbIZ6Sx/DmnwwFp3X2IsdxTBG2Y6q6xGBH1P4khL0qb1JVrXgApo1A5Vo3aADvMGM70Aautc
-	4H8rN4Rvh/CDTok1etkEC2+kvuL1sSTqUdAobsJfzb9sHpys+66NiF8I=
-X-Google-Smtp-Source: AGHT+IHlVd3hJWK1UWMadrAPWJdyK/1JHLko1J5M/PynvAhDREjCeIBwi8faa/qySXdPgKHzRQ2YidiOAMaHKEotNz/OdZlTi0Ry
+	s=arc-20240116; t=1714957170; c=relaxed/simple;
+	bh=k1QUYHjTwg9ScrGUxfSE1dgf3CKWDUZ4xyW0gZeKzkk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=pmi5li2c6t2/g32Kf2pNlpD/EiiOCbhNW3tBcjWxoPC174lTa3LTYSfiW0XIdFcAe5ChdloHU9GEJFGB7hGVtBW/+pO7z21++UKuwRcqCAKzeqm4Y38djQQoh+5NQ8gl3Cza89MT6mk+jnpGLj2oUZnav5CYyCVsPF3m69fu+xE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VXjjF4fnRz4f3kjc
+	for <linux-ext4@vger.kernel.org>; Mon,  6 May 2024 08:59:13 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id E10A11A0D91
+	for <linux-ext4@vger.kernel.org>; Mon,  6 May 2024 08:59:18 +0800 (CST)
+Received: from [10.174.177.210] (unknown [10.174.177.210])
+	by APP1 (Coremail) with SMTP id cCh0CgCXaBFlKzhmjcF_Lw--.27978S3;
+	Mon, 06 May 2024 08:59:18 +0800 (CST)
+Message-ID: <dedf5caf-4ced-0a7d-ca3a-e0f68b59043a@huaweicloud.com>
+Date: Mon, 6 May 2024 08:59:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8c18:b0:487:5aca:1a49 with SMTP id
- jl24-20020a0566388c1800b004875aca1a49mr344230jab.1.1714942743591; Sun, 05 May
- 2024 13:59:03 -0700 (PDT)
-Date: Sun, 05 May 2024 13:59:03 -0700
-In-Reply-To: <000000000000897f760617b91491@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000ac63c0617bb390b@google.com>
-Subject: Re: [syzbot] [bcachefs?] [ext4?] WARNING: suspicious RCU usage in bch2_fs_quota_read
-From: syzbot <syzbot+a3a9a61224ed3b7f0010@syzkaller.appspotmail.com>
-To: bfoster@redhat.com, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH] ext4: clear EXT4_GROUP_INFO_WAS_TRIMMED_BIT even mount
+ with discard
+To: yangerkun <yangerkun@huawei.com>, Jan Kara <jack@suse.cz>,
+ "Theodore Y . Ts'o" <tytso@mit.edu>
+Cc: adilger.kernel@dilger.ca, boyu.mt@taobao.com, linux-ext4@vger.kernel.org
+References: <20231230070654.178638-1-yangerkun@huaweicloud.com>
+ <20240221111852.olo7jeycctz7xntj@quack3>
+ <7953c617-2f74-faa4-2aa4-c6ef9de2c28e@huawei.com>
+From: yangerkun <yangerkun@huaweicloud.com>
+In-Reply-To: <7953c617-2f74-faa4-2aa4-c6ef9de2c28e@huawei.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgCXaBFlKzhmjcF_Lw--.27978S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxXr4kuw4rtry5Aw1kJr1DZFb_yoW5Zryfpr
+	1ktF1jyry5Xr109r4jqr1jqFy8tw4UJw1UXr1UXF48JrZrtr1agr17Xr1j9ryUJF48Jr1U
+	XF15Xry3ZF1UArDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIE
+	c7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
 
-syzbot has bisected this issue to:
+Hi, Ted,
 
-commit 03ef80b469d5d83530ce1ce15be78a40e5300f9b
-Author: Kent Overstreet <kent.overstreet@linux.dev>
-Date:   Sat Sep 23 22:41:51 2023 +0000
+Ping again...
 
-    bcachefs: Ignore unknown mount options
+在 2024/3/30 16:04, yangerkun 写道:
+> Hi, Ted,
+> 
+> Ping for this patch.
+> 
+> 
+> 在 2024/2/21 19:18, Jan Kara 写道:
+>> On Sat 30-12-23 15:06:54, yangerkun wrote:
+>>> Commit 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in
+>>> ext4_group_info") speed up fstrim by skipping trim trimmed group. We
+>>> also has the chance to clear trimmed once there exists some block free
+>>> for this group(mount without discard), and the next trim for this group
+>>> will work well too.
+>>>
+>>> For mount with discard, we will issue dicard when we free blocks, so
+>>> leave trimmed flag keep alive to skip useless trim trigger from
+>>> userspace seems reasonable. But for some case like ext4 build on
+>>> dm-thinpool(ext4 blocksize 4K, pool blocksize 128K), discard from ext4
+>>> maybe unaligned for dm thinpool, and thinpool will just finish this
+>>> discard(see process_discard_bio when begein equals to end) without
+>>> actually process discard. For this case, trim from userspace can really
+>>> help us to free some thinpool block.
+>>>
+>>> So convert to clear trimmed flag for all case no matter mounted with
+>>> discard or not.
+>>>
+>>> Fixes: 3d56b8d2c74c ("ext4: Speed up FITRIM by recording flags in 
+>>> ext4_group_info")
+>>> Signed-off-by: yangerkun <yangerkun@huaweicloud.com>
+>>
+>> Thanks for the fix. It looks good. Feel free to add:
+>>
+>> Reviewed-by: Jan Kara <jack@suse.cz>
+>>
+>>                                 Honza
+>>
+>>> ---
+>>>   fs/ext4/mballoc.c | 10 ++++------
+>>>   1 file changed, 4 insertions(+), 6 deletions(-)
+>>>
+>>> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+>>> index d72b5e3c92ec..69240ae775f1 100644
+>>> --- a/fs/ext4/mballoc.c
+>>> +++ b/fs/ext4/mballoc.c
+>>> @@ -3855,11 +3855,8 @@ static void ext4_free_data_in_buddy(struct 
+>>> super_block *sb,
+>>>       /*
+>>>        * Clear the trimmed flag for the group so that the next
+>>>        * ext4_trim_fs can trim it.
+>>> -     * If the volume is mounted with -o discard, online discard
+>>> -     * is supported and the free blocks will be trimmed online.
+>>>        */
+>>> -    if (!test_opt(sb, DISCARD))
+>>> -        EXT4_MB_GRP_CLEAR_TRIMMED(db);
+>>> +    EXT4_MB_GRP_CLEAR_TRIMMED(db);
+>>>       if (!db->bb_free_root.rb_node) {
+>>>           /* No more items in the per group rb tree
+>>> @@ -6481,8 +6478,9 @@ static void ext4_mb_clear_bb(handle_t *handle, 
+>>> struct inode *inode,
+>>>                        " group:%u block:%d count:%lu failed"
+>>>                        " with %d", block_group, bit, count,
+>>>                        err);
+>>> -        } else
+>>> -            EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
+>>> +        }
+>>> +
+>>> +        EXT4_MB_GRP_CLEAR_TRIMMED(e4b.bd_info);
+>>>           ext4_lock_group(sb, block_group);
+>>>           mb_free_blocks(inode, &e4b, bit, count_clusters);
+>>> -- 
+>>> 2.39.2
+>>>
+>>>
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=16f8862f180000
-start commit:   7367539ad4b0 Merge tag 'cxl-fixes-6.9-rc7' of git://git.ke..
-git tree:       upstream
-final oops:     https://syzkaller.appspot.com/x/report.txt?x=15f8862f180000
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f8862f180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d2f00edef461175
-dashboard link: https://syzkaller.appspot.com/bug?extid=a3a9a61224ed3b7f0010
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12376338980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16047450980000
-
-Reported-by: syzbot+a3a9a61224ed3b7f0010@syzkaller.appspotmail.com
-Fixes: 03ef80b469d5 ("bcachefs: Ignore unknown mount options")
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
