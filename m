@@ -1,115 +1,78 @@
-Return-Path: <linux-ext4+bounces-2315-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2316-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F7A78BCEB3
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 15:05:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 101EE8BCEF6
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 15:32:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EFA5A283777
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 13:05:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B99A61F2420A
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 13:32:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09A6974BF8;
-	Mon,  6 May 2024 13:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A9E78276;
+	Mon,  6 May 2024 13:32:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fisica.ufpr.br header.i=@fisica.ufpr.br header.b="SaLNdsq2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from hoggar.fisica.ufpr.br (hoggar.fisica.ufpr.br [200.238.171.242])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5B644C66;
-	Mon,  6 May 2024 13:05:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6913474BF8;
+	Mon,  6 May 2024 13:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=200.238.171.242
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715000732; cv=none; b=rIGRcKfNEHVT2ridJiTzJcvCrruAObbh+uDEMnwWCzP/uerbnlIFxlFCxemF352itBrG23fFCDKsBT4u6/lkQ2J0G4yJXrS1sSRSGmBPsR8nH5nbDB8TJSgVY6XJ/sZzlx/iFGobswHQVC/kkntce9jHiiCQtJeYZ739s11Xvvg=
+	t=1715002354; cv=none; b=nmyXxTpRgCmWBT28PBfdv142BamutrxvjrmJGCjlXSxRpghpmrSM4QQEMPLZU9Gz4BqA9sSDyuV21npbibGxGKeyZX2KOSvL9Of0PZrgMLrJGEDuGseHTzifpVHjKHATK+P+9PULwSL6564NAXZq5roJ+iUvKNj9DDsQBVf+y8I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715000732; c=relaxed/simple;
-	bh=o/sXgNc3t4AhEHZQzACRVWndIPoft8f4vqB8PGglIIo=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=MaSh/EytpS1MUuZ7I5L+h84RV0eMnIldDzu6OB8PmbvnlkR6qUYGzsSCoCiixCLfl+RHLVNcRAoDSRy/9ZYELugyHedNwABglla1RS2+/RZUucRV7PN2h79SaHr455ydDqe9j5XwesPTf+uwogOzjac9ZaIn9PwvnySM5lqsZaw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VY1q04Xwqz4f3jd5;
-	Mon,  6 May 2024 21:05:16 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id CBBD31A0572;
-	Mon,  6 May 2024 21:05:24 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP2 (Coremail) with SMTP id Syh0CgAnmAuS1ThmXifRMA--.45497S3;
-	Mon, 06 May 2024 21:05:24 +0800 (CST)
-Subject: Re: [RFC PATCH v4 29/34] ext4: fall back to buffer_head path for
- defrag
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-mm@kvack.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
- hch@infradead.org, djwong@kernel.org, willy@infradead.org,
- zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com, wangkefeng.wang@huawei.com
-References: <20240410142948.2817554-1-yi.zhang@huaweicloud.com>
- <20240410150313.2820364-1-yi.zhang@huaweicloud.com>
- <ZjIMQTAtxZ0NhCD2@dread.disaster.area>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <5dbb3021-b92e-2e53-7eee-5a6595a5ad03@huaweicloud.com>
-Date: Mon, 6 May 2024 21:05:22 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1715002354; c=relaxed/simple;
+	bh=5aPWLNBCt9nnOWvrjzXnoFe/wAdPKeU8CYYqXZeZPZU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dZYfuQga1hVO5DrHa2kSVYEKgzPT6JyNL9x+xcPEhpswQL9DiR1doeI8Z6yJHu1L3iP4UEkuCBCEiLYZHV3RdMdtSFHt6bDHlt2FYZ62/AyzVwts6nSfPmtiChOlLxzol1PMH1Ua72GyMP8VmmCQV1DBVWscfdCWUMnAjKSw29g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fisica.ufpr.br; spf=pass smtp.mailfrom=fisica.ufpr.br; dkim=pass (2048-bit key) header.d=fisica.ufpr.br header.i=@fisica.ufpr.br header.b=SaLNdsq2; arc=none smtp.client-ip=200.238.171.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=fisica.ufpr.br
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fisica.ufpr.br
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=fisica.ufpr.br;
+	s=201705; t=1715002338;
+	bh=5aPWLNBCt9nnOWvrjzXnoFe/wAdPKeU8CYYqXZeZPZU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SaLNdsq24DmAzv2rf5bj32oN1ZeRCqh1yXkv9KIcIMqs2niaZcdr0dew0kw9XyN6q
+	 OtXL/zdyIwYusDptM8IrNxe1jkWxiUu+V/NA5QJM7jSpKFcqfoS/dbOqjeUuckLFYb
+	 RI2RSjcD75VmEUsnageM0lxENHhqlD6QNoI/fgEPeUZwwhZ6KuepnrJDZJv9EF1sIg
+	 Bx6hFY/B0Pt8tX+0gJTOSGNpYSI2yGPIjjwmLbj5tRW7JhkcIhk9i8rkCtvatxsZq6
+	 2lOMSL2cVsOB6d1So0Zi7NiEWJ2Ire54M7icBYWiTP9TdfZ+WJO8KMmgS/mOxwYL/G
+	 MOvA/1PMyIaew==
+Received: by hoggar.fisica.ufpr.br (Postfix, from userid 577)
+	id BB29D11A7C87; Mon, 06 May 2024 10:32:18 -0300 (-03)
+Date: Mon, 6 May 2024 10:32:18 -0300
+From: Carlos Carvalho <carlos@fisica.ufpr.br>
+To: Holger Kiehl <Holger.Kiehl@dwd.de>
+Cc: linux-kernel <linux-kernel@vger.kernel.org>,
+	linux-raid <linux-raid@vger.kernel.org>,
+	linux-block@vger.kernel.org, Jens Axboe <axboe@kernel.dk>,
+	linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: Massive slowdown in kernels as of 6.x
+Message-ID: <Zjjb4mjcnjxrPUw3@fisica.ufpr.br>
+References: <1ebabc15-51a8-59f3-c813-4e65e897a373@diagnostix.dwd.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <ZjIMQTAtxZ0NhCD2@dread.disaster.area>
 Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgAnmAuS1ThmXifRMA--.45497S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Jr4kGw4xCryrur4xWFW8Crg_yoWDWwcE9F
-	yrCrWDCw1UJF4xZrsI9rs8KFs2kr4UWr4qqryUXrnFy34FyrZ5XFsYk3yqk34rtFWxuFn0
-	kwn3ZF40vr9rXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbIAYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
-	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_GFv_
-	WrylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
-	CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyT
-	uYvjxUFDGOUUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Disposition: inline
+In-Reply-To: <1ebabc15-51a8-59f3-c813-4e65e897a373@diagnostix.dwd.de>
 
-On 2024/5/1 17:32, Dave Chinner wrote:
-> On Wed, Apr 10, 2024 at 11:03:08PM +0800, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> Online defrag doesn't support iomap path yet, we have to fall back to
->> buffer_head path for the inode which has been using iomap. Changing
->> active inode is dangerous, before we start, we must hold the inode lock
->> and the mapping->invalidate_lock, and writeback all dirty folios and
->> drop the inode's pagecache.
+Holger Kiehl (Holger.Kiehl@dwd.de) wrote on Mon, May 06, 2024 at 08:31:37AM -03:
+> Mounted as follows:
 > 
-> Even then, I don't think this is obviously safe. We went through
-> this with DAX and we couldn't make it work safely.
-> 
-> Just return EOPNOTSUPP to the online defrag ioctl if iomap is in use
-> - that avoids all the excitement involved in doing dangerous things
-> like swapping aops structures on actively referenced inodes...
-> 
+>    /dev/md0 on /u2 type ext4 (rw,nodev,noatime,commit=600,stripe=640)
 
-Okay, this is just a temporary solution to support defrag. I've been
-looking at how to support defrag for iomap recently, I hope it could
-be supported in the near future, so let's drop this dangerous
-operation.
+Sorry, missed that. You can try
 
-Thanks,
-Yi.
+# mount -o remount,stripe=0 /dev/md0
 
-
-
+ext4 is known to have a problem with parity raid with the symptoms you
+describe and the above remount works around it. raid10 doesn't have parity but
+is stripped so the workaround might work.
 
