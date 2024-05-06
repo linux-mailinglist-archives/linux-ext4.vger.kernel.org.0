@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-2319-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2327-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D89E8BCFE7
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 16:19:17 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3806C8BCFF7
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 16:20:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E21331F22AC7
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 14:19:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 603E1B27754
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 May 2024 14:20:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91FBE13D531;
-	Mon,  6 May 2024 14:18:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4D5313E036;
+	Mon,  6 May 2024 14:18:32 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BBCD13D2B0;
-	Mon,  6 May 2024 14:18:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5537B13CFAD;
+	Mon,  6 May 2024 14:18:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715005110; cv=none; b=bCft3hkSDRT5fz7POkvgS7ipWjsN+o8NthNkJZd+L2RQW/6cTZ29+oIO+dRx0JvcS3ImVIaQLjTFPu3bZ4oUgh0KbPXZFxMERCm+8CfpUhNkwlsS1xJnKUwB1xoJ8Zo12XGdKiETh3W5XN5/5QQghe47oGkcPuJPrfrV89vb4Vw=
+	t=1715005112; cv=none; b=VKArqGe++OAbXH8ZmC7Umr/0hOY43idfKUq/dmE7cICzUvZOARiMK78Tyc5iZn+APm+UQEk2K6sQelt9sBM5TmYTIgEQssRkyOyITBw5mi396QC65KrkFoOpKi3iD6nfWRgzP3jFwcUvHmTW2hdawfZDeFiOkqR2ntQ7u9viuTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715005110; c=relaxed/simple;
-	bh=QQwEt7VSIvBikGCac88Bofue0zCMu1gHYn2Q/Kx54s0=;
+	s=arc-20240116; t=1715005112; c=relaxed/simple;
+	bh=Zm86qt6RdF+YDOSKq5gre7uYNIr5q4CDZPa9kGDuJIQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=eLH5xxeF7xvBmfeD0ZODrH8QT/oN/j02OV5IfyZcMdBlte7jKJgAtD0v2iLfgPowv61EcU3JiN3ElJyQG9Cq6F9+m7MG/abHunoLd2Jh5foRsR2RrbahFH4zB487Z/5YvcYfIp/vCLCxMkfSnks7TCCmbJIChVYN1btxbf5EuYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=G1X106iIrK501kR8bEB17ktDlskLRMPoHkRojYh49zftV6PKG2dhSNd3Huq23PQ0wun2mSNMoVqnHja47Xr9l0BzMTD26qpWex3xTcsGsYX/jq7VHyERWAsFDGFMi/M3z30iuv5jCWtYNNr7Vy6/XWfz2jxbW4VeWyKcAxQdOaM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VY3RF3Qhkz4f3kG9;
-	Mon,  6 May 2024 22:18:17 +0800 (CST)
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VY3RD1Ljhz4f3n6g;
+	Mon,  6 May 2024 22:18:16 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id A7EEC1A0568;
+	by mail.maildlp.com (Postfix) with ESMTP id EA30B1A0568;
 	Mon,  6 May 2024 22:18:25 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgAH2RGu5jhmGgSzLw--.22965S8;
+	by APP1 (Coremail) with SMTP id cCh0CgAH2RGu5jhmGgSzLw--.22965S9;
 	Mon, 06 May 2024 22:18:25 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	jack@suse.com
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/9] jbd2: use bh_in instead of jh2bh(jh_in) to simplify code
-Date: Mon,  6 May 2024 22:17:58 +0800
-Message-Id: <20240506141801.1165315-7-shikemeng@huaweicloud.com>
+Subject: [PATCH 7/9] jbd2: remove dead equality check of j_commit_[sequence/request] in kjournald2
+Date: Mon,  6 May 2024 22:17:59 +0800
+Message-Id: <20240506141801.1165315-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240506141801.1165315-1-shikemeng@huaweicloud.com>
 References: <20240506141801.1165315-1-shikemeng@huaweicloud.com>
@@ -56,10 +56,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgAH2RGu5jhmGgSzLw--.22965S8
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1DuF1xCw4fGF1kCrW5GFg_yoWfCrc_Za
-	ykAw1kZwsIyF4DJw4rCw4xXr1jgw1rAr1ku3Z7tFyDCFnIvrn3Z3ZIkrn2yrnrua1xtrW5
-	X3ZruF4FyFy7JjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID:cCh0CgAH2RGu5jhmGgSzLw--.22965S9
+X-Coremail-Antispam: 1UD129KBjvdXoWrur4DKw4kZr17Cr4UCw1kAFb_yoWkKwb_Wr
+	WSyrnF9rWftr15Ja1kCw15ur1aqrn7Zrn5J3Z7ta1UKr1jyan2kFWkJay5Wwnru3yFqr45
+	A39akw48trnavjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbVkYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
 	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
 	0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
@@ -75,29 +75,35 @@ X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1DuF1xCw4fGF1kCrW5GFg_yoWfCrc_Za
 	nxnUUI43ZEXa7IU13l1DUUUUU==
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-We save jh2bh(jh_in) to bh_in, so use bh_in directly instead of
-jh2bh(jh_in) to simplify the code.
+In kjournald2, two equality checks of j_commit_[sequence/request] are
+under the same j_state_lock. As j_commit_[sequence/request] are updated
+concurrently with j_state_lock held during runtime, the second check is
+unnecessary.
+The j_commit_sequence is only updated concurrently in
+jbd2_journal_commit_transaction with j_state_lock held.
+The j_commit_request is only updated concurrently in
+__jbd2_log_start_commit with j_state_lock held.
+Also see comment in struct journal_s about lock rule of j_commit_sequence
+and j_commit_request.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/jbd2/journal.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+ fs/jbd2/journal.c | 2 --
+ 1 file changed, 2 deletions(-)
 
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 87f558bd2e8a..01e33b643e4d 100644
+index 01e33b643e4d..e8f592fbd6e1 100644
 --- a/fs/jbd2/journal.c
 +++ b/fs/jbd2/journal.c
-@@ -363,8 +363,8 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
- 		new_folio = virt_to_folio(jh_in->b_frozen_data);
- 		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
- 	} else {
--		new_folio = jh2bh(jh_in)->b_folio;
--		new_offset = offset_in_folio(new_folio, jh2bh(jh_in)->b_data);
-+		new_folio = bh_in->b_folio;
-+		new_offset = offset_in_folio(new_folio, bh_in->b_data);
- 	}
+@@ -224,8 +224,6 @@ static int kjournald2(void *arg)
  
- 	mapped_data = kmap_local_folio(new_folio, new_offset);
+ 		prepare_to_wait(&journal->j_wait_commit, &wait,
+ 				TASK_INTERRUPTIBLE);
+-		if (journal->j_commit_sequence != journal->j_commit_request)
+-			should_sleep = 0;
+ 		transaction = journal->j_running_transaction;
+ 		if (transaction && time_after_eq(jiffies,
+ 						transaction->t_expires))
 -- 
 2.30.0
 
