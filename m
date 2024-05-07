@@ -1,112 +1,137 @@
-Return-Path: <linux-ext4+bounces-2345-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2346-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 337368BE344
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 May 2024 15:15:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 043EE8BEEB5
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 May 2024 23:11:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 622331C23BCE
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 May 2024 13:15:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B39A02874A4
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 May 2024 21:11:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B26D915ECC6;
-	Tue,  7 May 2024 13:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADAEB14B961;
+	Tue,  7 May 2024 21:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WqdrQV8i"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5807215E5D2;
-	Tue,  7 May 2024 13:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2951878C76;
+	Tue,  7 May 2024 21:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715087616; cv=none; b=mmiDWBKWfc1RgFB9nOMbaarNFYCxv2xFutmSlSgI19eQ/A++yQ6SyLthAOdFU4qLxg6ouKdlSLwFGRumqo4OGfrHxt3l+zzhmpzaEEwYJhPDNKpbjqJVkGrxL/zdV4YMkzWEB9nqlM1J5uLUwqWLC99S0hv10FZUwy1yXXKFAJQ=
+	t=1715116275; cv=none; b=BGmTTPVlqnJtFd6lYsnJ8iULVrgD19zbJjlIkCmQHtHFAaBIbj0NXjfPh0g+nTa8MZ3DHHUdqTytDeUPNjfSYHjku3rbcoyVi+FgWjWe/x69XAKGbVTlrIvUApBHqtXeYcWU0vdpoZnG67bKlY4UM8MMV90gHgdhMcwOKDkAtUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715087616; c=relaxed/simple;
-	bh=nXTXydUjZ0AYCUSfBjFdB1M0Cpdjkm6cUoTgReWw5So=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=lddK7dzNr1VQz8w+P6YDvHuIr4OKrApFWkmbJdaeaNxL0l1aytFBHMPZ1rjDeHyOod0NaU6+PZ5CbRdtJQ9gxxwI3/UqxdNtSiJoV18wsAQbGykFw9FOY5tK1B2rBP62CFM/kqNtAU8D8kregBCxx7CQeWe/8s6rmCmIQGyPtaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VYdxt4t88z4f3kG1;
-	Tue,  7 May 2024 21:13:22 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id E64221A0568;
-	Tue,  7 May 2024 21:13:30 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP2 (Coremail) with SMTP id Syh0CgCnyw76KDpmLTcxMQ--.42256S3;
-	Tue, 07 May 2024 21:13:30 +0800 (CST)
-Subject: Re: [PATCH 6/9] jbd2: use bh_in instead of jh2bh(jh_in) to simplify
- code
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
- jack@suse.com
-References: <20240506141801.1165315-1-shikemeng@huaweicloud.com>
- <20240506141801.1165315-7-shikemeng@huaweicloud.com>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <aaaf9df6-dad5-f405-eb7f-8056ba5e69f1@huaweicloud.com>
-Date: Tue, 7 May 2024 21:13:30 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1715116275; c=relaxed/simple;
+	bh=N17paVKsvnHlMoVYYbGAwSs5ZZJ5KRuS1vQScRvlcjg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oElh/bv3Bg518xCRLBYDdAjMTzCsJrHP5hyY8nSO1KdVCZlyASuPpcWAcb+Gvm6gkqlvmD0JbfsNoCm2e8zitAYgH3M8LN/wFbNjJ+8E3enHdKXKTE3HIL8BHsnWgw5a6QNlGhnvvdM231lJDZs1V7MFYrHpZm2WyRptwzjyqOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WqdrQV8i; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EDFC5C2BBFC;
+	Tue,  7 May 2024 21:11:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715116275;
+	bh=N17paVKsvnHlMoVYYbGAwSs5ZZJ5KRuS1vQScRvlcjg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WqdrQV8insRznhS1yS8bFigi9YWERuZXqwTfAJ03UGBVCbiEEmW/kxgojAjC0agF7
+	 HMb94pFs5CoDoZ4OixNdFLDT4aXt/g/0EFpsaCb982WWXI/RQ+2XLGeyV/Jq1o7H8p
+	 IXLNGPSLcUREpmxiQ6VUM93dnxbl0EIqo2DkVEqTms0gonZRfDCtyaTG2ZBy4vvvu7
+	 ugrLjXODLxx89Znxlv9mxSG042NmyIkvzPsHih6e9KtNmtT5ewUfI7Kd/E2/GIZ1hK
+	 64EN7mqB2nzqljWLrQLfB6gPBELzjcv7N49ukWuSPijpMdkWUsBcY7XKOfnJBSoetb
+	 7xycCDWKc3VHg==
+Date: Tue, 7 May 2024 14:11:14 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCHv2 2/2] iomap: Optimize iomap_read_folio
+Message-ID: <20240507211114.GU360919@frogsfrogsfrogs>
+References: <cover.1715067055.git.ritesh.list@gmail.com>
+ <92ae9f3333c9a7e66214568d08f45664261c899c.1715067055.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240506141801.1165315-7-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgCnyw76KDpmLTcxMQ--.42256S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Xr1kGw13XFW8Gw43Zr4UCFg_yoWDCrg_Za
-	yvyw1kX39IqF4kJw4rCw1xWr4Ygw1rZr1kCw1xtFyUuFnIvFn5Z3Z8KrWvyrnrWa1xKrW5
-	Z3Z7uF4FyasrXjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbzAYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
-	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
-	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
-	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
-	k26cxKx2IYs7xG6Fyj6rWUJwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUrNtxDUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <92ae9f3333c9a7e66214568d08f45664261c899c.1715067055.git.ritesh.list@gmail.com>
 
-On 2024/5/6 22:17, Kemeng Shi wrote:
-> We save jh2bh(jh_in) to bh_in, so use bh_in directly instead of
-> jh2bh(jh_in) to simplify the code.
+On Tue, May 07, 2024 at 02:25:43PM +0530, Ritesh Harjani (IBM) wrote:
+> iomap_readpage_iter() handles "uptodate blocks" and "not uptodate blocks"
+> within a folio separately. This makes iomap_read_folio() to call into
+> ->iomap_begin() to request for extent mapping even though it might already
+> have an extent which is not fully processed.
+> This happens when we either have a large folio or with bs < ps. In these
+> cases we can have sub blocks which can be uptodate (say for e.g. due to
+> previous writes). With iomap_read_folio_iter(), this is handled more
+> efficiently by not calling ->iomap_begin() call until all the sub blocks
+> with the current folio are processed.
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> iomap_read_folio_iter() handles multiple sub blocks within a given
+> folio but it's implementation logic is similar to how
+> iomap_readahead_iter() handles multiple folios within a single mapped
+> extent. Both of them iterate over a given range of folio/mapped extent
+> and call iomap_readpage_iter() for reading.
+> 
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-Looks good to me.
+I like this improved changelog, it'e easier to understand why
+_read_folio_iter needs to exist.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
 
 > ---
->  fs/jbd2/journal.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
+>  fs/iomap/buffered-io.c | 20 +++++++++++++++++++-
+>  1 file changed, 19 insertions(+), 1 deletion(-)
 > 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 87f558bd2e8a..01e33b643e4d 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -363,8 +363,8 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
->  		new_folio = virt_to_folio(jh_in->b_frozen_data);
->  		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
->  	} else {
-> -		new_folio = jh2bh(jh_in)->b_folio;
-> -		new_offset = offset_in_folio(new_folio, jh2bh(jh_in)->b_data);
-> +		new_folio = bh_in->b_folio;
-> +		new_offset = offset_in_folio(new_folio, bh_in->b_data);
->  	}
->  
->  	mapped_data = kmap_local_folio(new_folio, new_offset);
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 9f79c82d1f73..a9bd74ee7870 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -444,6 +444,24 @@ static loff_t iomap_readpage_iter(const struct iomap_iter *iter,
+>  	return pos - orig_pos + plen;
+>  }
 > 
-
+> +static loff_t iomap_read_folio_iter(const struct iomap_iter *iter,
+> +		struct iomap_readpage_ctx *ctx)
+> +{
+> +	struct folio *folio = ctx->cur_folio;
+> +	size_t offset = offset_in_folio(folio, iter->pos);
+> +	loff_t length = min_t(loff_t, folio_size(folio) - offset,
+> +			      iomap_length(iter));
+> +	loff_t done, ret;
+> +
+> +	for (done = 0; done < length; done += ret) {
+> +		ret = iomap_readpage_iter(iter, ctx, done);
+> +		if (ret <= 0)
+> +			return ret;
+> +	}
+> +
+> +	return done;
+> +}
+> +
+>  int iomap_read_folio(struct folio *folio, const struct iomap_ops *ops)
+>  {
+>  	struct iomap_iter iter = {
+> @@ -459,7 +477,7 @@ int iomap_read_folio(struct folio *folio, const struct iomap_ops *ops)
+>  	trace_iomap_readpage(iter.inode, 1);
+> 
+>  	while ((ret = iomap_iter(&iter, ops)) > 0)
+> -		iter.processed = iomap_readpage_iter(&iter, &ctx, 0);
+> +		iter.processed = iomap_read_folio_iter(&iter, &ctx);
+> 
+>  	if (ret < 0)
+>  		folio_set_error(folio);
+> --
+> 2.44.0
+> 
+> 
 
