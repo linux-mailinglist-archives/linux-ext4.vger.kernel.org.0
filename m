@@ -1,32 +1,32 @@
-Return-Path: <linux-ext4+bounces-2386-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2370-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7DB9B8BFA6C
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 12:08:18 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3B418BFA34
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 12:04:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CD70FB238A2
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 10:08:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 68349B22F97
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 10:04:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B81E985940;
-	Wed,  8 May 2024 10:03:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C46C8062A;
+	Wed,  8 May 2024 10:03:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FD327E11E;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0BD7E0EB;
 	Wed,  8 May 2024 10:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715162585; cv=none; b=RQIBmmWLAcUeTQBfGqRwPUJbF2zziUMh7krqlKxAzDdmnsEURRGd5rXpJBW4UPjZ0QFX/Xq1ThvB6FdtlL0u487JTQ5PWUgKljYirWRllkChyCnW8dr7vL6JwSuTkk2sg47wtN3Ubq6wg0sgIMvqqcgS0HLdz5cr7DONM8Lv67I=
+	t=1715162583; cv=none; b=RiXjqj7Dr0WbENu+J1owW4MARGVRBwS1UaUSmhvR5uCx6eemT+kZKgzT401wvlWZsocareg4iU5byVtdqlO3NSKumNNUFgTAliSfZKxls5bqMaOELo1iVbLKMP6INnvd0HkysK9rQAOPL5L0vKVazst7QWBXu0twlvYoTXZ+PDo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715162585; c=relaxed/simple;
-	bh=yYyo9J9LbrfncpB2CWVjqJhM6aD/eyXV6B0l1bR9NkI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=bx7MTKAwffy3bd0r14NS5gjJn/kHrpgQEAJsv/SyFg0vvROSxLIDg5q0x3BMYJL8XN2EOqxy0pt3BCEd6yFCLrSbN/ytwk1nQxzPVNm/jea1V4zQ+AF7ID4OVZyxtvOogCdFySjsXspn6lhA3ogHnm7hK76pcD7X88uKCThTuFg=
+	s=arc-20240116; t=1715162583; c=relaxed/simple;
+	bh=ZnDomY68etRURkOftpc7pgxDDdwCW9QdH8k+FPh35/w=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=cAPrh9HMm8DWdSs2tBIzTHDEexUEq24Xmh5b5TThhEbTB1a23ymZ9MuGH7pEiEUg8qxHkWaRFi6G9lLDcTLL+Ju7koEImVzXM2Qa+0xYQeL32We7C8r/Z0qC23nEfVHp9irf1i14XN1xmqT/AcydpBKHdZbfBHvFJ4xfAeKy4uE=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-45-663b4a3836b1
+X-AuditID: a67dfc5b-d85ff70000001748-55-663b4a39ddb3
 From: Byungchul Park <byungchul@sk.com>
 To: linux-kernel@vger.kernel.org
 Cc: kernel_team@skhynix.com,
@@ -86,43 +86,44 @@ Cc: kernel_team@skhynix.com,
 	longman@redhat.com,
 	hdanton@sina.com,
 	her0gyugyu@gmail.com
-Subject: [PATCH v14 03/28] dept: Add single event dependency tracker APIs
-Date: Wed,  8 May 2024 18:47:00 +0900
-Message-Id: <20240508094726.35754-4-byungchul@sk.com>
+Subject: [PATCH v14 04/28] dept: Add lock dependency tracker APIs
+Date: Wed,  8 May 2024 18:47:01 +0900
+Message-Id: <20240508094726.35754-5-byungchul@sk.com>
 X-Mailer: git-send-email 2.17.1
 In-Reply-To: <20240508094726.35754-1-byungchul@sk.com>
 References: <20240508094726.35754-1-byungchul@sk.com>
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSbUxTZxTH9zz3lTs6r5XIFT64dFETDSoG9PgSs8RE74y6RY0f9ANWe7HV
-	gloERWMCUhgW0WrEbpUpINYGqmBrjC+AtaQoELFqVTCUCKljjVC02moFpwXjl5Nfzvn/f58O
-	S8gdVBKryd4n6bKVWgXNkdxwfHXK4tVLM+dfHOXg5LH5EH5fSkJlg40Gz5V6BLZrhRgC7lXw
-	PDKEYPTBQwJMFR4E1f0+Aq619SFoth6h4Yn/J/CGR2horyijoehCAw2PXo9h6D1zCkO9fS10
-	GmswOKODJJgCNJw1FeHY+A9D1FLHgKVgBgxYzQyM9adCe98zCppfzIG/z/XS0NTcTkLbjQEM
-	T25V0tBn+0JBZ9t9Ejwnyym4HKyh4XXEQoAlPMLAY2cVhkZ9TFTy7n8K7pU7MZTUXsXg7bmN
-	oKX0JQa77RkNreEhDA57BQGfLrkRDBwfZqD4WJSBs4XHEZQVnyFB35sOox8r6V8Xi61DI4So
-	d+wXmyNVpNhRI4g3zT5G1Le8YMQqe67osM4WLzQFsFgdClOive4oLdpDpxjRMOzFYrCrixHv
-	/zVKin6vCf+RtJlbppK0mjxJN2/5Vk7tMpqpPc8TD0RM0wuQV25AcazApwldw6+I7/zWYptg
-	mp8ldHdHJziB/1lwlP9LjTPBD3FCbdfKcZ7C/yY8bXzDGBDLkvwMocc4ZXwt49OFPl8n/qac
-	LtQ3Oic0cfxCoWcwiMZZHsvcLjLHqlws85EVzJYg9a0wTbhr7SaNSFaFfqhDck12XpZSo02b
-	q87P1hyYu313lh3FXslyeGzLDRTybHAhnkWKeJkzcUmmnFLm5eRnuZDAEooEmfvPRZlymUqZ
-	f1DS7c7Q5WqlHBdKZklFomxBZL9Kzu9Q7pN2SdIeSff9itm4pAKkTVQd8oMv/s670KdJCTO5
-	8/0dq93qvRt/8Y/9s+5Ex4Ied/pggff6j7lrjCo20KRsXbc+dXmywW8XHC69j9u0xaFLNzxc
-	Mblw79Q3DbRnfeDSTtNp98vP1schfbItJa32Q0YwevpDKabLplkNRb8XZuDiRUtajpblq0v4
-	lM/bFGSOWpk6m9DlKL8Cl/UHnUYDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTcRjG+//P1dnqMCUP+cEYdMFIk7RetDthpyipT0UENfKYS52xqWVo
-	WFNT09BAV17CSy3RVTbNrDSW4tIss1zpTFeaZNLSbhst18UVfXn58TwPv08vS8iKqYWsUpUk
-	qlWKeDktISVREdoVsD0iZmW/IwSK8leC41sOCeU3DDT0Xa9HYGg6hWGycysMOO0IZp48JUBX
-	3IeganSEgCazDUFb7Wka+sfngcUxTUN38VkatDU3aHj2wY1huOQ8hnrjTugprMZgck2QoJuk
-	oUynxbPnPQaXvo4BfcZiGKstZcA9GgLdtpcUdFR0U9A2tBwuXhqmobWtmwRzyxiG/rvlNNgM
-	vynoMXeR0FdUQMG1qWoaPjj1BOgd0ww8N1ViaMictWV//UXBwwIThuzLNzFYrPcQ3M95g8Fo
-	eElDh8OOodFYTMCPq50Ixs59ZCAr38VA2alzCM5mlZCQORwGM9/L6Y3hQod9mhAyG48Jbc5K
-	UnhUzQt3SkcYIfP+ECNUGpOFxtpAoaZ1EgtVXxyUYKzLpQXjl/OMkPfRgoWp3l5G6LowQwrj
-	Fh3e5b9PsjZajFemiOrg9Qclse2FpdTRAb/jTl1ABrLI8pAXy3Oh/Ge9gfAwzS3lBwddf9mX
-	W8Q3FryjPExwdgl/uTfSwz7cNv5FwycmD7EsyS3mrYU+nljKhfG2kR78TxnA1zeY/mq8uNW8
-	dWIKeVg2u7mnLWUKkaQSzalDvkpVSoJCGR8WpImLTVUpjwcdSkwwotln0ae7i1rQt/6t7Yhj
-	kXyutI+OiJFRihRNakI74llC7ivtPLMmRiaNVqSeENWJB9TJ8aKmHfmzpNxPun2PeFDGHVYk
-	iXGieFRU/28x67UwA+2TOVOhaUVGy25r8o7DEYMtFa+cri0ynb8k3b3Otlb6uOzW5qr5reb1
-	u3NfaJWbUqrqLHRIbqItMHf/kYAN7gfRzeFBWwzWS2yFd7B3GsoPDm2+ElewyGEPjEyf9yZ8
-	geL2yZ+R3hO39pY8cS9JOyBvjqqGZa2rxNdvs0wq81iUnNTEKkICCbVG8QdySKOkKAMAAA==
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSa0hTcRjG+//P2TlztDjMyJNRxsAsK9Our92oPughioryS9HlkEc3vCSb
+	l4wCzdllplmkM5OYZlO8pG1FN2dTcXkhW7VKRVeKeMmpYc0yJZtGX15+vO/zPDwfXjEheyzy
+	Fitj4wVVLB8tpySkZGR+4drgvdsiArsqPeHGtUBw/bhCQkFVBQW2B+UIKh6lYhhqDIVPE04E
+	U6/fEKDLsSEo7Okm4JHVgcBcepGC930LwO4ao6A5J4OCtHtVFLwdnsbQlXsTQ7lxP7RmF2Gw
+	TA6QoBui4I4uDbvHIIZJQxkNhhRf6C3Np2G6JwiaHR9FYO5cDbfvdlFQY24mwfq0F8P75wUU
+	OCpmRNBqbSLBdiNTBJWjRRQMTxgIMLjGaHhn0WOo1riDLn3/I4JXmRYMl4ofYrB3vEBQe+UL
+	BmPFRwoaXE4MJmMOAb9LGhH0Zo3QkH5tkoY7qVkIMtJzSdB0bYKpXwXUrmCuwTlGcBpTEmee
+	0JNcSxHLPcvvpjlNbSfN6Y0JnKnUn7tXM4S5wnGXiDOWXaU44/hNmtOO2DE32tZGc015UyTX
+	Z9fhg95HJdvDhWhloqBat/OURKFxF4sb9Dp735KCUlC5TIs8xCyzkXVZRsj//DN3QDTLFOPH
+	trdPErO8kFnOmjL75/YE45SwxW0hs+zJ7GZrcv7MeUnGl3V8GUSzLGU2sfqZ6/hfpg9bXm2Z
+	y/FgNrMdA6NzGplb8yItn9YiiVszI2YfWlvQP8Nitq60ncxGUj2aV4ZkytjEGF4ZvTFAkRyr
+	PBtw+kyMEbmfyXBh+thTNG47XI8YMZLPl1q8tkbIRHyiOjmmHrFiQr5Q2nh5S4RMGs4nnxNU
+	Z06qEqIFdT1aIiblXtL1E0nhMiaSjxeiBCFOUP2/YrGHdwoKSt8aFh51yKvzm1Z3pDI44GWf
+	vehTCO/Zn6YO6F0a4mdaUbJP0XrqZJD/Kp8ntq/K4yeSTh/20WYcEM6HDPRlf/7qPWj1K67j
+	SxQf4l/XOe3DO+I8arKizJZlRHzH7dCmhoQ9jOBLtYQ1rJCF3U+95djQrele1Pgrck1P/4/I
+	vJVyUq3gg/wJlZr/C/69brJIAwAA
+X-Brightmail-Tracker: H4sIAAAAAAAAAzWSfUzMcRzHfb+/p+vm7OdkfjLLbszz06Z8yBrN+C0P6x9r8w9Hv6tTd9pd
+	xdlY6YSeKK4j4Qqn1REX5qFrp3QVeqCkqKMW1To16SKl3GX++ey1z+e91z5/vEWE1Ej5iZTq
+	OEGjlsfIaDEp3h2UvBJCgxRrrjs2QFb6GnAPnyEhr8RCQ+PdYgSWB0kY+qq2w/sRF4KxugYC
+	jIZGBPmdHQQ8cDgR2ApP0tDUPQOa3YM01BrSaEi+UULDm/5xDO052RiKrbvg1fkCDPbRHhKM
+	fTRcMSZjz+jFMGouYsCcuAi6CnMZGO9cC7XOFgoqr9ZSYPuwHC5fa6ehzFZLguNxF4amp3k0
+	OC2TFLxy1JDQmJVBwZ2BAhr6R8wEmN2DDLy1mzDc03tsKT8mKKjOsGNIuXkfQ3PbMwTlZz5j
+	sFpaaKh0uzCUWg0E/L5dhaAr8xsDp9JHGbiSlIkg7VQOCfr2ABj7lUdv3shXugYJXl96hLeN
+	mEj+ZQHHP8ntYHh9+QeGN1nj+dLCZfyNsj7M5w+5Kd5adJbmrUPZDJ/6rRnzA/X1DF9zaYzk
+	u5uNOGzeXvGmCCFGmSBoVgfvF0fpPY/F9s45esueiBJRsTQV+Yg4dh33M6eH8jLNLuZaW0cJ
+	L/uyC7jSjK9Te4J1ibmb9du8PIvdwpUZJkgvk+wizvm5F3lZwgZwpslz+J/Tnyu+Z5/y+LCB
+	XFvPwFRG6sk8S85lziOxCU0rQr5KdYJKrowJWKWNjtKplUdXHTyssiJPXczHx7Meo+Gm7RWI
+	FSHZdEkjHaSQUvIErU5VgTgRIfOVVJ1er5BKIuS6Y4Lm8D5NfIygrUDzRKRsjiQ0XNgvZSPl
+	cUK0IMQKmv9XLPLxS0TzU+Mz2yJ3q3dInoc9igy+tLh17gVX9C+V0+/hurDw6tklNUtXH/z+
+	8d2T7ukvst8+HRhO+ap4/V434Y6YDE173rGgLbbhnMJf6W/7w/osXFG+YX3gp5kh9Z2Gh6qK
+	QMnWyiXGL/kndHvs4TmO6iHZiZ2KQ7K6Ax1ESHRCfvBFC4qQykhtlHztMkKjlf8FVpLjJyoD
+	AAA=
 X-CFilter-Loop: Reflected
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -130,108 +131,97 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 
-Wrapped the base APIs for easier annotation on wait and event. Start
-with supporting waiters on each single event. More general support for
-multiple events is a future work. Do more when the need arises.
-
-How to annotate (the simplest way):
-
-1. Initaialize a map for the interesting wait.
-
-   /*
-    * Recommand to place along with the wait instance.
-    */
-   struct dept_map my_wait;
-
-   /*
-    * Recommand to place in the initialization code.
-    */
-   sdt_map_init(&my_wait);
-
-2. Place the following at the wait code.
-
-   sdt_wait(&my_wait);
-
-3. Place the following at the event code.
-
-   sdt_event(&my_wait);
-
-That's it!
+Wrapped the base APIs for easier annotation on typical lock.
 
 Signed-off-by: Byungchul Park <byungchul@sk.com>
 ---
- include/linux/dept_sdt.h | 62 ++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 62 insertions(+)
- create mode 100644 include/linux/dept_sdt.h
+ include/linux/dept_ldt.h | 77 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 77 insertions(+)
+ create mode 100644 include/linux/dept_ldt.h
 
-diff --git a/include/linux/dept_sdt.h b/include/linux/dept_sdt.h
+diff --git a/include/linux/dept_ldt.h b/include/linux/dept_ldt.h
 new file mode 100644
-index 000000000000..12a793b90c7e
+index 000000000000..062613e89fc3
 --- /dev/null
-+++ b/include/linux/dept_sdt.h
-@@ -0,0 +1,62 @@
++++ b/include/linux/dept_ldt.h
+@@ -0,0 +1,77 @@
 +/* SPDX-License-Identifier: GPL-2.0 */
 +/*
-+ * Single-event Dependency Tracker
++ * Lock Dependency Tracker
 + *
 + * Started by Byungchul Park <max.byungchul.park@gmail.com>:
 + *
 + *  Copyright (c) 2020 LG Electronics, Inc., Byungchul Park
 + */
 +
-+#ifndef __LINUX_DEPT_SDT_H
-+#define __LINUX_DEPT_SDT_H
++#ifndef __LINUX_DEPT_LDT_H
++#define __LINUX_DEPT_LDT_H
 +
-+#include <linux/kernel.h>
 +#include <linux/dept.h>
 +
 +#ifdef CONFIG_DEPT
-+#define sdt_map_init(m)							\
++#define LDT_EVT_L			1UL
++#define LDT_EVT_R			2UL
++#define LDT_EVT_W			1UL
++#define LDT_EVT_RW			(LDT_EVT_R | LDT_EVT_W)
++#define LDT_EVT_ALL			(LDT_EVT_L | LDT_EVT_RW)
++
++#define ldt_init(m, k, su, n)		dept_map_init(m, k, su, n)
++#define ldt_lock(m, sl, t, n, i)					\
 +	do {								\
-+		static struct dept_key __key;				\
-+		dept_map_init(m, &__key, 0, #m);			\
++		if (n)							\
++			dept_ecxt_enter_nokeep(m);			\
++		else if (t)						\
++			dept_ecxt_enter(m, LDT_EVT_L, i, "trylock", "unlock", sl);\
++		else {							\
++			dept_wait(m, LDT_EVT_L, i, "lock", sl);		\
++			dept_ecxt_enter(m, LDT_EVT_L, i, "lock", "unlock", sl);\
++		}							\
 +	} while (0)
 +
-+#define sdt_map_init_key(m, k)		dept_map_init(m, k, 0, #m)
-+
-+#define sdt_wait(m)							\
++#define ldt_rlock(m, sl, t, n, i, q)					\
 +	do {								\
-+		dept_request_event(m);					\
-+		dept_wait(m, 1UL, _THIS_IP_, __func__, 0);		\
++		if (n)							\
++			dept_ecxt_enter_nokeep(m);			\
++		else if (t)						\
++			dept_ecxt_enter(m, LDT_EVT_R, i, "read_trylock", "read_unlock", sl);\
++		else {							\
++			dept_wait(m, q ? LDT_EVT_RW : LDT_EVT_W, i, "read_lock", sl);\
++			dept_ecxt_enter(m, LDT_EVT_R, i, "read_lock", "read_unlock", sl);\
++		}							\
 +	} while (0)
 +
-+/*
-+ * sdt_might_sleep() and its family will be committed in __schedule()
-+ * when it actually gets to __schedule(). Both dept_request_event() and
-+ * dept_wait() will be performed on the commit.
-+ */
-+
-+/*
-+ * Use the code location as the class key if an explicit map is not used.
-+ */
-+#define sdt_might_sleep_start(m)					\
++#define ldt_wlock(m, sl, t, n, i)					\
 +	do {								\
-+		struct dept_map *__m = m;				\
-+		static struct dept_key __key;				\
-+		dept_stage_wait(__m, __m ? NULL : &__key, _THIS_IP_, __func__);\
++		if (n)							\
++			dept_ecxt_enter_nokeep(m);			\
++		else if (t)						\
++			dept_ecxt_enter(m, LDT_EVT_W, i, "write_trylock", "write_unlock", sl);\
++		else {							\
++			dept_wait(m, LDT_EVT_RW, i, "write_lock", sl);	\
++			dept_ecxt_enter(m, LDT_EVT_W, i, "write_lock", "write_unlock", sl);\
++		}							\
 +	} while (0)
 +
-+#define sdt_might_sleep_end()		dept_clean_stage()
++#define ldt_unlock(m, i)		dept_ecxt_exit(m, LDT_EVT_ALL, i)
 +
-+#define sdt_ecxt_enter(m)		dept_ecxt_enter(m, 1UL, _THIS_IP_, "start", "event", 0)
-+#define sdt_event(m)			dept_event(m, 1UL, _THIS_IP_, __func__)
-+#define sdt_ecxt_exit(m)		dept_ecxt_exit(m, 1UL, _THIS_IP_)
++#define ldt_downgrade(m, i)						\
++	do {								\
++		if (dept_ecxt_holding(m, LDT_EVT_W))			\
++			dept_map_ecxt_modify(m, LDT_EVT_W, NULL, LDT_EVT_R, i, "downgrade", "read_unlock", -1);\
++	} while (0)
++
++#define ldt_set_class(m, n, k, sl, i)	dept_map_ecxt_modify(m, LDT_EVT_ALL, k, 0UL, i, "lock_set_class", "(any)unlock", sl)
 +#else /* !CONFIG_DEPT */
-+#define sdt_map_init(m)			do { } while (0)
-+#define sdt_map_init_key(m, k)		do { (void)(k); } while (0)
-+#define sdt_wait(m)			do { } while (0)
-+#define sdt_might_sleep_start(m)	do { } while (0)
-+#define sdt_might_sleep_end()		do { } while (0)
-+#define sdt_ecxt_enter(m)		do { } while (0)
-+#define sdt_event(m)			do { } while (0)
-+#define sdt_ecxt_exit(m)		do { } while (0)
++#define ldt_init(m, k, su, n)		do { (void)(k); } while (0)
++#define ldt_lock(m, sl, t, n, i)	do { } while (0)
++#define ldt_rlock(m, sl, t, n, i, q)	do { } while (0)
++#define ldt_wlock(m, sl, t, n, i)	do { } while (0)
++#define ldt_unlock(m, i)		do { } while (0)
++#define ldt_downgrade(m, i)		do { } while (0)
++#define ldt_set_class(m, n, k, sl, i)	do { } while (0)
 +#endif
-+#endif /* __LINUX_DEPT_SDT_H */
++#endif /* __LINUX_DEPT_LDT_H */
 -- 
 2.17.1
 
