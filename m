@@ -1,104 +1,84 @@
-Return-Path: <linux-ext4+bounces-2396-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2397-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC6DE8C009C
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 17:08:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFF358C00D1
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 17:20:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2289287FAA
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 15:08:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D4AC1C23FC2
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 15:20:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621CF127B57;
-	Wed,  8 May 2024 15:08:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B436127E2B;
+	Wed,  8 May 2024 15:20:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="T7xueD9W"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="gbh4kqLN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786061272BB;
-	Wed,  8 May 2024 15:08:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D67F126F0A;
+	Wed,  8 May 2024 15:20:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715180884; cv=none; b=nZscJYOpU709RsCX9Ybwd8L4pKcSUPUzeU0zCl8wCPJs9LoHwh52gL0yVlkiovi3+lVVC+40xMC2wtq2Hkdux9SnLF64VgZN00neh7y6mHfb/tIS6+zo3LhmxSoSeVUdoFR6t4k8VQaF9bWT9uY0iYmxL0FNoF398Xe/UW0Dm9k=
+	t=1715181626; cv=none; b=i8Xaiou2Hoy76/fWdEuJmQNo1pdmnDj2zVnyDdhWxv7XmJPWseRzMui9m7eeLSc4lsyID+B6exdZMAUS78urrj+W3iRTQs76p1o7J+eqoiksTycyw3p/bT1QZpNZTt4ZVgMM7Ii7c7cIfgsa9Xn/qTR+t/8M7onkRtGlLVesvz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715180884; c=relaxed/simple;
-	bh=8hHikQJgKvHrF6+f83Hf7hW04VKGZyT8FIIZHg2JC88=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=axZkfccJO8olAB2dU8ydhxfDZHecT5QRcJaANBJSKwKepbcirsDackmjrziOO3qZ7ZC2zzxI4Ph32caR3r1EVBpK1zBPK7iuxRx0DPG4jKtQCT0hsEjTUooF+EVspdCZjPddEYZfOT1dD2m7UlgK3MLFCR0KNcNA+BZSoyVnkQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=T7xueD9W; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1715180541; x=1715785341; i=markus.elfring@web.de;
-	bh=8hHikQJgKvHrF6+f83Hf7hW04VKGZyT8FIIZHg2JC88=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=T7xueD9We+EV7NMRzFieIVmDcOAqa4EH2FwMGOtod5U3f+vdiEfRzeEceAtDB4k1
-	 qjdSON+Z9a8WiqlOKBl9unTGiOms/7K4M4a3/JbKukPFmDlX/FPQctUFnPD/YNPsi
-	 CEbnrmmgNudxryF7mYYMdhubz0pOKC49EFNmEDgxQYmMtT786faX9+P6V265np4/p
-	 rxTPBLypBogyJuNHUqm42cHter328/Jrs4KNi97ABDYwlLGQQx5QG0NJSqLJG8k1x
-	 fLDkXQbz0NjML8xrWwJMULHD0OPCh64Y9oajsWG8E1VLpq4Csd/uMR3yfJ+9Z3Sr1
-	 Bx/uHhj4PtczwGtMhg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.89.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1M7Nmq-1rzDYf18Ga-007qvg; Wed, 08
- May 2024 17:02:21 +0200
-Message-ID: <34c08d45-a0fe-49c9-b7ba-de6a79d46ebc@web.de>
-Date: Wed, 8 May 2024 17:02:14 +0200
+	s=arc-20240116; t=1715181626; c=relaxed/simple;
+	bh=RfnuiEkMHZizlL+1XOx2zPuV0PNycPXg1cxvzumtMVo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jFcDg9yaiAaVRSnes0CI6LobiEFGO8322tMn5BFe3D4KwEIegl+stfhUv+MaycRvrPrERxZJsW7pCqNp3MOPfqI+dJnQ/MUUtjewLLUtAd5H3QK+5JlXNjNhasq786SjYvWan+J6kQNiKQ46Fl5Nd4G/RFgQzWKh8E7ZH6ACyl8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=gbh4kqLN; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=e3hS5Fl8mwjnXrAA74G4mvzbNmBfp9o+MHe2MBuH9EA=; b=gbh4kqLN6hHkqAnXPraqwObX/q
+	XH0dpEaHVbIbVyoDUCpU6ZwUJRm9Z5K2MB4FAAi+S++GX9iwBiyRh7KnJD0UNuAd5/mW7T/rAEHFW
+	WIeOdC9ViDfjlbkGituNCsA2qJ4gn3088+BoDuldAcamu6xCxTPViUmJoruKKEF7XQhztRZAr17Tl
+	Q4iHUIZEMg8cH8Hwwb5cdPMhqi0q+Zn09iyPmXIN1uH1ExdCVmo3GDFY6oYeH+zgnDzliR/pUxUvp
+	ROT0Z1Nyn20TGHYTTyGdGapJOgGZySGG4cFnq780gD3HJoUm3QIW0tdjS9u6rwGp+hPuC5xryI9c+
+	um2O+FEg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s4j5f-0000000Fueq-43ch;
+	Wed, 08 May 2024 15:20:20 +0000
+Date: Wed, 8 May 2024 16:20:19 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 0/5] Convert ext4's mballoc to use folios
+Message-ID: <ZjuYM5ElTeBrXW4D@casper.infradead.org>
+References: <20240416172900.244637-1-willy@infradead.org>
+ <171512302195.3602678.13595191031798220265.b4-ty@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
- Ritesh Harjani <ritesh.list@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
- Yu Kuai <yukuai3@huawei.com>, Zhang Yi <yi.zhang@huaweicloud.com>,
- Zhihao Cheng <chengzhihao1@huawei.com>
-References: <20240508061220.967970-3-yi.zhang@huaweicloud.com>
-Subject: Re: [PATCH v3 02/10] ext4: check the extent status again before
- inserting delalloc block
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240508061220.967970-3-yi.zhang@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:P3bhoIr5hklyJjfO6yQONug9t3uau7D9hknXlpPWcdyJLCwtBz1
- X0JBciOtO6QFCY7nGG5nZsd7eCMgfgF1BY/EWkLZmoSNxqatE6jLKbZHvODMOiVHk9vyeSf
- px0/lWQZd/oRx+GEVIfwrxGU1LvV4TdL1a2i2L9zyxlbdwor7gT8udJs1p29ZZh4BzMyuhM
- 94Gv6AkPsMtR9+OymzzYQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:Zd6Rz4IAoAQ=;IlMHiD3mE+kv8VkXfvELousQr3H
- czyT66RkzWwCJlAFrIUXiduc37YMO7ARkFJvMkhsR3GF6GWJpdxdfbkTd40R4vRcTZzHeJGds
- 7k2ZECVfYyibjABGf6rfhPbmRDPJC21HYlEJvbnjqc1tyxeh8s9eIY+CSBtjJb2m5uGI+buoM
- z/IuFRdiaJDxVLA2zi0u7lnJHWWQuLlnHwNS68sbXfxbYlTTBWc+5Su0TQofcyEk9mZDcczlg
- 3rk8huvYYL7fhpqfTUxU3GrjRpBK3JCT/7tBJzrN5ExF8jBjvmUqZOavP8B5USLYTi0JGFbJw
- 0yJORcSNuRi/h1gPO6MO8oqYmUzZXMFUPUzXlO/1H7Z3u3ndstyMnve7oYNJdYkQGn43xKC/K
- iUhUT9UiPmfRqwhsherXWr8oYMYV7SjPE7w6YkbEG48we7fiE4R76DBH/JRYT3FHkxlyUaO2Y
- d1wRq5rFN8W52rmgUeXXRbO7b1SuB+EARlk64zHuzCXZxCPx0rwafMQiRpFgmf5rw0eVJ+2DQ
- irkC1wQPTKpXqHtuN0xkn45bPRwKo11J4YctfIhFhDV1JgKPfW3uVbSW6SR2xSAVNvBojOVtZ
- zogXYiJy7bcKORDYgEbsramlT5PkN1uxq/3WGYf+KXwo0gKrEvg8UL5K680uv3r5unmZEMuWp
- 3NtF/yfuE6i7XGGe6GH7jwPhvzOpBENG4GFPe2MDy8NNOxSTD2O4xG4s8Lpyu1WRKSJ9A9vu7
- 7Sigyxzla53lTMRARvHAxB3FKTrI0V9ivW41eDEQy831hoLmvmyckiQiB7vTve6OA2esnY7HM
- lYyhc2uSlT4qtWv/bfXZLADLgTTHolUjJyyujZRLP6Ob0=
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171512302195.3602678.13595191031798220265.b4-ty@mit.edu>
 
-=E2=80=A6
-> This patch fixes the problem by looking =E2=80=A6
+On Tue, May 07, 2024 at 07:03:53PM -0400, Theodore Ts'o wrote:
+> 
+> On Tue, 16 Apr 2024 18:28:53 +0100, Matthew Wilcox (Oracle) wrote:
+> > These pages are stored in the page cache, so they're really folios.
+> > Convert the whole file from pages to folios.
+> > 
+> > Matthew Wilcox (Oracle) (5):
+> >   ext4: Convert bd_bitmap_page to bd_bitmap_folio
+> >   ext4: Convert bd_buddy_page to bd_buddy_folio
+> >   ext4: Convert ext4_mb_init_cache() to take a folio
+> >   ext4: Convert ac_bitmap_page to ac_bitmap_folio
+> >   ext4: Convert ac_buddy_page to ac_buddy_folio
+> > 
+> > [...]
+> 
+> Applied, thanks!
 
-Will corresponding imperative wordings be desirable for an improved change=
- description?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.9-rc7#n94
-
-Regards,
-Markus
+Thanks!  Can you also add 20240420025029.2166544-11-willy@infradead.org
 
