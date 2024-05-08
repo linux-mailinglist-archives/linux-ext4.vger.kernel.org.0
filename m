@@ -1,196 +1,104 @@
-Return-Path: <linux-ext4+bounces-2395-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2396-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3B0B8BFECA
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 15:34:01 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EC6DE8C009C
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 17:08:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 209851C2183B
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 13:34:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B2289287FAA
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 May 2024 15:08:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7320B79DD4;
-	Wed,  8 May 2024 13:33:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 621CF127B57;
+	Wed,  8 May 2024 15:08:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YIhpTii/"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="T7xueD9W"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F28EB5B1E4
-	for <linux-ext4@vger.kernel.org>; Wed,  8 May 2024 13:33:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 786061272BB;
+	Wed,  8 May 2024 15:08:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715175237; cv=none; b=ApPpR7jJjQETLit4L+sYh0rEdcAabnqa9Sz/8xHGwZ3okNYUlqfBtvXOC76/sDxMIZ820Wo3uzT8CC0dKXzxrGFcw3QojGQz5IVSACnClXTLStE4uzDz/XmeHNInaNNnU4eGpqdnDPNCMzq8tB/oB35ywQl+SYe7OxaXLQzHVx8=
+	t=1715180884; cv=none; b=nZscJYOpU709RsCX9Ybwd8L4pKcSUPUzeU0zCl8wCPJs9LoHwh52gL0yVlkiovi3+lVVC+40xMC2wtq2Hkdux9SnLF64VgZN00neh7y6mHfb/tIS6+zo3LhmxSoSeVUdoFR6t4k8VQaF9bWT9uY0iYmxL0FNoF398Xe/UW0Dm9k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715175237; c=relaxed/simple;
-	bh=H/F1BuQlOAQYpDxDWmRZP2hdg93ICxm/w+kqOMyAM1s=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=ASMd9qUSrcW4jAE9nadcUnejgTyBC96Wg6SX2EK1vfNr7NbTkl2pq5xNjFr2d8Euc7V0G4pO5IR2LwSdORO2AHIdFRkF0RRodltgTkWbNgfqnu7KML6YLZpBTE/twJR7RMKoyBdvT4bjYj8tX6wxS2OvMq6GoXc+XP8YUy7iwRE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YIhpTii/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 8B3A7C4AF17
-	for <linux-ext4@vger.kernel.org>; Wed,  8 May 2024 13:33:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715175236;
-	bh=H/F1BuQlOAQYpDxDWmRZP2hdg93ICxm/w+kqOMyAM1s=;
-	h=From:To:Subject:Date:From;
-	b=YIhpTii/P6e4Pfcc5h0KgvgxC4UqH4vcIc0K25MENeZzrQeGTKmlhPLa5K1eDZyFZ
-	 iG1MHXRS8ft4B0gvVYWvQPZQkaP9kEXE1CQInRqPSs11+4ObACIq81Xm+dJzG6BZ1J
-	 4FAPIgolDCPPpTlVTjQT9b4r5uzkLqKn7DipIit1GLFHxUjEBxzu4eLSUlkejEFL9S
-	 E89KBNApXbShe+MJrUJ2yn5UjOJhj9pmJKXfeTUxfavCcLeNvKfQDaFN6y7nIteD2O
-	 DPXh1PvyVPF5YPSY+rrVWEj50PbuY7x6BdJ7pXZj8DeeVx0z9Av0OrGSMrWpg6viTk
-	 oUuhJHBHwr0Rg==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 7F79DC53B6A; Wed,  8 May 2024 13:33:56 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 218820] New: The empty file occupies incorrect blocks
-Date: Wed, 08 May 2024 13:33:56 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: zhangchi_seg@smail.nju.edu.cn
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
- op_sys bug_status bug_severity priority component assigned_to reporter
- cf_regression attachments.created
-Message-ID: <bug-218820-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1715180884; c=relaxed/simple;
+	bh=8hHikQJgKvHrF6+f83Hf7hW04VKGZyT8FIIZHg2JC88=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=axZkfccJO8olAB2dU8ydhxfDZHecT5QRcJaANBJSKwKepbcirsDackmjrziOO3qZ7ZC2zzxI4Ph32caR3r1EVBpK1zBPK7iuxRx0DPG4jKtQCT0hsEjTUooF+EVspdCZjPddEYZfOT1dD2m7UlgK3MLFCR0KNcNA+BZSoyVnkQA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=T7xueD9W; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1715180541; x=1715785341; i=markus.elfring@web.de;
+	bh=8hHikQJgKvHrF6+f83Hf7hW04VKGZyT8FIIZHg2JC88=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=T7xueD9We+EV7NMRzFieIVmDcOAqa4EH2FwMGOtod5U3f+vdiEfRzeEceAtDB4k1
+	 qjdSON+Z9a8WiqlOKBl9unTGiOms/7K4M4a3/JbKukPFmDlX/FPQctUFnPD/YNPsi
+	 CEbnrmmgNudxryF7mYYMdhubz0pOKC49EFNmEDgxQYmMtT786faX9+P6V265np4/p
+	 rxTPBLypBogyJuNHUqm42cHter328/Jrs4KNi97ABDYwlLGQQx5QG0NJSqLJG8k1x
+	 fLDkXQbz0NjML8xrWwJMULHD0OPCh64Y9oajsWG8E1VLpq4Csd/uMR3yfJ+9Z3Sr1
+	 Bx/uHhj4PtczwGtMhg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.89.95]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1M7Nmq-1rzDYf18Ga-007qvg; Wed, 08
+ May 2024 17:02:21 +0200
+Message-ID: <34c08d45-a0fe-49c9-b7ba-de6a79d46ebc@web.de>
+Date: Wed, 8 May 2024 17:02:14 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+To: Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+ Ritesh Harjani <ritesh.list@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
+ Yu Kuai <yukuai3@huawei.com>, Zhang Yi <yi.zhang@huaweicloud.com>,
+ Zhihao Cheng <chengzhihao1@huawei.com>
+References: <20240508061220.967970-3-yi.zhang@huaweicloud.com>
+Subject: Re: [PATCH v3 02/10] ext4: check the extent status again before
+ inserting delalloc block
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240508061220.967970-3-yi.zhang@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:P3bhoIr5hklyJjfO6yQONug9t3uau7D9hknXlpPWcdyJLCwtBz1
+ X0JBciOtO6QFCY7nGG5nZsd7eCMgfgF1BY/EWkLZmoSNxqatE6jLKbZHvODMOiVHk9vyeSf
+ px0/lWQZd/oRx+GEVIfwrxGU1LvV4TdL1a2i2L9zyxlbdwor7gT8udJs1p29ZZh4BzMyuhM
+ 94Gv6AkPsMtR9+OymzzYQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:Zd6Rz4IAoAQ=;IlMHiD3mE+kv8VkXfvELousQr3H
+ czyT66RkzWwCJlAFrIUXiduc37YMO7ARkFJvMkhsR3GF6GWJpdxdfbkTd40R4vRcTZzHeJGds
+ 7k2ZECVfYyibjABGf6rfhPbmRDPJC21HYlEJvbnjqc1tyxeh8s9eIY+CSBtjJb2m5uGI+buoM
+ z/IuFRdiaJDxVLA2zi0u7lnJHWWQuLlnHwNS68sbXfxbYlTTBWc+5Su0TQofcyEk9mZDcczlg
+ 3rk8huvYYL7fhpqfTUxU3GrjRpBK3JCT/7tBJzrN5ExF8jBjvmUqZOavP8B5USLYTi0JGFbJw
+ 0yJORcSNuRi/h1gPO6MO8oqYmUzZXMFUPUzXlO/1H7Z3u3ndstyMnve7oYNJdYkQGn43xKC/K
+ iUhUT9UiPmfRqwhsherXWr8oYMYV7SjPE7w6YkbEG48we7fiE4R76DBH/JRYT3FHkxlyUaO2Y
+ d1wRq5rFN8W52rmgUeXXRbO7b1SuB+EARlk64zHuzCXZxCPx0rwafMQiRpFgmf5rw0eVJ+2DQ
+ irkC1wQPTKpXqHtuN0xkn45bPRwKo11J4YctfIhFhDV1JgKPfW3uVbSW6SR2xSAVNvBojOVtZ
+ zogXYiJy7bcKORDYgEbsramlT5PkN1uxq/3WGYf+KXwo0gKrEvg8UL5K680uv3r5unmZEMuWp
+ 3NtF/yfuE6i7XGGe6GH7jwPhvzOpBENG4GFPe2MDy8NNOxSTD2O4xG4s8Lpyu1WRKSJ9A9vu7
+ 7Sigyxzla53lTMRARvHAxB3FKTrI0V9ivW41eDEQy831hoLmvmyckiQiB7vTve6OA2esnY7HM
+ lYyhc2uSlT4qtWv/bfXZLADLgTTHolUjJyyujZRLP6Ob0=
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218820
+=E2=80=A6
+> This patch fixes the problem by looking =E2=80=A6
 
-            Bug ID: 218820
-           Summary: The empty file occupies incorrect blocks
-           Product: File System
-           Version: 2.5
-          Hardware: All
-                OS: Linux
-            Status: NEW
-          Severity: normal
-          Priority: P3
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: zhangchi_seg@smail.nju.edu.cn
-        Regression: No
+Will corresponding imperative wordings be desirable for an improved change=
+ description?
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/submitting-patches.rst?h=3Dv6.9-rc7#n94
 
-Created attachment 306275
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D306275&action=3Dedit
-reproduce.c
-
-Hi,
-
-I mounted an ext4 image, created a file, and wrote to it, but the blocks
-occupied by this file were incorrect after I `truncate` it. I can reproduce
-this with the latest linux kernel
-https://git.kernel.org/torvalds/t/linux-6.9-rc7.tar.gz
-
-
-The following is the triggering script:
-```
-dd if=3D/dev/zero of=3Dext4-0.img bs=3D1M count=3D120
-mkfs.ext4 ext4-0.img
-g++ -static reproduce.c
-losetup /dev/loop0 ext4-0.img
-mkdir /root/mnt
-./a.out
-stat /root/mnt/a
-```
-
-After run the script, you will get the following outputs:
-```
-  File: /root/mnt/a
-  Size: 0               Blocks: 82         IO Block: 1024   regular empty f=
-ile
-Device: 700h/1792d      Inode: 12          Links: 1
-Access: (0755/-rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
-Context: system_u:object_r:unlabeled_t:s0
-Access: 2024-05-08 11:47:48.000000000 +0000
-Modify: 2024-05-08 11:47:48.000000000 +0000
-Change: 2024-05-08 11:47:48.000000000 +0000
- Birth: -
-```
-
-The size of file `a` is 0, yet it occupies 82 blocks. Normally, it should o=
-nly
-occupy 2 blocks.
-
-The contents of `reproduce.c` :
-```
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
-#include <dirent.h>
-
-#include <string>
-
-#include <sys/mount.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <sys/wait.h>
-#include <sys/xattr.h>
-#include <sys/mount.h>
-#include <sys/statfs.h>
-#include <fcntl.h>
-
-#define ALIGN 4096
-
-void* align_alloc(size_t size) {
-    void *ptr =3D NULL;
-    int ret =3D posix_memalign(&ptr, ALIGN, size);
-    if (ret) {
-      printf("align error\n");
-      exit(1);
-    }
-    return ptr;
-}
-
-int main()
-{
-    mount("/dev/loop0", "/root/mnt", "ext4", 0, "");
-
-    creat("/root/mnt/a", S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-    int fd =3D open("/root/mnt/a", O_RDWR);
-    mount(NULL, "/root/mnt/", NULL, MS_REMOUNT, "nodelalloc");
-    sync();
-
-    char *buf =3D (char*)align_alloc(4096*20);
-    memset(buf, 'a' + 15, 4096*20);
-    write(fd, buf, 4096*10);
-
-    truncate("/root/mnt/a", 0);
-    close(fd);
-    return 0;
-}
-```
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Regards,
+Markus
 
