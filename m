@@ -1,139 +1,160 @@
-Return-Path: <linux-ext4+bounces-2426-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2427-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5B178C132A
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 18:41:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AB418C13F6
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 19:24:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A1C41F21E5E
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 16:41:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6EC01C21A1D
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 17:23:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ECC1BE66;
-	Thu,  9 May 2024 16:41:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7E511737;
+	Thu,  9 May 2024 17:23:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="pOwpAud7"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PVQeG805"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E99B48F7A
-	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 16:40:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C748F44;
+	Thu,  9 May 2024 17:23:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715272859; cv=none; b=szyOhWSXwMzV34X9aPk7T4OGsV8gbEsP5BXEtx+LvYDTRf3pJUEwmVPfcdx+uSnXjXrcRdSPMb51fRig4aQRXIxW3dDyxuMzjIPQGYfboQzXelogppXZfU151iFHMdhOM0uWheC0yqho7STdRdANrpG3FdCGd8judMOqVsDdl/Y=
+	t=1715275432; cv=none; b=sO83ZCm6P5vKjjxlzddjj67B4a0CoO49aHJCeWK7a50GQI8ZNBOv5huOXUxfhiDAt0Zd2I/PrFGmWdxeeM6Mia7IkV2yqQ6vhiSnAeTJOuaGwSdOEoLzN0ByZWJJB+5187jDpZ9far3irGc8qHgD0goZgHMPGX2MpLTa2El6S9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715272859; c=relaxed/simple;
-	bh=f8t8eIDeydSwNSMhQRpvtz/+E2VzWPKam45G3zjfMkI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Xdg9/H4x4LsPyvLi+QvRUCFU0EBsQG6VdhxvlsGS2uba5b65wBp67qzMfgEvw/ZjSrkL9x1wAUpsL9Fu48msYJdW4RzG9GhJS+Yv6o9vf55xYAX5Yc74g3k3K+C2+RGPuBUABraBFA5qT+obumO5tpFaBzogsG/MSGjl+mbjljE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=pOwpAud7; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 449GdrOL029481
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 9 May 2024 12:39:54 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1715272797; bh=vMIKuWYSq6W8VCcJbXYTnhjXEJwg1E/gV4Gfl9NNKDU=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=pOwpAud74hdbMcBM1DcxtS9z6wpX6SIlAnGfEkVVdZdSTqp5o+nl2yfq1E0t50vpQ
-	 jzrdEjCwAa51cW8jPODvFzXuSLxZ/0kxWQu7ZVgxycgnagtVvjuRAb56bxxfUkcixb
-	 qiFX7XnVsxoyQrK5H51DzT3NqOxEeTt+FI5fS14HSrcQkFrMC8moBgtO28xnkOrOAy
-	 GPJZLGSn8Qt8w+hJoO7NhMk1br1JWFI8WExAAVDnYqEP6ntjKOSf58Ed1GeX7Y/f0z
-	 81IQKgTZPRzDwqx6YWbzGPA6VZ6zg5uAd5FOOEcPfqWf2/U9VpGG0pDHhfTX79LcIB
-	 RfRz7GO3b9i5g==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 94F1115C026D; Thu, 09 May 2024 12:39:53 -0400 (EDT)
-Date: Thu, 9 May 2024 12:39:53 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Luis Henriques <luis.henriques@linux.dev>
-Cc: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
-        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
-        willy@infradead.org, zokeefe@google.com, yi.zhang@huawei.com,
-        chengzhihao1@huawei.com, yukuai3@huawei.com,
-        wangkefeng.wang@huawei.com
+	s=arc-20240116; t=1715275432; c=relaxed/simple;
+	bh=0ugMAx4PhzHKyv40ZuZGgNyOkcOW1v642VlMhmrdgvY=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Jlcmm+3sR8VpXW+8CfvL2wWxtILjHF59xPMDUnuvGQ3Oek9vqiOIR3uCpBc5CUVYYKVHyEycqYq1vMty8WGCNZjTXHa0JAFiYc8NWa/FUTCrQ+YMRIx5VAl39Sy5xlExc642Od4VfuCcXUyfk5rCqAKJvPDXS4jjv0Ws0Oc5fQQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PVQeG805; arc=none smtp.client-ip=95.215.58.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715275427;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Q5NwpyR9OTSf8oGKU+ne7+xoirIi77/iJlT2WIV8ttY=;
+	b=PVQeG805+z+rJd0kTIjdCzK2cBySgUA9thg2xKhNXMZcGZUpBLTZNP3FCARPpKo1Q2tRBR
+	UpdM1F7kDC2VbJ+YFTS7gITG/HiZbizfrTU/PQ+bWzgYoS27DCpOdfcPGCm5AD68HNxTX8
+	WTP771jM/gN3ebtg173XF8De52UvCBo=
+From: Luis Henriques <luis.henriques@linux.dev>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Luis Henriques <luis.henriques@linux.dev>,  Zhang Yi
+ <yi.zhang@huaweicloud.com>,  linux-ext4@vger.kernel.org,
+  linux-fsdevel@vger.kernel.org,  linux-mm@kvack.org,
+  linux-kernel@vger.kernel.org,  adilger.kernel@dilger.ca,  jack@suse.cz,
+  ritesh.list@gmail.com,  hch@infradead.org,  djwong@kernel.org,
+  willy@infradead.org,  zokeefe@google.com,  yi.zhang@huawei.com,
+  chengzhihao1@huawei.com,  yukuai3@huawei.com,  wangkefeng.wang@huawei.com
 Subject: Re: [PATCH v3 03/26] ext4: correct the hole length returned by
  ext4_map_blocks()
-Message-ID: <20240509163953.GI3620298@mit.edu>
+In-Reply-To: <20240509163953.GI3620298@mit.edu> (Theodore Ts'o's message of
+	"Thu, 9 May 2024 12:39:53 -0400")
 References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
- <20240127015825.1608160-4-yi.zhang@huaweicloud.com>
- <87zfszuib1.fsf@brahms.olymp>
+	<20240127015825.1608160-4-yi.zhang@huaweicloud.com>
+	<87zfszuib1.fsf@brahms.olymp> <20240509163953.GI3620298@mit.edu>
+Date: Thu, 09 May 2024 18:23:44 +0100
+Message-ID: <87h6f6vqzj.fsf@brahms.olymp>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87zfszuib1.fsf@brahms.olymp>
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-On Thu, May 09, 2024 at 04:16:34PM +0100, Luis Henriques wrote:
-> 
-> It's looks like it's easy to trigger an infinite loop here using fstest
-> generic/039.  If I understand it correctly (which doesn't happen as often
-> as I'd like), this is due to an integer overflow in the 'if' condition,
-> and should be fixed with the patch below.
+On Thu 09 May 2024 12:39:53 PM -04, Theodore Ts'o wrote;
 
-Thanks for the report.  However, I can't reproduce the failure, and
-looking at generic/039, I don't see how it could be relevant to the
-code path in question.  Generic/039 creates a test symlink with two
-hard links in the same directory, syncs the file system, and then
-removes one of the hard links, and then drops access to the block
-device using dmflakey.  So I don't see how the extent code would be
-involved at all.  Are you sure that you have the correct test listed?
+> On Thu, May 09, 2024 at 04:16:34PM +0100, Luis Henriques wrote:
+>> 
+>> It's looks like it's easy to trigger an infinite loop here using fstest
+>> generic/039.  If I understand it correctly (which doesn't happen as often
+>> as I'd like), this is due to an integer overflow in the 'if' condition,
+>> and should be fixed with the patch below.
+>
+> Thanks for the report.  However, I can't reproduce the failure, and
+> looking at generic/039, I don't see how it could be relevant to the
+> code path in question.  Generic/039 creates a test symlink with two
+> hard links in the same directory, syncs the file system, and then
+> removes one of the hard links, and then drops access to the block
+> device using dmflakey.  So I don't see how the extent code would be
+> involved at all.  Are you sure that you have the correct test listed?
 
-Looking at the code in question in fs/ext4/extents.c:
+Yep, I just retested and it's definitely generic/039.  I'm using a simple
+test environment, with virtme-ng.
 
-again:
-	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
-				  hole_start + len - 1, &es);
-	if (!es.es_len)
-		goto insert_hole;
+> Looking at the code in question in fs/ext4/extents.c:
+>
+> again:
+> 	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
+> 				  hole_start + len - 1, &es);
+> 	if (!es.es_len)
+> 		goto insert_hole;
+>
+>   	 * There's a delalloc extent in the hole, handle it if the delalloc
+>   	 * extent is in front of, behind and straddle the queried range.
+>   	 */
+>  -	if (lblk >= es.es_lblk + es.es_len) {
+>  +	if (lblk >= ((__u64) es.es_lblk) + es.es_len) {
+>   		/*
+>   		 * The delalloc extent is in front of the queried range,
+>   		 * find again from the queried start block.
+> 		len -= lblk - hole_start;
+> 		hole_start = lblk;
+> 		goto again;
+>
+> lblk and es.es_lblk are both __u32.  So the infinite loop is
+> presumably because es.es_lblk + es.es_len has overflowed.  This should
+> never happen(tm), and in fact we have a test for this case which
 
-  	 * There's a delalloc extent in the hole, handle it if the delalloc
-  	 * extent is in front of, behind and straddle the queried range.
-  	 */
- -	if (lblk >= es.es_lblk + es.es_len) {
- +	if (lblk >= ((__u64) es.es_lblk) + es.es_len) {
-  		/*
-  		 * The delalloc extent is in front of the queried range,
-  		 * find again from the queried start block.
-		len -= lblk - hole_start;
-		hole_start = lblk;
-		goto again;
+If I instrument the code, I can see that es.es_len is definitely set to
+EXT_MAX_BLOCKS, which will overflow.
 
-lblk and es.es_lblk are both __u32.  So the infinite loop is
-presumably because es.es_lblk + es.es_len has overflowed.  This should
-never happen(tm), and in fact we have a test for this case which
-*should* have gotten tripped when ext4_es_find_extent_range() calls
-__es_tree_search() in fs/ext4/extents_status.c:
+> *should* have gotten tripped when ext4_es_find_extent_range() calls
+> __es_tree_search() in fs/ext4/extents_status.c:
+>
+> static inline ext4_lblk_t ext4_es_end(struct extent_status *es)
+> {
+> 	BUG_ON(es->es_lblk + es->es_len < es->es_lblk);
+> 	return es->es_lblk + es->es_len - 1;
+> }
+>
+> So the patch is harmless, and I can see how it might fix what you were
+> seeing --- but I'm a bit nervous that I can't reproduce it and the
+> commit description claims that it reproduces easily; and we should
+> have never allowed the entry to have gotten introduced into the
+> extents status tree in the first place, and if it had been introduced,
+> it should have been caught before it was returned by
+> ext4_es_find_extent_range().
+>
+> Can you give more details about the reproducer; can you double check
+> the test id, and how easily you can trigger the failure, and what is
+> the hardware you used to run the test?
 
-static inline ext4_lblk_t ext4_es_end(struct extent_status *es)
-{
-	BUG_ON(es->es_lblk + es->es_len < es->es_lblk);
-	return es->es_lblk + es->es_len - 1;
-}
+So, here's few more details that may clarify, and that I should have added
+to the commit description:
 
-So the patch is harmless, and I can see how it might fix what you were
-seeing --- but I'm a bit nervous that I can't reproduce it and the
-commit description claims that it reproduces easily; and we should
-have never allowed the entry to have gotten introduced into the
-extents status tree in the first place, and if it had been introduced,
-it should have been caught before it was returned by
-ext4_es_find_extent_range().
+When the test hangs, the test is blocked mounting the flakey device:
 
-Can you give more details about the reproducer; can you double check
-the test id, and how easily you can trigger the failure, and what is
-the hardware you used to run the test?
+   mount -t ext4 -o acl,user_xattr /dev/mapper/flakey-test /mnt/scratch
 
-Many thanks,
+which will eventually call into ext4_ext_map_blocks(), triggering the bug.
 
-					- Ted
+Also, some more code instrumentation shows that after the call to
+ext4_ext_find_hole(), the 'hole_start' will be set to '1' and 'len' to
+'0xfffffffe'.  This '0xfffffffe' value is a bit odd, but it comes from the
+fact that, in ext4_ext_find_hole(), the call to
+ext4_ext_next_allocated_block() will return EXT_MAX_BLOCKS and 'len' will
+thus be set to 'EXT_MAX_BLOCKS - 1'.
+
+Does this make sense?
+
+Cheers,
+-- 
+Luis
 
