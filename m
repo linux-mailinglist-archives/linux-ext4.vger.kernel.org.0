@@ -1,122 +1,133 @@
-Return-Path: <linux-ext4+bounces-2424-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2425-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0E8D8C11BF
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 17:13:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 989AE8C11D1
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 17:16:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 995A21F24417
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 15:13:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E04E1F24BAC
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 15:16:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBC515E80C;
-	Thu,  9 May 2024 15:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53B6915ECC1;
+	Thu,  9 May 2024 15:16:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="dgJJeTI4"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tKoN2z+0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BBB1157A41;
-	Thu,  9 May 2024 15:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7161A131750
+	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 15:16:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715267584; cv=none; b=MzR4woCna3AMJTmrl5Mt+aDcu966QpO3iSYyhnKDYj3GY17htC3fWjqRxzWLFaE6SzDyyvsa2zGSH4YoI+tdneX5avsh6Siob8xU66QUqZPdY4JE12BLLkE1A61QWGfnUXpop1z/9ZfuMgOy1NcEgVwOniehwJJwMDBo5A638/Y=
+	t=1715267804; cv=none; b=jCftDY943xyfNj/aDbWTvdQA8zIYSftLm2rmIHw1xiUmgn7xG2SIIWZHlK7savVHAge3PlRd7Z/+iSEUJHmif/7YlK6QWtgZXy5xqQj49y8gPLF3Jwhm7q7iNCGQ8ga3HdXAeMrcyLwPMG7aX2A5PWsJibDG2ejf5UQdKLOCBUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715267584; c=relaxed/simple;
-	bh=8lKKZpJbPGF4Ani9x2yzwoaFUOf2+SAvjrEoKCY/6b8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=LqFrPz2emip760tz/O+bAEPaocavX5CeXBo3tspq3Nmg/AW1VhmXWCYuYK8gysxIyU+YKS9LvxBYm/jksn8/VnX7GdhTGaIOp+9y1HTMKLAHkCYVUtV+6PNfZb2dNKnsC9tvQiWlPMOCV2WhbL7kwfEGptQ1po09jqFWjyvHdqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=dgJJeTI4; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1715267579;
-	bh=8lKKZpJbPGF4Ani9x2yzwoaFUOf2+SAvjrEoKCY/6b8=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=dgJJeTI4VC6HVio0YMhzY2T/au6hlCtrozPI+CNVt9+bbNmx7HV+7eTrkp3qvF7kR
-	 QyNmye2Lkapq9CscALNuaRXLgwOCpbO4sZhMqgJojh4C4+QzYxmTiw5KQ+DfQhLcmv
-	 v2ilcycsTHH47XGOKy93eeD+j6coEkrPM2GFG7Md+k7TM9aX4xvMYmOQCg1INx2coG
-	 BQCTviXy0QnDpUJM1VAMBcgrPnsM8uPSiO/qXBS6do9tGlv0BfaioyLkHUaLWN0NON
-	 8BWw4ahwv4cJSteFjaqjBCktxCjac4BPjx+SkeUUVdKnnXN1N/V6+VQ8XgWYZTKC7I
-	 dL1xcKQoBLx1w==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 80E7737811CD;
-	Thu,  9 May 2024 15:12:58 +0000 (UTC)
-Message-ID: <1c4eae9a-ad82-4a89-9c0e-a0d61a4667f1@collabora.com>
-Date: Thu, 9 May 2024 18:12:57 +0300
+	s=arc-20240116; t=1715267804; c=relaxed/simple;
+	bh=rENpYzuzYep+kKpc+ClGh2Jqy7GxYlD0JOeoKeVYATU=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=WIOfhgSEPIjsQiivtkWJ9Xu31FGH8x8/4R0KJDQctdsnJ7EpmGtXIBqCaZBg6YO16wkB7L1PY5jnjx/5nvfzg47Z0Omvxc8uvUBN5YiV5rKTTRGt1EoEC+hqwI+XJED9JBwaxhYgVR89qJrvXfLVj1LZryb6RzxqOM9vzkTaZuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tKoN2z+0; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1715267799;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=WuV7M9mHf7zLGoXyvtH3Is1VnuTrzUZ1N2ISvLJru+k=;
+	b=tKoN2z+02HEGPxaMBMX19ZneYgaEWjlQx1yjDRa+5EtNM+Tk4h+QyONWXsiZlzBqwIkM0v
+	y02jbP0F9WK/J4dQxTDaCsJa9HxkYxUlN07D+ppV/DoxZeEABmqSngg/D+YBoNgF7iuP38
+	uWCX/WykcZyS911GVQsXeGumCrHpsR8=
+From: Luis Henriques <luis.henriques@linux.dev>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org,  linux-fsdevel@vger.kernel.org,
+  linux-mm@kvack.org,  linux-kernel@vger.kernel.org,  tytso@mit.edu,
+  adilger.kernel@dilger.ca,  jack@suse.cz,  ritesh.list@gmail.com,
+  hch@infradead.org,  djwong@kernel.org,  willy@infradead.org,
+  zokeefe@google.com,  yi.zhang@huawei.com,  chengzhihao1@huawei.com,
+  yukuai3@huawei.com,  wangkefeng.wang@huawei.com
+Subject: Re: [PATCH v3 03/26] ext4: correct the hole length returned by
+ ext4_map_blocks()
+In-Reply-To: <20240127015825.1608160-4-yi.zhang@huaweicloud.com> (Zhang Yi's
+	message of "Sat, 27 Jan 2024 09:58:02 +0800")
+References: <20240127015825.1608160-1-yi.zhang@huaweicloud.com>
+	<20240127015825.1608160-4-yi.zhang@huaweicloud.com>
+Date: Thu, 09 May 2024 16:16:34 +0100
+Message-ID: <87zfszuib1.fsf@brahms.olymp>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v16 0/9] Cache insensitive cleanup for ext4/f2fs
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: Matthew Wilcox <willy@infradead.org>, tytso@mit.edu,
- adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, jaegeuk@kernel.org,
- chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, ebiggers@kernel.org
-References: <20240405121332.689228-1-eugen.hristev@collabora.com>
- <Zg_sF1uPG4gdnJxI@casper.infradead.org>
- <ec3a3946-d6d6-40e1-8645-34b258d8b507@collabora.com>
- <87le5r3gw7.fsf@mailhost.krisman.be>
-Content-Language: en-US
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <87le5r3gw7.fsf@mailhost.krisman.be>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-Migadu-Flow: FLOW_OUT
 
-Hello Krisman,
+On Sat 27 Jan 2024 09:58:02 AM +08, Zhang Yi wrote;
+<...>
+> +static ext4_lblk_t ext4_ext_determine_insert_hole(struct inode *inode,
+> +						  struct ext4_ext_path *path,
+> +						  ext4_lblk_t lblk)
+> +{
+> +	ext4_lblk_t hole_start, len;
+> +	struct extent_status es;
+> +
+> +	hole_start = lblk;
+> +	len = ext4_ext_find_hole(inode, path, &hole_start);
+> +again:
+> +	ext4_es_find_extent_range(inode, &ext4_es_is_delayed, hole_start,
+> +				  hole_start + len - 1, &es);
+> +	if (!es.es_len)
+> +		goto insert_hole;
+> +
+> +	/*
+> +	 * There's a delalloc extent in the hole, handle it if the delalloc
+> +	 * extent is in front of, behind and straddle the queried range.
+> +	 */
+> +	if (lblk >= es.es_lblk + es.es_len) {
+> +		/*
+> +		 * The delalloc extent is in front of the queried range,
+> +		 * find again from the queried start block.
+> +		 */
+> +		len -= lblk - hole_start;
+> +		hole_start = lblk;
+> +		goto again;
 
-On 4/5/24 19:37, Gabriel Krisman Bertazi wrote:
-> Eugen Hristev <eugen.hristev@collabora.com> writes:
-> 
->> On 4/5/24 15:18, Matthew Wilcox wrote:
->>> On Fri, Apr 05, 2024 at 03:13:23PM +0300, Eugen Hristev wrote:
->>>> Hello,
->>>>
->>>> I am trying to respin the series here :
->>>> https://www.spinics.net/lists/linux-ext4/msg85081.html
->>>
->>> The subject here is "Cache insensitive cleanup for ext4/f2fs".
->>> Cache insensitive means something entirely different
->>> https://en.wikipedia.org/wiki/Cache-oblivious_algorithm
->>>
->>> I suspect you mean "Case insensitive".
->>
->> You are correct, I apologize for the typo.
-> 
-> Heh. I completely missed it in the previous submissions. I guess we both
-> just mentally auto-corrected.
-> 
-> Since we are here, I think I contributed to the typo in the cover letter
-> with the summary lines of patch 1 and 2.  Differently from the rest of
-> the series, these two are actually working on a "cache of
-> casefolded strings".  But their summary lines are misleading.
-> 
-> Can you rename them to:
-> 
-> [PATCH v16 1/9] ext4: Simplify the handling of cached casefolded names
-> [PATCH v16 2/9] f2fs: Simplify the handling of cached casefolded names
-> 
-> From a quick look, the series is looking good and the strict mode issue
-> pointed in the last iteration seems fixed, though I didn't run it yet.
-> I'll take a closer look later today and fully review.
-> 
+It's looks like it's easy to trigger an infinite loop here using fstest
+generic/039.  If I understand it correctly (which doesn't happen as often
+as I'd like), this is due to an integer overflow in the 'if' condition,
+and should be fixed with the patch below.
 
-Have you managed to take a look ? What would be the future of the series ? I didn't
-want to send another version for just a subject change, but I can if that's the
-only change required .
+From 3117af2f8dacad37a2722850421f31075ae9e88d Mon Sep 17 00:00:00 2001
+From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Date: Thu, 9 May 2024 15:53:01 +0100
+Subject: [PATCH] ext4: fix infinite loop caused by integer overflow
 
-Thanks,
-Eugen
+An integer overflow will happen if the extent_status len is set to
+EXT_MAX_BLOCKS (0xffffffff).  This may cause an infinite loop in function
+ext4_ext_determine_insert_hole(), easily reproducible using fstest
+generic/039.
+
+Fixes: 6430dea07e85 ("ext4: correct the hole length returned by ext4_map_blocks()")
+Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+---
+ fs/ext4/extents.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index e57054bdc5fd..193121b394f9 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4064,7 +4064,7 @@ static ext4_lblk_t ext4_ext_determine_insert_hole(struct inode *inode,
+ 	 * There's a delalloc extent in the hole, handle it if the delalloc
+ 	 * extent is in front of, behind and straddle the queried range.
+ 	 */
+-	if (lblk >= es.es_lblk + es.es_len) {
++	if (lblk >= ((__u64) es.es_lblk) + es.es_len) {
+ 		/*
+ 		 * The delalloc extent is in front of the queried range,
+ 		 * find again from the queried start block.
 
