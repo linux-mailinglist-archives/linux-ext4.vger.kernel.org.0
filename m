@@ -1,75 +1,89 @@
-Return-Path: <linux-ext4+bounces-2401-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2400-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E58C28C0A31
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 05:36:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29C908C0A30
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 05:35:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C5828477D
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 03:36:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D22C0284797
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 03:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F6D2147C6C;
-	Thu,  9 May 2024 03:35:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 642C1147C6B;
+	Thu,  9 May 2024 03:35:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="YPsFhRpT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lGn2vwV7"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43FF1D26D
-	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 03:35:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDE8FD26D
+	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 03:35:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715225757; cv=none; b=O2KX0IBQTFR1ivNeVKBwOixwqkp1+dQglYz3rlR9/WWV4KxSRNawlC90XrZT7HploSKtCkX6SWLP4SM6Cju0HHheweiAOZmyzJ35V6fFuwNziB4XOedoVWGRzApai5OXZXVdEkGZCHU3M1sZpZ0/GHAPb05MEy9Y9GCmMmvhRUc=
+	t=1715225748; cv=none; b=q/Yii5IqdEzRk9vYQtwsEd79J+qkyE8jHqoP75gqrqCLOJLbdDG/PFy4BLHmHFpudVFw7DR3V8AtzcXaqf+jWkFi0WnBv1WsYoNjPOwfVHa5kE1F6HYnKh2/nopCBbhQAN0ErDR1JxfT5xHrGS6wseSqSLJl/zrk7RYPr2xUt1E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715225757; c=relaxed/simple;
-	bh=9/MSgwCnW4npJMrnTLJysVqRBt+ZTy17FOClJpYgXOw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TQVmVCNbGOmLf7NR+z0fMnjPK/e9EVWHKEtw5UPcWLgszrY3/i829egLJn+RqZ0mUBdNNN6YO5bSjWXvJyAIOrv0QzmHEWbZSRLLNuMz1tDbQY1PlCMCRZ/NUvTeREIgEIV+VdgmVY2xYWWIHeWcgfAAGosV1FaEq5Wu32HG9Ks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=YPsFhRpT; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4493Zftu003342
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 8 May 2024 23:35:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1715225742; bh=ZljL32bdnUEBW3NfAl5RmsSp3oyrvscuLmD5hIa5+dc=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=YPsFhRpTdn31fKNjde5BC7TR8NfsqY8yy2K65Zln6MM72urTUNMZ9HzXKTbuqLaIG
-	 hDGL16rfpqi4PDLPZtJ4P5za54yzPJI5PlNDrieFyd3PnSxS0+bV4qOJXRfHyudO8c
-	 6iRLUFzJe28ei3Y8byQTzcgxgW9sMWkKYR9/ulBdVHk9xBaFFe8D4TXxpW08EHpieV
-	 4Q45wIaSFd3F1k0jHyqT1RL5tCf+y/t9UwdWtQAEpfaATHEhR7/TjULnSO5b43X4z4
-	 bo+/4JLz592oL+VV0mF9zHDpifEOAVRGH4EFaEuFckkt3EheonfWhMy/Y0kGl/sVbp
-	 m3PgIvSDIbCdA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 48F4815C026D; Wed, 08 May 2024 23:35:41 -0400 (EDT)
-Date: Wed, 8 May 2024 23:35:41 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: bugzilla-daemon@kernel.org
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: [Bug 218820] New: The empty file occupies incorrect blocks
-Message-ID: <20240509033541.GB3620298@mit.edu>
+	s=arc-20240116; t=1715225748; c=relaxed/simple;
+	bh=HtmJRVvcl6V9zxl/Ou6jG0dWHGdjloz286t95PB9hI4=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=GVv34OYKhRNRRj62kjNTbGyESiYX1GK0A7d5GGgIliOur4RnAgQXsl1kP3UBAnN/i87mKRk+zkepTND7TfvUh7TWYIMdtasoKmjcP3vesBtKeoSDGahTol3KZPVcWii47e1VaRKta+v+vvbK5ORoFO8VrAYs3IGWRGr+X3OHkB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lGn2vwV7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 736B1C2BD11
+	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 03:35:48 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715225748;
+	bh=HtmJRVvcl6V9zxl/Ou6jG0dWHGdjloz286t95PB9hI4=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=lGn2vwV7rx0rISkWLKS6YlOKwluiHtmQZcyBpD4iz83anjaTDzpVcQlfcgm83jEWy
+	 Irnuc+6JlpBVEl4z9kuiTAWPlNQh6WcAbCMctz2KYpA+UuYkY8e4IJSDLq8F84G2Qh
+	 ST/FFleJDkhBTxkeaGw/Q1rgxiYgjh3rTA1uRvfVeCO+rVkqmbWIwKAEKZZAPAIl5q
+	 apCO83n7qRQSRbed4qKOjzjef44M7RzwBPz64C1LSgpsqr7raCR84AwsbVsGvfhSJd
+	 5S3du/sUdbYRe2HGa8J/K9xv9T6b1bSxczJoBEFB2xhqjf1RmE7nHLLL3fzrJRVzod
+	 1ql96dw9imRpg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 5DB85C53B6F; Thu,  9 May 2024 03:35:48 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 218820] The empty file occupies incorrect blocks
+Date: Thu, 09 May 2024 03:35:48 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-218820-13602-J5dupHZgBt@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-218820-13602@https.bugzilla.kernel.org/>
 References: <bug-218820-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <bug-218820-13602@https.bugzilla.kernel.org/>
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D218820
+
+--- Comment #1 from Theodore Tso (tytso@mit.edu) ---
 On Wed, May 08, 2024 at 01:33:56PM +0000, bugzilla-daemon@kernel.org wrote:
-> 
+>=20
 > The following is the triggering script:
 > ```
-> dd if=/dev/zero of=ext4-0.img bs=1M count=120
+> dd if=3D/dev/zero of=3Dext4-0.img bs=3D1M count=3D120
 > mkfs.ext4 ext4-0.img
 > g++ -static reproduce.c
 > losetup /dev/loop0 ext4-0.img
@@ -77,11 +91,12 @@ On Wed, May 08, 2024 at 01:33:56PM +0000, bugzilla-daemon@kernel.org wrote:
 > ./a.out
 > stat /root/mnt/a
 > ```
-> 
+>=20
 > After run the script, you will get the following outputs:
 > ```
 >   File: /root/mnt/a
->   Size: 0               Blocks: 82         IO Block: 1024   regular empty file
+>   Size: 0               Blocks: 82         IO Block: 1024   regular empty
+>   file
 > Device: 700h/1792d      Inode: 12          Links: 1
 > Access: (0755/-rwxr-xr-x)  Uid: (    0/    root)   Gid: (    0/    root)
 > Context: system_u:object_r:unlabeled_t:s0
@@ -99,7 +114,9 @@ then truncates the file, and close it.
 The reproducer script leaves the file system mounted; if you unmount
 the file system, the kernel will issue a warning message:
 
-EXT4-fs (loop0): Inode 13 (0000000082f8ff6c): i_reserved_data_blocks (40) not cleared!
+EXT4-fs (loop0): Inode 13 (0000000082f8ff6c): i_reserved_data_blocks (40) n=
+ot
+cleared!
 
 ... and then if you examine the on-disk image, you'll see that the
 i_blocks field is correct.
@@ -148,5 +165,11 @@ Yelch.
 So preventing the "mount -o remount,nodelalloc" in the reproducer
 program is how we'll address this issue.
 
-					- Ted
+                                        - Ted
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
