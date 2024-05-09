@@ -1,94 +1,115 @@
-Return-Path: <linux-ext4+bounces-2407-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2408-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F7988C0C8A
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 10:27:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DA0D8C0D09
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 11:05:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 906E11C20D7B
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 08:27:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A90E283144
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 09:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97EBA14A088;
-	Thu,  9 May 2024 08:27:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D3314A0B8;
+	Thu,  9 May 2024 09:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U2a0E9Fi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38478149DF1;
-	Thu,  9 May 2024 08:27:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B662149DE5
+	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 09:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715243257; cv=none; b=dabIyKpXShkVOzaoGgBsaeJwfz8e2X1NM416vaCR9sZbR5p8KEBS2iOzHvI1SoTg1PHsCfMBHa4LybdEnTG/DZydhN0SIQQJmL5jF9jw9GwGxxmiY47p6/kJTrBD58wduDjlx8eOCgvtsZ3dAwT5THt2/jSxgo4SMpalAVPhYRo=
+	t=1715245513; cv=none; b=fVz6pco+nHtyDWWSKHvqmQHzmth/ixBdAAnllMGCWCyacpbRYdc76Ibqbvysfm8PR4KR2bNQEcafWA3JwewTm+aiEGj1KiGf7PWc36w423GXlLT4IStni2NlQfIRxxdUeTG21PtZhTky04O3zuc/naZAPbEYhgesEysuNKJ0Am4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715243257; c=relaxed/simple;
-	bh=JRrNzU87li/2M0+JVS/fkSLLfgwcdxXwJYgJQgencWQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=QinwJ1y3C/ZcNRLn+kCIA29WkUol9JT0vR7KxRbGoNtj75QDL5rxPLIztMUz02I/PuIKAqK7D3xOE8IWBC7HETS5u7d/MmJSDNJZj7HaH9KnrGV+dba3UN/+MW44E7GdXuHTMreJ/5jRcBHiElNOdrb+qkFlHq7TvGcsDW8sru4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VZlVw6RBQz4f3kKQ;
-	Thu,  9 May 2024 16:27:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 403191A10F1;
-	Thu,  9 May 2024 16:27:26 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP2 (Coremail) with SMTP id Syh0CgAnmAvtiDxmp0XdMQ--.45520S3;
-	Thu, 09 May 2024 16:27:26 +0800 (CST)
-Subject: Re: [PATCH v3 04/10] ext4: trim delalloc extent
-To: Markus Elfring <Markus.Elfring@web.de>, Zhang Yi <yi.zhang@huawei.com>,
- linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
- Ritesh Harjani <ritesh.list@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
- Yu Kuai <yukuai3@huawei.com>, Zhihao Cheng <chengzhihao1@huawei.com>
-References: <20240508061220.967970-5-yi.zhang@huaweicloud.com>
- <124a0129-cdc5-41aa-ae75-24bc634a3599@web.de>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <2343e4ab-b999-1417-ebd3-d84fe02090bf@huaweicloud.com>
-Date: Thu, 9 May 2024 16:27:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1715245513; c=relaxed/simple;
+	bh=tlBCVbB2SH2IMKieNDTDDSVaKGhzcQiP4++58czrCes=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=HZ8ghSEESYPFnSJogVC5/QQ37nWank02aU0brZrFL6ReMDuoitP2YVGcxEW6btUXtAshuwlGBLCDZuLa6pLOi+Wr3cQ9L2/TbNZ0JUbomjrr2dN/uXmpl0vRJ63WOq2A8Zosvyz0KQjAguxvhV13yv8LElnlC6Pc/Wz4fIdvdXo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U2a0E9Fi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id EC039C2BBFC
+	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 09:05:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1715245513;
+	bh=tlBCVbB2SH2IMKieNDTDDSVaKGhzcQiP4++58czrCes=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=U2a0E9FiG50CF97dTrnZdFInOcfTmLJ82YvPXFhLcDWVnaCtXlBMEcQ5aLWenNZwv
+	 /r5re+sXrbS4IF2wD398sELmZSZR8UBXyrPDiHAvmN4dxeFx+gDPcD1uc3t/bw9AAH
+	 zXYD8mSdxkx/iDxctzQQoopqOdhoit0EUQMPxZItRdKgsNBOYmlBg6VVXIX10wWRJc
+	 HITMVipVPnjkSPtxbyAHIONMVuwEdVzGB0QuviYwdjPRgGUzY6lpPwFdSG88V3Mt3H
+	 Hl8y1SUbj+PbQtIao2q4Nu2dpMIDYvOBjpHG1XpN3ZUmIvJWrufZ3GGaKpcn0M2IiG
+	 9FaRbSK3Rk13Q==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id D628AC53B6C; Thu,  9 May 2024 09:05:12 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 218822] Delete the file from the upper layer directly, the file
+ will become "Stale"
+Date: Thu, 09 May 2024 09:05:12 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: Squall.Zhou@vecima.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-218822-13602-Np5VUZxfFU@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-218822-13602@https.bugzilla.kernel.org/>
+References: <bug-218822-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <124a0129-cdc5-41aa-ae75-24bc634a3599@web.de>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgAnmAvtiDxmp0XdMQ--.45520S3
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUY47kC6x804xWl14x267AKxVW8JVW5JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
-	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
-	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r
-	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
-	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
-	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
-	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
-	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Gr0_Zr1l
-	IxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvf
-	C2KfnxnUUI43ZEXa7IUbPEf5UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/5/8 23:21, Markus Elfring wrote:
->> In ext4_da_map_blocks(), we could found four kind of extents …
-> 
->                                     find?
-> 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D218822
 
-Sure.
+--- Comment #1 from Squall.Zhou@vecima.com ---
+1. The issue has also been reproduced on:
+29~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Apr  4 14:39:20 UTC 2 x86_64 x86_=
+64
+x86_64 GNU/Linux=20
 
-Thanks,
-Yi.
+~:mount -t overlay -o  lowerdir=3Detc,upperdir=3Dupper,workdir=3Dwork overl=
+ay etc=20
+~:~/overlaytest$ touch etc/a=20
+rm upper/a=20
+rm etc/a=20
+rm: cannot remove 'etc/a': Stale file handle=20
 
+2. But not reproduced on WSL(Ubuntu 20.04.6)
+Squall.Zhou[~/over1]:mkdir etc
+mkdir upper
+mkdir work
+sudo mount -t overlay -o  lowerdir=3Detc,upperdir=3Dupper,workdir=3Dwork ov=
+erlay etc
+sudo touch etc/a
+sudo rm upper/a
+sudo rm etc/a
+rm: cannot remove 'etc/a': No such file or directory
+Squall.Zhou[~/over]:uname -a
+Linux PC3203 4.4.0-22621-Microsoft #2506-Microsoft Fri Jan 01 08:00:00 PST =
+2016
+x86_64 x86_64 x86_64 GNU/Linux
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
