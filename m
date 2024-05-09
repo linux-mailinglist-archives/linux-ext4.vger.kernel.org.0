@@ -1,115 +1,193 @@
-Return-Path: <linux-ext4+bounces-2408-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2409-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5DA0D8C0D09
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 11:05:19 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 219778C0E39
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 12:33:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1A90E283144
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 09:05:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DB87283CF4
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 10:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0D3314A0B8;
-	Thu,  9 May 2024 09:05:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF51712DDA4;
+	Thu,  9 May 2024 10:33:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="U2a0E9Fi"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AoJgnk6z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bGlXx/jc";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="AoJgnk6z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bGlXx/jc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B662149DE5
-	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 09:05:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA42322E;
+	Thu,  9 May 2024 10:33:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715245513; cv=none; b=fVz6pco+nHtyDWWSKHvqmQHzmth/ixBdAAnllMGCWCyacpbRYdc76Ibqbvysfm8PR4KR2bNQEcafWA3JwewTm+aiEGj1KiGf7PWc36w423GXlLT4IStni2NlQfIRxxdUeTG21PtZhTky04O3zuc/naZAPbEYhgesEysuNKJ0Am4=
+	t=1715250785; cv=none; b=suOqxvGdqbGa9M1MTZEMWAAj6Z/Ho7u/dABlv5d15tnNClknE/hrFqsS1Pp6xiBaMSCWrViazRZfXlbZcvXFP/A/mhiaWpsahNkmfjJGNV9B+NKUUuk2OA3z3kIGcHD3LQdmQ3Qcbxis5h33bEjjH3M/RXtXWpn5xtxkfJmqIrs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715245513; c=relaxed/simple;
-	bh=tlBCVbB2SH2IMKieNDTDDSVaKGhzcQiP4++58czrCes=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=HZ8ghSEESYPFnSJogVC5/QQ37nWank02aU0brZrFL6ReMDuoitP2YVGcxEW6btUXtAshuwlGBLCDZuLa6pLOi+Wr3cQ9L2/TbNZ0JUbomjrr2dN/uXmpl0vRJ63WOq2A8Zosvyz0KQjAguxvhV13yv8LElnlC6Pc/Wz4fIdvdXo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=U2a0E9Fi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id EC039C2BBFC
-	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 09:05:12 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715245513;
-	bh=tlBCVbB2SH2IMKieNDTDDSVaKGhzcQiP4++58czrCes=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=U2a0E9FiG50CF97dTrnZdFInOcfTmLJ82YvPXFhLcDWVnaCtXlBMEcQ5aLWenNZwv
-	 /r5re+sXrbS4IF2wD398sELmZSZR8UBXyrPDiHAvmN4dxeFx+gDPcD1uc3t/bw9AAH
-	 zXYD8mSdxkx/iDxctzQQoopqOdhoit0EUQMPxZItRdKgsNBOYmlBg6VVXIX10wWRJc
-	 HITMVipVPnjkSPtxbyAHIONMVuwEdVzGB0QuviYwdjPRgGUzY6lpPwFdSG88V3Mt3H
-	 Hl8y1SUbj+PbQtIao2q4Nu2dpMIDYvOBjpHG1XpN3ZUmIvJWrufZ3GGaKpcn0M2IiG
-	 9FaRbSK3Rk13Q==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id D628AC53B6C; Thu,  9 May 2024 09:05:12 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 218822] Delete the file from the upper layer directly, the file
- will become "Stale"
-Date: Thu, 09 May 2024 09:05:12 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: Squall.Zhou@vecima.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-218822-13602-Np5VUZxfFU@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-218822-13602@https.bugzilla.kernel.org/>
-References: <bug-218822-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1715250785; c=relaxed/simple;
+	bh=CB8xxaIZRl1fzw/CXfLsO53D8/KIS8y+griG0gt4mz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mz0KkapgMpe81hZQqGVVc5M4eUVcFn4n+awtE8Q0anli8b0l/F2L1MYrpNPGbZdFnYEYbVIYzeQLz3+tW/wN60khyyGZLIdt5W8L9lWakpAi0zIROhTBDXyQ4BVl3Z3ofuvydpFcNWMVmqWnq6h0Ise13iX9w+uj3FSqC15oLic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AoJgnk6z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bGlXx/jc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=AoJgnk6z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bGlXx/jc; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A7A38382D0;
+	Thu,  9 May 2024 10:33:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1715250781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6oKJGlMkczFIK1kqWn4wsntIpR+XDMhlPQbmWoBoSDI=;
+	b=AoJgnk6zkJLVHEh81ssiaP2zj//h1pZS8irDH65yFLjvJeGOUaxpC1SFldbOMCiP96xft1
+	QJ+S1HrrbjcYsF8LcHSuXzvIsx+SPDYBsHQD80l2JLwq190zGF1Ag/Uo/WX7cc+787l4V/
+	IAjj1bk0GDB9tYzOPCJnHoWQCO77Z4w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1715250781;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6oKJGlMkczFIK1kqWn4wsntIpR+XDMhlPQbmWoBoSDI=;
+	b=bGlXx/jczYEXd2R9XcD/buBBKn7XXCJ4nklBDdGpjQAGiIv0fDda5GaHVjTmaRZnoVONAK
+	3qAk8OwqqJGqgTAQ==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1715250781; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6oKJGlMkczFIK1kqWn4wsntIpR+XDMhlPQbmWoBoSDI=;
+	b=AoJgnk6zkJLVHEh81ssiaP2zj//h1pZS8irDH65yFLjvJeGOUaxpC1SFldbOMCiP96xft1
+	QJ+S1HrrbjcYsF8LcHSuXzvIsx+SPDYBsHQD80l2JLwq190zGF1Ag/Uo/WX7cc+787l4V/
+	IAjj1bk0GDB9tYzOPCJnHoWQCO77Z4w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1715250781;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=6oKJGlMkczFIK1kqWn4wsntIpR+XDMhlPQbmWoBoSDI=;
+	b=bGlXx/jczYEXd2R9XcD/buBBKn7XXCJ4nklBDdGpjQAGiIv0fDda5GaHVjTmaRZnoVONAK
+	3qAk8OwqqJGqgTAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9DD8513941;
+	Thu,  9 May 2024 10:33:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nJuCJl2mPGbJQAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 09 May 2024 10:33:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 4E4B5A0861; Thu,  9 May 2024 12:33:01 +0200 (CEST)
+Date: Thu, 9 May 2024 12:33:01 +0200
+From: Jan Kara <jack@suse.cz>
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>,
+	Christoph Hellwig <hch@lst.de>
+Subject: Re: [PATCHv2 1/2] iomap: Fix iomap_adjust_read_range for plen
+ calculation
+Message-ID: <20240509103301.6rievb5fx32iqcxk@quack3>
+References: <cover.1715067055.git.ritesh.list@gmail.com>
+ <a32e5f9a4fcfdb99077300c4020ed7ae61d6e0f9.1715067055.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a32e5f9a4fcfdb99077300c4020ed7ae61d6e0f9.1715067055.git.ritesh.list@gmail.com>
+X-Spam-Flag: NO
+X-Spam-Score: -2.30
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218822
+On Tue 07-05-24 14:25:42, Ritesh Harjani (IBM) wrote:
+> If the extent spans the block that contains i_size, we need to handle
+> both halves separately so that we properly zero data in the page cache
+> for blocks that are entirely outside of i_size. But this is needed only
+> when i_size is within the current folio under processing.
+> "orig_pos + length > isize" can be true for all folios if the mapped
+> extent length is greater than the folio size. That is making plen to
+> break for every folio instead of only the last folio.
+> 
+> So use orig_plen for checking if "orig_pos + orig_plen > isize".
+> 
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
---- Comment #1 from Squall.Zhou@vecima.com ---
-1. The issue has also been reproduced on:
-29~22.04.1-Ubuntu SMP PREEMPT_DYNAMIC Thu Apr  4 14:39:20 UTC 2 x86_64 x86_=
-64
-x86_64 GNU/Linux=20
+Looks good. Feel free to add:
 
-~:mount -t overlay -o  lowerdir=3Detc,upperdir=3Dupper,workdir=3Dwork overl=
-ay etc=20
-~:~/overlaytest$ touch etc/a=20
-rm upper/a=20
-rm etc/a=20
-rm: cannot remove 'etc/a': Stale file handle=20
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-2. But not reproduced on WSL(Ubuntu 20.04.6)
-Squall.Zhou[~/over1]:mkdir etc
-mkdir upper
-mkdir work
-sudo mount -t overlay -o  lowerdir=3Detc,upperdir=3Dupper,workdir=3Dwork ov=
-erlay etc
-sudo touch etc/a
-sudo rm upper/a
-sudo rm etc/a
-rm: cannot remove 'etc/a': No such file or directory
-Squall.Zhou[~/over]:uname -a
-Linux PC3203 4.4.0-22621-Microsoft #2506-Microsoft Fri Jan 01 08:00:00 PST =
-2016
-x86_64 x86_64 x86_64 GNU/Linux
+								Honza
 
---=20
-You may reply to this email to add a comment.
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+> ---
+>  fs/iomap/buffered-io.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index 4e8e41c8b3c0..9f79c82d1f73 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -241,6 +241,7 @@ static void iomap_adjust_read_range(struct inode *inode, struct folio *folio,
+>  	unsigned block_size = (1 << block_bits);
+>  	size_t poff = offset_in_folio(folio, *pos);
+>  	size_t plen = min_t(loff_t, folio_size(folio) - poff, length);
+> +	size_t orig_plen = plen;
+>  	unsigned first = poff >> block_bits;
+>  	unsigned last = (poff + plen - 1) >> block_bits;
+> 
+> @@ -277,7 +278,7 @@ static void iomap_adjust_read_range(struct inode *inode, struct folio *folio,
+>  	 * handle both halves separately so that we properly zero data in the
+>  	 * page cache for blocks that are entirely outside of i_size.
+>  	 */
+> -	if (orig_pos <= isize && orig_pos + length > isize) {
+> +	if (orig_pos <= isize && orig_pos + orig_plen > isize) {
+>  		unsigned end = offset_in_folio(folio, isize - 1) >> block_bits;
+> 
+>  		if (first <= end && last > end)
+> --
+> 2.44.0
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
