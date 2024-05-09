@@ -1,89 +1,97 @@
-Return-Path: <linux-ext4+bounces-2405-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2406-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EA8E8C0B8E
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 08:35:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0053A8C0C86
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 10:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C5E89282AA9
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 06:35:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 945261F22E81
+	for <lists+linux-ext4@lfdr.de>; Thu,  9 May 2024 08:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD90F31A8F;
-	Thu,  9 May 2024 06:35:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KePV/9Gm"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0129A149E0B;
+	Thu,  9 May 2024 08:27:10 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56CC7624
-	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 06:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B142FD528;
+	Thu,  9 May 2024 08:27:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715236518; cv=none; b=ZsMrnsRxc2JMwY3YyCKX1z4v9TeeaeI+Yf/7111HUijdmpNRLnxAe1rDvVNzw+V73bz1ygtc10beEqlPPokYGMDCv7mEFrvcgI/p5X0mAi3wiZ/Ec61Cb7c8uAm/I1IYj59cDvkoByB0ujsk+rhTXxv6UPicixcnpHYoT8lzQ9k=
+	t=1715243229; cv=none; b=KWTSOKXFzIlD0ZiN9VAOIaU2Bzq8tJj9fM9xq2t7RdLR+aFSUntFVpj4qqC5usnHehFYh8SwRvi3gqQYn6GQlwj3BWgR8v2kQgzSoAh+yzz7Gn5i7Kc4sNiXJIJv4O9C4JMlxK5ErWjIp68tnXbBm0RyHpK2DSGex/KBkdFeRTg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715236518; c=relaxed/simple;
-	bh=MXivLwVSZnQLJerOj8WHSd8RMkIqRMZ1Rrh/7QZUj4o=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=XxHTnnhrOWrj/24kN5PMHkalsr8A+0n6vtIeknyLj3lCwENTxSRJLUZcxlw16MCZOf0SAQSB7ntPPFl7flC/djtkd/ae9hWv68+tLPB5BYQI72HjqpUOhBe0638nxgE2uwAMDMNMoCk8jSnbRY1AA0wGS2tErY8nX9qZ2JTwcls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KePV/9Gm; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id D4D6FC116B1
-	for <linux-ext4@vger.kernel.org>; Thu,  9 May 2024 06:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715236517;
-	bh=MXivLwVSZnQLJerOj8WHSd8RMkIqRMZ1Rrh/7QZUj4o=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=KePV/9GmBNhyRDzBROEfbcGfyJj+9lO8oYd5id9WMJTJR0Je5v9po3kF7HzYB2NRd
-	 Taj0mh9rA70sEES/KCSadb3fQ8oxSVmUeReUAjOotUYc39RG7885Q1fTCsescoxGeI
-	 fWQuXVfMJcyeeJSFuGGwcPB1/bFSXcpVhh9b5jJOsMQ0FuLWLnD0pSbH9RUxcPw94r
-	 FGxQNbOXKGxkiqLVyP0pDTecNxP5fnXJoGXzA6Nv1yDzVKDOHlAqNUGM6Tr6x7JKzP
-	 k2DvCPAMAkyVyPNngvO/6IJFWqxphc204+VHXoEK2uJ9r0eovqrrzdftCCg8sbSPhs
-	 NepFjtSwIOojA==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id C8608C53B6D; Thu,  9 May 2024 06:35:17 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 218820] The empty file occupies incorrect blocks
-Date: Thu, 09 May 2024 06:35:17 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: zhangchi_seg@smail.nju.edu.cn
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-218820-13602-TI7bxD02SW@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-218820-13602@https.bugzilla.kernel.org/>
-References: <bug-218820-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1715243229; c=relaxed/simple;
+	bh=aQnnC1zwMqjpB6jOLDUkwiOfJfpN/2+N7Um3Xauwnrs=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=eXR4E6xPmd1tOmxnFOrYrBAxopWya+xJUimu/dPEw7ouqXgGOcyHc/kUgSFyqobnPBtk501+KrAThzs/OhRfYLzcA0RqycALOXjvnwLxbazo780ijmULcYYkXky4jmTtZy9624e4rDFdGGrO28WlXAFOM0zMvf5uEyCnefyRO8Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VZlVJ210Lz4f3jHy;
+	Thu,  9 May 2024 16:26:48 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 97E2C1A017D;
+	Thu,  9 May 2024 16:26:56 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP2 (Coremail) with SMTP id Syh0CgAXOQzNiDxmxDzdMQ--.44728S3;
+	Thu, 09 May 2024 16:26:55 +0800 (CST)
+Subject: Re: [PATCH v3 02/10] ext4: check the extent status again before
+ inserting delalloc block
+To: Markus Elfring <Markus.Elfring@web.de>, Zhang Yi <yi.zhang@huawei.com>,
+ linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+ Ritesh Harjani <ritesh.list@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
+ Yu Kuai <yukuai3@huawei.com>, Zhihao Cheng <chengzhihao1@huawei.com>
+References: <20240508061220.967970-3-yi.zhang@huaweicloud.com>
+ <34c08d45-a0fe-49c9-b7ba-de6a79d46ebc@web.de>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <90f21f4f-b619-ba23-48e2-c59c0fc18afd@huaweicloud.com>
+Date: Thu, 9 May 2024 16:26:53 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+In-Reply-To: <34c08d45-a0fe-49c9-b7ba-de6a79d46ebc@web.de>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgAXOQzNiDxmxDzdMQ--.44728S3
+X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
+	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYI7kC6x804xWl14x267AKxVW8JVW5JwAF
+	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
+	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xv
+	wVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4
+	x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG
+	64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r
+	1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4
+	AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE
+	17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMI
+	IF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq
+	3wCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjxUrR6zUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218820
+On 2024/5/8 23:02, Markus Elfring wrote:
+> …
+>> This patch fixes the problem by looking …
+> 
+> Will corresponding imperative wordings be desirable for an improved change description?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.9-rc7#n94
+> 
 
---- Comment #2 from Chi (zhangchi_seg@smail.nju.edu.cn) ---
-I got it! Thank you very much for your detailed explanation.
+Yes, it would be helpful.
 
---=20
-You may reply to this email to add a comment.
+Thanks,
+Yi.
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
