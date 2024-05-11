@@ -1,255 +1,222 @@
-Return-Path: <linux-ext4+bounces-2465-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2466-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF5968C30FE
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 13:39:45 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id ADF2F8C33D0
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 23:11:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 637ABB2106F
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 11:39:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AAD0B20FB7
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 21:11:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CBC87E58E;
-	Sat, 11 May 2024 11:37:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6DB21A04;
+	Sat, 11 May 2024 21:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fSy1J64E"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C02895677C;
-	Sat, 11 May 2024 11:37:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4607617BAB
+	for <linux-ext4@vger.kernel.org>; Sat, 11 May 2024 21:11:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715427434; cv=none; b=oba27AEmNlWXbsImLl5QBz6Z+qLAW/EqAL3VmDAWnZ7gkDRBhR8h5LGiWRvQK66PVTZtmyZ3TiPj998phJRNQrIHBHYI8xVtsWCum98vyhDiPDZIy2xy2rNLQGqh98Yvs/DyO8sM+ermNDDEz6QwlJ5+CSJ3v/l8YzpCk0QsEW0=
+	t=1715461887; cv=none; b=FyP9PHG6Q4mh1DgWO/O+wUXT1Gv1h2s0hefbXI8nwx5yiiCFzq6fIWEimdyLB1VFlBYePlp3eN0BjMYs5gVUFp14VHUC3F74UyLP2bRz8lsiaghMWE4rZ9a6yCmGXeEo7ALjxsTRRT2gD93KzdYZccY+Rfa3cAFJ+WRdNoUHG7w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715427434; c=relaxed/simple;
-	bh=Mj6BnHzrxInqGSNem33jYFs8lPS6YifOhW/IZyrskjY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=jHqmlbSg9VEJzdyJIcBmXu5X3FsiQn06RD9z5h9r45vsxPrhQDgYeqCw1bAiW21Q9U+cRqO3BQKA3paS1zIB0XpllMzb+5/zuJcpDYiUnxBlJhMOavnT0BfaBnoW6Y26hXXXdUunJrZcG6jxnH4zL1CZLeHvOmERfFHasCaM3GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Vc3cr250Yz4f3jd5;
-	Sat, 11 May 2024 19:37:00 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B79B71A016E;
-	Sat, 11 May 2024 19:37:08 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgDHlxA+WD9mG0B4MQ--.22689S14;
-	Sat, 11 May 2024 19:37:08 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ritesh.list@gmail.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [PATCH v4 10/10] ext4: make ext4_da_map_blocks() buffer_head unaware
-Date: Sat, 11 May 2024 19:26:19 +0800
-Message-Id: <20240511112619.3656450-11-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240511112619.3656450-1-yi.zhang@huaweicloud.com>
-References: <20240511112619.3656450-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1715461887; c=relaxed/simple;
+	bh=kJVDLALZidCmgSbZPHhXzlhchHYLkjc0AlkX4pIv4f0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S+TJG1FphdhsDc5IRjJAybuo3Hk/QU5NlErEurk9LJGw8V7d86ED5IV2dWnfslRH88tzhAcz2bXCg8XBhz7T+EqLm2oT34MMf91JvJMKaNB00h9fXJFEfJWmzvFkYrXzMhwZ2rT3VxD0QPqYgJ9BGPmSRW7L2ihUgdDcWRJauE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=fSy1J64E; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44BLBBXR014486
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 11 May 2024 17:11:13 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1715461873; bh=dIyxdzXTrRQaKLhsuF0q8Wg2Yo1YioB5EW7AUHS/oMI=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=fSy1J64EU62iUA2PNfCbfl65mAebKWoK7763qtxLZrJKcyEjfF00jxQfBvS9x1r1a
+	 2vVkVPk7UC4xrdxPSNMkgXuFI6xeZ+tJEhE6MlehMhHm7zcNWLaQU+2lSazaE+n5Kv
+	 OuLR1V43BQiN+KUwJE0U6N1p+aVai17AhvCdKZFkkYczIOWGkIDP6TC0JMIqo7zDQV
+	 AGz8lQkHBkKzxNjVSeoWUwiolmYwYO0U7p6Yay9Iqphifs6Cu4qzONZmEq14x+tMMj
+	 FLD4IkiD02cVGiqY0ozJnVa3d5yjdbsEO4iiHE8IT+OWe6t2jNXCBfFj8bk5uRZU7j
+	 4FK0QfJsTNhcg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id A2AD315C026D; Sat, 11 May 2024 17:11:11 -0400 (EDT)
+Date: Sat, 11 May 2024 17:11:11 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: created ext4 disk image differs depending on the underlying
+ filesystem
+Message-ID: <20240511211111.GA8330@mit.edu>
+References: <171483317081.2626447.5951155062757257572@localhost>
+ <171484520952.2626447.2160419274451668597@localhost>
+ <20240505001020.GA3035072@mit.edu>
+ <171540568260.2626447.10970955416649779876@localhost>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgDHlxA+WD9mG0B4MQ--.22689S14
-X-Coremail-Antispam: 1UD129KBjvJXoW3WF4kCw4rGr1fuFWxKFykXwb_yoW7Zw4Upr
-	Z3AF1rGr15Ww18ua1ftr15ZF1fK3WjyFW7Kr93GryrA34DCrn3tF1UJF1avas8trZ7Wr1r
-	XF4jqry8ua1IkrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPI14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E
-	14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIx
-	kGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAF
-	wI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr
-	0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUA
-	rcfUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <171540568260.2626447.10970955416649779876@localhost>
 
-From: Zhang Yi <yi.zhang@huawei.com>
+On Sat, May 11, 2024 at 07:34:42AM +0200, Johannes Schauer Marin Rodrigues wrote:
+>  2. allow resetting fs->super->s_kbytes_written to zero. This patch worked for
+>     me:
+> 
+> Would you be happy about a patch for (2.)? If yes, I can send something over
+> once I find some time. :)
+> 
 
-After calling the ext4_da_map_blocks(), a delalloc extent state could
-be identified through the EXT4_MAP_DELAYED flag in map. So factor out
-buffer_head related handles in ext4_da_map_blocks(), make this function
-buffer_head unaware and becomes a common helper, and also update the
-stale function commtents, preparing for the iomap da write path in the
-future.
+I'm currently going back and forth about whether we should just (a)
+unconditionally set s_kbytes_writes to zero before we write out the
+superblock, or (b) whether we add a new extended operation, or (c) do
+a hack where if SOURCE_DATE_EPOCH is set, use that as implied "set
+s_kbytes_written to zero since the user is probably caring about a
+reproducible file system".
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/ext4/inode.c | 63 ++++++++++++++++++++++++-------------------------
- 1 file changed, 31 insertions(+), 32 deletions(-)
+(c) is a bit hacky, but it's the most convenient for users, and adding
+Yet Another extended operation.
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c56386d1b10d..1dba5337382a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1745,36 +1745,32 @@ static int ext4_insert_delayed_blocks(struct inode *inode, ext4_lblk_t lblk,
- }
- 
- /*
-- * This function is grabs code from the very beginning of
-- * ext4_map_blocks, but assumes that the caller is from delayed write
-- * time. This function looks up the requested blocks and sets the
-- * buffer delay bit under the protection of i_data_sem.
-+ * Looks up the requested blocks and sets the delalloc extent map.
-+ * First try to look up for the extent entry that contains the requested
-+ * blocks in the extent status tree without i_data_sem, then try to look
-+ * up for the ondisk extent mapping with i_data_sem in read mode,
-+ * finally hold i_data_sem in write mode, looks up again and add a
-+ * delalloc extent entry if it still couldn't find any extent. Pass out
-+ * the mapped extent through @map and return 0 on success.
-  */
--static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map,
--			      struct buffer_head *bh)
-+static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map)
- {
- 	struct extent_status es;
- 	int retval;
--	sector_t invalid_block = ~((sector_t) 0xffff);
- #ifdef ES_AGGRESSIVE_TEST
- 	struct ext4_map_blocks orig_map;
- 
- 	memcpy(&orig_map, map, sizeof(*map));
- #endif
- 
--	if (invalid_block < ext4_blocks_count(EXT4_SB(inode->i_sb)->s_es))
--		invalid_block = ~0;
--
- 	map->m_flags = 0;
- 	ext_debug(inode, "max_blocks %u, logical block %lu\n", map->m_len,
- 		  (unsigned long) map->m_lblk);
- 
- 	/* Lookup extent status tree firstly */
- 	if (ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
--		retval = es.es_len - (map->m_lblk - es.es_lblk);
--		if (retval > map->m_len)
--			retval = map->m_len;
--		map->m_len = retval;
-+		map->m_len = min_t(unsigned int, map->m_len,
-+				   es.es_len - (map->m_lblk - es.es_lblk));
- 
- 		if (ext4_es_is_hole(&es))
- 			goto add_delayed;
-@@ -1784,10 +1780,8 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map,
- 		 * Delayed extent could be allocated by fallocate.
- 		 * So we need to check it.
- 		 */
--		if (ext4_es_is_delayed(&es) && !ext4_es_is_unwritten(&es)) {
--			map_bh(bh, inode->i_sb, invalid_block);
--			set_buffer_new(bh);
--			set_buffer_delay(bh);
-+		if (ext4_es_is_delonly(&es)) {
-+			map->m_flags |= EXT4_MAP_DELAYED;
- 			return 0;
- 		}
- 
-@@ -1802,7 +1796,7 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map,
- #ifdef ES_AGGRESSIVE_TEST
- 		ext4_map_blocks_es_recheck(NULL, inode, map, &orig_map, 0);
- #endif
--		return retval;
-+		return 0;
- 	}
- 
- 	/*
-@@ -1816,7 +1810,7 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map,
- 		retval = ext4_map_query_blocks(NULL, inode, map);
- 	up_read(&EXT4_I(inode)->i_data_sem);
- 	if (retval)
--		return retval;
-+		return retval < 0 ? retval : 0;
- 
- add_delayed:
- 	down_write(&EXT4_I(inode)->i_data_sem);
-@@ -1828,10 +1822,8 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map,
- 	 * the extent status tree.
- 	 */
- 	if (ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
--		retval = es.es_len - (map->m_lblk - es.es_lblk);
--		if (retval > map->m_len)
--			retval = map->m_len;
--		map->m_len = retval;
-+		map->m_len = min_t(unsigned int, map->m_len,
-+				   es.es_len - (map->m_lblk - es.es_lblk));
- 
- 		if (!ext4_es_is_hole(&es)) {
- 			up_write(&EXT4_I(inode)->i_data_sem);
-@@ -1841,18 +1833,14 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map,
- 		retval = ext4_map_query_blocks(NULL, inode, map);
- 		if (retval) {
- 			up_write(&EXT4_I(inode)->i_data_sem);
--			return retval;
-+			return retval < 0 ? retval : 0;
- 		}
- 	}
- 
-+	map->m_flags |= EXT4_MAP_DELAYED;
- 	retval = ext4_insert_delayed_blocks(inode, map->m_lblk, map->m_len);
- 	up_write(&EXT4_I(inode)->i_data_sem);
--	if (retval)
--		return retval;
- 
--	map_bh(bh, inode->i_sb, invalid_block);
--	set_buffer_new(bh);
--	set_buffer_delay(bh);
- 	return retval;
- }
- 
-@@ -1872,11 +1860,15 @@ int ext4_da_get_block_prep(struct inode *inode, sector_t iblock,
- 			   struct buffer_head *bh, int create)
- {
- 	struct ext4_map_blocks map;
-+	sector_t invalid_block = ~((sector_t) 0xffff);
- 	int ret = 0;
- 
- 	BUG_ON(create == 0);
- 	BUG_ON(bh->b_size != inode->i_sb->s_blocksize);
- 
-+	if (invalid_block < ext4_blocks_count(EXT4_SB(inode->i_sb)->s_es))
-+		invalid_block = ~0;
-+
- 	map.m_lblk = iblock;
- 	map.m_len = 1;
- 
-@@ -1885,10 +1877,17 @@ int ext4_da_get_block_prep(struct inode *inode, sector_t iblock,
- 	 * preallocated blocks are unmapped but should treated
- 	 * the same as allocated blocks.
- 	 */
--	ret = ext4_da_map_blocks(inode, &map, bh);
--	if (ret <= 0)
-+	ret = ext4_da_map_blocks(inode, &map);
-+	if (ret < 0)
- 		return ret;
- 
-+	if (map.m_flags & EXT4_MAP_DELAYED) {
-+		map_bh(bh, inode->i_sb, invalid_block);
-+		set_buffer_new(bh);
-+		set_buffer_delay(bh);
-+		return 0;
-+	}
-+
- 	map_bh(bh, inode->i_sb, map.m_pblk);
- 	ext4_update_bh_state(bh, map.m_flags);
- 
--- 
-2.39.2
+Related to this is the design question about whether SOURCE_DATE_EPOCH
+should imply using a fixed value for s_uuid and s_hash_seed.  Again,
+it's a little weird to overload SOURCE_DATE_EPOCH to setting the uuid
+and hash_seed to some fixed value, which might be a time-based UUID
+with the ethernet address set to all zeroes, or some other fixed
+value.  But it's a pretty good proxy of what the user wants, and if
+this is this is the default, the user can always override it via an
+extended option if they really want something different.
 
+If it weren't for the fact that I'm considering have SOURCE_DATE_EPOCH
+provide default values for s_uuid and s_hash_seed, I'd be tempted to just
+unconditionally set the s_kbytes_written to zero.
+
+I'm curious what your opinions might be on this, as someone who might
+want to use this feature.
+
+> As an end-user I am very interested in keeping the functionality of mke2fs
+> which keeps track of which parts are actually sparse and which ones are not.
+> This functionality can be used with tools like "bmaptool" (a more clever dd) to
+> only copy those parts of the image to the flash drive which are actually
+> supposed to contain data.
+
+If the file system where the image is created supports either the
+FIEMAP ioctl or fallocate SEEK_HOLE, then "bmaptool create" can figure
+out which parts of the file is sparse, so we don't need to make any
+changes to e2fsprogs.  If the file system doesn't support FIEMAP or
+SEEK_HOLE, one could imagine that bmaptool could figure out which
+parts of the file could be sparse simply by looking for blocks that
+are all zeroes.  This is basically what "cp --sparse=always" or what
+the attached make-sparse.c file does to determine where the holes could be.
+
+Yes, I could imagine adding a new io_manager much like test_io and
+undo_io which tracked which blocks had been written, and then would
+write out a BMAP file.  However, the vast majority of constructed file
+systems are quite small, so simply reading all of the blocks to
+determine which blocks were all zeroes ala cp --sparse=always isn't
+going to invole all that much overhead.  And I'd argue the right thing
+to do would be to teach bmaptool how to do what cp --sparse=always so
+that the same interface regardless of whether bmaptool is running on a
+modern file system that supports FIEMAP or SEEK_HOLE, or some legacy
+file system like FAT16 or FAT32.
+
+Cheers,
+
+						- Ted
+/*
+ * make-sparse.c --- make a sparse file from stdin
+ * 
+ * Copyright 2004 by Theodore Ts'o.
+ *
+ * %Begin-Header%
+ * This file may be redistributed under the terms of the GNU Public
+ * License.
+ * %End-Header%
+ */
+
+#define _LARGEFILE_SOURCE
+#define _LARGEFILE64_SOURCE
+
+#include <stdio.h>
+#include <unistd.h>
+#include <stdlib.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <fcntl.h>
+#include <errno.h>
+
+int full_read(int fd, char *buf, size_t count)
+{
+	int got, total = 0;
+	int pass = 0;
+
+	while (count > 0) {
+		got = read(fd, buf, count);
+		if (got == -1) {
+			if ((errno == EINTR) || (errno == EAGAIN)) 
+				continue;
+			return total ? total : -1;
+		}
+		if (got == 0) {
+			if (pass++ >= 3)
+				return total;
+			continue;
+		}
+		pass = 0;
+		buf += got;
+		total += got;
+		count -= got;
+	}
+	return total;
+}
+
+int main(int argc, char **argv)
+{
+	int fd, got, i;
+	int zflag = 0;
+	char buf[1024];
+
+	if (argc != 2) {
+		fprintf(stderr, "Usage: make-sparse out-file\n");
+		exit(1);
+	}
+	fd = open(argv[1], O_WRONLY|O_CREAT|O_TRUNC|O_LARGEFILE, 0777);
+	if (fd < 0) {
+		perror(argv[1]);
+		exit(1);
+	}
+	while (1) {
+		got = full_read(0, buf, sizeof(buf));
+		if (got == 0)
+			break;
+		if (got == sizeof(buf)) {
+			for (i=0; i < sizeof(buf); i++) 
+				if (buf[i])
+					break;
+			if (i == sizeof(buf)) {
+				lseek(fd, sizeof(buf), SEEK_CUR);
+				zflag = 1;
+				continue;
+			}
+		}
+		zflag = 0;
+		write(fd, buf, got);
+	}
+	if (zflag) {
+		lseek(fd, -1, SEEK_CUR);
+		buf[0] = 0;
+		write(fd, buf, 1);
+	}
+	return 0;
+}
+		
 
