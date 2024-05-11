@@ -1,164 +1,168 @@
-Return-Path: <linux-ext4+bounces-2453-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2454-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 08FBA8C2FAE
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 07:34:59 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3CECF8C2FD2
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 08:24:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58CEC1F22BBC
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 05:34:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 99CEBB23037
+	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 06:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09BC74779D;
-	Sat, 11 May 2024 05:34:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b="CO/ADUBe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D1824F5FE;
+	Sat, 11 May 2024 06:24:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mister-muffin.de (mister-muffin.de [144.76.155.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F93A208A0
-	for <linux-ext4@vger.kernel.org>; Sat, 11 May 2024 05:34:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.155.182
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0A34F215;
+	Sat, 11 May 2024 06:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715405693; cv=none; b=rY8/NfI623PlstmZXgW6Bu29PzE2efqWG/hsJyG6ZnAbte8NImXJLC7qrajqXmKwrmNBEWQQeQyW86ySiejO9FaYvdhqW7OmzBJpTjG8mZ9vPHFUrTKaljhdsYqi3c9ETDPNQNLvAtuvDC43GYnIsMLZRe0MdmW5PEs4RHSB4MM=
+	t=1715408667; cv=none; b=NMA4j2ugwxnPFmdV+vlIZz1YLAAgyD7leDGgQZhJvOGeUBmBhPFqmkTK0bPoiSytfKRzA8GWe3FJZIc6S+MDMNzB4M+hQZ7fRUsSrL7tOf5LJClLNQvrBOA81K5uz8MA7Vz79dZ2XUy6LL0vLI1nJ/kSjpwJ2FCjscwqFegv+rI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715405693; c=relaxed/simple;
-	bh=V0OIeU2K/e3Qj/CVLYhcSEnrkfba/979DXki9MHQ89o=;
-	h=Content-Type:MIME-Version:Content-Disposition:In-Reply-To:
-	 References:Subject:From:Cc:To:Date:Message-ID; b=tsZvCkvxkJcwDMZDD92fBbKXAEGWOzlGDZRZ7X8LBkqkchIsMIj5S40C2FkYpMH5nFequwxHTsArpxEC2+ZlaOzsE4IB/6W8jgmitznCm1inNC3XopY9f1Ec4/vqOSwK+uZE/3bNKLc2/jpLKxWI1039R37m+uICtzFmHhWfyg4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de; spf=pass smtp.mailfrom=mister-muffin.de; dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b=CO/ADUBe; arc=none smtp.client-ip=144.76.155.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mister-muffin.de
-Received: from localhost (unknown [37.4.230.225])
-	by mister-muffin.de (Postfix) with ESMTPSA id 3F5E527E;
-	Sat, 11 May 2024 07:34:43 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mister-muffin.de;
-	s=mail; t=1715405683;
-	bh=V0OIeU2K/e3Qj/CVLYhcSEnrkfba/979DXki9MHQ89o=;
-	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
-	b=CO/ADUBeO5vOBDYx1jcKuZhtTxT67oXbMspWw8vkzRqb+EUgwoAvZNKCvSgXbHeAa
-	 JrBDWDDafZ826Qu6Kd5N5iwP/ijMY/SDr1H/CYzIKMBdLwk60ra62BOY6W0iGDui34
-	 syUYdySVyhTtPYRvjxN5NwdCN6gxUA8nE2n37Qn0=
-Content-Type: multipart/signed; micalg="pgp-sha512"; protocol="application/pgp-signature"; boundary="===============0751526021854325053=="
+	s=arc-20240116; t=1715408667; c=relaxed/simple;
+	bh=5xv07f5Ibu51HbaqexyG2XEUvbwQjsn0EnRz/MNOTuw=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Bg2JnbBZBicJJ+CMYKhXpOBjsZ7YGXwXd3UpBKO9WWzmaNcvoALRBZOQhA2iuSEOYFLQvYkUUMmneseSA9JBGRHPxh3l2YmxjzW+L7Am3kY52xzqLmFr7ou4z8N6EiTRCGn5AQr8ZfDgvU+cNDs8/XEHfZWiyMa3eWk9UhL0kIU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vbwgy0npsz4f3jJ6;
+	Sat, 11 May 2024 14:24:14 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 812051A0572;
+	Sat, 11 May 2024 14:24:19 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP2 (Coremail) with SMTP id Syh0CgBXfA8RDz9md1mUMg--.18691S3;
+	Sat, 11 May 2024 14:24:19 +0800 (CST)
+Subject: Re: [PATCH] ext4: fix infinite loop when replaying fast_commit
+To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
+ Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+References: <20240510115252.11850-1-luis.henriques@linux.dev>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <2ee78957-b0a6-f346-5957-c4b2ebcea4ce@huaweicloud.com>
+Date: Sat, 11 May 2024 14:24:17 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Disposition: inline
-In-Reply-To: <20240505001020.GA3035072@mit.edu>
-References: <171483317081.2626447.5951155062757257572@localhost> <171484520952.2626447.2160419274451668597@localhost> <20240505001020.GA3035072@mit.edu>
-Subject: Re: created ext4 disk image differs depending on the underlying filesystem
-From: Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
-Cc: linux-ext4@vger.kernel.org
-To: Theodore Ts'o <tytso@mit.edu>
-Date: Sat, 11 May 2024 07:34:42 +0200
-Message-ID: <171540568260.2626447.10970955416649779876@localhost>
-User-Agent: alot/0.10
-
---===============0751526021854325053==
-Content-Type: text/plain; charset="utf-8"
-MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-
-Hi Ted,
-
-thank you very much for your (as usual) very detailed and comprehensive rep=
-ly!
-:D
-
-Quoting Theodore Ts'o (2024-05-05 02:10:20)
-> If your goal is to create completely reproducible image files, one questi=
-on
-> is whether keeping the checksums identical is enough, or do you care about
-> whether the underlying file is being more efficiently stored by using spa=
-rse
-> files or extents marked unitialized?
->=20
-> Depending on how much you care about reproducibility versus file
-> storage efficiency, I could imagine adding some kind of option which
-> disables the zeroout function, and forces e2fsprogs to always write
-> zeros, even if that increases the write wearout rate of the underlying
-> flash file system, and increasing the size of the image file.  Or I
-> could imageine some kind of extended option which hacks mke2fs to zero out
-> the lifetime writes counter.;
-
-the good news is, that the fix in my situation is very simple: create the
-filesystem on a tmpfs first and then copy it into 9p fs afterwards. Tada, t=
-he
-created images will be reproducible. I think there are multiple ways forward
-with which I'd be happy with:
-
- 1. leave everything as it is. It's just one more copy operation on my end.=
-  I
-    can just document that if your underlying file system is stupid, you mi=
-ght
-    not get the same identical image as somebody with a more intelligent
-    filesystem does.
-
- 2. allow resetting fs->super->s_kbytes_written to zero. This patch worked =
-for
-    me:
-
---- a/lib/ext2fs/closefs.c
-+++ b/lib/ext2fs/closefs.c
-@@ -504,6 +504,7 @@ errcode_t ext2fs_close2(ext2_filsys fs, int flags)
-                                (fs->blocksize / 1024);
-                if ((fs->flags & EXT2_FLAG_DIRTY) =3D=3D 0)
-                        fs->flags |=3D EXT2_FLAG_SUPER_ONLY | EXT2_FLAG_DIR=
-TY;
-+               fs->super->s_kbytes_written =3D 0;
-        }
-        if (fs->flags & EXT2_FLAG_DIRTY) {
-                retval =3D ext2fs_flush2(fs, flags);
-
-
-    If my goal is to create disk images, one could argue that what the end =
-user
-    is interested in, is the filesystem writes that *they* performed and th=
-at
-    the disk image they receive should therefor have the counter start at z=
-ero.
-
- 3. Somehow do magic with the zeroout function. If anybody has too much
-    free-time... ;)
-
-As an end-user I am very interested in keeping the functionality of mke2fs
-which keeps track of which parts are actually sparse and which ones are not.
-This functionality can be used with tools like "bmaptool" (a more clever dd=
-) to
-only copy those parts of the image to the flash drive which are actually
-supposed to contain data.
-
-Would you be happy about a patch for (2.)? If yes, I can send something over
-once I find some time. :)
-
-Thanks!
-
-cheers, josch
---===============0751526021854325053==
-MIME-Version: 1.0
+In-Reply-To: <20240510115252.11850-1-luis.henriques@linux.dev>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
 Content-Transfer-Encoding: 7bit
-Content-Description: signature
-Content-Type: application/pgp-signature; name="signature.asc"; charset="us-ascii"
+X-CM-TRANSID:Syh0CgBXfA8RDz9md1mUMg--.18691S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxJw13JFyrAFW5Zw48XF43Wrg_yoW5uFy8pF
+	9Ivr1DGrs8Way0kay7Gw4UZF1Yka1xC3y7GryfGr1rGF98Jrn3ZF18tFyakas3WrW8J3WY
+	vF40y34jkanIkaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCF04k20xvY0x0E
+	wIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E74
+	80Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0
+	I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04
+	k26cxKx2IYs7xG6rW3Jr0E3s1lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY
+	1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1zuWJUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
------BEGIN PGP SIGNATURE-----
+On 2024/5/10 19:52, Luis Henriques (SUSE) wrote:
+> When doing fast_commit replay an infinite loop may occur due to an
+> uninitialized extent_status struct.  ext4_ext_determine_insert_hole() does
+> not detect the replay and calls ext4_es_find_extent_range(), which will
+> return immediately without initializing the 'es' variable.
+> 
+> Because 'es' contains garbage, an integer overflow may happen causing an
+> infinite loop in this function, easily reproducible using fstest generic/039.
+> 
+> This commit fixes this issue by detecting the replay in function
+> ext4_ext_determine_insert_hole().  It also adds initialization code to the
+> error path in function ext4_es_find_extent_range().
+> 
+> Thanks to Zhang Yi, for figuring out the real problem!
+> 
+> Fixes: 8016e29f4362 ("ext4: fast commit recovery path")
+> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+> ---
+> Hi!
+> 
+> Two comments:
+> 1) The change in ext4_ext_map_blocks() could probably use the min_not_zero
+>    macro instead.  I decided not to do so simply because I wasn't sure if
+>    that would be safe, but I'm fine changing that if you think it is.
+> 
+> 2) I thought about returning 'EXT_MAX_BLOCKS' instead of '0' in
+>    ext4_lblk_t ext4_ext_determine_insert_hole(), which would then avoid
+>    the extra change to ext4_ext_map_blocks().  '0' sounds like the right
+>    value to return, but I'm also OK using 'EXT_MAX_BLOCKS' instead.
+> 
+> And again thanks to Zhang Yi for pointing me the *real* problem!
+> 
+>  fs/ext4/extents.c        | 6 +++++-
+>  fs/ext4/extents_status.c | 5 ++++-
+>  2 files changed, 9 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index e57054bdc5fd..b5bfcb6c18a0 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4052,6 +4052,9 @@ static ext4_lblk_t ext4_ext_determine_insert_hole(struct inode *inode,
+>  	ext4_lblk_t hole_start, len;
+>  	struct extent_status es;
+>  
+> +	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+> +		return 0;
+> +
 
-iQIzBAABCgAdFiEElFhU6KL81LF4wVq58sulx4+9g+EFAmY/A2oACgkQ8sulx4+9
-g+GY4RAAu5QOgV8+BVPzH966NS9RpJu7TR/rtj9XjnNJF1yU+YlMY7TU9zD40Gq4
-B8aKsg1o4mEj2pOSfIPEwL4CkCZ/AfOWQAt2pxfAtWoh1iOjeQdaz6ZBVjkt6/2O
-HMznP6w1eCrcIjr8AanAUAT7KxZWxxYki25LCcsiehzXvY59Yu6vUdundbrOo6Eh
-AahB0NXIYC52ZcwTKrltPSt7JRt5jBE3qgkRpenzln0o6JKU9UBOUqTgqW9ENsL2
-d5RL1YUV/UrkTpyPKKMUmj86oHixmlNm0qzvMXtgnAIhXEmsflytT9c+kMb2JXYN
-WbbwdI+w1YOXDhwPc53ZDsiNGfDSrHJeAmnuhHu3mm28PtRZirJYexYvZuzf6dMu
-v+c/01EwAqSuzrW4bGi2CkGKHiWjmXqeO+f9/hVOCA8+MVzonAgBU5woROTwtQEx
-h21rLYtbLdfy5bf+YUo22WZ1Fq6+JI0LpeU8qXb0cBB0Sox4x/kEDfCV4CR3RdlL
-Ey4Z4n689h3612wBMXLzKQ4lwJMVOjGt+yzTTfmFTeASSBmtBpRqGfydwinvbopQ
-pfUc6rdaYLPimS5kVK44fe40eSZQBkZQL2YflRBsom8H1jDAQEff4XKQ68EmmQ+4
-bAa/c7DjdjpSwgjOxf86f5eu9mj7a2cZKXsvu3d6An3y1STaQNI=
-=JLUI
------END PGP SIGNATURE-----
+Sorry, I think it's may not correct. When replaying the jouranl, although
+we don't use the extent statue tree, we still need to query the accurate
+hole length, e.g. please see skip_hole(). If you do this, the hole length
+becomes incorrect, right?
 
---===============0751526021854325053==--
+Thanks,
+Yi.
+
+>  	hole_start = lblk;
+>  	len = ext4_ext_find_hole(inode, path, &hole_start);
+>  again:
+> @@ -4226,7 +4229,8 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
+>  		len = ext4_ext_determine_insert_hole(inode, path, map->m_lblk);
+>  
+>  		map->m_pblk = 0;
+> -		map->m_len = min_t(unsigned int, map->m_len, len);
+> +		if (len > 0)
+> +			map->m_len = min_t(unsigned int, map->m_len, len);
+>  		goto out;
+>  	}
+>  
+> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+> index 4a00e2f019d9..acb9616ca119 100644
+> --- a/fs/ext4/extents_status.c
+> +++ b/fs/ext4/extents_status.c
+> @@ -310,8 +310,11 @@ void ext4_es_find_extent_range(struct inode *inode,
+>  			       ext4_lblk_t lblk, ext4_lblk_t end,
+>  			       struct extent_status *es)
+>  {
+> -	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
+> +	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) {
+> +		/* Initialize extent to zero */
+> +		es->es_lblk = es->es_len = es->es_pblk = 0;
+>  		return;
+> +	}
+>  
+>  	trace_ext4_es_find_extent_range_enter(inode, lblk);
+>  
+> 
+
 
