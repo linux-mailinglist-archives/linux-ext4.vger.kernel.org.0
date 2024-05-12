@@ -1,222 +1,157 @@
-Return-Path: <linux-ext4+bounces-2466-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2467-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ADF2F8C33D0
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 23:11:37 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5199E8C353B
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 May 2024 08:42:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1AAD0B20FB7
-	for <lists+linux-ext4@lfdr.de>; Sat, 11 May 2024 21:11:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BF36EB20E34
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 May 2024 06:42:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA6DB21A04;
-	Sat, 11 May 2024 21:11:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633FFFC0C;
+	Sun, 12 May 2024 06:42:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="fSy1J64E"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KopbyPZV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4607617BAB
-	for <linux-ext4@vger.kernel.org>; Sat, 11 May 2024 21:11:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8FEF4E2
+	for <linux-ext4@vger.kernel.org>; Sun, 12 May 2024 06:42:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715461887; cv=none; b=FyP9PHG6Q4mh1DgWO/O+wUXT1Gv1h2s0hefbXI8nwx5yiiCFzq6fIWEimdyLB1VFlBYePlp3eN0BjMYs5gVUFp14VHUC3F74UyLP2bRz8lsiaghMWE4rZ9a6yCmGXeEo7ALjxsTRRT2gD93KzdYZccY+Rfa3cAFJ+WRdNoUHG7w=
+	t=1715496133; cv=none; b=txTRn02ixuaiK2n0t1m/Xa0Y09Ero960JJ2LgmguRybNXRdduoRc2n6NhH/5bET4bQg5QsPjYG5ZnrPgONK4uDWGBdMj3e2epnt76vAZ4BTt77OHmxksxNQSoFqfdNlXIwNiwd0YZboEiqsoMgBWKlJ2rPfFETIqrflwYK1Eyqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715461887; c=relaxed/simple;
-	bh=kJVDLALZidCmgSbZPHhXzlhchHYLkjc0AlkX4pIv4f0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=S+TJG1FphdhsDc5IRjJAybuo3Hk/QU5NlErEurk9LJGw8V7d86ED5IV2dWnfslRH88tzhAcz2bXCg8XBhz7T+EqLm2oT34MMf91JvJMKaNB00h9fXJFEfJWmzvFkYrXzMhwZ2rT3VxD0QPqYgJ9BGPmSRW7L2ihUgdDcWRJauE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=fSy1J64E; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44BLBBXR014486
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 11 May 2024 17:11:13 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1715461873; bh=dIyxdzXTrRQaKLhsuF0q8Wg2Yo1YioB5EW7AUHS/oMI=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=fSy1J64EU62iUA2PNfCbfl65mAebKWoK7763qtxLZrJKcyEjfF00jxQfBvS9x1r1a
-	 2vVkVPk7UC4xrdxPSNMkgXuFI6xeZ+tJEhE6MlehMhHm7zcNWLaQU+2lSazaE+n5Kv
-	 OuLR1V43BQiN+KUwJE0U6N1p+aVai17AhvCdKZFkkYczIOWGkIDP6TC0JMIqo7zDQV
-	 AGz8lQkHBkKzxNjVSeoWUwiolmYwYO0U7p6Yay9Iqphifs6Cu4qzONZmEq14x+tMMj
-	 FLD4IkiD02cVGiqY0ozJnVa3d5yjdbsEO4iiHE8IT+OWe6t2jNXCBfFj8bk5uRZU7j
-	 4FK0QfJsTNhcg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id A2AD315C026D; Sat, 11 May 2024 17:11:11 -0400 (EDT)
-Date: Sat, 11 May 2024 17:11:11 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: created ext4 disk image differs depending on the underlying
- filesystem
-Message-ID: <20240511211111.GA8330@mit.edu>
-References: <171483317081.2626447.5951155062757257572@localhost>
- <171484520952.2626447.2160419274451668597@localhost>
- <20240505001020.GA3035072@mit.edu>
- <171540568260.2626447.10970955416649779876@localhost>
+	s=arc-20240116; t=1715496133; c=relaxed/simple;
+	bh=hplt68wxLVPFe/FBNJNv4BcOR82+0WZFYIvXcEjlD9s=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZDN/SZzr+yjCXWzdhnSqV9/5oq9NEgoJo3II7EeRoZOKJAGLJGaa5HOqEG4PExQg7P5+qRwhumb24nYx+YUzT58S54Yz6qAX3Jr3sEIkVHmZuRRZ0eLg4zUiJ1UrR5eJYTX9vSK7gVAC1msLfndZeBmgKwBfT+qZRFod3NX8jkI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KopbyPZV; arc=none smtp.client-ip=209.85.214.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1ec41d82b8bso32062805ad.2
+        for <linux-ext4@vger.kernel.org>; Sat, 11 May 2024 23:42:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1715496131; x=1716100931; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=y6kyLjXqotM5y5xq23p634i7QEzpbaRbZQhJ63CdyQA=;
+        b=KopbyPZV4gK/TNtVTG4/xkTmGMmmQ2PQ6rUKsZjJ+ASc0OFr8yDUub1VjdKPp6BlLv
+         VCERz0Ifpp3J7e3UP8hoDxVMRX/Us0RvIwK/O1kvTFl1wOmLTChfBw015fO7PnFrW4yb
+         REWoRI3XytFQrdGAzKerJ9R40BQDjqHxkrQpx8t7GXXOWPOmSXHtNcDT/4zBE35DdilH
+         pE3zQf4+IjbCVfCP3BAYIJjjUtjI+7unK0XRCbt891fpDoUuJKnCO7qg5zytcZbVTLD2
+         h8MX6659LQCbut4H2okG6FcyzqWBhO/cghu4pEVWoFJmI5T77Gb68VUjf3Y8ecvGEpEH
+         5F4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715496131; x=1716100931;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=y6kyLjXqotM5y5xq23p634i7QEzpbaRbZQhJ63CdyQA=;
+        b=pUx9DEskGtI1ApxhgZRjnStZ7i7HdkrwDCAQ7NvXGlllKEwIkXCTwWULU5BT2DWxxk
+         CgHNxBaPutpFfRl21ENzgjSbB9/kO40DNL0fyU25fg4CC6ETy0dcHH9TXpn4AkRPyxaD
+         iSGfflaBEMFH2HZMzulBOYmVFXm6HdsK1yMBh19gV1HdXEzCUTuzhIhKXY2IxJJS/JzY
+         oXzV0wK+1IunoBaMelCZQHX8dzmQ+cTeECZCWvYvIrdkTEm11ntvDET/8mm6+U4ZwZoR
+         TBKBCnCk4oKumtDjrZuYjVj85RURiUbmeKotFGyQZsOVFkPUmSuVvfKJkwPbXS2EMEGC
+         Ce5A==
+X-Gm-Message-State: AOJu0YzjrBqCOKv1GJoM8YRwkZ0m30n925SjqKqK8DRw3gE/KWFoxkXJ
+	pFJzpP9cqBFv65IyzoFcRal3EYIrgr/mtGgqKExJ4W0p80YMcFNe
+X-Google-Smtp-Source: AGHT+IEIqgBYkYkFouD3yUErzm5Qg7GSn2XiLVYpb/AD/cnTl7BsFJFAF8vetVXpqgqAFG6LK1Wauw==
+X-Received: by 2002:a17:902:cccb:b0:1f0:6960:1911 with SMTP id d9443c01a7336-1f0696019f0mr23329715ad.44.1715496130680;
+        Sat, 11 May 2024 23:42:10 -0700 (PDT)
+Received: from KERNELXING-MB0.tencent.com ([111.201.28.17])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1ef0bf2f503sm57455215ad.122.2024.05.11.23.42.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 11 May 2024 23:42:10 -0700 (PDT)
+From: Jason Xing <kerneljasonxing@gmail.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
+	kerneljasonxing@gmail.com,
+	Jason Xing <kernelxing@tencent.com>
+Subject: [PATCH] ext4: fix a data-race around bg_free_inodes_count_lo
+Date: Sun, 12 May 2024 14:42:02 +0800
+Message-Id: <20240512064203.63067-1-kerneljasonxing@gmail.com>
+X-Mailer: git-send-email 2.33.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <171540568260.2626447.10970955416649779876@localhost>
+Content-Transfer-Encoding: 8bit
 
-On Sat, May 11, 2024 at 07:34:42AM +0200, Johannes Schauer Marin Rodrigues wrote:
->  2. allow resetting fs->super->s_kbytes_written to zero. This patch worked for
->     me:
-> 
-> Would you be happy about a patch for (2.)? If yes, I can send something over
-> once I find some time. :)
-> 
+From: Jason Xing <kernelxing@tencent.com>
 
-I'm currently going back and forth about whether we should just (a)
-unconditionally set s_kbytes_writes to zero before we write out the
-superblock, or (b) whether we add a new extended operation, or (c) do
-a hack where if SOURCE_DATE_EPOCH is set, use that as implied "set
-s_kbytes_written to zero since the user is probably caring about a
-reproducible file system".
+As KCSAN reported below, this member could be accessed concurrently
+by two different cpus without lock protection.
 
-(c) is a bit hacky, but it's the most convenient for users, and adding
-Yet Another extended operation.
+BUG: KCSAN: data-race in ext4_free_inodes_count / ext4_free_inodes_set
 
-Related to this is the design question about whether SOURCE_DATE_EPOCH
-should imply using a fixed value for s_uuid and s_hash_seed.  Again,
-it's a little weird to overload SOURCE_DATE_EPOCH to setting the uuid
-and hash_seed to some fixed value, which might be a time-based UUID
-with the ethernet address set to all zeroes, or some other fixed
-value.  But it's a pretty good proxy of what the user wants, and if
-this is this is the default, the user can always override it via an
-extended option if they really want something different.
+write to 0xffff8881029ee00e of 2 bytes by task 3446 on cpu 0:
+ ext4_free_inodes_set+0x1f/0x80 fs/ext4/super.c:405
+ ext4_free_inode+0x436/0x810 fs/ext4/ialloc.c:323
+ ext4_evict_inode+0xb20/0xdc0 fs/ext4/inode.c:303
+ evict+0x1aa/0x410 fs/inode.c:665
+ iput_final fs/inode.c:1739 [inline]
+ iput+0x42c/0x5c0 fs/inode.c:1765
+ do_unlinkat+0x282/0x4c0 fs/namei.c:4409
+ __do_sys_unlink fs/namei.c:4450 [inline]
+ __se_sys_unlink fs/namei.c:4448 [inline]
+ __x64_sys_unlink+0x30/0x40 fs/namei.c:4448
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcd/0x1d0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-If it weren't for the fact that I'm considering have SOURCE_DATE_EPOCH
-provide default values for s_uuid and s_hash_seed, I'd be tempted to just
-unconditionally set the s_kbytes_written to zero.
+read to 0xffff8881029ee00e of 2 bytes by task 4984 on cpu 1:
+ ext4_free_inodes_count+0x1c/0x80 fs/ext4/super.c:349
+ find_group_other fs/ext4/ialloc.c:594 [inline]
+ __ext4_new_inode+0x6eb/0x2270 fs/ext4/ialloc.c:1017
+ ext4_symlink+0x242/0x590 fs/ext4/namei.c:3396
+ vfs_symlink+0xc2/0x1a0 fs/namei.c:4484
+ do_symlinkat+0xe3/0x340 fs/namei.c:4510
+ __do_sys_symlinkat fs/namei.c:4526 [inline]
+ __se_sys_symlinkat fs/namei.c:4523 [inline]
+ __x64_sys_symlinkat+0x62/0x70 fs/namei.c:4523
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcd/0x1d0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-I'm curious what your opinions might be on this, as someone who might
-want to use this feature.
+value changed: 0x1855 -> 0x1856
 
-> As an end-user I am very interested in keeping the functionality of mke2fs
-> which keeps track of which parts are actually sparse and which ones are not.
-> This functionality can be used with tools like "bmaptool" (a more clever dd) to
-> only copy those parts of the image to the flash drive which are actually
-> supposed to contain data.
+Reported by Kernel Concurrency Sanitizer on:
+CPU: 1 PID: 4984 Comm: syz-executor.1 Not tainted 6.8.0-rc7-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 01/25/2024
 
-If the file system where the image is created supports either the
-FIEMAP ioctl or fallocate SEEK_HOLE, then "bmaptool create" can figure
-out which parts of the file is sparse, so we don't need to make any
-changes to e2fsprogs.  If the file system doesn't support FIEMAP or
-SEEK_HOLE, one could imagine that bmaptool could figure out which
-parts of the file could be sparse simply by looking for blocks that
-are all zeroes.  This is basically what "cp --sparse=always" or what
-the attached make-sparse.c file does to determine where the holes could be.
+Signed-off-by: Jason Xing <kernelxing@tencent.com>
+---
+ fs/ext4/super.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-Yes, I could imagine adding a new io_manager much like test_io and
-undo_io which tracked which blocks had been written, and then would
-write out a BMAP file.  However, the vast majority of constructed file
-systems are quite small, so simply reading all of the blocks to
-determine which blocks were all zeroes ala cp --sparse=always isn't
-going to invole all that much overhead.  And I'd argue the right thing
-to do would be to teach bmaptool how to do what cp --sparse=always so
-that the same interface regardless of whether bmaptool is running on a
-modern file system that supports FIEMAP or SEEK_HOLE, or some legacy
-file system like FAT16 or FAT32.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 044135796f2b..cf817a6a6e27 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -346,7 +346,7 @@ __u32 ext4_free_group_clusters(struct super_block *sb,
+ __u32 ext4_free_inodes_count(struct super_block *sb,
+ 			      struct ext4_group_desc *bg)
+ {
+-	return le16_to_cpu(bg->bg_free_inodes_count_lo) |
++	return le16_to_cpu(READ_ONCE(bg->bg_free_inodes_count_lo)) |
+ 		(EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT ?
+ 		 (__u32)le16_to_cpu(bg->bg_free_inodes_count_hi) << 16 : 0);
+ }
+@@ -402,7 +402,7 @@ void ext4_free_group_clusters_set(struct super_block *sb,
+ void ext4_free_inodes_set(struct super_block *sb,
+ 			  struct ext4_group_desc *bg, __u32 count)
+ {
+-	bg->bg_free_inodes_count_lo = cpu_to_le16((__u16)count);
++	WRITE_ONCE(bg->bg_free_inodes_count_lo, cpu_to_le16((__u16)count));
+ 	if (EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT)
+ 		bg->bg_free_inodes_count_hi = cpu_to_le16(count >> 16);
+ }
+-- 
+2.37.3
 
-Cheers,
-
-						- Ted
-/*
- * make-sparse.c --- make a sparse file from stdin
- * 
- * Copyright 2004 by Theodore Ts'o.
- *
- * %Begin-Header%
- * This file may be redistributed under the terms of the GNU Public
- * License.
- * %End-Header%
- */
-
-#define _LARGEFILE_SOURCE
-#define _LARGEFILE64_SOURCE
-
-#include <stdio.h>
-#include <unistd.h>
-#include <stdlib.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <errno.h>
-
-int full_read(int fd, char *buf, size_t count)
-{
-	int got, total = 0;
-	int pass = 0;
-
-	while (count > 0) {
-		got = read(fd, buf, count);
-		if (got == -1) {
-			if ((errno == EINTR) || (errno == EAGAIN)) 
-				continue;
-			return total ? total : -1;
-		}
-		if (got == 0) {
-			if (pass++ >= 3)
-				return total;
-			continue;
-		}
-		pass = 0;
-		buf += got;
-		total += got;
-		count -= got;
-	}
-	return total;
-}
-
-int main(int argc, char **argv)
-{
-	int fd, got, i;
-	int zflag = 0;
-	char buf[1024];
-
-	if (argc != 2) {
-		fprintf(stderr, "Usage: make-sparse out-file\n");
-		exit(1);
-	}
-	fd = open(argv[1], O_WRONLY|O_CREAT|O_TRUNC|O_LARGEFILE, 0777);
-	if (fd < 0) {
-		perror(argv[1]);
-		exit(1);
-	}
-	while (1) {
-		got = full_read(0, buf, sizeof(buf));
-		if (got == 0)
-			break;
-		if (got == sizeof(buf)) {
-			for (i=0; i < sizeof(buf); i++) 
-				if (buf[i])
-					break;
-			if (i == sizeof(buf)) {
-				lseek(fd, sizeof(buf), SEEK_CUR);
-				zflag = 1;
-				continue;
-			}
-		}
-		zflag = 0;
-		write(fd, buf, got);
-	}
-	if (zflag) {
-		lseek(fd, -1, SEEK_CUR);
-		buf[0] = 0;
-		write(fd, buf, 1);
-	}
-	return 0;
-}
-		
 
