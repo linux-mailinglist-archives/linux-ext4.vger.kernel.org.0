@@ -1,192 +1,181 @@
-Return-Path: <linux-ext4+bounces-2472-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2473-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A2AE8C3A3C
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2024 04:40:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6941C8C3C18
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2024 09:32:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF58B1F211D3
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2024 02:40:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5B66B20FD8
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2024 07:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CCE6145B15;
-	Mon, 13 May 2024 02:40:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YHssM6z7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01DEE146A96;
+	Mon, 13 May 2024 07:31:55 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5A2112AAEA
-	for <linux-ext4@vger.kernel.org>; Mon, 13 May 2024 02:40:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2CB5E1465A7;
+	Mon, 13 May 2024 07:31:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715568000; cv=none; b=SIQ6a/PW2PgSqvpd9neq8aGiIacxTKOQ4UERSWD0EXEbRsl2o8uMx6FeLNDbRShP1L42E+o6qNmNG94opirYrhgGkrzGlvGJ1RwD5Onytd+UhGDU9vxE6qxV8Ylwp4YtLQxJ8yiP8pg6L3FIOU8RawEAWD9nnwgJ7yp0EYSpWBg=
+	t=1715585514; cv=none; b=sgk8SZYDtFFUusCza0+dsgLw4mQQgDbdbuyBTOtuuZM7CLe6acjZfqDyruK3HXzgmaXj/DpLYlH4qwngqR32dPXX4SLmW08VZJdPwj1+2LFMDzy9wBmEfxM03CgzjuIEGJ0xZHK41m2wKMDPtgPetCpr0h9NjJj9iWSHDJv3JZ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715568000; c=relaxed/simple;
-	bh=cU/U6y+2HtKzFVYW3ZOrvw+h41VWIY5Fg8wOOXN0RaY=;
-	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Hl41z2/fP/s7+IFCUg79RCewCSAZU4tIp34ztju8QImNrioxiJng+2b67SR9wjdvwvTvqlKjbUQdwlNf63L1bxaQu/wrhfkJK4dc7d9q2NWVDmQfRBIW+nc4UDzkV2fA1ISU5G5rWk/tQU594DBSI1/jgIhAcXCKFaiddRWZTE0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YHssM6z7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 58C40C32782
-	for <linux-ext4@vger.kernel.org>; Mon, 13 May 2024 02:40:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1715568000;
-	bh=cU/U6y+2HtKzFVYW3ZOrvw+h41VWIY5Fg8wOOXN0RaY=;
-	h=From:To:Subject:Date:From;
-	b=YHssM6z7lK8vRup1qixMXUFMOxLD4prw5NprwudpiG8emSume8DmVy8T3GpWULlyT
-	 8dFqkr0rFlvsnZXVvI1Gss8bPMIx+RElr16iDYjm8mLajxV0Lcl63zQIF6THmaaNYM
-	 6jW8Q86OMs5ss4PH1/uOlu1LiMu1C2D14YbvlmAg9rKeYx0Yg0VnyAQYBKrXULhqAq
-	 DKZh9usc0AKDOt86wMpzn18LMnctcgYUjsGIkXG3OoJLu771hMG6kvWLdK2V6bGnvX
-	 bukIE/DGJXi5unTBp2DDX890P4Dh6OJ7mG8eh1RyecYUZqHvAG/I2yN4E2HO/p21Vr
-	 o0rJw0YGJeeug==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 4B89BC53B73; Mon, 13 May 2024 02:40:00 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
+	s=arc-20240116; t=1715585514; c=relaxed/simple;
+	bh=mP89frmnm1S7+Nm2icvcGrXsiMEAppOWG+koyBdlx9Y=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QKcl+i02hlq85xGz+0X/n5OhgSmGuOoTHDyd7cy26FOfhI0ZifXJbpWb6AwOF2EM0P39XfsJTB0frfIw/pwVpSGmZqoqNLHI6/fBUr7I0DoQqNzcOgCuOfpff+hElSjGeIEj0RREaNUYjgEP8jxGVY0dHoHgCu1qrCTDgv6c0fw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VdB4k24Pmz4f3jHV;
+	Mon, 13 May 2024 15:31:34 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id D000D1A0C87;
+	Mon, 13 May 2024 15:31:42 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgBnOBHYwUFm_f0hMg--.51716S4;
+	Mon, 13 May 2024 15:31:40 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
 To: linux-ext4@vger.kernel.org
-Subject: [Bug 218830] New: lseek on closed file does not trigger an error and
- affect other files
-Date: Mon, 13 May 2024 02:39:59 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: new
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: zhangchi_seg@smail.nju.edu.cn
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
- op_sys bug_status bug_severity priority component assigned_to reporter
- cf_regression attachments.created
-Message-ID: <bug-218830-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH] ext4/jbd2: drop jbd2_transaction_committed()
+Date: Mon, 13 May 2024 15:21:19 +0800
+Message-Id: <20240513072119.2335346-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBnOBHYwUFm_f0hMg--.51716S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF4UKFW7Ww15Xw45uryDWrg_yoWrWryfpa
+	95Cr1xCryDZry8uw18Xr48ZFWjva18KayUWrWDC3Z3ta1UJwn2g3yUtw1avFyDtFZ5uw4U
+	XF1ruw4DG34jk37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UZa9-UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218830
+From: Zhang Yi <yi.zhang@huawei.com>
 
-            Bug ID: 218830
-           Summary: lseek on closed file does not trigger an error and
-                    affect other files
-           Product: File System
-           Version: 2.5
-          Hardware: All
-                OS: Linux
-            Status: NEW
-          Severity: normal
-          Priority: P3
-         Component: ext4
-          Assignee: fs_ext4@kernel-bugs.osdl.org
-          Reporter: zhangchi_seg@smail.nju.edu.cn
-        Regression: No
+jbd2_transaction_committed() is used to check whether a transaction with
+the given tid has already committed, it hold j_state_lock in read mode
+and check the tid of current running transaction and committing
+transaction, but holding the j_state_lock is expensive.
 
-Created attachment 306289
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D306289&action=3Dedit
-reproduce.c
+We have already stored the sequence number of the most recently
+committed transaction in journal t->j_commit_sequence, we could do this
+check by comparing it with the given tid instead. If the given tid isn't
+smaller than j_commit_sequence, we can ensure that the given transaction
+has been committed. That way we could drop the expensive lock and
+achieve about 10% ~ 20% performance gains in concurrent DIOs on may
+virtual machine with 100G ramdisk.
 
-Hi,
+fio -filename=/mnt/foo -direct=1 -iodepth=10 -rw=$rw -ioengine=libaio \
+    -bs=4k -size=10G -numjobs=10 -runtime=60 -overwrite=1 -name=test \
+    -group_reporting
 
-I have a file and lseek on it after calling the close(), but it dose not
-trigger an EBADF error. Then I open and write to another file, but the write
-operation trigger an "Invalid argument" error. I can reproduce this with the
-latest linux kernel https://git.kernel.org/torvalds/t/linux-6.9-rc7.tar.gz
+Before:
+  overwrite       IOPS=88.2k, BW=344MiB/s
+  read            IOPS=95.7k, BW=374MiB/s
+  rand overwrite  IOPS=98.7k, BW=386MiB/s
+  randread        IOPS=102k, BW=397MiB/s
 
-The following is the triggering script:
-```
-dd if=3D/dev/zero of=3Dext4-0.img bs=3D1M count=3D120
-mkfs.ext4 ext4-0.img
-g++ -static reproduce.c
-losetup /dev/loop0 ext4-0.img
-mkdir /root/mnt
-./a.out
-```
-After running the script, you will see an error message:
-```
-write failure: (Invalid argument)
-```
+After:
+  verwrite:       IOPS=105k, BW=410MiB/s
+  read:           IOPS=112k, BW=436MiB/s
+  rand overwrite: IOPS=104k, BW=404MiB/s
+  randread:       IOPS=111k, BW=432MiB/s
 
-The contents of `reproduce.c` :
-```
-#include <assert.h>
-#include <string.h>
-#include <stdlib.h>
-#include <stdio.h>
-#include <stdarg.h>
-#include <stddef.h>
-#include <unistd.h>
-#include <pthread.h>
-#include <errno.h>
-#include <dirent.h>
+CC: Dave Chinner <david@fromorbit.com>
+Suggested-by: Dave Chinner <david@fromorbit.com>
+Link: https://lore.kernel.org/linux-ext4/493ab4c5-505c-a351-eefa-7d2677cdf800@huaweicloud.com/T/#m6a14df5d085527a188c5a151191e87a3252dc4e2
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+ fs/ext4/inode.c      |  4 ++--
+ fs/jbd2/journal.c    | 17 -----------------
+ include/linux/jbd2.h |  1 -
+ 3 files changed, 2 insertions(+), 20 deletions(-)
 
-#include <string>
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 537803250ca9..e8e2865bf9ac 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3199,8 +3199,8 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+ 	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+ 
+ 	if (journal) {
+-		if (jbd2_transaction_committed(journal,
+-			EXT4_I(inode)->i_datasync_tid))
++		if (tid_geq(journal->j_commit_sequence,
++			    EXT4_I(inode)->i_datasync_tid))
+ 			return false;
+ 		if (test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT))
+ 			return !list_empty(&EXT4_I(inode)->i_fc_list);
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index b6c114c11b97..73737cd1106f 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -786,23 +786,6 @@ int jbd2_fc_end_commit_fallback(journal_t *journal)
+ }
+ EXPORT_SYMBOL(jbd2_fc_end_commit_fallback);
+ 
+-/* Return 1 when transaction with given tid has already committed. */
+-int jbd2_transaction_committed(journal_t *journal, tid_t tid)
+-{
+-	int ret = 1;
+-
+-	read_lock(&journal->j_state_lock);
+-	if (journal->j_running_transaction &&
+-	    journal->j_running_transaction->t_tid == tid)
+-		ret = 0;
+-	if (journal->j_committing_transaction &&
+-	    journal->j_committing_transaction->t_tid == tid)
+-		ret = 0;
+-	read_unlock(&journal->j_state_lock);
+-	return ret;
+-}
+-EXPORT_SYMBOL(jbd2_transaction_committed);
+-
+ /*
+  * When this function returns the transaction corresponding to tid
+  * will be completed.  If the transaction has currently running, start
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 971f3e826e15..e15ae324169d 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1643,7 +1643,6 @@ extern void	jbd2_clear_buffer_revoked_flags(journal_t *journal);
+ int jbd2_log_start_commit(journal_t *journal, tid_t tid);
+ int jbd2_journal_start_commit(journal_t *journal, tid_t *tid);
+ int jbd2_log_wait_commit(journal_t *journal, tid_t tid);
+-int jbd2_transaction_committed(journal_t *journal, tid_t tid);
+ int jbd2_complete_transaction(journal_t *journal, tid_t tid);
+ int jbd2_log_do_checkpoint(journal_t *journal);
+ int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid);
+-- 
+2.39.2
 
-#include <sys/mount.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <sys/ioctl.h>
-#include <sys/wait.h>
-#include <sys/xattr.h>
-#include <sys/mount.h>
-#include <sys/statfs.h>
-#include <fcntl.h>
-
-#define ALIGN 4096
-
-void* align_alloc(size_t size) {
-    void *ptr =3D NULL;
-    int ret =3D posix_memalign(&ptr, ALIGN, size);
-    if (ret) {
-      printf("align error\n");
-      exit(1);
-    }
-    return ptr;
-}
-
-int main()
-{
-    mount("/dev/loop0", "/root/mnt", "ext4", 0, "");
-
-    creat("/root/mnt/a", S_IRWXU);
-    creat("/root/mnt/b", S_IRWXU);
-    int fd_a =3D open("/root/mnt/a", O_RDWR);=20
-    close(fd_a);=20
-    int fd_b =3D open("/root/mnt/b", O_RDWR | O_DIRECT);=20
-    int state =3D lseek(fd_a, 7208, SEEK_SET);=20
-    if (state =3D=3D -1) {
-      printf("lseek failure: (%s)\n", strerror(errno));
-    }
-
-    char *buf =3D (char*)align_alloc(4096);
-    memset(buf, 'a', 4096);
-    state =3D write(fd_b, buf, 4096);
-    if (state =3D=3D -1) {
-      printf("write failure: (%s)\n", strerror(errno));
-    }
-
-    close(fd_b);=20
-    return 0;
-}
-```
-
-I also found that if I remove the `O_DIRECT` flag of file b, the write
-operation will not trigger an error, but the contents of b become garbled.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
