@@ -1,210 +1,248 @@
-Return-Path: <linux-ext4+bounces-2470-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2471-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4738F8C3897
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 May 2024 23:28:16 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6538F8C3A36
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2024 04:37:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BBE7D1F217AF
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 May 2024 21:28:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 597F8B20CD4
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 May 2024 02:37:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06BCD54913;
-	Sun, 12 May 2024 21:28:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0079145B0A;
+	Mon, 13 May 2024 02:37:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DbWyX943";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yRY4TBZ8";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="DbWyX943";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="yRY4TBZ8"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Q78Vst7X"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023BE381DA;
-	Sun, 12 May 2024 21:28:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 693A513AA32
+	for <linux-ext4@vger.kernel.org>; Mon, 13 May 2024 02:37:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715549286; cv=none; b=CTapvuktD/BfhXQnrktJIwUJKHwm8/zr4rSipwWbowA2DKjYp3lFrg4DtlycKbCZ/E0eLbK4U9sqPolv24X643/TOu7M3F0x9HK7xYW8Bb5gFRD1YLrU+FMAIkyZqqqzM0abDFYp7wMp4/PUF4B2Q7v5RLclPCcxYLdr6K4ISzk=
+	t=1715567867; cv=none; b=jIO++JzLjkXp26wCPo7R4j2dmgS29YxXdUcPvxXemsZT29ZTrnoxqI/il8qWCeHuRskL0BWjwtZB5L4kWk8VJB4bVG4Rx3mImEGMgy00pALfzo72yiB1AmvDv3udVhcBCUKwDzTSF2CA25pkxqypcQ6KWokBIRH58BRaqcNlBdI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715549286; c=relaxed/simple;
-	bh=KSIt88quIRh+q0RVSSIS6Irr9lCYULs84MOjvBaWryI=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=h8pGbkk38+wYo0pVzTtqHr5sw9yq301pyHE/BmxQLwtoPynJnh6rcSmcsFaVGd4OsNd0aTtErMc5O3ykZT90OWxlldTtfAtAJk187MEspbROeP3+SWtInuiSnO/S8yrSfMsj9aHT7gmPaOhQ0Ii5LC2eV1nqV+HIal8+3tN+Bi0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DbWyX943; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yRY4TBZ8; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=DbWyX943; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=yRY4TBZ8; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0538121B3F;
-	Sun, 12 May 2024 21:28:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1715549283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jf/nTYdtFSrpGP4pdOHHrKJq/xNpkR7aBGpW4FB068A=;
-	b=DbWyX943Zj70x56Nu5YgEr4FCOAh0dtpj+t4G2PgTfoy//scOf6Upl/2ALkpZviP/yX48T
-	16bWEN8/pYhA4iad797kO1XQD8K9KFz09caqlOnCa6rlJH1ovo99p4LhDeP58pK57G0gVZ
-	wbhbJhV8kkX/EDOhsZ5sxMYUEUnGgF4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1715549283;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jf/nTYdtFSrpGP4pdOHHrKJq/xNpkR7aBGpW4FB068A=;
-	b=yRY4TBZ86MHjyMIrAdjz0dLJGgy2lyo0mqSjd4lOhFDT/L6JwGmx3Xwg47UTM8Q0D8ktrZ
-	vij7rp5eteZocLDw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=DbWyX943;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=yRY4TBZ8
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1715549283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jf/nTYdtFSrpGP4pdOHHrKJq/xNpkR7aBGpW4FB068A=;
-	b=DbWyX943Zj70x56Nu5YgEr4FCOAh0dtpj+t4G2PgTfoy//scOf6Upl/2ALkpZviP/yX48T
-	16bWEN8/pYhA4iad797kO1XQD8K9KFz09caqlOnCa6rlJH1ovo99p4LhDeP58pK57G0gVZ
-	wbhbJhV8kkX/EDOhsZ5sxMYUEUnGgF4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1715549283;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jf/nTYdtFSrpGP4pdOHHrKJq/xNpkR7aBGpW4FB068A=;
-	b=yRY4TBZ86MHjyMIrAdjz0dLJGgy2lyo0mqSjd4lOhFDT/L6JwGmx3Xwg47UTM8Q0D8ktrZ
-	vij7rp5eteZocLDw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1BDEE13A3A;
-	Sun, 12 May 2024 21:28:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id tzV8L2E0QWbqKAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Sun, 12 May 2024 21:28:01 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: Eugen Hristev <eugen.hristev@collabora.com>,  tytso@mit.edu,
-  adilger.kernel@dilger.ca,  linux-ext4@vger.kernel.org,
-  jaegeuk@kernel.org,  chao@kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  linux-kernel@vger.kernel.org,  kernel@collabora.com,
-  viro@zeniv.linux.org.uk,  brauner@kernel.org,  jack@suse.cz,  Gabriel
- Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v16 3/9] libfs: Introduce case-insensitive string
- comparison helper
-In-Reply-To: <20240510013330.GI1110919@google.com> (Eric Biggers's message of
-	"Fri, 10 May 2024 01:33:30 +0000")
-Organization: SUSE
-References: <20240405121332.689228-1-eugen.hristev@collabora.com>
-	<20240405121332.689228-4-eugen.hristev@collabora.com>
-	<20240510013330.GI1110919@google.com>
-Date: Sun, 12 May 2024 17:27:48 -0400
-Message-ID: <875xviyb3f.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1715567867; c=relaxed/simple;
+	bh=51Reos7cY2T2HAqnGVhwGonrvgdJAvSb+3kcOadvFIg=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=tQKR0CzhEr7gwftnBlEv0IKAkDoCK8IzVtXFXHeZK51yt/UgiNZbGr/p9yIYBsdeaYTMTW6lPi7u/gWMPBBy/7y8pXroVHwhYcW3brbw72rAjvjU8m5Y44rYxNtp7jQ7B1hMvwmPB8svBNzQkNZ/810tUJhOEiRyVsL7S1Qrf6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Q78Vst7X; arc=none smtp.client-ip=192.198.163.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1715567865; x=1747103865;
+  h=date:from:to:cc:subject:message-id;
+  bh=51Reos7cY2T2HAqnGVhwGonrvgdJAvSb+3kcOadvFIg=;
+  b=Q78Vst7XLMXD6qhIkR7W851yoglXlMxzjRkXzExA65SNKCIl4JqjvvSA
+   0EP2mj3o7GKfbyRtuFDvc5wk23IVwKRzWouVppXwxD6yqvIOK078Ll0oX
+   1CleLPj/aZ9Udw0APZRlqg8RJD7PJremb7HP2clwATTaw36HLiSBQIs6z
+   KPWMooCziyzPFrHZ5gDZlJPx1AwykoK2ivX5LgDYFQwjxfjc0b6by6w/2
+   RTai4QSkp4A4sCeH9HJBnJCUWfztHREVbYkpJb9jg2ycxToOk0YjuVhUC
+   Xk06foOdXwIyItA3dq+wLfYet3xJraNJcwYK1UkLdtuOgwPVekAJEph6C
+   A==;
+X-CSE-ConnectionGUID: xSuFWPKFSDukO6ru7IOfxQ==
+X-CSE-MsgGUID: csPDiS8YSnOy6yAX85Y5Ag==
+X-IronPort-AV: E=McAfee;i="6600,9927,11071"; a="36863055"
+X-IronPort-AV: E=Sophos;i="6.08,157,1712646000"; 
+   d="scan'208";a="36863055"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 12 May 2024 19:37:45 -0700
+X-CSE-ConnectionGUID: xiRe8RYzTH+4Ll3Rj9/w5w==
+X-CSE-MsgGUID: JbWUiahTRKiPxEaWA7P8tA==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,157,1712646000"; 
+   d="scan'208";a="53423200"
+Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
+  by fmviesa002.fm.intel.com with ESMTP; 12 May 2024 19:37:44 -0700
+Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s6LZN-0009Rd-2U;
+	Mon, 13 May 2024 02:37:41 +0000
+Date: Mon, 13 May 2024 10:36:07 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 26770a717cac57041d9414725e3e01dd19b08dd2
+Message-ID: <202405131004.oG494rCr-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Level: 
-X-Spamd-Result: default: False [-6.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	DWL_DNSWL_MED(-2.00)[suse.de:dkim];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.de:dkim];
-	RCVD_TLS_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_TWO(0.00)[2];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_TRACE(0.00)[suse.de:+]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 0538121B3F
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -6.51
 
-Eric Biggers <ebiggers@kernel.org> writes:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 26770a717cac57041d9414725e3e01dd19b08dd2  jbd2: add prefix 'jbd2' for 'shrink_type'
 
-> On Fri, Apr 05, 2024 at 03:13:26PM +0300, Eugen Hristev wrote:
+elapsed time: 726m
 
->> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
->> +			return -EINVAL;
->> +
->> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
->> +		if (!decrypted_name.name)
->> +			return -ENOMEM;
->> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
->> +						&decrypted_name);
->> +		if (res < 0)
->> +			goto out;
->
-> If fscrypt_fname_disk_to_usr() returns an error and !sb_has_strict_encoding(sb),
-> then this function returns 0 (indicating no match) instead of the error code
-> (indicating an error).  Is that the correct behavior?  I would think that
-> strict_encoding should only have an effect on the actual name
-> comparison.
+configs tested: 155
+configs skipped: 3
 
-No. we *want* this return code to be propagated back to f2fs.  In ext4 it
-wouldn't matter since the error is not visible outside of ext4_match,
-but f2fs does the right thing and stops the lookup.
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-Thinking about it, there is a second problem with this series.
-Currently, if we are on strict_mode, f2fs_match_ci_name does not
-propagate unicode errors back to f2fs. So, once a utf8 invalid sequence
-is found during lookup, it will be considered not-a-match but the lookup
-will continue.  This allows some lookups to succeed even in a corrupted
-directory.  With this patch, we will abort the lookup on the first
-error, breaking existing semantics.  Note that these are different from
-memory allocation failure and fscrypt_fname_disk_to_usr. For those, it
-makes sense to abort.
-
-Also, once patch 6 and 7 are added, if fscrypt fails with -EINVAL for
-any reason unrelated to unicode (like in the WARN_ON above), we will
-incorrectly print the error message saying there is a bad UTF8 string.
-
-My suggestion would be to keep the current behavior.  Make
-generic_ci_match only propagate non-unicode related errors back to the
-filesystem.  This means that we need to move the error messages in patch
-6 and 7 into this function, so they only trigger when utf8_strncasecmp*
-itself fails.
-
->> +	/*
->> +	 * Attempt a case-sensitive match first. It is cheaper and
->> +	 * should cover most lookups, including all the sane
->> +	 * applications that expect a case-sensitive filesystem.
->> +	 */
->> +	if (folded_name->name) {
->> +		if (dirent.len == folded_name->len &&
->> +		    !memcmp(folded_name->name, dirent.name, dirent.len))
->> +			goto out;
->> +		res = utf8_strncasecmp_folded(um, folded_name, &dirent);
->
-> Shouldn't the memcmp be done with the original user-specified name, not the
-> casefolded name?  I would think that the user-specified name is the one that's
-> more likely to match the on-disk name, because of case preservation.  In most
-> cases users will specify the same case on both file creation and later access.
-
-Yes.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240513   gcc  
+arc                   randconfig-002-20240513   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                       aspeed_g5_defconfig   gcc  
+arm                                 defconfig   clang
+arm                      footbridge_defconfig   clang
+arm                            hisi_defconfig   gcc  
+arm                         lpc18xx_defconfig   clang
+arm                   randconfig-001-20240513   clang
+arm                   randconfig-002-20240513   gcc  
+arm                   randconfig-003-20240513   clang
+arm                   randconfig-004-20240513   gcc  
+arm                         socfpga_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240513   gcc  
+arm64                 randconfig-002-20240513   gcc  
+arm64                 randconfig-003-20240513   clang
+arm64                 randconfig-004-20240513   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240513   gcc  
+csky                  randconfig-002-20240513   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240513   clang
+hexagon               randconfig-002-20240513   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240513   clang
+i386         buildonly-randconfig-002-20240513   clang
+i386         buildonly-randconfig-003-20240513   gcc  
+i386         buildonly-randconfig-004-20240513   clang
+i386         buildonly-randconfig-005-20240513   gcc  
+i386         buildonly-randconfig-006-20240513   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240513   gcc  
+i386                  randconfig-002-20240513   clang
+i386                  randconfig-003-20240513   gcc  
+i386                  randconfig-004-20240513   clang
+i386                  randconfig-005-20240513   gcc  
+i386                  randconfig-006-20240513   gcc  
+i386                  randconfig-011-20240513   gcc  
+i386                  randconfig-012-20240513   clang
+i386                  randconfig-013-20240513   clang
+i386                  randconfig-014-20240513   gcc  
+i386                  randconfig-015-20240513   gcc  
+i386                  randconfig-016-20240513   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240513   gcc  
+loongarch             randconfig-002-20240513   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        m5307c3_defconfig   gcc  
+m68k                       m5475evb_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                        bcm63xx_defconfig   clang
+mips                     loongson1b_defconfig   clang
+mips                    maltaup_xpa_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240513   gcc  
+nios2                 randconfig-002-20240513   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           alldefconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240513   gcc  
+parisc                randconfig-002-20240513   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                     powernv_defconfig   gcc  
+powerpc               randconfig-001-20240513   gcc  
+powerpc               randconfig-002-20240513   gcc  
+powerpc               randconfig-003-20240513   gcc  
+powerpc64             randconfig-001-20240513   gcc  
+powerpc64             randconfig-002-20240513   clang
+powerpc64             randconfig-003-20240513   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240513   gcc  
+riscv                 randconfig-002-20240513   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240513   gcc  
+s390                  randconfig-002-20240513   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                ecovec24-romimage_defconfig   gcc  
+sh                        edosk7760_defconfig   gcc  
+sh                    randconfig-001-20240513   gcc  
+sh                    randconfig-002-20240513   gcc  
+sh                           se7206_defconfig   gcc  
+sh                             shx3_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240513   gcc  
+sparc64               randconfig-002-20240513   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240513   clang
+um                    randconfig-002-20240513   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64                              defconfig   gcc  
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                randconfig-001-20240513   gcc  
+xtensa                randconfig-002-20240513   gcc  
 
 -- 
-Gabriel Krisman Bertazi
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
