@@ -1,102 +1,101 @@
-Return-Path: <linux-ext4+bounces-2511-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2512-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 332868C5E27
-	for <lists+linux-ext4@lfdr.de>; Wed, 15 May 2024 01:43:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DB218C5E4D
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 May 2024 02:25:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A6AAC1F21582
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 May 2024 23:42:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B33B8282904
+	for <lists+linux-ext4@lfdr.de>; Wed, 15 May 2024 00:25:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9166182CA4;
-	Tue, 14 May 2024 23:42:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B9FEDF;
+	Wed, 15 May 2024 00:25:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LAgfWWD6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k+oGnfHS";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LAgfWWD6";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k+oGnfHS"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dKxHkkbf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RUmsnmKQ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="dKxHkkbf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RUmsnmKQ"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99C141E491;
-	Tue, 14 May 2024 23:42:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C979370;
+	Wed, 15 May 2024 00:25:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715730173; cv=none; b=Gzv6AF9thYI7nurJLazOERceyht1ricgvZEDmPsZMgFw+hLrtgMhMgyo5tXvLqpWvwgxHV43HXc/QoFA+T2GcLCf71TTjsGe4Q/23iVv33GJkn0p6m0u2bH/9lNN8lUuHIaLbeh2RfzWSurFQUr3PD3Kf0caSjU/6prZfZONVBY=
+	t=1715732721; cv=none; b=dGejtmVuuANEuMmWVblD2NgvYXJg6u0GOht47lWQ0K9HefHVYi2oM7SFjvqslF9L8b9e+GNGp/LndvUXX2s/snRjSAH4W7hFD2dnkj/lW+yBiub6AX66QpK8rwb+BqtuXewCqySUC+8bc0VZsv4hSpfELPpSoTttBUCfAfRMM6M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715730173; c=relaxed/simple;
-	bh=fYSwDpuW4GhmMPIAz4xHNUDOByuEcQeBnQCI8bspCJY=;
+	s=arc-20240116; t=1715732721; c=relaxed/simple;
+	bh=UwwJLzqENrZle2Y4/i+YEoQ9LtfalYqLwPCpLhSIrUc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZRfO2FX4QcLIYwI19nNrOA3D1nxZfxqGkou7jeEmqMkiaoarXKlgrReMm2NuYUJsQgJcTFF1pRTFA9wvP8UoXGmLukxlTWTCN5vcphPygnjjX1ic2ztR7xWFashMWnyIADhb3V4wbzjjJv0NBfRXR0UFPrzT5t2qg4mw8mlD+qI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LAgfWWD6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k+oGnfHS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LAgfWWD6; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k+oGnfHS; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=DOIMAOBeCsvwNS764W0otCZPTsLpvwt/NYR/J6ruUvDDXWct3m3kku49Jd1+P2TE3NhRrfKDJsHTJwMfoSzeBJ9XIdXnMeJIT2lJVEmPrvGw3C58F4YQUa1nVoYv/b4eOhS9/MgWKf/DS/mhwe9Oo7oxL/q+VkU0h/HlVEv0O+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dKxHkkbf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RUmsnmKQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=dKxHkkbf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RUmsnmKQ; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id B3D7222CA4;
-	Tue, 14 May 2024 23:42:49 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8151C22907;
+	Wed, 15 May 2024 00:25:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715730169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1715732717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5elmeUPTP1BK9yq34XxdelS1MaponklyZgQTVC7NNqc=;
-	b=LAgfWWD6YxVRZ10JMoW5EyJiGrSlbHax+FAsPiRcRbj6pK5XGP/xAVM6ZYxlj37SwodQgL
-	cbm4Y0maKV2BNDh7PBuuzxla+IiPMDLER3+59bzWZJnYDdHwvaphP2dzE9BuQA4V9MR9lf
-	2iLg5SS76slFj1nZnxw1LTkCqBpXKNI=
+	bh=UHZT2BoZr0ijthsLDchrpbeknRtm/GuvmkXc1Pxxy/Q=;
+	b=dKxHkkbfWr/geiKeNoSlV1mVmQf5zQreuILpWf9/GLWY/3/a5NyfxWXMVEB8uHBkbbqfa6
+	In94j0lIZ4i/3BbACEBrA8VoBTbC3qis5t8x2oQbTilbwCkp4ZR9ZRVKy9KYHeeOEpbh0a
+	9X08WDtx6L44QuzOi9TL9da9LeE9I9Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715730169;
+	s=susede2_ed25519; t=1715732717;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5elmeUPTP1BK9yq34XxdelS1MaponklyZgQTVC7NNqc=;
-	b=k+oGnfHSPDR2Q9g2FQi6i06nBWeutO+yzFgakDQJRVptvUulsrrv4XrlB1pzMkzr365YE8
-	xRz1HoCpyhxJ0EDA==
+	bh=UHZT2BoZr0ijthsLDchrpbeknRtm/GuvmkXc1Pxxy/Q=;
+	b=RUmsnmKQCuQfioWktYkb0msP1mHO2iwm8FFWoYA7jgNOe0RAiTN4e1xS6in7Eg4NoXJsP2
+	89RlT9BPhNwCPpBg==
 Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=LAgfWWD6;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=k+oGnfHS
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1715730169; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1715732717; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5elmeUPTP1BK9yq34XxdelS1MaponklyZgQTVC7NNqc=;
-	b=LAgfWWD6YxVRZ10JMoW5EyJiGrSlbHax+FAsPiRcRbj6pK5XGP/xAVM6ZYxlj37SwodQgL
-	cbm4Y0maKV2BNDh7PBuuzxla+IiPMDLER3+59bzWZJnYDdHwvaphP2dzE9BuQA4V9MR9lf
-	2iLg5SS76slFj1nZnxw1LTkCqBpXKNI=
+	bh=UHZT2BoZr0ijthsLDchrpbeknRtm/GuvmkXc1Pxxy/Q=;
+	b=dKxHkkbfWr/geiKeNoSlV1mVmQf5zQreuILpWf9/GLWY/3/a5NyfxWXMVEB8uHBkbbqfa6
+	In94j0lIZ4i/3BbACEBrA8VoBTbC3qis5t8x2oQbTilbwCkp4ZR9ZRVKy9KYHeeOEpbh0a
+	9X08WDtx6L44QuzOi9TL9da9LeE9I9Q=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1715730169;
+	s=susede2_ed25519; t=1715732717;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5elmeUPTP1BK9yq34XxdelS1MaponklyZgQTVC7NNqc=;
-	b=k+oGnfHSPDR2Q9g2FQi6i06nBWeutO+yzFgakDQJRVptvUulsrrv4XrlB1pzMkzr365YE8
-	xRz1HoCpyhxJ0EDA==
+	bh=UHZT2BoZr0ijthsLDchrpbeknRtm/GuvmkXc1Pxxy/Q=;
+	b=RUmsnmKQCuQfioWktYkb0msP1mHO2iwm8FFWoYA7jgNOe0RAiTN4e1xS6in7Eg4NoXJsP2
+	89RlT9BPhNwCPpBg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5515B137C3;
-	Tue, 14 May 2024 23:42:49 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D668F13A56;
+	Wed, 15 May 2024 00:25:16 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id BnZVFPn2Q2ZbTQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 14 May 2024 23:42:49 +0000
+	id 5i9SNOwARGbpVwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 15 May 2024 00:25:16 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B17B4A08B5; Wed, 15 May 2024 01:42:46 +0200 (CEST)
-Date: Wed, 15 May 2024 01:42:46 +0200
+	id 41AECA08B5; Wed, 15 May 2024 02:25:13 +0200 (CEST)
+Date: Wed, 15 May 2024 02:25:13 +0200
 From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, jack@suse.com, yi.zhang@huaweicloud.com,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/9] jbd2: jump to new copy_done tag when
- b_frozen_data is created concurrently
-Message-ID: <20240514234246.3kspcjji4pjrwsnc@quack3>
-References: <20240514112438.1269037-1-shikemeng@huaweicloud.com>
- <20240514112438.1269037-5-shikemeng@huaweicloud.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH] ext4/jbd2: drop jbd2_transaction_committed()
+Message-ID: <20240515002513.yaglghza4i4ldmr5@quack3>
+References: <20240513072119.2335346-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -105,99 +104,91 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240514112438.1269037-5-shikemeng@huaweicloud.com>
+In-Reply-To: <20240513072119.2335346-1-yi.zhang@huaweicloud.com>
 X-Spam-Flag: NO
-X-Spam-Score: -4.01
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: B3D7222CA4
+X-Spam-Score: -2.29
 X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-2.29 / 50.00];
+	BAYES_HAM(-2.99)[99.96%];
+	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	TAGGED_RCPT(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
 	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
 	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
 	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	DKIM_TRACE(0.00)[suse.cz:+]
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
 
-On Tue 14-05-24 19:24:33, Kemeng Shi wrote:
-> If b_frozen_data is created concurrently, we can update new_folio and
-> new_offset with b_frozen_data and then move forward
+On Mon 13-05-24 15:21:19, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> jbd2_transaction_committed() is used to check whether a transaction with
+> the given tid has already committed, it hold j_state_lock in read mode
+> and check the tid of current running transaction and committing
+> transaction, but holding the j_state_lock is expensive.
+> 
+> We have already stored the sequence number of the most recently
+> committed transaction in journal t->j_commit_sequence, we could do this
+> check by comparing it with the given tid instead. If the given tid isn't
+> smaller than j_commit_sequence, we can ensure that the given transaction
+> has been committed. That way we could drop the expensive lock and
+> achieve about 10% ~ 20% performance gains in concurrent DIOs on may
+> virtual machine with 100G ramdisk.
+> 
+> fio -filename=/mnt/foo -direct=1 -iodepth=10 -rw=$rw -ioengine=libaio \
+>     -bs=4k -size=10G -numjobs=10 -runtime=60 -overwrite=1 -name=test \
+>     -group_reporting
+> 
+> Before:
+>   overwrite       IOPS=88.2k, BW=344MiB/s
+>   read            IOPS=95.7k, BW=374MiB/s
+>   rand overwrite  IOPS=98.7k, BW=386MiB/s
+>   randread        IOPS=102k, BW=397MiB/s
+> 
+> After:
+>   verwrite:       IOPS=105k, BW=410MiB/s
+>   read:           IOPS=112k, BW=436MiB/s
+>   rand overwrite: IOPS=104k, BW=404MiB/s
+>   randread:       IOPS=111k, BW=432MiB/s
+> 
+> CC: Dave Chinner <david@fromorbit.com>
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+> Link: https://lore.kernel.org/linux-ext4/493ab4c5-505c-a351-eefa-7d2677cdf800@huaweicloud.com/T/#m6a14df5d085527a188c5a151191e87a3252dc4e2
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-Looks good. Feel free to add:
+I agree this is workable solution and the performance benefits are nice. But
+I have some comments regarding the implementation:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> @@ -3199,8 +3199,8 @@ static bool ext4_inode_datasync_dirty(struct inode *inode)
+>  	journal_t *journal = EXT4_SB(inode->i_sb)->s_journal;
+>  
+>  	if (journal) {
+> -		if (jbd2_transaction_committed(journal,
+> -			EXT4_I(inode)->i_datasync_tid))
+> +		if (tid_geq(journal->j_commit_sequence,
+> +			    EXT4_I(inode)->i_datasync_tid))
+
+Please leave the helper jbd2_transaction_committed(), just make the
+implementation more efficient. Also accessing j_commit_sequence without any
+lock is theoretically problematic wrt compiler optimization. You should have
+READ_ONCE() there and the places modifying j_commit_sequence need to use
+WRITE_ONCE().
 
 								Honza
-
-> ---
->  fs/jbd2/journal.c | 13 ++++++-------
->  1 file changed, 6 insertions(+), 7 deletions(-)
-> 
-> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 714e2ef0115a..5fb5062cf7ae 100644
-> --- a/fs/jbd2/journal.c
-> +++ b/fs/jbd2/journal.c
-> @@ -351,7 +351,6 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
->  	atomic_set(&new_bh->b_count, 1);
->  
->  	spin_lock(&jh_in->b_state_lock);
-> -repeat:
->  	/*
->  	 * If a new transaction has already done a buffer copy-out, then
->  	 * we use that version of the data for the commit.
-> @@ -399,22 +398,22 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
->  		spin_lock(&jh_in->b_state_lock);
->  		if (jh_in->b_frozen_data) {
->  			jbd2_free(tmp, bh_in->b_size);
-> -			goto repeat;
-> +			goto copy_done;
->  		}
->  
->  		jh_in->b_frozen_data = tmp;
->  		memcpy_from_folio(tmp, new_folio, new_offset, bh_in->b_size);
-> -
-> -		new_folio = virt_to_folio(tmp);
-> -		new_offset = offset_in_folio(new_folio, tmp);
-> -		done_copy_out = 1;
-> -
->  		/*
->  		 * This isn't strictly necessary, as we're using frozen
->  		 * data for the escaping, but it keeps consistency with
->  		 * b_frozen_data usage.
->  		 */
->  		jh_in->b_frozen_triggers = jh_in->b_triggers;
-> +
-> +copy_done:
-> +		new_folio = virt_to_folio(jh_in->b_frozen_data);
-> +		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
-> +		done_copy_out = 1;
->  	}
->  
->  	/*
-> -- 
-> 2.30.0
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
