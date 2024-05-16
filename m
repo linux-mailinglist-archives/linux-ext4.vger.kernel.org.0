@@ -1,79 +1,78 @@
-Return-Path: <linux-ext4+bounces-2544-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2545-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9A03D8C7D49
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 21:33:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 172F28C7EDB
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 01:05:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAF651C213D3
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 19:33:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48FEB1C21A73
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 23:05:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B4B7156F5F;
-	Thu, 16 May 2024 19:32:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDB22C6BB;
+	Thu, 16 May 2024 23:04:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="A9QZRkvs"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vj7jXEjv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E58D156F29;
-	Thu, 16 May 2024 19:32:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C42249F7;
+	Thu, 16 May 2024 23:04:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715887978; cv=none; b=TLfYeV0z/jVPcx2zJloXE9JQXSMex209Pras4jOXk1UjRtE9Pz5f4uah82r9jEjqYjNJmQA4CEZ7wAcP2VLtecBKVA4saQVBD5EbASwc7vNV/VM4PRR1oRpTqYrk5jXDZcTP2Ys9qDfG/whV8PQn6VB0w1q9qgwi9VgYcPq0OcE=
+	t=1715900694; cv=none; b=V0RQ3x9ZaHGT2a+UbkD4RWSGeSZxvx2F4/Pf6bwLdA6W0LjSVF7u7RiZakTzm3r857n1fdwZMa90/UMXR9e4EO1hnD70YOIs6UETacFZsukOCqOzqmCFcrD3dOidCXI5WvNxuNWUDrClDWjxYWSzdxv6+NGgljQhhZsEKDwwPsg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715887978; c=relaxed/simple;
-	bh=F+2v2+xUF084Tonn2JxepjXqiHplTniHyiir7MNmqac=;
+	s=arc-20240116; t=1715900694; c=relaxed/simple;
+	bh=nh4nGr+gQ6wnevCjIVCmzspYxt6MCbloYi4F9t67PIg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f6myKIOTFxRFtT86UHCJRdKsjU+OB1xhEGaKCCkcNWYa6apoqKgson1FVZ5XEktDdU4uHCs9t59JwAuoRVPeDQ/szCN1d63atz3yZBo8fg0FQtGJ6Oot6pDcOZLC+1PdjkYKZG8S/rWXmmdgXWuEi/UeUDtrYtv/6DqEuXXNKWo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=A9QZRkvs; arc=none smtp.client-ip=198.175.65.10
+	 Content-Type:Content-Disposition:In-Reply-To; b=T+OmpzkiLyLa3/ogWjSCSAZpQL1gHL3s1+EKJuFtqd+b/ALTkp0PKHn4rvDG7pBcx7VYJwd0UVaP9fiBAI05LqM2u7qQDLxOIVo2AUDr5w3gR0pnHCsaQvhgYNx3sIu9fqH9W7ZhRQvMCzzdpLN7X81Inq+xbs7Sry4BzOIL4Cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vj7jXEjv; arc=none smtp.client-ip=192.198.163.14
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715887977; x=1747423977;
+  t=1715900693; x=1747436693;
   h=date:from:to:cc:subject:message-id:references:
    mime-version:in-reply-to;
-  bh=F+2v2+xUF084Tonn2JxepjXqiHplTniHyiir7MNmqac=;
-  b=A9QZRkvsq9b6lOKRWN/OOBkt4k3qE3Ezldx1nnkHfHFTmGOaUVwAG5BM
-   /T1AQZAlBOqZkv0Y5IKw0ZIZwwygnI1z1NclL4UKpm00r0xwiqmghhEaP
-   ANlT03790ODc4uKlAojBaGyi42fDa+jAjbHBo4+HO7FNDIE3yePTV8L6h
-   Kt8WTdzd0x5V8XUC/l7hhJWpaWWq3rl9/VAAojxpDO1SiaFH5SrloSnge
-   9X1dlFlLh4jM9jW7Er6UR+MRKiChZqXbFgA6rf55KDTsUyt6xJNQyGllE
-   HvtNLqhNx8/4OzDOPyKU2+fpedfNAI/J0Xy1w1AA3RlTebeTvGOqyxDmo
-   A==;
-X-CSE-ConnectionGUID: eC2FWTFySQ6yf6CoZM7ljQ==
-X-CSE-MsgGUID: KOWs2NU0RUa6fRgd3J4QeA==
-X-IronPort-AV: E=McAfee;i="6600,9927,11074"; a="29534717"
+  bh=nh4nGr+gQ6wnevCjIVCmzspYxt6MCbloYi4F9t67PIg=;
+  b=Vj7jXEjva+EPdM5lqBvLwDq/Nqx79yO3kynUcy2fXe0np6p7P4sEW2Bd
+   sVo8KoWG0N9l3p8h+b/jERr5W8eSGLfKFhpdcV6i27ws3vXNbhmfq14DZ
+   4qFumpK8kbfO/urKBmLvxpoQSS/l0fPgqF2ha0jyIpzyFqHV7d2o6rqpX
+   n2nn0C4bmUMiGLaFFpr4PF4PtZoYKOa+fj/DQbd9zjbUQGCkEkkB0I7l1
+   TfroctM87xz+JnpcVCuhObg9g0diiSmM6Y2+QGiq2dZUFIlwaQSH/i5Gb
+   /ZukLeQN9F0KDkNqE353MHpONZWS7eVfGshfVqP0LleJx10dLYy6JLX6f
+   g==;
+X-CSE-ConnectionGUID: JBuN+R9nT7GY6p160paclw==
+X-CSE-MsgGUID: OfnCxF1jTj6N5yjPAom1Yw==
+X-IronPort-AV: E=McAfee;i="6600,9927,11074"; a="12266918"
 X-IronPort-AV: E=Sophos;i="6.08,165,1712646000"; 
-   d="scan'208";a="29534717"
-Received: from fmviesa007.fm.intel.com ([10.60.135.147])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2024 12:32:56 -0700
-X-CSE-ConnectionGUID: 4nkztOPnTliFpzBhonI88g==
-X-CSE-MsgGUID: Ep0hYkanRwyYg79M2JjH/g==
+   d="scan'208";a="12266918"
+Received: from orviesa004.jf.intel.com ([10.64.159.144])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2024 16:04:52 -0700
+X-CSE-ConnectionGUID: +k415JnMQi+FptgiSeOfPw==
+X-CSE-MsgGUID: bl9Y4xyLRXy+FsAFUdig8g==
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.08,165,1712646000"; 
-   d="scan'208";a="31468887"
+   d="scan'208";a="36499893"
 Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
-  by fmviesa007.fm.intel.com with ESMTP; 16 May 2024 12:32:52 -0700
+  by orviesa004.jf.intel.com with ESMTP; 16 May 2024 16:04:45 -0700
 Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
 	(envelope-from <lkp@intel.com>)
-	id 1s7gqQ-000Ehd-0w;
-	Thu, 16 May 2024 19:32:50 +0000
-Date: Fri, 17 May 2024 03:31:51 +0800
+	id 1s7k9S-000Exl-1e;
+	Thu, 16 May 2024 23:04:42 +0000
+Date: Fri, 17 May 2024 07:03:46 +0800
 From: kernel test robot <lkp@intel.com>
 To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-xfs@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	djwong@kernel.org, hch@infradead.org, brauner@kernel.org,
-	david@fromorbit.com, chandanbabu@kernel.org, jack@suse.cz,
-	yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, djwong@kernel.org, hch@infradead.org,
+	brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
+	jack@suse.cz, yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
 	chengzhihao1@huawei.com, yukuai3@huawei.com
 Subject: Re: [PATCH v2 1/3] iomap: pass blocksize to iomap_truncate_page()
-Message-ID: <202405170356.gLrF2NDl-lkp@intel.com>
+Message-ID: <202405170624.liC4qYj3-lkp@intel.com>
 References: <20240516073001.1066373-2-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -99,36 +98,19 @@ url:    https://github.com/intel-lab-lkp/linux/commits/Zhang-Yi/iomap-pass-block
 base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
 patch link:    https://lore.kernel.org/r/20240516073001.1066373-2-yi.zhang%40huaweicloud.com
 patch subject: [PATCH v2 1/3] iomap: pass blocksize to iomap_truncate_page()
-config: arm-davinci_all_defconfig (https://download.01.org/0day-ci/archive/20240517/202405170356.gLrF2NDl-lkp@intel.com/config)
-compiler: clang version 19.0.0git (https://github.com/llvm/llvm-project d3455f4ddd16811401fa153298fadd2f59f6914e)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240517/202405170356.gLrF2NDl-lkp@intel.com/reproduce)
+config: arm-randconfig-r111-20240517 (https://download.01.org/0day-ci/archive/20240517/202405170624.liC4qYj3-lkp@intel.com/config)
+compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
+reproduce: (https://download.01.org/0day-ci/archive/20240517/202405170624.liC4qYj3-lkp@intel.com/reproduce)
 
 If you fix the issue in a separate patch/commit (i.e. not just a new version of
 the same patch/commit), kindly add following tags
 | Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405170356.gLrF2NDl-lkp@intel.com/
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405170624.liC4qYj3-lkp@intel.com/
 
-All warnings (new ones prefixed by >>):
-
-   In file included from fs/iomap/buffered-io.c:9:
-   In file included from include/linux/iomap.h:7:
-   In file included from include/linux/blk_types.h:10:
-   In file included from include/linux/bvec.h:10:
-   In file included from include/linux/highmem.h:8:
-   In file included from include/linux/cacheflush.h:5:
-   In file included from arch/arm/include/asm/cacheflush.h:10:
-   In file included from include/linux/mm.h:2210:
-   include/linux/vmstat.h:522:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
-     522 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
-         |                               ~~~~~~~~~~~ ^ ~~~
->> fs/iomap/buffered-io.c:1453:7: warning: comparison of distinct pointer types ('typeof ((pos)) *' (aka 'long long *') and 'uint64_t *' (aka 'unsigned long long *')) [-Wcompare-distinct-pointer-types]
-    1453 |                            do_div(pos, blocksize);
-         |                            ^~~~~~~~~~~~~~~~~~~~~~
-   include/asm-generic/div64.h:222:28: note: expanded from macro 'do_div'
-     222 |         (void)(((typeof((n)) *)0) == ((uint64_t *)0));  \
-         |                ~~~~~~~~~~~~~~~~~~ ^  ~~~~~~~~~~~~~~~
-   2 warnings generated.
-
+sparse warnings: (new ones prefixed by >>)
+>> fs/iomap/buffered-io.c:1453:28: sparse: sparse: incompatible types in comparison expression (different signedness):
+   fs/iomap/buffered-io.c:1453:28: sparse:    long long *
+   fs/iomap/buffered-io.c:1453:28: sparse:    unsigned long long [usertype] *
 
 vim +1453 fs/iomap/buffered-io.c
 
