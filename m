@@ -1,131 +1,154 @@
-Return-Path: <linux-ext4+bounces-2541-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2542-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 890658C7B76
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 19:42:22 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B3318C7BC6
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 20:17:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29DCE1F21857
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 17:42:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9C6222837CE
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 18:17:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49532156871;
-	Thu, 16 May 2024 17:42:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5540B156F20;
+	Thu, 16 May 2024 18:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ltehudAH"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="anPjU8zL"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f67.google.com (mail-qv1-f67.google.com [209.85.219.67])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7109E1E880;
-	Thu, 16 May 2024 17:42:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.67
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32E7C156642;
+	Thu, 16 May 2024 18:16:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715881334; cv=none; b=sFrIXMer3Him+oz3F+JAw627Z0rA7mcvRr/PKVdRZ5hxIwSXUDPA8U9kcuO1LIUApvoiyZrevd0Oh/6WtiKC9nO0Db1/O1qur80PyQH72Y/FGOH5qSa5IBbxhPv/ZzCkOMm7YEBr0dEyZam3y7Y9/ebAgvWuhmYteiiaENI6Fpk=
+	t=1715883416; cv=none; b=FLVsLq2fHNsMbIYtaBL7W6vqIXTvdb91Buhd4F9qNcvOwSRwAXXb8i0/uGNXlJKf2DnP+r5GCEpNR+cDDqFSukwgkvsj6PSSAHo4qGLuK/zs3YQD+MuFUhGzipdfVHvF5+e3znd9GCmR2hj5OvLL8zLlC/Xn0QnZXlCW+ZTJ574=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715881334; c=relaxed/simple;
-	bh=7Yn7F5L68sDLIdlskeOzBHsQHVfBVBbjMZHq3csBVI0=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=WbHEeiNKIj2x79y26QebBqxfdhwCHV3coCxXIXtp9RT2EdwPSOHrEwBElY23SrasOi8ozg8OdavWvjSLuHaIB+sAdoIS+G9kz3yFGq9cv7fp+VAwKhs+2rsPpcOSrJ0fHKWqNLtwYjmPjf70TOZEbM3VpGkDRpWg3/JYV8NRH8w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ltehudAH; arc=none smtp.client-ip=209.85.219.67
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f67.google.com with SMTP id 6a1803df08f44-6a0c8fb3540so56571846d6.1;
-        Thu, 16 May 2024 10:42:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715881332; x=1716486132; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C2IWn5x9QtjyRy8l6pMXslqytYKJTjqGvZ/CNJ1mSN8=;
-        b=ltehudAHhGhxGIZZG1sKZj12JysUE6Av9arkbI099M70Hjnkk58OL90ddfl+9eTvsD
-         5YATAebC9uCHmjz0FNVime8a2+GFF6m+yJIJZ0PCutlRbGMa1G+jnwSw/vY/fPisXXo8
-         TnY2yQHVR1YOptKCH+R5jJIGAPdH0OYK6lOfPynZT5imvGWOj87kfrGUq8+S59KTKHJK
-         uigovILjSswJahjeCRyptVEE2kyVA35Pq8RPxmSoRJ8NHRXi9G9fUrbT5h3Cr6HjMaaO
-         krlFL80uO1hx0k0iIY5ccafu+fSDMi7bnXFn7CkyGv7WhfYpawlQWLl+zB2nBY/hMcvw
-         i0rg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715881332; x=1716486132;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C2IWn5x9QtjyRy8l6pMXslqytYKJTjqGvZ/CNJ1mSN8=;
-        b=sw+FwWx3z31k5MFoSJ57/HR5K4qRO6FEiu+DPymdr+SrZDfG8R0jElcOqUUzUoP8Fj
-         tV6f4kq60rvk/4oweljzUS23bugNBj5nQLBFHm76UdNkI3/LJk1mI+Wo2MI4RDjiPvqJ
-         ZLt2RqMK2+57ZJ4QfLu96CVY2MaacyAu8JWXxN6W+3GQ21PdmFQpeROdi3Dc5gQ04vTm
-         5X5DY/cd7BA5XMisuyed1mP1cyJjNTnghhZ2zFd7OPtCNmYa50tSXjiG7nw4g2SdEw3y
-         CF6/NphCsumyZv36O/SE9uX01XNXyY54zcE6TQ55CPf3+3UAItkawqFdB1aR7EwEjMLp
-         aZ7A==
-X-Forwarded-Encrypted: i=1; AJvYcCWtvITNw5D212G0MC7qr7oILNYOlMjl3edkF62miIwE+qKNG1LAAeNyAju2wK1fAkDVCGWyf1eubBHSYyrJng9MTNrbUI7xYQPHP15C
-X-Gm-Message-State: AOJu0YxLXLzqn15EBz9ULXMBA1tYlSZ/O1TOewiIb1yUpeeUZgQASwWs
-	htKV5cchnLtnLUkZx3QF6b1bhJgL8peOL/0KDrYtXdF07/yMe8dl
-X-Google-Smtp-Source: AGHT+IGcqsLo3pmIpQ6GlROvCQMJ8rUY5hll4YJVFpsQGsGlbCYTe44xLZw+yW3FSNmgEesh2jBQVQ==
-X-Received: by 2002:a0c:f6c4:0:b0:6a3:58a1:1e24 with SMTP id 6a1803df08f44-6a358a129b7mr78572886d6.25.1715881332192;
-        Thu, 16 May 2024 10:42:12 -0700 (PDT)
-Received: from smtpclient.apple ([2601:98a:4102:7e80:ac34:7fcf:f3a5:4fd8])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6a15f1cd17bsm77554206d6.96.2024.05.16.10.42.11
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 16 May 2024 10:42:11 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1715883416; c=relaxed/simple;
+	bh=IaEjMgOVijGUZoGyXC7Q6OgPYaSmUBlPNgF4/dQAhoM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a8ZrcLgr5+7fRpYa0o/rydNbDCk0OwrbI85e0AB3u4KC9lYBicxq3p/n52scwudkwkC17aHbRToEUo+snsHoWSQEc/6R10jQ8/55upDUrru5bulOCDLDXaCYnqejDNxJ41AsH/qJe/EFkq7Xm4Yvzw7rGBHAcS3H3+moRP4Kj5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=anPjU8zL; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:MIME-Version:
+	Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
+	Content-Description:In-Reply-To:References;
+	bh=Y/edxhwNxm+fnNhJDhofEY2JZfiUKbns0R5IrxVHBQ0=; b=anPjU8zL5WYWX4jBhpypmYYAdb
+	fZ/Ywc4jDb1syTNzS6y2yn7wgzguG9yRkt1KckNb+eXmjVs6W+kCo/B1MvTyQkAeMO5nd7uK5Nldu
+	jaFjppwCxjJyFWxPZwCIXKv02tdkELcdVRQ8cSGSK9pyWEjQSWr0hPuhlI5FxPON9xq8Xm+fZJ8SJ
+	xHrxps2wBsp4M433u5NUF3eortZ/QtTlfflYxeWFhafWdA/FE742KWcbcWEpAx76qW0ihbNXk7wJA
+	cwAWFgsdooM0hK2kLt78Dkr6bPb8qYNpeRsvCheOaGCBEiHLPvZ/srL5D39RANa1PtWp5WrP0w7Kl
+	L91EaeHg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1s7fet-0000000C5A9-32Ko;
+	Thu, 16 May 2024 18:16:51 +0000
+From: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+To: "Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	Hannes Reinecke <hare@suse.com>
+Subject: [PATCH 1/2] ext4: Reduce stack usage in ext4_mpage_readpages()
+Date: Thu, 16 May 2024 19:16:50 +0100
+Message-ID: <20240516181651.2879778-1-willy@infradead.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: KASAN: use-after-free in ext4_find_extent in v6.9
-From: Shuangpeng Bai <shuangpengbai@gmail.com>
-In-Reply-To: <CACT4Y+a3Tvh5eQuuCcrFuBfzAPQMVwEh0o5jLtASB_xVnKt_cg@mail.gmail.com>
-Date: Thu, 16 May 2024 13:42:00 -0400
-Cc: linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- syzkaller@googlegroups.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <77DB8D1D-4650-4A4C-BAE0-B04C29A06E20@gmail.com>
-References: <5B9F0C1F-C804-4A9C-8597-4E1A7D16B983@gmail.com>
- <20240515224932.GA202157@mit.edu>
- <2184C9DB-DDC2-484B-A1B2-A1E312B62D54@gmail.com>
- <20240516135821.GA272071@mit.edu>
- <CACT4Y+a3Tvh5eQuuCcrFuBfzAPQMVwEh0o5jLtASB_xVnKt_cg@mail.gmail.com>
-To: Dmitry Vyukov <dvyukov@google.com>,
- Theodore Ts'o <tytso@mit.edu>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-I will follow the suggestions. Thank you!=20
+This function is very similar to do_mpage_readpage() and a similar
+approach to that taken in commit 12ac5a65cb56 will work.  As in
+do_mpage_readpage(), we only use this array for checking block contiguity
+and we can do that more efficiently with a little arithmetic.
 
-> On May 16, 2024, at 10:44, Dmitry Vyukov <dvyukov@google.com> wrote:
->=20
-> On Thu, 16 May 2024 at 15:58, Theodore Ts'o <tytso@mit.edu> wrote:
->>=20
->> On Wed, May 15, 2024 at 08:33:33PM -0400, Shuangpeng Bai wrote:
->>>=20
->>> You are right. I disabled CONFIG_BLK_DEV_WRITE_MOUNTED and found
->>> this bug can not be triggered anymore.
->>>=20
->>> I am wondering if there is any suggested way for me to check whether
->>> a bug is reproduced under a reasonable environment (such as
->>> compiling config) or not? If so, that would be very helpful.
->>=20
->> As I mentioned, the upstream syzkaller always forces the
->> CONFIG_BLK_DEV_WRITE_MOUNTED to be disabled.  That's the best way to
->> check whether the bug is reproducible under a reasonable environment,
->> and to do it in an automated way.
->=20
-> FWIW we provide configs used by syzbot here (upstream-*):
-> https://github.com/google/syzkaller/tree/master/dashboard/config/linux
->=20
-> + a bunch of configs fragments with explanations why things are
-> enabled/disabled:
-> =
-https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bit=
-s/maintained.yml
-> =
-https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bit=
-s/base.yml
-> =
-https://github.com/google/syzkaller/blob/master/dashboard/config/linux/bit=
-s/debug.yml
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+---
+ fs/ext4/readpage.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
+
+diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
+index 21e8f0aebb3c..fe29fb23a1d0 100644
+--- a/fs/ext4/readpage.c
++++ b/fs/ext4/readpage.c
+@@ -221,7 +221,7 @@ int ext4_mpage_readpages(struct inode *inode,
+ 	sector_t block_in_file;
+ 	sector_t last_block;
+ 	sector_t last_block_in_file;
+-	sector_t blocks[MAX_BUF_PER_PAGE];
++	sector_t first_block;
+ 	unsigned page_block;
+ 	struct block_device *bdev = inode->i_sb->s_bdev;
+ 	int length;
+@@ -263,6 +263,7 @@ int ext4_mpage_readpages(struct inode *inode,
+ 			unsigned map_offset = block_in_file - map.m_lblk;
+ 			unsigned last = map.m_len - map_offset;
+ 
++			first_block = map.m_pblk + map_offset;
+ 			for (relative_block = 0; ; relative_block++) {
+ 				if (relative_block == last) {
+ 					/* needed? */
+@@ -271,8 +272,6 @@ int ext4_mpage_readpages(struct inode *inode,
+ 				}
+ 				if (page_block == blocks_per_page)
+ 					break;
+-				blocks[page_block] = map.m_pblk + map_offset +
+-					relative_block;
+ 				page_block++;
+ 				block_in_file++;
+ 			}
+@@ -308,7 +307,9 @@ int ext4_mpage_readpages(struct inode *inode,
+ 				goto confused;		/* hole -> non-hole */
+ 
+ 			/* Contiguous blocks? */
+-			if (page_block && blocks[page_block-1] != map.m_pblk-1)
++			if (!page_block)
++			       	first_block = map.m_pblk;
++			else if (first_block + page_block != map.m_pblk)
+ 				goto confused;
+ 			for (relative_block = 0; ; relative_block++) {
+ 				if (relative_block == map.m_len) {
+@@ -317,7 +318,6 @@ int ext4_mpage_readpages(struct inode *inode,
+ 					break;
+ 				} else if (page_block == blocks_per_page)
+ 					break;
+-				blocks[page_block] = map.m_pblk+relative_block;
+ 				page_block++;
+ 				block_in_file++;
+ 			}
+@@ -340,7 +340,7 @@ int ext4_mpage_readpages(struct inode *inode,
+ 		 * This folio will go to BIO.  Do we need to send this
+ 		 * BIO off first?
+ 		 */
+-		if (bio && (last_block_in_bio != blocks[0] - 1 ||
++		if (bio && (last_block_in_bio != first_block - 1 ||
+ 			    !fscrypt_mergeable_bio(bio, inode, next_block))) {
+ 		submit_and_realloc:
+ 			submit_bio(bio);
+@@ -356,7 +356,7 @@ int ext4_mpage_readpages(struct inode *inode,
+ 			fscrypt_set_bio_crypt_ctx(bio, inode, next_block,
+ 						  GFP_KERNEL);
+ 			ext4_set_bio_post_read_ctx(bio, inode, folio->index);
+-			bio->bi_iter.bi_sector = blocks[0] << (blkbits - 9);
++			bio->bi_iter.bi_sector = first_block << (blkbits - 9);
+ 			bio->bi_end_io = mpage_end_io;
+ 			if (rac)
+ 				bio->bi_opf |= REQ_RAHEAD;
+@@ -372,7 +372,7 @@ int ext4_mpage_readpages(struct inode *inode,
+ 			submit_bio(bio);
+ 			bio = NULL;
+ 		} else
+-			last_block_in_bio = blocks[blocks_per_page - 1];
++			last_block_in_bio = first_block + blocks_per_page - 1;
+ 		continue;
+ 	confused:
+ 		if (bio) {
+-- 
+2.43.0
 
 
