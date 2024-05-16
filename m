@@ -1,151 +1,342 @@
-Return-Path: <linux-ext4+bounces-2530-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2531-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 428138C6F8A
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 02:33:56 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id AB6718C71C0
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 08:57:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84CD1F21676
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 00:33:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C86C1F21B1A
+	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 06:57:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1CCAEBB;
-	Thu, 16 May 2024 00:33:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DD4D29424;
+	Thu, 16 May 2024 06:57:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ibno+YeB"
+	dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b="ePPEY0xN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qv1-f66.google.com (mail-qv1-f66.google.com [209.85.219.66])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 226E3620;
-	Thu, 16 May 2024 00:33:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.66
+Received: from mister-muffin.de (mister-muffin.de [144.76.155.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC417282F4
+	for <linux-ext4@vger.kernel.org>; Thu, 16 May 2024 06:57:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.155.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715819628; cv=none; b=pPGPixSDIi5ggVcItSN59BR8ERKAoI0WzvUm/re7HTQQO3Lj8WhpDVPn/75xON9iH7TOUYVGege6eve1KgEn3DbKb2H1SqUt6dfcMPjxjIIWjSN8KqsR0OI5PjY3lSBaUWwQ0Edc05QrN+vROYeGMUSp0aegwkhAnuj/O2bJYGM=
+	t=1715842624; cv=none; b=uRazNaEvTGi2NgYb26vfUvLRhORMjjZYyO7B6jXnrISgHWpF+SiHXz5P1WSB5hIUejeNyMUSrDmU0eTSoNO8s8s46AMWkKlq5sP68+/iyvK0/hIvUExxPbtgDWW+v39eaF9rFqRVbjm2LOPpp02boedfK+VQg6oWA4Kw1C0zXtw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715819628; c=relaxed/simple;
-	bh=EN9plsmwACHgXkbMKx+IVZKYo3CNhx7HHKOBfiGzO14=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=iDu55NxQqxiekt0WLKlpE27RbrL/NFdHNgQgU2gw7xyZDNtOKu28Zzu09jUTP5TVqQUiu4AVG/MMKe8VTDk0Q9zi5ad2uoH7SPCi72dQb1bY+0rec62v4mMKwT18laWM7PIhEvZM6BTD2mk6lCBidQ8VNLoXHgVoURkr7F1Z5iA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ibno+YeB; arc=none smtp.client-ip=209.85.219.66
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f66.google.com with SMTP id 6a1803df08f44-6a071595d22so30136146d6.3;
-        Wed, 15 May 2024 17:33:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1715819626; x=1716424426; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x5sidTUddXfpi2LHAtDx9zikhDWNEYE/1JDeYKEgcis=;
-        b=ibno+YeB/y/tUk3gSBKEIptb9FtNE/tGX9uoATlD5xAFY16gWEacncFzFu83VUQv+d
-         HRtSPHz6Rbe17360psAIv/dxDVUVcwkqmLiAOOxl4qdVu7LJ8HvR/Yt39wKigmDKf8ZY
-         NFZkC0kheFMFfIzJcXjFetQsxpH/GiVcXLroCVa0a1x8EOWpPIUhIJDzfWnIkXk4Ga+a
-         ukFFz4sCTf5AuTCcSR3jgB6MfAuTvCCYXILmgRaM5s0bJgJbznFKn0T2fBDpbxkAzIi1
-         ibCKj0ifW7QiiFDVxE8WFAkuG0nhFr+bcsSWlM5lWDA/GlR8P9HpYKMMSuY+zePNLdFv
-         ySww==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715819626; x=1716424426;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x5sidTUddXfpi2LHAtDx9zikhDWNEYE/1JDeYKEgcis=;
-        b=dq8dylTifLM642iycS4eXyRVfCooH7olnux8L//la48EQ/viLaQaJ4/xze7jz1TjZW
-         fEOIyV2mEegpYZTmBsokcA+eAYWAOzvostzaJm+SuqVz0e0WCfuek3SPWW/MIAGB+njM
-         omZvTJwZq6JXwDPoKkkcVQWo/Vh4qGECl+l+yGjbOFW0wKJza1tENW+cuAun71C4bsQP
-         /gS2utg9UA3d/++ay+uixPLYqpY8boJ1Hc6f/ystFvdputI1cCoZHGS9rxvazBVzYM4e
-         wiOVI6mUcJEteEKAqX8YJqL9bQYsu5gBffdAQHPrGQ7NA4rSLhsgLY8vKtPsba4KlnIy
-         nuug==
-X-Forwarded-Encrypted: i=1; AJvYcCUMR4Xn64Nx8Bx44vNlblAnMjU5nOdZFBfiLsShBa7ETR+tfgHk0v1mOu2qSdPgYdsJoCz46BIIJOPNlRDbgP7cmQp35zwfl6Rx7KxE
-X-Gm-Message-State: AOJu0YzOWzR/tqN4xGc2i9KUX2Z58S/AgMR9SAXzC5IBaMJsgzhwcbYO
-	vtYeA78ArGEB1LI04Z12lxU087fQnBrmIdwJXpo1vOTM6M7MCCkItooSagwDrNs=
-X-Google-Smtp-Source: AGHT+IGX4ISSqNbd9oXgSUgfybUHoui62YoQ2Y59eK4Jy2dYz+5FKzM8IXvpI4pClTwvRcmFQO1k0g==
-X-Received: by 2002:a05:6214:428f:b0:6a0:d298:e04e with SMTP id 6a1803df08f44-6a168259307mr231293756d6.43.1715819625850;
-        Wed, 15 May 2024 17:33:45 -0700 (PDT)
-Received: from smtpclient.apple ([2601:98a:4102:7e80:e978:2977:f486:8f27])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6a15f1cd245sm69464846d6.77.2024.05.15.17.33.44
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Wed, 15 May 2024 17:33:45 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1715842624; c=relaxed/simple;
+	bh=4LTcZI3NtyKLMF6ajqsiX6Md9k9+SZrxBjaSiG1EoLg=;
+	h=Content-Type:MIME-Version:Content-Disposition:In-Reply-To:
+	 References:Subject:From:Cc:To:Date:Message-ID; b=qDBcBVapc2vpQmTz7StYFb+LQUPmbz4tDHjsJQeRo+JKXR5GBCTrlRviihsrL/MgYHVXT+aR/5XgWZoBSz+abSBpsWYv0g9OELzdf/TaECKV56JTdW01ZyhpqG2enxEZpERTbjCaCHZqBR/imWhhPQ7QmgC+eEbIPB6o3QBQ4Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de; spf=pass smtp.mailfrom=mister-muffin.de; dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b=ePPEY0xN; arc=none smtp.client-ip=144.76.155.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mister-muffin.de
+Received: from localhost (ip2504e6e1.dynamic.kabel-deutschland.de [37.4.230.225])
+	by mister-muffin.de (Postfix) with ESMTPSA id B48192B8;
+	Thu, 16 May 2024 08:56:52 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mister-muffin.de;
+	s=mail; t=1715842612;
+	bh=4LTcZI3NtyKLMF6ajqsiX6Md9k9+SZrxBjaSiG1EoLg=;
+	h=In-Reply-To:References:Subject:From:Cc:To:Date:From;
+	b=ePPEY0xNyXG214l+Xu8/qvpsjY/3W7n5xEwrRgNjHt9sqN7WH0QUc10lPQFNRjJDu
+	 FwMuPxuAg4olawo1FuYQix5UYXnNTBtbH+ogvoDVG0fxOPqJGdkxNldJeN7s3oSFfB
+	 yG2t82fH3VrJA1nVsyMTk5RH45xerFkhuJomCAk8=
+Content-Type: multipart/signed; micalg="pgp-sha512"; protocol="application/pgp-signature"; boundary="===============3049226928662926417=="
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
-Subject: Re: KASAN: use-after-free in ext4_find_extent in v6.9
-From: Shuangpeng Bai <shuangpengbai@gmail.com>
-In-Reply-To: <20240515224932.GA202157@mit.edu>
-Date: Wed, 15 May 2024 20:33:33 -0400
-Cc: linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- syzkaller@googlegroups.com
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <2184C9DB-DDC2-484B-A1B2-A1E312B62D54@gmail.com>
-References: <5B9F0C1F-C804-4A9C-8597-4E1A7D16B983@gmail.com>
- <20240515224932.GA202157@mit.edu>
+MIME-Version: 1.0
+Content-Disposition: inline
+In-Reply-To: <20240511211111.GA8330@mit.edu>
+References: <171483317081.2626447.5951155062757257572@localhost> <171484520952.2626447.2160419274451668597@localhost> <20240505001020.GA3035072@mit.edu> <171540568260.2626447.10970955416649779876@localhost> <20240511211111.GA8330@mit.edu>
+Subject: Re: created ext4 disk image differs depending on the underlying filesystem
+From: Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+Cc: linux-ext4@vger.kernel.org
 To: Theodore Ts'o <tytso@mit.edu>
-X-Mailer: Apple Mail (2.3774.300.61.1.2)
+Date: Thu, 16 May 2024 08:56:52 +0200
+Message-ID: <171584261210.153302.13800498533021477492@localhost>
+User-Agent: alot/0.10
+
+--===============3049226928662926417==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 
 Hi Ted,
 
-Thanks for your reply!=20
-
-You are right. I disabled CONFIG_BLK_DEV_WRITE_MOUNTED and found this =
-bug can not be triggered anymore.=20
-
-I am wondering if there is any suggested way for me to check whether a =
-bug is reproduced under a reasonable environment (such as compiling =
-config) or not? If so, that would be very helpful.
-
-
-Best,
-Shuangpeng
-
-
-> On May 15, 2024, at 18:49, Theodore Ts'o <tytso@mit.edu> wrote:
+Quoting Theodore Ts'o (2024-05-11 23:11:11)
+> On Sat, May 11, 2024 at 07:34:42AM +0200, Johannes Schauer Marin Rodrigue=
+s wrote:
+> >  2. allow resetting fs->super->s_kbytes_written to zero. This patch wor=
+ked for
+> >     me:
+> >=20
+> > Would you be happy about a patch for (2.)? If yes, I can send something=
+ over
+> > once I find some time. :)
+> >=20
 >=20
-> On Tue, May 14, 2024 at 08:40:36PM -0400, Shuangpeng Bai wrote:
->> Hi Kernel Maintainers,
->>=20
->> Our tool found a kernel bug KASAN: use-after-free in =
-ext4_find_extent. Please see the details below.
->>=20
->> Kernel commit: v6.9 (Commits on May 12, 2024)
->> Kernel config: attachment
->> C/Syz reproducer: attachment
->>=20
->> We find this bug was reported and marked as fixed. =
-(https://syzkaller.appspot.com/bug?extid=3D7ec4ebe875a7076ebb31)
->>=20
->> Our reproducer can trigger this bug in v6.9, so the bug may have not =
-been fixed correctly.
+> I'm currently going back and forth about whether we should just (a)
+> unconditionally set s_kbytes_writes to zero before we write out the
+> superblock, or (b) whether we add a new extended operation, or (c) do
+> a hack where if SOURCE_DATE_EPOCH is set, use that as implied "set
+> s_kbytes_written to zero since the user is probably caring about a
+> reproducible file system".
 >=20
-> The reason why it was marked as fixed is because the reproducer no
-> longer reproduces with CONFIG_BLK_DEV_WRITE_MOUNTED disabled.
-> Upstream syzkaller unconditionally disables this config, and we don't
-> consider reproducers that have CONFIG_BLK_DEV_WRITE_MOUNTED enabled to
-> be a bug.
->=20
-> If the reproducer is actively modifying the block device (or the
-> underlying file for a loop device) while it is mounted, we don't
-> consider this a bug.  This is requires root, and it's no more a
-> "security bug" than someone complaining that root can execute a
-> reboot(2) system call and calling it a "security bug".
->=20
-> I've looked at your "reproducer" and it does appear to be modifying
-> the block device while it is mounted, and the config does have
-> CONFIG_BLK_DEV_WRITE_MOUNTED enabled.  So I don't care (tm).  If you
-> want to put an engineer to work on addressing the bug, and the patch
-> is a clean and maintable code fix, I'll certainly consider the change.
-> But it's not something that upstream will work on a volunteer basis;
-> no company I am aware of is willing to pay for engineers to work on
-> this sort of issue.
->=20
-> Cheers,
->=20
-> - Ted
+> (c) is a bit hacky, but it's the most convenient for users, and adding
+> Yet Another extended operation.
 
+when changing defaults in my own software I try to think about if and if yes
+how users will be able to change that default to get back to how it was bef=
+ore
+because xkcd #1172 is very real. Your options a) and c) do not give users a=
+ way
+to tell mke2fs that yes, they *do* want their filesystem to record how much=
+ was
+written to it during its creation. Even somebody who uses SOURCE_DATE_EPOCH=
+ to
+get reproducible output might have this need. Now you can argue "but users =
+who
+want this will be very very rare" and i will not disagree but then i think =
+the
+need to set s_kbytes_writes to zero because i want reproducible images when
+creating an ext4 file system image on top of 9p fs is also very, very rare.=
+ And
+then I look at option b) which is not nice but isn't it okay to have a
+cumbersome option for people in very niche situations?
+
+> Related to this is the design question about whether SOURCE_DATE_EPOCH sh=
+ould
+> imply using a fixed value for s_uuid and s_hash_seed.  Again, it's a litt=
+le
+> weird to overload SOURCE_DATE_EPOCH to setting the uuid and hash_seed to =
+some
+> fixed value, which might be a time-based UUID with the ethernet address s=
+et
+> to all zeroes, or some other fixed value.  But it's a pretty good proxy of
+> what the user wants, and if this is this is the default, the user can alw=
+ays
+> override it via an extended option if they really want something differen=
+t.
+
+Beware that generating a fitting uuid can quickly become not so fun anymore=
+ if
+you want to follow the relevant RFC instead of "just making something up". =
+I've
+had a talk with the reproducible builds people about this issue as I was
+looking for prior art on how to turn a SOURCE_DATE_EPOCH into a predictable
+uuid and I was told that the proper way would be to first generate a versio=
+n 5
+uuid using a DNS name you control and then use that uuid as the namespace f=
+or
+another uuid together with SOURCE_DATE_EPOCH. It was then discussed whether=
+ the
+reproducible builds team should formalize a method to turn a SOURCE_DATE_EP=
+OCH
+into a uuid and document it and how that should be done but it seems to be
+tricky to do it right if one wants to follow the relevant RFCs to the lette=
+r.
+
+> If it weren't for the fact that I'm considering have SOURCE_DATE_EPOCH
+> provide default values for s_uuid and s_hash_seed, I'd be tempted to just
+> unconditionally set the s_kbytes_written to zero.
+>=20
+> I'm curious what your opinions might be on this, as someone who might
+> want to use this feature.
+
+Not only "might want to use this" but "actively using it":
+
+https://tracker.debian.org/news/1529763/accepted-mmdebstrap-150-1-source-in=
+to-unstable/
+
+As the mmdebstrap upstream author, I would have no problem with mke2fs sett=
+ing
+s_uuid and s_hash_seed to some reproducible value by default. As you said, =
+any
+user who doesn't like this can always run mke2fs manually and because
+mmdebstrap writes tarballs to stdout, adding custom mke2fs options is really
+easy:
+
+mmdebstrap | mke2fs -d - -U $(uuidgen) -E hash_seed=3D$(uuidgen) ...
+
+That being said, I'm not aware of anybody else requiring bit-by-bit
+reproducible ext4 images. I never got bit-by-bit reproducible output to work
+when using an unpacked filesystem directory as the source for mke2fs. But I=
+'m
+at MiniDebConf Berlin this week and just yesterday I met somebody from the
+Debian Cloud team who said that they are interested in this functionality. I
+shall make them aware of this thread today and maybe they have some further
+input.
+
+> > As an end-user I am very interested in keeping the functionality of mke=
+2fs
+> > which keeps track of which parts are actually sparse and which ones are
+> > not.  This functionality can be used with tools like "bmaptool" (a more
+> > clever dd) to only copy those parts of the image to the flash drive whi=
+ch
+> > are actually supposed to contain data.
+> If the file system where the image is created supports either the FIEMAP
+> ioctl or fallocate SEEK_HOLE, then "bmaptool create" can figure out which
+> parts of the file is sparse, so we don't need to make any changes to
+> e2fsprogs.  If the file system doesn't support FIEMAP or SEEK_HOLE, one c=
+ould
+> imagine that bmaptool could figure out which parts of the file could be
+> sparse simply by looking for blocks that are all zeroes.  This is basical=
+ly
+> what "cp --sparse=3Dalways" or what the attached make-sparse.c file does =
+to
+> determine where the holes could be.
+>=20
+> Yes, I could imagine adding a new io_manager much like test_io and
+> undo_io which tracked which blocks had been written, and then would
+> write out a BMAP file.  However, the vast majority of constructed file
+> systems are quite small, so simply reading all of the blocks to
+> determine which blocks were all zeroes ala cp --sparse=3Dalways isn't
+> going to invole all that much overhead.  And I'd argue the right thing
+> to do would be to teach bmaptool how to do what cp --sparse=3Dalways so
+> that the same interface regardless of whether bmaptool is running on a
+> modern file system that supports FIEMAP or SEEK_HOLE, or some legacy
+> file system like FAT16 or FAT32.
+
+Thank you for your make-sparse.c. I was wondering whether it is really as
+simple as finding all 1024 byte blocks that are all zeros and then skipping
+them with lseek, creating a "hole". I imagined that maybe there were some
+potential issues of the sort that when my filesystem is part of a disk image
+together with a partition table, then maybe due to at what offset the
+filesystem is stored on that image or what expectations ext4 or other
+filesystems on that image have, there could be situations when it really *i=
+s*
+necessary to write 1024 consecutive zeroes to my flash drive. At the time t=
+hat
+I was pondering about this, I used fallocate --dig-holes to turn a disk ima=
+ge I
+had into a sparse one and this made fsck report problems in the filesystem =
+that
+it was not able to fix. I didn't investigate this further.
+
+My need to "dig holes" did not come from the underlying filesystem being a =
+dumb
+one like fat or 9p but because it turns out that copying an ext4 image onto=
+ a
+disk image with an offset while preserving its sparse-ness is not something=
+ dd
+(or any similar utility I found) was able to do. So at the end of this mail=
+ is
+the program I am now using to copy the output of mke2fs (which is sparse) o=
+nto
+my disk image while preserving all the holes created by mke2fs exactly as
+mke2fs decided they should be placed. After flashing this to a SD-Card whic=
+h I
+filled with random bytes before, the resulting system booted fine and fsck =
+did
+not report any issues. Assuming that the underlying filesystem is smart, I
+imagine that simply preserving the holes is the safer option than digging n=
+ew
+ones.
+
+Thanks!
+
+cheers, josch
+
+
+
+
+#define _GNU_SOURCE
+#define _LARGEFILE64_SOURCE
+#include <sys/types.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <errno.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <stdbool.h>
+
+
+int main(int argc, char *argv[]) {
+    if (argc !=3D 3 && argc !=3D 4) {
+        fprintf(stderr, "Usage: %s infile outfile [offset]\n", argv[0]);
+        exit(EXIT_FAILURE);
+    }
+    int infd =3D open(argv[1], O_RDONLY);
+    if (infd =3D=3D -1) {
+        perror("open");
+        exit(EXIT_FAILURE);
+    }
+    off64_t inlength =3D lseek64(infd, 0, SEEK_END);
+    if (inlength =3D=3D -1) {
+        perror("lseek64");
+        exit(EXIT_FAILURE);
+    }
+    int outfd =3D open(argv[2], O_CREAT | O_WRONLY);
+    if (outfd =3D=3D -1) {
+        perror("open");
+        exit(EXIT_FAILURE);
+    }
+    off64_t outlength =3D lseek64(outfd, 0, SEEK_END);
+    if (outlength =3D=3D -1) {
+        perror("lseek64");
+        exit(EXIT_FAILURE);
+    }
+    long long offset =3D 0;
+    if (argc =3D=3D 4) {
+        offset =3D strtoll(argv[3], NULL, 10);
+        if (errno !=3D 0) {
+            perror("strtoll");
+            exit(EXIT_FAILURE);
+        }
+    }
+    off64_t curr =3D 0;
+    while (true) {
+        off64_t data =3D lseek64(infd, curr, SEEK_DATA);
+        if (data =3D=3D -1) {
+            break;
+        }
+        off64_t hole =3D lseek64(infd, data, SEEK_HOLE);
+        if (hole =3D=3D -1) {
+            hole =3D inlength;
+        }
+        off64_t off_out =3D data + offset;
+        ssize_t ret =3D copy_file_range(infd, &data, outfd, &off_out, hole =
+- data, 0);
+        if (ret =3D=3D -1) {
+            perror("copy_file_range");
+            exit(EXIT_FAILURE);
+        }
+        curr =3D hole;
+    }
+    if (outlength < inlength + offset) {
+        int ret =3D ftruncate(outfd, inlength + offset);
+        if (ret =3D=3D -1) {
+            perror("ftruncate");
+            exit(EXIT_FAILURE);
+        }
+    }
+    close(infd);
+    close(outfd);
+    exit(EXIT_SUCCESS);
+}
+--===============3049226928662926417==
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Description: signature
+Content-Type: application/pgp-signature; name="signature.asc"; charset="us-ascii"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElFhU6KL81LF4wVq58sulx4+9g+EFAmZFri4ACgkQ8sulx4+9
+g+FUWg//X8Lax/Kd8CMTlTaFyb5wp3LUH1AIGjOhGqc7Tqx7d8MDAzmWIPwdckbK
+K90uvlPaEdpOMnn5Q8jRohyatqoVP5xMTP3ggLvBjuVwPa+k9J4u75B0aYNzDhEn
+2MZAblc0hdXU84SydY1jOdQIjMdAU4+DTiLFCpci6f42v5huROPWdPZw0YOawna5
+t6/SSPH5/Fo28egj61SqY7Je3DTZ8ZvxZGyfTrppCvbN7Zuea2KCLNgnWizxoyb6
+UqQEbd5L5stVgJs+hXO2NuxbQzhFpL9xF63Zd9S021JyGf+EBzyARTH+IOqk//q7
+qwqDDdZ7nkoUB/J3rsL86DTlhXAjl/8Xv5HOPzpXj5gLO3x1bmHkv1q8DIJOHSSj
+M9CeUtMA67mvOVbOLtgVPwQKTm+mxxU+2JGAYS1HjfOfM7gXRm2yMhh4pqUjKBL2
+X1ZLyRDxH6m+R45AUy//cBThIqJeRACorNdZ9ni/hVLOnl/s7P5rTLHRu6+c4Z/t
+9i1C+aVsMj+cMQoh1w7gFMo2OYbtPfeFeyD3tQmQO2ZrpJoEs+nl08ic+vlJqNqN
+wyBveys3Ssqi7v5g3zYIIF0sOcgiPHq1ZOJJdqyx7C3sENZFjaTMIj4ROfjuDc0T
+jyjOc+WFln3HlQA7dDSXoqaMStdlFBzS4/vPuH2gscNWwoePQLQ=
+=tu6F
+-----END PGP SIGNATURE-----
+
+--===============3049226928662926417==--
 
