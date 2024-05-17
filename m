@@ -1,102 +1,130 @@
-Return-Path: <linux-ext4+bounces-2546-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2547-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35C458C803F
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 05:45:30 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03C808C858B
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 13:25:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C50301F2251A
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 03:45:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 79347B2334E
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 11:25:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B54BE5A;
-	Fri, 17 May 2024 03:45:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A83713EA68;
+	Fri, 17 May 2024 11:24:50 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE27B669
-	for <linux-ext4@vger.kernel.org>; Fri, 17 May 2024 03:45:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC6563D0A3;
+	Fri, 17 May 2024 11:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715917521; cv=none; b=GxrHI45Q+ONonYKqxTjLKuleLQ7oE/owLp2Sz5eFDqu3q/rnDSh+IKYksQZDiq4snZuVfDpCjZQok5m8iwNWCzUAGU4RxzT4xB9CI5VoA95Zlsz5ewSxxfnkR0LIsulxy99Uv3obTLolBiaGU2TCYtjGaOJ0RStmEkOgbVw2Hks=
+	t=1715945090; cv=none; b=aHnF199yJN8hwxUX1ZJNY6YXxrKvAkWaYWMFvtaG0tT++9V3DVKCNL/Oob1RNtFT3iMhByTN9A13Os5V8WGd9mbJTzBNrdA6WGWm5SGB5SLuz1Oni14skcJ7J1WQzRNYQQRG15bgNxjTcidqR0wQeqioIehYbwrKIvNNYnySL7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715917521; c=relaxed/simple;
-	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=E/u9NTOfZyUbhdhW///g3ZY3AnCCi5saohusF/Wnhbxm5/u1wmgDrW56GZSlnrlKq77ekVmzTRG5h73MsuRFwkNGL/Zy2M0WcQagmRnHPfOezQVOPGCMgVwvJl+V0HA/TsSvpcP0jIvo+3Q41EjcYoPeJ/7ZhouvBHp09jGh4YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7e1de4c052aso627421539f.0
-        for <linux-ext4@vger.kernel.org>; Thu, 16 May 2024 20:45:20 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1715917519; x=1716522319;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
-        b=MtdAWXoFyqD4iYy3izUETCNoCRxpI4zK6DjpZeF8D1xcfRKX/dpZM+t4CKiWgA7F1t
-         4jzrZTLsjD3g/M80L7fzyqwp+DEMMq6m1bD0kpihuPUXy2r26e96wYJsmOz+WotdCPgt
-         qkwpA7CX5AIF2y2/nL/3iV3tUgJi72oi4MR/RpKlXYcXYT1XYD7+y3IiFCV/16kvSYj5
-         PhNCt6kDdhCXiJ43uektvDG9vlOBnzWlaJNSlFk/7LBJWEww80HZtHF9LSXYThMHZxrU
-         4MEcM/FsrtGKzC6mXlELgP+dAMam14vJV3UAEDVbFe3WrpTqLpERq2fP7l2VgqqIzCJQ
-         IVKg==
-X-Forwarded-Encrypted: i=1; AJvYcCXET3/0bmvCcMIHEvTdVasbGUwPQklPzYbBoCJD72BzAqxkfj66WoHGVc3RdU76aGUBGHZUK08fE6/5kh8thX5CKG9xkCBquSJfnA==
-X-Gm-Message-State: AOJu0YzTo0O5fd2A5HI7fXc0Bzh3dcPFMdqDhoQFWhLqhlvZCYqcfRYP
-	4SDEWwrAtVPKE8fSBlbtp1i5V3ZEJVYXgZAL5fhOa6J5pGYc+AZ2xiWS78JifcFlbUM8rv3bHf/
-	AwiDCifYAT8T8UJqi5EgIIHkBYk2BYJFvu/gUTrADLPXqUptH8DUHMIk=
-X-Google-Smtp-Source: AGHT+IHeRF5znd2RauvqwoQWzfQBK+/EpMeBkZLGuJ5vLdevUzahzVwExTNmN2kCcFtSeiUfNNLxE7EvP+y7R4QwsCuNtP2hxld8
+	s=arc-20240116; t=1715945090; c=relaxed/simple;
+	bh=DoyCXkpOfzLWKgC9ctYH1ac8X2WIkrxKpQLa1A3Sw+Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=RGedFnnCr7jSLO+SOId/+ao9ofgtcfAcyUnnuwuQTWGhkomdQxhL+YHRnEy0Xn0iQkSZ8zq+fGjfVKm4UFKf5oaUxe/su8d18RvDrAVadwxS50eGufNuvqtpDHy85kiW+w37FL91HujFKYFVIliUIJkXSCAPIvzwAHiHYmLQL/Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vgl3p3kPYz4f3jkq;
+	Fri, 17 May 2024 19:24:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 2280C1A017F;
+	Fri, 17 May 2024 19:24:44 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgBHGBFrPkdm3V+kMw--.2732S4;
+	Fri, 17 May 2024 19:24:41 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	djwong@kernel.org,
+	hch@infradead.org,
+	brauner@kernel.org,
+	david@fromorbit.com,
+	chandanbabu@kernel.org,
+	jack@suse.cz,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH v3 0/3] iomap/xfs: fix stale data exposure when truncating realtime inodes
+Date: Fri, 17 May 2024 19:13:52 +0800
+Message-Id: <20240517111355.233085-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:2727:b0:488:b7c1:401b with SMTP id
- 8926c6da1cb9f-48958e0d1e0mr1629654173.4.1715917519347; Thu, 16 May 2024
- 20:45:19 -0700 (PDT)
-Date: Thu, 16 May 2024 20:45:19 -0700
-In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000346e8f06189e2e1e@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
-From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgBHGBFrPkdm3V+kMw--.2732S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7AF4fZr4furyktF45Xry7Jrb_yoW8XF45pF
+	Z8Gry5Wr48Gry3ua4fua1qv345J3W0yrWUuFyxtwnxZFy2qryIyr10ga10gayDtrykXr4U
+	Xr15JFZ7Wr1vyrJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvj14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4j
+	6F4UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxa
+	n2IY04v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrV
+	AFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCI
+	c40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267
+	AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUoO
+	J5UUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+From: Zhang Yi <yi.zhang@huawei.com>
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+Changes since v2:
+ - Use div_u64_rem() instead of do_div().
 
-#syz fix: exact-commit-title
+Changes since v1:
+ - In iomap_truncate_page() and dax_truncate_page(), for the case of
+   truncate blocksize is not power of 2, use do_dive() to calculate the
+   offset.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
+This series fix a stale data exposure issue reported by Chandan when
+running fstests generic/561 on xfs with realtime device[1]. The real
+problem is xfs_setattr_size() doesn't zero out enough range when
+truncating a realtime inode, please see the third patch or [1] for
+details.
 
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
+The first two patches modify iomap_truncate_page() and
+dax_truncate_page() to pass filesystem identified blocksize, and drop
+the assumption of i_blocksize() as Dave suggested. The third patch fix
+the issue by modifying xfs_truncate_page() to pass the correct
+blocksize, and make sure zeroed range have been flushed to disk before
+updating i_size.
 
----
-[1] I expect the commit to be present in:
+[1] https://lore.kernel.org/linux-xfs/87ttj8ircu.fsf@debian-BULLSEYE-live-builder-AMD64/
 
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
+Thanks,
+Yi.
 
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+Zhang Yi (3):
+  iomap: pass blocksize to iomap_truncate_page()
+  fsdax: pass blocksize to dax_truncate_page()
+  xfs: correct the zeroing truncate range
 
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+ fs/dax.c               | 13 +++++++++----
+ fs/ext2/inode.c        |  4 ++--
+ fs/iomap/buffered-io.c | 13 +++++++++----
+ fs/xfs/xfs_iomap.c     | 36 ++++++++++++++++++++++++++++++++----
+ fs/xfs/xfs_iops.c      | 10 ----------
+ include/linux/dax.h    |  4 ++--
+ include/linux/iomap.h  |  4 ++--
+ 7 files changed, 56 insertions(+), 28 deletions(-)
 
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+-- 
+2.39.2
 
-The full list of 9 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
 
