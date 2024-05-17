@@ -1,90 +1,102 @@
-Return-Path: <linux-ext4+bounces-2562-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2563-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 939048C8909
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 17:11:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2176F8C89EB
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 18:20:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E65D928188E
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 15:11:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EA47282F75
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 16:20:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EB86996A;
-	Fri, 17 May 2024 15:11:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3B5912FB34;
+	Fri, 17 May 2024 16:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="gi+I/uwM"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="EAbYwBLS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from mout.web.de (mout.web.de [217.72.192.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F256564CE1
-	for <linux-ext4@vger.kernel.org>; Fri, 17 May 2024 15:11:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F4E51DDF8;
+	Fri, 17 May 2024 16:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.72.192.78
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715958664; cv=none; b=e70JwQ7Zt1XUsA4s2J6B0XP6D8xUO/q7m4vH6cAk95nT/jjDyqEEv0SZE0qE7mZOm3fuhh9Ccixd/TjL5JzHgiznvwluz2MkufAW0YY49V8JM6ijKMzGCM0MtUDqrrQbiS6T70pKbA73HHt6gcYdfJYBc0THXKtF9zeqjJnuGBQ=
+	t=1715962830; cv=none; b=PCPzR4JvHZNUA4Fui696Ey9q5JcKheQC5FFnAcqECFNa5VACQgaCNfv2yzGRS5aS2OKJuxFK01xSj2Y93kCEjymYFndmnfIkPH6+yOLUtQkVKdNUsVgQ+hOV6dKr+secs8X04+DR3/GruVc2l+PpRo+FAxVmXPm70GlHdSl9qpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715958664; c=relaxed/simple;
-	bh=0U3sf8Hc8uG0pt5j1TXMHSmEl5W5zQP3g9W1tgxp3YM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tnG1jwYnm3KWf1l8yWQ1hwaf6t58RM7u4b4X1CTOrmgKqzgIKFgm5qbdBYOFXi/+KphKAEn7nD9b1eogEdZStwi4qiHkG2fwFSLr7frxreb+/5wnSPFX9acgIs/k9Lf6MVsMbOkXzMBptQRZNIj45psDiaOwSCZ53/qIlIsxjLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=gi+I/uwM; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44HFAfIg005865
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 17 May 2024 11:10:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1715958645; bh=53gt3U+FPEO+PUBC7Ra4RhW5FF25V+xJNdlek+/C4FM=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=gi+I/uwMs8AWOIZoVgSpzp1LTjUsBsgcufR8K4dcGGobk03DWYCSMIAX2XXIMSuUG
-	 IMrBAkasJnfWWkcczcF6xvzajb6fj/yiJ3pvmgQl96LxNnrcKasqkILq8Tm2dmxpfg
-	 wrJ0M28N0WKdPhUL4sKblaLS2as1zpWW6aIxJxX2U4TRdp1HUbKkMQXYp1ym18pdI4
-	 u0OH9N1LyyWIOvzAlJzH0NqLH5LpF4UJ7Pc30JoHemfw0Umsexai0kzBgOADkLdKEY
-	 Pusxqpf6O8Npax2VByBowDCN7YmLDseO0R3jr5+JILbaXlrSlb1vekr8NnhO4sNYj8
-	 JxChXbyt5Zp+A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 20A1F15C00DC; Fri, 17 May 2024 11:10:41 -0400 (EDT)
-Date: Fri, 17 May 2024 11:10:41 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: David Howells <dhowells@redhat.com>
-Cc: Max Kellermann <max.kellermann@ionos.com>, Jan Kara <jack@suse.com>,
-        Miklos Szeredi <miklos@szeredi.hu>,
-        Christian Brauner <brauner@kernel.org>, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3] ext4: Don't reduce symlink i_mode by umask if no ACL
- support
-Message-ID: <20240517151041.GB10730@mit.edu>
-References: <1586868.1715341641@warthog.procyon.org.uk>
+	s=arc-20240116; t=1715962830; c=relaxed/simple;
+	bh=MhCqEObRQqnJSR8w68mFYmxXWm1UO8FSzDLr2vj0eLc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=GJokXUluehgjrS7mcpqa1WDUPm9IIa8KgPnJTy5medOm9KEEy9bNUkiIQ3b31jKZ7FC0CCKBrAtI72R84fY1hO2jkg7aXSM8DvfpeipaxatlUXa4BJr+XS1FmNnedn9qqP5J1VZ9bhtJA26l/pSiSbHt90RKBRqJnLuLmFanb2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=EAbYwBLS; arc=none smtp.client-ip=217.72.192.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1715962787; x=1716567587; i=markus.elfring@web.de;
+	bh=MhCqEObRQqnJSR8w68mFYmxXWm1UO8FSzDLr2vj0eLc=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=EAbYwBLSfbaP7DUcjywthjOZ92Z/m36nPCmGIKQAc0JYoap6mHV8CBWNqrmPu5DC
+	 FSkEtomqyovcoyzEvZgpAEdaQt+PYjcVQW9AmBXm271ODYR/Lc340/bSKz2M2q0lU
+	 KEkVBc4zmZwk8O+FGXA+jPoMz+BAgfNb1djJFImVUMgAa76k/wMxbjqFeDpB5kKOd
+	 msh95+aHkOE7mkPUc52b0H6HXhBYQI6hXRdB6iuW6qR1vViBanX7aBpE+aCrb7cle
+	 9k5IUcorUHcF94cPooaWm+/RHRAi9txj0DpZMh3x2jQ24q1jd0bFu5xfuHL5QxrWo
+	 /Oyelh2Gd98WUhEqeQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.82.95]) by smtp.web.de (mrweb106
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1Mvbn2-1sNt0130zO-00sfle; Fri, 17
+ May 2024 18:19:47 +0200
+Message-ID: <3dbe3c6f-e700-42d8-b2b7-574a3fd1da85@web.de>
+Date: Fri, 17 May 2024 18:19:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <1586868.1715341641@warthog.procyon.org.uk>
+User-Agent: Mozilla Thunderbird
+To: Zhang Yi <yi.zhang@huawei.com>, linux-ext4@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Cc: LKML <linux-kernel@vger.kernel.org>,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+ Ritesh Harjani <ritesh.list@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
+ Yu Kuai <yukuai3@huawei.com>, Zhang Yi <yi.zhang@huaweicloud.com>,
+ Zhihao Cheng <chengzhihao1@huawei.com>
+References: <20240517124005.347221-2-yi.zhang@huaweicloud.com>
+Subject: Re: [PATCH v5 01/10] ext4: factor out a common helper to query extent
+ map
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240517124005.347221-2-yi.zhang@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:dlvnttXyEIHdwQMV4dHCwXlZtMglBNz+cRMJQ456ZO/CNNYl2oF
+ JVULUzrvhC9rwRvHuywnHesK3jkgQgO6xF1FAStHzMURC6XmvCKdRgG+0agTPk+H+ILWw/r
+ Oed/KRVPdfx+7kZlydrvDZEs1oVEp1XVt0zB9/nGP/7g/YSla4WflkAT7zOjnQeMu5Q+Pwr
+ /BSrI804tjZ17uSh1KXTQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:b0Ifs6EglUs=;qCx0L091tWWSokjyvY9KnHZSVDb
+ tIRIQesyVLuF9y0J7GZ2CMp0cDDrmQXjsVDq20ukGgxlvcmr5rqC7upj8cScR/RFmUzRXjUZG
+ rnIvaEaww1MbcCXR7n89sRPox2le36W6+e0WFqwHdjQ5kwTxIUWxbKMl9ncR3wxlL4qo0N48E
+ G08D+uZZGFTJERJPlHoqupfg5yZlnRhMJZrSFErdWkho/bH9xeqjsWDWKqDrYF7sp1fG00Ex2
+ 0OLHce6ltAWjD8Y9/xo9ok9OnjmRxZlyTWt7nqyEeHzll/h7xgXH07Ng6tgSkAqYQJLzXmkk1
+ OVf4+7LIABFzWteFAtzyQLYilDLWR2zgC8F/Ln4MikYEhhoWDD79Y/mQHJ56lKGPDSUnbHAMw
+ gSBs2OVP7R2zDlw78cQ0fyjvcNSBv8GTSU6m4K+XNPIyg+s0pW0PNc64mScEx2WvxmvikcHob
+ 7EaGEw0OMtIy8d3BaRJ2XGFrFuYZ8F7rPBxoxMxbcSkGiIqbKrX14gbRrmVmIxMUKF0LBhoa/
+ VbZNjz5rlwYGK3bqlgiSLy1rWf25cLNyr3+VgppgbwM+my+P34GcEajQIN7UofpSqyT1uDXO1
+ J4NUD37s8dqsLpg0gPm2P+6IE3L9XY5bnydbUaqbvaezeRNW20W5TmMNHZimYyCx8Szz3ee7s
+ KCQalqzLce1iT2BAmDa7a+U51RoetM/2dYe2JdDMkppHNfewxJXGulxvVHB6G4TVHZexFbQxE
+ HVofm+I/8EF74t4Ghd7rvlc45r+MHzZA+9ancN7OvRQg6T1W6Qngqjl5+a8icS7EJuN26Srun
+ r+y+05wNZWLoN9M2aNJLLDn6ycz5NHGBcCuHzdm6LDzBI=
 
-On Fri, May 10, 2024 at 12:47:21PM +0100, David Howells wrote:
->     
-> If CONFIG_EXT4_FS_POSIX_ACL=n then the fallback version of ext4_init_acl()
-> will mask off the umask bits from the new inode's i_mode.  This should not
-> be done if the inode is a symlink.  If CONFIG_EXT4_FS_POSIX_ACL=y, then we
-> go through posix_acl_create() instead which does the right thing with
-> symlinks.
-> 
-> However, this is actually unnecessary now as vfs_prepare_mode() has already
-> done this where appropriate, so fix this by making the fallback version of
-> ext4_init_acl() do nothing.
+=E2=80=A6
+> ext4_da_map_blocks(), it query and return the extent map status on the
+> inode's extent path, no logic changes.
 
-Thanks for this patch; however, as I had mentioned in the discussion
-of the v1 version the patch, this change is already in the ext4 tree
-and linux-next in commit c77194965dd0 ('Revert "ext4: apply umask if
-ACL support is disabled"').
+Please improve this change description another bit.
 
-						- Ted
+Regards,
+Markus
 
