@@ -1,64 +1,58 @@
-Return-Path: <linux-ext4+bounces-2549-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2553-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 835B68C8593
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 13:25:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1291B8C868B
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 14:51:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14B881F225C2
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 11:25:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C36652838B0
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 12:51:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 605C341C78;
-	Fri, 17 May 2024 11:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C511F535D1;
+	Fri, 17 May 2024 12:51:02 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC33E3D56D;
-	Fri, 17 May 2024 11:24:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA4FB3D97A;
+	Fri, 17 May 2024 12:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715945091; cv=none; b=ODQMmNEuQOLxyIRNvOsixGGZoAsQcq55p+j1aHpobjPDVm0HKM4JWwYlkYq0y5yQeHvMKNbB7mI6b83StVlB25Mj/hmh6vp/9rqgTcNeiFMqVLo3+71+n+z1+7N+yW4JCAPgBwrnedpQJ2KB8ZIiW0m4ClO5+9nDvOnB9Up/uO8=
+	t=1715950262; cv=none; b=e2u8Kc2vn5w3B3cDtQSTYLZnmn0zIuUb5ih3xuUEZTgdh04FUxGYigaYdQP5lIXP6jhCJ3OhSkJfrFzlYd+biPHNxd/iQVMFClDhj9Ka+Yb8lrNxwBm1Y2Pqm4U75N0Tb/oweFCp4rNnzmYdJ+Q11GBKYeoZ2Q6ibSHy9P7C+vQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715945091; c=relaxed/simple;
-	bh=xuIlfY/3HVCtD8t5rWUv44jPGANtnz30uK1KfBywpWA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=NgRyEdZgiFna2AdfLptB9Mc5NkUXmuHT4BgEaRDbZTbF63KO15WME43oAqJK8SXwsE7dqO87gQVug9gvh6884oWwHn1zY4xRpMvsPLbWHbQatuhbU1xZq3qiu0zMPusu3Xar0iloWDCDyWLw1p2zyECrRleByFnOFrHU2tTj/y8=
+	s=arc-20240116; t=1715950262; c=relaxed/simple;
+	bh=3EQCRuvxHsBDbcUTb197QF5lWUu3o/wXiE93fM+rLPA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=iJohWIga3gGOkEXbROIVhgkCtFW1WXwHgXgygWNqT2csMdESnnLhEElWO4D/Pn56J61lknVfARv+8YjUP5yQGBwUEm8y3oPj0eJNmhG1ulq5cHpW2PYPl7tKaAPhr7rfVqfHhRQ95x7RPjI7YOG3UE7tdcQGlGUdKttKx2dIvX0=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vgl3r0kSrz4f3jqB;
-	Fri, 17 May 2024 19:24:40 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vgmz83grjz4f3mJP;
+	Fri, 17 May 2024 20:50:44 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B214B1A0199;
-	Fri, 17 May 2024 19:24:45 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id C084C1A017F;
+	Fri, 17 May 2024 20:50:54 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP1 (Coremail) with SMTP id cCh0CgBHGBFrPkdm3V+kMw--.2732S7;
-	Fri, 17 May 2024 19:24:45 +0800 (CST)
+	by APP1 (Coremail) with SMTP id cCh0CgBXKBGdUkdmdAmqMw--.14380S4;
+	Fri, 17 May 2024 20:50:52 +0800 (CST)
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	djwong@kernel.org,
-	hch@infradead.org,
-	brauner@kernel.org,
-	david@fromorbit.com,
-	chandanbabu@kernel.org,
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
 	jack@suse.cz,
+	ritesh.list@gmail.com,
 	yi.zhang@huawei.com,
 	yi.zhang@huaweicloud.com,
 	chengzhihao1@huawei.com,
 	yukuai3@huawei.com
-Subject: [PATCH v3 3/3] xfs: correct the zeroing truncate range
-Date: Fri, 17 May 2024 19:13:55 +0800
-Message-Id: <20240517111355.233085-4-yi.zhang@huaweicloud.com>
+Subject: [PATCH v5 00/10] ext4: support adding multi-delalloc blocks
+Date: Fri, 17 May 2024 20:39:55 +0800
+Message-Id: <20240517124005.347221-1-yi.zhang@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240517111355.233085-1-yi.zhang@huaweicloud.com>
-References: <20240517111355.233085-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -66,125 +60,96 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgBHGBFrPkdm3V+kMw--.2732S7
-X-Coremail-Antispam: 1UD129KBjvJXoWxGrW7uF4UAw1DCr4fGFW8Xrb_yoWrGry5pr
-	s7K3Z8CrsrK347ZF1kXF1jvw1Fy3WrAF409ryfGrn7Za4DXr1Iyrn2gF4rKa1Utr4DXw4Y
-	qFs5tayUuas5AaDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBE14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JrWl82xGYIkIc2
-	x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2IY04
-	v7MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_
-	Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x
-	0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVWx
-	JVW8Jr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMI
-	IF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUd8n5UUUUU
-	=
+X-CM-TRANSID:cCh0CgBXKBGdUkdmdAmqMw--.14380S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxCF4UXrWDXr4UZr47ur47twb_yoW5CF1fpF
+	WrCF15Jr47tr17Ka97Aws7GF4rW3Z3GFWUG34fXw1UuFWUAFyrXFsrKF1F9FWkXrZagF1Y
+	qF12yF18u3Wqk37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UZa9-UUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Changes since v4:
+ - In patch 3, switch to check EXT4_ERROR_FS instead of
+   ext4_forced_shutdown() to prevent warning on errors=continue mode as
+   Jan suggested.
+ - In patch 8, rename ext4_da_check_clu_allocated() to
+   ext4_clu_alloc_state() and change the return value according to the
+   cluster allocation state as Jan suggested.
+ - In patch 9, do some appropriate logic changes since
+   the ext4_clu_alloc_state() has been changed in patch 8, so I remove
+   the reviewed-by tag from Jan, please take a look again.
 
-When truncating a realtime file unaligned to a shorter size,
-xfs_setattr_size() only flush the EOF page before zeroing out, and
-xfs_truncate_page() also only zeros the EOF block. This could expose
-stale data since 943bc0882ceb ("iomap: don't increase i_size if it's not
-a write operation").
+Changes since v3:
+ - Fix two commit message grammatical issues in patch 2 and 4.
 
-If the sb_rextsize is bigger than one block, and we have a realtime
-inode that contains a long enough written extent. If we unaligned
-truncate into the middle of this extent, xfs_itruncate_extents() could
-split the extent and align the it's tail to sb_rextsize, there maybe
-have more than one blocks more between the end of the file. Since
-xfs_truncate_page() only zeros the trailing portion of the i_blocksize()
-value, so it may leftover some blocks contains stale data that could be
-exposed if we append write it over a long enough distance later.
+Changes since v2:
+ - Improve the commit message in patch 2,4,6 as Ritesh and Jan
+   suggested, makes the changes more clear.
+ - Add patch 3, add a warning if the delalloc counters are still not
+   zero on inactive.
+ - In patch 6, add a WARN in ext4_es_insert_delayed_extent(), strictly
+   requires the end_allocated parameter to be set to false if the
+   inserting extent belongs to one cluster.
+ - In patch 9, modify the reserve blocks math formula as Jan suggested,
+   prevent the count going to be negative.
+ - In patch 10, update the stale ext4_da_map_blocks() function comments.
 
-xfs_truncate_page() should flush, zeros out the entire rtextsize range,
-and make sure the entire zeroed range have been flushed to disk before
-updating the inode size.
+Hello!
 
-Fixes: 943bc0882ceb ("iomap: don't increase i_size if it's not a write operation")
-Reported-by: Chandan Babu R <chandanbabu@kernel.org>
-Link: https://lore.kernel.org/linux-xfs/0b92a215-9d9b-3788-4504-a520778953c2@huaweicloud.com
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+This patch series is the part 2 prepartory changes of the buffered IO
+iomap conversion, I picked them out from my buffered IO iomap conversion
+RFC series v3[1], add a fix for an issue found in current ext4 code, and
+also add bigalloc feature support. Please look the following patches for
+details.
+
+The first 3 patches fix an incorrect delalloc reserved blocks count
+issue and add a warning to make it easy to detect, the second 6 patches
+make ext4_insert_delayed_block() call path support inserting
+multi-delalloc blocks once a time, and the last patch makes
+ext4_da_map_blocks() buffer_head unaware, prepared for iomap.
+
+This patch set has been passed 'kvm-xfstests -g auto' tests, I hope it
+could be reviewed and merged first.
+
+[1] https://lore.kernel.org/linux-ext4/20240127015825.1608160-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
 ---
- fs/xfs/xfs_iomap.c | 35 +++++++++++++++++++++++++++++++----
- fs/xfs/xfs_iops.c  | 10 ----------
- 2 files changed, 31 insertions(+), 14 deletions(-)
+v2: https://lore.kernel.org/linux-ext4/20240410034203.2188357-1-yi.zhang@huaweicloud.com/
+v3: https://lore.kernel.org/linux-ext4/20240508061220.967970-1-yi.zhang@huaweicloud.com/
 
-diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-index 4958cc3337bc..fc379450fe74 100644
---- a/fs/xfs/xfs_iomap.c
-+++ b/fs/xfs/xfs_iomap.c
-@@ -1466,12 +1466,39 @@ xfs_truncate_page(
- 	loff_t			pos,
- 	bool			*did_zero)
- {
-+	struct xfs_mount	*mp = ip->i_mount;
- 	struct inode		*inode = VFS_I(ip);
- 	unsigned int		blocksize = i_blocksize(inode);
-+	int			error;
-+
-+	if (XFS_IS_REALTIME_INODE(ip))
-+		blocksize = XFS_FSB_TO_B(mp, mp->m_sb.sb_rextsize);
-+
-+	/*
-+	 * iomap won't detect a dirty page over an unwritten block (or a
-+	 * cow block over a hole) and subsequently skips zeroing the
-+	 * newly post-EOF portion of the page. Flush the new EOF to
-+	 * convert the block before the pagecache truncate.
-+	 */
-+	error = filemap_write_and_wait_range(inode->i_mapping, pos,
-+					     roundup_64(pos, blocksize));
-+	if (error)
-+		return error;
- 
- 	if (IS_DAX(inode))
--		return dax_truncate_page(inode, pos, blocksize, did_zero,
--					&xfs_dax_write_iomap_ops);
--	return iomap_truncate_page(inode, pos, blocksize, did_zero,
--				   &xfs_buffered_write_iomap_ops);
-+		error = dax_truncate_page(inode, pos, blocksize, did_zero,
-+					  &xfs_dax_write_iomap_ops);
-+	else
-+		error = iomap_truncate_page(inode, pos, blocksize, did_zero,
-+					    &xfs_buffered_write_iomap_ops);
-+	if (error)
-+		return error;
-+
-+	/*
-+	 * Write back path won't write dirty blocks post EOF folio,
-+	 * flush the entire zeroed range before updating the inode
-+	 * size.
-+	 */
-+	return filemap_write_and_wait_range(inode->i_mapping, pos,
-+					    roundup_64(pos, blocksize));
- }
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index 66f8c47642e8..baeeddf4a6bb 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -845,16 +845,6 @@ xfs_setattr_size(
- 		error = xfs_zero_range(ip, oldsize, newsize - oldsize,
- 				&did_zeroing);
- 	} else {
--		/*
--		 * iomap won't detect a dirty page over an unwritten block (or a
--		 * cow block over a hole) and subsequently skips zeroing the
--		 * newly post-EOF portion of the page. Flush the new EOF to
--		 * convert the block before the pagecache truncate.
--		 */
--		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
--						     newsize);
--		if (error)
--			return error;
- 		error = xfs_truncate_page(ip, newsize, &did_zeroing);
- 	}
- 
+Zhang Yi (10):
+  ext4: factor out a common helper to query extent map
+  ext4: check the extent status again before inserting delalloc block
+  ext4: warn if delalloc counters are not zero on inactive
+  ext4: trim delalloc extent
+  ext4: drop iblock parameter
+  ext4: make ext4_es_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_reserve_space() reserve multi-clusters
+  ext4: factor out a helper to check the cluster allocation state
+  ext4: make ext4_insert_delayed_block() insert multi-blocks
+  ext4: make ext4_da_map_blocks() buffer_head unaware
+
+ fs/ext4/extents_status.c    |  70 +++++++---
+ fs/ext4/extents_status.h    |   5 +-
+ fs/ext4/inode.c             | 250 +++++++++++++++++++++++-------------
+ fs/ext4/super.c             |   6 +-
+ include/trace/events/ext4.h |  26 ++--
+ 5 files changed, 234 insertions(+), 123 deletions(-)
+
 -- 
 2.39.2
 
