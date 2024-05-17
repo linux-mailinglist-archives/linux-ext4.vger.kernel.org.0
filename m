@@ -1,137 +1,102 @@
-Return-Path: <linux-ext4+bounces-2545-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2546-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 172F28C7EDB
-	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 01:05:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35C458C803F
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 05:45:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48FEB1C21A73
-	for <lists+linux-ext4@lfdr.de>; Thu, 16 May 2024 23:05:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C50301F2251A
+	for <lists+linux-ext4@lfdr.de>; Fri, 17 May 2024 03:45:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5EDB22C6BB;
-	Thu, 16 May 2024 23:04:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Vj7jXEjv"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4B54BE5A;
+	Fri, 17 May 2024 03:45:21 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C42249F7;
-	Thu, 16 May 2024 23:04:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BE27B669
+	for <linux-ext4@vger.kernel.org>; Fri, 17 May 2024 03:45:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715900694; cv=none; b=V0RQ3x9ZaHGT2a+UbkD4RWSGeSZxvx2F4/Pf6bwLdA6W0LjSVF7u7RiZakTzm3r857n1fdwZMa90/UMXR9e4EO1hnD70YOIs6UETacFZsukOCqOzqmCFcrD3dOidCXI5WvNxuNWUDrClDWjxYWSzdxv6+NGgljQhhZsEKDwwPsg=
+	t=1715917521; cv=none; b=GxrHI45Q+ONonYKqxTjLKuleLQ7oE/owLp2Sz5eFDqu3q/rnDSh+IKYksQZDiq4snZuVfDpCjZQok5m8iwNWCzUAGU4RxzT4xB9CI5VoA95Zlsz5ewSxxfnkR0LIsulxy99Uv3obTLolBiaGU2TCYtjGaOJ0RStmEkOgbVw2Hks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715900694; c=relaxed/simple;
-	bh=nh4nGr+gQ6wnevCjIVCmzspYxt6MCbloYi4F9t67PIg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=T+OmpzkiLyLa3/ogWjSCSAZpQL1gHL3s1+EKJuFtqd+b/ALTkp0PKHn4rvDG7pBcx7VYJwd0UVaP9fiBAI05LqM2u7qQDLxOIVo2AUDr5w3gR0pnHCsaQvhgYNx3sIu9fqH9W7ZhRQvMCzzdpLN7X81Inq+xbs7Sry4BzOIL4Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Vj7jXEjv; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1715900693; x=1747436693;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=nh4nGr+gQ6wnevCjIVCmzspYxt6MCbloYi4F9t67PIg=;
-  b=Vj7jXEjva+EPdM5lqBvLwDq/Nqx79yO3kynUcy2fXe0np6p7P4sEW2Bd
-   sVo8KoWG0N9l3p8h+b/jERr5W8eSGLfKFhpdcV6i27ws3vXNbhmfq14DZ
-   4qFumpK8kbfO/urKBmLvxpoQSS/l0fPgqF2ha0jyIpzyFqHV7d2o6rqpX
-   n2nn0C4bmUMiGLaFFpr4PF4PtZoYKOa+fj/DQbd9zjbUQGCkEkkB0I7l1
-   TfroctM87xz+JnpcVCuhObg9g0diiSmM6Y2+QGiq2dZUFIlwaQSH/i5Gb
-   /ZukLeQN9F0KDkNqE353MHpONZWS7eVfGshfVqP0LleJx10dLYy6JLX6f
-   g==;
-X-CSE-ConnectionGUID: JBuN+R9nT7GY6p160paclw==
-X-CSE-MsgGUID: OfnCxF1jTj6N5yjPAom1Yw==
-X-IronPort-AV: E=McAfee;i="6600,9927,11074"; a="12266918"
-X-IronPort-AV: E=Sophos;i="6.08,165,1712646000"; 
-   d="scan'208";a="12266918"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 May 2024 16:04:52 -0700
-X-CSE-ConnectionGUID: +k415JnMQi+FptgiSeOfPw==
-X-CSE-MsgGUID: bl9Y4xyLRXy+FsAFUdig8g==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.08,165,1712646000"; 
-   d="scan'208";a="36499893"
-Received: from lkp-server01.sh.intel.com (HELO f8b243fe6e68) ([10.239.97.150])
-  by orviesa004.jf.intel.com with ESMTP; 16 May 2024 16:04:45 -0700
-Received: from kbuild by f8b243fe6e68 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1s7k9S-000Exl-1e;
-	Thu, 16 May 2024 23:04:42 +0000
-Date: Fri, 17 May 2024 07:03:46 +0800
-From: kernel test robot <lkp@intel.com>
-To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org,
-	linux-ext4@vger.kernel.org, djwong@kernel.org, hch@infradead.org,
-	brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
-	jack@suse.cz, yi.zhang@huawei.com, yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2 1/3] iomap: pass blocksize to iomap_truncate_page()
-Message-ID: <202405170624.liC4qYj3-lkp@intel.com>
-References: <20240516073001.1066373-2-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1715917521; c=relaxed/simple;
+	bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=E/u9NTOfZyUbhdhW///g3ZY3AnCCi5saohusF/Wnhbxm5/u1wmgDrW56GZSlnrlKq77ekVmzTRG5h73MsuRFwkNGL/Zy2M0WcQagmRnHPfOezQVOPGCMgVwvJl+V0HA/TsSvpcP0jIvo+3Q41EjcYoPeJ/7ZhouvBHp09jGh4YM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7e1de4c052aso627421539f.0
+        for <linux-ext4@vger.kernel.org>; Thu, 16 May 2024 20:45:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1715917519; x=1716522319;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=DC68Fan9U1mDvvm9HS7/KL5cq/tCfXtYDl7pvERFoFo=;
+        b=MtdAWXoFyqD4iYy3izUETCNoCRxpI4zK6DjpZeF8D1xcfRKX/dpZM+t4CKiWgA7F1t
+         4jzrZTLsjD3g/M80L7fzyqwp+DEMMq6m1bD0kpihuPUXy2r26e96wYJsmOz+WotdCPgt
+         qkwpA7CX5AIF2y2/nL/3iV3tUgJi72oi4MR/RpKlXYcXYT1XYD7+y3IiFCV/16kvSYj5
+         PhNCt6kDdhCXiJ43uektvDG9vlOBnzWlaJNSlFk/7LBJWEww80HZtHF9LSXYThMHZxrU
+         4MEcM/FsrtGKzC6mXlELgP+dAMam14vJV3UAEDVbFe3WrpTqLpERq2fP7l2VgqqIzCJQ
+         IVKg==
+X-Forwarded-Encrypted: i=1; AJvYcCXET3/0bmvCcMIHEvTdVasbGUwPQklPzYbBoCJD72BzAqxkfj66WoHGVc3RdU76aGUBGHZUK08fE6/5kh8thX5CKG9xkCBquSJfnA==
+X-Gm-Message-State: AOJu0YzTo0O5fd2A5HI7fXc0Bzh3dcPFMdqDhoQFWhLqhlvZCYqcfRYP
+	4SDEWwrAtVPKE8fSBlbtp1i5V3ZEJVYXgZAL5fhOa6J5pGYc+AZ2xiWS78JifcFlbUM8rv3bHf/
+	AwiDCifYAT8T8UJqi5EgIIHkBYk2BYJFvu/gUTrADLPXqUptH8DUHMIk=
+X-Google-Smtp-Source: AGHT+IHeRF5znd2RauvqwoQWzfQBK+/EpMeBkZLGuJ5vLdevUzahzVwExTNmN2kCcFtSeiUfNNLxE7EvP+y7R4QwsCuNtP2hxld8
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240516073001.1066373-2-yi.zhang@huaweicloud.com>
+X-Received: by 2002:a05:6638:2727:b0:488:b7c1:401b with SMTP id
+ 8926c6da1cb9f-48958e0d1e0mr1629654173.4.1715917519347; Thu, 16 May 2024
+ 20:45:19 -0700 (PDT)
+Date: Thu, 16 May 2024 20:45:19 -0700
+In-Reply-To: <000000000000dfd6a105f71001d7@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000346e8f06189e2e1e@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_write_inline_data
+From: syzbot <syzbot+f4582777a19ec422b517@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, eadavis@qq.com, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	nogikh@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Zhang,
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-kernel test robot noticed the following build warnings:
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-[auto build test WARNING on brauner-vfs/vfs.all]
-[also build test WARNING on linus/master v6.9 next-20240516]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+#syz fix: exact-commit-title
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Zhang-Yi/iomap-pass-blocksize-to-iomap_truncate_page/20240516-154238
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
-patch link:    https://lore.kernel.org/r/20240516073001.1066373-2-yi.zhang%40huaweicloud.com
-patch subject: [PATCH v2 1/3] iomap: pass blocksize to iomap_truncate_page()
-config: arm-randconfig-r111-20240517 (https://download.01.org/0day-ci/archive/20240517/202405170624.liC4qYj3-lkp@intel.com/config)
-compiler: arm-linux-gnueabi-gcc (GCC) 13.2.0
-reproduce: (https://download.01.org/0day-ci/archive/20240517/202405170624.liC4qYj3-lkp@intel.com/reproduce)
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202405170624.liC4qYj3-lkp@intel.com/
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=f4582777a19ec422b517
 
-sparse warnings: (new ones prefixed by >>)
->> fs/iomap/buffered-io.c:1453:28: sparse: sparse: incompatible types in comparison expression (different signedness):
-   fs/iomap/buffered-io.c:1453:28: sparse:    long long *
-   fs/iomap/buffered-io.c:1453:28: sparse:    unsigned long long [usertype] *
+---
+[1] I expect the commit to be present in:
 
-vim +1453 fs/iomap/buffered-io.c
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-  1446	
-  1447	int
-  1448	iomap_truncate_page(struct inode *inode, loff_t pos, unsigned int blocksize,
-  1449			bool *did_zero, const struct iomap_ops *ops)
-  1450	{
-  1451		loff_t start = pos;
-  1452		unsigned int off = is_power_of_2(blocksize) ? (pos & (blocksize - 1)) :
-> 1453				   do_div(pos, blocksize);
-  1454	
-  1455		/* Block boundary? Nothing to do */
-  1456		if (!off)
-  1457			return 0;
-  1458		return iomap_zero_range(inode, start, blocksize - off, did_zero, ops);
-  1459	}
-  1460	EXPORT_SYMBOL_GPL(iomap_truncate_page);
-  1461	
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
 
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 9 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
