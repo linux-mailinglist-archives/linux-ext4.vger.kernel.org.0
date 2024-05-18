@@ -1,60 +1,60 @@
-Return-Path: <linux-ext4+bounces-2567-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2568-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E20878C8F5D
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2024 04:27:22 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 889278C8FA2
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2024 06:46:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9629E282CA1
-	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2024 02:27:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BDC91B21BEE
+	for <lists+linux-ext4@lfdr.de>; Sat, 18 May 2024 04:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6032A523A;
-	Sat, 18 May 2024 02:27:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F1B3D9E;
+	Sat, 18 May 2024 04:46:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="O8+CIgmL"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="pJldRtGU"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22D7F29AF
-	for <linux-ext4@vger.kernel.org>; Sat, 18 May 2024 02:27:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 012D4621
+	for <linux-ext4@vger.kernel.org>; Sat, 18 May 2024 04:46:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1715999237; cv=none; b=gG0MzgruJYnjTUV4kzZ9aqXm5u/nBtqZPmUcXtBo7AInJq55ZBsuKbYDoKaTptOjEoFrpxFZseAlTBt/6shp9ZV0E4QxxVqse3usdrIJSi258tGW+blA6w0XOETMvFvLs44rxXeoT50FzkwcEvPN+WJeSbcsAA9gGgJmZSdjCr0=
+	t=1716007571; cv=none; b=tAdWgKNRE2DiVta6qmIfb562Vk0hVx5yIMdlwUR1qqmtApE4C3uMXmu2Ra8x8X7ma7GO3Y1CdLBTALwCaRTd0OmbkxFYy5rGFWSxPyLMQCdAEauor0WbpOD1fOPz1d4NcsG67pjAZubNL9nxcv2ysVty5brjCXGqoL4HR5dokr4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1715999237; c=relaxed/simple;
-	bh=QZn3hh/vWFRGq9PVcMq3WbkOsCjPcnQpcs8NOTSohQ4=;
+	s=arc-20240116; t=1716007571; c=relaxed/simple;
+	bh=zko0GQvgQmrQKqUCDztIo20k64rQkCRdQOFf5LVRNOQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=XK0kBQOfZk7288EkCxnCYpDErCHfJxroZD8eFKbdn+nSb1OKAbeDWeONmR4SYzTJx+jcgHiwaOC2wfyhr56BNoJ8xOqyFDaP4Ahxury/78ZCz6pUTK4mXu6xeBW5kjKAJSTJlyMjsJdHM3jnGDt+FUfIJJNnHJQaMAz5mQ/jBJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=O8+CIgmL; arc=none smtp.client-ip=18.9.28.11
+	 Content-Disposition; b=d6f3hxsvcRh3q89JTSUreta81ylbUT1vTZQdiCq+NgOrZsmsCpZQfSuIAMEx6uUvyZnxLq1JSvorUXajKOwK3u1POEJNob9HXJhVAr2EtAb9krtoDcee++nB0LI43B/CvF7MaRg4SbVf4rdElJK/uazuyVpHYgvyj/5rpe7r0CI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=pJldRtGU; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-113-2.bstnma.fios.verizon.net [173.48.113.2])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44I2QkTg008925
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44I4k2EV000641
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 17 May 2024 22:26:47 -0400
+	Sat, 18 May 2024 00:46:03 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1715999209; bh=fBNuPesawIQnGyWuvipMnxxc+s1aABzzD9p+pZBeJ/Y=;
+	t=1716007563; bh=VXD0kbwWVZnwfsiyxEZxxCdIqZ/+aqzg6M6B03Hd/ps=;
 	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=O8+CIgmL7yBfXQnXrnpjhdSyeL/lCeyRymgH9AhtYAdfEwXKyNaGtKQ8otOHcrkXN
-	 W3xPCPNce46RGFCSbK71snrXZSDJTon9WqJwJ7egwBx3OGtYvMlKZutRMRGqAdAEUx
-	 arENHKNliBtUU6eeSV6pQT1OJWHD9ElQEX1OFMFm8fd9dqEbGnYgDK7tiX2i9F87h1
-	 fEufGkY/RG7OPgHofHN+5jeaSvE+K+CmEbeTxrMWy+xSNb+9BPpx75SNp52U07NcZS
-	 UjPB/e8T9YAIiM4RuDZfyZSTQAkY9C1bAY5L20JPJfj1DywTozIavY9wlk6LLCcrX1
-	 3729+ZvrQcJMQ==
+	b=pJldRtGU3aiRbXK7YAvuBFRrbw4anQFUUwswOnNo+O59Bj2j+oeNd25BDldNaiL53
+	 /iYcurizVRTpQ9zRUNlHpZ8Cvke6qqYvbxmZDxIl73iwL6ebvjS4jvv7iTjm7j6j3M
+	 MEDAO7ayG1TA1qfDdziOCJaoQA1c8FdT55BB3maP+ZPhDj/7cZoV7h9lkH4R9Oh8MG
+	 HYQGuyBsNqYvW7D20hvgmExi19DEibVP0F30MBt8Qjq4kuXzDbtAy3KDFQ93j8KXpU
+	 aibupskFnYVv7IjhQa5TkTWxBjL8+nrT+raZCiAL+7byz8f3Z8927Hy90hM9HRGNzc
+	 fgmAOlCwlVLfw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 5248015C00DC; Fri, 17 May 2024 22:26:46 -0400 (EDT)
-Date: Fri, 17 May 2024 22:26:46 -0400
+	id DF90715C00DC; Sat, 18 May 2024 00:46:01 -0400 (EDT)
+Date: Sat, 18 May 2024 00:46:01 -0400
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: dm-devel@lists.linux.dev, fstests@vger.kernel.org,
-        linux-ext4@vger.kernel.org, regressions@lists.linux.dev
-Cc: Christoph Hellwig <hch@lst.de>, Mike Snitzer <snitzer@kernel.org>
-Subject: [REGRESSION] dm: use queue_limits_set
-Message-ID: <20240518022646.GA450709@mit.edu>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        Linux Kernel Developers List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] ext4 updates for v6.10-rc1
+Message-ID: <20240518044601.GA478319@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,100 +64,118 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-#regzbot introduced: 1c0e720228ad
+The following changes since commit 0bbac3facb5d6cc0171c45c9873a2dc96bea9680:
 
-While doing final regression testing before sending a pull request for
-the ext4 tree, I found a regression which was triggered by generic/347
-and generic/405 on on multiple fstests configurations, including
-both ext4/4k and xfs/4k.
+  Linux 6.9-rc4 (2024-04-14 13:38:39 -0700)
 
-It bisects cleanly to commit 1c0e720228ad ("dm: use
-queue_limits_set"), and the resulting WARNING is attached below.  This
-stack trace can be seen for both generic/347 and generic/405.  And if
-I revert this commit on top of linux-next, the failure goes away, so
-it pretty clearly root causes to 1c0e720228ad.
+are available in the Git repository at:
 
-For now, I'll add generic/347 and generic/405 to my global exclude
-file, but maybe we should consider reverting the commit if it can't be
-fixed quickly?
+  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-6.10-rc1
 
-Thanks,
+for you to fetch changes up to c6a6c9694aadc4c3ab8d89bdd44aed3eab1e43c6:
 
-      	  	   	  	   	     - Ted
+  ext4: fix error pointer dereference in ext4_mb_load_buddy_gfp() (2024-05-17 11:24:38 -0400)
 
-% git show 1c0e720228ad
-commit 1c0e720228ad1c63bb487cdcead2558353b5a067
-Author: Christoph Hellwig <hch@lst.de>
-Date:   Wed Feb 28 14:56:42 2024 -0800
+Note that there is a relatively merge conflict; the relatively simple
+resolution which I used when running regression tests is at the tag
+ext4_merge_resolution in the ext4 git repo,
+https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git
 
-    dm: use queue_limits_set
-    
-    Use queue_limits_set which validates the limits and takes care of
-    updating the readahead settings instead of directly assigning them to
-    the queue.  For that make sure all limits are actually updated before
-    the assignment.
-    
-    Signed-off-by: Christoph Hellwig <hch@lst.de>
-    Signed-off-by: Mike Snitzer <snitzer@kernel.org>
-  ...    
+----------------------------------------------------------------
+Ext4 patches for the 6.10-rc1 merge window:
+ - more folio conversion patches
+ - add support for FS_IOC_GETFSSYSFSPATH
+ - mballoc cleaups and add more kunit tests
+ - sysfs cleanups and bug fixes
+ - miscellaneous bug fixes and cleanups
 
-% git checkout 1c0e720228ad
-% install-kconfig ; kbuild
-% kvm-xfstests -c xfs/4k generic/347
+----------------------------------------------------------------
+Baokun Li (12):
+      ext4: avoid overflow when setting values via sysfs
+      ext4: refactor out ext4_generic_attr_store()
+      ext4: refactor out ext4_generic_attr_show()
+      ext4: fix slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists()
+      ext4: add new attr pointer attr_mb_order
+      ext4: add positive int attr pointer to avoid sysfs variables overflow
+      ext4: set type of ac_groups_linear_remaining to __u32 to avoid overflow
+      ext4: set the type of max_zeroout to unsigned int to avoid overflow
+      ext4: clean up s_mb_rb_lock to fix build warnings with C=1
+      ext4: fix mb_cache_entry's e_refcnt leak in ext4_xattr_block_cache_find()
+      ext4: propagate errors from ext4_sb_bread() in ext4_xattr_block_cache_find()
+      ext4: fix uninitialized ratelimit_state->lock access in __ext4_fill_super()
 
-BEGIN TEST 4k (1 test): XFS 4k block Fri May 17 22:03:06 EDT 2024
-DEVICE: /dev/vdd
-XFS_MKFS_OPTIONS: -bsize=4096
-XFS_MOUNT_OPTIONS: 
-FSTYP         -- xfs (debug)
-PLATFORM      -- Linux/x86_64 kvm-xfstests 6.9.0-rc2-xfstests-00006-g1c0e720228ad #335 SMP PREEMPT_DYNAMIC Fri May 17 22:02:37 EDT 2024
-MKFS_OPTIONS  -- -f -bsize=4096 /dev/vdc
-MOUNT_OPTIONS -- /dev/vdc /vdc
+Christoph Hellwig (1):
+      ext4: set FMODE_CAN_ODIRECT instead of a dummy direct_IO method
 
-[    3.179146] XFS (vdd): EXPERIMENTAL online scrub feature in use. Use at your own risk!
-generic/347 65s ...  [22:03:06][    3.389241] run fstests generic/347 at 2024-05-17 22:03:06
-[    4.032221] ------------[ cut here ]------------
-[    4.033087] WARNING: CPU: 1 PID: 30 at drivers/md/dm-bio-prison-v1.c:128 dm_cell_key_has_valid_range+0x3d/0x50
-[    4.034871] CPU: 1 PID: 30 Comm: kworker/u8:1 Not tainted 6.9.0-rc2-xfstests-00006-g1c0e720228ad #335
-[    4.035440] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-[    4.035829] Workqueue: dm-thin do_worker
-[    4.035998] RIP: 0010:dm_cell_key_has_valid_range+0x3d/0x50
-[    4.036236] Code: c1 48 29 d1 48 81 f9 00 04 00 00 77 1d 48 83 e8 01 48 c1 ea 0a b9 01 00 00 00 48 c1 e8 0a 48 39 c2 75 12 89 c8 c3 cc cc cc cc <0f> 0b 31 c9 89 c8 c3 cc cc cc cc 0f 0b 31 c9 eb e8 66 90 90 90 90
-[    4.037024] RSP: 0018:ffffc90000107d18 EFLAGS: 00010206
-[    4.037249] RAX: 0000000000000fff RBX: 0000000000000000 RCX: 0000000000000fff
-[    4.037556] RDX: 0000000000000000 RSI: 0000000000000fff RDI: ffffc90000107d28
-[    4.037923] RBP: ffff888009aa7b40 R08: ffff888009aa7bc0 R09: ffff888003e7b980
-[    4.038247] R10: 0000000000000008 R11: fefefefefefefeff R12: ffff8880097ca5b8
-[    4.038545] R13: 0000000000000fff R14: ffff8880097ca5b8 R15: ffff88800f4fc400
-[    4.038843] FS:  0000000000000000(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-[    4.039228] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    4.039472] CR2: 0000564ad92d7c00 CR3: 000000000f73e006 CR4: 0000000000770ef0
-[    4.039774] PKRU: 55555554
-[    4.039892] Call Trace:
-[    4.040000]  <TASK>
-`[    4.040094]  ? __warn+0x7b/0x120
-[    4.040235]  ? dm_cell_key_has_valid_range+0x3d/0x50
-[    4.040473]  ? report_bug+0x174/0x1c0
-[    4.040635]  ? handle_bug+0x3a/0x70
-[    4.040789]  ? exc_invalid_op+0x17/0x70
-[    4.040958]  ? asm_exc_invalid_op+0x1a/0x20
-[    4.041163]  ? dm_cell_key_has_valid_range+0x3d/0x50
-[    4.041397]  process_discard_bio+0xba/0x190
-[    4.041597]  process_thin_deferred_bios+0x290/0x3e0
-[    4.041806]  process_deferred_bios+0xba/0x2e0
-[    4.041994]  do_worker+0xf5/0x160
-[    4.042139]  process_one_work+0x18a/0x3d0
-[    4.042311]  worker_thread+0x285/0x3a0
-[    4.042470]  ? __pfx_worker_thread+0x10/0x10
-[    4.042655]  kthread+0xdd/0x110
-[    4.042795]  ? __pfx_kthread+0x10/0x10
-[    4.042979]  ret_from_fork+0x31/0x50
-[    4.043153]  ? __pfx_kthread+0x10/0x10
-[    4.043317]  ret_from_fork_asm+0x1a/0x30
-[    4.043490]  </TASK>
-[    4.043586] ---[ end trace 0000000000000000 ]---
-[    4.043784] device-mapper: thin: Discard doesn't respect bio prison limits
-[    4.044142] device-mapper: thin: Discard doesn't respect bio prison limits
-[    4.044585] device-mapper: thin: Discard doesn't respect bio prison limits
-[    6.410678] device-mapper: thin: 253:2: reached low water mark for data device: sending event.
+Colin Ian King (1):
+      jbd2: remove redundant assignement to variable err
+
+Dan Carpenter (2):
+      ext4: fix potential unnitialized variable
+      ext4: fix error pointer dereference in ext4_mb_load_buddy_gfp()
+
+Jan Kara (3):
+      ext4: avoid excessive credit estimate in ext4_tmpfile()
+      Revert "ext4: drop duplicate ea_inode handling in ext4_xattr_block_set()"
+      ext4: do not create EA inode under buffer lock
+
+Justin Stitt (1):
+      ext4: replace deprecated strncpy with alternatives
+
+Kemeng Shi (6):
+      ext4: implement filesystem specific alloc_inode in unit test
+      ext4: keep "prefetch_grp" and "nr" consistent
+      ext4: add test_mb_mark_used_cost to estimate cost of mb_mark_used
+      ext4: call ext4_mb_mark_free_simple to free continuous bits in found chunk
+      ext4: use correct criteria name instead stale integer number in comment
+      ext4: open coding repeated check in next_linear_group
+
+Kent Overstreet (1):
+      ext4: add support for FS_IOC_GETFSSYSFSPATH
+
+Matthew Wilcox (Oracle) (6):
+      ext4: convert bd_bitmap_page to bd_bitmap_folio
+      ext4: convert bd_buddy_page to bd_buddy_folio
+      ext4: convert ext4_mb_init_cache() to take a folio
+      ext4: convert ac_bitmap_page to ac_bitmap_folio
+      ext4: convert ac_buddy_page to ac_buddy_folio
+      ext4: remove calls to to set/clear the folio error flag
+
+Max Kellermann (1):
+      Revert "ext4: apply umask if ACL support is disabled"
+
+Ritesh Harjani (IBM) (2):
+      ext4: Fixes len calculation in mpage_journal_page_buffers
+      ext4: Remove PAGE_MASK dependency on mpage_submit_folio
+
+Thorsten Blum (1):
+      ext4: remove unneeded if checks before kfree
+
+Ye Bin (2):
+      jbd2: use shrink_type type instead of bool type for __jbd2_journal_clean_checkpoint_list()
+      jbd2: add prefix 'jbd2' for 'shrink_type'
+
+Zhang Yi (1):
+      ext4: remove the redundant folio_wait_stable()
+
+ fs/ext4/acl.h          |   5 -
+ fs/ext4/ext4.h         |   9 +-
+ fs/ext4/extents.c      |   3 +-
+ fs/ext4/file.c         |   5 +-
+ fs/ext4/inode.c        |  11 +-
+ fs/ext4/ioctl.c        |   3 +-
+ fs/ext4/mballoc-test.c |  76 +++++++++++++
+ fs/ext4/mballoc.c      | 322 +++++++++++++++++++++++++++++---------------------------
+ fs/ext4/mballoc.h      |  14 +--
+ fs/ext4/move_extent.c  |   4 +-
+ fs/ext4/namei.c        |   2 +-
+ fs/ext4/page-io.c      |   3 -
+ fs/ext4/readpage.c     |   1 -
+ fs/ext4/super.c        |  36 +++----
+ fs/ext4/sysfs.c        | 174 ++++++++++++++++++------------
+ fs/ext4/xattr.c        | 145 +++++++++++++------------
+ fs/jbd2/checkpoint.c   |  24 +++--
+ fs/jbd2/commit.c       |   3 +-
+ include/linux/jbd2.h   |   4 +-
+ 19 files changed, 481 insertions(+), 363 deletions(-)
 
