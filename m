@@ -1,145 +1,183 @@
-Return-Path: <linux-ext4+bounces-2578-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2579-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB9988C9382
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 May 2024 07:42:12 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C84028C9535
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 May 2024 18:00:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6C9F28178D
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 May 2024 05:42:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20CAE281183
+	for <lists+linux-ext4@lfdr.de>; Sun, 19 May 2024 16:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D6311094E;
-	Sun, 19 May 2024 05:42:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B094D4D584;
+	Sun, 19 May 2024 15:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=ans.pl header.i=@ans.pl header.b="D4RyOMad"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ot1-f50.google.com (mail-ot1-f50.google.com [209.85.210.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.emenem.pl (cmyk.emenem.pl [217.79.154.63])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62B31EAC7
-	for <linux-ext4@vger.kernel.org>; Sun, 19 May 2024 05:42:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0AF4CB28;
+	Sun, 19 May 2024 15:59:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.79.154.63
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716097324; cv=none; b=imaahccv5S7vHg75nHYgaOyX0xRt6rCmecVIqW1BUmdpsExH1fEm9Gs2BlCNhz/TKdbd60fgq+CeaA59WXte3/t97jtfMSdb/YRFUU6UDXzyeKgMsrq9HE2FsbJ1HYXhPZJ6UG59e+3WJNqjpIkImh8FVjFbdDM8v/pdjHKpa/k=
+	t=1716134399; cv=none; b=SVzW7Ttx9/ZQEMU1lXezlqRTq/vb/x22p+khXTiaTB0DHYDj2AuF4Rjt+2nI1Oj5fDH5R8g1GD9c+Fs3vZ27BuhX287zfJv4Ttc1Sc81DfBSOwa/xaW4vy8M2DLCx8brpkUcC498uBdeo/NIZ0nFCFuQt491G/SYq4x7I61+oB8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716097324; c=relaxed/simple;
-	bh=/SIEvilEuGxNx6YsbUqINfipy5NHVf7qeI1zkT+rWh4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CEfhcGpnOHX9jZHFMb/nmmd6QicOmHRFL4O+KW2edtsGMqtvyA3IxpOAmC0I8t8kUM6tIIZq9ENWHfLYSLAKP2alzakYJ3WxXkrawFCjxNrtx9uD0E0kuU9RNyeT/VqCGsgdcR+BJCdKMkja5R6itCaDnCEVE6XDrVr+MWXYi24=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=snitzer.net; arc=none smtp.client-ip=209.85.210.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=snitzer.net
-Received: by mail-ot1-f50.google.com with SMTP id 46e09a7af769-6f1239a2e83so916109a34.3
-        for <linux-ext4@vger.kernel.org>; Sat, 18 May 2024 22:42:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716097322; x=1716702122;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=F4AwhCy5t0HDmb4oWwsifG/akPKwpEP/0M3vb18IjHU=;
-        b=G9L+I3WqSkoYcZ5ORW3RbOPpS4ddPy5sI90jzk+qJM3ykb35w8xehmcAblDkxbBecy
-         q6nTpQco3VayaDuSpStLIwxGdYVEu/29gJ7sJWRQbKU7NenUAv5zACK5BYt3ctSAheGC
-         FjgbL1XbU/8aGOrV3V1JoNYSoTeYjpCE8RVXAzSqX1VKpeFPmNMaDR9FYPL08Ie+zGqP
-         XHznrCPhDViwg8fc3DLNxnT7rY/Mh3oXizBCciJwigm0+K+/0zK0TjNe19IeLZIAzAWg
-         3t+UYACUY4gF5VE/k6LP0f98acQl+XaOgeDreWD3Ln2M+PTW+KR7oK15AT7MpVXZVo2J
-         rPlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUfBP9XHjs3LwmR9dCsyGMM+n0gSfsWA/lvKKdesFXCnPoJNVrr244dJ5wXT24g7ZBVjAuQ4JXWiRHU9N15uR/E66NyWsDnjjRL6g==
-X-Gm-Message-State: AOJu0YxdRcrc+5s/RQJnjjcOzCjNgt23sw6Im7UUrHIQCYJKPelRH+6g
-	QhKTFOrOH/2qf6ktVc33DMByY20vOrgMhqFtHbTuik9sj8wjp43CnXqVj0068Xs=
-X-Google-Smtp-Source: AGHT+IEjPAD6MgCxL+L20MoLBfYzCdWwrbQEAwIGqlJinj5kSkPWA1UbpuE7ezuYyYiP7+b0i1WkdA==
-X-Received: by 2002:a05:6830:3295:b0:6f1:3d32:5906 with SMTP id 46e09a7af769-6f13d325b7bmr4334249a34.1.1716097322353;
-        Sat, 18 May 2024 22:42:02 -0700 (PDT)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-792bf2a3cadsm1058972985a.67.2024.05.18.22.42.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 18 May 2024 22:42:01 -0700 (PDT)
-Date: Sun, 19 May 2024 01:42:00 -0400
-From: Mike Snitzer <snitzer@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: dm-devel@lists.linux.dev, fstests@vger.kernel.org,
-	linux-ext4@vger.kernel.org, regressions@lists.linux.dev,
-	Christoph Hellwig <hch@lst.de>, linux-block@vger.kernel.org
-Subject: Re: dm: use queue_limits_set
-Message-ID: <ZkmRKPfPeX3c138f@kernel.org>
-References: <20240518022646.GA450709@mit.edu>
- <ZkmIpCRaZE0237OH@kernel.org>
+	s=arc-20240116; t=1716134399; c=relaxed/simple;
+	bh=Zv/L+Jx63e8HEedewUI0JG44m1FcEAnrm7DA8WcUtno=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=V5U6EUWbWgmdioLKhzSrZ9wrokcFK4PySrNyaag9py9tlNmjjRYxXUdm03llY6hNegq6GUZB4vEJ2v2tN4sTb4vUKPxKL16EQoEt1d+AcOxSWNR/PgwNua7ukZYFDPyDToyDtnCsZIVkEFO+HugEze0tJXDeSe1+IOIbkMGRT7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ans.pl; spf=none smtp.mailfrom=ans.pl; dkim=pass (1024-bit key) header.d=ans.pl header.i=@ans.pl header.b=D4RyOMad; arc=none smtp.client-ip=217.79.154.63
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ans.pl
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ans.pl
+X-Virus-Scanned: amavisd-new at emenem.pl
+Received: from [192.168.1.10] (c-98-45-176-131.hsd1.ca.comcast.net [98.45.176.131])
+	(authenticated bits=0)
+	by cmyk.emenem.pl (8.17.1.9/8.17.1.9) with ESMTPSA id 44JFxbIY005385
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Sun, 19 May 2024 17:59:39 +0200
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ans.pl; s=20190507;
+	t=1716134380; bh=SVMCT1QxQxufKhwHB96vILUZGZ6v1lcN+v8BV3MLlz0=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To;
+	b=D4RyOMadxnpqu8hZnMorWOQcfwiFUrqEdYI94ryIM+qtcTUq4S6AdJ7vZgfIvnVxS
+	 RAVs2kC67FHiNj1JfjP5v6aqXH+FWsfluGDyiAZyPrZF1l6Ww/xQLVtLrEGi2lF8jx
+	 gjuFYQBOaCJEAjRn+wm7BL1cThRkRAqI9WSNKJZA=
+Message-ID: <027267db-fa2e-4436-9bd5-ca1dfae2f2b3@ans.pl>
+Date: Sun, 19 May 2024 08:59:36 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZkmIpCRaZE0237OH@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: WARNING: CPU: 5 PID: 23226 at fs/ext4/ext4_jbd2.c:73
+ ext4_journal_check_start+0x2c/0x82 [Linux 6.6.30, data=journal]
+From: =?UTF-8?Q?Krzysztof_Ol=C4=99dzki?= <ole@ans.pl>
+To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca
+References: <a4ed8496-60f6-4036-b1f9-75e3448510ec@ans.pl>
+Content-Language: en-US
+In-Reply-To: <a4ed8496-60f6-4036-b1f9-75e3448510ec@ans.pl>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Sun, May 19, 2024 at 01:05:40AM -0400, Mike Snitzer wrote:
-> Hi Ted,
+On 17.05.2024 at 22:24, Krzysztof Olędzki wrote:
+> Hi,
 > 
-> On Fri, May 17, 2024 at 10:26:46PM -0400, Theodore Ts'o wrote:
-> > #regzbot introduced: 1c0e720228ad
-> > 
-> > While doing final regression testing before sending a pull request for
-> > the ext4 tree, I found a regression which was triggered by generic/347
-> > and generic/405 on on multiple fstests configurations, including
-> > both ext4/4k and xfs/4k.
-> > 
-> > It bisects cleanly to commit 1c0e720228ad ("dm: use
-> > queue_limits_set"), and the resulting WARNING is attached below.  This
-> > stack trace can be seen for both generic/347 and generic/405.  And if
-> > I revert this commit on top of linux-next, the failure goes away, so
-> > it pretty clearly root causes to 1c0e720228ad.
-> > 
-> > For now, I'll add generic/347 and generic/405 to my global exclude
-> > file, but maybe we should consider reverting the commit if it can't be
-> > fixed quickly?
+> I noticed that once a while my system generates a WARNING during shutdown and this has been ongoing for some time, perhaps since upgrading to 6.6-stable and/or migrating to "-o 64bit". However, I cannot be 100% sure if this is a relatively recent regression or not, as I think it does not happen very frequently and usually I don't look at the console during shutdown.
 > 
-> Commit 1c0e720228ad is a red herring, it switches DM over to using
-> queue_limits_set() which I now see is clearly disregarding DM's desire
-> to disable discards (in blk_validate_limits).
+> The WARNING happens after all filesystems except the root fs (253:0) get unmounted and root is already mounted read-only. Today, I was finally able to capture it with the serial console attached.
 > 
-> It looks like the combo of commit d690cb8ae14bd ("block: add an API to
-> atomically update queue limits") and 4f563a64732da ("block: add a
-> max_user_discard_sectors queue limit") needs fixing.
-> 
-> This being one potential fix from code inspection I've done to this
-> point, please see if it resolves your fstests failures (but I haven't
-> actually looked at those fstests yet _and_ I still need to review
-> commits d690cb8ae14bd and 4f563a64732da further -- will do on Monday,
-> sorry for the trouble):
+> [ 5802.007527] EXT4-fs (dm-0): re-mounted 5a3b300a-6b1a-4ff1-9138-287dec4dcdd7 ro. Quota mode: none.
+> [ 5803.382293] sd 0:0:7:0: [sdh] Synchronizing SCSI cache
+> [ 5803.388868] sd 0:0:7:0: [sdh] Stopping disk
+> [ 5821.086972] sd 0:0:6:0: [sdg] Synchronizing SCSI cache
+> [ 5821.093581] sd 0:0:6:0: [sdg] Stopping disk
+> [ 5832.944678] ------------[ cut here ]------------
+> [ 5832.950507] WARNING: CPU: 5 PID: 23226 at fs/ext4/ext4_jbd2.c:73 ext4_journal_check_start+0x2c/0x82
 
-I looked early, this is needed (max_user_discard_sectors makes discard
-limits stacking suck more than it already did -- imho 4f563a64732da is
-worthy of revert.  Short of that, dm-cache-target.c and possibly other
-DM targets will need fixes too -- I'll go over it all Monday):
+Forgot to mention, the WARNING comes from:
 
-diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-index 4793ad2aa1f7..c196f39579af 100644
---- a/drivers/md/dm-thin.c
-+++ b/drivers/md/dm-thin.c
-@@ -4099,8 +4099,10 @@ static void pool_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 
- 	if (pt->adjusted_pf.discard_enabled) {
- 		disable_discard_passdown_if_not_supported(pt);
--		if (!pt->adjusted_pf.discard_passdown)
--			limits->max_discard_sectors = 0;
-+		if (!pt->adjusted_pf.discard_passdown) {
-+			limits->max_hw_discard_sectors = 0;
-+			limits->max_user_discard_sectors = 0;
-+		}
- 		/*
- 		 * The pool uses the same discard limits as the underlying data
- 		 * device.  DM core has already set this up.
-@@ -4497,7 +4499,8 @@ static void thin_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 
- 	if (pool->pf.discard_enabled) {
- 		limits->discard_granularity = pool->sectors_per_block << SECTOR_SHIFT;
--		limits->max_discard_sectors = pool->sectors_per_block * BIO_PRISON_MAX_RANGE;
-+		limits->max_hw_discard_sectors = limits->max_user_discard_sectors =
-+			pool->sectors_per_block * BIO_PRISON_MAX_RANGE;
- 	}
- }
- 
+	if (WARN_ON_ONCE(sb_rdonly(sb)))
+		return -EROFS;
 
+See: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/ext4/ext4_jbd2.c?h=v6.6.30#n73
+
+So, the question is: why we are trying to write something about long (about 30.94s) after remounting the filesystem as read-only?
+
+> [ 5832.961303] CPU: 5 PID: 23226 Comm: kworker/u16:28 Not tainted 6.6.30-o4 #2
+> [ 5832.969772] Hardware name: Dell Inc. PowerEdge T330/06FW8M, BIOS 2.20.0 02/22/2024
+> [ 5832.978872] Workqueue: writeback wb_workfn (flush-253:0)
+> [ 5832.985498] RIP: 0010:ext4_journal_check_start+0x2c/0x82
+> [ 5832.992079] Code: 89 3c 24 2e 2e 2e 31 c0 48 8b 3c 24 b8 fb ff ff ff 48 8b 97 78 03 00 00 48 8b 8a 30 02 00 00 80 e1 02 75 56 f6 47 50 01 74 04 <0f> 0b eb 47 66 83 bf 50 02 00 00 04 75 00
+> [ 5833.014495] RSP: 0018:ffffc9000eff7908 EFLAGS: 00010202
+> [ 5833.021000] RAX: 00000000fffffffb RBX: ffffc9000eff7b18 RCX: 0000000000000000
+> [ 5833.029711] RDX: ffff8881021f5000 RSI: ffff888100f8c000 RDI: ffff888100f8c000
+> [ 5833.038392] RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
+> [ 5833.047028] R10: 8080808080808080 R11: fefefefefefefeff R12: ffff888100f8c000
+> [ 5833.055698] R13: 0000000000000008 R14: 0000000000000959 R15: ffffffff95c7c06f
+> [ 5833.064377] FS:  0000000000000000(0000) GS:ffff889030140000(0000) knlGS:0000000000000000
+> [ 5833.074106] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [ 5833.081239] CR2: 00007f8bac652120 CR3: 0000000309e44001 CR4: 00000000003706e0
+> [ 5833.089883] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> [ 5833.098573] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> [ 5833.107255] Call Trace:
+> [ 5833.110693]  <TASK>
+> [ 5833.113727]  ? __warn+0x93/0x11a
+> [ 5833.117961]  ? report_bug+0xeb/0x162
+> [ 5833.122630]  ? ext4_journal_check_start+0x2c/0x82
+> [ 5833.128636]  ? handle_bug+0x3c/0x63
+> [ 5833.133212]  ? exc_invalid_op+0x17/0x64
+> [ 5833.138176]  ? asm_exc_invalid_op+0x1a/0x20
+> [ 5833.143530]  ? __ext4_journal_start+0x15/0x1b
+> [ 5833.149031]  ? ext4_journal_check_start+0x2c/0x82
+> [ 5833.154920]  __ext4_journal_start_sb+0xe5/0x152
+> [ 5833.160753]  __ext4_journal_start+0x15/0x1b
+> [ 5833.166046]  mpage_prepare_extent_to_map+0xd1/0x38b
+> [ 5833.172142]  ext4_do_writepages+0x2a9/0x922
+> [ 5833.177490]  ext4_writepages+0x83/0xda
+> [ 5833.182332]  do_writepages+0xca/0x177
+> [ 5833.187024]  ? lock_timer_base+0x3b/0x64
+> [ 5833.192001]  __writeback_single_inode+0x83/0x301
+> [ 5833.197760]  writeback_sb_inodes+0x251/0x418
+> [ 5833.203168]  __writeback_inodes_wb+0x80/0xc8
+> [ 5833.208574]  wb_writeback+0x142/0x266
+> [ 5833.213307]  wb_workfn+0x212/0x3ac
+> [ 5833.217733]  ? __raw_spin_unlock_irqrestore+0x14/0x29
+> [ 5833.223973]  process_scheduled_works+0x196/0x29d
+> [ 5833.229723]  worker_thread+0x1c5/0x21f
+> [ 5833.234523]  ? __pfx_worker_thread+0x10/0x10
+> [ 5833.239850]  kthread+0xf3/0xfe
+> [ 5833.243826]  ? __pfx_kthread+0x10/0x10
+> [ 5833.248633]  ret_from_fork+0x20/0x35
+> [ 5833.253239]  ? __pfx_kthread+0x10/0x10
+> [ 5833.257963]  ret_from_fork_asm+0x1b/0x30
+> [ 5833.262874]  </TASK>
+> [ 5833.265828] ---[ end trace 0000000000000000 ]---
+> [ 5838.780155] sd 0:0:5:0: [sdf] Synchronizing SCSI cache
+> [ 5838.788570] sd 0:0:5:0: [sdf] Stopping disk
+> [ 5856.502606] sd 0:0:4:0: [sde] Synchronizing SCSI cache
+> [ 5856.510119] sd 0:0:4:0: [sde] Stopping disk
+> [ 5874.197657] sd 0:0:3:0: [sdd] Synchronizing SCSI cache
+> [ 5874.204287] sd 0:0:3:0: [sdd] Stopping disk
+> [ 5882.659434] sd 0:0:2:0: [sdc] Synchronizing SCSI cache
+> [ 5882.666164] sd 0:0:2:0: [sdc] Stopping disk
+> [ 5891.129810] sd 0:0:1:0: [sdb] Synchronizing SCSI cache
+> [ 5891.136410] sd 0:0:1:0: [sdb] Stopping disk
+> [ 5899.598645] sd 0:0:0:0: [sda] Synchronizing SCSI cache
+> [ 5899.605233] sd 0:0:0:0: [sda] Stopping disk
+> [ 5908.184767] megaraid_sas 0000:02:00.0: megasas_disable_intr_fusion is called outbound_intr_mask:0x40000009
+> [ 5908.198623] mlx4_core 0000:01:00.0: mlx4_shutdown was called
+> [ 5908.250311] bond0: (slave eth2): Releasing backup interface
+> [ 5908.257384] bond0: (slave eth2): the permanent HWaddr of slave - XX:XX:XX:XX:XX:XX - is still in use by bond - set the HWaddr of slave to a different address to avoid conflicts
+> [ 5908.290793] mlx4_en 0000:01:00.0: removed PHC
+> [ 5908.327539] bond0: (slave eth3): Releasing backup interface
+> [ 5909.421105] ACPI: PM: Preparing to enter system sleep state S5
+> [ 5909.428720] kvm: exiting hardware virtualization
+> [ 5909.434855] reboot: Power down
+> 
+> # tune2fs -l /dev/VG0/root |head -12
+> tune2fs 1.47.0 (5-Feb-2023)
+> Filesystem volume name:   /
+> Last mounted on:          /
+> Filesystem UUID:          5a3b300a-6b1a-4ff1-9138-287dec4dcdd7
+> Filesystem magic number:  0xEF53
+> Filesystem revision #:    1 (dynamic)
+> Filesystem features:      has_journal ext_attr resize_inode dir_index orphan_file filetype needs_recovery extent 64bit flex_bg metadata_csum_seed sparse_super large_file huge_file dir_nlink extra_isize metadata_csum orphan_present
+> Filesystem flags:         signed_directory_hash
+> Default mount options:    user_xattr acl
+> Filesystem state:         clean
+> Errors behavior:          Remount read-only
+> Filesystem OS type:       Linux
+> 
+> # grep /dev/mapper/VG0-root /proc/mounts
+> /dev/mapper/VG0-root / ext4 rw,relatime,nodioread_nolock,nodelalloc,stripe=192,data=journal 0 0
+
+
+Thanks,
+ Krzysztof
 
 
