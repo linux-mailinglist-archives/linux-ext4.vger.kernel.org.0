@@ -1,219 +1,535 @@
-Return-Path: <linux-ext4+bounces-2592-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2593-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF0A58C98DB
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 07:52:41 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A58D8C990D
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 08:56:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8D971281EAF
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 05:52:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8D97F1C20D4F
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 06:56:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BB411B947;
-	Mon, 20 May 2024 05:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kM79g1Rt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6E7F17C67;
+	Mon, 20 May 2024 06:56:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22FD318C3B
-	for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 05:52:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B0D8911CBD;
+	Mon, 20 May 2024 06:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716184336; cv=none; b=RYn4HQIxT21yZD/+EEraYefXqFOgcIbflqadRZEpaD/WVQgYzMMrCL/xaMjZ6JhvJKpkFkTwZcHaMeD/TSK/w1h4Zi+Sy9lsd3WT4LWHIfsrXEC6aURbnQKGI60NfZTKfY+l81lAscr9HVDmm/V3y2fDKPHbZKxb4EksGLc0X0o=
+	t=1716188194; cv=none; b=Iebk9s7Z6bhPyG2Ri+ELCIOF6jea2Q/s/QjdhzynT35Q//TRkUxaNK5kcdfQinVILvXKa3U1+UVfznhSczuzGLefTRqeWRosTwuLAr+xaCEENnVnF3hqR82oQ/lEzbgvt7eb5ZSBTJ/7CCX9fYov9UHNMBdiJllZJ+1g0rsasEQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716184336; c=relaxed/simple;
-	bh=+Uq9b7TIqg5KrW4Rrdyp/ut5h2nnns/CcgN8yVdLKMA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QFViSwtX97HKu6SRwboVU/RpX2gLlucCkJI8Zm2d/N5Znks4i+QwRfU9mUapUjW866i2L2TF1pII6aQxTOIZjmS/NU/ejiJdshTlig4QViF64K6g8KVgXHMo0mYS0mwQTN3AJM3ZFNWabQyInl2OibkX2+wOjuRXK/TjxAI4DOM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kM79g1Rt; arc=none smtp.client-ip=209.85.214.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-1f2ecea41deso54497425ad.1
-        for <linux-ext4@vger.kernel.org>; Sun, 19 May 2024 22:52:14 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716184334; x=1716789134; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AxP9Gm2vSKqlyPVkpSXOmtFn7rLqu7QS/t6rkQVI5TU=;
-        b=kM79g1Rtr+vpDoxt1uFebZlu7sUBsxTvskbEZtbwLAwj5WFQ661umTOWToYc2zUxpG
-         FRsw4oW77m5o80FwnOfSifZHN5dev4KZDXUC4IgPT6VtPaE2GlnORL8lu1KM2tZI640L
-         tjBdcw0EBYz8lMsDi/KVHen29tazxoTlOTV2cXFgTGe18Z3VA4MAnyUeNVKoHr5CCQM1
-         eM4roHPgWZ7srVAugfphGCdpZ+ttLk7eI2hZSznLIwGHL3zsB49COr5ffX/YdYCErYwg
-         jENuM8Sk6yQ3zJLExrllDvrgKv/rOwpcaeQ37+FLV5jCxZZhkcqryxwLXm/rcrvUG/wK
-         wz+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716184334; x=1716789134;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=AxP9Gm2vSKqlyPVkpSXOmtFn7rLqu7QS/t6rkQVI5TU=;
-        b=bqGd/zV7Opjuy7AudFugOe6ewX7zCerV8k3VfC5D7Ig6AKlcR3aLt9P6XSG5cbBU74
-         qzgJ680PG1IeEH56Z9PiCbUymTAlzIX5okuc2fRLExP6T1Q+V5sn0VzWXG5ZxqwymwTm
-         0KyyZjwvsQAf2Pcn9O0555NY+HgBGtCVfci1LC+N0hJXZ3JZDEj7WsDouSWw6m/Is9X5
-         FvsKGRa8/xZGZVEsUsp5fOa4RJ1yjWgTFxrr5J/kYWJbG2gN53sVH4fCNJeb2p0jATLc
-         wKTOaxlPhH4bwiR/9jlrvdI6xxS5QYlliH99BjLEcuaOV3JHffvtPC8B4LU3piYOxTFC
-         oWhQ==
-X-Gm-Message-State: AOJu0YxJ8v3TgOMq/yHeV2RmPyjlc2stxzbhnfHT8XIHzFUszBuMUFJ5
-	hGicZsxmXNPCMTnro45BRsP2PQi5jyIIwOpkjrFTIQiIVigj3xqZ08ZXJrDR
-X-Google-Smtp-Source: AGHT+IEJP2IiMwSd6iqbrm6J8y6TGLyEHvS3gIzUZ2M7RbvnC8hd+ibJ2W1952b3VHg2Be/ZDDGmig==
-X-Received: by 2002:a05:6a00:1a8f:b0:6ec:f097:1987 with SMTP id d2e1a72fcca58-6f4e03840e4mr32667589b3a.31.1716184334239;
-        Sun, 19 May 2024 22:52:14 -0700 (PDT)
-Received: from harshads.c.googlers.com.com (34.85.168.34.bc.googleusercontent.com. [34.168.85.34])
-        by smtp.googlemail.com with ESMTPSA id 41be03b00d2f7-659f66bf18csm6769297a12.46.2024.05.19.22.52.13
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 19 May 2024 22:52:13 -0700 (PDT)
-From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	saukad@google.com,
-	harshads@google.com,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 10/10] ext4: make fast commit ineligible on ext4_reserve_inode_write failure
-Date: Mon, 20 May 2024 05:51:53 +0000
-Message-ID: <20240520055153.136091-11-harshadshirwadkar@gmail.com>
-X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
-In-Reply-To: <20240520055153.136091-1-harshadshirwadkar@gmail.com>
-References: <20240520055153.136091-1-harshadshirwadkar@gmail.com>
+	s=arc-20240116; t=1716188194; c=relaxed/simple;
+	bh=1KGqEa04302sqBjwGMbSNLX3Wxfvn/dLulkDLBIEmZo=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=lTeoiVfD+LbPVW1/xIKFGOIS43rHNOBZLq9EtqrC6ld5uL/6IA3TYo9rApqFN+Te8oCeOTtaSjUCbGKLw+aDa+FNpVL7tFB39lclGdQ7Xd4cBDo+eRcK5HFu0fWpZMuVl6K4WObpIFV8jAu9933BwgFZNgtRYewgws3pSoedBhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4VjSym12K1z4f3lfJ;
+	Mon, 20 May 2024 14:56:16 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 813611A058E;
+	Mon, 20 May 2024 14:56:26 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP2 (Coremail) with SMTP id Syh0CgDnCw8W9Epmk_f0NQ--.22880S3;
+	Mon, 20 May 2024 14:56:24 +0800 (CST)
+Subject: Re: [PATCH v3 3/3] xfs: correct the zeroing truncate range
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org, hch@infradead.org,
+ brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
+ jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com
+References: <20240517111355.233085-1-yi.zhang@huaweicloud.com>
+ <20240517111355.233085-4-yi.zhang@huaweicloud.com>
+ <20240517175900.GC360919@frogsfrogsfrogs>
+ <fc050e5c-cdc5-9e3d-2787-ce09ec3b888e@huaweicloud.com>
+ <20240518192602.GD360919@frogsfrogsfrogs>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <7c388db6-f2fa-9ac1-2a0b-30bd28f3aeeb@huaweicloud.com>
+Date: Mon, 20 May 2024 14:56:22 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240518192602.GD360919@frogsfrogsfrogs>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgDnCw8W9Epmk_f0NQ--.22880S3
+X-Coremail-Antispam: 1UD129KBjvAXoW3KF4UAF47Cw47CFy5urW7Jwb_yoW8XF1kuo
+	WfKr47Jws5KFn8CFyUCa47t34DWa95Wr1rCFy5Jr1UAF9FqryUCw12ywn5GFWxtw10kF48
+	Ga4xK3Z3ArW2yF1fn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUYx7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
+	7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
+	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
+	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
+	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
+	kF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
+	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
+	9x07UWE__UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Fast commit by default makes every inode on which
-ext4_reserve_inode_write() is called. Thus, if that function
-fails for some reason, make the next fast commit ineligible.
+On 2024/5/19 3:26, Darrick J. Wong wrote:
+> On Sat, May 18, 2024 at 02:35:02PM +0800, Zhang Yi wrote:
+>> On 2024/5/18 1:59, Darrick J. Wong wrote:
+>>> On Fri, May 17, 2024 at 07:13:55PM +0800, Zhang Yi wrote:
+>>>> From: Zhang Yi <yi.zhang@huawei.com>
+>>>>
+>>>> When truncating a realtime file unaligned to a shorter size,
+>>>> xfs_setattr_size() only flush the EOF page before zeroing out, and
+>>>> xfs_truncate_page() also only zeros the EOF block. This could expose
+>>>> stale data since 943bc0882ceb ("iomap: don't increase i_size if it's not
+>>>> a write operation").
+>>>>
+>>>> If the sb_rextsize is bigger than one block, and we have a realtime
+>>>> inode that contains a long enough written extent. If we unaligned
+>>>> truncate into the middle of this extent, xfs_itruncate_extents() could
+>>>> split the extent and align the it's tail to sb_rextsize, there maybe
+>>>> have more than one blocks more between the end of the file. Since
+>>>> xfs_truncate_page() only zeros the trailing portion of the i_blocksize()
+>>>> value, so it may leftover some blocks contains stale data that could be
+>>>> exposed if we append write it over a long enough distance later.
+> 
+> Hum.  Is this an appending write into the next rtextent?  For example,
+> if you start with a file like this:
+> 
+> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
+>                     ^ old EOF
+> 
+> Then truncate it improperly like this:
+> 
+> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuu
+>      ^ new EOF               
+> 
+> Then do an extending write like this:
+> 
+> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuuuuuuuuuuuuuuuuuuuuWWWuuuuuuuuu
+>      ^ EOF                    ^ next rtx        ^ append here
+> 
+> And now the problem is that we've exposed stale data that should be
+> zeroes?
+> 
+> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuuuuuuuuuuuuuuuuuuuuWWWuuuuuuuuu
+>       ^^^^^^^^^^^^^^^                             ^ new EOF
+>       should be zeroed
+> 
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
----
- fs/ext4/fast_commit.c       |  1 +
- fs/ext4/fast_commit.h       |  1 +
- fs/ext4/inode.c             | 31 +++++++++++++++++++------------
- include/trace/events/ext4.h |  7 +++++--
- 4 files changed, 26 insertions(+), 14 deletions(-)
+Yeah.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index d354839dbf7e..5ab13cb017a1 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -2291,6 +2291,7 @@ static const char * const fc_ineligible_reasons[] = {
- 	[EXT4_FC_REASON_FALLOC_RANGE] = "Falloc range op",
- 	[EXT4_FC_REASON_INODE_JOURNAL_DATA] = "Data journalling",
- 	[EXT4_FC_REASON_ENCRYPTED_FILENAME] = "Encrypted filename",
-+	[EXT4_FC_REASON_INODE_RSV_WRITE_FAIL] = "Inode reserve write failure"
- };
- 
- int ext4_fc_info_show(struct seq_file *seq, void *v)
-diff --git a/fs/ext4/fast_commit.h b/fs/ext4/fast_commit.h
-index 2fadb2c4780c..f7f85c3dd3af 100644
---- a/fs/ext4/fast_commit.h
-+++ b/fs/ext4/fast_commit.h
-@@ -97,6 +97,7 @@ enum {
- 	EXT4_FC_REASON_FALLOC_RANGE,
- 	EXT4_FC_REASON_INODE_JOURNAL_DATA,
- 	EXT4_FC_REASON_ENCRYPTED_FILENAME,
-+	EXT4_FC_REASON_INODE_RSV_WRITE_FAIL,
- 	EXT4_FC_REASON_MAX
- };
- 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c6405c45970e..18bab8023a16 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -5420,7 +5420,7 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 					(attr->ia_size > 0 ? attr->ia_size - 1 : 0) >>
- 					inode->i_sb->s_blocksize_bits);
- 
--			rc = ext4_mark_inode_dirty(handle, inode);
-+						rc = ext4_mark_inode_dirty(handle, inode);
- 			if (!error)
- 				error = rc;
- 			down_write(&EXT4_I(inode)->i_data_sem);
-@@ -5728,20 +5728,27 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
- {
- 	int err;
- 
--	if (unlikely(ext4_forced_shutdown(inode->i_sb)))
--		return -EIO;
-+	if (unlikely(ext4_forced_shutdown(inode->i_sb))) {
-+		err = -EIO;
-+		goto out;
-+	}
- 
- 	err = ext4_get_inode_loc(inode, iloc);
--	if (!err) {
--		BUFFER_TRACE(iloc->bh, "get_write_access");
--		err = ext4_journal_get_write_access(handle, inode->i_sb,
--						    iloc->bh, EXT4_JTR_NONE);
--		if (err) {
--			brelse(iloc->bh);
--			iloc->bh = NULL;
--		}
--		ext4_fc_track_inode(handle, inode);
-+	if (err)
-+		goto out;
-+
-+	BUFFER_TRACE(iloc->bh, "get_write_access");
-+	err = ext4_journal_get_write_access(handle, inode->i_sb,
-+						iloc->bh, EXT4_JTR_NONE);
-+	if (err) {
-+		brelse(iloc->bh);
-+		iloc->bh = NULL;
- 	}
-+	ext4_fc_track_inode(handle, inode);
-+out:
-+	if (err)
-+		ext4_fc_mark_ineligible(inode->i_sb,
-+			EXT4_FC_REASON_INODE_RSV_WRITE_FAIL, handle);
- 	ext4_std_error(inode->i_sb, err);
- 	return err;
- }
-diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-index a697f4b77162..597845d5c1e8 100644
---- a/include/trace/events/ext4.h
-+++ b/include/trace/events/ext4.h
-@@ -105,6 +105,7 @@ TRACE_DEFINE_ENUM(EXT4_FC_REASON_RENAME_DIR);
- TRACE_DEFINE_ENUM(EXT4_FC_REASON_FALLOC_RANGE);
- TRACE_DEFINE_ENUM(EXT4_FC_REASON_INODE_JOURNAL_DATA);
- TRACE_DEFINE_ENUM(EXT4_FC_REASON_ENCRYPTED_FILENAME);
-+TRACE_DEFINE_ENUM(EXT4_FC_REASON_INODE_RSV_WRITE_FAIL);
- TRACE_DEFINE_ENUM(EXT4_FC_REASON_MAX);
- 
- #define show_fc_reason(reason)						\
-@@ -118,7 +119,8 @@ TRACE_DEFINE_ENUM(EXT4_FC_REASON_MAX);
- 		{ EXT4_FC_REASON_RENAME_DIR,	"RENAME_DIR"},		\
- 		{ EXT4_FC_REASON_FALLOC_RANGE,	"FALLOC_RANGE"},	\
- 		{ EXT4_FC_REASON_INODE_JOURNAL_DATA,	"INODE_JOURNAL_DATA"}, \
--		{ EXT4_FC_REASON_ENCRYPTED_FILENAME,	"ENCRYPTED_FILENAME"})
-+		{ EXT4_FC_REASON_ENCRYPTED_FILENAME,	"ENCRYPTED_FILENAME"}, \
-+		{ EXT4_FC_REASON_INODE_RSV_WRITE_FAIL,	"INODE_RSV_WRITE_FAIL"})
- 
- TRACE_DEFINE_ENUM(CR_POWER2_ALIGNED);
- TRACE_DEFINE_ENUM(CR_GOAL_LEN_FAST);
-@@ -2805,7 +2807,7 @@ TRACE_EVENT(ext4_fc_stats,
- 	),
- 
- 	TP_printk("dev %d,%d fc ineligible reasons:\n"
--		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u"
-+		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u"
- 		  "num_commits:%lu, ineligible: %lu, numblks: %lu",
- 		  MAJOR(__entry->dev), MINOR(__entry->dev),
- 		  FC_REASON_NAME_STAT(EXT4_FC_REASON_XATTR),
-@@ -2818,6 +2820,7 @@ TRACE_EVENT(ext4_fc_stats,
- 		  FC_REASON_NAME_STAT(EXT4_FC_REASON_FALLOC_RANGE),
- 		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_JOURNAL_DATA),
- 		  FC_REASON_NAME_STAT(EXT4_FC_REASON_ENCRYPTED_FILENAME),
-+		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_RSV_WRITE_FAIL),
- 		  __entry->fc_commits, __entry->fc_ineligible_commits,
- 		  __entry->fc_numblks)
- );
--- 
-2.45.0.rc1.225.g2a3ae87e7f-goog
+>>>
+>>> IOWs, any time we truncate down, we need to zero every byte from the new
+>>> EOF all the way to the end of the allocation unit, correct?
+>>
+>> Yeah.
+>>
+>>>
+>>> Maybe pictures would be easier to reason with.  Say you have
+>>> rextsize=30 and a partially written rtextent; each 'W' is a written
+>>> fsblock and 'u' is an unwritten fsblock:
+>>>
+>>> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
+>>>                     ^ old EOF
+>>>
+>>> Now you want to truncate down:
+>>>
+>>> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
+>>>      ^ new EOF      ^ old EOF
+>>>
+>>> Currently, iomap_truncate_blocks only zeroes up to the next i_blocksize,
+>>> so the truncate leaves the file in this state:
+>>>
+>>> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuu
+>>>      ^ new EOF      ^ old EOF
+>>>
+>>> (where 'z' is a written block with zeroes after EOF)
+>>>
+>>> This is bad because the "W"s between the new and old EOF still contain
+>>> old credit card info or whatever.  Now if we mmap the file or whatever,
+>>> we can access those old contents.
+>>>
+>>> So your new patch amends iomap_truncate_page so that it'll zero all the
+>>> way to the end of the @blocksize parameter.  That fixes the exposure by 
+>>> writing zeroes to the pagecache before we truncate down:
+>>>
+>>> WWWWWzzzzzzzzzzzzzzzzuuuuuuuuu
+>>>      ^ new EOF      ^ old EOF
+>>>
+>>> Is that correct?
+>>>
+>>
+>> Yes, it's correct. However, not only write zeros to the pagecache, but
+>> also flush to disk, please see below for details.
+> 
+> <nod> iomap_truncate_page writes zeroes to any part of the pagecache
+> backed by written extents, and then xfs must call
+> filemap_write_and_wait_range to write the dirty (zeroed) cache out to
+> disk.
+> 
+>>> If so, then why don't we make xfs_truncate_page convert the post-eof
+>>> rtextent blocks back to unwritten status:
+>>>
+>>> WWWWWzuuuuuuuuuuuuuuuuuuuuuuuu
+>>>      ^ new EOF      ^ old EOF
+>>>
+>>> If we can do that, then do we need the changes to iomap_truncate_page?
+>>> Converting the mapping should be much faster than dirtying potentially
+>>> a lot of data (rt extents can be 1GB in size).
+>>
+>> Now that the exposed stale data range (should be zeroed) is only one
+>> rtextsize unit, if we convert the post-eof rtextent blocks to unwritten,
+>> it breaks the alignment of rtextent and the definition of "extsize is used
+>> to specify the size of the blocks in the real-time section of the
+>> filesystem", is it fine?
+> 
+> A written -> unwritten extent conversion doesn't change which physical
+> space extent is mapped to the file data extent; it merely marks the
+> mapping as unwritten.
+> 
+> For example, if you start with this mapping:
+> 
+> {startoff = 8, startblock 256, blockcount = 8, state = written}
+> 
+> and then convert blocks 13-15 to unwritten, you get:
+> 
+> {startoff = 8, startblock 256, blockcount = 5, state = written}
+> {startoff = 13, startblock 261, blockcount = 3, state = unwritten}
+> 
+> File blocks 8-15 still map to physical space 256-263.
+
+Yeah, indeed.
+
+> 
+> In xfs, the entire allocation unit is /always/ mapped to the file, even
+> if parts of it have to be unwritten.  Hole punching on rt, for example,
+> converts the punched region to unwritten.  This is (iirc) the key
+> difference between xfs rt and ext4 bigalloc.  xfs doesn't have or need
+> (or want) the implied cluster allocation code that ext4 has.
+> 
+
+I checked the xfs_file_fallocate(), it looks like hole punching on realtime
+inode is still follow the rtextsize alignment, i.e. if we punch hole on a
+file that only contains one written extent, it doesn't split it and convet
+the punched range to unwritten. Please take a look at
+xfs_file_fallocate()->xfs_free_file_space(), it aligned the freeing range
+and zeroing out the whole unligned range in one reextsize unit, and
+FALLOC_FL_ZERO_RANGE is the same.
+
+ 836	/* We can only free complete realtime extents. */
+ 837	if (xfs_inode_has_bigrtalloc(ip)) {
+ 838		startoffset_fsb = xfs_rtb_roundup_rtx(mp, startoffset_fsb);
+ 839 		endoffset_fsb = xfs_rtb_rounddown_rtx(mp, endoffset_fsb);
+ 840	}
+...
+ 864	error = xfs_zero_range(ip, offset, len, NULL);
+
+And I tested it on my machine, it's true that it doesn't do the convertion.
+
+  # mkfs.xfs -f -rrtdev=/dev/nvme0n1 -f -m reflink=0,rmapbt=0, -d rtinherit=1 -r extsize=28k /dev/pmem2s
+  # mount -ortdev=/dev/nvme0n1 /dev/pmem2s /mnt/scratch
+  # xfs_io -f -c "pwrite 0 28k" -c "fsync" /mnt/scratch/foo
+  # xfs_io -c "fpunch 4k 24k" /mnt/scratch/foo
+  # umount /mnt/scratch
+
+  # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
+   u3.bmx[0] = [startoff,startblock,blockcount,extentflag]
+   0:[0,0,7,0]
+
+Am I missed something?
+
+> I can't tell if there's something that you see that I don't see such
+> that we really /do/ need to actually write zeroes to the entire tail of
+> the rtextent; or if you weren't sure that forcing all the post-eof
+> fsblocks in the rtextent to unwritten (and zapping the pagecache) would
+> actually preserve the rtextsize alignment.
+
+I haven't found any restrictions yet, and I also noticed that a simple
+write is not guaranteed to align the extent to rtextsize, since the write
+back path doesn't zeroing out the extra blocks that align to the
+rtextsize.
+
+  # #extsize=28k
+  # xfs_io -d -f -c  "pwrite 0 4k" -c "fsync" /mnt/scratch/foo
+  # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
+     u3.bmx[0-1] = [startoff,startblock,blockcount,extentflag]
+     0:[0,0,1,0]
+     1:[1,1,6,1]
+
+So I guess convert the tail fsblocks of the rtextent to unwritten status
+could work. However, I'm a little confused, besides the write operation,
+other operations like above punch hold and zero range, they seem to be
+doing their best to follow the alignment rule since commit fe341eb151ec
+("xfs: ensure that fpunch, fcollapse, and finsert operations are aligned
+to rt extent size") [1], it looks like this commit is to fix some issues,
+so I'm not sure that converting to unwritten would always preserve the
+rtextsize alignment.
+
+[1]. https://lore.kernel.org/linux-xfs/159950168085.582172.4254559621934598919.stgit@magnolia/
+
+> 
+> (Or if there's something else?)
+> 
+>>                          And IIUC, the upcoming xfs force alignment
+>> extent feature seems also need to follow this alignment, right?
+> 
+> Yes.
+> 
+>>>
+>>>> xfs_truncate_page() should flush, zeros out the entire rtextsize range,
+>>>> and make sure the entire zeroed range have been flushed to disk before
+>>>> updating the inode size.
+>>>>
+>>>> Fixes: 943bc0882ceb ("iomap: don't increase i_size if it's not a write operation")
+>>>> Reported-by: Chandan Babu R <chandanbabu@kernel.org>
+>>>> Link: https://lore.kernel.org/linux-xfs/0b92a215-9d9b-3788-4504-a520778953c2@huaweicloud.com
+>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>>> ---
+>>>>  fs/xfs/xfs_iomap.c | 35 +++++++++++++++++++++++++++++++----
+>>>>  fs/xfs/xfs_iops.c  | 10 ----------
+>>>>  2 files changed, 31 insertions(+), 14 deletions(-)
+>>>>
+>>>> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+>>>> index 4958cc3337bc..fc379450fe74 100644
+>>>> --- a/fs/xfs/xfs_iomap.c
+>>>> +++ b/fs/xfs/xfs_iomap.c
+>>>> @@ -1466,12 +1466,39 @@ xfs_truncate_page(
+>>>>  	loff_t			pos,
+>>>>  	bool			*did_zero)
+>>>>  {
+>>>> +	struct xfs_mount	*mp = ip->i_mount;
+>>>>  	struct inode		*inode = VFS_I(ip);
+>>>>  	unsigned int		blocksize = i_blocksize(inode);
+>>>> +	int			error;
+>>>> +
+>>>> +	if (XFS_IS_REALTIME_INODE(ip))
+>>>> +		blocksize = XFS_FSB_TO_B(mp, mp->m_sb.sb_rextsize);
+>>>
+>>> Don't opencode xfs_inode_alloc_unitsize, please.
+>>
+>> Ha, I missed the latest added helper, thanks for pointing this out.
+>>
+>>>
+>>>> +
+>>>> +	/*
+>>>> +	 * iomap won't detect a dirty page over an unwritten block (or a
+>>>> +	 * cow block over a hole) and subsequently skips zeroing the
+>>>> +	 * newly post-EOF portion of the page. Flush the new EOF to
+>>>> +	 * convert the block before the pagecache truncate.
+>>>> +	 */
+>>>> +	error = filemap_write_and_wait_range(inode->i_mapping, pos,
+>>>> +					     roundup_64(pos, blocksize));
+>>>> +	if (error)
+>>>> +		return error;pos_in_block
+>>>
+>>> Ok so this is hoisting the filemap_write_and_wait_range call from
+>>> xfs_setattr_size.  It's curious that we need to need to twiddle anything
+>>> other than the EOF block itself though?
+>>
+>> Since we planed to zero out the dirtied range which is ailgned to the
+>> extsize instead of the blocksize, ensure one block is not unwritten is
+>> not enough, we should also make sure that the range which is going to
+>> zero out is not unwritten, or else the iomap_zero_iter() will skip
+>> zeroing out the extra blocks.
+>>
+>> For example:
+>>
+>> before zeroing:
+>>            |<-    extszie   ->|
+>>         ...dddddddddddddddddddd
+>>         ...UUUUUUUUUUUUUUUUUUUU
+>>            ^                  ^
+>>         new EOF             old EOF    (where 'd' means the pagecache is dirty)
+>>
+>> if we only flush the new EOF block, the result becomes:
+>>
+>>            |<-    extszie   ->|
+>>            zddddddddddddddddddd
+>>            ZUUUUUUUUUUUUUUUUUUU
+>>            ^                  ^
+>>         new EOF             old EOF
+>>
+>>
+>> then the dirty extent range that between new EOF block and the old EOF
+>> block can't be zeroed sine it's still unwritten. So we have to flush the
+>> whole range before zeroing out.
+> 
+> "Z" on the second line of the second diagram is a written fsblock with
+> the tail zeroed, correct?
+
+Yeah,
+
+> 
+> truncate_setsize -> truncate_pagecache unmaps all the pagecache after
+> the eof folio and unconditionally zeroes the tail of the eof folio
+> without regard to the mappings.  Doesn't that cover us here?  After the
+> truncate_setsize finishes, won't we end up in this state:
+> 
+>            |<-   rextsize   ->|
+>            zzzzzzzz               
+>            ZUUUUUUUUUUUUUUUUUUU
+>            ^      ^           ^
+>         new EOF   |         old EOF
+>                   folio boundary
+> 
+
+Yeah, this case is fine, but the below case is not fine.
+
+truncate                          write back
+xfs_setattr_size()
+ xfs_truncate_page()
+  filemap_write_and_wait_range(newsize, newsize) <- A
+  iomap_zero_range() <- B
+                                  flush dirty pages <- C
+ truncate_setsize() <- D
+
+Please assume if a concurrent write back happenes just before
+truncate_setsize(), the state of the file changes as below:
+
+A:
+              |<-    extszie   ->|
+              wddddddddddddddddddd (pagecache)
+              WUUUUUUUUUUUUUUUUUUU (disk)
+              ^                  ^
+           (new EOF)           old EOF  (where 'd' means the pagecache is dirty)
+                                        (where 'x' means the pagecache contianes user data)
+
+B:
+              |<-    extszie   ->|
+              zddddddddddddddddddd
+              ZUUUUUUUUUUUUUUUUUUU
+              ^                  ^
+           (new EOF)           old EOF  (where 'z' means the pagecache is zero)
+
+C:
+              |<-    extszie   ->|
+              zwwwwwwwwwwwwwwwwwww
+              ZWWWWWWWWWWWWWWWWWWW
+              ^                  ^
+           (new EOF)           old EOF
+
+D:
+              |<-    extszie   ->|
+              zzzzzzzzz
+              ZWWWWWWWWWWWWWWWWWWW
+              ^       ^          ^
+            new EOF   |       (old EOF)
+                      folio boundary
+
+
+Thanks,
+Yi.
+
+>>>
+>>>>  
+>>>>  	if (IS_DAX(inode))
+>>>> -		return dax_truncate_page(inode, pos, blocksize, did_zero,
+>>>> -					&xfs_dax_write_iomap_ops);
+>>>> -	return iomap_truncate_page(inode, pos, blocksize, did_zero,
+>>>> -				   &xfs_buffered_write_iomap_ops);
+>>>> +		error = dax_truncate_page(inode, pos, blocksize, did_zero,
+>>>> +					  &xfs_dax_write_iomap_ops);
+>>>> +	else
+>>>> +		error = iomap_truncate_page(inode, pos, blocksize, did_zero,
+>>>> +					    &xfs_buffered_write_iomap_ops);
+>>>> +	if (error)
+>>>> +		return error;
+>>>> +
+>>>> +	/*
+>>>> +	 * Write back path won't write dirty blocks post EOF folio,
+>>>> +	 * flush the entire zeroed range before updating the inode
+>>>> +	 * size.
+>>>> +	 */
+>>>> +	return filemap_write_and_wait_range(inode->i_mapping, pos,
+>>>> +					    roundup_64(pos, blocksize));
+>>>
+>>> ...but what is the purpose of the second filemap_write_and_wait_range
+>>> call?  Is that to flush the bytes between new and old EOF to disk before
+>>> truncate_setsize invalidates the (zeroed) pagecache?
+>>>
+>>
+>> The second filemap_write_and_wait_range() call is used to make sure that
+>> the zeroed data be flushed to disk before we updating i_size. If we don't
+>> add this one, once the i_size is been changed, the zeroed data which
+>> beyond the new EOF folio(block) couldn't be write back, because
+>> iomap_writepage_map()->iomap_writepage_handle_eof() skip that range, so
+>> the stale data problem is still there.
+>>
+>> For example:
+>>
+>> before zeroing:
+>>            |<-    extszie   ->|
+>>            wwwwwwwwwwwwwwwwwwww (pagecache)
+>>         ...WWWWWWWWWWWWWWWWWWWW (disk)
+>>            ^                  ^
+>>         new EOF               EOF   (where 'w' means the pagecache contains data)
+>>
+>> then iomap_truncate_page() zeroing out the pagecache:
+>>
+>>            |<-    extszie   ->|
+>>            zzzzzzzzzzzzzzzzzzzz (pagecache)
+>>            WWWWWWWWWWWWWWWWWWWW (disk)
+>>            ^                  ^
+>>         new EOF               EOF
+>>
+>> then update i_size, sync and drop cache:
+>>
+>>            |<-    extszie   ->|
+>>            ZWWWWWWWWWWWWWWWWWWW (disk)
+>>            ^
+>>            EOF
+> 
+> <nod> Ok, so this second call to filemap_write_and_wait_range flushes
+> the newly written pagecache to disk.  If it doesn't work to
+> force-convert the tail fsblocks of the rtextent to unwritten status,
+> then I suppose this is necessary if @blocksize != mp->m_sb.blocksize.
+> 
+> --D
+> 
+>> Thanks,
+>> Yi.
+>>
+>>>
+>>>>  }
+>>>> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+>>>> index 66f8c47642e8..baeeddf4a6bb 100644
+>>>> --- a/fs/xfs/xfs_iops.c
+>>>> +++ b/fs/xfs/xfs_iops.c
+>>>> @@ -845,16 +845,6 @@ xfs_setattr_size(
+>>>>  		error = xfs_zero_range(ip, oldsize, newsize - oldsize,
+>>>>  				&did_zeroing);
+>>>>  	} else {
+>>>> -		/*
+>>>> -		 * iomap won't detect a dirty page over an unwritten block (or a
+>>>> -		 * cow block over a hole) and subsequently skips zeroing the
+>>>> -		 * newly post-EOF portion of the page. Flush the new EOF to
+>>>> -		 * convert the block before the pagecache truncate.
+>>>> -		 */
+>>>> -		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
+>>>> -						     newsize);
+>>>> -		if (error)
+>>>> -			return error;
+>>>>  		error = xfs_truncate_page(ip, newsize, &did_zeroing);
+>>>>  	}
+>>>>  
+>>>> -- 
+>>>> 2.39.2
+>>>>
+>>>>
+>>
+>>
 
 
