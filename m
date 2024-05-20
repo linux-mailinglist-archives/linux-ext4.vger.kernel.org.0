@@ -1,67 +1,67 @@
-Return-Path: <linux-ext4+bounces-2588-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2589-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4874B8C98D7
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 07:52:32 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 164FE8C98D9
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 07:52:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F2B4328215C
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 05:52:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8440FB216BF
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 05:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B366818E28;
-	Mon, 20 May 2024 05:52:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36E4719478;
+	Mon, 20 May 2024 05:52:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XfeZ/Zug"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="d6lyU5NQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+Received: from mail-oo1-f46.google.com (mail-oo1-f46.google.com [209.85.161.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B870E17BAB
-	for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 05:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4681917BAF
+	for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 05:52:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716184335; cv=none; b=GoKGLvMGaCVwV69yXJX5sGI9/n9bTEDLJ7w0gAwZGy5yJDYZG0LqPx/Mw6DoETiNteZtTv5/BAPzW1xnR1yTh9zzteLdyN0NyUnr/VWef6j3dfkJjW6rNOjFVXtZdbutfvG0hB51Kb6aIyHi6CGuwmRAhwDDb6ivCa1VnInMtHs=
+	t=1716184335; cv=none; b=MpMXQLAXonV3FSDfFlNA7Bhdo1ywWfZJD1yaKXKa4AfCwUgh+9vfDry25EJGzCcVGsFM1gVGsUfcUnz7m7y9RCcFzff7C2T3hjCg0jA8ISn7aj6FtTrWsNM38tdTm79MQm1cG7xPmsJ+kGpBFwHuXEy0Y4tEslSslVVQuQ4z0gg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1716184335; c=relaxed/simple;
-	bh=wu7YEzq+lRilSD4JZCge6AI1ow5y+pV4swLuWDyXUNg=;
+	bh=esRfFolUwQfjZH5lKtSia5mjV8MLOxqkm8MikLkYeTM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=H+tgQzp1a0GSKQAzs8hWEP7YdcC1zjwd/4ApLLxaYaDVlho3OhMMc+DJ3FkHNA9D3pGFEs757wiMXIjb0ZhXFMfVRiMhap2tWTLRudzqmw0AAeEuH8g3RZzU6HHCxQ4Qb+DaGREKOmeHg8iH7Y6kOem4kV0vmz5daztq4F9w/kQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XfeZ/Zug; arc=none smtp.client-ip=209.85.210.48
+	 MIME-Version; b=W49X+AdsCu0Cu9MkQw0zlkh8IM2shqBDUiHbZKbE+w+gJVAnWYiO8XZflkdToo0m/oniWxB3pOgddqE548EB8v0I0Ai0mWhu+9sMIPOUgY0GQUGFl+bFWbclJo+Din0BlJo4cZ6mwr1wFSttnlq0Sb3sGN9TKwUXOYTVXL6GHLM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=d6lyU5NQ; arc=none smtp.client-ip=209.85.161.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6f0f87f9545so1873702a34.2
-        for <linux-ext4@vger.kernel.org>; Sun, 19 May 2024 22:52:13 -0700 (PDT)
+Received: by mail-oo1-f46.google.com with SMTP id 006d021491bc7-5aa1bf6cb40so2900651eaf.1
+        for <linux-ext4@vger.kernel.org>; Sun, 19 May 2024 22:52:14 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=gmail.com; s=20230601; t=1716184333; x=1716789133; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MWW/wNZKk20Q5d+2ZvU6dyAte2Ib7vphR0PBwrIMDPM=;
-        b=XfeZ/ZugeNt7hW4q1GX3YcXuIqRXRFy7VvxZDiODo65XsM6bYX+ip6eGHkUGoOXCHH
-         Bja/wpfc6XmjXuDHs+M2Mkc+zNnaccbYveP/0ANs9CrNqrtwYWM7s5Nv+I1jjyK9ceF0
-         lhbSyHY0cXjuMSDHXBrTorjxHASoREupOaHb57sBqgscsGVYQ4Kadednu3SxEevxbZLG
-         7Qu5fvQkKbLxCOmHZvyrYeOBHuxxrtkwQOyZAlVdRSTrJDVwGvi03tvMyjILWhLpvgEp
-         iwfiEsU5gkyK+8lO34AaQZ48TE7Sx8JFvz3FZlgdYClEN4EY+GqzvaK83EG2+duQ3Hkz
-         micg==
+        bh=XuaYvGcnVEqOPF8zM8qg0nGvEsW7rIwGevpEeyh48XQ=;
+        b=d6lyU5NQTCuNYLf0uhl9kKyowXFP8so9pDE6wVpUi6F9nuJNXbuwTspWza7QeNrXsV
+         d9wpsPOdllOlbJSNf2C3byowoXMp+i9aRpgWxRLrPPA+tBMS6n8ca1VExZXl1Ed/O5LW
+         d4OzWOJsm/AiyQr2WPjna1PdN7Lww/F7FNWvkbI1bhgSsN/e7t1iK6xQpKGGnYz67QGA
+         BkAo1nzI6Q5cIvQhKqbEcj/YeaOQxKzH7q6LMx+kYgaaxGMBsL2er6ZFl5Xru+q8YjOj
+         Z0CQEMSR1X8dsD/eeV/Tb9IwGrMIhnEtt49hjfJHGXbOq7AeoqayL0iOP1j09g6MLeHl
+         3f9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1716184333; x=1716789133;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MWW/wNZKk20Q5d+2ZvU6dyAte2Ib7vphR0PBwrIMDPM=;
-        b=tFvdVFVrlmYt3kV8WDe1ITAqsBgp7dyJDamHzlPiZdh7p+HcDVGFUaRpkeVb2/na1+
-         WQUGVvE+ywMw95UPmwjh9ypCJPWEhg645EnpaC4pju9jGbNV19NwBy15eQTmHzXHTLZE
-         1QdcFtw7H0cwIQFnK8Y04OMIpBzvDEeAY7/U17CY8fEs1uY6lK1uFzOQ4b5i+Uvr2JY8
-         LpWoRt1ByzbQGF+qfGa/MNPc803GEVFnB2fdz8YXUuXlPSnnT9VJbvjvVqKl8273RDc/
-         SZb+RArlSP5tEDazK/YP4rOFJLmX3vBfJTDDkEXGFb2QieeyV6eyoz2YgwVXhuVUM+Np
-         zuSQ==
-X-Gm-Message-State: AOJu0YyaEX1+lFFQe/MFFcI2b7YE70SnGrO+Hvy8iMeRMj7pN6A7Pi6H
-	jRpixsJ1xcMi0gS5mgYO1HtCorqoep9dpJJ0jAFP+i78L2AZwlz3jqV2ltWM
-X-Google-Smtp-Source: AGHT+IFv80HJPeJa2CEiH4hGNxlON3YpwFHtH/MMZlG/1ZmCzBaBKU8YZ9Y9LKO8xQYxGFhAEogGOw==
-X-Received: by 2002:a05:6830:1143:b0:6ee:23dd:7441 with SMTP id 46e09a7af769-6f0e92cbbd1mr29431956a34.28.1716184332689;
-        Sun, 19 May 2024 22:52:12 -0700 (PDT)
+        bh=XuaYvGcnVEqOPF8zM8qg0nGvEsW7rIwGevpEeyh48XQ=;
+        b=PO5QXFlvPf1yWPfPbf0l879z2NXLtlCJJZLmGg8ORYhbcW+dlowB8aCv/MKYHEiqQd
+         +66SMqKZGY2NyxhYRaVPwbDn44+pk+QmpS6rZ9Wx90znJ+t7Uah54Fyf0MYgU1f1RMtg
+         Fel5JM84d+VYG1NFFlY7sFoo9qyStHpVwH9H5BVAKCgZUoalpioxydeAwALJl8Gp1Y3Q
+         aFwpcnom3dWomr2y2fuRay/ucuNviRkSYm4PlNEAusyqHne5xBStnDYo+cuuPx2y1zwI
+         nlksqCXWUwVMYItEHQdxN4q23z81ZBvyfZNrBNz6nwUalvAoP8MXg6BWK77QcXkv34Nn
+         UB9Q==
+X-Gm-Message-State: AOJu0YzIaDLz2V0Z2tSgj34cO80A1M/9oLsF/y2ed8neq05eqaMOvW8Z
+	UzVke+O2Ar6Fu+ZdSGMfbW8u17RD3wB2YN7/ZawhrFkh+kMMnOThYYkGBqT+
+X-Google-Smtp-Source: AGHT+IFQdCJ8Tpf1CSi/Op/MhDMD7Y9DCSDZSrDN5FoznFupzog2Gwzgb9/HdXGquhuN7bgtEU8gUQ==
+X-Received: by 2002:a05:6358:c006:b0:194:80bd:3e8c with SMTP id e5c5f4694b2df-19480bd4475mr1684743155d.4.1716184333176;
+        Sun, 19 May 2024 22:52:13 -0700 (PDT)
 Received: from harshads.c.googlers.com.com (34.85.168.34.bc.googleusercontent.com. [34.168.85.34])
         by smtp.googlemail.com with ESMTPSA id 41be03b00d2f7-659f66bf18csm6769297a12.46.2024.05.19.22.52.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
@@ -72,9 +72,9 @@ Cc: tytso@mit.edu,
 	saukad@google.com,
 	harshads@google.com,
 	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH 07/10] ext4: add nolock mode to ext4_map_blocks()
-Date: Mon, 20 May 2024 05:51:50 +0000
-Message-ID: <20240520055153.136091-8-harshadshirwadkar@gmail.com>
+Subject: [PATCH 08/10] ext4: introduce selective flushing in fast commit
+Date: Mon, 20 May 2024 05:51:51 +0000
+Message-ID: <20240520055153.136091-9-harshadshirwadkar@gmail.com>
 X-Mailer: git-send-email 2.45.0.rc1.225.g2a3ae87e7f-goog
 In-Reply-To: <20240520055153.136091-1-harshadshirwadkar@gmail.com>
 References: <20240520055153.136091-1-harshadshirwadkar@gmail.com>
@@ -86,113 +86,126 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add nolock flag to ext4_map_blocks() which skips grabbing
-i_data_sem in ext4_map_blocks. In FC commit path, we first
-mark the inode as committing and thereby prevent any mutations
-on it. Thus, it should be safe to call ext4_map_blocks()
-without i_data_sem in this case. This is a workaround to
-the problem mentioned in RFC V4 version cover letter[1] of this
-patch series which pointed out that there is in incosistency between
-ext4_map_blocks() behavior when EXT4_GET_BLOCKS_CACHED_NOWAIT is
-passed. This patch gets rid of the need to call ext4_map_blocks()
-with EXT4_GET_BLOCKS_CACHED_NOWAIT and instead call it with
-EXT4_GET_BLOCKS_NOLOCK. I verified that generic/311 which failed
-in cached_nowait mode passes with nolock mode.
-
-[1] https://lwn.net/Articles/902022/
+With fast commits, if the entire commit is contained within a single
+block and there isn't any data that needs a flush, we can avoid sending
+expensive cache flush to disk. Single block metadata only fast commits
+can be written using FUA to guarantee consistency.
 
 Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 ---
- fs/ext4/ext4.h        |  1 +
- fs/ext4/fast_commit.c | 16 ++++++++--------
- fs/ext4/inode.c       | 14 ++++++++++++--
- 3 files changed, 21 insertions(+), 10 deletions(-)
+ fs/ext4/ext4.h        | 12 ++++++++++++
+ fs/ext4/ext4_jbd2.h   | 20 ++++++++++++--------
+ fs/ext4/fast_commit.c | 23 ++++++++++++++++++-----
+ 3 files changed, 42 insertions(+), 13 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index d802040e94df..196c513f82dd 100644
+index 196c513f82dd..3721daea2890 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -720,6 +720,7 @@ enum {
- #define EXT4_GET_BLOCKS_IO_SUBMIT		0x0400
- 	/* Caller is in the atomic contex, find extent if it has been cached */
- #define EXT4_GET_BLOCKS_CACHED_NOWAIT		0x0800
-+#define EXT4_GET_BLOCKS_NOLOCK			0x1000
+@@ -1744,6 +1744,13 @@ struct ext4_sb_info {
+ 					 */
+ 	struct list_head s_fc_dentry_q[2];	/* directory entry updates */
+ 	unsigned int s_fc_bytes;
++
++	/*
++	 * This flag indicates whether a full flush is needed on
++	 * next fast commit.
++	 */
++	int fc_flush_required;
++
+ 	/*
+ 	 * Main fast commit lock. This lock protects accesses to the
+ 	 * following fields:
+@@ -2905,6 +2912,11 @@ void ext4_fc_del(struct inode *inode);
+ bool ext4_fc_replay_check_excluded(struct super_block *sb, ext4_fsblk_t block);
+ void ext4_fc_replay_cleanup(struct super_block *sb);
+ int ext4_fc_commit(journal_t *journal, tid_t commit_tid);
++static inline void ext4_fc_mark_needs_flush(struct super_block *sb)
++{
++	EXT4_SB(sb)->fc_flush_required = 1;
++}
++
+ int __init ext4_fc_init_dentry_cache(void);
+ void ext4_fc_destroy_dentry_cache(void);
+ int ext4_fc_record_regions(struct super_block *sb, int ino,
+diff --git a/fs/ext4/ext4_jbd2.h b/fs/ext4/ext4_jbd2.h
+index 0c77697d5e90..e3a4f5c49b6e 100644
+--- a/fs/ext4/ext4_jbd2.h
++++ b/fs/ext4/ext4_jbd2.h
+@@ -420,19 +420,23 @@ static inline int ext4_journal_force_commit(journal_t *journal)
+ static inline int ext4_jbd2_inode_add_write(handle_t *handle,
+ 		struct inode *inode, loff_t start_byte, loff_t length)
+ {
+-	if (ext4_handle_valid(handle))
+-		return jbd2_journal_inode_ranged_write(handle,
+-				EXT4_I(inode)->jinode, start_byte, length);
+-	return 0;
++	if (!ext4_handle_valid(handle))
++		return 0;
++
++	ext4_fc_mark_needs_flush(inode->i_sb);
++	return jbd2_journal_inode_ranged_write(handle,
++			EXT4_I(inode)->jinode, start_byte, length);
+ }
  
- /*
-  * The bit position of these flags must not overlap with any of the
+ static inline int ext4_jbd2_inode_add_wait(handle_t *handle,
+ 		struct inode *inode, loff_t start_byte, loff_t length)
+ {
+-	if (ext4_handle_valid(handle))
+-		return jbd2_journal_inode_ranged_wait(handle,
+-				EXT4_I(inode)->jinode, start_byte, length);
+-	return 0;
++	if (!ext4_handle_valid(handle))
++		return 0;
++
++	ext4_fc_mark_needs_flush(inode->i_sb);
++	return jbd2_journal_inode_ranged_wait(handle,
++			EXT4_I(inode)->jinode, start_byte, length);
+ }
+ 
+ static inline void ext4_update_inode_fsync_trans(handle_t *handle,
 diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index b81b0292aa59..0b7064f8dfa5 100644
+index 0b7064f8dfa5..35c89bee452c 100644
 --- a/fs/ext4/fast_commit.c
 +++ b/fs/ext4/fast_commit.c
-@@ -559,13 +559,6 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
- 		!list_empty(&ei->i_fc_list))
- 		return;
- 
--	/*
--	 * If we come here, we may sleep while waiting for the inode to
--	 * commit. We shouldn't be holding i_data_sem in write mode when we go
--	 * to sleep since the commit path needs to grab the lock while
--	 * committing the inode.
--	 */
--	WARN_ON(lockdep_is_held_type(&ei->i_data_sem, 1));
- 
- 	while (ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING)) {
- #if (BITS_PER_LONG < 64)
-@@ -898,7 +891,14 @@ static int ext4_fc_write_inode_data(struct inode *inode, u32 *crc)
- 	while (cur_lblk_off <= new_blk_size) {
- 		map.m_lblk = cur_lblk_off;
- 		map.m_len = new_blk_size - cur_lblk_off + 1;
--		ret = ext4_map_blocks(NULL, inode, &map, 0);
+@@ -638,11 +638,24 @@ void ext4_fc_track_range(handle_t *handle, struct inode *inode, ext4_lblk_t star
+ static void ext4_fc_submit_bh(struct super_block *sb, bool is_tail)
+ {
+ 	blk_opf_t write_flags = REQ_SYNC;
+-	struct buffer_head *bh = EXT4_SB(sb)->s_fc_bh;
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	struct buffer_head *bh = sbi->s_fc_bh;
++	int old = 1, new = 0;
++
++	if (!is_tail) {
 +		/*
-+		 * Given that this inode is being committed,
-+		 * EXT4_STATE_FC_COMMITTING is already set on this inode.
-+		 * Which means all the mutations on the inode are paused
-+		 * until the commit operation is complete. Thus it is safe
-+		 * call ext4_map_blocks() in no lock mode.
++		 * This commit has at least 1 non-tail block,
++		 * thus FLUSH is required.
 +		 */
-+		ret = ext4_map_blocks(NULL, inode, &map, EXT4_GET_BLOCKS_NOLOCK);
- 		if (ret < 0)
- 			return -ECANCELED;
++		ext4_fc_mark_needs_flush(sb);
++	} else {
++		/* Use cmpxchg to ensure that no flush requrest is lost. */
++		if (cmpxchg(&sbi->fc_flush_required, old, new))
++			/* Old value was 1, so request a flush. */
++			write_flags |= REQ_PREFLUSH;
++		write_flags |= REQ_FUA;
++	}
  
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 26b9d3076536..c6405c45970e 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -546,7 +546,8 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 	 * Try to see if we can get the block without requesting a new
- 	 * file system block.
+-	/* Add REQ_FUA | REQ_PREFLUSH only its tail */
+-	if (test_opt(sb, BARRIER) && is_tail)
+-		write_flags |= REQ_FUA | REQ_PREFLUSH;
+ 	lock_buffer(bh);
+ 	set_buffer_dirty(bh);
+ 	set_buffer_uptodate(bh);
+@@ -1090,7 +1103,7 @@ static int ext4_fc_perform_commit(journal_t *journal)
+ 	 * If file system device is different from journal device, issue a cache
+ 	 * flush before we start writing fast commit blocks.
  	 */
--	down_read(&EXT4_I(inode)->i_data_sem);
-+	if (!(flags & EXT4_GET_BLOCKS_NOLOCK))
-+		down_read(&EXT4_I(inode)->i_data_sem);
- 	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) {
- 		retval = ext4_ext_map_blocks(handle, inode, map, 0);
- 	} else {
-@@ -573,7 +574,15 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
- 				      map->m_pblk, status);
- 	}
--	up_read((&EXT4_I(inode)->i_data_sem));
-+	/*
-+	 * We should never call ext4_map_blocks() in nolock mode outside
-+	 * of fast commit path.
-+	 */
-+	WARN_ON((flags & EXT4_GET_BLOCKS_NOLOCK) &&
-+		!ext4_test_inode_state(inode,
-+				       EXT4_STATE_FC_COMMITTING));
-+	if (!(flags & EXT4_GET_BLOCKS_NOLOCK))
-+		up_read((&EXT4_I(inode)->i_data_sem));
+-	if (journal->j_fs_dev != journal->j_dev)
++	if (sbi->fc_flush_required && journal->j_fs_dev != journal->j_dev)
+ 		blkdev_issue_flush(journal->j_fs_dev);
  
- found:
- 	if (retval > 0 && map->m_flags & EXT4_MAP_MAPPED) {
-@@ -614,6 +623,7 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 	 * the write lock of i_data_sem, and call get_block()
- 	 * with create == 1 flag.
- 	 */
-+	WARN_ON((flags & EXT4_GET_BLOCKS_NOLOCK) != 0);
- 	down_write(&EXT4_I(inode)->i_data_sem);
- 
- 	/*
+ 	blk_start_plug(&plug);
 -- 
 2.45.0.rc1.225.g2a3ae87e7f-goog
 
