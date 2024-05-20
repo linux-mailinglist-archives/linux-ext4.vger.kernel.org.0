@@ -1,120 +1,166 @@
-Return-Path: <linux-ext4+bounces-2600-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2601-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A868C9D84
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 14:40:07 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0FBE8C9E2A
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 15:29:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B5A8285AFF
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 12:40:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2D9C51C21933
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 13:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77FFA55E72;
-	Mon, 20 May 2024 12:39:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 505C3136648;
+	Mon, 20 May 2024 13:29:39 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 830A050275;
-	Mon, 20 May 2024 12:39:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91D443AB2;
+	Mon, 20 May 2024 13:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716208799; cv=none; b=CKKqOkurqC/mHOsbxgzY7QOZJ9WOR0fy98b+dmOCESxQJ+rP1IIdurw/7VfUCbv/SG/87qyvsTVn06HR72mbK2CeaRJCS/4ouoYlBZsY+WVVM0+J3vZ5tSfTOg3DsP1/4hM34eJkJm0K+2HKLfpRvFWxzL8uf2KY5qK/IBq9Bow=
+	t=1716211779; cv=none; b=Lc369pdizeX0EEMy6G9E8c9w58YM6mzIblpABFNNjX7us9pXw/XvoQ3gCvLNU1PgOi/vlAAHA+azpgsk4WtAgb3S5Xe4wIQvmwG+M2fiVnVyJvxSs4O4DPgu5tHFfWbauO+4RMHybEVfdv03ujw38Ck5ol/q6sLlMOVK8z5vi+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716208799; c=relaxed/simple;
-	bh=RMALe9odXTlOhasHrwx7JoyA/Hw3+Z+zypbJzTqfiiM=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=P30tjZUr8uqFNitAxl3na9B2J2VaKWCLEiGzbQ+GgiocHCoC36mi/2oEKm1C0RGEUjMwO5h0hO+Cc9lQYv1lTtYS/Tgnq7tryInRdp9nxTyAX6Axu99PYC5VoaVEJKwQt+N/zpSxy7FQgWdDJsrE5g7vuOk44iRXf0VhYWNkqXM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	s=arc-20240116; t=1716211779; c=relaxed/simple;
+	bh=dfQ2mFPkIfsAxlVTyO4uk0ANvRgUl3qUB4NCcxQVKBM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=H9muJ2xhzjNnEWH3ejFLTM/IHJb+KcoCrLvj/QasQuRzyNrzpge9+6OCVAFj/4ESoOucfZhiJsaer0W7SAVqfP9G0MGnULnKtIKzPWZUwXT/AxzFEb/ylVYORA+XDt68Xz1uZGAodII5b9JPvSVc8aDo+6wWt9OJcDY7S0CATK4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vjcb24YNPz4f3l1K;
-	Mon, 20 May 2024 20:39:42 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 0A02B1A016E;
-	Mon, 20 May 2024 20:39:53 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP2 (Coremail) with SMTP id Syh0CgDnCw+XREtma4YLNg--.33126S3;
-	Mon, 20 May 2024 20:39:52 +0800 (CST)
-Subject: Re: [PATCH] ext4/jbd2: drop jbd2_transaction_committed()
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240513072119.2335346-1-yi.zhang@huaweicloud.com>
- <20240515002513.yaglghza4i4ldmr5@quack3>
- <f0eb115d-dd10-e156-9aed-65b7f479f008@huaweicloud.com>
- <20240520084906.ejykv3xwn7l36jbg@quack3>
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VjdhM516Tz4f3jMH;
+	Mon, 20 May 2024 21:29:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 8E5871A0BCA;
+	Mon, 20 May 2024 21:29:32 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAn+REpUEtmHanDNA--.33390S4;
+	Mon, 20 May 2024 21:29:30 +0800 (CST)
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <8d85f75e-cf9e-b3da-766f-59d80d608203@huaweicloud.com>
-Date: Mon, 20 May 2024 20:39:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH v2] jbd2: speed up jbd2_transaction_committed()
+Date: Mon, 20 May 2024 21:18:31 +0800
+Message-Id: <20240520131831.2910790-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240520084906.ejykv3xwn7l36jbg@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:Syh0CgDnCw+XREtma4YLNg--.33126S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF43Kr43Ar1UGr4rKw17Jrb_yoW8Wry5pF
-	W8Ka47Ka17tr1Svrn7trnrZFy2yw1Ikry8Gr9F9ryqk3yUG3sagrWftryak34Duw1kGayI
-	9rWFgFZrG3W5ua7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvIb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxV
-	Aqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q
-	6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6x
-	kF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE
-	14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf
-	9x07UWE__UUUUU=
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAn+REpUEtmHanDNA--.33390S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr4fur4kJry8ZF47Cw47CFg_yoW5ZF4xpr
+	yxCw17trykZ34xurn7Xr4kXFWjvanYya4UXrZF93Z3Za1Utw1xK3y2qryavryqyFs5Ww48
+	XF15ur1DKw1j9a7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6rWUJVWrZr1UMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UdHUDUUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/5/20 16:49, Jan Kara wrote:
-> On Thu 16-05-24 16:27:25, Zhang Yi wrote:
->> On 2024/5/15 8:25, Jan Kara wrote:
->>> On Mon 13-05-24 15:21:19, Zhang Yi wrote:
->>> Also accessing j_commit_sequence without any
->>> lock is theoretically problematic wrt compiler optimization. You should have
->>> READ_ONCE() there and the places modifying j_commit_sequence need to use
->>> WRITE_ONCE().
->>>
->>
->> Thanks for pointing this out, but I'm not sure if we have to need READ_ONCE()
->> here. IIUC, if we add READ_ONCE(), we could make sure to get the latest
->> j_commit_sequence, if not, there is a window (it might becomes larger) that
->> we could get the old value and jbd2_transaction_committed() could return false
->> even if the given transaction was just committed, but I think the window is
->> always there, so it looks like it is not a big problem, is that right?
-> 
-> Well, all accesses to any memory should use READ_ONCE(), be protected by a
-> lock, or use types that handle atomicity on assembly level (like atomic_t,
-> or atomic bit operations and similar). Otherwise the compiler is free to
-> assume the underlying memory cannot change and generate potentionally
-> invalid code. In this case, I don't think realistically any compiler will
-> do it but still it is a good practice and also it saves us from KCSAN
-> warnings. If you want to know more details about possible problems, see
-> 
->   tools/memory-model/Documentation/explanation.txt
-> 
-> chapter "PLAIN ACCESSES AND DATA RACES".
-> 
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Sure, this document is really helpful, I'll add READ_ONCE() and
-WRITE_ONCE() here, thanks a lot.
+jbd2_transaction_committed() is used to check whether a transaction with
+the given tid has already committed, it holds j_state_lock in read mode
+and check the tid of current running transaction and committing
+transaction, but holding the j_state_lock is expensive.
 
-Yi.
+We have already stored the sequence number of the most recently
+committed transaction in journal t->j_commit_sequence, we could do this
+check by comparing it with the given tid instead. If the given tid isn't
+smaller than j_commit_sequence, we can ensure that the given transaction
+has been committed. That way we could drop the expensive lock and
+achieve about 10% ~ 20% performance gains in concurrent DIOs on may
+virtual machine with 100G ramdisk.
+
+fio -filename=/mnt/foo -direct=1 -iodepth=10 -rw=$rw -ioengine=libaio \
+    -bs=4k -size=10G -numjobs=10 -runtime=60 -overwrite=1 -name=test \
+    -group_reporting
+
+Before:
+  overwrite       IOPS=88.2k, BW=344MiB/s
+  read            IOPS=95.7k, BW=374MiB/s
+  rand overwrite  IOPS=98.7k, BW=386MiB/s
+  randread        IOPS=102k, BW=397MiB/s
+
+After:
+  overwrite       IOPS=105k, BW=410MiB/s
+  read            IOPS=112k, BW=436MiB/s
+  rand overwrite  IOPS=104k, BW=404MiB/s
+  randread        IOPS=111k, BW=432MiB/s
+
+CC: Dave Chinner <david@fromorbit.com>
+Suggested-by: Dave Chinner <david@fromorbit.com>
+Link: https://lore.kernel.org/linux-ext4/ZjILCPNZRHeazSqV@dread.disaster.area/
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+---
+v1->v2:
+ - Add READ_ONCE and WRITE_ONCE to access ->j_commit_sequence
+   concurrently.
+ - Keep the jbd2_transaction_committed() helper.
+
+ fs/jbd2/commit.c  |  2 +-
+ fs/jbd2/journal.c | 12 +-----------
+ 2 files changed, 2 insertions(+), 12 deletions(-)
+
+diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+index 5e122586e06e..8244cab17688 100644
+--- a/fs/jbd2/commit.c
++++ b/fs/jbd2/commit.c
+@@ -1108,7 +1108,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+ 
+ 	commit_transaction->t_state = T_COMMIT_CALLBACK;
+ 	J_ASSERT(commit_transaction == journal->j_committing_transaction);
+-	journal->j_commit_sequence = commit_transaction->t_tid;
++	WRITE_ONCE(journal->j_commit_sequence, commit_transaction->t_tid);
+ 	journal->j_committing_transaction = NULL;
+ 	commit_time = ktime_to_ns(ktime_sub(ktime_get(), start_time));
+ 
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index b6c114c11b97..cc586e3c4ee1 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -789,17 +789,7 @@ EXPORT_SYMBOL(jbd2_fc_end_commit_fallback);
+ /* Return 1 when transaction with given tid has already committed. */
+ int jbd2_transaction_committed(journal_t *journal, tid_t tid)
+ {
+-	int ret = 1;
+-
+-	read_lock(&journal->j_state_lock);
+-	if (journal->j_running_transaction &&
+-	    journal->j_running_transaction->t_tid == tid)
+-		ret = 0;
+-	if (journal->j_committing_transaction &&
+-	    journal->j_committing_transaction->t_tid == tid)
+-		ret = 0;
+-	read_unlock(&journal->j_state_lock);
+-	return ret;
++	return tid_geq(READ_ONCE(journal->j_commit_sequence), tid);
+ }
+ EXPORT_SYMBOL(jbd2_transaction_committed);
+ 
+-- 
+2.39.2
 
 
