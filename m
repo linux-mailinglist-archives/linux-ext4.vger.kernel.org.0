@@ -1,183 +1,161 @@
-Return-Path: <linux-ext4+bounces-2579-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2580-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C84028C9535
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 May 2024 18:00:07 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A8828C97B6
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 03:52:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 20CAE281183
-	for <lists+linux-ext4@lfdr.de>; Sun, 19 May 2024 16:00:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 231B01F21BF2
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 01:52:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B094D4D584;
-	Sun, 19 May 2024 15:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ans.pl header.i=@ans.pl header.b="D4RyOMad"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 669088F5E;
+	Mon, 20 May 2024 01:52:28 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.emenem.pl (cmyk.emenem.pl [217.79.154.63])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f79.google.com (mail-io1-f79.google.com [209.85.166.79])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE0AF4CB28;
-	Sun, 19 May 2024 15:59:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.79.154.63
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C3022F23
+	for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 01:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.79
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716134399; cv=none; b=SVzW7Ttx9/ZQEMU1lXezlqRTq/vb/x22p+khXTiaTB0DHYDj2AuF4Rjt+2nI1Oj5fDH5R8g1GD9c+Fs3vZ27BuhX287zfJv4Ttc1Sc81DfBSOwa/xaW4vy8M2DLCx8brpkUcC498uBdeo/NIZ0nFCFuQt491G/SYq4x7I61+oB8=
+	t=1716169948; cv=none; b=EMDFaq4S9He9ZeKOrYsxSefdKjAmaSmA6bQcP6PIaMhfbzAQXbPk+fQ8Es0N8PlWgYuBsiF1CedcOxnlzCDRf4Jryc0Un4lHi7gy6iQiLh7KXVlqOpLVRlBajdjKiYtGgai1Gt1FdgYooMTOtbMTSzWY1zcuzkaXF3tloWl17SY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716134399; c=relaxed/simple;
-	bh=Zv/L+Jx63e8HEedewUI0JG44m1FcEAnrm7DA8WcUtno=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=V5U6EUWbWgmdioLKhzSrZ9wrokcFK4PySrNyaag9py9tlNmjjRYxXUdm03llY6hNegq6GUZB4vEJ2v2tN4sTb4vUKPxKL16EQoEt1d+AcOxSWNR/PgwNua7ukZYFDPyDToyDtnCsZIVkEFO+HugEze0tJXDeSe1+IOIbkMGRT7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ans.pl; spf=none smtp.mailfrom=ans.pl; dkim=pass (1024-bit key) header.d=ans.pl header.i=@ans.pl header.b=D4RyOMad; arc=none smtp.client-ip=217.79.154.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ans.pl
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ans.pl
-X-Virus-Scanned: amavisd-new at emenem.pl
-Received: from [192.168.1.10] (c-98-45-176-131.hsd1.ca.comcast.net [98.45.176.131])
-	(authenticated bits=0)
-	by cmyk.emenem.pl (8.17.1.9/8.17.1.9) with ESMTPSA id 44JFxbIY005385
-	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
-	Sun, 19 May 2024 17:59:39 +0200
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ans.pl; s=20190507;
-	t=1716134380; bh=SVMCT1QxQxufKhwHB96vILUZGZ6v1lcN+v8BV3MLlz0=;
-	h=Date:Subject:From:To:Cc:References:In-Reply-To;
-	b=D4RyOMadxnpqu8hZnMorWOQcfwiFUrqEdYI94ryIM+qtcTUq4S6AdJ7vZgfIvnVxS
-	 RAVs2kC67FHiNj1JfjP5v6aqXH+FWsfluGDyiAZyPrZF1l6Ww/xQLVtLrEGi2lF8jx
-	 gjuFYQBOaCJEAjRn+wm7BL1cThRkRAqI9WSNKJZA=
-Message-ID: <027267db-fa2e-4436-9bd5-ca1dfae2f2b3@ans.pl>
-Date: Sun, 19 May 2024 08:59:36 -0700
+	s=arc-20240116; t=1716169948; c=relaxed/simple;
+	bh=HsQV4Ltggy6Aey7CF0suvofOohFBFlsZ5EqjOonqp6c=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=Ces+zmMwmPJ6mYsKN1VCLxxQ4l5m+wAGipNxRW57WVF1fy6Gns4vQVzbhgiQR3mqI2guiAFY2ZhPzDtrxoGqrUnWEVDZnW/dR61MlD349eE2PAIsDv4a4uRBgvXdKyn7oHSAyf3AFJXrP8abyMkjwU3nNXBIQ7i5k1ed32Dqp5Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.79
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f79.google.com with SMTP id ca18e2360f4ac-7e1c3c98401so738337539f.2
+        for <linux-ext4@vger.kernel.org>; Sun, 19 May 2024 18:52:26 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716169946; x=1716774746;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=k++fI0WKokHitI27fX8ZAGJFInOOijXTOw3x+5jhqLg=;
+        b=lNt+67oGXxTsWsgIjg8bPqyWR6FQR1/WvxPJaBb2MGA9B1YJOWWKdgAsSD9GuLWTzp
+         9NhSh/zzDhgKNNZAMN0HXYb7sVfPZVbF74m5sxLQsK7wzzc47+3bgr+bku2DKZfBUVBn
+         ItgOhBB2/fGvBDxqrLdh1JdjxRQCJLjYt2qJlPk9hdIrp8JnuCIKbvH5jVcRrNQehepm
+         VfV6jMNSUE/GQycnVK89eANRcV/Ksi4WYc/hatr3nQYY3lq4lZVXW0I5r9Zo1fCclLlr
+         UKE5y54V4wZ9I4sSZqw7XIMnOnbTNFBmWtyDoxzKizPWbpRqr1kJKU8waEg7ABdBTMrG
+         VBkA==
+X-Forwarded-Encrypted: i=1; AJvYcCUDMUEgnHPAsS44p1tilHPJhoHGGpGaNfzYgl6//gWXi0QIjd2f9SwEt2j3g7PlkPEP+barW4oB9evajNMLlYJAkmRu6pAHTnf3Ew==
+X-Gm-Message-State: AOJu0Yx47y/8PYsDxiZy6sFVZKSaTcAAAO6rSVyndnTL9/l/C+0mWbu7
+	Ij26e9V5d7BrTmUM4wv4rrCq3Lvofine3acUYNbMoxH8Vr0eYqytpHI21I2qT/fkq9/134Ps3BA
+	1d+UKO4zRCppIO0sHeEDlMyRa1hQQ/vRaL4s67RLVxdlJGnPewnGEo/U=
+X-Google-Smtp-Source: AGHT+IHfDk7mUTbbI/3N8CUKQkG0KRS2hg0WW5QlxyVMk7+oinsyJd/sju8KYYQgN0slGoVobo/Iaff4pwYsacf+PjdZ+Kp67gC/
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: WARNING: CPU: 5 PID: 23226 at fs/ext4/ext4_jbd2.c:73
- ext4_journal_check_start+0x2c/0x82 [Linux 6.6.30, data=journal]
-From: =?UTF-8?Q?Krzysztof_Ol=C4=99dzki?= <ole@ans.pl>
-To: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-        linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca
-References: <a4ed8496-60f6-4036-b1f9-75e3448510ec@ans.pl>
-Content-Language: en-US
-In-Reply-To: <a4ed8496-60f6-4036-b1f9-75e3448510ec@ans.pl>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6638:8725:b0:488:5e26:ffb5 with SMTP id
+ 8926c6da1cb9f-48958694bafmr1963185173.2.1716169945846; Sun, 19 May 2024
+ 18:52:25 -0700 (PDT)
+Date: Sun, 19 May 2024 18:52:25 -0700
+In-Reply-To: <000000000000f19a1406109eb5c5@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000ff23a10618d8f3b5@google.com>
+Subject: Re: [syzbot] [ext4?] general protection fault in __block_commit_write
+From: syzbot <syzbot+18df508cf00a0598d9a6@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On 17.05.2024 at 22:24, Krzysztof Olędzki wrote:
-> Hi,
-> 
-> I noticed that once a while my system generates a WARNING during shutdown and this has been ongoing for some time, perhaps since upgrading to 6.6-stable and/or migrating to "-o 64bit". However, I cannot be 100% sure if this is a relatively recent regression or not, as I think it does not happen very frequently and usually I don't look at the console during shutdown.
-> 
-> The WARNING happens after all filesystems except the root fs (253:0) get unmounted and root is already mounted read-only. Today, I was finally able to capture it with the serial console attached.
-> 
-> [ 5802.007527] EXT4-fs (dm-0): re-mounted 5a3b300a-6b1a-4ff1-9138-287dec4dcdd7 ro. Quota mode: none.
-> [ 5803.382293] sd 0:0:7:0: [sdh] Synchronizing SCSI cache
-> [ 5803.388868] sd 0:0:7:0: [sdh] Stopping disk
-> [ 5821.086972] sd 0:0:6:0: [sdg] Synchronizing SCSI cache
-> [ 5821.093581] sd 0:0:6:0: [sdg] Stopping disk
-> [ 5832.944678] ------------[ cut here ]------------
-> [ 5832.950507] WARNING: CPU: 5 PID: 23226 at fs/ext4/ext4_jbd2.c:73 ext4_journal_check_start+0x2c/0x82
+syzbot has found a reproducer for the following issue on:
 
-Forgot to mention, the WARNING comes from:
+HEAD commit:    fda5695d692c Merge branch 'for-next/core' into for-kernelci
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=1624be58980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=95dc1de8407c7270
+dashboard link: https://syzkaller.appspot.com/bug?extid=18df508cf00a0598d9a6
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12bef634980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=10b68242980000
 
-	if (WARN_ON_ONCE(sb_rdonly(sb)))
-		return -EROFS;
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/07f3214ff0d9/disk-fda5695d.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/70e2e2c864e8/vmlinux-fda5695d.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/b259942a16dc/Image-fda5695d.gz.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/5853ffd99deb/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/8d78b07027fb/mount_5.gz
 
-See: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux.git/tree/fs/ext4/ext4_jbd2.c?h=v6.6.30#n73
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+18df508cf00a0598d9a6@syzkaller.appspotmail.com
 
-So, the question is: why we are trying to write something about long (about 30.94s) after remounting the filesystem as read-only?
-
-> [ 5832.961303] CPU: 5 PID: 23226 Comm: kworker/u16:28 Not tainted 6.6.30-o4 #2
-> [ 5832.969772] Hardware name: Dell Inc. PowerEdge T330/06FW8M, BIOS 2.20.0 02/22/2024
-> [ 5832.978872] Workqueue: writeback wb_workfn (flush-253:0)
-> [ 5832.985498] RIP: 0010:ext4_journal_check_start+0x2c/0x82
-> [ 5832.992079] Code: 89 3c 24 2e 2e 2e 31 c0 48 8b 3c 24 b8 fb ff ff ff 48 8b 97 78 03 00 00 48 8b 8a 30 02 00 00 80 e1 02 75 56 f6 47 50 01 74 04 <0f> 0b eb 47 66 83 bf 50 02 00 00 04 75 00
-> [ 5833.014495] RSP: 0018:ffffc9000eff7908 EFLAGS: 00010202
-> [ 5833.021000] RAX: 00000000fffffffb RBX: ffffc9000eff7b18 RCX: 0000000000000000
-> [ 5833.029711] RDX: ffff8881021f5000 RSI: ffff888100f8c000 RDI: ffff888100f8c000
-> [ 5833.038392] RBP: 0000000000000002 R08: 0000000000000001 R09: 0000000000000000
-> [ 5833.047028] R10: 8080808080808080 R11: fefefefefefefeff R12: ffff888100f8c000
-> [ 5833.055698] R13: 0000000000000008 R14: 0000000000000959 R15: ffffffff95c7c06f
-> [ 5833.064377] FS:  0000000000000000(0000) GS:ffff889030140000(0000) knlGS:0000000000000000
-> [ 5833.074106] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> [ 5833.081239] CR2: 00007f8bac652120 CR3: 0000000309e44001 CR4: 00000000003706e0
-> [ 5833.089883] DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-> [ 5833.098573] DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-> [ 5833.107255] Call Trace:
-> [ 5833.110693]  <TASK>
-> [ 5833.113727]  ? __warn+0x93/0x11a
-> [ 5833.117961]  ? report_bug+0xeb/0x162
-> [ 5833.122630]  ? ext4_journal_check_start+0x2c/0x82
-> [ 5833.128636]  ? handle_bug+0x3c/0x63
-> [ 5833.133212]  ? exc_invalid_op+0x17/0x64
-> [ 5833.138176]  ? asm_exc_invalid_op+0x1a/0x20
-> [ 5833.143530]  ? __ext4_journal_start+0x15/0x1b
-> [ 5833.149031]  ? ext4_journal_check_start+0x2c/0x82
-> [ 5833.154920]  __ext4_journal_start_sb+0xe5/0x152
-> [ 5833.160753]  __ext4_journal_start+0x15/0x1b
-> [ 5833.166046]  mpage_prepare_extent_to_map+0xd1/0x38b
-> [ 5833.172142]  ext4_do_writepages+0x2a9/0x922
-> [ 5833.177490]  ext4_writepages+0x83/0xda
-> [ 5833.182332]  do_writepages+0xca/0x177
-> [ 5833.187024]  ? lock_timer_base+0x3b/0x64
-> [ 5833.192001]  __writeback_single_inode+0x83/0x301
-> [ 5833.197760]  writeback_sb_inodes+0x251/0x418
-> [ 5833.203168]  __writeback_inodes_wb+0x80/0xc8
-> [ 5833.208574]  wb_writeback+0x142/0x266
-> [ 5833.213307]  wb_workfn+0x212/0x3ac
-> [ 5833.217733]  ? __raw_spin_unlock_irqrestore+0x14/0x29
-> [ 5833.223973]  process_scheduled_works+0x196/0x29d
-> [ 5833.229723]  worker_thread+0x1c5/0x21f
-> [ 5833.234523]  ? __pfx_worker_thread+0x10/0x10
-> [ 5833.239850]  kthread+0xf3/0xfe
-> [ 5833.243826]  ? __pfx_kthread+0x10/0x10
-> [ 5833.248633]  ret_from_fork+0x20/0x35
-> [ 5833.253239]  ? __pfx_kthread+0x10/0x10
-> [ 5833.257963]  ret_from_fork_asm+0x1b/0x30
-> [ 5833.262874]  </TASK>
-> [ 5833.265828] ---[ end trace 0000000000000000 ]---
-> [ 5838.780155] sd 0:0:5:0: [sdf] Synchronizing SCSI cache
-> [ 5838.788570] sd 0:0:5:0: [sdf] Stopping disk
-> [ 5856.502606] sd 0:0:4:0: [sde] Synchronizing SCSI cache
-> [ 5856.510119] sd 0:0:4:0: [sde] Stopping disk
-> [ 5874.197657] sd 0:0:3:0: [sdd] Synchronizing SCSI cache
-> [ 5874.204287] sd 0:0:3:0: [sdd] Stopping disk
-> [ 5882.659434] sd 0:0:2:0: [sdc] Synchronizing SCSI cache
-> [ 5882.666164] sd 0:0:2:0: [sdc] Stopping disk
-> [ 5891.129810] sd 0:0:1:0: [sdb] Synchronizing SCSI cache
-> [ 5891.136410] sd 0:0:1:0: [sdb] Stopping disk
-> [ 5899.598645] sd 0:0:0:0: [sda] Synchronizing SCSI cache
-> [ 5899.605233] sd 0:0:0:0: [sda] Stopping disk
-> [ 5908.184767] megaraid_sas 0000:02:00.0: megasas_disable_intr_fusion is called outbound_intr_mask:0x40000009
-> [ 5908.198623] mlx4_core 0000:01:00.0: mlx4_shutdown was called
-> [ 5908.250311] bond0: (slave eth2): Releasing backup interface
-> [ 5908.257384] bond0: (slave eth2): the permanent HWaddr of slave - XX:XX:XX:XX:XX:XX - is still in use by bond - set the HWaddr of slave to a different address to avoid conflicts
-> [ 5908.290793] mlx4_en 0000:01:00.0: removed PHC
-> [ 5908.327539] bond0: (slave eth3): Releasing backup interface
-> [ 5909.421105] ACPI: PM: Preparing to enter system sleep state S5
-> [ 5909.428720] kvm: exiting hardware virtualization
-> [ 5909.434855] reboot: Power down
-> 
-> # tune2fs -l /dev/VG0/root |head -12
-> tune2fs 1.47.0 (5-Feb-2023)
-> Filesystem volume name:   /
-> Last mounted on:          /
-> Filesystem UUID:          5a3b300a-6b1a-4ff1-9138-287dec4dcdd7
-> Filesystem magic number:  0xEF53
-> Filesystem revision #:    1 (dynamic)
-> Filesystem features:      has_journal ext_attr resize_inode dir_index orphan_file filetype needs_recovery extent 64bit flex_bg metadata_csum_seed sparse_super large_file huge_file dir_nlink extra_isize metadata_csum orphan_present
-> Filesystem flags:         signed_directory_hash
-> Default mount options:    user_xattr acl
-> Filesystem state:         clean
-> Errors behavior:          Remount read-only
-> Filesystem OS type:       Linux
-> 
-> # grep /dev/mapper/VG0-root /proc/mounts
-> /dev/mapper/VG0-root / ext4 rw,relatime,nodioread_nolock,nodelalloc,stripe=192,data=journal 0 0
+Unable to handle kernel paging request at virtual address dfff800000000004
+KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
+Mem abort info:
+  ESR = 0x0000000096000005
+  EC = 0x25: DABT (current EL), IL = 32 bits
+  SET = 0, FnV = 0
+  EA = 0, S1PTW = 0
+  FSC = 0x05: level 1 translation fault
+Data abort info:
+  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
+  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
+  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
+[dfff800000000004] address between user and kernel address ranges
+Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
+Modules linked in:
+CPU: 1 PID: 20274 Comm: syz-executor185 Not tainted 6.9.0-rc7-syzkaller-gfda5695d692c #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+pc : __block_commit_write+0x64/0x2b0 fs/buffer.c:2167
+lr : __block_commit_write+0x3c/0x2b0 fs/buffer.c:2160
+sp : ffff8000a1957600
+x29: ffff8000a1957610 x28: dfff800000000000 x27: ffff0000e30e34b0
+x26: 0000000000000000 x25: dfff800000000000 x24: dfff800000000000
+x23: fffffdffc397c9e0 x22: 0000000000000020 x21: 0000000000000020
+x20: 0000000000000040 x19: fffffdffc397c9c0 x18: 1fffe000367bd196
+x17: ffff80008eead000 x16: ffff80008ae89e3c x15: 00000000200000c0
+x14: 1fffe0001cbe4e04 x13: 0000000000000000 x12: 0000000000000000
+x11: 0000000000000001 x10: 0000000000ff0100 x9 : 0000000000000000
+x8 : 0000000000000004 x7 : 0000000000000000 x6 : 0000000000000000
+x5 : fffffdffc397c9c0 x4 : 0000000000000020 x3 : 0000000000000020
+x2 : 0000000000000040 x1 : 0000000000000020 x0 : fffffdffc397c9c0
+Call trace:
+ __block_commit_write+0x64/0x2b0 fs/buffer.c:2167
+ block_write_end+0xb4/0x104 fs/buffer.c:2253
+ ext4_da_do_write_end fs/ext4/inode.c:2955 [inline]
+ ext4_da_write_end+0x2c4/0xa40 fs/ext4/inode.c:3028
+ generic_perform_write+0x394/0x588 mm/filemap.c:3985
+ ext4_buffered_write_iter+0x2c0/0x4ec fs/ext4/file.c:299
+ ext4_file_write_iter+0x188/0x1780
+ call_write_iter include/linux/fs.h:2110 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0x968/0xc3c fs/read_write.c:590
+ ksys_write+0x15c/0x26c fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __arm64_sys_write+0x7c/0x90 fs/read_write.c:652
+ __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
+ invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
+ el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
+ do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
+ el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+Code: 97f85911 f94002da 91008356 d343fec8 (38796908) 
+---[ end trace 0000000000000000 ]---
+----------------
+Code disassembly (best guess):
+   0:	97f85911 	bl	0xffffffffffe16444
+   4:	f94002da 	ldr	x26, [x22]
+   8:	91008356 	add	x22, x26, #0x20
+   c:	d343fec8 	lsr	x8, x22, #3
+* 10:	38796908 	ldrb	w8, [x8, x25] <-- trapping instruction
 
 
-Thanks,
- Krzysztof
-
+---
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
