@@ -1,62 +1,78 @@
-Return-Path: <linux-ext4+bounces-2610-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2611-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 693FB8CA20C
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 20:37:35 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A518CA272
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 20:59:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C7D21C2102B
-	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 18:37:34 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2FA99B21A96
+	for <lists+linux-ext4@lfdr.de>; Mon, 20 May 2024 18:59:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F2111384A2;
-	Mon, 20 May 2024 18:37:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DFEA1384B0;
+	Mon, 20 May 2024 18:59:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dSi2OFwW"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="O5lqunol"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D8B42137939;
-	Mon, 20 May 2024 18:37:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B29AE4AEE3
+	for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 18:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716230246; cv=none; b=ffaRUtIt5Pm8qoAHMsg2d7vqnTT86BOeahUTOrxEqkJhS2aNbXN80F7Teh+hlcPudrJe/hUHKZQjcO/sycu62f0Z3MH9Dy/ZC9a05UxzMyZfyce+5mE7Gtkf6EvVIZYHYd/mt3gIPCK/XLI9nMJRIYsTxI0zibv3d30PBBVyxi0=
+	t=1716231555; cv=none; b=upMuC22p93JOE4kJkl2+dgsSuvj4uzHbcOYZ7boG61amYgQTzyDmoyf+xG2t9fmrKrp9wT9CX4BdEms/W3SQH4njS4EzXC8v4OL2nV5pCZiYWFJda/H9E6pj/f89S6NxJWrS3hrI1YY2Wx6Wozut9/Uvi1MfNlcw7fcmxytERUM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716230246; c=relaxed/simple;
-	bh=TWekRrD9aIuqDsXAFgW2YpmZs5gfRZ8eOab4s6z4HFM=;
+	s=arc-20240116; t=1716231555; c=relaxed/simple;
+	bh=FGPgOMM8WtZ3iBZnP3NJEWFGaaaJ7NvY3p6np4B0pGQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Wiom21ZPZvmFR6wDUtIv7TbGFNxxtX2BRAWGZlpRCgln0tuqRerZyWmFv36YTotLsEe2IQ9vb7t26yPx+o+QxDfkHyIkoC1CJ+y2CB0FT//dmRp8QZ0B29dYixEtMvTthT2uL3xEv5hPaXcT25Sk2KecKd7Ck11Qr49DKHH3kOA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dSi2OFwW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6AFCFC2BD10;
-	Mon, 20 May 2024 18:37:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716230245;
-	bh=TWekRrD9aIuqDsXAFgW2YpmZs5gfRZ8eOab4s6z4HFM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=dSi2OFwW+blr4CiuJTu35ynkI9++bLu/85orAwRbpKaZH8BnlpQu0hrsHRoqr9mjw
-	 dVE1dQ0ymNTAY+GQVsoI6izpL9jTlise991loVpFiu7/M3cUJZHEULyyTsLicmMeNC
-	 afZRQD5BHWN2TyqhGTCFpMEqrn5M7X2L7ESoymvKNf1RtA2C8b6yX4v3bafEF8TxLL
-	 LA5HfNdwXVplC1IsMo5rhWSHPB578AMatJKs7jkUZeWWwsFGrH6fvlg8A7spWpWENv
-	 Ve2WUV6aCg+3ssXSMi47w8qUbFEAAqmRrc/+SywXdEp5JjjmEbZ19Cxb0ZiBLTCrx4
-	 gyPitSUBJBUmg==
-Date: Mon, 20 May 2024 11:37:24 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	hch@infradead.org, brauner@kernel.org, david@fromorbit.com,
-	chandanbabu@kernel.org, jack@suse.cz, yi.zhang@huawei.com,
-	chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v3 3/3] xfs: correct the zeroing truncate range
-Message-ID: <20240520183724.GJ25518@frogsfrogsfrogs>
-References: <20240517111355.233085-1-yi.zhang@huaweicloud.com>
- <20240517111355.233085-4-yi.zhang@huaweicloud.com>
- <20240517175900.GC360919@frogsfrogsfrogs>
- <fc050e5c-cdc5-9e3d-2787-ce09ec3b888e@huaweicloud.com>
- <20240518192602.GD360919@frogsfrogsfrogs>
- <7c388db6-f2fa-9ac1-2a0b-30bd28f3aeeb@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=iJas9nROfeT/BecpWsVPppkjQ7NvwFNFXTOI19uNzOdTqb11oP6vjEFtgV9109SAqvMnZ8Sf9mmA3dnYuy9sgOSwQI+kV7JDdJyV41vGdmZx34Fne+88k8RcwsaVqH3LRCJMYMLJntuKblsRZqH1EVHjIwUo+MUngMAC/BBW8OA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=O5lqunol; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1716231554; x=1747767554;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=FGPgOMM8WtZ3iBZnP3NJEWFGaaaJ7NvY3p6np4B0pGQ=;
+  b=O5lqunolGpb8t7LASi4WiGfgdiNcedCoEbSuQGwRqUaEoNzvSOGJyW1Z
+   4OtFccSkMwWFde1XNUnhl+yVMRLALbXRQS8ZpSYiqL2BjoT11nLIHakg+
+   SDnmFB2n8w9JhpQ/+nAsjLkcnip0HU3dX8mNVIyAKDUZWVcwdOPY0ni8F
+   WsvJKdODg+oPfMm2vwd35OFpXy85jXg2y7Z1BNM8Uf1fdCa/TmP7Lqcs3
+   Un7pYTjEd82Bli5hBPZXQw6OgEh6RNO5OtA6ml6wQy8JfVRJiTL/yncM4
+   e21I4QZfVnmNT2lfc0kIGm2z5Ny4tILJ91kWmNztZvUCh2yog+a1sL1Ks
+   g==;
+X-CSE-ConnectionGUID: g3rYQ0m8QWKroyY1K/sdPw==
+X-CSE-MsgGUID: ovLzMTC0RhSvz/yc+btnfQ==
+X-IronPort-AV: E=McAfee;i="6600,9927,11078"; a="12492724"
+X-IronPort-AV: E=Sophos;i="6.08,175,1712646000"; 
+   d="scan'208";a="12492724"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 May 2024 11:59:14 -0700
+X-CSE-ConnectionGUID: +MJMrbs8SZC+V1EICc9ipw==
+X-CSE-MsgGUID: as/S58l4Qw2B6utu2QFRQg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.08,175,1712646000"; 
+   d="scan'208";a="32624782"
+Received: from unknown (HELO 108735ec233b) ([10.239.97.151])
+  by fmviesa008.fm.intel.com with ESMTP; 20 May 2024 11:59:11 -0700
+Received: from kbuild by 108735ec233b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1s98Dj-00054y-0D;
+	Mon, 20 May 2024 18:58:56 +0000
+Date: Tue, 21 May 2024 02:58:06 +0800
+From: kernel test robot <lkp@intel.com>
+To: Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+	linux-ext4@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev, tytso@mit.edu, saukad@google.com,
+	harshads@google.com,
+	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Subject: Re: [PATCH 10/10] ext4: make fast commit ineligible on
+ ext4_reserve_inode_write failure
+Message-ID: <202405210233.ZNN50qLq-lkp@intel.com>
+References: <20240520055153.136091-11-harshadshirwadkar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,490 +81,284 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <7c388db6-f2fa-9ac1-2a0b-30bd28f3aeeb@huaweicloud.com>
+In-Reply-To: <20240520055153.136091-11-harshadshirwadkar@gmail.com>
 
-On Mon, May 20, 2024 at 02:56:22PM +0800, Zhang Yi wrote:
-> On 2024/5/19 3:26, Darrick J. Wong wrote:
-> > On Sat, May 18, 2024 at 02:35:02PM +0800, Zhang Yi wrote:
-> >> On 2024/5/18 1:59, Darrick J. Wong wrote:
-> >>> On Fri, May 17, 2024 at 07:13:55PM +0800, Zhang Yi wrote:
-> >>>> From: Zhang Yi <yi.zhang@huawei.com>
-> >>>>
-> >>>> When truncating a realtime file unaligned to a shorter size,
-> >>>> xfs_setattr_size() only flush the EOF page before zeroing out, and
-> >>>> xfs_truncate_page() also only zeros the EOF block. This could expose
-> >>>> stale data since 943bc0882ceb ("iomap: don't increase i_size if it's not
-> >>>> a write operation").
-> >>>>
-> >>>> If the sb_rextsize is bigger than one block, and we have a realtime
-> >>>> inode that contains a long enough written extent. If we unaligned
-> >>>> truncate into the middle of this extent, xfs_itruncate_extents() could
-> >>>> split the extent and align the it's tail to sb_rextsize, there maybe
-> >>>> have more than one blocks more between the end of the file. Since
-> >>>> xfs_truncate_page() only zeros the trailing portion of the i_blocksize()
-> >>>> value, so it may leftover some blocks contains stale data that could be
-> >>>> exposed if we append write it over a long enough distance later.
-> > 
-> > Hum.  Is this an appending write into the next rtextent?  For example,
-> > if you start with a file like this:
-> > 
-> > WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
-> >                     ^ old EOF
-> > 
-> > Then truncate it improperly like this:
-> > 
-> > WWWWWzWWWWWWWWWWWWWWWuuuuuuuuu
-> >      ^ new EOF               
-> > 
-> > Then do an extending write like this:
-> > 
-> > WWWWWzWWWWWWWWWWWWWWWuuuuuuuuuuuuuuuuuuuuuuuuuuuWWWuuuuuuuuu
-> >      ^ EOF                    ^ next rtx        ^ append here
-> > 
-> > And now the problem is that we've exposed stale data that should be
-> > zeroes?
-> > 
-> > WWWWWzWWWWWWWWWWWWWWWuuuuuuuuuuuuuuuuuuuuuuuuuuuWWWuuuuuuuuu
-> >       ^^^^^^^^^^^^^^^                             ^ new EOF
-> >       should be zeroed
-> > 
-> 
-> Yeah.
-> 
-> >>>
-> >>> IOWs, any time we truncate down, we need to zero every byte from the new
-> >>> EOF all the way to the end of the allocation unit, correct?
-> >>
-> >> Yeah.
-> >>
-> >>>
-> >>> Maybe pictures would be easier to reason with.  Say you have
-> >>> rextsize=30 and a partially written rtextent; each 'W' is a written
-> >>> fsblock and 'u' is an unwritten fsblock:
-> >>>
-> >>> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
-> >>>                     ^ old EOF
-> >>>
-> >>> Now you want to truncate down:
-> >>>
-> >>> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
-> >>>      ^ new EOF      ^ old EOF
-> >>>
-> >>> Currently, iomap_truncate_blocks only zeroes up to the next i_blocksize,
-> >>> so the truncate leaves the file in this state:
-> >>>
-> >>> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuu
-> >>>      ^ new EOF      ^ old EOF
-> >>>
-> >>> (where 'z' is a written block with zeroes after EOF)
-> >>>
-> >>> This is bad because the "W"s between the new and old EOF still contain
-> >>> old credit card info or whatever.  Now if we mmap the file or whatever,
-> >>> we can access those old contents.
-> >>>
-> >>> So your new patch amends iomap_truncate_page so that it'll zero all the
-> >>> way to the end of the @blocksize parameter.  That fixes the exposure by 
-> >>> writing zeroes to the pagecache before we truncate down:
-> >>>
-> >>> WWWWWzzzzzzzzzzzzzzzzuuuuuuuuu
-> >>>      ^ new EOF      ^ old EOF
-> >>>
-> >>> Is that correct?
-> >>>
-> >>
-> >> Yes, it's correct. However, not only write zeros to the pagecache, but
-> >> also flush to disk, please see below for details.
-> > 
-> > <nod> iomap_truncate_page writes zeroes to any part of the pagecache
-> > backed by written extents, and then xfs must call
-> > filemap_write_and_wait_range to write the dirty (zeroed) cache out to
-> > disk.
-> > 
-> >>> If so, then why don't we make xfs_truncate_page convert the post-eof
-> >>> rtextent blocks back to unwritten status:
-> >>>
-> >>> WWWWWzuuuuuuuuuuuuuuuuuuuuuuuu
-> >>>      ^ new EOF      ^ old EOF
-> >>>
-> >>> If we can do that, then do we need the changes to iomap_truncate_page?
-> >>> Converting the mapping should be much faster than dirtying potentially
-> >>> a lot of data (rt extents can be 1GB in size).
-> >>
-> >> Now that the exposed stale data range (should be zeroed) is only one
-> >> rtextsize unit, if we convert the post-eof rtextent blocks to unwritten,
-> >> it breaks the alignment of rtextent and the definition of "extsize is used
-> >> to specify the size of the blocks in the real-time section of the
-> >> filesystem", is it fine?
-> > 
-> > A written -> unwritten extent conversion doesn't change which physical
-> > space extent is mapped to the file data extent; it merely marks the
-> > mapping as unwritten.
-> > 
-> > For example, if you start with this mapping:
-> > 
-> > {startoff = 8, startblock 256, blockcount = 8, state = written}
-> > 
-> > and then convert blocks 13-15 to unwritten, you get:
-> > 
-> > {startoff = 8, startblock 256, blockcount = 5, state = written}
-> > {startoff = 13, startblock 261, blockcount = 3, state = unwritten}
-> > 
-> > File blocks 8-15 still map to physical space 256-263.
-> 
-> Yeah, indeed.
-> 
-> > 
-> > In xfs, the entire allocation unit is /always/ mapped to the file, even
-> > if parts of it have to be unwritten.  Hole punching on rt, for example,
-> > converts the punched region to unwritten.  This is (iirc) the key
-> > difference between xfs rt and ext4 bigalloc.  xfs doesn't have or need
-> > (or want) the implied cluster allocation code that ext4 has.
-> > 
-> 
-> I checked the xfs_file_fallocate(), it looks like hole punching on realtime
-> inode is still follow the rtextsize alignment, i.e. if we punch hole on a
-> file that only contains one written extent, it doesn't split it and convet
-> the punched range to unwritten. Please take a look at
-> xfs_file_fallocate()->xfs_free_file_space(), it aligned the freeing range
-> and zeroing out the whole unligned range in one reextsize unit, and
-> FALLOC_FL_ZERO_RANGE is the same.
-> 
->  836	/* We can only free complete realtime extents. */
->  837	if (xfs_inode_has_bigrtalloc(ip)) {
->  838		startoffset_fsb = xfs_rtb_roundup_rtx(mp, startoffset_fsb);
->  839 		endoffset_fsb = xfs_rtb_rounddown_rtx(mp, endoffset_fsb);
->  840	}
-> ...
->  864	error = xfs_zero_range(ip, offset, len, NULL);
-> 
-> And I tested it on my machine, it's true that it doesn't do the convertion.
-> 
->   # mkfs.xfs -f -rrtdev=/dev/nvme0n1 -f -m reflink=0,rmapbt=0, -d rtinherit=1 -r extsize=28k /dev/pmem2s
->   # mount -ortdev=/dev/nvme0n1 /dev/pmem2s /mnt/scratch
->   # xfs_io -f -c "pwrite 0 28k" -c "fsync" /mnt/scratch/foo
->   # xfs_io -c "fpunch 4k 24k" /mnt/scratch/foo
->   # umount /mnt/scratch
-> 
->   # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
->    u3.bmx[0] = [startoff,startblock,blockcount,extentflag]
->    0:[0,0,7,0]
-> 
-> Am I missed something?
+Hi Harshad,
 
-I think fpunch is broken here -- xfs definitely supports having
-unwritten mappings in the middle of an allocation unit.  See below.
+kernel test robot noticed the following build warnings:
 
-> > I can't tell if there's something that you see that I don't see such
-> > that we really /do/ need to actually write zeroes to the entire tail of
-> > the rtextent; or if you weren't sure that forcing all the post-eof
-> > fsblocks in the rtextent to unwritten (and zapping the pagecache) would
-> > actually preserve the rtextsize alignment.
-> 
-> I haven't found any restrictions yet, and I also noticed that a simple
-> write is not guaranteed to align the extent to rtextsize, since the write
-> back path doesn't zeroing out the extra blocks that align to the
-> rtextsize.
-> 
->   # #extsize=28k
->   # xfs_io -d -f -c  "pwrite 0 4k" -c "fsync" /mnt/scratch/foo
->   # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
->      u3.bmx[0-1] = [startoff,startblock,blockcount,extentflag]
->      0:[0,0,1,0]
->      1:[1,1,6,1]
-> 
-> So I guess convert the tail fsblocks of the rtextent to unwritten status
-> could work. However, I'm a little confused, besides the write operation,
-> other operations like above punch hold and zero range, they seem to be
-> doing their best to follow the alignment rule since commit fe341eb151ec
-> ("xfs: ensure that fpunch, fcollapse, and finsert operations are aligned
-> to rt extent size") [1], it looks like this commit is to fix some issues,
-> so I'm not sure that converting to unwritten would always preserve the
-> rtextsize alignment.
-> 
-> [1]. https://lore.kernel.org/linux-xfs/159950168085.582172.4254559621934598919.stgit@magnolia/
+[auto build test WARNING on tytso-ext4/dev]
+[also build test WARNING on linus/master v6.9 next-20240520]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-Looking at commit fe341eb151ec0 ("xfs: ensure that fpunch, fcollapse,
-and finsert operations are aligned to rt extent size"), I think the
-logic in xfs_free_file_space is wrong.  If bunmapi is told to unmap a
-partial rt extent, it will instead convert it to unwritten; it only
-unmaps full rt extents.  For punch that's ok because punch
-opportunistically removes blocks and zeroes the unaligned segments; for
-zero that's ok because it will falloc the sparse holes and zero the
-rest.
+url:    https://github.com/intel-lab-lkp/linux/commits/Harshad-Shirwadkar/ext4-convert-i_fc_lock-to-spinlock/20240520-135501
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+patch link:    https://lore.kernel.org/r/20240520055153.136091-11-harshadshirwadkar%40gmail.com
+patch subject: [PATCH 10/10] ext4: make fast commit ineligible on ext4_reserve_inode_write failure
+config: i386-randconfig-141-20240520 (https://download.01.org/0day-ci/archive/20240521/202405210233.ZNN50qLq-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
 
-It's only collapse and insert that *require* alignment.  That's
-something that should be checked during input validation, and I think
-that got fixed by 25219dbfa734e ("xfs: fix fallocate functions when
-rtextsize is larger than 1").
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202405210233.ZNN50qLq-lkp@intel.com/
 
-> > 
-> > (Or if there's something else?)
-> > 
-> >>                          And IIUC, the upcoming xfs force alignment
-> >> extent feature seems also need to follow this alignment, right?
-> > 
-> > Yes.
-> > 
-> >>>
-> >>>> xfs_truncate_page() should flush, zeros out the entire rtextsize range,
-> >>>> and make sure the entire zeroed range have been flushed to disk before
-> >>>> updating the inode size.
-> >>>>
-> >>>> Fixes: 943bc0882ceb ("iomap: don't increase i_size if it's not a write operation")
-> >>>> Reported-by: Chandan Babu R <chandanbabu@kernel.org>
-> >>>> Link: https://lore.kernel.org/linux-xfs/0b92a215-9d9b-3788-4504-a520778953c2@huaweicloud.com
-> >>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> >>>> ---
-> >>>>  fs/xfs/xfs_iomap.c | 35 +++++++++++++++++++++++++++++++----
-> >>>>  fs/xfs/xfs_iops.c  | 10 ----------
-> >>>>  2 files changed, 31 insertions(+), 14 deletions(-)
-> >>>>
-> >>>> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> >>>> index 4958cc3337bc..fc379450fe74 100644
-> >>>> --- a/fs/xfs/xfs_iomap.c
-> >>>> +++ b/fs/xfs/xfs_iomap.c
-> >>>> @@ -1466,12 +1466,39 @@ xfs_truncate_page(
-> >>>>  	loff_t			pos,
-> >>>>  	bool			*did_zero)
-> >>>>  {
-> >>>> +	struct xfs_mount	*mp = ip->i_mount;
-> >>>>  	struct inode		*inode = VFS_I(ip);
-> >>>>  	unsigned int		blocksize = i_blocksize(inode);
-> >>>> +	int			error;
-> >>>> +
-> >>>> +	if (XFS_IS_REALTIME_INODE(ip))
-> >>>> +		blocksize = XFS_FSB_TO_B(mp, mp->m_sb.sb_rextsize);
-> >>>
-> >>> Don't opencode xfs_inode_alloc_unitsize, please.
-> >>
-> >> Ha, I missed the latest added helper, thanks for pointing this out.
-> >>
-> >>>
-> >>>> +
-> >>>> +	/*
-> >>>> +	 * iomap won't detect a dirty page over an unwritten block (or a
-> >>>> +	 * cow block over a hole) and subsequently skips zeroing the
-> >>>> +	 * newly post-EOF portion of the page. Flush the new EOF to
-> >>>> +	 * convert the block before the pagecache truncate.
-> >>>> +	 */
-> >>>> +	error = filemap_write_and_wait_range(inode->i_mapping, pos,
-> >>>> +					     roundup_64(pos, blocksize));
-> >>>> +	if (error)
-> >>>> +		return error;pos_in_block
-> >>>
-> >>> Ok so this is hoisting the filemap_write_and_wait_range call from
-> >>> xfs_setattr_size.  It's curious that we need to need to twiddle anything
-> >>> other than the EOF block itself though?
-> >>
-> >> Since we planed to zero out the dirtied range which is ailgned to the
-> >> extsize instead of the blocksize, ensure one block is not unwritten is
-> >> not enough, we should also make sure that the range which is going to
-> >> zero out is not unwritten, or else the iomap_zero_iter() will skip
-> >> zeroing out the extra blocks.
-> >>
-> >> For example:
-> >>
-> >> before zeroing:
-> >>            |<-    extszie   ->|
-> >>         ...dddddddddddddddddddd
-> >>         ...UUUUUUUUUUUUUUUUUUUU
-> >>            ^                  ^
-> >>         new EOF             old EOF    (where 'd' means the pagecache is dirty)
-> >>
-> >> if we only flush the new EOF block, the result becomes:
-> >>
-> >>            |<-    extszie   ->|
-> >>            zddddddddddddddddddd
-> >>            ZUUUUUUUUUUUUUUUUUUU
-> >>            ^                  ^
-> >>         new EOF             old EOF
-> >>
-> >>
-> >> then the dirty extent range that between new EOF block and the old EOF
-> >> block can't be zeroed sine it's still unwritten. So we have to flush the
-> >> whole range before zeroing out.
-> > 
-> > "Z" on the second line of the second diagram is a written fsblock with
-> > the tail zeroed, correct?
-> 
-> Yeah,
-> 
-> > 
-> > truncate_setsize -> truncate_pagecache unmaps all the pagecache after
-> > the eof folio and unconditionally zeroes the tail of the eof folio
-> > without regard to the mappings.  Doesn't that cover us here?  After the
-> > truncate_setsize finishes, won't we end up in this state:
-> > 
-> >            |<-   rextsize   ->|
-> >            zzzzzzzz               
-> >            ZUUUUUUUUUUUUUUUUUUU
-> >            ^      ^           ^
-> >         new EOF   |         old EOF
-> >                   folio boundary
-> > 
-> 
-> Yeah, this case is fine, but the below case is not fine.
-> 
-> truncate                          write back
-> xfs_setattr_size()
->  xfs_truncate_page()
->   filemap_write_and_wait_range(newsize, newsize) <- A
->   iomap_zero_range() <- B
->                                   flush dirty pages <- C
->  truncate_setsize() <- D
-> 
-> Please assume if a concurrent write back happenes just before
-> truncate_setsize(), the state of the file changes as below:
-> 
-> A:
->               |<-    extszie   ->|
->               wddddddddddddddddddd (pagecache)
->               WUUUUUUUUUUUUUUUUUUU (disk)
->               ^                  ^
->            (new EOF)           old EOF  (where 'd' means the pagecache is dirty)
->                                         (where 'x' means the pagecache contianes user data)
+New smatch warnings:
+fs/ext4/inode.c:5423 ext4_setattr() warn: inconsistent indenting
 
-"W", not "x", as you noted.
+Old smatch warnings:
+fs/ext4/inode.c:2422 mpage_prepare_extent_to_map() warn: missing error code 'err'
+fs/ext4/inode.c:5437 ext4_setattr() error: uninitialized symbol 'old_disksize'.
+fs/ext4/inode.c:6150 ext4_page_mkwrite() error: uninitialized symbol 'get_block'.
 
-> 
-> B:
->               |<-    extszie   ->|
->               zddddddddddddddddddd
->               ZUUUUUUUUUUUUUUUUUUU
->               ^                  ^
->            (new EOF)           old EOF  (where 'z' means the pagecache is zero)
-> 
-> C:
->               |<-    extszie   ->|
->               zwwwwwwwwwwwwwwwwwww
->               ZWWWWWWWWWWWWWWWWWWW
->               ^                  ^
->            (new EOF)           old EOF
-> 
-> D:
->               |<-    extszie   ->|
->               zzzzzzzzz
->               ZWWWWWWWWWWWWWWWWWWW
->               ^       ^          ^
->             new EOF   |       (old EOF)
->                       folio boundary
+vim +5423 fs/ext4/inode.c
 
-Hmm.  At point D we still hold i_rwsem and the invalidate_lock, so could
-we convert the underlying blocks to unwritten here instead of writing
-them all out?  Once we reduce i_size, writeback will stop at EOF, right?
+53e872681fed6a Jan Kara           2012-12-25  5251  
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5252  /*
+617ba13b31fbf5 Mingming Cao       2006-10-11  5253   * ext4_setattr()
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5254   *
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5255   * Called from notify_change.
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5256   *
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5257   * We want to trap VFS attempts to truncate the file as soon as
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5258   * possible.  In particular, we want to make sure that when the VFS
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5259   * shrinks i_size, we put the inode on the orphan list and modify
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5260   * i_disksize immediately, so that during the subsequent flushing of
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5261   * dirty pages and freeing of disk blocks, we can guarantee that any
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5262   * commit will leave the blocks being flushed in an unused state on
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5263   * disk.  (On recovery, the inode will get truncated and the blocks will
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5264   * be freed, so we have a strong guarantee that no future commit will
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5265   * leave these blocks visible to the user.)
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5266   *
+678aaf481496b0 Jan Kara           2008-07-11  5267   * Another thing we have to assure is that if we are in ordered mode
+678aaf481496b0 Jan Kara           2008-07-11  5268   * and inode is still attached to the committing transaction, we must
+678aaf481496b0 Jan Kara           2008-07-11  5269   * we start writeout of all the dirty pages which are being truncated.
+678aaf481496b0 Jan Kara           2008-07-11  5270   * This way we are sure that all the data written in the previous
+678aaf481496b0 Jan Kara           2008-07-11  5271   * transaction are already on disk (truncate waits for pages under
+678aaf481496b0 Jan Kara           2008-07-11  5272   * writeback).
+678aaf481496b0 Jan Kara           2008-07-11  5273   *
+f340b3d9027485 hongnanli          2022-01-21  5274   * Called with inode->i_rwsem down.
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5275   */
+c1632a0f112093 Christian Brauner  2023-01-13  5276  int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+549c7297717c32 Christian Brauner  2021-01-21  5277  		 struct iattr *attr)
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5278  {
+2b0143b5c986be David Howells      2015-03-17  5279  	struct inode *inode = d_inode(dentry);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5280  	int error, rc = 0;
+3d287de3b82822 Dmitry Monakhov    2010-10-27  5281  	int orphan = 0;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5282  	const unsigned int ia_valid = attr->ia_valid;
+a642c2c0827f56 Jeff Layton        2022-09-08  5283  	bool inc_ivers = true;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5284  
+eb8ab4443aec5f Jan Kara           2023-06-16  5285  	if (unlikely(ext4_forced_shutdown(inode->i_sb)))
+0db1ff222d40f1 Theodore Ts'o      2017-02-05  5286  		return -EIO;
+0db1ff222d40f1 Theodore Ts'o      2017-02-05  5287  
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5288  	if (unlikely(IS_IMMUTABLE(inode)))
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5289  		return -EPERM;
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5290  
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5291  	if (unlikely(IS_APPEND(inode) &&
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5292  		     (ia_valid & (ATTR_MODE | ATTR_UID |
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5293  				  ATTR_GID | ATTR_TIMES_SET))))
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5294  		return -EPERM;
+02b016ca7f9922 Theodore Ts'o      2019-06-09  5295  
+c1632a0f112093 Christian Brauner  2023-01-13  5296  	error = setattr_prepare(idmap, dentry, attr);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5297  	if (error)
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5298  		return error;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5299  
+3ce2b8ddd84d50 Eric Biggers       2017-10-18  5300  	error = fscrypt_prepare_setattr(dentry, attr);
+3ce2b8ddd84d50 Eric Biggers       2017-10-18  5301  	if (error)
+3ce2b8ddd84d50 Eric Biggers       2017-10-18  5302  		return error;
+3ce2b8ddd84d50 Eric Biggers       2017-10-18  5303  
+c93d8f88580921 Eric Biggers       2019-07-22  5304  	error = fsverity_prepare_setattr(dentry, attr);
+c93d8f88580921 Eric Biggers       2019-07-22  5305  	if (error)
+c93d8f88580921 Eric Biggers       2019-07-22  5306  		return error;
+c93d8f88580921 Eric Biggers       2019-07-22  5307  
+f861646a65623b Christian Brauner  2023-01-13  5308  	if (is_quota_modification(idmap, inode, attr)) {
+a7cdadee0e8948 Jan Kara           2015-06-29  5309  		error = dquot_initialize(inode);
+a7cdadee0e8948 Jan Kara           2015-06-29  5310  		if (error)
+a7cdadee0e8948 Jan Kara           2015-06-29  5311  			return error;
+a7cdadee0e8948 Jan Kara           2015-06-29  5312  	}
+2729cfdcfa1cc4 Harshad Shirwadkar 2021-12-23  5313  
+0dbe12f2e49c04 Christian Brauner  2023-01-13  5314  	if (i_uid_needs_update(idmap, attr, inode) ||
+0dbe12f2e49c04 Christian Brauner  2023-01-13  5315  	    i_gid_needs_update(idmap, attr, inode)) {
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5316  		handle_t *handle;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5317  
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5318  		/* (user+group)*(old+new) structure, inode write (sb,
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5319  		 * inode block, ? - but truncate inode update has it) */
+9924a92a8c2175 Theodore Ts'o      2013-02-08  5320  		handle = ext4_journal_start(inode, EXT4_HT_QUOTA,
+9924a92a8c2175 Theodore Ts'o      2013-02-08  5321  			(EXT4_MAXQUOTAS_INIT_BLOCKS(inode->i_sb) +
+194074acacebc1 Dmitry Monakhov    2009-12-08  5322  			 EXT4_MAXQUOTAS_DEL_BLOCKS(inode->i_sb)) + 3);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5323  		if (IS_ERR(handle)) {
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5324  			error = PTR_ERR(handle);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5325  			goto err_out;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5326  		}
+7a9ca53aea10ad Tahsin Erdogan     2017-06-22  5327  
+7a9ca53aea10ad Tahsin Erdogan     2017-06-22  5328  		/* dquot_transfer() calls back ext4_get_inode_usage() which
+7a9ca53aea10ad Tahsin Erdogan     2017-06-22  5329  		 * counts xattr inode references.
+7a9ca53aea10ad Tahsin Erdogan     2017-06-22  5330  		 */
+7a9ca53aea10ad Tahsin Erdogan     2017-06-22  5331  		down_read(&EXT4_I(inode)->xattr_sem);
+f861646a65623b Christian Brauner  2023-01-13  5332  		error = dquot_transfer(idmap, inode, attr);
+7a9ca53aea10ad Tahsin Erdogan     2017-06-22  5333  		up_read(&EXT4_I(inode)->xattr_sem);
+7a9ca53aea10ad Tahsin Erdogan     2017-06-22  5334  
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5335  		if (error) {
+617ba13b31fbf5 Mingming Cao       2006-10-11  5336  			ext4_journal_stop(handle);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5337  			return error;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5338  		}
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5339  		/* Update corresponding info in inode so that everything is in
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5340  		 * one transaction */
+0dbe12f2e49c04 Christian Brauner  2023-01-13  5341  		i_uid_update(idmap, attr, inode);
+0dbe12f2e49c04 Christian Brauner  2023-01-13  5342  		i_gid_update(idmap, attr, inode);
+617ba13b31fbf5 Mingming Cao       2006-10-11  5343  		error = ext4_mark_inode_dirty(handle, inode);
+617ba13b31fbf5 Mingming Cao       2006-10-11  5344  		ext4_journal_stop(handle);
+512c15ef05d73a Pan Bian           2021-01-17  5345  		if (unlikely(error)) {
+4209ae12b12265 Harshad Shirwadkar 2020-04-26  5346  			return error;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5347  		}
+512c15ef05d73a Pan Bian           2021-01-17  5348  	}
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5349  
+3da40c7b089810 Josef Bacik        2015-06-22  5350  	if (attr->ia_valid & ATTR_SIZE) {
+5208386c501276 Jan Kara           2013-08-17  5351  		handle_t *handle;
+3da40c7b089810 Josef Bacik        2015-06-22  5352  		loff_t oldsize = inode->i_size;
+f4534c9fc94d22 Ye Bin             2022-03-26  5353  		loff_t old_disksize;
+b9c1c26739ec2d Jan Kara           2019-05-30  5354  		int shrink = (attr->ia_size < inode->i_size);
+562c72aa57c36b Christoph Hellwig  2011-06-24  5355  
+12e9b892002d9a Dmitry Monakhov    2010-05-16  5356  		if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
+e2b4657453c0d5 Eric Sandeen       2008-01-28  5357  			struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+e2b4657453c0d5 Eric Sandeen       2008-01-28  5358  
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5359  			if (attr->ia_size > sbi->s_bitmap_maxbytes) {
+0c095c7f113e9f Theodore Ts'o      2010-07-27  5360  				return -EFBIG;
+e2b4657453c0d5 Eric Sandeen       2008-01-28  5361  			}
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5362  		}
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5363  		if (!S_ISREG(inode->i_mode)) {
+3da40c7b089810 Josef Bacik        2015-06-22  5364  			return -EINVAL;
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5365  		}
+dff6efc326a4d5 Christoph Hellwig  2013-11-19  5366  
+a642c2c0827f56 Jeff Layton        2022-09-08  5367  		if (attr->ia_size == inode->i_size)
+a642c2c0827f56 Jeff Layton        2022-09-08  5368  			inc_ivers = false;
+dff6efc326a4d5 Christoph Hellwig  2013-11-19  5369  
+b9c1c26739ec2d Jan Kara           2019-05-30  5370  		if (shrink) {
+b9c1c26739ec2d Jan Kara           2019-05-30  5371  			if (ext4_should_order_data(inode)) {
+5208386c501276 Jan Kara           2013-08-17  5372  				error = ext4_begin_ordered_truncate(inode,
+5208386c501276 Jan Kara           2013-08-17  5373  							    attr->ia_size);
+5208386c501276 Jan Kara           2013-08-17  5374  				if (error)
+5208386c501276 Jan Kara           2013-08-17  5375  					goto err_out;
+5208386c501276 Jan Kara           2013-08-17  5376  			}
+b9c1c26739ec2d Jan Kara           2019-05-30  5377  			/*
+b9c1c26739ec2d Jan Kara           2019-05-30  5378  			 * Blocks are going to be removed from the inode. Wait
+b9c1c26739ec2d Jan Kara           2019-05-30  5379  			 * for dio in flight.
+b9c1c26739ec2d Jan Kara           2019-05-30  5380  			 */
+b9c1c26739ec2d Jan Kara           2019-05-30  5381  			inode_dio_wait(inode);
+b9c1c26739ec2d Jan Kara           2019-05-30  5382  		}
+b9c1c26739ec2d Jan Kara           2019-05-30  5383  
+d4f5258eae7b38 Jan Kara           2021-02-04  5384  		filemap_invalidate_lock(inode->i_mapping);
+b9c1c26739ec2d Jan Kara           2019-05-30  5385  
+b9c1c26739ec2d Jan Kara           2019-05-30  5386  		rc = ext4_break_layouts(inode);
+b9c1c26739ec2d Jan Kara           2019-05-30  5387  		if (rc) {
+d4f5258eae7b38 Jan Kara           2021-02-04  5388  			filemap_invalidate_unlock(inode->i_mapping);
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5389  			goto err_out;
+b9c1c26739ec2d Jan Kara           2019-05-30  5390  		}
+b9c1c26739ec2d Jan Kara           2019-05-30  5391  
+3da40c7b089810 Josef Bacik        2015-06-22  5392  		if (attr->ia_size != inode->i_size) {
+9924a92a8c2175 Theodore Ts'o      2013-02-08  5393  			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5394  			if (IS_ERR(handle)) {
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5395  				error = PTR_ERR(handle);
+b9c1c26739ec2d Jan Kara           2019-05-30  5396  				goto out_mmap_sem;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5397  			}
+3da40c7b089810 Josef Bacik        2015-06-22  5398  			if (ext4_handle_valid(handle) && shrink) {
+617ba13b31fbf5 Mingming Cao       2006-10-11  5399  				error = ext4_orphan_add(handle, inode);
+3d287de3b82822 Dmitry Monakhov    2010-10-27  5400  				orphan = 1;
+3d287de3b82822 Dmitry Monakhov    2010-10-27  5401  			}
+911af577de4e44 Eryu Guan          2015-07-28  5402  			/*
+911af577de4e44 Eryu Guan          2015-07-28  5403  			 * Update c/mtime on truncate up, ext4_truncate() will
+911af577de4e44 Eryu Guan          2015-07-28  5404  			 * update c/mtime in shrink case below
+911af577de4e44 Eryu Guan          2015-07-28  5405  			 */
+1bc33893e79a79 Jeff Layton        2023-07-05  5406  			if (!shrink)
+b898ab233611f7 Jeff Layton        2023-10-04  5407  				inode_set_mtime_to_ts(inode,
+b898ab233611f7 Jeff Layton        2023-10-04  5408  						      inode_set_ctime_current(inode));
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5409  
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5410  			if (shrink)
+a80f7fcf18672a Harshad Shirwadkar 2020-11-05  5411  				ext4_fc_track_range(handle, inode,
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5412  					(attr->ia_size > 0 ? attr->ia_size - 1 : 0) >>
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5413  					inode->i_sb->s_blocksize_bits,
+9725958bb75cdf Xin Yin            2021-12-23  5414  					EXT_MAX_BLOCKS - 1);
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5415  			else
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5416  				ext4_fc_track_range(
+a80f7fcf18672a Harshad Shirwadkar 2020-11-05  5417  					handle, inode,
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5418  					(oldsize > 0 ? oldsize - 1 : oldsize) >>
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5419  					inode->i_sb->s_blocksize_bits,
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5420  					(attr->ia_size > 0 ? attr->ia_size - 1 : 0) >>
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5421  					inode->i_sb->s_blocksize_bits);
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5422  
+617ba13b31fbf5 Mingming Cao       2006-10-11 @5423  						rc = ext4_mark_inode_dirty(handle, inode);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5424  			if (!error)
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5425  				error = rc;
+a879a75fe2d0ce Harshad Shirwadkar 2024-05-20  5426  			down_write(&EXT4_I(inode)->i_data_sem);
+a879a75fe2d0ce Harshad Shirwadkar 2024-05-20  5427  			EXT4_I(inode)->i_disksize = attr->ia_size;
+a879a75fe2d0ce Harshad Shirwadkar 2024-05-20  5428  
+90e775b71ac4e6 Jan Kara           2013-08-17  5429  			/*
+90e775b71ac4e6 Jan Kara           2013-08-17  5430  			 * We have to update i_size under i_data_sem together
+90e775b71ac4e6 Jan Kara           2013-08-17  5431  			 * with i_disksize to avoid races with writeback code
+90e775b71ac4e6 Jan Kara           2013-08-17  5432  			 * running ext4_wb_update_i_disksize().
+90e775b71ac4e6 Jan Kara           2013-08-17  5433  			 */
+90e775b71ac4e6 Jan Kara           2013-08-17  5434  			if (!error)
+90e775b71ac4e6 Jan Kara           2013-08-17  5435  				i_size_write(inode, attr->ia_size);
+f4534c9fc94d22 Ye Bin             2022-03-26  5436  			else
+f4534c9fc94d22 Ye Bin             2022-03-26  5437  				EXT4_I(inode)->i_disksize = old_disksize;
+90e775b71ac4e6 Jan Kara           2013-08-17  5438  			up_write(&EXT4_I(inode)->i_data_sem);
+617ba13b31fbf5 Mingming Cao       2006-10-11  5439  			ext4_journal_stop(handle);
+b9c1c26739ec2d Jan Kara           2019-05-30  5440  			if (error)
+b9c1c26739ec2d Jan Kara           2019-05-30  5441  				goto out_mmap_sem;
+82a25b027ca48d Jan Kara           2019-05-23  5442  			if (!shrink) {
+b9c1c26739ec2d Jan Kara           2019-05-30  5443  				pagecache_isize_extended(inode, oldsize,
+b9c1c26739ec2d Jan Kara           2019-05-30  5444  							 inode->i_size);
+b9c1c26739ec2d Jan Kara           2019-05-30  5445  			} else if (ext4_should_journal_data(inode)) {
+82a25b027ca48d Jan Kara           2019-05-23  5446  				ext4_wait_for_tail_page_commit(inode);
+b9c1c26739ec2d Jan Kara           2019-05-30  5447  			}
+430657b6be896d Ross Zwisler       2018-07-29  5448  		}
+430657b6be896d Ross Zwisler       2018-07-29  5449  
+53e872681fed6a Jan Kara           2012-12-25  5450  		/*
+53e872681fed6a Jan Kara           2012-12-25  5451  		 * Truncate pagecache after we've waited for commit
+53e872681fed6a Jan Kara           2012-12-25  5452  		 * in data=journal mode to make pages freeable.
+53e872681fed6a Jan Kara           2012-12-25  5453  		 */
+7caef26767c172 Kirill A. Shutemov 2013-09-12  5454  		truncate_pagecache(inode, inode->i_size);
+b9c1c26739ec2d Jan Kara           2019-05-30  5455  		/*
+b9c1c26739ec2d Jan Kara           2019-05-30  5456  		 * Call ext4_truncate() even if i_size didn't change to
+b9c1c26739ec2d Jan Kara           2019-05-30  5457  		 * truncate possible preallocated blocks.
+b9c1c26739ec2d Jan Kara           2019-05-30  5458  		 */
+b9c1c26739ec2d Jan Kara           2019-05-30  5459  		if (attr->ia_size <= oldsize) {
+2c98eb5ea24976 Theodore Ts'o      2016-11-13  5460  			rc = ext4_truncate(inode);
+2c98eb5ea24976 Theodore Ts'o      2016-11-13  5461  			if (rc)
+2c98eb5ea24976 Theodore Ts'o      2016-11-13  5462  				error = rc;
+2c98eb5ea24976 Theodore Ts'o      2016-11-13  5463  		}
+b9c1c26739ec2d Jan Kara           2019-05-30  5464  out_mmap_sem:
+d4f5258eae7b38 Jan Kara           2021-02-04  5465  		filemap_invalidate_unlock(inode->i_mapping);
+3da40c7b089810 Josef Bacik        2015-06-22  5466  	}
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5467  
+2c98eb5ea24976 Theodore Ts'o      2016-11-13  5468  	if (!error) {
+a642c2c0827f56 Jeff Layton        2022-09-08  5469  		if (inc_ivers)
+a642c2c0827f56 Jeff Layton        2022-09-08  5470  			inode_inc_iversion(inode);
+c1632a0f112093 Christian Brauner  2023-01-13  5471  		setattr_copy(idmap, inode, attr);
+1025774ce411f2 Christoph Hellwig  2010-06-04  5472  		mark_inode_dirty(inode);
+1025774ce411f2 Christoph Hellwig  2010-06-04  5473  	}
+1025774ce411f2 Christoph Hellwig  2010-06-04  5474  
+1025774ce411f2 Christoph Hellwig  2010-06-04  5475  	/*
+1025774ce411f2 Christoph Hellwig  2010-06-04  5476  	 * If the call to ext4_truncate failed to get a transaction handle at
+1025774ce411f2 Christoph Hellwig  2010-06-04  5477  	 * all, we need to clean up the in-core orphan list manually.
+1025774ce411f2 Christoph Hellwig  2010-06-04  5478  	 */
+3d287de3b82822 Dmitry Monakhov    2010-10-27  5479  	if (orphan && inode->i_nlink)
+617ba13b31fbf5 Mingming Cao       2006-10-11  5480  		ext4_orphan_del(NULL, inode);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5481  
+2c98eb5ea24976 Theodore Ts'o      2016-11-13  5482  	if (!error && (ia_valid & ATTR_MODE))
+13e83a4923bea7 Christian Brauner  2023-01-13  5483  		rc = posix_acl_chmod(idmap, dentry, inode->i_mode);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5484  
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5485  err_out:
+aa75f4d3daaeb1 Harshad Shirwadkar 2020-10-15  5486  	if  (error)
+617ba13b31fbf5 Mingming Cao       2006-10-11  5487  		ext4_std_error(inode->i_sb, error);
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5488  	if (!error)
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5489  		error = rc;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5490  	return error;
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5491  }
+ac27a0ec112a08 Dave Kleikamp      2006-10-11  5492  
 
-D:
-              |<-    extszie   ->|
-              zzzzzzzzz
-              ZUUUUUUUUUUUUUUUUUUU
-              ^       ^          ^
-            new EOF   |       (old EOF)
-                      folio boundary
-
---D
-
-> 
-> Thanks,
-> Yi.
-> 
-> >>>
-> >>>>  
-> >>>>  	if (IS_DAX(inode))
-> >>>> -		return dax_truncate_page(inode, pos, blocksize, did_zero,
-> >>>> -					&xfs_dax_write_iomap_ops);
-> >>>> -	return iomap_truncate_page(inode, pos, blocksize, did_zero,
-> >>>> -				   &xfs_buffered_write_iomap_ops);
-> >>>> +		error = dax_truncate_page(inode, pos, blocksize, did_zero,
-> >>>> +					  &xfs_dax_write_iomap_ops);
-> >>>> +	else
-> >>>> +		error = iomap_truncate_page(inode, pos, blocksize, did_zero,
-> >>>> +					    &xfs_buffered_write_iomap_ops);
-> >>>> +	if (error)
-> >>>> +		return error;
-> >>>> +
-> >>>> +	/*
-> >>>> +	 * Write back path won't write dirty blocks post EOF folio,
-> >>>> +	 * flush the entire zeroed range before updating the inode
-> >>>> +	 * size.
-> >>>> +	 */
-> >>>> +	return filemap_write_and_wait_range(inode->i_mapping, pos,
-> >>>> +					    roundup_64(pos, blocksize));
-> >>>
-> >>> ...but what is the purpose of the second filemap_write_and_wait_range
-> >>> call?  Is that to flush the bytes between new and old EOF to disk before
-> >>> truncate_setsize invalidates the (zeroed) pagecache?
-> >>>
-> >>
-> >> The second filemap_write_and_wait_range() call is used to make sure that
-> >> the zeroed data be flushed to disk before we updating i_size. If we don't
-> >> add this one, once the i_size is been changed, the zeroed data which
-> >> beyond the new EOF folio(block) couldn't be write back, because
-> >> iomap_writepage_map()->iomap_writepage_handle_eof() skip that range, so
-> >> the stale data problem is still there.
-> >>
-> >> For example:
-> >>
-> >> before zeroing:
-> >>            |<-    extszie   ->|
-> >>            wwwwwwwwwwwwwwwwwwww (pagecache)
-> >>         ...WWWWWWWWWWWWWWWWWWWW (disk)
-> >>            ^                  ^
-> >>         new EOF               EOF   (where 'w' means the pagecache contains data)
-> >>
-> >> then iomap_truncate_page() zeroing out the pagecache:
-> >>
-> >>            |<-    extszie   ->|
-> >>            zzzzzzzzzzzzzzzzzzzz (pagecache)
-> >>            WWWWWWWWWWWWWWWWWWWW (disk)
-> >>            ^                  ^
-> >>         new EOF               EOF
-> >>
-> >> then update i_size, sync and drop cache:
-> >>
-> >>            |<-    extszie   ->|
-> >>            ZWWWWWWWWWWWWWWWWWWW (disk)
-> >>            ^
-> >>            EOF
-> > 
-> > <nod> Ok, so this second call to filemap_write_and_wait_range flushes
-> > the newly written pagecache to disk.  If it doesn't work to
-> > force-convert the tail fsblocks of the rtextent to unwritten status,
-> > then I suppose this is necessary if @blocksize != mp->m_sb.blocksize.
-> > 
-> > --D
-> > 
-> >> Thanks,
-> >> Yi.
-> >>
-> >>>
-> >>>>  }
-> >>>> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> >>>> index 66f8c47642e8..baeeddf4a6bb 100644
-> >>>> --- a/fs/xfs/xfs_iops.c
-> >>>> +++ b/fs/xfs/xfs_iops.c
-> >>>> @@ -845,16 +845,6 @@ xfs_setattr_size(
-> >>>>  		error = xfs_zero_range(ip, oldsize, newsize - oldsize,
-> >>>>  				&did_zeroing);
-> >>>>  	} else {
-> >>>> -		/*
-> >>>> -		 * iomap won't detect a dirty page over an unwritten block (or a
-> >>>> -		 * cow block over a hole) and subsequently skips zeroing the
-> >>>> -		 * newly post-EOF portion of the page. Flush the new EOF to
-> >>>> -		 * convert the block before the pagecache truncate.
-> >>>> -		 */
-> >>>> -		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
-> >>>> -						     newsize);
-> >>>> -		if (error)
-> >>>> -			return error;
-> >>>>  		error = xfs_truncate_page(ip, newsize, &did_zeroing);
-> >>>>  	}
-> >>>>  
-> >>>> -- 
-> >>>> 2.39.2
-> >>>>
-> >>>>
-> >>
-> >>
-> 
-> 
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
