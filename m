@@ -1,77 +1,87 @@
-Return-Path: <linux-ext4+bounces-2615-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2616-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1D9B8CA56F
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 02:45:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 024DC8CA63C
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 04:38:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D8F11F2265B
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 00:45:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BA5CB220F9
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 02:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 248BA8BF8;
-	Tue, 21 May 2024 00:45:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684A2171C4;
+	Tue, 21 May 2024 02:38:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="evMcCNPM"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 115573D68
-	for <linux-ext4@vger.kernel.org>; Tue, 21 May 2024 00:45:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEE218E1C
+	for <linux-ext4@vger.kernel.org>; Tue, 21 May 2024 02:38:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716252332; cv=none; b=j52fywpbSFgvkP/piuAzdrK9y8tQVketjm8SjU725dTM0WFoDZaEDqfS7OJZ1jPPNCg3YHy7k62cZig580StzzbvM9YkZysm5z8OOLCoFo2HIpqx9sUZ8M+mO2+hvm3t2AmkL7TURqDGOHNvYJRqzh6peOyhndF+RQ5AXKUpYhY=
+	t=1716259117; cv=none; b=bUMr04n283FgNPalYia8U2HXi2Gawq+Qq96e72yyhomD6gtT/mCHmEIKHFAUjKgzCHD0PlAo8XN8SSwdTuLJowwzyvTP9/qcS+9QUqo7kzisqDYZyj0XBVydFtHtiagyoEsoQ9OysADbSEAi3qbGmJE4BOEHPZiVEKWg3nCPHTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716252332; c=relaxed/simple;
-	bh=M3IGua52fbiYvVXmDO9/O5jfEFfSwxKvM3kbq6LZ/ME=;
+	s=arc-20240116; t=1716259117; c=relaxed/simple;
+	bh=04V2TiG7n1566pTE69nmTzCYQM93yyc3uTcAW5bgVaU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mWMJZPYMuD/NBzZiHYVh71PSgmWE/wUqrUvzlYhFKq3pctUvUIRbFlIZixk1uCV2e5Fgbsvx6b1DbHf0IQMVo2hhthkyQ5eYy511+bZpknDsGkUr/zxvDMd7jnT9L5ZwddhoIwRU8ORSVERF8EPmUN+k7RFu/F5scv2hzJDzf/8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=none smtp.mailfrom=snitzer.net; arc=none smtp.client-ip=209.85.167.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=snitzer.net
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3c99e6b8b1fso2372502b6e.1
-        for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 17:45:30 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=FN2gs4ebXFHajaTxnwRImzoKyh3P2bmxmoEM5kpWt3wVKQknxXcv001yYQBPP6RcCoVMwGwgnXnPIGtgKKGRnOSe3c0T5rJH56W8xwAjJsGMiVM75pmZhBJIaj3V+sFTotWzfheooDT53eHCh9IUjNw2+z4chUaNANubpsibMW0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=evMcCNPM; arc=none smtp.client-ip=209.85.214.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1ee954e0aa6so64551585ad.3
+        for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 19:38:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1716259114; x=1716863914; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=nAD2HfoXLZII7PkQY+RIy3eDF2S7Lzem/nR8E1ux0Zo=;
+        b=evMcCNPM/oQaYMxN5Tu6ChZk/eJjm1GQ7ac5FjwH7ETz17OMJHkA8BExK9wzo4N8V1
+         mZsNUG3a5h7BcE+Bvhk6xW6T5a7laj0uK+kvsSWGwprkNz9T0AUccLU21hUolmXkaA3q
+         XOqaKxl+L3dwgwEku1KiRUSE5mWj6l3iHII5A1mmaZCymmZm2ODNGafpacssQjC/I1o7
+         ekxBMG7rqdCXFNlFFQWtMLvA1yD4I7SSDeffZPSAYBOtv/4QnmCd6eoYG1meReUljzAG
+         hn4Il/rrhj9EGVzUHGqNjrdXLLTh+WxW0zxS6TRCK5XAEEVgW19oUD4FpKVK8+Ei89Y+
+         cREQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716252330; x=1716857130;
+        d=1e100.net; s=20230601; t=1716259114; x=1716863914;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WAQ7EZw2gT8mUoiA62o4QOdC/XHNNwGQwfkkzt04Rds=;
-        b=n3NmtxVIPnBLHaNfsEoclzZ8w/m3sogc1MHWBdJc3H03bAouzC3DPli6UyN91bjB7S
-         q6T92Y0ubQ9x3Ej3NPPHyjfoBc9+ZXhohpdqPi8p8Vnr8RsSJWLIyrxO2dWt2TN2esu1
-         QKagw5806hP7Y/j5C+M/Unl4GgLX/BePTryGu0nMch5QVvTD/4ndObmBRttDJ8Jr995i
-         bmkXL4pWpCPEFt9LkjH1KKFHq+Z0Iq9mQKWFaOOAeJ86vxk6QseYeGLY4BnKVk/+NtGN
-         BeXSfyYRSjrj5I9PsgjMTvLdF8LOOmtM7BlS8jfUE/KivRbCwJqTRliFyn6R+syJxqZx
-         Px3A==
-X-Forwarded-Encrypted: i=1; AJvYcCVyw2+AIqhmS2l4w188imCjSThQE3YavneMnSFIWTpTMbVj0bkX5zrVTiYB8vI1hM3GB3tNE3DOl1fxE9kF0b3KsGx7NCdQOeKOvA==
-X-Gm-Message-State: AOJu0YyvHpOWOMNJro2pUCsT5CA2OM3KrHi4T6W+OuSLTufZqIFJR/M4
-	l7VjLnlwkWLG8QRASQ8hJnOIS2LmSmqd1GxuV5GADg/pevb2NjxcGBqM7S3LwOB565615/Fa9l1
-	gZRUIKA==
-X-Google-Smtp-Source: AGHT+IGMn6xjydCtb38kyKvLjZDgFdGue2uUOR537cPk5ZgFt4ChObkqOmoaYUFS+4P+IGBFARHGTQ==
-X-Received: by 2002:a05:6808:18a8:b0:3c9:c3ad:53b9 with SMTP id 5614622812f47-3c9c3ad58ddmr21150431b6e.26.1716252330121;
-        Mon, 20 May 2024 17:45:30 -0700 (PDT)
-Received: from localhost (pool-68-160-141-91.bstnma.fios.verizon.net. [68.160.141.91])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-792bf2757b5sm1237989085a.17.2024.05.20.17.45.29
+        bh=nAD2HfoXLZII7PkQY+RIy3eDF2S7Lzem/nR8E1ux0Zo=;
+        b=JGAfEh4bpCF5N5w7IMuMuY34Sjba+i1Is6c4ueSPwCSLggM4l6468oYB5MKLaDz1Nv
+         1t7vwqlUE6ElAUXfox6cqt/4NQOELzVir6nW2RIFmKqwAObd3Vv110H+8eWgw4tWkWSv
+         0CQ4UTGWHM9o1oIZFg+1tpMcJ66CvKSG43yduTANt6B9frV/yhiFdEZgRXZJt448ECa8
+         KLAD0eblAHI9mK4BvGSOgFHyxz1Fs23GYWRCM63dHf8AqzWCdxh31fyVVMKn5d7M9ZDd
+         fNPDygNDBQVb3CYrsOttboiPQZio/Fm1wl3bjpx/Fmw1Dd/K3il5KQssOHleOrD7BIpP
+         Ge3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUekKXnwnliVRcxcd05CZOj0ZCwlkia1YixsE0Yk2Krtb78rDeeMMTCCeQpC4FuDQUhwzaAdleMsnToSTDgFGCX8BEsXo7r+bug8Q==
+X-Gm-Message-State: AOJu0YwnvGJSrhzFEqNJ38WHjybLCwshRJq0oP9ZWFGp/BJKcZfyQcbJ
+	MszJeC4+2OIQXvRgSF0KxBBTeZiNmZgO5LBRhGdoPGSvGBD8TYw8Dx7gyG1ctZs=
+X-Google-Smtp-Source: AGHT+IF+y45+russ+eDPrVjYNTO1UVyGDJjV/s+G/taRA7G2C00wpzQgV7fi+keZlGEa+fybql83YA==
+X-Received: by 2002:a17:90b:301:b0:2bd:92b3:c09b with SMTP id 98e67ed59e1d1-2bd92b3c272mr755060a91.42.1716259114007;
+        Mon, 20 May 2024 19:38:34 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2b67158c39dsm20679185a91.35.2024.05.20.19.38.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 May 2024 17:45:29 -0700 (PDT)
-Date: Mon, 20 May 2024 20:45:28 -0400
-From: Mike Snitzer <snitzer@kernel.org>
-To: Christoph Hellwig <hch@lst.de>, Theodore Ts'o <tytso@mit.edu>
-Cc: dm-devel@lists.linux.dev, fstests@vger.kernel.org,
-	linux-ext4@vger.kernel.org, regressions@lists.linux.dev,
-	linux-block@vger.kernel.org
-Subject: Re: dm: use queue_limits_set
-Message-ID: <ZkvuqNXaNOMe6Gfj@kernel.org>
-References: <20240518022646.GA450709@mit.edu>
- <ZkmIpCRaZE0237OH@kernel.org>
- <ZkmRKPfPeX3c138f@kernel.org>
- <20240520150653.GA32461@lst.de>
- <ZktuojMrQWH9MQJO@kernel.org>
- <20240520154425.GB1104@lst.de>
- <ZktyTYKySaauFcQT@kernel.org>
- <ZkuFuqo3dNw8bOA2@kernel.org>
- <20240520201237.GA6235@lst.de>
- <ZkvIn73jAqz94LjI@kernel.org>
+        Mon, 20 May 2024 19:38:33 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1s9FOY-004rHv-07;
+	Tue, 21 May 2024 12:38:30 +1000
+Date: Tue, 21 May 2024 12:38:30 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	djwong@kernel.org, hch@infradead.org, brauner@kernel.org,
+	chandanbabu@kernel.org, jack@suse.cz, yi.zhang@huawei.com,
+	chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v3 3/3] xfs: correct the zeroing truncate range
+Message-ID: <ZkwJJuFCV+WQLl40@dread.disaster.area>
+References: <20240517111355.233085-1-yi.zhang@huaweicloud.com>
+ <20240517111355.233085-4-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -80,221 +90,373 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZkvIn73jAqz94LjI@kernel.org>
+In-Reply-To: <20240517111355.233085-4-yi.zhang@huaweicloud.com>
 
-On Mon, May 20, 2024 at 06:03:11PM -0400, Mike Snitzer wrote:
-> On Mon, May 20, 2024 at 10:12:37PM +0200, Christoph Hellwig wrote:
-> > On Mon, May 20, 2024 at 01:17:46PM -0400, Mike Snitzer wrote:
-> > > Doubt there was anything in fstests setting max discard user limit
-> > > (max_user_discard_sectors) in Ted's case. blk_set_stacking_limits()
-> > > sets max_user_discard_sectors to UINT_MAX, so given the use of
-> > > min(lim->max_hw_discard_sectors, lim->max_user_discard_sectors) I
-> > > suspect blk_stack_limits() stacks up max_discard_sectors to match the
-> > > underlying storage's max_hw_discard_sectors.
-> > > 
-> > > And max_hw_discard_sectors exceeds BIO_PRISON_MAX_RANGE, resulting in
-> > > dm_cell_key_has_valid_range() triggering on:
-> > > WARN_ON_ONCE(key->block_end - key->block_begin > BIO_PRISON_MAX_RANGE)
-> > 
-> > Oh, that makes more sense.
-> > 
-> > I think you just want to set the max_hw_discard_sectors limit before
-> > stacking in the lower device limits so that they can only lower it.
-> > 
-> > (and in the long run we should just stop stacking the limits except
-> > for request based dm which really needs it)
+On Fri, May 17, 2024 at 07:13:55PM +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> This is what I staged, I cannot send a patch out right now.. 
+> When truncating a realtime file unaligned to a shorter size,
+> xfs_setattr_size() only flush the EOF page before zeroing out, and
+> xfs_truncate_page() also only zeros the EOF block. This could expose
+> stale data since 943bc0882ceb ("iomap: don't increase i_size if it's not
+> a write operation").
 > 
-> Ted if you need the patch in email (rather than from linux-dm.git) I
-> can send it later tonight.  Please see:
+> If the sb_rextsize is bigger than one block, and we have a realtime
+> inode that contains a long enough written extent. If we unaligned
+> truncate into the middle of this extent, xfs_itruncate_extents() could
+> split the extent and align the it's tail to sb_rextsize, there maybe
+> have more than one blocks more between the end of the file. Since
+> xfs_truncate_page() only zeros the trailing portion of the i_blocksize()
+> value, so it may leftover some blocks contains stale data that could be
+> exposed if we append write it over a long enough distance later.
 > 
-> https://git.kernel.org/pub/scm/linux/kernel/git/device-mapper/linux-dm.git/commit/?h=dm-6.10&id=825d8bbd2f32cb229c3b6653bd454832c3c20acb
+> xfs_truncate_page() should flush, zeros out the entire rtextsize range,
+> and make sure the entire zeroed range have been flushed to disk before
+> updating the inode size.
+> 
+> Fixes: 943bc0882ceb ("iomap: don't increase i_size if it's not a write operation")
+> Reported-by: Chandan Babu R <chandanbabu@kernel.org>
+> Link: https://lore.kernel.org/linux-xfs/0b92a215-9d9b-3788-4504-a520778953c2@huaweicloud.com
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+>  fs/xfs/xfs_iomap.c | 35 +++++++++++++++++++++++++++++++----
+>  fs/xfs/xfs_iops.c  | 10 ----------
+>  2 files changed, 31 insertions(+), 14 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> index 4958cc3337bc..fc379450fe74 100644
+> --- a/fs/xfs/xfs_iomap.c
+> +++ b/fs/xfs/xfs_iomap.c
+> @@ -1466,12 +1466,39 @@ xfs_truncate_page(
+>  	loff_t			pos,
+>  	bool			*did_zero)
+>  {
+> +	struct xfs_mount	*mp = ip->i_mount;
+>  	struct inode		*inode = VFS_I(ip);
+>  	unsigned int		blocksize = i_blocksize(inode);
+> +	int			error;
+> +
+> +	if (XFS_IS_REALTIME_INODE(ip))
+> +		blocksize = XFS_FSB_TO_B(mp, mp->m_sb.sb_rextsize);
+> +
+> +	/*
+> +	 * iomap won't detect a dirty page over an unwritten block (or a
+> +	 * cow block over a hole) and subsequently skips zeroing the
+> +	 * newly post-EOF portion of the page. Flush the new EOF to
+> +	 * convert the block before the pagecache truncate.
+> +	 */
+> +	error = filemap_write_and_wait_range(inode->i_mapping, pos,
+> +					     roundup_64(pos, blocksize));
+> +	if (error)
+> +		return error;
+>  
+>  	if (IS_DAX(inode))
+> -		return dax_truncate_page(inode, pos, blocksize, did_zero,
+> -					&xfs_dax_write_iomap_ops);
+> -	return iomap_truncate_page(inode, pos, blocksize, did_zero,
+> -				   &xfs_buffered_write_iomap_ops);
+> +		error = dax_truncate_page(inode, pos, blocksize, did_zero,
+> +					  &xfs_dax_write_iomap_ops);
+> +	else
+> +		error = iomap_truncate_page(inode, pos, blocksize, did_zero,
+> +					    &xfs_buffered_write_iomap_ops);
+> +	if (error)
+> +		return error;
+> +
+> +	/*
+> +	 * Write back path won't write dirty blocks post EOF folio,
+> +	 * flush the entire zeroed range before updating the inode
+> +	 * size.
+> +	 */
+> +	return filemap_write_and_wait_range(inode->i_mapping, pos,
+> +					    roundup_64(pos, blocksize));
+>  }
 
-From: Mike Snitzer <snitzer@kernel.org>
-Date: Mon, 20 May 2024 13:34:06 -0400
-Subject: [PATCH] dm: always manage discard support in terms of max_hw_discard_sectors
+Ok, this means we do -three- blocking writebacks through this path
+instead of one or maybe two.
 
-Commit 4f563a64732d ("block: add a max_user_discard_sectors queue
-limit") changed block core to set max_discard_sectors to:
- min(lim->max_hw_discard_sectors, lim->max_user_discard_sectors)
+We already know that this existing blocking writeback case for dirty
+pages over unwritten extents is a significant performance issue for
+some workloads. I have a fix in progress for iomap to handle this
+case without requiring blocking writeback to be done to convert the
+extent to written before we do the truncate.
 
-Since commit 1c0e720228ad ("dm: use queue_limits_set") it was reported
-dm-thinp was failing in a few fstests (generic/347 and generic/405)
-with the first WARN_ON_ONCE in dm_cell_key_has_valid_range() being
-reported, e.g.:
-WARNING: CPU: 1 PID: 30 at drivers/md/dm-bio-prison-v1.c:128 dm_cell_key_has_valid_range+0x3d/0x50
+Regardless, I think this whole "truncate is allocation unit size
+aware" algorithm is largely unworkable without a rewrite. What XFS
+needs to do on truncate *down* before we start the truncate
+transaction is pretty simple:
 
-blk_set_stacking_limits() sets max_user_discard_sectors to UINT_MAX,
-so given how block core now sets max_discard_sectors (detailed above)
-it follows that blk_stack_limits() stacks up the underlying device's
-max_hw_discard_sectors and max_discard_sectors is set to match it. If
-max_hw_discard_sectors exceeds dm's BIO_PRISON_MAX_RANGE, then
-dm_cell_key_has_valid_range() will trigger the warning with:
-WARN_ON_ONCE(key->block_end - key->block_begin > BIO_PRISON_MAX_RANGE)
+	- ensure that the new EOF extent tail contains zeroes
+	- ensure that the range from the existing ip->i_disk_size to
+	  the new EOF is on disk so data vs metadata ordering is
+	  correct for crash recovery purposes.
 
-Aside from this warning, the discard will fail.  Fix this and other DM
-issues by governing discard support in terms of max_hw_discard_sectors
-instead of max_discard_sectors.
+What this patch does to acheive that is:
 
-Reported-by: Theodore Ts'o <tytso@mit.edu>
-Fixes: 1c0e720228ad ("dm: use queue_limits_set")
-Signed-off-by: Mike Snitzer <snitzer@kernel.org>
----
- drivers/md/dm-cache-target.c | 5 ++---
- drivers/md/dm-clone-target.c | 4 ++--
- drivers/md/dm-log-writes.c   | 2 +-
- drivers/md/dm-snap.c         | 2 +-
- drivers/md/dm-target.c       | 1 -
- drivers/md/dm-thin.c         | 4 ++--
- drivers/md/dm-zero.c         | 1 -
- drivers/md/dm-zoned-target.c | 1 -
- drivers/md/dm.c              | 2 +-
- 9 files changed, 9 insertions(+), 13 deletions(-)
+	1. blocking writeback to clean dirty unwritten/cow blocks at
+	the new EOF.
+	2. iomap_truncate_page() writes zeroes into the page cache,
+	which dirties the pages we just cleaned at the new EOF.
+	3. blocking writeback to clean the dirty blocks at the new
+	EOF.
+	4. truncate_setsize() then writes zeros to partial folios at
+	the new EOF, dirtying the EOF page again.
+	5. blocking writeback to clean dirty blocks from the current
+	on-disk size to the new EOF.
 
-diff --git a/drivers/md/dm-cache-target.c b/drivers/md/dm-cache-target.c
-index 911f73f7ebba..1f0bc1173230 100644
---- a/drivers/md/dm-cache-target.c
-+++ b/drivers/md/dm-cache-target.c
-@@ -3394,8 +3394,8 @@ static void set_discard_limits(struct cache *cache, struct queue_limits *limits)
- 
- 	if (!cache->features.discard_passdown) {
- 		/* No passdown is done so setting own virtual limits */
--		limits->max_discard_sectors = min_t(sector_t, cache->discard_block_size * 1024,
--						    cache->origin_sectors);
-+		limits->max_hw_discard_sectors = min_t(sector_t, cache->discard_block_size * 1024,
-+						       cache->origin_sectors);
- 		limits->discard_granularity = cache->discard_block_size << SECTOR_SHIFT;
- 		return;
- 	}
-@@ -3404,7 +3404,6 @@ static void set_discard_limits(struct cache *cache, struct queue_limits *limits)
- 	 * cache_iterate_devices() is stacking both origin and fast device limits
- 	 * but discards aren't passed to fast device, so inherit origin's limits.
- 	 */
--	limits->max_discard_sectors = origin_limits->max_discard_sectors;
- 	limits->max_hw_discard_sectors = origin_limits->max_hw_discard_sectors;
- 	limits->discard_granularity = origin_limits->discard_granularity;
- 	limits->discard_alignment = origin_limits->discard_alignment;
-diff --git a/drivers/md/dm-clone-target.c b/drivers/md/dm-clone-target.c
-index 94b2fc33f64b..2332d9798141 100644
---- a/drivers/md/dm-clone-target.c
-+++ b/drivers/md/dm-clone-target.c
-@@ -2050,7 +2050,8 @@ static void set_discard_limits(struct clone *clone, struct queue_limits *limits)
- 	if (!test_bit(DM_CLONE_DISCARD_PASSDOWN, &clone->flags)) {
- 		/* No passdown is done so we set our own virtual limits */
- 		limits->discard_granularity = clone->region_size << SECTOR_SHIFT;
--		limits->max_discard_sectors = round_down(UINT_MAX >> SECTOR_SHIFT, clone->region_size);
-+		limits->max_hw_discard_sectors = round_down(UINT_MAX >> SECTOR_SHIFT,
-+							    clone->region_size);
- 		return;
- 	}
- 
-@@ -2059,7 +2060,6 @@ static void set_discard_limits(struct clone *clone, struct queue_limits *limits)
- 	 * device limits but discards aren't passed to the source device, so
- 	 * inherit destination's limits.
- 	 */
--	limits->max_discard_sectors = dest_limits->max_discard_sectors;
- 	limits->max_hw_discard_sectors = dest_limits->max_hw_discard_sectors;
- 	limits->discard_granularity = dest_limits->discard_granularity;
- 	limits->discard_alignment = dest_limits->discard_alignment;
-diff --git a/drivers/md/dm-log-writes.c b/drivers/md/dm-log-writes.c
-index f17a6cf2284e..8d7df8303d0a 100644
---- a/drivers/md/dm-log-writes.c
-+++ b/drivers/md/dm-log-writes.c
-@@ -871,7 +871,7 @@ static void log_writes_io_hints(struct dm_target *ti, struct queue_limits *limit
- 	if (!bdev_max_discard_sectors(lc->dev->bdev)) {
- 		lc->device_supports_discard = false;
- 		limits->discard_granularity = lc->sectorsize;
--		limits->max_discard_sectors = (UINT_MAX >> SECTOR_SHIFT);
-+		limits->max_hw_discard_sectors = (UINT_MAX >> SECTOR_SHIFT);
- 	}
- 	limits->logical_block_size = bdev_logical_block_size(lc->dev->bdev);
- 	limits->physical_block_size = bdev_physical_block_size(lc->dev->bdev);
-diff --git a/drivers/md/dm-snap.c b/drivers/md/dm-snap.c
-index 0ace06d1bee3..f40c18da4000 100644
---- a/drivers/md/dm-snap.c
-+++ b/drivers/md/dm-snap.c
-@@ -2410,7 +2410,7 @@ static void snapshot_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 
- 		/* All discards are split on chunk_size boundary */
- 		limits->discard_granularity = snap->store->chunk_size;
--		limits->max_discard_sectors = snap->store->chunk_size;
-+		limits->max_hw_discard_sectors = snap->store->chunk_size;
- 
- 		up_read(&_origins_lock);
- 	}
-diff --git a/drivers/md/dm-target.c b/drivers/md/dm-target.c
-index 0c4efb0bef8a..652627aea11b 100644
---- a/drivers/md/dm-target.c
-+++ b/drivers/md/dm-target.c
-@@ -249,7 +249,6 @@ static int io_err_iterate_devices(struct dm_target *ti,
- 
- static void io_err_io_hints(struct dm_target *ti, struct queue_limits *limits)
- {
--	limits->max_discard_sectors = UINT_MAX;
- 	limits->max_hw_discard_sectors = UINT_MAX;
- 	limits->discard_granularity = 512;
- }
-diff --git a/drivers/md/dm-thin.c b/drivers/md/dm-thin.c
-index 4793ad2aa1f7..e0528a4f809c 100644
---- a/drivers/md/dm-thin.c
-+++ b/drivers/md/dm-thin.c
-@@ -4100,7 +4100,7 @@ static void pool_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 	if (pt->adjusted_pf.discard_enabled) {
- 		disable_discard_passdown_if_not_supported(pt);
- 		if (!pt->adjusted_pf.discard_passdown)
--			limits->max_discard_sectors = 0;
-+			limits->max_hw_discard_sectors = 0;
- 		/*
- 		 * The pool uses the same discard limits as the underlying data
- 		 * device.  DM core has already set this up.
-@@ -4497,7 +4497,7 @@ static void thin_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 
- 	if (pool->pf.discard_enabled) {
- 		limits->discard_granularity = pool->sectors_per_block << SECTOR_SHIFT;
--		limits->max_discard_sectors = pool->sectors_per_block * BIO_PRISON_MAX_RANGE;
-+		limits->max_hw_discard_sectors = pool->sectors_per_block * BIO_PRISON_MAX_RANGE;
- 	}
- }
- 
-diff --git a/drivers/md/dm-zero.c b/drivers/md/dm-zero.c
-index 3b13e6eb1aa4..9a0bb623e823 100644
---- a/drivers/md/dm-zero.c
-+++ b/drivers/md/dm-zero.c
-@@ -61,7 +61,6 @@ static int zero_map(struct dm_target *ti, struct bio *bio)
- 
- static void zero_io_hints(struct dm_target *ti, struct queue_limits *limits)
- {
--	limits->max_discard_sectors = UINT_MAX;
- 	limits->max_hw_discard_sectors = UINT_MAX;
- 	limits->discard_granularity = 512;
- }
-diff --git a/drivers/md/dm-zoned-target.c b/drivers/md/dm-zoned-target.c
-index 621794a9edd6..12236e6f46f3 100644
---- a/drivers/md/dm-zoned-target.c
-+++ b/drivers/md/dm-zoned-target.c
-@@ -1001,7 +1001,6 @@ static void dmz_io_hints(struct dm_target *ti, struct queue_limits *limits)
- 
- 	limits->discard_alignment = 0;
- 	limits->discard_granularity = DMZ_BLOCK_SIZE;
--	limits->max_discard_sectors = chunk_sectors;
- 	limits->max_hw_discard_sectors = chunk_sectors;
- 	limits->max_write_zeroes_sectors = chunk_sectors;
- 
-diff --git a/drivers/md/dm.c b/drivers/md/dm.c
-index 7d0746b37c8e..3adfc6b83c01 100644
---- a/drivers/md/dm.c
-+++ b/drivers/md/dm.c
-@@ -1086,7 +1086,7 @@ void disable_discard(struct mapped_device *md)
- 	struct queue_limits *limits = dm_get_queue_limits(md);
- 
- 	/* device doesn't really support DISCARD, disable it */
--	limits->max_discard_sectors = 0;
-+	limits->max_hw_discard_sectors = 0;
- }
- 
- void disable_write_zeroes(struct mapped_device *md)
+This is pretty crazy when you stop and think about it. We're writing
+the same EOF block -three- times. The first data write gets
+overwritten by zeroes on the second write, and the third write
+writes the same zeroes as the second write. There are two redundant
+*blocking* writes in this process.
+
+We can do all this with a single writeback operation if we are a
+little bit smarter about the order of operations we perform and we
+are a little bit smarter in iomap about zeroing dirty pages in the
+page cache:
+
+	1. change iomap_zero_range() to do the right thing with
+	dirty unwritten and cow extents (the patch I've been working
+	on).
+
+	2. pass the range to be zeroed into iomap_truncate_page()
+	(the fundamental change being made here).
+
+	3. zero the required range *through the page cache*
+	(iomap_zero_range() already does this).
+
+	4. write back the XFS inode from ip->i_disk_size to the end
+	of the range zeroed by iomap_truncate_page()
+	(xfs_setattr_size() already does this).
+
+	5. i_size_write(newsize);
+
+	6. invalidate_inode_pages2_range(newsize, -1) to trash all
+	the page cache beyond the new EOF without doing any zeroing
+	as we've already done all the zeroing needed to the page
+	cache through iomap_truncate_page().
+
+
+The patch I'm working on for step 1 is below. It still needs to be
+extended to handle the cow case, but I'm unclear on how to exercise
+that case so I haven't written the code to do it. The rest of it is
+just rearranging the code that we already use just to get the order
+of operations right. The only notable change in behaviour is using
+invalidate_inode_pages2_range() instead of truncate_pagecache(),
+because we don't want the EOF page to be dirtied again once we've
+already written zeroes to disk....
+
 -- 
-2.44.0
+Dave Chinner
+david@fromorbit.com
 
+
+[RFC] iomap: zeroing needs to be pagecache aware
+
+From: Dave Chinner <dchinner@redhat.com>
+
+Unwritten extents can have page cache data over the range being
+zeroed so we can't just skip them entirely. Fix this by checking for
+an existing dirty folio over the unwritten range we are zeroing
+and only performing zeroing if the folio is already dirty.
+
+XXX: how do we detect a iomap containing a cow mapping over a hole
+in iomap_zero_iter()? The XFS code implies this case also needs to
+zero the page cache if there is data present, so trigger for page
+cache lookup only in iomap_zero_iter() needs to handle this case as
+well.
+
+Before:
+
+$ time sudo ./pwrite-trunc /mnt/scratch/foo 50000
+path /mnt/scratch/foo, 50000 iters
+
+real    0m14.103s
+user    0m0.015s
+sys     0m0.020s
+
+$ sudo strace -c ./pwrite-trunc /mnt/scratch/foo 50000
+path /mnt/scratch/foo, 50000 iters
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 85.90    0.847616          16     50000           ftruncate
+ 14.01    0.138229           2     50000           pwrite64
+....
+
+After:
+
+$ time sudo ./pwrite-trunc /mnt/scratch/foo 50000
+path /mnt/scratch/foo, 50000 iters
+
+real    0m0.144s
+user    0m0.021s
+sys     0m0.012s
+
+$ sudo strace -c ./pwrite-trunc /mnt/scratch/foo 50000
+path /mnt/scratch/foo, 50000 iters
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 53.86    0.505964          10     50000           ftruncate
+ 46.12    0.433251           8     50000           pwrite64
+....
+
+Yup, we get back all the performance.
+
+As for the "mmap write beyond EOF" data exposure aspect
+documented here:
+
+https://lore.kernel.org/linux-xfs/20221104182358.2007475-1-bfoster@redhat.com/
+
+With this command:
+
+$ sudo xfs_io -tfc "falloc 0 1k" -c "pwrite 0 1k" \
+  -c "mmap 0 4k" -c "mwrite 3k 1k" -c "pwrite 32k 4k" \
+  -c fsync -c "pread -v 3k 32" /mnt/scratch/foo
+
+Before:
+
+wrote 1024/1024 bytes at offset 0
+1 KiB, 1 ops; 0.0000 sec (34.877 MiB/sec and 35714.2857 ops/sec)
+wrote 4096/4096 bytes at offset 32768
+4 KiB, 1 ops; 0.0000 sec (229.779 MiB/sec and 58823.5294 ops/sec)
+00000c00:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
+00000c10:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
+read 32/32 bytes at offset 3072
+32.000000 bytes, 1 ops; 0.0000 sec (568.182 KiB/sec and 18181.8182 ops/sec
+
+After:
+
+wrote 1024/1024 bytes at offset 0
+1 KiB, 1 ops; 0.0000 sec (40.690 MiB/sec and 41666.6667 ops/sec)
+wrote 4096/4096 bytes at offset 32768
+4 KiB, 1 ops; 0.0000 sec (150.240 MiB/sec and 38461.5385 ops/sec)
+00000c00:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+00000c10:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
+read 32/32 bytes at offset 3072
+32.000000 bytes, 1 ops; 0.0000 sec (558.036 KiB/sec and 17857.1429 ops/sec)
+
+We see that this post-eof unwritten extent dirty page zeroing is
+working correctly.
+
+This has passed through most of fstests on a couple of test VMs
+without issues at the moment, so I think this approach to fixing the
+issue is going to be solid once we've worked out how to detect the
+COW-hole mapping case.
+
+Signed-off-by: Dave Chinner <dchinner@redhat.com>
+---
+ fs/iomap/buffered-io.c | 42 ++++++++++++++++++++++++++++++++++++++++--
+ fs/xfs/xfs_iops.c      | 12 +-----------
+ 2 files changed, 41 insertions(+), 13 deletions(-)
+
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index 4e8e41c8b3c0..6877474de0c9 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -583,11 +583,23 @@ EXPORT_SYMBOL_GPL(iomap_is_partially_uptodate);
+  *
+  * Returns a locked reference to the folio at @pos, or an error pointer if the
+  * folio could not be obtained.
++ *
++ * Note: when zeroing unwritten extents, we might have data in the page cache
++ * over an unwritten extent. In this case, we want to do a pure lookup on the
++ * page cache and not create a new folio as we don't need to perform zeroing on
++ * unwritten extents if there is no cached data over the given range.
+  */
+ struct folio *iomap_get_folio(struct iomap_iter *iter, loff_t pos, size_t len)
+ {
+ 	fgf_t fgp = FGP_WRITEBEGIN | FGP_NOFS;
+ 
++	if (iter->flags & IOMAP_ZERO) {
++		const struct iomap *srcmap = iomap_iter_srcmap(iter);
++
++		if (srcmap->type == IOMAP_UNWRITTEN)
++			fgp &= ~FGP_CREAT;
++	}
++
+ 	if (iter->flags & IOMAP_NOWAIT)
+ 		fgp |= FGP_NOWAIT;
+ 	fgp |= fgf_set_order(len);
+@@ -1375,7 +1387,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+ 	loff_t written = 0;
+ 
+ 	/* already zeroed?  we're done. */
+-	if (srcmap->type == IOMAP_HOLE || srcmap->type == IOMAP_UNWRITTEN)
++	if (srcmap->type == IOMAP_HOLE)
+ 		return length;
+ 
+ 	do {
+@@ -1385,8 +1397,22 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+ 		size_t bytes = min_t(u64, SIZE_MAX, length);
+ 
+ 		status = iomap_write_begin(iter, pos, bytes, &folio);
+-		if (status)
++		if (status) {
++			if (status == -ENOENT) {
++				/*
++				 * Unwritten extents need to have page cache
++				 * lookups done to determine if they have data
++				 * over them that needs zeroing. If there is no
++				 * data, we'll get -ENOENT returned here, so we
++				 * can just skip over this index.
++				 */
++				WARN_ON_ONCE(srcmap->type != IOMAP_UNWRITTEN);
++				if (bytes > PAGE_SIZE - offset_in_page(pos))
++					bytes = PAGE_SIZE - offset_in_page(pos);
++				goto loop_continue;
++			}
+ 			return status;
++		}
+ 		if (iter->iomap.flags & IOMAP_F_STALE)
+ 			break;
+ 
+@@ -1394,6 +1420,17 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+ 		if (bytes > folio_size(folio) - offset)
+ 			bytes = folio_size(folio) - offset;
+ 
++		/*
++		 * If the folio over an unwritten extent is clean (i.e. because
++		 * it has been read from), then it already contains zeros. Hence
++		 * we can just skip it.
++		 */
++		if (srcmap->type == IOMAP_UNWRITTEN &&
++		    !folio_test_dirty(folio)) {
++			folio_unlock(folio);
++			goto loop_continue;
++		}
++
+ 		folio_zero_range(folio, offset, bytes);
+ 		folio_mark_accessed(folio);
+ 
+@@ -1401,6 +1438,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
+ 		if (WARN_ON_ONCE(bytes == 0))
+ 			return -EIO;
+ 
++loop_continue:
+ 		pos += bytes;
+ 		length -= bytes;
+ 		written += bytes;
+diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+index 8a145ca7d380..e8c9f3018c80 100644
+--- a/fs/xfs/xfs_iops.c
++++ b/fs/xfs/xfs_iops.c
+@@ -838,17 +838,7 @@ xfs_setattr_size(
+ 		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
+ 		error = xfs_zero_range(ip, oldsize, newsize - oldsize,
+ 				&did_zeroing);
+-	} else {
+-		/*
+-		 * iomap won't detect a dirty page over an unwritten block (or a
+-		 * cow block over a hole) and subsequently skips zeroing the
+-		 * newly post-EOF portion of the page. Flush the new EOF to
+-		 * convert the block before the pagecache truncate.
+-		 */
+-		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
+-						     newsize);
+-		if (error)
+-			return error;
++	} else if (newsize != oldsize) {
+ 		error = xfs_truncate_page(ip, newsize, &did_zeroing);
+ 	}
+ 
 
