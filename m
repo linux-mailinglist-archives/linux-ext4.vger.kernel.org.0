@@ -1,462 +1,622 @@
-Return-Path: <linux-ext4+bounces-2616-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2617-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 024DC8CA63C
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 04:38:55 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7DA38CAFA1
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 15:46:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3BA5CB220F9
-	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 02:38:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 101E21C2158C
+	for <lists+linux-ext4@lfdr.de>; Tue, 21 May 2024 13:46:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 684A2171C4;
-	Tue, 21 May 2024 02:38:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="evMcCNPM"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E3C37711E;
+	Tue, 21 May 2024 13:46:12 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CEE218E1C
-	for <linux-ext4@vger.kernel.org>; Tue, 21 May 2024 02:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F8A660BBE;
+	Tue, 21 May 2024 13:46:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716259117; cv=none; b=bUMr04n283FgNPalYia8U2HXi2Gawq+Qq96e72yyhomD6gtT/mCHmEIKHFAUjKgzCHD0PlAo8XN8SSwdTuLJowwzyvTP9/qcS+9QUqo7kzisqDYZyj0XBVydFtHtiagyoEsoQ9OysADbSEAi3qbGmJE4BOEHPZiVEKWg3nCPHTA=
+	t=1716299171; cv=none; b=PQ3WXwZhhj24XoPmNKTV+uHoIQ/ACKTV3ylyvp2FRIgoDMGuy7zvTmsNxmPF6Fo28VB4WlJCoQMRol3VjB7+ma9w23w982M0gSmJxpF0Q7nHSOBoDzDEGWasMMUz2iTBC/T/QkdZYV0tjc0jxvOxNhBEXP6p6z8Uef8xdavwQ8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716259117; c=relaxed/simple;
-	bh=04V2TiG7n1566pTE69nmTzCYQM93yyc3uTcAW5bgVaU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FN2gs4ebXFHajaTxnwRImzoKyh3P2bmxmoEM5kpWt3wVKQknxXcv001yYQBPP6RcCoVMwGwgnXnPIGtgKKGRnOSe3c0T5rJH56W8xwAjJsGMiVM75pmZhBJIaj3V+sFTotWzfheooDT53eHCh9IUjNw2+z4chUaNANubpsibMW0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=evMcCNPM; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1ee954e0aa6so64551585ad.3
-        for <linux-ext4@vger.kernel.org>; Mon, 20 May 2024 19:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1716259114; x=1716863914; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=nAD2HfoXLZII7PkQY+RIy3eDF2S7Lzem/nR8E1ux0Zo=;
-        b=evMcCNPM/oQaYMxN5Tu6ChZk/eJjm1GQ7ac5FjwH7ETz17OMJHkA8BExK9wzo4N8V1
-         mZsNUG3a5h7BcE+Bvhk6xW6T5a7laj0uK+kvsSWGwprkNz9T0AUccLU21hUolmXkaA3q
-         XOqaKxl+L3dwgwEku1KiRUSE5mWj6l3iHII5A1mmaZCymmZm2ODNGafpacssQjC/I1o7
-         ekxBMG7rqdCXFNlFFQWtMLvA1yD4I7SSDeffZPSAYBOtv/4QnmCd6eoYG1meReUljzAG
-         hn4Il/rrhj9EGVzUHGqNjrdXLLTh+WxW0zxS6TRCK5XAEEVgW19oUD4FpKVK8+Ei89Y+
-         cREQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716259114; x=1716863914;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nAD2HfoXLZII7PkQY+RIy3eDF2S7Lzem/nR8E1ux0Zo=;
-        b=JGAfEh4bpCF5N5w7IMuMuY34Sjba+i1Is6c4ueSPwCSLggM4l6468oYB5MKLaDz1Nv
-         1t7vwqlUE6ElAUXfox6cqt/4NQOELzVir6nW2RIFmKqwAObd3Vv110H+8eWgw4tWkWSv
-         0CQ4UTGWHM9o1oIZFg+1tpMcJ66CvKSG43yduTANt6B9frV/yhiFdEZgRXZJt448ECa8
-         KLAD0eblAHI9mK4BvGSOgFHyxz1Fs23GYWRCM63dHf8AqzWCdxh31fyVVMKn5d7M9ZDd
-         fNPDygNDBQVb3CYrsOttboiPQZio/Fm1wl3bjpx/Fmw1Dd/K3il5KQssOHleOrD7BIpP
-         Ge3Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUekKXnwnliVRcxcd05CZOj0ZCwlkia1YixsE0Yk2Krtb78rDeeMMTCCeQpC4FuDQUhwzaAdleMsnToSTDgFGCX8BEsXo7r+bug8Q==
-X-Gm-Message-State: AOJu0YwnvGJSrhzFEqNJ38WHjybLCwshRJq0oP9ZWFGp/BJKcZfyQcbJ
-	MszJeC4+2OIQXvRgSF0KxBBTeZiNmZgO5LBRhGdoPGSvGBD8TYw8Dx7gyG1ctZs=
-X-Google-Smtp-Source: AGHT+IF+y45+russ+eDPrVjYNTO1UVyGDJjV/s+G/taRA7G2C00wpzQgV7fi+keZlGEa+fybql83YA==
-X-Received: by 2002:a17:90b:301:b0:2bd:92b3:c09b with SMTP id 98e67ed59e1d1-2bd92b3c272mr755060a91.42.1716259114007;
-        Mon, 20 May 2024 19:38:34 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2b67158c39dsm20679185a91.35.2024.05.20.19.38.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 20 May 2024 19:38:33 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1s9FOY-004rHv-07;
-	Tue, 21 May 2024 12:38:30 +1000
-Date: Tue, 21 May 2024 12:38:30 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	djwong@kernel.org, hch@infradead.org, brauner@kernel.org,
-	chandanbabu@kernel.org, jack@suse.cz, yi.zhang@huawei.com,
-	chengzhihao1@huawei.com, yukuai3@huawei.com
+	s=arc-20240116; t=1716299171; c=relaxed/simple;
+	bh=y6hepGepZNcWLgs7Z/fpnLhbnoHuAOSk4O5jstMZ2hM=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=O4958mt/fwXtV+nLXVslX/uiBrUyL70xE9EgqtzJ9iev8iv+kntbqj/lr06mXe1AdIgmXtK2b8jU8+H66uHOjrfMIx3Ra+mW+4joLpLl3m8NOvT2pf0tP5/tJyXGGdhdOwndPUnghJ7sgVHz+UgfhVK9TMkKKeet5dQ3SPg/ugE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4VkG0x3v16z4f3jdN;
+	Tue, 21 May 2024 21:45:53 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 7190B1A0181;
+	Tue, 21 May 2024 21:46:02 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP2 (Coremail) with SMTP id Syh0CgDH6w6WpUxmP29vNg--.35919S3;
+	Tue, 21 May 2024 21:46:00 +0800 (CST)
 Subject: Re: [PATCH v3 3/3] xfs: correct the zeroing truncate range
-Message-ID: <ZkwJJuFCV+WQLl40@dread.disaster.area>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org, hch@infradead.org,
+ brauner@kernel.org, david@fromorbit.com, chandanbabu@kernel.org,
+ jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com
 References: <20240517111355.233085-1-yi.zhang@huaweicloud.com>
  <20240517111355.233085-4-yi.zhang@huaweicloud.com>
+ <20240517175900.GC360919@frogsfrogsfrogs>
+ <fc050e5c-cdc5-9e3d-2787-ce09ec3b888e@huaweicloud.com>
+ <20240518192602.GD360919@frogsfrogsfrogs>
+ <7c388db6-f2fa-9ac1-2a0b-30bd28f3aeeb@huaweicloud.com>
+ <20240520183724.GJ25518@frogsfrogsfrogs>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <53da586e-c713-bf4f-ed5f-3198e2c83a2f@huaweicloud.com>
+Date: Tue, 21 May 2024 21:45:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240517111355.233085-4-yi.zhang@huaweicloud.com>
+In-Reply-To: <20240520183724.GJ25518@frogsfrogsfrogs>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:Syh0CgDH6w6WpUxmP29vNg--.35919S3
+X-Coremail-Antispam: 1UD129KBjvAXoW3KF4UJFW7KFW3WF4ktw17trb_yoW8Cw1DWo
+	WfGr47Jw4ktFn8CF1UCa47t34DGaykWr18AFy5Gr1UAF1qq34UCw12ywn5GFWxtw10kr4U
+	Ja4xG3Z3ArW2yF1rn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73VFW2AGmfu7bjvjm3
+	AaLaJ3UjIYCTnIWjp_UUUYI7kC6x804xWl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK
+	8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4
+	AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF
+	7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7
+	CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8C
+	rVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4
+	IE7xkEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCYjI0SjxkI
+	62AI1cAE67vIY487MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I
+	0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWU
+	tVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcV
+	CY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI42IY6I8E87Iv
+	67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyT
+	uYvjxUrR6zUUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Fri, May 17, 2024 at 07:13:55PM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+On 2024/5/21 2:37, Darrick J. Wong wrote:
+> On Mon, May 20, 2024 at 02:56:22PM +0800, Zhang Yi wrote:
+>> On 2024/5/19 3:26, Darrick J. Wong wrote:
+>>> On Sat, May 18, 2024 at 02:35:02PM +0800, Zhang Yi wrote:
+>>>> On 2024/5/18 1:59, Darrick J. Wong wrote:
+>>>>> On Fri, May 17, 2024 at 07:13:55PM +0800, Zhang Yi wrote:
+>>>>>> From: Zhang Yi <yi.zhang@huawei.com>
+>>>>>>
+>>>>>> When truncating a realtime file unaligned to a shorter size,
+>>>>>> xfs_setattr_size() only flush the EOF page before zeroing out, and
+>>>>>> xfs_truncate_page() also only zeros the EOF block. This could expose
+>>>>>> stale data since 943bc0882ceb ("iomap: don't increase i_size if it's not
+>>>>>> a write operation").
+>>>>>>
+>>>>>> If the sb_rextsize is bigger than one block, and we have a realtime
+>>>>>> inode that contains a long enough written extent. If we unaligned
+>>>>>> truncate into the middle of this extent, xfs_itruncate_extents() could
+>>>>>> split the extent and align the it's tail to sb_rextsize, there maybe
+>>>>>> have more than one blocks more between the end of the file. Since
+>>>>>> xfs_truncate_page() only zeros the trailing portion of the i_blocksize()
+>>>>>> value, so it may leftover some blocks contains stale data that could be
+>>>>>> exposed if we append write it over a long enough distance later.
+>>>
+>>> Hum.  Is this an appending write into the next rtextent?  For example,
+>>> if you start with a file like this:
+>>>
+>>> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
+>>>                     ^ old EOF
+>>>
+>>> Then truncate it improperly like this:
+>>>
+>>> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuu
+>>>      ^ new EOF               
+>>>
+>>> Then do an extending write like this:
+>>>
+>>> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuuuuuuuuuuuuuuuuuuuuWWWuuuuuuuuu
+>>>      ^ EOF                    ^ next rtx        ^ append here
+>>>
+>>> And now the problem is that we've exposed stale data that should be
+>>> zeroes?
+>>>
+>>> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuuuuuuuuuuuuuuuuuuuuWWWuuuuuuuuu
+>>>       ^^^^^^^^^^^^^^^                             ^ new EOF
+>>>       should be zeroed
+>>>
+>>
+>> Yeah.
+>>
+>>>>>
+>>>>> IOWs, any time we truncate down, we need to zero every byte from the new
+>>>>> EOF all the way to the end of the allocation unit, correct?
+>>>>
+>>>> Yeah.
+>>>>
+>>>>>
+>>>>> Maybe pictures would be easier to reason with.  Say you have
+>>>>> rextsize=30 and a partially written rtextent; each 'W' is a written
+>>>>> fsblock and 'u' is an unwritten fsblock:
+>>>>>
+>>>>> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
+>>>>>                     ^ old EOF
+>>>>>
+>>>>> Now you want to truncate down:
+>>>>>
+>>>>> WWWWWWWWWWWWWWWWWWWWWuuuuuuuuu
+>>>>>      ^ new EOF      ^ old EOF
+>>>>>
+>>>>> Currently, iomap_truncate_blocks only zeroes up to the next i_blocksize,
+>>>>> so the truncate leaves the file in this state:
+>>>>>
+>>>>> WWWWWzWWWWWWWWWWWWWWWuuuuuuuuu
+>>>>>      ^ new EOF      ^ old EOF
+>>>>>
+>>>>> (where 'z' is a written block with zeroes after EOF)
+>>>>>
+>>>>> This is bad because the "W"s between the new and old EOF still contain
+>>>>> old credit card info or whatever.  Now if we mmap the file or whatever,
+>>>>> we can access those old contents.
+>>>>>
+>>>>> So your new patch amends iomap_truncate_page so that it'll zero all the
+>>>>> way to the end of the @blocksize parameter.  That fixes the exposure by 
+>>>>> writing zeroes to the pagecache before we truncate down:
+>>>>>
+>>>>> WWWWWzzzzzzzzzzzzzzzzuuuuuuuuu
+>>>>>      ^ new EOF      ^ old EOF
+>>>>>
+>>>>> Is that correct?
+>>>>>
+>>>>
+>>>> Yes, it's correct. However, not only write zeros to the pagecache, but
+>>>> also flush to disk, please see below for details.
+>>>
+>>> <nod> iomap_truncate_page writes zeroes to any part of the pagecache
+>>> backed by written extents, and then xfs must call
+>>> filemap_write_and_wait_range to write the dirty (zeroed) cache out to
+>>> disk.
+>>>
+>>>>> If so, then why don't we make xfs_truncate_page convert the post-eof
+>>>>> rtextent blocks back to unwritten status:
+>>>>>
+>>>>> WWWWWzuuuuuuuuuuuuuuuuuuuuuuuu
+>>>>>      ^ new EOF      ^ old EOF
+>>>>>
+>>>>> If we can do that, then do we need the changes to iomap_truncate_page?
+>>>>> Converting the mapping should be much faster than dirtying potentially
+>>>>> a lot of data (rt extents can be 1GB in size).
+>>>>
+>>>> Now that the exposed stale data range (should be zeroed) is only one
+>>>> rtextsize unit, if we convert the post-eof rtextent blocks to unwritten,
+>>>> it breaks the alignment of rtextent and the definition of "extsize is used
+>>>> to specify the size of the blocks in the real-time section of the
+>>>> filesystem", is it fine?
+>>>
+>>> A written -> unwritten extent conversion doesn't change which physical
+>>> space extent is mapped to the file data extent; it merely marks the
+>>> mapping as unwritten.
+>>>
+>>> For example, if you start with this mapping:
+>>>
+>>> {startoff = 8, startblock 256, blockcount = 8, state = written}
+>>>
+>>> and then convert blocks 13-15 to unwritten, you get:
+>>>
+>>> {startoff = 8, startblock 256, blockcount = 5, state = written}
+>>> {startoff = 13, startblock 261, blockcount = 3, state = unwritten}
+>>>
+>>> File blocks 8-15 still map to physical space 256-263.
+>>
+>> Yeah, indeed.
+>>
+>>>
+>>> In xfs, the entire allocation unit is /always/ mapped to the file, even
+>>> if parts of it have to be unwritten.  Hole punching on rt, for example,
+>>> converts the punched region to unwritten.  This is (iirc) the key
+>>> difference between xfs rt and ext4 bigalloc.  xfs doesn't have or need
+>>> (or want) the implied cluster allocation code that ext4 has.
+>>>
+>>
+>> I checked the xfs_file_fallocate(), it looks like hole punching on realtime
+>> inode is still follow the rtextsize alignment, i.e. if we punch hole on a
+>> file that only contains one written extent, it doesn't split it and convet
+>> the punched range to unwritten. Please take a look at
+>> xfs_file_fallocate()->xfs_free_file_space(), it aligned the freeing range
+>> and zeroing out the whole unligned range in one reextsize unit, and
+>> FALLOC_FL_ZERO_RANGE is the same.
+>>
+>>  836	/* We can only free complete realtime extents. */
+>>  837	if (xfs_inode_has_bigrtalloc(ip)) {
+>>  838		startoffset_fsb = xfs_rtb_roundup_rtx(mp, startoffset_fsb);
+>>  839 		endoffset_fsb = xfs_rtb_rounddown_rtx(mp, endoffset_fsb);
+>>  840	}
+>> ...
+>>  864	error = xfs_zero_range(ip, offset, len, NULL);
+>>
+>> And I tested it on my machine, it's true that it doesn't do the convertion.
+>>
+>>   # mkfs.xfs -f -rrtdev=/dev/nvme0n1 -f -m reflink=0,rmapbt=0, -d rtinherit=1 -r extsize=28k /dev/pmem2s
+>>   # mount -ortdev=/dev/nvme0n1 /dev/pmem2s /mnt/scratch
+>>   # xfs_io -f -c "pwrite 0 28k" -c "fsync" /mnt/scratch/foo
+>>   # xfs_io -c "fpunch 4k 24k" /mnt/scratch/foo
+>>   # umount /mnt/scratch
+>>
+>>   # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
+>>    u3.bmx[0] = [startoff,startblock,blockcount,extentflag]
+>>    0:[0,0,7,0]
+>>
+>> Am I missed something?
 > 
-> When truncating a realtime file unaligned to a shorter size,
-> xfs_setattr_size() only flush the EOF page before zeroing out, and
-> xfs_truncate_page() also only zeros the EOF block. This could expose
-> stale data since 943bc0882ceb ("iomap: don't increase i_size if it's not
-> a write operation").
+> I think fpunch is broken here -- xfs definitely supports having
+> unwritten mappings in the middle of an allocation unit.  See below.
 > 
-> If the sb_rextsize is bigger than one block, and we have a realtime
-> inode that contains a long enough written extent. If we unaligned
-> truncate into the middle of this extent, xfs_itruncate_extents() could
-> split the extent and align the it's tail to sb_rextsize, there maybe
-> have more than one blocks more between the end of the file. Since
-> xfs_truncate_page() only zeros the trailing portion of the i_blocksize()
-> value, so it may leftover some blocks contains stale data that could be
-> exposed if we append write it over a long enough distance later.
+>>> I can't tell if there's something that you see that I don't see such
+>>> that we really /do/ need to actually write zeroes to the entire tail of
+>>> the rtextent; or if you weren't sure that forcing all the post-eof
+>>> fsblocks in the rtextent to unwritten (and zapping the pagecache) would
+>>> actually preserve the rtextsize alignment.
+>>
+>> I haven't found any restrictions yet, and I also noticed that a simple
+>> write is not guaranteed to align the extent to rtextsize, since the write
+>> back path doesn't zeroing out the extra blocks that align to the
+>> rtextsize.
+>>
+>>   # #extsize=28k
+>>   # xfs_io -d -f -c  "pwrite 0 4k" -c "fsync" /mnt/scratch/foo
+>>   # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
+>>      u3.bmx[0-1] = [startoff,startblock,blockcount,extentflag]
+>>      0:[0,0,1,0]
+>>      1:[1,1,6,1]
+>>
+>> So I guess convert the tail fsblocks of the rtextent to unwritten status
+>> could work. However, I'm a little confused, besides the write operation,
+>> other operations like above punch hold and zero range, they seem to be
+>> doing their best to follow the alignment rule since commit fe341eb151ec
+>> ("xfs: ensure that fpunch, fcollapse, and finsert operations are aligned
+>> to rt extent size") [1], it looks like this commit is to fix some issues,
+>> so I'm not sure that converting to unwritten would always preserve the
+>> rtextsize alignment.
+>>
+>> [1]. https://lore.kernel.org/linux-xfs/159950168085.582172.4254559621934598919.stgit@magnolia/
 > 
-> xfs_truncate_page() should flush, zeros out the entire rtextsize range,
-> and make sure the entire zeroed range have been flushed to disk before
-> updating the inode size.
+> Looking at commit fe341eb151ec0 ("xfs: ensure that fpunch, fcollapse,
+> and finsert operations are aligned to rt extent size"), I think the
+> logic in xfs_free_file_space is wrong.  If bunmapi is told to unmap a
+> partial rt extent, it will instead convert it to unwritten; it only
+> unmaps full rt extents.  For punch that's ok because punch
+> opportunistically removes blocks and zeroes the unaligned segments; for
+> zero that's ok because it will falloc the sparse holes and zero the
+> rest.
 > 
-> Fixes: 943bc0882ceb ("iomap: don't increase i_size if it's not a write operation")
-> Reported-by: Chandan Babu R <chandanbabu@kernel.org>
-> Link: https://lore.kernel.org/linux-xfs/0b92a215-9d9b-3788-4504-a520778953c2@huaweicloud.com
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->  fs/xfs/xfs_iomap.c | 35 +++++++++++++++++++++++++++++++----
->  fs/xfs/xfs_iops.c  | 10 ----------
->  2 files changed, 31 insertions(+), 14 deletions(-)
+> It's only collapse and insert that *require* alignment.  That's
+> something that should be checked during input validation, and I think
+> that got fixed by 25219dbfa734e ("xfs: fix fallocate functions when
+> rtextsize is larger than 1").
 > 
-> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
-> index 4958cc3337bc..fc379450fe74 100644
-> --- a/fs/xfs/xfs_iomap.c
-> +++ b/fs/xfs/xfs_iomap.c
-> @@ -1466,12 +1466,39 @@ xfs_truncate_page(
->  	loff_t			pos,
->  	bool			*did_zero)
->  {
-> +	struct xfs_mount	*mp = ip->i_mount;
->  	struct inode		*inode = VFS_I(ip);
->  	unsigned int		blocksize = i_blocksize(inode);
-> +	int			error;
-> +
-> +	if (XFS_IS_REALTIME_INODE(ip))
-> +		blocksize = XFS_FSB_TO_B(mp, mp->m_sb.sb_rextsize);
-> +
-> +	/*
-> +	 * iomap won't detect a dirty page over an unwritten block (or a
-> +	 * cow block over a hole) and subsequently skips zeroing the
-> +	 * newly post-EOF portion of the page. Flush the new EOF to
-> +	 * convert the block before the pagecache truncate.
-> +	 */
-> +	error = filemap_write_and_wait_range(inode->i_mapping, pos,
-> +					     roundup_64(pos, blocksize));
-> +	if (error)
-> +		return error;
->  
->  	if (IS_DAX(inode))
-> -		return dax_truncate_page(inode, pos, blocksize, did_zero,
-> -					&xfs_dax_write_iomap_ops);
-> -	return iomap_truncate_page(inode, pos, blocksize, did_zero,
-> -				   &xfs_buffered_write_iomap_ops);
-> +		error = dax_truncate_page(inode, pos, blocksize, did_zero,
-> +					  &xfs_dax_write_iomap_ops);
-> +	else
-> +		error = iomap_truncate_page(inode, pos, blocksize, did_zero,
-> +					    &xfs_buffered_write_iomap_ops);
-> +	if (error)
-> +		return error;
-> +
-> +	/*
-> +	 * Write back path won't write dirty blocks post EOF folio,
-> +	 * flush the entire zeroed range before updating the inode
-> +	 * size.
-> +	 */
-> +	return filemap_write_and_wait_range(inode->i_mapping, pos,
-> +					    roundup_64(pos, blocksize));
->  }
 
-Ok, this means we do -three- blocking writebacks through this path
-instead of one or maybe two.
+Ha, I see! I didn't notice that xfs_bunmapi() would split and convert
+the extent to unwritten for an rt inode. I try to drop the rtextsize
+range alignment logic in xfs_free_file_space(), it works as expect
+now.
 
-We already know that this existing blocking writeback case for dirty
-pages over unwritten extents is a significant performance issue for
-some workloads. I have a fix in progress for iomap to handle this
-case without requiring blocking writeback to be done to convert the
-extent to written before we do the truncate.
+  # #reextsize is 28k
+  # xfs_io -f -c "pwrite 0 28k" -c "fsync" /mnt/scratch/foo
+  # xfs_io -c "fpunch 4k 24k" /mnt/scratch/foo
+  # umount /mnt/scratch
+  # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
+    u3.bmx[0-1] = [startoff,startblock,blockcount,extentflag]
+    0:[0,0,1,0]
+    1:[1,1,6,1]
 
-Regardless, I think this whole "truncate is allocation unit size
-aware" algorithm is largely unworkable without a rewrite. What XFS
-needs to do on truncate *down* before we start the truncate
-transaction is pretty simple:
+Now, think about the original problem again. I simplified my test case
+below,
 
-	- ensure that the new EOF extent tail contains zeroes
-	- ensure that the range from the existing ip->i_disk_size to
-	  the new EOF is on disk so data vs metadata ordering is
-	  correct for crash recovery purposes.
+  # #reextsize is 28k
+  # xfs_io -f -c "pwrite 0 28k" -c "fsync" /mnt/scratch/foo
+  # xfs_io -c "truncate 4k" /mnt/scratch/foo
+  # umount /mnt/scratch
+  # xfs_db -c "inode 131" -c "p u3.bmx" /dev/pmem2s
+    u3.bmx[0] = [startoff,startblock,blockcount,extentflag]
+    0:[0,0,7,0]
 
-What this patch does to acheive that is:
+The expected result should be the same as the fpunch, but it doesn't.
+So, It seems that xfs_setattr_size()->xfs_itruncate_extents() doesn't
+do the right thing. After check it, the problem is __xfs_bunmapi()
+goto the wrong branch, it failed to convert this extent to unwritten
+since tp->t_blk_res is zero.
 
-	1. blocking writeback to clean dirty unwritten/cow blocks at
-	the new EOF.
-	2. iomap_truncate_page() writes zeroes into the page cache,
-	which dirties the pages we just cleaned at the new EOF.
-	3. blocking writeback to clean the dirty blocks at the new
-	EOF.
-	4. truncate_setsize() then writes zeros to partial folios at
-	the new EOF, dirtying the EOF page again.
-	5. blocking writeback to clean dirty blocks from the current
-	on-disk size to the new EOF.
+5559			} else if (del.br_startoff == start &&
+5560				  (del.br_state == XFS_EXT_UNWRITTEN ||
+5561				   tp->t_blk_res == 0)) {
+5562				/*
+5563 				 * Can't make it unwritten.  There isn't
+5564				 * a full extent here so just skip it.
+5565				 */
 
-This is pretty crazy when you stop and think about it. We're writing
-the same EOF block -three- times. The first data write gets
-overwritten by zeroes on the second write, and the third write
-writes the same zeroes as the second write. There are two redundant
-*blocking* writes in this process.
+May be we should fix this problem by reserve enough blocks when
+allocating transaction in xfs_setattr_size? If so, the whole tail
+rtextsize aligned blocks beyond EOF could be convert to unwritten
+as expected, and we could also avoid writing too much zero,
+finally the stale data exposure issue would gone.
 
-We can do all this with a single writeback operation if we are a
-little bit smarter about the order of operations we perform and we
-are a little bit smarter in iomap about zeroing dirty pages in the
-page cache:
+>>>
+>>> (Or if there's something else?)
+>>>
+>>>>                          And IIUC, the upcoming xfs force alignment
+>>>> extent feature seems also need to follow this alignment, right?
+>>>
+>>> Yes.
+>>>
+>>>>>
+>>>>>> xfs_truncate_page() should flush, zeros out the entire rtextsize range,
+>>>>>> and make sure the entire zeroed range have been flushed to disk before
+>>>>>> updating the inode size.
+>>>>>>
+>>>>>> Fixes: 943bc0882ceb ("iomap: don't increase i_size if it's not a write operation")
+>>>>>> Reported-by: Chandan Babu R <chandanbabu@kernel.org>
+>>>>>> Link: https://lore.kernel.org/linux-xfs/0b92a215-9d9b-3788-4504-a520778953c2@huaweicloud.com
+>>>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>>>>> ---
+>>>>>>  fs/xfs/xfs_iomap.c | 35 +++++++++++++++++++++++++++++++----
+>>>>>>  fs/xfs/xfs_iops.c  | 10 ----------
+>>>>>>  2 files changed, 31 insertions(+), 14 deletions(-)
+>>>>>>
+>>>>>> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+>>>>>> index 4958cc3337bc..fc379450fe74 100644
+>>>>>> --- a/fs/xfs/xfs_iomap.c
+>>>>>> +++ b/fs/xfs/xfs_iomap.c
+>>>>>> @@ -1466,12 +1466,39 @@ xfs_truncate_page(
+>>>>>>  	loff_t			pos,
+>>>>>>  	bool			*did_zero)
+>>>>>>  {
+>>>>>> +	struct xfs_mount	*mp = ip->i_mount;
+>>>>>>  	struct inode		*inode = VFS_I(ip);
+>>>>>>  	unsigned int		blocksize = i_blocksize(inode);
+>>>>>> +	int			error;
+>>>>>> +
+>>>>>> +	if (XFS_IS_REALTIME_INODE(ip))
+>>>>>> +		blocksize = XFS_FSB_TO_B(mp, mp->m_sb.sb_rextsize);
+>>>>>
+>>>>> Don't opencode xfs_inode_alloc_unitsize, please.
+>>>>
+>>>> Ha, I missed the latest added helper, thanks for pointing this out.
+>>>>
+>>>>>
+>>>>>> +
+>>>>>> +	/*
+>>>>>> +	 * iomap won't detect a dirty page over an unwritten block (or a
+>>>>>> +	 * cow block over a hole) and subsequently skips zeroing the
+>>>>>> +	 * newly post-EOF portion of the page. Flush the new EOF to
+>>>>>> +	 * convert the block before the pagecache truncate.
+>>>>>> +	 */
+>>>>>> +	error = filemap_write_and_wait_range(inode->i_mapping, pos,
+>>>>>> +					     roundup_64(pos, blocksize));
+>>>>>> +	if (error)
+>>>>>> +		return error;pos_in_block
+>>>>>
+>>>>> Ok so this is hoisting the filemap_write_and_wait_range call from
+>>>>> xfs_setattr_size.  It's curious that we need to need to twiddle anything
+>>>>> other than the EOF block itself though?
+>>>>
+>>>> Since we planed to zero out the dirtied range which is ailgned to the
+>>>> extsize instead of the blocksize, ensure one block is not unwritten is
+>>>> not enough, we should also make sure that the range which is going to
+>>>> zero out is not unwritten, or else the iomap_zero_iter() will skip
+>>>> zeroing out the extra blocks.
+>>>>
+>>>> For example:
+>>>>
+>>>> before zeroing:
+>>>>            |<-    extszie   ->|
+>>>>         ...dddddddddddddddddddd
+>>>>         ...UUUUUUUUUUUUUUUUUUUU
+>>>>            ^                  ^
+>>>>         new EOF             old EOF    (where 'd' means the pagecache is dirty)
+>>>>
+>>>> if we only flush the new EOF block, the result becomes:
+>>>>
+>>>>            |<-    extszie   ->|
+>>>>            zddddddddddddddddddd
+>>>>            ZUUUUUUUUUUUUUUUUUUU
+>>>>            ^                  ^
+>>>>         new EOF             old EOF
+>>>>
+>>>>
+>>>> then the dirty extent range that between new EOF block and the old EOF
+>>>> block can't be zeroed sine it's still unwritten. So we have to flush the
+>>>> whole range before zeroing out.
+>>>
+>>> "Z" on the second line of the second diagram is a written fsblock with
+>>> the tail zeroed, correct?
+>>
+>> Yeah,
+>>
+>>>
+>>> truncate_setsize -> truncate_pagecache unmaps all the pagecache after
+>>> the eof folio and unconditionally zeroes the tail of the eof folio
+>>> without regard to the mappings.  Doesn't that cover us here?  After the
+>>> truncate_setsize finishes, won't we end up in this state:
+>>>
+>>>            |<-   rextsize   ->|
+>>>            zzzzzzzz               
+>>>            ZUUUUUUUUUUUUUUUUUUU
+>>>            ^      ^           ^
+>>>         new EOF   |         old EOF
+>>>                   folio boundary
+>>>
+>>
+>> Yeah, this case is fine, but the below case is not fine.
+>>
+>> truncate                          write back
+>> xfs_setattr_size()
+>>  xfs_truncate_page()
+>>   filemap_write_and_wait_range(newsize, newsize) <- A
+>>   iomap_zero_range() <- B
+>>                                   flush dirty pages <- C
+>>  truncate_setsize() <- D
+>>
+>> Please assume if a concurrent write back happenes just before
+>> truncate_setsize(), the state of the file changes as below:
+>>
+>> A:
+>>               |<-    extszie   ->|
+>>               wddddddddddddddddddd (pagecache)
+>>               WUUUUUUUUUUUUUUUUUUU (disk)
+>>               ^                  ^
+>>            (new EOF)           old EOF  (where 'd' means the pagecache is dirty)
+>>                                         (where 'x' means the pagecache contianes user data)
+> 
+> "W", not "x", as you noted.
+> 
+>>
+>> B:
+>>               |<-    extszie   ->|
+>>               zddddddddddddddddddd
+>>               ZUUUUUUUUUUUUUUUUUUU
+>>               ^                  ^
+>>            (new EOF)           old EOF  (where 'z' means the pagecache is zero)
+>>
+>> C:
+>>               |<-    extszie   ->|
+>>               zwwwwwwwwwwwwwwwwwww
+>>               ZWWWWWWWWWWWWWWWWWWW
+>>               ^                  ^
+>>            (new EOF)           old EOF
+>>
+>> D:
+>>               |<-    extszie   ->|
+>>               zzzzzzzzz
+>>               ZWWWWWWWWWWWWWWWWWWW
+>>               ^       ^          ^
+>>             new EOF   |       (old EOF)
+>>                       folio boundary
+> 
+> Hmm.  At point D we still hold i_rwsem and the invalidate_lock, so could
+> we convert the underlying blocks to unwritten here instead of writing
+> them all out?  Once we reduce i_size, writeback will stop at EOF, right?
+> 
+> D:
+>               |<-    extszie   ->|
+>               zzzzzzzzz
+>               ZUUUUUUUUUUUUUUUUUUU
+>               ^       ^          ^
+>             new EOF   |       (old EOF)
+>                       folio boundary
+> 
 
-	1. change iomap_zero_range() to do the right thing with
-	dirty unwritten and cow extents (the patch I've been working
-	on).
+Yeah.
 
-	2. pass the range to be zeroed into iomap_truncate_page()
-	(the fundamental change being made here).
+Thanks,
+Yi.
 
-	3. zero the required range *through the page cache*
-	(iomap_zero_range() already does this).
+>>
+>>>>>
+>>>>>>  
+>>>>>>  	if (IS_DAX(inode))
+>>>>>> -		return dax_truncate_page(inode, pos, blocksize, did_zero,
+>>>>>> -					&xfs_dax_write_iomap_ops);
+>>>>>> -	return iomap_truncate_page(inode, pos, blocksize, did_zero,
+>>>>>> -				   &xfs_buffered_write_iomap_ops);
+>>>>>> +		error = dax_truncate_page(inode, pos, blocksize, did_zero,
+>>>>>> +					  &xfs_dax_write_iomap_ops);
+>>>>>> +	else
+>>>>>> +		error = iomap_truncate_page(inode, pos, blocksize, did_zero,
+>>>>>> +					    &xfs_buffered_write_iomap_ops);
+>>>>>> +	if (error)
+>>>>>> +		return error;
+>>>>>> +
+>>>>>> +	/*
+>>>>>> +	 * Write back path won't write dirty blocks post EOF folio,
+>>>>>> +	 * flush the entire zeroed range before updating the inode
+>>>>>> +	 * size.
+>>>>>> +	 */
+>>>>>> +	return filemap_write_and_wait_range(inode->i_mapping, pos,
+>>>>>> +					    roundup_64(pos, blocksize));
+>>>>>
+>>>>> ...but what is the purpose of the second filemap_write_and_wait_range
+>>>>> call?  Is that to flush the bytes between new and old EOF to disk before
+>>>>> truncate_setsize invalidates the (zeroed) pagecache?
+>>>>>
+>>>>
+>>>> The second filemap_write_and_wait_range() call is used to make sure that
+>>>> the zeroed data be flushed to disk before we updating i_size. If we don't
+>>>> add this one, once the i_size is been changed, the zeroed data which
+>>>> beyond the new EOF folio(block) couldn't be write back, because
+>>>> iomap_writepage_map()->iomap_writepage_handle_eof() skip that range, so
+>>>> the stale data problem is still there.
+>>>>
+>>>> For example:
+>>>>
+>>>> before zeroing:
+>>>>            |<-    extszie   ->|
+>>>>            wwwwwwwwwwwwwwwwwwww (pagecache)
+>>>>         ...WWWWWWWWWWWWWWWWWWWW (disk)
+>>>>            ^                  ^
+>>>>         new EOF               EOF   (where 'w' means the pagecache contains data)
+>>>>
+>>>> then iomap_truncate_page() zeroing out the pagecache:
+>>>>
+>>>>            |<-    extszie   ->|
+>>>>            zzzzzzzzzzzzzzzzzzzz (pagecache)
+>>>>            WWWWWWWWWWWWWWWWWWWW (disk)
+>>>>            ^                  ^
+>>>>         new EOF               EOF
+>>>>
+>>>> then update i_size, sync and drop cache:
+>>>>
+>>>>            |<-    extszie   ->|
+>>>>            ZWWWWWWWWWWWWWWWWWWW (disk)
+>>>>            ^
+>>>>            EOF
+>>>
+>>> <nod> Ok, so this second call to filemap_write_and_wait_range flushes
+>>> the newly written pagecache to disk.  If it doesn't work to
+>>> force-convert the tail fsblocks of the rtextent to unwritten status,
+>>> then I suppose this is necessary if @blocksize != mp->m_sb.blocksize.
+>>>
+>>> --D
+>>>
+>>>> Thanks,
+>>>> Yi.
+>>>>
+>>>>>
+>>>>>>  }
+>>>>>> diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
+>>>>>> index 66f8c47642e8..baeeddf4a6bb 100644
+>>>>>> --- a/fs/xfs/xfs_iops.c
+>>>>>> +++ b/fs/xfs/xfs_iops.c
+>>>>>> @@ -845,16 +845,6 @@ xfs_setattr_size(
+>>>>>>  		error = xfs_zero_range(ip, oldsize, newsize - oldsize,
+>>>>>>  				&did_zeroing);
+>>>>>>  	} else {
+>>>>>> -		/*
+>>>>>> -		 * iomap won't detect a dirty page over an unwritten block (or a
+>>>>>> -		 * cow block over a hole) and subsequently skips zeroing the
+>>>>>> -		 * newly post-EOF portion of the page. Flush the new EOF to
+>>>>>> -		 * convert the block before the pagecache truncate.
+>>>>>> -		 */
+>>>>>> -		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
+>>>>>> -						     newsize);
+>>>>>> -		if (error)
+>>>>>> -			return error;
+>>>>>>  		error = xfs_truncate_page(ip, newsize, &did_zeroing);
+>>>>>>  	}
+>>>>>>  
+>>>>>> -- 
+>>>>>> 2.39.2
+>>>>>>
+>>>>>>
+>>>>
+>>>>
+>>
+>>
 
-	4. write back the XFS inode from ip->i_disk_size to the end
-	of the range zeroed by iomap_truncate_page()
-	(xfs_setattr_size() already does this).
-
-	5. i_size_write(newsize);
-
-	6. invalidate_inode_pages2_range(newsize, -1) to trash all
-	the page cache beyond the new EOF without doing any zeroing
-	as we've already done all the zeroing needed to the page
-	cache through iomap_truncate_page().
-
-
-The patch I'm working on for step 1 is below. It still needs to be
-extended to handle the cow case, but I'm unclear on how to exercise
-that case so I haven't written the code to do it. The rest of it is
-just rearranging the code that we already use just to get the order
-of operations right. The only notable change in behaviour is using
-invalidate_inode_pages2_range() instead of truncate_pagecache(),
-because we don't want the EOF page to be dirtied again once we've
-already written zeroes to disk....
-
--- 
-Dave Chinner
-david@fromorbit.com
-
-
-[RFC] iomap: zeroing needs to be pagecache aware
-
-From: Dave Chinner <dchinner@redhat.com>
-
-Unwritten extents can have page cache data over the range being
-zeroed so we can't just skip them entirely. Fix this by checking for
-an existing dirty folio over the unwritten range we are zeroing
-and only performing zeroing if the folio is already dirty.
-
-XXX: how do we detect a iomap containing a cow mapping over a hole
-in iomap_zero_iter()? The XFS code implies this case also needs to
-zero the page cache if there is data present, so trigger for page
-cache lookup only in iomap_zero_iter() needs to handle this case as
-well.
-
-Before:
-
-$ time sudo ./pwrite-trunc /mnt/scratch/foo 50000
-path /mnt/scratch/foo, 50000 iters
-
-real    0m14.103s
-user    0m0.015s
-sys     0m0.020s
-
-$ sudo strace -c ./pwrite-trunc /mnt/scratch/foo 50000
-path /mnt/scratch/foo, 50000 iters
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 85.90    0.847616          16     50000           ftruncate
- 14.01    0.138229           2     50000           pwrite64
-....
-
-After:
-
-$ time sudo ./pwrite-trunc /mnt/scratch/foo 50000
-path /mnt/scratch/foo, 50000 iters
-
-real    0m0.144s
-user    0m0.021s
-sys     0m0.012s
-
-$ sudo strace -c ./pwrite-trunc /mnt/scratch/foo 50000
-path /mnt/scratch/foo, 50000 iters
-% time     seconds  usecs/call     calls    errors syscall
------- ----------- ----------- --------- --------- ----------------
- 53.86    0.505964          10     50000           ftruncate
- 46.12    0.433251           8     50000           pwrite64
-....
-
-Yup, we get back all the performance.
-
-As for the "mmap write beyond EOF" data exposure aspect
-documented here:
-
-https://lore.kernel.org/linux-xfs/20221104182358.2007475-1-bfoster@redhat.com/
-
-With this command:
-
-$ sudo xfs_io -tfc "falloc 0 1k" -c "pwrite 0 1k" \
-  -c "mmap 0 4k" -c "mwrite 3k 1k" -c "pwrite 32k 4k" \
-  -c fsync -c "pread -v 3k 32" /mnt/scratch/foo
-
-Before:
-
-wrote 1024/1024 bytes at offset 0
-1 KiB, 1 ops; 0.0000 sec (34.877 MiB/sec and 35714.2857 ops/sec)
-wrote 4096/4096 bytes at offset 32768
-4 KiB, 1 ops; 0.0000 sec (229.779 MiB/sec and 58823.5294 ops/sec)
-00000c00:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
-00000c10:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
-read 32/32 bytes at offset 3072
-32.000000 bytes, 1 ops; 0.0000 sec (568.182 KiB/sec and 18181.8182 ops/sec
-
-After:
-
-wrote 1024/1024 bytes at offset 0
-1 KiB, 1 ops; 0.0000 sec (40.690 MiB/sec and 41666.6667 ops/sec)
-wrote 4096/4096 bytes at offset 32768
-4 KiB, 1 ops; 0.0000 sec (150.240 MiB/sec and 38461.5385 ops/sec)
-00000c00:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-00000c10:  00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00  ................
-read 32/32 bytes at offset 3072
-32.000000 bytes, 1 ops; 0.0000 sec (558.036 KiB/sec and 17857.1429 ops/sec)
-
-We see that this post-eof unwritten extent dirty page zeroing is
-working correctly.
-
-This has passed through most of fstests on a couple of test VMs
-without issues at the moment, so I think this approach to fixing the
-issue is going to be solid once we've worked out how to detect the
-COW-hole mapping case.
-
-Signed-off-by: Dave Chinner <dchinner@redhat.com>
----
- fs/iomap/buffered-io.c | 42 ++++++++++++++++++++++++++++++++++++++++--
- fs/xfs/xfs_iops.c      | 12 +-----------
- 2 files changed, 41 insertions(+), 13 deletions(-)
-
-diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-index 4e8e41c8b3c0..6877474de0c9 100644
---- a/fs/iomap/buffered-io.c
-+++ b/fs/iomap/buffered-io.c
-@@ -583,11 +583,23 @@ EXPORT_SYMBOL_GPL(iomap_is_partially_uptodate);
-  *
-  * Returns a locked reference to the folio at @pos, or an error pointer if the
-  * folio could not be obtained.
-+ *
-+ * Note: when zeroing unwritten extents, we might have data in the page cache
-+ * over an unwritten extent. In this case, we want to do a pure lookup on the
-+ * page cache and not create a new folio as we don't need to perform zeroing on
-+ * unwritten extents if there is no cached data over the given range.
-  */
- struct folio *iomap_get_folio(struct iomap_iter *iter, loff_t pos, size_t len)
- {
- 	fgf_t fgp = FGP_WRITEBEGIN | FGP_NOFS;
- 
-+	if (iter->flags & IOMAP_ZERO) {
-+		const struct iomap *srcmap = iomap_iter_srcmap(iter);
-+
-+		if (srcmap->type == IOMAP_UNWRITTEN)
-+			fgp &= ~FGP_CREAT;
-+	}
-+
- 	if (iter->flags & IOMAP_NOWAIT)
- 		fgp |= FGP_NOWAIT;
- 	fgp |= fgf_set_order(len);
-@@ -1375,7 +1387,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
- 	loff_t written = 0;
- 
- 	/* already zeroed?  we're done. */
--	if (srcmap->type == IOMAP_HOLE || srcmap->type == IOMAP_UNWRITTEN)
-+	if (srcmap->type == IOMAP_HOLE)
- 		return length;
- 
- 	do {
-@@ -1385,8 +1397,22 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
- 		size_t bytes = min_t(u64, SIZE_MAX, length);
- 
- 		status = iomap_write_begin(iter, pos, bytes, &folio);
--		if (status)
-+		if (status) {
-+			if (status == -ENOENT) {
-+				/*
-+				 * Unwritten extents need to have page cache
-+				 * lookups done to determine if they have data
-+				 * over them that needs zeroing. If there is no
-+				 * data, we'll get -ENOENT returned here, so we
-+				 * can just skip over this index.
-+				 */
-+				WARN_ON_ONCE(srcmap->type != IOMAP_UNWRITTEN);
-+				if (bytes > PAGE_SIZE - offset_in_page(pos))
-+					bytes = PAGE_SIZE - offset_in_page(pos);
-+				goto loop_continue;
-+			}
- 			return status;
-+		}
- 		if (iter->iomap.flags & IOMAP_F_STALE)
- 			break;
- 
-@@ -1394,6 +1420,17 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
- 		if (bytes > folio_size(folio) - offset)
- 			bytes = folio_size(folio) - offset;
- 
-+		/*
-+		 * If the folio over an unwritten extent is clean (i.e. because
-+		 * it has been read from), then it already contains zeros. Hence
-+		 * we can just skip it.
-+		 */
-+		if (srcmap->type == IOMAP_UNWRITTEN &&
-+		    !folio_test_dirty(folio)) {
-+			folio_unlock(folio);
-+			goto loop_continue;
-+		}
-+
- 		folio_zero_range(folio, offset, bytes);
- 		folio_mark_accessed(folio);
- 
-@@ -1401,6 +1438,7 @@ static loff_t iomap_zero_iter(struct iomap_iter *iter, bool *did_zero)
- 		if (WARN_ON_ONCE(bytes == 0))
- 			return -EIO;
- 
-+loop_continue:
- 		pos += bytes;
- 		length -= bytes;
- 		written += bytes;
-diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-index 8a145ca7d380..e8c9f3018c80 100644
---- a/fs/xfs/xfs_iops.c
-+++ b/fs/xfs/xfs_iops.c
-@@ -838,17 +838,7 @@ xfs_setattr_size(
- 		trace_xfs_zero_eof(ip, oldsize, newsize - oldsize);
- 		error = xfs_zero_range(ip, oldsize, newsize - oldsize,
- 				&did_zeroing);
--	} else {
--		/*
--		 * iomap won't detect a dirty page over an unwritten block (or a
--		 * cow block over a hole) and subsequently skips zeroing the
--		 * newly post-EOF portion of the page. Flush the new EOF to
--		 * convert the block before the pagecache truncate.
--		 */
--		error = filemap_write_and_wait_range(inode->i_mapping, newsize,
--						     newsize);
--		if (error)
--			return error;
-+	} else if (newsize != oldsize) {
- 		error = xfs_truncate_page(ip, newsize, &did_zeroing);
- 	}
- 
 
