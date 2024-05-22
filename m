@@ -1,149 +1,161 @@
-Return-Path: <linux-ext4+bounces-2627-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2628-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C88B28CC23D
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2024 15:36:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 356378CC2BD
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2024 16:03:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7764B1F225FA
-	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2024 13:36:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3277D1C21802
+	for <lists+linux-ext4@lfdr.de>; Wed, 22 May 2024 14:03:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC9FA13FD91;
-	Wed, 22 May 2024 13:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E62213DBBD;
+	Wed, 22 May 2024 14:03:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="G46JFn8v"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RzWT3O3N"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8147913F44F
-	for <linux-ext4@vger.kernel.org>; Wed, 22 May 2024 13:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4467B6AB9;
+	Wed, 22 May 2024 14:02:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716384987; cv=none; b=kFJWMcoorE8w11stzLwo859AFehX6nORWaa6lpBox5PuTFL36rPWcECH02Z9WmWDgI70LwileIShar22obb6SC6zxjjRin3ST1zW+y+iOK0ka0/qnPRBS2jbtIaSOe31MDd59wEycSeS/ygZEQhLiE825CLg95jolNn5TSC4O60=
+	t=1716386580; cv=none; b=CHLhs1Z1sx4JQUnY9zAk5/SXwJzUxCT4RRxexy8DCuV8W3ex12rNi3RbT6KlgWcZlIrIyuo0eXxUUdJRQT+ZvgQ74aBByGIOt5FkqedpptGU14xBLF1YOFWxkxzknPYxfJInP47Y8Z5KxyLdzmyTvMNWbVVVvlD/99CIGYvIlkU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716384987; c=relaxed/simple;
-	bh=X2q+erCbtf0RX//GWfLitE9ugYmfB1kEk0t5QNdVhLk=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=R0mxAL4OyjX/b60Zdn61+q9vplT/tDbyTTWHQJyijqC6fPTybVEZwEhRIJDDmExc6cHCseRZjtBlKeSgchzcuTvPloIsBi6pHZO48GfTlplYnZBQAdwEM9QoYkSpjFsw2mb4SAkmFjN3SNfW2H47HruKPsNh3GetEC3kRUgpJiw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=G46JFn8v; arc=none smtp.client-ip=95.215.58.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: jack@suse.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716384982;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=rf2l+EHzhy6R8RE6vUeAIdMlv+BvfdFWYb4Q53DjI38=;
-	b=G46JFn8v39NdRGMGD8xcLanitZUpg1k4yR0eYud2rHt+Q0xg2M6dKHfTYqgI/S3JgVW7vo
-	5GdO4vMb+e1/ks2hUAxLhy5QP3CUtyJu9+l8Yjm3pa5zI91xpoCj8rh38e345XrjQOfTgn
-	pxTRFbutsFXl1eEvdWO4+Mf8QEnT+jM=
-X-Envelope-To: jack@suse.com
-X-Envelope-To: tytso@mit.edu
-X-Envelope-To: linux-ext4@vger.kernel.org
-X-Envelope-To: adilger@dilger.ca
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: luis.henriques@linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Luis Henriques <luis.henriques@linux.dev>
-To: Jan Kara <jack@suse.cz>
-Cc: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>,  Theodore Ts'o
- <tytso@mit.edu>,  Andreas Dilger <adilger@dilger.ca>,  Jan Kara
- <jack@suse.com>,  linux-ext4@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] jbd2: reset fast commit offset only after fs
- cleanup is done
-In-Reply-To: <20240522104500.z343a6xqfduuq5i3@quack3> (Jan Kara's message of
-	"Wed, 22 May 2024 12:45:00 +0200")
-References: <20240521154535.12911-1-luis.henriques@linux.dev>
-	<20240521154535.12911-3-luis.henriques@linux.dev>
-	<20240522104500.z343a6xqfduuq5i3@quack3>
-Date: Wed, 22 May 2024 14:36:20 +0100
-Message-ID: <87le42dl4b.fsf@brahms.olymp>
+	s=arc-20240116; t=1716386580; c=relaxed/simple;
+	bh=7kTG5ts3OQOCh1/2XvqX0aVjJCkbUUXFDVmo08IThCA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RN9i224W7/nO0zPkOONx4qcvOQfzCY0Pk+9rg7BnU8hXlz3Ud+6oPEYf4Rd8Rlv4MMzZqL2TtKpCDJCSx7IFlCa7ARMFsgRXZZrUqscDu5sZYtk+bwhqfEA/u6QA1/FUeo733IHTlT3RI5DZcrFPIvsCtBHUqE2wFC9qg8PqORM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RzWT3O3N; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1716386575;
+	bh=7kTG5ts3OQOCh1/2XvqX0aVjJCkbUUXFDVmo08IThCA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RzWT3O3NZ1dwV9M2JHbVSngE4q1VPMGXCXBpUQq11qZ2XeiDQmS47vXNKh45ByruT
+	 Cm7JT6sfDFXS8Fa1W3bTnt3tZ9zNI/4VVsOPEWAheGA84yHB0+QR9/vD8ZNCY2muQ/
+	 v20AlPXWqnAAZMWBoRd+unQh0zXE48VBkyjei/Zf3ZYkSL3XFlGcPWwHE8Ok//AO6Q
+	 EPl3BQhtDjJXhDQI8sWI8BAIxBLQHJBirIfmH+vA9Mkyzu/ded0oeTF8nT7FYY4Trp
+	 PMDbOHmF6JipmDBsBTOZtMmW4ktp9wbt35v3TgXmqkNsRi9LocM4J3Mc0RmJzFxtxt
+	 SKCoSTO0+zKlA==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4991137821B3;
+	Wed, 22 May 2024 14:02:54 +0000 (UTC)
+Message-ID: <9afebadd-765f-42f3-a80b-366dd749bf48@collabora.com>
+Date: Wed, 22 May 2024 17:02:53 +0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v16 3/9] libfs: Introduce case-insensitive string
+ comparison helper
+To: Gabriel Krisman Bertazi <krisman@suse.de>,
+ Eric Biggers <ebiggers@kernel.org>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ jaegeuk@kernel.org, chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, Gabriel Krisman Bertazi <krisman@collabora.com>
+References: <20240405121332.689228-1-eugen.hristev@collabora.com>
+ <20240405121332.689228-4-eugen.hristev@collabora.com>
+ <20240510013330.GI1110919@google.com> <875xviyb3f.fsf@mailhost.krisman.be>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <875xviyb3f.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Wed 22 May 2024 12:45:00 PM +02, Jan Kara wrote;
+On 5/13/24 00:27, Gabriel Krisman Bertazi wrote:
+> Eric Biggers <ebiggers@kernel.org> writes:
+> 
+>> On Fri, Apr 05, 2024 at 03:13:26PM +0300, Eugen Hristev wrote:
+> 
+>>> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
+>>> +			return -EINVAL;
+>>> +
+>>> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
+>>> +		if (!decrypted_name.name)
+>>> +			return -ENOMEM;
+>>> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
+>>> +						&decrypted_name);
+>>> +		if (res < 0)
+>>> +			goto out;
+>>
+>> If fscrypt_fname_disk_to_usr() returns an error and !sb_has_strict_encoding(sb),
+>> then this function returns 0 (indicating no match) instead of the error code
+>> (indicating an error).  Is that the correct behavior?  I would think that
+>> strict_encoding should only have an effect on the actual name
+>> comparison.
+> 
+> No. we *want* this return code to be propagated back to f2fs.  In ext4 it
+> wouldn't matter since the error is not visible outside of ext4_match,
+> but f2fs does the right thing and stops the lookup.
 
-> On Tue 21-05-24 16:45:35, Luis Henriques (SUSE) wrote:
->> When doing a journal commit, the fast journal offset (journal->j_fc_off) is
->> set to zero too early in the process.  Since ext4 filesystem calls function
->> jbd2_fc_release_bufs() in its j_fc_cleanup_callback (ext4_fc_cleanup()),
->> that call will be a no-op exactly because the offset is zero.
->> 
->> Move the fast commit offset further down in the journal commit code, until
->> it's mostly done, immediately before clearing the on-going commit flags.
->> 
->> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
->
-> Did you see any particular failure because of this? Because AFAICS the
-> buffers cleaned up by jbd2_fc_release_bufs() are only allocated during fast
-> commit (from ext4_fc_reserve_space()). And the code in
-> jbd2_journal_commit_transaction() is making sure fast commit isn't running
-> before we set journal->j_fc_off to 0.
+In the previous version which I sent, you told me that the error should be
+propagated only in strict_mode, and if !strict_mode, it should just return no match.
+Originally I did not understand that this should be done only for utf8_strncasecmp
+errors, and not for all the errors. I will change it here to fix that.
 
-No, I did not see any failure caused by this, this patch is simply based
-on my understanding of the code after spending some time reviewing it.
+> 
+> Thinking about it, there is a second problem with this series.
+> Currently, if we are on strict_mode, f2fs_match_ci_name does not
+> propagate unicode errors back to f2fs. So, once a utf8 invalid sequence
+> is found during lookup, it will be considered not-a-match but the lookup
+> will continue.  This allows some lookups to succeed even in a corrupted
+> directory.  With this patch, we will abort the lookup on the first
+> error, breaking existing semantics.  Note that these are different from
+> memory allocation failure and fscrypt_fname_disk_to_usr. For those, it
+> makes sense to abort.
 
-The problem I saw was that jbd2_journal_commit_transaction() will run the
-clean-up callbacks, which includes ext4_fc_cleanup().  One of the first
-things that this callback will do is to call jbd2_fc_release_bufs().
-Because journal->j_fc_off is zero, this call is useless:
+So , in the case of f2fs , we must not propagate utf8 errors ? It should just
+return no match even in strict mode ?
+If this helper is common for both f2fs and ext4, we have to do the same for ext4 ?
+Or we are no longer able to commonize the code altogether ?
+> 
+> Also, once patch 6 and 7 are added, if fscrypt fails with -EINVAL for
+> any reason unrelated to unicode (like in the WARN_ON above), we will
+> incorrectly print the error message saying there is a bad UTF8 string.
+> 
+> My suggestion would be to keep the current behavior.  Make
+> generic_ci_match only propagate non-unicode related errors back to the
+> filesystem.  This means that we need to move the error messages in patch
+> 6 and 7 into this function, so they only trigger when utf8_strncasecmp*
+> itself fails.
+> 
 
-	j_fc_off = journal->j_fc_off;
+So basically unicode errors stop here, and print the error message here in that case.
+Am I understanding it correctly ?
+>>> +	/*
+>>> +	 * Attempt a case-sensitive match first. It is cheaper and
+>>> +	 * should cover most lookups, including all the sane
+>>> +	 * applications that expect a case-sensitive filesystem.
+>>> +	 */
+>>> +	if (folded_name->name) {
+>>> +		if (dirent.len == folded_name->len &&
+>>> +		    !memcmp(folded_name->name, dirent.name, dirent.len))
+>>> +			goto out;
+>>> +		res = utf8_strncasecmp_folded(um, folded_name, &dirent);
+>>
+>> Shouldn't the memcmp be done with the original user-specified name, not the
+>> casefolded name?  I would think that the user-specified name is the one that's
+>> more likely to match the on-disk name, because of case preservation.  In most
+>> cases users will specify the same case on both file creation and later access.
+> 
+> Yes.
+> 
+so the utf8_strncasecmp_folded call here must use name->name instead of folded_name ?
 
-	for (i = j_fc_off - 1; i >= 0; i--) {
-		[...]
-	}
+Thanks for the review
+Eugen
 
-(It's even a bit odd to start the loop with 'i = -1'...)
-
-So the question is whether this call is actually useful at all.  Maybe the
-thing to do is to simply remove the call to jbd2_fc_release_bufs()?  (And
-in that case, remove the function too, as this is the only call site.)
-
-Cheers,
--- 
-Luis
-
->
-> 								Honza
->
->> ---
->>  fs/jbd2/commit.c | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->> 
->> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
->> index 75ea4e9a5cab..88b834c7c9c9 100644
->> --- a/fs/jbd2/commit.c
->> +++ b/fs/jbd2/commit.c
->> @@ -435,7 +435,6 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->>  			commit_transaction->t_tid);
->>  
->>  	write_lock(&journal->j_state_lock);
->> -	journal->j_fc_off = 0;
->>  	J_ASSERT(commit_transaction->t_state == T_RUNNING);
->>  	commit_transaction->t_state = T_LOCKED;
->>  
->> @@ -1133,6 +1132,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->>  		  journal->j_commit_sequence, journal->j_tail_sequence);
->>  
->>  	write_lock(&journal->j_state_lock);
->> +	journal->j_fc_off = 0;
->>  	journal->j_flags &= ~JBD2_FULL_COMMIT_ONGOING;
->>  	journal->j_flags &= ~JBD2_FAST_COMMIT_ONGOING;
->>  	spin_lock(&journal->j_list_lock);
->> 
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
 
