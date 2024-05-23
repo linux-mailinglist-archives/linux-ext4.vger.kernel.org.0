@@ -1,135 +1,178 @@
-Return-Path: <linux-ext4+bounces-2635-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2636-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F0C9C8CCEA1
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 10:53:06 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 556148CD112
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 13:16:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2C9A91C20F5D
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 08:53:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DEEF1F21321
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 11:16:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 151ED13CFB7;
-	Thu, 23 May 2024 08:52:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396CE146A84;
+	Thu, 23 May 2024 11:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VHb0oO4z"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oL5myX0a"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-172.mta0.migadu.com (out-172.mta0.migadu.com [91.218.175.172])
+Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F56C13CA89
-	for <linux-ext4@vger.kernel.org>; Thu, 23 May 2024 08:52:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1177D1465A6
+	for <linux-ext4@vger.kernel.org>; Thu, 23 May 2024 11:16:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716454364; cv=none; b=NtoCjFOmAeT4IkVoaZwYU5H8OmHo4eKVt+v5O1gb9rSVsXp3LNWvwa+yCmib6WQFoo+khu1Ee8QyUYoSmcAAKAvkyff4v3/0NnTof+e7/6FWhPRCxL0I6rQmrSQzV4I/CtPASrvFBMSpcj9nV8QxfeOsMAo9tRNkj0AGHinHjhI=
+	t=1716462987; cv=none; b=RJdvJXF6WqnXVph0Uk6lVwPLyF2kJxik1ZzA0si8ENNlYAnD/5wijKJwPtXOT560pmNNv+zlpC09Oz5ROCW50c7fL0u492geaNMgjoiJOH8ppBhoARMOVYlrNmOkQCFVn4K/rZegm6IQXbsbZiDev3Nk01tTMGG/UyqlWcwhmwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716454364; c=relaxed/simple;
-	bh=Ne8K3aZIklrSsnXiC2eKNCa51ju/79uUNxOtDo/KL88=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=np3P6ozvSEpqEjBIHm6a1LedUq1YKcS+xP1W7OcBMoUfxtR6wjb56hz0gZntjcrABdJHnz4siXoA6PUUfkMZONE+N3toYbp32au6hWdRjxPzpTWyYC2JdPW2GkI4NDhjIP7oWaUbmssHXkVhzHbjd+A9mPRiH6jQxtMPeY/l4KI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VHb0oO4z; arc=none smtp.client-ip=91.218.175.172
+	s=arc-20240116; t=1716462987; c=relaxed/simple;
+	bh=NtWHZ0S6uruFC/CoeNcH7BzMxeAQxoesFu6LY3wrFvk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fW/XPi8vaUQLfEz2He9u1CIZYA1rukkLEF/dk7HdFWFtvBMGREN+mtH3zNOhvudARYZYXrPDTN/EedtL9LW0y5csEe+6LJVhz/PHbHDsgeI+6oGVUFdSAaC9e01e8lhtdGrK8uycmRwMQyBnHMhOD8vR6bNTHxYUfefcmGLgqoE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oL5myX0a; arc=none smtp.client-ip=95.215.58.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Envelope-To: tytso@mit.edu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716454360;
+	t=1716462983;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7wET50NqYkTKouiyULS5A8Rly72qStBQjSusl5+Kp6g=;
-	b=VHb0oO4ziDGfLYG2tedWj5KU0fXc704vWqP3wZ0XLeVkY861wUWrGV4FZp3PC+Vx9rSqZ1
-	SAgO6AUSMPYqWo6fteQbx36X6BV8xO1FAL7gH4dS9pDLm/x6e77efP/Tq30q2XuFfny2RA
-	5wqX8MEWED6HAW9hxLEcNrZB8xUXM/Y=
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=rXeNfA493tYgxtMQKHtku9ZfX9GDeRnviC1JlvIusEI=;
+	b=oL5myX0akLeu28dNXLuCXviIdU85moWLY/axN+6K/ezP8uvxYpAI9O7+pEvGIPuYYayRrr
+	cid50YYRVnidbC/3qyJCL7cYBseBxso9qItaFS3W+IfHRpvnFvpDBaJikFuD8vhRmsP7aI
+	QhRJORjhuBVyDtNNP+nRLHwEHzmTfBA=
+X-Envelope-To: jack@suse.cz
+X-Envelope-To: adilger@dilger.ca
+X-Envelope-To: harshadshirwadkar@gmail.com
 X-Envelope-To: linux-kernel@vger.kernel.org
 X-Envelope-To: linux-ext4@vger.kernel.org
 X-Envelope-To: luis.henriques@linux.dev
-X-Envelope-To: jack@suse.com
-X-Envelope-To: adilger@dilger.ca
-X-Envelope-To: jack@suse.cz
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Luis Henriques <luis.henriques@linux.dev>
-To: Jan Kara <jack@suse.cz>
-Cc: Luis Henriques <luis.henriques@linux.dev>,  Theodore Ts'o
- <tytso@mit.edu>,  Andreas Dilger <adilger@dilger.ca>,  Jan Kara
- <jack@suse.com>,  linux-ext4@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH 2/2] jbd2: reset fast commit offset only after fs
- cleanup is done
-In-Reply-To: <20240523074434.xdpyso46v5l6qvze@quack3> (Jan Kara's message of
-	"Thu, 23 May 2024 09:44:34 +0200")
-References: <20240521154535.12911-1-luis.henriques@linux.dev>
-	<20240521154535.12911-3-luis.henriques@linux.dev>
-	<20240522104500.z343a6xqfduuq5i3@quack3> <87le42dl4b.fsf@brahms.olymp>
-	<20240523074434.xdpyso46v5l6qvze@quack3>
-Date: Thu, 23 May 2024 09:52:32 +0100
-Message-ID: <87wmnk3o6n.fsf@brahms.olymp>
+From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Jan Kara <jack@suse.cz>,
+	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Subject: [PATCH v2] ext4: fix fast commit inode enqueueing during a full journal commit
+Date: Thu, 23 May 2024 12:16:18 +0100
+Message-ID: <20240523111618.17012-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-On Thu 23 May 2024 09:44:34 AM +02, Jan Kara wrote;
+When a full journal commit is on-going, any fast commit has to be enqueued
+into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
+is done only once, i.e. if an inode is already queued in a previous fast
+commit entry it won't be enqueued again.  However, if a full commit starts
+_after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
+be done into FC_Q_STAGING.  And this is not being done in function
+ext4_fc_track_template().
 
-> On Wed 22-05-24 14:36:20, Luis Henriques wrote:
->> On Wed 22 May 2024 12:45:00 PM +02, Jan Kara wrote;
->> 
->> > On Tue 21-05-24 16:45:35, Luis Henriques (SUSE) wrote:
->> >> When doing a journal commit, the fast journal offset (journal->j_fc_off) is
->> >> set to zero too early in the process.  Since ext4 filesystem calls function
->> >> jbd2_fc_release_bufs() in its j_fc_cleanup_callback (ext4_fc_cleanup()),
->> >> that call will be a no-op exactly because the offset is zero.
->> >> 
->> >> Move the fast commit offset further down in the journal commit code, until
->> >> it's mostly done, immediately before clearing the on-going commit flags.
->> >> 
->> >> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
->> >
->> > Did you see any particular failure because of this? Because AFAICS the
->> > buffers cleaned up by jbd2_fc_release_bufs() are only allocated during fast
->> > commit (from ext4_fc_reserve_space()). And the code in
->> > jbd2_journal_commit_transaction() is making sure fast commit isn't running
->> > before we set journal->j_fc_off to 0.
->> 
->> No, I did not see any failure caused by this, this patch is simply based
->> on my understanding of the code after spending some time reviewing it.
->> 
->> The problem I saw was that jbd2_journal_commit_transaction() will run the
->> clean-up callbacks, which includes ext4_fc_cleanup().  One of the first
->> things that this callback will do is to call jbd2_fc_release_bufs().
->> Because journal->j_fc_off is zero, this call is useless:
->> 
->> 	j_fc_off = journal->j_fc_off;
->> 
->> 	for (i = j_fc_off - 1; i >= 0; i--) {
->> 		[...]
->> 	}
->> 
->> (It's even a bit odd to start the loop with 'i = -1'...)
->> 
->> So the question is whether this call is actually useful at all.  Maybe the
->> thing to do is to simply remove the call to jbd2_fc_release_bufs()?  (And
->> in that case, remove the function too, as this is the only call site.)
->
-> What is I guess confusing for you (and somewhat for me as well) is that
-> journal->j_fc_cleanup_callback() gets called from __jbd2_fc_end_commit()
-> *and* from jbd2_journal_commit_transaction(). I agree the
-> jbd2_fc_release_bufs() is useless for the call from
-> jbd2_journal_commit_transaction(), it is however needed for the call from
-> __jbd2_fc_end_commit(). There are however other bits - namely the
-> s_fc_dentry_q and s_fc_q list handling that need to happen both for normal
-> and fast commit...
+This patch fixes the issue by flagging an inode that is already enqueued in
+either queues.  Later, during the fast commit clean-up callback, if the
+inode has a tid that is bigger than the one being handled, that inode is
+re-enqueued into STAGING and the spliced back into MAIN.
 
-Oops!  I totally missed that second callback execution.  Yeah, it does
-make sense now, of course.  Sorry for the noise and thank you for looking
-into it.  I'll go back and focus on reworking on the other patch (and also
-look into Harshad's patchset).
+This bug was found using fstest generic/047.  This test creates several 32k
+bytes files, sync'ing each of them after it's creation, and then shutting
+down the filesystem.  Some data may be loss in this operation; for example a
+file may have it's size truncated to zero.
+
+Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+---
+Hi!
+
+(Now Cc'ing Harshad, as I should have done in the initial RFC.)
+
+This v2 is a complete different solution, hinted by Jan Kara.  I hope my
+understanding of his suggestion is correct.  Also, I've dropped the second
+patch as it didn't made sense, as Jan also pointed out.
+
+Finally, I haven't yet done a review of Harshad's patchset [1] (hope to
+get to it soon), but a quick test shows the issue is still present there.
+The good news is that patch can be trivially applied on top of it.
+
+[1] https://lore.kernel.org/all/20240520055153.136091-1-harshadshirwadkar@gmail.com
 
 Cheers,
--- 
+--
 Luis
+
+ fs/ext4/ext4.h        | 11 ++++++++++-
+ fs/ext4/fast_commit.c | 11 +++++++++++
+ fs/ext4/super.c       |  1 +
+ 3 files changed, 22 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 983dad8c07ec..4c308c18c3da 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1062,9 +1062,18 @@ struct ext4_inode_info {
+ 	/* Fast commit wait queue for this inode */
+ 	wait_queue_head_t i_fc_wait;
+ 
+-	/* Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len */
++	/*
++	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len,
++	 * i_fc_next
++	 */
+ 	struct mutex i_fc_lock;
+ 
++	/*
++	 * Used to flag an inode as part of the next fast commit; will be
++	 * reset during fast commit clean-up
++	 */
++	tid_t i_fc_next;
++
+ 	/*
+ 	 * i_disksize keeps track of what the inode size is ON DISK, not
+ 	 * in memory.  During truncate, i_size is set to the new size by
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 87c009e0c59a..bfdf249f0783 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -402,6 +402,8 @@ static int ext4_fc_track_template(
+ 				 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
+ 				&sbi->s_fc_q[FC_Q_STAGING] :
+ 				&sbi->s_fc_q[FC_Q_MAIN]);
++	else
++		ei->i_fc_next = tid;
+ 	spin_unlock(&sbi->s_fc_lock);
+ 
+ 	return ret;
+@@ -1280,6 +1282,15 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+ 	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
+ 				 i_fc_list) {
+ 		list_del_init(&iter->i_fc_list);
++		if (iter->i_fc_next == tid)
++			iter->i_fc_next = 0;
++		else if (iter->i_fc_next > tid)
++			/*
++			 * re-enqueue inode into STAGING, which will later be
++			 * splice back into MAIN
++			 */
++			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
++				      &sbi->s_fc_q[FC_Q_STAGING]);
+ 		ext4_clear_inode_state(&iter->vfs_inode,
+ 				       EXT4_STATE_FC_COMMITTING);
+ 		if (iter->i_sync_tid <= tid)
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 893ab80dafba..56f416656d96 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -1437,6 +1437,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
+ 	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
+ 	ext4_fc_init_inode(&ei->vfs_inode);
+ 	mutex_init(&ei->i_fc_lock);
++	ei->i_fc_next = 0;
+ 	return &ei->vfs_inode;
+ }
+ 
 
