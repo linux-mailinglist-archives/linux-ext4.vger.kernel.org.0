@@ -1,178 +1,192 @@
-Return-Path: <linux-ext4+bounces-2636-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2637-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 556148CD112
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 13:16:34 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48CCA8CD297
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 14:49:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0DEEF1F21321
-	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 11:16:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F1F2B283BBF
+	for <lists+linux-ext4@lfdr.de>; Thu, 23 May 2024 12:49:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 396CE146A84;
-	Thu, 23 May 2024 11:16:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD8E414A4F9;
+	Thu, 23 May 2024 12:49:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="oL5myX0a"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Gn0SHxIG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1177D1465A6
-	for <linux-ext4@vger.kernel.org>; Thu, 23 May 2024 11:16:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8CF1474BC;
+	Thu, 23 May 2024 12:49:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716462987; cv=none; b=RJdvJXF6WqnXVph0Uk6lVwPLyF2kJxik1ZzA0si8ENNlYAnD/5wijKJwPtXOT560pmNNv+zlpC09Oz5ROCW50c7fL0u492geaNMgjoiJOH8ppBhoARMOVYlrNmOkQCFVn4K/rZegm6IQXbsbZiDev3Nk01tTMGG/UyqlWcwhmwM=
+	t=1716468560; cv=none; b=BVhj+2wHwWxWGE1GmYZEEaXGxAiS86lAlsrY9hiUwFo/Tpgyk6a8++AJMut2vBYhWfoBDIVjauXfYrgOhnfv4JiF5g9lsjxiEqCpF0AV0pQ8msmFewxHeAhHsP1Z+FdsMNcNOLjAJ5CrgMnbEKDMZfmtfn/Kg7nuCNwX1uU7pd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716462987; c=relaxed/simple;
-	bh=NtWHZ0S6uruFC/CoeNcH7BzMxeAQxoesFu6LY3wrFvk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=fW/XPi8vaUQLfEz2He9u1CIZYA1rukkLEF/dk7HdFWFtvBMGREN+mtH3zNOhvudARYZYXrPDTN/EedtL9LW0y5csEe+6LJVhz/PHbHDsgeI+6oGVUFdSAaC9e01e8lhtdGrK8uycmRwMQyBnHMhOD8vR6bNTHxYUfefcmGLgqoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=oL5myX0a; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: tytso@mit.edu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716462983;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=rXeNfA493tYgxtMQKHtku9ZfX9GDeRnviC1JlvIusEI=;
-	b=oL5myX0akLeu28dNXLuCXviIdU85moWLY/axN+6K/ezP8uvxYpAI9O7+pEvGIPuYYayRrr
-	cid50YYRVnidbC/3qyJCL7cYBseBxso9qItaFS3W+IfHRpvnFvpDBaJikFuD8vhRmsP7aI
-	QhRJORjhuBVyDtNNP+nRLHwEHzmTfBA=
-X-Envelope-To: jack@suse.cz
-X-Envelope-To: adilger@dilger.ca
-X-Envelope-To: harshadshirwadkar@gmail.com
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: linux-ext4@vger.kernel.org
-X-Envelope-To: luis.henriques@linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger@dilger.ca>,
-	Jan Kara <jack@suse.cz>,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Subject: [PATCH v2] ext4: fix fast commit inode enqueueing during a full journal commit
-Date: Thu, 23 May 2024 12:16:18 +0100
-Message-ID: <20240523111618.17012-1-luis.henriques@linux.dev>
+	s=arc-20240116; t=1716468560; c=relaxed/simple;
+	bh=HdmW1gOgpWUDWXSdqbqOwIQZrjfbTqeyJE7qb78fOkE=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=Cv4O9OxWxdPrLKUI4scVgkudCLGFcSA4MaG9fWx7w/qOPUQG9Ur6lZFgIAe5+KtQ0Fa9EC0/SfF3D9YSCx7UGm17HV3CbQueSKFDMS829FhGAi3BEW5y0ERU/4Auaaf30NCwMnetnpXimErCKu+KMYl9sfXqrTc2LjViHcoJsy4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Gn0SHxIG; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2bdd8968dabso666487a91.3;
+        Thu, 23 May 2024 05:49:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1716468558; x=1717073358; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=3aeBmKgrOnO4yEhVnrO4wtVoPhNU9lhbqrAJNJKcN4g=;
+        b=Gn0SHxIG9B41DRs4CovVh48WlIsbsMqO7NS/rvI9INhLZfaHRKKFuOcpkgCdiHZDwX
+         UtWuQ08Aif27+9YQ13KO5uq+3JiZqxKKFzl/3/nXOjL4xv6PUB+Mn7iNiRy3WSKqRGbt
+         LWovoJOPI+mlUr71F5+QgM2s7vg9Hy+4luEe8fE1bEG0VOjt6bgR/+mA4OAEFwVMNeys
+         kHn99tUxR6PXVUQP22PPfHxy2J/+aGyVgVALdDzJO/lrgSkmHl5lsA81re5SqdfQChKp
+         IQLPkunzIz3rfQDhaRNgdfPoD0dZJ+kRIiHb4GXznxo6vCfEcFqj/QHB0nD4n3fxnZaf
+         l1YA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1716468558; x=1717073358;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3aeBmKgrOnO4yEhVnrO4wtVoPhNU9lhbqrAJNJKcN4g=;
+        b=VpsSG463LZCTgzggkuR3a217deA3UiZHTSa5tJINH0Gd4/VOhq9lXRIZICkF2oK4tA
+         VnVTn0asXaCAqNPcfAsKzHmQsU9H6gmRY8wvzAnn+B5aPcUypbNBQ41D51zKoAYMscrk
+         jDnD3y6CSm1xnMachN8YaDm9GeU3JdMim3n1JKLpoPxN9kA0v0AX6PpR97H30kjJulpO
+         6RQ9VPIpMwpn3lx9Nk2NvMlUm08AkwpFJuMzWL+K/zhtvj1oSGO/rnGmakoK51rxZe8U
+         nnYcl3A4O+QGpAQIBvVI7lUWvGXpOesGzppLA8/qJcrzQzGG5uJNsGY6+7vlI8CunYfU
+         t7lw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVSFQAkdYCOuAOt10B+PKyTrdSWYmGRWZToblFzjdNb90EDiWTQ/jwcp+dfVK1YEo0IP1pV2JzqS9pBAVb+n9OFLlydCmTymiCVXGZYcXQ3TwbgMlOlMgVAih1pN7P3iWZ98faLU2lqQ==
+X-Gm-Message-State: AOJu0YxwZn6YJybJDcs83RFbidcZhmy5RB2R0VatEioe+Vk5TiLcUbyO
+	1gW1IbVxX7lnKw85oz7SnGMPntu60B9/ZSEyJ0Wh/slaA+s7B4H+
+X-Google-Smtp-Source: AGHT+IFyZ9tLOMxbFXyWyRzA8fBN8CQ9Ox4w0qSotXEjlrcRyj3tjW1eGMS/TfOEWCgDutX2ppOMcQ==
+X-Received: by 2002:a17:90a:d389:b0:2bd:90fc:6631 with SMTP id 98e67ed59e1d1-2bd9f5b8a77mr4926122a91.33.1716468557954;
+        Thu, 23 May 2024 05:49:17 -0700 (PDT)
+Received: from dw-tp ([171.76.81.79])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2bdd9ef83c1sm1485328a91.22.2024.05.23.05.49.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 23 May 2024 05:49:17 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com, yi.zhang@huaweicloud.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2] jbd2: speed up jbd2_transaction_committed()
+In-Reply-To: <20240520131831.2910790-1-yi.zhang@huaweicloud.com>
+Date: Thu, 23 May 2024 18:00:53 +0530
+Message-ID: <87ttiosoaq.fsf@gmail.com>
+References: <20240520131831.2910790-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-When a full journal commit is on-going, any fast commit has to be enqueued
-into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
-is done only once, i.e. if an inode is already queued in a previous fast
-commit entry it won't be enqueued again.  However, if a full commit starts
-_after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
-be done into FC_Q_STAGING.  And this is not being done in function
-ext4_fc_track_template().
+Zhang Yi <yi.zhang@huaweicloud.com> writes:
 
-This patch fixes the issue by flagging an inode that is already enqueued in
-either queues.  Later, during the fast commit clean-up callback, if the
-inode has a tid that is bigger than the one being handled, that inode is
-re-enqueued into STAGING and the spliced back into MAIN.
+> From: Zhang Yi <yi.zhang@huawei.com>
+>
+> jbd2_transaction_committed() is used to check whether a transaction with
+> the given tid has already committed, it holds j_state_lock in read mode
+> and check the tid of current running transaction and committing
+> transaction, but holding the j_state_lock is expensive.
+>
+> We have already stored the sequence number of the most recently
+> committed transaction in journal t->j_commit_sequence, we could do this
+> check by comparing it with the given tid instead. If the given tid isn't
+> smaller than j_commit_sequence, we can ensure that the given transaction
+> has been committed. That way we could drop the expensive lock and
+> achieve about 10% ~ 20% performance gains in concurrent DIOs on may
+> virtual machine with 100G ramdisk.
+>
+> fio -filename=/mnt/foo -direct=1 -iodepth=10 -rw=$rw -ioengine=libaio \
+>     -bs=4k -size=10G -numjobs=10 -runtime=60 -overwrite=1 -name=test \
+>     -group_reporting
+>
+> Before:
+>   overwrite       IOPS=88.2k, BW=344MiB/s
+>   read            IOPS=95.7k, BW=374MiB/s
+>   rand overwrite  IOPS=98.7k, BW=386MiB/s
+>   randread        IOPS=102k, BW=397MiB/s
+>
+> After:
+>   overwrite       IOPS=105k, BW=410MiB/s
+>   read            IOPS=112k, BW=436MiB/s
+>   rand overwrite  IOPS=104k, BW=404MiB/s
+>   randread        IOPS=111k, BW=432MiB/s
 
-This bug was found using fstest generic/047.  This test creates several 32k
-bytes files, sync'ing each of them after it's creation, and then shutting
-down the filesystem.  Some data may be loss in this operation; for example a
-file may have it's size truncated to zero.
+I was surprised to see that even the read and randread performance
+is improved with this patch which should theoritically only impact write
+workloads given based on such checks we are just setting IOMAP_F_DIRTY
+flag to report to iomap. 
 
-Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
----
-Hi!
+But then I came across these two patches [1] [2]. It seems the change
+[1] to set IOMAP_F_DIRTY was initially only done for IOMAP_WRITE path.
+But patch [2] moved some logic to fs-dax core and filesystems were left
+to always just reports if there is any dirty metadata, irrespective of
+reads or writes.
 
-(Now Cc'ing Harshad, as I should have done in the initial RFC.)
+[1]: https://lore.kernel.org/all/20171101153648.30166-17-jack@suse.cz/
+[2]: https://lore.kernel.org/all/151062258598.8554.8157038002895095232.stgit@dwillia2-desk3.amr.corp.intel.com/
 
-This v2 is a complete different solution, hinted by Jan Kara.  I hope my
-understanding of his suggestion is correct.  Also, I've dropped the second
-patch as it didn't made sense, as Jan also pointed out.
 
-Finally, I haven't yet done a review of Harshad's patchset [1] (hope to
-get to it soon), but a quick test shows the issue is still present there.
-The good news is that patch can be trivially applied on top of it.
+Ohh - could this patch be that reason of peformance regression when ext4
+DIO moved to iomap? Should we CC: stable to when ext4 DIO was moved to
+iomap atleast - which I believe was v5.5?
 
-[1] https://lore.kernel.org/all/20240520055153.136091-1-harshadshirwadkar@gmail.com
+Looks good to me.
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Cheers,
---
-Luis
+>
+> CC: Dave Chinner <david@fromorbit.com>
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+> Link: https://lore.kernel.org/linux-ext4/ZjILCPNZRHeazSqV@dread.disaster.area/
 
- fs/ext4/ext4.h        | 11 ++++++++++-
- fs/ext4/fast_commit.c | 11 +++++++++++
- fs/ext4/super.c       |  1 +
- 3 files changed, 22 insertions(+), 1 deletion(-)
+aah. This link is helpful too to understand the context. Thanks!
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 983dad8c07ec..4c308c18c3da 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1062,9 +1062,18 @@ struct ext4_inode_info {
- 	/* Fast commit wait queue for this inode */
- 	wait_queue_head_t i_fc_wait;
- 
--	/* Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len */
-+	/*
-+	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len,
-+	 * i_fc_next
-+	 */
- 	struct mutex i_fc_lock;
- 
-+	/*
-+	 * Used to flag an inode as part of the next fast commit; will be
-+	 * reset during fast commit clean-up
-+	 */
-+	tid_t i_fc_next;
-+
- 	/*
- 	 * i_disksize keeps track of what the inode size is ON DISK, not
- 	 * in memory.  During truncate, i_size is set to the new size by
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 87c009e0c59a..bfdf249f0783 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -402,6 +402,8 @@ static int ext4_fc_track_template(
- 				 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
- 				&sbi->s_fc_q[FC_Q_STAGING] :
- 				&sbi->s_fc_q[FC_Q_MAIN]);
-+	else
-+		ei->i_fc_next = tid;
- 	spin_unlock(&sbi->s_fc_lock);
- 
- 	return ret;
-@@ -1280,6 +1282,15 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
- 				 i_fc_list) {
- 		list_del_init(&iter->i_fc_list);
-+		if (iter->i_fc_next == tid)
-+			iter->i_fc_next = 0;
-+		else if (iter->i_fc_next > tid)
-+			/*
-+			 * re-enqueue inode into STAGING, which will later be
-+			 * splice back into MAIN
-+			 */
-+			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
-+				      &sbi->s_fc_q[FC_Q_STAGING]);
- 		ext4_clear_inode_state(&iter->vfs_inode,
- 				       EXT4_STATE_FC_COMMITTING);
- 		if (iter->i_sync_tid <= tid)
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 893ab80dafba..56f416656d96 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1437,6 +1437,7 @@ static struct inode *ext4_alloc_inode(struct super_block *sb)
- 	INIT_WORK(&ei->i_rsv_conversion_work, ext4_end_io_rsv_work);
- 	ext4_fc_init_inode(&ei->vfs_inode);
- 	mutex_init(&ei->i_fc_lock);
-+	ei->i_fc_next = 0;
- 	return &ei->vfs_inode;
- }
- 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> ---
+> v1->v2:
+>  - Add READ_ONCE and WRITE_ONCE to access ->j_commit_sequence
+>    concurrently.
+>  - Keep the jbd2_transaction_committed() helper.
+>
+>  fs/jbd2/commit.c  |  2 +-
+>  fs/jbd2/journal.c | 12 +-----------
+>  2 files changed, 2 insertions(+), 12 deletions(-)
+>
+> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+> index 5e122586e06e..8244cab17688 100644
+> --- a/fs/jbd2/commit.c
+> +++ b/fs/jbd2/commit.c
+> @@ -1108,7 +1108,7 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+>  
+>  	commit_transaction->t_state = T_COMMIT_CALLBACK;
+>  	J_ASSERT(commit_transaction == journal->j_committing_transaction);
+> -	journal->j_commit_sequence = commit_transaction->t_tid;
+> +	WRITE_ONCE(journal->j_commit_sequence, commit_transaction->t_tid);
+>  	journal->j_committing_transaction = NULL;
+>  	commit_time = ktime_to_ns(ktime_sub(ktime_get(), start_time));
+>  
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index b6c114c11b97..cc586e3c4ee1 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -789,17 +789,7 @@ EXPORT_SYMBOL(jbd2_fc_end_commit_fallback);
+>  /* Return 1 when transaction with given tid has already committed. */
+>  int jbd2_transaction_committed(journal_t *journal, tid_t tid)
+>  {
+> -	int ret = 1;
+> -
+> -	read_lock(&journal->j_state_lock);
+> -	if (journal->j_running_transaction &&
+> -	    journal->j_running_transaction->t_tid == tid)
+> -		ret = 0;
+> -	if (journal->j_committing_transaction &&
+> -	    journal->j_committing_transaction->t_tid == tid)
+> -		ret = 0;
+> -	read_unlock(&journal->j_state_lock);
+> -	return ret;
+> +	return tid_geq(READ_ONCE(journal->j_commit_sequence), tid);
+>  }
+>  EXPORT_SYMBOL(jbd2_transaction_committed);
+>  
+> -- 
+> 2.39.2
 
