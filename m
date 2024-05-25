@@ -1,102 +1,65 @@
-Return-Path: <linux-ext4+bounces-2644-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2645-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E32F38CE898
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 May 2024 18:22:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B6F58CEDC9
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 May 2024 06:11:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 692D51F2243A
-	for <lists+linux-ext4@lfdr.de>; Fri, 24 May 2024 16:22:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1A5A2820D2
+	for <lists+linux-ext4@lfdr.de>; Sat, 25 May 2024 04:11:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06E012EBC0;
-	Fri, 24 May 2024 16:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6ED5522E;
+	Sat, 25 May 2024 04:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="O7OqNbK5";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bhwwlCRS";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kbwXvE8i";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="85DicWDe"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="B1R3j0Pt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5379381BB;
-	Fri, 24 May 2024 16:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDF210F1
+	for <linux-ext4@vger.kernel.org>; Sat, 25 May 2024 04:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716567760; cv=none; b=ipojXVoVkBCCzgFz1mDeUjT1FY8VpZeZK2BHChRmHGfzMzu0BCBvcgA/ywRLLrqfue+ZpkHKm0DLFHiJJTRbdFO9pnVeD2hs3LeKZfNY02yj+NkET0VlksTObAfeGdOAfMPdmlVV3UoLsIF/bjmSk5LS9OJM82/JLq8Ki49LrSQ=
+	t=1716610300; cv=none; b=s1Ugya8V/BrKKrg6NH0xL1ahusLtscQBuzprLEX3YUb5o8SONacyaeFL9bZrKWaOcB2CbeQmo0Ve7Zp7b1Zj7M+xxjt0dRXwct4szacNS/i0LhGTeAWd0bv59y7H7NzBnbU11ldE9hPxZpzRYlLE27RflAAgGH2hxnbd/JfXkEY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716567760; c=relaxed/simple;
-	bh=iFZpV7CkR3cwZMbp91sg+RlX+hMKFzAL0gyw81GNBUQ=;
+	s=arc-20240116; t=1716610300; c=relaxed/simple;
+	bh=i/8bPKTHQepSw/PtXN54/xFyaQLHX5/Ic1/k3GfFdm0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=e0T3dLM6/5t3YUAbvtRCkAWgWjdCXrkjkO4sqSpkBNZGOs9lwUxNG/6BPuS4H8GbxGmmVKkVLM4D7eY3x8cMNQc0kVHm/uoBgfUHoBLcvNDdCXZ3uPbod4SyKosEcexsfMsGLCjnPWY2sQ1O+3ybfaGR92KWCEt/62jEQ5jauQA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=O7OqNbK5; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bhwwlCRS; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kbwXvE8i; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=85DicWDe; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E3FF720B84;
-	Fri, 24 May 2024 16:22:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1716567756; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6LER4DlKj7/Cd1I076cZl4KFbNFaWY4zTJ12iLqvBP8=;
-	b=O7OqNbK5EP1Cc8HsrsH0LCJXvyCMdg5eyC1ll618XZO13Qvu+4YhapEsIO6XTVraDkZunw
-	M7P94uzBoHcA42oSfxDnNcpfTVgepPUSaogWj950H94MXJ+Xh2yfKptO3NChJC6jqIwU+f
-	2Kaadr47Sz6Mh7LV9PAEnN349th+exs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1716567756;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6LER4DlKj7/Cd1I076cZl4KFbNFaWY4zTJ12iLqvBP8=;
-	b=bhwwlCRSlcV9iltxJeraomTiYEBDlnDbC6ue3GInmvep7ITGMVHKLGXqbndDFA9Y3YmOw5
-	HU/gVf03e5g068Dg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1716567755; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6LER4DlKj7/Cd1I076cZl4KFbNFaWY4zTJ12iLqvBP8=;
-	b=kbwXvE8iJQ8gjOf/v3bD2Nv33spVQdPFzIc1YDI0cvMDOybBCkPHpFeIAeYZq/aHbFgiS5
-	KT/Y4Wy/OB7XJTwyVx6HK4JeElZOVp0tXqhHFti9amzYl1hONdRS3YSeCxcMPp4Y0j7siD
-	XiyR85dqMwOixju2M3DogX3N9wA0lno=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1716567755;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6LER4DlKj7/Cd1I076cZl4KFbNFaWY4zTJ12iLqvBP8=;
-	b=85DicWDea8JNcYFvJVLrrmlLyWmX93rTmKs5k5JiVh23MjVvvnMfN1JbfkHHJEHtAJq4fB
-	HWdTNFrIEP8Y2LBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D7EDD13A6B;
-	Fri, 24 May 2024 16:22:35 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 1gexNMu+UGbCUAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 24 May 2024 16:22:35 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 32F87A0825; Fri, 24 May 2024 18:22:31 +0200 (CEST)
-Date: Fri, 24 May 2024 18:22:31 +0200
-From: Jan Kara <jack@suse.cz>
-To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
-	Jan Kara <jack@suse.cz>,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix fast commit inode enqueueing during a full
- journal commit
-Message-ID: <20240524162231.l5r4niz7awjgfju6@quack3>
-References: <20240523111618.17012-1-luis.henriques@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=q2B0GKRjU5ma26RWmQDodMHNubgeExlQUQJJddRaBeo8/VWw3I86h9tGZ6qPv/rEkv0k+gOo2jzk3tI7BaDu48WjkV/Qbg7n5iOqJy/Wd/DS6nUMSUcUUUyWrdrWeCdVC0WFspgRZOXLVbMKJVi39GbQZKrnqPVgIyWsjERSZec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=B1R3j0Pt; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-128-134.bstnma.fios.verizon.net [173.48.128.134])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44P4BJ0v016606
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sat, 25 May 2024 00:11:20 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1716610282; bh=3oV+IctIQAXy0pIwXkAp3Hfhz/d4vXvllmxaqFVFWew=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=B1R3j0PtzOdAxET9gbHYXeU9ZKKvZRFgyQ+kKi0uFXe+hYdqh8t9mrTQxHGrwV9Yn
+	 +/ajaGSJ6RHA2njb+Tsj1AEWEQOq9rdiaIKh+fBm80yw5bSyo1GJ9Mn9S8Lu/5aYkD
+	 PUiFOFWSYLvdZagZ13sYsE1YPnjSsdX5m5AE+1pdC5xdzYbXAFOSGAxZwnWbRRiwLI
+	 u3vzEKuVYqClO0WXTBsWMv0iYhk+18WVdFo50ZSB9CmghkWuzJ+LBZxspV5fY/KLvg
+	 K1f5JUK6+aL5FE9fBFbTUQHZQzP+EVqaewUYqrCg850xZqgcXM3OadYBUAO5j0bVV8
+	 bkLi622X0YNXw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 3E21B15C0225; Sat, 25 May 2024 00:11:19 -0400 (EDT)
+Date: Sat, 25 May 2024 00:11:19 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Kees Cook <keescook@chromium.org>
+Cc: syzbot <syzbot+50835f73143cc2905b9e@syzkaller.appspotmail.com>,
+        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
+        Justin Stitt <justinstitt@google.com>
+Subject: Re: [syzbot] [ext4?] WARNING in __fortify_report
+Message-ID: <20240525041119.GA981794@mit.edu>
+References: <00000000000019f4c00619192c05@google.com>
+ <20240523130456.GH65648@mit.edu>
+ <202405231540.84B3DBE841@keescook>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -105,120 +68,82 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240523111618.17012-1-luis.henriques@linux.dev>
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,gmail.com,vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+In-Reply-To: <202405231540.84B3DBE841@keescook>
 
-On Thu 23-05-24 12:16:18, Luis Henriques (SUSE) wrote:
-> When a full journal commit is on-going, any fast commit has to be enqueued
-> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
-> is done only once, i.e. if an inode is already queued in a previous fast
-> commit entry it won't be enqueued again.  However, if a full commit starts
-> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
-> be done into FC_Q_STAGING.  And this is not being done in function
-> ext4_fc_track_template().
+On Thu, May 23, 2024 at 03:48:01PM -0700, Kees Cook wrote:
+> It looks like this is another case of a non-terminated string being made
+> terminated by strncpy into a string with 1 extra byte at the end:
 > 
-> This patch fixes the issue by flagging an inode that is already enqueued in
-> either queues.  Later, during the fast commit clean-up callback, if the
-> inode has a tid that is bigger than the one being handled, that inode is
-> re-enqueued into STAGING and the spliced back into MAIN.
+>         char label[EXT4_LABEL_MAX + 1];
+> 	...
+> -       memset(label, 0, sizeof(label));
+>         lock_buffer(sbi->s_sbh);
+> -       strncpy(label, sbi->s_es->s_volume_name, EXT4_LABEL_MAX);
+> +       strscpy_pad(label, sbi->s_es->s_volume_name);
+>         unlock_buffer(sbi->s_sbh);
 > 
-> This bug was found using fstest generic/047.  This test creates several 32k
-> bytes files, sync'ing each of them after it's creation, and then shutting
-> down the filesystem.  Some data may be loss in this operation; for example a
-> file may have it's size truncated to zero.
+> This should be using memtostr_pad() as:
 > 
-> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+> 	memtostr_pad(label, sbi->s_es->s_volume_name);
+> 
 
-Thanks for the fix. Some comments below:
+Ah... I see what is going on.  The two argument variants of
+memtostr_pad() and strscpy_pad() are confusing and dangerous.  These
+don't exist in the original OpenBSD strscpy() function, because the
+size in the third argument is explicit, while with strscpy_pad(), the
+automagic size is intuited from the first argument (the destination),
+while with memtostr_pad(), the size is automagically intuited from the
+second argument (the source).
 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 983dad8c07ec..4c308c18c3da 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -1062,9 +1062,18 @@ struct ext4_inode_info {
->  	/* Fast commit wait queue for this inode */
->  	wait_queue_head_t i_fc_wait;
->  
-> -	/* Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len */
-> +	/*
-> +	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len,
-> +	 * i_fc_next
-> +	 */
->  	struct mutex i_fc_lock;
->  
-> +	/*
-> +	 * Used to flag an inode as part of the next fast commit; will be
-> +	 * reset during fast commit clean-up
-> +	 */
-> +	tid_t i_fc_next;
-> +
+This confused me, and I couldn't figure out the bug even when I was
+given the stack trace from syzkaller.  So it's an accident waiting to
+happen, I clearly I was not smart enough not to fall into the trap,
 
-Do we really need new tid in the inode? I'd be kind of hoping we could use
-EXT4_I(inode)->i_sync_tid for this - I can see we even already set it in
-ext4_fc_track_template() and used for similar comparisons in fast commit
-code.
+So perhaps it might be nice if the descriptions of strscpy() is moved
+out of process/deprecated.rst (and BTW, memstrtopad isn't mentioned at
+all), and moved inta separate doumentation which safe string handling
+in C --- so instead of talking about what functions *shouldn't* used,
+such as strncpy(), it talks about how the various functions *should*
+be used instead.  
 
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 87c009e0c59a..bfdf249f0783 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -402,6 +402,8 @@ static int ext4_fc_track_template(
->  				 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
->  				&sbi->s_fc_q[FC_Q_STAGING] :
->  				&sbi->s_fc_q[FC_Q_MAIN]);
-> +	else
-> +		ei->i_fc_next = tid;
->  	spin_unlock(&sbi->s_fc_lock);
->  
->  	return ret;
-> @@ -1280,6 +1282,15 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
->  	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
->  				 i_fc_list) {
->  		list_del_init(&iter->i_fc_list);
-> +		if (iter->i_fc_next == tid)
-> +			iter->i_fc_next = 0;
-> +		else if (iter->i_fc_next > tid)
-			 ^^^ careful here, TIDs do wrap so you need to use
-tid_geq() for comparison.
+I'll also note that figuring out what was going on from looking at
+include/linu/string.h was confusing, because there is so much #define
+magic to provide the magic multiple argument handling.  Personally, I
+was never a fan of C++'s function overloading where different function
+signatures could result in different implementations being called, and
+doing with C preprocessor magic makes it even worse.  To be fair,
+there is the kernel-doc inline documentation, but my eyes were drawn
+to the C++ implementation, and the kernel-doc documentation is more of
+a reference and not a tutorial style "this is how you should do
+things".
 
-> +			/*
-> +			 * re-enqueue inode into STAGING, which will later be
-> +			 * splice back into MAIN
-> +			 */
-> +			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
-> +				      &sbi->s_fc_q[FC_Q_STAGING]);
->  		ext4_clear_inode_state(&iter->vfs_inode,
->  				       EXT4_STATE_FC_COMMITTING);
->  		if (iter->i_sync_tid <= tid)
-				     ^^^ and I can see this is buggy as
-well and needs tid_geq() (not your fault obviously).
+Anyway, thanks for sending the patch.  I spent a good 30 minutes
+trying to figure out the bug, and was half-tempted to just revert the
+patch and go back to strncpy(), which at least I could obviously see
+was correct, unlike the strscpy_pad() transmogrification.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> It looks like __nonstring markings from commit 072ebb3bffe6 ("ext4:
+> add nonstring annotations to ext4.h") were incomplete.
+
+Yes, I'll patch ext4.h to add a __nonstring annotation to
+s_volume_name.  As I recall, the reason why we had added the
+__nonstring markings was to shut up gcc's -Wstringpop-truncation
+warnings, and apparently it was needed for s_volume_name, which is why
+it was never annotated.
+
+Out of curiosity, though, would this have caused some analysis tool to
+trigger a warning when the strscpy_pad() commit was added?  I've
+tried, and it doesn't seem to have triggered any kind of warning with
+either gcc, clang, or sparse.
+
+Anyway, since I'm an old fart, it was pretty obvious to *me* that the
+how strcnpy() was used was obviouly correct, whereas I actually have
+to do more careful thinking and analysis with strscpy() and
+memtostr().  So it would be nice if there were some automated tools
+that warn if those new functions aren't used correctly, because this
+bug shows that these functions are definitely not fool proof --- both
+by the original patch submitter, and the fool who reviewed the patch
+and missed the problem.  :-)
+
+     	     	       		 	     - Ted
 
