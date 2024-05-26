@@ -1,149 +1,191 @@
-Return-Path: <linux-ext4+bounces-2645-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2646-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B6F58CEDC9
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 May 2024 06:11:46 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8C7098CF421
+	for <lists+linux-ext4@lfdr.de>; Sun, 26 May 2024 13:50:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1A5A2820D2
-	for <lists+linux-ext4@lfdr.de>; Sat, 25 May 2024 04:11:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AF6F11C209A8
+	for <lists+linux-ext4@lfdr.de>; Sun, 26 May 2024 11:50:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6ED5522E;
-	Sat, 25 May 2024 04:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5A6DDD8;
+	Sun, 26 May 2024 11:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="B1R3j0Pt"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="PvQfWxwo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDF210F1
-	for <linux-ext4@vger.kernel.org>; Sat, 25 May 2024 04:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C909D524;
+	Sun, 26 May 2024 11:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716610300; cv=none; b=s1Ugya8V/BrKKrg6NH0xL1ahusLtscQBuzprLEX3YUb5o8SONacyaeFL9bZrKWaOcB2CbeQmo0Ve7Zp7b1Zj7M+xxjt0dRXwct4szacNS/i0LhGTeAWd0bv59y7H7NzBnbU11ldE9hPxZpzRYlLE27RflAAgGH2hxnbd/JfXkEY=
+	t=1716724193; cv=none; b=Cc2nKutOia+gnwuO/xmcgTuv9/dquCRGCskbzu+f4zX9Q6Z8ADMXspp+xWg/+mUiN1+w0AP3ym3tMD0wT0uKZWx5hTPQ2+wvxT21aLW5bM0Kft8uRD+j7PShCLVXFklQo47VjLZjGh3rYrVMcgXfCdga0ryw01198nYx8mYZE+M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716610300; c=relaxed/simple;
-	bh=i/8bPKTHQepSw/PtXN54/xFyaQLHX5/Ic1/k3GfFdm0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q2B0GKRjU5ma26RWmQDodMHNubgeExlQUQJJddRaBeo8/VWw3I86h9tGZ6qPv/rEkv0k+gOo2jzk3tI7BaDu48WjkV/Qbg7n5iOqJy/Wd/DS6nUMSUcUUUyWrdrWeCdVC0WFspgRZOXLVbMKJVi39GbQZKrnqPVgIyWsjERSZec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=B1R3j0Pt; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-128-134.bstnma.fios.verizon.net [173.48.128.134])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44P4BJ0v016606
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 25 May 2024 00:11:20 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1716610282; bh=3oV+IctIQAXy0pIwXkAp3Hfhz/d4vXvllmxaqFVFWew=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=B1R3j0PtzOdAxET9gbHYXeU9ZKKvZRFgyQ+kKi0uFXe+hYdqh8t9mrTQxHGrwV9Yn
-	 +/ajaGSJ6RHA2njb+Tsj1AEWEQOq9rdiaIKh+fBm80yw5bSyo1GJ9Mn9S8Lu/5aYkD
-	 PUiFOFWSYLvdZagZ13sYsE1YPnjSsdX5m5AE+1pdC5xdzYbXAFOSGAxZwnWbRRiwLI
-	 u3vzEKuVYqClO0WXTBsWMv0iYhk+18WVdFo50ZSB9CmghkWuzJ+LBZxspV5fY/KLvg
-	 K1f5JUK6+aL5FE9fBFbTUQHZQzP+EVqaewUYqrCg850xZqgcXM3OadYBUAO5j0bVV8
-	 bkLi622X0YNXw==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 3E21B15C0225; Sat, 25 May 2024 00:11:19 -0400 (EDT)
-Date: Sat, 25 May 2024 00:11:19 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Kees Cook <keescook@chromium.org>
-Cc: syzbot <syzbot+50835f73143cc2905b9e@syzkaller.appspotmail.com>,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-        Justin Stitt <justinstitt@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in __fortify_report
-Message-ID: <20240525041119.GA981794@mit.edu>
-References: <00000000000019f4c00619192c05@google.com>
- <20240523130456.GH65648@mit.edu>
- <202405231540.84B3DBE841@keescook>
+	s=arc-20240116; t=1716724193; c=relaxed/simple;
+	bh=1S0uRH1NaKnSxVqVxh5XtY1K+ZMfNCChicbaWsjdybQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UQDbkPrivWn9QXS6CVjzMLf0sTKGlWfNquorRiUGK66FssqoXXyEpTA+ev13o5QK0SuQd/B1W/GQK2RvkOBWOZ5JpykMBOw6oyqqNtwRTBqkZHnW/7hzcMaqoLyvujuHVEcyJb4kc2aHFDxj0iwWiJ9jnDD8vwdvFv6qKDimGLc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=PvQfWxwo; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1716724184;
+	bh=1S0uRH1NaKnSxVqVxh5XtY1K+ZMfNCChicbaWsjdybQ=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=PvQfWxwoCB7XIL21b8WzaTfH0XQ+gByaa24MXwOZukjodY2BWD6OXLZBvnWa805qu
+	 /pR5DOVorSNfn1Bey+XyNrWMN5aPl+v3VDKAlXB9MlGIB7GdC+iL5y/wgi3OXRXFz6
+	 qoJku+/A7YM+OzCFAFVlwTzbGU++fen1hal4iSJLDNKe3OfzkBGQbtiGEbEj+59vnI
+	 QSXzR6WcA0/z4S6z/tzhqFva7g3G+P/yi+3zfpGdcVF7dVVoVFrGylBh697csYLVqC
+	 agw9eJ26k6vAZUz48IejLXyMJXaY99juVMJfTYxnFNibP1XNycSX8NfDkTXibRwjHU
+	 VBewwGss/zwRg==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 236B5378000A;
+	Sun, 26 May 2024 11:49:43 +0000 (UTC)
+Message-ID: <92b56554-3415-46fe-99b4-99258d8a496c@collabora.com>
+Date: Sun, 26 May 2024 14:49:42 +0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <202405231540.84B3DBE841@keescook>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v16 3/9] libfs: Introduce case-insensitive string
+ comparison helper
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: Eric Biggers <ebiggers@kernel.org>, tytso@mit.edu,
+ adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, jaegeuk@kernel.org,
+ chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, Gabriel Krisman Bertazi <krisman@collabora.com>
+References: <20240405121332.689228-1-eugen.hristev@collabora.com>
+ <20240405121332.689228-4-eugen.hristev@collabora.com>
+ <20240510013330.GI1110919@google.com> <875xviyb3f.fsf@mailhost.krisman.be>
+ <9afebadd-765f-42f3-a80b-366dd749bf48@collabora.com>
+ <87ttipqwfn.fsf@mailhost.krisman.be>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <87ttipqwfn.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Thu, May 23, 2024 at 03:48:01PM -0700, Kees Cook wrote:
-> It looks like this is another case of a non-terminated string being made
-> terminated by strncpy into a string with 1 extra byte at the end:
+On 5/23/24 02:05, Gabriel Krisman Bertazi wrote:
+> Eugen Hristev <eugen.hristev@collabora.com> writes:
 > 
->         char label[EXT4_LABEL_MAX + 1];
-> 	...
-> -       memset(label, 0, sizeof(label));
->         lock_buffer(sbi->s_sbh);
-> -       strncpy(label, sbi->s_es->s_volume_name, EXT4_LABEL_MAX);
-> +       strscpy_pad(label, sbi->s_es->s_volume_name);
->         unlock_buffer(sbi->s_sbh);
+>> On 5/13/24 00:27, Gabriel Krisman Bertazi wrote:
+>>> Eric Biggers <ebiggers@kernel.org> writes:
+>>>
+>>>> On Fri, Apr 05, 2024 at 03:13:26PM +0300, Eugen Hristev wrote:
+>>>
+>>>>> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
+>>>>> +			return -EINVAL;
+>>>>> +
+>>>>> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
+>>>>> +		if (!decrypted_name.name)
+>>>>> +			return -ENOMEM;
+>>>>> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
+>>>>> +						&decrypted_name);
+>>>>> +		if (res < 0)
+>>>>> +			goto out;
+>>>>
+>>>> If fscrypt_fname_disk_to_usr() returns an error and !sb_has_strict_encoding(sb),
+>>>> then this function returns 0 (indicating no match) instead of the error code
+>>>> (indicating an error).  Is that the correct behavior?  I would think that
+>>>> strict_encoding should only have an effect on the actual name
+>>>> comparison.
+>>>
+>>> No. we *want* this return code to be propagated back to f2fs.  In ext4 it
+>>> wouldn't matter since the error is not visible outside of ext4_match,
+>>> but f2fs does the right thing and stops the lookup.
+>>
+>> In the previous version which I sent, you told me that the error should be
+>> propagated only in strict_mode, and if !strict_mode, it should just return no match.
+>> Originally I did not understand that this should be done only for utf8_strncasecmp
+>> errors, and not for all the errors. I will change it here to fix that.
 > 
-> This should be using memtostr_pad() as:
+> Yes, it depends on which error we are talking about. For ENOMEM and
+> whatever error fscrypt_fname_disk_to_usr returns, we surely want to send
+> that back, such that f2fs can handle it (i.e abort the lookup).  Unicode
+> casefolding errors don't need to stop the lookup.
 > 
-> 	memtostr_pad(label, sbi->s_es->s_volume_name);
+> 
+>>> Thinking about it, there is a second problem with this series.
+>>> Currently, if we are on strict_mode, f2fs_match_ci_name does not
+>>> propagate unicode errors back to f2fs. So, once a utf8 invalid sequence
+>>> is found during lookup, it will be considered not-a-match but the lookup
+>>> will continue.  This allows some lookups to succeed even in a corrupted
+>>> directory.  With this patch, we will abort the lookup on the first
+>>> error, breaking existing semantics.  Note that these are different from
+>>> memory allocation failure and fscrypt_fname_disk_to_usr. For those, it
+>>> makes sense to abort.
+>>
+>> So , in the case of f2fs , we must not propagate utf8 errors ? It should just
+>> return no match even in strict mode ?
+>> If this helper is common for both f2fs and ext4, we have to do the same for ext4 ?
+>> Or we are no longer able to commonize the code altogether ?
+> 
+> We can have a common handler.  It doesn't matter for Ext4 because it
+> ignores all errors. Perhaps ext4 can be improved too in a different
+> patchset.
+> 
+>>> My suggestion would be to keep the current behavior.  Make
+>>> generic_ci_match only propagate non-unicode related errors back to the
+>>> filesystem.  This means that we need to move the error messages in patch
+>>> 6 and 7 into this function, so they only trigger when utf8_strncasecmp*
+>>> itself fails.
+>>>
+>>
+>> So basically unicode errors stop here, and print the error message here in that case.
+>> Am I understanding it correctly ?
+> 
+> Yes, that is it.  print the error message - only in strict mode - and
+> return not-a-match.
+> 
+> Is there any problem with this approach that I'm missing?
+
+As the printing is moved here, in the common code, we cannot use either of
+f2fs_warn nor EXT4_ERROR_INODE . Any suggestion ? Would have to be something
+meaningful for the user and ratelimited I guess.
+
+Thanks for the explanations !
+
+
+> 
+>>>>> +	/*
+>>>>> +	 * Attempt a case-sensitive match first. It is cheaper and
+>>>>> +	 * should cover most lookups, including all the sane
+>>>>> +	 * applications that expect a case-sensitive filesystem.
+>>>>> +	 */
+>>>>> +	if (folded_name->name) {
+>>>>> +		if (dirent.len == folded_name->len &&
+>>>>> +		    !memcmp(folded_name->name, dirent.name, dirent.len))
+>>>>> +			goto out;
+>>>>> +		res = utf8_strncasecmp_folded(um, folded_name, &dirent);
+>>>>
+>>>> Shouldn't the memcmp be done with the original user-specified name, not the
+>>>> casefolded name?  I would think that the user-specified name is the one that's
+>>>> more likely to match the on-disk name, because of case preservation.  In most
+>>>> cases users will specify the same case on both file creation and later access.
+>>>
+>>> Yes.
+>>>
+>> so the utf8_strncasecmp_folded call here must use name->name instead of folded_name ?
+> 
+> No, utf8_strncasecmp_folded requires a casefolded name.  Eric's point is
+> that the *memcmp* should always compare against name->name since it's more
+> likely to match the name on disk than the folded version because the user
+> is probably doing a case-exact lookup.
+> 
+> This also means the memcmp can be moved outside the "if (folded_name->name)",
+> simplifying the patch!
 > 
 
-Ah... I see what is going on.  The two argument variants of
-memtostr_pad() and strscpy_pad() are confusing and dangerous.  These
-don't exist in the original OpenBSD strscpy() function, because the
-size in the third argument is explicit, while with strscpy_pad(), the
-automagic size is intuited from the first argument (the destination),
-while with memtostr_pad(), the size is automagically intuited from the
-second argument (the source).
-
-This confused me, and I couldn't figure out the bug even when I was
-given the stack trace from syzkaller.  So it's an accident waiting to
-happen, I clearly I was not smart enough not to fall into the trap,
-
-So perhaps it might be nice if the descriptions of strscpy() is moved
-out of process/deprecated.rst (and BTW, memstrtopad isn't mentioned at
-all), and moved inta separate doumentation which safe string handling
-in C --- so instead of talking about what functions *shouldn't* used,
-such as strncpy(), it talks about how the various functions *should*
-be used instead.  
-
-I'll also note that figuring out what was going on from looking at
-include/linu/string.h was confusing, because there is so much #define
-magic to provide the magic multiple argument handling.  Personally, I
-was never a fan of C++'s function overloading where different function
-signatures could result in different implementations being called, and
-doing with C preprocessor magic makes it even worse.  To be fair,
-there is the kernel-doc inline documentation, but my eyes were drawn
-to the C++ implementation, and the kernel-doc documentation is more of
-a reference and not a tutorial style "this is how you should do
-things".
-
-Anyway, thanks for sending the patch.  I spent a good 30 minutes
-trying to figure out the bug, and was half-tempted to just revert the
-patch and go back to strncpy(), which at least I could obviously see
-was correct, unlike the strscpy_pad() transmogrification.
-
-> It looks like __nonstring markings from commit 072ebb3bffe6 ("ext4:
-> add nonstring annotations to ext4.h") were incomplete.
-
-Yes, I'll patch ext4.h to add a __nonstring annotation to
-s_volume_name.  As I recall, the reason why we had added the
-__nonstring markings was to shut up gcc's -Wstringpop-truncation
-warnings, and apparently it was needed for s_volume_name, which is why
-it was never annotated.
-
-Out of curiosity, though, would this have caused some analysis tool to
-trigger a warning when the strscpy_pad() commit was added?  I've
-tried, and it doesn't seem to have triggered any kind of warning with
-either gcc, clang, or sparse.
-
-Anyway, since I'm an old fart, it was pretty obvious to *me* that the
-how strcnpy() was used was obviouly correct, whereas I actually have
-to do more careful thinking and analysis with strscpy() and
-memtostr().  So it would be nice if there were some automated tools
-that warn if those new functions aren't used correctly, because this
-bug shows that these functions are definitely not fool proof --- both
-by the original patch submitter, and the fool who reviewed the patch
-and missed the problem.  :-)
-
-     	     	       		 	     - Ted
 
