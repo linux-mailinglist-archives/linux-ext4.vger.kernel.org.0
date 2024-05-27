@@ -1,185 +1,142 @@
-Return-Path: <linux-ext4+bounces-2651-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2652-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4479A8CFB70
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 May 2024 10:29:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5168CFC9C
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 May 2024 11:17:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D5F94B210CA
-	for <lists+linux-ext4@lfdr.de>; Mon, 27 May 2024 08:29:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 436D71F22879
+	for <lists+linux-ext4@lfdr.de>; Mon, 27 May 2024 09:17:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 547CC53364;
-	Mon, 27 May 2024 08:29:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CE7B1DFE4;
+	Mon, 27 May 2024 09:17:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iTO5yAa5"
+	dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b="mkH/6rzs";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="PAzHvDBa"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
+Received: from fout8-smtp.messagingengine.com (fout8-smtp.messagingengine.com [103.168.172.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 746AF1A2C13
-	for <linux-ext4@vger.kernel.org>; Mon, 27 May 2024 08:29:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9C9313174B
+	for <linux-ext4@vger.kernel.org>; Mon, 27 May 2024 09:17:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716798589; cv=none; b=WDfpGU3NHLI7vwNds9g+30Z6tAXRs6//Z6QwHlDe9hzk1g7DAV//4OsxykwvW/HgskMKA/6/mPa8wWJRQprW/EL8gpW1cngi2f+H2ZHaIXDSOLtTsNAIpMIihZv2PzKz8akNDNxQ3aBsKVGc94o0KJ9280hq9uT9gCwYWnBk2IE=
+	t=1716801435; cv=none; b=mBHvpoNewsIk+kVHJIkyPmRo6EWQIWf73OiD7Z9tUBuIyYpGPkbv/3rhosxjkvvxoSkElGTqEgo2u6KQlSqAgtk+iu7ntGjDb4Kgxel93NbFdodbuztdYTmWU8DnZPwv8MBbmrwHmu+hVHbaWH7IE8XAflLtCpuuYA6m6eB9iqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716798589; c=relaxed/simple;
-	bh=IRg1ZnY4ad7Grky6EACnYJ/1e7/wYjNVqwNwgDIfrEc=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=LBFt1VJkbh8i2qrOQoLcwHzldMwfuUSQfcwiwp7FO9cR9smZjFXEeOPXOjsOl9yOAmV3fqSpY/ORShwA/FlxZbipD/O23ls/liUKCZGSIt3DzsE4EuRyyiQiHDSIctc0NmxorZ7RD611gCqoc2DB1DTSBGSmDnznamX3dJwkbJ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iTO5yAa5; arc=none smtp.client-ip=95.215.58.188
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: adilger@dilger.ca
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1716798585;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=RheZsmz5aig038SHC8M9U7tuJQE9AcezfFpXh6dMu0A=;
-	b=iTO5yAa52j7cLFdsYMo7r2TiUkCcvzagZW+5ym6yCwLkyom22AOZUgDaOyflKWIJjWBWx/
-	4XTyTmk+XdwWtZR/PUWpQuigNUM4Z8en53nC2KdtvgWlRdRvOlwwFn0ewFe8SIOn5S0H6D
-	tmeeYR1uC8tA8mm+YokANQH5fJdOd/A=
-X-Envelope-To: linux-ext4@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Envelope-To: harshadshirwadkar@gmail.com
-X-Envelope-To: jack@suse.cz
-X-Envelope-To: luis.henriques@linux.dev
-X-Envelope-To: tytso@mit.edu
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Luis Henriques <luis.henriques@linux.dev>
-To: Jan Kara <jack@suse.cz>
-Cc: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>,  Theodore Ts'o
- <tytso@mit.edu>,  Andreas Dilger <adilger@dilger.ca>,  Harshad Shirwadkar
- <harshadshirwadkar@gmail.com>,  linux-ext4@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix fast commit inode enqueueing during a full
- journal commit
-In-Reply-To: <20240524162231.l5r4niz7awjgfju6@quack3> (Jan Kara's message of
-	"Fri, 24 May 2024 18:22:31 +0200")
-References: <20240523111618.17012-1-luis.henriques@linux.dev>
-	<20240524162231.l5r4niz7awjgfju6@quack3>
-Date: Mon, 27 May 2024 09:29:40 +0100
-Message-ID: <87h6ej64jv.fsf@brahms.olymp>
+	s=arc-20240116; t=1716801435; c=relaxed/simple;
+	bh=CecAeyoou+/HH0A17TQH4FkfTMhFzA64op5JgclGqGg=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=jTDgwe8mvmIlvVCSwp8IfF0T42UY5dbkvI1iPW/a4boGlZ+dmID5MQf5SffnFebE7Pe7Z11oMgeWFIPywh5MzxizoWuRhicTI2K1Z3rNLbyYq46ZSSwFDvmVfpOq6XK/5ApC00DcEB1I15m1rY3BNnKY7PQuEEL8MrfhlWgpY2Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is; spf=pass smtp.mailfrom=alyssa.is; dkim=pass (2048-bit key) header.d=alyssa.is header.i=@alyssa.is header.b=mkH/6rzs; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=PAzHvDBa; arc=none smtp.client-ip=103.168.172.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=alyssa.is
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alyssa.is
+Received: from compute4.internal (compute4.nyi.internal [10.202.2.44])
+	by mailfout.nyi.internal (Postfix) with ESMTP id 8B3CF13800E6
+	for <linux-ext4@vger.kernel.org>; Mon, 27 May 2024 05:17:11 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute4.internal (MEProxy); Mon, 27 May 2024 05:17:11 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alyssa.is; h=cc
+	:content-transfer-encoding:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm3; t=1716801431; x=1716887831; bh=YIL0JdpRjCvVW/wgX9cqG
+	NR2AHbm3kdSXhTKqHdpm5Y=; b=mkH/6rzsv0J1Zba3cywrPNrgneyYZpzXyBWjj
+	KtvfJ3ymN/xejFP57OzzhBvVpPtEjAVhLQGQBeaJw8ci9IJGl08xqVpVipZWbZj7
+	kR6FLusbLxU0tzMQykdq2VV3AWGStUMiFl/MPDNAMv1aDa1ruEssOOWOdgJNb8sE
+	u6aBNfZd4z92isxJ9Eq0EKobjSzvN+83nzYZtnGrnOEwLjzQnHAZt9S6ONK+Xbxa
+	m0j5JXMvSZgtlvwmqyt5QG4Tsk+gr9hjZg6GzFGTuyK37XRUJQHMusajyYj4Q/bC
+	Icbh5cRTayZ+Fm+05GXLNOAoEVLJlqQGPFz/qPUH7PWDOaYjw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-transfer-encoding:content-type
+	:date:date:feedback-id:feedback-id:from:from:in-reply-to
+	:message-id:mime-version:reply-to:subject:subject:to:to
+	:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1716801431; x=1716887831; bh=YIL0JdpRjCvVW/wgX9cqGNR2AHbm
+	3kdSXhTKqHdpm5Y=; b=PAzHvDBaGTdxzjjyavd6mm90OuD1G011mV3OzllCyHQ3
+	tu8HxGbBJZ15CLwyh7eeEnxBjhFUToH5rshkuMSsavA1JdSIKNcxXRJRrJ6mqv9D
+	oJJxmtwOduoToyxXW8Zqck/dyfexn5nQ1aWMacPfDv9pXrHBf6/jzqJw+YLNiwkO
+	09yQnr5ecWnoB8XdGIfl8QIaJf8wrNgYQZGWssEEHG4KUeNMGGVUqyBa/nbQ0xUD
+	WMBqHtRUhTk6rsm5PE7RDf/EfHBjGv1+b4H5H5siuv0OO3vwg/9TsrSsgzIGV1H8
+	uJaNieqCUFPzyUY/lvn7mKpm7kWeu9AvuZt46BZU/g==
+X-ME-Sender: <xms:l09UZkr42Tj3GCW6pa1859gbpGEcXcsw3CZ00tl37FChKXfxXxI1xw>
+    <xme:l09UZqpPD2IU7cwr8I7vPrs4sAKCP-k5aTI11P0cZK9v8HeTJyp02EXpAyghMMiQP
+    9iqr--p9Bw6b-70bQ>
+X-ME-Received: <xmr:l09UZpP_L1bwceDbmrGquJQCAdfKuE19DU4-LYGNEzJw91DKJveXeROFHqesWWrxbvrGz5Z3gxMJhRJoN71qhwqgXacF>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrvdejgedguddvucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpefhvffufffkofgggfestdekredtre
+    dttdenucfhrhhomheptehlhihsshgrucftohhsshcuoehhihesrghlhihsshgrrdhisheq
+    necuggftrfgrthhtvghrnhephedvfffghfetieejgfetfedtgffhvdehueehvdejudfgge
+    fgleejgfelfeevgfefnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghi
+    lhhfrhhomhephhhisegrlhihshhsrgdrihhs
+X-ME-Proxy: <xmx:l09UZr5PdSyAGGYetzdrRUOAxtleKifl7ZfL3R8zGFjX06vKLod5TQ>
+    <xmx:l09UZj5sA9dzqEQlniiPtVeSCPm2Qn1w3uEJzZyZVsqdJkT_UWZhLg>
+    <xmx:l09UZrhmw62RLF6RPJ5_JjoF-Y4snL6hxsv63xmeISgOk5PEqHdDBA>
+    <xmx:l09UZt6duT7EkSJL48uoqRoqbr-jUctHN4LF293UVcPFk9RFfZZIiw>
+    <xmx:l09UZtRUczszvoZy9V7J91cAR5v2psVBOofIKdzwRugN0ifIIpWNJtOo>
+Feedback-ID: i12284293:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA for
+ <linux-ext4@vger.kernel.org>; Mon, 27 May 2024 05:17:10 -0400 (EDT)
+Received: by mbp.qyliss.net (Postfix, from userid 1000)
+	id 420C03B1; Mon, 27 May 2024 11:17:08 +0200 (CEST)
+From: Alyssa Ross <hi@alyssa.is>
+To: linux-ext4@vger.kernel.org
+Subject: [PATCH] libext2fs: fix unused parameter warnings/errors
+Date: Mon, 27 May 2024 11:15:43 +0200
+Message-ID: <20240527091542.4121237-2-hi@alyssa.is>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
-On Fri 24 May 2024 06:22:31 PM +02, Jan Kara wrote;
+This fixes building dependent packages that use -Werror.
 
-> On Thu 23-05-24 12:16:18, Luis Henriques (SUSE) wrote:
->> When a full journal commit is on-going, any fast commit has to be enqueu=
-ed
->> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueue=
-ing
->> is done only once, i.e. if an inode is already queued in a previous fast
->> commit entry it won't be enqueued again.  However, if a full commit star=
-ts
->> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs=
- to
->> be done into FC_Q_STAGING.  And this is not being done in function
->> ext4_fc_track_template().
->>=20
->> This patch fixes the issue by flagging an inode that is already enqueued=
- in
->> either queues.  Later, during the fast commit clean-up callback, if the
->> inode has a tid that is bigger than the one being handled, that inode is
->> re-enqueued into STAGING and the spliced back into MAIN.
->>=20
->> This bug was found using fstest generic/047.  This test creates several =
-32k
->> bytes files, sync'ing each of them after it's creation, and then shutting
->> down the filesystem.  Some data may be loss in this operation; for examp=
-le a
->> file may have it's size truncated to zero.
->>=20
->> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
->
-> Thanks for the fix. Some comments below:
->
->> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->> index 983dad8c07ec..4c308c18c3da 100644
->> --- a/fs/ext4/ext4.h
->> +++ b/fs/ext4/ext4.h
->> @@ -1062,9 +1062,18 @@ struct ext4_inode_info {
->>  	/* Fast commit wait queue for this inode */
->>  	wait_queue_head_t i_fc_wait;
->>=20=20
->> -	/* Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len */
->> +	/*
->> +	 * Protect concurrent accesses on i_fc_lblk_start, i_fc_lblk_len,
->> +	 * i_fc_next
->> +	 */
->>  	struct mutex i_fc_lock;
->>=20=20
->> +	/*
->> +	 * Used to flag an inode as part of the next fast commit; will be
->> +	 * reset during fast commit clean-up
->> +	 */
->> +	tid_t i_fc_next;
->> +
->
-> Do we really need new tid in the inode? I'd be kind of hoping we could use
-> EXT4_I(inode)->i_sync_tid for this - I can see we even already set it in
-> ext4_fc_track_template() and used for similar comparisons in fast commit
-> code.
+Signed-off-by: Alyssa Ross <hi@alyssa.is>
+---
+I'm assuming here that it is actually intentional that these variables 
+are unused!  I don't understand the code enough to know for sure — 
+I'm just trying to fix some build regressions after updating e2fsprogs. :)
 
-Ah, true.  It looks like it could be used indeed.  We'll still need a flag
-here, but a simple bool should be enough for that.
+ lib/ext2fs/ext2fs.h | 5 +++++
+ 1 file changed, 5 insertions(+)
 
->
->> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
->> index 87c009e0c59a..bfdf249f0783 100644
->> --- a/fs/ext4/fast_commit.c
->> +++ b/fs/ext4/fast_commit.c
->> @@ -402,6 +402,8 @@ static int ext4_fc_track_template(
->>  				 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
->>  				&sbi->s_fc_q[FC_Q_STAGING] :
->>  				&sbi->s_fc_q[FC_Q_MAIN]);
->> +	else
->> +		ei->i_fc_next =3D tid;
->>  	spin_unlock(&sbi->s_fc_lock);
->>=20=20
->>  	return ret;
->> @@ -1280,6 +1282,15 @@ static void ext4_fc_cleanup(journal_t *journal, i=
-nt full, tid_t tid)
->>  	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
->>  				 i_fc_list) {
->>  		list_del_init(&iter->i_fc_list);
->> +		if (iter->i_fc_next =3D=3D tid)
->> +			iter->i_fc_next =3D 0;
->> +		else if (iter->i_fc_next > tid)
-> 			 ^^^ careful here, TIDs do wrap so you need to use
-> tid_geq() for comparison.
->
+diff --git a/lib/ext2fs/ext2fs.h b/lib/ext2fs/ext2fs.h
+index 6e87829f..a1ce192b 100644
+--- a/lib/ext2fs/ext2fs.h
++++ b/lib/ext2fs/ext2fs.h
+@@ -592,6 +592,8 @@ static inline __u32 __encode_extra_time(time_t seconds, __u32 nsec)
+ #if (SIZEOF_TIME_T > 4)
+ 	extra = ((seconds - (__s32)(seconds & 0xffffffff)) >> 32) &
+ 		EXT4_EPOCH_MASK;
++#else
++	(void)seconds;
+ #endif
+ 	return extra | (nsec << EXT4_EPOCH_BITS);
+ }
+@@ -600,6 +602,8 @@ static inline time_t __decode_extra_sec(time_t seconds, __u32 extra)
+ #if (SIZEOF_TIME_T > 4)
+ 	if (extra & EXT4_EPOCH_MASK)
+ 		seconds += ((time_t)(extra & EXT4_EPOCH_MASK) << 32);
++#else
++	(void)extra;
+ #endif
+ 	return seconds;
+ }
+@@ -642,6 +646,7 @@ static inline void __sb_set_tstamp(__u32 *lo, __u8 *hi, time_t seconds)
+ static inline time_t __sb_get_tstamp(__u32 *lo, __u8 *hi)
+ {
+ #if (SIZEOF_TIME_T == 4)
++	(void)hi;
+ 	return *lo;
+ #else
+ 	return ((time_t)(*hi) << 32) | *lo;
 
-Yikes!  Thanks, I'll update the code to do that.
+base-commit: 950a0d69c82b585aba30118f01bf80151deffe8c
+-- 
+2.44.0
 
->> +			/*
->> +			 * re-enqueue inode into STAGING, which will later be
->> +			 * splice back into MAIN
->> +			 */
->> +			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
->> +				      &sbi->s_fc_q[FC_Q_STAGING]);
->>  		ext4_clear_inode_state(&iter->vfs_inode,
->>  				       EXT4_STATE_FC_COMMITTING);
->>  		if (iter->i_sync_tid <=3D tid)
-> 				     ^^^ and I can see this is buggy as
-> well and needs tid_geq() (not your fault obviously).
-
-Yeah, good point.  I can that too in v3.
-
-Again, thanks a lot for your review!
-
-Cheers,
---=20
-Lu=C3=ADs
 
