@@ -1,203 +1,136 @@
-Return-Path: <linux-ext4+bounces-2661-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2662-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 421E88D11CC
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 04:20:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 891BA8D14B1
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 08:50:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4ADAB21803
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 02:20:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1BD1B2113E
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 06:50:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC27845957;
-	Tue, 28 May 2024 02:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 958DF6A33B;
+	Tue, 28 May 2024 06:50:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njaMxIeh"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="TUMVKsep"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3AF47A62;
-	Tue, 28 May 2024 02:19:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46ED11BDD3
+	for <linux-ext4@vger.kernel.org>; Tue, 28 May 2024 06:50:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716862742; cv=none; b=EXY/33YCx1XXaEV0YNFiZ/4Ga++DnRw6E6z+MF7ah20mPDPwQE2FxHja3PyXOMPUL+tXKYIEmh0T4AGvqQPKyKW4/8ZUP/RTnDZSr6u3gqSClJrZnbtw+0Hh7x1TWqiFsBrX1WcLRa+1zL2siZ/2fU6Dn4f8mLM7XlVelInvuYA=
+	t=1716879019; cv=none; b=p7YZpIJfhcPtYbUrc21Ql80QGJPzTwsrTVU4xn1sKPvWif5DrvAXvAZDf4cGBaMG1y1+rdff5hJ3Qi18wdpl+QlXwibvUX7NBnnGrlY8gbyIokDlI0yugZ5ZttJ/l5IrNHHXjnFVvWMSVfUXI/VJY5BLrSVmElpoPi3AwmhSFmQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716862742; c=relaxed/simple;
-	bh=Pjk67fPFjHtppc3wMlZuoY1CvZdQrDtIflgQnJLuOvE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jT90b7ATjZ1XXaIdotUk5WDGIXTNkPECXEKTBns8etnINxGmBEjCyWgvqxxekFeA8J3Ry448sDKGpvg1MincMJy1/DBCcS1RxZW74AjjgbsMsKp5cKHznfc7qzmwpeZgrWW6wSsNowl4Wf7A3Kx830mYx1aulqUvzK8R/sBPmlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=njaMxIeh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA0EC2BBFC;
-	Tue, 28 May 2024 02:19:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716862741;
-	bh=Pjk67fPFjHtppc3wMlZuoY1CvZdQrDtIflgQnJLuOvE=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=njaMxIeh/NAUMx7tGiJVWHzOSCFymOdHGaGmrQbpiZCMNpiK+1hQP+2IOx3dkMOPJ
-	 3wqlj7v/imnz92EUyHLDzuXqxgwjsOn92BZRhW4SHoXQO08mQAKxJYSWit4XldUdCR
-	 sYJC2KxHyXK2rMv2zJ6WLuv5dak6YLDsf1nkXYGHUpKiabYIu05a6gi9I+nC/MaCBE
-	 MY5Eun43deRmjBpT74C62johDL5aI7QV7D5SDUo8+bY+DBh1AR5zVhsUZn3gj3zol8
-	 6Bo+IOiw7VTsH8GAVZpccR6vQAZPP7Y+4TOJt+9VPaCGAsGG4w9U+9uC+/b2SnLF1a
-	 PN9hC5Fz41EGQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.6 3/4] ext4: fix uninitialized ratelimit_state->lock access in __ext4_fill_super()
-Date: Mon, 27 May 2024 22:18:52 -0400
-Message-ID: <20240528021854.3905245-3-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240528021854.3905245-1-sashal@kernel.org>
-References: <20240528021854.3905245-1-sashal@kernel.org>
+	s=arc-20240116; t=1716879019; c=relaxed/simple;
+	bh=BzLi6SqoaN39rJEH0tlO461xNVeBEq0ZehRyOfFXA5k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XeBV3a5RmGZRoPtRAfYgzeJlDC4zI93mIOD12SXgl4xBRcEgPp3z+eqblsXjPKyGaasu0GCh4BIVz9j36dU6v5ZZtMSBtLmTNhnqe+5BI+h8NoxsFzQTp3oIj1b3ED7DjnKU1g3512HSWoNZcKB3tFEIn+/+qHamc/OwJaP8LcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=TUMVKsep; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (static180.cust.as2116.net [213.239.88.180] (may be forged))
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 44S6o068017233
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 28 May 2024 02:50:03 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1716879004; bh=WeUczJhw9i2RJskJRQFxOhdJfww+ndeMWSit3yDf1yk=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=TUMVKsepSUj2u2sswf6Nxxkg9WP/pULTi4ov02DVou6rU9vSvuAOrz9sMpmwa0f4v
+	 FhO39hL/N+BcWh+F2L96uqKLb/hTPjc3mRcIlpCsNPG9M30LyDSDS/YP7ls+jjQvhI
+	 vvpSyGxdlWi5ocAgZrq4Wjh005ELP8jCPPMi65qRsxSDWmBfF75F04BJNb1VC0q/OP
+	 1YRaVJBYoCHCN2wpXnz1APeI1oq4VT4nooThFzWsBVPHvxuNoLBdm5N0IVvXy9lZ3A
+	 zMMOtgrsA7HDj1q39HzF2sUv1S/ed/VfrsP7ahtO6OFC0ixomKh9+XTxQvuVxv14e4
+	 QnDLFVz2tdD3w==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 7EAF13411C8; Tue, 28 May 2024 02:49:58 -0400 (EDT)
+Date: Tue, 28 May 2024 08:49:58 +0200
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Alyssa Ross <hi@alyssa.is>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] libext2fs: fix unused parameter warnings/errors
+Message-ID: <20240528064958.GB1294551@mit.edu>
+References: <20240527091542.4121237-2-hi@alyssa.is>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.6.32
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240527091542.4121237-2-hi@alyssa.is>
 
-From: Baokun Li <libaokun1@huawei.com>
+On Mon, May 27, 2024 at 11:15:43AM +0200, Alyssa Ross wrote:
+> This fixes building dependent packages that use -Werror.
+> 
+> Signed-off-by: Alyssa Ross <hi@alyssa.is>
+> ---
+> I'm assuming here that it is actually intentional that these variables 
+> are unused!  I don't understand the code enough to know for sure — 
+> I'm just trying to fix some build regressions after updating e2fsprogs. :)
 
-[ Upstream commit b4b4fda34e535756f9e774fb2d09c4537b7dfd1c ]
+Well, note that you only get the warning at all if you use
+-Wunused-parameter, "-Wunused -Wextra", or "-Wall -Wextra".  The
+unused-parameter warning is not enabled unless you **really** go out
+of your way to enable it, because it has so many false positives.  The
+gcc maintainers do not enable this insanity even with -Wall, so
+someone really went out of their way to make your life miserable.  :-)
 
-In the following concurrency we will access the uninitialized rs->lock:
+I generally think it's a really bad idea to turn on warnings as if
+they are overdone Christmas tree lights.  However, to accomodate this,
+the normal way to suppress this is via __attribute__(unused).  To do
+this in a portable way to avoid breaking compilers which don't
+understand said attribute:
 
-ext4_fill_super
-  ext4_register_sysfs
-   // sysfs registered msg_ratelimit_interval_ms
-                             // Other processes modify rs->interval to
-                             // non-zero via msg_ratelimit_interval_ms
-  ext4_orphan_cleanup
-    ext4_msg(sb, KERN_INFO, "Errors on filesystem, "
-      __ext4_msg
-        ___ratelimit(&(EXT4_SB(sb)->s_msg_ratelimit_state)
-          if (!rs->interval)  // do nothing if interval is 0
-            return 1;
-          raw_spin_trylock_irqsave(&rs->lock, flags)
-            raw_spin_trylock(lock)
-              _raw_spin_trylock
-                __raw_spin_trylock
-                  spin_acquire(&lock->dep_map, 0, 1, _RET_IP_)
-                    lock_acquire
-                      __lock_acquire
-                        register_lock_class
-                          assign_lock_key
-                            dump_stack();
-  ratelimit_state_init(&sbi->s_msg_ratelimit_state, 5 * HZ, 10);
-    raw_spin_lock_init(&rs->lock);
-    // init rs->lock here
+/* this is usually predfined in some header file like compiler.h */
+#ifdef __GNUC__
+#define EXT2FS_ATTR(x) __attribute__(x)
+#else
+#define EXT2FS_ATTR(x)
+#endif
 
-and get the following dump_stack:
+...
+_INLINE_ errcode_t ext2fs_resize_mem(unsigned long EXT2FS_ATTR((unused)) old_size,
+				     unsigned long size, void *ptr)
+...
 
-=========================================================
-INFO: trying to register non-static key.
-The code is fine but needs lockdep annotation, or maybe
-you didn't initialize this object before use?
-turning off the locking correctness validator.
-CPU: 12 PID: 753 Comm: mount Tainted: G E 6.7.0-rc6-next-20231222 #504
-[...]
-Call Trace:
- dump_stack_lvl+0xc5/0x170
- dump_stack+0x18/0x30
- register_lock_class+0x740/0x7c0
- __lock_acquire+0x69/0x13a0
- lock_acquire+0x120/0x450
- _raw_spin_trylock+0x98/0xd0
- ___ratelimit+0xf6/0x220
- __ext4_msg+0x7f/0x160 [ext4]
- ext4_orphan_cleanup+0x665/0x740 [ext4]
- __ext4_fill_super+0x21ea/0x2b10 [ext4]
- ext4_fill_super+0x14d/0x360 [ext4]
-[...]
-=========================================================
+You can also play this game if you really have a huge number of stupid
+gcc warnings that you want to suppress:
 
-Normally interval is 0 until s_msg_ratelimit_state is initialized, so
-___ratelimit() does nothing. But registering sysfs precedes initializing
-rs->lock, so it is possible to change rs->interval to a non-zero value
-via the msg_ratelimit_interval_ms interface of sysfs while rs->lock is
-uninitialized, and then a call to ext4_msg triggers the problem by
-accessing an uninitialized rs->lock. Therefore register sysfs after all
-initializations are complete to avoid such problems.
+/* this is usually predfined in some header file like compiler.h */
+#ifndef __GNUC_PREREQ
+#if defined(__GNUC__) && defined(__GNUC_MINOR__)
+#define __GNUC_PREREQ(maj, min) \
+	((__GNUC__ << 16) + __GNUC_MINOR__ >= ((maj) << 16) + (min))
+#else
+#define __GNUC_PREREQ(maj, min) 0
+#endif
+#endif
 
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/r/20240102133730.1098120-1-libaokun1@huawei.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/super.c | 22 ++++++++++------------
- 1 file changed, 10 insertions(+), 12 deletions(-)
+#if __GNUC_PREREQ (4, 6)
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wunused-function"
+#pragma GCC diagnostic ignored "-Wunused-parameter"
+#endif
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 83fc3f092a0c7..5baacb3058abd 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5556,19 +5556,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	if (err)
- 		goto failed_mount6;
- 
--	err = ext4_register_sysfs(sb);
--	if (err)
--		goto failed_mount7;
--
- 	err = ext4_init_orphan_info(sb);
- 	if (err)
--		goto failed_mount8;
-+		goto failed_mount7;
- #ifdef CONFIG_QUOTA
- 	/* Enable quota usage during mount. */
- 	if (ext4_has_feature_quota(sb) && !sb_rdonly(sb)) {
- 		err = ext4_enable_quotas(sb);
- 		if (err)
--			goto failed_mount9;
-+			goto failed_mount8;
- 	}
- #endif  /* CONFIG_QUOTA */
- 
-@@ -5594,7 +5590,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		ext4_msg(sb, KERN_INFO, "recovery complete");
- 		err = ext4_mark_recovery_complete(sb, es);
- 		if (err)
--			goto failed_mount10;
-+			goto failed_mount9;
- 	}
- 
- 	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
-@@ -5611,15 +5607,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	atomic_set(&sbi->s_warning_count, 0);
- 	atomic_set(&sbi->s_msg_count, 0);
- 
-+	/* Register sysfs after all initializations are complete. */
-+	err = ext4_register_sysfs(sb);
-+	if (err)
-+		goto failed_mount9;
-+
- 	return 0;
- 
--failed_mount10:
-+failed_mount9:
- 	ext4_quotas_off(sb, EXT4_MAXQUOTAS);
--failed_mount9: __maybe_unused
-+failed_mount8: __maybe_unused
- 	ext4_release_orphan_info(sb);
--failed_mount8:
--	ext4_unregister_sysfs(sb);
--	kobject_put(&sbi->s_kobj);
- failed_mount7:
- 	ext4_unregister_li_request(sb);
- failed_mount6:
--- 
-2.43.0
+...
 
+#if __GNUC_PREREQ (4, 6)
+#pragma GCC diagnostic pop
+#endif
+
+I do this when I'm defining a lot of inline functions in a header
+file, and some stupid person thinks that -Wunused -Wextra is actually
+a good idea (hint: it's not), and I just want to shut up the
+completely unnecessary warnings.
+
+Cheers,
+
+					- Ted
 
