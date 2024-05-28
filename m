@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-2660-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2661-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A7718D11BF
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 04:19:56 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 421E88D11CC
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 04:20:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 321FA1F24D13
-	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 02:19:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4ADAB21803
+	for <lists+linux-ext4@lfdr.de>; Tue, 28 May 2024 02:20:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 296CC38DE4;
-	Tue, 28 May 2024 02:18:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC27845957;
+	Tue, 28 May 2024 02:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="avauGSQQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="njaMxIeh"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E25F37719;
-	Tue, 28 May 2024 02:18:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D3AF47A62;
+	Tue, 28 May 2024 02:19:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716862727; cv=none; b=d4pTCeNQu7t3vcEoxaPMWunMf+247u3R7YDPp3hEUOG/I3DG8ysdwZsrRsM/RL70QTzVwXPZTbIcHOrKK/gaUqmYvdjyzjVOut9Slx3opEIyt6vwUuCUjWNUOZezT6Fgl+p2ZXeoT3B5/Z6bJ30tCUjho1r+wp2DINWpmBMVPwA=
+	t=1716862742; cv=none; b=EXY/33YCx1XXaEV0YNFiZ/4Ga++DnRw6E6z+MF7ah20mPDPwQE2FxHja3PyXOMPUL+tXKYIEmh0T4AGvqQPKyKW4/8ZUP/RTnDZSr6u3gqSClJrZnbtw+0Hh7x1TWqiFsBrX1WcLRa+1zL2siZ/2fU6Dn4f8mLM7XlVelInvuYA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716862727; c=relaxed/simple;
-	bh=rhmOw/+SwBu79j3YvIR5ee96mjkov8qRkwVET61TZvw=;
+	s=arc-20240116; t=1716862742; c=relaxed/simple;
+	bh=Pjk67fPFjHtppc3wMlZuoY1CvZdQrDtIflgQnJLuOvE=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=glnnTb8XtplzZ7oflLwsQ/qkOG9DMRk3/1Yh87d/1vr7QzFx7/EPZMKg3EmbM2XlZzYeIQpIpvTf1O+VY63uMcOy49vhbDHPYH9bzSDHnW2C5lIXsJ0mF8cJZkFI9P9dhtJ8KT0qApNV0rBTuiwoUFlev7v22zVapUM6tJOErWg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=avauGSQQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EF7DC32782;
-	Tue, 28 May 2024 02:18:46 +0000 (UTC)
+	 MIME-Version; b=jT90b7ATjZ1XXaIdotUk5WDGIXTNkPECXEKTBns8etnINxGmBEjCyWgvqxxekFeA8J3Ry448sDKGpvg1MincMJy1/DBCcS1RxZW74AjjgbsMsKp5cKHznfc7qzmwpeZgrWW6wSsNowl4Wf7A3Kx830mYx1aulqUvzK8R/sBPmlg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=njaMxIeh; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8EA0EC2BBFC;
+	Tue, 28 May 2024 02:19:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1716862727;
-	bh=rhmOw/+SwBu79j3YvIR5ee96mjkov8qRkwVET61TZvw=;
+	s=k20201202; t=1716862741;
+	bh=Pjk67fPFjHtppc3wMlZuoY1CvZdQrDtIflgQnJLuOvE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=avauGSQQFUCtbTDSIktiX8V2GGHCgZkhP10Js4dMW8WTDDimMHIoxLhYiZD95mV/4
-	 i/KhH/X1FIJU3vfIlprXs6qKmj9UeUW2XHxBk4holDCj+IyP/HEBDYBT1k5zcQLYg7
-	 zXfIRX6Jqf2biMqVP3bNgOFOeK0/2o5GC9ZolgTbSwePSOrZIVV4mmj5WuEyp4/uPv
-	 ggLZWwRCIC2lOSR1oavBau9D8bf3lSU4og429JvrqnYs69H4GgxTRqgZDGQa8q3CQr
-	 qUYVddKCZCgw8kpDoS0TIUE41vdY8UzeQpzpdkqYv2hF5kh+LNsO9bPfQ4NIAYJ+ij
-	 9/0gEaxiXIelw==
+	b=njaMxIeh/NAUMx7tGiJVWHzOSCFymOdHGaGmrQbpiZCMNpiK+1hQP+2IOx3dkMOPJ
+	 3wqlj7v/imnz92EUyHLDzuXqxgwjsOn92BZRhW4SHoXQO08mQAKxJYSWit4XldUdCR
+	 sYJC2KxHyXK2rMv2zJ6WLuv5dak6YLDsf1nkXYGHUpKiabYIu05a6gi9I+nC/MaCBE
+	 MY5Eun43deRmjBpT74C62johDL5aI7QV7D5SDUo8+bY+DBh1AR5zVhsUZn3gj3zol8
+	 6Bo+IOiw7VTsH8GAVZpccR6vQAZPP7Y+4TOJt+9VPaCGAsGG4w9U+9uC+/b2SnLF1a
+	 PN9hC5Fz41EGQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -50,12 +50,12 @@ Cc: Baokun Li <libaokun1@huawei.com>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.8 3/4] ext4: fix uninitialized ratelimit_state->lock access in __ext4_fill_super()
-Date: Mon, 27 May 2024 22:18:38 -0400
-Message-ID: <20240528021840.3905128-3-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.6 3/4] ext4: fix uninitialized ratelimit_state->lock access in __ext4_fill_super()
+Date: Mon, 27 May 2024 22:18:52 -0400
+Message-ID: <20240528021854.3905245-3-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240528021840.3905128-1-sashal@kernel.org>
-References: <20240528021840.3905128-1-sashal@kernel.org>
+In-Reply-To: <20240528021854.3905245-1-sashal@kernel.org>
+References: <20240528021854.3905245-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,7 +64,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.8.11
+X-stable-base: Linux 6.6.32
 Content-Transfer-Encoding: 8bit
 
 From: Baokun Li <libaokun1@huawei.com>
@@ -140,10 +140,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  1 file changed, 10 insertions(+), 12 deletions(-)
 
 diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4866657c6d41f..b5fc5fa4e586c 100644
+index 83fc3f092a0c7..5baacb3058abd 100644
 --- a/fs/ext4/super.c
 +++ b/fs/ext4/super.c
-@@ -5555,19 +5555,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+@@ -5556,19 +5556,15 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  	if (err)
  		goto failed_mount6;
  
@@ -165,7 +165,7 @@ index 4866657c6d41f..b5fc5fa4e586c 100644
  	}
  #endif  /* CONFIG_QUOTA */
  
-@@ -5593,7 +5589,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+@@ -5594,7 +5590,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  		ext4_msg(sb, KERN_INFO, "recovery complete");
  		err = ext4_mark_recovery_complete(sb, es);
  		if (err)
@@ -174,7 +174,7 @@ index 4866657c6d41f..b5fc5fa4e586c 100644
  	}
  
  	if (test_opt(sb, DISCARD) && !bdev_max_discard_sectors(sb->s_bdev))
-@@ -5610,15 +5606,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+@@ -5611,15 +5607,17 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
  	atomic_set(&sbi->s_warning_count, 0);
  	atomic_set(&sbi->s_msg_count, 0);
  
