@@ -1,151 +1,106 @@
-Return-Path: <linux-ext4+bounces-2681-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2693-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F0E98D292F
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 02:01:41 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 61E748D29F7
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 03:28:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A61092869B8
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 00:01:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C907289141
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 01:28:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAB654A39;
-	Wed, 29 May 2024 00:01:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 758FE15AD9A;
+	Wed, 29 May 2024 01:28:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AwTK3Ubq"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="fBFPbQ6U"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-58-216.mail.qq.com (out162-62-58-216.mail.qq.com [162.62.58.216])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03BB517E8E6;
-	Wed, 29 May 2024 00:01:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75AC015A841;
+	Wed, 29 May 2024 01:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.58.216
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716940894; cv=none; b=cv0cjg9F1opWEUuDjTktzZnneoXBran6ppFkJ+1uO5ouJqDEvP8juedAS06jehYeWEZ2dktMgSKJJ1n3GeWmxfJBgHCsNSii7Lu2Fkumd7eadd3SXlqVI52rd//HSJ+JkKKiF9JhLVgUUlABa/ZrKCRN4z6S6TmeFGuurSDxldE=
+	t=1716946122; cv=none; b=N02NJuVDiKBMtrus7u2Sxi4XDhOJUi6mRQSYK6P6XbBVLQwxmLLKYqATe3qQ720RuDtGl6daa1Vlm/lIPanSmDOdRTy3kAL+kj6WNf2Gy1d1o4fS6SNwt+72mCE84d7w/ug0Hv4MFQcnHxs9ur9pW0n6RPRPE5a+L31ISdJvnHY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716940894; c=relaxed/simple;
-	bh=C63Ly9k5dKIFZWQs/wl1bGWVi8J3EJSDPbiFrxMa7xU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FHaZE96MxsGWiBYmQB7LaFm/D0k2eMP6KMD70eMzQtDcC4OPRgXEfc1Pdq6Ki7SauBuQ8wQ4SchRcw7t8kQr4gRcsSgXJyyIx6mMwTo0zwNHTbVSkAmUD4HoO5WSD5oc+X1/5oFsr2vAPq/Ae9SM5EIDokCNKGTRiOtJ86ailaA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AwTK3Ubq; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-62a0849f5a8so14391967b3.2;
-        Tue, 28 May 2024 17:01:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1716940892; x=1717545692; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TIRHKX25G2rvrHd33/dtDE8fOCvBEp9EtBOCUmSmkH8=;
-        b=AwTK3Ubq4MafPRoP1gJ16sOovMMdg4/xiQpmgufQI1HgZf2ojWBBUPUUFIF6zyrXM+
-         4PS9+7UWV+Yxpf/EE5WdlsDIKSyE+t2QKx1ETv4Sy338/8Y+MMRnO/R8pA1/H6BiSxvy
-         cq/KokAHROSiiSTL9+FCBIe8OsMiaPSxN57+TPtd+KYVUx5q8XrV6tM0F/z2Ha0eoBKe
-         qsf9oclQL6TpJv2GXCjxM4sg0maTahgCTCPl+Rtl5lHEdleQS/WXTdtGh2caZoFggbiJ
-         scLeRMqhcirWjiLOAskTlY1y7udkzRnZ8IL6ISv+LNwuHq7TGq6djZ18uzChgL3vWZpK
-         TcmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1716940892; x=1717545692;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TIRHKX25G2rvrHd33/dtDE8fOCvBEp9EtBOCUmSmkH8=;
-        b=VQ0ia0b1EQpxFqaha2RE3DWadRoH8IMTzZaWXQXnWfLRaa6bcC5v9OlmbQv2k1Un5g
-         rXJWNBtAIOPjuRTsQCHh0mQ2FXjS1zhoEKbdU8Uk5GwAyXXkOGW9eBWwhUGI5Ab/kFVU
-         Jt7zjDfZAjPWPy1cHqCmU6EoSa15Y4nH6jxbsqveTfEBG65z2aMschtEk8c5mAgIsyQ3
-         Vhpu4V7DkL6cfozAZDy5DcPm1F84hILNPEIJ5edd7cWFr9m7xS6lnRy1cLrswlPLQTFM
-         r3pkOjdcnOL+QL/U82ZkobwJF/LEnbHVI5oRuVwPD6bkdCa0rYyPHWs8nvA8SzWq0T7o
-         V2rA==
-X-Forwarded-Encrypted: i=1; AJvYcCUd6EBVy6WqeQPtldey8qKp2xgX9AEEqpWDNlLjqPaIAxtW845W+viXfVTjxHRHIGtdcJYOngk/f7DbvrzL/zWHSLWvHbBiD/v2oR0G0O9Qn1npzJdUApXGum0A2ytTZLT0BXWBILqfAw==
-X-Gm-Message-State: AOJu0YxBoNRPQtuy8jZZQm1uhvXstR9ZeCXSH1bD9f5wHqDQyckGs0V7
-	4SsMBW/8n9EUyCyPP5J1ATCID37WhsFtbimHg0rJTxsGHKlpEww1/u/yb8xf8RYCNSTrbIJd6ZF
-	xsrIeebbB5yfLmq2g+74FJmhAFa9lZzUt6ig=
-X-Google-Smtp-Source: AGHT+IFTzRkenDTDt3wESNB4ZaRKpKcLVxz2To6inH8tHhmRceliC0fS45+10Kk5SPl2fMZu0N83xDR7R+Y3WMrVcOc=
-X-Received: by 2002:a25:bc3:0:b0:df7:92ee:bb1a with SMTP id
- 3f1490d57ef6-df792eebc0dmr9317375276.52.1716940891845; Tue, 28 May 2024
- 17:01:31 -0700 (PDT)
+	s=arc-20240116; t=1716946122; c=relaxed/simple;
+	bh=j3htC+RmfS/MluEVClfrUS0wbKNXXr8GUemPYhAO0v0=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=NJe+8n9uiODh8P+O2qxXUIkXyQGqnXYYoy7VcYCFZ8KDYctkKI/Ex96EXIk4lDM2jXBDGq+x9LU6HxqJGlyY8eDzqtQ82yJnLTVNNH2hhVmnJtswTTcYxW5UL9dgZqODTwunL4Ku/Fvdq95LBVOHUnMCar0Y1lRvjIRl1iC+e8o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=fBFPbQ6U; arc=none smtp.client-ip=162.62.58.216
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1716946109; bh=OOjVQMK7W8tJWIF171tEGyp2a8xk0aKQ+MIa3W0Xb6s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=fBFPbQ6UAMbL/dqr0GXJu81N8umE1vc+k/9ZGL5SQQeODA9v2iIO8XHU1jqB+HuDO
+	 iWavkQyDfmJHgn5Gau0YEJ/nFBe4xxJCKPIPMEHXEqzRp/b1bcF8StrVJr+6knuW1D
+	 SMinDgrh41Mn+5j6jyuLS34xgecrnLH2FoYBqLao=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.153])
+	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
+	id 3C1310D4; Wed, 29 May 2024 09:15:01 +0800
+X-QQ-mid: xmsmtpt1716945301tgjycg6rl
+Message-ID: <tencent_72297DA3B4444FF762977666C65361437E05@qq.com>
+X-QQ-XMAILINFO: M/NR0wiIuy70guOsM/HY0pDqYQRhlhcRAMO0baPQfpwTWUVC+XwO2+YZXLXkCd
+	 Ah6koRaVDbU5rMY7FURDqchAGTGzGkBCmgMe8MfydY2uIYFBzk/2WOnWW8gdnxzPbf1/HmnPVnZc
+	 vqFgrJqQye4W4tgTDazT6I0ityKM52D0mryV2A+eVamH8ciEL+OCwCg4+Oi2gAQwAURbk5DARsaS
+	 /kg5HoSn+sNuqkwP1/NACkkHHvYOhOzF/NylHkNJk1P5wDtQxDMcnQ1n+Pmuybdi9Mw6leQhtXDo
+	 VpK3dRWO2QjxQCtS8cSKOyaBN2K+UDQkly23VTjA2avWrATAeH7X/0jbrBsgxOgA/sGomb/LhUlh
+	 tHKW8lNq56zg3s8t29JFMDsumsBcTx8nFHOUF3xy2kLIbwOweUIbTyr9Yi5IYHWVomCM6O84GY9l
+	 0QEN1Q3ff5H9+TewKblnCYgBmRf7SKqRcwesH0YCylGHk6FMD278Dm65FAs5rzbakFQYnUX82bGp
+	 K9YNFRV67GSmBHRVE4AZxPN1aQytbWh14EnMLU0x5EBNvf4rCr7VwoTfXg0nozRvsks+eiB8h0iZ
+	 bLjdDhXUZpBtgzEBNd/1GDbTScGv6OPYNf2jxVZIsr9MCFFplFi2qAnooKACTtnTH+4Lu4Q6lVH0
+	 tYJarfKD3zHh4zXm1rMs4RNM1MeVe5vN+hcL24DZD+nFOxQrTJ3yRGgpk8Ebu4h33lLD2D1OB5WX
+	 p2fOrT/krxe5STcSyxLOAZBLvzfygbmHvmIShFzyPrjqtUqGhATsG8p+B2AWKHX7paQc/4FZ/D4G
+	 DzHwwdk9sD46F4aZ/in7SfJ8tMYzIqSPfD6IdyiHPHNvALPsbY/ulXnuDMTzQMCvEfCAiZB465ti
+	 /xIYWvgSSHIzh/eeOMKtWU42CyV5VVnqP9ouZidC9Sggwg5BiGWewwCcyDVn9eWZBuITLpkXRT
+X-QQ-XMRINFO: MSVp+SPm3vtS1Vd6Y4Mggwc=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+fe42a669c87e4a980051@syzkaller.appspotmail.com
+Cc: adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	tytso@mit.edu
+Subject: [PATCH] fs/dcache: fix warning in ext4_xattr_inode_lookup_create
+Date: Wed, 29 May 2024 09:15:02 +0800
+X-OQ-MSGID: <20240529011501.2190031-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <0000000000002b03350619853096@google.com>
+References: <0000000000002b03350619853096@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240523111618.17012-1-luis.henriques@linux.dev>
- <20240524162231.l5r4niz7awjgfju6@quack3> <87h6ej64jv.fsf@brahms.olymp>
- <87msob45o7.fsf@brahms.olymp> <20240528103602.akx2gui5ownj25l3@quack3>
- <20240528105203.2q4gxqz6amgvud4l@quack3> <87h6eirl49.fsf@brahms.olymp>
-In-Reply-To: <87h6eirl49.fsf@brahms.olymp>
-From: harshad shirwadkar <harshadshirwadkar@gmail.com>
-Date: Tue, 28 May 2024 17:01:19 -0700
-Message-ID: <CAD+ocbwjeRVS3PL3AL+HKQ=VYm=MRZa1JOesZvERije4KFn7Vw@mail.gmail.com>
-Subject: Re: [PATCH v2] ext4: fix fast commit inode enqueueing during a full
- journal commit
-To: Luis Henriques <luis.henriques@linux.dev>
-Cc: Jan Kara <jack@suse.cz>, "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-Sorry for getting back late on your patchset - I was on vacation and
-checked your patch just now. This is a good catch! My patchset does
-not fix this issue. Looking forward to your V3 fix.
+ext4_xattr_inode_lookup_create() will use s_root, so set it to NULL
+after do_one_tree().
 
-Also, using i_sync_tid as Jan suggested sounds like a good way to handle th=
-is.
+Reported-and-tested-by: syzbot+fe42a669c87e4a980051@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/dcache.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-- Harshad
+diff --git a/fs/dcache.c b/fs/dcache.c
+index 407095188f83..e2f1a3f92ce9 100644
+--- a/fs/dcache.c
++++ b/fs/dcache.c
+@@ -1551,8 +1551,8 @@ void shrink_dcache_for_umount(struct super_block *sb)
+ 	WARN(down_read_trylock(&sb->s_umount), "s_umount should've been locked");
+ 
+ 	dentry = sb->s_root;
+-	sb->s_root = NULL;
+ 	do_one_tree(dentry);
++	sb->s_root = NULL;
+ 
+ 	while (!hlist_bl_empty(&sb->s_roots)) {
+ 		dentry = dget(hlist_bl_entry(hlist_bl_first(&sb->s_roots), struct dentry, d_hash));
+-- 
+2.43.0
 
-
-On Tue, May 28, 2024 at 8:50=E2=80=AFAM Luis Henriques <luis.henriques@linu=
-x.dev> wrote:
->
-> On Tue 28 May 2024 12:52:03 PM +02, Jan Kara wrote;
->
-> > On Tue 28-05-24 12:36:02, Jan Kara wrote:
-> >> On Mon 27-05-24 16:48:24, Luis Henriques wrote:
-> >> > On Mon 27 May 2024 09:29:40 AM +01, Luis Henriques wrote;
-> >> > >>> +      /*
-> >> > >>> +       * Used to flag an inode as part of the next fast commit;=
- will be
-> >> > >>> +       * reset during fast commit clean-up
-> >> > >>> +       */
-> >> > >>> +      tid_t i_fc_next;
-> >> > >>> +
-> >> > >>
-> >> > >> Do we really need new tid in the inode? I'd be kind of hoping we =
-could use
-> >> > >> EXT4_I(inode)->i_sync_tid for this - I can see we even already se=
-t it in
-> >> > >> ext4_fc_track_template() and used for similar comparisons in fast=
- commit
-> >> > >> code.
-> >> > >
-> >> > > Ah, true.  It looks like it could be used indeed.  We'll still nee=
-d a flag
-> >> > > here, but a simple bool should be enough for that.
-> >> >
-> >> > After looking again at the code, I'm not 100% sure that this is actu=
-ally
-> >> > doable.  For example, if I replace the above by
-> >> >
-> >> >    bool i_fc_next;
-> >> >
-> >> > and set to to 'true' below:
-> >
-> > Forgot to comment on this one: I don't think you even need 'bool i_fc_n=
-ext'
-> > - simply whenever i_sync_tid is greater than committing transaction's t=
-id,
-> > you move the inode to FC_Q_STAGING list in ext4_fc_cleanup().
->
-> Yeah, I got that from your other comment in the previous email.  And that
-> means the actual fix will be a pretty small patch (almost a one-liner).
->
-> I'm running some more tests on v3, I'll probably send it later today or
-> tomorrow.  Thanks a lot for your review (and patience), Jan.
->
-> Cheers,
-> --
-> Lu=C3=ADs
 
