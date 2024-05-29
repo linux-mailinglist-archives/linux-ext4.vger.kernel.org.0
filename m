@@ -1,61 +1,44 @@
-Return-Path: <linux-ext4+bounces-2695-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2696-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE23E8D2A4D
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 04:02:33 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 616718D2C4A
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 07:20:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 15ABEB26DDF
-	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 02:02:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 89BB41C21E5E
+	for <lists+linux-ext4@lfdr.de>; Wed, 29 May 2024 05:20:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B6EF15B11D;
-	Wed, 29 May 2024 02:01:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="QPRIznJ4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C6F15B972;
+	Wed, 29 May 2024 05:20:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0AD715A856;
-	Wed, 29 May 2024 02:01:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A07113A412;
+	Wed, 29 May 2024 05:20:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1716948096; cv=none; b=MD7eYoUq6JKOpL3k7E5MzsrGDLrhkoZHICk7WvfE6hM6PY7kakoObIljnPvLEimV9cP9aKSVUVKQNQcXOFNNvGhENuobiHM9JkMWrjKLd/hvZyy1avK7rtvAuRfEe9HDhUQkPChwpzKSlOwzi2fQxjtCCa8bX4IXTr5j1u+Y7Z8=
+	t=1716960024; cv=none; b=rxV3+iZfoA7C7rHDEAsE+Hi0DzCxWnhgJAsSd+mbNlLDcGseOIjBDB1iZNC1pgWkHJvRQQqKLx2hvGZgejLJPR40TWkRzoAHYRG5MmzlTtwADsRePB33Rh1H0c+KbCxWsTPudwK+ns4eoWgPr9W7sj4MhV8p0O+nxlpMREODlHc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1716948096; c=relaxed/simple;
-	bh=cjm0d7iJq0ZZy8NXDanN6QOQ8yyu7l9oVdu/MkVpRNY=;
+	s=arc-20240116; t=1716960024; c=relaxed/simple;
+	bh=1UF5wLDZH52kQQrtLtl5zDihegHq2jfGPBVOxdLdhIM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iDdjpKuv8o+K6onjgpSc+cEMx2ghOMctnXIo7N2f0B/0sQKw2nk1l7t/mDqSKSKis+kNwf7Smuiz0WIS0ELs/WpBr9jEiMMKIuTHq7oWSYS9rRxI1mwUgkYXp4VWw055/lMn5qwDNSkHXCytJNmJQB6f+o9BEiUcAEGIqI2V7fg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=QPRIznJ4; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=W7VynibdGQv1JFv2RbWXbyZjg4WNXsABmpDa7JG50io=; b=QPRIznJ4SQbjdTZHwCXUdxD3wi
-	iguHnEQ10cLXK9n/V6VJZhgX2zIqnZfMPHSXksRjo2pwj/EI6Gr2ohFokkT9uVfDKXI/4opg/e+ff
-	L89UVW0ZOu/7ryKAyEOv4+McyGolM1uCZP+a8PmBKup3+qq+HOiFeFvJ7/jVLB6ANTsUpgMOg+bcG
-	mJYr014oSDEnektFQWy3cpt2WploE0IkkcJgSY4UmzrGrLJhGeGjVuiZ3dlAqQYjWKMldPejk0SaF
-	oJSyXY1v8bKlSJ/eCTHoJEqI0Fdg/D/rgLROJ10rBi9ka7KI/2GcrIewzP48CA+9wXbxyJ8p0IJOW
-	JsA82X1Q==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.96 #2 (Red Hat Linux))
-	id 1sC8d8-001pva-22;
-	Wed, 29 May 2024 02:01:30 +0000
-Date: Wed, 29 May 2024 03:01:30 +0100
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+fe42a669c87e4a980051@syzkaller.appspotmail.com,
-	adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	tytso@mit.edu
-Subject: Re: [PATCH] fs/dcache: fix warning in ext4_xattr_inode_lookup_create
-Message-ID: <20240529020130.GK2118490@ZenIV>
-References: <0000000000002b03350619853096@google.com>
- <tencent_72297DA3B4444FF762977666C65361437E05@qq.com>
- <20240529015652.GJ2118490@ZenIV>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JGU1S5KC2tYG97JfDaZMPo65y492s3SgOKMZFRtkpW7xDNpQAhQucKWe7uiinPavTPiCfRJRoCRarfNE8tsXwzbPqRFZVgoK9n+LDiRR+F+rfoskdik5l9UVPpj6++iDkodg0JOb4ctZUtt0S/tQPCrtV/c4IzLnsP3r9kLoJYU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id E7E6968AFE; Wed, 29 May 2024 07:20:18 +0200 (CEST)
+Date: Wed, 29 May 2024 07:20:18 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: "Matthew Wilcox (Oracle)" <willy@infradead.org>
+Cc: Christoph Hellwig <hch@lst.de>, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/7] Start moving write_begin/write_end out of aops
+Message-ID: <20240529052018.GA15312@lst.de>
+References: <20240528164829.2105447-1-willy@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,18 +47,24 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240529015652.GJ2118490@ZenIV>
-Sender: Al Viro <viro@ftp.linux.org.uk>
+In-Reply-To: <20240528164829.2105447-1-willy@infradead.org>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-On Wed, May 29, 2024 at 02:56:52AM +0100, Al Viro wrote:
-> On Wed, May 29, 2024 at 09:15:02AM +0800, Edward Adam Davis wrote:
-> > ext4_xattr_inode_lookup_create() will use s_root, so set it to NULL
-> > after do_one_tree().
-> 
-> Why, in the name of everything unholy, would eviction of dentries need
-> to set any kind of xattrs?
+On Tue, May 28, 2024 at 05:48:21PM +0100, Matthew Wilcox (Oracle) wrote:
+> Christoph wants to remove write_begin/write_end from aops and pass them
+> to filemap as callback functions.  Here's one possible route to do this.
+> I combined it with the folio conversion (because why touch the same code
+> twice?) and tweaked some of the other things (support for ridiculously
+> large folios with size_t lengths, remove the need to initialise fsdata
+> by passing only a pointer to the fsdata pointer).  And then I converted
+> ext4, which is probably the worst filesystem to convert because it needs
+> three different bwops.  Most fs will only need one.
 
-IOW, that might make the testcase STFU, but something odd is happening
-there and I would really like to understand the details before we go
-that way.
+Hopefully ext4 will get convert to iomap before we need this.. :)
+
+More seriously, there is an ext4 iomap conversion in progress and a
+ext2 one, which is a really good copy & paste model for a lot of the
+simple file systems.  Maybe just wait for some of this to settle
+to avoid a lot of duplicate work?
+
 
