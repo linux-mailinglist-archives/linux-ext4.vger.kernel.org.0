@@ -1,108 +1,105 @@
-Return-Path: <linux-ext4+bounces-2723-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2724-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FC518D5D4F
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 10:57:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5B0E8D5F50
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 12:13:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B05661C23772
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 08:57:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D7F287DEF
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 10:13:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44A75155A5C;
-	Fri, 31 May 2024 08:57:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7603515098C;
+	Fri, 31 May 2024 10:13:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RVKM9Yn/"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88EA843154;
-	Fri, 31 May 2024 08:57:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6961B18EB1;
+	Fri, 31 May 2024 10:13:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717145828; cv=none; b=paP0dVHoklQ2o2GtqvRbACJSPW+6aaNFjal8RNod+Jv7pUmAH1+SS2iBqKhz0dDUSyyrQ/qG7vRsAjw6A2D+Xhh1QeW0/jVXJ3goSEjHKit6JAboSbX4aLWDzSkDaT/ROjO8GSd3YPnA4F7LiV9KZlj8BS5qDWkVe6p5rvkka0Y=
+	t=1717150385; cv=none; b=mkbNrgGBa1YpT7zwviCpjml9bQEAMGT0tHP01GHVY7CcRKSUGc62o98VQvrnyCupztUY8YrvNZCpisUUoGSMw1XR+BmNieaK/EeCymhLSiHV7INSesjQTwj6wXDVRFsSmuDEMcfryaDj1MXO2sU6l8fm/YXFqwO0/99daILjFA8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717145828; c=relaxed/simple;
-	bh=kPaFz5uK0ZOx/rIMQz/T/Y/SU8NEW+MLiaH5hug2usI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PkG6KFxOVBkAHc7mrtzu5bELm+so2l9OJVK2/cc6YtR0ZJtynLv1rg0A5su0ndwLhKW3NRigOE3Ko/fT0e5LK7NZJkJcP3NMsFeD4a39kC+DObrPsatIcjFYEla6FVCSnxPlwEErMzJ3thUOvLN3z0tAwOtgu0GqTujVyWF2jeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250812.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 44V4tQal022085;
-	Fri, 31 May 2024 08:56:54 GMT
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3yf5ydg88n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Fri, 31 May 2024 08:56:53 +0000 (GMT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Fri, 31 May 2024 01:56:52 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.39 via Frontend Transport; Fri, 31 May 2024 01:56:48 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <ebiggers@kernel.org>
-CC: <adilger.kernel@dilger.ca>, <coreteam@netfilter.org>,
-        <davem@davemloft.net>, <fw@strlen.de>, <jaegeuk@kernel.org>,
-        <kadlec@netfilter.org>, <kuba@kernel.org>,
-        <linux-ext4@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lizhi.xu@windriver.com>,
-        <netdev@vger.kernel.org>, <netfilter-devel@vger.kernel.org>,
-        <pablo@netfilter.org>,
-        <syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>, <tytso@mit.edu>
-Subject: [PATCH V3] ext4: check hash version and filesystem casefolded consistent
-Date: Fri, 31 May 2024 16:56:47 +0800
-Message-ID: <20240531085647.2918240-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240531033407.GB6505@sol.localdomain>
-References: <20240531033407.GB6505@sol.localdomain>
+	s=arc-20240116; t=1717150385; c=relaxed/simple;
+	bh=uCrhf4ZOEnBO4VCk1/sMCeJBzWOouCqL5FtZQg3xdRY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=h4Br/xb8c8MCGkotDcWSPad6woVPEYdOYTAgYEjoCdC/xwx/nugL2k2pJlKdNNO4we7DktnLpURojQ5gH3BDIn7j2SVqBQ4XNYx9ANMvwiYlTryclyT0WfyqkjEWCTKzAU5uimYF0E8CdNzgY+L6rbSZmp4nxLESNqbbeiHWB6Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RVKM9Yn/; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1717150381;
+	bh=uCrhf4ZOEnBO4VCk1/sMCeJBzWOouCqL5FtZQg3xdRY=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=RVKM9Yn/XzYfONe6xRHXS1zvr3ge+TieARHvTR+IRkgYIn9RHNB57tjTkw4xFAwEs
+	 7G2B+xWvTq1ZG+U9GftFQ8VEMnwae/1mBtn5iJdHr65foVxthb/csRTFhvCNY2VsPo
+	 x9x/pjAt3WodU6aIUHdphxfi1e7nazCVu7rEO1s3WJcSuNHSXv720Hg2Qu03Arky4X
+	 m+Vi9gKPDfPTaCSzUl6hIiqDnPWA0ZmLIvvQPDnKdkjehO/xKGn8aG83kCuJCBNG25
+	 Rocv4lj3do+i2luupO72TcteaCjCrdDio3Xg6eekfoFhu2JHTAKcPZhJlCAJz1J7/j
+	 HvotI5iWHoW7w==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 693D837821C1;
+	Fri, 31 May 2024 10:13:00 +0000 (UTC)
+Message-ID: <c6d7ddfe-9e16-4836-b285-d43dd16853fe@collabora.com>
+Date: Fri, 31 May 2024 13:12:59 +0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: BCm3wry5b9WNN3q2iVIUrHzGri0mMOPg
-X-Proofpoint-GUID: BCm3wry5b9WNN3q2iVIUrHzGri0mMOPg
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-05-31_05,2024-05-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- lowpriorityscore=0 bulkscore=0 mlxlogscore=999 impostorscore=0
- priorityscore=1501 spamscore=0 malwarescore=0 suspectscore=0 clxscore=1015
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.21.0-2405170001 definitions=main-2405310066
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v17 3/7] libfs: Introduce case-insensitive string
+ comparison helper
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
+ jaegeuk@kernel.org, adilger.kernel@dilger.ca, tytso@mit.edu,
+ krisman@suse.de, brauner@kernel.org, jack@suse.cz, viro@zeniv.linux.org.uk,
+ kernel@collabora.com, Gabriel Krisman Bertazi <krisman@collabora.com>
+References: <20240529082634.141286-1-eugen.hristev@collabora.com>
+ <20240529082634.141286-4-eugen.hristev@collabora.com>
+ <20240531044851.GE6505@sol.localdomain>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <20240531044851.GE6505@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-When mounting the ext4 filesystem, if the hash version and casefolded are not
-consistent, exit the mounting.
+On 5/31/24 07:48, Eric Biggers wrote:
+> On Wed, May 29, 2024 at 11:26:30AM +0300, Eugen Hristev via Linux-f2fs-devel wrote:
+>> +	/*
+>> +	 * Attempt a case-sensitive match first. It is cheaper and
+>> +	 * should cover most lookups, including all the sane
+>> +	 * applications that expect a case-sensitive filesystem.
+>> +	 */
+>> +
+>> +	if (dirent.len == (folded_name->name ? folded_name->len : name->len) &&
+>> +	    !memcmp(name->name, dirent.name, dirent.len))
+>> +		goto out;
+> 
+> Shouldn't it be just 'name->len' instead of
+> '(folded_name->name ? folded_name->len : name->len)'?
 
-Reported-by: syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- fs/ext4/super.c | 3 +++
- 1 file changed, 3 insertions(+)
+Okay, I will change it. I am also waiting for other reviews to prepare the next
+version.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c682fb927b64..c0036e3922c2 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5262,6 +5262,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		goto failed_mount;
- 
- 	ext4_hash_info_init(sb);
-+	if (es->s_def_hash_version == DX_HASH_SIPHASH && 
-+	    !ext4_has_feature_casefold(sb))
-+		goto failed_mount;
- 
- 	err = ext4_handle_clustersize(sb);
- 	if (err)
--- 
-2.43.0
+Thanks for looking at this.
+
+Eugen
+> 
+> - Eric
+> _______________________________________________
+> Kernel mailing list -- kernel@mailman.collabora.com
+> To unsubscribe send an email to kernel-leave@mailman.collabora.com
+> This list is managed by https://mailman.collabora.com
 
 
