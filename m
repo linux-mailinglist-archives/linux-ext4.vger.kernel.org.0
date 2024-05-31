@@ -1,105 +1,119 @@
-Return-Path: <linux-ext4+bounces-2724-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2725-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D5B0E8D5F50
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 12:13:13 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 59E908D5FD8
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 12:42:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87D7F287DEF
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 10:13:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC46328501E
+	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 10:42:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7603515098C;
-	Fri, 31 May 2024 10:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38669156649;
+	Fri, 31 May 2024 10:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="RVKM9Yn/"
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="glcQAAKI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6961B18EB1;
-	Fri, 31 May 2024 10:13:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0FB481749
+	for <linux-ext4@vger.kernel.org>; Fri, 31 May 2024 10:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717150385; cv=none; b=mkbNrgGBa1YpT7zwviCpjml9bQEAMGT0tHP01GHVY7CcRKSUGc62o98VQvrnyCupztUY8YrvNZCpisUUoGSMw1XR+BmNieaK/EeCymhLSiHV7INSesjQTwj6wXDVRFsSmuDEMcfryaDj1MXO2sU6l8fm/YXFqwO0/99daILjFA8=
+	t=1717152152; cv=none; b=eGm5hRf+2eFfuIHftqEEiStj2TfTq5uE4gmYSNGmRkQgwBLdjE7aClfXSNLDKz0RPKB5vR/3B53sKLc2VolWThHwocKO10HLVSMDcdfUTXb3+r5INX0GYi3m/EQbDEwysGvsfiLZnuZRkrbfs1mineVHrn1kn3Hw0pbjaKPWXUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717150385; c=relaxed/simple;
-	bh=uCrhf4ZOEnBO4VCk1/sMCeJBzWOouCqL5FtZQg3xdRY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=h4Br/xb8c8MCGkotDcWSPad6woVPEYdOYTAgYEjoCdC/xwx/nugL2k2pJlKdNNO4we7DktnLpURojQ5gH3BDIn7j2SVqBQ4XNYx9ANMvwiYlTryclyT0WfyqkjEWCTKzAU5uimYF0E8CdNzgY+L6rbSZmp4nxLESNqbbeiHWB6Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=RVKM9Yn/; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1717150381;
-	bh=uCrhf4ZOEnBO4VCk1/sMCeJBzWOouCqL5FtZQg3xdRY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=RVKM9Yn/XzYfONe6xRHXS1zvr3ge+TieARHvTR+IRkgYIn9RHNB57tjTkw4xFAwEs
-	 7G2B+xWvTq1ZG+U9GftFQ8VEMnwae/1mBtn5iJdHr65foVxthb/csRTFhvCNY2VsPo
-	 x9x/pjAt3WodU6aIUHdphxfi1e7nazCVu7rEO1s3WJcSuNHSXv720Hg2Qu03Arky4X
-	 m+Vi9gKPDfPTaCSzUl6hIiqDnPWA0ZmLIvvQPDnKdkjehO/xKGn8aG83kCuJCBNG25
-	 Rocv4lj3do+i2luupO72TcteaCjCrdDio3Xg6eekfoFhu2JHTAKcPZhJlCAJz1J7/j
-	 HvotI5iWHoW7w==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 693D837821C1;
-	Fri, 31 May 2024 10:13:00 +0000 (UTC)
-Message-ID: <c6d7ddfe-9e16-4836-b285-d43dd16853fe@collabora.com>
-Date: Fri, 31 May 2024 13:12:59 +0300
+	s=arc-20240116; t=1717152152; c=relaxed/simple;
+	bh=n1UFMEc2a+ip6lozAo9tSQX9hcHUWAUFc4VcwZzCngA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TLTkBCv4kX/fyEBJvc8Tn0/4oaRI4tfPGG8qQM/sIoLeVURl4wO+dsnqqqFojlFs4quqAT0KevfZgrN7av949zN75iaJ+OR+HR9xfN4yaC0RuW39jFvRAR4ruU0ZW4wgNPlbcJ4XnLDWH2Nwt0S513fVGm9R6E1OHBcra+EYoiQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=glcQAAKI; arc=none smtp.client-ip=209.85.218.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a59a352bbd9so300841366b.1
+        for <linux-ext4@vger.kernel.org>; Fri, 31 May 2024 03:42:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1717152148; x=1717756948; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ISXVPcsrr94mEq5TpN2s7NC6skzoD4RhjRGS9Vh3EGg=;
+        b=glcQAAKIPtevmkols0ptwp4vXUnTq3ggGXUGqJGp4nmRWxebORGuR83u5oXlEoDxZa
+         NizX4UyS/K2CE+lFON78HZCBlJTCph2h+bYARnf7hae7dGyw0NW4X/5TReS0Ot+aqmq9
+         0JFSl+js4NVKl2jETpdzswaxnJq9cSVsM1QQVzajWYHhZp9y4lkNLYEhOZpPssUJ5qVI
+         SuqKvY9ociPSHEtT9kSW2tLV2Df5I/ephmISdUXSGrg06DKNS3jShkisJHt1yP1OpfCv
+         4ouZEyXYNNF3NYhtRqUzDqdWSAPWR/bz84/Y3zBhtOzmMZG6esYkw+vFLdxlqS+IvIe4
+         XdiA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717152148; x=1717756948;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ISXVPcsrr94mEq5TpN2s7NC6skzoD4RhjRGS9Vh3EGg=;
+        b=AxJVJYLpjAouI0FgvS8C+uU66TePaIXNy4uK2xZT/CujDPtKRynGkKXSs3wISDHlBM
+         bqRGQCriBthwsU2eDxnCyIZ4BT7qng0vzgkwyXcpV0vVeH/tBe9ux/OodzE70VdrlNar
+         uZ/Vbo+B+FkxkKNOgVAFMHaKX+33xMiCqpMfBTzXknf3UWEJ+oo+5o3snx7tYPdUpjic
+         x+dTnJAHKu+iQWZ3sPQ8iEifHIBOpSrwNavN93fqwYB5Y+WFCgQAc+d5pv38dsqZdDoB
+         CA7vISKcWxqLEJxTBWkMmTRHw+dmo2f/wVRX0ag1IIDbmDuJf/f1uMCVXtPjmqT7uYN1
+         4DUA==
+X-Gm-Message-State: AOJu0Yz4aTm35sqxk9U5VV2CjUuruHDJ14DeSpJ+yEOpDlricrZl6V9c
+	dnC2dOWZwPwk8wHGEVSvauf351PAKxlLckVJFIBMx3fyRlzrrH3zxJ60LsDpkQI=
+X-Google-Smtp-Source: AGHT+IGzX4FmK/DHUc3XXLdjOJ6iZO10jtCcTWxg7hbg8WBqNvQwsHc++hdIf+MCsZ/hgXwzq8um4w==
+X-Received: by 2002:a17:907:bb84:b0:a62:5094:817 with SMTP id a640c23a62f3a-a65f093f6admr348929266b.11.1717152148161;
+        Fri, 31 May 2024 03:42:28 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-160.dynamic.mnet-online.de. [82.135.80.160])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31c9bc0asm866578a12.79.2024.05.31.03.42.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 31 May 2024 03:42:27 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: "Theodore Ts'o" <tytso@mit.edu>,
+	Jan Kara <jack@suse.com>
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [RESEND PATCH] jbd2: Use str_plural() to fix Coccinelle warning
+Date: Fri, 31 May 2024 12:42:00 +0200
+Message-ID: <20240531104159.564605-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.45.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v17 3/7] libfs: Introduce case-insensitive string
- comparison helper
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- jaegeuk@kernel.org, adilger.kernel@dilger.ca, tytso@mit.edu,
- krisman@suse.de, brauner@kernel.org, jack@suse.cz, viro@zeniv.linux.org.uk,
- kernel@collabora.com, Gabriel Krisman Bertazi <krisman@collabora.com>
-References: <20240529082634.141286-1-eugen.hristev@collabora.com>
- <20240529082634.141286-4-eugen.hristev@collabora.com>
- <20240531044851.GE6505@sol.localdomain>
-Content-Language: en-US
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20240531044851.GE6505@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 5/31/24 07:48, Eric Biggers wrote:
-> On Wed, May 29, 2024 at 11:26:30AM +0300, Eugen Hristev via Linux-f2fs-devel wrote:
->> +	/*
->> +	 * Attempt a case-sensitive match first. It is cheaper and
->> +	 * should cover most lookups, including all the sane
->> +	 * applications that expect a case-sensitive filesystem.
->> +	 */
->> +
->> +	if (dirent.len == (folded_name->name ? folded_name->len : name->len) &&
->> +	    !memcmp(name->name, dirent.name, dirent.len))
->> +		goto out;
-> 
-> Shouldn't it be just 'name->len' instead of
-> '(folded_name->name ? folded_name->len : name->len)'?
+Use str_plural() to fix the following Coccinelle/coccicheck warning
+reported by string_choices.cocci:
 
-Okay, I will change it. I am also waiting for other reviews to prepare the next
-version.
+	opportunity for str_plural(dropped)
 
-Thanks for looking at this.
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ fs/jbd2/recovery.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Eugen
-> 
-> - Eric
-> _______________________________________________
-> Kernel mailing list -- kernel@mailman.collabora.com
-> To unsubscribe send an email to kernel-leave@mailman.collabora.com
-> This list is managed by https://mailman.collabora.com
+diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+index 1f7664984d6e..af930c3d0d97 100644
+--- a/fs/jbd2/recovery.c
++++ b/fs/jbd2/recovery.c
+@@ -19,6 +19,7 @@
+ #include <linux/errno.h>
+ #include <linux/crc32.h>
+ #include <linux/blkdev.h>
++#include <linux/string_choices.h>
+ #endif
+ 
+ /*
+@@ -374,7 +375,7 @@ int jbd2_journal_skip_recovery(journal_t *journal)
+ 			be32_to_cpu(journal->j_superblock->s_sequence);
+ 		jbd2_debug(1,
+ 			  "JBD2: ignoring %d transaction%s from the journal.\n",
+-			  dropped, (dropped == 1) ? "" : "s");
++			  dropped, str_plural(dropped));
+ #endif
+ 		journal->j_transaction_sequence = ++info.end_transaction;
+ 		journal->j_head = info.head_block;
+-- 
+2.45.1
 
 
