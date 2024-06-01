@@ -1,175 +1,137 @@
-Return-Path: <linux-ext4+bounces-2726-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2727-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93C6B8D6A87
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 22:12:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA668D6DB6
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Jun 2024 05:42:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 318F91F2208B
-	for <lists+linux-ext4@lfdr.de>; Fri, 31 May 2024 20:12:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 267291F236C6
+	for <lists+linux-ext4@lfdr.de>; Sat,  1 Jun 2024 03:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5814517D37D;
-	Fri, 31 May 2024 20:12:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F1L0x7Rr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pzPuoZ5R";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="F1L0x7Rr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="pzPuoZ5R"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A23FD304;
+	Sat,  1 Jun 2024 03:42:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (unknown [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCBB6EAE7;
-	Fri, 31 May 2024 20:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23E197EF;
+	Sat,  1 Jun 2024 03:42:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717186355; cv=none; b=jIPG0sSjPqtCkvqXO+p95zWIobODl8B1r9LLfBLJarmBGMuexZ/V1QyGZ0NUGYyjlOfRfRR1/Ea+IndUVAs8zpE2X4Ox3b8dKByEVdWviX3LjrNpZNR6npMpZwQoFruWAWlk0VUpcOHoIQpnKuQEY3Zmfl4BeKa6mLNtWu6ObKE=
+	t=1717213324; cv=none; b=aXeSIm/HMXv8Z+f1ujjoOftH4+Hqiuun7DjwvElm+4jLOJ+RfDOFcQZzDURXpeD8O0ZaK+FIuWl4EFE36NC7eSAFfi7AaUCDwqbkiASqiNXY2VKtlx7bB0t0Ws6C/s1uzKwNeZjxOwqlnmvVH97kLoPwnvg/4safT2SjcrnV/Mc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717186355; c=relaxed/simple;
-	bh=PS4M7kRCVQqt7j4FPqpECbKoj/X5NVci6cyJdj4/aUc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GcLG7P/gsnKbz9eGhQM14dNX0HUs1qu1id/WfLHHpjtbDLQ4yKAa7yCdaNC3I4E/qGhK5wzB4qsOnpJ5qHebxHaqoq/5VMP6CQu8lIhFXHn1JKtS9cMfH/s86NphJtsPgv69m3CdEFWxjx31KJ28tlvjibdDPPJTDtCp+XRbDBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F1L0x7Rr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pzPuoZ5R; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=F1L0x7Rr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=pzPuoZ5R; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AAACA21D2A;
-	Fri, 31 May 2024 20:12:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1717186351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OIMdQxVWcgHgoT8x+qFv2MPalSLenD4lbNogIdyldgc=;
-	b=F1L0x7RrtEVSY1XEfg4x+8M3k1eC2YQ4bswqGLXBJo6igI+iYmhCfoQfQNudYV6gLLSzQF
-	k+ko4XzaH3DhHcCEyNGmtrZB4gf+wxyLjrcwUilfEV+y+ZfcnTJnBAjl9KLhKV2APcVnOQ
-	gShTYzxWr74DYHKZD0yf3Qc2eUc06Wc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1717186351;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OIMdQxVWcgHgoT8x+qFv2MPalSLenD4lbNogIdyldgc=;
-	b=pzPuoZ5RjnG5P/fUErIvchIVIsypURQpHuBNR2a6p5Id+xSv5ZkphPLS8QI2MBqRk4PvfR
-	VbFZVcjg9BP50uCA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1717186351; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OIMdQxVWcgHgoT8x+qFv2MPalSLenD4lbNogIdyldgc=;
-	b=F1L0x7RrtEVSY1XEfg4x+8M3k1eC2YQ4bswqGLXBJo6igI+iYmhCfoQfQNudYV6gLLSzQF
-	k+ko4XzaH3DhHcCEyNGmtrZB4gf+wxyLjrcwUilfEV+y+ZfcnTJnBAjl9KLhKV2APcVnOQ
-	gShTYzxWr74DYHKZD0yf3Qc2eUc06Wc=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1717186351;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=OIMdQxVWcgHgoT8x+qFv2MPalSLenD4lbNogIdyldgc=;
-	b=pzPuoZ5RjnG5P/fUErIvchIVIsypURQpHuBNR2a6p5Id+xSv5ZkphPLS8QI2MBqRk4PvfR
-	VbFZVcjg9BP50uCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 989E3132C2;
-	Fri, 31 May 2024 20:12:31 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id V9cAJS8vWmZ6WgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 31 May 2024 20:12:31 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 30D2EA088F; Fri, 31 May 2024 22:12:27 +0200 (CEST)
-Date: Fri, 31 May 2024 22:12:27 +0200
-From: Jan Kara <jack@suse.cz>
-To: Thorsten Blum <thorsten.blum@toblux.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RESEND PATCH] jbd2: Use str_plural() to fix Coccinelle warning
-Message-ID: <20240531201227.h6gc4cu3h6ltg6kl@quack3>
-References: <20240531104159.564605-2-thorsten.blum@toblux.com>
+	s=arc-20240116; t=1717213324; c=relaxed/simple;
+	bh=iC5J5NaNVHLn9fKACjdIwUU56j5iHHVCyrp73CAFfc8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=fvgr/QiG+Pii9Q7LhdLuKmReRnqUdUhxLTefHEZSE2IsdO+i3WcNfS05F1QznLVEnNkCHWz6/N28XERLmjT5zUnPTWLXXFbWtvBcn/4PInjIueP0KHLoj4PzA1fhpPg5dCEM0nErQFIygNqSYS4DN/Fo7PLASt/8GI1RYDBKAM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Vrm4k6HtSz4f3jXm;
+	Sat,  1 Jun 2024 11:41:42 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id 52DC41A016E;
+	Sat,  1 Jun 2024 11:41:52 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP1 (Coremail) with SMTP id cCh0CgAX6RFumFpmHN_4OA--.4543S4;
+	Sat, 01 Jun 2024 11:41:50 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH 00/10] ext4: simplify the counting and management of delalloc reserved blocks
+Date: Sat,  1 Jun 2024 11:41:39 +0800
+Message-Id: <20240601034149.2169771-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240531104159.564605-2-thorsten.blum@toblux.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.988];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:cCh0CgAX6RFumFpmHN_4OA--.4543S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Cw1xXrW3Gr1kGw4rWw15Arb_yoW8uw1DpF
+	WfC3W3Gr18Ww17W393Aw1UJw1rW3WfCr4UWrWfKw18ZFWrAr1xZFn2gF1ruFWrKrWxAF1Y
+	qF1akw18Cas8CrDanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvY14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWrZr1j6s0DMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0J
+	UZa9-UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Fri 31-05-24 12:42:00, Thorsten Blum wrote:
-> Use str_plural() to fix the following Coccinelle/coccicheck warning
-> reported by string_choices.cocci:
-> 
-> 	opportunity for str_plural(dropped)
-> 
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Looks good. Feel free to add:
+Hello!
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+This patch series is the part 3 prepartory changes of the buffered IO
+iomap conversion, it simplify the counting and updating logic of delalloc
+reserved blocks. I picked them out from my buffered IO iomap conversion
+RFC series v4[1], and did some minor change log messages improvement.
+It's based on the part 2 prepartory series [2] (not merged yet) +
+6.10-rc1.
 
-								Honza
+Patch 1-3 simplify the delalloc extent management logic by changes to
+always set EXT4_GET_BLOCKS_DELALLOC_RESERVE flag when allocating
+preallocated blocks, and don't add EXTENT_STATUS_DELAYED flag to an
+unwritten extent, which means ext4_es_is_delayed() is equal to
+ext4_es_is_delonly().
 
-> ---
->  fs/jbd2/recovery.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 1f7664984d6e..af930c3d0d97 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -19,6 +19,7 @@
->  #include <linux/errno.h>
->  #include <linux/crc32.h>
->  #include <linux/blkdev.h>
-> +#include <linux/string_choices.h>
->  #endif
->  
->  /*
-> @@ -374,7 +375,7 @@ int jbd2_journal_skip_recovery(journal_t *journal)
->  			be32_to_cpu(journal->j_superblock->s_sequence);
->  		jbd2_debug(1,
->  			  "JBD2: ignoring %d transaction%s from the journal.\n",
-> -			  dropped, (dropped == 1) ? "" : "s");
-> +			  dropped, str_plural(dropped));
->  #endif
->  		journal->j_transaction_sequence = ++info.end_transaction;
->  		journal->j_head = info.head_block;
-> -- 
-> 2.45.1
-> 
+Patch 4-6 simplify the reserved blocks updating logic by moves the
+reserved blocks updating from ext4_{ind|ext}_map_blocks() to
+ext4_es_insert_extent().
+
+Patch 7-10 drop the unused code (e.g. ext4_es_is_delonly())and update
+comments.
+
+This series has passed through kvm-xfstests in auto mode many times,
+please take a look at it.
+
+[1] https://lore.kernel.org/linux-ext4/20240410142948.2817554-1-yi.zhang@huaweicloud.com/
+[2] https://lore.kernel.org/linux-ext4/20240517124005.347221-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
+Zhang Yi (10):
+  ext4: factor out ext4_map_create_blocks() to allocate new blocks
+  ext4: optimize the EXT4_GET_BLOCKS_DELALLOC_RESERVE flag set
+  ext4: don't set EXTENT_STATUS_DELAYED on allocated blocks
+  ext4: let __revise_pending() return newly inserted pendings
+  ext4: count removed reserved blocks for delalloc only extent entry
+  ext4: update delalloc data reserve spcae in ext4_es_insert_extent()
+  ext4: drop ext4_es_delayed_clu()
+  ext4: use ext4_map_query_blocks() in ext4_map_blocks()
+  ext4: drop ext4_es_is_delonly()
+  ext4: drop all delonly descriptions
+
+ fs/ext4/extents.c        |  37 ------
+ fs/ext4/extents_status.c | 271 ++++++++++++++++-----------------------
+ fs/ext4/extents_status.h |   7 -
+ fs/ext4/indirect.c       |   7 -
+ fs/ext4/inode.c          | 197 +++++++++++++---------------
+ 5 files changed, 195 insertions(+), 324 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.31.1
+
 
