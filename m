@@ -1,111 +1,105 @@
-Return-Path: <linux-ext4+bounces-2738-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2739-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 323B18D6F86
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Jun 2024 13:38:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D7AEE8D7544
+	for <lists+linux-ext4@lfdr.de>; Sun,  2 Jun 2024 14:15:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D64EE1F21F40
-	for <lists+linux-ext4@lfdr.de>; Sat,  1 Jun 2024 11:38:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1A2A0B20F56
+	for <lists+linux-ext4@lfdr.de>; Sun,  2 Jun 2024 12:15:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 113B114E2E7;
-	Sat,  1 Jun 2024 11:38:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 492C439FD8;
+	Sun,  2 Jun 2024 12:15:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=lxm.se header.i=@lxm.se header.b="2tHWW3s8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+Received: from smtp.outgoing.loopia.se (smtp.outgoing.loopia.se [93.188.3.37])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8419335A7;
-	Sat,  1 Jun 2024 11:38:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7CD3D51A
+	for <linux-ext4@vger.kernel.org>; Sun,  2 Jun 2024 12:15:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.188.3.37
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717241911; cv=none; b=XfDPAPtoDc4DmSEUX+km/HvakQaOldDVsOA1f8ypyWvloE6RkxsQIwlVCpxLKKhBmFXHGtbbgCTrxn3VIzgdb+6vnmDZO7E20/aLRczJbv3wFv4yYZFz/EALMHcFea39PE7G9jlVcMkKNNeAPqtf2062D2glwDLPpFdEWtkA2sk=
+	t=1717330542; cv=none; b=BNN3ErV/ZS7flziZc4+7/wghauMklav1mo/WmZd/dIDDM/ehSSD0pLpTR1oaihrnwtb2uxB2BUnNNFN4M/6EkdRVkus0EMRfBHvO/2MeSG9ih7lTNnRDCX9QdiFTgUtw55HhW5C43mN876yIKnXvvSJkz9nYQw4Q5Eixt+cNcag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717241911; c=relaxed/simple;
-	bh=uAJlqDMiuKeV1HJo6t1t12QkEwDuIC/XqQuiy4tqFGg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CYvWJ1UL/j4itSc6sOp2xSj7wVOXXyNVNXLHEEqEzPITMMPv5afzPOoYJax2sy4ifRxBkkHRabRnqNGPl7SNl3JB5R8aBhNpvq38g8ngami6kBpEWCVUU/Fag4svCcG902G63V+mz031DkNUvX18mEMy+I5cGZtRGKdy+OdhrPc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 451Ao3b6025787;
-	Sat, 1 Jun 2024 11:37:57 GMT
-Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3yfrux8a77-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Sat, 01 Jun 2024 11:37:56 +0000 (GMT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Sat, 1 Jun 2024 04:37:55 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.39 via Frontend Transport; Sat, 1 Jun 2024 04:37:50 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <lkp@intel.com>
-CC: <coreteam@netfilter.org>, <davem@davemloft.net>, <ebiggers@kernel.org>,
-        <fw@strlen.de>, <jaegeuk@kernel.org>, <kadlec@netfilter.org>,
-        <kuba@kernel.org>, <linux-fscrypt@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lizhi.xu@windriver.com>,
-        <llvm@lists.linux.dev>, <netdev@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <oe-kbuild-all@lists.linux.dev>,
-        <pablo@netfilter.org>,
-        <syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>, <tytso@mit.edu>,
-        <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>
-Subject: [PATCH V5] ext4: check hash version and filesystem casefolded consistent
-Date: Sat, 1 Jun 2024 19:37:49 +0800
-Message-ID: <20240601113749.473058-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240531185519.GB1153@sol.localdomain>
-References: <20240531185519.GB1153@sol.localdomain>
+	s=arc-20240116; t=1717330542; c=relaxed/simple;
+	bh=Njp6KCE9wyEFjpp7hZ86IPaiG19bUetl5J+liw0Bo6w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hvH+QID9iQgiUh1z/wYfizWaWygOXOjUXt4oVM6NoFND8968GjTysa9xPJOyNrnVBNu6cOdQCEMPCEfRwmc6u6m6uCiUdg9vjVSgOc8VZZpzd32uaTHDslPuGX475a6i+zMMid5k8agA/oZhmhWeqbYCbn3zZR5H6vo8k2YtlkU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lxm.se; spf=pass smtp.mailfrom=lxm.se; dkim=pass (2048-bit key) header.d=lxm.se header.i=@lxm.se header.b=2tHWW3s8; arc=none smtp.client-ip=93.188.3.37
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lxm.se
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lxm.se
+Received: from s807.loopia.se (localhost [127.0.0.1])
+	by s807.loopia.se (Postfix) with ESMTP id 9F9F6301F6A0
+	for <linux-ext4@vger.kernel.org>; Sun, 02 Jun 2024 14:07:57 +0200 (CEST)
+Received: from s899.loopia.se (unknown [172.22.191.6])
+	by s807.loopia.se (Postfix) with ESMTP id 8F9A12E2872E
+	for <linux-ext4@vger.kernel.org>; Sun, 02 Jun 2024 14:07:57 +0200 (CEST)
+Received: from s472.loopia.se (unknown [172.22.191.6])
+	by s899.loopia.se (Postfix) with ESMTP id 8E1752C8BA68
+	for <linux-ext4@vger.kernel.org>; Sun, 02 Jun 2024 14:07:57 +0200 (CEST)
+X-Virus-Scanned: amavisd-new at amavis.loopia.se
+X-Spam-Flag: NO
+X-Spam-Score: -1.2
+X-Spam-Level:
+Authentication-Results: s472.loopia.se (amavisd-new); dkim=pass (2048-bit key)
+ header.d=lxm.se
+Received: from s980.loopia.se ([172.22.191.5])
+ by s472.loopia.se (s472.loopia.se [172.22.190.12]) (amavisd-new, port 10024)
+ with LMTP id lFMVuc_PQEzr; Sun,  2 Jun 2024 14:07:57 +0200 (CEST)
+X-Loopia-Auth: user
+X-Loopia-User: henrik@lxm.se
+X-Loopia-Originating-IP: 92.35.23.126
+Received: from pc.arpa.home (c-7e17235c.012-196-6c6b701.bbcust.telenor.se [92.35.23.126])
+	(Authenticated sender: henrik@lxm.se)
+	by s980.loopia.se (Postfix) with ESMTPSA id 21684220164B;
+	Sun, 02 Jun 2024 14:07:57 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lxm.se;
+	s=loopiadkim1708025221; t=1717330077;
+	bh=niS0o5ubvzUlqH+oKPFCJymMECr+LOFr6uOVCuGx/dw=;
+	h=From:To:Cc:Subject:Date;
+	b=2tHWW3s8qFhJmmHS3EVEfI9FR+wLCxcXjBj7qFjY1Q+nwQS/FQHPS3/w/QnoaAVPP
+	 u18ZtODPBEuDkmg5FR55GoTO+WaJbC3PseBqqenCimMcSV2OAzAa/vxySkmGTPh5cw
+	 7tnYozRXwYbHoBW8/o/4o+5uKcAHZrSQhXsiUp3H2issImzUwamMhU+hptyIj2WTfT
+	 qSoygEcKcJDXSnk9zZoPjm8mjLavA9rh/C1qcOgd2XRIhX5o6Gw2mA+T+5rVYzm6T5
+	 WxwhF1iqDvD6DPmHSdp5IwTMpU7VYXvb2JPbjDsX1SfogNfWDrS8/micaSqHV5AWV+
+	 Ol0+cccyVfVkA==
+From: =?UTF-8?q?Henrik=20Lindstr=C3=B6m?= <henrik@lxm.se>
+To: linux-ext4@vger.kernel.org
+Cc: =?UTF-8?q?Henrik=20Lindstr=C3=B6m?= <henrik@lxm.se>
+Subject: [PATCH] Fix implicit my_llseek declaration error when targeting musl libc
+Date: Sun,  2 Jun 2024 14:07:21 +0200
+Message-Id: <20240602120721.387561-1-henrik@lxm.se>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: SajYroC-HqTmjkX9D0lmFQznohzPr4mF
-X-Proofpoint-GUID: SajYroC-HqTmjkX9D0lmFQznohzPr4mF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-06-01_05,2024-05-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- bulkscore=0 spamscore=0 mlxscore=0 priorityscore=1501 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.21.0-2405170001 definitions=main-2406010091
 
-When mounting the ext4 filesystem, if the hash version and casefolded are not
-consistent, exit the mounting.
-
-Reported-by: syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+Signed-off-by: Henrik Lindström <henrik@lxm.se>
 ---
- fs/ext4/super.c | 5 +++++
- 1 file changed, 5 insertions(+)
+ lib/blkid/llseek.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c682fb927b64..0ad326504c50 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5262,6 +5262,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 		goto failed_mount;
+diff --git a/lib/blkid/llseek.c b/lib/blkid/llseek.c
+index 59298646..edb64320 100644
+--- a/lib/blkid/llseek.c
++++ b/lib/blkid/llseek.c
+@@ -52,7 +52,7 @@ extern long long llseek(int fd, long long offset, int origin);
  
- 	ext4_hash_info_init(sb);
-+	if (es->s_def_hash_version == DX_HASH_SIPHASH && 
-+	    !ext4_has_feature_casefold(sb)) {
-+		err = -EINVAL;
-+		goto failed_mount;
-+	}
+ #if SIZEOF_LONG == SIZEOF_LONG_LONG
  
- 	err = ext4_handle_clustersize(sb);
- 	if (err)
+-#define llseek lseek
++#define my_llseek lseek
+ 
+ #else /* SIZEOF_LONG != SIZEOF_LONG_LONG */
+ 
 -- 
-2.43.0
+2.39.2
 
 
