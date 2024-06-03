@@ -1,90 +1,167 @@
-Return-Path: <linux-ext4+bounces-2749-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2750-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C2EA8D8073
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2024 12:57:55 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 648788D812E
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2024 13:27:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96AC4B23DC1
-	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2024 10:57:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BDB22861CE
+	for <lists+linux-ext4@lfdr.de>; Mon,  3 Jun 2024 11:27:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D449580039;
-	Mon,  3 Jun 2024 10:57:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8AD0684A51;
+	Mon,  3 Jun 2024 11:27:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="RCFqGgMI"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="y6W/tjwL";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="p2RIwMKT";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="flPfk7AO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FUz/Pj4g"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.3])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 233BB107A8
-	for <linux-ext4@vger.kernel.org>; Mon,  3 Jun 2024 10:57:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.3
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A6482C6A3;
+	Mon,  3 Jun 2024 11:27:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717412266; cv=none; b=cp0p8/y+0abaiAP9Un/vnwvvVv247YLu/2AOyWZHBu8sNvZfEj9FFPj+ATnhyqGpaS4KyU1Lk0d7uEBMbQplk18h+CZbsUx1VJzhrXQ4Mk/QoxOL++2J55NMZk/Ls6Pj8NCIrM2PGQrX4D5qadd/P6e5nv/sl+yu2ZSa6jP4GzA=
+	t=1717414035; cv=none; b=p8kD0k5JkZyR3doAe5gJmsVR/RbCG0MtsxjD6PVFb29dYlzVbszi4EwmjBSKGwjtPfKOtCtbGwlTlklO7MhUMk97ZHSUH1NzhAGV/MPar3xZdJcYitHeseCbT/5l3zlilZAw6LvyKBkFdgfBQrVQzazFHWiJwnESWHzPQVJ0O3w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717412266; c=relaxed/simple;
-	bh=ILLCQJ6YCWaiOUwBZ2oG6XTFLJUTtXS5qQ90oQP3gAY=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=Bc2z1XvRDv+QtDXKbyrcD7z2n3R1CfR+zmczbMO8EuwB0dhhqgWOh6XaSfcpqHS1IBbZOh03Y1RsC07Dx8rkRiD4nJjme0dOp2qoyUS5D+C4AVhSmgyPzHq3NFOQC0CWdPbvDIE0+UUSD4n1DfEdQJI2xmXJnWXS4nEu8/mTxHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=RCFqGgMI; arc=none smtp.client-ip=220.197.31.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=From:Subject:Date:Message-Id; bh=uGnoAAc7YPzdknGJd+
-	YKFZ3RPWePJNQ/hjnRUSA0X0E=; b=RCFqGgMImfAT3PaJXGkgXjOimRQv9SteeC
-	7KM11w07Ha3ak/d665LlOYSZWm/Wa/o3bQbW5pVTFV+Umj/W6acGxgZNfwjxK6gh
-	G1gLENsIp0wOHoS6nJG+NiEt1XZCv3ENiRbc6BxRKkHsgUer1Iwsx3PdTxPxdf41
-	d0k94zRvo=
-Received: from localhost.tbsite.net (unknown [140.205.118.15])
-	by gzga-smtp-mta-g1-2 (Coremail) with SMTP id _____wDXr1+RoV1m9DTwFg--.13199S3;
-	Mon, 03 Jun 2024 18:57:22 +0800 (CST)
-From: carrion bent <carrionbent@163.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	carrion bent <carrionbent@163.com>
-Subject: [PATCH] ext4:fix macro definition error of EXT4_DIRENT_HASH and EXT4_DIRENT_MINOR_HASH
-Date: Mon,  3 Jun 2024 18:57:19 +0800
-Message-Id: <1717412239-31392-1-git-send-email-carrionbent@163.com>
-X-Mailer: git-send-email 2.7.4
-X-CM-TRANSID:_____wDXr1+RoV1m9DTwFg--.13199S3
-X-Coremail-Antispam: 1Uf129KBjvdXoW7Gr45ury3tFWxCryrWr45ZFb_yoWDtFcE93
-	48Ar18GwsIyF93Ka18A345tF1aqr48KF4jqF95G34qvr98Ja13A34qq3srZr93ury3AF1D
-	uF9Yqr1rKrn7WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUvcSsGvfC2KfnxnUUI43ZEXa7sR_SfOUUUUUU==
-X-CM-SenderInfo: xfdu2xprqev0rw6rljoofrz/1tbiLhbycmV4JUKG1QAAsR
+	s=arc-20240116; t=1717414035; c=relaxed/simple;
+	bh=cJPnpg2hCwgHukR1vYoWJ+DVnA03/FFtOwtTCUJ8wkY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YMs2O09di+tB4XMzUfMUv/nXqsLLfeTKOLs4EwYrOkWKppwk7D+uRuivGFsQekBYqaX9r+tu8UdjKofIzZ5xoCPq9uCpJ+LalTB1Iy6pUFZs/lAnQlyjCrHA1BbYcEd2p+yXpi3NQYYr5rRELQAtzEE2NMeyBw51FL2L5Xe8lCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=y6W/tjwL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=p2RIwMKT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=flPfk7AO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FUz/Pj4g; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 63A272224D;
+	Mon,  3 Jun 2024 11:27:10 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717414031; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7pfFFXzKIW4SMjbgPuQqcNQPPQGz7PtcZJ46Fj089Is=;
+	b=y6W/tjwLyJFxYOMqAVNiil/WQmavDW8lR/py1GpPK1u/XNM6fc+gV0qTEt47HpLOW1/hh5
+	PxMOJvMm4dp6wluFyY5UtrEO0BIEH67CI8b0a4TdpSMtj1pS+ULuY7XCKL7hK+gy1lSLAA
+	I6CDN8g9JIBJoxujiCClmPECcCM4g00=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717414031;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7pfFFXzKIW4SMjbgPuQqcNQPPQGz7PtcZJ46Fj089Is=;
+	b=p2RIwMKT1kTsj9NXcpvegHJol5lw/KUIDeHqirTbn039oAQbu8V8mzDa3yH6SBTEjIrlTa
+	ts0FHhDL8vR+S0Bw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=flPfk7AO;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="FUz/Pj4g"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717414030; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7pfFFXzKIW4SMjbgPuQqcNQPPQGz7PtcZJ46Fj089Is=;
+	b=flPfk7AOOeYAnUfLtCpiJv36/Q16dFQN4aXjltYqF/2fKTOb1Xw4Qoxp34/tZvKvR5tb1K
+	Pav9u71FY5VZRtJowJ4bon3w0m134DzwyfCGDFQSW6S6Msg2qSpjft255ZXFkLlexH4Sjf
+	8REr4OA0CUrTdkFoqT27hgkFO7z1znY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717414030;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7pfFFXzKIW4SMjbgPuQqcNQPPQGz7PtcZJ46Fj089Is=;
+	b=FUz/Pj4gT+sjqZWtu+0NyY8suUgunZRzh1/vNXe92rZEbWS7Ha0DJnNTVHro4FGrP5i/C9
+	29QjW+mtQUuUzOBQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 59687139CB;
+	Mon,  3 Jun 2024 11:27:10 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id nr/PFY6oXWb/JwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 03 Jun 2024 11:27:10 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0799EA087F; Mon,  3 Jun 2024 13:27:05 +0200 (CEST)
+Date: Mon, 3 Jun 2024 13:27:05 +0200
+From: Jan Kara <jack@suse.cz>
+To: syzbot <syzbot+42986aeeddfd7ed93c8b@syzkaller.appspotmail.com>
+Cc: brauner@kernel.org, jack@suse.cz, linux-ext4@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, viro@zeniv.linux.org.uk
+Subject: Re: [syzbot] [ext4?] INFO: task hung in vfs_rmdir (2)
+Message-ID: <20240603112705.hafr4gh5foxccw7f@quack3>
+References: <00000000000054d8540619f43b86@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <00000000000054d8540619f43b86@google.com>
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Level: 
+X-Spamd-Result: default: False [-0.92 / 50.00];
+	BAYES_HAM(-2.41)[97.28%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=47d282ddffae809f];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[42986aeeddfd7ed93c8b];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Rspamd-Queue-Id: 63A272224D
+X-Spam-Flag: NO
+X-Spam-Score: -0.92
+X-Spamd-Bar: /
 
-the macro parameter "entry" of EXT4_DIRENT_HASH and
-EXT4_DIRENT_MINOR_HASH was not used, but rather the
-variable de was directly used, which may be a local
-variable inside a function that calls the macros
+On Sun 02-06-24 20:50:18, syzbot wrote:
+> syzbot found the following issue on:
+> 
+> HEAD commit:    4a4be1ad3a6e Revert "vfs: Delete the associated dentry whe..
+> git tree:       upstream
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=1466269a980000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=47d282ddffae809f
+> dashboard link: https://syzkaller.appspot.com/bug?extid=42986aeeddfd7ed93c8b
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12a5b3ec980000
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=103820f2980000
 
-Signed-off-by: carrion bent <carrionbent@163.com>
----
- fs/ext4/ext4.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+Based on strace (and also the reproducer) this looks purely in exfat
+driver. So:
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 983dad8..04bdd27 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2338,9 +2338,9 @@ struct ext4_dir_entry_2 {
- 	((struct ext4_dir_entry_hash *) \
- 		(((void *)(entry)) + \
- 		((8 + (entry)->name_len + EXT4_DIR_ROUND) & ~EXT4_DIR_ROUND)))
--#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(de)->hash)
-+#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(entry)->hash)
- #define EXT4_DIRENT_MINOR_HASH(entry) \
--		le32_to_cpu(EXT4_DIRENT_HASHES(de)->minor_hash)
-+		le32_to_cpu(EXT4_DIRENT_HASHES(entry)->minor_hash)
- 
- static inline bool ext4_hash_in_dirent(const struct inode *inode)
- {
+#syz set subsystems: exfat
+
+								Honza
 -- 
-2.7.4
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
