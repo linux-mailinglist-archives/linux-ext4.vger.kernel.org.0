@@ -1,188 +1,145 @@
-Return-Path: <linux-ext4+bounces-2769-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2770-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4E918FBC17
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 21:07:01 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E89508FBC44
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 21:10:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82274283B83
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 19:07:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 618221F23328
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 19:10:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B3814AD3D;
-	Tue,  4 Jun 2024 19:06:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B4D13DB9F;
+	Tue,  4 Jun 2024 19:10:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xpVmld3U";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Sub/LDfg";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="xpVmld3U";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Sub/LDfg"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XX0Ajj3Y"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A1A214AD0D;
-	Tue,  4 Jun 2024 19:06:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9DA14AD2D
+	for <linux-ext4@vger.kernel.org>; Tue,  4 Jun 2024 19:10:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717528010; cv=none; b=FtHm1Hm8gG23o+HxgPo+daI5Z2RYIRx7GU2KdAWQxWihrFbI40uPI8JDD9hXFZCzFst9WnIBFGtPQ5swTBupYdlUgfUh/XfRLFP+/ia9LDdO9KcO0/ARQkI/pwTn5Ccud4axRDkLqRo630SypdojwaMeoTiiijt77k02Ls3Ex7w=
+	t=1717528241; cv=none; b=EpnecPi5LUb1bVx82WWZcZNSXDdvDtLDVB0xdIAr2QN8FHns+/VVa6Zx0P6uWLCWhU2UKhuj0DW+Hb6CsigdFZ6FVhDTo+BjriFwephIA5GDJnVZEnQXQEG7m7x+KbzksMXYV8vhKb3QuvtzzltGKu9QUP0Wx0PZiJ/z6QqASGk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717528010; c=relaxed/simple;
-	bh=w+z51GOxz6CgOvEKGk3Y4qP1o260i7X7s60eVfx6w8g=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IKcbQ1rtaR3MZ+T4V80c66IJIjTLrICeyDES8QMqTTm3jvwIud+OaeGrVHE4arlAS1kWNl+w+2L4I6A6Tdh4bEhs9fdgxpGV33RVfSLNissEeW7NL1xXM+msZ6kIH1n878GvnN5FLjaWebmCmQAJBkDGpaV5/n6IL1RXgKxg/SM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xpVmld3U; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Sub/LDfg; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=xpVmld3U; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Sub/LDfg; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 398E21F37C;
-	Tue,  4 Jun 2024 19:06:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1717528007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TXBboWW451VBPbHdzoF/IPP9YUNWIilu8/IAXa2j64I=;
-	b=xpVmld3U5rCSlYA+RS3LZvZSmgEP04a9DhPwJTUWgJ6Mqdan4i7dfYHA4JH+u4Rr6GzE2P
-	GK06r+QZDHElrI4eDogAq3kYyd9GvsOpXf6dfJEn6QoPPmuva1wI+ic/K/tU2OmKmqdaad
-	52fu0xlxtHW7AmnDbEecQpzxYKdW6ok=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1717528007;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TXBboWW451VBPbHdzoF/IPP9YUNWIilu8/IAXa2j64I=;
-	b=Sub/LDfgBk8LEnfeHQ5e0GjMGwc+RlDeU1LiGDsIpcv2LArYPL7mmsyoi6FdC4RTqmZ3EU
-	ajAGh0JzEvzQgqBA==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1717528007; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TXBboWW451VBPbHdzoF/IPP9YUNWIilu8/IAXa2j64I=;
-	b=xpVmld3U5rCSlYA+RS3LZvZSmgEP04a9DhPwJTUWgJ6Mqdan4i7dfYHA4JH+u4Rr6GzE2P
-	GK06r+QZDHElrI4eDogAq3kYyd9GvsOpXf6dfJEn6QoPPmuva1wI+ic/K/tU2OmKmqdaad
-	52fu0xlxtHW7AmnDbEecQpzxYKdW6ok=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1717528007;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TXBboWW451VBPbHdzoF/IPP9YUNWIilu8/IAXa2j64I=;
-	b=Sub/LDfgBk8LEnfeHQ5e0GjMGwc+RlDeU1LiGDsIpcv2LArYPL7mmsyoi6FdC4RTqmZ3EU
-	ajAGh0JzEvzQgqBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E6E1B13A93;
-	Tue,  4 Jun 2024 19:06:46 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pNiQMsZlX2YBYQAAD6G6ig
-	(envelope-from <krisman@suse.de>); Tue, 04 Jun 2024 19:06:46 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Lizhi Xu <lizhi.xu@windriver.com>
-Cc: <adilger.kernel@dilger.ca>,  <coreteam@netfilter.org>,
-  <davem@davemloft.net>,  <ebiggers@kernel.org>,  <fw@strlen.de>,
-  <jaegeuk@kernel.org>,  <kadlec@netfilter.org>,  <kuba@kernel.org>,
-  <linux-ext4@vger.kernel.org>,  <linux-fscrypt@vger.kernel.org>,
-  <linux-kernel@vger.kernel.org>,  <lkp@intel.com>,
-  <llvm@lists.linux.dev>,  <netdev@vger.kernel.org>,
-  <netfilter-devel@vger.kernel.org>,  <oe-kbuild-all@lists.linux.dev>,
-  <pablo@netfilter.org>,
-  <syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com>,
-  <syzkaller-bugs@googlegroups.com>,  <tytso@mit.edu>
-Subject: Re: [PATCH V5] ext4: check hash version and filesystem casefolded
- consistent
-In-Reply-To: <20240604011718.3360272-1-lizhi.xu@windriver.com> (Lizhi Xu's
-	message of "Tue, 4 Jun 2024 09:17:17 +0800")
-Organization: SUSE
-References: <87plsym65w.fsf@mailhost.krisman.be>
-	<20240604011718.3360272-1-lizhi.xu@windriver.com>
-Date: Tue, 04 Jun 2024 15:06:32 -0400
-Message-ID: <87le3kle87.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1717528241; c=relaxed/simple;
+	bh=6WRhNvMputCmUE8KuRCNypytBhygsDlUsvmXPlqiqT8=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=MGSo1gBXTvNitxatG0BqisP8ZIVBj6DBHa/IOP0qU+UB4t91cpXHIFcAqTHvje6Dk1I6lKU6I2GuEnkYkTWPeuUch0hjHS8V+RMZWf06puxw8EJh/1vycbQgiHmsiPURvjjmFx3G7NwC4/ma6ClzZkvCWU4e7nMWPwTC2SB5Yao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XX0Ajj3Y; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57a2ed9af7dso6609085a12.1
+        for <linux-ext4@vger.kernel.org>; Tue, 04 Jun 2024 12:10:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1717528238; x=1718133038; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uzA8SRe4whRjxMfh3T9fimsp/JqPLwi91HrTpjRxV+U=;
+        b=XX0Ajj3Y+1AZObqOfPb18cGyraQBDDLO2XIlAPS8Ly83mZMEaDukTwLl+9+4GwpKd2
+         THP7pT7DLRfk9UqrlX/fGSI5cZPLFm8D0w5CUdEI3pYebM+h81FoVigV9m2nEfYj4kRC
+         TonahQMlIiCAWbop+xMV9g639FTHM0BNlMfdtUrRWitQi6eLhlCZAtRVbPilZLWl0auA
+         8h2mQJGO7Hs2apj6epMapIMzjz6YH5eOzwmLsxZKClVONJ1f6gxRaW+EvpI+QRaIfMhz
+         7XZQpiWfGApQyh6Jx4J7T+OGwblLT6XKCE2SpIvVkKV0X1DWJhFjGQN7d0Qx/HnXjWz+
+         qRYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1717528238; x=1718133038;
+        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
+         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uzA8SRe4whRjxMfh3T9fimsp/JqPLwi91HrTpjRxV+U=;
+        b=pjGMZD5GaHEZoSHThnRBsWZMW2avMjFNs+Jm2xOef3I6vje0EjMwh3YwKmhj3J1psL
+         0lebGgHQ+nLjEW3QCHkyq2Ipl2gWEOdJCtS5Rqps5nCNRAuVFg5nEaPl74wNE85OEYY/
+         tfQdfnHMnIlXilihHaMHOuzh3pD3AT4t+2Mji2z8rTocJu8qP+ATP8MVJUxvr4+5MxB7
+         BFGusIXpHb5TTZMolqYI6guoyzqykgdgRF4wsiUxW+QULMv4JTZ/F3JzDR08niiPeixI
+         C50Wdtvc77q1I+tA1/4G2ufMXMcwD2ZVw4hbnvwt4hMjFA0I7XFuHj05C0M8KbdCuS0e
+         +HkQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV8cmk7hdcQ8RLacO9rz5NqpIJPzNnCsfYgsP8dB9ZwvJL6tLMbg62L/Rc+tO3alX4+qdzB7zr8jwE/liFhwWPeI528DwdG3HMIdw==
+X-Gm-Message-State: AOJu0YxgwAG1nXZYjoGOnFncKZ1ZX20QaDX6hKGmqF2DCPm78ginJmW8
+	XbqMKVR4kbIw+2OjRQYxq2IjCkeq05R4XAzvz+bZhrZsf5C8kU742To3xhhL4LA=
+X-Google-Smtp-Source: AGHT+IGlsLGfRHK0f6DmqF44S64KIFY4M3R+3mRgGUK5rWCZG7z77L7iKZ+bC3jDwWK1rj3XV48eRQ==
+X-Received: by 2002:a50:d4db:0:b0:57a:242e:806b with SMTP id 4fb4d7f45d1cf-57a8b6acd8emr362804a12.18.1717528237801;
+        Tue, 04 Jun 2024 12:10:37 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31bb825esm7847800a12.32.2024.06.04.12.10.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 04 Jun 2024 12:10:37 -0700 (PDT)
+Date: Tue, 4 Jun 2024 22:10:33 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: oe-kbuild@lists.linux.dev, Hyeonwoo Cha <chw1119@hanyang.ac.kr>,
+	david.sterba@suse.com
+Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, aivazian.tigran@gmail.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	tytso@mit.edu, adilger.kernel@dilger.ca,
+	hirofumi@mail.parknet.co.jp, sfr@canb.auug.org.au,
+	chw1119@hanyang.ac.kr, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	reiserfs-devel@vger.kernel.org
+Subject: Re: [PATCH v2] Fix issue in mark_buffer_dirty_inode
+Message-ID: <97ac9280-4c7b-4466-9cb8-2a81882f0b80@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Flag: NO
-X-Spam-Score: -2.80
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[340581ba9dceb7e06fb3];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[appspotmail.com:email]
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240604060636.87652-1-chw1119@hanyang.ac.kr>
 
-Lizhi Xu <lizhi.xu@windriver.com> writes:
+Hi Hyeonwoo,
 
-> On Mon, 03 Jun 2024 10:50:51 -0400, Gabriel Krisman Bertazi wrote:
->> > When mounting the ext4 filesystem, if the hash version and casefolded are not
->> > consistent, exit the mounting.
->> >
->> > Reported-by: syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com
->> > Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
->> > ---
->> >  fs/ext4/super.c | 5 +++++
->> >  1 file changed, 5 insertions(+)
->> >
->> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> > index c682fb927b64..0ad326504c50 100644
->> > --- a/fs/ext4/super.c
->> > +++ b/fs/ext4/super.c
->> > @@ -5262,6 +5262,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->> >  		goto failed_mount;
->> >  
->> >  	ext4_hash_info_init(sb);
->> > +	if (es->s_def_hash_version == DX_HASH_SIPHASH && 
->> > +	    !ext4_has_feature_casefold(sb)) {
->> 
->> Can we ever have DX_HASH_SIPHASH set up in the super block?  I thought
->> it was used solely for directories where ext4_hash_in_dirent(inode) is
->> true.
-> The value of s'def_hash_version is obtained by reading the super block from the
-> buffer cache of the block device in ext4_load_super().
+kernel test robot noticed the following build warnings:
 
-Yes, I know.  My point is whether this check should just be:
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-if (es->s_def_hash_version == DX_HASH_SIPHASH)
-	goto failed_mount;
+url:    https://github.com/intel-lab-lkp/linux/commits/Hyeonwoo-Cha/Fix-issue-in-mark_buffer_dirty_inode/20240604-140958
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
+patch link:    https://lore.kernel.org/r/20240604060636.87652-1-chw1119%40hanyang.ac.kr
+patch subject: [PATCH v2] Fix issue in mark_buffer_dirty_inode
+config: i386-randconfig-141-20240604 (https://download.01.org/0day-ci/archive/20240605/202406050218.U7c0DL3C-lkp@intel.com/config)
+compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
 
-Since, IIUC, DX_HASH_SIPHASH is done per-directory and not written to
-the sb.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
+| Closes: https://lore.kernel.org/r/202406050218.U7c0DL3C-lkp@intel.com/
 
->> If this is only for the case of a superblock corruption, perhaps we
->> should always reject the mount, whether casefold is enabled or not?
-> Based on the existing information, it cannot be confirmed whether the superblock
-> is corrupt, but one thing is clear: if the default hash version of the superblock
-> is set to DX_HASH_SIPHASH, but the casefold feature is not set at the same time,
-> it is definitely an error.
+smatch warnings:
+fs/buffer.c:673 mark_buffer_dirty_fsync() warn: if statement not indented
+fs/buffer.c:682 mark_buffer_dirty_fsync() warn: inconsistent indenting
 
+vim +673 fs/buffer.c
+
+73295b4ed00de6 Hyeonwoo Cha            2024-06-04  667  void mark_buffer_dirty_fsync(struct buffer_head *bh, struct address_space *mapping)
+^1da177e4c3f41 Linus Torvalds          2005-04-16  668  {
+abc8a8a2c7dc7b Matthew Wilcox (Oracle  2022-12-15  669) 	struct address_space *buffer_mapping = bh->b_folio->mapping;
+^1da177e4c3f41 Linus Torvalds          2005-04-16  670  
+^1da177e4c3f41 Linus Torvalds          2005-04-16  671  	mark_buffer_dirty(bh);
+73295b4ed00de6 Hyeonwoo Cha            2024-06-04  672  
+73295b4ed00de6 Hyeonwoo Cha            2024-06-04 @673  	if (bh->b_assoc_map)
+73295b4ed00de6 Hyeonwoo Cha            2024-06-04  674          return;
+
+The code is okay, but the indenting is messed up.
+
+73295b4ed00de6 Hyeonwoo Cha            2024-06-04  675  
+600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  676) 	if (!mapping->i_private_data) {
+600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  677)     	mapping->i_private_data = buffer_mapping;
+^1da177e4c3f41 Linus Torvalds          2005-04-16  678      } else {
+600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  679)         BUG_ON(mapping->i_private_data != buffer_mapping);
+^1da177e4c3f41 Linus Torvalds          2005-04-16  680      }
+73295b4ed00de6 Hyeonwoo Cha            2024-06-04  681  
+600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17 @682)     spin_lock(&buffer_mapping->i_private_lock);
+73295b4ed00de6 Hyeonwoo Cha            2024-06-04  683      list_move_tail(&bh->b_assoc_buffers, &mapping->i_private_list);
+58ff407bee5a55 Jan Kara                2006-10-17  684      bh->b_assoc_map = mapping;
+600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  685)     spin_unlock(&buffer_mapping->i_private_lock);
+^1da177e4c3f41 Linus Torvalds          2005-04-16  686  }
 
 -- 
-Gabriel Krisman Bertazi
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
+
 
