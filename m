@@ -1,145 +1,270 @@
-Return-Path: <linux-ext4+bounces-2770-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2771-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E89508FBC44
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 21:10:49 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 458958FBC66
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 21:18:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 618221F23328
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 19:10:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA12B1F26675
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 19:18:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8B4D13DB9F;
-	Tue,  4 Jun 2024 19:10:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76DC714B075;
+	Tue,  4 Jun 2024 19:17:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="XX0Ajj3Y"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lEfy7KFv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ApTIBBZg";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="lEfy7KFv";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="ApTIBBZg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F9DA14AD2D
-	for <linux-ext4@vger.kernel.org>; Tue,  4 Jun 2024 19:10:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 418B713E8BF;
+	Tue,  4 Jun 2024 19:17:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717528241; cv=none; b=EpnecPi5LUb1bVx82WWZcZNSXDdvDtLDVB0xdIAr2QN8FHns+/VVa6Zx0P6uWLCWhU2UKhuj0DW+Hb6CsigdFZ6FVhDTo+BjriFwephIA5GDJnVZEnQXQEG7m7x+KbzksMXYV8vhKb3QuvtzzltGKu9QUP0Wx0PZiJ/z6QqASGk=
+	t=1717528672; cv=none; b=mEX1F9fLsb5iqYRpvCobNdsFqlxESG1GWs4s/Yk2mHvPGHRFoSYoxx+uTKfBRytSnGUOK+7Z/DleY4v220iYwAaATS+JEnB8QL6vhQ2J7D2+akjyVtakZm73ePpSLBdkSUgAHtIQ6uFTEPeIOZuSEd7m9U08YrqylskiU2XjlSs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717528241; c=relaxed/simple;
-	bh=6WRhNvMputCmUE8KuRCNypytBhygsDlUsvmXPlqiqT8=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=MGSo1gBXTvNitxatG0BqisP8ZIVBj6DBHa/IOP0qU+UB4t91cpXHIFcAqTHvje6Dk1I6lKU6I2GuEnkYkTWPeuUch0hjHS8V+RMZWf06puxw8EJh/1vycbQgiHmsiPURvjjmFx3G7NwC4/ma6ClzZkvCWU4e7nMWPwTC2SB5Yao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=XX0Ajj3Y; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-57a2ed9af7dso6609085a12.1
-        for <linux-ext4@vger.kernel.org>; Tue, 04 Jun 2024 12:10:39 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1717528238; x=1718133038; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uzA8SRe4whRjxMfh3T9fimsp/JqPLwi91HrTpjRxV+U=;
-        b=XX0Ajj3Y+1AZObqOfPb18cGyraQBDDLO2XIlAPS8Ly83mZMEaDukTwLl+9+4GwpKd2
-         THP7pT7DLRfk9UqrlX/fGSI5cZPLFm8D0w5CUdEI3pYebM+h81FoVigV9m2nEfYj4kRC
-         TonahQMlIiCAWbop+xMV9g639FTHM0BNlMfdtUrRWitQi6eLhlCZAtRVbPilZLWl0auA
-         8h2mQJGO7Hs2apj6epMapIMzjz6YH5eOzwmLsxZKClVONJ1f6gxRaW+EvpI+QRaIfMhz
-         7XZQpiWfGApQyh6Jx4J7T+OGwblLT6XKCE2SpIvVkKV0X1DWJhFjGQN7d0Qx/HnXjWz+
-         qRYQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1717528238; x=1718133038;
-        h=in-reply-to:content-disposition:mime-version:message-id:subject:cc
-         :to:from:date:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uzA8SRe4whRjxMfh3T9fimsp/JqPLwi91HrTpjRxV+U=;
-        b=pjGMZD5GaHEZoSHThnRBsWZMW2avMjFNs+Jm2xOef3I6vje0EjMwh3YwKmhj3J1psL
-         0lebGgHQ+nLjEW3QCHkyq2Ipl2gWEOdJCtS5Rqps5nCNRAuVFg5nEaPl74wNE85OEYY/
-         tfQdfnHMnIlXilihHaMHOuzh3pD3AT4t+2Mji2z8rTocJu8qP+ATP8MVJUxvr4+5MxB7
-         BFGusIXpHb5TTZMolqYI6guoyzqykgdgRF4wsiUxW+QULMv4JTZ/F3JzDR08niiPeixI
-         C50Wdtvc77q1I+tA1/4G2ufMXMcwD2ZVw4hbnvwt4hMjFA0I7XFuHj05C0M8KbdCuS0e
-         +HkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV8cmk7hdcQ8RLacO9rz5NqpIJPzNnCsfYgsP8dB9ZwvJL6tLMbg62L/Rc+tO3alX4+qdzB7zr8jwE/liFhwWPeI528DwdG3HMIdw==
-X-Gm-Message-State: AOJu0YxgwAG1nXZYjoGOnFncKZ1ZX20QaDX6hKGmqF2DCPm78ginJmW8
-	XbqMKVR4kbIw+2OjRQYxq2IjCkeq05R4XAzvz+bZhrZsf5C8kU742To3xhhL4LA=
-X-Google-Smtp-Source: AGHT+IGlsLGfRHK0f6DmqF44S64KIFY4M3R+3mRgGUK5rWCZG7z77L7iKZ+bC3jDwWK1rj3XV48eRQ==
-X-Received: by 2002:a50:d4db:0:b0:57a:242e:806b with SMTP id 4fb4d7f45d1cf-57a8b6acd8emr362804a12.18.1717528237801;
-        Tue, 04 Jun 2024 12:10:37 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-57a31bb825esm7847800a12.32.2024.06.04.12.10.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 04 Jun 2024 12:10:37 -0700 (PDT)
-Date: Tue, 4 Jun 2024 22:10:33 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: oe-kbuild@lists.linux.dev, Hyeonwoo Cha <chw1119@hanyang.ac.kr>,
-	david.sterba@suse.com
-Cc: lkp@intel.com, oe-kbuild-all@lists.linux.dev, aivazian.tigran@gmail.com,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	tytso@mit.edu, adilger.kernel@dilger.ca,
-	hirofumi@mail.parknet.co.jp, sfr@canb.auug.org.au,
-	chw1119@hanyang.ac.kr, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	reiserfs-devel@vger.kernel.org
-Subject: Re: [PATCH v2] Fix issue in mark_buffer_dirty_inode
-Message-ID: <97ac9280-4c7b-4466-9cb8-2a81882f0b80@moroto.mountain>
+	s=arc-20240116; t=1717528672; c=relaxed/simple;
+	bh=bhz6beSoZHU0cD/b+1WGcJg+4R07D7ffbbCwhG5yiv0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=fbHukTugZMx39cSXjS0LUKWDBEht3FSVaANifzHXrCegfzz44u5d7W2nBUW6EXijnKAA3wNbzZ6NQGpqY+hBBeNjEIjmybl2fnEOvIME+dJka4yNCdwxHH6DjW4ilgQL1nkHuT+dmq3ZZOm4WibW2hfeBB/4BMAz6HIXHO1kCaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lEfy7KFv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ApTIBBZg; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=lEfy7KFv; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=ApTIBBZg; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 44A8F21A49;
+	Tue,  4 Jun 2024 19:17:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1717528667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rO2JAWmDJtlVxTQDorgmfpM/zzgopthZzmv/CylN0UA=;
+	b=lEfy7KFvbYAu5Gy+ndRbat4fzOU68RDR7fbdoOvM8TNr+eLnWDKN3NLWHNk5nTEB+RBK/J
+	VVk1aglcyJbAa95ekP89831ZhX+bpi36WVN+SgUs1vlh9OZrCfhOshwyHnQrQUseKv5/yt
+	4429yG93oPOP/VXrBtWeE3tCOPD+aho=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1717528667;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rO2JAWmDJtlVxTQDorgmfpM/zzgopthZzmv/CylN0UA=;
+	b=ApTIBBZgztLzgx2iXdTJhOWHbFiIpXmzJZXspoqfRyp+gK25RM6uuwfp5piowKx1ScboFA
+	x7Mzq2DSvBYLAsCw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1717528667; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rO2JAWmDJtlVxTQDorgmfpM/zzgopthZzmv/CylN0UA=;
+	b=lEfy7KFvbYAu5Gy+ndRbat4fzOU68RDR7fbdoOvM8TNr+eLnWDKN3NLWHNk5nTEB+RBK/J
+	VVk1aglcyJbAa95ekP89831ZhX+bpi36WVN+SgUs1vlh9OZrCfhOshwyHnQrQUseKv5/yt
+	4429yG93oPOP/VXrBtWeE3tCOPD+aho=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1717528667;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rO2JAWmDJtlVxTQDorgmfpM/zzgopthZzmv/CylN0UA=;
+	b=ApTIBBZgztLzgx2iXdTJhOWHbFiIpXmzJZXspoqfRyp+gK25RM6uuwfp5piowKx1ScboFA
+	x7Mzq2DSvBYLAsCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E55BD13A93;
+	Tue,  4 Jun 2024 19:17:46 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id mLlRMVpoX2bXYwAAD6G6ig
+	(envelope-from <krisman@suse.de>); Tue, 04 Jun 2024 19:17:46 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Eugen Hristev <eugen.hristev@collabora.com>
+Cc: linux-ext4@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
+  jaegeuk@kernel.org,  adilger.kernel@dilger.ca,  tytso@mit.edu,
+  chao@kernel.org,  viro@zeniv.linux.org.uk,  brauner@kernel.org,
+  jack@suse.cz,  ebiggers@google.com,  kernel@collabora.com,  Gabriel
+ Krisman Bertazi <krisman@collabora.com>
+Subject: Re: [PATCH v17 4/7] ext4: Reuse generic_ci_match for ci comparisons
+In-Reply-To: <20240529082634.141286-5-eugen.hristev@collabora.com> (Eugen
+	Hristev's message of "Wed, 29 May 2024 11:26:31 +0300")
+Organization: SUSE
+References: <20240529082634.141286-1-eugen.hristev@collabora.com>
+	<20240529082634.141286-5-eugen.hristev@collabora.com>
+Date: Tue, 04 Jun 2024 15:17:41 -0400
+Message-ID: <87cyowldpm.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240604060636.87652-1-chw1119@hanyang.ac.kr>
+Content-Type: text/plain
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	HAS_ORG_HEADER(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[15];
+	FROM_EQ_ENVFROM(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_DN_SOME(0.00)[]
+X-Spam-Score: -4.30
+X-Spam-Flag: NO
 
-Hi Hyeonwoo,
+Eugen Hristev <eugen.hristev@collabora.com> writes:
 
-kernel test robot noticed the following build warnings:
+> From: Gabriel Krisman Bertazi <krisman@collabora.com>
+>
+> Instead of reimplementing ext4_match_ci, use the new libfs helper.
+>
+> It also adds a comment explaining why fname->cf_name.name must be
+> checked prior to the encryption hash optimization, because that tripped
+> me before.
+>
+> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
+> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+> Reviewed-by: Eric Biggers <ebiggers@google.com>
+> ---
+>  fs/ext4/namei.c | 91 +++++++++++++++----------------------------------
+>  1 file changed, 27 insertions(+), 64 deletions(-)
+>
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index ec4c9bfc1057..20668741a23c 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -1390,58 +1390,6 @@ static void dx_insert_block(struct dx_frame *frame, u32 hash, ext4_lblk_t block)
+>  }
+>  
+>  #if IS_ENABLED(CONFIG_UNICODE)
+> -/*
+> - * Test whether a case-insensitive directory entry matches the filename
+> - * being searched for.  If quick is set, assume the name being looked up
+> - * is already in the casefolded form.
+> - *
+> - * Returns: 0 if the directory entry matches, more than 0 if it
+> - * doesn't match or less than zero on error.
+> - */
+> -static int ext4_ci_compare(const struct inode *parent, const struct qstr *name,
+> -			   u8 *de_name, size_t de_name_len, bool quick)
+> -{
+> -	const struct super_block *sb = parent->i_sb;
+> -	const struct unicode_map *um = sb->s_encoding;
+> -	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
+> -	struct qstr entry = QSTR_INIT(de_name, de_name_len);
+> -	int ret;
+> -
+> -	if (IS_ENCRYPTED(parent)) {
+> -		const struct fscrypt_str encrypted_name =
+> -				FSTR_INIT(de_name, de_name_len);
+> -
+> -		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
+> -		if (!decrypted_name.name)
+> -			return -ENOMEM;
+> -		ret = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
+> -						&decrypted_name);
+> -		if (ret < 0)
+> -			goto out;
+> -		entry.name = decrypted_name.name;
+> -		entry.len = decrypted_name.len;
+> -	}
+> -
+> -	if (quick)
+> -		ret = utf8_strncasecmp_folded(um, name, &entry);
+> -	else
+> -		ret = utf8_strncasecmp(um, name, &entry);
+> -	if (ret < 0) {
+> -		/* Handle invalid character sequence as either an error
+> -		 * or as an opaque byte sequence.
+> -		 */
+> -		if (sb_has_strict_encoding(sb))
+> -			ret = -EINVAL;
+> -		else if (name->len != entry.len)
+> -			ret = 1;
+> -		else
+> -			ret = !!memcmp(name->name, entry.name, entry.len);
+> -	}
+> -out:
+> -	kfree(decrypted_name.name);
+> -	return ret;
+> -}
+> -
+>  int ext4_fname_setup_ci_filename(struct inode *dir, const struct qstr *iname,
+>  				  struct ext4_filename *name)
+>  {
+> @@ -1503,20 +1451,35 @@ static bool ext4_match(struct inode *parent,
+>  #if IS_ENABLED(CONFIG_UNICODE)
+>  	if (IS_CASEFOLDED(parent) &&
+>  	    (!IS_ENCRYPTED(parent) || fscrypt_has_encryption_key(parent))) {
+> -		if (fname->cf_name.name) {
+> -			if (IS_ENCRYPTED(parent)) {
+> -				if (fname->hinfo.hash != EXT4_DIRENT_HASH(de) ||
+> -					fname->hinfo.minor_hash !=
+> -						EXT4_DIRENT_MINOR_HASH(de)) {
+> +		int ret;
+>  
+> -					return false;
+> -				}
+> -			}
+> -			return !ext4_ci_compare(parent, &fname->cf_name,
+> -						de->name, de->name_len, true);
+> +		/*
+> +		 * Just checking IS_ENCRYPTED(parent) below is not
+> +		 * sufficient to decide whether one can use the hash for
+> +		 * skipping the string comparison, because the key might
+> +		 * have been added right after
+> +		 * ext4_fname_setup_ci_filename().  In this case, a hash
+> +		 * mismatch will be a false negative.  Therefore, make
+> +		 * sure cf_name was properly initialized before
+> +		 * considering the calculated hash.
+> +		 */
+> +		if (IS_ENCRYPTED(parent) && fname->cf_name.name &&
+> +		    (fname->hinfo.hash != EXT4_DIRENT_HASH(de) ||
+> +		     fname->hinfo.minor_hash != EXT4_DIRENT_MINOR_HASH(de)))
+> +			return false;
+> +
+> +		ret = generic_ci_match(parent, fname->usr_fname,
+> +				       &fname->cf_name, de->name,
+> +				       de->name_len);
+> +		if (ret < 0) {
+> +			/*
+> +			 * Treat comparison errors as not a match.  The
+> +			 * only case where it happens is on a disk
+> +			 * corruption or ENOMEM.
+> +			 */
+> +			return false;
+>  		}
+> -		return !ext4_ci_compare(parent, fname->usr_fname, de->name,
+> -						de->name_len, false);
 
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+With the changes to patch 3 in this iteration, This could become:
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Hyeonwoo-Cha/Fix-issue-in-mark_buffer_dirty_inode/20240604-140958
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git vfs.all
-patch link:    https://lore.kernel.org/r/20240604060636.87652-1-chw1119%40hanyang.ac.kr
-patch subject: [PATCH v2] Fix issue in mark_buffer_dirty_inode
-config: i386-randconfig-141-20240604 (https://download.01.org/0day-ci/archive/20240605/202406050218.U7c0DL3C-lkp@intel.com/config)
-compiler: gcc-13 (Ubuntu 13.2.0-4ubuntu3) 13.2.0
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-| Closes: https://lore.kernel.org/r/202406050218.U7c0DL3C-lkp@intel.com/
-
-smatch warnings:
-fs/buffer.c:673 mark_buffer_dirty_fsync() warn: if statement not indented
-fs/buffer.c:682 mark_buffer_dirty_fsync() warn: inconsistent indenting
-
-vim +673 fs/buffer.c
-
-73295b4ed00de6 Hyeonwoo Cha            2024-06-04  667  void mark_buffer_dirty_fsync(struct buffer_head *bh, struct address_space *mapping)
-^1da177e4c3f41 Linus Torvalds          2005-04-16  668  {
-abc8a8a2c7dc7b Matthew Wilcox (Oracle  2022-12-15  669) 	struct address_space *buffer_mapping = bh->b_folio->mapping;
-^1da177e4c3f41 Linus Torvalds          2005-04-16  670  
-^1da177e4c3f41 Linus Torvalds          2005-04-16  671  	mark_buffer_dirty(bh);
-73295b4ed00de6 Hyeonwoo Cha            2024-06-04  672  
-73295b4ed00de6 Hyeonwoo Cha            2024-06-04 @673  	if (bh->b_assoc_map)
-73295b4ed00de6 Hyeonwoo Cha            2024-06-04  674          return;
-
-The code is okay, but the indenting is messed up.
-
-73295b4ed00de6 Hyeonwoo Cha            2024-06-04  675  
-600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  676) 	if (!mapping->i_private_data) {
-600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  677)     	mapping->i_private_data = buffer_mapping;
-^1da177e4c3f41 Linus Torvalds          2005-04-16  678      } else {
-600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  679)         BUG_ON(mapping->i_private_data != buffer_mapping);
-^1da177e4c3f41 Linus Torvalds          2005-04-16  680      }
-73295b4ed00de6 Hyeonwoo Cha            2024-06-04  681  
-600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17 @682)     spin_lock(&buffer_mapping->i_private_lock);
-73295b4ed00de6 Hyeonwoo Cha            2024-06-04  683      list_move_tail(&bh->b_assoc_buffers, &mapping->i_private_list);
-58ff407bee5a55 Jan Kara                2006-10-17  684      bh->b_assoc_map = mapping;
-600f111ef51dc2 Matthew Wilcox (Oracle  2023-11-17  685)     spin_unlock(&buffer_mapping->i_private_lock);
-^1da177e4c3f41 Linus Torvalds          2005-04-16  686  }
+/*
+ * Treat comparison errors as not a match.  The
+ * only case where it happens is disk corruption
+ * or ENOMEM.
+ */
+return ext4_ci_compare(parent, fname->usr_fname, de->name,
+		       de->name_len, false) > 0;
 
 -- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
-
+Gabriel Krisman Bertazi
 
