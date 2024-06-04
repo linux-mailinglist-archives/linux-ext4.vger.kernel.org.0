@@ -1,118 +1,96 @@
-Return-Path: <linux-ext4+bounces-2767-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2768-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 466118FAEF8
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 11:37:29 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B68B88FBA7C
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 19:33:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DA5B41F26355
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 09:37:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A9CCCB28F42
+	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 17:31:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52FAA143C6A;
-	Tue,  4 Jun 2024 09:37:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C647714A0A7;
+	Tue,  4 Jun 2024 17:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M4yaGbJg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49BBB8BFA;
-	Tue,  4 Jun 2024 09:37:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50DCE14A09B
+	for <linux-ext4@vger.kernel.org>; Tue,  4 Jun 2024 17:30:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717493837; cv=none; b=qmlYNHPMgakT94u2cbPrg/UPkOpoVbGZLBoYrUNcibQqA1j1AjvrqUf/b1ihZlQKZWolyAymzrMpvIReCaSIgqRoRPdRKOqorgpYBP+WmJfR7nfh+jN6n0ZhFDB56WCUvOBc6SHrmDuSQcJF/Qy5bVQ6V0Lq1XJh4PiWl7nY/C4=
+	t=1717522246; cv=none; b=kwoln8TBHx47WFmrcsQWkY57wd5oDD5L+ekm0JmAD3I42aPLeyznaXxx2qGHvSYMn+HQGCcCXl7cvWt51wHpqV4qfZeMB3E8EoEELITPVVOWIG0KFOS3w84AgEyoLEbMytutGYncB100n7MrLtUAfWO0/IUUx+Ur1Esj77w36/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717493837; c=relaxed/simple;
-	bh=af2fEpd+Md2eU+XT2qqgm8Gs0Ji9V0aPy63zg4vev+o=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r81VgLweyEuOobj0/eb0sIJkEkevhYgqJuD6lFKXCZ1+IfudEuo3S/NZrGEw8Yf8fd2jXUvdS0t6Pvd73jhhXs3FI3dqHF/Ka3SlihnKWE7woJeRvtnIVErdNPXtcTg897AI6ud9cxreCFjZb4GAqpbYnonTqSuibaonwjfEbyw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4549UYmV011658;
-	Tue, 4 Jun 2024 09:36:43 GMT
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3yfruxat3p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Tue, 04 Jun 2024 09:36:42 +0000 (GMT)
-Received: from ala-exchng01.corp.ad.wrs.com (147.11.82.252) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 4 Jun 2024 02:36:41 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server id
- 15.1.2507.39 via Frontend Transport; Tue, 4 Jun 2024 02:36:36 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <dan.carpenter@linaro.org>
-CC: <adilger.kernel@dilger.ca>, <coreteam@netfilter.org>,
-        <davem@davemloft.net>, <ebiggers@kernel.org>, <fw@strlen.de>,
-        <jaegeuk@kernel.org>, <kadlec@netfilter.org>, <kuba@kernel.org>,
-        <linux-ext4@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lizhi.xu@windriver.com>,
-        <lkp@intel.com>, <netdev@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <oe-kbuild-all@lists.linux.dev>,
-        <oe-kbuild@lists.linux.dev>, <pablo@netfilter.org>,
-        <syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>, <tytso@mit.edu>
-Subject: Re: [PATCH V3] ext4: check hash version and filesystem casefolded consistent
-Date: Tue, 4 Jun 2024 17:36:35 +0800
-Message-ID: <20240604093635.538480-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <638bf33d-7ab0-4ff0-aece-ab877cff1694@moroto.mountain>
-References: <638bf33d-7ab0-4ff0-aece-ab877cff1694@moroto.mountain>
+	s=arc-20240116; t=1717522246; c=relaxed/simple;
+	bh=sqz1qbKj8sYh1m4kyTeBM2R2X5vDzFS9JdeJ8ZaRFBo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Zk84KbBH3BjtjvS4M00W+xu0+MmO9vvho0dD2bGA1Pl4F2mU/V609ExzzA4k/tG4xyOP6ESr1gFLl5X97QxHluEYS84IP8pN4GnBDXPqtj0VBltVmsFHgdTVxnBVGN0P+83KghEhXjDy20WMzjYzOS1lcFUFWNYy0KKhZtyN/Dk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M4yaGbJg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0AAB4C2BBFC;
+	Tue,  4 Jun 2024 17:30:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717522246;
+	bh=sqz1qbKj8sYh1m4kyTeBM2R2X5vDzFS9JdeJ8ZaRFBo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=M4yaGbJgPnAl6xNoqEAW0HFA8UkRhwMoy8F1abkiddtt6bJiotYqh3nxhM5tLHNtk
+	 e1kmG+dJp9nzQM/a7qxJX4h6Nq5a/QWiF3zlBjEdQ1mWdwaZWQuaEizZoCuDJDEV7S
+	 tyZyHjiT2AaORYvsfbrauZD1LYyO5TWbE5sNw8l0kt6xqPuOTqA6rClIOhQctEi1+8
+	 yQOVs+3DTEjv9QaFTefQoYNGSlzX1gaNO4k7VlfCojT71fZRuM6jFBI9Tr2b+cWxGr
+	 AtD4VgXygfOkqih3QU8IsKnd6j6IPE/1Ofvbq6UkE2Z15tmFiXQOIlcoPP2TGUjV7w
+	 /hIkyxs/p48YA==
+Date: Tue, 4 Jun 2024 10:30:44 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: carrion bent <carrionbent@163.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] ext4:fix macro definition error of EXT4_DIRENT_HASH and
+ EXT4_DIRENT_MINOR_HASH
+Message-ID: <20240604173044.GB1566@sol.localdomain>
+References: <1717412239-31392-1-git-send-email-carrionbent@163.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: mq-ShY-sh6m8qUd6uHmR57w9omC2Phuz
-X-Proofpoint-GUID: mq-ShY-sh6m8qUd6uHmR57w9omC2Phuz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.650,FMLib:17.12.28.16
- definitions=2024-06-04_03,2024-05-30_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
- bulkscore=0 spamscore=0 mlxscore=0 priorityscore=1501 phishscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.21.0-2405170001 definitions=main-2406040077
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1717412239-31392-1-git-send-email-carrionbent@163.com>
 
-On Tue, 4 Jun 2024 12:27:06 +0300, Dan Carpenter wrote: 
-> kernel test robot noticed the following build warnings:
+On Mon, Jun 03, 2024 at 06:57:19PM +0800, carrion bent wrote:
+> the macro parameter "entry" of EXT4_DIRENT_HASH and
+> EXT4_DIRENT_MINOR_HASH was not used, but rather the
+> variable de was directly used, which may be a local
+> variable inside a function that calls the macros
 > 
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> Signed-off-by: carrion bent <carrionbent@163.com>
+> ---
+>  fs/ext4/ext4.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Lizhi-Xu/ext4-check-hash-version-and-filesystem-casefolded-consistent/20240531-170046
-> base:   https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-> patch link:    https://lore.kernel.org/r/20240531085647.2918240-1-lizhi.xu%40windriver.com
-> patch subject: [PATCH V3] ext4: check hash version and filesystem casefolded consistent
-> config: i386-randconfig-141-20240601 (https://download.01.org/0day-ci/archive/20240602/202406020752.Ii2MU4KP-lkp@intel.com/config)
-> compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Reported-by: Dan Carpenter <dan.carpenter@linaro.org>
-> | Closes: https://lore.kernel.org/r/202406020752.Ii2MU4KP-lkp@intel.com/
-> 
-> smatch warnings:
-> fs/ext4/super.c:5287 __ext4_fill_super() warn: missing error code 'err'
-> 
-> vim +/err +5287 fs/ext4/super.c
-> 
-> d4fab7b28e2f5d7 Theodore Ts'o           2023-04-27  5280  	err = ext4_block_group_meta_init(sb, silent);
-> d4fab7b28e2f5d7 Theodore Ts'o           2023-04-27  5281  	if (err)
-> 0d1ee42f27d30ee Alexandre Ratchov       2006-10-11  5282  		goto failed_mount;
-> 0b8e58a140cae2b Andreas Dilger          2009-06-03  5283
-> db9345d9e6f075e Jason Yan               2023-03-23  5284  	ext4_hash_info_init(sb);
-> 66b3f078839bbdb Lizhi Xu                2024-05-31  5285  	if (es->s_def_hash_version == DX_HASH_SIPHASH &&
-> 66b3f078839bbdb Lizhi Xu                2024-05-31  5286  	    !ext4_has_feature_casefold(sb))
-> 66b3f078839bbdb Lizhi Xu                2024-05-31 @5287  		goto failed_mount;
-This warning has been resolved in the following patch: 
-https://lore.kernel.org/all/20240601113749.473058-1-lizhi.xu@windriver.com/
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 983dad8..04bdd27 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2338,9 +2338,9 @@ struct ext4_dir_entry_2 {
+>  	((struct ext4_dir_entry_hash *) \
+>  		(((void *)(entry)) + \
+>  		((8 + (entry)->name_len + EXT4_DIR_ROUND) & ~EXT4_DIR_ROUND)))
+> -#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(de)->hash)
+> +#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(entry)->hash)
+>  #define EXT4_DIRENT_MINOR_HASH(entry) \
+> -		le32_to_cpu(EXT4_DIRENT_HASHES(de)->minor_hash)
+> +		le32_to_cpu(EXT4_DIRENT_HASHES(entry)->minor_hash)
+>  
+>  static inline bool ext4_hash_in_dirent(const struct inode *inode)
+>  {
 
-Lizhi
+Thanks!  Can you call out explicitly in the commit message that (fortunately)
+all callers pass in 'de', so this bug didn't have an effect?  Also, in the
+commit title, there needs to be a space after "ext4:".  Otherwise this patch
+looks good to me.
+
+- Eric
 
