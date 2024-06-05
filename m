@@ -1,114 +1,165 @@
-Return-Path: <linux-ext4+bounces-2774-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2775-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46A0D8FC140
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2024 03:24:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12B298FC69F
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2024 10:35:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 780F11C2237A
-	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2024 01:24:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B78AE285B97
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2024 08:35:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5A902E634;
-	Wed,  5 Jun 2024 01:24:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D9B1946C1;
+	Wed,  5 Jun 2024 08:35:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2GQrqcb3";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="uAhIBfIH";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Anz0bD87";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="bvwICSPj"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6268333F7;
-	Wed,  5 Jun 2024 01:24:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 733271946AA;
+	Wed,  5 Jun 2024 08:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717550659; cv=none; b=hi0PILRaQuB3O4Gmu1WCxyXjTBfeD9hjhvCOt5oPdaepT4JwxhToqS1Cag/2ho+n6cj3uZ8xUdR4WUX2zKSMK07NL737qPLCaHE47KIbYnsZ8xlCVAsUn91HaDF6EPmm/Jr+IY0VL79znGMJkAalN4qfgk6VJUTjIMWUlJO3o1w=
+	t=1717576549; cv=none; b=At7u+pivsQLj4QLesgcpB57+7852IZ2h9B3LvN7d+XD5BXpszLRfN3gNhwvdcBiWvKxuydv8z1zFtVQvyU5Kj+C/pnv4yNsM7PTz9gyQ/aVmNPr+lg+Z7nVh+R6Bru9qWDO4n6xMPyXpkd1zmeocEkcbqj+vmDhmoxHE4ZvhjkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717550659; c=relaxed/simple;
-	bh=Id9sImMrkS3WBgztVALbU9ktfSbg5X5ksatQi+bWftI=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=enZ/MAMrr7f8+icfgLIJOaiReoj5L86AFgWk2PzYlBY2CAz2IItkxNWpM7f9ehomOjCbRHtWcpivRJ22Erzk44Q9n/zWUNs/TVDPSW0ugTpxnjTzYHiD3l2bmS/QJ5y3za22WhIk4VoexmolrRthpniZoe5V2qA9C2XmjEpeHJY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
-Received: from pps.filterd (m0250809.ppops.net [127.0.0.1])
-	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4550LIkK016063;
-	Tue, 4 Jun 2024 18:23:44 -0700
-Received: from ala-exchng02.corp.ad.wrs.com (ala-exchng02.wrs.com [147.11.82.254])
-	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3yg35f3a8n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
-	Tue, 04 Jun 2024 18:23:44 -0700 (PDT)
-Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Tue, 4 Jun 2024 18:23:43 -0700
-Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
- ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
- 15.1.2507.39 via Frontend Transport; Tue, 4 Jun 2024 18:23:36 -0700
-From: Lizhi Xu <lizhi.xu@windriver.com>
-To: <krisman@suse.de>
-CC: <adilger.kernel@dilger.ca>, <coreteam@netfilter.org>,
-        <davem@davemloft.net>, <ebiggers@kernel.org>, <fw@strlen.de>,
-        <jaegeuk@kernel.org>, <kadlec@netfilter.org>, <kuba@kernel.org>,
-        <linux-ext4@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <lizhi.xu@windriver.com>,
-        <lkp@intel.com>, <llvm@lists.linux.dev>, <netdev@vger.kernel.org>,
-        <netfilter-devel@vger.kernel.org>, <oe-kbuild-all@lists.linux.dev>,
-        <pablo@netfilter.org>,
-        <syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com>,
-        <syzkaller-bugs@googlegroups.com>, <tytso@mit.edu>
-Subject: [PATCH V6] fs/ext4: Filesystem without casefold feature cannot be mounted with spihash
-Date: Wed, 5 Jun 2024 09:23:35 +0800
-Message-ID: <20240605012335.44086-1-lizhi.xu@windriver.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <87le3kle87.fsf@mailhost.krisman.be>
-References: <87le3kle87.fsf@mailhost.krisman.be>
+	s=arc-20240116; t=1717576549; c=relaxed/simple;
+	bh=kYH2yJi/HdTLkne42i/lQgVn2DMQeUge9VKw06RK4Mc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=d9EfKwAQ745TNbZSXV+n8wNlIacollamytNnKKBzeKRjND3ndt1ZYIXB0cHOfKeKSoiptOmGaozzhk+S//QjgqMxDvm3iHVAJ4iU9M/t9pZmjkrmeU/GLrIPFtGwW2Tc7kobibX0BDAsWtjq6YI6oByWEgJF1gF4PA4kjDjGBeM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2GQrqcb3; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=uAhIBfIH; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Anz0bD87; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=bvwICSPj; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 66072216E7;
+	Wed,  5 Jun 2024 08:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717576540; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a1FdvGcK/hiBia9Wy/QJQW13yM7Cwjgy8SdWOUF2qUU=;
+	b=2GQrqcb30fRAdH5pYPABN0yKafVhE9cs89GmLAhFAg9tJNmH0CtLmNMzsBG1o6DdDysxH9
+	skodYHy9Q6n363udOk1V0/K16ncZsRI3t8lJfKFyW0qVMSOn2SEhBK2bpgJu5xBSUK/urE
+	WkwJFzKWlBIKQ0DyQOYyI8EVyZrm4U4=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717576540;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a1FdvGcK/hiBia9Wy/QJQW13yM7Cwjgy8SdWOUF2qUU=;
+	b=uAhIBfIHJOsBk2zAAZ1Vw+TZ9StWf6jFiIJgHf+4RVk6SK3ZJzJWikthS5IRa2bWZcDiQD
+	WUt61Fi9Q0hmpiCA==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1717576538; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a1FdvGcK/hiBia9Wy/QJQW13yM7Cwjgy8SdWOUF2qUU=;
+	b=Anz0bD87U6W0gxGzMgRyUNLlcBPgwQxN/Y+bFFinJsZmqaao7iYBJYYHSzOVfRje8R6vHc
+	Qo0goBSPcdSFZJ1y6xSjhLuNXF1bluJhUEHcW+Y0EvoICqF7YQtj+35briTGwIooPtjyIU
+	s1r2VSnxpjEdtxOhDTEa2to92RwAS+0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1717576538;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=a1FdvGcK/hiBia9Wy/QJQW13yM7Cwjgy8SdWOUF2qUU=;
+	b=bvwICSPjcWaM4oxJH38m+qMCAgh0RMIAjA/BJe0d/tG6dSwCAyU/eeyZC+K7+E+mPcWqAy
+	dgPUnwOU18ftM2DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 55FDC13AA1;
+	Wed,  5 Jun 2024 08:35:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id yhn4FFojYGZQOQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 05 Jun 2024 08:35:38 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0286BA088A; Wed,  5 Jun 2024 10:35:33 +0200 (CEST)
+Date: Wed, 5 Jun 2024 10:35:33 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jeff Johnson <quic_jjohnson@quicinc.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] jbd2: add missing MODULE_DESCRIPTION()
+Message-ID: <20240605083533.qr3gmecrtdotxxxv@quack3>
+References: <20240526-md-fs-jbd2-v1-1-7bba6665327d@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-Proofpoint-GUID: 2upWjM2V16NiGPCPyDb6ZG4I8yCG6TLl
-X-Proofpoint-ORIG-GUID: 2upWjM2V16NiGPCPyDb6ZG4I8yCG6TLl
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-04_11,2024-06-04_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- mlxlogscore=999 priorityscore=1501 adultscore=0 mlxscore=0 phishscore=0
- clxscore=1015 malwarescore=0 spamscore=0 lowpriorityscore=0 suspectscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.21.0-2405170001 definitions=main-2406050009
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240526-md-fs-jbd2-v1-1-7bba6665327d@quicinc.com>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.992];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-When mounting the ext4 filesystem, if the default hash version is set to 
-DX_HASH_SIPHASH but the casefold feature is not set, exit the mounting.
+On Sun 26-05-24 11:53:49, Jeff Johnson wrote:
+> Fix the 'make W=1' warning:
+> WARNING: modpost: missing MODULE_DESCRIPTION() in fs/jbd2/jbd2.o
+> 
+> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
 
-Reported-by: syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com
-Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
----
- fs/ext4/super.c | 8 ++++++++
- 1 file changed, 8 insertions(+)
+Thanks added to my tree.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c682fb927b64..d0645af3e66e 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3593,6 +3593,14 @@ int ext4_feature_set_ok(struct super_block *sb, int readonly)
- 			 "mounted without CONFIG_UNICODE");
- 		return 0;
- 	}
-+#else
-+	if (EXT4_SB(sb)->s_es->s_def_hash_version == DX_HASH_SIPHASH &&
-+	    !ext4_has_feature_casefold(sb)) {
-+		ext4_msg(sb, KERN_ERR,
-+			 "Filesystem without casefold feature cannot be "
-+			 "mounted with spihash");
-+		return 0;
-+	}
- #endif
- 
- 	if (readonly)
+								Honza
+
+> ---
+>  fs/jbd2/journal.c | 1 +
+>  1 file changed, 1 insertion(+)
+> 
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 03c4b9214f56..0d2825c131cc 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -3181,6 +3181,7 @@ static void __exit journal_exit(void)
+>  	jbd2_journal_destroy_caches();
+>  }
+>  
+> +MODULE_DESCRIPTION("Generic filesystem journal-writing module");
+>  MODULE_LICENSE("GPL");
+>  module_init(journal_init);
+>  module_exit(journal_exit);
+> 
+> ---
+> base-commit: 416ff45264d50a983c3c0b99f0da6ee59f9acd68
+> change-id: 20240526-md-fs-jbd2-bd0acb6527b8
+> 
 -- 
-2.43.0
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
