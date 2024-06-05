@@ -1,262 +1,130 @@
-Return-Path: <linux-ext4+bounces-2772-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2773-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C548FBC6C
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 21:19:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B6D1E8FC137
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2024 03:17:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B9F531C24FA9
-	for <lists+linux-ext4@lfdr.de>; Tue,  4 Jun 2024 19:19:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 702C52834C8
+	for <lists+linux-ext4@lfdr.de>; Wed,  5 Jun 2024 01:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA71214A0B8;
-	Tue,  4 Jun 2024 19:18:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="o8sfW9bl";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SPzJV6CQ";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="o8sfW9bl";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="SPzJV6CQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3946C8BE7;
+	Wed,  5 Jun 2024 01:17:24 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-0064b401.pphosted.com (mx0b-0064b401.pphosted.com [205.220.178.238])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F19A801;
-	Tue,  4 Jun 2024 19:18:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D75A2107;
+	Wed,  5 Jun 2024 01:17:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.178.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717528737; cv=none; b=F+1/OSPdCcVD+6dSny1v6cA9kOHU4+ufB58aVVACNEdJQuSg6Uwqy0rKyWQfTcUdRcCyiNLMzKX6VgJPACasm0Nv5v0ouutbV1S+2j1owlA4qQWJ48Iw6xz3gtsN4mbAo9WjBnN6GnONeUHWzzWEjedu4FQ8HouQmEBLL4whPPY=
+	t=1717550243; cv=none; b=Gz0in5xG7w4wu6SqJ8afpSZTxUmnWAwUtKtnuUYJParsDb6TjpxijvFsvzyovfwl4QXjlqaFxVZlI+EbzmC/ypgzNwlC43BRm0Y3bJbvYPDZNKvKfRjsiMOHTAU+0bpvCGlKLvhpMoZrlyOHL+LhOd/Q0CtvHLMWWLfhSqu4NhI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717528737; c=relaxed/simple;
-	bh=HY2uD1V2XNnt7Yw6Q2og4xGbhV0iSXg8vgOOgV62bR4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=ExGQk1NnmEbs6CcvgJEPv5XUy0hDv/vZNymqYi1P6U2sujrBk0sYYGfRHzAk2tr0HZWpb5XK8l282wNAKY6pf45iUwdeonMAjgvfwOVdCoAR0A5aj9YTMF7zCZJ2Q7RDyhRCG6CKu+/O59FSQRrvvmy3E5OlGpe+IO7jR3tt4UY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=o8sfW9bl; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SPzJV6CQ; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=o8sfW9bl; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=SPzJV6CQ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 4595E1F385;
-	Tue,  4 Jun 2024 19:18:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1717528733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fHpikqLS3lplK6ETI4WYKgRmbL70DTWGHED9kErL4ec=;
-	b=o8sfW9blSyqGKsN8DSf9C+mekBpd2Xbi1tNe9oAh5kMA2DHcklcTUHr7k63mY1a5VNhcYL
-	G7ZJCdnLRXeWTl57U8p+MvbCVRKNwHsOzClwAhWNRrbiIlNsu2kWsIDNPLsfXmnNEVewEQ
-	5UxzehF1OeguS6HVcPIkki0+FYZtxHs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1717528733;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fHpikqLS3lplK6ETI4WYKgRmbL70DTWGHED9kErL4ec=;
-	b=SPzJV6CQWR7M8Dk+ygpjpqscjUPSfb6KMQl+0n9rlKlwduUWs/NWZkuxqEO6KAMv0LjFTL
-	s4rnOHSl5WcN+0Aw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1717528733; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fHpikqLS3lplK6ETI4WYKgRmbL70DTWGHED9kErL4ec=;
-	b=o8sfW9blSyqGKsN8DSf9C+mekBpd2Xbi1tNe9oAh5kMA2DHcklcTUHr7k63mY1a5VNhcYL
-	G7ZJCdnLRXeWTl57U8p+MvbCVRKNwHsOzClwAhWNRrbiIlNsu2kWsIDNPLsfXmnNEVewEQ
-	5UxzehF1OeguS6HVcPIkki0+FYZtxHs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1717528733;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=fHpikqLS3lplK6ETI4WYKgRmbL70DTWGHED9kErL4ec=;
-	b=SPzJV6CQWR7M8Dk+ygpjpqscjUPSfb6KMQl+0n9rlKlwduUWs/NWZkuxqEO6KAMv0LjFTL
-	s4rnOHSl5WcN+0Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F307E13A93;
-	Tue,  4 Jun 2024 19:18:52 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id iATjNJxoX2YjZAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Tue, 04 Jun 2024 19:18:52 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: linux-ext4@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-f2fs-devel@lists.sourceforge.net,  linux-fsdevel@vger.kernel.org,
-  jaegeuk@kernel.org,  adilger.kernel@dilger.ca,  tytso@mit.edu,
-  chao@kernel.org,  viro@zeniv.linux.org.uk,  brauner@kernel.org,
-  jack@suse.cz,  ebiggers@google.com,  kernel@collabora.com,  Gabriel
- Krisman Bertazi <krisman@collabora.com>
-Subject: Re: [PATCH v17 3/7] libfs: Introduce case-insensitive string
- comparison helper
-In-Reply-To: <20240529082634.141286-4-eugen.hristev@collabora.com> (Eugen
-	Hristev's message of "Wed, 29 May 2024 11:26:30 +0300")
-Organization: SUSE
-References: <20240529082634.141286-1-eugen.hristev@collabora.com>
-	<20240529082634.141286-4-eugen.hristev@collabora.com>
-Date: Tue, 04 Jun 2024 15:18:47 -0400
-Message-ID: <878qzkldns.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1717550243; c=relaxed/simple;
+	bh=HLpoLdstnucicsvT5jMONV0hC5aA5fX3wp6EmkQr7ro=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Fey+Z0FdNFjJnP/PlhgyizvOAQQOCH9ITAykAYr+OzlvvtzJ6XTiiOFO8rTolNebV5MfgI/ht96LyJWlB3iWuM2wqQwz+oPua4wawxSwgLbBy5Cx78aj3ydNELa2OmmOx/+LaYi97RdOWnb1JpnyzOyiJamhDEODBBhj+XRVzmM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.178.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250811.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45518rnG006051;
+	Wed, 5 Jun 2024 01:16:52 GMT
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 3yfruxbkk2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Wed, 05 Jun 2024 01:16:52 +0000 (GMT)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Tue, 4 Jun 2024 18:16:51 -0700
+Received: from pek-lpd-ccm6.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.39 via Frontend Transport; Tue, 4 Jun 2024 18:16:45 -0700
+From: Lizhi Xu <lizhi.xu@windriver.com>
+To: <krisman@suse.de>
+CC: <adilger.kernel@dilger.ca>, <coreteam@netfilter.org>,
+        <davem@davemloft.net>, <ebiggers@kernel.org>, <fw@strlen.de>,
+        <jaegeuk@kernel.org>, <kadlec@netfilter.org>, <kuba@kernel.org>,
+        <linux-ext4@vger.kernel.org>, <linux-fscrypt@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <lizhi.xu@windriver.com>,
+        <lkp@intel.com>, <llvm@lists.linux.dev>, <netdev@vger.kernel.org>,
+        <netfilter-devel@vger.kernel.org>, <oe-kbuild-all@lists.linux.dev>,
+        <pablo@netfilter.org>,
+        <syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com>,
+        <syzkaller-bugs@googlegroups.com>, <tytso@mit.edu>
+Subject: Re: [PATCH V5] ext4: check hash version and filesystem casefolded consistent
+Date: Wed, 5 Jun 2024 09:16:44 +0800
+Message-ID: <20240605011644.1878-1-lizhi.xu@windriver.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <87le3kle87.fsf@mailhost.krisman.be>
+References: <87le3kle87.fsf@mailhost.krisman.be>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-Spam-Flag: NO
-X-Spam-Score: -4.30
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	HAS_ORG_HEADER(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	RCVD_COUNT_TWO(0.00)[2];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[]
+X-Proofpoint-ORIG-GUID: eSwt-QjaTDEty4IdYCpGVD27kbz6EKap
+X-Proofpoint-GUID: eSwt-QjaTDEty4IdYCpGVD27kbz6EKap
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-06-04_11,2024-06-04_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ lowpriorityscore=0 impostorscore=0 mlxlogscore=999 adultscore=0
+ bulkscore=0 spamscore=0 mlxscore=0 priorityscore=1501 phishscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.21.0-2405170001 definitions=main-2406050008
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+On Tue, 04 Jun 2024 15:06:32 -0400, Gabriel Krisman Bertazi wrote:
+> >> > When mounting the ext4 filesystem, if the hash version and casefolded are not
+> >> > consistent, exit the mounting.
+> >> >
+> >> > Reported-by: syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com
+> >> > Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+> >> > ---
+> >> >  fs/ext4/super.c | 5 +++++
+> >> >  1 file changed, 5 insertions(+)
+> >> >
+> >> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> >> > index c682fb927b64..0ad326504c50 100644
+> >> > --- a/fs/ext4/super.c
+> >> > +++ b/fs/ext4/super.c
+> >> > @@ -5262,6 +5262,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+> >> >  		goto failed_mount;
+> >> >  
+> >> >  	ext4_hash_info_init(sb);
+> >> > +	if (es->s_def_hash_version == DX_HASH_SIPHASH && 
+> >> > +	    !ext4_has_feature_casefold(sb)) {
+> >> 
+> >> Can we ever have DX_HASH_SIPHASH set up in the super block?  I thought
+> >> it was used solely for directories where ext4_hash_in_dirent(inode) is
+> >> true.
+> > The value of s'def_hash_version is obtained by reading the super block from the
+> > buffer cache of the block device in ext4_load_super().
+> 
+> Yes, I know.  My point is whether this check should just be:
+Based on the existing information, it cannot be confirmed that it is incorrect
+to separately determine the value of s_def_hash_version as DX_HASH_SIPHASH.
+Additionally, I have come up with a better solution, and I will issue the next
+fixed version in a while.
+> 
+> if (es->s_def_hash_version == DX_HASH_SIPHASH)
+> 	goto failed_mount;
+> 
+> Since, IIUC, DX_HASH_SIPHASH is done per-directory and not written to
+> the sb.
+> 
+> >> If this is only for the case of a superblock corruption, perhaps we
+> >> should always reject the mount, whether casefold is enabled or not?
+> > Based on the existing information, it cannot be confirmed whether the superblock
+> > is corrupt, but one thing is clear: if the default hash version of the superblock
+> > is set to DX_HASH_SIPHASH, but the casefold feature is not set at the same time,
+> > it is definitely an error.
 
-> From: Gabriel Krisman Bertazi <krisman@collabora.com>
->
-> generic_ci_match can be used by case-insensitive filesystems to compare
-> strings under lookup with dirents in a case-insensitive way.  This
-> function is currently reimplemented by each filesystem supporting
-> casefolding, so this reduces code duplication in filesystem-specific
-> code.
->
-> Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-> [eugen.hristev@collabora.com: rework to first test the exact match, cleanup
-> and add error message]
-> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
-
-Other than the origin of the length in memcmp mentioned by Eric, this patch
-looks good to me now.
-
-Thanks again for picking up this work!
-
-> ---
->  fs/libfs.c         | 74 ++++++++++++++++++++++++++++++++++++++++++++++
->  include/linux/fs.h |  4 +++
->  2 files changed, 78 insertions(+)
->
-> diff --git a/fs/libfs.c b/fs/libfs.c
-> index b635ee5adbcc..6a6cfa2d7d93 100644
-> --- a/fs/libfs.c
-> +++ b/fs/libfs.c
-> @@ -1854,6 +1854,80 @@ static const struct dentry_operations generic_ci_dentry_ops = {
->  	.d_revalidate = fscrypt_d_revalidate,
->  #endif
->  };
-> +
-> +/**
-> + * generic_ci_match() - Match a name (case-insensitively) with a dirent.
-> + * This is a filesystem helper for comparison with directory entries.
-> + * generic_ci_d_compare should be used in VFS' ->d_compare instead.
-> + *
-> + * @parent: Inode of the parent of the dirent under comparison
-> + * @name: name under lookup.
-> + * @folded_name: Optional pre-folded name under lookup
-> + * @de_name: Dirent name.
-> + * @de_name_len: dirent name length.
-> + *
-> + * Test whether a case-insensitive directory entry matches the filename
-> + * being searched.  If @folded_name is provided, it is used instead of
-> + * recalculating the casefold of @name.
-> + *
-> + * Return: > 0 if the directory entry matches, 0 if it doesn't match, or
-> + * < 0 on error.
-> + */
-> +int generic_ci_match(const struct inode *parent,
-> +		     const struct qstr *name,
-> +		     const struct qstr *folded_name,
-> +		     const u8 *de_name, u32 de_name_len)
-> +{
-> +	const struct super_block *sb = parent->i_sb;
-> +	const struct unicode_map *um = sb->s_encoding;
-> +	struct fscrypt_str decrypted_name = FSTR_INIT(NULL, de_name_len);
-> +	struct qstr dirent = QSTR_INIT(de_name, de_name_len);
-> +	int res = 0;
-> +
-> +	if (IS_ENCRYPTED(parent)) {
-> +		const struct fscrypt_str encrypted_name =
-> +			FSTR_INIT((u8 *) de_name, de_name_len);
-> +
-> +		if (WARN_ON_ONCE(!fscrypt_has_encryption_key(parent)))
-> +			return -EINVAL;
-> +
-> +		decrypted_name.name = kmalloc(de_name_len, GFP_KERNEL);
-> +		if (!decrypted_name.name)
-> +			return -ENOMEM;
-> +		res = fscrypt_fname_disk_to_usr(parent, 0, 0, &encrypted_name,
-> +						&decrypted_name);
-> +		if (res < 0) {
-> +			kfree(decrypted_name.name);
-> +			return res;
-> +		}
-> +		dirent.name = decrypted_name.name;
-> +		dirent.len = decrypted_name.len;
-> +	}
-> +
-> +	/*
-> +	 * Attempt a case-sensitive match first. It is cheaper and
-> +	 * should cover most lookups, including all the sane
-> +	 * applications that expect a case-sensitive filesystem.
-> +	 */
-> +
-> +	if (dirent.len == (folded_name->name ? folded_name->len : name->len) &&
-> +	    !memcmp(name->name, dirent.name, dirent.len))
-> +		goto out;
-> +
-> +	if (folded_name->name)
-> +		res = utf8_strncasecmp_folded(um, folded_name, &dirent);
-> +	else
-> +		res = utf8_strncasecmp(um, name, &dirent);
-> +
-> +out:
-> +	kfree(decrypted_name.name);
-> +	if (res < 0 && sb_has_strict_encoding(sb)) {
-> +		pr_err_ratelimited("Directory contains filename that is invalid UTF-8");
-> +		return 0;
-> +	}
-> +	return !res;
-> +}
-> +EXPORT_SYMBOL(generic_ci_match);
->  #endif
->  
->  #ifdef CONFIG_FS_ENCRYPTION
-> diff --git a/include/linux/fs.h b/include/linux/fs.h
-> index 639885621608..f8ca264a0edc 100644
-> --- a/include/linux/fs.h
-> +++ b/include/linux/fs.h
-> @@ -3367,6 +3367,10 @@ extern int generic_file_fsync(struct file *, loff_t, loff_t, int);
->  extern int generic_check_addressable(unsigned, u64);
->  
->  extern void generic_set_sb_d_ops(struct super_block *sb);
-> +extern int generic_ci_match(const struct inode *parent,
-> +			    const struct qstr *name,
-> +			    const struct qstr *folded_name,
-> +			    const u8 *de_name, u32 de_name_len);
->  
->  static inline bool sb_has_encoding(const struct super_block *sb)
->  {
-
--- 
-Gabriel Krisman Bertazi
+Lizhi
 
