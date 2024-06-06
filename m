@@ -1,104 +1,115 @@
-Return-Path: <linux-ext4+bounces-2801-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2803-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFF358FE6E6
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 14:56:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E37018FF66A
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 23:08:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6476E1F25721
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 12:56:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E43B1F24358
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 21:08:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 969B0195F16;
-	Thu,  6 Jun 2024 12:56:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E41745C0;
+	Thu,  6 Jun 2024 21:07:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="C1KmBMlN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (unknown [45.249.212.51])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5F8B195B13;
-	Thu,  6 Jun 2024 12:56:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B84D171748
+	for <linux-ext4@vger.kernel.org>; Thu,  6 Jun 2024 21:07:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717678585; cv=none; b=diQFn87XxHCZ8ermyEsSgYjWolCuCiyQd7vRsGZYBeMQusuMhvzybjAAqMW5srDJ6eKF5W/+/WK2jIPKbPHoxXYQyarItaV1sB80ZbUJphwPMMzs0J0RrmqONDskicVXSgFMO5BBspwi7kRMgomnMBGwlwA6w7iFmM4pViacLd0=
+	t=1717708060; cv=none; b=jlsP9QW9fEOROuBJL03A/kE/sF68APXoUbpaxGwCSZbtr5dHsvgYxK+0tstvpF0etPQCSgMHY/XsI8le3QbRrWmjnVmoag3eIWAY5WCqT9Uppj4GmT21/auExDbchymF2NbBfT21HHcfXKhVltaTYUz9DilgY7I2B84UtVJneSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717678585; c=relaxed/simple;
-	bh=RgTX+M5nQNBqP5GqXs68I/ytp3G6EXzwjpsGD6jj/sQ=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=id61v0fDvNKuEoKkMqDQ5E/HbcfhCWB6tgKC2YmaBkBRvfjkbxV+50vPkLwuJ5ecj27WrwrRnIIE1zNftUHCYQn8Ca7+q0iQLOKFcrE6BNoBMurVsYTRHzT5NA4ijcXr6T1ZcHwtQbEIqeEJn+1Ns4HCLIWqtjhPK2BDBpALFSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Vw4884Vt7z4f3nZy;
-	Thu,  6 Jun 2024 20:56:08 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id C98CA1A06E0;
-	Thu,  6 Jun 2024 20:56:19 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgC31A3xsWFmlILsOg--.39039S5;
-	Thu, 06 Jun 2024 20:56:19 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] ext4: correct comment of h_checksum
-Date: Thu,  6 Jun 2024 20:55:08 +0800
-Message-Id: <20240606125508.1459893-4-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240606125508.1459893-1-shikemeng@huaweicloud.com>
-References: <20240606125508.1459893-1-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1717708060; c=relaxed/simple;
+	bh=kfLw+bVyjNw6GeEFlaVUCx19iTE0rZqESzVAYMUqHgE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=KU7jsHgv+FBhgWiKAwQ8bCQucmiDqVkWLCvVMaJEc5JaNQy7U47uHeNoulDQvWU6N5AAuq20WAkmQ6xDJfMXh3RyVoszI9Y8q6zABVupkbzhJdTt9q6PmKHiGrmqcz/z5o12A5FSPeSTTLicwkDtPLlJGT6ZHh6S9CfhTNihfws=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=C1KmBMlN; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org (unn-149-40-50-16.datapacket.com [149.40.50.16] (may be forged))
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 456L78xL032294
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 6 Jun 2024 17:07:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1717708036; bh=UyShpUtUk4n/tOAijLCzOMsxjsiHJiQC0A8h/B78v+8=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=C1KmBMlNsdZMP0fUtx3mu2tMmvWurhYntomQSE50Kvix41Qfgnjdmyjy7MFc2SHKf
+	 QhcOUsLGITIhea0u3PZyMsVUl3y9/fFS9XRJp/T8kFAh71eesmCfF+K/XiunWtGTdV
+	 LWtSacRNqpFB4pgzkKEfO8zqrMLvlbK48Alz5bkI80uLGRx5o/lGXCCqagf5C0TA+g
+	 FeTc0W0eBvZMo4vvs4GlGPJOQxgdCXdGJmWZpdOnnllMY5OEghZTHTE6pjwbwxuRjg
+	 lMrumNWMlO113QPkT666zuWOZ7unNLFpM2/lyrdlZ+zQxVa00k531AUg4l0Au0jcw0
+	 DY0luLnAb/JMA==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id F33DC340578; Thu, 06 Jun 2024 23:07:06 +0200 (CEST)
+Date: Thu, 6 Jun 2024 23:07:06 +0200
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: =?utf-8?B?0LzQuNGI0LAg0YPRhdC40L0=?= <mish.uxin2012@yandex.ru>
+Cc: "stable@vger.kernel.org" <stable@vger.kernel.org>,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        Michail Ivanov <iwanov-23@bk.ru>,
+        Pavel Koshutin <koshutin.pavel@yandex.ru>,
+        "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>,
+        Ritesh Harjani <ritesh.list@gmail.com>,
+        Artem Sadovnikov <ancowi69@gmail.com>
+Subject: Re: [PATCH v2] ext4: fix i_data_sem unlock order in
+ ext4_ind_migrate()
+Message-ID: <20240606210706.GE4182@mit.edu>
+References: <20240405210803.9152-1-mish.uxin2012@yandex.ru>
+ <20240509145124.GH3620298@mit.edu>
+ <3159311717621748@mail.yandex.ru>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgC31A3xsWFmlILsOg--.39039S5
-X-Coremail-Antispam: 1UD129KBjvdXoWrZw1ruF1kXr1xAFWfGryUJrb_yoWfGwb_Ka
-	4kKr48Jry5WFs2gr1fCF1rt3yvqr4Iyr43WF4Utr1fWa45ta18Z34DJr45Zr98Wa48G34r
-	Aw18ZFy7Cry8KjkaLaAFLSUrUUUUUb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbV8YFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r1rM2
-	8IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
-	021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
-	4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
-	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
-	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
-	JVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
-	W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
-	1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
-	IIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
-	x4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
-	DU0xZFpf9x07jec_-UUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+In-Reply-To: <3159311717621748@mail.yandex.ru>
 
-Checksum of xattr block is always crc32c(uuid+blknum+xattrblock), see
-ext4_xattr_block_csum_set for detail. Remove incorrect comment that
-"id = inum if refcount=1".
+On Thu, Jun 06, 2024 at 12:14:22AM +0300, миша ухин wrote:
+> <div><div>Thank you for the comment.<br />It seems there might be a misunderstanding.<br />The commit 00d873c17e29 ("ext4: avoid deadlock in fs reclaim with page writeback") you mentioned introduces the use of memalloc_nofs_save()/memalloc_nofs_restore() when acquiring the EXT4_SB(sb)-&gt;s_writepages_rwsem lock.<br />On the other hand the patch we proposed corrects the order of locking/unlocking resources with calls to the functions ext4_journal_start()/ext4_journal_stop() and down_write(&amp;EXT4_I(inode)-&gt;i_data_sem)/up_write(&amp;EXT4_I(inode)-&gt;i_data_sem).<br />These patches do not appear to resolve the same issue, and the code changes are different.</div><div> </div><div>- <span style="white-space:pre-wrap">Mikhail Ukhin</span></div></div>
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- fs/ext4/xattr.h | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+PLEASE do not send HTML messages to the linux-kernel mailing list.  It
+looks like garbage when read on a text mail reader.
 
-diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
-index bd97c4aa8177..7df0d77643c7 100644
---- a/fs/ext4/xattr.h
-+++ b/fs/ext4/xattr.h
-@@ -32,8 +32,7 @@ struct ext4_xattr_header {
- 	__le32	h_refcount;	/* reference count */
- 	__le32	h_blocks;	/* number of disk blocks used */
- 	__le32	h_hash;		/* hash value of all attributes */
--	__le32	h_checksum;	/* crc32c(uuid+id+xattrblock) */
--				/* id = inum if refcount=1, blknum otherwise */
-+	__le32	h_checksum;	/* crc32c(uuid+blknum+xattrblock) */
- 	__u32	h_reserved[3];	/* zero right now */
- };
- 
--- 
-2.30.0
+In any case, you're correct.  I had misremembered the issue with this
+patch.  The complaint that I had made with the V1 of the patch has not
+been corrected, which is that the assertion made in the commit
+description "the order of unlocking must be the reverse of the order
+of locking" is errant nonsense.  It is simply is technically
+incorrect; the order in which locks are released doesn't matter.  (And
+a jbd2 handle is not a lock.)
 
+The syzkaller report which apparntly triggered this failure was
+supplied by Artem here[1], and the explanation should include that it
+was triggered by an EXT4_IOC_MIGRATE ioctl which was set to require
+synchornous update because the file descriptor was opened with O_SYNC,
+and this could result in the jbd2_journal_stop() function calling
+jbd2_might_wait_for_commit() which could potentially trigger a
+deadlock if the EXT4_IOC_MIGRATE call is racing with write(2) system
+call.
+
+[1] https://lore.kernel.org/r/1845977.e0hk0VWMCB@cherry
+
+In any case, this is a low priority issue since the only program which
+uses EXT4_IOC_MIGRATE is e4defrag, and it doesn't open files with
+O_SYNC, so this isn't going to happen in real life.  And so why don't
+you use this as an opportunity to practice writing a technically valid
+and correct commit description, and how to properlty submit patches
+and send valid (non-HTML) messages to the Linux kernel mailing list?
+
+Cheers,
+
+						- Ted
 
