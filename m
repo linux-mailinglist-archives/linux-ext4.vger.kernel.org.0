@@ -1,90 +1,115 @@
-Return-Path: <linux-ext4+bounces-2789-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2790-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C15238FDE38
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 07:44:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D87B28FDEB2
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 08:27:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58B551F25914
-	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 05:44:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0A901C23A8D
+	for <lists+linux-ext4@lfdr.de>; Thu,  6 Jun 2024 06:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D6D53AC36;
-	Thu,  6 Jun 2024 05:43:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4328A75809;
+	Thu,  6 Jun 2024 06:27:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="o1ceHMGF"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hMAxBSoY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out30-100.freemail.mail.aliyun.com (out30-100.freemail.mail.aliyun.com [115.124.30.100])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9EF446A2
-	for <linux-ext4@vger.kernel.org>; Thu,  6 Jun 2024 05:43:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FD0D2E3E5;
+	Thu,  6 Jun 2024 06:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1717652639; cv=none; b=sQ9iw9pw4WFqY4kGYSAL2obUntc9I6DQn3BaAggPvlKRjmYvYRHJmWkX1b1ELw9/5TYn8WVICtTXWnqpXkFhL1bI3HQKjcMkN7FuKUejZescpGKvMvST7OJ8g/0/OinS5RIJ0mgIlwJ5iwLMDqLjF2q8cN36eDy2hOv41rfKnRg=
+	t=1717655225; cv=none; b=M2F7O0duzuxWRUZSHKSr5xeURBOnQ4v1DZWuWLqtXHkKaGjxw46PNxpzSQnBKOJL80Wt0hb23b3aj1xap+E3NYUvA9fhJ6+Q8y5zJX0BOXNyOs5JAnKdg0ymae642HrE+jRngz++JTmsZEXpU41RBzPvxR+BdAH0vChHE+zHznQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1717652639; c=relaxed/simple;
-	bh=E3xoj+QfK7wTNX1uS2jc92oz1Usudj1VLXGehqSzS50=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=F7+BNbviuS2CQF1/j8O20KiyAneuDPT7GU+2GO1MYb4Qp+Ao1XTlbjVCjw2iMZPP+jmVNpb9cyOr1lwDWpiAhPZra8piA1uknMmWoWuBOaSyBCZ0EwdLCoJHVbh1hRzU87wCb/JWGRkeu/+s6xmJdodlPqvVb9U59UOh3dcIB8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=o1ceHMGF; arc=none smtp.client-ip=115.124.30.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1717652633; h=From:To:Subject:Date:Message-Id;
-	bh=uXHgiyQ96csgFQ1Lw6YKxjPS6x/w6GdUL1tu3OF1KIM=;
-	b=o1ceHMGFqaoMzONDxQV19E/x58AaPiZsF+lfAAE55uu14SImZNeGWlZ/TbmXhYIRjlMvc83ovMavOpSapU8hgfQJDSjlRrh3P1vnvkD1PDkMX/+60JtZ/ktbTZ/ZfULwEFeUm3bXvqA7Kdt6F/O0asIGra2xKu/PT63qwyx02DM=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=maildocker-contentspam033068173054;MF=carrionbent@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W7x8LZI_1717652616;
-Received: from localhost(mailfrom:carrionbent@linux.alibaba.com fp:SMTPD_---0W7x8LZI_1717652616)
-          by smtp.aliyun-inc.com;
-          Thu, 06 Jun 2024 13:43:52 +0800
-From: carrion bent <carrionbent@linux.alibaba.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	carrion bent <carrionbent@linux.alibaba.com>
-Subject: [PATCH v2] ext4: fix macro definition error of EXT4_DIRENT_HASH and EXT4_DIRENT_MINOR_HASH
-Date: Thu,  6 Jun 2024 13:43:16 +0800
-Message-Id: <1717652596-58760-1-git-send-email-carrionbent@linux.alibaba.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1717412239-31392-1-git-send-email-carrionbent@163.com>
-References: <1717412239-31392-1-git-send-email-carrionbent@163.com>
+	s=arc-20240116; t=1717655225; c=relaxed/simple;
+	bh=8sTAUFN6ttVGBTSIkP0SK1wk1W07q2GV6zvcwY4KfEg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Hk+d+yd8PSr6Nu+wIs/iU8loloFlKwiANLUyN90K23/HW1N/qKR8g44rssy/jY2Eu9LBwpqaMMwBbbYHlbbpMdF8Qh2WdIbStIJMZQ4ZU7Ea9DVW4H4Jioj2vh2GCRNuI/Dc+6LcepoyxSugm9u7Ema1C/RJtJPN/brJ4i7tI1A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hMAxBSoY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81C0CC3277B;
+	Thu,  6 Jun 2024 06:27:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1717655225;
+	bh=8sTAUFN6ttVGBTSIkP0SK1wk1W07q2GV6zvcwY4KfEg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=hMAxBSoYXBBoBY0kVL+6E1ZIwPc9R2E8g8BsWNAew0O67OH1Vdfh0MAJKtvwQwKuY
+	 nwJODBJ9IxbpJEQr0wK6EIyTyWnwCTxRpVcdqylsNxRCpLIfGH7StnLAJIqnYYZDzB
+	 MBgLOBBcKP4SjkHeLLJ2pvLXMrLzkUVR+Qu1kvpSVLjUZFxhsISQ/DfQS/Q2VOG0fd
+	 PjKalyhJ2coX1fOqJ7WIOV6BDMC0RjA8XZrCBSAraTf7amjb6RUHNqHUGxV48bGDCd
+	 TRj5iBRl8H0L69Et80wLxSWBzJZuROt3WysTC9Ek7qo83gVulHqKHzvKxaOLjbnZWB
+	 VT7gFRRky73QA==
+Date: Wed, 5 Jun 2024 23:27:02 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: Lizhi Xu <lizhi.xu@windriver.com>, adilger.kernel@dilger.ca,
+	coreteam@netfilter.org, davem@davemloft.net, fw@strlen.de,
+	jaegeuk@kernel.org, kadlec@netfilter.org, kuba@kernel.org,
+	linux-ext4@vger.kernel.org, linux-fscrypt@vger.kernel.org,
+	linux-kernel@vger.kernel.org, lkp@intel.com, llvm@lists.linux.dev,
+	netdev@vger.kernel.org, netfilter-devel@vger.kernel.org,
+	oe-kbuild-all@lists.linux.dev, pablo@netfilter.org,
+	syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com,
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Subject: Re: [PATCH V5] ext4: check hash version and filesystem casefolded
+ consistent
+Message-ID: <20240606062702.GB324380@sol.localdomain>
+References: <87plsym65w.fsf@mailhost.krisman.be>
+ <20240604011718.3360272-1-lizhi.xu@windriver.com>
+ <87le3kle87.fsf@mailhost.krisman.be>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87le3kle87.fsf@mailhost.krisman.be>
 
-    the macro parameter 'entry' of EXT4_DIRENT_HASH and
-    EXT4_DIRENT_MINOR_HASH was not used, but rather the
-    variable 'de' was directly used, which may be a local
-    variable inside a function that calls the macros.
-    Fortunately, all callers have passed in 'de' so far,
-    so this bug didn't have an effect.
+On Tue, Jun 04, 2024 at 03:06:32PM -0400, Gabriel Krisman Bertazi wrote:
+> Lizhi Xu <lizhi.xu@windriver.com> writes:
+> 
+> > On Mon, 03 Jun 2024 10:50:51 -0400, Gabriel Krisman Bertazi wrote:
+> >> > When mounting the ext4 filesystem, if the hash version and casefolded are not
+> >> > consistent, exit the mounting.
+> >> >
+> >> > Reported-by: syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com
+> >> > Signed-off-by: Lizhi Xu <lizhi.xu@windriver.com>
+> >> > ---
+> >> >  fs/ext4/super.c | 5 +++++
+> >> >  1 file changed, 5 insertions(+)
+> >> >
+> >> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> >> > index c682fb927b64..0ad326504c50 100644
+> >> > --- a/fs/ext4/super.c
+> >> > +++ b/fs/ext4/super.c
+> >> > @@ -5262,6 +5262,11 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+> >> >  		goto failed_mount;
+> >> >  
+> >> >  	ext4_hash_info_init(sb);
+> >> > +	if (es->s_def_hash_version == DX_HASH_SIPHASH && 
+> >> > +	    !ext4_has_feature_casefold(sb)) {
+> >> 
+> >> Can we ever have DX_HASH_SIPHASH set up in the super block?  I thought
+> >> it was used solely for directories where ext4_hash_in_dirent(inode) is
+> >> true.
+> > The value of s'def_hash_version is obtained by reading the super block from the
+> > buffer cache of the block device in ext4_load_super().
+> 
+> Yes, I know.  My point is whether this check should just be:
+> 
+> if (es->s_def_hash_version == DX_HASH_SIPHASH)
+> 	goto failed_mount;
+> 
+> Since, IIUC, DX_HASH_SIPHASH is done per-directory and not written to
+> the sb.
+> 
 
-Signed-off-by: carrion bent <carrionbent@linux.alibaba.com>
----
- fs/ext4/ext4.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+That seems right to me.  SipHash can never be the default because it's only used
+on directories that are both encrypted and casefolded.
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 983dad8..04bdd27 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2338,9 +2338,9 @@ struct ext4_dir_entry_2 {
- 	((struct ext4_dir_entry_hash *) \
- 		(((void *)(entry)) + \
- 		((8 + (entry)->name_len + EXT4_DIR_ROUND) & ~EXT4_DIR_ROUND)))
--#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(de)->hash)
-+#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(entry)->hash)
- #define EXT4_DIRENT_MINOR_HASH(entry) \
--		le32_to_cpu(EXT4_DIRENT_HASHES(de)->minor_hash)
-+		le32_to_cpu(EXT4_DIRENT_HASHES(entry)->minor_hash)
- 
- static inline bool ext4_hash_in_dirent(const struct inode *inode)
- {
--- 
-2.7.4
-
+- Eric
 
