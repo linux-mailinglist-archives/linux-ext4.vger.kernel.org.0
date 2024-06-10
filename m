@@ -1,369 +1,156 @@
-Return-Path: <linux-ext4+bounces-2838-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2839-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCAC29023DD
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2024 16:18:21 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 307599026A7
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2024 18:25:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CC90288F94
-	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2024 14:18:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 26CA41C2267C
+	for <lists+linux-ext4@lfdr.de>; Mon, 10 Jun 2024 16:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79B0D84E1F;
-	Mon, 10 Jun 2024 14:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xf5I/HQb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="i9deXUGW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xf5I/HQb";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="i9deXUGW"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC9C4142E94;
+	Mon, 10 Jun 2024 16:25:19 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from maynard.decadent.org.uk (maynard.decadent.org.uk [95.217.213.242])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00D7E1D6AA;
-	Mon, 10 Jun 2024 14:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 303F182495
+	for <linux-ext4@vger.kernel.org>; Mon, 10 Jun 2024 16:25:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.217.213.242
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718029093; cv=none; b=HLe+nqXwZMkLZSmSF8EvTCO3IX+bl9tyKH3lH8S1j3Qxg+TOssuAeKmjTT899GBm+wRo/55iiI8j2us+hNnAmjZrnMVlPz//TcDBGCGhiz9QP9kucST9nbkNup6VuFhyzZszEXQxUm8L6zI5QDoJAzONgoJCXHe2OW2hhvVTEIY=
+	t=1718036719; cv=none; b=BORv2Be4dB/I6f399+83M6YUzFhpGD2/M/WIEX9+WRVQaD1ibG0RhpTjEyMSF9bIl1BFNN5rriM/IiVaHn9qmQzxtA/AODT9TK/rlsChhQc/98mJ9+t1rQe4WbKOxjDN6kTISBBFchTAQ/WZDd4EzfR79RHkDkpr6771T67qAKU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718029093; c=relaxed/simple;
-	bh=hITahHwkarjmzwSzI4GNa9eCkEiJ6pq3dy/29gZ+WFA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ktKPb2B81i15sSs2i1uh5LrhdzsdJN3F9unTKii2anVq+bodpLoLiCKSBko4tlvcH3AzKkPVRkA4IpZNIwxlHnWo31bF9C12z61/pBQInZqsjNVcPB1QWFRqRKolaH2HyaN1d0YyVEv2dlmdFfF35P0XHEEH0di6FV/Sy1W81IE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xf5I/HQb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=i9deXUGW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xf5I/HQb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=i9deXUGW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0677821B79;
-	Mon, 10 Jun 2024 14:18:09 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718029089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KIaNHN9Tm36HPHOOL2icrUAvSgiXdDUp+AaYpWLwx54=;
-	b=xf5I/HQbziPEMXjU0eGaLjTEUYgDoVf2UQeEo+8e8CBjkB/RKW0Fkd0Fo8yuCPndoKZwIl
-	czDp4GD1m318Fn8KAWzD+fkvFwg/3OC9R9ThZsVdS9UvfAZCDBF1cnQdRMIibXmvsNJyLt
-	mr/VKTfkm3yXAFVd80LE+v5jXQggMwE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718029089;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KIaNHN9Tm36HPHOOL2icrUAvSgiXdDUp+AaYpWLwx54=;
-	b=i9deXUGWvDRZb3AmHZ5CqcdkYFaq/D4g+zQif0ZHNBGAPpvPdtAKzd2aFOpldLccNYipcD
-	5dxNDNTKF2a0GdDg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="xf5I/HQb";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=i9deXUGW
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718029089; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KIaNHN9Tm36HPHOOL2icrUAvSgiXdDUp+AaYpWLwx54=;
-	b=xf5I/HQbziPEMXjU0eGaLjTEUYgDoVf2UQeEo+8e8CBjkB/RKW0Fkd0Fo8yuCPndoKZwIl
-	czDp4GD1m318Fn8KAWzD+fkvFwg/3OC9R9ThZsVdS9UvfAZCDBF1cnQdRMIibXmvsNJyLt
-	mr/VKTfkm3yXAFVd80LE+v5jXQggMwE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718029089;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=KIaNHN9Tm36HPHOOL2icrUAvSgiXdDUp+AaYpWLwx54=;
-	b=i9deXUGWvDRZb3AmHZ5CqcdkYFaq/D4g+zQif0ZHNBGAPpvPdtAKzd2aFOpldLccNYipcD
-	5dxNDNTKF2a0GdDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EE89A13AA0;
-	Mon, 10 Jun 2024 14:18:08 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id yBA5OiALZ2ZeQwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 10 Jun 2024 14:18:08 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 8A7DDA087F; Mon, 10 Jun 2024 16:18:08 +0200 (CEST)
-Date: Mon, 10 Jun 2024 16:18:08 +0200
-From: Jan Kara <jack@suse.cz>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Christoph Hellwig <hch@infradead.org>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH] Documentation: document the design of iomap and how to
- port
-Message-ID: <20240610141808.vdsflgcbjmgc37dt@quack3>
-References: <20240608001707.GD52973@frogsfrogsfrogs>
- <ZmVNblggFRgR8bnJ@infradead.org>
- <20240609155506.GT52987@frogsfrogsfrogs>
+	s=arc-20240116; t=1718036719; c=relaxed/simple;
+	bh=HWyu4k3TKEtzeCrlUrlhUfzKjT/REFBNbfGD4iMt0Nc=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=jfUcs49Lx9nEnQHxc2ER55nQNx46QnHudTG5BDOmifPtNlOM6axpm+MKJGbBxzhkKf3JITrfUdHb3k9yV3z/tTn9lZPIfw3tevDud/Q3mjILtp3QoJdIoj5A1Pw4pILfmPfAAEKmSp/velSihngdCjCqnQr9O3FxJMVWEPqiCts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=decadent.org.uk; spf=pass smtp.mailfrom=decadent.org.uk; arc=none smtp.client-ip=95.217.213.242
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=decadent.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=decadent.org.uk
+Received: from 213.219.156.63.adsl.dyn.edpnet.net ([213.219.156.63] helo=deadeye)
+	by maynard with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ben@decadent.org.uk>)
+	id 1sGhV6-0008E5-BZ; Mon, 10 Jun 2024 18:04:04 +0200
+Received: from ben by deadeye with local (Exim 4.97)
+	(envelope-from <ben@decadent.org.uk>)
+	id 1sGhV5-00000006Qcn-2x4W;
+	Mon, 10 Jun 2024 18:04:03 +0200
+Message-ID: <e6797603353b8162df6c29777ed5936af4d11b32.camel@decadent.org.uk>
+Subject: Re: linux: ext4 corruption with symlinks
+From: Ben Hutchings <ben@decadent.org.uk>
+To: linux-ext4@vger.kernel.org, =?ISO-8859-1?Q?Herv=E9?= Werner
+	 <dud225@hotmail.com>
+Cc: Diederik de Haas <didi.debian@cknow.org>, 1039883@bugs.debian.org, 
+	Salvatore Bonaccorso
+	 <carnil@debian.org>
+Date: Mon, 10 Jun 2024 18:03:58 +0200
+Autocrypt: addr=ben@decadent.org.uk; prefer-encrypt=mutual;
+ keydata=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
+In-Reply-To: <DB4PR02MB936085F4449207358A9943568FABA@DB4PR02MB9360.eurprd02.prod.outlook.com>
+References: <168802788716.2369531.1979971093539266086.reportbug@ariane.home>
+ <ZL5DB7vU3GnIx588@eldamar.lan> <2002858.macj2W6JUv@bagend>
+ <DB4PR02MB936085F4449207358A9943568FABA@DB4PR02MB9360.eurprd02.prod.outlook.com>
+Content-Type: multipart/signed; micalg="pgp-sha512";
+	protocol="application/pgp-signature"; boundary="=-+YiL7wBynssCBQyl48fY"
+User-Agent: Evolution 3.50.3-1+b1 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240609155506.GT52987@frogsfrogsfrogs>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[infradead.org,gmail.com,vger.kernel.org,fromorbit.com,kernel.org,linux.ibm.com,suse.cz];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Action: no action
-X-Rspamd-Queue-Id: 0677821B79
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Score: -2.51
+X-SA-Exim-Connect-IP: 213.219.156.63
+X-SA-Exim-Mail-From: ben@decadent.org.uk
+X-SA-Exim-Scanned: No (on maynard); SAEximRunCond expanded to false
 
-On Sun 09-06-24 08:55:06, Darrick J. Wong wrote:
->        * invalidate_lock: The pagecache struct address_space
->          rwsemaphore that protects against folio removal.
 
-invalidate_lock lock is held for read during insertions and for write
-during removals. So holding it pro read indeed protects against folio
-removal but holding it for write protects against folio insertion (which
-some places also use).
+--=-+YiL7wBynssCBQyl48fY
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
->        * validity_cookie is a magic freshness value set by the
->          filesystem that should be used to detect stale mappings. For
->          pagecache operations this is critical for correct operation
->          because page faults can occur, which implies that filesystem
->          locks should not be held between ->iomap_begin and
->          ->iomap_end. Filesystems with completely static mappings
->          need not set this value. Only pagecache operations
->          revalidate mappings.
-> 
->          XXX: Should fsdax revalidate as well?
+On Sun, 5 Nov 2023 16:12:41 +0000 Herv=C3=A9 Werner <dud225@hotmail.com>
+wrote:
+> Hello
+>=20
+> I'm sorry for the delay.
+>=20
+> > Are you able to reliably preoeduce the issue and can bisect it to
+> > the introducing commit?
+> I faced this issue on real data but I struggled to find a reliable
+> scenario to reproduce it. Here is what I just came up with:
+>=C2=A0=C2=A0 sudo mkfs -t ext4 -O fast_commit,inline_data /dev/sdb
+>=C2=A0=C2=A0 sudo mount /dev/sdb /mnt/
+>=C2=A0=C2=A0 sudo install -d -o myuser /mnt/annex
+>=C2=A0=C2=A0 cd /mnt/annex
+>=C2=A0=C2=A0 git init && git annex init
+>=C2=A0=C2=A0 for i in {1..2}; do
+>=C2=A0=C2=A0=C2=A0=C2=A0 for i in {1..10000}; do
+>=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 dd if=3D/dev/urandom of=3Dfile-${i} b=
+s=3D1K count=3D1 2>/dev/null
+>=C2=A0=C2=A0=C2=A0=C2=A0 done
+>=C2=A0=C2=A0=C2=A0=C2=A0 git annex add -J cpus . >/dev/null && git annex s=
+ync -J cpus && git annex fsck -J cpus >/dev/null
+>=C2=A0=C2=A0=C2=A0=C2=A0 git rm * && git annex sync=C2=A0 && git annex dro=
+punused all
+>=C2=A0=C2=A0 done
+>=20
+> Then at some point the following error appears:
+>=C2=A0=C2=A0 EXT4-fs error (device sdb): ext4_map_blocks:577: inode #39423=
+43: block 4: comm git-annex:w: lblock 1 mapped to illegal pblock 4 (length =
+1)
+[...]
 
-AFAICT no. DAX is more like using direct IO for everything. So no writeback
-changing mapping state behind your back (and that's the only thing that is
-not serialized with i_rwsem or invalidate_lock). Maybe this fact can be
-mentioned somewhere around the discussion of iomap_valid() as a way how
-locking usually works out?
+I can also reproduce this error message using the above script and:
 
->    iomap implements nearly all the folio and pagecache management
->    that filesystems once had to implement themselves. This means that
->    the filesystem need not know the details of allocating, mapping,
->    managing uptodate and dirty state, or writeback of pagecache
->    folios. Unless the filesystem explicitly opts in to buffer heads,
->    they will not be used, which makes buffered I/O much more
->    efficient, and willy much happier.
-		    ^^^ unless we make it a general noun for someone doing
-thankless neverending conversion job, we should give him a capital W ;).
+- Linux 6.10-rc2
+- A 2 GiB loopback devic instead of /dev/sdb
 
->    These struct kiocb flags are significant for buffered I/O with
->    iomap:
-> 
->        * IOCB_NOWAIT: Only proceed with the I/O if mapping data are
->          already in memory, we do not have to initiate other I/O, and
->          we acquire all filesystem locks without blocking. Neither
->          this flag nor its definition RWF_NOWAIT actually define what
->          this flag means, so this is the best the author could come
->          up with.
+I bisected this back to:
 
-RWF_NOWAIT is a performance feature, not a correctness one, hence the
-meaning is somewhat vague. It is meant to mean "do the IO only if it
-doesn't involve waiting for other IO or other time expensive operations".
-Generally we translate it to "don't wait for i_rwsem, page locks, don't do
-block allocation, etc." OTOH we don't bother to specialcase internal
-filesystem locks (such as EXT4_I(inode)->i_data_sem) and we get away with
-it because blocking on it under constraints we generally perform RWF_NOWAIT
-IO is exceedingly rare.
+commit 9725958bb75cdfa10f2ec11526fdb23e7485e8e4
+Author: Xin Yin <yinxin.x@bytedance.com>
+Date:   Thu Dec 23 11:23:37 2021 +0800
+=20
+    ext4: fast commit may miss tracking unwritten range during ftruncate
 
->       mmap Write Faults
-> 
->    The iomap_page_mkwrite function handles a write fault to a folio
->    the pagecache.
-     ^^^ to a folio *in* the pagecache? I cannot quite parse the sentence.
+It is still possible to cleanly revert that commit from 6.10-rc2, and
+doing so removes the error message.
 
->       Truncation
-> 
->    Filesystems can call iomap_truncate_page to zero the bytes in the
->    pagecache from EOF to the end of the fsblock during a file
->    truncation operation. truncate_setsize or truncate_pagecache will
->    take care of everything after the EOF block. IOMAP_ZERO will be
->    passed as the flags argument to ->iomap_begin. Callers typically
->    take i_rwsem and invalidate_lock in exclusive mode.
+Ben.
 
-Hum, but i_rwsem and invalidate_lock are usually acquired *before*
-iomap_truncate_page() is even called, aren't they? This locking note looks
-a bit confusing to me. I'd rather write: "The callers typically hold i_rwsem
-and invalidate_lock when calling iomap_truncate_page()." if you want to
-mention any locking.
+--=20
+Ben Hutchings
+Reality is just a crutch for people who can't handle science fiction.
 
->       Zeroing for File Operations
-> 
->    Filesystems can call iomap_zero_range to perform zeroing of the
->    pagecache for non-truncation file operations that are not aligned
->    to the fsblock size. IOMAP_ZERO will be passed as the flags
->    argument to ->iomap_begin. Callers typically take i_rwsem and
->    invalidate_lock in exclusive mode.
 
-Ditto here...
+--=-+YiL7wBynssCBQyl48fY
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
 
->       Unsharing Reflinked File Data
-> 
->    Filesystems can call iomap_file_unshare to force a file sharing
->    storage with another file to preemptively copy the shared data to
->    newly allocate storage. IOMAP_WRITE | IOMAP_UNSHARE will be passed
->    as the flags argument to ->iomap_begin. Callers typically take
->    i_rwsem and invalidate_lock in exclusive mode.
+-----BEGIN PGP SIGNATURE-----
 
-And here.
+iQIzBAABCgAdFiEErCspvTSmr92z9o8157/I7JWGEQkFAmZnI+4ACgkQ57/I7JWG
+EQmRtRAAg6uc0G0KIpx1IeCTSGDNwKES+MNkfxcS6SCuZbKw9bDy5v0OYFhWfVkg
+3FQ5xu98uTUW3+d0xS9qV7EUziJJqSk8v8PEtzffeOWX5duJBDAAnQ4ed4Na5JG0
+EiKcxauZQsajXTJGS/KKq9+Lif4RZzNXNLk6kEEWWDyDCnWIfJr47AW9QizSqTfh
+B26xxzrc0lrMyVwQyyOgGIdpbLJdJZ2RnhdvKVT4U2oV8gJYB4xi7JYAdN5D5LNx
+p7nhzvd5fXzSzU0Mv48JzQq8FfIOiwCFrcl8lEtSnchjgdJnZnxzktW+5NVwAe6m
+X7qrl60CP8uGI86mDPbN15ayG1frdi+o6j8RkkZCJAt2PlT2xdzP5Nruh48GJcwt
+AmznfFNFZUFHSc5Zp4vO5+3YjEV3zs210+XQ0IN2Jjg/6RWb+izREvaoCMaFN/JK
+wCQ9UDthadySReunWEbprMRovete0x494dq+7X86j90ElZ2d3x3i67POqK6whm8o
+SmpDC3iHvT0Jqq6AJ0uycFfCZ2ZFuIU7ki7L07DLuMeLOI22ns1WmrRCzlHZUUZ6
+Pkdj+HDBD3aAkb/JnWLnlR7rnhgO9OiYUeZCLpUugP1P8JTvrJ9BRp3LegTR23A6
+IUTQA1LN02T1sBOacZHwTCS1s2x7e0Ri8yPOu4QejixUD/Tm5j0=
+=5oIT
+-----END PGP SIGNATURE-----
 
->   Direct I/O
-> 
->    In Linux, direct I/O is defined as file I/O that is issued
->    directly to storage, bypassing the pagecache.
-> 
->    The iomap_dio_rw function implements O_DIRECT (direct I/O) reads
->    and writes for files. An optional ops parameter can be passed to
->    change the behavior of direct I/O. The done_before parameter
->    should be set if writes have been initiated prior to the call. The
->    direction of the I/O is determined from the iocb passed in.
-> 
->    The flags argument can be any of the following values:
-> 
->        * IOMAP_DIO_FORCE_WAIT: Wait for the I/O to complete even if
->          the kiocb is not synchronous.
-> 
->        * IOMAP_DIO_OVERWRITE_ONLY: Allocating blocks, zeroing partial
->          blocks, and extensions of the file size are not allowed. The
->          entire file range must to map to a single written or
-				  ^^ extra "to"
-
->          unwritten extent. This flag exists to enable issuing
->          concurrent direct IOs with only the shared i_rwsem held when
->          the file I/O range is not aligned to the filesystem block
->          size. -EAGAIN will be returned if the operation cannot
->          proceed.
-
-<snip>
-
->     Direct Writes
-> 
->    A direct I/O write initiates a write I/O to the storage device to
->    the caller's buffer. Dirty parts of the pagecache are flushed to
->    storage before initiating the write io. The pagecache is
->    invalidated both before and after the write io. The flags value
->    for ->iomap_begin will be IOMAP_DIRECT | IOMAP_WRITE with any
->    combination of the following enhancements:
-> 
->        * IOMAP_NOWAIT: Write if mapping data are already in memory.
->          Does not initiate other I/O or block on filesystem locks.
-> 
->        * IOMAP_OVERWRITE_ONLY: Allocating blocks and zeroing partial
->          blocks is not allowed. The entire file range must to map to
-							     ^^ extra "to"
-
->          a single written or unwritten extent. The file I/O range
->          must be aligned to the filesystem block size.
-
-This seems to be XFS specific thing? At least I don't see anything in
-generic iomap code depending on this?
-
->     fsdax Writes
-> 
->    A fsdax write initiates a memcpy to the storage device to the
-							    ^^ from
-
->    caller's buffer. The flags value for ->iomap_begin will be
->    IOMAP_DAX | IOMAP_WRITE with any combination of the following
->    enhancements:
-> 
->        * IOMAP_NOWAIT: Write if mapping data are already in memory.
->          Does not initiate other I/O or block on filesystem locks.
-> 
->        * IOMAP_OVERWRITE_ONLY: Allocating blocks and zeroing partial
->          blocks is not allowed. The entire file range must to map to
-							     ^^ extra "to"
-
->          a single written or unwritten extent. The file I/O range
->          must be aligned to the filesystem block size.
-> 
->    Callers commonly hold i_rwsem in exclusive mode.
-> 
->     mmap Faults
-> 
->    The dax_iomap_fault function handles read and write faults to
->    fsdax storage. For a read fault, IOMAP_DAX | IOMAP_FAULT will be
->    passed as the flags argument to ->iomap_begin. For a write fault,
->    IOMAP_DAX | IOMAP_FAULT | IOMAP_WRITE will be passed as the flags
->    argument to ->iomap_begin.
-> 
->    Callers commonly hold the same locks as they do to call their
->    iomap pagecache counterparts.
-> 
->     Truncation, fallocate, and Unsharing
-> 
->    For fsdax files, the following functions are provided to replace
->    their iomap pagecache I/O counterparts. The flags argument to
->    ->iomap_begin are the same as the pagecache counterparts, with
->    IOMAP_DIO added.
-	  ^^^ IOMAP_DAX?
-
->        * dax_file_unshare
-> 
->        * dax_zero_range
-> 
->        * dax_truncate_page
-> 
->    Callers commonly hold the same locks as they do to call their
->    iomap pagecache counterparts.
-
->   How to Convert to iomap?
-> 
->    First, add #include <linux/iomap.h> from your source code and add
->    select FS_IOMAP to your filesystem's Kconfig option. Build the
->    kernel, run fstests with the -g all option across a wide variety
->    of your filesystem's supported configurations to build a baseline
->    of which tests pass and which ones fail.
-> 
->    The recommended approach is first to implement ->iomap_begin (and
->    ->iomap->end if necessary) to allow iomap to obtain a read-only
-       ^^^^ ->iomap_end
-
-<snip>
-
->    Most likely at this point, the buffered read and write paths will
->    still to be converted. The mapping functions should all work
-          ^^ need to be
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--=-+YiL7wBynssCBQyl48fY--
 
