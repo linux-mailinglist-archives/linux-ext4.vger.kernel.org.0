@@ -1,385 +1,698 @@
-Return-Path: <linux-ext4+bounces-2844-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2846-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F39A7902DF7
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 03:32:46 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71F929037A1
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 11:15:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 44EAD282246
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 01:32:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1BCDD2813ED
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 09:15:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6050F8BF3;
-	Tue, 11 Jun 2024 01:32:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78FE2176ACD;
+	Tue, 11 Jun 2024 09:15:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="DnN8F8+V"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vd9NpBMo"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F9DF7F8
-	for <linux-ext4@vger.kernel.org>; Tue, 11 Jun 2024 01:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E153D3BB23;
+	Tue, 11 Jun 2024 09:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718069557; cv=none; b=AmqQMd6NdKqeRZ/2UNva7Vruar2dYUEDdorw3U9UwVpzK7rbQvcKQ23ciXb5CWkfQ9X/YzYq/Sdswc3Iyg2PXHKG+M5kw3QjPqIaqgvygwCi4WZIqbzI+oWJQLWZu/uncWfE+bCAgC2MIQnEqWGX0zq2YYNMxD7F5AZJ42bwCeg=
+	t=1718097328; cv=none; b=GfaNa0Omq9zbEIeC87+xkikfAethTrS/zUdjt5own2eDeoAL3fBNrPyr/VOdwOFViJrFiKLrBbqdHeUaPtj9puV+UFOK7rCfOc+Mp/yiFaH9tCOtOVvgG6RErb/0UYQ5/kFHNcsTI0PtOnG4k1b/asNaIjwyCbSsYUJTgR/Dxno=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718069557; c=relaxed/simple;
-	bh=w6JeLXAlXXn8x0I/h/F0jI6PwYAtj6/H7k7yFqJ7YjQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hPeH/Lqo87XWqvml+F6rMViG/KGhSf9o3ex96khz7y6sF1S3kataUZaK+rz8ctiDOH+L0opwn3js9PHO9XEPq/GtMH+VcDYroozTbdS86fv4VNLeQYMrb9VhKf1RZRIQfp8f0LFpKIEyQRRSkP69bKUnsjPZqqMusFxPyT4ptbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=DnN8F8+V; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1f6c7cdec83so40908425ad.0
-        for <linux-ext4@vger.kernel.org>; Mon, 10 Jun 2024 18:32:35 -0700 (PDT)
+	s=arc-20240116; t=1718097328; c=relaxed/simple;
+	bh=3wqPsEBMxwwZ8P9yoyEFGld7zEyXBcm+IEI8vdbV+4o=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=uDBOrqK24skX6iQNggdUrlndHj/QPy4+4dj9RBiXzM4F3FsrGtYevOEXjPG8pHyLcy+tFSAGPtvVUnDjANuyQ54MZvSA+jriEEYzRH6gP64weUJ+M1gVePAY0YXo50h17Ptl1U7xqPUDDbqt/NkPokFseknzL/p1td3L5n8CWxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vd9NpBMo; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-70599522368so714404b3a.2;
+        Tue, 11 Jun 2024 02:15:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1718069555; x=1718674355; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=h17X7yFiA7LnykW5wJDwIAaa/MAlqO5a8WshU7ufiKc=;
-        b=DnN8F8+VYlMh7jHy1akWmhAFustnuMNYmYvO3sQ9vHAK/cPG3624IcvrSjioQpq1Kd
-         te0ckqbVt9Jnkt2SsEJ5M6lIVnfzBYjJdNMdGOZRYZtJcW1T3E1HanvqxgJc3A8pHSaN
-         NhsUtgh3Alo+Gqor7NSGJp1bnLPNzOJZHHb2QLMIJNvr6kUpRQywjDatnTJyXtWGdVvk
-         QnxXdhurK9sRcsxQbIa7QURQ2Yj5Omi/n9EGLMk0ZmazPYashJC3xdWHv5ye8bb3npew
-         FhNo3Ge2a7+VB4I5xXS/iA0euOfXzE7XCtJKJNrKrseh8+k64PAgISM5vVOkIgq7z+jo
-         T5uw==
+        d=gmail.com; s=20230601; t=1718097325; x=1718702125; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=BMlFccGgF1JbERB0qSqUDrCHVWIoPR3tjSAu3jCKCXU=;
+        b=Vd9NpBMo/0KBRAnBMt2VRWUC9uUqRGZzVE8DVtN/Y0PC0jotCGQsj/T8luG+6VEyem
+         aHT92/oQBfIxuPns4mn8yHbnKojubqLm93VoyWDSIhqxu432lmn5c8CxlQuGjiiFJHrf
+         uO33ydIWpHXgLEUypuBXIO+iu8bkk7gvN7mfh1ji08zDfU8uB1DZk3xur9pGCGEjA3Ou
+         XNSO5MZO4bQXqnBhXQlYQW/S5J/FnBySkZHmFfiDxdCDyU+4PK6pQVo0MFEldMq9Jxl1
+         r+CU8oAshQxY6FBNTXRItFBvlAw396DMzOaBICs+Ngmbd1FkXyB2EFC/SlzDC2l41K4+
+         3bpQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718069555; x=1718674355;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=h17X7yFiA7LnykW5wJDwIAaa/MAlqO5a8WshU7ufiKc=;
-        b=imAqJ1X2GX+ANNCgpE6Bm4dfMff58z97ujwAJHcVxBq3Cdhk0VFmv+wBWSK8fAVc5j
-         XlGv9zF7GSVSkQ5qDfST85f10EndrxccWvUNNTy+PiP+U390bA9h8mCF24geAX74rwlS
-         c6HV5vC91Q3LRyfUPY8tYyMND8qMESUv52PZ3h5P6gobvDlcWEbP489EzbkMPf8Kpq9z
-         7sq91bcgEI+WZcsXDQiWVgAfPlj1R9Bel1q3kZ11zO/KzVTZkvV+PuzvsdOxNjbNewgE
-         OBZdqbWyw9W68d9NtyKKEq+J54+UAMvXlXVvL80iPVRerF4rzPZte4oj45sLDvAFcE/y
-         KBRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUA8BDS0TCZE555TF4qz7En7Sq9G2BV8Oekvc4nuXyBGqtMGQVnN2QxPkWdMx74OHkkPfSQl8YTsAAiulZnUrG/hzaSvCxiBWtHbQ==
-X-Gm-Message-State: AOJu0YxLPcikcDZEWkyBK2/RJV4GC4EqXWWofgKhuOFnXM2y2aiIOuGJ
-	YzBYIqta5Q+UnN7mHJ0fy6ptkWg8FqZYfkPGyYZxZrvEisRMFScvJLGffBTOiDQ=
-X-Google-Smtp-Source: AGHT+IERDtR60M7xczNd7e5pwEu/qzE0byLX347qAp6tha8LILEWFJr9CtN/Be+EYKXcIhkJeh7mdw==
-X-Received: by 2002:a17:902:da86:b0:1f6:343f:dc4d with SMTP id d9443c01a7336-1f6d0377702mr124032755ad.49.1718069555029;
-        Mon, 10 Jun 2024 18:32:35 -0700 (PDT)
-Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f70ed8a2c8sm31372275ad.95.2024.06.10.18.32.33
+        d=1e100.net; s=20230601; t=1718097325; x=1718702125;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BMlFccGgF1JbERB0qSqUDrCHVWIoPR3tjSAu3jCKCXU=;
+        b=azNvam8ihQJqD4i3HDYZ5hn4MIbmevoVqlJwuXQUTJZnVXcxzJTFQHlt8Yc+9GzgGY
+         aYGNQmP2GlMrcxYmZQW7fEbevBJUdqtVwNOL7TvnDfstrVF7Ib7g3YxtA5XeiP0R+K35
+         HMGDyuyTsZCly+6MB0dGeNI4uVDzUEqxtDI+/pImC/ykqt4WsS8ZRrgjKLYD3YzaJWJX
+         NZrQYOprOHtHWi69C5w76TqbBk8u2IEMpzVbfTXD9OllkeKk/wLI0zpCPWjjCvpJHTKZ
+         9WV5fyHnWC2W9pptoe39f4R3Z8rFsfnpABb84JbnklJBY5txfd/PQz4tZ1c5jA3T7LjT
+         RC8w==
+X-Forwarded-Encrypted: i=1; AJvYcCUtnH5yqGxJmq9Bzu6iqVyElL2JpCJSegKGtlIirdisDhpyZYkCiGfh/gttpnzyQTJ5cJh3DIsItoj1crBnrw2Ea62rLl7v1gNlnf4tjGKr+SOj6UUYF1mRV14is316/zJ2Q9qYAL0dOg==
+X-Gm-Message-State: AOJu0YyHi2dpxylr5J/GV3nGgTvTnnxribbe9nGJIH+nXsCZ2z7REdQh
+	Pj7UhwSlWocQXyv6G2mnfDorRIXQBFnl3uAzFgaBD36WfB7bMjLt
+X-Google-Smtp-Source: AGHT+IHrb4bkv59aGO1RC9Ltb0gF29qtfMpB6rErDhaqA2yJL2iW5ubnegbG2BNiml8eShRQVO//AA==
+X-Received: by 2002:a05:6a20:9184:b0:1b6:a7c5:4fb4 with SMTP id adf61e73a8af0-1b6a7c55844mr5424077637.16.1718097324959;
+        Tue, 11 Jun 2024 02:15:24 -0700 (PDT)
+Received: from dw-tp ([171.76.84.72])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f6bd80d789sm95807825ad.289.2024.06.11.02.15.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 10 Jun 2024 18:32:34 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1sGqND-00Bdd0-0O;
-	Tue, 11 Jun 2024 11:32:31 +1000
-Date: Tue, 11 Jun 2024 11:32:31 +1000
-From: Dave Chinner <david@fromorbit.com>
+        Tue, 11 Jun 2024 02:15:24 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, Matthew Wilcox <willy@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH] Documentation: document the design of iomap and how to
- port
-Message-ID: <ZmepL9161HEfmBNU@dread.disaster.area>
-References: <20240608001707.GD52973@frogsfrogsfrogs>
- <ZmVNblggFRgR8bnJ@infradead.org>
- <20240609155506.GT52987@frogsfrogsfrogs>
- <20240610141808.vdsflgcbjmgc37dt@quack3>
- <20240610215928.GV52987@frogsfrogsfrogs>
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>, Matthew Wilcox <willy@infradead.org>, Christoph Hellwig <hch@infradead.org>, Christian Brauner <brauner@kernel.org>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>, Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH] Documentation: document the design of iomap and how to port
+In-Reply-To: <20240610231111.GW52987@frogsfrogsfrogs>
+Date: Tue, 11 Jun 2024 12:13:22 +0530
+Message-ID: <875xug9dyt.fsf@gmail.com>
+References: <20240608001707.GD52973@frogsfrogsfrogs> <874ja118g7.fsf@gmail.com> <20240610231111.GW52987@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240610215928.GV52987@frogsfrogsfrogs>
 
-On Mon, Jun 10, 2024 at 02:59:28PM -0700, Darrick J. Wong wrote:
-> On Mon, Jun 10, 2024 at 04:18:08PM +0200, Jan Kara wrote:
-> > On Sun 09-06-24 08:55:06, Darrick J. Wong wrote:
-> > >        * validity_cookie is a magic freshness value set by the
-> > >          filesystem that should be used to detect stale mappings. For
-> > >          pagecache operations this is critical for correct operation
-> > >          because page faults can occur, which implies that filesystem
-> > >          locks should not be held between ->iomap_begin and
-> > >          ->iomap_end. Filesystems with completely static mappings
-> > >          need not set this value. Only pagecache operations
-> > >          revalidate mappings.
-> > > 
-> > >          XXX: Should fsdax revalidate as well?
-> > 
-> > AFAICT no. DAX is more like using direct IO for everything. So no writeback
-> > changing mapping state behind your back (and that's the only thing that is
-> > not serialized with i_rwsem or invalidate_lock). Maybe this fact can be
-> > mentioned somewhere around the discussion of iomap_valid() as a way how
-> > locking usually works out?
-> 
-> <nod> I'll put that in the section about iomap_valid, which documents
-> the whole mechanism more thoroughly:
-> 
-> "iomap_valid: The filesystem may not hold locks between ->iomap_begin
-> and ->iomap_end because pagecache operations can take folio locks, fault
-> on userspace pages, initiate writeback for memory reclamation, or engage
-> in other time-consuming actions.  If a file's space mapping data are
-> mutable, it is possible that the mapping for a particular pagecache
-> folio can change in the time it takes to allocate, install, and lock
-> that folio.
-> 
-> "For the pagecache, races can happen if writeback doesn't take i_rwsem
-> or invalidate_lock and updates mapping information.  Races can also
-> happen if the filesytem allows concurrent writes.  For such files, the
-> mapping *must* be revalidated after the folio lock has been taken so
-> that iomap can manage the folio correctly.
-> 
-> "fsdax does not need this revalidation because there's no writeback and
-> no support for unwritten extents.
-> 
-> "The filesystem's ->iomap_begin function must sample a sequence counter
-> into struct iomap::validity_cookie at the same time that it populates
-> the mapping fields.  It must then provide a ->iomap_valid function to
-> compare the validity cookie against the source counter and return
-> whether or not the mapping is still valid.  If the mapping is not valid,
-> the mapping will be sampled again."
+"Darrick J. Wong" <djwong@kernel.org> writes:
 
-Everything is fine except for the last paragraph. Filesystems do not
-need to use a sequence counter for the validity cookie - they can
-use any mechanism they want to determine that the extent state has
-changed. If they can track extent status on a fine grained basis
-(e.g. ext4 has individual extent state cache entries) then that
-validity cookie could be a pointer to the filesystem's internal
-extent state cache entry.
+> On Mon, Jun 10, 2024 at 02:27:28PM +0530, Ritesh Harjani wrote:
+>> 
+>> Hello Darrick,
+>> 
+>> "Darrick J. Wong" <djwong@kernel.org> writes:
+>> 
+>> > From: Darrick J. Wong <djwong@kernel.org>
+>> >
+>> > This is the fourth attempt at documenting the design of iomap and how to
+>> 
+>> I agree that this isn't needed in the commit msg ("fourth attempt").
+>
+> Ok.  "Coapture the design of iomap and how to port..."
+>
+>> > port filesystems to use it.  Apologies for all the rst formatting, but
+>> > it's necessary to distinguish code from regular text.
+>> >
+>> > A lot of this has been collected from various email conversations, code
+>> > comments, commit messages, my own understanding of iomap, and
+>> > Ritesh/Luis' previous efforts to create a document.  Please note a large
+>> > part of this has been taken from Dave's reply to last iomap doc
+>> > patchset. Thanks to Ritesh, Luis, Dave, Darrick, Matthew, Christoph and
+>> > other iomap developers who have taken time to explain the iomap design
+>> > in various emails, commits, comments etc.
+>> >
+>> > Cc: Dave Chinner <david@fromorbit.com>
+>> > Cc: Matthew Wilcox <willy@infradead.org>
+>> > Cc: Christoph Hellwig <hch@infradead.org>
+>> > Cc: Christian Brauner <brauner@kernel.org>
+>> > Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>> > Cc: Jan Kara <jack@suse.cz>
+>> > Cc: Luis Chamberlain <mcgrof@kernel.org>
+>> > Inspired-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>> 
+>> I am not sure if this is even a valid or accepted tag.
+>> But sure thanks! :)
+>
+> They're freeform tags, so they can be everything everyone wants them to
+> be!  Drum circle kumbaya etc. :P
+>
+>> > Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+>> > ---
+>> >  Documentation/filesystems/index.rst |    1 
+>> >  Documentation/filesystems/iomap.rst | 1060 +++++++++++++++++++++++++++++++++++
+>> >  MAINTAINERS                         |    1 
+>> >  3 files changed, 1062 insertions(+)
+>> >  create mode 100644 Documentation/filesystems/iomap.rst
+>> >
+>> > diff --git a/Documentation/filesystems/index.rst b/Documentation/filesystems/index.rst
+>> > index 8f5c1ee02e2f..b010cc8df32d 100644
+>> > --- a/Documentation/filesystems/index.rst
+>> > +++ b/Documentation/filesystems/index.rst
+>> > @@ -34,6 +34,7 @@ algorithms work.
+>> >     seq_file
+>> >     sharedsubtree
+>> >     idmappings
+>> > +   iomap
+>> >  
+>> >     automount-support
+>> >  
+>> > diff --git a/Documentation/filesystems/iomap.rst b/Documentation/filesystems/iomap.rst
+>> > new file mode 100644
+>> > index 000000000000..a478b55e4135
+>> > --- /dev/null
+>> > +++ b/Documentation/filesystems/iomap.rst
+>> > @@ -0,0 +1,1060 @@
+>> > +.. SPDX-License-Identifier: GPL-2.0
+>> > +.. _iomap:
+>> > +
+>> > +..
+>> > +        Dumb style notes to maintain the author's sanity:
+>> > +        Please try to start sentences on separate lines so that
+>> > +        sentence changes don't bleed colors in diff.
+>> > +        Heading decorations are documented in sphinx.rst.
+>> > +
+>> > +============================
+>> > +VFS iomap Design and Porting
+>> > +============================
+>> > +
+>> > +.. toctree::
+>> > +
+>> > +Introduction
+>> > +============
+>> > +
+>> > +iomap is a filesystem library for handling various filesystem operations
+>> > +that involves mapping of file's logical offset ranges to physical
+>> > +extents.
+>> > +This origins of this library is the file I/O path that XFS once used; it
+>> > +has now been extended to cover several other operations.
+>> > +The library provides various APIs for implementing various file and
+>>                         ^^^^ redundant "various"
+>> 
+>> > +pagecache operations, such as:
+>> > +
+>> > + * Pagecache reads and writes
+>> > + * Folio write faults to the pagecache
+>> > + * Writeback of dirty folios
+>> > + * Direct I/O reads and writes
+>> 
+>> Dax I/O reads and writes.
+>> ... as well please?
+>
+> It's really fsdax I/O reads, writes, loads, and stores, isn't it?
+>
 
-There's also nothing that says the cookie needs to remain a u64;
-I've been toying with replacing it with a pointer to an xfs iext
-btree cursor and checking that the cursor still points to the same
-extent that iomap was made from. Hence we get fine grained extent
-checks and don't have to worry about changes outside the range of
-the iomap causing spurious revalidation failures.
+It felt like dax_iomap_rw() belongs to fs/iomap. 
+But nevertheless, we could skip it if we are targetting fs/iomap/
+lib.
 
-IOWs, the intention of the cookie is simply an opaque blob that the
-filesystem can keep whatever validity information in it that it
-wants - a sequence counter is just one of many possible
-implementations. hence I think this should be rephrased to reflect
-this.
+>> 
+>> > + * FIEMAP
+>> > + * lseek ``SEEK_DATA`` and ``SEEK_HOLE``
+>> > + * swapfile activation
+>> > +
+>> 
+>> > +Who Should Read This?
+>> > +=====================
+>> > +
+>> > +The target audience for this document are filesystem, storage, and
+>> 
+>> /s/and/,/
+>> 
+>> 
+>> > +pagecache programmers and code reviewers.
+>> 
+>> Not sure if we even need this secion "Who Should Read This".
+>
+> That was a review comment from Luis' attempt to write this document:
+> https://lore.kernel.org/linux-xfs/87zg61p78x.fsf@meer.lwn.net/
+>
+> Also I guess I should state explicitly:
+>
+> "If you are working on PCI, machine architectures, or device drivers,
+> you are most likely in the wrong place."
+>
+>> > +The goal of this document is to provide a brief discussion of the
+>> > +design and capabilities of iomap, followed by a more detailed catalog
+>> > +of the interfaces presented by iomap.
+>> > +If you change iomap, please update this design document.
+>> 
+>> The details of "goal of this document..." -> can be a part of
+>> separate paragraph in "Introduction" section itself.
+>> 
+>> > +
+>> > +But Why?
+>> > +========
+>> 
+>> "Why Iomap?" is more clean IMO. 
+>
+> "Why VFS iomap?", then.
+>
+>> > +
+>> > +Unlike the classic Linux I/O model which breaks file I/O into small
+>> > +units (generally memory pages or blocks) and looks up space mappings on
+>> > +the basis of that unit, the iomap model asks the filesystem for the
+>> > +largest space mappings that it can create for a given file operation and
+>> > +initiates operations on that basis.
+>> > +This strategy improves the filesystem's visibility into the size of the
+>> > +operation being performed, which enables it to combat fragmentation with
+>> > +larger space allocations when possible.
+>> > +Larger space mappings improve runtime performance by amortizing the cost
+>> > +of a mapping function call into the filesystem across a larger amount of
+>> 
+>> s/call/calls
+>
+> Done.
+>
+>> > +data.
+>> > +
+>> > +At a high level, an iomap operation `looks like this
+>> > +<https://lore.kernel.org/all/ZGbVaewzcCysclPt@dread.disaster.area/>`_:
+>> > +
+>> > +1. For each byte in the operation range...
+>> > +
+>> > +   1. Obtain space mapping via ->iomap_begin
+>> > +   2. For each sub-unit of work...
+>> > +
+>> > +      1. Revalidate the mapping and go back to (1) above, if necessary
+>> > +      2. Do the work
+>> > +
+>> > +   3. Increment operation cursor
+>> > +   4. Release the mapping via ->iomap_end, if necessary
+>> > +
+>> > +Each iomap operation will be covered in more detail below.
+>> > +This library was covered previously by an `LWN article
+>> > +<https://lwn.net/Articles/935934/>`_ and a `KernelNewbies page
+>> > +<https://kernelnewbies.org/KernelProjects/iomap>`_.
+>> > +
+>> > +Data Structures and Algorithms
+>> > +==============================
+>> > +
+>> > +Definitions
+>> > +-----------
+>> > +
+>> > + * ``bufferhead``: Shattered remnants of the old buffer cache.
+>> > + * ``fsblock``: The block size of a file, also known as ``i_blocksize``.
+>> > + * ``i_rwsem``: The VFS ``struct inode`` rwsemaphore.
+>> > + * ``invalidate_lock``: The pagecache ``struct address_space``
+>> > +   rwsemaphore that protects against folio removal.
+>> 
+>> This definition is a bit confusing & maybe even incomplete.
+>> I think we should use this from header file.
+>> 
+>> @invalidate_lock: The pagecache ``struct address_sapce`` rwsemaphore
+>>   that guards coherency between page cache contents and file offset->disk
+>>   block mappings in the filesystem during invalidates. It is also used to
+>>   block modification of page cache contents through memory mappings.
+>> 
+>> Also if we are describing definitions above - then I think we should
+>> also clarify these locks/terms used in this document (I just looked
+>> "lock" related terms for now)
+>> 
+>> - folio lock:
+>> - dax lock:
+>
+> Er, what /is/ the dax lock?  Is that the dax_read_lock thing that (I
+> think) wraps the dax rcu lock?  Which in turn exists so that we don't
+> return from the dax offlining function before everyone's dropped all
+> their references to internal structures?
+>
+>> - pagecache lock: 
+>> - FS internal mapping lock: 
+>> - Iomap internal operation lock:
+>> 
+>> > +
+>> > +struct iomap_ops
+>> > +----------------
+>> 
+>> IMO, we should define "struct iomap" in the begining. The reason is
+>> because iomap_ops functions take "struct iomap" in it's function
+>> arguments. So it's easier if we describe "struct iomap" before.
+>
+> Yeah, I agree.
+>
+>> > +
+>> > +Every iomap function requires the filesystem to pass an operations
+>> > +structure to obtain a mapping and (optionally) to release the mapping.
+>> > +
+>> > +.. code-block:: c
+>> > +
+>> > + struct iomap_ops {
+>> > +     int (*iomap_begin)(struct inode *inode, loff_t pos, loff_t length,
+>> > +                        unsigned flags, struct iomap *iomap,
+>> > +                        struct iomap *srcmap);
+>> > +
+>> > +     int (*iomap_end)(struct inode *inode, loff_t pos, loff_t length,
+>> > +                      ssize_t written, unsigned flags,
+>> > +                      struct iomap *iomap);
+>> > + };
+>> > +
+>> > +The ``->iomap_begin`` function is called to obtain one mapping for the
+>> > +range of bytes specified by ``pos`` and ``length`` for the file
+>> > +``inode``.
+>> 
+>> I think it is better if we describe ->iomap_begin and ->iomap_end
+>> in proper sub-sections. Otherwise this looks like we have clobbered
+>> all the information together :)
+>> 
+>> ->iomap_begin 
+>> ^^^^^^^^^^^^^^^^^
+>
+> Yes, I like the explicit section headings better.
+>
 
-"The filesystem's ->iomap_begin function must write the data it
-needs to validate the iomap into struct iomap::validity_cookie at
-the same time that it populates the mapping fields.  It must then
-provide a ->iomap_valid function to compare the validity cookie
-against the source data and return whether or not the mapping is
-still valid.  If the mapping is not valid, the mapping will be
-sampled again.
+yup.
 
-A simple validation cookie implementation is a sequence counter. If
-the filesystem bumps the sequence counter every time it modifies the
-inode's extent map, it can be placed in the struct
-iomap::validity_cookie during ->iomap_begin. If the value in the
-cookie is found to be different to the value the filesystem holds
-when it is passed back to ->iomap_valid, then the iomap should
-considered stale and the validation failed."
+>> This either returns an existing mapping or reserve/allocates a new
+>> mapping.
+>
+> That's a filesystem specific detail -- all that iomap cares about is
+> that the fs communicates a mapping.  Maybe the fs actually had to do a
+> bunch of work to get that mapping, or maybe it's already laid out
+> statically, ala zonefs.  Either way, it's not a concern of the iomap
+> library.
+>
+>> logical file pos and length are in bytes which gets passed
+>> as function arguments. Filesystem returns the new mapping information
+>> within ``struct iomap`` which also gets passed as a function argument.
+>> Filesystems should provide the details of this mapping by filling
+>> various fields within ``struct iomap``.
+>
+> "iomap operations call ->iomap_begin to obtain one file mapping for the
+> range of bytes specified by pos and length for the file inode.  This
+> mapping should be returned through the iomap pointer.  The mapping must
+> cover at least the first byte of the supplied file range, but it does
+> not need to cover the entire requested range."
+>
 
+I like it. Thanks for adding that detail in the last line.
 
-> 
-> > >    These struct kiocb flags are significant for buffered I/O with
-> > >    iomap:
-> > > 
-> > >        * IOCB_NOWAIT: Only proceed with the I/O if mapping data are
-> > >          already in memory, we do not have to initiate other I/O, and
-> > >          we acquire all filesystem locks without blocking. Neither
-> > >          this flag nor its definition RWF_NOWAIT actually define what
-> > >          this flag means, so this is the best the author could come
-> > >          up with.
-> > 
-> > RWF_NOWAIT is a performance feature, not a correctness one, hence the
-> > meaning is somewhat vague. It is meant to mean "do the IO only if it
-> > doesn't involve waiting for other IO or other time expensive operations".
-> > Generally we translate it to "don't wait for i_rwsem, page locks, don't do
-> > block allocation, etc." OTOH we don't bother to specialcase internal
-> > filesystem locks (such as EXT4_I(inode)->i_data_sem)
+>>   @srcmap agument:
+>>     Note that ->iomap_begin call has srcmap passed as another argument. This is
+>>     mainly used only during the begin phase for COW mappings to identify where
+>>     the reads are to be performed from. Filesystems needs to fill that mapping
+>>     information if iomap should read data for partially written blocks from a
+>>     different location than the write target [4].
+>>   @flags argument:
+>>     These are the operation types which iomap supports. 
+>>     IOMAP_WRITE: For doing write I/O.
+>>     <...>
+>>     IOMAP_ZERO:
+>>     IOMAP_REPORT:		
+>>     IOMAP_FAULT:		
+>>     IOMAP_DIRECT:		
+>>     IOMAP_NOWAIT:		
+>>     IOMAP_OVERWRITE_ONLY:
+>>     IOMAP_UNSHARE:
+>>     IOMAP_DAX:	
+>
+> I think it's /much/ more valuable to document the exact combinations
+> that will be passed to ->iomap_begin further down where we talk about
+> specific operations that iomap performs.
+>
+> Otherwise, someone is going to look at this list and wonder if they
+> really need to figure out what IOMAP_ZERO|IOMAP_FAULT|IOMAP_DAX means,
+> and if it's actually possible (it's not).
+>
 
-But we have support for this - the IOMAP_NOWAIT flag tells the
-filesystem iomap methods that it should:
+Sure.
 
-	a) not block on internal mapping operations; and
-	b) fail with -EAGAIN if it can't map the entire range in a
-	   single iomap.
+>> 
+>> ->iomap_end
+>> ^^^^^^^^^^^^^^^^^
+>> 
+>> Commit and/or unreserve space which was previously allocated/reserved
+>> in ``->iomap_begin``. For e.g. during buffered-io, when a short writes
+>> occurs, filesystem may need to remove the reserved space that was
+>> allocated during ->iomap_begin.
+>> For filesystems that use delalloc allocation, we may need to punch out
+>> delalloc extents from the range that are not dirty in
+>> the page cache. See comments in
+>> iomap_file_buffered_write_punch_delalloc() for more info [5][6].
+>> 
+>> (IMHO) I find above definitions more descriptive.
+>
+> I don't want to merge the general description with pagecache specific
+> areas.  They already cover punch_delalloc.
+>
 
-XFS implements these semantics for internal locks and operations
-needed for mapping operations, and any filesystem that uses iomap
--should- be doing the same thing.
+sure.
 
-> > and we get away with
-> > it because blocking on it under constraints we generally perform RWF_NOWAIT
-> > IO is exceedingly rare.
-> 
-> I hate this flag's undocumented nature.  It now makes *documenting*
-> things around it hard.  How about:
+>> > +
+>> > +Each iomap operation describes the requested operation through the
+>> > +``flags`` argument.
+>> > +The exact value of ``flags`` will be documented in the
+>> > +operation-specific sections below, but these principles apply generally:
+>> > +
+>> > + * For a write operation, ``IOMAP_WRITE`` will be set.
+>> > +   Filesystems must not return ``IOMAP_HOLE`` mappings.
+>> > +
+>> > + * For any other operation, ``IOMAP_WRITE`` will not be set.
+>> > +
+>> 
+>> Direct-io related operation which bypasses pagecache use IOMAP_DIRECT.
+>
+> That's covered in the pagecache/directio/dax subsection because I wanted
+> to document specific combinations that filesystem authors should expect.
+>
 
-But it is documented.
+The points mentioned above were targetting buffered-io, dax, so I
+thought we could add direct-io related flag as well here.
 
-RWF_NOWAIT (since Linux 4.14)
+>> > + * For any operation targetting direct access to storage (fsdax),
+>> > +   ``IOMAP_DAX`` will be set.
+>> > +
+>> > +If it is necessary to read existing file contents from a `different
+>> > +<https://lore.kernel.org/all/20191008071527.29304-9-hch@lst.de/>`_ device or
+>> > +address range on a device, the filesystem should return that information via
+>> > +``srcmap``.
+>> > +Only pagecache and fsdax operations support reading from one mapping and
+>> > +writing to another.
+>> > +
+>> > +After the operation completes, the ``->iomap_end`` function, if present,
+>> > +is called to signal that iomap is finished with a mapping.
+>> > +Typically, implementations will use this function to tear down any
+>> > +context that were set up in ``->iomap_begin``.
+>> > +For example, a write might wish to commit the reservations for the bytes
+>> > +that were operated upon and unreserve any space that was not operated
+>> > +upon.
+>> > +``written`` might be zero if no bytes were touched.
+>> > +``flags`` will contain the same value passed to ``->iomap_begin``.
+>> > +iomap ops for reads are not likely to need to supply this function.
+>> > +
+>> > +Both functions should return a negative errno code on error, or zero.
+>> 
+>> minor nit: ... or zero on success.
+>
+> done.
+>
+>> > +
+>> > +struct iomap
+>> > +------------
+>> > +
+>> > +The filesystem returns the mappings via the following structure.
+>> 
+>> Filesystem returns the contiguous file mapping information of logical
+>> file offset range to a physically mapped extent via the following
+>> structure which iomap uses to perform various file and pagecache
+>> related operations listed above.
+>
+> How about:
+>
+> "The filesystem communicates to iomap operations the mappings of byte
+> ranges of a file to byte ranges of a storage device with the structure
+> below."
+>
 
-      Do not wait for data which is not immediately available.  If
-      this flag is specified, the preadv2() system call will return
-      instantly if  it  would have  to  read data from the backing
-      storage or wait for a lock. [...]
+Sounds good.
 
-Yes, not well documented. But the *intent* is clear. It's basically
-the same thing as O_NONBLOCK:
+>> > +For documentation purposes, the structure has been reordered to group
+>> > +fields that go together logically.
+>> > +
+>> > +.. code-block:: c
+>> > +
+>> > + struct iomap {
+>> > +     loff_t                       offset;
+>> > +     u64                          length;
+>> > +
+>> > +     u16                          type;
+>> > +     u16                          flags;
+>> > +
+>> > +     u64                          addr;
+>> > +     struct block_device          *bdev;
+>> > +     struct dax_device            *dax_dev;
+>> > +     void                         *inline_data;
+>> > +
+>> > +     void                         *private;
+>> > +
+>> > +     const struct iomap_folio_ops *folio_ops;
+>> > +
+>> > +     u64                          validity_cookie;
+>> > + };
+>> > +
+>> > +The information is useful for translating file operations into action.
+>> > +The actions taken are specific to the target of the operation, such as
+>> > +disk cache, physical storage devices, or another part of the kernel.
+>> 
+>> I think the wording "action" & trying to make it so generic w/o mapping
+>> what "action" refers here for "disk cache", "physical storage device" or
+>> "other parts of the kernel", gets a bit confusing.
+>> 
+>> Do you think we should map those to some examples maybe?
+>> BTW, with added definition of "struct iomap" which I mentioned above,
+>> I am even fine if we want to drop this paragraph. 
+>
+> Yeah, I'll delete the paragraph.
+>
+>> > +
+>> > + * ``offset`` and ``length`` describe the range of file offsets, in
+>> > +   bytes, covered by this mapping.
+>> > +   These fields must always be set by the filesystem.
+>> > +
+>> > + * ``type`` describes the type of the space mapping:
+>> 
+>> This field is set by the filesystem in ->iomap_begin call.
+>> 
+>> > +
+>> > +   * **IOMAP_HOLE**: No storage has been allocated.
+>> > +     This type must never be returned in response to an IOMAP_WRITE
+>> > +     operation because writes must allocate and map space, and return
+>> > +     the mapping.
+>> > +     The ``addr`` field must be set to ``IOMAP_NULL_ADDR``.
+>> > +     iomap does not support writing (whether via pagecache or direct
+>> > +     I/O) to a hole.
+>> > +
+>> > +   * **IOMAP_DELALLOC**: A promise to allocate space at a later time
+>> > +     ("delayed allocation").
+>> > +     If the filesystem returns IOMAP_F_NEW here and the write fails, the
+>> > +     ``->iomap_end`` function must delete the reservation.
+>> > +     The ``addr`` field must be set to ``IOMAP_NULL_ADDR``.
+>> > +
+>> > +   * **IOMAP_MAPPED**: The file range maps to specific space on the
+>> > +     storage device.
+>> > +     The device is returned in ``bdev`` or ``dax_dev``.
+>> > +     The device address, in bytes, is returned via ``addr``.
+>> > +
+>> > +   * **IOMAP_UNWRITTEN**: The file range maps to specific space on the
+>> > +     storage device, but the space has not yet been initialized.
+>> > +     The device is returned in ``bdev`` or ``dax_dev``.
+>> > +     The device address, in bytes, is returned via ``addr``.
+>> > +     Reads will return zeroes to userspace.
+>> 
+>> Reads to this type of mapping will return zeroes to the caller.
+>
+> Reads from this type of mapping, but yes.
+>
+>> > +     For a write or writeback operation, the ioend should update the
+>> > +     mapping to MAPPED.
+>> 
+>> Refer to section "Writeback ioend Completion" for more details.
+>
+> There are two here -- one for the pagecache, and one for directio.
+>
+>> > +
+>> > +   * **IOMAP_INLINE**: The file range maps to the memory buffer
+>> > +     specified by ``inline_data``.
+>> > +     For write operation, the ``->iomap_end`` function presumably
+>> > +     handles persisting the data.
+>> 
+>> Is it? Or do we just mark the inode as dirty?
+>
+> gfs2 actually starts a transaction in ->iomap_begin and commits or
+> cancels it in ->iomap_end.
+>
 
-O_NONBLOCK or O_NDELAY
-      When  possible,  the file is opened in nonblocking mode.
-      Neither the open() nor any subsequent I/O operations on the
-      file descriptor which is returned will cause the calling
-      process to wait.
+ok.
 
-That's what we are supposed to be implementing with IOCB_NOWAIT -
-don't block the submitting task if at all possible.
+>> > +     The ``addr`` field must be set to ``IOMAP_NULL_ADDR``.
+>> > +
+>> > + * ``flags`` describe the status of the space mapping.
+>> > +   These flags should be set by the filesystem in ``->iomap_begin``:
+>> > +
+>> > +   * **IOMAP_F_NEW**: The space under the mapping is newly allocated.
+>> > +     Areas that will not be written to must be zeroed.
+>> 
+>> In case of DAX, we have to invalidate those existing mappings which
+>> might have a "hole" page mapped.
+>
+> Isn't that an internal detail of the fs/dax.c code?  The filesystem
+> doesn't have to do the invalidation or even know about hole pages.
+>
 
-> "IOCB_NOWAIT: Neither this flag nor its associated definition
-> RWF_NOWAIT actually specify what this flag means.  Community
-> members seem to think that it means only proceed with the I/O if
-> it doesn't involve waiting for expensive operations.  XFS and ext4
-> appear to reject the IO unless the mapping data are already in
-> memory, the filesystem does not have to initiate other I/O, and
-> the kernel can acquire all filesystem locks without blocking."
+Right. Sorry about that. I assumed dax_iomap_rw() implementation
+is a part of iomap :)
 
-I think the passive-aggressive nature of this statement doesn't read
-very well. Blaming "community members" for organic code development
-that solved poorly defined, undocumented bleeding edge issues isn't
-a winning strategy. And other developers don't care about this; they
-just want to know what they should be implementing.
+>> > +     If a write fails and the mapping is a space reservation, the
+>> > +     reservation must be deleted.
+>> > +
+>> > +   * **IOMAP_F_DIRTY**: The inode will have uncommitted metadata needed
+>> > +     to access any data written.
+>> > +     fdatasync is required to commit these changes to persistent
+>> > +     storage.
+>> > +     This needs to take into account metadata changes that *may* be made
+>> > +     at I/O completion, such as file size updates from direct I/O.
+>> > +
+>> > +   * **IOMAP_F_SHARED**: The space under the mapping is shared.
+>> > +     Copy on write is necessary to avoid corrupting other file data.
+>> > +
+>> > +   * **IOMAP_F_BUFFER_HEAD**: This mapping requires the use of buffer
+>> > +     heads for pagecache operations.
+>> > +     Do not add more uses of this.
+>> > +
+>> > +   * **IOMAP_F_MERGED**: Multiple contiguous block mappings were
+>> > +     coalesced into this single mapping.
+>> > +     This is only useful for FIEMAP.
+>> > +
+>> > +   * **IOMAP_F_XATTR**: The mapping is for extended attribute data, not
+>> > +     regular file data.
+>> > +     This is only useful for FIEMAP.
+>> > +
+>> > +   * **IOMAP_F_PRIVATE**: Starting with this value, the upper bits can
+>> > +     be set by the filesystem for its own purposes.
+>> > +
+>> > +   These flags can be set by iomap itself during file operations.
+>> > +   The filesystem should supply an ``->iomap_end`` function to observe
+>> > +   these flags:
+>> > +
+>> > +   * **IOMAP_F_SIZE_CHANGED**: The file size has changed as a result of
+>> > +     using this mapping.
+>> > +
+>> > +   * **IOMAP_F_STALE**: The mapping was found to be stale.
+>> > +     iomap will call ``->iomap_end`` on this mapping and then
+>> > +     ``->iomap_begin`` to obtain a new mapping.
+>> > +
+>> > +   Currently, these flags are only set by pagecache operations.
+>> > +
+>> > + * ``addr`` describes the device address, in bytes.
+>> > +
+>> > + * ``bdev`` describes the block device for this mapping.
+>> > +   This only needs to be set for mapped or unwritten operations.
+>> > +
+>> > + * ``dax_dev`` describes the DAX device for this mapping.
+>> > +   This only needs to be set for mapped or unwritten operations, and
+>> > +   only for a fsdax operation.
+>> 
+>> Looks like we can make this union (bdev and dax_dev). Since depending
+>> upon IOMAP_DAX or not we only set either dax_dev or bdev.
+>
+> Separate patch. ;)
+>
 
-So let's just make a clear statement about the intent of
-IOCB_NOWAIT, because that is *always* been very clear right from the
-start, even though there was no way we could implement the intent
-right from the start.
+Yes, in a way I was trying to get an opinion from you and others on
+whether it make sense to make bdev and dax_dev as union :)
 
-"IOCB_NOWAIT: Perform a best effort attempt to avoid any operation
-that would result in blocking the submitting task. This is similar
-in intent to O_NONBLOCK for network APIs - it is intended for
-asynchronous applications to keep doing other work instead of
-waiting for the specific unavailable filesystem resource to become
-available.
+Looks like this series [1] could be the reason for that. 
 
-This means the filesystem implementing IOCB_NOWAIT semantics need to
-use trylock algorithms.  They need to be able to satisfy the entire
-IO request range in a single iomap mapping. They need to avoid
-reading or writing metadata synchronously. They need to avoid
-blocking memory allocations. They need to avoid waiting on
-transaction reservations to allow modifications to take place. And
-so on.
+[1]: https://lore.kernel.org/all/20211129102203.2243509-1-hch@lst.de/#t
 
-If there is any doubt in the filesystem developer's mind as to
-whether any specific IOCB_NOWAIT operation may end up blocking, then
-they should return -EAGAIN as early as possible rather than start
-the operation and force the submitting task to block."
+I also don't see any reference to dax code from fs/iomap/buffered-io.c
+So maybe we don't need this dax.h header in this file.
 
-This clearly documents the intent and what the submitters are
-expecting from filesystems when this flag is set. IT also tells
-filesystem implementers the way to handle IOCB_NOWAIT if they
-haven't actually coded any of this - abort at the top of the IO
-stack with -EAGAIN - and applications using this will work
-correctly.
+diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+index c5802a459334..e1a6cca3cec2 100644
+--- a/fs/iomap/buffered-io.c
++++ b/fs/iomap/buffered-io.c
+@@ -10,7 +10,6 @@
+ #include <linux/pagemap.h>
+ #include <linux/uio.h>
+ #include <linux/buffer_head.h>
+-#include <linux/dax.h>
+ #include <linux/writeback.h>
+ #include <linux/list_sort.h>
+ #include <linux/swap.h>
+ 
 
-> > >     Direct Writes
-> > > 
-> > >    A direct I/O write initiates a write I/O to the storage device to
-> > >    the caller's buffer. Dirty parts of the pagecache are flushed to
-> > >    storage before initiating the write io. The pagecache is
-> > >    invalidated both before and after the write io. The flags value
-> > >    for ->iomap_begin will be IOMAP_DIRECT | IOMAP_WRITE with any
-> > >    combination of the following enhancements:
-> > > 
-> > >        * IOMAP_NOWAIT: Write if mapping data are already in memory.
-> > >          Does not initiate other I/O or block on filesystem locks.
+>> Sorry Darrick. I will stop here for now.
+>> I will continue it from here later.
+>
+> Ok.  The rest of the doc will hopefully make it more obvious why there's
+> the generic discussion up here.
+>
 
-IOMAP_NOWAIT is not specific to direct IO. It is supported for both
-buffered reads and writes in iomap and XFS.
+Sure. I am going through it.
 
-It also tends to imply "don't allocate new blocks" for journalling
-filesysetms because that requires journal space reservation (which
-blocks), memory allocation, metadata creation and metadata IO.
-
-> > >        * IOMAP_OVERWRITE_ONLY: Allocating blocks and zeroing partial
-> > >          blocks is not allowed. The entire file range must to map to
-> > 							     ^^ extra "to"
-> > 
-> > >          a single written or unwritten extent. The file I/O range
-> > >          must be aligned to the filesystem block size.
-
-
-> > This seems to be XFS specific thing? At least I don't see anything in
-> > generic iomap code depending on this?
-> 
-> Hmm.  XFS bails out if the mapping is unwritten and the directio write
-> range isn't aligned to the fsblock size.
-
-I think that is wrong. IOMAP_OVERWRITE_ONLY is specifically for
-allowing unaligned IO to be performed without triggering allocation
-or sub-block zeroing. It requests a mapping to allow a pure
-overwrite to be performed, otherwise it fails.
-
-XFS first it checks if allocation is required. If so, it bails.
-
-Second it checks if the extent spans the range requested. If not, it
-bails.
-
-Finally, it checks if the extent is IOMAP_WRITTEN. If not, it bails.
-
-> I think the reason for that is
-> because we'd have to zero the unaligned regions outside of the write
-> range, and xfs can't do that without synchronizing.  (Or we didn't think
-
-Right, it enables an optimistic fast path for unaligned direct
-IOs. We take the i_rwsem shared, attempt the fast path, if it is
-rejected with -EAGAIN we drop the shared lock, take it exclusive
-and run the IO again without IOMAP_DIO_OVERWRITE_ONLY being set
-to allow allocation and/or sub-block zeroing to be performed.
-
-I think this needs to be written in terms of what a "pure overwrite"
-is. We use that term repeatedly in the iomap code (e.g. for FUA
-optimisations), and IOMAP_OVERWRITE_ONLY is a mechanism for the
-caller to ask "give me a pure overwrite mapping for this range or
-fail with -EAGAIN". This is the mechanism that provides the required
-IOMAP_DIO_OVERWRITE_ONLY semantics.
-
-
-"Pure Overwrite: A write operation that does not require any
-metadata or zeroing operations to perform during either submission
-or completion. This implies that the fileystem must have already
-allocated space on disk as IOMAP_WRITTEN and the filesystem must not
-place any constaints on IO alignment or size - the only constraints
-on IO alignment are device level (minimum IO size and alignment,
-typically sector size).
-
-IOMAP_DIO_OVERWRITE_ONLY: Perform a pure overwrite for this range or
-fail with -EAGAIN.
-
-This can be used by filesystems with complex unaligned IO
-write paths to provide an optimised fast path for unaligned writes.
-If a pure overwrite can be performed, then serialisation against
-other IOs to the same filesystem block(s) is unnecessary as there is
-no risk of stale data exposure or data loss.
-
-If a pure overwrite cannot be performed, then the filesystem can
-perform the serialisation steps needed to provide exclusive access
-to the unaligned IO range so that it can perform allocation and
-sub-block zeroing safely.
-
-IOMAP_OVERWRITE_ONLY: The caller requires a pure overwrite to be
-performed from this mapping. This requires the filesystem extent
-mapping to already exist as an IOMAP_MAPPED type and span the entire
-range of the write IO request. If the filesystem cannot map this
-request in a way that allows the iomap infrastructure to perform
-a pure overwrite, it must fail the mapping operation with -EAGAIN."
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+-ritesh
 
