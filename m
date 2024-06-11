@@ -1,249 +1,213 @@
-Return-Path: <linux-ext4+bounces-2852-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2854-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 49C1F903EB5
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 16:27:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5CC39040EC
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 18:12:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5060E1C22D1B
-	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 14:27:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5195D286E20
+	for <lists+linux-ext4@lfdr.de>; Tue, 11 Jun 2024 16:12:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B933817D896;
-	Tue, 11 Jun 2024 14:27:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 093843B2A1;
+	Tue, 11 Jun 2024 16:12:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="RTMCoK7u"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uWm/x20H"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-179.mta1.migadu.com (out-179.mta1.migadu.com [95.215.58.179])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9A3D17D37F
-	for <linux-ext4@vger.kernel.org>; Tue, 11 Jun 2024 14:27:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D82311720;
+	Tue, 11 Jun 2024 16:12:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718116044; cv=none; b=rl1PsnZrponDRPq9DqFwuAmZ25HGX7xUEYpEiS+qzXzWP+7sccMGuscsJ6TCL/q6GWM8omnfXSqsx6wiYdVbAOIedngFHG/1QjBF+9L5+t6mnHKjQINp67n1KDkGtw1VUrngd0vzgzPCLFfYniRM/4ep7lEqdmu1NXXM2AWm/4Q=
+	t=1718122337; cv=none; b=Zk4Obtfnoz8jwFqAIDPMYev5G/JLTOASPxM1OtaHQMLl6JmoHJJlMQ+yBC2vo1pAbQguZP4Y8cT+BsZO0jVNesC/QCVXVQz6WbS6lBsjlPR3cA41ofTAWkk7BkJ7WbSp8AblRsSqMZChG5H/UcXWuw7XbSszghDZVG9QMC82aCQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718116044; c=relaxed/simple;
-	bh=9OVLDd3Yu9UCiziiAvm9ItkzIFw1PjMJSxfOXYmGtgg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=FYGyJhiRk1F/tsU0TO8l+72kKLbPcpfQF7NNMeQzZO5tnMSiGLgePhHyWKlP/sLZXaNrTohhsTU7iAcD1IjqLPI8ACNGqj5YuZ0Ej/BSZJ3IXydizsoDjeQelmoX4LSPVYBPISkHub6AWgTUMoycuD4QDrJE3hxXTb3y8uFywkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=RTMCoK7u; arc=none smtp.client-ip=95.215.58.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: tytso@mit.edu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1718116039;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=W4+a1L/4As5eiy1DYW4abQi34HRzCHFF0qxZs0Epg74=;
-	b=RTMCoK7u48V8Bz1WH5IkzQ3kL4iwfxB/0GIA+nZ+uFN8rA+XyAbn60xcbxLvdIZEtptwVB
-	lxw8ddt5Ctx/hFZFidgMg3+8w82dGrRw7j8NVIKruHecSuKMnxMa4nKYeL7WD9FzGu4qhy
-	WwC1rMewTloGzYFwsuoJZALr6Ne2Nrg=
-X-Envelope-To: linux-ext4@vger.kernel.org
-X-Envelope-To: luis.henriques@linux.dev
-X-Envelope-To: adilger@dilger.ca
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger@dilger.ca>
-Cc: linux-ext4@vger.kernel.org,
-	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Subject: [PATCH 2/2] tests: new test to check that the orphan file is cleaned up
-Date: Tue, 11 Jun 2024 15:27:04 +0100
-Message-ID: <20240611142704.14307-3-luis.henriques@linux.dev>
-In-Reply-To: <20240611142704.14307-1-luis.henriques@linux.dev>
-References: <20240611142704.14307-1-luis.henriques@linux.dev>
+	s=arc-20240116; t=1718122337; c=relaxed/simple;
+	bh=VZ0o54UMcw140gZRar2GtS++P8hw9v8NeCtiUWYIIiw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DgQrkuGcIUzjCx8drlQz51ogIpWveny4qMFvoROkSzyalHVb4+fOI2Xigpz/xh21jgCZHyrqRFzj+hkjhw+uE+eIuxR9SEaV0+EhT391zmPbGmV0FSdhFsoFbHOqn6OljzUOmRYraRjqNMgsQeyEDbxg4Rk9X7L8eDfSnhYAxJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=uWm/x20H; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Jthpn0A2/AheIVgcEBsmw1C6QM5gdAWip+PnRxD96Do=; b=uWm/x20HC7l7eoUlhohfqUhpm6
+	jWAxPdTCXI0pSbEVlK2Lt64TbCI0B4rlztIx0VF1rLe6oU/r2beMUfwCjmN1WH63db13FufQAI4Ff
+	t+nMYrYzIN1ewn7LnFh9bi7yQtFFc0D7CuZWdj5A7fVH+gaXdOyLPg1TgxjoiFb/03Kq08Sx1JFxM
+	c3kH09dJZOaNNl3KRTNT2Ri9MVrmYlLRLCVqLurR8iLMARTU+EI+UJkob6lgGCpg+P1roQc+kEa98
+	AVA9XeK5k1wnCtRy9RsjW20ZP0J6oVU9KxKwUT/AOWM3/vW3c36YuCFObPjWl7FB6OVLHmyHJfw7+
+	w1qjpS0Q==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sH46X-00000009SX8-2xUq;
+	Tue, 11 Jun 2024 16:12:13 +0000
+Date: Tue, 11 Jun 2024 09:12:13 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
+	Matthew Wilcox <willy@infradead.org>,
+	Christian Brauner <brauner@kernel.org>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>,
+	Luis Chamberlain <mcgrof@kernel.org>
+Subject: Re: [PATCH] Documentation: document the design of iomap and how to
+ port
+Message-ID: <Zmh3XTDLM1TToQ2g@infradead.org>
+References: <20240608001707.GD52973@frogsfrogsfrogs>
+ <ZmVNblggFRgR8bnJ@infradead.org>
+ <20240609155506.GT52987@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240609155506.GT52987@frogsfrogsfrogs>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-This test verifies that e2fsck clears the orphan file if it is present.
-The filesystem was created by simply creating a bunch of empty files and,
-while those files were open by an application, delete some of them in
-order to add them to the orphan file.  After this, the filesystem is
-simply powered off.  An e2fsck will need to clear the orphaned inodes but
-also to clean the orphan file.
+On Sun, Jun 09, 2024 at 08:55:06AM -0700, Darrick J. Wong wrote:
+> HTML version here, text version below.
 
-Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
----
- tests/f_clear_orphan_file/expect.1 |  35 +++++++++++++++++++++++++++++
- tests/f_clear_orphan_file/expect.2 |   7 ++++++
- tests/f_clear_orphan_file/image.gz | Bin 0 -> 12449 bytes
- tests/f_clear_orphan_file/name     |   1 +
- tests/f_clear_orphan_file/script   |   2 ++
- 5 files changed, 45 insertions(+)
- create mode 100644 tests/f_clear_orphan_file/expect.1
- create mode 100644 tests/f_clear_orphan_file/expect.2
- create mode 100644 tests/f_clear_orphan_file/image.gz
- create mode 100644 tests/f_clear_orphan_file/name
- create mode 100644 tests/f_clear_orphan_file/script
+That is so much nicer than all the RST stuff..
 
-diff --git a/tests/f_clear_orphan_file/expect.1 b/tests/f_clear_orphan_file/expect.1
-new file mode 100644
-index 000000000000..281b131cbba0
---- /dev/null
-+++ b/tests/f_clear_orphan_file/expect.1
-@@ -0,0 +1,35 @@
-+test_filesys: recovering journal
-+Clearing orphaned inode 13 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 14 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 15 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 16 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 17 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 18 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 19 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 20 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 21 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 22 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 23 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 24 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 25 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 26 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 27 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 28 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 29 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 30 (uid=0, gid=0, mode=0100644, size=0)
-+Clearing orphaned inode 31 (uid=0, gid=0, mode=0100644, size=0)
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+Free inodes count wrong (2055, counted=2005).
-+Fix? yes
-+
-+Orphan file (inode 12) block 0 is not clean.
-+Clear? yes
-+
-+
-+test_filesys: ***** FILE SYSTEM WAS MODIFIED *****
-+test_filesys: 43/2048 files (2.3% non-contiguous), 1650/8192 blocks
-+Exit status is 1
-diff --git a/tests/f_clear_orphan_file/expect.2 b/tests/f_clear_orphan_file/expect.2
-new file mode 100644
-index 000000000000..f719dbbaad08
---- /dev/null
-+++ b/tests/f_clear_orphan_file/expect.2
-@@ -0,0 +1,7 @@
-+Pass 1: Checking inodes, blocks, and sizes
-+Pass 2: Checking directory structure
-+Pass 3: Checking directory connectivity
-+Pass 4: Checking reference counts
-+Pass 5: Checking group summary information
-+test_filesys: 43/2048 files (2.3% non-contiguous), 1650/8192 blocks
-+Exit status is 0
-diff --git a/tests/f_clear_orphan_file/image.gz b/tests/f_clear_orphan_file/image.gz
-new file mode 100644
-index 0000000000000000000000000000000000000000..c93cf754ddbe02dfad966364cc943a3824052cce
-GIT binary patch
-literal 12449
-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
-zVUE>1vW022*gf0lf%0A{Dt;i0#JDGGdCGJ$BPgn8`k0UDhRu56MK54axk_3R_O<Bb
-zuWERf)jUX<t8;Fd-zz%`H;_+r74?!HK6)3cG=6d-9d5Y}zF7oysep#h7zF3gLtzfw
-zSilGY32voD;Em=ar^RidV~^rfWCB-_hrXkgQ=j}SWy8wO$6<e3==eEmPtfd^E5nRK
-zllQ0IGX#6WvW@4a<oajmq6<KLpo7nQHN-mg@Y@0KHpvH5DXg2@EDbajPNt+w_sNg(
-z4#YE{nLQ)PLOM=_x>h@Bwf%2<ei;fk5HJw<4+K0{6_ZbLejd;w10%LRv6Dl!xB%<U
-zpAHfx0MPV{t*XEA%vOUvkT1C*_3HExkmbQL&d%KkmS-`T6?0y?FkO|2)7!`guGshK
-zgPX!SvM%UtVab7nr~25DAfjN!j>V&O08L~h@qL$XV`_Qz!R=S{Hs(6(4_NOn+M)m^
-zK>lNl-iAOamGH8q5BNIFe(*=A-pkz2Z}#w;iv^mMjozo`t{}0*|4NO%)Rt?JqVxL1
-zj|JFtf4z4Cp573ww{-{Yu&LDF_tbUO`Eb2W_BDeRslUQtM7(}|`RqvXRGPl%n5{@!
-zh~E2-7!Yjs#7z#!?`ptpy)%%1g5|gTKj1aE3<L}W3<L}W3<L}W3<L}W3<L}W3<L}W
-z3<L}W3<L}W3<L}W3<L}W3<Umu1g-)sY}L}ax|b^bDc>Lb^6%Gzq2j+2fyt#_i0Ho-
-IExNks-^UvQM*si-
+>    iomap is a filesystem library for handling various filesystem
+>    operations that involves mapping of file's logical offset ranges
+>    to physical extents. This origins of this library is the file I/O
+>    path that XFS once used; it has now been extended to cover several
+>    other operations. The library provides various APIs for
+>    implementing various file and pagecache operations, such as:
 
-literal 0
-HcmV?d00001
+Does anyone care about the origin?
 
-diff --git a/tests/f_clear_orphan_file/name b/tests/f_clear_orphan_file/name
-new file mode 100644
-index 000000000000..89ba2247f437
---- /dev/null
-+++ b/tests/f_clear_orphan_file/name
-@@ -0,0 +1 @@
-+clear orphan file
-diff --git a/tests/f_clear_orphan_file/script b/tests/f_clear_orphan_file/script
-new file mode 100644
-index 000000000000..2210e9ddc643
---- /dev/null
-+++ b/tests/f_clear_orphan_file/script
-@@ -0,0 +1,2 @@
-+FSCK_OPT=-y
-+. $cmd_dir/run_e2fsck
+> 
+>        * Pagecache reads and writes
+> 
+>        * Folio write faults to the pagecache
+> 
+>        * Writeback of dirty folios
+> 
+>        * Direct I/O reads and writes
+> 
+>        * FIEMAP
+> 
+>        * lseek SEEK_DATA and SEEK_HOLE
+> 
+>        * swapfile activation
+
+One useful bit might be that there are two layer in iomap.
+
+ 1) the very simply underlying layer in iter.c that just provides
+    a nicer iteration over logical file offsets
+ 2) anything built on top.  That's the things mentioned above plus
+    DAX.
+
+What is also kinda interesting as it keeps confusing people is that
+nothing in the iterator is block device specific.  In fact the DAX
+code now has no block device dependencies, as does the lseek and
+FIEMAP code.
+
+Because of that it might make sense to split this document up a bit
+for the different layers and libraries.  Or maybe not if too many
+documents are too confusing.
+
+>          2. For each sub-unit of work...
+> 
+>               1. Revalidate the mapping and go back to (1) above, if
+>                  necessary
+
+That's something only really done in the buffered write path.
+
+>    Each iomap operation will be covered in more detail below. This
+>    library was covered previously by an LWN article and a
+>    KernelNewbies page.
+
+Maybe these are links in other formats, but if not this information
+isn't very useful.  Depending on how old that information is it
+probably isn't even with links.
+
+>    The filesystem returns the mappings via the following structure.
+>    For documentation purposes, the structure has been reordered to
+>    group fields that go together logically.
+
+I don't think putting a different layout in here is a good idea.
+In fact duplicating the definition means it will be out of sync
+rather sooner than later.  Given that we have to deal with RST anyway
+we might as well want to pull this in as kerneldoc comments.
+And maybe reorder the actual definition while we're at it,
+as the version below still packs nicely.
+
+>      struct block_device          *bdev;
+>      struct dax_device            *dax_dev;
+>      void                         *inline_data;
+
+Note: The could become a union these days.  I tried years ago
+before fully decoupling the DAX code and that didn't work,
+but we should be fine now.
+
+>        * type describes the type of the space mapping:
+> 
+>             * IOMAP_HOLE: No storage has been allocated. This type
+>               must never be returned in response to an IOMAP_WRITE
+>               operation because writes must allocate and map space,
+>               and return the mapping. The addr field must be set to
+>               IOMAP_NULL_ADDR. iomap does not support writing
+>               (whether via pagecache or direct I/O) to a hole.
+
+...
+
+These should probably also be kerneldoc comments instead of being
+away from the definitions?
+
+> 
+>             * IOMAP_F_XATTR: The mapping is for extended attribute
+>               data, not regular file data. This is only useful for
+>               FIEMAP.
+
+.. and only used inside XFS.  Maybe we should look into killing it.
+
+>    These struct kiocb flags are significant for buffered I/O with
+>    iomap:
+> 
+>        * IOCB_NOWAIT: Only proceed with the I/O if mapping data are
+>          already in memory, we do not have to initiate other I/O, and
+>          we acquire all filesystem locks without blocking. Neither
+>          this flag nor its definition RWF_NOWAIT actually define what
+>          this flag means, so this is the best the author could come
+>          up with.
+
+I don't think that's true.  But if it feels true to you submitting
+a patch to describe it better is probably more helpful than this.
+
+>    iomap internally tracks two state bits per fsblock:
+> 
+>        * uptodate: iomap will try to keep folios fully up to date. If
+>          there are read(ahead) errors, those fsblocks will not be
+>          marked uptodate. The folio itself will be marked uptodate
+>          when all fsblocks within the folio are uptodate.
+> 
+>        * dirty: iomap will set the per-block dirty state when
+>          programs write to the file. The folio itself will be marked
+>          dirty when any fsblock within the folio is dirty.
+> 
+>    iomap also tracks the amount of read and write disk IOs that are
+>    in flight. This structure is much lighter weight than struct
+>    buffer_head.
+
+Is this really something that should go into an API documentation?
+
+Note that the structure not only is lighter weight than a buffer_head,
+but more importantly there are a lot less of them as there is only
+one per folio and not one per FSB.
+
+>   Why Convert to iomap?
+
+Make this a separate document?
+
 
