@@ -1,136 +1,180 @@
-Return-Path: <linux-ext4+bounces-2863-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2864-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DA0E904C29
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2024 08:59:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C56E4904D2C
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2024 09:54:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D4781F22EA0
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2024 06:59:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3456DB20FD2
+	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2024 07:54:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A41C168C35;
-	Wed, 12 Jun 2024 06:59:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 137C916C697;
+	Wed, 12 Jun 2024 07:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="M5ALtACs"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OAO4ftX0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="URvqdu35";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="OAO4ftX0";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="URvqdu35"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6760F12D1FE;
-	Wed, 12 Jun 2024 06:59:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4F872772A;
+	Wed, 12 Jun 2024 07:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718175541; cv=none; b=AhCJxzADbFpboMmp6xcwwJ6ZCXTbOeDxzwjHwJTDDl2QVX6fKxH9oljV65fA7A6+rXL0G5IAgsCqBcL9QaSCyVPrymDbH5QWIDkzVOCnm9IKRXgLEKyR/Bvml59dMuGE+nRsLmHFglvnSP6TN4WhHzz7qCqbYm8LKW2oZ6kZ8Q4=
+	t=1718178844; cv=none; b=IBJ1U3u67C6lEORaBpTGH2JnG9AG6Lj1u8IAGW9GDyPslwlDV4SgGGXf8YdVH7mRUl5qEVPkT1I7xsvBau+U/YBiKToSAoZBjm1aQRAvyRzYf5D5e10WTu6W6zr/ypjSv3VuX6kttRzcQFNNn05QwFWg81FPgtB0L86WfTCX5kk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718175541; c=relaxed/simple;
-	bh=P5/SKE5g4jbMVwxP3MuDPs2UW0aj74nxG9qED+xOExs=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=m0C2Ng1ewSsNJfuAwlpRIzgdXBJRgSL+m2tTR5bwCQzMR7dNZsUpAjaFo4DY7caD3UY9eLUhy5e4sE900rUFbcc/Ssb0Acdv8BeJFyqUjjJDWRLtzfbwlfkMzOOjoKvyzddUiBQkS6OO5/NfUpLVrol1Wd5wphzS1G8Qkyz2BAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=M5ALtACs; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1f480624d0dso16652505ad.1;
-        Tue, 11 Jun 2024 23:59:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1718175540; x=1718780340; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=tm/u9Q34O3UXQ3CActc83zLA5cchBEk8RtLpOuISpos=;
-        b=M5ALtACs+bB+9S8QUnmtTpTk+DRWG/lNP/mocCFn608ktPS9o2+xx6FJ3oNu3xTBcw
-         qc4Qq/Eyb7wdj+McfV3SHpL6QWYmCQ+tprD4nNqK1mVDi3iFTOosT4cGaVLZUJ0JCHJx
-         34JrpbgX0S8PmfZvvTn21WtOHp6+mFP2GjRa0RRXrpOBuydh7317YPMZzn+FFDlkqcPX
-         A9/pI4G+ckpK1bnfc1B/RORMbg7PIYK3czq/gdiE8kb5zhwMoz1vSX7chIWA+0aDvkdJ
-         6x3NEd5dG64WMW6r3GJCeCfgDOBBU9B/vetBB/bYs/Y+J9jwPDhOYBPFxlVXvH5dUxHS
-         bXXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718175540; x=1718780340;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=tm/u9Q34O3UXQ3CActc83zLA5cchBEk8RtLpOuISpos=;
-        b=JzrlED0YUljCYBY+U5Gi92rO9wdAYSsT8+j9by1fT35NpMHJcdODb3KppOfi22kUTR
-         zc16xzqk363OriSEcfqx+BK7+OZ5b3vSTCOoEMBE6cN5rKkjVeei3j9QF8KJzeVUm9yL
-         UBjvgvRajNNE+JcizgT1IBtUFXdR6+LyKpc3ZlDKM5tPOyfOsUSoxorW7D6yxq76qprv
-         UC7q4/2BjPS+6IuQz7wHoOTb82qlI0XMuD0hm/RT//Ls76UtUMsdnQGt9owXbDsT8GEh
-         CV8c+LjVPPJjOnEdyhxITzVmsv2IMhxe0gjNwv/wDf46ID1+ImIHaDXF2fI1/r/fvN+I
-         racA==
-X-Forwarded-Encrypted: i=1; AJvYcCXa70J+Erx5oluzCHygjPQ7h117hGqkogxnewQ5Go43pUdqsm134IQtg884s4On5uWKOwc/OA8T5tpSaU1dQNo4HdoXCJ0lfBF6n98Bi2BKy/3d59htpMgublMF34vaQfogI/vaLx8aKQ==
-X-Gm-Message-State: AOJu0YzVG600eKpFaFYFGwqhkKtA34JdVvKanTzi7AOcIiKQOrd4qmgN
-	W+Hyr5bIfevTQHb/drRFPIuFXvXaO1XOhCVXJdl8X3ktdsdlWMs7
-X-Google-Smtp-Source: AGHT+IGx6YGnpv1ijukiEX0Tkav2XBXoUlNs7fmZVpCEI7PogfG5/bjtdarvzsnVczvIJEo7O24HoA==
-X-Received: by 2002:a17:902:d4d2:b0:1f6:3750:527f with SMTP id d9443c01a7336-1f83b61329fmr11823495ad.31.1718175539674;
-        Tue, 11 Jun 2024 23:58:59 -0700 (PDT)
-Received: from dw-tp ([171.76.84.72])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1f71b9dec2bsm44576245ad.186.2024.06.11.23.58.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 11 Jun 2024 23:58:59 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>, Matthew Wilcox <willy@infradead.org>, Christoph Hellwig <hch@infradead.org>, Christian Brauner <brauner@kernel.org>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>, Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH] Documentation: document the design of iomap and how to port
-In-Reply-To: <20240611215049.GC52987@frogsfrogsfrogs>
-Date: Wed, 12 Jun 2024 12:25:47 +0530
-Message-ID: <871q52abv0.fsf@gmail.com>
-References: <20240608001707.GD52973@frogsfrogsfrogs> <874ja118g7.fsf@gmail.com> <20240610231111.GW52987@frogsfrogsfrogs> <875xug9dyt.fsf@gmail.com> <20240611215049.GC52987@frogsfrogsfrogs>
+	s=arc-20240116; t=1718178844; c=relaxed/simple;
+	bh=frjf2yRoYppskJEjgW+Fs4LD5DAGHLdgINmxMcprX20=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=chbQZr42GIVPSKoWrddr7eMILcL62GGcgyZFuN6AqCsh3mxlmr76wIZVrdIpBMDDS16MkMhBhggwk2YmDyP6d1OWBf56mKg9ALwakjDWu4R0WqMtbwrCfcYPI941egYakIZMWGfxXfzuRukJISU1AQQQC6DSmKNzs405lhD0sYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OAO4ftX0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=URvqdu35; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=OAO4ftX0; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=URvqdu35; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 139825BDB3;
+	Wed, 12 Jun 2024 07:54:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718178841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0nECO5VH26rvrWqSX/kqsFSBcBZ6QGhFggX3HCcXRKs=;
+	b=OAO4ftX0VHhGtesSCWGzzFz8W043mhdf8vCEcy/4gL+H7Hlctf0f68k6zL5FpdDggDKOGT
+	V/5CKx7Dr3GqVr+8BpeYc9nUn50x+N8HiIuqxM0oMorOyCQ7o7kQJ+nsUicUeSWINWyLL3
+	KoL7Pu9DhiNiHoimCa8mdgNE8hmeo3w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718178841;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0nECO5VH26rvrWqSX/kqsFSBcBZ6QGhFggX3HCcXRKs=;
+	b=URvqdu35GXkAcUSbpEvXU208bi5upvmGypa6CtyKaO2nkrb6jpV2J+xiHs887apYXUXiq5
+	p1apIeCxfrRh5wAQ==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718178841; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0nECO5VH26rvrWqSX/kqsFSBcBZ6QGhFggX3HCcXRKs=;
+	b=OAO4ftX0VHhGtesSCWGzzFz8W043mhdf8vCEcy/4gL+H7Hlctf0f68k6zL5FpdDggDKOGT
+	V/5CKx7Dr3GqVr+8BpeYc9nUn50x+N8HiIuqxM0oMorOyCQ7o7kQJ+nsUicUeSWINWyLL3
+	KoL7Pu9DhiNiHoimCa8mdgNE8hmeo3w=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718178841;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0nECO5VH26rvrWqSX/kqsFSBcBZ6QGhFggX3HCcXRKs=;
+	b=URvqdu35GXkAcUSbpEvXU208bi5upvmGypa6CtyKaO2nkrb6jpV2J+xiHs887apYXUXiq5
+	p1apIeCxfrRh5wAQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 827B91372E;
+	Wed, 12 Jun 2024 07:53:40 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id OlHOHwRUaWbcUQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 12 Jun 2024 07:53:40 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 554FCA0873; Wed, 12 Jun 2024 09:50:27 +0200 (CEST)
+Date: Wed, 12 Jun 2024 09:50:27 +0200
+From: Jan Kara <jack@suse.cz>
+To: Hugh Dickins <hughd@google.com>
+Cc: Yosry Ahmed <yosryahmed@google.com>,
+	syzbot <syzbot+9c1fe13fcb51574b249b@syzkaller.appspotmail.com>,
+	akpm@linux-foundation.org, chengming.zhou@linux.dev,
+	hannes@cmpxchg.org, linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org, nphamcs@gmail.com,
+	syzkaller-bugs@googlegroups.com, Jan Kara <jack@suse.cz>,
+	linux-ext4@vger.kernel.org
+Subject: Re: [syzbot] [mm?] KMSAN: uninit-value in zswap_store
+Message-ID: <20240612075027.5pzkkovaewtx63n5@quack3>
+References: <000000000000d0f165061a6754c3@google.com>
+ <CAJD7tkaTQU1Kxt935fmq+_BJd-VT6vKFj58o7Aq+QhoyrOtCmw@mail.gmail.com>
+ <02a21a55-8fe3-a9eb-f54b-051d75ae8335@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <02a21a55-8fe3-a9eb-f54b-051d75ae8335@google.com>
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TAGGED_RCPT(0.00)[9c1fe13fcb51574b249b];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[google.com,syzkaller.appspotmail.com,linux-foundation.org,linux.dev,cmpxchg.org,vger.kernel.org,kvack.org,gmail.com,googlegroups.com,suse.cz];
+	TO_DN_SOME(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Flag: NO
+X-Spam-Score: -2.30
+X-Spam-Level: 
 
-"Darrick J. Wong" <djwong@kernel.org> writes:
+On Tue 11-06-24 02:13:59, Hugh Dickins wrote:
+> On Mon, 10 Jun 2024, Yosry Ahmed wrote:
+> > Hugh, do you mind taking a quick look at whether this is a real bug?
+> > 
+> > If this is expected behavior, perhaps there is some annotation we can
+> > use in zswap that it is fine to encounter uninitialized data when
+> > reading the folio.
+> 
+> I've not been faced with a KMSAN report before, so I might well be
+> misunderstanding its language: but this looks like an ext4 "bug" to me.
+> 
+> I think the story that the three KMSAN stacks are telling is this:
+> syzbot has an ext4 filesystem on a loop device on a tmpfs file (I do
+> exactly that too); ext4 is doing some ext4_xattr_inode_write() business,
+> in the course of which it writes back a not-fully-initialized block to
+> the loop device; shmem faithfully copies that data into its pagecache,
+> then later when under memory pressure that page gets "written" out to
+> zswap: where zswap_is_page_same_filled() takes an interest in the data,
+> and KMSAN objects because some of it was not originally initialized.
+> 
+> If that's a correct interpretation, then it's probably not a big deal:
+> it's probably the uninitialized end of a buffer that's written out,
+> not any part of the "disk" which ext4 would ever show to a user; but
+> I do agree with KMSAN that ext4 would do better to clear that area,
+> rather than accidentally storing someone else's super-secret info.
 
-> On Tue, Jun 11, 2024 at 12:13:22PM +0530, Ritesh Harjani wrote:
->> "Darrick J. Wong" <djwong@kernel.org> writes:
->> 
+Yes, that seems to be accurate.  ext4_xattr_inode_write() stores large
+extended attribute in the inode and we don't bother to zero out the tail of
+the block we use since we never access bytes beyond xattr size. Frankly I
+don't consider this a bug since the uninitialized bytes are never exposed
+to (unpriviledged) userspace. But I agree that out of pure precaution and
+because it doesn't cost much in terms of performance we could zero out the
+block tail.
 
-<snip>
->> >> > + * ``addr`` describes the device address, in bytes.
->> >> > +
->> >> > + * ``bdev`` describes the block device for this mapping.
->> >> > +   This only needs to be set for mapped or unwritten operations.
->> >> > +
->> >> > + * ``dax_dev`` describes the DAX device for this mapping.
->> >> > +   This only needs to be set for mapped or unwritten operations, and
->> >> > +   only for a fsdax operation.
->> >> 
->> >> Looks like we can make this union (bdev and dax_dev). Since depending
->> >> upon IOMAP_DAX or not we only set either dax_dev or bdev.
->> >
->> > Separate patch. ;)
->> >
->> 
->> Yes, in a way I was trying to get an opinion from you and others on
->> whether it make sense to make bdev and dax_dev as union :)
->> 
->> Looks like this series [1] could be the reason for that. 
->> 
->> [1]: https://lore.kernel.org/all/20211129102203.2243509-1-hch@lst.de/#t
->> 
->> I also don't see any reference to dax code from fs/iomap/buffered-io.c
->> So maybe we don't need this dax.h header in this file.
->> 
->> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
->> index c5802a459334..e1a6cca3cec2 100644
->> --- a/fs/iomap/buffered-io.c
->> +++ b/fs/iomap/buffered-io.c
->> @@ -10,7 +10,6 @@
->>  #include <linux/pagemap.h>
->>  #include <linux/uio.h>
->>  #include <linux/buffer_head.h>
->> -#include <linux/dax.h>
->>  #include <linux/writeback.h>
->>  #include <linux/list_sort.h>
->>  #include <linux/swap.h>
->
-> Yes, given that both you and hch have mentioned it, could one of you
-> send a cleanup series for that?
->
-
-Sure, Thanks Darrick and Christoph.
-I can queue this with my other work where I am improving iomap for
-indirect-block mapping, so that it will be easier to get testing done on
-all of this together.
-
--ritesh
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
