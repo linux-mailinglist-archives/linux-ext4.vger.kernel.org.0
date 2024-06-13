@@ -1,134 +1,111 @@
-Return-Path: <linux-ext4+bounces-2869-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2870-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19598905E4E
-	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2024 00:15:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7DA5C90619E
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2024 04:09:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C12EC1F22EEA
-	for <lists+linux-ext4@lfdr.de>; Wed, 12 Jun 2024 22:15:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1FEA61F22762
+	for <lists+linux-ext4@lfdr.de>; Thu, 13 Jun 2024 02:09:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE558129E64;
-	Wed, 12 Jun 2024 22:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0QF/wd0"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F36429CFE;
+	Thu, 13 Jun 2024 02:09:50 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E0112CCB7;
-	Wed, 12 Jun 2024 22:15:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A698510A0E
+	for <linux-ext4@vger.kernel.org>; Thu, 13 Jun 2024 02:09:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718230530; cv=none; b=RZQ7L2Qc3EH6+y1SCcfR3mDYa7ZXUHw/8FX0le+/80sQ1A2PdiS/HqsTI1C7M5vBF5/736CUDVPx1e4L0cCTeb5yWmxnUQFGaapnbXnNVlWPNZv9zgG0A/dbQILjZxjy0/HPxQ5j3Kc3XzgBeQ1zwharf4tHBPkXmu8UHpFMzn8=
+	t=1718244590; cv=none; b=lk7uFm0iAh8hO3js8mks6ngsyCbIUSnNEhvBKScU81GlB6CiycMwkefHVjAC4jHWJWgwjZk1T4pS8RtQ10ai2vKimyEQa3L1F5JkGNv78HXJzOBhWQdHaOhLZNyjomTcyE4ffS5WPuSldr5C1YFlBSXdlQXCUZToJoZCYKkIXSk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718230530; c=relaxed/simple;
-	bh=HkjRE2UD/HyNAkiUwt2idFnkUPqPqfT7itES3wF6rz8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SQcUgJbuq6VHDMoGAbYb3LO6LyI5XdTPOfRs4aRgXgosJapiX5OjlH5RZQAmVHZTfl9SCBLSinKWtIk0B+tbQEToVbgjX/OOGRL/3UVXepu6kZ4amWvMWPmFUSuIfaXBJ9tMQb4T1vkafObIuMyii8hSxNELXskP55cjOTvARAk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B0QF/wd0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB8C1C116B1;
-	Wed, 12 Jun 2024 22:15:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1718230529;
-	bh=HkjRE2UD/HyNAkiUwt2idFnkUPqPqfT7itES3wF6rz8=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=B0QF/wd08upyH08yWyfV1j/JgrbIRWNqPMlagcHqOfEpdMnZNkIpefE2UDx1v0SfP
-	 gO3I/4ezOTz+oUUMbYYXywxsWEg4HPA0WIWtTonEHjWOJ7GYcpFFfEIDF3J+ZG3KOv
-	 41akmdC6AuIRxOPBkcD/KshXKnI7Gh9lKErPEGPduvgHX/Nu4nAr9NppHvJr64QQN9
-	 PGBMht/B+nZliVe6lMQjDMKCEjWLdBLS066DMPTQFmdN70327lNohrizqp8kwq2sOt
-	 H1UutQJZGehvBQpAh3ZlFt5vpgZdC00komvqOCcrW9QGBWemFGISNJvJnx8xPetczD
-	 1OT/hioQg+CvA==
-Date: Wed, 12 Jun 2024 15:15:29 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, Dave Chinner <david@fromorbit.com>,
-	Matthew Wilcox <willy@infradead.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	Christian Brauner <brauner@kernel.org>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>,
-	Luis Chamberlain <mcgrof@kernel.org>
-Subject: Re: [PATCH] Documentation: document the design of iomap and how to
- port
-Message-ID: <20240612221529.GM2764752@frogsfrogsfrogs>
-References: <20240608001707.GD52973@frogsfrogsfrogs>
- <874j9zahch.fsf@gmail.com>
- <20240611234745.GD52987@frogsfrogsfrogs>
- <8734piacp7.fsf@gmail.com>
+	s=arc-20240116; t=1718244590; c=relaxed/simple;
+	bh=BQ95PuknC4GlVPtxWcrk7r89yfPzQ0wXx0gTyMW/gTc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ZLOAQdrw7QjO7vMtVvWu+I12WkQicOic/Kkshm5HRnEAGMMtG9BUs85G52IVwT0NhHKkvWOs2Mtjo4ZCT02owOwm2ziujLRafMkFTjEDw1Om5d+5OWn3I2ye8r+pcOxeoZ5C2XOXKqI7I3IH04Cv20C/iJfMdRtWLNYqEdHXYWw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4W05Qs213mz1HDmc;
+	Thu, 13 Jun 2024 10:07:49 +0800 (CST)
+Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0A1871A0188;
+	Thu, 13 Jun 2024 10:09:45 +0800 (CST)
+Received: from [10.174.177.174] (10.174.177.174) by
+ dggpeml100021.china.huawei.com (7.185.36.148) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Thu, 13 Jun 2024 10:09:44 +0800
+Message-ID: <45251246-e24b-4ace-9b45-2efad65e8eb5@huawei.com>
+Date: Thu, 13 Jun 2024 10:09:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <8734piacp7.fsf@gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4/059: disable block_validity checks when mounting a
+ corrupted file system
+To: <zlang@kernel.org>, Theodore Ts'o <tytso@mit.edu>
+CC: Ext4 Developers List <linux-ext4@vger.kernel.org>,
+	<linux-fstests@mit.edu>, =?UTF-8?B?5p2o5LqM5Z2k?= <yangerkun@huawei.com>
+References: <20230823145621.3680601-1-tytso@mit.edu>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20230823145621.3680601-1-tytso@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ dggpeml100021.china.huawei.com (7.185.36.148)
 
-On Wed, Jun 12, 2024 at 12:07:40PM +0530, Ritesh Harjani wrote:
-> 
-> "Darrick J. Wong" <djwong@kernel.org> writes:
-> 
-> > On Tue, Jun 11, 2024 at 04:15:02PM +0530, Ritesh Harjani wrote:
-> >> 
-> >> Hi Darrick,
-> >> 
-> >> Resuming my review from where I left off yesterday.
-> >
-> 
-> <snip>
-> >> > +Writes
-> >> > +~~~~~~
-> >> > +
-> >> > +The ``iomap_file_buffered_write`` function writes an ``iocb`` to the
-> >> > +pagecache.
-> >> > +``IOMAP_WRITE`` or ``IOMAP_WRITE`` | ``IOMAP_NOWAIT`` will be passed as
-> >> > +the ``flags`` argument to ``->iomap_begin``.
-> >> > +Callers commonly take ``i_rwsem`` in either shared or exclusive mode.
-> >> 
-> >> shared(e.g. aligned overwrites) 
-> >
-> 
-> Ok, I see we were in buffered I/O section (Sorry, I misunderstood
-> thinking this was for direct-io)
+Hi Zorro,
 
-Aha.  I'll change these headings to "Buffered Readahead and Reads" and
-"Buffered Writes".
+Could you pick up this patch?
+This test case has been failing in the mainline for a while now.
 
-> > That's a matter of debate -- xfs locks out concurrent reads by taking
-> > i_rwsem in exclusive mode, whereas (I think?) ext4 and most other
-> > filesystems take it in shared mode and synchronizes readers and writers
-> > with folio locks.
-> 
-> Ext4 too takes inode lock in exclusive mode in case of
-> buffered-write. It's the DIO writes/overwrites in ext4 which has special
-> casing for shared/exclusive mode locking.
-> 
-> But ext4 buffered-read does not take any inode lock (it uses
-> generic_file_read_iter()). So the synchronization must happen via folio
-> lock w.r.t buffered-writes.
-> 
-> However, I am not sure if we have any filesystem taking VFS inode lock in
-> shared more for buffered-writes.
+Thanks,
+Baokun
 
-In theory you could if no other metadata needed updating, such as a dumb
-filesystem with fixed size files where timestamps don't matter.
+On 2023/8/23 22:56, Theodore Ts'o wrote:
+> Kernels with the commit "ext4: add correct group descriptors and
+> reserved GDT blocks to system zone" will refuse to mount the corrupted
+> file system constructed by this test.  So in order to perform the
+> test, we need to disable the block_validity checks.
+>
+> Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 
-> BTW -
-> I really like all of the other updates that you made w.r.t the review
-> comments. All of those looks more clear to me. (so not commenting on them
-> individually).
-> 
-> Thanks!
+Looks good to me, thanks for the patch!
 
-No, thank /you/ and everyone else for reading all the way through it.
-I'll finish cleaning things up and put out a v2.
+Reviewed-and-tested-by: Baokun Li <libaokun1@huawei.com>
 
---D
+> ---
+>   tests/ext4/059 | 5 +++++
+>   1 file changed, 5 insertions(+)
+>
+> diff --git a/tests/ext4/059 b/tests/ext4/059
+> index 4230bde92..e4af77f1e 100755
+> --- a/tests/ext4/059
+> +++ b/tests/ext4/059
+> @@ -31,6 +31,11 @@ $DEBUGFS_PROG -w -R "set_super_value s_reserved_gdt_blocks 100" $SCRATCH_DEV \
+>   $DEBUGFS_PROG -R "show_super_stats -h" $SCRATCH_DEV 2>/dev/null | \
+>   	grep "Reserved GDT blocks"
+>   
+> +# Kernels with the commit "ext4: add correct group descriptors and
+> +# reserved GDT blocks to system zone" will refuse to mount the file
+> +# system due to block_validity checks; so disable block_validity.
+> +MOUNT_OPTIONS="$MOUNT_OPTIONS -o noblock_validity"
+> +
+>   _scratch_mount
+>   
+>   # Expect no crash from this resize operation
 
-> -ritesh
-> 
+
+-- 
+With Best Regards,
+Baokun Li
+
 
