@@ -1,124 +1,184 @@
-Return-Path: <linux-ext4+bounces-2908-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2909-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF342910B36
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 18:07:25 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77F29911480
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 23:25:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 352F0287B0A
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 16:07:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EAC2281DE2
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 21:25:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 770221B143D;
-	Thu, 20 Jun 2024 16:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A10BB84A4D;
+	Thu, 20 Jun 2024 21:24:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="ZPvpPqKs"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FlQZkEWX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A281AF68A;
-	Thu, 20 Jun 2024 16:06:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F02FE78C8E;
+	Thu, 20 Jun 2024 21:24:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718899617; cv=none; b=XbSdTJcoRNSg4ajV3CH90y9gwnamyQrtDCISMYYBUWTRIbuuD81C0hw5iM3lSa9ZYi82VpvWHaO80BPpBBDQgkK2c7j+hFb2IvR79v3nZIMQHvwDgOoTPzify863KfXoQWiYAoEgmqNKNj/1iUMEjsindfnJd2WtrBZy27gufd0=
+	t=1718918643; cv=none; b=jn/TCGYywP8ZkBHVbXCG9rq1AOId25kJTTdgcQBspU2ydrNUymQYAXwXORkF4GxSo0Xw/cAcK2U1SFiZl47sflIACc8oMEg3rsNlEAI8+ScXTxxuH87xzAmYd4vxNwQkNvME6UNUj1LRQ4O9cqG4MrI0njeiUSaSFLRDRTVU3so=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718899617; c=relaxed/simple;
-	bh=zXbdU1oLq+AqkMmyeelEkii4gp4zKH4SF9MBqk8l1aQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=UykP50NTydc68TizzyBdNOSglWRZStahMMu0pmAzsO6wBmilTNzAZodFqZdGQ2uQ8fUSPEn5sDhygg8T+h++AsyBJBzLAoqqpK7PeQ0y0bxRD9RSo+ThW7TJLS4XdJjvPIei/mw2nBuHcFqA7jbKb1s7FxwDanLv6manHDOeM/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=ZPvpPqKs; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 45K9v8Dd029254;
-	Thu, 20 Jun 2024 16:06:45 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	cc:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=qcppdkim1; bh=
-	EPYPyP+Di0PB2m1ljCIq9SqCdLBOpOwq7ZjrKC+Akfs=; b=ZPvpPqKs2KHCPu5i
-	QREhhYMtDXaie3wT27IVyu3YdkmgoV4ZZZR1g/SyzPggLSKlj2XbpBeRMnrJ3/Wq
-	d1z/KsXxaESPT4p3gd2qm5RbMVtWwbSwfAPFPSjaA35EqRKSANZr9KbZMDLSaRek
-	TYlJPW8xBJW6SeoBNz/Sh7PsduY9usVA5i6O/DAB4RiqObx2QcAZCo1u6Z47Jj/+
-	KnNhR5ie6Jsm/3lL2p3DLz+uCr/uKN6cHQlFnfgVWAE+SNU6Mhl4p3FqGoSle+PT
-	rxbWFfcUzgVUXUb1zNojYR1X9sZpkaP8YqLVuniocSkPSU3HyEYvfX8WRA5bTWUT
-	fl52Zg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3yvabp1wf0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 20 Jun 2024 16:06:45 +0000 (GMT)
-Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
-	by NALASPPMTA01.qualcomm.com (8.17.1.19/8.17.1.19) with ESMTPS id 45KG6i9v031711
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 20 Jun 2024 16:06:44 GMT
-Received: from [10.81.24.74] (10.49.16.6) by nalasex01a.na.qualcomm.com
- (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.9; Thu, 20 Jun
- 2024 09:06:43 -0700
-Message-ID: <bbff5b14-75ae-4dc3-9aac-17afd4e92693@quicinc.com>
-Date: Thu, 20 Jun 2024 09:06:42 -0700
+	s=arc-20240116; t=1718918643; c=relaxed/simple;
+	bh=J2GqEQCdBgJeMDsHOUD3ggS0L8MaxCNWl/BVWnLRCW8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Klh52aQGeE2rm+1S/lVne1qMOtv44ALA3sso6+FQ0/MD+Xno5DrHOCaVgOaly34ujNaKTHct8zvolmUcuKjoAZjDGcZj+yR/foe+f0O2AGLNs0YsK+LGnZVQf6R3VfvgwTLkpHghJsYgUaN6KYGlv8Hu+64NrrIwdEgTCgS2QFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FlQZkEWX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 578C8C2BD10;
+	Thu, 20 Jun 2024 21:24:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1718918642;
+	bh=J2GqEQCdBgJeMDsHOUD3ggS0L8MaxCNWl/BVWnLRCW8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=FlQZkEWXuYjG3lBPD+CbeqHswxAsU7y4iss7QjmrwwSkTw2iU3E6o6btinmhwPHrD
+	 lSF/mb5wOLfVwxtjYYm93dMIUn1hfwPO7/uvnuUvaMGfIVTVH8Kn/kMXsydRkfKkKk
+	 +q9uKCYgckPzfqcC2uHLzy4ZEe1BFH/G9Q8G00qfYW4ZlnjgKp1D8f5mbTBTzHet3f
+	 KJRe02ZO01MDudREL9gtQdj64PgKYAVNDPPdkW0hXvesX4jdchaliSxKMN5OssSrSq
+	 Ecnj4xZ09k4NozRYTQARzo3zXOkrOETiUmVHdKRiMwF75ak/8AVeIkVdoL0kbhtqfE
+	 xzqtOujZzBqdw==
+Date: Thu, 20 Jun 2024 14:24:01 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, tytso@mit.edu, dchinner@redhat.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.com,
+	chandan.babu@oracle.com, hch@lst.de, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-xfs@vger.kernel.org, catherine.hoang@oracle.com,
+	ritesh.list@gmail.com, mcgrof@kernel.org,
+	mikulas@artax.karlin.mff.cuni.cz, agruenba@redhat.com,
+	miklos@szeredi.hu, martin.petersen@oracle.com
+Subject: Re: [PATCH v4 01/22] fs: Add generic_atomic_write_valid_size()
+Message-ID: <20240620212401.GA3058325@frogsfrogsfrogs>
+References: <20240607143919.2622319-1-john.g.garry@oracle.com>
+ <20240607143919.2622319-2-john.g.garry@oracle.com>
+ <20240612211040.GJ2764752@frogsfrogsfrogs>
+ <a123946e-1df2-48da-b120-67b50c3aa9f5@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] fs: ext4: add missing MODULE_DESCRIPTION()
-To: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
-        Christian Brauner <brauner@kernel.org>,
-        Alexander Viro
-	<viro@zeniv.linux.org.uk>, Jan Kara <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-        <kernel-janitors@vger.kernel.org>
-References: <20240527-md-fs-ext4-v1-1-07aad5936bb1@quicinc.com>
-Content-Language: en-US
-From: Jeff Johnson <quic_jjohnson@quicinc.com>
-In-Reply-To: <20240527-md-fs-ext4-v1-1-07aad5936bb1@quicinc.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01a.na.qualcomm.com (10.47.209.196)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: iEhmeQnKT_kDzTdiXLG0NGm9C5dm5tlb
-X-Proofpoint-ORIG-GUID: iEhmeQnKT_kDzTdiXLG0NGm9C5dm5tlb
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-06-20_07,2024-06-20_04,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 suspectscore=0
- phishscore=0 mlxscore=0 priorityscore=1501 spamscore=0 impostorscore=0
- lowpriorityscore=0 bulkscore=0 adultscore=0 mlxlogscore=999 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2405170001
- definitions=main-2406200116
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a123946e-1df2-48da-b120-67b50c3aa9f5@oracle.com>
 
-On 5/27/24 11:02, Jeff Johnson wrote:
-> Fix the 'make W=1' warning:
-> WARNING: modpost: missing MODULE_DESCRIPTION() in fs/ext4/ext4-inode-test.o
+On Thu, Jun 13, 2024 at 08:35:53AM +0100, John Garry wrote:
+> On 12/06/2024 22:10, Darrick J. Wong wrote:
+> > On Fri, Jun 07, 2024 at 02:38:58PM +0000, John Garry wrote:
+> > > Add a generic helper for FSes to validate that an atomic write is
+> > > appropriately sized (along with the other checks).
+> > > 
+> > > Signed-off-by: John Garry <john.g.garry@oracle.com>
+> > > ---
+> > >   include/linux/fs.h | 12 ++++++++++++
+> > >   1 file changed, 12 insertions(+)
+> > > 
+> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > > index 069cbab62700..e13d34f8c24e 100644
+> > > --- a/include/linux/fs.h
+> > > +++ b/include/linux/fs.h
+> > > @@ -3645,4 +3645,16 @@ bool generic_atomic_write_valid(loff_t pos, struct iov_iter *iter)
+> > >   	return true;
+> > >   }
+> > > +static inline
+> > > +bool generic_atomic_write_valid_size(loff_t pos, struct iov_iter *iter,
+> > > +				unsigned int unit_min, unsigned int unit_max)
+> > > +{
+> > > +	size_t len = iov_iter_count(iter);
+> > > +
+> > > +	if (len < unit_min || len > unit_max)
+> > > +		return false;
+> > > +
+> > > +	return generic_atomic_write_valid(pos, iter);
+> > > +}
+> > 
+> > Now that I look back at "fs: Initial atomic write support" I wonder why
+> > not pass the iocb and the iov_iter instead of pos and the iov_iter?
 > 
-> Signed-off-by: Jeff Johnson <quic_jjohnson@quicinc.com>
-> ---
->   fs/ext4/inode-test.c | 1 +
->   1 file changed, 1 insertion(+)
-> 
-> diff --git a/fs/ext4/inode-test.c b/fs/ext4/inode-test.c
-> index f0c0fd507fbc..749af7ad4e09 100644
-> --- a/fs/ext4/inode-test.c
-> +++ b/fs/ext4/inode-test.c
-> @@ -279,4 +279,5 @@ static struct kunit_suite ext4_inode_test_suite = {
->   
->   kunit_test_suites(&ext4_inode_test_suite);
->   
-> +MODULE_DESCRIPTION("KUnit test of ext4 inode timestamp decoding");
->   MODULE_LICENSE("GPL v2");
-> 
-> ---
-> base-commit: 2bfcfd584ff5ccc8bb7acde19b42570414bf880b
-> change-id: 20240527-md-fs-ext4-9d52d6959fb6
-> 
+> The original user of generic_atomic_write_valid() [blkdev_dio_unaligned() or
+> blkdev_dio_invalid() with the rename] used these same args, so I just went
+> with that.
 
-Adding core fs maintainers.
-Following up to see if anything else is needed to get this merged.
+Don't let the parameter types of static blockdev helpers determine the
+VFS API that filesystems need to implement untorn writes.
 
+In the block layer enablement patch, this could easily be:
+
+bool generic_atomic_write_valid(const struct kiocb *iocb,
+				const struct iov_iter *iter)
+{
+	size_t len = iov_iter_count(iter);
+
+	if (!iter_is_ubuf(iter))
+		return false;
+
+	if (!is_power_of_2(len))
+		return false;
+
+	if (!IS_ALIGNED(iocb->ki_pos, len))
+		return false;
+
+	return true;
+}
+
+Then this becomes:
+
+bool generic_atomic_write_valid_size(const struct kiocb *iocb,
+				     const struct iov_iter *iter,
+				     unsigned int unit_min,
+				     unsigned int unit_max)
+{
+	size_t len = iov_iter_count(iter);
+
+	if (len < unit_min || len > unit_max)
+		return false;
+
+	return generic_atomic_write_valid(iocb, iter);
+}
+
+Yes, that means you have to rearrange the calling conventions of
+blkdev_dio_invalid a little bit, but the first two arguments match
+->read_iter and ->write_iter.  Filesystem writers can see that the first
+two arguments are the first two parameters to foofs_write_iter() and
+focus on the hard part, which is figuring out unit_{min,max}.
+
+static ssize_t
+xfs_file_dio_write(
+	struct kiocb		*iocb,
+	struct iov_iter		*from)
+{
+...
+	if ((iocb->ki_flags & IOCB_ATOMIC) &&
+	    !generic_atomic_write_valid_size(iocb, from,
+			i_blocksize(inode),
+			XFS_FSB_TO_B(mp, ip->i_extsize)))
+		return -EINVAL;
+	}
+
+
+> > And can these be collapsed into a single generic_atomic_write_checks()
+> > function?
+> 
+> bdev file operations would then need to use
+> generic_atomic_write_valid_size(), and there is no unit_min and unit_max
+> size there, apart from bdev awu min and max. And if I checked them, we would
+> be duplicating checks (of awu min and max) in the block layer.
+
+Fair enough, I concede this point.
+
+--D
+
+> 
+> Cheers,
+> John
+> 
 
