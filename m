@@ -1,129 +1,75 @@
-Return-Path: <linux-ext4+bounces-2901-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2902-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F01D490FB8E
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 05:11:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E727690FB9C
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 05:19:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64D62283AB8
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 03:11:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 068B91C2155A
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 03:19:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20C2F1D555;
-	Thu, 20 Jun 2024 03:11:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="ZUxBfA6y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEFFB1CD2F;
+	Thu, 20 Jun 2024 03:19:37 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D52D1D52C
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Jun 2024 03:11:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF0402139C7
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Jun 2024 03:19:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718853065; cv=none; b=YzEYnotP8RZ1u7BtkyI2okumNAR7e2nVODRqMzfqLhY720vmXZioZUNFsGcElSJkaj3pXQ9l5Dls3ZYNPhTXFHIh4eOuKczon5h4iWuyknGfcKUBbxvkSrmH4XiWxF+gn+1KPx0hw6EAIq9Tfo4XiK1skHCcYMTHJjF3LJOR10U=
+	t=1718853577; cv=none; b=mdLHiwKQNNUkBScws611k68BKFUhT9C/2FhY5VYdrWKM1YLhaEITStUsZDLV/rvdTC3g4mhtYF79BYJ1vc6yiNbb1jwOpv4Zt54RjK/Tp/AeIEA1SvZdhT+pGhjBpv/PEkRDpdGOOsO67P9AzvthR4vZ6WqH/W7u5JwKmPjADmI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718853065; c=relaxed/simple;
-	bh=5p2AxTpd6a7PLUWBmgpHc9QVaSepe1mn04sFi4sCfs0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LjMW1M7j54u56h7m1OUTXp8MsdHYvneZ7HOT1MSTA+JDFAKi1kLkCoYh3nIXEGpPMzshhmfiTPVWNqso4jn7GivnAK/Jd2uNSO0sIKcPpQ2RthpVLe9LlcR1oJx07fvKkLphiUUpSuLP6Mwy2MQLWMoF8M8X6Bw3Ggad0gyfpmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=ZUxBfA6y; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-120-239.bstnma.fios.verizon.net [173.48.120.239])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 45K3AiwE018591
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 19 Jun 2024 23:10:45 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1718853047; bh=g7jNV9Cch3yWVsexAfH6zCU1DoH+Ax54DSdo/kLyfxE=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=ZUxBfA6y2N9fJZUSjlXGc3tKi4ncCs1jrgYZtLm39X37cEjMuFB8C98+lXHZbzIW9
-	 aJPv+0pYur2YYLa22Cf2Bwiz0rF71Sz6173g7mPjjbjTJ2b9aRs06Wak6dIcpvzT6C
-	 6QFdxKUJ0CUKqjCUEEtTZ0RhUdWwJeG0ivhHhAZENIR/WXADkJQpJIzfpeSWr/xq+u
-	 NGMmqJN5IHLZFhm9tjCD/p4DEQM3JeBmDAZjo72nLaJutjo24TsBnfXMW6YM7BLUwU
-	 UYwExbBJHn8DiPzF66WSh+ydqlcepuBXlUTXsFpbWuIGMjrgjAM3mmz3rQcXZeUUwZ
-	 SoGOa63BCdKbg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 43DE615C0579; Wed, 19 Jun 2024 23:10:44 -0400 (EDT)
-Date: Wed, 19 Jun 2024 23:10:44 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Edward Adam Davis <eadavis@qq.com>
-Cc: syzbot+ee72b9a7aad1e5a77c5c@syzkaller.appspotmail.com,
-        adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-        syzkaller-bugs@googlegroups.com
-Subject: Re: [PATCH] ext4: fix deadlock in ext4_xattr_inode_iget
-Message-ID: <20240620031044.GB1553731@mit.edu>
-References: <000000000000163e1406152c6877@google.com>
- <tencent_9E9EB81B474B0E1B23256EBA05BB79332408@qq.com>
+	s=arc-20240116; t=1718853577; c=relaxed/simple;
+	bh=OAMtOat3YDKGPkX72MjjGeHsAQ4vVFE8dzrn+58BRP0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=lKLWcOxWtEuuBnSRm+Ta/fbZNAq4IubKPnTHyEFLhZUhyd6rq8hVJVyTnYHj+sYuG5fjKSXTiX882+XZ8d/Ct09ZsQzgWwAga8L6NRqCiOB65GkmKBwbgCUUtQP3fKGDf3TJY2YKke+lmH3IJoRltdMPd601AN9iQDIQmlpGxoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.214])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4W4QcH1YjNz1ytSh;
+	Thu, 20 Jun 2024 11:15:59 +0800 (CST)
+Received: from kwepemf200016.china.huawei.com (unknown [7.202.181.9])
+	by mail.maildlp.com (Postfix) with ESMTPS id 48CA21A016C;
+	Thu, 20 Jun 2024 11:19:32 +0800 (CST)
+Received: from [10.108.234.194] (10.108.234.194) by
+ kwepemf200016.china.huawei.com (7.202.181.9) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 20 Jun 2024 11:19:31 +0800
+Message-ID: <0c296005-c607-431d-a696-b5b165c83856@huawei.com>
+Date: Thu, 20 Jun 2024 11:19:30 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <tencent_9E9EB81B474B0E1B23256EBA05BB79332408@qq.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] jbd2: Add a comment for incorrect tag size
+To: Theodore Ts'o <tytso@mit.edu>, Wang Jianjian <wangjianjian0@foxmail.com>
+CC: <linux-ext4@vger.kernel.org>
+References: <tencent_1D453DB77B0F2091CB4A68568A77627D4E08@qq.com>
+ <20240619233655.GC981794@mit.edu>
+Content-Language: en-US
+From: "wangjianjian (C)" <wangjianjian3@huawei.com>
+In-Reply-To: <20240619233655.GC981794@mit.edu>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ kwepemf200016.china.huawei.com (7.202.181.9)
 
-On Thu, Apr 04, 2024 at 09:54:02AM +0800, Edward Adam Davis wrote:
-> According to mark inode dirty context, it does not need to be protected by lock
-> i_data_sem, and if it is protected by i_data_sem, a deadlock will occur.
+On 2024/6/20 7:36, Theodore Ts'o wrote:
+> bd2: fix descriptor block size handling errors with journal_csum
+ > in 2016 --- a full eight years ago.  So it's probably not worth adding
+the comment at this point.
 
-The i_data_sem lock is not to protect mark_inode_dirty_context, but to
-avoid races with the writeback code, which you can see right before
-you added the down_write() line.
+Hi Ted,
+Thanks for detailed information, but is it better to put it in document 
+in case any other one confuse about this when read code.
+-- 
+Regards
 
-More detail about why it is necessary can be found in commit
-90e775b71ac4 ("ext4: fix lost truncate due to race with writeback"):
-
-    The following race can lead to a loss of i_disksize update from truncate
-    thus resulting in a wrong inode size if the inode size isn't updated
-    again before inode is reclaimed:
-    
-    ext4_setattr()                          mpage_map_and_submit_extent()
-      EXT4_I(inode)->i_disksize = attr->ia_size;
-      ...                                     ...
-                                              disksize = ((loff_t)mpd->first_page) << PAGE_CACHE_SHIFT
-                                              /* False because i_size isn't
-                                               * updated yet */
-                                              if (disksize > i_size_read(inode))
-                                              /* True, because i_disksize is
-                                               * already truncated */
-                                              if (disksize > EXT4_I(inode)->i_disksize)
-                                                /* Overwrite i_disksize
-                                                 * update from truncate */
-                                                ext4_update_i_disksize()
-      i_size_write(inode, attr->ia_size);
-    
-    For other places updating i_disksize such race cannot happen because
-    i_mutex prevents these races. Writeback is the only place where we do
-    not hold i_mutex and we cannot grab it there because of lock ordering.
-    
-    We fix the race by doing both i_disksize and i_size update in truncate
-    Atomically under i_data_sem and in mpage_map_and_submit_extent() we move
-    the check against i_size under i_data_sem as well.
-
-So your proposed fix would introduce a regression by re-enabling the
-bug which is fixed by commit 90e775b71ac4.
-
-In any case, as Andreas has pointed out, this is a false positive; the
-supposed deadlock involves an ea_inode in stack trace #0, whereas the
-stack trace #1 involves a write to a data inode.  Andreas has
-suggested fixing this by annotating the lock appropriately.  This case
-is not going to happen in real production systems today, since
-triggering it requires using the debugging mount option
-debug_want_extra_isize.
-
-So while it would be good to avoid the false positive lockdep warning,
-fixing this is a lower priority bug --- it certainly isn't security
-issue that syzbot developers like to point at when talking about the
-"Linux security disaster".  It isn't even a real production level bug!
-
-Cheers,
-
-      	       		  	     - Ted
 
