@@ -1,152 +1,236 @@
-Return-Path: <linux-ext4+bounces-2906-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2907-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED2B790FEBC
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 10:24:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EBD69100F4
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 11:59:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 95C8C1F229DA
-	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 08:24:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 952F61C21149
+	for <lists+linux-ext4@lfdr.de>; Thu, 20 Jun 2024 09:59:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4340619DF85;
-	Thu, 20 Jun 2024 08:23:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 284701A4F37;
+	Thu, 20 Jun 2024 09:59:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="di3po7sz";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+owO/IZr";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="JTDltsJX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wxPRfNuG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f207.google.com (mail-il1-f207.google.com [209.85.166.207])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 831E717D8A6
-	for <linux-ext4@vger.kernel.org>; Thu, 20 Jun 2024 08:23:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.207
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D11431A4F2B
+	for <linux-ext4@vger.kernel.org>; Thu, 20 Jun 2024 09:59:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718871807; cv=none; b=phrejTHqpmpO0M/E4yn9yZaSO+8b8g4MSp4bbqV0TonzRQ18INGhLIAxVB4886O7NUg3OBrIjhRI0sjEashLtc1JN1t2BQ+Gr+d2FI3WHsKJ7aM5Z1eTuxnPKgTd2C46J+VFhI2JNVvjX7dszJjo8o3YkEUsG1uzoCQOouWdE5U=
+	t=1718877552; cv=none; b=CN1ADXMIVVoQvpNggoNZl8FzfJmg3eM7TAxTrd/TCGIXGqIjDO6soshEVqgdirdQ1vgL9KblrsMhbaqplpSu/BgYIJQ/ituMT6e3Nzj821030Zfc6KuDofGid3rXdjgw7O1jLIFNiNy65z2/53oULMjUhgRIjCMnES4SoJAH60A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718871807; c=relaxed/simple;
-	bh=csVDR8kg7NwtMi5YPusScgBP25EglVp+lgFvYNFqgpw=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=dQPnwS57rchKKrj9gamGnyG95OJv9kvdwG6L/kOKzDoqsSMBgmJgkmgTI/BbEJNJPhI+PAwyLi6AicKXWh64Ps0U5q9EzlJqfih8lAeh9NAYSoqnxDsYkpNDuz8ilKq0XIyKA6XWPy/FZBRdBRrEJOujrqgArix/RsEGIJHL8LI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.207
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f207.google.com with SMTP id e9e14a558f8ab-37620c37ae8so6673615ab.2
-        for <linux-ext4@vger.kernel.org>; Thu, 20 Jun 2024 01:23:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1718871804; x=1719476604;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=7xjOp+wYL/pN3A6XRA46Brl74ey8lMmg1qP9IE4QUj0=;
-        b=bPoaCQErMCZqEHGYt+LZgtExaQ7iV22YdYoAkINXkL1ZTDhW/Qc/1/QLydIppJeQ8V
-         /MwNPlEG6hT69QPullUwH10iduQrpT4e/6qijY2xPfJd2L78PHx3yU2VzLZyoDDRygW1
-         CTxVgjoAWtNnauH9OT/e31EQCThCLNFp6P1ifIJ8pHnyPABwITPAlndlut46/NMAd3g8
-         naehupTPBFEn+UztXMHbgCU63LynfTzQoQFgWNgexqv39bcupY4Ai0/QquuqZE67B9U8
-         pV0fS6U07DgisHRU8IybHuGlYMexw28SW6o7JYnPcvzE4kU/rhlXv/hpiGMJhGDdZOZl
-         Y9ag==
-X-Forwarded-Encrypted: i=1; AJvYcCUqmkFEnl/mPdzL122Yd+oUFzMNdr4DrtxoH5yUtKXEhPbqUo3GyUOjTeZLeGRlWDxu04EnfWc3oKRdzjiSc8wTfw+oQ+wqFVn+Vg==
-X-Gm-Message-State: AOJu0YwRqoesMo9LYrL+4Vj2zO5jUOlwhDXrnj8T/fhmy2vuv+iBx4GC
-	X72X5HkUbj9DEOKUMbbAMiLFn+C4kgRxVWIR+F5WrVnAax1lNT+qrqhSWj/ZrDWag/czupcIOeQ
-	HTheHHVdnGlEVXMz1T1HO+me8iGJUmGJfk9zMm4mmX0zUj6IJt1kXgbE=
-X-Google-Smtp-Source: AGHT+IFxcdE8rH+VsUhG08w8ApM4MKNQDyWCo5jAxthJeWhn0KrCbETlKmxGXB45wd2ZrHaBLOjASnpzJwfTzKlP/s3oMnWZRUb2
+	s=arc-20240116; t=1718877552; c=relaxed/simple;
+	bh=b3gWZK5MNfdg2a7psQs0NA1IDTDa+R3ZzMDqTsKxLFM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Fg5QKZnBRnwXMuNGMas+EYBEmgIX3oyxnSgfovxoshAk3Vc+ju55kH4/Ca2Tcz3Su/cm2T+CXFnKRCP1hdMf0sf8O5fNN0RqOREMnnjzaG9gqG2qXBqZQAry9OCZgObtreZ66n5ZKlONV1TyBUrLuzrG/mLuwGrukG65j0E/A6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=di3po7sz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+owO/IZr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=JTDltsJX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wxPRfNuG; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id D45A321AAF;
+	Thu, 20 Jun 2024 09:59:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718877549; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rm55fNppXTeOpg1NCmBfj/ZZVx57E1fV7PwrxJbVU08=;
+	b=di3po7szTqy2M5I92qQSQlcnGUbA3mq+64DC+wycojJ2eHHsokWwLMbAmRweaPZQdtzTYQ
+	ln3NDEfsQb0SRtMZp1q5wC6q3L37xQRYXdmyWe/9p/woxZZuJX/fnHZHcsaBGQHFcmmkP6
+	parRhFJAlUqf/1NSlLq05RpC40v4I0M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718877549;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rm55fNppXTeOpg1NCmBfj/ZZVx57E1fV7PwrxJbVU08=;
+	b=+owO/IZrXYEwbqNc7BAs4BfN4eJTxRgYyxDS950fRXjNd2EHa6+HXWoPJGwmWGaECIQAWJ
+	yhhQ+BU5vi1KAlCw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=JTDltsJX;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wxPRfNuG
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1718877548; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rm55fNppXTeOpg1NCmBfj/ZZVx57E1fV7PwrxJbVU08=;
+	b=JTDltsJX95cX0G9tjmWuHD4HlcWdNR9dSYGXp6gr4Iu/4dh+NTO5kjIvfSi/kruJeUFo5m
+	tcqEklG7hcsvneO6G6XhlyPutpGBtf+y6j+d98q4Rsm//aJfCTrB1psEfuAL8rPrCaxeEy
+	iz0lUArONWGAk7EYiJBER1TxBwExveg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1718877548;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rm55fNppXTeOpg1NCmBfj/ZZVx57E1fV7PwrxJbVU08=;
+	b=wxPRfNuGjMgjMWNZU2BvJ2ggas3ycTNMiehS/dU20Mo8RK+DvIjJdE03lnz6PgjjD22DnH
+	745+IDbBXVo/5VBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C94D313AC1;
+	Thu, 20 Jun 2024 09:59:08 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xGchMWz9c2bgAgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 20 Jun 2024 09:59:08 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 81568A0881; Thu, 20 Jun 2024 11:59:04 +0200 (CEST)
+Date: Thu, 20 Jun 2024 11:59:04 +0200
+From: Jan Kara <jack@suse.cz>
+To: Ye Bin <yebin@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	jack@suse.cz, Ye Bin <yebin10@huawei.com>
+Subject: Re: [PATCH v4] jbd2: avoid mount failed when commit block is partial
+ submitted
+Message-ID: <20240620095904.65hwldqex4y4a266@quack3>
+References: <20240620072405.3533701-1-yebin@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:164e:b0:375:a40f:97d1 with SMTP id
- e9e14a558f8ab-3761d74fc47mr3396555ab.4.1718871802662; Thu, 20 Jun 2024
- 01:23:22 -0700 (PDT)
-Date: Thu, 20 Jun 2024 01:23:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000366469061b4e0781@google.com>
-Subject: [syzbot] [ext4?] KCSAN: data-race in __d_instantiate / lookup_fast (7)
-From: syzbot <syzbot+5757df85a1c108693de1@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240620072405.3533701-1-yebin@huaweicloud.com>
+X-Rspamd-Queue-Id: D45A321AAF
+X-Spam-Score: -4.01
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[6];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-Hello,
+On Thu 20-06-24 15:24:05, Ye Bin wrote:
+> From: Ye Bin <yebin10@huawei.com>
+> 
+> We encountered a problem that the file system could not be mounted in
+> the power-off scenario. The analysis of the file system mirror shows that
+> only part of the data is written to the last commit block.
+> The valid data of the commit block is concentrated in the first sector.
+> However, the data of the entire block is involved in the checksum calculation.
+> For different hardware, the minimum atomic unit may be different.
+> If the checksum of a committed block is incorrect, clear the data except the
+> 'commit_header' and then calculate the checksum. If the checkusm is correct,
+> it is considered that the block is partially committed, Then continue to replay
+> journal.
+> 
+> Signed-off-by: Ye Bin <yebin10@huawei.com>
 
-syzbot found the following issue on:
+Looks good. Feel free to add:
 
-HEAD commit:    e5b3efbe1ab1 Merge tag 'probes-fixes-v6.10-rc4' of git://g..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=11f67fca980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=704451bc2941bcb0
-dashboard link: https://syzkaller.appspot.com/bug?extid=5757df85a1c108693de1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Unfortunately, I don't have any reproducer for this issue yet.
+								Honza
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/aba434953b89/disk-e5b3efbe.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6c615db72106/vmlinux-e5b3efbe.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ec51cef20784/bzImage-e5b3efbe.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+5757df85a1c108693de1@syzkaller.appspotmail.com
-
-==================================================================
-BUG: KCSAN: data-race in __d_instantiate / lookup_fast
-
-read-write to 0xffff8881207d1d80 of 4 bytes by task 25805 on cpu 1:
- __d_instantiate+0x2cd/0x3c0 fs/dcache.c:1855
- d_instantiate_new+0x5c/0xf0 fs/dcache.c:1899
- ext4_mkdir+0x5e6/0x740 fs/ext4/namei.c:3047
- vfs_mkdir+0x1f4/0x320 fs/namei.c:4131
- do_mkdirat+0x12f/0x2a0 fs/namei.c:4154
- __do_sys_mkdir fs/namei.c:4174 [inline]
- __se_sys_mkdir fs/namei.c:4172 [inline]
- __x64_sys_mkdir+0x44/0x50 fs/namei.c:4172
- x64_sys_call+0x10d4/0x2d70 arch/x86/include/generated/asm/syscalls_64.h:84
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-read to 0xffff8881207d1d80 of 4 bytes by task 25807 on cpu 0:
- d_revalidate fs/namei.c:860 [inline]
- lookup_fast+0xd9/0x2a0 fs/namei.c:1641
- walk_component fs/namei.c:2000 [inline]
- link_path_walk+0x403/0x810 fs/namei.c:2331
- path_lookupat+0x72/0x2b0 fs/namei.c:2492
- filename_lookup+0x127/0x300 fs/namei.c:2522
- user_path_at_empty+0x42/0x120 fs/namei.c:2929
- user_path_at include/linux/namei.h:58 [inline]
- path_setxattr+0x60/0x1a0 fs/xattr.c:666
- __do_sys_setxattr fs/xattr.c:687 [inline]
- __se_sys_setxattr fs/xattr.c:683 [inline]
- __x64_sys_setxattr+0x6d/0x80 fs/xattr.c:683
- x64_sys_call+0x2957/0x2d70 arch/x86/include/generated/asm/syscalls_64.h:189
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-value changed: 0x00000000 -> 0x00280040
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 0 PID: 25807 Comm: syz-executor.4 Tainted: G        W          6.10.0-rc4-syzkaller-00052-ge5b3efbe1ab1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/07/2024
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> ---
+>  fs/jbd2/recovery.c | 30 ++++++++++++++++++++++++++++++
+>  1 file changed, 30 insertions(+)
+> 
+> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
+> index 1f7664984d6e..0d14b5f39be6 100644
+> --- a/fs/jbd2/recovery.c
+> +++ b/fs/jbd2/recovery.c
+> @@ -443,6 +443,27 @@ static int jbd2_commit_block_csum_verify(journal_t *j, void *buf)
+>  	return provided == cpu_to_be32(calculated);
+>  }
+>  
+> +static bool jbd2_commit_block_csum_verify_partial(journal_t *j, void *buf)
+> +{
+> +	struct commit_header *h;
+> +	__be32 provided;
+> +	__u32 calculated;
+> +	void *tmpbuf;
+> +
+> +	tmpbuf = kzalloc(j->j_blocksize, GFP_KERNEL);
+> +	if (!tmpbuf)
+> +		return false;
+> +
+> +	memcpy(tmpbuf, buf, sizeof(struct commit_header));
+> +	h = tmpbuf;
+> +	provided = h->h_chksum[0];
+> +	h->h_chksum[0] = 0;
+> +	calculated = jbd2_chksum(j, j->j_csum_seed, tmpbuf, j->j_blocksize);
+> +	kfree(tmpbuf);
+> +
+> +	return provided == cpu_to_be32(calculated);
+> +}
+> +
+>  static int jbd2_block_tag_csum_verify(journal_t *j, journal_block_tag_t *tag,
+>  				      journal_block_tag3_t *tag3,
+>  				      void *buf, __u32 sequence)
+> @@ -810,6 +831,13 @@ static int do_one_pass(journal_t *journal,
+>  			if (pass == PASS_SCAN &&
+>  			    !jbd2_commit_block_csum_verify(journal,
+>  							   bh->b_data)) {
+> +				if (jbd2_commit_block_csum_verify_partial(
+> +								  journal,
+> +								  bh->b_data)) {
+> +					pr_notice("JBD2: Find incomplete commit block in transaction %u block %lu\n",
+> +						  next_commit_ID, next_log_block);
+> +					goto chksum_ok;
+> +				}
+>  			chksum_error:
+>  				if (commit_time < last_trans_commit_time)
+>  					goto ignore_crc_mismatch;
+> @@ -824,6 +852,7 @@ static int do_one_pass(journal_t *journal,
+>  				}
+>  			}
+>  			if (pass == PASS_SCAN) {
+> +			chksum_ok:
+>  				last_trans_commit_time = commit_time;
+>  				head_block = next_log_block;
+>  			}
+> @@ -843,6 +872,7 @@ static int do_one_pass(journal_t *journal,
+>  					  next_log_block);
+>  				need_check_commit_time = true;
+>  			}
+> +
+>  			/* If we aren't in the REVOKE pass, then we can
+>  			 * just skip over this block. */
+>  			if (pass != PASS_REVOKE) {
+> -- 
+> 2.31.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
