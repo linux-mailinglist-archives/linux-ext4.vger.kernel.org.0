@@ -1,101 +1,67 @@
-Return-Path: <linux-ext4+bounces-2916-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2917-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 02130912D32
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2024 20:31:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BFCB912F53
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2024 23:19:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 301FAB27B7E
-	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2024 18:31:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FCCE1C21EA4
+	for <lists+linux-ext4@lfdr.de>; Fri, 21 Jun 2024 21:19:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53F421684AA;
-	Fri, 21 Jun 2024 18:31:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2324117C221;
+	Fri, 21 Jun 2024 21:18:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NCbsF8oT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0aCppgDq";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NCbsF8oT";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0aCppgDq"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C2j0J7XY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FBBB65F
-	for <linux-ext4@vger.kernel.org>; Fri, 21 Jun 2024 18:31:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 819C882488;
+	Fri, 21 Jun 2024 21:18:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1718994681; cv=none; b=qO4zmrpUelMpm+nG/Nt4Kq77f3YG9WBFjwqTsgPY3UPUBeRREFKLgjm/CC48ybIWVrS35jZC5R7+za4Rq9dJcpFUMYQUQtcNEojxHvMpTkKVSdXwCX7XjeuaGkw5wUp4OwmXeW0MaGboGhWP4GE2ZyrmNjz66vblJsRSI72XUQs=
+	t=1719004736; cv=none; b=XLxc8hf/fiEXdPzWiNgf939xviOEmWTQC4r07IiubiyqMp1GFvz+bqy9we1iACGmC6IrHUur7iSFISk51E1TsdfzNGxZrX/yj6lfZ7teDj0hC8OtisJ9GIN66sjhH4FyLRYcCzcHWVe+2UxM9w/+Gixrtwo7q5CR87daQKjAYys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1718994681; c=relaxed/simple;
-	bh=TbTT+dfp5l/22+/JRAI6d7UYwzyfXrDUjisHTsQ3LjU=;
+	s=arc-20240116; t=1719004736; c=relaxed/simple;
+	bh=sdtBjsr+XiHzFFwJkoRXFeC0FXv2NWldnm0I6mueIIk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZBLxhjStUDCyUui3IyxkQK3YUxjxifaiM3N4Ddf5eeHacXLrkHgzP2a2wi7IzyKxy6P4eu2R1F3sGJSBkbn9dbC9A/0bqokcu/7xXLn6WgEdjET39M7X0RhHMOjIs1csiB1/sdDTkMF5nWVFPCTYQGJXInyLmG2uD06ICXk3Azo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NCbsF8oT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0aCppgDq; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NCbsF8oT; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0aCppgDq; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9C97121B43;
-	Fri, 21 Jun 2024 18:31:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718994671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ewZ/afJNn47Tw7sxtmIADME91iCLFgZA9neHreVuKw=;
-	b=NCbsF8oTSX2vnktTMrpVZUmFcpd3QKjCUYFovoDd1WG3svgwgHcHL956ACLWqF6D70KQlp
-	JR7skNJE4t7Cf24o98+q00CRkAZmRjQqYOY378hNlDglj3A0Z2ziRVbEMKMUydpvTIeW82
-	vqJ2TD7q3/6bY/JeX1t+GPHuf9U3GJQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718994671;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ewZ/afJNn47Tw7sxtmIADME91iCLFgZA9neHreVuKw=;
-	b=0aCppgDqhBThlypSDWAuB2UWuHBOykSf1PJUWHue1d5oRI4H8+ZP/2GPlpY4VuO9UJAFQw
-	VVHiAPf0o1QCGzDg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1718994671; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ewZ/afJNn47Tw7sxtmIADME91iCLFgZA9neHreVuKw=;
-	b=NCbsF8oTSX2vnktTMrpVZUmFcpd3QKjCUYFovoDd1WG3svgwgHcHL956ACLWqF6D70KQlp
-	JR7skNJE4t7Cf24o98+q00CRkAZmRjQqYOY378hNlDglj3A0Z2ziRVbEMKMUydpvTIeW82
-	vqJ2TD7q3/6bY/JeX1t+GPHuf9U3GJQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1718994671;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=3ewZ/afJNn47Tw7sxtmIADME91iCLFgZA9neHreVuKw=;
-	b=0aCppgDqhBThlypSDWAuB2UWuHBOykSf1PJUWHue1d5oRI4H8+ZP/2GPlpY4VuO9UJAFQw
-	VVHiAPf0o1QCGzDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8F75A13ABD;
-	Fri, 21 Jun 2024 18:31:11 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id clD/Iu/GdWZIdQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 21 Jun 2024 18:31:11 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id EEA13A0829; Fri, 21 Jun 2024 18:33:13 +0200 (CEST)
-Date: Fri, 21 Jun 2024 18:33:13 +0200
-From: Jan Kara <jack@suse.cz>
-To: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, saukad@google.com,
-	harshads@google.com
-Subject: Re: [PATCH v6 02/10] ext4: for committing inode, make
- ext4_fc_track_inode wait
-Message-ID: <20240621163313.equbxelyeetrxb6w@quack3>
-References: <20240529012003.4006535-1-harshadshirwadkar@gmail.com>
- <20240529012003.4006535-3-harshadshirwadkar@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=WR5z5blMHzJtoxXcpisM5wY8e8yCZiOClBwBsipqyax4iP6z2LpVOGzazDL8mB5Jl0GLs/wFpGV41k0YENOPKd6Gem6cmSFxLB7EdlgZ1HSomhFffSSWm0IqM0j7QYwLkFLfdAY9jUNq3MLFLu2UH2XAHxP/LhDaOy5LAD/SDWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C2j0J7XY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7A1AC2BBFC;
+	Fri, 21 Jun 2024 21:18:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719004736;
+	bh=sdtBjsr+XiHzFFwJkoRXFeC0FXv2NWldnm0I6mueIIk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C2j0J7XYnglGPEiEziaR5oJH2YSHKc+/x1SlIkP213F7Ne1JnvVZgZz9tuky+Aasy
+	 6MZy17hsxxBt4Ba+DYJAqIhtz2nV+WGetvSA99yPiipqs9cjZNMOxbYaCNY3YcsAG0
+	 HiAHxsFtoKEI2Y+6IAExVu2LiF4RYYYqYVlTUskJEAe4ESUa+1W9M2nNkrGtq8huU5
+	 KngZUgVIh3zUgw0al2QnLAYMhYAn5jMED5Q0x25hq0a8LUy6zpZhsowQHWaCrSTxOb
+	 cM3OxhmkgUB0Xa8k/tYmqM7nB8FdZQtkPANImh5zh6pzmGKxfm6QB5LJGB/XggKl0D
+	 ynjuqanOQhjkg==
+Date: Fri, 21 Jun 2024 14:18:55 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: John Garry <john.g.garry@oracle.com>
+Cc: axboe@kernel.dk, tytso@mit.edu, dchinner@redhat.com,
+	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.com,
+	chandan.babu@oracle.com, hch@lst.de, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-erofs@lists.ozlabs.org, linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org, gfs2@lists.linux.dev,
+	linux-xfs@vger.kernel.org, catherine.hoang@oracle.com,
+	ritesh.list@gmail.com, mcgrof@kernel.org,
+	mikulas@artax.karlin.mff.cuni.cz, agruenba@redhat.com,
+	miklos@szeredi.hu, martin.petersen@oracle.com
+Subject: Re: [PATCH v4 02/22] iomap: Allow filesystems set IO block zeroing
+ size
+Message-ID: <20240621211855.GY3058325@frogsfrogsfrogs>
+References: <20240607143919.2622319-1-john.g.garry@oracle.com>
+ <20240607143919.2622319-3-john.g.garry@oracle.com>
+ <20240612213235.GK2764752@frogsfrogsfrogs>
+ <59255aa1-a769-437b-8fbb-71f53fd7920f@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -104,102 +70,250 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240529012003.4006535-3-harshadshirwadkar@gmail.com>
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Score: -3.80
-X-Spam-Level: 
+In-Reply-To: <59255aa1-a769-437b-8fbb-71f53fd7920f@oracle.com>
 
-On Wed 29-05-24 01:19:55, Harshad Shirwadkar wrote:
-> If the inode that's being requested to track using ext4_fc_track_inode
-> is being committed, then wait until the inode finishes the
-> commit. Also, add calls to ext4_fc_track_inode at the right places.
+On Thu, Jun 13, 2024 at 11:31:35AM +0100, John Garry wrote:
+> On 12/06/2024 22:32, Darrick J. Wong wrote:
+> > > unsigned int fs_block_size = i_blocksize(inode), pad;
+> > > +	u64 io_block_size = iomap->io_block_size;
+> > I wonder, should iomap be nice and not require filesystems to set
+> > io_block_size themselves unless they really need it?
 > 
-> With this patch, now calling ext4_reserve_inode_write() results in
-> inode being tracked for next fast commit. A subtle lock ordering
-> requirement with i_data_sem (which is documented in the code) requires
-> that ext4_fc_track_inode() be called before grabbing i_data_sem. So,
-> this patch also adds explicit ext4_fc_track_inode() calls in places
-> where i_data_sem grabbed.
+> That's what I had in v3, like:
 > 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> ---
->  fs/ext4/fast_commit.c | 34 ++++++++++++++++++++++++++++++++++
->  fs/ext4/inline.c      |  3 +++
->  fs/ext4/inode.c       |  4 ++++
->  3 files changed, 41 insertions(+)
+> if (iomap->io_block_size)
+> 	io_block_size = iomap->io_block_size;
+> else
+> 	io_block_size = i_block_size(inode)
 > 
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index a1aadebfcd66..fa93ce399440 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -581,6 +581,8 @@ static int __track_inode(struct inode *inode, void *arg, bool update)
->  
->  void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
->  {
-> +	struct ext4_inode_info *ei = EXT4_I(inode);
-> +	wait_queue_head_t *wq;
->  	int ret;
->  
->  	if (S_ISDIR(inode->i_mode))
-> @@ -598,6 +600,38 @@ void ext4_fc_track_inode(handle_t *handle, struct inode *inode)
->  	if (ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE))
->  		return;
->  
-> +	if (!test_opt2(inode->i_sb, JOURNAL_FAST_COMMIT) ||
-> +	    (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY) ||
-> +		ext4_test_mount_flag(inode->i_sb, EXT4_MF_FC_INELIGIBLE) ||
-> +		!list_empty(&ei->i_fc_list))
+> but it was suggested to change that (to like what I have here).
 
-Indentation here is wrong (we never indent conditions by the same amount as
-subsequent code block). Also EXT4_MF_FC_INELIGIBLE was just tested above so
-why repeat it and ext4_fc_disabled() tested the EXT4_FC_REPLAY and
-JOURNAL_FAST_COMMIT flags. So list_empty() should be the only thing needed
-here.
+oh, ok.  Ignore that comment, then. :)
 
-BTW a separate helper for ext4_fc_disabled() + EXT4_MF_FC_INELIGIBLE test
-would be a nice cleanup as it is a pattern happening in quite a few places.
+> > Anyone working on
+> > an iomap port while this patchset is in progress may or may not remember
+> > to add this bit if they get their port merged after atomicwrites is
+> > merged; and you might not remember to prevent the bitrot if the reverse
+> > order happens.
+> 
+> Sure, I get your point.
+> 
+> However, OTOH, if we check xfs_bmbt_to_iomap(), it does set all or close to
+> all members of struct iomap, so we are just continuing that trend, i.e. it
+> is the job of the FS callback to set all these members.
+> 
+> > 
+> > 	u64 io_block_size = iomap->io_block_size ?: i_blocksize(inode);
+> > 
+> > >   	loff_t length = iomap_length(iter);
+> > >   	loff_t pos = iter->pos;
+> > >   	blk_opf_t bio_opf;
+> > > @@ -287,6 +287,7 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+> > >   	int nr_pages, ret = 0;
+> > >   	size_t copied = 0;
+> > >   	size_t orig_count;
+> > > +	unsigned int pad;
+> > >   	if ((pos | length) & (bdev_logical_block_size(iomap->bdev) - 1) ||
+> > >   	    !bdev_iter_is_aligned(iomap->bdev, dio->submit.iter))
+> > > @@ -355,7 +356,14 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+> > >   	if (need_zeroout) {
+> > >   		/* zero out from the start of the block to the write offset */
+> > > -		pad = pos & (fs_block_size - 1);
+> > > +		if (is_power_of_2(io_block_size)) {
+> > > +			pad = pos & (io_block_size - 1);
+> > > +		} else {
+> > > +			loff_t _pos = pos;
+> > > +
+> > > +			pad = do_div(_pos, io_block_size);
+> > > +		}
+> > Please don't opencode this twice.
+> > 
+> > static unsigned int offset_in_block(loff_t pos, u64 blocksize)
+> > {
+> > 	if (likely(is_power_of_2(blocksize)))
+> > 		return pos & (blocksize - 1);
+> > 	return do_div(pos, blocksize);
+> > }
+> 
+> ok, fine
+> 
+> > 
+> > 		pad = offset_in_block(pos, io_block_size);
+> > 		if (pad)
+> > 			...
+> > 
+> > Also, what happens if pos-pad points to a byte before the mapping?
+> 
+> It's the job of the FS to map in something aligned to io_block_size. Having
+> said that, I don't think we are doing that for XFS (which sets io_block_size
+> > i_block_size(inode)), so I need to check that.
 
-> +		return;
-> +
-> +	/*
-> +	 * If we come here, we may sleep while waiting for the inode to
-> +	 * commit. We shouldn't be holding i_data_sem in write mode when we go
-> +	 * to sleep since the commit path needs to grab the lock while
-> +	 * committing the inode.
-> +	 */
-> +	WARN_ON(lockdep_is_held_type(&ei->i_data_sem, 1));
+<nod>  You can only play with the mapping that the fs gave you.
+If xfs doesn't give you a big enough mapping, then that's a programming
+bug to WARN_ON_ONCE about and return EIO.
 
-Actually even holding it in read mode is problematic. rwsems can block
-other readers from acquiring rwsem if there's some writer waiting to
-acquire the lock (and that will be blocked behind us). Shortly, this should
-be just lockdep_is_held().
+I hadn't realized that the ->iomap_begin function is required to
+provide mappings that are aligned to io_block_size.
 
-Otherwise the patch looks good.
+> 
+> > 
+> > > +
+> > >   		if (pad)
+> > >   			iomap_dio_zero(iter, dio, pos - pad, pad);
+> > >   	}
+> > > @@ -429,9 +437,16 @@ static loff_t iomap_dio_bio_iter(const struct iomap_iter *iter,
+> > >   	if (need_zeroout ||
+> > >   	    ((dio->flags & IOMAP_DIO_WRITE) && pos >= i_size_read(inode))) {
+> > >   		/* zero out from the end of the write to the end of the block */
+> > > -		pad = pos & (fs_block_size - 1);
+> > > +		if (is_power_of_2(io_block_size)) {
+> > > +			pad = pos & (io_block_size - 1);
+> > > +		} else {
+> > > +			loff_t _pos = pos;
+> > > +
+> > > +			pad = do_div(_pos, io_block_size);
+> > > +		}
+> > > +
+> > >   		if (pad)
+> > > -			iomap_dio_zero(iter, dio, pos, fs_block_size - pad);
+> > > +			iomap_dio_zero(iter, dio, pos, io_block_size - pad);
+> > What if pos + io_block_size - pad points to a byte after the end of the
+> > mapping?
+> 
+> as above, we expect this to be mapped in (so ok to zero)
+> 
+> > 
+> > >   	}
+> > >   out:
+> > >   	/* Undo iter limitation to current extent */
+> > > diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> > > index 378342673925..ecb4cae88248 100644
+> > > --- a/fs/xfs/xfs_iomap.c
+> > > +++ b/fs/xfs/xfs_iomap.c
+> > > @@ -127,6 +127,7 @@ xfs_bmbt_to_iomap(
+> > >   	}
+> > >   	iomap->offset = XFS_FSB_TO_B(mp, imap->br_startoff);
+> > >   	iomap->length = XFS_FSB_TO_B(mp, imap->br_blockcount);
+> > > +	iomap->io_block_size = i_blocksize(VFS_I(ip));
+> > >   	if (mapping_flags & IOMAP_DAX)
+> > >   		iomap->dax_dev = target->bt_daxdev;
+> > >   	else
+> > > diff --git a/fs/zonefs/file.c b/fs/zonefs/file.c
+> > > index 3b103715acc9..bf2cc4bee309 100644
+> > > --- a/fs/zonefs/file.c
+> > > +++ b/fs/zonefs/file.c
+> > > @@ -50,6 +50,7 @@ static int zonefs_read_iomap_begin(struct inode *inode, loff_t offset,
+> > >   		iomap->addr = (z->z_sector << SECTOR_SHIFT) + iomap->offset;
+> > >   		iomap->length = isize - iomap->offset;
+> > >   	}
+> > > +	iomap->io_block_size = i_blocksize(inode);
+> > >   	mutex_unlock(&zi->i_truncate_mutex);
+> > >   	trace_zonefs_iomap_begin(inode, iomap);
+> > > @@ -99,6 +100,7 @@ static int zonefs_write_iomap_begin(struct inode *inode, loff_t offset,
+> > >   		iomap->type = IOMAP_MAPPED;
+> > >   		iomap->length = isize - iomap->offset;
+> > >   	}
+> > > +	iomap->io_block_size = i_blocksize(inode);
+> > >   	mutex_unlock(&zi->i_truncate_mutex);
+> > >   	trace_zonefs_iomap_begin(inode, iomap);
+> > > diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> > > index 6fc1c858013d..d63a35b77907 100644
+> > > --- a/include/linux/iomap.h
+> > > +++ b/include/linux/iomap.h
+> > > @@ -103,6 +103,8 @@ struct iomap {
+> > >   	void			*private; /* filesystem private */
+> > >   	const struct iomap_folio_ops *folio_ops;
+> > >   	u64			validity_cookie; /* used with .iomap_valid() */
+> > > +	/* io block zeroing size, not necessarily a power-of-2  */
+> > size in bytes?
+> > 
+> > I'm not sure what "io block zeroing" means.
+> 
+> Naming is hard. Essentally we are trying to reuse the sub-fs block zeroing
+> code for sub-extent granule writes. More below.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Yeah.  For sub-fsblock zeroing we issue (chained) bios to write zeroes
+to the sectors surrounding the part we're actually writing, then we're
+issuing the write itself, and finally the ioend converts the mapping to
+unwritten.
+
+For untorn writes we're doing the same thing, but now on the level of
+multiple fsblocks.  I guess this is all going to support a 
+
+
+<nod> "IO granularity" ?  For untorn writes I guess you want mappings
+that are aligned to a supported untorn write granularity; for bs > ps
+filesystems I guess the IO granularity is 
+
+> > What are you trying to
+> > accomplish here?  Let's say the fsblock size is 4k and the allocation
+> > unit (aka the atomic write size) is 16k.
+> 
+> ok, so I say here that the extent granule is 16k
+> 
+> > Userspace wants a direct write
+> > to file offset 8192-12287, and that space is unwritten:
+> > 
+> > uuuu
+> >    ^
+> > 
+> > Currently we'd just write the 4k and run the io completion handler, so
+> > the final state is:
+> > 
+> > uuWu
+> > 
+> > Instead, if the fs sets io_block_size to 16384, does this direct write
+> > now amplify into a full 16k write?
+> 
+> Yes, but only when the extent is newly allocated and we require zeroing.
+> 
+> > With the end result being:
+> > ZZWZ
+> 
+> Yes
+> 
+> > 
+> > only.... I don't see the unwritten areas being converted to written?
+> 
+> See xfs_iomap_write_unwritten() change in the next patch
+> 
+> > I guess for an atomic write you'd require the user to write 0-16383?
+> 
+> Not exactly
+> 
+> > 
+> > <still confused about why we need to do this, maybe i'll figure it out
+> > as I go along>
+> 
+> This zeroing is just really required for atomic writes. The purpose is to
+> zero the extent granule for any write within a newly allocated granule.
+> 
+> Consider we have uuWu, above. If the user then attempts to write the full
+> 16K as an atomic write, the iomap iter code would generate writes for sizes
+> 8k, 4k, and 4k, i.e. not a single 16K write. This is not acceptable. So the
+> idea is to zero the full extent granule when allocated, so we have ZZWZ
+> after the 4k write at offset 8192, above. As such, if we then attempt this
+> 16K atomic write, we get a single 16K BIO, i.e. there is no unwritten extent
+> conversion.
+
+Wait, are we issuing zeroing writes for 0-8191 and 12288-16383, then
+issuing a single atomic write for 0-16383?  That won't work, because all
+the bios attached to an iomap_dio are submitted and execute
+asynchronously.  I think you need ->iomap_begin to do XFS_BMAPI_ZERO
+allocations if the writes aren't aligned to the minimum untorn write
+granularity.
+
+> I am not sure if we should be doing this only for atomic writes inodes, or
+> also forcealign only or RT.
+
+I think it only applies to untorn writes because the default behavior
+everywhere is is that writes can tear.
+
+--D
+
+> Thanks,
+> John
+> 
+> 
+> 
 
