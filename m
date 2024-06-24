@@ -1,164 +1,196 @@
-Return-Path: <linux-ext4+bounces-2939-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2943-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF98B9154EE
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 19:01:43 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 689DB915583
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 19:38:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA18B1C21164
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 17:01:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10AE01F24496
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 17:38:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD0319E837;
-	Mon, 24 Jun 2024 17:01:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6498819F461;
+	Mon, 24 Jun 2024 17:38:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Joz6ekNa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DFQTi1/1";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Joz6ekNa";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DFQTi1/1"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UYa8XJRC";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="u3wAtqUT";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oRuclHGm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="1SGPMFjt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEC413D539
-	for <linux-ext4@vger.kernel.org>; Mon, 24 Jun 2024 17:01:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 081D5FC08;
+	Mon, 24 Jun 2024 17:38:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719248491; cv=none; b=Sjl5ArivuKQqWQB0CCjnyU1BPeiN8AN+DvqyhZASprL0Jp2bv6xm304a3l5uN8zFZS4x4t6Mc0w6dMfVDSQHYT+mh4MxrbpXdARj3m9EmKDIGRIEtGyYbxfhqwbN3Lf0LK3I48Sr70iA+qxoFp3IFsh2UwIWJRMYU5nCUsmroh0=
+	t=1719250708; cv=none; b=MCk29OvD0f+PMNgNcc9Fx9QzVFqzrXXY3Tno6QVYo334UNgk19JYi0EqfI3NeM5GVKi7KetMiHXuZ5nv79azAEcZ6EWdNHu+96hKnGFPq+izrI41r5jqq2H94X4COhA0jbnJLEKU/0P+Sbv/C5dpdAJLZY7y6atpqFqrA5TE234=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719248491; c=relaxed/simple;
-	bh=P6evGZXLuehID/EfUdWutniFVl3nsabt5OFqBApHpWo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=CQ2TlLcfC9pvaCKCS1u8fNuUtpID3ipMZ8P246vhdVQvphTxfjXYaRYu+CqKEhFI7dgolIn3IVZPnKjvtr768QSdytgENOxXF8zxFJYBe1qnUwSG8d34Uh2LNkGmBnzSp6KWnJfMjAJvCMQBz/Mx/svsx/p3IduKn5xv/fzi6gs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Joz6ekNa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DFQTi1/1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Joz6ekNa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DFQTi1/1; arc=none smtp.client-ip=195.135.223.131
+	s=arc-20240116; t=1719250708; c=relaxed/simple;
+	bh=+K9TrWo+nrR5Bp1WKgmjEixh6h0x8NnnpUzq/8maT6Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bWR5tSBeqO3VFNwsAxYXAgpaYt7nmf2H5TXzEB+IBjLqOzPbuZ+MCWhHBhIIddgVVvS/GrrQUpK1iXw6JVXgE+qNWGt7jZTOSr9zZF4dMX5H4BXZUUmkezakUI/+2FpAw3Y/Z3I7V9cN6zHymZVC7Ci7zjVDNWrGZwD3x4f+nZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UYa8XJRC; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=u3wAtqUT; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oRuclHGm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=1SGPMFjt; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0CE9F1F83A;
-	Mon, 24 Jun 2024 17:01:28 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 868ED219B6;
+	Mon, 24 Jun 2024 17:38:23 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719248488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	t=1719250704; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
-	b=Joz6ekNaHoUZfDTHXrHdA55PxB5WQvYagRGXktGM8xe4K/iuwiHnQ4At7RgRea8BfJrh07
-	ZMqM5zJ2x3dYUn/9P7kepmzgTxQnydsrJWox5tO/wMOWfkzus0cAnEfhimhvNoUXrQMtkd
-	IypdSjnxbM0Gv26Ry/2dUDwHX7dNO7s=
+	bh=UkOmw9j/RdejhDDiZkoe7o0qMyio1yTKvDD8d7IQx2k=;
+	b=UYa8XJRCxb5KSk89TibhhcZRXqJ1vDw/jCbdboVB6xe8MqXE36rvDt4LJSDs1HtJ+prGlI
+	CZtqBd0fG0cJy0N49FeO/ml3eyf54/45K9yz7x5doZYBRc/V7Kx+J0hHXvNa6pjEvMG7Ut
+	h5KV/+uQDEDIDR+De81iZ+lNKEBbA+U=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719248488;
+	s=susede2_ed25519; t=1719250704;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
-	b=DFQTi1/1eB9KCzBk0wRsrrwFPS1RDaylz6MAC1SYB0VmREl8PNqB+bf3W8TZFLtzIkhRuh
-	DPC06EEsVEEQLZAg==
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=UkOmw9j/RdejhDDiZkoe7o0qMyio1yTKvDD8d7IQx2k=;
+	b=u3wAtqUTujMA+DPHMTByML3vWHST6IwEU7yHv+wgVLCK9yufJ+LlPP5Zv/jDghI90lg9WY
+	6BZu3uw4KoKtNNAw==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=oRuclHGm;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=1SGPMFjt
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719248488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	t=1719250703; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
-	b=Joz6ekNaHoUZfDTHXrHdA55PxB5WQvYagRGXktGM8xe4K/iuwiHnQ4At7RgRea8BfJrh07
-	ZMqM5zJ2x3dYUn/9P7kepmzgTxQnydsrJWox5tO/wMOWfkzus0cAnEfhimhvNoUXrQMtkd
-	IypdSjnxbM0Gv26Ry/2dUDwHX7dNO7s=
+	bh=UkOmw9j/RdejhDDiZkoe7o0qMyio1yTKvDD8d7IQx2k=;
+	b=oRuclHGmRQs+w6Uz+T2YVOYpROMjpG8I1V3Q+oGGJzQDLmBJaj5Ga7m9W0zOyYbJQYjPBI
+	BVK0LoTkfbG5GCPGZ0ArE0CYYXlcOcOdg4TCFbPOojfYbPgu3gZkrdS5KU6+8Hn/2QpWV7
+	CP5J+Ah0ZFUKnRq6eNIgQJp6tsH4Pz0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719248488;
+	s=susede2_ed25519; t=1719250703;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
+	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
-	b=DFQTi1/1eB9KCzBk0wRsrrwFPS1RDaylz6MAC1SYB0VmREl8PNqB+bf3W8TZFLtzIkhRuh
-	DPC06EEsVEEQLZAg==
+	bh=UkOmw9j/RdejhDDiZkoe7o0qMyio1yTKvDD8d7IQx2k=;
+	b=1SGPMFjtJNTQtT8Gk6i7CCcNk/e+2zv2tWylo5gBcummSCeqymSMiuSStj8I0q4DUDYwyt
+	tpTMIHGmX6jy/UBA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFCCA13AD7;
-	Mon, 24 Jun 2024 17:01:27 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75FF313AA4;
+	Mon, 24 Jun 2024 17:38:23 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 5vGKOmemeWbROAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 24 Jun 2024 17:01:27 +0000
+	id cLuHHA+veWa5QgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 24 Jun 2024 17:38:23 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 97349A091E; Mon, 24 Jun 2024 19:01:27 +0200 (CEST)
+	id 0E883A08AA; Mon, 24 Jun 2024 19:38:23 +0200 (CEST)
+Date: Mon, 24 Jun 2024 19:38:23 +0200
 From: Jan Kara <jack@suse.cz>
-To: Ted Tso <tytso@mit.edu>
-Cc: <linux-ext4@vger.kernel.org>,
-	Alexander Coffin <alex.coffin@maticrobots.com>,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH v2 4/4] jbd2: Drop pointless shrinker batch initialization
-Date: Mon, 24 Jun 2024 19:01:20 +0200
-Message-Id: <20240624170127.3253-4-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240624165406.12784-1-jack@suse.cz>
-References: <20240624165406.12784-1-jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Alexander Coffin <alex.coffin@maticrobots.com>,
+	Jan Kara <jack@suse.com>, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: PROBLEM: ext4 resize2fs on-line resizing panic
+Message-ID: <20240624173823.qacrdbxfxwn42kmr@quack3>
+References: <CA+hUFcuGs04JHZ_WzA1zGN57+ehL2qmHOt5a7RMpo+rv6Vyxtw@mail.gmail.com>
+ <20240624152658.GC280025@mit.edu>
+ <20240624165350.madyxs74vx3niyy2@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1000; i=jack@suse.cz; h=from:subject; bh=P6evGZXLuehID/EfUdWutniFVl3nsabt5OFqBApHpWo=; b=owGbwMvMwME4Z+4qdvsUh5uMp9WSGNIql8UHFV0yW6PCFv9udeDuqmKVhR/v3OtXjJdfxvgoQsdy 3ezkTkZjFgZGDgZZMUWW1ZEXta/NM+raGqohAzOIlQlkCgMXpwBMZM8X9v9hl65onNKcWVC69jaHrE q8QzKb9v0b3X6Bs977r+SbcujvbA3m6IPOf26JRSXkVgXtqpS+prD7iIDO3Jiij5bLn+y2M3Xr6Dlh qPOB7XyjgYPMnMkH2uVDTl3iLm/8nG0gpqnA1GEjxV947nqr4SL/ax8tVJPconoZq/ZOSHnnkG4iwX h04yKOG50feK7qcztcuSWvXL3/Du8K4ZYN724b1D+8F1Imnh7RsJgvKMr5Ubht4JbY8w6tcZuXxaxO y2aIvMWrNMteJ3tib6kdV/TM/nNvCi62dotyz89XKVv+1yxL4dVDo2ePXiVn2FdGPZWoZnioVMKpfz Zuebgxf9Virfil4Vekvj6Pr1QAAA==
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Spamd-Result: default: False [-6.80 / 50.00];
-	REPLY(-4.00)[];
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240624165350.madyxs74vx3niyy2@quack3>
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	MID_CONTAINS_FROM(1.00)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.com:email];
 	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_THREE(0.00)[4];
+	RCPT_COUNT_FIVE(0.00)[5];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 868ED219B6
 X-Spam-Flag: NO
-X-Spam-Score: -6.80
+X-Spam-Score: -4.01
 X-Spam-Level: 
 
-In jbd2_journal_init_common() we set batch size of a shrinker shrinking
-checkpointed buffers to journal->j_max_transaction_buffers. But that is
-guaranteed to be 0 at that point so we effectively stay with the default
-shrinker batch size of 128. It has been like this since introduction of
-jbd2 shrinkers so just drop the pointless initialization.
+On Mon 24-06-24 18:53:50, Jan Kara wrote:
+> On Mon 24-06-24 11:26:58, Theodore Ts'o wrote:
+> > On Sun, Jun 23, 2024 at 06:57:13PM -0700, Alexander Coffin wrote:
+> > > [1.] One line summary of the problem:
+> > > Using resize2fs on-line resizing on a specific ext4 partition is
+> > > causing an Oops.
+> > > 
+> > > 
+> > > [6.] Output of Oops.. message (if applicable) with symbolic information
+> > >      resolved (see Documentation/admin-guide/bug-hunting.rst)
+> > > 
+> > > ```
+> > > [  445.552287] ------------[ cut here ]------------
+> > > [  445.552300] kernel BUG at fs/jbd2/journal.c:846!
+> > 
+> > Thanks for the bug report.  The BUG_ON is from the following assert in
+> > jbd2_journal_next_log_block:
+> > 
+> > 	J_ASSERT(journal->j_free > 1);
+> > 
+> > and it indicates that we ran out of space in the journal.  There are
+> > mechanisms to make sure that this should never happen, and if the
+> > journal is too small and the transaction couldn't be broken up, then
+> > the operation (whether it is a resize or a file truncate or some other
+> > operation) should have errored out, and not triggered a BUG.
+> 
+> Yeah, I was debugging this today and I'll shortly send a fix for JBD2 so
+> that we don't trigger this BUG. But the online resize will fail anyway
+> after my fixes (just gracefully) because the add_flex_bg() code tries to
+> start a transaction with more credits than the journal allows.
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/journal.c | 1 -
- 1 file changed, 1 deletion(-)
+To be more precise, the problem is that with this size of the journal,
+maximum transaction size is 250 metadata blocks (+6 blocks reserved for
+descriptors). Online resizing tries to start a transaction with 252 credits
+in ext4_flex_group_add(). 246 credits come from es->s_reserved_gdt_blocks
+so I don't see an easy way how to avoid that because to each of these
+reserve gdt blocks we need to add reserved gdt blocks from the new groups.
+So I see two possibilities:
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index ae5b544ed0cc..c356cc027ed7 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -1641,7 +1641,6 @@ static journal_t *journal_init_common(struct block_device *bdev,
- 
- 	journal->j_shrinker->scan_objects = jbd2_journal_shrink_scan;
- 	journal->j_shrinker->count_objects = jbd2_journal_shrink_count;
--	journal->j_shrinker->batch = journal->j_max_transaction_buffers;
- 	journal->j_shrinker->private_data = journal;
- 
- 	shrinker_register(journal->j_shrinker);
+1) Just make mke2fs / tune2fs refuse so many reserved gdt blocks with a
+tiny journal.
+
+2) Allow larger transaction size - currently we require that 4 max sized
+transactions fit into the journal, we could reduce it to 3 without
+introducing deadlocks. But larger transactions could have other unexpected
+performance side effects so I'm not sure the risk is worth it for a corner
+case like this.
+
+								Honza
+
 -- 
-2.35.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
