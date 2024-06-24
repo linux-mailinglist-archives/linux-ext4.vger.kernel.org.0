@@ -1,63 +1,63 @@
-Return-Path: <linux-ext4+bounces-2940-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2939-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9B309154EF
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 19:01:47 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF98B9154EE
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 19:01:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 365611F244A6
-	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 17:01:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EA18B1C21164
+	for <lists+linux-ext4@lfdr.de>; Mon, 24 Jun 2024 17:01:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D517519EEA7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABD0319E837;
 	Mon, 24 Jun 2024 17:01:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q4msYm1M";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dT5CYQQp";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Q4msYm1M";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="dT5CYQQp"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Joz6ekNa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DFQTi1/1";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Joz6ekNa";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="DFQTi1/1"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAE6D129A7B;
-	Mon, 24 Jun 2024 17:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEC413D539
+	for <linux-ext4@vger.kernel.org>; Mon, 24 Jun 2024 17:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719248491; cv=none; b=K37ANGLXjzgS02WM78ca4RUc0gISSXpC3cjZCPHeU21RsSCn5vpdOMyGFVupBor7VWXkuvysCGDNIy6gtXud+7FJ2knQL1TkD+XS+bYgxGCGSJwGIWsrPOw8RQHkLLC/cN/tfbULNHDvnP9JuRwAkMwVvzQ9DlTkPYua7csTETE=
+	t=1719248491; cv=none; b=Sjl5ArivuKQqWQB0CCjnyU1BPeiN8AN+DvqyhZASprL0Jp2bv6xm304a3l5uN8zFZS4x4t6Mc0w6dMfVDSQHYT+mh4MxrbpXdARj3m9EmKDIGRIEtGyYbxfhqwbN3Lf0LK3I48Sr70iA+qxoFp3IFsh2UwIWJRMYU5nCUsmroh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1719248491; c=relaxed/simple;
-	bh=dSrX3jOEJ/rI55MZPygNhQemTao0WXPsuAVGKsikvk4=;
+	bh=P6evGZXLuehID/EfUdWutniFVl3nsabt5OFqBApHpWo=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=kUkHwRhZsts7YBPgDXBmymFcDLvYKK9lVxa1gF00Wh/LSFknKrrTQ82ASVFld97ZAu23aZPDs6su3SRoeGQWTRKE7Mp4fqEjPbRXIQia0h/mqwn42j4/blQRF5tSZ5POkEAjsIWUoQHwzQZJjFSyhq3bVYKHFQwnSbblwuka5EY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q4msYm1M; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dT5CYQQp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Q4msYm1M; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=dT5CYQQp; arc=none smtp.client-ip=195.135.223.131
+	 MIME-Version; b=CQ2TlLcfC9pvaCKCS1u8fNuUtpID3ipMZ8P246vhdVQvphTxfjXYaRYu+CqKEhFI7dgolIn3IVZPnKjvtr768QSdytgENOxXF8zxFJYBe1qnUwSG8d34Uh2LNkGmBnzSp6KWnJfMjAJvCMQBz/Mx/svsx/p3IduKn5xv/fzi6gs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Joz6ekNa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DFQTi1/1; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Joz6ekNa; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=DFQTi1/1; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 09B621F829;
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0CE9F1F83A;
 	Mon, 24 Jun 2024 17:01:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	t=1719248488; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GGPcikoJeqEjh8jCx4uqqoCKPQi5MgHji8CVnlHlX1Q=;
-	b=Q4msYm1MjevP+JbVzxYV9st+qw2TwSeb3ES7+RovjkwkstVl0ebr+vAvg3E22H/fTccSnd
-	/o6DVH/ggVVkPj3rfq1CcilcITB3GIKZf3OpyYaBNN5W4dBTvf7TBMkS4E55Ho7ok+n7UY
-	14IzEt2amVQ0Iv3a5YKfNFrAWFew9HA=
+	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
+	b=Joz6ekNaHoUZfDTHXrHdA55PxB5WQvYagRGXktGM8xe4K/iuwiHnQ4At7RgRea8BfJrh07
+	ZMqM5zJ2x3dYUn/9P7kepmzgTxQnydsrJWox5tO/wMOWfkzus0cAnEfhimhvNoUXrQMtkd
+	IypdSjnxbM0Gv26Ry/2dUDwHX7dNO7s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1719248488;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GGPcikoJeqEjh8jCx4uqqoCKPQi5MgHji8CVnlHlX1Q=;
-	b=dT5CYQQp8gw85l9WMiBSVx9B2LS2yIN2HCmjLL4aWQ3KrX8lLOPQYk8sLdmXQ3MYQ7iS0X
-	z0eVIk1pjiQ0ZdCQ==
+	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
+	b=DFQTi1/1eB9KCzBk0wRsrrwFPS1RDaylz6MAC1SYB0VmREl8PNqB+bf3W8TZFLtzIkhRuh
+	DPC06EEsVEEQLZAg==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
@@ -65,40 +65,39 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GGPcikoJeqEjh8jCx4uqqoCKPQi5MgHji8CVnlHlX1Q=;
-	b=Q4msYm1MjevP+JbVzxYV9st+qw2TwSeb3ES7+RovjkwkstVl0ebr+vAvg3E22H/fTccSnd
-	/o6DVH/ggVVkPj3rfq1CcilcITB3GIKZf3OpyYaBNN5W4dBTvf7TBMkS4E55Ho7ok+n7UY
-	14IzEt2amVQ0Iv3a5YKfNFrAWFew9HA=
+	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
+	b=Joz6ekNaHoUZfDTHXrHdA55PxB5WQvYagRGXktGM8xe4K/iuwiHnQ4At7RgRea8BfJrh07
+	ZMqM5zJ2x3dYUn/9P7kepmzgTxQnydsrJWox5tO/wMOWfkzus0cAnEfhimhvNoUXrQMtkd
+	IypdSjnxbM0Gv26Ry/2dUDwHX7dNO7s=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
 	s=susede2_ed25519; t=1719248488;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GGPcikoJeqEjh8jCx4uqqoCKPQi5MgHji8CVnlHlX1Q=;
-	b=dT5CYQQp8gw85l9WMiBSVx9B2LS2yIN2HCmjLL4aWQ3KrX8lLOPQYk8sLdmXQ3MYQ7iS0X
-	z0eVIk1pjiQ0ZdCQ==
+	bh=uIdnV3IOS/q0gAV3tggu7MFBuM7TYy3fjRe5J7zUf0E=;
+	b=DFQTi1/1eB9KCzBk0wRsrrwFPS1RDaylz6MAC1SYB0VmREl8PNqB+bf3W8TZFLtzIkhRuh
+	DPC06EEsVEEQLZAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EEBBD13AD6;
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EFCCA13AD7;
 	Mon, 24 Jun 2024 17:01:27 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id n3ddOmemeWbQOAAAD6G6ig
+	id 5vGKOmemeWbROAAAD6G6ig
 	(envelope-from <jack@suse.cz>); Mon, 24 Jun 2024 17:01:27 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 8F273A091A; Mon, 24 Jun 2024 19:01:27 +0200 (CEST)
+	id 97349A091E; Mon, 24 Jun 2024 19:01:27 +0200 (CEST)
 From: Jan Kara <jack@suse.cz>
 To: Ted Tso <tytso@mit.edu>
 Cc: <linux-ext4@vger.kernel.org>,
 	Alexander Coffin <alex.coffin@maticrobots.com>,
-	Jan Kara <jack@suse.cz>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 3/4] jbd2: Avoid infinite transaction commit loop
-Date: Mon, 24 Jun 2024 19:01:19 +0200
-Message-Id: <20240624170127.3253-3-jack@suse.cz>
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH v2 4/4] jbd2: Drop pointless shrinker batch initialization
+Date: Mon, 24 Jun 2024 19:01:20 +0200
+Message-Id: <20240624170127.3253-4-jack@suse.cz>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240624165406.12784-1-jack@suse.cz>
 References: <20240624165406.12784-1-jack@suse.cz>
@@ -108,12 +107,9 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4172; i=jack@suse.cz; h=from:subject; bh=dSrX3jOEJ/rI55MZPygNhQemTao0WXPsuAVGKsikvk4=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBmeaZf5kY5LZWAgUrXbM7qJn/XKKkWRFcnCv+bTmdq 7rXQmPWJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZnmmXwAKCRCcnaoHP2RA2cUnB/ 9LJIp7N0ferYaIQQ05itKkuAnyFzVkMcnK0bmvM/fPM/8r0Pq8SdHefcSXBfd6kmVRc7xH4YehEqUw WXJYNviYuIZ/87grKXpOjH/0JKb0zbdwHsrQQAnXvnbCGLcVKwVpI97cQi078OBGyeR241lp2OC6Nl c8eu3jKbok+kRNGbkW3QVd/naOdxQ3TBZPs5sqWvFTJxVbTjRoC+1RhpgW8Uo4gDlRvvFeU62yC1eK kFV2Lafuw2V6QGDykkqAQftlBE4lyyVRcp5DPCeXclsJXBOnVophglJQncc2QThTlHeivcQRAR1Vn8 myRMblL+C4qZy9WdAg7VO8JwMbtNCi
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1000; i=jack@suse.cz; h=from:subject; bh=P6evGZXLuehID/EfUdWutniFVl3nsabt5OFqBApHpWo=; b=owGbwMvMwME4Z+4qdvsUh5uMp9WSGNIql8UHFV0yW6PCFv9udeDuqmKVhR/v3OtXjJdfxvgoQsdy 3ezkTkZjFgZGDgZZMUWW1ZEXta/NM+raGqohAzOIlQlkCgMXpwBMZM8X9v9hl65onNKcWVC69jaHrE q8QzKb9v0b3X6Bs977r+SbcujvbA3m6IPOf26JRSXkVgXtqpS+prD7iIDO3Jiij5bLn+y2M3Xr6Dlh qPOB7XyjgYPMnMkH2uVDTl3iLm/8nG0gpqnA1GEjxV947nqr4SL/ax8tVJPconoZq/ZOSHnnkG4iwX h04yKOG50feK7qcztcuSWvXL3/Du8K4ZYN724b1D+8F1Imnh7RsJgvKMr5Ubht4JbY8w6tcZuXxaxO y2aIvMWrNMteJ3tib6kdV/TM/nNvCi62dotyz89XKVv+1yxL4dVDo2ePXiVn2FdGPZWoZnioVMKpfz Zuebgxf9Virfil4Vekvj6Pr1QAAA==
 X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
 Content-Transfer-Encoding: 8bit
-X-Spam-Score: -6.80
-X-Spam-Level: 
-X-Spam-Flag: NO
 X-Spamd-Result: default: False [-6.80 / 50.00];
 	REPLY(-4.00)[];
 	BAYES_HAM(-3.00)[100.00%];
@@ -130,102 +126,38 @@ X-Spamd-Result: default: False [-6.80 / 50.00];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
+	RCPT_COUNT_THREE(0.00)[4];
 	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Score: -6.80
+X-Spam-Level: 
 
-Commit 9f356e5a4f12 ("jbd2: Account descriptor blocks into
-t_outstanding_credits") started to account descriptor blocks into
-transactions outstanding credits. However it didn't appropriately
-decrease the maximum amount of credits available to userspace. Thus if
-the filesystem requests a transaction smaller than
-j_max_transaction_buffers but large enough that when descriptor blocks
-are added the size exceeds j_max_transaction_buffers, we confuse
-add_transaction_credits() into thinking previous handles have grown the
-transaction too much and enter infinite journal commit loop in
-start_this_handle() -> add_transaction_credits() trying to create
-transaction with enough credits available.
+In jbd2_journal_init_common() we set batch size of a shrinker shrinking
+checkpointed buffers to journal->j_max_transaction_buffers. But that is
+guaranteed to be 0 at that point so we effectively stay with the default
+shrinker batch size of 128. It has been like this since introduction of
+jbd2 shrinkers so just drop the pointless initialization.
 
-Fix the problem by properly accounting for transaction space reserved
-for descriptor blocks when verifying requested transaction handle size.
-
-CC: stable@vger.kernel.org
-Fixes: 9f356e5a4f12 ("jbd2: Account descriptor blocks into t_outstanding_credits")
-Reported-by: Alexander Coffin <alex.coffin@maticrobots.com>
-Link: https://lore.kernel.org/all/CA+hUFcuGs04JHZ_WzA1zGN57+ehL2qmHOt5a7RMpo+rv6Vyxtw@mail.gmail.com
 Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- fs/jbd2/transaction.c | 21 ++++++++++++++-------
- 1 file changed, 14 insertions(+), 7 deletions(-)
+ fs/jbd2/journal.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
-index a095f1a3114b..66513c18ca29 100644
---- a/fs/jbd2/transaction.c
-+++ b/fs/jbd2/transaction.c
-@@ -191,6 +191,13 @@ static void sub_reserved_credits(journal_t *journal, int blocks)
- 	wake_up(&journal->j_wait_reserved);
- }
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index ae5b544ed0cc..c356cc027ed7 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -1641,7 +1641,6 @@ static journal_t *journal_init_common(struct block_device *bdev,
  
-+/* Maximum number of blocks for user transaction payload */
-+static int jbd2_max_user_trans_buffers(journal_t *journal)
-+{
-+	return journal->j_max_transaction_buffers -
-+				journal->j_transaction_overhead_buffers;
-+}
-+
- /*
-  * Wait until we can add credits for handle to the running transaction.  Called
-  * with j_state_lock held for reading. Returns 0 if handle joined the running
-@@ -240,12 +247,12 @@ __must_hold(&journal->j_state_lock)
- 		 * big to fit this handle? Wait until reserved credits are freed.
- 		 */
- 		if (atomic_read(&journal->j_reserved_credits) + total >
--		    journal->j_max_transaction_buffers) {
-+		    jbd2_max_user_trans_buffers(journal)) {
- 			read_unlock(&journal->j_state_lock);
- 			jbd2_might_wait_for_commit(journal);
- 			wait_event(journal->j_wait_reserved,
- 				   atomic_read(&journal->j_reserved_credits) + total <=
--				   journal->j_max_transaction_buffers);
-+				   jbd2_max_user_trans_buffers(journal));
- 			__acquire(&journal->j_state_lock); /* fake out sparse */
- 			return 1;
- 		}
-@@ -285,14 +292,14 @@ __must_hold(&journal->j_state_lock)
+ 	journal->j_shrinker->scan_objects = jbd2_journal_shrink_scan;
+ 	journal->j_shrinker->count_objects = jbd2_journal_shrink_count;
+-	journal->j_shrinker->batch = journal->j_max_transaction_buffers;
+ 	journal->j_shrinker->private_data = journal;
  
- 	needed = atomic_add_return(rsv_blocks, &journal->j_reserved_credits);
- 	/* We allow at most half of a transaction to be reserved */
--	if (needed > journal->j_max_transaction_buffers / 2) {
-+	if (needed > jbd2_max_user_trans_buffers(journal) / 2) {
- 		sub_reserved_credits(journal, rsv_blocks);
- 		atomic_sub(total, &t->t_outstanding_credits);
- 		read_unlock(&journal->j_state_lock);
- 		jbd2_might_wait_for_commit(journal);
- 		wait_event(journal->j_wait_reserved,
- 			 atomic_read(&journal->j_reserved_credits) + rsv_blocks
--			 <= journal->j_max_transaction_buffers / 2);
-+			 <= jbd2_max_user_trans_buffers(journal) / 2);
- 		__acquire(&journal->j_state_lock); /* fake out sparse */
- 		return 1;
- 	}
-@@ -322,12 +329,12 @@ static int start_this_handle(journal_t *journal, handle_t *handle,
- 	 * size and limit the number of total credits to not exceed maximum
- 	 * transaction size per operation.
- 	 */
--	if ((rsv_blocks > journal->j_max_transaction_buffers / 2) ||
--	    (rsv_blocks + blocks > journal->j_max_transaction_buffers)) {
-+	if (rsv_blocks > jbd2_max_user_trans_buffers(journal) / 2 ||
-+	    rsv_blocks + blocks > jbd2_max_user_trans_buffers(journal)) {
- 		printk(KERN_ERR "JBD2: %s wants too many credits "
- 		       "credits:%d rsv_credits:%d max:%d\n",
- 		       current->comm, blocks, rsv_blocks,
--		       journal->j_max_transaction_buffers);
-+		       jbd2_max_user_trans_buffers(journal));
- 		WARN_ON(1);
- 		return -ENOSPC;
- 	}
+ 	shrinker_register(journal->j_shrinker);
 -- 
 2.35.3
 
