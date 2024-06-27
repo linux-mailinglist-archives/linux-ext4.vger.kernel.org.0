@@ -1,119 +1,84 @@
-Return-Path: <linux-ext4+bounces-2979-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2980-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0154F919CC7
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 03:04:47 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 93E08919E90
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 07:23:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 336F51C203DA
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 01:04:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 939E11C220BD
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 05:23:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC2A473509;
-	Thu, 27 Jun 2024 01:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nwfaFDJ/"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A84441CD20;
+	Thu, 27 Jun 2024 05:23:07 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from verein.lst.de (verein.lst.de [213.95.11.211])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2407A6FE21;
-	Thu, 27 Jun 2024 01:00:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F1A1B94F;
+	Thu, 27 Jun 2024 05:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.95.11.211
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719450057; cv=none; b=FkgEJl656rQ7V6RkTpAYCqtS2ni91oII2zY4E02pdN9aqQ3RaYf6iZH80MvzfbZgl8q0R/yfFmNAVK0U54TBbWglW0fe1aS2WUMqHAhSivk1EnJfdkgyup1SGb17K1/nih5qaJX3Kk8VfvH0Kf+FF09trKuGk+Pf9j1oqVwUF+E=
+	t=1719465787; cv=none; b=b1ZWFGnUxPkRsfvVkTNxmTCeDBfHvUG95qNgIRVTk9pW5Hz1DRMCVvN625p5IoOl8qNTsaiegWQ9LSPbluIsjqItlhyeMaGIpsNAIZC+AGFQ81gelL58OohJTivsaNBTah0oWCGj9VcnEsONx8aT2KoEcN5DcdFc9aXTwPb3NNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719450057; c=relaxed/simple;
-	bh=cVjMReDf/y0/Eps4SzleHHnDCMnHwvcYHN7Dj4UkNNg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=VeiNBurWdn0Ftj7D7500gdk+eyTCSdobeqUDrn+c63gazqNjf5TGDC1+HQ+ROtwXJ4fPvucUTCvP/qEtDgvTfvDYAf770DybC1kI0J4Zzdi+8V9bSYOGZc92ns6qTEo3rc/bUDNvYsKshMmc/ARiRy7BBNT7cV2upn+egNW73NE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nwfaFDJ/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F045DC116B1;
-	Thu, 27 Jun 2024 01:00:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719450057;
-	bh=cVjMReDf/y0/Eps4SzleHHnDCMnHwvcYHN7Dj4UkNNg=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=nwfaFDJ/c30GiYmVc82cD+AdVo7ASrnc05c022cx7CwFpW+ctla+QGAWhR7g1u/0N
-	 FYQFKuzWEbo7DOQHlPOPzqZ9JMeE0rDVK2Z9M4eU1oHAd2ynL1MMg1rhKgKBK5LXIA
-	 N57GBUcpsaC9GC0Vd33/hTbi+JuMNBPY7ftTa2coNIlhKyUl9lKFV375aDLvjgKRlh
-	 W34ZJnjvdQcAdBbpmX5o392KQ/rt6/HfqCiZTEzUsxfJdRLGhocUh1i3gvv/k3wsHo
-	 0HntC5Inb6+MF0og3whrwgsMnla76xGCkDZAFd7OXXdWHpqiiGu+SiRTccaF1IsHZd
-	 ziBcVX92FrFqw==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Wed, 26 Jun 2024 21:00:30 -0400
-Subject: [PATCH 10/10] tmpfs: add support for multigrain timestamps
+	s=arc-20240116; t=1719465787; c=relaxed/simple;
+	bh=FJS3XMhZZmqbpsRqFI1wxC9jK+f50RCr1O8Ebbaclhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lCohH+RiD8VDFlSsu3CH5M9LKsgzq2IDe/y2l7qcKRswQeusC3jfM3fPk3p5xkjn0HuuMvn806tNLbi/3wwVL57OnuHAWMZwV7Omv71+Fxf173HlnFCgxynF7DwFUphAPHkD/Q+9cTybUY49oeGvdTsSlP3EBEVldXjnyYw41uw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=pass smtp.mailfrom=lst.de; arc=none smtp.client-ip=213.95.11.211
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lst.de
+Received: by verein.lst.de (Postfix, from userid 2407)
+	id 316B468AFE; Thu, 27 Jun 2024 07:22:59 +0200 (CEST)
+Date: Thu, 27 Jun 2024 07:22:59 +0200
+From: Christoph Hellwig <hch@lst.de>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com,
+	dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
+	jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
+	will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+	dave.hansen@linux.intel.com, ira.weiny@intel.com,
+	willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
+	linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
+Subject: Re: [PATCH 06/13] mm/memory: Add dax_insert_pfn
+Message-ID: <20240627052259.GA14837@lst.de>
+References: <cover.66009f59a7fe77320d413011386c3ae5c2ee82eb.1719386613.git-series.apopple@nvidia.com> <50013c1ee52b5bb1213571bff66780568455f54c.1719386613.git-series.apopple@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240626-mgtime-v1-10-a189352d0f8f@kernel.org>
-References: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
-In-Reply-To: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Chandan Babu R <chandan.babu@oracle.com>, 
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-nfs@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=775; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=cVjMReDf/y0/Eps4SzleHHnDCMnHwvcYHN7Dj4UkNNg=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmfLmvmuG1qE25UPrDynn3xIhwH5hC1wcY+8bCj
- oncJyX2Q2OJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZny5rwAKCRAADmhBGVaC
- FZiQEADD/GWDUAnr+QPK/65D/8cdJ2MjbHRshcq6JjFg04ftIlKReTiXHUgZFibwslcU1/KJXqA
- AeCQYsajkGNfClYJdPooe+9fYkC/bZ9TuTbCx8vgEkdy5spW1PqMwKpcYnaOtz0rt+y7f+dDbvZ
- Il5HQomOyFFjic4OS56a9d3g7ZKHKrMT25Wr1E2xXYMp/1TFSnsZ6PzqJZC83R08MKAk9AiLN8W
- ATgs3TQWKeBloEOKCB49jcfGIHtirxKLivKHL04iaZImju21FOjEedEXy021mtUKZyS7/UIF7Vy
- 7tSTQr9F9vTxs93vtzmWUDC0cLFTtfaog4o/C9zuhVTW/mjZ4JmWIalSU6uBqnFqemiucQSCe45
- q9afVDCLHijyoaX+aX1D2/8vYg//+/oDAPzmt0VmULKwekM+f3ZtbPVKqSOI9HaVAhV769zRd9u
- MWeehoAPSlcJTBKBZrQVCIX5aX7q0CQnuN7+t/nESwmDBtRnwLzpAj//XiDM68TFxPn6wHMV+O3
- e0sUqEzWfynVDKhu9OXrLQb1Pq0wfWdW/G60LQlJCK1iST4tmUat5GbRh6rexvj9nTJXgdnyJ0R
- YLi8/dD1+0aE1S1yt8LtuIzPrKFhLnTNMcmcmi1DKRiDPpKRcRqI7FY3mFi18w9FfIKybfXInFJ
- Sm7/fCDwxamE4rw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50013c1ee52b5bb1213571bff66780568455f54c.1719386613.git-series.apopple@nvidia.com>
+User-Agent: Mutt/1.5.17 (2007-11-01)
 
-Enable multigrain timestamps, which should ensure that there is an
-apparent change to the timestamp whenever it has been written after
-being actively observed via getattr.
+On Thu, Jun 27, 2024 at 10:54:21AM +1000, Alistair Popple wrote:
+> +extern void prep_compound_page(struct page *page, unsigned int order);
 
-tmpfs only requires the FS_MGTIME flag.
+No need for the extern.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+>  static int insert_page_into_pte_locked(struct vm_area_struct *vma, pte_t *pte,
+> -			unsigned long addr, struct page *page, pgprot_t prot)
+> +			unsigned long addr, struct page *page, pgprot_t prot, bool mkwrite)
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index ff7c756a7d02..d650f48444e0 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4653,7 +4653,7 @@ static struct file_system_type shmem_fs_type = {
- 	.parameters	= shmem_fs_parameters,
- #endif
- 	.kill_sb	= kill_litter_super,
--	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
- };
- 
- void __init shmem_init(void)
+Overly long line.
 
--- 
-2.45.2
+> +	retval = insert_page_into_pte_locked(vma, pte, addr, page, prot, mkwrite);
+
+.. same here.
+
+> +vm_fault_t dax_insert_pfn(struct vm_area_struct *vma,
+> +		unsigned long addr, pfn_t pfn_t, bool write)
+
+This could probably use a kerneldoc comment.
 
 
