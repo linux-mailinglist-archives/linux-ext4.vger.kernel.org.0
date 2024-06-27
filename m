@@ -1,61 +1,62 @@
-Return-Path: <linux-ext4+bounces-2995-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2996-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 353B791A7CF
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 15:27:50 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 82B6491A7EB
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 15:32:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62D0A1C20E7E
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 13:27:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38B2F1F214C9
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 13:32:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A4D719306F;
-	Thu, 27 Jun 2024 13:27:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAF05190698;
+	Thu, 27 Jun 2024 13:32:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="bG7UAH9i"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="o3QFlHJW"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED82A17836E
-	for <linux-ext4@vger.kernel.org>; Thu, 27 Jun 2024 13:27:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D03C5186E5D
+	for <linux-ext4@vger.kernel.org>; Thu, 27 Jun 2024 13:32:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719494864; cv=none; b=jbdwfq+7FuY8GP83iwMK8Oi5Ot0UMLtRIjyAmfwM48ygYk5OmZufcoQZ1ZY8T3HwMnGI17hAukfoi/MyB4z4r8dRke8l/L8rKHY872L7iY3FNP0cRsxSMNH4pI4njVbxrv387NrEQ08FTvAHy4QRRxqMGrVIWQE7xOjQDcME3Y0=
+	t=1719495136; cv=none; b=TzPX/Hhc0c5puAXmbzeZ48FCZYTN37uWjrI0ZYTZQ+8OCsil4yby+HnlZBwSmX0gMnTBA50mZFG6306osIS1Vsfhcaohxv18kCWI+7wlVehIHeHcH80YE+nCjxBAifzf8QWvi0gUegko4pbdFaMQecAN8x88V0z2bl5rkGaWfJc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719494864; c=relaxed/simple;
-	bh=kX06knfCv/gt6mT0oVUy3WEeTxvHC7XIgKXJKIQTdbQ=;
+	s=arc-20240116; t=1719495136; c=relaxed/simple;
+	bh=9IMR4bG+QrMD5EStLhJXG387Il///O58FizFb1FZuVo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Z+XevsrVcc/7NnJbjXzT4KKiBGrKZx4z2VRTGYwqMlZOomNO+3ILQPDIBDN6S/H548ed1UXPcCfpq0+6iOq+9efdtt3sOjWnoS6HgdGkHJS3pvEQezGTP8BeDsvRl7IzuaIu0oQmVuSUWJQvZOFMNZuZ+CTMyCa7/Mqj2DUAS0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=bG7UAH9i; arc=none smtp.client-ip=18.9.28.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q42dV6zYsdDHt6ZNxV6VVmS6VY3ptRcarwPLKUWNwRH/XdkizKGWyOGwP5dSXXYXnTHiEJyZqf11UENhE0nhduVg6mZZsTdiUbZxjGEEWghdexQrcPjWRLDYgmsprEhgMR3vEg3eb9cthAOygKF8v+Q1x/3xlAk6HFIgbdw9DFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=o3QFlHJW; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-120-63.bstnma.fios.verizon.net [173.48.120.63])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 45RDRRag003255
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 45RDVuZt007178
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 27 Jun 2024 09:27:28 -0400
+	Thu, 27 Jun 2024 09:31:58 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1719494849; bh=uZGLgZhwM9jtPm0KxRYxzQQrAUIqexvgqygxsXy4rRU=;
+	t=1719495118; bh=4DvxyIc7L8lU4EWlQ5jMV1t1CdN5ET04EYd2tGmW2tg=;
 	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=bG7UAH9iIafu2ddZWZANjGFCObtveCTL6HwU6G1aRrSOwbHZkfz8CNDf3UkIiWGfr
-	 f7VsVEatkYpU+oVcEu6GXEwP3WlNARSZs+06Pt/lodnOYBQ69bO9m5cb+y7yd10eL3
-	 ahN5M6NqKWPPl4Wd6F/BuwFyu+ivqjjthvVNCZEIe/Kxfo49G8bTeuBERXHg3/+AAd
-	 UwaMoA/JTH43wsx5zATm0vsbngmtQgMqYErPkvf6nSVvQcOvFiuGKEDn3i/zRYoNLs
-	 KnVUz2Q6j4Ocj/rKboTOX8yeuc++NlCWAPC4vqRbomzScboucnLkzgU7AbbwiM+Eb5
-	 enrd8cTJ9mIJA==
+	b=o3QFlHJWBaz7caf1GEhCOtK2WUj77IoI4kh8asYRgWokbtDVe84wvBvj0H14gx+fr
+	 eWCvRzoM+V0DcLnlZciS1gSvrQdCR67fB7tcPu95uNft2LuKFkF0opGvEOdSOIhFAa
+	 Uk24xn49qN/e5Rww5At3f4A3x70uJGY2HhKnmBGE+OQD+9L3MG0emfzx+kxQonlkNM
+	 3dEvgMFl9nwdVNPKCEn99Mzl3Hc91qwxSuoZ/hUeiqEOK6TZyzmHy76yyPL011BR7G
+	 R2EE4hR/jZX+OTPDRFq/FBegkhWvjHgEc/djiqTDiUB+jVDuG7I3wO/RsJly6iyTlv
+	 uC2T7mD2/aqRQ==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 690DC15C626C; Thu, 27 Jun 2024 09:27:27 -0400 (EDT)
-Date: Thu, 27 Jun 2024 09:27:27 -0400
+	id BB50215C626C; Thu, 27 Jun 2024 09:31:56 -0400 (EDT)
+Date: Thu, 27 Jun 2024 09:31:56 -0400
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Henrik Weinstock <jan@mwa.re>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, lukas@mwa.re, simon@mwa.re
-Subject: Re: [PATCH] ext4: fix kernel segfault after iterator overflow
-Message-ID: <20240627132727.GB412555@mit.edu>
-References: <20240627085601.24321-1-jan@mwa.re>
+To: "wangjianjian (C)" <wangjianjian3@huawei.com>
+Cc: Wang Jianjian <wangjianjian0@foxmail.com>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] jbd2: Add a comment for incorrect tag size
+Message-ID: <20240627133156.GC412555@mit.edu>
+References: <tencent_1D453DB77B0F2091CB4A68568A77627D4E08@qq.com>
+ <20240619233655.GC981794@mit.edu>
+ <0c296005-c607-431d-a696-b5b165c83856@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,47 +65,25 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240627085601.24321-1-jan@mwa.re>
+In-Reply-To: <0c296005-c607-431d-a696-b5b165c83856@huawei.com>
 
-On Thu, Jun 27, 2024 at 10:56:01AM +0200, Jan Henrik Weinstock wrote:
-> When search_buf gets placed at the end of the virtual address space
->         de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
-> might overflow to zero and a subsequent loop iteration will crash.
+On Thu, Jun 20, 2024 at 11:19:30AM +0800, wangjianjian (C) wrote:
+> On 2024/6/20 7:36, Theodore Ts'o wrote:
+> > bd2: fix descriptor block size handling errors with journal_csum
+> > in 2016 --- a full eight years ago.  So it's probably not worth adding
+> the comment at this point.
 > 
-> Observed on a simulated riscv32 system using 2GB of memory and a rootfs
-> on MMC.
-> 
-> Signed-off-by: Jan Henrik Weinstock <jan@mwa.re>
+> Thanks for detailed information, but is it better to put it in document in
+> case any other one confuse about this when read code.
 
-This is discussed earlier and the conclusion that it is a bug that on
-RiscV architectures the kernel can hand out the last 4k page in the 
-address space.  As Al Viro pointed out on this thread[1]:
-
->On Sat, Apr 13, 2024 at 07:46:03PM -0600, Andreas Dilger wrote:
->>
->> As to whether the 0xfffff000 address itself is valid for riscv32 is
->> outside my realm, but given that RAM is cheap it doesn't seem unlikely
->> to have 4GB+ of RAM and want to use it all.  The riscv32 might consider
->> reserving this page address from allocation to avoid similar issues in
->> other parts of the code, as is done with the NULL/0 page address.
->
->Not a chance.  *Any* page mapped there is a serious bug on any 32bit
->box.  Recall what ERR_PTR() is...
->
->On any architecture the virtual addresses in range (unsigned long)-512..
->(unsigned long)-1 must never resolve to valid kernel objects.
->In other words, any kind of wraparound here is asking for an oops on
->attempts to access the elements of buffer - kernel dereference of
->(char *)0xfffff000 on a 32bit box is already a bug.
-
-[1] https://lore.kernel.org/all/878r1ibpdn.fsf@all.your.base.are.belong.to.us/
-
-In any case, if on the RiscV platform the mm layer hands out a page at
-the very end of the address space, there will be **all** sorts of
-failures, not just in this particular ext4 codepath.  So this needs to
-be fixed for RiscV in the mm layer.
+The comment would probably make things more confusing, since there's a
+much larger context involving the fact that csum_v2 is an obsolete
+format that in practice is never used.  Sure, we could make the
+comment even more verbose, but perhaps it would be better to simply
+completely remove csum_v1 and csum_v2 from the code.  That will
+probably make the code even more simpler to read.
 
 Cheers,
 
-					- Ted
+						- Ted
 
