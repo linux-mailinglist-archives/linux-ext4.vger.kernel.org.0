@@ -1,116 +1,257 @@
-Return-Path: <linux-ext4+bounces-2993-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-2994-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 033A591A1F9
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 10:56:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCA9E91A562
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 13:34:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34B9B1C21249
-	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 08:56:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 22BC2B25177
+	for <lists+linux-ext4@lfdr.de>; Thu, 27 Jun 2024 11:34:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5CC91350FD;
-	Thu, 27 Jun 2024 08:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB3B214C5BA;
+	Thu, 27 Jun 2024 11:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b="CHfv0biw"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="luN+Tp9s";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FU/ogiTf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="luN+Tp9s";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FU/ogiTf"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f44.google.com (mail-ed1-f44.google.com [209.85.208.44])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206A1819
-	for <linux-ext4@vger.kernel.org>; Thu, 27 Jun 2024 08:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 930BC148820;
+	Thu, 27 Jun 2024 11:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719478591; cv=none; b=V+An4x8xUjw4ftDLaEIep3Ot3VKvUX4Kmq5ayCqezfJC0R8kwkDw2WBTMb84UeOWf/xM6LBQ6Z14EpXwu6A03glk9V1dmrwi5ZZNBdxEgvgv6N2HzXOIw/3xkjfvKEd9N9DzUwVBzBBn5PZYYpbOkUPyLWLu/ffBG4LSRW2zAl8=
+	t=1719488020; cv=none; b=VgUkakwS7gy1tzHjiFNtiXx1uLV24tUtcx4EE4xMl7Ji+u7v3U1OKHboR9jJJmOlH6K+r8yPi9RdzWd0ajdMw+gKmVtRPG1/mu7Z71ywq/jCwSH+6yia0G4murUHcbTt1V7eIvyIvIWhFlPqMfbdOcabkfwQrAzUDKVrGq+k0pE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719478591; c=relaxed/simple;
-	bh=Ysmxb0bGLrJuE7schxnLNi16/OfZI0+kM9j6mL2nvpo=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n2Ml4E46HM2lLpBZw5OHHsjEvbDk+r09UevvP8oMz3c/myfaViLxqOrhD/5DT/RnhkZPyxkG5ygw25tjTqkjSvH9VoSQxA1L30Ay5uAgKw3T450kvUXds/Rofuwrr4iXh4+HuMfjx8PhprVIOM05k3NUZ6JdYV1g0zAh//bSAyI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re; spf=pass smtp.mailfrom=mwa.re; dkim=pass (2048-bit key) header.d=mwa.re header.i=@mwa.re header.b=CHfv0biw; arc=none smtp.client-ip=209.85.208.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mwa.re
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mwa.re
-Received: by mail-ed1-f44.google.com with SMTP id 4fb4d7f45d1cf-57d4ee2aaabso1493135a12.2
-        for <linux-ext4@vger.kernel.org>; Thu, 27 Jun 2024 01:56:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=mwa.re; s=google; t=1719478587; x=1720083387; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+HvixEhQUFrS1HxDVCQfyFycypf+BTpTVP+IQrkb2So=;
-        b=CHfv0biw4IyaI0C73GrsBwojgsCCfwt9hTsbChOZ/J2NSHuzH8+CqPFZesdmMgG7Xn
-         XOa/g8xYf7EitoA8aec/eP7sIfS/GSoPuTOdy5cj7DAMnS4fS42wEHc85v0e6Xg4eUcn
-         /0STr/j4Db/ROxHG+gwzoYhp4Kvss4xamMGRhCoopuUBR21YwamVAoyBbK1UjosJxQkX
-         +5Y9zlFRtUjwT/o8q5zu6HT9ai9AbBry6BG7SjkPg/PwH+kRxXCnued/w65cfryuFACB
-         T1zfpDbuSVbMRvqMHPqzdTzPz5rM0zqbQtcawDlqK+ATmP83JBToBSremvk2lYCaOAQ4
-         ZBKw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719478587; x=1720083387;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=+HvixEhQUFrS1HxDVCQfyFycypf+BTpTVP+IQrkb2So=;
-        b=Sfp+jDkOPAlQw5pdXZTW+O9TzENJA7wV4HfuY5+J9ZohJy+Wkfu8V1afeuW4t/VfHl
-         RIR+4DEc5mj47mB99CVHw931vD9VsOgCaC+gxeb1zRRHbfZKrOzshfPh+aBFmTQFeiW/
-         R4RpSJurhhXrOpbIbX22z2RKopvSqrGOsf6A4yVjRU7CHVqxoJW6/BF1rFp8ggYX08Eb
-         PpZQkDQj+zs1RDaB9bvkfSPZBopmUqsfkoN3daAD+tGAaRRSIcX9N6WFcpnq43bgTaMk
-         SbGPrsUEY31a4LxcXrZFx8nGye7W7fHD7r0bqpHMyyEWqMfaor+JRE+I1SzvI1uFHEKt
-         tsqQ==
-X-Gm-Message-State: AOJu0YwWI/JX/qDGBm4zcwh3GPYAYPPpq6kdAGaI31gSqJBxeX7mJhP6
-	3R1pewXUen0/s3M4f36ATU/E3LJEsA7JQDvAOvSH5uoz6YT+/PCe64JHiYtgAsg=
-X-Google-Smtp-Source: AGHT+IE6uMbZoQTog5DVZt5hvrPJ0H5WQahBCj4S4MnHrE6UFTtU1ZUDTZGYKCugAXsTU28FP0GIWg==
-X-Received: by 2002:a17:906:9c93:b0:a72:6375:5fa7 with SMTP id a640c23a62f3a-a7263756132mr718335566b.64.1719478587446;
-        Thu, 27 Jun 2024 01:56:27 -0700 (PDT)
-Received: from phobos.home.arpa (2001-4dd0-53c2-0-0-0-0-13af.ipv6dyn.netcologne.de. [2001:4dd0:53c2::13af])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a729d77964bsm38516166b.130.2024.06.27.01.56.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 27 Jun 2024 01:56:26 -0700 (PDT)
-From: Jan Henrik Weinstock <jan@mwa.re>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	lukas@mwa.re,
-	simon@mwa.re,
-	Jan Henrik Weinstock <jan@mwa.re>
-Subject: [PATCH] ext4: fix kernel segfault after iterator overflow
-Date: Thu, 27 Jun 2024 10:56:01 +0200
-Message-ID: <20240627085601.24321-1-jan@mwa.re>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1719488020; c=relaxed/simple;
+	bh=u+k5a/2uqKJqfAihXtIvotddpIjx40GhhPHNZ53sBA4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pIgJbEsaeh1uUE6rfZzSA/kj4h4fmadO6EmcBNPkbesjL7OnZJ3Ja6c+0cn6hn56ijnSjGTD2IbSPYQ64o6tdX79KoY8ea8NAfPL7X0YbodP5XoCli4BAnkraHoz4lR0mjEQZetd0KPg46KFhqfD9uv/EKOICvO3Y/ZLE6nRLhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=luN+Tp9s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FU/ogiTf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=luN+Tp9s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FU/ogiTf; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 63CBB210E4;
+	Thu, 27 Jun 2024 11:33:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719488010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t01R90XdldGO7anUbxHaqX31mDL54qz2uJ5POgVrV3w=;
+	b=luN+Tp9sneSe5aIFXVa7+ZSq0Oicz+3+MOwfHde/chD8438+KoisRUxzvb8D1z4WP3bOQz
+	VxJXxQobcBj2OgTk3kz6J+e5QHxwgaxsWTIxJyPUOxJrU9S0zo664JUIdm1g2C1oMaT2Eo
+	5OG+LDM1yT8dr4qZJCGZuc9F2nevJak=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719488010;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t01R90XdldGO7anUbxHaqX31mDL54qz2uJ5POgVrV3w=;
+	b=FU/ogiTfDgFmO7Vi9yS/KUQgM4cVEziltRx8Qob1nx8hoAQ2muOpZewJqlBhXE0NAdErzT
+	HKrH1hm28QpHz1Bg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=luN+Tp9s;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="FU/ogiTf"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719488010; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t01R90XdldGO7anUbxHaqX31mDL54qz2uJ5POgVrV3w=;
+	b=luN+Tp9sneSe5aIFXVa7+ZSq0Oicz+3+MOwfHde/chD8438+KoisRUxzvb8D1z4WP3bOQz
+	VxJXxQobcBj2OgTk3kz6J+e5QHxwgaxsWTIxJyPUOxJrU9S0zo664JUIdm1g2C1oMaT2Eo
+	5OG+LDM1yT8dr4qZJCGZuc9F2nevJak=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719488010;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=t01R90XdldGO7anUbxHaqX31mDL54qz2uJ5POgVrV3w=;
+	b=FU/ogiTfDgFmO7Vi9yS/KUQgM4cVEziltRx8Qob1nx8hoAQ2muOpZewJqlBhXE0NAdErzT
+	HKrH1hm28QpHz1Bg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4A5F81384C;
+	Thu, 27 Jun 2024 11:33:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AmAgEgpOfWYhPwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 27 Jun 2024 11:33:30 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 988C8A08A2; Thu, 27 Jun 2024 13:33:28 +0200 (CEST)
+Date: Thu, 27 Jun 2024 13:33:28 +0200
+From: Jan Kara <jack@suse.cz>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com,
+	dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
+	jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
+	will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+	dave.hansen@linux.intel.com, ira.weiny@intel.com,
+	willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
+	linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
+Subject: Re: [PATCH 06/13] mm/memory: Add dax_insert_pfn
+Message-ID: <20240627113328.ozqkzhloufrpsdcr@quack3>
+References: <cover.66009f59a7fe77320d413011386c3ae5c2ee82eb.1719386613.git-series.apopple@nvidia.com>
+ <50013c1ee52b5bb1213571bff66780568455f54c.1719386613.git-series.apopple@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <50013c1ee52b5bb1213571bff66780568455f54c.1719386613.git-series.apopple@nvidia.com>
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[33];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RL7pfqg7h1m44jupjp7nguhfec)];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[intel.com,deltatee.com,google.com,suse.cz,ziepe.ca,arm.com,kernel.org,ellerman.id.au,gmail.com,linux.intel.com,infradead.org,mit.edu,huawei.com,redhat.com,vger.kernel.org,lists.infradead.org,lists.ozlabs.org,lists.linux.dev,kvack.org,nvidia.com,lst.de,fromorbit.com];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 63CBB210E4
+X-Spam-Flag: NO
+X-Spam-Score: -4.01
+X-Spam-Level: 
 
-When search_buf gets placed at the end of the virtual address space
-        de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
-might overflow to zero and a subsequent loop iteration will crash.
+On Thu 27-06-24 10:54:21, Alistair Popple wrote:
+> Currently to map a DAX page the DAX driver calls vmf_insert_pfn. This
+> creates a special devmap PTE entry for the pfn but does not take a
+> reference on the underlying struct page for the mapping. This is
+> because DAX page refcounts are treated specially, as indicated by the
+> presence of a devmap entry.
+> 
+> To allow DAX page refcounts to be managed the same as normal page
+> refcounts introduce dax_insert_pfn. This will take a reference on the
+> underlying page much the same as vmf_insert_page, except it also
+> permits upgrading an existing mapping to be writable if
+> requested/possible.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
 
-Observed on a simulated riscv32 system using 2GB of memory and a rootfs
-on MMC.
+Overall this looks good to me. Some comments below.
 
-Signed-off-by: Jan Henrik Weinstock <jan@mwa.re>
----
- fs/ext4/namei.c | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
+> ---
+>  include/linux/mm.h |  4 ++-
+>  mm/memory.c        | 79 ++++++++++++++++++++++++++++++++++++++++++-----
+>  2 files changed, 76 insertions(+), 7 deletions(-)
+> 
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index 9a5652c..b84368b 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -1080,6 +1080,8 @@ int vma_is_stack_for_current(struct vm_area_struct *vma);
+>  struct mmu_gather;
+>  struct inode;
+>  
+> +extern void prep_compound_page(struct page *page, unsigned int order);
+> +
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index a630b27a4..030a11412 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1537,7 +1537,8 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 
- 	de = (struct ext4_dir_entry_2 *)search_buf;
- 	dlimit = search_buf + buf_size;
--	while ((char *) de < dlimit - EXT4_BASE_DIR_LEN) {
-+	while ((char *) de < dlimit - EXT4_BASE_DIR_LEN &&
-+	       (char *) de >= search_buf) {
- 		/* this code is executed quadratically often */
- 		/* do minimal checking `by hand' */
- 		if (de->name + de->name_len <= dlimit &&
+You don't seem to use this function in this patch?
+
+> diff --git a/mm/memory.c b/mm/memory.c
+> index ce48a05..4f26a1f 100644
+> --- a/mm/memory.c
+> +++ b/mm/memory.c
+> @@ -1989,14 +1989,42 @@ static int validate_page_before_insert(struct page *page)
+>  }
+>  
+>  static int insert_page_into_pte_locked(struct vm_area_struct *vma, pte_t *pte,
+> -			unsigned long addr, struct page *page, pgprot_t prot)
+> +			unsigned long addr, struct page *page, pgprot_t prot, bool mkwrite)
+>  {
+>  	struct folio *folio = page_folio(page);
+> +	pte_t entry = ptep_get(pte);
+>  
+> -	if (!pte_none(ptep_get(pte)))
+> +	if (!pte_none(entry)) {
+> +		if (mkwrite) {
+> +			/*
+> +			 * For read faults on private mappings the PFN passed
+> +			 * in may not match the PFN we have mapped if the
+> +			 * mapped PFN is a writeable COW page.  In the mkwrite
+> +			 * case we are creating a writable PTE for a shared
+> +			 * mapping and we expect the PFNs to match. If they
+> +			 * don't match, we are likely racing with block
+> +			 * allocation and mapping invalidation so just skip the
+> +			 * update.
+> +			 */
+> +			if (pte_pfn(entry) != page_to_pfn(page)) {
+> +				WARN_ON_ONCE(!is_zero_pfn(pte_pfn(entry)));
+> +				return -EFAULT;
+> +			}
+> +			entry = maybe_mkwrite(entry, vma);
+> +			entry = pte_mkyoung(entry);
+> +			if (ptep_set_access_flags(vma, addr, pte, entry, 1))
+> +				update_mmu_cache(vma, addr, pte);
+> +			return 0;
+> +		}
+>  		return -EBUSY;
+
+If you do this like:
+
+		if (!mkwrite)
+			return -EBUSY;
+
+You can reduce indentation of the big block and also making the flow more
+obvious...
+
+> +	}
+> +
+>  	/* Ok, finally just insert the thing.. */
+>  	folio_get(folio);
+> +	if (mkwrite)
+> +		entry = maybe_mkwrite(mk_pte(page, prot), vma);
+> +	else
+> +		entry = mk_pte(page, prot);
+
+I'd prefer:
+
+	entry = mk_pte(page, prot);
+	if (mkwrite)
+		entry = maybe_mkwrite(entry, vma);
+
+but I don't insist. Also insert_pfn() additionally has pte_mkyoung() and
+pte_mkdirty(). Why was it left out here?
+
+								Honza
 -- 
-2.45.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
