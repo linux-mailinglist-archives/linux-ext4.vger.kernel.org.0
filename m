@@ -1,65 +1,65 @@
-Return-Path: <linux-ext4+bounces-3029-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3027-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C313891C4AB
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jun 2024 19:19:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9A35891C4A5
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jun 2024 19:19:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E5E828401B
-	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jun 2024 17:19:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 516261F22503
+	for <lists+linux-ext4@lfdr.de>; Fri, 28 Jun 2024 17:19:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 966181CF3DE;
-	Fri, 28 Jun 2024 17:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9EF11CD5AD;
+	Fri, 28 Jun 2024 17:18:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="lbVIy3aE"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="oybsNbu8"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1121CD5C4
-	for <linux-ext4@vger.kernel.org>; Fri, 28 Jun 2024 17:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9A031CD5A5
+	for <linux-ext4@vger.kernel.org>; Fri, 28 Jun 2024 17:18:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719595105; cv=none; b=VkjKjZ0+TbuX9f9DDaVw3/+Ej26ESIIZS3B9Fhb2K2rPUtbMAvlRs57tAJggOqypqZXgVyYSRqUpPHDeKwoMqLuG3W3ivK2bX5dB1oKMwb9BW7as7jD+wMCIU4QLP82f5GCSvai2fxix5jYth4XaGKQp17YxoO5DYstRrSwOc4s=
+	t=1719595096; cv=none; b=cvyRSxlRcRN9LxMQEHObzSjZHtqKzHwrZtN0KRwz2zo/eOWBy42pvo27pR1QlxP7J/vIGx01z42RsyU7oQjtfL/5yW64gN28WXhyN7rbTIqEm5atWpxsH3R5q8w/CNNRWxtiKG5fX1t0VwY4M5TR5ehLGp8+quxRE5D0FgPkzdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719595105; c=relaxed/simple;
-	bh=j6JO8xnyqMthfQl9cUoRuoYJrzy8B24x9G+tgF0oCf4=;
+	s=arc-20240116; t=1719595096; c=relaxed/simple;
+	bh=Ll7VDh97eSU4kzvGtZjZQRvp7nqnAh5Ud2rSAUstZJc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=e4+4F2T2/Tpe/ga4BAqfQth0CMXHXHmKwfdgjTGMrjkOCl/NxS2UGJx1hXE6XI8L8O+Hs3mTOl/MKlTn3feqk07BbPWHYjdrIhbjwY+QffMaZrCV3GEpq0GOchyXVdlW4ykbzYgcBsWvrdzh1ansx2oIEnxij9upH82koOAqTes=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=lbVIy3aE; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=df2vye0jAwn/e72VeSvlYSbmclsSYhHiTq6Z2sBr4/JDf27YnSPI8qhxGxujcV54q7aNjXU2rhTa6JEzxkiavL960d0OjKnSaYfm3LUVUduTpi8N9wi34xE41T0ZxFKQnGEEierwID/8QSj1D84Q1iOrjtiJKmPp86f7sAVyrnY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=oybsNbu8; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-120-63.bstnma.fios.verizon.net [173.48.120.63])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 45SHHtj3024133
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 45SHHtls024129
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Fri, 28 Jun 2024 13:17:56 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1719595077; bh=X1ZgjNTwhvsPZeB1iqG8J+FyPbhfO8IrQNQBkJW9UsM=;
+	t=1719595077; bh=KfV/rAv/XQlmF5zcjtWgflEmVb+bUQhJ46QMD8rb6A8=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=lbVIy3aEgzoDnpDkZQ/0rMvVad4dPzab+VELImZHfTv0k2rQFQdHCxzgaUkAEcp8F
-	 zFVjU9UVxn0hTb06cglFIDW3XziJD3h9H0VDn1KyMAZZ7CbRO4Zv8uygPzuWNPnB24
-	 6PwczJkCVKnM0mYJsdmSImSqhnahGyS41yRQLE9jh1yXMzcJTOjAs4EFMDm7IXnjFl
-	 /X/F9+ZA6WsvD1IDD5CPxra9O32NIrU56Z46+6IpPudu63CRndCdexiw0ByZotCg4z
-	 a1yCMd9Fkfk1r2XWfyhePkmzZh1EiPYwxrO7udiMK0HcFvIz3cRg7vW23Upxb3UdPG
-	 t2wCi6MDNK0LA==
+	b=oybsNbu8tI+R3CK5LpIiqCzIx7IKQrMNkQEPRKX2RbocWd+Vn5VeNtt89vRB8gjz+
+	 AEarE6Y9MunTkNpuvnH26Ybuy/kFA3SdVI9ZH9jJfK74rQVFox4bNKESKro6L4ZV5i
+	 Pg6VvWZ4LU/bX2kxCY4EbfmI0X1xi+eqqQXToXMCtCc5Ep0G7aV5P/zNoTp6O3+oK0
+	 JzBzipbw/z/1uLS5u+08PgwoGMCN4JTO7+rEohY1AzTauDe5RHosTGMLxdPZMA2p9c
+	 B4Qjfs0KgoAPXcRgU60WA8uK7+EW0J5O5F1q8neV9URKhNniUVoYjLDI2XY8MLmU6b
+	 crdXjdqERFuqg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id D2D8C15C00DC; Fri, 28 Jun 2024 13:17:54 -0400 (EDT)
+	id D42F515C02C7; Fri, 28 Jun 2024 13:17:54 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Andreas Dilger <adilger@dilger.ca>, Zhang Yi <yi.zhang@huaweicloud.com>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] ext4: fix infinite loop when replaying fast_commit
-Date: Fri, 28 Jun 2024 13:17:46 -0400
-Message-ID: <171959506219.737463.11804303304019797243.b4-ty@mit.edu>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaxi Shen <shenxiaxi26@gmail.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, skhan@linuxfoundation.org,
+        javier.carrasco.cruz@gmail.com, syzkaller-bugs@googlegroups.com,
+        syzbot+eaba5abe296837a640c0@syzkaller.appspotmail.com
+Subject: Re: [PATCH] Fix uninitialized variable in ext4_inlinedir_to_tree
+Date: Fri, 28 Jun 2024 13:17:47 -0400
+Message-ID: <171959506217.737463.6996650484265246906.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240515082857.32730-1-luis.henriques@linux.dev>
-References: <20240515082857.32730-1-luis.henriques@linux.dev>
+In-Reply-To: <20240501033017.220000-1-shenxiaxi26@gmail.com>
+References: <20240501033017.220000-1-shenxiaxi26@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -70,21 +70,22 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Wed, 15 May 2024 09:28:57 +0100, Luis Henriques (SUSE) wrote:
-> When doing fast_commit replay an infinite loop may occur due to an
-> uninitialized extent_status struct.  ext4_ext_determine_insert_hole() does
-> not detect the replay and calls ext4_es_find_extent_range(), which will
-> return immediately without initializing the 'es' variable.
+On Tue, 30 Apr 2024 20:30:17 -0700, Xiaxi Shen wrote:
+> Syzbot has found an uninit-value bug in ext4_inlinedir_to_tree
 > 
-> Because 'es' contains garbage, an integer overflow may happen causing an
-> infinite loop in this function, easily reproducible using fstest generic/039.
+> This error happens because ext4_inlinedir_to_tree does not
+> handle the case when ext4fs_dirhash returns an error
+> 
+> This can be avoided by checking the return value of ext4fs_dirhash
+> and propagating the error,
+> similar to how it's done with ext4_htree_store_dirent
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: fix infinite loop when replaying fast_commit
-      commit: 907c3fe532253a6ef4eb9c4d67efb71fab58c706
+[1/1] Fix uninitialized variable in ext4_inlinedir_to_tree
+      commit: 8dc9c3da79c84b13fdb135e2fb0a149a8175bffe
 
 Best regards,
 -- 
