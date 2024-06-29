@@ -1,262 +1,157 @@
-Return-Path: <linux-ext4+bounces-3033-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3034-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFD5591CEDA
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jun 2024 21:37:43 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E4091CF30
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jun 2024 23:29:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 43D401F21C23
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jun 2024 19:37:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCA9028278F
+	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jun 2024 21:29:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22703132112;
-	Sat, 29 Jun 2024 19:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5474E1411ED;
+	Sat, 29 Jun 2024 21:28:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ysf1xD7m"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VnqFJx5g"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D36280046
-	for <linux-ext4@vger.kernel.org>; Sat, 29 Jun 2024 19:37:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95FE374FA;
+	Sat, 29 Jun 2024 21:28:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719689856; cv=none; b=hY3Dn9DHAduFEe7nDDmEbkT6v8hsvZysRAfwFUeSsGkduYrKlkc44VFB81qRAsfVuQFm/pYSllJoFNE/laDFltX6z+J1OkyuVJvfEnYoDXh+JpOQNp73q5TuMSUEMOQdc/C4RFLLjQfxpO1dqPrBfgn/5px7KPK7tWKPV60b+mo=
+	t=1719696533; cv=none; b=ZmmPN+DDth5AUs+dVA3Zy1q67VoTFIY6mqLgXd4HHgCf9QwTljhM2adx2t7uPxdkhpYtnUWkdtHxKWWaFrOykx9JocDNXDjfMO6yC+iLsXuFghAbFrIPrwa36gjMkhFPB0PLk1d6FneoxAVHahetaID1BAG+DVaoUWzZv2MbOMI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719689856; c=relaxed/simple;
-	bh=LM7tlgKDO7kW+D/bcqrGzbqvleT0t6LoifWS21imoro=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=cPGkFc0rsQGkxpGI97rOf6NtpEXmyHwkGITFJat9VOajmbS/DiZXupTJp+njHO8tmP6nI5eH45M1xGuH8rt2IOFOyb9W+Dt2rLjURcWeaz6uG/w+spZqXIEMcZnHY6aujrYSgQbDVEMASGBkPAesvtlsduCu8HhEz/Xawi77vAI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ysf1xD7m; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1719689855; x=1751225855;
-  h=date:from:to:cc:subject:message-id;
-  bh=LM7tlgKDO7kW+D/bcqrGzbqvleT0t6LoifWS21imoro=;
-  b=Ysf1xD7m8TbAIGDkjzGzl1bvKpP0vODxmi+bU6ZNrmQu7GsUZkQXrHMw
-   x5J7U3nlHXe27i9gDIov6cZpWxJXQkLhAYIsZmouGKmrgeSV0frM340ar
-   0lSC1CXN4SUEw4sFpAkHOzOTdQ82ieDisNjeB7Ymhl/rIyg/DtHI3sV67
-   HYSFi4KpIVYrbOOqpbPUARFEvjoLnb8SHUXp1v4HTQ+W52/X/mjmgG/gu
-   MVMwGZnpRdjMSGndnTLy++r3Bs/jl3E1X5YIgbJgvxm8UBenPiedDUNOg
-   z+YA9Qc4owRKT2Y9zQZyvLV8k9pxPuKq9I0qsRmNiMbOBlc/bUGXl3s3o
-   w==;
-X-CSE-ConnectionGUID: qtycFp0YTgWTsLBiJr4Q4A==
-X-CSE-MsgGUID: qnvtBJITSaiFHBGIGALSzw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11118"; a="28242490"
-X-IronPort-AV: E=Sophos;i="6.09,172,1716274800"; 
-   d="scan'208";a="28242490"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Jun 2024 12:37:34 -0700
-X-CSE-ConnectionGUID: D0UZmc3NTweNnAVJf9zujA==
-X-CSE-MsgGUID: VewD6O0cRISvVgx36FIwxw==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.09,172,1716274800"; 
-   d="scan'208";a="49963400"
-Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
-  by orviesa003.jf.intel.com with ESMTP; 29 Jun 2024 12:37:32 -0700
-Received: from kbuild by 68891e0c336b with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sNdt4-000KDg-26;
-	Sat, 29 Jun 2024 19:37:30 +0000
-Date: Sun, 30 Jun 2024 03:36:58 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- 8262fe9a902c8a7b68c8521ebe18360a9145bada
-Message-ID: <202406300356.19ONwXE1-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1719696533; c=relaxed/simple;
+	bh=HtXt70x632jQVkvZVa5+viDAiEo/vLpbpyG46HWBjMw=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=moRBVwhoy0/uBa4JVJZd8I9XbLatM31IwIrc27PcHBuyN3hDwIKJRgCQOLAhonAiTxO+IGqEjh9svFvk5m+cm64fLp1Xs971OLHI74lRWhy8YNv3UwfdSqLx1dmTK5eCOH1hkxTUgvb/9cRo0KxeiOhfuAfqHip7Xn5Tss+jTHE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VnqFJx5g; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07CE9C2BBFC;
+	Sat, 29 Jun 2024 21:28:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719696533;
+	bh=HtXt70x632jQVkvZVa5+viDAiEo/vLpbpyG46HWBjMw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=VnqFJx5ghuBk4Ih3CVJjWYCN0/ZeQE4bA9dgueRtqlOBnEj9bpHIblRRQS9pvQOq9
+	 e1eHFjHr5+rNv2dGIMrkk3IAZlqwsKX7p+rD1r1vmjoqPl5r2aEZGCjwsQpiy3/x6B
+	 ysyxPdOQzeo0ZX9VEzv6T9NJsfU8dcWOxpkFNYAWzY/LBU0zuLZ2xf3++9jGcptCb1
+	 Xp8Voz7uHR8O3pq3w/ncYUPGbyyGG5MBfyicJ+oqDiGO1BzaG9nKTI9pT87K9/QPad
+	 WGmS2gB4YANsUc/hqolrWiMuZCznLg98Ov/R1hZ8gbO540njo89EbUIDosTqYlZeua
+	 vy2FDJBTYP9+A==
+Date: Sat, 29 Jun 2024 16:28:51 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com,
+	dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
+	jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
+	will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+	dave.hansen@linux.intel.com, ira.weiny@intel.com,
+	willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
+	linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
+Subject: Re: [PATCH 02/13] pci/p2pdma: Don't initialise page refcount to one
+Message-ID: <20240629212851.GA1484889@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c66cc5c5142813049ffdf9af75302f5064048241.1719386613.git-series.apopple@nvidia.com>
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: 8262fe9a902c8a7b68c8521ebe18360a9145bada  ext4: make ext4_da_map_blocks() buffer_head unaware
+On Thu, Jun 27, 2024 at 10:54:17AM +1000, Alistair Popple wrote:
+> The reference counts for ZONE_DEVICE private pages should be
+> initialised by the driver when the page is actually allocated by the
+> driver allocator, not when they are first created. This is currently
+> the case for MEMORY_DEVICE_PRIVATE and MEMORY_DEVICE_COHERENT pages
+> but not MEMORY_DEVICE_PCI_P2PDMA pages so fix that up.
 
-elapsed time: 1548m
+If you tag the subject line with PCI, please run "git log --oneline
+drivers/pci/p2pdma.c" and make yours look like previous ones
+("PCI/P2PDMA").
 
-configs tested: 169
-configs skipped: 4
+Also recast it to say something semantically useful about what it
+*does*, not what it *doesn't* do.  Maybe something about initializing
+the refcount where the page is allocated?  Especially since the only
+p2pdma.c change here is to "set_page_count(..., 1)", which looks like
+exactly the opposite of "don't initialize refcount to one".
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc-13.2.0
-alpha                               defconfig   gcc-13.2.0
-arc                              allmodconfig   gcc-13.2.0
-arc                               allnoconfig   gcc-13.2.0
-arc                              allyesconfig   gcc-13.2.0
-arc                                 defconfig   gcc-13.2.0
-arc                     haps_hs_smp_defconfig   gcc-13.2.0
-arc                   randconfig-001-20240629   gcc-13.2.0
-arc                   randconfig-002-20240629   gcc-13.2.0
-arm                              allmodconfig   gcc-13.2.0
-arm                               allnoconfig   gcc-13.2.0
-arm                              allyesconfig   gcc-13.2.0
-arm                       aspeed_g4_defconfig   clang-19
-arm                                 defconfig   gcc-13.2.0
-arm                       imx_v6_v7_defconfig   gcc-13.2.0
-arm                             pxa_defconfig   clang-19
-arm                   randconfig-001-20240629   gcc-13.2.0
-arm                   randconfig-002-20240629   gcc-13.2.0
-arm                   randconfig-003-20240629   gcc-13.2.0
-arm                   randconfig-004-20240629   gcc-13.2.0
-arm                         s3c6400_defconfig   clang-19
-arm64                            allmodconfig   gcc-13.2.0
-arm64                             allnoconfig   gcc-13.2.0
-arm64                               defconfig   gcc-13.2.0
-arm64                 randconfig-001-20240629   gcc-13.2.0
-arm64                 randconfig-002-20240629   gcc-13.2.0
-arm64                 randconfig-003-20240629   gcc-13.2.0
-arm64                 randconfig-004-20240629   gcc-13.2.0
-csky                              allnoconfig   gcc-13.2.0
-csky                                defconfig   gcc-13.2.0
-csky                  randconfig-001-20240629   gcc-13.2.0
-csky                  randconfig-002-20240629   gcc-13.2.0
-i386                             allmodconfig   clang-18
-i386                              allnoconfig   clang-18
-i386                             allyesconfig   clang-18
-i386         buildonly-randconfig-001-20240629   gcc-7
-i386         buildonly-randconfig-002-20240629   gcc-7
-i386         buildonly-randconfig-003-20240629   gcc-7
-i386         buildonly-randconfig-004-20240629   gcc-7
-i386         buildonly-randconfig-005-20240629   gcc-7
-i386         buildonly-randconfig-006-20240629   gcc-7
-i386                                defconfig   clang-18
-i386                  randconfig-001-20240629   gcc-7
-i386                  randconfig-002-20240629   gcc-7
-i386                  randconfig-003-20240629   gcc-7
-i386                  randconfig-004-20240629   gcc-7
-i386                  randconfig-005-20240629   gcc-7
-i386                  randconfig-006-20240629   gcc-7
-i386                  randconfig-011-20240629   gcc-7
-i386                  randconfig-012-20240629   gcc-7
-i386                  randconfig-013-20240629   gcc-7
-i386                  randconfig-014-20240629   gcc-7
-i386                  randconfig-015-20240629   gcc-7
-i386                  randconfig-016-20240629   gcc-7
-loongarch                        allmodconfig   gcc-13.2.0
-loongarch                         allnoconfig   gcc-13.2.0
-loongarch                           defconfig   gcc-13.2.0
-loongarch             randconfig-001-20240629   gcc-13.2.0
-loongarch             randconfig-002-20240629   gcc-13.2.0
-m68k                             allmodconfig   gcc-13.2.0
-m68k                              allnoconfig   gcc-13.2.0
-m68k                             allyesconfig   gcc-13.2.0
-m68k                         apollo_defconfig   gcc-13.2.0
-m68k                                defconfig   gcc-13.2.0
-m68k                           sun3_defconfig   gcc-13.2.0
-microblaze                       allmodconfig   gcc-13.2.0
-microblaze                        allnoconfig   gcc-13.2.0
-microblaze                       allyesconfig   gcc-13.2.0
-microblaze                          defconfig   gcc-13.2.0
-mips                              allnoconfig   gcc-13.2.0
-mips                     decstation_defconfig   clang-19
-mips                           ip32_defconfig   clang-19
-mips                      maltasmvp_defconfig   gcc-13.2.0
-mips                           xway_defconfig   gcc-13.2.0
-nios2                             allnoconfig   gcc-13.2.0
-nios2                               defconfig   gcc-13.2.0
-nios2                 randconfig-001-20240629   gcc-13.2.0
-nios2                 randconfig-002-20240629   gcc-13.2.0
-openrisc                          allnoconfig   gcc-13.2.0
-openrisc                         allyesconfig   gcc-13.2.0
-openrisc                            defconfig   gcc-13.2.0
-parisc                           allmodconfig   gcc-13.2.0
-parisc                            allnoconfig   gcc-13.2.0
-parisc                           allyesconfig   gcc-13.2.0
-parisc                              defconfig   gcc-13.2.0
-parisc                randconfig-001-20240629   gcc-13.2.0
-parisc                randconfig-002-20240629   gcc-13.2.0
-parisc64                            defconfig   gcc-13.2.0
-powerpc                          allmodconfig   gcc-13.2.0
-powerpc                           allnoconfig   gcc-13.2.0
-powerpc                          allyesconfig   gcc-13.2.0
-powerpc                 canyonlands_defconfig   gcc-13.2.0
-powerpc                        icon_defconfig   clang-19
-powerpc                     mpc512x_defconfig   clang-19
-powerpc                 mpc836x_rdk_defconfig   clang-19
-powerpc                     mpc83xx_defconfig   clang-19
-powerpc                      pcm030_defconfig   clang-19
-powerpc                      pmac32_defconfig   clang-19
-powerpc               randconfig-001-20240629   gcc-13.2.0
-powerpc               randconfig-002-20240629   gcc-13.2.0
-powerpc               randconfig-003-20240629   gcc-13.2.0
-powerpc                         wii_defconfig   gcc-13.2.0
-powerpc64             randconfig-001-20240629   gcc-13.2.0
-powerpc64             randconfig-002-20240629   gcc-13.2.0
-powerpc64             randconfig-003-20240629   gcc-13.2.0
-riscv                            allmodconfig   gcc-13.2.0
-riscv                             allnoconfig   gcc-13.2.0
-riscv                            allyesconfig   gcc-13.2.0
-riscv                               defconfig   gcc-13.2.0
-riscv                 randconfig-001-20240629   gcc-13.2.0
-riscv                 randconfig-002-20240629   gcc-13.2.0
-s390                              allnoconfig   gcc-13.2.0
-s390                                defconfig   clang-19
-s390                                defconfig   gcc-13.2.0
-s390                  randconfig-001-20240629   gcc-13.2.0
-s390                  randconfig-002-20240629   gcc-13.2.0
-sh                                allnoconfig   gcc-13.2.0
-sh                         ap325rxa_defconfig   gcc-13.2.0
-sh                                  defconfig   gcc-13.2.0
-sh                         ecovec24_defconfig   gcc-13.2.0
-sh                    randconfig-001-20240629   gcc-13.2.0
-sh                    randconfig-002-20240629   gcc-13.2.0
-sh                   rts7751r2dplus_defconfig   gcc-13.2.0
-sh                           se7722_defconfig   gcc-13.2.0
-sh                           se7724_defconfig   gcc-13.2.0
-sh                             shx3_defconfig   gcc-13.2.0
-sparc64                             defconfig   gcc-13.2.0
-sparc64               randconfig-001-20240629   gcc-13.2.0
-sparc64               randconfig-002-20240629   gcc-13.2.0
-um                                allnoconfig   gcc-13.2.0
-um                                  defconfig   gcc-13.2.0
-um                             i386_defconfig   gcc-13.2.0
-um                    randconfig-001-20240629   gcc-13.2.0
-um                    randconfig-002-20240629   gcc-13.2.0
-um                           x86_64_defconfig   gcc-13.2.0
-x86_64                            allnoconfig   clang-18
-x86_64                           allyesconfig   clang-18
-x86_64       buildonly-randconfig-001-20240629   clang-18
-x86_64       buildonly-randconfig-002-20240629   clang-18
-x86_64       buildonly-randconfig-003-20240629   clang-18
-x86_64       buildonly-randconfig-004-20240629   clang-18
-x86_64       buildonly-randconfig-005-20240629   clang-18
-x86_64       buildonly-randconfig-006-20240629   clang-18
-x86_64                              defconfig   clang-18
-x86_64                                  kexec   clang-18
-x86_64                randconfig-001-20240629   clang-18
-x86_64                randconfig-002-20240629   clang-18
-x86_64                randconfig-003-20240629   clang-18
-x86_64                randconfig-004-20240629   clang-18
-x86_64                randconfig-005-20240629   clang-18
-x86_64                randconfig-006-20240629   clang-18
-x86_64                randconfig-011-20240629   clang-18
-x86_64                randconfig-012-20240629   clang-18
-x86_64                randconfig-013-20240629   clang-18
-x86_64                randconfig-014-20240629   clang-18
-x86_64                randconfig-015-20240629   clang-18
-x86_64                randconfig-016-20240629   clang-18
-x86_64                randconfig-071-20240629   clang-18
-x86_64                randconfig-072-20240629   clang-18
-x86_64                randconfig-073-20240629   clang-18
-x86_64                randconfig-074-20240629   clang-18
-x86_64                randconfig-075-20240629   clang-18
-x86_64                randconfig-076-20240629   clang-18
-x86_64                          rhel-8.3-rust   clang-18
-x86_64                               rhel-8.3   clang-18
-xtensa                            allnoconfig   gcc-13.2.0
-xtensa                  cadence_csp_defconfig   gcc-13.2.0
-xtensa                randconfig-001-20240629   gcc-13.2.0
-xtensa                randconfig-002-20240629   gcc-13.2.0
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> ---
+>  drivers/pci/p2pdma.c | 2 ++
+>  mm/memremap.c        | 8 ++++----
+>  mm/mm_init.c         | 4 +++-
+>  3 files changed, 9 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index 4f47a13..1e9ea32 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -128,6 +128,8 @@ static int p2pmem_alloc_mmap(struct file *filp, struct kobject *kobj,
+>  		goto out;
+>  	}
+>  
+> +	set_page_count(virt_to_page(kaddr), 1);
+> +
+>  	/*
+>  	 * vm_insert_page() can sleep, so a reference is taken to mapping
+>  	 * such that rcu_read_unlock() can be done before inserting the
+> diff --git a/mm/memremap.c b/mm/memremap.c
+> index 40d4547..caccbd8 100644
+> --- a/mm/memremap.c
+> +++ b/mm/memremap.c
+> @@ -488,15 +488,15 @@ void free_zone_device_folio(struct folio *folio)
+>  	folio->mapping = NULL;
+>  	folio->page.pgmap->ops->page_free(folio_page(folio, 0));
+>  
+> -	if (folio->page.pgmap->type != MEMORY_DEVICE_PRIVATE &&
+> -	    folio->page.pgmap->type != MEMORY_DEVICE_COHERENT)
+> +	if (folio->page.pgmap->type == MEMORY_DEVICE_PRIVATE ||
+> +	    folio->page.pgmap->type == MEMORY_DEVICE_COHERENT)
+> +		put_dev_pagemap(folio->page.pgmap);
+> +	else if (folio->page.pgmap->type != MEMORY_DEVICE_PCI_P2PDMA)
+>  		/*
+>  		 * Reset the refcount to 1 to prepare for handing out the page
+>  		 * again.
+>  		 */
+>  		folio_set_count(folio, 1);
+> -	else
+> -		put_dev_pagemap(folio->page.pgmap);
+>  }
+>  
+>  void zone_device_page_init(struct page *page)
+> diff --git a/mm/mm_init.c b/mm/mm_init.c
+> index 3ec0493..b7e1599 100644
+> --- a/mm/mm_init.c
+> +++ b/mm/mm_init.c
+> @@ -6,6 +6,7 @@
+>   * Author Mel Gorman <mel@csn.ul.ie>
+>   *
+>   */
+> +#include "linux/memremap.h"
+>  #include <linux/kernel.h>
+>  #include <linux/init.h>
+>  #include <linux/kobject.h>
+> @@ -1014,7 +1015,8 @@ static void __ref __init_zone_device_page(struct page *page, unsigned long pfn,
+>  	 * which will set the page count to 1 when allocating the page.
+>  	 */
+>  	if (pgmap->type == MEMORY_DEVICE_PRIVATE ||
+> -	    pgmap->type == MEMORY_DEVICE_COHERENT)
+> +	    pgmap->type == MEMORY_DEVICE_COHERENT ||
+> +	    pgmap->type == MEMORY_DEVICE_PCI_P2PDMA)
+>  		set_page_count(page, 0);
+>  }
+>  
+> -- 
+> git-series 0.9.1
 
