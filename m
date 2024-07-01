@@ -1,48 +1,77 @@
-Return-Path: <linux-ext4+bounces-3034-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3035-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12E4091CF30
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jun 2024 23:29:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9FF3491D6F5
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 06:24:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BCA9028278F
-	for <lists+linux-ext4@lfdr.de>; Sat, 29 Jun 2024 21:29:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6059E281C4C
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 04:24:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5474E1411ED;
-	Sat, 29 Jun 2024 21:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD7222F03;
+	Mon,  1 Jul 2024 04:24:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VnqFJx5g"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="xUdX3f89"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A95FE374FA;
-	Sat, 29 Jun 2024 21:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80DEC17BA1
+	for <linux-ext4@vger.kernel.org>; Mon,  1 Jul 2024 04:24:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719696533; cv=none; b=ZmmPN+DDth5AUs+dVA3Zy1q67VoTFIY6mqLgXd4HHgCf9QwTljhM2adx2t7uPxdkhpYtnUWkdtHxKWWaFrOykx9JocDNXDjfMO6yC+iLsXuFghAbFrIPrwa36gjMkhFPB0PLk1d6FneoxAVHahetaID1BAG+DVaoUWzZv2MbOMI=
+	t=1719807882; cv=none; b=iJyTDx9pc1vW9WBQdGD61g/TS3ZrB53fAw6dbDdtWzK+tZ/wLnCB9KNENMUJ4koRU2n90TsTY+Qi5/fxRWUj676bRbkexfe83jG7u6WflQdWD3n/QMV08g4QpdpIoreL5JOJH73sP/9CvB3sApHvxuhaax+WPhfkWnElWD+z+W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719696533; c=relaxed/simple;
-	bh=HtXt70x632jQVkvZVa5+viDAiEo/vLpbpyG46HWBjMw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To; b=moRBVwhoy0/uBa4JVJZd8I9XbLatM31IwIrc27PcHBuyN3hDwIKJRgCQOLAhonAiTxO+IGqEjh9svFvk5m+cm64fLp1Xs971OLHI74lRWhy8YNv3UwfdSqLx1dmTK5eCOH1hkxTUgvb/9cRo0KxeiOhfuAfqHip7Xn5Tss+jTHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VnqFJx5g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07CE9C2BBFC;
-	Sat, 29 Jun 2024 21:28:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719696533;
-	bh=HtXt70x632jQVkvZVa5+viDAiEo/vLpbpyG46HWBjMw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:From;
-	b=VnqFJx5ghuBk4Ih3CVJjWYCN0/ZeQE4bA9dgueRtqlOBnEj9bpHIblRRQS9pvQOq9
-	 e1eHFjHr5+rNv2dGIMrkk3IAZlqwsKX7p+rD1r1vmjoqPl5r2aEZGCjwsQpiy3/x6B
-	 ysyxPdOQzeo0ZX9VEzv6T9NJsfU8dcWOxpkFNYAWzY/LBU0zuLZ2xf3++9jGcptCb1
-	 Xp8Voz7uHR8O3pq3w/ncYUPGbyyGG5MBfyicJ+oqDiGO1BzaG9nKTI9pT87K9/QPad
-	 WGmS2gB4YANsUc/hqolrWiMuZCznLg98Ov/R1hZ8gbO540njo89EbUIDosTqYlZeua
-	 vy2FDJBTYP9+A==
-Date: Sat, 29 Jun 2024 16:28:51 -0500
-From: Bjorn Helgaas <helgaas@kernel.org>
+	s=arc-20240116; t=1719807882; c=relaxed/simple;
+	bh=paVAf+8j2Ao8wNZ6d9H4Go6mO+YeHszO+g9YMet+gN4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dtBdSnh0AyZjxYAiIb6ISjmTr+md5bx/hEUSsB5/dvsJi78zZvPaTvp+ZdWah2/wuWuqLwf2dqZlxPaQRqotJWJXFOn3OKA8Lm1SOZRVo3pQHakWY78IEPA5ms1Ed2WyO2v2DekDNNmKnRx2myRL5ddOE6bxV0g+wVHHvE/JpKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=xUdX3f89; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1fa9f540f45so12818015ad.1
+        for <linux-ext4@vger.kernel.org>; Sun, 30 Jun 2024 21:24:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1719807880; x=1720412680; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=q8FaXxeW49XxQjIVoOOnJuKPW6Isofg2ljkc7tdAOtU=;
+        b=xUdX3f897Grs5cWWuQ2CuoY+jfH5lwciBkIJtBCf7XHn5Vy6PLpf3Y0oEYflVH6KRZ
+         cYzqRjL46Mhp7NxfpjavH3SLzSlx/uSa+Ln6e3xWzWkLpvU+SfWd11Q1NUXSphwk/a55
+         6NmKjcHlf15ki8DBVRvoXxG9iAS8BoybM1PwJHIm2FC/Xyljt+0GJqf8Ngywja2J2Ww9
+         D7HdBC8qSbQMyH3T7iDhdnoO18ctAczp+b2l/XZzsQNlAQ1DbgvNmMyhXtCE/zKg1CQ5
+         RXhY8LPV6wTdbxdJutRYXNqMgvPmIWb0wLA295TCggO7vn7bIjBeCllNLk12n3yQw1Ko
+         M1cQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719807880; x=1720412680;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q8FaXxeW49XxQjIVoOOnJuKPW6Isofg2ljkc7tdAOtU=;
+        b=Yc9Hx0HrNzf+18E9gWfF+cqrWKo2yGDTcwsgNUNAgOo4aWIKC2yLGD71k7zuQ0v/rQ
+         U+za63jO6EvEVc0ZLxYVyuDA1nMAp5KFvYCAXBPFcZ33iVH1zCwlovUqbkbUb6hYmNtJ
+         mwoF7cahPhqVRjV76n8iHSnLXUleKb79z1O9UHftZOrl5g0qDi5Ax9lZsFjTCPxdFfaJ
+         yPnbAU6kubWnhc8NBUCKl5ckqAG+2uwBqaZdGL2PCZ8TZvo/HFxrjtwuWM7u/DtMVg4h
+         sw2b93JMFYMBjos99e9254tuoCMGIGYJM3Vpls8MqOsf5MbSl/ZQm1YR39jUlD3Efjir
+         93IA==
+X-Forwarded-Encrypted: i=1; AJvYcCXnTWIrBUSyhYVqm1mMI8eX9Grw3ib8atLzRLuA39boKEpq6YJPF66m3CUfkA9p1E/GbfXfYKsenZm1YOpUtdiEBiNOiz+bLVFM3w==
+X-Gm-Message-State: AOJu0Yyix8+jFm/5gwb6d5gMd+SxDNSzTvIs5A/cddxWYvWLlYrvdWWi
+	D9MHIrXw2/vc6J+mJo6pqnSeeLZOR0oqEoLCETxobEKntBsk/sI8DpwKgvjEjwE=
+X-Google-Smtp-Source: AGHT+IFKQ7mlIRHK3qLypxLI+wB6C/xuRboouR5zOv5/KrFwuLBxwDWk/1+R28Hzvt5tq0xC0UW+Zw==
+X-Received: by 2002:a17:902:d2cc:b0:1fa:2d0:f85b with SMTP id d9443c01a7336-1fadbce9d59mr26040185ad.49.1719807879574;
+        Sun, 30 Jun 2024 21:24:39 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-32-121.pa.nsw.optusnet.com.au. [49.179.32.121])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fac1569051sm53926215ad.215.2024.06.30.21.24.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 30 Jun 2024 21:24:39 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1sO8ai-00HWNB-2Q;
+	Mon, 01 Jul 2024 14:24:36 +1000
+Date: Mon, 1 Jul 2024 14:24:36 +1000
+From: Dave Chinner <david@fromorbit.com>
 To: Alistair Popple <apopple@nvidia.com>
 Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com,
 	dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
@@ -56,9 +85,10 @@ Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com,
 	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
 	linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
-Subject: Re: [PATCH 02/13] pci/p2pdma: Don't initialise page refcount to one
-Message-ID: <20240629212851.GA1484889@bhelgaas>
+	jhubbard@nvidia.com, hch@lst.de
+Subject: Re: [PATCH 00/13] fs/dax: Fix FS DAX page reference counts
+Message-ID: <ZoIvhDvzMCw28VBI@dread.disaster.area>
+References: <cover.66009f59a7fe77320d413011386c3ae5c2ee82eb.1719386613.git-series.apopple@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -67,91 +97,41 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <c66cc5c5142813049ffdf9af75302f5064048241.1719386613.git-series.apopple@nvidia.com>
+In-Reply-To: <cover.66009f59a7fe77320d413011386c3ae5c2ee82eb.1719386613.git-series.apopple@nvidia.com>
 
-On Thu, Jun 27, 2024 at 10:54:17AM +1000, Alistair Popple wrote:
-> The reference counts for ZONE_DEVICE private pages should be
-> initialised by the driver when the page is actually allocated by the
-> driver allocator, not when they are first created. This is currently
-> the case for MEMORY_DEVICE_PRIVATE and MEMORY_DEVICE_COHERENT pages
-> but not MEMORY_DEVICE_PCI_P2PDMA pages so fix that up.
-
-If you tag the subject line with PCI, please run "git log --oneline
-drivers/pci/p2pdma.c" and make yours look like previous ones
-("PCI/P2PDMA").
-
-Also recast it to say something semantically useful about what it
-*does*, not what it *doesn't* do.  Maybe something about initializing
-the refcount where the page is allocated?  Especially since the only
-p2pdma.c change here is to "set_page_count(..., 1)", which looks like
-exactly the opposite of "don't initialize refcount to one".
-
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
->  drivers/pci/p2pdma.c | 2 ++
->  mm/memremap.c        | 8 ++++----
->  mm/mm_init.c         | 4 +++-
->  3 files changed, 9 insertions(+), 5 deletions(-)
+On Thu, Jun 27, 2024 at 10:54:15AM +1000, Alistair Popple wrote:
+> FS DAX pages have always maintained their own page reference counts
+> without following the normal rules for page reference counting. In
+> particular pages are considered free when the refcount hits one rather
+> than zero and refcounts are not added when mapping the page.
 > 
-> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
-> index 4f47a13..1e9ea32 100644
-> --- a/drivers/pci/p2pdma.c
-> +++ b/drivers/pci/p2pdma.c
-> @@ -128,6 +128,8 @@ static int p2pmem_alloc_mmap(struct file *filp, struct kobject *kobj,
->  		goto out;
->  	}
->  
-> +	set_page_count(virt_to_page(kaddr), 1);
-> +
->  	/*
->  	 * vm_insert_page() can sleep, so a reference is taken to mapping
->  	 * such that rcu_read_unlock() can be done before inserting the
-> diff --git a/mm/memremap.c b/mm/memremap.c
-> index 40d4547..caccbd8 100644
-> --- a/mm/memremap.c
-> +++ b/mm/memremap.c
-> @@ -488,15 +488,15 @@ void free_zone_device_folio(struct folio *folio)
->  	folio->mapping = NULL;
->  	folio->page.pgmap->ops->page_free(folio_page(folio, 0));
->  
-> -	if (folio->page.pgmap->type != MEMORY_DEVICE_PRIVATE &&
-> -	    folio->page.pgmap->type != MEMORY_DEVICE_COHERENT)
-> +	if (folio->page.pgmap->type == MEMORY_DEVICE_PRIVATE ||
-> +	    folio->page.pgmap->type == MEMORY_DEVICE_COHERENT)
-> +		put_dev_pagemap(folio->page.pgmap);
-> +	else if (folio->page.pgmap->type != MEMORY_DEVICE_PCI_P2PDMA)
->  		/*
->  		 * Reset the refcount to 1 to prepare for handing out the page
->  		 * again.
->  		 */
->  		folio_set_count(folio, 1);
-> -	else
-> -		put_dev_pagemap(folio->page.pgmap);
->  }
->  
->  void zone_device_page_init(struct page *page)
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index 3ec0493..b7e1599 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -6,6 +6,7 @@
->   * Author Mel Gorman <mel@csn.ul.ie>
->   *
->   */
-> +#include "linux/memremap.h"
->  #include <linux/kernel.h>
->  #include <linux/init.h>
->  #include <linux/kobject.h>
-> @@ -1014,7 +1015,8 @@ static void __ref __init_zone_device_page(struct page *page, unsigned long pfn,
->  	 * which will set the page count to 1 when allocating the page.
->  	 */
->  	if (pgmap->type == MEMORY_DEVICE_PRIVATE ||
-> -	    pgmap->type == MEMORY_DEVICE_COHERENT)
-> +	    pgmap->type == MEMORY_DEVICE_COHERENT ||
-> +	    pgmap->type == MEMORY_DEVICE_PCI_P2PDMA)
->  		set_page_count(page, 0);
->  }
->  
-> -- 
-> git-series 0.9.1
+> Tracking this requires special PTE bits (PTE_DEVMAP) and a secondary
+> mechanism for allowing GUP to hold references on the page (see
+> get_dev_pagemap). However there doesn't seem to be any reason why FS
+> DAX pages need their own reference counting scheme.
+> 
+> By treating the refcounts on these pages the same way as normal pages
+> we can remove a lot of special checks. In particular pXd_trans_huge()
+> becomes the same as pXd_leaf(), although I haven't made that change
+> here. It also frees up a valuable SW define PTE bit on architectures
+> that have devmap PTE bits defined.
+> 
+> It also almost certainly allows further clean-up of the devmap managed
+> functions, but I have left that as a future improvment.
+> 
+> This is an update to the original RFC rebased onto v6.10-rc5. Unlike
+> the original RFC it passes the same number of ndctl test suite
+> (https://github.com/pmem/ndctl) tests as my current development
+> environment does without these patches.
+
+I strongly suggest running fstests on pmem devices with '-o
+dax=always' mount options to get much more comprehensive fsdax test
+coverage. That exercises a lot of the weird mmap corner cases that
+cause problems so it would be good to actually test that nothing new
+got broken in FSDAX by this patchset.
+
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
