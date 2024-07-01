@@ -1,210 +1,170 @@
-Return-Path: <linux-ext4+bounces-3039-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3040-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 61DD191DB8B
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 11:34:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4405591DC72
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 12:28:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7DB61F21561
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 09:34:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF50A285853
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 10:28:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6129284E1E;
-	Mon,  1 Jul 2024 09:34:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29EBA14388B;
+	Mon,  1 Jul 2024 10:27:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="NbE49N1w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="rxylWUg+";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="a/p0kXeh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UOg+M19d"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vf+KOvFJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E47D56EB5B;
-	Mon,  1 Jul 2024 09:34:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BC5612C486;
+	Mon,  1 Jul 2024 10:27:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719826482; cv=none; b=TYcc5NuqIWdcio3CIgYfSrkGYDvKQenotZ6gk0RehoEfX8VxlYGzmWWSDg6aVhYrSva/tAWC2zP9uMZ6/W594kpdN1EDIIMpdovBtmFcVEi1lMsILseSMY5ApjThkyPp/DXYGrA1porVS63MATEQlypvxCRw/Smi5ICO9fBCsRI=
+	t=1719829628; cv=none; b=nr907TUxMiIPiDM8qxVmudbKR1475DJ7J+kZ9xzTJWobOJRJYwLNRMw9+qleiHt4r2FTGooGgKYm6rRiE2lD5pzYeBBKKgmosMWQtWj7sVeT/fGUZWBDLmqbqnHEAyE1+QtGejTZOLVr29UyHNuwTTRTnXcBy9Hp5zz9x03hLwE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719826482; c=relaxed/simple;
-	bh=f8A4N+tEl5e0q03GpDKXFyL2ptcO6DWC6XTKDmFJvfo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jJFic4Wk5XKfvukBEJ5Gh0fryVwUNmvs5pSh0KZFwnaS2urq8rU89iKrXOghHq6INT4XOauWiFr8EfwuM4YKu2ssRjcEMlNq0LjJfDzeFoK5IlQrmbzc7y1GDpnMb/skzrIsS/ezsQFdgx1s6ysQQ0aL5mF7LRjpaN5ApTOCjeA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=NbE49N1w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=rxylWUg+; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=a/p0kXeh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UOg+M19d; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EE0FD21AE6;
-	Mon,  1 Jul 2024 09:34:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719826479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FozuB0CgYy31OmZnoj5QofV+vYenuNBwwgLrQA0VLBg=;
-	b=NbE49N1wg6cM3fA5V/gAHBOfJZ3iQ6sNbuWpsuZ4Zp+bn9Z5Umyo3ZIVsTHpUWUPn2enzW
-	tsMj7AFVvfs8oGvA3u0u0q4fHUpLk8ljfoqfa7KBA0sAlgAvwo7GlAk02ifm04KQgEK8+W
-	oPs5DXZdULhit68Q3ZL6j/6brVN45y0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719826479;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FozuB0CgYy31OmZnoj5QofV+vYenuNBwwgLrQA0VLBg=;
-	b=rxylWUg+p7ebJEM0zMG68ju2VcNhbAxt57fAMc54omZ0LcTD2DD8Ho+V0qlj9iLpi3Z+YY
-	SmqhwNuzV3gVgjCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719826477; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FozuB0CgYy31OmZnoj5QofV+vYenuNBwwgLrQA0VLBg=;
-	b=a/p0kXehdSYe3JnwY+HlC46fhPrRSpXxMBXGv/2xw9LkSth2INE9N3aQvcU8OPTBNXf0GK
-	pGHA3H2sYuP9fsloNxZQY+e55cDT7gCJpurzfVnq8ETslMJpp110cle3MpclosQ69nvXFd
-	lPF9U2+C59K1awyl3VaCyb0n98PPWyk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719826477;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=FozuB0CgYy31OmZnoj5QofV+vYenuNBwwgLrQA0VLBg=;
-	b=UOg+M19dnm3PpJnbD1VmxR+FfwdjHAe4yQgxNY1Q9aGxTYVLbOO6OYpafqcZhp4u9ItxH5
-	NnuyFGkeLi7VTnCQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DD63813800;
-	Mon,  1 Jul 2024 09:34:37 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ps0FNi14gmb4FwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 01 Jul 2024 09:34:37 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 533E2A088E; Mon,  1 Jul 2024 11:34:37 +0200 (CEST)
-Date: Mon, 1 Jul 2024 11:34:37 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, Eric Sandeen <sandeen@redhat.com>,
-	linux-fsdevel@vger.kernel.org, autofs@vger.kernel.org,
-	"Rafael J. Wysocki" <rafael@kernel.org>, linux-efi@vger.kernel.org,
-	Namjae Jeon <linkinjeon@kernel.org>, linux-ext4@vger.kernel.org,
-	Miklos Szeredi <miklos@szeredi.hu>, linux-mm@kvack.org,
-	ntfs3@lists.linux.dev, linux-cifs@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	Hans Caniullan <hcaniull@redhat.com>
-Subject: Re: [PATCH 01/14] fs_parse: add uid & gid option option parsing
- helpers
-Message-ID: <20240701093437.d2654yek4nnq2ep6@quack3>
-References: <8dca3c11-99f4-446d-a291-35c50ed2dc14@redhat.com>
- <de859d0a-feb9-473d-a5e2-c195a3d47abb@redhat.com>
- <20240628094517.ifs4bp73nlggsnxz@quack3>
- <20240628-fernfahrt-missverstanden-01543e7492b4@brauner>
+	s=arc-20240116; t=1719829628; c=relaxed/simple;
+	bh=X6JnNaUpmLXm/etsj1wjIh6Yp85tWQSB7sG1ZkO5uUo=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=aNBvx+6AygEdqOb1vQs/mPAwO0Z8X8LlColdthzknqCVMPHASWprmI1fstOCuJsxNDWK2HAPGyTQylF+r9KjN4f7eOIs7KyGVrtFJADmRwzWEJfzc4fYMFFoDGHvwBv9C/jJvGkulPO3BtiafOGJd/W3i/w54ZIyf8NNd1zwTYk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vf+KOvFJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10A2DC116B1;
+	Mon,  1 Jul 2024 10:27:05 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719829628;
+	bh=X6JnNaUpmLXm/etsj1wjIh6Yp85tWQSB7sG1ZkO5uUo=;
+	h=From:Subject:Date:To:Cc:From;
+	b=Vf+KOvFJKBw679ZYAgmsH0RLuGYp8IAiSlCCZUhsTO4bKK7aVVnIt6i4tns2GxcVc
+	 arXIZflCj58WmK6HjROQJKCEmt3cQ5z0Hzi3pn3cztxRDFM9AW3TTN05aRVRbzfTIP
+	 nb/Zx0ZvRRprqg1+Pe8fWPIbcD8w30t2kT6oAPo+uHh9tj3fWC6GkC1S99hRvIETG8
+	 521TVFm4Rxsi2Kpi4RFWUdZBsF5bKnOYBn+8q1ndAmtmtM2N3/ewIfHvBZfYQtQ7KW
+	 HZaynh8qe10p4ksacSS8KtMrPUEca2HAktvREYgJJmRJZftrOhVHQ9Oj0ZFkjFs9uC
+	 8nHV+WEk81uqA==
+From: Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v2 00/11] fs: multigrain timestamp redux
+Date: Mon, 01 Jul 2024 06:26:36 -0400
+Message-Id: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240628-fernfahrt-missverstanden-01543e7492b4@brauner>
-X-Spam-Score: -3.80
-X-Spam-Level: 
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[sandeen.net:email,suse.com:email]
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAFyEgmYC/2XMQQ7CIBCF4as0sxYDaBt05T1MF7UMdKKFZmiIp
+ uHuYrcu/5eXb4OETJjg2mzAmClRDDX0oYFxGoJHQbY2aKnPstOdmP1KM4p2tEY+lLFGSajnhdH
+ Re4fufe2J0hr5s7tZ/dY/IishxaDM5dRqK51xtydywNcxsoe+lPIFCXxMlJ0AAAA=
+To: Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Chandan Babu R <chandan.babu@oracle.com>, 
+ "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
+ Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+ Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>
+Cc: Andi Kleen <ak@linux.intel.com>, kernel-team@fb.com, 
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
+ linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3820; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=X6JnNaUpmLXm/etsj1wjIh6Yp85tWQSB7sG1ZkO5uUo=;
+ b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmgoRw4WRZGASUb0ntKxZvyqMtYMkx8cPpzxKSo
+ 7jHqLZ2ou6JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZoKEcAAKCRAADmhBGVaC
+ FRklD/0V9mb072IqdAyazN2How8Y2mDXc3TC/CKJ07/XI2o0+GsYhF4MwAHLt4dLmtP0m5lVEYt
+ IXSS117t5QAbroXjMGDO78L/ngFJ6XHQNs8ApzjMPUa8wiawbeiKGEYtqgRm0+QcHsSkXtOKbfN
+ /YpUKYMts3Zt4XXHBcfdJNv2QCNem83SoduUEY5ZGw+Cm3Zi428oPzX4zNx+KGveuc0atwcVkoM
+ bNcs4Ua8HzyOOjnAZPcbSyLDv7nl4Lp8AeF86Pzg9s/TpY1We1cUclLV4H0DBoGVSc6rYrn73IJ
+ F6XwQI5jldA2SxQpsuUq3Q9fRBGLIvU82LiSsJ6TuneSFb/nlLahtrbfTsFZKeBv1T8AtN/Bm3g
+ 7JF8I8BESppicGDpFegi78JzwQvXq9QqPEeQoL7aFSVVBjDjlqz5kGT+3dZn5T6RoKRMPqNiTGY
+ jIBsiFOWOR2qM8jpIb5mwYfHjSJSVf0FYhYrzNiOBhC60Mo5QrsyK73HTwf0ouEznjygtcaOgqs
+ FevfDb09sW8WOF9igWYRK8bqpYkDbxPGVkflRLNElGxBooBGRokJsXnKOj63BWkqpAmZxct3dR6
+ zcO9QewsnTTV5FQuOh/q1SzW+lOoa+eIAOqMTV8bsC+bXen4HUI4jXfhPlhbAOHNxurzh0M7nLT
+ mBgV2UQww4zEPtQ==
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-On Fri 28-06-24 14:23:35, Christian Brauner wrote:
-> On Fri, Jun 28, 2024 at 11:45:17AM GMT, Jan Kara wrote:
-> > On Thu 27-06-24 19:26:24, Eric Sandeen wrote:
-> > > Multiple filesystems take uid and gid as options, and the code to
-> > > create the ID from an integer and validate it is standard boilerplate
-> > > that can be moved into common helper functions, so do that for
-> > > consistency and less cut&paste.
-> > > 
-> > > This also helps avoid the buggy pattern noted by Seth Jenkins at
-> > > https://lore.kernel.org/lkml/CALxfFW4BXhEwxR0Q5LSkg-8Vb4r2MONKCcUCVioehXQKr35eHg@mail.gmail.com/
-> > > because uid/gid parsing will fail before any assignment in most
-> > > filesystems.
-> > > 
-> > > Signed-off-by: Eric Sandeen <sandeen@sandeen.net>
-> > 
-> > I like the idea since this seems like a nobrainer but is actually
-> > surprisingly subtle...
-> > 
-> > > diff --git a/fs/fs_parser.c b/fs/fs_parser.c
-> > > index a4d6ca0b8971..24727ec34e5a 100644
-> > > --- a/fs/fs_parser.c
-> > > +++ b/fs/fs_parser.c
-> > > @@ -308,6 +308,40 @@ int fs_param_is_fd(struct p_log *log, const struct fs_parameter_spec *p,
-> > >  }
-> > >  EXPORT_SYMBOL(fs_param_is_fd);
-> > >  
-> > > +int fs_param_is_uid(struct p_log *log, const struct fs_parameter_spec *p,
-> > > +		    struct fs_parameter *param, struct fs_parse_result *result)
-> > > +{
-> > > +	kuid_t uid;
-> > > +
-> > > +	if (fs_param_is_u32(log, p, param, result) != 0)
-> > > +		return fs_param_bad_value(log, param);
-> > > +
-> > > +	uid = make_kuid(current_user_ns(), result->uint_32);
-> > 
-> > But here is the problem: Filesystems mountable in user namespaces need to use
-> > fc->user_ns for resolving uids / gids (e.g. like fuse_parse_param()).
-> > Having helpers that work for some filesystems and are subtly broken for
-> > others is worse than no helpers... Or am I missing something?
-> > 
-> > And the problem with fc->user_ns is that currently __fs_parse() does not
-> > get fs_context as an argument... So that will need some larger work.
-> 
-> Not really. If someone does an fsopen() in a namespace but the process
-> that actually sets mount options is in another namespace then it's
-> completely intransparent what uid/gid this will resolve to if it's
-> resovled according to fsopen().
-> 
-> It's also a bit strange if someone ends up handing off a tmpfs fscontext
-> that was created in the initial namespace to some random namespace and
-> they now can set uid/gid options that aren't mapped according to their
-> namespace but instead are 1:1 resolved according to the intial
-> namespace. So this would hinder delegation.
-> 
-> The expectation is that uid/gid options are resolved in the caller's
-> namespace and that shouldn't be any different for fscontexts for
-> namespace mountable filesystems. The crucial point is to ensure that the
-> resulting kuid/kgid can be resolved in the namespace the filesystem is
-> mounted in at the end. That's what was lacking in e.g., tmpfs in commit
-> 0200679fc795 ("tmpfs: verify {g,u}id mount options correctly")
-> 
-> The fuse conversion is the only inconsistency in that regard.
+This set is essentially unchanged from the last one, aside from the
+new file in Documentation/. I had a review comment from Andi Kleen
+suggesting that the ctime_floor should be per time_namespace, but I
+think that's incorrect as the realtime clock is not namespaced.
 
-OK, thanks for explanation!
+At LSF/MM this year, we had a discussion about the inode change
+attribute. At the time I mentioned that I thought I could salvage the
+multigrain timestamp work that had to be reverted last year [1].  That
+version had to be reverted because it was possible for a file to get a
+coarse grained timestamp that appeared to be earlier than another file
+that had recently gotten a fine-grained stamp.
 
-								Honza
+This version corrects the problem by establishing a per-time_namespace
+ctime_floor value that should prevent this from occurring. In the above
+situation that was problematic before, the two files might end up with
+the same timestamp value, but they won't appear to have been modified in
+the wrong order.
+
+That problem was discovered by the test-stat-time gnulib test. Note that
+that test still fails on multigrain timestamps, but that's because its
+method of determining the minimum delay that will show a timestamp
+change will no longer work with multigrain timestamps. I have a patch to
+change the testcase to use a different method that I've posted to the
+bug-gnulib mailing list.
+
+The big question with this set is whether the performance will be
+suitable. The testing I've done seems to show performance parity with
+multigrain timestamps enabled, but it's hard to rule this out regressing
+some workload.
+
+This set is based on top of Christian's vfs.misc branch (which has the
+earlier change to track inode timestamps as discrete integers). If there
+are no major objections, I'd like to let this soak in linux-next for a
+bit to see if any problems shake out.
+
+[1]: https://lore.kernel.org/linux-fsdevel/20230807-mgctime-v7-0-d1dec143a704@kernel.org/
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+Changes in v2:
+- Added Documentation file
+- Link to v1: https://lore.kernel.org/r/20240626-mgtime-v1-0-a189352d0f8f@kernel.org
+
+---
+Jeff Layton (11):
+      fs: turn inode ctime fields into a single ktime_t
+      fs: uninline inode_get_ctime and inode_set_ctime_to_ts
+      fs: tracepoints for inode_needs_update_time and inode_set_ctime_to_ts
+      fs: add infrastructure for multigrain timestamps
+      fs: add percpu counters to count fine vs. coarse timestamps
+      fs: have setattr_copy handle multigrain timestamps appropriately
+      xfs: switch to multigrain timestamps
+      ext4: switch to multigrain timestamps
+      btrfs: convert to multigrain timestamps
+      tmpfs: add support for multigrain timestamps
+      Documentation: add a new file documenting multigrain timestamps
+
+ Documentation/filesystems/multigrain-ts.rst | 126 ++++++++++++++++
+ fs/attr.c                                   |  52 ++++++-
+ fs/btrfs/file.c                             |  25 +---
+ fs/btrfs/super.c                            |   3 +-
+ fs/ext4/super.c                             |   2 +-
+ fs/inode.c                                  | 221 +++++++++++++++++++++++++---
+ fs/stat.c                                   |  39 ++++-
+ fs/xfs/libxfs/xfs_trans_inode.c             |   6 +-
+ fs/xfs/xfs_iops.c                           |   6 +-
+ fs/xfs/xfs_super.c                          |   2 +-
+ include/linux/fs.h                          |  61 +++++---
+ include/trace/events/timestamp.h            | 173 ++++++++++++++++++++++
+ mm/shmem.c                                  |   2 +-
+ 13 files changed, 639 insertions(+), 79 deletions(-)
+---
+base-commit: 2e8c78ef85682671dae2ac3a5aa039b07be0fc0b
+change-id: 20240626-mgtime-5cd80b18d810
+
+Best regards,
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jeff Layton <jlayton@kernel.org>
+
 
