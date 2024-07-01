@@ -1,137 +1,106 @@
-Return-Path: <linux-ext4+bounces-3058-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3059-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BACEB91E1FA
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 16:12:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A27F991E286
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 16:32:35 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35EBE1F24E00
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 14:12:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FA9728C333
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 14:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304F1161307;
-	Mon,  1 Jul 2024 14:12:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 276D516C44A;
+	Mon,  1 Jul 2024 14:31:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Bx6gl0u0"
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="woHIJPTO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from out162-62-57-252.mail.qq.com (out162-62-57-252.mail.qq.com [162.62.57.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F63215E5A6;
-	Mon,  1 Jul 2024 14:12:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 744A716849D;
+	Mon,  1 Jul 2024 14:31:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719843153; cv=none; b=AWpDw4D2yabVnV19QO82sTjVeSWTTkU+Nvp3AnkAFeKKIhEsYUEc9B3JKGjukhoYj9Dw6c045GUXjy72t8qwWcQOBK9dXbtRycLedAuMajJTfDZqBD3rP5G3UlIIMgD+ht8pqM6YAyjxWm+bkMmpHwpY4Nmrfq9mmeKlfr7upqs=
+	t=1719844281; cv=none; b=oCe0WP1zLr9Dj7k+S+rnX2GiLrYRDUaVhFo5b0PYaanu173OljWeRv6vRAnUhMHXpRp82x94LrAeBul+lrcw1zLo+0VpxJzT2sTokMwnbSoiEylc7HPG9JQujhaK36BsDGQ5LDNMHp+wsvE/+CbBooVKnmmgmZ7h6t7h0JBcza0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719843153; c=relaxed/simple;
-	bh=1VVWwQxpbYpxgTGynZjIRizmv2vMmvHZ76g/uhUNoXw=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DbQjITkpBzwUGgslzg1pvc3threVNDOtfsKznridTMqOi5Kt4drcQ299g2X6gYM9XgQOvkGwazjCjMXMMTXAaRYvKC1TK6Yqfj+jYI3ZZBQp/Xmsyq+u0fZwQUihGrM/GPOC7i8QQ5Wf5gt1f4Jf6hTo2a6LddUhA7r6fsXIXIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Bx6gl0u0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B4F24C116B1;
-	Mon,  1 Jul 2024 14:12:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719843153;
-	bh=1VVWwQxpbYpxgTGynZjIRizmv2vMmvHZ76g/uhUNoXw=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=Bx6gl0u0KpVIjrIpzrfYuY6WoBWEJEEFsy7b/cg2a/dYiOrt9fM/DJGDrY4QzS/z2
-	 BtJ2c2Y8K4NKN+etRhqcUQVzjCCN2h5D7xdOOXxL5/4RUam5MFz6a5hFvUmmHrbjSW
-	 GBdgrvmiHCBMiiPg8KwsHfBQSvqTTXGjspMQ8+oIkERaDsrnslkOSLiNDBbJCCVNht
-	 /HKEoG8hniCJoiHW0rvXZ6VGbyPTaEMa8dRiFPRr0P5g4yDZ+n/Rir8GoP0agHiEDr
-	 zbOJgH3sUJKUT1OpmSMSjDXDkXEvDtLAmCs0lSDgEg0QZPn/+DDoPCdTUZUf/Qmq/8
-	 RZQkXLVyvBeww==
-Message-ID: <1c3cee9f7ef81e1da09e0c7b4ee1e47dc9161a75.camel@kernel.org>
-Subject: Re: [PATCH v2 00/11] fs: multigrain timestamp redux
-From: Jeff Layton <jlayton@kernel.org>
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
- <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Chandan Babu R
- <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, Theodore
- Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Chris
- Mason <clm@fb.com>, David Sterba <dsterba@suse.com>, Hugh Dickins
- <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Andi Kleen
- <ak@linux.intel.com>,  kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org,  linux-trace-kernel@vger.kernel.org,
- linux-xfs@vger.kernel.org,  linux-ext4@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mm@kvack.org,  linux-nfs@vger.kernel.org
-Date: Mon, 01 Jul 2024 10:12:29 -0400
-In-Reply-To: <20240701135332.GD504479@perftesting>
-References: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
-	 <20240701135332.GD504479@perftesting>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxwn8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1WvegyjnSsFt7EGoDjdKqr1TS9syJYFjagYtvWk/UfHlW09X+jOh4vYtfX7iYSx/NfqV3W1D7EDi0PqVT2h6v8i8YqsATFPwO4nuiTmL6I40ZofxVd+9wdRI4Db8yUNA4ZSP2nqLcLtFjClYRBoJvRWvsv4lm0OX6MYPtv76hka8lW4mnRmZqqx3UtfHX/hF/zH24Gj7A6sYKYLCU3YrI2Ogiu7/ksKcl7goQjpvtVYrOOI5VGLHge0awt7bhMCTM9KAfPc+xL/ZxAMVWd3NCk5SamL2cE99UWgtvNOIYU8m6EjTLhsj8snVluJH0/RcxEeFbnSaswVChNSGa7mXJrTR22lRL6ZPjdMgS2Km90haWPRc8Wolcz07Y2se0xpGVLEQcDEsvv5IMmeMe1/qLZ6NaVkNuL3WOXvxaVT9USW1+/SGipO2IpKJjeDZfehlB/kpfF24+RrK+seQfCBYyUE8QJpvTZyfUHNYldXlrjO6n5MdOempLqWpfOmcGkwnyNRBR46g/jf8KnPRwXs509yAqDB6sELZH+yWr9LQZEwARAQABtCBKZWZmIExheXRvbiA8amxheXRvbkBrZXJuZWwub3JnPokCOAQTAQIAIgUCWe8u6AIbAwYLCQgHAwIGFQgCCQoLBBYCAwECHgECF4AACgkQAA5oQRlWghUuCg/+Lb/xGxZD2Q1oJVAE37uW308UpVSD2tAMJUvFTdDbfe3zKlPDTuVsyNsALBGclPLagJ5ZTP+Vp2irAN9uwBuacBOTtmOdz4ZN2tdvNgozzuxp4CHBDVzAslUi2idy+xpsp47DWPxYFIRP3M8QG/aNW052LaPc0cedY
-	xp8+9eiVUNpxF4SiU4i9JDfX/sn9XcfoVZIxMpCRE750zvJvcCUz9HojsrMQ1NFc7MFT1z3MOW2/RlzPcog7xvR5ENPH19ojRDCHqumUHRry+RF0lH00clzX/W8OrQJZtoBPXv9ahka/Vp7kEulcBJr1cH5Wz/WprhsIM7U9pse1f1gYy9YbXtWctUz8uvDR7shsQxAhX3qO7DilMtuGo1v97I/Kx4gXQ52syh/w6EBny71CZrOgD6kJwPVVAaM1LRC28muq91WCFhs/nzHozpbzcheyGtMUI2Ao4K6mnY+3zIuXPygZMFr9KXE6fF7HzKxKuZMJOaEZCiDOq0anx6FmOzs5E6Jqdpo/mtI8beK+BE7Va6ni7YrQlnT0i3vaTVMTiCThbqsB20VrbMjlhpf8lfK1XVNbRq/R7GZ9zHESlsa35ha60yd/j3pu5hT2xyy8krV8vGhHvnJ1XRMJBAB/UYb6FyC7S+mQZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65ke5Ag0ETpXRPAEQAJkVmzCmF+IEenf9a2nZRXMluJohnfl2wCMmw5qNzyk0f+mYuTwTCpw7BE2H0yXk4ZfAuA+xdj14K0A1Dj52j/fKRuDqoNAhQe0b6ipo85Sz98G+XnmQOMeFVp5G1Z7r/QP/nus3mXvtFsu9lLSjMA0cam2NLDt7vx3l9kUYlQBhyIE7/DkKg+3fdqRg7qJoMHNcODtQY+n3hMyaVpplJ/l0DdQDbRSZi5AzDM3DWZEShhuP6/E2LN4O3xWnZukEiz688d1ppl7vBZO9wBql6Ft9Og74diZrTN6lXGGjEWRvO55h6ijMsLCLNDRAVehPhZvSlPldtUuvhZLAjdWpwmzbRIwgoQcO51aWeKthpcpj8feDdKdlVjvJO9fgFD5kqZQiErRVPpB7VzA/pYV5Mdy7GMbPjmO0IpoL0tVZ8JvUzUZXB3ErS/dJflvboAAQeLpLCkQjqZiQ/D
-	CmgJCrBJst9Xc7YsKKS379Tc3GU33HNSpaOxs2NwfzoesyjKU+P35czvXWTtj7KVVSj3SgzzFk+gLx8y2Nvt9iESdZ1Ustv8tipDsGcvIZ43MQwqU9YbLg8k4V9ch+Mo8SE+C0jyZYDCE2ZGf3OztvtSYMsTnF6/luzVyej1AFVYjKHORzNoTwdHUeC+9/07GO0bMYTPXYvJ/vxBFm3oniXyhgb5FtABEBAAGJAh8EGAECAAkFAk6V0TwCGwwACgkQAA5oQRlWghXhZRAAyycZ2DDyXh2bMYvI8uHgCbeXfL3QCvcw2XoZTH2l2umPiTzrCsDJhgwZfG9BDyOHaYhPasd5qgrUBtjjUiNKjVM+Cx1DnieR0dZWafnqGv682avPblfi70XXr2juRE/fSZoZkyZhm+nsLuIcXTnzY4D572JGrpRMTpNpGmitBdh1l/9O7Fb64uLOtA5Qj5jcHHOjL0DZpjmFWYKlSAHmURHrE8M0qRryQXvlhoQxlJR4nvQrjOPMsqWD5F9mcRyowOzr8amasLv43w92rD2nHoBK6rbFE/qC7AAjABEsZq8+TQmueN0maIXUQu7TBzejsEbV0i29z+kkrjU2NmK5pcxgAtehVxpZJ14LqmN6E0suTtzjNT1eMoqOPrMSx+6vOCIuvJ/MVYnQgHhjtPPnU86mebTY5Loy9YfJAC2EVpxtcCbx2KiwErTndEyWL+GL53LuScUD7tW8vYbGIp4RlnUgPLbqpgssq2gwYO9m75FGuKuB2+2bCGajqalid5nzeq9v7cYLLRgArJfOIBWZrHy2m0C+pFu9DSuV6SNr2dvMQUv1V58h0FaSOxHVQnJdnoHn13g/CKKvyg2EMrMt/EfcXgvDwQbnG9we4xJiWOIOcsvrWcB6C6lWBDA+In7w7SXnnokkZWuOsJdJQdmwlWC5L5ln9xgfr/4mOY38B0U=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1719844281; c=relaxed/simple;
+	bh=kh4fd2Tt1g3FgPpUUT16nQDDaDmCFVlh5X1PX3Rz9RU=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=nSCws6SAKRbZx8u+4a6m8Q0VDt1IJh9wcnKtyxzVGBjCQE5WAS0aSUrNOtlNSVP0unCSEJFo3pabTESGKW1Uw5c1Iyk4FZ2T/wCKRN9rmoB/hmeHLNQ7sIOjs/dDKw7eGZyhjT/3NkSwWQJwcSa8RyuPeB8Xa1DWFQXw0WAmvFU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=woHIJPTO; arc=none smtp.client-ip=162.62.57.252
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1719844268; bh=oig2jSCI3rDtVcLntOJD59bkVH+SVdUKsJBtU3A9NPg=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=woHIJPTO5DRjvijRxgqfRyyE6eNzJxy3y5aP5Fq2WJDs17gcUF3EkUWLr6UfD+BJs
+	 jYs1z2gUcsNn0Gg/VMSRcoaimdNjweUaY/pUXgR4Zdc+ZoPuZAgNCkTDUECSlGnNrf
+	 1jNT3EwsY8sjT8OcMjOHJYgJZAP9CcXj4YxTiRZY=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.103])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 642386CC; Mon, 01 Jul 2024 22:25:02 +0800
+X-QQ-mid: xmsmtpt1719843902t011y0o3y
+Message-ID: <tencent_BE7AEE6C7C2D216CB8949CE8E6EE7ECC2C0A@qq.com>
+X-QQ-XMAILINFO: OCYbvBDBNb9r37I3PMSS14NyCwzK375aFroJL/YLh4ESeb9E/2KRMBm3bnUoev
+	 BsN9N0Q6AMJLVwj1FimcZvUyQNyqlBeu6FkSPuHzRXR7+fxTcSw1iPKuWQdE1nSKaGpjNspgO75Z
+	 A36YvFBGz1YNdjrvyBpUf8l6uh2hb/jvNGb0xm5Pmq0GHxLb98sgaBSy0P5EuYXj+SNDYr6/P1/q
+	 Q8+ipEes29TcweAPo0VxoYy+gaEaaV0ffbWLYVKGhFTpwpfTfGJwVOOrNupAzGS0wYP96qrWEQij
+	 4Q3h+L0zMcIzfJxc9Ep1m2Cx7aMVHyEZ+aXCjHE9qEDAy78bNhYEN0W6NmA25ND4/Kq0aSeuuWaA
+	 UF3Z8iKQu3CqR8ymtz+8q/Q6tNFi8fzsZb33NVHUTkaV+gyyWRnyModF0Qp1u2k+99pChZSbhoFN
+	 +tqMmXsY7nOZceJY1UFtMk5J06xIDsbbjCovAuQRFd4rq6TyOoEYF72VDsTqqDEf0mNHBK14R2sR
+	 +vUSPc/q6byPXidrTStGbXSjv/LfVDFSvLaRZzBU/3XM3kIswL7kR8+LFKOo3hJiog83OYeL3IgR
+	 FFo6iHMRACXWG/9rzrb7+JdvmqLdvf2Tzgj+XM7Jobhh3qtlikjz3MKKpLlNWOgVBX9a7A43znvV
+	 eJZKVlviHYA+VYZS5qt+yz4xgI3tsPfuDH+vZ3bfeOGabsC4/37V2o8IcFzSBe4ZXUAZh33E9AHS
+	 8w+4m+OscvCX/uJAdZ+W7+DA77SYWv+43Af04q8GyzI9hW1aN/xHxeFF1S/vAHP63pY59a/Ha/ny
+	 /h146ZVPDcWvxUmMw42V4d9hLOlIB4FPxowtMzJN78IOz9CTVxYdV7776tJF5Lu5GGfsZtgfyqVI
+	 hdthla8G9HJnLOSEViWZ4rTvhy145C0aim7NX+HNX3OwIslcipY7NTPV11D5Zjm7JGeMXLt8Ge
+X-QQ-XMRINFO: OWPUhxQsoeAVDbp3OJHYyFg=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+ae688d469e36fb5138d0@syzkaller.appspotmail.com
+Cc: adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com,
+	tytso@mit.edu
+Subject: [PATCH] ext4: No need to continue when the number of entries is 1
+Date: Mon,  1 Jul 2024 22:25:03 +0800
+X-OQ-MSGID: <20240701142502.2973881-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000075a135061c0480d0@google.com>
+References: <00000000000075a135061c0480d0@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 2024-07-01 at 09:53 -0400, Josef Bacik wrote:
-> On Mon, Jul 01, 2024 at 06:26:36AM -0400, Jeff Layton wrote:
-> > This set is essentially unchanged from the last one, aside from the
-> > new file in Documentation/. I had a review comment from Andi Kleen
-> > suggesting that the ctime_floor should be per time_namespace, but I
-> > think that's incorrect as the realtime clock is not namespaced.
-> >=20
-> > At LSF/MM this year, we had a discussion about the inode change
-> > attribute. At the time I mentioned that I thought I could salvage the
-> > multigrain timestamp work that had to be reverted last year [1].=C2=A0 =
-That
-> > version had to be reverted because it was possible for a file to get a
-> > coarse grained timestamp that appeared to be earlier than another file
-> > that had recently gotten a fine-grained stamp.
-> >=20
-> > This version corrects the problem by establishing a per-time_namespace
-> > ctime_floor value that should prevent this from occurring. In the above
-> > situation that was problematic before, the two files might end up with
-> > the same timestamp value, but they won't appear to have been modified i=
-n
-> > the wrong order.
-> >=20
-> > That problem was discovered by the test-stat-time gnulib test. Note tha=
-t
-> > that test still fails on multigrain timestamps, but that's because its
-> > method of determining the minimum delay that will show a timestamp
-> > change will no longer work with multigrain timestamps. I have a patch t=
-o
-> > change the testcase to use a different method that I've posted to the
-> > bug-gnulib mailing list.
-> >=20
-> > The big question with this set is whether the performance will be
-> > suitable. The testing I've done seems to show performance parity with
-> > multigrain timestamps enabled, but it's hard to rule this out regressin=
-g
-> > some workload.
-> >=20
-> > This set is based on top of Christian's vfs.misc branch (which has the
-> > earlier change to track inode timestamps as discrete integers). If ther=
-e
-> > are no major objections, I'd like to let this soak in linux-next for a
-> > bit to see if any problems shake out.
-> >=20
-> > [1]: https://lore.kernel.org/linux-fsdevel/20230807-mgctime-v7-0-d1dec1=
-43a704@kernel.org/
-> >=20
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
->=20
-> I have a few nits that need to be addressed, but you can add
->=20
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
->=20
-> to the series once they're addressed.=C2=A0 Thanks,
->=20
+When the number of entries mapped is 1, there is no need to split it.
 
-Thanks! Fixed them up in my tree. I left the IS_I_VERSION check out as
-well, and added a note to the changelog on the btrfs patch.
---=20
-Jeff Layton <jlayton@kernel.org>
+Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
+Reported-by: syzbot+ae688d469e36fb5138d0@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=ae688d469e36fb5138d0
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/ext4/namei.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index a630b27a4cc6..0a111274dc4a 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2043,7 +2043,7 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+ 		split = count/2;
+ 
+ 	hash2 = map[split].hash;
+-	continued = hash2 == map[split - 1].hash;
++	continued = split > 0 ? hash2 == map[split - 1].hash : 0;
+ 	dxtrace(printk(KERN_INFO "Split block %lu at %x, %i/%i\n",
+ 			(unsigned long)dx_get_block(frame->at),
+ 					hash2, split, count-split));
+-- 
+2.43.0
+
 
