@@ -1,62 +1,68 @@
-Return-Path: <linux-ext4+bounces-3063-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3064-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED6A291EABB
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 00:13:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90F5F91EB1D
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 00:49:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C0331F21B27
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 22:13:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C11611C21B65
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 22:49:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A3FE8120F;
-	Mon,  1 Jul 2024 22:13:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E34172791;
+	Mon,  1 Jul 2024 22:49:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="g5SujC8u"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MnsIb0uN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F40CD4F602
-	for <linux-ext4@vger.kernel.org>; Mon,  1 Jul 2024 22:13:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83A9617BA1;
+	Mon,  1 Jul 2024 22:49:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719871984; cv=none; b=l15I4wdg6XgMdzwdFmqRov1LM6lYTMkeTwHDtnWW+sKXs6Ws92XOed/Im/4bBCMNbUguJfz4T0Ikywr8b8TbCRtxvzLT1DDreY3wruCo0tcRsQBG3tdTPfevoSrRETTr47xHMkqNY9VSGKpfCQQZYg2X+E/P9X7+mmk7hgxSQRM=
+	t=1719874182; cv=none; b=u8aARWDsdSmta65FJP7jdRsONCSILIPbhNjoNxNDjna5/8HN2sbvjeLrz+82mZwHRyKdxvJCY0ZSkJllQcPkN4FStsa0Y5nq1Yu7+gMlraODZoSmdYt5s+I6PuSVtZYpiYq5XAwy8UcfrUyNgn5oVQiFx/fLhWqSo2SXbgTaAzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719871984; c=relaxed/simple;
-	bh=q381FDqHt5nOkVTGzJnmEwa7fO2YngB05ooRZLlGP48=;
+	s=arc-20240116; t=1719874182; c=relaxed/simple;
+	bh=bXoWDyduCGsJU7lhbujiLjxLA54PjQmw5SMTkVT0vNc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LlejgWKf4ZWMgmtzRKxb46Sfoe/ZXio3uGBpSeWuJtPu+8pUhthJoZPwD1yrKryfc0KsXER/6nk3Pf+3X0x3s20g7AWMHxTtdhnC3VCj3VrV0czpi06CmSx3se/7oSRaXXdQHB44/GiOLtSug2dO2EjtCNWicaZDi+CO8+XWlcA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=g5SujC8u; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-115-17.bstnma.fios.verizon.net [173.48.115.17])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 461M8b0a020819
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 1 Jul 2024 18:08:38 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1719871718; bh=e1aD09QeNlcHoNu4/jTwuyH61FI08y4yfqXcvNe4YHA=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=g5SujC8uPDvWyTuF8Fd8svyV+egf0hTROnPD3FavU38xXRMvILfg85HDC70XLdrZE
-	 PVCEXGja7s7Xv3eiK+77hMDtICsO/wJDLK4p1hDr0GEjmhKx9Oq+tfMNtAA5nR/j9E
-	 HWiCMi3IIro6x0+4FxUXkhzlFDKAxBXUCYjIyGoCtd3s22f9cGowqKNnD6uZQRuYD9
-	 +rwdDw40WXSMD+wWKbddq7mLGBoNdxRMl9dFHTI0zL1U9ox79+NYHTb0EiTTJ+yM5D
-	 NT1wYGYnwW7NPQyCrSnK46Yk9YslFMarCUqOOXQfGhcsbn3IDARJb8Oy+lcolfqvCm
-	 iKEIp4rkmMfLA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 0F15115C0269; Mon, 01 Jul 2024 18:08:37 -0400 (EDT)
-Date: Mon, 1 Jul 2024 18:08:37 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc: linux-ext4@vger.kernel.org, saukad@google.com, harshads@google.com
-Subject: Re: [PATCH v6 02/10] ext4: for committing inode, make
- ext4_fc_track_inode wait
-Message-ID: <20240701220837.GD419129@mit.edu>
-References: <20240529012003.4006535-1-harshadshirwadkar@gmail.com>
- <20240529012003.4006535-3-harshadshirwadkar@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=aOY/q+lHQEjFSLMAP6FTF6ABlk/W+rHq8cstR2cufqvdkpcyY/bheoWssnzP60UyzgRJFBPw+qorbB2GSZA7fj6Owf8L3dXNhiZXduxAxULjxBJE+RmmlYTs6vFRRCuWxNb9QS4L33p2fJGXz9Lqt92y46LzwYMpI9EXaClcxm0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MnsIb0uN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02F84C116B1;
+	Mon,  1 Jul 2024 22:49:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719874182;
+	bh=bXoWDyduCGsJU7lhbujiLjxLA54PjQmw5SMTkVT0vNc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MnsIb0uNSwAHfqytxz2YxarQKag9GysdcNIBeUK8dH1tzYMDJUfwlKcSo9NyetHFj
+	 4gRTea8CYRA/mwIDw8oQW65xy5aeE/FMx8dHovVUqnwGBQ4AMIi7TwrfpiY//28W68
+	 GrtBUsMP/EL1H25z91QNWBL63F7TRQUhp19y5VK0+7ldauGeatdJextRuf2x+nFj+D
+	 iToBZrGCa+a2CZZd1KHEMQIfFgam7OVr+YJ9P0s1scV4VsWOy36sQp+RFpToV/BKr+
+	 x2PWAcV1CMKmDKqSRrQjQTblzn4M2tyZE92FrpeA94E7MCwdHtrYNE606nDiRjp05o
+	 7pAp5zCFIgkUg==
+Date: Mon, 1 Jul 2024 15:49:41 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 01/10] fs: turn inode ctime fields into a single ktime_t
+Message-ID: <20240701224941.GE612460@frogsfrogsfrogs>
+References: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
+ <20240626-mgtime-v1-1-a189352d0f8f@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,122 +71,119 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240529012003.4006535-3-harshadshirwadkar@gmail.com>
+In-Reply-To: <20240626-mgtime-v1-1-a189352d0f8f@kernel.org>
 
-On Wed, May 29, 2024 at 01:19:55AM +0000, Harshad Shirwadkar wrote:
-> If the inode that's being requested to track using ext4_fc_track_inode
-> is being committed, then wait until the inode finishes the
-> commit. Also, add calls to ext4_fc_track_inode at the right places.
+On Wed, Jun 26, 2024 at 09:00:21PM -0400, Jeff Layton wrote:
+> The ctime is not settable to arbitrary values. It always comes from the
+> system clock, so we'll never stamp an inode with a value that can't be
+> represented there. If we disregard people setting their system clock
+> past the year 2262, there is no reason we can't replace the ctime fields
+> with a ktime_t.
 > 
-> With this patch, now calling ext4_reserve_inode_write() results in
-> inode being tracked for next fast commit. A subtle lock ordering
-> requirement with i_data_sem (which is documented in the code) requires
-> that ext4_fc_track_inode() be called before grabbing i_data_sem. So,
-> this patch also adds explicit ext4_fc_track_inode() calls in places
-> where i_data_sem grabbed.
+> Switch the ctime fields to a single ktime_t. Move the i_generation down
+> above i_fsnotify_mask and then move the i_version into the resulting 8
+> byte hole. This shrinks struct inode by 8 bytes total, and should
+> improve the cache footprint as the i_version and ctime are usually
+> updated together.
 > 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+> The one downside I can see to switching to a ktime_t is that if someone
+> has a filesystem with files on it that has ctimes outside the ktime_t
+> range (before ~1678 AD or after ~2262 AD), we won't be able to display
+> them properly in stat() without some special treatment in the
+> filesystem. The operating assumption here is that that is not a
+> practical problem.
 
-I tried applying this patchset to both the current ext4/dev branch as
-well as on to 6.10-rc5, and generic/241 is triggering large series of
-WARNINGS followed by a BUG (or in some cases, a soft lockup).  A
-bisection leads me to this patch.
+What happens if a filesystem with the ability to store ctimes beyond
+whatever ktime_t supports (AFAICT 2^63-1 nanonseconds on either side of
+the Unix epoch)?  I think the behavior with your patch is that ktime_set
+clamps the ctime on iget because the kernel can't handle it?
 
-The WARN stack trace:
+It's a little surprising that the ctime will suddenly jump back in time
+to 2262, but maybe you're right that nobody will notice or care? ;)
 
-[    4.061189] ------------[ cut here ]------------
-[    4.061848] WARNING: CPU: 1 PID: 2627 at fs/ext4/fast_commit.c:259 ext4_fc_del+0x7d/0x190
-[    4.062919] CPU: 1 PID: 2627 Comm: dbench Not tainted 6.10.0-rc5-xfstests-00033-gb6f5b0076b56 #350
-[    4.064070] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-[    4.065077] RIP: 0010:ext4_fc_del+0x7d/0x190
-[    4.065404] Code: 0f 84 f0 00 00 00 48 8b 83 48 ff ff ff 48 0f ba e0 2a 73 18 48 8b 43 28 48 8b 80 90 03 00 00 48 8b 80 80 00 00 00 a8 02 75 02 <0f> 0b 48 89 ef e8 09 ad 68 00 84 c0 74 0f 48 8b 53 98 48 8b 43 a0
-[    4.066190] RSP: 0018:ffffc90003707d98 EFLAGS: 00010246
-[    4.066415] RAX: 0000000000000001 RBX: ffff888013de5c08 RCX: 0000000000000000
-[    4.066718] RDX: 0000000000000001 RSI: 00000000ffffffff RDI: ffff88800a22c7f0
-[    4.067019] RBP: ffff888013de5ba0 R08: ffffffff827fc6fe R09: ffff888008bed000
-[    4.067323] R10: 0000000000000008 R11: 000000000000001e R12: ffff88800a22c7f0
-[    4.067629] R13: ffff88800a22c000 R14: ffff888013de5b90 R15: ffff88800ac0c000
-[    4.067935] FS:  00007fec79a4e740(0000) GS:ffff88807dd00000(0000) knlGS:0000000000000000
-[    4.068281] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    4.068530] CR2: 000055d2f34b87e8 CR3: 000000000f492003 CR4: 0000000000770ef0
-[    4.068834] PKRU: 55555554
-[    4.068952] Call Trace:
-[    4.069061]  <TASK>
-[    4.069158]  ? __warn+0x7b/0x120
-[    4.069338]  ? ext4_fc_del+0x7d/0x190
-[    4.069497]  ? report_bug+0x174/0x1c0
-[    4.069655]  ? handle_bug+0x3a/0x70
-[    4.069809]  ? exc_invalid_op+0x17/0x70
-[    4.069975]  ? asm_exc_invalid_op+0x1a/0x20
-[    4.070156]  ? ext4_fc_del+0x7d/0x190
-[    4.070309]  ? ext4_fc_del+0x44/0x190
-[    4.070468]  ext4_clear_inode+0x12/0xb0
-[    4.070636]  ext4_free_inode+0x86/0x5a0
-[    4.070802]  ext4_evict_inode+0x457/0x6b0
-[    4.070976]  evict+0xcd/0x1d0
-[    4.071114]  do_unlinkat+0x2de/0x330
-[    4.071271]  __x64_sys_unlink+0x23/0x30
-[    4.071436]  do_syscall_64+0x4b/0x110
-[    4.071596]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[    4.071812] RIP: 0033:0x7fec79b4aa07
-[    4.071969] Code: f0 ff ff 73 01 c3 48 8b 0d f6 83 0d 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 57 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c9 83 0d 00 f7 d8 64 89 01 48
-[    4.072760] RSP: 002b:00007ffed55de918 EFLAGS: 00000206 ORIG_RAX: 0000000000000057
-[    4.073081] RAX: ffffffffffffffda RBX: 00007ffed55dedb0 RCX: 00007fec79b4aa07
-[    4.073429] RDX: 0000000000000000 RSI: 00007ffed55dedb0 RDI: 00007ffed55dedb0
-[    4.073733] RBP: 000055d2f34a37f0 R08: 0fffffffffffffff R09: 0000000000000000
-[    4.074033] R10: 0000000000000000 R11: 0000000000000206 R12: 000055d2f34a35d0
-[    4.074338] R13: 00007fec79c35000 R14: 0000000000000004 R15: 00007fec79c35050
-[    4.074650]  </TASK>
-[    4.074747] ---[ end trace 0000000000000000 ]---
+--D
 
-And here's the BUG:
-
-[    5.121989] BUG: kernel NULL pointer dereference, address: 00000000000000b8
-[    5.122281] #PF: supervisor read access in kernel mode
-[    5.122500] #PF: error_code(0x0000) - not-present page
-[    5.122717] PGD 0 P4D 0 
-[    5.122828] Oops: Oops: 0000 [#1] PREEMPT SMP NOPTI
-[    5.123036] CPU: 0 PID: 2629 Comm: dbench Tainted: G        W          6.10.0-rc5-xfstests-00033-gb6f5b0076b56 #350
-[    5.123470] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2 04/01/2014
-[    5.123857] RIP: 0010:ext4_fc_perform_commit+0x303/0x4b0
-[    5.124082] Code: fd 48 2d a0 00 00 00 48 39 d3 75 af e9 ac fe ff ff 49 8b 4d 58 49 8d 45 58 48 39 c1 0f 84 9f 01 00 00 49 8b 45 58 49 63 4d 08 <48> 39 88 b8 00 00 00 4c 8d 78 78 0f 85 7f 01 00 00 48 89 ef e8 c4
-[    5.124855] RSP: 0018:ffffc90003727df8 EFLAGS: 00010246
-[    5.125072] RAX: 0000000000000000 RBX: ffff8880089e5f08 RCX: 00000000089e5f08
-[    5.125416] RDX: 0000000000000001 RSI: 0000000000000003 RDI: ffff88800a22c7f0
-[    5.125712] RBP: ffff88800a22c7f0 R08: ffff88807dc2fbc0 R09: 0000000000000000
-[    5.126009] R10: 0000000000000000 R11: 0000000000000000 R12: ffff88800a22c7c8
-[    5.126310] R13: ffff8880089e5f08 R14: ffff88800a22c7a8 R15: ffff88800a22c708
-[    5.126609] FS:  00007fec79a4e740(0000) GS:ffff88807dc00000(0000) knlGS:0000000000000000
-[    5.126943] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[    5.127188] CR2: 00000000000000b8 CR3: 000000000f48e002 CR4: 0000000000770ef0
-[    5.127483] PKRU: 55555554
-[    5.127598] Call Trace:
-[    5.127705]  <TASK>
-[    5.127838]  ? __die+0x23/0x60
-[    5.127973]  ? page_fault_oops+0xa3/0x160
-[    5.128143]  ? exc_page_fault+0x6a/0x160
-[    5.128351]  ? asm_exc_page_fault+0x26/0x30
-[    5.128530]  ? ext4_fc_perform_commit+0x303/0x4b0
-[    5.128728]  ? ext4_fc_perform_commit+0x36b/0x4b0
-[    5.128948]  ext4_fc_commit+0x17f/0x300
-[    5.129116]  ext4_sync_file+0x1ce/0x380
-[    5.129310]  __x64_sys_fsync+0x3b/0x70
-[    5.129470]  do_syscall_64+0x4b/0x110
-[    5.129627]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-[    5.129840] RIP: 0033:0x7fec79b4fb10
-[    5.129995] Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 80 3d d1 ba 0d 00 00 74 17 b8 4a 00 00 00 0f 05 <48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
-[    5.130764] RSP: 002b:00007ffed55de948 EFLAGS: 00000202 ORIG_RAX: 000000000000004a
-[    5.131079] RAX: ffffffffffffffda RBX: 00007fec79c35450 RCX: 00007fec79b4fb10
-[    5.131381] RDX: 0000000000002b6f RSI: 0000000000002b6f RDI: 0000000000000005
-[    5.131681] RBP: 000055d2f34a3660 R08: 1999999999999999 R09: 0000000000000000
-[    5.131981] R10: 00007fec79bcdac0 R11: 0000000000000202 R12: 000055d2f34a35d0
-[    5.132280] R13: 00007fec79c35450 R14: 0000000000000003 R15: 00007fec79c354a0
-[    5.132575]  </TASK>
-[    5.132670] CR2: 00000000000000b8
-[    5.132812] ---[ end trace 0000000000000000 ]---
-
-Harshad, can you take a look?   Thanks!
-
-						- Ted
-
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  include/linux/fs.h | 26 +++++++++++---------------
+>  1 file changed, 11 insertions(+), 15 deletions(-)
+> 
+> diff --git a/include/linux/fs.h b/include/linux/fs.h
+> index 5ff362277834..5139dec085f2 100644
+> --- a/include/linux/fs.h
+> +++ b/include/linux/fs.h
+> @@ -662,11 +662,10 @@ struct inode {
+>  	loff_t			i_size;
+>  	time64_t		i_atime_sec;
+>  	time64_t		i_mtime_sec;
+> -	time64_t		i_ctime_sec;
+>  	u32			i_atime_nsec;
+>  	u32			i_mtime_nsec;
+> -	u32			i_ctime_nsec;
+> -	u32			i_generation;
+> +	ktime_t			__i_ctime;
+> +	atomic64_t		i_version;
+>  	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
+>  	unsigned short          i_bytes;
+>  	u8			i_blkbits;
+> @@ -701,7 +700,6 @@ struct inode {
+>  		struct hlist_head	i_dentry;
+>  		struct rcu_head		i_rcu;
+>  	};
+> -	atomic64_t		i_version;
+>  	atomic64_t		i_sequence; /* see futex */
+>  	atomic_t		i_count;
+>  	atomic_t		i_dio_count;
+> @@ -724,6 +722,8 @@ struct inode {
+>  	};
+>  
+>  
+> +	u32			i_generation;
+> +
+>  #ifdef CONFIG_FSNOTIFY
+>  	__u32			i_fsnotify_mask; /* all events this inode cares about */
+>  	/* 32-bit hole reserved for expanding i_fsnotify_mask */
+> @@ -1608,29 +1608,25 @@ static inline struct timespec64 inode_set_mtime(struct inode *inode,
+>  	return inode_set_mtime_to_ts(inode, ts);
+>  }
+>  
+> -static inline time64_t inode_get_ctime_sec(const struct inode *inode)
+> +static inline struct timespec64 inode_get_ctime(const struct inode *inode)
+>  {
+> -	return inode->i_ctime_sec;
+> +	return ktime_to_timespec64(inode->__i_ctime);
+>  }
+>  
+> -static inline long inode_get_ctime_nsec(const struct inode *inode)
+> +static inline time64_t inode_get_ctime_sec(const struct inode *inode)
+>  {
+> -	return inode->i_ctime_nsec;
+> +	return inode_get_ctime(inode).tv_sec;
+>  }
+>  
+> -static inline struct timespec64 inode_get_ctime(const struct inode *inode)
+> +static inline long inode_get_ctime_nsec(const struct inode *inode)
+>  {
+> -	struct timespec64 ts = { .tv_sec  = inode_get_ctime_sec(inode),
+> -				 .tv_nsec = inode_get_ctime_nsec(inode) };
+> -
+> -	return ts;
+> +	return inode_get_ctime(inode).tv_nsec;
+>  }
+>  
+>  static inline struct timespec64 inode_set_ctime_to_ts(struct inode *inode,
+>  						      struct timespec64 ts)
+>  {
+> -	inode->i_ctime_sec = ts.tv_sec;
+> -	inode->i_ctime_nsec = ts.tv_nsec;
+> +	inode->__i_ctime = ktime_set(ts.tv_sec, ts.tv_nsec);
+>  	return ts;
+>  }
+>  
+> 
+> -- 
+> 2.45.2
+> 
+> 
 
