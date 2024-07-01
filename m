@@ -1,236 +1,167 @@
-Return-Path: <linux-ext4+bounces-3051-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3052-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C82491DCC0
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 12:34:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C89991E0B3
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 15:28:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21C33285227
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 10:34:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9B1D51F2373A
+	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 13:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2C4C15B96E;
-	Mon,  1 Jul 2024 10:27:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F5ED15E5BA;
+	Mon,  1 Jul 2024 13:28:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6GNnASo"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x37O6IDt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yqgzfKsO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="x37O6IDt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="yqgzfKsO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1F60915B14F;
-	Mon,  1 Jul 2024 10:27:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54BD215532E
+	for <linux-ext4@vger.kernel.org>; Mon,  1 Jul 2024 13:28:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719829654; cv=none; b=lzHfx6+NyQPrrf/bGXf5xf5o8+Gco+mbVAuXLrX4KACh/PwuL7go8UdM9tfdEgUt3sdUAKasnlgeoinn97ZeyHAIYKaHtPHcSmu1cF2B+UyNIoTN1muAI3/F0b6hcDMi0OeW76B23LPDGue1rR+Zno35TYJ1yMasi+k3ZvaOpHQ=
+	t=1719840493; cv=none; b=dBmGyzh0Jyk6jwcHmvqThsq4EkXX8z/QgTbbRkWY85gCNT4ADp5KHd3qS9Ms47b2JbsKYKTt9qY9I7O+DYiE0ra5I16/7Fw4HeYcAsHzAs8y2DOq4i4zKIXN6CF3L5/f+9N8KsH17CxfOX68S8mThmK/xIcdaUbs8PT6hmQOqMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719829654; c=relaxed/simple;
-	bh=yGbFoI0x64Criq5hVXpnf8cTDkEYS+drfXiF9/4UXTc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=mTE37RnGBtfVOi9d+2VjpFajRZt2en2vR4FKluwaydpzfuNVpgK8vftEmLa6bAdf3Th0C79ldS11gG1+YL6jZ0a/9JtA1/k5o7H0YBCF7Z2vm8ErxqGc1lueCi1SfhX1hlpU8jm/b3jbsct7c+9ZJZxBYT4NmZSf5tAaWM6EfKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6GNnASo; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 947F5C116B1;
-	Mon,  1 Jul 2024 10:27:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719829653;
-	bh=yGbFoI0x64Criq5hVXpnf8cTDkEYS+drfXiF9/4UXTc=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=Z6GNnASo0fot0PtERrcGCWLqCNkhG+ti+9IgcG2z62xbIC1ym5I817maTy4fkKhbY
-	 R2soLnBsN9ntBuRXtGUYtbUxBrvdurk/E0KX7EbbDmjOFHzMmSyo90wX0FwClonR8X
-	 P4RBkhzh+f0YRGrqIUSoKG7uVfAoeaEL0Ss0NQOw6/1RUJIexOvqBArjV7Pm3HKK+T
-	 ELGB782hclQDbjeAOXe38I7SPtwUvE2y977540crj+h57ilap+jopmlWAGnCDy6jcC
-	 lu8QPn3FZYpTj4N486u8gYzuOufgDmx/UFNBSoDMzdpGwk8GFl1VmaMqBSCpZXUEsG
-	 h//393LSr0nGQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 01 Jul 2024 06:26:47 -0400
-Subject: [PATCH v2 11/11] Documentation: add a new file documenting
- multigrain timestamps
+	s=arc-20240116; t=1719840493; c=relaxed/simple;
+	bh=TOQqCCCsmVhB9wUwD05+zD0p6Jvxnhhi5sXM+lmZHuI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=U4Ib8XkZG1/Uar2fqC3H+AvEbrGK/kiYwi6FUgeFAQr/lcMHUw0uWIA4Rw9IoA5KSCctY9BJUN+hXqnsRKCTKH0Uq9zKXM4jXaoc6G+DU2fa1IIZVBv4r5xhRKHsS5uVyt0PfoD11KUijUGk1dmtFYYeSVOkzOULDFzIIhYmGjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x37O6IDt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yqgzfKsO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=x37O6IDt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=yqgzfKsO; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 1413921AA6;
+	Mon,  1 Jul 2024 13:28:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719840489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zsWBbdkOV0YCCxAgZ8SJZpYJf6nixVUmkGp0FuapMkM=;
+	b=x37O6IDtAT63Q8rapWHQ4FbL2qyXxGESMk/nAewS2Qac0BKsFxUgGUGI/Ee54kYpZxL4zb
+	l3E4eiJ+nb050s5oizNDGeTxLn+twumAWISAh5sEm8AcZzq5pJ6VIPLXxGgDTgrQMQfZOf
+	5rfU2AzPzJ3ZYniGOJkjpnlpdPX6pIY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719840489;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zsWBbdkOV0YCCxAgZ8SJZpYJf6nixVUmkGp0FuapMkM=;
+	b=yqgzfKsOnCYps9G4iarlBQvL/ovqPnAwj5oTsxNFDm+vQb8IlwFR7zBd66hpL+27+ZT2rm
+	f8WkL2hgPWsiUuCQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=x37O6IDt;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=yqgzfKsO
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719840489; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zsWBbdkOV0YCCxAgZ8SJZpYJf6nixVUmkGp0FuapMkM=;
+	b=x37O6IDtAT63Q8rapWHQ4FbL2qyXxGESMk/nAewS2Qac0BKsFxUgGUGI/Ee54kYpZxL4zb
+	l3E4eiJ+nb050s5oizNDGeTxLn+twumAWISAh5sEm8AcZzq5pJ6VIPLXxGgDTgrQMQfZOf
+	5rfU2AzPzJ3ZYniGOJkjpnlpdPX6pIY=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719840489;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=zsWBbdkOV0YCCxAgZ8SJZpYJf6nixVUmkGp0FuapMkM=;
+	b=yqgzfKsOnCYps9G4iarlBQvL/ovqPnAwj5oTsxNFDm+vQb8IlwFR7zBd66hpL+27+ZT2rm
+	f8WkL2hgPWsiUuCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 08D7E13800;
+	Mon,  1 Jul 2024 13:28:09 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id M5cfAumugmZXXAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 01 Jul 2024 13:28:09 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 9C3CEA08A6; Mon,  1 Jul 2024 15:28:04 +0200 (CEST)
+From: Jan Kara <jack@suse.cz>
+To: Ted Tso <tytso@mit.edu>
+Cc: <linux-ext4@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH] jbd2: Increase maximum transaction size
+Date: Mon,  1 Jul 2024 15:28:00 +0200
+Message-Id: <20240701132800.7158-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240701-mgtime-v2-11-19d412a940d9@kernel.org>
-References: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
-In-Reply-To: <20240701-mgtime-v2-0-19d412a940d9@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Chandan Babu R <chandan.babu@oracle.com>, 
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>
-Cc: Andi Kleen <ak@linux.intel.com>, kernel-team@fb.com, 
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
- linux-nfs@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6401; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=yGbFoI0x64Criq5hVXpnf8cTDkEYS+drfXiF9/4UXTc=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBmgoR51H+Vt+Exq9KPckzpWSJI72DyZw39g58HZ
- 6vgl2QTkO+JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZoKEeQAKCRAADmhBGVaC
- FUgRD/9lsIjZK2rTJJTMM0K7QsIaOP3fGuxn3FJzgS/8fA0BxnWEFHyOjfHbW7G8Pk2e7T3FUtF
- eRaFdjrKm58/m+Pri5Gimbl9u0L3k8bs3OwWdfEHjjd3vY8dBeCHDYsyOOU96h0C8YAeLXYKW7v
- awrdt160eBzPfrVCLR+PYf0Nr2R5N1w4tTp8UCEaSy8BhOhiWHE5yEU+0dILaoEVaKub1bwYVjV
- mPVEWbsALVgC3JDWdkI4JTid9yXq+2fKgyT8ZRN9DuQqtfhetl6akwSxiTy2ZhYjQWXn4MwseN+
- Sl42qLYCNzrpb+I3GsuPzd4w3YrijPaS2vDQ82BPfRbQqqj+64kR1zd/yjaqoWMcp0YB5VEUnGO
- l8uyRah0FF1rQNatV4c+a/SpXu1jdNXXtOG6rlSN+0Vih1+1Q/miYBQH6ApBVf+QJxDKzXW10YR
- ywIi+5WIwTwVnTTUoJdTzKDyW7vSlMCR/n50SSiuX9vYI7wm5/wi5HL/+KT5Idgv29ro6UPca5C
- tuQZld6B1HnPwUHD0E34Slj4q9H2YbmDz2UYLavQK9GWVOSWvyVApcHSF74iwlV6XMnozuLwVRs
- iOP1aC1GI5fBD0AJrcgAxYw/xjmU0slyWE7EPk6otXIYcdc4Qrgc4cWAu3TP2Cu6Kw7o6A269Hq
- VCQ37btdGTtuEEA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1221; i=jack@suse.cz; h=from:subject; bh=TOQqCCCsmVhB9wUwD05+zD0p6Jvxnhhi5sXM+lmZHuI=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBmgq7atmh1ThlUsIIs7R5LlhsD2kMY+ScmNuSizi2d KQgHImOJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZoKu2gAKCRCcnaoHP2RA2bl9B/ 9MWXUKHvvuC5atjVC8dfMSZANGkYDhz0ScQqS9D+U1fN4F+B9Je3Eqy+EIflOJdw+puPLLGXCwMKVx x+mgWUsiTfT6xKgcPeLWMcdk6Hk4ObfOhwYZkVRScDAZVbaP2DecSrosjHI/v0eZHj0P6z75ZgwmhL tifGQ2ecrOSpU6Br1DYwwoyoSAbPK5ZWHJQEuGMEP3gEGP43C/ma7w7JEk5re3tvxORe0ShsDXuFy6 dCR93Ss+asCSufzH1fYs1U+6BxPdMKH+cIOmLkx6VG3RCDpwzCeTmfZxwH67xOFeb/QT+e4NLGweA6 RXMKFuXNVjduEFq5U9FZhD28Qa2oDi
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:email,suse.cz:dkim];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 1413921AA6
+X-Spam-Flag: NO
+X-Spam-Score: -3.01
+X-Spam-Level: 
 
-Add a high-level document that describes how multigrain timestamps work,
-rationale for them, and some info about implementation and tradeoffs.
+Originally, we were quite conservative in limiting maximum transaction
+size to a quarter of the journal because we were not accounting
+transaction descriptor and revoke blocks. These days we do properly
+account them and reserve space for them from the total transaction
+credits. Thus there's no need to be so conservative and we can increase
+the maximum transaction size to one third of the journal (even half
+should work fine in principle but the performance will likely suffer in
+that case). This also fixes failures to grow filesystems with tiny
+journals.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+Link: CA+hUFcuGs04JHZ_WzA1zGN57+ehL2qmHOt5a7RMpo+rv6Vyxtw@mail.gmail.com
+Signed-off-by: Jan Kara <jack@suse.cz>
 ---
- Documentation/filesystems/multigrain-ts.rst | 126 ++++++++++++++++++++++++++++
- 1 file changed, 126 insertions(+)
+ include/linux/jbd2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/Documentation/filesystems/multigrain-ts.rst b/Documentation/filesystems/multigrain-ts.rst
-new file mode 100644
-index 000000000000..beef7f79108c
---- /dev/null
-+++ b/Documentation/filesystems/multigrain-ts.rst
-@@ -0,0 +1,126 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+=====================
-+Multigrain Timestamps
-+=====================
-+
-+Introduction
-+============
-+Historically, the kernel has always used a coarse time values to stamp
-+inodes. This value is updated on every jiffy, so any change that happens
-+within that jiffy will end up with the same timestamp.
-+
-+When the kernel goes to stamp an inode (due to a read or write), it first gets
-+the current time and then compares it to the existing timestamp(s) to see
-+whether anything will change. If nothing changed, then it can avoid updating
-+the inode's metadata.
-+
-+Coarse timestamps are therefore good from a performance standpoint, since they
-+reduce the need for metadata updates, but bad from the standpoint of
-+determining whether anything has changed, since a lot of things can happen in a
-+jiffy.
-+
-+They are particularly troublesome with NFSv3, where unchanging timestamps can
-+make it difficult to tell whether to invalidate caches. NFSv4 provides a
-+dedicated change attribute that should always show a visible change, but not
-+all filesystems implement this properly, and many just populating this with
-+the ctime.
-+
-+Multigrain timestamps aim to remedy this by selectively using fine-grained
-+timestamps when a file has had its timestamps queried recently, and the current
-+coarse-grained time does not cause a change.
-+
-+Inode Timestamps
-+================
-+There are currently 3 timestamps in the inode that are updated to the current
-+wallclock time on different activity:
-+
-+ctime:
-+  The inode change time. This is stamped with the current time whenever
-+  the inode's metadata is changed. Note that this value is not settable
-+  from userland.
-+
-+mtime:
-+  The inode modification time. This is stamped with the current time
-+  any time a file's contents change.
-+
-+atime:
-+  The inode access time. This is stamped whenever an inode's contents are
-+  read. Widely considered to be a terrible mistake. Usually avoided with
-+  options like noatime or relatime.
-+
-+Updating the mtime always implies a change to the ctime, but updating the
-+atime due to a read request does not.
-+
-+Multigrain timestamps are only tracked for the ctime and the mtime. atimes are
-+not affected and always use the coarse-grained value (subject to the floor).
-+
-+Inode Timestamp Ordering
-+========================
-+
-+In addition just providing info about changes to individual files, file
-+timestamps also serve an important purpose in applications like "make". These
-+programs measure timestamps in order to determine whether source files might be
-+newer than cached objects.
-+
-+Userland applications like make can only determine ordering based on
-+operational boundaries. For a syscall those are the syscall entry and exit
-+points. For io_uring or nfsd operations, that's the request submission and
-+response. In the case of concurrent operations, userland can make no
-+determination about the order in which things will occur.
-+
-+For instance, if a single thread modifies one file, and then another file in
-+sequence, the second file must show an equal or later mtime than the first. The
-+same is true if two threads are issuing similar operations that do not overlap
-+in time.
-+
-+If however, two threads have racing syscalls that overlap in time, then there
-+is no such guarantee, and the second file may appear to have been modified
-+before, after or at the same time as the first, regardless of which one was
-+submitted first.
-+
-+Multigrain Timestamps
-+=====================
-+Multigrain timestamps are aimed at ensuring that changes to a single file are
-+always recognizeable, without violating the ordering guarantees when multiple
-+different files are modified. This affects the mtime and the ctime, but the
-+atime will always use coarse-grained timestamps.
-+
-+It uses the lowest-order bit in the timestamp as a flag that indicates whether
-+the mtime or ctime have been queried. If either or both have, then the kernel
-+takes special care to ensure the next timestamp update will display a visible
-+change. This ensures tight cache coherency for use-cases like NFS, without
-+sacrificing the benefits of reduced metadata updates when files aren't being
-+watched.
-+
-+The ctime Floor Value
-+=====================
-+It's not sufficient to simply use fine or coarse-grained timestamps based on
-+whether the mtime or ctime has been queried. A file could get a fine grained
-+timestamp, and then a second file modified later could get a coarse-grained one
-+that appears earlier than the first, which would break the kernel's timestamp
-+ordering guarantees.
-+
-+To mitigate this problem, we maintain a per-time_namespace floor value that
-+ensures that this can't happen. The two files in the above example may appear
-+to have been modified at the same time in such a case, but they will never show
-+the reverse order.
-+
-+Implementation Notes
-+====================
-+Multigrain timestamps are intended for use by local filesystems that get
-+ctime values from the local clock. This is in contrast to network filesystems
-+and the like that just mirror timestamp values from a server.
-+
-+For most filesystems, it's sufficient to just set the FS_MGTIME flag in the
-+fstype->fs_flags in order to opt-in, providing the ctime is only ever set via
-+inode_set_ctime_current(). If the filesystem has a ->getattr routine that
-+doesn't call generic_fillattr, then you should have it call fill_mg_cmtime to
-+fill those values.
-+
-+Caveats
-+=======
-+The main sacrifice is the lowest bit in the ctime's field, since that's
-+where the flag is stored. Thus, timestamps presented by multigrain enabled
-+filesystems will always have an even tv_nsec value (since the lowest bit
-+is masked off).
-
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index ab04c1c27fae..7273ef1732bf 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1662,7 +1662,7 @@ int jbd2_fc_release_bufs(journal_t *journal);
+ 
+ static inline int jbd2_journal_get_max_txn_bufs(journal_t *journal)
+ {
+-	return (journal->j_total_len - journal->j_fc_wbufsize) / 4;
++	return (journal->j_total_len - journal->j_fc_wbufsize) / 3;
+ }
+ 
+ /*
 -- 
-2.45.2
+2.35.3
 
 
