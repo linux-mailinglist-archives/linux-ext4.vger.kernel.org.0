@@ -1,139 +1,225 @@
-Return-Path: <linux-ext4+bounces-3088-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3089-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E8CE9923D84
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 14:22:00 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAFBE923E4F
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 15:01:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 275BB1C2302A
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 12:22:00 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72C95B25CB5
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 13:01:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00CB116B735;
-	Tue,  2 Jul 2024 12:21:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFB3616F85D;
+	Tue,  2 Jul 2024 13:01:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MKLHYwhq"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M1WatD9Y"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A6BE157488;
-	Tue,  2 Jul 2024 12:21:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D89C616EBF8
+	for <linux-ext4@vger.kernel.org>; Tue,  2 Jul 2024 13:01:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719922906; cv=none; b=OBX06o6KkTfLZgrMVZbXqtai9E64eD29xCd8DtoodEWOLrGESoIUFFCvmOfUshrbA8WgH+fP+WfSSLzwzPAp3eesFR2jJO/+dKOZcD4kmJ67xqvZobndjOu53zmjAAAPJbznGHSm+Cg/341MA6m7vmxsehPah5X+ofN/HJdYIOE=
+	t=1719925275; cv=none; b=CB7pTAFd0dQcEI56cffW79BUbNBC0GIQsLiryrsLXw8pwA1IWT7oLfmi36wIFeIZaZwidkk39rK9kV+VtsnkGQbCR5PaVXHhq95xJJkUUS9SFRQozpT3nECMi8fnsKIyaqBcBJ1Bk5dHUUuwCLA5rU4Wg44sGvo32U0uEXfoCw8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719922906; c=relaxed/simple;
-	bh=dlV/fAhfUmr253nJj9tCh33V0pYp49DfCChR4aJuxtc=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=h1kRPVtFkx6+R0iBKpisOxIod6OlPuBgISYS9rSfksW+rIp3sayncBZATpLYWY5owbqvNqY/HmZ8F5JDxUTIB/sDJbvw259vWe3GSaj8Zs01e29HUTn+iOsAoqGyiZ30h3rDKRrUbGmk4NVO8p0zkn+tgJ7E2knRH++rugQLDqc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MKLHYwhq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BCA9DC116B1;
-	Tue,  2 Jul 2024 12:21:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1719922905;
-	bh=dlV/fAhfUmr253nJj9tCh33V0pYp49DfCChR4aJuxtc=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=MKLHYwhqixRE7NHHs+pKxnm2xM07FMEaKMpowL4BHrzYKeiJGQ7PFBYCjClgpBiI/
-	 we8VYRV0kw10lMI7sISoJjvqh7TSpE0w5fQwI65uVz+DpmLUJKtU+bGfGyO8HoB8eu
-	 Q8xb14PfG29iDlbp7LbI8xzwGi7+RKZCngmMkIGhB/AXczJwUSFqC12fOCN19uDNgk
-	 2/FfGop4RJTAY50Ssa2AsKoITX+awTNKshF8e1eRiatSXT2u9Jpebr5sWW5NWWeb0p
-	 RrA1mYttC4C2Ko6NBkhrN8WxRoQ5hUBL0djKrLRVIJ6rvTVQgB0mT2vP/X91Mj1fZv
-	 GzC10zOs4nEpg==
-Message-ID: <a11d84a3085c6a6920d086bf8fae1625ceff5764.camel@kernel.org>
-Subject: Re: [PATCH 01/10] fs: turn inode ctime fields into a single ktime_t
-From: Jeff Layton <jlayton@kernel.org>
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>, 
- Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
- <brauner@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, Masami
- Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Chandan Babu R <chandan.babu@oracle.com>,
- Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
- <dsterba@suse.com>,  Hugh Dickins <hughd@google.com>, Andrew Morton
- <akpm@linux-foundation.org>, kernel-team@fb.com, 
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mm@kvack.org,  linux-nfs@vger.kernel.org
-Date: Tue, 02 Jul 2024 08:21:42 -0400
-In-Reply-To: <ZoPvR39vGeluD5T2@infradead.org>
-References: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
-	 <20240626-mgtime-v1-1-a189352d0f8f@kernel.org>
-	 <20240701224941.GE612460@frogsfrogsfrogs>
-	 <3042db2f803fbc711575ec4f1c4a273912a50904.camel@kernel.org>
-	 <ZoOuSxRlvEQ5rOqn@infradead.org>
-	 <d91a29f0e600793917b73ac23175e02dafd56beb.camel@kernel.org>
-	 <20240702101902.qcx73xgae2sqoso7@quack3>
-	 <958080f6de517cf9d0a1994e3ca500f23599ca33.camel@kernel.org>
-	 <ZoPs0TfTEktPaCHo@infradead.org>
-	 <09ad82419eb78a2f81dda5dca9caae10663a2a19.camel@kernel.org>
-	 <ZoPvR39vGeluD5T2@infradead.org>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1719925275; c=relaxed/simple;
+	bh=lzLXQy0yeh10k1V5HMthvj0Nq5/nTL/G2qR1mGuyZJQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oalHwabU/By+GEFTFv4pRgQrCDmqAVVdp6pgkDkfzVLqkbV5UQEKlqPRu0yYA7Sxk0gzTCOBJteOe7A9pl2xqb54Jp7iDx0e6gfaCJwk8s3xwlEC/xuLsazuDysIaP9vLy6UzLACwPj+dHMO9IG2oeeI5gwfxcvX1Kdr9RYPVdc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M1WatD9Y; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1719925272;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
+	bh=jyEO3+UzYxm+hTM+bXCMesYBadmj5Ly0ujSdz+Y7wU4=;
+	b=M1WatD9YhK7ewo+KH0+nhrmhk0gWdyCE6PiEjAY0pPTrRJHIZqVW+UNjhD27QYS7eMVxbz
+	Eccz0uLHDw+5ZhZd4I9iqLhF1UJiYdVX0Na3LL0htusUgrh2GbeUou/l6O5MSaumrfaIk7
+	hzAJDuuSehXK2pCk3Amm5/RIjdUeJiY=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-461-chkQwbM7N3G5Uoo1QE0jXA-1; Tue, 02 Jul 2024 09:01:09 -0400
+X-MC-Unique: chkQwbM7N3G5Uoo1QE0jXA-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4210d151c5bso28768055e9.3
+        for <linux-ext4@vger.kernel.org>; Tue, 02 Jul 2024 06:01:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1719925267; x=1720530067;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :content-language:from:references:cc:to:subject:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=jyEO3+UzYxm+hTM+bXCMesYBadmj5Ly0ujSdz+Y7wU4=;
+        b=LPJYiDY3ji95xvHB7BucYKCKG3gTXR6bY53OGaHCE+J+W86lnFX/plL59DY0wDl/gH
+         6l8N2NL+U8pjBEQMuTWqswvyIzPp8Vnr/auoNaksUla5tkJ3vtRWz2m9YC3d/gA1zRCb
+         r2KZlfl9JxW5JSMqb6IWqAkshjSS8W9y8CO+mpVe+bHQXlsuZOXWGW4hZylgRWow1bgK
+         2Akp10fopev4hamEv1zy0CMSeSlsd1PDeyHWLoJ+AX77GPgjnqTtrOUXU/5VS1F57V47
+         PUmJU7v5xCvqojegNkrAMQFE/TOpH4NY5umPK4yvdTw4q0jSxIhatA7+68fwc3B+2IE/
+         zLGQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/NKgRGhtNrMns1QMPm8F8yI0xily0MJf6CaCL3eZvezuvmwwWLhvdwCVDGBa56j1dOG69FqU8vabyWclrVpMDfV6lpFOznGb9vA==
+X-Gm-Message-State: AOJu0YwreHgBz9is/aqTyiIK+k9IMGG75jntCIlMuMzunH9F07bdGwJP
+	wLVXgxYVePDwHkPgqsZc/WhnvCeYANm5VdAswr9Yjp2gT9L6BJHjEw21Fr8zcmnPZOQ11NYTN5O
+	EAteNyBiHZ8aUWA42UWrMT6V/b1cDECLco+IRAQGRmyv1Ug7lo/QVlgwG1D8=
+X-Received: by 2002:a05:600c:1907:b0:425:80d5:b8b2 with SMTP id 5b1f17b1804b1-42580d5b949mr42162035e9.16.1719925267585;
+        Tue, 02 Jul 2024 06:01:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGNRWXVq25i4+xzNptJNzupJEva9JBF4UmMbTPOec4KVS/tV15hD65O9Gcf+IGsZJl8VbVPcA==
+X-Received: by 2002:a05:600c:1907:b0:425:80d5:b8b2 with SMTP id 5b1f17b1804b1-42580d5b949mr42161595e9.16.1719925267004;
+        Tue, 02 Jul 2024 06:01:07 -0700 (PDT)
+Received: from ?IPV6:2003:cb:c739:2400:78ac:64bb:a39e:2578? (p200300cbc739240078ac64bba39e2578.dip0.t-ipconnect.de. [2003:cb:c739:2400:78ac:64bb:a39e:2578])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4256b068e93sm198233215e9.24.2024.07.02.06.01.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 02 Jul 2024 06:01:06 -0700 (PDT)
+Message-ID: <0b6d36b9-ce12-4278-a697-0186088e17b1@redhat.com>
+Date: Tue, 2 Jul 2024 15:01:04 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 07/13] huge_memory: Allow mappings of PUD sized pages
+To: Alistair Popple <apopple@nvidia.com>
+Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com, dave.jiang@intel.com,
+ logang@deltatee.com, bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca,
+ catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
+ npiggin@gmail.com, dave.hansen@linux.intel.com, ira.weiny@intel.com,
+ willy@infradead.org, djwong@kernel.org, tytso@mit.edu, linmiaohe@huawei.com,
+ peterx@redhat.com, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
+ linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, jhubbard@nvidia.com,
+ hch@lst.de, david@fromorbit.com
+References: <cover.66009f59a7fe77320d413011386c3ae5c2ee82eb.1719386613.git-series.apopple@nvidia.com>
+ <bd332b0d3971b03152b3541f97470817c5147b51.1719386613.git-series.apopple@nvidia.com>
+ <cf572c69-a754-4d41-b9c4-7a079b25b3c3@redhat.com>
+ <874j98gjfg.fsf@nvdebian.thelocal>
+ <0b549ff0-b0b6-4fc8-aa6f-0d76157575b3@redhat.com>
+ <87wmm4f1y6.fsf@nvdebian.thelocal>
+From: David Hildenbrand <david@redhat.com>
+Content-Language: en-US
+Autocrypt: addr=david@redhat.com; keydata=
+ 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
+ WNyWQQ==
+Organization: Red Hat
+In-Reply-To: <87wmm4f1y6.fsf@nvdebian.thelocal>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, 2024-07-02 at 05:15 -0700, Christoph Hellwig wrote:
-> On Tue, Jul 02, 2024 at 08:09:46AM -0400, Jeff Layton wrote:
-> > > > corrupt timestamps like this?
-> > >=20
-> > > inode_set_ctime_to_ts should return an error if things are out of
-> > > range.
-> >=20
-> > Currently it just returns the timespec64 we're setting it to (which
-> > makes it easy to do several assignments), so we'd need to change
-> > its
-> > prototype to handle this case, and fix up the callers to recognize
-> > the
-> > error.
-> >=20
-> > Alternately it may be easier to just add in a test for when
-> > __i_ctime =3D=3D KTIME_MAX in the appropriate callers and have them
-> > error
-> > out. I'll have a look and see what makes sense.
->=20
-> The seems like a more awkward interface vs one that explicitly
-> checks.
->=20
+On 02.07.24 13:30, Alistair Popple wrote:
+> 
+> David Hildenbrand <david@redhat.com> writes:
+> 
+>> On 02.07.24 12:19, Alistair Popple wrote:
+>>> David Hildenbrand <david@redhat.com> writes:
+>>>
+>>>> On 27.06.24 02:54, Alistair Popple wrote:
+>>>>> Currently DAX folio/page reference counts are managed differently to
+>>>>> normal pages. To allow these to be managed the same as normal pages
+>>>>> introduce dax_insert_pfn_pud. This will map the entire PUD-sized folio
+>>>>> and take references as it would for a normally mapped page.
+>>>>> This is distinct from the current mechanism, vmf_insert_pfn_pud,
+>>>>> which
+>>>>> simply inserts a special devmap PUD entry into the page table without
+>>>>> holding a reference to the page for the mapping.
+>>>>
+>>>> Do we really have to involve mapcounts/rmap for daxfs pages at this
+>>>> point? Or is this only "to make it look more like other pages" ?
+>>> The aim of the series is make FS DAX and other ZONE_DEVICE pages
+>>> look
+>>> like other pages, at least with regards to the way they are refcounted.
+>>> At the moment they are not refcounted - instead their refcounts are
+>>> basically statically initialised to one and there are all these special
+>>> cases and functions requiring magic PTE bits (pXX_devmap) to do the
+>>> special DAX reference counting. This then adds some cruft to manage
+>>> pgmap references and to catch the 2->1 page refcount transition. All
+>>> this just goes away if we manage the page references the same as other
+>>> pages (and indeed we already manage DEVICE_PRIVATE and COHERENT pages
+>>> the same as normal pages).
+>>> So I think to make this work we at least need the mapcounts.
+>>>
+>>
+>> We only really need the mapcounts if we intend to do something like
+>> folio_mapcount() == folio_ref_count() to detect unexpected folio
+>> references, and if we have to have things like folio_mapped()
+>> working. For now that was not required, that's why I am asking.
+> 
+> Oh I see, thanks for pointing that out. In that case I agree, we don't
+> need the mapcounts. As you say we don't currently need to detect
+> unexpect references for FS DAX and this series doesn't seek to introduce
+> any new behviour/features.
+> 
+>> Background also being that in a distant future folios will be
+>> decoupled more from other compound pages, and only folios (or "struct
+>> anon_folio" / "struct file_folio") would even have mapcounts.
+>>
+>> For example, most stuff we map (and refcount!) via vm_insert_page()
+>> really must stop involving mapcounts. These won't be "ordinary"
+>> mapcount-tracked folios in the future, they are simply some refcounted
+>> pages some ordinary driver allocated.
+> 
+> Ok, so for FS DAX we should take a reference on the folio for the
+> mapping but not a mapcount?
 
-Many of the existing callers of inode_ctime_to_ts are in void return
-functions. They're just copying data from an internal representation to
-struct inode and assume it always succeeds. For those we'll probably
-have to catch bad ctime values earlier.
+That's what we could do, yes. But if we really just want to track page 
+table mappings like we do with other folios (anon/pagecache/shmem), and 
+want to keep doing that in the future, then maybe we should just do it 
+right away. The rmap code you add will be required in the future either way.
 
-So, I think I'll probably have to roll bespoke error handling in all of
-the relevant filesystems if we go this route. There are also
-differences between filesystems -- does it make sense to refuse to load
-an inode with a bogus ctime on NFS or AFS? Probably not.
+Using that code for device dax would likely be impossible right now due 
+to the vmemmap optimizations I guess, if we would end up writing subpage 
+mapcounts. But for FSDAX purposes (no vmemmap optimization) it would work.
 
-Hell, it may be simpler to just ditch this patch and reimplement
-mgtimes using the nanosecond fields like the earlier versions did.
+-- 
+Cheers,
 
-I'll need to study this a bit and figure out what's best.
+David / dhildenb
 
-> >=20
-> > > How do we currently catch this when it comes from userland?
-> > >=20
-> >=20
-> > Not sure I understand this question. ctime values should never come
-> > from userland. They should only ever come from the system clock.
->=20
-> Ah, yes, utimes only changes mtime.
-
-Yep. That's the main reason I see the ctime as very different from the
-atime or mtime.
---=20
-Jeff Layton <jlayton@kernel.org>
 
