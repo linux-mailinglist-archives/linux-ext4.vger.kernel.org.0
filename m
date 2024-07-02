@@ -1,219 +1,291 @@
-Return-Path: <linux-ext4+bounces-3065-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3066-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B24091EB9C
-	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 01:54:00 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B2591EBC9
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 02:22:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F5D7B21EAE
-	for <lists+linux-ext4@lfdr.de>; Mon,  1 Jul 2024 23:53:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAF1E284D67
+	for <lists+linux-ext4@lfdr.de>; Tue,  2 Jul 2024 00:22:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31111741EA;
-	Mon,  1 Jul 2024 23:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77DC38801;
+	Tue,  2 Jul 2024 00:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="No4ehdGc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IYYjhApb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2063.outbound.protection.outlook.com [40.107.96.63])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C439116F0DD;
-	Mon,  1 Jul 2024 23:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.63
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719878010; cv=fail; b=uC5mJUJ18F4qbJQE1A1LrV71iV+CBY1gN+8JSSIu77D9zD3fvFHtYjApsn2GkMObdw4RjAFXimlaI/TKSApMXbGHfgsayAmtJY+qWo6YRTKTM3MlfcTSiIEC9at7tNcRl7T+AxxXcGNrwCz43DvAH+FVvwBf97cEZySGXhmmQ3s=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719878010; c=relaxed/simple;
-	bh=Gu1zydKx8BvrqcPz8f811s2PKkip9bG3/r6ipqK8s1c=;
-	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
-	 Content-Type:MIME-Version; b=VnCo4vsuDog7dU7lf0dK7iv1o3lapBJECzvzAI1NP9i/iArMWWINGiVtZq9vwvWq701C5I7U6AsLndNhEMtI8ff0Bgel0hyBsR7RS74yZzX7gOKrzL4zQ8Pyf5WValaT8ngC7RFy0GuBsUDQHHpct8mrTyt/PlajDmElSQrWBCQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=No4ehdGc; arc=fail smtp.client-ip=40.107.96.63
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FzkbgFLDG83aigF8U7vWLtW00L0Fno1uhQwXZH0J1CPuinPqN7sO9THJCaiwUL8MLpGM0uc06ZcAO/F7uBv/CS3DSfmKSGGmHM5u2Dujy+nBEiskMZwZbmgokPATB0RMeC6OKF/4l5rYvgclFd7joqBT5Yrcpg8Hld4pev9EyeKMNRnkgwzl/BEx3xLk+Qz/El5RmAxvd9qGTUVcrF03tIYYuIHf5IeEh6ajW+cRzx8QoPQzJXdubOBcPZ7gFyO4ZGTXCL1vABWqc1GgOsUF2PPbBbDNm5p6LSyk2QeEoNNpwrvy0aQ7hv6WNzJ8zjNOrQolwWpMAZH3U6IrdZqNTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=vz7haZsFj1gyNIs9Hvqqy12vPgWsa7xrQknuTdinxv0=;
- b=IrmCrVMA6GT6bHmYvJx9YM61JGo7MCbAu166m+H/qUnMWeqWmwc6Lbu8sn7OXVG9S7iOIaIyD9ZE5AS045oPVGrXyl03Yx/8FYKGztd70GIi/292gVVy+5IvD7Kl+vFFcWcOcjWLZf2Ai+JPDtsQbzsZB5JtomvYRUFcEwYmpstry9su1USXQD6YFVD9bCBGgJvkPtuZgSM8bv/1EL2fqY3BrzeXm5Ct1QsMrPtw7ReNKCkZ56fD5qfrXZ04IhWl4J7zV1Spn1MjrdXdc+zCncQtdNF4yXc134CmRKJjgUO9yTn8Y8fzCEqw++n8t3j8P91Dp8VNLwKy/FyJDuLozw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=vz7haZsFj1gyNIs9Hvqqy12vPgWsa7xrQknuTdinxv0=;
- b=No4ehdGc74tkhPesz0WG8j+03OUgrdaLCpdJtbi3UeXD5Bu3k81AsI/QRjmQ8RAPLAptmnl769wu5ZFhIF86G67MI3aV3dqh04ZC081/boFdSTsF04bolYu+begF9+jzET8W/JqTEX7LwxlnLlfM2xPac1GWqT9ZuFFhq6GU+7MNF1W8PUiL5senZxv8rEtWXOQYUcmMpwJ3nc1tUU7E9C2fpdz+cWht0vrmiVGne20fpjRIaDjvYu9V0nSIbvdSIdmshYToq/sXSVgxGe3y7bnkKp0ewdIMAmqv0P3j8yJN8gR6XsLGQSW/e4YEWuj5IjL8Si7zEYL0ewX0ci+ZWA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
- DM4PR12MB6326.namprd12.prod.outlook.com (2603:10b6:8:a3::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7719.29; Mon, 1 Jul 2024 23:53:21 +0000
-Received: from DS0PR12MB7726.namprd12.prod.outlook.com
- ([fe80::953f:2f80:90c5:67fe]) by DS0PR12MB7726.namprd12.prod.outlook.com
- ([fe80::953f:2f80:90c5:67fe%6]) with mapi id 15.20.7719.028; Mon, 1 Jul 2024
- 23:53:21 +0000
-References: <cover.66009f59a7fe77320d413011386c3ae5c2ee82eb.1719386613.git-series.apopple@nvidia.com>
- <74a9fc9e018e54d7afbeae166479e2358e0a1225.1719386613.git-series.apopple@nvidia.com>
- <f9539968-4b76-41a9-92d5-00082c7d1e96@redhat.com>
-User-agent: mu4e 1.10.8; emacs 29.1
-From: Alistair Popple <apopple@nvidia.com>
-To: David Hildenbrand <david@redhat.com>
-Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com,
- dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
- jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com, will@kernel.org,
- mpe@ellerman.id.au, npiggin@gmail.com, dave.hansen@linux.intel.com,
- ira.weiny@intel.com, willy@infradead.org, djwong@kernel.org,
- tytso@mit.edu, linmiaohe@huawei.com, peterx@redhat.com,
- linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
- nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
- linux-fsdevel@vger.kernel.org, linux-mm@kvack.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
- jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
-Subject: Re: [PATCH 09/13] gup: Don't allow FOLL_LONGTERM pinning of FS DAX
- pages
-Date: Tue, 02 Jul 2024 09:47:03 +1000
-In-reply-to: <f9539968-4b76-41a9-92d5-00082c7d1e96@redhat.com>
-Message-ID: <87le2klleb.fsf@nvdebian.thelocal>
-Content-Type: text/plain
-X-ClientProxiedBy: SY5P282CA0115.AUSP282.PROD.OUTLOOK.COM
- (2603:10c6:10:20b::20) To DS0PR12MB7726.namprd12.prod.outlook.com
- (2603:10b6:8:130::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C51F01C27;
+	Tue,  2 Jul 2024 00:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1719879731; cv=none; b=XoapwzLRhDPeJN+k5e6a/+vqzS5INzf/VhK5l2p/2EbtGqlD6+z4jQRay8vIPsvSxQKLP85zg2NjSRV19lFkcK/r8XdSpO3hM2IUNlA0orAtaftKMn5kJ5VNmv3ofyswMonFCMzg9y9J7JQA0Fn3pW43RP12155dBpRHDZW/qiE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1719879731; c=relaxed/simple;
+	bh=eilQUQR1hEY1n0+7vh9oO2ffjz4mLnCHXgoFHh9075A=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=P6AZPYQxCsTsHY0mBYDjJOTyvfqg4ekqK0qS/F+A2Oz8ylIlyD7kYcvpx8znNRpcRLKv9i1Pvc4PqcYfUteUtqK5CpVb5pPn9Lwwt6NHAlaHQzp5gNCMilNWo/IvSULvrdDDTZjzPgkOynZmLY07lKCMXVIxSZqhZNj4daHNrNE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IYYjhApb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47C20C116B1;
+	Tue,  2 Jul 2024 00:22:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1719879730;
+	bh=eilQUQR1hEY1n0+7vh9oO2ffjz4mLnCHXgoFHh9075A=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=IYYjhApbHDW/NxyC5Q3C1G5etBVbKHdmHFdwzcNJFv2Izbhy9mFkpPzBs7YgR3aum
+	 1AaUcEHTDLbxEJPLHmrAYKyrUlW9eX7ZFQA5Wm6Ovs/EwwqwtSDDZbVv2g9t4vCdgP
+	 II/UQWgyLap2u/3qfpXg0xt7JFVPt1BqeBm4yGQl1IAXukM5aaRUY4v2SsphfUN41q
+	 ShisS2T+OJxZ8snKNBhLFzrVgwyGauII9kRgPWVkcHvS2BAUMpRaqSuHRLUSB6WzcZ
+	 YpmKvfjNaZO4Lg1yCO8wXW6pWvLBrVCvqH0fACgBeiC5euBZMq9WkvH7yV8tk/bOKy
+	 ubH5Qzu19+jGA==
+Message-ID: <3042db2f803fbc711575ec4f1c4a273912a50904.camel@kernel.org>
+Subject: Re: [PATCH 01/10] fs: turn inode ctime fields into a single ktime_t
+From: Jeff Layton <jlayton@kernel.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+ <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Chandan Babu R
+ <chandan.babu@oracle.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
+ <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,  Hugh Dickins
+ <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
+ kernel-team@fb.com,  linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org,  linux-trace-kernel@vger.kernel.org,
+ linux-xfs@vger.kernel.org,  linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mm@kvack.org,  linux-nfs@vger.kernel.org
+Date: Mon, 01 Jul 2024 20:22:07 -0400
+In-Reply-To: <20240701224941.GE612460@frogsfrogsfrogs>
+References: <20240626-mgtime-v1-0-a189352d0f8f@kernel.org>
+	 <20240626-mgtime-v1-1-a189352d0f8f@kernel.org>
+	 <20240701224941.GE612460@frogsfrogsfrogs>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.2 (3.52.2-1.fc40app2) 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|DM4PR12MB6326:EE_
-X-MS-Office365-Filtering-Correlation-Id: af2a5d09-3cd5-4c37-1ec5-08dc9a28fcee
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|1800799024|366016;
-X-Microsoft-Antispam-Message-Info:
-	=?us-ascii?Q?awaVA54tfcgdrNViR3wcYggMjMJylzTwaIHx8amfkRN/kHRD4lR/PQWRkg4r?=
- =?us-ascii?Q?hu2rVPneL6Sd14HEvEPjSBRI8eS6NUOXJYjB+2f1FJ4zsYjokL86+qpWqhyH?=
- =?us-ascii?Q?UG8fxCnFWhRYBMmVxxUR5ixxQWV/WWa1u3VGDo1wNy7TCsGrfkHizDR7/N59?=
- =?us-ascii?Q?o+0RWH5enMp8PtdVUEY9lCKarECrdsrHQjc8DQShUByHxNGjh1deC+UwNKE4?=
- =?us-ascii?Q?NgCpcVuolJvtEsILMbOt6XKa1/LlPG6pcRKcC68Wa9w00Az7cuXz4McEMMpI?=
- =?us-ascii?Q?qTlahGDrKCrUANeHKbL2mLLgiNRF1Wl2m8cHKasvb6X0HiqXWKw4+qwYULUb?=
- =?us-ascii?Q?2RdKckaPD38Q1ErKSU1b7w+dXzGjeMDWw+MRrFniBRyUfQ106dr9ekcspdmz?=
- =?us-ascii?Q?LWf/Komt77AGpfBs2Gx9onfG9gNtxvRhupwxH5yVslqSawKIay+j6kTz45tf?=
- =?us-ascii?Q?w3gVC+bKcDB5Rc5kdrq7g2LM8I1dS+dJr/8uQq9Y0qKG73DfG1L1KTDp187A?=
- =?us-ascii?Q?f/4caSBAo21Q7+0wbim+8a3re9fw8PKsz0BlcrF1qVBbAHxQgGXovhq015jY?=
- =?us-ascii?Q?Y7m9LF/nvWLfxkJFq5G2sOsCgDF6e0Wi38qAPxmJ7eCVIKg/zjeZgX4RMKrw?=
- =?us-ascii?Q?GJHMGd1oH454LnqTrOMyiiko5Nku62JaD/xWIlU+zCI6YLcD5Y0A8Au8QbIS?=
- =?us-ascii?Q?QHaKI+CB2PFnrFAMy5+PDOR0lOYqS4IzFVHyBz4YkjtttFWx7AAnnLu2KLO6?=
- =?us-ascii?Q?BeKrD2f9F7Lyn4QlgU0/4Oq/7q1BnpUDzTylYoYHlAvOkzJdFHWEsOJ1xLpU?=
- =?us-ascii?Q?qJ2KT0ysFSHLHN3FQ/aS3SifgYxJXHrdSg2RkLzi8YOGf8C44UZsSi0f2u53?=
- =?us-ascii?Q?V3zaKvBBcRWe9ZH/fpHSANWlJXqSIIw3MTbrZmCdBVJWDsfwFB9pZy2H3BRx?=
- =?us-ascii?Q?LUnKUbx3/33qo6XHLZYrZwq+M0N1H2/0mGrxKvRmyWaunYElSWIK0ZacCdXi?=
- =?us-ascii?Q?CVcj/aCqATNYQ5iqrttTj+jMH9PaWMutiHvE0QHL3adabicD0cnHi32gB13i?=
- =?us-ascii?Q?rqmk/eiyBDUxRoVMJSBnn/xYBFFBncTdKpmPK7F/1Jn5Wn3pKCpZ22Lgq9GB?=
- =?us-ascii?Q?iNT58jOovrSaCQR/hd74z8deRAVK/LjJrbf5cN2vaN6w/au+/qK2OheRKy/Z?=
- =?us-ascii?Q?DwtOBZ3zgULwCN6nbPd/djOC09OkU+q6b+XC89Xv3Di5vCRNXTvKBvK4y1Ly?=
- =?us-ascii?Q?Rd1u3EIbPcudAP876elljGcc56g2sLQSbgPxnWMItzwlYIduj1c7IIvIZPz4?=
- =?us-ascii?Q?zbfq5BKbBH8PtyJcuPeJwH3p34BILVeBQ16bMGRXI+gmuA=3D=3D?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(1800799024)(366016);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xe0yQIRcPVBK0BwbP3AnvC996VouGtgurZz7olMWyshhM0MlGosOHOKVXnMK?=
- =?us-ascii?Q?l44GPmfyEcUE6VJe+i8sPKMYA22bfA3c2oZfJJdHEwKKE1wTtjSoXJ7+5BNP?=
- =?us-ascii?Q?qZIANRbGNOinQzmrzAk6zQeKDT/OAep2HRASCCcDG7b4tQteKgd1zmU2nEjw?=
- =?us-ascii?Q?bUaTC5+64mBoBQ90DISCls+wjHhbs4i7Cuqu4b/sXUHV7QUbMx4z+BY6i5na?=
- =?us-ascii?Q?yk+OWU8owCwCpSakFeiem10YiofqX4ZuLWdGaQDa+VUnbfwhYYhJdzwEN3HV?=
- =?us-ascii?Q?6GYgAlxOouhAjbThmY8EBH7s35AvfMqd1rQL1kSi20cOZNJXAS6uApgQQzgh?=
- =?us-ascii?Q?ocBMtmcSWv+Eskb7irEd1jDUOexMUf7S847CzZoM/+XZdxRkl9UKITPIPneJ?=
- =?us-ascii?Q?hju5x1oa0ULBr0uJNqkZqKhBVoQeLQpUHQEnLQo+oXcdvaJqdWqYh+PPmS/e?=
- =?us-ascii?Q?HOUmrX1n4NzDh1GkInfBG3Zkbov1+YUoVGph749oM2jUCkFdcy2pCQfUR6v6?=
- =?us-ascii?Q?N4vrYh9iCYFgFwvQgcxe8pF64HEC6wfOxDClqTKxOn+kObUPHZ70f22Yuf3w?=
- =?us-ascii?Q?UhU7RsC3S9qtTfYrpcQIMQM5SxAyHhKhWvm2K+Vk10HeaROuOXKeWI/pA49s?=
- =?us-ascii?Q?XslsDJFA4apDksDCRXzWdQ4+iSQvNdGXB9s/84T6FIAv4jUVL1RSLgX6Ly5o?=
- =?us-ascii?Q?QuUJ/Vg+leQtxk5sIdQkjfZnsDhOHAwA0y1n7Moxp7IIvDCZ6CKnDruHyHgE?=
- =?us-ascii?Q?bZzE+n7YWmAsl1gZBsyVlbHZD8ivUXpXDG6gStJX/9udBKP9WH7AMe9SxDlo?=
- =?us-ascii?Q?dib+CySsSkCRCxQY36bTprlvK5yIDDhkP+TEdsocJU5++cYWuXUwmEXLOG/S?=
- =?us-ascii?Q?wxlLnNEpAgAqbQU4O9ZUBdLZDgIfHhUFP6gVz6plven09QyeDEiKU55F1g1Z?=
- =?us-ascii?Q?HMcvfO0nRJDgd5Sm8KE+BT+0rHmPJxnVkdV0taLtsfmnjufUdzmqTWoNrBXH?=
- =?us-ascii?Q?bf61DdRDD2AqzjyEdPtvoHhZ06BEWdwzAqy0/STbBUdvfGr2XBylzJGxnloU?=
- =?us-ascii?Q?XZRz8jq5sALAwxy4NlQxoS1L9ynbBXhVliFwvz9J8CeVqnXq7PWpYwWnogmL?=
- =?us-ascii?Q?UPEnNz99RFHIiAVesDSTCB71dL0SWmOM14cqWwBbyl+trGTdxuJNVwG7RRa/?=
- =?us-ascii?Q?GOc8y/i1cthGIxQ3B9DzNOmj0QgGMCFbjISO9BMmyh3ye454MjR9O16ur1/Q?=
- =?us-ascii?Q?Y/PaNeXw87ERGIND85Oh2f+fsI5os0R1zk39zasYFTNdjlf3XyRgR/PCbCLE?=
- =?us-ascii?Q?Q5hSTEmE1Ig854vXDsOC9NtXYxMJU1bscYDeTsbUuVVFRcC8OkBCOI0N2F5q?=
- =?us-ascii?Q?BjcnkqLR5mmghRu4R/cpTEKAJ4OATTm4+YLiiM8GqSYjwUrm7iACk3BhHZDb?=
- =?us-ascii?Q?/jYCSyUuXLiD7//i4wgVBCCoRRxC7AFeaWZiWkMIvlwbP5F+TOeC7wBXqOJq?=
- =?us-ascii?Q?noSkT7KvoEGGBNQy6pX98KiuGWn4txb0y5yivll0eAtj2mTd8DlgH1RgJsYh?=
- =?us-ascii?Q?z4rBH8KGkudiktw2rRUTjjcEPAet9pK5Rb/3J0zR?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: af2a5d09-3cd5-4c37-1ec5-08dc9a28fcee
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB7726.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 01 Jul 2024 23:53:21.3940
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: O8MokSv5MtbPOkmJIu4uqpiS0O32Vb/43yvJvOacsjjLmmAEhpdVC1H1GGdGxtUGRUJDgEioe82oNVgO8lSsYA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB6326
 
+On Mon, 2024-07-01 at 15:49 -0700, Darrick J. Wong wrote:
+> On Wed, Jun 26, 2024 at 09:00:21PM -0400, Jeff Layton wrote:
+> > The ctime is not settable to arbitrary values. It always comes from the
+> > system clock, so we'll never stamp an inode with a value that can't be
+> > represented there. If we disregard people setting their system clock
+> > past the year 2262, there is no reason we can't replace the ctime field=
+s
+> > with a ktime_t.
+> >=20
+> > Switch the ctime fields to a single ktime_t. Move the i_generation down
+> > above i_fsnotify_mask and then move the i_version into the resulting 8
+> > byte hole. This shrinks struct inode by 8 bytes total, and should
+> > improve the cache footprint as the i_version and ctime are usually
+> > updated together.
+> >=20
+> > The one downside I can see to switching to a ktime_t is that if someone
+> > has a filesystem with files on it that has ctimes outside the ktime_t
+> > range (before ~1678 AD or after ~2262 AD), we won't be able to display
+> > them properly in stat() without some special treatment in the
+> > filesystem. The operating assumption here is that that is not a
+> > practical problem.
+>=20
+> What happens if a filesystem with the ability to store ctimes beyond
+> whatever ktime_t supports (AFAICT 2^63-1 nanonseconds on either side of
+> the Unix epoch)?  I think the behavior with your patch is that ktime_set
+> clamps the ctime on iget because the kernel can't handle it?
+>=20
+> It's a little surprising that the ctime will suddenly jump back in time
+> to 2262, but maybe you're right that nobody will notice or care? ;)
+>=20
+>=20
 
-David Hildenbrand <david@redhat.com> writes:
+Yeah, it'd be clamped at KTIME_MAX when we pull in the inode from disk,
+a'la ktime_set.
 
-> On 27.06.24 02:54, Alistair Popple wrote:
->> Longterm pinning of FS DAX pages should already be disallowed by
->> various pXX_devmap checks. However a future change will cause these
->> checks to be invalid for FS DAX pages so make
->> folio_is_longterm_pinnable() return false for FS DAX pages.
->> Signed-off-by: Alistair Popple <apopple@nvidia.com>
->> ---
->>   include/linux/memremap.h | 11 +++++++++++
->>   include/linux/mm.h       |  4 ++++
->>   2 files changed, 15 insertions(+)
->> diff --git a/include/linux/memremap.h b/include/linux/memremap.h
->> index 6505713..19a448e 100644
->> --- a/include/linux/memremap.h
->> +++ b/include/linux/memremap.h
->> @@ -193,6 +193,17 @@ static inline bool folio_is_device_coherent(const struct folio *folio)
->>   	return is_device_coherent_page(&folio->page);
->>   }
->>   +static inline bool is_device_dax_page(const struct page *page)
->> +{
->> +	return is_zone_device_page(page) &&
->> +		page_dev_pagemap(page)->type == MEMORY_DEVICE_FS_DAX;
->> +}
->> +
->> +static inline bool folio_is_device_dax(const struct folio *folio)
->> +{
->> +	return is_device_dax_page(&folio->page);
->> +}
->> +
->>   #ifdef CONFIG_ZONE_DEVICE
->>   void zone_device_page_init(struct page *page);
->>   void *memremap_pages(struct dev_pagemap *pgmap, int nid);
->> diff --git a/include/linux/mm.h b/include/linux/mm.h
->> index b84368b..4d1cdea 100644
->> --- a/include/linux/mm.h
->> +++ b/include/linux/mm.h
->> @@ -2032,6 +2032,10 @@ static inline bool folio_is_longterm_pinnable(struct folio *folio)
->>   	if (folio_is_device_coherent(folio))
->>   		return false;
->>   +	/* DAX must also always allow eviction. */
->> +	if (folio_is_device_dax(folio))
->> +		return false;
->> +
->>   	/* Otherwise, non-movable zone folios can be pinned. */
->>   	return !folio_is_zone_movable(folio);
->>   
->
-> Why is the check in check_vma_flags() insufficient? GUP-fast maybe?
+I think it's important to note that the ctime is not settable from
+userland, so if an on-disk ctime is outside of the ktime_t range, there
+are only two possibilities:
 
-Right. This came up when I was changing the code for GUP-fast, but also
-they shouldn't be longterm pinnable and adding the case to
-folio_is_longterm_pinnable() is an excellent way of documenting that.
+1) the system clock was set to some time (far) in the future when the
+file's metadata was last altered (bad clock? time traveling fs?).
+
+...or...
+
+2) the filesystem has been altered (fuzzing? deliberate doctoring?).
+
+None of these seem like legitimate use cases so I'm arguing that we
+shouldn't worry about them.
+
+(...ok maybe the time travel one could be legit, but someone needs to
+step up and make a case for it, if so.)
+
+> >=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  include/linux/fs.h | 26 +++++++++++---------------
+> >  1 file changed, 11 insertions(+), 15 deletions(-)
+> >=20
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 5ff362277834..5139dec085f2 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -662,11 +662,10 @@ struct inode {
+> >  	loff_t			i_size;
+> >  	time64_t		i_atime_sec;
+> >  	time64_t		i_mtime_sec;
+> > -	time64_t		i_ctime_sec;
+> >  	u32			i_atime_nsec;
+> >  	u32			i_mtime_nsec;
+> > -	u32			i_ctime_nsec;
+> > -	u32			i_generation;
+> > +	ktime_t			__i_ctime;
+> > +	atomic64_t		i_version;
+> >  	spinlock_t		i_lock;	/* i_blocks, i_bytes, maybe i_size */
+> >  	unsigned short          i_bytes;
+> >  	u8			i_blkbits;
+> > @@ -701,7 +700,6 @@ struct inode {
+> >  		struct hlist_head	i_dentry;
+> >  		struct rcu_head		i_rcu;
+> >  	};
+> > -	atomic64_t		i_version;
+> >  	atomic64_t		i_sequence; /* see futex */
+> >  	atomic_t		i_count;
+> >  	atomic_t		i_dio_count;
+> > @@ -724,6 +722,8 @@ struct inode {
+> >  	};
+> > =20
+> > =20
+> > +	u32			i_generation;
+> > +
+> >  #ifdef CONFIG_FSNOTIFY
+> >  	__u32			i_fsnotify_mask; /* all events this inode cares about */
+> >  	/* 32-bit hole reserved for expanding i_fsnotify_mask */
+> > @@ -1608,29 +1608,25 @@ static inline struct timespec64 inode_set_mtime=
+(struct inode *inode,
+> >  	return inode_set_mtime_to_ts(inode, ts);
+> >  }
+> > =20
+> > -static inline time64_t inode_get_ctime_sec(const struct inode *inode)
+> > +static inline struct timespec64 inode_get_ctime(const struct inode *in=
+ode)
+> >  {
+> > -	return inode->i_ctime_sec;
+> > +	return ktime_to_timespec64(inode->__i_ctime);
+> >  }
+> > =20
+> > -static inline long inode_get_ctime_nsec(const struct inode *inode)
+> > +static inline time64_t inode_get_ctime_sec(const struct inode *inode)
+> >  {
+> > -	return inode->i_ctime_nsec;
+> > +	return inode_get_ctime(inode).tv_sec;
+> >  }
+> > =20
+> > -static inline struct timespec64 inode_get_ctime(const struct inode *in=
+ode)
+> > +static inline long inode_get_ctime_nsec(const struct inode *inode)
+> >  {
+> > -	struct timespec64 ts =3D { .tv_sec  =3D inode_get_ctime_sec(inode),
+> > -				 .tv_nsec =3D inode_get_ctime_nsec(inode) };
+> > -
+> > -	return ts;
+> > +	return inode_get_ctime(inode).tv_nsec;
+> >  }
+> > =20
+> >  static inline struct timespec64 inode_set_ctime_to_ts(struct inode *in=
+ode,
+> >  						      struct timespec64 ts)
+> >  {
+> > -	inode->i_ctime_sec =3D ts.tv_sec;
+> > -	inode->i_ctime_nsec =3D ts.tv_nsec;
+> > +	inode->__i_ctime =3D ktime_set(ts.tv_sec, ts.tv_nsec);
+> >  	return ts;
+> >  }
+> > =20
+> >=20
+> > --=20
+> > 2.45.2
+> >=20
+> >=20
+
+--=20
+Jeff Layton <jlayton@kernel.org>
 
