@@ -1,123 +1,107 @@
-Return-Path: <linux-ext4+bounces-3097-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3098-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29747924D29
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 03:24:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DC6629252ED
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 07:27:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D844428457A
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 01:24:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98E0E1F25FD2
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 05:27:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74CAC1FB4;
-	Wed,  3 Jul 2024 01:24:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6304F1F2;
+	Wed,  3 Jul 2024 05:27:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="uhVnfzsl"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D59E623;
-	Wed,  3 Jul 2024 01:24:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4047017C60;
+	Wed,  3 Jul 2024 05:27:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719969889; cv=none; b=U84cIIO50++bhtdHaUk1jp4VFQ+mFZ2QMEof7rggngpLdAvi5CBzHidzv4iCRn0d0GEhQyDNWmSIgkAXsyKKZETQCen4AnSUkINe4hvOYHopKpxaBMLj12q5h3OkxaAU/Rj1ACrcEPM/xFVM1OvvJauEePbgB3SfL3qUu8V4Z7w=
+	t=1719984425; cv=none; b=pws6zvZOqJh4KYX3g0l4Dcv2RkEZ3Jh+ar36Q8P2M/1zW/koWC+Y7GVFITwrkPv18TyqTWkyO6lCt/GewD0ek5K7WuE+0Pxaqd31jPNy/KSEqiLwrDuMmPFv4Ju3FY0ovMDr5WadqoyzAA8RdvLy16t83L7RXIhP/pNGoSiLq6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719969889; c=relaxed/simple;
-	bh=hVJFtsQLStwaNgFureVv0oR1O+Ev1bYFBNSi90GSxpI=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=aDmJdRMK1+dzRu58YmwL4sWN+UCU1ZbL5yjHDTPzOjBcZo/XLm6Efo6djy8bZ2o9Z29FDioCGoa7Wx6qiW2pU/jaHy0tv+p+Zg/rLLJNX8cSP4bHlrptnwGv9AlcwEUNwXdwS4XatLV+ch81rpxJoiSmMJxEB+rtwaMR61dXxts=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4WDMQm2k5xzxTbX;
-	Wed,  3 Jul 2024 09:20:16 +0800 (CST)
-Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
-	by mail.maildlp.com (Postfix) with ESMTPS id 6FD191402CE;
-	Wed,  3 Jul 2024 09:24:43 +0800 (CST)
-Received: from [10.174.179.80] (10.174.179.80) by
- kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 3 Jul 2024 09:24:42 +0800
-Subject: Re: [PATCH v2] Fix WARNING in __ext4_ioctl
-To: Pei Li <peili.dev@gmail.com>
-CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<skhan@linuxfoundation.org>, <syzkaller-bugs@googlegroups.com>,
-	<linux-kernel-mentees@lists.linuxfoundation.org>,
-	<syzbot+2cab87506a0e7885f4b9@syzkaller.appspotmail.com>, Theodore Ts'o
-	<tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
-References: <20240702-bug8-v2-1-be675f490db1@gmail.com>
-From: Zhang Yi <yi.zhang@huawei.com>
-Message-ID: <154c52ab-2452-df90-a8d8-5b786f46041b@huawei.com>
-Date: Wed, 3 Jul 2024 09:24:41 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1719984425; c=relaxed/simple;
+	bh=mZHTDOjfNldNq9pm83st4/J9NEm34dK9p7Q7e6Vj96w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S+AMSGIkZEDfAuVaDdIv8/fvTD+KvvPZ2UtsUJE/bKyeBlQke/jOJ1UAo6kGs3a08VatfRtGzd/kvkvbU23X3rpXV1I19EW3GY2A9IW3fmZP4urOXXgqena0SBjt86hCAixUzgmC7JTvhnJvSfFzyqKFppe8xKqJwWqVV7ncd8I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=uhVnfzsl; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=B2QFWmmtnzG9/Nt7IO4g9fzoajf9ZPOHUxGkfqY/0Fk=; b=uhVnfzsl8Ss5ByDBA//ACjebHe
+	jorQN3OuDLkgxctOg56Sg6djOeDxfc7ypq0RjIwaSmmPFXDEUZ/TW5UWehQr/LfVoSlFkiaAC6pRA
+	WvgJeI4zFNwfDNZlzqcdkrJT9lGakvlV4LUKGqpz60aa64GQRq7tKAemE2ILOcCM62/kioq5QTKqv
+	xL2lvZFiMCrBvDaEoHNlgd2xoA3eHdmqrwffMGPTrPWwyP1HwbKBsmqlZP+Z0fNJWZhXRpK2wYiLL
+	aI/5wqPGpdtMm3LxwtISeJZIpmVQmcTBWUE5NDVOMGGK/Sm4+IAz+HiFlxcI8UJmYUzaxk/mGUo26
+	CAFHPolQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sOsW7-000000092xA-20k6;
+	Wed, 03 Jul 2024 05:26:55 +0000
+Date: Tue, 2 Jul 2024 22:26:55 -0700
+From: Christoph Hellwig <hch@infradead.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Christoph Hellwig <hch@infradead.org>, Jan Kara <jack@suse.cz>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>, kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-nfs@vger.kernel.org
+Subject: Re: [PATCH 01/10] fs: turn inode ctime fields into a single ktime_t
+Message-ID: <ZoThH9fWsdzq7IXR@infradead.org>
+References: <ZoOuSxRlvEQ5rOqn@infradead.org>
+ <d91a29f0e600793917b73ac23175e02dafd56beb.camel@kernel.org>
+ <20240702101902.qcx73xgae2sqoso7@quack3>
+ <958080f6de517cf9d0a1994e3ca500f23599ca33.camel@kernel.org>
+ <ZoPs0TfTEktPaCHo@infradead.org>
+ <09ad82419eb78a2f81dda5dca9caae10663a2a19.camel@kernel.org>
+ <ZoPvR39vGeluD5T2@infradead.org>
+ <a11d84a3085c6a6920d086bf8fae1625ceff5764.camel@kernel.org>
+ <ZoQY4jdTc5dHPGGG@infradead.org>
+ <4ec1fbdc6568e16da40f41789081805e764fd83e.camel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240702-bug8-v2-1-be675f490db1@gmail.com>
-Content-Type: text/plain; charset="utf-8"
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemf100017.china.huawei.com (7.202.181.16)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <4ec1fbdc6568e16da40f41789081805e764fd83e.camel@kernel.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On 2024/7/3 8:07, Pei Li wrote:
-> Specify the size of s_volume_name in strscpy_pad() to avoid buffer
-> overflow.
+On Tue, Jul 02, 2024 at 11:58:02AM -0400, Jeff Layton wrote:
+> Yeah, mostly. We shrink struct inode by 8 bytes with that patch, and we
+> (probably) get a better cache footprint, since i_version ends up in the
+> same cacheline as the ctime. That's really a separate issue though, so
+> I'm not too worked up about dropping that patch.
 > 
-> strscpy_pad() by default takes the size of destination string as the
-> size to be read from source string. However, as s_volume_name is only
-> declared as an array of size EXT4_LABEL_MAX, we are reading 1 byte more
-> than expected.
+> As a bonus, leaving it split across separate fields means that we can
+> use unused bits in the nsec field for the flag, so we don't need to
+> sacrifice any timestamp granularity either.
 > 
-> Reported-by: syzbot+2cab87506a0e7885f4b9@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=2cab87506a0e7885f4b9
-> Fixes: 744a56389f73 ("ext4: replace deprecated strncpy with alternatives")
-> Signed-off-by: Pei Li <peili.dev@gmail.com>
+> I've got a draft rework that does this that I'm testing now. Assuming
+> it works OK, I'll resend in a few days.
 
-Thanks for the fix, it looks good to me.
+So while shrinking the inodes sounds nice, the tradeoff to have to
+check all timestamps from disk / the server for validity doesn't
+sound as positive.  So I'm glade we're avoiding this at least for.
 
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
-> ---
-> strscpy_pad() by default takes the size of destination string as the
-> size to be read from source string. However, as s_volume_name is only
-> declared as an array of size EXT4_LABEL_MAX, we are reading 1 byte more
-> than expected.
-> 
-> Specify the size of s_volume_name in strscpy_pad() to avoid buffer
-> overflow.
-> ---
-> Changes in v2:
-> - Add fixes label
-> - Move workaround into commit log
-> - Link to v1: https://lore.kernel.org/r/20240628-bug8-v1-1-417ef53cca33@gmail.com
-> ---
->  fs/ext4/ioctl.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/ioctl.c b/fs/ext4/ioctl.c
-> index dab7acd49709..0c4fb579757a 100644
-> --- a/fs/ext4/ioctl.c
-> +++ b/fs/ext4/ioctl.c
-> @@ -1151,7 +1151,7 @@ static int ext4_ioctl_getlabel(struct ext4_sb_info *sbi, char __user *user_label
->  	BUILD_BUG_ON(EXT4_LABEL_MAX >= FSLABEL_MAX);
->  
->  	lock_buffer(sbi->s_sbh);
-> -	strscpy_pad(label, sbi->s_es->s_volume_name);
-> +	strscpy_pad(label, sbi->s_es->s_volume_name, EXT4_LABEL_MAX);
->  	unlock_buffer(sbi->s_sbh);
->  
->  	if (copy_to_user(user_label, label, sizeof(label)))
-> 
-> ---
-> base-commit: 55027e689933ba2e64f3d245fb1ff185b3e7fc81
-> change-id: 20240628-bug8-7f700a228c4a
-> 
-> Best regards,
-> 
 
