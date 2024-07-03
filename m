@@ -1,106 +1,113 @@
-Return-Path: <linux-ext4+bounces-3102-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3103-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3075F9256F5
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 11:36:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 306AE926BBC
+	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jul 2024 00:46:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 545901C232B8
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 09:36:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DB10B21A29
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 22:46:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A2613D60F;
-	Wed,  3 Jul 2024 09:36:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8A5191F69;
+	Wed,  3 Jul 2024 22:46:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TJIU7Oxp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NM8Gf7Qm";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TJIU7Oxp";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="NM8Gf7Qm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQsZnf5n"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8167D42A80;
-	Wed,  3 Jul 2024 09:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8587914265C;
+	Wed,  3 Jul 2024 22:46:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719999393; cv=none; b=YZGf6yarKwysSV4T4ReKWtC6J0eU7wQ6mgRyLqfq1jtg6l1sKcuodCK486F8Q9fLf4azuCoJV1a/uaEvuqPMBuWN5WH912v//b/v2q4dbAHGppTzn+5nlpxwyqALpEIiJbmNMVGaXojDBoDJtgoHbQEJ+uYBQNvwyC1fF0R+ohQ=
+	t=1720046788; cv=none; b=m2uKW/aXyJH7DHXrmC4P0pY8IAswNNBK3GBEsJ7mpeA3J4nrTSQ7BlThUf98J7ZdO0ek37y0QOB86b/e4KjynK9hJgzUtcI+3f69aZGGvkLiUEzWfgNlIF5ZTwmb0SnoKlmNYDcp0xb217CYzA7+LXXfDLozjQi2IN9IKf9UKEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719999393; c=relaxed/simple;
-	bh=+Jz+X/tSnZUB2y+eECrqNMH2FT3yrdCKHvGBxxA5DxQ=;
+	s=arc-20240116; t=1720046788; c=relaxed/simple;
+	bh=gA7+VliSMoQlSbs6CV2YV/4Xrx/0Iq+N6gm0gQ63NHs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=azFg65C0pGSNzxi8diTNPEfZzhgj8x8ZYoU0OhOxOtF9nlFiWXpwCESRb2K5K46BjHXp3Smq4HrNNaitNgQOI7LppAxF+sDWhP5XaESx+Bk0rF8btG75dA1QlRA22UiiB2oARZZrtlmxNc27dydAsU8V8wrTAu/sh3SlZxer+yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TJIU7Oxp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NM8Gf7Qm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TJIU7Oxp; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=NM8Gf7Qm; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 71EC51F747;
-	Wed,  3 Jul 2024 09:36:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719999389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODDMJ5syjKC3m2Ep3RdDH/u/12tFlatinKlaGEJi1YY=;
-	b=TJIU7OxpI5SYgftyTpfk0vSgGDmeqcx3AVDIjO86t7jXERT6a//U32FfO30r9o4OPaxoA0
-	QtbaHp/vb8i+6a5Pfz3ibBKylN6FL8MaEFHrFE4A5kXzf6FuUFxPnSTsULlEpKk+F1MOho
-	xBCzm0vKP0YZVso6wEysxpe39/vaJaI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719999389;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODDMJ5syjKC3m2Ep3RdDH/u/12tFlatinKlaGEJi1YY=;
-	b=NM8Gf7Qmz4NwASdeQDOSeiYtFNpR8ThDSo2qmQY1a4GuKfwGa1Sh0uZPolKmUS6/21RalM
-	uHaOGcH49yAldECA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TJIU7Oxp;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=NM8Gf7Qm
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1719999389; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODDMJ5syjKC3m2Ep3RdDH/u/12tFlatinKlaGEJi1YY=;
-	b=TJIU7OxpI5SYgftyTpfk0vSgGDmeqcx3AVDIjO86t7jXERT6a//U32FfO30r9o4OPaxoA0
-	QtbaHp/vb8i+6a5Pfz3ibBKylN6FL8MaEFHrFE4A5kXzf6FuUFxPnSTsULlEpKk+F1MOho
-	xBCzm0vKP0YZVso6wEysxpe39/vaJaI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1719999389;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ODDMJ5syjKC3m2Ep3RdDH/u/12tFlatinKlaGEJi1YY=;
-	b=NM8Gf7Qmz4NwASdeQDOSeiYtFNpR8ThDSo2qmQY1a4GuKfwGa1Sh0uZPolKmUS6/21RalM
-	uHaOGcH49yAldECA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 626D913974;
-	Wed,  3 Jul 2024 09:36:29 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KfICGJ0bhWaBWAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 03 Jul 2024 09:36:29 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 17E43A08A9; Wed,  3 Jul 2024 11:36:29 +0200 (CEST)
-Date: Wed, 3 Jul 2024 11:36:29 +0200
-From: Jan Kara <jack@suse.cz>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-	yi.zhang@huawei.com, yangerkun@huawei.com,
-	Baokun Li <libaokun1@huawei.com>,
-	syzbot+ae688d469e36fb5138d0@syzkaller.appspotmail.com,
-	stable@kernel.org
-Subject: Re: [PATCH 2/2] ext4: make sure the first directory block is not a
- hole
-Message-ID: <20240703093629.bm32twullwiqmkmp@quack3>
-References: <20240702132349.2600605-1-libaokun@huaweicloud.com>
- <20240702132349.2600605-3-libaokun@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fkGla/nFyxl6ey/qj9RnBo9N9Qdc9W2x9O30sBMQHlDLqO+fBC7KTC9saN5n0Ee/iHKjmj93nqrM9uCZqCeUpX2B20FUAIGCO2IMgy1oSb0v1jwKckNs6v5SvVqDsGfqTjZJu1d49IVcaGJp8jqbgn4MLFMpjQWMh/V1NSLvfnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AQsZnf5n; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e0360f8901aso17751276.2;
+        Wed, 03 Jul 2024 15:46:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720046785; x=1720651585; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1NR1sr/ZbZPbIrygTH2/gqn6qhtATWX6EGzQmK9ZnLY=;
+        b=AQsZnf5nn6QOrMol5ZSHJ4Kw6BdQ5UicPwEajIqgq/eWkMKHBKPcscs1DHmxv+1I5r
+         bRQ66I/GaoPrGOJ+uVKs8AhsAOUJW4c888X9zSyCq3hsN/8rWo2qTKtUhlFHUBf+VbYn
+         SAopT4cVTs1OwTBjn0zn6l329KSIF8IgcPuSPErdsrthMNpyejH2zTjZdMAnbNDvec4Q
+         +OkQTVfI+N7jXQoHrN1A4E36q0+EQYkcvzW+vXHulsioY5YGXgCbWOud/6I2YX8yWVEb
+         waelb6xsxrmPR+FLmUdjyu6h1H4RkxEPNtf9iRkCLgFXke0JZ4/vy48mlfK1NvfW1Cnt
+         mvIQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720046785; x=1720651585;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1NR1sr/ZbZPbIrygTH2/gqn6qhtATWX6EGzQmK9ZnLY=;
+        b=YK1uDPf8dHRgvb/IoiirrNHXGzu2GNi6EPi2JSggW9ReCQ0eF/bMGK7l+oUfVym6Bl
+         r+HyfOipMrAl9EB9AaHdcpUyutb4Q88Obhlhu61PHUPtrT4iFJ7fXRRn4/06LdUj+L1g
+         bsQn+KdFD6hLNFN6uxsXiXSOjEEwAm28I2F9X7h/tFJIa8XftpAXb3ScCjhfzenVT0ma
+         oAxqvqeoHOYlH2W7XlZCH8Lpc2weA5CR8l8eN4789xggenRQOXgCfnWKB+Z1g2stBuBO
+         Mi+tRVrP0+5Bx8J/QEZ7l54InsfDteGuvRPPR+4qDOKWn0KJlDqyx0Uk2wTFHNO8Zp5m
+         gJhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUXHorNZoXITf39x5ZzsZR5VfWV9TN6eY9FRvTQGhaiFW+rNYyjlIjnzZd1RcubfdjQuHRyr9nqzL+TRuVUnGNOHfoAQu98TdjZJw==
+X-Gm-Message-State: AOJu0Yx3jGkmJcy9JcgEJ/QXVxakPZ62nAGTNF98s6CoeWPpI9t1ywTt
+	Y+qBZSAfKQ28TDKvILMM1lQpzax5Th2QCrN7Btvdyw7lSeBdQ9F0
+X-Google-Smtp-Source: AGHT+IExAkct7vzhEMm0LI1KfE/PTZcCuuE2jma8x+8BFnYcDnOqpOFLAlcFxtmKBISUNpLtKW1JMg==
+X-Received: by 2002:a25:a8a:0:b0:e03:a168:f132 with SMTP id 3f1490d57ef6-e03a168f33fmr5910295276.31.1720046785489;
+        Wed, 03 Jul 2024 15:46:25 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b5dfc92d45sm11585156d6.142.2024.07.03.15.46.24
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 03 Jul 2024 15:46:24 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id B79191200043;
+	Wed,  3 Jul 2024 18:46:23 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute2.internal (MEProxy); Wed, 03 Jul 2024 18:46:23 -0400
+X-ME-Sender: <xms:v9SFZrx_XtbK-YmDyDOjoYWTmPxohWsAuEywVmy5C-q_289ELl4w6Q>
+    <xme:v9SFZjRnRT4ueTFnC9qKpR5Fb8BM3TqB46E8Gga1ITXXr14zkm5D88g46Rn-NfQGQ
+    n1-TaXpQJoicXn6rg>
+X-ME-Received: <xmr:v9SFZlUBlhEfZhkrGHuLpSP3qpqH706ahknh5UQGSz2NMC3NJlO4xqvKlmhzQg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudekgddufecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepleeuvdehjeehledvtdegveefleejleegtdelkefgkedttdekhedvheegvdei
+    tdetnecuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmpdhkvg
+    hrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
+    fhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeile
+    dvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgt
+    ohhmsehfihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:v9SFZlhbUHcdPHmwNFdklla1dY5XdKiopnYKyq0vQl86-zVmW1c4Tw>
+    <xmx:v9SFZtC4q8BNcRAanbiCDL67mnwaPba5DcF7L6EHNSiH2kAYd2fPuw>
+    <xmx:v9SFZuIsz5HmwPC3G9SO38xRuLPynuOJUpAqjymzrMvEwEJ9FtBldQ>
+    <xmx:v9SFZsC5fgbK0kDTUbMdZYkhic74F-huTbKFQsZRb9P1prA8cGpt2w>
+    <xmx:v9SFZpxjiGRpDeCj2_rfeNL_DXy_C7cthYJKNFF-K6NDGkj4bqri8eEs>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
+ 3 Jul 2024 18:46:23 -0400 (EDT)
+Date: Wed, 3 Jul 2024 15:45:21 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: botta633 <bottaawesome633@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, linux-ext4@vger.kernel.org,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	syzkaller@googlegroups.com, "Paul E. McKenney" <paulmck@kernel.org>
+Subject: Re: [PATCH] Forcing subclasses to have same name pointer as their
+ parent class
+Message-ID: <ZoXUgdUkD-GtKfKJ@boqun-archlinux>
+References: <20240704003224.22832-1-bottaawesome633@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -109,133 +116,76 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240702132349.2600605-3-libaokun@huaweicloud.com>
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[ae688d469e36fb5138d0];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com,syzkaller.appspotmail.com,kernel.org];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,syzkaller.appspot.com:url,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,huaweicloud.com:email,appspotmail.com:email,suse.com:email]
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Queue-Id: 71EC51F747
-X-Spam-Flag: NO
-X-Spam-Score: -2.51
-X-Spam-Level: 
+In-Reply-To: <20240704003224.22832-1-bottaawesome633@gmail.com>
 
-On Tue 02-07-24 21:23:49, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
-> 
-> The syzbot constructs a directory that has no dirblock but is non-inline,
-> i.e. the first directory block is a hole. And no errors are reported when
-> creating files in this directory in the following flow.
-> 
->     ext4_mknod
->      ...
->       ext4_add_entry
->         // Read block 0
->         ext4_read_dirblock(dir, block, DIRENT)
->           bh = ext4_bread(NULL, inode, block, 0)
->           if (!bh && (type == INDEX || type == DIRENT_HTREE))
->           // The first directory block is a hole
->           // But type == DIRENT, so no error is reported.
-> 
-> After that, we get a directory block without '.' and '..' but with a valid
-> dentry. This may cause some code that relies on dot or dotdot (such as
-> make_indexed_dir()) to crash.
-> 
-> Therefore when ext4_read_dirblock() finds that the first directory block
-> is a hole report that the filesystem is corrupted and return an error to
-> avoid loading corrupted data from disk causing something bad.
-> 
-> Reported-by: syzbot+ae688d469e36fb5138d0@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=ae688d469e36fb5138d0
-> Fixes: 4e19d6b65fb4 ("ext4: allow directory holes")
-> Cc: stable@kernel.org
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Hi,
 
-Looks good to me. Feel free to add:
+On Thu, Jul 04, 2024 at 03:32:24AM +0300, botta633 wrote:
+> Preventing Lockdep_set_subclass from creating a new instance of the 
+> string literal. Hence, we will always have the class->name. This
+> prevents kernel panics when locking up a lock class while comparing
+> class locks and class names.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Good catch! Thanks.
 
-								Honza
+> 
+> 
+
+Please remove the extra blank line here.
+
+> Signed-off-by: botta633 <bottaawesome633@gmail.com>
+
+Do you mind putting your real name here? Besides, IIUC, this is fixing:
+
+	https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad		
+
+, right? If so, there are some more things:
+
+*	Copy ext4 and syzkaller people, so that you could get more
+	tests.
+
+*	Since this is a bug fix, could you please figure out which
+	commit introduces the issue, so that you can put a correct
+	"Fixes:" tag along with your signed-off-by?
+
+*	Since the issue was reported by syzkaller, you should put their
+	"Reported-by" tag, they have an example in the website I paste
+	above.
+
+*	Please also Cc stable mail list so that the fix can be
+	backported, you can find the information on "Cc: stable" tag at:
+
+		https://docs.kernel.org/process/stable-kernel-rules.html
+
+*	Last but not the least, could you try to add a test case in
+	lib/locking-selftest.c to ensure the issue you fixed won't
+	happen again? This could be tricky, since you will need to fight
+	against the compiler to generate two string literals with the
+	same content.
+
+[Cc ext4 and syzkaller]
+
+Regards,
+Boqun
 
 > ---
->  fs/ext4/namei.c | 17 ++++++-----------
->  1 file changed, 6 insertions(+), 11 deletions(-)
+>  include/linux/lockdep.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 35881e3dd880..6a95713f9193 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -151,10 +151,11 @@ static struct buffer_head *__ext4_read_dirblock(struct inode *inode,
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 08b0d1d9d78b..df8fa5929de7 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -173,7 +173,7 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
+>  			      (lock)->dep_map.lock_type)
 >  
->  		return bh;
->  	}
-> -	if (!bh && (type == INDEX || type == DIRENT_HTREE)) {
-> +	/* The first directory block must not be a hole. */
-> +	if (!bh && (type == INDEX || type == DIRENT_HTREE || block == 0)) {
->  		ext4_error_inode(inode, func, line, block,
-> -				 "Directory hole found for htree %s block",
-> -				 (type == INDEX) ? "index" : "leaf");
-> +				 "Directory hole found for htree %s block %u",
-> +				 (type == INDEX) ? "index" : "leaf", block);
->  		return ERR_PTR(-EFSCORRUPTED);
->  	}
->  	if (!bh)
-> @@ -3084,10 +3085,7 @@ bool ext4_empty_dir(struct inode *inode)
->  		EXT4_ERROR_INODE(inode, "invalid size");
->  		return false;
->  	}
-> -	/* The first directory block must not be a hole,
-> -	 * so treat it as DIRENT_HTREE
-> -	 */
-> -	bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
-> +	bh = ext4_read_dirblock(inode, 0, EITHER);
->  	if (IS_ERR(bh))
->  		return false;
->  
-> @@ -3529,10 +3527,7 @@ static struct buffer_head *ext4_get_first_dir_block(handle_t *handle,
->  		struct ext4_dir_entry_2 *de;
->  		unsigned int offset;
->  
-> -		/* The first directory block must not be a hole, so
-> -		 * treat it as DIRENT_HTREE
-> -		 */
-> -		bh = ext4_read_dirblock(inode, 0, DIRENT_HTREE);
-> +		bh = ext4_read_dirblock(inode, 0, EITHER);
->  		if (IS_ERR(bh)) {
->  			*retval = PTR_ERR(bh);
->  			return NULL;
+>  #define lockdep_set_subclass(lock, sub)					\
+> -	lockdep_init_map_type(&(lock)->dep_map, #lock, (lock)->dep_map.key, sub,\
+> +	lockdep_init_map_type(&(lock)->dep_map, (lock)->dep_map.name, (lock)->dep_map.key, sub,\
+>  			      (lock)->dep_map.wait_type_inner,		\
+>  			      (lock)->dep_map.wait_type_outer,		\
+>  			      (lock)->dep_map.lock_type)
 > -- 
-> 2.39.2
+> 2.45.2
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
 
