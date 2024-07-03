@@ -1,217 +1,304 @@
-Return-Path: <linux-ext4+bounces-3100-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3101-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6004092544F
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 09:01:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5334B9256CC
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 11:30:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAA3E1F219F5
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 07:01:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F41D428BA4F
+	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 09:30:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF43513664B;
-	Wed,  3 Jul 2024 07:01:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F91C13D602;
+	Wed,  3 Jul 2024 09:29:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b="iuKUgAe3"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="viXDdSoJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QlnNxEpZ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="viXDdSoJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QlnNxEpZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 960013CF73
-	for <linux-ext4@vger.kernel.org>; Wed,  3 Jul 2024 07:01:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5BBBC8C0;
+	Wed,  3 Jul 2024 09:29:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1719990089; cv=none; b=qWgyjKrJHvkFSU0IMnzfNPc7zSSrY9oZDtV3vh1NcgQDWRliAvorPkUt8HD07yJac0b2EMK6gWbrD5G4X33x24W38acCQU5ZWVthc/+3NGpIQ1YUSgFOEDT2KR7QNKD6rwhJd3LimSqx6Fc75xBfZFZgL4/4WXO+T0Lsl9VT/XA=
+	t=1719998997; cv=none; b=JXYxuLvj244aX1aNlw7ndVT3gJR0vj41cy2gzmDT3w/0H9QfmzcQV+lvrE0sQYTZ/pQYJKJghZelrtJMysNBRR+5ECtxBsZpHiGIS/qOnCpghMAgGrwP7csqzw3OBqZHM7xeipIw1ZC5r8I6bvPap8wW+tZPitk9OiZqEC2etOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1719990089; c=relaxed/simple;
-	bh=omGJJJb+OJtoZKQo9YFXJYGUR8/wXD4d4bdnk5rBXlU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AyE9V3eIlHm3fEtAg7XTtMpRUIEf/TWf/PTDHjkuUX5HUwhF78/fFIlJYESD10d9SAvK1MgCdeeeD1zXDCVYfDDz+B4fIqW7ZDh3LN0dsrnw3sZWo3YOkyqc6LEnUDKJNTSsxLN4pyHTVnjYCpo71krqvypr6M8BNJZ7Cj0C10U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com; spf=fail smtp.mailfrom=infogain.com; dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b=iuKUgAe3; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=infogain.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-57cb9a370ddso3197854a12.1
-        for <linux-ext4@vger.kernel.org>; Wed, 03 Jul 2024 00:01:25 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=infogain-com.20230601.gappssmtp.com; s=20230601; t=1719990084; x=1720594884; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=YUAP9uxm3PnSjMLbhttgQQwSpqvG0xjkaw0EQZ4lZwI=;
-        b=iuKUgAe3YVfn/CCVzFzoWGVskUvq3UNyQWPx1NiuLr6XjiK54N3EKxZSloUrJDMcUD
-         6eb11UXgzxkrsj1fkApS4koiGHfi0yC/fBxSknMwuB/0p77P9tyvL/5uFVoj4hBKSn05
-         W/TajzoWfzb+uFm0Q5Lfhf+6bJTItT9hE+Ild1/B9gddqHvO6dDjVybv60F0KU9YtKyQ
-         0lB+Gi0CihzSJdDzw357YoQ/kobYiBjG37sbLzvnZJAVvxmIF1yYp5TMVBRczNWXG0JQ
-         nCxnGhXGsEG5D9LspMCJY0WP++HSUDCcFsRwBN3pY0JiPemhybXXYt9kfJEbU75VgJfs
-         +FLg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1719990084; x=1720594884;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=YUAP9uxm3PnSjMLbhttgQQwSpqvG0xjkaw0EQZ4lZwI=;
-        b=uLPZdfPtcN6PtZtzPhx3283yT6pKzSysZpMFjDhJZiHztqFp4HhYX5JzIjmUfLeUUa
-         lTKU1mATOQqOMKPJpWeKh30sceMhf+AljBP2fo8OSFtH8S1NItjI0gJuNB80Cpq6SFrM
-         o6P8Dji4EP2WCSUXxZkOcobMko+CqgXbvXpJjoINL/HAjuSTLFMPZ5k3dfgQ+0KtH/Nc
-         P4Nb5DyCVeofl2sbex+pGNdoF7ZnwyF7xuGJyGSrUMQxJzILCoYU/0SjKtMhTSCPEkTC
-         LTCVpSxrU12KPQVkwqpg0RG/HEBP2Yr0Z/98uPmYFEy1MJeSYAkNuiEyi+2tRZSsGjrK
-         +ZiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUPkq3Zpfy/TC2ppvwBicKrUirx9UHth1MdHA8yKdg+TNJOCUsgCAC/XMCvqGqAipPcGuAuDULHkKD+I5PI7HcDx/hxNOUBMMA7zA==
-X-Gm-Message-State: AOJu0YwmXA7mX9aHfjUhP/+8aeCX8aeAZZMc6KuhoWgYsUJ5xeVxRCDt
-	RD3mcbpOe+x9QBTuf/K9svXx13L+Z+Rr3WRdQ7+P1ie4q9XUUCEiIHcjk8njUN4=
-X-Google-Smtp-Source: AGHT+IHlXRwS/8o4khwKGDkm4Y4zri08clxIkn2pE6cCqkBMlb7IO4o3elUvzm1mOCysu5UiNeaN3w==
-X-Received: by 2002:a17:906:5851:b0:a72:6b08:ab1a with SMTP id a640c23a62f3a-a75144545f4mr603397266b.46.1719990083607;
-        Wed, 03 Jul 2024 00:01:23 -0700 (PDT)
-Received: from localhost.localdomain (apn-31-0-3-137.dynamic.gprs.plus.pl. [31.0.3.137])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a751561bb1bsm347310066b.37.2024.07.03.00.01.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 00:01:23 -0700 (PDT)
-From: =?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>
-To: syzbot+18df508cf00a0598d9a6@syzkaller.appspotmail.com
-Cc: adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	tytso@mit.edu,
-	=?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>
-Subject: [PATCH] kernel/ext4: sanity check for NULL pointer after ext4_force_shutdown
-Date: Wed,  3 Jul 2024 09:01:12 +0200
-Message-Id: <20240703070112.10235-1-wojciech.gladysz@infogain.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <000000000000f19a1406109eb5c5@google.com>
-References: <000000000000f19a1406109eb5c5@google.com>
+	s=arc-20240116; t=1719998997; c=relaxed/simple;
+	bh=qXA/0XP0mErSdEsbkFeZbc5iGqHB95UjydhxaE87ZEw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gW00G7VVXeFxn3aWHPfvaHP1igR2uB1mqD0LAXkafPr5IaACKKwzf861RkpEPA5sN+ySosAtHE48xRlA9jeCV0lOX+KtoEt4RGNYtAz2+7hxam3aOkgBX5221rrWtXHTDNhES21NSb8hj9BGy+svRlSpixzWwWXnObmoJ0sBoJc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=viXDdSoJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QlnNxEpZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=viXDdSoJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QlnNxEpZ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 8DA7C219B2;
+	Wed,  3 Jul 2024 09:29:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719998993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qg8fh3E4O+gBZ3kQmrW77tAHA8+NQCdrYIWs4bWJwlM=;
+	b=viXDdSoJiqYK7gDJfD5W4Ze7AfmYhmd9OaozC6pN+oibJobaYKs5V4hU6z4wqBtB3NX2ET
+	7N8yJ3HpbaP8UxB0kEGg5ikBtHNITx+HB0z+qLUMjVKjXfEewheE972kvtGm8iBGlFEK19
+	RlkRdCGYLvBeYrlKZEM66RQ5xRWdBNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719998993;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qg8fh3E4O+gBZ3kQmrW77tAHA8+NQCdrYIWs4bWJwlM=;
+	b=QlnNxEpZR6vXjpcp/ZwPhiVBmbh8Bjyi4EkIj5MWtDnEhLpC7zwtH372TP3Gozg9GOgGNG
+	c/jGN70OKSfoYsCg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=viXDdSoJ;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=QlnNxEpZ
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1719998993; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qg8fh3E4O+gBZ3kQmrW77tAHA8+NQCdrYIWs4bWJwlM=;
+	b=viXDdSoJiqYK7gDJfD5W4Ze7AfmYhmd9OaozC6pN+oibJobaYKs5V4hU6z4wqBtB3NX2ET
+	7N8yJ3HpbaP8UxB0kEGg5ikBtHNITx+HB0z+qLUMjVKjXfEewheE972kvtGm8iBGlFEK19
+	RlkRdCGYLvBeYrlKZEM66RQ5xRWdBNs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1719998993;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=qg8fh3E4O+gBZ3kQmrW77tAHA8+NQCdrYIWs4bWJwlM=;
+	b=QlnNxEpZR6vXjpcp/ZwPhiVBmbh8Bjyi4EkIj5MWtDnEhLpC7zwtH372TP3Gozg9GOgGNG
+	c/jGN70OKSfoYsCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7C7A013974;
+	Wed,  3 Jul 2024 09:29:53 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id H9lbHhEahWaIVgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 03 Jul 2024 09:29:53 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2BB5CA08A9; Wed,  3 Jul 2024 11:29:53 +0200 (CEST)
+Date: Wed, 3 Jul 2024 11:29:53 +0200
+From: Jan Kara <jack@suse.cz>
+To: libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com, yangerkun@huawei.com,
+	Baokun Li <libaokun1@huawei.com>,
+	syzbot+ae688d469e36fb5138d0@syzkaller.appspotmail.com,
+	stable@kernel.org
+Subject: Re: [PATCH 1/2] ext4: check dot and dotdot of dx_root before making
+ dir indexed
+Message-ID: <20240703092953.j53in72xzn4vheca@quack3>
+References: <20240702132349.2600605-1-libaokun@huaweicloud.com>
+ <20240702132349.2600605-2-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240702132349.2600605-2-libaokun@huaweicloud.com>
+X-Rspamd-Queue-Id: 8DA7C219B2
+X-Spam-Score: -2.51
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received,2a07:de40:b281:104:10:150:64:97:from];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TAGGED_RCPT(0.00)[ae688d469e36fb5138d0];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com,syzkaller.appspotmail.com,kernel.org];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[syzkaller.appspot.com:url,huawei.com:email,suse.com:email]
+X-Rspamd-Action: no action
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 
-Test case: 2 threads write short inline data to a file.
-In ext4_page_mkwrite the resulting inline data is converted.
-Handling ext4_grp_locked_error with description "block bitmap
-and bg descriptor inconsistent: X vs Y free clusters" calls
-ext4_force_shutdown. The conversion clears
-EXT4_STATE_MAY_INLINE_DATA but fails for
-ext4_destroy_inline_data_nolock and ext4_mark_iloc_dirty due
-to ext4_forced_shutdown. The restoration of inline data fails
-for the same reason not setting EXT4_STATE_MAY_INLINE_DATA.
-Without the flag set a regular process path in ext4_da_write_end
-follows trying to dereference page folio private pointer that has
-not been set. The fix calls early return with -EIO error shall the
-pointer to private be NULL.
+On Tue 02-07-24 21:23:48, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
+> 
+> Syzbot reports a issue as follows:
+> ============================================
+> BUG: unable to handle page fault for address: ffffed11022e24fe
+> PGD 23ffee067 P4D 23ffee067 PUD 0
+> Oops: Oops: 0000 [#1] PREEMPT SMP KASAN PTI
+> CPU: 0 PID: 5079 Comm: syz-executor306 Not tainted 6.10.0-rc5-g55027e689933 #0
+> Call Trace:
+>  <TASK>
+>  make_indexed_dir+0xdaf/0x13c0 fs/ext4/namei.c:2341
+>  ext4_add_entry+0x222a/0x25d0 fs/ext4/namei.c:2451
+>  ext4_rename fs/ext4/namei.c:3936 [inline]
+>  ext4_rename2+0x26e5/0x4370 fs/ext4/namei.c:4214
+> [...]
+> ============================================
+> 
+> The immediate cause of this problem is that there is only one valid dentry
+> for the block to be split during do_split, so split==0 results in out of
+> bounds accesses to the map triggering the issue.
+> 
+>     do_split
+>       unsigned split
+>       dx_make_map
+>        count = 1
+>       split = count/2 = 0;
+>       continued = hash2 == map[split - 1].hash;
+>        ---> map[4294967295]
+> 
+> The maximum length of a filename is 255 and the minimum block size is 1024,
+> so it is always guaranteed that the number of entries is greater than or
+> equal to 2 when do_split() is called.
+> 
+> But syzbot's crafted image has no dot and dotdot in dir, and the dentry
+> distribution in dirblock is as follows:
+> 
+>   bus     dentry1          hole           dentry2           free
+> |xx--|xx-------------|...............|xx-------------|...............|
+> 0   12 (8+248)=256  268     256     524 (8+256)=264 788     236     1024
+> 
+> So when renaming dentry1 increases its name_len length by 1, neither hole
+> nor free is sufficient to hold the new dentry, and make_indexed_dir() is
+> called.
+> 
+> In make_indexed_dir() it is assumed that the first two entries of the
+> dirblock must be dot and dotdot, so bus and dentry1 are left in dx_root
+> because they are treated as dot and dotdot, and only dentry2 is moved
+> to the new leaf block. That's why count is equal to 1.
+> 
+> Therefore add the ext4_check_dx_root() helper function to add more sanity
+> checks to dot and dotdot before starting the conversion to avoid the above
+> issue.
+> 
+> Reported-by: syzbot+ae688d469e36fb5138d0@syzkaller.appspotmail.com
+> Closes: https://syzkaller.appspot.com/bug?extid=ae688d469e36fb5138d0
+> Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
+> Cc: stable@kernel.org
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Sample crash report:
+Thanks! The patch looks good to me. Feel free to add:
 
-Unable to handle kernel paging request at virtual address dfff800000000004
-KASAN: null-ptr-deref in range [0x0000000000000020-0x0000000000000027]
-Mem abort info:
-  ESR = 0x0000000096000005
-  EC = 0x25: DABT (current EL), IL = 32 bits
-  SET = 0, FnV = 0
-  EA = 0, S1PTW = 0
-  FSC = 0x05: level 1 translation fault
-Data abort info:
-  ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-  CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-  GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-[dfff800000000004] address between user and kernel address ranges
-Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 PID: 20274 Comm: syz-executor185 Not tainted 6.9.0-rc7-syzkaller-gfda5695d692c #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-pstate: 80400005 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __block_commit_write+0x64/0x2b0 fs/buffer.c:2167
-lr : __block_commit_write+0x3c/0x2b0 fs/buffer.c:2160
-sp : ffff8000a1957600
-x29: ffff8000a1957610 x28: dfff800000000000 x27: ffff0000e30e34b0
-x26: 0000000000000000 x25: dfff800000000000 x24: dfff800000000000
-x23: fffffdffc397c9e0 x22: 0000000000000020 x21: 0000000000000020
-x20: 0000000000000040 x19: fffffdffc397c9c0 x18: 1fffe000367bd196
-x17: ffff80008eead000 x16: ffff80008ae89e3c x15: 00000000200000c0
-x14: 1fffe0001cbe4e04 x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000001 x10: 0000000000ff0100 x9 : 0000000000000000
-x8 : 0000000000000004 x7 : 0000000000000000 x6 : 0000000000000000
-x5 : fffffdffc397c9c0 x4 : 0000000000000020 x3 : 0000000000000020
-x2 : 0000000000000040 x1 : 0000000000000020 x0 : fffffdffc397c9c0
-Call trace:
- __block_commit_write+0x64/0x2b0 fs/buffer.c:2167
- block_write_end+0xb4/0x104 fs/buffer.c:2253
- ext4_da_do_write_end fs/ext4/inode.c:2955 [inline]
- ext4_da_write_end+0x2c4/0xa40 fs/ext4/inode.c:3028
- generic_perform_write+0x394/0x588 mm/filemap.c:3985
- ext4_buffered_write_iter+0x2c0/0x4ec fs/ext4/file.c:299
- ext4_file_write_iter+0x188/0x1780
- call_write_iter include/linux/fs.h:2110 [inline]
- new_sync_write fs/read_write.c:497 [inline]
- vfs_write+0x968/0xc3c fs/read_write.c:590
- ksys_write+0x15c/0x26c fs/read_write.c:643
- __do_sys_write fs/read_write.c:655 [inline]
- __se_sys_write fs/read_write.c:652 [inline]
- __arm64_sys_write+0x7c/0x90 fs/read_write.c:652
- __invoke_syscall arch/arm64/kernel/syscall.c:34 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:48
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:133
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:152
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:712
- el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
- el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
-Code: 97f85911 f94002da 91008356 d343fec8 (38796908)
----[ end trace 0000000000000000 ]---
-----------------
-Code disassembly (best guess):
-   0:	97f85911 	bl	0xffffffffffe16444
-   4:	f94002da 	ldr	x26, [x22]
-   8:	91008356 	add	x22, x26, #0x20
-   c:	d343fec8 	lsr	x8, x22, #3
-* 10:	38796908 	ldrb	w8, [x8, x25] <-- trapping instruction
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Reported-by: syzbot+18df508cf00a0598d9a6@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=18df508cf00a0598d9a6
-Link: https://lore.kernel.org/all/000000000000f19a1406109eb5c5@google.com/T/
-Signed-off-by: Wojciech Gładysz <wojciech.gladysz@infogain.com>
----
- fs/buffer.c     | 5 ++++-
- fs/ext4/inode.c | 5 +++++
- 2 files changed, 9 insertions(+), 1 deletion(-)
+								Honza
 
-diff --git a/fs/buffer.c b/fs/buffer.c
-index 8c19e705b9c3..0d87d1f037e6 100644
---- a/fs/buffer.c
-+++ b/fs/buffer.c
-@@ -2186,7 +2186,10 @@ static void __block_commit_write(struct folio *folio, size_t from, size_t to)
- 	unsigned blocksize;
- 	struct buffer_head *bh, *head;
- 
--	bh = head = folio_buffers(folio);
-+	head = folio_buffers(folio);
-+	if (!head)
-+		return;
-+	bh = head;
- 	blocksize = bh->b_size;
- 
- 	block_start = 0;
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 4bae9ccf5fe0..f14e77c4a6de 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -2945,6 +2945,11 @@ static int ext4_da_do_write_end(struct address_space *mapping,
- 	bool disksize_changed = false;
- 	loff_t new_i_size;
- 
-+	if (unlikely(!folio_buffers(folio))) {
-+		folio_unlock(folio);
-+		folio_put(folio);
-+		return -EIO;
-+	}
- 	/*
- 	 * block_write_end() will mark the inode as dirty with I_DIRTY_PAGES
- 	 * flag, which all that's needed to trigger page writeback.
+> ---
+>  fs/ext4/namei.c | 56 ++++++++++++++++++++++++++++++++++++++++++++-----
+>  1 file changed, 51 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+> index e6769b97a970..35881e3dd880 100644
+> --- a/fs/ext4/namei.c
+> +++ b/fs/ext4/namei.c
+> @@ -2172,6 +2172,52 @@ static int add_dirent_to_buf(handle_t *handle, struct ext4_filename *fname,
+>  	return err ? err : err2;
+>  }
+>  
+> +static bool ext4_check_dx_root(struct inode *dir, struct dx_root *root)
+> +{
+> +	struct fake_dirent *fde;
+> +	const char *error_msg;
+> +	unsigned int rlen;
+> +	unsigned int blocksize = dir->i_sb->s_blocksize;
+> +	char *blockend = (char *)root + dir->i_sb->s_blocksize;
+> +
+> +	fde = &root->dot;
+> +	if (unlikely(fde->name_len != 1)) {
+> +		error_msg = "invalid name_len for '.'";
+> +		goto corrupted;
+> +	}
+> +	if (unlikely(strncmp(root->dot_name, ".", fde->name_len))) {
+> +		error_msg = "invalid name for '.'";
+> +		goto corrupted;
+> +	}
+> +	rlen = ext4_rec_len_from_disk(fde->rec_len, blocksize);
+> +	if (unlikely((char *)fde + rlen >= blockend)) {
+> +		error_msg = "invalid rec_len for '.'";
+> +		goto corrupted;
+> +	}
+> +
+> +	fde = &root->dotdot;
+> +	if (unlikely(fde->name_len != 2)) {
+> +		error_msg = "invalid name_len for '..'";
+> +		goto corrupted;
+> +	}
+> +	if (unlikely(strncmp(root->dotdot_name, "..", fde->name_len))) {
+> +		error_msg = "invalid name for '..'";
+> +		goto corrupted;
+> +	}
+> +	rlen = ext4_rec_len_from_disk(fde->rec_len, blocksize);
+> +	if (unlikely((char *)fde + rlen >= blockend)) {
+> +		error_msg = "invalid rec_len for '..'";
+> +		goto corrupted;
+> +	}
+> +
+> +	return true;
+> +
+> +corrupted:
+> +	EXT4_ERROR_INODE(dir, "Corrupt dir, %s, running e2fsck is recommended",
+> +			 error_msg);
+> +	return false;
+> +}
+> +
+>  /*
+>   * This converts a one block unindexed directory to a 3 block indexed
+>   * directory, and adds the dentry to the indexed directory.
+> @@ -2206,17 +2252,17 @@ static int make_indexed_dir(handle_t *handle, struct ext4_filename *fname,
+>  		brelse(bh);
+>  		return retval;
+>  	}
+> +
+>  	root = (struct dx_root *) bh->b_data;
+> +	if (!ext4_check_dx_root(dir, root)) {
+> +		brelse(bh);
+> +		return -EFSCORRUPTED;
+> +	}
+>  
+>  	/* The 0th block becomes the root, move the dirents out */
+>  	fde = &root->dotdot;
+>  	de = (struct ext4_dir_entry_2 *)((char *)fde +
+>  		ext4_rec_len_from_disk(fde->rec_len, blocksize));
+> -	if ((char *) de >= (((char *) root) + blocksize)) {
+> -		EXT4_ERROR_INODE(dir, "invalid rec_len for '..'");
+> -		brelse(bh);
+> -		return -EFSCORRUPTED;
+> -	}
+>  	len = ((char *) root) + (blocksize - csum_size) - (char *) de;
+>  
+>  	/* Allocate new block for the 0th block's dirents */
+> -- 
+> 2.39.2
+> 
 -- 
-2.35.3
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
