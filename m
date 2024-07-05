@@ -1,191 +1,112 @@
-Return-Path: <linux-ext4+bounces-3103-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3104-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 306AE926BBC
-	for <lists+linux-ext4@lfdr.de>; Thu,  4 Jul 2024 00:46:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B4AE9928202
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2024 08:27:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6DB10B21A29
-	for <lists+linux-ext4@lfdr.de>; Wed,  3 Jul 2024 22:46:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6FCED285AAE
+	for <lists+linux-ext4@lfdr.de>; Fri,  5 Jul 2024 06:27:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F8A5191F69;
-	Wed,  3 Jul 2024 22:46:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B9B114374F;
+	Fri,  5 Jul 2024 06:26:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AQsZnf5n"
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="SH43FUj8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8587914265C;
-	Wed,  3 Jul 2024 22:46:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E93C8143C75;
+	Fri,  5 Jul 2024 06:26:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720046788; cv=none; b=m2uKW/aXyJH7DHXrmC4P0pY8IAswNNBK3GBEsJ7mpeA3J4nrTSQ7BlThUf98J7ZdO0ek37y0QOB86b/e4KjynK9hJgzUtcI+3f69aZGGvkLiUEzWfgNlIF5ZTwmb0SnoKlmNYDcp0xb217CYzA7+LXXfDLozjQi2IN9IKf9UKEc=
+	t=1720160815; cv=none; b=fMRAxx8P55hz0tYT7Vde3h1BcWEcYjM/v+DFI5vniOTaw5AqPI7kN4C2ZoVUjC0YXmwadSxxRyjzU/NE38pCsrlXCHDrwubew/9AGX6O40UpWSzVuUOzib5FA2ZRAYEN1jSt/ss7E947ccIQSTtmyxGknesfZZiAcIGaf4P3gu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720046788; c=relaxed/simple;
-	bh=gA7+VliSMoQlSbs6CV2YV/4Xrx/0Iq+N6gm0gQ63NHs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fkGla/nFyxl6ey/qj9RnBo9N9Qdc9W2x9O30sBMQHlDLqO+fBC7KTC9saN5n0Ee/iHKjmj93nqrM9uCZqCeUpX2B20FUAIGCO2IMgy1oSb0v1jwKckNs6v5SvVqDsGfqTjZJu1d49IVcaGJp8jqbgn4MLFMpjQWMh/V1NSLvfnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AQsZnf5n; arc=none smtp.client-ip=209.85.219.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e0360f8901aso17751276.2;
-        Wed, 03 Jul 2024 15:46:26 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720046785; x=1720651585; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1NR1sr/ZbZPbIrygTH2/gqn6qhtATWX6EGzQmK9ZnLY=;
-        b=AQsZnf5nn6QOrMol5ZSHJ4Kw6BdQ5UicPwEajIqgq/eWkMKHBKPcscs1DHmxv+1I5r
-         bRQ66I/GaoPrGOJ+uVKs8AhsAOUJW4c888X9zSyCq3hsN/8rWo2qTKtUhlFHUBf+VbYn
-         SAopT4cVTs1OwTBjn0zn6l329KSIF8IgcPuSPErdsrthMNpyejH2zTjZdMAnbNDvec4Q
-         +OkQTVfI+N7jXQoHrN1A4E36q0+EQYkcvzW+vXHulsioY5YGXgCbWOud/6I2YX8yWVEb
-         waelb6xsxrmPR+FLmUdjyu6h1H4RkxEPNtf9iRkCLgFXke0JZ4/vy48mlfK1NvfW1Cnt
-         mvIQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720046785; x=1720651585;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1NR1sr/ZbZPbIrygTH2/gqn6qhtATWX6EGzQmK9ZnLY=;
-        b=YK1uDPf8dHRgvb/IoiirrNHXGzu2GNi6EPi2JSggW9ReCQ0eF/bMGK7l+oUfVym6Bl
-         r+HyfOipMrAl9EB9AaHdcpUyutb4Q88Obhlhu61PHUPtrT4iFJ7fXRRn4/06LdUj+L1g
-         bsQn+KdFD6hLNFN6uxsXiXSOjEEwAm28I2F9X7h/tFJIa8XftpAXb3ScCjhfzenVT0ma
-         oAxqvqeoHOYlH2W7XlZCH8Lpc2weA5CR8l8eN4789xggenRQOXgCfnWKB+Z1g2stBuBO
-         Mi+tRVrP0+5Bx8J/QEZ7l54InsfDteGuvRPPR+4qDOKWn0KJlDqyx0Uk2wTFHNO8Zp5m
-         gJhQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUXHorNZoXITf39x5ZzsZR5VfWV9TN6eY9FRvTQGhaiFW+rNYyjlIjnzZd1RcubfdjQuHRyr9nqzL+TRuVUnGNOHfoAQu98TdjZJw==
-X-Gm-Message-State: AOJu0Yx3jGkmJcy9JcgEJ/QXVxakPZ62nAGTNF98s6CoeWPpI9t1ywTt
-	Y+qBZSAfKQ28TDKvILMM1lQpzax5Th2QCrN7Btvdyw7lSeBdQ9F0
-X-Google-Smtp-Source: AGHT+IExAkct7vzhEMm0LI1KfE/PTZcCuuE2jma8x+8BFnYcDnOqpOFLAlcFxtmKBISUNpLtKW1JMg==
-X-Received: by 2002:a25:a8a:0:b0:e03:a168:f132 with SMTP id 3f1490d57ef6-e03a168f33fmr5910295276.31.1720046785489;
-        Wed, 03 Jul 2024 15:46:25 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6b5dfc92d45sm11585156d6.142.2024.07.03.15.46.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 03 Jul 2024 15:46:24 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id B79191200043;
-	Wed,  3 Jul 2024 18:46:23 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute2.internal (MEProxy); Wed, 03 Jul 2024 18:46:23 -0400
-X-ME-Sender: <xms:v9SFZrx_XtbK-YmDyDOjoYWTmPxohWsAuEywVmy5C-q_289ELl4w6Q>
-    <xme:v9SFZjRnRT4ueTFnC9qKpR5Fb8BM3TqB46E8Gga1ITXXr14zkm5D88g46Rn-NfQGQ
-    n1-TaXpQJoicXn6rg>
-X-ME-Received: <xmr:v9SFZlUBlhEfZhkrGHuLpSP3qpqH706ahknh5UQGSz2NMC3NJlO4xqvKlmhzQg>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudekgddufecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepleeuvdehjeehledvtdegveefleejleegtdelkefgkedttdekhedvheegvdei
-    tdetnecuffhomhgrihhnpehshiiikhgrlhhlvghrrdgrphhpshhpohhtrdgtohhmpdhkvg
-    hrnhgvlhdrohhrghenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhl
-    fhhrohhmpegsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeile
-    dvgeehtdeigedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgt
-    ohhmsehfihigmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:v9SFZlhbUHcdPHmwNFdklla1dY5XdKiopnYKyq0vQl86-zVmW1c4Tw>
-    <xmx:v9SFZtC4q8BNcRAanbiCDL67mnwaPba5DcF7L6EHNSiH2kAYd2fPuw>
-    <xmx:v9SFZuIsz5HmwPC3G9SO38xRuLPynuOJUpAqjymzrMvEwEJ9FtBldQ>
-    <xmx:v9SFZsC5fgbK0kDTUbMdZYkhic74F-huTbKFQsZRb9P1prA8cGpt2w>
-    <xmx:v9SFZpxjiGRpDeCj2_rfeNL_DXy_C7cthYJKNFF-K6NDGkj4bqri8eEs>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Wed,
- 3 Jul 2024 18:46:23 -0400 (EDT)
-Date: Wed, 3 Jul 2024 15:45:21 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: botta633 <bottaawesome633@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, linux-ext4@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	syzkaller@googlegroups.com, "Paul E. McKenney" <paulmck@kernel.org>
-Subject: Re: [PATCH] Forcing subclasses to have same name pointer as their
- parent class
-Message-ID: <ZoXUgdUkD-GtKfKJ@boqun-archlinux>
-References: <20240704003224.22832-1-bottaawesome633@gmail.com>
+	s=arc-20240116; t=1720160815; c=relaxed/simple;
+	bh=EMdvsRtHPHQyGahTe0wLT9ajkOMWh7BnJ8WxOakQ/54=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=hJvDCfFq0h4ODkYjpav/QadAVbTmJOk8o/qlpkENWDBsIm6R/sg0TzumIuXS6rEylTN+X778zzQ5YBYUqfyXM1+ahOs8yjIKEPuflq890BB+QXnvMUHNssoKA1BF9IajRTbnhvfxMUUIUTnNM2n5DQA/uVN4/+8I75cLWJykLnc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=SH43FUj8; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1720160812;
+	bh=EMdvsRtHPHQyGahTe0wLT9ajkOMWh7BnJ8WxOakQ/54=;
+	h=From:To:Cc:Subject:Date:From;
+	b=SH43FUj8/X+MQs5YQH/C5zbdIlujSz6/TZrnNxvKvr6qz8T9yqWSN0SyicD18qN/j
+	 7dMWfFpQoP93RhHzB5TRqMK2XaLArMul5DnXEFZatm1wgNvaW8NgxL13rQzTxfmQ96
+	 mXOGEVNrZdbQxJzL/PoYsBzJ4g5V3SGMHwREDMDM3K5FLCHg47UN+8BohXLCh7LMha
+	 vnC1eIpCavROJ4+or9a5w2Fqn66O8ZRb21kVmNLZugUNC2bPsFJ5IvsIbX3d65Ft1L
+	 LSTq1/EzdhK8Swizc33kQEP7onT7LujmPuXuFtyZikL8r3im2LI2ujkRp92XJklv1u
+	 adzlgnr0nSIrg==
+Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 5F14437820FE;
+	Fri,  5 Jul 2024 06:26:51 +0000 (UTC)
+From: Eugen Hristev <eugen.hristev@collabora.com>
+To: viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	tytso@mit.edu,
+	linux-ext4@vger.kernel.org
+Cc: jack@suse.cz,
+	adilger.kernel@dilger.ca,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	krisman@suse.de,
+	kernel@collabora.com,
+	shreeya.patel@collabora.com,
+	Eugen Hristev <eugen.hristev@collabora.com>
+Subject: [PATCH 0/2] fs/dcache: fix cache inconsistency on case-insensitive lookups
+Date: Fri,  5 Jul 2024 09:26:19 +0300
+Message-Id: <20240705062621.630604-1-eugen.hristev@collabora.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240704003224.22832-1-bottaawesome633@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-Hi,
+Hello,
 
-On Thu, Jul 04, 2024 at 03:32:24AM +0300, botta633 wrote:
-> Preventing Lockdep_set_subclass from creating a new instance of the 
-> string literal. Hence, we will always have the class->name. This
-> prevents kernel panics when locking up a lock class while comparing
-> class locks and class names.
+This is an attempt to go back to this old patch series here :
 
-Good catch! Thanks.
+https://lore.kernel.org/lkml/cover.1632909358.git.shreeya.patel@collabora.com/
 
-> 
-> 
+First patch fixes a possible hang when d_add_ci is called from a filesystem's
+lookup function (like xfs is doing)
+d_alloc_parallel -> lookup -> d_add_ci -> d_alloc_parallel
 
-Please remove the extra blank line here.
+Second patch solves the issue of having the dcache saving the entry with
+the same case as it's being looked up instead of saving the real file name
+from the storage.
+Please check above thread for motivation on why this should be changed.
 
-> Signed-off-by: botta633 <bottaawesome633@gmail.com>
+Some further old discussions here as well:
+https://patchwork.ozlabs.org/project/linux-ext4/patch/20180924215655.3676-20-krisman@collabora.co.uk/
 
-Do you mind putting your real name here? Besides, IIUC, this is fixing:
+I am not sure whether this is the right way to fix this, but I think
+I have considered all cases discussed in previous threads.
 
-	https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad		
+Thank you for your review and consideration,
+Eugen
 
-, right? If so, there are some more things:
 
-*	Copy ext4 and syzkaller people, so that you could get more
-	tests.
+Eugen Hristev (2):
+  fs/dcache: introduce d_alloc_parallel_check_existing
+  ext4: in lookup call d_add_ci if there is a case mismatch
 
-*	Since this is a bug fix, could you please figure out which
-	commit introduces the issue, so that you can put a correct
-	"Fixes:" tag along with your signed-off-by?
+ fs/dcache.c            | 29 +++++++++++++++++++++++------
+ fs/ext4/namei.c        | 13 +++++++++++++
+ include/linux/dcache.h |  4 ++++
+ 3 files changed, 40 insertions(+), 6 deletions(-)
 
-*	Since the issue was reported by syzkaller, you should put their
-	"Reported-by" tag, they have an example in the website I paste
-	above.
+-- 
+2.34.1
 
-*	Please also Cc stable mail list so that the fix can be
-	backported, you can find the information on "Cc: stable" tag at:
-
-		https://docs.kernel.org/process/stable-kernel-rules.html
-
-*	Last but not the least, could you try to add a test case in
-	lib/locking-selftest.c to ensure the issue you fixed won't
-	happen again? This could be tricky, since you will need to fight
-	against the compiler to generate two string literals with the
-	same content.
-
-[Cc ext4 and syzkaller]
-
-Regards,
-Boqun
-
-> ---
->  include/linux/lockdep.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 08b0d1d9d78b..df8fa5929de7 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -173,7 +173,7 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
->  			      (lock)->dep_map.lock_type)
->  
->  #define lockdep_set_subclass(lock, sub)					\
-> -	lockdep_init_map_type(&(lock)->dep_map, #lock, (lock)->dep_map.key, sub,\
-> +	lockdep_init_map_type(&(lock)->dep_map, (lock)->dep_map.name, (lock)->dep_map.key, sub,\
->  			      (lock)->dep_map.wait_type_inner,		\
->  			      (lock)->dep_map.wait_type_outer,		\
->  			      (lock)->dep_map.lock_type)
-> -- 
-> 2.45.2
-> 
 
