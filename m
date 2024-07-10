@@ -1,114 +1,154 @@
-Return-Path: <linux-ext4+bounces-3148-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3155-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A9F6E92C6C8
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 01:51:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2459E92C992
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 06:10:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 430DBB22462
-	for <lists+linux-ext4@lfdr.de>; Tue,  9 Jul 2024 23:51:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CD1F41F23D2C
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 04:10:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E1AE18C162;
-	Tue,  9 Jul 2024 23:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="DCzTmhwt"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B2A0770E6;
+	Wed, 10 Jul 2024 04:09:18 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D97901474BE;
-	Tue,  9 Jul 2024 23:51:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 16EC02BB04;
+	Wed, 10 Jul 2024 04:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720569064; cv=none; b=TFvvw2c/yr6PwYfrGzm6e1X5N/XUsWe2WItObIjs2vjViq9ID1xxFxLYHEd15GReIPunxWkAJpg+eR5iv4qftlpHDkkmAlxBt+N1fD5ex+L9etrXb97uHhGmV9ZdAfmgOnh2OXFkguOpnxM9eHSSl1l0qR6X5CrjLcJfqXJQKvg=
+	t=1720584558; cv=none; b=aEe9zz5O9N2Q+b0TOJl4vN3hGQbSLWS4K6UbjZfcW9nY7hNHTmuxr/u4w99y2zD8mAMzB6Pu64ZB4H64eAJDo4k8peUqPaRwKfHeyOutsUiQC/FVoLvBS52ooNVcC56kOD1cKuHCn1ch992Aw3RuwaNQhMoX1IyNJLMkvkcdvn8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720569064; c=relaxed/simple;
-	bh=06szhZhvI5y/0ml1HztEAZfKngl9g/YYJWu9WNQ4sLM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rI+84Xf2G2rgFW86L2Zm+CaVFbcWAOIddwGqcFuW3PFvXG158EE3UuvVWI2bS9S2T+3Fy8Ii4WSpCg5yrDIJKu8pZgiPXCIWcBiZepm8uPvj+9eFzRhhlsc8i4kNrQEkMWZbuILInTWRCiF6gSxpigOPwAX40AGoaZHbzdrBjSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=DCzTmhwt; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description;
-	bh=1MnKJi0jeAHhcjlp5AtWFQ8iIjqs+OJI3rZ7gK/CmMU=; b=DCzTmhwt94ownkzIzPjjLO9YFf
-	eu92ryb30Y5fTRUbNpYryFLMftlaguCeCXoN5EOazjbAsFOs+tBSCQRNU7Q9+73B6Auj6hO18pDHa
-	tVqNTGWjeWJdyOsHdlhu3/6ety3pwwmck57aAkc4fbaq1wmZauOvq+WLqpISS8yRZqCLos8OaPI4C
-	hs61AA6++huLcis6+2wfhFY8FKzdLoiDZGfl8hPNz2QPC/0WLP/nmKUoFVXt2uML9oLLHVZjGnISQ
-	SNynxgD4UGwrFpzo35YzDs92U2UM4UsY3+jCn/D4vFLAhvCA1+Qv96t7MNQa7spkBp1odrX3/w5pV
-	UYTO+k7A==;
-Received: from [50.53.4.147] (helo=[192.168.254.17])
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sRKbT-00000008U6L-2tpi;
-	Tue, 09 Jul 2024 23:50:35 +0000
-Message-ID: <420ac42f-dad2-4fd9-b36a-6405d14b6e25@infradead.org>
-Date: Tue, 9 Jul 2024 16:50:24 -0700
+	s=arc-20240116; t=1720584558; c=relaxed/simple;
+	bh=qc4SezDM94JLx0RivPHLn3N6khqf8RIdNCtutKb+Ors=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=KcrHeF2r49uSeQeesnPLp1JZhghTl3ZRM9dRvGh5cqb479S43PQSQe263sS+eaROQFnMbKMgGc7NH4Cr6Hxaxar5eyU4AH1bkHQW6rZUKJUTpYxNFX+6HVBWDiGrYzwlUy54NE7uRShC81HQK+weGmtrjynAGphNSsywvaG4luA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WJkr900Vzz4f3kp6;
+	Wed, 10 Jul 2024 12:08:56 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.75])
+	by mail.maildlp.com (Postfix) with ESMTP id 9D0321A016E;
+	Wed, 10 Jul 2024 12:09:04 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP2 (Coremail) with SMTP id Syh0CgCXAIZdCY5mkoy3Bg--.14986S4;
+	Wed, 10 Jul 2024 12:09:03 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun@huaweicloud.com,
+	Baokun Li <libaokun1@huawei.com>
+Subject: [PATCH 00/20] ext4: some bugfixes and cleanups for ext4 extents path
+Date: Wed, 10 Jul 2024 12:06:34 +0800
+Message-Id: <20240710040654.1714672-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/9] Documentation: add a new file documenting
- multigrain timestamps
-To: Jeff Layton <jlayton@kernel.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong"
- <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>,
- Christoph Hellwig <hch@infradead.org>, Uros Bizjak <ubizjak@gmail.com>,
- Kent Overstreet <kent.overstreet@linux.dev>, kernel-team@fb.com,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
- linux-nfs@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20240708-mgtime-v4-0-a0f3c6fb57f3@kernel.org>
- <20240708-mgtime-v4-5-a0f3c6fb57f3@kernel.org>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240708-mgtime-v4-5-a0f3c6fb57f3@kernel.org>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:Syh0CgCXAIZdCY5mkoy3Bg--.14986S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxArWkZw1Utw1UXryfXFW7XFb_yoW5Cry5pF
+	s3Cw1UA34vq3s7u39xJa15ZF15Gw4fG343Ary3Gr1kAF98JryFgFyxKa4YyFW5JFWxCF9I
+	vFW0yr17Cas8Ca7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r
+	1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CE
+	b7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0x
+	vE2Ix0cI8IcVCY1x0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_WFyUJVCq3wCI
+	42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxh
+	VjvjDU0xZFpf9x0JUm2NtUUUUU=
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAPBV1jkIIt0wABsY
 
+From: Baokun Li <libaokun1@huawei.com>
 
+Hi all!
 
-On 7/8/24 8:53 AM, Jeff Layton wrote:
-> Add a high-level document that describes how multigrain timestamps work,
-> rationale for them, and some info about implementation and tradeoffs.
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  Documentation/filesystems/multigrain-ts.rst | 120 ++++++++++++++++++++++++++++
->  1 file changed, 120 insertions(+)
-> 
-> diff --git a/Documentation/filesystems/multigrain-ts.rst b/Documentation/filesystems/multigrain-ts.rst
-> new file mode 100644
-> index 000000000000..e4f52a9e3c51
-> --- /dev/null
-> +++ b/Documentation/filesystems/multigrain-ts.rst
-> @@ -0,0 +1,120 @@
+This patch series is a hardening of ext4 extents path related code.
+The following is a brief overview of the patches, see the patches for
+more details.
 
-> +Inode Timestamp Ordering
-> +========================
-> +
-> +In addition just providing info about changes to individual files, file
+Patch 1-2: Refactor ext4_ext_rm_idx() as suggested by Jan, and add
+appropriate error handling branches to ext4_ext_rm_idx() and
+ext4_ext_correct_indexes() to avoid inconsistent extents tree.
+ PS: This comes from the previous work of my colleague zhanchengbin
+ (see link), who is no longer in charge of these and I have taken over.
+ Link: https://lore.kernel.org/r/20230213080514.535568-3-zhanchengbin1@huawei.com/
 
-   In addition to just
+Patch 3-4: Fix an issue that caused p_bh to be released twice if it wasn't
+set to NULL after path->p_bh was released. And add a helper function after
+the quick fix to prevent this from happening again.
 
-> +timestamps also serve an important purpose in applications like "make". These
-> +programs measure timestamps in order to determine whether source files might be
-> +newer than cached objects.
+Patch 5-7: Quick fixes for use-after-free and double-free problems caused
+by mixing path(pointer to an extent path) and ppath(pointer to an extent
+path pointer).
+
+Patch 8-19: Now the use of path and ppath is so confusing that we can
+trigger use-after-free or double-free by accessing a stale pointer, or
+we can get a memory leak by forgetting to update ppath. And it's very
+difficult to read the code. So to make the code more readable, get rid
+of ppath and pass path between functions uniformly to avoid these risks.
+
+Patch 20: Reduces the consumption of unnecessary memory operations by
+avoiding repetitive allocation and release paths.
+
+"kvm-xfstests -c ext4/all -g auto" has been executed with no new failures.
+
+Comments and questions are, as always, welcome.
+Please let me know what you think.
+
+Thanks,
+Baokun
+
+Baokun Li (20):
+  ext4: refactor ext4_ext_rm_idx() to index 'path'
+  ext4: prevent partial update of the extents path
+  ext4: fix double brelse() the buffer of the extents path
+  ext4: add new ext4_ext_path_brelse() helper
+  ext4: fix slab-use-after-free in ext4_split_extent_at()
+  ext4: avoid use-after-free in ext4_ext_show_leaf()
+  ext4: drop ppath from ext4_ext_replay_update_ex() to avoid double-free
+  ext4: get rid of ppath in ext4_find_extent()
+  ext4: get rid of ppath in get_ext_path()
+  ext4: get rid of ppath in ext4_ext_create_new_leaf()
+  ext4: get rid of ppath in ext4_ext_insert_extent()
+  ext4: get rid of ppath in ext4_split_extent_at()
+  ext4: get rid of ppath in ext4_force_split_extent_at()
+  ext4: get rid of ppath in ext4_split_extent()
+  ext4: get rid of ppath in ext4_split_convert_extents()
+  ext4: get rid of ppath in ext4_convert_unwritten_extents_endio()
+  ext4: get rid of ppath in ext4_ext_convert_to_initialized()
+  ext4: get rid of ppath in ext4_ext_handle_unwritten_extents()
+  ext4: get rid of ppath in convert_initialized_extent()
+  ext4: avoid unnecessary extent path frees and allocations
+
+ fs/ext4/ext4.h        |   9 +-
+ fs/ext4/extents.c     | 746 +++++++++++++++++++++++-------------------
+ fs/ext4/fast_commit.c |  17 +-
+ fs/ext4/migrate.c     |   5 +-
+ fs/ext4/move_extent.c |  36 +-
+ 5 files changed, 439 insertions(+), 374 deletions(-)
+
+-- 
+2.39.2
 
 
