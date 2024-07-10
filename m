@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-3161-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3162-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E460A92C997
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 06:10:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D89492C999
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 06:11:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5880828517E
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 04:10:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 098FE28527A
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 04:10:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFAEB82C60;
-	Wed, 10 Jul 2024 04:09:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17BD682D8E;
+	Wed, 10 Jul 2024 04:09:20 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE1644F8BB;
-	Wed, 10 Jul 2024 04:09:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EEA157CB6;
+	Wed, 10 Jul 2024 04:09:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720584559; cv=none; b=TBsnFiuBFFJSM53xx4mjCyFEvRgl3s9i5mnD8mxfonbg6VVB5BNdt3pu4+O9hW41mup1g8nfA2y26D0n2pl9T972WvK3QA2cQ1Jd2vaFvoDxkzVo1WeWWPa85RiFy152bWMenjMAYiITuDItKYJLl/hjKP6ya+YIQpPYXw0s7f0=
+	t=1720584559; cv=none; b=QhH45wxb7W14cgFcuzk/4njJtooN98hkdUsq/mcwFZhHOVi3RevS6OFd/0thW6uyW7328nvU4zMOLmZ61zm7xsqE57EhP0pRntnugWVzYSTpJLUa+SFA5EutwzvEkfOP2EHA/XT8121bUOlc8souIQpt22b9lObDKn31cG1u8F8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1720584559; c=relaxed/simple;
-	bh=ImlY1QsnFPM1kaHQzMg8KnrlyADTGAiVLYEmnGSnjIc=;
+	bh=uOG/Vr3MCFNJjRWImReFrc5J4cRS5yRX7UqDM2T4jLY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=bjumKhJ4nnmBrWSd5GL8EdjmKJSnXJnfsLpKmYphrKkJEUUrv6Y67W/AnX5quhf4jnIzlLsCtkDyyrREdrlBSZF6B/zQh8iHdqj41qlmjiPCPF0Yn1cUa0Iu8ZdMBQFygl4Fxpm0pzLRtFs60moeuNCKuWStV6ioTrY/7NQ4JUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=F3biqC0zzsqZVX2ZLXlqjgqvs3bYSR8lspaXO2m/kONaouRVcWoulh9RvaH4hvB8EgD+pSSLnSfsHZ9KaJDf+XF/wiGawD/UIQP8v5N5KY2h6WmFTumsX7SrgkHb7Pq+mq+ijOHns6/4jP4Np39InL5DfExYIsrlX0STm2ayeJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WJkr73tZFz4f3m7J;
-	Wed, 10 Jul 2024 12:08:55 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WJkr91NFrz4f3mJM;
+	Wed, 10 Jul 2024 12:08:57 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 62FEB1A0D00;
+	by mail.maildlp.com (Postfix) with ESMTP id C79571A0184;
 	Wed, 10 Jul 2024 12:09:08 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP2 (Coremail) with SMTP id Syh0CgCXAIZdCY5mkoy3Bg--.14986S13;
+	by APP2 (Coremail) with SMTP id Syh0CgCXAIZdCY5mkoy3Bg--.14986S14;
 	Wed, 10 Jul 2024 12:09:08 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -49,9 +49,9 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
 	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH 09/20] ext4: get rid of ppath in get_ext_path()
-Date: Wed, 10 Jul 2024 12:06:43 +0800
-Message-Id: <20240710040654.1714672-10-libaokun@huaweicloud.com>
+Subject: [PATCH 10/20] ext4: get rid of ppath in ext4_ext_create_new_leaf()
+Date: Wed, 10 Jul 2024 12:06:44 +0800
+Message-Id: <20240710040654.1714672-11-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240710040654.1714672-1-libaokun@huaweicloud.com>
 References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
@@ -62,10 +62,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXAIZdCY5mkoy3Bg--.14986S13
-X-Coremail-Antispam: 1UD129KBjvJXoWxAw4kJrW7Kr48uw47XryfXrb_yoW5Kr4rpF
-	sayr1Ygr48XanFkrZ7Ka1UZr15Ka1rG3y7WryfGw109ay7Xr1F9F1Iy3WYvFyrKFW8WrWa
-	vFWrtr1UC34UKFJanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:Syh0CgCXAIZdCY5mkoy3Bg--.14986S14
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw4DAr4rCF1DuFyDAr4ktFb_yoW5CF1fpr
+	4FyFy8KF45WasF9rZ2va1UZr1ak3W8Gw4UAFWfCr9Y9Fy7ZF1FqFyfta4FyFW5JFW8ua4a
+	qFW8tw1UXw12g3DanT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUmY14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -76,126 +76,119 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxAw4kJrW7Kr48uw47XryfXrb_yoW5Kr4rpF
 	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
 	kIc2xKxwAKzVCY07xG64k0F24l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_
 	Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17
-	CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIxAIcVC0
+	CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Gr0_Xr1lIxAIcVC0
 	I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0x
-	vEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIev
+	vEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJbIYCTnIWIev
 	Ja73UjIFyTuYvjfUYGYpUUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAABV1jkH7IJQAAs6
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAABV1jkH7IJgAAs5
 
 From: Baokun Li <libaokun1@huawei.com>
 
 The use of path and ppath is now very confusing, so to make the code more
 readable, pass path between functions uniformly, and get rid of ppath.
 
-After getting rid of ppath in get_ext_path(), its caller may pass an error
-pointer to ext4_free_ext_path(), so it needs to teach ext4_free_ext_path()
-and ext4_ext_drop_refs() to skip the error pointer. No functional changes.
+To get rid of the ppath in ext4_ext_create_new_leaf(), the following is
+done here:
+
+ * Free the extents path when an error is encountered.
+ * Its caller needs to update ppath if it uses ppath.
+
+No functional changes.
 
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/extents.c     |  5 +++--
- fs/ext4/move_extent.c | 34 +++++++++++++++++-----------------
- 2 files changed, 20 insertions(+), 19 deletions(-)
+ fs/ext4/extents.c | 41 +++++++++++++++++++++--------------------
+ 1 file changed, 21 insertions(+), 20 deletions(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 5217e6f53467..6dfb5d03e197 100644
+index 6dfb5d03e197..0d6ce9e74b01 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -116,7 +116,7 @@ static void ext4_ext_drop_refs(struct ext4_ext_path *path)
- {
- 	int depth, i;
- 
--	if (!path)
-+	if (IS_ERR_OR_NULL(path))
- 		return;
- 	depth = path->p_depth;
- 	for (i = 0; i <= depth; i++, path++)
-@@ -125,6 +125,8 @@ static void ext4_ext_drop_refs(struct ext4_ext_path *path)
- 
- void ext4_free_ext_path(struct ext4_ext_path *path)
- {
-+	if (IS_ERR_OR_NULL(path))
-+		return;
- 	ext4_ext_drop_refs(path);
- 	kfree(path);
- }
-@@ -4191,7 +4193,6 @@ int ext4_ext_map_blocks(handle_t *handle, struct inode *inode,
- 	path = ext4_find_extent(inode, map->m_lblk, NULL, 0);
- 	if (IS_ERR(path)) {
- 		err = PTR_ERR(path);
--		path = NULL;
- 		goto out;
- 	}
- 
-diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
-index b0ab19a913bf..a7186d63725a 100644
---- a/fs/ext4/move_extent.c
-+++ b/fs/ext4/move_extent.c
-@@ -17,27 +17,23 @@
-  * get_ext_path() - Find an extent path for designated logical block number.
-  * @inode:	inode to be searched
-  * @lblock:	logical block number to find an extent path
-- * @ppath:	pointer to an extent path pointer (for output)
-+ * @path:	pointer to an extent path
-  *
-- * ext4_find_extent wrapper. Return 0 on success, or a negative error value
-- * on failure.
-+ * ext4_find_extent wrapper. Return an extent path pointer on success,
-+ * or an error pointer on failure.
+@@ -1397,13 +1397,12 @@ static int ext4_ext_grow_indepth(handle_t *handle, struct inode *inode,
+  * finds empty index and adds new leaf.
+  * if no free index is found, then it requests in-depth growing.
   */
--static inline int
-+static inline struct ext4_ext_path *
- get_ext_path(struct inode *inode, ext4_lblk_t lblock,
--		struct ext4_ext_path **ppath)
-+	     struct ext4_ext_path *path)
+-static int ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+-				    unsigned int mb_flags,
+-				    unsigned int gb_flags,
+-				    struct ext4_ext_path **ppath,
+-				    struct ext4_extent *newext)
++static struct ext4_ext_path *
++ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
++			 unsigned int mb_flags, unsigned int gb_flags,
++			 struct ext4_ext_path *path,
++			 struct ext4_extent *newext)
  {
 -	struct ext4_ext_path *path = *ppath;
--
--	*ppath = NULL;
- 	path = ext4_find_extent(inode, lblock, path, EXT4_EX_NOCACHE);
- 	if (IS_ERR(path))
--		return PTR_ERR(path);
-+		return path;
- 	if (path[ext_depth(inode)].p_ext == NULL) {
- 		ext4_free_ext_path(path);
--		return -ENODATA;
-+		return ERR_PTR(-ENODATA);
+ 	struct ext4_ext_path *curp;
+ 	int depth, i, err = 0;
+ 
+@@ -1424,28 +1423,24 @@ static int ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+ 		 * entry: create all needed subtree and add new leaf */
+ 		err = ext4_ext_split(handle, inode, mb_flags, path, newext, i);
+ 		if (err)
+-			goto out;
++			goto errout;
+ 
+ 		/* refill path */
+ 		path = ext4_find_extent(inode,
+ 				    (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+ 				    path, gb_flags);
+-		if (IS_ERR(path))
+-			err = PTR_ERR(path);
+ 	} else {
+ 		/* tree is full, time to grow in depth */
+ 		err = ext4_ext_grow_indepth(handle, inode, mb_flags);
+ 		if (err)
+-			goto out;
++			goto errout;
+ 
+ 		/* refill path */
+ 		path = ext4_find_extent(inode,
+ 				   (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+ 				    path, gb_flags);
+-		if (IS_ERR(path)) {
+-			err = PTR_ERR(path);
+-			goto out;
+-		}
++		if (IS_ERR(path))
++			return path;
+ 
+ 		/*
+ 		 * only first (depth 0 -> 1) produces free space;
+@@ -1457,9 +1452,11 @@ static int ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+ 			goto repeat;
+ 		}
  	}
--	*ppath = path;
--	return 0;
+-out:
+-	*ppath = IS_ERR(path) ? NULL : path;
+-	return err;
 +	return path;
++
++errout:
++	ext4_free_ext_path(path);
++	return ERR_PTR(err);
  }
  
- /**
-@@ -95,9 +91,11 @@ mext_check_coverage(struct inode *inode, ext4_lblk_t from, ext4_lblk_t count,
- 	int ret = 0;
- 	ext4_lblk_t last = from + count;
- 	while (from < last) {
--		*err = get_ext_path(inode, from, &path);
--		if (*err)
--			goto out;
-+		path = get_ext_path(inode, from, path);
-+		if (IS_ERR(path)) {
-+			*err = PTR_ERR(path);
-+			return ret;
-+		}
- 		ext = path[ext_depth(inode)].p_ext;
- 		if (unwritten != ext4_ext_is_unwritten(ext))
- 			goto out;
-@@ -624,9 +622,11 @@ ext4_move_extents(struct file *o_filp, struct file *d_filp, __u64 orig_blk,
- 		int offset_in_page;
- 		int unwritten, cur_len;
+ /*
+@@ -2112,10 +2109,14 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
+ 	 */
+ 	if (gb_flags & EXT4_GET_BLOCKS_METADATA_NOFAIL)
+ 		mb_flags |= EXT4_MB_USE_RESERVED;
+-	err = ext4_ext_create_new_leaf(handle, inode, mb_flags, gb_flags,
+-				       ppath, newext);
+-	if (err)
++	path = ext4_ext_create_new_leaf(handle, inode, mb_flags, gb_flags,
++					path, newext);
++	if (IS_ERR(path)) {
++		*ppath = NULL;
++		err = PTR_ERR(path);
+ 		goto cleanup;
++	}
++	*ppath = path;
+ 	depth = ext_depth(inode);
+ 	eh = path[depth].p_hdr;
  
--		ret = get_ext_path(orig_inode, o_start, &path);
--		if (ret)
-+		path = get_ext_path(orig_inode, o_start, path);
-+		if (IS_ERR(path)) {
-+			ret = PTR_ERR(path);
- 			goto out;
-+		}
- 		ex = path[path->p_depth].p_ext;
- 		cur_blk = le32_to_cpu(ex->ee_block);
- 		cur_len = ext4_ext_get_actual_len(ex);
 -- 
 2.39.2
 
