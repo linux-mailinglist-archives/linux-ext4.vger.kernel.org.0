@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-3150-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3149-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99BCF92C987
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 06:09:30 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BF7BB92C986
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 06:09:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 289D31F24075
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 04:09:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D6261F23E45
+	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 04:09:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7B5D4D8C0;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CF98482C8;
 	Wed, 10 Jul 2024 04:09:16 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A82F3C092;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22FB15D1;
 	Wed, 10 Jul 2024 04:09:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720584556; cv=none; b=YsbtfZKYlPpqqdGnD8yHRrBk6jpB6k2kU7q/4E5jXMH7mHyplyTyUZxl/4zMsrmraX/Z7n5qp7TrdQr7njJgEgEm1J8p7tTqcQj7RldjzRFbOsJnBR0zLITlY66y/DqbACKLfF8ZwAcuNtam5szjibVTNniu8/Xl/YswDUPxzCM=
+	t=1720584556; cv=none; b=BC45zDeYIpF94txhsssNdbwMXB2bBvTJI6XqfueODG28fzG9iaLKlfO4Rqr7vKu+MyHorBoK4sTPCZJbYsdZCZbpvblAy7sHeqP9VEL8VQ1QN0GscNXO5bZxSfLwrUNP/x8ZmqqiWn8V7eFkFPYFAjmWSUnpMoQvsFbw+u9YSW4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1720584556; c=relaxed/simple;
-	bh=ykysJ0jIu2v2r6KTy4ZJ2qVAlIx9thwidx8uspBQ5RE=;
+	bh=gwRcVK2dLKOaYtOn17+khUsO6T+UH8dmKwhGcmf0u1c=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=RpI6bV2GX1D4J0KqKnt5ZIH2fnH8yol0lztofYnnXg5vZEf77yWva6KMejaTob92VTuKfMRi8npi/zN99ri8bC6Ueqkl9EB/n1+gX2H60bt8H/dme1S4/nJAQ7yZj+cdk4fKdaW1PZZe7IrS7R3+//Ocz02TEthVya3KtjfY//c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=JAzWkdR38HWZzQS5y7cBf8UZEU2WrURdi6BfEBo6eA/zNmNpCjL6SLXsT8I/iQR6VbvobpP5sosgBslDEgZ+j21pecM3VUpcH8CfrcBDNHCRfvCwTQzLVq0U3pJFGQpL++kS3c6TLwBb7Ql+X+KG6NVTV/mOo3Yx3QMa66xtNB4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WJkr41RP3z4f3m7Y;
-	Wed, 10 Jul 2024 12:08:52 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WJkr564hLz4f3mJX;
+	Wed, 10 Jul 2024 12:08:53 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 0E9111A0181;
+	by mail.maildlp.com (Postfix) with ESMTP id 761C11A0189;
 	Wed, 10 Jul 2024 12:09:05 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP2 (Coremail) with SMTP id Syh0CgCXAIZdCY5mkoy3Bg--.14986S5;
-	Wed, 10 Jul 2024 12:09:04 +0800 (CST)
+	by APP2 (Coremail) with SMTP id Syh0CgCXAIZdCY5mkoy3Bg--.14986S6;
+	Wed, 10 Jul 2024 12:09:05 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -48,10 +48,11 @@ Cc: tytso@mit.edu,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
-	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH 01/20] ext4: refactor ext4_ext_rm_idx() to index 'path'
-Date: Wed, 10 Jul 2024 12:06:35 +0800
-Message-Id: <20240710040654.1714672-2-libaokun@huaweicloud.com>
+	Baokun Li <libaokun1@huawei.com>,
+	zhanchengbin <zhanchengbin1@huawei.com>
+Subject: [PATCH 02/20] ext4: prevent partial update of the extents path
+Date: Wed, 10 Jul 2024 12:06:36 +0800
+Message-Id: <20240710040654.1714672-3-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240710040654.1714672-1-libaokun@huaweicloud.com>
 References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
@@ -61,15 +62,14 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgCXAIZdCY5mkoy3Bg--.14986S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxWr43GFy7tryrWr18Jw48tFb_yoW5WrWkpF
-	1ayrn5Cr4jgrWj9FZ7GF47Ar1293W2934xGrWSk34ruFyxXrnYqFyxtFZYyFWfAFWrWaya
-	qFWrt3W5t342y37anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUPG14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
+X-CM-TRANSID:Syh0CgCXAIZdCY5mkoy3Bg--.14986S6
+X-Coremail-Antispam: 1UD129KBjvJXoW7KF15tFWUJF15Jr4ftF4DCFg_yoW5JF1xpr
+	nIkrn5Gr48Way3uFW3tFWUZFy3K3Wkuw4xGrWxC343WFy5ZryFqryxKF13CFyrJrWxWa4f
+	XrW8tw1UKw1DGa7anT9S1TB71UUUUUUqnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPG14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jryl82xGYIkIc2
+	x26xkF7I0E14v26r4j6ryUM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
 	Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJw
 	A2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS
 	0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2
@@ -80,85 +80,85 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxWr43GFy7tryrWr18Jw48tFb_yoW5WrWkpF
 	v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IY
 	x2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87
 	Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIF
-	yTuYvjfUe9N3UUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAABV1jkH7IIQAAs+
+	yTuYvjfU1GQDUUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAPBV1jkIIt0wAEsd
 
 From: Baokun Li <libaokun1@huawei.com>
 
-As suggested by Honza in Link，modify ext4_ext_rm_idx() to leave 'path'
-alone and just index it like ext4_ext_correct_indexes() does it. This
-facilitates adding error handling later. No functional changes.
+In ext4_ext_rm_idx() and ext4_ext_correct_indexes(), there is no proper
+rollback of already executed updates when updating a level of the extents
+path fails, so we may get an inconsistent extents tree, which may trigger
+some bad things in errors=continue mode.
 
-Suggested-by: Jan Kara <jack@suse.cz>
-Link: https://lore.kernel.org/all/20230216130305.nrbtd42tppxhbynn@quack3/
+Hence clear the verified bit of modified extents buffers if the tree fails
+to be updated in ext4_ext_rm_idx() or ext4_ext_correct_indexes(), which
+forces the extents buffers to be checked in ext4_valid_extent_entries(),
+ensuring that the extents tree is consistent.
+
+Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
+Link: https://lore.kernel.org/r/20230213080514.535568-3-zhanchengbin1@huawei.com/
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/extents.c | 32 +++++++++++++++-----------------
- 1 file changed, 15 insertions(+), 17 deletions(-)
+ fs/ext4/extents.c | 31 +++++++++++++++++++++++++++----
+ 1 file changed, 27 insertions(+), 4 deletions(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index e067f2dd0335..bff3666c891a 100644
+index bff3666c891a..4d589d34b30e 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -2279,27 +2279,26 @@ static int ext4_ext_rm_idx(handle_t *handle, struct inode *inode,
- {
- 	int err;
- 	ext4_fsblk_t leaf;
-+	int k = depth - 1;
- 
- 	/* free index block */
--	depth--;
--	path = path + depth;
--	leaf = ext4_idx_pblock(path->p_idx);
--	if (unlikely(path->p_hdr->eh_entries == 0)) {
--		EXT4_ERROR_INODE(inode, "path->p_hdr->eh_entries == 0");
-+	leaf = ext4_idx_pblock(path[k].p_idx);
-+	if (unlikely(path[k].p_hdr->eh_entries == 0)) {
-+		EXT4_ERROR_INODE(inode, "path[%d].p_hdr->eh_entries == 0", k);
- 		return -EFSCORRUPTED;
- 	}
--	err = ext4_ext_get_access(handle, inode, path);
-+	err = ext4_ext_get_access(handle, inode, path + k);
- 	if (err)
- 		return err;
- 
--	if (path->p_idx != EXT_LAST_INDEX(path->p_hdr)) {
--		int len = EXT_LAST_INDEX(path->p_hdr) - path->p_idx;
-+	if (path[k].p_idx != EXT_LAST_INDEX(path[k].p_hdr)) {
-+		int len = EXT_LAST_INDEX(path[k].p_hdr) - path[k].p_idx;
- 		len *= sizeof(struct ext4_extent_idx);
--		memmove(path->p_idx, path->p_idx + 1, len);
-+		memmove(path[k].p_idx, path[k].p_idx + 1, len);
- 	}
- 
--	le16_add_cpu(&path->p_hdr->eh_entries, -1);
--	err = ext4_ext_dirty(handle, inode, path);
-+	le16_add_cpu(&path[k].p_hdr->eh_entries, -1);
-+	err = ext4_ext_dirty(handle, inode, path + k);
- 	if (err)
- 		return err;
- 	ext_debug(inode, "index is empty, remove it, free block %llu\n", leaf);
-@@ -2308,15 +2307,14 @@ static int ext4_ext_rm_idx(handle_t *handle, struct inode *inode,
- 	ext4_free_blocks(handle, inode, NULL, leaf, 1,
- 			 EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET);
- 
--	while (--depth >= 0) {
--		if (path->p_idx != EXT_FIRST_INDEX(path->p_hdr))
-+	while (--k >= 0) {
-+		if (path[k + 1].p_idx != EXT_FIRST_INDEX(path[k + 1].p_hdr))
+@@ -1749,12 +1749,23 @@ static int ext4_ext_correct_indexes(handle_t *handle, struct inode *inode,
  			break;
--		path--;
--		err = ext4_ext_get_access(handle, inode, path);
-+		err = ext4_ext_get_access(handle, inode, path + k);
+ 		err = ext4_ext_get_access(handle, inode, path + k);
  		if (err)
- 			break;
--		path->p_idx->ei_block = (path+1)->p_idx->ei_block;
--		err = ext4_ext_dirty(handle, inode, path);
-+		path[k].p_idx->ei_block = path[k + 1].p_idx->ei_block;
-+		err = ext4_ext_dirty(handle, inode, path + k);
+-			break;
++			goto clean;
+ 		path[k].p_idx->ei_block = border;
+ 		err = ext4_ext_dirty(handle, inode, path + k);
  		if (err)
- 			break;
+-			break;
++			goto clean;
  	}
++	return 0;
++
++clean:
++	/*
++	 * The path[k].p_bh is either unmodified or with no verified bit
++	 * set (see ext4_ext_get_access()). So just clear the verified bit
++	 * of the successfully modified extents buffers, which will force
++	 * these extents to be checked to avoid using inconsistent data.
++	 */
++	while (++k < depth)
++		clear_buffer_verified(path[k].p_bh);
+ 
+ 	return err;
+ }
+@@ -2312,12 +2323,24 @@ static int ext4_ext_rm_idx(handle_t *handle, struct inode *inode,
+ 			break;
+ 		err = ext4_ext_get_access(handle, inode, path + k);
+ 		if (err)
+-			break;
++			goto clean;
+ 		path[k].p_idx->ei_block = path[k + 1].p_idx->ei_block;
+ 		err = ext4_ext_dirty(handle, inode, path + k);
+ 		if (err)
+-			break;
++			goto clean;
+ 	}
++	return 0;
++
++clean:
++	/*
++	 * The path[k].p_bh is either unmodified or with no verified bit
++	 * set (see ext4_ext_get_access()). So just clear the verified bit
++	 * of the successfully modified extents buffers, which will force
++	 * these extents to be checked to avoid using inconsistent data.
++	 */
++	while (++k < depth)
++		clear_buffer_verified(path[k].p_bh);
++
+ 	return err;
+ }
+ 
 -- 
 2.39.2
 
