@@ -1,222 +1,310 @@
-Return-Path: <linux-ext4+bounces-3213-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3214-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095E992ECF8
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 18:42:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D093E92ED10
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 18:50:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CDF31C22161
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 16:42:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8DCC42869FE
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 16:50:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B469316D4CB;
-	Thu, 11 Jul 2024 16:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFA9416DC13;
+	Thu, 11 Jul 2024 16:49:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="hqPZB/Ol"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vv/+KMwm"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.53])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB5716D32E;
-	Thu, 11 Jul 2024 16:42:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DCF116D9C5;
+	Thu, 11 Jul 2024 16:49:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720716150; cv=none; b=EvBzZVinN9Ke6Wr0zm4yTwsjmqzwf2pa7AmOrfhL1zuP3s/Q9nyoxWC08sGSV1Gffij80sIjUR7Etri2mW5XFTq57Mmzf5KrqsJTyTiMhFyxqbX1Z3h2YTy4bKbtko0cSPdtQOQS8PBgBDfcg8YOjZQ8bph/ZmaSIV3mMpTd9ag=
+	t=1720716592; cv=none; b=WpTGg/QKVGptVq4gepESPT5uyDueFCOZX0F1KCFWEObHmp3wPmyPowSn73buovYNDd8PfExrVWoWZ7qQJSyQ3LU0g4e6kJc2o7C9RgCBDR7Gstp/4kFizDo9pOl1XopAR0eZLJe743XHA89NKZTz6Hq+TQXAgLzBi6t/iAQL2hc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720716150; c=relaxed/simple;
-	bh=5XXrD3Er7tJlA0T069DV3WzFwIGiNLYlnHydNwOwoDA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PNE3nlovDbEH20rFmhbrLt34hcucKJPNxBGula4Vy8bKb0RdD6ebyBy+I35ERfQ+PvayisFDzgc0iTRHR951mmwNyMuHOz8QocyGr4c9ngMsD6WDNhmpsFcgQOZ+V/codULtCNJIBSJnV21J9pnAFqZ+AnHGvfNtEH83qXzgkEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=hqPZB/Ol; arc=none smtp.client-ip=43.163.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
-	s=s201512; t=1720716134;
-	bh=s5mc+8AdniwxOMjnsOUvSDbal2IaCJcwnexgBeAnGbA=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To;
-	b=hqPZB/Olgkz0rr82M3zrK0tN1hyAnUAoXEpMcSpimNjzlAaJe+2/fD0O/GX335os3
-	 W4IoAP3kxZ2VrfO9lvM4iLsXx7QPrkq4fPb0NzXTfHZFw5wVRUQMw70qVemfmL25ja
-	 SZKmnOfOwZJYaG+2c0tg8Em+jQcPpQ+W4nmwK2jo=
-Received: from [192.168.50.235] ([120.244.20.46])
-	by newxmesmtplogicsvrszb16-1.qq.com (NewEsmtp) with SMTP
-	id 4229AC9C; Fri, 12 Jul 2024 00:16:34 +0800
-X-QQ-mid: xmsmtpt1720714594t6aplnsdx
-Message-ID: <tencent_CF3DC37BEB2026CB2F68408A2B62314E0C08@qq.com>
-X-QQ-XMAILINFO: NVd9ZAvGcUb9em05hx+gRvPtwZFbK38yNemqP+tOrKR9Yly3yXTL5QIasCAEK8
-	 rpDaZ6qpEvM5Fok1NrgugVqbojw8I/z88VKRL6mdwdswE7C+RxuHRIOR826LMRuH0LJ0yfL4Xrdn
-	 WU18aJQQTrOg+m2SF3fWjEAQ7ptCB90QBqXM+zXmMn5XpiJ8lPDylV1ShVnn+fcWkkBQSGZTyW57
-	 fF1LO9+tDq7md5vcxT+WbksW2QlA8wRbwwHjMY0cmBKUOeNX/LYwHROI+j4N7vs8XAjSFT6sKcdN
-	 XKt+Z7dwiLxLRmUPlWFI6G7sNOMr7kBoNjV8syQxxJTOUNshXdRPYFtlfgNSo5Uzc7roLqhulxdS
-	 Z6QlPOwOEO4JJV3aVTpb2h9j4xkRARVB0TgU6QjbG+9jATAJ+m5wsv8Xye8+vfO/zwFy6DAc177I
-	 JWRn/aw07Q7vKQi117TnEbOcZosNKBZVW9fB7Ekc5Vw5T+3DpfoOhB2YeOqx7zeuMYm6qFhlbUEi
-	 FXqStPW0saOSJbxsAr56iUGx7s2+epDf/NbLDQOqXft3HCK5qQj7GQR5Q3v99KRegiq3WeG7cm8L
-	 PdbL320urSaf7T5wFNLJl4KI/fvImiusPUvhlUyBeCz5vOFWc1zHK6qNItWZahd57tIKSV+TPeq1
-	 UsqqIOVJtI9lu1pHZbwtZS6P6sFq0CoGI2yQgGFZaV80X006yDCpyI3gaOlWpy/i9mjnYxwYzp+G
-	 kBioZWhpm83rhhS9DxV1/aJFM1KV05PNW1TQvskp/cOS4w3e0VeGBjifVBF7E6+dSG+eHG1INdts
-	 MxwBmmUwoEbrxgE36pZomfFvQ9rkfjD0tUUrqG+M1rIcl8efCLLboXxdzEhMh40zQ3EkFngZ6SI2
-	 ABZtpk5ixQ/yXAfW97KzcXz9p6HBJzV0CnhS+c89kumgBDec9iA5VkJNnIacJv/5PFiyCcjPs/CV
-	 YfyAWy0uN6zk2fxEU4CgQdnWEu00thHn5EmkCyZ2vmXNEYoHqttwTan4GPLv4ZSTyL67uohDduio
-	 xZpe9ZGg==
-X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
-X-OQ-MSGID: <dcf476c9-b3c5-4235-bf79-cee840895847@foxmail.com>
-Date: Fri, 12 Jul 2024 00:16:34 +0800
+	s=arc-20240116; t=1720716592; c=relaxed/simple;
+	bh=nWhL6EXYhTkVqK9dFWpYTLeNOOo5aCjD/1lHMwkWh+0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o54ZPrzf/UuciTCP8OftC5zCBONs9KYLsSjl5lkWa9eymBl6FMBq6//NXOP6wn6yiQNe88AbZcjREI55YV3QSA212YI9aw8LXFZvuzLzA77idGWSeKf9etS9D6l4Pl64zGwDbgQXEm7MpYCcBPr94P8AuP0VHeA+66a7r/qPULU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vv/+KMwm; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C392C32786;
+	Thu, 11 Jul 2024 16:49:51 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720716591;
+	bh=nWhL6EXYhTkVqK9dFWpYTLeNOOo5aCjD/1lHMwkWh+0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vv/+KMwm3A+1L8H7wRVjO0quMqAC2RPxeHrKzqk3F5O1xzjrykIITxwF0c5BBIRlV
+	 +nsO+MOsO3n9Vxcy2Oib9socUnIGKDGe5CAwEtasHiPMPnBC/s6IY1Xg2WrZYpZxAd
+	 iTjSAD09XwaDN9wCiSuzt1IsSnKhplzvF01rPA1/06sT/m2oPn59VtnH39Ei5t/hoU
+	 00auPqDi1rNPJQP6LDhgb8eLR5JrP2dAFFj6A4NEptuoAReMTXqQysBu6EwyIAp4DJ
+	 6kdMqU1jfBJgrnBsuSPirRgGTikbMcFL4F05wbr/iLvgI88NlKqWoP1OVWd4b8CATV
+	 anlgPNgJXHwFQ==
+Date: Thu, 11 Jul 2024 09:49:50 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Arnd Bergmann <arnd@arndb.de>, Randy Dunlap <rdunlap@infradead.org>,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+	linux-nfs@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 2/9] fs: tracepoints around multigrain timestamp events
+Message-ID: <20240711164950.GO612460@frogsfrogsfrogs>
+References: <20240711-mgtime-v5-0-37bb5b465feb@kernel.org>
+ <20240711-mgtime-v5-2-37bb5b465feb@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] ext4: fix fast commit inode enqueueing during a full
- journal commit
-To: Luis Henriques <luis.henriques@linux.dev>,
- "wangjianjian (C)" <wangjianjian3@huawei.com>
-Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
- Jan Kara <jack@suse.cz>, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240711083520.6751-1-luis.henriques@linux.dev>
- <4f9d5881-11e6-4064-ab69-ca6ef81582b3@huawei.com>
- <878qy8nem5.fsf@brahms.olymp>
-Content-Language: en-US
-From: Wang Jianjian <wangjianjian0@foxmail.com>
-In-Reply-To: <878qy8nem5.fsf@brahms.olymp>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240711-mgtime-v5-2-37bb5b465feb@kernel.org>
 
+On Thu, Jul 11, 2024 at 07:08:06AM -0400, Jeff Layton wrote:
+> Add some tracepoints around various multigrain timestamp events.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+>  fs/inode.c                       |   5 ++
+>  fs/stat.c                        |   3 ++
+>  include/trace/events/timestamp.h | 109 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 117 insertions(+)
+> 
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 2b5889ff7b36..81b45e0a95a6 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -22,6 +22,9 @@
+>  #include <linux/iversion.h>
+>  #include <linux/rw_hint.h>
+>  #include <trace/events/writeback.h>
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/timestamp.h>
+> +
+>  #include "internal.h"
+>  
+>  /*
+> @@ -2571,6 +2574,7 @@ struct timespec64 inode_set_ctime_to_ts(struct inode *inode, struct timespec64 t
+>  {
+>  	inode->i_ctime_sec = ts.tv_sec;
+>  	inode->i_ctime_nsec = ts.tv_nsec & ~I_CTIME_QUERIED;
+> +	trace_inode_set_ctime_to_ts(inode, &ts);
+>  	return ts;
+>  }
+>  EXPORT_SYMBOL(inode_set_ctime_to_ts);
+> @@ -2670,6 +2674,7 @@ struct timespec64 inode_set_ctime_current(struct inode *inode)
+>  	if (try_cmpxchg(&inode->i_ctime_nsec, &cur, now_ts.tv_nsec)) {
+>  		/* If swap occurred, then we're (mostly) done */
+>  		inode->i_ctime_sec = now_ts.tv_sec;
+> +		trace_ctime_ns_xchg(inode, cns, now_ts.tv_nsec, cur);
+>  	} else {
+>  		/*
+>  		 * Was the change due to someone marking the old ctime QUERIED?
+> diff --git a/fs/stat.c b/fs/stat.c
+> index df7fdd3afed9..552dfd67688b 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/uaccess.h>
+>  #include <asm/unistd.h>
+>  
+> +#include <trace/events/timestamp.h>
+> +
+>  #include "internal.h"
+>  #include "mount.h"
+>  
+> @@ -49,6 +51,7 @@ void fill_mg_cmtime(struct kstat *stat, u32 request_mask, struct inode *inode)
+>  	stat->mtime = inode_get_mtime(inode);
+>  	stat->ctime.tv_sec = inode->i_ctime_sec;
+>  	stat->ctime.tv_nsec = ((u32)atomic_fetch_or(I_CTIME_QUERIED, pcn)) & ~I_CTIME_QUERIED;
+> +	trace_fill_mg_cmtime(inode, &stat->ctime, &stat->mtime);
+>  }
+>  EXPORT_SYMBOL(fill_mg_cmtime);
+>  
+> diff --git a/include/trace/events/timestamp.h b/include/trace/events/timestamp.h
+> new file mode 100644
+> index 000000000000..3a603190b46c
+> --- /dev/null
+> +++ b/include/trace/events/timestamp.h
+> @@ -0,0 +1,109 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM timestamp
+> +
+> +#if !defined(_TRACE_TIMESTAMP_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_TIMESTAMP_H
+> +
+> +#include <linux/tracepoint.h>
+> +#include <linux/fs.h>
+> +
+> +TRACE_EVENT(inode_set_ctime_to_ts,
+> +	TP_PROTO(struct inode *inode,
+> +		 struct timespec64 *ctime),
+> +
+> +	TP_ARGS(inode, ctime),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(dev_t,			dev)
+> +		__field(ino_t,			ino)
+> +		__field(time64_t,		ctime_s)
+> +		__field(u32,			ctime_ns)
+> +		__field(u32,			gen)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->dev		= inode->i_sb->s_dev;
 
-On 2024/7/11 23:16, Luis Henriques wrote:
-> On Thu, Jul 11 2024, wangjianjian (C) wrote:
->
->> On 2024/7/11 16:35, Luis Henriques (SUSE) wrote:
->>> When a full journal commit is on-going, any fast commit has to be enqueued
->>> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
->>> is done only once, i.e. if an inode is already queued in a previous fast
->>> commit entry it won't be enqueued again.  However, if a full commit starts
->>> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
->>> be done into FC_Q_STAGING.  And this is not being done in function
->>> ext4_fc_track_template().
->>> This patch fixes the issue by re-enqueuing an inode into the STAGING queue
->>> during the fast commit clean-up callback if it has a tid (i_sync_tid)
->>> greater than the one being handled.  The STAGING queue will then be spliced
->>> back into MAIN.
->>> This bug was found using fstest generic/047.  This test creates several 32k
->>> bytes files, sync'ing each of them after it's creation, and then shutting
->>> down the filesystem.  Some data may be loss in this operation; for example a
->>> file may have it's size truncated to zero.
->>> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
->>> ---
->>> Hi!
->>> v4 of this patch enqueues the inode into STAGING *only* if the current tid
->>> is non-zero.  It will be zero when doing an fc commit, and this would mean
->>> to always re-enqueue the inode.  This fixes the regressions caught by Ted
->>> in v3 with fstests generic/472 generic/496 generic/643.
->>> Also, since 2nd patch of v3 has already been merged, I've rebased this patch
->>> to be applied on top of it.
->>>    fs/ext4/fast_commit.c | 10 ++++++++++
->>>    1 file changed, 10 insertions(+)
->>> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
->>> index 3926a05eceee..facbc8dbbaa2 100644
->>> --- a/fs/ext4/fast_commit.c
->>> +++ b/fs/ext4/fast_commit.c
->>> @@ -1290,6 +1290,16 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
->>>    				       EXT4_STATE_FC_COMMITTING);
->>>    		if (tid_geq(tid, iter->i_sync_tid))
->>>    			ext4_fc_reset_inode(&iter->vfs_inode);
->>> +		} else if (tid) {
->>> +			/*
->>> +			 * If the tid is valid (i.e. non-zero) re-enqueue the
->> one quick question about tid, if one disk is using long time and its tid   get
->> wrapped to 0, is it a valid seq? I don't find code handling this situation.
-> Hmm... OK.  So, to answer to your question, the 'tid' is expected to wrap.
-> That's why we use:
->
-> 	if (tid_geq(tid, iter->i_sync_tid))
-Yes, I know this.
->
-> instead of:
->
-> 	if (tid >= iter->i_sync_tid)
->
-> (The second patch in v3 actually fixed a few places where the tid_*()
-> helpers weren't being used.)
->
-> But your question shows me that my patch is wrong as '0' may actually be a
-> valid 'tid' value.
+Odd indenting of the second columns between the struct definition above
+and the assignment code here.
 
-Actually my question is,  there are some place use '0' to check if a 
-transaction is valid, e.g.
+> +		__entry->ino		= inode->i_ino;
+> +		__entry->gen		= inode->i_generation;
+> +		__entry->ctime_s	= ctime->tv_sec;
+> +		__entry->ctime_ns	= ctime->tv_nsec;
+> +	),
+> +
+> +	TP_printk("ino=%d:%d:%ld:%u ctime=%lld.%u",
+> +		MAJOR(__entry->dev), MINOR(__entry->dev), __entry->ino, __entry->gen,
+> +		__entry->ctime_s, __entry->ctime_ns
+> +	)
+> +);
+> +
+> +TRACE_EVENT(ctime_ns_xchg,
+> +	TP_PROTO(struct inode *inode,
+> +		 u32 old,
+> +		 u32 new,
+> +		 u32 cur),
+> +
+> +	TP_ARGS(inode, old, new, cur),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(dev_t,				dev)
+> +		__field(ino_t,				ino)
+> +		__field(u32,				gen)
+> +		__field(u32,				old)
+> +		__field(u32,				new)
+> +		__field(u32,				cur)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->dev		= inode->i_sb->s_dev;
+> +		__entry->ino		= inode->i_ino;
+> +		__entry->gen		= inode->i_generation;
+> +		__entry->old		= old;
+> +		__entry->new		= new;
+> +		__entry->cur		= cur;
+> +	),
+> +
+> +	TP_printk("ino=%d:%d:%ld:%u old=%u:%c new=%u cur=%u:%c",
+> +		MAJOR(__entry->dev), MINOR(__entry->dev), __entry->ino, __entry->gen,
+> +		__entry->old & ~I_CTIME_QUERIED, __entry->old & I_CTIME_QUERIED ? 'Q' : '-',
+> +		__entry->new,
+> +		__entry->cur & ~I_CTIME_QUERIED, __entry->cur & I_CTIME_QUERIED ? 'Q' : '-'
 
-In ext4_wait_for_tail_page_commit()
+This /might/ be overkill for a single flag, but anything you put in the
+TP_printk seems to end up in the format file:
 
-5218         while (1) {
-5219                 struct folio *folio = 
-filemap_lock_folio(inode->i_mapping,
-5220                                       inode->i_size >> PAGE_SHIFT);
-5221                 if (IS_ERR(folio))
-5222                         return;
-5223                 ret = __ext4_journalled_invalidate_folio(folio, offset,
-5224 folio_size(folio) - offset);
-5225                 folio_unlock(folio);
-5226                 folio_put(folio);
-5227                 if (ret != -EBUSY)
-5228                         return;
-5229                 commit_tid = 0;
-5230                 read_lock(&journal->j_state_lock);
-5231                 if (journal->j_committing_transaction)
-5232                         commit_tid = 
-journal->j_committing_transaction->t_tid;
-5233                 read_unlock(&journal->j_state_lock);
-5234                 if (commit_tid)
-5235                         jbd2_log_wait_commit(journal, commit_tid);
-5236         }
-5237  We only wait commit if tid is not zero.
+# cat /sys/kernel/debug/tracing/events/xfs/xfbtree_create_root_buf/format
+name: xfbtree_create_root_buf
+ID: 1644
+format:
+        field:unsigned short common_type;       offset:0;       size:2; signed:0;
+        field:unsigned char common_flags;       offset:2;       size:1; signed:0;
+        field:unsigned char common_preempt_count;       offset:3;       size:1; signed:0;
+        field:int common_pid;   offset:4;       size:4; signed:1;
 
-And in __jbd2_log_wait_for_space()
+        field:unsigned long xfino;      offset:8;       size:8; signed:0;
+        field:xfs_daddr_t bno;  offset:16;      size:8; signed:1;
+        field:int nblks;        offset:24;      size:4; signed:1;
+        field:int hold; offset:28;      size:4; signed:1;
+        field:int pincount;     offset:32;      size:4; signed:1;
+        field:unsigned int lockval;     offset:36;      size:4; signed:0;
+        field:unsigned int flags;       offset:40;      size:4; signed:0;
 
-79                 if (space_left < nblocks) {
-  80                         int chkpt = 
-journal->j_checkpoint_transactions != NULL;
-  81                         tid_t tid = 0;
-  82
-  83                         if (journal->j_committing_transaction)
-  84                                 tid = 
-journal->j_committing_transaction->t_tid;
-  85 spin_unlock(&journal->j_list_lock);
-  86 write_unlock(&journal->j_state_lock);
-  87                         if (chkpt) {
-  88 jbd2_log_do_checkpoint(journal);
-  89                         } else if 
-(jbd2_cleanup_journal_tail(journal) == 0) {
-  90                                 /* We were able to recover space; 
-yay! */
-  91                                 ;
-  92                         } else if (tid) {
-  93                                 /*
-  94                                  * 
-jbd2_journal_commit_transaction() may want
-  95                                  * to take the checkpoint_mutex if 
-JBD2_FLUSHED
-  96                                  * is set.  So we need to 
-temporarily drop it.
-  97                                  */
-  98 mutex_unlock(&journal->j_checkpoint_mutex);
-  99                                 jbd2_log_wait_commit(journal, tid);
-100 write_lock(&journal->j_state_lock);
-101                                 continue;
-We also only wait commit if tid is not zero.
+print fmt: "xfino 0x%lx daddr 0x%llx bbcount 0x%x hold %d pincount %d lock %d flags %s", REC->xfino, (unsigned long long)REC->bno, REC->nblks, REC->hold, REC->pincount, REC->lockval, __print_flags(REC->flags, "|", { (1u << 0), "READ" }, { (1u << 1), "WRITE" }, { (1u << 2), "READ_AHEAD" }, { (1u << 3), "NO_IOACCT" }, { (1u << 4), "ASYNC" }, { (1u << 5), "DONE" }, { (1u << 6), "STALE" }, { (1u << 7), "WRITE_FAIL" }, { (1u << 16), "INODES" }, { (1u << 17), "DQUOTS" }, { (1u << 18), "LOG_RECOVERY" }, { (1u << 20), "PAGES" }, { (1u << 21), "KMEM" }, { (1u << 22), "DELWRI_Q" }, { (1u << 28), "LIVESCAN" }, { (1u << 29), "INCORE" }, { (1u << 30), "TRYLOCK" }, { (1u << 31), "UNMAPPED" })
 
-Does it mean all these have bugs if '0' is a valid 'tid' ?
+I /think/ all that code gets compiled (interpreted?) as if it were C
+code, but a more compact format might be:
 
-But on the other hand, if we don't consider sync and fsync, and default 
-commit interval is 5s,
+#define CTIME_QUERIED_FLAGS \
+	{ I_CTIME_QUERIED, "queried" }
 
-time of tid wrap to 0 is nearly 680 years. However, we can run 
-sync/fsync to make tid to increase
+	TP_printk("ino=%d:%d:%ld:%u old=%u:%s new=%u cur=%u:%c",
+		MAJOR(__entry->dev), MINOR(__entry->dev), __entry->ino, __entry->gen,
+		__entry->old & ~I_CTIME_QUERIED,
+		__print_flags(__entry->old & I_CTIME_QUERIED, "|",
+			      CTIME_QUERIED_FLAGS),
+		...
 
-more quickly in real world ?
+But, again, that could be overkill for a single flag.  Aside from my
+minor bikeshedding, this all looks good, and I like that we can now
+monitor what's going on wrt ctime. :)
 
+--D
 
-> Cheers,
-
+> +	)
+> +);
+> +
+> +TRACE_EVENT(fill_mg_cmtime,
+> +	TP_PROTO(struct inode *inode,
+> +		 struct timespec64 *ctime,
+> +		 struct timespec64 *mtime),
+> +
+> +	TP_ARGS(inode, ctime, mtime),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(dev_t,			dev)
+> +		__field(ino_t,			ino)
+> +		__field(time64_t,		ctime_s)
+> +		__field(time64_t,		mtime_s)
+> +		__field(u32,			ctime_ns)
+> +		__field(u32,			mtime_ns)
+> +		__field(u32,			gen)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->dev		= inode->i_sb->s_dev;
+> +		__entry->ino		= inode->i_ino;
+> +		__entry->gen		= inode->i_generation;
+> +		__entry->ctime_s	= ctime->tv_sec;
+> +		__entry->mtime_s	= mtime->tv_sec;
+> +		__entry->ctime_ns	= ctime->tv_nsec;
+> +		__entry->mtime_ns	= mtime->tv_nsec;
+> +	),
+> +
+> +	TP_printk("ino=%d:%d:%ld:%u ctime=%lld.%u mtime=%lld.%u",
+> +		MAJOR(__entry->dev), MINOR(__entry->dev), __entry->ino, __entry->gen,
+> +		__entry->ctime_s, __entry->ctime_ns,
+> +		__entry->mtime_s, __entry->mtime_ns
+> +	)
+> +);
+> +#endif /* _TRACE_TIMESTAMP_H */
+> +
+> +/* This part must be outside protection */
+> +#include <trace/define_trace.h>
+> 
+> -- 
+> 2.45.2
+> 
+> 
 
