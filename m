@@ -1,65 +1,64 @@
-Return-Path: <linux-ext4+bounces-3184-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3178-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1687B92DE7F
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 04:37:22 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 629C692DE75
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 04:36:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BD20B2228F
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 02:37:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 944441C21739
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 02:36:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12DC87F47B;
-	Thu, 11 Jul 2024 02:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7CC7E572;
+	Thu, 11 Jul 2024 02:35:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="cH3ln0+U"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="F0zKcjiI"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3647A4F20E
-	for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 02:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4C59168CC
+	for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 02:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720665362; cv=none; b=Qd8vtO/IGKknLUp+9WAhP2mr9jgLWwM0MNmTdIOU7h7wMC81Y4CXJ7qX1CE7ahTkwNehObnSecPQchPxHzfUTUv0wAjRhxjXi/0Bhxci+juzLKIFa0sTaAbv5rpv6umQkMCqBFyz+NWmD0PB1+icoeIbAsmyb2yrjZPX9Fk+weY=
+	t=1720665359; cv=none; b=NbsVlzQRxWzWxIDvzmjgpzZR+VIWN04ozE5bWqY1TAedfMamudOZR/ujSxkEAvc1SiCNrLz/9XdFu7dJBy8XTXOPMDnpOqFaVrQ1jqG4KjL2B2YNoHdpunS50WBRumLZBGCo/y8i3RrYeu4ujN0Shq5Big866yK7kB+y4WzqsEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720665362; c=relaxed/simple;
-	bh=epLTkZNOB6OpkoXyb/vPfcZKaaf97RXsYzo/nRMIFwM=;
+	s=arc-20240116; t=1720665359; c=relaxed/simple;
+	bh=mVlNPKvgBDmHjNlih/T7Trzg9IL5n3ionbhTdiuuJfc=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=SY0zs2Dqdm98xcD59fpHqOVg4lB6jK5gYpQkua03hIc+5cHjslxlgvuDNQ74h0skEVauymdIQMarxTVVQ7/4zxWuD0VUFzib7SYYktNRrBwz/tiSE9Z2V0vJ5tuELO7g2eNEqGzu430gIUqnYlm/1Q6W1et4Ykn5aheTdELb/mQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=cH3ln0+U; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=fvEjFZIroJSa1DN8+DhplBkeobBAqwQOVEf1GEwMXRsVHFEPVIIPQL7m+i5Gokv6b3VExX3KCMMfwzJHtiSPUAs+g/CV074WT8z5sitwU1OSPvf5JnAmHWxeM3qGjkCQ225mWzUJVvpbO+/+SN3mAYFGhgAR3PhHBf64q3iz8cM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=F0zKcjiI; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-116-79.bstnma.fios.verizon.net [173.48.116.79])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46B2Zh48025438
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46B2Zhia025454
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Wed, 10 Jul 2024 22:35:44 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1720665345; bh=1w3gnNNj+MgpqZ4HN8mLNqi65vmXapOmEMa7QOsH+Fg=;
+	t=1720665345; bh=KCKUSCnJZej2EOEp8Kf3hF/vp94UjZHAqgQFUyfnS0w=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=cH3ln0+Uh/P3M1oL8TTJpn7qIjwfJ4ACuLuE/ikTn5bbaMAuU0EQQNVhuNRM+iarT
-	 ZYwb9qo+fWgxRuZzKfE/C7b3ezHoyxMgwEe98PzeKYoKnUxnut/gl+Th5U2mGkY/3p
-	 9Jvi7BOB3lmj1JuyBA/SkcLQI1ahLNEiNTnX/kw4k3LF8B/oz6QYGt1hd8oDvRjGe6
-	 efOLIo2vvKc26QCUw71M6yWixErKGNiR5nutTNtvNLZI/cdPN8rlqAYhW838bai0qo
-	 CQQ4v9yUJ2LvclsMDfrRu1xp3LPoNikYjFoTI1oc0lmWtcFCSGuz98ZekCVzswDCXS
-	 FvLHPKVhjeDiQ==
+	b=F0zKcjiIDwZzLl2WJbgXcHpQlgp1RRqAwVUwL+a0PzeoUR6AM6pmoCYF6Qnwm67kd
+	 C/JN7iciSBD9T6qbYLiK0vu5MfwEaj4HgmNHl+SYzHvgiZg2GKhEE3mI7XVw+ZEov6
+	 4gn3ROMxgCtBR80lY6l6ReMGhCtcUqL1j+5FiCOl0WT4B4KurBqeJM6NAUa5DR+9cQ
+	 aktl24Jp0pcv3IdF6+iXT2HZv14v1y+m4hZP5oI4H5g1Q7GxAKWvNfZw60UsFrpT0u
+	 h6nff4G994Lz/QxC3Zs1Qp2LdvXrCHC++LQiYkHeyM0Hn0sbUPVnnVSTIvJz4Dy3CB
+	 yjFlznZCrmd+w==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id D1E1715C18ED; Wed, 10 Jul 2024 22:35:41 -0400 (EDT)
+	id D447415C18FD; Wed, 10 Jul 2024 22:35:41 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-        Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-        "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+To: Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jeff Johnson <quic_jjohnson@quicinc.com>
 Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 0/2] ext4: fix fast commit inode enqueueing during a full journal commit
-Date: Wed, 10 Jul 2024 22:35:33 -0400
-Message-ID: <172066485813.400039.14328785579752390326.b4-ty@mit.edu>
+        linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+Subject: Re: [PATCH] fs: ext4: add missing MODULE_DESCRIPTION()
+Date: Wed, 10 Jul 2024 22:35:34 -0400
+Message-ID: <172066485811.400039.15583789810159631305.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240529092030.9557-1-luis.henriques@linux.dev>
-References: <20240529092030.9557-1-luis.henriques@linux.dev>
+In-Reply-To: <20240527-md-fs-ext4-v1-1-07aad5936bb1@quicinc.com>
+References: <20240527-md-fs-ext4-v1-1-07aad5936bb1@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -70,22 +69,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Wed, 29 May 2024 10:20:28 +0100, Luis Henriques (SUSE) wrote:
-> Here's v3 of this fix to the fast commit enqueuing bug triggered by fstest
-> generic/047.  This version simplifies the previous patch version by re-using
-> the i_sync_tid field in struct ext4_inode_info instead of adding a new one.
+On Mon, 27 May 2024 11:02:29 -0700, Jeff Johnson wrote:
+> Fix the 'make W=1' warning:
+> WARNING: modpost: missing MODULE_DESCRIPTION() in fs/ext4/ext4-inode-test.o
 > 
-> The extra patch includes a few extra fixes to the tid_t type handling.  Jan
-> brought to my attention the fact that this sequence number may wrap, and I
-> quickly found a few places in the code where the tid_geq() and tid_gt()
-> helpers had to be used.
 > 
-> [...]
 
-The second patch in this series was applied:
+Applied, thanks!
 
-[2/2] ext4: fix possible tid_t sequence overflows
-      commit: 63469662cc45d41705f14b4648481d5d29cf5999
+[1/1] fs: ext4: add missing MODULE_DESCRIPTION()
+      commit: 7378e8991a459f3e5672e4b06bf346adce062fd8
 
 Best regards,
 -- 
