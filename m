@@ -1,63 +1,65 @@
-Return-Path: <linux-ext4+bounces-3185-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3186-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4571F92DE83
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 04:38:18 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4409392DE84
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 04:38:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFDEF1F23B1C
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 02:38:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 758CD1C21554
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 02:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0AC5C133;
-	Thu, 11 Jul 2024 02:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7069D22F17;
+	Thu, 11 Jul 2024 02:36:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Vsm9fNMP"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="h7Sgu9ix"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31A08D512
-	for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 02:36:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F8C6D271
+	for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 02:36:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720665375; cv=none; b=fOyOQFwNkM3/n3m9ShQzyr4hfA9LKxHgKILjKpZCgx9733QAg7ID9rz37JI+GB4LiwXaLJFybACO7yuIuHyAtJw1wBH8qfw3nB/NMYrKLRg72qdrPxGjCw5od/zxwq6yvlFECKpcVfGtVDhhktlxhEVPPOW9S2NT7KYN0d94PhI=
+	t=1720665378; cv=none; b=GENRyrtDL3ypJOHJpftLAo4mmh82sNaTC6/ZlNNXDceOkYChtH89bH/2F/P9lv6x9VPXevt/hfvvYa71/fLynkTYNKlyjJk2g/nYAzuzRDO2S5rOyt8TuSiDRE4wGN0xUeXXqhAsAAi2WwnDDgaEskO70A82c3ow0siMsXPNoTo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720665375; c=relaxed/simple;
-	bh=NueEFf0t1sZJSd4qbpBhEWAqNGJbxPxlheiWcMAyz2Q=;
+	s=arc-20240116; t=1720665378; c=relaxed/simple;
+	bh=d38yRHq18ji//IUN5ts6WA+Ph2munXiLPomY5msniS4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=A0tw7WsXjuD0KXqBuNG9fXtVBAS/YV+zou5BD8f7U5YB8HK1Mwblz6gKp+3N2jNWIE3l5l80OYpg150hWcn6aR3vahipE+yEG/rkziSDz8Zw0w2yBQQJeVcylvus1oGrBRY0beLuNpZQkT102MUz9N2srv8jqNHue0yoXhsXDOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Vsm9fNMP; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=FmvZvy9DqyGeW20jcGC7JnPO1Q4FMGLuA2msxevOjSXG+Z7knU3rbgQ5vAELJJahJZjqqOd3cKvnHsA2hX9VGyFxmO1O+/5ApCMPNj7FvpG1ral6EOrM5h1gqVNJz3zsB7QEOwqVNXJNI2wzCflZoUU3f315ukXRGdQ3bveo5nU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=h7Sgu9ix; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-116-79.bstnma.fios.verizon.net [173.48.116.79])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46B2ZhOD025455
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46B2ZiN9025481
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 10 Jul 2024 22:35:44 -0400
+	Wed, 10 Jul 2024 22:35:45 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1720665346; bh=OSnidkPPLHOxiFT3TGKDV+j+9027LhrdPp6LYruURVg=;
+	t=1720665346; bh=g1tPbHJdmZnX2AtjWrEW5R3PQWck10IwSxqZ7K4T6t0=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=Vsm9fNMPRKpK6GTGbpkyS2xZsoVw0kr6gpPrXZ1aC/bxrK3pwY9mpz8ySt65BM51W
-	 ZeDSh4Y9aOozC0TAkCPAYhH/EK2CCpg663Tv2aYqNx+f6ySjb4RFPT3+AZSEDSBc1x
-	 MV0MSgyNVNYTmRmBCsmQ0FD6vOuJfHZonYC7ybwUlieJCrIAtxxo3UCeSBLQvgZ3Ht
-	 DfyH5pW15rUF8NZCXaivDjEYTmbJTNasPGuRK5wNb6EdSyGy7mzuaguPpTxlPW0qxS
-	 h6ex8FI3kJqHx89DafLAJGJGFJ7FNHmjn0fO/pg8zIkADQC3yTWth9BKw5sgNL/DWQ
-	 +dIh3fkvuCeiA==
+	b=h7Sgu9ixPhRXjD7X0B43X6VbvrEE3ZuJbHcqJCIVVVmAKUAji2iL8oSTscEj8Xyw2
+	 SdA516HsA/KHmBZvaxBu8W6GiD82dLEnqCi0ayjmQTIClD8Bx4el6cuZhtyWG2f0V5
+	 n67EABZ0Ad7eH1KQky/1jqdFSK+gEaemFPCz6SxIA79a6MuPM8g5DRMDW92lEdmATB
+	 G6coKcFwa5pMypHAWdzMnbQc4YuKIb16T4mzyRGjVCf7MUEYzKYuOS2WaqJFUMHH/o
+	 Tt/kDOuzgQ/KmvfsYWu/xcdEFGuRF+S1LdcYT/0qo8b7jEFbSOgrwUVQYaiLqyI//T
+	 EgRXk7Y1kAjcw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id D9FF915C1930; Wed, 10 Jul 2024 22:35:41 -0400 (EDT)
+	id DBE3115C193B; Wed, 10 Jul 2024 22:35:41 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        Ye Bin <yebin@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, jack@suse.cz, Ye Bin <yebin10@huawei.com>
-Subject: Re: [PATCH v4] jbd2: avoid mount failed when commit block is partial submitted
-Date: Wed, 10 Jul 2024 22:35:37 -0400
-Message-ID: <172066485817.400039.10621926219835783958.b4-ty@mit.edu>
+To: linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
+        ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+        yukuai3@huawei.com
+Subject: Re: [PATCH v2] jbd2: speed up jbd2_transaction_committed()
+Date: Wed, 10 Jul 2024 22:35:38 -0400
+Message-ID: <172066485807.400039.1155297721228619828.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240620072405.3533701-1-yebin@huaweicloud.com>
-References: <20240620072405.3533701-1-yebin@huaweicloud.com>
+In-Reply-To: <20240520131831.2910790-1-yi.zhang@huaweicloud.com>
+References: <20240520131831.2910790-1-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,24 +70,26 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Thu, 20 Jun 2024 15:24:05 +0800, Ye Bin wrote:
-> We encountered a problem that the file system could not be mounted in
-> the power-off scenario. The analysis of the file system mirror shows that
-> only part of the data is written to the last commit block.
-> The valid data of the commit block is concentrated in the first sector.
-> However, the data of the entire block is involved in the checksum calculation.
-> For different hardware, the minimum atomic unit may be different.
-> If the checksum of a committed block is incorrect, clear the data except the
-> 'commit_header' and then calculate the checksum. If the checkusm is correct,
-> it is considered that the block is partially committed, Then continue to replay
-> journal.
+On Mon, 20 May 2024 21:18:31 +0800, Zhang Yi wrote:
+> jbd2_transaction_committed() is used to check whether a transaction with
+> the given tid has already committed, it holds j_state_lock in read mode
+> and check the tid of current running transaction and committing
+> transaction, but holding the j_state_lock is expensive.
+> 
+> We have already stored the sequence number of the most recently
+> committed transaction in journal t->j_commit_sequence, we could do this
+> check by comparing it with the given tid instead. If the given tid isn't
+> smaller than j_commit_sequence, we can ensure that the given transaction
+> has been committed. That way we could drop the expensive lock and
+> achieve about 10% ~ 20% performance gains in concurrent DIOs on may
+> virtual machine with 100G ramdisk.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] jbd2: avoid mount failed when commit block is partial submitted
-      commit: 0bab8db4152c4a2185a1367db09cc402bdc62d5e
+[1/1] jbd2: speed up jbd2_transaction_committed()
+      commit: 7c73ddb7589fb8ddb1136b6306dfb72089c81511
 
 Best regards,
 -- 
