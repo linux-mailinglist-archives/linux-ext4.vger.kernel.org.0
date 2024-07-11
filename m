@@ -1,307 +1,429 @@
-Return-Path: <linux-ext4+bounces-3220-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3221-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7B1792EFA2
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 21:28:36 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B642992EFAF
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 21:35:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5CC7928362B
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 19:28:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA3171C213AA
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 19:35:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23A2F16EB63;
-	Thu, 11 Jul 2024 19:28:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 454E616EC02;
+	Thu, 11 Jul 2024 19:34:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="c3IfwJ4N"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SqB1bZzx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A7E16DEDA
-	for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 19:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C19A16D4D0;
+	Thu, 11 Jul 2024 19:34:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720726110; cv=none; b=DX2EKCYYPsaiLmpwbe0ayw03IYfxkziSyhg5JacvaYkj1PSOIub+nwY/EPvp+uhFMdt5ubnLZk8H1KpLGDm/Sjdgz+2elYiamZmefB3DO7m6V1vD5xhwQMSAc36lYUHWggnzZgYJghbFYXtxxNxpAyUoeSldMaJJ9j6cHFsNDEU=
+	t=1720726485; cv=none; b=GAvy8+fegPvOhO5jkx/W43DkxKGaDTkUqogTotO5QkG/XuZZyaSiXHldTQCMHVueb3Vg4U9vBncUYNG2XtngpCkSDhycU0OiSPwB9cDy/E+z1+mM0UNbhsM7gkzxVPOyCxtW3jP67i63/PMxL0PxtgMbMEtVFCZStmGY/05Vgo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720726110; c=relaxed/simple;
-	bh=6D9bzOEft/5hOiTyAMEWOotgp4ar0MIEplwc1hRjebI=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=QHbyS93PI0qNrrK944yfu3sBpe3Ozdb6YX2BSQdie6jOZCpbw/Ltu+k5GZWCI2mi6+NH3gD40nTWVToB9/9pH3uRZONV7Fg6ILnneJ+K2lcnkjzE/Qx3P6mYpQySFNfMMQKkgG+VB5vR9jo0MRpoQkfSs4L9sHzOh9JVH8nBC48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=c3IfwJ4N; arc=none smtp.client-ip=209.85.210.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-70b03ffbb3aso1096598b3a.0
-        for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 12:28:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1720726107; x=1721330907; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=xX1348kpbj/rzzCRaa2X/uIVxdI/0a5u6R7yX/SWYg4=;
-        b=c3IfwJ4NvisuDRDZmIsnbNoW1ntZr4H8r4AHQkpl4bLGYbT4wQUTavwVCZjMFTWWD2
-         ILvmg20q/5Pai7NPxUl4uziEFrpLRMX2LW1vZ7RuJGa0Sw5yfG14dA1KoZgi4wQ1TLRL
-         Aorz0eK/A+I7ryU42bA8yGhRhhpx8+yLIlnjMjJM/Bnn+MUsm9TpKGp0er+Kh734/Vn5
-         z7PvRjgCckXd3YkDOYTBA1HBAlTB7lu/wmchyV0ty3uoUcL68g2zVOK+qHKkMSrIKUgH
-         hhHhQnCUrzfRo0lb190iRqWxEkqEPg9PIYN++Trjco1zXDWz6nfNS95t4epAx1VvkzWV
-         LU4w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720726107; x=1721330907;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xX1348kpbj/rzzCRaa2X/uIVxdI/0a5u6R7yX/SWYg4=;
-        b=ti5iVE06tcyumZx8knubYNrWrCdYT0xhXwo6IiU+cdBl/e98iKTu7Sg2+j1giPLa8W
-         x1KIJLAzD+C4yHgFkDyUGvbV2OVCzgyvUMRk260dVS8vQDC1+vvUQE4Qj/+mgjnPw1K6
-         PLsZsI6jrnEXwyEL4k2dgS6z2LCIWII1YjkqlB/8AOQB1EmJAg5KB1m/9/4SWRfSPvmV
-         IZBpgDQEHQX8N1z+7D7+UoL1h6RMuiwcvarXeWgapDUprMGEsV7ETo2+oNurJzMk5Mz7
-         lFsv3SjhCHGNdoV+gXHXQLt5hDCaF2LJV2k4sFCpRJfm547wQxYWk8PBaAElM1O6G/YC
-         KiAA==
-X-Forwarded-Encrypted: i=1; AJvYcCUpAM54Up3J+o20GCYvhIGU1cvCPGQr28InAAZQ86sTyfRONnvICp54Z/+AoZs6TBDMS+tv/rsLxa3yuM0Tm1XnkBlNs/DMgQXvQQ==
-X-Gm-Message-State: AOJu0YxksXDsGf1rC09KQS3Qg4EWilxv9e2qkB0BnrM8Fz1J477mdCPN
-	H4VM4AZJves5gSBQayHgU7vHMQVWmQqIQTEGeeULmYnhAj95OGP/3g8w4X3+Uf4=
-X-Google-Smtp-Source: AGHT+IGdN1D1e9zNUrcWyK3K5i61xVgwn4bgNzDB6AwAfXnf73WMJB7yjSZosqQkgIlYplHILEM/Hw==
-X-Received: by 2002:a05:6a00:928a:b0:70b:970:5046 with SMTP id d2e1a72fcca58-70b43611671mr12588419b3a.29.1720726107098;
-        Thu, 11 Jul 2024 12:28:27 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-77d60117c34sm4764560a12.23.2024.07.11.12.28.25
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 11 Jul 2024 12:28:26 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <A90C7898-B704-4B2A-BFE6-4A32050763F0@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_2BE9C842-3F5C-4B34-B3ED-79C21F95D8D4";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1720726485; c=relaxed/simple;
+	bh=kJJFqsRUTpnZUvC9gjbodY1mFdLFbYJ1T6UYMtoz1eA=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=q6RpbbWHNfuUGs7as3s2A7ktBS8xY8OGq6+8KpiIfTEyryyBzs6AVTjfjlgBAhJtcJemMuyYwnbsetnTdgpALOSAefiDw8lGlDEthZWBRCKTa5hpwc4c4cyg1afNloVBoztlRh1FF4n0AWqN9tylx/0qynt2gtM/QJV0R/AVzvQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SqB1bZzx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6BCB5C116B1;
+	Thu, 11 Jul 2024 19:34:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1720726485;
+	bh=kJJFqsRUTpnZUvC9gjbodY1mFdLFbYJ1T6UYMtoz1eA=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=SqB1bZzxJJ5PZX+U0lymEysobu5cDXWfx0aq/RA8c3/32Bts24KnMvdVkrpAdk6mA
+	 f7nqh5nFp4FjTdj17xLN8iNLYSAEpkRKqScRg8mXaAZNnB8gY7J72e0gz9w563T7UB
+	 Eh9GEJ2ELOySG2sxdlBf+FeA/IhrIQsgG8HSJdX9vjwsJf6mPAW3YBQdUyeaEtKOlz
+	 d9ciA7RBMXcSX6OTtNp3Ez23CfBd7v9tBcifguTkV/l5+aM7LMdowBf9SXfLKCXdh0
+	 U8S5hOQGcBPAH8bxE8Mk4Ls1ZaATpmaWJbw6T7IquK2KgSui9DjtckP9H3sICQvNMk
+	 4ozh7o0DT2j1Q==
+Message-ID: <6ee462004f5dae76233242de948bcb3c54ca5d85.camel@kernel.org>
+Subject: Re: [PATCH v5 5/9] Documentation: add a new file documenting
+ multigrain timestamps
+From: Jeff Layton <jlayton@kernel.org>
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
+ <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt
+ <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
+ Desnoyers <mathieu.desnoyers@efficios.com>, Chandan Babu R
+ <chandan.babu@oracle.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
+ <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,  Hugh Dickins
+ <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Jonathan
+ Corbet <corbet@lwn.net>,  Dave Chinner <david@fromorbit.com>, Andi Kleen
+ <ak@linux.intel.com>, Christoph Hellwig <hch@infradead.org>,  Uros Bizjak
+ <ubizjak@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>, Arnd
+ Bergmann <arnd@arndb.de>,  Randy Dunlap <rdunlap@infradead.org>,
+ kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+  linux-doc@vger.kernel.org
+Date: Thu, 11 Jul 2024 15:34:41 -0400
+In-Reply-To: <20240711191239.GR612460@frogsfrogsfrogs>
+References: <20240711-mgtime-v5-0-37bb5b465feb@kernel.org>
+	 <20240711-mgtime-v5-5-37bb5b465feb@kernel.org>
+	 <20240711191239.GR612460@frogsfrogsfrogs>
+Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
+ keydata=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
+ QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.2 (3.52.2-1.fc40app2) 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v4] ext4: fix fast commit inode enqueueing during a full
- journal commit
-Date: Thu, 11 Jul 2024 13:28:23 -0600
-In-Reply-To: <tencent_CF3DC37BEB2026CB2F68408A2B62314E0C08@qq.com>
-Cc: Luis Henriques <luis.henriques@linux.dev>,
- "wangjianjian (C)" <wangjianjian3@huawei.com>,
- Theodore Ts'o <tytso@mit.edu>,
- Jan Kara <jack@suse.cz>,
- Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
- linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org
-To: Wang Jianjian <wangjianjian0@foxmail.com>
-References: <20240711083520.6751-1-luis.henriques@linux.dev>
- <4f9d5881-11e6-4064-ab69-ca6ef81582b3@huawei.com>
- <878qy8nem5.fsf@brahms.olymp>
- <tencent_CF3DC37BEB2026CB2F68408A2B62314E0C08@qq.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
 
-
---Apple-Mail=_2BE9C842-3F5C-4B34-B3ED-79C21F95D8D4
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
-
-On Jul 11, 2024, at 10:16 AM, Wang Jianjian <wangjianjian0@foxmail.com> =
-wrote:
-> On 2024/7/11 23:16, Luis Henriques wrote:
->> On Thu, Jul 11 2024, wangjianjian (C) wrote:
->>=20
->>> On 2024/7/11 16:35, Luis Henriques (SUSE) wrote:
->>>> When a full journal commit is on-going, any fast commit has to be =
-enqueued
->>>> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This =
-enqueueing
->>>> is done only once, i.e. if an inode is already queued in a previous =
-fast
->>>> commit entry it won't be enqueued again.  However, if a full commit =
-starts
->>>> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit =
-needs to
->>>> be done into FC_Q_STAGING.  And this is not being done in function
->>>> ext4_fc_track_template().
->>>> This patch fixes the issue by re-enqueuing an inode into the =
-STAGING queue
->>>> during the fast commit clean-up callback if it has a tid =
-(i_sync_tid)
->>>> greater than the one being handled.  The STAGING queue will then be =
-spliced
->>>> back into MAIN.
->>>> This bug was found using fstest generic/047.  This test creates =
-several 32k
->>>> bytes files, sync'ing each of them after it's creation, and then =
-shutting
->>>> down the filesystem.  Some data may be loss in this operation; for =
-example a
->>>> file may have it's size truncated to zero.
->>>> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
->>>> ---
->>>> Hi!
->>>> v4 of this patch enqueues the inode into STAGING *only* if the =
-current tid
->>>> is non-zero.  It will be zero when doing an fc commit, and this =
-would mean
->>>> to always re-enqueue the inode.  This fixes the regressions caught =
-by Ted
->>>> in v3 with fstests generic/472 generic/496 generic/643.
->>>> Also, since 2nd patch of v3 has already been merged, I've rebased =
-this patch
->>>> to be applied on top of it.
->>>>   fs/ext4/fast_commit.c | 10 ++++++++++
->>>>   1 file changed, 10 insertions(+)
->>>> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
->>>> index 3926a05eceee..facbc8dbbaa2 100644
->>>> --- a/fs/ext4/fast_commit.c
->>>> +++ b/fs/ext4/fast_commit.c
->>>> @@ -1290,6 +1290,16 @@ static void ext4_fc_cleanup(journal_t =
-*journal, int full, tid_t tid)
->>>>   				       EXT4_STATE_FC_COMMITTING);
->>>>   		if (tid_geq(tid, iter->i_sync_tid))
->>>>   			ext4_fc_reset_inode(&iter->vfs_inode);
->>>> +		} else if (tid) {
->>>> +			/*
->>>> +			 * If the tid is valid (i.e. non-zero) =
-re-enqueue the
->>> one quick question about tid, if one disk is using long time and its =
-tid   get
->>> wrapped to 0, is it a valid seq? I don't find code handling this =
-situation.
->> Hmm... OK.  So, to answer to your question, the 'tid' is expected to =
-wrap.
->> That's why we use:
->>=20
->> 	if (tid_geq(tid, iter->i_sync_tid))
-> Yes, I know this.
->>=20
->> instead of:
->>=20
->> 	if (tid >=3D iter->i_sync_tid)
->>=20
->> (The second patch in v3 actually fixed a few places where the tid_*()
->> helpers weren't being used.)
->>=20
->> But your question shows me that my patch is wrong as '0' may actually =
-be a
->> valid 'tid' value.
+On Thu, 2024-07-11 at 12:12 -0700, Darrick J. Wong wrote:
+> On Thu, Jul 11, 2024 at 07:08:09AM -0400, Jeff Layton wrote:
+> > Add a high-level document that describes how multigrain timestamps work=
+,
+> > rationale for them, and some info about implementation and tradeoffs.
+> >=20
+> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> > ---
+> >  Documentation/filesystems/multigrain-ts.rst | 120 ++++++++++++++++++++=
+++++++++
+> >  1 file changed, 120 insertions(+)
+> >=20
+> > diff --git a/Documentation/filesystems/multigrain-ts.rst b/Documentatio=
+n/filesystems/multigrain-ts.rst
+> > new file mode 100644
+> > index 000000000000..5cefc204ecec
+> > --- /dev/null
+> > +++ b/Documentation/filesystems/multigrain-ts.rst
+> > @@ -0,0 +1,120 @@
+> > +.. SPDX-License-Identifier: GPL-2.0
+> > +
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +Multigrain Timestamps
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +
+> > +Introduction
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +Historically, the kernel has always used coarse time values to stamp
+> > +inodes. This value is updated on every jiffy, so any change that happe=
+ns
+> > +within that jiffy will end up with the same timestamp.
+> > +
+> > +When the kernel goes to stamp an inode (due to a read or write), it fi=
+rst gets
+> > +the current time and then compares it to the existing timestamp(s) to =
+see
+> > +whether anything will change. If nothing changed, then it can avoid up=
+dating
+> > +the inode's metadata.
+> > +
+> > +Coarse timestamps are therefore good from a performance standpoint, si=
+nce they
+> > +reduce the need for metadata updates, but bad from the standpoint of
+> > +determining whether anything has changed, since a lot of things can ha=
+ppen in a
+> > +jiffy.
+> > +
+> > +They are particularly troublesome with NFSv3, where unchanging timesta=
+mps can
+> > +make it difficult to tell whether to invalidate caches. NFSv4 provides=
+ a
+> > +dedicated change attribute that should always show a visible change, b=
+ut not
+> > +all filesystems implement this properly, causing the NFS server to sub=
+stitute
+> > +the ctime in many cases.
+> > +
+> > +Multigrain timestamps aim to remedy this by selectively using fine-gra=
+ined
+> > +timestamps when a file has had its timestamps queried recently, and th=
+e current
+> > +coarse-grained time does not cause a change.
+> > +
+> > +Inode Timestamps
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +There are currently 3 timestamps in the inode that are updated to the =
+current
+> > +wallclock time on different activity:
+> > +
+> > +ctime:
+> > +  The inode change time. This is stamped with the current time wheneve=
+r
+> > +  the inode's metadata is changed. Note that this value is not settabl=
+e
+> > +  from userland.
+> > +
+> > +mtime:
+> > +  The inode modification time. This is stamped with the current time
+> > +  any time a file's contents change.
+> > +
+> > +atime:
+> > +  The inode access time. This is stamped whenever an inode's contents =
+are
+> > +  read. Widely considered to be a terrible mistake. Usually avoided wi=
+th
+> > +  options like noatime or relatime.
 >=20
-> Actually my question is,  there are some place use '0' to check if a =
-transaction is valid, e.g.
+> And for btime/crtime (aka creation time) a filesystem can take the
+> coarse timestamp, right?  It's not settable by userspace, and I think
+> statx is the only way those are ever exposed.  QUERIED is never set when
+> the file is being created.
 >=20
-> In ext4_wait_for_tail_page_commit()
+
+Yep. I'd just copy the ctime to the btime after it's set on creation so
+that everything lines up nicely.
+
+> > +Updating the mtime always implies a change to the ctime, but updating =
+the
+> > +atime due to a read request does not.
+> > +
+> > +Multigrain timestamps are only tracked for the ctime and the mtime. at=
+imes are
+> > +not affected and always use the coarse-grained value (subject to the f=
+loor).
 >=20
-> 5218         while (1) {
-> 5219                 struct folio *folio =3D =
-filemap_lock_folio(inode->i_mapping,
-> 5220                                       inode->i_size >> =
-PAGE_SHIFT);
-> 5221                 if (IS_ERR(folio))
-> 5222                         return;
-> 5223                 ret =3D __ext4_journalled_invalidate_folio(folio, =
-offset,
-> 5224 folio_size(folio) - offset);
-> 5225                 folio_unlock(folio);
-> 5226                 folio_put(folio);
-> 5227                 if (ret !=3D -EBUSY)
-> 5228                         return;
-> 5229                 commit_tid =3D 0;
-> 5230                 read_lock(&journal->j_state_lock);
-> 5231                 if (journal->j_committing_transaction)
-> 5232                         commit_tid =3D =
-journal->j_committing_transaction->t_tid;
-> 5233                 read_unlock(&journal->j_state_lock);
-> 5234                 if (commit_tid)
-> 5235                         jbd2_log_wait_commit(journal, =
-commit_tid);
-> 5236         }
-> 5237  We only wait commit if tid is not zero.
+> Is it ok if an atime update uses the same timespec as was used for a
+> ctime update?  There's a pending update for 6.11 that changes
+> xfs_trans_ichgtime to do:
+>
+> 	tv =3D current_time(inode);
 >=20
-> And in __jbd2_log_wait_for_space()
+> 	if (flags & XFS_ICHGTIME_MOD)
+> 		inode_set_mtime_to_ts(inode, tv);
+> 	if (flags & XFS_ICHGTIME_CHG)
+> 		inode_set_ctime_to_ts(inode, tv);
+> 	if (flags & XFS_ICHGTIME_ACCESS)
+> 		inode_set_atime_to_ts(inode, tv);
+> 	if (flags & XFS_ICHGTIME_CREATE)
+> 		ip->i_crtime =3D tv;
 >=20
-> 79                 if (space_left < nblocks) {
->  80                         int chkpt =3D =
-journal->j_checkpoint_transactions !=3D NULL;
->  81                         tid_t tid =3D 0;
->  82
->  83                         if (journal->j_committing_transaction)
->  84                                 tid =3D =
-journal->j_committing_transaction->t_tid;
->  85 spin_unlock(&journal->j_list_lock);
->  86 write_unlock(&journal->j_state_lock);
->  87                         if (chkpt) {
->  88 jbd2_log_do_checkpoint(journal);
->  89                         } else if =
-(jbd2_cleanup_journal_tail(journal) =3D=3D 0) {
->  90                                 /* We were able to recover space; =
-yay! */
->  91                                 ;
->  92                         } else if (tid) {
->  93                                 /*
->  94                                  * =
-jbd2_journal_commit_transaction() may want
->  95                                  * to take the checkpoint_mutex if =
-JBD2_FLUSHED
->  96                                  * is set.  So we need to =
-temporarily drop it.
->  97                                  */
->  98 mutex_unlock(&journal->j_checkpoint_mutex);
->  99                                 jbd2_log_wait_commit(journal, =
-tid);
-> 100 write_lock(&journal->j_state_lock);
-> 101                                 continue;
-> We also only wait commit if tid is not zero.
+
+Yeah, that should be fine. If you were doing some (hypothetical)
+operation that needs to set both the ctime and the atime, then the
+natural thing to do is to just let the atime's value "flow" from the
+updated ctime.
+
+> So I guess xfs could do something like this to set @tv:
 >=20
-> Does it mean all these have bugs if '0' is a valid 'tid' ?
+> 	if (flags & XFS_ICHGTIME_CHG)
+> 		tv =3D inode_set_ctime_current(inode);
+> 	else
+> 		tv =3D current_time();
+> ...
+> 	if (flags & XFS_ICHGTIME_ACCESS)
+> 		inode_set_atime_to_ts(inode, tv);
+>
+> Thoughts?
 >=20
-> But on the other hand, if we don't consider sync and fsync, and =
-default commit interval is 5s,
+
+Yes, that should be fine. It's pretty similar to what we do in
+inode_update_timestamps():
+
+	if (flags & (S_MTIME|S_CTIME|S_VERSION)) {
+		...
+                now =3D inode_set_ctime_current(inode);
+		...
+        } else {
+                now =3D current_time(inode);
+	}
+
+
+In practice, a mtime or version change implies a ctime change, whereas
+an atime change generally doesn't. Still, I set up the infrastructure
+to handle it properly if the ctime and atime are ever updated together.
+
+> > +Inode Timestamp Ordering
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D
+> > +
+> > +In addition to just providing info about changes to individual files, =
+file
+> > +timestamps also serve an important purpose in applications like "make"=
+. These
+> > +programs measure timestamps in order to determine whether source files=
+ might be
+> > +newer than cached objects.
+> > +
+> > +Userland applications like make can only determine ordering based on
+> > +operational boundaries. For a syscall those are the syscall entry and =
+exit
+> > +points. For io_uring or nfsd operations, that's the request submission=
+ and
+> > +response. In the case of concurrent operations, userland can make no
+> > +determination about the order in which things will occur.
+> > +
+> > +For instance, if a single thread modifies one file, and then another f=
+ile in
+> > +sequence, the second file must show an equal or later mtime than the f=
+irst. The
+> > +same is true if two threads are issuing similar operations that do not=
+ overlap
+> > +in time.
+> > +
+> > +If however, two threads have racing syscalls that overlap in time, the=
+n there
+> > +is no such guarantee, and the second file may appear to have been modi=
+fied
+> > +before, after or at the same time as the first, regardless of which on=
+e was
+> > +submitted first.
+> > +
+> > +Multigrain Timestamps
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +Multigrain timestamps are aimed at ensuring that changes to a single f=
+ile are
+> > +always recognizable, without violating the ordering guarantees when mu=
+ltiple
+> > +different files are modified. This affects the mtime and the ctime, bu=
+t the
+> > +atime will always use coarse-grained timestamps.
+> > +
+> > +It uses an unused bit in the i_ctime_nsec field to indicate whether th=
+e mtime
+> > +or ctime has been queried. If either or both have, then the kernel tak=
+es
+> > +special care to ensure the next timestamp update will display a visibl=
+e change.
+> > +This ensures tight cache coherency for use-cases like NFS, without sac=
+rificing
+> > +the benefits of reduced metadata updates when files aren't being watch=
+ed.
+> > +
+> > +The Ctime Floor Value
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +It's not sufficient to simply use fine or coarse-grained timestamps ba=
+sed on
+> > +whether the mtime or ctime has been queried. A file could get a fine g=
+rained
+> > +timestamp, and then a second file modified later could get a coarse-gr=
+ained one
+> > +that appears earlier than the first, which would break the kernel's ti=
+mestamp
+> > +ordering guarantees.
+> > +
+> > +To mitigate this problem, we maintain a global floor value that ensure=
+s that
+> > +this can't happen. The two files in the above example may appear to ha=
+ve been
+> > +modified at the same time in such a case, but they will never show the=
+ reverse
+> > +order. To avoid problems with realtime clock jumps, the floor is manag=
+ed as a
+> > +monotonic ktime_t, and the values are converted to realtime clock valu=
+es as
+> > +needed.
 >=20
-> time of tid wrap to 0 is nearly 680 years. However, we can run =
-sync/fsync to make tid to increase
+> monotonic atomic64_t?
 >=20
-> more quickly in real world ?
 
-The simple solution is that "0" is not a valid sequence.  It looks like
-this is a bug in jbd2_get_transaction() where it is incrementing the =
-TID:
+It is an atomic64_t, but the values come from the ktime_get_*
+functions, so we use the value as a ktime_t. Both are typedefs of s64
+though, so casting between them is seamless.
 
-        transaction->t_tid =3D journal->j_transaction_sequence++;
+I'll see if I can make that clearer in the doc.
 
-it should add a check to handle the wrap-around:
+> --D
+>=20
+> > +
+> > +Implementation Notes
+> > +=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > +Multigrain timestamps are intended for use by local filesystems that g=
+et
+> > +ctime values from the local clock. This is in contrast to network file=
+systems
+> > +and the like that just mirror timestamp values from a server.
+> > +
+> > +For most filesystems, it's sufficient to just set the FS_MGTIME flag i=
+n the
+> > +fstype->fs_flags in order to opt-in, providing the ctime is only ever =
+set via
+> > +inode_set_ctime_current(). If the filesystem has a ->getattr routine t=
+hat
+> > +doesn't call generic_fillattr, then you should have it call fill_mg_cm=
+time to
+> > +fill those values.
+> >=20
+> > --=20
+> > 2.45.2
+> >=20
+> >=20
 
-        if (unlikely(transaction->t_tid =3D=3D 0))
-                transaction->t_tid =3D =
-journal->j_transaction_sequence++;
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_2BE9C842-3F5C-4B34-B3ED-79C21F95D8D4
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmaQMlcACgkQcqXauRfM
-H+DRjRAAprc6LVSLVShptMqLDt+asLyEF2tTU+AOGJ/tGLKQvOQElKlovr+6VqVe
-X7YjGkQmFeruB63ZbP0oQqS9T9ECO5COQGqek+G3lS6NFlewBb1NREk+0ec9t/dS
-fGt4ZNYeswMRUIJD5ETRrAenmNKkjRDxS31GX1rXApFLhRePDxH1rmitfX+zE+sU
-JBqi35YOUT8/kcIopBp9Oj6NDdbA48lJ287PfnbjijeL426HtlnmSlxbHFzGr4+c
-WFJ7DA8Ve11PcBBMFPF96vJFoXU/sjotKjqKqwd4geaZ2lwEIu+++k23lca5m0ra
-EUfFcLAIyAhYob15ChrIebOA3D1Lc0Gldu9g11obwUNPr/jTi0xABQaKMa5q2MPv
-r4eLWIbMf+TbsKSkxjKpZpMiQ89qmlcl4y4jPIOnky89HtQYxIvmmYxKbkAKiIMN
-oOdwa+xi1GzvHt0C1pLn7p0e1Px551SiIIzV4b3HlcHvtl33oMVVZwslFUkMOSWy
-QHpwFdopcZONeEMddr3J8fPYBlK4RimRknUK/Ph9S5IKzM5fLebnF+haR8fDkD6D
-9TKJOVmSLHPdgeXzP29cCZx7oukt6G/xIOluDyRn+RWm1aV/hnBrARYSb73RQD1n
-a8iX2J+/77GPfc85CFYXBv9Hl0U4jvdZjXNh4mGduCXBzMnHw/E=
-=Rynx
------END PGP SIGNATURE-----
-
---Apple-Mail=_2BE9C842-3F5C-4B34-B3ED-79C21F95D8D4--
+Thanks!
+--=20
+Jeff Layton <jlayton@kernel.org>
 
