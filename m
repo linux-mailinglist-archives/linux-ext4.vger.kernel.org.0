@@ -1,301 +1,222 @@
-Return-Path: <linux-ext4+bounces-3212-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3213-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F56292EC2B
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 17:59:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 095E992ECF8
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 18:42:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E06481F2198C
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 15:59:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2CDF31C22161
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 16:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87EE616D4CA;
-	Thu, 11 Jul 2024 15:59:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B469316D4CB;
+	Thu, 11 Jul 2024 16:42:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RilZTT6o"
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="hqPZB/Ol"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from xmbghk7.mail.qq.com (xmbghk7.mail.qq.com [43.163.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD2741642B;
-	Thu, 11 Jul 2024 15:59:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFB5716D32E;
+	Thu, 11 Jul 2024 16:42:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.163.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720713544; cv=none; b=J8N0b2Nf8kl1udAgGOt9VmqmILYq8sZLyLF/fjOAKf7QXOl1jq2Xva4KLyLpeGZYA20goED1R1rfVEisTce8WWbG1Byh6ecOCAiwR25+HwamCsQhT4XKSetdPTSQQuKKtRn4QXWXCv+iQK08BnvtEVmynR4+nDsitm/wIb88H/g=
+	t=1720716150; cv=none; b=EvBzZVinN9Ke6Wr0zm4yTwsjmqzwf2pa7AmOrfhL1zuP3s/Q9nyoxWC08sGSV1Gffij80sIjUR7Etri2mW5XFTq57Mmzf5KrqsJTyTiMhFyxqbX1Z3h2YTy4bKbtko0cSPdtQOQS8PBgBDfcg8YOjZQ8bph/ZmaSIV3mMpTd9ag=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720713544; c=relaxed/simple;
-	bh=1iLtZj+CaSFvlN0D+8+pdkXrtfvKV5SmTmwUWZ1gvV0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=THgJNlrMH2AirPc8jYoSpWKU+G6hLdFwNzXdUtIc+uwB3HU5aPy8ein3/ZSjLztPnKvCVWJMg+zQkiNtM9ODY670BBBMUm0pVXh9YhyIfmvDpx1wocxE+E4vFz5B/vExT8l4mTtGvJWiLG+WJ0AcTTEq6zXnSpdeXQPI6EI+5vw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RilZTT6o; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BEE46C116B1;
-	Thu, 11 Jul 2024 15:59:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1720713543;
-	bh=1iLtZj+CaSFvlN0D+8+pdkXrtfvKV5SmTmwUWZ1gvV0=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=RilZTT6oQtB3tiFj/GIIBLC/ZRyo/VwTLg6HQJgTA712ulSCbnbRO4v0zINaanpUK
-	 ABZ8d+FUa1TePSU4UhYsEfvQh60kgDvbI4e/j/tlO+tAjM9R6/soCKIEYBMlPHBcWv
-	 cGrbjS0JEruStBXVgumxtfdnFeSH36LKmMd22fRmlYCDZprXXbDV2Gmz3IWyAAiiZZ
-	 hfkUQtRkrfRR6JUGbHe0VYIov2586luk7489V92JJ/E/qguhEy5iuGlQIJ57vMOrsc
-	 SUNeO2WIhbtrjGUoFyl/SiU9RRRQ6zQvzunSnGG3mjtAxql0i2eB1qXakgTalIYLOO
-	 sPbQM9506Agzg==
-Message-ID: <95a135dcec10423b9bcb9f53a1420d80b4afdba7.camel@kernel.org>
-Subject: Re: [PATCH v5 6/9] xfs: switch to multigrain timestamps
-From: Jeff Layton <jlayton@kernel.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner
- <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>, Chandan Babu R
- <chandan.babu@oracle.com>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
- <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
- <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,  Hugh Dickins
- <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Jonathan
- Corbet <corbet@lwn.net>,  Dave Chinner <david@fromorbit.com>, Andi Kleen
- <ak@linux.intel.com>, Christoph Hellwig <hch@infradead.org>,  Uros Bizjak
- <ubizjak@gmail.com>, Kent Overstreet <kent.overstreet@linux.dev>, Arnd
- Bergmann <arnd@arndb.de>,  Randy Dunlap <rdunlap@infradead.org>,
- kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-nfs@vger.kernel.org,
-  linux-doc@vger.kernel.org
-Date: Thu, 11 Jul 2024 11:58:59 -0400
-In-Reply-To: <20240711150920.GU1998502@frogsfrogsfrogs>
-References: <20240711-mgtime-v5-0-37bb5b465feb@kernel.org>
-	 <20240711-mgtime-v5-6-37bb5b465feb@kernel.org>
-	 <20240711150920.GU1998502@frogsfrogsfrogs>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1720716150; c=relaxed/simple;
+	bh=5XXrD3Er7tJlA0T069DV3WzFwIGiNLYlnHydNwOwoDA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=PNE3nlovDbEH20rFmhbrLt34hcucKJPNxBGula4Vy8bKb0RdD6ebyBy+I35ERfQ+PvayisFDzgc0iTRHR951mmwNyMuHOz8QocyGr4c9ngMsD6WDNhmpsFcgQOZ+V/codULtCNJIBSJnV21J9pnAFqZ+AnHGvfNtEH83qXzgkEw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=hqPZB/Ol; arc=none smtp.client-ip=43.163.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1720716134;
+	bh=s5mc+8AdniwxOMjnsOUvSDbal2IaCJcwnexgBeAnGbA=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To;
+	b=hqPZB/Olgkz0rr82M3zrK0tN1hyAnUAoXEpMcSpimNjzlAaJe+2/fD0O/GX335os3
+	 W4IoAP3kxZ2VrfO9lvM4iLsXx7QPrkq4fPb0NzXTfHZFw5wVRUQMw70qVemfmL25ja
+	 SZKmnOfOwZJYaG+2c0tg8Em+jQcPpQ+W4nmwK2jo=
+Received: from [192.168.50.235] ([120.244.20.46])
+	by newxmesmtplogicsvrszb16-1.qq.com (NewEsmtp) with SMTP
+	id 4229AC9C; Fri, 12 Jul 2024 00:16:34 +0800
+X-QQ-mid: xmsmtpt1720714594t6aplnsdx
+Message-ID: <tencent_CF3DC37BEB2026CB2F68408A2B62314E0C08@qq.com>
+X-QQ-XMAILINFO: NVd9ZAvGcUb9em05hx+gRvPtwZFbK38yNemqP+tOrKR9Yly3yXTL5QIasCAEK8
+	 rpDaZ6qpEvM5Fok1NrgugVqbojw8I/z88VKRL6mdwdswE7C+RxuHRIOR826LMRuH0LJ0yfL4Xrdn
+	 WU18aJQQTrOg+m2SF3fWjEAQ7ptCB90QBqXM+zXmMn5XpiJ8lPDylV1ShVnn+fcWkkBQSGZTyW57
+	 fF1LO9+tDq7md5vcxT+WbksW2QlA8wRbwwHjMY0cmBKUOeNX/LYwHROI+j4N7vs8XAjSFT6sKcdN
+	 XKt+Z7dwiLxLRmUPlWFI6G7sNOMr7kBoNjV8syQxxJTOUNshXdRPYFtlfgNSo5Uzc7roLqhulxdS
+	 Z6QlPOwOEO4JJV3aVTpb2h9j4xkRARVB0TgU6QjbG+9jATAJ+m5wsv8Xye8+vfO/zwFy6DAc177I
+	 JWRn/aw07Q7vKQi117TnEbOcZosNKBZVW9fB7Ekc5Vw5T+3DpfoOhB2YeOqx7zeuMYm6qFhlbUEi
+	 FXqStPW0saOSJbxsAr56iUGx7s2+epDf/NbLDQOqXft3HCK5qQj7GQR5Q3v99KRegiq3WeG7cm8L
+	 PdbL320urSaf7T5wFNLJl4KI/fvImiusPUvhlUyBeCz5vOFWc1zHK6qNItWZahd57tIKSV+TPeq1
+	 UsqqIOVJtI9lu1pHZbwtZS6P6sFq0CoGI2yQgGFZaV80X006yDCpyI3gaOlWpy/i9mjnYxwYzp+G
+	 kBioZWhpm83rhhS9DxV1/aJFM1KV05PNW1TQvskp/cOS4w3e0VeGBjifVBF7E6+dSG+eHG1INdts
+	 MxwBmmUwoEbrxgE36pZomfFvQ9rkfjD0tUUrqG+M1rIcl8efCLLboXxdzEhMh40zQ3EkFngZ6SI2
+	 ABZtpk5ixQ/yXAfW97KzcXz9p6HBJzV0CnhS+c89kumgBDec9iA5VkJNnIacJv/5PFiyCcjPs/CV
+	 YfyAWy0uN6zk2fxEU4CgQdnWEu00thHn5EmkCyZ2vmXNEYoHqttwTan4GPLv4ZSTyL67uohDduio
+	 xZpe9ZGg==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+X-OQ-MSGID: <dcf476c9-b3c5-4235-bf79-cee840895847@foxmail.com>
+Date: Fri, 12 Jul 2024 00:16:34 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4] ext4: fix fast commit inode enqueueing during a full
+ journal commit
+To: Luis Henriques <luis.henriques@linux.dev>,
+ "wangjianjian (C)" <wangjianjian3@huawei.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
+ Jan Kara <jack@suse.cz>, Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240711083520.6751-1-luis.henriques@linux.dev>
+ <4f9d5881-11e6-4064-ab69-ca6ef81582b3@huawei.com>
+ <878qy8nem5.fsf@brahms.olymp>
+Content-Language: en-US
+From: Wang Jianjian <wangjianjian0@foxmail.com>
+In-Reply-To: <878qy8nem5.fsf@brahms.olymp>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 2024-07-11 at 08:09 -0700, Darrick J. Wong wrote:
-> On Thu, Jul 11, 2024 at 07:08:10AM -0400, Jeff Layton wrote:
-> > Enable multigrain timestamps, which should ensure that there is an
-> > apparent change to the timestamp whenever it has been written after
-> > being actively observed via getattr.
-> >=20
-> > Also, anytime the mtime changes, the ctime must also change, and those
-> > are now the only two options for xfs_trans_ichgtime. Have that function
-> > unconditionally bump the ctime, and ASSERT that XFS_ICHGTIME_CHG is
-> > always set.
-> >=20
-> > Finally, stop setting STATX_CHANGE_COOKIE in getattr, since the ctime
-> > should give us better semantics now.
->=20
-> Following up on "As long as the fs isn't touching i_ctime_nsec directly,
-> you shouldn't need to worry about this" from:
-> https://lore.kernel.org/linux-xfs/cae5c28f172ac57b7eaaa98a00b23f342f01ba6=
-4.camel@kernel.org/
->=20
-> xfs /does/ touch i_ctime_nsec directly when it's writing inodes to disk.
-> From xfs_inode_to_disk, see:
->=20
-> 	to->di_ctime =3D xfs_inode_to_disk_ts(ip, inode_get_ctime(inode));
->=20
-> AFAICT, inode_get_ctime itself remains unchanged, and still returns
-> inode->__i_ctime, right?=C2=A0 In which case it's returning a raw timespe=
-c64,
-> which can include the QUERIED flag in tv_nsec, right?
->=20
 
-No, in the first patch in the series, inode_get_ctime becomes this:
+On 2024/7/11 23:16, Luis Henriques wrote:
+> On Thu, Jul 11 2024, wangjianjian (C) wrote:
+>
+>> On 2024/7/11 16:35, Luis Henriques (SUSE) wrote:
+>>> When a full journal commit is on-going, any fast commit has to be enqueued
+>>> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
+>>> is done only once, i.e. if an inode is already queued in a previous fast
+>>> commit entry it won't be enqueued again.  However, if a full commit starts
+>>> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
+>>> be done into FC_Q_STAGING.  And this is not being done in function
+>>> ext4_fc_track_template().
+>>> This patch fixes the issue by re-enqueuing an inode into the STAGING queue
+>>> during the fast commit clean-up callback if it has a tid (i_sync_tid)
+>>> greater than the one being handled.  The STAGING queue will then be spliced
+>>> back into MAIN.
+>>> This bug was found using fstest generic/047.  This test creates several 32k
+>>> bytes files, sync'ing each of them after it's creation, and then shutting
+>>> down the filesystem.  Some data may be loss in this operation; for example a
+>>> file may have it's size truncated to zero.
+>>> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+>>> ---
+>>> Hi!
+>>> v4 of this patch enqueues the inode into STAGING *only* if the current tid
+>>> is non-zero.  It will be zero when doing an fc commit, and this would mean
+>>> to always re-enqueue the inode.  This fixes the regressions caught by Ted
+>>> in v3 with fstests generic/472 generic/496 generic/643.
+>>> Also, since 2nd patch of v3 has already been merged, I've rebased this patch
+>>> to be applied on top of it.
+>>>    fs/ext4/fast_commit.c | 10 ++++++++++
+>>>    1 file changed, 10 insertions(+)
+>>> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+>>> index 3926a05eceee..facbc8dbbaa2 100644
+>>> --- a/fs/ext4/fast_commit.c
+>>> +++ b/fs/ext4/fast_commit.c
+>>> @@ -1290,6 +1290,16 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+>>>    				       EXT4_STATE_FC_COMMITTING);
+>>>    		if (tid_geq(tid, iter->i_sync_tid))
+>>>    			ext4_fc_reset_inode(&iter->vfs_inode);
+>>> +		} else if (tid) {
+>>> +			/*
+>>> +			 * If the tid is valid (i.e. non-zero) re-enqueue the
+>> one quick question about tid, if one disk is using long time and its tid   get
+>> wrapped to 0, is it a valid seq? I don't find code handling this situation.
+> Hmm... OK.  So, to answer to your question, the 'tid' is expected to wrap.
+> That's why we use:
+>
+> 	if (tid_geq(tid, iter->i_sync_tid))
+Yes, I know this.
+>
+> instead of:
+>
+> 	if (tid >= iter->i_sync_tid)
+>
+> (The second patch in v3 actually fixed a few places where the tid_*()
+> helpers weren't being used.)
+>
+> But your question shows me that my patch is wrong as '0' may actually be a
+> valid 'tid' value.
 
-#define I_CTIME_QUERIED         ((u32)BIT(31))
+Actually my question is,  there are some place use '0' to check if a 
+transaction is valid, e.g.
 
-static inline time64_t inode_get_ctime_sec(const struct inode *inode)
-{
-        return inode->i_ctime_sec;
-}
+In ext4_wait_for_tail_page_commit()
 
-static inline long inode_get_ctime_nsec(const struct inode *inode)
-{
-        return inode->i_ctime_nsec & ~I_CTIME_QUERIED;
-}
+5218         while (1) {
+5219                 struct folio *folio = 
+filemap_lock_folio(inode->i_mapping,
+5220                                       inode->i_size >> PAGE_SHIFT);
+5221                 if (IS_ERR(folio))
+5222                         return;
+5223                 ret = __ext4_journalled_invalidate_folio(folio, offset,
+5224 folio_size(folio) - offset);
+5225                 folio_unlock(folio);
+5226                 folio_put(folio);
+5227                 if (ret != -EBUSY)
+5228                         return;
+5229                 commit_tid = 0;
+5230                 read_lock(&journal->j_state_lock);
+5231                 if (journal->j_committing_transaction)
+5232                         commit_tid = 
+journal->j_committing_transaction->t_tid;
+5233                 read_unlock(&journal->j_state_lock);
+5234                 if (commit_tid)
+5235                         jbd2_log_wait_commit(journal, commit_tid);
+5236         }
+5237  We only wait commit if tid is not zero.
 
-static inline struct timespec64 inode_get_ctime(const struct inode *inode)
-{
-        struct timespec64 ts =3D { .tv_sec  =3D inode_get_ctime_sec(inode),
-                                 .tv_nsec =3D inode_get_ctime_nsec(inode) }=
-;
+And in __jbd2_log_wait_for_space()
 
-        return ts;
-}
+79                 if (space_left < nblocks) {
+  80                         int chkpt = 
+journal->j_checkpoint_transactions != NULL;
+  81                         tid_t tid = 0;
+  82
+  83                         if (journal->j_committing_transaction)
+  84                                 tid = 
+journal->j_committing_transaction->t_tid;
+  85 spin_unlock(&journal->j_list_lock);
+  86 write_unlock(&journal->j_state_lock);
+  87                         if (chkpt) {
+  88 jbd2_log_do_checkpoint(journal);
+  89                         } else if 
+(jbd2_cleanup_journal_tail(journal) == 0) {
+  90                                 /* We were able to recover space; 
+yay! */
+  91                                 ;
+  92                         } else if (tid) {
+  93                                 /*
+  94                                  * 
+jbd2_journal_commit_transaction() may want
+  95                                  * to take the checkpoint_mutex if 
+JBD2_FLUSHED
+  96                                  * is set.  So we need to 
+temporarily drop it.
+  97                                  */
+  98 mutex_unlock(&journal->j_checkpoint_mutex);
+  99                                 jbd2_log_wait_commit(journal, tid);
+100 write_lock(&journal->j_state_lock);
+101                                 continue;
+We also only wait commit if tid is not zero.
 
-...which should ensure that you never store the QUERIED bit.
+Does it mean all these have bugs if '0' is a valid 'tid' ?
 
-> Now let's look at the consumer:
->=20
-> static inline xfs_timestamp_t
-> xfs_inode_to_disk_ts(
-> 	struct xfs_inode		*ip,
-> 	const struct timespec64		tv)
-> {
-> 	struct xfs_legacy_timestamp	*lts;
-> 	xfs_timestamp_t			ts;
->=20
-> 	if (xfs_inode_has_bigtime(ip))
-> 		return cpu_to_be64(xfs_inode_encode_bigtime(tv));
->=20
-> 	lts =3D (struct xfs_legacy_timestamp *)&ts;
-> 	lts->t_sec =3D cpu_to_be32(tv.tv_sec);
-> 	lts->t_nsec =3D cpu_to_be32(tv.tv_nsec);
->=20
-> 	return ts;
-> }
->=20
-> For the !bigtime case (aka before we added y2038 support) the queried
-> flag gets encoded into the tv_nsec field since xfs doesn't filter the
-> queried flag.
->=20
-> For the bigtime case, the timespec is turned into an absolute nsec count
-> since the xfs epoch (which is the minimum timestamp possible under the
-> old encoding scheme):
->=20
-> static inline uint64_t xfs_inode_encode_bigtime(struct timespec64 tv)
-> {
-> 	return xfs_unix_to_bigtime(tv.tv_sec) * NSEC_PER_SEC + tv.tv_nsec;
-> }
->=20
-> Here we'd also be mixing in the QUERIED flag, only now we've encoded a
-> time that's a second in the future.=C2=A0 I think the solution is to add =
-a:
->=20
-> static inline struct timespec64
-> inode_peek_ctime(const struct inode *inode)
-> {
-> 	return (struct timespec64){
-> 		.tv_sec =3D inode->__i_ctime.tv_sec,
-> 		.tv_nsec =3D inode->__i_ctime.tv_nsec & ~I_CTIME_QUERIED,
-> 	};
-> }
->=20
-> similar to what inode_peek_iversion does for iversion; and then
-> xfs_inode_to_disk can do:
->=20
-> 	to->di_ctime =3D xfs_inode_to_disk_ts(ip, inode_peek_ctime(inode));
->=20
-> which would prevent I_CTIME_QUERIED from going out to disk.
->=20
-> At load time, xfs_inode_from_disk uses inode_set_ctime_to_ts so I think
-> xfs won't accidentally introduce QUERIED when it's loading an inode from
-> disk.
->=20
->=20
+But on the other hand, if we don't consider sync and fsync, and default 
+commit interval is 5s,
 
-Also already done in this patchset:
+time of tid wrap to 0 is nearly 680 years. However, we can run 
+sync/fsync to make tid to increase
 
-struct timespec64 inode_set_ctime_to_ts(struct inode *inode, struct timespe=
-c64 ts)
-{
-        inode->i_ctime_sec =3D ts.tv_sec;
-        inode->i_ctime_nsec =3D ts.tv_nsec & ~I_CTIME_QUERIED;
-        trace_inode_set_ctime_to_ts(inode, &ts);
-        return ts;
-}
-EXPORT_SYMBOL(inode_set_ctime_to_ts);
+more quickly in real world ?
 
-Basically, we never want to store or fetch the QUERIED flag from disk,
-and since it's in an unused bit, we can just universally mask it off
-when dealing with "external" users of it.
 
-One caveat -- I am using the sign bit for the QUERIED flag, so I'm
-assuming that no one should ever pass inode_set_ctime_to_ts a negative
-tv_nsec value.
+> Cheers,
 
-Maybe I should add a WARN_ON_ONCE here to check for that? It seems
-nonsensical, but you never know...
-
-> > Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> > ---
-> > =C2=A0fs/xfs/libxfs/xfs_trans_inode.c |=C2=A0 6 +++---
-> > =C2=A0fs/xfs/xfs_iops.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 | 10 +++-------
-> > =C2=A0fs/xfs/xfs_super.c=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 |=C2=A0 2 +-
-> > =C2=A03 files changed, 7 insertions(+), 11 deletions(-)
-> >=20
-> > diff --git a/fs/xfs/libxfs/xfs_trans_inode.c b/fs/xfs/libxfs/xfs_trans_=
-inode.c
-> > index 69fc5b981352..1f3639bbf5f0 100644
-> > --- a/fs/xfs/libxfs/xfs_trans_inode.c
-> > +++ b/fs/xfs/libxfs/xfs_trans_inode.c
-> > @@ -62,12 +62,12 @@ xfs_trans_ichgtime(
-> > =C2=A0	ASSERT(tp);
-> > =C2=A0	xfs_assert_ilocked(ip, XFS_ILOCK_EXCL);
-> > =C2=A0
-> > -	tv =3D current_time(inode);
-> > +	/* If the mtime changes, then ctime must also change */
-> > +	ASSERT(flags & XFS_ICHGTIME_CHG);
-> > =C2=A0
-> > +	tv =3D inode_set_ctime_current(inode);
-> > =C2=A0	if (flags & XFS_ICHGTIME_MOD)
-> > =C2=A0		inode_set_mtime_to_ts(inode, tv);
-> > -	if (flags & XFS_ICHGTIME_CHG)
-> > -		inode_set_ctime_to_ts(inode, tv);
-> > =C2=A0	if (flags & XFS_ICHGTIME_CREATE)
-> > =C2=A0		ip->i_crtime =3D tv;
-> > =C2=A0}
-> > diff --git a/fs/xfs/xfs_iops.c b/fs/xfs/xfs_iops.c
-> > index a00dcbc77e12..d25872f818fa 100644
-> > --- a/fs/xfs/xfs_iops.c
-> > +++ b/fs/xfs/xfs_iops.c
-> > @@ -592,8 +592,9 @@ xfs_vn_getattr(
-> > =C2=A0	stat->gid =3D vfsgid_into_kgid(vfsgid);
-> > =C2=A0	stat->ino =3D ip->i_ino;
-> > =C2=A0	stat->atime =3D inode_get_atime(inode);
-> > -	stat->mtime =3D inode_get_mtime(inode);
-> > -	stat->ctime =3D inode_get_ctime(inode);
-> > +
-> > +	fill_mg_cmtime(stat, request_mask, inode);
-> > +
-> > =C2=A0	stat->blocks =3D XFS_FSB_TO_BB(mp, ip->i_nblocks + ip->i_delayed=
-_blks);
-> > =C2=A0
-> > =C2=A0	if (xfs_has_v3inodes(mp)) {
-> > @@ -603,11 +604,6 @@ xfs_vn_getattr(
-> > =C2=A0		}
-> > =C2=A0	}
-> > =C2=A0
-> > -	if ((request_mask & STATX_CHANGE_COOKIE) && IS_I_VERSION(inode)) {
-> > -		stat->change_cookie =3D inode_query_iversion(inode);
-> > -		stat->result_mask |=3D STATX_CHANGE_COOKIE;
-> > -	}
-> > -
-> > =C2=A0	/*
-> > =C2=A0	 * Note: If you add another clause to set an attribute flag, ple=
-ase
-> > =C2=A0	 * update attributes_mask below.
-> > diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
-> > index 27e9f749c4c7..210481b03fdb 100644
-> > --- a/fs/xfs/xfs_super.c
-> > +++ b/fs/xfs/xfs_super.c
-> > @@ -2052,7 +2052,7 @@ static struct file_system_type xfs_fs_type =3D {
-> > =C2=A0	.init_fs_context	=3D xfs_init_fs_context,
-> > =C2=A0	.parameters		=3D xfs_fs_parameters,
-> > =C2=A0	.kill_sb		=3D xfs_kill_sb,
-> > -	.fs_flags		=3D FS_REQUIRES_DEV | FS_ALLOW_IDMAP,
-> > +	.fs_flags		=3D FS_REQUIRES_DEV | FS_ALLOW_IDMAP | FS_MGTIME,
-> > =C2=A0};
-> > =C2=A0MODULE_ALIAS_FS("xfs");
-> > =C2=A0
-> >=20
-> > --=20
-> > 2.45.2
-> >=20
-
---=20
-Jeff Layton <jlayton@kernel.org>
 
