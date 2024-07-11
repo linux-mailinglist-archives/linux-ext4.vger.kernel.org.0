@@ -1,239 +1,90 @@
-Return-Path: <linux-ext4+bounces-3174-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3180-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C7BA92CF52
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 12:37:15 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9F0B92DE78
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 04:36:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1AF9B24875
-	for <lists+linux-ext4@lfdr.de>; Wed, 10 Jul 2024 10:37:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86DBA28414B
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 02:36:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEEEA19248E;
-	Wed, 10 Jul 2024 10:32:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AA82208A1;
+	Thu, 11 Jul 2024 02:36:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="tTXOGWaZ"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="NU4aV/bT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-184.mta0.migadu.com (out-184.mta0.migadu.com [91.218.175.184])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 003E31922F5
-	for <linux-ext4@vger.kernel.org>; Wed, 10 Jul 2024 10:32:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AF5815E8C
+	for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 02:35:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720607559; cv=none; b=XZN2vR6YlRukLqjLYvxMw9sdsueowpe4oLRB7JdrtnjDlZs0EmxxMJLGfp1gmyTLx5u1tmWj8T55aBnKBrCDSYZ0Yok6LZnThy1bNXClK1XlqsoWCB3qWySpri/7HqxLkvOcoihB1E2Rf4e+FQNcMayCSTDjqNW8RXM3cG+WLn4=
+	t=1720665360; cv=none; b=NwwdZXz8EKW1xsom1FlMQbDRjaQlQllpLomatJGb764+j+JqqvyxUlW0ztS2pJakh/WOxtFBQUgQzxyLitzoNRvuPCMTtsZjLZqDV6yDEXMWDyrk5StOQQiituopLi285Q8mbMe0FtaBeIELjx8AvOFixq6Pk0ewlbniK9jzoS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720607559; c=relaxed/simple;
-	bh=zNypG+r5+gLMdO4RKsYS8V9W8oiyk45RElwRH893UTU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qJRueC/KpywWpsvVJL2ExrKb0QYUsc1jTRD4RBvun2E506iZLitONu1Tjb2AF9G0p3dXZkyQwG24Krvh01SFgqoz6sVP2+KV0XCOJm2KE2wzd47yUOcW75u7txS6BOZTkJfozhcVipp7TePk4DuD3IP2Ha/RZJKuFDX0nnvI4Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=tTXOGWaZ; arc=none smtp.client-ip=91.218.175.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Envelope-To: tytso@mit.edu
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1720607553;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=YSEnUFPjapuSjePp2fpwABu+h70moQNK81dxmI54eXE=;
-	b=tTXOGWaZb43uR2IeiH4xIZ037YKrJ9CMaqsjSOWTKoOuzy26OSR+nPL+OmyhqGCLt0WNE0
-	qDhwnOtwilaFPtP/JKAVf+RGjVsX3M6m4TaQTu83ChXYkssdUoQifRJjeHK2ItTE/cIYIo
-	dtnMadV9e4DqQMKATy5ROd7N/z8PLWI=
-X-Envelope-To: adilger@dilger.ca
-X-Envelope-To: jack@suse.cz
-X-Envelope-To: harshadshirwadkar@gmail.com
-X-Envelope-To: linux-ext4@vger.kernel.org
-X-Envelope-To: linux-kernel@vger.kernel.org
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Luis Henriques <luis.henriques@linux.dev>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Andreas Dilger <adilger@dilger.ca>,  Jan Kara <jack@suse.cz>,  Harshad
- Shirwadkar <harshadshirwadkar@gmail.com>,  linux-ext4@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 1/2] ext4: fix fast commit inode enqueueing during a
- full journal commit
-In-Reply-To: <877cdusk75.fsf@brahms.olymp> (Luis Henriques's message of "Tue,
-	09 Jul 2024 15:39:58 +0100")
-References: <20240529092030.9557-1-luis.henriques@linux.dev>
-	<20240529092030.9557-2-luis.henriques@linux.dev>
-	<20240709035911.GB10452@mit.edu> <877cdusk75.fsf@brahms.olymp>
-Date: Wed, 10 Jul 2024 11:32:21 +0100
-Message-ID: <87y169a66i.fsf@brahms.olymp>
+	s=arc-20240116; t=1720665360; c=relaxed/simple;
+	bh=zi+E5I+G6GZSiFh7YNemUXCiMlfPc0opBO7tG+NtCDw=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Y3xbXU9rbpkCQxQBuq2L6zgntK+v4K9cx2OT6ikp/jmGi6/Kxn3nOLCJC5xTm3sT+8SB3bIbgw+e0AIagQwGu9DKbGCdIIK2jiYvu+1ez40kYBOp5bX3sQu4UUEDgNlimAPzNH4QUMXcReM+8JsWI4iCQN/4F7Wu9gqpsjhodcs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=NU4aV/bT; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-116-79.bstnma.fios.verizon.net [173.48.116.79])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46B2ZfD0025369
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 10 Jul 2024 22:35:42 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1720665343; bh=H5LjYlxK8pLcRFuX1WDYrEwmsyjOAfcf5KEdy43E0LA=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=NU4aV/bTov6sAOPC7SAh68y4I+parOICkN7hXfCAXEmSmNBdruErDOEogzhbkWuBf
+	 aDHNL/NHwPxraIqThHGmK8+X+coRB+MJbKG+N0zkdJrDr8652CvRiCXUGTOGEFG+bB
+	 2BCRvuR0e+ryDjVcYYabS7sgX+Gc9pG2dN3STP+JeVe81b26swyG0a/Gx8HN3x6lO4
+	 rR70morplVj8/fxXBOfZwn3Gnn14XCHZc9ZHcJNtjIPBREjVKRy6DCKxluAIzXNcNu
+	 OagxTTQwrOYXnZM0LhNFGtzaHSNdQHBPoQoVar/eAnjbuVy6mTZc66VZGztacNAKCS
+	 vMLrDoucWQoCw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id C688915C0250; Wed, 10 Jul 2024 22:35:41 -0400 (EDT)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+        syzbot+9c1fe13fcb51574b249b@syzkaller.appspotmail.com,
+        Hugh Dickins <hughd@google.com>
+Subject: Re: [PATCH] ext4: Avoid writing unitialized memory to disk in EA inodes
+Date: Wed, 10 Jul 2024 22:35:27 -0400
+Message-ID: <172066485816.400039.12241862277216436676.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240613150234.25176-1-jack@suse.cz>
+References: <20240613150234.25176-1-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Jul 09 2024, Luis Henriques wrote:
 
-> On Mon, Jul 08 2024, Theodore Ts'o wrote:
->
->> On Wed, May 29, 2024 at 10:20:29AM +0100, Luis Henriques (SUSE) wrote:
->>> When a full journal commit is on-going, any fast commit has to be enque=
-ued
->>> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueu=
-eing
->>> is done only once, i.e. if an inode is already queued in a previous fast
->>> commit entry it won't be enqueued again.  However, if a full commit sta=
-rts
->>> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit need=
-s to
->>> be done into FC_Q_STAGING.  And this is not being done in function
->>> ext4_fc_track_template().
->>>=20
->>> This patch fixes the issue by re-enqueuing an inode into the STAGING qu=
-eue
->>> during the fast commit clean-up callback if it has a tid (i_sync_tid)
->>> greater than the one being handled.  The STAGING queue will then be spl=
-iced
->>> back into MAIN.
->>>=20
->>> This bug was found using fstest generic/047.  This test creates several=
- 32k
->>> bytes files, sync'ing each of them after it's creation, and then shutti=
-ng
->>> down the filesystem.  Some data may be loss in this operation; for exam=
-ple a
->>> file may have it's size truncated to zero.
->>>=20
->>> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
->>
->> This patch is causing a regression for the test generic/472
->> generic/496 generic/643 if fast_commit is enabled.  So using the
->> ext4/adv or ext4/fast_commit configuration, e.g:
->>
->> % kvm-xfstests  -c ext4/fast_commit  generic/472 generic/496 generic/643
->>
->> For all of these test, the failures seem to involve the swapon command
->> erroring out:
->>
->>     --- tests/generic/496.out   2024-06-13 18:57:39.000000000 -0400
->>     +++ /results/ext4/results-fast_commit/generic/496.out.bad   2024-07-=
-08 23:46:39.720
->>     @@ -1,3 +1,4 @@
->>      QA output created by 496
->>      fallocate swap
->>      mixed swap
->>     +swapon: Invalid argument
->>     ...
->>
->> but it's unclear why this patch would affect swapon.
->
-> OK, that's... embarrassing.  I should have caught these failures :-(
->
->> I've never been able to see generic/047 failure in any of my ext4/dev
->> testing, nor in any of my daily fs-next CI testing.  So for that
->> reason, I'm going to drop this patch from my tree.
->
-> There's nothing special about my test environment.  I can reproduce the
-> generic/047 failure (although not 100% of the times) by running it
-> manually in a virtme-ng test environment, using MKFS_OPTIONS=3D"-O fast_c=
-ommit".
-> Here's what I see when running it:
->
-> FSTYP         -- ext4
-> PLATFORM      -- Linux/x86_64 virtme-ng 6.10.0-rc7+ #269 SMP PREEMPT_DYNA=
-MIC Tue Jul  9 14:24:22 WEST 2024
-> MKFS_OPTIONS  -- -F -O fast_commit /dev/vdb1
-> MOUNT_OPTIONS -- -o acl,user_xattr /dev/vdb1 /tmp/mnt/scratch
->
-> generic/047 162s ... - output mismatch (see [...]/testing/xfstests-dev/re=
-sults//generic/047.out.bad)
->     --- tests/generic/047.out   2021-01-11 12:08:14.972458324 +0000
->     +++ [...]/testing/xfstests-dev/results//generic/047.out.bad   2024-07=
--09 14:28:36.626435948 +0100
->     @@ -1 +1,2 @@
->      QA output created by 047
->     +file /tmp/mnt/scratch/944 has incorrect size - fsync failed
->     ...
->     (Run 'diff -u [...]/testing/xfstests-dev/tests/generic/047.out [...]/=
-testing/xfstests-dev/results//generic/047.out.bad'  to see the entire diff)
-> Ran: generic/047
-> Failures: generic/047
-> Failed 1 of 1 tests
->
->> The second patch in this series appears to be independent at least
->> from a logical perspective --- although a minor change is needed to
->> resolve a merge conflict after dropping this change.
->>
->> Luis, Harshad, could you look in this failure and then resubmit once
->> it's been fixed?  Thanks!!  Also, Luis, can you give more details
->> about the generic/047 failure that you had seen?  Is it one of those
->> flaky tests where you need to run the test dozens or hundreds of time
->> to see the failure?
->
->
-> So, I've done some quick tests, but I'll need some more time to dig into
-> it.  And this is what I _think_ it's happening:
->
-> When activating a swap file, the kernel forces an fsync, calling
-> ext4_sync_file() which will then call ext4_fc_commit() and, eventually,
-> the ext4_fc_cleanup().
->
-> With this patch an inode may be re-enqueued into the STAGING queue and
-> then spliced back into MAIN; and that's exactly what I see happening.
->
-> Later, still on the swap activation path, ext4_set_iomap() will be called
-> and will do this:
->
-> 	if (ext4_inode_datasync_dirty(inode) ||
-> 	    offset + length > i_size_read(inode))
-> 		iomap->flags |=3D IOMAP_F_DIRTY;
->
-> 'ext4_inode_datasync_dirty()' will be true because '->i_fc_list' is not
-> empty.  And that's why the swapoff will fail.
->
-> Anyway, I'll try to figure out what's missing here (or what's wrong with
-> my patch).
+On Thu, 13 Jun 2024 17:02:34 +0200, Jan Kara wrote:
+> If the extended attribute size is not a multiple of block size, the last
+> block in the EA inode will have uninitialized tail which will get
+> written to disk. We will never expose the data to userspace but still
+> this is not a good practice so just zero out the tail of the block as it
+> isn't going to cause a noticeable performance overhead.
+> 
+> 
+> [...]
 
-I believe I found the issue with the patch.  The ext4_fc_cleanup()
-callback can be invoked in three different situations:
+Applied, thanks!
 
-1) when there's a full commit
-2) when there's a fc commit but with fallback to full commit
-3) when there's a fc commit
+[1/1] ext4: Avoid writing unitialized memory to disk in EA inodes
+      commit: 65121eff3e4c8c90f8126debf3c369228691c591
 
-For both 1) and 2) the cleanup callback will get a real 'tid' value;
-however, for the regular fc commit 3) the 'tid' will be 0.  And for those
-cases the inode should not be enqueued back in enqueued into STAGING.  See
-below an updated diff with this fix.
-
-Does this make sense?  I'll run a few more tests before sending a v4.
-
-Cheers
---=20
-Lu=C3=ADs
-
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 87c009e0c59a..86d33741452a 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1282,8 +1282,17 @@ static void ext4_fc_cleanup(journal_t *journal, int =
-full, tid_t tid)
- 		list_del_init(&iter->i_fc_list);
- 		ext4_clear_inode_state(&iter->vfs_inode,
- 				       EXT4_STATE_FC_COMMITTING);
--		if (iter->i_sync_tid <=3D tid)
-+		if (iter->i_sync_tid <=3D tid) {
- 			ext4_fc_reset_inode(&iter->vfs_inode);
-+		} else if (tid) {
-+			/*
-+			 * re-enqueue inode into STAGING, which later will be
-+			 * splice back into MAIN
-+			 */
-+			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
-+				      &sbi->s_fc_q[FC_Q_STAGING]);
-+		}
-+
- 		/* Make sure EXT4_STATE_FC_COMMITTING bit is clear */
- 		smp_mb();
- #if (BITS_PER_LONG < 64)
+Best regards,
+-- 
+Theodore Ts'o <tytso@mit.edu>
 
