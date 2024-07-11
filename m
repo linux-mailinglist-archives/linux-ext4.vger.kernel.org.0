@@ -1,128 +1,167 @@
-Return-Path: <linux-ext4+bounces-3207-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3208-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 258A592E994
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 15:33:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 088E992EAFC
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 16:44:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A79ECB2617B
-	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 13:33:11 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56073B22B9F
+	for <lists+linux-ext4@lfdr.de>; Thu, 11 Jul 2024 14:44:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627F315EFC1;
-	Thu, 11 Jul 2024 13:33:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A32A716B38D;
+	Thu, 11 Jul 2024 14:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="q1PXf1Gy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A12D4CE09;
-	Thu, 11 Jul 2024 13:33:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6417C169AD2
+	for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 14:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720704785; cv=none; b=VVWIU60/voQWtRG6misuzy8M7hpxMEhn7LMbXy+xQFJ9GyqkWe+SifaGxdMsAyu0SL3h3fnK0DJBZNIuIMDwGBO7W6+cecV8ALIvEqTphU/oKIXVRE4QxJ5Uv+zHQyp39b+AtZx0U++qNnRWR5rkP0O6UCD7zjgiOfmtV8tb5qQ=
+	t=1720709078; cv=none; b=YYD2LSbVzQKF/xlOC4LA1fkyYVfd5Y5xeJbqVUscIHGFPUzo1WBY1Tkp5U/94GNRcjfam7v85E3KJTs0ySxVidDXd3lhS60GDqMxU+iyrNkWGLezth+YvnTB5kaCr0mXDCT2DMCpDYiAgatMls2TWlSNUJXalmXK3z2gONsyGbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720704785; c=relaxed/simple;
-	bh=Avkb30PRdUlac2ai5AaEn9yduRB8QqSAkcEZ2aaOQ18=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=nnWrFBg0dDEzF8PATwCGrV0xebolIbFzj6tbd+tGWAABe62f8NMa73qgm8PLo12exoYsTSoYcFmthIbstkVQQ1O6qqirZgjhH3GtZ6Dq16kKnxygFsAZ6ZJzMcEskLhJfUFRqu16tgUOQOdbY0Dzz6dwDsQAVk4+xPRfjpZV9l8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4WKbCv5VSRzQlMm;
-	Thu, 11 Jul 2024 21:28:59 +0800 (CST)
-Received: from kwepemf200016.china.huawei.com (unknown [7.202.181.9])
-	by mail.maildlp.com (Postfix) with ESMTPS id C7830140361;
-	Thu, 11 Jul 2024 21:32:56 +0800 (CST)
-Received: from [10.108.234.194] (10.108.234.194) by
- kwepemf200016.china.huawei.com (7.202.181.9) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Thu, 11 Jul 2024 21:32:55 +0800
-Message-ID: <4f9d5881-11e6-4064-ab69-ca6ef81582b3@huawei.com>
-Date: Thu, 11 Jul 2024 21:32:55 +0800
+	s=arc-20240116; t=1720709078; c=relaxed/simple;
+	bh=MMu6kiGgrdyVeIGgo0o2g5ISXoiklOJgpiyd0c6Mhcg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mCWxO5ltvvmUYd1cKIezGcfprAjH8VCK1MsRQPLA2TMNGHSSLPTaXNABOERnZGbaq/UVZ3PAw2UEq7pm2hqk2PSoEhPjti2neDbIA7NlxFMuPwP0TbB1VPpg/Xp9qN7nRr+TMrmtT613MP0IvwuvoXvVdnSwEueH/BPjx+t442M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=q1PXf1Gy; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-64b29539d87so8897917b3.0
+        for <linux-ext4@vger.kernel.org>; Thu, 11 Jul 2024 07:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1720709075; x=1721313875; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=p6PLNSJZMY2HBtPFlfBgNDPZWDEOAS/uY6eb53FVzXU=;
+        b=q1PXf1GybYh1aDXkOQriXh3etXHQaQvAEvEHvmjzflwesjMtmTkIcKjsvkM3cvyMew
+         1ADOSrKUCZeN1Bc6ndt1rYxk0DDfHkzu9xezqPuUzubgvhJWQPvuMkrPn/0U5ZZxfo9i
+         fctEzUyU1X+gwXWNkJGT6Qb6Rul3J21Wfk7CiQmTfo+8/rA+YGP6qKw6dLORH3DeagL/
+         y8faZ8jpGGnpY3BUumaQJl7BBvPzevdG9+6FJ6dQodNUGNJSp/gYUNCG5drWdvmjx5Mn
+         cv8yTWT0bLgjhtN0Oa3FCF0hNCixvqUBhriTBD67tVMd36sVAEQFtLzVdeP7ReM7JUpg
+         nXbw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720709075; x=1721313875;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=p6PLNSJZMY2HBtPFlfBgNDPZWDEOAS/uY6eb53FVzXU=;
+        b=ks4SXfOaGEIwfMQzpeyCsrSaxUlQkMQLkoRhWPJTM4sgEbC1dHioyG+U60Tl9epWsi
+         AidEw/lJwJ+SWRmi9+tX3bjDbXr1hKi40bOywB8/FMgbashuQ/oVQ0UDKz6wR1SuMQ9z
+         vEt7LbWRGajENpAMfjNqO/e6yJ8yoGEHGSyI8hhpQEDqGh4mxu7IL6Z+pGIOk7ARuA8F
+         Mo/ksL2qIC3tA2153nKzEtX6p7dzLWPnNCg06A0Wo94UZyo177FvvHhEXinV4bRHMY50
+         NlVak+GILjdJXi3IjJQbL6V64X34z4d/szpfNW0NFszqa8dLPA1IaeBkno9nEIKtW/jJ
+         wr4w==
+X-Forwarded-Encrypted: i=1; AJvYcCWwI5z3qtAeY5qS3G5dx6FVEuGHosi4K9I6omJ7M3K6QHL4CqIA3DI0J03eTgr3ygSrvMFw0VGpMZcQelN6AFv12cs9YHLMJN1clg==
+X-Gm-Message-State: AOJu0Yx1kcCm5ec2QietZukhU+QPZV/HcC29xyAedJvKi5ApFyVQOnqG
+	0GpoA/ud0imUqkDM9CEJcy2APO0KV4Vkq3MsAZl3v39DBThyHNAqj1y23DqZBpY=
+X-Google-Smtp-Source: AGHT+IFAnEDVnsGx1tZ1AxBo1QTn+tOSC2MfALvNb6Q+MllvTQBzHLMq8T3kjDK5yp3+1lqcT3GiRg==
+X-Received: by 2002:a05:690c:3385:b0:62f:2553:d3b3 with SMTP id 00721157ae682-658ef3414eemr120805467b3.29.1720709075414;
+        Thu, 11 Jul 2024 07:44:35 -0700 (PDT)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-658e4936079sm11198567b3.15.2024.07.11.07.44.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 11 Jul 2024 07:44:34 -0700 (PDT)
+Date: Thu, 11 Jul 2024 10:44:34 -0400
+From: Josef Bacik <josef@toxicpanda.com>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>, Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Arnd Bergmann <arnd@arndb.de>, Randy Dunlap <rdunlap@infradead.org>,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+	linux-nfs@vger.kernel.org, linux-doc@vger.kernel.org
+Subject: Re: [PATCH v5 0/9] fs: multigrain timestamp redux
+Message-ID: <20240711144434.GB1235314@perftesting>
+References: <20240711-mgtime-v5-0-37bb5b465feb@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4] ext4: fix fast commit inode enqueueing during a full
- journal commit
-To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>, Theodore Ts'o
-	<tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>, Jan Kara <jack@suse.cz>,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240711083520.6751-1-luis.henriques@linux.dev>
-Content-Language: en-US
-From: "wangjianjian (C)" <wangjianjian3@huawei.com>
-In-Reply-To: <20240711083520.6751-1-luis.henriques@linux.dev>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemf200016.china.huawei.com (7.202.181.9)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240711-mgtime-v5-0-37bb5b465feb@kernel.org>
 
-On 2024/7/11 16:35, Luis Henriques (SUSE) wrote:
-> When a full journal commit is on-going, any fast commit has to be enqueued
-> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
-> is done only once, i.e. if an inode is already queued in a previous fast
-> commit entry it won't be enqueued again.  However, if a full commit starts
-> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
-> be done into FC_Q_STAGING.  And this is not being done in function
-> ext4_fc_track_template().
+On Thu, Jul 11, 2024 at 07:08:04AM -0400, Jeff Layton wrote:
+> tl;dr for those who have been following along:
 > 
-> This patch fixes the issue by re-enqueuing an inode into the STAGING queue
-> during the fast commit clean-up callback if it has a tid (i_sync_tid)
-> greater than the one being handled.  The STAGING queue will then be spliced
-> back into MAIN.
+> There are several changes in this version. The conversion of ctime to
+> be a ktime_t value has been dropped, and we now use an unused bit in
+> the nsec field as the QUERIED flag (like the earlier patchset did).
 > 
-> This bug was found using fstest generic/047.  This test creates several 32k
-> bytes files, sync'ing each of them after it's creation, and then shutting
-> down the filesystem.  Some data may be loss in this operation; for example a
-> file may have it's size truncated to zero.
+> The floor value is now tracked as a monotonic clock value, and is
+> converted to a realtime value on an as-needed basis. This eliminates the
+> problem of trying to detect when the realtime clock jumps backward.
 > 
-> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
-> ---
-> Hi!
+> Longer patch description for those just joining in:
 > 
-> v4 of this patch enqueues the inode into STAGING *only* if the current tid
-> is non-zero.  It will be zero when doing an fc commit, and this would mean
-> to always re-enqueue the inode.  This fixes the regressions caught by Ted
-> in v3 with fstests generic/472 generic/496 generic/643.
+> At LSF/MM this year, we had a discussion about the inode change
+> attribute. At the time I mentioned that I thought I could salvage the
+> multigrain timestamp work that had to be reverted last year [1].
 > 
-> Also, since 2nd patch of v3 has already been merged, I've rebased this patch
-> to be applied on top of it.
+> That version had to be reverted because it was possible for a file to
+> get a coarse grained timestamp that appeared to be earlier than another
+> file that had recently gotten a fine-grained stamp.
 > 
->   fs/ext4/fast_commit.c | 10 ++++++++++
->   1 file changed, 10 insertions(+)
+> This version corrects the problem by establishing a per-time_namespace
+> ctime_floor value that should prevent this from occurring. In the above
+> situation, the two files might end up with the same timestamp value, but
+> they won't appear to have been modified in the wrong order.
 > 
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 3926a05eceee..facbc8dbbaa2 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -1290,6 +1290,16 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
->   				       EXT4_STATE_FC_COMMITTING);
->   		if (tid_geq(tid, iter->i_sync_tid))
->   			ext4_fc_reset_inode(&iter->vfs_inode);
-> +		} else if (tid) {
-> +			/*
-> +			 * If the tid is valid (i.e. non-zero) re-enqueue the
-one quick question about tid, if one disk is using long time and its tid 
-  get wrapped to 0, is it a valid seq? I don't find code handling this 
-situation.
-> +			 * inode into STAGING, which will then be splice back
-> +			 * into MAIN
-> +			 */
-> +			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
-> +				      &sbi->s_fc_q[FC_Q_STAGING]);
-> +		}
-> +
->   		/* Make sure EXT4_STATE_FC_COMMITTING bit is clear */
->   		smp_mb();
->   #if (BITS_PER_LONG < 64)
+> That problem was discovered by the test-stat-time gnulib test. Note that
+> that test still fails on multigrain timestamps, but that's because its
+> method of determining the minimum delay that will show a timestamp
+> change will no longer work with multigrain timestamps. I have a patch to
+> change the testcase to use a different method that is in the process of
+> being merged.
 > 
--- 
-Regards
+> The testing I've done seems to show performance parity with multigrain
+> timestamps enabled vs. disabled, but it's hard to rule this out
+> regressing some workload.
+> 
+> This set is based on top of Christian's vfs.misc branch (which has the
+> earlier change to track inode timestamps as discrete integers). If there
+> are no major objections, I'd like to have this considered for v6.12,
+> after a nice long full-cycle soak in linux-next.
+> 
+> PS: I took a stab at a conversion for bcachefs too, but it's not
+> trivial. bcachefs handles timestamps backward from the way most
+> block-based filesystems do. Instead of updating them in struct inode and
+> eventually copying them to a disk-based representation, it does the
+> reverse and updates the timestamps in its in-core image of the on-disk
+> inode, and then copies that into struct inode. Either that will need to
+> be changed, or we'll need to come up with a different way to do this for
+> bcachefs.
+> 
+> [1]: https://lore.kernel.org/linux-fsdevel/20230807-mgctime-v7-0-d1dec143a704@kernel.org/
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
+Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+
+Thanks,
+
+Josef
 
