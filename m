@@ -1,286 +1,277 @@
-Return-Path: <linux-ext4+bounces-3236-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3237-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C5DA92FDF2
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2024 17:52:55 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E1AB392FF2A
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2024 19:11:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A0A61C2087B
-	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2024 15:52:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C3D91F23021
+	for <lists+linux-ext4@lfdr.de>; Fri, 12 Jul 2024 17:11:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B2D017554A;
-	Fri, 12 Jul 2024 15:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7FAB178398;
+	Fri, 12 Jul 2024 17:09:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="JQWn/5a4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PLZPSm/a"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pj1-f51.google.com (mail-pj1-f51.google.com [209.85.216.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22025174EE3
-	for <linux-ext4@vger.kernel.org>; Fri, 12 Jul 2024 15:52:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFFC317624C
+	for <linux-ext4@vger.kernel.org>; Fri, 12 Jul 2024 17:09:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720799558; cv=none; b=fN+i2FNLyWPuxpPUJHp1p22rOqypjIdDLGTl3rCCH2S8scYKr6ARmljA+cjZMfEByFsnQFEDEWCkCT/3XhFuUeiAequknQqJdLL8bVKQctlbMgxsueeg6j3lQEzfT0URFNJg6vIlTOvhISHdwL5yWp1scuNVB/WNys4qjJfSg8g=
+	t=1720804180; cv=none; b=ALZPy98vsajZnD/bVrPQiypOWyAISuCLGxQ58Poe7iz0UIf9gmVUHL7UIxuivtU/jhPikOokBtsodl38If5RNYJJEPI1+zjDZYtWk2hcoi21X7cdWSBX8feDMU8jq6Kk/zRgpdkx/00dNaGLZejeT++DDWh0XaI1WNxUpAIhZR0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720799558; c=relaxed/simple;
-	bh=ZnYtEwQmRhSInSuZM5bGERSfZOhYNMj6nDH2d7KOFRM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GW8AtT8LcJ8HYb0vcfxIJ/RSrehZp/UGm8szQFmcjAxDMuzbY/+iv9Z+EPLburSzr0g/rhYvHZHq+EX3yIw/Ce0HMPj2Id+xCgGA51sBiRLqYA+5cjcaCjvHIez3EN5pfKg7XiJ28HxG1o0iRIoA1DdflzK1BRZeGYz308pauMM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=JQWn/5a4; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1720799556;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CBPZJXhtPTYw9uGWwBpC8EVMxJRjwQ/Iz+iND+SW6sA=;
-	b=JQWn/5a4fNlgKXWz9tzsD7nNk0qTeO6MRWXFr5kE+7IBFqiT8/45vmULtDdD59BwQBdIon
-	NuVVbT4VJ8haKQ9KzwxOc8Lws30BuF/vvR+oXvyZnaGOxaLFX49b4AJRw1gb/KBx+j34lO
-	rCyJ9SinMqWg81pIb2QLqhSIxN6cws8=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-649-7xqBTcgROUGl86EMhWRj3A-1; Fri, 12 Jul 2024 11:52:32 -0400
-X-MC-Unique: 7xqBTcgROUGl86EMhWRj3A-1
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3d8476cb195so22697b6e.1
-        for <linux-ext4@vger.kernel.org>; Fri, 12 Jul 2024 08:52:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720799552; x=1721404352;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+	s=arc-20240116; t=1720804180; c=relaxed/simple;
+	bh=Wo/v5UwG/09CD73ONxK7imOHJdQall48xHyQGXTgfwg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=riBWi+7+XC3yZB5mVNFlHpn/EBTGaNoQNha8/EL0m6JkTRxHTTVxyomUo2wnCJqrzeMVMh+9IX6yCxlfrAmfW+9rrruvW7Z6F+GlVgfv+oiOZRl5c7wU6zosEy4lRxQl0I+nAdtN3bkvxCrM65aduGF0I82dJCAT2bjZIXb00Cg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PLZPSm/a; arc=none smtp.client-ip=209.85.216.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f51.google.com with SMTP id 98e67ed59e1d1-2c965efab0fso1757827a91.3
+        for <linux-ext4@vger.kernel.org>; Fri, 12 Jul 2024 10:09:38 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1720804178; x=1721408978; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CBPZJXhtPTYw9uGWwBpC8EVMxJRjwQ/Iz+iND+SW6sA=;
-        b=SxvzJlLf0AeK0U1XPWMVI9R1UhiDz3KTsjRFeqhPjJ+UMXpNqoSoleBTnB9rqIYehR
-         AN7dxfShLXuQAvMwu3U/AK3+nZupA2BNbRofnyOCJ2HhNZNPXbt59K8iwAWxbIGA+3z1
-         eWoZn/Fo9dn0TfsTWrUoSDWRgjCEVIZILwYApLlPrbUBRfos1GHGY2OrU6lebneiYtqv
-         E9wSKO+ZmJyOzhkhu02J90dPIaiyTuWhr05qPyD8fqAzHmguY4c9bUibLtfku2+cgKoP
-         dYyAPxHqDuLd3U8aJbbtRI1PJz9KLIpc9xr8rwsk9rimVCMD1YNfR/XE81HDhxqXkjrM
-         Jubw==
-X-Forwarded-Encrypted: i=1; AJvYcCUC8f0cg9dWBuFq6hADEgj8FLR1FxLkLNPykZgOl/BFJGhiyDYnRxyAeA/QnOjK0eDqtEXMuvTJykqLxTjGAIKYpefFhL4at8MuGg==
-X-Gm-Message-State: AOJu0YzEa4/Qf/q9n6dETfDXElIZfi3g8J6Lj2JFahvHfIxmrmGYponF
-	GZnNpAxKI1CeJNhY1NL+fzb+V269fyCCiPjYGjeg3f0qshwq4kYDJ5ZyhGSIkv+v00WKSRe1qk2
-	MAXxwpK5gGq/eit0Jp6PVCXi6hdptK/gDZn4WdTgDnz4JI8LKw5KtWmsDWZw=
-X-Received: by 2002:a05:6808:18a4:b0:3d9:3f72:7147 with SMTP id 5614622812f47-3daa0cc727emr5077567b6e.3.1720799551963;
-        Fri, 12 Jul 2024 08:52:31 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IG/ZIrWNSDLGpdOzmVtr7gg5txILa2tK9NGlD5tHXAm+7q1klaoYYw+zZj//kgznCBpBAfzHQ==
-X-Received: by 2002:a05:6808:18a4:b0:3d9:3f72:7147 with SMTP id 5614622812f47-3daa0cc727emr5077526b6e.3.1720799551507;
-        Fri, 12 Jul 2024 08:52:31 -0700 (PDT)
-Received: from x1n (pool-99-254-121-117.cpe.net.cable.rogers.com. [99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-79f19012fa9sm414621985a.46.2024.07.12.08.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 12 Jul 2024 08:52:31 -0700 (PDT)
-Date: Fri, 12 Jul 2024 11:52:27 -0400
-From: Peter Xu <peterx@redhat.com>
-To: Alistair Popple <apopple@nvidia.com>
-Cc: dan.j.williams@intel.com, vishal.l.verma@intel.com,
-	dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
-	jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
-	will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
-	dave.hansen@linux.intel.com, ira.weiny@intel.com,
-	willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
-	linmiaohe@huawei.com, david@redhat.com, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev,
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
-	david@fromorbit.com, Alex Williamson <alex.williamson@redhat.com>
-Subject: Re: [PATCH 11/13] huge_memory: Remove dead vmf_insert_pXd code
-Message-ID: <ZpFROxbDINDc43m_@x1n>
-References: <cover.66009f59a7fe77320d413011386c3ae5c2ee82eb.1719386613.git-series.apopple@nvidia.com>
- <400a4584f6f628998a7093aee49d9f86c592754b.1719386613.git-series.apopple@nvidia.com>
- <ZogCDpfSyCcjVXWH@x1n>
- <87zfqrw69i.fsf@nvdebian.thelocal>
- <Zo1dqTPLn_gosrSO@x1n>
- <87sewf48s6.fsf@nvdebian.thelocal>
+        bh=Lrj2IHZDU2vmhGKB/cK/omhwPnigu08hmqFJnt5GI3M=;
+        b=PLZPSm/aH4+1fK3EQgYLF9PMy8Qo2c79l6u6PIl5bT2EehCG/u0gEqiqQyNzMtfL+s
+         onP4bcAXHQAos0aJBiQlvg2zxkLdy2CQoSUQh99YFfU51Z63IMomx8ZWesRPSvAn2s0n
+         /9aZ7ARmKtdveuqECe2fhXmnQ5InKEBzv4nbRmr2vXCTbBFwrH2oEnpRtPMhB+HaPJm+
+         Fvn3tUs3F0vI64Rg23uJP9XarwQVYt/ibLT6wUY1Ie0KLLNtkxGOaTvKyEhVjdHoWnFO
+         5Dp1mog/jdM0sjiFzZmafOG7ke1uc2UzVaumS4EsvUqo2e33ayqrn+MWJ56JLOjuhBCg
+         XtPg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1720804178; x=1721408978;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Lrj2IHZDU2vmhGKB/cK/omhwPnigu08hmqFJnt5GI3M=;
+        b=jPwnReDIirwavnJ4+sfIaKNvgS8g4YJrEBEJJeayXM3N+fflZ88l65/CVubi5DMTmi
+         Vp8ghNDRj8txa5d8siSad1PowYbibDH/WOUkoNR69dNFarymKma5ze+zZ+zaykS/M2ML
+         YYF8Nr7Wn/h8GmtY96A1CN4BZtYPXtcPQjO6DUBntDWlZQ4G8mK/mdRbxSLA6ooi4J5k
+         EfN0/weRvdNdgrJxq2p34moINADbW3APvXaTBDySZ440/GuNzxpJyf8lgPoisGh284Cx
+         m1z5TVnF6dcP/99TgIE3evuF5w1Q3JGFa/5Ah08jHmpawcFCWYINNcZr+H4wiJFvO7Ng
+         cRmg==
+X-Gm-Message-State: AOJu0YyYqNYJeDBjIJaRfl/VXf6qqUiNER244ddrqSDIfmhzzbstNISO
+	VeK3bDf5OdVOCvOIjbHusT1gzMe5aYVV70d0pxJvn1Mws4czDzrugbCgV6qbVo7kWESKc4qcnOb
+	ouGWSjSMFuvflGHXE3+NJDKoWNHM7l1P2
+X-Google-Smtp-Source: AGHT+IFjCE2F1AV1BQa9Z2ftNsKvp7zs0sJbNriOnExPDcvezmbY1d2dmGhIV4hLzqIdHU3f4saJsP0uE9EMJnTPORY=
+X-Received: by 2002:a17:90a:70c6:b0:2c8:87e:c2d9 with SMTP id
+ 98e67ed59e1d1-2ca35d43887mr9447762a91.39.1720804177939; Fri, 12 Jul 2024
+ 10:09:37 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <87sewf48s6.fsf@nvdebian.thelocal>
+References: <20240529012003.4006535-1-harshadshirwadkar@gmail.com>
+ <20240529012003.4006535-3-harshadshirwadkar@gmail.com> <20240701220837.GD419129@mit.edu>
+In-Reply-To: <20240701220837.GD419129@mit.edu>
+From: harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date: Fri, 12 Jul 2024 10:09:26 -0700
+Message-ID: <CAD+ocbwg1Uh9aLZAZFHaPMBAimkXVUsUeQM=jEHvnJ1WmfXKFA@mail.gmail.com>
+Subject: Re: [PATCH v6 02/10] ext4: for committing inode, make
+ ext4_fc_track_inode wait
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org, saukad@google.com, harshads@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jul 12, 2024 at 12:40:39PM +1000, Alistair Popple wrote:
-> 
-> Peter Xu <peterx@redhat.com> writes:
-> 
-> > On Tue, Jul 09, 2024 at 02:07:31PM +1000, Alistair Popple wrote:
-> >> 
-> >> Peter Xu <peterx@redhat.com> writes:
-> >> 
-> >> > Hi, Alistair,
-> >> >
-> >> > On Thu, Jun 27, 2024 at 10:54:26AM +1000, Alistair Popple wrote:
-> >> >> Now that DAX is managing page reference counts the same as normal
-> >> >> pages there are no callers for vmf_insert_pXd functions so remove
-> >> >> them.
-> >> >> 
-> >> >> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> >> >> ---
-> >> >>  include/linux/huge_mm.h |   2 +-
-> >> >>  mm/huge_memory.c        | 165 +-----------------------------------------
-> >> >>  2 files changed, 167 deletions(-)
-> >> >> 
-> >> >> diff --git a/include/linux/huge_mm.h b/include/linux/huge_mm.h
-> >> >> index 9207d8e..0fb6bff 100644
-> >> >> --- a/include/linux/huge_mm.h
-> >> >> +++ b/include/linux/huge_mm.h
-> >> >> @@ -37,8 +37,6 @@ int change_huge_pmd(struct mmu_gather *tlb, struct vm_area_struct *vma,
-> >> >>  		    pmd_t *pmd, unsigned long addr, pgprot_t newprot,
-> >> >>  		    unsigned long cp_flags);
-> >> >>  
-> >> >> -vm_fault_t vmf_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool write);
-> >> >> -vm_fault_t vmf_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool write);
-> >> >>  vm_fault_t dax_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool write);
-> >> >>  vm_fault_t dax_insert_pfn_pud(struct vm_fault *vmf, pfn_t pfn, bool write);
-> >> >
-> >> > There's a plan to support huge pfnmaps in VFIO, which may still make good
-> >> > use of these functions.  I think it's fine to remove them but it may mean
-> >> > we'll need to add them back when supporting pfnmaps with no memmap.
-> >> 
-> >> I'm ok with that. If we need them back in future it shouldn't be too
-> >> hard to add them back again. I just couldn't find any callers of them
-> >> once DAX stopped using them and the usual policy is to remove unused
-> >> functions.
+Thank you for the review, Jan and the bug report Ted. I think I have
+found the issue here.
+
+In fast commit code, we are using s_fc_lock to protect additions and
+deletions to lists s_fc_q and s_fc_dentry_q. However, since s_fc_lock
+is a spin_lock, we have to give it up in many places where we do
+things like memory allocations / deletions, since those cannot be
+performed in an atomic context. I am realizing that unlocking that
+lock in the middle of the list traversal to allow it to perform these
+non-atomic tasks is opening a door to a lot of subtle concurrency
+bugs. Unlocking this lock in the middle of the traversal leaves the
+door open to ext4_fc_del, which may just remove an entry from the
+list, and leave the initial traversal in a broken state. So as an
+immediate remedy, I am thinking that we can convert s_fc_lock to mutex
+so that the commit code doesn't have to leave the lock in the middle
+of the loop.
+
+In the long run, we need to revisit the whole staging queue / main
+queue design. I think we can just simplify that such that there is
+really only one queue. Commit code just copies the queue in a local
+variable and initializes sbi->s_fc_q to empty. That would get rid of
+all the messy "if commit ongoing insert in staging otherwise insert in
+main" conditions and also simplify the overall code.
+
+I'll make the change to convert to mutex and handle all other Jan's
+comments (thanks Jan for the detailed feedback on other patches) to
+submit V7 of this patch series.
+
+Thank you,
+Harshad
+
+
+
+On Mon, Jul 1, 2024 at 3:08=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote:
+>
+> On Wed, May 29, 2024 at 01:19:55AM +0000, Harshad Shirwadkar wrote:
+> > If the inode that's being requested to track using ext4_fc_track_inode
+> > is being committed, then wait until the inode finishes the
+> > commit. Also, add calls to ext4_fc_track_inode at the right places.
 > >
-> > True.  Currently the pmd/pud helpers are only used in dax.
+> > With this patch, now calling ext4_reserve_inode_write() results in
+> > inode being tracked for next fast commit. A subtle lock ordering
+> > requirement with i_data_sem (which is documented in the code) requires
+> > that ext4_fc_track_inode() be called before grabbing i_data_sem. So,
+> > this patch also adds explicit ext4_fc_track_inode() calls in places
+> > where i_data_sem grabbed.
 > >
-> >> 
-> >> > Is it still possible to make the old API generic to both service the new
-> >> > dax refcount plan, but at the meantime working for pfn injections when
-> >> > there's no page struct?
-> >> 
-> >> I don't think so - this new dax refcount plan relies on having a struct
-> >> page to take references on so I don't think it makes much sense to
-> >> combine it with something that doesn't have a struct page. It sounds
-> >> like the situation is the analogue of vm_insert_page()
-> >> vs. vmf_insert_pfn() - it's possible for both to exist but there's not
-> >> really anything that can be shared between the two APIs as one has a
-> >> page and the other is just a raw PFN.
-> >
-> > I still think most of the codes should be shared on e.g. most of sanity
-> > checks, pgtable injections, pgtable deposits (for pmd) and so on.
-> 
-> Yeah, it was mostly the BUG_ON's that weren't applicable once pXd_devmap
-> went away.
-> 
-> > To be explicit, I wonder whether something like below diff would be
-> > applicable on top of the patch "huge_memory: Allow mappings of PMD sized
-> > pages" in this series, which introduced dax_insert_pfn_pmd() for dax:
-> >
-> > $ diff origin new
-> > 1c1
-> > < vm_fault_t dax_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool write)
-> > ---
-> >> vm_fault_t vmf_insert_pfn_pmd(struct vm_fault *vmf, pfn_t pfn, bool write)
-> > 55,58c55,60
-> > <       folio = page_folio(page);
-> > <       folio_get(folio);
-> > <       folio_add_file_rmap_pmd(folio, page, vma);
-> > <       add_mm_counter(mm, mm_counter_file(folio), HPAGE_PMD_NR);
-> > ---
-> >>         if (page) {
-> >>                 folio = page_folio(page);
-> >>                 folio_get(folio);
-> >>                 folio_add_file_rmap_pmd(folio, page, vma);
-> >>                 add_mm_counter(mm, mm_counter_file(folio), HPAGE_PMD_NR);
-> >>         }
-> 
-> We get the page from calling pfn_t_to_page(pfn). This is safe for the
-> DAX case but is it safe to use a page returned by this more generally?
-
-Good question.  I thought it should work when the caller doesn't set any
-bit in PFN_FLAGS_MASK, but it turns out it's not the case?  As I just
-notice:
-
-static inline bool pfn_t_has_page(pfn_t pfn)
-{
-	return (pfn.val & PFN_MAP) == PFN_MAP || (pfn.val & PFN_DEV) == 0;
-}
-
-So it looks like "no PFN_FLAGS" case should also fall into this category of
-"(pfn.val & PFN_DEV) == 0"..
-
-I'm not sure whether my understanding is correct, though.  Maybe we'd want
-to double check with pfn_valid() when it's a generic function.
-
-> 
-> From an API perspective it would make more sense for the DAX code to
-> pass the page rather than the pfn. I didn't do that because device DAX
-> just had the PFN and this was DAX-specific code. But if we want to make
-> it generic I'd rather have callers pass the page in.
-> 
-> Of course that probably doesn't help you, because then the call would be
-> vmf_insert_page_pmd() rather than a raw pfn, but as you point out there
-> might be some common code we could share.
-
-It'll be fine if it needs page*, then it'll be NULL for VFIO.
-
-So far it looks cleaner if it has the pgtable entry anyway to me, as that
-indeed contains the pfn.  But I'd trust you more on what should it look
-like, as I didn't read the whole series here.
-
-> 
-> >
-> > As most of the rest look very similar to what pfn injections would need..
-> > and in the PoC of ours we're using vmf_insert_pfn_pmd/pud().
-> 
-> Do you have the PoC posted anywhere so I can get an understanding of how
-> this might be used?
-
-https://github.com/xzpeter/linux/commits/vfio-pfnmap-all/
-
-Specifically Alex's commit here:
-
-https://github.com/xzpeter/linux/commit/afd05f1082bc78738e280f1fc1937da52b2572ed
-
-Just a note that it's still work in progress.  Alex did run it through (not
-this tree, but an older one) and it works pretty well so far.
-
-I think it's because so far nothing involves the pfn flags, the only one
-has it involved is (taking pmd as example):
-
-insert_pfn_pmd():
-	if (!pmd_none(*pmd)) {
-		if (write) {
-			if (pmd_pfn(*pmd) != pfn_t_to_pfn(pfn)) {
-				WARN_ON_ONCE(!is_huge_zero_pmd(*pmd));
-				goto out_unlock;
-			}
-			entry = pmd_mkyoung(*pmd);
-			entry = maybe_pmd_mkwrite(pmd_mkdirty(entry), vma);
-			if (pmdp_set_access_flags(vma, addr, pmd, entry, 1))
-				update_mmu_cache_pmd(vma, addr, pmd);
-		}
-
-		goto out_unlock;
-	}
-
-But for VFIO it'll definitely be pmd_none() here, so the whole path ignores
-pfn flags so far here, I assume.
-
-> 
-> > That also reminds me on whether it'll be easier to implement the new dax
-> > support for page struct on top of vmf_insert_pfn_pmd/pud, rather than
-> > removing the 1st then adding the new one.  Maybe it'll reduce code churns,
-> > and would that also make reviews easier?
-> 
-> Yeah, that's a good observation. I think it was just a quirk of how I
-> was developing this and also not caring about the PFN case so I'll see
-> what that looks like.
-
-Great!  I hope it'll reduce the diff for this series too, so it could be a
-win-win.
-
-Thanks,
-
--- 
-Peter Xu
-
+> > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+>
+> I tried applying this patchset to both the current ext4/dev branch as
+> well as on to 6.10-rc5, and generic/241 is triggering large series of
+> WARNINGS followed by a BUG (or in some cases, a soft lockup).  A
+> bisection leads me to this patch.
+>
+> The WARN stack trace:
+>
+> [    4.061189] ------------[ cut here ]------------
+> [    4.061848] WARNING: CPU: 1 PID: 2627 at fs/ext4/fast_commit.c:259 ext=
+4_fc_del+0x7d/0x190
+> [    4.062919] CPU: 1 PID: 2627 Comm: dbench Not tainted 6.10.0-rc5-xfste=
+sts-00033-gb6f5b0076b56 #350
+> [    4.064070] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
+.16.3-debian-1.16.3-2 04/01/2014
+> [    4.065077] RIP: 0010:ext4_fc_del+0x7d/0x190
+> [    4.065404] Code: 0f 84 f0 00 00 00 48 8b 83 48 ff ff ff 48 0f ba e0 2=
+a 73 18 48 8b 43 28 48 8b 80 90 03 00 00 48 8b 80 80 00 00 00 a8 02 75 02 <=
+0f> 0b 48 89 ef e8 09 ad 68 00 84 c0 74 0f 48 8b 53 98 48 8b 43 a0
+> [    4.066190] RSP: 0018:ffffc90003707d98 EFLAGS: 00010246
+> [    4.066415] RAX: 0000000000000001 RBX: ffff888013de5c08 RCX: 000000000=
+0000000
+> [    4.066718] RDX: 0000000000000001 RSI: 00000000ffffffff RDI: ffff88800=
+a22c7f0
+> [    4.067019] RBP: ffff888013de5ba0 R08: ffffffff827fc6fe R09: ffff88800=
+8bed000
+> [    4.067323] R10: 0000000000000008 R11: 000000000000001e R12: ffff88800=
+a22c7f0
+> [    4.067629] R13: ffff88800a22c000 R14: ffff888013de5b90 R15: ffff88800=
+ac0c000
+> [    4.067935] FS:  00007fec79a4e740(0000) GS:ffff88807dd00000(0000) knlG=
+S:0000000000000000
+> [    4.068281] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    4.068530] CR2: 000055d2f34b87e8 CR3: 000000000f492003 CR4: 000000000=
+0770ef0
+> [    4.068834] PKRU: 55555554
+> [    4.068952] Call Trace:
+> [    4.069061]  <TASK>
+> [    4.069158]  ? __warn+0x7b/0x120
+> [    4.069338]  ? ext4_fc_del+0x7d/0x190
+> [    4.069497]  ? report_bug+0x174/0x1c0
+> [    4.069655]  ? handle_bug+0x3a/0x70
+> [    4.069809]  ? exc_invalid_op+0x17/0x70
+> [    4.069975]  ? asm_exc_invalid_op+0x1a/0x20
+> [    4.070156]  ? ext4_fc_del+0x7d/0x190
+> [    4.070309]  ? ext4_fc_del+0x44/0x190
+> [    4.070468]  ext4_clear_inode+0x12/0xb0
+> [    4.070636]  ext4_free_inode+0x86/0x5a0
+> [    4.070802]  ext4_evict_inode+0x457/0x6b0
+> [    4.070976]  evict+0xcd/0x1d0
+> [    4.071114]  do_unlinkat+0x2de/0x330
+> [    4.071271]  __x64_sys_unlink+0x23/0x30
+> [    4.071436]  do_syscall_64+0x4b/0x110
+> [    4.071596]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> [    4.071812] RIP: 0033:0x7fec79b4aa07
+> [    4.071969] Code: f0 ff ff 73 01 c3 48 8b 0d f6 83 0d 00 f7 d8 64 89 0=
+1 48 83 c8 ff c3 66 2e 0f 1f 84 00 00 00 00 00 66 90 b8 57 00 00 00 0f 05 <=
+48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d c9 83 0d 00 f7 d8 64 89 01 48
+> [    4.072760] RSP: 002b:00007ffed55de918 EFLAGS: 00000206 ORIG_RAX: 0000=
+000000000057
+> [    4.073081] RAX: ffffffffffffffda RBX: 00007ffed55dedb0 RCX: 00007fec7=
+9b4aa07
+> [    4.073429] RDX: 0000000000000000 RSI: 00007ffed55dedb0 RDI: 00007ffed=
+55dedb0
+> [    4.073733] RBP: 000055d2f34a37f0 R08: 0fffffffffffffff R09: 000000000=
+0000000
+> [    4.074033] R10: 0000000000000000 R11: 0000000000000206 R12: 000055d2f=
+34a35d0
+> [    4.074338] R13: 00007fec79c35000 R14: 0000000000000004 R15: 00007fec7=
+9c35050
+> [    4.074650]  </TASK>
+> [    4.074747] ---[ end trace 0000000000000000 ]---
+>
+> And here's the BUG:
+>
+> [    5.121989] BUG: kernel NULL pointer dereference, address: 00000000000=
+000b8
+> [    5.122281] #PF: supervisor read access in kernel mode
+> [    5.122500] #PF: error_code(0x0000) - not-present page
+> [    5.122717] PGD 0 P4D 0
+> [    5.122828] Oops: Oops: 0000 [#1] PREEMPT SMP NOPTI
+> [    5.123036] CPU: 0 PID: 2629 Comm: dbench Tainted: G        W         =
+ 6.10.0-rc5-xfstests-00033-gb6f5b0076b56 #350
+> [    5.123470] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1=
+.16.3-debian-1.16.3-2 04/01/2014
+> [    5.123857] RIP: 0010:ext4_fc_perform_commit+0x303/0x4b0
+> [    5.124082] Code: fd 48 2d a0 00 00 00 48 39 d3 75 af e9 ac fe ff ff 4=
+9 8b 4d 58 49 8d 45 58 48 39 c1 0f 84 9f 01 00 00 49 8b 45 58 49 63 4d 08 <=
+48> 39 88 b8 00 00 00 4c 8d 78 78 0f 85 7f 01 00 00 48 89 ef e8 c4
+> [    5.124855] RSP: 0018:ffffc90003727df8 EFLAGS: 00010246
+> [    5.125072] RAX: 0000000000000000 RBX: ffff8880089e5f08 RCX: 000000000=
+89e5f08
+> [    5.125416] RDX: 0000000000000001 RSI: 0000000000000003 RDI: ffff88800=
+a22c7f0
+> [    5.125712] RBP: ffff88800a22c7f0 R08: ffff88807dc2fbc0 R09: 000000000=
+0000000
+> [    5.126009] R10: 0000000000000000 R11: 0000000000000000 R12: ffff88800=
+a22c7c8
+> [    5.126310] R13: ffff8880089e5f08 R14: ffff88800a22c7a8 R15: ffff88800=
+a22c708
+> [    5.126609] FS:  00007fec79a4e740(0000) GS:ffff88807dc00000(0000) knlG=
+S:0000000000000000
+> [    5.126943] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> [    5.127188] CR2: 00000000000000b8 CR3: 000000000f48e002 CR4: 000000000=
+0770ef0
+> [    5.127483] PKRU: 55555554
+> [    5.127598] Call Trace:
+> [    5.127705]  <TASK>
+> [    5.127838]  ? __die+0x23/0x60
+> [    5.127973]  ? page_fault_oops+0xa3/0x160
+> [    5.128143]  ? exc_page_fault+0x6a/0x160
+> [    5.128351]  ? asm_exc_page_fault+0x26/0x30
+> [    5.128530]  ? ext4_fc_perform_commit+0x303/0x4b0
+> [    5.128728]  ? ext4_fc_perform_commit+0x36b/0x4b0
+> [    5.128948]  ext4_fc_commit+0x17f/0x300
+> [    5.129116]  ext4_sync_file+0x1ce/0x380
+> [    5.129310]  __x64_sys_fsync+0x3b/0x70
+> [    5.129470]  do_syscall_64+0x4b/0x110
+> [    5.129627]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> [    5.129840] RIP: 0033:0x7fec79b4fb10
+> [    5.129995] Code: 00 f7 d8 64 89 01 48 83 c8 ff c3 66 2e 0f 1f 84 00 0=
+0 00 00 00 0f 1f 44 00 00 80 3d d1 ba 0d 00 00 74 17 b8 4a 00 00 00 0f 05 <=
+48> 3d 00 f0 ff ff 77 48 c3 0f 1f 80 00 00 00 00 48 83 ec 18 89 7c
+> [    5.130764] RSP: 002b:00007ffed55de948 EFLAGS: 00000202 ORIG_RAX: 0000=
+00000000004a
+> [    5.131079] RAX: ffffffffffffffda RBX: 00007fec79c35450 RCX: 00007fec7=
+9b4fb10
+> [    5.131381] RDX: 0000000000002b6f RSI: 0000000000002b6f RDI: 000000000=
+0000005
+> [    5.131681] RBP: 000055d2f34a3660 R08: 1999999999999999 R09: 000000000=
+0000000
+> [    5.131981] R10: 00007fec79bcdac0 R11: 0000000000000202 R12: 000055d2f=
+34a35d0
+> [    5.132280] R13: 00007fec79c35450 R14: 0000000000000003 R15: 00007fec7=
+9c354a0
+> [    5.132575]  </TASK>
+> [    5.132670] CR2: 00000000000000b8
+> [    5.132812] ---[ end trace 0000000000000000 ]---
+>
+> Harshad, can you take a look?   Thanks!
+>
+>                                                 - Ted
+>
 
