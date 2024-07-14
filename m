@@ -1,72 +1,70 @@
-Return-Path: <linux-ext4+bounces-3244-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3245-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA9A2930847
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Jul 2024 04:18:24 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9FF6930855
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Jul 2024 04:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 085391C211A8
-	for <lists+linux-ext4@lfdr.de>; Sun, 14 Jul 2024 02:18:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6DDA51F21901
+	for <lists+linux-ext4@lfdr.de>; Sun, 14 Jul 2024 02:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09394B64E;
-	Sun, 14 Jul 2024 02:18:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39B8DB64E;
+	Sun, 14 Jul 2024 02:29:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MDDkX4/y"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DibKUocx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D492F5E;
-	Sun, 14 Jul 2024 02:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B79A92F;
+	Sun, 14 Jul 2024 02:29:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1720923495; cv=none; b=aSkg4bAmZFkaYvr4ItSjFDlUrvl5wGnh/RDflBBvNHg0JAS/bbF1EyHbNvqTuF+mdHNKCknxGj+i5LhmFpZp6uHMEEanspXCPb8jcC5Ua+g/SdMACEZ3lJKv0TS7RviYkTJxrWWGfu5AelzRlNF76nZz8PcFx8Hng2FFChGMYqg=
+	t=1720924179; cv=none; b=uyZnqb1CLTk6LmwONDW6XwpLXXkh/CJCIhV6SBN+iQCdchQ1PxE2eAvbRvPvlqERPS8bZTWAd2lIIgAqczqDS1Whg5yaGM5E5l4voUrJZs0/Eiji9L84V3KktQWm7sOLVbv54+lJuTpjgmGDre0j4MSfdDfAwNd/ez0lOxR4IAQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1720923495; c=relaxed/simple;
-	bh=Q2VWN9oYpodyWvS7RzRqUazVqYKNN8A1wmP5RDMVu2I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gva//KhmgC/NTGfUeblZ54qQflSUCoFlSE9s/11h8Ip92Iyf8IzgiHyXvr4d9LrETCvPmWOgGzQsOYquEHo8Lk4n6q5grHpo7+D/FrGunQk6yjpyT89mAm4wn3zaUBBkK9Ss3OxoIb0dQWF9XdFn3Ryf/6lZWCVSC0+onn6oQU0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MDDkX4/y; arc=none smtp.client-ip=209.85.128.46
+	s=arc-20240116; t=1720924179; c=relaxed/simple;
+	bh=gvaCtxw0JmqX0qKNFkwrK622sEzBsNuUqWwdfi1veZI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HO0DL7ly8my0VL9mtNcxnw5Gq6iv8wtyWQ4cEY3yzZC6TvvQr0pgPQwgzwceG/lU73dbxRZt3rC+XcLzu8zPUBfIWYBFzKYjqKjJWYJc1OV5p9pIqjT5dygma+cAyjD7/m6ffu8Jx/NtW0EVHRdD+q38ya8yBoQ0k2dq3Fm27K8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DibKUocx; arc=none smtp.client-ip=209.85.128.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4279c10a40eso18829195e9.3;
-        Sat, 13 Jul 2024 19:18:13 -0700 (PDT)
+Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-4266b1f1b21so21336705e9.1;
+        Sat, 13 Jul 2024 19:29:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1720923492; x=1721528292; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lAs1Gk4an+iNb/J96GVaGrZrn8TrGn7XZfkpZtZ/+3s=;
-        b=MDDkX4/yN1k1bSPJ6xaW2gdTAqAnfUTgBX72Jq4ZDEJ72zHdmt2FdBOZ95aP5VTxHX
-         +rmQGm7tCWEhAd67HX1w6Wp0BZgzbyP2+CCeg+KnMfoHJz+U5YVWXXe+zGDOzxAFqOQG
-         h0LqeJoOZHx9M90302Rw9bd8m4MddyUD8+/ited3hhhlsRAx3MuJ7WDpWQDF1usinMmW
-         aQuIq6mLuCQhow7mwni7cRDfRlUUB3fDfcJFTJpM853yfEwHTv1ngtPMGGSoc67dCVHa
-         3okqIi5tPEl74zYvhMDCqDn+V5/45wm5Tw1DBiNGPWMSAKpPV/VKZfVhY2vxGUFFKFS3
-         MJRg==
+        d=gmail.com; s=20230601; t=1720924176; x=1721528976; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7uTtxkGrUED0qsLRRVKEM+k/1Ov/NZS6SczaERixb68=;
+        b=DibKUocxo7UdohX02RbknBx06eH0pyD/2/5mUNPnFtd0zNrl9CKFE6YfFBxD7bj5mK
+         V1wMH14gZEOU2J4CAN4Mu/A/y6UMxU+cX0whwp5vVnV9o+huppDUTZyOheFDpuFb8Mtj
+         R0jn23EGrTDFtXOPyBqAHSW8A1iceceot6oH9HPCNyzVGXVoSW1qR+t/xcrOEcAtAfWC
+         zOorDI8yZQyOgm5n2TrpxRZslMEKSyRXOOzs8Vyf14doH74Z+MjdMsbTaFgk51qWqf5c
+         5PYv8ndimPHTiUcWZ3Xhm+wHETcNsLotGBWUef0RmcuVZoBWRZzevrNBjHAcsEP3TFOc
+         mQ6w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1720923492; x=1721528292;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lAs1Gk4an+iNb/J96GVaGrZrn8TrGn7XZfkpZtZ/+3s=;
-        b=roEko6W2ExFegxFCpAVmAvsk5LEs6CAO9ToR3GTHeUToVkb7KtxoBh7MXotADFuMCO
-         rA6MDhn4zAKL9YVwkSwCJJlAoxL8O2q+gsLxIKOFpJEcvUbt0ysksXzmkTGYM/y9mmAy
-         zcsbNTqikGGp3MB69vEU9ed9gdB1+2zE27Bemwuh4E48Ws8jaEThChcWBWoKDV3dvNwn
-         Qw1oQI1dSneUatJhAN1WZvR9jprMKgPiDzYPUCLn3KNfKQttX2s4gKTCd5QF9vrY0xCv
-         mAUShtRAhJq5ERrk6ZbjJfUxgdpGD357SKufPUS/li5RPikM5TqRem9BXAH1AoQ5aBFd
-         d8Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCVFaXkENUCsbFdJnHwP6zPeh+STdEHRCfkHmhPamAdtJJrZzkYI0+Eibb+FQMgpq8fXfdADtk/KzuMJLQ7NS4SNEXqHCpTuC/Ax3CEKLpcEJG9PjLrPPiOHt2lJYQmplbDOvw==
-X-Gm-Message-State: AOJu0YzrmHyz6fHNY+OD7FpJ/+WXLuJnEObLGT5VktZVzVbtx8AMSTwg
-	Jups52p/jcEM5aFfgO0AMw8N0WBbJJ7P+g99gdVyeqpD9/0MxwTBRuOQvlEHqQQ=
-X-Google-Smtp-Source: AGHT+IEgJqm+4IgLtChQAMhCHVaPrvOHaykEEA+S++jectej03gs2zLNTF0WplY5JTGrItqluKdpyw==
-X-Received: by 2002:a05:600c:4930:b0:425:5ec3:570b with SMTP id 5b1f17b1804b1-426708f1f07mr96194945e9.35.1720923491924;
-        Sat, 13 Jul 2024 19:18:11 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1720924176; x=1721528976;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7uTtxkGrUED0qsLRRVKEM+k/1Ov/NZS6SczaERixb68=;
+        b=aktxBxzsx0X3ilArgbvsmeBed8jWfoDk9cF8GLEYuph0iBR1XF9OcLo8KFYsAO+qja
+         tus1FlfB85X1SBzp1x/AZv+mpnNpzfjUMfiQYe2+X910DzhYPDAOEpl136Nk9ISSdsgO
+         adYINAhCbtFEohcmdj+EN46zK/u9HagrUT8MYkwhZPbcxrTxDUzvQjVAqlELXJ5mvjvT
+         9bkWHfj1uAVV1qnjBKc9VZ7psh+K+hey0kPCP1us1Tg8Oz6J0nZUx5GbrLSvQ1dcrmdk
+         LwzTmKrb+AJ8pGAA+29s563TtTdmHMQ/20yrbCfR2H6sSouufTReZu6iCnz4PdmUMAFX
+         5HZQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWGIDOggGE5caxXlJjN+IrdQ/JHqYYDsqZLgq+xRMcaNrI3FvIGKE5IIADbK/JRD/Ri1wX+v2qYIMxYujRt9Rog66HNLqYUfFJkkf8MMlA+m1zoLbPgGkrCp7u1b6TpTzi2Cg==
+X-Gm-Message-State: AOJu0Yynvt298E0hg3iGvfRI+jtpqvcgDo7/DW3vzw4T0n22Rfx69goV
+	lLuLRn/LzPGms+DYTsNFSHrUPTArwSq8fusmkAzvF4/C+xeAFdJnuJROxQVoFK4=
+X-Google-Smtp-Source: AGHT+IHl8Y8wLqDxJzkDVIy/A1pwLR4+D5zIzHFndDxbJqI0GiE3G+KkSNQb9LjffrW2mOyVJKvV1A==
+X-Received: by 2002:a05:600c:524f:b0:427:9dad:8063 with SMTP id 5b1f17b1804b1-4279dad8478mr44072335e9.12.1720924175722;
+        Sat, 13 Jul 2024 19:29:35 -0700 (PDT)
 Received: from localhost.localdomain ([156.197.1.65])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-427a5e774besm38142655e9.5.2024.07.13.19.18.10
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4279f2d7955sm72759145e9.47.2024.07.13.19.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 13 Jul 2024 19:18:11 -0700 (PDT)
+        Sat, 13 Jul 2024 19:29:35 -0700 (PDT)
 From: botta633 <bottaawesome633@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Peter Zijlstra <peterz@infradead.org>,
@@ -76,14 +74,13 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	linux-ext4@vger.kernel.org,
 	syzkaller@googlegroups.com,
+	Ahmed Ehab <bottaawesome633@gmail.com>,
 	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
 	stable@vger.kernel.org
-Subject: [PATCH 2/2] ext4: Testing lock class and subclass got the same name pointer
-Date: Sun, 14 Jul 2024 08:14:27 +0300
-Message-ID: <20240714051427.114044-2-bottaawesome633@gmail.com>
+Subject: [PATCH v2 2/2] ext4: Testing lock class and subclass got the same name pointer
+Date: Sun, 14 Jul 2024 08:26:40 +0300
+Message-ID: <20240714052640.115476-1-bottaawesome633@gmail.com>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240714051427.114044-1-bottaawesome633@gmail.com>
-References: <20240714051427.114044-1-bottaawesome633@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -91,6 +88,8 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+
+From: Ahmed Ehab <bottaawesome633@gmail.com>
 
 Checking if the lockdep_map->name will change when setting the subclass.
 It shouldn't change so that the lock class and subclass will have the same name
