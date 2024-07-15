@@ -1,128 +1,148 @@
-Return-Path: <linux-ext4+bounces-3258-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3259-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 42D10930D38
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 06:34:14 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6FB1A930D71
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 07:16:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5D60B20D10
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 04:34:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 148921F213A1
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 05:16:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E0A761FFC;
-	Mon, 15 Jul 2024 04:34:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C1F131836C5;
+	Mon, 15 Jul 2024 05:15:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IDokbObt"
+	dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b="IJufC1hE";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="pT3pfWb5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from flow1-smtp.messagingengine.com (flow1-smtp.messagingengine.com [103.168.172.136])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7679F1843;
-	Mon, 15 Jul 2024 04:34:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF1D13AA39;
+	Mon, 15 Jul 2024 05:15:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.136
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721018042; cv=none; b=MJJo+U+DpHon+ljOisJeuWK+xNC5H8Tu3Y1HyK9FIwTMgk45wNQbd+Jj0nUXGxu3efcyx4auCtRxTED9WQiRiUmUVJ4Jnj+qYPcsZZ+Y4CpuWvHwhsDkzMsDcTKmX/RkRotsGQsbnfUAP80zP9Z0BCnTLeeoIonrLECtIqEHBbs=
+	t=1721020542; cv=none; b=jxnIqugBc/+Iz6e6qa+4Mh0UjWhRGcvxPfhEGxSzbRd18slvtSXh6faeQ2+kPn/NnLpWwtphgm+zV1989MyUz6Z5vSsb7SrIJncKXl3EF1oBxoK22+cd+4pH6FqU10leCbvGbJm5ruc0RO7Y8mDvgeSlSS0sxV0OReNAwr5H7IA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721018042; c=relaxed/simple;
-	bh=3Wvcfe8oEdKfcyDZbopKoLa6dmTuK7X0SJZkvLu6YzY=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=K7Ubs7ZnmTZdgg3poiEiPXrKnhDrV+YaUQeaaJaEJh1kjJLDwFWtjWrygAezdB8byJBfIIXW8w6YY13RsnGqSDlC/Ly4Dt/tOe02Y66iCzIVqGte3ITFEr5JlWB2ZAumsmh6haztuzEA0McqS3bh0Dj5gEIoYzz5RNqgmfHrESM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IDokbObt; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2c983d8bdc7so3141244a91.0;
-        Sun, 14 Jul 2024 21:34:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721018041; x=1721622841; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=a4SCJwaKwCtR2CiDRItTCkrmfcVb4Wc6JiIR88R7Gqk=;
-        b=IDokbObt2afl1Kbmedl5gPtDxasqxoJtZe/N7KnbJx6gY+/4gWdRPUqxLBguTQVxZE
-         bLBOYsyXJz9uCTP3VF48pThbbtoRQ0/1FZUhhqbGU/scQNvLU8u240yXGqSXV0p3WBOK
-         Rh0+aC/gfhb7op0xaTMpDZ+k9pnI/ALOnmPgrU1cD0XsKJneEbj+GI7fie5QWcaYxrN9
-         j41da00zkShTWqM0ERhqfcCbcu6Zyxpyt+JrO/VNTJU0e+VMZyIG5WXBA5phkj2gpCSF
-         F1NLNsgMemX6Hp4R+RJRuF9iVx4MtyLS+9pSTp/yLIILYfJfYngw0fBRh356KTcR/BGm
-         7sbQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721018041; x=1721622841;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=a4SCJwaKwCtR2CiDRItTCkrmfcVb4Wc6JiIR88R7Gqk=;
-        b=ng82tJDTOhjjBDOzaefLV7oqUdsvr13zmEgeOpYJO73lUkhYibV4u3jhiPw36fTZG8
-         Hb9LKzz0cwDE1wnRUCnM4MHfL6B7EXZUl4Cmt81gvozygH+T7IIvuvwAt1yacahe8Ets
-         hDqBypWJ6hF7WxzCi3Fn+tcPGIGjyMbT9GGOJ4ujfZbVDzUu5qsV2IuAv+t+Mv/UXvWy
-         3VAI0QQ3v3/2peZPCFLsD9CnlhPCzNbgrCiLr6kzKjDeZO4CUvFed8aDGoVovwg/j5IV
-         uy1lF91/3r9QyzlbcJeZl8v01nqmZ+Y7pljz7x6LTFJaS1eFFEv6OOHZUVnGZX8sR6jW
-         lFqA==
-X-Forwarded-Encrypted: i=1; AJvYcCX48reshOBAmgn1igYTpSC5uDsdDEZ/UWQxB94fQi+X+jjM8Ye0hIPvRulRttyOH85CXoc5ZZ7aydFoaBvhCtkC3l6ZHZG9tQGUzoN3hdSzjZyCKHkk5bHA8ePuRlh85K+eNuGVlWReSg==
-X-Gm-Message-State: AOJu0Yw3GHO0qjD7WD/h6Fr5sBqc02I+ciiKDwbMZGia2nzgPVHLDNd/
-	+K/FfpSehR4uIwTTbXDm/ghes8TC34k7rnXX0uCkXQpRzpsA+VdH
-X-Google-Smtp-Source: AGHT+IFTVrPHAW2F6fx28LMhuf1pFShWPTA6HQBjHb3NaDPwyjtxNWxNbfX71qwLaOqYBHRjkmP0Cg==
-X-Received: by 2002:a17:903:184:b0:1fb:43d2:2c9e with SMTP id d9443c01a7336-1fbb6d42003mr161349985ad.17.1721018040398;
-        Sun, 14 Jul 2024 21:34:00 -0700 (PDT)
-Received: from xiaxiShen-ThinkPad.. ([50.175.126.146])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fc0bb6fedesm30904555ad.15.2024.07.14.21.33.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jul 2024 21:33:59 -0700 (PDT)
-From: Xiaxi Shen <shenxiaxi26@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: skhan@linuxfoundation.org,
-	javier.carrasco.cruz@gmail.com,
-	syzkaller-bugs@googlegroups.com,
-	shenxiaxi26@gmail.com,
-	syzbot+59e0101c430934bc9a36@syzkaller.appspotmail.com
-Subject: [PATCH] ext4: Fix timer use-after-free on failed mount
-Date: Sun, 14 Jul 2024 21:33:36 -0700
-Message-Id: <20240715043336.98097-1-shenxiaxi26@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1721020542; c=relaxed/simple;
+	bh=XBsZbKGiVtTrKlyP1R6GYcTiqxjh19bGVWk3vIktpF8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Cq2ZRIjlIPRKZNZp1P098D6Ojp0gM3qK6yLdal2DQNwqcxi+dYMdwRzIm02/xTmjqgsHtBWoxc6t7W4mW5ii240yvp24IXn3Z3mjRcrp3FtTts5tHjZfm4J22QQIvAyKELRTpIvAl2CN0NAJPS6MTefai7OMnzJVFEQnbmcyMkE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com; spf=pass smtp.mailfrom=kroah.com; dkim=pass (2048-bit key) header.d=kroah.com header.i=@kroah.com header.b=IJufC1hE; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=pT3pfWb5; arc=none smtp.client-ip=103.168.172.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=kroah.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kroah.com
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailflow.nyi.internal (Postfix) with ESMTP id 0AC5620054E;
+	Mon, 15 Jul 2024 01:15:39 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Mon, 15 Jul 2024 01:15:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=kroah.com; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1721020539; x=1721027739; bh=1ACFvhP62g
+	scbHqyYeARu0YHLy0C0ta9v4Ydldd1YuU=; b=IJufC1hEunLX8ShlvfQOj3gHeZ
+	tuMhkLLiuonq83SQrIF7ocSp5I/XfR4t5AK74YQMcasmzenZxy2vn07UYZGwlbBp
+	5XrDmdrJ9tOHHVzR1IAFcV4nNe0AOpST5V0I1N9u9sdJ1EsHeGqdDLvSkYB20JPS
+	uElbGdqdcJlKyp3kMaw/BCKPX5LS87KK+zjHXCmRG/JcMnGTx9d/H1ois9+fsOgo
+	x4ieMhf0wv+UKthJ4/yBtMelhIxmM8DMdIDipHoA7IJF2Y1AfQYULW/BzFM3ttL6
+	mBIeKVb+QA0TkVEJhg9ubHsgUZDX+XE0ruoC3O216horTNs8O4rhrxsUBWuw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1721020539; x=1721027739; bh=1ACFvhP62gscbHqyYeARu0YHLy0C
+	0ta9v4Ydldd1YuU=; b=pT3pfWb5lhsvBc8ig/lReN6EuBpyTD1rNcNe/NzywA9D
+	yawjrBoUcciq8rkL8OxRTRpFyqhrVD29c+lf09n/k3eaWu4ls2pMkweyk1A9xser
+	KMWpESlhTJhGAFriiRKML1MSyQ7+dTnTdw8ZKMWS8ejvZPDR/NdkGvTepDgB9lW3
+	UQwRsOCNQhwytpMy+wIL4wr/wx52By0Q76qMfaGFR0IHDdmD2ROCREmPMBfCD2c+
+	DKkHh14CBnwp1MQKQ3/7ESotzUombvXa7etBzE1R3sW9YXB9qQxAz8kus1XVy8Rg
+	LX+JvZ2z8AtI76ncd6BItzdupvQEcWz6lNtrHkHW4w==
+X-ME-Sender: <xms:ebCUZt-D3rte0sCxnqARy97iKOLUloqvW3f5OBOvgg8jU2T6wlqY5g>
+    <xme:ebCUZhucwiOaq8xm2Gc6rJl8nJOu2JOlyWDIHGLmsKgne9cAfrwhb8GiG5iRk6o5l
+    TqnU6fBYsP7Ew>
+X-ME-Received: <xmr:ebCUZrARYVzvRpECQ7CxQ5fJV5VXC-09THSqIrnJAL7T4-_gGO8356d0dBlHmput4TfzC-w3efnzNel_Pel8Fc05pCz8Jk9f5PcJHA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrgedugdelhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefirhgvghcu
+    mffjuceoghhrvghgsehkrhhorghhrdgtohhmqeenucggtffrrghtthgvrhhnpeehgedvve
+    dvleejuefgtdduudfhkeeltdeihfevjeekjeeuhfdtueefhffgheekteenucevlhhushht
+    vghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehgrhgvgheskhhrohgrhh
+    drtghomh
+X-ME-Proxy: <xmx:ebCUZhcUXL5iJ2IWw0WVuf_06XNPLWQTwYVu-_o_jNoHRtBosdYQ_Q>
+    <xmx:ebCUZiP8uHq0tA0-Pp2gGhumc43M4oi7ezbmMzxUlHV6InnFrdJI0w>
+    <xmx:ebCUZjlpdb41GrQU-mJnPzZEsO5V462CluKCQKOgKgzgvbmYye0grw>
+    <xmx:ebCUZsuUsHXNnnWFstQk9UcG5D7rUp4LYxGzEomfcGarQlnxCW5hdQ>
+    <xmx:erCUZrz7kLiuR7vYXy6YusCZveJodqhFSp9ZR7LUIASnPv7fRsWlVtvD>
+Feedback-ID: i787e41f1:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 15 Jul 2024 01:15:36 -0400 (EDT)
+Date: Mon, 15 Jul 2024 07:15:34 +0200
+From: Greg KH <greg@kroah.com>
+To: botta633 <bottaawesome633@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, Boqun Feng <boqun.feng@gmail.com>,
+	linux-ext4@vger.kernel.org, syzkaller@googlegroups.com,
+	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] locking/lockdep: Forcing subclasses to have same
+ name pointer as their parent class
+Message-ID: <2024071514-gift-bride-a420@gregkh>
+References: <20240715063447.391668-1-bottaawesome633@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240715063447.391668-1-bottaawesome633@gmail.com>
 
-Syzbot has found an ODEBUG bug in ext4_fill_super
+On Mon, Jul 15, 2024 at 09:34:46AM +0300, botta633 wrote:
+> From: Ahmed Ehab <bottaawesome633@gmail.com>
+> 
+> Preventing lockdep_set_subclass from creating a new instance of the
+> string literal. Hence, we will always have the same class->name among
+> parent and subclasses. This prevents kernel panics when looking up a
+> lock class while comparing class locks and class names.
+> 
+> Reported-by: <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
+> Fixes: de8f5e4f2dc1f ("lockdep: Introduce wait-type checks")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
+> ---
+>  include/linux/lockdep.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 
-The del_timer_sync function cancels the s_err_report timer,
-which reminds about filesystem errors daily. We should
-guarantee the timer is no longer active before kfree(sbi).
+Hi,
 
-When filesystem mounting fails, the flow goes to failed_mount3,
-where an error occurs when ext4_stop_mmpd is called, causing
-a read I/O failure. This triggers the ext4_handle_error function
-that ultimately re-arms the timer,
-leaving the s_err_report timer active before kfree(sbi) is called.
+This is the friendly patch-bot of Greg Kroah-Hartman.  You have sent him
+a patch that has triggered this response.  He used to manually respond
+to these common problems, but in order to save his sanity (he kept
+writing the same thing over and over, yet to different people), I was
+created.  Hopefully you will not take offence and will fix the problem
+in your patch and resubmit it so that it can be accepted into the Linux
+kernel tree.
 
-Fix the issue by canceling the s_err_report timer after calling ext4_stop_mmpd.
+You are receiving this message because of the following common error(s)
+as indicated below:
 
-Signed-off-by: Xiaxi Shen <shenxiaxi26@gmail.com>
-Reported-and-tested-by: syzbot+59e0101c430934bc9a36@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=59e0101c430934bc9a36
----
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+- This looks like a new version of a previously submitted patch, but you
+  did not list below the --- line any changes from the previous version.
+  Please read the section entitled "The canonical patch format" in the
+  kernel file, Documentation/process/submitting-patches.rst for what
+  needs to be done here to properly describe this.
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index c682fb927b64..1b4b0d3d8889 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5626,8 +5626,8 @@ failed_mount8: __maybe_unused
- failed_mount3:
- 	/* flush s_sb_upd_work before sbi destroy */
- 	flush_work(&sbi->s_sb_upd_work);
--	del_timer_sync(&sbi->s_err_report);
- 	ext4_stop_mmpd(sbi);
-+	del_timer_sync(&sbi->s_err_report);
- 	ext4_group_desc_free(sbi);
- failed_mount:
- 	if (sbi->s_chksum_driver)
--- 
-2.34.1
+If you wish to discuss this problem further, or you have questions about
+how to resolve this issue, please feel free to respond to this email and
+Greg will reply once he has dug out from the pending patches received
+from other developers.
 
+thanks,
+
+greg k-h's patch email bot
 
