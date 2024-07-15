@@ -1,112 +1,118 @@
-Return-Path: <linux-ext4+bounces-3278-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3279-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED6C5931659
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 16:03:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF79593169F
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 16:24:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 997611F2255E
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 14:03:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F066B221F3
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 14:24:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7F818EA83;
-	Mon, 15 Jul 2024 14:03:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBCBA18EA62;
+	Mon, 15 Jul 2024 14:24:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="RFl2Es5K"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DFE918E774
-	for <linux-ext4@vger.kernel.org>; Mon, 15 Jul 2024 14:03:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B708618C335
+	for <linux-ext4@vger.kernel.org>; Mon, 15 Jul 2024 14:24:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721052210; cv=none; b=uCxCx8RcSzaILv5yl4bLWjcK0CQ7mP7CwiVnVtIZeP3E6YywudrFsLZN9K2p/4N7vJ5y3xfophrscdakCJM14rNx1++6zYW/WiUwTriQxKI7qCZqGpz4w4T2D6OhW9IDYEoSSepz55wuEinRwYuWcTuP65ZXRC057Qf4mZ6umVk=
+	t=1721053462; cv=none; b=hUqcc6Yl2wgJMclgKfNOIvxMJrok7+bC+XV/eEzGD4iWXXLRTEoTIzLENDWvaQbYZIz3z5NGDoD4lVz9JMn7XmJOPgk+3xF1jQkh2C4ZMDb1PSVvXJEUte40jrdMJGysLtgjsQwhXk0EIq6US6ei26g2HAujzmDpznVFCKC/O9s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721052210; c=relaxed/simple;
-	bh=C+gRiq69F4ISt6vvxd9tUTsZhvSX+XhIhoiPKht+0Vk=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Ro84hVaFmC3mKH4KAYDNBwPZNsEH2iC81CC/re5uKS00Sro0jXOe60d6Y4l48rNZvLVy3xMTsSxND8Rh21SMKfKlOFTdBaPZRUi+yDIVd3XSgPZMDVyfX4UV/bwvUZkUZmVRXpUOFKTrya9L9f9u0DfqC8l5dQ1ief2V+AiDdy8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-8152f0c4837so1295839f.0
-        for <linux-ext4@vger.kernel.org>; Mon, 15 Jul 2024 07:03:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721052208; x=1721657008;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l1lNj/oSeYXzBUdR6uxjHpRPfChohFUFqZTmJEjOkYE=;
-        b=Cr72SKgKIXm+kNwJHM2poBedDM/njaUErPMA1KTpRdqphc/cyLmgDyA5+42Cyak/7P
-         AjIB+c0Fj/fq4GKz0f2v/WkmmkEt+DbdNGzJBBwEjkeZqV5gdHjayqo0Vft+H9df2pS/
-         pgLWo0M6rNez4EVkN1sWxd93kttwIhAhxeo1xLoZFCaFjllYMpQoZjeykGbus6svafsa
-         KJfe/ItpJjnNLALaxVIE99ih1Z3oDds3LJUAmQ4oNaTKuWNXS+oDkipmqHz3YLHCfR04
-         6x5x3R+2DKd+9WHfbV9waJRQp8GRdmjMsl4CVL84LKHa1Y/xlBVK04ueo6R0TxGBubyn
-         RX1g==
-X-Gm-Message-State: AOJu0YzqCHHCh+StYjkz0mxHp8oH28RF3QAEqFNHzzKrVIBsDCwFSAAU
-	1i0GttSkfFAM997Y2SzuiitC9NNEQdJ/bmy8TR6cWaREVm014Uu/L6LlR2NyuwNynhRtiekCDG4
-	edm93LiHdwfASrCiEAnZ7ANAU3kUvFaEACC2ZvceG/ZP0scjrGJjFBuI=
-X-Google-Smtp-Source: AGHT+IGZKMBcCYlEDP31jz9E4gHrPb9JJsJPbCjKFqlG0rQxOeHTaUxB8iufAyylTONKJLMyslc4OwLTjoP2Tbvlx5LYLJSk1SLo
+	s=arc-20240116; t=1721053462; c=relaxed/simple;
+	bh=jadYoQb1W14XSd8A0IG5OahW5gEfDZGyZgN5UaQB+nI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YzayOWOCGOCMcSBD0inRVXSrY14fr4ulcY1i5EyiinRwJ0Nn4HoMoLfXkU0M3N3yvrYGtbLQlbb1XDwHbyQIObJkVSoGdql+wKWiKetoVDutNNLUMBt51H+1t4j0t18Ua01pA6wv+yoVg9DajyWZqoYMbi5vODzD2bROvnl6BeY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=RFl2Es5K; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-108.bstnma.fios.verizon.net [173.48.102.108])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46FEO3jw011524
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jul 2024 10:24:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1721053445; bh=x2y58X4Q4lxVklgROmX+Ft/OSyd8eboDgbw63MzF9mQ=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=RFl2Es5KsEVuHo7NnTJ2ijZGKO0jvqfso0IrLETH0oPVAIJvI5Po8jAP2dVqeRUUy
+	 90NnSPW8adhMduzSIN6sTfoMCfZD/uktnajnwcKqlm91vzZzso3Nx0H+fU75tRm6x/
+	 /JTQbnilWk/utDoWkH4vhwEV8MckpuH6c7DtjdcbNvAVIkrx+uaxh6xOPcz/yBQ8PD
+	 cnfYzU3nRDfUcbiW1z7dytNAghIlNJTJyEhGKRIYy8dCuIeNXUcGBe7BV2m+UDCPNL
+	 qcvRibLYaLYxfoxbvE3enAt0RWcxPvEFsJN26BqcI4R0+EE9maXoXN7cCfLCYgaYx9
+	 MueaXtB5o4vwA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 68DA715C029B; Mon, 15 Jul 2024 10:24:03 -0400 (EDT)
+Date: Mon, 15 Jul 2024 10:24:03 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Daniel Gomez <da.gomez@samsung.com>
+Cc: Zorro Lang <zlang@redhat.com>,
+        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
+        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Re: [Bug report]: fstests g/388 crash on ext4, BUG: kernel NULL
+ pointer dereference, address: 0000000000000000
+Message-ID: <20240715142403.GA70013@mit.edu>
+References: <20240714034624.qz3l7f52pi6m27yx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+ <CGME20240715042825eucas1p2f409955112396d2777f3f2a5ef3764c8@eucas1p2.samsung.com>
+ <20240715042803.GM10452@mit.edu>
+ <ejaxnieh5h6bfeocb7gwtonirthjvpgoveqvmfnb5ebqk33uxs@4lvgdocvt55c>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:9827:b0:4b7:c9b5:675c with SMTP id
- 8926c6da1cb9f-4c0b2b907f6mr1432835173.6.1721052208085; Mon, 15 Jul 2024
- 07:03:28 -0700 (PDT)
-Date: Mon, 15 Jul 2024 07:03:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000080c9c5061d49b1d4@google.com>
-Subject: [syzbot] Monthly ext4 report (Jul 2024)
-From: syzbot <syzbot+list2032c8f48b9cdc43ce58@syzkaller.appspotmail.com>
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ejaxnieh5h6bfeocb7gwtonirthjvpgoveqvmfnb5ebqk33uxs@4lvgdocvt55c>
 
-Hello ext4 maintainers/developers,
+On Mon, Jul 15, 2024 at 08:01:54AM +0000, Daniel Gomez wrote:
+> 
+> My guess is that '-o acl,user_xattr' [1] options are now included in
+> the scratch device and they were not before. This is what patch 4
+> fixes. f2fs, tmpfs, reiserfs, gfs2 and ext* will be affected as well
+> with their respective default mount options.
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+At least for ext4, acl and user_xattr are enabled by default:
 
-During the period, 6 new issues were detected and 0 were fixed.
-In total, 39 issues are still open and 134 have been fixed so far.
+% kvm-xfstests shell
+...
+root@kvm-xfstests:~# mount -t ext4 /dev/vdc /vdc
+[   11.207917] EXT4-fs (vdc): recovery complete
+[   11.209103] EXT4-fs (vdc): mounted filesystem 881ec32f-72a0-4b10-9a3f-a68c68f31f40 r/w with ordered data mode. Quota mode: none.
+root@kvm-xfstests:~# cat /proc/fs/ext4/vdc/options 
+...
+user_xattr
+acl
+...
+root@kvm-xfstests:~# 
 
-Some of the still happening issues:
+> [1] From _common_mount_opts(). Snippet:
+> 
+> 	ext2|ext3|ext4|ext4dev)
+> 		# acls & xattrs aren't turned on by default on ext$FOO
+> 		echo "-o acl,user_xattr $EXT_MOUNT_OPTIONS"
+> 		;;
 
-Ref  Crashes Repro Title
-<1>  893     Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<2>  784     Yes   WARNING: locking bug in __ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
-<3>  595     Yes   WARNING: locking bug in ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
-<4>  237     Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
-                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
-<5>  120     No    WARNING in ext4_fileattr_get
-                   https://syzkaller.appspot.com/bug?extid=d6a7a43c85606b87babd
-<6>  111     Yes   possible deadlock in ext4_xattr_inode_iget (3)
-                   https://syzkaller.appspot.com/bug?extid=ee72b9a7aad1e5a77c5c
-<7>  66      No    INFO: task hung in ext4_stop_mmpd
-                   https://syzkaller.appspot.com/bug?extid=0dd5b81275fa083055d7
-<8>  47      Yes   kernel BUG in ext4_write_inline_data_end (2)
-                   https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
-<9>  31      Yes   INFO: rcu detected stall in sys_unlink (3)
-                   https://syzkaller.appspot.com/bug?extid=c4f62ba28cc1290de764
-<10> 30      Yes   WARNING in fscrypt_fname_siphash
-                   https://syzkaller.appspot.com/bug?extid=340581ba9dceb7e06fb3
+Yeah, that hasn't been true for a while....
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+commit ea6633369458992241599c9d9ebadffaeddec164
+Author: Eric Sandeen <sandeen@redhat.com>
+Date:   Wed Feb 23 17:51:51 2011 -0500
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+    ext4: enable acls and user_xattr by default
+    
+    There's no good reason to require the extra step of providing
+    a mount option for acl or user_xattr once the feature is configured
+    on; no other filesystem that I know of requires this.
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
+So we probably remove that bit from _common_mount_opts.  :-)
 
-You may send multiple commands in a single email message.
+    	       	      	       	    			 - Ted
 
