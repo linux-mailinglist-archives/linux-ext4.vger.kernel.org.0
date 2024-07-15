@@ -1,267 +1,180 @@
-Return-Path: <linux-ext4+bounces-3267-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3268-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3509893148F
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 14:42:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DF789314A9
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 14:49:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B30891F22F32
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 12:42:13 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 93255B22F61
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 12:49:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C4E218C32E;
-	Mon, 15 Jul 2024 12:42:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA01318C354;
+	Mon, 15 Jul 2024 12:49:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hHO0YxtV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FBA918C199;
-	Mon, 15 Jul 2024 12:42:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0826118C176;
+	Mon, 15 Jul 2024 12:49:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721047325; cv=none; b=B3uLfEVuaMBRmzQlB+5p43SGd2ovQ+p5JHYPkjlnwD02iXe1quRK3HX5sXOIDtwoF9Mo294mBNgwAPx4Y5Nbmy/PcW1Bi8z+y3TlGQImsih2d4VaIvYCY2QLuN+KIQEFBhyoWPIDhwEyUoY5Hqchzq7BMMigLqVGj/OIV2LukWw=
+	t=1721047751; cv=none; b=UTiZOO4klNFjygCkS4m+7E39WP7fmJuCBRgSK0ZNDUcehapXaEMWxVO1J/n8LtobChAJ4gJyT+IugEg/LSWwQUS7+82jMKwW6UD7FWKWCjXDuDfvWU25FPmzDwIvTjnlE91zp6+Fljj+D9kz9wF4o2Sf5MDxDisAX4KWpbegyMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721047325; c=relaxed/simple;
-	bh=RymC3KXofy0N4SRL7i6l50KYjj5iqOuKS3ZHuEBMQA8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=d0naAVD2gMc/aY0E2YLMAcVgN4lg+3gz/X4mPrw5YxT28Hm3m409BEg87LI5iubqX1zOZrAJlLlfadpv8Oiy+rR6JCBlNr7TEqBM7O3li2X0UZZoD15RwKOR+f50VNHUwtIYFfOULDG2CFdlAqhcD9Ccp9iVoIR0ONJ1+rV6Ogo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WN1zY5Tp6z4f3m7B;
-	Mon, 15 Jul 2024 20:41:45 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D9E891A0181;
-	Mon, 15 Jul 2024 20:41:58 +0800 (CST)
-Received: from [10.174.177.174] (unknown [10.174.177.174])
-	by APP4 (Coremail) with SMTP id gCh0CgC3mjgTGZVm3G7QAA--.42161S3;
-	Mon, 15 Jul 2024 20:41:58 +0800 (CST)
-Message-ID: <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
-Date: Mon, 15 Jul 2024 20:41:55 +0800
+	s=arc-20240116; t=1721047751; c=relaxed/simple;
+	bh=xFFgpft1Mea2W1k9CRfnoGMXT8jsvAC5W7aI49zY2Ho=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=XsbhcRmzenHvMKxFjCO9t2VfP7tScdIiWJSDyORlINKZm+M11+6hne6RDEpdCfZn0eJGxYTSeOgHtvfVbmf7DmaOEK/Kpzzx1J264z8avgOWZQZwHNSrC/GFgIFel4fgsapAITcGgYeZUkYePxKcPHjySrVMnsOU4ymXVmdxGdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hHO0YxtV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE245C32782;
+	Mon, 15 Jul 2024 12:49:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721047750;
+	bh=xFFgpft1Mea2W1k9CRfnoGMXT8jsvAC5W7aI49zY2Ho=;
+	h=From:Subject:Date:To:Cc:From;
+	b=hHO0YxtV0sA7lKQy/qpLsAUoBj1SK5dbWWh/2CEfEcmYykhD36/pSSmr7qi/ixBVF
+	 jQ0qVn2G1Kctx7Xm/CRjFjBCp0cmcJrckKdNxBA084n9hdWkj55fal7wkSfI0Bwhkn
+	 e2/wyIH70/thsGeXp+3qb9BEC1AxXsogak1p2XusxeoG/s9fCWGxD7amUEZz6nz/Kz
+	 +eSbbBfQMq8Oguwj6tUjlMYhaHKipf4O+J+TxukYaaBTMYbvn4bFjCkS0gS6nEDygw
+	 LOhWc+6Z9oxKKkF9i/dNle20vVbucj4mcDeyWNQz+SaZ0KzI1jvKqTywtRnUVppgrM
+	 frsjZG+6s597g==
+From: Jeff Layton <jlayton@kernel.org>
+Subject: [PATCH v6 0/9] fs: multigrain timestamp redux
+Date: Mon, 15 Jul 2024 08:48:51 -0400
+Message-Id: <20240715-mgtime-v6-0-48e5d34bd2ba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/20] ext4: prevent partial update of the extents path
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
- yi.zhang@huawei.com, yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>,
- zhanchengbin <zhanchengbin1@huawei.com>, Baokun Li <libaokun@huaweicloud.com>
-References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
- <20240710040654.1714672-3-libaokun@huaweicloud.com>
- <ZpPx3kuO36lp9/Um@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <9fd554c7-dc0c-4969-9f2a-1c99356fccce@huaweicloud.com>
-Content-Language: en-US
-From: Baokun Li <libaokun@huaweicloud.com>
-In-Reply-To: <9fd554c7-dc0c-4969-9f2a-1c99356fccce@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgC3mjgTGZVm3G7QAA--.42161S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3XrW8GF48JrW8WrykXry3XFb_yoW3XFyxpr
-	nayF1UGrWUWwn5Wry7GF1UJryUAw18Jw17JrWrGFy8JFWUAr1aqr10qF109F1DJrZ7Ja15
-	tryUXrnrur1UJrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
-	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
-	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
-	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
-	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
-	0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
-	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
-	42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-	evJa73UjIFyTuYvjfUFg4SDUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAFBWaU3XsUgAABsA
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALMalWYC/2XOQW7DIBAF0KtErEs0AwyGrHqPqgsw4KA0doUjq
+ 1Xkuwdn4Tjy8o/mff07G2PJcWSnw52VOOUxD30N+uPA2rPru8hzqJkJEAq00Pza3fI1cmqDAY8
+ mGARWn39LTPnvWfT1XfM5j7eh/D97J1yuu4oJOXCHxkoSAZJJn5dY+vhzHErHlo5JvFwDuDpRH
+ dqgUDirINidk1tHq5PVGfIiOGe9lLRzauvM6tSyE5JsdfLUJLlztHH42knVycZ78kpTiv7NzfP
+ 8AGWAWtd9AQAA
+To: Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ Steven Rostedt <rostedt@goodmis.org>, 
+ Masami Hiramatsu <mhiramat@kernel.org>, 
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+ Chandan Babu R <chandan.babu@oracle.com>, 
+ "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
+ Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
+ Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+ Jonathan Corbet <corbet@lwn.net>
+Cc: Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>, 
+ Christoph Hellwig <hch@infradead.org>, Uros Bizjak <ubizjak@gmail.com>, 
+ Kent Overstreet <kent.overstreet@linux.dev>, Arnd Bergmann <arnd@arndb.de>, 
+ Randy Dunlap <rdunlap@infradead.org>, linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
+ linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-nfs@vger.kernel.org, 
+ linux-doc@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=3631; i=jlayton@kernel.org;
+ h=from:subject:message-id; bh=xFFgpft1Mea2W1k9CRfnoGMXT8jsvAC5W7aI49zY2Ho=;
+ b=kA0DAAgBAA5oQRlWghUByyZiAGaVGr2g4UrC2NR/JuNqzaZKyhN0Ef4ZmpMvcH7PbDDPZHHRV
+ IkCMwQAAQgAHRYhBEvA17JEcbKhhOr10wAOaEEZVoIVBQJmlRq9AAoJEAAOaEEZVoIVTjQP/jX+
+ FkDKAs3wVJ5Axae25xxqh3+9eKr0TZGpOgkPagjwLT6v3f9XdjTx2D+ny31MbxZx/8McTCh5CqJ
+ MGiEx4rfChljA39Fo/tW9wXGqNRPbnTWdKXc4PfP6WoC0NVtDBRFQtLB9NypjpBFG8NEMhzxWHi
+ 7d4e3cfDb9xiU6JM0NjmIligXvUQiWXAKnzPfPQO2IFF4dbLuMieQdwv2aJcpR6dFseL1XsEWSP
+ CEvJfHO1LicNtZ2HnTCUN4THmgXqRq2+DCAh13kGt63mbgaWg2ZdMaxzjlKn0Q6PzgYGca0jJJS
+ /6R4MROk86E+GnGt7CkR42Qll5QKwzReKTCAlZBQBuECkMcOTMGUaJnMKBb4aSH+pgfdEO53CQ3
+ f/jO/nubRe3e1M7r7xjT3fGDfTXAecDgT8CjXnAlGDjyXfapx+cjnMSROMycWqsPxaVAlZmSKXt
+ nxZ5qgK/wv5IwQt9KknfIKDoV6xiK+u27ekJ+feAYc/e5dUd+m2AzN+LIf3X0K8n917ky5sZKvB
+ mhpyaxFsNuX78/dILLUSGbie3FmjWHzJokfYwLfrwSUt3LYE4YXJ/gXEgHs+eQhmU8HV0GiD4QQ
+ nKvv2railk/i6NH5pvQy2msnvWcNvs2yvwaMevWsvEqFLM6yFTMJH90b3Rw/l3SSF7mq6YQrGzf
+ DJstS
+X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
+ fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-On 2024/7/15 20:33, Baokun Li wrote:
-> Hi Ojaswin!
->
-> On 2024/7/14 23:42, Ojaswin Mujoo wrote:
->> On Wed, Jul 10, 2024 at 12:06:36PM +0800, libaokun@huaweicloud.com 
->> wrote:
->>> From: Baokun Li <libaokun1@huawei.com>
->>>
->>> In ext4_ext_rm_idx() and ext4_ext_correct_indexes(), there is no proper
->>> rollback of already executed updates when updating a level of the 
->>> extents
->>> path fails, so we may get an inconsistent extents tree, which may 
->>> trigger
->>> some bad things in errors=continue mode.
->>>
->>> Hence clear the verified bit of modified extents buffers if the tree 
->>> fails
->>> to be updated in ext4_ext_rm_idx() or ext4_ext_correct_indexes(), which
->>> forces the extents buffers to be checked in 
->>> ext4_valid_extent_entries(),
->>> ensuring that the extents tree is consistent.
->>>
->>> Signed-off-by: zhanchengbin <zhanchengbin1@huawei.com>
->>> Link: 
->>> https://lore.kernel.org/r/20230213080514.535568-3-zhanchengbin1@huawei.com/
->>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
->>> ---
->>>   fs/ext4/extents.c | 31 +++++++++++++++++++++++++++----
->>>   1 file changed, 27 insertions(+), 4 deletions(-)
->>>
->>> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
->>> index bff3666c891a..4d589d34b30e 100644
->>> --- a/fs/ext4/extents.c
->>> +++ b/fs/ext4/extents.c
->>> @@ -1749,12 +1749,23 @@ static int ext4_ext_correct_indexes(handle_t 
->>> *handle, struct inode *inode,
->>>        break;
->>>      err = ext4_ext_get_access(handle, inode, path + k);
->>>      if (err)
->>> -     break;
->>> +     goto clean;
->>>      path[k].p_idx->ei_block = border;
->>>      err = ext4_ext_dirty(handle, inode, path + k);
->>>      if (err)
->>> -     break;
->>> +     goto clean;
->>>    }
->>> + return 0;
->>> +
->>> +clean:
->>> + /*
->>> +  * The path[k].p_bh is either unmodified or with no verified bit
->>> +  * set (see ext4_ext_get_access()). So just clear the verified bit
->>> +  * of the successfully modified extents buffers, which will force
->>> +  * these extents to be checked to avoid using inconsistent data.
->>> +  */
->>> + while (++k < depth)
->>> +   clear_buffer_verified(path[k].p_bh);
->>>      return err;
->>>   }
->>> @@ -2312,12 +2323,24 @@ static int ext4_ext_rm_idx(handle_t *handle, 
->>> struct inode *inode,
->>>        break;
->>>      err = ext4_ext_get_access(handle, inode, path + k);
->>>      if (err)
->>> -     break;
->>> +     goto clean;
->>>      path[k].p_idx->ei_block = path[k + 1].p_idx->ei_block;
->>>      err = ext4_ext_dirty(handle, inode, path + k);
->>>      if (err)
->>> -     break;
->>> +     goto clean;
->>>    }
->>> + return 0;
->>> +
->>> +clean:
->>> + /*
->>> +  * The path[k].p_bh is either unmodified or with no verified bit
->>> +  * set (see ext4_ext_get_access()). So just clear the verified bit
->>> +  * of the successfully modified extents buffers, which will force
->>> +  * these extents to be checked to avoid using inconsistent data.
->>> +  */
->>> + while (++k < depth)
->>> +   clear_buffer_verified(path[k].p_bh);
->>> +
->>>    return err;
->>>   }
->> Hi Baokun,
->>
->> So I wanted to understand the extent handling paths for a whil and 
->> thought this
->> patchset was a good chance to finally take sometime and do that.
->>
->> I do have a question based on my understanding of this extent 
->> deletion code:
->>
->> So IIUC, ext4_find_extent() will return a path where buffer of each 
->> node is
->> verified (via bh = read_extent_tree_block()). So imagine we have the 
->> following
->> path (d=depth, blk=idx.ei_block, v=verified, nv=not-verified):
->>
->> +------+     +------+     +------+     +------+     +------+
->> |d=0   |     |d=1   |     |d=2   |     |d=3   |     |      |
->> |blk=1 | --> |blk=1 | --> |blk=1 | --> |blk=1 | --> |pblk=1|
->> |(v)   |     |(v)   |     |(v)   |     |(v)   |     |      |
->> +------+     +------+     +------+     +------+     +------+
->>                                         |d=3   |     +------+
->>                                         |blk=2 | --> |      |
->>                                         |(v)   |     |pblk=2|
->>                                         +------+     |      |
->>                                                      +------+
->>
->> Here, the the last column are the leaf nodes with only 1 extent in 
->> them.  Now,
->> say we want to punch the leaf having pblk=1. We'll eventually call
->> ext4_ext_rm_leaf() -> ext4_ext_rm_idx() to remove the index at depth 
->> = 3 and
->> try fixin up the indices in path with ei_block = 2
->>
->> Suppose we error out at depth == 1. After the cleanup (introduced in 
->> this
->> patch), we'll mark depth = 1 to 4 as non verified:
->>
->> +------+     +------+     +------+     +------+     +------+
->> |d=0   |     |d=1   |     |d=2   |     |d=3   |     |      |
->> |blk=1 | --> |blk=1 | --> |blk=2 | --> |blk=2 | --> |pblk=2|
->> |(v)   |     |(nv)  |     |(nv)  |     |(nv)  |     |(nv)  |
->> +------+     +------+     +------+     +------+     +------+
-> Exactly right!
->>
->> And we return and we won't actually mark the FS corrupt until we try 
->> to check
->> the bh at depth = 1 above. In this case, the first node is still 
->> pointing to
->> wrong ei_block but is marked valid. Aren't we silently leaving the 
->> tree in an
->> inconsistent state which might lead to corrupted lookups until we 
->> actually
->> touch the affected bh and realise that there's a corruption.
->>
->> Am I missing some codepath here? Should we maybe try to clear_valid 
->> for the
->> whole tree?
->>
->> (I hope the formatting of diagram comes out correct :) )
-Uh, I'm sorry, my diagram is disordered. 😅
->>
->> Regards,
->> ojaswin
-> But the journal will ensure the consistency of the extents path after
-> this patch.
->
-> When ext4_ext_get_access() or ext4_ext_dirty() returns an error in
-> ext4_ext_rm_idx() and ext4_ext_correct_indexes(), this may cause
-> the extents tree to be inconsistent. But the inconsistency just
-> exists in memory and doesn't land on disk.
->
-> For ext4_ext_get_access(), the handle must have been aborted
-> when it returned an error, as follows:
-ext4_ext_get_access
-  ext4_journal_get_write_access
-   __ext4_journal_get_write_access
-    err = jbd2_journal_get_write_access
-    if (err)
-      ext4_journal_abort_handle
-> For ext4_ext_dirty(), since path->p_bh must not be null and handle
-> must be valid, handle is aborted anyway when an error is returned:
-ext4_ext_dirty
-  __ext4_ext_dirty
-   if (path->p_bh)
-     __ext4_handle_dirty_metadata
-      if (ext4_handle_valid(handle))
-        err = jbd2_journal_dirty_metadata
-         if (!is_handle_aborted(handle) && WARN_ON_ONCE(err))
-           ext4_journal_abort_handle
-> Thus the extents tree will only be inconsistent in memory, so only
-> the verified bit of the modified buffer needs to be cleared to avoid
-> these inconsistent data being used in memory.
->
-Regards,
-Baokun
+I think this is pretty much ready for linux-next now. Since the latest
+changes are pretty minimal, I've left the Reviewed-by's intact. It would
+be nice to have acks or reviews from maintainers for ext4 and tmpfs too.
+
+I did try to plumb this into bcachefs too, but the way it handles
+timestamps makes that pretty difficult. It keeps the active copies in an
+internal representation of the on-disk inode and periodically copies
+them to struct inode. This is backward from the way most blockdev
+filesystems do this.
+
+Christian, would you be willing to pick these up  with an eye toward
+v6.12 after the merge window settles?
+
+Thanks!
+
+Signed-off-by: Jeff Layton <jlayton@kernel.org>
+---
+Changes in v6:
+- Normalize timespec64 in inode_set_ctime_to_ts
+- use DEFINE_PER_CPU counters for better vfs consistency
+- skip ctime cmpxchg if the result means nothing will change
+- add trace_ctime_xchg_skip to track skipped ctime updates
+- use __print_flags in ctime_ns_xchg tracepoint
+- Link to v5: https://lore.kernel.org/r/20240711-mgtime-v5-0-37bb5b465feb@kernel.org
+
+Changes in v5:
+- refetch coarse time in coarse_ctime if not returning floor
+- timestamp_truncate before swapping new ctime value into place
+- track floor value as atomic64_t
+- cleanups to Documentation file
+- Link to v4: https://lore.kernel.org/r/20240708-mgtime-v4-0-a0f3c6fb57f3@kernel.org
+
+Changes in v4:
+- reordered tracepoint fields for better packing
+- rework percpu counters again to also count fine grained timestamps
+- switch to try_cmpxchg for better efficiency
+- Link to v3: https://lore.kernel.org/r/20240705-mgtime-v3-0-85b2daa9b335@kernel.org
+
+Changes in v3:
+- Drop the conversion of i_ctime fields to ktime_t, and use an unused bit
+  of the i_ctime_nsec field as QUERIED flag.
+- Better tracepoints for tracking floor and ctime updates
+- Reworked percpu counters to be more useful
+- Track floor as monotonic value, which eliminates clock-jump problem
+
+Changes in v2:
+- Added Documentation file
+- Link to v1: https://lore.kernel.org/r/20240626-mgtime-v1-0-a189352d0f8f@kernel.org
+
+---
+Jeff Layton (9):
+      fs: add infrastructure for multigrain timestamps
+      fs: tracepoints around multigrain timestamp events
+      fs: add percpu counters for significant multigrain timestamp events
+      fs: have setattr_copy handle multigrain timestamps appropriately
+      Documentation: add a new file documenting multigrain timestamps
+      xfs: switch to multigrain timestamps
+      ext4: switch to multigrain timestamps
+      btrfs: convert to multigrain timestamps
+      tmpfs: add support for multigrain timestamps
+
+ Documentation/filesystems/multigrain-ts.rst | 120 +++++++++++++
+ fs/attr.c                                   |  52 +++++-
+ fs/btrfs/file.c                             |  25 +--
+ fs/btrfs/super.c                            |   3 +-
+ fs/ext4/super.c                             |   2 +-
+ fs/inode.c                                  | 251 +++++++++++++++++++++++++---
+ fs/stat.c                                   |  39 ++++-
+ fs/xfs/libxfs/xfs_trans_inode.c             |   6 +-
+ fs/xfs/xfs_iops.c                           |  10 +-
+ fs/xfs/xfs_super.c                          |   2 +-
+ include/linux/fs.h                          |  34 +++-
+ include/trace/events/timestamp.h            | 124 ++++++++++++++
+ mm/shmem.c                                  |   2 +-
+ 13 files changed, 592 insertions(+), 78 deletions(-)
+---
+base-commit: bb83a76c647a96db4c9ae77b0577170da4d7bd77
+change-id: 20240626-mgtime-5cd80b18d810
+
+Best regards,
+-- 
+Jeff Layton <jlayton@kernel.org>
 
 
