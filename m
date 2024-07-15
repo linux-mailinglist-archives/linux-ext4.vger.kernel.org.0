@@ -1,67 +1,75 @@
-Return-Path: <linux-ext4+bounces-3279-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3280-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF79593169F
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 16:24:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A5DBF931A47
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 20:29:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6F066B221F3
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 14:24:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 03C15B227DE
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 18:29:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBCBA18EA62;
-	Mon, 15 Jul 2024 14:24:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFF2374424;
+	Mon, 15 Jul 2024 18:29:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="RFl2Es5K"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WW8iEsT2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B708618C335
-	for <linux-ext4@vger.kernel.org>; Mon, 15 Jul 2024 14:24:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36EEC18B1A;
+	Mon, 15 Jul 2024 18:29:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721053462; cv=none; b=hUqcc6Yl2wgJMclgKfNOIvxMJrok7+bC+XV/eEzGD4iWXXLRTEoTIzLENDWvaQbYZIz3z5NGDoD4lVz9JMn7XmJOPgk+3xF1jQkh2C4ZMDb1PSVvXJEUte40jrdMJGysLtgjsQwhXk0EIq6US6ei26g2HAujzmDpznVFCKC/O9s=
+	t=1721068149; cv=none; b=RWA4GzLrsoGBVzw8ivPnTuc7AxOpeh4zvy8X9U/oegLCYakTo9eK23aLrEY8u7OnyzPWMASuup7HvsN8ogsFvrXyW4UytgmqoEsn3p+qRKBzDe/IIJQR5KWVLKnkIr5GVyRu2KrB0bd+enPvNrl8/U6RUbVt70H44ckOCHaJ6L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721053462; c=relaxed/simple;
-	bh=jadYoQb1W14XSd8A0IG5OahW5gEfDZGyZgN5UaQB+nI=;
+	s=arc-20240116; t=1721068149; c=relaxed/simple;
+	bh=fTKTqXvODxiH14W2JlEV67Ic+f/odwUbY+RedfTGRAE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YzayOWOCGOCMcSBD0inRVXSrY14fr4ulcY1i5EyiinRwJ0Nn4HoMoLfXkU0M3N3yvrYGtbLQlbb1XDwHbyQIObJkVSoGdql+wKWiKetoVDutNNLUMBt51H+1t4j0t18Ua01pA6wv+yoVg9DajyWZqoYMbi5vODzD2bROvnl6BeY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=RFl2Es5K; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-102-108.bstnma.fios.verizon.net [173.48.102.108])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46FEO3jw011524
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 15 Jul 2024 10:24:04 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1721053445; bh=x2y58X4Q4lxVklgROmX+Ft/OSyd8eboDgbw63MzF9mQ=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=RFl2Es5KsEVuHo7NnTJ2ijZGKO0jvqfso0IrLETH0oPVAIJvI5Po8jAP2dVqeRUUy
-	 90NnSPW8adhMduzSIN6sTfoMCfZD/uktnajnwcKqlm91vzZzso3Nx0H+fU75tRm6x/
-	 /JTQbnilWk/utDoWkH4vhwEV8MckpuH6c7DtjdcbNvAVIkrx+uaxh6xOPcz/yBQ8PD
-	 cnfYzU3nRDfUcbiW1z7dytNAghIlNJTJyEhGKRIYy8dCuIeNXUcGBe7BV2m+UDCPNL
-	 qcvRibLYaLYxfoxbvE3enAt0RWcxPvEFsJN26BqcI4R0+EE9maXoXN7cCfLCYgaYx9
-	 MueaXtB5o4vwA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 68DA715C029B; Mon, 15 Jul 2024 10:24:03 -0400 (EDT)
-Date: Mon, 15 Jul 2024 10:24:03 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Daniel Gomez <da.gomez@samsung.com>
-Cc: Zorro Lang <zlang@redhat.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        "fstests@vger.kernel.org" <fstests@vger.kernel.org>,
-        "Darrick J. Wong" <djwong@kernel.org>
-Subject: Re: [Bug report]: fstests g/388 crash on ext4, BUG: kernel NULL
- pointer dereference, address: 0000000000000000
-Message-ID: <20240715142403.GA70013@mit.edu>
-References: <20240714034624.qz3l7f52pi6m27yx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
- <CGME20240715042825eucas1p2f409955112396d2777f3f2a5ef3764c8@eucas1p2.samsung.com>
- <20240715042803.GM10452@mit.edu>
- <ejaxnieh5h6bfeocb7gwtonirthjvpgoveqvmfnb5ebqk33uxs@4lvgdocvt55c>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Kc6nXXmvpDfxpPvqfQxPxU7giIyy7TeW/SQkE01TKDSN71xbRrBokSfBPW6ff0No7o4P9GXCt54Y4Az6hd5C+a94hZ93MvFTV4uqk9MZL7JFj7JZH71uUEplIv+AagH8XPzi+279c/AMtYSYxnnB7e2S6rJuamBLt5o2JEioc38=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WW8iEsT2; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6A1BC32782;
+	Mon, 15 Jul 2024 18:29:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721068148;
+	bh=fTKTqXvODxiH14W2JlEV67Ic+f/odwUbY+RedfTGRAE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WW8iEsT27XWeAdUScm3j2X4Bh2cAg1X9i4WUdmMLYvtm9ybgPYTx6KiTuSgH7N6+N
+	 uRRGguxn96doXRGES6t/+aL41zanbegNtxTe94PzaUzvk+MsN282U/5p/QrJdVZCud
+	 e98mU4p6E/jmED8DQEMCu9sCfzUTGJ9eqdeBG8JHrq8y+WNOFEhOafoksGPn57SnkG
+	 GQkGHC+LBsDIQt6i3/aaZrSBWGcfQKufk+E0zF75Zh8CGEBuW2p8EMiguxrSEIjM4n
+	 zRzyhz/pyivD45aZtoqITSSGNIT32RoCiEoODnkQhVT4//xeBMEGcaLlcXpbe9IujP
+	 XljTMyyAvBiVg==
+Date: Mon, 15 Jul 2024 11:29:08 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>,
+	Christoph Hellwig <hch@infradead.org>,
+	Uros Bizjak <ubizjak@gmail.com>,
+	Kent Overstreet <kent.overstreet@linux.dev>,
+	Arnd Bergmann <arnd@arndb.de>, Randy Dunlap <rdunlap@infradead.org>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-nfs@vger.kernel.org,
+	linux-doc@vger.kernel.org
+Subject: Re: [PATCH v6 2/9] fs: tracepoints around multigrain timestamp events
+Message-ID: <20240715182908.GC103014@frogsfrogsfrogs>
+References: <20240715-mgtime-v6-0-48e5d34bd2ba@kernel.org>
+ <20240715-mgtime-v6-2-48e5d34bd2ba@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -70,49 +78,219 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ejaxnieh5h6bfeocb7gwtonirthjvpgoveqvmfnb5ebqk33uxs@4lvgdocvt55c>
+In-Reply-To: <20240715-mgtime-v6-2-48e5d34bd2ba@kernel.org>
 
-On Mon, Jul 15, 2024 at 08:01:54AM +0000, Daniel Gomez wrote:
+On Mon, Jul 15, 2024 at 08:48:53AM -0400, Jeff Layton wrote:
+> Add some tracepoints around various multigrain timestamp events.
 > 
-> My guess is that '-o acl,user_xattr' [1] options are now included in
-> the scratch device and they were not before. This is what patch 4
-> fixes. f2fs, tmpfs, reiserfs, gfs2 and ext* will be affected as well
-> with their respective default mount options.
+> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
 
-At least for ext4, acl and user_xattr are enabled by default:
+Woot!
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-% kvm-xfstests shell
-...
-root@kvm-xfstests:~# mount -t ext4 /dev/vdc /vdc
-[   11.207917] EXT4-fs (vdc): recovery complete
-[   11.209103] EXT4-fs (vdc): mounted filesystem 881ec32f-72a0-4b10-9a3f-a68c68f31f40 r/w with ordered data mode. Quota mode: none.
-root@kvm-xfstests:~# cat /proc/fs/ext4/vdc/options 
-...
-user_xattr
-acl
-...
-root@kvm-xfstests:~# 
+--D
 
-> [1] From _common_mount_opts(). Snippet:
+> ---
+>  fs/inode.c                       |   9 ++-
+>  fs/stat.c                        |   3 +
+>  include/trace/events/timestamp.h | 124 +++++++++++++++++++++++++++++++++++++++
+>  3 files changed, 135 insertions(+), 1 deletion(-)
 > 
-> 	ext2|ext3|ext4|ext4dev)
-> 		# acls & xattrs aren't turned on by default on ext$FOO
-> 		echo "-o acl,user_xattr $EXT_MOUNT_OPTIONS"
-> 		;;
-
-Yeah, that hasn't been true for a while....
-
-commit ea6633369458992241599c9d9ebadffaeddec164
-Author: Eric Sandeen <sandeen@redhat.com>
-Date:   Wed Feb 23 17:51:51 2011 -0500
-
-    ext4: enable acls and user_xattr by default
-    
-    There's no good reason to require the extra step of providing
-    a mount option for acl or user_xattr once the feature is configured
-    on; no other filesystem that I know of requires this.
-
-So we probably remove that bit from _common_mount_opts.  :-)
-
-    	       	      	       	    			 - Ted
+> diff --git a/fs/inode.c b/fs/inode.c
+> index 417acbeabef3..869994285e87 100644
+> --- a/fs/inode.c
+> +++ b/fs/inode.c
+> @@ -22,6 +22,9 @@
+>  #include <linux/iversion.h>
+>  #include <linux/rw_hint.h>
+>  #include <trace/events/writeback.h>
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/timestamp.h>
+> +
+>  #include "internal.h"
+>  
+>  /*
+> @@ -2569,6 +2572,7 @@ EXPORT_SYMBOL(inode_nohighmem);
+>  
+>  struct timespec64 inode_set_ctime_to_ts(struct inode *inode, struct timespec64 ts)
+>  {
+> +	trace_inode_set_ctime_to_ts(inode, &ts);
+>  	set_normalized_timespec64(&ts, ts.tv_sec, ts.tv_nsec);
+>  	inode->i_ctime_sec = ts.tv_sec;
+>  	inode->i_ctime_nsec = ts.tv_nsec;
+> @@ -2668,13 +2672,16 @@ struct timespec64 inode_set_ctime_current(struct inode *inode)
+>  	cur = cns;
+>  
+>  	/* No need to cmpxchg if it's exactly the same */
+> -	if (cns == now_ts.tv_nsec && inode->i_ctime_sec == now_ts.tv_sec)
+> +	if (cns == now_ts.tv_nsec && inode->i_ctime_sec == now_ts.tv_sec) {
+> +		trace_ctime_xchg_skip(inode, &now_ts);
+>  		goto out;
+> +	}
+>  retry:
+>  	/* Try to swap the nsec value into place. */
+>  	if (try_cmpxchg(&inode->i_ctime_nsec, &cur, now_ts.tv_nsec)) {
+>  		/* If swap occurred, then we're (mostly) done */
+>  		inode->i_ctime_sec = now_ts.tv_sec;
+> +		trace_ctime_ns_xchg(inode, cns, now_ts.tv_nsec, cur);
+>  	} else {
+>  		/*
+>  		 * Was the change due to someone marking the old ctime QUERIED?
+> diff --git a/fs/stat.c b/fs/stat.c
+> index df7fdd3afed9..552dfd67688b 100644
+> --- a/fs/stat.c
+> +++ b/fs/stat.c
+> @@ -23,6 +23,8 @@
+>  #include <linux/uaccess.h>
+>  #include <asm/unistd.h>
+>  
+> +#include <trace/events/timestamp.h>
+> +
+>  #include "internal.h"
+>  #include "mount.h"
+>  
+> @@ -49,6 +51,7 @@ void fill_mg_cmtime(struct kstat *stat, u32 request_mask, struct inode *inode)
+>  	stat->mtime = inode_get_mtime(inode);
+>  	stat->ctime.tv_sec = inode->i_ctime_sec;
+>  	stat->ctime.tv_nsec = ((u32)atomic_fetch_or(I_CTIME_QUERIED, pcn)) & ~I_CTIME_QUERIED;
+> +	trace_fill_mg_cmtime(inode, &stat->ctime, &stat->mtime);
+>  }
+>  EXPORT_SYMBOL(fill_mg_cmtime);
+>  
+> diff --git a/include/trace/events/timestamp.h b/include/trace/events/timestamp.h
+> new file mode 100644
+> index 000000000000..c9e5ec930054
+> --- /dev/null
+> +++ b/include/trace/events/timestamp.h
+> @@ -0,0 +1,124 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM timestamp
+> +
+> +#if !defined(_TRACE_TIMESTAMP_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_TIMESTAMP_H
+> +
+> +#include <linux/tracepoint.h>
+> +#include <linux/fs.h>
+> +
+> +#define CTIME_QUERIED_FLAGS \
+> +	{ I_CTIME_QUERIED, "Q" }
+> +
+> +DECLARE_EVENT_CLASS(ctime,
+> +	TP_PROTO(struct inode *inode,
+> +		 struct timespec64 *ctime),
+> +
+> +	TP_ARGS(inode, ctime),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(dev_t,		dev)
+> +		__field(ino_t,		ino)
+> +		__field(time64_t,	ctime_s)
+> +		__field(u32,		ctime_ns)
+> +		__field(u32,		gen)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->dev		= inode->i_sb->s_dev;
+> +		__entry->ino		= inode->i_ino;
+> +		__entry->gen		= inode->i_generation;
+> +		__entry->ctime_s	= ctime->tv_sec;
+> +		__entry->ctime_ns	= ctime->tv_nsec;
+> +	),
+> +
+> +	TP_printk("ino=%d:%d:%ld:%u ctime=%lld.%u",
+> +		MAJOR(__entry->dev), MINOR(__entry->dev), __entry->ino, __entry->gen,
+> +		__entry->ctime_s, __entry->ctime_ns
+> +	)
+> +);
+> +
+> +DEFINE_EVENT(ctime, inode_set_ctime_to_ts,
+> +		TP_PROTO(struct inode *inode,
+> +			 struct timespec64 *ctime),
+> +		TP_ARGS(inode, ctime));
+> +
+> +DEFINE_EVENT(ctime, ctime_xchg_skip,
+> +		TP_PROTO(struct inode *inode,
+> +			 struct timespec64 *ctime),
+> +		TP_ARGS(inode, ctime));
+> +
+> +TRACE_EVENT(ctime_ns_xchg,
+> +	TP_PROTO(struct inode *inode,
+> +		 u32 old,
+> +		 u32 new,
+> +		 u32 cur),
+> +
+> +	TP_ARGS(inode, old, new, cur),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(dev_t,		dev)
+> +		__field(ino_t,		ino)
+> +		__field(u32,		gen)
+> +		__field(u32,		old)
+> +		__field(u32,		new)
+> +		__field(u32,		cur)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->dev		= inode->i_sb->s_dev;
+> +		__entry->ino		= inode->i_ino;
+> +		__entry->gen		= inode->i_generation;
+> +		__entry->old		= old;
+> +		__entry->new		= new;
+> +		__entry->cur		= cur;
+> +	),
+> +
+> +	TP_printk("ino=%d:%d:%ld:%u old=%u:%s new=%u cur=%u:%s",
+> +		MAJOR(__entry->dev), MINOR(__entry->dev), __entry->ino, __entry->gen,
+> +		__entry->old & ~I_CTIME_QUERIED,
+> +		__print_flags(__entry->old & I_CTIME_QUERIED, "|", CTIME_QUERIED_FLAGS),
+> +		__entry->new,
+> +		__entry->cur & ~I_CTIME_QUERIED,
+> +		__print_flags(__entry->cur & I_CTIME_QUERIED, "|", CTIME_QUERIED_FLAGS)
+> +	)
+> +);
+> +
+> +TRACE_EVENT(fill_mg_cmtime,
+> +	TP_PROTO(struct inode *inode,
+> +		 struct timespec64 *ctime,
+> +		 struct timespec64 *mtime),
+> +
+> +	TP_ARGS(inode, ctime, mtime),
+> +
+> +	TP_STRUCT__entry(
+> +		__field(dev_t,		dev)
+> +		__field(ino_t,		ino)
+> +		__field(time64_t,	ctime_s)
+> +		__field(time64_t,	mtime_s)
+> +		__field(u32,		ctime_ns)
+> +		__field(u32,		mtime_ns)
+> +		__field(u32,		gen)
+> +	),
+> +
+> +	TP_fast_assign(
+> +		__entry->dev		= inode->i_sb->s_dev;
+> +		__entry->ino		= inode->i_ino;
+> +		__entry->gen		= inode->i_generation;
+> +		__entry->ctime_s	= ctime->tv_sec;
+> +		__entry->mtime_s	= mtime->tv_sec;
+> +		__entry->ctime_ns	= ctime->tv_nsec;
+> +		__entry->mtime_ns	= mtime->tv_nsec;
+> +	),
+> +
+> +	TP_printk("ino=%d:%d:%ld:%u ctime=%lld.%u mtime=%lld.%u",
+> +		MAJOR(__entry->dev), MINOR(__entry->dev), __entry->ino, __entry->gen,
+> +		__entry->ctime_s, __entry->ctime_ns,
+> +		__entry->mtime_s, __entry->mtime_ns
+> +	)
+> +);
+> +#endif /* _TRACE_TIMESTAMP_H */
+> +
+> +/* This part must be outside protection */
+> +#include <trace/define_trace.h>
+> 
+> -- 
+> 2.45.2
+> 
+> 
 
