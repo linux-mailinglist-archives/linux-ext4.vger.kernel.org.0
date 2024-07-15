@@ -1,152 +1,119 @@
-Return-Path: <linux-ext4+bounces-3256-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3257-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF2C9930D06
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 05:37:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DEE3C930D33
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 06:28:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1FDE6281121
-	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 03:37:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63EF7B20E05
+	for <lists+linux-ext4@lfdr.de>; Mon, 15 Jul 2024 04:28:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114CD183092;
-	Mon, 15 Jul 2024 03:37:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D043C183096;
+	Mon, 15 Jul 2024 04:28:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WmQ8KJR3"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="DohJ5drz"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAF491D68F;
-	Mon, 15 Jul 2024 03:37:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B114828FC
+	for <linux-ext4@vger.kernel.org>; Mon, 15 Jul 2024 04:28:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721014663; cv=none; b=f5gZG7lYbbs+l5Sr450/STQLp9Py2gqGDUHsmaf8CdS7+kubCpRmtw/HM4Oq51MJIK02aImNMCdnf1OBrUxTjHQAGeuGJekDXxmDM8jQ1mOIrk9zhoZh0BwWl34Y0WHFAqxHqsSiR9G1jfMwsANOIrX2iXSsOqNh1MCGRJ2f/b8=
+	t=1721017717; cv=none; b=Fo4MxN1TeurTlgJxzvU+1KUSrUITy5G7YTxIRnIMeCWNswn/9+DgRbBVuPYpc8NlF8LeumfZTQ5nfA+MFGBUIDSOFjHZcdysiLsTfrL7THUrKZqzbdS4+14izLAHU1cQANmUdm8zjwKMikjErzLxDMX8+tUWhCdBZwrw+KgV08Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721014663; c=relaxed/simple;
-	bh=Y0PadggLRkA95euQ2qJyyCo+WToLY6xDRBOzjxa9woc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=f/42dUr9lHyNZLtmrwhHszT3+ggLrUPnyx5bA+eA5P4fvybbxyM5/tZEY9qdCuggEhAHfrrzQVattPERgPNr2IlhQuk7jpINHCJJ2MDL2U3HTD1cksP/CVhGcAMtlYM3shy2p2+NP8QYjmn3mQXHnsqWIVeQehidasWADPeNpX8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WmQ8KJR3; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-4266182a9d7so23988065e9.0;
-        Sun, 14 Jul 2024 20:37:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721014660; x=1721619460; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cncGZVsdVkoJ+Ta2O3z5A5pVfum/7e9lqGRcPz/LKR8=;
-        b=WmQ8KJR3JICKFzAXDX5pcL60bJq7xx6B/S6ojH9mWQA1UvZZnpZV2ZLC9uSKZwzeyO
-         KGNuhC+snDniAdGfPhXCMK/FsIkJ+lI2DE2CBhPrdxJbk10BYuXah5wYH9pXX4tK9RtL
-         BUmqIeHj3WKZyuqhspoYHX9EmAcLJT73iYavZWYPhjeHw4WkkncTfl7GScNSVZ1Xc7A8
-         lLJCckuZAWzy3CtjgG3IRARVJGsYasX4h90nXHLbfcLUwAPMbY3c2jAQwN0xIpc8F7lC
-         gdYZUi3ED7WQLLEzV459fVLyCWwtAO0/qPgBG3cC9tbSGiZCU02H7dYdVFI+0iAj0Y/f
-         K9Mg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721014660; x=1721619460;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=cncGZVsdVkoJ+Ta2O3z5A5pVfum/7e9lqGRcPz/LKR8=;
-        b=XMLci0okIfXJqqxRuxgjQZAJUgC4sRW0gFvqlvkloiyuUnMcNDeBoNusPmclj6vPvy
-         9xknth7iJjuzc5wkxGZ3tAbed0DiYFixq60uq4epo41o7sjbYM9iBh1TVnmbKk/KRpsM
-         o6/pLW62Izcyt+yYU8Fh/EEkeLJ8Y68/n+sriCvN1vAz73lGOEXl7AIfiW8090Xv9tOD
-         55RwrBwcOj0pfMHmJMtw/7JcjRr5ShcuoxPEEiEFq2eIPK1VTirEtZDTNoKJZhBmd4Ik
-         ok1qHo/3th2lIzScOH3c8eCa6daDfYPU1TzECvD6BCUBSfHaoZkhFSDxQFctLFqEMWBb
-         0lzg==
-X-Forwarded-Encrypted: i=1; AJvYcCVcykjEKOFt2348i55EKijL+ZnqlHFFcGRNUvIZo+vAjvmQEeCUcz5xxtPOQE2ykmxcbIozwOlEe85MsUs8durzq1510+h97w31AROUU9dHsr17JEnzX3i0ZhdZz2lGnoYqGw==
-X-Gm-Message-State: AOJu0YwD667Q05cRYzkx6Oq1Y5uNHbOEMHN9oLdK9f7IsM7FadpN06bt
-	FpBqruAUCpxoCedfPSUJdOLgX6/19vb+UScAd2xfS9Oj/NKX7pnU6jUGmFkiuDQ=
-X-Google-Smtp-Source: AGHT+IGCp9pnBR3+YaVvySCjBtKchpkQcveoCrHmToVOhcPnS6s9hzhxCX3gnzThxrRvYtHTAuP2UA==
-X-Received: by 2002:a05:600c:54c3:b0:426:5440:854a with SMTP id 5b1f17b1804b1-426707cca09mr119389945e9.1.1721014659861;
-        Sun, 14 Jul 2024 20:37:39 -0700 (PDT)
-Received: from localhost.localdomain ([197.35.224.179])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-4279f25b946sm102604485e9.19.2024.07.14.20.37.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 14 Jul 2024 20:37:39 -0700 (PDT)
-From: botta633 <bottaawesome633@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	linux-ext4@vger.kernel.org,
-	syzkaller@googlegroups.com,
-	Ahmed Ehab <bottaawesome633@gmail.com>,
-	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
-	stable@vger.kernel.org
-Subject: [PATCH v4 2/2] locking/lockdep: Testing lock class and subclass got the same name pointer
-Date: Mon, 15 Jul 2024 09:34:47 +0300
-Message-ID: <20240715063447.391668-2-bottaawesome633@gmail.com>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240715063447.391668-1-bottaawesome633@gmail.com>
-References: <20240715063447.391668-1-bottaawesome633@gmail.com>
+	s=arc-20240116; t=1721017717; c=relaxed/simple;
+	bh=RBSx72or8ZjyW0t1RDNwbn3UIgNtPoYJO5knun5rgII=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Pi1bVBtIUjAUrjmMBf3FYZEWUkF7ZvbZjKD2+i8bdCoCd5VaE1swT9HGsoqQsoQAf6i/+3Oy2qebWITFtCh1VTgJt1JM/0ldZkl4yjWM34qA886ZD3jrSVLbXowH9TCWkOtZ+jbZV2IF8zt5OzeNFKdo0APg8Dib1/Laq/xXeaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=DohJ5drz; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-108.bstnma.fios.verizon.net [173.48.102.108])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 46F4S3ti023464
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 15 Jul 2024 00:28:04 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1721017685; bh=gjLMGIRjiRJ0hh63/qYMVnFng9tQJrk+QqvCddh5BBQ=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=DohJ5drzsSLeFLFsRJlHrrruPWvI3pcdk1gnkKDfwsJamocxnJn28D6Ljtn9AhT0s
+	 5v91gNOro6JPh5qestHKfILpMMNLeYqO0aVABzfE/OW553ALhOzOp5C6QZrMlNcyU/
+	 aZzv34VdFbdWAILr4zxiQdEdn/LqzNkhMFAkfh6Y2nMHPRUaUi/zaHi1z2mI3AomQr
+	 D3gsKtGHxw0vey8hsHJ7ordFJiJLPgfexw7E+U7NJV605XFQTWxhpViOvvCCtnUqhv
+	 H1TMs+GVSh/6hhBfy0mHghKMEfbVKttFuHYt3UjqkfNLNXcRELhFw1D8QZou7/fT2I
+	 uGfHNYks5sFYA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 2A7AA15C029B; Mon, 15 Jul 2024 00:28:03 -0400 (EDT)
+Date: Mon, 15 Jul 2024 00:28:03 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Zorro Lang <zlang@redhat.com>
+Cc: linux-ext4@vger.kernel.org, fstests@vger.kernel.org,
+        "Darrick J. Wong" <djwong@kernel.org>,
+        Daniel Gomez <da.gomez@samsung.com>
+Subject: Re: [Bug report]: fstests g/388 crash on ext4, BUG: kernel NULL
+ pointer dereference, address: 0000000000000000
+Message-ID: <20240715042803.GM10452@mit.edu>
+References: <20240714034624.qz3l7f52pi6m27yx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240714034624.qz3l7f52pi6m27yx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
 
-From: Ahmed Ehab <bottaawesome633@gmail.com>
+On Sun, Jul 14, 2024 at 11:46:24AM +0800, Zorro Lang wrote:
+> 
+> A weird kernel panic on ext4 happened when I tried to test a
+> fstests patchset:
+> https://lore.kernel.org/fstests/20240712093341.ftesijixy2yrjlxx@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/T/#med4b8d2fe14ef627519d84474b4cd1a25d386f75
 
-Checking if the lockdep_map->name will change when setting the subclass.
-It shouldn't change so that the lock class and subclass will have the same
-name
+I'm confused; this patch set:
 
-Reported-by: <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
-Fixes: de8f5e4f2dc1f ("lockdep: Introduce wait-type checks")
-Cc: <stable@vger.kernel.org>
-Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
----
- lib/locking-selftest.c | 21 +++++++++++++++++++++
- 1 file changed, 21 insertions(+)
+Daniel Gomez (5):
+      common/config: fix RECREATE_TEST_DEV initialization
+      common/rc: add recreation support for tmpfs
+      common/config: enable section parsing when recreation
+      common/rc: read config section mount options for scratch devs
+      common/rc: print test mount options
 
-diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index 6f6a5fc85b42..aeed613799ca 100644
---- a/lib/locking-selftest.c
-+++ b/lib/locking-selftest.c
-@@ -2710,6 +2710,25 @@ static void local_lock_3B(void)
- 
- }
- 
-+ /** 
-+  * after setting the subclass the lockdep_map.name changes
-+  * if we initialize a new string literal for the subclass
-+  * we will have a new name pointer
-+  */
-+static void class_subclass_X1_name_test(void)
-+{
-+	printk("  --------------------------------------------------------------------------\n");
-+	printk("  | class and subclass name test|\n");
-+	printk("  ---------------------\n");
-+	const char *name_before_setting_subclass = rwsem_X1.dep_map.name;
-+	const char *name_after_setting_subclass;
-+
-+	WARN_ON(!rwsem_X1.dep_map.name);
-+	lockdep_set_subclass(&rwsem_X1, 1);
-+	name_after_setting_subclass = rwsem_X1.dep_map.name;
-+	WARN_ON(name_before_setting_subclass != name_after_setting_subclass);
-+}
-+
- static void local_lock_tests(void)
- {
- 	printk("  --------------------------------------------------------------------------\n");
-@@ -2916,6 +2935,8 @@ void locking_selftest(void)
- 
- 	local_lock_tests();
- 
-+	class_subclass_X1_name_test();
-+
- 	print_testname("hardirq_unsafe_softirq_safe");
- 	dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE, LOCKTYPE_SPECIAL);
- 	pr_cont("\n");
--- 
-2.45.2
+seems to be mostly about how xfstest config section handling
+especially for tmpfs.  Is this realy the right patch set?  If so, I'm
+guessing that the reproducer would be very specific to the xfstests
+config.
 
+My {kvm,gce}-xfstest setup doesn't use the config sections at
+all, but instead uses shell script fragments, since it predates config
+sections by three years --- and I need something that works well with
+sharding separate configs to run on separate cloud VM's.
+
+So I'm not sure I'm going to be able to reprduce this easily using my
+test setup.  Can you translate the stack trace to source file names /
+line numbers?  Maybe that will give me a hint what's going on:
+
+> [35346.372867] Call Trace:
+> [35346.375319]  <TASK>
+> [35346.377426]  ? __die+0x20/0x70
+> [35346.380493]  ? page_fault_oops+0x116/0x230
+> [35346.384602]  ? __pfx_page_fault_oops+0x10/0x10
+> [35346.389048]  ? _raw_spin_unlock+0x29/0x50
+> [35346.393072]  ? rcu_is_watching+0x11/0xb0
+> [35346.397006]  ? exc_page_fault+0x59/0xe0
+> [35346.400854]  ? asm_exc_page_fault+0x22/0x30
+> [35346.405049]  ? folio_mark_dirty+0x2a/0xf0
+> [35346.409072]  __ext4_block_zero_page_range+0x50c/0x7b0 [ext4]
+> [35346.414809]  ext4_truncate+0xcd3/0x1210 [ext4]
+
+Getting line numbers for these two functions would be especially
+helpful.
+
+Thanks,
+
+					- Ted
 
