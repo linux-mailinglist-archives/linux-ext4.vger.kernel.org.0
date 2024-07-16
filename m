@@ -1,185 +1,225 @@
-Return-Path: <linux-ext4+bounces-3289-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3290-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0736B93236E
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 11:55:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFBDC9323DB
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 12:24:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6E31F23ABE
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 09:55:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58E581F2177F
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 10:24:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39FD7197A7D;
-	Tue, 16 Jul 2024 09:55:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9597143875;
+	Tue, 16 Jul 2024 10:24:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ex4hdFk8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rhgK4Cbd";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CJzm1eEm";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0CFuARiI";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SGwN97yZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965AA15EA6;
-	Tue, 16 Jul 2024 09:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A4B22BAF0;
+	Tue, 16 Jul 2024 10:24:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721123707; cv=none; b=kJyi6RgkAhHPbwKSKgAQWvJWQIskljzM4hFs1+tfSqLDu3KoQ9L0o2IpsxTP8PnnTD00ehXZ85GB7aEnKDpUkx51qHMhGeeckIMPp6mS6l92p+D+K1n31IsObtUirm27qgl36yFESlYpldz8LDbHaFJ/Q2tHuicXc5dVwTeAV+o=
+	t=1721125466; cv=none; b=QNyqe+HqwmfTutYSjBm8clOe1ulnHZQS7Ql5znybPpBTHvBk+rVG+nHFeZekHeqVkYV9+Cnu9h7Sc53EJrkEhFXz+LcoSOQDGt7kDVLAFNprRIJYLRvUO2lnnU4hMVrqwmhTDSwiZwkVgUwbd7dENYIwwmxj7mrLK9CdkNfD+/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721123707; c=relaxed/simple;
-	bh=jfxSFmmn0FuBrzgetWN57RpGUWLVf3aBc+89qRwLppw=;
+	s=arc-20240116; t=1721125466; c=relaxed/simple;
+	bh=NXOZnkekiyVsuIjOADrk+toWDiA2DAUH1u2Y3mUCJIQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F9o2LlUDx00kPMTIUr1Dg+dQA1/bN1+ItIeASmXWaK3RtI/NG/rOKKG9/BXGKbqn6w6z62RnUF45vH9ek/fXtfpgPSR4ISdFcFZBZWjSEe8O2Dwk/4rSjNt5kzNHufJgBYvXbE7kg2/fA6L6HLxrjSShPwI9hxzDxf4LqUop9ro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ex4hdFk8; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46G8xJlJ007518;
-	Tue, 16 Jul 2024 09:54:42 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
-	:from:to:cc:subject:message-id:references:mime-version
-	:content-type:content-transfer-encoding:in-reply-to; s=pp1; bh=V
-	G50molFEjmHBUz5s7o7renexBIBxRWMR8t/rWyUk4M=; b=Ex4hdFk80TScBM6B2
-	/pah8yYlzV5ikYDulpwgpg9Ww81pZra5vn0TZGqJBTjP1LHXxLyBhLPPg8f+AqYa
-	7iLnuqOoasrYu8FyExf5Znkg9OJmKA+y71VvvrkMF7MeghztUMZ+716/SNyQuRHy
-	7NTbbH8HvHi2Cgar4+gxkr759kUyVPEit150SypVljR/e0tFSzd7eC56JxYERJ2a
-	s9N2a5lCdTilhFZFk/kfCLw5LcLppWAfiTRtrjNUY1CO+XzbD/dgiqI/ShIjb0im
-	5Rep4ev2E+P/nrM+eoEU+MA7s8tBPecgIy7mp6zqo/3QyUFXYCgsyFECF9DXH+BP
-	isyvg==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40dnu2g491-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jul 2024 09:54:41 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 46G9sfOQ024302;
-	Tue, 16 Jul 2024 09:54:41 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40dnu2g48s-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jul 2024 09:54:41 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 46G613WB015025;
-	Tue, 16 Jul 2024 09:54:40 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40c4wpbdt2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 16 Jul 2024 09:54:40 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 46G9sajf53870950
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 16 Jul 2024 09:54:38 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7D84D20040;
-	Tue, 16 Jul 2024 09:54:36 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 758FB2004B;
-	Tue, 16 Jul 2024 09:54:34 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 16 Jul 2024 09:54:34 +0000 (GMT)
-Date: Tue, 16 Jul 2024 15:24:31 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Baokun Li <libaokun@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        Baokun Li <libaokun1@huawei.com>,
-        zhanchengbin <zhanchengbin1@huawei.com>
-Subject: Re: [PATCH 02/20] ext4: prevent partial update of the extents path
-Message-ID: <ZpZDSMFbziWq5xOK@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
- <20240710040654.1714672-3-libaokun@huaweicloud.com>
- <ZpPx3kuO36lp9/Um@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <9fd554c7-dc0c-4969-9f2a-1c99356fccce@huaweicloud.com>
- <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=gGx6Us6sshMZlB8mblTVoS25fHdcVg08PTy7G5RiuNZX2QLrJnHQs0YRR3aKsA4sma7CHllTzZE7dn/YBG4PDDOIu1YuhculO7AdqC7eH+JpOfiTiI/4nftqsmP5lhUnyJUf2hH6Cjp2ApMWnNsXRSCT2NsW/zlcWyd5X7BaJOE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rhgK4Cbd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CJzm1eEm; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0CFuARiI; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SGwN97yZ; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 7F0A31F8AC;
+	Tue, 16 Jul 2024 10:24:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721125462; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DPrOEKAiT+WpE+UHCR8Fkie45MEJdb7Gn9tKLiB19Es=;
+	b=rhgK4CbdV6it233wlZQ1r2g2dvrd/no4/w8IIDiSMdf7+FLOIqdV3OX56LRogWijX+74gB
+	iLjnIWNauEilhjyMe6wzzYPYJ+X2H8pjIgvX0I54Yk57RMzZuB8HX8ehjWflrxogTugYle
+	XMAtAEN2mQJ1k+IoCi8Ua7tEU3H8KkA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721125462;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DPrOEKAiT+WpE+UHCR8Fkie45MEJdb7Gn9tKLiB19Es=;
+	b=CJzm1eEmoXcYIMbpaT6pw8mgKfw1VNBoFCtWzsCs6D+NjqJ2xRZoOHReZpHH6+Q0dwJCUz
+	HIRuBxovAfsaJXCA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721125461; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DPrOEKAiT+WpE+UHCR8Fkie45MEJdb7Gn9tKLiB19Es=;
+	b=0CFuARiIsq6jMJJPpTcKeRRjpk/ZChpwgMEfIeQM8B2P2HhduJvuLyw0jbCjI5C0UpwdgV
+	FX/5JDF/pPgDXrtF0IoVrJfkbOiK6w4opBwwtJecpN26lJ3tjTZF+vmi/51jSXCK1CDyDY
+	XZx+AlyqTkKE6ov2hKD/7UTEYVPx2tk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721125461;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=DPrOEKAiT+WpE+UHCR8Fkie45MEJdb7Gn9tKLiB19Es=;
+	b=SGwN97yZiTtiQBK1FjWa+hoOQzOXtdqc5aLsGiIcUdqXOAXKESQPqCXeOtv2Opg5xbv5Mg
+	Ig1A2a1rQLbtY8BA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 66D3F136E5;
+	Tue, 16 Jul 2024 10:24:21 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id IzrUGFVKlmYULgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 16 Jul 2024 10:24:21 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id E28E6A0987; Tue, 16 Jul 2024 12:24:16 +0200 (CEST)
+Date: Tue, 16 Jul 2024 12:24:16 +0200
+From: Jan Kara <jack@suse.cz>
+To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
+	Jan Kara <jack@suse.cz>,
+	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v4] ext4: fix fast commit inode enqueueing during a full
+ journal commit
+Message-ID: <20240716102416.jublpma3qiltlrbr@quack3>
+References: <20240711083520.6751-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: EstWM539K01k2nwSki2KgzRRMJCGebUs
-X-Proofpoint-ORIG-GUID: TMh6XINqQD9UhX26lLpgAbill4c3gpl1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-07-15_19,2024-07-16_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
- priorityscore=1501 suspectscore=0 adultscore=0 spamscore=0 malwarescore=0
- bulkscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=316 phishscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2406140001 definitions=main-2407160071
+In-Reply-To: <20240711083520.6751-1-luis.henriques@linux.dev>
+X-Spam-Flag: NO
+X-Spam-Score: 0.20
+X-Spamd-Result: default: False [0.20 / 50.00];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.998];
+	MIME_GOOD(-0.10)[text/plain];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,gmail.com,vger.kernel.org];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo,linux.dev:email]
+X-Spam-Level: 
 
+On Thu 11-07-24 09:35:20, Luis Henriques (SUSE) wrote:
+> When a full journal commit is on-going, any fast commit has to be enqueued
+> into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
+> is done only once, i.e. if an inode is already queued in a previous fast
+> commit entry it won't be enqueued again.  However, if a full commit starts
+> _after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
+> be done into FC_Q_STAGING.  And this is not being done in function
+> ext4_fc_track_template().
+> 
+> This patch fixes the issue by re-enqueuing an inode into the STAGING queue
+> during the fast commit clean-up callback if it has a tid (i_sync_tid)
+> greater than the one being handled.  The STAGING queue will then be spliced
+> back into MAIN.
+> 
+> This bug was found using fstest generic/047.  This test creates several 32k
+> bytes files, sync'ing each of them after it's creation, and then shutting
+> down the filesystem.  Some data may be loss in this operation; for example a
+> file may have it's size truncated to zero.
+> 
+> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
 
-> > But the journal will ensure the consistency of the extents path after
-> > this patch.
-> > 
-> > When ext4_ext_get_access() or ext4_ext_dirty() returns an error in
-> > ext4_ext_rm_idx() and ext4_ext_correct_indexes(), this may cause
-> > the extents tree to be inconsistent. But the inconsistency just
-> > exists in memory and doesn't land on disk.
-> > 
-> > For ext4_ext_get_access(), the handle must have been aborted
-> > when it returned an error, as follows:
-> ext4_ext_get_access
->  ext4_journal_get_write_access
->   __ext4_journal_get_write_access
->    err = jbd2_journal_get_write_access
->    if (err)
->      ext4_journal_abort_handle
-> > For ext4_ext_dirty(), since path->p_bh must not be null and handle
-> > must be valid, handle is aborted anyway when an error is returned:
-> ext4_ext_dirty
->  __ext4_ext_dirty
->   if (path->p_bh)
->     __ext4_handle_dirty_metadata
->      if (ext4_handle_valid(handle))
->        err = jbd2_journal_dirty_metadata
->         if (!is_handle_aborted(handle) && WARN_ON_ONCE(err))
->           ext4_journal_abort_handle
-> > Thus the extents tree will only be inconsistent in memory, so only
-> > the verified bit of the modified buffer needs to be cleared to avoid
-> > these inconsistent data being used in memory.
-> > 
-> Regards,
-> Baokun
+...
 
-Thanks for the explanation Baokun, so basically we only have the
-inconsitency in the memory.
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 3926a05eceee..facbc8dbbaa2 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -1290,6 +1290,16 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+>  				       EXT4_STATE_FC_COMMITTING);
+>  		if (tid_geq(tid, iter->i_sync_tid))
+>  			ext4_fc_reset_inode(&iter->vfs_inode);
+> +		} else if (tid) {
+> +			/*
+> +			 * If the tid is valid (i.e. non-zero) re-enqueue the
+> +			 * inode into STAGING, which will then be splice back
+> +			 * into MAIN
+> +			 */
+> +			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
+> +				      &sbi->s_fc_q[FC_Q_STAGING]);
+> +		}
 
-I do have a followup questions:
+I don't think this is going to work (even if we fix the tid 0 being special
+assumption). With this there would be a race like:
 
-So in the above example, after we have the error, we'll have the buffer
-for depth=0 marked as valid but pointing to the wrong ei_block.
+Task 1					Task2
+modify inode I
+ext4_fc_commit()
+  jbd2_fc_begin_commit()
+  commits changes
+  jbd2_fc_end_commit()
+    __jbd2_fc_end_commit(journal, 0, false)
+      jbd2_journal_unlock_updates(journal)
+					jbd2_journal_start()
+					modify inode I
+					...
+					ext4_mark_iloc_dirty()
+					  ext4_fc_track_inode()
+					    ext4_fc_track_template()
+					      - doesn't add inode anywhere
+					      because i_fc_list is not empty
+      ext4_fc_cleanup(journal, 0, 0)
+        removes inode I from i_fc_list => next fastcommit will not properly
+flush it.
 
-In this case, can we have something like below:
+To avoid this race I think we could move the
+journal->j_fc_cleanup_callback() call to happen before we call
+jbd2_journal_unlock_updates(). Then we are sure that inode cannot be
+modified (journal is locked) until we are done processing the fastcommit
+lists when doing fastcommit. Hence your patch could then be changed like:
 
------------------
-ext4_ext_remove_space
-  err = ext4_ext_rm_idx (error, path[0].p_bh inconsistent but verified)
-  /* 
-   * we release buffers of the path but path[0].p_bh is not cleaned up
-   * due to other references to it (possible?)
-   */
++		} else if (full) {
++			/*
++			 * We are called after a full commit, inode has been
++			 * modified while the commit was running. Re-enqueue
++			 * the inode into STAGING, which will then be splice
++			 * back into MAIN. This cannot happen during
++			 * fastcommit because the journal is locked all the
++			 * time in that case (and tid doesn't increase so
++			 * tid check above isn't reliable).
++			 */
++			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
++				      &sbi->s_fc_q[FC_Q_STAGING]);
++		}
 
-... at a later point...:
+Later, Harshad's patches change the code to use EXT4_STATE_FC_COMMITTING
+for protecting inodes during fastcommit and that will also deal with these
+races without having to keep the whole journal locked.
 
-ext4_find_extent
-  bh = read_extent_tree_block() 
-    /* 
-     * we get the bh that was left inconsistent previously
-     * since its verified, we dont check it again corrupting
-     * the lookup
-     */
-
------------------
-
-Is the above scenario possible? Or would the path[0].p_bh that was
-corrupted previously always be reread during the subsequent
-ext4_find_extent() lookup?
-
-Thanks again,
-Ojaswin
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
