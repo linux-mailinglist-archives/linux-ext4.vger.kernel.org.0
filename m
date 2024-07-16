@@ -1,190 +1,185 @@
-Return-Path: <linux-ext4+bounces-3288-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3289-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F08CB932362
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 11:52:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0736B93236E
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 11:55:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 59EF71F22B87
-	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 09:52:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C6E31F23ABE
+	for <lists+linux-ext4@lfdr.de>; Tue, 16 Jul 2024 09:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5EC219755B;
-	Tue, 16 Jul 2024 09:52:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39FD7197A7D;
+	Tue, 16 Jul 2024 09:55:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IIC4jQoR";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ayk51sUa";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="TyBalTTs";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gBhBdWMw"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Ex4hdFk8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C52A1957EA;
-	Tue, 16 Jul 2024 09:52:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 965AA15EA6;
+	Tue, 16 Jul 2024 09:55:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721123532; cv=none; b=tig3fyocwYo+pzi88EtiNWgCbxSqrwNRWcS7C2akkiexbXp7Kw5cXDZD8r84E5dY3eKZetAbrU6KZVTlZVUDWGyVP9UpRc3EwFKrR40qhukyq6uGf3KIvFpnhKxFs+HbunrPGOy7a8J51Od6AG2556ow71SUQsSrZ7xJp+3Vh4I=
+	t=1721123707; cv=none; b=kJyi6RgkAhHPbwKSKgAQWvJWQIskljzM4hFs1+tfSqLDu3KoQ9L0o2IpsxTP8PnnTD00ehXZ85GB7aEnKDpUkx51qHMhGeeckIMPp6mS6l92p+D+K1n31IsObtUirm27qgl36yFESlYpldz8LDbHaFJ/Q2tHuicXc5dVwTeAV+o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721123532; c=relaxed/simple;
-	bh=sTEq+71d74BYVRgRntDOvHNAUACrFmPk/YofTyor9gs=;
+	s=arc-20240116; t=1721123707; c=relaxed/simple;
+	bh=jfxSFmmn0FuBrzgetWN57RpGUWLVf3aBc+89qRwLppw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KCyudW/TE+fTxXO0+Al5R3KmnVUf52Y92niqgN2FwZJyGSjcFWp3tsv9sy3t7f41FixVCjYlj7+No9sehE9Qayc2hZmx72njnWJuxC0CB7F/W2t3Musth4/wYcf2D/5mPsNWmTWdj4d4Ifx15ZlRgHSZlcAHprWEEwAVr4wNxz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IIC4jQoR; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ayk51sUa; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=TyBalTTs; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gBhBdWMw; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id CBC5921BF7;
-	Tue, 16 Jul 2024 09:52:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721123527; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=faLu8ANarLN64HGOqW59wT/J2T9GSRfX6GdQz79QNrg=;
-	b=IIC4jQoRmwsprrx0Cw+8GqOMvr4XhWNHcYEdYuCsMFQFd1JQbs246iHTRygSfuyD+HKF6M
-	ND76nfpPy5iHyJ/0PgHdw8SbpXFn51qjwo1JzApmMbz8ie/QPqOauzehmm+9UuoT88KtsR
-	XdWEX67flo9b2B8ZIKS1lHhiuiELA44=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721123527;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=faLu8ANarLN64HGOqW59wT/J2T9GSRfX6GdQz79QNrg=;
-	b=Ayk51sUaWccAfvkjogklhKJzJMzmzeNaUgsq2Lxm+jZlBc+jXl/W3dkUqImrfaI0SfrMln
-	cxBjxKicmC6A5qCg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=TyBalTTs;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=gBhBdWMw
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721123525; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=faLu8ANarLN64HGOqW59wT/J2T9GSRfX6GdQz79QNrg=;
-	b=TyBalTTsXSavQfQGt3C8zUyKDX66zhMxYgtSmS+Db9+MauHZl9bNGqoy15N2du+oxsaM3t
-	KkLbv7EemL0DrA7Sg7qUn3nB7wYDijyK9BItTugw/XI3lRoJvfcxX9M/q1m3c8MzG49vRI
-	kqmfEplnnKSyF/vSUTdRSOsp+/WEt6o=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721123525;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=faLu8ANarLN64HGOqW59wT/J2T9GSRfX6GdQz79QNrg=;
-	b=gBhBdWMwrZ29Hit3ULCHrRFho/kCSyMBnFlo71PaFXgVoHEZTV1yVnIvD471Fp9Qvtvp2J
-	XbZG+o57rTmo7oBA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B2CDC13795;
-	Tue, 16 Jul 2024 09:52:05 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id +cCeK8VClmavIwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 16 Jul 2024 09:52:05 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3DF74A0987; Tue, 16 Jul 2024 11:52:01 +0200 (CEST)
-Date: Tue, 16 Jul 2024 11:52:01 +0200
-From: Jan Kara <jack@suse.cz>
-To: Luis Henriques <luis.henriques@linux.dev>
-Cc: Andreas Dilger <adilger@dilger.ca>,
-	Wang Jianjian <wangjianjian0@foxmail.com>,
-	"wangjianjian (C)" <wangjianjian3@huawei.com>,
-	Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] jbd2: make '0' an invalid transaction sequence
-Message-ID: <20240716095201.o7kkrhfdy2bps3rw@quack3>
-References: <20240711083520.6751-1-luis.henriques@linux.dev>
- <4f9d5881-11e6-4064-ab69-ca6ef81582b3@huawei.com>
- <878qy8nem5.fsf@brahms.olymp>
- <tencent_CF3DC37BEB2026CB2F68408A2B62314E0C08@qq.com>
- <A90C7898-B704-4B2A-BFE6-4A32050763F0@dilger.ca>
- <87ed7znf8n.fsf@linux.dev>
- <87wmlrkkch.fsf_-_@linux.dev>
+	 Content-Type:Content-Disposition:In-Reply-To; b=F9o2LlUDx00kPMTIUr1Dg+dQA1/bN1+ItIeASmXWaK3RtI/NG/rOKKG9/BXGKbqn6w6z62RnUF45vH9ek/fXtfpgPSR4ISdFcFZBZWjSEe8O2Dwk/4rSjNt5kzNHufJgBYvXbE7kg2/fA6L6HLxrjSShPwI9hxzDxf4LqUop9ro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Ex4hdFk8; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46G8xJlJ007518;
+	Tue, 16 Jul 2024 09:54:42 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
+	:from:to:cc:subject:message-id:references:mime-version
+	:content-type:content-transfer-encoding:in-reply-to; s=pp1; bh=V
+	G50molFEjmHBUz5s7o7renexBIBxRWMR8t/rWyUk4M=; b=Ex4hdFk80TScBM6B2
+	/pah8yYlzV5ikYDulpwgpg9Ww81pZra5vn0TZGqJBTjP1LHXxLyBhLPPg8f+AqYa
+	7iLnuqOoasrYu8FyExf5Znkg9OJmKA+y71VvvrkMF7MeghztUMZ+716/SNyQuRHy
+	7NTbbH8HvHi2Cgar4+gxkr759kUyVPEit150SypVljR/e0tFSzd7eC56JxYERJ2a
+	s9N2a5lCdTilhFZFk/kfCLw5LcLppWAfiTRtrjNUY1CO+XzbD/dgiqI/ShIjb0im
+	5Rep4ev2E+P/nrM+eoEU+MA7s8tBPecgIy7mp6zqo/3QyUFXYCgsyFECF9DXH+BP
+	isyvg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40dnu2g491-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jul 2024 09:54:41 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 46G9sfOQ024302;
+	Tue, 16 Jul 2024 09:54:41 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40dnu2g48s-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jul 2024 09:54:41 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 46G613WB015025;
+	Tue, 16 Jul 2024 09:54:40 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40c4wpbdt2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 16 Jul 2024 09:54:40 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 46G9sajf53870950
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 16 Jul 2024 09:54:38 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7D84D20040;
+	Tue, 16 Jul 2024 09:54:36 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 758FB2004B;
+	Tue, 16 Jul 2024 09:54:34 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Tue, 16 Jul 2024 09:54:34 +0000 (GMT)
+Date: Tue, 16 Jul 2024 15:24:31 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Baokun Li <libaokun@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        Baokun Li <libaokun1@huawei.com>,
+        zhanchengbin <zhanchengbin1@huawei.com>
+Subject: Re: [PATCH 02/20] ext4: prevent partial update of the extents path
+Message-ID: <ZpZDSMFbziWq5xOK@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
+ <20240710040654.1714672-3-libaokun@huaweicloud.com>
+ <ZpPx3kuO36lp9/Um@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9fd554c7-dc0c-4969-9f2a-1c99356fccce@huaweicloud.com>
+ <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <87wmlrkkch.fsf_-_@linux.dev>
-X-Rspamd-Queue-Id: CBC5921BF7
-X-Spam-Flag: NO
-X-Spam-Score: -0.01
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-0.01 / 50.00];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[foxmail.com,gmail.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_CC(0.00)[dilger.ca,foxmail.com,huawei.com,mit.edu,suse.cz,gmail.com,vger.kernel.org];
-	DWL_DNSWL_BLOCKED(0.00)[suse.cz:dkim];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,dilger.ca:email,linux.dev:email]
-X-Spam-Level: 
-X-Spamd-Bar: /
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: EstWM539K01k2nwSki2KgzRRMJCGebUs
+X-Proofpoint-ORIG-GUID: TMh6XINqQD9UhX26lLpgAbill4c3gpl1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-15_19,2024-07-16_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015
+ priorityscore=1501 suspectscore=0 adultscore=0 spamscore=0 malwarescore=0
+ bulkscore=0 lowpriorityscore=0 mlxscore=0 mlxlogscore=316 phishscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2406140001 definitions=main-2407160071
 
-On Fri 12-07-24 10:53:02, Luis Henriques wrote:
-> Since there's code (in fast-commit) that already handles a '0' tid as a
-> special case, it's better to ensure that jbd2 never sets it to that value
-> when journal->j_transaction_sequence increment wraps.
-> 
-> Suggested-by: Andreas Dilger <adilger@dilger.ca>
-> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
 
-Well, sadly it isn't so simple. If nothing else, journal replay
-(do_one_pass()) will get broken by the skipped tid as we do check:
+> > But the journal will ensure the consistency of the extents path after
+> > this patch.
+> > 
+> > When ext4_ext_get_access() or ext4_ext_dirty() returns an error in
+> > ext4_ext_rm_idx() and ext4_ext_correct_indexes(), this may cause
+> > the extents tree to be inconsistent. But the inconsistency just
+> > exists in memory and doesn't land on disk.
+> > 
+> > For ext4_ext_get_access(), the handle must have been aborted
+> > when it returned an error, as follows:
+> ext4_ext_get_access
+>  ext4_journal_get_write_access
+>   __ext4_journal_get_write_access
+>    err = jbd2_journal_get_write_access
+>    if (err)
+>      ext4_journal_abort_handle
+> > For ext4_ext_dirty(), since path->p_bh must not be null and handle
+> > must be valid, handle is aborted anyway when an error is returned:
+> ext4_ext_dirty
+>  __ext4_ext_dirty
+>   if (path->p_bh)
+>     __ext4_handle_dirty_metadata
+>      if (ext4_handle_valid(handle))
+>        err = jbd2_journal_dirty_metadata
+>         if (!is_handle_aborted(handle) && WARN_ON_ONCE(err))
+>           ext4_journal_abort_handle
+> > Thus the extents tree will only be inconsistent in memory, so only
+> > the verified bit of the modified buffer needs to be cleared to avoid
+> > these inconsistent data being used in memory.
+> > 
+> Regards,
+> Baokun
 
-                if (sequence != next_commit_ID) {
-                        brelse(bh);
-                        break;
-                }
+Thanks for the explanation Baokun, so basically we only have the
+inconsitency in the memory.
 
-So we'd abort journal replay too early. Secondly, there's also code
-handling journal replay in libext2fs which would need to be checked and
-fixed up. Finally, I've found code in mballoc which alternates between two
-lists based on tid & 1, so this logic would get broken by skipping 0 tid
-as well.
+I do have a followup questions:
 
-Overall, I think we might be better off to go and fix places that assume
-tid 0 is not valid. I can see those assumptions in:
+So in the above example, after we have the error, we'll have the buffer
+for depth=0 marked as valid but pointing to the wrong ei_block.
 
-ext4_fc_mark_ineligible()
-ext4_wait_for_tail_page_commit()
-__jbd2_log_wait_for_space()
-jbd2_journal_shrink_checkpoint_list()
+In this case, can we have something like below:
 
-Now I don't see it as urgent to fix all these right now. Just for this
-series let's not add another place making tid 0 special. Later we can fixup
-the other places...
+-----------------
+ext4_ext_remove_space
+  err = ext4_ext_rm_idx (error, path[0].p_bh inconsistent but verified)
+  /* 
+   * we release buffers of the path but path[0].p_bh is not cleaned up
+   * due to other references to it (possible?)
+   */
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+... at a later point...:
+
+ext4_find_extent
+  bh = read_extent_tree_block() 
+    /* 
+     * we get the bh that was left inconsistent previously
+     * since its verified, we dont check it again corrupting
+     * the lookup
+     */
+
+-----------------
+
+Is the above scenario possible? Or would the path[0].p_bh that was
+corrupted previously always be reread during the subsequent
+ext4_find_extent() lookup?
+
+Thanks again,
+Ojaswin
 
