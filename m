@@ -1,204 +1,146 @@
-Return-Path: <linux-ext4+bounces-3309-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3310-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F273933D5B
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 15:07:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 567B8934164
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 19:22:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C92F3283806
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 13:07:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 107F7281EDE
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 17:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55869180058;
-	Wed, 17 Jul 2024 13:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01CBF183076;
+	Wed, 17 Jul 2024 17:22:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QcmQEern";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5ewloc//";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="QcmQEern";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5ewloc//"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="O6zNBnn4"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-188.mta0.migadu.com (out-188.mta0.migadu.com [91.218.175.188])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23F941802A3
-	for <linux-ext4@vger.kernel.org>; Wed, 17 Jul 2024 13:07:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FE5D183062
+	for <linux-ext4@vger.kernel.org>; Wed, 17 Jul 2024 17:22:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721221633; cv=none; b=n78AMvCypYO5TDCI5xcFVizFO8zhGFf+iITDBR7/+yU3yhEZ+XwjUZ3Y/zwQ35kcrP3YFVBPYJ5oicufOiWZRNfj0qY6d08pbrkqfZMos5ODKvNzdl0mUzjT1o9pWI6BRRmGbpwyi++dywzldjpD0olDkwZBbC1kgXMZuXo2txw=
+	t=1721236954; cv=none; b=TQoV1KqnIFBKvrgmEE+IzTA2S+MTPJpYnPUdEe0TJrjkEAISICPjTxdzWjLI9CXGM+vKGA/rGGOw7EKwLBPv5nKUl7m6gSnNjcnppZsitWzaDjrvjItzu6DJbLwhq+lo8fz+y00pkpKayqG7m52NLxP2K6SQA86X1HcvK4lNjbQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721221633; c=relaxed/simple;
-	bh=YjNnrQrK7I69tVblKy3suY4lV755DjdIGMN1MKFCt/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WufhZPEOBIm3wKM9ysS4Vh66uL7rJwquSo9/stR+LJEBLYAFrODn370cVh2/Y3f+72nlaUcuGgx5KTAN5V8qo25YbwWcFEy/2ZmJIaCbkOJjrvzckU0bEK4+Xdkn7YotP4EA/4sDf6TbQkPRx1lLBkmLp5jgJ9kbBUQxcv79bKE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QcmQEern; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5ewloc//; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=QcmQEern; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5ewloc//; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3070221C21;
-	Wed, 17 Jul 2024 13:07:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721221630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8Ij/dW2A1WFNo2WsU1FYFEkQzQWbRi5ghj4wwPbLP4=;
-	b=QcmQEernxePImxaLDkoRxxUHwpjR8jYwI1MNJIeLKld0M2IeC7Gbqfw/gJEEtxGiK9R6KR
-	Hc1CawroCk5rUeOeoK2gYBXExzjk0ro4pQv+SKoDOrBIb2XBK/1g7CYz/UKHm8CDBobv2Q
-	z4yi5mjGbbpVf+axRwcPekGykFZszZs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721221630;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8Ij/dW2A1WFNo2WsU1FYFEkQzQWbRi5ghj4wwPbLP4=;
-	b=5ewloc//dgEBLtdkS6y1jW62VMsE1kUT/J4PSUH/kDx4HIb93srCxqyTQ/o7aF5Ni/yaa3
-	ECmv4XgU/g6yemCw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1721221630; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8Ij/dW2A1WFNo2WsU1FYFEkQzQWbRi5ghj4wwPbLP4=;
-	b=QcmQEernxePImxaLDkoRxxUHwpjR8jYwI1MNJIeLKld0M2IeC7Gbqfw/gJEEtxGiK9R6KR
-	Hc1CawroCk5rUeOeoK2gYBXExzjk0ro4pQv+SKoDOrBIb2XBK/1g7CYz/UKHm8CDBobv2Q
-	z4yi5mjGbbpVf+axRwcPekGykFZszZs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1721221630;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8Ij/dW2A1WFNo2WsU1FYFEkQzQWbRi5ghj4wwPbLP4=;
-	b=5ewloc//dgEBLtdkS6y1jW62VMsE1kUT/J4PSUH/kDx4HIb93srCxqyTQ/o7aF5Ni/yaa3
-	ECmv4XgU/g6yemCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 26F0E136E5;
-	Wed, 17 Jul 2024 13:07:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Mjl7Cf7Bl2a1agAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 17 Jul 2024 13:07:10 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id DA67DA0987; Wed, 17 Jul 2024 15:07:09 +0200 (CEST)
-Date: Wed, 17 Jul 2024 15:07:09 +0200
-From: Jan Kara <jack@suse.cz>
-To: harshad shirwadkar <harshadshirwadkar@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
-	saukad@google.com, harshads@google.com
-Subject: Re: [PATCH v6 07/10] ext4: add nolock mode to ext4_map_blocks()
-Message-ID: <20240717130709.ji7lnashqaxhnjf6@quack3>
-References: <20240529012003.4006535-1-harshadshirwadkar@gmail.com>
- <20240529012003.4006535-8-harshadshirwadkar@gmail.com>
- <20240628141837.iu3knuvzb7kc7qag@quack3>
- <CAD+ocbzeAM=0_k=TBTHb3HA6tg6QKUfnd1Cw7235VHDFMsZVaQ@mail.gmail.com>
+	s=arc-20240116; t=1721236954; c=relaxed/simple;
+	bh=w1NPe9WcILqvBMR79gBUkgBg/mpRAjlzexIbZk8XiQw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jX907CUKfqJzQFaTCvZcuRqFvQI0KeHO4CUcBW9FNnXaCs1Jggm4TB4YMtvXtcFC26pqF9D8KiyxRxg2NNRJfsD4h9yzmUrznBTTXWeoDsPcJKk2ZAZcUXJJj/a/2e+1lX63QYajzOkUv2EJQFsuDGGy+toNA2QEgN9HJIQXakI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=O6zNBnn4; arc=none smtp.client-ip=91.218.175.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: tytso@mit.edu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721236948;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=K106XqbcYfH8ci1Y+fSU8zpOaaksHSItrgPnvgG054c=;
+	b=O6zNBnn42JkMAoaTew959hYqfNDCCnwiSf+sFN4v67msWI0CF3PKnjg5U94CyApPmaNA0C
+	fTXsE1iPfiSEZ8gfR8FHs1vvK4l+8GT/UawNrDvfQynAILAyZEga2gINsHNXXqfLDkC5Vb
+	Ar5tljMKDzk890b0zEzDK4Zotija7B0=
+X-Envelope-To: adilger@dilger.ca
+X-Envelope-To: jack@suse.cz
+X-Envelope-To: harshadshirwadkar@gmail.com
+X-Envelope-To: linux-ext4@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: luis.henriques@linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Jan Kara <jack@suse.cz>,
+	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Subject: [PATCH v5] ext4: fix fast commit inode enqueueing during a full journal commit
+Date: Wed, 17 Jul 2024 18:22:20 +0100
+Message-ID: <20240717172220.14201-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD+ocbzeAM=0_k=TBTHb3HA6tg6QKUfnd1Cw7235VHDFMsZVaQ@mail.gmail.com>
-X-Spam-Flag: NO
-X-Spam-Score: 0.20
-X-Spamd-Result: default: False [0.20 / 50.00];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Level: 
+X-Migadu-Flow: FLOW_OUT
 
-On Fri 12-07-24 19:01:25, harshad shirwadkar wrote:
-> On Fri, Jun 28, 2024 at 7:18 AM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Wed 29-05-24 01:20:00, Harshad Shirwadkar wrote:
-> > > Add nolock flag to ext4_map_blocks() which skips grabbing
-> > > i_data_sem in ext4_map_blocks. In FC commit path, we first
-> > > mark the inode as committing and thereby prevent any mutations
-> > > on it. Thus, it should be safe to call ext4_map_blocks()
-> > > without i_data_sem in this case. This is a workaround to
-> > > the problem mentioned in RFC V4 version cover letter[1] of this
-> > > patch series which pointed out that there is in incosistency between
-> > > ext4_map_blocks() behavior when EXT4_GET_BLOCKS_CACHED_NOWAIT is
-> > > passed. This patch gets rid of the need to call ext4_map_blocks()
-> > > with EXT4_GET_BLOCKS_CACHED_NOWAIT and instead call it with
-> > > EXT4_GET_BLOCKS_NOLOCK. I verified that generic/311 which failed
-> > > in cached_nowait mode passes with nolock mode.
-> > >
-> > > [1] https://lwn.net/Articles/902022/
-> > >
-> > > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> >
-> > I'm sorry I forgot since last time - can you remind me why we cannot we
-> > grab i_data_sem from ext4_fc_write_inode_data()? Because as you write
-> > above, nobody should really be holding that lock while inode is
-> > EXT4_STATE_FC_COMMITTING anyway...
-> >
-> The original reason was that the commit path calls ext4_map_blocks()
-> which needs i_data_sem. But other places might grab i_data_sem and
-> then call ext4_mark_inode_dirty(). Ext4_mark_inode_dirty() can block
-> for a fast commit to finish, causing a deadlock.
-> 
-> In this patchset I'm attacking this problem 2 ways:
-> (1) Ensure i_data_sem is always grabbed before ext4_mark_inode_dirty()
+When a full journal commit is on-going, any fast commit has to be enqueued
+into a different queue: FC_Q_STAGING instead of FC_Q_MAIN.  This enqueueing
+is done only once, i.e. if an inode is already queued in a previous fast
+commit entry it won't be enqueued again.  However, if a full commit starts
+_after_ the inode is enqueued into FC_Q_MAIN, the next fast commit needs to
+be done into FC_Q_STAGING.  And this is not being done in function
+ext4_fc_track_template().
 
-I think this rather should be: Make sure the inode is properly tracked with
-fastcommit code (which waits for EXT4_STATE_FC_COMMITTING) before grabbing
-i_data_sem, shouldn't it?
+This patch fixes the issue by re-enqueuing an inode into the STAGING queue
+during the fast commit clean-up callback when doing a full commit.  However,
+to prevent a race with a fast-commit, the clean-up callback has to be called
+with the journal locked.
 
-> (2) (This patch) Remove the need of grabbing i_data_sem in
-> ext4_map_blocks() when in the commit path.
-> 
-> I am now realizing either (1) or (2) is sufficient -- both are not
-> needed.
+This bug was found using fstest generic/047.  This test creates several 32k
+bytes files, sync'ing each of them after it's creation, and then shutting
+down the filesystem.  Some data may be loss in this operation; for example a
+file may have it's size truncated to zero.
 
-Yes, this is what was confusing me somewhat.
+Suggested-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+---
+Hi!
 
-> (2) is more maintainable. (1) seems fragile and future code
-> paths can potentially break that rule which can cause hard to debug
-> failures. So, how about just keeping this patch and dropping the need
-> to remove grab i_data_sem before ext4_mark_inode_dirty()? If no
-> concerns, I'll handle this in V7.
+And here's another attempt to fix this bug.  The most significant change is
+that now it doesn't assume a 'special' meaning for a tid of '0'.  Which is
+a wrong assumption as Jan has shown.
 
-Well, you have added assertions into ext4_mark_inode_dirty() exactly to
-catch possible problems with inode not being tracked with fastcommit code.
-I agree 1) needs changes in more places but long term, it actually seems
-*less* fragile with the assertions added. Because adding conditional
-locking to our core block mapping function and relying on the fact that
-nobody can modify the mapping structures while EXT4_STATE_FC_COMMITTING is
-set is quite hard to assert for and the failures are going to be hard to
-debug as they will result in random memory corruptions, oopses etc. So I
-believe you should rather remove 2).
+I've also added a Suggested-by: tag, although Jan pretty much owns this
+patch -- I have simply tested it and sent it out!
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+ fs/ext4/fast_commit.c | 15 ++++++++++++++-
+ fs/jbd2/journal.c     |  2 +-
+ 2 files changed, 15 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+index 3926a05eceee..df71fd5b1fed 100644
+--- a/fs/ext4/fast_commit.c
++++ b/fs/ext4/fast_commit.c
+@@ -1288,8 +1288,21 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
+ 		list_del_init(&iter->i_fc_list);
+ 		ext4_clear_inode_state(&iter->vfs_inode,
+ 				       EXT4_STATE_FC_COMMITTING);
+-		if (tid_geq(tid, iter->i_sync_tid))
++		if (tid_geq(tid, iter->i_sync_tid)) {
+ 			ext4_fc_reset_inode(&iter->vfs_inode);
++		} else if (full) {
++			/*
++			 * We are called after a full commit, inode has been
++			 * modified while the commit was running. Re-enqueue
++			 * the inode into STAGING, which will then be splice
++			 * back into MAIN. This cannot happen during
++			 * fastcommit because the journal is locked all the
++			 * time in that case (and tid doesn't increase so
++			 * tid check above isn't reliable).
++			 */
++			list_add_tail(&EXT4_I(&iter->vfs_inode)->i_fc_list,
++				      &sbi->s_fc_q[FC_Q_STAGING]);
++		}
+ 		/* Make sure EXT4_STATE_FC_COMMITTING bit is clear */
+ 		smp_mb();
+ #if (BITS_PER_LONG < 64)
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 1ebf2393bfb7..291a431f8aaf 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -740,9 +740,9 @@ EXPORT_SYMBOL(jbd2_fc_begin_commit);
+  */
+ static int __jbd2_fc_end_commit(journal_t *journal, tid_t tid, bool fallback)
+ {
+-	jbd2_journal_unlock_updates(journal);
+ 	if (journal->j_fc_cleanup_callback)
+ 		journal->j_fc_cleanup_callback(journal, 0, tid);
++	jbd2_journal_unlock_updates(journal);
+ 	write_lock(&journal->j_state_lock);
+ 	journal->j_flags &= ~JBD2_FAST_COMMIT_ONGOING;
+ 	if (fallback)
 
