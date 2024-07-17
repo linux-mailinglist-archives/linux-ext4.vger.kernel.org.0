@@ -1,52 +1,45 @@
-Return-Path: <linux-ext4+bounces-3298-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3299-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F41D933686
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 08:01:23 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE899336AF
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 08:11:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 92D842844D0
-	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 06:01:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CC686B233F2
+	for <lists+linux-ext4@lfdr.de>; Wed, 17 Jul 2024 06:11:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FB15134A8;
-	Wed, 17 Jul 2024 06:01:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="T2f0kHzh"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC017125DE;
+	Wed, 17 Jul 2024 06:11:38 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A064911712;
-	Wed, 17 Jul 2024 06:01:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC2EBA4B;
+	Wed, 17 Jul 2024 06:11:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721196069; cv=none; b=o94Hiwgs5R9Rqeh8P1lKw8lFZH+Q2Bn6ZCl8nYmPyLnCDds3jIMhkxljZ27fU4Uve34U5zjdr9L9tpgZZVNqPDJpnX1ES8b2CiFdbFUWa0dj4ddATmxdQ/ooNXDOCbOD3ntVB98+LfmAm7BZZ1iKFR7zCU0SDKOmIaUJ46sXxH0=
+	t=1721196698; cv=none; b=dveKlGucfbjXiOGMDUfHzaubazs5ot2fk8O2NsbUUV032nrq9bOrIL3l7vJsZ7WM/Z1coKmsOoBfVO4Eewi623OEveOUehJIudGTm93UdOfWZznjsGD7aRk31oVoN7WY2LfJQToyxc7mIned6Nb+ZJYOSLq6B3CkX5tdfcrNv6Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721196069; c=relaxed/simple;
-	bh=RFXjAgM+5/fsswwUyL7uiUhCLmR4FoPb4Hf8nYZk960=;
+	s=arc-20240116; t=1721196698; c=relaxed/simple;
+	bh=2dcUv3tyf6mtFvGXAxBAoA9pa+e4PYCgHafzcH1Ps8o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GJHUDww6S8De/kX2o/ohpWPr+9vymwGFU83s2CIGsUgnCj+jwl4LOd0QFGEyFCTwxLDs8NVlS+XieDT0pLFAzgz/Losi1wMmr7LAhD7YDvQVEt96vbEJ4qayzHNchWzkrCQP896LJIEPjHxzdr320u9RnFYqsVXTsF5U8ZLfndg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=T2f0kHzh; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=mf6/kkJicUX0q5FPWb7HFODThRUeroz1DuVg1N8KqDw=; b=T2f0kHzh4ncICrqU2OzBRJ1TBE
-	DSozUpfaSHF6jQ5mJABEqktRvZkcDaXtP9K83bXsV+Ml48DEoGnuTnNr+r2U8OXc05ebi6+S0gRmk
-	1QKIgs56iHnCkzgJeUCifl/101a/zpx+KSOpljmceVLI3WjZVfEymv8iUa1SlLDa1Gn/YEZbHwY9q
-	rVVHF8XX9vfMb8hseftIgewdvWFCiArdkHGIFAVFYL9DOp0KSl5vHjbTIqt/T2e6c/tkX3JqXzxCr
-	vvULFobdA7cTQHQ4lQPN2D7HzcH/U7lBfNcVnmmK2hWS8woyw+MPoh6IRuiTBvST0xmFvCHF2AR3s
-	1ivbwAFg==;
-Received: from [50.53.4.147] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sTxic-0000000CkkC-05Bv;
-	Wed, 17 Jul 2024 06:00:50 +0000
-Message-ID: <c65edd73-57b7-43d1-8012-6bdf318fcced@infradead.org>
-Date: Tue, 16 Jul 2024 23:00:45 -0700
+	 In-Reply-To:Content-Type; b=AnQGK/VEGuwWSjsdlgcA/dL5LDfPWXeuQ1iEcIVCbjhAVlTDKsWIrPyMPZ2mNyzpvR9SoSKxdlTnTelNXkw76u5R50xSsjx9HO8mvlbVgpJDxi0vXEH5dvwIwl8uYpbSLAoG0Yy/0a25vdh2TZ3YvcrjgcMNXvPf7jQZMEmnS6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WP5DC6b8Sz4f3jYb;
+	Wed, 17 Jul 2024 14:11:23 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id E17251A0DD3;
+	Wed, 17 Jul 2024 14:11:31 +0800 (CST)
+Received: from [10.174.177.174] (unknown [10.174.177.174])
+	by APP4 (Coremail) with SMTP id gCh0CgDXuTePYJdmtHx0AQ--.45764S3;
+	Wed, 17 Jul 2024 14:11:31 +0800 (CST)
+Message-ID: <9fcb1d52-520f-425f-8b83-debeda423483@huaweicloud.com>
+Date: Wed, 17 Jul 2024 14:11:27 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -54,52 +47,109 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 5/9] Documentation: add a new file documenting
- multigrain timestamps
-To: Jeff Layton <jlayton@kernel.org>, Alexander Viro
- <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
- Jan Kara <jack@suse.cz>, Steven Rostedt <rostedt@goodmis.org>,
- Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Chandan Babu R <chandan.babu@oracle.com>, "Darrick J. Wong"
- <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- Jonathan Corbet <corbet@lwn.net>
-Cc: Dave Chinner <david@fromorbit.com>, Andi Kleen <ak@linux.intel.com>,
- Christoph Hellwig <hch@infradead.org>, Uros Bizjak <ubizjak@gmail.com>,
- Kent Overstreet <kent.overstreet@linux.dev>, Arnd Bergmann <arnd@arndb.de>,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-trace-kernel@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
- linux-nfs@vger.kernel.org, linux-doc@vger.kernel.org
-References: <20240715-mgtime-v6-0-48e5d34bd2ba@kernel.org>
- <20240715-mgtime-v6-5-48e5d34bd2ba@kernel.org>
+Subject: Re: [PATCH 02/20] ext4: prevent partial update of the extents path
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>,
+ zhanchengbin <zhanchengbin1@huawei.com>, Baokun Li <libaokun@huaweicloud.com>
+References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
+ <20240710040654.1714672-3-libaokun@huaweicloud.com>
+ <ZpPx3kuO36lp9/Um@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9fd554c7-dc0c-4969-9f2a-1c99356fccce@huaweicloud.com>
+ <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
+ <ZpZDSMFbziWq5xOK@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9ef38162-2eeb-4cf6-aee4-02d6a5952757@huaweicloud.com>
+ <ZpdR4pN8IJajB9xc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240715-mgtime-v6-5-48e5d34bd2ba@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+From: Baokun Li <libaokun@huaweicloud.com>
+In-Reply-To: <ZpdR4pN8IJajB9xc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDXuTePYJdmtHx0AQ--.45764S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxWr1rArWDXrWUAw43KFyfZwb_yoW5Gr43pr
+	yvk3WqkrZ0krn5KFs2yF4jqFyjkw1fG3sFqrZ5CasrJ390vr1agryIqa1q9F9rArWkJa15
+	JrW8X3sxur1DtFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvE14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+	1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIx
+	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
+	42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+	evJa73UjIFyTuYvjfUonmRUUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAHBWaWL5RQyAAAsT
 
+On 2024/7/17 13:29, Ojaswin Mujoo wrote:
+> On Tue, Jul 16, 2024 at 07:54:43PM +0800, Baokun Li wrote:
+>> Hi Ojaswin,
+>>
+>> On 2024/7/16 17:54, Ojaswin Mujoo wrote:
+>>>>> But the journal will ensure the consistency of the extents path after
+>>>>> this patch.
+>>>>>
+>>>>> When ext4_ext_get_access() or ext4_ext_dirty() returns an error in
+>>>>> ext4_ext_rm_idx() and ext4_ext_correct_indexes(), this may cause
+>>>>> the extents tree to be inconsistent. But the inconsistency just
+>>>>> exists in memory and doesn't land on disk.
+>>>>>
+>>>>> For ext4_ext_get_access(), the handle must have been aborted
+>>>>> when it returned an error, as follows:
+>>>> ext4_ext_get_access
+>>>>    ext4_journal_get_write_access
+>>>>     __ext4_journal_get_write_access
+>>>>      err = jbd2_journal_get_write_access
+>>>>      if (err)
+>>>>        ext4_journal_abort_handle
+>>>>> For ext4_ext_dirty(), since path->p_bh must not be null and handle
+>>>>> must be valid, handle is aborted anyway when an error is returned:
+>>>> ext4_ext_dirty
+>>>>    __ext4_ext_dirty
+>>>>     if (path->p_bh)
+>>>>       __ext4_handle_dirty_metadata
+>>>>        if (ext4_handle_valid(handle))
+>>>>          err = jbd2_journal_dirty_metadata
+>>>>           if (!is_handle_aborted(handle) && WARN_ON_ONCE(err))
+>>>>             ext4_journal_abort_handle
+>>>>> Thus the extents tree will only be inconsistent in memory, so only
+>>>>> the verified bit of the modified buffer needs to be cleared to avoid
+>>>>> these inconsistent data being used in memory.
+>>>>>
+>>>> Regards,
+>>>> Baokun
+>>> Thanks for the explanation Baokun, so basically we only have the
+>>> inconsitency in the memory.
+>>>
+>>> I do have a followup questions:
+>>>
+>>> So in the above example, after we have the error, we'll have the buffer
+>>> for depth=0 marked as valid but pointing to the wrong ei_block.
+>> It looks wrong here. When there is an error, the ei_block of the
+>> unmodified buffer with depth=0 is the correct one, it is indeed
+>> 'valid' and it is consistent with the disk. Only buffers that were
+> Hey Baokun,
+>
+> Ahh I see now, I was looking at it the wrong way. So basically since
+> depth 1 to 4 is inconsistent to the disk we mark then non verified so
+> then subsequent lookups can act accordingly.
+>
+> Thanks for the explanation! I am in the middle of testing this patchset
+> with xfstests on a POWERPC system with 64k page size. I'll let you know
+> how that goes!
+>
+> Regards,
+> Ojaswin
 
+Hi Ojaswin,
 
-On 7/15/24 5:48 AM, Jeff Layton wrote:
-> Add a high-level document that describes how multigrain timestamps work,
-> rationale for them, and some info about implementation and tradeoffs.
-> 
-> Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
->  Documentation/filesystems/multigrain-ts.rst | 120 ++++++++++++++++++++++++++++
->  1 file changed, 120 insertions(+)
-> 
+Thank you for the test and feedback!
 
+Cheers,
+Baokun
 
-Reviewed-by: Randy Dunlap <rdunlap@infradead.org>
-
-Thanks.
-
--- 
-~Randy
 
