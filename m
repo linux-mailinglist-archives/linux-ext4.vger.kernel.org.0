@@ -1,94 +1,131 @@
-Return-Path: <linux-ext4+bounces-3313-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3314-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EF929348D1
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jul 2024 09:30:56 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6EDB6934B17
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jul 2024 11:44:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C147B21DAF
-	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jul 2024 07:30:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29CF3286D47
+	for <lists+linux-ext4@lfdr.de>; Thu, 18 Jul 2024 09:44:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2C9F770E5;
-	Thu, 18 Jul 2024 07:30:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4141184DE4;
+	Thu, 18 Jul 2024 09:44:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="FOnbss9g"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC0418059;
-	Thu, 18 Jul 2024 07:30:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD2E68002E
+	for <linux-ext4@vger.kernel.org>; Thu, 18 Jul 2024 09:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721287842; cv=none; b=sQ5tgW5cfagdbWzsjV4BE5cDcYZAEOejpw6dUxpgekufcbYmrtNwgLn6ookPkfIwg6LwQiHObJJgrMXOTY4n1VFr611uRn+xIPl4CE+k5lFciQRHp9Nt/bnUFKvihscvcnncf59qjEHk28AsLW7oiYesWQeOy8SVYX0MojBOwMI=
+	t=1721295851; cv=none; b=oiykHAQfm0dLvsm04hTwODSKsjp/44eBB2vvRx2p6/gM0JDxk9N6HQ2OVAtHd5QPvnxeUxJhieJHtHFtUU4KRsyiKUKEiD3B+Bxb2d5SjLzp0M4fvMTpg8JRLvt7Psegj35+US4VwENoTW2MF4YpUqJoJP1QI5pjsCTgeVdXRpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721287842; c=relaxed/simple;
-	bh=gxgSF5r/1aTolNGI95eCxaHoM+21qoGrkKwwKzAgZNk=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=CCtAR63Ueg5z/6NeYutwvlIbCYLmZRTDBGPmMlNRVw/igF5xaceab1aUv3TXn0ehQiT6H9vYTzi8ObQP4GxpqhfYkhzu9GlLSJGh0oiD83lwtlmyS2d7GiCpIVYy6pQ+PyRJOibGm5XaJ15PV6lvJBGfVzd435DLRGSzc4ejXM0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4WPkrB6VCnz28fYF;
-	Thu, 18 Jul 2024 15:26:18 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 22CE61A0170;
-	Thu, 18 Jul 2024 15:30:38 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 18 Jul 2024 15:30:37 +0800
-Subject: Re: [BUG REPORT] potential deadlock in inode evicting under the inode
- lru traversing context on ext4 and ubifs
-To: Ryder Wang <rydercoding@hotmail.com>, Theodore Ts'o <tytso@mit.edu>,
-	Zhihao Cheng <chengzhihao@huaweicloud.com>
-CC: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, LKML
-	<linux-kernel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Christoph Hellwig
-	<hch@infradead.org>, linux-mtd <linux-mtd@lists.infradead.org>, Richard
- Weinberger <richard@nod.at>, "zhangyi (F)" <yi.zhang@huawei.com>, yangerkun
-	<yangerkun@huawei.com>, "wangzhaolong (A)" <wangzhaolong1@huawei.com>
-References: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
- <20240712143708.GA151742@mit.edu>
- <MEYP282MB3164B39D532251DC6C36B652BFAC2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <10db909b-1b42-82f1-4ca3-3079e66ac7d3@huawei.com>
-Date: Thu, 18 Jul 2024 15:30:25 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1721295851; c=relaxed/simple;
+	bh=SvwI1DIplhMjMtLmPow6061mOYop5TfX4h2cEZYPO3E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ORX0oTH5nYZV7P4KZGrOj4aE/Vu1mYFhjx/XpGxUS+IbYy0sdCV38YnU+/2+TewwzM5/OWXZQ2Av4vSTUrFxS5ILWDLhdTAY954HOQucPnJh4xNdB33IAUw6aGO5y++mPMBQRnRsIIseV0wglbUQi0+rUqRRIQIITTIP7WXJ0u4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=FOnbss9g; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Envelope-To: tytso@mit.edu
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721295844;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=VTXNakot6fFVM3BBXblMUSXLT44vEFf+YFIeQYft0Jw=;
+	b=FOnbss9gjN3qJqWtheT6SQoQlleYpg+k6BBfcQaXH4vQzlANFydH1+XEy2ub6zVjq6GOA3
+	dXSYknJa82feMHAMW+nPS5tldQOYvNkq9GK+MkAlEhHVhCvAKwlRNzjcpmAhRNgOWT5UyF
+	piYM+47qwbi4v4q4l2qu3NnJcICZhyI=
+X-Envelope-To: adilger@dilger.ca
+X-Envelope-To: linux-ext4@vger.kernel.org
+X-Envelope-To: linux-kernel@vger.kernel.org
+X-Envelope-To: luis.henriques@linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger@dilger.ca>
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Subject: [PATCH] ext4: fix access to uninitialised lock in fc replay path
+Date: Thu, 18 Jul 2024 10:43:56 +0100
+Message-ID: <20240718094356.7863-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <MEYP282MB3164B39D532251DC6C36B652BFAC2@MEYP282MB3164.AUSP282.PROD.OUTLOOK.COM>
-Content-Type: text/plain; charset="gbk"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+X-Migadu-Flow: FLOW_OUT
 
-ÔÚ 2024/7/18 11:04, Ryder Wang Ð´µÀ:
-Hi, Ryder
->> Um, I don't see how this can happen.  If the ea_inode is in use,
->> i_count will be greater than zero, and hence the inode will never be
->> go down the rest of the path in inode_lru_inode():
->>
->>          if (atomic_read(&inode->i_count) ||
->>              ...) {
->>                  list_lru_isolate(lru, &inode->i_lru);
->>                  spin_unlock(&inode->i_lock);
->>                  this_cpu_dec(nr_unused);
->>                  return LRU_REMOVED;
->>          }
-> 
-> Yes, in the function inode_lru_inode (in case of clearing cache), there has been such inode->i_state check mechanism to avoid double-removing the inode which is being removed by another process. Unluckily, no such similar inode->i_state check mechanism in the function iput_final (in case of removing file), so double-removing inode can still appear.
+The following kernel trace can be triggered with fstest generic/629 when
+executed against a filesystem with fast-commit feature enabled:
 
-I'm a little confused about the process of inode double-removing, can 
-you provide a detailed case about how double-revemoving happens? I can't 
-find the relationship between inode double-removing and the problem i 
-described.
-> 
-> It looks we need to add some inode->i_state check in iput_final() , if we want to fix this race condition bug.
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 0 PID: 866 Comm: mount Not tainted 6.10.0+ #11
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-3-gd478f380-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x66/0x90
+ register_lock_class+0x759/0x7d0
+ __lock_acquire+0x85/0x2630
+ ? __find_get_block+0xb4/0x380
+ lock_acquire+0xd1/0x2d0
+ ? __ext4_journal_get_write_access+0xd5/0x160
+ _raw_spin_lock+0x33/0x40
+ ? __ext4_journal_get_write_access+0xd5/0x160
+ __ext4_journal_get_write_access+0xd5/0x160
+ ext4_reserve_inode_write+0x61/0xb0
+ __ext4_mark_inode_dirty+0x79/0x270
+ ? ext4_ext_replay_set_iblocks+0x2f8/0x450
+ ext4_ext_replay_set_iblocks+0x330/0x450
+ ext4_fc_replay+0x14c8/0x1540
+ ? jread+0x88/0x2e0
+ ? rcu_is_watching+0x11/0x40
+ do_one_pass+0x447/0xd00
+ jbd2_journal_recover+0x139/0x1b0
+ jbd2_journal_load+0x96/0x390
+ ext4_load_and_init_journal+0x253/0xd40
+ ext4_fill_super+0x2cc6/0x3180
+...
+
+In the replay path there's an attempt to lock sbi->s_bdev_wb_lock in
+function ext4_check_bdev_write_error().  Unfortunately, at this point this
+spinlock has not been initialized yet.  Moving it's initialization to an
+earlier point in __ext4_fill_super() fixes this splat.
+
+Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+---
+ fs/ext4/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c682fb927b64..d615a41ada0e 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5325,6 +5325,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	INIT_LIST_HEAD(&sbi->s_orphan); /* unlinked but open files */
+ 	mutex_init(&sbi->s_orphan_lock);
+ 
++	spin_lock_init(&sbi->s_bdev_wb_lock);
++
+ 	ext4_fast_commit_init(sb);
+ 
+ 	sb->s_root = NULL;
+@@ -5546,7 +5548,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	 * Save the original bdev mapping's wb_err value which could be
+ 	 * used to detect the metadata async write error.
+ 	 */
+-	spin_lock_init(&sbi->s_bdev_wb_lock);
+ 	errseq_check_and_advance(&sb->s_bdev->bd_mapping->wb_err,
+ 				 &sbi->s_bdev_wb_err);
+ 	EXT4_SB(sb)->s_mount_state |= EXT4_ORPHAN_FS;
 
