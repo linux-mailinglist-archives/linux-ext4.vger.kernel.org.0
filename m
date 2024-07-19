@@ -1,259 +1,172 @@
-Return-Path: <linux-ext4+bounces-3326-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3327-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A66F89372B3
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 05:22:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 133D89377A9
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 14:21:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 368631F21EA1
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 03:22:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C1ED9282240
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 12:21:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5885D182C5;
-	Fri, 19 Jul 2024 03:22:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91261132113;
+	Fri, 19 Jul 2024 12:21:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1UzypoMW";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="hM3lDMuI";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="VChNcmEO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="D7PPlN+d"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E15D72566;
-	Fri, 19 Jul 2024 03:22:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C22A1E871
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 12:21:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721359332; cv=none; b=qMyxi8MRr1f+IPZTK7QDHtEN1dIKiO+nCGtXg/e9u++gppsDiqNVqzBux7jMRFjiYS3Efvh4SXTyzcR89HnAsYsK0ubO8JP7vbBfWDO+H8xonj375WN9MosY3gR7IKLMU93TQvu/lGJI+q4BynFr5NlGNawrZiXON5BPIGYkPrs=
+	t=1721391678; cv=none; b=C1klmWB/RtO1AvO5MlsJzoSSHvkL9mJVlBcG8iMokU8Cm2xlhGtXl66xVIDX77AKS0hc5LYsX1xepPLBJ7mZk9dlgb6tTl/218LwmL4NdUpqu1S5GoxrDrOqtaqT7q/ApFt1OTBmYQxyok6qswEn3szw37ahfam82e3wsZGMuUQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721359332; c=relaxed/simple;
-	bh=/l0yJGO5EBjL933kX1ZtOmzUj71Ck6fbHD/HyU7QBtw=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=gCCLPzRAShKHJGmtqDCTrHsPYlhmv/GSOirrA4DZXL6vmTHegHFzMVz78B3+/l3PdhCgMGTuXhodBsFEf/fOMio5hUMKFqDTRNRB+puDyodRjztjt8kPpuoiZHBGazm3iWtYWJMP8pC19wsJEGA7awBbCgIpt/r2M6sk/9rYWMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WQFMg0tRxz4f3lVc;
-	Fri, 19 Jul 2024 11:21:51 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 683F71A08D7;
-	Fri, 19 Jul 2024 11:22:04 +0800 (CST)
-Received: from [10.174.178.46] (unknown [10.174.178.46])
-	by APP4 (Coremail) with SMTP id gCh0CgCHaTfa25lmVg0nAg--.34469S3;
-	Fri, 19 Jul 2024 11:22:04 +0800 (CST)
-Subject: Re: [BUG REPORT] potential deadlock in inode evicting under the inode
- lru traversing context on ext4 and ubifs
-To: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>
-Cc: linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
- Christoph Hellwig <hch@infradead.org>,
- linux-mtd <linux-mtd@lists.infradead.org>,
- Richard Weinberger <richard@nod.at>, "zhangyi (F)" <yi.zhang@huawei.com>,
- yangerkun <yangerkun@huawei.com>, "wangzhaolong (A)"
- <wangzhaolong1@huawei.com>
-References: <37c29c42-7685-d1f0-067d-63582ffac405@huaweicloud.com>
- <20240712143708.GA151742@mit.edu> <20240718134031.sxnwwzzj54jxl3e5@quack3>
-From: Zhihao Cheng <chengzhihao@huaweicloud.com>
-Message-ID: <0b0a7b95-f6d0-a56e-5492-b48882d9a35d@huaweicloud.com>
-Date: Fri, 19 Jul 2024 11:21:51 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1721391678; c=relaxed/simple;
+	bh=08wRGatxPKTcco98Cb/flc+N3dQLWT1fclAXwwHdZSQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h4GQYLn8cYySu7r7u7hcEL0RbBcMYEosja/FN+BF793zK3rtHYhV5jlXo0wM9qnCIX7CLtIie6MWJAQUSvFDPAkn7WLRDc8EAG1BK4rvy3M7EiS0+27QahDyisf/BY2UFH5OdNWKajz5JXvhH9rCLbP7IH72Qh9hYw5JNNLnJx8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1UzypoMW; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=hM3lDMuI; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=VChNcmEO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=D7PPlN+d; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 0A0511F7A1;
+	Fri, 19 Jul 2024 12:21:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721391674; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UuCvs5bM3FUP0Me+a/wru9EzqSLiDgN5MA1zVQ5b95k=;
+	b=1UzypoMWtz67wEiUnkeqimYSfqxc1NKsFJ1ZQF3LYk7d96foB2KxqVx4OY63opjflVNRzN
+	OzfGZ2Gmi8MxWKAXR+R7q65wcfg0zzO1tmrsskp6pAR71VLxu0oa4QNA53HZ+UwI/Hx6so
+	VGFIJs5586HORWf0hukMk8mcGzIgl2M=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721391674;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UuCvs5bM3FUP0Me+a/wru9EzqSLiDgN5MA1zVQ5b95k=;
+	b=hM3lDMuIHENU2oFbFVAM8MZeMbamMgoVrAModJwfp2TMgvCw500cCJNDHCCQGmCQZ8elB/
+	WclcFKN4kHEuRdCg==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1721391673; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UuCvs5bM3FUP0Me+a/wru9EzqSLiDgN5MA1zVQ5b95k=;
+	b=VChNcmEO1tgMJL/NlBtBrpAGi4B2Da2dyAf0B8DOApjiZ4Fcryq89Kw2gBNk5wp4rPhsod
+	YoUOVTdMPH4iUKHkYbX2qv0s7v35HvYX20YOgJ4fn0g0WkS7JX0S4NefXzZDk1ukIFtF0N
+	JuDKQ5G0/9W4yqyjhivXvdGzyShDEjg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1721391673;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=UuCvs5bM3FUP0Me+a/wru9EzqSLiDgN5MA1zVQ5b95k=;
+	b=D7PPlN+dyImnhEvRz+TljKaIzP62cC8T8ll/bBWZgDebmiV/eNnPTbj63ynCNIN91sog95
+	Jnpbbqq5rJbhrSCQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5C0B0132CB;
+	Fri, 19 Jul 2024 12:21:12 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id DShuFjhammYKewAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 19 Jul 2024 12:21:12 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2F4C0A0987; Fri, 19 Jul 2024 14:21:04 +0200 (CEST)
+Date: Fri, 19 Jul 2024 14:21:04 +0200
+From: Jan Kara <jack@suse.cz>
+To: Ted Tso <tytso@mit.edu>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+	carrion bent <carrionbent@linux.alibaba.com>
+Subject: Re: [PATCH v2] ext4: fix macro definition error of EXT4_DIRENT_HASH
+ and EXT4_DIRENT_MINOR_HASH
+Message-ID: <20240719122104.c5nzc6m3uoszgbj2@quack3>
+References: <1717412239-31392-1-git-send-email-carrionbent@163.com>
+ <1717652596-58760-1-git-send-email-carrionbent@linux.alibaba.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240718134031.sxnwwzzj54jxl3e5@quack3>
-Content-Type: text/plain; charset=gbk; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHaTfa25lmVg0nAg--.34469S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3JrWktr43Xw1DZr18GF4kZwb_yoWxGr4kpF
-	Z2qFyfKr4kJFy0k3s7trs0vrn2kayDtr4UJ348Kw4kZ3Z5JryftF1xGr4ayF98Ar4kCrWj
-	qr4UCrnxCFsIy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
-X-CM-SenderInfo: xfkh0wx2klxt3r6k3tpzhluzxrxghudrp/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <1717652596-58760-1-git-send-email-carrionbent@linux.alibaba.com>
+X-Spam-Flag: NO
+X-Spam-Score: 0.20
+X-Spamd-Result: default: False [0.20 / 50.00];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.989];
+	MIME_GOOD(-0.10)[text/plain];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_THREE(0.00)[4];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,alibaba.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Level: 
 
-Hi, Jan
-
-ÔÚ 2024/7/18 21:40, Jan Kara Ð´µÀ:
-> On Fri 12-07-24 10:37:08, Theodore Ts'o wrote:
->> On Fri, Jul 12, 2024 at 02:27:20PM +0800, Zhihao Cheng wrote:
->>> Problem description
->>> ===================
->>>
->>> The inode reclaiming process(See function prune_icache_sb) collects all
->>> reclaimable inodes and mark them with I_FREEING flag at first, at that
->>> time, other processes will be stuck if they try getting these inodes(See
->>> function find_inode_fast), then the reclaiming process destroy the
->>> inodes by function dispose_list().
->>> Some filesystems(eg. ext4 with ea_inode feature, ubifs with xattr) may
->>> do inode lookup in the inode evicting callback function, if the inode
->>> lookup is operated under the inode lru traversing context, deadlock
->>> problems may happen.
->>>
->>> Case 1: In function ext4_evict_inode(), the ea inode lookup could happen
->>> if ea_inode feature is enabled, the lookup process will be stuck under
->>> the evicting context like this:
->>>
->>>   1. File A has inode i_reg and an ea inode i_ea
->>>   2. getfattr(A, xattr_buf) // i_ea is added into lru // lru->i_ea
->>>   3. Then, following three processes running like this:
->>>
->>>      PA                              PB
->>>   echo 2 > /proc/sys/vm/drop_caches
->>>    shrink_slab
->>>     prune_dcache_sb
->>>     // i_reg is added into lru, lru->i_ea->i_reg
->>>     prune_icache_sb
->>>      list_lru_walk_one
->>>       inode_lru_isolate
->>>        i_ea->i_state |= I_FREEING // set inode state
->>>        i_ea->i_state |= I_FREEING // set inode state
->>
->> Um, I don't see how this can happen.  If the ea_inode is in use,
->> i_count will be greater than zero, and hence the inode will never be
->> go down the rest of the path in inode_lru_inode():
->>
->> 	if (atomic_read(&inode->i_count) ||
->> 	    ...) {
->> 		list_lru_isolate(lru, &inode->i_lru);
->> 		spin_unlock(&inode->i_lock);
->> 		this_cpu_dec(nr_unused);
->> 		return LRU_REMOVED;
->> 	}
->>
->> Do you have an actual reproduer which triggers this?  Or would this
->> happen be any chance something that was dreamed up with DEPT?
+On Thu 06-06-24 13:43:16, carrion bent wrote:
+>     the macro parameter 'entry' of EXT4_DIRENT_HASH and
+>     EXT4_DIRENT_MINOR_HASH was not used, but rather the
+>     variable 'de' was directly used, which may be a local
+>     variable inside a function that calls the macros.
+>     Fortunately, all callers have passed in 'de' so far,
+>     so this bug didn't have an effect.
 > 
-> No, it looks like a real problem and I agree with the analysis. We don't
-> hold ea_inode reference (i.e., ea_inode->i_count) from a normal inode. The
-> normal inode just owns that that special on-disk xattr reference. Standard
-> inode references are acquired and dropped as needed.
+> Signed-off-by: carrion bent <carrionbent@linux.alibaba.com>
+
+Ted, this seems to have fallen through the cracks. The bug in the macro is
+really nasty trap...
+
+								Honza
+
+> ---
+>  fs/ext4/ext4.h | 4 ++--
+>  1 file changed, 2 insertions(+), 2 deletions(-)
 > 
-> And this is exactly the problem: ext4_xattr_inode_dec_ref_all() called from
-> evict() needs to lookup the ea_inode and iget() it. So if we are processing
-> a list of inodes to dispose, all inodes have I_FREEING bit already set and
-> if ea_inode and its parent normal inode are both in the list, then the
-> evict()->ext4_xattr_inode_dec_ref_all()->iget() will deadlock.
-
-Yes, absolutely right.
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 983dad8..04bdd27 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -2338,9 +2338,9 @@ struct ext4_dir_entry_2 {
+>  	((struct ext4_dir_entry_hash *) \
+>  		(((void *)(entry)) + \
+>  		((8 + (entry)->name_len + EXT4_DIR_ROUND) & ~EXT4_DIR_ROUND)))
+> -#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(de)->hash)
+> +#define EXT4_DIRENT_HASH(entry) le32_to_cpu(EXT4_DIRENT_HASHES(entry)->hash)
+>  #define EXT4_DIRENT_MINOR_HASH(entry) \
+> -		le32_to_cpu(EXT4_DIRENT_HASHES(de)->minor_hash)
+> +		le32_to_cpu(EXT4_DIRENT_HASHES(entry)->minor_hash)
+>  
+>  static inline bool ext4_hash_in_dirent(const struct inode *inode)
+>  {
+> -- 
+> 2.7.4
 > 
-> Normally we don't hit this path because LRU list walk is not handling
-> inodes with 0 link count. But a race with unlink can make that happen with
-> iput() from inode_lru_isolate().
-
-Another reason is that mapping_empty(&inode->i_data) is consistent with 
-mapping_shrinkable(&inode->i_data) in most cases(CONFIG_HIGHMEM is 
-disabled in default on 64bit platforms, so mapping_shrinkable() hardly 
-returns true if file inode's mapping has pagecahes), the problem path 
-expects that mapping_shrinkable() returns true and mapping_empty() 
-returns false.
-
-Do we have any other methods to replace following if-branch without 
-invoking __iget()?
-
-         /* 
-
-          * On highmem systems, mapping_shrinkable() permits dropping 
-
-          * page cache in order to free up struct inodes: lowmem might 
-
-          * be under pressure before the cache inside the highmem zone. 
-
-          */ 
-
-         if (inode_has_buffers(inode) || !mapping_empty(&inode->i_data)) 
-{
-                 __iget(inode);
-                 ...
-                 iput(inode); 
-
-                 spin_lock(lru_lock); 
-
-                 return LRU_RETRY; 
-
-         }
 > 
-> I'm pondering about the best way to fix this. Maybe we could handle the
-> need for inode pinning in inode_lru_isolate() in a similar way as in
-> writeback code so that last iput() cannot happen from inode_lru_isolate().
-> In writeback we use I_SYNC flag to pin the inode and evict() waits for this
-> flag to clear. I'll probably sleep to it and if I won't find it too
-> disgusting to live tomorrow, I can code it.
-> 
-
-I guess that you may modify like this:
-diff --git a/fs/inode.c b/fs/inode.c
-index f356fe2ec2b6..5b1a9b23f53f 100644
---- a/fs/inode.c
-+++ b/fs/inode.c
-@@ -457,7 +457,7 @@ EXPORT_SYMBOL(ihold);
-
-  static void __inode_add_lru(struct inode *inode, bool rotate)
-  {
--       if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING | 
-I_WILL_FREE))
-+       if (inode->i_state & (I_DIRTY_ALL | I_SYNC | I_FREEING | 
-I_WILL_FREE | I_PINING))
-                 return;
-         if (atomic_read(&inode->i_count))
-                 return;
-@@ -845,7 +845,7 @@ static enum lru_status inode_lru_isolate(struct 
-list_head *item,
-          * be under pressure before the cache inside the highmem zone.
-          */
-         if (inode_has_buffers(inode) || !mapping_empty(&inode->i_data)) {
--               __iget(inode);
-+               inode->i_state |= I_PINING;
-                 spin_unlock(&inode->i_lock);
-                 spin_unlock(lru_lock);
-                 if (remove_inode_buffers(inode)) {
-@@ -857,7 +857,10 @@ static enum lru_status inode_lru_isolate(struct 
-list_head *item,
-                                 __count_vm_events(PGINODESTEAL, reap);
-                         mm_account_reclaimed_pages(reap);
-                 }
--               iput(inode);
-+               spin_lock(&inode->i_lock);
-+               inode->i_state &= ~I_PINING;
-+               wake_up_bit(&inode->i_state, __I_PINING);
-+               spin_unlock(&inode->i_lock);
-                 spin_lock(lru_lock);
-                 return LRU_RETRY;
-         }
-@@ -1772,6 +1775,7 @@ static void iput_final(struct inode *inode)
-                 return;
-         }
-
-+       inode_wait_for_pining(inode);
-         state = inode->i_state;
-         if (!drop) {
-                 WRITE_ONCE(inode->i_state, state | I_WILL_FREE);
-diff --git a/include/linux/fs.h b/include/linux/fs.h
-index fd34b5755c0b..daf094fff5fe 100644
---- a/include/linux/fs.h
-+++ b/include/linux/fs.h
-@@ -2415,6 +2415,8 @@ static inline void kiocb_clone(struct kiocb 
-*kiocb, struct kiocb *kiocb_src,
-  #define I_DONTCACHE            (1 << 16)
-  #define I_SYNC_QUEUED          (1 << 17)
-  #define I_PINNING_NETFS_WB     (1 << 18)
-+#define __I_PINING             19
-+#define I_PINING               (1 << __I_PINING)
-
-  #define I_DIRTY_INODE (I_DIRTY_SYNC | I_DIRTY_DATASYNC)
-  #define I_DIRTY (I_DIRTY_INODE | I_DIRTY_PAGES)
-
-, which means that we will import a new inode state to solve the problem.
-
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
