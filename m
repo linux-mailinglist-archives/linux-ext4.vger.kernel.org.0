@@ -1,101 +1,91 @@
-Return-Path: <linux-ext4+bounces-3329-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3330-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A0547937A85
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 18:14:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14C15937D26
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 22:07:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E072B2349E
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 16:14:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 45C701C213A1
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 20:07:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6ACD145FF8;
-	Fri, 19 Jul 2024 16:11:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04B514831C;
+	Fri, 19 Jul 2024 20:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M78asPI4"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 181C1145B34
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 16:11:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67EC74174C
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 20:07:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721405483; cv=none; b=sz/Lmzjx7QGlojrrHK1dR5qBt6onBYPyPymq0sZYsLEM+L2YOg3K0RM+B1P/4J3zEuJd/Oy/VE8X9gFC2+RLuNZN30KijBaxli9KSmYv22O6Q3dLx4RdBoQgd/x7n0iT4Z60d6K6SPN0Cerb89DK4N20JUguVlUOPn3YGirQkbM=
+	t=1721419654; cv=none; b=mZa5C7d5tIAiUB3RysIJSTap3oGeD5cV8Tc58He/rklRf4Q1KUopjkytAabxaCrZUKtMYNWG4IqxYazO6M5GbAHTp2OsI0cSUpEUO/S+7sMPlqX1B42JGakUKSzqOyglXMPnrcPwHjvMWWB62ZBWZrEIWFPhfFI4qMElnns4xjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721405483; c=relaxed/simple;
-	bh=dfBRawcr2glCEAMpyVpqh9p8zTcVwCn3sIfnaGnucac=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=UhNQWvHJUwkhQj3XAz/Is+4TYyHtU9rgjdHEmlOmYc0+hgxE/wePQQ5Id2bwiiqorN/dA8eHj71gC51u8Z+oUTrH4seANt8IuBhs5UeDJT3q/UjCWS1RaEZ25WzQ1U+Wa3t6o3HqXTTAgqXbjUYbozxnVqsThJt/fFiBl4cTA5M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-8048edd8993so284759739f.0
-        for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 09:11:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721405481; x=1722010281;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=dfBRawcr2glCEAMpyVpqh9p8zTcVwCn3sIfnaGnucac=;
-        b=R7fRoBdjy5NKKv5QSjj+A5z2l5Khzg1J48Z0Km2Cx1s+necI479Z0p0af45QtnoTg3
-         zTh84RuXFwyv//8oECGUntlPNVtovWo3fH9ydYgN5QwHD8doIzM5N+8L+DD4dNV2cUk/
-         5Xa7Es6e3VUK12kyoVxxv1D01GoK+fNo6GNk9ePZ+14s6fFPgOlYawM51o2m+pseTZkd
-         TD2Y/+VPGWT0tfJGtbHtjb4XvvSFYtYeFtafREARStsUzHEKLtoRqYSLjESC+/qhInNo
-         LmpIJKGWmYnAmn1oxMROJ69buHkPAidL/Pe3Dg8g/1sKC3+AzECvQEuBMfZxl4mHTryW
-         vr3A==
-X-Forwarded-Encrypted: i=1; AJvYcCV1hNjlkFozNarWtyNr8cZF1tKCHkqd+Lg51pRAboI9BtFyjJwunxIKsig2Cuv0uODV42Da9+thhVtZ8QwBB/ck0xdDh2oihPVfQA==
-X-Gm-Message-State: AOJu0YxITk7Vxtu3B4vwIwnT2Kyr8q2icG+58VMRYLCyYLnxOvTSHLf6
-	d09HWx0gFELApQWuyuwnCawt52cc3LKVUBLPE1cIwoNfF3GooV7IFh2jeVBBdXfw3UPmmHMBqqU
-	MOgq8TQyvZ3fZX53pAnGN2afVPPumZwXxrdIWu3Z6dd8jOhbsIrtg8dg=
-X-Google-Smtp-Source: AGHT+IGwYEixT6BqLiqvXjDMmTb7wMIy8BxZg/e6BjxjsZvp4vjzgKHeMXVEmyfHcDZgmx/TbUuz41yngryBR7KS+9ouYqk3j5TI
+	s=arc-20240116; t=1721419654; c=relaxed/simple;
+	bh=d4pEUozROn/JjV2CPxaK6cU1Kf3mMiPlWJpHg+rTezg=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=fRm8s/VkTpU9A6lkCtH64qthqwWRSxnbyiOUtADQ27hMD6vbEzLn1YDrac+uld4nDZcoDUI7vvWSX//dsqvrZY9GB8riNPBkCY2hA5QzHk0/yFjN2gr2Ij5/s8JXYazvhXsVjIwy0tup4tupIz0K9VL/V4uuE7cA2voCoBKSLIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M78asPI4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id F0DD5C4AF0C
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 20:07:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1721419654;
+	bh=d4pEUozROn/JjV2CPxaK6cU1Kf3mMiPlWJpHg+rTezg=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=M78asPI4lH/cKTnNNXD1ccpojWWMd2f74idzwTg9kxdcGTm6HOYgQjGApC1v683rG
+	 KT68jE1+Snv7E4rHbZTGmDh5auFuRYhI8VY8Uhs8FoHMXCERJU7T36l14AdpRtF6HO
+	 6gForXoGq8Sa8U6+ZE3owkUcSQ6kUVT9wIKhYddDa++C5TfzMFWGWn5ataqzYemhG7
+	 mqEAa4o1k6+Gxre5LxEmBeRgdK+0azFd16EMry4hd4K5vVs2wkk7QI4TgrHGT8qaVf
+	 3dnFkLmuoYepULe2pMCNSGjAj91dDAqMRCTJ+J+QZfJ1bb7Rx+B1PU+hk2ZPc46rIJ
+	 eWLxcyLEtIGkg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id DBE60C53BB8; Fri, 19 Jul 2024 20:07:33 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 218932] Serious problem with ext4 with all kernels,
+ auto-commits do not settle to block device
+Date: Fri, 19 Jul 2024 20:07:33 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: sirius@mailhaven.com
+X-Bugzilla-Status: RESOLVED
+X-Bugzilla-Resolution: INVALID
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-218932-13602-fYztrQjyZZ@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-218932-13602@https.bugzilla.kernel.org/>
+References: <bug-218932-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1c28:b0:398:36c0:796e with SMTP id
- e9e14a558f8ab-398e4601721mr164315ab.1.1721405481153; Fri, 19 Jul 2024
- 09:11:21 -0700 (PDT)
-Date: Fri, 19 Jul 2024 09:11:21 -0700
-In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000038105d061d9bf215@google.com>
-Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
-From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
 
-This bug is marked as fixed by commit:
-ext4: fix race condition between buffer write and page_mkwrite
+https://bugzilla.kernel.org/show_bug.cgi?id=3D218932
 
-But I can't find it in the tested trees[1] for more than 90 days.
-Is it a correct commit? Please update it by replying:
+--- Comment #8 from Serious (sirius@mailhaven.com) ---
+(In reply to Jan Kara from comment #7)
+new one is better
 
-#syz fix: exact-commit-title
+--=20
+You may reply to this email to add a comment.
 
-Until then the bug is still considered open and new crashes with
-the same signature are ignored.
-
-Kernel: Linux
-Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-
----
-[1] I expect the commit to be present in:
-
-1. for-kernelci branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
-
-2. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
-
-3. master branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
-
-4. main branch of
-git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
-
-The full list of 10 trees can be found at
-https://syzkaller.appspot.com/upstream/repos
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
