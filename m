@@ -1,118 +1,101 @@
-Return-Path: <linux-ext4+bounces-3328-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3329-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1F709377C7
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 14:33:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A0547937A85
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 18:14:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D326B1C2154C
-	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 12:33:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0E072B2349E
+	for <lists+linux-ext4@lfdr.de>; Fri, 19 Jul 2024 16:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72731130A7D;
-	Fri, 19 Jul 2024 12:33:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AjQV9wGB"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6ACD145FF8;
+	Fri, 19 Jul 2024 16:11:23 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECCCD84D3E
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 12:33:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 181C1145B34
+	for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 16:11:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721392406; cv=none; b=bd7a33uF8m74hyr6WEuP2O+/3x9dxv2bMjbofBqklPXVKJL/z436EW5rgsQpHZZ1fdvv2TxjGWt9H5CY8r3ia+GeYRg4QBR83TbOT1Gvp6TX5w0XY6L3pY38Jwdci0Y7QIB6OE7SBQE/Da+nV8wgjUXvqt5qDPDeasM6ghMBwcc=
+	t=1721405483; cv=none; b=sz/Lmzjx7QGlojrrHK1dR5qBt6onBYPyPymq0sZYsLEM+L2YOg3K0RM+B1P/4J3zEuJd/Oy/VE8X9gFC2+RLuNZN30KijBaxli9KSmYv22O6Q3dLx4RdBoQgd/x7n0iT4Z60d6K6SPN0Cerb89DK4N20JUguVlUOPn3YGirQkbM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721392406; c=relaxed/simple;
-	bh=/HZGP1eEwvDjjDxCNABUY+9csmbCzETWNHa/RuJDxPY=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iiG4SfoDlLLMjMNxUAMvW8HwD1e/Itay+IDpAK0sns2UTAj4wQvkNyqXaajNxSEasZAjypqPxFkhjUg0Vv5hKzn20ze2xSWlublMthsz6UOwR2B+lo6bkQuY3pz09wL9Mgw7e6FRpnCxqAcvCNNwixrj9xp5LTvoYpyKAN3/H8U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AjQV9wGB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 95132C4AF0A
-	for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 12:33:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721392405;
-	bh=/HZGP1eEwvDjjDxCNABUY+9csmbCzETWNHa/RuJDxPY=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=AjQV9wGBsGRBmRXB3Y9yosbK3TWcPi6TZSThL2pkxt3yIk3Cb4bDB7btpuwEj9s6T
-	 qoiJR4mhkvcDxn9T3dFQ+OuC0JUfyoRoWbuN1sCZ+IbS4vAd2SW/ZwbfHIP6H5D2wb
-	 23MwjvN1+H3/wnPI3EULev2qRa7BfSXoI9/R50DMkE0DyiQYyG7wZZR2Z33d6FBaJS
-	 mM0UfcB4+FWp8e7SVYalT1oYRH1MBqGWzOqupky8wbTHdfY6JJj7Ppp6CycyLfBm0G
-	 x1YejSPy52s0+1DnyrEiOpwDU0PucMwZgchRjYwrh0tiDI+aS9WRam7aeE+B5/n8Hz
-	 ZkvVpSfaX7TYw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 856D1C53B73; Fri, 19 Jul 2024 12:33:25 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 218932] Serious problem with ext4 with all kernels,
- auto-commits do not settle to block device
-Date: Fri, 19 Jul 2024 12:33:25 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: jack@suse.cz
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: INVALID
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-218932-13602-LvxXtfNJIW@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-218932-13602@https.bugzilla.kernel.org/>
-References: <bug-218932-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1721405483; c=relaxed/simple;
+	bh=dfBRawcr2glCEAMpyVpqh9p8zTcVwCn3sIfnaGnucac=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=UhNQWvHJUwkhQj3XAz/Is+4TYyHtU9rgjdHEmlOmYc0+hgxE/wePQQ5Id2bwiiqorN/dA8eHj71gC51u8Z+oUTrH4seANt8IuBhs5UeDJT3q/UjCWS1RaEZ25WzQ1U+Wa3t6o3HqXTTAgqXbjUYbozxnVqsThJt/fFiBl4cTA5M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-8048edd8993so284759739f.0
+        for <linux-ext4@vger.kernel.org>; Fri, 19 Jul 2024 09:11:21 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721405481; x=1722010281;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=dfBRawcr2glCEAMpyVpqh9p8zTcVwCn3sIfnaGnucac=;
+        b=R7fRoBdjy5NKKv5QSjj+A5z2l5Khzg1J48Z0Km2Cx1s+necI479Z0p0af45QtnoTg3
+         zTh84RuXFwyv//8oECGUntlPNVtovWo3fH9ydYgN5QwHD8doIzM5N+8L+DD4dNV2cUk/
+         5Xa7Es6e3VUK12kyoVxxv1D01GoK+fNo6GNk9ePZ+14s6fFPgOlYawM51o2m+pseTZkd
+         TD2Y/+VPGWT0tfJGtbHtjb4XvvSFYtYeFtafREARStsUzHEKLtoRqYSLjESC+/qhInNo
+         LmpIJKGWmYnAmn1oxMROJ69buHkPAidL/Pe3Dg8g/1sKC3+AzECvQEuBMfZxl4mHTryW
+         vr3A==
+X-Forwarded-Encrypted: i=1; AJvYcCV1hNjlkFozNarWtyNr8cZF1tKCHkqd+Lg51pRAboI9BtFyjJwunxIKsig2Cuv0uODV42Da9+thhVtZ8QwBB/ck0xdDh2oihPVfQA==
+X-Gm-Message-State: AOJu0YxITk7Vxtu3B4vwIwnT2Kyr8q2icG+58VMRYLCyYLnxOvTSHLf6
+	d09HWx0gFELApQWuyuwnCawt52cc3LKVUBLPE1cIwoNfF3GooV7IFh2jeVBBdXfw3UPmmHMBqqU
+	MOgq8TQyvZ3fZX53pAnGN2afVPPumZwXxrdIWu3Z6dd8jOhbsIrtg8dg=
+X-Google-Smtp-Source: AGHT+IGwYEixT6BqLiqvXjDMmTb7wMIy8BxZg/e6BjxjsZvp4vjzgKHeMXVEmyfHcDZgmx/TbUuz41yngryBR7KS+9ouYqk3j5TI
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+X-Received: by 2002:a05:6e02:1c28:b0:398:36c0:796e with SMTP id
+ e9e14a558f8ab-398e4601721mr164315ab.1.1721405481153; Fri, 19 Jul 2024
+ 09:11:21 -0700 (PDT)
+Date: Fri, 19 Jul 2024 09:11:21 -0700
+In-Reply-To: <0000000000006fd14305f00bdc84@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000038105d061d9bf215@google.com>
+Subject: Re: [syzbot] kernel BUG in ext4_do_writepages
+From: syzbot <syzbot+d1da16f03614058fdc48@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D218932
+This bug is marked as fixed by commit:
+ext4: fix race condition between buffer write and page_mkwrite
 
-Jan Kara (jack@suse.cz) changed:
+But I can't find it in the tested trees[1] for more than 90 days.
+Is it a correct commit? Please update it by replying:
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |jack@suse.cz
+#syz fix: exact-commit-title
 
---- Comment #7 from Jan Kara (jack@suse.cz) ---
-Not sure where you've got the URL in comment 5 from but it is an ancient
-version of the documentation. This text has been fixed in 2018. Current ver=
-sion
-of the documentation is at
-https://www.kernel.org/doc/html/latest/admin-guide/ext4.html and has:
+Until then the bug is still considered open and new crashes with
+the same signature are ignored.
 
-commit=3Dnrsec (*)
+Kernel: Linux
+Dashboard link: https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
 
-    This setting limits the maximum age of the running transaction to =E2=
-=80=98nrsec=E2=80=99
-seconds. The default value is 5 seconds. This means that if you lose your
-power, you will lose as much as the latest 5 seconds of metadata changes (y=
-our
-filesystem will not be damaged though, thanks to the journaling). This defa=
-ult
-value (or any low value) will hurt performance, but it=E2=80=99s good for d=
-ata-safety.
-Setting it to 0 will have the same effect as leaving it at the default (5
-seconds). Setting it to very large values will improve performance. Note th=
-at
-due to delayed allocation even older data can be lost on power failure since
-writeback of those data begins only after time set in
-/proc/sys/vm/dirty_expire_centisecs.
+---
+[1] I expect the commit to be present in:
 
---=20
-You may reply to this email to add a comment.
+1. for-kernelci branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+2. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf-next.git
+
+3. master branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git
+
+4. main branch of
+git://git.kernel.org/pub/scm/linux/kernel/git/davem/net-next.git
+
+The full list of 10 trees can be found at
+https://syzkaller.appspot.com/upstream/repos
 
