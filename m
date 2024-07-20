@@ -1,41 +1,42 @@
-Return-Path: <linux-ext4+bounces-3334-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3335-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CE909381DF
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jul 2024 17:53:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 365639381E3
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jul 2024 17:54:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A0A31F22201
-	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jul 2024 15:53:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C969DB213D3
+	for <lists+linux-ext4@lfdr.de>; Sat, 20 Jul 2024 15:53:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 489D9145A09;
-	Sat, 20 Jul 2024 15:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38FD9145B34;
+	Sat, 20 Jul 2024 15:53:53 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtpbgeu1.qq.com (smtpbgeu1.qq.com [52.59.177.22])
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.77.159])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2D76946C;
-	Sat, 20 Jul 2024 15:53:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.59.177.22
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6C8A133987;
+	Sat, 20 Jul 2024 15:53:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.77.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721490817; cv=none; b=Kh8/LPxr+VYZrNWeXr66ZdJIHzRPdR/BaiQx0lm2JY/Jb8g4511diXeD6UiH3BS+Lhn3QwiU1NIBTi8QstkIdtcoqzgcRDspGpWzPqHL/ztUiCRbhSMourH8EVX/t3Tbd6L1jHLFM+dTOPe12+Tvni5Zmzqed87jnpmq/fK5hQ0=
+	t=1721490832; cv=none; b=ORvg5nVQG87ehgUvnACfbwfvbANP+Us9l13K442t+iXo4UVN2kOQXlEHPjcT89U9PKsB3F5uFsHmAm1T8W+1+3O3zP8ILgu5UyV3exhXq62Cfw7Q1duELhJ2yM7L/beEe1jYfCXYEHIbrrQWEyilKtjXXBubDzClJ8RFCyeleiI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721490817; c=relaxed/simple;
-	bh=ElDvncL6VUjH4U6v2RI2TOxRlaNlaIlbOpJntQdrDu0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aX4NoO8ZsrMj2ns6BNd19ys6XiDef/aMJ7xW/Vk9IPQP4b0zds88K6ioBKGAsHtyP4njmCyW13FP7ZyQqnsCxCho5ellLWOqPrGq+vGk8MqD5gN1HRXrZLhJDUJ7m1WPjd/ZHWRJL/5q32aCDEfHhuqbDgcho1mdnKmAJ8YgLEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=52.59.177.22
+	s=arc-20240116; t=1721490832; c=relaxed/simple;
+	bh=9ox4G0hCdJSOFC677hcy/7FFw1kl0rPk8FHugppKxHc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=Ci+xnOYa80vh11OycYhJIyvZQoaGiK+73aJBNNC37duDoiJAw1tb5kExC56P2X8kSAjP46iUMomN4YNCYBkrD3WApY0x592BHCS1syYEY36PSzT0adaEY9Oyv78uVwzb1yTQgLQfLHjhzw1D5Wg5X1ofw0j52nV5/8P8XMRSXqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.77.159
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtp84t1721490798tzi2q3bj
-X-QQ-Originating-IP: p1YDyL64odMybnNrdLDW23VwbfdMU45/KpdQV0W8N4s=
+X-QQ-mid: bizesmtp84t1721490808tam80m5u
+X-QQ-Originating-IP: ty7/62pp/p88ttMIsQ84KQIjZOGBV4ahUwOAtGLFfzo=
 Received: from localhost.localdomain ( [113.57.152.160])
 	by bizesmtp.qq.com (ESMTP) with 
-	id ; Sat, 20 Jul 2024 23:53:15 +0800 (CST)
+	id ; Sat, 20 Jul 2024 23:53:21 +0800 (CST)
 X-QQ-SSF: 0000000000000000000000000000000
 X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 4554181603940633578
+X-BIZMAIL-ID: 4382411021988501471
 From: WangYuli <wangyuli@uniontech.com>
 To: stable@vger.kernel.org,
 	gregkh@linuxfoundation.org,
@@ -51,10 +52,12 @@ Cc: jack@suse.cz,
 	zhangdandan@uniontech.com,
 	guanwentao@uniontech.com,
 	WangYuli <wangyuli@uniontech.com>
-Subject: [PATCH 4.19 0/4] ext4: improve delalloc buffer write performance
-Date: Sat, 20 Jul 2024 23:51:59 +0800
-Message-ID: <BFA78356E2E71FF0+20240720155234.573790-1-wangyuli@uniontech.com>
+Subject: [PATCH 1/4] ext4: check and update i_disksize properly
+Date: Sat, 20 Jul 2024 23:52:00 +0800
+Message-ID: <71FF15A91ED5C348+20240720155234.573790-2-wangyuli@uniontech.com>
 X-Mailer: git-send-email 2.43.4
+In-Reply-To: <20240720155234.573790-1-wangyuli@uniontech.com>
+References: <20240720155234.573790-1-wangyuli@uniontech.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,90 +68,89 @@ Content-Transfer-Encoding: 8bit
 X-QQ-SENDSIZE: 520
 Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 
-A patchset from linux-5.15 should be backported to 4.19 that can
-significantly improve ext4 fs read and write performance. Unixbench test
-results for linux-4.19.318 on Phytium D2000 CPU are shown below.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Test cmd: (Phytium D2000 only has 8 cores)
-  ./Run fs -c 8
+After commit 3da40c7b0898 ("ext4: only call ext4_truncate when size <=
+isize"), i_disksize could always be updated to i_size in ext4_setattr(),
+and we could sure that i_disksize <= i_size since holding inode lock and
+if i_disksize < i_size there are delalloc writes pending in the range
+upto i_size. If the end of the current write is <= i_size, there's no
+need to touch i_disksize since writeback will push i_disksize upto
+i_size eventually. So we can switch to check i_size instead of
+i_disksize in ext4_da_write_end() when write to the end of the file.
+we also could remove ext4_mark_inode_dirty() together because we defer
+inode dirtying to generic_write_end() or ext4_da_write_inline_data_end().
 
-Before this patch set:
-  File Copy 1024 bufsize 2000 maxblocks		1124181
-  File Copy 256 bufsize 500 maxblocks		281885
-  File Copy 4096 bufsize 8000 maxblocks		3383785
-  File Read 1024 bufsize 2000 maxblocks		8702173
-  File Read 256 bufsize 500 maxblocks		3869384
-  File Read 4096 bufsize 8000 maxblocks		13043151
-  File Write 1024 bufsize 2000 maxblocks	1107185
-  File Write 256 bufsize 500 maxblocks 		270493
-  File Write 4096 bufsize 8000 maxblocks	4018084
+Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20210716122024.1105856-2-yi.zhang@huawei.com
+Reviewed-by: Cheng Nie <niecheng1@uniontech.com>
+Signed-off-by: Dandan Zhang <zhangdandan@uniontech.com>
+Signed-off-by: WangYuli <wangyuli@uniontech.com>
+---
+ fs/ext4/inode.c | 34 ++++++++++++++++++----------------
+ 1 file changed, 18 insertions(+), 16 deletions(-)
 
-After this patch set:
-  File Copy 1024 bufsize 2000 maxblocks         2026206
-  File Copy 256 bufsize 500 maxblocks           829534
-  File Copy 4096 bufsize 8000 maxblocks         4066659
-  File Read 1024 bufsize 2000 maxblocks         8877219
-  File Read 256 bufsize 500 maxblocks           3997445
-  File Read 4096 bufsize 8000 maxblocks         13179885
-  File Write 1024 bufsize 2000 maxblocks        4256929
-  File Write 256 bufsize 500 maxblocks          1305320
-  File Write 4096 bufsize 8000 maxblocks	10721052
-
-We can observe a quantum leap in the test results as a consequence of
-applying this patchset
-
-Link: https://lore.kernel.org/all/20210716122024.1105856-1-yi.zhang@huawei.com/
-
-
-
-Original description:
-
-This patchset address to improve buffer write performance with delalloc.
-The first patch reduce the unnecessary update i_disksize, the second two
-patch refactor the inline data write procedure and also do some small
-fix, the last patch do improve by remove all unnecessary journal handle
-in the delalloc write procedure.
-
-After this patch set, we could get a lot of performance improvement.
-Below is the Unixbench comparison data test on my machine with 'Intel
-Xeon Gold 5120' CPU and nvme SSD backend.
-
-Test cmd:
-
-  ./Run -c 56 -i 3 fstime fsbuffer fsdisk
-
-Before this patch set:
-
-  System Benchmarks Partial Index           BASELINE       RESULT   INDEX
-  File Copy 1024 bufsize 2000 maxblocks       3960.0     422965.0   1068.1
-  File Copy 256 bufsize 500 maxblocks         1655.0     105077.0   634.9
-  File Copy 4096 bufsize 8000 maxblocks       5800.0    1429092.0   2464.0
-                                                                    ========
-  System Benchmarks Index Score (Partial Only)                      1186.6
-
-After this patch set:
-
-  System Benchmarks Partial Index           BASELINE       RESULT   INDEX
-  File Copy 1024 bufsize 2000 maxblocks       3960.0     732716.0   1850.3
-  File Copy 256 bufsize 500 maxblocks         1655.0     184940.0   1117.5
-  File Copy 4096 bufsize 8000 maxblocks       5800.0    2427152.0   4184.7
-                                                                    ========
-  System Benchmarks Index Score (Partial Only)                      2053.0
-
-
-
-
-Zhang Yi (4):
-  ext4: check and update i_disksize properly
-  ext4: correct the error path of ext4_write_inline_data_end()
-  ext4: factor out write end code of inline file
-  ext4: drop unnecessary journal handle in delalloc write
-
- fs/ext4/ext4.h   |   3 -
- fs/ext4/inline.c | 120 ++++++++++++++++++-------------------
- fs/ext4/inode.c  | 150 ++++++++++++-----------------------------------
- 3 files changed, 99 insertions(+), 174 deletions(-)
-
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 646285fbc9fc..d8a8e4ee5ff8 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -3207,35 +3207,37 @@ static int ext4_da_write_end(struct file *file,
+ 	end = start + copied - 1;
+ 
+ 	/*
+-	 * generic_write_end() will run mark_inode_dirty() if i_size
+-	 * changes.  So let's piggyback the i_disksize mark_inode_dirty
+-	 * into that.
++	 * Since we are holding inode lock, we are sure i_disksize <=
++	 * i_size. We also know that if i_disksize < i_size, there are
++	 * delalloc writes pending in the range upto i_size. If the end of
++	 * the current write is <= i_size, there's no need to touch
++	 * i_disksize since writeback will push i_disksize upto i_size
++	 * eventually. If the end of the current write is > i_size and
++	 * inside an allocated block (ext4_da_should_update_i_disksize()
++	 * check), we need to update i_disksize here as neither
++	 * ext4_writepage() nor certain ext4_writepages() paths not
++	 * allocating blocks update i_disksize.
++	 *
++	 * Note that we defer inode dirtying to generic_write_end() /
++	 * ext4_da_write_inline_data_end().
+ 	 */
+ 	new_i_size = pos + copied;
+-	if (copied && new_i_size > EXT4_I(inode)->i_disksize) {
++	if (copied && new_i_size > inode->i_size) {
+ 		if (ext4_has_inline_data(inode) ||
+-		    ext4_da_should_update_i_disksize(page, end)) {
++		    ext4_da_should_update_i_disksize(page, end))
+ 			ext4_update_i_disksize(inode, new_i_size);
+-			/* We need to mark inode dirty even if
+-			 * new_i_size is less that inode->i_size
+-			 * bu greater than i_disksize.(hint delalloc)
+-			 */
+-			ext4_mark_inode_dirty(handle, inode);
+-		}
+ 	}
+ 
+ 	if (write_mode != CONVERT_INLINE_DATA &&
+ 	    ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA) &&
+ 	    ext4_has_inline_data(inode))
+-		ret2 = ext4_da_write_inline_data_end(inode, pos, len, copied,
++		ret = ext4_da_write_inline_data_end(inode, pos, len, copied,
+ 						     page);
+ 	else
+-		ret2 = generic_write_end(file, mapping, pos, len, copied,
++		ret = generic_write_end(file, mapping, pos, len, copied,
+ 							page, fsdata);
+ 
+-	copied = ret2;
+-	if (ret2 < 0)
+-		ret = ret2;
++	copied = ret;
+ 	ret2 = ext4_journal_stop(handle);
+ 	if (!ret)
+ 		ret = ret2;
 -- 
-2.31.1
+2.43.4
+
 
