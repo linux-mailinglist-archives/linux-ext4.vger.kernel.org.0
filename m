@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-3346-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3347-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72E1E938622
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Jul 2024 23:02:12 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F82D938623
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Jul 2024 23:02:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34791280FED
-	for <lists+linux-ext4@lfdr.de>; Sun, 21 Jul 2024 21:02:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 404C81C202E2
+	for <lists+linux-ext4@lfdr.de>; Sun, 21 Jul 2024 21:02:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B51B16A920;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24FE16B385;
 	Sun, 21 Jul 2024 21:02:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GqusGegh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cugEpCWE"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3640C8C7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37FFA167D97
 	for <linux-ext4@vger.kernel.org>; Sun, 21 Jul 2024 21:02:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721595727; cv=none; b=a98J/N9PiWayNKx3ahmpAgqb2M4+AZ3q5AUVLUWVk3dLH4fkV40Zako6LoV9FSOZURTIVdWAI+mejlv1iO7jwuIRUs2CiSdkbuLg9q1NyqR5wtYq343rgbZiktuXN1mSC8rN1VqthiKQCM+CTLGcHLNZLXvKS3AFDqUCiwV7Uao=
+	t=1721595727; cv=none; b=L8pBRi522hHiBUgSxba/1tkpyabbUklNN0BmaAcobWk0LlPPZ1bmMC9TKnCCDjEOoJjVts7W78SSLbIXi3anc89sBUX0JdrzfYsrog7s29KNNS2tz7QSwQMzvRCNnyk8UICk5oq2H+FLzZIPEw64/fz9jJvdkwiKDWp90b33sjs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1721595727; c=relaxed/simple;
-	bh=TjkdXU37INgMnCQeoVh0d/Z5GUA6MP5h1fe5xEuEpM0=;
+	bh=gXuAXug0IHzC8zuvi/rFzd0ol+osLJRgwqgZEcFZvS8=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=OTlfYtKkb5uBP7ckgrdoeFlpD2/8atbhYUTfF01+L3MzkNq+y34P6KxIl+ItFv+dxMjHTzKNlm00plvdrZ7iQz+/YByTYcBft+tFToMxOSUJyzqF3ybnlNFWEnlEx3px2cFmLZecofkCo+7JJVtbcLfXpRVkh6PUAcjcXoOdlUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GqusGegh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 80D3EC32782
+	 Content-Type:MIME-Version; b=Hj9h34QXes6jeCqthldNfWEvMJ4B7yPdjPVCn6dEYgQJGtBu64BZTtPi/67YfcVMnkcWl/f0lL5Aa0lvvoRgfjdhUZBvxNUPYpJ6D/VA92mMvkCfHyJmWSl5C8CuS7uAP6ZT7DNEdo/znmbN9UckIZS9qxIhjfumR4RAlbcwXrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cugEpCWE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id C81E3C4AF13
 	for <linux-ext4@vger.kernel.org>; Sun, 21 Jul 2024 21:02:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1721595726;
-	bh=TjkdXU37INgMnCQeoVh0d/Z5GUA6MP5h1fe5xEuEpM0=;
+	bh=gXuAXug0IHzC8zuvi/rFzd0ol+osLJRgwqgZEcFZvS8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=GqusGegh5p4o2LeP1BGeHPHX0tlGpwMUZNNWNUBvdSRQJ0We5Q4rwngMAwILzCIJx
-	 0MEaZejWKQBFgjytPNKaj6dqLmhd11Y4hKoEJV3H3ngwvrDMzhK824HzvZOucKqlKG
-	 O8PHuCbzW8Hy9yUXGZrhPTGkzJ2Ky4ZdGnRsW1XRc8Cl8/yjrWqeyit8oGDFtxNPq3
-	 vnKjJNeUP2XYSzE69xowDvdabl39AaAmOT6FUydlAX2uVL+yQeyIgymD0nVB47ql8b
-	 V+T2DUrcS1xnHj6g2WwrT8DyGoPYKfD4RIpXUgzmY656R9lwWKqYuxZX/DtgkX6Qc9
-	 OkFYycfgTe1kg==
+	b=cugEpCWEidU4yrcRJh/QfPkt6d4Vj5Kvuk1PgNTbCPYdL4Mg/0K3bnD5UdchyFcua
+	 e9bOr/vVu/ifaXl4f26Fk9WC/45+j96RZ2L7AV9bcN74OR0T8bP5BAtXzxwEkYp6NF
+	 OJvpp7CxQyfVFg9Uiqvf2/IUMnraeRCYWAUUwpQABauhi8SgAQ7YUg32BofoV4KB2C
+	 YTfFtB0bwzDtoHm3DhpWtDxCHiHjChEC5pnAabOHnyddIGfl3heTD/dpYi4KXI1QNb
+	 tgtXvvUQqfAnQSIheKK0lP3QgNfId8JJSV851Y511dWfqDjX+m0If5d74SyUs1DRs0
+	 OmaPz+ZIU7J+w==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 77775C53BBF; Sun, 21 Jul 2024 21:02:06 +0000 (UTC)
+	id C18DFC53BBF; Sun, 21 Jul 2024 21:02:06 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
-Subject: [Bug 219078] Filesystem is not responding; file manager crashes;
- detected buffer overflow; steam won't start
+Subject: [Bug 219072] After updating to kernel 6.10.0, one of my Western
+ Digital HDD stopped working
 Date: Sun, 21 Jul 2024 21:02:06 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
@@ -55,18 +55,17 @@ X-Bugzilla-Product: File System
 X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: high
+X-Bugzilla-Severity: normal
 X-Bugzilla-Who: aros@gmx.com
-X-Bugzilla-Status: RESOLVED
-X-Bugzilla-Resolution: DUPLICATE
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status cf_kernel_version resolution
- cf_regression
-Message-ID: <bug-219078-13602-gs0yks1tKz@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-219078-13602@https.bugzilla.kernel.org/>
-References: <bug-219078-13602@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-219072-13602-j3iV8fbzgc@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-219072-13602@https.bugzilla.kernel.org/>
+References: <bug-219072-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 X-Bugzilla-URL: https://bugzilla.kernel.org/
@@ -78,21 +77,16 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D219078
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219072
 
 Artem S. Tashkinov (aros@gmx.com) changed:
 
            What    |Removed                     |Added
 ----------------------------------------------------------------------------
-             Status|NEW                         |RESOLVED
-     Kernel Version|                            |6.10
-         Resolution|---                         |DUPLICATE
-         Regression|No                          |Yes
+                 CC|                            |madeisbaer@arcor.de
 
---- Comment #1 from Artem S. Tashkinov (aros@gmx.com) ---
-
-
-*** This bug has been marked as a duplicate of bug 219072 ***
+--- Comment #2 from Artem S. Tashkinov (aros@gmx.com) ---
+*** Bug 219078 has been marked as a duplicate of this bug. ***
 
 --=20
 You may reply to this email to add a comment.
