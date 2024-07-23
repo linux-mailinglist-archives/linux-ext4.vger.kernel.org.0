@@ -1,55 +1,84 @@
-Return-Path: <linux-ext4+bounces-3391-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3392-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AC6893A531
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 19:58:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10D5693A773
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 20:52:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 579E51F234D5
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 17:58:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB3581F23CF0
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 18:52:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511D31586C8;
-	Tue, 23 Jul 2024 17:58:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8DB513E020;
+	Tue, 23 Jul 2024 18:51:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="FPsq4UtM"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FV7yl5au"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE07C381B1;
-	Tue, 23 Jul 2024 17:58:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5D3B13D600;
+	Tue, 23 Jul 2024 18:51:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721757499; cv=none; b=C8fBihZ7QPIl+9Ryy4OuzSaptuZGe02Ofhg90ugMDudlKXJcEQ4fY6MJhyCcwBo2hCP59xTkz0ABP2YXY8dc/Nm9TvSLFizpOc/WZv+Wp4iAlcxyVkMlsa+U05SzaBMnFROnxeTCL44zW87qnR68ndM63tqPMoj5v22eabNN+H0=
+	t=1721760716; cv=none; b=gHXmP084Z+WdrO+ESP9hdczqa1b+90egdiBVPGyUemumaQXtD+pAmW/7L/jxXC2uJBt31aZpLMJwDH5jXKcyTmITip+UV3wtthydkxBhDy8T007+87hUkPWLV6H8geixwEUbqkDxZD3u+xgT/lCDIcvUK6EYi6oLbBdUSi4+Th0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721757499; c=relaxed/simple;
-	bh=zpqs01eB+r9f6kaArGfa7scDf/edw0VAmt/EXKackuQ=;
+	s=arc-20240116; t=1721760716; c=relaxed/simple;
+	bh=jwFoh6L9rTQrrkMo4N/xtydd5G7+Zqn3pnTBTVbfISg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dbGT0fWaictxy/h30g/anYijKxc1Q28qPw5JeXi/4v4+yyC8zIlxeWAM/0GmqDwKvi9dldsJ50ln9Pxqd6gD6QMCiVYVgm7BBed4KhpAfHgVpzmOmMSPOEFSeu5myR96R8FdIWJXEXOoeuOKPZLjg/lyL8CnxJuhaqZuhgOUNJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=FPsq4UtM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0A7EC4AF09;
-	Tue, 23 Jul 2024 17:58:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1721757499;
-	bh=zpqs01eB+r9f6kaArGfa7scDf/edw0VAmt/EXKackuQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=FPsq4UtMrVh4tmnqKIdEETKig0H5QkPJlaZLVc3KQ7dLo2EyAGH+OXw3IynnKiCFD
-	 6dCO3u0j9XtpkF9H4Hy6kicROmupDksrrqctmM13Y8075pG/AJaV15HcmBR1uzfyFs
-	 wpESB0g+CazGiMPgctqHEQXOvtGfHb/ak+IV/Xgw=
-Date: Tue, 23 Jul 2024 19:58:16 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: WangYuli <wangyuli@uniontech.com>
-Cc: stable@vger.kernel.org, sashal@kernel.org, yi.zhang@huawei.com,
-	jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	yukuai3@huawei.com, niecheng1@uniontech.com,
-	zhangdandan@uniontech.com, guanwentao@uniontech.com
-Subject: Re: [PATCH v2 4.19 0/4] ext4: improve delalloc buffer write
- performance
-Message-ID: <2024072316-thirty-cytoplasm-2b81@gregkh>
-References: <78C2D546AD199A57+20240720160420.578940-1-wangyuli@uniontech.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=uHon+eQP6X6ADjmsXcKAXQ6pH0Xem9u3ZqdHmFfp2G/2GUJD16KWzbWRSk1loj+2SUuLUWEoqn0NTtJ4x5m9SWFSFGZi21K1ZITDFAcwCYUXDuQX8t0vZaAFGrzX3ZSc/m2+MYInpzcsD6XPKBnvtQGX9mx4PhVt48MmPK9kyaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FV7yl5au; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1721760714; x=1753296714;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=jwFoh6L9rTQrrkMo4N/xtydd5G7+Zqn3pnTBTVbfISg=;
+  b=FV7yl5auZxSf++jGVJ31ha8wAZh4CWp5XV16A6MB9uNoWmO1g+w0ldtD
+   2M1EtzatiNMh2ZrDoDgRC3TMKYDe/Ug1UaciKm54Nv6D9otrl9Kl84k1e
+   CTkxYK3kxfH1TrpfU9FOnshTEXb3ofMk/WFDWrgn+T5iDzolM+KJmk/70
+   o4OEeiMfcQjxlDDiIae1ytR5Cb6oHugH2SbROd6+9WxJelAVRLVki0Okk
+   M4MyJ5Kb9rLifpcB/sdgsx3GKjioaH4DM/1NcVnnugJGK56n66f09PVFW
+   BJjrPnHnq3Ps69COxquC4cbzLlaIHQ4gMa234OjDuJfotNc5EDlKWOS76
+   g==;
+X-CSE-ConnectionGUID: pw9JKDkdSeOaWLV3+wywNg==
+X-CSE-MsgGUID: fkxG+PZ6T62hnlu21nQ3AA==
+X-IronPort-AV: E=McAfee;i="6700,10204,11142"; a="19591188"
+X-IronPort-AV: E=Sophos;i="6.09,231,1716274800"; 
+   d="scan'208";a="19591188"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 23 Jul 2024 11:51:53 -0700
+X-CSE-ConnectionGUID: xOcSniOWQmiD7YKSdDl0lA==
+X-CSE-MsgGUID: YApj6lHvSC+kCsDNk6CK3Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.09,231,1716274800"; 
+   d="scan'208";a="82959106"
+Received: from lkp-server01.sh.intel.com (HELO 68891e0c336b) ([10.239.97.150])
+  by orviesa002.jf.intel.com with ESMTP; 23 Jul 2024 11:51:48 -0700
+Received: from kbuild by 68891e0c336b with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sWKbx-000mGC-2V;
+	Tue, 23 Jul 2024 18:51:45 +0000
+Date: Wed, 24 Jul 2024 02:51:45 +0800
+From: kernel test robot <lkp@intel.com>
+To: Youling Tang <youling.tang@linux.dev>, Arnd Bergmann <arnd@arndb.de>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Chris Mason <chris.mason@fusionio.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <yuchao0@huawei.com>,
+	Chao Yu <chao@kernel.org>, Christoph Hellwig <hch@infradead.org>
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-modules@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	youling.tang@linux.dev, Youling Tang <tangyouling@kylinos.cn>
+Subject: Re: [PATCH 4/4] f2fs: Use module_{subinit, subeixt} helper macros
+Message-ID: <202407240204.KcPiCniO-lkp@intel.com>
+References: <20240723083239.41533-5-youling.tang@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -58,23 +87,62 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <78C2D546AD199A57+20240720160420.578940-1-wangyuli@uniontech.com>
+In-Reply-To: <20240723083239.41533-5-youling.tang@linux.dev>
 
-On Sun, Jul 21, 2024 at 12:04:06AM +0800, WangYuli wrote:
-> Changes since v1:
->   Fixed some formatting errors to make the patchset less confusing.
-> 
-> A patchset from linux-5.15 should be backported to 4.19 that can
-> significantly improve ext4 fs read and write performance. Unixbench test
-> results for linux-4.19.318 on Phytium D2000 CPU are shown below.
+Hi Youling,
 
-Also, this looks like a performance issue, why not just use a newer
-kernel (i.e. 5.15.y) to get the benefit of this, and many other,
-increased performance fixes?  4.19.y is only going to be alive for a few
-more months, if you haven't already planned to move off of it yet, you
-need to do so now.
+kernel test robot noticed the following build warnings:
 
-thanks,
+[auto build test WARNING on kdave/for-next]
+[also build test WARNING on linus/master next-20240723]
+[cannot apply to jaegeuk-f2fs/dev-test jaegeuk-f2fs/dev soc/for-next v6.10]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-greg k-h
+url:    https://github.com/intel-lab-lkp/linux/commits/Youling-Tang/module-Add-module_subinit-_noexit-and-module_subeixt-helper-macros/20240723-164434
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/kdave/linux.git for-next
+patch link:    https://lore.kernel.org/r/20240723083239.41533-5-youling.tang%40linux.dev
+patch subject: [PATCH 4/4] f2fs: Use module_{subinit, subeixt} helper macros
+config: i386-buildonly-randconfig-004-20240724 (https://download.01.org/0day-ci/archive/20240724/202407240204.KcPiCniO-lkp@intel.com/config)
+compiler: clang version 18.1.5 (https://github.com/llvm/llvm-project 617a15a9eac96088ae5e9134248d8236e34b91b1)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240724/202407240204.KcPiCniO-lkp@intel.com/reproduce)
+
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202407240204.KcPiCniO-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from fs/f2fs/node.c:16:
+>> fs/f2fs/f2fs.h:4131:57: warning: non-void function does not return a value [-Wreturn-type]
+    4131 | static inline int __init f2fs_create_root_stats(void) { }
+         |                                                         ^
+   1 warning generated.
+--
+   In file included from fs/f2fs/data.c:25:
+>> fs/f2fs/f2fs.h:4131:57: warning: non-void function does not return a value [-Wreturn-type]
+    4131 | static inline int __init f2fs_create_root_stats(void) { }
+         |                                                         ^
+   fs/f2fs/data.c:2373:10: warning: variable 'index' set but not used [-Wunused-but-set-variable]
+    2373 |         pgoff_t index;
+         |                 ^
+   2 warnings generated.
+
+
+vim +4131 fs/f2fs/f2fs.h
+
+  4128	
+  4129	static inline int f2fs_build_stats(struct f2fs_sb_info *sbi) { return 0; }
+  4130	static inline void f2fs_destroy_stats(struct f2fs_sb_info *sbi) { }
+> 4131	static inline int __init f2fs_create_root_stats(void) { }
+  4132	static inline void f2fs_destroy_root_stats(void) { }
+  4133	static inline void f2fs_update_sit_info(struct f2fs_sb_info *sbi) {}
+  4134	#endif
+  4135	
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
