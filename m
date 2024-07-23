@@ -1,47 +1,47 @@
-Return-Path: <linux-ext4+bounces-3385-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3386-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 225E493A3E2
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 17:44:53 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6805193A3E4
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 17:45:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A338FB2314A
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 15:44:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 902E61C22E06
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 15:45:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75046157E93;
-	Tue, 23 Jul 2024 15:44:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3A80157A6B;
+	Tue, 23 Jul 2024 15:44:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="rNAMjQzH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dreQwsXf"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-182.mta1.migadu.com (out-182.mta1.migadu.com [95.215.58.182])
+Received: from out-176.mta1.migadu.com (out-176.mta1.migadu.com [95.215.58.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5938E157A72
-	for <linux-ext4@vger.kernel.org>; Tue, 23 Jul 2024 15:44:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B31751581EA
+	for <linux-ext4@vger.kernel.org>; Tue, 23 Jul 2024 15:44:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721749465; cv=none; b=HS3Ru38MLIAMRu5PV7uHZ3yz0bYRprXfbXz0JXevhCHvqAdMEB3Btues6WOWqCEjB7nSPZoMe8QZuX//9nMSg/mI7xYyU3V3XokosjD21nXOtbR0reecrLIGbGvS9N6hEpYfdrpbjkfCeGERMFFsNgqtva2U1GpRvV+NNtuNL3k=
+	t=1721749468; cv=none; b=VnsDbUQtIFdwwqZwtW+AtFkbYYd1arEDTYfFD2a5XfOcan82jBk8heciMXPIvrWHWkNa/yBC9T5VAZ6xnFOByHxqB7SnZznE9o2PrghIyHJDFdfU7rgK5ixEuGAdi7+Ofo47hs1k1tS0+6mBIVyv1E7MtfzdqWhTZW9abbZU5Po=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721749465; c=relaxed/simple;
-	bh=TA7W0pcxd/Eb0Vc0SGJlJR1RToLMmy29uT+Pri3wrDE=;
+	s=arc-20240116; t=1721749468; c=relaxed/simple;
+	bh=Bxkl0Hsq/C8M5vztSXAU7ypBDTyy8EAXeWXTtS31tww=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=W+C4qJMOMYw77foIJpDxdB/0UCHzqUfxVfszCSFvnUB61YnV5UtXfLFCuR+/R+/cmj5WxuzVWTqu1oKXA6h+kMIHdDiUGamFjZDpUQFEF7T6rhkrHxcIkP9vk7hh35iqpx2aJyhc6ZJEy2ZEm5HK19JemdmC9giurcKiKhzKRXY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=rNAMjQzH; arc=none smtp.client-ip=95.215.58.182
+	 MIME-Version; b=BPTpxn0NDTGo9ssB570aHadasqT8bRrNyZNn571yH8tYRFzRrN+g00ncVlPfE/24NvnLc5mU8ikFxiPwjQJB9aGrEsTr677PFymBVrjpz5UkS9n0dI+uDjV2UhAwDHYA4oRlBH8xOaolmk/SYoztAsJoWb3zOiQOPX+2qvDX0CU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dreQwsXf; arc=none smtp.client-ip=95.215.58.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Envelope-To: tytso@mit.edu
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721749461;
+	t=1721749465;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=OCQDY39ftFCrPmBUE2fSsNAe1oUYALwUXrxgaHtT78I=;
-	b=rNAMjQzHp6gz96BOMWcSXgxujUT5aMsp3ZtuFZ0R93ex24p/zBr+pWltm0Yt4SyzAJ2vdJ
-	mYAkDm257Puk1iE+Rek54tMh9Dh9UMc9lLqhldFCQYuCvjMwHJxZ0OUkt//oxOuvrMOHS/
-	p1Dp6vc/HFh1wzo9TBo2GTQhP4n/Puo=
+	bh=rz9lvD/QnXWNWbo/BvxmhM9orJ0FJCtlryAD6j/pNsA=;
+	b=dreQwsXfs96IstFiRI1hPoQfQqqUhB116zeyx2xnP7tnJ+ZGwLcg0kgvZTqiwmRqvA+869
+	AQJTft3iLRrg23gf3XUyPXGVFdp8pm34oQaDS1lN01fHTwHojAwhsMUaEkb2QiO3WNuCMD
+	heAKdE44lTrFIu/gGUNqjzJQGBPLLoM=
 X-Envelope-To: adilger@dilger.ca
 X-Envelope-To: jack@suse.cz
 X-Envelope-To: harshadshirwadkar@gmail.com
@@ -57,9 +57,9 @@ To: Theodore Ts'o <tytso@mit.edu>,
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Subject: [PATCH 2/4] ext4: fix incorrect tid assumption in __jbd2_log_wait_for_space()
-Date: Tue, 23 Jul 2024 16:44:00 +0100
-Message-ID: <20240723154402.21125-3-luis.henriques@linux.dev>
+Subject: [PATCH 3/4] ext4: fix incorrect tid assumption in jbd2_journal_shrink_checkpoint_list()
+Date: Tue, 23 Jul 2024 16:44:01 +0100
+Message-ID: <20240723154402.21125-4-luis.henriques@linux.dev>
 In-Reply-To: <20240723154402.21125-1-luis.henriques@linux.dev>
 References: <20240723154402.21125-1-luis.henriques@linux.dev>
 Precedence: bulk
@@ -71,40 +71,53 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Function __jbd2_log_wait_for_space() assumes that '0' is not a valid value
-for transaction IDs, which is incorrect.  Don't assume that and invoke
-jbd2_log_wait_commit() if the journal had a committing transaction instead.
+Function jbd2_journal_shrink_checkpoint_list() assumes that '0' is not a
+valid value for transaction IDs, which is incorrect.  Don't assume that and
+use two extra boolean variables to control the loop iterations and keep
+track of the first and last tid.
 
 Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
 ---
- fs/jbd2/checkpoint.c | 7 +++++--
- 1 file changed, 5 insertions(+), 2 deletions(-)
+ fs/jbd2/checkpoint.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
 diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index 951f78634adf..77bc522e6821 100644
+index 77bc522e6821..f5a594237b7a 100644
 --- a/fs/jbd2/checkpoint.c
 +++ b/fs/jbd2/checkpoint.c
-@@ -79,9 +79,12 @@ __releases(&journal->j_state_lock)
- 		if (space_left < nblocks) {
- 			int chkpt = journal->j_checkpoint_transactions != NULL;
- 			tid_t tid = 0;
-+			bool has_transaction = false;
+@@ -410,6 +410,7 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+ 	tid_t tid = 0;
+ 	unsigned long nr_freed = 0;
+ 	unsigned long freed;
++	bool is_first = true, is_last = false;
  
--			if (journal->j_committing_transaction)
-+			if (journal->j_committing_transaction) {
- 				tid = journal->j_committing_transaction->t_tid;
-+				has_transaction = true;
-+			}
- 			spin_unlock(&journal->j_list_lock);
- 			write_unlock(&journal->j_state_lock);
- 			if (chkpt) {
-@@ -89,7 +92,7 @@ __releases(&journal->j_state_lock)
- 			} else if (jbd2_cleanup_journal_tail(journal) == 0) {
- 				/* We were able to recover space; yay! */
- 				;
--			} else if (tid) {
-+			} else if (has_transaction) {
- 				/*
- 				 * jbd2_journal_commit_transaction() may want
- 				 * to take the checkpoint_mutex if JBD2_FLUSHED
+ again:
+ 	spin_lock(&journal->j_list_lock);
+@@ -429,8 +430,10 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+ 	else
+ 		transaction = journal->j_checkpoint_transactions;
+ 
+-	if (!first_tid)
++	if (is_first) {
+ 		first_tid = transaction->t_tid;
++		is_first = false;
++	}
+ 	last_transaction = journal->j_checkpoint_transactions->t_cpprev;
+ 	next_transaction = transaction;
+ 	last_tid = last_transaction->t_tid;
+@@ -455,12 +458,13 @@ unsigned long jbd2_journal_shrink_checkpoint_list(journal_t *journal,
+ 	} else {
+ 		journal->j_shrink_transaction = NULL;
+ 		next_tid = 0;
++		is_last = true;
+ 	}
+ 
+ 	spin_unlock(&journal->j_list_lock);
+ 	cond_resched();
+ 
+-	if (*nr_to_scan && next_tid)
++	if (*nr_to_scan && !is_last)
+ 		goto again;
+ out:
+ 	trace_jbd2_shrink_checkpoint_list(journal, first_tid, tid, last_tid,
 
