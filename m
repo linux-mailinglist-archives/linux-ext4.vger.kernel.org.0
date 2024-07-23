@@ -1,110 +1,144 @@
-Return-Path: <linux-ext4+bounces-3373-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3374-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76646939E89
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 12:05:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA79E939EA2
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 12:14:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 96C0EB212B5
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 10:05:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC82A1C21FEC
+	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 10:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D370F14E2EF;
-	Tue, 23 Jul 2024 10:04:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B0914E2F9;
+	Tue, 23 Jul 2024 10:13:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="AphzzP+s"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iA6wtirb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 070A314D28F;
-	Tue, 23 Jul 2024 10:04:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86A3414BF98;
+	Tue, 23 Jul 2024 10:13:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721729093; cv=none; b=dpf84eVWxTcE/TWr13EziGWj4UfCjPa7+lA2WqgTf9VzRsitZgPYHdQq1DIZHn96pt4xvX2xplHmXEwMg6LZp/kqCxtb4KelXgPKSHB9UH11qzQ93KU3oPvzCRByILfBiC000XJxQp+PfmpBE8PENDQfCwAOH+I+htYMStrVWUs=
+	t=1721729634; cv=none; b=KJTX8vPHgPS0iOIvJ1apeSRKf07tR/1O6OH8i94mkWQ9WG8tXidSVXoiskxBoJ8flUL1Brq8XeApMw16AB7uOfRZSUM67sHW35f7azZ7w5BBW7W8BgRSn9O4xLAM3fVOL4VU0a6/P8KmI3punOquii1h04MQkMl+FrkY4lMl4Lg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721729093; c=relaxed/simple;
-	bh=+8I4TKsfEOavMjm8P/2ATDPszpj6Q9Jmp/XlpWDjeXs=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=VeP0SI8q5wI+QBu1HvSMq0bb3qksXuI4vwMTcSxYx0xFLZRoE1G39Nzvs9L3sC5vONxqSa2uHdGJ0LCDjb43bqxfe+bGsuCvxcfoeQVfvS/uvUQqc5KDRXzYcn/8/TuEucI5uKIi5m1XypOiiAYz1l8Hs8EJrIYgv3kFhA+rK7o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=AphzzP+s; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:References:Cc:To:Subject:From:MIME-Version:Date:Message-ID:From:
-	Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:Content-Type:
-	Content-Transfer-Encoding:Content-ID:Content-Description:In-Reply-To:
-	References; bh=pBRBtqKuHNX2rkdNL75agUq7iD+iQuYibTqU7iSRiVw=; t=1721729091;
-	x=1722161091; b=AphzzP+s3NWRyhCA1wl7VC+6IxtX3sKu0tyCMwloknbcCI90d7zBzh51I7ag8
-	aRkO1NduLCptzzTXc/KsG1CWzOUS2G8lWILezHnVdblamv9riBQmk7x0ILQrvwoQ2WzXrRMnl+rgP
-	JaeV47s59NKMXJuRe1F1eqqYf6gAnNTe8NkwRcKslMDTwUOpM1xbwMfJggUqx7xgPbNTRIwbqVch3
-	ipdp+IB91fapDd5ur9dYgD53hpsGVFKFMxRcsoCYyIrtfqJej5Hoa0/UVovwh8OZ9Uj4T9Rs/Iq6w
-	AkRQnxNShSPQvQlVaMBGyA5F/hdCpATZLCoRpTlHzJqhaU288g==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1sWCNu-0004Kg-LG; Tue, 23 Jul 2024 12:04:42 +0200
-Message-ID: <108448f5-912f-4dac-bbba-19b1b58087b1@leemhuis.info>
-Date: Tue, 23 Jul 2024 12:04:41 +0200
+	s=arc-20240116; t=1721729634; c=relaxed/simple;
+	bh=KEk0smRLPVkFTP6+3W2ooQcQf5x72wZKLgttJGDtM8A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Y9iMLysgLPDhUW5z7BJz+ThboV5esSGoNbPqNc2uEGESaHzGOENJR6x+dNm4RzPqo5WhzZ9788jphNQr7/XIBjnR3hLSYJLSHhWT4C9Yx8xme3gL3cGK/OOak9zrDooP4g0oo2n5meVMDfBE0IsgtxI36k7KTcbjQ5wcjhVTCN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iA6wtirb; arc=none smtp.client-ip=209.85.219.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e087264e297so2903089276.3;
+        Tue, 23 Jul 2024 03:13:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1721729632; x=1722334432; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KEk0smRLPVkFTP6+3W2ooQcQf5x72wZKLgttJGDtM8A=;
+        b=iA6wtirbceGJOiVFzws7sx2h8WojMApK1tW69zhEASWiMjZfLqhniCoAlqW1nFnQLQ
+         1cn8TtQXpfB7/PNtWuwl8nC+eHFU4m0+tvsz77x/PJJ9iA+qn8a0T18EJKK99U9CHzv1
+         l5szKg5Y2MvzAceq500lMdBdPsfkIgoAKNVmWW/xJ4Ao+2LydLBEMezogX365ZZfPoGF
+         huMTkJZZacncsKlQL5UHcvAEuPFEKxo3CJIvCbD+9WecH/UH+/2sWP5PhCMOO4oPubbd
+         ZUDW21xPYoVC2VU0yBT6yxBjlJHV/pWz/LBZyrTf55hgGqiss2no2QvxmD/9hDM9dDby
+         /8oA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1721729632; x=1722334432;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=KEk0smRLPVkFTP6+3W2ooQcQf5x72wZKLgttJGDtM8A=;
+        b=vBTjOYb6wF0Pz5aA75MuESkDrJrFTVlOCJkWzVZekiSjjYh6xVl7mydZ+aMXmM91WT
+         Q8oMFxsBNr0BONR2V8YRxrAftsmWdXTkErezBj/TGl/s/TA+cNCQxxapuf3K/1/UmnB7
+         Qwtrn972D87w+s/yZ0lsCXpJ93uuWAkjHxa+9FNINozdy5baqO0XuYnnpxr6ch3TavVR
+         p2COZRThU/8KaUP4D9nSvKuq5Anv7ZHF0jLHfXJsHwlTRegz5CeFS+61M0pn/9n/QyM9
+         fTHya2dB3O1dKSm80UPmnb2HR+z2gLajOawqWoMMXojIZmR8cRFiA9vvc1bn4vnFB92y
+         EraA==
+X-Forwarded-Encrypted: i=1; AJvYcCU5aJAneMKMSqfVDbupnYzEULQxLq4ZwNGglxFB74Pbw2INBeXcn1kXDY9xK5Z4V8t2NlifiWeNL1M9LNiQvH3osV+vpS+mnFUX2xp7itPCMcME5rFDJBmrSEvEgV1HzfsSyg==
+X-Gm-Message-State: AOJu0YxFh7m8c0JDtuN3f8Zy+Uvlu7L9yP9zf5yaQSKk9lBlCFILHTVk
+	aGRV1vNZo3uL2BHppE+GS0BonoMGvlI/y99xrE1h0b5Kat1gtS6z5xEicaEsVUHJHBsaGmJHhrT
+	aQ2eLEgSFr7tsvhf2GLPCE3Ug5hU=
+X-Google-Smtp-Source: AGHT+IFQ4zPPSQuppKaSAmeMi32D6OCmwZWSG4R7sgAN2pLVjB8laSzPFfYfg33GVFpZciwNSLIWa2mDTWNrfVBxi1M=
+X-Received: by 2002:a05:6902:150e:b0:e08:7171:698d with SMTP id
+ 3f1490d57ef6-e0871716fe2mr10571110276.20.1721729632472; Tue, 23 Jul 2024
+ 03:13:52 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Thorsten Leemhuis <regressions@leemhuis.info>
-Subject: Re: Linux 6.10 regression resulting in a crash when using an ext4
- filesystem
-To: Greg KH <gregkh@linuxfoundation.org>,
- "stable@vger.kernel.org" <stable@vger.kernel.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, "Artem S. Tashkinov"
- <aros@gmx.com>, Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
- linux-ext4@vger.kernel.org, xcreativ@gmail.com, madeisbaer@arcor.de,
- justinstitt@google.com, keescook@chromium.org,
- linux-hardening@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
- Kees Cook <kees@kernel.org>,
- Linux kernel regressions list <regressions@lists.linux.dev>
-References: <500f38b2-ad30-4161-8065-a10e53bf1b02@gmx.com>
- <20240722041924.GB103010@frogsfrogsfrogs>
- <BEEA84E0-1CF5-4F06-BC5C-A0F97240D76D@kernel.org>
- <20240723041136.GC3222663@mit.edu>
-Content-Language: en-US, de-DE
-In-Reply-To: <20240723041136.GC3222663@mit.edu>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1721729091;1fc44743;
-X-HE-SMSGID: 1sWCNu-0004Kg-LG
+References: <20240618123422.213844892@linuxfoundation.org> <1721718387-9038-1-git-send-email-ajay.kaher@broadcom.com>
+ <20240723092916.gtpvnifv2rizbyii@quack3>
+In-Reply-To: <20240723092916.gtpvnifv2rizbyii@quack3>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Tue, 23 Jul 2024 13:13:41 +0300
+Message-ID: <CAOQ4uxjGrPbq8=znBSV8i79Kj2Or4p5O5BZ0+RL1oXbxxNu3rw@mail.gmail.com>
+Subject: Re: [PATCH 5.10 387/770] fanotify: Allow users to request
+ FAN_FS_ERROR events
+To: Jan Kara <jack@suse.cz>
+Cc: Ajay Kaher <ajay.kaher@broadcom.com>, gregkh@linuxfoundation.org, 
+	chuck.lever@oracle.com, krisman@collabora.com, patches@lists.linux.dev, 
+	sashal@kernel.org, stable@vger.kernel.org, adilger.kernel@dilger.ca, 
+	linux-ext4@vger.kernel.org, tytso@mit.edu, alexey.makhalov@broadcom.com, 
+	vasavi.sirnapalli@broadcom.com, florian.fainelli@broadcom.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 23.07.24 06:11, Theodore Ts'o wrote:
-> On Mon, Jul 22, 2024 at 12:06:59AM -0700, Kees Cook wrote:
->>> Is strscpy_pad appropriate if the @src parameter itself is a fixed
->>> length char[16] which isn't null terminated when the label itself is 16
->>> chars long?
->>
->> Nope; it needed memtostr_pad(). I sent the fix back at the end of May, but it only just recently landed:
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=be27cd64461c45a6088a91a04eba5cd44e1767ef
-> 
-> Yeah, sorry, I was on vacation for 3.5 weeks starting just before
-> Memorial day, and it took me a while to get caught up.  Unfortunately,
-> I missed the bug in the strncpy extirpation patch, and it was't
-> something that our regression tests caught.  (Sometimes, the
-> old/deprecated ways are just more reliable; all of ext4's strncpy()
-> calls were working and had been correct for decades.  :-P )
-> 
-> Anyway, Kees's bugfix is in Linus's tree, and it should be shortly be
-> making its way to -stable.
+On Tue, Jul 23, 2024 at 12:29=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+>
+> On Tue 23-07-24 12:36:27, Ajay Kaher wrote:
+> > > [ Upstream commit 9709bd548f11a092d124698118013f66e1740f9b ]
+> > >
+> > > Wire up the FAN_FS_ERROR event in the fanotify_mark syscall, allowing
+> > > user space to request the monitoring of FAN_FS_ERROR events.
+> > >
+> > > These events are limited to filesystem marks, so check it is the
+> > > case in the syscall handler.
+> >
+> > Greg,
+> >
+> > Without 9709bd548f11 in v5.10.y skips LTP fanotify22 test case, as:
+> > fanotify22.c:312: TCONF: FAN_FS_ERROR not supported in kernel
+> >
+> > With 9709bd548f11 in v5.10.220, LTP fanotify22 is failing because of
+> > timeout as no notification. To fix need to merge following two upstream
+> > commit to v5.10:
+> >
+> > 124e7c61deb27d758df5ec0521c36cf08d417f7a:
+> > 0001-ext4_fix_error_code_saved_on_super_block_during_file_system.patch
+> > https://lore.kernel.org/stable/1721717240-8786-1-git-send-email-ajay.ka=
+her@broadcom.com/T/#mf76930487697d8c1383ed5d21678fe504e8e2305
+> >
+> > 9a089b21f79b47eed240d4da7ea0d049de7c9b4d:
+> > 0001-ext4_Send_notifications_on_error.patch
+> > Link: https://lore.kernel.org/stable/1721717240-8786-1-git-send-email-a=
+jay.kaher@broadcom.com/T/#md1be98e0ecafe4f92d7b61c048e15bcf286cbd53
+>
+> I know Chuck has been backporting the huge pile of fsnotify changes for
+> stable and he was running LTP so I'm a bit curious if he saw the fanotify=
+22
+> failure as well. The reason for the test failure seems to be that the
+> combination of features now present in stable has never been upstream whi=
+ch
+> confuses the test. As such I'm not sure if backporting more features to
+> stable is warranted just to fix a broken LTP test... But given the huge
+> pile Chuck has backported already I'm not strongly opposed to backporting=
+ a
+> few more, there's just a question where does this stop :)
 
-Adding Greg and the stable list to the list of recipients: given that we
-already have two reports about trouble due to this[1] he might want to
-fast-track the fix (be27cd64461c45 ("ext4: use memtostr_pad() for
-s_volume_name")) to 6.10.y, as it's not queued yet -- at least afaics
-from looking at
-https://git.kernel.org/pub/scm/linux/kernel/git/stable/stable-queue.git/tree/
+I'm not sure is it exactly "more features".
+The fanotify patches and ext4 patches that use them where merges as
+a feature together.
 
-Ciao, Thorsten
+IOW, FAN_FS_ERROR was merged with support for a single fs (ext4)
+it would be weird to backport the feature with support for zero fs.
+Also, 5.15.y already has the ext4 patches - not sure why 5.10.y didn't get =
+them.
 
-[1] https://bugzilla.kernel.org/show_bug.cgi?id=219072 and
-https://bugzilla.kernel.org/show_bug.cgi?id=219078
+Thanks,
+Amir.
 
