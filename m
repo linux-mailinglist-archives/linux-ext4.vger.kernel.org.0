@@ -1,108 +1,96 @@
-Return-Path: <linux-ext4+bounces-3405-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3406-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D593893AC13
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 06:56:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B9DD93AC37
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 07:23:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12E841C22BEB
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 04:56:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19F921F22B24
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 05:23:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8264643B;
-	Wed, 24 Jul 2024 04:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B725481AA;
+	Wed, 24 Jul 2024 05:23:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="flYDGCor"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.62.65])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3751FDF5B;
-	Wed, 24 Jul 2024 04:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.62.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4221208D7;
+	Wed, 24 Jul 2024 05:23:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721796992; cv=none; b=Cam0l+VgP2IbpGFZpTPko/16JPH9xbjbROh4f/lfztO/38uNicrQtCqzq7o8PAEXjhwtHW6cz623SafdpEWBqqMtC/JgyMrSegINqgBlxgzflvSSyL/gi2qouk5DhEtHbj+jZEdfAF6yc0Ds4FpA0ZRj3CYF/PJcB4BVQ9Fw0e0=
+	t=1721798603; cv=none; b=PQLU9ylJWRTGszLdXbTgMWATvK9GUbYEXlTbqaSmRswgGD63vA1flbGr3Opu9H6F3b1eeTl6ml7zg4piKPv66bLE71BjNH6NwYyaObhEwIj7uDkyD3huiu+bRH+Q1JyohqJrqp4xT0R9gjfwEhkPh+Biw3Vj8Bb3sWe286CmyTQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721796992; c=relaxed/simple;
-	bh=ojRQbAahHTByEAfI1eOYOni1gIRLm26bkB+y4at/GTg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n2xoCCtM/oq84UMe4R7aKS/a2mHFwmk8prUxrwp86xulIbQdUDkSAx8BvVaH+ip2SGYpq3ilTDqPYTrTfQVEpWDY+fjMZcmDlY0mfSkNOO5chk4zCUsUVZ4VzI6q6/zThxoB3KbRG0NufytH1OfU6JKqlA61WukUUBzhBh/FnNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.62.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
-X-QQ-mid: bizesmtpip1t1721796955tn1j07u
-X-QQ-Originating-IP: ngYma45+Uyq6qWUH9KZ71PKZU1IDMA1Xub2T+rMrxJ4=
-Received: from [IPV6:240e:36c:d5d:2c00:58c6:db ( [255.146.199.5])
-	by bizesmtp.qq.com (ESMTP) with 
-	id ; Wed, 24 Jul 2024 12:55:53 +0800 (CST)
-X-QQ-SSF: 0000000000000000000000000000000
-X-QQ-GoodBg: 1
-X-BIZMAIL-ID: 17571171907496050409
-Message-ID: <206F8E88DD4C4DD9+5197bc65-d440-4ad5-8b19-e1f83f4a1c7a@uniontech.com>
-Date: Wed, 24 Jul 2024 12:55:52 +0800
+	s=arc-20240116; t=1721798603; c=relaxed/simple;
+	bh=3wV2E0ms8osbGVrmUy0Brt3tv3Cz24uYw20q/7UoYC0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QXD4nQio9L35oKR6npiy3CTlWGVsIfBBtEiEBN1SL/TB/DLAqBmfDxFa8o5OfPat4qoZ9bd7807ue5Mi2DMtjp/GiymgVyYZTomDKui7dpxhQ+Y74G7cseFPxnH9OHm2bhgpB9tGE8t2sa0tOxHQvhPJCFWXBky5AxMvg+fs3wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=flYDGCor; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8C842C32782;
+	Wed, 24 Jul 2024 05:23:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1721798603;
+	bh=3wV2E0ms8osbGVrmUy0Brt3tv3Cz24uYw20q/7UoYC0=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=flYDGCorY3DfjswUyJ7VkLQqocbFjGWk04Z9iiP5A6UMBwOz79ypi0iMuQ/qF9s3T
+	 jJJeslhHF98t/EM9/rYLaDXT7pmNf1oKhmRUTXlV9pkeube9/35zb7liLMe8kUOaQg
+	 s+GxlCwxIgzp5zW0N339ii8UtvsJOP4IT8Nb6hlg=
+Date: Wed, 24 Jul 2024 07:23:20 +0200
+From: Greg KH <gregkh@linuxfoundation.org>
+To: WangYuli <wangyuli@uniontech.com>
+Cc: stable@vger.kernel.org, sashal@kernel.org, yi.zhang@huawei.com,
+	jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	yukuai3@huawei.com, niecheng1@uniontech.com,
+	zhangdandan@uniontech.com, guanwentao@uniontech.com,
+	chenyichong@uniontech.com, wentao@uniontech.com
+Subject: Re: [PATCH v2 4.19 0/4] ext4: improve delalloc buffer write
+ performance
+Message-ID: <2024072434-clunky-ninja-89fa@gregkh>
+References: <78C2D546AD199A57+20240720160420.578940-1-wangyuli@uniontech.com>
+ <2024072316-thirty-cytoplasm-2b81@gregkh>
+ <206F8E88DD4C4DD9+5197bc65-d440-4ad5-8b19-e1f83f4a1c7a@uniontech.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4.19 0/4] ext4: improve delalloc buffer write
- performance
-To: Greg KH <gregkh@linuxfoundation.org>
-Cc: stable@vger.kernel.org, sashal@kernel.org, yi.zhang@huawei.com,
- jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- yukuai3@huawei.com, niecheng1@uniontech.com, zhangdandan@uniontech.com,
- guanwentao@uniontech.com, chenyichong@uniontech.com, wentao@uniontech.com
-References: <78C2D546AD199A57+20240720160420.578940-1-wangyuli@uniontech.com>
- <2024072316-thirty-cytoplasm-2b81@gregkh>
-From: WangYuli <wangyuli@uniontech.com>
-In-Reply-To: <2024072316-thirty-cytoplasm-2b81@gregkh>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-QQ-SENDSIZE: 520
-Feedback-ID: bizesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+In-Reply-To: <206F8E88DD4C4DD9+5197bc65-d440-4ad5-8b19-e1f83f4a1c7a@uniontech.com>
 
-Hi greg k-h,
+On Wed, Jul 24, 2024 at 12:55:52PM +0800, WangYuli wrote:
+> Hi greg k-h,
+> 
+> As a commercial Linux distribution maintainer, we understand that
+> even though upstream support for linux-4.19.y is ending, our users'
+> reliance on this kernel version will not cease immediately.
 
-As a commercial Linux distribution maintainer, we understand that
+Good luck to them, given that almost immediately after it goes out of
+support it will become insecure :(
 
-even though upstream support for linux-4.19.y is ending, our users'
+> They often lack the time or resources to promptly migrate all their
+> devices to a newer kernel, due to considerations such as stability,
+> operational costs, and other factors.
 
-reliance on this kernel version will not cease immediately.
+They have had 6 years to plan for this, how much time do they need?
 
+> Therefore, to provide a more graceful conclusion to the linux-4.19.y
+> lifecycle, we propose backporting these performance optimizations
+> to extend its useful life  and ensure a smooth transition for commercial
+> users by the way.
 
-They often lack the time or resources to promptly migrate all their
+Performance optimizations for old kernels like this are not a good idea,
+please just have them move to a more modern, and actually supported,
+kernel instead if they wish to have performance improvements.  Otherwise
+you are ensuring they will never move.
 
-devices to a newer kernel, due to considerations such as stability,
+good luck!
 
-operational costs, and other factors.
-
-
-Therefore, to provide a more graceful conclusion to the linux-4.19.y
-
-lifecycle, we propose backporting these performance optimizations
-
-to extend its useful lifeÂ  and ensure a smooth transition for commercial
-
-users by the way.
-
-
-Of course, we appreciate your suggestion and will prioritize backporting
-
-these optimizations to linux-5.10.y and linux 5.4.y first.
-
-
-Stay tuned for updates. We are committed to staying informed about kernel
-
-updates and community trends. Thanks.
-
-
-Sincerely,
-
-
---
-
-WangYuli
-
+greg k-h
 
