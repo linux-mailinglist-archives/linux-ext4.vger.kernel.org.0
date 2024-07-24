@@ -1,144 +1,180 @@
-Return-Path: <linux-ext4+bounces-3409-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3410-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B980793ACC3
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 08:43:23 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A574093ACD8
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 08:52:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57652B2363D
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 06:43:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2EC3B1F23678
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 06:52:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5583750284;
-	Wed, 24 Jul 2024 06:43:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0097C67A0D;
+	Wed, 24 Jul 2024 06:52:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m5bNTarp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A3Q8C8wS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
+Received: from mail-qk1-f182.google.com (mail-qk1-f182.google.com [209.85.222.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E1554CE05;
-	Wed, 24 Jul 2024 06:43:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CF26D29E;
+	Wed, 24 Jul 2024 06:52:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721803392; cv=none; b=PI5Qpc17p8BPs3cjj5EjOEDYWzFbGc2aIfOBDYTtwPM7NmLnDgjtA/ojbqBM1/fTAxgiWoi23nN9mSBeQBmaSfZ45d1g9KzsXHjWTGm6MDvwAYMYe5B/KdhPBgmn55Eggq7mGrUzV75IuVWFAsthArlPNABvZ12bMa6pRKNjJas=
+	t=1721803961; cv=none; b=BEACeLJLoaQ2tt3roJweyY/K9pqxRPpA+38JF7MO9aUaDAKCH2OZQ/o9R3tlVI5pI1ik8d+AXUsnIIqA/YAWyJtqfKBmahPrqb8WrXc9U1VKmBPndJAtgOer9dsDND6Sq48ajCtOZu4Dh3gziULFJkSq9jx2p1BWx85xIhnb1FQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721803392; c=relaxed/simple;
-	bh=BvzaEa7+Inuxhazq34ZT0aKl1U9tc8B8v6hfHoXQy7M=;
+	s=arc-20240116; t=1721803961; c=relaxed/simple;
+	bh=Bfx5l7uwGafxxKFg8g544NeKdX/OJ82VNbHROmOPw5M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZHiZfI8jwwHCFOsI1zfyUU1Q/RU02AW74VNG0lw7+kquqFxwSMjst3MrdSvWegcbx9kynzZHHCiVCU6RoyXp8jaPPwkzeawy85DHmLgs747+j3ZrqKLyUstTIe+V97imdJXQM9EYyknHjo9bVGxRi8uen4L+7ywhYbjE1Yr37rA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m5bNTarp; arc=none smtp.client-ip=209.85.222.178
+	 To:Cc:Content-Type; b=FA580erEKOmyxnu+6i+U8sLWxuo8AkJZ692rPhfh33kJ1VaVxDe4lZFn5oXHq46lfh4N4lgbbkVnvZua/vjEGpldtvQf8RclwEK6xZzVj0ye89oePhBkitCkrA0Fg1HwC3qdZX6FXsHqLodhf91ThtxA+6qLseltusHC6FYrLGI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A3Q8C8wS; arc=none smtp.client-ip=209.85.222.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-7a05b7c8e38so345909485a.0;
-        Tue, 23 Jul 2024 23:43:09 -0700 (PDT)
+Received: by mail-qk1-f182.google.com with SMTP id af79cd13be357-79f15e7c879so437082685a.1;
+        Tue, 23 Jul 2024 23:52:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1721803389; x=1722408189; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1721803959; x=1722408759; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=MPFAXHpcpNHosyuWGUHU07Blzo9gAD1mlcK+fpP4HNc=;
-        b=m5bNTarpeowY/CAJnJnsrWkOQzlp++WPARTUOu2MjeFx3ZHGCykpaQcQ9LAVieZPXQ
-         R4UMUflXB6haaqTtmdKKvVhz0DV1SlZPUVk7FFkcbqZQJ08oZ3zlK4trmnZBBqVWzVQl
-         O+ksMu/O7xDnoY87Q5wEaD1qoeOFKwn6/DYzMjI/jqQkmnn9xYGmxF22XNfmhDmsYchp
-         ujh8pkAusyR+0g1lcvRkNFe7PzBf9prqRAzXIEqXUglK/rnf4UPvPMp5b9YL+H2Dl5n3
-         ybWwpsrmePqaIjMBHhofozNBEsN28wamir6ud0ucQD78M9vEYZwVbc3jBxXTgX+2a8/1
-         x/2g==
+        bh=Bfx5l7uwGafxxKFg8g544NeKdX/OJ82VNbHROmOPw5M=;
+        b=A3Q8C8wSHTLjn9T6tTCCJaIErKOz9ThUiIwUM9LodnuJXEPORCV2MvOoROjpbniqR4
+         RCW1QHEgyT47rPUHMqTZxKtHCZn3W4pMe+G2qyzQOkgzlikhIddLvFMFqM7HZcq3TkhD
+         kSsP8OJr5MIsNn7gL1BL8UnVZfR9pqfsSVTbcdmhm9q0gClJ4gXmrCQFEnEjmozfDB5o
+         X8muNZF40G51tRoL43YO1EfkUpEBK3AQx3wyUt2+gRV4X3cJGUpvUN0MbuBdLVYbG8qk
+         f8vvuI4nFFArgvSsxMPnsvD57io1DQhQgv4WirW33NbQXeYdmapbE4ENpgstV+aG6tYS
+         6aFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721803389; x=1722408189;
+        d=1e100.net; s=20230601; t=1721803959; x=1722408759;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=MPFAXHpcpNHosyuWGUHU07Blzo9gAD1mlcK+fpP4HNc=;
-        b=l/L2+aZRVuIJoKoXMwPAvOP/I91tX1NBdSXuklUmIanQ/FQYzsBZ/Qixl05d0/omOl
-         vxdkeALw5DRBxQIVriixrmGwFLv/C2NDasbTagJY2nVUJzQ9/GxrktMTs8kr9g4P+AK3
-         cZuKkYA5ohWsnXazfXtItUeZZwFRkNd+9yj8LH89W35J6ZxSavtq0h0ZLMnX5XQSRT5N
-         V6RR5fu14ZHX5fFpIfsZrk95X5mzgq6dU85OCu6lET3z8FsXPulXcrLh7kibmtJoKtvJ
-         tFB+0l6/tk6TUTCLP9kWz6wju8hfAbRYaArwVdh4M0HVncjc5ae8U+Psf+3BGoPLcbwZ
-         LiwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUscHKJl7QNJFoiW5WJp8Di6gmAT6dMxTObrmXgayWGcUFnrz1Jnk3RQfhw0md67saGhLeiy80wVBdQ1Xm1mr95SBkSD0gvziDLb7l5vsz/Nmff6WvWsypejSjQLiHfuAk5yg==
-X-Gm-Message-State: AOJu0Yxctwv3pgDZj7gq57RbsQ+CfAMpZgPLLDOq9wVOlHo/YtZedZPW
-	YfEarJUdjPP2Qe5ZgRa86LNtWlY5bN6d6tq2rTaB1GUUobc8rzRJhyaorS1j4EJ85VBDTCLoT1+
-	AU8n8FOIIL9XH8QtCdQ2wT01x4FU=
-X-Google-Smtp-Source: AGHT+IEMBaGnSfDJ+jEEftZgDyBW5iYKL7A7JIFxgVqqv7Bb4un3LnmVYMP0aw97+OgVNLOg+E1P8hqc78x1IQXaz7U=
-X-Received: by 2002:a05:620a:2681:b0:79d:8d21:4571 with SMTP id
- af79cd13be357-7a1cbcda79dmr149727185a.22.1721803388911; Tue, 23 Jul 2024
- 23:43:08 -0700 (PDT)
+        bh=Bfx5l7uwGafxxKFg8g544NeKdX/OJ82VNbHROmOPw5M=;
+        b=SyfmVbHlU36AiNlhRm9600p0/zzW7UFcVsvy4BF/451hD/Q3FM3shBFLJg8CQHbz18
+         LBR9lZP+obKZvTKyzaw0p8K07Sf7z26hjSAcFgJkJjBxHQlBvQ3z6vr8GtZNr9YrQyeA
+         mu/X62CQEfHebkMq1k9uFOej6iauStxRXJCJ/0Y7IM19vHyhDIAkqNO7Q2woEZRXC0xK
+         9Yjfz903LZ4chZ7buWUT7HKSjXR+aHdD1ScHvVn/eGEnh2w94oJA8WzpwyFZ7cK7XVHD
+         XKs3jbuJuarhVBSXiDOQIhwygX4UpW07Zdj+jrtWLOUaukANdYOsw0zwd7oAaxqfPcfL
+         5ClQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVEYV14wiV7F1MwMkdKBQJKY6wzy0pKQUqjp0JPlthDuRH5s++lnBdk7F1Z5uUDGjcKGK5fIruzb2RM5ru2Y5Xkc1+ZbehlBnxof2GecJVJIrQtQUwxk+sjQcqXsd8/1jbAYg==
+X-Gm-Message-State: AOJu0Yyvztsktb2T2nF7XTyi+t/Dbog7p3hfVKEx+OY94uh67jkMcoLT
+	fPZNikfumdNIhvmcTr+edAN7+aZeYNjIYvc/QGQCN8EipPFTZjik2ZmOCru8bDfC96k5GI6pxlR
+	F/FMXZTft4P38VriabUQ0/nenwBs=
+X-Google-Smtp-Source: AGHT+IFfEqKfp851TI5GZPpKydt1I9aSw9uQDJMX+tizWj/bXIso7OPQLfv/VqnOOQ/0D4vxzeFCclLX2uexl3AmuU4=
+X-Received: by 2002:a05:620a:400a:b0:79f:b34:9edc with SMTP id
+ af79cd13be357-7a1cbd35be0mr139400485a.66.1721803958898; Tue, 23 Jul 2024
+ 23:52:38 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <875xswtbxb.fsf@mailhost.krisman.be> <20240723214246.4010-1-cel@kernel.org>
- <87jzhbsncw.fsf@mailhost.krisman.be>
-In-Reply-To: <87jzhbsncw.fsf@mailhost.krisman.be>
+References: <20240618123422.213844892@linuxfoundation.org> <1721718387-9038-1-git-send-email-ajay.kaher@broadcom.com>
+ <CAOQ4uxgz4Gq2Yg4upLWrOf15FaDuAPppRVsLbYvMxrLbpHJE1g@mail.gmail.com> <1C4B79C7-D88F-4664-AA99-4C9A39A32934@oracle.com>
+In-Reply-To: <1C4B79C7-D88F-4664-AA99-4C9A39A32934@oracle.com>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 24 Jul 2024 09:42:57 +0300
-Message-ID: <CAOQ4uxjDM00vuQfw4m3+eph4iSxqrvFu7-WNfuZ4BApv58gQ-g@mail.gmail.com>
-Subject: Re: [PATCH v5.15.y] Revert "fanotify: Allow users to request
- FAN_FS_ERROR events"
-To: Gabriel Krisman Bertazi <gabriel@krisman.be>
-Cc: cel@kernel.org, gregkh@linuxfoundation.org, jack@suse.cz, 
-	sashal@kernel.org, stable@vger.kernel.org, adilger.kernel@dilger.ca, 
-	linux-ext4@vger.kernel.org, tytso@mit.edu, alexey.makhalov@broadcom.com, 
-	vasavi.sirnapalli@broadcom.com, florian.fainelli@broadcom.com, 
-	Chuck Lever <chuck.lever@oracle.com>
+Date: Wed, 24 Jul 2024 09:52:27 +0300
+Message-ID: <CAOQ4uxiWttnpLBbFzVjQLKbeubbwWG35pn3Ve_majuV9a0mPJQ@mail.gmail.com>
+Subject: Re: [PATCH 5.10 387/770] fanotify: Allow users to request
+ FAN_FS_ERROR events
+To: Chuck Lever III <chuck.lever@oracle.com>
+Cc: Ajay Kaher <ajay.kaher@broadcom.com>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "jack@suse.cz" <jack@suse.cz>, 
+	"krisman@collabora.com" <krisman@collabora.com>, "patches@lists.linux.dev" <patches@lists.linux.dev>, 
+	"sashal@kernel.org" <sashal@kernel.org>, "stable@vger.kernel.org" <stable@vger.kernel.org>, 
+	"adilger.kernel@dilger.ca" <adilger.kernel@dilger.ca>, 
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, "tytso@mit.edu" <tytso@mit.edu>, 
+	"alexey.makhalov@broadcom.com" <alexey.makhalov@broadcom.com>, 
+	"vasavi.sirnapalli@broadcom.com" <vasavi.sirnapalli@broadcom.com>, 
+	"florian.fainelli@broadcom.com" <florian.fainelli@broadcom.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Jul 24, 2024 at 2:24=E2=80=AFAM Gabriel Krisman Bertazi
-<gabriel@krisman.be> wrote:
+On Tue, Jul 23, 2024 at 4:48=E2=80=AFPM Chuck Lever III <chuck.lever@oracle=
+.com> wrote:
 >
-> cel@kernel.org writes:
 >
-> > From: Chuck Lever <chuck.lever@oracle.com>
+>
+> > On Jul 23, 2024, at 5:20=E2=80=AFAM, Amir Goldstein <amir73il@gmail.com=
+> wrote:
 > >
-> > Gabriel says:
-> >> 9709bd548f11 just enabled a new feature -
-> >> which seems against stable rules.  Considering that "anything is
-> >> a CVE", we really need to be cautious about this kind of stuff in
-> >> stable kernels.
+> > On Tue, Jul 23, 2024 at 10:06=E2=80=AFAM Ajay Kaher <ajay.kaher@broadco=
+m.com> wrote:
 > >>
-> >> Is it possible to drop 9709bd548f11 from stable instead?
+> >>> [ Upstream commit 9709bd548f11a092d124698118013f66e1740f9b ]
+> >>>
+> >>> Wire up the FAN_FS_ERROR event in the fanotify_mark syscall, allowing
+> >>> user space to request the monitoring of FAN_FS_ERROR events.
+> >>>
+> >>> These events are limited to filesystem marks, so check it is the
+> >>> case in the syscall handler.
+> >>
+> >> Greg,
+> >>
+> >> Without 9709bd548f11 in v5.10.y skips LTP fanotify22 test case, as:
+> >> fanotify22.c:312: TCONF: FAN_FS_ERROR not supported in kernel
+> >>
+> >> With 9709bd548f11 in v5.10.220, LTP fanotify22 is failing because of
+> >> timeout as no notification. To fix need to merge following two upstrea=
+m
+> >> commit to v5.10:
+> >>
+> >> 124e7c61deb27d758df5ec0521c36cf08d417f7a:
+> >> 0001-ext4_fix_error_code_saved_on_super_block_during_file_system.patch
+> >> https://lore.kernel.org/stable/1721717240-8786-1-git-send-email-ajay.k=
+aher@broadcom.com/T/#mf76930487697d8c1383ed5d21678fe504e8e2305
+> >>
+> >> 9a089b21f79b47eed240d4da7ea0d049de7c9b4d:
+> >> 0001-ext4_Send_notifications_on_error.patch
+> >> Link: https://lore.kernel.org/stable/1721717240-8786-1-git-send-email-=
+ajay.kaher@broadcom.com/T/#md1be98e0ecafe4f92d7b61c048e15bcf286cbd53
+> >>
+> >> -Ajay
 > >
-> > The revert wasn't clean, but adjusting it to fit was straightforward.
-> > This passes NFSD CI, and adds no new failures to the fanotify ltp
-> > tests.
+> > I agree that this is the best approach, because the test has no other
+> > way to test
+> > if ext4 specifically supports FAN_FS_ERROR.
 > >
-> > Reported-by: Gabriel Krisman Bertazi <gabriel@krisman.be>
-> > Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> > ---
-> >  fs/notify/fanotify/fanotify_user.c | 4 ----
-> >  include/linux/fanotify.h           | 6 +-----
-> >  2 files changed, 1 insertion(+), 9 deletions(-)
+> > Chuck,
 > >
-> > Gabriel, is this what you were thinking?
+> > I wonder how those patches end up in 5.15.y but not in 5.10.y?
 >
-> Thanks Chuck.
+> The process was by hand. I tried to copy the same
+> commit ID set from 5.15 to 5.10, but some patches
+> did not apply to 5.10, or may have been omitted
+> unintentionally.
 >
-> This looks good to me as a way to disable it in stable and prevent
-> userspace from trying to use it. Up to fanotify maintainers to decide
-> whether to bring the rest of the series or merge this,
+>
+> > Also, since you backported *most* of this series:
+> > https://lore.kernel.org/all/20211025192746.66445-1-krisman@collabora.co=
+m/
+> >
+> > I think it would be wise to also backport the sample code and documenta=
+tion
+> > patches to 5.15.y and 5.10.y.
+> >
+> > 9abeae5d4458 docs: Fix formatting of literal sections in fanotify docs
+> > 8fc70b3a142f samples: Make fs-monitor depend on libc and headers
+> > c0baf9ac0b05 docs: Document the FAN_FS_ERROR event
+> > 5451093081db samples: Add fs error monitoring example.
+> >
+> > Gabriel, if 9abeae5d4458 has a Fixes: tag it may have been auto seleced
+> > for 5.15.y after c0baf9ac0b05 was picked up...
+>
+> Or this... I might not have backported those at all
+> to 5.15, and they got pulled in by another process.
+>
+> In any event, do you want me to backport these to
+> 5.10, or would you like to do it yourself?
+>
 
-First of all, the "rest of the series" is already queued for 5.10.y.
+Please backport the docs and sample patches above to 5.15 and 5.10
+for completion of the backport.
 
-I too was a bit surprised from willingness of stable tree maintainers
-to allow backports of entire features along with Chuck's nfsd backports.
-I understand the logic, I was just not aware when this shift in stable ideo=
-logy
-had happened.
-
-But having backported the entire fanotify 6.1 code as is to 5.15 and 5.10
-I see no reason to make an exception for FAN_FS_ERROR.
-Certainly not because two patches were left out of 5.10.y (and are now queu=
-ed).
-
-I think that the benefits of fanotify code parity across 6.1 5.15 5.10
-outweigh the risk of regressions introduced by this specific feature.
-
-So please do not revert.
+I do not expect you should have any major conflicts with these standalone
+document and sample code.
 
 Thanks,
 Amir.
