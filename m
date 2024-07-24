@@ -1,114 +1,97 @@
-Return-Path: <linux-ext4+bounces-3420-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3421-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B28293B40F
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 17:44:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07BFD93B498
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 18:11:42 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFDF71F23E79
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 15:44:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30CD61C20F48
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 16:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5D1615CD55;
-	Wed, 24 Jul 2024 15:43:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20FE315E5B7;
+	Wed, 24 Jul 2024 16:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="xBBhe6jV"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="VhOxnjrh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061FF14D293;
-	Wed, 24 Jul 2024 15:43:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94AE415B10B
+	for <linux-ext4@vger.kernel.org>; Wed, 24 Jul 2024 16:11:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721835830; cv=none; b=WKOzRZxO8HgzyaAr/i+T0e6bFQH1iREqmup87JFBH1Obyzg2MW66oyAoStpmSf5z+EZDqbbFJmfah1swsst0vZIS4+fNxMrBr9JDRV2OQqwIz0T1dToAnnmrPeeXSrOV2w2abACbNc3/3HRlx90vTQUKPb3827MU6VygM/ljYvk=
+	t=1721837493; cv=none; b=GV18H7ipIdTnYVfhAdyB32oaRQts+59zvaQxw8uJrVEqg0R4Fs87GGviUIqmxkTAusQDlUuFnvZr6/Rx9fXMpXeeqwm/qPZfEMa3Uc8PFsul0iaAfnYUYnxvDNtmL80Av2YAFIPBeZWCH/3tno3mJlWm/rBbox+U9K3ht0HZs4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721835830; c=relaxed/simple;
-	bh=fjoCzSVNTXzDemQxHLgm77eSI43uzAqjvUS76Oxk0bk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=izc7uYNSrv5pzSCVwZE+zEkDk3DWBpoS1Cm9osVnsLGMqBBaTyfJvNJ2Um/ZBRnek/XT4SbRYhfDV7i+NKZsh82M7xm642+eix52Sfy2onuGqU6FYvPlu5BJ7RyTpPDj7eUzxb0y848+WS6ffQ7yXn0w1L8/nuATzbitTQQMRqo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=xBBhe6jV; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=A5NCdA5yQOqvciqjVmzO4FQb/LC/NqR4RCRHik4/Oxc=; b=xBBhe6jVMTs+rNw1ry/JeDmbO3
-	MNV3LRo+Yl7MrNMLXKUiUDh5a3l9B6nf0f4P0IsTIY0nSlDEHnV7a6G5I2EsV8/T4721oBI5r3MGc
-	3bgO/JHGl3nAfelh+Kd6Thukp30duUluFSk8tydhbdTnaK6QW2elJGcYbFqV8rWXjiP3d5KDfa8w4
-	PKjt6QhDh7m9FgZOlBwsfH+sj8NdO57AqPTZgajuCBIN3V0F78TjO4UmAGVqo581pq2+6oegH//ao
-	JHXnFbMNWsFGotBDBWynEQzuNL5NRzCkOLNKenS7i9xbMEBAP0uAoZ6mo4RKLEfZS3L7srGg/rYXh
-	hSFx2mNg==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sWe9Y-0000000FoTR-2trX;
-	Wed, 24 Jul 2024 15:43:44 +0000
-Date: Wed, 24 Jul 2024 08:43:44 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Youling Tang <youling.tang@linux.dev>
-Cc: Christoph Hellwig <hch@infradead.org>, Arnd Bergmann <arnd@arndb.de>,
-	Luis Chamberlain <mcgrof@kernel.org>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	tytso@mit.edu, Andreas Dilger <adilger.kernel@dilger.ca>,
-	Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
-	linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-modules@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	Youling Tang <tangyouling@kylinos.cn>
-Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
- module_subeixt helper macros
-Message-ID: <ZqEhMCjdFwC3wF4u@infradead.org>
-References: <20240723083239.41533-1-youling.tang@linux.dev>
- <20240723083239.41533-2-youling.tang@linux.dev>
- <Zp-_RDk5n5431yyh@infradead.org>
- <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
+	s=arc-20240116; t=1721837493; c=relaxed/simple;
+	bh=RHWwB4IHGV04hTuEiAFg01WkRz5yU8JfHY+cHSHL0rg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=sxeIJ3qOg1IZJ6ktbCDmvyTJG2EVETpzOnSzWdiCNo+r9AM7gjHrfvpNIR2BHuQIyns0lEdMUq/TLqj+g3OuqILQNpp0vWOHa+hD0wLv/cwbQmSsiQNtomyAqwsKspprcz7pD/jFkVflNwYLPHfNIZKSrDt+i7viHjfEN8SSbG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=VhOxnjrh; arc=none smtp.client-ip=91.218.175.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721837488;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=O/k6dbgmrfT9pZ0z9AcYiu7qwgs0jPmgRU+xwZdWGkk=;
+	b=VhOxnjrh668EaCiK9WaW5aOgN0m9mchhVe3rXMVz3nW2NhaYeUn1/TthbKbemRbRzC836j
+	9SiqA1c200WG+cg00E4x2jR+7L2rEaDqizm3svQmUDTnws1Xr6BaK4LhwxOp6fnSxiXod1
+	0lV9YxBGcNg5wtl37pmRMVLVN9WHf0c=
+From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger@dilger.ca>,
+	Jan Kara <jack@suse.cz>,
+	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Luis Henriques (SUSE)" <luis.henriques@linux.dev>
+Subject: [PATCH v2 0/4] ext4: fix incorrect tid assumptions
+Date: Wed, 24 Jul 2024 17:11:14 +0100
+Message-ID: <20240724161119.13448-1-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Jul 24, 2024 at 09:57:05AM +0800, Youling Tang wrote:
-> module_init(initfn)/module_exit(exitfn) has two definitions (via MODULE):
-> - buindin: uses do_initcalls() to iterate over the contents of the specified
->   section and executes all initfn functions in the section in the order in
->   which they are stored (exitfn is not required).
-> 
-> - ko: run do_init_module(mod)->do_one_initcall(mod->init) to execute initfn
->   of the specified module.
-> 
-> If we change module_subinit to something like this, not called in
-> module_init,
+Hi
 
-> Not only do we want to ensure that exit is executed in reverse order of
-> init, but we also want to ensure the order of init.
+As discussed here [1], there are a few places in ext4 and jbd2 code where it
+is assumed that a tid of '0' is not valid.  Which isn't true.
 
-Yes.
+This small patchset tries to fix (hopefully!) all these places.  Jan Kara
+had already identified the functions that needed to be fixed.  I believe
+that the only other issue is the handling of sbi->s_fc_ineligible_tid.
 
-> This does not guarantee the order in which init will be executed (although
-> the init/exit order will remain the same)
+Each patch in this series fixes a single function; the last one also fixes
+the sbi->s_fc_ineligible_tid handling.
 
-Hmm, so the normal built-in initcalls depend on the link order, but when
-they are in the same file, the compiler can reorder them before we even
-get to the linker.
+Changes since v1:
+- [PATCH 1/4] set 'has_transaction' variable on each loop iteration
+- [PATCH 3/4] dropped local variable 'is_last'; renamed 'is_first' to
+  'first_set' (including corresponding semantic adjustment)
+- [PATCH 4/4] removed extra braces in statement
 
-I wonder what a good syntax would be to still avoid the boilerplate
-code.  We'd probably need one macro to actually define the init/exit
-table in a single statement so that it can't be reordered, but that
-would lose the ability to actually declare the module subinit/exit
-handlers in multiple files, which really is the biggest win of this
-scheme as it allows to keep the functions static instead of exposing
-them to other compilation units.
+[1] https://lore.kernel.org/all/20240716095201.o7kkrhfdy2bps3rw@quack3/
 
-And in fact even in your three converted file systems, most
-subinit/exit handler are in separate files, so maybe instead
-enforcing that there is just one per file and slightly refactoring
-the code so that this is the case might be the best option?
+*** BLURB HERE ***
+
+Luis Henriques (SUSE) (4):
+  ext4: fix incorrect tid assumption in ext4_wait_for_tail_page_commit()
+  ext4: fix incorrect tid assumption in __jbd2_log_wait_for_space()
+  ext4: fix incorrect tid assumption in
+    jbd2_journal_shrink_checkpoint_list()
+  ext4: fix incorrect tid assumption in ext4_fc_mark_ineligible()
+
+ fs/ext4/fast_commit.c | 15 +++++++++++----
+ fs/ext4/inode.c       | 11 +++++++----
+ fs/jbd2/checkpoint.c  | 14 ++++++++++----
+ 3 files changed, 28 insertions(+), 12 deletions(-)
+
 
