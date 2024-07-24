@@ -1,107 +1,108 @@
-Return-Path: <linux-ext4+bounces-3400-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3405-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C0A1493AB12
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 04:17:10 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D593893AC13
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 06:56:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 75AFD1F22945
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 02:17:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12E841C22BEB
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 04:56:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 826A21CAA1;
-	Wed, 24 Jul 2024 02:16:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bMpDk9N7"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8264643B;
+	Wed, 24 Jul 2024 04:56:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bg1.exmail.qq.com (bg1.exmail.qq.com [114.132.62.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F020B1BC58;
-	Wed, 24 Jul 2024 02:16:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3751FDF5B;
+	Wed, 24 Jul 2024 04:56:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.132.62.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721787407; cv=none; b=FjaRJJQXq1Uq/a2MtBXylqkhzbudhBehNAplNxscd7rNk9PuSfTJ87fe4zg2cMnWuWnTmv0uF2SFttHsoV613s87WU/5xRhy8weni1bWvBydmflc2NfcpPGlctPi6BwQ90J0anXr2FQE3ddoF/lgmGR0yrgUlWk0C560aTbgF9s=
+	t=1721796992; cv=none; b=Cam0l+VgP2IbpGFZpTPko/16JPH9xbjbROh4f/lfztO/38uNicrQtCqzq7o8PAEXjhwtHW6cz623SafdpEWBqqMtC/JgyMrSegINqgBlxgzflvSSyL/gi2qouk5DhEtHbj+jZEdfAF6yc0Ds4FpA0ZRj3CYF/PJcB4BVQ9Fw0e0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721787407; c=relaxed/simple;
-	bh=e2dCHd3n8q25XhOxzHvJ6i3RPXn9LxCn1diONk3KotU=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=bhI5VAo13FR8tBFiYin2CP/N21ZjitTrsYGs8gIUmQr3dhRQ+7R8K4xWrdlB1sUlNBnOzFmXqyj7eIGXLlnLiQh/U5K5W0o13w310RVP14Y1hMyio7KhUmE48TdVMya7QeIhxtXrER61ScP+I3XNNLgzxHOrhvEcOE4j+DgGu/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bMpDk9N7; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A0D85C4AF10;
-	Wed, 24 Jul 2024 02:16:46 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721787406;
-	bh=e2dCHd3n8q25XhOxzHvJ6i3RPXn9LxCn1diONk3KotU=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=bMpDk9N7EkOjwmpSIaAklT8hKeoG5hdBDnUji25xGqzIqXwl2rfjVmaQ/8qQ2+Yek
-	 gOs+5otr1dYkrWn+WLf0ZC3HwosbZkdbdnUO0UGPhsVjWN98Q7xmyz2jNw6FzWgvOD
-	 9ndEKbh0olHi7p2k64uy+qnGbLmH6t8j1sa6XUSiGnrh7bgv/HP5UQRGPMlsdtpHmK
-	 qfGlbxz8w3UWIOg38XkCepKM8/51bHXqfVu1p7eW27zj2OOxvqss+E6rzPm4jCZyv6
-	 Geo/fzyYTMac242CPAQTv+006yg3TOQ8zCnWl4VapNKMakux9lOgHLCrG2vPZuFVE2
-	 akL++zdvOugdg==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 94D30C43443;
-	Wed, 24 Jul 2024 02:16:46 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1721796992; c=relaxed/simple;
+	bh=ojRQbAahHTByEAfI1eOYOni1gIRLm26bkB+y4at/GTg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=n2xoCCtM/oq84UMe4R7aKS/a2mHFwmk8prUxrwp86xulIbQdUDkSAx8BvVaH+ip2SGYpq3ilTDqPYTrTfQVEpWDY+fjMZcmDlY0mfSkNOO5chk4zCUsUVZ4VzI6q6/zThxoB3KbRG0NufytH1OfU6JKqlA61WukUUBzhBh/FnNM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; arc=none smtp.client-ip=114.132.62.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+X-QQ-mid: bizesmtpip1t1721796955tn1j07u
+X-QQ-Originating-IP: ngYma45+Uyq6qWUH9KZ71PKZU1IDMA1Xub2T+rMrxJ4=
+Received: from [IPV6:240e:36c:d5d:2c00:58c6:db ( [255.146.199.5])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Wed, 24 Jul 2024 12:55:53 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 17571171907496050409
+Message-ID: <206F8E88DD4C4DD9+5197bc65-d440-4ad5-8b19-e1f83f4a1c7a@uniontech.com>
+Date: Wed, 24 Jul 2024 12:55:52 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 4.19 0/4] ext4: improve delalloc buffer write
+ performance
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, sashal@kernel.org, yi.zhang@huawei.com,
+ jack@suse.cz, tytso@mit.edu, adilger.kernel@dilger.ca,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+ yukuai3@huawei.com, niecheng1@uniontech.com, zhangdandan@uniontech.com,
+ guanwentao@uniontech.com, chenyichong@uniontech.com, wentao@uniontech.com
+References: <78C2D546AD199A57+20240720160420.578940-1-wangyuli@uniontech.com>
+ <2024072316-thirty-cytoplasm-2b81@gregkh>
+From: WangYuli <wangyuli@uniontech.com>
+In-Reply-To: <2024072316-thirty-cytoplasm-2b81@gregkh>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Subject: Re: [f2fs-dev] [PATCH v18 0/7] Case insensitive cleanup for ext4/f2fs
-From: patchwork-bot+f2fs@kernel.org
-Message-Id: 
- <172178740660.17759.10253649840019036127.git-patchwork-notify@kernel.org>
-Date: Wed, 24 Jul 2024 02:16:46 +0000
-References: <20240606073353.47130-1-eugen.hristev@collabora.com>
-In-Reply-To: <20240606073353.47130-1-eugen.hristev@collabora.com>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, linux-fsdevel@vger.kernel.org,
- jaegeuk@kernel.org, adilger.kernel@dilger.ca, tytso@mit.edu, krisman@suse.de,
- brauner@kernel.org, jack@suse.cz, ebiggers@google.com,
- viro@zeniv.linux.org.uk, kernel@collabora.com
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
 
-Hello:
+Hi greg k-h,
 
-This series was applied to jaegeuk/f2fs.git (dev)
-by Christian Brauner <brauner@kernel.org>:
+As a commercial Linux distribution maintainer, we understand that
 
-On Thu,  6 Jun 2024 10:33:46 +0300 you wrote:
-> Hello,
-> 
-> I am trying to respin the series here :
-> https://www.spinics.net/lists/linux-ext4/msg85081.html
-> 
-> I resent some of the v9 patches and got some reviews from Gabriel,
-> I did changes as requested and here is v18.
-> 
-> [...]
+even though upstream support for linux-4.19.y is ending, our users'
 
-Here is the summary with links:
-  - [f2fs-dev,v18,1/7] ext4: Simplify the handling of cached casefolded names
-    https://git.kernel.org/jaegeuk/f2fs/c/f776f02a2c96
-  - [f2fs-dev,v18,2/7] f2fs: Simplify the handling of cached casefolded names
-    https://git.kernel.org/jaegeuk/f2fs/c/632f4054b229
-  - [f2fs-dev,v18,3/7] libfs: Introduce case-insensitive string comparison helper
-    https://git.kernel.org/jaegeuk/f2fs/c/6a79a4e187bd
-  - [f2fs-dev,v18,4/7] ext4: Reuse generic_ci_match for ci comparisons
-    https://git.kernel.org/jaegeuk/f2fs/c/d76b92f61f3b
-  - [f2fs-dev,v18,5/7] f2fs: Reuse generic_ci_match for ci comparisons
-    https://git.kernel.org/jaegeuk/f2fs/c/d66858eb0c72
-  - [f2fs-dev,v18,6/7] ext4: Move CONFIG_UNICODE defguards into the code flow
-    https://git.kernel.org/jaegeuk/f2fs/c/d98c822232f8
-  - [f2fs-dev,v18,7/7] f2fs: Move CONFIG_UNICODE defguards into the code flow
-    https://git.kernel.org/jaegeuk/f2fs/c/28add38d545f
+reliance on this kernel version will not cease immediately.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
 
+They often lack the time or resources to promptly migrate all their
+
+devices to a newer kernel, due to considerations such as stability,
+
+operational costs, and other factors.
+
+
+Therefore, to provide a more graceful conclusion to the linux-4.19.y
+
+lifecycle, we propose backporting these performance optimizations
+
+to extend its useful life  and ensure a smooth transition for commercial
+
+users by the way.
+
+
+Of course, we appreciate your suggestion and will prioritize backporting
+
+these optimizations to linux-5.10.y and linux 5.4.y first.
+
+
+Stay tuned for updates. We are committed to staying informed about kernel
+
+updates and community trends. Thanks.
+
+
+Sincerely,
+
+
+--
+
+WangYuli
 
 
