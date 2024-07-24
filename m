@@ -1,145 +1,333 @@
-Return-Path: <linux-ext4+bounces-3396-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3397-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DED4F93A9CE
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 01:25:13 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D95CB93AA89
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 03:20:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A9FC2855F3
-	for <lists+linux-ext4@lfdr.de>; Tue, 23 Jul 2024 23:25:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BAB6281DF0
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 01:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53EC01494D0;
-	Tue, 23 Jul 2024 23:25:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117A9DDA0;
+	Wed, 24 Jul 2024 01:20:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b="ip+MaP9P"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="dQ7pvkaa"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from relay6-d.mail.gandi.net (relay6-d.mail.gandi.net [217.70.183.198])
+Received: from out-173.mta1.migadu.com (out-173.mta1.migadu.com [95.215.58.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AFC0143747;
-	Tue, 23 Jul 2024 23:25:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFDA5221
+	for <linux-ext4@vger.kernel.org>; Wed, 24 Jul 2024 01:20:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721777106; cv=none; b=f6juOuYXQLXcV6YqRyU6xEh9SUMOgPX/KXhuB8YTin8RYDc+98pHew3PDgiGNkU+bUM4HpaRZASBu4FDD7uDAk1QUR0Ab5HZbFBS+jC4DilNflQZf67IcqA65xjn/Jw90oOXjK0ur73igDs2tKXVQU9+J2oDVrBAd7cHy/sKncg=
+	t=1721784037; cv=none; b=ODetk+0OkiD7vhC8MsJz7SYwO3QA6I2XODjFz3t1TjuZVBYMhcQALFXg6Inon3ING3VaFUKBCRf0zrGtnqmwF4CyJ4vcpTyDpzqN99biKo276KXzEHoE7rhONBYKfVcpApbSh9DH/hh95LzWatpLcYFlTIoxzbhfTSAH05Yx8D0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721777106; c=relaxed/simple;
-	bh=yc6kIr7ZrHuqjN4tIM5lkAFxFYTYQ3ntL2QfI194z3Q=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=mLXyF0Dr+Ssl18ak18u2gZLTsFBRE7LpIfaR6ht/If7+8+RvnH8XAGiE7zJSaY47jUnawbjFmyqcqiuYuL+I3vNvI/FVjw5Iww6KTDDIpsHh+mfWqqym1kqT1DckE3XTxfJE1B2n0kga1gB4RE+y7jw436EWEzZ7oT2IPNX0pec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=krisman.be; spf=pass smtp.mailfrom=krisman.be; dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b=ip+MaP9P; arc=none smtp.client-ip=217.70.183.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=krisman.be
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=krisman.be
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 1137BC0005;
-	Tue, 23 Jul 2024 23:24:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=krisman.be; s=gm1;
-	t=1721777096;
+	s=arc-20240116; t=1721784037; c=relaxed/simple;
+	bh=AC8Bel9UEYnaROjqC9+2e8CVf6gW/SwN5KaatGqwuRw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mAWkpRSaXk7LN9oFbhSUjpORDD6oMXLCcc6bc3H+vp5XPaQaCYsxnEVL5ajZHE3HivWboy6cM3xzscdz4yukCePl2RzA9YY01KH1tZJU0KYnSpslyKXQ7nsxB+smffuWEw0moXQzmZ6FPZrMZzSJPJY2Mu0ronLo8K317azq3ME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=dQ7pvkaa; arc=none smtp.client-ip=95.215.58.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <da41a162-9f6d-4607-9055-ffc21fe1771e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1721784032;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=FlxbZNSOyl5pTp7K6H99DbR/f/WeDANfLj0x7H2aP+o=;
-	b=ip+MaP9PNnQTmta14XJsFntRzyHt1qoERb2H0WUM2+zk6JgpYXG+HDiCkxwls7TRHLjQna
-	Yze/ayaFLNJs2EvQoyr+ckzewEN8xfcMHUJJ5H7838Hbc5NITB3w7CEfdFFezwsBln3t2u
-	gFyHyGrKuzt5mmxcziSuN42sVWADvHskm7a71mhHLfTMQBVhN/pys+rOonoXPzkqy8a5+I
-	IGm+GIR8dJPuKubl4vKnnlKi1LnWOTLpYjrKHVi3GWFY8sOBW5bSF0OErg3IJyg7/0awDP
-	l0nMPw5B0DkKZjxA+rj5yd2LyRMbRtYDxToRjZ/RRcSnaORKyUMB+vbFTaPyEA==
-From: Gabriel Krisman Bertazi <gabriel@krisman.be>
-To: cel@kernel.org
-Cc: amir73il@gmail.com,  gregkh@linuxfoundation.org,  jack@suse.cz,
-  sashal@kernel.org,  stable@vger.kernel.org,  adilger.kernel@dilger.ca,
-  linux-ext4@vger.kernel.org,  tytso@mit.edu,
-  alexey.makhalov@broadcom.com,  vasavi.sirnapalli@broadcom.com,
-  florian.fainelli@broadcom.com,  Chuck Lever <chuck.lever@oracle.com>,
-  Gabriel Krisman Bertazi <gabriel@krisman.be>
-Subject: Re: [PATCH v5.15.y] Revert "fanotify: Allow users to request
- FAN_FS_ERROR events"
-In-Reply-To: <20240723214246.4010-1-cel@kernel.org> (cel@kernel.org's message
-	of "Tue, 23 Jul 2024 17:42:46 -0400")
-References: <875xswtbxb.fsf@mailhost.krisman.be>
-	<20240723214246.4010-1-cel@kernel.org>
-Date: Tue, 23 Jul 2024 19:24:47 -0400
-Message-ID: <87jzhbsncw.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	bh=dEhyMpF2beLnKk2jNCAd0kL3ECpPY/WBwUXHZaKgEPc=;
+	b=dQ7pvkaawQNIB+BCzRzvtJY0Wq6NMR8kNLAXFxl1E0sHcVC61q5kr1NayEOKt2/T4r5rr/
+	TUUUJheElULcwdIdWT3AjkAP0Ab7PzaCezqqmnT9Aifbt56O8FoM5KawiUhjGZdR7imDB3
+	NOvrBa2TpNxpWQwFSLrlC5J9ef6FHxg=
+Date: Wed, 24 Jul 2024 09:20:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-GND-Sasl: gabriel@krisman.be
+Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
+ module_subeixt helper macros
+To: =?UTF-8?Q?Mika_Penttil=C3=A4?= <mika.penttila@mbosol.com>,
+ Arnd Bergmann <arnd@arndb.de>, Luis Chamberlain <mcgrof@kernel.org>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, tytso@mit.edu,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>,
+ Chao Yu <chao@kernel.org>, Christoph Hellwig <hch@infradead.org>
+Cc: linux-arch@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ Youling Tang <tangyouling@kylinos.cn>
+References: <20240723083239.41533-1-youling.tang@linux.dev>
+ <20240723083239.41533-2-youling.tang@linux.dev>
+ <4570c972-de09-4818-bd1b-3112f651b49d@mbosol.com>
+Content-Language: en-US, en-AU
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Youling Tang <youling.tang@linux.dev>
+In-Reply-To: <4570c972-de09-4818-bd1b-3112f651b49d@mbosol.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-cel@kernel.org writes:
+Hi, Mika
 
-> From: Chuck Lever <chuck.lever@oracle.com>
->
-> Gabriel says:
->> 9709bd548f11 just enabled a new feature -
->> which seems against stable rules.  Considering that "anything is
->> a CVE", we really need to be cautious about this kind of stuff in
->> stable kernels.
+On 23/07/2024 17:58, Mika Penttilä wrote:
+> On 7/23/24 11:32, Youling Tang wrote:
+>> From: Youling Tang <tangyouling@kylinos.cn>
 >>
->> Is it possible to drop 9709bd548f11 from stable instead?
->
-> The revert wasn't clean, but adjusting it to fit was straightforward.
-> This passes NFSD CI, and adds no new failures to the fanotify ltp
-> tests.
->
-> Reported-by: Gabriel Krisman Bertazi <gabriel@krisman.be>
-> Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
-> ---
->  fs/notify/fanotify/fanotify_user.c | 4 ----
->  include/linux/fanotify.h           | 6 +-----
->  2 files changed, 1 insertion(+), 9 deletions(-)
->
-> Gabriel, is this what you were thinking?
+>> In theory init/exit should match their sequence, thus normally they should
+>> look like this:
+>> -------------------------+------------------------
+>>      init_A();            |
+>>      init_B();            |
+>>      init_C();            |
+>>                           |   exit_C();
+>>                           |   exit_B();
+>>                           |   exit_A();
+>>
+>> Providing module_subinit{_noexit} and module_subeixt helps macros ensure
+>> that modules init/exit match their order, while also simplifying the code.
+>>
+>> The three macros are defined as follows:
+>> - module_subinit(initfn, exitfn,rollback)
+>> - module_subinit_noexit(initfn, rollback)
+>> - module_subexit(rollback)
+>>
+>> `initfn` is the initialization function and `exitfn` is the corresponding
+>> exit function.
+>>
+>> Signed-off-by: Youling Tang <tangyouling@kylinos.cn>
+>> ---
+>>   include/asm-generic/vmlinux.lds.h |  5 +++
+>>   include/linux/init.h              | 62 ++++++++++++++++++++++++++++++-
+>>   include/linux/module.h            | 22 +++++++++++
+>>   3 files changed, 88 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/include/asm-generic/vmlinux.lds.h b/include/asm-generic/vmlinux.lds.h
+>> index 677315e51e54..48ccac7c6448 100644
+>> --- a/include/asm-generic/vmlinux.lds.h
+>> +++ b/include/asm-generic/vmlinux.lds.h
+>> @@ -927,6 +927,10 @@
+>>   		INIT_CALLS_LEVEL(7)					\
+>>   		__initcall_end = .;
+>>   
+>> +#define SUBINIT_CALL							\
+>> +		*(.subinitcall.init)					\
+>> +		*(.subexitcall.exit)
+>> +
+>>   #define CON_INITCALL							\
+>>   	BOUNDED_SECTION_POST_LABEL(.con_initcall.init, __con_initcall, _start, _end)
+>>   
+>> @@ -1155,6 +1159,7 @@
+>>   		INIT_DATA						\
+>>   		INIT_SETUP(initsetup_align)				\
+>>   		INIT_CALLS						\
+>> +		SUBINIT_CALL						\
+>>   		CON_INITCALL						\
+>>   		INIT_RAM_FS						\
+>>   	}
+>> diff --git a/include/linux/init.h b/include/linux/init.h
+>> index ee1309473bc6..e8689ff2cb6c 100644
+>> --- a/include/linux/init.h
+>> +++ b/include/linux/init.h
+>> @@ -55,6 +55,9 @@
+>>   #define __exitdata	__section(".exit.data")
+>>   #define __exit_call	__used __section(".exitcall.exit")
+>>   
+>> +#define __subinit_call	__used __section(".subinitcall.init")
+>> +#define __subexit_call	__used __section(".subexitcall.exit")
+>> +
+>>   /*
+>>    * modpost check for section mismatches during the kernel build.
+>>    * A section mismatch happens when there are references from a
+>> @@ -115,6 +118,9 @@
+>>   typedef int (*initcall_t)(void);
+>>   typedef void (*exitcall_t)(void);
+>>   
+>> +typedef int (*subinitcall_t)(void);
+>> +typedef void (*subexitcall_t)(void);
+>> +
+>>   #ifdef CONFIG_HAVE_ARCH_PREL32_RELOCATIONS
+>>   typedef int initcall_entry_t;
+>>   
+>> @@ -183,7 +189,61 @@ extern struct module __this_module;
+>>   #endif
+>>   
+>>   #endif
+>> -
+>> +
+>> +#ifndef __ASSEMBLY__
+>> +struct subexitcall_rollback {
+>> +	/*
+>> +	 * Records the address of the first sub-initialization function in the
+>> +	 * ".subexitcall.exit" section
+>> +	 */
+>> +	unsigned long first_addr;
+>> +	int ncalls;
+>> +};
+>> +
+>> +static inline void __subexitcall_rollback(struct subexitcall_rollback *r)
+>> +{
+>> +	unsigned long addr = r->first_addr - sizeof(r->first_addr) * (r->ncalls - 1);
+>> +
+>> +	for (; r->ncalls--; addr += sizeof(r->first_addr)) {
+>> +		unsigned long *tmp = (void *)addr;
+>> +		subexitcall_t fn = (subexitcall_t)*tmp;
+>> +		fn();
+>> +	}
+>> +}
+> How does this guarantee the exit calls match sequence? Are you assuming
+> linker puts exit functions in reverse order?
+Take btrfs for example:
+Initialize the function sequentially in init_btrfs_fs() using
+module_subinit{_noexit}, storing the corresponding function addresses
+in the specified ".subinitcall.init" and ".subexitcall.exit" sections.
 
-Thanks Chuck.
+Using gcc to compile btrfs to.ko, the view section contains the following:
+```
+$ objdump -d -j ".subinitcall.init" fs/btrfs/super.o
 
-This looks good to me as a way to disable it in stable and prevent
-userspace from trying to use it. Up to fanotify maintainers to decide
-whether to brign the rest of the series or merge this, but either way:
-
-Reviewed-by: Gabriel Krisman Bertazi <gabriel@krisman.be>
+fs/btrfs/super.o:     file format elf64-x86-64
 
 
->
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-> index d93418f21386..0d91db1c7249 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -1701,10 +1701,6 @@ static int do_fanotify_mark(int fanotify_fd, unsigned int flags, __u64 mask,
->  	    group->priority == FS_PRIO_0)
->  		goto fput_and_out;
->  
-> -	if (mask & FAN_FS_ERROR &&
-> -	    mark_type != FAN_MARK_FILESYSTEM)
-> -		goto fput_and_out;
-> -
->  	/*
->  	 * Evictable is only relevant for inode marks, because only inode object
->  	 * can be evicted on memory pressure.
-> diff --git a/include/linux/fanotify.h b/include/linux/fanotify.h
-> index 558844c8d259..df60b46971c9 100644
-> --- a/include/linux/fanotify.h
-> +++ b/include/linux/fanotify.h
-> @@ -97,13 +97,9 @@ extern struct ctl_table fanotify_table[]; /* for sysctl */
->  #define FANOTIFY_INODE_EVENTS	(FANOTIFY_DIRENT_EVENTS | \
->  				 FAN_ATTRIB | FAN_MOVE_SELF | FAN_DELETE_SELF)
->  
-> -/* Events that can only be reported with data type FSNOTIFY_EVENT_ERROR */
-> -#define FANOTIFY_ERROR_EVENTS	(FAN_FS_ERROR)
-> -
->  /* Events that user can request to be notified on */
->  #define FANOTIFY_EVENTS		(FANOTIFY_PATH_EVENTS | \
-> -				 FANOTIFY_INODE_EVENTS | \
-> -				 FANOTIFY_ERROR_EVENTS)
-> +				 FANOTIFY_INODE_EVENTS)
->  
->  /* Events that require a permission response from user */
->  #define FANOTIFY_PERM_EVENTS	(FAN_OPEN_PERM | FAN_ACCESS_PERM | \
+Disassembly of section .subinitcall.init:
 
--- 
-Gabriel Krisman Bertazi
+0000000000000000 <__subinitcall_register_btrfs.0>:
+     ...
+
+0000000000000008 <__subinitcall_btrfs_run_sanity_tests.2>:
+     ...
+
+0000000000000010 <__subinitcall_btrfs_print_mod_info.3>:
+     ...
+
+0000000000000018 <__subinitcall_btrfs_interface_init.4>:
+     ...
+
+0000000000000020 <__subinitcall_btrfs_prelim_ref_init.6>:
+     ...
+
+0000000000000028 <__subinitcall_btrfs_delayed_ref_init.8>:
+     ...
+
+0000000000000030 <__subinitcall_btrfs_auto_defrag_init.10>:
+     ...
+
+0000000000000038 <__subinitcall_btrfs_delayed_inode_init.12>:
+     ...
+
+0000000000000040 <__subinitcall_ordered_data_init.14>:
+     ...
+
+0000000000000048 <__subinitcall_extent_map_init.16>:
+     ...
+
+0000000000000050 <__subinitcall_btrfs_bioset_init.18>:
+     ...
+
+0000000000000058 <__subinitcall_extent_buffer_init_cachep.20>:
+     ...
+
+0000000000000060 <__subinitcall_extent_state_init_cachep.22>:
+     ...
+
+0000000000000068 <__subinitcall_btrfs_free_space_init.24>:
+     ...
+
+0000000000000070 <__subinitcall_btrfs_ctree_init.26>:
+     ...
+
+0000000000000078 <__subinitcall_btrfs_transaction_init.28>:
+     ...
+
+0000000000000080 <__subinitcall_btrfs_init_dio.30>:
+     ...
+
+0000000000000088 <__subinitcall_btrfs_init_cachep.32>:
+     ...
+
+0000000000000090 <__subinitcall_btrfs_init_compress.34>:
+     ...
+
+0000000000000098 <__subinitcall_btrfs_init_sysfs.36>:
+     ...
+
+00000000000000a0 <__subinitcall_btrfs_props_init.38>:
+     ...
+
+```
+
+```
+$ objdump -d -j ".subexitcall.exit" fs/btrfs/super.o
+
+fs/btrfs/super.o:     file format elf64-x86-64
+
+
+Disassembly of section .subexitcall.exit:
+
+0000000000000000 <__subexitcall_unregister_btrfs.1>:
+     ...
+
+0000000000000008 <__subexitcall_btrfs_interface_exit.5>:
+     ...
+
+0000000000000010 <__subexitcall_btrfs_prelim_ref_exit.7>:
+     ...
+
+0000000000000018 <__subexitcall_btrfs_delayed_ref_exit.9>:
+     ...
+
+0000000000000020 <__subexitcall_btrfs_auto_defrag_exit.11>:
+     ...
+
+0000000000000028 <__subexitcall_btrfs_delayed_inode_exit.13>:
+     ...
+
+0000000000000030 <__subexitcall_ordered_data_exit.15>:
+     ...
+
+0000000000000038 <__subexitcall_extent_map_exit.17>:
+     ...
+
+0000000000000040 <__subexitcall_btrfs_bioset_exit.19>:
+     ...
+
+0000000000000048 <__subexitcall_extent_buffer_free_cachep.21>:
+     ...
+
+0000000000000050 <__subexitcall_extent_state_free_cachep.23>:
+     ...
+
+0000000000000058 <__subexitcall_btrfs_free_space_exit.25>:
+     ...
+
+0000000000000060 <__subexitcall_btrfs_ctree_exit.27>:
+     ...
+
+0000000000000068 <__subexitcall_btrfs_transaction_exit.29>:
+     ...
+
+0000000000000070 <__subexitcall_btrfs_destroy_dio.31>:
+     ...
+
+0000000000000078 <__subexitcall_btrfs_destroy_cachep.33>:
+     ...
+
+0000000000000080 <__subexitcall_btrfs_exit_compress.35>:
+     ...
+
+0000000000000088 <__subexitcall_btrfs_exit_sysfs.37>:
+     ...
+
+
+```
+
+ From the above, we can see that the compiler stores the init/exit function
+in reverse order.
+
+Thanks,
+Youling.
 
