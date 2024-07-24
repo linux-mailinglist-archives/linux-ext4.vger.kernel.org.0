@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-3434-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3435-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6834E93B730
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 21:07:04 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2DE5593B732
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 21:07:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 993CE1C216D2
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 19:07:03 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CCB4C1F22006
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 19:07:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619C7167D8C;
-	Wed, 24 Jul 2024 19:06:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C9556167D8C;
+	Wed, 24 Jul 2024 19:07:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c5KnN2sg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="T8u86VRb"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3FF65E20;
-	Wed, 24 Jul 2024 19:06:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EEBC65E20;
+	Wed, 24 Jul 2024 19:07:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721848017; cv=none; b=mZGv3mem2qHQKee4JbSneedvGyyQ2RRtBhpU9+R9pt/AJdGkuqyrk6QkrKiPqoyz+Yt9g5hv0PTyu61GKycXAOTAObM6ZQIxR+lGYFNgrHc2m5gyLm1tk2mbklMzFIt5mtS0SVRZYCop6c3AVCd5Vjfy1wXzxk//wSIJ1y/isd0=
+	t=1721848025; cv=none; b=Rjq2PDuG/rhEy0W2DoVRr1MG6FKcHwYwEyCP8ZxaGYYbKS8kyJKsYi4NSzdrgoAp8E4l6EIUAbgZFC+uYwWOK9OfzNaET9ty3Kh+W+jVuV2JLoiM919wVYdH6RoF711h7jpHFI0r2dPrkuPeldwiUCv8v0H12Ue4+8AAFtlXJUA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721848017; c=relaxed/simple;
-	bh=rQ153ztKslahUTw3Zcbb4iyRxvj1/+V/XI2lxHnMeO8=;
+	s=arc-20240116; t=1721848025; c=relaxed/simple;
+	bh=iphHr0EX7lolNkzQUwFnzeU1+uuZ9oEjhGKPWWI4urs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c/vrQta7jjNKwkW2OwqzBQmlYwUxYsw46G08+hK3YalozX91iiIw0kaHhLsVwBqvdMpAQW6bN+yCdE3Ol01w0ASBDZXnxlljotfS8dX/h8jWgA2rrJ+noeyg0OGSbc3r4shCEqEJ9jINYF5DnsGJW0+K0YGm4kENmcV9dQ4KCw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c5KnN2sg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9403CC32781;
-	Wed, 24 Jul 2024 19:06:55 +0000 (UTC)
+	 MIME-Version; b=m5sAcCxJ35OlKi9xCBSsHFzwAkC0Rq+kWnbdB9l6kiU8z8VdhCIGmkZQtgp7HNw08kvA2JRJrnVsWYmzbLnG0AbqWI6+1cFuEJwninddWtkpMnLt1Su1rVJ2ATQAR6EqucVG8Ze3kVQrs1sHpaXDdoaINxxNYw0WPC6xOEKzna4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=T8u86VRb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A6ADCC32781;
+	Wed, 24 Jul 2024 19:07:03 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721848016;
-	bh=rQ153ztKslahUTw3Zcbb4iyRxvj1/+V/XI2lxHnMeO8=;
+	s=k20201202; t=1721848024;
+	bh=iphHr0EX7lolNkzQUwFnzeU1+uuZ9oEjhGKPWWI4urs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=c5KnN2sgsF4sbsIF+PtbhCS+EooYiZ5qKTfBqCua8GlKrWWG51YCbiIpPXRaNMe4Y
-	 WXtzM8PSyhgttSQT5HJHtYrutMxG+wUGhM0tvBfYtFw42oX+8UwNDS3CF7I1yK7G8p
-	 +T0ZqvBwLm9XuqsFKj9OVV2U/m9rlx0PkSCOybHJpC+sIBTuBZzm6n380q8FyJqIiE
-	 9ovSRLsxU4RVyn+oWLcF/Eq3xxKcxjN33zY/FJ13/e/L7bj8G5TM51q0fqPHPZLHdO
-	 AjaoCVIby43VM1raZOjgjd8qXDIb+8OiOoZY8PnPe8Z0yV536/rC1CGzEHLX7nCr5S
-	 hgvVv1Q/+zBMQ==
+	b=T8u86VRbowcjTD6LPdW03OXUi9ddvRyoDNDqe1X6HujEaXYOasaXHFGghPQPoGaL1
+	 nHnNqt/wG7ePf8YpJkUSNoMC1JA9tdukxO76x+QGoUDfZAw3fFXAXXiFeTdrpxjf4n
+	 a2QL8If1FKCN2PMIL+zsY6E5pEU05b8UVUv5crrUKu2B2uTEa7M479yJlxFqhoLf36
+	 BRqo+uCEcsm7+H+g9aNfYFPax5yl/z4F7ScsSnnGk87PwZpqyNHHaY1Ep1nDsjTl1k
+	 lGjVX1UQoPAvgjWusX5qMkqn6kwLzuZ2fKZKLGB/s0g2RkPnnfQfAm3UxzJXypUuv0
+	 mBtvh4JCjQN9A==
 From: cel@kernel.org
 To: amir73il@gmail.com,
 	krisman@collabora.com
@@ -54,10 +54,10 @@ Cc: gregkh@linuxfoundation.org,
 	alexey.makhalov@broadcom.com,
 	vasavi.sirnapalli@broadcom.com,
 	florian.fainelli@broadcom.com,
-	Guenter Roeck <linux@roeck-us.net>
-Subject: [PATCH v5.15.y 2/4] samples: Make fs-monitor depend on libc and headers
-Date: Wed, 24 Jul 2024 15:06:21 -0400
-Message-ID: <20240724190623.8948-3-cel@kernel.org>
+	Stephen Rothwell <sfr@canb.auug.org.au>
+Subject: [PATCH v5.15.y 3/4] docs: Fix formatting of literal sections in fanotify docs
+Date: Wed, 24 Jul 2024 15:06:22 -0400
+Message-ID: <20240724190623.8948-4-cel@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240724190623.8948-1-cel@kernel.org>
 References: <20240724190623.8948-1-cel@kernel.org>
@@ -71,39 +71,61 @@ Content-Transfer-Encoding: 8bit
 
 From: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-[ Upstream commit 8fc70b3a142f97f7859bf052151df896933d2586 ]
+[ Upstream commit 9abeae5d4458326e16df7ea237104b58c27dfd77 ]
 
-Prevent build errors when headers or libc are not available, such as on
-kernel build bots, like the below:
+Stephen Rothwell reported the following warning was introduced by commit
+c0baf9ac0b05 ("docs: Document the FAN_FS_ERROR event").
 
-samples/fanotify/fs-monitor.c:7:10: fatal error: errno.h: No such file
-or directory
-  7 | #include <errno.h>
-    |          ^~~~~~~~~
+Documentation/admin-guide/filesystem-monitoring.rst:60: WARNING:
+ Definition list ends without a blank line; unexpected unindent.
 
-Link: https://lore.kernel.org/r/87fsslasgz.fsf@collabora.com
-Suggested-by: Guenter Roeck <linux@roeck-us.net>
-Tested-by: Guenter Roeck <linux@roeck-us.net>
+Link: https://lore.kernel.org/r/87y26camhe.fsf@collabora.com
+Reported-by: Stephen Rothwell <sfr@canb.auug.org.au>
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- samples/Kconfig | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ .../admin-guide/filesystem-monitoring.rst     | 20 +++++++++++--------
+ 1 file changed, 12 insertions(+), 8 deletions(-)
 
-diff --git a/samples/Kconfig b/samples/Kconfig
-index 88353b8eac0b..56539b21f2c7 100644
---- a/samples/Kconfig
-+++ b/samples/Kconfig
-@@ -122,7 +122,7 @@ config SAMPLE_CONNECTOR
+diff --git a/Documentation/admin-guide/filesystem-monitoring.rst b/Documentation/admin-guide/filesystem-monitoring.rst
+index 5a3c84e60095..ab8dba76283c 100644
+--- a/Documentation/admin-guide/filesystem-monitoring.rst
++++ b/Documentation/admin-guide/filesystem-monitoring.rst
+@@ -35,9 +35,11 @@ notifications is Ext4.
  
- config SAMPLE_FANOTIFY_ERROR
- 	bool "Build fanotify error monitoring sample"
--	depends on FANOTIFY
-+	depends on FANOTIFY && CC_CAN_LINK && HEADERS_INSTALL
- 	help
- 	  When enabled, this builds an example code that uses the
- 	  FAN_FS_ERROR fanotify mechanism to monitor filesystem
+ A FAN_FS_ERROR Notification has the following format::
+ 
+-  [ Notification Metadata (Mandatory) ]
+-  [ Generic Error Record  (Mandatory) ]
+-  [ FID record            (Mandatory) ]
++  ::
++
++     [ Notification Metadata (Mandatory) ]
++     [ Generic Error Record  (Mandatory) ]
++     [ FID record            (Mandatory) ]
+ 
+ The order of records is not guaranteed, and new records might be added
+ in the future.  Therefore, applications must not rely on the order and
+@@ -53,11 +55,13 @@ providing any additional details about the problem.  This record is
+ identified by ``struct fanotify_event_info_header.info_type`` being set
+ to FAN_EVENT_INFO_TYPE_ERROR.
+ 
+-  struct fanotify_event_info_error {
+-	struct fanotify_event_info_header hdr;
+-	__s32 error;
+-	__u32 error_count;
+-  };
++  ::
++
++     struct fanotify_event_info_error {
++          struct fanotify_event_info_header hdr;
++         __s32 error;
++         __u32 error_count;
++     };
+ 
+ The `error` field identifies the type of error using errno values.
+ `error_count` tracks the number of errors that occurred and were
 -- 
 2.45.2
 
