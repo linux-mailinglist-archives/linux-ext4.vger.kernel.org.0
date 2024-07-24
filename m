@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-3433-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3434-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F1CCF93B72E
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 21:06:57 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6834E93B730
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 21:07:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 88C67B21490
-	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 19:06:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 993CE1C216D2
+	for <lists+linux-ext4@lfdr.de>; Wed, 24 Jul 2024 19:07:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4853216A37C;
-	Wed, 24 Jul 2024 19:06:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 619C7167D8C;
+	Wed, 24 Jul 2024 19:06:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RfjekoAj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="c5KnN2sg"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BACCF15667B;
-	Wed, 24 Jul 2024 19:06:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3FF65E20;
+	Wed, 24 Jul 2024 19:06:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721848007; cv=none; b=JQxgfwgArx0rM1hhMfr/TikujpZJ2sxBS80I1XIb3dnT0dnHR2jNw7ZjVj9yt0pIVcz92/H4mYT7x0PuVW1pFJZMn6xHUEL7NgrWYeVXouDnXY3Q8cL7wbaQTv8sab0BG0+heeZhc2XMYcnOLVLQlKaayQrt4z4wV++nyP13+EQ=
+	t=1721848017; cv=none; b=mZGv3mem2qHQKee4JbSneedvGyyQ2RRtBhpU9+R9pt/AJdGkuqyrk6QkrKiPqoyz+Yt9g5hv0PTyu61GKycXAOTAObM6ZQIxR+lGYFNgrHc2m5gyLm1tk2mbklMzFIt5mtS0SVRZYCop6c3AVCd5Vjfy1wXzxk//wSIJ1y/isd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721848007; c=relaxed/simple;
-	bh=WK5BPW1X67NRzibaJjSAvchBzJPiuxvCRkJVAJwag6k=;
+	s=arc-20240116; t=1721848017; c=relaxed/simple;
+	bh=rQ153ztKslahUTw3Zcbb4iyRxvj1/+V/XI2lxHnMeO8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=pSSSQE84GZdLTeByEKtjdhdb78HyIdmoSFmNqMMaAktVTtchZuKUgWHJ6k9c2NjkEQzt390doThDSyfdYVuWfriPqAZMALYu5YW0kPNwCacxJJigYb1oTxXpq0cOLfzpWtHPZf04gfmasGMquBf5gnNRDnt0IhfJFnrR8UZ4Vk0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RfjekoAj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 51876C32781;
-	Wed, 24 Jul 2024 19:06:46 +0000 (UTC)
+	 MIME-Version; b=c/vrQta7jjNKwkW2OwqzBQmlYwUxYsw46G08+hK3YalozX91iiIw0kaHhLsVwBqvdMpAQW6bN+yCdE3Ol01w0ASBDZXnxlljotfS8dX/h8jWgA2rrJ+noeyg0OGSbc3r4shCEqEJ9jINYF5DnsGJW0+K0YGm4kENmcV9dQ4KCw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=c5KnN2sg; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9403CC32781;
+	Wed, 24 Jul 2024 19:06:55 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1721848007;
-	bh=WK5BPW1X67NRzibaJjSAvchBzJPiuxvCRkJVAJwag6k=;
+	s=k20201202; t=1721848016;
+	bh=rQ153ztKslahUTw3Zcbb4iyRxvj1/+V/XI2lxHnMeO8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=RfjekoAjsxQJmS0ozU0AJolZSMEYp4Xz3On/ZcU3nTHIrwLKrRQXsCrAwYMOew8sx
-	 bO9y9rTLSSGI7F1tAS0Da63Bw1BiPDwooS5CSDg0TmUaoOW5aHWVEgoXDFGaXOUEib
-	 yR7jM5F+Ma+J3WYCUAZR/sXzr6pOd9ym6c7QM75Uc2okaQsMFGebPy+VOMmRnc/Rgo
-	 h2VjwZTQG0B/fUMVgU+8gnhQQSY8PwomtOxqCMknYd5NKs7D4nBDROKpgmoMSl81bi
-	 BW82LP5SQRI2wceMzYG7dgMA80WUc9b1jXmTekkY1PG+4xs/MC9w5tVC0i1iWnu1+r
-	 IYxzm+X6xVnRQ==
+	b=c5KnN2sgsF4sbsIF+PtbhCS+EooYiZ5qKTfBqCua8GlKrWWG51YCbiIpPXRaNMe4Y
+	 WXtzM8PSyhgttSQT5HJHtYrutMxG+wUGhM0tvBfYtFw42oX+8UwNDS3CF7I1yK7G8p
+	 +T0ZqvBwLm9XuqsFKj9OVV2U/m9rlx0PkSCOybHJpC+sIBTuBZzm6n380q8FyJqIiE
+	 9ovSRLsxU4RVyn+oWLcF/Eq3xxKcxjN33zY/FJ13/e/L7bj8G5TM51q0fqPHPZLHdO
+	 AjaoCVIby43VM1raZOjgjd8qXDIb+8OiOoZY8PnPe8Z0yV536/rC1CGzEHLX7nCr5S
+	 hgvVv1Q/+zBMQ==
 From: cel@kernel.org
 To: amir73il@gmail.com,
 	krisman@collabora.com
@@ -53,10 +53,11 @@ Cc: gregkh@linuxfoundation.org,
 	tytso@mit.edu,
 	alexey.makhalov@broadcom.com,
 	vasavi.sirnapalli@broadcom.com,
-	florian.fainelli@broadcom.com
-Subject: [PATCH v5.15.y 1/4] samples: Add fs error monitoring example
-Date: Wed, 24 Jul 2024 15:06:20 -0400
-Message-ID: <20240724190623.8948-2-cel@kernel.org>
+	florian.fainelli@broadcom.com,
+	Guenter Roeck <linux@roeck-us.net>
+Subject: [PATCH v5.15.y 2/4] samples: Make fs-monitor depend on libc and headers
+Date: Wed, 24 Jul 2024 15:06:21 -0400
+Message-ID: <20240724190623.8948-3-cel@kernel.org>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20240724190623.8948-1-cel@kernel.org>
 References: <20240724190623.8948-1-cel@kernel.org>
@@ -70,217 +71,39 @@ Content-Transfer-Encoding: 8bit
 
 From: Gabriel Krisman Bertazi <krisman@collabora.com>
 
-[ Upstream commit 5451093081db6ca1a708d149e11cfd219800bc4c ]
+[ Upstream commit 8fc70b3a142f97f7859bf052151df896933d2586 ]
 
-Introduce an example of a FAN_FS_ERROR fanotify user to track filesystem
-errors.
+Prevent build errors when headers or libc are not available, such as on
+kernel build bots, like the below:
 
-Link: https://lore.kernel.org/r/20211025192746.66445-31-krisman@collabora.com
-Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
+samples/fanotify/fs-monitor.c:7:10: fatal error: errno.h: No such file
+or directory
+  7 | #include <errno.h>
+    |          ^~~~~~~~~
+
+Link: https://lore.kernel.org/r/87fsslasgz.fsf@collabora.com
+Suggested-by: Guenter Roeck <linux@roeck-us.net>
+Tested-by: Guenter Roeck <linux@roeck-us.net>
 Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
 Signed-off-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Chuck Lever <chuck.lever@oracle.com>
 ---
- samples/Kconfig               |   9 +++
- samples/Makefile              |   1 +
- samples/fanotify/Makefile     |   5 ++
- samples/fanotify/fs-monitor.c | 142 ++++++++++++++++++++++++++++++++++
- 4 files changed, 157 insertions(+)
- create mode 100644 samples/fanotify/Makefile
- create mode 100644 samples/fanotify/fs-monitor.c
+ samples/Kconfig | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/samples/Kconfig b/samples/Kconfig
-index b0503ef058d3..88353b8eac0b 100644
+index 88353b8eac0b..56539b21f2c7 100644
 --- a/samples/Kconfig
 +++ b/samples/Kconfig
-@@ -120,6 +120,15 @@ config SAMPLE_CONNECTOR
- 	  with it.
- 	  See also Documentation/driver-api/connector.rst
+@@ -122,7 +122,7 @@ config SAMPLE_CONNECTOR
  
-+config SAMPLE_FANOTIFY_ERROR
-+	bool "Build fanotify error monitoring sample"
-+	depends on FANOTIFY
-+	help
-+	  When enabled, this builds an example code that uses the
-+	  FAN_FS_ERROR fanotify mechanism to monitor filesystem
-+	  errors.
-+	  See also Documentation/admin-guide/filesystem-monitoring.rst.
-+
- config SAMPLE_HIDRAW
- 	bool "hidraw sample"
- 	depends on CC_CAN_LINK && HEADERS_INSTALL
-diff --git a/samples/Makefile b/samples/Makefile
-index 087e0988ccc5..931a81847c48 100644
---- a/samples/Makefile
-+++ b/samples/Makefile
-@@ -5,6 +5,7 @@ subdir-$(CONFIG_SAMPLE_AUXDISPLAY)	+= auxdisplay
- subdir-$(CONFIG_SAMPLE_ANDROID_BINDERFS) += binderfs
- obj-$(CONFIG_SAMPLE_CONFIGFS)		+= configfs/
- obj-$(CONFIG_SAMPLE_CONNECTOR)		+= connector/
-+obj-$(CONFIG_SAMPLE_FANOTIFY_ERROR)	+= fanotify/
- subdir-$(CONFIG_SAMPLE_HIDRAW)		+= hidraw
- obj-$(CONFIG_SAMPLE_HW_BREAKPOINT)	+= hw_breakpoint/
- obj-$(CONFIG_SAMPLE_KDB)		+= kdb/
-diff --git a/samples/fanotify/Makefile b/samples/fanotify/Makefile
-new file mode 100644
-index 000000000000..e20db1bdde3b
---- /dev/null
-+++ b/samples/fanotify/Makefile
-@@ -0,0 +1,5 @@
-+# SPDX-License-Identifier: GPL-2.0-only
-+userprogs-always-y += fs-monitor
-+
-+userccflags += -I usr/include -Wall
-+
-diff --git a/samples/fanotify/fs-monitor.c b/samples/fanotify/fs-monitor.c
-new file mode 100644
-index 000000000000..a0e44cd31e6f
---- /dev/null
-+++ b/samples/fanotify/fs-monitor.c
-@@ -0,0 +1,142 @@
-+// SPDX-License-Identifier: GPL-2.0
-+/*
-+ * Copyright 2021, Collabora Ltd.
-+ */
-+
-+#define _GNU_SOURCE
-+#include <errno.h>
-+#include <err.h>
-+#include <stdlib.h>
-+#include <stdio.h>
-+#include <fcntl.h>
-+#include <sys/fanotify.h>
-+#include <sys/types.h>
-+#include <unistd.h>
-+#include <sys/types.h>
-+
-+#ifndef FAN_FS_ERROR
-+#define FAN_FS_ERROR		0x00008000
-+#define FAN_EVENT_INFO_TYPE_ERROR	5
-+
-+struct fanotify_event_info_error {
-+	struct fanotify_event_info_header hdr;
-+	__s32 error;
-+	__u32 error_count;
-+};
-+#endif
-+
-+#ifndef FILEID_INO32_GEN
-+#define FILEID_INO32_GEN	1
-+#endif
-+
-+#ifndef FILEID_INVALID
-+#define	FILEID_INVALID		0xff
-+#endif
-+
-+static void print_fh(struct file_handle *fh)
-+{
-+	int i;
-+	uint32_t *h = (uint32_t *) fh->f_handle;
-+
-+	printf("\tfh: ");
-+	for (i = 0; i < fh->handle_bytes; i++)
-+		printf("%hhx", fh->f_handle[i]);
-+	printf("\n");
-+
-+	printf("\tdecoded fh: ");
-+	if (fh->handle_type == FILEID_INO32_GEN)
-+		printf("inode=%u gen=%u\n", h[0], h[1]);
-+	else if (fh->handle_type == FILEID_INVALID && !fh->handle_bytes)
-+		printf("Type %d (Superblock error)\n", fh->handle_type);
-+	else
-+		printf("Type %d (Unknown)\n", fh->handle_type);
-+
-+}
-+
-+static void handle_notifications(char *buffer, int len)
-+{
-+	struct fanotify_event_metadata *event =
-+		(struct fanotify_event_metadata *) buffer;
-+	struct fanotify_event_info_header *info;
-+	struct fanotify_event_info_error *err;
-+	struct fanotify_event_info_fid *fid;
-+	int off;
-+
-+	for (; FAN_EVENT_OK(event, len); event = FAN_EVENT_NEXT(event, len)) {
-+
-+		if (event->mask != FAN_FS_ERROR) {
-+			printf("unexpected FAN MARK: %llx\n", event->mask);
-+			goto next_event;
-+		}
-+
-+		if (event->fd != FAN_NOFD) {
-+			printf("Unexpected fd (!= FAN_NOFD)\n");
-+			goto next_event;
-+		}
-+
-+		printf("FAN_FS_ERROR (len=%d)\n", event->event_len);
-+
-+		for (off = sizeof(*event) ; off < event->event_len;
-+		     off += info->len) {
-+			info = (struct fanotify_event_info_header *)
-+				((char *) event + off);
-+
-+			switch (info->info_type) {
-+			case FAN_EVENT_INFO_TYPE_ERROR:
-+				err = (struct fanotify_event_info_error *) info;
-+
-+				printf("\tGeneric Error Record: len=%d\n",
-+				       err->hdr.len);
-+				printf("\terror: %d\n", err->error);
-+				printf("\terror_count: %d\n", err->error_count);
-+				break;
-+
-+			case FAN_EVENT_INFO_TYPE_FID:
-+				fid = (struct fanotify_event_info_fid *) info;
-+
-+				printf("\tfsid: %x%x\n",
-+				       fid->fsid.val[0], fid->fsid.val[1]);
-+				print_fh((struct file_handle *) &fid->handle);
-+				break;
-+
-+			default:
-+				printf("\tUnknown info type=%d len=%d:\n",
-+				       info->info_type, info->len);
-+			}
-+		}
-+next_event:
-+		printf("---\n\n");
-+	}
-+}
-+
-+int main(int argc, char **argv)
-+{
-+	int fd;
-+
-+	char buffer[BUFSIZ];
-+
-+	if (argc < 2) {
-+		printf("Missing path argument\n");
-+		return 1;
-+	}
-+
-+	fd = fanotify_init(FAN_CLASS_NOTIF|FAN_REPORT_FID, O_RDONLY);
-+	if (fd < 0)
-+		errx(1, "fanotify_init");
-+
-+	if (fanotify_mark(fd, FAN_MARK_ADD|FAN_MARK_FILESYSTEM,
-+			  FAN_FS_ERROR, AT_FDCWD, argv[1])) {
-+		errx(1, "fanotify_mark");
-+	}
-+
-+	while (1) {
-+		int n = read(fd, buffer, BUFSIZ);
-+
-+		if (n < 0)
-+			errx(1, "read");
-+
-+		handle_notifications(buffer, n);
-+	}
-+
-+	return 0;
-+}
+ config SAMPLE_FANOTIFY_ERROR
+ 	bool "Build fanotify error monitoring sample"
+-	depends on FANOTIFY
++	depends on FANOTIFY && CC_CAN_LINK && HEADERS_INSTALL
+ 	help
+ 	  When enabled, this builds an example code that uses the
+ 	  FAN_FS_ERROR fanotify mechanism to monitor filesystem
 -- 
 2.45.2
 
