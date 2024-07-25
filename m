@@ -1,264 +1,227 @@
-Return-Path: <linux-ext4+bounces-3443-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3444-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE97293BC73
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 08:18:36 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A00D93BE29
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 10:49:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 259F11C227D7
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 06:18:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11176284516
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 08:49:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352B316C69D;
-	Thu, 25 Jul 2024 06:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E7A7196438;
+	Thu, 25 Jul 2024 08:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="h54EiO/+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 211BE16B39C
-	for <linux-ext4@vger.kernel.org>; Thu, 25 Jul 2024 06:18:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E56DB17C203;
+	Thu, 25 Jul 2024 08:48:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721888307; cv=none; b=cyHzvs9MYMxQCKieux9nBohbIlfCJY7ESwaelx2BHdmn/BOWsQOov1gltU8aznoMYhwiWWvVv73SfQiMpnK1m5hvd7VNad8zfz9sjqBv6e0hEhqeEGuAQnJs1MlHW69HaLdyA/jEcqRsjmSC4siitJN8dfjideQUA4RO3xPdxCM=
+	t=1721897337; cv=none; b=SnP6NZkwBJ22aePV1quUCFwtMBtPjobJgpRYPVqoXwCeGgPoQCXyuftv2R7wXxy5yHUiAclih5A+IRR6NdBx4T2Yxe5tOv3MSrhI7kZa8ASjXyKofUbzAUuc5dLDYKWPjozefEFV3QKIVqkMO2EktLVhddFMkqyDeGwMQYtpeLI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721888307; c=relaxed/simple;
-	bh=6wdQ515yhUTWZfUcS2Yxg7TYS9w/R44a3ReHNC2M+rU=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=N9gN1udi6DaLiUNAg3++QFwFdWrTJk98KOsuBUFpUqP3I8XHqCh73RD4+cJb15qMVMNXv6j513Je2mZi/gzQoB1rI/++uV/brdTyUW7LjW8IrnZiQcv+yFOaytVO52YrZmgF8De88Be1Zf5FBK502ZUt6Sgu5TKnHuL9cLLUYkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-81f7fb0103fso30657239f.0
-        for <linux-ext4@vger.kernel.org>; Wed, 24 Jul 2024 23:18:25 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1721888305; x=1722493105;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=M0mG+NC9VjYBQk9CiWV5gKANJ3JV1vh6dmYYKhqLceg=;
-        b=ZeL6goLoGgkMrVmj7Mj8OLcZjb1xZcjB0VTQ0uxu6ya3ELy8msLEVyG62ErhzVzPws
-         nvk5BAqL4YGNq3g/IurizYXzXIyb5HMdqewz3WVbmPcOjcYGla1iZGPnKjIbYoKghV4/
-         uoU486r9GFI50GDGzPa3qUniTN23HFjporyx4mL/3sNwjeJ3XjO3e4ufeSn/78bbzKoI
-         27FDB4UO2OOPXBetEvma9EWH6TGowrFZqYMucqLqlN2E7tXIR1MTQVno8eSgvnOpcj1N
-         zEkpTCwpd+3segCrHvCfe+AUIskqqpoGx/TRLYjqRjglN/Nq081YL46UHWUCyaMATU/L
-         QN4g==
-X-Forwarded-Encrypted: i=1; AJvYcCWix9L+DOMCORxLWMIFVLfdjhaNSIqm05E+geNzJwJh0o1DiI1/89vFLZ+nLYg7Gbgq54Tiz88pORfxWxHGd/IC3aVmfcoypKzalw==
-X-Gm-Message-State: AOJu0YzGm/iAZSN5N9HKnN89ZEXmTcKo7IEuHgVJbXcZBb1zU/J2Bmj5
-	k0JnhT2Fc8Fed6EBh0ixd8Eoc798uwZNLCsRcd60o+/zcuTEKX8CNc329OOfVRuzFBsysjscGcC
-	SzvGnGRK2D+OiDn6dAf8TFTBB+0Q2Ghs2EuMcqdtsaYHWzOLN8m//ftg=
-X-Google-Smtp-Source: AGHT+IH55ScSSc/prev/3PP+sMFyHhpUvzNb7vzhA8ClgYnIIXwOpM9eBH8ekRvfz5vZzQ8+tKDY411GWddDJ5PIIbNVty3nT3pB
+	s=arc-20240116; t=1721897337; c=relaxed/simple;
+	bh=qsFA+cU5P98sdj9RVrkewUegqRBzGVkycpJZ6sBq+qM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bhU+KCnrxMLUzmULbMtxB6ZsAndijif7RcqHZ24QEy9DGBmkhxIyLvzgcPuzx/i5kZoRoLW6Sext0exrP/UuH2D8eekiAXEWKKv5zN3Ir6Fcgog1CvzxHO7cMe5jGXDHHSbdrke3j9dVlBHOWIS02fccBEtNOkOLHG7cHGXb3Eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=h54EiO/+; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 46P8TAeU008633;
+	Thu, 25 Jul 2024 08:48:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
+	:from:to:cc:subject:message-id:references:mime-version
+	:content-type:content-transfer-encoding:in-reply-to; s=pp1; bh=r
+	VDLOlXxb2rBhwEK5FY7L6rN/5WkiMbPccj2WY3xA9E=; b=h54EiO/+XdWV09RyE
+	Wo3KQiUj0ewiuvR58LzZhyQNlq+t4DoSNMEuFXyZh7sd9XE8QNcSXrNTd/o7EtIn
+	lqRAVzAwh3UpbLi61YtG3JhD+SdKgPQ1cbleEJqpWFOHCmfd5UQKbME30HmxgCCr
+	OFQNysSTON6Oi5y39Tkli71uo8omkk3hpabqoi2P0E4bPpDNSlvkZi3lRK4DB+Ec
+	mRn5pAMsNdzIzB3t6isnZT/g7YcHE0eIsyuedhHk4DROhrcZ56AvNhoEwJP/d8vE
+	aCrXFPwqF5qYwXjWvr93wGT31uD8/6RR8dI83ngTXb1rvY2fWXJX22g9lSTzGfCZ
+	Z/Rew==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40kgk8rdn9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jul 2024 08:48:33 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 46P8mWcI010021;
+	Thu, 25 Jul 2024 08:48:32 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40kgk8rdn6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jul 2024 08:48:32 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 46P6Qhdm009115;
+	Thu, 25 Jul 2024 08:48:31 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 40gt93ns1d-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 25 Jul 2024 08:48:31 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 46P8mRBZ56623472
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 25 Jul 2024 08:48:29 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B5AA32004B;
+	Thu, 25 Jul 2024 08:48:27 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C70C820040;
+	Thu, 25 Jul 2024 08:48:25 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 25 Jul 2024 08:48:25 +0000 (GMT)
+Date: Thu, 25 Jul 2024 14:18:23 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Baokun Li <libaokun@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        Baokun Li <libaokun1@huawei.com>,
+        zhanchengbin <zhanchengbin1@huawei.com>
+Subject: Re: [PATCH 02/20] ext4: prevent partial update of the extents path
+Message-ID: <ZqIRVzXireJ8fiU1@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240710040654.1714672-3-libaokun@huaweicloud.com>
+ <ZpPx3kuO36lp9/Um@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9fd554c7-dc0c-4969-9f2a-1c99356fccce@huaweicloud.com>
+ <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
+ <ZpZDSMFbziWq5xOK@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9ef38162-2eeb-4cf6-aee4-02d6a5952757@huaweicloud.com>
+ <ZpdR4pN8IJajB9xc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9fcb1d52-520f-425f-8b83-debeda423483@huaweicloud.com>
+ <ZqCd0fjFzZt00h6N@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <6df79e24-df1a-43da-8d1d-6bd0f8dd2edf@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8728:b0:4b9:9c0a:6f6c with SMTP id
- 8926c6da1cb9f-4c29afaf6f2mr100269173.1.1721888305194; Wed, 24 Jul 2024
- 23:18:25 -0700 (PDT)
-Date: Wed, 24 Jul 2024 23:18:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c65dc8061e0c5c29@google.com>
-Subject: [syzbot] [ext4?] INFO: task hung in sb_start_write
-From: syzbot <syzbot+fb3ada58a6c0a3208821@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6df79e24-df1a-43da-8d1d-6bd0f8dd2edf@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: 94HkO9mayGdlhi1tTE90w950JPGumnrg
+X-Proofpoint-ORIG-GUID: FaYBell6NQ_VoIVfEoXGKOEpsu0iPGwN
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-07-25_08,2024-07-25_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
+ suspectscore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 phishscore=0 spamscore=0 bulkscore=0
+ mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2407250054
 
-Hello,
+On Thu, Jul 25, 2024 at 01:35:10PM +0800, Baokun Li wrote:
+> On 2024/7/24 14:23, Ojaswin Mujoo wrote:
+> > On Wed, Jul 17, 2024 at 02:11:27PM +0800, Baokun Li wrote:
+> > > On 2024/7/17 13:29, Ojaswin Mujoo wrote:
+> > > > On Tue, Jul 16, 2024 at 07:54:43PM +0800, Baokun Li wrote:
+> > > > > Hi Ojaswin,
+> > > > > 
+> > > > > On 2024/7/16 17:54, Ojaswin Mujoo wrote:
+> > > > > > > > But the journal will ensure the consistency of the extents path after
+> > > > > > > > this patch.
+> > > > > > > > 
+> > > > > > > > When ext4_ext_get_access() or ext4_ext_dirty() returns an error in
+> > > > > > > > ext4_ext_rm_idx() and ext4_ext_correct_indexes(), this may cause
+> > > > > > > > the extents tree to be inconsistent. But the inconsistency just
+> > > > > > > > exists in memory and doesn't land on disk.
+> > > > > > > > 
+> > > > > > > > For ext4_ext_get_access(), the handle must have been aborted
+> > > > > > > > when it returned an error, as follows:
+> > > > > > > ext4_ext_get_access
+> > > > > > >     ext4_journal_get_write_access
+> > > > > > >      __ext4_journal_get_write_access
+> > > > > > >       err = jbd2_journal_get_write_access
+> > > > > > >       if (err)
+> > > > > > >         ext4_journal_abort_handle
+> > > > > > > > For ext4_ext_dirty(), since path->p_bh must not be null and handle
+> > > > > > > > must be valid, handle is aborted anyway when an error is returned:
+> > > > > > > ext4_ext_dirty
+> > > > > > >     __ext4_ext_dirty
+> > > > > > >      if (path->p_bh)
+> > > > > > >        __ext4_handle_dirty_metadata
+> > > > > > >         if (ext4_handle_valid(handle))
+> > > > > > >           err = jbd2_journal_dirty_metadata
+> > > > > > >            if (!is_handle_aborted(handle) && WARN_ON_ONCE(err))
+> > > > > > >              ext4_journal_abort_handle
+> > > > > > > > Thus the extents tree will only be inconsistent in memory, so only
+> > > > > > > > the verified bit of the modified buffer needs to be cleared to avoid
+> > > > > > > > these inconsistent data being used in memory.
+> > > > > > > > 
+> > > > > > > Regards,
+> > > > > > > Baokun
+> > > > > > Thanks for the explanation Baokun, so basically we only have the
+> > > > > > inconsitency in the memory.
+> > > > > > 
+> > > > > > I do have a followup questions:
+> > > > > > 
+> > > > > > So in the above example, after we have the error, we'll have the buffer
+> > > > > > for depth=0 marked as valid but pointing to the wrong ei_block.
+> > > > > It looks wrong here. When there is an error, the ei_block of the
+> > > > > unmodified buffer with depth=0 is the correct one, it is indeed
+> > > > > 'valid' and it is consistent with the disk. Only buffers that were
+> > > > Hey Baokun,
+> > > > 
+> > > > Ahh I see now, I was looking at it the wrong way. So basically since
+> > > > depth 1 to 4 is inconsistent to the disk we mark then non verified so
+> > > > then subsequent lookups can act accordingly.
+> > > > 
+> > > > Thanks for the explanation! I am in the middle of testing this patchset
+> > > > with xfstests on a POWERPC system with 64k page size. I'll let you know
+> > > > how that goes!
+> > > > 
+> > > > Regards,
+> > > > Ojaswin
+> > > Hi Ojaswin,
+> > > 
+> > > Thank you for the test and feedback!
+> > > 
+> > > Cheers,
+> > > Baokun
+> > Hey Baokun,
+> 
+> Hi Ojaswin,
+> 
+> Sorry for the slow reply, I'm currently on a business trip.
+> 
+> > The xfstests pass for sub page size as well as bs = page size for
+> > POWERPC with no new regressions.
+> Thank you very much for your test!
+> > 
+> > Although for this particular patch I doubt if we would be able to
+> > exersice the error path using xfstests. We might need to artifically
+> > inject error in ext4_ext_get_access or ext4_ext_dirty.  Do you have any
+> > other way of testing this?
+> The issues in this patch set can all be triggered by injecting EIO or
+> ENOMEM into ext4_find_extent(). So not only did I test kvm-xftests
+> several times on x86 to make sure there weren't any regressions,
+> but I also tested that running kvm-xfstests while randomly injecting
+> faults into ext4_find_extent() didn't crash the system.
 
-syzbot found the following issue on:
+Ahh got it, thanks. I think I understand the changes well enough now and 
+it makes sense to me to mark them non verified in case of errors.
+Furthermore, the tests also look fine. Feel free to add:
 
-HEAD commit:    786c8248dbd3 Merge tag 'perf-tools-fixes-for-v6.11-2024-07..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1615aead980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=fd768013789223fa
-dashboard link: https://syzkaller.appspot.com/bug?extid=fb3ada58a6c0a3208821
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/d1499b23d099/disk-786c8248.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a2ccae57b0f3/vmlinux-786c8248.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/501a769c268d/bzImage-786c8248.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fb3ada58a6c0a3208821@syzkaller.appspotmail.com
-
-INFO: task syz.2.2299:13275 blocked for more than 143 seconds.
-      Not tainted 6.10.0-syzkaller-12246-g786c8248dbd3 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz.2.2299      state:D stack:27424 pid:13275 tgid:13255 ppid:12630  flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5188 [inline]
- __schedule+0x1800/0x4a60 kernel/sched/core.c:6529
- __schedule_loop kernel/sched/core.c:6606 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6621
- percpu_rwsem_wait+0x3c2/0x450 kernel/locking/percpu-rwsem.c:162
- __percpu_down_read+0xee/0x130 kernel/locking/percpu-rwsem.c:177
- percpu_down_read include/linux/percpu-rwsem.h:65 [inline]
- __sb_start_write include/linux/fs.h:1675 [inline]
- sb_start_write+0x184/0x1c0 include/linux/fs.h:1811
- file_start_write include/linux/fs.h:2876 [inline]
- vfs_write+0x227/0xc90 fs/read_write.c:586
- ksys_write+0x1a0/0x2c0 fs/read_write.c:643
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f77fd175f19
-RSP: 002b:00007f77fde67048 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f77fd306110 RCX: 00007f77fd175f19
-RDX: 0000000000000016 RSI: 00000000200001c0 RDI: 0000000000000006
-RBP: 00007f77fd1e4e68 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000006e R14: 00007f77fd306110 R15: 00007fff7a49ea38
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffffffff8e337660 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:326 [inline]
- #0: ffffffff8e337660 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:838 [inline]
- #0: ffffffff8e337660 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6620
-3 locks held by kworker/u8:7/962:
- #0: ffff88802a1a0148 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3206 [inline]
- #0: ffff88802a1a0148 ((wq_completion)ipv6_addrconf){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3312
- #1: ffffc90003e87d00 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3207 [inline]
- #1: ffffc90003e87d00 ((work_completion)(&(&ifa->dad_work)->work)){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3312
- #2: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: addrconf_dad_work+0xd0/0x16f0 net/ipv6/addrconf.c:4194
-2 locks held by getty/4856:
- #0: ffff88802ab2b0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900031232f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6b5/0x1e10 drivers/tty/n_tty.c:2211
-5 locks held by kworker/u8:12/5462:
- #0: ffff888015ed5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3206 [inline]
- #0: ffff888015ed5948 ((wq_completion)netns){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3312
- #1: ffffc90004357d00 (net_cleanup_work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3207 [inline]
- #1: ffffc90004357d00 (net_cleanup_work){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3312
- #2: ffffffff8f5fbbd0 (pernet_ops_rwsem){++++}-{3:3}, at: cleanup_net+0x16a/0xcc0 net/core/net_namespace.c:594
- #3: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: default_device_exit_batch+0xe9/0xa90 net/core/dev.c:11874
- #4: ffffffff8e33ca38 (rcu_state.exp_mutex){+.+.}-{3:3}, at: exp_funnel_lock kernel/rcu/tree_exp.h:296 [inline]
- #4: ffffffff8e33ca38 (rcu_state.exp_mutex){+.+.}-{3:3}, at: synchronize_rcu_expedited+0x381/0x830 kernel/rcu/tree_exp.h:958
-5 locks held by kworker/u8:13/8517:
-3 locks held by syz.0.1908/11783:
-3 locks held by syz.5.1943/11906:
-3 locks held by kworker/0:8/12439:
- #0: ffff888015078948 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3206 [inline]
- #0: ffff888015078948 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x90a/0x1830 kernel/workqueue.c:3312
- #1: ffffc900045c7d00 ((linkwatch_work).work){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3207 [inline]
- #1: ffffc900045c7d00 ((linkwatch_work).work){+.+.}-{0:0}, at: process_scheduled_works+0x945/0x1830 kernel/workqueue.c:3312
- #2: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: linkwatch_event+0xe/0x60 net/core/link_watch.c:276
-3 locks held by kworker/u8:0/12788:
-2 locks held by syz.2.2299/13275:
- #0: ffff88802ba69c48 (&f->f_pos_lock){+.+.}-{3:3}, at: __fdget_pos+0x24e/0x310 fs/file.c:1191
- #1: ffff888051c36420 (sb_writers#4){++++}-{0:0}, at: file_start_write include/linux/fs.h:2876 [inline]
- #1: ffff888051c36420 (sb_writers#4){++++}-{0:0}, at: vfs_write+0x227/0xc90 fs/read_write.c:586
-1 lock held by kmmpd-loop2/13260:
- #0: ffff888051c36420 (sb_writers#4){++++}-{0:0}, at: kmmpd+0x26d/0xaa0 fs/ext4/mmp.c:246
-1 lock held by syz-executor/13644:
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6644
-1 lock held by syz-executor/13647:
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6644
-1 lock held by syz-executor/13654:
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6644
-1 lock held by syz-executor/13657:
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6644
-7 locks held by syz-executor/13695:
- #0: ffff888029706420 (sb_writers#8){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2876 [inline]
- #0: ffff888029706420 (sb_writers#8){.+.+}-{0:0}, at: vfs_write+0x227/0xc90 fs/read_write.c:586
- #1: ffff88805ecb5088 (&of->mutex){+.+.}-{3:3}, at: kernfs_fop_write_iter+0x1eb/0x500 fs/kernfs/file.c:325
- #2: ffff8880223ddb48 (kn->active#50){.+.+}-{0:0}, at: kernfs_fop_write_iter+0x20f/0x500 fs/kernfs/file.c:326
- #3: ffffffff8ef0a8a8 (nsim_bus_dev_list_lock){+.+.}-{3:3}, at: new_device_store+0x1b4/0x890 drivers/net/netdevsim/bus.c:166
- #4: ffff88801ba860e8 (&dev->mutex){....}-{3:3}, at: device_lock include/linux/device.h:1009 [inline]
- #4: ffff88801ba860e8 (&dev->mutex){....}-{3:3}, at: __device_attach+0x8e/0x520 drivers/base/dd.c:1003
- #5: ffff88802199d250 (&devlink->lock_key#67){+.+.}-{3:3}, at: nsim_drv_probe+0xcb/0xb80 drivers/net/netdevsim/dev.c:1534
- #6: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: fib_seq_sum+0x31/0x290 net/core/fib_notifier.c:46
-1 lock held by syz-executor/13712:
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6644
-1 lock held by syz-executor/13722:
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6644
-1 lock held by syz-executor/13725:
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnl_lock net/core/rtnetlink.c:79 [inline]
- #0: ffffffff8f608748 (rtnl_mutex){+.+.}-{3:3}, at: rtnetlink_rcv_msg+0x6e6/0xcf0 net/core/rtnetlink.c:6644
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.10.0-syzkaller-12246-g786c8248dbd3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
- watchdog+0xfee/0x1030 kernel/hung_task.c:379
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 61 Comm: kworker/u8:4 Not tainted 6.10.0-syzkaller-12246-g786c8248dbd3 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
-Workqueue: bat_events batadv_nc_worker
-RIP: 0010:separate_irq_context kernel/locking/lockdep.c:4613 [inline]
-RIP: 0010:__lock_acquire+0xd3e/0x2040 kernel/locking/lockdep.c:5126
-Code: e8 48 c1 e8 03 80 3c 38 00 74 12 48 89 ef e8 79 10 8b 00 48 bf 00 00 00 00 00 fc ff df 4c 89 75 00 48 8b 44 24 38 0f b6 04 38 <84> c0 0f 85 2a 0c 00 00 41 8b 5d 00 48 85 db 74 58 83 fb 31 0f 83
-RSP: 0018:ffffc900015cf850 EFLAGS: 00000046
-RAX: 0000000000000000 RBX: ffff888017f0c6d0 RCX: ffffffff816fbebb
-RDX: 0000000000000000 RSI: 0000000000000008 RDI: dffffc0000000000
-RBP: ffff888017f0c730 R08: ffffffff930028df R09: 1ffffffff260051b
-R10: dffffc0000000000 R11: fffffbfff260051c R12: 0000000000000000
-R13: ffff888017f0c6d8 R14: 5fc32a07651d3de9 R15: ffff888017f0c750
-FS:  0000000000000000(0000) GS:ffff8880b9500000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f0954dc0ef0 CR3: 000000000e134000 CR4: 0000000000350ef0
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5759
- __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
- _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
- spin_lock_bh include/linux/spinlock.h:356 [inline]
- batadv_nc_purge_paths+0xe8/0x3b0 net/batman-adv/network-coding.c:442
- batadv_nc_worker+0x328/0x610 net/batman-adv/network-coding.c:720
- process_one_work kernel/workqueue.c:3231 [inline]
- process_scheduled_works+0xa2e/0x1830 kernel/workqueue.c:3312
- worker_thread+0x86d/0xd40 kernel/workqueue.c:3390
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+> > 
+> > Also, just curious whether you came across this bug during code reading
+> > or were you actually hitting it?
+> The initial issue was that e2fsck was always reporting some sort of
+> extents tree exception after testing, so the processes in question
+> were troubleshooting and hardening, i.e. the first two patches.
+> The other issues were discovered during fault injection testing of
+> the processes in question.
+> 
+> 
+> Regards,
+> Baokun
+> 
 
