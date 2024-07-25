@@ -1,143 +1,189 @@
-Return-Path: <linux-ext4+bounces-3440-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3441-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6DE9293BB0B
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 05:02:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 775D593BC10
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 07:35:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A0A3A1C236AC
-	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 03:02:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F2CE61F22222
+	for <lists+linux-ext4@lfdr.de>; Thu, 25 Jul 2024 05:35:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9054217999;
-	Thu, 25 Jul 2024 03:01:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t0bnRmik"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5D5D1CD11;
+	Thu, 25 Jul 2024 05:35:25 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3297B12B7F
-	for <linux-ext4@vger.kernel.org>; Thu, 25 Jul 2024 03:01:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D073420DC4;
+	Thu, 25 Jul 2024 05:35:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1721876514; cv=none; b=clgjwRgHg3PLah1ceO0+0PyzuOnMKiZtfvGSAwke/C0Y6bxMmWhbH0l0FJJIi5G16xKmEQ8BaCWsb/0EVETli0Bh3Yg+FPUgjFqeGdmggcUYTXp5kuEDMYqNuWGsYwe1tFzcvz82OJ5ZJejP570x4wkUjLVmwKasYOXvQGQRcCE=
+	t=1721885725; cv=none; b=rbLBofaIbivcr8VxBURLiCY78KjCZCm0FvA82YINDY2oGT5SJbgQll1qiyGSru6R+NEAVNYe5D0ATZ1F+RTm1iA4yETVZ8ZLt6YZSxR+Km9XJfvn7vslHN7g44ctrkVqqNoMjThhqo0Gy42sVjmeLrtTRjhNfx7refmOV3vR2+U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1721876514; c=relaxed/simple;
-	bh=49jcBefj5FcT3M9x20xUQPUdsQZFD9U6hguK29l+JiI=;
+	s=arc-20240116; t=1721885725; c=relaxed/simple;
+	bh=574NiufiSGXw1jkMN+aHqO8YHR7vQfMvd32oWN3mdpA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lYvtY33wxtv6EVNOvoBGshF8mujfQQyLr1If5mm9Q79qVczpKmNBVyhqXKBouP5k49JTXDQhsUhmNhtr4r7njv2keb036ZUp5f+mRZ9Lu+rslO3Bsyb/zCBVoVfekD4BLDKElG8JUZ+8m7E8NSN91lxbavWYrulxbOhtQcN2F/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t0bnRmik; arc=none smtp.client-ip=95.215.58.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <895360e3-97bb-4188-a91d-eaca3302bd43@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1721876510;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=dinahWWNWKVgxUr2QQ8r5vtDMN47K5jpbrU4x04fZmQ=;
-	b=t0bnRmiksgMcuV2n4/X74UTpJITvS5MrnJV4M93S6NWIOs2XsMr+6Kz8W7etk9BqNLgiLm
-	WyW+SnXPb9G/KKg4743QNI4cw/8+OwX72AkIF3GAqZwoNi6QNrEMZbnhD9k/VEF+m8nY7q
-	VR/2e2/7phjKq6pM1GTTV0CvBfSEfNI=
-Date: Thu, 25 Jul 2024 11:01:33 +0800
+	 In-Reply-To:Content-Type; b=kdOEpaM+uELrNJyNreFvdVm3pAypyFvuc5nb7j5oXT8LjLjEvKHVt7ttBOQtSCKttz9TPNCanSpH6hys41n/qfhGiSaAZqESaf39rNgkHhIfZ9Hj8ezzxWKV/A5b5PvuM4+CUKZs7k+MvLHOOqBzodbhXZ6CrMr/qrk5Q4JDaH8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WV02X2f3Cz4f3jdb;
+	Thu, 25 Jul 2024 13:35:00 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DBB741A1492;
+	Thu, 25 Jul 2024 13:35:12 +0800 (CST)
+Received: from [10.174.177.174] (unknown [10.174.177.174])
+	by APP4 (Coremail) with SMTP id gCh0CgDXuTcO5KFmOsBqBA--.64208S3;
+	Thu, 25 Jul 2024 13:35:12 +0800 (CST)
+Message-ID: <6df79e24-df1a-43da-8d1d-6bd0f8dd2edf@huaweicloud.com>
+Date: Thu, 25 Jul 2024 13:35:10 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
- module_subeixt helper macros
-To: Christoph Hellwig <hch@infradead.org>
-Cc: Arnd Bergmann <arnd@arndb.de>, Luis Chamberlain <mcgrof@kernel.org>,
- Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, tytso@mit.edu,
- Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <chao@kernel.org>, linux-arch@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, Youling Tang <tangyouling@kylinos.cn>
-References: <20240723083239.41533-1-youling.tang@linux.dev>
- <20240723083239.41533-2-youling.tang@linux.dev>
- <Zp-_RDk5n5431yyh@infradead.org>
- <0a63dfd1-ead3-4db3-a38c-2bc1db65f354@linux.dev>
- <ZqEhMCjdFwC3wF4u@infradead.org>
-Content-Language: en-US, en-AU
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Youling Tang <youling.tang@linux.dev>
-In-Reply-To: <ZqEhMCjdFwC3wF4u@infradead.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 02/20] ext4: prevent partial update of the extents path
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+ yi.zhang@huawei.com, yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>,
+ zhanchengbin <zhanchengbin1@huawei.com>, Baokun Li <libaokun@huaweicloud.com>
+References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
+ <20240710040654.1714672-3-libaokun@huaweicloud.com>
+ <ZpPx3kuO36lp9/Um@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9fd554c7-dc0c-4969-9f2a-1c99356fccce@huaweicloud.com>
+ <d33cfec3-4d72-41dc-b020-f17f726ba719@huaweicloud.com>
+ <ZpZDSMFbziWq5xOK@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9ef38162-2eeb-4cf6-aee4-02d6a5952757@huaweicloud.com>
+ <ZpdR4pN8IJajB9xc@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <9fcb1d52-520f-425f-8b83-debeda423483@huaweicloud.com>
+ <ZqCd0fjFzZt00h6N@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Content-Language: en-US
+From: Baokun Li <libaokun@huaweicloud.com>
+In-Reply-To: <ZqCd0fjFzZt00h6N@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+X-CM-TRANSID:gCh0CgDXuTcO5KFmOsBqBA--.64208S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxZrW3ZrW7XrW7GFWDWF15Arb_yoWrWrWxpF
+	yvy3WDKFWDKF1vkFnrtr4jqa4jvw1fWw4UXryrGr9rJ390vr1Sgryxtr4j9FyDCrWrJ3WY
+	yrW8Xa43ur1qyFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+	VjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAPBWagu5VP4QABsP
 
-On 24/07/2024 23:43, Christoph Hellwig wrote:
-> On Wed, Jul 24, 2024 at 09:57:05AM +0800, Youling Tang wrote:
->> module_init(initfn)/module_exit(exitfn) has two definitions (via MODULE):
->> - buindin: uses do_initcalls() to iterate over the contents of the specified
->>    section and executes all initfn functions in the section in the order in
->>    which they are stored (exitfn is not required).
+On 2024/7/24 14:23, Ojaswin Mujoo wrote:
+> On Wed, Jul 17, 2024 at 02:11:27PM +0800, Baokun Li wrote:
+>> On 2024/7/17 13:29, Ojaswin Mujoo wrote:
+>>> On Tue, Jul 16, 2024 at 07:54:43PM +0800, Baokun Li wrote:
+>>>> Hi Ojaswin,
+>>>>
+>>>> On 2024/7/16 17:54, Ojaswin Mujoo wrote:
+>>>>>>> But the journal will ensure the consistency of the extents path after
+>>>>>>> this patch.
+>>>>>>>
+>>>>>>> When ext4_ext_get_access() or ext4_ext_dirty() returns an error in
+>>>>>>> ext4_ext_rm_idx() and ext4_ext_correct_indexes(), this may cause
+>>>>>>> the extents tree to be inconsistent. But the inconsistency just
+>>>>>>> exists in memory and doesn't land on disk.
+>>>>>>>
+>>>>>>> For ext4_ext_get_access(), the handle must have been aborted
+>>>>>>> when it returned an error, as follows:
+>>>>>> ext4_ext_get_access
+>>>>>>     ext4_journal_get_write_access
+>>>>>>      __ext4_journal_get_write_access
+>>>>>>       err = jbd2_journal_get_write_access
+>>>>>>       if (err)
+>>>>>>         ext4_journal_abort_handle
+>>>>>>> For ext4_ext_dirty(), since path->p_bh must not be null and handle
+>>>>>>> must be valid, handle is aborted anyway when an error is returned:
+>>>>>> ext4_ext_dirty
+>>>>>>     __ext4_ext_dirty
+>>>>>>      if (path->p_bh)
+>>>>>>        __ext4_handle_dirty_metadata
+>>>>>>         if (ext4_handle_valid(handle))
+>>>>>>           err = jbd2_journal_dirty_metadata
+>>>>>>            if (!is_handle_aborted(handle) && WARN_ON_ONCE(err))
+>>>>>>              ext4_journal_abort_handle
+>>>>>>> Thus the extents tree will only be inconsistent in memory, so only
+>>>>>>> the verified bit of the modified buffer needs to be cleared to avoid
+>>>>>>> these inconsistent data being used in memory.
+>>>>>>>
+>>>>>> Regards,
+>>>>>> Baokun
+>>>>> Thanks for the explanation Baokun, so basically we only have the
+>>>>> inconsitency in the memory.
+>>>>>
+>>>>> I do have a followup questions:
+>>>>>
+>>>>> So in the above example, after we have the error, we'll have the buffer
+>>>>> for depth=0 marked as valid but pointing to the wrong ei_block.
+>>>> It looks wrong here. When there is an error, the ei_block of the
+>>>> unmodified buffer with depth=0 is the correct one, it is indeed
+>>>> 'valid' and it is consistent with the disk. Only buffers that were
+>>> Hey Baokun,
+>>>
+>>> Ahh I see now, I was looking at it the wrong way. So basically since
+>>> depth 1 to 4 is inconsistent to the disk we mark then non verified so
+>>> then subsequent lookups can act accordingly.
+>>>
+>>> Thanks for the explanation! I am in the middle of testing this patchset
+>>> with xfstests on a POWERPC system with 64k page size. I'll let you know
+>>> how that goes!
+>>>
+>>> Regards,
+>>> Ojaswin
+>> Hi Ojaswin,
 >>
->> - ko: run do_init_module(mod)->do_one_initcall(mod->init) to execute initfn
->>    of the specified module.
+>> Thank you for the test and feedback!
 >>
->> If we change module_subinit to something like this, not called in
->> module_init,
->> Not only do we want to ensure that exit is executed in reverse order of
->> init, but we also want to ensure the order of init.
-> Yes.
+>> Cheers,
+>> Baokun
+> Hey Baokun,
+
+Hi Ojaswin,
+
+Sorry for the slow reply, I'm currently on a business trip.
+
+> The xfstests pass for sub page size as well as bs = page size for
+> POWERPC with no new regressions.
+Thank you very much for your test!
 >
->> This does not guarantee the order in which init will be executed (although
->> the init/exit order will remain the same)
-> Hmm, so the normal built-in initcalls depend on the link order, but when
-> they are in the same file, the compiler can reorder them before we even
-> get to the linker.
+> Although for this particular patch I doubt if we would be able to
+> exersice the error path using xfstests. We might need to artifically
+> inject error in ext4_ext_get_access or ext4_ext_dirty.  Do you have any
+> other way of testing this?
+The issues in this patch set can all be triggered by injecting EIO or
+ENOMEM into ext4_find_extent(). So not only did I test kvm-xftests
+several times on x86 to make sure there weren't any regressions,
+but I also tested that running kvm-xfstests while randomly injecting
+faults into ext4_find_extent() didn't crash the system.
 >
-> I wonder what a good syntax would be to still avoid the boilerplate
-> code.  We'd probably need one macro to actually define the init/exit
-> table in a single statement so that it can't be reordered, but that
-> would lose the ability to actually declare the module subinit/exit
-> handlers in multiple files, which really is the biggest win of this
-> scheme as it allows to keep the functions static instead of exposing
-> them to other compilation units.
->
-> And in fact even in your three converted file systems, most
-> subinit/exit handler are in separate files, so maybe instead
-> enforcing that there is just one per file and slightly refactoring
-> the code so that this is the case might be the best option?
-- It doesn't feel good to have only one subinit/exit in a file.
-   Assuming that there is only one file in each file, how do we
-   ensure that the files are linked in order?(Is it sorted by *.o
-   in the Makefile?)
-
-- Even if the order of each init is linked correctly, then the
-   runtime will be iterated through the .subinitcall.init section,
-   which executes each initfn in sequence (similar to do_initcalls),
-   which means that no other code can be inserted between each subinit.
+> Also, just curious whether you came across this bug during code reading
+> or were you actually hitting it?
+The initial issue was that e2fsck was always reporting some sort of
+extents tree exception after testing, so the processes in question
+were troubleshooting and hardening, i.e. the first two patches.
+The other issues were discovered during fault injection testing of
+the processes in question.
 
 
-If module_subinit is called in module_init, other code can be inserted
-between subinit, similar to the following:
+Regards,
+Baokun
 
-```
-static int __init init_example(void)
-{
-     module_subinit(inita, exita);
-
-     otherthing...
-
-     module_subinit(initb, exitb);
-
-     return 0;
-}
-
-module_init(init_example);
-```
-
-IMHO, module_subinit() might be better called in module_init().
-
-Thanks,
-Youling.
 
