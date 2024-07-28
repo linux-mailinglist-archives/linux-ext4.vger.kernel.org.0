@@ -1,58 +1,59 @@
-Return-Path: <linux-ext4+bounces-3489-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3490-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2293493E687
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Jul 2024 17:49:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4AB0593E68A
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Jul 2024 17:49:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4AF631C21238
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Jul 2024 15:49:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7B3C11C2125F
+	for <lists+linux-ext4@lfdr.de>; Sun, 28 Jul 2024 15:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094DA79DC5;
-	Sun, 28 Jul 2024 15:44:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A1944132132;
+	Sun, 28 Jul 2024 15:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nVHPEldb"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z6/cUpQx"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FE8412D209;
-	Sun, 28 Jul 2024 15:44:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21C3079B96;
+	Sun, 28 Jul 2024 15:45:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722181498; cv=none; b=cqJriqchOQzt0RRn+LacqQb0CVDmx3aYEKgDPWHLcnSF18hVCTKav8wYYCT95Jgd0VcnQ3UU+lf37DShLBKmWklbFFLqYqadLGvUgQH2mIPoMmfCzCkYYxDXitpv2hpifVbKK7fZox1ZAGgGIhs1maiynP0sMkjDgtfNUJzYy7g=
+	t=1722181500; cv=none; b=c00tz85t/SYw7xpUy2J48COepAnIJPy8tr/9+tnDx3ECvp0/I/L7lFso6UWOyZu31K4/aSpK65PtoIS4vvAHBN59IEnR3NEvRsqONl5pial1d5vxwmTlk4CE2nZ2295Gq5hWdbMu2Rf3zowk/1zFdCnsaL58VC419fz6U0Pc3Dk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722181498; c=relaxed/simple;
-	bh=Kl/zGhmPjgU29qKp0mbfvPZ8RsWisEndDWh/+mGe9Dw=;
+	s=arc-20240116; t=1722181500; c=relaxed/simple;
+	bh=sK186PS30/XxqNdSYLEpgwInVcCUBO/O9BODHrgo5+8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ELAAecCNXXhayYCkJC+aQrvsWiX40csG8Sa3ghcABY901cCAAo4HiE9+9M5G9ICM1BjekIAhgMcRtdDOB0TFeWs1nN1/c1CWimWzrHF1pSiaOBo4YRx7OIxGQ0O1oMFQ4gQ98wk7XDYS8sWi4jQz/951EvFglOLN0PcWni8osaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nVHPEldb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 47852C116B1;
-	Sun, 28 Jul 2024 15:44:57 +0000 (UTC)
+	 MIME-Version; b=qgyCH6oYiHa14zql3XKE4DZ6i+hCc0r4X9o7IYd+pEluC0SAdwuU86GoyHibR+2Jpu0vHdNdSXZqmalUxZ08TGCyiDsHuF94/VO6u2IfhEwbiyIhYBy+HfMnUgq4C2JPXpBe52w7STf1zyEfQDJC0pid8W6zbQGrBjHfoCgwZ4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z6/cUpQx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE725C32782;
+	Sun, 28 Jul 2024 15:44:58 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1722181498;
-	bh=Kl/zGhmPjgU29qKp0mbfvPZ8RsWisEndDWh/+mGe9Dw=;
+	s=k20201202; t=1722181500;
+	bh=sK186PS30/XxqNdSYLEpgwInVcCUBO/O9BODHrgo5+8=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=nVHPEldbIjzbBUuXrFQUy9eSTy01uX+uJ1+NGAbxi6z5ihU2eZmpNaxWDyA5KOXfA
-	 RuOc3OEOR3g3Cw+HDti2qBNwIH9FoKXdxi0vbmj1AX2ptCIAwA6zkpEgmuNZnbJwPj
-	 017p5BpJT5Ajhbh2wnagkk+YakKFv4s1PZibXNvb4ZUxmotIabWzVEhb+XI6RpBp9v
-	 jBVPVeKtVPWCKNFZsndgJH/yhG6lX85b6elcZGx+WnCdCOqsPRcl1k2hrK+BP5XXOW
-	 AdxHRZPZpPFOQ2y1YdtdOoWtpGdGehBPR8o2G8rqil6gu51OE1lkPNfBlcI7R6Nt7E
-	 dIOElENqP04hg==
+	b=Z6/cUpQx1DODMHxpQcR0Wf9AVLW6fUYmXzBF/dCPh/8OeSef5u9FuVBOg9AS9nk+6
+	 FjePWcpXDJdEqJV0VDKM0eCQj+iokJS3nqZgr8afyuYpgFPu2ZDbhAwouS1sBF5tQS
+	 yHL85Z5UASJrCBfyLACsCxgGVywm4K0tnVE9V8erw/7LBN2DrCp8dlngmOf74qpcYX
+	 pwUhacJoYO6oo6DQt/VDdEVeUo3cioQOvswkc0Xx9JgJBoEQEkXPkBtHg5wOoCFfF9
+	 tOKOymknaB508oM7j4WUaExSuiUAjtQhEDB9Ymt0lCMgMTuA5xj9uKBf3giYZtjKS7
+	 oqVXOtMLlS3xQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Xiaxi Shen <shenxiaxi26@gmail.com>,
-	syzbot+eaba5abe296837a640c0@syzkaller.appspotmail.com,
+Cc: Kemeng Shi <shikemeng@huaweicloud.com>,
+	Zhang Yi <yi.zhang@huawei.com>,
+	Jan Kara <jack@suse.cz>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
+	jack@suse.com,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.10 29/34] ext4: fix uninitialized variable in ext4_inlinedir_to_tree
-Date: Sun, 28 Jul 2024 11:40:53 -0400
-Message-ID: <20240728154230.2046786-29-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.10 30/34] jbd2: avoid memleak in jbd2_journal_write_metadata_buffer
+Date: Sun, 28 Jul 2024 11:40:54 -0400
+Message-ID: <20240728154230.2046786-30-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240728154230.2046786-1-sashal@kernel.org>
 References: <20240728154230.2046786-1-sashal@kernel.org>
@@ -67,46 +68,35 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.10.2
 Content-Transfer-Encoding: 8bit
 
-From: Xiaxi Shen <shenxiaxi26@gmail.com>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
 
-[ Upstream commit 8dc9c3da79c84b13fdb135e2fb0a149a8175bffe ]
+[ Upstream commit cc102aa24638b90e04364d64e4f58a1fa91a1976 ]
 
-Syzbot has found an uninit-value bug in ext4_inlinedir_to_tree
+The new_bh is from alloc_buffer_head, we should call free_buffer_head to
+free it in error case.
 
-This error happens because ext4_inlinedir_to_tree does not
-handle the case when ext4fs_dirhash returns an error
-
-This can be avoided by checking the return value of ext4fs_dirhash
-and propagating the error,
-similar to how it's done with ext4_htree_store_dirent
-
-Signed-off-by: Xiaxi Shen <shenxiaxi26@gmail.com>
-Reported-and-tested-by: syzbot+eaba5abe296837a640c0@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=eaba5abe296837a640c0
-Link: https://patch.msgid.link/20240501033017.220000-1-shenxiaxi26@gmail.com
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Link: https://patch.msgid.link/20240514112438.1269037-2-shikemeng@huaweicloud.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/inline.c | 6 +++++-
- 1 file changed, 5 insertions(+), 1 deletion(-)
+ fs/jbd2/journal.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index d5bd1e3a5d36c..e7a09a99837b9 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1410,7 +1410,11 @@ int ext4_inlinedir_to_tree(struct file *dir_file,
- 			hinfo->hash = EXT4_DIRENT_HASH(de);
- 			hinfo->minor_hash = EXT4_DIRENT_MINOR_HASH(de);
- 		} else {
--			ext4fs_dirhash(dir, de->name, de->name_len, hinfo);
-+			err = ext4fs_dirhash(dir, de->name, de->name_len, hinfo);
-+			if (err) {
-+				ret = err;
-+				goto out;
-+			}
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 03c4b9214f564..5ad255ffb289c 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -399,6 +399,7 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+ 		tmp = jbd2_alloc(bh_in->b_size, GFP_NOFS);
+ 		if (!tmp) {
+ 			brelse(new_bh);
++			free_buffer_head(new_bh);
+ 			return -ENOMEM;
  		}
- 		if ((hinfo->hash < start_hash) ||
- 		    ((hinfo->hash == start_hash) &&
+ 		spin_lock(&jh_in->b_state_lock);
 -- 
 2.43.0
 
