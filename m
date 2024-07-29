@@ -1,117 +1,207 @@
-Return-Path: <linux-ext4+bounces-3507-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3506-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7ADA493F40F
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 13:30:49 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8480693F401
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 13:28:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDF04B20A27
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 11:30:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D4DA2814C3
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 11:28:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92966145B21;
-	Mon, 29 Jul 2024 11:30:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19E51145B12;
+	Mon, 29 Jul 2024 11:28:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="Xh1I36du"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="w3fPnfNX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k9E/dqw2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="w3fPnfNX";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k9E/dqw2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5DD79B8E
-	for <linux-ext4@vger.kernel.org>; Mon, 29 Jul 2024 11:30:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B82BE1DA24;
+	Mon, 29 Jul 2024 11:28:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722252640; cv=none; b=EJLgm69Eqr/igauU7b3T4XSPksEH0qs14OkGMJCMI240H/tbX5CLoNNtxkwb9JwA/3qFA+uNfdmCAGI5q7HLS+UYqgMntuN4dMbIVjCn1oIutKtiYMksRXYLDR2N+AySt0ur0ovhMUGopmgTn90t0AIRbDvqSF2zyFdGlAcTIYo=
+	t=1722252486; cv=none; b=n3QVSF9bUq9ysI8weWdyH/FIXMSY8qhnT/IgEs1RW0ebeHeEYJOQkxm9hozVCV5/rXwNHhFfEnsSTi6r9FD6nwuqPQgfAU5TKQFSwcPIQR5sjiYtyrv3fdKzm782GiDmJ7sVQtioVXeoY0CCneQ4+v5S42b8qazSI2nqIEO11ho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722252640; c=relaxed/simple;
-	bh=pjObBwxxiFHux+NXjbaAhUXpRgJOrYS8GRm5NvagPLM=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jmzmg+O1Gj/k+l7xBnjmii7UW++d4t4baHaxo3GljnXTjsGhKZstaJU8kFP0VA+nL0VX9ncDgJhzILX5daPjyMzbKkFq3nAINn2uhRJocGw6FnmaC2V4xZXvCJDxRkH4gP1aO6hQmtEm1GQluWUNMFfdWiD5zhTMBOCua9CMSjI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=Xh1I36du; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-428178fc07eso12961875e9.3
-        for <linux-ext4@vger.kernel.org>; Mon, 29 Jul 2024 04:30:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1722252636; x=1722857436; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=XwXA3dD7SAZsbhApPfN7AfejG+oDqK2DgA1HjnsQ1MY=;
-        b=Xh1I36du0EI1G22t6ZhEKZUd0vk+nFhyBiRlAVKtmPdcl6lQiI6ozLicL62xWu7qxw
-         dVnggqWJUa59TNIQj3JjI/+phmK3mABLsUhwfFHPg2TeVa3foAeimVnDpKGC1hgWzLLo
-         RbFdHSNI/zXPsJGRXe7RXbgnVC3NxRfTi+2oCrcPTs2YVUjWfPfBLJJMxjM3G422E82g
-         zayELY4PZCpWCndFxiKiqPmAXs9Y25YqV2X+kq6+hCiRqv8k6ujesd+q5cZASovFtJjA
-         NbretkzflV0+mg8+HzFXMLcuYFZodOwsU2RkCAiJF1w7n88jZaEhJ/6ROE9yiYoSNUOR
-         rOzQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722252636; x=1722857436;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XwXA3dD7SAZsbhApPfN7AfejG+oDqK2DgA1HjnsQ1MY=;
-        b=uy2K07II127IW69i2KNsMG61LRd/KS9mC1S2HQ32JGdlyTxuieKrl6JnenkNXUpMhQ
-         8meQK+loXNsBJgC+im9M68xpp9GNB6x3VdW384xbWx8lkGj2j79xIflvChExLeyrkF8B
-         1ZQYFTTwRHUwjIKvW7M6zHTD2l8QqHIVZljkVPpB/MVMHyupbYekpo2Mxs6NHQErcQQE
-         KDVfRLMoEoogFScVQxtflm/1aSZDyVEMmBPKiUhFOz0v0r1liYnyz76zbwZUtB2nLCwx
-         gP0pOJIIULQmfuw8QA9K7b+qes7tXvVRdTruV6dD50xjyVRCa331XEwun04JxYBtLL5O
-         OnTA==
-X-Gm-Message-State: AOJu0YwZc4dgKlzxbeeufKno4tYTNp1yzbMMCQAsWCaV4dZf2UiJVgYs
-	ZM5V0AMZpH+iBvy1PE2q/WnUQN26c7iAaPxh4CCao6AgCN80YlnU1/gQ7GPusiI=
-X-Google-Smtp-Source: AGHT+IGjHB30wevbTXYBKu03d2S8jAWUf0rPrsqnjpTSyTPyWNnUBy5LQUpZyVzyw3MY9OFVpUWL2Q==
-X-Received: by 2002:a05:600c:4f50:b0:426:51ce:bb14 with SMTP id 5b1f17b1804b1-42811dd19d8mr41565735e9.30.1722252636324;
-        Mon, 29 Jul 2024 04:30:36 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-26.dynamic.mnet-online.de. [82.135.80.26])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-428054b9196sm174041615e9.0.2024.07.29.04.30.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 29 Jul 2024 04:30:35 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	kees@kernel.org,
-	gustavoars@kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] ext4: Annotate struct ext4_xattr_inode_array with __counted_by()
-Date: Mon, 29 Jul 2024 13:04:56 +0200
-Message-ID: <20240729110454.346918-3-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1722252486; c=relaxed/simple;
+	bh=64wCMHSRx+3w86acTbFol7vjqbpkywyn79By4+qP8vI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gchDuK7ZoSjc4gDVgnrUtBGted3g46+bcrrEoeGCoqRt/x0pto78ElNeBC5fph4MQmylJb+2lSJRUYQ0yihvo50XhJDOm8V/a1ONGR0oTLBsnhNAW8lDADIhZnZg3beH8Z1s20xl6qnsTR1wHbh8dkli/smT2Fr2iDdPsZr+aHY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=w3fPnfNX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k9E/dqw2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=w3fPnfNX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k9E/dqw2; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C9C3C1F78D;
+	Mon, 29 Jul 2024 11:28:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1722252482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zHUy40S81Hi4I9W9Ak/AUgKQ+mpmORJOALnG2nRnuZM=;
+	b=w3fPnfNXR7uSSln120H+4F0BucM5UqvqvxvUAQ4OQduS4RA5+TwUjEHWI5i6oCBJEH9FtN
+	LesNzcVoghICMVYj0tqTu2X9hzFlGlRU1W50Ws092evHeJU5nA32m5y8AQQn9JXJcm8C7q
+	hmXV6o2fBXjIl4iIiHiAmO6RLBtpRFg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1722252482;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zHUy40S81Hi4I9W9Ak/AUgKQ+mpmORJOALnG2nRnuZM=;
+	b=k9E/dqw2MvhFlDgqEBRwJ38Ig/L5V33Nz87eZTwStImN3ZRmR+Vv+po62CMaLMCUbLMtVx
+	OAodIzr8smLBsLAw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1722252482; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zHUy40S81Hi4I9W9Ak/AUgKQ+mpmORJOALnG2nRnuZM=;
+	b=w3fPnfNXR7uSSln120H+4F0BucM5UqvqvxvUAQ4OQduS4RA5+TwUjEHWI5i6oCBJEH9FtN
+	LesNzcVoghICMVYj0tqTu2X9hzFlGlRU1W50Ws092evHeJU5nA32m5y8AQQn9JXJcm8C7q
+	hmXV6o2fBXjIl4iIiHiAmO6RLBtpRFg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1722252482;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zHUy40S81Hi4I9W9Ak/AUgKQ+mpmORJOALnG2nRnuZM=;
+	b=k9E/dqw2MvhFlDgqEBRwJ38Ig/L5V33Nz87eZTwStImN3ZRmR+Vv+po62CMaLMCUbLMtVx
+	OAodIzr8smLBsLAw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BD3FF1368A;
+	Mon, 29 Jul 2024 11:28:02 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id DsgtLsJ8p2YjMQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 29 Jul 2024 11:28:02 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6F770A099C; Mon, 29 Jul 2024 13:28:02 +0200 (CEST)
+Date: Mon, 29 Jul 2024 13:28:02 +0200
+From: Jan Kara <jack@suse.cz>
+To: Baokun Li <libaokun@huaweicloud.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>
+Subject: Re: [PATCH 08/20] ext4: get rid of ppath in ext4_find_extent()
+Message-ID: <20240729112802.eqkmgf66ebnc22u5@quack3>
+References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
+ <20240710040654.1714672-9-libaokun@huaweicloud.com>
+ <20240725103823.fvvinixcctacf4fx@quack3>
+ <0046d3b3-24ce-4cdb-a40a-4022b79a5a7b@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <0046d3b3-24ce-4cdb-a40a-4022b79a5a7b@huaweicloud.com>
+X-Spamd-Result: default: False [-2.10 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_TLS_LAST(0.00)[];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,huawei.com];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,huawei.com:email,suse.cz:email,suse.com:email]
+X-Spam-Level: 
+X-Spam-Flag: NO
+X-Spam-Score: -2.10
 
-Add the __counted_by compiler attribute to the flexible array member
-inodes to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-CONFIG_FORTIFY_SOURCE.
+On Sat 27-07-24 14:18:33, Baokun Li wrote:
+> On 2024/7/25 18:38, Jan Kara wrote:
+> > On Wed 10-07-24 12:06:42, libaokun@huaweicloud.com wrote:
+> > > From: Baokun Li <libaokun1@huawei.com>
+> > > 
+> > > The use of path and ppath is now very confusing, so to make the code more
+> > > readable, pass path between functions uniformly, and get rid of ppath.
+> > > 
+> > > Getting rid of ppath in ext4_find_extent() requires its caller to update
+> > > ppath. These ppaths will also be dropped later. No functional changes.
+> > > 
+> > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > One nit below, otherwise feel free to add:
+> > 
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > 
+> > > @@ -3260,11 +3257,12 @@ static int ext4_split_extent_at(handle_t *handle,
+> > >   	 * WARN_ON may be triggered in ext4_da_update_reserve_space() due to
+> > >   	 * an incorrect ee_len causing the i_reserved_data_blocks exception.
+> > >   	 */
+> > > -	path = ext4_find_extent(inode, ee_block, ppath,
+> > > +	path = ext4_find_extent(inode, ee_block, *ppath,
+> > >   				flags | EXT4_EX_NOFAIL);
+> > >   	if (IS_ERR(path)) {
+> > >   		EXT4_ERROR_INODE(inode, "Failed split extent on %u, err %ld",
+> > >   				 split, PTR_ERR(path));
+> > > +		*ppath = NULL;
+> > >   		return PTR_ERR(path);
+> > >   	}
+> > I think here you forgot to update ppath on success case. It will go away by
+> > the end of the series but still it's good to keep thing consistent...
+> > 
+> > 								Honza
+> 
+> Hi Honza,
+> 
+> Thank you for your review！
+> 
+> In patch 5, the ppath is already updated in case of success, so there
+> is no need to add it here. This update was not shown when the patch
+> was made and it looks like this：
+> 
+> -       path = ext4_find_extent(inode, ee_block, ppath,
+> +       path = ext4_find_extent(inode, ee_block, *ppath,
+>                                 flags | EXT4_EX_NOFAIL);
+>         if (IS_ERR(path)) {
+>                 EXT4_ERROR_INODE(inode, "Failed split extent on %u, err
+> %ld",
+>                                  split, PTR_ERR(path));
+> +               *ppath = NULL;
+>                 return PTR_ERR(path);
+>         }
+>         depth = ext_depth(inode);
+>         ex = path[depth].p_ext;
+>         *ppath = path;
 
-Remove the now obsolete comment on the count field.
+Yes, you are right. I didn't realize the update was already there. So I
+withdraw my comment :)
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/ext4/xattr.h | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
+								Honza
 
-diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
-index bd97c4aa8177..e14fb19dc912 100644
---- a/fs/ext4/xattr.h
-+++ b/fs/ext4/xattr.h
-@@ -130,8 +130,8 @@ struct ext4_xattr_ibody_find {
- };
- 
- struct ext4_xattr_inode_array {
--	unsigned int count;		/* # of used items in the array */
--	struct inode *inodes[];
-+	unsigned int count;
-+	struct inode *inodes[] __counted_by(count);
- };
- 
- extern const struct xattr_handler ext4_xattr_user_handler;
 -- 
-2.45.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
