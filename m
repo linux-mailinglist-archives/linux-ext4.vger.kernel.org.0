@@ -1,107 +1,134 @@
-Return-Path: <linux-ext4+bounces-3502-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3503-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4111293EA14
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 00:47:45 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF36893EAB5
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 03:47:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB11A2817C3
-	for <lists+linux-ext4@lfdr.de>; Sun, 28 Jul 2024 22:47:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C2781F21D46
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 01:47:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D45367C6EB;
-	Sun, 28 Jul 2024 22:46:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEDF918C36;
+	Mon, 29 Jul 2024 01:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MXz/agCH"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Y8Up7+78"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5BF178291
-	for <linux-ext4@vger.kernel.org>; Sun, 28 Jul 2024 22:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5130014293;
+	Mon, 29 Jul 2024 01:46:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722206808; cv=none; b=KlQ/uz4fuDkGiBi8Znk3zJPe6DmGxRq/DVAo9c35phcyuhxe5TUhGXAUV34ZdGewFHe7ISgCDlWPKtGh7UOcV8QzmeYOvhanmq7N0cxjA7vvEAxdT+gxoaxfI6VGBDFWIbuVXoPFPK2KBZ6heVuFMtqjgEcUJ4L4bbQHiRsF2V8=
+	t=1722217611; cv=none; b=gO3xLemKTczONTS+FN78sgtyR7Ur83AK3SjykBKrSwCB+KiJP+deRbo9JxZ7ny4OKwiG68DhAkvJAyyWJBb+iIzyVyxXHRwfMTCglvHz6UBeepV+0ynbVjjAgXfnCMA8tIf5YHOQw4w2AsF2I90kZWvKvUnhZ4oR7ehaBJfWQYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722206808; c=relaxed/simple;
-	bh=+37D/4nCO54n90M/u+NZWBYjP0tnb9hWEUzfyevPfCA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=fDigM7BkpTKJmRGMmTupf9x2mu8rKg0bz1UrWtdLRkpHUgvD4ZlC5p4I648v8ImX4Do/Pgo2SYyJ1ua3Uy80AAWr6lm0RJrgumVOFsM50tV1nuGWjpAmRcc2OAlDRc9TvJ9xOttJ1FrK2/5twtS66S4euZtXpg6rKz3KDDkfndY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MXz/agCH; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1fc5a93ce94so1929545ad.1
-        for <linux-ext4@vger.kernel.org>; Sun, 28 Jul 2024 15:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1722206805; x=1722811605; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=1Xqiho1AouRxLOnHmIj3zOU/N65RdIyhSd2t/vYTGc8=;
-        b=MXz/agCHZbwi9DCKAS1c7J9CCTHBpGnNN/Vk8Ny5o44HRv0o9HAFAY0zmqQm39Dm5P
-         Lk1EUgHBJncEWegHMxxDNcwdaUf0lnxBC/QBKt39WSIkg44em0Q0A+zPkmLOcRIeP1KR
-         9TOgMuvVNBkcb3Owus/aHh0fhevA28JNgAg6TrFq6kJA5X2qXmzYUZoBhrt5Cbog8Zzv
-         9DpZG52Mimj2dgyXyeepG8f7GMvaHUls9bHsjklvrFwsq3Wqx6TsygI8eP44EYa0F+OW
-         68nC4r31603r5Q5BCoPoWM8Z27zJEnu/M8vmmWGeiTUCIsuBFA78XuNKJo1CFXol+a9m
-         jOdg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722206805; x=1722811605;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1Xqiho1AouRxLOnHmIj3zOU/N65RdIyhSd2t/vYTGc8=;
-        b=Y3qcqDoGuHL7kkH8npZXwEivXrHOe5w/nAQxpyNf+Yj0wAgKXPpmGagNVAp/5522gR
-         Q+dKgNzl1iJGqXecdKcro/eThkHfvnC7rJ3Ox5dkcJinc3HTKOf4jm1GFK9OJ0pX6AB9
-         Ao6xXV3nTaIuSh0x91kKvhuMBj8NcnG0NxBsRaxnOYmH/diCnJMHt7dSvvgq9wZZj4MW
-         DZ4O+vxilTHrJw2zYWxWB4882Y21+WJW3a6OmrFZp8GPnAJ9My7R95e0DHfrig+dHwVu
-         7/b2PAkLFaiMpN2+DioK17UiNvMCsuN587d4MZYA/yje1H9FVl3ewUJfhcS0zkOd+rGg
-         U4KQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW/Xn6RhuVzKgz+X4Z60n5DrVJPJnSWA5/3jlJ3/5tNG87VPtDQPlSLHBBMWjpOwu5RNag52i83BO0V@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9W+rxIqQ6ZgevgE5wgZgNp7JMtPElv6St5Ipidl4Km0h+6bxw
-	Mou2LhxY1DprFgijU/LfXQy9EG1zBNhjkBcUnRVh5vSlbJ48p71b8LQQSevFMnQ=
-X-Google-Smtp-Source: AGHT+IHKg+a0YE3GUIxnhPOnInI/3RKPsutZEg5X+UAgetWdzYR/LDdMjPmdpFW1kUTtooMwSokq1w==
-X-Received: by 2002:a17:903:234d:b0:1fc:4377:e6ea with SMTP id d9443c01a7336-1fed6cc839dmr83385505ad.9.1722206804553;
-        Sun, 28 Jul 2024 15:46:44 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7f1aa0dsm69378485ad.187.2024.07.28.15.46.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 28 Jul 2024 15:46:44 -0700 (PDT)
-Message-ID: <f768298d-c964-466a-b8d6-ff0a8b4ca0e4@kernel.dk>
-Date: Sun, 28 Jul 2024 16:46:42 -0600
+	s=arc-20240116; t=1722217611; c=relaxed/simple;
+	bh=lZuGlOIc3eRYuViK94AAOvBgXPuSdxIjwVbfAN91LpE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=cVo+FlPzMNR3sM/vfTScOkJvRf6/J8h1uZYV59X8c0o+R4lGUCTrqxRcZzdjY5nyjiSf8UmXRkFwzUQ65Z/Pkq3+OLF2VWjrsOIp2SSf9gJ4i5StRAWVYdc7EDkWN5WKfRdW8edfs8V26kechPW0FILAoY2gWzeMTR0/KHIP+Hc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Y8Up7+78; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <23862652-a702-4a5d-b804-db9ee9f6f539@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1722217607;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7iniOVG3gmXmMx4OmearIZzDrv6mcb+oZJZnr0nrBNk=;
+	b=Y8Up7+78RpdUjqbjHPIQbw7hf77OpaqpA9PDUsezW/ro4XhuCufC4VK4aP2RwSJRPwTwsC
+	S/vrbNHe1FA73FXDSpRwZ66++fonyUl1SSO3Qm6B5fDoDpGdfIU66/JbZwbvQch5bcs38D
+	+kQgibNyS71FQyvlL8ltJ5K88WOu72Y=
+Date: Mon, 29 Jul 2024 09:46:17 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [ext4?] KASAN: slab-out-of-bounds Read in
- ext4_read_inline_dir
-To: syzbot <syzbot+ee5f6a9c86b42ed64fec@syzkaller.appspotmail.com>,
- adilger.kernel@dilger.ca, asml.silence@gmail.com,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com, tytso@mit.edu
-References: <000000000000f70500061e55a074@google.com>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <000000000000f70500061e55a074@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
+ module_subeixt helper macros
+To: Christoph Hellwig <hch@infradead.org>, Theodore Ts'o <tytso@mit.edu>,
+ David Sterba <dsterba@suse.cz>, Arnd Bergmann <arnd@arndb.de>
+Cc: kreijack@inwind.it, Luis Chamberlain <mcgrof@kernel.org>,
+ Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Jaegeuk Kim <jaegeuk@kernel.org>, Chao Yu <chao@kernel.org>,
+ Linux-Arch <linux-arch@vger.kernel.org>, linux-kernel@vger.kernel.org,
+ linux-modules@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ Youling Tang <tangyouling@kylinos.cn>
+References: <ZqJjsg3s7H5cTWlT@infradead.org>
+ <61beb54b-399b-442d-bfdb-bad23cefa586@app.fastmail.com>
+ <ZqJwa2-SsIf0aA_l@infradead.org>
+ <68584887-3dec-4ce5-8892-86af50651c41@libero.it>
+ <ZqKreStOD-eRkKZU@infradead.org>
+ <91bfea9b-ad7e-4f35-a2c1-8cd41499b0c0@linux.dev>
+ <ZqOs84hdYkSV_YWd@infradead.org> <20240726152237.GH17473@twin.jikos.cz>
+ <20240726175800.GC131596@mit.edu> <ZqPmPufwqbGOTyGI@infradead.org>
+ <20240727145232.GA377174@mit.edu>
+Content-Language: en-US, en-AU
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Youling Tang <youling.tang@linux.dev>
+In-Reply-To: <20240727145232.GA377174@mit.edu>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On 7/28/24 3:43 PM, syzbot wrote:
-> syzbot has bisected this issue to:
-> 
-> commit e5598d6ae62626d261b046a2f19347c38681ff51
-> Author: Pavel Begunkov <asml.silence@gmail.com>
-> Date:   Thu Aug 24 22:53:31 2023 +0000
-> 
->     io_uring: compact SQ/CQ heads/tails
+On 27/07/2024 22:52, Theodore Ts'o wrote:
+> On Fri, Jul 26, 2024 at 11:09:02AM -0700, Christoph Hellwig wrote:
+>> On Fri, Jul 26, 2024 at 01:58:00PM -0400, Theodore Ts'o wrote:
+>>> Yeah, that's my reaction as well.  This only saves 50 lines of code in
+>>> ext4, and that includes unrelated changes such as getting rid of "int
+>>> i" and putting the declaration into the for loop --- "for (int i =
+>>> ...").  Sure, that saves two lines of code, but yay?
+>>>
+>>> If the ordering how the functions gets called is based on the magic
+>>> ordering in the Makefile, I'm not sure this actually makes the code
+>>> clearer, more robust, and easier to maintain for the long term.
+>> So you two object to kernel initcalls for the same reason and would
+>> rather go back to calling everything explicitly?
+> I don't oject to kernel initcalls which don't have any
+> interdependencies and where ordering doesn't matter.
+1. Previous version implementation: array mode (see link 1) :
+    Advantages:
+    - Few changes, simple principle, easy to understand code.
+    Disadvantages:
+    - Each modified module needs to maintain an array, more code.
 
-That's obviously wrong.
+2. Current implementation: explicit call subinit in initcall (see link 2) :
+    Advantages:
+    - Direct use of helpes macros, the subinit call sequence is
+      intuitive, and the implementation is relatively simple.
+    Disadvantages:
+    - helper macros need to be implemented compared to array mode.
 
--- 
-Jens Axboe
+3. Only one module_subinit per file (not implemented, see link 3) :
+    Advantage:
+    - No need to display to call subinit.
+    Disadvantages:
+    - Magic order based on Makefile makes code more fragile,
+    - Make sure that each file has only one module_subinit,
+    - It is not intuitive to know which subinits the module needs
+      and in what order (grep and Makefile are required),
+    - With multiple subinits per module, it would be difficult to
+      define module_{subinit, subexit} by MODULE, and difficult to
+      rollback when initialization fails (I haven't found a good way
+      to do this yet).
 
 
+Personally, I prefer the implementation of method two.
+
+Links:
+[1]: 
+https://lore.kernel.org/all/20240711074859.366088-4-youling.tang@linux.dev/
+[2]: 
+https://lore.kernel.org/all/20240723083239.41533-2-youling.tang@linux.dev/
+[3]: https://lore.kernel.org/all/ZqKreStOD-eRkKZU@infradead.org/
+
+Thanks,
+Youling.
 
