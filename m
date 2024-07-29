@@ -1,134 +1,117 @@
-Return-Path: <linux-ext4+bounces-3505-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3507-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 858E593EBBA
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 05:02:14 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7ADA493F40F
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 13:30:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 331671F211E7
-	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 03:02:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EDF04B20A27
+	for <lists+linux-ext4@lfdr.de>; Mon, 29 Jul 2024 11:30:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0DE7F7C7;
-	Mon, 29 Jul 2024 03:02:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92966145B21;
+	Mon, 29 Jul 2024 11:30:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xJ/0a1P0"
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="Xh1I36du"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BFCC5FB95
-	for <linux-ext4@vger.kernel.org>; Mon, 29 Jul 2024 03:02:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D5DD79B8E
+	for <linux-ext4@vger.kernel.org>; Mon, 29 Jul 2024 11:30:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722222123; cv=none; b=YrxV5OItaqD89fIq7w6YF+RuGP1KInDXWbyk/LJZHcdA4scZxaHlYnoWWHNAp2ecp1DmIvaUev9mb4H+FwSsYSvOVFxFzHoqKLjRYjKcKjLQqw1kO7HO3B71dhtkAUENRKmfsk+sNGvA0nEYUG8guWFMQ8zYNtgSGkITtYbynT4=
+	t=1722252640; cv=none; b=EJLgm69Eqr/igauU7b3T4XSPksEH0qs14OkGMJCMI240H/tbX5CLoNNtxkwb9JwA/3qFA+uNfdmCAGI5q7HLS+UYqgMntuN4dMbIVjCn1oIutKtiYMksRXYLDR2N+AySt0ur0ovhMUGopmgTn90t0AIRbDvqSF2zyFdGlAcTIYo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722222123; c=relaxed/simple;
-	bh=ejK+JLHw98fyL4yw9lBzd9vdjVs1PyEJPzes0fN3DzE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=InZr2uACIAbIVtrug2Cem0HiTYAcT4LReY98anvns/H/URUvSwQBaLcCVFSoVp8Up9BgZasr4a+NMwHgFFunt97IKlYOLT+MR1SFcD5E7XdiBbxWGurwUJiSasej1bavem88BNq/HpInDcjPMjEWxazgomdp05L65qv/N4bX23M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xJ/0a1P0; arc=none smtp.client-ip=95.215.58.183
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <ca823522-fe78-4eb7-ae1d-b017d16e39fe@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1722222119;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Z9wqau/zSknzCnsohqqshMiTMDATCIJu7G0AysZkCDg=;
-	b=xJ/0a1P0NwUNNMLY6DohbukOFlCjl5lRE89SJL1joXlE8aGAxS5D9t45QWPahYN2fzjZfv
-	p8Q5R/c1tXLpuC7784AJnVdCdqfTi74D920vJy8uLEGQYmqMsB+FwSqUaG9paPfQKJO6Pl
-	aJbeS7+79P91ANxNHHLtZgO+JAF2WtE=
-Date: Mon, 29 Jul 2024 11:01:29 +0800
+	s=arc-20240116; t=1722252640; c=relaxed/simple;
+	bh=pjObBwxxiFHux+NXjbaAhUXpRgJOrYS8GRm5NvagPLM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jmzmg+O1Gj/k+l7xBnjmii7UW++d4t4baHaxo3GljnXTjsGhKZstaJU8kFP0VA+nL0VX9ncDgJhzILX5daPjyMzbKkFq3nAINn2uhRJocGw6FnmaC2V4xZXvCJDxRkH4gP1aO6hQmtEm1GQluWUNMFfdWiD5zhTMBOCua9CMSjI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=Xh1I36du; arc=none smtp.client-ip=209.85.128.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-428178fc07eso12961875e9.3
+        for <linux-ext4@vger.kernel.org>; Mon, 29 Jul 2024 04:30:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1722252636; x=1722857436; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XwXA3dD7SAZsbhApPfN7AfejG+oDqK2DgA1HjnsQ1MY=;
+        b=Xh1I36du0EI1G22t6ZhEKZUd0vk+nFhyBiRlAVKtmPdcl6lQiI6ozLicL62xWu7qxw
+         dVnggqWJUa59TNIQj3JjI/+phmK3mABLsUhwfFHPg2TeVa3foAeimVnDpKGC1hgWzLLo
+         RbFdHSNI/zXPsJGRXe7RXbgnVC3NxRfTi+2oCrcPTs2YVUjWfPfBLJJMxjM3G422E82g
+         zayELY4PZCpWCndFxiKiqPmAXs9Y25YqV2X+kq6+hCiRqv8k6ujesd+q5cZASovFtJjA
+         NbretkzflV0+mg8+HzFXMLcuYFZodOwsU2RkCAiJF1w7n88jZaEhJ/6ROE9yiYoSNUOR
+         rOzQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722252636; x=1722857436;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XwXA3dD7SAZsbhApPfN7AfejG+oDqK2DgA1HjnsQ1MY=;
+        b=uy2K07II127IW69i2KNsMG61LRd/KS9mC1S2HQ32JGdlyTxuieKrl6JnenkNXUpMhQ
+         8meQK+loXNsBJgC+im9M68xpp9GNB6x3VdW384xbWx8lkGj2j79xIflvChExLeyrkF8B
+         1ZQYFTTwRHUwjIKvW7M6zHTD2l8QqHIVZljkVPpB/MVMHyupbYekpo2Mxs6NHQErcQQE
+         KDVfRLMoEoogFScVQxtflm/1aSZDyVEMmBPKiUhFOz0v0r1liYnyz76zbwZUtB2nLCwx
+         gP0pOJIIULQmfuw8QA9K7b+qes7tXvVRdTruV6dD50xjyVRCa331XEwun04JxYBtLL5O
+         OnTA==
+X-Gm-Message-State: AOJu0YwZc4dgKlzxbeeufKno4tYTNp1yzbMMCQAsWCaV4dZf2UiJVgYs
+	ZM5V0AMZpH+iBvy1PE2q/WnUQN26c7iAaPxh4CCao6AgCN80YlnU1/gQ7GPusiI=
+X-Google-Smtp-Source: AGHT+IGjHB30wevbTXYBKu03d2S8jAWUf0rPrsqnjpTSyTPyWNnUBy5LQUpZyVzyw3MY9OFVpUWL2Q==
+X-Received: by 2002:a05:600c:4f50:b0:426:51ce:bb14 with SMTP id 5b1f17b1804b1-42811dd19d8mr41565735e9.30.1722252636324;
+        Mon, 29 Jul 2024 04:30:36 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-26.dynamic.mnet-online.de. [82.135.80.26])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-428054b9196sm174041615e9.0.2024.07.29.04.30.35
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 29 Jul 2024 04:30:35 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	kees@kernel.org,
+	gustavoars@kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] ext4: Annotate struct ext4_xattr_inode_array with __counted_by()
+Date: Mon, 29 Jul 2024 13:04:56 +0200
+Message-ID: <20240729110454.346918-3-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/4] module: Add module_subinit{_noexit} and
- module_subeixt helper macros
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Christoph Hellwig <hch@infradead.org>, David Sterba <dsterba@suse.cz>,
- Arnd Bergmann <arnd@arndb.de>, kreijack@inwind.it,
- Luis Chamberlain <mcgrof@kernel.org>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- Andreas Dilger <adilger.kernel@dilger.ca>, Jaegeuk Kim <jaegeuk@kernel.org>,
- Chao Yu <chao@kernel.org>, Linux-Arch <linux-arch@vger.kernel.org>,
- linux-kernel@vger.kernel.org, linux-modules@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-f2fs-devel@lists.sourceforge.net, Youling Tang <tangyouling@kylinos.cn>
-References: <ZqJwa2-SsIf0aA_l@infradead.org>
- <68584887-3dec-4ce5-8892-86af50651c41@libero.it>
- <ZqKreStOD-eRkKZU@infradead.org>
- <91bfea9b-ad7e-4f35-a2c1-8cd41499b0c0@linux.dev>
- <ZqOs84hdYkSV_YWd@infradead.org> <20240726152237.GH17473@twin.jikos.cz>
- <20240726175800.GC131596@mit.edu> <ZqPmPufwqbGOTyGI@infradead.org>
- <20240727145232.GA377174@mit.edu>
- <23862652-a702-4a5d-b804-db9ee9f6f539@linux.dev>
- <20240729024412.GD377174@mit.edu>
-Content-Language: en-US, en-AU
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Youling Tang <youling.tang@linux.dev>
-In-Reply-To: <20240729024412.GD377174@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
 
-On 29/07/2024 10:44, Theodore Ts'o wrote:
-> On Mon, Jul 29, 2024 at 09:46:17AM +0800, Youling Tang wrote:
->> 1. Previous version implementation: array mode (see link 1) :
->>     Advantages:
->>     - Few changes, simple principle, easy to understand code.
->>     Disadvantages:
->>     - Each modified module needs to maintain an array, more code.
->>
->> 2. Current implementation: explicit call subinit in initcall (see link 2) :
->>     Advantages:
->>     - Direct use of helpes macros, the subinit call sequence is
->>       intuitive, and the implementation is relatively simple.
->>     Disadvantages:
->>     - helper macros need to be implemented compared to array mode.
->>
->> 3. Only one module_subinit per file (not implemented, see link 3) :
->>     Advantage:
->>     - No need to display to call subinit.
->>     Disadvantages:
->>     - Magic order based on Makefile makes code more fragile,
->>     - Make sure that each file has only one module_subinit,
->>     - It is not intuitive to know which subinits the module needs
->>       and in what order (grep and Makefile are required),
->>     - With multiple subinits per module, it would be difficult to
->>       define module_{subinit, subexit} by MODULE, and difficult to
->>       rollback when initialization fails (I haven't found a good way
->>       to do this yet).
->>
->>
->> Personally, I prefer the implementation of method two.
-> But there's also method zero --- keep things the way they are, and
-> don't try to add a new astraction.
->
-> Advantage:
->
->   -- Code has worked for decades, so it is very well tested
->   -- Very easy to understand and maintain
->
-> Disadvantage
->
->   --- A few extra lines of C code.
-The number of lines of code is not important, the main point is to
-better ensure that subexit runs in the reverse order of subinit when
-init fails.
+Add the __counted_by compiler attribute to the flexible array member
+inodes to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+CONFIG_FORTIFY_SOURCE.
 
-Thanks,
-Youling.
+Remove the now obsolete comment on the count field.
 
->
-> which we need to weigh against the other choices.
->
->        	      	       	       	   - Ted
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ fs/ext4/xattr.h | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
+index bd97c4aa8177..e14fb19dc912 100644
+--- a/fs/ext4/xattr.h
++++ b/fs/ext4/xattr.h
+@@ -130,8 +130,8 @@ struct ext4_xattr_ibody_find {
+ };
+ 
+ struct ext4_xattr_inode_array {
+-	unsigned int count;		/* # of used items in the array */
+-	struct inode *inodes[];
++	unsigned int count;
++	struct inode *inodes[] __counted_by(count);
+ };
+ 
+ extern const struct xattr_handler ext4_xattr_user_handler;
+-- 
+2.45.2
 
 
