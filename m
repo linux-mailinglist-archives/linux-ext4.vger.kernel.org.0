@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-3519-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3522-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1415E94109E
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 13:36:54 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 261A39410A5
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 13:37:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 431841C22A7C
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 11:36:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAF3628571A
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 11:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B258019F46C;
-	Tue, 30 Jul 2024 11:36:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B8751A0724;
+	Tue, 30 Jul 2024 11:36:21 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D87A81991DD;
-	Tue, 30 Jul 2024 11:36:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3F0F1A00E8;
+	Tue, 30 Jul 2024 11:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722339378; cv=none; b=YwK6tIgBoQmic4E+zasPjFEdXNgbF0vgPPqVsUWd2oAYc5MbdPfe1G7I0apH0jedMBlAHMwMpD5ISHPbQKcQrcNPYCB3G+CwHsE0PIOH2JzHKdV+r+vSNgBKMBuOzXJkj0vdZzLIOU6NEYLPQeXWZ/DZp0nrf/WDtP0m3PGYci4=
+	t=1722339381; cv=none; b=qob+L0zFmAwksP0krAYH2je6mAyPqNw0i9oGMN37qJwLODScF5JrxDAw5ZaJniVTgQJUq9+y7zeqxWNpGQ49CEBSDnw6fQTCB1x8cZ4WyxZCkZ1WTXIYEXcGYED7wrbYGF8rwiGtRpwxHfuOUSwCQpC5KlPQrJBM3e2E8FhhMFc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722339378; c=relaxed/simple;
-	bh=+K4dQYWGjBUk9cwWtnX6G5B4Oxjq8U7YaemCOosT0cU=;
+	s=arc-20240116; t=1722339381; c=relaxed/simple;
+	bh=awNkFWM4dpEhLJQBdcyW/+EP6ZU4SxzM2blDy3GxHec=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=tXvdOt6Ch/3zfX/HTkJHVv2TXrSFrue9TEJgQLbcnGjfBleKQsXUQS8yoVJv7knc3GmccjlSsLI0T8SyKIPd997WQ6bP3SdvwfDUk5wdABC0kosYwZLFI1Ox22vOS3ETG5fVi3Xd6w10Y/KmCrxrdwNZq42MZPN/Yakb3JpoCuc=
+	 MIME-Version; b=BN2OVJHa3zUsXTg9oVtEoi5ODFimgdcWzJWfQZP5vLzDOTSTH0IjtnedSA/RA+vhrKiD5LWrrGQYUdumGG17qJEJW7NRiDJMCR5ySmLttktl56OnhUA7vB2SqgBH9Vy/JGfBbakbMKKRtbGigPOD+lRvG1+ciXpCT6EhkXT9++k=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WYCpl4N9tz4f3m6s;
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WYCpl6LBCz4f3m6t;
 	Tue, 30 Jul 2024 19:35:59 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 7F4FD1A12D1;
+	by mail.maildlp.com (Postfix) with ESMTP id C34B81A0568;
 	Tue, 30 Jul 2024 19:36:13 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP1 (Coremail) with SMTP id cCh0CgCH2kwq0Khmm+QUAQ--.5153S8;
+	by APP1 (Coremail) with SMTP id cCh0CgCH2kwq0Khmm+QUAQ--.5153S9;
 	Tue, 30 Jul 2024 19:36:13 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	jack@suse.com
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/7] jbd2: correct comment jbd2_mark_journal_empty
-Date: Tue, 30 Jul 2024 19:33:34 +0800
-Message-Id: <20240730113335.2365290-7-shikemeng@huaweicloud.com>
+Subject: [PATCH 7/7] jbd2: remove unneeded check of ret in jbd2_fc_get_buf
+Date: Tue, 30 Jul 2024 19:33:35 +0800
+Message-Id: <20240730113335.2365290-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240730113335.2365290-1-shikemeng@huaweicloud.com>
 References: <20240730113335.2365290-1-shikemeng@huaweicloud.com>
@@ -56,10 +56,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:cCh0CgCH2kwq0Khmm+QUAQ--.5153S8
-X-Coremail-Antispam: 1UD129KBjvdXoWrKF1UtFy7Xr17Ww15Jw1UJrb_yoWxKFX_XF
-	40vrs7u39xtrsFyw4rCa18Wrnaqrs7uFn5J3WxtwsFkr1UJFWfGFnrJry5X347uF18K3y2
-	9wn2ga48tFZFqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID:cCh0CgCH2kwq0Khmm+QUAQ--.5153S9
+X-Coremail-Antispam: 1UD129KBjvdXoWruF4rZr1rWFyDGry8CFykXwb_yoWxKwb_Xr
+	W8Z3srZrZxWr13ArWrC3y8urnIqws7ur1ku34xt392kF1UJ3W5Jw1DJrW5Jr9rWFWvqFy3
+	Gw1q9rWFkF9rCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbVkYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
 	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
 	0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
@@ -75,26 +75,33 @@ X-Coremail-Antispam: 1UD129KBjvdXoWrKF1UtFy7Xr17Ww15Jw1UJrb_yoWxKFX_XF
 	nxnUUI43ZEXa7IU13l1DUUUUU==
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-After jbd2_mark_journal_empty, journal log is supposed to be empty.
+Simply return -EINVAL if j_fc_off is invalid to avoid repeated check of
+ret.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/jbd2/journal.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/jbd2/journal.c | 8 ++------
+ 1 file changed, 2 insertions(+), 6 deletions(-)
 
 diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index f17d05bc61df..dc18b9f7c999 100644
+index dc18b9f7c999..6f90f7b8e9e5 100644
 --- a/fs/jbd2/journal.c
 +++ b/fs/jbd2/journal.c
-@@ -1939,7 +1939,7 @@ static void jbd2_mark_journal_empty(journal_t *journal, blk_opf_t write_flags)
- 	if (had_fast_commit)
- 		jbd2_set_feature_fast_commit(journal);
+@@ -842,12 +842,8 @@ int jbd2_fc_get_buf(journal_t *journal, struct buffer_head **bh_out)
+ 		fc_off = journal->j_fc_off;
+ 		blocknr = journal->j_fc_first + fc_off;
+ 		journal->j_fc_off++;
+-	} else {
+-		ret = -EINVAL;
+-	}
+-
+-	if (ret)
+-		return ret;
++	} else
++		return -EINVAL;
  
--	/* Log is no longer empty */
-+	/* Log is empty */
- 	write_lock(&journal->j_state_lock);
- 	journal->j_flags |= JBD2_FLUSHED;
- 	write_unlock(&journal->j_state_lock);
+ 	ret = jbd2_journal_bmap(journal, blocknr, &pblock);
+ 	if (ret)
 -- 
 2.30.0
 
