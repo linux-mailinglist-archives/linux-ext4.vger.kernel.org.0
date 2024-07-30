@@ -1,101 +1,101 @@
-Return-Path: <linux-ext4+bounces-3526-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3527-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C806794132C
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 15:33:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88EC594134B
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 15:38:18 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EAC801C23256
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 13:33:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 156181F252B3
+	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 13:38:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C0ED19EEC8;
-	Tue, 30 Jul 2024 13:32:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4E9819F478;
+	Tue, 30 Jul 2024 13:38:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ubMPzN2v";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7W2u5j1S";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="ubMPzN2v";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7W2u5j1S"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nhn5VE3l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qhbAaeyh";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nhn5VE3l";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qhbAaeyh"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D9CA63D;
-	Tue, 30 Jul 2024 13:32:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87072173;
+	Tue, 30 Jul 2024 13:38:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722346376; cv=none; b=UDu6CuQQ7+2UyF5cB8ENDtqYooPnpXheSLBtWNNnZCS6ogBSzs+F4OxwxjaO2ibeSUpST2a+P7xykHcZzIzNzSoBBis8KRtAW4+Vyim7hd937youpLU23yTHsCj2J8FREVDJ8hCAbzM3Be3Tg39y7oKXzPjMIjSp/NRlgsI7Aew=
+	t=1722346683; cv=none; b=gIFSYF0aFxRBsRuf1yyzKHktwlR7NJsmf/zAh1cVskps43xlfW8rvMGZbE0uoOe6OG8mIzNiEsDGKxIW45OZ6bSJXzCr0+tzOzUb8w/coh35eGYRHL7X+xRoi2ynw0kuQ0XB52F3Z1cFFhs8BVzLnTv1ggqLGlLLOYVg5C91VNU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722346376; c=relaxed/simple;
-	bh=adhNAza1pVf4N1QsdW9F7E1DGAcCpUgTsaAlRdYFLGM=;
+	s=arc-20240116; t=1722346683; c=relaxed/simple;
+	bh=dA0uhtuOgUhDsyAaODOaK2LIY1drzHDqIl3N9rjT2P0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LuB+GEVo3CkmZiifRhjQ+EpundwITuS36OtHBkZ1Qhx00N+z07AHluFhqMK7EyPqE1Vb8jqGrWy14WA5zutz0y2yNvebxlhx8UzcTfJw6Jbu+J+BWm9+RDpuj+tmsDZL9o2il7GAjhfOl4QWJ5xVCiYit3i8RK8Jpe6OrS2ij88=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ubMPzN2v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7W2u5j1S; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=ubMPzN2v; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7W2u5j1S; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=SMkP2Rc0LpPjMOQuozozDtd1h82qRhYLffKIvX7izCD5OUpYJmav3zq8mb82/i864HIKgKyYq5m7ztWS94LU0MmNEqmSYnz0T04g/1rTrvDojfn9DqkiHqWl4sZVv1AN7j1N5ZVKS8FjI8JJImGUuIXTWCIFH+QpNH11llLPER4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nhn5VE3l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qhbAaeyh; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nhn5VE3l; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qhbAaeyh; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 36F8921A79;
-	Tue, 30 Jul 2024 13:32:53 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A065E21A73;
+	Tue, 30 Jul 2024 13:37:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722346373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1722346679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5S44Wdgx/0xNGoWaOUDCn2p2slrl+ejMtJf7mRLMCow=;
-	b=ubMPzN2vfcCd/dgQUY4ppyFzIvjWJsKuUTfKKugCQg9SkjjXCjfvkGWcEIUerYSTyv6IMw
-	xic2aAyytSutmZb311JQfjP3W3UvPfvkfbqMqTIz5wHGg9+rPfFqF3Vdjf40RxXgfE2Csv
-	UIEUxjbcZWzFlovbZ8yHBCTin0MXEqY=
+	bh=ixEMlP2+wOFI7HiP2zY1F0yJKKpQ4OgmDFRDHgtq7yY=;
+	b=Nhn5VE3lw9ZaovzdQoG15E2Dd9TuJWq6ODoPG80/ra781Ct8rjmJFJ+2sC2D0whc4A2eRf
+	Klaq81PZ/cKpj7UfpTPeCha2Pzv8NT/RjP/0X8xm/LvltsKNTiaMz+RNvY4BLl3Ae1s1P9
+	eTkjRyrcyx/4uwZKcC73v7EWP8miZfU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722346373;
+	s=susede2_ed25519; t=1722346679;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5S44Wdgx/0xNGoWaOUDCn2p2slrl+ejMtJf7mRLMCow=;
-	b=7W2u5j1STbAsm44iftW7SLwENGga7cLAt/0hK4cD1zg7q6qfQu4tgxUJZDisf1IU6Yldko
-	JZPpqqs+QZi+VXDg==
+	bh=ixEMlP2+wOFI7HiP2zY1F0yJKKpQ4OgmDFRDHgtq7yY=;
+	b=qhbAaeyhlcMoTPfnR5vbGa/OvgfcbjHelulABfe6PeztKLjoOYCf1Tmh+O707cvyOm3en2
+	fRmuEfXYTqSoODAg==
 Authentication-Results: smtp-out1.suse.de;
-	none
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Nhn5VE3l;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=qhbAaeyh
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1722346373; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1722346679; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5S44Wdgx/0xNGoWaOUDCn2p2slrl+ejMtJf7mRLMCow=;
-	b=ubMPzN2vfcCd/dgQUY4ppyFzIvjWJsKuUTfKKugCQg9SkjjXCjfvkGWcEIUerYSTyv6IMw
-	xic2aAyytSutmZb311JQfjP3W3UvPfvkfbqMqTIz5wHGg9+rPfFqF3Vdjf40RxXgfE2Csv
-	UIEUxjbcZWzFlovbZ8yHBCTin0MXEqY=
+	bh=ixEMlP2+wOFI7HiP2zY1F0yJKKpQ4OgmDFRDHgtq7yY=;
+	b=Nhn5VE3lw9ZaovzdQoG15E2Dd9TuJWq6ODoPG80/ra781Ct8rjmJFJ+2sC2D0whc4A2eRf
+	Klaq81PZ/cKpj7UfpTPeCha2Pzv8NT/RjP/0X8xm/LvltsKNTiaMz+RNvY4BLl3Ae1s1P9
+	eTkjRyrcyx/4uwZKcC73v7EWP8miZfU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1722346373;
+	s=susede2_ed25519; t=1722346679;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=5S44Wdgx/0xNGoWaOUDCn2p2slrl+ejMtJf7mRLMCow=;
-	b=7W2u5j1STbAsm44iftW7SLwENGga7cLAt/0hK4cD1zg7q6qfQu4tgxUJZDisf1IU6Yldko
-	JZPpqqs+QZi+VXDg==
+	bh=ixEMlP2+wOFI7HiP2zY1F0yJKKpQ4OgmDFRDHgtq7yY=;
+	b=qhbAaeyhlcMoTPfnR5vbGa/OvgfcbjHelulABfe6PeztKLjoOYCf1Tmh+O707cvyOm3en2
+	fRmuEfXYTqSoODAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 289A513983;
-	Tue, 30 Jul 2024 13:32:53 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9742313983;
+	Tue, 30 Jul 2024 13:37:59 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 0vCoCYXrqGbHWwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 30 Jul 2024 13:32:53 +0000
+	id 4k7nJLfsqGZ4XQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 30 Jul 2024 13:37:59 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D6406A099C; Tue, 30 Jul 2024 15:32:48 +0200 (CEST)
-Date: Tue, 30 Jul 2024 15:32:48 +0200
+	id 59EE3A099C; Tue, 30 Jul 2024 15:37:55 +0200 (CEST)
+Date: Tue, 30 Jul 2024 15:37:55 +0200
 From: Jan Kara <jack@suse.cz>
 To: Kemeng Shi <shikemeng@huaweicloud.com>
 Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/7] jbd2: remove unneeded kmap for jh_in->b_frozen_data
- in jbd2_journal_write_metadata_buffer
-Message-ID: <20240730133248.k4ttccw3gla6xgoy@quack3>
+Subject: Re: [PATCH 6/7] jbd2: correct comment jbd2_mark_journal_empty
+Message-ID: <20240730133755.lbu65hpxwxq6eo64@quack3>
 References: <20240730113335.2365290-1-shikemeng@huaweicloud.com>
- <20240730113335.2365290-5-shikemeng@huaweicloud.com>
+ <20240730113335.2365290-7-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -104,75 +104,64 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240730113335.2365290-5-shikemeng@huaweicloud.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.60 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+In-Reply-To: <20240730113335.2365290-7-shikemeng@huaweicloud.com>
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-0.81 / 50.00];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
-	FROM_HAS_DN(0.00)[];
+	MIME_TRACE(0.00)[0:+];
 	MISSING_XM_UA(0.00)[];
 	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
 	RCVD_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,huaweicloud.com:email,suse.cz:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
 	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huaweicloud.com:email,suse.com:email]
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Spamd-Bar: /
+X-Rspamd-Queue-Id: A065E21A73
+X-Spam-Level: 
+X-Rspamd-Action: no action
 X-Spam-Flag: NO
-X-Spam-Score: -3.60
+X-Spam-Score: -0.81
 
-On Tue 30-07-24 19:33:32, Kemeng Shi wrote:
-> Remove kmap for page of b_frozen_data from jbd2_alloc() which always
-> provides an address from the direct kernel mapping.
+On Tue 30-07-24 19:33:34, Kemeng Shi wrote:
+> After jbd2_mark_journal_empty, journal log is supposed to be empty.
 > 
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-I don't think this is really a win. On majority of installations kmap is a
-noop anyway and for the remainder kmap_local() is cheap. And the
-readability of the code is just worse with this.
+Looks good. Feel free to add:
 
-								Honza
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+							Honza
 
 > ---
->  fs/jbd2/journal.c | 6 ++++--
->  1 file changed, 4 insertions(+), 2 deletions(-)
+>  fs/jbd2/journal.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
 > 
 > diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-> index 312c7575b54f..9c1ffb0dc740 100644
+> index f17d05bc61df..dc18b9f7c999 100644
 > --- a/fs/jbd2/journal.c
 > +++ b/fs/jbd2/journal.c
-> @@ -352,12 +352,13 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
->  		done_copy_out = 1;
->  		new_folio = virt_to_folio(jh_in->b_frozen_data);
->  		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
-> +		mapped_data = jh_in->b_frozen_data;
->  	} else {
->  		new_folio = bh_in->b_folio;
->  		new_offset = offset_in_folio(new_folio, bh_in->b_data);
-> +		mapped_data = kmap_local_folio(new_folio, new_offset);
->  	}
+> @@ -1939,7 +1939,7 @@ static void jbd2_mark_journal_empty(journal_t *journal, blk_opf_t write_flags)
+>  	if (had_fast_commit)
+>  		jbd2_set_feature_fast_commit(journal);
 >  
-> -	mapped_data = kmap_local_folio(new_folio, new_offset);
->  	/*
->  	 * Fire data frozen trigger if data already wasn't frozen.  Do this
->  	 * before checking for escaping, as the trigger may modify the magic
-> @@ -373,7 +374,8 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
->  	 */
->  	if (*((__be32 *)mapped_data) == cpu_to_be32(JBD2_MAGIC_NUMBER))
->  		do_escape = 1;
-> -	kunmap_local(mapped_data);
-> +	if (!jh_in->b_frozen_data)
-> +		kunmap_local(mapped_data);
->  
->  	/*
->  	 * Do we need to do a data copy?
+> -	/* Log is no longer empty */
+> +	/* Log is empty */
+>  	write_lock(&journal->j_state_lock);
+>  	journal->j_flags |= JBD2_FLUSHED;
+>  	write_unlock(&journal->j_state_lock);
 > -- 
 > 2.30.0
 > 
