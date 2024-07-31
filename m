@@ -1,188 +1,155 @@
-Return-Path: <linux-ext4+bounces-3539-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3540-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1242E942285
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 00:03:44 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id D001894242B
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 03:35:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BD1E2285E74
-	for <lists+linux-ext4@lfdr.de>; Tue, 30 Jul 2024 22:03:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 327E0284E5D
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 01:35:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1D2B18991F;
-	Tue, 30 Jul 2024 22:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="XUGRRXTe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08648C2ED;
+	Wed, 31 Jul 2024 01:35:17 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 75B6A1AA3EE
-	for <linux-ext4@vger.kernel.org>; Tue, 30 Jul 2024 22:03:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D6EB1AA3C3;
+	Wed, 31 Jul 2024 01:35:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722377012; cv=none; b=t7gReyOUuzx2DtaYrMlp42ZoPVTiC3Z+EArUSZ5CGyio+h8ERNY3q7wNiWDeu0vm0VIOHjo+/Ded/NC/MiYO9WTGqM3CBetyg4p0Uncmh6o21Qd2EUI5aNS/e96xTVOjod0vUNP5Tn5lTe5n0cGxihQ/DOdzyOKV4k/pJQsLn4I=
+	t=1722389716; cv=none; b=VNrA/Vr63EFOgVugtSb5o6ZkUE+v6xjyizax4kjWP+5F7Zcv43YWV73wREBKpLxOaaDSqi8/QOXSZErwiyQpVGR45BrjZ97eavgYK7Tcfy3T2HUCJVRz5ePOnvc9Ld5uiMgq4wSqNWpaOjXipHOJ13pwovVCUFhArDOX0rWW0OU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722377012; c=relaxed/simple;
-	bh=T6XB/UxIt5ahppozx8cDvdlnzxM96xFJq46yS1oHwxQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=eOqtjWfQqFgsOL0HiPvGAE9cVOBkBT3jsLKFvS/F7iatxlv4o/pTIzPshGzOlxtUYDats9C4DlrpFZBNFg66N7QAWIn8rT/onr6YcHkPBNoy0UM5+srIkorQL0EzFJXThSSFVtCoMUnaL6H+n4B4VdQ+Jo2yLgSowP6ywHXUpD8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=XUGRRXTe; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5a10835480bso7439679a12.2
-        for <linux-ext4@vger.kernel.org>; Tue, 30 Jul 2024 15:03:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1722377008; x=1722981808; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cQd/qUCzd98DKMhZGAyQi0AZAIe2ySF7lmegpNpJvqc=;
-        b=XUGRRXTeU1hL1DdBy2M+mloNrJA1m2bJuJyuLXk+J+pMs71vhkLShuZ3xGs9d89DEk
-         idm7UzxDujupV30MAS7g0j32doxNoIfXULDUrG+nHU/ttt+QDykK7p9jWOUHnK+14h9I
-         HghJ5sqcmvCzllwq/UxoWudQ+OKSoeZrQsbkbrA6ug4MCbV1kIDg61Foa0y4F3pT+AG2
-         Jm3kGoV7r+Xoym411/SjvDdgs1q/HkRPJ+CV9njgOZD2W6lU6mQMtelR5kQeEmYWmKz9
-         iQnF8LbK+gpq5G+iVj4iRGktbehVrlMU+qmVhcKvCo23sAG1zy1yHHGtRdgNjCQOIqbT
-         Pp9g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722377008; x=1722981808;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=cQd/qUCzd98DKMhZGAyQi0AZAIe2ySF7lmegpNpJvqc=;
-        b=lVvGdYlstZLMoaFcKIecTUiF7ztoCnUg4lslhxiEhkjAnQ7sF4ruWDo/Em78wNMt9Z
-         Eqpiprfd1nI7Ha88z8Q2cZj1cK0pcZ6Xsa71Zvwgh1y0MG8zzhPwEcPCy0S4KdRGKtOC
-         N//kkjRLdP2CQpafneuECAwiIn2d5PklRl7Dreu7OMsPFw2jjOXXVpwBG59zI+MHqk9i
-         S6OIa6Hf647kbaNme5YPp8n/9Ok96MBIkPzRorAgjshfhxTcJ4ngxcmx0AsozfGeVyHZ
-         GsHTNQoD3ZgrtjVv0gle/EJmqoNMAWpN1PhJfYuSuwA/uDV7PQ0i3x9P4lh3SCmuR8G2
-         jsDA==
-X-Gm-Message-State: AOJu0YweYH3YjHnNGaqhSSnRwJFJtkKYOF6V1RklspdvPnMF0DCY2c69
-	pWpkx8d2QYZe+U5ka/hy+6HYXDzxcaAFQ1KcNWokTw/WFw2L5UJxFGxcnzFyf1M=
-X-Google-Smtp-Source: AGHT+IF1gaydBCbdkb+0mIKJs7r3iiV7SXsmmw8DHjaqfSQT0GzXJ1xKgEKeQAvKNKhSYoY+VfmB+A==
-X-Received: by 2002:a17:907:6d25:b0:a7d:34fd:6cd0 with SMTP id a640c23a62f3a-a7d4015fca8mr902016966b.66.1722377007402;
-        Tue, 30 Jul 2024 15:03:27 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-26.dynamic.mnet-online.de. [82.135.80.26])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acadb9819sm691401966b.205.2024.07.30.15.03.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 30 Jul 2024 15:03:27 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	kees@kernel.org,
-	gustavoars@kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH v4] ext4: Annotate struct ext4_xattr_inode_array with __counted_by()
-Date: Wed, 31 Jul 2024 00:02:02 +0200
-Message-ID: <20240730220200.410939-3-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.45.2
+	s=arc-20240116; t=1722389716; c=relaxed/simple;
+	bh=i7McqhjslTEUgJNczjwLHkbohcNeCfBcxZU9Cyupdi4=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ALyxqBdb0WE9BK0R/tASIUbchGJH4UkotO8NdQ7m7PoWWhGvdKSR3bm7mfOF2N2UZlBZU0fuhu54V8cFsS9B7euPzBq0hZqfJMZGxNxVyCDUFs9m7p2z8B7axDb6HGR+prL51CZXFaH3nYJvdihH6MeMhiGpGImv2jfkYfibm2M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WYZQt0c56z4f3jjx;
+	Wed, 31 Jul 2024 09:35:02 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.112])
+	by mail.maildlp.com (Postfix) with ESMTP id B55E91A0359;
+	Wed, 31 Jul 2024 09:35:10 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP1 (Coremail) with SMTP id cCh0CgB3f1G6lKlmF8ZJAQ--.37087S2;
+	Wed, 31 Jul 2024 09:35:10 +0800 (CST)
+Subject: Re: [PATCH 5/7] jbd2: remove unneeded done_copy_out variable in
+ jbd2_journal_write_metadata_buffer
+To: Jan Kara <jack@suse.cz>
+Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240730113335.2365290-1-shikemeng@huaweicloud.com>
+ <20240730113335.2365290-6-shikemeng@huaweicloud.com>
+ <20240730134943.ircjz6l5ix6zmmwe@quack3>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <0f83f5e5-97d1-fc63-f611-21cd08e9e70b@huaweicloud.com>
+Date: Wed, 31 Jul 2024 09:34:49 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240730134943.ircjz6l5ix6zmmwe@quack3>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:cCh0CgB3f1G6lKlmF8ZJAQ--.37087S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7tF18tr18ZFyDJrWUZr1fWFg_yoW8tFWDpF
+	WrKrWkKFykJry2yr1DWw4UZryUKrWDWr17Kr47Ca43Aa9Ig3sI9F1YyFW0g3WjyrZ3AF48
+	ZF17XFyxWwsIya7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
+	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2N
+	tUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Add the __counted_by compiler attribute to the flexible array member
-inodes to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-CONFIG_FORTIFY_SOURCE.
 
-Remove the now obsolete comment on the count field.
 
-In ext4_expand_inode_array(), use struct_size() instead of offsetof()
-and remove the local variable count. Increment the count field before
-adding a new inode to the inodes array.
+on 7/30/2024 9:49 PM, Jan Kara wrote:
+> On Tue 30-07-24 19:33:33, Kemeng Shi wrote:
+>> It's more intuitive to use jh_in->b_frozen_data directly instead of
+>> done_copy_out variable. Simply remove unneeded done_copy_out variable
+>> and use b_frozen_data instead.
+>>
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> 
+>> @@ -357,17 +355,15 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>>  		new_folio = bh_in->b_folio;
+>>  		new_offset = offset_in_folio(new_folio, bh_in->b_data);
+>>  		mapped_data = kmap_local_folio(new_folio, new_offset);
+>> -	}
+>> -
+>> -	/*
+>> -	 * Fire data frozen trigger if data already wasn't frozen.  Do this
+>> -	 * before checking for escaping, as the trigger may modify the magic
+>> -	 * offset.  If a copy-out happens afterwards, it will have the correct
+>> -	 * data in the buffer.
+>> -	 */
+>> -	if (!done_copy_out)
+>> +		/*
+>> +		 * Fire data frozen trigger if data already wasn't frozen. Do
+>> +		 * this before checking for escaping, as the trigger may modify
+>> +		 * the magic offset.  If a copy-out happens afterwards, it will
+>> +		 * have the correct data in the buffer.
+>> +		 */
+>>  		jbd2_buffer_frozen_trigger(jh_in, mapped_data,
+>>  					   jh_in->b_triggers);
+>> +	}
+> 
+> I like how you've got rid of the conditional. But I'd go further and also
+> move the escaping check and thus unmap & possible frozen buffer creation
+> into the branch. Like:
+> 
+> 		do_escape = jbd2_data_needs_escaping(mapped_data);
+> 			- create this trivial helper
+> 		kunmap_local(mapped_data);
+> 		if (do_escape) {
+> 			handle b_frozen_data creation
+> 		}
+Thanks Jan. It does look better this way, I will do it in next version.
 
-Compile-tested only.
-
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
-Changes in v2:
-- Adjust ext4_expand_inode_array() as suggested by Gustavo A. R. Silva
-- Use struct_size() and struct_size_t() instead of offsetof()
-- Link to v1: https://lore.kernel.org/linux-kernel/20240729110454.346918-3-thorsten.blum@toblux.com/
-
-Changes in v3:
-- Use struct_size() instead of struct_size_t() as suggested by Kees Cook
-- Remove the local variable count as suggested by Gustavo A. R. Silva
-- Increment count before adding a new inode as suggested by Gustavo
-- Link to v2: https://lore.kernel.org/linux-kernel/20240730172301.231867-4-thorsten.blum@toblux.com/
-
-Changes in v4:
-- Remove unnecessary count assignment and adjust copying the whole
-  struct as suggested by Gustavo
-- Link to v3: https://lore.kernel.org/linux-kernel/20240730205509.323320-3-thorsten.blum@toblux.com/
----
- fs/ext4/xattr.c | 22 ++++++++++------------
- fs/ext4/xattr.h |  4 ++--
- 2 files changed, 12 insertions(+), 14 deletions(-)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 46ce2f21fef9..263567d4e13d 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2879,33 +2879,31 @@ ext4_expand_inode_array(struct ext4_xattr_inode_array **ea_inode_array,
- 	if (*ea_inode_array == NULL) {
- 		/*
- 		 * Start with 15 inodes, so it fits into a power-of-two size.
--		 * If *ea_inode_array is NULL, this is essentially offsetof()
- 		 */
--		(*ea_inode_array) =
--			kmalloc(offsetof(struct ext4_xattr_inode_array,
--					 inodes[EIA_MASK]),
--				GFP_NOFS);
-+		(*ea_inode_array) = kmalloc(
-+			struct_size(*ea_inode_array, inodes, EIA_MASK),
-+			GFP_NOFS);
- 		if (*ea_inode_array == NULL)
- 			return -ENOMEM;
- 		(*ea_inode_array)->count = 0;
- 	} else if (((*ea_inode_array)->count & EIA_MASK) == EIA_MASK) {
- 		/* expand the array once all 15 + n * 16 slots are full */
- 		struct ext4_xattr_inode_array *new_array = NULL;
--		int count = (*ea_inode_array)->count;
- 
--		/* if new_array is NULL, this is essentially offsetof() */
- 		new_array = kmalloc(
--				offsetof(struct ext4_xattr_inode_array,
--					 inodes[count + EIA_INCR]),
--				GFP_NOFS);
-+			struct_size(*ea_inode_array, inodes,
-+				    (*ea_inode_array)->count + EIA_INCR),
-+			GFP_NOFS);
- 		if (new_array == NULL)
- 			return -ENOMEM;
- 		memcpy(new_array, *ea_inode_array,
--		       offsetof(struct ext4_xattr_inode_array, inodes[count]));
-+		       struct_size(*ea_inode_array, inodes,
-+				   (*ea_inode_array)->count));
- 		kfree(*ea_inode_array);
- 		*ea_inode_array = new_array;
- 	}
--	(*ea_inode_array)->inodes[(*ea_inode_array)->count++] = inode;
-+	(*ea_inode_array)->count++;
-+	(*ea_inode_array)->inodes[(*ea_inode_array)->count - 1] = inode;
- 	return 0;
- }
- 
-diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
-index bd97c4aa8177..e14fb19dc912 100644
---- a/fs/ext4/xattr.h
-+++ b/fs/ext4/xattr.h
-@@ -130,8 +130,8 @@ struct ext4_xattr_ibody_find {
- };
- 
- struct ext4_xattr_inode_array {
--	unsigned int count;		/* # of used items in the array */
--	struct inode *inodes[];
-+	unsigned int count;
-+	struct inode *inodes[] __counted_by(count);
- };
- 
- extern const struct xattr_handler ext4_xattr_user_handler;
--- 
-2.45.2
+Kemeng.
+> 
+> 								Honza
+> 
+>>  
+>>  	/*
+>>  	 * Check for escaping
+>> @@ -380,7 +376,7 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>>  	/*
+>>  	 * Do we need to do a data copy?
+>>  	 */
+>> -	if (do_escape && !done_copy_out) {
+>> +	if (do_escape && !jh_in->b_frozen_data) {
+>>  		char *tmp;
+>>  
+>>  		spin_unlock(&jh_in->b_state_lock);
+>> @@ -408,7 +404,6 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>>  copy_done:
+>>  		new_folio = virt_to_folio(jh_in->b_frozen_data);
+>>  		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
+>> -		done_copy_out = 1;
+>>  	}
+>>  
+>>  	/*
+>> -- 
+>> 2.30.0
+>>
 
 
