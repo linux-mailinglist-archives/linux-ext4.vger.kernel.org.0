@@ -1,134 +1,112 @@
-Return-Path: <linux-ext4+bounces-3568-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3569-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 773FD942D0B
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 13:16:38 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7C6B942D93
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 13:55:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12670B23F4A
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 11:16:36 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 22F351C2088F
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 11:55:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A108C1AC42F;
-	Wed, 31 Jul 2024 11:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=spornkuller.de header.i=@spornkuller.de header.b="xjdUgq4Y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DBFD1AED3C;
+	Wed, 31 Jul 2024 11:55:03 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from spornkuller.de (spornkuller.de [89.58.8.206])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5296F18DF9F
-	for <linux-ext4@vger.kernel.org>; Wed, 31 Jul 2024 11:16:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.58.8.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7EE91AD9F6;
+	Wed, 31 Jul 2024 11:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722424590; cv=none; b=WYXmO+Wd7wS4HEMNG7aK7ZbuG5SqBzm7RGN130ZDtkP5rdY+kIyYNnr9XBmjKos/cCLYcRXqlDOpBa8eVehW4Kw/dLI/SUvN0XykcW1MgRkJEj+xzkxB/8J9VynJ7HQyMe0OX3pmTclNHbo9ZKivi/sw5k2dFx2IqPBwM67M9vY=
+	t=1722426903; cv=none; b=kJGyQ+IJC0m4mLzWnqpehFWoDK0NZmRad1tzxpw/J/+l4L2pLfMhS3DV5oWnOdr3YbONLx+ke/6e813M8uilgHlVmSHixl885+v444ybHNv5VajLYPkTqn4aJ+fms1OAjx1CsJgeadMd22MfiQgJ/LeVfQWRXH5AbokKXZdvyec=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722424590; c=relaxed/simple;
-	bh=zbEjxCZVGBUmwA87aZbZaTk4s+I0CsrucyYxqk3bWK0=;
-	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=aT/AjeP1w9QcEOn9R4ZTfFj3kBOIJT353xgCfrGi15ELDbi4H0hc0AhOws5DQXOPHf+Xo2qYnCuPG4LWQYmQHD0c1ZLCqbA/4JVOQxxj0GDXgm0TFWRc3dsNLa5F+GE6FbDPLndyJYT72FKYDRLP0yCJfhs8zo6eT8mFQ/AhwSU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=spornkuller.de; spf=pass smtp.mailfrom=spornkuller.de; dkim=pass (2048-bit key) header.d=spornkuller.de header.i=@spornkuller.de header.b=xjdUgq4Y; arc=none smtp.client-ip=89.58.8.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=spornkuller.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=spornkuller.de
-Received: from [IPV6:2a00:79c0:768:fd01:b3aa:d19e:128f:14c] (unknown [IPv6:2a00:79c0:768:fd01:b3aa:d19e:128f:14c])
-	by spornkuller.de (Postfix) with ESMTPSA id B170C636FCB
-	for <linux-ext4@vger.kernel.org>; Wed, 31 Jul 2024 13:16:26 +0200 (CEST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=spornkuller.de;
-	s=dkim202204; t=1722424586;
-	bh=zbEjxCZVGBUmwA87aZbZaTk4s+I0CsrucyYxqk3bWK0=;
-	h=Date:To:From:Subject:From;
-	b=xjdUgq4Y3kVIYr4LknFXjc843JCinPL1DxRGUeT95UJR4a0OfGhIRMB7efNXLVwIG
-	 a5G0bi0qyUIk+jR5PslNEcWCNIDcW4bHttgUk3WETnm+5V3lPKSTEzvCIQPtKx/BFm
-	 hY0IsUai6sYdH1tlFxnHZ/zUXGvB0slG894fk08ysEj3OuaKOE6/lrDFeCaK9VayPp
-	 eEMnurakbW3Q5FBLW0rqk+mh458HrbH1I9RVO8p5BonidpBpRC/gc9ClhUBInlA3Wh
-	 5KOlg+Cz+g2mN9mBMIxM5scQipTSKaL7DffYFeQIl2TzR8hznG4nrp665MmzlF/djr
-	 qDqQHeeJgjmpg==
-Message-ID: <39c23608-8e20-40ad-84a3-4d4c0f9468c0@spornkuller.de>
-Date: Wed, 31 Jul 2024 13:16:26 +0200
+	s=arc-20240116; t=1722426903; c=relaxed/simple;
+	bh=0BIFvrvK2ne771IGbC/UKbRtviiZiVvnJ3dOjFj5f+o=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=Ztg5toGobqeVaC/ukQWG91Xc545aHJ2828fXFBggiWntDpbjyqAkr3CV28a7bFKH566dOQCMRsIgqkFAoB0IMgZHk9zMgKsvK44XoQZgqDEXqWHt7VWpRR1RIWqgnUxByw+RHOnswLwL5xB0LQciEJp4CgSXeqjNqxvSw8Jiklk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.252])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4WYr9y4mN6z1L96F;
+	Wed, 31 Jul 2024 19:54:46 +0800 (CST)
+Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
+	by mail.maildlp.com (Postfix) with ESMTPS id 0A7FB180AE6;
+	Wed, 31 Jul 2024 19:54:58 +0800 (CST)
+Received: from [10.174.179.80] (10.174.179.80) by
+ kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Wed, 31 Jul 2024 19:54:57 +0800
+Subject: Re: [PATCH v3 4/8] jbd2: remove unneeded kmap for
+ jh_in->b_frozen_data in jbd2_journal_write_metadata_buffer
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<tytso@mit.edu>, <jack@suse.com>
+References: <20240731092910.2383048-1-shikemeng@huaweicloud.com>
+ <20240731092910.2383048-5-shikemeng@huaweicloud.com>
+From: Zhang Yi <yi.zhang@huawei.com>
+Message-ID: <e3fc4766-ce2b-b7d3-abcf-f145c2ff2727@huawei.com>
+Date: Wed, 31 Jul 2024 19:54:56 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: linux-ext4@vger.kernel.org
+In-Reply-To: <20240731092910.2383048-5-shikemeng@huaweicloud.com>
+Content-Type: text/plain; charset="utf-8"
 Content-Language: en-US
-From: Johannes Bauer <canjzymsaxyt@spornkuller.de>
-Subject: Modification of block device by R/O mount
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemf100017.china.huawei.com (7.202.181.16)
 
-Dear list,
+On 2024/7/31 17:29, Kemeng Shi wrote:
+> Remove kmap for page of b_frozen_data from jbd2_alloc() which always
+> provides an address from the direct kernel mapping.
+> 
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+> Reviewed-by: Jan Kara <jack@suse.cz>
 
-I'm a little bit puzzled by behavior of ext4 I've been seeing initially 
-on aarch64 Linux 6.1 but can reproduce easily on my machine:
+Looks good to me.
 
-Linux reliant 6.5.0-28-generic #29-Ubuntu SMP PREEMPT_DYNAMIC Thu Mar 28 
-23:46:48 UTC 2024 x86_64 x86_64 x86_64 GNU/Linux
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
-The behavior I'm seeing is that a R/O mount modifies a device mapper 
-block device (or loopback device), which is unsettling. That change is 
-not propagated back to the original source, but it is causing massive 
-problems nevertheless. For example:
-
-reliant [/tmp/ext4test]: dd if=/dev/null bs=1M seek=64 count=0 of=image.img
-0+0 records in
-0+0 records out
-0 bytes copied, 2,2172e-05 s, 0,0 kB/s
-
-
-reliant [/tmp/ext4test]: mkfs.ext4 image.img
-mke2fs 1.47.0 (5-Feb-2023)
-Discarding device blocks: done
-Creating filesystem with 16384 4k blocks and 16384 inodes
-
-Allocating group tables: done
-Writing inode tables: done
-Creating journal (1024 blocks): done
-Writing superblocks and filesystem accounting information: done
-
-
-
-reliant [/tmp/ext4test]: losetup --read-only --show -f image.img
-/dev/loop28
-
-
-reliant [/tmp/ext4test]: md5sum /dev/loop28 image.img
-34d7cd8eb4abb1943aabe078b8fb3c74  /dev/loop28
-34d7cd8eb4abb1943aabe078b8fb3c74  image.img
-
-
-reliant [/tmp/ext4test]: mkdir mnt; mount -o ro /dev/loop28 mnt
-
-
-reliant [/tmp/ext4test]: md5sum /dev/loop28 image.img
-9145654c1e6a5855c1db239815a05198  /dev/loop28
-34d7cd8eb4abb1943aabe078b8fb3c74  image.img
-
-
-reliant [/tmp/ext4test]: cmp /dev/loop28 image.img
-/dev/loop28 image.img differ: byte 61484, line 5
-
-
-reliant [/tmp/ext4test]: umount mnt; losetup -d /dev/loop28
-
-
-reliant [/tmp/ext4test]: md5sum image.img
-34d7cd8eb4abb1943aabe078b8fb3c74  image.img
-
-
-As you can see, the original image was never modified (MD5 34d7... 
-remains the same) but /dev/loop28 changes once R/O mounted. This 
-behavior is shocking to me and I've not observed this with other file 
-systems (I tried btrfs) so this seems to be ext4-specific.
-
-Is this expected behavior? Is there a way to mitigate it?
-
-Thanks and best regards,
-Johannes
-
--- 
-"A PC without Windows is like a chocolate cake without mustard."
-
+> ---
+>  fs/jbd2/journal.c | 6 ++++--
+>  1 file changed, 4 insertions(+), 2 deletions(-)
+> 
+> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+> index 312c7575b54f..9c1ffb0dc740 100644
+> --- a/fs/jbd2/journal.c
+> +++ b/fs/jbd2/journal.c
+> @@ -352,12 +352,13 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>  		done_copy_out = 1;
+>  		new_folio = virt_to_folio(jh_in->b_frozen_data);
+>  		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
+> +		mapped_data = jh_in->b_frozen_data;
+>  	} else {
+>  		new_folio = bh_in->b_folio;
+>  		new_offset = offset_in_folio(new_folio, bh_in->b_data);
+> +		mapped_data = kmap_local_folio(new_folio, new_offset);
+>  	}
+>  
+> -	mapped_data = kmap_local_folio(new_folio, new_offset);
+>  	/*
+>  	 * Fire data frozen trigger if data already wasn't frozen.  Do this
+>  	 * before checking for escaping, as the trigger may modify the magic
+> @@ -373,7 +374,8 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>  	 */
+>  	if (*((__be32 *)mapped_data) == cpu_to_be32(JBD2_MAGIC_NUMBER))
+>  		do_escape = 1;
+> -	kunmap_local(mapped_data);
+> +	if (!jh_in->b_frozen_data)
+> +		kunmap_local(mapped_data);
+>  
+>  	/*
+>  	 * Do we need to do a data copy?
+> 
 
