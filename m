@@ -1,51 +1,54 @@
-Return-Path: <linux-ext4+bounces-3563-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3558-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC541942A8F
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 11:32:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92C81942A85
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 11:32:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3ACE3281EF8
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 09:32:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3D55B1F22075
+	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 09:32:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 267461AC438;
-	Wed, 31 Jul 2024 09:31:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34A541AAE3C;
+	Wed, 31 Jul 2024 09:31:54 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D684218C93B;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7D21624;
 	Wed, 31 Jul 2024 09:31:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722418314; cv=none; b=R+P4yggT8mViOZ7jc8ktZQuK103AHr7MjWJqPpDcz2smUBFPFwLHJtuB7sOpd16mtOIdRKbXrTQsFMZ1armaOQr0F5Q9Ht068ISCcxUNzIsu3Wruavz7iwnFivPP1aYPTOW+Ky8q27IgrQnfsW4clQpO3fWx+NGTWaUIzN65Sjc=
+	t=1722418313; cv=none; b=XTQHPWO/Uoz7jFbeMk8Psrtr2wwpaAkleIl3xLzcc+Ov8GSqJK7atE+9B+daBSZbsbIzfhgoRsYKBN7dzOvJ8cOjU6RB1VwhDBOyevVAZbdgNnDz0rawFZfcqZJ7XxIywYeXBBQ9ORq4aeYmX5UKI6M6yrGMjGXDq0SobRf2g3k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722418314; c=relaxed/simple;
-	bh=Py8ou2K68+gmANUwBPx6Uulh9cO3lfgjfVdcnqkouLI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Pw2hOhmtCEhEhALvbo9oltr5Bw9Qo7k56NkcnhkdDgKEFAB8dRQNWdgMCr9Fm1lN6igZ8QbADWTotPzqVCRwYZbPj9ddA7XgUwt/PkCvFsty+l6xykXVuh77NHgzLjMLzxXclXoBK8TxRiUGYxWR3s7EIQloKstclMsWuCsFwuo=
+	s=arc-20240116; t=1722418313; c=relaxed/simple;
+	bh=jv9mL8bTYHP2MRryq0Gtvp3IB6pLJqrsD0knMVMr34w=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=kSnpEP+3E7P8XBmUCAaGX8SZOI7ZeWvT1X7L6x7DK30fJXPUeu5kCtwijjmErI2X7YdaNETGXqAxZzOdxIPOdbuZLZ6ES2WImmbiUtYvaGVD3RryUGt/M3ZYhKz1jaQ4qOwQBOYBvmfG2t59nxNAN+befpqnfK8zHEtl+oyjbok=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WYn0k25Q7z4f3lWD;
-	Wed, 31 Jul 2024 17:31:34 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WYn0q691Wz4f3k6M;
+	Wed, 31 Jul 2024 17:31:39 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id 3D7691A0568;
+	by mail.maildlp.com (Postfix) with ESMTP id 84C9A1A0359;
 	Wed, 31 Jul 2024 17:31:48 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP2 (Coremail) with SMTP id Syh0CgC3oL+CBKpm5KxyAQ--.8660S2;
+	by APP2 (Coremail) with SMTP id Syh0CgC3oL+CBKpm5KxyAQ--.8660S3;
 	Wed, 31 Jul 2024 17:31:48 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	jack@suse.com
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v3 0/8] Fix and cleanups to jbd2
-Date: Wed, 31 Jul 2024 17:29:02 +0800
-Message-Id: <20240731092910.2383048-1-shikemeng@huaweicloud.com>
+Subject: [PATCH v3 1/8] jbd2: correctly compare tids with tid_geq function in jbd2_fc_begin_commit
+Date: Wed, 31 Jul 2024 17:29:03 +0800
+Message-Id: <20240731092910.2383048-2-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
+In-Reply-To: <20240731092910.2383048-1-shikemeng@huaweicloud.com>
+References: <20240731092910.2383048-1-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -53,54 +56,47 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgC3oL+CBKpm5KxyAQ--.8660S2
-X-Coremail-Antispam: 1UD129KBjvdXoWrKw1fCF1kuF47Ar4kJFykAFb_yoWkJwc_ZF
-	WvgF9rJwsxXF17Wa43Cr13WrWrWw48Jr18KF95Za1DKr1xJ3Z5Zw1UGF4UZrnxX3yvk3y5
-	Kr4Yq3y8tw1kCjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUboxYFVCjjxCrM7AC8VAFwI0_Jr0_Gr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Y
-	z7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zV
-	AF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4l
-	IxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCw
-	CI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnI
-	WIevJa73UjIFyTuYvjxUzsqWUUUUU
+X-CM-TRANSID:Syh0CgC3oL+CBKpm5KxyAQ--.8660S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZryDJr1rtry7GF45Zry5Jwb_yoW3XFX_XF
+	10yr47Z3yagF1rA3yrCayY9rnaqws7urn5Ww1xtw12kr4UGF18tFnrt398Kr1DW3yktrW5
+	WFZ29a10qr9xJjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbV8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r18M2
+	8IrcIa0xkI8VCY1x0267AKxVWUXVWUCwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK
+	021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r
+	4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_
+	GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx
+	0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWU
+	JVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJV
+	W8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF
+	1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6x
+	IIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvE
+	x4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvj
+	DU0xZFpf9x07UAEfrUUUUU=
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-v2->v3:
--Improve patch "jbd2: remove unneeded check of ret in jbd2_fc_get_buf"
--Collect RVB from Yi.
+Use tid_geq to compare tids to work over sequence number wraps.
 
-v1->v2:
--Move escape handle to futher improve
-jbd2_journal_write_metadata_buffer.
--Collect RVB from Jan
+Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
+---
+ fs/jbd2/journal.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-This series contains a fix and some random cleanups to jbd2. More
-details can be found in respective patches. Thanks!
-
-Kemeng Shi (8):
-  jbd2: correctly compare tids with tid_geq function in
-    jbd2_fc_begin_commit
-  jbd2: remove dead check in journal_alloc_journal_head
-  jbd2: remove unused return value of jbd2_fc_release_bufs
-  jbd2: remove unneeded kmap for jh_in->b_frozen_data in
-    jbd2_journal_write_metadata_buffer
-  jbd2: remove unneeded done_copy_out variable in
-    jbd2_journal_write_metadata_buffer
-  ext4: move escape handle to futher improve
-    jbd2_journal_write_metadata_buffer
-  jbd2: correct comment jbd2_mark_journal_empty
-  jbd2: remove unneeded check of ret in jbd2_fc_get_buf
-
- fs/jbd2/journal.c    | 95 +++++++++++++++++++-------------------------
- include/linux/jbd2.h |  2 +-
- 2 files changed, 42 insertions(+), 55 deletions(-)
-
+diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+index 1ebf2393bfb7..da5a56d700f1 100644
+--- a/fs/jbd2/journal.c
++++ b/fs/jbd2/journal.c
+@@ -710,7 +710,7 @@ int jbd2_fc_begin_commit(journal_t *journal, tid_t tid)
+ 		return -EINVAL;
+ 
+ 	write_lock(&journal->j_state_lock);
+-	if (tid <= journal->j_commit_sequence) {
++	if (tid_geq(journal->j_commit_sequence, tid)) {
+ 		write_unlock(&journal->j_state_lock);
+ 		return -EALREADY;
+ 	}
 -- 
 2.30.0
 
