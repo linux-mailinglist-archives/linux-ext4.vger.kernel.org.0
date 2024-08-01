@@ -1,126 +1,123 @@
-Return-Path: <linux-ext4+bounces-3588-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3589-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277E39440CC
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 04:18:05 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 54F549440E6
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 04:21:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CF8761F255DD
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 02:18:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C1D42836FB
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 02:21:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CC441B9B2C;
-	Thu,  1 Aug 2024 01:41:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2264445030;
+	Thu,  1 Aug 2024 01:53:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="pVCgTy2n"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B5071DA58;
-	Thu,  1 Aug 2024 01:40:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41C11EB4A9
+	for <linux-ext4@vger.kernel.org>; Thu,  1 Aug 2024 01:53:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722476462; cv=none; b=pncoHAIiw0G1qreCDnoM1OxWLcXjq/wjUxpuPPaLZDangN9vNMYhV8SUYsXnOTozpIdjnwe+1t1VGU8Q4IpleEBgct/es/Q3yaS+UV55adRReJsxxxITbnBScoNGrRqNrqaIiK5ipCuW5davnwhVhWMf+TeVZq6JhKHKrPN0Yjw=
+	t=1722477224; cv=none; b=p42QYDyS26N8z7FUAwGeuOQtV0XsMSzPfCC5Y8h+ypkwh3sxxsW/wvg86NfqA8reEN8gV209PBRyA/1QgdQQOPriIL/h7Jvl68dWCZ74X/xJ6VlQn6IgIjgY3son/oZzPvGq6ixwRDuzFQ6gcOC0JkcE6QsQvl/PBqcNiz6pEws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722476462; c=relaxed/simple;
-	bh=5I/Sh/Gj4gK1RlwP8a1JR08fvBvDeanWUWCWoSUVCVw=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=LB5ro9H0R6VKeG6ONYXUEsQsGCkWtL9uzSUuw8GdbWK5ntZ62IjmwIG1ldKua2QgE7OJH2VPQr8rxaoJn/lkGvP8kmbJLuKcupyMNp/rnlrDQqhzsRqBtxhg2lNtIHyS0PBkVxGhojhmyH69/Nnz0wRnFzmp7+QVZIX8Xg7T3qU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WZBVz6ypbz4f3jsB;
-	Thu,  1 Aug 2024 09:40:43 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id E79F11A1533;
-	Thu,  1 Aug 2024 09:40:56 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP2 (Coremail) with SMTP id Syh0CgBnnr2l56pmr3OyAQ--.24249S10;
-	Thu, 01 Aug 2024 09:40:56 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	jack@suse.com
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4 8/8] jbd2: remove unneeded check of ret in jbd2_fc_get_buf
-Date: Thu,  1 Aug 2024 09:38:15 +0800
-Message-Id: <20240801013815.2393869-9-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240801013815.2393869-1-shikemeng@huaweicloud.com>
-References: <20240801013815.2393869-1-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1722477224; c=relaxed/simple;
+	bh=y0J1KWvQUR0aocLIOF2pPQMWyW3yeN9LyqVOMNdzmcE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=b5RGR5feGgsas9rTyAbxrKgeMIpOD/XYyWR1Vh5O5FGxDkG96CLoSHuUXDVGZqRmPxBQdHOUPDPtUtzZJ+Kpzs0oA4i0SZSMzsthDLs5+5FWqrEKBsy4WNsZDad3+LRmJkqv4gPiH7XPmSozDneckL/RjZCP+6zGienTzf852y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=pVCgTy2n; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1fc611a0f8cso46674925ad.2
+        for <linux-ext4@vger.kernel.org>; Wed, 31 Jul 2024 18:53:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1722477222; x=1723082022; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=uLmOVmu2fXsynV0AqtSvW9BETIpLkLkWNmHFlIbYIr4=;
+        b=pVCgTy2nQVOB7luo7bcv/vTx8Wy5X/skOb28qyjeNeN9wgdNjGx9FAN8bdCVLr7124
+         e0nkmbklEFw0RR0p2qMkdHauY2acOmKrhiUSeLGllHTSWXQ98ziBtHsHApVI16B1o7Kr
+         0usrAFs3bEHcehLxflbbGbRlBFR92xeQUUYkFYnnKJIVf3R4W+1rgjzot/FJs3fcPKlh
+         2BZ+KkDOguV3J0PUVs4pP9Y5DC/6L1jYAfNqt8hCJ6hsw1yxnXtnXMz8AfPdr9Ym+Cpk
+         PoXCx7K71i7hzF9S8sCyHACEfpOsF09kjTGvKMgRW5hpCzI+pDU//erbEhYPrOpRbmzr
+         0/jQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722477222; x=1723082022;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=uLmOVmu2fXsynV0AqtSvW9BETIpLkLkWNmHFlIbYIr4=;
+        b=MbofENbMSBykXGfhYvdk4exzUvh/VlusH5B3HLNCfZoqR8bbYosww3e082YMjXxCv9
+         Q9kN2Sm4YadfpPamzbfB+x4NYGjFVHctx19gkWpW9rVp4EQb7dLNhu00S/LAXTp4xhGG
+         QFQOZyLCcLK4ATW1A70y5RZB5ioIJ/vN/4QjfvsaGscil63nYjFlXMMrhgt+SzQgnkKG
+         tzHQolInuy89+LZQUySJJEiY6ppMozAteGvjRGSuRpjZy4mHwPX47tq6ZH5Dm/wyo5E3
+         v1UNaUUJ3+WhM7yJlKKpC9X1sArWrRBnTal9sfjfRxqxKQflMZNBKdbpKNj5dvvTadDt
+         jk6g==
+X-Gm-Message-State: AOJu0YwxBBzAuveVu4d9aMdz12PFwhevqUEOR8U8C7QUMPPzZW3MOCsI
+	B2hm/sRQVfjY0GNsBxRsZ8OZz6vp2Q/J7y9R84kKJHMWhkxoz9HDJMc3i1wRHoCHOQiitg704Q3
+	O
+X-Google-Smtp-Source: AGHT+IEq4xnmzu9K7n12mxaWA9qzQSfvpRqdDTuHMyO/4MaFS9Y5Gt9SISBWF9tECiZdKT4/BW0D6w==
+X-Received: by 2002:a17:902:7c06:b0:1fd:a0ec:2f4c with SMTP id d9443c01a7336-1ff4cea877dmr11144205ad.33.1722477221999;
+        Wed, 31 Jul 2024 18:53:41 -0700 (PDT)
+Received: from dread.disaster.area (pa49-181-47-239.pa.nsw.optusnet.com.au. [49.181.47.239])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7ee4d16sm126773075ad.146.2024.07.31.18.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 31 Jul 2024 18:53:41 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1sZL0d-000xWb-0g;
+	Thu, 01 Aug 2024 11:53:39 +1000
+Date: Thu, 1 Aug 2024 11:53:39 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Johannes Bauer <canjzymsaxyt@spornkuller.de>
+Cc: linux-ext4@vger.kernel.org
+Subject: Re: Modification of block device by R/O mount
+Message-ID: <Zqrqo1lIrsxdm7AP@dread.disaster.area>
+References: <39c23608-8e20-40ad-84a3-4d4c0f9468c0@spornkuller.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgBnnr2l56pmr3OyAQ--.24249S10
-X-Coremail-Antispam: 1UD129KBjvJXoWruF45GF43WFyxCFW7trW5ZFb_yoW8JF48pr
-	W3Kas8AFy8ZrW7WF1xXrZ5Jayjv392kFyUGFZ8CwnYkw42yrn7J3Z8Jw18Wa98ArWrK3W8
-	Zr17Za95Cw4YyFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
-	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
-	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
-	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
-	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
-	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
-	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
-	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
-	1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIx
-	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
-	42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
-	evJa73UjIFyTuYvjxUFgAwUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <39c23608-8e20-40ad-84a3-4d4c0f9468c0@spornkuller.de>
 
-Simply return -EINVAL if j_fc_off is invalid to avoid repeated check of
-ret.
+On Wed, Jul 31, 2024 at 01:16:26PM +0200, Johannes Bauer wrote:
+> Is this expected behavior?
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
----
- fs/jbd2/journal.c | 16 +++++-----------
- 1 file changed, 5 insertions(+), 11 deletions(-)
+Yes. A read-only mount doesn't mean the filesystem cannot write to
+the block device. All it means is that users cannot make
+modifications to the filesystem contents once the filesystem is
+mounted.
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index e89d777ded34..c5179aa38111 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -837,17 +837,12 @@ int jbd2_fc_get_buf(journal_t *journal, struct buffer_head **bh_out)
- 
- 	*bh_out = NULL;
- 
--	if (journal->j_fc_off + journal->j_fc_first < journal->j_fc_last) {
--		fc_off = journal->j_fc_off;
--		blocknr = journal->j_fc_first + fc_off;
--		journal->j_fc_off++;
--	} else {
--		ret = -EINVAL;
--	}
--
--	if (ret)
--		return ret;
-+	if (journal->j_fc_off + journal->j_fc_first >= journal->j_fc_last)
-+		return -EINVAL;
- 
-+	fc_off = journal->j_fc_off;
-+	blocknr = journal->j_fc_first + fc_off;
-+	journal->j_fc_off++;
- 	ret = jbd2_journal_bmap(journal, blocknr, &pblock);
- 	if (ret)
- 		return ret;
-@@ -856,7 +851,6 @@ int jbd2_fc_get_buf(journal_t *journal, struct buffer_head **bh_out)
- 	if (!bh)
- 		return -ENOMEM;
- 
--
- 	journal->j_fc_wbuf[fc_off] = bh;
- 
- 	*bh_out = bh;
+The filesystem may still have to do things like journal recovery on
+a read-only mount which requires writing to the block device, or
+maybe other house-keeping things that happen at mount time which
+require writing updates to the superblock or other metadata.
+
+This is not ext4 specific. XFS behaves the same way on read-only
+mounts and, IIRC, JFS, Reiser and most other journalling filesystems
+will also behave the same way.
+
+> Is there a way to mitigate it?
+
+If you want to stop the filesystem writing to the block device, you
+have to set the -block device- to be read only. At this point, the
+filesystem will refuse to mount if it needs to write to the block
+device during mount.
+
+Hence you may need to use "-ro,norecovery" on journalled filesystems
+when the block device is read only to get them to mount. However,
+this can expose inconsistent metadata to userspace and weird stuff
+can happen because the journal will not have been recovered...
+
+-Dave.
 -- 
-2.30.0
-
+Dave Chinner
+david@fromorbit.com
 
