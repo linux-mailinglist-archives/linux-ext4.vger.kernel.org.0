@@ -1,123 +1,99 @@
-Return-Path: <linux-ext4+bounces-3589-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3590-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54F549440E6
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 04:21:23 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1AB1944459
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 08:23:19 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0C1D42836FB
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 02:21:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2FD4E1C22303
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 06:23:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2264445030;
-	Thu,  1 Aug 2024 01:53:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D27BF157E61;
+	Thu,  1 Aug 2024 06:18:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="pVCgTy2n"
+	dkim=pass (2048-bit key) header.d=spornkuller.de header.i=@spornkuller.de header.b="ai9IXXGT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from spornkuller.de (spornkuller.de [89.58.8.206])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F41C11EB4A9
-	for <linux-ext4@vger.kernel.org>; Thu,  1 Aug 2024 01:53:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23A228379
+	for <linux-ext4@vger.kernel.org>; Thu,  1 Aug 2024 06:18:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.58.8.206
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722477224; cv=none; b=p42QYDyS26N8z7FUAwGeuOQtV0XsMSzPfCC5Y8h+ypkwh3sxxsW/wvg86NfqA8reEN8gV209PBRyA/1QgdQQOPriIL/h7Jvl68dWCZ74X/xJ6VlQn6IgIjgY3son/oZzPvGq6ixwRDuzFQ6gcOC0JkcE6QsQvl/PBqcNiz6pEws=
+	t=1722493109; cv=none; b=GN8wyMgXDeI6jOCAJU5PtaS3pJPC5muhxP00Wd85yjuzAV6cq7nVgzM4WdaTg5u/sSorBRqwZZVsc5xzMMpVSHQ5QJXaI9c8MQwyf2bB8MyA+CAaL4l84+ZrU0FeM9HVTNHh66xJVybyTzXDKKPXKU46rYV/unOvjYKeBzfxnAU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722477224; c=relaxed/simple;
-	bh=y0J1KWvQUR0aocLIOF2pPQMWyW3yeN9LyqVOMNdzmcE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b5RGR5feGgsas9rTyAbxrKgeMIpOD/XYyWR1Vh5O5FGxDkG96CLoSHuUXDVGZqRmPxBQdHOUPDPtUtzZJ+Kpzs0oA4i0SZSMzsthDLs5+5FWqrEKBsy4WNsZDad3+LRmJkqv4gPiH7XPmSozDneckL/RjZCP+6zGienTzf852y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=pVCgTy2n; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1fc611a0f8cso46674925ad.2
-        for <linux-ext4@vger.kernel.org>; Wed, 31 Jul 2024 18:53:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1722477222; x=1723082022; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=uLmOVmu2fXsynV0AqtSvW9BETIpLkLkWNmHFlIbYIr4=;
-        b=pVCgTy2nQVOB7luo7bcv/vTx8Wy5X/skOb28qyjeNeN9wgdNjGx9FAN8bdCVLr7124
-         e0nkmbklEFw0RR0p2qMkdHauY2acOmKrhiUSeLGllHTSWXQ98ziBtHsHApVI16B1o7Kr
-         0usrAFs3bEHcehLxflbbGbRlBFR92xeQUUYkFYnnKJIVf3R4W+1rgjzot/FJs3fcPKlh
-         2BZ+KkDOguV3J0PUVs4pP9Y5DC/6L1jYAfNqt8hCJ6hsw1yxnXtnXMz8AfPdr9Ym+Cpk
-         PoXCx7K71i7hzF9S8sCyHACEfpOsF09kjTGvKMgRW5hpCzI+pDU//erbEhYPrOpRbmzr
-         0/jQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722477222; x=1723082022;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=uLmOVmu2fXsynV0AqtSvW9BETIpLkLkWNmHFlIbYIr4=;
-        b=MbofENbMSBykXGfhYvdk4exzUvh/VlusH5B3HLNCfZoqR8bbYosww3e082YMjXxCv9
-         Q9kN2Sm4YadfpPamzbfB+x4NYGjFVHctx19gkWpW9rVp4EQb7dLNhu00S/LAXTp4xhGG
-         QFQOZyLCcLK4ATW1A70y5RZB5ioIJ/vN/4QjfvsaGscil63nYjFlXMMrhgt+SzQgnkKG
-         tzHQolInuy89+LZQUySJJEiY6ppMozAteGvjRGSuRpjZy4mHwPX47tq6ZH5Dm/wyo5E3
-         v1UNaUUJ3+WhM7yJlKKpC9X1sArWrRBnTal9sfjfRxqxKQflMZNBKdbpKNj5dvvTadDt
-         jk6g==
-X-Gm-Message-State: AOJu0YwxBBzAuveVu4d9aMdz12PFwhevqUEOR8U8C7QUMPPzZW3MOCsI
-	B2hm/sRQVfjY0GNsBxRsZ8OZz6vp2Q/J7y9R84kKJHMWhkxoz9HDJMc3i1wRHoCHOQiitg704Q3
-	O
-X-Google-Smtp-Source: AGHT+IEq4xnmzu9K7n12mxaWA9qzQSfvpRqdDTuHMyO/4MaFS9Y5Gt9SISBWF9tECiZdKT4/BW0D6w==
-X-Received: by 2002:a17:902:7c06:b0:1fd:a0ec:2f4c with SMTP id d9443c01a7336-1ff4cea877dmr11144205ad.33.1722477221999;
-        Wed, 31 Jul 2024 18:53:41 -0700 (PDT)
-Received: from dread.disaster.area (pa49-181-47-239.pa.nsw.optusnet.com.au. [49.181.47.239])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-1fed7ee4d16sm126773075ad.146.2024.07.31.18.53.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 31 Jul 2024 18:53:41 -0700 (PDT)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1sZL0d-000xWb-0g;
-	Thu, 01 Aug 2024 11:53:39 +1000
-Date: Thu, 1 Aug 2024 11:53:39 +1000
-From: Dave Chinner <david@fromorbit.com>
-To: Johannes Bauer <canjzymsaxyt@spornkuller.de>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: Modification of block device by R/O mount
-Message-ID: <Zqrqo1lIrsxdm7AP@dread.disaster.area>
-References: <39c23608-8e20-40ad-84a3-4d4c0f9468c0@spornkuller.de>
+	s=arc-20240116; t=1722493109; c=relaxed/simple;
+	bh=avmFWRU+y38sBhrFGIAtblO78YRuwiFY4dEKSP7Tij0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=bjEYpbf8vEP9ynCg9T6LLosx82aXtcO9ZDhQMR74UYxuPo3qnbRUEA2zP/MB77LgHAY41kbHVXnHH8JJklTv31ZJj19QXaTmNhk2s5qbOXCTjy1F9VP3nCYNcminR88bAXLMzFaKWeRV2F2Oad9JZLScKfikVRKGnngc+tS6TG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=spornkuller.de; spf=pass smtp.mailfrom=spornkuller.de; dkim=pass (2048-bit key) header.d=spornkuller.de header.i=@spornkuller.de header.b=ai9IXXGT; arc=none smtp.client-ip=89.58.8.206
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=spornkuller.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=spornkuller.de
+Received: from [IPV6:2a00:79c0:74e:4001:9dcc:927a:42a3:4b74] (unknown [IPv6:2a00:79c0:74e:4001:9dcc:927a:42a3:4b74])
+	by spornkuller.de (Postfix) with ESMTPSA id BD70B636FCB;
+	Thu,  1 Aug 2024 08:18:23 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=spornkuller.de;
+	s=dkim202204; t=1722493103;
+	bh=avmFWRU+y38sBhrFGIAtblO78YRuwiFY4dEKSP7Tij0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=ai9IXXGTE61565cNx98UyEvhlvz4J7jdvMwSdS3RDHEBiPvv5OoyvIdqOtzUZ0jKI
+	 0g6kGIBpw6TgYJBXbF0Dmrs5wtPp4zcuPNBMNhmA0tI3wMNCPFi7GHLRpuSaH6F8Yx
+	 rowShNaHbcSzrQtJH5/lfG/gPl/1V3angVu1hXIRRUyCFgYbM5snBp/dz7/z9X/Wxp
+	 TIYCxv7W2sNZMPVoSpXIY7NZN9gEJGRV+RTuP3rEsFPWfnwApcQyQrUfIYizIyLBiQ
+	 gq/12SgN/YIhdCzh7cn1J1+RjjPrGlLm+IRFtPtYk1OEdDEvXSqKCE2PRSAp57RN25
+	 DCfYDr/gxXTwA==
+Message-ID: <bdf2626f-580a-4af2-9fb0-5e3ebe944f95@spornkuller.de>
+Date: Thu, 1 Aug 2024 08:18:23 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <39c23608-8e20-40ad-84a3-4d4c0f9468c0@spornkuller.de>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Modification of block device by R/O mount
+Content-Language: en-US
+To: Dave Chinner <david@fromorbit.com>
+Cc: linux-ext4@vger.kernel.org
+References: <39c23608-8e20-40ad-84a3-4d4c0f9468c0@spornkuller.de>
+ <Zqrqo1lIrsxdm7AP@dread.disaster.area>
+From: Johannes Bauer <canjzymsaxyt@spornkuller.de>
+In-Reply-To: <Zqrqo1lIrsxdm7AP@dread.disaster.area>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Wed, Jul 31, 2024 at 01:16:26PM +0200, Johannes Bauer wrote:
-> Is this expected behavior?
+Hey Dave,
 
-Yes. A read-only mount doesn't mean the filesystem cannot write to
-the block device. All it means is that users cannot make
-modifications to the filesystem contents once the filesystem is
-mounted.
+thanks for your response!
 
-The filesystem may still have to do things like journal recovery on
-a read-only mount which requires writing to the block device, or
-maybe other house-keeping things that happen at mount time which
-require writing updates to the superblock or other metadata.
+Am 01.08.24 um 03:53 schrieb Dave Chinner:
 
-This is not ext4 specific. XFS behaves the same way on read-only
-mounts and, IIRC, JFS, Reiser and most other journalling filesystems
-will also behave the same way.
+>> Is there a way to mitigate it?
+> 
+> If you want to stop the filesystem writing to the block device, you
+> have to set the -block device- to be read only. At this point, the
+> filesystem will refuse to mount if it needs to write to the block
+> device during mount.
 
-> Is there a way to mitigate it?
+But my point is, that is what I am doing -- creating the losetup mapping 
+R/O:
 
-If you want to stop the filesystem writing to the block device, you
-have to set the -block device- to be read only. At this point, the
-filesystem will refuse to mount if it needs to write to the block
-device during mount.
+# losetup --read-only --show -f image.img
+/dev/loop35
 
-Hence you may need to use "-ro,norecovery" on journalled filesystems
-when the block device is read only to get them to mount. However,
-this can expose inconsistent metadata to userspace and weird stuff
-can happen because the journal will not have been recovered...
+# echo foo >/dev/loop35
+bash: echo: write error: Operation not permitted
 
--Dave.
+I.e., the block device is write protected and *yet* it changes content. 
+This is what I find so extremely puzzling, that the file system should 
+not have the capability to change the underlying block device, yet it does.
+
+Cheers,
+Johannes
+
 -- 
-Dave Chinner
-david@fromorbit.com
+"A PC without Windows is like a chocolate cake without mustard."
+
 
