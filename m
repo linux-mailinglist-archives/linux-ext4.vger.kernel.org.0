@@ -1,129 +1,196 @@
-Return-Path: <linux-ext4+bounces-3578-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3579-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05D28943469
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 18:50:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B7009440A6
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 04:12:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B6C8E281368
-	for <lists+linux-ext4@lfdr.de>; Wed, 31 Jul 2024 16:50:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 858AD1F2269F
+	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 02:12:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AB5751BD516;
-	Wed, 31 Jul 2024 16:49:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="a56fyTbl"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D43E1A0720;
+	Thu,  1 Aug 2024 01:24:37 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f43.google.com (mail-io1-f43.google.com [209.85.166.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 737F51BD511
-	for <linux-ext4@vger.kernel.org>; Wed, 31 Jul 2024 16:49:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA45013AA2D;
+	Thu,  1 Aug 2024 01:24:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722444590; cv=none; b=LSlnS53G1NcCoBX2UaIispmiNDDrKdUkfYNJZDCKUCqZA1oBeG19Pp72/210oDWy204ti1PTAj8gbljkq6Jy/AXgoq1si2VbI5czEs/IC+GCsjzBKViMOwP3hBVh0VuArGu+4yDZ+GuOkImrDmD9jA8lGGI/cWeWuf91XTrAWDM=
+	t=1722475476; cv=none; b=SK3OChJDuuGeUS3e5IbooEktrpzDKeURgJQVxjaPbtetFIha4oos1k3vOe83ltoG1+Ts33PbZzEf1rDvZnOvxTNAezH++dnYLe7qa863CWO4VhaoczE4d3p9dg3oXCzUXUlmYia/5nHBMPnBwSybDxfYGpr8kZY5LEDbNw/CobQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722444590; c=relaxed/simple;
-	bh=8COUR4jon3L8f5VLwM53D1JRLAKJ/oJmYgFrKUa37Js=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=p4ecthceMW+wHKxrk/fTgsO1VLz3cHu5xMraXJwvXebbKUCKydoOXsiuSJs75c13JuKVem0LQ+lKhfUQdkBpYw/ar5CQeofKOWk9NXzzQe12naz88erFOtCJyHrwvAra50RHIL7nKYfc43ez5RbHhGcW71Dny6nd1vHD6Jq4PNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=a56fyTbl; arc=none smtp.client-ip=209.85.166.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-io1-f43.google.com with SMTP id ca18e2360f4ac-812796ac793so30525139f.3
-        for <linux-ext4@vger.kernel.org>; Wed, 31 Jul 2024 09:49:47 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1722444586; x=1723049386; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=V9Gf2Q4Tk9nOZbWGuUSF4zfICmpYu5ZWAJDD+PJGym8=;
-        b=a56fyTblju1VkljlT35HghqyruhAehBE4lbQnJMn+CsQjocg/d03bB8q3RUQOKcpn8
-         2228aW18UJc+BOS6DSknq3mu8oJCvsVuZgAz8fNjeSJA8pbV6wlxhT+Qe4c7YblZ/PXW
-         nNCCFwYlp1iZEKv7FLGXCb4v4cZEqTpPlTHYSYu3q4hJPagybOlBY/Zdl1elSpCHMAS/
-         Fy/FpDfd+DmmozEoYf2c4t4jQMRiTRTvXmGRDsqVAMmiOZqerp+p7MviqkezKv4d3Vue
-         coVIfiSMuaSW+dbK95Y4KLReWrbe5NlxCfP6Bvp5uX3bIXl/CK4mNVuqMChS4bQ44bm2
-         EP3A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722444586; x=1723049386;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=V9Gf2Q4Tk9nOZbWGuUSF4zfICmpYu5ZWAJDD+PJGym8=;
-        b=dJMmb2P1wVO3J8OqYRDwXXLWEyfv7i7n6SzY7wt1fVZnQWEqhWiike5MGLt0hFlecb
-         EY/fOMkYdrbCBIABsm/Klg/hfQsCZztKDDqC6prW6FRImfANnw6skOPjRjG9eWnnnZLx
-         S3BoUShCHvgKrhmWiQxFfdBUsj1SMH/HgHKmF/5og2pHLTe3osD3fLry5hFrDNKLYzHa
-         3zKDWnlQTlBOslbsnkNvgVc5FV9/yh2eNaUqB/c1cxbm3PIhux3/F2B/mpQOJ4QkmPCj
-         ASMDyrAOj98g02Zt4zrGzDbNnQqsUNBsVO7dCczmk2x6JGrJEvprwltSbPjxc8EZv6g+
-         J28Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXOoeqQH8ONqzGGeSQTEZ93sdW6psVqDkKyQIUzHB4BbIBYCu42BofR+ebqyIFNWvWlcuCGPKOIZP6u@vger.kernel.org
-X-Gm-Message-State: AOJu0YwatWX7x1bIrJPnTywMM7ZhbOYAgouU9dtBpkOlwC8GuVwwVesM
-	La7WK4pi3kSWWc9lw4P9MMtncXkERX3HGluCWJVsmJwyifdv9jVGhR7c9So0QEc=
-X-Google-Smtp-Source: AGHT+IEk+lGB0Kz5JVSDo0ASBT9BQfvixOonepbfiFsTxqUQPKZroqdGrUESKpSIwV9EY/KvPOv8jA==
-X-Received: by 2002:a5e:c116:0:b0:81f:9219:4494 with SMTP id ca18e2360f4ac-81f92194514mr1019042139f.2.1722444586625;
-        Wed, 31 Jul 2024 09:49:46 -0700 (PDT)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 8926c6da1cb9f-4c29fc0a133sm3243209173.125.2024.07.31.09.49.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 31 Jul 2024 09:49:45 -0700 (PDT)
-Message-ID: <45a5132a-592b-4fcb-abaa-89cec26a0334@kernel.dk>
-Date: Wed, 31 Jul 2024 10:49:44 -0600
+	s=arc-20240116; t=1722475476; c=relaxed/simple;
+	bh=szTeyMQLDM3wAMn9EegK2Gei3FbTHD59zf+v7vtmfII=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=ONjNk7Dl1QyJGNZOTrZA3v18595kn+fkBt7HIjVHEbP56S01JgyS1E8g0rVrDREjcUyr62dOfxus3VY5dssoOsbvGepcBay+Z/J312xFYaNnelxznl9b11eHtA95IVSZn33aT0xbZk9QFqjldP6/Enmn9tgthzpI5vPVtC8yVJQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WZB801gdkz4f3jHk;
+	Thu,  1 Aug 2024 09:24:16 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 307991A06D7;
+	Thu,  1 Aug 2024 09:24:29 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgCnzYPL46pmPwO0AQ--.21094S2;
+	Thu, 01 Aug 2024 09:24:29 +0800 (CST)
+Subject: Re: [PATCH v3 6/8] ext4: move escape handle to futher improve
+ jbd2_journal_write_metadata_buffer
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
+ jack@suse.com
+References: <20240731092910.2383048-1-shikemeng@huaweicloud.com>
+ <20240731092910.2383048-7-shikemeng@huaweicloud.com>
+ <a3fe84d8-62b6-fa5e-a088-15b34fab6063@huaweicloud.com>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <a4c6f818-ec38-67a2-35b4-c27726ae0734@huaweicloud.com>
+Date: Thu, 1 Aug 2024 09:24:27 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 6.1 000/440] 6.1.103-rc1 review
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- Naresh Kamboju <naresh.kamboju@linaro.org>,
- Anders Roxell <anders.roxell@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, stable@vger.kernel.org,
- patches@lists.linux.dev, linux-kernel@vger.kernel.org,
- torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de, jonathanh@nvidia.com,
- f.fainelli@gmail.com, sudipm.mukherjee@gmail.com, srw@sladewatkins.net,
- rwarsow@gmx.de, conor@kernel.org, allen.lkml@gmail.com, broonie@kernel.org,
- linux-ext4 <linux-ext4@vger.kernel.org>,
- linux-block <linux-block@vger.kernel.org>, Arnd Bergmann <arnd@arndb.de>
-References: <20240730151615.753688326@linuxfoundation.org>
- <CA+G9fYuGGbhKgt6dD2pBCK1y4M3-KUhPZcw21gYtUFzQ32KLdg@mail.gmail.com>
- <ad4543e3-53bf-4e2c-8a3c-1e21b9cfa246@kernel.dk>
- <ea202d37-7460-4e45-9e19-6a2b23ada0a0@suswa.mountain>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ea202d37-7460-4e45-9e19-6a2b23ada0a0@suswa.mountain>
-Content-Type: text/plain; charset=UTF-8
+In-Reply-To: <a3fe84d8-62b6-fa5e-a088-15b34fab6063@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCnzYPL46pmPwO0AQ--.21094S2
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF13AF18AFykKr45Cr1kAFb_yoW5Kw13pr
+	93KF1fKFWvqr9Fyrn7Ww4DZryYgrWkWr17K3W3Gas3tFZY9wn2gF4jvryrGa4jyrWvka18
+	XFyjqFyxuwnIkFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvC14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7I2V7IY0VAS07AlzVAY
+	IcxG8wCY1x0262kKe7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2Kf
+	nxnUUI43ZEXa7VUjuHq7UUUUU==
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On 7/31/24 10:46 AM, Dan Carpenter wrote:
-> On Wed, Jul 31, 2024 at 10:13:26AM -0600, Jens Axboe wrote:
->>> ----------
->>>   ## Build
->>> * kernel: 6.1.103-rc1
->>> * git: https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git
->>> * git commit: a90fe3a941868870c281a880358b14d42f530b07
->>> * git describe: v6.1.102-441-ga90fe3a94186
->>> * test details:
->>> https://qa-reports.linaro.org/lkft/linux-stable-rc-linux-6.1.y/build/v6.1.102-441-ga90fe3a94186
+
+
+on 7/31/2024 8:17 PM, Zhang Yi wrote:
+> The title: "ext4: move escape handle..." should be "jbd2: move escape handle..."
+> 
+Sorry for this, will fix it in next version. Thanks!
+> Thanks,
+> Yi.
+> 
+> On 2024/7/31 17:29, Kemeng Shi wrote:
+>> Move escape handle to futher improve code readability and remove some
+>> repeat check.
 >>
->> I built and booted 6.1.103-rc3 and didn't hit anything. Does it still
->> trigger with that one? If yes, how do I reproduce this?
+>> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+>> ---
+>>  fs/jbd2/journal.c | 49 +++++++++++++++++++++++------------------------
+>>  1 file changed, 24 insertions(+), 25 deletions(-)
 >>
->> There are no deadline changes since 6.1.102, and the block side is just
->> some integrity bits, which don't look suspicious. The other part this
->> could potentially be is the sbitmap changes, but...
+>> diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
+>> index f17d05bc61df..85273fb1accb 100644
+>> --- a/fs/jbd2/journal.c
+>> +++ b/fs/jbd2/journal.c
+>> @@ -281,6 +281,16 @@ static void journal_kill_thread(journal_t *journal)
+>>  	write_unlock(&journal->j_state_lock);
+>>  }
+>>  
+>> +static inline bool jbd2_data_needs_escaping(char *data)
+>> +{
+>> +	return *((__be32 *)data) == cpu_to_be32(JBD2_MAGIC_NUMBER);
+>> +}
+>> +
+>> +static inline void jbd2_data_do_escape(char *data)
+>> +{
+>> +	*((unsigned int *)data) = 0;
+>> +}
+>> +
+>>  /*
+>>   * jbd2_journal_write_metadata_buffer: write a metadata buffer to the journal.
+>>   *
+>> @@ -319,7 +329,6 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>>  				  sector_t blocknr)
+>>  {
+>>  	int do_escape = 0;
+>> -	char *mapped_data;
+>>  	struct buffer_head *new_bh;
+>>  	struct folio *new_folio;
+>>  	unsigned int new_offset;
+>> @@ -350,8 +359,13 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>>  	if (jh_in->b_frozen_data) {
+>>  		new_folio = virt_to_folio(jh_in->b_frozen_data);
+>>  		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
+>> -		mapped_data = jh_in->b_frozen_data;
+>> +		do_escape = jbd2_data_needs_escaping(jh_in->b_frozen_data);
+>> +		if (do_escape)
+>> +			jbd2_data_do_escape(jh_in->b_frozen_data);
+>>  	} else {
+>> +		char *tmp;
+>> +		char *mapped_data;
+>> +
+>>  		new_folio = bh_in->b_folio;
+>>  		new_offset = offset_in_folio(new_folio, bh_in->b_data);
+>>  		mapped_data = kmap_local_folio(new_folio, new_offset);
+>> @@ -363,21 +377,13 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>>  		 */
+>>  		jbd2_buffer_frozen_trigger(jh_in, mapped_data,
+>>  					   jh_in->b_triggers);
+>> -	}
+>> -
+>> -	/*
+>> -	 * Check for escaping
+>> -	 */
+>> -	if (*((__be32 *)mapped_data) == cpu_to_be32(JBD2_MAGIC_NUMBER))
+>> -		do_escape = 1;
+>> -	if (!jh_in->b_frozen_data)
+>> +		do_escape = jbd2_data_needs_escaping(mapped_data);
+>>  		kunmap_local(mapped_data);
+>> -
+>> -	/*
+>> -	 * Do we need to do a data copy?
+>> -	 */
+>> -	if (do_escape && !jh_in->b_frozen_data) {
+>> -		char *tmp;
+>> +		/*
+>> +		 * Do we need to do a data copy?
+>> +		 */
+>> +		if (!do_escape)
+>> +			goto escape_done;
+>>  
+>>  		spin_unlock(&jh_in->b_state_lock);
+>>  		tmp = jbd2_alloc(bh_in->b_size, GFP_NOFS);
+>> @@ -404,17 +410,10 @@ int jbd2_journal_write_metadata_buffer(transaction_t *transaction,
+>>  copy_done:
+>>  		new_folio = virt_to_folio(jh_in->b_frozen_data);
+>>  		new_offset = offset_in_folio(new_folio, jh_in->b_frozen_data);
+>> +		jbd2_data_do_escape(jh_in->b_frozen_data);
+>>  	}
+>>  
+>> -	/*
+>> -	 * Did we need to do an escaping?  Now we've done all the
+>> -	 * copying, we can finally do so.
+>> -	 * b_frozen_data is from jbd2_alloc() which always provides an
+>> -	 * address from the direct kernels mapping.
+>> -	 */
+>> -	if (do_escape)
+>> -		*((unsigned int *)jh_in->b_frozen_data) = 0;
+>> -
+>> +escape_done:
+>>  	folio_set_bh(new_bh, new_folio, new_offset);
+>>  	new_bh->b_size = bh_in->b_size;
+>>  	new_bh->b_bdev = journal->j_dev;
 >>
 > 
-> I believe these were fixed in -rc2.  We're on -rc3 now.
-
-OK good, thanks.
-
--- 
-Jens Axboe
-
+> 
 
 
