@@ -1,262 +1,255 @@
-Return-Path: <linux-ext4+bounces-3595-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3596-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D4E944E2F
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 16:39:17 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BC0469458E8
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2024 09:34:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 52C1B1C20F62
-	for <lists+linux-ext4@lfdr.de>; Thu,  1 Aug 2024 14:39:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B7782815EA
+	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2024 07:34:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40BCC1A4F38;
-	Thu,  1 Aug 2024 14:39:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B43482EF;
+	Fri,  2 Aug 2024 07:34:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b="rIjEeupL"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GxRt3tVE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f51.google.com (mail-ej1-f51.google.com [209.85.218.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35B3F189B98
-	for <linux-ext4@vger.kernel.org>; Thu,  1 Aug 2024 14:39:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27B514D8BD;
+	Fri,  2 Aug 2024 07:34:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722523149; cv=none; b=iqhZVCvcbzdAVYBzPF1118YDXdnP2yWOaia9jHOMhaHbX5c37S/nVKFgK+859AkKfcKsb4yJQ0akKmJbjIzk1WqQMETGwZae3SehBMNF3gmwCQUJ+Lyq9nuQUs6Neo0uQkKpZcFNKki8sSs5RluG4jEXRspV5jX13bgo7PuFukI=
+	t=1722584080; cv=none; b=uK8kAliTyxEub//RZ7hGRIxhZIQnv4Ky9PI7B4iirIf0kWOJ0MaDvB2Jmp6CC6VZvGTHREXkOPHUia0/BWf582OMHWCFnsX13cqzmRNzOAaEgfm0WskbKQ+XoIxxrODmzf1tnKjm3orl7+b+z3boPCUJRHeebiiOX5YaxBpvPW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722523149; c=relaxed/simple;
-	bh=cxb0uqdh31axH/cKN4VDKaqd5OG9AK2gmKD/3foMa5Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=oS7m1jsdmgDxZGKDX1Wm6VHKHtd9aEJXqEW/zRuYh0smEvEn5eixDzY1FP0ElapWa1+kXkjhiFWBqRmSzedl1VJLK/MK17IliyP3mTo1nQGaCfp6GWGOPrdrg8QGpmxSVDYn0cx70m+B863egISvTx18jdWj+URcatXuHmxQiQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com; spf=fail smtp.mailfrom=infogain.com; dkim=pass (2048-bit key) header.d=infogain-com.20230601.gappssmtp.com header.i=@infogain-com.20230601.gappssmtp.com header.b=rIjEeupL; arc=none smtp.client-ip=209.85.218.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=infogain.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=infogain.com
-Received: by mail-ej1-f51.google.com with SMTP id a640c23a62f3a-a7ac449a0e6so600950866b.1
-        for <linux-ext4@vger.kernel.org>; Thu, 01 Aug 2024 07:39:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=infogain-com.20230601.gappssmtp.com; s=20230601; t=1722523145; x=1723127945; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HG2f4Kd2K4/9MIJAaucwbOj4OuPoS6yz1qIeQtu+inU=;
-        b=rIjEeupLHv9fwX9pMGgxpsAo5iYm5CpvnKReQFpZpZOk2xx6et2L/21v6sxRbJmzrB
-         JnN3IxW1GXk9zyIuB7zpNGhAY6FNNEGMPlbOqN31SwEXNI+GBKltHk0BPkXTgJj2ANGt
-         K1iojNMjFHfRyYcWH3xNeVEFh7uIQT0iWH5thvYzStads7nUbg3UaYniDcV2TqRDrfMe
-         lXsLS/ltQtDvOhkYo0GZSHiUgdnIU2uxyeFPGcgK539Q9N4TGBShnAFIOiOt1l1lodsl
-         TzHZUiwaJwp9mej0dwUKnwx+TMcXtnLU5Et3+ZJ7UH8rHo60dfsrfaccfVHzvws790KM
-         L04w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722523145; x=1723127945;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=HG2f4Kd2K4/9MIJAaucwbOj4OuPoS6yz1qIeQtu+inU=;
-        b=fFEfd1tos5HkioYXXV1ACifr0O6yNJ6sJKfWeXZOwoxD18Ld3bMVH7lBW6osh8smPs
-         TPD4AbJUAg2lz9GT1JiN1ejVRDV8yIfQcjz/iR+xt8ieNaXA4Vvs1+Dt8MVt5L+Uhst3
-         DQA3NSYHDIrPloxC/qcfJpmRUtHBAx526BukyBCU++HViuVHcleeeTgh7spqYHPC4qJ1
-         nMqNWS2pDI0qSy557TUAcwhgGC0tD/n9pv/vHpE1HaQd8xgwoU+fABDbxME3nxlJ/zcl
-         opx0KPGOJciUe2BB6durAkgq4U9a5HMC5I783aDgZD4jPiCR7Qj+c8FQf07VdLM+owyp
-         Lgmw==
-X-Forwarded-Encrypted: i=1; AJvYcCUQLaL2mNK4b+klsGr2oK4E71YEikfVUbrv/tTvnX7fxLs4Chh6WIE9McMonvtKRSyt6Ou2XxyfXjpj9QHhz7dggJ1aLefnStRPFg==
-X-Gm-Message-State: AOJu0Yw91jXJT/M9jhH0PpwpstzPJrz3cj0enEoRy5iLEFyn6pKRxLKH
-	FKGplN0oo7rniARWhkbJ/xwDASvm4hfRiBovV674YwrLx7qYp0fl8G8E2lcPJfmzdWNwG7eHzjM
-	gE/Y=
-X-Google-Smtp-Source: AGHT+IEYU+xzrcCJWLNpoBtj9pA19ybmUUKWgMMJqzDfViG3QzROmIlMFS1nzgzWerpKk2VDCIaW7g==
-X-Received: by 2002:a17:907:d86:b0:a7a:a30b:7b94 with SMTP id a640c23a62f3a-a7dc4fa95ccmr32488266b.28.1722523144746;
-        Thu, 01 Aug 2024 07:39:04 -0700 (PDT)
-Received: from localhost.localdomain (apn-31-0-3-137.dynamic.gprs.plus.pl. [31.0.3.137])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a7acad418f1sm902067666b.135.2024.08.01.07.39.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 01 Aug 2024 07:39:04 -0700 (PDT)
-From: =?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: =?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>
-Subject: [PATCH] kernel/ext4: nested locking for xattr inode
-Date: Thu,  1 Aug 2024 16:38:27 +0200
-Message-Id: <20240801143827.19135-1-wojciech.gladysz@infogain.com>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1722584080; c=relaxed/simple;
+	bh=Y7oUZFzs9JdiSCi+7GgFen9Y7E+A3M4dKqm1FlJXs5Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=TikC0f2a09/iw8TNROpm02/kIGwRw09L8MWUNiQ4hiy8CsRVTKMDSLsgyzOHRSvrLiI9w9d+jhxH48xLUcN3af2hUzTZe4hGyI0wjZUMKW9tIeJEFWZAFnuSKFcK85I5NehB9tQEmdY4OT8qCUWaw3Xur7TtKiye7jgXefT2wm8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GxRt3tVE; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4727JmT4023838;
+	Fri, 2 Aug 2024 07:34:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
+	:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pp1; bh=/gT1HipQeU5sVnl5LRkK8oayYcA
+	U5Hy2f855m8tVuWE=; b=GxRt3tVEOLkkqoBT2A9GRCfgPCQzmwren5esbT8GDun
+	X2PyZFU8ux8kZSDzx5pxjXovxrx6MkcColJVwHDmGVe4Qm0zp1mezxRzOpqiMAKB
+	zs1I9QKXmJdmnUONQ8DLpVd52XlU66LR24jjg3rhxDMfilyQaLse/E7SCTpuwKuX
+	F2lMH0eSyj6lTD7E2Fr+PCACcJvwaZhZ9LVwh6OLy2H7XpDstiKMYP3VaLsIcixY
+	L5+EbGMudCTLF3d1x5PHPpujMznI4E2eZ3l+abNR3VsiGRHjSagssm/zCAIcY2k3
+	GSYsG6ONhNdaRKX8OmtFxqLpWWM1GesBw75T4OB32Cg==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40rp8vghmt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Aug 2024 07:34:11 +0000 (GMT)
+Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4727YBie017758;
+	Fri, 2 Aug 2024 07:34:11 GMT
+Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40rp8vghmr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Aug 2024 07:34:11 +0000 (GMT)
+Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 4723FXZ8018863;
+	Fri, 2 Aug 2024 07:34:10 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40nc7q634k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 02 Aug 2024 07:34:10 +0000
+Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4727Y6VC21693058
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 2 Aug 2024 07:34:08 GMT
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 6CE0B20067;
+	Fri,  2 Aug 2024 07:34:06 +0000 (GMT)
+Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 99AEF2005A;
+	Fri,  2 Aug 2024 07:34:04 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.195.46.217])
+	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri,  2 Aug 2024 07:34:04 +0000 (GMT)
+Date: Fri, 2 Aug 2024 13:04:02 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
+        yi.zhang@huawei.com, yangerkun@huawei.com,
+        Baokun Li <libaokun1@huawei.com>
+Subject: Re: [PATCH 10/20] ext4: get rid of ppath in
+ ext4_ext_create_new_leaf()
+Message-ID: <ZqyL6rmtwl6N4MWR@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
+ <20240710040654.1714672-11-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240710040654.1714672-11-libaokun@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wKEMLnYKOE5DL0znAtdydpP9edbY7Rdy
+X-Proofpoint-ORIG-GUID: b0B-8raEEwRxqDGsz0eBhM6QQYFGNQz4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-02_04,2024-08-01_01,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ mlxlogscore=770 spamscore=0 suspectscore=0 phishscore=0 clxscore=1015
+ lowpriorityscore=0 bulkscore=0 impostorscore=0 priorityscore=1501
+ mlxscore=0 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408020047
 
-Add nested locking with I_MUTEX_XATTR subclass to avoid lockdep warning
-while handling xattr inode on file open syscall at ext4_xattr_inode_iget.
+On Wed, Jul 10, 2024 at 12:06:44PM +0800, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
+> 
+> The use of path and ppath is now very confusing, so to make the code more
+> readable, pass path between functions uniformly, and get rid of ppath.
+> 
+> To get rid of the ppath in ext4_ext_create_new_leaf(), the following is
+> done here:
+> 
+>  * Free the extents path when an error is encountered.
+>  * Its caller needs to update ppath if it uses ppath.
+> 
+> No functional changes.
+> 
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Backtrace
-EXT4-fs (loop0): Ignoring removed oldalloc option
-======================================================
-WARNING: possible circular locking dependency detected
-5.10.0-syzkaller #0 Not tainted
-------------------------------------------------------
-syz-executor543/2794 is trying to acquire lock:
-ffff8880215e1a48 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:782 [inline]
-ffff8880215e1a48 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}, at: ext4_xattr_inode_iget+0x42a/0x5c0 fs/ext4/xattr.c:425
+Hi Baokun,
 
-but task is already holding lock:
-ffff8880215e3278 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x136d/0x19c0 fs/ext4/inode.c:5559
+The changes look good to me, feel free to add:
 
-which lock already depends on the new lock.
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
-the existing dependency chain (in reverse order) is:
+That being said, IIUC i think this patchset also fixes a potential UAF
+bug. Below is a sample trace with dummy values:
 
--> #1 (&ei->i_data_sem/3){++++}-{3:3}:
-       lock_acquire+0x197/0x480 kernel/locking/lockdep.c:5566
-       down_write+0x93/0x180 kernel/locking/rwsem.c:1564
-       ext4_update_i_disksize fs/ext4/ext4.h:3267 [inline]
-       ext4_xattr_inode_write fs/ext4/xattr.c:1390 [inline]
-       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1538 [inline]
-       ext4_xattr_set_entry+0x331a/0x3d80 fs/ext4/xattr.c:1662
-       ext4_xattr_ibody_set+0x124/0x390 fs/ext4/xattr.c:2228
-       ext4_xattr_set_handle+0xc27/0x14e0 fs/ext4/xattr.c:2385
-       ext4_xattr_set+0x219/0x390 fs/ext4/xattr.c:2498
-       ext4_xattr_user_set+0xc9/0xf0 fs/ext4/xattr_user.c:40
-       __vfs_setxattr+0x404/0x450 fs/xattr.c:177
-       __vfs_setxattr_noperm+0x11d/0x4f0 fs/xattr.c:208
-       __vfs_setxattr_locked+0x1f9/0x210 fs/xattr.c:266
-       vfs_setxattr+0x112/0x2c0 fs/xattr.c:283
-       setxattr+0x1db/0x3e0 fs/xattr.c:548
-       path_setxattr+0x15a/0x240 fs/xattr.c:567
-       __do_sys_setxattr fs/xattr.c:582 [inline]
-       __se_sys_setxattr fs/xattr.c:578 [inline]
-       __x64_sys_setxattr+0xc5/0xe0 fs/xattr.c:578
-       do_syscall_64+0x6d/0xa0 arch/x86/entry/common.c:62
-       entry_SYSCALL_64_after_hwframe+0x61/0xcb
+ext4_ext_insert_extent
+  path = *ppath = 2000
+  ext4_ext_create_new_leaf(ppath)
+    path = *ppath = 2000
+    ext4_find_extent(path = 2000)
+      if (depth > path[0].p_maxdepth)
+            kfree(path = 2000);
+            path = NULL;
+      path = kcalloc() = 3000
+      ...
+      return path;
+  path = 3000
+  *ppath = 3000;
+  return;
+/* here path is still 2000 *, UAF! */
+eh = path[depth].p_hdr 
 
--> #0 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:2988 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3113 [inline]
-       validate_chain+0x1695/0x58f0 kernel/locking/lockdep.c:3729
-       __lock_acquire+0x12fd/0x20d0 kernel/locking/lockdep.c:4955
-       lock_acquire+0x197/0x480 kernel/locking/lockdep.c:5566
-       down_write+0x93/0x180 kernel/locking/rwsem.c:1564
-       inode_lock include/linux/fs.h:782 [inline]
-       ext4_xattr_inode_iget+0x42a/0x5c0 fs/ext4/xattr.c:425
-       ext4_xattr_inode_get+0x138/0x410 fs/ext4/xattr.c:485
-       ext4_xattr_move_to_block fs/ext4/xattr.c:2580 [inline]
-       ext4_xattr_make_inode_space fs/ext4/xattr.c:2682 [inline]
-       ext4_expand_extra_isize_ea+0xe70/0x1bb0 fs/ext4/xattr.c:2774
-       __ext4_expand_extra_isize+0x304/0x3f0 fs/ext4/inode.c:5898
-       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5941 [inline]
-       __ext4_mark_inode_dirty+0x591/0x810 fs/ext4/inode.c:6018
-       ext4_setattr+0x1400/0x19c0 fs/ext4/inode.c:5562
-       notify_change+0xbb6/0xe60 fs/attr.c:435
-       do_truncate+0x1de/0x2c0 fs/open.c:64
-       handle_truncate fs/namei.c:2970 [inline]
-       do_open fs/namei.c:3311 [inline]
-       path_openat+0x29f3/0x3290 fs/namei.c:3425
-       do_filp_open+0x20b/0x450 fs/namei.c:3452
-       do_sys_openat2+0x124/0x460 fs/open.c:1207
-       do_sys_open fs/open.c:1223 [inline]
-       __do_sys_open fs/open.c:1231 [inline]
-       __se_sys_open fs/open.c:1227 [inline]
-       __x64_sys_open+0x221/0x270 fs/open.c:1227
-       do_syscall_64+0x6d/0xa0 arch/x86/entry/common.c:62
-       entry_SYSCALL_64_after_hwframe+0x61/0xcb
+I'm not completely sure if we can hit (depth > path[0].p_maxdepth) in the
+above codepath but I think the flow is still a bit fragile. Maybe this
+should be fixed in a separate patch first. What do you think?
 
-other info that might help us debug this:
+Regards,
+ojaswin
 
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(&ei->i_data_sem/3);
-                               lock(&ea_inode->i_rwsem#7/1);
-                               lock(&ei->i_data_sem/3);
-  lock(&ea_inode->i_rwsem#7/1);
-
- *** DEADLOCK ***
-
-5 locks held by syz-executor543/2794:
- #0: ffff888026fbc448 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x4a/0x2a0 fs/namespace.c:365
- #1: ffff8880215e3488 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:782 [inline]
- #1: ffff8880215e3488 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: do_truncate+0x1cf/0x2c0 fs/open.c:62
- #2: ffff8880215e3310 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_setattr+0xec4/0x19c0 fs/ext4/inode.c:5519
- #3: ffff8880215e3278 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x136d/0x19c0 fs/ext4/inode.c:5559
- #4: ffff8880215e30c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
- #4: ffff8880215e30c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5938 [inline]
- #4: ffff8880215e30c8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4fb/0x810 fs/ext4/inode.c:6018
-
-stack backtrace:
-CPU: 1 PID: 2794 Comm: syz-executor543 Not tainted 5.10.0-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
-Call Trace:
- __dump_stack lib/dump_stack.c:77 [inline]
- dump_stack+0x177/0x211 lib/dump_stack.c:118
- print_circular_bug+0x146/0x1b0 kernel/locking/lockdep.c:2002
- check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2123
- check_prev_add kernel/locking/lockdep.c:2988 [inline]
- check_prevs_add kernel/locking/lockdep.c:3113 [inline]
- validate_chain+0x1695/0x58f0 kernel/locking/lockdep.c:3729
- __lock_acquire+0x12fd/0x20d0 kernel/locking/lockdep.c:4955
- lock_acquire+0x197/0x480 kernel/locking/lockdep.c:5566
- down_write+0x93/0x180 kernel/locking/rwsem.c:1564
- inode_lock include/linux/fs.h:782 [inline]
- ext4_xattr_inode_iget+0x42a/0x5c0 fs/ext4/xattr.c:425
- ext4_xattr_inode_get+0x138/0x410 fs/ext4/xattr.c:485
- ext4_xattr_move_to_block fs/ext4/xattr.c:2580 [inline]
- ext4_xattr_make_inode_space fs/ext4/xattr.c:2682 [inline]
- ext4_expand_extra_isize_ea+0xe70/0x1bb0 fs/ext4/xattr.c:2774
- __ext4_expand_extra_isize+0x304/0x3f0 fs/ext4/inode.c:5898
- ext4_try_to_expand_extra_isize fs/ext4/inode.c:5941 [inline]
- __ext4_mark_inode_dirty+0x591/0x810 fs/ext4/inode.c:6018
- ext4_setattr+0x1400/0x19c0 fs/ext4/inode.c:5562
- notify_change+0xbb6/0xe60 fs/attr.c:435
- do_truncate+0x1de/0x2c0 fs/open.c:64
- handle_truncate fs/namei.c:2970 [inline]
- do_open fs/namei.c:3311 [inline]
- path_openat+0x29f3/0x3290 fs/namei.c:3425
- do_filp_open+0x20b/0x450 fs/namei.c:3452
- do_sys_openat2+0x124/0x460 fs/open.c:1207
- do_sys_open fs/open.c:1223 [inline]
- __do_sys_open fs/open.c:1231 [inline]
- __se_sys_open fs/open.c:1227 [inline]
- __x64_sys_open+0x221/0x270 fs/open.c:1227
- do_syscall_64+0x6d/0xa0 arch/x86/entry/common.c:62
- entry_SYSCALL_64_after_hwframe+0x61/0xcb
-RIP: 0033:0x7f0cde4ea229
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd81d1c978 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
-RAX: ffffffffffffffda RBX: 0030656c69662f30 RCX: 00007f0cde4ea229
-RDX: 0000000000000089 RSI: 00000000000a0a00 RDI: 00000000200001c0
-RBP: 2f30656c69662f2e R08: 0000000000208000 R09: 0000000000208000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd81d1c9c0
-R13: 00007ffd81d1ca00 R14: 0000000000080000 R15: 0000000000000003
-EXT4-fs error (device loop0): ext4_expand_extra_isize_ea:2730: inode #13: comm syz-executor543: corrupted in-inode xattr
-
-Signed-off-by: Wojciech Gładysz <wojciech.gladysz@infogain.com>
----
- fs/ext4/xattr.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 46ce2f21fef9..a6bc9a22a8af 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -458,7 +458,7 @@ static int ext4_xattr_inode_iget(struct inode *parent, unsigned long ea_ino,
- 		ext4_set_inode_state(inode, EXT4_STATE_LUSTRE_EA_INODE);
- 		ext4_xattr_inode_set_ref(inode, 1);
- 	} else {
--		inode_lock(inode);
-+		inode_lock_nested(inode, I_MUTEX_XATTR);
- 		inode->i_flags |= S_NOQUOTA;
- 		inode_unlock(inode);
- 	}
-@@ -1039,7 +1039,7 @@ static int ext4_xattr_inode_update_ref(handle_t *handle, struct inode *ea_inode,
- 	s64 ref_count;
- 	int ret;
- 
--	inode_lock(ea_inode);
-+	inode_lock_nested(ea_inode, I_MUTEX_XATTR);
- 
- 	ret = ext4_reserve_inode_write(handle, ea_inode, &iloc);
- 	if (ret)
--- 
-2.35.3
-
+ ---
+>  fs/ext4/extents.c | 41 +++++++++++++++++++++--------------------
+>  1 file changed, 21 insertions(+), 20 deletions(-)
+> 
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 6dfb5d03e197..0d6ce9e74b01 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -1397,13 +1397,12 @@ static int ext4_ext_grow_indepth(handle_t *handle, struct inode *inode,
+>   * finds empty index and adds new leaf.
+>   * if no free index is found, then it requests in-depth growing.
+>   */
+> -static int ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+> -           unsigned int mb_flags,
+> -           unsigned int gb_flags,
+> -           struct ext4_ext_path **ppath,
+> -           struct ext4_extent *newext)
+> +static struct ext4_ext_path *
+> +ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+> +      unsigned int mb_flags, unsigned int gb_flags,
+> +      struct ext4_ext_path *path,
+> +      struct ext4_extent *newext)
+>  {
+> - struct ext4_ext_path *path = *ppath;
+>   struct ext4_ext_path *curp;
+>   int depth, i, err = 0;
+>  
+> @@ -1424,28 +1423,24 @@ static int ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+>      * entry: create all needed subtree and add new leaf */
+>     err = ext4_ext_split(handle, inode, mb_flags, path, newext, i);
+>     if (err)
+> -     goto out;
+> +     goto errout;
+>  
+>     /* refill path */
+>     path = ext4_find_extent(inode,
+>             (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+>             path, gb_flags);
+> -   if (IS_ERR(path))
+> -     err = PTR_ERR(path);
+>   } else {
+>     /* tree is full, time to grow in depth */
+>     err = ext4_ext_grow_indepth(handle, inode, mb_flags);
+>     if (err)
+> -     goto out;
+> +     goto errout;
+>  
+>     /* refill path */
+>     path = ext4_find_extent(inode,
+>            (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+>             path, gb_flags);
+> -   if (IS_ERR(path)) {
+> -     err = PTR_ERR(path);
+> -     goto out;
+> -   }
+> +   if (IS_ERR(path))
+> +     return path;
+>  
+>     /*
+>      * only first (depth 0 -> 1) produces free space;
+> @@ -1457,9 +1452,11 @@ static int ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+>       goto repeat;
+>     }
+>   }
+> -out:
+> - *ppath = IS_ERR(path) ? NULL : path;
+> - return err;
+> + return path;
+> +
+> +errout:
+> + ext4_free_ext_path(path);
+> + return ERR_PTR(err);
+>  }
+>  
+>  /*
+> @@ -2112,10 +2109,14 @@ int ext4_ext_insert_extent(handle_t *handle, struct inode *inode,
+>    */
+>   if (gb_flags & EXT4_GET_BLOCKS_METADATA_NOFAIL)
+>     mb_flags |= EXT4_MB_USE_RESERVED;
+> - err = ext4_ext_create_new_leaf(handle, inode, mb_flags, gb_flags,
+> -              ppath, newext);
+> - if (err)
+> + path = ext4_ext_create_new_leaf(handle, inode, mb_flags, gb_flags,
+> +         path, newext);
+> + if (IS_ERR(path)) {
+> +   *ppath = NULL;
+> +   err = PTR_ERR(path);
+>     goto cleanup;
+> + }
+> + *ppath = path;
+>   depth = ext_depth(inode);
+>   eh = path[depth].p_hdr;
+>  
+> -- 
+> 2.39.2
+> 
 
