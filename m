@@ -1,100 +1,101 @@
-Return-Path: <linux-ext4+bounces-3623-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3624-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7720D946691
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Aug 2024 02:51:28 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id B29A0946694
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Aug 2024 02:51:43 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA53282F4B
-	for <lists+linux-ext4@lfdr.de>; Sat,  3 Aug 2024 00:51:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6CDEE282F50
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Aug 2024 00:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574554C98;
-	Sat,  3 Aug 2024 00:51:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED724C84;
+	Sat,  3 Aug 2024 00:51:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WyvbfGHs"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HGFW9qga"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752382C9D;
-	Sat,  3 Aug 2024 00:51:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 983C8A929;
+	Sat,  3 Aug 2024 00:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722646279; cv=none; b=jeEd0FLSGRnT5d6pgYeeI6ROf47QJbxyWCXXDWVTkgittpeTAG6PrFSGedxYAC1UX/0BmXA/4GiTXaGLc2UBldqnQ+W8H3M+uXaoATy3Bvzg7mIPuxfQKvwwZwtd7ZzQFj8dfJQywo7mTLIxW7ta7TxKl7QztiVyJzhWoPx3D5s=
+	t=1722646294; cv=none; b=Z0CRPQVqG7kpNN91sD+EZP5kJ5DGpW6884ZXImmS4Sf+9BDnzJwWZNYE6oarapwBtGz2QClwgXX+8bXEIw/oGtBRWwoB7iqFcIb9MXqpHMmSRGgjSOVuRkc76nRdyKss0kO0iePHuI+ZKUIOj4L7YbJBB9og311EMmaFJrMAaMk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722646279; c=relaxed/simple;
-	bh=RTkxc6I84bdvVPb8GoxG2LV3JLBwNLUiBmnEz8xtXFQ=;
+	s=arc-20240116; t=1722646294; c=relaxed/simple;
+	bh=pY96aYg32/nPw1XpFjrJmIvvF5VZbmfOnUTt7fs5/q4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kwhb+G/GS3jktSEoQtBczTGtQ3T8Kqr3Wfbdvm9EVfwvBypwp5ZNr7NGYcp4rIUGg2Orv8+X5jD6Tta/7UWT8M8/evcbyggCQT2TqlgccJu/bKloJrikWbIJqB/zh0CJqrmrl8sU3G3dwJpA7RjZ+gCeEOBSoqxqUkjCzmsUSSQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WyvbfGHs; arc=none smtp.client-ip=209.85.219.170
+	 Content-Type:Content-Disposition:In-Reply-To; b=amLnMPpmCkTRkxERAO6HRNL/qh1zwu+yXYjMQKn1WdHCvvV927h7ibk7rz43PkTTaPIslGTS46QZ2JLcpTLpO5q58XTtZqvHdRbnO0b6ludmHDx4Vbzo0RG/LXpfeZZX6DALEprg0bo7/N7P2h6xtA5K0ymOUgHnd4Uy+2lC9FI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HGFW9qga; arc=none smtp.client-ip=209.85.222.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e05e4c3228bso7295913276.0;
-        Fri, 02 Aug 2024 17:51:18 -0700 (PDT)
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-7a1e4c75488so507468685a.0;
+        Fri, 02 Aug 2024 17:51:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722646277; x=1723251077; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1722646290; x=1723251090; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iF6lPBu+GXJKCl6fvSnUfVPaRFPsPcznlQW/cUWRjlI=;
-        b=WyvbfGHsgl6+3TVVkjO81wT9eJQWsJd8IYGCN16FnMDL8SwvuboxytMRnHBPpdFwoa
-         PESIuFHIHqAfH2nxf88C025Z6shmThmDJu4lkyM7DjSRX3ipnVnWw1ZAIW3vyedpVY5Y
-         7NhY1TVf5Ik2maZ89WJTdlHt6Aul7w4iymimkdhWder1Houc9JXuUq5OJFXWFkWFzxms
-         q2/eWDlVQ0axdVtYVkhTDg2l8AWqFIWwbde8ZDnUPzgsZTu2YjQGcHClgHNT4IhSrRyU
-         4LOmUZFH/rzEuWbXjr8MxL+wcx1QINu+sbfvfRQoAKKL+4OXYtRwPvCd7Ba0TJ0Nh0br
-         rFvQ==
+        bh=TQ5SH8pjLBofgxa3lURHlA5+O1awYpQHzkcfwFFENrA=;
+        b=HGFW9qgaCR4vIs2RuK+m38P4qzrb4QtN8Kt+dXyJCm/7l+4Ow7K+IkEbycgbM2aHdv
+         dQES3yU/yf+nEWY36BRtLOF7+1/cMrn61aYQ5tIvoUNbw3ZfPjeQ2T6O+tVFFKJIDaZC
+         R8xEmXAip+F7CIis89N33id2OSEsOQ141f0Ig2glj2ACmLyPqBqHsbpbfB8abrhwLb5w
+         aQYQGjEY2BgOrRdWyyQQH5MYGEy0uEGQVugue7PbNkVlePrhYV1Uk6YQ5ztpSrZkbRXF
+         iKsnTWRfK+L86m2XsJ0Ve7btQrh57+zfXxmO/Qe6WITM3P5Rr5CBXAIxkaYJN6syUtSM
+         7N9A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722646277; x=1723251077;
+        d=1e100.net; s=20230601; t=1722646290; x=1723251090;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iF6lPBu+GXJKCl6fvSnUfVPaRFPsPcznlQW/cUWRjlI=;
-        b=rLbZV4tYy5R4SjNFUDMlFo7vzZiPNa/QChkKuWT9/JC1zvN9nYuF5836lrQBxZBA7G
-         7UZkOMtc6oJiDpcZ3xUjJIsiwGH3DwsRkx7pmLWlM0U1dOu8+1HxcT7d4j8G10nK5BPv
-         gxj97ty0q1N8p1C0ht7ajxUK+Ui7uI29VYmR8+NELhB8MI7LL8gmzm/2oNj0OMRHNfqk
-         PiBiA0BDeID1wz8opFaaAtaX8Yjts4ysXifn5K8HLm3ylYqJiLHU9JkxADh8ZapQUTpE
-         Hu5sbWKJFce6U04mesOZ/l9SChswWSTnbqeV9R3A4Ze8ZYQVqUQAAqCa5Vw1Z0/QFGTg
-         siLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVzxyrqEYiwDrcaF9dMjC3JfuofOkuAJ3N5HQyPT3qDqQDq3oRDAPKDUTnOD0Khzl2fOwS8IHDcUYoC@vger.kernel.org, AJvYcCWi1RipZJJ5nZRbrOv3f6ge9ag7hCwQrkH096wUFpbU6Xnwx7Yqk/GSHMRSkeObEhiHJVpQEGjW@vger.kernel.org
-X-Gm-Message-State: AOJu0YziNuO9hYm7yPen7fXNj3W5dA92tHoRkqq5XoYOQ+aXDe9WX+0O
-	eXIQdtwcg9of6NGyCv1L8vXJgt3mmtaVjBFslwkNK9OfQaoERy5xGcSlew==
-X-Google-Smtp-Source: AGHT+IEBTsk5V/+YRzCXjfl8kEnMhrSyiHizEydnoDadPBo+Z5UddHW2msQt0+QfJexIPaxIRc5Hug==
-X-Received: by 2002:a05:6902:2605:b0:e0b:c94f:3040 with SMTP id 3f1490d57ef6-e0bde2f1ac9mr6408100276.27.1722646277292;
-        Fri, 02 Aug 2024 17:51:17 -0700 (PDT)
+        bh=TQ5SH8pjLBofgxa3lURHlA5+O1awYpQHzkcfwFFENrA=;
+        b=L5GUfVyRkyfdH4W7v2DSIQSxBTQb+F02Jaahcg37kD9cmfQUNFfXPf9QtIfR7xCZxz
+         XkBKqQofB6n9ZnR7ZXAj5zdWYClnBqSZQCjIBWNq9HrRg5t1Do7XeZxBz4TRj84qCr/o
+         Apj2alZPvEbBYgZC+g96YsLbGMF1+U+gXRS/opsNHaToYz8+Bq0J426F/FdZQwkOI2uO
+         E5I4ZkTzWGitJaDDkbR3Ah7soMpM8F9oVvZwO8wzAy0uMntEOCy/f1G/yEeytWRw5mR1
+         AOIZAlPQRBQuA54t3YUbhyBdpYsPKXzib68V6oJucdGku5f7Y38QgJIle/lx4fy1c2Dx
+         39Xg==
+X-Forwarded-Encrypted: i=1; AJvYcCWeuO1vBewp5atLZRXDdBso8A75FnBccxLLvpBwexcxvPOIwBJX8PFkLQcL5Qfi58M5XOAxSgQglzs9DFdxKqAg80pfjz3y+kxuRoA8owdLGD827XLwGx9vgWHV/Y4sunNwvQ==
+X-Gm-Message-State: AOJu0Yzy0W0X4zU3T2BdicvU+gyz/TFO/cw/s0T1D0lGQWOtOwE0eFjq
+	4Gwk7YU47V05vemdlJi+silQpfXcM5BNagV4ZGGJDjtJoDCE2m9a
+X-Google-Smtp-Source: AGHT+IFdsjMUvV+iGbAQHXaLtooE3GQF9aY7QdpknGE0opLbaFTs4N7CXmbPb0VloScFpSk8TjkjRw==
+X-Received: by 2002:a05:620a:f01:b0:79d:5c31:718c with SMTP id af79cd13be357-7a34ef032f5mr569864685a.27.1722646290473;
+        Fri, 02 Aug 2024 17:51:30 -0700 (PDT)
 Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4519353cb62sm5818121cf.29.2024.08.02.17.51.16
+        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a34f76f1d7sm130938885a.92.2024.08.02.17.51.29
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 02 Aug 2024 17:51:16 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 9F5DF120006E;
-	Fri,  2 Aug 2024 20:41:42 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Fri, 02 Aug 2024 20:41:42 -0400
-X-ME-Sender: <xms:xnytZp52NZt29jyj0xGj5IbTb_f6XrFQpG_O8PHX7-icOp40OFmSuQ>
-    <xme:xnytZm6R88PfEYALKYgi3prhLO5tWHte0fcIJ2AaJncI7QWxwy28n4pxsmw0GrlRI
-    wpBkIPftghKXMbNnA>
-X-ME-Received: <xmr:xnytZgcYJrD4Gt2ybc0P85ZHMGkEfj3sAI8enALR9-JPJxATxjSKXZDN3TJE2Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrkedugdegtdcutefuodetggdotefrodftvf
+        Fri, 02 Aug 2024 17:51:30 -0700 (PDT)
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id A6EB31200069;
+	Fri,  2 Aug 2024 20:51:29 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Fri, 02 Aug 2024 20:51:29 -0400
+X-ME-Sender: <xms:EX-tZhx7nqZ6mVAz9si0Rt99HSuYfAMyFdZsFSf-KBMnEcoTQEpN3A>
+    <xme:EX-tZhSv22EGxN-HpDJqPqTIl8PqZ_R8xSUUYH3y0MXAYyDgumk7dknab-HzxWuCU
+    1NBKFvdrVresB3CeQ>
+X-ME-Received: <xmr:EX-tZrXbpb-0wZMIa5Rqa2Act1J9BvpDisSk_j5Vc5VM8SL7wic7joLel24>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrkedugdegvdcutefuodetggdotefrodftvf
     curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
     uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
     fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
     ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
-    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
-    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
-    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
-    hmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedt
-X-ME-Proxy: <xmx:xnytZiLxJbfj01Q1XVh3rDYdIVyDkZT6rJ_AhkAVc1dV-n-ruVJ1Cw>
-    <xmx:xnytZtL7ZxWE-hhLpd5TZ-96JsXlb5i9OTYq1-4DtuB4gy_TTHa3hQ>
-    <xmx:xnytZryAA0wI9kGfQTgQA2DP3irLmn4o7Xpn7v0OMRweIZ5zCnwJ7g>
-    <xmx:xnytZpJJFKupnBa-qMnvwhyCGWzoi4vVFjXdk2auOhCEiOAi6QArZw>
-    <xmx:xnytZgZMBYlBWkPDFirQLGbLVyxqlCoy-C3JDgEshvWh8T8GaLI9WWXh>
+    htvghrnhepfedvgfffuefgjeffgeeuvedtfeeuheegfeettdeifedtgeffleetteelteet
+    feeknecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpuggvphgpmhgrphdrnhgrmhgvne
+    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhu
+    nhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqdduje
+    ejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdr
+    nhgrmhgvpdhnsggprhgtphhtthhopedt
+X-ME-Proxy: <xmx:EX-tZjiWwmIdV1DC7xp9x6FZC_Nsy4SfbxQmmeWn5UaCk9c6HIjETg>
+    <xmx:EX-tZjAKtCeb6rBwTbkCr_KxKHuQA4jjfulDFyU2a-8bH-xUO_vRRA>
+    <xmx:EX-tZsIS9i2mEu9Ichv3pMQCpaSXfUWKn2Z6N_1B8eQ5eBrzFSvNkw>
+    <xmx:EX-tZiDaFaD7RkNNQmsHTroD1wUDgSnHmh-RBlY3aUuSarxMlKdqrQ>
+    <xmx:EX-tZnxsd6nJyFHW2rbg7N4B4sDkznPJg8qIJpjB85csvV_RjL6EydTw>
 Feedback-ID: iad51458e:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
- 2 Aug 2024 20:41:42 -0400 (EDT)
-Date: Fri, 2 Aug 2024 17:40:50 -0700
+ 2 Aug 2024 20:51:29 -0400 (EDT)
+Date: Fri, 2 Aug 2024 17:50:37 -0700
 From: Boqun Feng <boqun.feng@gmail.com>
 To: botta633 <bottaawesome633@gmail.com>
 Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
@@ -103,10 +104,11 @@ Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
 	syzkaller@googlegroups.com,
 	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
 	stable@vger.kernel.org
-Subject: Re: [PATCH v4 1/2] locking/lockdep: Forcing subclasses to have same
- name pointer as their parent class
-Message-ID: <Zq18kvtkjD0R4lGX@boqun-archlinux>
+Subject: Re: [PATCH v4 2/2] locking/lockdep: Testing lock class and subclass
+ got the same name pointer
+Message-ID: <Zq1-3bClxgBlhnoq@boqun-archlinux>
 References: <20240715132638.3141-1-bottaawesome633@gmail.com>
+ <20240715132638.3141-2-bottaawesome633@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -115,46 +117,108 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240715132638.3141-1-bottaawesome633@gmail.com>
+In-Reply-To: <20240715132638.3141-2-bottaawesome633@gmail.com>
 
-On Mon, Jul 15, 2024 at 04:26:37PM +0300, botta633 wrote:
+On Mon, Jul 15, 2024 at 04:26:38PM +0300, botta633 wrote:
 > From: Ahmed Ehab <bottaawesome633@gmail.com>
 > 
-> Preventing lockdep_set_subclass from creating a new instance of the
-> string literal. Hence, we will always have the same class->name among
-> parent and subclasses. This prevents kernel panics when looking up a
-> lock class while comparing class locks and class names.
+> Checking if the lockdep_map->name will change when setting the subclass.
+> It shouldn't change so that the lock class and subclass will have the same
+> name
 > 
 > Reported-by: <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
 > Fixes: de8f5e4f2dc1f ("lockdep: Introduce wait-type checks")
 > Cc: <stable@vger.kernel.org>
+
+You seems to miss my comment at v2:
+
+	https://lore.kernel.org/lkml/ZpRKcHNZfsMuACRG@boqun-archlinux/	
+
+, i.e. you don't need the Reported-by, Fixes and Cc tag for the patch
+that adds a test case.
+
 > Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
-
-This looks good to me.
-
-Regards,
-Boqun
-
 > ---
 > v3->v4:
 >     - Fixed subject line truncation.
 > 
->  include/linux/lockdep.h | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+>  lib/locking-selftest.c | 21 +++++++++++++++++++++
+>  1 file changed, 21 insertions(+)
 > 
-> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-> index 08b0d1d9d78b..df8fa5929de7 100644
-> --- a/include/linux/lockdep.h
-> +++ b/include/linux/lockdep.h
-> @@ -173,7 +173,7 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
->  			      (lock)->dep_map.lock_type)
+> diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+> index 6f6a5fc85b42..aeed613799ca 100644
+> --- a/lib/locking-selftest.c
+> +++ b/lib/locking-selftest.c
+> @@ -2710,6 +2710,25 @@ static void local_lock_3B(void)
 >  
->  #define lockdep_set_subclass(lock, sub)					\
-> -	lockdep_init_map_type(&(lock)->dep_map, #lock, (lock)->dep_map.key, sub,\
-> +	lockdep_init_map_type(&(lock)->dep_map, (lock)->dep_map.name, (lock)->dep_map.key, sub,\
->  			      (lock)->dep_map.wait_type_inner,		\
->  			      (lock)->dep_map.wait_type_outer,		\
->  			      (lock)->dep_map.lock_type)
+>  }
+>  
+> + /** 
+
+^ there is a tailing space here, next time you can detect this by using
+checkpatch. Also "/**" style is especially for function signature
+comment, you could just use a "/*" here.
+
+> +  * after setting the subclass the lockdep_map.name changes
+> +  * if we initialize a new string literal for the subclass
+> +  * we will have a new name pointer
+> +  */
+> +static void class_subclass_X1_name_test(void)
+> +{
+> +	printk("  --------------------------------------------------------------------------\n");
+> +	printk("  | class and subclass name test|\n");
+> +	printk("  ---------------------\n");
+> +	const char *name_before_setting_subclass = rwsem_X1.dep_map.name;
+> +	const char *name_after_setting_subclass;
+> +
+> +	WARN_ON(!rwsem_X1.dep_map.name);
+> +	lockdep_set_subclass(&rwsem_X1, 1);
+> +	name_after_setting_subclass = rwsem_X1.dep_map.name;
+> +	WARN_ON(name_before_setting_subclass != name_after_setting_subclass);
+> +}
+> +
+>  static void local_lock_tests(void)
+>  {
+>  	printk("  --------------------------------------------------------------------------\n");
+> @@ -2916,6 +2935,8 @@ void locking_selftest(void)
+>  
+>  	local_lock_tests();
+>  
+> +	class_subclass_X1_name_test();
+> +
+
+I got this in the serial log:
+
+[    0.619454]   --------------------------------------------------------------------------
+[    0.621463]   | local_lock tests |
+[    0.622326]   ---------------------
+[    0.623211]           local_lock inversion  2:  ok  |
+[    0.624904]           local_lock inversion 3A:  ok  |
+[    0.626740]           local_lock inversion 3B:  ok  |
+[    0.628492]   --------------------------------------------------------------------------
+[    0.630513]   | class and subclass name test|
+[    0.631614]   ---------------------
+[    0.632502]       hardirq_unsafe_softirq_safe:  ok  |
+
+two problems here:
+
+1)	The "class and subclass name test" line interrupts the output of
+	testsuite "local_lock tests".
+
+2)	Instead of a WARN_ON(), could you look into using dotest() to
+	print "ok" if the test passes, which is consistent with other
+	tests.
+
+Could you please fix all above problems and send another version of this
+patch (no need to resend the first one)? Thanks!
+
+Regards,
+Boqun
+
+>  	print_testname("hardirq_unsafe_softirq_safe");
+>  	dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE, LOCKTYPE_SPECIAL);
+>  	pr_cont("\n");
 > -- 
 > 2.45.2
+> 
 
