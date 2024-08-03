@@ -1,91 +1,112 @@
-Return-Path: <linux-ext4+bounces-3622-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3623-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id A51589464BB
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2024 22:59:16 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7720D946691
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Aug 2024 02:51:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 168DE1F21233
-	for <lists+linux-ext4@lfdr.de>; Fri,  2 Aug 2024 20:59:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CA53282F4B
+	for <lists+linux-ext4@lfdr.de>; Sat,  3 Aug 2024 00:51:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CEEE61FF0;
-	Fri,  2 Aug 2024 20:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 574554C98;
+	Sat,  3 Aug 2024 00:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="W5TlKkDG"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WyvbfGHs"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-yb1-f170.google.com (mail-yb1-f170.google.com [209.85.219.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BAB71ABEBA;
-	Fri,  2 Aug 2024 20:59:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 752382C9D;
+	Sat,  3 Aug 2024 00:51:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722632347; cv=none; b=gs5IkfJH3QbcgkNYjpbxsqO4PQ+WEC8NgepUzUVax3nuwKNfazbqD8+LqpT4RE/7Ai3ZrkHyFu5B0l8baf3WjEv3sIjuiz2zMjjP421cXck399wsS3tsgjH0agg2h8vMjCFU1dmTDeTKFyr5MCpKAoL8TcAGJ+MnreVUIzlACwM=
+	t=1722646279; cv=none; b=jeEd0FLSGRnT5d6pgYeeI6ROf47QJbxyWCXXDWVTkgittpeTAG6PrFSGedxYAC1UX/0BmXA/4GiTXaGLc2UBldqnQ+W8H3M+uXaoATy3Bvzg7mIPuxfQKvwwZwtd7ZzQFj8dfJQywo7mTLIxW7ta7TxKl7QztiVyJzhWoPx3D5s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722632347; c=relaxed/simple;
-	bh=AMZ09jx4B75eq06v9qwSptsvrNaG0/xLTcQxAVq7P1M=;
+	s=arc-20240116; t=1722646279; c=relaxed/simple;
+	bh=RTkxc6I84bdvVPb8GoxG2LV3JLBwNLUiBmnEz8xtXFQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=upVDj3sNrSbHTCBMZAZmTk3pVVXdKRNayqfCsJlIVbqA9sxA+YmxB9Mone1uDLs1lNVxagxRqD4yfD/jnZSeQfQTrTZjNT/8KethNntyOGFzqfvjztW4t2U3JpjtpKDUN6kD+xbjWynDQwMNOuAsq87q5GgNDtwElUMcC732S2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=W5TlKkDG; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 472FZsJm000895;
-	Fri, 2 Aug 2024 20:58:48 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
-	:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pp1; bh=ZXwEyjfTR6JMviAKfGyOd37s8Vs
-	jISLrMk22g52BjL4=; b=W5TlKkDGjEtnmZ2WADSChV6abqRHO/vuaZue73oJEHB
-	/xKZPR78bBBqEr9S2shJRfDhWbmXmqXcANChzVSmpZ2Kx5K9Jl5UGzaeri8RBeyR
-	Ho+Kw5MSvEmAyX1voEvJ72GO1S4D0Z3Fxy4aNksPo78d8vQPs0IAvKukafi7F++i
-	41Ofl5EKsaG9yS+IibCw7iAhnLTMm17k/vbzraWhGBC61wCAQT6B+XMv07HHSzqe
-	FrXrGLXhkCcqOO1ZO506Ib95nWcWDUhIKtNoaF/BPJwlVS36MJYjWQlt/zL0Qx8e
-	rawN9DIn+8xQrUEUPi8dA1W63VR3aFyD/Kq4aiy+gVw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40rwqwsaye-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Aug 2024 20:58:47 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 472KwkcZ026060;
-	Fri, 2 Aug 2024 20:58:47 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 40rwqwsayb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Aug 2024 20:58:46 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 472IPgAm018797;
-	Fri, 2 Aug 2024 20:58:46 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 40nc7q945q-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 02 Aug 2024 20:58:46 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 472KwgLe33423896
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 2 Aug 2024 20:58:44 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3038D20043;
-	Fri,  2 Aug 2024 20:58:42 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 40EFA20040;
-	Fri,  2 Aug 2024 20:58:40 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.195.46.209])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri,  2 Aug 2024 20:58:40 +0000 (GMT)
-Date: Sat, 3 Aug 2024 02:28:37 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: libaokun@huaweicloud.com
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
-        jack@suse.cz, ritesh.list@gmail.com, linux-kernel@vger.kernel.org,
-        yi.zhang@huawei.com, yangerkun@huawei.com,
-        Baokun Li <libaokun1@huawei.com>
-Subject: Re: [PATCH 20/20] ext4: avoid unnecessary extent path frees and
- allocations
-Message-ID: <Zq1IfX3R7YSf6n5R@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
- <20240710040654.1714672-21-libaokun@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kwhb+G/GS3jktSEoQtBczTGtQ3T8Kqr3Wfbdvm9EVfwvBypwp5ZNr7NGYcp4rIUGg2Orv8+X5jD6Tta/7UWT8M8/evcbyggCQT2TqlgccJu/bKloJrikWbIJqB/zh0CJqrmrl8sU3G3dwJpA7RjZ+gCeEOBSoqxqUkjCzmsUSSQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WyvbfGHs; arc=none smtp.client-ip=209.85.219.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yb1-f170.google.com with SMTP id 3f1490d57ef6-e05e4c3228bso7295913276.0;
+        Fri, 02 Aug 2024 17:51:18 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1722646277; x=1723251077; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=iF6lPBu+GXJKCl6fvSnUfVPaRFPsPcznlQW/cUWRjlI=;
+        b=WyvbfGHsgl6+3TVVkjO81wT9eJQWsJd8IYGCN16FnMDL8SwvuboxytMRnHBPpdFwoa
+         PESIuFHIHqAfH2nxf88C025Z6shmThmDJu4lkyM7DjSRX3ipnVnWw1ZAIW3vyedpVY5Y
+         7NhY1TVf5Ik2maZ89WJTdlHt6Aul7w4iymimkdhWder1Houc9JXuUq5OJFXWFkWFzxms
+         q2/eWDlVQ0axdVtYVkhTDg2l8AWqFIWwbde8ZDnUPzgsZTu2YjQGcHClgHNT4IhSrRyU
+         4LOmUZFH/rzEuWbXjr8MxL+wcx1QINu+sbfvfRQoAKKL+4OXYtRwPvCd7Ba0TJ0Nh0br
+         rFvQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1722646277; x=1723251077;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=iF6lPBu+GXJKCl6fvSnUfVPaRFPsPcznlQW/cUWRjlI=;
+        b=rLbZV4tYy5R4SjNFUDMlFo7vzZiPNa/QChkKuWT9/JC1zvN9nYuF5836lrQBxZBA7G
+         7UZkOMtc6oJiDpcZ3xUjJIsiwGH3DwsRkx7pmLWlM0U1dOu8+1HxcT7d4j8G10nK5BPv
+         gxj97ty0q1N8p1C0ht7ajxUK+Ui7uI29VYmR8+NELhB8MI7LL8gmzm/2oNj0OMRHNfqk
+         PiBiA0BDeID1wz8opFaaAtaX8Yjts4ysXifn5K8HLm3ylYqJiLHU9JkxADh8ZapQUTpE
+         Hu5sbWKJFce6U04mesOZ/l9SChswWSTnbqeV9R3A4Ze8ZYQVqUQAAqCa5Vw1Z0/QFGTg
+         siLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVzxyrqEYiwDrcaF9dMjC3JfuofOkuAJ3N5HQyPT3qDqQDq3oRDAPKDUTnOD0Khzl2fOwS8IHDcUYoC@vger.kernel.org, AJvYcCWi1RipZJJ5nZRbrOv3f6ge9ag7hCwQrkH096wUFpbU6Xnwx7Yqk/GSHMRSkeObEhiHJVpQEGjW@vger.kernel.org
+X-Gm-Message-State: AOJu0YziNuO9hYm7yPen7fXNj3W5dA92tHoRkqq5XoYOQ+aXDe9WX+0O
+	eXIQdtwcg9of6NGyCv1L8vXJgt3mmtaVjBFslwkNK9OfQaoERy5xGcSlew==
+X-Google-Smtp-Source: AGHT+IEBTsk5V/+YRzCXjfl8kEnMhrSyiHizEydnoDadPBo+Z5UddHW2msQt0+QfJexIPaxIRc5Hug==
+X-Received: by 2002:a05:6902:2605:b0:e0b:c94f:3040 with SMTP id 3f1490d57ef6-e0bde2f1ac9mr6408100276.27.1722646277292;
+        Fri, 02 Aug 2024 17:51:17 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id d75a77b69052e-4519353cb62sm5818121cf.29.2024.08.02.17.51.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 02 Aug 2024 17:51:16 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id 9F5DF120006E;
+	Fri,  2 Aug 2024 20:41:42 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Fri, 02 Aug 2024 20:41:42 -0400
+X-ME-Sender: <xms:xnytZp52NZt29jyj0xGj5IbTb_f6XrFQpG_O8PHX7-icOp40OFmSuQ>
+    <xme:xnytZm6R88PfEYALKYgi3prhLO5tWHte0fcIJ2AaJncI7QWxwy28n4pxsmw0GrlRI
+    wpBkIPftghKXMbNnA>
+X-ME-Received: <xmr:xnytZgcYJrD4Gt2ybc0P85ZHMGkEfj3sAI8enALR9-JPJxATxjSKXZDN3TJE2Q>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrkedugdegtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhephedugfduffffteeutddvheeuveelvdfhleelieevtdeguefhgeeuveeiudff
+    iedvnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsg
+    hoqhhunhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieeg
+    qddujeejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigi
+    hmvgdrnhgrmhgvpdhnsggprhgtphhtthhopedt
+X-ME-Proxy: <xmx:xnytZiLxJbfj01Q1XVh3rDYdIVyDkZT6rJ_AhkAVc1dV-n-ruVJ1Cw>
+    <xmx:xnytZtL7ZxWE-hhLpd5TZ-96JsXlb5i9OTYq1-4DtuB4gy_TTHa3hQ>
+    <xmx:xnytZryAA0wI9kGfQTgQA2DP3irLmn4o7Xpn7v0OMRweIZ5zCnwJ7g>
+    <xmx:xnytZpJJFKupnBa-qMnvwhyCGWzoi4vVFjXdk2auOhCEiOAi6QArZw>
+    <xmx:xnytZgZMBYlBWkPDFirQLGbLVyxqlCoy-C3JDgEshvWh8T8GaLI9WWXh>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Fri,
+ 2 Aug 2024 20:41:42 -0400 (EDT)
+Date: Fri, 2 Aug 2024 17:40:50 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: botta633 <bottaawesome633@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, linux-ext4@vger.kernel.org,
+	syzkaller@googlegroups.com,
+	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
+	stable@vger.kernel.org
+Subject: Re: [PATCH v4 1/2] locking/lockdep: Forcing subclasses to have same
+ name pointer as their parent class
+Message-ID: <Zq18kvtkjD0R4lGX@boqun-archlinux>
+References: <20240715132638.3141-1-bottaawesome633@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -94,226 +115,46 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240710040654.1714672-21-libaokun@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: AyuhhpSBi-ds3-7TMXoTZHhOpubrUqLQ
-X-Proofpoint-GUID: 2garBcJxued9fPbwmmCb3mGP6fhcmdYC
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-02_16,2024-08-02_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- lowpriorityscore=0 malwarescore=0 mlxscore=0 clxscore=1015
- priorityscore=1501 impostorscore=0 suspectscore=0 bulkscore=0
- mlxlogscore=624 adultscore=0 spamscore=0 classifier=spam adjust=0
- reason=mlx scancount=1 engine=8.19.0-2407110000
- definitions=main-2408020145
+In-Reply-To: <20240715132638.3141-1-bottaawesome633@gmail.com>
 
-On Wed, Jul 10, 2024 at 12:06:54PM +0800, libaokun@huaweicloud.com wrote:
-> From: Baokun Li <libaokun1@huawei.com>
+On Mon, Jul 15, 2024 at 04:26:37PM +0300, botta633 wrote:
+> From: Ahmed Ehab <bottaawesome633@gmail.com>
 > 
-> The ext4_find_extent() can update the extent path so that it does not have
-> to allocate and free the path repeatedly, thus reducing the consumption of
-> memory allocation and freeing in the following functions:
+> Preventing lockdep_set_subclass from creating a new instance of the
+> string literal. Hence, we will always have the same class->name among
+> parent and subclasses. This prevents kernel panics when looking up a
+> lock class while comparing class locks and class names.
 > 
->     ext4_ext_clear_bb
->     ext4_ext_replay_set_iblocks
->     ext4_fc_replay_add_range
->     ext4_fc_set_bitmaps_and_counters
-> 
-> No functional changes. Note that ext4_find_extent() does not support error
-> pointers, so in this case set path to NULL first.
-> 
-> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> Reported-by: <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
+> Fixes: de8f5e4f2dc1f ("lockdep: Introduce wait-type checks")
+> Cc: <stable@vger.kernel.org>
+> Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
 
-Looks good Baokun, feel free to add:
-
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+This looks good to me.
 
 Regards,
-ojaswin
+Boqun
 
 > ---
->  fs/ext4/extents.c     | 51 +++++++++++++++++++------------------------
->  fs/ext4/fast_commit.c | 11 ++++++----
->  2 files changed, 29 insertions(+), 33 deletions(-)
+> v3->v4:
+>     - Fixed subject line truncation.
 > 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index 737432bb316e..5ff92cd50dc8 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -6068,12 +6068,9 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
->  	if (IS_ERR(path))
->  		return PTR_ERR(path);
->  	ex = path[path->p_depth].p_ext;
-> -	if (!ex) {
-> -		ext4_free_ext_path(path);
-> +	if (!ex)
->  		goto out;
-> -	}
->  	end = le32_to_cpu(ex->ee_block) + ext4_ext_get_actual_len(ex);
-> -	ext4_free_ext_path(path);
+>  include/linux/lockdep.h | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+> index 08b0d1d9d78b..df8fa5929de7 100644
+> --- a/include/linux/lockdep.h
+> +++ b/include/linux/lockdep.h
+> @@ -173,7 +173,7 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
+>  			      (lock)->dep_map.lock_type)
 >  
->  	/* Count the number of data blocks */
->  	cur = 0;
-> @@ -6099,32 +6096,28 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
->  	ret = skip_hole(inode, &cur);
->  	if (ret < 0)
->  		goto out;
-> -	path = ext4_find_extent(inode, cur, NULL, 0);
-> +	path = ext4_find_extent(inode, cur, path, 0);
->  	if (IS_ERR(path))
->  		goto out;
->  	numblks += path->p_depth;
-> -	ext4_free_ext_path(path);
->  	while (cur < end) {
-> -		path = ext4_find_extent(inode, cur, NULL, 0);
-> +		path = ext4_find_extent(inode, cur, path, 0);
->  		if (IS_ERR(path))
->  			break;
->  		ex = path[path->p_depth].p_ext;
-> -		if (!ex) {
-> -			ext4_free_ext_path(path);
-> -			return 0;
-> -		}
-> +		if (!ex)
-> +			goto cleanup;
-> +
->  		cur = max(cur + 1, le32_to_cpu(ex->ee_block) +
->  					ext4_ext_get_actual_len(ex));
->  		ret = skip_hole(inode, &cur);
-> -		if (ret < 0) {
-> -			ext4_free_ext_path(path);
-> +		if (ret < 0)
->  			break;
-> -		}
-> -		path2 = ext4_find_extent(inode, cur, NULL, 0);
-> -		if (IS_ERR(path2)) {
-> -			ext4_free_ext_path(path);
-> +
-> +		path2 = ext4_find_extent(inode, cur, path2, 0);
-> +		if (IS_ERR(path2))
->  			break;
-> -		}
-> +
->  		for (i = 0; i <= max(path->p_depth, path2->p_depth); i++) {
->  			cmp1 = cmp2 = 0;
->  			if (i <= path->p_depth)
-> @@ -6136,13 +6129,14 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
->  			if (cmp1 != cmp2 && cmp2 != 0)
->  				numblks++;
->  		}
-> -		ext4_free_ext_path(path);
-> -		ext4_free_ext_path(path2);
->  	}
->  
->  out:
->  	inode->i_blocks = numblks << (inode->i_sb->s_blocksize_bits - 9);
->  	ext4_mark_inode_dirty(NULL, inode);
-> +cleanup:
-> +	ext4_free_ext_path(path);
-> +	ext4_free_ext_path(path2);
->  	return 0;
->  }
->  
-> @@ -6163,12 +6157,9 @@ int ext4_ext_clear_bb(struct inode *inode)
->  	if (IS_ERR(path))
->  		return PTR_ERR(path);
->  	ex = path[path->p_depth].p_ext;
-> -	if (!ex) {
-> -		ext4_free_ext_path(path);
-> -		return 0;
-> -	}
-> +	if (!ex)
-> +		goto out;
->  	end = le32_to_cpu(ex->ee_block) + ext4_ext_get_actual_len(ex);
-> -	ext4_free_ext_path(path);
->  
->  	cur = 0;
->  	while (cur < end) {
-> @@ -6178,16 +6169,16 @@ int ext4_ext_clear_bb(struct inode *inode)
->  		if (ret < 0)
->  			break;
->  		if (ret > 0) {
-> -			path = ext4_find_extent(inode, map.m_lblk, NULL, 0);
-> -			if (!IS_ERR_OR_NULL(path)) {
-> +			path = ext4_find_extent(inode, map.m_lblk, path, 0);
-> +			if (!IS_ERR(path)) {
->  				for (j = 0; j < path->p_depth; j++) {
-> -
->  					ext4_mb_mark_bb(inode->i_sb,
->  							path[j].p_block, 1, false);
->  					ext4_fc_record_regions(inode->i_sb, inode->i_ino,
->  							0, path[j].p_block, 1, 1);
->  				}
-> -				ext4_free_ext_path(path);
-> +			} else {
-> +				path = NULL;
->  			}
->  			ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, false);
->  			ext4_fc_record_regions(inode->i_sb, inode->i_ino,
-> @@ -6196,5 +6187,7 @@ int ext4_ext_clear_bb(struct inode *inode)
->  		cur = cur + map.m_len;
->  	}
->  
-> +out:
-> +	ext4_free_ext_path(path);
->  	return 0;
->  }
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 1dee40477727..1426d595fab7 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -1766,7 +1766,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
->  
->  		if (ret == 0) {
->  			/* Range is not mapped */
-> -			path = ext4_find_extent(inode, cur, NULL, 0);
-> +			path = ext4_find_extent(inode, cur, path, 0);
->  			if (IS_ERR(path))
->  				goto out;
->  			memset(&newex, 0, sizeof(newex));
-> @@ -1782,7 +1782,6 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
->  			up_write((&EXT4_I(inode)->i_data_sem));
->  			if (IS_ERR(path))
->  				goto out;
-> -			ext4_free_ext_path(path);
->  			goto next;
->  		}
->  
-> @@ -1830,6 +1829,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
->  	ext4_ext_replay_shrink_inode(inode, i_size_read(inode) >>
->  					sb->s_blocksize_bits);
->  out:
-> +	ext4_free_ext_path(path);
->  	iput(inode);
->  	return 0;
->  }
-> @@ -1930,12 +1930,13 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
->  				break;
->  
->  			if (ret > 0) {
-> -				path = ext4_find_extent(inode, map.m_lblk, NULL, 0);
-> +				path = ext4_find_extent(inode, map.m_lblk, path, 0);
->  				if (!IS_ERR(path)) {
->  					for (j = 0; j < path->p_depth; j++)
->  						ext4_mb_mark_bb(inode->i_sb,
->  							path[j].p_block, 1, true);
-> -					ext4_free_ext_path(path);
-> +				} else {
-> +					path = NULL;
->  				}
->  				cur += ret;
->  				ext4_mb_mark_bb(inode->i_sb, map.m_pblk,
-> @@ -1946,6 +1947,8 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
->  		}
->  		iput(inode);
->  	}
-> +
-> +	ext4_free_ext_path(path);
->  }
->  
->  /*
+>  #define lockdep_set_subclass(lock, sub)					\
+> -	lockdep_init_map_type(&(lock)->dep_map, #lock, (lock)->dep_map.key, sub,\
+> +	lockdep_init_map_type(&(lock)->dep_map, (lock)->dep_map.name, (lock)->dep_map.key, sub,\
+>  			      (lock)->dep_map.wait_type_inner,		\
+>  			      (lock)->dep_map.wait_type_outer,		\
+>  			      (lock)->dep_map.lock_type)
 > -- 
-> 2.39.2
-> 
+> 2.45.2
 
