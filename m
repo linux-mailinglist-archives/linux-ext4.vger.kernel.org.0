@@ -1,317 +1,128 @@
-Return-Path: <linux-ext4+bounces-3649-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3650-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id ECB6E949DB8
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 04:21:04 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B309949E49
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 05:33:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49644B23C03
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 02:21:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D33A7B21812
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 03:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294D618FDAA;
-	Wed,  7 Aug 2024 02:20:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF5E82863;
+	Wed,  7 Aug 2024 03:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fpZ24afH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ny0ZOfbK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E52C1A288;
-	Wed,  7 Aug 2024 02:20:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8681B23D7
+	for <linux-ext4@vger.kernel.org>; Wed,  7 Aug 2024 03:33:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1722997254; cv=none; b=oz0lXP9rdv5+kPupDoo7hbniIjdi3F235HWrlhnx9tVnXMVwrVyABZFDCMiqlv5xRJHL1MliKqaSREhOkVjxg+3pW0oQ9fiKneqJxdSfD2Clj10R9fIuNAMOPWdjqpT1wAIkiZPzU4gCOdY02j7Pok6lmD5yr8boSQPuYxaUlJM=
+	t=1723001597; cv=none; b=QxDijN48NdDib9/w4ozbScNdbTWpemY0L3OYYdMXUpMxtpitRyzfne8+012P+JiC9Wt+2bW4QvwqH3OmZLYA16b1iGR7ZBypx2HAjXMQqhBSG+wHQ4a6FKMftueZ+CBu8qs2mIh1TqZc8k/BQSk5JwcHaMP1gX9B5D32SsOh6Vk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1722997254; c=relaxed/simple;
-	bh=iVPMyh7XC8IApwKW4VgtbuBA7H8TTp4PRxujFe+p0EE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jhKZjWbUvXf6lAEak+iXXaTYff+bi5JajTVRduu+swi+petIAw7GxIVZgiWhKkG1FTpxirfUxXTdOaFwwuvQtubPrc3OkzQfO6DSpxOKdprYdKki8HCB1w3Zbdqln1f8jKnpoOhG9TiNy1+jKpneOY+YH5byTrDirdF7aPdCpJ0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fpZ24afH; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7a1d42da3baso73145285a.1;
-        Tue, 06 Aug 2024 19:20:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1722997252; x=1723602052; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wjPrUZGfj22iahOm+dDJ0cgNV2eFfCVEfwCrhq8bOEk=;
-        b=fpZ24afHwfY3sXCrdRr1yBfnmH0b2hx6utEQnIXDqILUd03hY18ntMzVmlVjGNkYVd
-         BgNjPjPzmO1x6/lay3lJy0atI7uCJmsbSa0ar3U5a32l8iuPm5fYe/TWOk12R6670d6D
-         OA4ckbfZQ0cJQ8DozzyLQjhfs99/VlLfR9NPG3+yZ8wArai7EDNSi1AWodN6wrcscESt
-         rJHs/s+W73jMpVs1XnlO9xY6jG26zfIgi6F60kqTWD2XdRMsjGiSlXknEkYzab3p5qiO
-         kDKaOrpRL1AWLRpGhmaNfarAB2EaZcs4dN3HqF6FgD4nM5tK2vUPfF0RhvzDdgj133Wa
-         oJlQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1722997252; x=1723602052;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=wjPrUZGfj22iahOm+dDJ0cgNV2eFfCVEfwCrhq8bOEk=;
-        b=stW76f/Vdut7YPAUfATE6TaA9h6myUi0qF70o8flcQv4JBtEvOH/lnGlW78fQnHA6g
-         p0+C2CNEJ3f2Je2/M02WO5DZaKYRJCDG2qwadb6PGxYiw7qcmUUWUf/NuhFrQ1jMU8qk
-         g4/KsS4IyT2SnaQ5avWhyuhbgtR7mIRlxsXgrN16RsNlkouIhM+0E3VByFqvHJ+kdS1k
-         SY+eAKaSVI+wD2Yqr96NbrkypkMKvY/b4pDA/rn9xCnYktXBGdPiO4S+XWmNK79mRrVM
-         wEiK4/dQ0hof8CvSSlDsb1n3clsHKv+meq2U5SFgGMPsixZn2iAHXaofdPWnJbq1T0J1
-         n1iQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWOOniwQrlzShP01c32bcv5hHlesQIB+GL0P/btXwddzSOC1NYOY9NOASDzozjC+SpOQ5X/D2o0Qp/5RVy90Jy+oXlJCs09ZmcZoihQfUVHYlHQ7CUnEcSQKxNs5XxQ8aBQNg==
-X-Gm-Message-State: AOJu0YzSYd4s9AhlMBcU1HKkJc/dffxsynRVi3G9XCF2DaC3kWVTASKh
-	GT5z8wUoeaF47FiOLzibspercZMur9V319PB9kXKrGk4ej4e9GIFLNujug==
-X-Google-Smtp-Source: AGHT+IHYvlA6QQz3GuXKZIYToj1njGWRgkiR+EuB+8puJVLHEUxcvPBgV10/Jc89/VvXc74lZ070Iw==
-X-Received: by 2002:a05:620a:370c:b0:79d:62c4:d636 with SMTP id af79cd13be357-7a34ef3c3a3mr2268377685a.26.1722997251735;
-        Tue, 06 Aug 2024 19:20:51 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id af79cd13be357-7a3785d2b56sm17809785a.17.2024.08.06.19.20.50
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 06 Aug 2024 19:20:50 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 6F2811200043;
-	Tue,  6 Aug 2024 22:20:50 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Tue, 06 Aug 2024 22:20:50 -0400
-X-ME-Sender: <xms:AtqyZsYbHAhbvzTeQVG-jqfjMWORntuGzIja9o7kbkI8B0NoGRw-lg>
-    <xme:AtqyZnbTaUtYkNS8Xaa_d6B0OqPx9DyH1UVSg6AHVVPZDL6rbJvvlD4f4Ehq-attJ
-    d2p1XpID1NTOYA48Q>
-X-ME-Received: <xmr:AtqyZm9lM2xr4mOcW4IPnN7gpcVZOND1kg9ZO0aYm8EmIK6RUAtODaRt1S7NN28py6gfSDdFPLo1QNZR7YopiYx_fORBVXaD>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrkeelgdeitdcutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvvefukfhfgggtuggjsehgtderredttdejnecuhfhrohhmpeeuohhquhhn
-    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
-    htvghrnhepveehfeehgfeuueffieeffeevteeigfdtkefhgefgleeufefgtdegfeekkeel
-    gfejnecuffhomhgrihhnpehkvghrnhgvlhdrohhrghdpuggvphgpmhgrphdrnhgrmhgvne
-    cuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhu
-    nhdomhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqdduje
-    ejkeehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdr
-    nhgrmhgvpdhnsggprhgtphhtthhopedt
-X-ME-Proxy: <xmx:AtqyZmpWO0h8TRXGtUkEzKFPPCZ0t7AAyqzzZ1OIwzmvFYdsuF-1XQ>
-    <xmx:AtqyZnrL4uL6EDLCEUuwJx2NmAcxTgjaAvq5e20eP8NSCAjeMNDrzQ>
-    <xmx:AtqyZkTbvj4jeBHZVRZePyQVB_7V1aCqiB6MzrlVJ7RuQVS5puKEVg>
-    <xmx:AtqyZnoFkL15li3UF_hHRujD8L6ThN2Mq-fOIWEfqFomycjDcorDSQ>
-    <xmx:AtqyZs69ZvyZrvAeoOG4AQeHwWHIInWM6mxLZpQFhx4weF5d5QSHiJOS>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 6 Aug 2024 22:20:49 -0400 (EDT)
-Date: Tue, 6 Aug 2024 19:21:28 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: ahmed Ehab <bottaawesome633@gmail.com>
-Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>, linux-ext4@vger.kernel.org,
-	syzkaller@googlegroups.com,
-	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
-	stable@vger.kernel.org
-Subject: Re: [PATCH v4 2/2] locking/lockdep: Testing lock class and subclass
- got the same name pointer
-Message-ID: <ZrLaKCEJc8FqI38I@tardis>
-References: <20240715132638.3141-1-bottaawesome633@gmail.com>
- <20240715132638.3141-2-bottaawesome633@gmail.com>
- <Zq1-3bClxgBlhnoq@boqun-archlinux>
- <CA+6bSatQkwonesz4Pa3S7E-GAWHCwq=xuo_E9e3gXfJwV5_-jw@mail.gmail.com>
+	s=arc-20240116; t=1723001597; c=relaxed/simple;
+	bh=+90upCNcJMJKNR1/fKs6hhoX2F2OP3sXaNgZKtFBfAM=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=RpZJ0luYMX0CqtUef4gk/GISuY6UTe06ou/yd/aA8kT/e3BlZNFgEbq3kz0QFA84Hb6/ApYp4yIG+dEpycNsj6bZjDUx9+VI36dV58DIQk+qHiwWj09tkjjpwW5nZM76hlISRVyBPrQpATf73z0pHN9/kCXSV8ILf7gry9DP/4g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ny0ZOfbK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1DE34C4AF0D
+	for <linux-ext4@vger.kernel.org>; Wed,  7 Aug 2024 03:33:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723001597;
+	bh=+90upCNcJMJKNR1/fKs6hhoX2F2OP3sXaNgZKtFBfAM=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=Ny0ZOfbKvQBvNrNkP0BJcjHuhhz+a8PM4+GEfTY49k0+02ATTWw7pmQK+/0ITDNeq
+	 I2QeGyFyHcxzT7c7xCv4WK/TxWeZdSUxnTH+oKWTcDeVKbNMFC1xB2cxFvmyj3Z1k2
+	 iWp2sAy3WcyuUswbX4QYbDolVAcBhqldQuH8YK/4zY3LG1z87pAipp8Gwpp3Kn+081
+	 71gn0eohZl1Pp2qJmXbSRj2YYTxgCFbi/gxkWNHxEJ0VcNSFdhZXFy72BnRqxl9Z79
+	 P9+nwWiQUuEe2UhMdnbnlFjNkYQgbTwL4qr4WjO8FplarwxQnEt5tTxrrl/Kw5zFPj
+	 aQ8TP2tu/eb1Q==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 0C2A3C433E5; Wed,  7 Aug 2024 03:33:17 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219132] Redundant "re-mounted ro" message
+Date: Wed, 07 Aug 2024 03:33:16 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: low
+X-Bugzilla-Who: tytso@mit.edu
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-219132-13602-iWIiqR0MYh@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-219132-13602@https.bugzilla.kernel.org/>
+References: <bug-219132-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QvzP0FT4f5Il3vXZ"
-Content-Disposition: inline
-In-Reply-To: <CA+6bSatQkwonesz4Pa3S7E-GAWHCwq=xuo_E9e3gXfJwV5_-jw@mail.gmail.com>
 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219132
 
---QvzP0FT4f5Il3vXZ
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Theodore Tso (tytso@mit.edu) changed:
 
-On Wed, Aug 07, 2024 at 06:00:11AM +0300, ahmed Ehab wrote:
-> On Sat, Aug 3, 2024 at 3:51=E2=80=AFAM Boqun Feng <boqun.feng@gmail.com> =
-wrote:
->=20
-> > On Mon, Jul 15, 2024 at 04:26:38PM +0300, botta633 wrote:
-> > > From: Ahmed Ehab <bottaawesome633@gmail.com>
-> > >
-> > > Checking if the lockdep_map->name will change when setting the subcla=
-ss.
-> > > It shouldn't change so that the lock class and subclass will have the
-> > same
-> > > name
-> > >
-> > > Reported-by: <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
-> > > Fixes: de8f5e4f2dc1f ("lockdep: Introduce wait-type checks")
-> > > Cc: <stable@vger.kernel.org>
-> >
-> > You seems to miss my comment at v2:
-> >
-> >         https://lore.kernel.org/lkml/ZpRKcHNZfsMuACRG@boqun-archlinux/
-> >
-> > , i.e. you don't need the Reported-by, Fixes and Cc tag for the patch
-> > that adds a test case.
-> >
-> > > Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
-> > > ---
-> > > v3->v4:
-> > >     - Fixed subject line truncation.
-> > >
-> > >  lib/locking-selftest.c | 21 +++++++++++++++++++++
-> > >  1 file changed, 21 insertions(+)
-> > >
-> > > diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-> > > index 6f6a5fc85b42..aeed613799ca 100644
-> > > --- a/lib/locking-selftest.c
-> > > +++ b/lib/locking-selftest.c
-> > > @@ -2710,6 +2710,25 @@ static void local_lock_3B(void)
-> > >
-> > >  }
-> > >
-> > > + /**
-> >
-> > ^ there is a tailing space here, next time you can detect this by using
-> > checkpatch. Also "/**" style is especially for function signature
-> > comment, you could just use a "/*" here.
-> >
-> > > +  * after setting the subclass the lockdep_map.name changes
-> > > +  * if we initialize a new string literal for the subclass
-> > > +  * we will have a new name pointer
-> > > +  */
-> > > +static void class_subclass_X1_name_test(void)
-> > > +{
-> > > +     printk("
-> > -----------------------------------------------------------------------=
----\n");
-> > > +     printk("  | class and subclass name test|\n");
-> > > +     printk("  ---------------------\n");
-> > > +     const char *name_before_setting_subclass =3D rwsem_X1.dep_map.n=
-ame;
-> > > +     const char *name_after_setting_subclass;
-> > > +
-> > > +     WARN_ON(!rwsem_X1.dep_map.name);
-> > > +     lockdep_set_subclass(&rwsem_X1, 1);
-> > > +     name_after_setting_subclass =3D rwsem_X1.dep_map.name;
-> > > +     WARN_ON(name_before_setting_subclass !=3D
-> > name_after_setting_subclass);
-> > > +}
-> > > +
-> > >  static void local_lock_tests(void)
-> > >  {
-> > >       printk("
-> > -----------------------------------------------------------------------=
----\n");
-> > > @@ -2916,6 +2935,8 @@ void locking_selftest(void)
-> > >
-> > >       local_lock_tests();
-> > >
-> > > +     class_subclass_X1_name_test();
-> > > +
-> >
-> > I got this in the serial log:
-> >
-> > [    0.619454]
-> >  ----------------------------------------------------------------------=
-----
-> > [    0.621463]   | local_lock tests |
-> > [    0.622326]   ---------------------
-> > [    0.623211]           local_lock inversion  2:  ok  |
-> > [    0.624904]           local_lock inversion 3A:  ok  |
-> > [    0.626740]           local_lock inversion 3B:  ok  |
-> > [    0.628492]
-> >  ----------------------------------------------------------------------=
-----
-> > [    0.630513]   | class and subclass name test|
-> > [    0.631614]   ---------------------
-> > [    0.632502]       hardirq_unsafe_softirq_safe:  ok  |
-> >
-> > two problems here:
-> >
-> > 1)      The "class and subclass name test" line interrupts the output of
-> >         testsuite "local_lock tests".
-> >
-> > 2)      Instead of a WARN_ON(), could you look into using dotest() to
-> >         print "ok" if the test passes, which is consistent with other
-> >
->         tests.
-> >
->=20
-> I wrote it this way:
-> static void lock_class_subclass_X1(void)
-> {
-> const char *name_before_setting_subclass =3D rwsem_X1.dep_map.name;
-> const char *name_after_setting_subclass;
->=20
-> lockdep_set_subclass(&rwsem_X1, 1);
-> name_after_setting_subclass =3D rwsem_X1.dep_map.name;
-> debug_locks =3D name_before_setting_subclass =3D=3D name_after_setting_su=
-bclass;
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+                 CC|                            |tytso@mit.edu
 
-I think you could use:
+--- Comment #2 from Theodore Tso (tytso@mit.edu) ---
+The suggestion in #1 isn't necessarily correct, though, because we could be
+remounting to change some other superblock options.  For example:
 
-	DEBUG_LOCK_WARN_ON(name_before_setting_subclass !=3D name_after_setting_su=
-bclass);
+mount -o remount,errors=3Dcontinue /dev/vdc
 
-here.
+Fundamentally, whenever runs "mount -o remount ...", we issue the "EXT4-fs
+(DEVICE): re-mounted ..." message.   The fact that we print the ro/rw and q=
+uota
+mode is completely arbitrary and more due to historical reasons than anythi=
+ng
+else.   For example, the fact that we print the quota mode is pretty much
+useless in this day and era and there are plenty of other mount option/state
+that would probably be much more useful.
 
-Regards,
-Boqun
+So the fact that we print the ro/rw state doesn't imply that it has changed=
+.=20
+For example, if the file system is mounted read/write and we change the err=
+ors=3D
+mode from continue to remount-ro, etc., we will print:
 
-> }
-> ...
-> static void class_subclass_X1_name_test(void)
-> {
-> printk("
->  ------------------------------------------------------------------------=
---\n");
-> printk("  | class and subclass name test|\n");
-> printk("  ---------------------\n");
->=20
-> print_testname("lock class and subclass same name");
-> dotest(lock_class_subclass_X1, SUCCESS, LOCKTYPE_RWSEM);
-> pr_cont("\n");
-> }
-> However, assigning a value to debug_locks seems very uncommon. I tried to
-> check other test cases; however, they seem to rely on the method they are
-> testing. Do you have a suggestion for my scenario if I want to compare the
-> names before and after setting the subclass?
-> Or you suggest that I follow a different approach other than comparing the
-> names such as checking debug_locks in lockdep_init_map_type and returning
-> when we have multiple instantiations for lock->name?
->=20
-> >
-> > Could you please fix all above problems and send another version of this
-> > patch (no need to resend the first one)? Thanks!
-> >
-> > Regards,
-> > Boqun
-> >
-> > >       print_testname("hardirq_unsafe_softirq_safe");
-> > >       dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE,
-> > LOCKTYPE_SPECIAL);
-> > >       pr_cont("\n");
-> > > --
-> > > 2.45.2
-> > >
-> >
->=20
-> Regards,
-> Ahmed
+EXT4-fs (nvme0n1p3): re-mounted UUID rw. Quota mode: none.
 
---QvzP0FT4f5Il3vXZ
-Content-Type: application/pgp-signature; name="signature.asc"
+... and it doesn't mean that we changed the rw/ro mode from ro to r/w.=20=
+=20=20
 
------BEGIN PGP SIGNATURE-----
+Should we change the behavior to something else?   Perhaps, although to be
+honest it's not the highest priority thing for me.   I could see dropping t=
+he
+quota mode and only printing the message when the r/o state changes.  Or ma=
+ybe
+we display any mount option that changes (which would be a lot more work). =
+ Is
+it worth the effort?  Meh.....
+.
 
-iQEzBAABCAAdFiEEj5IosQTPz8XU1wRHSXnow7UH+rgFAmay2iMACgkQSXnow7UH
-+rh9KAgAgxt99jXPVUQ5w0twp59iLAkmKHY1HdWm1NUriAyoA2DB8QFe3wgyKHN4
-9M4g1FoBdhLR06zPRwJNLl/yaf7YJFmYeDt5gDoC7pSHi01goClgHpn77FV5P3Ol
-WJFVk+7w3Mf2RYMM3BcBJJfPFHXMK2t3M0Umeq7iyaOFzdvNgML7aLhPjYWO3f6Q
-4Y0GtKrEcCSYhW4/LP41uSydCwHQSV68aNc1NyW80tRO7hrBQag0fn7RM6eJfW3P
-E00n1Ebp4Kbzozk0LeD7e7Tr4UtigMG1pJXTvsX3AwEJVBV7UeGm7B9AKlbobVbx
-ZGkVdbpE/9LB13bOWjlqN/bncWoedg==
-=zXSC
------END PGP SIGNATURE-----
+--=20
+You may reply to this email to add a comment.
 
---QvzP0FT4f5Il3vXZ--
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
