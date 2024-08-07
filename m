@@ -1,168 +1,159 @@
-Return-Path: <linux-ext4+bounces-3658-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3659-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 53AFB94A798
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 14:18:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 402BC94A814
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 14:52:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 848D71C20B91
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 12:18:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA54828173A
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 12:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72AC41E4F19;
-	Wed,  7 Aug 2024 12:18:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E4151E6734;
+	Wed,  7 Aug 2024 12:52:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pVjycEnH"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C52B91C6880;
-	Wed,  7 Aug 2024 12:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D9D8D1E486D
+	for <linux-ext4@vger.kernel.org>; Wed,  7 Aug 2024 12:52:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723033108; cv=none; b=mixl6j1DOFMKddpE+ITwz1hfRPAh5KvA0Ox6nog4U36oAZ/Zb0PpPw6d/yljD/GleqbKhg0aPFkD5lFlK+keggDL/cWya53AgH4iwLOzWXupen2z2TRYCjLFQidSTTFZJurGZTSU3exBipHZLFR+lAT/ZriqGAxMqEoqjZy8jS0=
+	t=1723035144; cv=none; b=bOaYYIQsIn9ed2BPlQUCh1q8N3KIdQI6nicOvQRb/68w9RNf2IGDzzgvwWgxo7fYWH4Pw9tFJ8mI7WQ33dxwiuywBk0vSYntxA4rFnN3Dp0acEfhUDAHMWeLvkBlowYXaIGXV404M8aWplxaMNyCNrLvdqnaTTyHyjAor4ChtlU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723033108; c=relaxed/simple;
-	bh=AP4rbMbRZn32pcJB0YS/Lu1lnbVzzDIy5mY/CNRCtjQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=midDHcyFYA8yEdihBzuc0U3ejUjozBaUVv1DLdAda5RBILpWYHQr7FHs4+DQ8ET7aj1cIuZS96v4v0RiV7skHEKJaiANKavDZ5HZR/80g1dWMgWluPfsYyRuBFwKrBTEYDhn/dfsLIf38S4PMdGfhFyEPLmZvxzl7b1yM46+S8s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wf8Md71Wqz4f3kvs;
-	Wed,  7 Aug 2024 20:18:05 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 50BFB1A12EB;
-	Wed,  7 Aug 2024 20:18:20 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgCHr4UKZrNm9g8ZBA--.25468S3;
-	Wed, 07 Aug 2024 20:18:20 +0800 (CST)
-Subject: Re: [PATCH v2 03/10] ext4: don't set EXTENT_STATUS_DELAYED on
- allocated blocks
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240802115120.362902-1-yi.zhang@huaweicloud.com>
- <20240802115120.362902-4-yi.zhang@huaweicloud.com>
- <20240806152327.td572f7elpel4aeo@quack3>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <685055bc-0d56-6cf3-7716-f27e448c8c38@huaweicloud.com>
-Date: Wed, 7 Aug 2024 20:18:18 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1723035144; c=relaxed/simple;
+	bh=Wa3qGyH4LiklsLldqwfW8mkUdjCiwI9Tf1Bkw3IbxFs=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=dSxYEmwroyGJWscPJPTvhojXoPjbPxSfRMtypS/sm8CR5Pc6ICPhywC0FMHZcrWAC4Utnb37nKalOTHTVSqHWcaLSkJwdgApkIq8PhEQs8TsxhtzFRJBIPMxJBmKLNeUrtw9qL1MAMaS8KV+YaiTOfhdur4Td7biUsECY2zkGxI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pVjycEnH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 6B2A9C4AF0B
+	for <linux-ext4@vger.kernel.org>; Wed,  7 Aug 2024 12:52:24 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723035144;
+	bh=Wa3qGyH4LiklsLldqwfW8mkUdjCiwI9Tf1Bkw3IbxFs=;
+	h=From:To:Subject:Date:From;
+	b=pVjycEnHO+IufDNe9XG8w77Hcg3IcOd27l6nrLRYEjab1OfZYYWmEDBl/MrNWiMBC
+	 t06GtAzKcXvZSkyx4QcHWqyO6zuMT6KxvLH4siX40OfXwtxwHUS9rGGNp9w6D6SXnX
+	 G/FuEz0Lr153bEE3B8FIkh4PlXiTV8cOfc4otsskzrAp8LvScyAFBfziIT21I1T7rE
+	 JisnhzSjTd3WnFsUSDgAzHt7kPbveBp2jhmcbuT//UKru0bos6m24hiQyTHdonCLqq
+	 lZQg3/N/K4DNRARdNKWhcz+1Be/Eo6dLcL1BOxjPz5HbnKMqTDfg3l16/Sb5Vojbgg
+	 bZRxunQWAomvw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 650F4C53B73; Wed,  7 Aug 2024 12:52:24 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219136] New: ext4: dax: overflowing extents beyond inode size
+ when partially writing
+Date: Wed, 07 Aug 2024 12:52:24 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: chengzhihao1@huawei.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
+ op_sys bug_status bug_severity priority component assigned_to reporter
+ cf_regression
+Message-ID: <bug-219136-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240806152327.td572f7elpel4aeo@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCHr4UKZrNm9g8ZBA--.25468S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxXF48Zw4kKr4kJFWDKF1ftFb_yoW5ur47pr
-	WxCr1rGa18Xw1UuayIvw4xWr1F9a10krWUCF409ry5Xa1rGryS9F1UJFWjgFWqgrWIyF1F
-	qFW5u3s7CayfCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/8/6 23:23, Jan Kara wrote:
-> On Fri 02-08-24 19:51:13, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> Since we always set EXT4_GET_BLOCKS_DELALLOC_RESERVE when allocating
->> delalloc blocks, there is no need to keep delayed flag on the unwritten
->> extent status entry, so just drop it after allocation.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Let me improve the changelog because I was confused for some time before I
-> understood:
-> 
-> Currently, we release delayed allocation reservation when removing delayed
-> extent from extent status tree (which also happens when overwriting one
-> extent with another one). When we allocated unwritten extent under
-> some delayed allocated extent, we don't need the reservation anymore and
-> hence we don't need to preserve the EXT4_MAP_DELAYED status bit. Inserting
-> the new extent into extent status tree will properly release the
-> reservation.
-> 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219136
 
-Thanks for your review and change log improvement. My original idea was very
-simple, after patch 2, we always set EXT4_GET_BLOCKS_DELALLOC_RESERVE when
-allocating blocks for delalloc extent, these two conditions in the 'if'
-branch can never be true at the same time, so they become dead code and I
-dropped them.
+            Bug ID: 219136
+           Summary: ext4: dax: overflowing extents beyond inode size when
+                    partially writing
+           Product: File System
+           Version: 2.5
+          Hardware: All
+                OS: Linux
+            Status: NEW
+          Severity: normal
+          Priority: P3
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: chengzhihao1@huawei.com
+        Regression: No
 
-	if (!(flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE) &&
-	    ext4_es_scan_range(inode, &ext4_es_is_delayed, ...)
+The dax_iomap_rw() does two things in each iteration: map written blocks
+    and copy user data to blocks. If the process is killed by user(See sign=
+al
+    handling in dax_iomap_iter()), the copied data will be returned and add=
+ed
+    on inode size, which means that the length of written extents may exceed
+    the inode size, then fsck will fail. An example is given as:
 
-But after thinking your change log, I agree with you that we have already
-properly update the reservation by searching delayed blocks through
-ext4_es_delayed_clu() in ext4_ext_map_blocks() when we allocated unwritten
-extent under some delayed allocated extent even it's not from the write
-back path, so I think we can also drop them even without patch 2. But just
-one point, I think the last last sentence isn't exactly true before path 6,
-should it be "Allocating the new extent blocks will properly release the
-reservation." now ?
+    dd if=3D/dev/urandom of=3Dfile bs=3D4M count=3D1
+     dax_iomap_rw
+      iomap_iter // round 1
+       ext4_iomap_begin
+        ext4_iomap_alloc // allocate 0~2M extents(written flag)
+      dax_iomap_iter // copy 2M data
+      iomap_iter // round 2
+       iomap_iter_advance
+        iter->pos +=3D iter->processed // iter->pos =3D 2M
+       ext4_iomap_begin
+        ext4_iomap_alloc // allocate 2~4M extents(written flag)
+      dax_iomap_iter
+       fatal_signal_pending
+      done =3D iter->pos - iocb->ki_pos // done =3D 2M
+     ext4_handle_inode_extension
+      ext4_update_inode_size // inode size =3D 2M
 
-Thanks,
-Yi.
+    fsck reports: Inode 13, i_size is 2097152, should be 4194304.  Fix?
 
-> Otherwise feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> 								Honza
-> 
-> 
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 91b2610a6dc5..e9ce1e4e6acb 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -558,12 +558,6 @@ static int ext4_map_create_blocks(handle_t *handle, struct inode *inode,
->>  
->>  	status = map->m_flags & EXT4_MAP_UNWRITTEN ?
->>  			EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
->> -	if (!(flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE) &&
->> -	    !(status & EXTENT_STATUS_WRITTEN) &&
->> -	    ext4_es_scan_range(inode, &ext4_es_is_delayed, map->m_lblk,
->> -			       map->m_lblk + map->m_len - 1))
->> -		status |= EXTENT_STATUS_DELAYED;
->> -
->>  	ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
->>  			      map->m_pblk, status);
->>  
->> @@ -682,11 +676,6 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
->>  
->>  		status = map->m_flags & EXT4_MAP_UNWRITTEN ?
->>  				EXTENT_STATUS_UNWRITTEN : EXTENT_STATUS_WRITTEN;
->> -		if (!(flags & EXT4_GET_BLOCKS_DELALLOC_RESERVE) &&
->> -		    !(status & EXTENT_STATUS_WRITTEN) &&
->> -		    ext4_es_scan_range(inode, &ext4_es_is_delayed, map->m_lblk,
->> -				       map->m_lblk + map->m_len - 1))
->> -			status |= EXTENT_STATUS_DELAYED;
->>  		ext4_es_insert_extent(inode, map->m_lblk, map->m_len,
->>  				      map->m_pblk, status);
->>  	}
->> -- 
->> 2.39.2
->>
+Reproducer:
+1. Apply diff and compile kernel
+2. ./test.sh
+mke2fs 1.47.0 (5-Feb-2023)
+Creating filesystem with 524288 4k blocks and 131072 inodes
+Filesystem UUID: e2c71b4e-3315-4463-8613-ea3f40bf1efb
+Superblock backups stored on blocks:=20
+        32768, 98304, 163840, 229376, 294912
 
+Allocating group tables: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20=20
+Writing inode tables: done=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=20=
+=20=20=20=20=20=20=20=20=20=20=20=20
+Creating journal (16384 blocks): done
+Writing superblocks and filesystem accounting information: done=20
+
+./test.sh: line 18:  1559 Terminated              dd if=3D/dev/urandom
+of=3D$MNT/file bs=3D4M count=3D1
+e2fsck 1.47.0 (5-Feb-2023)
+Pass 1: Checking inodes, blocks, and sizes
+Inode 13, i_size is 2097152, should be 4194304.  Fix? no
+
+Pass 2: Checking directory structure
+Pass 3: Checking directory connectivity
+Pass 4: Checking reference counts
+Pass 5: Checking group summary information
+
+/dev/pmem2: ********** WARNING: Filesystem still has errors **********
+
+/dev/pmem2: 13/131072 files (0.0% non-contiguous), 27308/524288 blocks
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
