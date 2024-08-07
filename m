@@ -1,128 +1,107 @@
-Return-Path: <linux-ext4+bounces-3650-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3651-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B309949E49
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 05:33:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FA2E949E9B
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 05:47:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D33A7B21812
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 03:33:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DBC991F2641B
+	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 03:46:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CF5E82863;
-	Wed,  7 Aug 2024 03:33:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FDE9191F83;
+	Wed,  7 Aug 2024 03:46:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ny0ZOfbK"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="kBpsMhbZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8681B23D7
-	for <linux-ext4@vger.kernel.org>; Wed,  7 Aug 2024 03:33:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 879001A269;
+	Wed,  7 Aug 2024 03:46:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723001597; cv=none; b=QxDijN48NdDib9/w4ozbScNdbTWpemY0L3OYYdMXUpMxtpitRyzfne8+012P+JiC9Wt+2bW4QvwqH3OmZLYA16b1iGR7ZBypx2HAjXMQqhBSG+wHQ4a6FKMftueZ+CBu8qs2mIh1TqZc8k/BQSk5JwcHaMP1gX9B5D32SsOh6Vk=
+	t=1723002383; cv=none; b=d+oXrm4eGJTsTMXQ2RqhY79GEMDWhXj5HG/Zo0RQdQ2sWKJvc4NSNgCIs3OldNS96zMDFFqhKe0Oi+bAZp2/1M2xUNh20RzbKTC1pblivQbimA/SrsNyqQqtS0zLsR60JLTd+zZkHahRymC2xlmGTuZXyGq+69NzkjlcQahH85E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723001597; c=relaxed/simple;
-	bh=+90upCNcJMJKNR1/fKs6hhoX2F2OP3sXaNgZKtFBfAM=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=RpZJ0luYMX0CqtUef4gk/GISuY6UTe06ou/yd/aA8kT/e3BlZNFgEbq3kz0QFA84Hb6/ApYp4yIG+dEpycNsj6bZjDUx9+VI36dV58DIQk+qHiwWj09tkjjpwW5nZM76hlISRVyBPrQpATf73z0pHN9/kCXSV8ILf7gry9DP/4g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ny0ZOfbK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 1DE34C4AF0D
-	for <linux-ext4@vger.kernel.org>; Wed,  7 Aug 2024 03:33:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1723001597;
-	bh=+90upCNcJMJKNR1/fKs6hhoX2F2OP3sXaNgZKtFBfAM=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=Ny0ZOfbKvQBvNrNkP0BJcjHuhhz+a8PM4+GEfTY49k0+02ATTWw7pmQK+/0ITDNeq
-	 I2QeGyFyHcxzT7c7xCv4WK/TxWeZdSUxnTH+oKWTcDeVKbNMFC1xB2cxFvmyj3Z1k2
-	 iWp2sAy3WcyuUswbX4QYbDolVAcBhqldQuH8YK/4zY3LG1z87pAipp8Gwpp3Kn+081
-	 71gn0eohZl1Pp2qJmXbSRj2YYTxgCFbi/gxkWNHxEJ0VcNSFdhZXFy72BnRqxl9Z79
-	 P9+nwWiQUuEe2UhMdnbnlFjNkYQgbTwL4qr4WjO8FplarwxQnEt5tTxrrl/Kw5zFPj
-	 aQ8TP2tu/eb1Q==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 0C2A3C433E5; Wed,  7 Aug 2024 03:33:17 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 219132] Redundant "re-mounted ro" message
-Date: Wed, 07 Aug 2024 03:33:16 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: low
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-219132-13602-iWIiqR0MYh@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-219132-13602@https.bugzilla.kernel.org/>
-References: <bug-219132-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1723002383; c=relaxed/simple;
+	bh=S7xTj1+BRrFzibxP14qb9afX2Rlcc7Yzirv1sNhukC4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=r35b0so3qFIjK2gQC4RJydfRZCD3att8F6kgWZ9yFNloc9sqTHdBSYbttKQ4PSFkeOf0+PJMuXYMuuhm5WiJlM/frXCteqFGAQ3eUZtE1U8p3Efn4QCnjhxQ27+USrURN5v3GOEN/o4/Cdm6xCoLOfCQc3/cvrDAB15fhumu5Xk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=kBpsMhbZ; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=Jy5sBXXGr2voNP18guOdqKk17MKFMl8ptCuzk1nlp0Q=; b=kBpsMhbZ+1Pgy99WHBD3YzI4XG
+	Hqy0KiWbREOfNTGd4D85Ztw2vyfymYiId0v/fTjNdlVAQK/i5x/NoKEy/QsyytCQ29qGuUAPcq9Qm
+	vjWq9+4BtI6nienJ8u7m7JMTT8t8SpdKlmHFaOFuyV61i2voDWVr/HNRi6uBFNEFEKkv5wF5jsRT4
+	QsFXi0/Oqo98Wx1ic4RCpOZYs5IrLeuD9EiwRoO7eiq16UpiiqcAEe8uXB9oQygLNDqEwGOxHUSal
+	larh/IiUtXsxc/JN3FDf2sNmqYdwc6o9DNqJ+ZGljoforqQ0namjXayDrOo23zksSQNAh0C4Om5cd
+	UgGbrBrg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1sbXct-00000006gRT-3Off;
+	Wed, 07 Aug 2024 03:46:16 +0000
+Date: Wed, 7 Aug 2024 04:46:15 +0100
+From: Matthew Wilcox <willy@infradead.org>
+To: kernel test robot <oliver.sang@intel.com>,
+	Ryan Roberts <ryan.roberts@arm.com>,
+	Christian Brauner <brauner@kernel.org>
+Cc: oe-lkp@lists.linux.dev, lkp@intel.com,
+	Linux Memory Management List <linux-mm@kvack.org>,
+	linux-fsdevel@vger.kernel.org, linux-block@vger.kernel.org,
+	intel-gfx@lists.freedesktop.org, linux-bcachefs@vger.kernel.org,
+	ceph-devel@vger.kernel.org, ecryptfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+	linux-um@lists.infradead.org, linux-mtd@lists.infradead.org,
+	jfs-discussion@lists.sourceforge.net, linux-nfs@vger.kernel.org,
+	linux-nilfs@vger.kernel.org, ntfs3@lists.linux.dev,
+	ocfs2-devel@lists.linux.dev,
+	linux-karma-devel@lists.sourceforge.net, devel@lists.orangefs.org,
+	reiserfs-devel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [linux-next:master] [fs]  cdc4ad36a8:
+ kernel_BUG_at_include/linux/page-flags.h
+Message-ID: <ZrLuBz1eBdgFzIyC@casper.infradead.org>
+References: <202408062249.2194d51b-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <202408062249.2194d51b-lkp@intel.com>
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D219132
+On Tue, Aug 06, 2024 at 10:26:17PM +0800, kernel test robot wrote:
+> kernel test robot noticed "kernel_BUG_at_include/linux/page-flags.h" on:
+> 
+> commit: cdc4ad36a871b7ac43fcc6b2891058d332ce60ce ("fs: Convert aops->write_begin to take a folio")
+> https://git.kernel.org/cgit/linux/kernel/git/next/linux-next.git master
+> 
+> [test failed on linux-next/master 1e391b34f6aa043c7afa40a2103163a0ef06d179]
+> 
+> in testcase: boot
 
-Theodore Tso (tytso@mit.edu) changed:
+This patch should fix it.
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|                            |tytso@mit.edu
+Christian, can you squash the fix in?
 
---- Comment #2 from Theodore Tso (tytso@mit.edu) ---
-The suggestion in #1 isn't necessarily correct, though, because we could be
-remounting to change some other superblock options.  For example:
 
-mount -o remount,errors=3Dcontinue /dev/vdc
-
-Fundamentally, whenever runs "mount -o remount ...", we issue the "EXT4-fs
-(DEVICE): re-mounted ..." message.   The fact that we print the ro/rw and q=
-uota
-mode is completely arbitrary and more due to historical reasons than anythi=
-ng
-else.   For example, the fact that we print the quota mode is pretty much
-useless in this day and era and there are plenty of other mount option/state
-that would probably be much more useful.
-
-So the fact that we print the ro/rw state doesn't imply that it has changed=
-.=20
-For example, if the file system is mounted read/write and we change the err=
-ors=3D
-mode from continue to remount-ro, etc., we will print:
-
-EXT4-fs (nvme0n1p3): re-mounted UUID rw. Quota mode: none.
-
-... and it doesn't mean that we changed the rw/ro mode from ro to r/w.=20=
-=20=20
-
-Should we change the behavior to something else?   Perhaps, although to be
-honest it's not the highest priority thing for me.   I could see dropping t=
-he
-quota mode and only printing the message when the r/o state changes.  Or ma=
-ybe
-we display any mount option that changes (which would be a lot more work). =
- Is
-it worth the effort?  Meh.....
-.
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+diff --git a/mm/shmem.c b/mm/shmem.c
+index 7d28304aea0f..66ff87417090 100644
+--- a/mm/shmem.c
++++ b/mm/shmem.c
+@@ -2904,7 +2904,8 @@ shmem_write_begin(struct file *file, struct address_space *mapping,
+ 	if (ret)
+ 		return ret;
+ 
+-	if (folio_test_has_hwpoisoned(folio)) {
++	if (folio_test_hwpoison(folio) ||
++	    (folio_test_large(folio) && folio_test_has_hwpoisoned(folio))) {
+ 		folio_unlock(folio);
+ 		folio_put(folio);
+ 		return -EIO;
 
