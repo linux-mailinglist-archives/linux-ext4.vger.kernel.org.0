@@ -1,289 +1,310 @@
-Return-Path: <linux-ext4+bounces-3666-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3667-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 536A994AF19
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 19:48:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 49F3C94B550
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Aug 2024 05:06:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CC97B1F22C7D
-	for <lists+linux-ext4@lfdr.de>; Wed,  7 Aug 2024 17:48:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C5A01C20D55
+	for <lists+linux-ext4@lfdr.de>; Thu,  8 Aug 2024 03:06:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 122D713DBB3;
-	Wed,  7 Aug 2024 17:48:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C26FA2D052;
+	Thu,  8 Aug 2024 03:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f9Ww8RDd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="omWwUP+4";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="f9Ww8RDd";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="omWwUP+4"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G4egLMh6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8239A80BEC;
-	Wed,  7 Aug 2024 17:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B35861A291;
+	Thu,  8 Aug 2024 03:06:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723052907; cv=none; b=KxP+J8sZmZsjrJJkGwy/9nhEO5uJ9BoX90dWtbvPkOlhvao3xBgurFySGUGeyvCqu11f4PPaT4w6/b8o+nyYwElg4pq14kIOSSJm9FBSPpiHObq5TQzkT3RU4bnjy4urx6BFMA3Db+krkJ/BE0Ko9NWqbGYdhOeD3j/UHtKmf+o=
+	t=1723086365; cv=none; b=e1DbMZxbolr7ObZ/dB3/CPAp93os0PihQ5cOMEoG0QF1jFfLfWE2Qg1B8e4yNOJGrMtk4/LqZvNmBJRSZAKzigMabTgYzrxJblENllbGTKc0ttQZZb5rTDmZQSjsn1jvjaBWYMCO/CfxpktBXLwR1ZP0aVuYiO/NXCsJUfudmbc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723052907; c=relaxed/simple;
-	bh=gxnzrZK532UzXDU9oJooQnA7p6wuT0+Yfq3+XQ/ick4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enMRPASCEFXfb0KDp0vLBHkImhCK4YjtFIcRCL2oiTD7sij0SVoCa8Q26gpzu7nhS6w7r3Kh4VEa2PUK79gYiNOY8SxAU+/vUuGA4s878Hv7G6pOD7Flb2FSSfJRa/upeBdq4Z5nDQTP333pAtPqzjvprHCaseILChsBGmuec94=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f9Ww8RDd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=omWwUP+4; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=f9Ww8RDd; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=omWwUP+4; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 50A101FB98;
-	Wed,  7 Aug 2024 17:48:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723052903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=izW4UerVRQHs5fzbafGixcUtLUBiwOZn6UJ4BD67bEU=;
-	b=f9Ww8RDdu3QM3qBdVLQ3pFl3xt6Uwhalt8Ht6j4JHXjuLaBb8UnLygcN4cmM0nyj/8S6I2
-	PIvsYWE7HOtNQ4D1tOjg0shshFgmxpMDyLxwNCp+XteuAX1wu8KCUr80t6BCpx7Edq5q/K
-	bdIiDKclZJ9CYrGts8rMOk/iCM3/0sE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723052903;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=izW4UerVRQHs5fzbafGixcUtLUBiwOZn6UJ4BD67bEU=;
-	b=omWwUP+4wezOkL4Kpf3lbGnbJYY5G2hPopgIo7/F5fokQkhOKGTKA1U07/6Y1lYDy7kqB9
-	fhis+fsqqNzLitDQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=f9Ww8RDd;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=omWwUP+4
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1723052903; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=izW4UerVRQHs5fzbafGixcUtLUBiwOZn6UJ4BD67bEU=;
-	b=f9Ww8RDdu3QM3qBdVLQ3pFl3xt6Uwhalt8Ht6j4JHXjuLaBb8UnLygcN4cmM0nyj/8S6I2
-	PIvsYWE7HOtNQ4D1tOjg0shshFgmxpMDyLxwNCp+XteuAX1wu8KCUr80t6BCpx7Edq5q/K
-	bdIiDKclZJ9CYrGts8rMOk/iCM3/0sE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1723052903;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=izW4UerVRQHs5fzbafGixcUtLUBiwOZn6UJ4BD67bEU=;
-	b=omWwUP+4wezOkL4Kpf3lbGnbJYY5G2hPopgIo7/F5fokQkhOKGTKA1U07/6Y1lYDy7kqB9
-	fhis+fsqqNzLitDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3DA8213A7D;
-	Wed,  7 Aug 2024 17:48:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id QLvLDmezs2Y6KAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 07 Aug 2024 17:48:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id D8FE2A0762; Wed,  7 Aug 2024 19:48:18 +0200 (CEST)
-Date: Wed, 7 Aug 2024 19:48:18 +0200
-From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2 09/10] ext4: drop ext4_es_is_delonly()
-Message-ID: <20240807174818.bt6b4qhub7ydy5r5@quack3>
-References: <20240802115120.362902-1-yi.zhang@huaweicloud.com>
- <20240802115120.362902-10-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1723086365; c=relaxed/simple;
+	bh=NTVg4k52Ld7Qb5fRMa1cOVh7BXz9c+aNB4LooZF0n7U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GXM0CaR2BtANm1l7MDYW21s6V8h2lzM7wboWjKJ1twi7sz7yFPxall7qs7Yuo3pLfJ9m8hbFLEkJx1q9NtvFOsMqqMiznuhiNC3KVjeCusHlY0to7bwJcAz8x4QAHiYgls5efZjLajJ9qeRgQXHn9dXHjfgS9Ihdgcr72widwv0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G4egLMh6; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-44ff50affc5so3078561cf.1;
+        Wed, 07 Aug 2024 20:06:03 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723086362; x=1723691162; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=N+aurtEh+//psw1dedoJ0a/PdwxNeh43gUGAszzKC0k=;
+        b=G4egLMh6QtTcZelco+k9fon0JX0UPgmcyYPOrUfzZKDpn48I5ZtfddHx3k95jagPhS
+         YEcJVWpXGedQAcrVleDV8uGtnmB6Zjm/2UkyocCA7x9Fq2pPm3PkrXA+lZX5wG3+w+FU
+         Mh0npSi+BGlrJkOT5zg/9U3vaeZGa4iTJTfu/inJdSdSd5SCmzSHN4UV7AbP0oI4k0Cr
+         yP7JH5e616h11gzSbf38PSUp/splnq0oHVpeZypHbedkdBdGuEHy+Dfe47+yVZMxZifD
+         OajZXTeAsUIVzzkFJvBvD6ctUBQIVkn3lbnTj4rnyksNGyPFPxPCxlCiff7ul+VSI1+S
+         CcAA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723086362; x=1723691162;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=N+aurtEh+//psw1dedoJ0a/PdwxNeh43gUGAszzKC0k=;
+        b=F+rKMMomcw0kp2XT3V5MivvbX+s4xuUMKy4Pc2yC4zhum5yB5lGYz06XFVNc1FYXm2
+         BbkYv2lAzecYvdTn7xB31NYokNZ6N9AOTNTeuzGu9DTaIpit9JXEC0iZb+jlmEW1Xq2D
+         lxl6ikQ+Bl41iJ5jfPvi3QOSe5GjEFg3g3agay10drwu9uqCkiK35RvjFmSFSfKOwACo
+         AiQ7eYUUYXS+/hgPuiRgXUHcBiLiIVdvZ+soD6fggZkDQmQLkVf+2jw3jSB+3SiP4nY/
+         iaMfWZ7AM0FRlhTaU9zhq0qPlLlykRq6u47yYsyEIQ8D8XmaxK7OEf0AQCDph99Twl5H
+         NJIA==
+X-Forwarded-Encrypted: i=1; AJvYcCUvoj4gcgSaa9LKGg55ftrJYbDB3z4tkEU4kUygiXmPwCv8wdYDzHPyElCggkvGOL7YNJSJmA29VrwpzPJW2T6TPuGFyAh5CbuzmoWEc2Imirg40rczB9xeh9nCHF3WmQuPnm0feojHTQ==
+X-Gm-Message-State: AOJu0YywNVnMwqyxcSP5A+iV4XNTjwvOdRJjL/aWQ1aceGlVOn39olek
+	WwMuCmEwdXR9NuobKBzB4xFUrhtvEp9eQB37iOiIEwA4MqDurrd57Wmk+tGrFg+PpI1DuTHZDwa
+	G0XzlP4iXwgnRakrZI+A65SFIGfg=
+X-Google-Smtp-Source: AGHT+IGbxRYYeWrxFBirDQVYm9kGQ0jwT983PaKpIulhAXv0XPmXZ+4rOojNGMeQENWtEnQdEC/abcfiU0jcEfW7n8Q=
+X-Received: by 2002:a05:622a:598c:b0:447:e6d8:57a4 with SMTP id
+ d75a77b69052e-451d430b037mr5885061cf.62.1723086362395; Wed, 07 Aug 2024
+ 20:06:02 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240802115120.362902-10-yi.zhang@huaweicloud.com>
-X-Spam-Level: 
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,huawei.com:email,suse.com:email]
-X-Rspamd-Action: no action
-X-Spam-Flag: NO
-X-Spam-Score: -2.51
-X-Rspamd-Queue-Id: 50A101FB98
+References: <20240720062356.2522658-1-zhangshida@kylinos.cn>
+ <20240806134023.rm2ggd7swopryqci@quack3> <CANubcdV32L71ARCznZgKdrt0BmSyOYwW50L17zP=TG4PO2MH4Q@mail.gmail.com>
+ <20240807120659.y6cpxas5g3mze2rr@quack3>
+In-Reply-To: <20240807120659.y6cpxas5g3mze2rr@quack3>
+From: Stephen Zhang <starzhangzsd@gmail.com>
+Date: Thu, 8 Aug 2024 11:05:26 +0800
+Message-ID: <CANubcdVHbbq=WsTXU4EWAUPUby5--CLe5rf1GPzNPv+Y0a9VzQ@mail.gmail.com>
+Subject: Re: [RFC PATCH] jbd2: fix a potential assertion failure due to
+ improperly dirtied buffer
+To: Jan Kara <jack@suse.cz>
+Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, zhangshida@kylinos.cn, 
+	Baolin Liu <liubaolin@kylinos.cn>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri 02-08-24 19:51:19, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Since we don't add delayed flag in unwritten extents, so there is no
-> difference between ext4_es_is_delayed() and ext4_es_is_delonly(),
-> just drop ext4_es_is_delonly().
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+Jan Kara <jack@suse.cz> =E4=BA=8E2024=E5=B9=B48=E6=9C=887=E6=97=A5=E5=91=A8=
+=E4=B8=89 20:07=E5=86=99=E9=81=93=EF=BC=9A
+>
+> On Wed 07-08-24 16:10:50, Stephen Zhang wrote:
+> > Jan Kara <jack@suse.cz> =E4=BA=8E2024=E5=B9=B48=E6=9C=886=E6=97=A5=E5=
+=91=A8=E4=BA=8C 21:40=E5=86=99=E9=81=93=EF=BC=9A
+> > > On Sat 20-07-24 14:23:56, zhangshida wrote:
+> > > > From: Shida Zhang <zhangshida@kylinos.cn>
+> > > >
+> > > > On an old kernel version(4.19, ext3, journal=3Ddata, pagesize=3D64k=
+),
+> > > > an assertion failure will occasionally be triggered by the line bel=
+ow:
+> > >
+> > > OK, just out of curiosity, why are you using data=3Djournal mode? It =
+doesn't
+> > > really get that much testing and the performance is quite bad...
+> > >
+> >
+> > It is used by one of our customers. It's more like a historical issue:
+> > About 12 years ago, they used data=3Djournal mode for the benefit of us=
+er
+> > data consistency brought by the mode.
+> > Time goes by, they attempted to change, say, maybe change it to ext4
+> > at least, but found it is no more stable than it was under ext3...
+> > And yeah, they decided to just leave the thing as it was and keep the s=
+ystem
+> > under that state until now...
+>
+> I see, thanks for sharing. I was asking because we are mostly trying to
+> steer away people from using data=3Djournal mode and deprecate it because=
+ it
+> adds a lot of complexity into the code without significant benefit.
+>
 
-Looks good. But please also add assertion when inserting extent into status
-tree that only one of EXTENT_STATUS_WRITTEN, EXTENT_STATUS_UNWRITTEN,
-EXTENT_STATUS_DELAYED, and EXTENT_STATUS_HOLE is set.
-Also perhaps add comment to EXTENT_STATUS_DELAYED (and other) definition that
-these states are exclusive. Thanks!
+Yeah. Though I am not an experienced file system developer, I was thinking
+the philosophy behind the data=3Djournal design sometimes.
 
-									Honza
+In essence, unlike the metadata, the user data could be dirtied in an unexp=
+ected
+and uncontrollable way.
 
-> ---
->  fs/ext4/extents_status.c | 18 +++++++++---------
->  fs/ext4/extents_status.h |  5 -----
->  fs/ext4/inode.c          |  4 ++--
->  3 files changed, 11 insertions(+), 16 deletions(-)
-> 
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index e482ac818317..5fb0a02405ba 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -563,8 +563,8 @@ static int ext4_es_can_be_merged(struct extent_status *es1,
->  	if (ext4_es_is_hole(es1))
->  		return 1;
->  
-> -	/* we need to check delayed extent is without unwritten status */
-> -	if (ext4_es_is_delayed(es1) && !ext4_es_is_unwritten(es1))
-> +	/* we need to check delayed extent */
-> +	if (ext4_es_is_delayed(es1))
->  		return 1;
->  
->  	return 0;
-> @@ -1139,7 +1139,7 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
->  	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
->  	ext4_lblk_t i, end, nclu;
->  
-> -	if (!ext4_es_is_delonly(es))
-> +	if (!ext4_es_is_delayed(es))
->  		return;
->  
->  	WARN_ON(len <= 0);
-> @@ -1291,7 +1291,7 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
->  		es = rc->left_es;
->  		while (es && ext4_es_end(es) >=
->  		       EXT4_LBLK_CMASK(sbi, rc->first_do_lblk)) {
-> -			if (ext4_es_is_delonly(es)) {
-> +			if (ext4_es_is_delayed(es)) {
->  				rc->ndelonly_cluster--;
->  				left_delonly = true;
->  				break;
-> @@ -1311,7 +1311,7 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
->  			}
->  			while (es && es->es_lblk <=
->  			       EXT4_LBLK_CFILL(sbi, rc->last_do_lblk)) {
-> -				if (ext4_es_is_delonly(es)) {
-> +				if (ext4_es_is_delayed(es)) {
->  					rc->ndelonly_cluster--;
->  					right_delonly = true;
->  					break;
-> @@ -2239,7 +2239,7 @@ static int __revise_pending(struct inode *inode, ext4_lblk_t lblk,
->  	if (EXT4_B2C(sbi, lblk) == EXT4_B2C(sbi, end)) {
->  		first = EXT4_LBLK_CMASK(sbi, lblk);
->  		if (first != lblk)
-> -			f_del = __es_scan_range(inode, &ext4_es_is_delonly,
-> +			f_del = __es_scan_range(inode, &ext4_es_is_delayed,
->  						first, lblk - 1);
->  		if (f_del) {
->  			ret = __insert_pending(inode, first, prealloc);
-> @@ -2251,7 +2251,7 @@ static int __revise_pending(struct inode *inode, ext4_lblk_t lblk,
->  			       sbi->s_cluster_ratio - 1;
->  			if (last != end)
->  				l_del = __es_scan_range(inode,
-> -							&ext4_es_is_delonly,
-> +							&ext4_es_is_delayed,
->  							end + 1, last);
->  			if (l_del) {
->  				ret = __insert_pending(inode, last, prealloc);
-> @@ -2264,7 +2264,7 @@ static int __revise_pending(struct inode *inode, ext4_lblk_t lblk,
->  	} else {
->  		first = EXT4_LBLK_CMASK(sbi, lblk);
->  		if (first != lblk)
-> -			f_del = __es_scan_range(inode, &ext4_es_is_delonly,
-> +			f_del = __es_scan_range(inode, &ext4_es_is_delayed,
->  						first, lblk - 1);
->  		if (f_del) {
->  			ret = __insert_pending(inode, first, prealloc);
-> @@ -2276,7 +2276,7 @@ static int __revise_pending(struct inode *inode, ext4_lblk_t lblk,
->  
->  		last = EXT4_LBLK_CMASK(sbi, end) + sbi->s_cluster_ratio - 1;
->  		if (last != end)
-> -			l_del = __es_scan_range(inode, &ext4_es_is_delonly,
-> +			l_del = __es_scan_range(inode, &ext4_es_is_delayed,
->  						end + 1, last);
->  		if (l_del) {
->  			ret = __insert_pending(inode, last, prealloc);
-> diff --git a/fs/ext4/extents_status.h b/fs/ext4/extents_status.h
-> index 5b49cb3b9aff..e484c60e55e3 100644
-> --- a/fs/ext4/extents_status.h
-> +++ b/fs/ext4/extents_status.h
-> @@ -184,11 +184,6 @@ static inline int ext4_es_is_mapped(struct extent_status *es)
->  	return (ext4_es_is_written(es) || ext4_es_is_unwritten(es));
->  }
->  
-> -static inline int ext4_es_is_delonly(struct extent_status *es)
-> -{
-> -	return (ext4_es_is_delayed(es) && !ext4_es_is_unwritten(es));
-> -}
-> -
->  static inline void ext4_es_set_referenced(struct extent_status *es)
->  {
->  	es->es_pblk |= ((ext4_fsblk_t)EXTENT_STATUS_REFERENCED) << ES_SHIFT;
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 8bd65a45a26a..2b301c165468 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1645,7 +1645,7 @@ static int ext4_clu_alloc_state(struct inode *inode, ext4_lblk_t lblk)
->  	int ret;
->  
->  	/* Has delalloc reservation? */
-> -	if (ext4_es_scan_clu(inode, &ext4_es_is_delonly, lblk))
-> +	if (ext4_es_scan_clu(inode, &ext4_es_is_delayed, lblk))
->  		return 1;
->  
->  	/* Already been allocated? */
-> @@ -1766,7 +1766,7 @@ static int ext4_da_map_blocks(struct inode *inode, struct ext4_map_blocks *map)
->  		 * Delayed extent could be allocated by fallocate.
->  		 * So we need to check it.
->  		 */
-> -		if (ext4_es_is_delonly(&es)) {
-> +		if (ext4_es_is_delayed(&es)) {
->  			map->m_flags |= EXT4_MAP_DELAYED;
->  			return 0;
->  		}
-> -- 
-> 2.39.2
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+For example, calls like __block_write_begin() is a function that could dirt=
+y
+the user data, but __block_write_begin() is beyond ext4 maintainer's contro=
+l.
+We cannot tell the block layer maintainer, =E2=80=98Hey, we want to trace t=
+he dirty user
+data in ext4, can we add some special code for ext4 in __block_write_begin?=
+=E2=80=99:P
+
+Whilst for metadata, each time the dirting of each piece of metadata is man=
+aged
+by ext4's internal code logic.
+
+The uncontrollable dirting of user data is the root cause of all problems.
+
+> > > > jbd2_journal_commit_transaction
+> > > > {
+> > > > ...
+> > > > J_ASSERT_BH(bh, !buffer_dirty(bh));
+> > > > /*
+> > > > * The buffer on BJ_Forget list and not jbddirty means
+> > > > ...
+> > > > }
+> > > >
+> > > > AFAIC, that's how the problem works:
+> > > > --------
+> > > > journal_unmap_buffer
+> > > > jbd2_journal_invalidatepage
+> > > > __ext4_journalled_invalidatepage
+> > > > ext4_journalled_invalidatepage
+> > > > do_invalidatepage
+> > > > truncate_inode_pages_range
+> > > > truncate_inode_pages
+> > > > truncate_pagecache
+> > > > ext4_setattr
+> > > > --------
+> > > >
+> > > > First try to truncate and invalidate the page.
+> > > > Sometimes the buffer and the page won't be freed immediately.
+> > > > the buffer will be sent to the BJ_Forget list of the currently
+> > > > committing transaction. Maybe the transaction knows when and how
+> > > > to free the buffer better.
+> > > > The buffer's states now: !jbd_dirty !mapped !dirty
+> > > >
+> > > > Then jbd2_journal_commit_transaction(=EF=BC=89will try to iterate o=
+ver the
+> > > > BJ_Forget list:
+> > > > --------
+> > > > jbd2_journal_commit_transaction()
+> > > >       while (commit_transaction->t_forget) {
+> > > >       ...
+> > > >       }
+> > > > --------
+> > > >
+> > > > At this exact moment, another write comes:
+> > > > --------
+> > > > mark_buffer_dirty
+> > > > __block_write_begin_int
+> > > > __block_write_begin
+> > > > ext4_write_begin
+> > > > --------
+> > > > it sees a unmapped new buffer, and marks it as dirty.
+> > >
+> > > This should not happen. When ext4_setattr() truncates the file, we do=
+ not
+> > > allow reallocating these blocks for other purposes until the transact=
+ion
+> >
+> > ext4_setattr() will try to free it by adding it to the BJ_Forget list
+> > for further processing.
+> > Put it more clearly,
+> > when ext4_setattr() truncates the file, the buffer is not fully freed
+> > yet. It's half-freed.
+> > Furthermore,
+> > Because the buffer is half-freed, the reallocating thing won't need to =
+happen.
+> > Now,
+> > under that scenario, can we redirty the half-freed buffer on the BJ_For=
+get list?
+> > The answer may be 'yes'.
+> >
+> > redirty it by the following code:
+> > ext4_block_write_begin
+> >     if (!buffer_mapped(bh)) { // check 1
+> >          _ext4_get_block(inode, block, bh, 1);
+> >         (buffer_new(bh)) { // check 2
+> >              if (folio_test_uptodate(folio)) { // check 3
+> >                  mark_buffer_dirty(bh);
+>
+> <snip>
+>
+> I see, right. It is not that the block would get reused. It is just that
+> the buffer_head on the file's tail page gets reused and this causes issue=
+s.
+> In fact, the problem is with ext4_block_write_begin() (and
+> __block_write_begin_int()) that they call mark_buffer_dirty() on a
+> journalled buffer before calling jbd2_journal_get_write_access() (which
+> would remove the buffer from BJ_Forget list). This is what ultimately
+> confuses the commit code.
+>
+> > For another proof, there is indeed a small window where the buffer coul=
+d be
+> > seen dirty.
+> > Have a look at the code and comment in do_journal_get_write_access:
+> > ----------------
+> > int do_journal_get_write_access(handle_t *handle, struct inode *inode,
+> > struct buffer_head *bh)
+> > {
+> > ...
+> > /*
+> > * __block_write_begin() could have dirtied some buffers. Clean
+> > * the dirty bit as jbd2_journal_get_write_access() could complain
+> > * otherwise about fs integrity issues. Setting of the dirty bit
+> > * by __block_write_begin() isn't a real problem here as we clear
+> > * the bit before releasing a page lock and thus writeback cannot
+> > * ever write the buffer.
+> > */
+> > if (dirty)
+> > clear_buffer_dirty(bh); // clear the dirty immdiately in case some bad
+> > things happen
+>
+> OK, it was even me adding that comment 14 years ago ;) I already forgot
+> about this nuance.
+>
+
+That's quite a long time. Jan, you are a great developer. Cheers for you.:P
+
+> So I agree with your analysis now. But still don't like adding hacks to
+> jbd2 to acommodate for this oddity of data=3Djournal mode. Since we alrea=
+dy
+> have ext4_block_write_begin() implementation anyway, we should be able to
+> tweak it to do the right thing for data=3Djournal mode inodes...
+>
+> So we could replace uses of __block_write_begin() with
+> ext4_block_write_begin() and then call do_journal_get_write_access() in
+> ext4_block_write_begin() for inodes with journalled data after the buffer
+> is mapped with get_block().
+>
+> From the part:
+>                                 if (folio_test_uptodate(folio)) {
+>                                         clear_buffer_new(bh);
+>                                         set_buffer_uptodate(bh);
+>                                         mark_buffer_dirty(bh);
+>                                         continue;
+>                                 }
+>
+> we can actually remove the clear_buffer_new() and mark_buffer_dirty() bit=
+s
+> because they will be done by block_commit_write() or
+> folio_zero_new_buffers() and they are superfluous and somewhat odd here
+> anyway.
+>
+> And the call to folio_zero_new_buffers() from ext4_block_write_begin()
+> needs to call ext4_journalled_zero_new_buffers() for inodes where data is
+> journalled.
+>
+> Will you try to implement this or should I look into it?
+>
+
+Yeah, Thank you for giving me the opportunity to work on something truly
+meaningful. All I can do until now is some small cleanups. And doing cleanu=
+ps
+all the time is annoyable to the maintainers and frustrating to me. I
+will try my best.
+
+So basically, we should:
+1.Trace the user data dirting in ext4_block_write_begin().
+2.Replace the uncontrollable __block_write_begin with ext4_block_write_begi=
+n().
+3.Remove some superfluous things.
+
+Cheers,
+Stephen.
+
+>                                                                 Honza
+> --
+> Jan Kara <jack@suse.com>
+> SUSE Labs, CR
 
