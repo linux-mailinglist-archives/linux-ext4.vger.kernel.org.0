@@ -1,153 +1,115 @@
-Return-Path: <linux-ext4+bounces-3683-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3684-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 918A994CFC5
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 14:05:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECD5594D335
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 17:16:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E7A22835AD
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 12:05:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A22C21F23AB2
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 15:16:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1EC19308F;
-	Fri,  9 Aug 2024 12:05:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 836021990BC;
+	Fri,  9 Aug 2024 15:16:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fTVUuXbA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD591553A2;
-	Fri,  9 Aug 2024 12:05:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CAA198A11;
+	Fri,  9 Aug 2024 15:16:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723205126; cv=none; b=jzwDCj1BKfwuzvjIBcKXTJ8ggoF/dc1fDucwWX+VspoCGm3QTNhC0An5OmQ1e77O8O9EYQWyb7VVl5WvgTPiTbx4eITee+tUxTEoPhCv2ucgDhkCV5XxR+vKt+F8l9pfEkOpwMbIHRIEM0zjBKuh7zwvvL5gA/ZnB/x5vjsSukM=
+	t=1723216566; cv=none; b=S76+wFTDK2YlLk7m2x4SHjnXwO+5zJPyCFmU4mdczJAzXOvIqrxp4BcFj5gc602iU+hbIIdTp4fLXtSf+dJKxsj7ET8NmtnK5wWlQrsLOIxUPZELawnQIVm4z/3p2dcbtFSgN7Ztkigj0crdP7vDxtpr3bLlCW+ogfk8SBla9Mw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723205126; c=relaxed/simple;
-	bh=8FXevOaaW4dMe8R/a9rzmc74R1/c7ClSkFGxKPEfuV0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NocAiFA85lHf1LYFxxAOjteLipu0Cn6PHYTz6gXXZshlAjQENpMEekufFWMd4lw972ihsFIsy0PQhQTy4UqIL9oqnvCY/RDpooQn+4VDLtcYDCLR9S34opT+MkhcYMkaFwwYOofckdfdnCMqygQpgUp7FVLYoORmnjfII0sCFmg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WgMzb5yRlz4f3l21;
-	Fri,  9 Aug 2024 20:04:59 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 47BC81A0A22;
-	Fri,  9 Aug 2024 20:05:14 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.127.227])
-	by APP3 (Coremail) with SMTP id _Ch0CgC3Gbj0BbZm1E6mBA--.50645S4;
-	Fri, 09 Aug 2024 20:05:12 +0800 (CST)
-From: Zhihao Cheng <chengzhihao@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz
-Cc: linux-ext4@vger.kernel.org,
+	s=arc-20240116; t=1723216566; c=relaxed/simple;
+	bh=QzbMMXohX/nbFUDAv2G2AVoMhu56MDJK2QCsx8awg/A=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jMg7q7foLPH+tHeyfFr1uXDk8B70/cqGBsEgT4vnAt5uVjE7oeeB1NOMyeD1lrwvKExE01DE3o1V5TQvR+eTdoBEI1fJ7sXvb6wKgzl+dgTcSz2Y6HOMv85+QTTmFp7DYaqysHxstJj9fNaAB0uqnki+d2ELnybJW/q5N2HUYRQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fTVUuXbA; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3575C32782;
+	Fri,  9 Aug 2024 15:16:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723216565;
+	bh=QzbMMXohX/nbFUDAv2G2AVoMhu56MDJK2QCsx8awg/A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=fTVUuXbArCav3KJVsl+eSc5AkhIRDvwX3uQS+sX0twaDYoS4G1Bb3AUiSFynlLqcL
+	 gEermTVfi66DEOhk3SG1IHPzSHW5i8qj0tXO6o6OcQwoGNiA8JwaUtKpWVXjVc0SBq
+	 S9TdtIMrJ6cQyHpPTxqaeYOMXcJ9Iugr5uLLuvio9ohPakgXzuFEaz5kYTNTwLmNXu
+	 JJ3CGcCEiY6NpxGgg/RcWkxIv7uAs8PLryiMOQpg/Zv08B1/MIsHylABygWZKa0GPY
+	 J5lror6LoFp1Guh0FkH4MAUO5t1xgQBqgoodSuTC2juW+AvUyfGhY4W14iVLFGO5vG
+	 J+/M0xWh0CUGg==
+From: Christian Brauner <brauner@kernel.org>
+To: Zhihao Cheng <chengzhihao@huaweicloud.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-mtd@lists.infradead.org,
 	chengzhihao1@huawei.com,
-	yi.zhang@huawei.com
-Subject: [PATCH] ext4: dax: Fix overflowing extents beyond inode size when partially writing
-Date: Fri,  9 Aug 2024 20:15:32 +0800
-Message-Id: <20240809121532.2105494-1-chengzhihao@huaweicloud.com>
-X-Mailer: git-send-email 2.31.1
+	yi.zhang@huawei.com,
+	wangzhaolong1@huawei.com,
+	yangerkun@huawei.com,
+	mjguzik@gmail.com,
+	viro@zeniv.linux.org.uk,
+	error27@gmail.com,
+	tahsin@google.com,
+	rydercoding@hotmail.com,
+	jack@suse.cz,
+	hch@infradead.org,
+	andreas.dilger@intel.com,
+	tytso@mit.edu,
+	richard@nod.at
+Subject: Re: [PATCH v2] vfs: Don't evict inode under the inode lru traversing context
+Date: Fri,  9 Aug 2024 17:15:36 +0200
+Message-ID: <20240809-neuanfang-recyceln-b3d99596e98f@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240809031628.1069873-1-chengzhihao@huaweicloud.com>
+References: <20240809031628.1069873-1-chengzhihao@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1472; i=brauner@kernel.org; h=from:subject:message-id; bh=QzbMMXohX/nbFUDAv2G2AVoMhu56MDJK2QCsx8awg/A=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaRtM1pzas0xLi7eKXOP/jVYMOvYsu3syX8WfDZ7quSVm OqmJR95raOUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAipzgZGa46OBQseXPG6PAJ sx6Vtkc/Vv2ZuPfFZf78ZbsKBVbtVU1h+KfJt6xlhYCouNXlpCmZxkdKT298+0Os1m67NcODPtO l0ZwA
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgC3Gbj0BbZm1E6mBA--.50645S4
-X-Coremail-Antispam: 1UD129KBjvJXoWxAF4ftr1UZF18Cry8Jry8AFb_yoW5XFW5pr
-	9xKFyY9rWvqasFgay8tF4DZw4qk3W7GrWUCr1UKwn0vF9rZryfKF1jyF4FvF15JrWkuF12
-	qrsYkry8uw12y3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
-	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
-	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
-	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
-	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
-	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUotCzDUUUU
-X-CM-SenderInfo: xfkh0wx2klxt3r6k3tpzhluzxrxghudrp/
 
-From: Zhihao Cheng <chengzhihao1@huawei.com>
+On Fri, 09 Aug 2024 11:16:28 +0800, Zhihao Cheng wrote:
+> The inode reclaiming process(See function prune_icache_sb) collects all
+> reclaimable inodes and mark them with I_FREEING flag at first, at that
+> time, other processes will be stuck if they try getting these inodes
+> (See function find_inode_fast), then the reclaiming process destroy the
+> inodes by function dispose_list(). Some filesystems(eg. ext4 with
+> ea_inode feature, ubifs with xattr) may do inode lookup in the inode
+> evicting callback function, if the inode lookup is operated under the
+> inode lru traversing context, deadlock problems may happen.
+> 
+> [...]
 
-The dax_iomap_rw() does two things in each iteration: map written blocks
-and copy user data to blocks. If the process is killed by user(See signal
-handling in dax_iomap_iter()), the copied data will be returned and added
-on inode size, which means that the length of written extents may exceed
-the inode size, then fsck will fail. An example is given as:
+I've replaced the BUG_ON() with WARN_ON().
 
-dd if=/dev/urandom of=file bs=4M count=1
- dax_iomap_rw
-  iomap_iter // round 1
-   ext4_iomap_begin
-    ext4_iomap_alloc // allocate 0~2M extents(written flag)
-  dax_iomap_iter // copy 2M data
-  iomap_iter // round 2
-   iomap_iter_advance
-    iter->pos += iter->processed // iter->pos = 2M
-   ext4_iomap_begin
-    ext4_iomap_alloc // allocate 2~4M extents(written flag)
-  dax_iomap_iter
-   fatal_signal_pending
-  done = iter->pos - iocb->ki_pos // done = 2M
- ext4_handle_inode_extension
-  ext4_update_inode_size // inode size = 2M
-
-fsck reports: Inode 13, i_size is 2097152, should be 4194304.  Fix?
-
-Fix the problem by truncating extents if the written length is smaller
-than expected.
-
-Fixes: 776722e85d3b ("ext4: DAX iomap write support")
-CC: stable@vger.kernel.org
-Link: https://bugzilla.kernel.org/show_bug.cgi?id=219136
-Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ext4/file.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index c89e434db6b7..be061bb64067 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -334,10 +334,10 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
-  * Clean up the inode after DIO or DAX extending write has completed and the
-  * inode size has been updated using ext4_handle_inode_extension().
-  */
--static void ext4_inode_extension_cleanup(struct inode *inode, ssize_t count)
-+static void ext4_inode_extension_cleanup(struct inode *inode, bool need_trunc)
- {
- 	lockdep_assert_held_write(&inode->i_rwsem);
--	if (count < 0) {
-+	if (need_trunc) {
- 		ext4_truncate_failed_write(inode);
- 		/*
- 		 * If the truncate operation failed early, then the inode may
-@@ -586,7 +586,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		 * writeback of delalloc blocks.
- 		 */
- 		WARN_ON_ONCE(ret == -EIOCBQUEUED);
--		ext4_inode_extension_cleanup(inode, ret);
-+		ext4_inode_extension_cleanup(inode, ret < 0);
- 	}
- 
- out:
-@@ -670,7 +670,7 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 
- 	if (extend) {
- 		ret = ext4_handle_inode_extension(inode, offset, ret);
--		ext4_inode_extension_cleanup(inode, ret);
-+		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
- 	}
- out:
- 	inode_unlock(inode);
--- 
-2.39.2
+Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+Patches in the vfs.fixes branch should appear in linux-next soon.
 
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
+
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fixes
+
+[1/1] vfs: Don't evict inode under the inode lru traversing context
+      https://git.kernel.org/vfs/vfs/c/24b0ba4e047d
 
