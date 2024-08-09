@@ -1,187 +1,153 @@
-Return-Path: <linux-ext4+bounces-3682-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3683-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2352B94CAC3
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 08:46:53 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 918A994CFC5
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 14:05:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 31B361C22014
-	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 06:46:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E7A22835AD
+	for <lists+linux-ext4@lfdr.de>; Fri,  9 Aug 2024 12:05:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C428416D4FE;
-	Fri,  9 Aug 2024 06:46:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I/sVgBZK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1EC19308F;
+	Fri,  9 Aug 2024 12:05:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E902216D4EE;
-	Fri,  9 Aug 2024 06:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD591553A2;
+	Fri,  9 Aug 2024 12:05:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723185991; cv=none; b=QRgPPND7XFV2eI8EXd22Z4u4kyZDUIhIHMtcfVkKEnEj+cDdSIe6o4lR9HWpwgA7dplxc73i/GxSopQBfx174EF4wiQIUUfWzLmrYLZ20kk5l/HE3W1hVJwgbtZ9bNAo042lcJifC9hZm9/fXqIpV+r+xak7f5lPZGDy0dl47Eo=
+	t=1723205126; cv=none; b=jzwDCj1BKfwuzvjIBcKXTJ8ggoF/dc1fDucwWX+VspoCGm3QTNhC0An5OmQ1e77O8O9EYQWyb7VVl5WvgTPiTbx4eITee+tUxTEoPhCv2ucgDhkCV5XxR+vKt+F8l9pfEkOpwMbIHRIEM0zjBKuh7zwvvL5gA/ZnB/x5vjsSukM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723185991; c=relaxed/simple;
-	bh=0XjSVnAX262gGnoCnVHs2qpH728XqwdlxfLY0/kEphI=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=itobLQO7dqM+AsvuswqpehDqFSpBnEgJhGF+BkCrOYSi4HnmgBrLDzl3tkD3+2SmOZpCAJXk4JYvChXu84ODVdObuzgvax/g/TTXVy85DFFs5RWJT4zHlWK7MHVp9Ovs4tcWsNWLOUfBF1RB4aDkU0NgIsT9HHh/0SgOY6NQ0/o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I/sVgBZK; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-2cb510cd097so1451133a91.1;
-        Thu, 08 Aug 2024 23:46:29 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723185989; x=1723790789; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CmeU6YujhDN+JQ00gbkG5q3lZjXBS3ZjjOccDr3kLEc=;
-        b=I/sVgBZKjdzHeA6ho+KX7mNMFWtKJywPtx4z49wtIxOc4Z/rVpllN4Qpx+8rs5ziTt
-         nwZoGreoLTy+niv84dhO4duPywKol9jxgSqtI4pmqJHSlt9AGqn+VouuNL8kSdfdt8gF
-         pEWtHeF81JOebu8LjJbvk/dnHa1R+BELPglzd0wH6DTg2zptgI+Buoq1zS0eQVM+WDRN
-         rwh1422IIcN/kGEDLnVbvU/jfId3wqGmZT6decdY2y+WDzZRMWyRhj4FnlAI7cq9yeN4
-         6QZdtVk+adnOiDcdAAktrfGJ+bLepBBMrtg5XxowNsSKDPRzRYxqrX1xd7iIdXgbP2bI
-         T61Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723185989; x=1723790789;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CmeU6YujhDN+JQ00gbkG5q3lZjXBS3ZjjOccDr3kLEc=;
-        b=LNxXYayQ8XSpBndt6dEYUx0muVidGusuOg4/u+CJRsY5V283V2mUy9X8vC7UmKxclV
-         Wv11OVrK3fVNoNa2syh1jcw1iAFoEWLKyzYfF8T9qUQGxL3i6o2TjIzVq4R0cMH9SzK4
-         3rV4hYP/dfT+oUAh5h9W9Rlqrn0STRVdDRIzbKQbURsA2xKutvJkuzU/rn4opEOaUBAT
-         we4igb5/7NfByPNGfElgVcBiRkvAno2hjnUC5eIYMotEx0JxO24hk3tEZyEnj/e2R2XZ
-         ur0wrtKB++IP2p0kXIruU94HP/Lgdio88//vQ5yfG2lpx/6fLSbbcL/mA01A+LLBVovU
-         EzWA==
-X-Forwarded-Encrypted: i=1; AJvYcCWAI4YL/Yzh6++HLymZwbIQDP1RxTNnHXVTGvbjBKJL7j8Nj2OrFel+qSDWisGemOM0c72stayRHGELerg=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0883ibIYgn8lUY+aN6u11CeMp+hWhZcVQlDNZsGUG9ft8A/7d
-	YUmY1WWWGKIYLLsa+ksekJjHf/zJ3Dk0kxkE23dikzBX3H9jB3+w
-X-Google-Smtp-Source: AGHT+IGXN4pPCc482mbAOY0AU8yxNDO8RXnNS+hRFpMl0trjmLBMX9o8YHd5C8A/dENRrBWSJUTCRA==
-X-Received: by 2002:a17:90a:c695:b0:2c9:66d3:4663 with SMTP id 98e67ed59e1d1-2d1e80a08e2mr478057a91.43.1723185989209;
-        Thu, 08 Aug 2024 23:46:29 -0700 (PDT)
-Received: from localhost.localdomain ([163.53.18.10])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d1c9db44e5sm2201491a91.46.2024.08.08.23.46.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 08 Aug 2024 23:46:28 -0700 (PDT)
-From: zhangshida <starzhangzsd@gmail.com>
-X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
+	s=arc-20240116; t=1723205126; c=relaxed/simple;
+	bh=8FXevOaaW4dMe8R/a9rzmc74R1/c7ClSkFGxKPEfuV0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NocAiFA85lHf1LYFxxAOjteLipu0Cn6PHYTz6gXXZshlAjQENpMEekufFWMd4lw972ihsFIsy0PQhQTy4UqIL9oqnvCY/RDpooQn+4VDLtcYDCLR9S34opT+MkhcYMkaFwwYOofckdfdnCMqygQpgUp7FVLYoORmnjfII0sCFmg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WgMzb5yRlz4f3l21;
+	Fri,  9 Aug 2024 20:04:59 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 47BC81A0A22;
+	Fri,  9 Aug 2024 20:05:14 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.127.227])
+	by APP3 (Coremail) with SMTP id _Ch0CgC3Gbj0BbZm1E6mBA--.50645S4;
+	Fri, 09 Aug 2024 20:05:12 +0800 (CST)
+From: Zhihao Cheng <chengzhihao@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca,
-	jack@suse.com
+	jack@suse.cz
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	zhangshida@kylinos.cn,
-	starzhangzsd@gmail.com,
-	Jan Kara <jack@suse.cz>
-Subject: [RFC PATCH V2 2/2] ext4: Replace the __block_write_begin with ext4_block_write_begin
-Date: Fri,  9 Aug 2024 14:46:06 +0800
-Message-Id: <20240809064606.3490994-3-zhangshida@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240809064606.3490994-1-zhangshida@kylinos.cn>
-References: <20240809064606.3490994-1-zhangshida@kylinos.cn>
+	chengzhihao1@huawei.com,
+	yi.zhang@huawei.com
+Subject: [PATCH] ext4: dax: Fix overflowing extents beyond inode size when partially writing
+Date: Fri,  9 Aug 2024 20:15:32 +0800
+Message-Id: <20240809121532.2105494-1-chengzhihao@huaweicloud.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgC3Gbj0BbZm1E6mBA--.50645S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF4ftr1UZF18Cry8Jry8AFb_yoW5XFW5pr
+	9xKFyY9rWvqasFgay8tF4DZw4qk3W7GrWUCr1UKwn0vF9rZryfKF1jyF4FvF15JrWkuF12
+	qrsYkry8uw12y3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUotCzDUUUU
+X-CM-SenderInfo: xfkh0wx2klxt3r6k3tpzhluzxrxghudrp/
 
-From: Shida Zhang <zhangshida@kylinos.cn>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
-Using __block_write_begin() make it inconvenient to journal the
-user data dirty process. We can't tell the block layer maintainer,
-‘Hey, we want to trace the dirty user data in ext4, can we add some
-special code for ext4 in __block_write_begin?’:P
+The dax_iomap_rw() does two things in each iteration: map written blocks
+and copy user data to blocks. If the process is killed by user(See signal
+handling in dax_iomap_iter()), the copied data will be returned and added
+on inode size, which means that the length of written extents may exceed
+the inode size, then fsck will fail. An example is given as:
 
-So use ext4_block_write_begin() instead.
+dd if=/dev/urandom of=file bs=4M count=1
+ dax_iomap_rw
+  iomap_iter // round 1
+   ext4_iomap_begin
+    ext4_iomap_alloc // allocate 0~2M extents(written flag)
+  dax_iomap_iter // copy 2M data
+  iomap_iter // round 2
+   iomap_iter_advance
+    iter->pos += iter->processed // iter->pos = 2M
+   ext4_iomap_begin
+    ext4_iomap_alloc // allocate 2~4M extents(written flag)
+  dax_iomap_iter
+   fatal_signal_pending
+  done = iter->pos - iocb->ki_pos // done = 2M
+ ext4_handle_inode_extension
+  ext4_update_inode_size // inode size = 2M
 
-The two functions are basically doing the same thing except for the
-fscrypt related code. Narrow the scope of CONFIG_FS_ENCRYPTION
-so as to allow ext4_block_write_begin() to function like
-__block_write_begin when the config is disabled.
+fsck reports: Inode 13, i_size is 2097152, should be 4194304.  Fix?
 
-Suggested-by: Jan Kara <jack@suse.cz>
-Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+Fix the problem by truncating extents if the written length is smaller
+than expected.
+
+Fixes: 776722e85d3b ("ext4: DAX iomap write support")
+CC: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=219136
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
 ---
- fs/ext4/inode.c | 19 ++++---------------
- 1 file changed, 4 insertions(+), 15 deletions(-)
+ fs/ext4/file.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index de46c0a6842a..31389633086a 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1046,7 +1046,6 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 	return ret;
- }
- 
--#ifdef CONFIG_FS_ENCRYPTION
- static int ext4_block_write_begin(handle_t *handle, struct folio *folio,
- 				  loff_t pos, unsigned len,
- 				  get_block_t *get_block)
-@@ -1135,7 +1134,9 @@ static int ext4_block_write_begin(handle_t *handle, struct folio *folio,
- 							 from, to);
- 		else
- 			folio_zero_new_buffers(folio, from, to);
--	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
-+	}
-+#ifdef CONFIG_FS_ENCRYPTION
-+	else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
- 		for (i = 0; i < nr_wait; i++) {
- 			int err2;
- 
-@@ -1147,10 +1148,10 @@ static int ext4_block_write_begin(handle_t *handle, struct folio *folio,
- 			}
- 		}
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index c89e434db6b7..be061bb64067 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -334,10 +334,10 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
+  * Clean up the inode after DIO or DAX extending write has completed and the
+  * inode size has been updated using ext4_handle_inode_extension().
+  */
+-static void ext4_inode_extension_cleanup(struct inode *inode, ssize_t count)
++static void ext4_inode_extension_cleanup(struct inode *inode, bool need_trunc)
+ {
+ 	lockdep_assert_held_write(&inode->i_rwsem);
+-	if (count < 0) {
++	if (need_trunc) {
+ 		ext4_truncate_failed_write(inode);
+ 		/*
+ 		 * If the truncate operation failed early, then the inode may
+@@ -586,7 +586,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		 * writeback of delalloc blocks.
+ 		 */
+ 		WARN_ON_ONCE(ret == -EIOCBQUEUED);
+-		ext4_inode_extension_cleanup(inode, ret);
++		ext4_inode_extension_cleanup(inode, ret < 0);
  	}
-+#endif
  
- 	return err;
- }
--#endif
+ out:
+@@ -670,7 +670,7 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
  
- /*
-  * To preserve ordering, it is essential that the hole instantiation and
-@@ -1232,20 +1233,12 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- 	/* In case writeback began while the folio was unlocked */
- 	folio_wait_stable(folio);
- 
--#ifdef CONFIG_FS_ENCRYPTION
- 	if (ext4_should_dioread_nolock(inode))
- 		ret = ext4_block_write_begin(handle, folio, pos, len,
- 					     ext4_get_block_unwritten);
- 	else
- 		ret = ext4_block_write_begin(handle, folio, pos, len,
- 					     ext4_get_block);
--#else
--	if (ext4_should_dioread_nolock(inode))
--		ret = __block_write_begin(&folio->page, pos, len,
--					  ext4_get_block_unwritten);
--	else
--		ret = __block_write_begin(&folio->page, pos, len, ext4_get_block);
--#endif
- 	if (!ret && ext4_should_journal_data(inode)) {
- 		ret = ext4_walk_page_buffers(handle, inode,
- 					     folio_buffers(folio), from, to,
-@@ -2978,12 +2971,8 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
- 	if (IS_ERR(folio))
- 		return PTR_ERR(folio);
- 
--#ifdef CONFIG_FS_ENCRYPTION
- 	ret = ext4_block_write_begin(NULL, folio, pos, len,
- 				     ext4_da_get_block_prep);
--#else
--	ret = __block_write_begin(&folio->page, pos, len, ext4_da_get_block_prep);
--#endif
- 	if (ret < 0) {
- 		folio_unlock(folio);
- 		folio_put(folio);
+ 	if (extend) {
+ 		ret = ext4_handle_inode_extension(inode, offset, ret);
+-		ext4_inode_extension_cleanup(inode, ret);
++		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
+ 	}
+ out:
+ 	inode_unlock(inode);
 -- 
-2.33.0
+2.39.2
 
 
