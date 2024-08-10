@@ -1,70 +1,72 @@
-Return-Path: <linux-ext4+bounces-3692-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3693-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30D2994DB69
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 10:28:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7753894DB6B
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 10:28:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB10E2823D3
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 08:28:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7B5D1F2127A
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 08:28:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0898914B95B;
-	Sat, 10 Aug 2024 08:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB1D14D29D;
+	Sat, 10 Aug 2024 08:28:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CIKH7LIO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Tn6sFyUm"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92D41C28E;
-	Sat, 10 Aug 2024 08:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5E6314C583;
+	Sat, 10 Aug 2024 08:28:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723278505; cv=none; b=XF9nfJK1bUnD6t+frFUAc0WTBsvG5f+zT6BLXjX2HSG/qUbJoG77KcQsmlOo2j28ZsoyYCe4AHi5Rnke69oxqnQKgMRxcyogEKAXKAhlswTdmvNcP5GfaBUd2uBZQPOoST1DkXRoQkTgWZXtsZ6AjBTtzyXeMmtRFgqgwQpeUTA=
+	t=1723278509; cv=none; b=p8Ar6z90U9+3+LZheLt+ykzLlNFtpPywdPlwoy8iOniOT41nXGt+58Qb0GIkBucr9ELepY+5corHL+qOfZSog+m7dC5cLkePR2256fUNOiObV2wJlmcyHsc+Up4l2X4kwJFAeg2dmPGTL1bpoSWG3EfuVxKq0zcuBu4vJj5svA4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723278505; c=relaxed/simple;
-	bh=tgvChdqFcbG93zFoVASyNV9P7tBf+MDssFR3I1icJDs=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=RppVR8JMHSUD+3Zr9YZuw0Op5UOfnlITeT146DnC+hUWVQCR6mmumOZxP+4RFQ8WRekGPPFyrSbSOnL8R8jYRC2Vwv39QTPBGxqKV9WTxH1qxYAamPffAvsoJ99NPxscPQoAC7F18jjTRaJslBNGzprVAkHDo5LpjFTo+JeMEUw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CIKH7LIO; arc=none smtp.client-ip=209.85.167.182
+	s=arc-20240116; t=1723278509; c=relaxed/simple;
+	bh=wdiNS1NVUsFCdpAPH1x17L4nOv4E184Rt48nedcpfLc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Xmjd63SdrwPVmwQ/PbkjTKXBEaT8jn2HtC9prr/lpFcmUT3ANVAtDnciqTY3GA7rRuLaBVc7hJTzB5FYd677FjiZUwdOIGdyzf1TERin51AfQJSNh0qXhYoPy1Hy8htFdh0TGf+bzMIwCR/6NIhBODkQAUcIQsZeRUOuDKSBrKk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Tn6sFyUm; arc=none smtp.client-ip=209.85.222.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3db1657c0fdso1930372b6e.1;
-        Sat, 10 Aug 2024 01:28:23 -0700 (PDT)
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-8223f0614b6so919175241.2;
+        Sat, 10 Aug 2024 01:28:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723278503; x=1723883303; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=eVi24F7BOm+woApTsUtzfxGKjOUe1mrgm5itsbG0ZJA=;
-        b=CIKH7LIO+BAIM9NwkDicpEMiRA7msrvA3IJ0VE/KLuNBOQpLQ43fNbGE8x2BIRflCY
-         ec1jb4ulFF3sQiXp/kqFfXkTNs9PWziwWfvj6PnAE/0Wq6F/07gBDXOpBUn7cpi+0ug2
-         gRdKeRpfXDo0P7/u3Au2IdccVbd7IUGftFFQHpgSNHg8al2yoDxQoeIrp27AbKMC9lhf
-         wzp7VEMXbNdbS96q5q2rK/FQ5MDtO/YU24TBXKioM/mK8tm86HOGZcmqaH82obHxngBF
-         aFGVLfiTjYKakxma1jIHYSxZq5L0ofQUUF2FVjmaAt1TDaMOJOcVszaRDBH4Rue7Rnui
-         intg==
+        d=gmail.com; s=20230601; t=1723278507; x=1723883307; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OfkinVOCRqqx14ba0QNxtd1YpB4MXEXYboXHawxHb8w=;
+        b=Tn6sFyUmQK5ydGXmJsZsHjRRWEOKLDyB2QXvstKX0jsYXqK88WOQPyL0NdK6f2wIgY
+         Ap+HAggYepiJboSfUgy3m+4crcovcXAtqpxKrvVZgwuddNPn+21vKYIABMwtwfN2qIJS
+         7i/2rmqFoRttTF5uzEKdUTkXjoMnkIYfSt0/D1P07oox3JkaqBuVq49PUFfJR+26V5QR
+         WbacDJtIUIDSCWazeQGWjqVr3H/g/7/OmZHfP5IqjOFS2SqN86d+U4UKyQgppGpjg290
+         bqpRBJHkTAXXrIqZuSLuMWM2vkmLNrmGg95UCVeBrtWvw7rV4CThpq8WDNiwhBOo4/qT
+         NpAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723278503; x=1723883303;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=eVi24F7BOm+woApTsUtzfxGKjOUe1mrgm5itsbG0ZJA=;
-        b=d2gJXMC/3Sirl0lZeCMOeW8hdIR5xutuGK9vg/WiVkl19JXR4rFZDpLxhsIdC9jmIq
-         L/se5m/Mq/Q9mws+D9JP6ufbKVDMq9vt/Ry309c3kl8AxK5GDc7dwlD76p561yqFTiJv
-         ATIS4aPeHTk9cY9jbX/f6DsJSHNsc0pu75qKGclxFSNy53Ub4qC8kBR8ZMsj1SwCgni1
-         d8AuaHm5r8yGesCjGscNwz+L8GVj5zVZhTP3jfnWFyTPNPw42S+kLYv3SOru3tvWLmwC
-         90HrZKVTEt/wkZrwaqk9EoQA4gUkEv0TdLYY8tyVpz3B06zvFtXhwOpVLei/KSg5ja7i
-         jf4Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUpa6m2p/92kQNy17BtR+SWy2wm+Pz9vCTroHaW2rBST2000nKWcfZE7fgzBG+2pctVpW2F4wESFPJRtkreDm4i0BONlFLeo5kMLtCu
-X-Gm-Message-State: AOJu0YzVPoiu6dYlP9F8UqFglaJiIGLf3V0tjJGP2SXYLcU2ETv9W58U
-	NVDYoOYwgPAfSnFKILuYH0zqxazpI8MY9S33UHM4gQ2sHhTtwES+
-X-Google-Smtp-Source: AGHT+IFtWOipOrFqGkJ0YyAdDgA2K+LnzEbLt4cY+ckXaks0zPIaSGS+0YEod1ECw2JrPeNIWmAqDA==
-X-Received: by 2002:a05:6808:21a2:b0:3db:17b6:1ea4 with SMTP id 5614622812f47-3dc417058f7mr5224065b6e.42.1723278502709;
-        Sat, 10 Aug 2024 01:28:22 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1723278507; x=1723883307;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OfkinVOCRqqx14ba0QNxtd1YpB4MXEXYboXHawxHb8w=;
+        b=pCJmolxNfaV7sWQVEIFVbj9wrvRUHK8xBHHZONlFNjW7gvZczzMTqdk6ttg0zoNdCl
+         0xDmBxt75fxeDeuO35hQHZG92qIjT+vC433MIHvJvcEVmmrWL6847Y7qIwfwWA30kt6o
+         PGQMCTFd//9tZKrF0PHJaL4ww2E+lKsmYPjgLUiJCVcrRw5o6edWuCPSL5reqU2ZWyVp
+         h2wTXUNT05AaW93Ol2DiBwQMpo5YuXgu7gAEsWtNHIeXJhhg2b4Hu/uhiKFm+6GCbxGE
+         UiogDGCdkzx84nL5/2W+yoypo+FN1Q/1aL+wB6ajgWPg4/YBXclaWZTL4BKPFCynLJxj
+         mEyA==
+X-Forwarded-Encrypted: i=1; AJvYcCUMmBjzsvZ8r0qVNyentB6aMZ2COLU1yuGtiXH3y/n5Msvelhd9JjIAgjJEjbJshJ2dCATFtTlLVvtjN78kDO3VARtJql4FGiYfCtfs
+X-Gm-Message-State: AOJu0YxQ2fQybqbfG3FFEuh2DMVURI0Fz/RpnA+MA4LINHxbk0XsMo8J
+	UOOFydElnMX+tItUTx1lPZzgKueLlnikyyWfr0lX/Ztzva+BWI9g
+X-Google-Smtp-Source: AGHT+IE4NUkWyiiqXdmtF6hIKBPZSxvvNxOTXmRN0m6q3gBBFnHullZGiSnvAfG2e7BLe8Qrnxl/JQ==
+X-Received: by 2002:a05:6102:3f47:b0:48f:a858:2b52 with SMTP id ada2fe7eead31-495d860b1e4mr6043346137.29.1723278506604;
+        Sat, 10 Aug 2024 01:28:26 -0700 (PDT)
 Received: from localhost.localdomain ([163.53.18.10])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5a8c454sm854092b3a.180.2024.08.10.01.28.20
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5a8c454sm854092b3a.180.2024.08.10.01.28.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 10 Aug 2024 01:28:22 -0700 (PDT)
+        Sat, 10 Aug 2024 01:28:26 -0700 (PDT)
 From: zhangshida <starzhangzsd@gmail.com>
 X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
 To: tytso@mit.edu,
@@ -73,11 +75,14 @@ To: tytso@mit.edu,
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	zhangshida@kylinos.cn,
-	starzhangzsd@gmail.com
-Subject: [PATCH v3 0/3] Fix an error caused by improperly dirtied buffer 
-Date: Sat, 10 Aug 2024 16:28:11 +0800
-Message-Id: <20240810082814.3709867-1-zhangshida@kylinos.cn>
+	starzhangzsd@gmail.com,
+	Jan Kara <jack@suse.cz>
+Subject: [PATCH v3 1/3] ext4: hoist ext4_block_write_begin and replace the __block_write_begin
+Date: Sat, 10 Aug 2024 16:28:12 +0800
+Message-Id: <20240810082814.3709867-2-zhangshida@kylinos.cn>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240810082814.3709867-1-zhangshida@kylinos.cn>
+References: <20240810082814.3709867-1-zhangshida@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -89,54 +94,141 @@ Content-Transfer-Encoding: 8bit
 
 From: Shida Zhang <zhangshida@kylinos.cn>
 
-Hi all,
+Using __block_write_begin() make it inconvenient to journal the
+user data dirty process. We can't tell the block layer maintainer,
+‘Hey, we want to trace the dirty user data in ext4, can we add some
+special code for ext4 in __block_write_begin?’:P
 
-On an old kernel version(4.19, ext3, journal=data, pagesize=64k),
-an assertion failure will occasionally be triggered by the line below:
----------
-jbd2_journal_commit_transaction
-{
-...
-J_ASSERT_BH(bh, !buffer_dirty(bh));
-/*
-* The buffer on BJ_Forget list and not jbddirty means
-...
-}
----------
+So use ext4_block_write_begin() instead.
 
-The same condition may also be applied to the lattest kernel version.
+The two functions are basically doing the same thing except for the
+fscrypt related code. Narrow the scope of CONFIG_FS_ENCRYPTION so as
+to allow ext4_block_write_begin() to function like __block_write_begin
+when the config is disabled.
+And hoist the ext4_block_write_begin so that it can be used in other
+files.
 
-This patch set fixes it by:
-1.Replace the __block_write_begin with the hoisted
-  ext4_block_write_begin().(patch 1)
-2.Trace the user data dirtying in ext4_block_write_begin().(patch 2)
-3.Remove some superfluous things.(patch 3)
+Suggested-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
+---
+ fs/ext4/ext4.h   |  2 ++
+ fs/ext4/inline.c | 10 +++++-----
+ fs/ext4/inode.c  | 23 ++++++-----------------
+ 3 files changed, 13 insertions(+), 22 deletions(-)
 
-Changes since v2:
-- Adjust the applied order of patch 1 and patch 2 in v1.
-- Reword the commit message.
-- Remove some superfluous logic in patch 2 and patch 3.
-
-[2] Version 2:
-https://lore.kernel.org/linux-ext4/20240809064606.3490994-1-zhangshida@kylinos.cn/T/#m5da94f8299ef9e491e03f4d0cd19581ef5f13288
-Changes since v1:
-- v1 use a hack into jbd2 to fix the bug while v2 choose to journal
-  the dirty data in *_block_write_begin.
-
-[1] Version 1:
-https://lore.kernel.org/linux-ext4/CANubcdVHbbq=WsTXU4EWAUPUby5--CLe5rf1GPzNPv+Y0a9VzQ@mail.gmail.com/T/#m19d3b9357f5dff050f75edc863e47f3cb018d778
-
-Shida Zhang (3):
-  ext4: hoist ext4_block_write_begin and replace the __block_write_begin
-  ext4: fix a potential assertion failure due to improperly dirtied
-    buffer
-  ext4: remove the superfluous things left by __block_write_begin
-
- fs/ext4/ext4.h   |  3 ++
- fs/ext4/inline.c | 11 ++++----
- fs/ext4/inode.c  | 71 ++++++++++++++++++++----------------------------
- 3 files changed, 39 insertions(+), 46 deletions(-)
-
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 08acd152261e..5f8257b68190 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -3851,6 +3851,8 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+ 	return buffer_uptodate(bh);
+ }
+ 
++extern int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
++				  get_block_t *get_block);
+ #endif	/* __KERNEL__ */
+ 
+ #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index e7a09a99837b..0a1a8431e281 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -601,10 +601,10 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
+ 		goto out;
+ 
+ 	if (ext4_should_dioread_nolock(inode)) {
+-		ret = __block_write_begin(&folio->page, from, to,
+-					  ext4_get_block_unwritten);
++		ret = ext4_block_write_begin(folio, from, to,
++					     ext4_get_block_unwritten);
+ 	} else
+-		ret = __block_write_begin(&folio->page, from, to, ext4_get_block);
++		ret = ext4_block_write_begin(folio, from, to, ext4_get_block);
+ 
+ 	if (!ret && ext4_should_journal_data(inode)) {
+ 		ret = ext4_walk_page_buffers(handle, inode,
+@@ -856,8 +856,8 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+ 			goto out;
+ 	}
+ 
+-	ret = __block_write_begin(&folio->page, 0, inline_size,
+-				  ext4_da_get_block_prep);
++	ret = ext4_block_write_begin(folio, 0, inline_size,
++				     ext4_da_get_block_prep);
+ 	if (ret) {
+ 		up_read(&EXT4_I(inode)->xattr_sem);
+ 		folio_unlock(folio);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 941c1c0d5c6e..6b15805ca88b 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1041,9 +1041,8 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
+ 	return ret;
+ }
+ 
+-#ifdef CONFIG_FS_ENCRYPTION
+-static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+-				  get_block_t *get_block)
++int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
++			   get_block_t *get_block)
+ {
+ 	unsigned from = pos & (PAGE_SIZE - 1);
+ 	unsigned to = from + len;
+@@ -1119,7 +1118,9 @@ static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+ 	}
+ 	if (unlikely(err)) {
+ 		folio_zero_new_buffers(folio, from, to);
+-	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
++	}
++#ifdef CONFIG_FS_ENCRYPTION
++	else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+ 		for (i = 0; i < nr_wait; i++) {
+ 			int err2;
+ 
+@@ -1131,10 +1132,10 @@ static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+ 			}
+ 		}
+ 	}
++#endif
+ 
+ 	return err;
+ }
+-#endif
+ 
+ /*
+  * To preserve ordering, it is essential that the hole instantiation and
+@@ -1216,19 +1217,11 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+ 	/* In case writeback began while the folio was unlocked */
+ 	folio_wait_stable(folio);
+ 
+-#ifdef CONFIG_FS_ENCRYPTION
+ 	if (ext4_should_dioread_nolock(inode))
+ 		ret = ext4_block_write_begin(folio, pos, len,
+ 					     ext4_get_block_unwritten);
+ 	else
+ 		ret = ext4_block_write_begin(folio, pos, len, ext4_get_block);
+-#else
+-	if (ext4_should_dioread_nolock(inode))
+-		ret = __block_write_begin(&folio->page, pos, len,
+-					  ext4_get_block_unwritten);
+-	else
+-		ret = __block_write_begin(&folio->page, pos, len, ext4_get_block);
+-#endif
+ 	if (!ret && ext4_should_journal_data(inode)) {
+ 		ret = ext4_walk_page_buffers(handle, inode,
+ 					     folio_buffers(folio), from, to,
+@@ -2961,11 +2954,7 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
+ 	if (IS_ERR(folio))
+ 		return PTR_ERR(folio);
+ 
+-#ifdef CONFIG_FS_ENCRYPTION
+ 	ret = ext4_block_write_begin(folio, pos, len, ext4_da_get_block_prep);
+-#else
+-	ret = __block_write_begin(&folio->page, pos, len, ext4_da_get_block_prep);
+-#endif
+ 	if (ret < 0) {
+ 		folio_unlock(folio);
+ 		folio_put(folio);
 -- 
 2.33.0
 
