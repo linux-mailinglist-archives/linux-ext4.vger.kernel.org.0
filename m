@@ -1,266 +1,143 @@
-Return-Path: <linux-ext4+bounces-3691-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3692-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C88C94DA8E
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 06:01:47 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30D2994DB69
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 10:28:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 307DC1C219CD
-	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 04:01:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB10E2823D3
+	for <lists+linux-ext4@lfdr.de>; Sat, 10 Aug 2024 08:28:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6975013A24E;
-	Sat, 10 Aug 2024 04:01:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0898914B95B;
+	Sat, 10 Aug 2024 08:28:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CIKH7LIO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oi1-f182.google.com (mail-oi1-f182.google.com [209.85.167.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F0B21FDD;
-	Sat, 10 Aug 2024 04:01:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D92D41C28E;
+	Sat, 10 Aug 2024 08:28:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723262497; cv=none; b=hbE0osm30Im26QBahy3xyINYCysa9glwlYDMWOGE7FEQd+bhqWxAuP+LNwsOHlJCEDBYD6SVdnaBKwbxbEm5Qi4fgx5k6jp3ez9m4d6JtuF+L2Esmg1vEYtDlxfHEWvYv8MCcf0pDJCwNKSvgyudoH0O96tJ6jTbxlLLKM7y0vQ=
+	t=1723278505; cv=none; b=XF9nfJK1bUnD6t+frFUAc0WTBsvG5f+zT6BLXjX2HSG/qUbJoG77KcQsmlOo2j28ZsoyYCe4AHi5Rnke69oxqnQKgMRxcyogEKAXKAhlswTdmvNcP5GfaBUd2uBZQPOoST1DkXRoQkTgWZXtsZ6AjBTtzyXeMmtRFgqgwQpeUTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723262497; c=relaxed/simple;
-	bh=YOlRbOcCiL7cuUSlHsIqsz7g3qu4gdisg6LvYPh3ndU=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=VuK0gvh4/M36ofAuq1Z/F1qLX7VQaAHaGUTTKtfePoVPa3GWZGe5bBe4oARZw2VbBfhUk5EurJwACgJYhQjB3D7cNbrwsMwucySo+I/+j/2yukIqd6OqcDyl3kVSxQEI1GHRH0CHPI0+xkBBsksMzHyjIIPDbQ8ASgFW+GJaCUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WgnC127Dxz4f3jrx;
-	Sat, 10 Aug 2024 12:01:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id C74841A1356;
-	Sat, 10 Aug 2024 12:01:30 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgCHr4UZ5rZmoskSBQ--.6322S3;
-	Sat, 10 Aug 2024 12:01:30 +0800 (CST)
-Subject: Re: [PATCH v2 06/10] ext4: update delalloc data reserve spcae in
- ext4_es_insert_extent()
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240802115120.362902-1-yi.zhang@huaweicloud.com>
- <20240802115120.362902-7-yi.zhang@huaweicloud.com>
- <20240807174108.l2bbbhlnpznztp34@quack3>
- <a23023f6-93cc-584d-c55a-9f8395e360ae@huaweicloud.com>
- <20240808183619.vmxttspcs5ngm6g3@quack3>
- <d6b8ed3c-82a7-6344-bdb9-8c18b1f526ca@huaweicloud.com>
- <20240809162013.tieom26umwqcsfe4@quack3>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <5dcb2dc2-7622-05bd-d330-610e9c009fe2@huaweicloud.com>
-Date: Sat, 10 Aug 2024 12:01:28 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1723278505; c=relaxed/simple;
+	bh=tgvChdqFcbG93zFoVASyNV9P7tBf+MDssFR3I1icJDs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=RppVR8JMHSUD+3Zr9YZuw0Op5UOfnlITeT146DnC+hUWVQCR6mmumOZxP+4RFQ8WRekGPPFyrSbSOnL8R8jYRC2Vwv39QTPBGxqKV9WTxH1qxYAamPffAvsoJ99NPxscPQoAC7F18jjTRaJslBNGzprVAkHDo5LpjFTo+JeMEUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CIKH7LIO; arc=none smtp.client-ip=209.85.167.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3db1657c0fdso1930372b6e.1;
+        Sat, 10 Aug 2024 01:28:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723278503; x=1723883303; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=eVi24F7BOm+woApTsUtzfxGKjOUe1mrgm5itsbG0ZJA=;
+        b=CIKH7LIO+BAIM9NwkDicpEMiRA7msrvA3IJ0VE/KLuNBOQpLQ43fNbGE8x2BIRflCY
+         ec1jb4ulFF3sQiXp/kqFfXkTNs9PWziwWfvj6PnAE/0Wq6F/07gBDXOpBUn7cpi+0ug2
+         gRdKeRpfXDo0P7/u3Au2IdccVbd7IUGftFFQHpgSNHg8al2yoDxQoeIrp27AbKMC9lhf
+         wzp7VEMXbNdbS96q5q2rK/FQ5MDtO/YU24TBXKioM/mK8tm86HOGZcmqaH82obHxngBF
+         aFGVLfiTjYKakxma1jIHYSxZq5L0ofQUUF2FVjmaAt1TDaMOJOcVszaRDBH4Rue7Rnui
+         intg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723278503; x=1723883303;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=eVi24F7BOm+woApTsUtzfxGKjOUe1mrgm5itsbG0ZJA=;
+        b=d2gJXMC/3Sirl0lZeCMOeW8hdIR5xutuGK9vg/WiVkl19JXR4rFZDpLxhsIdC9jmIq
+         L/se5m/Mq/Q9mws+D9JP6ufbKVDMq9vt/Ry309c3kl8AxK5GDc7dwlD76p561yqFTiJv
+         ATIS4aPeHTk9cY9jbX/f6DsJSHNsc0pu75qKGclxFSNy53Ub4qC8kBR8ZMsj1SwCgni1
+         d8AuaHm5r8yGesCjGscNwz+L8GVj5zVZhTP3jfnWFyTPNPw42S+kLYv3SOru3tvWLmwC
+         90HrZKVTEt/wkZrwaqk9EoQA4gUkEv0TdLYY8tyVpz3B06zvFtXhwOpVLei/KSg5ja7i
+         jf4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUpa6m2p/92kQNy17BtR+SWy2wm+Pz9vCTroHaW2rBST2000nKWcfZE7fgzBG+2pctVpW2F4wESFPJRtkreDm4i0BONlFLeo5kMLtCu
+X-Gm-Message-State: AOJu0YzVPoiu6dYlP9F8UqFglaJiIGLf3V0tjJGP2SXYLcU2ETv9W58U
+	NVDYoOYwgPAfSnFKILuYH0zqxazpI8MY9S33UHM4gQ2sHhTtwES+
+X-Google-Smtp-Source: AGHT+IFtWOipOrFqGkJ0YyAdDgA2K+LnzEbLt4cY+ckXaks0zPIaSGS+0YEod1ECw2JrPeNIWmAqDA==
+X-Received: by 2002:a05:6808:21a2:b0:3db:17b6:1ea4 with SMTP id 5614622812f47-3dc417058f7mr5224065b6e.42.1723278502709;
+        Sat, 10 Aug 2024 01:28:22 -0700 (PDT)
+Received: from localhost.localdomain ([163.53.18.10])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-710e5a8c454sm854092b3a.180.2024.08.10.01.28.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 10 Aug 2024 01:28:22 -0700 (PDT)
+From: zhangshida <starzhangzsd@gmail.com>
+X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.com
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhangshida@kylinos.cn,
+	starzhangzsd@gmail.com
+Subject: [PATCH v3 0/3] Fix an error caused by improperly dirtied buffer 
+Date: Sat, 10 Aug 2024 16:28:11 +0800
+Message-Id: <20240810082814.3709867-1-zhangshida@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240809162013.tieom26umwqcsfe4@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCHr4UZ5rZmoskSBQ--.6322S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3Wry5Xw1fZrW3Ar47tFyrWFg_yoWfJFyUpF
-	W5CF15Kw15Jr1UCrZIqw15Xr1S9w4DJF4UXrZIqry8ZF98tF1fWFnrJF45uFZ29r4xJFn8
-	XFy5C347uF98Aa7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Fb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Gr0_Xr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcS
-	sGvfC2KfnxnUUI43ZEXa7IU17KsUUUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On 2024/8/10 0:20, Jan Kara wrote:
-> On Fri 09-08-24 11:35:49, Zhang Yi wrote:
->> On 2024/8/9 2:36, Jan Kara wrote:
->>> On Thu 08-08-24 19:18:30, Zhang Yi wrote:
->>>> On 2024/8/8 1:41, Jan Kara wrote:
->>>>> On Fri 02-08-24 19:51:16, Zhang Yi wrote:
->>>>>> From: Zhang Yi <yi.zhang@huawei.com>
->>>>>>
->>>>>> Now that we update data reserved space for delalloc after allocating
->>>>>> new blocks in ext4_{ind|ext}_map_blocks(), and if bigalloc feature is
->>>>>> enabled, we also need to query the extents_status tree to calculate the
->>>>>> exact reserved clusters. This is complicated now and it appears that
->>>>>> it's better to do this job in ext4_es_insert_extent(), because
->>>>>> __es_remove_extent() have already count delalloc blocks when removing
->>>>>> delalloc extents and __revise_pending() return new adding pending count,
->>>>>> we could update the reserved blocks easily in ext4_es_insert_extent().
->>>>>>
->>>>>> Thers is one special case needs to concern is the quota claiming, when
->>>>>> bigalloc is enabled, if the delayed cluster allocation has been raced
->>>>>> by another no-delayed allocation(e.g. from fallocate) which doesn't
->>>>>> cover the delayed blocks:
->>>>>>
->>>>>>   |<       one cluster       >|
->>>>>>   hhhhhhhhhhhhhhhhhhhdddddddddd
->>>>>>   ^            ^
->>>>>>   |<          >| < fallocate this range, don't claim quota again
->>>>>>
->>>>>> We can't claim quota as usual because the fallocate has already claimed
->>>>>> it in ext4_mb_new_blocks(), we could notice this case through the
->>>>>> removed delalloc blocks count.
->>>>>>
->>>>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->>>>> ...
->>>>>> @@ -926,9 +928,27 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
->>>>>>  			__free_pending(pr);
->>>>>>  			pr = NULL;
->>>>>>  		}
->>>>>> +		pending = err3;
->>>>>>  	}
->>>>>>  error:
->>>>>>  	write_unlock(&EXT4_I(inode)->i_es_lock);
->>>>>> +	/*
->>>>>> +	 * Reduce the reserved cluster count to reflect successful deferred
->>>>>> +	 * allocation of delayed allocated clusters or direct allocation of
->>>>>> +	 * clusters discovered to be delayed allocated.  Once allocated, a
->>>>>> +	 * cluster is not included in the reserved count.
->>>>>> +	 *
->>>>>> +	 * When bigalloc is enabled, allocating non-delayed allocated blocks
->>>>>> +	 * which belong to delayed allocated clusters (from fallocate, filemap,
->>>>>> +	 * DIO, or clusters allocated when delalloc has been disabled by
->>>>>> +	 * ext4_nonda_switch()). Quota has been claimed by ext4_mb_new_blocks(),
->>>>>> +	 * so release the quota reservations made for any previously delayed
->>>>>> +	 * allocated clusters.
->>>>>> +	 */
->>>>>> +	resv_used = rinfo.delonly_cluster + pending;
->>>>>> +	if (resv_used)
->>>>>> +		ext4_da_update_reserve_space(inode, resv_used,
->>>>>> +					     rinfo.delonly_block);
->>>>>
->>>>> I'm not sure I understand here. We are inserting extent into extent status
->>>>> tree. We are replacing resv_used clusters worth of space with delayed
->>>>> allocation reservation with normally allocated clusters so we need to
->>>>> release the reservation (mballoc already reduced freeclusters counter).
->>>>> That I understand. In normal case we should also claim quota because we are
->>>>> converting from reserved into allocated state. Now if we allocated blocks
->>>>> under this range (e.g. from fallocate()) without
->>>>> EXT4_GET_BLOCKS_DELALLOC_RESERVE, we need to release quota reservation here
->>>>> instead of claiming it. But I fail to see how rinfo.delonly_block > 0 is
->>>>> related to whether EXT4_GET_BLOCKS_DELALLOC_RESERVE was set when allocating
->>>>> blocks for this extent or not.
->>>>
->>>> Oh, this is really complicated due to the bigalloc feature, please let me
->>>> explain it more clearly by listing all related situations.
->>>>
->>>> There are 2 types of paths of allocating delayed/reserved cluster:
->>>> 1. Normal case, normally allocate delayed clusters from the write back path.
->>>> 2. Special case, allocate blocks under this delayed range, e.g. from
->>>>    fallocate().
->>>>
->>>> There are 4 situations below:
->>>>
->>>> A. bigalloc is disabled. This case is simple, after path 2, we don't need
->>>>    to distinguish path 1 and 2, when calling ext4_es_insert_extent(), we
->>>>    set EXT4_GET_BLOCKS_DELALLOC_RESERVE after EXT4_MAP_DELAYED bit is
->>>>    detected. If the flag is set, we must be replacing a delayed extent and
->>>>    rinfo.delonly_block must be > 0. So rinfo.delonly_block > 0 is equal
->>>>    to set EXT4_GET_BLOCKS_DELALLOC_RESERVE.
->>>
->>> Right. So fallocate() will call ext4_map_blocks() and
->>> ext4_es_lookup_extent() will find delayed extent and set EXT4_MAP_DELAYED
->>> which you (due to patch 2 of this series) transform into
->>> EXT4_GET_BLOCKS_DELALLOC_RESERVE. We used to update the delalloc
->>> accounting through in ext4_ext_map_blocks() but this patch moved the update
->>> to ext4_es_insert_extent(). But there is one cornercase even here AFAICT:
->>>
->>> Suppose fallocate is called for range 0..16k, we have delalloc extent at
->>> 8k..16k. In this case ext4_map_blocks() at block 0 will not find the
->>> delalloc extent but ext4_ext_map_blocks() will allocate 16k from mballoc
->>> without using delalloc reservation but then ext4_es_insert_extent() will
->>> still have rinfo.delonly_block > 0 so we claim the quota reservation
->>> instead of releasing it?
->>>
->>
->> After commit 6430dea07e85 ("ext4: correct the hole length returned by
->> ext4_map_blocks()"), the fallocate range 0-16K would be divided into two
->> rounds. When we first calling ext4_map_blocks() with 0-16K, the map range
->> will be corrected to 0-8k by ext4_ext_determine_insert_hole() and the
->> allocating range should not cover any delayed range.
-> 
-> Eww, subtle, subtle, subtle... And isn't this also racy? We drop i_data_sem
-> in ext4_map_blocks() after we do the initial lookup. So there can be some
-> changes to both the extent tree and extent status tree before we grab
-> i_data_sem again for the allocation. We hold inode_lock so there can be
-> only writeback and page faults racing with us but e.g. ext4_page_mkwrite()
-> -> block_page_mkwrite -> ext4_da_get_block_prep() -> ext4_da_map_blocks()
-> can add delayed extent into extent status tree in that window causing
-> breakage, can't it?
+From: Shida Zhang <zhangshida@kylinos.cn>
 
-Oh! you are totally right, I missed that current ext4_fallocate() doesn't
-hold invalidate_lock for the normal fallocate path, hence there's nothing
-could prevent this race now, thanks a lot for pointing this out.
+Hi all,
 
-> 
->> Then
->> ext4_alloc_file_blocks() will call ext4_map_blocks() again to allocate
->> 8K-16K in the second round, in this round, we are allocating a real
->> delayed range. Please below graph for details,
->>
->> ext4_alloc_file_blocks() //0-16K
->>  ext4_map_blocks()  //0-16K
->>   ext4_es_lookup_extent() //find nothing
->>    ext4_ext_map_blocks(0)
->>     ext4_ext_determine_insert_hole() //change map range to 0-8K
->>    ext4_ext_map_blocks(EXT4_GET_BLOCKS_CREATE) //allocate blocks under hole
->>  ext4_map_blocks()  //8-16K
->>   ext4_es_lookup_extent() //find delayed extent
->>   ext4_ext_map_blocks(EXT4_GET_BLOCKS_CREATE)
->>     //allocate blocks under a whole delayed range,
->>     //use rinfo.delonly_block > 0 is okay
->>
->> Hence the allocating range can't mixed with delayed and non-delayed extent
->> at a time, and the rinfo.delonly_block > 0 should work.
-> 
-> Besides the race above I agree. So either we need to trim mapping extent in
-> ext4_map_blocks() after re-acquiring i_data_sem
+On an old kernel version(4.19, ext3, journal=data, pagesize=64k),
+an assertion failure will occasionally be triggered by the line below:
+---------
+jbd2_journal_commit_transaction
+{
+...
+J_ASSERT_BH(bh, !buffer_dirty(bh));
+/*
+* The buffer on BJ_Forget list and not jbddirty means
+...
+}
+---------
 
-Yeah, if we keep on using this solution, it looks like we have to add similar
-logic we've done in ext4_da_map_blocks() a few months ago into the begin of
-the new helper ext4_map_create_blocks(). I guess it may expensive and not
-worth now.
+The same condition may also be applied to the lattest kernel version.
 
-	if (ext4_es_lookup_extent(inode, map->m_lblk, NULL, &es)) {
-		map->m_len = min_t(unsigned int, map->m_len,
-				   es.es_len - (map->m_lblk - es.es_lblk));
-	} else
-		retval = ext4_map_query_blocks(NULL, inode, map);
-		...
-	}
+This patch set fixes it by:
+1.Replace the __block_write_begin with the hoisted
+  ext4_block_write_begin().(patch 1)
+2.Trace the user data dirtying in ext4_block_write_begin().(patch 2)
+3.Remove some superfluous things.(patch 3)
 
-> or we need to deal with
-> unwritten extents that are partially delalloc. I'm more and more leaning
-> towards just passing the information whether delalloc was used or not to
-> extent status tree insertion. Because that can deal with partial extents
-> just fine...
-> 
+Changes since v2:
+- Adjust the applied order of patch 1 and patch 2 in v1.
+- Reword the commit message.
+- Remove some superfluous logic in patch 2 and patch 3.
 
-Yeah, I agree with you, passing the information to ext4_es_init_extent()
-is simple and looks fine. I will change to use this solution.
+[2] Version 2:
+https://lore.kernel.org/linux-ext4/20240809064606.3490994-1-zhangshida@kylinos.cn/T/#m5da94f8299ef9e491e03f4d0cd19581ef5f13288
+Changes since v1:
+- v1 use a hack into jbd2 to fix the bug while v2 choose to journal
+  the dirty data in *_block_write_begin.
 
-> Thanks for your patience with me :).
-> 
+[1] Version 1:
+https://lore.kernel.org/linux-ext4/CANubcdVHbbq=WsTXU4EWAUPUby5--CLe5rf1GPzNPv+Y0a9VzQ@mail.gmail.com/T/#m19d3b9357f5dff050f75edc863e47f3cb018d778
 
-Anytime! I appreciate your review and suggestions as well. :)
+Shida Zhang (3):
+  ext4: hoist ext4_block_write_begin and replace the __block_write_begin
+  ext4: fix a potential assertion failure due to improperly dirtied
+    buffer
+  ext4: remove the superfluous things left by __block_write_begin
 
-Thanks,
-Yi.
+ fs/ext4/ext4.h   |  3 ++
+ fs/ext4/inline.c | 11 ++++----
+ fs/ext4/inode.c  | 71 ++++++++++++++++++++----------------------------
+ 3 files changed, 39 insertions(+), 46 deletions(-)
+
+-- 
+2.33.0
 
 
