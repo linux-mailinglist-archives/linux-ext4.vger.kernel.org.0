@@ -1,315 +1,217 @@
-Return-Path: <linux-ext4+bounces-3721-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3722-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64A5A950552
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 14:43:19 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 588D5950D8E
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 22:05:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCF651F25003
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 12:43:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 120B0287159
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 20:05:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B51F419F49E;
-	Tue, 13 Aug 2024 12:39:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03B791A4F2B;
+	Tue, 13 Aug 2024 20:05:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F5F199E9B;
-	Tue, 13 Aug 2024 12:39:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143BAA953
+	for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2024 20:05:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723552772; cv=none; b=CgkVuZfNOCwhg4YBwsNwq8NdtqJAqhsDlz3tgJAdoXBC6HnzIHKgrTSMjdrWrdEPj5voL6WQqDDfWZqvVocwnHeY15x/WvRIXHIuTWcYvOrD1+6FTJ0VTwuxP03BCh7XEEXR4YiA6dAh0RTwRwqecXD2HcWVccRykqVo7mn4AV0=
+	t=1723579533; cv=none; b=sOSFGTb6PAAI0EqaGzXNLSMedhe0EfyJ0Qafki8kkAoc/+VV2fLO5c06A0uXSBgrWzDgfU6cpuZlUXDrsZO0wAqLP86iIzIYF8HBv+lVllZ2ySzRqHRl0QJM1w79bnYD0TgNM0VGQ+2RacPAZxIbVw4nBSpY32WOeO4jaqWZql8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723552772; c=relaxed/simple;
-	bh=myNAaYvncLUJOSa4A+wCCsT7D2xZ2t6PEeXjJg2Opmo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Y4M6y6ZQIwiMRlWzEW0OUH1j8EorxUXQs34S+2PQXQ6OHb4TDDvBBEEMp2b6WC6EPLgHba+LLETKbgItoVANWUJa2RhtusuLkQWqf50GRubeflj/+Q2tgupLZDzfh4WfwRhlc0qF3SjMIv26a60UrPuPA6FAMzsKeD+1YznVwHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WjrYF06kdz4f3k6W;
-	Tue, 13 Aug 2024 20:39:13 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4D3081A07B6;
-	Tue, 13 Aug 2024 20:39:22 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgBnj4XkU7tmejNSBg--.17625S16;
-	Tue, 13 Aug 2024 20:39:22 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	ritesh.list@gmail.com,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com
-Subject: [PATCH v3 12/12] ext4: drop all delonly descriptions
-Date: Tue, 13 Aug 2024 20:34:52 +0800
-Message-Id: <20240813123452.2824659-13-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240813123452.2824659-1-yi.zhang@huaweicloud.com>
-References: <20240813123452.2824659-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1723579533; c=relaxed/simple;
+	bh=I6KwcpM6Y8DRIcGSbPchhTfdkTfQ37eZ1jQhX7yTa/k=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=iih9SDaeydk6co9xvfn5Qm7GdLKARwf3IlZRxVGImqS99cnpW35M3h4jKcCFI01QxgZv7V1Rcy7ESyrERyu5U+iuDNXOsARkirjGchNEqXPrz6ljDXXfBQWOsbE3Dl+/BSDd5YjF2hOxbA2YLXxfw6guvx3qbfFgs0D4VEIo8VQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-81f8e43f0c1so723434639f.3
+        for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2024 13:05:31 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723579531; x=1724184331;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=NefdGqxMuJwAbyUAoYcgGnRpHLr4ojz2P9HUr90xHy0=;
+        b=dW3wMzE56JCYx53wh/wtmQuqCbQCuhT8vJ26R47+0q5lS1cQbzSHN3aKwNAcjbv7tg
+         ys5bWdND8Ps28zp4fQvh/0TGY8eTMrKDvb5j9Zm6g/25IdEDdY02xpmklunB0SDSN8no
+         xFDx7a2SOQl28vMSk5/ihOhxK9VNPNtjHShmWm2eiprNhF0Faz8wdBBJ6gRpDceIi/OD
+         QYpXBa4hIfhWvOdOUEJNu2gUJL5n59Z3pLvCXF06Tc32ZbT3SxteCDdu8Wt/oBBVVkKI
+         jrg8aXCvdWivYpwNRgz9sVVR2UwHLZ2Pwanrv9ZvZU0jYHjHt0nildg7b6U7jVzBoG+k
+         dfrg==
+X-Forwarded-Encrypted: i=1; AJvYcCVLoZmfR/ZBdIw1oa8sJAc3fnV4YfhguOqhSYay++A96eFbM3H5FjGYmy3cAzGYn7O2D8i/ktN7cW82fmVlqYrMqCCLs5ZQGZsL5A==
+X-Gm-Message-State: AOJu0YzsCjWHW6INFa+/lqO6ZkfLx1EeKnpL3dhneR+inIUl74eE7PKe
+	vrEcSv6ZPIygUVjOrflOgsN+gadgp8UNfLvzET8Rr1uyhnQL9G44DWAAmkS34oSeRgmzls+w+y4
+	XY69seyuoltzE91Aij3pYZJy4tS1nsNhGf/b7E+9oiQOihAbWhMpTy9o=
+X-Google-Smtp-Source: AGHT+IFngvkaje5JeHTAeg2y9Use1ldCLVQScaZXGJLwjmezHiN2GxvCov4F/G1+zWS9pchwHIC++BnUyyLQrK361NKT147KatNn
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBnj4XkU7tmejNSBg--.17625S16
-X-Coremail-Antispam: 1UD129KBjvJXoWxKFyDKFW3GrWrXr1kCFW8tFb_yoW3Ar4xpF
-	WYg3W5ta1DX3y09r4Svw48Zr1Sq34ktFWUt34fJa4Fyrn5tryFkFn2yry0vFy8GrWxA3Wj
-	qF1j9ryUua12gFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVW8JVW5JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
-	daVFxhVjvjDU0xZFpf9x0JUQFxUUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-Received: by 2002:a05:6e02:138c:b0:396:1fc1:7034 with SMTP id
+ e9e14a558f8ab-39d123ca3cbmr591335ab.0.1723579531106; Tue, 13 Aug 2024
+ 13:05:31 -0700 (PDT)
+Date: Tue, 13 Aug 2024 13:05:31 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000b1b164061f96213d@google.com>
+Subject: [syzbot] [ext4?] divide error in ext4_mb_regular_allocator
+From: syzbot <syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, jack@suse.cz, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Hello,
 
-When counting reserved clusters, delayed type is always equal to delonly
-type now, hence drop all delonly descriptions in parameters and
-comments.
+syzbot found the following issue on:
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+HEAD commit:    ee9a43b7cfe2 Merge tag 'net-6.11-rc3' of git://git.kernel...
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=1655c15d980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=9358cc4a2e37fd30
+dashboard link: https://syzkaller.appspot.com/bug?extid=1ad8bac5af24d01e2cbd
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15a8fbc9980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17bc726d980000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/e6062f24de48/disk-ee9a43b7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5d3ec6153dbd/vmlinux-ee9a43b7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/98dbabb91d02/bzImage-ee9a43b7.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/4dd4c0acf870/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/ca52271baf46/mount_1.gz
+
+The issue was bisected to:
+
+commit 1f6bc02f18489b9c9ea39b068d0695fb0e4567e9
+Author: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Date:   Fri Dec 15 11:19:50 2023 +0000
+
+    ext4: fallback to complex scan if aligned scan doesn't work
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=118a3d11980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=138a3d11980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=158a3d11980000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
+Fixes: 1f6bc02f1848 ("ext4: fallback to complex scan if aligned scan doesn't work")
+
+EXT4-fs: Ignoring removed oldalloc option
+EXT4-fs (loop0): re-mounted 00000000-0000-0000-0000-000000000000 r/w. Quota mode: none.
+Oops: divide error: 0000 [#1] PREEMPT SMP KASAN PTI
+CPU: 0 UID: 0 PID: 5224 Comm: syz-executor196 Not tainted 6.11.0-rc2-syzkaller-00111-gee9a43b7cfe2 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 06/27/2024
+RIP: 0010:ext4_mb_regular_allocator+0x1687/0x3b80 fs/ext4/mballoc.c:2932
+Code: 16 00 00 8b 1a bf 40 00 00 00 89 de e8 e2 ab 38 ff 48 83 fb 3f 0f 87 9f 19 00 00 e8 93 a7 38 ff 89 d9 49 d3 ec 4c 89 f8 31 d2 <49> f7 f4 48 89 d3 31 ff 48 89 d6 e8 59 ac 38 ff 83 bc 24 64 01 00
+RSP: 0018:ffffc9000341e740 EFLAGS: 00010246
+RAX: 0000000000000001 RBX: 0000000000000004 RCX: 0000000000000004
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000040
+RBP: ffffc9000341e9f0 R08: ffffffff825acf3e R09: ffffffff825bea62
+R10: 0000000000000005 R11: ffff8880282b1e00 R12: 0000000000000000
+R13: 0000000000000003 R14: ffff8880663270e0 R15: 0000000000000001
+FS:  0000555592670380(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe13f0d000 CR3: 0000000025072000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ ext4_mb_new_blocks+0x10a8/0x4e30 fs/ext4/mballoc.c:6219
+ ext4_ext_map_blocks+0x1c74/0x77b0 fs/ext4/extents.c:4318
+ ext4_map_blocks+0xa5e/0x1d20 fs/ext4/inode.c:652
+ _ext4_get_block+0x239/0x6b0 fs/ext4/inode.c:794
+ ext4_get_block_unwritten+0x2f/0x100 fs/ext4/inode.c:827
+ __block_write_begin_int+0x50c/0x1a70 fs/buffer.c:2125
+ ext4_try_to_write_inline_data+0x7ed/0x1360 fs/ext4/inline.c:739
+ ext4_write_begin+0x2a0/0x10e0 fs/ext4/inode.c:1172
+ ext4_da_write_begin+0x300/0xa70 fs/ext4/inode.c:2943
+ generic_perform_write+0x399/0x840 mm/filemap.c:4019
+ ext4_buffered_write_iter+0xc6/0x350 fs/ext4/file.c:299
+ ext4_file_write_iter+0x1de/0x1a10
+ do_iter_readv_writev+0x60a/0x890
+ vfs_writev+0x37c/0xbb0 fs/read_write.c:971
+ do_pwritev fs/read_write.c:1072 [inline]
+ __do_sys_pwritev2 fs/read_write.c:1131 [inline]
+ __se_sys_pwritev2+0x1ca/0x2d0 fs/read_write.c:1122
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fb9c91a61d9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 f1 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe13f0c6c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
+RAX: ffffffffffffffda RBX: 00007fb9c91ef095 RCX: 00007fb9c91a61d9
+RDX: 000000000000000f RSI: 00000000200002c0 RDI: 0000000000000004
+RBP: 0031656c69662f2e R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000a12 R11: 0000000000000246 R12: 70756f7267647362
+R13: 7461785f72657375 R14: 431bde82d7b634db R15: 00007fb9c91ef03b
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:ext4_mb_regular_allocator+0x1687/0x3b80 fs/ext4/mballoc.c:2932
+Code: 16 00 00 8b 1a bf 40 00 00 00 89 de e8 e2 ab 38 ff 48 83 fb 3f 0f 87 9f 19 00 00 e8 93 a7 38 ff 89 d9 49 d3 ec 4c 89 f8 31 d2 <49> f7 f4 48 89 d3 31 ff 48 89 d6 e8 59 ac 38 ff 83 bc 24 64 01 00
+RSP: 0018:ffffc9000341e740 EFLAGS: 00010246
+RAX: 0000000000000001 RBX: 0000000000000004 RCX: 0000000000000004
+RDX: 0000000000000000 RSI: 0000000000000004 RDI: 0000000000000040
+RBP: ffffc9000341e9f0 R08: ffffffff825acf3e R09: ffffffff825bea62
+R10: 0000000000000005 R11: ffff8880282b1e00 R12: 0000000000000000
+R13: 0000000000000003 R14: ffff8880663270e0 R15: 0000000000000001
+FS:  0000555592670380(0000) GS:ffff8880b9200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffe13f0d000 CR3: 0000000025072000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	00 00                	add    %al,(%rax)
+   2:	8b 1a                	mov    (%rdx),%ebx
+   4:	bf 40 00 00 00       	mov    $0x40,%edi
+   9:	89 de                	mov    %ebx,%esi
+   b:	e8 e2 ab 38 ff       	call   0xff38abf2
+  10:	48 83 fb 3f          	cmp    $0x3f,%rbx
+  14:	0f 87 9f 19 00 00    	ja     0x19b9
+  1a:	e8 93 a7 38 ff       	call   0xff38a7b2
+  1f:	89 d9                	mov    %ebx,%ecx
+  21:	49 d3 ec             	shr    %cl,%r12
+  24:	4c 89 f8             	mov    %r15,%rax
+  27:	31 d2                	xor    %edx,%edx
+* 29:	49 f7 f4             	div    %r12 <-- trapping instruction
+  2c:	48 89 d3             	mov    %rdx,%rbx
+  2f:	31 ff                	xor    %edi,%edi
+  31:	48 89 d6             	mov    %rdx,%rsi
+  34:	e8 59 ac 38 ff       	call   0xff38ac92
+  39:	83                   	.byte 0x83
+  3a:	bc 24 64 01 00       	mov    $0x16424,%esp
+
+
 ---
- fs/ext4/extents_status.c | 66 +++++++++++++++++++---------------------
- 1 file changed, 32 insertions(+), 34 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-index 68c47ecc01a5..c786691dabd3 100644
---- a/fs/ext4/extents_status.c
-+++ b/fs/ext4/extents_status.c
-@@ -1067,7 +1067,7 @@ int ext4_es_lookup_extent(struct inode *inode, ext4_lblk_t lblk,
- }
- 
- struct rsvd_count {
--	int ndelonly;
-+	int ndelayed;
- 	bool first_do_lblk_found;
- 	ext4_lblk_t first_do_lblk;
- 	ext4_lblk_t last_do_lblk;
-@@ -1093,10 +1093,10 @@ static void init_rsvd(struct inode *inode, ext4_lblk_t lblk,
- 	struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
- 	struct rb_node *node;
- 
--	rc->ndelonly = 0;
-+	rc->ndelayed = 0;
- 
- 	/*
--	 * for bigalloc, note the first delonly block in the range has not
-+	 * for bigalloc, note the first delayed block in the range has not
- 	 * been found, record the extent containing the block to the left of
- 	 * the region to be removed, if any, and note that there's no partial
- 	 * cluster to track
-@@ -1116,9 +1116,8 @@ static void init_rsvd(struct inode *inode, ext4_lblk_t lblk,
- }
- 
- /*
-- * count_rsvd - count the clusters containing delayed and not unwritten
-- *		(delonly) blocks in a range within an extent and add to
-- *	        the running tally in rsvd_count
-+ * count_rsvd - count the clusters containing delayed blocks in a range
-+ *	        within an extent and add to the running tally in rsvd_count
-  *
-  * @inode - file containing extent
-  * @lblk - first block in range
-@@ -1141,7 +1140,7 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
- 	WARN_ON(len <= 0);
- 
- 	if (sbi->s_cluster_ratio == 1) {
--		rc->ndelonly += (int) len;
-+		rc->ndelayed += (int) len;
- 		return;
- 	}
- 
-@@ -1151,7 +1150,7 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
- 	end = lblk + (ext4_lblk_t) len - 1;
- 	end = (end > ext4_es_end(es)) ? ext4_es_end(es) : end;
- 
--	/* record the first block of the first delonly extent seen */
-+	/* record the first block of the first delayed extent seen */
- 	if (!rc->first_do_lblk_found) {
- 		rc->first_do_lblk = i;
- 		rc->first_do_lblk_found = true;
-@@ -1165,7 +1164,7 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
- 	 * doesn't start with it, count it and stop tracking
- 	 */
- 	if (rc->partial && (rc->lclu != EXT4_B2C(sbi, i))) {
--		rc->ndelonly++;
-+		rc->ndelayed++;
- 		rc->partial = false;
- 	}
- 
-@@ -1175,7 +1174,7 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
- 	 */
- 	if (EXT4_LBLK_COFF(sbi, i) != 0) {
- 		if (end >= EXT4_LBLK_CFILL(sbi, i)) {
--			rc->ndelonly++;
-+			rc->ndelayed++;
- 			rc->partial = false;
- 			i = EXT4_LBLK_CFILL(sbi, i) + 1;
- 		}
-@@ -1183,11 +1182,11 @@ static void count_rsvd(struct inode *inode, ext4_lblk_t lblk, long len,
- 
- 	/*
- 	 * if the current cluster starts on a cluster boundary, count the
--	 * number of whole delonly clusters in the extent
-+	 * number of whole delayed clusters in the extent
- 	 */
- 	if ((i + sbi->s_cluster_ratio - 1) <= end) {
- 		nclu = (end - i + 1) >> sbi->s_cluster_bits;
--		rc->ndelonly += nclu;
-+		rc->ndelayed += nclu;
- 		i += nclu << sbi->s_cluster_bits;
- 	}
- 
-@@ -1247,10 +1246,9 @@ static struct pending_reservation *__pr_tree_search(struct rb_root *root,
-  * @rc - pointer to reserved count data
-  *
-  * The number of reservations to be released is equal to the number of
-- * clusters containing delayed and not unwritten (delonly) blocks within
-- * the range, minus the number of clusters still containing delonly blocks
-- * at the ends of the range, and minus the number of pending reservations
-- * within the range.
-+ * clusters containing delayed blocks within the range, minus the number of
-+ * clusters still containing delayed blocks at the ends of the range, and
-+ * minus the number of pending reservations within the range.
-  */
- static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
- 			     struct extent_status *right_es,
-@@ -1261,33 +1259,33 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
- 	struct ext4_pending_tree *tree = &EXT4_I(inode)->i_pending_tree;
- 	struct rb_node *node;
- 	ext4_lblk_t first_lclu, last_lclu;
--	bool left_delonly, right_delonly, count_pending;
-+	bool left_delayed, right_delayed, count_pending;
- 	struct extent_status *es;
- 
- 	if (sbi->s_cluster_ratio > 1) {
- 		/* count any remaining partial cluster */
- 		if (rc->partial)
--			rc->ndelonly++;
-+			rc->ndelayed++;
- 
--		if (rc->ndelonly == 0)
-+		if (rc->ndelayed == 0)
- 			return 0;
- 
- 		first_lclu = EXT4_B2C(sbi, rc->first_do_lblk);
- 		last_lclu = EXT4_B2C(sbi, rc->last_do_lblk);
- 
- 		/*
--		 * decrease the delonly count by the number of clusters at the
--		 * ends of the range that still contain delonly blocks -
-+		 * decrease the delayed count by the number of clusters at the
-+		 * ends of the range that still contain delayed blocks -
- 		 * these clusters still need to be reserved
- 		 */
--		left_delonly = right_delonly = false;
-+		left_delayed = right_delayed = false;
- 
- 		es = rc->left_es;
- 		while (es && ext4_es_end(es) >=
- 		       EXT4_LBLK_CMASK(sbi, rc->first_do_lblk)) {
- 			if (ext4_es_is_delayed(es)) {
--				rc->ndelonly--;
--				left_delonly = true;
-+				rc->ndelayed--;
-+				left_delayed = true;
- 				break;
- 			}
- 			node = rb_prev(&es->rb_node);
-@@ -1295,7 +1293,7 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
- 				break;
- 			es = rb_entry(node, struct extent_status, rb_node);
- 		}
--		if (right_es && (!left_delonly || first_lclu != last_lclu)) {
-+		if (right_es && (!left_delayed || first_lclu != last_lclu)) {
- 			if (end < ext4_es_end(right_es)) {
- 				es = right_es;
- 			} else {
-@@ -1306,8 +1304,8 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
- 			while (es && es->es_lblk <=
- 			       EXT4_LBLK_CFILL(sbi, rc->last_do_lblk)) {
- 				if (ext4_es_is_delayed(es)) {
--					rc->ndelonly--;
--					right_delonly = true;
-+					rc->ndelayed--;
-+					right_delayed = true;
- 					break;
- 				}
- 				node = rb_next(&es->rb_node);
-@@ -1321,21 +1319,21 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
- 		/*
- 		 * Determine the block range that should be searched for
- 		 * pending reservations, if any.  Clusters on the ends of the
--		 * original removed range containing delonly blocks are
-+		 * original removed range containing delayed blocks are
- 		 * excluded.  They've already been accounted for and it's not
- 		 * possible to determine if an associated pending reservation
- 		 * should be released with the information available in the
- 		 * extents status tree.
- 		 */
- 		if (first_lclu == last_lclu) {
--			if (left_delonly | right_delonly)
-+			if (left_delayed | right_delayed)
- 				count_pending = false;
- 			else
- 				count_pending = true;
- 		} else {
--			if (left_delonly)
-+			if (left_delayed)
- 				first_lclu++;
--			if (right_delonly)
-+			if (right_delayed)
- 				last_lclu--;
- 			if (first_lclu <= last_lclu)
- 				count_pending = true;
-@@ -1346,13 +1344,13 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
- 		/*
- 		 * a pending reservation found between first_lclu and last_lclu
- 		 * represents an allocated cluster that contained at least one
--		 * delonly block, so the delonly total must be reduced by one
-+		 * delayed block, so the delayed total must be reduced by one
- 		 * for each pending reservation found and released
- 		 */
- 		if (count_pending) {
- 			pr = __pr_tree_search(&tree->root, first_lclu);
- 			while (pr && pr->lclu <= last_lclu) {
--				rc->ndelonly--;
-+				rc->ndelayed--;
- 				node = rb_next(&pr->rb_node);
- 				rb_erase(&pr->rb_node, &tree->root);
- 				__free_pending(pr);
-@@ -1363,7 +1361,7 @@ static unsigned int get_rsvd(struct inode *inode, ext4_lblk_t end,
- 			}
- 		}
- 	}
--	return rc->ndelonly;
-+	return rc->ndelayed;
- }
- 
- 
--- 
-2.39.2
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
