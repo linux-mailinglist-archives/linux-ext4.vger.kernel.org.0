@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-3702-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3705-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CBF8950489
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 14:10:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id A657B95048D
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 14:11:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EE5EEB278A1
-	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 12:10:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2706EB27DB5
+	for <lists+linux-ext4@lfdr.de>; Tue, 13 Aug 2024 12:11:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00A211993BC;
-	Tue, 13 Aug 2024 12:10:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06CD019AD8E;
+	Tue, 13 Aug 2024 12:10:18 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C30A9199259;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 132B1199230;
 	Tue, 13 Aug 2024 12:10:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723551016; cv=none; b=cbVoC/8shW7qi06rluMBFHDcphXbjkJexQrsjn/6zVFcZ0itH2893lZkzmboCtgcOlZdXeNGq+HcWeYQyMCDBCa7gOE+5iDya31rJaDBRKKzscX3zwjgI+3pAzXdfoWRlSbb3EuDDOUZ3/TjNMURXpqeFNMpSEmqgcTzfShHWx4=
+	t=1723551017; cv=none; b=pO5IA7HGfuaMN6L8URCOgG9JSa09XBz0kh1nijUzJmbpdM73BCAOsA59UjUi+pKUvrebGprl11YajYHGdXlRh1rx70rTYKHpkopQS8eFGGWcnb2iLhM8uVY6dKi3k2U5vaiCc77uc90Hqw8ze+hmvBHbZCtqdr/gbwynG141tlg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723551016; c=relaxed/simple;
-	bh=fS3pAxeY7KXNMzgv/VZvJo2TdW5N7JjyW6d84O4Uetg=;
+	s=arc-20240116; t=1723551017; c=relaxed/simple;
+	bh=rS6N5KlkT98oXSzbXBnTmaAa8BGeGJKXKWr+rXkheGs=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=moLUbmg3P8GlVC/xtHqwE5bNEFuxe4zDcRlJjp8lTQwoXiaOe7Lg+rItrrA7vCXWtAVUIPec76e4kgUVhSDBnwBlFi2+M1803cY+wLWxFZux48lrbMfCxfYHhIQgeztI9wLWUPQ5PWxfQg8FUF6J+cEm5p1oIz7gh4E5Kqnoo8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=SrcrGVrLYB5qCuVuRqmAO4ZMj8CkpHODqYz5v3jqS+mlUhmem3Pzr/Q5KifZQvjCiGUX54krdWR5QahT/kqTdQ8Ak1WN94mKB9sdUO6VQv6IKocXx4zCceBK3FWW/us4f8V2YbTX8DzmbYohj7ZwFoe1Op+Wycb6Ag3ylveqWmw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WjqvV0Jknz4f3jHh;
-	Tue, 13 Aug 2024 20:09:58 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WjqvZ4qS7z4f3k6L;
+	Tue, 13 Aug 2024 20:10:02 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id B8AFD1A018D;
+	by mail.maildlp.com (Postfix) with ESMTP id F1B821A0E97;
 	Tue, 13 Aug 2024 20:10:11 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP3 (Coremail) with SMTP id _Ch0CgDnl7YhTbtmPh4XBg--.33191S6;
+	by APP3 (Coremail) with SMTP id _Ch0CgDnl7YhTbtmPh4XBg--.33191S7;
 	Tue, 13 Aug 2024 20:10:11 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 4/7] ext4: remove dead check in __ext4_new_inode
-Date: Tue, 13 Aug 2024 20:07:09 +0800
-Message-Id: <20240813120712.2592310-5-shikemeng@huaweicloud.com>
+Subject: [PATCH 5/7] ext4: move checksum length calculation of inode bitmap into ext4_inode_bitmap_csum_[verify/set] functions
+Date: Tue, 13 Aug 2024 20:07:10 +0800
+Message-Id: <20240813120712.2592310-6-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240813120712.2592310-1-shikemeng@huaweicloud.com>
 References: <20240813120712.2592310-1-shikemeng@huaweicloud.com>
@@ -56,55 +56,155 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgDnl7YhTbtmPh4XBg--.33191S6
-X-Coremail-Antispam: 1UD129KBjvdXoWruw43AFWktr1DXr1Uuw1DAwb_yoWfCwc_Ga
-	yktr4kA3yYq3Z3JFWvqrs5tF4DKr48KF15uFy5K34fZ3W5JrWkCa1DAr43Ary7u3yqvr98
-	uFW7Jry7ta4rKjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbVAYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
-	0DM28IrcIa0xkI8VCY1x0267AKxVW8JVW5JwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
-	Y2AK021l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14
-	v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAF
-	wI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2
-	WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkE
-	bVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
-	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
-	67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
-	IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
-	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
-	VjvjDU0xZFpf9x07jeVbkUUUUU=
+X-CM-TRANSID:_Ch0CgDnl7YhTbtmPh4XBg--.33191S7
+X-Coremail-Antispam: 1UD129KBjvJXoWxZw1xGrWkWw45urW7GFy8Krg_yoW7JFW3pa
+	4DtF1UCr45ZFsF9r4xKryxZw18Kwn5KwsrWFWSkw13CFZrJwnYqFy8KFyUAa4ayF4kXFnF
+	vr1Ykw47uw13W3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvEb4IE77IF4wAFF20E14v26rWj6s0DM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAV
+	Cq3wA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0
+	rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267
+	AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E
+	14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7
+	xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Y
+	z7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7
+	v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF
+	1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_JFI_Gr1lIx
+	AIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI
+	42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWI
+	evJa73UjIFyTuYvjxU2CJmUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-If we can't grab any inode, the prvious find_inode_bit will set ino
-to be >= EXT4_INODES_PER_GROUP(sb). So the check of need to repeat
-in the same group is not needed.
+There are some little improve:
+1. remove repeat code to calculate checksum length of inode bitmap
+2. remove unnecessary checksum length calculation if checksum is not
+enabled.
+3. use more efficient bit shift operation instead of div opreation.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/ialloc.c | 3 ---
- 1 file changed, 3 deletions(-)
+ fs/ext4/bitmap.c |  8 ++++++--
+ fs/ext4/ext4.h   |  4 ++--
+ fs/ext4/ialloc.c | 12 ++++--------
+ fs/ext4/resize.c |  3 +--
+ 4 files changed, 13 insertions(+), 14 deletions(-)
 
+diff --git a/fs/ext4/bitmap.c b/fs/ext4/bitmap.c
+index cd725bebe69e..2a135075468d 100644
+--- a/fs/ext4/bitmap.c
++++ b/fs/ext4/bitmap.c
+@@ -18,15 +18,17 @@ unsigned int ext4_count_free(char *bitmap, unsigned int numchars)
+ 
+ int ext4_inode_bitmap_csum_verify(struct super_block *sb,
+ 				  struct ext4_group_desc *gdp,
+-				  struct buffer_head *bh, int sz)
++				  struct buffer_head *bh)
+ {
+ 	__u32 hi;
+ 	__u32 provided, calculated;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	int sz;
+ 
+ 	if (!ext4_has_metadata_csum(sb))
+ 		return 1;
+ 
++	sz = EXT4_INODES_PER_GROUP(sb) >> 3;
+ 	provided = le16_to_cpu(gdp->bg_inode_bitmap_csum_lo);
+ 	calculated = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
+ 	if (sbi->s_desc_size >= EXT4_BG_INODE_BITMAP_CSUM_HI_END) {
+@@ -40,14 +42,16 @@ int ext4_inode_bitmap_csum_verify(struct super_block *sb,
+ 
+ void ext4_inode_bitmap_csum_set(struct super_block *sb,
+ 				struct ext4_group_desc *gdp,
+-				struct buffer_head *bh, int sz)
++				struct buffer_head *bh)
+ {
+ 	__u32 csum;
+ 	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	int sz;
+ 
+ 	if (!ext4_has_metadata_csum(sb))
+ 		return;
+ 
++	sz = EXT4_INODES_PER_GROUP(sb) >> 3;
+ 	csum = ext4_chksum(sbi, sbi->s_csum_seed, (__u8 *)bh->b_data, sz);
+ 	gdp->bg_inode_bitmap_csum_lo = cpu_to_le16(csum & 0xFFFF);
+ 	if (sbi->s_desc_size >= EXT4_BG_INODE_BITMAP_CSUM_HI_END)
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index efed7f09876d..7494b2abb794 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2693,10 +2693,10 @@ struct mmpd_data {
+ extern unsigned int ext4_count_free(char *bitmap, unsigned numchars);
+ void ext4_inode_bitmap_csum_set(struct super_block *sb,
+ 				struct ext4_group_desc *gdp,
+-				struct buffer_head *bh, int sz);
++				struct buffer_head *bh);
+ int ext4_inode_bitmap_csum_verify(struct super_block *sb,
+ 				  struct ext4_group_desc *gdp,
+-				  struct buffer_head *bh, int sz);
++				  struct buffer_head *bh);
+ void ext4_block_bitmap_csum_set(struct super_block *sb,
+ 				struct ext4_group_desc *gdp,
+ 				struct buffer_head *bh);
 diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index df41aa079cb5..f446588af368 100644
+index f446588af368..39fcffe4c529 100644
 --- a/fs/ext4/ialloc.c
 +++ b/fs/ext4/ialloc.c
-@@ -1067,7 +1067,6 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 			goto next_group;
+@@ -98,8 +98,7 @@ static int ext4_validate_inode_bitmap(struct super_block *sb,
+ 	if (buffer_verified(bh))
+ 		goto verified;
+ 	blk = ext4_inode_bitmap(sb, desc);
+-	if (!ext4_inode_bitmap_csum_verify(sb, desc, bh,
+-					   EXT4_INODES_PER_GROUP(sb) / 8) ||
++	if (!ext4_inode_bitmap_csum_verify(sb, desc, bh) ||
+ 	    ext4_simulate_fail(sb, EXT4_SIM_IBITMAP_CRC)) {
+ 		ext4_unlock_group(sb, block_group);
+ 		ext4_error(sb, "Corrupt inode bitmap - block_group = %u, "
+@@ -327,8 +326,7 @@ void ext4_free_inode(handle_t *handle, struct inode *inode)
+ 		if (percpu_counter_initialized(&sbi->s_dirs_counter))
+ 			percpu_counter_dec(&sbi->s_dirs_counter);
+ 	}
+-	ext4_inode_bitmap_csum_set(sb, gdp, bitmap_bh,
+-				   EXT4_INODES_PER_GROUP(sb) / 8);
++	ext4_inode_bitmap_csum_set(sb, gdp, bitmap_bh);
+ 	ext4_group_desc_csum_set(sb, block_group, gdp);
+ 	ext4_unlock_group(sb, block_group);
+ 
+@@ -853,8 +851,7 @@ int ext4_mark_inode_used(struct super_block *sb, int ino)
+ 
+ 	ext4_free_inodes_set(sb, gdp, ext4_free_inodes_count(sb, gdp) - 1);
+ 	if (ext4_has_group_desc_csum(sb)) {
+-		ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh,
+-					   EXT4_INODES_PER_GROUP(sb) / 8);
++		ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh);
+ 		ext4_group_desc_csum_set(sb, group, gdp);
+ 	}
+ 
+@@ -1228,8 +1225,7 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
  		}
+ 	}
+ 	if (ext4_has_group_desc_csum(sb)) {
+-		ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh,
+-					   EXT4_INODES_PER_GROUP(sb) / 8);
++		ext4_inode_bitmap_csum_set(sb, gdp, inode_bitmap_bh);
+ 		ext4_group_desc_csum_set(sb, group, gdp);
+ 	}
+ 	ext4_unlock_group(sb, group);
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index 0ba9837d65ca..e04eb08b9060 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -1319,8 +1319,7 @@ static int ext4_set_bitmap_checksums(struct super_block *sb,
+ 	bh = ext4_get_bitmap(sb, group_data->inode_bitmap);
+ 	if (!bh)
+ 		return -EIO;
+-	ext4_inode_bitmap_csum_set(sb, gdp, bh,
+-				   EXT4_INODES_PER_GROUP(sb) / 8);
++	ext4_inode_bitmap_csum_set(sb, gdp, bh);
+ 	brelse(bh);
  
--repeat_in_this_group:
- 		ret2 = find_inode_bit(sb, group, inode_bitmap_bh, &ino);
- 		if (!ret2)
- 			goto next_group;
-@@ -1117,8 +1116,6 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 		if (!ret2)
- 			goto got; /* we grabbed the inode! */
- 
--		if (ino < EXT4_INODES_PER_GROUP(sb))
--			goto repeat_in_this_group;
- next_group:
- 		if (++group == ngroups)
- 			group = 0;
+ 	bh = ext4_get_bitmap(sb, group_data->block_bitmap);
 -- 
 2.30.0
 
