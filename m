@@ -1,89 +1,117 @@
-Return-Path: <linux-ext4+bounces-3724-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3725-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96CC29511AE
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2024 03:52:11 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C545D9511E4
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2024 04:12:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C466F1C2353A
-	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2024 01:52:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F02EB22562
+	for <lists+linux-ext4@lfdr.de>; Wed, 14 Aug 2024 02:12:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A447317C68;
-	Wed, 14 Aug 2024 01:52:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 565711BF53;
+	Wed, 14 Aug 2024 02:12:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="VNQCkvmD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05F7A10FA
-	for <linux-ext4@vger.kernel.org>; Wed, 14 Aug 2024 01:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7542327713;
+	Wed, 14 Aug 2024 02:12:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723600325; cv=none; b=guhiFcfICRQDfFbTR/n/Nb2tcdyqB+h7cMzOkIedQH2fheQedQDGHc0Sk4hYSXzv607AT1UFjjcADybCKYfhgMMXFiqL7obr2XNJwuau+Ce4MHYSbSjluhcbUwVNNrMHx3tqZixnlBE3hSV9OZ5hdmFs0uYBWbXQOKE7tA2fxHE=
+	t=1723601532; cv=none; b=lS+AMpQ+YYCumGA63mHe2NHd6d8ajPGQZfUOAyQOY3syJxZ7Hi79XKbj8xELUxQzFHrjjHvbjaJ1tQoA8pYey3UsB3CH+TPoF8U8scEsuMu8yKxcOuHjUCFUmBQ4p70axMXBFVbQ4uslDU9qLjNmxzMs0OOoxs4arH0WbfT2XS4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723600325; c=relaxed/simple;
-	bh=XS64JM0hwmruJ5LzbhBhtv42zVcLYE4v1woMxuH4eBI=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=EgIVgDWJbdNPacTXJbMyEae8oBg/eDpTAyPMB8hg4W662UvdijEywHKHlwGyxmlifdC/ydShtnGGX9RAVCTg9oTUzMIM2WCIq4RwJk8N4A1vk0xzGbYh4ivX8XN3Y7f/R/ko0VI1xUMh/h6AC0fQm5VsoI9GCHzWJCCs4SlPZ84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-39a143db6c4so62348825ab.1
-        for <linux-ext4@vger.kernel.org>; Tue, 13 Aug 2024 18:52:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723600323; x=1724205123;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rr1FQrSlLyHIR7bKJ+Sj2PnGw3Onv4oXfRLT0nBQKHc=;
-        b=t+OYjXetm+dQwNx+n7kzuMbjPGDCk47GTU0bcQ4Ini+HSUOJ0pJIq1xm+uwG0KQQAC
-         Dlyv47ufjpWp6S2rmNymAxCCWJba1g49LZkHfEc/hW3wAZZVPwe1oAQjqQd5ne1N2Z2n
-         dpZrsTr+yQOIv15WCXLQDsawLilqwjYvQEyifmVEGhPaQjC8zb8GpmzC0VEFD0ktuHCt
-         BrK9ZJruEzsFKThz1zZMbvNAaQqjTwvh2uEw8jizyZHf7r9QNrHciSj+9xQftem/Rrpy
-         p2lDseP5P3AviPjV65IOvI+PNx40NjHFTDaRHYzk2MBzl+62onrSzMxKPe+33T+vtHn5
-         uMaA==
-X-Forwarded-Encrypted: i=1; AJvYcCWwx0y0r12e+Ee6nWVBlxpUsjaO/iyg21sFYo4Ht1p2cBxxuJiDEV5zm3wr+MZh1RfgXQnT/VJ60/BIFKga5RxfaUyF2sqO4eYphw==
-X-Gm-Message-State: AOJu0YwvnZG0xZ5A8PAsO74DH0SHIOTMV/MqK8LA0Iw3IMT5/LpaLKL8
-	orceX0CG+DBPW1v7ZAzwbs36ZQYAUbZGF+2YVOOsGlI1b2r79dayQpDqow2q9imJbM0pfY5VPYv
-	Sp3o0sR6p5+egokOkGrv5TvJ9SR8FqlWolUUIrPWce/TaZvz7Iu4glGA=
-X-Google-Smtp-Source: AGHT+IHqA7pQnyMrXho0mD+TUeP2QWjKbV97KrYXUIJ4iXmGLDZf88mj/5QXqkKGVrs9YdSyU79x/lDrUXmH2JEGZiTj/x3sLYfc
+	s=arc-20240116; t=1723601532; c=relaxed/simple;
+	bh=aNasdxu4yIswcEWQRn7spxwYDmyLSm0tj1clLR5XF0I=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=A481zbTznNtr69uPVqtlCo9fEFnhHTPHZD4nGs27XR/dxzDAIW6SlFHiSjrxPaJ9vGYx3N5KSxMLkEKy3xKISQnJ9h0JvbBbktMup0pIwTeSJSzNAZyAx+r742spxU4TZqYy0dvHv9julyXpWUOnDmZ8bFglvnXYL1VkRlGVw80=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=VNQCkvmD; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1723601523; bh=3wsPyn91f/PVLo4SVvbVk5KTI6RKkQpp5yoClszyFoI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=VNQCkvmDW3yKfUo9+PnYbl7xA8a4O9MW8++7yIZ0/6Fp9HFSlVJsxyK8QLKSBt/ew
+	 /GxXLueUMNo3j/tZRAt2lB3I0KasVqZNKsQLPftws1hmjezcCzjdD+90kuFZXaFG5B
+	 T9rTFB+HHE5VPOCfSqNpDw+zsZ6nfkMgkT+VeQHw=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.4])
+	by newxmesmtplogicsvrszc19-0.qq.com (NewEsmtp) with SMTP
+	id 300060B1; Wed, 14 Aug 2024 10:12:00 +0800
+X-QQ-mid: xmsmtpt1723601520ten4rqrpk
+Message-ID: <tencent_42D9D2CB066909BF6EDDAEDB8C8067F3C606@qq.com>
+X-QQ-XMAILINFO: M589RIiAniBCFCgDGCNO+FPRn8oVsIM3oyBNFg2Xh78Tso9bAEpOnZxstfE7zi
+	 RjH5tTZIo9D4uSGmJinkfJQy3WO1SZ4JR0XHbATaSwsvksx8FjbfWOTkoS4JPJF6VuTWqvdtFW4O
+	 9OQ1MHTwEjsrX2guwU1IslKAdFhzoNrxXDmbLSZBS/gC2IiUISc5d1Zt8ow2yOaU9tC87LluR18D
+	 Qblrmwgdj+mZX1A+bi9XaQdH7KHHzdQa4vkAFfS2n9sib9WaCE/Ll14xm2Vwa4tRLml6bsDQaPAb
+	 Pt43MmR3rXN5COIR7GBrb1bmn+KOK8hk9NfrtudRanXq7Lup7wVwITrBAw/inpnX5Y4bu6H0BbIk
+	 bdnAKTCgTJ49o46VXQ8jLWo+p2Xmo8zvaiXbGKKe02sZVw3XPSChGeJzMHEB0J8u2kWymxlKbeZE
+	 ukBk14zQgo+VRcTUAZDlafmpfCvOP/uCX6maOV1fZ/9Z2ZYgjj6z46vPh5mfXuYLLP8ziqH8i5OQ
+	 IoSWt66nZDXtJFVxOzCwS+p1+5C5Ux1kCihJ+GGLQaHeZQ+xbD4M4hcrv+g1nW9AI++U2EUsAllc
+	 flf6Fq6fXnemwMOdya7psjATJNCPH8I+M/NG+eTKVviivYLk4jMIirQ32TpohI3609MbMZvrWzT6
+	 83FoaRYM/3P4MiGdhpYTrWuM3WFoGIEAn2X8Dp63eWMx1fMVHqQetg5gz7fmLdA6VAWE1M8si+iF
+	 WtkcyNQ7oqBpSDkHuB4GupBNSmFJJwIPqFcngggg9GLNvnAv2ix7+bB4oRjGaPZzFFtxFbLcKU/K
+	 iyWN46u92vBdob4GcnJWTRKfdOB7FJtyflz+stFV/0JdEpZWT+O+dY4WQW28p0HLDMt/cIhxGz95
+	 3nBSbwpgJBVHNLNSEHmJdLHwD9AmhSSDhSgsFgYVYWW5wAv/J/+HR/oDBtYGiR6wfNJbxmx7vo
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
+Cc: adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	ojaswin@linux.ibm.com,
+	syzkaller-bugs@googlegroups.com,
+	tytso@mit.edu
+Subject: [PATCH] ext4: fix divide error in ext4_mb_regular_allocator
+Date: Wed, 14 Aug 2024 10:12:00 +0800
+X-OQ-MSGID: <20240814021159.587619-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <000000000000b1b164061f96213d@google.com>
+References: <000000000000b1b164061f96213d@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:214e:b0:398:36c0:796e with SMTP id
- e9e14a558f8ab-39d124564a7mr1332345ab.1.1723600322958; Tue, 13 Aug 2024
- 18:52:02 -0700 (PDT)
-Date: Tue, 13 Aug 2024 18:52:02 -0700
-In-Reply-To: <tencent_0F27C706CC52D386584988EECBEEC0CCA206@qq.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000fc26b3061f9af819@google.com>
-Subject: Re: [syzbot] [ext4?] divide error in ext4_mb_regular_allocator
-From: syzbot <syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, eadavis@qq.com, jack@suse.cz, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	ojaswin@linux.ibm.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Before determining that the goal length is a multiple of the stripe size,
+check CR_GOAL_LEN_FAST and CR_BEST_AVAIL_LEN first.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Fixes: 1f6bc02f1848 ("ext4: fallback to complex scan if aligned scan doesn't work")
+Reported-and-tested-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=1ad8bac5af24d01e2cbd
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/ext4/mballoc.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-Reported-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
-Tested-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index 9dda9cd68ab2..451f92cde461 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -2928,13 +2928,12 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+ 			if (cr == CR_POWER2_ALIGNED)
+ 				ext4_mb_simple_scan_group(ac, &e4b);
+ 			else {
+-				bool is_stripe_aligned = sbi->s_stripe &&
++				bool is_stripe_aligned = (cr == CR_GOAL_LEN_FAST ||
++					cr == CR_BEST_AVAIL_LEN) && sbi->s_stripe &&
+ 					!(ac->ac_g_ex.fe_len %
+ 					  EXT4_B2C(sbi, sbi->s_stripe));
+ 
+-				if ((cr == CR_GOAL_LEN_FAST ||
+-				     cr == CR_BEST_AVAIL_LEN) &&
+-				    is_stripe_aligned)
++				if (is_stripe_aligned)
+ 					ext4_mb_scan_aligned(ac, &e4b);
+ 
+ 				if (ac->ac_status == AC_STATUS_CONTINUE)
+-- 
+2.43.0
 
-Tested on:
-
-commit:         ee9a43b7 Merge tag 'net-6.11-rc3' of git://git.kernel...
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=12dedb5d980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=9358cc4a2e37fd30
-dashboard link: https://syzkaller.appspot.com/bug?extid=1ad8bac5af24d01e2cbd
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17fd71ed980000
-
-Note: testing is done by a robot and is best-effort only.
 
