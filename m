@@ -1,59 +1,55 @@
-Return-Path: <linux-ext4+bounces-3729-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3730-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B293F952921
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 08:04:07 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E381A952C7D
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 12:40:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6C211C22323
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 06:04:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1E04B29321
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 10:39:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED13C176ACA;
-	Thu, 15 Aug 2024 06:03:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D46F1BBBDE;
+	Thu, 15 Aug 2024 10:02:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=collabora.com header.i=eugen.hristev@collabora.com header.b="K70a8Ryb"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="mkC3OrQH"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
+Received: from mout.web.de (mout.web.de [212.227.15.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A9C39FE5;
-	Thu, 15 Aug 2024 06:03:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723701838; cv=pass; b=Jg+K7KlXXsL142ZB1vwxBXEqokJ5fd3vCTUcm8IaGOnED1oLa6Jod+Pc5NOzTE06PXnbd4fTdV+8aAzT4WKkXcsl+6U/K0xxtE1Vzbz8XU69JCcL1bcVyynmpwHGmHmp8IUsr4RW1p1xyRNQlJfyP7dRQRR5nqaVbJNH7A6n13k=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723701838; c=relaxed/simple;
-	bh=Xx+/AyQ134n42czrEU1KUaSRZpjaDaWaFu7zmyt8Z9U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ow6Rk43wRPqWT5MA4KgP8P2VKdvzNpsGAQehQ+qiJH15rg1fGaEuvEF9fIHb1W72IwJG3fCSpBPaFxXn31WRkxi2HKiWJcXA+e+dBSALvT5Vw8124ifPwE/gb0C+yANe+00rAxG2WlrOFXmZhf51gAKxBvSFh3mTyid16uUoogw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=eugen.hristev@collabora.com header.b=K70a8Ryb; arc=pass smtp.client-ip=136.143.188.112
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-Delivered-To: kernel@collabora.com
-ARC-Seal: i=1; a=rsa-sha256; t=1723701809; cv=none; 
-	d=zohomail.com; s=zohoarc; 
-	b=ONLkAptYYvW1RCG+LSVVZuOogSmAj3as3u35Npi40VFIiYnAxMYSjsagXDeFj68fad/Hm45W03HrVnh12b+0aL9NWG8x3IAEEHSY+MtTqqDQI3SX6loCvwwXo5wz3bj0yUaH+6ZYcHHFxfXXILNN5dlbGlwequQNiS6FwcfsReI=
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
-	t=1723701809; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
-	bh=IFcEpqXjckIV9NDm7vtqPjwRNp0LilOzZsxtjiZwS7s=; 
-	b=GR8sAB6+6a/ScTl7S4bl9sqnj5W84KI9mq0bs/ljQlz+qjKKPPTEjrd4U7O8AyyVD/PqRQgWKniNQoiVnPjfkT6+o6gfOkYIOwM8CdkXKKVXDSfVcDdpvG2KMR73PCRung83f6I4fjysLrlwvfpiJkn5WqTq2Sag9/64qs5Y7I8=
-ARC-Authentication-Results: i=1; mx.zohomail.com;
-	dkim=pass  header.i=collabora.com;
-	spf=pass  smtp.mailfrom=eugen.hristev@collabora.com;
-	dmarc=pass header.from=<eugen.hristev@collabora.com>
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1723701809;
-	s=zohomail; d=collabora.com; i=eugen.hristev@collabora.com;
-	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
-	bh=IFcEpqXjckIV9NDm7vtqPjwRNp0LilOzZsxtjiZwS7s=;
-	b=K70a8Ryb2Bmy6BH8HssYePaGByT2SCAQmnOYGrPfjQK03dKUniQMrdW5L4ygKQmI
-	SdBF5KMHiriAiDt1a7lbLypjbDc0nlQP/Gp3c7BCXftbTMrqYsSirH9xwJwi73h54WV
-	So77AhAh7t+ExtkCIJ1cLiMIomKwNZOdU/zWNYJE=
-Received: by mx.zohomail.com with SMTPS id 1723701807188757.8000277911274;
-	Wed, 14 Aug 2024 23:03:27 -0700 (PDT)
-Message-ID: <181856a3-3378-4136-9734-b20a732d10c4@collabora.com>
-Date: Thu, 15 Aug 2024 09:02:58 +0300
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47C3F1714C4;
+	Thu, 15 Aug 2024 10:02:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.14
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723716179; cv=none; b=Luh7Hk6gxjLMD8sasOmjkyvfOCggzo17lEirF3p4T+jPKpx1Fs5iLq2wPboEzLL+/vxVrT4cphKLc5UBYyzasEEL/BSsZkpuRs9nHw4/4zmOg2PGMx9kBmRJKQdR923tnJnJvYngwaG9Dl3NiPc0qzZNoZeEYTZ80frPbGYU4dY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723716179; c=relaxed/simple;
+	bh=opaTHF0FYquU0QR4xUtGcrbqwy7XWU7cBuztM5O7ykc=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=qQ0EZ+GGAM+QzHhXZgFRG4M67O+ZLfg9vYGqFqx/CJAknmEAfTGivJyU4y8a1+oqV4GQPNGq2yZWa/+O79tOYnJOfQJMZXhVHkYDJl0PZRp2IcfB/BB5LzwG57Iv5TofDg8/rNeU+NYbCW1qFMiG3uY8yQJp9Mifc0nepoSTLsw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=mkC3OrQH; arc=none smtp.client-ip=212.227.15.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1723715747; x=1724320547; i=markus.elfring@web.de;
+	bh=BIDHjq8/nt0EFcVBhNoN0ffl/t4bxwEOm7k3+GMz6u8=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=mkC3OrQHkwJcun+hPynZi7SLyYyskwSBuJ0NSiBy3xrHEOlhjITJ0IJUAtu+TjRF
+	 BqjE7wrchV3/1K0/M7/jJCEe6HEg3uBhLPIECQ2uhmVwodgOiG75nulQC3dGxzHOr
+	 94pO0XXFuR/lch1juwaZHwpuvoFv3xc3NY2pL0D0Mr3IQBYadNu6CBeMJfer/oqe5
+	 SlLX2fdG3rwwzqRnfN7Zc0wiMfq1vvnC5aOvEiYdWXN4WuL76CSTSraCbAAcTquBc
+	 2CRDgwYAql+0+x7WCUxddV1CXILow+XR4+sFOdGTs9ozuzKvzq59pTIrXuKYsanYY
+	 a43kK6wVhvXq2RGEGw==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb005
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MY5fd-1sfK2Q3JLp-00L6ro; Thu, 15
+ Aug 2024 11:55:47 +0200
+Message-ID: <fec59d4d-898d-447c-b4fb-e9d055550f96@web.de>
+Date: Thu, 15 Aug 2024 11:55:44 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,64 +57,49 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/2] fs/dcache: fix cache inconsistency on
- case-insensitive lookups
-To: viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
- linux-ext4@vger.kernel.org
-Cc: jack@suse.cz, adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, krisman@suse.de, kernel@collabora.com,
- shreeya.patel@collabora.com
-References: <20240705062621.630604-1-eugen.hristev@collabora.com>
-Content-Language: en-US
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <20240705062621.630604-1-eugen.hristev@collabora.com>
+To: Kemeng Shi <shikemeng@huaweicloud.com>, linux-ext4@vger.kernel.org,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>
+Cc: LKML <linux-kernel@vger.kernel.org>
+References: <20240813120712.2592310-2-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH 1/7] ext4: avoid buffer_head leak in ext4_mark_inode_used
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240813120712.2592310-2-shikemeng@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ZohoMailClient: External
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:+0NXfX4/vDLKQ4u7wJLI4kMdp9uPckouU58ypuB3SkAqOKGl5Y6
+ 5e1VJzGQcG7fPUasPdyMr8tlBgwdZsZqjrLEKuKP2DhMIhHDVKsiw35xq/cQxx4vrdBOTAR
+ GKNqdpiuAyvQjlOrvpg5dlVCwlMgFMlnxmPi2bjANmhy23RVw1iZ4UNwjjrzrRfMigRU/nL
+ eIluLu1cpUrxVfTEXFehw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:y7aQx5hplRU=;qJaoSJWo8kLYI0a1F7qdKLQzS+G
+ GRSc0KDPCGvlcmaW9EJ/RRzN6BWJqi+Q7IHQDvOflVT3nBqd0wrHGahvw8YdJyS5+aUlvRSkS
+ MrpNrmyDuuClj6BqDu1HBnwXPmBDmO4g33sflpom2MZ/C2vORZTdWZtg/1Z97zRjBHTirE7B5
+ dx2e/fGbJnhpKU+d194mXeYGgOCxsGD/OFWIBVc/WDYaQr8OB85AplQg0++tZAITHujiqic5B
+ /YJionorQzxetpnhG1rd8pa8t+UvtApV9MwKme6yA8vZCvQMOoW2T3ZdXQUAdzrH6Glfcdn7X
+ uz275ND0Z1im8V7wgjU9nyTpcA5thZ7TNoGK6tssxDN5ykW+cozTvnNwLKpRj9DB1oesT05Kn
+ iGhzF+7ZAIi7toaDuMkQ/jGAWFKGGsfSbXjTHDJzops0fz6caorzT5ICrBopS1/KrTWFrrLCS
+ M+ARG4qWu0K5R00MwRpDzhmBM/gKxRnza59HSSQjrYKM0QyS0id09VPjLetEiF8p/Ngv5U0Bf
+ YZ/EI00d1SRjxyhOq1RwDTeY1vc0zInaQyTgyjc1AAwqJl82bIJe5MqEcw2tr5OoEvXWWzI37
+ Krv1AIiHPxFqiAG2pCo0V7zdo1Qd8eMY0gtCV2acaekV2wTTOSmJl42uYMs/WOpJn1sHTKb4v
+ YDc8XvVZA10hH+lbDlN46hmGPgx1XTTUwv0558U/boRCcFlnyZILMxzbk16iNSUxhHy9Qiuu1
+ WtpCHbg+gbdQzzZHzOH71kCH5ZzKMGa0bW8GeAupAmkSvdimaxuHRDQMpiEjhdLC/dg6YO7zb
+ jsPJNIWVpQJvgrQvKUaqvpOQ==
 
-On 7/5/24 09:26, Eugen Hristev wrote:
-> Hello,
-> 
-> This is an attempt to go back to this old patch series here :
-> 
-> https://lore.kernel.org/lkml/cover.1632909358.git.shreeya.patel@collabora.com/
-> 
-> First patch fixes a possible hang when d_add_ci is called from a filesystem's
-> lookup function (like xfs is doing)
-> d_alloc_parallel -> lookup -> d_add_ci -> d_alloc_parallel
-> 
-> Second patch solves the issue of having the dcache saving the entry with
-> the same case as it's being looked up instead of saving the real file name
-> from the storage.
-> Please check above thread for motivation on why this should be changed.
-> 
-> Some further old discussions here as well:
-> https://patchwork.ozlabs.org/project/linux-ext4/patch/20180924215655.3676-20-krisman@collabora.co.uk/
-> 
-> I am not sure whether this is the right way to fix this, but I think
-> I have considered all cases discussed in previous threads.
-> 
-> Thank you for your review and consideration,
-> Eugen
-> 
+> Release inode_bitmap_bh from ext4_read_inode_bitmap in
+> ext4_mark_inode_used to avoid buffer_head leak.
+> By the way, remove unneeded goto for invalid ino when inode_bitmap_bh
+> is NULL.
 
-Hello,
+1. I suggest to split such changes into separate update steps.
+   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree=
+/Documentation/process/submitting-patches.rst?h=3Dv6.11-rc3#n81
 
-I have sent this series a while back, anyone has any opinion on whether it's a good
-way to solve the problem ?
+2. How do you think about to add any tags (like =E2=80=9CFixes=E2=80=9D an=
+d =E2=80=9CCc=E2=80=9D) accordingly?
 
-Thank you,
-Eugen
+3. Would you like to append parentheses to any function names?
 
-> 
-> Eugen Hristev (2):
->   fs/dcache: introduce d_alloc_parallel_check_existing
->   ext4: in lookup call d_add_ci if there is a case mismatch
-> 
->  fs/dcache.c            | 29 +++++++++++++++++++++++------
->  fs/ext4/namei.c        | 13 +++++++++++++
->  include/linux/dcache.h |  4 ++++
->  3 files changed, 40 insertions(+), 6 deletions(-)
-> 
-
+Regards,
+Markus
 
