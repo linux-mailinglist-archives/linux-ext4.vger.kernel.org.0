@@ -1,100 +1,124 @@
-Return-Path: <linux-ext4+bounces-3731-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3732-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63D12952D45
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 13:14:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D639E952D74
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 13:28:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 188871F223A3
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 11:14:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FBF31F25EC2
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 11:28:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F02911AC8B7;
-	Thu, 15 Aug 2024 11:14:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326537DA9D;
+	Thu, 15 Aug 2024 11:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="HnoC71Rn"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Wsg5Rk8c"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96FBA1AC8A4;
-	Thu, 15 Aug 2024 11:14:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BA831AC891;
+	Thu, 15 Aug 2024 11:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723720449; cv=none; b=g1CtXdHslkEG+cRuDLhvlzwGuzK9K1pQyjhO+HcnFy488RFA9MpUc20eFZwsl6vduN1uvx4tN+1rAvYhiNFIjY2GVWaxghcW6kvehI5vecyyJP41DCjbYeNyN4if+pQ0dA6lldxGWk65K2SLCdT/3tpUUNfH3uHPTAI9a3TV958=
+	t=1723721274; cv=none; b=EabVhZO9c5dTiKGnisnyl3t/sNoJO0Np0KI6MHDVon68yfUsmR23G+ESv42pTll5GEDr+OcHaPNa20yq/6Tye53lJZnOqwNvmORMMN9kFduEt+EXJjXG2DYU2AsIOz4axgCdz0NBDuxlf5mRWRm3wttqtFRpX+SZnzvQpqKmMBI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723720449; c=relaxed/simple;
-	bh=rXm4l6ARRi0fjVDtarLzTvmipbBoOY8ZFyu6tjekXFY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=qV1p9b23z1Tfl0iJ6E9pmr7ac3UB3BeMzZ9ATAaJkI8MTSeyrKyaAMdiuTsWNkA5Wv7TDalwKGgDMwV3G18oqolhiRDGVgleB6StaqARDuDxjNIX0OHFo7BhDUoSQ386BHq3GfylweVU7qw9e2Rxk1Vlizff1ASPcNjy7jXSzFg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=HnoC71Rn; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1723720427; x=1724325227; i=markus.elfring@web.de;
-	bh=IMuihew64CpO9zH34qs61AIH8JFgWpnxsZcLMjqPH68=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=HnoC71RnGnH1+qANvbdFSMWggQLzyk04r+RmPh4RcGB/4fBKjkRbKI2WReZ/w0Gl
-	 aaPiB4XeEknhR0t+CXpCI9+Ddw+DbHGXsQXZseQSamF2tnk/QdGveYh57SKAcYEgw
-	 P+xpqnBD1DC5RDJVitxGigx4+Hk6M+oGZniekPAY4lwWRUayH8V/cJ5b1q0pkE6kx
-	 ZUO5scQf+YjN/FzjBj6SDTld9rSrI17pGH0Vi7qZaUyIe/UZvwmkcXjmntkIEk4Zr
-	 zyEBpLsjE1zp8N9yOsIAJU1WmZLoLDJQI/Wb0tYEGKhGH3uRy7dsgUnBc5U6Am7N7
-	 nGcR1Zi4wkthX648nA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.87.95]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1N01di-1sHomT1Z1K-00xmCF; Thu, 15
- Aug 2024 13:13:47 +0200
-Message-ID: <77c9258a-dce1-4cf8-8e0e-e4073902e25a@web.de>
-Date: Thu, 15 Aug 2024 13:13:46 +0200
+	s=arc-20240116; t=1723721274; c=relaxed/simple;
+	bh=jMQOiwjRbvfwNZgSQ2FQRzwUrVRGLEJDvC8BdAPu9ZQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rraO2aMaPYlPckdJ8czvbN+09BoUmvuskMepLK86hg710YCbjrC6oVKhLEIQj87LlDC+qg1mV8b73HzGGXOAEOngIUu8rKUAk31kQpptoIYUCOWstZp1S5rDo/44hvjbgX9AWwH+3wAzS8tIec2LADXDWCEGWnxxGHx8CYIRYuM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Wsg5Rk8c; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-70d18d4b94cso591800b3a.2;
+        Thu, 15 Aug 2024 04:27:53 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1723721272; x=1724326072; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=wKheqVSEnUqvFLH/97WLdGTkqi4n/pNJlYmRDr/i0K0=;
+        b=Wsg5Rk8c55PaUYce6qgfb3Jb2TxmZCYC22jxnyDARaJKvc+0mcSSXIvYKrd/VFrfrs
+         7NZz5XgucGilHB7ptjKT0ysD9rMbr6NxCmaAcZqsUqZ6FVemoh6soJmnvZ1ftkrRivnO
+         lP/lMbTvOBWhsgR3lQNyXajhh1Zu2uhzFQm99PAZgPAjXh5iAVa62J4pKCHe4VFtS63/
+         iRqwcnYkSG4IrGpC4reiycRR901yL8FxSFfAhDesBQ0pUlcAxtKUAIX0uXIDgcGf+gPX
+         +sadfe0QAcx3nizfmww24X6rAqZeMczkADO2Irgqh1hI+ZN+ENg/SuqZpS42pUA4tASv
+         ddiQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723721272; x=1724326072;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=wKheqVSEnUqvFLH/97WLdGTkqi4n/pNJlYmRDr/i0K0=;
+        b=Rp3oxhKcbf7GwSMwJWkm4TGMYhen8W8JgSQZpRUfJRuX+fhdtNx6ghp3BknMMrb4Go
+         fMoQF6nOS713E7cTetboCsJl9rNAS5jEPB84xPBXj5E7JLC6PBiFNXDKh89kl97VHxL3
+         /h5Ft/KQWw1zqne4PK56BAwsoAfB1YcUCel82beD7U7lcJlbjFlUGo+tCz7/Pswthp+o
+         uij6O2HRNE8piLnr4xriD9VqWyqIFn55wsBj3Tt6xf0oCKinerTKnd/YKG3VXuG67aKd
+         uDTN/fPjakyXhLMNEiQNvB0acts6MwAhs09KLEGZhs00EdJ+jX0K7GnU59SoPiRPUbbe
+         dogw==
+X-Forwarded-Encrypted: i=1; AJvYcCVa7mrEq5p7KT2WRuiWy8Na+ZG8INDbbD5LbBUhmYiTyylzN4IomkXu9sNRJhhZHq+c5PMdBv9ZX7YMfV8=@vger.kernel.org
+X-Gm-Message-State: AOJu0Ywrpao1OdqMSu+ytKCbTjGHoNoAFxmIdf100d3QErPMDlAq9wLz
+	OC3u4o/I5840qaOocXVSHwu2k4L13GJu/6/2O5XwjyuoW2bRkL5V5E3aP8F/
+X-Google-Smtp-Source: AGHT+IEv1Mhf/8/EmGnrV0xJC0S5lQ2mFMobbZv55rNB1NQ0v0Op70Zl/X9BZ62BmHAcO7d01+yMZw==
+X-Received: by 2002:a05:6a00:1404:b0:706:65f6:3ab9 with SMTP id d2e1a72fcca58-712673ab9acmr6684894b3a.20.1723721272482;
+        Thu, 15 Aug 2024 04:27:52 -0700 (PDT)
+Received: from localhost.localdomain ([119.28.17.178])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7c6b61c72d8sm822262a12.23.2024.08.15.04.27.50
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 15 Aug 2024 04:27:52 -0700 (PDT)
+From: alexjlzheng@gmail.com
+X-Google-Original-From: alexjlzheng@tencent.com
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Jinliang Zheng <alexjlzheng@tencent.com>
+Subject: [PATCH] ext4: disambiguate the return value of ext4_dio_write_end_io()
+Date: Thu, 15 Aug 2024 19:27:46 +0800
+Message-ID: <20240815112746.18570-1-alexjlzheng@tencent.com>
+X-Mailer: git-send-email 2.41.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kemeng Shi <shikemeng@huaweicloud.com>, linux-ext4@vger.kernel.org,
- Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240813120712.2592310-8-shikemeng@huaweicloud.com>
-Subject: Re: [PATCH 7/7] ext4: check buffer_verified in advance to avoid
- unneeded ext4_get_group_info
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240813120712.2592310-8-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:i2b0glHSXfmbNCiYnNPhljhJc1GDxcbG6hbGiwUsB8SDkuJFznA
- LdP/PEPqhOt5GT6T98fYa4FXmeCcppOYSS6PXqoeHT5IUvR35UqQFqy+IRT4wPMK8brBT5p
- 0vW5os+6WJZdOIRz1vKTzYgJc2j7ZZtPMm8YmedjirYpQg9ePxQnZ38I3ONThKVJrYDuqaE
- 2dIW+38k04vl9cCr1HnZw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:fc7hQ0rtPAQ=;WlZNVYngpu6WsaZCkEnWXLPONoT
- uppouZeKOnaseqmkFo/VqoCYNATrTpjiUIF4b2/y0q/iPcmxuUw6Y1YLPAe9yPRyRNmEKOZow
- 6YJibZCZqCOaC5w0mCGRqB4chPXCz19tTbuAZnx9iZHvOea6FXlxhqvXqeGl0d5+8su9wPUyJ
- 8V8qYthdaf3MMlX2t19LW8DAKuu1vb/8qrKXiUHzrfeGJWOcE3wkGwpYVmFNHi6afW5kLwNlm
- sE4AbojuYy0MzLGtoBlkZUvg2zh9VrKG8kCjD3Z3/tGZ1AK/oPxQa8CKIdHcHYCGcD9GQHMhy
- D6e7LFeJKdfBmjtRUzw8JzB+SbzoRPyWfCn8cGf/qa3HPQ5r3q53v+0JBZuP4b7/1llY/5cP3
- FAYdk9VYoDZ1uopPqlfERFfbWWdsjjA4gKPaZksTjXIvPgsWpJAwOH2BPnK6QR16sNbCYLld1
- 5epsk04ZbLE9bjwVi9U70VgzKBx7RIa/LxkcT8zQ7PcPN/50aDfvpEkOuj2Dde79i3tcMJjK2
- XmVXqbH9PxhnSh0+3xgeVMrrXzYiKU0KDU27/DwqsmUlpHlKt6kvAEtUr+njvx2nmKvZIAjqF
- fCU0fPmklbjqqFzaS5QdzRYDBOVnaufxJwesRxjoMLLVtLE75hvsgERKsDKzDlhy6sheWw9Ve
- qY0isKOapFpFSSLeLDkCt5uGGPhf+4xCoT54VhzKtb9l7biZ6QJy/gEkpAV6Lfb14IBGSNJZu
- BmvZnQKAK7Ief2lJbfg1j0xrjzcgtphQqT5qJhFGRRwjUanEsC6gJ9G9/1IVBX9rS25YBohaX
- Hfe4uZw1hXlR/Ld38b9G14Ww==
+Content-Transfer-Encoding: 8bit
 
-=E2=80=A6
-> This could be a simple cleanup as complier may handle this.
+From: Jinliang Zheng <alexjlzheng@tencent.com>
 
-                                    compiler?
+The commit 91562895f803 ("ext4: properly sync file size update after O_SYNC
+direct IO") causes confusion about the meaning of the return value of
+ext4_dio_write_end_io().
 
+Specifically, when the ext4_handle_inode_extension() operation succeeds,
+ext4_dio_write_end_io() directly returns count instead of 0.
 
-Would you like to append parentheses to the mentioned function name?
+This does not cause a bug in the current kernel, but the semantics of the
+return value of the ext4_dio_write_end_io() function are wrong, which is
+likely to introduce bugs in the future code evolution.
 
-Regards,
-Markus
+Signed-off-by: Jinliang Zheng <alexjlzheng@tencent.com>
+---
+ fs/ext4/file.c | 5 +++--
+ 1 file changed, 3 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index c89e434db6b7..6df5a92cec2b 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -392,8 +392,9 @@ static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
+ 	 */
+ 	if (pos + size <= READ_ONCE(EXT4_I(inode)->i_disksize) &&
+ 	    pos + size <= i_size_read(inode))
+-		return size;
+-	return ext4_handle_inode_extension(inode, pos, size);
++		return 0;
++	error = ext4_handle_inode_extension(inode, pos, size);
++	return error < 0 ? error : 0;
+ }
+ 
+ static const struct iomap_dio_ops ext4_dio_write_ops = {
+-- 
+2.41.1
+
 
