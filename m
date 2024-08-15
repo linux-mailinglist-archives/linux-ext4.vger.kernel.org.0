@@ -1,101 +1,102 @@
-Return-Path: <linux-ext4+bounces-3734-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3735-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC3FE952EEF
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 15:18:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9B9FB953625
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 16:49:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A9C51C241BB
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 13:18:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE4301C25355
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 14:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E1C19F471;
-	Thu, 15 Aug 2024 13:17:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 811371A00D2;
+	Thu, 15 Aug 2024 14:49:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AnJX3Sip"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4415519F467;
-	Thu, 15 Aug 2024 13:17:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2AD41AC8B7;
+	Thu, 15 Aug 2024 14:49:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723727873; cv=none; b=tuhtoGBhkOz0Dt6Wrxh1F8kCJv/ZMiTjw1g7fjTygVzKXCzy66HeU3Hl4UM1pKmhKX8n013WhaL+TQSXg7kpLyAaVtS/65VB1e/sjmqxuTfwYdl27ozoSkbZ28ohLmPX9oHdl7LCCcniW0SE2n7zJQp/vP6+S+A7c9fNSLfA7qM=
+	t=1723733347; cv=none; b=MJf16NacrOky+u4Bwu0P8ujsfAOxFJIBWuIk56tFu+MxiTIGlqRNYDYLIG5TlQHVJ/NlJFo3W9s4x+2/RwSvhJJZ/URZKv4l3t4MBE7dJBQzak2CZRxvgaMz6aYC5xU0a/7+4PgaX6BzMweLfI99EBEUqzV3utThQQWG+EVf8ZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723727873; c=relaxed/simple;
-	bh=bLc7megkl+rT6wNw7jAeD6fJx5G6JNXBBzgzkxZ5aW0=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=gViqBeyyc2hHLNVOLAlCiQ86ZhUnw7ONCw3b38TORtjtMluXM5/ib08Y8v57AUf7FszThVvH5UzszdYNwp6GAxZ1Ehqk4QzRQGsK0koXu9BFCs85YzYRSRgrsLGgg4PBLt418JqhPyBqp1yGQSOC/3WTymU0fQVkto9/slZMH30=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wl5JX0JJxz4f3kw3;
-	Thu, 15 Aug 2024 21:17:32 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CA2D11A0568;
-	Thu, 15 Aug 2024 21:17:46 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP4 (Coremail) with SMTP id gCh0CgDX_4X6_71m0qUQBw--.47465S2;
-	Thu, 15 Aug 2024 21:17:46 +0800 (CST)
-Subject: Re: [PATCH 7/7] ext4: check buffer_verified in advance to avoid
- unneeded ext4_get_group_info
-To: Markus Elfring <Markus.Elfring@web.de>, linux-ext4@vger.kernel.org,
- Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>
-Cc: LKML <linux-kernel@vger.kernel.org>
-References: <20240813120712.2592310-8-shikemeng@huaweicloud.com>
- <77c9258a-dce1-4cf8-8e0e-e4073902e25a@web.de>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <9c8082c7-510c-5bb1-0649-ecfb2f44e728@huaweicloud.com>
-Date: Thu, 15 Aug 2024 21:17:46 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1723733347; c=relaxed/simple;
+	bh=gWjvEPZtVEHi2sjoPgdRvTu2/HU8I/YPBbUL9JEYxOQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ggB9etz+GiHVi2cyi7nPtsr8fQLPdIKxEKslT2yVQXMjjwxjUBosVBw3e5mYWfkQ6N+Z1YUFYKpHbWaoxqgBuGz6ZpKfAqO+ZuHL6GnRLbNEXDFEbaD7F5dWLToXXCqe2XaOy2jA4xCQj0X/xUE0DQqHY7hhVCV71XHws2gAFuY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AnJX3Sip; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63912C32786;
+	Thu, 15 Aug 2024 14:49:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1723733346;
+	bh=gWjvEPZtVEHi2sjoPgdRvTu2/HU8I/YPBbUL9JEYxOQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AnJX3SipLxuFP4RGSlWnOfzpGk0ZiV+sXJNsAO4IQiEsxqLCTJaIFcBBwU25V3Abp
+	 rVdNQ0jpiiDUc5/0A2ddWn7fI0fSQDZwLo1imj2PiVc2oKO6FW5cA1xTBR0g7kjxjE
+	 DvDuYWCqdSH4lY8H57N6IMgUG7/ZzhvUZZznYUhLD1tR9UwSB9iU+Xj7P0G0UnTaAx
+	 lUnUgqk80/G/iZ+ya473ddW7dligv7qTQJtGNB7qf7gGKa9hkBwRz/GrLp11aVLrm1
+	 cy9r7o4fZvM2jUABT5teF02W5vzyC3G6A9A/RLwwJSpL0tUwd7mEzb4/wPRXGAqwR3
+	 k53ia75xMFb0Q==
+Date: Thu, 15 Aug 2024 07:49:05 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: Markus Elfring <Markus.Elfring@web.de>, linux-ext4@vger.kernel.org,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Theodore Ts'o <tytso@mit.edu>, LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/7] ext4: avoid buffer_head leak in ext4_mark_inode_used
+Message-ID: <20240815144905.GA6039@frogsfrogsfrogs>
+References: <20240813120712.2592310-2-shikemeng@huaweicloud.com>
+ <fec59d4d-898d-447c-b4fb-e9d055550f96@web.de>
+ <5d75ab7f-0fad-07ef-bbcb-3fed16a5170e@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <77c9258a-dce1-4cf8-8e0e-e4073902e25a@web.de>
 Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDX_4X6_71m0qUQBw--.47465S2
-X-Coremail-Antispam: 1UD129KBjDUn29KB7ZKAUJUUUUU529EdanIXcx71UUUUU7v73
-	VFW2AGmfu7bjvjm3AaLaJ3UjIYCTnIWjp_UUUYI7kC6x804xWl14x267AKxVWUJVW8JwAF
-	c2x0x2IEx4CE42xK8VAvwI8IcIk0rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII
-	0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xv
-	wVC0I7IYx2IY6xkF7I0E14v26F4j6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7
-	xvwVC2z280aVCY1x0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40E
-	FcxC0VAKzVAqx4xG6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr
-	0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxv
-	r21l42xK82IYc2Ij64vIr41l4c8EcI0Ec7CjxVAaw2AFwI0_JF0_Jw1l4I8I3I0E4IkC6x
-	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
-	zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
-	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
-	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
-	nIWIevJa73UjIFyTuYvjxUrNtxDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+In-Reply-To: <5d75ab7f-0fad-07ef-bbcb-3fed16a5170e@huaweicloud.com>
 
-
-
-on 8/15/2024 7:13 PM, Markus Elfring wrote:
-> …
->> This could be a simple cleanup as complier may handle this.
-> 
->                                     compiler?
-Right.
+On Thu, Aug 15, 2024 at 09:17:10PM +0800, Kemeng Shi wrote:
 > 
 > 
-> Would you like to append parentheses to the mentioned function name?
-Sure
+> on 8/15/2024 5:55 PM, Markus Elfring wrote:
+> >> Release inode_bitmap_bh from ext4_read_inode_bitmap in
+> >> ext4_mark_inode_used to avoid buffer_head leak.
+> >> By the way, remove unneeded goto for invalid ino when inode_bitmap_bh
+> >> is NULL.
+> > 
+> > 1. I suggest to split such changes into separate update steps.
+> >    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.11-rc3#n81
+> It's acceptable to me, but I'm not sure if it worth separate patches
+> to others. I will do separate in next version if no person is against
+> this.
 
-Will improve in next version.
+No, that suggestion is stupid.  There's no reason to generate even more
+patches for a three line fix, it's very obvious that you're fixing a
+missing resource release and rearranging the first error out
+accordingly.
 
-Thanks,
-Kemeng
+--D
+
+> > 2. How do you think about to add any tags (like “Fixes” and “Cc”) accordingly?
+> > 
+> > 3. Would you like to append parentheses to any function names?
+> Thanks for remind me of these. I will improve the series in next
+> version.
 > 
-> Regards,
-> Markus
+> Thanks,
+> Kemeng
+> > 
+> > Regards,
+> > Markus
+> > 
 > 
-
+> 
 
