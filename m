@@ -1,133 +1,124 @@
-Return-Path: <linux-ext4+bounces-3728-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3729-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9063952787
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 03:36:26 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id B293F952921
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 08:04:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61DFE1F22FAE
-	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 01:36:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6C211C22323
+	for <lists+linux-ext4@lfdr.de>; Thu, 15 Aug 2024 06:04:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03C8D5680;
-	Thu, 15 Aug 2024 01:36:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED13C176ACA;
+	Thu, 15 Aug 2024 06:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=eugen.hristev@collabora.com header.b="K70a8Ryb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D6117C9;
-	Thu, 15 Aug 2024 01:36:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723685778; cv=none; b=u/aFE+qII1M0pDSMdZSNKjETyElgWB6oADRm+trbhJH+yqosEtaztTSJpo8ng0DRJTyHJ4NMReFeffqHVY09QxE1pmbWmAYuQrLATaiupXRkRXDPINutUGY5DFac2N7bqh+77ab+WNMD2sPThZ0+WhYmVSHiRDbhQ4H+HPVNvNo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723685778; c=relaxed/simple;
-	bh=4D6Szzp8yOxn1qdN+JL9HZF4/Od7GnMRQJiljyjspbQ=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=KPS8KD81u07wBMRU11/DEFhD1ANP7GhXDPmWS4E+ViI1Y2d9tcHQznPvM6K84uTAtLnQh41QDrC3Vf1i0py8gpDlw/dSUqxVRvdvIVADoeThUvgAJ/L45HcXpH+KsaIYPBtTRUn4QRaQUf0pDhxWVz4kSImyBiPUpYtGkCWJDLA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Wknl13t51z4f3js2;
-	Thu, 15 Aug 2024 09:35:57 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id 54DB81A018D;
-	Thu, 15 Aug 2024 09:36:11 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP1 (Coremail) with SMTP id cCh0CgDHGUyJW71mwcmsBg--.62677S2;
-	Thu, 15 Aug 2024 09:36:11 +0800 (CST)
-Subject: Re: [PATCH 2/7] ext4: avoid potential buffer_head leak in
- __ext4_new_inode
-To: Zhang Yi <yi.zhang@huawei.com>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
- adilger.kernel@dilger.ca
-References: <20240813120712.2592310-1-shikemeng@huaweicloud.com>
- <20240813120712.2592310-3-shikemeng@huaweicloud.com>
- <0351b3b1-e84a-9e41-a492-743f5bbea910@huawei.com>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <b089fd73-5c3d-89d7-e947-646b301babb2@huaweicloud.com>
-Date: Thu, 15 Aug 2024 09:36:09 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89A9C39FE5;
+	Thu, 15 Aug 2024 06:03:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1723701838; cv=pass; b=Jg+K7KlXXsL142ZB1vwxBXEqokJ5fd3vCTUcm8IaGOnED1oLa6Jod+Pc5NOzTE06PXnbd4fTdV+8aAzT4WKkXcsl+6U/K0xxtE1Vzbz8XU69JCcL1bcVyynmpwHGmHmp8IUsr4RW1p1xyRNQlJfyP7dRQRR5nqaVbJNH7A6n13k=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1723701838; c=relaxed/simple;
+	bh=Xx+/AyQ134n42czrEU1KUaSRZpjaDaWaFu7zmyt8Z9U=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ow6Rk43wRPqWT5MA4KgP8P2VKdvzNpsGAQehQ+qiJH15rg1fGaEuvEF9fIHb1W72IwJG3fCSpBPaFxXn31WRkxi2HKiWJcXA+e+dBSALvT5Vw8124ifPwE/gb0C+yANe+00rAxG2WlrOFXmZhf51gAKxBvSFh3mTyid16uUoogw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=eugen.hristev@collabora.com header.b=K70a8Ryb; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Delivered-To: kernel@collabora.com
+ARC-Seal: i=1; a=rsa-sha256; t=1723701809; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=ONLkAptYYvW1RCG+LSVVZuOogSmAj3as3u35Npi40VFIiYnAxMYSjsagXDeFj68fad/Hm45W03HrVnh12b+0aL9NWG8x3IAEEHSY+MtTqqDQI3SX6loCvwwXo5wz3bj0yUaH+6ZYcHHFxfXXILNN5dlbGlwequQNiS6FwcfsReI=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1723701809; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=IFcEpqXjckIV9NDm7vtqPjwRNp0LilOzZsxtjiZwS7s=; 
+	b=GR8sAB6+6a/ScTl7S4bl9sqnj5W84KI9mq0bs/ljQlz+qjKKPPTEjrd4U7O8AyyVD/PqRQgWKniNQoiVnPjfkT6+o6gfOkYIOwM8CdkXKKVXDSfVcDdpvG2KMR73PCRung83f6I4fjysLrlwvfpiJkn5WqTq2Sag9/64qs5Y7I8=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=collabora.com;
+	spf=pass  smtp.mailfrom=eugen.hristev@collabora.com;
+	dmarc=pass header.from=<eugen.hristev@collabora.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1723701809;
+	s=zohomail; d=collabora.com; i=eugen.hristev@collabora.com;
+	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=IFcEpqXjckIV9NDm7vtqPjwRNp0LilOzZsxtjiZwS7s=;
+	b=K70a8Ryb2Bmy6BH8HssYePaGByT2SCAQmnOYGrPfjQK03dKUniQMrdW5L4ygKQmI
+	SdBF5KMHiriAiDt1a7lbLypjbDc0nlQP/Gp3c7BCXftbTMrqYsSirH9xwJwi73h54WV
+	So77AhAh7t+ExtkCIJ1cLiMIomKwNZOdU/zWNYJE=
+Received: by mx.zohomail.com with SMTPS id 1723701807188757.8000277911274;
+	Wed, 14 Aug 2024 23:03:27 -0700 (PDT)
+Message-ID: <181856a3-3378-4136-9734-b20a732d10c4@collabora.com>
+Date: Thu, 15 Aug 2024 09:02:58 +0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <0351b3b1-e84a-9e41-a492-743f5bbea910@huawei.com>
-Content-Type: text/plain; charset=utf-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 0/2] fs/dcache: fix cache inconsistency on
+ case-insensitive lookups
+To: viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+ linux-ext4@vger.kernel.org
+Cc: jack@suse.cz, adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, krisman@suse.de, kernel@collabora.com,
+ shreeya.patel@collabora.com
+References: <20240705062621.630604-1-eugen.hristev@collabora.com>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <20240705062621.630604-1-eugen.hristev@collabora.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgDHGUyJW71mwcmsBg--.62677S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4rtw1fur4rJr17Zr1UWrg_yoW8Ar1fpr
-	Z3tF1UKFs5Xr9Igryft34FvF1rtan7Ka17JF4Svw1rWFsrKrnaqrWxKFy8WFn8Ars7XF4q
-	qFsIkF48Xr129a7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
-	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07jjVb
-	kUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-ZohoMailClient: External
 
-
-
-on 8/14/2024 4:48 PM, Zhang Yi wrote:
-> On 2024/8/13 20:07, Kemeng Shi wrote:
->> If a group is marked EXT4_GROUP_INFO_IBITMAP_CORRUPT after it's inode
->> bitmap buffer_head was successfully verified, then __ext4_new_inode
->> will get a valid inode_bitmap_bh of a corrupted group from
->> ext4_read_inode_bitmap in which case inode_bitmap_bh misses a release.
->> Hnadle "IS_ERR(inode_bitmap_bh)" and group corruption separately like
->> how ext4_free_inode does to avoid buffer_head leak.
->>
->> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
->> ---
->>  fs/ext4/ialloc.c | 10 +++++++---
->>  1 file changed, 7 insertions(+), 3 deletions(-)
->>
->> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
->> index ad7f13976dc6..f24a238b6b09 100644
->> --- a/fs/ext4/ialloc.c
->> +++ b/fs/ext4/ialloc.c
->> @@ -1054,9 +1054,13 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
->>  		brelse(inode_bitmap_bh);
->>  		inode_bitmap_bh = ext4_read_inode_bitmap(sb, group);
->>  		/* Skip groups with suspicious inode tables */
->> -		if (((!(sbi->s_mount_state & EXT4_FC_REPLAY))
->> -		     && EXT4_MB_GRP_IBITMAP_CORRUPT(grp)) ||
->> -		    IS_ERR(inode_bitmap_bh)) {
->> +		if (IS_ERR(inode_bitmap_bh)) {
->> +			inode_bitmap_bh = NULL;
->> +			goto next_group;
->> +		}
->> +		if (!(sbi->s_mount_state & EXT4_FC_REPLAY) &&
->> +		    EXT4_MB_GRP_IBITMAP_CORRUPT(grp)) {
->> +			brelse(inode_bitmap_bh);
->>  			inode_bitmap_bh = NULL;
+On 7/5/24 09:26, Eugen Hristev wrote:
+> Hello,
 > 
-> Wouldn't the inode_bitmap_bh be brelsed in the next loop or the end of this
-> function? why not just goto next_group?
-Sure, goto next_group directly will be better. Will do it in next version.
+> This is an attempt to go back to this old patch series here :
+> 
+> https://lore.kernel.org/lkml/cover.1632909358.git.shreeya.patel@collabora.com/
+> 
+> First patch fixes a possible hang when d_add_ci is called from a filesystem's
+> lookup function (like xfs is doing)
+> d_alloc_parallel -> lookup -> d_add_ci -> d_alloc_parallel
+> 
+> Second patch solves the issue of having the dcache saving the entry with
+> the same case as it's being looked up instead of saving the real file name
+> from the storage.
+> Please check above thread for motivation on why this should be changed.
+> 
+> Some further old discussions here as well:
+> https://patchwork.ozlabs.org/project/linux-ext4/patch/20180924215655.3676-20-krisman@collabora.co.uk/
+> 
+> I am not sure whether this is the right way to fix this, but I think
+> I have considered all cases discussed in previous threads.
+> 
+> Thank you for your review and consideration,
+> Eugen
+> 
 
-Thanks,
-Kemeng
+Hello,
+
+I have sent this series a while back, anyone has any opinion on whether it's a good
+way to solve the problem ?
+
+Thank you,
+Eugen
+
 > 
-> Thanks,
-> Yi.
+> Eugen Hristev (2):
+>   fs/dcache: introduce d_alloc_parallel_check_existing
+>   ext4: in lookup call d_add_ci if there is a case mismatch
 > 
->>  			goto next_group;
->>  		}
->>
+>  fs/dcache.c            | 29 +++++++++++++++++++++++------
+>  fs/ext4/namei.c        | 13 +++++++++++++
+>  include/linux/dcache.h |  4 ++++
+>  3 files changed, 40 insertions(+), 6 deletions(-)
 > 
 
 
