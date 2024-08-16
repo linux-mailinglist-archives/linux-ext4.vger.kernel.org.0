@@ -1,124 +1,129 @@
-Return-Path: <linux-ext4+bounces-3743-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3744-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 729059548A4
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 14:21:44 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6D39954F01
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 18:38:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A530C1C22A70
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 12:21:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3688EB226AB
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 16:38:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7A501AD9E2;
-	Fri, 16 Aug 2024 12:21:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 061991BE235;
+	Fri, 16 Aug 2024 16:38:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="DziBoPAC"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C18D812AAC6;
-	Fri, 16 Aug 2024 12:21:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0C941BE259
+	for <linux-ext4@vger.kernel.org>; Fri, 16 Aug 2024 16:38:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723810896; cv=none; b=sTEAJP0SdHrUVABzel/d9lvGQaVBWBmaNUXGeVj+8yEP3edqUzCrjeruBFnmdbhCGYYADticCDiY+l3z02LnY7Q1ceslLA9WQXUHFWjOrUmyuCT/Mzt2hV7olEA/nwCPTmN8n6CXiBE56Z6RhfBnoea2uZlPbclWSvXhDd8qWnM=
+	t=1723826326; cv=none; b=IOQjcsi0jvJv1vIDCG1Ux79QwLVfolfzRCLyvfBsuwgnkX/42wRnEUSVSn5fgXvTlQ+18hjt1Y9Xqz0mWbw7SWFa10XJoGwfWZyVGRlHIv5M8Tw2O6ZE7hgRHmCOxVwsOZweE4/Q0uX9r5U3fD8ZWYoI5VZne4Fr+CJLHFncXU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723810896; c=relaxed/simple;
-	bh=TkX6qWziGg4Tt4r7MEJjYTjrsF+fQMQK1CuUPADhI3s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OCAPQWpzufN8IZKYMuqfojTcElBe6v/JEGLxja+Xy66JkFR1g0BVZBH5N9ki9Z9IacBe//NaeHJQX3c4LmsICqd2PJ2T+y/tZmTDcf0x0/OcwDi4Aux3JMt7haO7UeR2v+u+FXbtf600DRhkw8MOqYbkBkiwuFRbA6mjRadCNQY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Wlh122nyrz4f3jMP;
-	Fri, 16 Aug 2024 20:21:10 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 451631A0359;
-	Fri, 16 Aug 2024 20:21:24 +0800 (CST)
-Received: from [10.174.177.210] (unknown [10.174.177.210])
-	by APP4 (Coremail) with SMTP id gCh0CgBnj4VCRL9mJ4dqBw--.4895S3;
-	Fri, 16 Aug 2024 20:21:24 +0800 (CST)
-Message-ID: <9de82d23-902f-cb18-7688-f5e687e86d14@huaweicloud.com>
-Date: Fri, 16 Aug 2024 20:21:22 +0800
+	s=arc-20240116; t=1723826326; c=relaxed/simple;
+	bh=N0gYsH2CkMU9WUzyeKkDMFIKT6XgcxKXGmjs6Odce3M=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GOXNoHO9g9L1975sk/QQIVjaKoRrG9CUlnQJ4er+HicQ4gH0//Etd5hNTLZi9ljquuak67ywXR0R+UoLGtWdPd+tGofXc9kEJLnoosCCvdjCHx8Bg12TRNqDKkUvXHEkNMgS+5BtxiqEvwXDsXiKgeEbrwKbj1kuhjKQaQZAaCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=DziBoPAC; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-113-74.bstnma.fios.verizon.net [173.48.113.74])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47GGZMSi021664
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 16 Aug 2024 12:35:24 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1723826126; bh=/gsgMVXGIRAap23/7MM79YKbQX53ES2N0h6afyTSiuc=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=DziBoPAC9E4jcJIYgnonVtfGrAjF9uGl3eHs61ASbN4KgwbCX7+0WIjtWrM7MFyBC
+	 p21EnYyC5lkGZAWJOMCxznUuz3+I+JayQkmXW1EwI1vVe1/oNezpyCjysYmT3b+NHU
+	 418Rsfb6whrCulw4yuEu8XJtiJjvFSjMdSZDK+tIoem3TY8PFY6iKv7RZdG7b32s/s
+	 3FwRvqRboPPpx0IZmnI9mXrrn6XujCxk5Civ7tZuK4NAOQ4Fuc0EMq2fIxx1KdJT+2
+	 n0chYU32isYFITnYk4X0NrdHSUps8zSIWpnSWjldhwTZmVzWW+rgdHfzLSRctsgUuF
+	 J0RYDdG3dVr3A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 38CF415C02C0; Fri, 16 Aug 2024 12:35:22 -0400 (EDT)
+Date: Fri, 16 Aug 2024 12:35:22 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Markus Elfring <Markus.Elfring@web.de>
+Cc: "Darrick J. Wong" <djwong@kernel.org>,
+        Kemeng Shi <shikemeng@huaweicloud.com>, linux-ext4@vger.kernel.org,
+        Andreas Dilger <adilger.kernel@dilger.ca>,
+        LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH 1/7] ext4: avoid buffer_head leak in ext4_mark_inode_used
+Message-ID: <20240816163522.GB8108@mit.edu>
+References: <20240813120712.2592310-2-shikemeng@huaweicloud.com>
+ <fec59d4d-898d-447c-b4fb-e9d055550f96@web.de>
+ <5d75ab7f-0fad-07ef-bbcb-3fed16a5170e@huaweicloud.com>
+ <20240815144905.GA6039@frogsfrogsfrogs>
+ <a5ddf25d-3bd3-4323-8649-c75b65070d01@web.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
- Thunderbird/102.5.1
-Subject: Re: [PATCH] ext4: disambiguate the return value of
- ext4_dio_write_end_io()
-To: alexjlzheng@gmail.com, tytso@mit.edu, adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
- Jinliang Zheng <alexjlzheng@tencent.com>
-References: <20240815112746.18570-1-alexjlzheng@tencent.com>
-From: yangerkun <yangerkun@huaweicloud.com>
-In-Reply-To: <20240815112746.18570-1-alexjlzheng@tencent.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBnj4VCRL9mJ4dqBw--.4895S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tr1rtFWfGFyDZr1UKw4Uurg_yoW8XF1kpr
-	s0kasFyryqv342k397KF1DZr18ua18G3y5XF909w17ZrZFvrn5KF1Utas0vF10yrZ7Ww4F
-	qa1ktr9Ivw1jy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
-	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHD
-	UUUUU==
-X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <a5ddf25d-3bd3-4323-8649-c75b65070d01@web.de>
 
-
-
-在 2024/8/15 19:27, alexjlzheng@gmail.com 写道:
-> From: Jinliang Zheng <alexjlzheng@tencent.com>
+On Fri, Aug 16, 2024 at 08:56:45AM +0200, Markus Elfring wrote:
+> >>>> Release inode_bitmap_bh from ext4_read_inode_bitmap in
+> >>>> ext4_mark_inode_used to avoid buffer_head leak.
+> >>>> By the way, remove unneeded goto for invalid ino when inode_bitmap_bh
+> >>>> is NULL.
+> >>>
+> >>> 1. I suggest to split such changes into separate update steps.
+> >>>    https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.11-rc3#n81
+> >> It's acceptable to me, but I'm not sure if it worth separate patches
+> >> to others. I will do separate in next version if no person is against
+> >> this.
+> >
+> > No, that suggestion is stupid.
 > 
-> The commit 91562895f803 ("ext4: properly sync file size update after O_SYNC
-> direct IO") causes confusion about the meaning of the return value of
-> ext4_dio_write_end_io().
-> 
-> Specifically, when the ext4_handle_inode_extension() operation succeeds,
-> ext4_dio_write_end_io() directly returns count instead of 0.
-> 
-> This does not cause a bug in the current kernel, but the semantics of the
-> return value of the ext4_dio_write_end_io() function are wrong, which is
-> likely to introduce bugs in the future code evolution.
-> 
-> Signed-off-by: Jinliang Zheng <alexjlzheng@tencent.com>
-> ---
->   fs/ext4/file.c | 5 +++--
->   1 file changed, 3 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index c89e434db6b7..6df5a92cec2b 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -392,8 +392,9 @@ static int ext4_dio_write_end_io(struct kiocb *iocb, ssize_t size,
->   	 */
->   	if (pos + size <= READ_ONCE(EXT4_I(inode)->i_disksize) &&
->   	    pos + size <= i_size_read(inode))
-> -		return size;
-> -	return ext4_handle_inode_extension(inode, pos, size);
-> +		return 0;
-> +	error = ext4_handle_inode_extension(inode, pos, size);
-> +	return error < 0 ? error : 0;
+> Please reconsider such a view a bit more.
 
-Why?
+Darrick is absolutely correct; that suggestion is.... ill-considered.
 
-iomap_dio_complete can use the return value directly without any bug. 
-And I think the code now seems more clearly...
+> >                                 There's no reason to generate even more
+> > patches for a three line fix, it's very obvious that you're fixing a
+> > missing resource release and rearranging the first error out
+> > accordingly.
+> 
+> You would probably like to distinguish the severity for two changes,
+> wouldn't you?
+> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/process/submitting-patches.rst?h=v6.11-rc3#n168
+> 
+> Under which circumstances can you accept the separation of development concerns better?
 
->   }
->   
->   static const struct iomap_dio_ops ext4_dio_write_ops = {
+We will sometimes do minor cleanups in the course of fixing a bug.  In
+this particular case, the cleanup is so minor, that if someone
+suggested it as a stand-alone cleanup patch, I'd reject it as adding
+noise, and not being worth the extra commit.
 
+Blindly following rules is a bad idea; that's because software
+programming is an engineering discpline, which means we are often
+trading off multiple goals, each of which are good in and of
+themselves.  For example, extra patch noise, such as fixing
+whitespace, or changing a goto errout to a return, makes zero
+difference to the generated code, only a very tiny margial improvement
+in the readability in the code base; and also increases the chance
+that some future bug fix won't backport cleanly to older LTS kernels.
+
+I expect ext4 developers to use their good judgement, and not just
+blindly follow rules, even good rules which may make sense 80% or even
+95% of the time in the submitting-patches.rst file.
+
+Markus, perhaps you could good "blindly following rules" and read some
+of the eassays found from that web search, if you need more
+explorations of that topic.
+
+Best regards, 
+
+						- Ted
 
