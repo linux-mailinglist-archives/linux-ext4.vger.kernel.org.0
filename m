@@ -1,156 +1,112 @@
-Return-Path: <linux-ext4+bounces-3740-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3742-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6050C95438D
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 09:58:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3C02954609
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 11:46:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CABD8282DA5
-	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 07:57:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0548281C8F
+	for <lists+linux-ext4@lfdr.de>; Fri, 16 Aug 2024 09:46:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9E384FAD;
-	Fri, 16 Aug 2024 07:57:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qmsd2Bg3"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 894F216F26F;
+	Fri, 16 Aug 2024 09:46:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F2F7BAF4;
-	Fri, 16 Aug 2024 07:57:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB62812D773
+	for <linux-ext4@vger.kernel.org>; Fri, 16 Aug 2024 09:46:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723795064; cv=none; b=KoZL3p1RUeU2LaCw2mbUXrGOm7Crx+Dqq8lHA8ur9srq7Y3ArqoMhdAnK/TR+UMiB4Gc/mvAa9gqRymh7lNYKUzZkPSH32/U1XyQnsiPQ7BUBgAo37yAvZ122EkK2SAAEpvp1Fm5i+GFvrR/r421YOQgMtTT00xkcPHOOwR/6xg=
+	t=1723801587; cv=none; b=avtGCs8cb1Ekvx/ti3n+2ZtP0tCGtaZHfc7bh1TSy8Ty7Bh5YvK6tcZgiyUlE8oelFUrBwzeZUf4HQ6122l6s8nKUeU2gXr6H2+k3GBuTL5e3OalUR16B91H7PFlofwpnTaTotQja2+M3ZrGGmIcV7QXCMgKkxi0fAy4RuhTfsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723795064; c=relaxed/simple;
-	bh=DTQOvLkphWFnN1Cmk92b4y3tH9rSbe4haRl9fA+jnY0=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=isQT3xuvgowop1tsTemx7hdkAXan+3OquDpdzpJX5fwH87PDYN0maQOQjnxCu2x2T/+SMxhRWR1sQOI1p32XbiSD9DYbDwY3HYV79OuUwEp5yxvL3MLTVGcAcCK44QI+FNeJTUa748fs/xWbKWG1Kl3Z24831nosY31sGfnNDrI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qmsd2Bg3; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47FLqWhD001403;
-	Fri, 16 Aug 2024 07:57:33 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
-	:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=pp1; bh=S53l/6iWEd/02
-	gr+iv2B9Gaa2Q92BrYDwZZl6joZ79o=; b=qmsd2Bg3Hu4CPSkVUo0V6yOFDRxGr
-	w+vBSMjRvfz8c8jtc81xTEsSQqccy245Xav3sinHtaUUfZvgq2fZb7H25KX3a0vJ
-	cXDPSXl/s1ZeG7XKh9HPtmPzXtkhyEQ8PEYdzHCysNiKjovfi/ezYniwYNAd/2AU
-	N71Jw7i+ymz3yo5sHH6gCXCigxUEpLOWybYfyBYw5BZ/xoDa8PdIyHYKoRpAv3IV
-	87hml4U937KiIWviatKFvjKHC1hLIqwSkQe+SFAOMFDFGsU+6hrbHDQoV4A9VLdl
-	dfVTsbKUAvR0IYbpbDlhXDBR0drXrhSanVfK78gBbG4NUN/J8Z843VFEA==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4111j5yf7h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Aug 2024 07:57:32 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47G7vVO6028310;
-	Fri, 16 Aug 2024 07:57:31 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4111j5yf7g-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Aug 2024 07:57:31 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 47G40AFR029932;
-	Fri, 16 Aug 2024 07:57:30 GMT
-Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 40xmrmtdh5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 16 Aug 2024 07:57:30 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47G7vRKx52560340
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 16 Aug 2024 07:57:29 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E8FFD2004F;
-	Fri, 16 Aug 2024 07:57:26 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C89D320067;
-	Fri, 16 Aug 2024 07:57:25 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.216.104])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 16 Aug 2024 07:57:25 +0000 (GMT)
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Subject: [PATCH 2/2] ext4: Convert EXT4_B2C(sbi->s_stripe) users to EXT4_NUM_B2C
-Date: Fri, 16 Aug 2024 13:27:15 +0530
-Message-ID: <02e5b5139294897985f2b99729c5f3da3dd4f6f9.1723794770.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <957d29b85e06f415ee125de141809d2b9e084003.1723794770.git.ojaswin@linux.ibm.com>
-References: <957d29b85e06f415ee125de141809d2b9e084003.1723794770.git.ojaswin@linux.ibm.com>
+	s=arc-20240116; t=1723801587; c=relaxed/simple;
+	bh=Tb0h4ck6cfiihuLwqoLnMdMsolPdYYKMx3c/TZUiA9E=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=jCqMC2Xn9uD1WYunJ2EjxP754l6JCM1HGs3OC8f5hFY9Sq4lB4/Fk7FfkVf+a5TI1om75eM1vi8m4YjRWnJtLUMgyfMN9jh+3FbJ778D/CRLvk+qHSSB5SO3c/OONaxPsP5ThNLeQwpx68keZHlGZefFrxXsbM8+sLoMBfoNZN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-81f7fa42463so151295839f.0
+        for <linux-ext4@vger.kernel.org>; Fri, 16 Aug 2024 02:46:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1723801585; x=1724406385;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4Lop1zYGMzYsqu86D2s0Uq9vQfJMOb/arCg4VxmPAgE=;
+        b=WU1zWUQC1xAU/+6YWePDKhptwIn4s+qz+9dIVHAuaLrWlgN5anleCSJsLSEamhaIG+
+         mvffHKIyBWcjKviZ+yF/mOxQO3UeOG+r6s77ib+LcqxQ/Jue5JZy4utGR2fQOgeF259q
+         zDEMGDxg7oyYrV+qlu/3jME9CdbzdH0WzjCnWGY7PS2NhxoxgziFQFnpxhwy4uezvUVJ
+         Bh0h4AUkBhgz5fZpOQ69JiSReSPOnPmZAz2zyhF4L2lSGhfLP98Aw+FhVvXluhiks7t9
+         eVrTw54M4HpS9sTmRAD2wKzH/HrRFnoMko4BdAu/vGtTTiPRKIEa4V2IpMdyFwogBB6b
+         Atqw==
+X-Gm-Message-State: AOJu0YxdbauAxTSxxUS5anULwJMbdR17Ew8UlIQCoVOqEyFh1ptlhWoT
+	twXShco4bKslDoADsjaD6ZEaR88SPzZDS2FqNUbfHxzaz7tJCeyfbZZPPVjQeVM+tC+GSY2pbZD
+	qIQoFfQzTp6wfUJ5n0ujb08cX+pNvo2RCXxuSDdh7i/wLVqxQUtoJyXQ=
+X-Google-Smtp-Source: AGHT+IE80XNTjfDnFBIq2+f7vLTg2cxjmDzbCift/9CjRrLuMrKV6+z7KamZUSnLDq+cUck4tIXBQ0HdfSuRX5KNVclrKB1qIVZZ
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: NyAt9dqMUqpKuAuVPoJ7DKLX3ykZMzCS
-X-Proofpoint-GUID: QyKqe-V6349UYjNB8MRRfWZ7KMZqW-BJ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-15_18,2024-08-15_01,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 impostorscore=0
- mlxscore=0 lowpriorityscore=0 clxscore=1015 spamscore=0 mlxlogscore=999
- bulkscore=0 suspectscore=0 priorityscore=1501 malwarescore=0 adultscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
- definitions=main-2408160053
+X-Received: by 2002:a05:6638:8709:b0:4c2:31f5:3137 with SMTP id
+ 8926c6da1cb9f-4cce0d85575mr75648173.0.1723801585017; Fri, 16 Aug 2024
+ 02:46:25 -0700 (PDT)
+Date: Fri, 16 Aug 2024 02:46:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000236dd4061fc9d5ff@google.com>
+Subject: [syzbot] Monthly ext4 report (Aug 2024)
+From: syzbot <syzbot+list069a4bf4a271f0c4158e@syzkaller.appspotmail.com>
+To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Although we have checks to make sure s_stripe is a multiple of cluster
-size, in case we accidentally end up with a scenario where this is not
-the case, use EXT4_NUM_B2C() so that we don't end up with unexpected
-cases where EXT4_B2C(stripe) becomes 0.
+Hello ext4 maintainers/developers,
 
-Also make the is_stripe_aligned check in regular_allocator a bit more
-robust while we are at it. This should ideally have no functional change
-unless we have a bug somewhere causing (stripe % cluster_size != 0)
+This is a 31-day syzbot report for the ext4 subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/ext4
 
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+During the period, 4 new issues were detected and 0 were fixed.
+In total, 40 issues are still open and 138 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  1284    Yes   kernel BUG in ext4_do_writepages
+                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
+<2>  1159    Yes   INFO: task hung in sync_inodes_sb (5)
+                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
+<3>  801     Yes   WARNING: locking bug in __ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
+<4>  690     Yes   WARNING: locking bug in ext4_ioctl
+                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
+<5>  321     Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
+                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
+<6>  276     No    INFO: task hung in ext4_stop_mmpd
+                   https://syzkaller.appspot.com/bug?extid=0dd5b81275fa083055d7
+<7>  204     No    INFO: task hung in sb_start_write
+                   https://syzkaller.appspot.com/bug?extid=fb3ada58a6c0a3208821
+<8>  128     Yes   possible deadlock in ext4_xattr_inode_iget (3)
+                   https://syzkaller.appspot.com/bug?extid=ee72b9a7aad1e5a77c5c
+<9>  58      Yes   kernel BUG in ext4_write_inline_data_end (2)
+                   https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
+<10> 34      Yes   KMSAN: uninit-value in aes_encrypt (5)
+                   https://syzkaller.appspot.com/bug?extid=aeb14e2539ffb6d21130
+
 ---
- fs/ext4/mballoc.c | 7 ++++---
- 1 file changed, 4 insertions(+), 3 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 9dda9cd68ab2..b2e836a4bd18 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2553,7 +2553,7 @@ void ext4_mb_scan_aligned(struct ext4_allocation_context *ac,
- 	do_div(a, sbi->s_stripe);
- 	i = (a * sbi->s_stripe) - first_group_block;
- 
--	stripe = EXT4_B2C(sbi, sbi->s_stripe);
-+	stripe = EXT4_NUM_B2C(sbi, sbi->s_stripe);
- 	i = EXT4_B2C(sbi, i);
- 	while (i < EXT4_CLUSTERS_PER_GROUP(sb)) {
- 		if (!mb_test_bit(i, bitmap)) {
-@@ -2929,8 +2929,9 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- 				ext4_mb_simple_scan_group(ac, &e4b);
- 			else {
- 				bool is_stripe_aligned = sbi->s_stripe &&
-+					sbi->s_stripe >= sbi->s_cluster_ratio &&
- 					!(ac->ac_g_ex.fe_len %
--					  EXT4_B2C(sbi, sbi->s_stripe));
-+					  EXT4_NUM_B2C(sbi, sbi->s_stripe));
- 
- 				if ((cr == CR_GOAL_LEN_FAST ||
- 				     cr == CR_BEST_AVAIL_LEN) &&
-@@ -3707,7 +3708,7 @@ int ext4_mb_init(struct super_block *sb)
- 	 */
- 	if (sbi->s_stripe > 1) {
- 		sbi->s_mb_group_prealloc = roundup(
--			sbi->s_mb_group_prealloc, EXT4_B2C(sbi, sbi->s_stripe));
-+			sbi->s_mb_group_prealloc, EXT4_NUM_B2C(sbi, sbi->s_stripe));
- 	}
- 
- 	sbi->s_locality_groups = alloc_percpu(struct ext4_locality_group);
--- 
-2.43.5
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
 
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
