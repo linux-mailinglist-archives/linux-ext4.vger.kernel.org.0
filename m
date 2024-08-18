@@ -1,403 +1,204 @@
-Return-Path: <linux-ext4+bounces-3768-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3769-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE0D0955AC1
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 Aug 2024 06:04:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E5DD2955AF5
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Aug 2024 06:49:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 26D1DB212D4
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 Aug 2024 04:04:50 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DA23A1C20A96
+	for <lists+linux-ext4@lfdr.de>; Sun, 18 Aug 2024 04:49:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7626B101E6;
-	Sun, 18 Aug 2024 04:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6225A9454;
+	Sun, 18 Aug 2024 04:49:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dMx7DOCD"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D0YdE5fY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f180.google.com (mail-pl1-f180.google.com [209.85.214.180])
+Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 589168F6E
-	for <linux-ext4@vger.kernel.org>; Sun, 18 Aug 2024 04:04:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EB5223AD
+	for <linux-ext4@vger.kernel.org>; Sun, 18 Aug 2024 04:49:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723953867; cv=none; b=plYNKtQwgwZYCSGLardxj8qq38UhADmXF9gAVVMGxTr7hyhBMzVJTHQ2l8jYpImie4PLCD6AILc/+in1Y1N5y3gfJwbITZtHmJaYWwN81moUZ812hS4B+jsIVAEaLVx/VLmMJr7SgfcGb3S9DgavER+U77waXB2iVaHzBOXcGgo=
+	t=1723956564; cv=none; b=EVPXDlQzGYgcbESlJQPrFKxwZDN6hWvyUa+TG7Z85aTORxmrrqf27ICzrmTUM/UqhV1KXX076+nF6mY2k0LYgTHkkRI3GRK+O7I0VCSULvLnRdGe7plE0wQUmszoqibZGnGiwqpvL02ORbpA//sacd4k/HtePtWt82VOS4foiYU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723953867; c=relaxed/simple;
-	bh=nam/sHzKfJOlxI4NWlgMeLr1iGCq7p/Tn/9TMk6L1sw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dQ6cP4MV2yqAYFcI4BT5ZDCNEcE1Amz/jNNpFf/+4kIOM9AF+HycDL78YFyzOytRTkHUe4HyAysrCOmy9A9WWmw5QyBaK4LOuFDQag9XEwtLoHa5GLoMSJds7NiLN+uX2MR30Q8V+752OJZ+FqgPTIpZH+32QwOI365+OLkol9Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dMx7DOCD; arc=none smtp.client-ip=209.85.214.180
+	s=arc-20240116; t=1723956564; c=relaxed/simple;
+	bh=PQVdP80oYMkQWa6Mw8G5eg0q2/0zhP5T9AmD+lD2PSo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l5uWVG/SKME+Abm3P+eur7uQUqQGaJFT0zJ/BpRgv9NpcpDECoQQNLNYtAqa6gLtOjhIBS7yE1l4dl32eivKLZ6pB5G86ATtjm6jtD7zNeuDnU22VeMnBYSpzUc7LFWhYuVWyKzbTKY2LDNKxiL5IAHGVCORuTkyfB30xtMkLcw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D0YdE5fY; arc=none smtp.client-ip=209.85.219.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f180.google.com with SMTP id d9443c01a7336-2021537a8e6so13863565ad.2
-        for <linux-ext4@vger.kernel.org>; Sat, 17 Aug 2024 21:04:25 -0700 (PDT)
+Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-e0e76380433so3390299276.2
+        for <linux-ext4@vger.kernel.org>; Sat, 17 Aug 2024 21:49:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723953864; x=1724558664; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1723956562; x=1724561362; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=DWjO9kA7p3Bwhao1YgQrEQOOMP5A0f9KQkfCnVpY9hY=;
-        b=dMx7DOCDztZKajjnuCWLj/t1c0ADl/Vm926R7alaLrKfS/e5e9t7i3VVLYx+Yst1xD
-         k6hIccdlpT1oJTLinX+cUswYsHvc9djWvQWImPAzkdEWzjiAPslg99D/KCAeHXLt/PEH
-         0rQ0yFWPZlH8DLITH1bXt/yVsHuoD/PBURvco24D7yACzmd9/g4KPZgN0f4A6EqZuiuN
-         khgJB4YvLGOxXAJRQFmZgDs+Tqlr1PgTWsdu8SJxYHX6M+JeMDeYClI0SyemM0AXWcPG
-         kIl2QeDjlGtUIgQNxOBzbtZj27TaKC9JInd9CpSBBVDNSbCL6kaGv9VJL3WiG4m97OI1
-         fAZw==
+        bh=S9Qh7f37uw0M7h8kMBvDd6mxhjcmMWVgK+Pd3D7QGaw=;
+        b=D0YdE5fYc6Fogm3eNKbOBHb41vn94qqSNmd5Nai7T2Y74tWp5RkVIqzK1YF2rNrnVi
+         27AZBXgjkgunAhW2SFXR+NtFeZwVlRJH2e+YesAAK7z163RT1LHCQLRgu038UCarW/w6
+         dxcctwwd0MvR0R4L6VIOCGV3e+erM+4pFFte3hwl1Z8nDQYDZkn6y3UGl0q9m98sd8Wh
+         S7Y+++9nVz2LEFtWMl34DCK1lRSDPMeVgQcrBJNf5w9YzU3eeVzRZrhgGPyCegIqYr2H
+         jmKrK4e3q+btg696pJROgqWwTx21byYnT4+SDKJcvzZbJ52FgDCnS3J1itxWiXvugW26
+         XuNw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723953864; x=1724558664;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1723956562; x=1724561362;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DWjO9kA7p3Bwhao1YgQrEQOOMP5A0f9KQkfCnVpY9hY=;
-        b=L1PD4zIp6Ii2ZP9BiRx3EhB/cgpq4jggrdqRzeBnyIB/Ou5MfbZim9uPrXBbb5PhGP
-         5dBmZAceasf7F6bGe4P5AeHQQ0N2r1fFcZOkeV/ynhbdicaGyOt20dBMOfAb7P4zzYET
-         8BCV4+8x0l6tfFn6CNk2p2Ik9yutp0r8VtTY3u+j73pbo2Otel/yC/ZVOWY4E79+RFEp
-         4r+me6RwV0CDwLrIhX3NLOXmOyr65/6PZuQfCbLB0vz7B1p49cNqiE6d9kHqwWD7G403
-         ofHoZM/sUZdFMLkbbHGd4rUYDWF642NPQkjvygpnDtbJaQ/yDPM/DbMW0NktVCrAo6n2
-         xE2A==
-X-Gm-Message-State: AOJu0YwES91yBbtK/kY3u99rGxRialvbXaw6tHvTqWlWB3hUl2sUU6Nn
-	V0j3TuU6ojdgpJXLh4pF08FvZ0rBUW/L1on0dJK9riVzafhRLNkC9kzjSfvWggQ=
-X-Google-Smtp-Source: AGHT+IHQvqoGJAHlGaavEqM1YoqkGZmzFCbCSUQFOOcKHjwNxpC/8xif1GRP+YonupOi7n3Tnynjyg==
-X-Received: by 2002:a17:903:2303:b0:1ff:4967:66a with SMTP id d9443c01a7336-20203e88843mr86121165ad.14.1723953864198;
-        Sat, 17 Aug 2024 21:04:24 -0700 (PDT)
-Received: from harshads.c.googlers.com.com (27.179.83.34.bc.googleusercontent.com. [34.83.179.27])
-        by smtp.googlemail.com with ESMTPSA id d9443c01a7336-201f0375649sm45138235ad.124.2024.08.17.21.04.23
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 17 Aug 2024 21:04:23 -0700 (PDT)
-From: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: tytso@mit.edu,
-	jack@suse.cz,
-	harshads@google.com,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Subject: [PATCH v7 9/9] ext4: hold s_fc_lock while during fast commit
-Date: Sun, 18 Aug 2024 04:03:56 +0000
-Message-ID: <20240818040356.241684-11-harshadshirwadkar@gmail.com>
-X-Mailer: git-send-email 2.46.0.184.g6999bdac58-goog
-In-Reply-To: <20240818040356.241684-1-harshadshirwadkar@gmail.com>
-References: <20240818040356.241684-1-harshadshirwadkar@gmail.com>
+        bh=S9Qh7f37uw0M7h8kMBvDd6mxhjcmMWVgK+Pd3D7QGaw=;
+        b=E502nRZ+SpceBBjEJID9D8enVSr7tVhp55nYVieXLJV9UY1KXZEC9HCyoUpq6+MeWa
+         41tIo6vF0gn5wuHavOEpHvq3E/7KJJ+tCaki+prpoWrdpduMREa6qVaOUz+hRn5blXZ2
+         FECJHcfog9Ja47Mc8NpfjE9WTRmHo0AcIX4OCcyxgnt4/u9cQljB0kgJ4H3GO9FtE9Tf
+         IfVbh973iEes6IEgbcyobKwuiNtYoaUAoiKHUYB9xD/Ry12hyAgvSrCOgqZLujiuv49x
+         QSWViYpPcALewNn1O9rEQ5Jnj9Jnm4vRzjG9WlI4gpdGKn6wbyJHIaLIThmybMaQheKj
+         Rbng==
+X-Gm-Message-State: AOJu0YzJeXeBFb7Rj6A/vbsGRPR7vWyaLa93LDKSsVyfTKHkAptQrnvi
+	JFO0qpLyNQZPm1PJ8VkUOW4KEOymx7SS6Hq+BjWQ69kkhDaoUPy9g2b9U/01VWUMUJcfBR5jJ0q
+	bGAXXq1TCSPyBZ6jVYx/h4D2zszLCztppgnx4u04n
+X-Google-Smtp-Source: AGHT+IFk7y998Wn1Ht15ql6mCgZxoPzIxZATJ1lWZqvyZTQpm2Ljjfy+g5+9nltE7hTVkvMbMRXAKkGvQ3PUlX1tC/Q=
+X-Received: by 2002:a05:6902:1189:b0:e11:7bff:364f with SMTP id
+ 3f1490d57ef6-e1180f0aedamr7357037276.25.1723956561712; Sat, 17 Aug 2024
+ 21:49:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240818040356.241684-1-harshadshirwadkar@gmail.com> <20240818040356.241684-2-harshadshirwadkar@gmail.com>
+In-Reply-To: <20240818040356.241684-2-harshadshirwadkar@gmail.com>
+From: harshad shirwadkar <harshadshirwadkar@gmail.com>
+Date: Sat, 17 Aug 2024 21:49:09 -0700
+Message-ID: <CAD+ocbzWreiFGgQDcT6posPe-jTBvm=TQK-16GJ-6Oc3+GLETw@mail.gmail.com>
+Subject: Re: [PATCH v7 0/9] Ext4 Fast Commit Performance Patchset
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu, jack@suse.cz, harshads@google.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Leaving s_fc_lock in between during commit in ext4_fc_perform_commit()
-function leaves room for subtle concurrency bugs where ext4_fc_del() may
-delete an inode from the fast commit list, leaving list in an inconsistent
-state. Also, this patch converts s_fc_lock to mutex type so that it can be
-held when kmem_cache_* functions are called.
+On Sat, Aug 17, 2024 at 9:04=E2=80=AFPM Harshad Shirwadkar
+<harshadshirwadkar@gmail.com> wrote:
+>
+> V7 Cover Letter
+> ---------------
+>
+> This is the V7 of the patch series. This patch series contains fixes to
+> review comments by Jan Kara (<jack@suse.cz>). The main changes are as
+> follows:
+>
+> - As discussed in V6 review, I have dropped "ext4: add nolock mode to
+>   ext4_map_blocks()" patch given that we now ensure that i_data_sem is
+>   always grabbed before ext4_mark_inode_dirty() is called.
+>
+> - I have also dropped "ext4: introduce selective flushing in fast commit"
+>   given that correctly implementing that would require more changes, and =
+I
+>   think they would be best done outside of this series.
+>
+> - I added "ext4: introduce selective flushing in fast commit" as the last
+>   patch in the series. While testing log group tests I found a few failur=
+es
+>   which get fixed due to this patch.
 
-Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
----
- fs/ext4/ext4.h        |  2 +-
- fs/ext4/fast_commit.c | 91 +++++++++++++++++--------------------------
- fs/ext4/super.c       |  2 +-
- 3 files changed, 38 insertions(+), 57 deletions(-)
+Sorry that was a copy paste error. I meant to say I have added a new
+patch - "ext4: hold s_fc_lock while during fast commit" (which is the
+last patch in the series).
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 4ecb63f95..a1acd34ff 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1748,7 +1748,7 @@ struct ext4_sb_info {
- 	 * following fields:
- 	 * ei->i_fc_list, s_fc_dentry_q, s_fc_q, s_fc_bytes, s_fc_bh.
- 	 */
--	spinlock_t s_fc_lock;
-+	struct mutex s_fc_lock;
- 	struct buffer_head *s_fc_bh;
- 	struct ext4_fc_stats s_fc_stats;
- 	tid_t s_fc_ineligible_tid;
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 7525450f1..c3627efd9 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -236,9 +236,9 @@ void ext4_fc_del(struct inode *inode)
- 	if (ext4_fc_disabled(inode->i_sb))
- 		return;
- 
--	spin_lock(&EXT4_SB(inode->i_sb)->s_fc_lock);
-+	mutex_lock(&EXT4_SB(inode->i_sb)->s_fc_lock);
- 	if (list_empty(&ei->i_fc_list) && list_empty(&ei->i_fc_dilist)) {
--		spin_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
-+		mutex_unlock(&EXT4_SB(inode->i_sb)->s_fc_lock);
- 		return;
- 	}
- 
-@@ -266,7 +266,7 @@ void ext4_fc_del(struct inode *inode)
- 	 * dentry create references, since it is not needed to log it anyways.
- 	 */
- 	if (list_empty(&ei->i_fc_dilist)) {
--		spin_unlock(&sbi->s_fc_lock);
-+		mutex_unlock(&sbi->s_fc_lock);
- 		return;
- 	}
- 
-@@ -276,7 +276,7 @@ void ext4_fc_del(struct inode *inode)
- 	list_del_init(&fc_dentry->fcd_dilist);
- 
- 	WARN_ON(!list_empty(&ei->i_fc_dilist));
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 
- 	if (fc_dentry->fcd_name.name &&
- 		fc_dentry->fcd_name.len > DNAME_INLINE_LEN)
-@@ -306,10 +306,10 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason, handle_t *handl
- 				sbi->s_journal->j_running_transaction->t_tid : 0;
- 		read_unlock(&sbi->s_journal->j_state_lock);
- 	}
--	spin_lock(&sbi->s_fc_lock);
-+	mutex_lock(&sbi->s_fc_lock);
- 	if (tid_gt(tid, sbi->s_fc_ineligible_tid))
- 		sbi->s_fc_ineligible_tid = tid;
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 	WARN_ON(reason >= EXT4_FC_REASON_MAX);
- 	sbi->s_fc_stats.fc_ineligible_reason_count[reason]++;
- }
-@@ -349,14 +349,14 @@ static int ext4_fc_track_template(
- 	if (!enqueue)
- 		return ret;
- 
--	spin_lock(&sbi->s_fc_lock);
-+	mutex_lock(&sbi->s_fc_lock);
- 	if (list_empty(&EXT4_I(inode)->i_fc_list))
- 		list_add_tail(&EXT4_I(inode)->i_fc_list,
- 				(sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
- 				 sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING) ?
- 				&sbi->s_fc_q[FC_Q_STAGING] :
- 				&sbi->s_fc_q[FC_Q_MAIN]);
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 
- 	return ret;
- }
-@@ -414,7 +414,8 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
- 	}
- 	node->fcd_name.len = dentry->d_name.len;
- 	INIT_LIST_HEAD(&node->fcd_dilist);
--	spin_lock(&sbi->s_fc_lock);
-+	INIT_LIST_HEAD(&node->fcd_list);
-+	mutex_lock(&sbi->s_fc_lock);
- 	if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
- 		sbi->s_journal->j_flags & JBD2_FAST_COMMIT_ONGOING)
- 		list_add_tail(&node->fcd_list,
-@@ -435,7 +436,7 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
- 		WARN_ON(!list_empty(&ei->i_fc_dilist));
- 		list_add_tail(&node->fcd_dilist, &ei->i_fc_dilist);
- 	}
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 	spin_lock(&ei->i_fc_lock);
- 
- 	return 0;
-@@ -955,15 +956,15 @@ static int ext4_fc_submit_inode_data_all(journal_t *journal)
- 	struct ext4_inode_info *ei;
- 	int ret = 0;
- 
--	spin_lock(&sbi->s_fc_lock);
-+	mutex_lock(&sbi->s_fc_lock);
- 	list_for_each_entry(ei, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
--		spin_unlock(&sbi->s_fc_lock);
-+		mutex_unlock(&sbi->s_fc_lock);
- 		ret = jbd2_submit_inode_data(journal, ei->jinode);
- 		if (ret)
- 			return ret;
--		spin_lock(&sbi->s_fc_lock);
-+		mutex_lock(&sbi->s_fc_lock);
- 	}
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 
- 	return ret;
- }
-@@ -976,19 +977,19 @@ static int ext4_fc_wait_inode_data_all(journal_t *journal)
- 	struct ext4_inode_info *pos, *n;
- 	int ret = 0;
- 
--	spin_lock(&sbi->s_fc_lock);
-+	mutex_lock(&sbi->s_fc_lock);
- 	list_for_each_entry_safe(pos, n, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		if (!ext4_test_inode_state(&pos->vfs_inode,
- 					   EXT4_STATE_FC_COMMITTING))
- 			continue;
--		spin_unlock(&sbi->s_fc_lock);
-+		mutex_unlock(&sbi->s_fc_lock);
- 
- 		ret = jbd2_wait_inode_data(journal, pos->jinode);
- 		if (ret)
- 			return ret;
--		spin_lock(&sbi->s_fc_lock);
-+		mutex_lock(&sbi->s_fc_lock);
- 	}
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 
- 	return 0;
- }
-@@ -1010,26 +1011,22 @@ __releases(&sbi->s_fc_lock)
- 	list_for_each_entry_safe(fc_dentry, fc_dentry_n,
- 				 &sbi->s_fc_dentry_q[FC_Q_MAIN], fcd_list) {
- 		if (fc_dentry->fcd_op != EXT4_FC_TAG_CREAT) {
--			spin_unlock(&sbi->s_fc_lock);
--			if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry)) {
--				ret = -ENOSPC;
--				goto lock_and_exit;
--			}
--			spin_lock(&sbi->s_fc_lock);
-+			if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry))
-+				return -ENOSPC;
- 			continue;
- 		}
- 		/*
- 		 * With fcd_dilist we need not loop in sbi->s_fc_q to get the
--		 * corresponding inode pointer
-+		 * corresponding inode. Also, the corresponding inode could have been
-+		 * deleted, in which case, we don't need to do anything.
- 		 */
--		WARN_ON(list_empty(&fc_dentry->fcd_dilist));
-+		if (list_empty(&fc_dentry->fcd_dilist))
-+			continue;
- 		ei = list_first_entry(&fc_dentry->fcd_dilist,
- 				struct ext4_inode_info, i_fc_dilist);
- 		inode = &ei->vfs_inode;
- 		WARN_ON(inode->i_ino != fc_dentry->fcd_ino);
- 
--		spin_unlock(&sbi->s_fc_lock);
--
- 		/*
- 		 * We first write the inode and then the create dirent. This
- 		 * allows the recovery code to create an unnamed inode first
-@@ -1039,23 +1036,14 @@ __releases(&sbi->s_fc_lock)
- 		 */
- 		ret = ext4_fc_write_inode(inode, crc);
- 		if (ret)
--			goto lock_and_exit;
--
-+			return ret;
- 		ret = ext4_fc_write_inode_data(inode, crc);
- 		if (ret)
--			goto lock_and_exit;
--
--		if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry)) {
--			ret = -ENOSPC;
--			goto lock_and_exit;
--		}
--
--		spin_lock(&sbi->s_fc_lock);
-+			return ret;
-+		if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry))
-+			return -ENOSPC;
- 	}
- 	return 0;
--lock_and_exit:
--	spin_lock(&sbi->s_fc_lock);
--	return ret;
- }
- 
- static int ext4_fc_perform_commit(journal_t *journal)
-@@ -1074,12 +1062,12 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 	 * and then lock the journal.
- 	 */
- 	jbd2_journal_lock_updates(journal);
--	spin_lock(&sbi->s_fc_lock);
-+	mutex_lock(&sbi->s_fc_lock);
- 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		ext4_set_inode_state(&iter->vfs_inode,
- 				     EXT4_STATE_FC_COMMITTING);
- 	}
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 	jbd2_journal_unlock_updates(journal);
- 
- 	ret = ext4_fc_submit_inode_data_all(journal);
-@@ -1113,19 +1101,16 @@ static int ext4_fc_perform_commit(journal_t *journal)
- 		}
- 	}
- 
--	spin_lock(&sbi->s_fc_lock);
-+	mutex_lock(&sbi->s_fc_lock);
- 	ret = ext4_fc_commit_dentry_updates(journal, &crc);
--	if (ret) {
--		spin_unlock(&sbi->s_fc_lock);
-+	if (ret)
- 		goto out;
--	}
- 
- 	list_for_each_entry(iter, &sbi->s_fc_q[FC_Q_MAIN], i_fc_list) {
- 		inode = &iter->vfs_inode;
- 		if (!ext4_test_inode_state(inode, EXT4_STATE_FC_COMMITTING))
- 			continue;
- 
--		spin_unlock(&sbi->s_fc_lock);
- 		ret = ext4_fc_write_inode_data(inode, &crc);
- 		if (ret)
- 			goto out;
-@@ -1144,13 +1129,11 @@ static int ext4_fc_perform_commit(journal_t *journal)
- #else
- 		wake_up_bit(&iter->i_flags, EXT4_STATE_FC_COMMITTING);
- #endif
--		spin_lock(&sbi->s_fc_lock);
- 	}
--	spin_unlock(&sbi->s_fc_lock);
--
- 	ret = ext4_fc_write_tail(sb, crc);
- 
- out:
-+	mutex_unlock(&sbi->s_fc_lock);
- 	blk_finish_plug(&plug);
- 	return ret;
- }
-@@ -1291,7 +1274,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 	trace_ext4_fc_cleanup(journal, full, tid);
- 	jbd2_fc_release_bufs(journal);
- 
--	spin_lock(&sbi->s_fc_lock);
-+	mutex_lock(&sbi->s_fc_lock);
- 	list_for_each_entry_safe(iter, iter_n, &sbi->s_fc_q[FC_Q_MAIN],
- 				 i_fc_list) {
- 		ext4_clear_inode_state(&iter->vfs_inode,
-@@ -1318,13 +1301,11 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 					     fcd_list);
- 		list_del_init(&fc_dentry->fcd_list);
- 		list_del_init(&fc_dentry->fcd_dilist);
--		spin_unlock(&sbi->s_fc_lock);
- 
- 		if (fc_dentry->fcd_name.name &&
- 			fc_dentry->fcd_name.len > DNAME_INLINE_LEN)
- 			kfree(fc_dentry->fcd_name.name);
- 		kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
--		spin_lock(&sbi->s_fc_lock);
- 	}
- 
- 	list_splice_init(&sbi->s_fc_dentry_q[FC_Q_STAGING],
-@@ -1339,7 +1320,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 
- 	if (full)
- 		sbi->s_fc_bytes = 0;
--	spin_unlock(&sbi->s_fc_lock);
-+	mutex_unlock(&sbi->s_fc_lock);
- 	trace_ext4_fc_stats(sb);
- }
- 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 4f38a34b0..bef9fd128 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4436,7 +4436,7 @@ static void ext4_fast_commit_init(struct super_block *sb)
- 	sbi->s_fc_bytes = 0;
- 	ext4_clear_mount_flag(sb, EXT4_MF_FC_INELIGIBLE);
- 	sbi->s_fc_ineligible_tid = 0;
--	spin_lock_init(&sbi->s_fc_lock);
-+	mutex_init(&sbi->s_fc_lock);
- 	memset(&sbi->s_fc_stats, 0, sizeof(sbi->s_fc_stats));
- 	sbi->s_fc_replay_state.fc_regions = NULL;
- 	sbi->s_fc_replay_state.fc_regions_size = 0;
--- 
-2.46.0.184.g6999bdac58-goog
+- Harshad
 
+>
+> V6 Cover Letter
+> ---------------
+>
+> This is the V6 of the patch series. This patch series contains fixes to a
+> bunch of kernel build warnings reported by Kernel Test Robot
+> (lkp@intel.com) and Dan Carpenter (dan.carpenter@linaro.org). Thank you!
+>
+> V5 Cover Letter
+> ---------------
+>
+> This patch series supersedes the patch series "ext4: remove journal barri=
+er
+> during fast commit" sent in July 2022[1].  Except following three patches
+> all the other patches are newly introduced in this series.
+>
+> * ext4: convert i_fc_lock to spinlock
+> * ext4: for committing inode, make ext4_fc_track_inode wait
+> * ext4: drop i_fc_updates from inode fc info
+>
+> This patchset does not introduce any on-disk format and / or user visible
+> API change. This patchset reworks fast-commit's commit path improve overa=
+ll
+> performance of the commit path. Following optimizations have been added i=
+n
+> this series:
+>
+> * Avoid having to lock the journal throughout the fast commit.
+> * Remove tracking of open handles per inode.
+> * Avoid issuing cache flushes when fast commits are contained within a
+>   single FUA writes and there is no data that needs flushing.
+> * Temporarily lift committing thread's priority to match that of the
+>   journal thread to reduce scheduling delays.
+>
+> With the changes introduced in this patch series, now the commit path for
+> fast commits is as follows:
+>
+> 1. Lock the journal by calling jbd2_journal_lock_updates_no_rsv(). This
+>    ensures that all the exsiting handles finish and no new handles can
+>    start.
+> 2. Mark all the fast commit eligible inodes as undergoing fast commit by
+>    setting "EXT4_STATE_FC_COMMITTING" state.
+> 3. Unlock the journal by calling jbd2_journal_unlock_updates. This allows
+>    starting of new handles. If new handles try to start an update on any =
+of
+>    the inodes that are being committed, ext4_fc_track_inode() will block
+>    until those inodes have finished the fast commit.
+> 4. Submit data buffers of all the committing inodes.
+> 5. Wait for [4] to complete.
+> 6. Commit all the directory entry updates in the fast commit space.
+> 7. Commit all the changed inodes in the fast commit space and clear
+>    "EXT4_STATE_FC_COMMITTING" for all the inodes.
+> 8. Write tail tag to ensure atomicity of commits.
+>
+> (The above flow has been documented in the code as well)
+>
+> I verified that the patch series introduces no regressions in "log" group=
+s
+> when "fast_commit" feature is enabled.
+>
+> Also, we have a paper on fast commits in USENIX ATC 2024 this year which
+> should become available on the website[2] in a few months.
+>
+> [1] https://lwn.net/Articles/902022/
+> [2] https://www.usenix.org/conference/atc24
+>
+> Harshad Shirwadkar (9):
+>   ext4: convert i_fc_lock to spinlock
+>   ext4: for committing inode, make ext4_fc_track_inode wait
+>   ext4: mark inode dirty before grabbing i_data_sem in ext4_setattr
+>   ext4: rework fast commit commit path
+>   ext4: drop i_fc_updates from inode fc info
+>   ext4: update code documentation
+>   ext4: temporarily elevate commit thread priority
+>   ext4: make fast commit ineligible on ext4_reserve_inode_write failure
+>   ext4: hold s_fc_lock while during fast commit
+>
+>  fs/ext4/ext4.h              |  18 +-
+>  fs/ext4/fast_commit.c       | 339 ++++++++++++++++++------------------
+>  fs/ext4/fast_commit.h       |   1 +
+>  fs/ext4/inline.c            |   3 +
+>  fs/ext4/inode.c             |  38 ++--
+>  fs/ext4/super.c             |   9 +-
+>  fs/jbd2/journal.c           |   2 -
+>  include/trace/events/ext4.h |   7 +-
+>  8 files changed, 214 insertions(+), 203 deletions(-)
+>
+> --
+> 2.46.0.184.g6999bdac58-goog
+>
 
