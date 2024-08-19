@@ -1,198 +1,135 @@
-Return-Path: <linux-ext4+bounces-3777-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3778-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7126956B28
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 14:49:51 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 62F2C956B3D
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 14:52:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 580BD1F22C8B
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 12:49:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95AB11C21C76
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 12:52:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AEEE816B3AC;
-	Mon, 19 Aug 2024 12:49:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65F716BE04;
+	Mon, 19 Aug 2024 12:52:06 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A360171AA;
-	Mon, 19 Aug 2024 12:49:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFAC9171AA;
+	Mon, 19 Aug 2024 12:52:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724071783; cv=none; b=EiHXAMy0mMvhkmAlFAe1koOFWlrawz+Lap1gfSxujdKx00e/56Ko6Sizwy0tmRKWFgPiPJPDH3J8ZqawlOkPGhJMeJKaGiVd8VKw0Mw2ogJpFZbmXRMSAQVIGmf4PTm+SKASpBHPcAMY1srhGRvEXHWe5OzRC2U8M2EXZ5QCW+8=
+	t=1724071926; cv=none; b=A7s4Knet3Q8pOkG/GsERA1Tv6xhkI+YzZ3Qd4KN/vOw+vcWjWQGITuQqy2vhVq720nbF7NCr051OOU+fXuexLocLSYygMlphYrE0SYFssTxJ7AHeYHfwyE0nu1GJ3prKMb5lyidndwjIonTaofdmyl/nb4pOkm6iC3L+G45ElNY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724071783; c=relaxed/simple;
-	bh=UqJLdllXFrBGlpPpdZXoX0kwdgaG367zaEEUM0O4KAs=;
-	h=Subject:To:References:From:Cc:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=UeYVmYZHOL9vw9yb1fRjr8q4aRH1EWF3St9LQnnx3ySZyYzwXDA9LoV0uyWdDoDRr3XA2J7N9pmDLq4HRPIpJjdKszOqQQibcsGRlFLjz2cY11w2r/Ed6nxoHF9BeQUAQv8Uk5SVguOfoR75/jow2x7BC4Uc1o1cnY5Sw2FRkFY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	s=arc-20240116; t=1724071926; c=relaxed/simple;
+	bh=i3Jdj4it8XyViTNpXMn7KKLgdUQcwr1kF2uoH5K2U9g=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=PlptasGnZc44L70nNyuvH9WOjHm5SMujT153oijv9dap+LdcuNi/WrtPMssN5+HUX5g1RSjMu8SdmeR5f5zQTJvzSzas4Qol/SDBdxalhSLFDPFUFZX0twmiyEuQC0DJxr+lw/veN5T9fGq9z8TQ1zQTGa5F9fQGU/KUPdW20fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WnXV80Tw8z4f3jdg;
-	Mon, 19 Aug 2024 20:49:20 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 2272F1A0359;
-	Mon, 19 Aug 2024 20:49:34 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgBnj4VbP8NmPRSFCA--.253S3;
-	Mon, 19 Aug 2024 20:49:32 +0800 (CST)
-Subject: Re: jbd2: io throttle for metadata buffers
-To: Haifeng Xu <haifeng.xu@shopee.com>
-References: <9914a4b4-eb4d-44de-a48c-8ae08eedebe8@shopee.com>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, hanjinke.666@bytedance.com, yukuai3@huawei.com
-Message-ID: <b85e49c6-588e-63c7-b153-a273183f810e@huaweicloud.com>
-Date: Mon, 19 Aug 2024 20:49:31 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WnXY23LJTz4f3pC2;
+	Mon, 19 Aug 2024 20:51:50 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 0BA231A0568;
+	Mon, 19 Aug 2024 20:52:00 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP3 (Coremail) with SMTP id _Ch0CgCXRbTuP8NmZS08CA--.34959S2;
+	Mon, 19 Aug 2024 20:51:59 +0800 (CST)
+Subject: Re: [PATCH 2/2] ext4: Convert EXT4_B2C(sbi->s_stripe) users to
+ EXT4_NUM_B2C
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+ Theodore Ts'o <tytso@mit.edu>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org
+References: <957d29b85e06f415ee125de141809d2b9e084003.1723794770.git.ojaswin@linux.ibm.com>
+ <02e5b5139294897985f2b99729c5f3da3dd4f6f9.1723794770.git.ojaswin@linux.ibm.com>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <94377e74-3159-8130-df96-7955b55755c2@huaweicloud.com>
+Date: Mon, 19 Aug 2024 20:51:58 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <9914a4b4-eb4d-44de-a48c-8ae08eedebe8@shopee.com>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgBnj4VbP8NmPRSFCA--.253S3
-X-Coremail-Antispam: 1UD129KBjvJXoW3AFWfKw1UKw1fJFWDZw1kXwb_yoWxGF1rpr
-	WxJFW7Xr4qyF1UZryfurW5Z3y8Ar4UZasxJw1UGr13Ja47Ww1YvryDCrykWr9Fvrs8Ga12
-	q3s5trZ8KF47CrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkKb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+In-Reply-To: <02e5b5139294897985f2b99729c5f3da3dd4f6f9.1723794770.git.ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset=gbk
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgCXRbTuP8NmZS08CA--.34959S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ww47uF4UJr15trW3AF18Zrb_yoW8uFW3pr
+	WfJF1UJa45Gw10k3W7Wr1Ygr1vg3y8u3y3GrWxZr18WryaqFZ3Gr9Fqwn0kFyxJr4kG34r
+	X390vw1xArZrW3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
 	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
 	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AK
-	xVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1l
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7IU1veHD
-	UUUUU==
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
+	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7I
+	JmUUUUU
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-Hello, Haifeng.
 
-On 2024/8/19 18:19, Haifeng Xu wrote:
-> Hi, matsers!
-> 
-> 
-> We encountered high load issuses in our production environment recently. And the kernel version is stable-5.15.39
-> the filesystem is ext4(ordered).
-> 
-> 
-> After digging into it, we found the problem is due to io.max
-> 
-> 
-> thread 1:                                             
-> 
-> PID: 189529  TASK: ffff92ab51e5c080  CPU: 34  COMMAND: "mc"
->  #0 [ffffa638db807800] __schedule at ffffffff83b19898
->  #1 [ffffa638db807888] schedule at ffffffff83b19e9e
->  #2 [ffffa638db8078a8] io_schedule at ffffffff83b1a316
->  #3 [ffffa638db8078c0] bit_wait_io at ffffffff83b1a751
->  #4 [ffffa638db8078d8] __wait_on_bit at ffffffff83b1a373
->  #5 [ffffa638db807918] out_of_line_wait_on_bit at ffffffff83b1a46d
->  #6 [ffffa638db807970] __wait_on_buffer at ffffffff831b9c64
->  #7 [ffffa638db807988] jbd2_log_do_checkpoint at ffffffff832b556e
->  #8 [ffffa638db8079e8] __jbd2_log_wait_for_space at ffffffff832b55dc
->  #9 [ffffa638db807a30] add_transaction_credits at ffffffff832af369
-> #10 [ffffa638db807a98] start_this_handle at ffffffff832af50f
-> #11 [ffffa638db807b20] jbd2__journal_start at ffffffff832afe1f
-> #12 [ffffa638db807b60] __ext4_journal_start_sb at ffffffff83241af3
-> #13 [ffffa638db807ba8] __ext4_new_inode at ffffffff83253be6
-> #14 [ffffa638db807c80] ext4_mkdir at ffffffff8327ec9e
-> #15 [ffffa638db807d10] vfs_mkdir at ffffffff83182a92
-> #16 [ffffa638db807d50] ovl_mkdir_real at ffffffffc0965c9f [overlay]
-> #17 [ffffa638db807d80] ovl_create_real at ffffffffc0965e8b [overlay]
-> #18 [ffffa638db807db8] ovl_create_or_link at ffffffffc09677cc [overlay]
-> #19 [ffffa638db807e10] ovl_create_object at ffffffffc0967a48 [overlay]
-> #20 [ffffa638db807e60] ovl_mkdir at ffffffffc0967ad3 [overlay]
-> #21 [ffffa638db807e70] vfs_mkdir at ffffffff83182a92
-> #22 [ffffa638db807eb0] do_mkdirat at ffffffff83184305
-> #23 [ffffa638db807f08] __x64_sys_mkdirat at ffffffff831843df
-> #24 [ffffa638db807f28] do_syscall_64 at ffffffff83b0bf1c
-> #25 [ffffa638db807f50] entry_SYSCALL_64_after_hwframe at ffffffff83c0007c
-> 
-> other threads:
-> 
-> 
-> PID: 21125  TASK: ffff929f5b9a0000  CPU: 44  COMMAND: "task_server"
->  #0 [ffffa638aff9b900] __schedule at ffffffff83b19898
->  #1 [ffffa638aff9b988] schedule at ffffffff83b19e9e
->  #2 [ffffa638aff9b9a8] schedule_preempt_disabled at ffffffff83b1a24e
->  #3 [ffffa638aff9b9b8] __mutex_lock at ffffffff83b1af28
->  #4 [ffffa638aff9ba38] __mutex_lock_slowpath at ffffffff83b1b1a3
->  #5 [ffffa638aff9ba48] mutex_lock at ffffffff83b1b1e2
->  #6 [ffffa638aff9ba60] mutex_lock_io at ffffffff83b1b210
->  #7 [ffffa638aff9ba80] __jbd2_log_wait_for_space at ffffffff832b563b
->  #8 [ffffa638aff9bac8] add_transaction_credits at ffffffff832af369
->  #9 [ffffa638aff9bb30] start_this_handle at ffffffff832af50f
-> #10 [ffffa638aff9bbb8] jbd2__journal_start at ffffffff832afe1f
-> #11 [ffffa638aff9bbf8] __ext4_journal_start_sb at ffffffff83241af3
-> #12 [ffffa638aff9bc40] ext4_dirty_inode at ffffffff83266d0a
-> #13 [ffffa638aff9bc60] __mark_inode_dirty at ffffffff831ab423
-> #14 [ffffa638aff9bca0] generic_update_time at ffffffff8319169d
-> #15 [ffffa638aff9bcb0] inode_update_time at ffffffff831916e5
-> #16 [ffffa638aff9bcc0] file_update_time at ffffffff83191b01
-> #17 [ffffa638aff9bd08] file_modified at ffffffff83191d47
-> #18 [ffffa638aff9bd20] ext4_write_checks at ffffffff8324e6e4
-> #19 [ffffa638aff9bd40] ext4_buffered_write_iter at ffffffff8324edfb
-> #20 [ffffa638aff9bd78] ext4_file_write_iter at ffffffff8324f553
-> #21 [ffffa638aff9bdf8] ext4_file_write_iter at ffffffff8324f505
-> #22 [ffffa638aff9be00] new_sync_write at ffffffff8316dfca
-> #23 [ffffa638aff9be90] vfs_write at ffffffff8316e975
-> #24 [ffffa638aff9bec8] ksys_write at ffffffff83170a97
-> #25 [ffffa638aff9bf08] __x64_sys_write at ffffffff83170b2a
-> #26 [ffffa638aff9bf18] do_syscall_64 at ffffffff83b0bf1c
-> #27 [ffffa638aff9bf38] asm_common_interrupt at ffffffff83c00cc8
-> #28 [ffffa638aff9bf50] entry_SYSCALL_64_after_hwframe at ffffffff83c0007c
-> 
-> 
-> The cgroup of thread1 has set io.max, so the j_checkpoint_mutex can't be released and many threads must wait for it.
-> I have some questions about the throttle for the metadata buffers.
-> 
-> 1) writeback 
-> 
-> jbd2 converts the buffer head from jbddirty to buffer_dirty and trigger the write back in __jbd2_journal_temp_unlink_buffer().
-> By default, the blkcg in bdi_writeback attached to block device inode is blkcg_root which has no io throttle rules. But there may be other
-> threads which invoke sync_filesystem, such as umount overlayfs. This operation will write out all dirty data associated with the block
-> device. In this case, the bdi_writeback attached to block device inode may changed due to Boyer-Moore majority vote algorithm.
-> And the blkcg in bdi_writeback attached to block device inode is the group where the thread allocate the buffer head and dev page.
-> 
-> So the writeback process of metadata buffers can also be throttled, right?
-> 
-> 
-> 2) checkpoint
-> 
-> If the free log space is not suffcient, we will do checkpoint to update log tail. During the process, if the buffer head hasn't been 
-> written out by wirteback. we will lock the buffer head and submit bio in current context.
-> 
-> So the throttle rules may be different from writeback?
-> 
-> 
-> 3）j_checkpoint_mutex
-> If we can't make any progress in checkpoint due to io throttle, the j_checkpoint_mutex can'be release and block many others threads.
-> 
-> So can we cancel the throttle rules for metadata buffers and keep it in blkcg_root?
-> 
 
-It seems that iocost have already act as blkcg_root if bios have
-REQ_META set(ext4's metadata bh should've set this flag), but
-blk-thottle doesn't, Jinke had submitted a patch to improve this
-case, maybe it could help, please take a look at this patch. Or
-maybe we could add some similar logic in blk-throttle like iocost
-does for REQ_META.
-
-https://lore.kernel.org/linux-block/20230228085935.71465-1-hanjinke.666@bytedance.com/
-
-Thanks,
-Yi.
+on 8/16/2024 3:57 PM, Ojaswin Mujoo wrote:
+> Although we have checks to make sure s_stripe is a multiple of cluster
+> size, in case we accidentally end up with a scenario where this is not
+> the case, use EXT4_NUM_B2C() so that we don't end up with unexpected
+> cases where EXT4_B2C(stripe) becomes 0.
+> 
+> Also make the is_stripe_aligned check in regular_allocator a bit more
+> robust while we are at it. This should ideally have no functional change
+> unless we have a bug somewhere causing (stripe % cluster_size != 0)
+> 
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>> ---
+>  fs/ext4/mballoc.c | 7 ++++---
+>  1 file changed, 4 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> index 9dda9cd68ab2..b2e836a4bd18 100644
+> --- a/fs/ext4/mballoc.c
+> +++ b/fs/ext4/mballoc.c
+> @@ -2553,7 +2553,7 @@ void ext4_mb_scan_aligned(struct ext4_allocation_context *ac,
+>  	do_div(a, sbi->s_stripe);
+>  	i = (a * sbi->s_stripe) - first_group_block;
+>  
+> -	stripe = EXT4_B2C(sbi, sbi->s_stripe);
+> +	stripe = EXT4_NUM_B2C(sbi, sbi->s_stripe);
+>  	i = EXT4_B2C(sbi, i);
+>  	while (i < EXT4_CLUSTERS_PER_GROUP(sb)) {
+>  		if (!mb_test_bit(i, bitmap)) {
+> @@ -2929,8 +2929,9 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
+>  				ext4_mb_simple_scan_group(ac, &e4b);
+>  			else {
+>  				bool is_stripe_aligned = sbi->s_stripe &&
+> +					sbi->s_stripe >= sbi->s_cluster_ratio &&
+sbi->s_cluster_ratio is >= 1, so sbi->s_stripe >= sbi->s_cluster_ratio could
+cover the case that sbi->s_stripe is non-zero. Non-zero check of sbi->s_stripe
+seems not needed.
+>  					!(ac->ac_g_ex.fe_len %
+> -					  EXT4_B2C(sbi, sbi->s_stripe));
+> +					  EXT4_NUM_B2C(sbi, sbi->s_stripe));
+>  
+>  				if ((cr == CR_GOAL_LEN_FAST ||
+>  				     cr == CR_BEST_AVAIL_LEN) &&
+> @@ -3707,7 +3708,7 @@ int ext4_mb_init(struct super_block *sb)
+>  	 */
+>  	if (sbi->s_stripe > 1) {
+>  		sbi->s_mb_group_prealloc = roundup(
+> -			sbi->s_mb_group_prealloc, EXT4_B2C(sbi, sbi->s_stripe));
+> +			sbi->s_mb_group_prealloc, EXT4_NUM_B2C(sbi, sbi->s_stripe));
+>  	}
+>  
+>  	sbi->s_locality_groups = alloc_percpu(struct ext4_locality_group);
+> 
 
 
