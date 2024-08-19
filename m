@@ -1,212 +1,277 @@
-Return-Path: <linux-ext4+bounces-3772-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3773-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 31FB19564DE
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 09:42:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91FE29564FF
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 09:51:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B3E9A1F2462C
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 07:42:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06541B2343C
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 07:51:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE156158520;
-	Mon, 19 Aug 2024 07:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236DC157484;
+	Mon, 19 Aug 2024 07:51:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fdsx+l6P"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9F2914AD3D
-	for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 07:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724053350; cv=none; b=isb4n2FSv7D7EyfwymF7clJXYKsv8/1Kx4/JN1pJFMcDApkiI3r7I4BkwHykYpGRgKozLVfgKaGC3Pu0iBUp8FiLT+Lgx2VEKKZgIB9q8BZHqzMsfyZvMGwGxxlIoOQQJUqo1vr6sAlVONQ/emVCIMH+8Dw3Dy/FD407Mmijuwk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724053350; c=relaxed/simple;
-	bh=+JDLI63S1ln8et2UVMGrEsItpYkbK0XsXQggLMv1DI4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=bvqLBlQMVbzA6xo74sglCxiyeDynLBbl5lScirXRbsF1MT2Gtr40soXDCVI1ZoERlyuYvDOnqBgJgqnwo0SeUtQBn6apjPg3CM+PgyymBx2qa3CFbd6XjBLdo2w99AxpOLCBrTI/+QMr1XW/vkfQlxmCuoW2hQc4Hn4mxKIqTqM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-822372161efso284345939f.0
-        for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 00:42:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724053348; x=1724658148;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Pw0Pj8KvLQLM9Mw/vG95gIC/N37eafE73fcwI3LDHFg=;
-        b=QSMe7ht9zyF63l1QwWhnObR2cwtwALYln6nQhD8q1heQAj6MG9VUBLjixU2nKk+acM
-         FZY0g/9m3gsxbyXJQJ7Zfcmj7LuI0xfW09ESQXCJom2lYHyjDlEoL9qOyhdztWWoJal/
-         xvxXXuFG3xZFX/YCIMjvH7R6NO0RmC3qyouaFAwo9oTh9J+MA8awJByfECHbrHGPouF4
-         9ZZ1M3sRUMakh38+FH+bJ6vw2JEmRLVOKL2FEWG5UvLjGjDooP5N0XIbn9tNyKRhT6DV
-         7+B//RiBuxdhSEoHL/lpihDsWQyg3T9eXqBzoUR7eQ77my68rb3RwtFJt0MmwBRA3irC
-         jg5Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUK6i3Y6ny2UgkNzWl1Itw2oYga80codA4FVOHm+sOXVlt/bgHDdaf9lZTVxWBvehKDyDdFlW+CmgKCY1+b58k8Yx6NLM5hRnTjUA==
-X-Gm-Message-State: AOJu0YxaqdP9fHuptcGCn8hshKBvqFZG47aDXiqiNt81WKbXChg+Weoy
-	iqOKZ8uIF9tFp9H2d1HVSmByvQticz1SiIw20ODNWWfiXdI3b+qCSbscoJPPyQn98OhVvRx5KKU
-	bzW0O1uXgVpNEgeaqN1K8jAefNaTmev86myUo1ktrzN9MoBCDwabi4Jw=
-X-Google-Smtp-Source: AGHT+IH6T/IC2jUcSg/RgvP695bUb09z977MQDV3/XgELvG3iPoIyfaXC7QIOxbiH5AZ1l4+bBshweC3eNR1INU7atoV71WH2+kz
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CCD28370;
+	Mon, 19 Aug 2024 07:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724053880; cv=fail; b=peXETDoHo4ipEE5C/iroluLQH7x9igXOHqCPkHjZcrFyAEV/xQIkj+e2cR1QCKovOi2Qfeq8YevSUDAXbvkr6obGNb+ObHHWGKM/ecsE00kVdqP7STdaTWnVfTPZxC0ODRYA8zNQqGVzk+G8hv0gTv5WEthMzSqMFxZs+uG6OTA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724053880; c=relaxed/simple;
+	bh=kPecblUWJnNquAI3ZXfXiWggGg8rClvA+OONaXkTR3E=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=osOTE0FO2dtA2p1gimOTjiTVYj7yHU6KS5YhY4NSc2UGaI8sapXUm/OtCctIz7/lF5i30B1g9ydVFR4L7zwCxDteeMuHmXubiDdX2qOe78YEt/WYsBPESQ6lYKbQyDid+2EehJ5M6iPK0eLQQ1yo6rkpw9yBp8JPQD0H69etaoQ=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fdsx+l6P; arc=fail smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724053878; x=1755589878;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=kPecblUWJnNquAI3ZXfXiWggGg8rClvA+OONaXkTR3E=;
+  b=Fdsx+l6Pc1rvR0wqmZCL9bw3vAU1H5px5FJdv/S1sl8VpckdRJsfXTx5
+   x3XuJDsNgkCpq7sMITfouhy6KVqmKcFhitLEceEpv8gL8ZfuQfQx05leE
+   8wxAvD/Ad+BI1wl3ASRno8ZF/UXyxeuRRGMgKnqgf3IZAmHPcq/x0CFOe
+   V4lDW102Xq++3b2uSwr1PQlFayzHjbh4dIcL78Id/YO4cP6If5JilZAtf
+   hDlXzbrhKaLGhQn3XK+qteh3OSJX3Esc8p9C88y5NZK9wucIJShcX/1DC
+   st3PsvbsSSfFMoC6g+021Nf4M2BwScoiVHKCmzP676s4OhxxRzxqq74kI
+   g==;
+X-CSE-ConnectionGUID: sAxxSywGTGiGnpzJzaeTAw==
+X-CSE-MsgGUID: ZUECmS90S06/KtqSmTr33A==
+X-IronPort-AV: E=McAfee;i="6700,10204,11168"; a="22132056"
+X-IronPort-AV: E=Sophos;i="6.10,158,1719903600"; 
+   d="scan'208";a="22132056"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 00:51:15 -0700
+X-CSE-ConnectionGUID: pwctg6F/T32SMwjlUhN8MQ==
+X-CSE-MsgGUID: w1O6zX+TSPWjEXp22gtT1w==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,158,1719903600"; 
+   d="scan'208";a="59954115"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Aug 2024 00:51:14 -0700
+Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39; Mon, 19 Aug 2024 00:51:13 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.39 via Frontend Transport; Mon, 19 Aug 2024 00:51:13 -0700
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Mon, 19 Aug 2024 00:51:13 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=Fz5lxoOsZi04yvIyLqYD2nctMF0wOasiyY6hXQQVvlhtWgKZptXUZUmhqgEm0dFuP+ATHTos2lxG9cXWkU7jVhuueLuFVuUrM7oSnXnN021yFjWId949Z23w+XIj0f7sMjrV/lc60hgdHq5Gq5kTfzq5/zPHXbkI7KhRGewPBrj/8A/jRu0fYx3Abydg2PwNFz05+4cqQkBCZ+0ArXiGsdsE33M+IXlaOlti+lxbC/LcGkcyCkqCv8iawyJVShy6F+BWfpPzLg1QZU+aXwetO93SvwZHQ0zzslQ1MKivJH2UU2nwp8xj4Os+0ekkoJxiE/XhdNB7y6U2297PmUp5JA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6U63LPGG4WIt98HT6e0b6b7+NVwscjnvH7rW+j7sQPU=;
+ b=KYv5LaxkK9U7ijn3DZ3J8iAocMOu2/+w2dbTaAZ3pt3KOb1k/uW5Wj20JvwhWfNbTsgGmj5BXMDRFkjJ4BDmH/7Sv8kCSQlnrXoP7PenmWKVR/TFiX//aiOQApVff3zPftwzPNGFtKaav+AgU7Ioa9aKC1hvPdlXnsNPgaWh0n0/4IKfTf07JEgUVE/h6IhTKGIRIQy/3cU+LMQxbwWRB074iAfz0ykAbwMl7qKirdOlDvWD5bDtGDnluZlqeQiFDxAqOj7ZzrkeexdiBdIRmqlUyec1YYqohoZc38SayMNR1gLAfaFxY7aRwGHXcWDY65P39PZbe8Qn58W/eca1OQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from IA1PR11MB6348.namprd11.prod.outlook.com (2603:10b6:208:3af::16)
+ by CY8PR11MB7033.namprd11.prod.outlook.com (2603:10b6:930:53::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21; Mon, 19 Aug
+ 2024 07:51:10 +0000
+Received: from IA1PR11MB6348.namprd11.prod.outlook.com
+ ([fe80::4db5:b0d9:b6b3:bb52]) by IA1PR11MB6348.namprd11.prod.outlook.com
+ ([fe80::4db5:b0d9:b6b3:bb52%4]) with mapi id 15.20.7875.019; Mon, 19 Aug 2024
+ 07:51:08 +0000
+From: "Golani, Mitulkumar Ajitkumar" <mitulkumar.ajitkumar.golani@intel.com>
+To: abid-sayyad <sayyad.abid16@gmail.com>, "airlied@gmail.com"
+	<airlied@gmail.com>
+CC: "daniel@ffwll.ch" <daniel@ffwll.ch>, "dmitry.baryshkov@linaro.org"
+	<dmitry.baryshkov@linaro.org>, "mripard@kernel.org" <mripard@kernel.org>,
+	"Nautiyal, Ankit K" <ankit.k.nautiyal@intel.com>, "Nikula, Jani"
+	<jani.nikula@intel.com>, "Deak, Imre" <imre.deak@intel.com>,
+	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
+	"dianders@chromium.org" <dianders@chromium.org>, "marilene.agarcia@gmail.com"
+	<marilene.agarcia@gmail.com>, "dri-devel@lists.freedesktop.org"
+	<dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "tytso@mit.edu" <tytso@mit.edu>,
+	"jack@suse.com" <jack@suse.com>, "linux-ext4@vger.kernel.org"
+	<linux-ext4@vger.kernel.org>, "skhan@linuxfoundation.org"
+	<skhan@linuxfoundation.org>
+Subject: RE: [PATCH] fix member variable description warnings while building
+ docs
+Thread-Topic: [PATCH] fix member variable description warnings while building
+ docs
+Thread-Index: AQHa8WN4Lx/m86sUqkSco3PD+5KZVLIuNe3g
+Date: Mon, 19 Aug 2024 07:51:08 +0000
+Message-ID: <IA1PR11MB6348A1DE51518D6B437D2C04B28C2@IA1PR11MB6348.namprd11.prod.outlook.com>
+References: <20240818112543.1089986-1-sayyad.abid16@gmail.com>
+In-Reply-To: <20240818112543.1089986-1-sayyad.abid16@gmail.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-Mentions: sayyad.abid16@gmail.com
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: IA1PR11MB6348:EE_|CY8PR11MB7033:EE_
+x-ms-office365-filtering-correlation-id: 40be87ca-67f0-4e63-b919-08dcc023afef
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014|38070700018;
+x-microsoft-antispam-message-info: =?us-ascii?Q?rD+I4uLM/1pEG2Tos02Dm6qqHB82dCf3XTheZinAMSkpWQTdM0mmFYjhcupL?=
+ =?us-ascii?Q?klG3AtiRIFTBB/kinRVpuUhsIzKm7TBjmRFQJWrVXjOFQmcPHMaoB3VgDDIA?=
+ =?us-ascii?Q?REZPFaCfWnRfngj+mc3JXhtrH4jsqARHYbYazBg6EjoXZTYBPIEuBNiNwZlk?=
+ =?us-ascii?Q?x0WWHPCggoF4i8u/JkMjQD6tui1/DMVYdQp0NfyY2dVcihBYBsRY7eHJ7x1+?=
+ =?us-ascii?Q?sN1tCHt/HfayFhdZSUPtJd5X6Ow0I0ugEiD3mfvDufRrcO3s3Ih92QsKJnfO?=
+ =?us-ascii?Q?9fBArXu2P3WDOclIAXnuzAhjA2coiUMvn3ysxxmcivvnToUaIiHCMmUZDVtL?=
+ =?us-ascii?Q?0u00mhAtfMtv4sGPHCdMFXFFjiDXvkP79mdvCZ6Vathjyjy6WbjJmHvA2RlN?=
+ =?us-ascii?Q?BOcdGUUhw740YrZFY+D3Lu/Nhym0eh0YiaBDhXwpP040D2shN3K/U7zmpG1B?=
+ =?us-ascii?Q?LGsH/gzckHp3pt2zxENgAYa5AY+xyii84GN3rHo/DfOoQYBD9TL0fY3tQNhU?=
+ =?us-ascii?Q?A6OK9P10D+62m1ZZXqEe2MUE4FM3yGvn+1TRI188SEhIrRMmOpZFY5nDaaPs?=
+ =?us-ascii?Q?hWvqXJ6zhrx8OziNeL7OcSAiLUJyq2jH9UdW1YGuUI5KfeyacecXo9N1o8aj?=
+ =?us-ascii?Q?oTq/PJw1pMOXI7DMRPrjQY5YkTo42GVt1Es/As/FaCwyo6u8LDBEpT7NYkEx?=
+ =?us-ascii?Q?ZGZBsEzbJAJPNdybxwQ+NRoUZ8usrhSeMcFBI11+v4CRDbqNEn560s9CUl/1?=
+ =?us-ascii?Q?BeQUinQuagweP+nuRsqVaHXt1bAFYWtWiqdqLJmURBm3guskfZ3/ynSE7AGD?=
+ =?us-ascii?Q?ReK1gzylp+VrqmuVnvtgu69AiCm5OFh05F74rOIOUeV06DesCEqL8sRy4yZY?=
+ =?us-ascii?Q?qffpDJ79BmDNbglQkiFYHQCXxtPXElQ6FNZ3b3LM++cBjLrIHnABzXEP45j+?=
+ =?us-ascii?Q?7uERHZkrm4fMsUPaCzGV80289l066E9y60R4lAptcUEhksQCqC50ch05NBTe?=
+ =?us-ascii?Q?w4Yqfgk+mcoQtPa4hwyB3ihavbGfZCtnXy89wj2DoTdIg3rTOOzhLluNk2Ej?=
+ =?us-ascii?Q?pABCLXOotJukIkaldnt7oxLlBeY4qWZLzW+vb2kDomYW3svCqchOa0OPM01l?=
+ =?us-ascii?Q?JoVSAR9n7CfSZJ9oB+CpCL4SWx+mSuQIHIS2enT7nMvN1PKV2IRG3F2OPZGz?=
+ =?us-ascii?Q?zYP4tbMi4qDNgf1qmmXZ/Te7Ew0gzarRaYlEY9Vz3MsNfo9g/djQIm9gZkQJ?=
+ =?us-ascii?Q?5CeqWx6hqKTx8hsziLg2xo+TRi70GccRJTn6PelV/kWBEzumK10TbTpWH4ji?=
+ =?us-ascii?Q?YF3GuW1qfDd+ELyDk+C7gXMZ0F/0EKdjftvO17zmwy8HflwsimjkKXwxEUpc?=
+ =?us-ascii?Q?QsL7E/fPMiTvnDwlc1smG7aBzNtq5V5GaHzjBDve0/+6c9gMsg=3D=3D?=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6348.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(38070700018);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Iv8g342kV6p5zOYz6yFP1rdrhOOhOXJZL38l0tKDYFxqgZ15tREtljC2rVTS?=
+ =?us-ascii?Q?2rlqg0fwSj0MjyPoguxxUI9GhvG2exoPo15hNw1bW0ncwOeOvLtLDDWs9Iwu?=
+ =?us-ascii?Q?GgbIoOqHYvHdT5uVtSphQXudrDddMK/JvlZfjzyi4cCrIVfpQc6JjEWyvST+?=
+ =?us-ascii?Q?O9g1upxRVcrvVJlEHdftJsq95isQEh4ANFnaQZSnlzpfZyhP7HhpONNUWLCV?=
+ =?us-ascii?Q?4YboF+al2GyNFmO8l428dA515hajEZMGlM2Nc5pzSGVp5Re698h1inD0Azan?=
+ =?us-ascii?Q?ZZktWq/RYU/z/9DQtjuSkQCj4QjOzJFqWTfvCVGM09y0ymvyrV+aBpyTLBxd?=
+ =?us-ascii?Q?Ujo5IGv/2qVVORR2daH5fx33Th4sduBTzfZpNudCQm9RLXgH1uu/NzSyGa0W?=
+ =?us-ascii?Q?ednc4gVR7veraNH/AaqyJz/bB0M5zt8f9QFBwzDmQCeRu/IuzTutYygz7da8?=
+ =?us-ascii?Q?5kUyvzZPPhGWFx1zebuHt9UQ0yctO8JUvjfRQtGNb7gCpjWz9nYy+Ws7dHvO?=
+ =?us-ascii?Q?ijCzJxUlFnlRV/u9kn0VYkh9gmqDyanalCGKZc+vFD4XVAVZgJD9nX99dHMM?=
+ =?us-ascii?Q?mAeQh+Cy7bMV7QMIoyB9r5Xs7IZ7sS2Td4atnlpgLrwA39UhNfe/8FT9qQfs?=
+ =?us-ascii?Q?eP+WJLfstWoe4fvlE2ff/OEFYBK9T3fRBmnY1RAeVXYfJ6bFIsQ3/GCuGGQm?=
+ =?us-ascii?Q?gdC1ZoJf7Cgx+OByLiBCHYPM5Tp6pdyxvtqmI+KoRLZYM/HVIMRxw5pFDXPH?=
+ =?us-ascii?Q?H6wn2QjXCXmEh0hQSMcSVeclZdhAjvpXuz3pgL7L32A5YMEtbb3P1Edjz9kC?=
+ =?us-ascii?Q?nR2C0cpy6HC7slIQAZc+iE12npfpPmA1Ov0J71mqIut5Au0xwPRiIs1E6CNE?=
+ =?us-ascii?Q?dxTUC5YVB2Ycibs06kMNknl9V6bmz2dMlFBYQGs+dktrJaMsFQ2CFLuBzTXG?=
+ =?us-ascii?Q?DR7n36fN9RkSzdOBi9KarqcrYGshWDOqMM4T6Oq1lvT3BK6hOh6EXv+BMxPg?=
+ =?us-ascii?Q?6EQjr1lt1DtaYfJTmrDyrWOGN36TNbADKvCf1jUwugXXK57cyQzh11M8BUCG?=
+ =?us-ascii?Q?G0gdX8ZDmxAKGnF7FV+O4dZL7Yl2bnjezncIg8Gp/2CBOihySz+7P9GXK3X4?=
+ =?us-ascii?Q?SvWkt7czuATu5smiE0LY+TRT/224OOhmquxzQB08Ms069LGmAA1JRwB4o4iQ?=
+ =?us-ascii?Q?3pc13P7TmlzeFPV+YOI8y6KH3672/mgYDZluE7bNSiUKQFjGxkLAoipFvaPv?=
+ =?us-ascii?Q?3N8//Rc0nVhqxSHZQiQykJxMwhOTev+TDizx372jkpynPXmZBDHOU0zoFWCQ?=
+ =?us-ascii?Q?7vYw3j96+Wa79tPsykl0ThO9yJ2Ed05XNMjUfp/G/uebWED/2fanyuCLNEAT?=
+ =?us-ascii?Q?GrPUOruXkOE1UcsaTuTlD+/pN9fpHT5F8QRTYNbngZNizPBxzDwZdbXnFwoS?=
+ =?us-ascii?Q?5qzMsxLodqpnsbvxFtm3qGpGBdzPsNIyXRr80FOIvrCIff9aps+TYrF6N+M+?=
+ =?us-ascii?Q?VEDyg7wBuvMicpabk1xpFqwlTdX3q9nB4zjO7aXPMqMMMsG558qGu0u3xMCl?=
+ =?us-ascii?Q?dIG9MgEVRHgUTPzh6OenRMLiCT/2B3S6M7Gj5zl6IiCVcoNPO0IqHqk/6u41?=
+ =?us-ascii?Q?UqjxS0bXrPHCun5L+DpPuGQ=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8327:b0:4c0:9a3e:c264 with SMTP id
- 8926c6da1cb9f-4cce15dbcf6mr571306173.2.1724053348051; Mon, 19 Aug 2024
- 00:42:28 -0700 (PDT)
-Date: Mon, 19 Aug 2024 00:42:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000062812a062004738b@google.com>
-Subject: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_search_dir (2)
-From: syzbot <syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6348.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 40be87ca-67f0-4e63-b919-08dcc023afef
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2024 07:51:08.7689
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: pSxcVlgeblsiQf+xyTGmzVdGMKQLkqMpPoTmUGR8Mz1onGfbBt7lXuU8a6041YSw51+MF1F0Ddvq9nNkGUJcEOvrILEzIAqoxuARt82qOcauMvsFJwvdVqjH2F/z/zqQ
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7033
+X-OriginatorOrg: intel.com
 
-Hello,
+Hi @abid-sayyad
 
-syzbot found the following issue on:
+> -----Original Message-----
+> From: abid-sayyad <sayyad.abid16@gmail.com>
+> Sent: Sunday, August 18, 2024 4:56 PM
+> To: airlied@gmail.com
+> Cc: daniel@ffwll.ch; dmitry.baryshkov@linaro.org; mripard@kernel.org;
+> Nautiyal, Ankit K <ankit.k.nautiyal@intel.com>; Nikula, Jani
+> <jani.nikula@intel.com>; Deak, Imre <imre.deak@intel.com>; Golani,
+> Mitulkumar Ajitkumar <mitulkumar.ajitkumar.golani@intel.com>;
+> quic_abhinavk@quicinc.com; dianders@chromium.org;
+> marilene.agarcia@gmail.com; dri-devel@lists.freedesktop.org; linux-
+> kernel@vger.kernel.org; tytso@mit.edu; jack@suse.com; linux-
+> ext4@vger.kernel.org; skhan@linuxfoundation.org; abid-sayyad
+> <sayyad.abid16@gmail.com>
+> Subject: [PATCH] fix member variable description warnings while building
+> docs
+>=20
+> Fix the following warnings while building the docs :-
+>=20
+> ./include/linux/jbd2.h:1303: warning: Function parameter or struct member
+> 		'j_transaction_overhead_buffers' not described in 'journal_s'
+> ./include/linux/jbd2.h:1303: warning: Excess struct member
+> 		'j_transaction_overhead' description in 'journal_s'
+>=20
+> Fix spelling error for j_transaction_overhead to
+> j_transaction_overhead_buffers.
+>=20
+> ./include/drm/display/drm_dp_helper.h:127: warning: Function parameter or
+> struct
+> 		member 'target_rr_divider' not described in 'drm_dp_as_sdp'
+>=20
+> Add description for the 'target_rr_divider' member.
+>=20
+> Signed-off-by: abid-sayyad <sayyad.abid16@gmail.com>
+> ---
+>  include/drm/display/drm_dp_helper.h | 1 +
+>  include/linux/jbd2.h                | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>=20
+> diff --git a/include/drm/display/drm_dp_helper.h
+> b/include/drm/display/drm_dp_helper.h
+> index ea03e1dd26ba..7f2567fa230d 100644
+> --- a/include/drm/display/drm_dp_helper.h
+> +++ b/include/drm/display/drm_dp_helper.h
+> @@ -112,6 +112,7 @@ struct drm_dp_vsc_sdp {
+>   * @target_rr: Target Refresh
+>   * @duration_incr_ms: Successive frame duration increase
+>   * @duration_decr_ms: Successive frame duration decrease
+> + * @target_rr_divider: Target refresh rate divider
 
-HEAD commit:    47ac09b91bef Linux 6.11-rc4
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=153eeafd980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df2f0ed7e30a639d
-dashboard link: https://syzkaller.appspot.com/bug?extid=0c2508114d912a54ee79
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1335fe05980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=156ba6fd980000
+This change is merged to drm-tip as part of following commit
+a755947e050b8751fc5402609a7d600e9c756fa7
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-47ac09b9.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/6db2a1c6b666/vmlinux-47ac09b9.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/b1c782255526/bzImage-47ac09b9.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/83fcfca5f30f/mount_0.gz
+>   * @mode: Adaptive Sync Operation Mode
+>   */
+>  struct drm_dp_as_sdp {
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h index
+> 5157d92b6f23..17662eae408f 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1086,7 +1086,7 @@ struct journal_s
+>  	int			j_revoke_records_per_block;
+>=20
+>  	/**
+> -	 * @j_transaction_overhead:
+> +	 * @j_transaction_overhead_buffers:
+>  	 *
+>  	 * Number of blocks each transaction needs for its own bookkeeping
+>  	 */
+> --
+> 2.39.2
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com
-
-EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: none.
-loop0: detected capacity change from 2048 to 2047
-==================================================================
-BUG: KASAN: use-after-free in ext4_search_dir+0xf2/0x1c0 fs/ext4/namei.c:1500
-Read of size 1 at addr ffff88803e91130f by task syz-executor269/5103
-
-CPU: 0 UID: 0 PID: 5103 Comm: syz-executor269 Not tainted 6.11.0-rc4-syzkaller #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
- print_address_description mm/kasan/report.c:377 [inline]
- print_report+0x169/0x550 mm/kasan/report.c:488
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- ext4_search_dir+0xf2/0x1c0 fs/ext4/namei.c:1500
- ext4_find_inline_entry+0x4be/0x5e0 fs/ext4/inline.c:1697
- __ext4_find_entry+0x2b4/0x1b30 fs/ext4/namei.c:1573
- ext4_lookup_entry fs/ext4/namei.c:1727 [inline]
- ext4_lookup+0x15f/0x750 fs/ext4/namei.c:1795
- lookup_one_qstr_excl+0x11f/0x260 fs/namei.c:1633
- filename_create+0x297/0x540 fs/namei.c:3980
- do_symlinkat+0xf9/0x3a0 fs/namei.c:4587
- __do_sys_symlinkat fs/namei.c:4610 [inline]
- __se_sys_symlinkat fs/namei.c:4607 [inline]
- __x64_sys_symlinkat+0x95/0xb0 fs/namei.c:4607
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f3e73ced469
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff4d40c258 EFLAGS: 00000246 ORIG_RAX: 000000000000010a
-RAX: ffffffffffffffda RBX: 0032656c69662f2e RCX: 00007f3e73ced469
-RDX: 0000000020000200 RSI: 00000000ffffff9c RDI: 00000000200001c0
-RBP: 0000000000000000 R08: 00007fff4d40c290 R09: 00007fff4d40c290
-R10: 0023706f6f6c2f76 R11: 0000000000000246 R12: 00007fff4d40c27c
-R13: 0000000000000003 R14: 431bde82d7b634db R15: 00007fff4d40c2b0
- </TASK>
-
-The buggy address belongs to the physical page:
-page: refcount:0 mapcount:0 mapping:0000000000000000 index:0x7fb7091d9 pfn:0x3e911
-flags: 0x4fff00000000000(node=1|zone=1|lastcpupid=0x7ff)
-raw: 04fff00000000000 dead000000000100 dead000000000122 0000000000000000
-raw: 00000007fb7091d9 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
-page_owner tracks the page as freed
-page last allocated via order 0, migratetype Movable, gfp_mask 0x140dca(GFP_HIGHUSER_MOVABLE|__GFP_COMP|__GFP_ZERO), pid 5083, tgid 5083 (sshd), ts 84338308196, free_ts 84419190442
- set_page_owner include/linux/page_owner.h:32 [inline]
- post_alloc_hook+0x1f3/0x230 mm/page_alloc.c:1493
- prep_new_page mm/page_alloc.c:1501 [inline]
- get_page_from_freelist+0x2e4c/0x2f10 mm/page_alloc.c:3439
- __alloc_pages_noprof+0x256/0x6c0 mm/page_alloc.c:4695
- alloc_pages_mpol_noprof+0x3e8/0x680 mm/mempolicy.c:2263
- folio_alloc_mpol_noprof mm/mempolicy.c:2281 [inline]
- vma_alloc_folio_noprof+0x12e/0x230 mm/mempolicy.c:2312
- folio_prealloc+0x31/0x170
- alloc_anon_folio mm/memory.c:4498 [inline]
- do_anonymous_page mm/memory.c:4555 [inline]
- do_pte_missing mm/memory.c:3945 [inline]
- handle_pte_fault+0x255e/0x6fc0 mm/memory.c:5521
- __handle_mm_fault mm/memory.c:5664 [inline]
- handle_mm_fault+0x1029/0x1980 mm/memory.c:5832
- do_user_addr_fault arch/x86/mm/fault.c:1338 [inline]
- handle_page_fault arch/x86/mm/fault.c:1481 [inline]
- exc_page_fault+0x459/0x8c0 arch/x86/mm/fault.c:1539
- asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
-page last free pid 5083 tgid 5083 stack trace:
- reset_page_owner include/linux/page_owner.h:25 [inline]
- free_pages_prepare mm/page_alloc.c:1094 [inline]
- free_unref_folios+0x103a/0x1b00 mm/page_alloc.c:2660
- folios_put_refs+0x76e/0x860 mm/swap.c:1039
- free_pages_and_swap_cache+0x2ea/0x690 mm/swap_state.c:332
- __tlb_batch_free_encoded_pages mm/mmu_gather.c:136 [inline]
- tlb_batch_pages_flush mm/mmu_gather.c:149 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:366 [inline]
- tlb_flush_mmu+0x3a3/0x680 mm/mmu_gather.c:373
- tlb_finish_mmu+0xd4/0x200 mm/mmu_gather.c:465
- unmap_region+0x2df/0x350 mm/mmap.c:2441
- do_vmi_align_munmap+0x1122/0x18c0 mm/mmap.c:2754
- do_vmi_munmap+0x261/0x2f0 mm/mmap.c:2830
- __vm_munmap+0x1fc/0x400 mm/mmap.c:3109
- __do_sys_munmap mm/mmap.c:3126 [inline]
- __se_sys_munmap mm/mmap.c:3123 [inline]
- __x64_sys_munmap+0x68/0x80 mm/mmap.c:3123
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-Memory state around the buggy address:
- ffff88803e911200: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88803e911280: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
->ffff88803e911300: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-                      ^
- ffff88803e911380: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
- ffff88803e911400: ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff ff
-==================================================================
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
