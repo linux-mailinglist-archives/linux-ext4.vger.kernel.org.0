@@ -1,135 +1,118 @@
-Return-Path: <linux-ext4+bounces-3778-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3780-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62F2C956B3D
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 14:52:29 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 13BDD956C55
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 15:41:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 95AB11C21C76
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 12:52:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4786285947
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 13:41:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B65F716BE04;
-	Mon, 19 Aug 2024 12:52:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8B3E16C6A5;
+	Mon, 19 Aug 2024 13:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="uP0wQjkj"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFAC9171AA;
-	Mon, 19 Aug 2024 12:52:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF72D16C680;
+	Mon, 19 Aug 2024 13:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724071926; cv=none; b=A7s4Knet3Q8pOkG/GsERA1Tv6xhkI+YzZ3Qd4KN/vOw+vcWjWQGITuQqy2vhVq720nbF7NCr051OOU+fXuexLocLSYygMlphYrE0SYFssTxJ7AHeYHfwyE0nu1GJ3prKMb5lyidndwjIonTaofdmyl/nb4pOkm6iC3L+G45ElNY=
+	t=1724074879; cv=none; b=Kt7Z2qKV6Esf0kXZ7c/tZnkriM2nI45MTjj/VC79BGS6L3TC8znJxAUj6LQZhQrGOZiUXlgl8NlV93QPNPfOy0eke+TGCAJk9t62EnD7MJuIXTHkyVg6zlB20EkYvMnpjhmZBhilxDAPfBAFI/5CKKljRjoe/p38aft8mOp5S/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724071926; c=relaxed/simple;
-	bh=i3Jdj4it8XyViTNpXMn7KKLgdUQcwr1kF2uoH5K2U9g=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=PlptasGnZc44L70nNyuvH9WOjHm5SMujT153oijv9dap+LdcuNi/WrtPMssN5+HUX5g1RSjMu8SdmeR5f5zQTJvzSzas4Qol/SDBdxalhSLFDPFUFZX0twmiyEuQC0DJxr+lw/veN5T9fGq9z8TQ1zQTGa5F9fQGU/KUPdW20fk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WnXY23LJTz4f3pC2;
-	Mon, 19 Aug 2024 20:51:50 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 0BA231A0568;
-	Mon, 19 Aug 2024 20:52:00 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP3 (Coremail) with SMTP id _Ch0CgCXRbTuP8NmZS08CA--.34959S2;
-	Mon, 19 Aug 2024 20:51:59 +0800 (CST)
-Subject: Re: [PATCH 2/2] ext4: Convert EXT4_B2C(sbi->s_stripe) users to
- EXT4_NUM_B2C
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
- Theodore Ts'o <tytso@mit.edu>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org
-References: <957d29b85e06f415ee125de141809d2b9e084003.1723794770.git.ojaswin@linux.ibm.com>
- <02e5b5139294897985f2b99729c5f3da3dd4f6f9.1723794770.git.ojaswin@linux.ibm.com>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <94377e74-3159-8130-df96-7955b55755c2@huaweicloud.com>
-Date: Mon, 19 Aug 2024 20:51:58 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+	s=arc-20240116; t=1724074879; c=relaxed/simple;
+	bh=zqQnjPLRzcXO7/t3xlo9e0xwX8HTbgYJiHZTVnSB7PQ=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=YbdRJxYw3lcw3AylTowmQVLiA2UoJ7uYcAhD3DOtSpTzpYYtQhkc4jCDa9j3c5EbSl1Azfa9N/yAqiHYt7wtFVkGQwST6rG4PvtEkW5TDte13fxZxGubj91H9etqaVh/ZIgJtnqZEwwPkYnUPOwD/UZDpPxUKhtyuZaIQAAEuqE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=uP0wQjkj; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1724074569; bh=2wMqJMCOY7StTOp6eQQXkHi+RNUVnlidZ7g7RNmnJWo=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=uP0wQjkjxJAZFWWD86st4d3odncKKin0A0MAhe0LZCCPVq9UcSRFefb4LdYhaan7G
+	 +HhEzubSiLjKJrAG5tS3nXyBtv/AK5v9itC3i2+tJj24720cbytHLAU89EU+6hSq1L
+	 5kooURMBFBgugxh3oKLTnlbpmVJr1n0ESHy6ocWM=
+Received: from pek-lxu-l1.wrs.com ([111.198.225.4])
+	by newxmesmtplogicsvrszb9-1.qq.com (NewEsmtp) with SMTP
+	id 906174C2; Mon, 19 Aug 2024 21:36:06 +0800
+X-QQ-mid: xmsmtpt1724074566tidpeyyso
+Message-ID: <tencent_879750E9E2EF32CD287A2E6C9C2C856F1C0A@qq.com>
+X-QQ-XMAILINFO: NQR8mRxMnur9PJ3oCcHFUsB6EnKTTSyPOh3P8Ccawdoe1YxxEcwTNkKGAdMYC5
+	 v9KZzQ/WJCM6J1YXHlFlHoFwYOuXepPxbZF7TC6T5Dhd+qgepvkmA+WO31Nnbh1szb+clVRlGjaY
+	 CZD/IjrVNJl32qKun7+jawezUNkS4a0ZoLl4W4Zu8XQyHoAf2j7h8vJfQR5kT+ygiVOxcwyHb2+u
+	 U532pQatigC9vGtx4QIBJNnu6hxqV2F+IRgpjdrDHSSy1rxS1k8nbHiX524jCYu+zzaykpwpVF1e
+	 kM1TxYorQH5zEhqVcRr6/h1+jxz2HUMQM7jWaSI7PnoPMwFVLW/WsEIs3XAxieQJm2Pi1GVuNo1G
+	 o1/WlGPa1A9PqcX4GIKBCJ1GXBvMZuz97ALTeP0FCL0owa6raxdRFUgGTtkXp6MJ5n3l1zgS0XI5
+	 F1bWILXkJpKO4TCaCOR/LOH+/0baDOpFtY9gs7AXzzocn76as1XdO8n3zlcFqrEI9bNz55ahAZ7r
+	 lBibt37HgTfhjsSWxH5rLMe267XcCmMGKRdXvCvewwZZzzT5Zmi3b0sgyDzeShMpGMAuUqeyTT5u
+	 T2vHUDlLCCGPsuQ+EkR40mBvgWBONJw5DwdLAH2l7DEdmaOJintUm0Ya98ghqH9hNWdJY0Fyuy0G
+	 7zZsbw9XDZnNseBhgIDmxXW5JAfuno+oSZ6rgKllohrCPd0O0eBnFR4GcnN2KPZeYy5rBtGQpY12
+	 m0Wzffqp2XEHJe3hLgg2iEWMKgf4WMfZdkw3oRxLvDiKFZj4lWYifxii8j3FmpwM92HF5tEAhSha
+	 ueuNQOgrm7FfGl9eT+PDctpvSGM9wa9sLYtpo87Fhl4FjU+liKU4gEZX/XzdA60QuxIvQ5LdBGXu
+	 agWVGcU6fkjIc/EaF8GuQcgc7mJNTx6HWu2+PhmBAMKA95IVIWI2LHFON2S4OG5vwiTW8371U2Ds
+	 4kBnmFvQY=
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+05b9b39d8bdfe1a0861f@syzkaller.appspotmail.com
+Cc: jack@suse.com,
+	jlbec@evilplan.org,
+	joseph.qi@linux.alibaba.com,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	mark@fasheh.com,
+	ocfs2-devel@lists.linux.dev,
+	syzkaller-bugs@googlegroups.com,
+	tytso@mit.edu
+Subject: [PATCH] ocfs2: Fix null-ptr-deref in jbd2_journal_update_sb_log_tail
+Date: Mon, 19 Aug 2024 21:36:06 +0800
+X-OQ-MSGID: <20240819133605.3256941-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.46.0
+In-Reply-To: <000000000000742b9d062005fc1c@google.com>
+References: <000000000000742b9d062005fc1c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <02e5b5139294897985f2b99729c5f3da3dd4f6f9.1723794770.git.ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset=gbk
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:_Ch0CgCXRbTuP8NmZS08CA--.34959S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww47uF4UJr15trW3AF18Zrb_yoW8uFW3pr
-	WfJF1UJa45Gw10k3W7Wr1Ygr1vg3y8u3y3GrWxZr18WryaqFZ3Gr9Fqwn0kFyxJr4kG34r
-	X390vw1xArZrW3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
-	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU7I
-	JmUUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Transfer-Encoding: 8bit
 
+Journal too short will cause ocfs2_check_volume failed, and will set
+journal->j_sb_buffer to NULL in journal_fail_superblock before running
+journal shutdown.
 
+Reported-and-tested-by: syzbot+05b9b39d8bdfe1a0861f@syzkaller.appspotmail.com
+Closes: https://syzkaller.appspot.com/bug?extid=05b9b39d8bdfe1a0861f
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ fs/ocfs2/journal.c | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
 
-on 8/16/2024 3:57 PM, Ojaswin Mujoo wrote:
-> Although we have checks to make sure s_stripe is a multiple of cluster
-> size, in case we accidentally end up with a scenario where this is not
-> the case, use EXT4_NUM_B2C() so that we don't end up with unexpected
-> cases where EXT4_B2C(stripe) becomes 0.
-> 
-> Also make the is_stripe_aligned check in regular_allocator a bit more
-> robust while we are at it. This should ideally have no functional change
-> unless we have a bug somewhere causing (stripe % cluster_size != 0)
-> 
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>> ---
->  fs/ext4/mballoc.c | 7 ++++---
->  1 file changed, 4 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> index 9dda9cd68ab2..b2e836a4bd18 100644
-> --- a/fs/ext4/mballoc.c
-> +++ b/fs/ext4/mballoc.c
-> @@ -2553,7 +2553,7 @@ void ext4_mb_scan_aligned(struct ext4_allocation_context *ac,
->  	do_div(a, sbi->s_stripe);
->  	i = (a * sbi->s_stripe) - first_group_block;
->  
-> -	stripe = EXT4_B2C(sbi, sbi->s_stripe);
-> +	stripe = EXT4_NUM_B2C(sbi, sbi->s_stripe);
->  	i = EXT4_B2C(sbi, i);
->  	while (i < EXT4_CLUSTERS_PER_GROUP(sb)) {
->  		if (!mb_test_bit(i, bitmap)) {
-> @@ -2929,8 +2929,9 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
->  				ext4_mb_simple_scan_group(ac, &e4b);
->  			else {
->  				bool is_stripe_aligned = sbi->s_stripe &&
-> +					sbi->s_stripe >= sbi->s_cluster_ratio &&
-sbi->s_cluster_ratio is >= 1, so sbi->s_stripe >= sbi->s_cluster_ratio could
-cover the case that sbi->s_stripe is non-zero. Non-zero check of sbi->s_stripe
-seems not needed.
->  					!(ac->ac_g_ex.fe_len %
-> -					  EXT4_B2C(sbi, sbi->s_stripe));
-> +					  EXT4_NUM_B2C(sbi, sbi->s_stripe));
->  
->  				if ((cr == CR_GOAL_LEN_FAST ||
->  				     cr == CR_BEST_AVAIL_LEN) &&
-> @@ -3707,7 +3708,7 @@ int ext4_mb_init(struct super_block *sb)
->  	 */
->  	if (sbi->s_stripe > 1) {
->  		sbi->s_mb_group_prealloc = roundup(
-> -			sbi->s_mb_group_prealloc, EXT4_B2C(sbi, sbi->s_stripe));
-> +			sbi->s_mb_group_prealloc, EXT4_NUM_B2C(sbi, sbi->s_stripe));
->  	}
->  
->  	sbi->s_locality_groups = alloc_percpu(struct ext4_locality_group);
-> 
+diff --git a/fs/ocfs2/journal.c b/fs/ocfs2/journal.c
+index 530fba34f6d3..25821077b855 100644
+--- a/fs/ocfs2/journal.c
++++ b/fs/ocfs2/journal.c
+@@ -1077,9 +1077,11 @@ void ocfs2_journal_shutdown(struct ocfs2_super *osb)
+ 	BUG_ON(atomic_read(&(osb->journal->j_num_trans)) != 0);
+ 
+ 	if (ocfs2_mount_local(osb)) {
+-		jbd2_journal_lock_updates(journal->j_journal);
+-		status = jbd2_journal_flush(journal->j_journal, 0);
+-		jbd2_journal_unlock_updates(journal->j_journal);
++		if (journal->j_journal->j_sb_buffer) {
++			jbd2_journal_lock_updates(journal->j_journal);
++			status = jbd2_journal_flush(journal->j_journal, 0);
++			jbd2_journal_unlock_updates(journal->j_journal);
++		}
+ 		if (status < 0)
+ 			mlog_errno(status);
+ 	}
+-- 
+2.43.0
 
 
