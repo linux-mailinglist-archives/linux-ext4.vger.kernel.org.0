@@ -1,147 +1,144 @@
-Return-Path: <linux-ext4+bounces-3770-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3771-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE4B2955C4C
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 Aug 2024 13:40:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0F909564C0
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 09:34:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58518281B21
-	for <lists+linux-ext4@lfdr.de>; Sun, 18 Aug 2024 11:40:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6D1F1B21D79
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 07:34:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0CB101B95B;
-	Sun, 18 Aug 2024 11:40:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69DA215697A;
+	Mon, 19 Aug 2024 07:34:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NSxTkthg"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Y3FRYoNh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EED317BA9;
-	Sun, 18 Aug 2024 11:40:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67837199B9;
+	Mon, 19 Aug 2024 07:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1723981245; cv=none; b=ug2QuywxVcSZ/Zi1CTaYWxvII0HZXeoeMG2C4ihJaL77AXDmPkaUWVkDLelRYpyxkrF80lz4SlnCcZs3nYDcMRURPm65Ncp3kDpOlzKmnFsedwI0J8r/zefP2qbk0l18M1OCLlq96BPtrXCgewcpDeSM8VVpct+QVuy2OLh9dJM=
+	t=1724052861; cv=none; b=dcwMNQ8y0ABc+E1EsdVW0bP1Zs9eis27AOUad6vC5hbnYp2pStsmfG78k0N5H96Mv0b9PqUHiQ/1gUYboRy2A62gyQ1ozTKIh1GypcOET+g++KkOCEtK85ZhKz60PSPdhRTtlt3ifM442nlWDBkofPDSRQQjRFL5MKWVosTShuA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1723981245; c=relaxed/simple;
-	bh=eBYqKGhWmGDwRXKx7wPCMGC9Z3DbPhTQ/VBYxOAysuw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TqGQ9K1Ov3bR46RCVS5dFMODQF8BEY0eMKo6J+Ku7fKQ7Jr7/GH6aHz+lzkR2iHaxSRTzPSKC5SMVKzeO7K9Iq+KT5jJC3yN7ySZ6dgDW6VY+PTN2elSQR7jbiKKZnoezwl777PRI9SgQwvY+DyhTcwiXOcowOXmEb9e35ohOuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NSxTkthg; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-202089e57d8so12361135ad.0;
-        Sun, 18 Aug 2024 04:40:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1723981243; x=1724586043; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=iPOAyXslVQztvmKtJNEbQBOKGd86i/cZ1d616kyhVrA=;
-        b=NSxTkthg1AboN0MNA0ByKvRi2zu6s5QOaqwunlVmd6C4anwVGo3u/6uFNOoEbh1pPq
-         vMJ1TrNVIq4ITh1dzVyrfbowV2PGaDtbnPv+7I5PgPCTnPmtMwCqPy0EvkUK/nTgS9Ae
-         QF0VdA78BS05ZZcMG8UhgDpL+86rH5wTcRTjs80Lbd8lJyeQ51gCbaYMSJt33mGrZz2v
-         5KyFFa4x2mMQ28rrpp61krN3zYFcydQrUHze/c9hDID4gwiSHVE+SGOM6cE5D8efDiwA
-         Vxi44SIWVyMwYniuiAGRrJzbmSr+KUvwmLKYE+CC/bZ6WB65pcMZVg3B8mr0LsSDpwMG
-         jTYA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1723981243; x=1724586043;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=iPOAyXslVQztvmKtJNEbQBOKGd86i/cZ1d616kyhVrA=;
-        b=mHWkPiq4TrlMWzO7+1WXM7frCHwuvOwVQ9ojtARMcUyOHWZGWf4T7u5X4xhaLYjzxJ
-         BQyGBnWfHrP7zhgNOkzwKJYqjZ5zdKH/uAcGGD38KLVA/go+zFbTn7PgzzZMp5AcFXtu
-         gr3gtHS7ODr4M0dL3D5zagNF5tUiGjb4WK2IM7wa6YEj2R2VAai02eoJ1An1DEISflD4
-         TguHtILfZFTT+r5IfIXI3uVsSZKmFeM4jlojM/LNACldX8vzvoeY9BwQPxOhgVMfd6iD
-         tcqmqb/IOmgcexnmtakzdZAmqFl8wSUFD0JhGWroxQ/rVI+ZOAVXIDA76Z7Vy2tZWLwo
-         pI2Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVl6XkKzUm2CuVQdJnA1TbbFOKqlGRdwmqsjPnYAF3jWyNySf8iHWP4b1HG9g+58KgaMH2wnhLS1p+JpzTj5OHEzpcrszAtJipoOOJXGbtiefepdD5cH4Ge2SlrEPEs0J7EgYHEsF5fXA==
-X-Gm-Message-State: AOJu0YwXwQYDgrc/1UK5XV1PRMcTgbU0nw4aUH0zjZ5G3YNKq13sJJJv
-	ltn2N2PsXtMYEcXOAyOvYxGjIElhEG51QyD7AJLg2kxlzYCdnzA1
-X-Google-Smtp-Source: AGHT+IGXpW4bTySqg25zXNJ2YjKACfoms2OkyOgFUzjpB9MApiGppPNXEosmS30t53Hr7ahx57tBsw==
-X-Received: by 2002:a17:902:e80b:b0:1fc:4acb:3670 with SMTP id d9443c01a7336-202061d3af7mr112886555ad.12.1723981243166;
-        Sun, 18 Aug 2024 04:40:43 -0700 (PDT)
-Received: from localhost.localdomain ([103.57.174.219])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-201f038d2aasm49085825ad.223.2024.08.18.04.40.37
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 18 Aug 2024 04:40:42 -0700 (PDT)
-From: abid-sayyad <sayyad.abid16@gmail.com>
-To: airlied@gmail.com
-Cc: daniel@ffwll.ch,
-	dmitry.baryshkov@linaro.org,
-	mripard@kernel.org,
-	ankit.k.nautiyal@intel.com,
-	jani.nikula@intel.com,
-	imre.deak@intel.com,
-	mitulkumar.ajitkumar.golani@intel.com,
-	quic_abhinavk@quicinc.com,
-	dianders@chromium.org,
-	marilene.agarcia@gmail.com,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	jack@suse.com,
-	linux-ext4@vger.kernel.org,
-	skhan@linuxfoundation.org,
-	abid-sayyad <sayyad.abid16@gmail.com>
-Subject: [PATCH] fix member variable description warnings while building docs
-Date: Sun, 18 Aug 2024 16:55:44 +0530
-Message-Id: <20240818112543.1089986-1-sayyad.abid16@gmail.com>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1724052861; c=relaxed/simple;
+	bh=jWCdw6+Mt7vTwAMd410byNxcR/efNsh0Co3i6REIQqE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=GXVRoWGE9eqUp2RD/T5eLTNdsu76HH+3QNNSd2/BgkEOqyoi0pzdswPR/W4mdiQLafXWp6pu2ecFF2qHvRdqBGJ7NhIcgiGlRRKAt7XDVtY5VQISzdhGSsedSxSj4Y00Fcy6YT8szBqT7gZrxNmv6YELcCiDh5vMHSxsn2KEreM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Y3FRYoNh; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724052859; x=1755588859;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=jWCdw6+Mt7vTwAMd410byNxcR/efNsh0Co3i6REIQqE=;
+  b=Y3FRYoNhJ9Zjhq1jbTMr/rJNEf6RwPUe4hWt4u/A+YilWreXM6da3GmS
+   H9kMalzuuulCtvCS32f02sP3LTYHj/AKCrhe/bbx4kVAtLCctgzU+UTQt
+   6tBLiztABzatagXE/a4QRU9VR7Jw5m+75tvg/yDrpiFfSxX1HdGJ7YEog
+   QjG3rUnAuQ1TMsz+t5o0ez4uJVjRyh9hcCA1TzEoKMUM6yNmcmQCEv8xZ
+   yFIM8ACsul53PYYsejRpDRjF/QTwc1xga0T2+R/b6KSMDWApUza9+Oiy/
+   IM1rZugCVEksgG+MB2mJ4TXsbEBINXP9IXqMHonSNmy/vimDnCnEbXDUP
+   Q==;
+X-CSE-ConnectionGUID: a0zdzh9pTNSIQaQTDAuqPA==
+X-CSE-MsgGUID: RILr0rTbT72jlG56sk+ByQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11168"; a="22445177"
+X-IronPort-AV: E=Sophos;i="6.10,158,1719903600"; 
+   d="scan'208";a="22445177"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 00:34:19 -0700
+X-CSE-ConnectionGUID: O+B60iEqRGqYo4fRX3CQFg==
+X-CSE-MsgGUID: FTEnVBr5RkuC77QyZMAnGw==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,158,1719903600"; 
+   d="scan'208";a="60587214"
+Received: from mwiniars-desk2.ger.corp.intel.com (HELO localhost) ([10.245.246.70])
+  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 00:34:13 -0700
+From: Jani Nikula <jani.nikula@intel.com>
+To: abid-sayyad <sayyad.abid16@gmail.com>, airlied@gmail.com
+Cc: daniel@ffwll.ch, dmitry.baryshkov@linaro.org, mripard@kernel.org,
+ ankit.k.nautiyal@intel.com, imre.deak@intel.com,
+ mitulkumar.ajitkumar.golani@intel.com, quic_abhinavk@quicinc.com,
+ dianders@chromium.org, marilene.agarcia@gmail.com,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
+ skhan@linuxfoundation.org, abid-sayyad <sayyad.abid16@gmail.com>
+Subject: Re: [PATCH] fix member variable description warnings while building
+ docs
+In-Reply-To: <20240818112543.1089986-1-sayyad.abid16@gmail.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240818112543.1089986-1-sayyad.abid16@gmail.com>
+Date: Mon, 19 Aug 2024 10:34:09 +0300
+Message-ID: <87a5h96k5q.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Fix the following warnings while building the docs :-
+On Sun, 18 Aug 2024, abid-sayyad <sayyad.abid16@gmail.com> wrote:
+> Fix the following warnings while building the docs :-
+>
+> ./include/linux/jbd2.h:1303: warning: Function parameter or struct member
+> 		'j_transaction_overhead_buffers' not described in 'journal_s'
+> ./include/linux/jbd2.h:1303: warning: Excess struct member
+> 		'j_transaction_overhead' description in 'journal_s'
+>
+> Fix spelling error for j_transaction_overhead to j_transaction_overhead_buffers.
+>
+> ./include/drm/display/drm_dp_helper.h:127: warning: Function parameter or struct
+> 		member 'target_rr_divider' not described in 'drm_dp_as_sdp'
+>
+> Add description for the 'target_rr_divider' member.
 
-./include/linux/jbd2.h:1303: warning: Function parameter or struct member
-		'j_transaction_overhead_buffers' not described in 'journal_s'
-./include/linux/jbd2.h:1303: warning: Excess struct member
-		'j_transaction_overhead' description in 'journal_s'
+Please send the two separately. They are part of two completely
+different subsystems.
 
-Fix spelling error for j_transaction_overhead to j_transaction_overhead_buffers.
+BR,
+Jani.
 
-./include/drm/display/drm_dp_helper.h:127: warning: Function parameter or struct
-		member 'target_rr_divider' not described in 'drm_dp_as_sdp'
+>
+> Signed-off-by: abid-sayyad <sayyad.abid16@gmail.com>
+> ---
+>  include/drm/display/drm_dp_helper.h | 1 +
+>  include/linux/jbd2.h                | 2 +-
+>  2 files changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+> index ea03e1dd26ba..7f2567fa230d 100644
+> --- a/include/drm/display/drm_dp_helper.h
+> +++ b/include/drm/display/drm_dp_helper.h
+> @@ -112,6 +112,7 @@ struct drm_dp_vsc_sdp {
+>   * @target_rr: Target Refresh
+>   * @duration_incr_ms: Successive frame duration increase
+>   * @duration_decr_ms: Successive frame duration decrease
+> + * @target_rr_divider: Target refresh rate divider
+>   * @mode: Adaptive Sync Operation Mode
+>   */
+>  struct drm_dp_as_sdp {
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 5157d92b6f23..17662eae408f 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1086,7 +1086,7 @@ struct journal_s
+>  	int			j_revoke_records_per_block;
+>
+>  	/**
+> -	 * @j_transaction_overhead:
+> +	 * @j_transaction_overhead_buffers:
+>  	 *
+>  	 * Number of blocks each transaction needs for its own bookkeeping
+>  	 */
+> --
+> 2.39.2
+>
 
-Add description for the 'target_rr_divider' member.
-
-Signed-off-by: abid-sayyad <sayyad.abid16@gmail.com>
----
- include/drm/display/drm_dp_helper.h | 1 +
- include/linux/jbd2.h                | 2 +-
- 2 files changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
-index ea03e1dd26ba..7f2567fa230d 100644
---- a/include/drm/display/drm_dp_helper.h
-+++ b/include/drm/display/drm_dp_helper.h
-@@ -112,6 +112,7 @@ struct drm_dp_vsc_sdp {
-  * @target_rr: Target Refresh
-  * @duration_incr_ms: Successive frame duration increase
-  * @duration_decr_ms: Successive frame duration decrease
-+ * @target_rr_divider: Target refresh rate divider
-  * @mode: Adaptive Sync Operation Mode
-  */
- struct drm_dp_as_sdp {
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 5157d92b6f23..17662eae408f 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1086,7 +1086,7 @@ struct journal_s
- 	int			j_revoke_records_per_block;
-
- 	/**
--	 * @j_transaction_overhead:
-+	 * @j_transaction_overhead_buffers:
- 	 *
- 	 * Number of blocks each transaction needs for its own bookkeeping
- 	 */
---
-2.39.2
-
+-- 
+Jani Nikula, Intel
 
