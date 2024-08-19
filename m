@@ -1,167 +1,188 @@
-Return-Path: <linux-ext4+bounces-3774-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3775-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E26E595671B
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 11:33:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2E10956821
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 12:19:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 109EB1C217CC
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 09:33:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7E5DD283899
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 10:19:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC5C15D5B9;
-	Mon, 19 Aug 2024 09:32:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B501607A4;
+	Mon, 19 Aug 2024 10:19:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="VbSc8Kxi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8068715C151
-	for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 09:32:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3A4015E5CC
+	for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 10:19:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724059945; cv=none; b=bZH+rgoY/3eo/wTyiDwHeip2wKLdkhv50RKl3i5Xo/Jz0/cEDBRe3naPK4+aGa6inBZXWtPl/nQ0RYrwUWmIYCmoOqiTZTc68kh23G+JfSCXgFS22WJRwI5K3CEzfyjxvFfgfO0GzyEn7cgEiMHPtrqVMHqeApq+qV9h/0nvka0=
+	t=1724062790; cv=none; b=ExdepddgZNwVOvZ2120E2WDlS3Ak538VsDuQLhkRHwpIm5fb6mxBbkhvXSvVEzG3gAFNAPGKvHUMWdcOvO7SVlnSQClHVyHH9zz52mNcTHzjv8A55rh2LrCrDguRONBfwoHe6LzlXKcw8eMtm5KoMZUQDMPujSk98dzBzUuRxpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724059945; c=relaxed/simple;
-	bh=5rMARzXfjykrfd6VRs6OIjWAzoKwx9rwjE22ch6ES3w=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LU4eXPdbqBn+3h9ZQqICnChrDU8yOadZpDLJISc3glEtZgqvPU0IC929LhGTBaFLQ+dc87tlDVaBl4c5unqmdujDj5jjROZIufWocMCg7LlQX6Vb/CjiqDZtHONlRIeYMNL4BIDnuiuBZKxwjnb8n7DFdpGXXu74/frYnty0i50=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-81fa44764bbso447967139f.3
-        for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 02:32:23 -0700 (PDT)
+	s=arc-20240116; t=1724062790; c=relaxed/simple;
+	bh=HRrXeSpqxMn4cHbV5csnXIpRlyy3gL+5H+8DomyTLfU=;
+	h=Message-ID:Date:MIME-Version:To:From:Subject:Content-Type; b=JT7WVEhujlrAYK3YN6DQRFDl0i4/ZXJzzAp/V33LGaOvS15AgECHJQAlygleWlsI0r3vqtnDFtK1NDPWk4N1TVEpB6hTM+iDuB/IPlxvjbTEnlYcrXGk7LFRMukS3cX+d92ex94MMDSQVHHwNEui0vBrPSA3ZDAtEYqkusxID74=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=VbSc8Kxi; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-2d3dacaccfaso2226034a91.0
+        for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 03:19:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=shopee.com; s=shopee.com; t=1724062788; x=1724667588; darn=vger.kernel.org;
+        h=content-transfer-encoding:subject:from:to:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=w10OW70sQb54xoO4mS/lvMMIc5OboPqe69kRxVXxMU8=;
+        b=VbSc8KxiBWy/8fXuteU0Yf0oYRz46WfXds1IWi3hu7NveAmBAaM8UnX5pLwW0qT29W
+         PFS5ziwBUGtYnHDb/FneLOeNVH3L+xhODnSP0S+nNLVy2819QK7VMNB8tj5Tp15ybA5Y
+         Ep2MdrA4D2qQYHHm7upYnssxTtvUuWFBnxV4om+QKr/Ire8k3DxSR26Kyntf7yHm91gu
+         d5rd96vNBhX1jIBTG6wqyzrNH9WtbSNOpuYDRyTRrbl9lnpaZsOa2Ryy9shwTsBCUS9c
+         fHn55yDVolrgLkCTTb4kSoewWUxb32kF/FuSz30LZBhreEc/wRxZN7N+lE/rlefvQxF8
+         ywTg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724059942; x=1724664742;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=31Ti/nVOY7JVVGXS7iHukqNPYzxM76JGPC6XDQTDHuY=;
-        b=ch0JIp3qLvoKDj7F1DVbccyLa8+KXigxrAx4OhJ46WRl/v6Dl3Z6kLUmwA8qIGFPrd
-         nBSXSL8NOA8Hc/y7HrClTp7TbkW6YcShXHUN2FOAnR0FR5nhMhTV1cvY+gXL/Cy1Apt4
-         ZijLs6sCf3t0hD7VWeVZH8EzsHqCkvi2e9RL1Hii7WPXcADJ++eujAEmlwDSTSreNNt5
-         G+1kUVYlRCRHjHNNNkb7/oA4yqoJGbHGKdCxDk7NXoIMFftqFSDtd1EIC62hVFQ/KSUF
-         ztgXIE4LvvMfTN2/g1fomyJvFb7oF7ROI0rCWe2we7jJEHjcLQU7CMqQfNB+HX/Tg78z
-         sWEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV4IEZ6PuUt/8mlYh0T1hq4omdioiLm0L3WfFJHLzLu+u2aIGUCe+oiVTUcXDZet3v9c0jZCpaaE3X+aEe608vzye2zb1O6RaRk8g==
-X-Gm-Message-State: AOJu0YyaI/SKxVnFg6pnc85BgYt6EynOW5O3zQv44cPQK7X+dSopNDYG
-	3L25Ni/OPiimy5e77VpwoaxEkSPTuNPKqabuzPJpkPH09VGb80ixqTUdTWEpEnhpu8cEbhNDHjU
-	dMUyD3WVorql2UquqNDx/tejXtUdS1nhqFyd5lmOjv/qmM7spxAT9b0o=
-X-Google-Smtp-Source: AGHT+IF6qveUhN2bNVUNT25upCC6vqQ9wkR5DddErz2BaGezXnt0SC16TLAqfzkPEwvNmJUpTTVpZ5GjGO2r+Pd99XrDX74fqQFT
+        d=1e100.net; s=20230601; t=1724062788; x=1724667588;
+        h=content-transfer-encoding:subject:from:to:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=w10OW70sQb54xoO4mS/lvMMIc5OboPqe69kRxVXxMU8=;
+        b=XPVwAxkGJ31eyl0fWg65H+Kcc8zle5JqrxhlfxlXw6toedfib6+LFnu3ZGJD1KDyPa
+         5Oa2azUuo1+dly5NMBvmgfzj5KjC08BrXVoJA4+GcC5/LTmLrMQcFuBSwC6tQuhp8bnX
+         sXH0dLWBM4TnHL6hfB1hNdVNcdC103eCTd/6mS9ETHU1gRTcIuPAv75QLXwHJSk3gzGv
+         MuK+d+L8TFTWmlRFXv3/nlQy6aPL8urm08rEA9apneeKQsQTwDHdWmH/4BPco7hAvW/E
+         /ftgTxAg2MxunKWTfibPcapYupom9Zo7YMvRpia9u/Rn6upkMY7aIrVfVJ8hifVBw+wM
+         XKjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXsSJ04lmISf6rRtjg5Um/FNmYpOuyrst8i8uyv1p6IHB+dzdF+pQH9T0AjRr3mcdg/fmGzK92NxkfxK8g5dct9opDjpp5vvdD7jw==
+X-Gm-Message-State: AOJu0Yx12OLCyZEAy0C+jgQDLwY9Ys/8qeOZHAnhMGOy0t/VkWTTYKTx
+	YPkl93hyT0ZteYCytol4mb/W2gCQy0MrF0txdzhyRNB3rSHS03S2NOSDCY0fO/M=
+X-Google-Smtp-Source: AGHT+IHE0HpPiE6oZpBycdlavux+wGOK5rdOlRFxbuSYY4TFf5U13iDlBYp5KOvTAaSSSIk9pF9oJg==
+X-Received: by 2002:a17:90a:8984:b0:2d3:b7c7:d67f with SMTP id 98e67ed59e1d1-2d3e00ec434mr9120332a91.26.1724062788144;
+        Mon, 19 Aug 2024 03:19:48 -0700 (PDT)
+Received: from [10.54.24.59] ([143.92.118.3])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2d3e70c88d1sm6666751a91.21.2024.08.19.03.19.46
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 19 Aug 2024 03:19:47 -0700 (PDT)
+Message-ID: <9914a4b4-eb4d-44de-a48c-8ae08eedebe8@shopee.com>
+Date: Mon, 19 Aug 2024 18:19:44 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:370f:b0:4b9:e5b4:67fd with SMTP id
- 8926c6da1cb9f-4cce15cdbd5mr540564173.1.1724059942654; Mon, 19 Aug 2024
- 02:32:22 -0700 (PDT)
-Date: Mon, 19 Aug 2024 02:32:22 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000742b9d062005fc1c@google.com>
-Subject: [syzbot] [ext4?] [ocfs2?] KASAN: null-ptr-deref Write in jbd2_journal_update_sb_log_tail
-From: syzbot <syzbot+05b9b39d8bdfe1a0861f@syzkaller.appspotmail.com>
-To: jack@suse.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, mark@fasheh.com, 
-	ocfs2-devel@lists.linux.dev, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+To: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+From: Haifeng Xu <haifeng.xu@shopee.com>
+Subject: jbd2: io throttle for metadata buffers
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    c3f2d783a459 Merge tag 'mm-hotfixes-stable-2024-08-17-19-3..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13736c29980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7229118d88b4a71b
-dashboard link: https://syzkaller.appspot.com/bug?extid=05b9b39d8bdfe1a0861f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f1b191980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1042525b980000
-
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-c3f2d783.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/4d927f7c3cfd/vmlinux-c3f2d783.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/ea54bdfad24b/bzImage-c3f2d783.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/562379f73e38/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+05b9b39d8bdfe1a0861f@syzkaller.appspotmail.com
-
-(syz-executor198,5100,0):ocfs2_check_volume:2481 ERROR: status = -22
-(syz-executor198,5100,0):ocfs2_mount_volume:1821 ERROR: status = -22
-==================================================================
-BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
-BUG: KASAN: null-ptr-deref in test_and_set_bit_lock include/asm-generic/bitops/instrumented-lock.h:57 [inline]
-BUG: KASAN: null-ptr-deref in trylock_buffer include/linux/buffer_head.h:420 [inline]
-BUG: KASAN: null-ptr-deref in lock_buffer include/linux/buffer_head.h:426 [inline]
-BUG: KASAN: null-ptr-deref in jbd2_journal_update_sb_log_tail+0x19b/0x360 fs/jbd2/journal.c:1889
-Write of size 8 at addr 0000000000000000 by task syz-executor198/5100
-
-CPU: 0 UID: 0 PID: 5100 Comm: syz-executor198 Not tainted 6.11.0-rc3-syzkaller-00338-gc3f2d783a459 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:93 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
- print_report+0xe8/0x550 mm/kasan/report.c:491
- kasan_report+0x143/0x180 mm/kasan/report.c:601
- kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
- instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
- test_and_set_bit_lock include/asm-generic/bitops/instrumented-lock.h:57 [inline]
- trylock_buffer include/linux/buffer_head.h:420 [inline]
- lock_buffer include/linux/buffer_head.h:426 [inline]
- jbd2_journal_update_sb_log_tail+0x19b/0x360 fs/jbd2/journal.c:1889
- __jbd2_update_log_tail+0x48/0x3f0 fs/jbd2/journal.c:1079
- jbd2_cleanup_journal_tail+0x230/0x2d0 fs/jbd2/checkpoint.c:334
- jbd2_journal_flush+0x290/0xc10 fs/jbd2/journal.c:2479
- ocfs2_journal_shutdown+0x443/0xbe0 fs/ocfs2/journal.c:1081
- ocfs2_mount_volume+0x169f/0x1940 fs/ocfs2/super.c:1842
- ocfs2_fill_super+0x483b/0x5880 fs/ocfs2/super.c:1084
- mount_bdev+0x20a/0x2d0 fs/super.c:1679
- legacy_get_tree+0xee/0x190 fs/fs_context.c:662
- vfs_get_tree+0x90/0x2a0 fs/super.c:1800
- do_new_mount+0x2be/0xb40 fs/namespace.c:3472
- do_mount fs/namespace.c:3812 [inline]
- __do_sys_mount fs/namespace.c:4020 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:3997
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f69037ad16a
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffed646ff58 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007ffed646ff70 RCX: 00007f69037ad16a
-RDX: 0000000020004480 RSI: 00000000200044c0 RDI: 00007ffed646ff70
-RBP: 0000000000000004 R08: 00007ffed646ffb0 R09: 0000000000004470
-R10: 0000000000000000 R11: 0000000000000282 R12: 0000000000000000
-R13: 00007ffed646ffb0 R14: 0000000000000003 R15: 0000000001000000
- </TASK>
-==================================================================
+Hi, matsers!
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+We encountered high load issuses in our production environment recently. And the kernel version is stable-5.15.39
+the filesystem is ext4(ordered).
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+After digging into it, we found the problem is due to io.max
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+thread 1:                                             
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+PID: 189529  TASK: ffff92ab51e5c080  CPU: 34  COMMAND: "mc"
+ #0 [ffffa638db807800] __schedule at ffffffff83b19898
+ #1 [ffffa638db807888] schedule at ffffffff83b19e9e
+ #2 [ffffa638db8078a8] io_schedule at ffffffff83b1a316
+ #3 [ffffa638db8078c0] bit_wait_io at ffffffff83b1a751
+ #4 [ffffa638db8078d8] __wait_on_bit at ffffffff83b1a373
+ #5 [ffffa638db807918] out_of_line_wait_on_bit at ffffffff83b1a46d
+ #6 [ffffa638db807970] __wait_on_buffer at ffffffff831b9c64
+ #7 [ffffa638db807988] jbd2_log_do_checkpoint at ffffffff832b556e
+ #8 [ffffa638db8079e8] __jbd2_log_wait_for_space at ffffffff832b55dc
+ #9 [ffffa638db807a30] add_transaction_credits at ffffffff832af369
+#10 [ffffa638db807a98] start_this_handle at ffffffff832af50f
+#11 [ffffa638db807b20] jbd2__journal_start at ffffffff832afe1f
+#12 [ffffa638db807b60] __ext4_journal_start_sb at ffffffff83241af3
+#13 [ffffa638db807ba8] __ext4_new_inode at ffffffff83253be6
+#14 [ffffa638db807c80] ext4_mkdir at ffffffff8327ec9e
+#15 [ffffa638db807d10] vfs_mkdir at ffffffff83182a92
+#16 [ffffa638db807d50] ovl_mkdir_real at ffffffffc0965c9f [overlay]
+#17 [ffffa638db807d80] ovl_create_real at ffffffffc0965e8b [overlay]
+#18 [ffffa638db807db8] ovl_create_or_link at ffffffffc09677cc [overlay]
+#19 [ffffa638db807e10] ovl_create_object at ffffffffc0967a48 [overlay]
+#20 [ffffa638db807e60] ovl_mkdir at ffffffffc0967ad3 [overlay]
+#21 [ffffa638db807e70] vfs_mkdir at ffffffff83182a92
+#22 [ffffa638db807eb0] do_mkdirat at ffffffff83184305
+#23 [ffffa638db807f08] __x64_sys_mkdirat at ffffffff831843df
+#24 [ffffa638db807f28] do_syscall_64 at ffffffff83b0bf1c
+#25 [ffffa638db807f50] entry_SYSCALL_64_after_hwframe at ffffffff83c0007c
 
-If you want to undo deduplication, reply with:
-#syz undup
+other threads:
+
+
+PID: 21125  TASK: ffff929f5b9a0000  CPU: 44  COMMAND: "task_server"
+ #0 [ffffa638aff9b900] __schedule at ffffffff83b19898
+ #1 [ffffa638aff9b988] schedule at ffffffff83b19e9e
+ #2 [ffffa638aff9b9a8] schedule_preempt_disabled at ffffffff83b1a24e
+ #3 [ffffa638aff9b9b8] __mutex_lock at ffffffff83b1af28
+ #4 [ffffa638aff9ba38] __mutex_lock_slowpath at ffffffff83b1b1a3
+ #5 [ffffa638aff9ba48] mutex_lock at ffffffff83b1b1e2
+ #6 [ffffa638aff9ba60] mutex_lock_io at ffffffff83b1b210
+ #7 [ffffa638aff9ba80] __jbd2_log_wait_for_space at ffffffff832b563b
+ #8 [ffffa638aff9bac8] add_transaction_credits at ffffffff832af369
+ #9 [ffffa638aff9bb30] start_this_handle at ffffffff832af50f
+#10 [ffffa638aff9bbb8] jbd2__journal_start at ffffffff832afe1f
+#11 [ffffa638aff9bbf8] __ext4_journal_start_sb at ffffffff83241af3
+#12 [ffffa638aff9bc40] ext4_dirty_inode at ffffffff83266d0a
+#13 [ffffa638aff9bc60] __mark_inode_dirty at ffffffff831ab423
+#14 [ffffa638aff9bca0] generic_update_time at ffffffff8319169d
+#15 [ffffa638aff9bcb0] inode_update_time at ffffffff831916e5
+#16 [ffffa638aff9bcc0] file_update_time at ffffffff83191b01
+#17 [ffffa638aff9bd08] file_modified at ffffffff83191d47
+#18 [ffffa638aff9bd20] ext4_write_checks at ffffffff8324e6e4
+#19 [ffffa638aff9bd40] ext4_buffered_write_iter at ffffffff8324edfb
+#20 [ffffa638aff9bd78] ext4_file_write_iter at ffffffff8324f553
+#21 [ffffa638aff9bdf8] ext4_file_write_iter at ffffffff8324f505
+#22 [ffffa638aff9be00] new_sync_write at ffffffff8316dfca
+#23 [ffffa638aff9be90] vfs_write at ffffffff8316e975
+#24 [ffffa638aff9bec8] ksys_write at ffffffff83170a97
+#25 [ffffa638aff9bf08] __x64_sys_write at ffffffff83170b2a
+#26 [ffffa638aff9bf18] do_syscall_64 at ffffffff83b0bf1c
+#27 [ffffa638aff9bf38] asm_common_interrupt at ffffffff83c00cc8
+#28 [ffffa638aff9bf50] entry_SYSCALL_64_after_hwframe at ffffffff83c0007c
+
+
+The cgroup of thread1 has set io.max, so the j_checkpoint_mutex can't be released and many threads must wait for it.
+I have some questions about the throttle for the metadata buffers.
+
+1) writeback 
+
+jbd2 converts the buffer head from jbddirty to buffer_dirty and trigger the write back in __jbd2_journal_temp_unlink_buffer().
+By default, the blkcg in bdi_writeback attached to block device inode is blkcg_root which has no io throttle rules. But there may be other
+threads which invoke sync_filesystem, such as umount overlayfs. This operation will write out all dirty data associated with the block
+device. In this case, the bdi_writeback attached to block device inode may changed due to Boyer-Moore majority vote algorithm.
+And the blkcg in bdi_writeback attached to block device inode is the group where the thread allocate the buffer head and dev page.
+
+So the writeback process of metadata buffers can also be throttled, right?
+
+
+2) checkpoint
+
+If the free log space is not suffcient, we will do checkpoint to update log tail. During the process, if the buffer head hasn't been 
+written out by wirteback. we will lock the buffer head and submit bio in current context.
+
+So the throttle rules may be different from writeback?
+
+
+3）j_checkpoint_mutex
+If we can't make any progress in checkpoint due to io throttle, the j_checkpoint_mutex can'be release and block many others threads.
+
+So can we cancel the throttle rules for metadata buffers and keep it in blkcg_root?
+
+Thanks!
+
 
