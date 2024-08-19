@@ -1,277 +1,167 @@
-Return-Path: <linux-ext4+bounces-3773-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3774-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91FE29564FF
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 09:51:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E26E595671B
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 11:33:32 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 06541B2343C
-	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 07:51:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 109EB1C217CC
+	for <lists+linux-ext4@lfdr.de>; Mon, 19 Aug 2024 09:33:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 236DC157484;
-	Mon, 19 Aug 2024 07:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Fdsx+l6P"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC5C15D5B9;
+	Mon, 19 Aug 2024 09:32:25 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11CCD28370;
-	Mon, 19 Aug 2024 07:51:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724053880; cv=fail; b=peXETDoHo4ipEE5C/iroluLQH7x9igXOHqCPkHjZcrFyAEV/xQIkj+e2cR1QCKovOi2Qfeq8YevSUDAXbvkr6obGNb+ObHHWGKM/ecsE00kVdqP7STdaTWnVfTPZxC0ODRYA8zNQqGVzk+G8hv0gTv5WEthMzSqMFxZs+uG6OTA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724053880; c=relaxed/simple;
-	bh=kPecblUWJnNquAI3ZXfXiWggGg8rClvA+OONaXkTR3E=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=osOTE0FO2dtA2p1gimOTjiTVYj7yHU6KS5YhY4NSc2UGaI8sapXUm/OtCctIz7/lF5i30B1g9ydVFR4L7zwCxDteeMuHmXubiDdX2qOe78YEt/WYsBPESQ6lYKbQyDid+2EehJ5M6iPK0eLQQ1yo6rkpw9yBp8JPQD0H69etaoQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Fdsx+l6P; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724053878; x=1755589878;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=kPecblUWJnNquAI3ZXfXiWggGg8rClvA+OONaXkTR3E=;
-  b=Fdsx+l6Pc1rvR0wqmZCL9bw3vAU1H5px5FJdv/S1sl8VpckdRJsfXTx5
-   x3XuJDsNgkCpq7sMITfouhy6KVqmKcFhitLEceEpv8gL8ZfuQfQx05leE
-   8wxAvD/Ad+BI1wl3ASRno8ZF/UXyxeuRRGMgKnqgf3IZAmHPcq/x0CFOe
-   V4lDW102Xq++3b2uSwr1PQlFayzHjbh4dIcL78Id/YO4cP6If5JilZAtf
-   hDlXzbrhKaLGhQn3XK+qteh3OSJX3Esc8p9C88y5NZK9wucIJShcX/1DC
-   st3PsvbsSSfFMoC6g+021Nf4M2BwScoiVHKCmzP676s4OhxxRzxqq74kI
-   g==;
-X-CSE-ConnectionGUID: sAxxSywGTGiGnpzJzaeTAw==
-X-CSE-MsgGUID: ZUECmS90S06/KtqSmTr33A==
-X-IronPort-AV: E=McAfee;i="6700,10204,11168"; a="22132056"
-X-IronPort-AV: E=Sophos;i="6.10,158,1719903600"; 
-   d="scan'208";a="22132056"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Aug 2024 00:51:15 -0700
-X-CSE-ConnectionGUID: pwctg6F/T32SMwjlUhN8MQ==
-X-CSE-MsgGUID: w1O6zX+TSPWjEXp22gtT1w==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,158,1719903600"; 
-   d="scan'208";a="59954115"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by fmviesa006.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Aug 2024 00:51:14 -0700
-Received: from orsmsx603.amr.corp.intel.com (10.22.229.16) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Mon, 19 Aug 2024 00:51:13 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Mon, 19 Aug 2024 00:51:13 -0700
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (104.47.58.176)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Mon, 19 Aug 2024 00:51:13 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Fz5lxoOsZi04yvIyLqYD2nctMF0wOasiyY6hXQQVvlhtWgKZptXUZUmhqgEm0dFuP+ATHTos2lxG9cXWkU7jVhuueLuFVuUrM7oSnXnN021yFjWId949Z23w+XIj0f7sMjrV/lc60hgdHq5Gq5kTfzq5/zPHXbkI7KhRGewPBrj/8A/jRu0fYx3Abydg2PwNFz05+4cqQkBCZ+0ArXiGsdsE33M+IXlaOlti+lxbC/LcGkcyCkqCv8iawyJVShy6F+BWfpPzLg1QZU+aXwetO93SvwZHQ0zzslQ1MKivJH2UU2nwp8xj4Os+0ekkoJxiE/XhdNB7y6U2297PmUp5JA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=6U63LPGG4WIt98HT6e0b6b7+NVwscjnvH7rW+j7sQPU=;
- b=KYv5LaxkK9U7ijn3DZ3J8iAocMOu2/+w2dbTaAZ3pt3KOb1k/uW5Wj20JvwhWfNbTsgGmj5BXMDRFkjJ4BDmH/7Sv8kCSQlnrXoP7PenmWKVR/TFiX//aiOQApVff3zPftwzPNGFtKaav+AgU7Ioa9aKC1hvPdlXnsNPgaWh0n0/4IKfTf07JEgUVE/h6IhTKGIRIQy/3cU+LMQxbwWRB074iAfz0ykAbwMl7qKirdOlDvWD5bDtGDnluZlqeQiFDxAqOj7ZzrkeexdiBdIRmqlUyec1YYqohoZc38SayMNR1gLAfaFxY7aRwGHXcWDY65P39PZbe8Qn58W/eca1OQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from IA1PR11MB6348.namprd11.prod.outlook.com (2603:10b6:208:3af::16)
- by CY8PR11MB7033.namprd11.prod.outlook.com (2603:10b6:930:53::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7875.21; Mon, 19 Aug
- 2024 07:51:10 +0000
-Received: from IA1PR11MB6348.namprd11.prod.outlook.com
- ([fe80::4db5:b0d9:b6b3:bb52]) by IA1PR11MB6348.namprd11.prod.outlook.com
- ([fe80::4db5:b0d9:b6b3:bb52%4]) with mapi id 15.20.7875.019; Mon, 19 Aug 2024
- 07:51:08 +0000
-From: "Golani, Mitulkumar Ajitkumar" <mitulkumar.ajitkumar.golani@intel.com>
-To: abid-sayyad <sayyad.abid16@gmail.com>, "airlied@gmail.com"
-	<airlied@gmail.com>
-CC: "daniel@ffwll.ch" <daniel@ffwll.ch>, "dmitry.baryshkov@linaro.org"
-	<dmitry.baryshkov@linaro.org>, "mripard@kernel.org" <mripard@kernel.org>,
-	"Nautiyal, Ankit K" <ankit.k.nautiyal@intel.com>, "Nikula, Jani"
-	<jani.nikula@intel.com>, "Deak, Imre" <imre.deak@intel.com>,
-	"quic_abhinavk@quicinc.com" <quic_abhinavk@quicinc.com>,
-	"dianders@chromium.org" <dianders@chromium.org>, "marilene.agarcia@gmail.com"
-	<marilene.agarcia@gmail.com>, "dri-devel@lists.freedesktop.org"
-	<dri-devel@lists.freedesktop.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "tytso@mit.edu" <tytso@mit.edu>,
-	"jack@suse.com" <jack@suse.com>, "linux-ext4@vger.kernel.org"
-	<linux-ext4@vger.kernel.org>, "skhan@linuxfoundation.org"
-	<skhan@linuxfoundation.org>
-Subject: RE: [PATCH] fix member variable description warnings while building
- docs
-Thread-Topic: [PATCH] fix member variable description warnings while building
- docs
-Thread-Index: AQHa8WN4Lx/m86sUqkSco3PD+5KZVLIuNe3g
-Date: Mon, 19 Aug 2024 07:51:08 +0000
-Message-ID: <IA1PR11MB6348A1DE51518D6B437D2C04B28C2@IA1PR11MB6348.namprd11.prod.outlook.com>
-References: <20240818112543.1089986-1-sayyad.abid16@gmail.com>
-In-Reply-To: <20240818112543.1089986-1-sayyad.abid16@gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-Mentions: sayyad.abid16@gmail.com
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: IA1PR11MB6348:EE_|CY8PR11MB7033:EE_
-x-ms-office365-filtering-correlation-id: 40be87ca-67f0-4e63-b919-08dcc023afef
-x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;ARA:13230040|366016|1800799024|376014|7416014|38070700018;
-x-microsoft-antispam-message-info: =?us-ascii?Q?rD+I4uLM/1pEG2Tos02Dm6qqHB82dCf3XTheZinAMSkpWQTdM0mmFYjhcupL?=
- =?us-ascii?Q?klG3AtiRIFTBB/kinRVpuUhsIzKm7TBjmRFQJWrVXjOFQmcPHMaoB3VgDDIA?=
- =?us-ascii?Q?REZPFaCfWnRfngj+mc3JXhtrH4jsqARHYbYazBg6EjoXZTYBPIEuBNiNwZlk?=
- =?us-ascii?Q?x0WWHPCggoF4i8u/JkMjQD6tui1/DMVYdQp0NfyY2dVcihBYBsRY7eHJ7x1+?=
- =?us-ascii?Q?sN1tCHt/HfayFhdZSUPtJd5X6Ow0I0ugEiD3mfvDufRrcO3s3Ih92QsKJnfO?=
- =?us-ascii?Q?9fBArXu2P3WDOclIAXnuzAhjA2coiUMvn3ysxxmcivvnToUaIiHCMmUZDVtL?=
- =?us-ascii?Q?0u00mhAtfMtv4sGPHCdMFXFFjiDXvkP79mdvCZ6Vathjyjy6WbjJmHvA2RlN?=
- =?us-ascii?Q?BOcdGUUhw740YrZFY+D3Lu/Nhym0eh0YiaBDhXwpP040D2shN3K/U7zmpG1B?=
- =?us-ascii?Q?LGsH/gzckHp3pt2zxENgAYa5AY+xyii84GN3rHo/DfOoQYBD9TL0fY3tQNhU?=
- =?us-ascii?Q?A6OK9P10D+62m1ZZXqEe2MUE4FM3yGvn+1TRI188SEhIrRMmOpZFY5nDaaPs?=
- =?us-ascii?Q?hWvqXJ6zhrx8OziNeL7OcSAiLUJyq2jH9UdW1YGuUI5KfeyacecXo9N1o8aj?=
- =?us-ascii?Q?oTq/PJw1pMOXI7DMRPrjQY5YkTo42GVt1Es/As/FaCwyo6u8LDBEpT7NYkEx?=
- =?us-ascii?Q?ZGZBsEzbJAJPNdybxwQ+NRoUZ8usrhSeMcFBI11+v4CRDbqNEn560s9CUl/1?=
- =?us-ascii?Q?BeQUinQuagweP+nuRsqVaHXt1bAFYWtWiqdqLJmURBm3guskfZ3/ynSE7AGD?=
- =?us-ascii?Q?ReK1gzylp+VrqmuVnvtgu69AiCm5OFh05F74rOIOUeV06DesCEqL8sRy4yZY?=
- =?us-ascii?Q?qffpDJ79BmDNbglQkiFYHQCXxtPXElQ6FNZ3b3LM++cBjLrIHnABzXEP45j+?=
- =?us-ascii?Q?7uERHZkrm4fMsUPaCzGV80289l066E9y60R4lAptcUEhksQCqC50ch05NBTe?=
- =?us-ascii?Q?w4Yqfgk+mcoQtPa4hwyB3ihavbGfZCtnXy89wj2DoTdIg3rTOOzhLluNk2Ej?=
- =?us-ascii?Q?pABCLXOotJukIkaldnt7oxLlBeY4qWZLzW+vb2kDomYW3svCqchOa0OPM01l?=
- =?us-ascii?Q?JoVSAR9n7CfSZJ9oB+CpCL4SWx+mSuQIHIS2enT7nMvN1PKV2IRG3F2OPZGz?=
- =?us-ascii?Q?zYP4tbMi4qDNgf1qmmXZ/Te7Ew0gzarRaYlEY9Vz3MsNfo9g/djQIm9gZkQJ?=
- =?us-ascii?Q?5CeqWx6hqKTx8hsziLg2xo+TRi70GccRJTn6PelV/kWBEzumK10TbTpWH4ji?=
- =?us-ascii?Q?YF3GuW1qfDd+ELyDk+C7gXMZ0F/0EKdjftvO17zmwy8HflwsimjkKXwxEUpc?=
- =?us-ascii?Q?QsL7E/fPMiTvnDwlc1smG7aBzNtq5V5GaHzjBDve0/+6c9gMsg=3D=3D?=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB6348.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(376014)(7416014)(38070700018);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?Iv8g342kV6p5zOYz6yFP1rdrhOOhOXJZL38l0tKDYFxqgZ15tREtljC2rVTS?=
- =?us-ascii?Q?2rlqg0fwSj0MjyPoguxxUI9GhvG2exoPo15hNw1bW0ncwOeOvLtLDDWs9Iwu?=
- =?us-ascii?Q?GgbIoOqHYvHdT5uVtSphQXudrDddMK/JvlZfjzyi4cCrIVfpQc6JjEWyvST+?=
- =?us-ascii?Q?O9g1upxRVcrvVJlEHdftJsq95isQEh4ANFnaQZSnlzpfZyhP7HhpONNUWLCV?=
- =?us-ascii?Q?4YboF+al2GyNFmO8l428dA515hajEZMGlM2Nc5pzSGVp5Re698h1inD0Azan?=
- =?us-ascii?Q?ZZktWq/RYU/z/9DQtjuSkQCj4QjOzJFqWTfvCVGM09y0ymvyrV+aBpyTLBxd?=
- =?us-ascii?Q?Ujo5IGv/2qVVORR2daH5fx33Th4sduBTzfZpNudCQm9RLXgH1uu/NzSyGa0W?=
- =?us-ascii?Q?ednc4gVR7veraNH/AaqyJz/bB0M5zt8f9QFBwzDmQCeRu/IuzTutYygz7da8?=
- =?us-ascii?Q?5kUyvzZPPhGWFx1zebuHt9UQ0yctO8JUvjfRQtGNb7gCpjWz9nYy+Ws7dHvO?=
- =?us-ascii?Q?ijCzJxUlFnlRV/u9kn0VYkh9gmqDyanalCGKZc+vFD4XVAVZgJD9nX99dHMM?=
- =?us-ascii?Q?mAeQh+Cy7bMV7QMIoyB9r5Xs7IZ7sS2Td4atnlpgLrwA39UhNfe/8FT9qQfs?=
- =?us-ascii?Q?eP+WJLfstWoe4fvlE2ff/OEFYBK9T3fRBmnY1RAeVXYfJ6bFIsQ3/GCuGGQm?=
- =?us-ascii?Q?gdC1ZoJf7Cgx+OByLiBCHYPM5Tp6pdyxvtqmI+KoRLZYM/HVIMRxw5pFDXPH?=
- =?us-ascii?Q?H6wn2QjXCXmEh0hQSMcSVeclZdhAjvpXuz3pgL7L32A5YMEtbb3P1Edjz9kC?=
- =?us-ascii?Q?nR2C0cpy6HC7slIQAZc+iE12npfpPmA1Ov0J71mqIut5Au0xwPRiIs1E6CNE?=
- =?us-ascii?Q?dxTUC5YVB2Ycibs06kMNknl9V6bmz2dMlFBYQGs+dktrJaMsFQ2CFLuBzTXG?=
- =?us-ascii?Q?DR7n36fN9RkSzdOBi9KarqcrYGshWDOqMM4T6Oq1lvT3BK6hOh6EXv+BMxPg?=
- =?us-ascii?Q?6EQjr1lt1DtaYfJTmrDyrWOGN36TNbADKvCf1jUwugXXK57cyQzh11M8BUCG?=
- =?us-ascii?Q?G0gdX8ZDmxAKGnF7FV+O4dZL7Yl2bnjezncIg8Gp/2CBOihySz+7P9GXK3X4?=
- =?us-ascii?Q?SvWkt7czuATu5smiE0LY+TRT/224OOhmquxzQB08Ms069LGmAA1JRwB4o4iQ?=
- =?us-ascii?Q?3pc13P7TmlzeFPV+YOI8y6KH3672/mgYDZluE7bNSiUKQFjGxkLAoipFvaPv?=
- =?us-ascii?Q?3N8//Rc0nVhqxSHZQiQykJxMwhOTev+TDizx372jkpynPXmZBDHOU0zoFWCQ?=
- =?us-ascii?Q?7vYw3j96+Wa79tPsykl0ThO9yJ2Ed05XNMjUfp/G/uebWED/2fanyuCLNEAT?=
- =?us-ascii?Q?GrPUOruXkOE1UcsaTuTlD+/pN9fpHT5F8QRTYNbngZNizPBxzDwZdbXnFwoS?=
- =?us-ascii?Q?5qzMsxLodqpnsbvxFtm3qGpGBdzPsNIyXRr80FOIvrCIff9aps+TYrF6N+M+?=
- =?us-ascii?Q?VEDyg7wBuvMicpabk1xpFqwlTdX3q9nB4zjO7aXPMqMMMsG558qGu0u3xMCl?=
- =?us-ascii?Q?dIG9MgEVRHgUTPzh6OenRMLiCT/2B3S6M7Gj5zl6IiCVcoNPO0IqHqk/6u41?=
- =?us-ascii?Q?UqjxS0bXrPHCun5L+DpPuGQ=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8068715C151
+	for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 09:32:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724059945; cv=none; b=bZH+rgoY/3eo/wTyiDwHeip2wKLdkhv50RKl3i5Xo/Jz0/cEDBRe3naPK4+aGa6inBZXWtPl/nQ0RYrwUWmIYCmoOqiTZTc68kh23G+JfSCXgFS22WJRwI5K3CEzfyjxvFfgfO0GzyEn7cgEiMHPtrqVMHqeApq+qV9h/0nvka0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724059945; c=relaxed/simple;
+	bh=5rMARzXfjykrfd6VRs6OIjWAzoKwx9rwjE22ch6ES3w=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=LU4eXPdbqBn+3h9ZQqICnChrDU8yOadZpDLJISc3glEtZgqvPU0IC929LhGTBaFLQ+dc87tlDVaBl4c5unqmdujDj5jjROZIufWocMCg7LlQX6Vb/CjiqDZtHONlRIeYMNL4BIDnuiuBZKxwjnb8n7DFdpGXXu74/frYnty0i50=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-81fa44764bbso447967139f.3
+        for <linux-ext4@vger.kernel.org>; Mon, 19 Aug 2024 02:32:23 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724059942; x=1724664742;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=31Ti/nVOY7JVVGXS7iHukqNPYzxM76JGPC6XDQTDHuY=;
+        b=ch0JIp3qLvoKDj7F1DVbccyLa8+KXigxrAx4OhJ46WRl/v6Dl3Z6kLUmwA8qIGFPrd
+         nBSXSL8NOA8Hc/y7HrClTp7TbkW6YcShXHUN2FOAnR0FR5nhMhTV1cvY+gXL/Cy1Apt4
+         ZijLs6sCf3t0hD7VWeVZH8EzsHqCkvi2e9RL1Hii7WPXcADJ++eujAEmlwDSTSreNNt5
+         G+1kUVYlRCRHjHNNNkb7/oA4yqoJGbHGKdCxDk7NXoIMFftqFSDtd1EIC62hVFQ/KSUF
+         ztgXIE4LvvMfTN2/g1fomyJvFb7oF7ROI0rCWe2we7jJEHjcLQU7CMqQfNB+HX/Tg78z
+         sWEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV4IEZ6PuUt/8mlYh0T1hq4omdioiLm0L3WfFJHLzLu+u2aIGUCe+oiVTUcXDZet3v9c0jZCpaaE3X+aEe608vzye2zb1O6RaRk8g==
+X-Gm-Message-State: AOJu0YyaI/SKxVnFg6pnc85BgYt6EynOW5O3zQv44cPQK7X+dSopNDYG
+	3L25Ni/OPiimy5e77VpwoaxEkSPTuNPKqabuzPJpkPH09VGb80ixqTUdTWEpEnhpu8cEbhNDHjU
+	dMUyD3WVorql2UquqNDx/tejXtUdS1nhqFyd5lmOjv/qmM7spxAT9b0o=
+X-Google-Smtp-Source: AGHT+IF6qveUhN2bNVUNT25upCC6vqQ9wkR5DddErz2BaGezXnt0SC16TLAqfzkPEwvNmJUpTTVpZ5GjGO2r+Pd99XrDX74fqQFT
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB6348.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 40be87ca-67f0-4e63-b919-08dcc023afef
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Aug 2024 07:51:08.7689
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: pSxcVlgeblsiQf+xyTGmzVdGMKQLkqMpPoTmUGR8Mz1onGfbBt7lXuU8a6041YSw51+MF1F0Ddvq9nNkGUJcEOvrILEzIAqoxuARt82qOcauMvsFJwvdVqjH2F/z/zqQ
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY8PR11MB7033
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a05:6638:370f:b0:4b9:e5b4:67fd with SMTP id
+ 8926c6da1cb9f-4cce15cdbd5mr540564173.1.1724059942654; Mon, 19 Aug 2024
+ 02:32:22 -0700 (PDT)
+Date: Mon, 19 Aug 2024 02:32:22 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000742b9d062005fc1c@google.com>
+Subject: [syzbot] [ext4?] [ocfs2?] KASAN: null-ptr-deref Write in jbd2_journal_update_sb_log_tail
+From: syzbot <syzbot+05b9b39d8bdfe1a0861f@syzkaller.appspotmail.com>
+To: jack@suse.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com, 
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, mark@fasheh.com, 
+	ocfs2-devel@lists.linux.dev, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-Hi @abid-sayyad
+Hello,
 
-> -----Original Message-----
-> From: abid-sayyad <sayyad.abid16@gmail.com>
-> Sent: Sunday, August 18, 2024 4:56 PM
-> To: airlied@gmail.com
-> Cc: daniel@ffwll.ch; dmitry.baryshkov@linaro.org; mripard@kernel.org;
-> Nautiyal, Ankit K <ankit.k.nautiyal@intel.com>; Nikula, Jani
-> <jani.nikula@intel.com>; Deak, Imre <imre.deak@intel.com>; Golani,
-> Mitulkumar Ajitkumar <mitulkumar.ajitkumar.golani@intel.com>;
-> quic_abhinavk@quicinc.com; dianders@chromium.org;
-> marilene.agarcia@gmail.com; dri-devel@lists.freedesktop.org; linux-
-> kernel@vger.kernel.org; tytso@mit.edu; jack@suse.com; linux-
-> ext4@vger.kernel.org; skhan@linuxfoundation.org; abid-sayyad
-> <sayyad.abid16@gmail.com>
-> Subject: [PATCH] fix member variable description warnings while building
-> docs
->=20
-> Fix the following warnings while building the docs :-
->=20
-> ./include/linux/jbd2.h:1303: warning: Function parameter or struct member
-> 		'j_transaction_overhead_buffers' not described in 'journal_s'
-> ./include/linux/jbd2.h:1303: warning: Excess struct member
-> 		'j_transaction_overhead' description in 'journal_s'
->=20
-> Fix spelling error for j_transaction_overhead to
-> j_transaction_overhead_buffers.
->=20
-> ./include/drm/display/drm_dp_helper.h:127: warning: Function parameter or
-> struct
-> 		member 'target_rr_divider' not described in 'drm_dp_as_sdp'
->=20
-> Add description for the 'target_rr_divider' member.
->=20
-> Signed-off-by: abid-sayyad <sayyad.abid16@gmail.com>
-> ---
->  include/drm/display/drm_dp_helper.h | 1 +
->  include/linux/jbd2.h                | 2 +-
->  2 files changed, 2 insertions(+), 1 deletion(-)
->=20
-> diff --git a/include/drm/display/drm_dp_helper.h
-> b/include/drm/display/drm_dp_helper.h
-> index ea03e1dd26ba..7f2567fa230d 100644
-> --- a/include/drm/display/drm_dp_helper.h
-> +++ b/include/drm/display/drm_dp_helper.h
-> @@ -112,6 +112,7 @@ struct drm_dp_vsc_sdp {
->   * @target_rr: Target Refresh
->   * @duration_incr_ms: Successive frame duration increase
->   * @duration_decr_ms: Successive frame duration decrease
-> + * @target_rr_divider: Target refresh rate divider
+syzbot found the following issue on:
 
-This change is merged to drm-tip as part of following commit
-a755947e050b8751fc5402609a7d600e9c756fa7
+HEAD commit:    c3f2d783a459 Merge tag 'mm-hotfixes-stable-2024-08-17-19-3..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=13736c29980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7229118d88b4a71b
+dashboard link: https://syzkaller.appspot.com/bug?extid=05b9b39d8bdfe1a0861f
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15f1b191980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1042525b980000
 
->   * @mode: Adaptive Sync Operation Mode
->   */
->  struct drm_dp_as_sdp {
-> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h index
-> 5157d92b6f23..17662eae408f 100644
-> --- a/include/linux/jbd2.h
-> +++ b/include/linux/jbd2.h
-> @@ -1086,7 +1086,7 @@ struct journal_s
->  	int			j_revoke_records_per_block;
->=20
->  	/**
-> -	 * @j_transaction_overhead:
-> +	 * @j_transaction_overhead_buffers:
->  	 *
->  	 * Number of blocks each transaction needs for its own bookkeeping
->  	 */
-> --
-> 2.39.2
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-c3f2d783.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4d927f7c3cfd/vmlinux-c3f2d783.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/ea54bdfad24b/bzImage-c3f2d783.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/562379f73e38/mount_0.gz
 
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+05b9b39d8bdfe1a0861f@syzkaller.appspotmail.com
+
+(syz-executor198,5100,0):ocfs2_check_volume:2481 ERROR: status = -22
+(syz-executor198,5100,0):ocfs2_mount_volume:1821 ERROR: status = -22
+==================================================================
+BUG: KASAN: null-ptr-deref in instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+BUG: KASAN: null-ptr-deref in test_and_set_bit_lock include/asm-generic/bitops/instrumented-lock.h:57 [inline]
+BUG: KASAN: null-ptr-deref in trylock_buffer include/linux/buffer_head.h:420 [inline]
+BUG: KASAN: null-ptr-deref in lock_buffer include/linux/buffer_head.h:426 [inline]
+BUG: KASAN: null-ptr-deref in jbd2_journal_update_sb_log_tail+0x19b/0x360 fs/jbd2/journal.c:1889
+Write of size 8 at addr 0000000000000000 by task syz-executor198/5100
+
+CPU: 0 UID: 0 PID: 5100 Comm: syz-executor198 Not tainted 6.11.0-rc3-syzkaller-00338-gc3f2d783a459 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:93 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
+ print_report+0xe8/0x550 mm/kasan/report.c:491
+ kasan_report+0x143/0x180 mm/kasan/report.c:601
+ kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
+ instrument_atomic_read_write include/linux/instrumented.h:96 [inline]
+ test_and_set_bit_lock include/asm-generic/bitops/instrumented-lock.h:57 [inline]
+ trylock_buffer include/linux/buffer_head.h:420 [inline]
+ lock_buffer include/linux/buffer_head.h:426 [inline]
+ jbd2_journal_update_sb_log_tail+0x19b/0x360 fs/jbd2/journal.c:1889
+ __jbd2_update_log_tail+0x48/0x3f0 fs/jbd2/journal.c:1079
+ jbd2_cleanup_journal_tail+0x230/0x2d0 fs/jbd2/checkpoint.c:334
+ jbd2_journal_flush+0x290/0xc10 fs/jbd2/journal.c:2479
+ ocfs2_journal_shutdown+0x443/0xbe0 fs/ocfs2/journal.c:1081
+ ocfs2_mount_volume+0x169f/0x1940 fs/ocfs2/super.c:1842
+ ocfs2_fill_super+0x483b/0x5880 fs/ocfs2/super.c:1084
+ mount_bdev+0x20a/0x2d0 fs/super.c:1679
+ legacy_get_tree+0xee/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x90/0x2a0 fs/super.c:1800
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3472
+ do_mount fs/namespace.c:3812 [inline]
+ __do_sys_mount fs/namespace.c:4020 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:3997
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f69037ad16a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffed646ff58 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffed646ff70 RCX: 00007f69037ad16a
+RDX: 0000000020004480 RSI: 00000000200044c0 RDI: 00007ffed646ff70
+RBP: 0000000000000004 R08: 00007ffed646ffb0 R09: 0000000000004470
+R10: 0000000000000000 R11: 0000000000000282 R12: 0000000000000000
+R13: 00007ffed646ffb0 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
+==================================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
