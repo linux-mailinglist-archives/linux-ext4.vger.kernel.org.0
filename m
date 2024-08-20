@@ -1,208 +1,155 @@
-Return-Path: <linux-ext4+bounces-3800-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3802-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21649958868
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 16:02:53 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 595CE9588B8
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 16:12:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99AE9281266
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 14:02:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8873B21154
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 14:12:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C27B191F6B;
-	Tue, 20 Aug 2024 14:02:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="ZsTVHTcg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CC871922E5;
+	Tue, 20 Aug 2024 14:11:51 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A891917E4;
-	Tue, 20 Aug 2024 14:02:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD31F1917CB
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 14:11:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724162544; cv=none; b=f0mcaWA9gsFNlq+VFqh3LSM0K/wDf8jFYkRMLUCs+Ze0SCOkUDQdoHPmh/RRhO+c3WlswsSZteFv0tm+hhVdIhPcGIOPjS3GzWHJsTm1QwnuU4PhGI7xEv9zERSjpj1Ovj4elPWmtEws0zXzXdoPD1HD5OmPu1qa7sP2RBtFQys=
+	t=1724163111; cv=none; b=iJvZEcXFg2YWoFgQkDJI3BOAK12oThurM5KMVjh8y1RbRh3i6DRUPGnLuANYFS5sgRGO9FFj+MnaOoswG4uNCuGp6bYczCbM3XvtFLeO3lZCVcid7IPLWp3uWQm0Mg0XmG/qYW6oKjw5tPUQZsS9fGwT1wL63Pn32sPl3dWSvOg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724162544; c=relaxed/simple;
-	bh=/RP+vchqEyeezYylnz8b10s5iJ9FMw2qzdebpR/Z78U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B8nmQQ+Qm0IOfbeLLxk6QfRXeIel0cTAKo++wE5yNsA/aEs/Eb/KTSyqZbA8S5IRkDZo6pvSC/+dFYyu2LZHacI5+rPohZ68/Soi+ijpOcSPOGZ3AfdFLbULGaJOloq/vQY9l86bOXaM+qWS5W8+tHTFaeesRezsY1jzX8GMdOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=ZsTVHTcg; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=In-Reply-To:Content-Type:MIME-Version:References:Message-ID:
-	Subject:Cc:To:From:Date:Sender:Reply-To:Content-Transfer-Encoding:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=sXowgNI7Ym7p4ze9gJRZD2DGLWRu4RKLL5qm9E1s/ns=; b=ZsTVHTcgNKZ2oRSChowadTFdMb
-	xGtRVwUHj4ySi0UkAO+GkGS5CVs4dvM8IwesectYlk/DvqtAxVVG0kbTwGZ11wRU/zrwZpyF9DeYG
-	e0XD53wQRhKa0cW+qXTxVJLfi+n0JdcPZWfQk3M2d9bsI/jElVx+YhuNBeOJXPn2YTU+MMPEznp2x
-	PJESkvzek2wHQ89abJ0qQOP7Zpsb7mLRkYUTu4eNrecW+kywS6gYL6GwU66LyhuKrRZ+txhjT2Gxx
-	4phuuIQ/Sy93a3tBu6YNVpkKM/BByvzzm22QaU6E2xqIiJiDzm2Su12xzr1uKxYr6T2PKs3BFd3Cc
-	n8It4SkQ==;
-Received: from 179-125-75-209-dinamico.pombonet.net.br ([179.125.75.209] helo=quatroqueijos.cascardo.eti.br)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_SECP256R1__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1sgPRA-002duS-Pe; Tue, 20 Aug 2024 16:02:16 +0200
-Date: Tue, 20 Aug 2024 11:02:08 -0300
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-To: syzbot <syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com>
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_search_dir
- (2)
-Message-ID: <ZsSh4NUWT7MlvlSL@quatroqueijos.cascardo.eti.br>
-References: <00000000000062812a062004738b@google.com>
+	s=arc-20240116; t=1724163111; c=relaxed/simple;
+	bh=oyFJwQ6CJco6l2jvEpleg1wYg1Sp8qMEpYz3tF60jyc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Q96m/Sp5SUk92+KTMp5RWaM7ntPe3fO2I/OLIn6Kmu2uSpCEahQ14fM6SactN2VZFpFmGWdieABAUnWnMAyPzr49hFYcp6bmMOglQi7+V5dFn3/P0gRGDJRWrZM6olNB4bsk/btEsRLclvWiYOcWhIDDuK2eidJUT1TQ8eMzO/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WpBGS5Jmlz4f3jdL
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 22:11:28 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id D7CBA1A14F8
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 22:11:42 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCXv4UTpMRmyr3nCA--.45152S4;
+	Tue, 20 Aug 2024 22:11:38 +0800 (CST)
+From: yangerkun <yangerkun@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz
+Cc: linux-ext4@vger.kernel.org,
+	yangerkun@huawei.com,
+	yangerkun@huaweicloud.com,
+	chengzhihao1@huawei.com
+Subject: [PATCH 1/2] ext4: dax: Fix overflowing extents beyond inode size when partially writing
+Date: Tue, 20 Aug 2024 22:06:56 +0800
+Message-Id: <20240820140657.3685287-1-yangerkun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <00000000000062812a062004738b@google.com>
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCXv4UTpMRmyr3nCA--.45152S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAF4ftr1UZF18Cry8Jry8AFb_yoW5Wr1xpr
+	9xKFyY9rWvqasFgay8tF4DZw4jk3W7GrWUCF1UKwn0vF9rZryfKF1jyF4FvF15JrWkuF17
+	XrsYyry8u3W2y3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkl14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWU
+	AVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14
+	v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkG
+	c2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI
+	0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4U
+	MIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43ZEXa7VUbSfO7UUUU
+	U==
+X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
 
-#syz test: upstream 47ac09b91befbb6a235ab620c32af719f8208399
+From: Zhihao Cheng <chengzhihao1@huawei.com>
 
+The dax_iomap_rw() does two things in each iteration: map written blocks
+and copy user data to blocks. If the process is killed by user(See signal
+handling in dax_iomap_iter()), the copied data will be returned and added
+on inode size, which means that the length of written extents may exceed
+the inode size, then fsck will fail. An example is given as:
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index e7a09a99837b..44a5f6df59ec 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -1664,24 +1664,36 @@ struct buffer_head *ext4_find_inline_entry(struct inode *dir,
- 					struct ext4_dir_entry_2 **res_dir,
- 					int *has_inline_data)
+dd if=/dev/urandom of=file bs=4M count=1
+ dax_iomap_rw
+  iomap_iter // round 1
+   ext4_iomap_begin
+    ext4_iomap_alloc // allocate 0~2M extents(written flag)
+  dax_iomap_iter // copy 2M data
+  iomap_iter // round 2
+   iomap_iter_advance
+    iter->pos += iter->processed // iter->pos = 2M
+   ext4_iomap_begin
+    ext4_iomap_alloc // allocate 2~4M extents(written flag)
+  dax_iomap_iter
+   fatal_signal_pending
+  done = iter->pos - iocb->ki_pos // done = 2M
+ ext4_handle_inode_extension
+  ext4_update_inode_size // inode size = 2M
+
+fsck reports: Inode 13, i_size is 2097152, should be 4194304.  Fix?
+
+Fix the problem by truncating extents if the written length is smaller
+than expected.
+
+Fixes: 776722e85d3b ("ext4: DAX iomap write support")
+CC: stable@vger.kernel.org
+Link: https://bugzilla.kernel.org/show_bug.cgi?id=219136
+Signed-off-by: Zhihao Cheng <chengzhihao1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/file.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index c89e434db6b7..be061bb64067 100644
+--- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -334,10 +334,10 @@ static ssize_t ext4_handle_inode_extension(struct inode *inode, loff_t offset,
+  * Clean up the inode after DIO or DAX extending write has completed and the
+  * inode size has been updated using ext4_handle_inode_extension().
+  */
+-static void ext4_inode_extension_cleanup(struct inode *inode, ssize_t count)
++static void ext4_inode_extension_cleanup(struct inode *inode, bool need_trunc)
  {
-+	struct ext4_xattr_ibody_find is = {
-+		.s = { .not_found = -ENODATA, },
-+	};
-+	struct ext4_xattr_info i = {
-+		.name_index = EXT4_XATTR_INDEX_SYSTEM,
-+		.name = EXT4_XATTR_SYSTEM_DATA,
-+	};
- 	int ret;
--	struct ext4_iloc iloc;
- 	void *inline_start;
- 	int inline_size;
- 
--	if (ext4_get_inode_loc(dir, &iloc))
--		return NULL;
-+	ret = ext4_get_inode_loc(dir, &is.iloc);
-+	if (ret)
-+		return ERR_PTR(ret);
- 
- 	down_read(&EXT4_I(dir)->xattr_sem);
-+
-+	ret = ext4_xattr_ibody_find(dir, &i, &is);
-+	if (ret)
-+		goto out;
-+
- 	if (!ext4_has_inline_data(dir)) {
- 		*has_inline_data = 0;
- 		goto out;
+ 	lockdep_assert_held_write(&inode->i_rwsem);
+-	if (count < 0) {
++	if (need_trunc) {
+ 		ext4_truncate_failed_write(inode);
+ 		/*
+ 		 * If the truncate operation failed early, then the inode may
+@@ -586,7 +586,7 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+ 		 * writeback of delalloc blocks.
+ 		 */
+ 		WARN_ON_ONCE(ret == -EIOCBQUEUED);
+-		ext4_inode_extension_cleanup(inode, ret);
++		ext4_inode_extension_cleanup(inode, ret < 0);
  	}
- 
--	inline_start = (void *)ext4_raw_inode(&iloc)->i_block +
-+	inline_start = (void *)ext4_raw_inode(&is.iloc)->i_block +
- 						EXT4_INLINE_DOTDOT_SIZE;
- 	inline_size = EXT4_MIN_INLINE_DATA_SIZE - EXT4_INLINE_DOTDOT_SIZE;
--	ret = ext4_search_dir(iloc.bh, inline_start, inline_size,
-+	ret = ext4_search_dir(is.iloc.bh, inline_start, inline_size,
- 			      dir, fname, 0, res_dir);
- 	if (ret == 1)
- 		goto out_find;
-@@ -1691,20 +1703,23 @@ struct buffer_head *ext4_find_inline_entry(struct inode *dir,
- 	if (ext4_get_inline_size(dir) == EXT4_MIN_INLINE_DATA_SIZE)
- 		goto out;
- 
--	inline_start = ext4_get_inline_xattr_pos(dir, &iloc);
-+	inline_start = ext4_get_inline_xattr_pos(dir, &is.iloc);
- 	inline_size = ext4_get_inline_size(dir) - EXT4_MIN_INLINE_DATA_SIZE;
- 
--	ret = ext4_search_dir(iloc.bh, inline_start, inline_size,
-+	ret = ext4_search_dir(is.iloc.bh, inline_start, inline_size,
- 			      dir, fname, 0, res_dir);
- 	if (ret == 1)
- 		goto out_find;
  
  out:
--	brelse(iloc.bh);
--	iloc.bh = NULL;
-+	brelse(is.iloc.bh);
-+	if (ret < 0)
-+		is.iloc.bh = ERR_PTR(ret);
-+	else
-+		is.iloc.bh = NULL;
- out_find:
- 	up_read(&EXT4_I(dir)->xattr_sem);
--	return iloc.bh;
-+	return is.iloc.bh;
- }
+@@ -670,7 +670,7 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
  
- int ext4_delete_inline_entry(handle_t *handle,
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 6a95713f9193..14163b32eddb 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1482,7 +1482,7 @@ static bool ext4_match(struct inode *parent,
- }
- 
- /*
-- * Returns 0 if not found, -1 on failure, and 1 on success
-+ * Returns 0 if not found, -EFSCORRUPTED on failure, and 1 on success
-  */
- int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		    struct inode *dir, struct ext4_filename *fname,
-@@ -1503,7 +1503,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 			 * a full check */
- 			if (ext4_check_dir_entry(dir, NULL, de, bh, search_buf,
- 						 buf_size, offset))
--				return -1;
-+				return -EFSCORRUPTED;
- 			*res_dir = de;
- 			return 1;
- 		}
-@@ -1511,7 +1511,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		de_len = ext4_rec_len_from_disk(de->rec_len,
- 						dir->i_sb->s_blocksize);
- 		if (de_len <= 0)
--			return -1;
-+			return -EFSCORRUPTED;
- 		offset += de_len;
- 		de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
+ 	if (extend) {
+ 		ret = ext4_handle_inode_extension(inode, offset, ret);
+-		ext4_inode_extension_cleanup(inode, ret);
++		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
  	}
-@@ -1574,7 +1574,7 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 					     &has_inline_data);
- 		if (inlined)
- 			*inlined = has_inline_data;
--		if (has_inline_data)
-+		if (has_inline_data || IS_ERR(ret))
- 			goto cleanup_and_exit;
- 	}
- 
-@@ -1663,8 +1663,10 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 			goto cleanup_and_exit;
- 		} else {
- 			brelse(bh);
--			if (i < 0)
-+			if (i < 0) {
-+				ret = ERR_PTR(i);
- 				goto cleanup_and_exit;
-+			}
- 		}
- 	next:
- 		if (++block >= nblocks)
-@@ -1758,7 +1760,7 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
- 		if (retval == 1)
- 			goto success;
- 		brelse(bh);
--		if (retval == -1) {
-+		if (retval < 0) {
- 			bh = ERR_PTR(ERR_BAD_DX_DIR);
- 			goto errout;
- 		}
+ out:
+ 	inode_unlock(inode);
+-- 
+2.39.2
+
 
