@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-3797-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3799-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FEA89587DF
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 15:26:48 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57A439587E6
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 15:27:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 412F11C213C6
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 13:26:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1C14284E9A
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 13:27:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89A8F191F92;
-	Tue, 20 Aug 2024 13:25:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0454819309D;
+	Tue, 20 Aug 2024 13:25:58 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6F8AF191494;
-	Tue, 20 Aug 2024 13:25:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA57F18E35F;
+	Tue, 20 Aug 2024 13:25:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724160352; cv=none; b=OmM3dVqjM1eNbH3uqQBQwLrNauRBIy6nlBbqGY2B6dvnKQiluT4+ItuMrijs+4lcz8mhxmYm4dfc8ujzEPwMWfyYyDUjE6ZSllkKPJiDfoikmFqoEeCGDOb2brKGntiSvY5/k/w+bpOzoxw+VDF1Qnwp2znCNyCGVSg2gSuCdMo=
+	t=1724160357; cv=none; b=TdxLP0Hvj4TEwwL9SE2DCNEsU1H5Fu4vrhOv1tvx/yrzZCNfdeFnuFKZHMNeCRB3m4WkSsrneHseiHuTGTvsU6AuKgjNGBJ4TuGSDpQZyFQR3aj4xCAj/0KmyuP24tcuJasH/M2Xb8zPP7somKVFolAXjEcTaihKXYcJ+SvHPXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724160352; c=relaxed/simple;
-	bh=S2JmiYp/oMrFWXuRv30lp/yN0UvVbNvIglF2e9WnJ08=;
+	s=arc-20240116; t=1724160357; c=relaxed/simple;
+	bh=4iJP8x6/JFY3TuPX7C3g63tcrYgAnDPhxH9GD8kbuSQ=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SbqVNDx/s/1I0Eh4SR726hHvJ3WtKKVghq8bJH18uF5hojaUEDF7hW8qi8i2IeS5TXsonSNwjUZF1CmzU0QNtjG+s2ogC9onfyp9jwuDuHO3PDA0cT+aaW9HUfZPTV8xO4dUPasTHAE2aFn4fuQyRdvJBP67cj7RnM6tqD0SB6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=nr5ah+NEpVbTDHerJxhjsJCpph0HdQeJLolohkju6kW+S8llYaRBkhK9B1yaVJ6Mo5DPEEcJuRIci2dPfDs7AhxRTiotmX9ZCpdfK5oWlXY939yPcgM3QgPXpLdGDeAgFz2UbN7rpDv1V4QwM7SeZuDksDqPU3hJXP/hnDYBxHg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wp9FY1vnwz4f3kKm;
-	Tue, 20 Aug 2024 21:25:37 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Wp9FT19vnz4f3jHj;
+	Tue, 20 Aug 2024 21:25:33 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.75])
-	by mail.maildlp.com (Postfix) with ESMTP id DA63E1A0359;
-	Tue, 20 Aug 2024 21:25:46 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 485D61A1753;
+	Tue, 20 Aug 2024 21:25:47 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP2 (Coremail) with SMTP id Syh0CgDH_bxWmcRmD7_dCA--.4366S8;
-	Tue, 20 Aug 2024 21:25:46 +0800 (CST)
+	by APP2 (Coremail) with SMTP id Syh0CgDH_bxWmcRmD7_dCA--.4366S9;
+	Tue, 20 Aug 2024 21:25:47 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca
@@ -47,9 +47,9 @@ Cc: harshadshirwadkar@gmail.com,
 	shaggy@austin.ibm.com,
 	linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH v2 6/7] ext4: remove unneeded NULL check of buffer_head in ext4_mark_inode_used()
-Date: Tue, 20 Aug 2024 21:22:33 +0800
-Message-Id: <20240820132234.2759926-7-shikemeng@huaweicloud.com>
+Subject: [PATCH v2 7/7] ext4: check buffer_verified in advance to avoid unneeded ext4_get_group_info()
+Date: Tue, 20 Aug 2024 21:22:34 +0800
+Message-Id: <20240820132234.2759926-8-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20240820132234.2759926-1-shikemeng@huaweicloud.com>
 References: <20240820132234.2759926-1-shikemeng@huaweicloud.com>
@@ -60,10 +60,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:Syh0CgDH_bxWmcRmD7_dCA--.4366S8
-X-Coremail-Antispam: 1UD129KBjvdXoWruF1Dtr17JF47GF4xXrWxtFb_yoWxKwb_t3
-	WxJr4xJ3yrt34xGFs0yws5Ar4SkF4Fgr1rGF93J3Wfu3WjvF4kuFyDXrsxArZru3yfKF93
-	CFy2vFy3JFWxXjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+X-CM-TRANSID:Syh0CgDH_bxWmcRmD7_dCA--.4366S9
+X-Coremail-Antispam: 1UD129KBjvdXoWrtFykXw1rKFyfZw4DAF45Awb_yoW3ZFgEka
+	4kAa1kC3yfGwn3CFyvyrWYyw48KFWkGr1rWFWft3WfuF1UJFyrZ3ykZr13AFs7ua17JF1D
+	Kas7ZFW3tr4IqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
 	9fnUUIcSsGvfJTRUUUbfkYFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
 	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l82xGYIkIc2x26280x7IE14v26r126s
 	0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC64kIII0Yj41l84x0c7CEw4AK67xG
@@ -79,28 +79,31 @@ X-Coremail-Antispam: 1UD129KBjvdXoWruF1Dtr17JF47GF4xXrWxtFb_yoWxKwb_t3
 	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUwuWlUUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-If gdp from ext4_get_group_desc() is not NULL, then returned group_desc_bh
-won't be NULL either. Remove check of group_desc_bh and only check
-returned gdp from ext4_get_group_desc() like how other callers do.
+Check buffer_verified in advance to avoid unneeded ext4_get_group_info().
+This could be a simple cleanup as compiler may handle this.
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/ialloc.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/ialloc.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
 diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 0234f5e91d8d..daacb9f0ef50 100644
+index daacb9f0ef50..7f1a5f90dbbd 100644
 --- a/fs/ext4/ialloc.c
 +++ b/fs/ext4/ialloc.c
-@@ -772,7 +772,7 @@ int ext4_mark_inode_used(struct super_block *sb, int ino)
- 	}
+@@ -87,10 +87,10 @@ static int ext4_validate_inode_bitmap(struct super_block *sb,
+ 	if (EXT4_SB(sb)->s_mount_state & EXT4_FC_REPLAY)
+ 		return 0;
  
- 	gdp = ext4_get_group_desc(sb, group, &group_desc_bh);
--	if (!gdp || !group_desc_bh) {
-+	if (!gdp) {
- 		err = -EINVAL;
- 		goto out;
- 	}
+-	grp = ext4_get_group_info(sb, block_group);
+-
+ 	if (buffer_verified(bh))
+ 		return 0;
++
++	grp = ext4_get_group_info(sb, block_group);
+ 	if (!grp || EXT4_MB_GRP_IBITMAP_CORRUPT(grp))
+ 		return -EFSCORRUPTED;
+ 
 -- 
 2.30.0
 
