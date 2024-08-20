@@ -1,52 +1,87 @@
-Return-Path: <linux-ext4+bounces-3787-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3788-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCABF957F8B
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 09:27:06 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id CAC2095822D
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 11:27:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE1ED1C23F0B
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 07:27:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D66CB1C2124E
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 09:27:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B6F3E18005B;
-	Tue, 20 Aug 2024 07:27:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925FD18C004;
+	Tue, 20 Aug 2024 09:27:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="f7GPNB01"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C90216BE33;
-	Tue, 20 Aug 2024 07:26:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6655A18B496;
+	Tue, 20 Aug 2024 09:27:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724138820; cv=none; b=a4wVXUCTPrTtjTW9UhgN8cZXNZV/7t3YHu5yfgMSt8F3HD0N2Z3+VKiPxL6fi9lWz2ikd1vVU+dylqMPTMETk8rgN0mmrr//yem/dvsJSd6FQALwMzJs8DhRH7awThzqDklSjFa/Wglpz7m8i4AmXfPyqlt0QDXT4p1LuGMK2wA=
+	t=1724146050; cv=none; b=AR1w27KPykhV8H3GWwD0WoT7Z/SQ7B6o5t2aV6W03hp+HEI6zPn0GqdmRM3bEl4cobiOB2hhyfYOZZGUt/kLIjdH3uxDjXxR2yFwg5moi8mLI70gadnPtCyLDtYpwXd/CeeHvlbsTTYzVm6zrfg3J8l8XzQ9fcSfxvtrV6XBqfc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724138820; c=relaxed/simple;
-	bh=Mm+786GwMepZHE+J+39pBbQn8RxkXtSdL3hx6i0yj6M=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DeEHHxNxZHgcmlM7ITVIGH+TjmDFDPDGfayNW/JXNcngQ/z6/OLp5YSCzozd5QcgKMU0QvTO+mAkPtA7wIxuWg5iWhyk5YoreKyge7OsVtGLschZUcaGFWV6rGdLf99RbiScpNYVIWBxLxJwJWx9M0SWVnbrbky8n9G+g5KGMuE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
-Received: from dlp.unisoc.com ([10.29.3.86])
-	by SHSQR01.spreadtrum.com with ESMTP id 47K7QKN2057700;
-	Tue, 20 Aug 2024 15:26:20 +0800 (+08)
-	(envelope-from zhaoyang.huang@unisoc.com)
-Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
-	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4Wp17S4Vfjz2K5Dpd;
-	Tue, 20 Aug 2024 15:19:48 +0800 (CST)
-Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
- BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
- 15.0.1497.23; Tue, 20 Aug 2024 15:26:18 +0800
-From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
-To: "Theodore Ts'o" <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
-        Zhaoyang Huang
-	<huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
-Subject: [RFC PATCH 1/1] fs: jbd2: try to launch cp transaction when bh refer cma
-Date: Tue, 20 Aug 2024 15:26:09 +0800
-Message-ID: <20240820072609.570513-1-zhaoyang.huang@unisoc.com>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1724146050; c=relaxed/simple;
+	bh=uyuHLa4E/0rICcL4LD+yki6xIF8s/9Fph2JEquPZDbk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=vCfZpOWHTs2wZBzWOPLVq47qSiQzdFyQufU7J1YwSuWVyqDaSC3MY6xQu3qAcS5Kht5w6kLsnOIFuJBhZ7UjS7tLCVJ+Ne3ekSr7l9ytOK6KqIE/BHkeEAENz/7YLBFAQ/vUMsN4C9sLp4KeiPeRXxKWAc3+prR3A+L/BEYc8Ys=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=f7GPNB01; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47K1TQA2014557;
+	Tue, 20 Aug 2024 09:27:20 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
+	:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding; s=pp1; bh=Kd3HcJWgOPQRv5wiamNPLcU88D
+	E0cWjveH6jN9IARIU=; b=f7GPNB01zoiF1QxRklKJsbHxtAIs5HJpQE19INArbs
+	TnSz9e7TRt1s3C1nGXhmRBnw9eIBP8zowGzDuhGTErYOvpxfARlI8d8u0J3+lqwf
+	B0ZdrC7x5e8eZptu5LxS8FhO7ZYiKUu5ZhzFqtEe12ML3v92YsA5QIW78CnDYaE/
+	jD0hH7Xh/7eW+WGEQCYzcTVfr2wosYRxHzjzhizW5zh0PRKIvWGxJPlC1G8YGYEx
+	gYsPle7fHVlg6HhpXR2a2igZEFZ2H8e8ule7qrbBp2eiBok93lif0PUqQOq6DIDu
+	NBxdoqHV862axbhVedu6O+S5tk5z/h1n9UKk8N8L1qtA==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 412mb5mxwq-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 09:27:20 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47K9RJDm005783;
+	Tue, 20 Aug 2024 09:27:19 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 412mb5mxwn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 09:27:19 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47K5kGPN003097;
+	Tue, 20 Aug 2024 09:27:18 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 4136k0jbea-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 09:27:18 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47K9REHR26083644
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 20 Aug 2024 09:27:16 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 180A920043;
+	Tue, 20 Aug 2024 09:27:14 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0DC4220040;
+	Tue, 20 Aug 2024 09:27:12 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.124.218.80])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 20 Aug 2024 09:27:11 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        Kemeng Shi <shikemeng@huaweicloud.com>,
+        syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
+Subject: [PATCH v2 1/2] ext4: Check stripe size compatibility on remount as well
+Date: Tue, 20 Aug 2024 14:57:07 +0530
+Message-ID: <f9042a87bfe883a3552c8fc561b2aa6f18de4f12.1724145714.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -54,111 +89,90 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
- BJMBX01.spreadtrum.com (10.0.64.7)
-X-MAIL:SHSQR01.spreadtrum.com 47K7QKN2057700
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 0fBOmfvPaHKEsGhcN6mbzmB7qnWZxeFY
+X-Proofpoint-GUID: gwuZEippsdZ-eRwFWQTfx5KUsjPWju1D
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-19_16,2024-08-19_03,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 spamscore=0
+ priorityscore=1501 adultscore=0 bulkscore=0 impostorscore=0 malwarescore=0
+ mlxlogscore=999 phishscore=0 mlxscore=0 lowpriorityscore=0 suspectscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
+ definitions=main-2408200066
 
-From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+We disable stripe size in __ext4_fill_super if it is not a multiple of
+the cluster ratio however this check is missed when trying to remount.
+This can leave us with cases where stripe < cluster_ratio after
+remount:set making EXT4_B2C(sbi->s_stripe) become 0 that can cause some
+unforeseen bugs like divide by 0.
 
-cma_alloc() keep failed when an bunch of IO operations happened on an
-journal enabled ext4 device which is caused by a jh->bh->b_page
-can not be migrated out of CMA area as the jh has one cp_transaction
-pending on it. We solve this by launching jbd2_log_do_checkpoint forcefully
-somewhere. Since journal is common mechanism to all JFSs and
-cp_transaction has a little fewer opportunity to be launched, this patch
-would like to introduce a timing point at which the
-cp_transaction->t_checkpoint_list is shrunk if CMA page used for
-journalling.
+Fix that by adding the check in remount path as well.
 
-Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+Reported-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
+Tested-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
+Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
+Fixes: c3defd99d58c ("ext4: treat stripe in block unit")
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- fs/jbd2/checkpoint.c | 27 +++++++++++++++++++++++++++
- fs/jbd2/journal.c    |  4 ++++
- include/linux/jbd2.h |  2 ++
- 3 files changed, 33 insertions(+)
+ fs/ext4/super.c | 29 ++++++++++++++++++++++-------
+ 1 file changed, 22 insertions(+), 7 deletions(-)
 
-diff --git a/fs/jbd2/checkpoint.c b/fs/jbd2/checkpoint.c
-index 951f78634adf..8c6c1dba1f0f 100644
---- a/fs/jbd2/checkpoint.c
-+++ b/fs/jbd2/checkpoint.c
-@@ -21,6 +21,7 @@
- #include <linux/slab.h>
- #include <linux/blkdev.h>
- #include <trace/events/jbd2.h>
-+#include <linux/mm.h>
- 
- /*
-  * Unlink a buffer from a transaction checkpoint list.
-@@ -137,6 +138,32 @@ __flush_batch(journal_t *journal, int *batch_count)
- 	*batch_count = 0;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index e72145c4ae5a..9d495d78d262 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5165,6 +5165,18 @@ static int ext4_block_group_meta_init(struct super_block *sb, int silent)
+ 	return 0;
  }
  
-+#ifdef CONFIG_CMA
-+void drain_cma_bh(journal_t *journal)
++/*
++ * It's hard to get stripe aligned blocks if stripe is not aligned with
++ * cluster, just disable stripe and alert user to simpfy code and avoid
++ * stripe aligned allocation which will rarely successes.
++ */
++static bool ext4_is_stripe_incompatible(struct super_block *sb, unsigned long stripe)
 +{
-+	struct journal_head	*jh;
-+	struct buffer_head	*bh;
-+
-+	if (!journal->j_checkpoint_transactions)
-+		return;
-+
-+	jh = journal->j_checkpoint_transactions->t_checkpoint_list;
-+	while (jh) {
-+		bh = jh2bh(jh);
-+
-+		if (bh && get_pageblock_migratetype(bh->b_page) == MIGRATE_CMA) {
-+			mutex_lock_io(&journal->j_checkpoint_mutex);
-+			jbd2_log_do_checkpoint(journal);
-+			mutex_unlock(&journal->j_checkpoint_mutex);
-+			return;
-+		}
-+
-+		jh = jh->b_cpnext;
-+	}
++	struct ext4_sb_info *sbi = EXT4_SB(sb);
++	return (stripe > 0 && sbi->s_cluster_ratio > 1 &&
++		stripe % sbi->s_cluster_ratio != 0);
 +}
-+#else
-+void drain_cma_bh(journal_t *journal) {}
-+#endif
- /*
-  * Perform an actual checkpoint. We take the first transaction on the
-  * list of transactions to be checkpointed and send all its buffers
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 1ebf2393bfb7..dd92cb7404fc 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -41,6 +41,7 @@
- #include <linux/bitops.h>
- #include <linux/ratelimit.h>
- #include <linux/sched/mm.h>
-+#include <linux/swap.h>
- 
- #define CREATE_TRACE_POINTS
- #include <trace/events/jbd2.h>
-@@ -1273,6 +1274,9 @@ static unsigned long jbd2_journal_shrink_scan(struct shrinker *shrink,
- 	count = percpu_counter_read_positive(&journal->j_checkpoint_jh_count);
- 	trace_jbd2_shrink_scan_enter(journal, sc->nr_to_scan, count);
- 
-+	if (current_is_kswapd())
-+		drain_cma_bh(journal);
 +
- 	nr_shrunk = jbd2_journal_shrink_checkpoint_list(journal, &nr_to_scan);
+ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ {
+ 	struct ext4_super_block *es = NULL;
+@@ -5272,13 +5284,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 		goto failed_mount3;
  
- 	count = percpu_counter_read_positive(&journal->j_checkpoint_jh_count);
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 5157d92b6f23..fc152382a6ae 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -105,6 +105,8 @@ typedef struct jbd2_journal_handle handle_t;	/* Atomic operation type */
- typedef struct journal_s	journal_t;	/* Journal control structure */
- #endif
+ 	sbi->s_stripe = ext4_get_stripe_size(sbi);
+-	/*
+-	 * It's hard to get stripe aligned blocks if stripe is not aligned with
+-	 * cluster, just disable stripe and alert user to simpfy code and avoid
+-	 * stripe aligned allocation which will rarely successes.
+-	 */
+-	if (sbi->s_stripe > 0 && sbi->s_cluster_ratio > 1 &&
+-	    sbi->s_stripe % sbi->s_cluster_ratio != 0) {
++	if (ext4_is_stripe_incompatible(sb, sbi->s_stripe)) {
+ 		ext4_msg(sb, KERN_WARNING,
+ 			 "stripe (%lu) is not aligned with cluster size (%u), "
+ 			 "stripe is disabled",
+@@ -6441,6 +6447,15 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
  
-+void drain_cma_bh(journal_t *journal);
+ 	}
+ 
++	if ((ctx->spec & EXT4_SPEC_s_stripe) &&
++	    ext4_is_stripe_incompatible(sb, ctx->s_stripe)) {
++		ext4_msg(sb, KERN_WARNING,
++			 "stripe (%lu) is not aligned with cluster size (%u), "
++			 "stripe is disabled",
++			 ctx->s_stripe, sbi->s_cluster_ratio);
++		ctx->s_stripe = 0;
++	}
 +
- /*
-  * Internal structures used by the logging mechanism:
-  */
+ 	/*
+ 	 * Changing the DIOREAD_NOLOCK or DELALLOC mount options may cause
+ 	 * two calls to ext4_should_dioread_nolock() to return inconsistent
 -- 
-2.25.1
+2.43.5
 
 
