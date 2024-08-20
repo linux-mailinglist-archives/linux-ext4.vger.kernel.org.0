@@ -1,159 +1,111 @@
-Return-Path: <linux-ext4+bounces-3789-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3790-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8BC095822F
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 11:27:58 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CF4695854A
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 12:59:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A95E1F246E7
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 09:27:58 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B3FC7B21DDD
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 10:59:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 925A318C32F;
-	Tue, 20 Aug 2024 09:27:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F5718DF70;
+	Tue, 20 Aug 2024 10:59:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VHNJzCbM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uWyQqVwv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 061D918A6C6;
-	Tue, 20 Aug 2024 09:27:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEE5D18E375;
+	Tue, 20 Aug 2024 10:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724146052; cv=none; b=qV+NZfMa5yEKZJ25zN6hgzWhznZu1jxDzPwgua0ccLUZzFHTvZiAYjJfmhVYvXQdMFDgrrZwXALmflR/tsGD66Q8apzNYIEAMiTSosIBlAy2spThJAQyclA+5LySCPHR/zcnCKaMT3fzTiwKowUhutB77jOFK4dcsLW4NPjQaa4=
+	t=1724151551; cv=none; b=M1f0GoWPPOyqEilAw5ev018lNvdPTF3P47b9Q9H54KHlpQIStTH7aYEtor/VQSOKLhzEv8WyjLF/QERl8stZf+9WwiEWpuVG0pwaIup1h7n4tXDdJxwfVdy/x9D8A+rVYdwoJXnozU6VkTLm+tHWiTxHxfUWXaVFwrx46zELcBg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724146052; c=relaxed/simple;
-	bh=vlSyjZm3vraF6f4TshQsdmKa+dwgd7TOq3pHvYrwKA8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=hW3H85cnNsyDdhLDEL36iFR6KeqMtzRh5X+O0LtMWeMPtONXraaUDv7SroCOcYEP9ymEAhlvdlY7/CtcXHhIkYv+t7V5XZEz+mKQMyhDkBgpyoOo4p//Eln+JtYid3LzFygp4M3EbyWkBvplvCRwTiJiY9oxPY9zHMVFlW+pCIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VHNJzCbM; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47JKwsqs001579;
-	Tue, 20 Aug 2024 09:27:21 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
-	:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=pp1; bh=eI3hCFcYlVFsE
-	7eXCCGw581aBdT62IWfYQMMreIM7I0=; b=VHNJzCbMC83GFBPPtct/a+j8w6lYF
-	+ugVF/lv9BD71Fe23jP0II1GD9a6CuQojVgan8+6R5iGWK26ytqDygMBZVETtNpX
-	zrobJTbioidID44HvV654L+GkFrzdPx0u02ZilMYEP5kf2yB3xxFGIyx7ZlP3LGn
-	m3Ub7qN9C6KS/b6rtAkbEVJmkTlcof7PjqOxjWbew4ol9aqaWvJI0MqzKVEOndmg
-	ebsIjlKuTfDnwaRp7b52sFS1hEiRQ4M9tEklK/s2MwADYowhnk/qpRLLpwBm1M/Z
-	sLac6lhECt0fdnxK6xFz3rYHB7BBAUC4xl/QohvTU8gbxz/4IH2UstOew==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 412ma050nm-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Aug 2024 09:27:21 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47K9RKjZ017885;
-	Tue, 20 Aug 2024 09:27:20 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 412ma050nh-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Aug 2024 09:27:20 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47K80qVh017706;
-	Tue, 20 Aug 2024 09:27:19 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 4138w31v3k-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 20 Aug 2024 09:27:19 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47K9RGYu56099326
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 20 Aug 2024 09:27:18 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id EBEF32004B;
-	Tue, 20 Aug 2024 09:27:15 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7B3AC20040;
-	Tue, 20 Aug 2024 09:27:14 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.124.218.80])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 20 Aug 2024 09:27:14 +0000 (GMT)
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Subject: [PATCH v2 2/2] ext4: Convert EXT4_B2C(sbi->s_stripe) users to EXT4_NUM_B2C
-Date: Tue, 20 Aug 2024 14:57:08 +0530
-Message-ID: <aff746f3dbce54f5ea807928c2286edfd6e9976e.1724145714.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <f9042a87bfe883a3552c8fc561b2aa6f18de4f12.1724145714.git.ojaswin@linux.ibm.com>
-References: <f9042a87bfe883a3552c8fc561b2aa6f18de4f12.1724145714.git.ojaswin@linux.ibm.com>
+	s=arc-20240116; t=1724151551; c=relaxed/simple;
+	bh=3Og+tiSfir93LZrEHOVhD/etjKB31Cdx407jfgvkUKg=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=mZjn/xPgE2BXjZwSUTYilsU+HUssm6V1mUMZ2k/kmbpOR7310lkl/NQFqEQXsjOoy2YKfpWcPUGt8Roj4CN9eAF2qsnKjfgGBsJL5IFX0KDL8+Gta302mgPv9YL13r2cJdpXrd/kowRbFOTH/fU4tnI8MG2O5DvKRQWQb7JaLT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uWyQqVwv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 48C49C4AF0F;
+	Tue, 20 Aug 2024 10:59:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724151551;
+	bh=3Og+tiSfir93LZrEHOVhD/etjKB31Cdx407jfgvkUKg=;
+	h=From:Date:Subject:To:Cc:Reply-To:From;
+	b=uWyQqVwvsZrmGbxN+Umg87Dp787H89goQln7q65Yh0SQsGE0bXmhyPNZRT/siyiAW
+	 SBJfACvQ8f1DBpIKwKP86LdxgIdQnuXzy8Egb/6zhCPLb9SnzHNF+fLi6EsI7bbryT
+	 OasP0hdSbNpczmBtSm1Zp7kuhUt+CwUpN+6pNvL2VYbphiN5K81pjpf+SCwzJbWZXg
+	 Q/A/8n3UczTA5QcfGBpYjvGhgo7xrGVp0drMlv+G4UAEZYuXjqcTpGgrpVHjScQ7gO
+	 aZcgeCh/RmiFJZmvMCX4ZKWlJe4RLbp4dnFPNWSWseGLXDhM/6zAolvSDg4Vkl1CED
+	 mjx0lZECPf1Mg==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id 346BAC531DF;
+	Tue, 20 Aug 2024 10:59:11 +0000 (UTC)
+From: Manas via B4 Relay <devnull+manas18244.iiitd.ac.in@kernel.org>
+Date: Tue, 20 Aug 2024 16:28:59 +0530
+Subject: [PATCH] Fix missing description in struct member for journal_s
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: ODbDgItV-Czx4CwFMSFKywveSRSQqgkT
-X-Proofpoint-ORIG-GUID: M5WmSbvuXvVuITWVzKWgZUQDwyYqZubz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-19_16,2024-08-19_03,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 phishscore=0 spamscore=0 malwarescore=0
- bulkscore=0 adultscore=0 impostorscore=0 suspectscore=0 clxscore=1015
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2407110000
- definitions=main-2408200062
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240820-journal_s-missing-description-fix-v1-1-578b218e646d@iiitd.ac.in>
+X-B4-Tracking: v=1; b=H4sIAPJ2xGYC/x2N0QrCMAxFf2Xk2UAXZBZ/RURmG2tEu5HoGJT9+
+ 4KP58K5p4GxChucuwbKi5hM1aE/dJCeYy2Mkp2BAh1DpICv6ad1fN8MP2ImtWBmSyrz1018yIp
+ 87ymmMOR4IvCfWdnnf+Ny3bYd+nV2xXMAAAA=
+To: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>, 
+ Shuah Khan <skhan@linuxfoundation.org>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Manas <manas18244@iiitd.ac.in>
+X-Mailer: b4 0.14.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1724151549; l=849;
+ i=manas18244@iiitd.ac.in; s=20240813; h=from:subject:message-id;
+ bh=w1+MRLpQlqWk+mrt0yJy8pQkb3cf8RgO7noQOxVKLCA=;
+ b=nWb0FIVRoU7+fyLBkHM9tXMnfqm6Flnn2gHKxXt0krC45Pm5HUIqkb9w/Dc/PB/96rkrQ8ukC
+ Xknx9ml/9kdAUdUZYkVn23a4SGYGVDZCfNXM7snM2cVA0QRXZqbO14A
+X-Developer-Key: i=manas18244@iiitd.ac.in; a=ed25519;
+ pk=pXNEDKd3qTkQe9vsJtBGT9hrfOR7Dph1rfX5ig2AAoM=
+X-Endpoint-Received: by B4 Relay for manas18244@iiitd.ac.in/20240813 with
+ auth_id=196
+X-Original-From: Manas <manas18244@iiitd.ac.in>
+Reply-To: manas18244@iiitd.ac.in
 
-Although we have checks to make sure s_stripe is a multiple of cluster
-size, in case we accidentally end up with a scenario where this is not
-the case, use EXT4_NUM_B2C() so that we don't end up with unexpected
-cases where EXT4_B2C(stripe) becomes 0.
+From: Manas <manas18244@iiitd.ac.in>
 
-Also make the is_stripe_aligned check in regular_allocator a bit more
-robust while we are at it. This should ideally have no functional change
-unless we have a bug somewhere causing (stripe % cluster_size != 0)
+The struct member 'j_transaction_overhead_buffers' in 'journal_s' was
+commented with partial name. 'make htmldocs' warned about this.
 
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Signed-off-by: Manas <manas18244@iiitd.ac.in>
 ---
- fs/ext4/mballoc.c | 10 ++++++----
- 1 file changed, 6 insertions(+), 4 deletions(-)
+ include/linux/jbd2.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 9dda9cd68ab2..99d1a8c730e0 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2553,7 +2553,7 @@ void ext4_mb_scan_aligned(struct ext4_allocation_context *ac,
- 	do_div(a, sbi->s_stripe);
- 	i = (a * sbi->s_stripe) - first_group_block;
+diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+index 5157d92b6f23..17662eae408f 100644
+--- a/include/linux/jbd2.h
++++ b/include/linux/jbd2.h
+@@ -1086,7 +1086,7 @@ struct journal_s
+ 	int			j_revoke_records_per_block;
  
--	stripe = EXT4_B2C(sbi, sbi->s_stripe);
-+	stripe = EXT4_NUM_B2C(sbi, sbi->s_stripe);
- 	i = EXT4_B2C(sbi, i);
- 	while (i < EXT4_CLUSTERS_PER_GROUP(sb)) {
- 		if (!mb_test_bit(i, bitmap)) {
-@@ -2928,9 +2928,11 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- 			if (cr == CR_POWER2_ALIGNED)
- 				ext4_mb_simple_scan_group(ac, &e4b);
- 			else {
--				bool is_stripe_aligned = sbi->s_stripe &&
-+				bool is_stripe_aligned =
-+					(sbi->s_stripe >=
-+					 sbi->s_cluster_ratio) &&
- 					!(ac->ac_g_ex.fe_len %
--					  EXT4_B2C(sbi, sbi->s_stripe));
-+					  EXT4_NUM_B2C(sbi, sbi->s_stripe));
- 
- 				if ((cr == CR_GOAL_LEN_FAST ||
- 				     cr == CR_BEST_AVAIL_LEN) &&
-@@ -3707,7 +3709,7 @@ int ext4_mb_init(struct super_block *sb)
+ 	/**
+-	 * @j_transaction_overhead:
++	 * @j_transaction_overhead_buffers:
+ 	 *
+ 	 * Number of blocks each transaction needs for its own bookkeeping
  	 */
- 	if (sbi->s_stripe > 1) {
- 		sbi->s_mb_group_prealloc = roundup(
--			sbi->s_mb_group_prealloc, EXT4_B2C(sbi, sbi->s_stripe));
-+			sbi->s_mb_group_prealloc, EXT4_NUM_B2C(sbi, sbi->s_stripe));
- 	}
- 
- 	sbi->s_locality_groups = alloc_percpu(struct ext4_locality_group);
+
+---
+base-commit: 47ac09b91befbb6a235ab620c32af719f8208399
+change-id: 20240820-journal_s-missing-description-fix-eb128c06d872
+
+Best regards,
 -- 
-2.43.5
+Manas <manas18244@iiitd.ac.in>
+
 
 
