@@ -1,164 +1,88 @@
-Return-Path: <linux-ext4+bounces-3801-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3803-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60F789588B7
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 16:12:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 773FF958926
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 16:23:13 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5FC9D1C224DA
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 14:12:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DB84282788
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 14:23:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 596B21922DE;
-	Tue, 20 Aug 2024 14:11:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E712A18E757;
+	Tue, 20 Aug 2024 14:23:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4CA01922DD
-	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 14:11:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DC13D982
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 14:23:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724163111; cv=none; b=dOlPdc+Gr3UkWFrqWbixapVzNY0M7y1v9HfVy//rVfLl7EwmwfSnBbHBJ2KhqC1rFUgei1EMddAh+35aMcvQeoLecH9XdSQ5Ekpg8VYYLXjdntXyUvCcyEtHC8xAPaNqfK1c3pbbhoyuIB1LNcSUWO/dxEmktUJTDpeGeRnVWiQ=
+	t=1724163784; cv=none; b=KqoM5vrQIrSlDZjl+wcfMDkbIn58PGdvzEgA2bF8e6Lak8CcETzrMHdoe5JTVzt2ERWgmiS9WF0wwSYRWN+71PWZchzDVSAbVmxS9ab7iv8FKR6QKshLUe9oVEGIfF6b/F3iDMwGvSWMJVctqTnGjlB+7bKQpIzG+SPZEGjzsU0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724163111; c=relaxed/simple;
-	bh=WMlpuClqocTi5icpTNJeg+M1maJ2QHVqkXStiElvm8Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=OZJ0cBYqoVzd+GyR9/+8ZtQ+drDaXjECpf89HZdujH9vcP+CHtjn+aDPD0sTNICKBudV+G53IDRtkC2RvYdSP8nt90PMDkYqIEXcoDlVk/dLoam7wWAxmyvtmJKGDupmMLfG8BO4qIhsVUkvGBssuHb/JSI5dx39h/t1tiZXfDg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WpBGY4MG9z4f3l8Q
-	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 22:11:33 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 3C44E1A0359
-	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 22:11:43 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCXv4UTpMRmyr3nCA--.45152S5;
-	Tue, 20 Aug 2024 22:11:43 +0800 (CST)
-From: yangerkun <yangerkun@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz
-Cc: linux-ext4@vger.kernel.org,
-	yangerkun@huawei.com,
-	yangerkun@huaweicloud.com,
-	chengzhihao1@huawei.com
-Subject: [PATCH 2/2] ext4: dax: keep orphan list before truncate overflow allocated blocks
-Date: Tue, 20 Aug 2024 22:06:57 +0800
-Message-Id: <20240820140657.3685287-2-yangerkun@huaweicloud.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240820140657.3685287-1-yangerkun@huaweicloud.com>
-References: <20240820140657.3685287-1-yangerkun@huaweicloud.com>
+	s=arc-20240116; t=1724163784; c=relaxed/simple;
+	bh=gLUPsuWdSTXJTb7WUNyOiFbA7COIzIkvwM69A72ng2Y=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=DE9gpqUytExw1h1cY4mG7W0LOr7OkNzI6RPY+gblA64wlbmKrkk9sAotCAB0jTpWYTEzQGt77BB+3h2lCSSjud71k9r1Hsxe3zFIcABvchFQCAhCFWnM3uls8S/un3zbhke307gPrVR8TKC31SJOktkoOaR8875qe1uHn+5/Yjs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-81f8489097eso518007539f.3
+        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 07:23:03 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724163782; x=1724768582;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hYjN5/oAhwhrXBgTjU/FX5dzLOB+Fl9k99kdXwpqfh4=;
+        b=CwR7Pv7N6/sBwa/oO+GHDepyP2sqaEmrvejrV0J937Rg4AG+KKpv9nvtXhXGe3RGvQ
+         BLlI8ccGc/1yVYM2Qo/RN0Qs4X0zGcVluQXdiHlQ+uCfFwJ9+6Sz48im+NmGrdGxUZSN
+         +Hn0tI7YcBAypKjepRKiJBhP9Z5XCw5APIeiP6R2eAz9zHCqy5ao5GGi3ep5JmSDwLPc
+         X5I2t8WuQRcs3N0NIgBkRDEpx4gdpCu6qRbSR+MteodhXlZRU6GSv0moU6IOx6KkW/Xr
+         LL7Idhv+ncF3e+wGbSHWCs9ZCDbZu79LhVoDisyuArYT+tz1F2ecpvUku0FPp1ISghY5
+         kLAg==
+X-Forwarded-Encrypted: i=1; AJvYcCXPIrfd28rk7L7fsYJ/HumBcoObJCgm7QQTRSsqCMWZtURIGPZTG5S/TJ14tQPd7kSgHn9cLtKVrUBHkHo03j2/5KIs0XROD4B3UQ==
+X-Gm-Message-State: AOJu0YzPHFV80FdzNuvMXgZtTerTZaY7uKfqV9U3gPFGi6UKNjFCQpVL
+	Mc4cGk9rQUsRtQ2jpG9vsiHvAxW6qWjadx7jMtiijWagzZCoQeFatqzF5Tk2/fqF1jJoVbeZFOu
+	7sf7+Kg4KsSVMkH1z69cnfmTHj/yieX012PTU/V0C0P9nAs7MDGUaftI=
+X-Google-Smtp-Source: AGHT+IHu4ZkUAJ3FI1u8kEFYnwHpSsm3j2LHBI8asJ1P5KcIq195yEeFNPZMqP22Swuy1epC1bQwMwsnfLF7cqSDFyQEUIk3UsuO
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCXv4UTpMRmyr3nCA--.45152S5
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF4fKF4xCryfCF43ZF13Arb_yoW5Gr1xpF
-	y3GF15Wr1kZas2grZ3KF4UZ34Fka1xC3yUWFWxWw1fZr9xXr1SqF1UtFyrtF45trW8W3WY
-	gF4qyryDu3WUJ3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUBl14x267AKxVW5JVWrJwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_Jr4l82xGYIkIc2
-	x26xkF7I0E14v26r1I6r4UM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2z4x0
-	Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_Gr1UM2
-	8EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AI
-	xVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20x
-	vE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xv
-	r2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7MxkF7I0En4kS14v26r126r1DMx
-	AIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_
-	Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwI
-	xGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWx
-	JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcV
-	C2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUjX18JUUUUU==
-X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
+X-Received: by 2002:a05:6638:980b:b0:4ce:54dc:fa44 with SMTP id
+ 8926c6da1cb9f-4ce54dd01eamr146141173.1.1724163782330; Tue, 20 Aug 2024
+ 07:23:02 -0700 (PDT)
+Date: Tue, 20 Aug 2024 07:23:02 -0700
+In-Reply-To: <ZsSh4NUWT7MlvlSL@quatroqueijos.cascardo.eti.br>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000c7d90606201e2917@google.com>
+Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_search_dir (2)
+From: syzbot <syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com>
+To: cascardo@igalia.com, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-From: yangerkun <yangerkun@huawei.com>
+Hello,
 
-Any extended write for ext4 requires the inode to be placed on the
-orphan list before the actual write. In addition, the inode can be
-actually removed from the orphan list only after all writes are
-completed. Otherwise, those overcommitted blocks (If the allocated
-blocks are not written due to certain reasons, the inode size does not
-exceed the offset of these blocks) The leak status is always retained,
-and fsck reports an alarm for this scenario.
+syzbot has tested the proposed patch and the reproducer did not trigger any issue:
 
-Currently, the dio and buffer IO comply with this logic. However, the
-dax write will removed the inode from orphan list since
-ext4_handle_inode_extension is unconditionally called during extend
-write. Fix it with this patch. We open the code from
-ext4_handle_inode_extension since we want to keep the blocks valid
-has been allocated and write success.
+Reported-by: syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com
+Tested-by: syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com
 
-Signed-off-by: yangerkun <yangerkun@huawei.com>
----
- fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
- 1 file changed, 31 insertions(+), 4 deletions(-)
+Tested on:
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index be061bb64067..fd8597eef75e 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -628,11 +628,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- static ssize_t
- ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- {
--	ssize_t ret;
-+	ssize_t ret, written;
- 	size_t count;
- 	loff_t offset;
- 	handle_t *handle;
- 	bool extend = false;
-+	bool need_trunc = true;
- 	struct inode *inode = file_inode(iocb->ki_filp);
- 
- 	if (iocb->ki_flags & IOCB_NOWAIT) {
-@@ -668,10 +669,36 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 
- 	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
- 
--	if (extend) {
--		ret = ext4_handle_inode_extension(inode, offset, ret);
--		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
-+	if (!extend)
-+		goto out;
-+
-+	if (ret <= 0)
-+		goto err_trunc;
-+
-+	written = ret;
-+	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-+	if (IS_ERR(handle)) {
-+		ret = PTR_ERR(handle);
-+		goto err_trunc;
- 	}
-+
-+	if (ext4_update_inode_size(inode, offset + written)) {
-+		ret = ext4_mark_inode_dirty(handle, inode);
-+		if (unlikely(ret)) {
-+			ext4_journal_stop(handle);
-+			goto err_trunc;
-+		}
-+	}
-+
-+	if (written == count)
-+		need_trunc = false;
-+
-+	if (inode->i_nlink)
-+		ext4_orphan_del(handle, inode);
-+	ext4_journal_stop(handle);
-+	ret = written;
-+err_trunc:
-+	ext4_inode_extension_cleanup(inode, need_trunc);
- out:
- 	inode_unlock(inode);
- 	if (ret > 0)
--- 
-2.39.2
+commit:         47ac09b9 Linux 6.11-rc4
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
+console output: https://syzkaller.appspot.com/x/log.txt?x=10631a91980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=df2f0ed7e30a639d
+dashboard link: https://syzkaller.appspot.com/bug?extid=0c2508114d912a54ee79
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=163ed3f5980000
 
+Note: testing is done by a robot and is best-effort only.
 
