@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-3804-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3805-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A9EE958B67
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 17:33:34 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94AFB958B6C
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 17:33:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E0A3B24D9A
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 15:33:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C723A1C21BD0
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 15:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D4319413F;
-	Tue, 20 Aug 2024 15:33:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18D81194137;
+	Tue, 20 Aug 2024 15:33:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sUj7N3q+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="urZ0Y7Uc"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC261940B3
-	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 15:33:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92787194085
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 15:33:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724167993; cv=none; b=TbRHS9IL0QS6JhsELq0TEso8GpMRR/a/H5I7u0SU4h+eCDJ6XRuUCb1+LoDU7ihxBCX4NUpnz+GOHd92B8Du7QJRFrW5It5bf3sWQD7aBV1w/ElkusLoDKeNZoIODp9pGCeNjrH52rGpbEMrTfTVhOJkk3uvvuc7MoRweIIDrN8=
+	t=1724168022; cv=none; b=DqtaBU4oEISvuBdf29fvPifx2MGSPWWtrlECU2Bpfzt2ZrU/c8XJFtjSiQADD+3soqccZ+1Ifs2ho01hrru5WjTj0E5fSEFZMYUhy9S7k2OKANQ+du+GspxNKPOLT+UOLOfpmK5l0XnPzRDf9LAEui6qaG4WsglqTXDD+O4rBug=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724167993; c=relaxed/simple;
-	bh=hYN5MquIx/Vl7ek00+wLuUYEl2z33+03xbDhed17b7M=;
+	s=arc-20240116; t=1724168022; c=relaxed/simple;
+	bh=MjDfPRguW/6OQIw1csf3N2yZ6S5eMkp7YwFkAWOhOvM=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=YvAQR2ascGCJ8P8y13yftKRPHXxl9luEuuHGzr646sdYOL9YjfxAvv8o7QWO1KcgXv6uP0EELpFx7vK1cidRuWfcK6U+6Z338rBPJJ390XUcFbahE982e/CHTUjAUp0A7HXX6twS9nR58Mk7Qm7o3d2LutuM/jRE5D1Vce7lA2E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sUj7N3q+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B1EA7C4AF10
-	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 15:33:12 +0000 (UTC)
+	 Content-Type:MIME-Version; b=Kn3eKUgUyI9JbHchkZFBsocq79qQCmytSPf5kBPE89DMgsuKMtzx2qnLnR7IcoYavAbvaVbqLYdeaYl9XFdQWg0eOyCAbqDLqK1s0OTIRqusylwqNedDpBjQP5UKpMTwVFuPqxTrcITfjdygvTBZX0ashJJG3+QzhPDeBH+K5GA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=urZ0Y7Uc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2D978C4AF11
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 15:33:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724167992;
-	bh=hYN5MquIx/Vl7ek00+wLuUYEl2z33+03xbDhed17b7M=;
+	s=k20201202; t=1724168022;
+	bh=MjDfPRguW/6OQIw1csf3N2yZ6S5eMkp7YwFkAWOhOvM=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=sUj7N3q+ZAngceqwsgbJwZDYY28uJcWu4QYrwsSXQ9hC8iCik9dsYwzxFTfDxDBq9
-	 BexWi39T+F5tvnXraQBaQ6keXcEFEIArZKG5s72y93JrnM3t9toLuhgMySxPf9FtBH
-	 c0nLboZCXGXpZHteNwGT+HpFsr7HZ7ZoD7y5lLD9BPJUprBpK8i1oWIYhf/MeRuAjb
-	 bFvn7M6K75Zhr9IUmuree54jxN/d2grjg2X89clMQEicLrVWWnGhBywlF8OSVQz3Sl
-	 FZlqmDat2NgU9xP6VUSGCbGzmpvL7JsM1Bno87q2Lv0vZ7oMzsYmsua1x35nYW4ues
-	 +9ND0T7pLQEWw==
+	b=urZ0Y7Uc7pEd2e8fiQWgJcOfh9OIPyu5A1FxM2iY//yqzzpcvHfMDvsXxjmPkeEA7
+	 bHG01LaA3GIQ+B/nrlva339BqzTTR+u4Vf+KOyEAMfGWYYT50gNNzVbTvz9IISSyEl
+	 NV46KeFIG14v52JQi8nQ5DxqaZpXNFpvClsjU5pwHxpoqm5mWWf48t8TgoNcXhoX5/
+	 4spoOKxZBf9wa6otnPaA86EAs5Rf/k1HRKPEmu4F05ssDRMJKs36b0PDGKs0RUFszr
+	 xYb6D0qYnwgQJyMe2XNPHOIf+l5Zd6DJ+HKYX+mL7CVOba4827gjTOiZtSdadHW3sG
+	 tzMfk0MBqi3EA==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 9FCECC53BB7; Tue, 20 Aug 2024 15:33:12 +0000 (UTC)
+	id 25B33C53BB7; Tue, 20 Aug 2024 15:33:42 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
-Subject: [Bug 219166] ext4 hang when setting echo noop >
- /sys/block/sda/queue/scheduler
-Date: Tue, 20 Aug 2024 15:33:12 +0000
+Subject: [Bug 219166] occasional block layer hang when setting 'echo noop >
+ /sys/block/sda/queue/scheduler'
+Date: Tue, 20 Aug 2024 15:33:41 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -62,8 +62,8 @@ X-Bugzilla-Resolution:
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-219166-13602-qeBGZzNcyL@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: short_desc
+Message-ID: <bug-219166-13602-4cXpAE0xG3@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-219166-13602@https.bugzilla.kernel.org/>
 References: <bug-219166-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -79,24 +79,14 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D219166
 
---- Comment #10 from Richard W.M. Jones (rjones@redhat.com) ---
-Just to close this one out ...
+Richard W.M. Jones (rjones@redhat.com) changed:
 
-I couldn't reproduce this issue when I compiled the kernel myself, even tho=
-ugh
-I was using the exact same .config as Fedora uses, the same tag, building i=
-t on
-Fedora 40, and Fedora itself does not have any significant downstream patch=
-es.=20
-There were a few differences, for example I'm probably using a slightly
-different version of gcc/binutils than the Fedora kernel builders.
-
-So being unable to reproduce it in a self-compiled kernel, I cannot bisect =
-it.
-
-We have worked around the problem, so that's basically as far as I want to =
-take
-this bug.  Feel free to close it if you want.
+           What    |Removed                     |Added
+----------------------------------------------------------------------------
+            Summary|ext4 hang when setting echo |occasional block layer hang
+                   |noop >                      |when setting 'echo noop >
+                   |/sys/block/sda/queue/schedu |/sys/block/sda/queue/schedu
+                   |ler                         |ler'
 
 --=20
 You may reply to this email to add a comment.
