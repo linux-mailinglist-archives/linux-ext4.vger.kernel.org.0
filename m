@@ -1,88 +1,106 @@
-Return-Path: <linux-ext4+bounces-3803-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3804-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 773FF958926
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 16:23:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A9EE958B67
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 17:33:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DB84282788
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 14:23:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9E0A3B24D9A
+	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 15:33:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E712A18E757;
-	Tue, 20 Aug 2024 14:23:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D4319413F;
+	Tue, 20 Aug 2024 15:33:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sUj7N3q+"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43DC13D982
-	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 14:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC261940B3
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 15:33:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724163784; cv=none; b=KqoM5vrQIrSlDZjl+wcfMDkbIn58PGdvzEgA2bF8e6Lak8CcETzrMHdoe5JTVzt2ERWgmiS9WF0wwSYRWN+71PWZchzDVSAbVmxS9ab7iv8FKR6QKshLUe9oVEGIfF6b/F3iDMwGvSWMJVctqTnGjlB+7bKQpIzG+SPZEGjzsU0=
+	t=1724167993; cv=none; b=TbRHS9IL0QS6JhsELq0TEso8GpMRR/a/H5I7u0SU4h+eCDJ6XRuUCb1+LoDU7ihxBCX4NUpnz+GOHd92B8Du7QJRFrW5It5bf3sWQD7aBV1w/ElkusLoDKeNZoIODp9pGCeNjrH52rGpbEMrTfTVhOJkk3uvvuc7MoRweIIDrN8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724163784; c=relaxed/simple;
-	bh=gLUPsuWdSTXJTb7WUNyOiFbA7COIzIkvwM69A72ng2Y=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=DE9gpqUytExw1h1cY4mG7W0LOr7OkNzI6RPY+gblA64wlbmKrkk9sAotCAB0jTpWYTEzQGt77BB+3h2lCSSjud71k9r1Hsxe3zFIcABvchFQCAhCFWnM3uls8S/un3zbhke307gPrVR8TKC31SJOktkoOaR8875qe1uHn+5/Yjs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-81f8489097eso518007539f.3
-        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 07:23:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724163782; x=1724768582;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hYjN5/oAhwhrXBgTjU/FX5dzLOB+Fl9k99kdXwpqfh4=;
-        b=CwR7Pv7N6/sBwa/oO+GHDepyP2sqaEmrvejrV0J937Rg4AG+KKpv9nvtXhXGe3RGvQ
-         BLlI8ccGc/1yVYM2Qo/RN0Qs4X0zGcVluQXdiHlQ+uCfFwJ9+6Sz48im+NmGrdGxUZSN
-         +Hn0tI7YcBAypKjepRKiJBhP9Z5XCw5APIeiP6R2eAz9zHCqy5ao5GGi3ep5JmSDwLPc
-         X5I2t8WuQRcs3N0NIgBkRDEpx4gdpCu6qRbSR+MteodhXlZRU6GSv0moU6IOx6KkW/Xr
-         LL7Idhv+ncF3e+wGbSHWCs9ZCDbZu79LhVoDisyuArYT+tz1F2ecpvUku0FPp1ISghY5
-         kLAg==
-X-Forwarded-Encrypted: i=1; AJvYcCXPIrfd28rk7L7fsYJ/HumBcoObJCgm7QQTRSsqCMWZtURIGPZTG5S/TJ14tQPd7kSgHn9cLtKVrUBHkHo03j2/5KIs0XROD4B3UQ==
-X-Gm-Message-State: AOJu0YzPHFV80FdzNuvMXgZtTerTZaY7uKfqV9U3gPFGi6UKNjFCQpVL
-	Mc4cGk9rQUsRtQ2jpG9vsiHvAxW6qWjadx7jMtiijWagzZCoQeFatqzF5Tk2/fqF1jJoVbeZFOu
-	7sf7+Kg4KsSVMkH1z69cnfmTHj/yieX012PTU/V0C0P9nAs7MDGUaftI=
-X-Google-Smtp-Source: AGHT+IHu4ZkUAJ3FI1u8kEFYnwHpSsm3j2LHBI8asJ1P5KcIq195yEeFNPZMqP22Swuy1epC1bQwMwsnfLF7cqSDFyQEUIk3UsuO
+	s=arc-20240116; t=1724167993; c=relaxed/simple;
+	bh=hYN5MquIx/Vl7ek00+wLuUYEl2z33+03xbDhed17b7M=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=YvAQR2ascGCJ8P8y13yftKRPHXxl9luEuuHGzr646sdYOL9YjfxAvv8o7QWO1KcgXv6uP0EELpFx7vK1cidRuWfcK6U+6Z338rBPJJ390XUcFbahE982e/CHTUjAUp0A7HXX6twS9nR58Mk7Qm7o3d2LutuM/jRE5D1Vce7lA2E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sUj7N3q+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B1EA7C4AF10
+	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 15:33:12 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724167992;
+	bh=hYN5MquIx/Vl7ek00+wLuUYEl2z33+03xbDhed17b7M=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=sUj7N3q+ZAngceqwsgbJwZDYY28uJcWu4QYrwsSXQ9hC8iCik9dsYwzxFTfDxDBq9
+	 BexWi39T+F5tvnXraQBaQ6keXcEFEIArZKG5s72y93JrnM3t9toLuhgMySxPf9FtBH
+	 c0nLboZCXGXpZHteNwGT+HpFsr7HZ7ZoD7y5lLD9BPJUprBpK8i1oWIYhf/MeRuAjb
+	 bFvn7M6K75Zhr9IUmuree54jxN/d2grjg2X89clMQEicLrVWWnGhBywlF8OSVQz3Sl
+	 FZlqmDat2NgU9xP6VUSGCbGzmpvL7JsM1Bno87q2Lv0vZ7oMzsYmsua1x35nYW4ues
+	 +9ND0T7pLQEWw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 9FCECC53BB7; Tue, 20 Aug 2024 15:33:12 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219166] ext4 hang when setting echo noop >
+ /sys/block/sda/queue/scheduler
+Date: Tue, 20 Aug 2024 15:33:12 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: rjones@redhat.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-219166-13602-qeBGZzNcyL@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-219166-13602@https.bugzilla.kernel.org/>
+References: <bug-219166-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:980b:b0:4ce:54dc:fa44 with SMTP id
- 8926c6da1cb9f-4ce54dd01eamr146141173.1.1724163782330; Tue, 20 Aug 2024
- 07:23:02 -0700 (PDT)
-Date: Tue, 20 Aug 2024 07:23:02 -0700
-In-Reply-To: <ZsSh4NUWT7MlvlSL@quatroqueijos.cascardo.eti.br>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c7d90606201e2917@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: use-after-free Read in ext4_search_dir (2)
-From: syzbot <syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com>
-To: cascardo@igalia.com, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
 
-Hello,
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219166
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+--- Comment #10 from Richard W.M. Jones (rjones@redhat.com) ---
+Just to close this one out ...
 
-Reported-by: syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com
-Tested-by: syzbot+0c2508114d912a54ee79@syzkaller.appspotmail.com
+I couldn't reproduce this issue when I compiled the kernel myself, even tho=
+ugh
+I was using the exact same .config as Fedora uses, the same tag, building i=
+t on
+Fedora 40, and Fedora itself does not have any significant downstream patch=
+es.=20
+There were a few differences, for example I'm probably using a slightly
+different version of gcc/binutils than the Fedora kernel builders.
 
-Tested on:
+So being unable to reproduce it in a self-compiled kernel, I cannot bisect =
+it.
 
-commit:         47ac09b9 Linux 6.11-rc4
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=10631a91980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=df2f0ed7e30a639d
-dashboard link: https://syzkaller.appspot.com/bug?extid=0c2508114d912a54ee79
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=163ed3f5980000
+We have worked around the problem, so that's basically as far as I want to =
+take
+this bug.  Feel free to close it if you want.
 
-Note: testing is done by a robot and is best-effort only.
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
