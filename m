@@ -1,151 +1,89 @@
-Return-Path: <linux-ext4+bounces-3809-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3810-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 074A1959291
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 04:01:17 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D803295934C
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 05:20:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41608B24BF2
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 02:01:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7FD411F2609B
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 03:20:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8563B7A8;
-	Wed, 21 Aug 2024 02:01:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F17D15746A;
+	Wed, 21 Aug 2024 03:20:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="JhU4sxV9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A602599
-	for <linux-ext4@vger.kernel.org>; Wed, 21 Aug 2024 02:01:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D8D21547C2
+	for <linux-ext4@vger.kernel.org>; Wed, 21 Aug 2024 03:20:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724205668; cv=none; b=qmesGcYWkTQ5xYMiq6naNEe3k45Qpxb+VyARNtj2jVNuiimnNyp/nWFTYOFn284INSQnDrGtxF3XSEPsb1LMxPOQEXWytkwRXmvUOUNIF3ReTktyG8t8RijptHUb0IGkrilBOCrOPAmtdux7gY3IKzvDeXa4yJVcEdc6YH948/M=
+	t=1724210418; cv=none; b=Jt+ZB0/RRzkDe5g2rL2I38FV8VGzOOwSaaXJUy0je4oyNk6dgzjNG0qH6zIahhk2h6XqiXMbVg5RLQAJh1bB4aWYC+bulxwCCPlr0VjZHPg4MjcBQd9exafOklnM2wzG5fvsC3c4mGq3TkaBok+8t0PTMEq09fUbZrcAP+tKFQ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724205668; c=relaxed/simple;
-	bh=2Q+whA2JQv1gNskvqTn+/STDIjNkhe4ShOJDjICCfWA=;
-	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=F3euhiq2xlD2vA7e6HwTzmxXYHvgVSXJVVrOoolM9R1t5EnF6R6nPnUksMfi/I/ddjtX6lDZKZ60WWxiGwl6cQVLVKWnTMfMVnI7lHK7sQ/mlrVRn7Bgn4sLowf5V7MP4Qp5RxC56rU5H3m0kh3A6aeKBOZEdBIIgah5pCZgSPY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WpTY80DRCz20m2g;
-	Wed, 21 Aug 2024 09:40:12 +0800 (CST)
-Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
-	by mail.maildlp.com (Postfix) with ESMTPS id 458AF14010C;
-	Wed, 21 Aug 2024 09:44:53 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Wed, 21 Aug 2024 09:44:52 +0800
-Subject: Re: [PATCH 2/2] ext4: dax: keep orphan list before truncate overflow
- allocated blocks
-To: yangerkun <yangerkun@huaweicloud.com>, <tytso@mit.edu>,
-	<adilger.kernel@dilger.ca>, <jack@suse.cz>
-CC: <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>
-References: <20240820140657.3685287-1-yangerkun@huaweicloud.com>
- <20240820140657.3685287-2-yangerkun@huaweicloud.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <238e40d0-606f-bb9e-c18c-542df87c1e31@huawei.com>
-Date: Wed, 21 Aug 2024 09:44:40 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1724210418; c=relaxed/simple;
+	bh=VsXRTEDQwNH8m6AaQpm31ch4vkuZRGtFm/T6sL41ip4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UiFLt3mnpuoxyZPjQFuNw3qP/ghWnxKg+5xE2x128Hmy/d7FV3hQHhUNzFoRIWdNatmE+BqudiwrE547G9PPTpwQ8RjrzYICkjAQ6HirkQCmm0RhcOGyv3wsbKeYtaHJOi9lPEGGgLjONA1uikpjJxjf3sCdH5ephQdhJQwDr+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=JhU4sxV9; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-112-67.bstnma.fios.verizon.net [173.48.112.67])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47L3JcjU024064
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 20 Aug 2024 23:19:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1724210382; bh=f4PakQ5bnKjiLKXKzLV7pR83jIv0eJHYGpCo+y8ltbI=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=JhU4sxV9ziSVg3D/3pDrj1UVqfvWAcdnUxnPpfeu+BJ2+8NGz80VxZbSYjYHz5Yz0
+	 xud4U0rddH3hDZMrMm2+SkPIRSCRxGe06w3EJzW0brocgl+ImAqN8/zg8+pC5r8iCs
+	 rbzHdPqEw2+LVNTMuP5L3roiEryQEpCUKV844OFKyUofBtNMvzfrfRVCkHp784uMYq
+	 Q+0lBOCcmwt5IHqk/zB6H9cVeZSfq+tWIS8aBF4C83coYZxGzol8gcJPXPC2aFXxGL
+	 4vEdTDOzENBphXeklhfy9L5klP5OJa4Yi1/s8BdrDNZjMB8ujMwogpd26wpLFTopnc
+	 B8ARU7Me6EIig==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 73AF015C02C0; Tue, 20 Aug 2024 23:19:38 -0400 (EDT)
+Date: Tue, 20 Aug 2024 23:19:38 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Baokun Li <libaokun@huaweicloud.com>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+        adilger.kernel@dilger.ca, ritesh.list@gmail.com,
+        linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+        yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>
+Subject: Re: [PATCH 12/20] ext4: get rid of ppath in ext4_split_extent_at()
+Message-ID: <20240821031938.GA277453@mit.edu>
+References: <20240710040654.1714672-1-libaokun@huaweicloud.com>
+ <20240710040654.1714672-13-libaokun@huaweicloud.com>
+ <20240725110756.fuyjfdvgbprma5ml@quack3>
+ <84d1cae3-1939-463c-b1f9-344e02f87a9c@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240820140657.3685287-2-yangerkun@huaweicloud.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- kwepemm000013.china.huawei.com (7.193.23.81)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84d1cae3-1939-463c-b1f9-344e02f87a9c@huaweicloud.com>
 
-ÔÚ 2024/8/20 22:06, yangerkun Ð´µÀ:
-> From: yangerkun <yangerkun@huawei.com>
+On Sat, Jul 27, 2024 at 02:42:50PM +0800, Baokun Li wrote:
+ > 								Honza
+> Ok, I'll put this in a separate patch in the next version.
 > 
-> Any extended write for ext4 requires the inode to be placed on the
-> orphan list before the actual write. In addition, the inode can be
-> actually removed from the orphan list only after all writes are
-> completed. Otherwise, those overcommitted blocks (If the allocated
-> blocks are not written due to certain reasons, the inode size does not
-> exceed the offset of these blocks) The leak status is always retained,
-> and fsck reports an alarm for this scenario.
-> 
-> Currently, the dio and buffer IO comply with this logic. However, the
-> dax write will removed the inode from orphan list since
-> ext4_handle_inode_extension is unconditionally called during extend
-> write. Fix it with this patch. We open the code from
-> ext4_handle_inode_extension since we want to keep the blocks valid
-> has been allocated and write success.
-> 
-> Signed-off-by: yangerkun <yangerkun@huawei.com>
-> ---
->   fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
->   1 file changed, 31 insertions(+), 4 deletions(-)
+> Thank you very much for your review!
+>
 
-Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
-> 
-> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-> index be061bb64067..fd8597eef75e 100644
-> --- a/fs/ext4/file.c
-> +++ b/fs/ext4/file.c
-> @@ -628,11 +628,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->   static ssize_t
->   ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
->   {
-> -	ssize_t ret;
-> +	ssize_t ret, written;
->   	size_t count;
->   	loff_t offset;
->   	handle_t *handle;
->   	bool extend = false;
-> +	bool need_trunc = true;
->   	struct inode *inode = file_inode(iocb->ki_filp);
->   
->   	if (iocb->ki_flags & IOCB_NOWAIT) {
-> @@ -668,10 +669,36 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
->   
->   	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
->   
-> -	if (extend) {
-> -		ret = ext4_handle_inode_extension(inode, offset, ret);
-> -		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
-> +	if (!extend)
-> +		goto out;
-> +
-> +	if (ret <= 0)
-> +		goto err_trunc;
-> +
-> +	written = ret;
-> +	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-> +	if (IS_ERR(handle)) {
-> +		ret = PTR_ERR(handle);
-> +		goto err_trunc;
->   	}
-> +
-> +	if (ext4_update_inode_size(inode, offset + written)) {
-> +		ret = ext4_mark_inode_dirty(handle, inode);
-> +		if (unlikely(ret)) {
-> +			ext4_journal_stop(handle);
-> +			goto err_trunc;
-> +		}
-> +	}
-> +
-> +	if (written == count)
-> +		need_trunc = false;
-> +
-> +	if (inode->i_nlink)
-> +		ext4_orphan_del(handle, inode);
-> +	ext4_journal_stop(handle);
-> +	ret = written;
-> +err_trunc:
-> +	ext4_inode_extension_cleanup(inode, need_trunc);
->   out:
->   	inode_unlock(inode);
->   	if (ret > 0)
-> 
+Hi Baokun,
 
+Did you send out a newer version of this patch series?  I can't seem
+to find it in patchwork.
+
+Thanks,
+
+					- Ted
 
