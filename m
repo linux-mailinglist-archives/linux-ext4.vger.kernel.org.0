@@ -1,442 +1,239 @@
-Return-Path: <linux-ext4+bounces-3818-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3819-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 296509594A6
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 08:32:31 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 796D4959882
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 12:53:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC7A61F240FC
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 06:32:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04EA81F217E4
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 10:53:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EAAA5170828;
-	Wed, 21 Aug 2024 06:31:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1FD1CB139;
+	Wed, 21 Aug 2024 09:12:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="dfH/rXdl"
+	dkim=pass (1024-bit key) header.d=collabora.com header.i=eugen.hristev@collabora.com header.b="aonqa8fi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from sender4-pp-f112.zoho.com (sender4-pp-f112.zoho.com [136.143.188.112])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8BDD16DC34;
-	Wed, 21 Aug 2024 06:31:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724221890; cv=none; b=sxlOKZQDYqnW0k4oKt4+UUnZ2C+QdYSZE44Bg1AfGXnsQe8aXAOm0t5o571swPkdW7Sn8UFJUrh5fO4G38eULToggdSKn25utDp1+cQxKtUioHcEuMjhrtdPGzwANuXFwvd8SnjL7bBzT/s5M5OqCkz2SQjx2RmcI7vwdUEWDbo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724221890; c=relaxed/simple;
-	bh=WNDTWIYVoeTaQc8ip6uIYTr3sUeaMNBX5kglkTVyBD4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BoTIe12mjwlfwHoPEXbDO7R3doks5p7qZOFdAQJ8Dcdw/7WHuFpCY7Vl6vnSzDlobq0dL61FwjsmkmqmAdOdYuGECaFTF3fjkU3sbSiGkFH2K044mHQFAqPYSaurVPOHYFf+ISYgPdHzSMAoxE9Nc59xya4zxEp9Am7B6V+B9xM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=dfH/rXdl; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:Sender
-	:Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=V9mgMURNOhTBMKoMnincYbZsHjdjqPlsl4d8zlD52Ow=; b=dfH/rXdlXYUKMMctA5aC5+/rfo
-	9p8qhYQcC+po2NXjTV8UNrcH9cQdGg9pksAm+9Xqw9Cdd5lYNHTiSPrlwcTR1okHP4v3jx5qdyuPo
-	n47ZzCnT5CYeJPlAzijW/OVZ1s83iqPMWGsozt7BFxguq3WWhIyVVyJjqAUDYD6IGKgCG6XThIUBG
-	ULCNz4xEcJhgl4I8NTI+EkgFehsw9OO95ORx2Zn5nRJ8lO8y0jBi7pKUrAdLkTiCU/QQJDlQyPwNe
-	KZdlxnju1zCB63hByai4IhgXLV+fC2b+YKl/wjBChHEfaitmFRHgCUCdSQWTWvNddqfjlP9C4n/h3
-	N11Hbj+Q==;
-Received: from 2a02-8389-2341-5b80-94d5-b2c4-989b-ff6e.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:94d5:b2c4:989b:ff6e] helo=localhost)
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1sgesQ-00000007iUI-20Gf;
-	Wed, 21 Aug 2024 06:31:26 +0000
-From: Christoph Hellwig <hch@lst.de>
-To: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chandan Babu R <chandan.babu@oracle.com>
-Cc: Jens Axboe <axboe@kernel.dk>,
-	Jan Kara <jack@suse.cz>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	"Theodore Ts'o" <tytso@mit.edu>,
-	linux-block@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH 6/6] xfs: refactor xfs_file_fallocate
-Date: Wed, 21 Aug 2024 08:30:32 +0200
-Message-ID: <20240821063108.650126-7-hch@lst.de>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240821063108.650126-1-hch@lst.de>
-References: <20240821063108.650126-1-hch@lst.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0776F1E389B;
+	Wed, 21 Aug 2024 09:11:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=pass smtp.client-ip=136.143.188.112
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1724231521; cv=pass; b=sCdlW2xNuAOIqlrKhwGpJV1at9ybNMRkUREnpfdLjOsQom7WTqkZBYHZPweVkAFifaVhJFjtYpremJtpIJlrRGMBFSduMTnfoEZs9SIdPrjM3FZaEU/bArKEjKbkvNjcFPRC/b5FE2EpbDLnLkD3hEsxtRQelWBET32QlIrO1qc=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1724231521; c=relaxed/simple;
+	bh=AE885sgZay/3ZiHVm8qDsP2iN+Ocp3A8SWfd+b0DnHg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IBesVlQzAz3cl9VsiU/E444NRwLMywSBz76ui8ewmW0bKjFoH76c3/AiJ+rzqgoiPAjnaiy86VDqJ1Q9LpvSM2zNpdjHEhI+vI3SM/WAEy1Obi+cT/gfhPJyMdUAEqRDtfj80q8U4dtYg9kb74Z7Js7J5Vxk70h6z/aKtT3cdYE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (1024-bit key) header.d=collabora.com header.i=eugen.hristev@collabora.com header.b=aonqa8fi; arc=pass smtp.client-ip=136.143.188.112
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+Delivered-To: kernel@collabora.com
+ARC-Seal: i=1; a=rsa-sha256; t=1724231463; cv=none; 
+	d=zohomail.com; s=zohoarc; 
+	b=nNzK8LG3HiBzobKGwqnb3nFuSPgvKu8NycrKb9QqZbOpaY4YcnRBd2H7hK+11EPaPtXG/Abw0Nq224cDgx4NaOcJWq5ru95nBFfEaTzryzaBQDnyRuqvXhgNn51Oixv7gOFAY3DJTUC2Q3mO8qMVYIJHExdzRvrZ+RT9QQp8bBM=
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=zohomail.com; s=zohoarc; 
+	t=1724231463; h=Content-Type:Content-Transfer-Encoding:Cc:Cc:Date:Date:From:From:In-Reply-To:MIME-Version:Message-ID:References:Subject:Subject:To:To:Message-Id:Reply-To; 
+	bh=gb71my/CkcxpqtTYRfl6w81FtlLDJsKpj9k7R6MykrA=; 
+	b=IRlVGuHA92H5TLV2EPmKdsc8x0VrgaLVWAmUgY5SKI7vPRUzsTb8l3r8nj74KVhRJVMI0MVVNFphtfbstKAcxexoPUN1v53E7LEymsoyySCp0GXEfv/1WyzNL8QvXGxjxWa6hwmtoe97hjy/nralz5V1B9y8BRnz4j633IOWBJQ=
+ARC-Authentication-Results: i=1; mx.zohomail.com;
+	dkim=pass  header.i=collabora.com;
+	spf=pass  smtp.mailfrom=eugen.hristev@collabora.com;
+	dmarc=pass header.from=<eugen.hristev@collabora.com>
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; t=1724231463;
+	s=zohomail; d=collabora.com; i=eugen.hristev@collabora.com;
+	h=Message-ID:Date:Date:MIME-Version:Subject:Subject:To:To:Cc:Cc:References:From:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:Message-Id:Reply-To;
+	bh=gb71my/CkcxpqtTYRfl6w81FtlLDJsKpj9k7R6MykrA=;
+	b=aonqa8fiCng+Jwf3YvS99LV2JqIVnTxPzvlWCL0djm0HhRryfOuroBPdDC8tLrsh
+	eIBhcreB3ZvuITfTNMQ9XfYtp4w6FklvtV9q8AfyLua76Ee4wUUvYfcHoQ4x5DJvfrR
+	eCZDi+/ky4CcIgo2QMU1Mm3M8O2GzNKnwEgTd3vk=
+Received: by mx.zohomail.com with SMTPS id 1724231462364895.0511063892309;
+	Wed, 21 Aug 2024 02:11:02 -0700 (PDT)
+Message-ID: <2df894de-8fa9-40c2-ba2c-f9ae65520656@collabora.com>
+Date: Wed, 21 Aug 2024 12:10:23 +0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] fs/dcache: introduce d_alloc_parallel_check_existing
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, tytso@mit.edu,
+ linux-ext4@vger.kernel.org, jack@suse.cz, adilger.kernel@dilger.ca,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, shreeya.patel@collabora.com
+References: <20240705062621.630604-1-eugen.hristev@collabora.com>
+ <20240705062621.630604-2-eugen.hristev@collabora.com>
+ <87zfp7rltx.fsf@mailhost.krisman.be>
+Content-Language: en-US
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <87zfp7rltx.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ZohoMailClient: External
 
-Refactor xfs_file_fallocate into separate helpers for each mode,
-two factors for i_size handling and a single switch statement over the
-supported modes.
+On 8/20/24 23:16, Gabriel Krisman Bertazi wrote:
+> Eugen Hristev <eugen.hristev@collabora.com> writes:
+> 
+>> d_alloc_parallel currently looks for entries that match the name being
+>> added and return them if found.
+>> However if d_alloc_parallel is being called during the process of adding
+>> a new entry (that becomes in_lookup), the same entry is found by
+>> d_alloc_parallel in the in_lookup_hash and d_alloc_parallel will wait
+>> forever for it to stop being in lookup.
+>> To avoid this, it makes sense to check for an entry being currently
+>> added (e.g. by d_add_ci from a lookup func, like xfs is doing) and if this
+>> exact match is found, return the entry.
+>> This way, to add a new entry , as xfs is doing, is the following flow:
+>> _lookup_slow -> d_alloc_parallel -> entry is being created -> xfs_lookup ->
+>> d_add_ci -> d_alloc_parallel_check_existing(entry created before) ->
+>> d_splice_alias.
+> 
+> Hi Eugen,
 
-Signed-off-by: Christoph Hellwig <hch@lst.de>
----
- fs/xfs/xfs_file.c | 327 +++++++++++++++++++++++++++++-----------------
- 1 file changed, 205 insertions(+), 122 deletions(-)
+Hello Krisman,
 
-diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-index 489bc1b173c268..9d3bac7731bdcb 100644
---- a/fs/xfs/xfs_file.c
-+++ b/fs/xfs/xfs_file.c
-@@ -852,6 +852,189 @@ static inline bool xfs_file_sync_writes(struct file *filp)
- 	return false;
- }
- 
-+static int
-+xfs_falloc_newsize(
-+	struct file		*file,
-+	int			mode,
-+	loff_t			offset,
-+	loff_t			len,
-+	loff_t			*new_size)
-+{
-+	struct inode		*inode = file_inode(file);
-+
-+	if ((mode & FALLOC_FL_KEEP_SIZE) || offset + len <= i_size_read(inode))
-+		return 0;
-+	*new_size = offset + len;
-+	return inode_newsize_ok(inode, *new_size);
-+}
-+
-+static int
-+xfs_falloc_setsize(
-+	struct file		*file,
-+	loff_t			new_size)
-+{
-+	struct iattr iattr = {
-+		.ia_valid	= ATTR_SIZE,
-+		.ia_size	= new_size,
-+	};
-+
-+	if (!new_size)
-+		return 0;
-+	return xfs_vn_setattr_size(file_mnt_idmap(file), file_dentry(file),
-+			&iattr);
-+}
-+
-+static int
-+xfs_falloc_collapse_range(
-+	struct file		*file,
-+	loff_t			offset,
-+	loff_t			len)
-+{
-+	struct inode		*inode = file_inode(file);
-+	loff_t			new_size = i_size_read(inode) - len;
-+	int			error;
-+
-+	if (!xfs_is_falloc_aligned(XFS_I(inode), offset, len))
-+		return -EINVAL;
-+
-+	/*
-+	 * There is no need to overlap collapse range with EOF, in which case it
-+	 * is effectively a truncate operation
-+	 */
-+	if (offset + len >= i_size_read(inode))
-+		return -EINVAL;
-+
-+	error = xfs_collapse_file_space(XFS_I(inode), offset, len);
-+	if (error)
-+		return error;
-+	return xfs_falloc_setsize(file, new_size);
-+}
-+
-+static int
-+xfs_falloc_insert_range(
-+	struct file		*file,
-+	loff_t			offset,
-+	loff_t			len)
-+{
-+	struct inode		*inode = file_inode(file);
-+	loff_t			isize = i_size_read(inode);
-+	int			error;
-+
-+	if (!xfs_is_falloc_aligned(XFS_I(inode), offset, len))
-+		return -EINVAL;
-+
-+	/*
-+	 * New inode size must not exceed ->s_maxbytes, accounting for
-+	 * possible signed overflow.
-+	 */
-+	if (inode->i_sb->s_maxbytes - isize < len)
-+		return -EFBIG;
-+
-+	/* Offset should be less than i_size */
-+	if (offset >= isize)
-+		return -EINVAL;
-+
-+	error = xfs_falloc_setsize(file, isize + len);
-+	if (error)
-+		return error;
-+
-+	/*
-+	 * Perform hole insertion now that the file size has been updated so
-+	 * that if we crash during the operation we don't leave shifted extents
-+	 * past EOF and hence losing access to the data that is contained within
-+	 * them.
-+	 */
-+	return xfs_insert_file_space(XFS_I(inode), offset, len);
-+}
-+
-+/*
-+ * Punch a hole and prealloc the range.  We use a hole punch rather than
-+ * unwritten extent conversion for two reasons:
-+ *
-+ *   1.) Hole punch handles partial block zeroing for us.
-+ *   2.) If prealloc returns ENOSPC, the file range is still zero-valued by
-+ *	 virtue of the hole punch.
-+ */
-+static int
-+xfs_falloc_zero_range(
-+	struct file		*file,
-+	int			mode,
-+	loff_t			offset,
-+	loff_t			len)
-+{
-+	struct inode		*inode = file_inode(file);
-+	unsigned int		blksize = i_blocksize(inode);
-+	loff_t			new_size = 0;
-+	int			error;
-+
-+	trace_xfs_zero_file_space(XFS_I(inode));
-+
-+	error = xfs_falloc_newsize(file, mode, offset, len, &new_size);
-+	if (error)
-+		return error;
-+
-+	error = xfs_free_file_space(XFS_I(inode), offset, len);
-+	if (error)
-+		return error;
-+
-+	len = round_up(offset + len, blksize) - round_down(offset, blksize);
-+	offset = round_down(offset, blksize);
-+	error = xfs_alloc_file_space(XFS_I(inode), offset, len);
-+	if (error)
-+		return error;
-+	return xfs_falloc_setsize(file, new_size);
-+}
-+
-+static int
-+xfs_falloc_unshare_range(
-+	struct file		*file,
-+	int			mode,
-+	loff_t			offset,
-+	loff_t			len)
-+{
-+	struct inode		*inode = file_inode(file);
-+	loff_t			new_size = 0;
-+	int			error;
-+
-+	error = xfs_falloc_newsize(file, mode, offset, len, &new_size);
-+	if (error)
-+		return error;
-+
-+	error = xfs_reflink_unshare(XFS_I(inode), offset, len);
-+	if (error)
-+		return error;
-+
-+	return xfs_falloc_setsize(file, new_size);
-+}
-+
-+static int
-+xfs_falloc_allocate_range(
-+	struct file		*file,
-+	int			mode,
-+	loff_t			offset,
-+	loff_t			len)
-+{
-+	struct inode		*inode = file_inode(file);
-+	loff_t			new_size = 0;
-+	int			error;
-+
-+	/*
-+	 * If always_cow mode we can't use preallocations and thus should not
-+	 * create them.
-+	 */
-+	if (xfs_is_always_cow_inode(XFS_I(inode)))
-+		return -EOPNOTSUPP;
-+
-+	error = xfs_falloc_newsize(file, mode, offset, len, &new_size);
-+	if (error)
-+		return error;
-+
-+	error = xfs_alloc_file_space(XFS_I(inode), offset, len);
-+	if (error)
-+		return error;
-+	return xfs_falloc_setsize(file, new_size);
-+}
-+
- #define	XFS_FALLOC_FL_SUPPORTED						\
- 		(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |		\
- 		 FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |	\
-@@ -868,8 +1051,6 @@ xfs_file_fallocate(
- 	struct xfs_inode	*ip = XFS_I(inode);
- 	long			error;
- 	uint			iolock = XFS_IOLOCK_EXCL | XFS_MMAPLOCK_EXCL;
--	loff_t			new_size = 0;
--	bool			do_file_insert = false;
- 
- 	if (!S_ISREG(inode->i_mode))
- 		return -EINVAL;
-@@ -894,129 +1075,31 @@ xfs_file_fallocate(
- 	if (error)
- 		goto out_unlock;
- 
--	if (mode & FALLOC_FL_PUNCH_HOLE) {
-+	switch (mode & FALLOC_FL_MODE_MASK) {
-+	case FALLOC_FL_PUNCH_HOLE:
- 		error = xfs_free_file_space(ip, offset, len);
--		if (error)
--			goto out_unlock;
--	} else if (mode & FALLOC_FL_COLLAPSE_RANGE) {
--		if (!xfs_is_falloc_aligned(ip, offset, len)) {
--			error = -EINVAL;
--			goto out_unlock;
--		}
--
--		/*
--		 * There is no need to overlap collapse range with EOF,
--		 * in which case it is effectively a truncate operation
--		 */
--		if (offset + len >= i_size_read(inode)) {
--			error = -EINVAL;
--			goto out_unlock;
--		}
--
--		new_size = i_size_read(inode) - len;
--
--		error = xfs_collapse_file_space(ip, offset, len);
--		if (error)
--			goto out_unlock;
--	} else if (mode & FALLOC_FL_INSERT_RANGE) {
--		loff_t		isize = i_size_read(inode);
--
--		if (!xfs_is_falloc_aligned(ip, offset, len)) {
--			error = -EINVAL;
--			goto out_unlock;
--		}
--
--		/*
--		 * New inode size must not exceed ->s_maxbytes, accounting for
--		 * possible signed overflow.
--		 */
--		if (inode->i_sb->s_maxbytes - isize < len) {
--			error = -EFBIG;
--			goto out_unlock;
--		}
--		new_size = isize + len;
--
--		/* Offset should be less than i_size */
--		if (offset >= isize) {
--			error = -EINVAL;
--			goto out_unlock;
--		}
--		do_file_insert = true;
--	} else {
--		if (!(mode & FALLOC_FL_KEEP_SIZE) &&
--		    offset + len > i_size_read(inode)) {
--			new_size = offset + len;
--			error = inode_newsize_ok(inode, new_size);
--			if (error)
--				goto out_unlock;
--		}
--
--		if (mode & FALLOC_FL_ZERO_RANGE) {
--			/*
--			 * Punch a hole and prealloc the range.  We use a hole
--			 * punch rather than unwritten extent conversion for two
--			 * reasons:
--			 *
--			 *   1.) Hole punch handles partial block zeroing for us.
--			 *   2.) If prealloc returns ENOSPC, the file range is
--			 *       still zero-valued by virtue of the hole punch.
--			 */
--			unsigned int blksize = i_blocksize(inode);
--
--			trace_xfs_zero_file_space(ip);
--
--			error = xfs_free_file_space(ip, offset, len);
--			if (error)
--				goto out_unlock;
--
--			len = round_up(offset + len, blksize) -
--			      round_down(offset, blksize);
--			offset = round_down(offset, blksize);
--		} else if (mode & FALLOC_FL_UNSHARE_RANGE) {
--			error = xfs_reflink_unshare(ip, offset, len);
--			if (error)
--				goto out_unlock;
--		} else {
--			/*
--			 * If always_cow mode we can't use preallocations and
--			 * thus should not create them.
--			 */
--			if (xfs_is_always_cow_inode(ip)) {
--				error = -EOPNOTSUPP;
--				goto out_unlock;
--			}
--		}
--
--		error = xfs_alloc_file_space(ip, offset, len);
--		if (error)
--			goto out_unlock;
--	}
--
--	/* Change file size if needed */
--	if (new_size) {
--		struct iattr iattr;
--
--		iattr.ia_valid = ATTR_SIZE;
--		iattr.ia_size = new_size;
--		error = xfs_vn_setattr_size(file_mnt_idmap(file),
--					    file_dentry(file), &iattr);
--		if (error)
--			goto out_unlock;
--	}
--
--	/*
--	 * Perform hole insertion now that the file size has been
--	 * updated so that if we crash during the operation we don't
--	 * leave shifted extents past EOF and hence losing access to
--	 * the data that is contained within them.
--	 */
--	if (do_file_insert) {
--		error = xfs_insert_file_space(ip, offset, len);
--		if (error)
--			goto out_unlock;
-+		break;
-+	case FALLOC_FL_COLLAPSE_RANGE:
-+		error = xfs_falloc_collapse_range(file, offset, len);
-+		break;
-+	case FALLOC_FL_INSERT_RANGE:
-+		error = xfs_falloc_insert_range(file, offset, len);
-+		break;
-+	case FALLOC_FL_ZERO_RANGE:
-+		error = xfs_falloc_zero_range(file, mode, offset, len);
-+		break;
-+	case FALLOC_FL_UNSHARE_RANGE:
-+		error = xfs_falloc_unshare_range(file, mode, offset, len);
-+		break;
-+	case FALLOC_FL_ALLOCATE_RANGE:
-+		error = xfs_falloc_allocate_range(file, mode, offset, len);
-+		break;
-+	default:
-+		error = -EOPNOTSUPP;
-+		break;
- 	}
- 
--	if (xfs_file_sync_writes(file))
-+	if (!error && xfs_file_sync_writes(file))
- 		error = xfs_log_force_inode(ip);
- 
- out_unlock:
--- 
-2.43.0
+> 
+> I have a hard time understanding what xfs has anything to do with this.
+
+It has because xfs has been given as an example a few times about how a FS
+implementation should use d_add_ci.
+
+> xfs already users d_add_ci without problems.  The issue is that
+> ext4/f2fs have case-insensitive d_compare/d_hash functions, so they will
+> find the dentry-under-lookup itself here. Xfs doesn't have that problem
+> at all because it doesn't try to match case-inexact names in the dcache.
+
+That's right. So xfs cannot be given as an example, as it does not make
+case-inexact dentries and lookup.
+
+> 
+>> The initial entry stops being in_lookup after d_splice_alias finishes, and
+>> it's returned to d_add_ci by d_alloc_parallel_check_existing.
+>> Without d_alloc_parallel_check_existing, d_alloc_parallel would be called
+>> instead and wait forever for the entry to stop being in lookup, as the
+>> iteration through the in_lookup_hash matches the entry.
+>> Currently XFS does not hang because it creates another entry in the second
+>> call of d_alloc_parallel if the name differs by case as the hashing and
+>> comparison functions used by XFS are not case insensitive.
+>>
+>> Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
+>> ---
+>>  fs/dcache.c            | 29 +++++++++++++++++++++++------
+>>  include/linux/dcache.h |  4 ++++
+>>  2 files changed, 27 insertions(+), 6 deletions(-)
+>>
+>> diff --git a/fs/dcache.c b/fs/dcache.c
+>> index a0a944fd3a1c..459a3d8b8bdb 100644
+>> --- a/fs/dcache.c
+>> +++ b/fs/dcache.c
+>> @@ -2049,8 +2049,9 @@ struct dentry *d_add_ci(struct dentry *dentry, struct inode *inode,
+>>  		return found;
+>>  	}
+>>  	if (d_in_lookup(dentry)) {
+>> -		found = d_alloc_parallel(dentry->d_parent, name,
+>> -					dentry->d_wait);
+>> +		found = d_alloc_parallel_check_existing(dentry,
+>> +							dentry->d_parent, name,
+>> +							dentry->d_wait);
+>>  		if (IS_ERR(found) || !d_in_lookup(found)) {
+>>  			iput(inode);
+>>  			return found;
+>> @@ -2452,9 +2453,10 @@ static void d_wait_lookup(struct dentry *dentry)
+>>  	}
+>>  }
+>>  
+>> -struct dentry *d_alloc_parallel(struct dentry *parent,
+>> -				const struct qstr *name,
+>> -				wait_queue_head_t *wq)
+>> +struct dentry *d_alloc_parallel_check_existing(struct dentry *d_check,
+>> +					       struct dentry *parent,
+>> +					       const struct qstr *name,
+>> +					       wait_queue_head_t *wq)
+>>  {
+>>  	unsigned int hash = name->hash;
+>>  	struct hlist_bl_head *b = in_lookup_hash(parent, hash);
+>> @@ -2523,6 +2525,14 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+>>  		}
+>>  
+>>  		rcu_read_unlock();
+>> +
+>> +		/* if the entry we found is the same as the original we
+>> +		 * are checking against, then return it
+>> +		 */
+>> +		if (d_check == dentry) {
+>> +			dput(new);
+>> +			return dentry;
+>> +		}
+> 
+> The point of the patchset is to install a dentry with the disk-name in
+> the dcache if the name isn't an exact match to the name of the
+> dentry-under-lookup.  But, since you return the same
+> dentry-under-lookup, d_add_ci will just splice that dentry into the
+> cache - which is exactly the same as just doing d_splice_alias(dentry) at
+> the end of ->d_lookup() like we currently do, no?  Shreeya's idea in
+> that original patchset was to return a new dentry with the new name.
+
+Yes, but we cannot add another dentry for the same file with a different case.
+That would break everything about dentry lookups, etc.
+We need to have the one dentry in the cache which use the right case. Regardless of
+the case of the lookup.
+
+As Al Viro said here :
+https://lore.kernel.org/lkml/YVmyYP25kgGq9uEy@zeniv-ca.linux.org.uk/
+we cannot have parallel lookups for names that would compare as equals (two
+different dentries for the same file with different case).
+
+So yes, I return the same dentry-under-lookup, because that's the purpose of that
+search, return it, have it use the right case, and then splice it to the cache.
+
+In the end we will have the dentry use the right case and not the case that we used
+for the search, namely, the original filename from the disk. That was the purpose
+of the patch.
+
+Eugen
+
+> 
+>>  		/*
+>>  		 * somebody is likely to be still doing lookup for it;
+>>  		 * wait for them to finish
+>> @@ -2560,8 +2570,15 @@ struct dentry *d_alloc_parallel(struct dentry *parent,
+>>  	dput(dentry);
+>>  	goto retry;
+>>  }
+>> -EXPORT_SYMBOL(d_alloc_parallel);
+>> +EXPORT_SYMBOL(d_alloc_parallel_check_existing);
+>>  
+>> +struct dentry *d_alloc_parallel(struct dentry *parent,
+>> +				const struct qstr *name,
+>> +				wait_queue_head_t *wq)
+>> +{
+>> +	return d_alloc_parallel_check_existing(NULL, parent, name, wq);
+>> +}
+>> +EXPORT_SYMBOL(d_alloc_parallel);
+>>  /*
+>>   * - Unhash the dentry
+>>   * - Retrieve and clear the waitqueue head in dentry
+>> diff --git a/include/linux/dcache.h b/include/linux/dcache.h
+>> index bf53e3894aae..6eb21a518cb0 100644
+>> --- a/include/linux/dcache.h
+>> +++ b/include/linux/dcache.h
+>> @@ -232,6 +232,10 @@ extern struct dentry * d_alloc(struct dentry *, const struct qstr *);
+>>  extern struct dentry * d_alloc_anon(struct super_block *);
+>>  extern struct dentry * d_alloc_parallel(struct dentry *, const struct qstr *,
+>>  					wait_queue_head_t *);
+>> +extern struct dentry * d_alloc_parallel_check_existing(struct dentry *,
+>> +						       struct dentry *,
+>> +						       const struct qstr *,
+>> +						       wait_queue_head_t *);
+>>  extern struct dentry * d_splice_alias(struct inode *, struct dentry *);
+>>  extern struct dentry * d_add_ci(struct dentry *, struct inode *, struct qstr *);
+>>  extern bool d_same_name(const struct dentry *dentry, const struct dentry *parent,
+> 
 
 
