@@ -1,210 +1,151 @@
-Return-Path: <linux-ext4+bounces-3808-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3809-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 804D6959100
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 01:17:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 074A1959291
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 04:01:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00D091F23194
-	for <lists+linux-ext4@lfdr.de>; Tue, 20 Aug 2024 23:17:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 41608B24BF2
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 02:01:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A571C8242;
-	Tue, 20 Aug 2024 23:17:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="niLKJi3K"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8563B7A8;
+	Wed, 21 Aug 2024 02:01:08 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f51.google.com (mail-wm1-f51.google.com [209.85.128.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF80A107A0
-	for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 23:17:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22A602599
+	for <linux-ext4@vger.kernel.org>; Wed, 21 Aug 2024 02:01:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724195854; cv=none; b=ilV/nKdEXOcnIG+gN5cuGWDoy/HEZMgRLkxpUSUaxCK4/8s8A3DzBfhZroU4/uCNHoS6bjo+sIDMz8wCa7PaSXKwfNVh6KJDB+3t4SmiIBdOXKtKrmyIR+spTtkrtpYg2clbdXgAkWMx2OKbGWLRZ3WHjj3H9N03x9k6RC5ospQ=
+	t=1724205668; cv=none; b=qmesGcYWkTQ5xYMiq6naNEe3k45Qpxb+VyARNtj2jVNuiimnNyp/nWFTYOFn284INSQnDrGtxF3XSEPsb1LMxPOQEXWytkwRXmvUOUNIF3ReTktyG8t8RijptHUb0IGkrilBOCrOPAmtdux7gY3IKzvDeXa4yJVcEdc6YH948/M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724195854; c=relaxed/simple;
-	bh=XIitAwc2m/XIDG0E+BXyhLhiDlqGkwDvEQ2KrtnoW/E=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=BRtFERzeCe5b/B5/n5H0fzNfoQ4/CFKT8RYqxilkkYb/TazFwBQtwlMgZu3OybQ6J1Dc0ZGNXmYuQsnMVKTdQI5zv1RDcWHzAqgCAVGHwnX3U1TCH/6cmTtUCAr+8VUCh67PPnottcZiLx3Tc2o+T8tsXyGw2+xfCd6FrNVWvGo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=niLKJi3K; arc=none smtp.client-ip=209.85.128.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wm1-f51.google.com with SMTP id 5b1f17b1804b1-428098e2b3bso8394895e9.3
-        for <linux-ext4@vger.kernel.org>; Tue, 20 Aug 2024 16:17:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1724195851; x=1724800651; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=oYTQ5x5CeStFc2/B521mMkl8hxPWD6L8NQAxmM43O7o=;
-        b=niLKJi3K+5o9O8d+KfDE/kS+J5Sr419ZOVKDZzRd1dKZ6sju9JW94g9zZb3pzXLbKA
-         WK2AikgFEayfsahRL6hdV8WwkR5erwra9ONYXfFSyfj+FkCwb8Wu99olxITT6PFabiUL
-         sCmGJ9Edcs/iYDZRkk+bH59coKWl90Sb4iYqASReUQDcgt7/aYket8X5jRI5aLaOVXDI
-         Rg8Zkca8btFOvXE70GMt/7EmLsbKgJp5Hzeqn/wPvsRS5K/YGaSzN/ZyQcDAAyIMYnaX
-         0CDnsx3CEIyzhbxDeQiyyLcTsr1ZtiljkRwJkIF+sVGK7exy/wZQ1otjuwWHeldlGCeN
-         77ug==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724195851; x=1724800651;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oYTQ5x5CeStFc2/B521mMkl8hxPWD6L8NQAxmM43O7o=;
-        b=JkNo9PEORT70IWxFmh68DRC6b3bvaJR5HTYNJ/xD0/00bKLvlGnwDdxJpybWJQpNNT
-         iG9FRb2iwHz07i2nw0AwLRHFl4Dm1YrYd9qLtEEukhBJ5Yleu1niKnYrRsTLaFmuPD22
-         Z6fTC55UO9nD72+Km2rGmylGGXeJvd0VpymH7K80Yj+jnWl1MLo6s7H8LlkpXOF+zIUS
-         wPlHhFSTGAiZIe+dghdTDM119OxcY1HRurQXaB7JBCUFevZK9DJ9rVHvqsRLn02iQTyg
-         t+TNOQdF4B/pgD1LI8o6yUhM1A8MIWzdvw7+W84W/py+WI6q5Y1Icqx29veIVh1WDHUK
-         YSNw==
-X-Gm-Message-State: AOJu0YzHgV6tFGyQ11E6LhdUZd8vAi7t1FZS96rtwbl7Tlx2bTWKVfrq
-	1abHG4/+wbW5KR9+WFEIAmovSZXKh2mzLmvcJBOepzvop1XcaW0ArO+PGAPRgJc=
-X-Google-Smtp-Source: AGHT+IF4mDjdThKSBPxP/wA2ZFRyHKOXq4oRI3+x/erbrgvHiqhkdibYDhdHRcvB60/WbdhWlJCuAg==
-X-Received: by 2002:a5d:59a9:0:b0:365:da7f:6c13 with SMTP id ffacd0b85a97d-372fd580272mr171785f8f.2.1724195850790;
-        Tue, 20 Aug 2024 16:17:30 -0700 (PDT)
-Received: from smtpclient.apple ([2001:a61:1050:bb01:8164:778c:a10:dcfc])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a83839359f7sm819139566b.131.2024.08.20.16.17.30
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 20 Aug 2024 16:17:30 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+	s=arc-20240116; t=1724205668; c=relaxed/simple;
+	bh=2Q+whA2JQv1gNskvqTn+/STDIjNkhe4ShOJDjICCfWA=;
+	h=Subject:To:CC:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=F3euhiq2xlD2vA7e6HwTzmxXYHvgVSXJVVrOoolM9R1t5EnF6R6nPnUksMfi/I/ddjtX6lDZKZ60WWxiGwl6cQVLVKWnTMfMVnI7lHK7sQ/mlrVRn7Bgn4sLowf5V7MP4Qp5RxC56rU5H3m0kh3A6aeKBOZEdBIIgah5pCZgSPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WpTY80DRCz20m2g;
+	Wed, 21 Aug 2024 09:40:12 +0800 (CST)
+Received: from kwepemm000013.china.huawei.com (unknown [7.193.23.81])
+	by mail.maildlp.com (Postfix) with ESMTPS id 458AF14010C;
+	Wed, 21 Aug 2024 09:44:53 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm000013.china.huawei.com (7.193.23.81) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.39; Wed, 21 Aug 2024 09:44:52 +0800
+Subject: Re: [PATCH 2/2] ext4: dax: keep orphan list before truncate overflow
+ allocated blocks
+To: yangerkun <yangerkun@huaweicloud.com>, <tytso@mit.edu>,
+	<adilger.kernel@dilger.ca>, <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <yangerkun@huawei.com>
+References: <20240820140657.3685287-1-yangerkun@huaweicloud.com>
+ <20240820140657.3685287-2-yangerkun@huaweicloud.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <238e40d0-606f-bb9e-c18c-542df87c1e31@huawei.com>
+Date: Wed, 21 Aug 2024 09:44:40 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3776.700.51\))
-Subject: Re: [RESEND PATCH v4] ext4: Annotate struct ext4_xattr_inode_array
- with __counted_by()
-From: Thorsten Blum <thorsten.blum@toblux.com>
-In-Reply-To: <20240813070707.34203-1-thorsten.blum@toblux.com>
-Date: Wed, 21 Aug 2024 01:17:19 +0200
-Cc: linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <90467BBB-59F4-48C5-AD18-4FDDAE3CF321@toblux.com>
-References: <20240813070707.34203-1-thorsten.blum@toblux.com>
-To: tytso@mit.edu,
- adilger.kernel@dilger.ca,
- Kees Cook <kees@kernel.org>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>
-X-Mailer: Apple Mail (2.3776.700.51)
+MIME-Version: 1.0
+In-Reply-To: <20240820140657.3685287-2-yangerkun@huaweicloud.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm000013.china.huawei.com (7.193.23.81)
 
-On 13. Aug 2024, at 09:07, Thorsten Blum <thorsten.blum@toblux.com> =
-wrote:
->=20
-> Add the __counted_by compiler attribute to the flexible array member
-> inodes to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-> CONFIG_FORTIFY_SOURCE.
->=20
-> Remove the now obsolete comment on the count field.
->=20
-> In ext4_expand_inode_array(), use struct_size() instead of offsetof()
-> and remove the local variable count. Increment the count field before
-> adding a new inode to the inodes array.
->=20
-> Compile-tested only.
->=20
-> Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+ÔÚ 2024/8/20 22:06, yangerkun Ð´µÀ:
+> From: yangerkun <yangerkun@huawei.com>
+> 
+> Any extended write for ext4 requires the inode to be placed on the
+> orphan list before the actual write. In addition, the inode can be
+> actually removed from the orphan list only after all writes are
+> completed. Otherwise, those overcommitted blocks (If the allocated
+> blocks are not written due to certain reasons, the inode size does not
+> exceed the offset of these blocks) The leak status is always retained,
+> and fsck reports an alarm for this scenario.
+> 
+> Currently, the dio and buffer IO comply with this logic. However, the
+> dax write will removed the inode from orphan list since
+> ext4_handle_inode_extension is unconditionally called during extend
+> write. Fix it with this patch. We open the code from
+> ext4_handle_inode_extension since we want to keep the blocks valid
+> has been allocated and write success.
+> 
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
 > ---
-> Changes in v2:
-> - Adjust ext4_expand_inode_array() as suggested by Gustavo A. R. Silva
-> - Use struct_size() and struct_size_t() instead of offsetof()
-> - Link to v1: =
-https://lore.kernel.org/linux-kernel/20240729110454.346918-3-thorsten.blum=
-@toblux.com/
->=20
-> Changes in v3:
-> - Use struct_size() instead of struct_size_t() as suggested by Kees =
-Cook
-> - Remove the local variable count as suggested by Gustavo A. R. Silva
-> - Increment count before adding a new inode as suggested by Gustavo
-> - Link to v2: =
-https://lore.kernel.org/linux-kernel/20240730172301.231867-4-thorsten.blum=
-@toblux.com/
->=20
-> Changes in v4:
-> - Remove unnecessary count assignment and adjust copying the whole
->  struct as suggested by Gustavo
-> - Link to v3: =
-https://lore.kernel.org/linux-kernel/20240730205509.323320-3-thorsten.blum=
-@toblux.com/
-> ---
-> fs/ext4/xattr.c | 22 ++++++++++------------
-> fs/ext4/xattr.h |  4 ++--
-> 2 files changed, 12 insertions(+), 14 deletions(-)
->=20
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 46ce2f21fef9..263567d4e13d 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -2879,33 +2879,31 @@ ext4_expand_inode_array(struct =
-ext4_xattr_inode_array **ea_inode_array,
-> if (*ea_inode_array =3D=3D NULL) {
-> /*
-> * Start with 15 inodes, so it fits into a power-of-two size.
-> - * If *ea_inode_array is NULL, this is essentially offsetof()
-> */
-> - (*ea_inode_array) =3D
-> - kmalloc(offsetof(struct ext4_xattr_inode_array,
-> - inodes[EIA_MASK]),
-> - GFP_NOFS);
-> + (*ea_inode_array) =3D kmalloc(
-> + struct_size(*ea_inode_array, inodes, EIA_MASK),
-> + GFP_NOFS);
-> if (*ea_inode_array =3D=3D NULL)
-> return -ENOMEM;
-> (*ea_inode_array)->count =3D 0;
-> } else if (((*ea_inode_array)->count & EIA_MASK) =3D=3D EIA_MASK) {
-> /* expand the array once all 15 + n * 16 slots are full */
-> struct ext4_xattr_inode_array *new_array =3D NULL;
-> - int count =3D (*ea_inode_array)->count;
->=20
-> - /* if new_array is NULL, this is essentially offsetof() */
-> new_array =3D kmalloc(
-> - offsetof(struct ext4_xattr_inode_array,
-> - inodes[count + EIA_INCR]),
-> - GFP_NOFS);
-> + struct_size(*ea_inode_array, inodes,
-> +    (*ea_inode_array)->count + EIA_INCR),
-> + GFP_NOFS);
-> if (new_array =3D=3D NULL)
-> return -ENOMEM;
-> memcpy(new_array, *ea_inode_array,
-> -       offsetof(struct ext4_xattr_inode_array, inodes[count]));
-> +       struct_size(*ea_inode_array, inodes,
-> +   (*ea_inode_array)->count));
-> kfree(*ea_inode_array);
-> *ea_inode_array =3D new_array;
-> }
-> - (*ea_inode_array)->inodes[(*ea_inode_array)->count++] =3D inode;
-> + (*ea_inode_array)->count++;
-> + (*ea_inode_array)->inodes[(*ea_inode_array)->count - 1] =3D inode;
-> return 0;
-> }
->=20
-> diff --git a/fs/ext4/xattr.h b/fs/ext4/xattr.h
-> index bd97c4aa8177..e14fb19dc912 100644
-> --- a/fs/ext4/xattr.h
-> +++ b/fs/ext4/xattr.h
-> @@ -130,8 +130,8 @@ struct ext4_xattr_ibody_find {
-> };
->=20
-> struct ext4_xattr_inode_array {
-> - unsigned int count; /* # of used items in the array */
-> - struct inode *inodes[];
-> + unsigned int count;
-> + struct inode *inodes[] __counted_by(count);
-> };
->=20
-> extern const struct xattr_handler ext4_xattr_user_handler;
-> --=20
-> 2.46.0
->=20
+>   fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
+>   1 file changed, 31 insertions(+), 4 deletions(-)
 
-Could someone take another look at this?
+Reviewed-by: Zhihao Cheng <chengzhihao1@huawei.com>
+> 
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index be061bb64067..fd8597eef75e 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -628,11 +628,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>   static ssize_t
+>   ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>   {
+> -	ssize_t ret;
+> +	ssize_t ret, written;
+>   	size_t count;
+>   	loff_t offset;
+>   	handle_t *handle;
+>   	bool extend = false;
+> +	bool need_trunc = true;
+>   	struct inode *inode = file_inode(iocb->ki_filp);
+>   
+>   	if (iocb->ki_flags & IOCB_NOWAIT) {
+> @@ -668,10 +669,36 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>   
+>   	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
+>   
+> -	if (extend) {
+> -		ret = ext4_handle_inode_extension(inode, offset, ret);
+> -		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
+> +	if (!extend)
+> +		goto out;
+> +
+> +	if (ret <= 0)
+> +		goto err_trunc;
+> +
+> +	written = ret;
+> +	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+> +	if (IS_ERR(handle)) {
+> +		ret = PTR_ERR(handle);
+> +		goto err_trunc;
+>   	}
+> +
+> +	if (ext4_update_inode_size(inode, offset + written)) {
+> +		ret = ext4_mark_inode_dirty(handle, inode);
+> +		if (unlikely(ret)) {
+> +			ext4_journal_stop(handle);
+> +			goto err_trunc;
+> +		}
+> +	}
+> +
+> +	if (written == count)
+> +		need_trunc = false;
+> +
+> +	if (inode->i_nlink)
+> +		ext4_orphan_del(handle, inode);
+> +	ext4_journal_stop(handle);
+> +	ret = written;
+> +err_trunc:
+> +	ext4_inode_extension_cleanup(inode, need_trunc);
+>   out:
+>   	inode_unlock(inode);
+>   	if (ret > 0)
+> 
 
-Thanks,
-Thorsten=
 
