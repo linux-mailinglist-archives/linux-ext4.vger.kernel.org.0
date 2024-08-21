@@ -1,114 +1,106 @@
-Return-Path: <linux-ext4+bounces-3825-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3826-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E4210959E2D
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 15:09:05 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E196959E49
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 15:13:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A7041C2246C
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 13:09:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 44F631F22E10
+	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 13:13:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C699192D84;
-	Wed, 21 Aug 2024 13:08:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA7B619ABD2;
+	Wed, 21 Aug 2024 13:12:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iDZpWcAd"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="CKj5YCsJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+Received: from out-172.mta1.migadu.com (out-172.mta1.migadu.com [95.215.58.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAD8319992C
-	for <linux-ext4@vger.kernel.org>; Wed, 21 Aug 2024 13:08:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7738C19ABA6
+	for <linux-ext4@vger.kernel.org>; Wed, 21 Aug 2024 13:12:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724245737; cv=none; b=Wn377nfWUq0zdqJck1rkOpoaGycSssMfhqsDwkvyYv4Thisd700NkowMrTWO/DDd8ApuQxn4jHF4vYOgOwGSDv+lbzcQO8e6Tu6zfRTpWGBIG7yq3F9hVvnMFpkTzH1KO6qy9LrOVNJgxXN6PmVhCn036gPfaIjzbUQ66zDIJXE=
+	t=1724245949; cv=none; b=sywxtTCd7/dFRDbFFD3yryf8KZOmInRuoJg/CWSmd6qRpZEHB0+jbw9IA/LdxGsPO2cb82nokHMlAFCAsL40kVKyNSOh7RcUTRd9o7Nf+H9SBc3PHrYOTW26dK9CF0W7RfXNJbX6iVLL+acCjYEW31PVxJiu7g03CPY1a6/lrwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724245737; c=relaxed/simple;
-	bh=ybJQR0hiEiFX55/zKRUixsPea5djDrknKPtGT0oPRGw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BtvmMFrxIrJwwwYT6KonqG68I2CE/ue4k8lTyeTZfd8/v4JzJWS/hn+m6dhgJDrbMux5z8B+2rlbZWE3vQ8LMhAFkjHpsRBA5VtGUh3+KafhNGX6RJV/No4kl3fbylkwH5nBogYDwSBIS5H3oRaBrpqGpaNGukNTKNN9r8hLq2I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iDZpWcAd; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1724245734;
+	s=arc-20240116; t=1724245949; c=relaxed/simple;
+	bh=1hWSfkuDvCCgzyJWEPIuUmNXb4LdRo7Zv0iC4AskkO8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=tsqmdv51lEAVcWvnsGc7HN+tWXl+L9LG71/jriiWYvl5YisA2PzQnUeNQtYnKnpNTgIvNcPqDzdXHPm/fC8ytU4Do1gCtOhE7oW1TKtXEwD97vXSZHFxAYtpNxqa+n7wLPX3BedHHM7Oh/5zkgsGVRBVMVKMs91H94I6t4E3FwA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=CKj5YCsJ; arc=none smtp.client-ip=95.215.58.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1724245943;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Ftzy8wmPd1fIZosJOmF+YzPd6W3yB3pGQ4TDRBMo1RA=;
-	b=iDZpWcAdg4xOQjBsdN5dyV2pAg8PjQDGRWATbBpJUTqk9CeHIlSyMpGpCETxd9Snk5FYgf
-	U2FRpdSoj2O2r9nWJkAwLqATdl2YJPa9+6x3LXPuXQGbatYKdYrptZjr913Eyww3x8/QnM
-	cC85OmzAzHpIzXnP5Low4laVJu964Nk=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-655-SIV7iMHCOnWkrfCYlssVvw-1; Wed,
- 21 Aug 2024 09:08:51 -0400
-X-MC-Unique: SIV7iMHCOnWkrfCYlssVvw-1
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 2F5F31954B2A;
-	Wed, 21 Aug 2024 13:08:48 +0000 (UTC)
-Received: from bfoster (unknown [10.22.33.147])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 54F5C19560AA;
-	Wed, 21 Aug 2024 13:08:45 +0000 (UTC)
-Date: Wed, 21 Aug 2024 09:09:41 -0400
-From: Brian Foster <bfoster@redhat.com>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	Jens Axboe <axboe@kernel.dk>, Jan Kara <jack@suse.cz>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 6/6] xfs: refactor xfs_file_fallocate
-Message-ID: <ZsXnFYIwww-Y6JH8@bfoster>
-References: <20240821063108.650126-1-hch@lst.de>
- <20240821063108.650126-7-hch@lst.de>
- <ZsXhL_pJhq2qyy-l@bfoster>
- <20240821125756.GA21319@lst.de>
+	bh=RkjVWgifWNDmOyCQoEG2PBMR+4xjF0nUCR+RTDSSzHk=;
+	b=CKj5YCsJnOZulatF/45o/OO7JgtmSwb46NEdcnct2keM4S3jBXEghIHMexYEslL43XS2JM
+	KuOKOEneqfNmXXWbPpxKFLlweQBNi3Dt4u0dUgyoe6d+/hihI1I1fl59F3YrsZAT24xvRJ
+	6n58PhZUao1DsiIKJXiOn6anP7nq3u8=
+From: Luis Henriques <luis.henriques@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Andreas Dilger <adilger@dilger.ca>,  linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 0/2] e2fsck: make sure orphan files are cleaned-up
+In-Reply-To: <20240611142704.14307-1-luis.henriques@linux.dev> (Luis
+	Henriques's message of "Tue, 11 Jun 2024 15:27:02 +0100")
+References: <20240611142704.14307-1-luis.henriques@linux.dev>
+Date: Wed, 21 Aug 2024 14:12:14 +0100
+Message-ID: <8734myrpe9.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240821125756.GA21319@lst.de>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-On Wed, Aug 21, 2024 at 02:57:56PM +0200, Christoph Hellwig wrote:
-> On Wed, Aug 21, 2024 at 08:44:31AM -0400, Brian Foster wrote:
-> > > +	error = xfs_reflink_unshare(XFS_I(inode), offset, len);
-> > > +	if (error)
-> > > +		return error;
-> > > +
-> > 
-> > Doesn't unshare imply alloc?
-> 
-> Yes, ooks like that got lost and no test noticed it
-> 
-> > > -	if (xfs_file_sync_writes(file))
-> > > +	if (!error && xfs_file_sync_writes(file))
-> > >  		error = xfs_log_force_inode(ip);
-> > 
-> > I'd think if you hit -ENOSPC or something after doing a partial alloc to
-> > a sync inode, you'd still want to flush the changes that were made..?
-> 
-> Persistence behavior on error is always undefined.  And that's also
-> what the current code does, as it jumps past the log force from all
-> error exits.
-> 
+On Tue, Jun 11 2024, Luis Henriques (SUSE) wrote:
 
-Ok, if this preserves existing behavior then I'm not too worried about
-it. Thanks.
+> Hi!
+>
+> I'm sending a fix to e2fsck that forces the filesystem checks to happen
+> when the orphan file is present in the filesystem.  This patch resulted f=
+rom
+> a bug reported in openSUSE Tumbleweed[1] where e2fsck doesn't clean-up th=
+is
+> file and later the filesystem  fails to be mounted read-only (because it
+> still requires recovery).
+>
+> I'm also sending a new test to validate this scenario.
 
-Brian
+I know it's holidays season, but since I've sent this a while ago I
+believe it's time for a ping.
 
+Cheers,
+--=20
+Lu=C3=ADs
+
+
+> [1] https://bugzilla.suse.com/show_bug.cgi?id=3D1226043
+>
+> Luis Henriques (SUSE) (2):
+>   e2fsck: don'k skip checks if the orphan file is present in the
+>     filesystem
+>   tests: new test to check that the orphan file is cleaned up
+>
+>  e2fsck/unix.c                      |   4 ++++
+>  tests/f_clear_orphan_file/expect.1 |  35 +++++++++++++++++++++++++++++
+>  tests/f_clear_orphan_file/expect.2 |   7 ++++++
+>  tests/f_clear_orphan_file/image.gz | Bin 0 -> 12449 bytes
+>  tests/f_clear_orphan_file/name     |   1 +
+>  tests/f_clear_orphan_file/script   |   2 ++
+>  6 files changed, 49 insertions(+)
+>  create mode 100644 tests/f_clear_orphan_file/expect.1
+>  create mode 100644 tests/f_clear_orphan_file/expect.2
+>  create mode 100644 tests/f_clear_orphan_file/image.gz
+>  create mode 100644 tests/f_clear_orphan_file/name
+>  create mode 100644 tests/f_clear_orphan_file/script
+>
 
