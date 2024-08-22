@@ -1,85 +1,188 @@
-Return-Path: <linux-ext4+bounces-3866-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3870-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9824795B939
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 17:01:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AACA195BD19
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 19:25:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7256FB275AE
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 15:00:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A55E285219
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 17:25:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3567B1CC88A;
-	Thu, 22 Aug 2024 15:00:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 711B91CEACC;
+	Thu, 22 Aug 2024 17:25:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="VWFgd0TS"
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="t7bRC+77";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="1vOjQtg2";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="ho8VzL9h";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="TVNg7y82"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28A671CB135
-	for <linux-ext4@vger.kernel.org>; Thu, 22 Aug 2024 15:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FC8E1CEABB;
+	Thu, 22 Aug 2024 17:25:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724338845; cv=none; b=L+z/MyWNi6KPMtgX6jGNWgJtzwrXA+A92mHDE5PSmFOLlZMhKjSZGxrzyLynpR9Se3DQ0h7r1dGv+lmzRs3JW/hU5+i7BL2GQGZm97QDJRu1sZgdaR51feiS2YotMmtbcwkdMztJVVVgHa0ntJT6rrfbdn9SYtyW5J5mhHxX6mU=
+	t=1724347539; cv=none; b=kmW1KaVl2GLsX68YXLgN6ZionvKOZjxBIQglUTirplREuJMD5NdWDjYO5Zt2WTCiQGDXdo/KQ3W4ysoYoAjiQ8qQL/Iq144TztWpMvAICWb2+Jv93XRi9niLuppPYnshM+6dnnMmQc3/YoVVOQGzcP10/zmis/vv2V+3w8sFbQs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724338845; c=relaxed/simple;
-	bh=9MmF3OwinZU57ZeQdvO5q5U9hXfnwUZyKjxWoZmXdSQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=N0yj3kTXe2RWuT4ZATRsTmGcJ26/v0L/5fnaXUSjFKh4WbCZKrLoaAknqTB9L+p4BStDfcC4YNZmckKwKxAhVqeo9b+ZCr68tbWXOrB+C7ksbMfZM8ObKIrs+syw/v2Mm/4NRJpwAhN1tCBGP/OqiTwgnm9nvwKEmrBRUAVV0PM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=VWFgd0TS; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-112-67.bstnma.fios.verizon.net [173.48.112.67])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47MF0O3b022430
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 22 Aug 2024 11:00:25 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1724338826; bh=PJeAnoJXdEfUH82I933bZUUEq15CB74p299DfwOQAnE=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=VWFgd0TSgw0Z4ia4OQNb+DL1zYavDG+kRxEstqOjlloMzmh8rfHTo/XFbrJtN6CBd
-	 nDVI+HtGUj6+M5/Qyalb1cw7NjKvT31XOgp2pWQbRea4tPmHMPfL1l5qXie/PNsMqZ
-	 qN5pcuTprbs2Vt/SdUief/ve5tcODukj/8YQvZmGsHPxhxwta1KsIfFh6C/nRPvjdx
-	 gXCWqmwIcibId3K+WLyNajiCF3zuTpIacLUA5o1Ggxt9LcaZpY72LDenocQPY1G5zi
-	 OgsJyimoc5u3KLx8KGEMWdA025XRz0FGmpz1ejTaRTmLlnlA8rVqdIXO8f8IZTAn1z
-	 J5pC4ZXXJSf3A==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id E64AC15C02C6; Thu, 22 Aug 2024 11:00:21 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: adilger.kernel@dilger.ca, "yao.ly" <yao.ly@linux.alibaba.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] ext4: Correct dentry name hash when readdir with encrypted and not casefolded
-Date: Thu, 22 Aug 2024 11:00:14 -0400
-Message-ID: <172433877725.370733.10136882872193689804.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <1719816219-128287-1-git-send-email-yao.ly@linux.alibaba.com>
-References: <1719816219-128287-1-git-send-email-yao.ly@linux.alibaba.com>
+	s=arc-20240116; t=1724347539; c=relaxed/simple;
+	bh=lZz2b+UIfcm76DYpcUn3AC660hwcw/loySTha54lQR4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=pLRhqaPFs2t/gfMouMPpwwyk4fd9MngCZrvmUZah5LIcea1v+48T9Dl0bXhPAs0MxwdeVIozcRp2AZ/1eSKxx8itlupq0tlUTkuY26BYoGwvc8zJEl5AJF0U5cqCW8pc/7F31A2YsTBRGneRu57gtfJRn1PUCd4FDwtBVqyZw+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=t7bRC+77; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=1vOjQtg2; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=ho8VzL9h; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=TVNg7y82; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E82782020D;
+	Thu, 22 Aug 2024 17:25:34 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1724347535; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BObgr4Z1nBzmg7iQR4vsFNHe/0eQMqqJIKMig54d+WY=;
+	b=t7bRC+77OR6/NWFx47bUZGgve7AI/XiZjiO1dppmXhr6x/cdGJvzxIjlftga0lsoPWxYbc
+	XrE2SLnexdMzA61Bya8KlA0rHmbxVengX6jtYmwUALgn2HhEKSmmho9RErcB/SWTaN+EK3
+	HePBOutOXfVOwCopgx9/h4OFk2Jx0ug=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1724347535;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BObgr4Z1nBzmg7iQR4vsFNHe/0eQMqqJIKMig54d+WY=;
+	b=1vOjQtg2+4yPFcrKWikFzyDAABw4sAJGqrPJhX13v+P+YE1RNnWBbDEng9jalzaEuwdjFc
+	1BZ6+dZG40KdIICw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=ho8VzL9h;
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=TVNg7y82
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1724347534; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BObgr4Z1nBzmg7iQR4vsFNHe/0eQMqqJIKMig54d+WY=;
+	b=ho8VzL9haiPDdrXvqolJg/wNSKS0UVG9hXShBWklDjZ5/jm4fKz7wEDhxdxpj6jitIZ3W9
+	a0ZT2N5pgfgTTj9cUQ0Er2PtCK/jDzG4lAuUKzkmKYaNGaP/itfKLEa5yWHZ43AM++Bvaw
+	aECvA0erDCb55TJ0CQ8wN7xknDBPZK8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1724347534;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=BObgr4Z1nBzmg7iQR4vsFNHe/0eQMqqJIKMig54d+WY=;
+	b=TVNg7y82VmpzTXpW7vXGdIN0hR3jJVeb/JEGCLUiYt9qsSEM9Zsiqtk4mPm+ivC2YTl+ea
+	QkCCKCLXqItDm9Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id AC53113A1F;
+	Thu, 22 Aug 2024 17:25:34 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id B98pJI50x2bmFwAAD6G6ig
+	(envelope-from <krisman@suse.de>); Thu, 22 Aug 2024 17:25:34 +0000
+From: Gabriel Krisman Bertazi <krisman@suse.de>
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Eugen Hristev <eugen.hristev@collabora.com>,  brauner@kernel.org,
+  tytso@mit.edu,  linux-ext4@vger.kernel.org,  jack@suse.cz,
+  adilger.kernel@dilger.ca,  linux-fsdevel@vger.kernel.org,
+  linux-kernel@vger.kernel.org,  kernel@collabora.com,
+  shreeya.patel@collabora.com
+Subject: Re: [PATCH 1/2] fs/dcache: introduce d_alloc_parallel_check_existing
+In-Reply-To: <20240822011345.GS504335@ZenIV> (Al Viro's message of "Thu, 22
+	Aug 2024 02:13:45 +0100")
+Organization: SUSE
+References: <20240705062621.630604-1-eugen.hristev@collabora.com>
+	<20240705062621.630604-2-eugen.hristev@collabora.com>
+	<87zfp7rltx.fsf@mailhost.krisman.be>
+	<2df894de-8fa9-40c2-ba2c-f9ae65520656@collabora.com>
+	<87jzg9wjeo.fsf@mailhost.krisman.be> <20240822011345.GS504335@ZenIV>
+Date: Thu, 22 Aug 2024 13:25:33 -0400
+Message-ID: <87frqwwjua.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Rspamd-Queue-Id: E82782020D
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	HAS_ORG_HEADER(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_TWO(0.00)[2];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	DKIM_TRACE(0.00)[suse.de:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.51
+X-Spam-Flag: NO
 
+Al Viro <viro@zeniv.linux.org.uk> writes:
 
-On Mon, 01 Jul 2024 14:43:39 +0800, yao.ly wrote:
-> EXT4_DIRENT_HASH and EXT4_DIRENT_MINOR_HASH will access struct
-> ext4_dir_entry_hash followed ext4_dir_entry. But there is no ext4_dir_entry_hash
-> followed when inode is encrypted and not casefolded
-> 
-> 
+> On Wed, Aug 21, 2024 at 07:22:39PM -0400, Gabriel Krisman Bertazi wrote:
+>
+>> Would it be acceptable to just change the dentry->d_name here in a new
+>> flavor of d_add_ci used only by these filesystems? We are inside the
+>> creation path, so the dentry has never been hashed.  Concurrent lookups
+>> will be stuck in d_wait_lookup() until we are done and will never become
+>> invalid after the change because the lookup was already done
+>> case-insensitively, so they all match the same dentry, per-definition,
+>> and we know there is no other matching dentries in the directory.  We'd
+>> only need to be careful not to expose partial names to concurrent
+>> parallel lookups.
+>
+> *Ow*
+>
+> ->d_name stability rules are already convoluted as hell; that would make
+> them even more painful.
+>
+> What locking are you going to use there?
 
-Applied, thanks!
+Since we are in the ->d_lookup() during the rename, and we use the
+dcache-insensitively for the filesystems that will do the rename, we
+know there is nothing in the dcache and the dentry is still in the
+parallel lookup table.  So we are not racing with a creation of the same
+name in the same directory.  A parallel lookup will either find that
+dentry (old or new name, doesn't matter) or not find anything, in case
+it sees a partial ->d_name.  Therefore, the only possible problem is a
+false negative/positive in parent->d_in_lookup_hash.
 
-[1/1] ext4: Correct dentry name hash when readdir with encrypted and not casefolded
-      commit: 95525bf5b13d28d55fb61400c9e97db6ea7da5f4
+Can we extend the rename_lock seqlock protection that already exists in
+d_alloc_parallel to include the d_in_lookup_hash walk?  d_add_ci then
+acquires the rename_lock before writing ->d_name and d_alloc_parallel
+will see it changed after iterating over d_in_lookup_hash, in case it
+didn't find anything, and retry the entire sequence.
 
-Best regards,
+Case-inexact lookups are not supposed to be frequent. Most lookups
+should be done in a case-exact way, so the extra acquisition of
+rename_lock shouldn't create more contention on the rename_lock for the
+regular path or for non-case-insensitive filesystems.  The overhead in
+d_alloc_parallel is another read_seqretry() that is done only in the
+case where the dentry is not found anywhere and should be created.
+
 -- 
-Theodore Ts'o <tytso@mit.edu>
+Gabriel Krisman Bertazi
 
