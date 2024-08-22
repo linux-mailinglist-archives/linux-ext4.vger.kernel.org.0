@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-3847-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3846-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46B7095AB08
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 04:42:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 90FC895AB05
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 04:41:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 046B7285090
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 02:42:11 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35C931F240D7
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 02:41:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9FF4436A;
-	Thu, 22 Aug 2024 02:40:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CED0E3BB32;
+	Thu, 22 Aug 2024 02:40:40 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33291D556;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C522B1CF9B;
 	Thu, 22 Aug 2024 02:40:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724294441; cv=none; b=JWK+LeshrjsirKyfMH/yC7eq+1YZ5kFNv7AoYyvdzO/zP0K4M6lreaUbS4qOL0LskmbNNz9ZSiEqLoLDcgKD7U1/pvoroC9CgRDU5ZOYGH2fg7MbSwfWicYD76eJPJ+MOKD+o4hcHnvaZnw1JXVPA6aGOAPFD/bwjR2ppCQAjfA=
+	t=1724294440; cv=none; b=bdE1Q4cHAb4FaWnQEGe/+qW0BEQEnr6QBtg68LPYKc0Bk5a4oov5T8UL/Qk5NJR+qq+/MeZbXzy8lG4HO8tTc9XinvmAw4OdSQaS/Rd5BDQfYVXtRwmM8VIISDGni2JQEz8jpQfWCzYvnROcueVPBl8ll3AhLhtflgRpgcI3sOc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724294441; c=relaxed/simple;
-	bh=RgmNB8LuzxrYvh+yl33SHHehMeLOHf0XmS/yY93Pq7A=;
+	s=arc-20240116; t=1724294440; c=relaxed/simple;
+	bh=ng/CWgAZqIVAraFtFfg/ebpVG5r3IDES0s8HGhn3J2o=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R897sATUvXbmSsyZeNpwh0koOdepfRtFQFusi5aJ7Dy8iyCPXbdUeq5Pm3vSuyW1yG41iugIIyawQZzM+JOrVxvF6XhTjQ5r7fl0pg6bOQtf5FwD4yc3uACxWZNsLTvxRiCt3yQzpLcIB4VAGjagzZQnd91MdQxWO2XzRGHLGTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 MIME-Version; b=cHZkIKkvlD8mxmYA94RKX9CCRJZBd0zTKF8knaUkkPXJ/majx+RlYQni3qUbS/SSUaAO0Vn7gSvK0xgnxMZ1C3qkIVpL8u4oVDSpCt9oAder8n7Uf3JEVMXnLl53xRYSMPXOX7qErtVsJSFrOOVC75HnFhBLlUwviN9tBHIb40w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Wq6r51pp9z4f3jY9;
-	Thu, 22 Aug 2024 10:40:21 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wq6r46H1Cz4f3n5k;
+	Thu, 22 Aug 2024 10:40:20 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 745A91A18EE;
-	Thu, 22 Aug 2024 10:40:35 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 05C3B1A058E;
+	Thu, 22 Aug 2024 10:40:36 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCHr4UapcZmqbd1CQ--.38129S13;
+	by APP4 (Coremail) with SMTP id gCh0CgCHr4UapcZmqbd1CQ--.38129S14;
 	Thu, 22 Aug 2024 10:40:35 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -49,10 +49,11 @@ Cc: tytso@mit.edu,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
-	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH v2 09/25] ext4: add new ext4_ext_path_brelse() helper
-Date: Thu, 22 Aug 2024 10:35:29 +0800
-Message-Id: <20240822023545.1994557-10-libaokun@huaweicloud.com>
+	Baokun Li <libaokun1@huawei.com>,
+	stable@kernel.org
+Subject: [PATCH v2 10/25] ext4: propagate errors from ext4_find_extent() in ext4_insert_range()
+Date: Thu, 22 Aug 2024 10:35:30 +0800
+Message-Id: <20240822023545.1994557-11-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240822023545.1994557-1-libaokun@huaweicloud.com>
 References: <20240822023545.1994557-1-libaokun@huaweicloud.com>
@@ -63,109 +64,55 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHr4UapcZmqbd1CQ--.38129S13
-X-Coremail-Antispam: 1UD129KBjvJXoWxGr18uF1rKF1ftF17Xry3CFg_yoW5GF43pF
-	4ayr1DurWrta9I9FZ2qr4UZw1Sy3WfC3y8JrWakr1v93W7Jr1FqFyxtF40vFyayFW8WFWa
-	vFWjyw1Utr45taDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUQ214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwAKzVCY07xG64k0F24lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l
-	4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67
-	AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8I
-	cVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26c
-	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
-	wI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUYl19UUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQADBWbFpP9DdgABsL
+X-CM-TRANSID:gCh0CgCHr4UapcZmqbd1CQ--.38129S14
+X-Coremail-Antispam: 1UD129KBjvdXoWrZry3ZFyDWr4kGw18Gr4fAFb_yoWkWFXEya
+	4xJr1kWr43tw1xWw1kZr1IqrsFkF40gF15Xa1DGF1rZr15WF1kJF4DCrZ3A398ur4xZry3
+	AFZxXr4Yyry2qjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbm8FF20E14v26rWj6s0DM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28IrcIa0xkI8VA2jI8067AKxVWUAVCq3wA2048vs2
+	IY020Ec7CjxVAFwI0_Xr0E3s1l8cAvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28E
+	F7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr
+	1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0D
+	M2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjx
+	v20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1l
+	F7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4IIrI8v6xkF7I0E8cxan2
+	IY04v7M4kE6xkIj40Ew7xC0wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCF
+	x2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14
+	v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY
+	67AKxVW8JVW5JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4
+	v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Gr0_Cr1lIxAIcVC2z280aVCY1x0267AK
+	xVW8Jr0_Cr1UYxBIdaVFxhVjvjDU0xZFpf9x0JU9Aw3UUUUU=
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQADBWbFpP9DdgADsJ
 
 From: Baokun Li <libaokun1@huawei.com>
 
-Add ext4_ext_path_brelse() helper function to reduce duplicate code
-and ensure that path->p_bh is set to NULL after it is released.
+Even though ext4_find_extent() returns an error, ext4_insert_range() still
+returns 0. This may confuse the user as to why fallocate returns success,
+but the contents of the file are not as expected. So propagate the error
+returned by ext4_find_extent() to avoid inconsistencies.
 
+Fixes: 331573febb6a ("ext4: Add support FALLOC_FL_INSERT_RANGE for fallocate")
+Cc: stable@kernel.org
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Tested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- fs/ext4/extents.c | 24 ++++++++++++------------
- 1 file changed, 12 insertions(+), 12 deletions(-)
+ fs/ext4/extents.c | 1 +
+ 1 file changed, 1 insertion(+)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index c4a4573440c1..5e760d1a0eff 100644
+index 5e760d1a0eff..1c1c7c39ceaa 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -106,6 +106,12 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
- 	return 0;
- }
+@@ -5577,6 +5577,7 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
+ 	path = ext4_find_extent(inode, offset_lblk, NULL, 0);
+ 	if (IS_ERR(path)) {
+ 		up_write(&EXT4_I(inode)->i_data_sem);
++		ret = PTR_ERR(path);
+ 		goto out_stop;
+ 	}
  
-+static inline void ext4_ext_path_brelse(struct ext4_ext_path *path)
-+{
-+	brelse(path->p_bh);
-+	path->p_bh = NULL;
-+}
-+
- static void ext4_ext_drop_refs(struct ext4_ext_path *path)
- {
- 	int depth, i;
-@@ -113,10 +119,8 @@ static void ext4_ext_drop_refs(struct ext4_ext_path *path)
- 	if (!path)
- 		return;
- 	depth = path->p_depth;
--	for (i = 0; i <= depth; i++, path++) {
--		brelse(path->p_bh);
--		path->p_bh = NULL;
--	}
-+	for (i = 0; i <= depth; i++, path++)
-+		ext4_ext_path_brelse(path);
- }
- 
- void ext4_free_ext_path(struct ext4_ext_path *path)
-@@ -635,8 +639,7 @@ int ext4_ext_precache(struct inode *inode)
- 		 */
- 		if ((i == depth) ||
- 		    path[i].p_idx > EXT_LAST_INDEX(path[i].p_hdr)) {
--			brelse(path[i].p_bh);
--			path[i].p_bh = NULL;
-+			ext4_ext_path_brelse(path + i);
- 			i--;
- 			continue;
- 		}
-@@ -1889,8 +1892,7 @@ static void ext4_ext_try_to_merge_up(handle_t *handle,
- 		(path[1].p_ext - EXT_FIRST_EXTENT(path[1].p_hdr));
- 	path[0].p_hdr->eh_max = cpu_to_le16(max_root);
- 
--	brelse(path[1].p_bh);
--	path[1].p_bh = NULL;
-+	ext4_ext_path_brelse(path + 1);
- 	ext4_free_blocks(handle, inode, NULL, blk, 1,
- 			 EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET);
- }
-@@ -2959,8 +2961,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 			err = ext4_ext_rm_leaf(handle, inode, path,
- 					       &partial, start, end);
- 			/* root level has p_bh == NULL, brelse() eats this */
--			brelse(path[i].p_bh);
--			path[i].p_bh = NULL;
-+			ext4_ext_path_brelse(path + i);
- 			i--;
- 			continue;
- 		}
-@@ -3022,8 +3023,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
- 				err = ext4_ext_rm_idx(handle, inode, path, i);
- 			}
- 			/* root level has p_bh == NULL, brelse() eats this */
--			brelse(path[i].p_bh);
--			path[i].p_bh = NULL;
-+			ext4_ext_path_brelse(path + i);
- 			i--;
- 			ext_debug(inode, "return to level %d\n", i);
- 		}
 -- 
 2.39.2
 
