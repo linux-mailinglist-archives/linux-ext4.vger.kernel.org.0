@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-3862-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3863-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2169A95AB27
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 04:45:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A699995AB29
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 04:45:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F51A1C244DA
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 02:45:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 64F65287B8D
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 02:45:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CDF017E00C;
-	Thu, 22 Aug 2024 02:40:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FE94181334;
+	Thu, 22 Aug 2024 02:40:49 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82918165F11;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AECC7176AA5;
 	Thu, 22 Aug 2024 02:40:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724294447; cv=none; b=d2yextpHvGD2uPudbETgDZk+P+XJYc1bC0C53HZGXaaN2uSA85M96ckXyu9URYh6vVYV4ThuwjzpgPfUyR/x+ceLBCnRiEHA30KEqdw2hkJwMTb5JK14m0XGwwgfzJ9Dk4fs0i4eyNyA9dAaKAHGeId/Hni/lvwQW+IUiEbmxjQ=
+	t=1724294449; cv=none; b=lTxhiyZmiaOSDSg5DlcNqi50bokkuv3RD9yea3dUiyD5A3FGxQF3qyeql3PdBsv/2vSIwIqRyDk+QYKOwaVreUMr2OCl5RinM2OdHyzWWoKXObStslRmeTIwViMvZstLE0soozwJuxhUhZTqHBc8y8s1/bgHHXpt7FiO5N+2nNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724294447; c=relaxed/simple;
-	bh=mXvtL3fite4bDNRyOxT5Mw60FRuY8QpPL96/wQRpLUg=;
+	s=arc-20240116; t=1724294449; c=relaxed/simple;
+	bh=mWjNdXa9ZQMCkYs9dLLQcfo9hALBsireYH9ACWkdKss=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E53fmX1B8uh1tKShJX2xIgh6Ee7qoFg1LhxTS8By6MS35hhbPS+CF0KsLuw9lsGLDY+G8tx5rhEAX54+cy+FSuJt61rXVI7Of3UFiuZ0EQ552qKCoJqtP4HDAcFlgwvH8qMBL+s33e8MW2nZS3v9bMgVHQbc1nx/lvEPAvermuw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=WQwCsMe9knN5ilh4zAISu/QMzsC/RHaIiau4xypcvQ8Y+JPI7FHGcFFLJyPG7UG9NksIiGotpagoVA+YHICPZaGDJ3lech6qkxiF1LF3jwZR9MxlD4U/9ZaJNGme3bBgK9BjxTdAZ+ASJadCdZGi+3EytI6z3HyJEXPHkZBc4J0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wq6rJ6Y8gz4f3jtD;
-	Thu, 22 Aug 2024 10:40:32 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Wq6rD69DBz4f3jdl;
+	Thu, 22 Aug 2024 10:40:28 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 970791A0568;
-	Thu, 22 Aug 2024 10:40:42 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 159391A148B;
+	Thu, 22 Aug 2024 10:40:43 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCHr4UapcZmqbd1CQ--.38129S28;
+	by APP4 (Coremail) with SMTP id gCh0CgCHr4UapcZmqbd1CQ--.38129S29;
 	Thu, 22 Aug 2024 10:40:42 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
@@ -50,9 +50,9 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
 	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH v2 24/25] ext4: make some fast commit functions reuse extents path
-Date: Thu, 22 Aug 2024 10:35:44 +0800
-Message-Id: <20240822023545.1994557-25-libaokun@huaweicloud.com>
+Subject: [PATCH v2 25/25] ext4: save unnecessary indentation in ext4_ext_create_new_leaf()
+Date: Thu, 22 Aug 2024 10:35:45 +0800
+Message-Id: <20240822023545.1994557-26-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240822023545.1994557-1-libaokun@huaweicloud.com>
 References: <20240822023545.1994557-1-libaokun@huaweicloud.com>
@@ -63,10 +63,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHr4UapcZmqbd1CQ--.38129S28
-X-Coremail-Antispam: 1UD129KBjvJXoW3Xry7Jw15Xw4furWkWFW7Jwb_yoW7CFW3pF
-	WayF1Ygr15JFsrCrZ2ga17Zw13K3W8Gw48GryfWw1kuasxJr1SgF17ta1rtFy8KFZ7WFWa
-	vF18Kry8Gry7KFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgCHr4UapcZmqbd1CQ--.38129S29
+X-Coremail-Antispam: 1UD129KBjvJXoW7Zw1xWry7Gw4rXF1xtw1DJrb_yoW8tF43pF
+	s3ZF93Gr1q93yq9rZ3Wa1UZr13K3W8Wr4UJFWSyr9YvFy3ArsaqF93ta4rZFWrJFZ7Zay2
+	qrW0qw13Jw12qaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUQ214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -81,207 +81,86 @@ X-Coremail-Antispam: 1UD129KBjvJXoW3Xry7Jw15Xw4furWkWFW7Jwb_yoW7CFW3pF
 	cVAFwI0_Xr0_Ar1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26c
 	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAF
 	wI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUYl19UUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQADBWbFpP9DfgAAsC
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgADBWbFpZhEIgAAs8
 
 From: Baokun Li <libaokun1@huawei.com>
 
-The ext4_find_extent() can update the extent path so that it does not have
-to allocate and free the path repeatedly, thus reducing the consumption of
-memory allocation and freeing in the following functions:
+Save an indentation level in ext4_ext_create_new_leaf() by removing
+unnecessary 'else'. Besides, the variable 'ee_block' is declared to
+avoid line breaks. No functional changes.
 
-    ext4_ext_clear_bb
-    ext4_ext_replay_set_iblocks
-    ext4_fc_replay_add_range
-    ext4_fc_set_bitmaps_and_counters
-
-No functional changes. Note that ext4_find_extent() does not support error
-pointers, so in this case set path to NULL first.
-
+Suggested-by: Jan Kara <jack@suse.cz>
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Tested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- fs/ext4/extents.c     | 51 +++++++++++++++++++------------------------
- fs/ext4/fast_commit.c | 11 ++++++----
- 2 files changed, 29 insertions(+), 33 deletions(-)
+ fs/ext4/extents.c | 44 +++++++++++++++++++++-----------------------
+ 1 file changed, 21 insertions(+), 23 deletions(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 37b36b1abb16..ca1f946514dd 100644
+index ca1f946514dd..45ddc0692673 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -6069,12 +6069,9 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
- 	if (IS_ERR(path))
- 		return PTR_ERR(path);
- 	ex = path[path->p_depth].p_ext;
--	if (!ex) {
--		ext4_free_ext_path(path);
-+	if (!ex)
- 		goto out;
--	}
- 	end = le32_to_cpu(ex->ee_block) + ext4_ext_get_actual_len(ex);
--	ext4_free_ext_path(path);
+@@ -1403,6 +1403,7 @@ ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+ {
+ 	struct ext4_ext_path *curp;
+ 	int depth, i, err = 0;
++	ext4_lblk_t ee_block = le32_to_cpu(newext->ee_block);
  
- 	/* Count the number of data blocks */
- 	cur = 0;
-@@ -6100,32 +6097,28 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
- 	ret = skip_hole(inode, &cur);
- 	if (ret < 0)
- 		goto out;
--	path = ext4_find_extent(inode, cur, NULL, 0);
-+	path = ext4_find_extent(inode, cur, path, 0);
- 	if (IS_ERR(path))
- 		goto out;
- 	numblks += path->p_depth;
--	ext4_free_ext_path(path);
- 	while (cur < end) {
--		path = ext4_find_extent(inode, cur, NULL, 0);
-+		path = ext4_find_extent(inode, cur, path, 0);
- 		if (IS_ERR(path))
- 			break;
- 		ex = path[path->p_depth].p_ext;
--		if (!ex) {
--			ext4_free_ext_path(path);
--			return 0;
+ repeat:
+ 	i = depth = ext_depth(inode);
+@@ -1424,33 +1425,30 @@ ext4_ext_create_new_leaf(handle_t *handle, struct inode *inode,
+ 			goto errout;
+ 
+ 		/* refill path */
+-		path = ext4_find_extent(inode,
+-				    (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+-				    path, gb_flags);
++		path = ext4_find_extent(inode, ee_block, path, gb_flags);
+ 		return path;
+-	} else {
+-		/* tree is full, time to grow in depth */
+-		err = ext4_ext_grow_indepth(handle, inode, mb_flags);
+-		if (err)
+-			goto errout;
++	}
+ 
+-		/* refill path */
+-		path = ext4_find_extent(inode,
+-				   (ext4_lblk_t)le32_to_cpu(newext->ee_block),
+-				    path, gb_flags);
+-		if (IS_ERR(path))
+-			return path;
++	/* tree is full, time to grow in depth */
++	err = ext4_ext_grow_indepth(handle, inode, mb_flags);
++	if (err)
++		goto errout;
+ 
+-		/*
+-		 * only first (depth 0 -> 1) produces free space;
+-		 * in all other cases we have to split the grown tree
+-		 */
+-		depth = ext_depth(inode);
+-		if (path[depth].p_hdr->eh_entries == path[depth].p_hdr->eh_max) {
+-			/* now we need to split */
+-			goto repeat;
 -		}
-+		if (!ex)
-+			goto cleanup;
++	/* refill path */
++	path = ext4_find_extent(inode, ee_block, path, gb_flags);
++	if (IS_ERR(path))
++		return path;
 +
- 		cur = max(cur + 1, le32_to_cpu(ex->ee_block) +
- 					ext4_ext_get_actual_len(ex));
- 		ret = skip_hole(inode, &cur);
--		if (ret < 0) {
--			ext4_free_ext_path(path);
-+		if (ret < 0)
- 			break;
--		}
--		path2 = ext4_find_extent(inode, cur, NULL, 0);
--		if (IS_ERR(path2)) {
--			ext4_free_ext_path(path);
-+
-+		path2 = ext4_find_extent(inode, cur, path2, 0);
-+		if (IS_ERR(path2))
- 			break;
--		}
-+
- 		for (i = 0; i <= max(path->p_depth, path2->p_depth); i++) {
- 			cmp1 = cmp2 = 0;
- 			if (i <= path->p_depth)
-@@ -6137,13 +6130,14 @@ int ext4_ext_replay_set_iblocks(struct inode *inode)
- 			if (cmp1 != cmp2 && cmp2 != 0)
- 				numblks++;
- 		}
--		ext4_free_ext_path(path);
--		ext4_free_ext_path(path2);
- 	}
- 
- out:
- 	inode->i_blocks = numblks << (inode->i_sb->s_blocksize_bits - 9);
- 	ext4_mark_inode_dirty(NULL, inode);
-+cleanup:
-+	ext4_free_ext_path(path);
-+	ext4_free_ext_path(path2);
- 	return 0;
- }
- 
-@@ -6164,12 +6158,9 @@ int ext4_ext_clear_bb(struct inode *inode)
- 	if (IS_ERR(path))
- 		return PTR_ERR(path);
- 	ex = path[path->p_depth].p_ext;
--	if (!ex) {
--		ext4_free_ext_path(path);
--		return 0;
--	}
-+	if (!ex)
-+		goto out;
- 	end = le32_to_cpu(ex->ee_block) + ext4_ext_get_actual_len(ex);
--	ext4_free_ext_path(path);
- 
- 	cur = 0;
- 	while (cur < end) {
-@@ -6179,16 +6170,16 @@ int ext4_ext_clear_bb(struct inode *inode)
- 		if (ret < 0)
- 			break;
- 		if (ret > 0) {
--			path = ext4_find_extent(inode, map.m_lblk, NULL, 0);
--			if (!IS_ERR_OR_NULL(path)) {
-+			path = ext4_find_extent(inode, map.m_lblk, path, 0);
-+			if (!IS_ERR(path)) {
- 				for (j = 0; j < path->p_depth; j++) {
--
- 					ext4_mb_mark_bb(inode->i_sb,
- 							path[j].p_block, 1, false);
- 					ext4_fc_record_regions(inode->i_sb, inode->i_ino,
- 							0, path[j].p_block, 1, 1);
- 				}
--				ext4_free_ext_path(path);
-+			} else {
-+				path = NULL;
- 			}
- 			ext4_mb_mark_bb(inode->i_sb, map.m_pblk, map.m_len, false);
- 			ext4_fc_record_regions(inode->i_sb, inode->i_ino,
-@@ -6197,5 +6188,7 @@ int ext4_ext_clear_bb(struct inode *inode)
- 		cur = cur + map.m_len;
- 	}
- 
-+out:
-+	ext4_free_ext_path(path);
- 	return 0;
- }
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 52e42cb02f39..7ab3290b49e3 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -1772,7 +1772,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
- 
- 		if (ret == 0) {
- 			/* Range is not mapped */
--			path = ext4_find_extent(inode, cur, NULL, 0);
-+			path = ext4_find_extent(inode, cur, path, 0);
- 			if (IS_ERR(path))
- 				goto out;
- 			memset(&newex, 0, sizeof(newex));
-@@ -1788,7 +1788,6 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
- 			up_write((&EXT4_I(inode)->i_data_sem));
- 			if (IS_ERR(path))
- 				goto out;
--			ext4_free_ext_path(path);
- 			goto next;
- 		}
- 
-@@ -1836,6 +1835,7 @@ static int ext4_fc_replay_add_range(struct super_block *sb,
- 	ext4_ext_replay_shrink_inode(inode, i_size_read(inode) >>
- 					sb->s_blocksize_bits);
- out:
-+	ext4_free_ext_path(path);
- 	iput(inode);
- 	return 0;
- }
-@@ -1936,12 +1936,13 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
- 				break;
- 
- 			if (ret > 0) {
--				path = ext4_find_extent(inode, map.m_lblk, NULL, 0);
-+				path = ext4_find_extent(inode, map.m_lblk, path, 0);
- 				if (!IS_ERR(path)) {
- 					for (j = 0; j < path->p_depth; j++)
- 						ext4_mb_mark_bb(inode->i_sb,
- 							path[j].p_block, 1, true);
--					ext4_free_ext_path(path);
-+				} else {
-+					path = NULL;
- 				}
- 				cur += ret;
- 				ext4_mb_mark_bb(inode->i_sb, map.m_pblk,
-@@ -1952,6 +1953,8 @@ static void ext4_fc_set_bitmaps_and_counters(struct super_block *sb)
- 		}
- 		iput(inode);
++	/*
++	 * only first (depth 0 -> 1) produces free space;
++	 * in all other cases we have to split the grown tree
++	 */
++	depth = ext_depth(inode);
++	if (path[depth].p_hdr->eh_entries == path[depth].p_hdr->eh_max) {
++		/* now we need to split */
++		goto repeat;
  	}
 +
-+	ext4_free_ext_path(path);
- }
+ 	return path;
  
- /*
+ errout:
 -- 
 2.39.2
 
