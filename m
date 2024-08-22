@@ -1,182 +1,91 @@
-Return-Path: <linux-ext4+bounces-3835-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3836-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8C2A095A817
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 01:22:59 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0143595A95F
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 03:14:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B21C71C21CE5
-	for <lists+linux-ext4@lfdr.de>; Wed, 21 Aug 2024 23:22:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD20B1F225BD
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 01:14:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7B7517B513;
-	Wed, 21 Aug 2024 23:22:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E0D01B67E;
+	Thu, 22 Aug 2024 01:13:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fRMZjeEA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NFD2bP1d";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="fRMZjeEA";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="NFD2bP1d"
+	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="BL9kQJFc"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F66A1494AD;
-	Wed, 21 Aug 2024 23:22:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859C379C2;
+	Thu, 22 Aug 2024 01:13:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724282568; cv=none; b=IaELEqmNfjSYwKiagmmFr1hWkJCTzBMaLuwtlD1R3CAATZ+/9AG9a0TXYFKVmeAtlcHJ+lNf1qH+WwgNbrjmLRtpi260+QYo1dGPt2FHh6RQsIXvnDPBS2Bb4oZGkSFPTF59DBP/BMP74K0ghsa2bBEVd8uzxtLBJ7pNEWl94Lk=
+	t=1724289230; cv=none; b=ZZFBVLxD94bwI5SxKxDPwI+u9Sxl46bwRPxIfsu98E3JRcXUd9FRTGQsH+J2VhAtwP+29MH5lT6+lvoOYw9EgMC8fTsM2QO2iZhv2xi+bcvRgFwULoEGTHUF84+noGlxwyXtM8HMCrhAhVTnAiUEjU/iGo9ShACsx9gi0W+5H/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724282568; c=relaxed/simple;
-	bh=kVhZqRkVV1bjvD670JLB8X4z7NTopasXuAIDVCcygdY=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Ety+K8pVZ+UMecN5MSrBR7aww8Sbriwa846k22K1Vfgn/H9+GJCiDJzJU+Bw5GBSQ/k37d5m9P1uPad+GKrDUca5bcZ6L8tBFtsag5L8rpa6J3X3RUj55vPfEfy/FE0Avwu6g9mygg3I2W70EyJfwmHqpbD0KDNuciGothb1gNI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=fRMZjeEA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NFD2bP1d; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=fRMZjeEA; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=NFD2bP1d; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id BB2FD200FF;
-	Wed, 21 Aug 2024 23:22:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1724282564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0VqUrt7TEVe2jgA3XFvg/WNbxDZE9ihhU0buJlSZ4FU=;
-	b=fRMZjeEAPiwU8kAOxk7iq8G87VobLct+Y43y5nF1ZRhgBh0qsoJ2/Lz4YHFmhYOtW5OewE
-	Oxpv/saQVKxe0fG5jG057HqMGIJPy8UgiINT1hA2t3R82t+i2sqsnupm9Pg+IBxxsqR407
-	r+86/jGo4jJtOaHngXebdPvsv3CcuK0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1724282564;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0VqUrt7TEVe2jgA3XFvg/WNbxDZE9ihhU0buJlSZ4FU=;
-	b=NFD2bP1dhXmZyOe4jau1both/UEfeSxP44nftleYUtpcrvTKbxSCVFeDrwFQwVfVZWGuX7
-	Ck+qdVCPKLd7OZBg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1724282564; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0VqUrt7TEVe2jgA3XFvg/WNbxDZE9ihhU0buJlSZ4FU=;
-	b=fRMZjeEAPiwU8kAOxk7iq8G87VobLct+Y43y5nF1ZRhgBh0qsoJ2/Lz4YHFmhYOtW5OewE
-	Oxpv/saQVKxe0fG5jG057HqMGIJPy8UgiINT1hA2t3R82t+i2sqsnupm9Pg+IBxxsqR407
-	r+86/jGo4jJtOaHngXebdPvsv3CcuK0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1724282564;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=0VqUrt7TEVe2jgA3XFvg/WNbxDZE9ihhU0buJlSZ4FU=;
-	b=NFD2bP1dhXmZyOe4jau1both/UEfeSxP44nftleYUtpcrvTKbxSCVFeDrwFQwVfVZWGuX7
-	Ck+qdVCPKLd7OZBg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7727513770;
-	Wed, 21 Aug 2024 23:22:44 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Sj3PFsR2xmaRUAAAD6G6ig
-	(envelope-from <krisman@suse.de>); Wed, 21 Aug 2024 23:22:44 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: Eugen Hristev <eugen.hristev@collabora.com>
-Cc: viro@zeniv.linux.org.uk,  brauner@kernel.org,  tytso@mit.edu,
-  linux-ext4@vger.kernel.org,  jack@suse.cz,  adilger.kernel@dilger.ca,
-  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  kernel@collabora.com,  shreeya.patel@collabora.com
+	s=arc-20240116; t=1724289230; c=relaxed/simple;
+	bh=vZxKPDpq5DvbVbWSJfOPq6M50fu8vloHEW6y3g/twfU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nuCw1sqL6OL+6MVyidrz3ld9IOI5mKjrZAqv2qen5mDEYaOEx4a363C+BsHmFBRgjJpG9VnSJLBCfdiQO1XNFvtbLnAmMoFaHkbiYUvtveR7XH7L/cupnbsMIUTjUDNQuS3omqN4SH1ecjBCLCSzp1Y5aMNMOtrvnq+7rgTQ0Ug=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=BL9kQJFc; arc=none smtp.client-ip=62.89.141.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=linux.org.uk; s=zeniv-20220401; h=Sender:In-Reply-To:Content-Type:
+	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=HlGw7ZwNFGz+UQNa18MYFzhGEuRQCC/73wjOyCj5Tgw=; b=BL9kQJFcSDNFH3M+pr+GlYB2rV
+	yJbrCQ8QBQW8DY1IEiblCoNX9qrPDV+M0EFR6c9HzCUwux+WISbsHmp3FEKn1Lw9G21dTtH/R1YMQ
+	c5/Ve20NiNKEA1Z8YkvpqOqsjWpCxsMRIh+75E3/HpoLCKpC/i8Iymd2GcEZGHypNyfz+5Lkw2Ych
+	JpAeTWg8PhsTO/61dDYckc+Q64YCLGvNPNo0LHtkGsZXH/GeHYakcJvvea/dNCLtvk2bu2zva0/FB
+	fA9GJwU+O3GtX/3znwe01h2lcMXUmTGyjJNs3FaE8I+xijHyYJj7IY7h0yx2TinkOM+lI23fM6l8g
+	GlcYmoJw==;
+Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1sgwOX-00000003wf2-3BSs;
+	Thu, 22 Aug 2024 01:13:45 +0000
+Date: Thu, 22 Aug 2024 02:13:45 +0100
+From: Al Viro <viro@zeniv.linux.org.uk>
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: Eugen Hristev <eugen.hristev@collabora.com>, brauner@kernel.org,
+	tytso@mit.edu, linux-ext4@vger.kernel.org, jack@suse.cz,
+	adilger.kernel@dilger.ca, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, kernel@collabora.com,
+	shreeya.patel@collabora.com
 Subject: Re: [PATCH 1/2] fs/dcache: introduce d_alloc_parallel_check_existing
-In-Reply-To: <2df894de-8fa9-40c2-ba2c-f9ae65520656@collabora.com> (Eugen
-	Hristev's message of "Wed, 21 Aug 2024 12:10:23 +0300")
-Organization: SUSE
+Message-ID: <20240822011345.GS504335@ZenIV>
 References: <20240705062621.630604-1-eugen.hristev@collabora.com>
-	<20240705062621.630604-2-eugen.hristev@collabora.com>
-	<87zfp7rltx.fsf@mailhost.krisman.be>
-	<2df894de-8fa9-40c2-ba2c-f9ae65520656@collabora.com>
-Date: Wed, 21 Aug 2024 19:22:39 -0400
-Message-ID: <87jzg9wjeo.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+ <20240705062621.630604-2-eugen.hristev@collabora.com>
+ <87zfp7rltx.fsf@mailhost.krisman.be>
+ <2df894de-8fa9-40c2-ba2c-f9ae65520656@collabora.com>
+ <87jzg9wjeo.fsf@mailhost.krisman.be>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.986];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	RCVD_TLS_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -4.30
-X-Spam-Flag: NO
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87jzg9wjeo.fsf@mailhost.krisman.be>
+Sender: Al Viro <viro@ftp.linux.org.uk>
 
-Eugen Hristev <eugen.hristev@collabora.com> writes:
+On Wed, Aug 21, 2024 at 07:22:39PM -0400, Gabriel Krisman Bertazi wrote:
 
-> Yes, but we cannot add another dentry for the same file with a different case.
-> That would break everything about dentry lookups, etc.
-> We need to have the one dentry in the cache which use the right case. Regardless of
-> the case of the lookup.
->
-> As Al Viro said here :
-> https://lore.kernel.org/lkml/YVmyYP25kgGq9uEy@zeniv-ca.linux.org.uk/
-> we cannot have parallel lookups for names that would compare as equals (two
-> different dentries for the same file with different case).
->
-> So yes, I return the same dentry-under-lookup, because that's the purpose of that
-> search, return it, have it use the right case, and then splice it to the cache.
+> Would it be acceptable to just change the dentry->d_name here in a new
+> flavor of d_add_ci used only by these filesystems? We are inside the
+> creation path, so the dentry has never been hashed.  Concurrent lookups
+> will be stuck in d_wait_lookup() until we are done and will never become
+> invalid after the change because the lookup was already done
+> case-insensitively, so they all match the same dentry, per-definition,
+> and we know there is no other matching dentries in the directory.  We'd
+> only need to be careful not to expose partial names to concurrent
+> parallel lookups.
 
-It is not changing the case of the returned dentry.  The patch simply
-returns the same dentry you sent to d_alloc_parallel, which is then
-spliced into the cache. Exactly as if you had issued d_splice_alias
-directly.  You are just doing a hop in d_alloc_parallel and finding the
-same dentry.
+*Ow*
 
-A quick test case below. You can print the ->d_name through
-several methods. I'm doing it by reading /proc/self/cwd.
+->d_name stability rules are already convoluted as hell; that would make
+them even more painful.
 
-$ # In a case-insensitive filesystem
-$ mkdir cf &&  chattr +F cf
-$ mkdir cf/hello
-$ echo 3 > /proc/sys/vm/drop_caches    # drop the dentry created above
-$ cd cf/HELLO                          # provoke a case-inexact lookup.
-$ readlink /proc/self/cwd
-
-If we replaced the dentry with the disk name, it should
-print <mnt>/cf/hello.  With your patch, it still prints <mnt>/cf/HELLO
-
-Al,
-
-Would it be acceptable to just change the dentry->d_name here in a new
-flavor of d_add_ci used only by these filesystems? We are inside the
-creation path, so the dentry has never been hashed.  Concurrent lookups
-will be stuck in d_wait_lookup() until we are done and will never become
-invalid after the change because the lookup was already done
-case-insensitively, so they all match the same dentry, per-definition,
-and we know there is no other matching dentries in the directory.  We'd
-only need to be careful not to expose partial names to concurrent
-parallel lookups.
-
--- 
-Gabriel Krisman Bertazi
+What locking are you going to use there?
 
