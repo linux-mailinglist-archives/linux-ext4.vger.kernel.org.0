@@ -1,43 +1,43 @@
-Return-Path: <linux-ext4+bounces-3849-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3847-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9E61795AB0D
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 04:42:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B7095AB08
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 04:42:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16E88B22A77
-	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 02:42:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 046B7285090
+	for <lists+linux-ext4@lfdr.de>; Thu, 22 Aug 2024 02:42:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99C9173440;
-	Thu, 22 Aug 2024 02:40:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9FF4436A;
+	Thu, 22 Aug 2024 02:40:41 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 083C82D05E;
-	Thu, 22 Aug 2024 02:40:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D33291D556;
+	Thu, 22 Aug 2024 02:40:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724294442; cv=none; b=e1Piep9xk8l6NuVbXajq+1fsE37FiX5OlcIsrWwgUAWZZmF1EQUpSPCBCDs0kOUXwQbiJGuYr4P2ODI0PojkuoToHiRKDIE+OA8P2xgpbekWPszoXpJgPrrd6hIq/kOm8CqyhN+874i6GIbB2MhQvH4iyFIkQeylQ5cod96O9Fc=
+	t=1724294441; cv=none; b=JWK+LeshrjsirKyfMH/yC7eq+1YZ5kFNv7AoYyvdzO/zP0K4M6lreaUbS4qOL0LskmbNNz9ZSiEqLoLDcgKD7U1/pvoroC9CgRDU5ZOYGH2fg7MbSwfWicYD76eJPJ+MOKD+o4hcHnvaZnw1JXVPA6aGOAPFD/bwjR2ppCQAjfA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724294442; c=relaxed/simple;
-	bh=Y2pikUM82WXAsiDFvKFLzeawwqDPF11vcLFNfXUXIKw=;
+	s=arc-20240116; t=1724294441; c=relaxed/simple;
+	bh=RgmNB8LuzxrYvh+yl33SHHehMeLOHf0XmS/yY93Pq7A=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Ew/7Lx9zWQ5/K/oQK4CW9ilTRaCCyZkvhLh+gs0m7sgXTcvM+3/2B4mQtx72HSGnqsYLFAuXiRzPLwGFDWKblmfF1hU0HM4NqCefr8MJN0Oxd2yyC2BSQHPF6MMDAiLFYuVSef48xyHWQ1VVzQ5zctgr5/rdGt2EusI3F+xbU70=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 MIME-Version; b=R897sATUvXbmSsyZeNpwh0koOdepfRtFQFusi5aJ7Dy8iyCPXbdUeq5Pm3vSuyW1yG41iugIIyawQZzM+JOrVxvF6XhTjQ5r7fl0pg6bOQtf5FwD4yc3uACxWZNsLTvxRiCt3yQzpLcIB4VAGjagzZQnd91MdQxWO2XzRGHLGTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Wq6r92b7bz4f3jt9;
-	Thu, 22 Aug 2024 10:40:25 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Wq6r51pp9z4f3jY9;
+	Thu, 22 Aug 2024 10:40:21 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 0FE461A0568;
+	by mail.maildlp.com (Postfix) with ESMTP id 745A91A18EE;
 	Thu, 22 Aug 2024 10:40:35 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCHr4UapcZmqbd1CQ--.38129S12;
-	Thu, 22 Aug 2024 10:40:34 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgCHr4UapcZmqbd1CQ--.38129S13;
+	Thu, 22 Aug 2024 10:40:35 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -49,11 +49,10 @@ Cc: tytso@mit.edu,
 	yi.zhang@huawei.com,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
-	Baokun Li <libaokun1@huawei.com>,
-	stable@kernel.org
-Subject: [PATCH v2 08/25] ext4: fix double brelse() the buffer of the extents path
-Date: Thu, 22 Aug 2024 10:35:28 +0800
-Message-Id: <20240822023545.1994557-9-libaokun@huaweicloud.com>
+	Baokun Li <libaokun1@huawei.com>
+Subject: [PATCH v2 09/25] ext4: add new ext4_ext_path_brelse() helper
+Date: Thu, 22 Aug 2024 10:35:29 +0800
+Message-Id: <20240822023545.1994557-10-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20240822023545.1994557-1-libaokun@huaweicloud.com>
 References: <20240822023545.1994557-1-libaokun@huaweicloud.com>
@@ -64,10 +63,10 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHr4UapcZmqbd1CQ--.38129S12
-X-Coremail-Antispam: 1UD129KBjvJXoWxWF43AFyfJw1rWFW8XrWUurg_yoW5Ww4fpr
-	sIkryxGr1rt3yq9FWDJF4UCr10k3W3Gw47JFWfC3WjkFyqyr4kXFy7K3WFvF98uFW8ZF4Y
-	vFW8t34UW3Z8Ka7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+X-CM-TRANSID:gCh0CgCHr4UapcZmqbd1CQ--.38129S13
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr18uF1rKF1ftF17Xry3CFg_yoW5GF43pF
+	4ayr1DurWrta9I9FZ2qr4UZw1Sy3WfC3y8JrWakr1v93W7Jr1FqFyxtF40vFyayFW8WFWa
+	vFWjyw1Utr45taDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
 	9KBjDU0xBIdaVrnRJUUUQ214x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
 	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
 	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
@@ -82,100 +81,91 @@ X-Coremail-Antispam: 1UD129KBjvJXoWxWF43AFyfJw1rWFW8XrWUurg_yoW5Ww4fpr
 	cVAFwI0_JFI_Gr1lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1lIxAIcVCF04k26c
 	xKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAF
 	wI0_Gr1j6F4UJbIYCTnIWIevJa73UjIFyTuYvjfUYl19UUUUU
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQADBWbFpP9DdQAAsJ
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQADBWbFpP9DdgABsL
 
 From: Baokun Li <libaokun1@huawei.com>
 
-In ext4_ext_try_to_merge_up(), set path[1].p_bh to NULL after it has been
-released, otherwise it may be released twice. An example of what triggers
-this is as follows:
+Add ext4_ext_path_brelse() helper function to reduce duplicate code
+and ensure that path->p_bh is set to NULL after it is released.
 
-  split2    map    split1
-|--------|-------|--------|
-
-ext4_ext_map_blocks
- ext4_ext_handle_unwritten_extents
-  ext4_split_convert_extents
-   // path->p_depth == 0
-   ext4_split_extent
-     // 1. do split1
-     ext4_split_extent_at
-       |ext4_ext_insert_extent
-       |  ext4_ext_create_new_leaf
-       |    ext4_ext_grow_indepth
-       |      le16_add_cpu(&neh->eh_depth, 1)
-       |    ext4_find_extent
-       |      // return -ENOMEM
-       |// get error and try zeroout
-       |path = ext4_find_extent
-       |  path->p_depth = 1
-       |ext4_ext_try_to_merge
-       |  ext4_ext_try_to_merge_up
-       |    path->p_depth = 0
-       |    brelse(path[1].p_bh)  ---> not set to NULL here
-       |// zeroout success
-     // 2. update path
-     ext4_find_extent
-     // 3. do split2
-     ext4_split_extent_at
-       ext4_ext_insert_extent
-         ext4_ext_create_new_leaf
-           ext4_ext_grow_indepth
-             le16_add_cpu(&neh->eh_depth, 1)
-           ext4_find_extent
-             path[0].p_bh = NULL;
-             path->p_depth = 1
-             read_extent_tree_block  ---> return err
-             // path[1].p_bh is still the old value
-             ext4_free_ext_path
-               ext4_ext_drop_refs
-                 // path->p_depth == 1
-                 brelse(path[1].p_bh)  ---> brelse a buffer twice
-
-Finally got the following WARRNING when removing the buffer from lru:
-
-============================================
-VFS: brelse: Trying to free free buffer
-WARNING: CPU: 2 PID: 72 at fs/buffer.c:1241 __brelse+0x58/0x90
-CPU: 2 PID: 72 Comm: kworker/u19:1 Not tainted 6.9.0-dirty #716
-RIP: 0010:__brelse+0x58/0x90
-Call Trace:
- <TASK>
- __find_get_block+0x6e7/0x810
- bdev_getblk+0x2b/0x480
- __ext4_get_inode_loc+0x48a/0x1240
- ext4_get_inode_loc+0xb2/0x150
- ext4_reserve_inode_write+0xb7/0x230
- __ext4_mark_inode_dirty+0x144/0x6a0
- ext4_ext_insert_extent+0x9c8/0x3230
- ext4_ext_map_blocks+0xf45/0x2dc0
- ext4_map_blocks+0x724/0x1700
- ext4_do_writepages+0x12d6/0x2a70
-[...]
-============================================
-
-Fixes: ecb94f5fdf4b ("ext4: collapse a single extent tree block into the inode if possible")
-Cc: stable@kernel.org
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 Reviewed-by: Jan Kara <jack@suse.cz>
 Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 Tested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 ---
- fs/ext4/extents.c | 1 +
- 1 file changed, 1 insertion(+)
+ fs/ext4/extents.c | 24 ++++++++++++------------
+ 1 file changed, 12 insertions(+), 12 deletions(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index cd2e71123a25..c4a4573440c1 100644
+index c4a4573440c1..5e760d1a0eff 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -1890,6 +1890,7 @@ static void ext4_ext_try_to_merge_up(handle_t *handle,
+@@ -106,6 +106,12 @@ static int ext4_ext_trunc_restart_fn(struct inode *inode, int *dropped)
+ 	return 0;
+ }
+ 
++static inline void ext4_ext_path_brelse(struct ext4_ext_path *path)
++{
++	brelse(path->p_bh);
++	path->p_bh = NULL;
++}
++
+ static void ext4_ext_drop_refs(struct ext4_ext_path *path)
+ {
+ 	int depth, i;
+@@ -113,10 +119,8 @@ static void ext4_ext_drop_refs(struct ext4_ext_path *path)
+ 	if (!path)
+ 		return;
+ 	depth = path->p_depth;
+-	for (i = 0; i <= depth; i++, path++) {
+-		brelse(path->p_bh);
+-		path->p_bh = NULL;
+-	}
++	for (i = 0; i <= depth; i++, path++)
++		ext4_ext_path_brelse(path);
+ }
+ 
+ void ext4_free_ext_path(struct ext4_ext_path *path)
+@@ -635,8 +639,7 @@ int ext4_ext_precache(struct inode *inode)
+ 		 */
+ 		if ((i == depth) ||
+ 		    path[i].p_idx > EXT_LAST_INDEX(path[i].p_hdr)) {
+-			brelse(path[i].p_bh);
+-			path[i].p_bh = NULL;
++			ext4_ext_path_brelse(path + i);
+ 			i--;
+ 			continue;
+ 		}
+@@ -1889,8 +1892,7 @@ static void ext4_ext_try_to_merge_up(handle_t *handle,
+ 		(path[1].p_ext - EXT_FIRST_EXTENT(path[1].p_hdr));
  	path[0].p_hdr->eh_max = cpu_to_le16(max_root);
  
- 	brelse(path[1].p_bh);
-+	path[1].p_bh = NULL;
+-	brelse(path[1].p_bh);
+-	path[1].p_bh = NULL;
++	ext4_ext_path_brelse(path + 1);
  	ext4_free_blocks(handle, inode, NULL, blk, 1,
  			 EXT4_FREE_BLOCKS_METADATA | EXT4_FREE_BLOCKS_FORGET);
  }
+@@ -2959,8 +2961,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+ 			err = ext4_ext_rm_leaf(handle, inode, path,
+ 					       &partial, start, end);
+ 			/* root level has p_bh == NULL, brelse() eats this */
+-			brelse(path[i].p_bh);
+-			path[i].p_bh = NULL;
++			ext4_ext_path_brelse(path + i);
+ 			i--;
+ 			continue;
+ 		}
+@@ -3022,8 +3023,7 @@ int ext4_ext_remove_space(struct inode *inode, ext4_lblk_t start,
+ 				err = ext4_ext_rm_idx(handle, inode, path, i);
+ 			}
+ 			/* root level has p_bh == NULL, brelse() eats this */
+-			brelse(path[i].p_bh);
+-			path[i].p_bh = NULL;
++			ext4_ext_path_brelse(path + i);
+ 			i--;
+ 			ext_debug(inode, "return to level %d\n", i);
+ 		}
 -- 
 2.39.2
 
