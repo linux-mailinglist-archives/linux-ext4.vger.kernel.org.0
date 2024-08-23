@@ -1,53 +1,52 @@
-Return-Path: <linux-ext4+bounces-3879-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3880-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 429D095C52D
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2024 08:11:02 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3536395C7FC
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2024 10:25:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ED6B62842E8
-	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2024 06:11:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67D551C220CE
+	for <lists+linux-ext4@lfdr.de>; Fri, 23 Aug 2024 08:25:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A95EE762EB;
-	Fri, 23 Aug 2024 06:10:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1D9C145B00;
+	Fri, 23 Aug 2024 08:24:48 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from SHSQR01.spreadtrum.com (unknown [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0349D481DA
-	for <linux-ext4@vger.kernel.org>; Fri, 23 Aug 2024 06:10:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1AAE1442F7;
+	Fri, 23 Aug 2024 08:24:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724393451; cv=none; b=U0mQRFflou5oCJhWB7nckFvzRx/oA2FNBtzqKziHLVnPJNzBmRf/kgrU3BnZT9d7Ulcuhn4dXcc4kZPTn6ZpQPkOqcCm4h+KyxnzyqnYVF4fXNgb4sDPBboHr39O8K1GuQ1oO42/di9haBHH91/lt+wITgFc8nw1yCSZAluS/ZE=
+	t=1724401488; cv=none; b=VV2HjJuVPS1eexEH+7pR6OPGf+wMagoG0pLig0KXW2XUmfvkUQ0n9/rcFHZCH7jDuTDpakz+FGtILwXFrdkDsQmaXq1dYpAWF0vjqM6rJotryMvDG3uywSUgbxDPbASHCqJ/9Hv9y8JNNqf31H4w0kh7ftP6gk/9vdUrsY1smwQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724393451; c=relaxed/simple;
-	bh=VoatHBcDpJy7/mNMSH5lhV7A5dUKcJ4reWXIPRJImSk=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=FZX3xBHvSHoqRwYX7qcZTGNN2mTWuz8Z0YOPBqBt3lnPtazuPLm8/wiPh/wRyGeznVeIgjLXPaNaMqzhV1geE3eWjbVyabJc4X3bfL60g7ouTFJ6Xh5rOcF/03xef+g8l/cDRQuRZPHCtsNrphgLQOTKmWkSEMFlhMdeWkpQE6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WqqSH08t0z2CnJ4;
-	Fri, 23 Aug 2024 14:10:39 +0800 (CST)
-Received: from kwepemd500012.china.huawei.com (unknown [7.221.188.25])
-	by mail.maildlp.com (Postfix) with ESMTPS id A0A66180042;
-	Fri, 23 Aug 2024 14:10:43 +0800 (CST)
-Received: from huawei.com (10.90.53.73) by kwepemd500012.china.huawei.com
- (7.221.188.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.34; Fri, 23 Aug
- 2024 14:10:43 +0800
-From: Li Zetao <lizetao1@huawei.com>
-To: <tytso@mit.edu>, <adilger.kernel@dilger.ca>
-CC: <lizetao1@huawei.com>, <linux-ext4@vger.kernel.org>
-Subject: [PATCH -next 3/3] ext4: Use scoped()/scoped_guard() to drop rcu_read_lock()/unlock pair
-Date: Fri, 23 Aug 2024 14:18:24 +0800
-Message-ID: <20240823061824.3323522-4-lizetao1@huawei.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240823061824.3323522-1-lizetao1@huawei.com>
-References: <20240823061824.3323522-1-lizetao1@huawei.com>
+	s=arc-20240116; t=1724401488; c=relaxed/simple;
+	bh=+xnJpKLcMixBqqQxg0TMdYgcKsQKGekuxQNthjwozGw=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=QJVB+jUH1oFwSfQCKxXAmo30AaEIows0l40VUUVzi0QDYRuqxB5e1N2SN77T0QHqRQM3D4f35TGmaILvGv06Xa+xOOGxsFm9Oqkj24+S8xP/AotYrwK7puGcLdJ7bn9dhEGKt8DfL1ojMClq8kA+BbItZUDku7c9TI7M1ikpktY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 47N8MnGC044605;
+	Fri, 23 Aug 2024 16:22:49 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4WqtF63Wljz2MZvQ8;
+	Fri, 23 Aug 2024 16:16:10 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Fri, 23 Aug 2024 16:22:46 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+        Baolin Wang <baolin.wang@linux.alibaba.com>,
+        <linux-fsdevel@vger.kernel.org>, <linux-ext4@vger.kernel.org>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [RFC PATCHv2 1/1] fs: ext4: Don't use CMA for buffer_head
+Date: Fri, 23 Aug 2024 16:22:37 +0800
+Message-ID: <20240823082237.713543-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -56,337 +55,79 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemd500012.china.huawei.com (7.221.188.25)
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 47N8MnGC044605
 
-A rcu_read_lock() and rcu_read_unlock() pair can be replaced by a
-scope-based resource management function scoped(rcu) or scoped_guard(rcu)
-which can make the code more readable and safer. In some functions, we
-can remove the goto label which will release the lock, and return from
-function directly.
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Signed-off-by: Li Zetao <lizetao1@huawei.com>
+cma_alloc() keep failed in our system which thanks to a jh->bh->b_page
+can not be migrated out of CMA area[1] as the jh has one cp_transaction
+pending on it because of j_free > j_max_transaction_buffers[2][3][4][5][6].
+We temporarily solve this by launching jbd2_log_do_checkpoint forcefully
+somewhere. Since journal is common mechanism to all JFSs and
+cp_transaction has a little fewer opportunity to be launched, the
+cma_alloc() could be affected under the same scenario. This patch
+would like to have buffer_head of ext4 not use CMA pages when doing
+sb_getblk.
+
+[1]
+crash_arm64_v8.0.4++> kmem -p|grep ffffff808f0aa150(sb->s_bdev->bd_inode->i_mapping)
+fffffffe01a51c00  e9470000 ffffff808f0aa150        3  2 8000000008020 lru,private //within CMA area
+fffffffe03d189c0 174627000 ffffff808f0aa150        4  2 2004000000008020 lru,private
+fffffffe03d88e00 176238000 ffffff808f0aa150      3f9  2 2008000000008020 lru,private
+fffffffe03d88e40 176239000 ffffff808f0aa150        6  2 2008000000008020 lru,private
+fffffffe03d88e80 17623a000 ffffff808f0aa150        5  2 2008000000008020 lru,private
+fffffffe03d88ec0 17623b000 ffffff808f0aa150        1  2 2008000000008020 lru,private
+fffffffe03d88f00 17623c000 ffffff808f0aa150        0  2 2008000000008020 lru,private
+fffffffe040e6540 183995000 ffffff808f0aa150      3f4  2 2004000000008020 lru,private
+
+[2] page -> buffer_head
+crash_arm64_v8.0.4++> struct page.private fffffffe01a51c00 -x
+      private = 0xffffff802fca0c00
+
+[3] buffer_head -> journal_head
+crash_arm64_v8.0.4++> struct buffer_head.b_private 0xffffff802fca0c00
+  b_private = 0xffffff8041338e10,
+
+[4] journal_head -> b_cp_transaction
+crash_arm64_v8.0.4++> struct journal_head.b_cp_transaction 0xffffff8041338e10 -x
+  b_cp_transaction = 0xffffff80410f1900,
+
+[5] transaction_t -> journal
+crash_arm64_v8.0.4++> struct transaction_t.t_journal 0xffffff80410f1900 -x
+  t_journal = 0xffffff80e70f3000,
+
+[6] j_free & j_max_transaction_buffers
+crash_arm64_v8.0.4++> struct journal_t.j_free,j_max_transaction_buffers 0xffffff80e70f3000 -x
+  j_free = 0x3f1,
+  j_max_transaction_buffers = 0x100,
+
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 ---
- fs/ext4/block_validity.c | 27 +++++++++++++--------------
- fs/ext4/ext4.h           |  3 +--
- fs/ext4/inode.c          |  3 +--
- fs/ext4/mballoc.c        | 37 ++++++++++++++++---------------------
- fs/ext4/resize.c         | 20 ++++++++++----------
- fs/ext4/super.c          | 26 +++++++++++---------------
- 6 files changed, 52 insertions(+), 64 deletions(-)
+v2: update commit message
+---
+---
+ fs/ext4/inode.c | 4 ++++
+ 1 file changed, 4 insertions(+)
 
-diff --git a/fs/ext4/block_validity.c b/fs/ext4/block_validity.c
-index 87ee3a17bd29..962ee95017fd 100644
---- a/fs/ext4/block_validity.c
-+++ b/fs/ext4/block_validity.c
-@@ -130,17 +130,17 @@ static void debug_print_tree(struct ext4_sb_info *sbi)
- 	int first = 1;
- 
- 	printk(KERN_INFO "System zones: ");
--	rcu_read_lock();
--	system_blks = rcu_dereference(sbi->s_system_blks);
--	node = rb_first(&system_blks->root);
--	while (node) {
--		entry = rb_entry(node, struct ext4_system_zone, node);
--		printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
--		       entry->start_blk, entry->start_blk + entry->count - 1);
--		first = 0;
--		node = rb_next(node);
-+	scoped_guard(rcu) {
-+		system_blks = rcu_dereference(sbi->s_system_blks);
-+		node = rb_first(&system_blks->root);
-+		while (node) {
-+			entry = rb_entry(node, struct ext4_system_zone, node);
-+			printk(KERN_CONT "%s%llu-%llu", first ? "" : ", ",
-+				entry->start_blk, entry->start_blk + entry->count - 1);
-+			first = 0;
-+			node = rb_next(node);
-+		}
- 	}
--	rcu_read_unlock();
- 	printk(KERN_CONT "\n");
- }
- 
-@@ -311,10 +311,10 @@ int ext4_sb_block_valid(struct super_block *sb, struct inode *inode,
- 	 * when doing a remount which inverse current "[no]block_validity"
- 	 * mount option.
- 	 */
--	rcu_read_lock();
-+	guard(rcu)();
- 	system_blks = rcu_dereference(sbi->s_system_blks);
- 	if (system_blks == NULL)
--		goto out_rcu;
-+		return ret;
- 
- 	n = system_blks->root.rb_node;
- 	while (n) {
-@@ -330,8 +330,7 @@ int ext4_sb_block_valid(struct super_block *sb, struct inode *inode,
- 			break;
- 		}
- 	}
--out_rcu:
--	rcu_read_unlock();
-+
- 	return ret;
- }
- 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 92a5e2d29599..13402929c757 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -1809,9 +1809,8 @@ static inline int ext4_valid_inum(struct super_block *sb, unsigned long ino)
- #define sbi_array_rcu_deref(sbi, field, index)				   \
- ({									   \
- 	typeof(*((sbi)->field)) _v;					   \
--	rcu_read_lock();						   \
-+	guard(rcu)();						   \
- 	_v = ((typeof(_v)*)rcu_dereference((sbi)->field))[index];	   \
--	rcu_read_unlock();						   \
- 	_v;								   \
- })
- 
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 2c978d8ff3ba..1172b43dcc18 100644
+index 941c1c0d5c6e..4422246851fe 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -5099,14 +5099,13 @@ static void ext4_update_other_inodes_time(struct super_block *sb,
- 	 * (assuming 4k blocks and 256 byte inodes) is (n*16 + 1).
- 	 */
- 	ino = ((orig_ino - 1) & ~(inodes_per_block - 1)) + 1;
--	rcu_read_lock();
-+	guard(rcu)();
- 	for (i = 0; i < inodes_per_block; i++, ino++, buf += inode_size) {
- 		if (ino == orig_ino)
- 			continue;
- 		__ext4_update_other_inode_time(sb, orig_ino, ino,
- 					       (struct ext4_inode *)buf);
- 	}
--	rcu_read_unlock();
- }
+@@ -869,7 +869,11 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+ 	if (nowait)
+ 		return sb_find_get_block(inode->i_sb, map.m_pblk);
  
- /*
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index e9bc4056ea94..905752a396c1 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -3291,12 +3291,12 @@ int ext4_mb_alloc_groupinfo(struct super_block *sb, ext4_group_t ngroups)
- 		ext4_msg(sb, KERN_ERR, "can't allocate buddy meta group");
- 		return -ENOMEM;
- 	}
--	rcu_read_lock();
--	old_groupinfo = rcu_dereference(sbi->s_group_info);
--	if (old_groupinfo)
--		memcpy(new_groupinfo, old_groupinfo,
--		       sbi->s_group_info_size * sizeof(*sbi->s_group_info));
--	rcu_read_unlock();
-+	scoped_guard(rcu) {
-+		old_groupinfo = rcu_dereference(sbi->s_group_info);
-+		if (old_groupinfo)
-+			memcpy(new_groupinfo, old_groupinfo,
-+				sbi->s_group_info_size * sizeof(*sbi->s_group_info));
-+	}
- 	rcu_assign_pointer(sbi->s_group_info, new_groupinfo);
- 	sbi->s_group_info_size = size / sizeof(*sbi->s_group_info);
- 	if (old_groupinfo)
-@@ -3331,9 +3331,8 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
- 				 "for a buddy group");
- 			return -ENOMEM;
- 		}
--		rcu_read_lock();
-+		guard(rcu)();
- 		rcu_dereference(sbi->s_group_info)[idx] = meta_group_info;
--		rcu_read_unlock();
- 	}
- 
- 	meta_group_info = sbi_array_rcu_deref(sbi, s_group_info, idx);
-@@ -3377,11 +3376,10 @@ int ext4_mb_add_groupinfo(struct super_block *sb, ext4_group_t group,
- 	if (group % EXT4_DESC_PER_BLOCK(sb) == 0) {
- 		struct ext4_group_info ***group_info;
- 
--		rcu_read_lock();
-+		guard(rcu)();
- 		group_info = rcu_dereference(sbi->s_group_info);
- 		kfree(group_info[idx]);
- 		group_info[idx] = NULL;
--		rcu_read_unlock();
- 	}
- 	return -ENOMEM;
- } /* ext4_mb_add_groupinfo */
-@@ -3462,16 +3460,15 @@ static int ext4_mb_init_backend(struct super_block *sb)
- 			kmem_cache_free(cachep, grp);
- 	}
- 	i = sbi->s_group_info_size;
--	rcu_read_lock();
--	group_info = rcu_dereference(sbi->s_group_info);
--	while (i-- > 0)
--		kfree(group_info[i]);
--	rcu_read_unlock();
-+	scoped_guard(rcu) {
-+		group_info = rcu_dereference(sbi->s_group_info);
-+		while (i-- > 0)
-+			kfree(group_info[i]);
-+	}
- 	iput(sbi->s_buddy_cache);
- err_freesgi:
--	rcu_read_lock();
-+	guard(rcu)();
- 	kvfree(rcu_dereference(sbi->s_group_info));
--	rcu_read_unlock();
- 	return -ENOMEM;
- }
- 
-@@ -3789,12 +3786,11 @@ void ext4_mb_release(struct super_block *sb)
- 		num_meta_group_infos = (ngroups +
- 				EXT4_DESC_PER_BLOCK(sb) - 1) >>
- 			EXT4_DESC_PER_BLOCK_BITS(sb);
--		rcu_read_lock();
-+		guard(rcu)();
- 		group_info = rcu_dereference(sbi->s_group_info);
- 		for (i = 0; i < num_meta_group_infos; i++)
- 			kfree(group_info[i]);
- 		kvfree(group_info);
--		rcu_read_unlock();
- 	}
- 	kfree(sbi->s_mb_avg_fragment_size);
- 	kfree(sbi->s_mb_avg_fragment_size_locks);
-@@ -4946,7 +4942,7 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 	 * minimal distance from the goal block.
- 	 */
- 	for (i = order; i < PREALLOC_TB_SIZE; i++) {
--		rcu_read_lock();
-+		guard(rcu)();
- 		list_for_each_entry_rcu(tmp_pa, &lg->lg_prealloc_list[i],
- 					pa_node.lg_list) {
- 			spin_lock(&tmp_pa->pa_lock);
-@@ -4958,7 +4954,6 @@ ext4_mb_use_preallocated(struct ext4_allocation_context *ac)
- 			}
- 			spin_unlock(&tmp_pa->pa_lock);
- 		}
--		rcu_read_unlock();
- 	}
- 	if (cpa) {
- 		ext4_mb_use_group_pa(ac, cpa);
-diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
-index 0ba9837d65ca..a72e0b1f6435 100644
---- a/fs/ext4/resize.c
-+++ b/fs/ext4/resize.c
-@@ -920,11 +920,11 @@ static int add_new_gdb(handle_t *handle, struct inode *inode,
- 	}
- 	brelse(dind);
- 
--	rcu_read_lock();
--	o_group_desc = rcu_dereference(EXT4_SB(sb)->s_group_desc);
--	memcpy(n_group_desc, o_group_desc,
--	       EXT4_SB(sb)->s_gdb_count * sizeof(struct buffer_head *));
--	rcu_read_unlock();
-+	scoped_guard(rcu) {
-+		o_group_desc = rcu_dereference(EXT4_SB(sb)->s_group_desc);
-+		memcpy(n_group_desc, o_group_desc,
-+			EXT4_SB(sb)->s_gdb_count * sizeof(struct buffer_head *));
-+	}
- 	n_group_desc[gdb_num] = gdb_bh;
- 	rcu_assign_pointer(EXT4_SB(sb)->s_group_desc, n_group_desc);
- 	EXT4_SB(sb)->s_gdb_count++;
-@@ -980,11 +980,11 @@ static int add_new_gdb_meta_bg(struct super_block *sb,
- 		return err;
- 	}
- 
--	rcu_read_lock();
--	o_group_desc = rcu_dereference(EXT4_SB(sb)->s_group_desc);
--	memcpy(n_group_desc, o_group_desc,
--	       EXT4_SB(sb)->s_gdb_count * sizeof(struct buffer_head *));
--	rcu_read_unlock();
-+	scoped_guard(rcu) {
-+		o_group_desc = rcu_dereference(EXT4_SB(sb)->s_group_desc);
-+		memcpy(n_group_desc, o_group_desc,
-+			EXT4_SB(sb)->s_gdb_count * sizeof(struct buffer_head *));
-+	}
- 	n_group_desc[gdb_num] = gdb_bh;
- 
- 	BUFFER_TRACE(gdb_bh, "get_write_access");
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 5ae7bc36eb78..4826b1689c53 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -1249,12 +1249,11 @@ static void ext4_group_desc_free(struct ext4_sb_info *sbi)
- 	struct buffer_head **group_desc;
- 	int i;
- 
--	rcu_read_lock();
-+	guard(rcu)();
- 	group_desc = rcu_dereference(sbi->s_group_desc);
- 	for (i = 0; i < sbi->s_gdb_count; i++)
- 		brelse(group_desc[i]);
- 	kvfree(group_desc);
--	rcu_read_unlock();
- }
- 
- static void ext4_flex_groups_free(struct ext4_sb_info *sbi)
-@@ -1262,14 +1261,13 @@ static void ext4_flex_groups_free(struct ext4_sb_info *sbi)
- 	struct flex_groups **flex_groups;
- 	int i;
- 
--	rcu_read_lock();
-+	guard(rcu)();
- 	flex_groups = rcu_dereference(sbi->s_flex_groups);
- 	if (flex_groups) {
- 		for (i = 0; i < sbi->s_flex_groups_allocated; i++)
- 			kvfree(flex_groups[i]);
- 		kvfree(flex_groups);
- 	}
--	rcu_read_unlock();
- }
- 
- static void ext4_put_super(struct super_block *sb)
-@@ -2892,14 +2890,13 @@ static inline void ext4_show_quota_options(struct seq_file *seq,
- 		seq_printf(seq, ",jqfmt=%s", fmtname);
- 	}
- 
--	rcu_read_lock();
-+	guard(rcu)();
- 	usr_qf_name = rcu_dereference(sbi->s_qf_names[USRQUOTA]);
- 	grp_qf_name = rcu_dereference(sbi->s_qf_names[GRPQUOTA]);
- 	if (usr_qf_name)
- 		seq_show_option(seq, "usrjquota", usr_qf_name);
- 	if (grp_qf_name)
- 		seq_show_option(seq, "grpjquota", grp_qf_name);
--	rcu_read_unlock();
- #endif
- }
- 
-@@ -3140,13 +3137,13 @@ int ext4_alloc_flex_bg_array(struct super_block *sb, ext4_group_t ngroup)
- 			return -ENOMEM;
- 		}
- 	}
--	rcu_read_lock();
--	old_groups = rcu_dereference(sbi->s_flex_groups);
--	if (old_groups)
--		memcpy(new_groups, old_groups,
--		       (sbi->s_flex_groups_allocated *
--			sizeof(struct flex_groups *)));
--	rcu_read_unlock();
-+	scoped_guard(rcu) {
-+		old_groups = rcu_dereference(sbi->s_flex_groups);
-+		if (old_groups)
-+			memcpy(new_groups, old_groups,
-+				(sbi->s_flex_groups_allocated *
-+				sizeof(struct flex_groups *)));
-+	}
- 	rcu_assign_pointer(sbi->s_flex_groups, new_groups);
- 	sbi->s_flex_groups_allocated = size;
- 	if (old_groups)
-@@ -4851,9 +4848,8 @@ static int ext4_group_desc_init(struct super_block *sb,
- 			sbi->s_gdb_count = i;
- 			return PTR_ERR(bh);
- 		}
--		rcu_read_lock();
-+		guard(rcu)();
- 		rcu_dereference(sbi->s_group_desc)[i] = bh;
--		rcu_read_unlock();
- 	}
- 	sbi->s_gdb_count = db_count;
- 	if (!ext4_check_descriptors(sb, logical_sb_block, first_not_zeroed)) {
++#ifndef CONFIG_CMA
+ 	bh = sb_getblk(inode->i_sb, map.m_pblk);
++#else
++	bh = sb_getblk_gfp(inode->i_sb, map.m_pblk, 0);
++#endif
+ 	if (unlikely(!bh))
+ 		return ERR_PTR(-ENOMEM);
+ 	if (map.m_flags & EXT4_MAP_NEW) {
 -- 
-2.34.1
+2.25.1
 
 
