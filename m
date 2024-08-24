@@ -1,185 +1,130 @@
-Return-Path: <linux-ext4+bounces-3883-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3884-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC7F595DB6F
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 06:20:44 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74F7395DFC2
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 21:13:03 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 201481C221A9
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 04:20:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE533282913
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 19:13:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1904D3A1CD;
-	Sat, 24 Aug 2024 04:20:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36DF7DA79;
+	Sat, 24 Aug 2024 19:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G6TbKhWp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EB2C182B4;
-	Sat, 24 Aug 2024 04:20:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B681B7DA61;
+	Sat, 24 Aug 2024 19:12:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724473235; cv=none; b=UefDZt9IQxPB1HqoATiCqkCbKn8F6XAOpMb4HSR6IdBdxgcZq+C806TcEiKYwFI8ob6lDwthmDsOLLMvJstGsLi2Zich6Ut/99keOYC5dm6fN6ofxEtnyZJc7ZTRK3T29bSme76TCqGzV9oT/buU04JTBPgdaNveXcYoIX5QJGU=
+	t=1724526773; cv=none; b=kWRWrFwalN0kwEYLhrV3e3dQXw7dWK5+Hy52X/CfvhKeprWO89Uv0tsFi0sB8qbJGdxacJPiafgxBDnfszZbA9kLEPMhDOd33zgDFxeXYSCxeryoa3lUY9j66sKP+hKdrJIHkyRCCE12Hvbnebpa+Dst0HV2PBq8bJz9luYCiMM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724473235; c=relaxed/simple;
-	bh=+TYfZQw6LeoLTkTwEtsL60r2b1nBCnIkZZlV2NskKyg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=tqBmvvVRKxl2sFjiDAZU/Us3QlG+El9XZ9H58gGOEW5ERCUI6+fQpZopHePezsYvNVsAmzlDl6wyIdCg83fODifasLh8RV47cznw4NStsRymWK3ITmmpaxZirvOHJt8RsztPE7Ob5MZlqJiSJ07VYDXhgo9W2AcQogEbAaA4Rtg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4WrNsC0DQrz20m9c;
-	Sat, 24 Aug 2024 12:15:43 +0800 (CST)
-Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
-	by mail.maildlp.com (Postfix) with ESMTPS id AD07814022D;
-	Sat, 24 Aug 2024 12:20:27 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.174) by dggpeml100021.china.huawei.com
- (7.185.36.148) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Sat, 24 Aug
- 2024 12:20:27 +0800
-Message-ID: <0dbb903b-7d13-494f-bba4-962820d561b6@huawei.com>
-Date: Sat, 24 Aug 2024 12:20:26 +0800
+	s=arc-20240116; t=1724526773; c=relaxed/simple;
+	bh=pnaGJYOZGck1ER1jWc1dvxcWSL8te3arYl6CgL95lrI=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cGny5MHEbCbkurFsk7D5lb5pgz7rxGsrgCeN6RCGSrs5lb/qoeo/Ccos1hsb4e5Nx/hmkasOEgGHEmqyZqhrFG43WbeMjdumcYhjSJLsg429Abv86f2k+O2XU4ZBjGDdrmh7DT1NdMN0KeKsNKlAxkuBFbHIB4pMMuBbD/DfbEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G6TbKhWp; arc=none smtp.client-ip=209.85.128.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-427fc97a88cso25202855e9.0;
+        Sat, 24 Aug 2024 12:12:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724526770; x=1725131570; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=uRqSVSBy7WVzrRyXzMTngEmfTDtpwenXKbG7hH0Uup8=;
+        b=G6TbKhWp5tfCeafR9InzSm0Cr+GmDlCfnSK2T6XmYkqzYNTFLWhgwV5dVQOz5Db9sW
+         bhQve4v8XDVTr+pyV4qEgDhu31S/LXl9EXGI3vNkdANtFHRKy7s9CNHyHFmJn1nBy048
+         GR8xfzrNnzsdtOGtSXmtpk4HNqH9X8B9FW4iJgrrcIJhrHAZ8ODGhQ6H17cOQpDCwxvj
+         YTBaByxEFjKsbqhbquTxbJcPsx5+LGQmWeFL8KkyhQEszlU0wWDICnZHdUpl5817/Znc
+         3Pi4oAqY1lxtg7C6F60sWAvMp7AkAmWTtnMt+GIXIcdgIkODdD0hjOKJFEu+X7ig98st
+         z40g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724526770; x=1725131570;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=uRqSVSBy7WVzrRyXzMTngEmfTDtpwenXKbG7hH0Uup8=;
+        b=GH0xpDC64I46aDoLwo4PSpVpY40PZEfTvXBQAuO9heVjjfZFm7UtNIJywSJLTPWo6j
+         KeB2QsqDNBF+42r86ODo/kht+7qBNmyWI9YBfufF3sW7ft/8JV/qzbtv2Ut+QJCGJgCU
+         5CMHeKpP4vsyeZzyOT2kgcVddKfOvmO/vTUfkPe36TPpxNMdtnxg6nmXuYvc876Px/4S
+         /10+foX4AoF28ojAf9a//gHPMsO2FK5jiZMlHOmDukRatU4vVjbFcnk3hETuWYepznwm
+         JkkJbvM30tw7hbtinWFb3FZJuQksQnGdYb0oia4XA1cHY/MbogU3cEjWHbwr6us9GPYf
+         u/rQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVV/9fY0O1GiAiFKyKwsOZhr68HtkGajm3QOj19l3cPZwMDDuNIB3VizJ5bF2bgXHpgck9Km3c/d3mn@vger.kernel.org, AJvYcCVxnTBZu7tellYMtvR3SBgUBF2ZVVoW13/1Vh5oLUnheCqEGPpW3IY8Z5Oz8nTnX+l64gUqemKY@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzs0PRUDYgnmu1SXHviOFqB5h1paO/yk+vcjHzBGNyKaLYB1kn+
+	kmJr2oJEkdagC6YIc9fi+8shSfwN7FIzHQ6rVMtosSwzwrOwu/YB09VGjeUI/i4=
+X-Google-Smtp-Source: AGHT+IEOcWJXK+IUeq9aebQdW8nPQy00HtJM4j9sdFCYGF6fyDggXTCyaAy5A/yB1LwAbqhRDy0WVw==
+X-Received: by 2002:adf:f5c3:0:b0:371:8c1f:6692 with SMTP id ffacd0b85a97d-373118e979amr3784385f8f.52.1724526769323;
+        Sat, 24 Aug 2024 12:12:49 -0700 (PDT)
+Received: from localhost.localdomain ([156.197.22.60])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3730813c520sm7109793f8f.39.2024.08.24.12.12.47
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 24 Aug 2024 12:12:48 -0700 (PDT)
+From: Ahmed Ehab <bottaawesome633@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	linux-ext4@vger.kernel.org,
+	syzkaller@googlegroups.com,
+	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
+	stable@vger.kernel.org
+Subject: [PATCH v5 1/2] locking/lockdep: Avoid creating new name string literals in lockdep_set_subclass()
+Date: Sun, 25 Aug 2024 01:10:30 +0300
+Message-ID: <20240824221031.7751-1-bottaawesome633@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: No need to continue when the number of entries is 1
-To: Theodore Ts'o <tytso@mit.edu>
-CC: Edward Adam Davis <eadavis@qq.com>,
-	<syzbot+ae688d469e36fb5138d0@syzkaller.appspotmail.com>,
-	<adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <syzkaller-bugs@googlegroups.com>
-References: <00000000000075a135061c0480d0@google.com>
- <tencent_BE7AEE6C7C2D216CB8949CE8E6EE7ECC2C0A@qq.com>
- <172433877725.370733.2330809797744892142.b4-ty@mit.edu>
- <6ba9afc8-fa95-478c-8ed2-a4ad10b3c520@huawei.com>
- <20240823160518.GA424729@mit.edu>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240823160518.GA424729@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpeml100021.china.huawei.com (7.185.36.148)
 
-On 2024/8/24 0:05, Theodore Ts'o wrote:
-> On Fri, Aug 23, 2024 at 10:22:19AM +0800, Baokun Li wrote:
->> I think this patch is wrong and it will hide the real problem.
->>
->> The maximum length of a filename is 255 and the minimum block size is 1024,
->> so it is always guaranteed that the number of entries is greater than or
->> equal to 2 when do_split() is called.
->>
->> The problem reported by syzbot was actually caused by a missing check in
->> make_indexed_dir(). The issue has been fixed:
->> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=50ea741def58
->>
->> So unless ext4_dx_add_entry() and make_indexed_dir(), or some other function
->> has a bug, 'split == 0' will not occur.
->>
->> If we want to defend against future changes that introduce bugs, I think
->> it's better to add a WARN_ON_ONCE to make sure that the problem isn't hidden
->> and that it doesn't trigger serious bugs like out-of-bounds access.
-> I agree that given your patch (50ea741def58: "ext4: check dot and
-> dotdot of dx_root before making dir indexed") split should never be
-> zero.  (Although there are two ways this could happen --- either count
-> could be 0, or count == max).  But this patch isn't wrong per se
-> because in the case where split == 0, we do want to prevent the
-> out-of-bounds memory access bug.
+Syzbot reports a problem that a warning will be triggered while
+searching a lock class in look_up_lock_class().
 
+The cause of the issue is that a new name is created and used by
+lockdep_set_subclass() instead of using the existing one. This results
+in two lock classes with the same key but different name pointers and a
+WARN_ONCE() is triggered because of that in look_up_lock_class().
 
-Agreed, it is correct to avoid serious problems by judging the split,
+To fix this, change lockdep_set_subclass() to use the existing name
+instead of a new one. Hence, no new name will be created by
+lockdep_set_subclass(). Hence, the warning is avoided.
 
-I was thinking that it is wrong to report no error or hint when split == 0.
+Reported-by: <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
+Fixes: de8f5e4f2dc1f ("lockdep: Introduce wait-type checks")
+Cc: <stable@vger.kernel.org>
+Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
+---
+v4->v5:
+    - Changed the subject
+    - Changed the changelog to be more detailed
 
-> That being said; adding a WARN_ON_ONCE(split == 0) might be a good
-> idea, although I'd probably also print more debugging information so
-> we can take a look at the file system and understand what might have
-> happened.  Maybe something like this?
->
-> 	if (WARN_ON_ONCE(split == 0)) {
-> 	   	/* should never happen, but... */
-> 		ext4_error_inode_block(dir, (*bh)->b_blocknr, 0,
-> 				"bad indexed directory? hash=%08x:%08x "
-> 				"count=%d move=%u", hinfo->hash, hinfo->minor_hash,
-> 				count, move);
-> 		brelse(*bh);
-> 		brelse(bh2);
-> 		*bh = 0;
-> 		return ERR_PTR(-EFSCORRUPTED);
-> 	}
->
-> I haven't checked to make sure all of the error code paths / error
-> handling right, but something like this might be useful for debugging
-> purposes --- if the file system developer could get access to the file
-> system moment the error is logged.  If the data center automation
-> causes the file system to get fsck'ed or reformatted right away (which
-> is the only scalable thing to do if there are millions of file systems
-> in production :-), something like this is probably not going to help
-> all that much.  Still, it certainly wouldn't hurt.
+ include/linux/lockdep.h | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Totally agree! These printouts are very useful for debugging.
-
-The modification above looks good. I tested it and it works fine.
-
-But I think we could reuse the error handling code like this:
-
-
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index e6769b97a970..0187910108c4 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1997,6 +1997,15 @@ static struct ext4_dir_entry_2 *do_split(handle_t 
-*handle, struct inode *dir,
-         else
-                 split = count/2;
-
-+       if (WARN_ON_ONCE(split == 0)) {
-+               /* should never happen, but... */
-+               ext4_error_inode_block(dir, (*bh)->b_blocknr, 0,
-+                               "bad indexed directory? hash=%08x:%08x 
-count=%d move=%u",
-+                               hinfo->hash, hinfo->minor_hash, count, 
-move);
-+               err = -EFSCORRUPTED;
-+               goto out;
-+       }
-+
-         hash2 = map[split].hash;
-         continued = hash2 == map[split - 1].hash;
-         dxtrace(printk(KERN_INFO "Split block %lu at %x, %i/%i\n",
-@@ -2040,10 +2049,11 @@ static struct ext4_dir_entry_2 
-*do_split(handle_t *handle, struct inode *dir,
-         return de;
-
-  journal_error:
-+       ext4_std_error(dir->i_sb, err);
-+out:
-         brelse(*bh);
-         brelse(bh2);
-         *bh = NULL;
--       ext4_std_error(dir->i_sb, err);
-         return ERR_PTR(err);
-  }
-
->
-> If someone does think this would be helpful for them, I wouldn't
-> object to adding a patch something like this.
->
-> Cheers,
->
-> 						- Ted
->
-I think it's very helpful.
-
-Thank you very much for your detailed explanation!
-
-
-Cheers,
-Baokun
+diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
+index 08b0d1d9d78b..df8fa5929de7 100644
+--- a/include/linux/lockdep.h
++++ b/include/linux/lockdep.h
+@@ -173,7 +173,7 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
+ 			      (lock)->dep_map.lock_type)
+ 
+ #define lockdep_set_subclass(lock, sub)					\
+-	lockdep_init_map_type(&(lock)->dep_map, #lock, (lock)->dep_map.key, sub,\
++	lockdep_init_map_type(&(lock)->dep_map, (lock)->dep_map.name, (lock)->dep_map.key, sub,\
+ 			      (lock)->dep_map.wait_type_inner,		\
+ 			      (lock)->dep_map.wait_type_outer,		\
+ 			      (lock)->dep_map.lock_type)
+-- 
+2.45.2
 
