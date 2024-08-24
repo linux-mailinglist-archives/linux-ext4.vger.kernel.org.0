@@ -1,70 +1,72 @@
-Return-Path: <linux-ext4+bounces-3884-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3885-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74F7395DFC2
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 21:13:03 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DF3895DFC4
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 21:13:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE533282913
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 19:13:01 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0831C20AA3
+	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 19:13:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C36DF7DA79;
-	Sat, 24 Aug 2024 19:12:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBCE12C49B;
+	Sat, 24 Aug 2024 19:12:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="G6TbKhWp"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2ZeEYbP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B681B7DA61;
-	Sat, 24 Aug 2024 19:12:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EAC61FFC;
+	Sat, 24 Aug 2024 19:12:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724526773; cv=none; b=kWRWrFwalN0kwEYLhrV3e3dQXw7dWK5+Hy52X/CfvhKeprWO89Uv0tsFi0sB8qbJGdxacJPiafgxBDnfszZbA9kLEPMhDOd33zgDFxeXYSCxeryoa3lUY9j66sKP+hKdrJIHkyRCCE12Hvbnebpa+Dst0HV2PBq8bJz9luYCiMM=
+	t=1724526775; cv=none; b=N2t4j0n8H7mxtSIv/PazsbqhRcFLwIw6SK93u6bieXCe1bQpxW2Hdudht7QZQwqVP6Zl/fZ9kwRvB1SkSU788oLoV5yaDrHDQINXc7fQCuStY1yKU7UrGsU96w4oLxIVgTAlwR+MBfdSncymU7Y6EvXhTLj1FtCPHCfZM33We3g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724526773; c=relaxed/simple;
-	bh=pnaGJYOZGck1ER1jWc1dvxcWSL8te3arYl6CgL95lrI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=cGny5MHEbCbkurFsk7D5lb5pgz7rxGsrgCeN6RCGSrs5lb/qoeo/Ccos1hsb4e5Nx/hmkasOEgGHEmqyZqhrFG43WbeMjdumcYhjSJLsg429Abv86f2k+O2XU4ZBjGDdrmh7DT1NdMN0KeKsNKlAxkuBFbHIB4pMMuBbD/DfbEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=G6TbKhWp; arc=none smtp.client-ip=209.85.128.47
+	s=arc-20240116; t=1724526775; c=relaxed/simple;
+	bh=dRsDBERBKXGQmlNxsmOYsnycmpuJFUc5IIm+FZN1U5I=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=eeTmHHawug+j57fGQhfjdRdls5HRxQh2LotXFD2KfnKNY4Cai6AA377wVevE2WyjSMZD37bfg9+mgfBQOQv6L3HN6PMc7IjCQwdtTecMZiROCyeuguCrEN7eKC6UE8iFTU3R1l1STlA6N8gFU2mRhLdXsAHaKlL6zJ6Vjyv4Bgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U2ZeEYbP; arc=none smtp.client-ip=209.85.221.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-427fc97a88cso25202855e9.0;
-        Sat, 24 Aug 2024 12:12:51 -0700 (PDT)
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3718cd91185so1552600f8f.2;
+        Sat, 24 Aug 2024 12:12:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724526770; x=1725131570; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=uRqSVSBy7WVzrRyXzMTngEmfTDtpwenXKbG7hH0Uup8=;
-        b=G6TbKhWp5tfCeafR9InzSm0Cr+GmDlCfnSK2T6XmYkqzYNTFLWhgwV5dVQOz5Db9sW
-         bhQve4v8XDVTr+pyV4qEgDhu31S/LXl9EXGI3vNkdANtFHRKy7s9CNHyHFmJn1nBy048
-         GR8xfzrNnzsdtOGtSXmtpk4HNqH9X8B9FW4iJgrrcIJhrHAZ8ODGhQ6H17cOQpDCwxvj
-         YTBaByxEFjKsbqhbquTxbJcPsx5+LGQmWeFL8KkyhQEszlU0wWDICnZHdUpl5817/Znc
-         3Pi4oAqY1lxtg7C6F60sWAvMp7AkAmWTtnMt+GIXIcdgIkODdD0hjOKJFEu+X7ig98st
-         z40g==
+        d=gmail.com; s=20230601; t=1724526771; x=1725131571; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vxw92cxeIEiHhs9EMgxgq3pO39LFJ0Vnsb2d9XSPFpU=;
+        b=U2ZeEYbP5QsmUn61qTqEkBRfGcvO9rITHaVaoP+oQ3JBWfzc6XCDEnxz4FPgX9QGiQ
+         uWbxRUbsX3CdNaOSBKxVaGSo3T+Oc3Z/SLeZJx5sC6MAzaFQO4fbPuEmJFQhrniuGtm+
+         aW/WiBg4ws/gX8RJhTxx4q8GOALjX+XHOrO+ILCj7C9wcUBM4T3a6giJbDHvhn7Zo7Me
+         P5rr13LhVN2Kwx5KjuV/jzvDV+1AxsMRvbbG84kuAd7owdh87fSP6N+fGHKMVmf3btuZ
+         /vffp0NlIf5RTtnW81gHrA2rVzVvZNFuv5ZzgozTaWfQaFEkWv6b3kYcBJlmzuhc8xaO
+         wHVA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724526770; x=1725131570;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=uRqSVSBy7WVzrRyXzMTngEmfTDtpwenXKbG7hH0Uup8=;
-        b=GH0xpDC64I46aDoLwo4PSpVpY40PZEfTvXBQAuO9heVjjfZFm7UtNIJywSJLTPWo6j
-         KeB2QsqDNBF+42r86ODo/kht+7qBNmyWI9YBfufF3sW7ft/8JV/qzbtv2Ut+QJCGJgCU
-         5CMHeKpP4vsyeZzyOT2kgcVddKfOvmO/vTUfkPe36TPpxNMdtnxg6nmXuYvc876Px/4S
-         /10+foX4AoF28ojAf9a//gHPMsO2FK5jiZMlHOmDukRatU4vVjbFcnk3hETuWYepznwm
-         JkkJbvM30tw7hbtinWFb3FZJuQksQnGdYb0oia4XA1cHY/MbogU3cEjWHbwr6us9GPYf
-         u/rQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVV/9fY0O1GiAiFKyKwsOZhr68HtkGajm3QOj19l3cPZwMDDuNIB3VizJ5bF2bgXHpgck9Km3c/d3mn@vger.kernel.org, AJvYcCVxnTBZu7tellYMtvR3SBgUBF2ZVVoW13/1Vh5oLUnheCqEGPpW3IY8Z5Oz8nTnX+l64gUqemKY@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzs0PRUDYgnmu1SXHviOFqB5h1paO/yk+vcjHzBGNyKaLYB1kn+
-	kmJr2oJEkdagC6YIc9fi+8shSfwN7FIzHQ6rVMtosSwzwrOwu/YB09VGjeUI/i4=
-X-Google-Smtp-Source: AGHT+IEOcWJXK+IUeq9aebQdW8nPQy00HtJM4j9sdFCYGF6fyDggXTCyaAy5A/yB1LwAbqhRDy0WVw==
-X-Received: by 2002:adf:f5c3:0:b0:371:8c1f:6692 with SMTP id ffacd0b85a97d-373118e979amr3784385f8f.52.1724526769323;
-        Sat, 24 Aug 2024 12:12:49 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724526771; x=1725131571;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vxw92cxeIEiHhs9EMgxgq3pO39LFJ0Vnsb2d9XSPFpU=;
+        b=w0A20t6dj7qx4c+wWm1/5ucA5iD6hI2csuLoLGemseYJgNm4d0n6RRqhdUO0jCgjVG
+         EUnK8XjhzCAz5TxJHW50m8qsK1g/d8F8TzYuX6s47Keg62NQWw1p3FOvgLsSTb7D+DV3
+         a/FKAPpcR+oMNlMqtjUMte74x5ZZTivY3fSx98ORdUECZeWHNFS16q4S5Bk/4s1BEnyX
+         O+xSODTGucnJnfi3itI0bHUt6RlFUeUAR/xaAoVfcoU94ci/w9OROHr7yqpVPEUJVsiU
+         4uUN0nlG4oLfYYpH9eXO4LSv6VFI98Sz3rJ3hsv0hz0F+LBrUk3BbRyxV8qbMSNf8qrT
+         1uHg==
+X-Forwarded-Encrypted: i=1; AJvYcCXF2J4j9cR2FufAKBrGjE1doPrLF7ymG1/zAzkCi7o9nAOuRgOy4OKQPM1LFVjV/FQXJ5HbAIWB7KKW@vger.kernel.org
+X-Gm-Message-State: AOJu0YxeQeE75X8plW4rydQilWGCl59omfLmLt0ruKdMzedaogdi/SkA
+	vEmfE/sjbsjnwNV8l1ySmLACTpg3E+08nKZqilFN7rK6ndsUypjpqsBKN41fSHQ=
+X-Google-Smtp-Source: AGHT+IF9Li3MJwjnTCQZvRS3VVn7nuqBi4T5p7Mo+MHjDsuw5dg8olBZhngWv1qKDBfikGef2aL15A==
+X-Received: by 2002:a5d:5273:0:b0:371:a70d:107e with SMTP id ffacd0b85a97d-37311843365mr3676162f8f.6.1724526770689;
+        Sat, 24 Aug 2024 12:12:50 -0700 (PDT)
 Received: from localhost.localdomain ([156.197.22.60])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3730813c520sm7109793f8f.39.2024.08.24.12.12.47
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3730813c520sm7109793f8f.39.2024.08.24.12.12.49
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Aug 2024 12:12:48 -0700 (PDT)
+        Sat, 24 Aug 2024 12:12:50 -0700 (PDT)
 From: Ahmed Ehab <bottaawesome633@gmail.com>
 To: linux-kernel@vger.kernel.org
 Cc: Peter Zijlstra <peterz@infradead.org>,
@@ -73,13 +75,13 @@ Cc: Peter Zijlstra <peterz@infradead.org>,
 	Waiman Long <longman@redhat.com>,
 	Boqun Feng <boqun.feng@gmail.com>,
 	linux-ext4@vger.kernel.org,
-	syzkaller@googlegroups.com,
-	syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com,
-	stable@vger.kernel.org
-Subject: [PATCH v5 1/2] locking/lockdep: Avoid creating new name string literals in lockdep_set_subclass()
-Date: Sun, 25 Aug 2024 01:10:30 +0300
-Message-ID: <20240824221031.7751-1-bottaawesome633@gmail.com>
+	syzkaller@googlegroups.com
+Subject: [PATCH v6 2/2] locking/lockdep: Test no new string literal is created in lockdep_set_subclass()
+Date: Sun, 25 Aug 2024 01:10:31 +0300
+Message-ID: <20240824221031.7751-2-bottaawesome633@gmail.com>
 X-Mailer: git-send-email 2.46.0
+In-Reply-To: <20240824221031.7751-1-bottaawesome633@gmail.com>
+References: <20240824221031.7751-1-bottaawesome633@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -88,43 +90,65 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Syzbot reports a problem that a warning will be triggered while
-searching a lock class in look_up_lock_class().
+Add a test case to ensure that no new name string literal will be
+created in lockdep_set_subclass(), otherwise a warning will be triggered
+in look_up_lock_class(). Add this to catch the problem in the future. 
 
-The cause of the issue is that a new name is created and used by
-lockdep_set_subclass() instead of using the existing one. This results
-in two lock classes with the same key but different name pointers and a
-WARN_ONCE() is triggered because of that in look_up_lock_class().
-
-To fix this, change lockdep_set_subclass() to use the existing name
-instead of a new one. Hence, no new name will be created by
-lockdep_set_subclass(). Hence, the warning is avoided.
-
-Reported-by: <syzbot+7f4a6f7f7051474e40ad@syzkaller.appspotmail.com>
-Fixes: de8f5e4f2dc1f ("lockdep: Introduce wait-type checks")
-Cc: <stable@vger.kernel.org>
 Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
 ---
-v4->v5:
-    - Changed the subject
-    - Changed the changelog to be more detailed
+v5->v6:
+- Changed the subject and changelog to be in imperative format
 
- include/linux/lockdep.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ lib/locking-selftest.c | 28 ++++++++++++++++++++++++++++
+ 1 file changed, 28 insertions(+)
 
-diff --git a/include/linux/lockdep.h b/include/linux/lockdep.h
-index 08b0d1d9d78b..df8fa5929de7 100644
---- a/include/linux/lockdep.h
-+++ b/include/linux/lockdep.h
-@@ -173,7 +173,7 @@ static inline void lockdep_init_map(struct lockdep_map *lock, const char *name,
- 			      (lock)->dep_map.lock_type)
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 6f6a5fc85b42..2b4650bdf833 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -2710,6 +2710,32 @@ static void local_lock_3B(void)
  
- #define lockdep_set_subclass(lock, sub)					\
--	lockdep_init_map_type(&(lock)->dep_map, #lock, (lock)->dep_map.key, sub,\
-+	lockdep_init_map_type(&(lock)->dep_map, (lock)->dep_map.name, (lock)->dep_map.key, sub,\
- 			      (lock)->dep_map.wait_type_inner,		\
- 			      (lock)->dep_map.wait_type_outer,		\
- 			      (lock)->dep_map.lock_type)
+ }
+ 
++static void lock_class_subclass_X1(void)
++{
++	const char *name_before_setting_subclass = rwsem_X1.dep_map.name;
++	const char *name_after_setting_subclass;
++
++	lockdep_set_subclass(&rwsem_X1, 1);
++	name_after_setting_subclass = rwsem_X1.dep_map.name;
++	DEBUG_LOCKS_WARN_ON(name_before_setting_subclass != name_after_setting_subclass);
++}
++
++/*
++ * after setting the subclass the lockdep_map.name changes
++ * if we initialize a new string literal for the subclass
++ * we will have a new name pointer
++ */
++static void class_subclass_X1_name_test(void)
++{
++	printk("  --------------------------------------------------------------------------\n");
++	printk("  | class and subclass name test|\n");
++	printk("  ---------------------\n");
++
++	print_testname("lock class and subclass same name");
++	dotest(lock_class_subclass_X1, SUCCESS, LOCKTYPE_RWSEM);
++	pr_cont("\n");
++}
++
+ static void local_lock_tests(void)
+ {
+ 	printk("  --------------------------------------------------------------------------\n");
+@@ -2920,6 +2946,8 @@ void locking_selftest(void)
+ 	dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE, LOCKTYPE_SPECIAL);
+ 	pr_cont("\n");
+ 
++	class_subclass_X1_name_test();
++
+ 	if (unexpected_testcase_failures) {
+ 		printk("-----------------------------------------------------------------\n");
+ 		debug_locks = 0;
 -- 
 2.45.2
+
 
