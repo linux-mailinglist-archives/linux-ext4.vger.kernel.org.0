@@ -1,128 +1,142 @@
-Return-Path: <linux-ext4+bounces-3886-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3887-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3159095E7A3
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2024 06:24:34 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D8B7395F2F5
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2024 15:33:07 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62A7A1C21300
-	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2024 04:24:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6498FB21918
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2024 13:33:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BF481751;
-	Mon, 26 Aug 2024 04:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D3BD13DBB6;
+	Mon, 26 Aug 2024 13:32:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=lkcamp.dev header.i=@lkcamp.dev header.b="bdMqW1QJ";
-	dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b="DCAKlRMw"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="MZG+zzd8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from sendmail.purelymail.com (sendmail.purelymail.com [34.202.193.197])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4515A804
-	for <linux-ext4@vger.kernel.org>; Mon, 26 Aug 2024 04:23:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.202.193.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4797187842
+	for <linux-ext4@vger.kernel.org>; Mon, 26 Aug 2024 13:32:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724646211; cv=none; b=Dfjmw4+SRRpFM1OYrDOOhORiX//uzXJpg7z32uFdeO0WSZhvM0oA5AEk53yRJREsvhjbdyllIL02/ItABWMcmSpsAsxQMq67LopkBMjkJbtQEJuCRw0fwJNOMYE9DlOFFL+ucYx0dY9Zu9U0BJdmzFCG6N8PVhUpE+MtQEkw74Y=
+	t=1724679169; cv=none; b=J0f+Pdk+DpY8E5/mwGRfv4bXFe+noodQjiJtg7VMoIVAT3QjJbo0MmWxS413jEd2NDtVG/THuKeuhGNUFl/jhtyMVzD8MkZ0q9teSESo1vUBSDYqhpZ+CDWYUC6oZiCbBNL5GDILH9DTGBGk1110XHTfnZd3rTcFWZKain+WGUo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724646211; c=relaxed/simple;
-	bh=UvRwjVT+wdzSsadX45w3gvGTX/NnPXde2PFuhVgMyuk=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=DjTwm3+G/ESByQa9YpTx9aGHKPC6/6wmd/NzKFdikCCHwW9bE/HnQE2apZqPhxQN7vKIYM0vSmvMTTsDhFHNCZ3A59l3VZndC4zf8Y77hbPyYIY4a4vU3CJLwVMz0u6lZl/KlhXbpqscbTQTxQ8A+GNp4eDjP1BNlURr2J4LKVQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lkcamp.dev; spf=pass smtp.mailfrom=lkcamp.dev; dkim=pass (2048-bit key) header.d=lkcamp.dev header.i=@lkcamp.dev header.b=bdMqW1QJ; dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b=DCAKlRMw; arc=none smtp.client-ip=34.202.193.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lkcamp.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lkcamp.dev
-DKIM-Signature: a=rsa-sha256; b=bdMqW1QJ2u29NPdmDJUZAq9T9jEztt7DaxcycYXuW6xHuErAhgCIS7HFwWXiD65P4PUNeVoP1ZKIkG6iwZrq8wl6cFCrzcU47rfERSDFWPnnNaWBr4jGVzsvdYGDYDwvV5Ibwo6bkedFsu98ITdPyPYgRHKs84uCLGbG93fE98E/I5a2s+bZXZLhSfdudVEoQ0dPtH8crE8uRo/Ly7GwvtBj++rJ3L99nap9iG3mLr0lOwyl1HLiRn7fJPd9chYoOFGvf4EdM+IzeezuiZSByPwzTWkCuxmJB4mtKKHXEgI24+gllE5peRbVF6gmFODyrYRlD8mthqZAY3ao7inX4w==; s=purelymail2; d=lkcamp.dev; v=1; bh=UvRwjVT+wdzSsadX45w3gvGTX/NnPXde2PFuhVgMyuk=; h=Received:Date:To:Subject:From;
-DKIM-Signature: a=rsa-sha256; b=DCAKlRMw9waceTuBQgqwEVY+Xq4gqA7NTLZ9Q0Et1SRF5UXNnbrxbShbMgMAYJ6paQd8GB4cww9wmFHPbjv4D36Y7a6Wv5H1Ociw/PCyz+ybCUd85LyX7R2MfMjNKhihK3Ns19VWFcO+ZcdyMYlzHmFL5fK9tl4cxW5qSBABXYi/mMgMSPfBW8nBfDZ8pFmF+FxwS9o8uTbHowTeZf5Acrx+OF3pupaM+pAv3sNbQpuW7eIcK3YuI4zFcwVucA8p0Gatv0WOUVSLgswe6IeIPC6lISZ4fSB6juf2NOi8qfippDe0j+VyJNpLZfCTOsOPxSZQ0N4AmGXRgkuqb4EkUQ==; s=purelymail2; d=purelymail.com; v=1; bh=UvRwjVT+wdzSsadX45w3gvGTX/NnPXde2PFuhVgMyuk=; h=Feedback-ID:Received:Date:To:Subject:From;
-Feedback-ID: 40580:7130:null:purelymail
-X-Pm-Original-To: linux-ext4@vger.kernel.org
-Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id 1044989440;
-          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
-          Mon, 26 Aug 2024 04:22:59 +0000 (UTC)
-Message-ID: <d673f289-2385-4949-ac80-f3a502d4deb2@lkcamp.dev>
-Date: Mon, 26 Aug 2024 01:22:54 -0300
+	s=arc-20240116; t=1724679169; c=relaxed/simple;
+	bh=n0NPm7B6J7gVDk2ymDoWEA5zA8j5C6+nBCISk/lA5Lk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ALXV0VNHcUtDrf6OE/U7zVTryGspey8SOqNzYebPfAvMxjPV46qTCTPZBCCE189Jc4LVIvRW6M09iQl7SYRXVRpG/pyLi966oDP3a956+5GIYsxSKjJODg6+9nyK1oRZKvoRCMa4y1QTUo5kiJQoH+h07W99lJZfQ0n19+MrJ9A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=MZG+zzd8; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-154.bstnma.fios.verizon.net [173.48.102.154])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47QDW8j6004718
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 26 Aug 2024 09:32:10 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1724679132; bh=Fri/kc3dR/ARb2zKFwI6CM6fhXpI4ReBwuWSC6P3TgM=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=MZG+zzd8YoEYiH+pUWgnfqgM7vJoEyYa4aBt0CagAKr72sOkn/bVYrmB7osXKGjt1
+	 Qcg14P5902cyLz5kzCRuTLhMTjs3HwWE4iQu1VPFKpZZP3+bJABRXz2wgL8FvPOSuG
+	 /77RJZsWCamci5WSPnuE6kMjQNt2VR95u4rm/QHvtbtkn8nqnoRLw6+6sbe0dBjkqU
+	 UkusYmsZzm0g/ylujOXY5rxjCC1vbnhfnsc46E2Og9N4b89qhGb5d+3xOmGsSHgIfv
+	 8G9cpRxlV1Co1cnIsN5/LilcyFW0yJ2KqwsugOyQuyx9eGI8q7BslJrwyWGoztjtXV
+	 lwBZoaJyYA02A==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 9C5FB15C02C1; Mon, 26 Aug 2024 09:32:08 -0400 (EDT)
+Date: Mon, 26 Aug 2024 09:32:08 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Vinicius Peixoto <vpeixoto@lkcamp.dev>
+Cc: syzbot+8512f3dbd96253ffbe27@syzkaller.appspotmail.com, jack@suse.com,
+        jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+        linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        mark@fasheh.com, ocfs2-devel@lists.linux.dev,
+        syzkaller-bugs@googlegroups.com, ~lkcamp/discussion@lists.sr.ht
+Subject: Re: [syzbot] [ext4?] [ocfs2?] kernel BUG in jbd2_cleanup_journal_tail
+Message-ID: <20240826133208.GB424729@mit.edu>
+References: <00000000000070a66706204e7698@google.com>
+ <d673f289-2385-4949-ac80-f3a502d4deb2@lkcamp.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: syzbot+8512f3dbd96253ffbe27@syzkaller.appspotmail.com
-Cc: jack@suse.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
- linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, mark@fasheh.com,
- ocfs2-devel@lists.linux.dev, syzkaller-bugs@googlegroups.com, tytso@mit.edu,
- ~lkcamp/discussion@lists.sr.ht
-References: <00000000000070a66706204e7698@google.com>
-Subject: Re: [syzbot] [ext4?] [ocfs2?] kernel BUG in jbd2_cleanup_journal_tail
-Content-Language: en-US
-From: Vinicius Peixoto <vpeixoto@lkcamp.dev>
-In-Reply-To: <00000000000070a66706204e7698@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <d673f289-2385-4949-ac80-f3a502d4deb2@lkcamp.dev>
 
-Hi all,
+On Mon, Aug 26, 2024 at 01:22:54AM -0300, Vinicius Peixoto wrote:
+> Since the disk data is bogus, journal_reset fails with -EINVAL ("JBD2:
+> Journal too short (blocks 2-1024)"); this leaves journal->j_head == NULL.
+> However, jbd2_journal_load clears the JBD2_ABORT flag right before calling
+> journal_reset. This leads to a problem later when ofcs2_mount_volume tries
+> to flush the journal as part of the cleanup when aborting the mount
+> operation:
+> 
+>   -> ofcs2_mount_volume (error; goto out_system_inodes)
+>     -> ofcs2_journal_shutdown
+>       -> jbd2_journal_flush
+>         -> jbd2_cleanup_journal_tail (J_ASSERT fails)
+> ...
+>
+> I confirmed that setting the JBD2_ABORT flag in journal_reset before
+> returning -EINVAL fixes the problem:
+> 
+>         static int journal_reset(journal_t *journal)
+>                         journal_fail_superblock(journal);
+>         +               journal->j_flags |= JBD2_ABORT;
+>                         return -EINVAL;
+> 
+> You can find a proper patch file + the syzbot re-test result in [1].
+> However, I'm not entirely sure whether this is the correct decision, and I
+> wanted to confirm that this is an appropriate solution before sending a
+> proper patch to the mailing list.
 
-I noticed this report from syzbot when going through the preliminary 
-tasks for the Linux Kernel Mentorship Program, and thought I'd take a 
-stab at solving it. I apologize in advance for any mistakes as I'm still 
-very new to kernel development. Either way, here's my analysis:
+The reason why this isn't an issue with ext4 is because the normal
+"right" way to do this is if jbd2_journal_load() returns an error, is
+to call jbd2_journal_destroy() to release the data structures with the
+journal --- and then don't try to use the journal afterwards.
 
- From what I can tell by looking at the reproducer from syzbot, it is 
-trying to mount a file filled with bogus data as an ocfs2 disk, and this 
-is triggering an assertion in jbd2_cleanup_journal_tail, which in turn 
-causes a panic.
+The weird thing is that there are two code paths in ocfs2 that calls
+jbd2_journal_load().  One is in ocfs2_replay_journal() which does what
+ext4 does.  The other is ocfs2_load_journal() which does *not* do
+this, and this is the one which you saw in the syzkaller reproducer.
+It looks like one codepath is used to replay the ocfs2 for some other
+node, and the is to load (and presumably later, replay) the journal
+for the mounting node.
 
-The problematic call stack goes roughly like this:
+There are also some other things which look very confusing, such as the fact that ocfs2_journal_shutdown calls igrab:
 
-mount_bdev
-   -> ofcs2_mount_volume
-     -> ofcs2_check_volume
-       -> ofcs2_journal_load
-         -> jbd2_journal_load
-           -> journal_reset (fails)
+	/* need to inc inode use count - jbd2_journal_destroy will iput. */
+	if (!igrab(inode))
+		BUG();
 
-Since the disk data is bogus, journal_reset fails with -EINVAL ("JBD2: 
-Journal too short (blocks 2-1024)"); this leaves journal->j_head == 
-NULL. However, jbd2_journal_load clears the JBD2_ABORT flag right before 
-calling journal_reset. This leads to a problem later when 
-ofcs2_mount_volume tries to flush the journal as part of the cleanup 
-when aborting the mount operation:
+... which is *weird*.  Normaly the journal inode refcount is expected
+to be bumped before calling jbd2_journal_init_inode() --- which
+normally is done by an iget() function, and is needed to make sure the
+journal inode isn't released out from under the jbd2 layer.  It looks
+like ocfs2 uses the journal inode for other stuff so get the journal
+inode without calling something like iget().  Which is OK, I guess,
+but it means that there are a whole bunch of places where it has to
+call !BUG_ON(igrab(journal->j_inode) before calling
+jbd2_journal_destroy().  It would seem like the *right* thing to do is
+to bump the refcount in ocfs2_journal_init(), and if for some reason
+the igrab fails, it can just return an error early, instead of having
+to resort to BUG_ON() later, and if you don't realize that you have to
+do this weird igrab() before calling jbd2_journal_destroy(), you'll
+end up leaking the journal inode.
 
-   -> ofcs2_mount_volume (error; goto out_system_inodes)
-     -> ofcs2_journal_shutdown
-       -> jbd2_journal_flush
-         -> jbd2_cleanup_journal_tail (J_ASSERT fails)
+Anyway, I think the right thing to do is to restructure how ocfs2
+calls the jbd2 journal, but that's going to require a more careful
+examination of the code paths.  Your patch is a bit of a blunt force
+hack that should be harmless, but it's probably not the best way to
+fix the problem, although doing it "right" would be more
+complicated....
 
-This failure happens because of the following code:
-
-         if (is_journal_aborted(journal))
-                 return -EIO;
-
-         if (!jbd2_journal_get_log_tail(journal, &first_tid, &blocknr))
-                 return 1;
-         J_ASSERT(blocknr != 0);
-
-Since JBD2_ABORT was cleared in jbd2_journal_load earlier, we enter 
-jbd2_journal_get_log_tail, which will set *blocknr = journal->j_head 
-(which is NULL) and then trigger the assertion, causing a panic.
-
-I confirmed that setting the JBD2_ABORT flag in journal_reset before 
-returning -EINVAL fixes the problem:
-
-         static int journal_reset(journal_t *journal)
-                         journal_fail_superblock(journal);
-         +               journal->j_flags |= JBD2_ABORT;
-                         return -EINVAL;
-
-You can find a proper patch file + the syzbot re-test result in [1]. 
-However, I'm not entirely sure whether this is the correct decision, and 
-I wanted to confirm that this is an appropriate solution before sending 
-a proper patch to the mailing list.
-
-Thanks in advance,
-Vinicius
-
-[1] https://syzkaller.appspot.com/bug?extid=8512f3dbd96253ffbe27
-
+					- Ted
 
