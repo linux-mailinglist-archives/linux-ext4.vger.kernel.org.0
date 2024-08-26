@@ -1,154 +1,128 @@
-Return-Path: <linux-ext4+bounces-3885-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3886-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DF3895DFC4
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 21:13:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3159095E7A3
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2024 06:24:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0831C20AA3
-	for <lists+linux-ext4@lfdr.de>; Sat, 24 Aug 2024 19:13:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 62A7A1C21300
+	for <lists+linux-ext4@lfdr.de>; Mon, 26 Aug 2024 04:24:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8FBCE12C49B;
-	Sat, 24 Aug 2024 19:12:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5BF481751;
+	Mon, 26 Aug 2024 04:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="U2ZeEYbP"
+	dkim=pass (2048-bit key) header.d=lkcamp.dev header.i=@lkcamp.dev header.b="bdMqW1QJ";
+	dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b="DCAKlRMw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from sendmail.purelymail.com (sendmail.purelymail.com [34.202.193.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80EAC61FFC;
-	Sat, 24 Aug 2024 19:12:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4515A804
+	for <linux-ext4@vger.kernel.org>; Mon, 26 Aug 2024 04:23:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=34.202.193.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724526775; cv=none; b=N2t4j0n8H7mxtSIv/PazsbqhRcFLwIw6SK93u6bieXCe1bQpxW2Hdudht7QZQwqVP6Zl/fZ9kwRvB1SkSU788oLoV5yaDrHDQINXc7fQCuStY1yKU7UrGsU96w4oLxIVgTAlwR+MBfdSncymU7Y6EvXhTLj1FtCPHCfZM33We3g=
+	t=1724646211; cv=none; b=Dfjmw4+SRRpFM1OYrDOOhORiX//uzXJpg7z32uFdeO0WSZhvM0oA5AEk53yRJREsvhjbdyllIL02/ItABWMcmSpsAsxQMq67LopkBMjkJbtQEJuCRw0fwJNOMYE9DlOFFL+ucYx0dY9Zu9U0BJdmzFCG6N8PVhUpE+MtQEkw74Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724526775; c=relaxed/simple;
-	bh=dRsDBERBKXGQmlNxsmOYsnycmpuJFUc5IIm+FZN1U5I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=eeTmHHawug+j57fGQhfjdRdls5HRxQh2LotXFD2KfnKNY4Cai6AA377wVevE2WyjSMZD37bfg9+mgfBQOQv6L3HN6PMc7IjCQwdtTecMZiROCyeuguCrEN7eKC6UE8iFTU3R1l1STlA6N8gFU2mRhLdXsAHaKlL6zJ6Vjyv4Bgw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=U2ZeEYbP; arc=none smtp.client-ip=209.85.221.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3718cd91185so1552600f8f.2;
-        Sat, 24 Aug 2024 12:12:53 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724526771; x=1725131571; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vxw92cxeIEiHhs9EMgxgq3pO39LFJ0Vnsb2d9XSPFpU=;
-        b=U2ZeEYbP5QsmUn61qTqEkBRfGcvO9rITHaVaoP+oQ3JBWfzc6XCDEnxz4FPgX9QGiQ
-         uWbxRUbsX3CdNaOSBKxVaGSo3T+Oc3Z/SLeZJx5sC6MAzaFQO4fbPuEmJFQhrniuGtm+
-         aW/WiBg4ws/gX8RJhTxx4q8GOALjX+XHOrO+ILCj7C9wcUBM4T3a6giJbDHvhn7Zo7Me
-         P5rr13LhVN2Kwx5KjuV/jzvDV+1AxsMRvbbG84kuAd7owdh87fSP6N+fGHKMVmf3btuZ
-         /vffp0NlIf5RTtnW81gHrA2rVzVvZNFuv5ZzgozTaWfQaFEkWv6b3kYcBJlmzuhc8xaO
-         wHVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724526771; x=1725131571;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vxw92cxeIEiHhs9EMgxgq3pO39LFJ0Vnsb2d9XSPFpU=;
-        b=w0A20t6dj7qx4c+wWm1/5ucA5iD6hI2csuLoLGemseYJgNm4d0n6RRqhdUO0jCgjVG
-         EUnK8XjhzCAz5TxJHW50m8qsK1g/d8F8TzYuX6s47Keg62NQWw1p3FOvgLsSTb7D+DV3
-         a/FKAPpcR+oMNlMqtjUMte74x5ZZTivY3fSx98ORdUECZeWHNFS16q4S5Bk/4s1BEnyX
-         O+xSODTGucnJnfi3itI0bHUt6RlFUeUAR/xaAoVfcoU94ci/w9OROHr7yqpVPEUJVsiU
-         4uUN0nlG4oLfYYpH9eXO4LSv6VFI98Sz3rJ3hsv0hz0F+LBrUk3BbRyxV8qbMSNf8qrT
-         1uHg==
-X-Forwarded-Encrypted: i=1; AJvYcCXF2J4j9cR2FufAKBrGjE1doPrLF7ymG1/zAzkCi7o9nAOuRgOy4OKQPM1LFVjV/FQXJ5HbAIWB7KKW@vger.kernel.org
-X-Gm-Message-State: AOJu0YxeQeE75X8plW4rydQilWGCl59omfLmLt0ruKdMzedaogdi/SkA
-	vEmfE/sjbsjnwNV8l1ySmLACTpg3E+08nKZqilFN7rK6ndsUypjpqsBKN41fSHQ=
-X-Google-Smtp-Source: AGHT+IF9Li3MJwjnTCQZvRS3VVn7nuqBi4T5p7Mo+MHjDsuw5dg8olBZhngWv1qKDBfikGef2aL15A==
-X-Received: by 2002:a5d:5273:0:b0:371:a70d:107e with SMTP id ffacd0b85a97d-37311843365mr3676162f8f.6.1724526770689;
-        Sat, 24 Aug 2024 12:12:50 -0700 (PDT)
-Received: from localhost.localdomain ([156.197.22.60])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-3730813c520sm7109793f8f.39.2024.08.24.12.12.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 24 Aug 2024 12:12:50 -0700 (PDT)
-From: Ahmed Ehab <bottaawesome633@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Will Deacon <will@kernel.org>,
-	Waiman Long <longman@redhat.com>,
-	Boqun Feng <boqun.feng@gmail.com>,
-	linux-ext4@vger.kernel.org,
-	syzkaller@googlegroups.com
-Subject: [PATCH v6 2/2] locking/lockdep: Test no new string literal is created in lockdep_set_subclass()
-Date: Sun, 25 Aug 2024 01:10:31 +0300
-Message-ID: <20240824221031.7751-2-bottaawesome633@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <20240824221031.7751-1-bottaawesome633@gmail.com>
-References: <20240824221031.7751-1-bottaawesome633@gmail.com>
+	s=arc-20240116; t=1724646211; c=relaxed/simple;
+	bh=UvRwjVT+wdzSsadX45w3gvGTX/NnPXde2PFuhVgMyuk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=DjTwm3+G/ESByQa9YpTx9aGHKPC6/6wmd/NzKFdikCCHwW9bE/HnQE2apZqPhxQN7vKIYM0vSmvMTTsDhFHNCZ3A59l3VZndC4zf8Y77hbPyYIY4a4vU3CJLwVMz0u6lZl/KlhXbpqscbTQTxQ8A+GNp4eDjP1BNlURr2J4LKVQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lkcamp.dev; spf=pass smtp.mailfrom=lkcamp.dev; dkim=pass (2048-bit key) header.d=lkcamp.dev header.i=@lkcamp.dev header.b=bdMqW1QJ; dkim=pass (2048-bit key) header.d=purelymail.com header.i=@purelymail.com header.b=DCAKlRMw; arc=none smtp.client-ip=34.202.193.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=lkcamp.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lkcamp.dev
+DKIM-Signature: a=rsa-sha256; b=bdMqW1QJ2u29NPdmDJUZAq9T9jEztt7DaxcycYXuW6xHuErAhgCIS7HFwWXiD65P4PUNeVoP1ZKIkG6iwZrq8wl6cFCrzcU47rfERSDFWPnnNaWBr4jGVzsvdYGDYDwvV5Ibwo6bkedFsu98ITdPyPYgRHKs84uCLGbG93fE98E/I5a2s+bZXZLhSfdudVEoQ0dPtH8crE8uRo/Ly7GwvtBj++rJ3L99nap9iG3mLr0lOwyl1HLiRn7fJPd9chYoOFGvf4EdM+IzeezuiZSByPwzTWkCuxmJB4mtKKHXEgI24+gllE5peRbVF6gmFODyrYRlD8mthqZAY3ao7inX4w==; s=purelymail2; d=lkcamp.dev; v=1; bh=UvRwjVT+wdzSsadX45w3gvGTX/NnPXde2PFuhVgMyuk=; h=Received:Date:To:Subject:From;
+DKIM-Signature: a=rsa-sha256; b=DCAKlRMw9waceTuBQgqwEVY+Xq4gqA7NTLZ9Q0Et1SRF5UXNnbrxbShbMgMAYJ6paQd8GB4cww9wmFHPbjv4D36Y7a6Wv5H1Ociw/PCyz+ybCUd85LyX7R2MfMjNKhihK3Ns19VWFcO+ZcdyMYlzHmFL5fK9tl4cxW5qSBABXYi/mMgMSPfBW8nBfDZ8pFmF+FxwS9o8uTbHowTeZf5Acrx+OF3pupaM+pAv3sNbQpuW7eIcK3YuI4zFcwVucA8p0Gatv0WOUVSLgswe6IeIPC6lISZ4fSB6juf2NOi8qfippDe0j+VyJNpLZfCTOsOPxSZQ0N4AmGXRgkuqb4EkUQ==; s=purelymail2; d=purelymail.com; v=1; bh=UvRwjVT+wdzSsadX45w3gvGTX/NnPXde2PFuhVgMyuk=; h=Feedback-ID:Received:Date:To:Subject:From;
+Feedback-ID: 40580:7130:null:purelymail
+X-Pm-Original-To: linux-ext4@vger.kernel.org
+Received: by smtp.purelymail.com (Purelymail SMTP) with ESMTPSA id 1044989440;
+          (version=TLSv1.3 cipher=TLS_AES_256_GCM_SHA384);
+          Mon, 26 Aug 2024 04:22:59 +0000 (UTC)
+Message-ID: <d673f289-2385-4949-ac80-f3a502d4deb2@lkcamp.dev>
+Date: Mon, 26 Aug 2024 01:22:54 -0300
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+To: syzbot+8512f3dbd96253ffbe27@syzkaller.appspotmail.com
+Cc: jack@suse.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com,
+ linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, mark@fasheh.com,
+ ocfs2-devel@lists.linux.dev, syzkaller-bugs@googlegroups.com, tytso@mit.edu,
+ ~lkcamp/discussion@lists.sr.ht
+References: <00000000000070a66706204e7698@google.com>
+Subject: Re: [syzbot] [ext4?] [ocfs2?] kernel BUG in jbd2_cleanup_journal_tail
+Content-Language: en-US
+From: Vinicius Peixoto <vpeixoto@lkcamp.dev>
+In-Reply-To: <00000000000070a66706204e7698@google.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Add a test case to ensure that no new name string literal will be
-created in lockdep_set_subclass(), otherwise a warning will be triggered
-in look_up_lock_class(). Add this to catch the problem in the future. 
+Hi all,
 
-Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
----
-v5->v6:
-- Changed the subject and changelog to be in imperative format
+I noticed this report from syzbot when going through the preliminary 
+tasks for the Linux Kernel Mentorship Program, and thought I'd take a 
+stab at solving it. I apologize in advance for any mistakes as I'm still 
+very new to kernel development. Either way, here's my analysis:
 
- lib/locking-selftest.c | 28 ++++++++++++++++++++++++++++
- 1 file changed, 28 insertions(+)
+ From what I can tell by looking at the reproducer from syzbot, it is 
+trying to mount a file filled with bogus data as an ocfs2 disk, and this 
+is triggering an assertion in jbd2_cleanup_journal_tail, which in turn 
+causes a panic.
 
-diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
-index 6f6a5fc85b42..2b4650bdf833 100644
---- a/lib/locking-selftest.c
-+++ b/lib/locking-selftest.c
-@@ -2710,6 +2710,32 @@ static void local_lock_3B(void)
- 
- }
- 
-+static void lock_class_subclass_X1(void)
-+{
-+	const char *name_before_setting_subclass = rwsem_X1.dep_map.name;
-+	const char *name_after_setting_subclass;
-+
-+	lockdep_set_subclass(&rwsem_X1, 1);
-+	name_after_setting_subclass = rwsem_X1.dep_map.name;
-+	DEBUG_LOCKS_WARN_ON(name_before_setting_subclass != name_after_setting_subclass);
-+}
-+
-+/*
-+ * after setting the subclass the lockdep_map.name changes
-+ * if we initialize a new string literal for the subclass
-+ * we will have a new name pointer
-+ */
-+static void class_subclass_X1_name_test(void)
-+{
-+	printk("  --------------------------------------------------------------------------\n");
-+	printk("  | class and subclass name test|\n");
-+	printk("  ---------------------\n");
-+
-+	print_testname("lock class and subclass same name");
-+	dotest(lock_class_subclass_X1, SUCCESS, LOCKTYPE_RWSEM);
-+	pr_cont("\n");
-+}
-+
- static void local_lock_tests(void)
- {
- 	printk("  --------------------------------------------------------------------------\n");
-@@ -2920,6 +2946,8 @@ void locking_selftest(void)
- 	dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE, LOCKTYPE_SPECIAL);
- 	pr_cont("\n");
- 
-+	class_subclass_X1_name_test();
-+
- 	if (unexpected_testcase_failures) {
- 		printk("-----------------------------------------------------------------\n");
- 		debug_locks = 0;
--- 
-2.45.2
+The problematic call stack goes roughly like this:
+
+mount_bdev
+   -> ofcs2_mount_volume
+     -> ofcs2_check_volume
+       -> ofcs2_journal_load
+         -> jbd2_journal_load
+           -> journal_reset (fails)
+
+Since the disk data is bogus, journal_reset fails with -EINVAL ("JBD2: 
+Journal too short (blocks 2-1024)"); this leaves journal->j_head == 
+NULL. However, jbd2_journal_load clears the JBD2_ABORT flag right before 
+calling journal_reset. This leads to a problem later when 
+ofcs2_mount_volume tries to flush the journal as part of the cleanup 
+when aborting the mount operation:
+
+   -> ofcs2_mount_volume (error; goto out_system_inodes)
+     -> ofcs2_journal_shutdown
+       -> jbd2_journal_flush
+         -> jbd2_cleanup_journal_tail (J_ASSERT fails)
+
+This failure happens because of the following code:
+
+         if (is_journal_aborted(journal))
+                 return -EIO;
+
+         if (!jbd2_journal_get_log_tail(journal, &first_tid, &blocknr))
+                 return 1;
+         J_ASSERT(blocknr != 0);
+
+Since JBD2_ABORT was cleared in jbd2_journal_load earlier, we enter 
+jbd2_journal_get_log_tail, which will set *blocknr = journal->j_head 
+(which is NULL) and then trigger the assertion, causing a panic.
+
+I confirmed that setting the JBD2_ABORT flag in journal_reset before 
+returning -EINVAL fixes the problem:
+
+         static int journal_reset(journal_t *journal)
+                         journal_fail_superblock(journal);
+         +               journal->j_flags |= JBD2_ABORT;
+                         return -EINVAL;
+
+You can find a proper patch file + the syzbot re-test result in [1]. 
+However, I'm not entirely sure whether this is the correct decision, and 
+I wanted to confirm that this is an appropriate solution before sending 
+a proper patch to the mailing list.
+
+Thanks in advance,
+Vinicius
+
+[1] https://syzkaller.appspot.com/bug?extid=8512f3dbd96253ffbe27
 
 
