@@ -1,65 +1,63 @@
-Return-Path: <linux-ext4+bounces-3913-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3906-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D626960B02
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 14:50:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53433960AF2
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 14:49:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEF931C21DEB
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 12:50:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F00F11F2197F
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 12:49:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B00431C57AD;
-	Tue, 27 Aug 2024 12:48:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF9971C2DC9;
+	Tue, 27 Aug 2024 12:47:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="It++mg58"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="NWBDdajh"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF66F1C462C
-	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 12:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C2371BFE16
+	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 12:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724762884; cv=none; b=JCvp6fWsDVAZUA1z0gRogSU7q3e8UsWpUcVmbzq01lVVhd4w1cDkvTAyQznZbrRNvCJ+c4YQMz+r1WURjIUzXZdwyZ/ANsKXYb1nVE9r8StipO4ISM7Y7icOIAzlC2NubdIZtW+9Fsa3wRgToLC0ZDzSZFp7nVdugMu5issVw1k=
+	t=1724762876; cv=none; b=Yv1gtXVu4HkaAQwA+bq1lSKmBDh+7Ak5dqZLU0NDulAI40jrH2ElrnZByHaOznpIQTZrBNprXYWn65KAYp3MEAnhfdoudNAY1A4gip6yGYQFW6NhPFSpJbj5yvA8bGwjeGYyndA3YqR1vY7Yi9iipQ15maUKghwMafMvI1+rGtA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724762884; c=relaxed/simple;
-	bh=LI7vPSdSkJR6uJTu2bQt0dKtx5Z8FF8kYPyzhck8zoI=;
+	s=arc-20240116; t=1724762876; c=relaxed/simple;
+	bh=9tEouNA51z43LCLVflWg/9lAy+GYZyS6g17VcMAdXbw=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=aBPi/V1wocqXyWcDQLOkSFDtvmtQxsmbx/5Ka6u4sff31C5B0/GWKoAiW6OmLW5N+QzRRRuDpNMBUUzRrug2EB0dBp+i3rld/CdF6sNByVqK50Jdi46uJIFbuSzEYNjNB1KHuhgP5p3cCZcWJd6w2JGjR5W5xCFZWKf9uy6BO/g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=It++mg58; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=O3QXCqdjET5+6qECmNpaHWKuYrHnmi87l2T+IVYQ0o46e1A14SJ/wflMgYidqypt3kUa1eXScidYfMgpNIJDE7xl40NUa85PeIDMKhAVudPxGH7qPjMjhZehuxLA3b1TNwLdi+SJD6fuVJZGm7XELs35J66JZKsFA+AGCB0XxOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=NWBDdajh; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-112-93.bstnma.fios.verizon.net [173.48.112.93])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47RClcHW021452
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47RClcQ4021448
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Aug 2024 08:47:40 -0400
+	Tue, 27 Aug 2024 08:47:39 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1724762861; bh=oTYlK1YyIwI2rNA0zoIgoTS4jm/2IDp5tKAWA/G9+Hs=;
+	t=1724762860; bh=h3SDb6VQneSRFjXMKyLtXqVsh+UppbIVj+mvFf7itNE=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=It++mg58YPuVJ/jdxzuO8m4RKcKLC1RzF0AsNmS3eT76PhNRAls9iI8JkfHM14Cf4
-	 B10v7nZxm/El1zjGjt4k4qq9jGGtuiXCk7bQvMUFs79rPYGbYgNLfD4IF7DZpiuw3x
-	 fSSwnA4TkVXN/8eViHUesvdEoy1Bzhq7NEUzpkelCOgSIbNszhPCJcI+I93Sju6R3d
-	 cDjH2aTV+ke2jdWb1pLJZMNrYkWEXttWJQADGHozJ6XLuBalukC9zUJnfRckJFC9YD
-	 ADwUVHT4XvYJqNeILoo9s9kWukEqBKh08534Mamwbh33MkaEcm5XeR4HtwZ8Dbvz41
-	 1hnu6aHwcfTAA==
+	b=NWBDdajh5piwnLD95rkjR/RK9JwQXadjDSH7IT/C6Y57QvOGVkwFFmAOiBUkmW8Do
+	 xpOr0S7iM0S5cB07TZtipzafwxrQ4v2ifbsfN7zfkW0nOOuUqHZRENYhLGx6lOO5wE
+	 4RGBNUZFwCrn1pUcqtlkArxCeYRPQi0eqdF2yOz64ELHkkRN/GIYNTpynSSKvLFcMQ
+	 RD4IxwT5AHtW5u5YbbNJjHWyBg1XftPG8+EJthNgOezmOUiYsCI8gQ7KFU+kpNfJHv
+	 BSmNOyNsaDkzMoxV9wXGG1qbC5LNjwgimR1xcHtZajGiNJdXVYZ8yySJUbWlwSqMnN
+	 Ut/Rs0t2PhTQg==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id AF17C15C02C1; Tue, 27 Aug 2024 08:47:38 -0400 (EDT)
+	id B062215C02C2; Tue, 27 Aug 2024 08:47:38 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: adilger.kernel@dilger.ca, jack@suse.cz,
-        Zhihao Cheng <chengzhihao@huaweicloud.com>
+To: Jan Kara <jack@suse.cz>
 Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org, chengzhihao1@huawei.com,
-        yi.zhang@huawei.com
-Subject: Re: [PATCH] ext4: dax: Fix overflowing extents beyond inode size when partially writing
-Date: Tue, 27 Aug 2024 08:47:21 -0400
-Message-ID: <172476284024.635532.4541598386517901728.b4-ty@mit.edu>
+        Christian Brauner <brauner@kernel.org>, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] ext4: don't set SB_RDONLY after filesystem errors
+Date: Tue, 27 Aug 2024 08:47:22 -0400
+Message-ID: <172476284023.635532.9064427382024981891.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240809121532.2105494-1-chengzhihao@huaweicloud.com>
-References: <20240809121532.2105494-1-chengzhihao@huaweicloud.com>
+In-Reply-To: <20240805201241.27286-1-jack@suse.cz>
+References: <20240805201241.27286-1-jack@suse.cz>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -70,36 +68,25 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Fri, 09 Aug 2024 20:15:32 +0800, Zhihao Cheng wrote:
-> The dax_iomap_rw() does two things in each iteration: map written blocks
-> and copy user data to blocks. If the process is killed by user(See signal
-> handling in dax_iomap_iter()), the copied data will be returned and added
-> on inode size, which means that the length of written extents may exceed
-> the inode size, then fsck will fail. An example is given as:
-> 
-> dd if=/dev/urandom of=file bs=4M count=1
->  dax_iomap_rw
->   iomap_iter // round 1
->    ext4_iomap_begin
->     ext4_iomap_alloc // allocate 0~2M extents(written flag)
->   dax_iomap_iter // copy 2M data
->   iomap_iter // round 2
->    iomap_iter_advance
->     iter->pos += iter->processed // iter->pos = 2M
->    ext4_iomap_begin
->     ext4_iomap_alloc // allocate 2~4M extents(written flag)
->   dax_iomap_iter
->    fatal_signal_pending
->   done = iter->pos - iocb->ki_pos // done = 2M
->  ext4_handle_inode_extension
->   ext4_update_inode_size // inode size = 2M
+On Mon, 05 Aug 2024 22:12:41 +0200, Jan Kara wrote:
+> When the filesystem is mounted with errors=remount-ro, we were setting
+> SB_RDONLY flag to stop all filesystem modifications. We knew this misses
+> proper locking (sb->s_umount) and does not go through proper filesystem
+> remount procedure but it has been the way this worked since early ext2
+> days and it was good enough for catastrophic situation damage
+> mitigation. Recently, syzbot has found a way (see link) to trigger
+> warnings in filesystem freezing because the code got confused by
+> SB_RDONLY changing under its hands. Since these days we set
+> EXT4_FLAGS_SHUTDOWN on the superblock which is enough to stop all
+> filesystem modifications, modifying SB_RDONLY shouldn't be needed. So
+> stop doing that.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] ext4: dax: Fix overflowing extents beyond inode size when partially writing
-      commit: dda898d7ffe85931f9cca6d702a51f33717c501e
+[1/1] ext4: don't set SB_RDONLY after filesystem errors
+      commit: d3476f3dad4ad68ae5f6b008ea6591d1520da5d8
 
 Best regards,
 -- 
