@@ -1,60 +1,103 @@
-Return-Path: <linux-ext4+bounces-3920-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3921-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 88AF09613A3
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 18:07:18 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C3EB961522
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 19:10:10 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 40E8E283E36
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 16:07:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7C2D289E5B
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 17:10:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B211CC8A3;
-	Tue, 27 Aug 2024 16:07:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DABF21CF2B8;
+	Tue, 27 Aug 2024 17:08:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TOZinLr2"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="G8nRby7q";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zUUXx3j2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pDrsBI/x";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vb9+D3gh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 860DF64A;
-	Tue, 27 Aug 2024 16:07:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E76111CF2A4
+	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 17:08:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724774824; cv=none; b=hxAj3FvYcngmqvlIz781WWzVNThjXIOc/1/PBncUILSnl9vrOTVdc/OCoBP305fdgjti/lf179eW+8LpVE5iY5+18uhmQ1xHXqT9jTKDJiTAwe1W3f90RXuckc8jTDOoel7vLQn17yxYUjfiSyErdHpCMNu1rOCAMvQmz/t6q5A=
+	t=1724778502; cv=none; b=g3Q5oy2L6YZidJe7xLQd4ZH4y9/CCdPWfXrhUeSN5aAN0QBR8WqEsR02UOhr73KDD+1SKs4iFdJlJUVKSu/DqRNa4VJ+zrHpTJxK56M3R49iAZUngT/kKBNdKxB8/AKFXXE9UXKbolrVBkevWxHdsiSVT/reyeoLC3SGpUDAvzQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724774824; c=relaxed/simple;
-	bh=irhSr4GbFS7N4fmJ/q2uying4I3KUcEzRISTAGoDD8w=;
+	s=arc-20240116; t=1724778502; c=relaxed/simple;
+	bh=BYbyi5hQtQXP6EjhJcl5V4f9NkEvUl0qvwGAlF1XojQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VfPz2PG3ZFomQwfJDkFEx9QCAdVqB2AbKwdTWNHo3epTFf7ADY/zngebfB88M+ajVcVubuZCfb6Gcxr7c2JcycKek8UH+/SyJjwHgFH0lBcykIZLUBnwd4pEEE8ChdGOhZeczWosptGag1rcE0qveWGg7pdY8bpn14t/LwrGE7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TOZinLr2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C626C581B9;
-	Tue, 27 Aug 2024 16:07:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724774824;
-	bh=irhSr4GbFS7N4fmJ/q2uying4I3KUcEzRISTAGoDD8w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=TOZinLr2qYYMeGJckzyt3DQnD22ZMIKMwrbOv4W4T3AWq5RNzIvEKd3SMlFdm667u
-	 Ww/2lnawO3XJAs4chnspr9qn6rgQ668iTyTW5dy24Xk7J9muLyCxuB8MkMa+1BRCHd
-	 rj+sQ7esFUQWTw1POXeZV49gFabcu3woyGVpy6lvE6Ky4ea/zpmAZA2nnw+iwrt+Og
-	 Mmuf6bjpD3z/GL0sgA8GhEweIij+N2mFyLoLJLEut6hOS3Ryf1QYD0KlM+Si61ifvD
-	 TknzuBT2mAlneqqAgLtczHFVsqNdB3eOi6rxkkLXToIdBbuNKxHe0giuIPgKiqAA0Q
-	 E+bAZP0x0TzNQ==
-Date: Tue, 27 Aug 2024 09:07:03 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	Brian Foster <bfoster@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 6/6] xfs: refactor xfs_file_fallocate
-Message-ID: <20240827160703.GU865349@frogsfrogsfrogs>
-References: <20240827065123.1762168-1-hch@lst.de>
- <20240827065123.1762168-7-hch@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bcO6+JUfJty5ki+ab6AWW0ADnW94MCRTJmAEzhp1eq4YkRxMzGXMihiPA5pfOmmW6KNSLi1nKXMidcCwOw+ZwyiQ4ls520dnlEgNa5OQKUxZgErBbVl69nxefSuJRmMrrx68U1K22IZ+cX41gnxSSB/k132L/+x65OADhCrTMqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=G8nRby7q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zUUXx3j2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pDrsBI/x; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vb9+D3gh; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id CC01C1FB7B;
+	Tue, 27 Aug 2024 17:08:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724778498; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ri0EzA4SfeP7fEjbPQYnGJtMQ8yxkajqv84uxnKNnwY=;
+	b=G8nRby7qrNkx4z1Ud5R3aEF6LdXIt0dUVJF1dl8F85wMlcO69J+yFONE4f1AfDuG9sOcfC
+	ZyfTcKkbJGP1sL89OoZWMt+iEu3lVwfdhlCJt4Kj4F/Rbhhn8IgfBW0rXzYGAW/cD+Uh/V
+	Gj4kxdUt+sp1jN++o4H3uL+OItMm5Nw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724778498;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ri0EzA4SfeP7fEjbPQYnGJtMQ8yxkajqv84uxnKNnwY=;
+	b=zUUXx3j2JeMOPS9BMPZ89ZEOpMDW70xhMtDKbSerk3qFjJbICVisZYeL8n9JZtr09Vd8+M
+	wjYKP0onb7zOLjDg==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="pDrsBI/x";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=vb9+D3gh
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1724778497; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ri0EzA4SfeP7fEjbPQYnGJtMQ8yxkajqv84uxnKNnwY=;
+	b=pDrsBI/xOblZn/yaoK/kC1mmY9uwmI6ltc302TAc9oF9EEGBLlyYsrQM4rbOhk21++B85J
+	QiUAU8s57hhRMjrN0tV69I5R8MLoQh3aj6+Mo6DOmN8BmF4DJgfz+yf30C1UmScpdigJia
+	3/JR07EynFExbdatbyM0kTwBQK3EqzM=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1724778497;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ri0EzA4SfeP7fEjbPQYnGJtMQ8yxkajqv84uxnKNnwY=;
+	b=vb9+D3gheNA+7ohXK3xoYZZXLmFi+SLl8E/PwPhswCjRgfXKvIkmejsSBimuE7gakXHVZ8
+	5idRSoIuSdbGesBg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B38C213724;
+	Tue, 27 Aug 2024 17:08:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id eXrHKwEIzmZ6RQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 27 Aug 2024 17:08:17 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 56B54A0968; Tue, 27 Aug 2024 19:08:13 +0200 (CEST)
+Date: Tue, 27 Aug 2024 19:08:13 +0200
+From: Jan Kara <jack@suse.cz>
+To: yangerkun <yangerkun@huaweicloud.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+	linux-ext4@vger.kernel.org, yangerkun@huawei.com,
+	chengzhihao1@huawei.com
+Subject: Re: [PATCH 2/2] ext4: dax: keep orphan list before truncate overflow
+ allocated blocks
+Message-ID: <20240827170813.twxnsgkqp2vraavz@quack3>
+References: <20240820140657.3685287-1-yangerkun@huaweicloud.com>
+ <20240820140657.3685287-2-yangerkun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,388 +106,156 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240827065123.1762168-7-hch@lst.de>
+In-Reply-To: <20240820140657.3685287-2-yangerkun@huaweicloud.com>
+X-Rspamd-Queue-Id: CC01C1FB7B
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[7];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	TO_DN_SOME(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-On Tue, Aug 27, 2024 at 08:50:50AM +0200, Christoph Hellwig wrote:
-> Refactor xfs_file_fallocate into separate helpers for each mode,
-> two factors for i_size handling and a single switch statement over the
-> supported modes.
+On Tue 20-08-24 22:06:57, yangerkun wrote:
+> From: yangerkun <yangerkun@huawei.com>
+
+Thanks for debugging this. Couple of spelling fixes first:
+ 
+> Any extended write for ext4 requires the inode to be placed on the
+      ^^^ extending
+
+> orphan list before the actual write. In addition, the inode can be
+> actually removed from the orphan list only after all writes are
+> completed. Otherwise, those overcommitted blocks (If the allocated
+	     ^^ I'd phrase this: Otherwise we'd leave allocated blocks
+beyond i_disksize if we could not copy all the data into allocated block
+and e2fsck would complain.
+
+> blocks are not written due to certain reasons, the inode size does not
+> exceed the offset of these blocks) The leak status is always retained,
+> and fsck reports an alarm for this scenario.
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Currently, the dio and buffer IO comply with this logic. However, the
+			 ^^ buffered
 
-Much less complicated now! :)
+BTW: The only reason why direct IO doesn't have this problem is because
+we don't do short writes for direct IO. We either submit all or we return
+error.
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+> dax write will removed the inode from orphan list since
+		  ^^^ remove           ^ the orphan ...
 
---D
+> ext4_handle_inode_extension is unconditionally called during extend
+								^^ extending
 
+> write. Fix it with this patch. We open the code from
+> ext4_handle_inode_extension since we want to keep the blocks valid
+> has been allocated and write success.
+> 
+> Signed-off-by: yangerkun <yangerkun@huawei.com>
 > ---
->  fs/xfs/xfs_file.c | 330 +++++++++++++++++++++++++++++-----------------
->  1 file changed, 208 insertions(+), 122 deletions(-)
+>  fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
+>  1 file changed, 31 insertions(+), 4 deletions(-)
 > 
-> diff --git a/fs/xfs/xfs_file.c b/fs/xfs/xfs_file.c
-> index 489bc1b173c268..f6e4912769a0d5 100644
-> --- a/fs/xfs/xfs_file.c
-> +++ b/fs/xfs/xfs_file.c
-> @@ -852,6 +852,192 @@ static inline bool xfs_file_sync_writes(struct file *filp)
->  	return false;
->  }
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index be061bb64067..fd8597eef75e 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -628,11 +628,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  static ssize_t
+>  ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  {
+> -	ssize_t ret;
+> +	ssize_t ret, written;
+>  	size_t count;
+>  	loff_t offset;
+>  	handle_t *handle;
+>  	bool extend = false;
+> +	bool need_trunc = true;
+>  	struct inode *inode = file_inode(iocb->ki_filp);
 >  
-> +static int
-> +xfs_falloc_newsize(
-> +	struct file		*file,
-> +	int			mode,
-> +	loff_t			offset,
-> +	loff_t			len,
-> +	loff_t			*new_size)
-> +{
-> +	struct inode		*inode = file_inode(file);
-> +
-> +	if ((mode & FALLOC_FL_KEEP_SIZE) || offset + len <= i_size_read(inode))
-> +		return 0;
-> +	*new_size = offset + len;
-> +	return inode_newsize_ok(inode, *new_size);
-> +}
-> +
-> +static int
-> +xfs_falloc_setsize(
-> +	struct file		*file,
-> +	loff_t			new_size)
-> +{
-> +	struct iattr iattr = {
-> +		.ia_valid	= ATTR_SIZE,
-> +		.ia_size	= new_size,
-> +	};
-> +
-> +	if (!new_size)
-> +		return 0;
-> +	return xfs_vn_setattr_size(file_mnt_idmap(file), file_dentry(file),
-> +			&iattr);
-> +}
-> +
-> +static int
-> +xfs_falloc_collapse_range(
-> +	struct file		*file,
-> +	loff_t			offset,
-> +	loff_t			len)
-> +{
-> +	struct inode		*inode = file_inode(file);
-> +	loff_t			new_size = i_size_read(inode) - len;
-> +	int			error;
-> +
-> +	if (!xfs_is_falloc_aligned(XFS_I(inode), offset, len))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * There is no need to overlap collapse range with EOF, in which case it
-> +	 * is effectively a truncate operation
-> +	 */
-> +	if (offset + len >= i_size_read(inode))
-> +		return -EINVAL;
-> +
-> +	error = xfs_collapse_file_space(XFS_I(inode), offset, len);
-> +	if (error)
-> +		return error;
-> +	return xfs_falloc_setsize(file, new_size);
-> +}
-> +
-> +static int
-> +xfs_falloc_insert_range(
-> +	struct file		*file,
-> +	loff_t			offset,
-> +	loff_t			len)
-> +{
-> +	struct inode		*inode = file_inode(file);
-> +	loff_t			isize = i_size_read(inode);
-> +	int			error;
-> +
-> +	if (!xfs_is_falloc_aligned(XFS_I(inode), offset, len))
-> +		return -EINVAL;
-> +
-> +	/*
-> +	 * New inode size must not exceed ->s_maxbytes, accounting for
-> +	 * possible signed overflow.
-> +	 */
-> +	if (inode->i_sb->s_maxbytes - isize < len)
-> +		return -EFBIG;
-> +
-> +	/* Offset should be less than i_size */
-> +	if (offset >= isize)
-> +		return -EINVAL;
-> +
-> +	error = xfs_falloc_setsize(file, isize + len);
-> +	if (error)
-> +		return error;
-> +
-> +	/*
-> +	 * Perform hole insertion now that the file size has been updated so
-> +	 * that if we crash during the operation we don't leave shifted extents
-> +	 * past EOF and hence losing access to the data that is contained within
-
-"...and hence lose access to the data..."
-
-> +	 * them.
-> +	 */
-> +	return xfs_insert_file_space(XFS_I(inode), offset, len);
-> +}
-> +
-> +/*
-> + * Punch a hole and prealloc the range.  We use a hole punch rather than
-> + * unwritten extent conversion for two reasons:
-> + *
-> + *   1.) Hole punch handles partial block zeroing for us.
-> + *   2.) If prealloc returns ENOSPC, the file range is still zero-valued by
-> + *	 virtue of the hole punch.
-> + */
-> +static int
-> +xfs_falloc_zero_range(
-> +	struct file		*file,
-> +	int			mode,
-> +	loff_t			offset,
-> +	loff_t			len)
-> +{
-> +	struct inode		*inode = file_inode(file);
-> +	unsigned int		blksize = i_blocksize(inode);
-> +	loff_t			new_size = 0;
-> +	int			error;
-> +
-> +	trace_xfs_zero_file_space(XFS_I(inode));
-> +
-> +	error = xfs_falloc_newsize(file, mode, offset, len, &new_size);
-> +	if (error)
-> +		return error;
-> +
-> +	error = xfs_free_file_space(XFS_I(inode), offset, len);
-> +	if (error)
-> +		return error;
-> +
-> +	len = round_up(offset + len, blksize) - round_down(offset, blksize);
-> +	offset = round_down(offset, blksize);
-> +	error = xfs_alloc_file_space(XFS_I(inode), offset, len);
-> +	if (error)
-> +		return error;
-> +	return xfs_falloc_setsize(file, new_size);
-> +}
-> +
-> +static int
-> +xfs_falloc_unshare_range(
-> +	struct file		*file,
-> +	int			mode,
-> +	loff_t			offset,
-> +	loff_t			len)
-> +{
-> +	struct inode		*inode = file_inode(file);
-> +	loff_t			new_size = 0;
-> +	int			error;
-> +
-> +	error = xfs_falloc_newsize(file, mode, offset, len, &new_size);
-> +	if (error)
-> +		return error;
-> +
-> +	error = xfs_reflink_unshare(XFS_I(inode), offset, len);
-> +	if (error)
-> +		return error;
-> +
-> +	error = xfs_alloc_file_space(XFS_I(inode), offset, len);
-> +	if (error)
-> +		return error;
-> +	return xfs_falloc_setsize(file, new_size);
-> +}
-> +
-> +static int
-> +xfs_falloc_allocate_range(
-> +	struct file		*file,
-> +	int			mode,
-> +	loff_t			offset,
-> +	loff_t			len)
-> +{
-> +	struct inode		*inode = file_inode(file);
-> +	loff_t			new_size = 0;
-> +	int			error;
-> +
-> +	/*
-> +	 * If always_cow mode we can't use preallocations and thus should not
-> +	 * create them.
-> +	 */
-> +	if (xfs_is_always_cow_inode(XFS_I(inode)))
-> +		return -EOPNOTSUPP;
-> +
-> +	error = xfs_falloc_newsize(file, mode, offset, len, &new_size);
-> +	if (error)
-> +		return error;
-> +
-> +	error = xfs_alloc_file_space(XFS_I(inode), offset, len);
-> +	if (error)
-> +		return error;
-> +	return xfs_falloc_setsize(file, new_size);
-> +}
-> +
->  #define	XFS_FALLOC_FL_SUPPORTED						\
->  		(FALLOC_FL_KEEP_SIZE | FALLOC_FL_PUNCH_HOLE |		\
->  		 FALLOC_FL_COLLAPSE_RANGE | FALLOC_FL_ZERO_RANGE |	\
-> @@ -868,8 +1054,6 @@ xfs_file_fallocate(
->  	struct xfs_inode	*ip = XFS_I(inode);
->  	long			error;
->  	uint			iolock = XFS_IOLOCK_EXCL | XFS_MMAPLOCK_EXCL;
-> -	loff_t			new_size = 0;
-> -	bool			do_file_insert = false;
+>  	if (iocb->ki_flags & IOCB_NOWAIT) {
+> @@ -668,10 +669,36 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
 >  
->  	if (!S_ISREG(inode->i_mode))
->  		return -EINVAL;
-> @@ -894,129 +1078,31 @@ xfs_file_fallocate(
->  	if (error)
->  		goto out_unlock;
+>  	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
 >  
-> -	if (mode & FALLOC_FL_PUNCH_HOLE) {
-> +	switch (mode & FALLOC_FL_MODE_MASK) {
-> +	case FALLOC_FL_PUNCH_HOLE:
->  		error = xfs_free_file_space(ip, offset, len);
-> -		if (error)
-> -			goto out_unlock;
-> -	} else if (mode & FALLOC_FL_COLLAPSE_RANGE) {
-> -		if (!xfs_is_falloc_aligned(ip, offset, len)) {
-> -			error = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -
-> -		/*
-> -		 * There is no need to overlap collapse range with EOF,
-> -		 * in which case it is effectively a truncate operation
-> -		 */
-> -		if (offset + len >= i_size_read(inode)) {
-> -			error = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -
-> -		new_size = i_size_read(inode) - len;
-> -
-> -		error = xfs_collapse_file_space(ip, offset, len);
-> -		if (error)
-> -			goto out_unlock;
-> -	} else if (mode & FALLOC_FL_INSERT_RANGE) {
-> -		loff_t		isize = i_size_read(inode);
-> -
-> -		if (!xfs_is_falloc_aligned(ip, offset, len)) {
-> -			error = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -
-> -		/*
-> -		 * New inode size must not exceed ->s_maxbytes, accounting for
-> -		 * possible signed overflow.
-> -		 */
-> -		if (inode->i_sb->s_maxbytes - isize < len) {
-> -			error = -EFBIG;
-> -			goto out_unlock;
-> -		}
-> -		new_size = isize + len;
-> -
-> -		/* Offset should be less than i_size */
-> -		if (offset >= isize) {
-> -			error = -EINVAL;
-> -			goto out_unlock;
-> -		}
-> -		do_file_insert = true;
-> -	} else {
-> -		if (!(mode & FALLOC_FL_KEEP_SIZE) &&
-> -		    offset + len > i_size_read(inode)) {
-> -			new_size = offset + len;
-> -			error = inode_newsize_ok(inode, new_size);
-> -			if (error)
-> -				goto out_unlock;
-> -		}
-> -
-> -		if (mode & FALLOC_FL_ZERO_RANGE) {
-> -			/*
-> -			 * Punch a hole and prealloc the range.  We use a hole
-> -			 * punch rather than unwritten extent conversion for two
-> -			 * reasons:
-> -			 *
-> -			 *   1.) Hole punch handles partial block zeroing for us.
-> -			 *   2.) If prealloc returns ENOSPC, the file range is
-> -			 *       still zero-valued by virtue of the hole punch.
-> -			 */
-> -			unsigned int blksize = i_blocksize(inode);
-> -
-> -			trace_xfs_zero_file_space(ip);
-> -
-> -			error = xfs_free_file_space(ip, offset, len);
-> -			if (error)
-> -				goto out_unlock;
-> -
-> -			len = round_up(offset + len, blksize) -
-> -			      round_down(offset, blksize);
-> -			offset = round_down(offset, blksize);
-> -		} else if (mode & FALLOC_FL_UNSHARE_RANGE) {
-> -			error = xfs_reflink_unshare(ip, offset, len);
-> -			if (error)
-> -				goto out_unlock;
-> -		} else {
-> -			/*
-> -			 * If always_cow mode we can't use preallocations and
-> -			 * thus should not create them.
-> -			 */
-> -			if (xfs_is_always_cow_inode(ip)) {
-> -				error = -EOPNOTSUPP;
-> -				goto out_unlock;
-> -			}
-> -		}
-> -
-> -		error = xfs_alloc_file_space(ip, offset, len);
-> -		if (error)
-> -			goto out_unlock;
-> -	}
-> -
-> -	/* Change file size if needed */
-> -	if (new_size) {
-> -		struct iattr iattr;
-> -
-> -		iattr.ia_valid = ATTR_SIZE;
-> -		iattr.ia_size = new_size;
-> -		error = xfs_vn_setattr_size(file_mnt_idmap(file),
-> -					    file_dentry(file), &iattr);
-> -		if (error)
-> -			goto out_unlock;
-> -	}
-> -
-> -	/*
-> -	 * Perform hole insertion now that the file size has been
-> -	 * updated so that if we crash during the operation we don't
-> -	 * leave shifted extents past EOF and hence losing access to
-> -	 * the data that is contained within them.
-> -	 */
-> -	if (do_file_insert) {
-> -		error = xfs_insert_file_space(ip, offset, len);
-> -		if (error)
-> -			goto out_unlock;
-> +		break;
-> +	case FALLOC_FL_COLLAPSE_RANGE:
-> +		error = xfs_falloc_collapse_range(file, offset, len);
-> +		break;
-> +	case FALLOC_FL_INSERT_RANGE:
-> +		error = xfs_falloc_insert_range(file, offset, len);
-> +		break;
-> +	case FALLOC_FL_ZERO_RANGE:
-> +		error = xfs_falloc_zero_range(file, mode, offset, len);
-> +		break;
-> +	case FALLOC_FL_UNSHARE_RANGE:
-> +		error = xfs_falloc_unshare_range(file, mode, offset, len);
-> +		break;
-> +	case FALLOC_FL_ALLOCATE_RANGE:
-> +		error = xfs_falloc_allocate_range(file, mode, offset, len);
-> +		break;
-> +	default:
-> +		error = -EOPNOTSUPP;
-> +		break;
+> -	if (extend) {
+> -		ret = ext4_handle_inode_extension(inode, offset, ret);
+> -		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
+> +	if (!extend)
+> +		goto out;
+> +
+> +	if (ret <= 0)
+> +		goto err_trunc;
+> +
+> +	written = ret;
+> +	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+> +	if (IS_ERR(handle)) {
+> +		ret = PTR_ERR(handle);
+> +		goto err_trunc;
 >  	}
->  
-> -	if (xfs_file_sync_writes(file))
-> +	if (!error && xfs_file_sync_writes(file))
->  		error = xfs_log_force_inode(ip);
->  
->  out_unlock:
-> -- 
-> 2.43.0
-> 
-> 
+> +
+> +	if (ext4_update_inode_size(inode, offset + written)) {
+> +		ret = ext4_mark_inode_dirty(handle, inode);
+> +		if (unlikely(ret)) {
+> +			ext4_journal_stop(handle);
+> +			goto err_trunc;
+> +		}
+> +	}
+> +
+> +	if (written == count)
+> +		need_trunc = false;
+> +
+> +	if (inode->i_nlink)
+> +		ext4_orphan_del(handle, inode);
+
+Why did you keep ext4_orphan_del() here? I thought the whole point of this
+patch is to avoid it? In fact, rather then opencoding
+ext4_handle_inode_extension() I'd add argument to
+ext4_handle_inode_extension() like:
+
+ext4_handle_inode_extension(inode, pos, written, allocated)
+
+and remove inode from the orphan list only if written == allocated. The
+call site in ext4_dio_write_end_io() would call:
+
+	/*
+	 * For DIO we don't do partial writes so we must have submitted all
+	 * that was allocated.
+	 */
+	return ext4_handle_inode_extension(inode, pos, size, size);
+
+and the call site in ext4_dax_write_iter() would call:
+
+	ret = ext4_handle_inode_extension(inode, offset, ret, count);
+
+What do you think?
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
