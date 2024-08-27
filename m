@@ -1,96 +1,211 @@
-Return-Path: <linux-ext4+bounces-3901-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3915-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D479960AE9
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 14:48:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A246D960F20
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 16:56:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BF205283D45
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 12:48:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27FA21F2110C
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 14:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 868A71BF329;
-	Tue, 27 Aug 2024 12:47:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B57051C8FD8;
+	Tue, 27 Aug 2024 14:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="kISk3PzH"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gGtFWehd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43E2E1BCA18
-	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 12:47:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FA341C5792;
+	Tue, 27 Aug 2024 14:55:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724762871; cv=none; b=OlKbHBMezW9ar4m8e9WffJ/FY1b0V614XozFYP+XNVxhXgNRF8HMpbo+WRLQNLQKBuj6goxDZgFkELY43c1Dp0874k0vgefBFezX7EvEGDrk9W8f36KywgRWi+0q+sUEzZKqjotIN/CYc34s2k0PnQ4/s6Ius3nTk0lOKEIou8E=
+	t=1724770503; cv=none; b=Ti1/kyZCaZfQU/40VTZhQr78TVtp2PgW5FAXWadCMK9Y1+f+4rEz3YaNCCx8GRc/OfraMbAWiElGmALY5X9tWPZdhp1dyWZuKxiOnVVJ8mdd8/OQkwMUw4BrLndS7NrahRl63kEnam2bZSTBXx9kQJg9oPh7FnsHRXCJIAML5Nc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724762871; c=relaxed/simple;
-	bh=lMUQriP8UMLq/T6yewTOmusJHQkjdcZJHucQ45PVsDI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=NnExdh02GJFgvTYylAeo/KnWj+dMTsofbHKOtPfaFn01Cn2z470NQxE13YcUsICxxzUQEc2G/t6u4s5L4R7ll69hNgBzDaS7MQiBC4IOr7HtxwTr2i2ZEj22MP2jb96YjkMQCHgYPktMjAZdQK+R9aeYh+hRYPa04khcQSbGAJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=kISk3PzH; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-112-93.bstnma.fios.verizon.net [173.48.112.93])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47RClftO021551
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 27 Aug 2024 08:47:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1724762863; bh=A6/ygQzAVqdVJxlGWdzzmumNiZui9LuRbVG9Wyw27Vk=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=kISk3PzH6GEdxE63kKM36FJhh5xQMG7BXgCiu5sFCeklJDl4HKzUnDRkMMTbDOKqf
-	 CRaWqVNtY7OjES3rKmXPpWa9TREWwPI5yD6EaULvBptEmYo9SW8MGAHT8g+KvVsvlL
-	 N0ezbpVBGxHQML4WKrC0+oU2gMMcfKeN2GHT7+mZLUoRM+mvqWAtlOGBpXx9JucYhZ
-	 UljYlygPyW97Q/MLpUuHwLApx5++59bZw2UgVN+P02FAgFx0zWg7PtZaHyy464y87c
-	 0ATiPUfN4QR2woWwJQA5nKDBkD11tbMpKMdwtupwEKIeiOKDyhKKvxtfTDqRr3+URW
-	 I4rh55eT7wkEA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id C6D7E15C1D08; Tue, 27 Aug 2024 08:47:38 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org,
-        =?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>
-Subject: Re: [PATCH] kernel/ext4: nested locking for xattr inode
-Date: Tue, 27 Aug 2024 08:47:34 -0400
-Message-ID: <172476284023.635532.2188826848588011043.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240801143827.19135-1-wojciech.gladysz@infogain.com>
-References: <20240801143827.19135-1-wojciech.gladysz@infogain.com>
+	s=arc-20240116; t=1724770503; c=relaxed/simple;
+	bh=vj2+uX4DyJ0X9AMUJ15fS1HOXBIX9BaNH5KrRvHAu/U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eyP7pQtCpTZz6w6aNNXGl0RMRnW8jd0ZxiaKljIyuZ2QHl04BdSUdoIwpacwh3txjGHd5cEUaQLDdvBG9Pj2N1m1H4zyWhmh5YGPAIhzmcOQbYK/pV1CdaQdGoMNOHeuyMqoAZfzGpFGHwqXxfHiBss0oKuytqLhmt+umhx6mkY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gGtFWehd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E225DC4E68F;
+	Tue, 27 Aug 2024 14:55:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1724770503;
+	bh=vj2+uX4DyJ0X9AMUJ15fS1HOXBIX9BaNH5KrRvHAu/U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gGtFWehd0bTpb75y/zS5e/LmeuBMzOVYKNzaCAsDKitMuRLwNVLEAt25mBRWrVGsM
+	 W8dhQav+624/E0F9V5jNvGsHADmHXHvYFGmEluXyqPvNhTAtwsk7Kq67xW5iYEudFx
+	 HFSAmeFRSvecEbCBrmXM+W55YADafc2pU4Jvx62hBlgNyTLrA0bAb2cp3YGNYrVi/y
+	 KBXaqkjAYoMjAuG7krhZkXahXkjjOFwrMQa5164XsM9IP2U7EdhNaIEhhs0lhK61s/
+	 yqFhyIuw+5/saH+J+LwETZouClWe1j8nsbPXhyTNDNa3uHWJQdzo3IvkMxB4zOkP19
+	 HlwukIekMFF5A==
+Date: Tue, 27 Aug 2024 07:55:02 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	Brian Foster <bfoster@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/6] fs: sort out the fallocate mode vs flag mess
+Message-ID: <20240827145502.GP865349@frogsfrogsfrogs>
+References: <20240827065123.1762168-1-hch@lst.de>
+ <20240827065123.1762168-4-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240827065123.1762168-4-hch@lst.de>
 
-
-On Thu, 01 Aug 2024 16:38:27 +0200, Wojciech Gładysz wrote:
-> Add nested locking with I_MUTEX_XATTR subclass to avoid lockdep warning
-> while handling xattr inode on file open syscall at ext4_xattr_inode_iget.
+On Tue, Aug 27, 2024 at 08:50:47AM +0200, Christoph Hellwig wrote:
+> The fallocate system call takes a mode argument, but that argument
+> contains a wild mix of exclusive modes and an optional flags.
 > 
-> Backtrace
-> EXT4-fs (loop0): Ignoring removed oldalloc option
-> ======================================================
-> WARNING: possible circular locking dependency detected
-> 5.10.0-syzkaller #0 Not tainted
-> ------------------------------------------------------
-> syz-executor543/2794 is trying to acquire lock:
-> ffff8880215e1a48 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:782 [inline]
-> ffff8880215e1a48 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}, at: ext4_xattr_inode_iget+0x42a/0x5c0 fs/ext4/xattr.c:425
+> Replace FALLOC_FL_SUPPORTED_MASK with FALLOC_FL_MODE_MASK, which excludes
+> the optional flag bit, so that we can use switch statement on the value
+> to easily enumerate the cases while getting the check for duplicate modes
+> for free.
 > 
-> [...]
+> To make this (and in the future the file system implementations) more
+> readable also add a symbolic name for the 0 mode used to allocate blocks.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Applied, thanks!
+For a brief moment I wondered if it were possible to set more than one
+mode bit but it looks like none of the implementations support that kind
+of wackiness (e.g. COLLAPSE|INSERT_RANGE for magicks!) so we're good:
 
-[1/1] kernel/ext4: nested locking for xattr inode
-      commit: d1bc560e9a9c78d0b2314692847fc8661e0aeb99
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
 
-Best regards,
--- 
-Theodore Ts'o <tytso@mit.edu>
+--D
+
+> ---
+>  fs/open.c                   | 51 ++++++++++++++++++-------------------
+>  include/linux/falloc.h      | 18 ++++++++-----
+>  include/uapi/linux/falloc.h |  1 +
+>  3 files changed, 38 insertions(+), 32 deletions(-)
+> 
+> diff --git a/fs/open.c b/fs/open.c
+> index 22adbef7ecc2a6..daf1b55ca8180b 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -252,40 +252,39 @@ int vfs_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+>  	if (offset < 0 || len <= 0)
+>  		return -EINVAL;
+>  
+> -	/* Return error if mode is not supported */
+> -	if (mode & ~FALLOC_FL_SUPPORTED_MASK)
+> +	if (mode & ~(FALLOC_FL_MODE_MASK | FALLOC_FL_KEEP_SIZE))
+>  		return -EOPNOTSUPP;
+>  
+> -	/* Punch hole and zero range are mutually exclusive */
+> -	if ((mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE)) ==
+> -	    (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE))
+> -		return -EOPNOTSUPP;
+> -
+> -	/* Punch hole must have keep size set */
+> -	if ((mode & FALLOC_FL_PUNCH_HOLE) &&
+> -	    !(mode & FALLOC_FL_KEEP_SIZE))
+> +	/*
+> +	 * Modes are exclusive, even if that is not obvious from the encoding
+> +	 * as bit masks and the mix with the flag in the same namespace.
+> +	 *
+> +	 * To make things even more complicated, FALLOC_FL_ALLOCATE_RANGE is
+> +	 * encoded as no bit set.
+> +	 */
+> +	switch (mode & FALLOC_FL_MODE_MASK) {
+> +	case FALLOC_FL_ALLOCATE_RANGE:
+> +	case FALLOC_FL_UNSHARE_RANGE:
+> +	case FALLOC_FL_ZERO_RANGE:
+> +		break;
+> +	case FALLOC_FL_PUNCH_HOLE:
+> +		if (!(mode & FALLOC_FL_KEEP_SIZE))
+> +			return -EOPNOTSUPP;
+> +		break;
+> +	case FALLOC_FL_COLLAPSE_RANGE:
+> +	case FALLOC_FL_INSERT_RANGE:
+> +		if (mode & FALLOC_FL_KEEP_SIZE)
+> +			return -EOPNOTSUPP;
+> +		break;
+> +	default:
+>  		return -EOPNOTSUPP;
+> -
+> -	/* Collapse range should only be used exclusively. */
+> -	if ((mode & FALLOC_FL_COLLAPSE_RANGE) &&
+> -	    (mode & ~FALLOC_FL_COLLAPSE_RANGE))
+> -		return -EINVAL;
+> -
+> -	/* Insert range should only be used exclusively. */
+> -	if ((mode & FALLOC_FL_INSERT_RANGE) &&
+> -	    (mode & ~FALLOC_FL_INSERT_RANGE))
+> -		return -EINVAL;
+> -
+> -	/* Unshare range should only be used with allocate mode. */
+> -	if ((mode & FALLOC_FL_UNSHARE_RANGE) &&
+> -	    (mode & ~(FALLOC_FL_UNSHARE_RANGE | FALLOC_FL_KEEP_SIZE)))
+> -		return -EINVAL;
+> +	}
+>  
+>  	if (!(file->f_mode & FMODE_WRITE))
+>  		return -EBADF;
+>  
+>  	/*
+> -	 * We can only allow pure fallocate on append only files
+> +	 * On append-only files only space preallocation is supported.
+>  	 */
+>  	if ((mode & ~FALLOC_FL_KEEP_SIZE) && IS_APPEND(inode))
+>  		return -EPERM;
+> diff --git a/include/linux/falloc.h b/include/linux/falloc.h
+> index f3f0b97b167579..3f49f3df6af5fb 100644
+> --- a/include/linux/falloc.h
+> +++ b/include/linux/falloc.h
+> @@ -25,12 +25,18 @@ struct space_resv {
+>  #define FS_IOC_UNRESVSP64	_IOW('X', 43, struct space_resv)
+>  #define FS_IOC_ZERO_RANGE	_IOW('X', 57, struct space_resv)
+>  
+> -#define	FALLOC_FL_SUPPORTED_MASK	(FALLOC_FL_KEEP_SIZE |		\
+> -					 FALLOC_FL_PUNCH_HOLE |		\
+> -					 FALLOC_FL_COLLAPSE_RANGE |	\
+> -					 FALLOC_FL_ZERO_RANGE |		\
+> -					 FALLOC_FL_INSERT_RANGE |	\
+> -					 FALLOC_FL_UNSHARE_RANGE)
+> +/*
+> + * Mask of all supported fallocate modes.  Only one can be set at a time.
+> + *
+> + * In addition to the mode bit, the mode argument can also encode flags.
+> + * FALLOC_FL_KEEP_SIZE is the only supported flag so far.
+> + */
+> +#define FALLOC_FL_MODE_MASK	(FALLOC_FL_ALLOCATE_RANGE |	\
+> +				 FALLOC_FL_PUNCH_HOLE |		\
+> +				 FALLOC_FL_COLLAPSE_RANGE |	\
+> +				 FALLOC_FL_ZERO_RANGE |		\
+> +				 FALLOC_FL_INSERT_RANGE |	\
+> +				 FALLOC_FL_UNSHARE_RANGE)
+>  
+>  /* on ia32 l_start is on a 32-bit boundary */
+>  #if defined(CONFIG_X86_64)
+> diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
+> index 51398fa57f6cdf..5810371ed72bbd 100644
+> --- a/include/uapi/linux/falloc.h
+> +++ b/include/uapi/linux/falloc.h
+> @@ -2,6 +2,7 @@
+>  #ifndef _UAPI_FALLOC_H_
+>  #define _UAPI_FALLOC_H_
+>  
+> +#define FALLOC_FL_ALLOCATE_RANGE 0x00 /* allocate range */
+>  #define FALLOC_FL_KEEP_SIZE	0x01 /* default is extend size */
+>  #define FALLOC_FL_PUNCH_HOLE	0x02 /* de-allocates range */
+>  #define FALLOC_FL_NO_HIDE_STALE	0x04 /* reserved codepoint */
+> -- 
+> 2.43.0
+> 
+> 
 
