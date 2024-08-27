@@ -1,126 +1,86 @@
-Return-Path: <linux-ext4+bounces-3892-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3893-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26CA9600FE
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 07:18:06 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B25E96025D
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 08:51:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D4A511C211B6
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 05:18:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04DACB20DA5
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 06:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E5C077113;
-	Tue, 27 Aug 2024 05:17:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C33014D2B3;
+	Tue, 27 Aug 2024 06:51:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r0klwJA0"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="wy7vG6Xq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8B07171AF
-	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 05:17:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EC333A1C4;
+	Tue, 27 Aug 2024 06:51:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724735878; cv=none; b=GtVU6ibcgKrTcMLFtiGZjKdVsmY8AZUzJOLxR9q870hEx4GdUIwSBMAo6FMbszYJXc0wGlsH9VUwNFaa7nJsF0b/gAAgul8r3yo6dy6fluFFYfLOvaT7G5bHi6O1+1zAREEnhYragVaNwEzsw1u/aPzFvW7hj1eecMQ8APlEMxM=
+	t=1724741492; cv=none; b=rtM93CTwBAT2cftlMOVs0MBNfA1TP9v/ACmTYVzhJWjDZ169l7h8dWC3NhKFwJiGhtkQdHNS7UQ2c+xMtOn6YII6dOIckvQLkoc9gCrDq1oLtJMrJbOoJBjNYSLvRFIAFTj2tq96OeKNiSMVEVq/GvjvtWE/orpQaaUBD4POYV8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724735878; c=relaxed/simple;
-	bh=Ki3Gjw0krm9K6Xqe4VvFAyRuY2zwu0m3u1SFWQ3WuvE=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=JaT1i6olCo1zDwLISWg0dHtiX6faLQprOc1ZVJHsEOSSUDbS9CGGCw5PZk0K2FnGhMJ5ytk2rFf2tGh7LBfcmPR9JIs3/3IC05xWAhGFDMg3Z/qK0CYNvgvHfSKx3QMk5ZJ9LXwBPGJGZcXsPWYobBtPdPHgSt+QwVWctim/wOQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r0klwJA0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 524C8C8B7A8
-	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 05:17:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1724735878;
-	bh=Ki3Gjw0krm9K6Xqe4VvFAyRuY2zwu0m3u1SFWQ3WuvE=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=r0klwJA08QhgaWFGTStYVL8dsGbqmkno9Yaiu/3MerN7FaS/EvNNGTsYU1sZihOpc
-	 cF55z8CT5y1t3SNavqDdGQxjuaQsxBTwD4pJIcrjtREQtph/KGL16T7+4KubuWUa1L
-	 1epidvEpZ/3xfG8OQnSXqLto+iSqHQVL+jOmzo6XDlloP0fobQa8m8O5+qShvFF/Dq
-	 X1wZQGa5kKjWcs0djIRWLaIC2hH0lrZUo4QAu8iBlv0/eFliAR8AqHgPaw6vY75f/+
-	 C18xfB0C2MQY6MUzKbXiSYQRZqvBnTTWrll0EGTyKbrSxjuPg9d+cCGHEgolx1Ekjj
-	 mtVM/R5SfdIMw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 43A9BC53BC0; Tue, 27 Aug 2024 05:17:58 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 219200] update from 6.11.0-rc1 to 6.11.0-rc5 causes file system
- check every boot
-Date: Tue, 27 Aug 2024 05:17:58 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext2@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext2
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: ebiggers@kernel.org
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext2@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-219200-13602-tdGr5LT7hK@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-219200-13602@https.bugzilla.kernel.org/>
-References: <bug-219200-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1724741492; c=relaxed/simple;
+	bh=D2TV5kBY7UZXY+Lwn+hOQcL9j6rqj76riA0ZNX5yNU0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=nelBf5mQW3f9SmLc/4q6dhDf1tm5H8fEe+Pqm1u1gHtIRJqDpXPXlbxN6eK5FsaPjwXNSdW+F/LvRYOW/R2rmxgmAGI0IKP8nJ9LiHx6yS0lKV26JW5u4rVbSOGDstO0HQj9Qv+2yrbMNnV4XiCy/QnVAjDHcrB3iOW/GSJgfxA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=wy7vG6Xq; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=D2TV5kBY7UZXY+Lwn+hOQcL9j6rqj76riA0ZNX5yNU0=; b=wy7vG6XqoqCg7oRND/piAuTP6Q
+	CRgxtyhNB2Su+PN+jmXlwsjyEo6qKzy2KN4XJBHXi4wvJyxR6gE0gtV7f1s1oiv9z18rTXwY2Jtfd
+	vsDNUAmCLwhOOuX/seEfcxVzZaV1bNWDh803ahb4QU5RbSmFFFzeZDhyabrRHc3YH7tk/oRTISNxu
+	UOL4/6ujIO2ppcR5Oc10B6FnFyoHKAeEvp1F3wfM+A8VM9E+KB4KVP+v5A1jGEimv8F+n4wkwda2z
+	/oEyAap1cmVLNfPP0q5E3BXuRxpZDHwrHeB7ZHooP+7D16TstLf2X5kB9nWxikiMp82IwH/6PTahD
+	aUdcczjw==;
+Received: from 2a02-8389-2341-5b80-0483-5781-2c2b-8fb4.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:483:5781:2c2b:8fb4] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1siq35-0000000A68r-0GPh;
+	Tue, 27 Aug 2024 06:51:27 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Chandan Babu R <chandan.babu@oracle.com>
+Cc: Brian Foster <bfoster@redhat.com>,
+	Jens Axboe <axboe@kernel.dk>,
+	Jan Kara <jack@suse.cz>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	"Theodore Ts'o" <tytso@mit.edu>,
+	linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Subject: sort out the fallocate mode mess v2
+Date: Tue, 27 Aug 2024 08:50:44 +0200
+Message-ID: <20240827065123.1762168-1-hch@lst.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D219200
+Hi all,
 
---- Comment #1 from ebiggers@kernel.org ---
-On Tue, Aug 27, 2024 at 12:04:56AM +0000, bugzilla-daemon@kernel.org wrote:
-> https://bugzilla.kernel.org/show_bug.cgi?id=3D219200
->=20
->             Bug ID: 219200
->            Summary: update from 6.11.0-rc1 to 6.11.0-rc5 causes file
->                     system check every boot
->            Product: File System
->            Version: 2.5
->           Hardware: All
->                 OS: Linux
->             Status: NEW
->           Severity: normal
->           Priority: P3
->          Component: ext2
->           Assignee: fs_ext2@kernel-bugs.osdl.org
->           Reporter: publiccontact2020@protonmail.com
->         Regression: No
->=20
-> Reverting from 6.11.0-rc5 to 6.11.0-rc1 resolves the issue of file system
-> check
-> at every boot.
->=20
-> This issue is observed accross Debian, Gentoo, Arch and Fedora Rawhide.
->=20
-> --=20
-> You may reply to this email to add a comment.
->=20
-> You are receiving this mail because:
-> You are watching the assignee of the bug.
+I've recently been looking at the XFS fallocate implementation and got
+upset about the messing parsing of the mode argument, which mixes modes
+and an optional flag in a really confusing way.
 
-This was already fixed by the following commit:
+This series tries to clean this up by better defining what is the
+operation mode and what is an optional flag, so that both the core
+code and file systems can use switch statements to switch on the mode.
 
-    commit 232590ea7fc125986a526e03081b98e5783f70d2
-    Author: Christian Brauner <brauner@kernel.org>
-    Date:   Mon Aug 19 10:38:23 2024 +0200
-
-        Revert "pidfd: prevent creation of pidfds for kthreads"
-
---=20
-You may reply to this email to add a comment.
-
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+Changes since v1:
+ - fix the IS_APPEND check
+ - ensure space is allocated after unshare
 
