@@ -1,63 +1,65 @@
-Return-Path: <linux-ext4+bounces-3912-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3902-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CD2C960AFF
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 14:50:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E1B4960AEB
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 14:48:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F5B31C22CC6
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 12:50:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ECDBD1F23BE7
+	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 12:48:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4846E1C4EF5;
-	Tue, 27 Aug 2024 12:48:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B5EE1BF805;
+	Tue, 27 Aug 2024 12:47:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="DOng+Tn5"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="KycDx7JK"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65A211C462C
-	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 12:47:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E58BC1BCA19
+	for <linux-ext4@vger.kernel.org>; Tue, 27 Aug 2024 12:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724762881; cv=none; b=ffFFvJdp7HyJKt5X14zwsBHrdnZSTF0UyHmajYn0QQ2GY9JO7bNXf4Wokv3jCZr7kfy66OmLeJdOxv7cMAvBaOS1RKce1sV1lEZsBCKEjB6SV6ES0y5gGuZ6zGjGjUAxIPQGdBzVLVH8jkmCfbFNclfINGXtk6/qpnxXYJU6qXI=
+	t=1724762872; cv=none; b=HkwhbaVcVrOOGlGcmDThXqVjasVXyLRJrSqBhKE0d9vanHZZhEFdQR015SwWK0fYw0XCJEb7pM0LqWK4lpaSCpHKUsPHj/QgG9MfNivbmTDRPL4/Qo5laFjk8UH7jzd12QvhdfLVvYZsZk0Ou6Te2U66NziAfu89Lj5E9JzlseQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724762881; c=relaxed/simple;
-	bh=QJ7zIFY31lkCcAHm0ucVlZlKcMSfL7bKNpyvkzdcIOM=;
+	s=arc-20240116; t=1724762872; c=relaxed/simple;
+	bh=BadwHJbBYKz8Pt8bxgpD8DrZ3nrlXucHaDMo5AlbvnY=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=c0jshpdMJakcAuW0mV6/4hdkCpg1aOiRUtyn1IkA7YqZGx0dXia1w3rQd+ldVCkZLkUvDAsCLUSaccrvWH+ANKaMVffjhM7f5MN1OH9fkkLWFX2yAAy7CqTWnhxJPYMv4pWV6BwVTIbXuvCRmZs8qGPQORteqnXoCAFfc65YgGI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=DOng+Tn5; arc=none smtp.client-ip=18.9.28.11
+	 MIME-Version:Content-Type; b=NrzHRKFZ1jDxiAk5RLW/M02okwGpI1TRAOL1ZMsxeCFlaAguf9YWhPddtx3GyCn1Z04Nr8lEAGWiEXXnYJ59l9buTB5iFWmBi3KHU8MLUCptArWnZJr+Zcg9bwuDwCqLCxun9GVKFK5gf1difPcd30PB++9gpaj8+Qw+d9mmKYc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=KycDx7JK; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-112-93.bstnma.fios.verizon.net [173.48.112.93])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47RClfJP021511
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 47RClfc1021510
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
 	Tue, 27 Aug 2024 08:47:42 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1724762864; bh=KgVLvwVgnSvW9lbOpNjtiCly4AHmvAivyIX/Y/Q3TN8=;
+	t=1724762863; bh=ll1YDNM9uOBU+tYnb++FSoy7a1iraSTFkbmIXR16hZE=;
 	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=DOng+Tn5f7F2t//3P7tqFchr3uYXRD6kcynFwec/V2hjzwe/ha6W8YwcWeqH1z5np
-	 vtrPQDm/Cb1twEh8zyInp1y0948QgVl9B23ZwtteadX61MO9E4EimVxpxxaFLc0Imj
-	 cfHtgpmGkZO1Ogym1vvXDvUEjucgOZtGX180cw9+sQoC73+JZhYwHN9j6uBGml4jDV
-	 p1VU/tsUgqHnMPWDJAp1wgjxoA02EyygzWSliwcU6WXU4jZ9ukRsjZ/ztOpa1VaDQI
-	 3xXksQZioXt3yQ4ew5NwYXOw88K9qKpe6R20z/2/eVnfTQDBbrELNi4joQ2d14YLZH
-	 w6cqiyg5BrJKA==
+	b=KycDx7JKkjWSDoK7Qdsm4NwSC1Ou23ew+i9X7zv+9fjwx/7Um5H5FBlmfSJzUVuFq
+	 wgAoe4bPzelEKufGMkmh4qXvRrQPIUkbAiDj01gQwP7hLZHe82dW87C4iBAM4oL7ab
+	 MeaEDXoe3Mlk1QQeMwOr4zoS9UdxyYsUaNcRy0BsVQvPlFzBvqbptMssXVGczIvm4j
+	 2a/uPuyzFEjh54d5TCheEo4oo28riwlSsGTwJSw38RR3yQt7YHk45QYnDMZDgZxvRo
+	 a9MgyMdCtCA6s9pWOjWafzj6yQ17mws8ypuTv8TNQhVZLHS4olwPhdZ2qGBXeOW2oV
+	 nCxE8t4KVIZ1Q==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id BBB7315C1972; Tue, 27 Aug 2024 08:47:38 -0400 (EDT)
+	id BDA2915C19A9; Tue, 27 Aug 2024 08:47:38 -0400 (EDT)
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-kernel@vger.kernel.org, Randy Dunlap <rdunlap@infradead.org>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, Stephen Rothwell <sfr@canb.auug.org.au>,
-        Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH] jbd2: fix kernel-doc for j_transaction_overhead_buffers
-Date: Tue, 27 Aug 2024 08:47:28 -0400
-Message-ID: <172476284020.635532.13847870872561422486.b4-ty@mit.edu>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+        linux-kernel@vger.kernel.org, Xiaxi Shen <shenxiaxi26@gmail.com>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, skhan@linuxfoundation.org,
+        javier.carrasco.cruz@gmail.com, syzkaller-bugs@googlegroups.com,
+        syzbot+59e0101c430934bc9a36@syzkaller.appspotmail.com
+Subject: Re: [PATCH] ext4: Fix timer use-after-free on failed mount
+Date: Tue, 27 Aug 2024 08:47:29 -0400
+Message-ID: <172476284017.635532.12571452606052946369.b4-ty@mit.edu>
 X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240723051647.3053491-1-rdunlap@infradead.org>
-References: <20240723051647.3053491-1-rdunlap@infradead.org>
+In-Reply-To: <20240715043336.98097-1-shenxiaxi26@gmail.com>
+References: <20240715043336.98097-1-shenxiaxi26@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -68,20 +70,25 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Mon, 22 Jul 2024 22:16:47 -0700, Randy Dunlap wrote:
-> Use the correct struct member name in the kernel-doc notation
-> to prevent a kernel-doc build warning.
+On Sun, 14 Jul 2024 21:33:36 -0700, Xiaxi Shen wrote:
+> Syzbot has found an ODEBUG bug in ext4_fill_super
 > 
-> include/linux/jbd2.h:1303: warning: Function parameter or struct member 'j_transaction_overhead_buffers' not described in 'journal_s'
-> include/linux/jbd2.h:1303: warning: Excess struct member 'j_transaction_overhead' description in 'journal_s'
+> The del_timer_sync function cancels the s_err_report timer,
+> which reminds about filesystem errors daily. We should
+> guarantee the timer is no longer active before kfree(sbi).
 > 
+> When filesystem mounting fails, the flow goes to failed_mount3,
+> where an error occurs when ext4_stop_mmpd is called, causing
+> a read I/O failure. This triggers the ext4_handle_error function
+> that ultimately re-arms the timer,
+> leaving the s_err_report timer active before kfree(sbi) is called.
 > 
 > [...]
 
 Applied, thanks!
 
-[1/1] jbd2: fix kernel-doc for j_transaction_overhead_buffers
-      commit: 7e8fb2eda9885ea2d13179a4c0bbf810f900ef25
+[1/1] ext4: Fix timer use-after-free on failed mount
+      commit: 0ce160c5bdb67081a62293028dc85758a8efb22a
 
 Best regards,
 -- 
