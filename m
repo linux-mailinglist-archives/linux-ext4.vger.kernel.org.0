@@ -1,290 +1,253 @@
-Return-Path: <linux-ext4+bounces-3939-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3940-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1AB52962572
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 13:04:55 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADBA4962645
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 13:45:26 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C20B328573F
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 11:04:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF247B215A9
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 11:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B341016B3BA;
-	Wed, 28 Aug 2024 11:04:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C2DA17166E;
+	Wed, 28 Aug 2024 11:45:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0tBK1UVU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7fHWZT4r";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0tBK1UVU";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7fHWZT4r"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Do1vTlq4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cdx9s7VF";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Do1vTlq4";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="cdx9s7VF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7414E5A79B;
-	Wed, 28 Aug 2024 11:04:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BA79166F37;
+	Wed, 28 Aug 2024 11:45:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724843088; cv=none; b=M6oFsBCpZNO424Yzj5hMoexzI+IAavJM7xT8DXJ+AKEcRevoqNW8LlyzIY4GkaR54Qhd8kIZHS/LSk9RvBjL4r9gARtS/uaqzgdu63VG305lLK3UxFcU9KQ1ZhxumtECGLYko5w2U5K/7WjXI0V97H6BolRRKR8JXujJXRdJvGs=
+	t=1724845518; cv=none; b=Dm8DTJ0mAV1xha0cl1SawzIjl+77NaoQfW1gXMnBZFYidwFY8tPi97mMX3zY7HiYYgGN4kVjd0Xy7lSh+ahz3Y4kbIClB2sHEIqynnuY5fLEPIUmosJPJ+NENLRFmysYYv7LOymC+iiX8WQcNgWA7KRwab4N5Um7tXWx90NmSVU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724843088; c=relaxed/simple;
-	bh=IYw/5jfec3G9EL5cIvBTKWMPYFfAUAmYIUT55trKI1c=;
+	s=arc-20240116; t=1724845518; c=relaxed/simple;
+	bh=D1sUvkcv4jwAVZu0sYGCE612fGA8INtsVk2b2+YEUEU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GaJIkU6YVchqqVYf9OzcbGBlc7u02/qvC8Auz6G42AXOtxWF6ZkF+3Ov1ic/E/vHKIJU9jbRRAsAGKOKeYkL4cpLBXG7dCBZmfbULT4FFgc2WR/Xt7rsoJo5puhjPxVr/DmOaI5bFZeAtNrXkdvgrnTMtA6B4+Nm1fiazYqveSE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0tBK1UVU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7fHWZT4r; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0tBK1UVU; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7fHWZT4r; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=tOor/x5V4olJ5vG+YI7Gdgn+WZcIV4Uoa//RCsHcTgurfivWtMdH1PjhUIs4aFSuTumXFDyEdNtg8D3rRNA2te6/rv9cC9B5F7BFSqwuH8ax2nktIHi2pTTN6cyJz5388JWG6MHqwvpULYlqnz2Ux9rG+B/bQI9bLqpo2jqqGjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Do1vTlq4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cdx9s7VF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Do1vTlq4; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=cdx9s7VF; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A72531FC06;
-	Wed, 28 Aug 2024 11:04:44 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id A56CE21CCD;
+	Wed, 28 Aug 2024 11:45:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724843084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1724845514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IcJrGrxrJ3Kg3x9BNXw8QcolNjCA/gMiIrvdnowUhvM=;
-	b=0tBK1UVU1kCEphLWsOeXcQ7WWVlkGlXeBwpmEEOUEzq2dzkskt4XhLK9LiWcsVEEGRlUch
-	0XWRsIG90rEfGRYyz9NTuQVZkRPPU39LAauOgoY4QkJJawU8sdtP6FzKPxxI2v56xpdS/N
-	a/5x2mejLjpMRv1BppeyZAp5JrMikj4=
+	bh=AXRIX8aCOJfhbfuLXD/zzxk32Vs1sSYZ9hNbcOX+qYU=;
+	b=Do1vTlq4vNjkP8Q5PLqG15bjZA1a93xX10CBNXzXIlnwY8P8TpWRqG55axLW4oqaKEDHuE
+	FeoGeKSV566GeFHmj4+r8gZxGpJ7wnRoZ8OQFUKlhiQC16CoCDxLfPaYIEV7lvY6NvKHaC
+	0Ui84PhpPfw6jiMvbRUNu+lRInpHgdI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724843084;
+	s=susede2_ed25519; t=1724845514;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IcJrGrxrJ3Kg3x9BNXw8QcolNjCA/gMiIrvdnowUhvM=;
-	b=7fHWZT4r/JR3XVe7abGcoESf7/W+kl6X37LThY+dsAeNvc5n9x0TgNrbP8fZE88tk/Dfgx
-	VH9YQAomMQNMBUDw==
-Authentication-Results: smtp-out2.suse.de;
-	none
+	bh=AXRIX8aCOJfhbfuLXD/zzxk32Vs1sSYZ9hNbcOX+qYU=;
+	b=cdx9s7VFX9DfVZUxMabIzk6xmdT8Ig9mpWUrj9pU51QEagf3pIkpxikjG3wdigmTxo/uYj
+	AsXRB3rDTelx4OCA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Do1vTlq4;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=cdx9s7VF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724843084; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1724845514; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IcJrGrxrJ3Kg3x9BNXw8QcolNjCA/gMiIrvdnowUhvM=;
-	b=0tBK1UVU1kCEphLWsOeXcQ7WWVlkGlXeBwpmEEOUEzq2dzkskt4XhLK9LiWcsVEEGRlUch
-	0XWRsIG90rEfGRYyz9NTuQVZkRPPU39LAauOgoY4QkJJawU8sdtP6FzKPxxI2v56xpdS/N
-	a/5x2mejLjpMRv1BppeyZAp5JrMikj4=
+	bh=AXRIX8aCOJfhbfuLXD/zzxk32Vs1sSYZ9hNbcOX+qYU=;
+	b=Do1vTlq4vNjkP8Q5PLqG15bjZA1a93xX10CBNXzXIlnwY8P8TpWRqG55axLW4oqaKEDHuE
+	FeoGeKSV566GeFHmj4+r8gZxGpJ7wnRoZ8OQFUKlhiQC16CoCDxLfPaYIEV7lvY6NvKHaC
+	0Ui84PhpPfw6jiMvbRUNu+lRInpHgdI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724843084;
+	s=susede2_ed25519; t=1724845514;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=IcJrGrxrJ3Kg3x9BNXw8QcolNjCA/gMiIrvdnowUhvM=;
-	b=7fHWZT4r/JR3XVe7abGcoESf7/W+kl6X37LThY+dsAeNvc5n9x0TgNrbP8fZE88tk/Dfgx
-	VH9YQAomMQNMBUDw==
+	bh=AXRIX8aCOJfhbfuLXD/zzxk32Vs1sSYZ9hNbcOX+qYU=;
+	b=cdx9s7VFX9DfVZUxMabIzk6xmdT8Ig9mpWUrj9pU51QEagf3pIkpxikjG3wdigmTxo/uYj
+	AsXRB3rDTelx4OCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9D7C1138D2;
-	Wed, 28 Aug 2024 11:04:44 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 872891398F;
+	Wed, 28 Aug 2024 11:45:14 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rANtJkwEz2Y2dgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 28 Aug 2024 11:04:44 +0000
+	id +F/2IMoNz2agBAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 28 Aug 2024 11:45:14 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4C4AAA0968; Wed, 28 Aug 2024 13:04:44 +0200 (CEST)
-Date: Wed, 28 Aug 2024 13:04:44 +0200
+	id 7E1F8A0968; Wed, 28 Aug 2024 13:45:13 +0200 (CEST)
+Date: Wed, 28 Aug 2024 13:45:13 +0200
 From: Jan Kara <jack@suse.cz>
 To: zhangshida <starzhangzsd@gmail.com>
 Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
 	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	zhangshida@kylinos.cn, Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH 1/2] ext4: hoist ext4_block_write_begin and replace the
- __block_write_begin
-Message-ID: <20240828110444.7wvo4ev32m5pewo7@quack3>
+	zhangshida@kylinos.cn, Baolin Liu <liubaolin@kylinos.cn>,
+	Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 2/2] ext4: fix a potential assertion failure due to
+ improperly dirtied buffer
+Message-ID: <20240828114513.bzccvcalexwge4d7@quack3>
 References: <20240823013329.1996741-1-zhangshida@kylinos.cn>
- <20240823013329.1996741-2-zhangshida@kylinos.cn>
+ <20240823013329.1996741-3-zhangshida@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240823013329.1996741-2-zhangshida@kylinos.cn>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.998];
+In-Reply-To: <20240823013329.1996741-3-zhangshida@kylinos.cn>
+X-Rspamd-Queue-Id: A56CE21CCD
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	MX_GOOD(-0.01)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
 	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email]
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Fri 23-08-24 09:33:28, zhangshida wrote:
+On Fri 23-08-24 09:33:29, zhangshida wrote:
 > From: Shida Zhang <zhangshida@kylinos.cn>
 > 
-> Using __block_write_begin() make it inconvenient to journal the
-> user data dirty process. We can't tell the block layer maintainer,
-> ‘Hey, we want to trace the dirty user data in ext4, can we add some
-> special code for ext4 in __block_write_begin?’:P
+> On an old kernel version(4.19, ext3, data=journal, pagesize=64k),
+> an assertion failure will occasionally be triggered by the line below:
+> -----------
+> jbd2_journal_commit_transaction
+> {
+> ...
+> J_ASSERT_BH(bh, !buffer_dirty(bh));
+> /*
+> * The buffer on BJ_Forget list and not jbddirty means
+> ...
+> }
+> -----------
 > 
-> So use ext4_block_write_begin() instead.
+> The same condition may also be applied to the lattest kernel version.
 > 
-> The two functions are basically doing the same thing except for the
-> fscrypt related code. Narrow the scope of CONFIG_FS_ENCRYPTION so as
-> to allow ext4_block_write_begin() to function like __block_write_begin
-> when the config is disabled.
-> And hoist the ext4_block_write_begin so that it can be used in other
-> files.
+> When blocksize < pagesize and we truncate a file, there can be buffers in
+> the mapping tail page beyond i_size. These buffers will be filed to
+> transaction's BJ_Forget list by ext4_journalled_invalidatepage() during
+> truncation. When the transaction doing truncate starts committing, we can
+> grow the file again. This calls __block_write_begin() which allocates new
+> blocks under these buffers in the tail page we go through the branch:
+					     ^^ and we...
+
+ 
+>                         if (buffer_new(bh)) {
+>                                 clean_bdev_bh_alias(bh);
+>                                 if (folio_test_uptodate(folio)) {
+>                                         clear_buffer_new(bh);
+>                                         set_buffer_uptodate(bh);
+>                                         mark_buffer_dirty(bh);
+>                                         continue;
+>                                 }
+>                                 ...
+>                         }
 > 
+> Hence buffers on BJ_Forget list of the committing transaction get marked
+> dirty and this triggers the jbd2 assertion.
+> 
+> Teach ext4_block_write_begin() to properly handle files with data
+> journalling by avoiding dirtying them directly. Instead of
+> folio_zero_new_buffers() we use ext4_journalled_zero_new_buffers() which
+> takes care of handling journalling. We also don't need to mark new uptodate
+> buffers as dirty in ext4_block_write_begin(). That will be either done
+> either by block_commit_write() in case of success or by
+> folio_zero_new_buffers() in case of failure.
+> 
+> Reported-by: Baolin Liu <liubaolin@kylinos.cn>
 > Suggested-by: Jan Kara <jack@suse.cz>
 > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
 
-Looks good to me! Feel free to add:
+Looks mostly good. Just three small comments:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> @@ -1083,11 +1090,11 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+>  			err = get_block(inode, block, bh, 1);
+>  			if (err)
+>  				break;
 
-								Honza
 
-> ---
->  fs/ext4/ext4.h   |  2 ++
->  fs/ext4/inline.c | 10 +++++-----
->  fs/ext4/inode.c  | 23 ++++++-----------------
->  3 files changed, 13 insertions(+), 22 deletions(-)
-> 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 08acd152261e..5f8257b68190 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3851,6 +3851,8 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
->  	return buffer_uptodate(bh);
->  }
->  
-> +extern int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
-> +				  get_block_t *get_block);
->  #endif	/* __KERNEL__ */
->  
->  #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index e7a09a99837b..0a1a8431e281 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -601,10 +601,10 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
->  		goto out;
->  
->  	if (ext4_should_dioread_nolock(inode)) {
-> -		ret = __block_write_begin(&folio->page, from, to,
-> -					  ext4_get_block_unwritten);
-> +		ret = ext4_block_write_begin(folio, from, to,
-> +					     ext4_get_block_unwritten);
->  	} else
-> -		ret = __block_write_begin(&folio->page, from, to, ext4_get_block);
-> +		ret = ext4_block_write_begin(folio, from, to, ext4_get_block);
->  
->  	if (!ret && ext4_should_journal_data(inode)) {
->  		ret = ext4_walk_page_buffers(handle, inode,
-> @@ -856,8 +856,8 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
->  			goto out;
->  	}
->  
-> -	ret = __block_write_begin(&folio->page, 0, inline_size,
-> -				  ext4_da_get_block_prep);
-> +	ret = ext4_block_write_begin(folio, 0, inline_size,
-> +				     ext4_da_get_block_prep);
->  	if (ret) {
->  		up_read(&EXT4_I(inode)->xattr_sem);
->  		folio_unlock(folio);
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 941c1c0d5c6e..6b15805ca88b 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1041,9 +1041,8 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
->  	return ret;
->  }
->  
-> -#ifdef CONFIG_FS_ENCRYPTION
-> -static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
-> -				  get_block_t *get_block)
-> +int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
-> +			   get_block_t *get_block)
->  {
->  	unsigned from = pos & (PAGE_SIZE - 1);
->  	unsigned to = from + len;
-> @@ -1119,7 +1118,9 @@ static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+> +			if (should_journal_data)
+> +				do_journal_get_write_access(handle, inode, bh);
+
+I'd move this inside the buffer_new() branch and add before it a comment:
+			/*
+			 * We may be zeroing partial buffers or all new
+			 * buffers in case of failure. Prepare JBD2 for
+			 * that.
+			 */
+
+>  			if (buffer_new(bh)) {
+>  				if (folio_test_uptodate(folio)) {
+> -					clear_buffer_new(bh);
+>  					set_buffer_uptodate(bh);
+> -					mark_buffer_dirty(bh);
+
+Here I'd add comment:
+				/*
+				 * Unlike __block_write_begin() we leave
+				 * dirtying of new uptodate buffers to
+				 * ->write_end() time or
+				 * folio_zero_new_buffers().
+				 */
+
+> @@ -1117,7 +1124,11 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+>  			err = -EIO;
 >  	}
 >  	if (unlikely(err)) {
->  		folio_zero_new_buffers(folio, from, to);
-> -	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
-> +	}
-> +#ifdef CONFIG_FS_ENCRYPTION
-> +	else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
->  		for (i = 0; i < nr_wait; i++) {
->  			int err2;
->  
-> @@ -1131,10 +1132,10 @@ static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
->  			}
->  		}
+> -		folio_zero_new_buffers(folio, from, to);
+> +		if (should_journal_data)
+> +			ext4_journalled_zero_new_buffers(handle, inode, folio,
+> +							 from, to);
+
+I've realized there's a small bug in ext4_journalled_zero_new_buffers()
+that it calls write_end_fn() only if it zeroed a buffer. But for new
+uptodate buffers we also need to call write_end_fn() to persist the
+uptodate content (similarly as folio_zero_new_buffers() does it). So we
+need another preparatory patch moving write_end_fn() in
+ext4_journalled_zero_new_buffers() to be called also for uptodate pages.
+
+> +		else
+> +			folio_zero_new_buffers(folio, from, to);
 >  	}
-> +#endif
->  
->  	return err;
->  }
-> -#endif
->  
->  /*
->   * To preserve ordering, it is essential that the hole instantiation and
-> @@ -1216,19 +1217,11 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
->  	/* In case writeback began while the folio was unlocked */
->  	folio_wait_stable(folio);
->  
-> -#ifdef CONFIG_FS_ENCRYPTION
->  	if (ext4_should_dioread_nolock(inode))
->  		ret = ext4_block_write_begin(folio, pos, len,
->  					     ext4_get_block_unwritten);
->  	else
->  		ret = ext4_block_write_begin(folio, pos, len, ext4_get_block);
-> -#else
-> -	if (ext4_should_dioread_nolock(inode))
-> -		ret = __block_write_begin(&folio->page, pos, len,
-> -					  ext4_get_block_unwritten);
-> -	else
-> -		ret = __block_write_begin(&folio->page, pos, len, ext4_get_block);
-> -#endif
->  	if (!ret && ext4_should_journal_data(inode)) {
->  		ret = ext4_walk_page_buffers(handle, inode,
->  					     folio_buffers(folio), from, to,
-> @@ -2961,11 +2954,7 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
->  	if (IS_ERR(folio))
->  		return PTR_ERR(folio);
->  
-> -#ifdef CONFIG_FS_ENCRYPTION
->  	ret = ext4_block_write_begin(folio, pos, len, ext4_da_get_block_prep);
-> -#else
-> -	ret = __block_write_begin(&folio->page, pos, len, ext4_da_get_block_prep);
-> -#endif
->  	if (ret < 0) {
->  		folio_unlock(folio);
->  		folio_put(folio);
-> -- 
-> 2.33.0
-> 
+>  #ifdef CONFIG_FS_ENCRYPTION
+>  	else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+
+								Honza
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
