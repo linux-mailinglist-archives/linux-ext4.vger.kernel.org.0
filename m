@@ -1,260 +1,224 @@
-Return-Path: <linux-ext4+bounces-3926-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3927-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BFEE96186D
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 22:16:59 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id C0D7A961BC8
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 04:07:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3FBE91C23292
-	for <lists+linux-ext4@lfdr.de>; Tue, 27 Aug 2024 20:16:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E65D21C23294
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 02:07:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE3A41D3631;
-	Tue, 27 Aug 2024 20:16:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="H2cRDo2s";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Oigw9UeX";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="H2cRDo2s";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="Oigw9UeX"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173963B1A4;
+	Wed, 28 Aug 2024 02:07:00 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C85A15B554;
-	Tue, 27 Aug 2024 20:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC69B49644
+	for <linux-ext4@vger.kernel.org>; Wed, 28 Aug 2024 02:06:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724789805; cv=none; b=pmKj9ANSNg1SsTSZ4xOKCaG3CGxul3pS4W56tiF0+KNdaM0Y0QD0ibK2RA9C9erLxPVkrP1SczdViQX6rAYBTG4VEJRwEtTpVtq+Uh0kYXCbYpRldPIMKoBgd1/5x1miJROJHvyz8VU0KgMLiYbCekwlgSBCI3ftC7/oFF/hjk8=
+	t=1724810819; cv=none; b=BNU8UU+B9KVrntnRNNtj/9QnxSEsWFLgB/1PD64iHv0AHIG9/6oCz/v+LYfka/bQzvf5wKXHXVJkvDZvu7wMbeCUeD4CuftDO/n3jiCPpGugJJOWj5KtvieEZRgd/jOo6Trt7q0SMMxs/Z67qAQo5rHpU3CUaUnBW5Cd5PmfKqo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724789805; c=relaxed/simple;
-	bh=Hcx8QcIxQCwYgcS9aVzVA/bgTxxtOqbsBjmUJhdmgDE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=tNOR5fsbFYz7f4ojncvA+HUFaYZSBqOlBF3rThvZ3pnzqABhRO6pjIJQp7RBYtTXGQn4uWXCIiOQN99yNdU9QRaLDX4L+XtnD71nZQwPdmIRCHjE9aGr6x+3pq/NzFubQoM61pTk4u53mzufZ86S4FMMmKET8FUo/ULGIHihyEM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=H2cRDo2s; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Oigw9UeX; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=H2cRDo2s; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=Oigw9UeX; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A903621B26;
-	Tue, 27 Aug 2024 20:16:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1724789801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGZ2P7NBrFDQ9r5RZr35OZ49pTXK6VSOYy22Fa0AIok=;
-	b=H2cRDo2sZsK9GGwhMSl1+LBbuJkzDzZYXcRxrrBUP1ii16m+nlgl5lQuGRMlXjKO3rMU+2
-	RW7ZakNBPsPXhimbmHe87HiRt56Srjp7XbDJTAs786nC4bb+YpVip4YFqKQJVmk2ruOvwG
-	TTSl5TE1vADus4Sac+O5ia3FfZexrQE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1724789801;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGZ2P7NBrFDQ9r5RZr35OZ49pTXK6VSOYy22Fa0AIok=;
-	b=Oigw9UeXIEcBSjzCMhjwNNDBauMqt8lcBgPJkrJGXLDcmeW7czBJF9IftZwl7tLtBCB5ac
-	SJ5wvU5kPUJ/WpCg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1724789801; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGZ2P7NBrFDQ9r5RZr35OZ49pTXK6VSOYy22Fa0AIok=;
-	b=H2cRDo2sZsK9GGwhMSl1+LBbuJkzDzZYXcRxrrBUP1ii16m+nlgl5lQuGRMlXjKO3rMU+2
-	RW7ZakNBPsPXhimbmHe87HiRt56Srjp7XbDJTAs786nC4bb+YpVip4YFqKQJVmk2ruOvwG
-	TTSl5TE1vADus4Sac+O5ia3FfZexrQE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1724789801;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=nGZ2P7NBrFDQ9r5RZr35OZ49pTXK6VSOYy22Fa0AIok=;
-	b=Oigw9UeXIEcBSjzCMhjwNNDBauMqt8lcBgPJkrJGXLDcmeW7czBJF9IftZwl7tLtBCB5ac
-	SJ5wvU5kPUJ/WpCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6516913A20;
-	Tue, 27 Aug 2024 20:16:41 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id NMafEik0zmYWfQAAD6G6ig
-	(envelope-from <krisman@suse.de>); Tue, 27 Aug 2024 20:16:41 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: Lizhi Xu <lizhi.xu@windriver.com>,  adilger.kernel@dilger.ca,
-  coreteam@netfilter.org,  davem@davemloft.net,  ebiggers@kernel.org,
-  fw@strlen.de,  jaegeuk@kernel.org,  kadlec@netfilter.org,
-  kuba@kernel.org,  linux-ext4@vger.kernel.org,
-  linux-fscrypt@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  lkp@intel.com,  llvm@lists.linux.dev,  netdev@vger.kernel.org,
-  netfilter-devel@vger.kernel.org,  oe-kbuild-all@lists.linux.dev,
-  pablo@netfilter.org,
-  syzbot+340581ba9dceb7e06fb3@syzkaller.appspotmail.com,
-  syzkaller-bugs@googlegroups.com
-Subject: [PATCH] ext4: Fix error message when rejecting the default hash
-In-Reply-To: <172433877724.370733.16770771071139702263.b4-ty@mit.edu>
-	(Theodore Ts'o's message of "Thu, 22 Aug 2024 11:00:11 -0400")
-Organization: SUSE
-References: <87le3kle87.fsf@mailhost.krisman.be>
-	<20240605012335.44086-1-lizhi.xu@windriver.com>
-	<172433877724.370733.16770771071139702263.b4-ty@mit.edu>
-Date: Tue, 27 Aug 2024 16:16:36 -0400
-Message-ID: <87jzg1en6j.fsf_-_@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1724810819; c=relaxed/simple;
+	bh=gX57igARrwtMmurHNsP95+hlKliBJy6D1RTFgxhP6ks=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=MCPPhdH7LsDCcPLSYlbV0UIywhJMw1DQ0HgBlAVcJAdtbIVLUqErMAekFsE4vNQYdc1QH/jQ+hXDlkKnhsQii+/kglKchybtSiVn+RqO0On8f4r6x+GzOyBPxWzGvtepll3CTwKbLzwHd35WPg+mrf9mA0sueJLCmM8YT7OonwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WtnpJ458sz4f3kw3
+	for <linux-ext4@vger.kernel.org>; Wed, 28 Aug 2024 10:06:32 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 0B4491A0359
+	for <linux-ext4@vger.kernel.org>; Wed, 28 Aug 2024 10:06:48 +0800 (CST)
+Received: from [10.174.177.210] (unknown [10.174.177.210])
+	by APP4 (Coremail) with SMTP id gCh0CgAXPoQ2hs5mEo2rCw--.29549S3;
+	Wed, 28 Aug 2024 10:06:47 +0800 (CST)
+Message-ID: <3e7c14a1-3d9d-ab58-22a4-efc7eb525f23@huaweicloud.com>
+Date: Wed, 28 Aug 2024 10:06:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Spam-Score: -2.80
-X-Spamd-Result: default: False [-2.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	ARC_NA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	HAS_ORG_HEADER(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[21];
-	MIME_TRACE(0.00)[0:+];
-	TAGGED_RCPT(0.00)[340581ba9dceb7e06fb3];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.de:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.5.1
+Subject: Re: [PATCH 2/2] ext4: dax: keep orphan list before truncate overflow
+ allocated blocks
+To: Jan Kara <jack@suse.cz>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ yangerkun@huawei.com, chengzhihao1@huawei.com
+References: <20240820140657.3685287-1-yangerkun@huaweicloud.com>
+ <20240820140657.3685287-2-yangerkun@huaweicloud.com>
+ <20240827170813.twxnsgkqp2vraavz@quack3>
+From: yangerkun <yangerkun@huaweicloud.com>
+In-Reply-To: <20240827170813.twxnsgkqp2vraavz@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAXPoQ2hs5mEo2rCw--.29549S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGw4xuFW7AFWkWF47Xr1kXwb_yoWrCrW8pF
+	9xGF15GF1vyasF9FZavF1UXF1Fka1xGr47GrWIga47Zr9xCr1ftF1UtFyF9F4YqrW8WF4j
+	qF4jyryq9F1DA37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21lc7CjxVAaw2AF
+	wI0_JF0_Jw1l42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
+	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1D
+	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
+	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
+	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2N
+	tUUUUU=
+X-CM-SenderInfo: 51dqwvhunx0q5kxd4v5lfo033gof0z/
 
-"Theodore Ts'o" <tytso@mit.edu> writes:
 
-> On Wed, 05 Jun 2024 09:23:35 +0800, Lizhi Xu wrote:
->> When mounting the ext4 filesystem, if the default hash version is set to
->> DX_HASH_SIPHASH but the casefold feature is not set, exit the mounting.
->> 
->> 
->
-> Applied, thanks!
->
-> [1/1] fs/ext4: Filesystem without casefold feature cannot be mounted with spihash
->       commit: 985b67cd86392310d9e9326de941c22fc9340eec
 
-Ted,
+在 2024/8/28 1:08, Jan Kara 写道:
+> On Tue 20-08-24 22:06:57, yangerkun wrote:
+>> From: yangerkun <yangerkun@huawei.com>
+> 
+> Thanks for debugging this. Couple of spelling fixes first:
 
-Since you took the above, can you please consider the following fixup?
-I had pointed we shouldn't have siphash as the sb default hash at all:
+Hi,
 
-based on your dev branch.
+Thank you for your patient review!
 
->8
-Subject: [PATCH] ext4: Fix error message when rejecting the default hash
+>   
+>> Any extended write for ext4 requires the inode to be placed on the
+>        ^^^ extending
+> 
+>> orphan list before the actual write. In addition, the inode can be
+>> actually removed from the orphan list only after all writes are
+>> completed. Otherwise, those overcommitted blocks (If the allocated
+> 	     ^^ I'd phrase this: Otherwise we'd leave allocated blocks
+> beyond i_disksize if we could not copy all the data into allocated block
+> and e2fsck would complain.
+> 
+>> blocks are not written due to certain reasons, the inode size does not
+>> exceed the offset of these blocks) The leak status is always retained,
+>> and fsck reports an alarm for this scenario.
+>>
+>> Currently, the dio and buffer IO comply with this logic. However, the
+> 			 ^^ buffered
+> 
+> BTW: The only reason why direct IO doesn't have this problem is because
+> we don't do short writes for direct IO. We either submit all or we return
+> error.
 
-Commit 985b67cd8639 ("ext4: filesystems without casefold feature cannot
-be mounted with siphash") properly rejects volumes where
-s_def_hash_version is set to DX_HASH_SIPHASH, but the check and the
-error message should not look into casefold setup - a filesystem should
-never have DX_HASH_SIPHASH as the default hash.  Fix it and, since we
-are there, move the check to ext4_hash_info_init.
+Yeah. In fact, the first version in my mind is same as this, don't do
+short write for dax too. But thinking deeper, it seems better to keep
+the blocks that has been successfully written...
 
-Fixes:985b67cd8639 ("ext4: filesystems without casefold feature cannot
-be mounted with siphash")
-Signed-off-by: Gabriel Krisman Bertazi <krisman@suse.de>
----
- fs/ext4/ext4.h  |  1 +
- fs/ext4/super.c | 27 +++++++++++++++++----------
- 2 files changed, 18 insertions(+), 10 deletions(-)
 
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 5845e4aa091a..4120f24880cb 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2462,6 +2462,7 @@ static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned blocksize)
- #define DX_HASH_HALF_MD4_UNSIGNED	4
- #define DX_HASH_TEA_UNSIGNED		5
- #define DX_HASH_SIPHASH			6
-+#define DX_HASH_LAST 			DX_HASH_SIPHASH
- 
- static inline u32 ext4_chksum(struct ext4_sb_info *sbi, u32 crc,
- 			      const void *address, unsigned int length)
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 25cd0d662e31..c6a34ad07ecc 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3582,13 +3582,6 @@ int ext4_feature_set_ok(struct super_block *sb, int readonly)
- 			 "mounted without CONFIG_UNICODE");
- 		return 0;
- 	}
--	if (EXT4_SB(sb)->s_es->s_def_hash_version == DX_HASH_SIPHASH &&
--	    !ext4_has_feature_casefold(sb)) {
--		ext4_msg(sb, KERN_ERR,
--			 "Filesystem without casefold feature cannot be "
--			 "mounted with siphash");
--		return 0;
--	}
- 
- 	if (readonly)
- 		return 1;
-@@ -5094,16 +5087,27 @@ static int ext4_load_super(struct super_block *sb, ext4_fsblk_t *lsb,
- 	return ret;
- }
- 
--static void ext4_hash_info_init(struct super_block *sb)
-+static int ext4_hash_info_init(struct super_block *sb)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct ext4_super_block *es = sbi->s_es;
- 	unsigned int i;
- 
-+	sbi->s_def_hash_version = es->s_def_hash_version;
-+
-+	if (sbi->s_def_hash_version > DX_HASH_LAST) {
-+		ext4_msg(sb, KERN_ERR,
-+			 "Invalid default hash set in the superblock");
-+		return -EINVAL;
-+	} else if (sbi->s_def_hash_version == DX_HASH_SIPHASH) {
-+		ext4_msg(sb, KERN_ERR,
-+			 "SIPHASH is not a valid default hash value");
-+		return -EINVAL;
-+	}
-+
- 	for (i = 0; i < 4; i++)
- 		sbi->s_hash_seed[i] = le32_to_cpu(es->s_hash_seed[i]);
- 
--	sbi->s_def_hash_version = es->s_def_hash_version;
- 	if (ext4_has_feature_dir_index(sb)) {
- 		i = le32_to_cpu(es->s_flags);
- 		if (i & EXT2_FLAGS_UNSIGNED_HASH)
-@@ -5121,6 +5125,7 @@ static void ext4_hash_info_init(struct super_block *sb)
- #endif
- 		}
- 	}
-+	return 0;
- }
- 
- static int ext4_block_group_meta_init(struct super_block *sb, int silent)
-@@ -5256,7 +5261,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
- 	if (err)
- 		goto failed_mount;
- 
--	ext4_hash_info_init(sb);
-+	err = ext4_hash_info_init(sb);
-+	if (err)
-+		goto failed_mount;
- 
- 	err = ext4_handle_clustersize(sb);
- 	if (err)
--- 
-2.46.0
+> 
+>> dax write will removed the inode from orphan list since
+> 		  ^^^ remove           ^ the orphan ...
+> 
+>> ext4_handle_inode_extension is unconditionally called during extend
+> 								^^ extending
+> 
+>> write. Fix it with this patch. We open the code from
+>> ext4_handle_inode_extension since we want to keep the blocks valid
+>> has been allocated and write success.
+>>
+>> Signed-off-by: yangerkun <yangerkun@huawei.com>
+>> ---
+>>   fs/ext4/file.c | 35 +++++++++++++++++++++++++++++++----
+>>   1 file changed, 31 insertions(+), 4 deletions(-)
+>>
+>> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+>> index be061bb64067..fd8597eef75e 100644
+>> --- a/fs/ext4/file.c
+>> +++ b/fs/ext4/file.c
+>> @@ -628,11 +628,12 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>   static ssize_t
+>>   ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>   {
+>> -	ssize_t ret;
+>> +	ssize_t ret, written;
+>>   	size_t count;
+>>   	loff_t offset;
+>>   	handle_t *handle;
+>>   	bool extend = false;
+>> +	bool need_trunc = true;
+>>   	struct inode *inode = file_inode(iocb->ki_filp);
+>>   
+>>   	if (iocb->ki_flags & IOCB_NOWAIT) {
+>> @@ -668,10 +669,36 @@ ext4_dax_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>>   
+>>   	ret = dax_iomap_rw(iocb, from, &ext4_iomap_ops);
+>>   
+>> -	if (extend) {
+>> -		ret = ext4_handle_inode_extension(inode, offset, ret);
+>> -		ext4_inode_extension_cleanup(inode, ret < (ssize_t)count);
+>> +	if (!extend)
+>> +		goto out;
+>> +
+>> +	if (ret <= 0)
+>> +		goto err_trunc;
+>> +
+>> +	written = ret;
+>> +	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+>> +	if (IS_ERR(handle)) {
+>> +		ret = PTR_ERR(handle);
+>> +		goto err_trunc;
+>>   	}
+>> +
+>> +	if (ext4_update_inode_size(inode, offset + written)) {
+>> +		ret = ext4_mark_inode_dirty(handle, inode);
+>> +		if (unlikely(ret)) {
+>> +			ext4_journal_stop(handle);
+>> +			goto err_trunc;
+>> +		}
+>> +	}
+>> +
+>> +	if (written == count)
+>> +		need_trunc = false;
+>> +
+>> +	if (inode->i_nlink)
+>> +		ext4_orphan_del(handle, inode);
+> 
+> Why did you keep ext4_orphan_del() here? I thought the whole point of this
+
+Sorry, I make a mistake here, there should be a truncate before. Thanks
+for point out this!
+
+> patch is to avoid it? In fact, rather then opencoding
+> ext4_handle_inode_extension() I'd add argument to
+> ext4_handle_inode_extension() like:
+> 
+> ext4_handle_inode_extension(inode, pos, written, allocated)
+> 
+> and remove inode from the orphan list only if written == allocated. The
+> call site in ext4_dio_write_end_io() would call:
+> 
+> 	/*
+> 	 * For DIO we don't do partial writes so we must have submitted all
+> 	 * that was allocated.
+> 	 */
+> 	return ext4_handle_inode_extension(inode, pos, size, size);
+> 
+> and the call site in ext4_dax_write_iter() would call:
+> 
+> 	ret = ext4_handle_inode_extension(inode, offset, ret, count);
+> 
+> What do you think?
+
+Great! This seems more clearly and I think it should works too. Whould I
+send a v2 patch for this?
+
+Thanks,
+Erkun.
+
+> 
+> 								Honza
+
 
