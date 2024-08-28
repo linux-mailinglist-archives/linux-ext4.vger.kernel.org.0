@@ -1,106 +1,76 @@
-Return-Path: <linux-ext4+bounces-3946-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3947-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67D21962C7A
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 17:34:46 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1E66C9633F7
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 23:36:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 85C591C2422C
-	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 15:34:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A1ED71F24660
+	for <lists+linux-ext4@lfdr.de>; Wed, 28 Aug 2024 21:36:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94201A2C0E;
-	Wed, 28 Aug 2024 15:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE7291AD3F5;
+	Wed, 28 Aug 2024 21:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="C7KT8q2q";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="IDDARMRi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="B5qnEANe";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZnUx22B/"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dRyIJ+iW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 678DC13D889;
-	Wed, 28 Aug 2024 15:34:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCF121AB531
+	for <linux-ext4@vger.kernel.org>; Wed, 28 Aug 2024 21:35:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724859274; cv=none; b=a+dZnGSgmQO1EM5UFKMPw1OFhzc9beVs+xST+ti/ks5tFGqPxda3yB0KqnR5NHOJTs9H/QaXjLRqJ5/sdYc+ZPLvkVsv5+n7ihMUm7vGwZ/DVEg5YS/tRCx1IQYU9AYixKiw+d+HQufXdkLQNdhNuAVl5DpBNo4NZiVQh+CsxV4=
+	t=1724880957; cv=none; b=gLGSXsUsISQgpndkip3k92LKiCoGYrWdU51Aj7hiJOJZutC7F/YzibhzISOnZftNHP7I4QGRrYKMz5/RQ171oBoouljmz4SNr1CFK/LkfO/G+dmSRI37po6QHDo9B32F3F7C2MVR5Xd4GCWkT8AvGibA9kqr6Qt/l1z9rnyu8eQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724859274; c=relaxed/simple;
-	bh=0MrHZwsCW0Y57nuox4lGSlndzkqpr7aXr7jJnEOkGb8=;
+	s=arc-20240116; t=1724880957; c=relaxed/simple;
+	bh=61XA5LoekClLafVJAXsbMI9LoIYvALcf6wcbqa+CLOo=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HyIjQeNlR8uo1vS8zy52wKSCeuyda32pyw0f4+3+4974qd5fzXPlrspVCAvc07h3FMBuJy478z+uIew6sIVqBYTlramla1OERJ9MHkK2IATYsa2RDEE2CI90hJaGCbTdl0iJz/lHGq3Vzyu3Aohn4Npg9lEzw4zwRW7RPKqRPeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=C7KT8q2q; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=IDDARMRi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=B5qnEANe; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZnUx22B/; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id A6B871FC86;
-	Wed, 28 Aug 2024 15:34:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724859270; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9O0Vci8+b4q68G1caoGSF7w6opascpZiikpZjFP/dws=;
-	b=C7KT8q2qDGqR1u9oNyBhQ/hB78uMIU6/M9/PWy5ALFxWbK2kfqJ/JoNpykYicWEsgD8B7F
-	GGBh0kR/TQsy290MAVPox+Zp/mtHmJPTzQDnCbUtM3ilM01elaAxCR/XRuCELiY5m/qT45
-	yAD8687VvNU3P7xLXn8sbTFjOCav8/0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724859270;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9O0Vci8+b4q68G1caoGSF7w6opascpZiikpZjFP/dws=;
-	b=IDDARMRid5PxQwYtyCDQNRwHUUeSdvEuUdWZbt2RBQAJ8t+rJVOZaIa+B9Z67WkH5p6vKT
-	XFMfIrhAnmjLaqBQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1724859267; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9O0Vci8+b4q68G1caoGSF7w6opascpZiikpZjFP/dws=;
-	b=B5qnEANeVKXFIGM4wBUQN+RS2R0os77bJKi1uaU64QbSfC45aQxgTeTu32Z0amJBHS0gha
-	jni1bYtByeXEyN1r3chuykid/X+J3j3iJlh8b7HF3HMkViw8ncPwhOUt5e9V/jasfqUiMp
-	ayr4yUFDzcE5v+M9jzi7Y0+A7bCP1aU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1724859267;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9O0Vci8+b4q68G1caoGSF7w6opascpZiikpZjFP/dws=;
-	b=ZnUx22B/FJKxla0jIH+VKSDQbj2OgNOT6rjjehHDmjTgjrJ+ceODF1hVt5ukX2lzHbldM2
-	6HKI4LAizAOoK/BQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8FA8C138D2;
-	Wed, 28 Aug 2024 15:34:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id L3XLIoNDz2bnUgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 28 Aug 2024 15:34:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 304CFA0965; Wed, 28 Aug 2024 17:34:27 +0200 (CEST)
-Date: Wed, 28 Aug 2024 17:34:27 +0200
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Christian Brauner <brauner@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	Brian Foster <bfoster@redhat.com>, Jens Axboe <axboe@kernel.dk>,
-	Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/6] fs: sort out the fallocate mode vs flag mess
-Message-ID: <20240828153427.tbuzninrbj6wtam4@quack3>
-References: <20240827065123.1762168-1-hch@lst.de>
- <20240827065123.1762168-4-hch@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=pBKzT3U94vo7GOL613t/ptTy4mqBK8sZ5jn8EhEgFeuc0x1Oo7WpLfJLPvCQryAgVA4nA0Pm7nLlKyqqiSXRjo8NmfQd8McI0NAqaR2gZ2JhqJtZKvtHnVTGP0wZQVKQaOeDrxD/eezS2Y/jUervQvaWdI7vNLExj9c3vKXH9Hk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dRyIJ+iW; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1724880955; x=1756416955;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=61XA5LoekClLafVJAXsbMI9LoIYvALcf6wcbqa+CLOo=;
+  b=dRyIJ+iWqXJpdP06734sD9CQGPcVU/sWjoa78axIWiECIkCfrW651bwf
+   VGUvuEaoxHwzsNn66iWOHoKbSS3dgV5FwE/rBHWnH2RvcaK9gQ+x/s151
+   pvUJKTN91m3k4Tv9uuZs5Z0Em2boJnwMbCL0uNpgDG10MIALleglUN+q/
+   5yCuPI0hyKdhDWeH1Y77N48UwEJnwcdCgWHFOROcjielJIpPbhyvLzoFW
+   tvW6HOVrH44mwEt79Iw/+CiGbp51LS1DU8JSYU9gURQll2tGKYiVI3DqM
+   a9kS37N6XmVjGQo/3t4J40zwSjotTrZcBPpQjtU+tdlnwxVLPZxP9rkHS
+   Q==;
+X-CSE-ConnectionGUID: GmFsSjK3SP6d1EFT6qrWVQ==
+X-CSE-MsgGUID: QzMPV4BhSeeRMDGbXYV1AQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11178"; a="34099575"
+X-IronPort-AV: E=Sophos;i="6.10,184,1719903600"; 
+   d="scan'208";a="34099575"
+Received: from fmviesa010.fm.intel.com ([10.60.135.150])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 28 Aug 2024 14:34:33 -0700
+X-CSE-ConnectionGUID: Hu0aOdQAToioz1Z0oV4wdA==
+X-CSE-MsgGUID: TrQDYRYjSYa88qyP86fbSg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,184,1719903600"; 
+   d="scan'208";a="63545621"
+Received: from lkp-server01.sh.intel.com (HELO 9a732dc145d3) ([10.239.97.150])
+  by fmviesa010.fm.intel.com with ESMTP; 28 Aug 2024 14:34:31 -0700
+Received: from kbuild by 9a732dc145d3 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sjQJB-000LNq-05;
+	Wed, 28 Aug 2024 21:34:29 +0000
+Date: Thu, 29 Aug 2024 05:34:09 +0800
+From: kernel test robot <lkp@intel.com>
+To: Li Zetao <lizetao1@huawei.com>, tytso@mit.edu, adilger.kernel@dilger.ca
+Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
+	lizetao1@huawei.com, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH -next 3/3] ext4: Use scoped()/scoped_guard() to drop
+ rcu_read_lock()/unlock pair
+Message-ID: <202408290407.XQuWf1oH-lkp@intel.com>
+References: <20240823061824.3323522-4-lizetao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -109,172 +79,169 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240827065123.1762168-4-hch@lst.de>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[13];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email,imap1.dmz-prg2.suse.org:helo,lst.de:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+In-Reply-To: <20240823061824.3323522-4-lizetao1@huawei.com>
 
-On Tue 27-08-24 08:50:47, Christoph Hellwig wrote:
-> The fallocate system call takes a mode argument, but that argument
-> contains a wild mix of exclusive modes and an optional flags.
-> 
-> Replace FALLOC_FL_SUPPORTED_MASK with FALLOC_FL_MODE_MASK, which excludes
-> the optional flag bit, so that we can use switch statement on the value
-> to easily enumerate the cases while getting the check for duplicate modes
-> for free.
-> 
-> To make this (and in the future the file system implementations) more
-> readable also add a symbolic name for the 0 mode used to allocate blocks.
-> 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+Hi Li,
 
-Looks good. Feel free to add:
+kernel test robot noticed the following build warnings:
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+[auto build test WARNING on next-20240823]
 
-								Honza
+url:    https://github.com/intel-lab-lkp/linux/commits/Li-Zetao/ext4-Use-scoped-scoped_guard-to-drop-read_lock-unlock-pair/20240826-123331
+base:   next-20240823
+patch link:    https://lore.kernel.org/r/20240823061824.3323522-4-lizetao1%40huawei.com
+patch subject: [PATCH -next 3/3] ext4: Use scoped()/scoped_guard() to drop rcu_read_lock()/unlock pair
+config: s390-allmodconfig (https://download.01.org/0day-ci/archive/20240829/202408290407.XQuWf1oH-lkp@intel.com/config)
+compiler: clang version 20.0.0git (https://github.com/llvm/llvm-project 08e5a1de8227512d4774a534b91cb2353cef6284)
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240829/202408290407.XQuWf1oH-lkp@intel.com/reproduce)
 
-> ---
->  fs/open.c                   | 51 ++++++++++++++++++-------------------
->  include/linux/falloc.h      | 18 ++++++++-----
->  include/uapi/linux/falloc.h |  1 +
->  3 files changed, 38 insertions(+), 32 deletions(-)
-> 
-> diff --git a/fs/open.c b/fs/open.c
-> index 22adbef7ecc2a6..daf1b55ca8180b 100644
-> --- a/fs/open.c
-> +++ b/fs/open.c
-> @@ -252,40 +252,39 @@ int vfs_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  	if (offset < 0 || len <= 0)
->  		return -EINVAL;
->  
-> -	/* Return error if mode is not supported */
-> -	if (mode & ~FALLOC_FL_SUPPORTED_MASK)
-> +	if (mode & ~(FALLOC_FL_MODE_MASK | FALLOC_FL_KEEP_SIZE))
->  		return -EOPNOTSUPP;
->  
-> -	/* Punch hole and zero range are mutually exclusive */
-> -	if ((mode & (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE)) ==
-> -	    (FALLOC_FL_PUNCH_HOLE | FALLOC_FL_ZERO_RANGE))
-> -		return -EOPNOTSUPP;
-> -
-> -	/* Punch hole must have keep size set */
-> -	if ((mode & FALLOC_FL_PUNCH_HOLE) &&
-> -	    !(mode & FALLOC_FL_KEEP_SIZE))
-> +	/*
-> +	 * Modes are exclusive, even if that is not obvious from the encoding
-> +	 * as bit masks and the mix with the flag in the same namespace.
-> +	 *
-> +	 * To make things even more complicated, FALLOC_FL_ALLOCATE_RANGE is
-> +	 * encoded as no bit set.
-> +	 */
-> +	switch (mode & FALLOC_FL_MODE_MASK) {
-> +	case FALLOC_FL_ALLOCATE_RANGE:
-> +	case FALLOC_FL_UNSHARE_RANGE:
-> +	case FALLOC_FL_ZERO_RANGE:
-> +		break;
-> +	case FALLOC_FL_PUNCH_HOLE:
-> +		if (!(mode & FALLOC_FL_KEEP_SIZE))
-> +			return -EOPNOTSUPP;
-> +		break;
-> +	case FALLOC_FL_COLLAPSE_RANGE:
-> +	case FALLOC_FL_INSERT_RANGE:
-> +		if (mode & FALLOC_FL_KEEP_SIZE)
-> +			return -EOPNOTSUPP;
-> +		break;
-> +	default:
->  		return -EOPNOTSUPP;
-> -
-> -	/* Collapse range should only be used exclusively. */
-> -	if ((mode & FALLOC_FL_COLLAPSE_RANGE) &&
-> -	    (mode & ~FALLOC_FL_COLLAPSE_RANGE))
-> -		return -EINVAL;
-> -
-> -	/* Insert range should only be used exclusively. */
-> -	if ((mode & FALLOC_FL_INSERT_RANGE) &&
-> -	    (mode & ~FALLOC_FL_INSERT_RANGE))
-> -		return -EINVAL;
-> -
-> -	/* Unshare range should only be used with allocate mode. */
-> -	if ((mode & FALLOC_FL_UNSHARE_RANGE) &&
-> -	    (mode & ~(FALLOC_FL_UNSHARE_RANGE | FALLOC_FL_KEEP_SIZE)))
-> -		return -EINVAL;
-> +	}
->  
->  	if (!(file->f_mode & FMODE_WRITE))
->  		return -EBADF;
->  
->  	/*
-> -	 * We can only allow pure fallocate on append only files
-> +	 * On append-only files only space preallocation is supported.
->  	 */
->  	if ((mode & ~FALLOC_FL_KEEP_SIZE) && IS_APPEND(inode))
->  		return -EPERM;
-> diff --git a/include/linux/falloc.h b/include/linux/falloc.h
-> index f3f0b97b167579..3f49f3df6af5fb 100644
-> --- a/include/linux/falloc.h
-> +++ b/include/linux/falloc.h
-> @@ -25,12 +25,18 @@ struct space_resv {
->  #define FS_IOC_UNRESVSP64	_IOW('X', 43, struct space_resv)
->  #define FS_IOC_ZERO_RANGE	_IOW('X', 57, struct space_resv)
->  
-> -#define	FALLOC_FL_SUPPORTED_MASK	(FALLOC_FL_KEEP_SIZE |		\
-> -					 FALLOC_FL_PUNCH_HOLE |		\
-> -					 FALLOC_FL_COLLAPSE_RANGE |	\
-> -					 FALLOC_FL_ZERO_RANGE |		\
-> -					 FALLOC_FL_INSERT_RANGE |	\
-> -					 FALLOC_FL_UNSHARE_RANGE)
-> +/*
-> + * Mask of all supported fallocate modes.  Only one can be set at a time.
-> + *
-> + * In addition to the mode bit, the mode argument can also encode flags.
-> + * FALLOC_FL_KEEP_SIZE is the only supported flag so far.
-> + */
-> +#define FALLOC_FL_MODE_MASK	(FALLOC_FL_ALLOCATE_RANGE |	\
-> +				 FALLOC_FL_PUNCH_HOLE |		\
-> +				 FALLOC_FL_COLLAPSE_RANGE |	\
-> +				 FALLOC_FL_ZERO_RANGE |		\
-> +				 FALLOC_FL_INSERT_RANGE |	\
-> +				 FALLOC_FL_UNSHARE_RANGE)
->  
->  /* on ia32 l_start is on a 32-bit boundary */
->  #if defined(CONFIG_X86_64)
-> diff --git a/include/uapi/linux/falloc.h b/include/uapi/linux/falloc.h
-> index 51398fa57f6cdf..5810371ed72bbd 100644
-> --- a/include/uapi/linux/falloc.h
-> +++ b/include/uapi/linux/falloc.h
-> @@ -2,6 +2,7 @@
->  #ifndef _UAPI_FALLOC_H_
->  #define _UAPI_FALLOC_H_
->  
-> +#define FALLOC_FL_ALLOCATE_RANGE 0x00 /* allocate range */
->  #define FALLOC_FL_KEEP_SIZE	0x01 /* default is extend size */
->  #define FALLOC_FL_PUNCH_HOLE	0x02 /* de-allocates range */
->  #define FALLOC_FL_NO_HIDE_STALE	0x04 /* reserved codepoint */
-> -- 
-> 2.43.0
-> 
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202408290407.XQuWf1oH-lkp@intel.com/
+
+All warnings (new ones prefixed by >>):
+
+   In file included from fs/ext4/mballoc.c:12:
+   In file included from fs/ext4/ext4_jbd2.h:16:
+   In file included from include/linux/jbd2.h:23:
+   In file included from include/linux/buffer_head.h:12:
+   In file included from include/linux/blk_types.h:10:
+   In file included from include/linux/bvec.h:10:
+   In file included from include/linux/highmem.h:10:
+   In file included from include/linux/mm.h:2202:
+   include/linux/vmstat.h:504:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     504 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     505 |                            item];
+         |                            ~~~~
+   include/linux/vmstat.h:511:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     511 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     512 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+   include/linux/vmstat.h:518:36: warning: arithmetic between different enumeration types ('enum node_stat_item' and 'enum lru_list') [-Wenum-enum-conversion]
+     518 |         return node_stat_name(NR_LRU_BASE + lru) + 3; // skip "nr_"
+         |                               ~~~~~~~~~~~ ^ ~~~
+   include/linux/vmstat.h:524:43: warning: arithmetic between different enumeration types ('enum zone_stat_item' and 'enum numa_stat_item') [-Wenum-enum-conversion]
+     524 |         return vmstat_text[NR_VM_ZONE_STAT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~ ^
+     525 |                            NR_VM_NUMA_EVENT_ITEMS +
+         |                            ~~~~~~~~~~~~~~~~~~~~~~
+>> fs/ext4/mballoc.c:3470:2: warning: label followed by a declaration is a C23 extension [-Wc23-extensions]
+    3470 |         guard(rcu)();
+         |         ^
+   include/linux/cleanup.h:303:2: note: expanded from macro 'guard'
+     303 |         CLASS(_name, __UNIQUE_ID(guard))
+         |         ^
+   include/linux/cleanup.h:258:2: note: expanded from macro 'CLASS'
+     258 |         class_##_name##_t var __cleanup(class_##_name##_destructor) =   \
+         |         ^
+   <scratch space>:94:1: note: expanded from here
+      94 | class_rcu_t
+         | ^
+   5 warnings generated.
+
+Kconfig warnings: (for reference only)
+   WARNING: unmet direct dependencies detected for OMAP2PLUS_MBOX
+   Depends on [n]: MAILBOX [=y] && (ARCH_OMAP2PLUS || ARCH_K3)
+   Selected by [m]:
+   - TI_K3_M4_REMOTEPROC [=m] && REMOTEPROC [=y] && (ARCH_K3 || COMPILE_TEST [=y])
+
+
+vim +3470 fs/ext4/mballoc.c
+
+  3386	
+  3387	static int ext4_mb_init_backend(struct super_block *sb)
+  3388	{
+  3389		ext4_group_t ngroups = ext4_get_groups_count(sb);
+  3390		ext4_group_t i;
+  3391		struct ext4_sb_info *sbi = EXT4_SB(sb);
+  3392		int err;
+  3393		struct ext4_group_desc *desc;
+  3394		struct ext4_group_info ***group_info;
+  3395		struct kmem_cache *cachep;
+  3396	
+  3397		err = ext4_mb_alloc_groupinfo(sb, ngroups);
+  3398		if (err)
+  3399			return err;
+  3400	
+  3401		sbi->s_buddy_cache = new_inode(sb);
+  3402		if (sbi->s_buddy_cache == NULL) {
+  3403			ext4_msg(sb, KERN_ERR, "can't get new inode");
+  3404			goto err_freesgi;
+  3405		}
+  3406		/* To avoid potentially colliding with an valid on-disk inode number,
+  3407		 * use EXT4_BAD_INO for the buddy cache inode number.  This inode is
+  3408		 * not in the inode hash, so it should never be found by iget(), but
+  3409		 * this will avoid confusion if it ever shows up during debugging. */
+  3410		sbi->s_buddy_cache->i_ino = EXT4_BAD_INO;
+  3411		EXT4_I(sbi->s_buddy_cache)->i_disksize = 0;
+  3412		for (i = 0; i < ngroups; i++) {
+  3413			cond_resched();
+  3414			desc = ext4_get_group_desc(sb, i, NULL);
+  3415			if (desc == NULL) {
+  3416				ext4_msg(sb, KERN_ERR, "can't read descriptor %u", i);
+  3417				goto err_freebuddy;
+  3418			}
+  3419			if (ext4_mb_add_groupinfo(sb, i, desc) != 0)
+  3420				goto err_freebuddy;
+  3421		}
+  3422	
+  3423		if (ext4_has_feature_flex_bg(sb)) {
+  3424			/* a single flex group is supposed to be read by a single IO.
+  3425			 * 2 ^ s_log_groups_per_flex != UINT_MAX as s_mb_prefetch is
+  3426			 * unsigned integer, so the maximum shift is 32.
+  3427			 */
+  3428			if (sbi->s_es->s_log_groups_per_flex >= 32) {
+  3429				ext4_msg(sb, KERN_ERR, "too many log groups per flexible block group");
+  3430				goto err_freebuddy;
+  3431			}
+  3432			sbi->s_mb_prefetch = min_t(uint, 1 << sbi->s_es->s_log_groups_per_flex,
+  3433				BLK_MAX_SEGMENT_SIZE >> (sb->s_blocksize_bits - 9));
+  3434			sbi->s_mb_prefetch *= 8; /* 8 prefetch IOs in flight at most */
+  3435		} else {
+  3436			sbi->s_mb_prefetch = 32;
+  3437		}
+  3438		if (sbi->s_mb_prefetch > ext4_get_groups_count(sb))
+  3439			sbi->s_mb_prefetch = ext4_get_groups_count(sb);
+  3440		/*
+  3441		 * now many real IOs to prefetch within a single allocation at
+  3442		 * CR_POWER2_ALIGNED. Given CR_POWER2_ALIGNED is an CPU-related
+  3443		 * optimization we shouldn't try to load too many groups, at some point
+  3444		 * we should start to use what we've got in memory.
+  3445		 * with an average random access time 5ms, it'd take a second to get
+  3446		 * 200 groups (* N with flex_bg), so let's make this limit 4
+  3447		 */
+  3448		sbi->s_mb_prefetch_limit = sbi->s_mb_prefetch * 4;
+  3449		if (sbi->s_mb_prefetch_limit > ext4_get_groups_count(sb))
+  3450			sbi->s_mb_prefetch_limit = ext4_get_groups_count(sb);
+  3451	
+  3452		return 0;
+  3453	
+  3454	err_freebuddy:
+  3455		cachep = get_groupinfo_cache(sb->s_blocksize_bits);
+  3456		while (i-- > 0) {
+  3457			struct ext4_group_info *grp = ext4_get_group_info(sb, i);
+  3458	
+  3459			if (grp)
+  3460				kmem_cache_free(cachep, grp);
+  3461		}
+  3462		i = sbi->s_group_info_size;
+  3463		scoped_guard(rcu) {
+  3464			group_info = rcu_dereference(sbi->s_group_info);
+  3465			while (i-- > 0)
+  3466				kfree(group_info[i]);
+  3467		}
+  3468		iput(sbi->s_buddy_cache);
+  3469	err_freesgi:
+> 3470		guard(rcu)();
+  3471		kvfree(rcu_dereference(sbi->s_group_info));
+  3472		return -ENOMEM;
+  3473	}
+  3474	
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
