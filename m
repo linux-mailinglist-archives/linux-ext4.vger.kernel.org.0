@@ -1,72 +1,72 @@
-Return-Path: <linux-ext4+bounces-3958-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3959-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D55F963F32
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 10:55:35 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46B8B963F34
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 10:55:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A224F1C24552
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 08:55:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6447E1C24515
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 08:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15D6518DF80;
-	Thu, 29 Aug 2024 08:54:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 946C518CC18;
+	Thu, 29 Aug 2024 08:54:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ejYJiDfm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PY5Julto"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
+Received: from mail-oa1-f42.google.com (mail-oa1-f42.google.com [209.85.160.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0E2C918DF76;
-	Thu, 29 Aug 2024 08:54:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D5BC18DF90;
+	Thu, 29 Aug 2024 08:54:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724921664; cv=none; b=My0hsLH9M1ilj8Y1rgNGqkR5oJUbdENI5QgNCRZiOrCl1I0YbsmSEugY5vPqzQEvF+fALEE4P2/t5Q80dClvBk8sJ1dYg3AcefGSCWzbmR6pDGbrNVC6zsMFIu3Kj5gkJclvD72VCLdxkbOY1TGVPDEz6npUvc7Ot+xm2R7fJx8=
+	t=1724921668; cv=none; b=lCAudx/wMACznNHYxsRGtUgcXwcpCfjBhF6U/dVy8l1Cvq3X27G8p6Z1rXIV2k/qbN0148RKpvZLQ8zG/Cv9lOPlBx682M4j664UrR3nF7h1H+Eh+EVqIrGw7pPStFq4fqSBHJmy9fHEYAQhU/qhIF5abOI4W7Pn0E7aeJwFnT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724921664; c=relaxed/simple;
-	bh=NuOOl4B0O6SgRCZ9WgyPYfugB0wWSFDZus2Cir+Of/w=;
+	s=arc-20240116; t=1724921668; c=relaxed/simple;
+	bh=aNcuKur2RRGZzm/Cjy5aSYFHQrmqMOaH0SEuz++d644=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ResaqWlSO4EE5Imo2bT20IHXKGwGyS31PWISuMwif1x3AQK49mIctdanm1ghEYaTLV1alFyJDqMjSLIQv0wgojuOQAJgZHI3ZNhCh5j5KoSigoQlwgvmRCH3Uc2lZlPEQ2jendTgc8CuLrbX81mhPjAh+neXDA3JOP7E0DcFRS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ejYJiDfm; arc=none smtp.client-ip=209.85.161.47
+	 MIME-Version; b=suDE38orYHXoWMH/XF1m6ZCiaKw7zx9uTZiIRSuN3tHz/B673nmMxiMiWDhD2T1+EO8bM225hTd+RRxkCGP/BPezWKmjtDl3Uy0x3z4VEFtLgYZCCD4CDCIdJswg/WwU4N77rL09PN11MFCC6glYGyPLG32tYM4mXJnvWUoAISc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PY5Julto; arc=none smtp.client-ip=209.85.160.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5dfa315ffbdso88208eaf.3;
-        Thu, 29 Aug 2024 01:54:22 -0700 (PDT)
+Received: by mail-oa1-f42.google.com with SMTP id 586e51a60fabf-27046394c9bso228909fac.2;
+        Thu, 29 Aug 2024 01:54:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724921662; x=1725526462; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1724921665; x=1725526465; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=drlosV0jYeCTB1hRz+zjdH7bQAKjEiJRmwaFd3cvm/M=;
-        b=ejYJiDfmI4PDnYqHpknF9C7lV5a0FYhoZBhtAn1EL/ebCQgkqVgx+54PV37+9SpZ4j
-         71sx3jvt91lXMar9PuAGDrjVsra3WnPQanFXQnCpkubPQPjcC3jxqIBmGDgXCC9XkwZH
-         DhlGSuvIDLHT82PUFdFfyPofemhegjp+8WAgydcS4YlP2SdA5irb3AwsNyx4UvysXWpw
-         axYlyl1nMWs4Ippa2RANQdabSI4arbFaOrug5darVZFocaTCRKsmOvBNCIPdtSqaMT38
-         GFkz39PNYirAv2WhImJx3JjLGg9g+0r9A1HiG/3UnZX3HbV5m0yLB59M2SPKNQz2XqSI
-         58ag==
+        bh=btC5ManTiMADgBttAYOj92C9j/sYx4TVglTFjwxWLn4=;
+        b=PY5Julto+tUGN2jnPI+5Qv13HLNLP2qm69QdIXpS1ULW4jDOLEc1pcVK5LcWAAluZZ
+         1cLKN5P2pOTkHH/mjlM7mvLJ62Erf15ULfrvHGEhkzXbc34f9EH730bSTELj3z/bUSK+
+         N39yYpUUahPycAQJUp8Fzc57jiv6/4IYT2c5+sCKA+HDoc1pkyJwqxlzN94SPxfMEoKl
+         jhs9YSNRGu7fPGESxBgEL5fFwPv5Z74A65bavs7sufkz19IGC3j9L9GEDdA1Wxw6dqFT
+         orJOY+0NTc/9FXhTYIgTZ0DAUWq4t3d2Sqh/sLCXMydC6B5ftEDyJD4fhJPWwX4GdH1y
+         5tPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724921662; x=1725526462;
+        d=1e100.net; s=20230601; t=1724921665; x=1725526465;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=drlosV0jYeCTB1hRz+zjdH7bQAKjEiJRmwaFd3cvm/M=;
-        b=MLFD455oWpGoegSlKPdCoCmc7nFRR9Af0DULIqpRcnkS9rxKSiFKpG+8Rqf+YEkbyl
-         Z+bml3mTRlU2kybRUsQGA5w17SbZr020gTZu0oHGsmxG9/YpNE7DN/30IR4VD+Jm+FQ7
-         ix9EQsYWCt2GrAy05uUVctHYkgFUJtTfMSd1XLk/os6Elr4E/vgfvmwVra7TxihbDmwT
-         xZ1Uho+RDUc4Ddy6BqCAgsbXrWZSdias9m7MYxLFg2k0+4z3Z5hpJXm8IFu1WHwqKxM2
-         iHVg6hjb8Z8C7aesMJaWJmB6LJ0CANh7Gt0SkJcpVEkFYyZkSZJKvP5wKpR8/bYl+M0X
-         9OMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVKauJVbI5eZhz9h2v+PYSRXqTWGT5nHpNFIpcP9TbJHzKQdtk2/sT4AUvlC3aIDokHnbPsCqRVAXfmD14=@vger.kernel.org
-X-Gm-Message-State: AOJu0YxZsfv83dJTb7BI925KScJkdoR7uxW8vfhXXpCzbxIYP3kGVHJv
-	h7InOL3N/4WY+d/z/mYmVcgj1dU/4sxCBll667QrmVRQ62AYHO7sPCDQFQa1
-X-Google-Smtp-Source: AGHT+IEggqwH7nLJxSjaEa+R5dLu4fGLb8IQ9jxQ7CunzV+LG/ht7+ns54iHM9Nsg8Fng9GlmOCpMA==
-X-Received: by 2002:a05:6870:c150:b0:261:515:d311 with SMTP id 586e51a60fabf-277900c7344mr2295851fac.18.1724921661878;
-        Thu, 29 Aug 2024 01:54:21 -0700 (PDT)
+        bh=btC5ManTiMADgBttAYOj92C9j/sYx4TVglTFjwxWLn4=;
+        b=gTCkn7uwM+RLtSUQ7DVXmQ5aS8gLQUvGwJHEUZXnlCDm6R9A/vUvFT0nHW6HrQBYUL
+         onhb+9BKL4wcZCQc+Ge082ZAyhZLOohEfIAhtYKxI6AizoJmuww2lRWnNz2jR4rvH0tW
+         8RGOncMg/Kb9bZroEomT0HRupctWVz5t+TtS71sfVVwupsCgGr5fJdw41fDEPVYChOm6
+         ezX3LcKJJnEJibbpDemRuX0iT2CnPgDm0pmfz5dyWsTDMMBVVgQnue9KaIw42f4ErFHd
+         dinRP9VCTrGvoXLDjXfeewFvkZRY5eLl2HJdJjBBwrjfg3ir6BmUgw1sQ9phfAYa50x6
+         C9Yg==
+X-Forwarded-Encrypted: i=1; AJvYcCXPwbqhK4tEa1/JnI4AUwRh1ndtz+5AJJWbsAzsaOY8D2uVmFUaXI05R4GmC431ADLP/LIDg/0CcVcqznw=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx3M7aw0EZ1UT82uUxSjemPydt66jDWq10s7GWAr3/s8AJ29rw4
+	lAxNqYY9/yQ6qsrCT6C4zD1pXYAtgW5sgAseqVSjAgfk1+GC2IaF
+X-Google-Smtp-Source: AGHT+IHbXCEbC2Z8aLEcBWY/XDCwEHkdbVwlXzD6o4QrW2kfSK62+R1JGF1wYzZZ1UvagR+LT2h0rQ==
+X-Received: by 2002:a05:6870:6492:b0:268:a79a:be0d with SMTP id 586e51a60fabf-27790367381mr2368382fac.47.1724921665411;
+        Thu, 29 Aug 2024 01:54:25 -0700 (PDT)
 Received: from localhost.localdomain ([163.53.18.10])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715e56e3f95sm708789b3a.176.2024.08.29.01.54.19
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715e56e3f95sm708789b3a.176.2024.08.29.01.54.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 29 Aug 2024 01:54:21 -0700 (PDT)
+        Thu, 29 Aug 2024 01:54:25 -0700 (PDT)
 From: zhangshida <starzhangzsd@gmail.com>
 X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
 To: tytso@mit.edu,
@@ -77,10 +77,11 @@ Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	zhangshida@kylinos.cn,
 	starzhangzsd@gmail.com,
+	Baolin Liu <liubaolin@kylinos.cn>,
 	Jan Kara <jack@suse.cz>
-Subject: [PATCH 2/3] ext4: hoist ext4_block_write_begin and replace the __block_write_begin
-Date: Thu, 29 Aug 2024 16:54:06 +0800
-Message-Id: <20240829085407.3331490-3-zhangshida@kylinos.cn>
+Subject: [PATCH 3/3] ext4: fix a potential assertion failure due to improperly dirtied buffer
+Date: Thu, 29 Aug 2024 16:54:07 +0800
+Message-Id: <20240829085407.3331490-4-zhangshida@kylinos.cn>
 X-Mailer: git-send-email 2.25.1
 In-Reply-To: <20240829085407.3331490-1-zhangshida@kylinos.cn>
 References: <20240829085407.3331490-1-zhangshida@kylinos.cn>
@@ -90,155 +91,210 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
 From: Shida Zhang <zhangshida@kylinos.cn>
 
-Using __block_write_begin() make it inconvenient to journal the
-user data dirty process. We can't tell the block layer maintainer,
-‘Hey, we want to trace the dirty user data in ext4, can we add some
-special code for ext4 in __block_write_begin?’:P
+On an old kernel version(4.19, ext3, data=journal, pagesize=64k),
+an assertion failure will occasionally be triggered by the line below:
+-----------
+jbd2_journal_commit_transaction
+{
+...
+J_ASSERT_BH(bh, !buffer_dirty(bh));
+/*
+* The buffer on BJ_Forget list and not jbddirty means
+...
+}
+-----------
 
-So use ext4_block_write_begin() instead.
+The same condition may also be applied to the lattest kernel version.
 
-The two functions are basically doing the same thing except for the
-fscrypt related code. Remove the unnecessary #ifdef since
-fscrypt_inode_uses_fs_layer_crypto() returns false (and it's known at
-compile time) when !CONFIG_FS_ENCRYPTION.
+When blocksize < pagesize and we truncate a file, there can be buffers in
+the mapping tail page beyond i_size. These buffers will be filed to
+transaction's BJ_Forget list by ext4_journalled_invalidatepage() during
+truncation. When the transaction doing truncate starts committing, we can
+grow the file again. This calls __block_write_begin() which allocates new
+blocks under these buffers in the tail page we go through the branch:
 
-And hoist the ext4_block_write_begin so that it can be used in other
-files.
+                        if (buffer_new(bh)) {
+                                clean_bdev_bh_alias(bh);
+                                if (folio_test_uptodate(folio)) {
+                                        clear_buffer_new(bh);
+                                        set_buffer_uptodate(bh);
+                                        mark_buffer_dirty(bh);
+                                        continue;
+                                }
+                                ...
+                        }
 
+Hence buffers on BJ_Forget list of the committing transaction get marked
+dirty and this triggers the jbd2 assertion.
+
+Teach ext4_block_write_begin() to properly handle files with data
+journalling by avoiding dirtying them directly. Instead of
+folio_zero_new_buffers() we use ext4_journalled_zero_new_buffers() which
+takes care of handling journalling. We also don't need to mark new uptodate
+buffers as dirty in ext4_block_write_begin(). That will be either done
+either by block_commit_write() in case of success or by
+folio_zero_new_buffers() in case of failure.
+
+Reported-by: Baolin Liu <liubaolin@kylinos.cn>
 Suggested-by: Jan Kara <jack@suse.cz>
-Suggested-by: Eric Biggers <ebiggers@kernel.org>
 Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
 ---
- fs/ext4/ext4.h   |  2 ++
- fs/ext4/inline.c | 10 +++++-----
- fs/ext4/inode.c  | 24 +++++-------------------
- 3 files changed, 12 insertions(+), 24 deletions(-)
+ fs/ext4/ext4.h   |  3 ++-
+ fs/ext4/inline.c |  7 ++++---
+ fs/ext4/inode.c  | 41 +++++++++++++++++++++++++++++++++--------
+ 3 files changed, 39 insertions(+), 12 deletions(-)
 
 diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 08acd152261e..5f8257b68190 100644
+index 5f8257b68190..b653bd423b11 100644
 --- a/fs/ext4/ext4.h
 +++ b/fs/ext4/ext4.h
-@@ -3851,6 +3851,8 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+@@ -3851,7 +3851,8 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
  	return buffer_uptodate(bh);
  }
  
-+extern int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
-+				  get_block_t *get_block);
+-extern int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
++extern int ext4_block_write_begin(handle_t *handle, struct folio *folio,
++				  loff_t pos, unsigned len,
+ 				  get_block_t *get_block);
  #endif	/* __KERNEL__ */
  
- #define EFSBADCRC	EBADMSG		/* Bad CRC detected */
 diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index e7a09a99837b..0a1a8431e281 100644
+index 0a1a8431e281..8d5599d5af27 100644
 --- a/fs/ext4/inline.c
 +++ b/fs/ext4/inline.c
-@@ -601,10 +601,10 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
+@@ -601,10 +601,11 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
  		goto out;
  
  	if (ext4_should_dioread_nolock(inode)) {
--		ret = __block_write_begin(&folio->page, from, to,
--					  ext4_get_block_unwritten);
-+		ret = ext4_block_write_begin(folio, from, to,
-+					     ext4_get_block_unwritten);
+-		ret = ext4_block_write_begin(folio, from, to,
++		ret = ext4_block_write_begin(handle, folio, from, to,
+ 					     ext4_get_block_unwritten);
  	} else
--		ret = __block_write_begin(&folio->page, from, to, ext4_get_block);
-+		ret = ext4_block_write_begin(folio, from, to, ext4_get_block);
+-		ret = ext4_block_write_begin(folio, from, to, ext4_get_block);
++		ret = ext4_block_write_begin(handle, folio, from, to,
++					     ext4_get_block);
  
  	if (!ret && ext4_should_journal_data(inode)) {
  		ret = ext4_walk_page_buffers(handle, inode,
-@@ -856,8 +856,8 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+@@ -856,7 +857,7 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
  			goto out;
  	}
  
--	ret = __block_write_begin(&folio->page, 0, inline_size,
--				  ext4_da_get_block_prep);
-+	ret = ext4_block_write_begin(folio, 0, inline_size,
-+				     ext4_da_get_block_prep);
+-	ret = ext4_block_write_begin(folio, 0, inline_size,
++	ret = ext4_block_write_begin(NULL, folio, 0, inline_size,
+ 				     ext4_da_get_block_prep);
  	if (ret) {
  		up_read(&EXT4_I(inode)->xattr_sem);
- 		folio_unlock(folio);
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index a0a55cb8db53..4964c67e029e 100644
+index 4964c67e029e..bc26200b2852 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -1024,10 +1024,10 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 	if (!buffer_mapped(bh) || buffer_freed(bh))
- 		return 0;
- 	/*
--	 * __block_write_begin() could have dirtied some buffers. Clean
-+	 * ext4_block_write_begin() could have dirtied some buffers. Clean
- 	 * the dirty bit as jbd2_journal_get_write_access() could complain
- 	 * otherwise about fs integrity issues. Setting of the dirty bit
--	 * by __block_write_begin() isn't a real problem here as we clear
-+	 * by ext4_block_write_begin() isn't a real problem here as we clear
- 	 * the bit before releasing a page lock and thus writeback cannot
- 	 * ever write the buffer.
- 	 */
-@@ -1041,9 +1041,8 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
+@@ -49,6 +49,11 @@
+ 
+ #include <trace/events/ext4.h>
+ 
++static void ext4_journalled_zero_new_buffers(handle_t *handle,
++					    struct inode *inode,
++					    struct folio *folio,
++					    unsigned from, unsigned to);
++
+ static __u32 ext4_inode_csum(struct inode *inode, struct ext4_inode *raw,
+ 			      struct ext4_inode_info *ei)
+ {
+@@ -1041,7 +1046,8 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
  	return ret;
  }
  
--#ifdef CONFIG_FS_ENCRYPTION
--static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
--				  get_block_t *get_block)
-+int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
-+			   get_block_t *get_block)
+-int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
++int ext4_block_write_begin(handle_t *handle, struct folio *folio,
++			   loff_t pos, unsigned len,
+ 			   get_block_t *get_block)
  {
  	unsigned from = pos & (PAGE_SIZE - 1);
- 	unsigned to = from + len;
-@@ -1134,7 +1133,6 @@ static int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+@@ -1055,6 +1061,7 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+ 	struct buffer_head *bh, *head, *wait[2];
+ 	int nr_wait = 0;
+ 	int i;
++	bool should_journal_data = ext4_should_journal_data(inode);
  
- 	return err;
- }
--#endif
- 
- /*
-  * To preserve ordering, it is essential that the hole instantiation and
-@@ -1216,19 +1214,11 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- 	/* In case writeback began while the folio was unlocked */
+ 	BUG_ON(!folio_test_locked(folio));
+ 	BUG_ON(from > PAGE_SIZE);
+@@ -1083,11 +1090,22 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+ 			err = get_block(inode, block, bh, 1);
+ 			if (err)
+ 				break;
++			/*
++			 * We may be zeroing partial buffers or all new
++			 * buffers in case of failure. Prepare JBD2 for
++			 * that.
++			 */
++			if (should_journal_data)
++				do_journal_get_write_access(handle, inode, bh);
+ 			if (buffer_new(bh)) {
+ 				if (folio_test_uptodate(folio)) {
+-					clear_buffer_new(bh);
++					/*
++					 * Unlike __block_write_begin() we leave
++					 * dirtying of new uptodate buffers to
++					 * ->write_end() time or
++					 * folio_zero_new_buffers().
++					 */
+ 					set_buffer_uptodate(bh);
+-					mark_buffer_dirty(bh);
+ 					continue;
+ 				}
+ 				if (block_end > to || block_start < from)
+@@ -1117,7 +1135,11 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+ 			err = -EIO;
+ 	}
+ 	if (unlikely(err)) {
+-		folio_zero_new_buffers(folio, from, to);
++		if (should_journal_data)
++			ext4_journalled_zero_new_buffers(handle, inode, folio,
++							 from, to);
++		else
++			folio_zero_new_buffers(folio, from, to);
+ 	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+ 		for (i = 0; i < nr_wait; i++) {
+ 			int err2;
+@@ -1215,10 +1237,11 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
  	folio_wait_stable(folio);
  
--#ifdef CONFIG_FS_ENCRYPTION
  	if (ext4_should_dioread_nolock(inode))
- 		ret = ext4_block_write_begin(folio, pos, len,
+-		ret = ext4_block_write_begin(folio, pos, len,
++		ret = ext4_block_write_begin(handle, folio, pos, len,
  					     ext4_get_block_unwritten);
  	else
- 		ret = ext4_block_write_begin(folio, pos, len, ext4_get_block);
--#else
--	if (ext4_should_dioread_nolock(inode))
--		ret = __block_write_begin(&folio->page, pos, len,
--					  ext4_get_block_unwritten);
--	else
--		ret = __block_write_begin(&folio->page, pos, len, ext4_get_block);
--#endif
+-		ret = ext4_block_write_begin(folio, pos, len, ext4_get_block);
++		ret = ext4_block_write_begin(handle, folio, pos, len,
++					     ext4_get_block);
  	if (!ret && ext4_should_journal_data(inode)) {
  		ret = ext4_walk_page_buffers(handle, inode,
  					     folio_buffers(folio), from, to,
-@@ -1241,7 +1231,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
- 
- 		folio_unlock(folio);
- 		/*
--		 * __block_write_begin may have instantiated a few blocks
-+		 * ext4_block_write_begin may have instantiated a few blocks
- 		 * outside i_size.  Trim these off again. Don't need
- 		 * i_size_read because we hold i_rwsem.
- 		 *
-@@ -2961,11 +2951,7 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
+@@ -2951,7 +2974,8 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
  	if (IS_ERR(folio))
  		return PTR_ERR(folio);
  
--#ifdef CONFIG_FS_ENCRYPTION
- 	ret = ext4_block_write_begin(folio, pos, len, ext4_da_get_block_prep);
--#else
--	ret = __block_write_begin(&folio->page, pos, len, ext4_da_get_block_prep);
--#endif
+-	ret = ext4_block_write_begin(folio, pos, len, ext4_da_get_block_prep);
++	ret = ext4_block_write_begin(NULL, folio, pos, len,
++				     ext4_da_get_block_prep);
  	if (ret < 0) {
  		folio_unlock(folio);
  		folio_put(folio);
+@@ -6205,7 +6229,8 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+ 		if (folio_pos(folio) + len > size)
+ 			len = size - folio_pos(folio);
+ 
+-		err = __block_write_begin(&folio->page, 0, len, ext4_get_block);
++		err = ext4_block_write_begin(handle, folio, 0, len,
++					     ext4_get_block);
+ 		if (!err) {
+ 			ret = VM_FAULT_SIGBUS;
+ 			if (ext4_journal_folio_buffers(handle, folio, len))
 -- 
 2.33.0
 
