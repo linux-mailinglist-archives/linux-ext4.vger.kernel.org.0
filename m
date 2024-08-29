@@ -1,218 +1,140 @@
-Return-Path: <linux-ext4+bounces-3951-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3952-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBCB09637FE
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 03:50:52 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C210896388A
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 05:03:44 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B1B91F23EEB
-	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 01:50:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4B1951F23B32
+	for <lists+linux-ext4@lfdr.de>; Thu, 29 Aug 2024 03:03:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91F5122EF2;
-	Thu, 29 Aug 2024 01:50:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EBDE45979;
+	Thu, 29 Aug 2024 03:03:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gH737kW8"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="zV8Q8Kv0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 85AE68814;
-	Thu, 29 Aug 2024 01:50:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BCD43A1BA
+	for <linux-ext4@vger.kernel.org>; Thu, 29 Aug 2024 03:03:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724896245; cv=none; b=HMQtXrqJUGwezUiRFkkdOU6Q8fE70N0Ao2HZmq+tIVlsgL1u0pSp3Kyhus6Otk1OVdz7Cg7s5qP2B/goeuaP7+y/JfWanmTFZDFApHVyth1BcYXzwdcWSFrqFyW1dSm8/Iuo7A8D/Fo0p8JQiZJKCn7IpRlLiCyUbnnzDelvfGo=
+	t=1724900617; cv=none; b=jfpGOd9dXvTqzKtxsvS9uMXdPz3aLLRxEDemmV1COQyHuRoOwns5IH55TedcsXWVTVOyOje3KNMqMGlYxNCjRovsvRZxv5mwHig/oj5zzZEe4nJVeCcqOBheVM7g/gjJ8xkK1n1Y6uSFmHvm6L6usO4o3EJQFi2LDf4LoflKFBM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724896245; c=relaxed/simple;
-	bh=A7OpZthYOELSDV1dYFWj78rfBJLsOOtrDuntA6Vi2Nk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EPGQF6MjV+qGwOAqQM56JoClYcdgI9eJQyEGRTQaooNPea96gheIeMY/UflAyA6kve/RJonLf96zEP/64l83ltVyQU1SNc1ijipOnkDrYtERYzbO6Zy4MYXmh/2qVaCG6iYehDINYeqlNe1RrN2vmtI2fq4FAGsryDcLYAXhEnc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gH737kW8; arc=none smtp.client-ip=209.85.160.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-4567edb7dceso689771cf.1;
-        Wed, 28 Aug 2024 18:50:43 -0700 (PDT)
+	s=arc-20240116; t=1724900617; c=relaxed/simple;
+	bh=Y5TFWF6UZ5bQXyp+AvYM1eMv+pzyDjlsxCBBIQxDZRI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gbIRsnJwmxKTCHlXI3RINpTwuHQm+KSfpdHz6BwUewmkwNfF4CiydbD7UJoA2qgX5ekVqkOnJdTIUm9/fU1SVIC2Bwymo1kVqo81dtvTp8OWiaxhD220sKxeD89++Jkese2gbogzi2D1odkxa44mzLNe1tPfsTb52mYrYLIQNnQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=zV8Q8Kv0; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-70cec4aa1e4so129438b3a.1
+        for <linux-ext4@vger.kernel.org>; Wed, 28 Aug 2024 20:03:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1724896242; x=1725501042; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=i9uj9LVLu2Gy8UKo+nGuraOXO0NSHj32TkuRI+BSWlA=;
-        b=gH737kW8XY5OYcK0JGTy9oLtmDEiKpTWdR2dU06eOK7OnGVEtc13JEGYG9VG/hWHoQ
-         njoSQ9Bow94yZtebFN5vF8NVYASVur0VfHPhMv/2jwxYDqyUiJsZOYhYViRhwk8CyWaP
-         UkP9/Gn2cDKQc3q7zYV2XT7g1t4clrGn0hruMmmffTX8tR/fD+l+fMRoFhCVad5UF5UP
-         PovF4jjApi9DmcCvMbQ2SXWrI3AFX2XbD0yeX+BCsG3e09hevcem18MfFXiy2Vp4Re8x
-         mNCGLJzgYDvoWNQe0l6Es2pbWtoTj5+gKfetepglc6Afbu2laUiLkj3sNlP95wuOUumu
-         hFmA==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1724900615; x=1725505415; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=9/z6toI6voQ0IKlbU4L2/8KMYJeJaGPdDqgqk9fjkIQ=;
+        b=zV8Q8Kv0tREVC0ieTlWeVUwMPIx0Jj6eJlilhSO2ALZjaw7oDA2tJfsWPGudI1y4DB
+         WVWF6mEal/8hog63XImi5GyT9c6nXbOd//00lRGA+jJVyZZbuZjNy4y9GnQrf0L4Dnc/
+         hce6YvhGkVm/D9tCqB1R9AUvH6irJMDi6gvJAM500CjcONe4t03oo0OlY00nwqkGN3OB
+         BpBb+VB1/dB3Rmf7O+kITD9xPRO5vnGddjYtPkNc1QxM1tvzHAZM8L/ZKDdNTJ1ZREPD
+         Ajq2oxokP+SuyTC2nTBq70/1RalT3h9RV051mPOswWX6iSUUbkB+nQcuXBpnCSY3mB3E
+         MvoA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1724896242; x=1725501042;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=i9uj9LVLu2Gy8UKo+nGuraOXO0NSHj32TkuRI+BSWlA=;
-        b=UdeuaLZyyxCaUOGMP0EVdAXGkwK2IkvNYePN3kkLUpJKIROZjNwSyBDnFgUnjFcH9u
-         qPYvV0wnt4hUxsY/sXznyNlf18i3bJNaGpn1PNrhffW2jsocRfZxzQoj4nlC8hpYH6io
-         mC9aOHslIFLrEqt4e0uU1QJBm+xTNjqLoV1J5JHsGNbY5SAAC6goNA1lmj6O7a+D3yxM
-         osbtgAFE62iGqz6MF9chUzvix64n44ZGtmTxL75ytmwqsyfHfCm6miKeexod1iyGB33r
-         ToMmT7Ycee0yqAPNnw1mr4sOV44JyVw9dhzzU5t7kxX27H2di8gY/MVmwIzAhjhqtslO
-         ZqQA==
-X-Forwarded-Encrypted: i=1; AJvYcCU+pIkaEP1rCrbI0nWbfBAvovgnUxXRWRR06sMUUM8o1Vb1tawMsvNwXGOiQZ9YpD8Ox4fJJ1IGlh25@vger.kernel.org, AJvYcCX34QY10J4tliiQJKfzqdpj5a/CgJfZjWB1mAWwES4UqdbzoNX3LfoIuUHcJJW8s5xjxaBAT/yu7MmaqvRp@vger.kernel.org
-X-Gm-Message-State: AOJu0YwOEYuPMFIYwnCmDyrhQHFEAIn7kF0+Hho83pAnrKnEtDp3cTOH
-	AlpTkZ5jtUx+uUwnc8UhKpcJMEyiv1ZK9PEi9ZBb9xwUwIyH/2FE9JDR7noJY7eDrQt6FLVXQAo
-	nQCz+Ni8F1ioRb0rIEkUQ7ijFXYs=
-X-Google-Smtp-Source: AGHT+IHiDSVszR82FWP7/ERRIUgyKLBr56ZY/HeJ2w/l5jRq1MWvPDKR1Tvo4nA3iaSEmFrrPg4+LcoezKlvxH48DUo=
-X-Received: by 2002:a05:622a:114e:b0:456:6264:1c27 with SMTP id
- d75a77b69052e-4567f6dc44emr16192911cf.40.1724896242286; Wed, 28 Aug 2024
- 18:50:42 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1724900615; x=1725505415;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9/z6toI6voQ0IKlbU4L2/8KMYJeJaGPdDqgqk9fjkIQ=;
+        b=J2A11ai911PxbUFQ/05+ea+VHlDHprLQjSMJ+pn/RBQbpoHc2HZ2eVTEJv8wtFmroe
+         a0OKkBKrjFwksp4oMJHrwcfragrULN/V7QKRKnJk9EY1nEGGU92/4tOOzK8OhgaUNZ3I
+         o3xs/UBHT2VZg2+EVkAVL27lhMGQ3v7PGp32L3WDThje4epA1MrUT7zUaayf3TugiNoV
+         VTkxbpx2hZbcoHYwU71ibwvgVpXqO+uxfz3HHHPp3Ln3xSJSyi8lyZHj41dZGZ2zCoSS
+         Md7i+vF7W2T6l3JPQYiI3gXsV586goRSbquOPmMUAbg7tc7WqeKEpLmh2q5PQXWt1XGR
+         nfQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVCBFJCzWsAHDbUQ9Km6+h5MwNmH8WYMriLsxYIKvXGUp4OIVuFxmtGtP+8pEdKlBNGqjx7ufXNRbHf@vger.kernel.org
+X-Gm-Message-State: AOJu0YwGUWC+h4SKKexiICAr67r5mhhVW17d+pzM6hyiNuOvttbmOCKS
+	aNB9yLksS9cMfWjKH4Z/1W/QJe42wnUKayQD2nOLgKPKLsjAzRWWnr5YAGIKss8=
+X-Google-Smtp-Source: AGHT+IGsjijU+KkW6jFzBT/TWTjdXr9y3F1MJJ71ZQJHmm+Lxp/ogvEjvW4gS5LrA1D6exxUROszQg==
+X-Received: by 2002:a05:6a21:10a:b0:1c3:b143:303b with SMTP id adf61e73a8af0-1cce111d93emr1276501637.54.1724900614723;
+        Wed, 28 Aug 2024 20:03:34 -0700 (PDT)
+Received: from dread.disaster.area (pa49-179-0-65.pa.nsw.optusnet.com.au. [49.179.0.65])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-205152cd8d6sm1780325ad.71.2024.08.28.20.03.34
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 28 Aug 2024 20:03:34 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1sjVRb-00GS83-3A;
+	Thu, 29 Aug 2024 13:03:32 +1000
+Date: Thu, 29 Aug 2024 13:03:31 +1000
+From: Dave Chinner <david@fromorbit.com>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	Brian Foster <bfoster@redhat.com>, Jens Axboe <axboe@kernel.dk>,
+	Jan Kara <jack@suse.cz>, "Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>, linux-block@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 4/6] xfs: call xfs_flush_unmap_range from
+ xfs_free_file_space
+Message-ID: <Zs/lA5FJoF0Zd9Ip@dread.disaster.area>
+References: <20240827065123.1762168-1-hch@lst.de>
+ <20240827065123.1762168-5-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240823013329.1996741-1-zhangshida@kylinos.cn>
- <20240823013329.1996741-3-zhangshida@kylinos.cn> <20240828114513.bzccvcalexwge4d7@quack3>
-In-Reply-To: <20240828114513.bzccvcalexwge4d7@quack3>
-From: Stephen Zhang <starzhangzsd@gmail.com>
-Date: Thu, 29 Aug 2024 09:50:06 +0800
-Message-ID: <CANubcdUZpf1DOVYnqjYBYCYB0J0D=3vk+efC-T98gpO=hPgD4A@mail.gmail.com>
-Subject: Re: [PATCH 2/2] ext4: fix a potential assertion failure due to
- improperly dirtied buffer
-To: Jan Kara <jack@suse.cz>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	zhangshida@kylinos.cn, Baolin Liu <liubaolin@kylinos.cn>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240827065123.1762168-5-hch@lst.de>
 
-Jan Kara <jack@suse.cz> =E4=BA=8E2024=E5=B9=B48=E6=9C=8828=E6=97=A5=E5=91=
-=A8=E4=B8=89 19:45=E5=86=99=E9=81=93=EF=BC=9A
->
-> On Fri 23-08-24 09:33:29, zhangshida wrote:
-> > From: Shida Zhang <zhangshida@kylinos.cn>
-> >
-> > On an old kernel version(4.19, ext3, data=3Djournal, pagesize=3D64k),
-> > an assertion failure will occasionally be triggered by the line below:
-> > -----------
-> > jbd2_journal_commit_transaction
-> > {
-> > ...
-> > J_ASSERT_BH(bh, !buffer_dirty(bh));
-> > /*
-> > * The buffer on BJ_Forget list and not jbddirty means
-> > ...
-> > }
-> > -----------
-> >
-> > The same condition may also be applied to the lattest kernel version.
-> >
-> > When blocksize < pagesize and we truncate a file, there can be buffers =
-in
-> > the mapping tail page beyond i_size. These buffers will be filed to
-> > transaction's BJ_Forget list by ext4_journalled_invalidatepage() during
-> > truncation. When the transaction doing truncate starts committing, we c=
-an
-> > grow the file again. This calls __block_write_begin() which allocates n=
-ew
-> > blocks under these buffers in the tail page we go through the branch:
->                                              ^^ and we...
->
->
-> >                         if (buffer_new(bh)) {
-> >                                 clean_bdev_bh_alias(bh);
-> >                                 if (folio_test_uptodate(folio)) {
-> >                                         clear_buffer_new(bh);
-> >                                         set_buffer_uptodate(bh);
-> >                                         mark_buffer_dirty(bh);
-> >                                         continue;
-> >                                 }
-> >                                 ...
-> >                         }
-> >
-> > Hence buffers on BJ_Forget list of the committing transaction get marke=
-d
-> > dirty and this triggers the jbd2 assertion.
-> >
-> > Teach ext4_block_write_begin() to properly handle files with data
-> > journalling by avoiding dirtying them directly. Instead of
-> > folio_zero_new_buffers() we use ext4_journalled_zero_new_buffers() whic=
-h
-> > takes care of handling journalling. We also don't need to mark new upto=
-date
-> > buffers as dirty in ext4_block_write_begin(). That will be either done
-> > either by block_commit_write() in case of success or by
-> > folio_zero_new_buffers() in case of failure.
-> >
-> > Reported-by: Baolin Liu <liubaolin@kylinos.cn>
-> > Suggested-by: Jan Kara <jack@suse.cz>
-> > Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
->
-> Looks mostly good. Just three small comments:
->
-> > @@ -1083,11 +1090,11 @@ int ext4_block_write_begin(struct folio *folio,=
- loff_t pos, unsigned len,
-> >                       err =3D get_block(inode, block, bh, 1);
-> >                       if (err)
-> >                               break;
->
->
-> > +                     if (should_journal_data)
-> > +                             do_journal_get_write_access(handle, inode=
-, bh);
->
-> I'd move this inside the buffer_new() branch and add before it a comment:
->                         /*
->                          * We may be zeroing partial buffers or all new
->                          * buffers in case of failure. Prepare JBD2 for
->                          * that.
->                          */
->
-> >                       if (buffer_new(bh)) {
-> >                               if (folio_test_uptodate(folio)) {
-> > -                                     clear_buffer_new(bh);
-> >                                       set_buffer_uptodate(bh);
-> > -                                     mark_buffer_dirty(bh);
->
-> Here I'd add comment:
->                                 /*
->                                  * Unlike __block_write_begin() we leave
->                                  * dirtying of new uptodate buffers to
->                                  * ->write_end() time or
->                                  * folio_zero_new_buffers().
->                                  */
->
-> > @@ -1117,7 +1124,11 @@ int ext4_block_write_begin(struct folio *folio, =
-loff_t pos, unsigned len,
-> >                       err =3D -EIO;
-> >       }
-> >       if (unlikely(err)) {
-> > -             folio_zero_new_buffers(folio, from, to);
-> > +             if (should_journal_data)
-> > +                     ext4_journalled_zero_new_buffers(handle, inode, f=
-olio,
-> > +                                                      from, to);
->
-> I've realized there's a small bug in ext4_journalled_zero_new_buffers()
-> that it calls write_end_fn() only if it zeroed a buffer. But for new
-> uptodate buffers we also need to call write_end_fn() to persist the
-> uptodate content (similarly as folio_zero_new_buffers() does it). So we
-> need another preparatory patch moving write_end_fn() in
-> ext4_journalled_zero_new_buffers() to be called also for uptodate pages.
->
+On Tue, Aug 27, 2024 at 08:50:48AM +0200, Christoph Hellwig wrote:
+> Call xfs_flush_unmap_range from xfs_free_file_space so that
+> xfs_file_fallocate doesn't have to predict which mode will call it.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/xfs/xfs_bmap_util.c |  8 ++++++++
+>  fs/xfs/xfs_file.c      | 21 ---------------------
+>  2 files changed, 8 insertions(+), 21 deletions(-)
+> 
+> diff --git a/fs/xfs/xfs_bmap_util.c b/fs/xfs/xfs_bmap_util.c
+> index fe2e2c93097550..187a0dbda24fc4 100644
+> --- a/fs/xfs/xfs_bmap_util.c
+> +++ b/fs/xfs/xfs_bmap_util.c
+> @@ -848,6 +848,14 @@ xfs_free_file_space(
+>  	if (len <= 0)	/* if nothing being freed */
+>  		return 0;
+>  
+> +	/*
+> +	 * Now AIO and DIO has drained we flush and (if necessary) invalidate
+> +	 * the cached range over the first operation we are about to run.
+> +	 */
+> +	error = xfs_flush_unmap_range(ip, offset, len);
+> +	if (error)
+> +		return error;
+> +
+>  	startoffset_fsb = XFS_B_TO_FSB(mp, offset);
+>  	endoffset_fsb = XFS_B_TO_FSBT(mp, offset + len);
 
-Will do. And also thanks for the detailed explanation.
+Ok, so if we ever change the zeroing implementation to not punch a
+hole first, we're going to have to make sure we add this to whatever
+new zeroing implementation we have.
 
--Stephen
+Can you leave a comment in the FALLOC_FL_ZERO_RANGE implementation
+code that notes it currently relies on the xfs_flush_unmap_range()
+in xfs_free_file_space() for correct operation?
 
-> > +             else
-> > +                     folio_zero_new_buffers(folio, from, to);
-> >       }
-> >  #ifdef CONFIG_FS_ENCRYPTION
-> >       else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
->
->                                                                 Honza
-> --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
