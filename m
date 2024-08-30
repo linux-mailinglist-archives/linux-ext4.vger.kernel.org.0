@@ -1,158 +1,167 @@
-Return-Path: <linux-ext4+bounces-3995-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3996-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCBA6966564
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 17:27:12 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7B2AE96693B
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 20:59:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 728771F253A7
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 15:27:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2717C1F248FC
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 18:59:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8C451B5833;
-	Fri, 30 Aug 2024 15:26:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19F691BC099;
+	Fri, 30 Aug 2024 18:59:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tHadyWyn"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="aTJI934K"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 242A3EACD;
-	Fri, 30 Aug 2024 15:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42DF41BAED9
+	for <linux-ext4@vger.kernel.org>; Fri, 30 Aug 2024 18:59:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725031609; cv=none; b=a36Ca15eBWfmfkPpYDBpmfIyKNHimkH0+kPXwEp0POTsqN54ouMc3x69jyB1GX5Ac5gkL8ow1Q2m5BDmZkkq6n81osEGnN6L88e0ac+Y3hPOxY640IHBqSIrG4QsHHBzB+IsVYMihsjf1EwCxhyotQrTAzcNb/nA0VbUu1UaIiA=
+	t=1725044376; cv=none; b=HK4vTX6113+oiVxmqJImAENIYt7tZ1AyM7tiRjrwIlLeyOY2Xeq1jFpDW2kpe9Nc4pMLI5Oj15Ueg21Hf/QSnwkRpwLj6Ip3fPTpKXFQ0BkonnJAuxdIQa4YFWxJ5cWd6VAlMK/GOzugUOcFoi2hwYML+Y4sWlAcu0dMfMn5mJY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725031609; c=relaxed/simple;
-	bh=J0mPR+VW0Y6u0fxLb3eD+gu7vmEOkEYsR8GhSlx6/hM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hJE65WgulL3dhrp38M9z2ChBuZ8PaywJM5Mub728DSn8BHXN+ZYBlzFSZ6eeA2F3ttd8QbvOdaybfAWjg8XBb2hlQbli6Dl2R3bYsYHiUfZgYbRGEpVTMaAzZUgdFcQJWOMKI2um4pt53YCt5gq8ko2kaG9B591QsFiCHQQBB2Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tHadyWyn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8B4B3C4CEC2;
-	Fri, 30 Aug 2024 15:26:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725031608;
-	bh=J0mPR+VW0Y6u0fxLb3eD+gu7vmEOkEYsR8GhSlx6/hM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tHadyWynpBuA2wxOEKHJ/ao2N1vhVavyWR5bkd3PexLJ1n8+uv4/tJjfLo8uluHt6
-	 YzFJpV+aWC0MXw/rL1isPdUYpOKJ+gi3/ugaZq3RBMwmqctgvMdx59LzByBnFnrq3L
-	 y/rxnw7643ELQrv0agtAQCQaq6bO0BZufZKMpA3afh57E1fDUxZsblXkZUwf7WUDzZ
-	 kpB9N5+meldL0EGc7y2xAza7plbnpdMt2YARsPumibxw6xXFfn5iKpn9cwsgRyHFl8
-	 6DS4khO/YrRvnzDlGlKvWOmmpnJGzzPTZUldQzwBtoymELjY7Bn5SXa429ASO397JT
-	 DosHSgrBbYNtA==
-Date: Fri, 30 Aug 2024 08:26:48 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Haifeng Xu <haifeng.xu@shopee.com>, Jeff Layton <jlayton@kernel.org>,
-	Theodore Tso <tytso@mit.edu>, miklos@szeredi.hu,
-	linux-unionfs@vger.kernel.org,
-	linux-fsdevel <linux-fsdevel@vger.kernel.org>,
-	Ext4 <linux-ext4@vger.kernel.org>,
-	fstests <fstests@vger.kernel.org>
-Subject: Re: [PATCH v2] ovl: don't set the superblock's errseq_t manually
-Message-ID: <20240830152648.GE6216@frogsfrogsfrogs>
-References: <CAOQ4uxi4B8JHYHF=yn6OrRZCdkoPUj3-+PuZTZy6iJR7RNWcbA@mail.gmail.com>
- <20240730042008.395716-1-haifeng.xu@shopee.com>
- <CAOQ4uxhs==_-EM+VyJRRCX_NPmYybPDBW2v7cXz33Qt2RMaPnQ@mail.gmail.com>
+	s=arc-20240116; t=1725044376; c=relaxed/simple;
+	bh=1OJeRZgxu3vXyjSqsTNs5iNXEWOriX96q60gDhJ5lW0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FK5ZvG4c2Lr6fSk73wyM23G5la6kzwW7PruUgXY9vI7UEzq2tBv5OQnm0oMtiWr6GX+kVpJlX7Ptr+40IlXRoLnwsM9RLT5FjeE2Yfncp03oavuaHDIvh0OdCrI4i24CJYXhZmkUn6z9YjufC+eOumLnuMz2fvWybwGZICeEVHw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=aTJI934K; arc=none smtp.client-ip=209.85.210.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71433096e89so1861118b3a.3
+        for <linux-ext4@vger.kernel.org>; Fri, 30 Aug 2024 11:59:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1725044374; x=1725649174; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=o2aWYMqpKCTdLGxLYP5Pap8M4aMLNuxyS8EvFXLBpKo=;
+        b=aTJI934KGfj546NaTZvi85upTa58pDg7l59S1RF6OPLvGcyOi5zBHNXxDMNHkIYYGL
+         JeaHx7eS4uDj4WKwz8eXwTVbJM9CdgnpAMPdwzod+SKUciQENJnIhWP8klm+26MejpQd
+         UOYxlp1cW/igubRVW7imElfkvluIFt2w/lsqY=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725044374; x=1725649174;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=o2aWYMqpKCTdLGxLYP5Pap8M4aMLNuxyS8EvFXLBpKo=;
+        b=HrtVT/irnIyfhNA3dYD1Ay0mYY8OjgGiZqTLffa3oDUG+hhaFZeFgJBDUJFVL1P6Kk
+         TZ+/0NUBxiXDNiuSc0HE/M8nrhC40gxIE91CmzfoszE4TqOmya4BcxpQXlwNHLbFeLHy
+         7Ke4W4hUch8CP1xp+xoszZzWcIQ5w3v3bPLC+dTFh9/GxIYo7gkaQyKvE3hud0J1bgzs
+         oeHRMBzqs8BPcFrD4G0qvW8M8KanOM4FSfl6yGKTYrc4eCChJye3iz4iLWwlRU0uBtC9
+         jfS+JgTxyH52nFIkGfW/d1r7Zd9P7/e2iGvk5+IaIOPhlxagjSWLQ82bxMULG2laMUJc
+         PEnw==
+X-Gm-Message-State: AOJu0YyMeoHjs9y4zW+w6Aej+ersfuT3ckz2yORFfDDVx3fQ3KdV5ywg
+	SfkfOJ/bIuFjKAPTKjjigMd/Jc6NA4q3Nq3I+hNbXHue8AAplusWCdNbNG9K5A==
+X-Google-Smtp-Source: AGHT+IFRebUt7dwmU0U9t10aGKLLWURaN1itrXg0J3x1/jgXT1rjgqUltGnyy9DqL55CLZvTC/36bw==
+X-Received: by 2002:a05:6a20:9f05:b0:1be:bfa2:5ac3 with SMTP id adf61e73a8af0-1cece5d136amr460746637.35.1725044374515;
+        Fri, 30 Aug 2024 11:59:34 -0700 (PDT)
+Received: from localhost ([2620:15c:9d:2:f9da:6f24:36e4:560])
+        by smtp.gmail.com with UTF8SMTPSA id d2e1a72fcca58-715e569ededsm3085258b3a.123.2024.08.30.11.59.33
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 30 Aug 2024 11:59:33 -0700 (PDT)
+From: Gwendal Grignou <gwendal@chromium.org>
+To: tytso@mit.edu,
+	uekawa@chromium.org
+Cc: linux-ext4@vger.kernel.org,
+	Gwendal Grignou <gwendal@chromium.org>
+Subject: [PATCH] tune2fs: do not update quota when not needed
+Date: Fri, 30 Aug 2024 11:59:21 -0700
+Message-ID: <20240830185921.2690798-1-gwendal@chromium.org>
+X-Mailer: git-send-email 2.46.0.469.g59c65b2a67-goog
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxhs==_-EM+VyJRRCX_NPmYybPDBW2v7cXz33Qt2RMaPnQ@mail.gmail.com>
 
-On Fri, Aug 30, 2024 at 03:27:35PM +0200, Amir Goldstein wrote:
-> On Tue, Jul 30, 2024 at 6:20 AM Haifeng Xu <haifeng.xu@shopee.com> wrote:
-> >
-> > Since commit 5679897eb104 ("vfs: make sync_filesystem return errors from
-> > ->sync_fs"), the return value from sync_fs callback can be seen in
-> > sync_filesystem(). Thus the errseq_set opreation can be removed here.
-> >
-> > Depends-on: commit 5679897eb104 ("vfs: make sync_filesystem return errors from ->sync_fs")
-> > Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
-> > Reviewed-by: Amir Goldstein <amir73il@gmail.com>
-> > ---
-> > Changes since v1:
-> > - Add Depends-on and Reviewed-by tags.
-> > ---
-> >  fs/overlayfs/super.c | 10 ++--------
-> >  1 file changed, 2 insertions(+), 8 deletions(-)
-> >
-> > diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
-> > index 06a231970cb5..fe511192f83c 100644
-> > --- a/fs/overlayfs/super.c
-> > +++ b/fs/overlayfs/super.c
-> > @@ -202,15 +202,9 @@ static int ovl_sync_fs(struct super_block *sb, int wait)
-> >         int ret;
-> >
-> >         ret = ovl_sync_status(ofs);
-> > -       /*
-> > -        * We have to always set the err, because the return value isn't
-> > -        * checked in syncfs, and instead indirectly return an error via
-> > -        * the sb's writeback errseq, which VFS inspects after this call.
-> > -        */
-> > -       if (ret < 0) {
-> > -               errseq_set(&sb->s_wb_err, -EIO);
-> > +
-> > +       if (ret < 0)
-> >                 return -EIO;
-> > -       }
-> >
-> >         if (!ret)
-> >                 return ret;
-> > --
-> > 2.25.1
-> >
-> 
-> FYI, this change is queued in overlayfs-next.
-> 
-> However, I went to see if overlayfs has test coverage for this and it does not.
-> 
-> The test coverage added by Darrick to the mentioned vfs commit is test xfs/546,
-> so it does not run on other fs, although it is quite generic.
-> 
-> I fixed this test so it could run on overlayfs (like this):
-> # This command is complicated a bit because in the case of overlayfs the
-> # syncfs fd needs to be opened before shutdown and it is different from the
-> # shutdown fd, so we cannot use the _scratch_shutdown() helper.
-> # Filter out xfs_io output of active fds.
-> $XFS_IO_PROG -x -c "open $(_scratch_shutdown_handle)" -c 'shutdown -f
-> ' -c close -c syncfs $SCRATCH_MNT | \
->         grep -vF '[00'
-> 
-> and it passes on both xfs and overlayfs (over xfs), but if I try to
-> make it "generic"
-> it fails on ext4, which explicitly allows syncfs after shutdown:
-> 
->         if (unlikely(ext4_forced_shutdown(sb)))
->                 return 0;
-> 
-> Ted, Darrick,
-> 
-> Do you have any insight as to why this ext4 behavior differs from xfs
-> or another idea how to exercise the syncfs error in a generic test?
-> 
-> I could fork an overlay/* test from the xfs/* test and require that
-> underlying fs is xfs, but that would be ugly.
-> 
-> Any ideas?
+Enabling quota is expensive: All inodes in the filesystem are scanned.
+Only do it when the requested quota configuration does not match the
+existing configuration.
 
-That should be:
+Test:
+Add a tiny patch to print out when core of function
+handle_quota_options() is triggered.
+Issue commands:
+truncate -s 1G unused ; mkfs.ext4 unused
 
-	if (unlikely(ext4_forced_shutdown(sb)))
-		return -EIO;
+| commands                                                | trigger | comments
++---------------------------------------------------------+---------+---------
+| tune2fs -Qusrquota,grpquota -Qprjquota -O quota unused  | Y       |
+                  Quota not set at formatting.
+| tune2fs -Qusrquota,grpquota -Qprjquota -O quota unused  | N       |
+                  Already set just above
+| tune2fs -Qusrquota,grpquota -Q^prjquota -O quota unused | Y       |
+                  Disabling a quota option always force a deep look.
+| tune2fs -Qusrquota,grpquota -Q^prjquota -O quota unused | Y       |
+                  See just above
+| tune2fs -Qusrquota,grpquota -O quota unused             | N       |
+                  No change from previous line.
+| tune2fs -Qusrquota,^grpquota -O quota unused            | Y       |
+                  Disabling a quota option always force a deep look.
+| tune2fs -Qusrquota -O quota unused                      | N       |
+                  No change from previous line.
+| tune2fs -O ^quota unused                                | Y       |
+                  Remove quota
+| tune2fs -O quota unused                                 | X       |
+                  function handle_quota_options() not called, default values
+                  (-Qusrquota,grpquota) used.
+| tune2fs -O quota -Qusrquota unused                      | N       |
+                  Already set just above
+---
+ misc/tune2fs.c | 35 +++++++++++++++++++++++++++++++++++
+ 1 file changed, 35 insertions(+)
 
-no?  The fs is dead and cannot persist anything, so we should fling that
-back to the calling program.
+diff --git a/misc/tune2fs.c b/misc/tune2fs.c
+index 6de40e93..3cce8861 100644
+--- a/misc/tune2fs.c
++++ b/misc/tune2fs.c
+@@ -1804,6 +1804,41 @@ static int handle_quota_options(ext2_filsys fs)
+ 			qtype_bits |= 1 << qtype;
+ 	}
+ 
++	/*
++	 * Check if the filesystem already has quota enabled and more features
++	 * need to be enabled and are not, or some features need to be disabled.
++	 */
++	if (ext2fs_has_feature_quota(fs->super) && qtype_bits) {
++		for (qtype = 0 ; qtype < MAXQUOTAS; qtype++) {
++			if ((quota_enable[qtype] == QOPT_ENABLE &&
++			     *quota_sb_inump(fs->super, qtype) == 0) ||
++			    (quota_enable[qtype] == QOPT_DISABLE)) {
++				/* Some work needed to match the configuration. */
++				break;
++			}
++		}
++		if (qtype == MAXQUOTAS) {
++			/* Nothing to do. */
++			return 0;
++		}
++	}
++	/*
++	 * Check if the user wants all features disabled and it is already
++	 * the case.
++	 */
++	if (!ext2fs_has_feature_quota(fs->super) && !qtype_bits) {
++		for (qtype = 0 ; qtype < MAXQUOTAS; qtype++) {
++			if (*quota_sb_inump(fs->super, qtype)) {
++				/* Some work needed to match the configuration. */
++				break;
++			}
++		}
++		if (qtype == MAXQUOTAS) {
++			/* Nothing to do. */
++			return 0;
++		}
++	}
++
+ 	retval = quota_init_context(&qctx, fs, qtype_bits);
+ 	if (retval) {
+ 		com_err(program_name, retval,
+-- 
+2.46.0.469.g59c65b2a67-goog
 
---D
-
-> Thanks,
-> Amir.
-> 
 
