@@ -1,205 +1,144 @@
-Return-Path: <linux-ext4+bounces-3971-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3972-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79AAD965640
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 06:22:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F18799656A0
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 07:02:36 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C5B30B21B41
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 04:22:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92CD31F24640
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 05:02:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4018414A4EC;
-	Fri, 30 Aug 2024 04:21:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72EBF14B097;
+	Fri, 30 Aug 2024 05:02:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WOX7eYO1"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Yr0dSM04"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40A7A71750
-	for <linux-ext4@vger.kernel.org>; Fri, 30 Aug 2024 04:21:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 850E71BDDB;
+	Fri, 30 Aug 2024 05:02:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724991713; cv=none; b=q8V1YsAHNgbZrsqEK2FKzK5l1F2Et9aLyVX6F+45zJNkRGNxfoTH67tb5tIKy1xGZVKdG5gCgq+8JAXlQK1h2ag/1cU9b4iED98e9vRHOt4SZ5s8JXMtCR5Qw5flgBoHBUcvuP/eM0ONDsKYQJDXbAbhH8JLn8axTCXXL3tVukE=
+	t=1724994148; cv=none; b=JGwK8E5hZjG9wqh4aihyOKDghYFODdkCxkF8+SXxaNZ7rg6F8YY4k8nzWfDDK7JD5FCVa+zLWEBPHYJZqcAWEOQpgILIN6oRvUIfrDOJO3K5ZSNlQpSu+4L+rqjEMjwY4u2qs27cNgaA/NZv8Aioob/zY4J6k0qjMB0R5KlvZKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724991713; c=relaxed/simple;
-	bh=NfwrDQd8NHmz/deoubBCkaR2ni/8OuyTNvtxIVMM1Pk=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=J5b+Q5mIA8E6tx4jjHbxg9F/I3FbhSKJgE8SJbVv0xEaUJHjkRUhAHWGHUWI3wS1m+yFe/lbVeZdS5s3ilorBOMzjQafmrcpe5cpauN93pvt7cPutf7vfIDAywVw1joFChUMddiTE80nsEI3MP879Efn/vUsZB2SDqWHc5fEV0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WOX7eYO1; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1724991712; x=1756527712;
-  h=date:from:to:cc:subject:message-id;
-  bh=NfwrDQd8NHmz/deoubBCkaR2ni/8OuyTNvtxIVMM1Pk=;
-  b=WOX7eYO1fF2X89zD6W18sZYA4afxnfze7FLKr4w1tcEE7hGiGqz8fE2r
-   VYfzOFYC24xTh2nAcZdrS8urCj8DwLncXKLwNqzk3poNcF8nhyxb1IGHv
-   O9c01dgLPQU76ITucu+U4rs7PYb4m4TLe2bSH9/cU/AQB2qpkOUtEAoKN
-   rzvX2GF/NYDqJeplfdtardbxnJ9jjKnhUwwo812bly6dF3gpmaYiFOCAH
-   E68UK0xwwl667l1KiKxCvMnpX9jcpNZZUXKQlsP8uVK4Tu8rD1uR+wxjf
-   8oYfFOwDIaHI2FcZaiTvCWR7XXOFa/MBHtipI37apCjb5TsOf80ZxHPdY
-   Q==;
-X-CSE-ConnectionGUID: eRkrcK3pT4+xDwaZQE29QA==
-X-CSE-MsgGUID: AOBy8Rt9TkiQad0TsvjryQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11179"; a="23748382"
-X-IronPort-AV: E=Sophos;i="6.10,187,1719903600"; 
-   d="scan'208";a="23748382"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 29 Aug 2024 21:21:52 -0700
-X-CSE-ConnectionGUID: v4k7ge1DTe2dMckPGFt4Ig==
-X-CSE-MsgGUID: OgfnxnEgRsKpGOPJXWj+mA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.10,187,1719903600"; 
-   d="scan'208";a="63632063"
-Received: from lkp-server01.sh.intel.com (HELO 9c6b1c7d3b50) ([10.239.97.150])
-  by orviesa010.jf.intel.com with ESMTP; 29 Aug 2024 21:21:50 -0700
-Received: from kbuild by 9c6b1c7d3b50 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1sjt8u-00012e-2E;
-	Fri, 30 Aug 2024 04:21:48 +0000
-Date: Fri, 30 Aug 2024 12:21:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:dev] BUILD SUCCESS
- dda898d7ffe85931f9cca6d702a51f33717c501e
-Message-ID: <202408301235.IhtgRN7v-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1724994148; c=relaxed/simple;
+	bh=REHpMRoorI3i1+ndplF6RVxB9m6VfOHXB09j+ECAEnw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y5bXunPz2Z4f85h8DU5s0bWZ4jm5wgROpIYU2QPjsF2QNempNyHSfhsNkAKEf1HR6RWO3SsFaiFQMsYmXrYIpPtQiDgsPpVLVMyH8juFDXjOYSA/K4mmmth5+xbly7ZIfJznNcpkg5E6KlZIGUY1Qrz9ZB6afi3Jd5UvKYmi6RY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Yr0dSM04; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47U3ImIw030957;
+	Fri, 30 Aug 2024 05:02:12 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
+	:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pp1; bh=0rkE1zrz/FVtaD4A/mxjSUnxtMO
+	Z9szEvqbY7Ut5qbw=; b=Yr0dSM04bfCv/cQ9lYLx0LBttIFJznSXISj8zmbdNwA
+	FFEcVckCukeux48YA46ef4pAonfl8mMFME6UgjYsancMwFa11zoxXsgs919GspnX
+	VNU1p5laHqeNsZHMlREpUAEvAzIAY27adQLgMuk9bRGuYg7ZgLDhwhzreFJMzYZC
+	fHQ8X8OOkDnAvI99NSR4ItouMjFeKoQGnkqg2gF/k3EjXqp5QXU3aNRXK/FkKbIB
+	RwOKmjoNnJ9utZ1bL8BhbzjV/X7uiajplB5udjQf8cR/RK/OqHhlwB7sxbTpNTJJ
+	Esw1yRln9Y1HB3XGBwRlmI23mKcmt8jl/z29SLmpPbQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 419q8r4dan-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 30 Aug 2024 05:02:11 +0000 (GMT)
+Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47U52BI6005291;
+	Fri, 30 Aug 2024 05:02:11 GMT
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 419q8r4dak-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 30 Aug 2024 05:02:11 +0000 (GMT)
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47U3tVEx024692;
+	Fri, 30 Aug 2024 05:02:10 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 417vj3s1q4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 30 Aug 2024 05:02:10 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47U528Ka45744618
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 30 Aug 2024 05:02:08 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A9F5D2004B;
+	Fri, 30 Aug 2024 05:02:08 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 940BA20040;
+	Fri, 30 Aug 2024 05:02:07 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.195.46.118])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 30 Aug 2024 05:02:07 +0000 (GMT)
+Date: Fri, 30 Aug 2024 10:32:04 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Ritesh Harjani <ritesh.list@gmail.com>
+Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        linux-kernel@vger.kernel.org, Kemeng Shi <shikemeng@huaweicloud.com>
+Subject: Re: [PATCH v2 2/2] ext4: Convert EXT4_B2C(sbi->s_stripe) users to
+ EXT4_NUM_B2C
+Message-ID: <ZtFSTBf3uCVMd1v/@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <f9042a87bfe883a3552c8fc561b2aa6f18de4f12.1724145714.git.ojaswin@linux.ibm.com>
+ <aff746f3dbce54f5ea807928c2286edfd6e9976e.1724145714.git.ojaswin@linux.ibm.com>
+ <87wmk1q9n6.fsf@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87wmk1q9n6.fsf@gmail.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: fezNA9TIqcFHdGX4dFYPitjJD-o_4XDF
+X-Proofpoint-ORIG-GUID: C8-IlNLzWIx-QkoY7_VDUPNAnb3CkcmB
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
+ definitions=2024-08-30_02,2024-08-29_02,2024-05-17_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
+ clxscore=1015 priorityscore=1501 mlxlogscore=999 spamscore=0 mlxscore=0
+ suspectscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2407110000 definitions=main-2408300031
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
-branch HEAD: dda898d7ffe85931f9cca6d702a51f33717c501e  ext4: dax: fix overflowing extents beyond inode size when partially writing
+On Wed, Aug 28, 2024 at 02:58:13PM +0530, Ritesh Harjani wrote:
+> Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
+> 
+> > Although we have checks to make sure s_stripe is a multiple of cluster
+> > size, in case we accidentally end up with a scenario where this is not
+> > the case, use EXT4_NUM_B2C() so that we don't end up with unexpected
+> > cases where EXT4_B2C(stripe) becomes 0.
+> 
+> man page of strip=n mount options says...
+>        stripe=n
+>               Number of file system blocks that mballoc will try to use
+>               for allocation size and alignment. For RAID5/6 systems
+>               this should be the number of data disks * RAID chunk size
+>               in file system blocks.
+> 
+> ... So stripe is anyways the no. of filesystem blocks. Making it
+> EXT4_NUM_B2C() make sense to me.
+> 
+> However, there is one more user that remains in ext4_mb_find_by_goal(),
+> right?
 
-elapsed time: 2147m
+Oh right, I'll fix that in v3. Thanks! 
 
-configs tested: 112
-configs skipped: 5
-
-The following configs have been built successfully.
-More configs may be tested in the coming days.
-
-tested configs:
-alpha                             allnoconfig   gcc-14.1.0
-alpha                            allyesconfig   clang-20
-alpha                               defconfig   gcc-14.1.0
-arc                              allmodconfig   clang-20
-arc                               allnoconfig   gcc-14.1.0
-arc                              allyesconfig   clang-20
-arc                                 defconfig   gcc-14.1.0
-arm                              allmodconfig   clang-20
-arm                               allnoconfig   gcc-14.1.0
-arm                              allyesconfig   clang-20
-arm                                 defconfig   gcc-14.1.0
-arm                   milbeaut_m10v_defconfig   gcc-14.1.0
-arm                        multi_v7_defconfig   gcc-14.1.0
-arm                           tegra_defconfig   gcc-14.1.0
-arm64                            allmodconfig   clang-20
-arm64                             allnoconfig   gcc-14.1.0
-arm64                               defconfig   gcc-14.1.0
-csky                              allnoconfig   gcc-14.1.0
-csky                                defconfig   gcc-14.1.0
-hexagon                          allmodconfig   clang-20
-hexagon                           allnoconfig   gcc-14.1.0
-hexagon                          allyesconfig   clang-20
-hexagon                             defconfig   gcc-14.1.0
-i386                             allmodconfig   clang-18
-i386                              allnoconfig   clang-18
-i386                             allyesconfig   clang-18
-i386                                defconfig   clang-18
-loongarch                        allmodconfig   gcc-14.1.0
-loongarch                         allnoconfig   gcc-14.1.0
-loongarch                           defconfig   gcc-14.1.0
-m68k                             allmodconfig   gcc-14.1.0
-m68k                              allnoconfig   gcc-14.1.0
-m68k                             allyesconfig   gcc-14.1.0
-m68k                                defconfig   gcc-14.1.0
-m68k                          hp300_defconfig   gcc-14.1.0
-m68k                       m5275evb_defconfig   gcc-14.1.0
-microblaze                       allmodconfig   gcc-14.1.0
-microblaze                        allnoconfig   gcc-14.1.0
-microblaze                       allyesconfig   gcc-14.1.0
-microblaze                          defconfig   gcc-14.1.0
-mips                              allnoconfig   gcc-14.1.0
-mips                      fuloong2e_defconfig   gcc-14.1.0
-nios2                             allnoconfig   gcc-14.1.0
-nios2                               defconfig   gcc-14.1.0
-openrisc                          allnoconfig   clang-20
-openrisc                         allyesconfig   gcc-14.1.0
-openrisc                            defconfig   gcc-12
-parisc                           allmodconfig   gcc-14.1.0
-parisc                            allnoconfig   clang-20
-parisc                           allyesconfig   gcc-14.1.0
-parisc                              defconfig   gcc-12
-parisc64                            defconfig   gcc-14.1.0
-powerpc                          allmodconfig   gcc-14.1.0
-powerpc                           allnoconfig   clang-20
-powerpc                          allyesconfig   gcc-14.1.0
-powerpc                      bamboo_defconfig   gcc-14.1.0
-powerpc                   bluestone_defconfig   gcc-14.1.0
-powerpc                 mpc836x_rdk_defconfig   gcc-14.1.0
-powerpc                      pmac32_defconfig   gcc-14.1.0
-powerpc                       ppc64_defconfig   gcc-14.1.0
-powerpc                     tqm5200_defconfig   gcc-14.1.0
-powerpc64                        alldefconfig   gcc-14.1.0
-riscv                             allnoconfig   clang-20
-riscv                               defconfig   gcc-12
-s390                             allmodconfig   gcc-14.1.0
-s390                              allnoconfig   clang-20
-s390                             allyesconfig   gcc-14.1.0
-s390                                defconfig   gcc-12
-s390                                defconfig   gcc-14.1.0
-sh                               allmodconfig   gcc-14.1.0
-sh                                allnoconfig   gcc-14.1.0
-sh                               allyesconfig   gcc-14.1.0
-sh                                  defconfig   gcc-12
-sh                             shx3_defconfig   gcc-14.1.0
-sparc                            allmodconfig   gcc-14.1.0
-sparc64                             defconfig   gcc-12
-um                               allmodconfig   clang-20
-um                                allnoconfig   clang-20
-um                               allyesconfig   clang-20
-um                                  defconfig   gcc-12
-um                             i386_defconfig   gcc-12
-um                           x86_64_defconfig   gcc-12
-x86_64                            allnoconfig   clang-18
-x86_64                           allyesconfig   clang-18
-x86_64       buildonly-randconfig-001-20240830   clang-18
-x86_64       buildonly-randconfig-002-20240830   clang-18
-x86_64       buildonly-randconfig-003-20240830   clang-18
-x86_64       buildonly-randconfig-004-20240830   clang-18
-x86_64       buildonly-randconfig-005-20240830   clang-18
-x86_64       buildonly-randconfig-006-20240830   clang-18
-x86_64                              defconfig   clang-18
-x86_64                randconfig-001-20240830   clang-18
-x86_64                randconfig-002-20240830   clang-18
-x86_64                randconfig-003-20240830   clang-18
-x86_64                randconfig-004-20240830   clang-18
-x86_64                randconfig-005-20240830   clang-18
-x86_64                randconfig-006-20240830   clang-18
-x86_64                randconfig-011-20240830   clang-18
-x86_64                randconfig-012-20240830   clang-18
-x86_64                randconfig-013-20240830   clang-18
-x86_64                randconfig-014-20240830   clang-18
-x86_64                randconfig-015-20240830   clang-18
-x86_64                randconfig-016-20240830   clang-18
-x86_64                randconfig-071-20240830   clang-18
-x86_64                randconfig-072-20240830   clang-18
-x86_64                randconfig-073-20240830   clang-18
-x86_64                randconfig-074-20240830   clang-18
-x86_64                randconfig-075-20240830   clang-18
-x86_64                randconfig-076-20240830   clang-18
-x86_64                          rhel-8.3-rust   clang-18
-xtensa                            allnoconfig   gcc-14.1.0
-xtensa                          iss_defconfig   gcc-14.1.0
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+> 
+> -ritesh
+> 
+> >
+> > Also make the is_stripe_aligned check in regular_allocator a bit more
+> > robust while we are at it. This should ideally have no functional change
+> > unless we have a bug somewhere causing (stripe % cluster_size != 0)
+> >
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > ---
+> >  fs/ext4/mballoc.c | 10 ++++++----
+> >  1 file changed, 6 insertions(+), 4 deletions(-)
 
