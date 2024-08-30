@@ -1,89 +1,58 @@
-Return-Path: <linux-ext4+bounces-3981-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3982-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A06A1965847
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 09:21:38 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 177639658C0
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 09:39:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B80B1F2246F
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 07:21:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5EABFB24521
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 07:39:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD106157A61;
-	Fri, 30 Aug 2024 07:21:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="otpo5ntJ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B61D315A85F;
+	Fri, 30 Aug 2024 07:39:36 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D7511509A0;
-	Fri, 30 Aug 2024 07:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 696687F6;
+	Fri, 30 Aug 2024 07:39:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725002487; cv=none; b=K+ZP8fL8QZH7hlvr8mbFfP8qGRjbLn1UdFQzHOuKfsl3mPGxCZOOBydGI7+uOE+lPeLakxolwGMJNATujUXNlALt5/EeptBSMTmoLb4oi5TyotvL5dXXL9O3EhoWPK3P//TQnhgo6uxsKHDIyyFqqZmPXYHhGcq4/KfLBA9rFCk=
+	t=1725003576; cv=none; b=B+w1g3xAXWCc4XKX6m6hHNoHsM1PUmCAB2EAJiYiRSc16802J5Az1eqIGh4bDttf5UFFF6Y+P3OnP75SNfrMKIQH8CbQC65s3PaHIu6YMkriJhdZyWTsbDNJ7YITzB3KDwxSF+aIbAHY7Cw3KqfTrOGaclfHVY7vT1xLwTeBdDc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725002487; c=relaxed/simple;
-	bh=ye98vENoZQWZsbEkLBJ/fd2Wa4qBGtCugOCMhivSlRo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Hcz0pCWs5rcrkFQaK4CpG6/zhJvcx6dIeDYAgooxZZednLBbzlEsXGLO9NUj8E0hKYZ3Hh6RoC4Gvd0BYYVLAreKrIFk4/l6788FDcwbHzgzFlNycpWTtupFGjN4riTgn5lF1Qw5vuXzlYn1z98BcEV9gys+4nLpwAReLHhpYjc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=otpo5ntJ; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47U3wMV5030922;
-	Fri, 30 Aug 2024 07:21:16 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from
-	:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-transfer-encoding; s=pp1; bh=E9z3t2ZIOLzOn
-	aDx3SE/JLHQ+NnkXcAGW/xdWKQ5sUc=; b=otpo5ntJB8Dlt4C5NMWv30hQR0DVc
-	CDL3CjEXXganKIBT/XGzLi451tK4ko+6uCFReV9+6K3a/u2Q5S5T449kQ0MO7RFd
-	Zl5admTz853gmRFIPubtBdYpO5izeJYehAO6jvrJAgir4hsYn2jWIm2EYzw3BcnO
-	NC8kgCAn0i3vTaex07RrSYIR2BBRO+DhxjReJbg0dS3eJNdyAVg7fjA19B70sngR
-	KNeygerCEfgQWjtA9bRgUF/wDrBYZg0RalIWOMQYMbD2BL4EuTe96B5D4h5R8gre
-	gSGbeJGniywUPLnJ1znHZHcZW+4ZwZ4eXjRmNMgE3qmMHXkk1+nkt7xvw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 419q8r58ax-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 Aug 2024 07:21:15 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47U7Henk016655;
-	Fri, 30 Aug 2024 07:21:15 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 419q8r58au-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 Aug 2024 07:21:15 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47U4rPwv021770;
-	Fri, 30 Aug 2024 07:21:14 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 417suutf5c-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 Aug 2024 07:21:14 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47U7LCwu18153738
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 30 Aug 2024 07:21:13 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id DB6162004B;
-	Fri, 30 Aug 2024 07:21:12 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BF5E620040;
-	Fri, 30 Aug 2024 07:21:11 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.195.46.118])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 30 Aug 2024 07:21:11 +0000 (GMT)
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        Kemeng Shi <shikemeng@huaweicloud.com>
-Subject: [PATCH v3 2/2] ext4: Convert EXT4_B2C(sbi->s_stripe) users to EXT4_NUM_B2C
-Date: Fri, 30 Aug 2024 12:50:58 +0530
-Message-ID: <e0c0a3b58a40935a1361f668851d041575861411.1725002410.git.ojaswin@linux.ibm.com>
-X-Mailer: git-send-email 2.43.5
-In-Reply-To: <3a493bb503c3598e25dcfbed2936bb2dff3fece7.1725002410.git.ojaswin@linux.ibm.com>
-References: <3a493bb503c3598e25dcfbed2936bb2dff3fece7.1725002410.git.ojaswin@linux.ibm.com>
+	s=arc-20240116; t=1725003576; c=relaxed/simple;
+	bh=FYRO+/sCjJwbslfJ6rTDTpYUYD1ku482mD5uWo2qrM8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Nj6BT6p8KZwOTVH2G8W8Q1iSMcnWO3yPDc0/L3UFuI2/hYJZatL6nrP+9ExAifcbZ+ZGLoh/TaGiyyrPSYIUj2xDpjIJvuVlEWuZgpjIn1+8GbR/qlHkbqR8luFMMYXwVUgsx4aKc5KKY0VboKC9+Wbxtf+ERYaY9lEtb1ToG4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Ww95G4gnqz4f3lD4;
+	Fri, 30 Aug 2024 15:39:14 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 390DC1A018D;
+	Fri, 30 Aug 2024 15:39:30 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCHr4Uhd9FmXb5_DA--.51707S4;
+	Fri, 30 Aug 2024 15:39:30 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH 00/10] ext4: clean up and refactor fallocate
+Date: Fri, 30 Aug 2024 15:37:50 +0800
+Message-Id: <20240830073800.2131781-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -91,79 +60,68 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: nzaFG1Xp5nuO8zikZJux-3dhNF5d0TMn
-X-Proofpoint-ORIG-GUID: 2J2pQ1nt6Z5eFMqY3wzWEG9A5P0H1Fuk
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-30_02,2024-08-29_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 phishscore=0
- clxscore=1015 priorityscore=1501 mlxlogscore=999 spamscore=0 mlxscore=0
- suspectscore=0 lowpriorityscore=0 impostorscore=0 malwarescore=0
- adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408300051
+X-CM-TRANSID:gCh0CgCHr4Uhd9FmXb5_DA--.51707S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kw4Dtry7KFW7Cr4xtF1UJrb_yoW8WFWDpF
+	WfKw1Sqr4UK3srurs3Zw4xXF4xKw4rAr47JFWIga1vgrn5ur109F43Ka40kFWxJFWfJa47
+	XF4jvrnru3Wjka7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUFg4SDUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-Although we have checks to make sure s_stripe is a multiple of cluster
-size, in case we accidentally end up with a scenario where this is not
-the case, use EXT4_NUM_B2C() so that we don't end up with unexpected
-cases where EXT4_B2C(stripe) becomes 0.
+From: Zhang Yi <yi.zhang@huawei.com>
 
-Also make the is_stripe_aligned check in regular_allocator a bit more
-robust while we are at it. This should ideally have no functional change
-unless we have a bug somewhere causing (stripe % cluster_size != 0)
+Hello!
 
-Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
-Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
- fs/ext4/mballoc.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+Current ext4 fallocate code is mess with mode checking, locking, input
+parameter checking, position calculation, and having some stale code.
+Almost all of the five sub-functions have the same preparation, it
+deserve a clean up now.
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 2008d2d524c9..6dc0a9bb29a7 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -2356,7 +2356,7 @@ int ext4_mb_find_by_goal(struct ext4_allocation_context *ac,
- 	ex.fe_logical = 0xDEADFA11; /* debug value */
- 
- 	if (max >= ac->ac_g_ex.fe_len &&
--	    ac->ac_g_ex.fe_len == EXT4_B2C(sbi, sbi->s_stripe)) {
-+	    ac->ac_g_ex.fe_len == EXT4_NUM_B2C(sbi, sbi->s_stripe)) {
- 		ext4_fsblk_t start;
- 
- 		start = ext4_grp_offs_to_block(ac->ac_sb, &ex);
-@@ -2553,7 +2553,7 @@ void ext4_mb_scan_aligned(struct ext4_allocation_context *ac,
- 	do_div(a, sbi->s_stripe);
- 	i = (a * sbi->s_stripe) - first_group_block;
- 
--	stripe = EXT4_B2C(sbi, sbi->s_stripe);
-+	stripe = EXT4_NUM_B2C(sbi, sbi->s_stripe);
- 	i = EXT4_B2C(sbi, i);
- 	while (i < EXT4_CLUSTERS_PER_GROUP(sb)) {
- 		if (!mb_test_bit(i, bitmap)) {
-@@ -2928,9 +2928,11 @@ ext4_mb_regular_allocator(struct ext4_allocation_context *ac)
- 			if (cr == CR_POWER2_ALIGNED)
- 				ext4_mb_simple_scan_group(ac, &e4b);
- 			else {
--				bool is_stripe_aligned = sbi->s_stripe &&
-+				bool is_stripe_aligned =
-+					(sbi->s_stripe >=
-+					 sbi->s_cluster_ratio) &&
- 					!(ac->ac_g_ex.fe_len %
--					  EXT4_B2C(sbi, sbi->s_stripe));
-+					  EXT4_NUM_B2C(sbi, sbi->s_stripe));
- 
- 				if ((cr == CR_GOAL_LEN_FAST ||
- 				     cr == CR_BEST_AVAIL_LEN) &&
-@@ -3706,7 +3708,7 @@ int ext4_mb_init(struct super_block *sb)
- 	 */
- 	if (sbi->s_stripe > 1) {
- 		sbi->s_mb_group_prealloc = roundup(
--			sbi->s_mb_group_prealloc, EXT4_B2C(sbi, sbi->s_stripe));
-+			sbi->s_mb_group_prealloc, EXT4_NUM_B2C(sbi, sbi->s_stripe));
- 	}
- 
- 	sbi->s_locality_groups = alloc_percpu(struct ext4_locality_group);
+This series tries to clean this up by refactor all fallocate related
+operations, it unifiy variable naming, reduce some unnecessary position
+calculation, factor out one common helper to check input parameters, and
+also foctor out one common helper to wait for the dios to finish, hold
+filemap invalidate lock, write back dirty data and drop page cache.
+
+The first patch fix a potential data loss problem when punch hole, zero
+range and collapse range by always write back dirty pages. Later patchs
+do cleanup and refactor work, please see them for details. After this
+series, we can reduce a lot of redundant code and make it more clear
+than before.
+
+Thanks,
+Yi.
+
+Zhang Yi (10):
+  ext4: write out dirty data before dropping pages
+  ext4: don't explicit update times in ext4_fallocate()
+  ext4: drop ext4_update_disksize_before_punch()
+  ext4: refactor ext4_zero_range()
+  ext4: refactor ext4_punch_hole()
+  ext4: refactor ext4_collapse_range()
+  ext4: refactor ext4_insert_range()
+  ext4: factor out ext4_do_fallocate()
+  ext4: factor out the common checking part of all fallocate operations
+  ext4: factor out a common helper to lock and flush data before
+    fallocate
+
+ fs/ext4/ext4.h    |   5 +-
+ fs/ext4/extents.c | 566 +++++++++++++++++++---------------------------
+ fs/ext4/inode.c   | 173 ++++----------
+ 3 files changed, 278 insertions(+), 466 deletions(-)
+
 -- 
-2.43.5
+2.39.2
 
 
