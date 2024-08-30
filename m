@@ -1,157 +1,174 @@
-Return-Path: <linux-ext4+bounces-3973-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-3974-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CAED49656A5
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 07:04:27 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F5B59656F9
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 07:37:58 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 88279283E65
-	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 05:04:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A36251F22D3A
+	for <lists+linux-ext4@lfdr.de>; Fri, 30 Aug 2024 05:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EC3714A0B6;
-	Fri, 30 Aug 2024 05:04:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8E9914D2B4;
+	Fri, 30 Aug 2024 05:37:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="aJz/mZOe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PvcXudcd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7ABD07406D;
-	Fri, 30 Aug 2024 05:04:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5AFC54683;
+	Fri, 30 Aug 2024 05:37:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1724994257; cv=none; b=Fj7Hv9FWbMQNbng3Mu1UbzGpSjWI+Ht5jLfuOm4bfa+zfdBlHXKRlI0vSRk+xfsAUDUfnCAWHqtIbwgqVYSKu/oa/DJliFds/YrDQgV7V05F02PH9ymYqUMVbqt3ftQAqdvC5+1mIcN3/eOXF8SdnNoxVe32k6iwGH0OPVqkreg=
+	t=1724996269; cv=none; b=fslpivhv6Dby8ArU7nvU+wLR1EIaaAB/wYXTlrTkpEIWp9PZ+e9gvbup1mL3rFFassEI2eoaFYgB9bDNhITysA+iKwNR2qa7AGIsjkgu2oc8pKGVOhfD4/XPVUu+J/ilNtZImy+dL82k+fkMfCY9uCON6dYe5BSpGsdlwLOjcEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1724994257; c=relaxed/simple;
-	bh=XQbPEx9IodwMMxF9pHSSgsxGQWOXQ+aMJWPrwJMY0rs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qiUtkkXQgRj5l43N7pRI5yRNF13JRnBnVdVhByZWB7AfZZWCn754bazYWUiNgMTz8JxQ8Xthxt16EHPJvVN7rE8X+/a+9ypgkslnQ+uv7YkZOrbALonLeyBFR+uAHH1s3f+bVL+9A8SM3c7k9UnhNvM5Lmx9HPxv16e/7FWggiI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=aJz/mZOe; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 47U3Bpfw003658;
-	Fri, 30 Aug 2024 05:03:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
-	:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pp1; bh=ZcnGbgnkHa9f6r+1q722qq+XhF+
-	9ZoNJ9z/gkgiN9VE=; b=aJz/mZOeNDeV6AsAD0NzmiuVRaPZfd/oIbQmSBy/Gfp
-	CjMDt0idPdsNLwuJHFT6BlOri+ORbUZYQmYvDSn/z0ChpdLzrLekqPCAdYpLK8TI
-	KvHaCCLT65RPmtFrgeaafKrm7KczPplWlEOhQ4pczwvnxfqEgFxuN+wQxnxUpOV4
-	haiQHzHubt8+O0UMViesSQQwyvByaJABd16IGln12Ho30kvWb0UoRj/L2+dpfIvd
-	o4DArUsUGtyIpJzvypJpXsFL7FEFs8invXzBmJuSrBIWbFP2HusA/HfFIElqi7Hg
-	dIleafoPYZ9HWzVpmILN3ofowkMaEjvzigJnRfzgZfw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 419q8qcfeb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 Aug 2024 05:03:07 +0000 (GMT)
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 47U5372f023314;
-	Fri, 30 Aug 2024 05:03:07 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 419q8qcfe8-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 Aug 2024 05:03:07 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 47U3C6KH028267;
-	Fri, 30 Aug 2024 05:03:06 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 417ubnh923-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 30 Aug 2024 05:03:06 +0000
-Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 47U534OW55247326
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 30 Aug 2024 05:03:04 GMT
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C107C20040;
-	Fri, 30 Aug 2024 05:03:04 +0000 (GMT)
-Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8CE6A20043;
-	Fri, 30 Aug 2024 05:03:03 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.195.46.118])
-	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 30 Aug 2024 05:03:03 +0000 (GMT)
-Date: Fri, 30 Aug 2024 10:33:01 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        linux-kernel@vger.kernel.org, Kemeng Shi <shikemeng@huaweicloud.com>,
-        syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/2] ext4: Check stripe size compatibility on remount
- as well
-Message-ID: <ZtFShfK/bj9WOShI@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <f9042a87bfe883a3552c8fc561b2aa6f18de4f12.1724145714.git.ojaswin@linux.ibm.com>
- <87v7zlq9e4.fsf@gmail.com>
+	s=arc-20240116; t=1724996269; c=relaxed/simple;
+	bh=YIqTEY53Dydj7lrzD+Z8xZQeTDoC27uAIz99CEHIE0E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Se/VLy3gqaNCiopQE3MTeVWz/Lq7nklR4o9sFMF4Ey4ArdntKFgcDFrKSKGX0Od0n9oduPOuLzs8J1NAPhoH/w8vG7LOYU//LjPhN9SDjWYJ9sUPBCfFbYEb6XtCLfmelAN7jUJSQFZde9ozEmtlXSwIT3jnCCV8YUehFLNH/do=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PvcXudcd; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-20219a0fe4dso12426145ad.2;
+        Thu, 29 Aug 2024 22:37:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1724996266; x=1725601066; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=ZIv2atOMB0cIykPfF8uzzPRCW3JUYYFtqphvX1v4wFo=;
+        b=PvcXudcdP+7CmdDFzGoVX1xtw0QpkLCBau2AWYvRv0XJwFsk+0uc2+k7Wf2lkdGQNy
+         5tNKIFq6/9HDIlPpb5tPu1fhU6g5ZT0GVtKxIkn7+IvUxgCPX6b1FcIvbbiuRf02J+N/
+         cvsy+7cl13MCi62utuVTnHLAxshFcIxKQ2A90Hi49J15wzBUu0OIFQfS0yhP7mZidULV
+         bPNeAHvIHM0Aoe6dbX3jvsGP6oLqGM/X6zSEul1YZbxd/aXI6swjq7Fs3YDEPAEPg1kX
+         lyNhLwcPeE75e0VgZmccfbY9CKEgmWRovg4gXjFlLCzcbe9WjnBmC6O1XFLxBiaCyYi0
+         UJPQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1724996266; x=1725601066;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=ZIv2atOMB0cIykPfF8uzzPRCW3JUYYFtqphvX1v4wFo=;
+        b=hgnVgZMWJMmG9MH1vlrtB6wYap6d9c6sIAN84HZL2+MQM/3OI2nnMmJAB1zzP4ahBC
+         MGvT+FpS9p3y+57z3eT8Iw0XT89KKZA8nMQ/V7846UKAunnIUVe6VFDHXSBsMNSZOHXU
+         8KsTp3swwhikgMjchLRV9IZJ5TbmOpo7pD7ZoMA81zXQRBEvrS20Edl65rz/aoLVDqlX
+         QHC8irZ8RghyVeCr4d6fcgN/mCQ0WBXbDuvxspOtna/D7eq7eFuElaJAbDWdDJkSFoSs
+         2A4g6tq3HCP/x7My68yqCSPbnbLNc9WtstkO3CHkOZkYkvKIl4KCA3xK+gbFI8HkYfQk
+         qArQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVgKA+PNq1XfU5FBNApXFL8uguoSa+jl8UxV8UNFnY9UyYmNVu1FRhDWxBwaCznpvU8gOGK2VPWSbLFiHc=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxhmDgP6CTjbhroiQPvg0RCyiGxS5sachBF9zLLAi6qVrYixj4E
+	5aUANGo6Ld30G2knD+dTCJcAaXcE3dVtXMCUVo2KaMidV1AV+aED9YtuDX3X
+X-Google-Smtp-Source: AGHT+IGpNW3eN39MKqqr2OXO5DlhRncT3JKekINbOmFmXuDtynLW4yLwufYGsr0JPHumk6YxLolUog==
+X-Received: by 2002:a17:902:f543:b0:1fa:fc24:afa5 with SMTP id d9443c01a7336-2050c350429mr57616415ad.27.1724996266167;
+        Thu, 29 Aug 2024 22:37:46 -0700 (PDT)
+Received: from localhost.localdomain ([163.53.18.10])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20515534801sm19784075ad.154.2024.08.29.22.37.44
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 29 Aug 2024 22:37:45 -0700 (PDT)
+From: zhangshida <starzhangzsd@gmail.com>
+X-Google-Original-From: zhangshida <zhangshida@kylinos.cn>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.com,
+	ebiggers@kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	zhangshida@kylinos.cn,
+	starzhangzsd@gmail.com
+Subject: [PATCH v6 0/4] Fix an error caused by improperly dirtied buffer
+Date: Fri, 30 Aug 2024 13:37:35 +0800
+Message-Id: <20240830053739.3588573-1-zhangshida@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v7zlq9e4.fsf@gmail.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: emwPVDkxhJAGzIAgpMKEWDcMycrouSSc
-X-Proofpoint-ORIG-GUID: VpobLNx7Lwod6J3-mObKMRoi7dItPjM3
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.28.16
- definitions=2024-08-30_02,2024-08-29_02,2024-05-17_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- clxscore=1015 lowpriorityscore=0 impostorscore=0 suspectscore=0
- adultscore=0 bulkscore=0 malwarescore=0 spamscore=0 phishscore=0
- mlxlogscore=999 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2407110000 definitions=main-2408300035
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Wed, Aug 28, 2024 at 03:03:39PM +0530, Ritesh Harjani wrote:
-> Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
-> 
-> > We disable stripe size in __ext4_fill_super if it is not a multiple of
-> > the cluster ratio however this check is missed when trying to remount.
-> > This can leave us with cases where stripe < cluster_ratio after
-> > remount:set making EXT4_B2C(sbi->s_stripe) become 0 that can cause some
-> > unforeseen bugs like divide by 0.
-> >
-> > Fix that by adding the check in remount path as well.
-> >
-> > Reported-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
-> > Tested-by: syzbot+1ad8bac5af24d01e2cbd@syzkaller.appspotmail.com
-> > Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> > Fixes: c3defd99d58c ("ext4: treat stripe in block unit")
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> >  fs/ext4/super.c | 29 ++++++++++++++++++++++-------
-> >  1 file changed, 22 insertions(+), 7 deletions(-)
-> 
-> Minor nits below, but otherwise looks good to me.
-> 
-> Please feel free to add - 
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+From: Shida Zhang <zhangshida@kylinos.cn>
 
-Thanks for the review Ritesh, I'll fix these in next revision
+Hi all,
 
-> 
-> >
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index e72145c4ae5a..9d495d78d262 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -5165,6 +5165,18 @@ static int ext4_block_group_meta_init(struct super_block *sb, int silent)
-> >  	return 0;
-> >  }
-> >  
-> > +/*
-> > + * It's hard to get stripe aligned blocks if stripe is not aligned with
-> > + * cluster, just disable stripe and alert user to simpfy code and avoid
-> 
-> s/simpfy/simplify
-> 
-> > + * stripe aligned allocation which will rarely successes.
-> 
-> s/successes/succeed
-> 
-> -ritesh
+On an old kernel version(4.19, ext3, data=journal, pagesize=64k),
+an assertion failure will occasionally be triggered by the line below:
+---------
+jbd2_journal_commit_transaction
+{
+...
+J_ASSERT_BH(bh, !buffer_dirty(bh));
+/*
+* The buffer on BJ_Forget list and not jbddirty means
+...
+}
+---------
+
+The same condition may also be applied to the lattest kernel version.
+
+This patch set fixes it by: 
+1.Fix a small bug for ext4_journalled_zero_new_buffers first.(patch 1)
+2.Replace the __block_write_begin with the hoisted
+  ext4_block_write_begin().(patch 2)
+3.Trace the user data dirtying in ext4_block_write_begin().(patch 3)
+4.Clean up some extra things.(patch 4)
+
+Changes since v5: 
+- Moved a hunk inside the if (buffer_new(bh)) check in patch 3.
+- Add a cleanup in patch 4. 
+
+[5] Version 5:
+https://lore.kernel.org/linux-ext4/20240829085407.3331490-1-zhangshida@kylinos.cn/
+Changes since v4: 
+- At first, we fix a bug in ext4_journalled_zero_new_buffers, as suggested
+  by Jan.
+- In patch 2, clean up the related comment. And remove the #ifdef in  
+  ext4_block_write_begin(), as suggested by Eric. 
+- Add some comments in patch 3.
+
+[4] Version 4:
+https://lore.kernel.org/linux-ext4/20240823013329.1996741-1-zhangshida@kylinos.cn/
+Changes since v3: 
+- Ditch the patch 3 in v3, because some other code paths can set the 
+  buffer dirty:
+        ext4_write_begin
+                ext4_block_write_begin
+                        create_empty_buffers
+                                set_buffer_dirty 
+
+[3] Version 3:
+https://lore.kernel.org/linux-ext4/20240810082814.3709867-1-zhangshida@kylinos.cn/
+Changes since v2: 
+- Adjust the applied order of patch 1 and patch 2 in v1. 
+- Reword the commit message.
+- Remove some superfluous logic in patch 2 and patch 3.
+
+[2] Version 2:
+https://lore.kernel.org/linux-ext4/20240809064606.3490994-2-zhangshida@kylinos.cn/
+Changes since v1:
+- v1 use a hack into jbd2 to fix the bug while v2 choose to journal
+  the dirty data in *_block_write_begin.
+
+[1] Version 1:
+https://lore.kernel.org/linux-ext4/20240720062356.2522658-1-zhangshida@kylinos.cn/
+
+
+Shida Zhang (4):
+  ext4: persist the new uptodate buffers in
+    ext4_journalled_zero_new_buffers
+  ext4: hoist ext4_block_write_begin and replace the __block_write_begin
+  ext4: fix a potential assertion failure due to improperly dirtied
+    buffer
+  ext4: remove the special buffer dirty handling in
+    do_journal_get_write_access
+
+ fs/ext4/ext4.h   |  3 ++
+ fs/ext4/inline.c | 11 ++++---
+ fs/ext4/inode.c  | 80 +++++++++++++++++++++++-------------------------
+ 3 files changed, 47 insertions(+), 47 deletions(-)
+
+-- 
+2.33.0
+
 
