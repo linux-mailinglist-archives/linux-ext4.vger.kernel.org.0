@@ -1,86 +1,112 @@
-Return-Path: <linux-ext4+bounces-3999-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4000-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CDEDB967045
-	for <lists+linux-ext4@lfdr.de>; Sat, 31 Aug 2024 10:03:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF92A967090
+	for <lists+linux-ext4@lfdr.de>; Sat, 31 Aug 2024 11:49:21 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 931C4283FB2
-	for <lists+linux-ext4@lfdr.de>; Sat, 31 Aug 2024 08:03:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7574FB2241F
+	for <lists+linux-ext4@lfdr.de>; Sat, 31 Aug 2024 09:49:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C3416F8E9;
-	Sat, 31 Aug 2024 08:03:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pfB9N89e"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 955FE17A583;
+	Sat, 31 Aug 2024 09:49:07 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47AB113C90A;
-	Sat, 31 Aug 2024 08:03:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 103DC193;
+	Sat, 31 Aug 2024 09:49:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725091412; cv=none; b=EjA43maqwSx+leERXU+bjuhKEqWiegXO8YA5DCG8bc4DUg2KRh+TuI3rJKvRLduw5y2aClDR6yBjwyr19oDkZz/GVKDD3BE1P4RN49TeANo+XlUSQKBcwWv3Ie57SUuleGMTCVnal/ylzt9naYtaPn7UWMcizFBN1ldXwIkAm5c=
+	t=1725097747; cv=none; b=HYy+9KDOcSiaB1MLb86FUAUw5neHkR3EI5toEQI/VkMrGrhIuieoUTbVkaJJhQHefn8ABY+/HAhgijsHY0tBzKAT9AYuNgAj0/mPhQwTbIHnffNAQ4OoPh6l5FxDrUC8M+ISJuKx4jPNO/KDLgJ+dwKVrDgwAX9TI6zZx8Pbgjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725091412; c=relaxed/simple;
-	bh=UUnJg2+37TJ1rix+7yKtkbYPhz3Ebu2K/okE4c6fqnI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tG44Omi8IYjv6H0tu5terbg9D1BThEEVtUzhlG6fCkn3/ExcYnbUswuyRAnSOvbjUEoUElfuhkOIVftFxYQQHxIKq4M9B/PoK+NOgnmVLv0LTfCI9JLEwD4O1b8aNfvNmYkB8PiYOUvYdWeOst2PTD6z1YRUAInoYYjoUILhJVk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pfB9N89e; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A0096C4CEC0;
-	Sat, 31 Aug 2024 08:03:31 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725091411;
-	bh=UUnJg2+37TJ1rix+7yKtkbYPhz3Ebu2K/okE4c6fqnI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pfB9N89eeS9otX2McEmYF6Zw+OgaRxckUayhw9kSXJ+ILkpYAtb2rS/4DZFlgcD6q
-	 wUnIAMhPw+uxzBdR5TyQ99e5WrYoJzw8wXjOVA0aTnIBYmDj4MuY1IBpsjHVkXUL/d
-	 VJPU+wdMYEpX9grNb/yu2xrw3e1gZZ/li+Pa3DW1iHC0NwxIj0KECoIdyIYcpDGUYR
-	 X9C3IEAzp0BbfjI3maWn9ddETGIw3M3reCpR3JZtgwB1Dy5ojFA7IPk6UoYg9LSHrn
-	 qvLTsf3iIGSnKl0X+SF4iUWp5I2ibwE2FmVClIuBAyd4vAFwV+DFGQve9A5QzNfu0V
-	 vi+eapXaWf3Xg==
-Date: Fri, 30 Aug 2024 22:03:30 -1000
-From: Tejun Heo <tj@kernel.org>
-To: Yu Kuai <yukuai1@huaweicloud.com>
-Cc: Haifeng Xu <haifeng.xu@shopee.com>, viro@zeniv.linux.org.uk,
-	brauner@kernel.org, jack@suse.cz, tytso@mit.edu,
-	yi.zhang@huaweicloud.com, linux-ext4@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, "yukuai (C)" <yukuai3@huawei.com>
+	s=arc-20240116; t=1725097747; c=relaxed/simple;
+	bh=6sUFkB0Ok0x06XvwFC30pbHHuqpTWoIbsyF3CR8TNjA=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=LD8+udpoMuBgfeFErdIBMS/JqOcpu+vGF7DlqSsIleK2b5NtalHRqi5EVrom5HvYcixZnLZ3P1dkMUR/j9Ru2Gtlqr8bQmFT2iVXz1NolU5YH56ka6QyGoSlYlllWLdIL9EoQpfHrnSMM9iXTH2M0JXddrefmCAM0EXPyJlM/z4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4WwqwM4BG7z4f3jkJ;
+	Sat, 31 Aug 2024 17:48:51 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id A88F61A058E;
+	Sat, 31 Aug 2024 17:49:01 +0800 (CST)
+Received: from [10.174.176.73] (unknown [10.174.176.73])
+	by APP4 (Coremail) with SMTP id gCh0CgAHL4UJ59JmmU_mDA--.25745S3;
+	Sat, 31 Aug 2024 17:48:59 +0800 (CST)
 Subject: Re: [PATCH] buffer: Associate the meta bio with blkg from buffer page
-Message-ID: <ZtLOUuoxnobhYgrm@slm.duckdns.org>
+To: Tejun Heo <tj@kernel.org>, Yu Kuai <yukuai1@huaweicloud.com>
+Cc: Haifeng Xu <haifeng.xu@shopee.com>, viro@zeniv.linux.org.uk,
+ brauner@kernel.org, jack@suse.cz, tytso@mit.edu, yi.zhang@huaweicloud.com,
+ linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ "yukuai (C)" <yukuai3@huawei.com>
 References: <20240828033224.146584-1-haifeng.xu@shopee.com>
  <ZtIfgc1CcG9XOu0-@slm.duckdns.org>
  <9cae20f9-aa6a-77da-8978-b4cfb7b0cb73@huaweicloud.com>
+ <ZtLOUuoxnobhYgrm@slm.duckdns.org>
+From: Yu Kuai <yukuai1@huaweicloud.com>
+Message-ID: <5c6c1aa7-eae9-fe0f-aaf4-626a5f273234@huaweicloud.com>
+Date: Sat, 31 Aug 2024 17:48:57 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.8.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <9cae20f9-aa6a-77da-8978-b4cfb7b0cb73@huaweicloud.com>
+In-Reply-To: <ZtLOUuoxnobhYgrm@slm.duckdns.org>
+Content-Type: text/plain; charset=gbk; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAHL4UJ59JmmU_mDA--.25745S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrWw1fXF4fJF4DCr4fWr13twb_yoWxXFg_u3
+	9Ivr17Gw4UZan3uFs8tF18JFZ7GF4UuayIq3yjqr97Ww1fZr1UGFZ5G34xA3Z5AFZ7AF9x
+	GF1DZw15JrWUGjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbfAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j
+	6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCYjI0SjxkI62AI1cAE67vIY487MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7V
+	AKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCj
+	r7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6x
+	IIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAI
+	w20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x
+	0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbGQ6JUUUUU==
+X-CM-SenderInfo: 51xn3trlr6x35dzhxuhorxvhhfrp/
 
-Hello,
+Hi,
 
-On Sat, Aug 31, 2024 at 02:11:08PM +0800, Yu Kuai wrote:
-...
-> > I think the right way to do it is marking the bio with REQ_META and
-> > implement forced charging in blk-throtl similar to blk-iocost.
+ÔÚ 2024/08/31 16:03, Tejun Heo Ð´µÀ:
+> Hello,
 > 
-> This is the exact thing I did in the code I attached in the other
-> thread, do you take a look?
+> On Sat, Aug 31, 2024 at 02:11:08PM +0800, Yu Kuai wrote:
+> ...
+>>> I think the right way to do it is marking the bio with REQ_META and
+>>> implement forced charging in blk-throtl similar to blk-iocost.
+>>
+>> This is the exact thing I did in the code I attached in the other
+>> thread, do you take a look?
+>>
+>> https://lore.kernel.org/all/97fc38e6-a226-5e22-efc2-4405beb6d75b@huaweicloud.com/
 > 
-> https://lore.kernel.org/all/97fc38e6-a226-5e22-efc2-4405beb6d75b@huaweicloud.com/
+> Sorry about missing it but yeah that *looks* like the right direction to be
+> headed. Would you mind testing it and turning it into a proper patch?
 
-Sorry about missing it but yeah that *looks* like the right direction to be
-headed. Would you mind testing it and turning it into a proper patch?
+Of course.
 
-Thanks.
+Thanks!
+Kuai
 
--- 
-tejun
+> 
+> Thanks.
+> 
+
 
