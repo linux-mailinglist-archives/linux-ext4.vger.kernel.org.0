@@ -1,191 +1,352 @@
-Return-Path: <linux-ext4+bounces-4004-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4005-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA8D0968648
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Sep 2024 13:33:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A82C09688F5
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Sep 2024 15:34:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63D212815F2
-	for <lists+linux-ext4@lfdr.de>; Mon,  2 Sep 2024 11:33:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD7691C22B50
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Sep 2024 13:34:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 593A51D4603;
-	Mon,  2 Sep 2024 11:32:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00C0120127D;
+	Mon,  2 Sep 2024 13:34:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="IZnPKT4K"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="E+9OiDME";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N8LbdYF3";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="c5OmyQrF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="YMZvMgBB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 955501D3188
-	for <linux-ext4@vger.kernel.org>; Mon,  2 Sep 2024 11:32:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A0815E81;
+	Mon,  2 Sep 2024 13:34:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725276768; cv=none; b=PQGTrc7jFjJjOHJmRWLpvCScoU37WOjRGI06hgiRNVZUwES0TAl4lql7t79XoHsYU4INMmCGqyrbEQc+U3X3enpGGBQsCex2OJiV2z2AvIPRhYQInzHAzju+aE6jkKO+gRDyOp8aF629cmlo/y/nfJ1NsgfFhMLVwM+2SzBxUJo=
+	t=1725284091; cv=none; b=gxPvUnjI0m+1DRTYYNMrHz9ft3r8W/FnClJtEvGZDdns7TvAMw4V+jMeVSiR89gKlr/YqW+FdCwzmhHOHDMu3C2rKAZfhKoCzKQp8B+vZuC0gI+WCyRzqugk5MekabFXOm/j371GcMCc+jjnxVQzzs1iJFMRvPqhRiyVcHd11yg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725276768; c=relaxed/simple;
-	bh=EaCx9uD7lLBoyO3gvZoujmruCtOjW8d0mUOQCiUGTNo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=TP+/QW+czwi+T3iy5YV7Wvq6sF+yyTSgpC8QWN+4vJc5OO9RaQJnlXnbNUaQ8aVN9ePPAbHNvgiNSoW4R7ipCVK1TkgIHLDOHeC8obSuiDpLobkwd8qv8Rq9v1f/H8mO+VFKB7BjoT7vlphqX4QVeY1Shj0rEJSGhL/Yn0lLKwk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=IZnPKT4K; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-715cdc7a153so2863378b3a.0
-        for <linux-ext4@vger.kernel.org>; Mon, 02 Sep 2024 04:32:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1725276766; x=1725881566; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k3T+qEmHOcCq1xQ+zRsNTSDREegBrH4STnJvq2MDDf0=;
-        b=IZnPKT4KGFUJRhas1kioF8R1UhsnVhFkksoN/SiqjhTVKS6sxMbhAFi8tRf2DYKJDT
-         eV8FzVOAQidrlI5gaSB0HTtJgnFO25Z49w4Lmk3riPdALM5wpGQMiIpRx+O+iXkhqcrj
-         RR9ywqACGa+/8ZexKXUtyv7pXPLXdJLOns/f5snvYZOQSHOOdo2HJjvsr3mApz7jKzFZ
-         CLMjk8sw0/Y07MbLL45EAiS649J3TbmmMphXOP+cnmf6Mw4FsrXV6DXhQcJ047aJGpsV
-         0KFXEN57l5jFKSoGtW48dy4dQ+H2aIqUVjfllol9d5WmnUs7ydxuQZ1WdGz3Xz23LjK5
-         Y5+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725276766; x=1725881566;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=k3T+qEmHOcCq1xQ+zRsNTSDREegBrH4STnJvq2MDDf0=;
-        b=IVIpxjvskT2+XZeE5oIYAZI1g7uE60UtOzA9m/luLGd3VKgJ2LVYmS78LC5FaAFKOV
-         fyxEP/io/NNn7LlN/YOY6cYct43WEiR1jEEj1dGNlUkcAUalAwGzlB+ZqVX2EENcx6cR
-         SX1M2zcfTkl6Ogfc34+rucIX+CXTy7TssQui8ugpPGk46ZxpVNFy7TCWWDl2v4cgo7Mz
-         CPJhE24ZWBfPVKOhKPIs3rh/65BtVWOrh4+LjooYJHyvdc/4H+N/xCr0x4wW2O1pQtko
-         sUemZqMzXsHbrVll13B/rArZvT1zQTibJvOwO95p8durZdGs3OmQd5WtgAK728F2nqSg
-         +RkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVmjekBY1D9aWieChR2NUoxCLNxka8R390i7JPAWiZ1a4XwXAIu/fSxn88s3mno0lwgSRu4fHuwMYyD@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4aUh7KOf14CWXHFmQgdQckG96Dya17mjueeA9/TIUdUov/B8z
-	ezZIivEPA8oJkBAT1CBfzVp0HbQWa0lToI88AX5z731tK18TqgrEugyZZRProbk=
-X-Google-Smtp-Source: AGHT+IEKBR7dteQbq1hh6J1kq7GDsyXK0XN7F9BJXJnN31Mk4hReTi+nlhaf0SDOblRrJ5aRyaTS8w==
-X-Received: by 2002:a05:6a21:1690:b0:1ca:ccfc:edc8 with SMTP id adf61e73a8af0-1ccee8874a3mr14856504637.22.1725276765428;
-        Mon, 02 Sep 2024 04:32:45 -0700 (PDT)
-Received: from [10.54.24.59] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-715e5576a37sm6688723b3a.29.2024.09.02.04.32.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 02 Sep 2024 04:32:44 -0700 (PDT)
-Message-ID: <dcf1c5c7-d5b0-41f4-9191-2876b80165ae@shopee.com>
-Date: Mon, 2 Sep 2024 19:32:38 +0800
+	s=arc-20240116; t=1725284091; c=relaxed/simple;
+	bh=rtgVHAHyztwBeHXMc3TzGqsuYobvtpTSetjX2nY+MPw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=bWrarXU8IdAT2F8skSks0iIFAkZEZDFnHZGSj0HJL2RCx8VpZP+pcacBLNPf8uNRcZDZt6MtMFHYycmQMuaCNrcVIS28qh5YeZTpCh25G1F+3i0U9WX2PG6RDs/pvPBrIARYEP4N9F38iDh0SExpcKoB9ozKuzEw3PngNo7902s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=E+9OiDME; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N8LbdYF3; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=c5OmyQrF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=YMZvMgBB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D06371FBAD;
+	Mon,  2 Sep 2024 13:34:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725284088; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fCewZ7fxvBwsfhzTIUsYfGaZMDHsUfFzR6NVCEJw5sE=;
+	b=E+9OiDMEwA6smP79ED+1iycn8Lkk4rBbGjv+r0Y5qk8ZI4Dmj+U5A/Z+lzl/VRo4kQxXd7
+	hSqQ5yPVFLfxhRJ6fEnTjhI6svFx/cuj9IU8AQiFNWAi3lLCIkaoLkNigSrWX0RiddSgbu
+	U0WUm+Pt6WxUjFlTy4K+kzFikpAaeck=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725284088;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fCewZ7fxvBwsfhzTIUsYfGaZMDHsUfFzR6NVCEJw5sE=;
+	b=N8LbdYF31yNsfNHCPW3gilulELY1ja3CW6pVlCFXD8r5sxfaROapyz9X6lPU6qBB8rPyDx
+	Kj9Sn4UI+sV9pRBw==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1725284087; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fCewZ7fxvBwsfhzTIUsYfGaZMDHsUfFzR6NVCEJw5sE=;
+	b=c5OmyQrF6yWoUPhbtltX4sWZtI0dri35yiFwa9xzbpcO+osumdWYBNOlDroE1IT5S0eLXU
+	ilPnYm3bHbGO1Xauz5GPkbVfLPjdwL+1OsU217uLfTDcEd7dYkz+uc5+ZTOyC4MiwAhZYd
+	myAgQk0wUyPUVXz1kWSRIeDRfA1uMFs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1725284087;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fCewZ7fxvBwsfhzTIUsYfGaZMDHsUfFzR6NVCEJw5sE=;
+	b=YMZvMgBBJmucl/oqLUE+iC9tpyJgGR2QnDaIr/0jbIDJCwhMRgaBOsDBT5RRCzyvKw3Vhw
+	2XDUNjj7iQ0gGrCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C35B713A7C;
+	Mon,  2 Sep 2024 13:34:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id OtCvL/e+1WZnJAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 02 Sep 2024 13:34:47 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 6A0DEA0965; Mon,  2 Sep 2024 15:34:32 +0200 (CEST)
+Date: Mon, 2 Sep 2024 15:34:32 +0200
+From: Jan Kara <jack@suse.cz>
+To: zhangshida <starzhangzsd@gmail.com>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.com,
+	ebiggers@kernel.org, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, zhangshida@kylinos.cn,
+	Baolin Liu <liubaolin@kylinos.cn>, Jan Kara <jack@suse.cz>
+Subject: Re: [PATCH 3/4] ext4: fix a potential assertion failure due to
+ improperly dirtied buffer
+Message-ID: <20240902133432.f7rm3dcmd6w5knrh@quack3>
+References: <20240830053739.3588573-1-zhangshida@kylinos.cn>
+ <20240830053739.3588573-4-zhangshida@kylinos.cn>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ovl: don't set the superblock's errseq_t manually
-To: "Darrick J. Wong" <djwong@kernel.org>, Amir Goldstein <amir73il@gmail.com>
-Cc: Jeff Layton <jlayton@kernel.org>, Theodore Tso <tytso@mit.edu>,
- miklos@szeredi.hu, linux-unionfs@vger.kernel.org,
- linux-fsdevel <linux-fsdevel@vger.kernel.org>,
- Ext4 <linux-ext4@vger.kernel.org>, fstests <fstests@vger.kernel.org>
-References: <CAOQ4uxi4B8JHYHF=yn6OrRZCdkoPUj3-+PuZTZy6iJR7RNWcbA@mail.gmail.com>
- <20240730042008.395716-1-haifeng.xu@shopee.com>
- <CAOQ4uxhs==_-EM+VyJRRCX_NPmYybPDBW2v7cXz33Qt2RMaPnQ@mail.gmail.com>
- <20240830152648.GE6216@frogsfrogsfrogs>
-From: Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <20240830152648.GE6216@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240830053739.3588573-4-zhangshida@kylinos.cn>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-0.998];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[10];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
+On Fri 30-08-24 13:37:38, zhangshida wrote:
+> From: Shida Zhang <zhangshida@kylinos.cn>
+> 
+> On an old kernel version(4.19, ext3, data=journal, pagesize=64k),
+> an assertion failure will occasionally be triggered by the line below:
+> -----------
+> jbd2_journal_commit_transaction
+> {
+> ...
+> J_ASSERT_BH(bh, !buffer_dirty(bh));
+> /*
+> * The buffer on BJ_Forget list and not jbddirty means
+> ...
+> }
+> -----------
+> 
+> The same condition may also be applied to the lattest kernel version.
+> 
+> When blocksize < pagesize and we truncate a file, there can be buffers in
+> the mapping tail page beyond i_size. These buffers will be filed to
+> transaction's BJ_Forget list by ext4_journalled_invalidatepage() during
+> truncation. When the transaction doing truncate starts committing, we can
+> grow the file again. This calls __block_write_begin() which allocates new
+> blocks under these buffers in the tail page we go through the branch:
+> 
+>                         if (buffer_new(bh)) {
+>                                 clean_bdev_bh_alias(bh);
+>                                 if (folio_test_uptodate(folio)) {
+>                                         clear_buffer_new(bh);
+>                                         set_buffer_uptodate(bh);
+>                                         mark_buffer_dirty(bh);
+>                                         continue;
+>                                 }
+>                                 ...
+>                         }
+> 
+> Hence buffers on BJ_Forget list of the committing transaction get marked
+> dirty and this triggers the jbd2 assertion.
+> 
+> Teach ext4_block_write_begin() to properly handle files with data
+> journalling by avoiding dirtying them directly. Instead of
+> folio_zero_new_buffers() we use ext4_journalled_zero_new_buffers() which
+> takes care of handling journalling. We also don't need to mark new uptodate
+> buffers as dirty in ext4_block_write_begin(). That will be either done
+> either by block_commit_write() in case of success or by
+> folio_zero_new_buffers() in case of failure.
+> 
+> Reported-by: Baolin Liu <liubaolin@kylinos.cn>
+> Suggested-by: Jan Kara <jack@suse.cz>
+> Signed-off-by: Shida Zhang <zhangshida@kylinos.cn>
 
+Looks good to me. Feel free to add:
 
-On 2024/8/30 23:26, Darrick J. Wong wrote:
-> On Fri, Aug 30, 2024 at 03:27:35PM +0200, Amir Goldstein wrote:
->> On Tue, Jul 30, 2024 at 6:20 AM Haifeng Xu <haifeng.xu@shopee.com> wrote:
->>>
->>> Since commit 5679897eb104 ("vfs: make sync_filesystem return errors from
->>> ->sync_fs"), the return value from sync_fs callback can be seen in
->>> sync_filesystem(). Thus the errseq_set opreation can be removed here.
->>>
->>> Depends-on: commit 5679897eb104 ("vfs: make sync_filesystem return errors from ->sync_fs")
->>> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
->>> Reviewed-by: Amir Goldstein <amir73il@gmail.com>
->>> ---
->>> Changes since v1:
->>> - Add Depends-on and Reviewed-by tags.
->>> ---
->>>  fs/overlayfs/super.c | 10 ++--------
->>>  1 file changed, 2 insertions(+), 8 deletions(-)
->>>
->>> diff --git a/fs/overlayfs/super.c b/fs/overlayfs/super.c
->>> index 06a231970cb5..fe511192f83c 100644
->>> --- a/fs/overlayfs/super.c
->>> +++ b/fs/overlayfs/super.c
->>> @@ -202,15 +202,9 @@ static int ovl_sync_fs(struct super_block *sb, int wait)
->>>         int ret;
->>>
->>>         ret = ovl_sync_status(ofs);
->>> -       /*
->>> -        * We have to always set the err, because the return value isn't
->>> -        * checked in syncfs, and instead indirectly return an error via
->>> -        * the sb's writeback errseq, which VFS inspects after this call.
->>> -        */
->>> -       if (ret < 0) {
->>> -               errseq_set(&sb->s_wb_err, -EIO);
->>> +
->>> +       if (ret < 0)
->>>                 return -EIO;
->>> -       }
->>>
->>>         if (!ret)
->>>                 return ret;
->>> --
->>> 2.25.1
->>>
->>
->> FYI, this change is queued in overlayfs-next.
->>
->> However, I went to see if overlayfs has test coverage for this and it does not.
->>
->> The test coverage added by Darrick to the mentioned vfs commit is test xfs/546,
->> so it does not run on other fs, although it is quite generic.
->>
->> I fixed this test so it could run on overlayfs (like this):
->> # This command is complicated a bit because in the case of overlayfs the
->> # syncfs fd needs to be opened before shutdown and it is different from the
->> # shutdown fd, so we cannot use the _scratch_shutdown() helper.
->> # Filter out xfs_io output of active fds.
->> $XFS_IO_PROG -x -c "open $(_scratch_shutdown_handle)" -c 'shutdown -f
->> ' -c close -c syncfs $SCRATCH_MNT | \
->>         grep -vF '[00'
->>
->> and it passes on both xfs and overlayfs (over xfs), but if I try to
->> make it "generic"
->> it fails on ext4, which explicitly allows syncfs after shutdown:
->>
->>         if (unlikely(ext4_forced_shutdown(sb)))
->>                 return 0;
->>
->> Ted, Darrick,
->>
->> Do you have any insight as to why this ext4 behavior differs from xfs
->> or another idea how to exercise the syncfs error in a generic test?
->>
->> I could fork an overlay/* test from the xfs/* test and require that
->> underlying fs is xfs, but that would be ugly.
->>
->> Any ideas?
-> 
-> That should be:
-> 
-> 	if (unlikely(ext4_forced_shutdown(sb)))
-> 		return -EIO;
-> 
-> no?  The fs is dead and cannot persist anything, so we should fling that
-> back to the calling program.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-yes. sync_filesystem() write outs and wait upon all dirty data. If the superblock is shutdown,
-writeback can't make any progress and there is no guarantees are made on how many dirty data
-have been written out. So I think it's reasonable to tell users about this error.
+								Honza
 
+> ---
+>  fs/ext4/ext4.h   |  3 ++-
+>  fs/ext4/inline.c |  7 ++++---
+>  fs/ext4/inode.c  | 42 ++++++++++++++++++++++++++++++++++--------
+>  3 files changed, 40 insertions(+), 12 deletions(-)
 > 
-> --D
+> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> index 5f8257b68190..b653bd423b11 100644
+> --- a/fs/ext4/ext4.h
+> +++ b/fs/ext4/ext4.h
+> @@ -3851,7 +3851,8 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+>  	return buffer_uptodate(bh);
+>  }
+>  
+> -extern int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+> +extern int ext4_block_write_begin(handle_t *handle, struct folio *folio,
+> +				  loff_t pos, unsigned len,
+>  				  get_block_t *get_block);
+>  #endif	/* __KERNEL__ */
+>  
+> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+> index 0a1a8431e281..8d5599d5af27 100644
+> --- a/fs/ext4/inline.c
+> +++ b/fs/ext4/inline.c
+> @@ -601,10 +601,11 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
+>  		goto out;
+>  
+>  	if (ext4_should_dioread_nolock(inode)) {
+> -		ret = ext4_block_write_begin(folio, from, to,
+> +		ret = ext4_block_write_begin(handle, folio, from, to,
+>  					     ext4_get_block_unwritten);
+>  	} else
+> -		ret = ext4_block_write_begin(folio, from, to, ext4_get_block);
+> +		ret = ext4_block_write_begin(handle, folio, from, to,
+> +					     ext4_get_block);
+>  
+>  	if (!ret && ext4_should_journal_data(inode)) {
+>  		ret = ext4_walk_page_buffers(handle, inode,
+> @@ -856,7 +857,7 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
+>  			goto out;
+>  	}
+>  
+> -	ret = ext4_block_write_begin(folio, 0, inline_size,
+> +	ret = ext4_block_write_begin(NULL, folio, 0, inline_size,
+>  				     ext4_da_get_block_prep);
+>  	if (ret) {
+>  		up_read(&EXT4_I(inode)->xattr_sem);
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 4964c67e029e..a28f279fd02f 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -49,6 +49,11 @@
+>  
+>  #include <trace/events/ext4.h>
+>  
+> +static void ext4_journalled_zero_new_buffers(handle_t *handle,
+> +					    struct inode *inode,
+> +					    struct folio *folio,
+> +					    unsigned from, unsigned to);
+> +
+>  static __u32 ext4_inode_csum(struct inode *inode, struct ext4_inode *raw,
+>  			      struct ext4_inode_info *ei)
+>  {
+> @@ -1041,7 +1046,8 @@ int do_journal_get_write_access(handle_t *handle, struct inode *inode,
+>  	return ret;
+>  }
+>  
+> -int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+> +int ext4_block_write_begin(handle_t *handle, struct folio *folio,
+> +			   loff_t pos, unsigned len,
+>  			   get_block_t *get_block)
+>  {
+>  	unsigned from = pos & (PAGE_SIZE - 1);
+> @@ -1055,6 +1061,7 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+>  	struct buffer_head *bh, *head, *wait[2];
+>  	int nr_wait = 0;
+>  	int i;
+> +	bool should_journal_data = ext4_should_journal_data(inode);
+>  
+>  	BUG_ON(!folio_test_locked(folio));
+>  	BUG_ON(from > PAGE_SIZE);
+> @@ -1084,10 +1091,22 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+>  			if (err)
+>  				break;
+>  			if (buffer_new(bh)) {
+> +				/*
+> +				 * We may be zeroing partial buffers or all new
+> +				 * buffers in case of failure. Prepare JBD2 for
+> +				 * that.
+> +				 */
+> +				if (should_journal_data)
+> +					do_journal_get_write_access(handle,
+> +								    inode, bh);
+>  				if (folio_test_uptodate(folio)) {
+> -					clear_buffer_new(bh);
+> +					/*
+> +					 * Unlike __block_write_begin() we leave
+> +					 * dirtying of new uptodate buffers to
+> +					 * ->write_end() time or
+> +					 * folio_zero_new_buffers().
+> +					 */
+>  					set_buffer_uptodate(bh);
+> -					mark_buffer_dirty(bh);
+>  					continue;
+>  				}
+>  				if (block_end > to || block_start < from)
+> @@ -1117,7 +1136,11 @@ int ext4_block_write_begin(struct folio *folio, loff_t pos, unsigned len,
+>  			err = -EIO;
+>  	}
+>  	if (unlikely(err)) {
+> -		folio_zero_new_buffers(folio, from, to);
+> +		if (should_journal_data)
+> +			ext4_journalled_zero_new_buffers(handle, inode, folio,
+> +							 from, to);
+> +		else
+> +			folio_zero_new_buffers(folio, from, to);
+>  	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+>  		for (i = 0; i < nr_wait; i++) {
+>  			int err2;
+> @@ -1215,10 +1238,11 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
+>  	folio_wait_stable(folio);
+>  
+>  	if (ext4_should_dioread_nolock(inode))
+> -		ret = ext4_block_write_begin(folio, pos, len,
+> +		ret = ext4_block_write_begin(handle, folio, pos, len,
+>  					     ext4_get_block_unwritten);
+>  	else
+> -		ret = ext4_block_write_begin(folio, pos, len, ext4_get_block);
+> +		ret = ext4_block_write_begin(handle, folio, pos, len,
+> +					     ext4_get_block);
+>  	if (!ret && ext4_should_journal_data(inode)) {
+>  		ret = ext4_walk_page_buffers(handle, inode,
+>  					     folio_buffers(folio), from, to,
+> @@ -2951,7 +2975,8 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
+>  	if (IS_ERR(folio))
+>  		return PTR_ERR(folio);
+>  
+> -	ret = ext4_block_write_begin(folio, pos, len, ext4_da_get_block_prep);
+> +	ret = ext4_block_write_begin(NULL, folio, pos, len,
+> +				     ext4_da_get_block_prep);
+>  	if (ret < 0) {
+>  		folio_unlock(folio);
+>  		folio_put(folio);
+> @@ -6205,7 +6230,8 @@ vm_fault_t ext4_page_mkwrite(struct vm_fault *vmf)
+>  		if (folio_pos(folio) + len > size)
+>  			len = size - folio_pos(folio);
+>  
+> -		err = __block_write_begin(&folio->page, 0, len, ext4_get_block);
+> +		err = ext4_block_write_begin(handle, folio, 0, len,
+> +					     ext4_get_block);
+>  		if (!err) {
+>  			ret = VM_FAULT_SIGBUS;
+>  			if (ext4_journal_folio_buffers(handle, folio, len))
+> -- 
+> 2.33.0
 > 
->> Thanks,
->> Amir.
->>
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
