@@ -1,101 +1,122 @@
-Return-Path: <linux-ext4+bounces-4009-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4010-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C2CB969621
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 09:52:36 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E5269697D4
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 10:52:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D0C9B20DD5
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 07:52:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1C33B25630
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 08:51:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 200E11D54ED;
-	Tue,  3 Sep 2024 07:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08E9A19F410;
+	Tue,  3 Sep 2024 08:51:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cVg3XG9m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D9E11865F0
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Sep 2024 07:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D431519F407;
+	Tue,  3 Sep 2024 08:51:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725349927; cv=none; b=Pnzu9bVCXduLj2cou7/2lILUl0m+Ujowd4oJpn1x7k9G8XgYmq86OdGUzfrRvrCs1Xn1SmRIcTA78QEDx9MDW3Inl3x79G+zi3YgkfyVNJ8YLEYlt9AxZYPYhZRE2hCLqokghPcsNeNqNL+QPer9usUs4EXFiQbYNWH54jCb2rU=
+	t=1725353462; cv=none; b=CaKLFxbYM8wa9DCXc3RJmwNGCeZzanJzDFRgrVhmqYFFF67vxiwpryWcL/4IwDWshJTooO4OBNM/cEMWX6SjDWO6MCWgo5y6+6zFCw4BR4hXDD36dDy6GzSmJgtmMD4hPwoeM6wD4AKQFYb8vTd8F7K9xp26VNwBfLAnf1EzfCE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725349927; c=relaxed/simple;
-	bh=Y6OYy2hpcSaq9gJ/835XlUBunmn9fIXdnY7o5Ftx4Hw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=pJDcXaZNgxgHoCZx4XKZGRv6i5mS3tCZS81h9nCkP54KCC0Iq04nvHHoDge+0i0a5nufgbNTAyS0sZb1Kdgf7LacUT/n83iNN4lXuZWaGbxsC4EdzRiEDG8MLop8ptTrysdWk+eVJwJmpaiRgInf0SQb0y8JEqBr0x/ADU5mKu8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4Wyd9p2XkLz1S9mg;
-	Tue,  3 Sep 2024 15:51:42 +0800 (CST)
-Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
-	by mail.maildlp.com (Postfix) with ESMTPS id D0F821A016C;
-	Tue,  3 Sep 2024 15:52:01 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.174) by dggpeml100021.china.huawei.com
- (7.185.36.148) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 3 Sep
- 2024 15:52:01 +0800
-Message-ID: <628a0278-6809-4d2e-94f3-14a882bfa34b@huawei.com>
-Date: Tue, 3 Sep 2024 15:52:01 +0800
+	s=arc-20240116; t=1725353462; c=relaxed/simple;
+	bh=5T93OmOW6XAozlR+lnXNg9ncGTbLriUTGFcNAKu7E9k=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Ju1dvRFS6QNJXezxDky9Fvrr6tRNa5F1W42Yje5ZuCCG8V+CkvRfLwEcJiDCeAU2k3luzMwYIKk5dj1Xops/KJ7cqn8k/K9PHyN3uu559uhmtXkVHTOiYOhognNnQg0tky78bIdINdgJN4wbeTOw7YslHBHt0rnU8p+3cj+c/cQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cVg3XG9m; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-53343652ec0so392773e87.2;
+        Tue, 03 Sep 2024 01:51:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725353459; x=1725958259; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hVlvyt6BFQoRacvXrglL9Jau+QFUUZlrFsU3ZgitFTU=;
+        b=cVg3XG9mf5HlsFZ4I2NKwpXnOljRDskPi883sNsEwBdb8QU+7xgjkN0Wbtx0KPIxua
+         hnkI5ODNRXzYoM9xYQF8nknOMrT+VIDmKJrc3ra22RHFcMnVbQavKKOAjqeRx5qWpmcO
+         vZe289v/E3Jq6yAsHNIqDC2KeRgnb1GRmCuTGTCThUrcv+4beHr7iYaIgpN67AmK+NqA
+         6gb3ivfPqVejhvBY5bMungKxg0x5hhU8XRRRaahPs9aifD2atFLk6RVtWjsfFAZAxne9
+         0DWiqpWXUQt1eAXD15stLCEfGmULUkCzJCmiBTl/fwcTWnYPncOIngnbNjcxN+NBI/FE
+         eMKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725353459; x=1725958259;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hVlvyt6BFQoRacvXrglL9Jau+QFUUZlrFsU3ZgitFTU=;
+        b=Jns6LnqBVjDVq3i3PX5FnimwL71q1QwceupI3JuIRYdyCUenbm6VIkEn872qdDkvNz
+         WgRhgiAvb8mkuBv4QDBVHBYw/ZZfrh8+q5SPMwLGUM9yC7XsZzzKFVfaL29ON2U3MkmS
+         XeS5SbvKz6XHHz2a+pK6RSOj4MweJr6cPUVaPfOf4CfFoGAzsB2e9ixTWIJARVUsxD8J
+         KFUZjEFJI6Vb9d5JAO/f1Nvy/DQxoDQteXM03TvTgW/tEs2/hkSjpHsgNLhmKSkTVpH8
+         nRCjHSlneE/d+N65ryilklglTBnViPYK42O54thiv8ZsrwEGfjWlfnFc0khfEGrtB59F
+         bJXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUDlSKWAV2KKP9Zhl+8GC29jgBOFYOJ4wTwCga8/wHY/K1UfOPTIKjP7uigXybMh1Rj04LCBZ4pGwiXZJ78Yw==@vger.kernel.org, AJvYcCWPAvSYEwqw4H+9oOx2h1BeAzlG6WLKHsqUmexvTDwnzGFDqDUkqJ7Gn4L4KGLktjlnoP2ilpHKv7fU@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzi0c0vcBoxKGTY+z4VSdKm2ejK+B/dlsghIHCZhh4I/EzezVmV
+	yPcX2rVwv8z8PDeNjsUBWoQl/VIg9uS3ohfW2vGgsE14a1f3AX7o1/aoQ6FEr5R/x8WHSIDHaZ3
+	+YdcM3ttgqlY4oItbT7tri7cKXOM=
+X-Google-Smtp-Source: AGHT+IFjt4tsY7sJ3tOTx8HvcE5a6xuQdW1RCnZd+Y2hSgKvHKFkS6mqjyUcS5RyIJ0uNZXEG6061dySrJs8Ffw72UU=
+X-Received: by 2002:a05:6512:131f:b0:530:b78c:445c with SMTP id
+ 2adb3069b0e04-53546ba3693mr3568331e87.8.1725353458060; Tue, 03 Sep 2024
+ 01:50:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH -next] ext4: Remove redundant null pointer check
-To: Li Zetao <lizetao1@huawei.com>, <tytso@mit.edu>,
-	<adilger.kernel@dilger.ca>
-CC: <linux-ext4@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
-References: <20240820013250.4121848-1-lizetao1@huawei.com>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20240820013250.4121848-1-lizetao1@huawei.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml100021.china.huawei.com (7.185.36.148)
+References: <20240823082237.713543-1-zhaoyang.huang@unisoc.com> <20240903022902.GP9627@mit.edu>
+In-Reply-To: <20240903022902.GP9627@mit.edu>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Tue, 3 Sep 2024 16:50:46 +0800
+Message-ID: <CAGWkznEv+F1A878Nw0=di02DHyKxWCvK0B=93o1xjXK6nUyQ3Q@mail.gmail.com>
+Subject: Re: [RFC PATCHv2 1/1] fs: ext4: Don't use CMA for buffer_head
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Baolin Wang <baolin.wang@linux.alibaba.com>, linux-fsdevel@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, steve.kang@unisoc.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Zetao,
-
-On 2024/8/20 9:32, Li Zetao wrote:
-> Since the ext4_find_extent() does not return a null pointer, the check for
-> the null pointer here is redundant. Drop null pointer check for clean
-> code.
+On Tue, Sep 3, 2024 at 10:29=E2=80=AFAM Theodore Ts'o <tytso@mit.edu> wrote=
+:
 >
-> No functional change intended.
+> On Fri, Aug 23, 2024 at 04:22:37PM +0800, zhaoyang.huang wrote:
+> >
+> > +#ifndef CONFIG_CMA
+> >       bh =3D sb_getblk(inode->i_sb, map.m_pblk);
+> > +#else
+> > +     bh =3D sb_getblk_gfp(inode->i_sb, map.m_pblk, 0);
+> > +#endif
 >
-> Signed-off-by: Li Zetao <lizetao1@huawei.com>
-> ---
->   fs/ext4/extents.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
+> So all of these patches to try to work around your issue with CMA are
+> a bit ugly.  But passing in a GFP mask of zero is definitely not the
+> right way to go about thing, since there might be certain GFP masks
+> that are required by a particular block device.  What I think you are
+> trying to do is to avoid setting the __GFP_MOVEABLE flag.  So in that
+> case, in the CMA path something like this is what you want:
 >
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index e067f2dd0335..12f0771d57d2 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -6112,7 +6112,7 @@ int ext4_ext_clear_bb(struct inode *inode)
->   			break;
->   		if (ret > 0) {
->   			path = ext4_find_extent(inode, map.m_lblk, NULL, 0);
-> -			if (!IS_ERR_OR_NULL(path)) {
-> +			if (!IS_ERR(path)) {
->   				for (j = 0; j < path->p_depth; j++) {
->   
->   					ext4_mb_mark_bb(inode->i_sb,
-
-Thanks for the cleanup patch.
-
-But the change is already included in the patch:
-
-  https://lore.kernel.org/all/20240710040654.1714672-21-libaokun@huaweicloud.com/
-
-
-Thanks,
-Baokun
+>         bh =3D getblk_unmoveable(sb->s_bdev, map.m_pblk, sb->s_blocksize)=
+;
+>
+> I'd also sugest only trying to use this is the file system has
+> journaling enabled.  If the file system is an ext2 file system without
+> a journal, there's no reason avoid using the CMA region
+agree.
+> assume the reason why the buffer cache is trying to use the moveable
+> flag is because the amount of non-CMA memory might be a precious
+> resource in some systems.
+I don't think so. All migrate type page blocks possess the same
+position as each other as they could fallback to all migrate types
+when current fails. I guess the purpose could be to enlarge the scope
+of available memory as __GFP_MOVEABLE has the capability of recruiting
+CMA.
+>
+>                                 - Ted
 
