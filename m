@@ -1,114 +1,90 @@
-Return-Path: <linux-ext4+bounces-4011-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4012-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35E7C969D03
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 14:09:18 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 834DD969E56
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 14:50:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68FF01C23B1F
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 12:09:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 351241F2264B
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Sep 2024 12:50:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CA8A1C9853;
-	Tue,  3 Sep 2024 12:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF7B1CA6A6;
+	Tue,  3 Sep 2024 12:50:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="PsMcUtNh"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="k9hfrQ28"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA1119F42F
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Sep 2024 12:09:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3DF71CA680
+	for <linux-ext4@vger.kernel.org>; Tue,  3 Sep 2024 12:50:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725365353; cv=none; b=sFgvPD1sj7zMbX4N/L/wVs4E31B8t+uT/o3XjjmUsTMvCUcnEyaX/8+VwR8otMfX3V15JJ2YR6TJVTLJXGwAvAgKzc9g0Z/9xbWRVGRg3C/KUj46hOlZ+wBBVEXaUWD7xiUhizCie/WNCCf7Q5m8oiGj23y1nIX3L/W8Fzkl7MA=
+	t=1725367842; cv=none; b=s+DoOuujZHB3jv3PLSvPCAdYIh1Xkd61KO4jQ+WiY7JLBGcjHSDXqU+uRutN9CIorXpLVGui/JcN+UVbm/RMLYeQZNGL64ay/jrKz1l20o2N87Bns5Vi8sNJLjA6n75mfDz7mPARDJRjB0H22HXFIpN6HH+/uz67MFMLIe8zf4Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725365353; c=relaxed/simple;
-	bh=FuldmmtFdPC+wAYHdv/1mRuo2K3eRTALSRwCK32AJ/I=;
+	s=arc-20240116; t=1725367842; c=relaxed/simple;
+	bh=flRatLrWnVLGm0ukD5PLJh7O9Kq+VSr/Lehnc7GIMNM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ghzO5m2K1QnvuoW/5vqdYJNTGwJjykE5DFsF06De5x3LZ0wfBkzu0xbWYG3wfSuCmJxmgln7tVfZkXtIJG7JGv6l9etDeSMhQp5RM4P0LE+beABB7YqyruxPD55f2DxHXgZQDSnAx7x4q8Y49OEjtsmJ7xNwqW/LhFyvHYIED1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=PsMcUtNh; arc=none smtp.client-ip=18.9.28.11
+	 Content-Type:Content-Disposition:In-Reply-To; b=avfi1mnKkfepkO+BZX4fBsRDgi8ZoKDtDX0J2ZbJ9T5hIVQ3oo4q/anAC7GMrib52tgFTZbIv1d4Mdeg3WHVc8OQnsLXwQFgEJwtUL1Cnaj2FAsEwCQc6hdGc/YJLM9Cmaq4ilbRU9JzKzuas7V5e6Bvh68VIpocXll8sTke428=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=k9hfrQ28; arc=none smtp.client-ip=18.9.28.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
 Received: from cwcc.thunk.org (pool-173-48-102-194.bstnma.fios.verizon.net [173.48.102.194])
 	(authenticated bits=0)
         (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 483C8eJg010291
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 483CoMRD029696
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 3 Sep 2024 08:08:42 -0400
+	Tue, 3 Sep 2024 08:50:23 -0400
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1725365324; bh=wvFsCU0TSej2kLdx1KJ3MyVCSDOw5N9vk9JSJj72amI=;
+	t=1725367824; bh=j9Sn0deNeRSALz8owlDSJet469u2F2s8YihKNVvIJqE=;
 	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=PsMcUtNhHJdT1ZIcuDY36+q+TRDoNJYV78+ps5hfNiXONgLYuWJOkNOPvgf35wZsc
-	 c85V7ZQR74NYWPf2Rfo2Cy2OqEZw0QxFKs3sUXMju6idz+eEt+s2BOgHRzelrndypR
-	 l56J/8Q68uvE0ayMT8pLnp21py8P/RaIx31PZ9NuP9LsdbdmXmTjYVU4B4U4R5Z9c+
-	 vw8l8rm5eEGfaZmd8dLc4buAw14uLMCtNxgLOtAGcCbwhyzrvw9d35LzaE/l3b+dZd
-	 S9q1iR+Guqv3te4pJG+jCwWtF+smy/Ujj4gk5vyw6hwNg2Wuy91KgG8dukz/z/rsFq
-	 PbAHuGq64kmrA==
+	b=k9hfrQ28xX0ruzLC6s/toONApDnKHSCxJdzu4kuwslKy0NEl4ckxrqiVqvkldT1Oh
+	 f44eQtQM7AchSItMX61EfBvPdAypBpIeYreFYbOx3Jp6LPjKHvawo/mk/WkTlpQ00/
+	 umJACk765x9bcQL6XiO5bOboCH3UKCebI3ZzPTi+tSBRVPjNN1aktaHVyNw9MHURm8
+	 WZnn0pmV/QH/VxRW7mOkMRmspZcx+70ZczUCj5p21rWaZkKeZv3EjKY34EOVfILj2/
+	 IcQxMjiFx39feLYZFx+Ui+BWy6r0U/dgSkCybRj1WOw4CKzV2zlck9iYVvDnpGcoS8
+	 tVnkIcKtoGnNw==
 Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 5CD2215C02C4; Tue, 03 Sep 2024 08:08:40 -0400 (EDT)
-Date: Tue, 3 Sep 2024 08:08:40 -0400
+	id 1F31F15C02C4; Tue, 03 Sep 2024 08:50:22 -0400 (EDT)
+Date: Tue, 3 Sep 2024 08:50:22 -0400
 From: "Theodore Ts'o" <tytso@mit.edu>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-        Andreas Dilger <adilger.kernel@dilger.ca>,
-        Baolin Wang <baolin.wang@linux.alibaba.com>,
-        linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-        steve.kang@unisoc.com
-Subject: Re: [RFC PATCHv2 1/1] fs: ext4: Don't use CMA for buffer_head
-Message-ID: <20240903120840.GD424729@mit.edu>
-References: <20240823082237.713543-1-zhaoyang.huang@unisoc.com>
- <20240903022902.GP9627@mit.edu>
- <CAGWkznEv+F1A878Nw0=di02DHyKxWCvK0B=93o1xjXK6nUyQ3Q@mail.gmail.com>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: Li Zetao <lizetao1@huawei.com>, adilger.kernel@dilger.ca,
+        linux-ext4@vger.kernel.org
+Subject: Re: [PATCH -next] ext4: Remove redundant null pointer check
+Message-ID: <20240903125022.GF424729@mit.edu>
+References: <20240820013250.4121848-1-lizetao1@huawei.com>
+ <628a0278-6809-4d2e-94f3-14a882bfa34b@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <CAGWkznEv+F1A878Nw0=di02DHyKxWCvK0B=93o1xjXK6nUyQ3Q@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <628a0278-6809-4d2e-94f3-14a882bfa34b@huawei.com>
 
-On Tue, Sep 03, 2024 at 04:50:46PM +0800, Zhaoyang Huang wrote:
-> > I'd also sugest only trying to use this is the file system has
-> > journaling enabled.  If the file system is an ext2 file system without
-> > a journal, there's no reason avoid using the CMA region
-> agree.
-> > assume the reason why the buffer cache is trying to use the moveable
-> > flag is because the amount of non-CMA memory might be a precious
-> > resource in some systems.
->  
-> I don't think so. All migrate type page blocks possess the same
-> position as each other as they could fallback to all migrate types
-> when current fails. I guess the purpose could be to enlarge the scope
-> of available memory as __GFP_MOVEABLE has the capability of recruiting
-> CMA.
+On Tue, Sep 03, 2024 at 03:52:01PM +0800, Baokun Li wrote:
+> Thanks for the cleanup patch.
+> 
+> But the change is already included in the patch:
+> 
+>  https://lore.kernel.org/all/20240710040654.1714672-21-libaokun@huaweicloud.com/
 
-Well, I guess I'm a bit confused why the buffer cache is trying to use
-__GFP_MOVEABLE in the first place.  In general CMA is to allow systems
-to be able to allocate big chunks of memory which have to be
-physically contiguous because the I/O device(s) are too primitive to
-be able to do scatter-gather, right?  So why are we trying to use CMA
-eligible memory for 4k buffer cache pages?  Presumably, because
-there's not enough non-CMA eligible memory?
+Yeah, I noticed.  I had already applied Zetao's patch when I processed
+yours, so I just ended up manually handling the patch conflict.
 
-After all, using GFP_MOVEABLE memory seems to mean that the buffer
-cache might get thrashed a lot by having a lot of cached disk buffers
-getting ejected from memory to try to make room for some contiguous
-frame buffer memory, which means extra I/O overhead.  So what's the
-upside of using GFP_MOVEABLE for the buffer cache?
+(I haven't set out the patch acks yet, because the current state of
+the ext4/dev branch is apparently causing a test regression which I'm
+trying to root cause.  They will be in tomorrow's fs-next and
+linux-next branch, though unless I end up figuring out the problematic
+patch or patch series, and end up dropping them from the ext4 dev
+branch today.  Still, feel free to take a look and let me know if I
+screwed up anything.)
 
-Just curious, because in general I'm blessed by not having to use CMA
-in the first place (not having I/O devices too primitive so they can't
-do scatter-gather :-).  So I don't tend to use CMA, and obviously I'm
-missing some of the design considerations behind CMA.  I thought in
-general CMA tends to used in early boot to allocate things like frame
-buffers, and after that CMA doesn't tend to get used at all?  That's
-clearly not the case for you, apparently?
-
-Cheers,
-
-							- Ted
+						- Ted
 
