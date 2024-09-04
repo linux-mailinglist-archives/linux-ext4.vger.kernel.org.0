@@ -1,179 +1,124 @@
-Return-Path: <linux-ext4+bounces-4047-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4048-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F5EB96BA06
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 13:17:58 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D02096BB2B
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 13:46:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBE76285EDF
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 11:17:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 607551C22295
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 11:46:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59FE11D4169;
-	Wed,  4 Sep 2024 11:14:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vmV8OQ09";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="fMXtvkd8";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="G6nSpGsq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HPKstyY4"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777111D5893;
+	Wed,  4 Sep 2024 11:44:00 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021E01D2235;
-	Wed,  4 Sep 2024 11:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAC01D2231;
+	Wed,  4 Sep 2024 11:43:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725448463; cv=none; b=fh7gdD8GYCOyQi4C6BvsuHB5xkdYigxfNEHD5M4eg53xNb07QzjHCrBIJ1qj65nSq7pBWT9sMJr98AjkPCVXrqsnQ4eK6m5S8ToBfFD332IEjASBjJvjRaA3D7wmUo9CHtA1+qLy7IetHvnVe4EBRIyK22yRdHJF4b5G7lcZMJU=
+	t=1725450240; cv=none; b=sfDEQJDmXXIVgTlHW4ODErIunOhv/7EkAOuQIa7clc0tzhbuZd45qkAJvDMwSQQVoLDT3X3WUxsREqBaM9/ZNGG8tyN2en9q9Dz6fQarSJW15TYwICXP3zgiBMMQdZAC3IN6TaaYEGsuiZE9rnjSMvMst8Jx+zxnY5pFMQURlRs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725448463; c=relaxed/simple;
-	bh=AjjPgpJzo2eKfimYCkqQOMZHOdwRWbumpxASTKp4IYU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=itJwn+LhXDNLxTCd+AlvYKKqTwUjIfZzWRGP7iZT22ellGTGG3frD5EcHH80Lt3OOatbb9WCp3glSEV60LU/yiwCMIDpnZnt/HXxMXsimwQbpRTyVrsIUIo3CezRUV55a4GcQZFBtJCHDwRQOKdV/Oi44sOlaHDwgs4Ovds7E1Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vmV8OQ09; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=fMXtvkd8; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=G6nSpGsq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HPKstyY4; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id EFBB421995;
-	Wed,  4 Sep 2024 11:14:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725448460; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oopo4gGEFFQxxuBDcyFPfasP6UTSXH8j8+SKkx6xPAQ=;
-	b=vmV8OQ09lxbEo00aY3zPtJmzTN0y3VV9rV66C6zZU1Imofx8t1d/nP1BoCr9+5rZ3CjczU
-	oOPUZDqrwxRz2PFoNqqunxdxj8TaO9vMOh0lQoMunXXdmKzu5n+xrm3Z8Rz6fUDFOS5QrV
-	/g9Mnl55u29hyRTYfCwPoifSsjQyef8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725448460;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oopo4gGEFFQxxuBDcyFPfasP6UTSXH8j8+SKkx6xPAQ=;
-	b=fMXtvkd8E3gcTJlJZgciJ07Yel8BeSq2D4KFEWQNQIwF1xMSoZrKum68Rzj/PstcAzg+4c
-	dOgIATSGhWmsaOBw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1725448459; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oopo4gGEFFQxxuBDcyFPfasP6UTSXH8j8+SKkx6xPAQ=;
-	b=G6nSpGsqOjxF68BDMygQDOkgO8m1S3FJ2EfMl0rRQxSQ7dsuT8ZBNwmnDiLzdkZVqW4w94
-	mITlKuhkzj4nyvRVYOvj4ShCUWWcfZIRpsmUo9QAx+38dicAN0/2fjozUpJOwMKNQPGqWC
-	A9X5BJGQ0vo/Bvbh1bq9eAwYMEiAKs8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1725448459;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Oopo4gGEFFQxxuBDcyFPfasP6UTSXH8j8+SKkx6xPAQ=;
-	b=HPKstyY4Gz0HuPF2bf6qBOsPKYcq1yURARK+MuBEMtiQnVX2NKvVETcC5qJtqZs8YgAVOs
-	4Qt8ZX/Mucg7oAAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E33AC139E2;
-	Wed,  4 Sep 2024 11:14:19 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2+WCNwtB2GbENwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 04 Sep 2024 11:14:19 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 90B11A0968; Wed,  4 Sep 2024 13:14:15 +0200 (CEST)
-Date: Wed, 4 Sep 2024 13:14:15 +0200
-From: Jan Kara <jack@suse.cz>
-To: syzbot <syzbot+c28d8da3e83b3cc68dc6@syzkaller.appspotmail.com>
-Cc: jack@suse.cz, jack@suse.com, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com,
-	tytso@mit.edu
-Subject: Re: [syzbot] [ext4?] kernel BUG in jbd2_journal_dirty_metadata
-Message-ID: <20240904111415.eo22zmhpggdavlzj@quack3>
-References: <20240904110644.g52vgotsmi4lm56c@quack3>
- <000000000000b8b0b30621492b9d@google.com>
+	s=arc-20240116; t=1725450240; c=relaxed/simple;
+	bh=K6OnJGxaAcsZ9MDkNmmQ1YWuZNbfYpWFDlarjgU69BA=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=lu4uwf9plPOifu11K9+YFFIufFAOp+qivxdm3TKEPl2noMLPK/M34Cx40TSZRS7/NYVQjGAJFZxU5w39tcJlYOFjkPBi59gUW9lISEoV346TIQwGL9hxMAh63ZBn04L0J1tOLntZMho39rKEIFPkrnbd9Uz/JMkVbvh/ATehHwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WzLGq2CRBz4f3jXJ;
+	Wed,  4 Sep 2024 19:43:31 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 4E3C01A07B6;
+	Wed,  4 Sep 2024 19:43:46 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgCHusbwR9hm8396AQ--.60910S3;
+	Wed, 04 Sep 2024 19:43:46 +0800 (CST)
+Subject: Re: [PATCH v3 05/12] ext4: passing block allocation information to
+ ext4_es_insert_extent()
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com
+References: <20240813123452.2824659-1-yi.zhang@huaweicloud.com>
+ <20240813123452.2824659-6-yi.zhang@huaweicloud.com>
+ <20240904102103.3lss7s5yxavcnjwm@quack3>
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+Message-ID: <0d8ffff7-6b51-16fe-bf11-a6f126a81c58@huaweicloud.com>
+Date: Wed, 4 Sep 2024 19:43:44 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
+ Thunderbird/78.12.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <000000000000b8b0b30621492b9d@google.com>
-X-Spam-Score: -1.30
-X-Spamd-Result: default: False [-1.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	URI_HIDDEN_PATH(1.00)[https://syzkaller.appspot.com/x/.config?x=996585887acdadb3];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TAGGED_RCPT(0.00)[c28d8da3e83b3cc68dc6];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	SUBJECT_HAS_QUESTION(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <20240904102103.3lss7s5yxavcnjwm@quack3>
+Content-Type: text/plain; charset=utf-8
+Content-Language: en-US
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCHusbwR9hm8396AQ--.60910S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7CrW5tF1kXw4fCFy8KF1rJFb_yoW8GF4rpF
+	Z3ua48GF4UXw429FW0ya13Jr4fKa18J3y7ArWSgw1rXay5Casa9F97KFWjq3WvqrWI9Fn0
+	vFW5Kw15Wa1YyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
+	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
+	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
+	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
+	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
+	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
+	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
+	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
+	6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
+	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Wed 04-09-24 04:06:50, syzbot wrote:
-> > On Tue 03-09-24 21:50:20, syzbot wrote:
-> >> syzbot found the following issue on:
-> >> 
-> >> HEAD commit:    fb24560f31f9 Merge tag 'lsm-pr-20240830' of git://git.kern..
-> >> git tree:       upstream
-> >> console output: https://syzkaller.appspot.com/x/log.txt?x=1739530b980000
-> >> kernel config:  https://syzkaller.appspot.com/x/.config?x=996585887acdadb3
-> >> dashboard link: https://syzkaller.appspot.com/bug?extid=c28d8da3e83b3cc68dc6
-> >> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> >> 
-> >> Unfortunately, I don't have any reproducer for this issue yet.
-> >> 
-> >> Downloadable assets:
-> >> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-fb24560f.raw.xz
-> >> vmlinux: https://storage.googleapis.com/syzbot-assets/2d39db26a2bc/vmlinux-fb24560f.xz
-> >> kernel image: https://storage.googleapis.com/syzbot-assets/8910481ae16e/bzImage-fb24560f.xz
-> >> 
-> >> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> >> Reported-by: syzbot+c28d8da3e83b3cc68dc6@syzkaller.appspotmail.com
-> >> 
-> >> loop0: detected capacity change from 0 to 32768
-> >> =======================================================
-> >> WARNING: The mand mount option has been deprecated and
-> >>          and is ignored by this kernel. Remove the mand
-> >>          option from the mount to silence this warning.
-> >> =======================================================
-> >> ocfs2: Mounting device (7,0) on (node local, slot 0) with ordered data mode.
-> >> loop0: detected capacity change from 32768 to 0
-> >> syz.0.0: attempt to access beyond end of device
-> >> loop0: rw=0, sector=10576, nr_sectors = 1 limit=0
-> >> (syz.0.0,5108,0):__ocfs2_xattr_set_value_outside:1385 ERROR: status = -5
-> >
-> > Looks like ocfs2 issue, not ext4.
-> >
-> > #syz set ocfs2
+On 2024/9/4 18:21, Jan Kara wrote:
+> On Tue 13-08-24 20:34:45, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> Just pass the block allocation flag to ext4_es_insert_extent() when we
+>> replacing a current extent after an actually block allocation or extent
+>> status conversion, this flag will be used by later changes.
+>>
+>> Suggested-by: Jan Kara <jack@suse.cz>
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> 
+> Looks good. Just one suggestion below. With that feel free to add:
+> 
+> Reviewed-by: Jan Kara <jack@suse.cz>
+> 
+>> @@ -848,7 +848,7 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes,
+>>   */
+>>  void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+>>  			   ext4_lblk_t len, ext4_fsblk_t pblk,
+>> -			   unsigned int status)
+>> +			   unsigned int status, int flags)
+> 
+> Since you pass flags to ext4_es_insert_extent() only from one place, let's
+> not pretend these are always full mapping flags and just make this new
+> argument:
+> 
+> bool delalloc_reserve_used
+> 
+> and from ext4_map_blocks_create() you can pass flags &
+> EXT4_GET_BLOCKS_DELALLOC_RESERVE.
+> 
 
-#syz set subsystems: ocfs2
+Sure, it's a better idea than passing full mapping flags, thanks for your
+suggestion, but since I've noticed that Ted had already picked this series
+into his dev branch, I can send another patch to do this. Thanks a lot for
+reviewing this series again!
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Yi.
+
 
