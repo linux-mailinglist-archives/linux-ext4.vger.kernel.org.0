@@ -1,124 +1,108 @@
-Return-Path: <linux-ext4+bounces-4048-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4049-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D02096BB2B
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 13:46:52 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E6FB96C6AA
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 20:48:02 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 607551C22295
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 11:46:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80DDF1C2223A
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 18:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 777111D5893;
-	Wed,  4 Sep 2024 11:44:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29DFA1E4111;
+	Wed,  4 Sep 2024 18:47:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="zGAF7sRr"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDAC01D2231;
-	Wed,  4 Sep 2024 11:43:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F321E2006
+	for <linux-ext4@vger.kernel.org>; Wed,  4 Sep 2024 18:47:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725450240; cv=none; b=sfDEQJDmXXIVgTlHW4ODErIunOhv/7EkAOuQIa7clc0tzhbuZd45qkAJvDMwSQQVoLDT3X3WUxsREqBaM9/ZNGG8tyN2en9q9Dz6fQarSJW15TYwICXP3zgiBMMQdZAC3IN6TaaYEGsuiZE9rnjSMvMst8Jx+zxnY5pFMQURlRs=
+	t=1725475668; cv=none; b=iv4/2brP0R+NUajPNUh32nhycY67JxBmJOjGnk8t47BnoXSohmQ7wuMQP0k3IDtPC1keHVf0+uciV9WuyxU+wxWXfrIedryqmeI14bbTGqN4XGrhuUBgiYiKzCq4pAK5qsXMcO6MSGxorIaFYOmFGL5g571ukt3nXluU/L+jWTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725450240; c=relaxed/simple;
-	bh=K6OnJGxaAcsZ9MDkNmmQ1YWuZNbfYpWFDlarjgU69BA=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=lu4uwf9plPOifu11K9+YFFIufFAOp+qivxdm3TKEPl2noMLPK/M34Cx40TSZRS7/NYVQjGAJFZxU5w39tcJlYOFjkPBi59gUW9lISEoV346TIQwGL9hxMAh63ZBn04L0J1tOLntZMho39rKEIFPkrnbd9Uz/JMkVbvh/ATehHwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4WzLGq2CRBz4f3jXJ;
-	Wed,  4 Sep 2024 19:43:31 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 4E3C01A07B6;
-	Wed,  4 Sep 2024 19:43:46 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgCHusbwR9hm8396AQ--.60910S3;
-	Wed, 04 Sep 2024 19:43:46 +0800 (CST)
-Subject: Re: [PATCH v3 05/12] ext4: passing block allocation information to
- ext4_es_insert_extent()
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240813123452.2824659-1-yi.zhang@huaweicloud.com>
- <20240813123452.2824659-6-yi.zhang@huaweicloud.com>
- <20240904102103.3lss7s5yxavcnjwm@quack3>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <0d8ffff7-6b51-16fe-bf11-a6f126a81c58@huaweicloud.com>
-Date: Wed, 4 Sep 2024 19:43:44 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1725475668; c=relaxed/simple;
+	bh=qlSKN2wgV6ev5aSb4wy+tYrHQbFDfkDI6sX3acAVpJA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=izRPphXp1qFwGx9CS8dX3a/3iQoHUwDmTEJpyBDESlhwIvksZZih1DUo2DWE2maDZhln4xZ7EQsvWhmKsyiJXkhMkoZtGOBJlDdi5qxn9+0OX674x39R4Py75O9QBbKaklJGRT0ub7JAeD5+LEjSAQzEUyIRqUeRMH0C4HsDLcQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=zGAF7sRr; arc=none smtp.client-ip=78.32.30.218
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=armlinux.org.uk; s=pandora-2019; h=Sender:Content-Type:MIME-Version:
+	Message-ID:Subject:Cc:To:From:Date:Reply-To:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:In-Reply-To:References:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=JBHbEbXsO108FDxsMj5RxjlsWKsmPmPGxQLdOtdXFwU=; b=zGAF7sRrMGbNaQbqU99LLietiG
+	8gW8DuinosShFOkyAMH17i+uAosCyt0mocBJlXnbBWNqx9EtkP+bnz1ejz4B+JiA2BxDLUACJI8df
+	UHCl4mrwILWZx9YyfizLQREE+hKXotVW31Hjnvvn7ld6ZnPUCRyKUM+zIVkspDLbVSLfkbw3pUFK+
+	ZssH+72yDhAID7e6K0shLC6ddxJNt5yh2/lOp3/BhR3hFk2lwPqWg9uLdsgnlEh77rpvDliVaTbI2
+	60PiUlmNMk+73qKxzjYTCt6CDotXQye+4sY0XXlY+YDrIl+NQL1qnb5sdtTyR5x0893Olxb5xBn1a
+	RklDMC/Q==;
+Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:52838)
+	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.96)
+	(envelope-from <linux@armlinux.org.uk>)
+	id 1slv2V-0001Wv-37;
+	Wed, 04 Sep 2024 19:47:35 +0100
+Received: from linux by shell.armlinux.org.uk with local (Exim 4.96)
+	(envelope-from <linux@shell.armlinux.org.uk>)
+	id 1slv2T-0003x0-1E;
+	Wed, 04 Sep 2024 19:47:33 +0100
+Date: Wed, 4 Sep 2024 19:47:33 +0100
+From: "Russell King (Oracle)" <linux@armlinux.org.uk>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
+Subject: BUG: 6.10: ext4 mpage_process_page_bufs() BUG_ON triggers
+Message-ID: <ZtirReiX7J+MDhuh@shell.armlinux.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240904102103.3lss7s5yxavcnjwm@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCHusbwR9hm8396AQ--.60910S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7CrW5tF1kXw4fCFy8KF1rJFb_yoW8GF4rpF
-	Z3ua48GF4UXw429FW0ya13Jr4fKa18J3y7ArWSgw1rXay5Casa9F97KFWjq3WvqrWI9Fn0
-	vFW5Kw15Wa1YyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r4j6F4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr1j6F4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUF1v3UUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Sender: Russell King (Oracle) <linux@armlinux.org.uk>
 
-On 2024/9/4 18:21, Jan Kara wrote:
-> On Tue 13-08-24 20:34:45, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> Just pass the block allocation flag to ext4_es_insert_extent() when we
->> replacing a current extent after an actually block allocation or extent
->> status conversion, this flag will be used by later changes.
->>
->> Suggested-by: Jan Kara <jack@suse.cz>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Looks good. Just one suggestion below. With that feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
->> @@ -848,7 +848,7 @@ static int __es_insert_extent(struct inode *inode, struct extent_status *newes,
->>   */
->>  void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
->>  			   ext4_lblk_t len, ext4_fsblk_t pblk,
->> -			   unsigned int status)
->> +			   unsigned int status, int flags)
-> 
-> Since you pass flags to ext4_es_insert_extent() only from one place, let's
-> not pretend these are always full mapping flags and just make this new
-> argument:
-> 
-> bool delalloc_reserve_used
-> 
-> and from ext4_map_blocks_create() you can pass flags &
-> EXT4_GET_BLOCKS_DELALLOC_RESERVE.
-> 
+With a 6.10 based kernel, no changes to filesystem/MM code, I'm
+seeing a reliable BUG_ON() within minutes of booting on one of my
+VMs. I don't have a complete oops dump, but this is what I do
+have, cobbled together from what was logged by journald, and
+what syslogd was able to splat on the terminals before the VM
+died.
 
-Sure, it's a better idea than passing full mapping flags, thanks for your
-suggestion, but since I've noticed that Ted had already picked this series
-into his dev branch, I can send another patch to do this. Thanks a lot for
-reviewing this series again!
+Sep 04 15:51:46 lists kernel: kernel BUG at fs/ext4/inode.c:1967!
 
-Yi.
+[ 1346.494848] Call trace:
+[ 1346.495409] [<c04b4f90>] (mpage_process_page_bufs) from [<c04b938c>] (mpage_prepare_extent_to_map+0x410/0x51c)
+[ 1346.499202] [<c04b938c>] (mpage_prepare_extent_to_map) from [<c04bbc40>] (ext4_do_writepages+0x320/0xb94)
+[ 1346.502113] [<c04bbc40>] (ext4_do_writepages) from [<c04bc5dc>] (ext4_writepages+0xc0/0x1b4)
+[ 1346.504662] [<c04bc5dc>] (ext4_writepages) from [<c0361154>] (do_writepages+0x68/0x220)
+[ 1346.506974] [<c0361154>] (do_writepages) from [<c0354868>] (filemap_fdatawrite_wbc+0x64/0x84)
+[ 1346.509165] [<c0354868>] (filemap_fdatawrite_wbc) from [<c035706c>] (__filemap_fdatawrite_range+0x50/0x58)
+[ 1346.511414] [<c035706c>] (__filemap_fdatawrite_range) from [<c035709c>] (filemap_flush+0x28/0x30)
+[ 1346.513518] [<c035709c>] (filemap_flush) from [<c04a8834>] (ext4_release_file+0x70/0xac)
+[ 1346.515312] [<c04a8834>] (ext4_release_file) from [<c03f8088>] (__fput+0xd4/0x2cc)
+[ 1346.517219] [<c03f8088>] (__fput) from [<c03f3e64>] (sys_close+0x28/0x5c)
+[ 1346.518720] [<c03f3e64>] (sys_close) from [<c0200060>] (ret_fast_syscall+0x0/0x5c)
 
+From a quick look, I don't see any patches that touch fs/ext4/inode.c
+that might address this.
+
+I'm not able to do any debugging, and from Friday, I suspect I won't
+even be able to use a computer (due to operations on my eyes.)
+
+-- 
+*** please note that I probably will only be occasionally responsive
+*** for an unknown period of time due to recent eye surgery making
+*** reading quite difficult.
+
+RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
+FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
