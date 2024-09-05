@@ -1,116 +1,131 @@
-Return-Path: <linux-ext4+bounces-4069-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4072-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09DD796DCB8
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 16:56:54 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E79AE96DFD5
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 18:33:52 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B4A941F240BB
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 14:56:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 265571C238A3
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 16:33:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDC691A0705;
-	Thu,  5 Sep 2024 14:54:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81AF61A0B1F;
+	Thu,  5 Sep 2024 16:32:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="LUPKQ7Jm"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="bZQ4zSna"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C606E1A01C5
-	for <linux-ext4@vger.kernel.org>; Thu,  5 Sep 2024 14:54:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80C231A0737;
+	Thu,  5 Sep 2024 16:32:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725548071; cv=none; b=ACVKrRY0KsI0lxpHBK4qiLll53O3yUJipBghBrMVZTu05y6AxErQ+cv68r1AlasKR8P1NJ2d103Tzf3jTLGLVRirfEBdOyKBKWBapmb7L6UTwBVu14zq5sv655KWC8mBNVrONbMDbEmeedBQoFoAhhh0bqFyaOQsqYVonyC6s24=
+	t=1725553957; cv=none; b=XiZEBZyFdoI3v7+KVjQaXrdwjRBiolLU5IRwplYZbABjrl9FbIlLkG8ncjSW7QgANng4tLpSvPOjOJSq7Su6WATLZaa6XgNlJ//WDyN9vd9f0KkL+LmJx4h4RxxmeILDPq6f/H96KC3Aa1jexOuAmiSLzuRrUblqTi7xekIbTqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725548071; c=relaxed/simple;
-	bh=V14CJcYvfPKl9Dyj1UEohkgVr1leB7mId7uDrVlxZ+M=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=rBHQqvyo2xo11+GJBpnMEE0eA0hwZY8iMXeaMqRPs0pfhqyuq5KBwz2ItgrccBM5EpUmZmfjo5BBPqVbrFUnccD6W0Bt6TjNYZY4t9LosHPlDkM9/ENqhlfw3E5HIjjYtdcuYPe7hpiCipDdpJC/QsSzXicNYS/CmPSLlZ36NVg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=LUPKQ7Jm; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-102-194.bstnma.fios.verizon.net [173.48.102.194])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 485Erxhn004736
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 5 Sep 2024 10:54:00 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1725548041; bh=pKlbDCE9K1sa7wnK0pbZ2MfXOKK0I1JnnQcWYxcFKjo=;
-	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
-	b=LUPKQ7JmFyJ5kjiOplydNZOb5oUfbrfb+sZqHUkF9yB14PhxdHC79WG8hAsh5X1Ap
-	 PRok2NVp/4k7Q+lIIpKU4lg9MfZoe0V3Bhznw90cHMcssjmjyfd2KNQDCLz815nWnU
-	 pb8BpDXTG5nHDZwCaFK2qbmUTVdf/kIM+aqFC+SXTMvEAZlRj3JM2axm3ZSqfEToUk
-	 wi6NU9RdKEpcnZIXcnlBSAweYJGORfk+6efm4lpU6Co6ptF9YEGsiQL6zwKoU7CeTl
-	 yDDwtEBh+t90qXlIhf9j1q69Cbwxpd7IxY27GxtyRC5MnM3F+STT509k8z3cZh6n7u
-	 /dt6aR0AlHjpA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id ED79E15C1D08; Thu, 05 Sep 2024 10:53:54 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-fsdevel@vger.kernel.org,
-        linux-kernel@vger.kernel.org, adilger.kernel@dilger.ca, jack@suse.cz,
-        ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-        yukuai3@huawei.com
-Subject: Re: [PATCH v3 00/12] ext4: simplify the counting and management of delalloc reserved blocks
-Date: Thu,  5 Sep 2024 10:53:49 -0400
-Message-ID: <172554793830.1268668.9236864034882757675.b4-ty@mit.edu>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20240813123452.2824659-1-yi.zhang@huaweicloud.com>
-References: <20240813123452.2824659-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1725553957; c=relaxed/simple;
+	bh=bM8/Aky9cVDTyu6+CHOGv/cduQxzuGgQDvzKsFymVfU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=gPiCn2mmHITMSXXwv+n+85VMefn7sZogXUjzTV4ZHUF2+pzEen+6nvu1gnegkvvP0tcXW6uLM10c2hqT9S+SK0mdeZHRnguTSO/8DxTm46ojCZvP0bkXXti13wowO1WUbYqduMovJpHnlI2C4JEgkoFZNJXLeIpubZR8zcYlahU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=bZQ4zSna; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1725553956; x=1757089956;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=bM8/Aky9cVDTyu6+CHOGv/cduQxzuGgQDvzKsFymVfU=;
+  b=bZQ4zSnaNTmoIYXtBfjQlI8YTFTOmy0E+MXCJoQEyBYLCum4YWmEQ56g
+   EiMtdujnJ9Y+JxpPaFoC0ih5mmcsZUC/TBZDqx+P2Fs1Vov2k/Y+i6vUc
+   mH178g1qTtWcqnD10vYODq5Y77xYwON2BHfXu4zL8JGqOU4VnesvRRw1b
+   VDMLu2zAYCNwOTg2w4wm/qSDljSoOuznrd2/Pg9mohkIPaDuKWKCjp2hV
+   +m3cTROJsaWpC1lY6EFWWxbuehSunKwx6QK04h1D+Llls1OUF46xjynlk
+   kVtm8QdNCrSF11gHKFGjg1M/RIb325IZPrBEYVF9c+J9X9gZeyEGX3H04
+   w==;
+X-CSE-ConnectionGUID: KGjChtu8R0WwXb6QEt23ow==
+X-CSE-MsgGUID: +8uDIeyjTh+3FXtFzYrmbQ==
+X-IronPort-AV: E=McAfee;i="6700,10204,11186"; a="34952585"
+X-IronPort-AV: E=Sophos;i="6.10,205,1719903600"; 
+   d="scan'208";a="34952585"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Sep 2024 09:32:34 -0700
+X-CSE-ConnectionGUID: 5FzCHLL9QUO3km3zapl2Zw==
+X-CSE-MsgGUID: z9pulfogRiSFU0MeIpQb8Q==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.10,205,1719903600"; 
+   d="scan'208";a="65671184"
+Received: from black.fi.intel.com ([10.237.72.28])
+  by orviesa009.jf.intel.com with ESMTP; 05 Sep 2024 09:32:31 -0700
+Received: by black.fi.intel.com (Postfix, from userid 1003)
+	id 347B031E; Thu, 05 Sep 2024 19:32:30 +0300 (EEST)
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	llvm@lists.linux.dev
+Cc: "Theodore Ts'o" <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Nathan Chancellor <nathan@kernel.org>,
+	Nick Desaulniers <ndesaulniers@google.com>,
+	Bill Wendling <morbo@google.com>,
+	Justin Stitt <justinstitt@google.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Subject: [PATCH v1 1/1] ext4: Mark ctx_*_flags() with __maybe_unused
+Date: Thu,  5 Sep 2024 19:32:29 +0300
+Message-ID: <20240905163229.140522-1-andriy.shevchenko@linux.intel.com>
+X-Mailer: git-send-email 2.43.0.rc1.1336.g36b5255a03ac
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
+When ctx_set_flags() is unused, it prevents kernel builds
+with clang, `make W=1` and CONFIG_WERROR=y:
 
-On Tue, 13 Aug 2024 20:34:40 +0800, Zhang Yi wrote:
-> Changes since v2:
->  - In patch 3, update the chang log as Jan suggested.
->  - In patch 5 and 6, when moving reserved blocks count updating to
->    ext4_es_insert_extent(), chang the condition for determining quota
->    claim by passing allocation information instead of counting used
->    reserved blocks as Jan suggested.
->  - Add patch 9, drop an unused helper ext4_es_store_status().
->  - Add patch 10, make extent status type exclusive, add assertion and
->    commtents as Jan suggested.
-> 
-> [...]
+.../ext4/super.c:2120:1: error: unused function 'ctx_set_flags' [-Werror,-Wunused-function]
+ 2120 | EXT4_SET_CTX(flags); /* set only */
+      | ^~~~~~~~~~~~~~~~~~~
 
-Applied, thanks!
+Fix this by marking ctx_*_flags() with __maybe_unused
+(mark both for the sake of symmetry).
 
-[01/12] ext4: factor out ext4_map_create_blocks() to allocate new blocks
-        commit: 130078d020e0214809f2e13cf4fb80c646020e94
-[02/12] ext4: optimize the EXT4_GET_BLOCKS_DELALLOC_RESERVE flag set
-        commit: 8b8252884f2ff4d28e3ce1a825057b3ad2900c35
-[03/12] ext4: don't set EXTENT_STATUS_DELAYED on allocated blocks
-        commit: eba8c368c8cb9ea05c08caf3dd1a0d0b87d614dc
-[04/12] ext4: let __revise_pending() return newly inserted pendings
-        commit: fccd632670408ab3066712aa90cc972b18d1b617
-[05/12] ext4: passing block allocation information to ext4_es_insert_extent()
-        commit: f3baf33b9cae0e00fe1870abca952d5dfea53dc6
-[06/12] ext4: update delalloc data reserve spcae in ext4_es_insert_extent()
-        commit: c543e2429640293d9eda8c7841d4b5d5e8682826
-[07/12] ext4: drop ext4_es_delayed_clu()
-        commit: 6e124d5b4b02229f8aaa206b1952db31d1687523
-[08/12] ext4: use ext4_map_query_blocks() in ext4_map_blocks()
-        commit: 15996a848564e40a3d030ec7e4603dddb9f425b6
-[09/12] ext4: drop unused ext4_es_store_status()
-        commit: 3b4ba269ab6673d664d2522a0e76797a3550983f
-[10/12] ext4: make extent status types exclusive
-        commit: ce09036ea4f0a54e9dcd7ba644bb1db7cf2d95d4
-[11/12] ext4: drop ext4_es_is_delonly()
-        commit: b224b18497484eef9d2dbb3c803888a3f3a3475e
-[12/12] ext4: drop all delonly descriptions
-        commit: 2046657e64a11b61d5ed07e0d60befd86303125e
+See also commit 6863f5643dd7 ("kbuild: allow Clang to find unused static
+inline functions for W=1 build").
 
-Best regards,
+Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+---
+ fs/ext4/super.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index e72145c4ae5a..8bbd84c2f3ca 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -2095,16 +2095,16 @@ static int ext4_parse_test_dummy_encryption(const struct fs_parameter *param,
+ }
+ 
+ #define EXT4_SET_CTX(name)						\
+-static inline void ctx_set_##name(struct ext4_fs_context *ctx,		\
+-				  unsigned long flag)			\
++static inline __maybe_unused						\
++void ctx_set_##name(struct ext4_fs_context *ctx, unsigned long flag)	\
+ {									\
+ 	ctx->mask_s_##name |= flag;					\
+ 	ctx->vals_s_##name |= flag;					\
+ }
+ 
+ #define EXT4_CLEAR_CTX(name)						\
+-static inline void ctx_clear_##name(struct ext4_fs_context *ctx,	\
+-				    unsigned long flag)			\
++static inline __maybe_unused						\
++void ctx_clear_##name(struct ext4_fs_context *ctx, unsigned long flag)	\
+ {									\
+ 	ctx->mask_s_##name |= flag;					\
+ 	ctx->vals_s_##name &= ~flag;					\
 -- 
-Theodore Ts'o <tytso@mit.edu>
+2.43.0.rc1.1336.g36b5255a03ac
+
 
