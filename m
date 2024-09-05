@@ -1,234 +1,159 @@
-Return-Path: <linux-ext4+bounces-4051-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4052-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BDE696C7F4
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 21:51:08 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3001096CA0C
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 00:03:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8D5D9B23036
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 19:51:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8C0D0B2506B
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Sep 2024 22:03:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88CD01E6DDB;
-	Wed,  4 Sep 2024 19:51:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 658C71714A9;
+	Wed,  4 Sep 2024 22:03:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b="DUi4XQrq"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fjQENuLy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from pandora.armlinux.org.uk (pandora.armlinux.org.uk [78.32.30.218])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5310C40C03
-	for <linux-ext4@vger.kernel.org>; Wed,  4 Sep 2024 19:50:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=78.32.30.218
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E91C535D4;
+	Wed,  4 Sep 2024 22:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725479460; cv=none; b=haR4FVFGRGIjPrFSlC6gQWCwXDBW/BPpzoe+6M1LXDlz9fNXdGiAsoAZU95ePxALkwIN8JEchsNLQj10qfvt3jI544LQ0GQtz9/i5wdCJS8vbj4V0ytVNIftnSzmRmNrU+BqSwzlDaJOWtTfXhYKVPZg2LPprk3tfvl3p7BNBJU=
+	t=1725487386; cv=none; b=GcFsBRkcKvXG2lg8V6iXEZuAUwYaY2HauzCQprKdpWjVBn0qKI2B3oNahtEMBQxn1NGu2qfNKwUBGRvzDsnxgDmGyQscXjxM9FUgOO/2uwjQrksUuia1aBrHht9MsewxpsydKmr0ydNuklzXw1ONZzqTIle+ZXdBAQe5WD/nv2s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725479460; c=relaxed/simple;
-	bh=YC4DFCNe7X6BtbrmVfUItUT1RH0dNQCpb2Z3+GnqeBM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UgwDmQi7xt2+rFk/l+SyHdH5/8/IQvfsYYwqe8OthAN2XQUzaoGZexKhRF4Y+YpKuROXGD16gLO+tp3sKKlg4XsD78WQgB47PXlbQm8Yvb17wGE1z3vVlmW/zxvElAsTtKgVAtQHidcNyTYodWMWh9VKrPvD1EfSBHioEQN1bSk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk; spf=none smtp.mailfrom=armlinux.org.uk; dkim=pass (2048-bit key) header.d=armlinux.org.uk header.i=@armlinux.org.uk header.b=DUi4XQrq; arc=none smtp.client-ip=78.32.30.218
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=armlinux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=armlinux.org.uk
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=armlinux.org.uk; s=pandora-2019; h=Sender:In-Reply-To:Content-Type:
-	MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
-	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
-	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=lRlEYAuB/b3a6T2n4mlWtclU2IW0wM6KBVv3hPFyURg=; b=DUi4XQrqFFz8/iEXR0Ze3/GBsu
-	JhaM0SoKd0XFzVpseaA0C/pQ9DqKVy6vhee/CgKa7eUSIEHO8C+cS++Om6B3JACTPIw4XjA1oxKjR
-	edM6ef4dqi57BJ8r5zuMsOLD2qk4jdBpK3JrtCexdwUVs6JtbC/eGDCR35XnIg/ph76wyj4kNou+m
-	qQgtBT7ModGseQhdqLeV/kJNhmlYLtdPwF6Jqbc8kyV+lILWqDENXgdxC+Gid/AC1GPI+l6v8Btlv
-	6rEoe674f+7+gOWt8/SmIgTjeiVrXMjvdOGAE1VugH/tLR58YaSi+HQJrfZGc9LEL8lxuidaz9VpK
-	2amEI1IA==;
-Received: from shell.armlinux.org.uk ([fd8f:7570:feb6:1:5054:ff:fe00:4ec]:57126)
-	by pandora.armlinux.org.uk with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.96)
-	(envelope-from <linux@armlinux.org.uk>)
-	id 1slw1m-0001bd-1n;
-	Wed, 04 Sep 2024 20:50:54 +0100
-Received: from linux by shell.armlinux.org.uk with local (Exim 4.96)
-	(envelope-from <linux@shell.armlinux.org.uk>)
-	id 1slw1j-00040i-2z;
-	Wed, 04 Sep 2024 20:50:51 +0100
-Date: Wed, 4 Sep 2024 20:50:51 +0100
-From: "Russell King (Oracle)" <linux@armlinux.org.uk>
-To: Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>
-Cc: linux-ext4@vger.kernel.org
-Subject: Re: BUG: 6.10: ext4 mpage_process_page_bufs() BUG_ON triggers
-Message-ID: <Zti6G4Wq3pQHcs++@shell.armlinux.org.uk>
-References: <ZtirReiX7J+MDhuh@shell.armlinux.org.uk>
- <Zti1Y5fthhgiL5Xb@shell.armlinux.org.uk>
+	s=arc-20240116; t=1725487386; c=relaxed/simple;
+	bh=K8MJs+EJIwG7sJB2ifj+Y0bf3kKsIwOqEP422d4TVWo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tYdEdUN5BkB3L5haAf8RJHsSf7r+MXyqb8JuU4JypCCqzHc6yxBjIjqTy5W+49MUuIJg+zjYiRo8CbC/4EGDWwJDht/tjFoanwnh6Uc7Zw7E7IDLINAKUm026l+S3S+5zASFd0EaEVldjj2/p5IvvNbyXKZjmaSQisQ3G6EL+TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fjQENuLy; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-42bbe809b06so116775e9.1;
+        Wed, 04 Sep 2024 15:03:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725487382; x=1726092182; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Gh8A8xEp/g3VK70eE6Ph8a8PDw8n7olrF1x7DsPqcC4=;
+        b=fjQENuLyApEZ1dLBJmW37SstY/JOc95cZNSgg3fviU9XL0nCOhWV4TBsNjFDdL3YId
+         ZfAD/Y57i5otM1DtrBmhQicf7hQByzlMG8gN4hs022XcKDUPAXetLMOBP5apAJ5nAQdP
+         fM4HRKUdAwWdF1bgywt6Qukf5lBc8xHYlykTAlaM/A+lKWUsoelY+jYTShEBK869u3Qs
+         nE8AWS/L1AIcPjtKzGkLiS1S0HDYbUVkmfPVCXhfmyDlj8PnDpVP+todz4Mr+h2I2qp4
+         5z1vQTwqS0fcCAWUwyMnzr1UQBibP5E8y7mLBSBRqPvOHBbhiRm8D8SjYHfFwtI1ES8a
+         nWdA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725487382; x=1726092182;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Gh8A8xEp/g3VK70eE6Ph8a8PDw8n7olrF1x7DsPqcC4=;
+        b=NMVtIa2uPYBcDACFIapPEp/jrBTosJf5VFPKYDB7e1jcBgJs412NDQK+086ZBmKNnu
+         MwbApoq5x8miX3Mvy9AOrz37DwKQmcd0yXp0Uofn03vQsml0T0WxkIBMF0ZecnGKI73I
+         /oQBrwUdoacHEDAWidwrrrMGthnCfgLrCXNEFw3H68qXKLt3+rRFieCjLz91e0m27R9M
+         Q9BoSjbQEMJ8iuhd0tfm0DdgQMkbf2Opqaa6J9qho+FLcPh9Yr8GFYnTLKSTJ5XBKIJt
+         NhQ/a5vzGOAkkWnz3/dcorNi33SCk7+K6iAWWjS71keWDEwYUVVWw+oO+FxYKKqWCcqK
+         vDJA==
+X-Forwarded-Encrypted: i=1; AJvYcCV9Pxm3QyR2VAZA2GNwQ+0I10kI7AHFNDYeHVpoQTTSGZatZ5h/SwnQmiyOBusCDMFraZwJzMqvbA04@vger.kernel.org
+X-Gm-Message-State: AOJu0YyaLg5BPzgd7ia0z4A4v3qqlGm9zPBKCa9nLnniGTwyTCDZv6tC
+	hTg6gn+BA3mZ+fBMxVJI9nlpatXUmuyG566HKNTd5paQDqsrbEOLHucYKLtY0hM=
+X-Google-Smtp-Source: AGHT+IFnrQndGf4+Gbd+MDlVfwPdj5W4CwU3o8FFEgXSTpDH013+ykqIiRPCkitX9bUrsa8u3X5K3Q==
+X-Received: by 2002:a05:600c:3ba7:b0:425:7c5f:1bac with SMTP id 5b1f17b1804b1-42bb0306f94mr177937675e9.21.1725487381964;
+        Wed, 04 Sep 2024 15:03:01 -0700 (PDT)
+Received: from localhost.localdomain ([156.197.26.140])
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-42bb6deb27fsm214861925e9.10.2024.09.04.15.03.00
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Sep 2024 15:03:01 -0700 (PDT)
+From: Ahmed Ehab <bottaawesome633@gmail.com>
+To: linux-kernel@vger.kernel.org
+Cc: Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>,
+	Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	linux-ext4@vger.kernel.org,
+	syzkaller@googlegroups.com
+Subject: [PATCH v7 2/2] locking/lockdep: Test no new string literal is created in lockdep_set_subclass()
+Date: Thu,  5 Sep 2024 04:00:42 +0300
+Message-ID: <20240905010042.355977-1-bottaawesome633@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zti1Y5fthhgiL5Xb@shell.armlinux.org.uk>
-Sender: Russell King (Oracle) <linux@armlinux.org.uk>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Sep 04, 2024 at 08:30:43PM +0100, Russell King (Oracle) wrote:
-> On Wed, Sep 04, 2024 at 07:47:33PM +0100, Russell King (Oracle) wrote:
-> > With a 6.10 based kernel, no changes to filesystem/MM code, I'm
-> > seeing a reliable BUG_ON() within minutes of booting on one of my
-> > VMs. I don't have a complete oops dump, but this is what I do
-> > have, cobbled together from what was logged by journald, and
-> > what syslogd was able to splat on the terminals before the VM
-> > died.
-> > 
-> > Sep 04 15:51:46 lists kernel: kernel BUG at fs/ext4/inode.c:1967!
-> > 
-> > [ 1346.494848] Call trace:
-> > [ 1346.495409] [<c04b4f90>] (mpage_process_page_bufs) from [<c04b938c>] (mpage_prepare_extent_to_map+0x410/0x51c)
-> > [ 1346.499202] [<c04b938c>] (mpage_prepare_extent_to_map) from [<c04bbc40>] (ext4_do_writepages+0x320/0xb94)
-> > [ 1346.502113] [<c04bbc40>] (ext4_do_writepages) from [<c04bc5dc>] (ext4_writepages+0xc0/0x1b4)
-> > [ 1346.504662] [<c04bc5dc>] (ext4_writepages) from [<c0361154>] (do_writepages+0x68/0x220)
-> > [ 1346.506974] [<c0361154>] (do_writepages) from [<c0354868>] (filemap_fdatawrite_wbc+0x64/0x84)
-> > [ 1346.509165] [<c0354868>] (filemap_fdatawrite_wbc) from [<c035706c>] (__filemap_fdatawrite_range+0x50/0x58)
-> > [ 1346.511414] [<c035706c>] (__filemap_fdatawrite_range) from [<c035709c>] (filemap_flush+0x28/0x30)
-> > [ 1346.513518] [<c035709c>] (filemap_flush) from [<c04a8834>] (ext4_release_file+0x70/0xac)
-> > [ 1346.515312] [<c04a8834>] (ext4_release_file) from [<c03f8088>] (__fput+0xd4/0x2cc)
-> > [ 1346.517219] [<c03f8088>] (__fput) from [<c03f3e64>] (sys_close+0x28/0x5c)
-> > [ 1346.518720] [<c03f3e64>] (sys_close) from [<c0200060>] (ret_fast_syscall+0x0/0x5c)
-> > 
-> > From a quick look, I don't see any patches that touch fs/ext4/inode.c
-> > that might address this.
-> > 
-> > I'm not able to do any debugging, and from Friday, I suspect I won't
-> > even be able to use a computer (due to operations on my eyes.)
-> 
-> After rebooting the VM, the next oops was:
-> 
-> Sep 04 19:33:41 lists kernel: Unable to handle kernel paging request at virtual address 5ed304f3 when read
-> Sep 04 19:33:42 lists kernel: [5ed304f3] *pgd=80000040005003, *pmd=00000000
-> Sep 04 19:33:42 lists kernel: Internal error: Oops: 206 [#1] PREEMPT SMP ARM
-> 
->  kernel:[  205.583038] Internal error: Oops: 206 [#1] PREEMPT SMP ARM
->  kernel:[  205.630530] Process kworker/u4:2 (pid: 33, stack limit = 0xc68f8000)
-> ...
->  kernel:[  205.661017] Call trace:
->  kernel:[  205.661997] [<c04d9060>] (ext4_finish_bio) from [<c04d931c>] (ext4_release_io_end+0x48/0xfc)
->  kernel:[  205.664523] [<c04d931c>] (ext4_release_io_end) from [<c04d94d8>] (ext4_end_io_rsv_work+0x88/0x188)
->  kernel:[  205.666628] [<c04d94d8>] (ext4_end_io_rsv_work) from [<c023f310>] (process_one_work+0x178/0x30c)
->  kernel:[  205.669924] [<c023f310>] (process_one_work) from [<c023fe48>] (worker_thread+0x25c/0x438)
->  kernel:[  205.671679] [<c023fe48>] (worker_thread) from [<c02480b0>] (kthread+0xfc/0x12c)
->  kernel:[  205.673607] [<c02480b0>] (kthread) from [<c020015c>] (ret_from_fork+0x14/0x38)
->  kernel:[  205.682719] Code: e1540005 0a00000d e5941008 e594201c (e5913000)
-> 
-> This corresponds with:
-> 
-> c04d9050:       e1540005        cmp     r4, r5
-> c04d9054:       0a00000d        beq     c04d9090 <ext4_finish_bio+0x208>
-> c04d9058:       e5941008        ldr     r1, [r4, #8]
-> c04d905c:       e594201c        ldr     r2, [r4, #28]
-> c04d9060:       e5913000        ldr     r3, [r1] ;<<<==== faulting instruction
-> 
-> This code is:
-> 
->                 /*
->                  * We check all buffers in the folio under b_uptodate_lock
->                  * to avoid races with other end io clearing async_write flags
->                  */
->                 spin_lock_irqsave(&head->b_uptodate_lock, flags);
->                 do {
->                         if (bh_offset(bh) < bio_start ||
->                             bh_offset(bh) + bh->b_size > bio_end) {
-> 
-> where r4 is "bh", r4+8 is the location of the bh->b_page pointer.
-> 
-> static inline unsigned long bh_offset(const struct buffer_head *bh)
-> {
->         return (unsigned long)(bh)->b_data & (page_size(bh->b_page) - 1);
-> }
-> 
-> static inline unsigned long compound_nr(struct page *page)
-> {
->         struct folio *folio = (struct folio *)page;
-> 
->         if (!test_bit(PG_head, &folio->flags))
->                 return 1;
-> 
-> where PG_head is bit 6. Thus, bh->b_page was corrupt.
-> 
-> I've booted back into 6.7 on the offending VM, and it's stable, so it
-> appears to be a regression between 6.7 and 6.10.
+Add a test case to ensure that no new name string literal will be
+created in lockdep_set_subclass(), otherwise a warning will be triggered
+in look_up_lock_class(). Add this to catch the problem in the future. 
 
-So.. I decided to stop the VM, and run e2fsck, first not allowing it
-to fix stuff. It identified only one error:
+Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
+---
+ lib/locking-selftest.c | 40 ++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 40 insertions(+)
 
-e2fsck 1.46.2 (28-Feb-2021)
-Pass 1: Checking inodes, blocks, and sizes
-Inode 657, i_blocks is 8, should be 0.  Fix<y>? no
-Inode 657 passes checks, but checksum does not match inode.  Fix<y>? no
-Pass 2: Checking directory structure
-ext2fs_read_inode: Inode checksum does not match inode while reading
-inode 657 in process_bad_inode
-
-/dev/loop0p1: ********** WARNING: Filesystem still has errors **********
-
-e2fsck: aborted
-
-/dev/loop0p1: ********** WARNING: Filesystem still has errors **********
-
-Booting the VM again and tracking that down (debugfs refused to do the
-inode number->name translation for some absurd reason... surely the
-inode checksum doesn't _need_ to be correct to find which directory
-entry has the inode number?)
-
-Interestingly, when I hit the bad inode:
-
-vdir: cannot access '/var/lib/dpkg/info/libacl1:armhf.triggers': Bad message
-vdir: '/var/lib/dpkg/info/libgdbm-compat4:armhf.list': Input/output error
-vdir: '/var/lib/dpkg/info/libldap-2.5-0:armhf.shlibs': Input/output error
-
-and any further accesses to the filesystem gave -EIO! As it's the root
-filesystem, no further commands could be run, not even those which
-I'd just run. The only solution was to destroy the VM via libvirt.
-This, despite the filesystem mounted:
-
-/dev/vda1 on / type ext4 (rw,relatime,errors=remount-ro)
-
-So why it started spitting out -EIO errors I've no idea. That seems
-utter madness.
-
-Anyway, I re-ran e2fsck, fixing the errors:
-
-e2fsck 1.46.2 (28-Feb-2021)
-/dev/loop0p1: recovering journal
-Pass 1: Checking inodes, blocks, and sizes
-Inode 657, i_blocks is 8, should be 0.  Fix<y>? yes
-Pass 2: Checking directory structure
-Inode 657 (/var/lib/dpkg/info/libacl1:armhf.triggers) has invalid mode
-(0171223).
-Clear<y>? yes
-Pass 3: Checking directory connectivity
-Pass 4: Checking reference counts
-Pass 5: Checking group summary information
-Block bitmap differences:  -88667
-Fix<y>? yes
-Free blocks count wrong for group #2 (21314, counted=21315).
-Fix<y>? yes
-Free blocks count wrong (862994, counted=862964).
-Fix<y>? yes
-Free inodes count wrong (292360, counted=292352).
-Fix<y>? yes
-
-/dev/loop0p1: ***** FILE SYSTEM WAS MODIFIED *****
-/dev/loop0p1: 38272/330624 files (0.4% non-contiguous), 459276/1322240 blocks
-
-before restarting the VM back into 6.7.0.
-
+diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+index 6f6a5fc85b42..0783ee97c971 100644
+--- a/lib/locking-selftest.c
++++ b/lib/locking-selftest.c
+@@ -2710,6 +2710,44 @@ static void local_lock_3B(void)
+ 
+ }
+ 
++#if CONFIG_DEBUG_LOCK_ALLOC
++static inline const char* rw_semaphore_lockdep_name(struct rw_semaphore *rwsem)
++{
++	return rwsem->dep_map.name;
++}
++#else
++static inline const char* rw_semaphore_lockdep_name(struct rw_semaphore *rwsem)
++{
++	return NULL;
++}
++#endif
++
++static void lock_class_subclass_X1(void)
++{
++	const char *name_before_setting_subclass = rw_semaphore_lockdep_name(&rwsem_X1);
++	const char *name_after_setting_subclass;
++
++	lockdep_set_subclass(&rwsem_X1, 1);
++	name_after_setting_subclass = rw_semaphore_lockdep_name(&rwsem_X1);
++	DEBUG_LOCKS_WARN_ON(name_before_setting_subclass != name_after_setting_subclass);
++}
++
++/*
++ * after setting the subclass the lockdep_map.name changes
++ * if we initialize a new string literal for the subclass
++ * we will have a new name pointer
++ */
++static void class_subclass_X1_name_test(void)
++{
++	printk("  --------------------------------------------------------------------------\n");
++	printk("  | class and subclass name test|\n");
++	printk("  ---------------------\n");
++
++	print_testname("lock class and subclass same name");
++	dotest(lock_class_subclass_X1, SUCCESS, LOCKTYPE_RWSEM);
++	pr_cont("\n");
++}
++
+ static void local_lock_tests(void)
+ {
+ 	printk("  --------------------------------------------------------------------------\n");
+@@ -2920,6 +2958,8 @@ void locking_selftest(void)
+ 	dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE, LOCKTYPE_SPECIAL);
+ 	pr_cont("\n");
+ 
++	class_subclass_X1_name_test();
++
+ 	if (unexpected_testcase_failures) {
+ 		printk("-----------------------------------------------------------------\n");
+ 		debug_locks = 0;
 -- 
-*** please note that I probably will only be occasionally responsive
-*** for an unknown period of time due to recent eye surgery making
-*** reading quite difficult.
+2.46.0
 
-RMK's Patch system: https://www.armlinux.org.uk/developer/patches/
-FTTP is here! 80Mbps down 10Mbps up. Decent connectivity at last!
 
