@@ -1,73 +1,110 @@
-Return-Path: <linux-ext4+bounces-4059-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4060-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E61796D6FB
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 13:24:42 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEE0D96D790
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 13:51:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DABB1C24E43
-	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 11:24:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E95BFB22175
+	for <lists+linux-ext4@lfdr.de>; Thu,  5 Sep 2024 11:51:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3CFE199392;
-	Thu,  5 Sep 2024 11:24:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C80A9199FC9;
+	Thu,  5 Sep 2024 11:50:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fpe8ufD2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-oa1-f53.google.com (mail-oa1-f53.google.com [209.85.160.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD067194C6F;
-	Thu,  5 Sep 2024 11:24:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 052D0199E8F;
+	Thu,  5 Sep 2024 11:50:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725535475; cv=none; b=lopGOkl0AawWqodyJsLut4b1tc/QB5gGMTuE3hBMLViFLk3cE7WcdBwZRemCBM3WyF9Fn60tD/CQSxITXWxc7bID3fDMm78j59WYoaArCuyQn36ZMOJInvAlAW9wFcxdief150JgKduaoEcqGOAima16dc749H30skNL08laovQ=
+	t=1725537058; cv=none; b=SHzHJ8IvIcsxxzxxirDEPItWN30bh0cZtEbxh6L5y9CkinPlpaNgV3K5DkBc2m5cqEQ3Xhm32DZA/aC4qlfIREhn64eI/24YFxupCN0MjN5d3XihkWp0P2+Ng63g0ZraG/SKO+c+b6G79KLFJyJ2TaA0jlrFST9OV7k42OwMfAk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725535475; c=relaxed/simple;
-	bh=fLMboQb8Qu9oFBXX+bXOvCVhklOX/x/MXZ85KuMfkmQ=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=VohrLg3sPnA9D90huvo0eEU7UgN09QLybhDqNyxESAG9myhW5Y5CjqsaXCbM1u2F2K97gu8FzzgW4nkerUwOJG6+Wk/YW7Qq8Wj/62rPBavXq/kj8/zHoVhAElmMNxuT9tVCt4ec9gyrUAoIDXTTPqvauyIJeI4/rc5h7Oncn4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: 668bd4546b7911efa216b1d71e6e1362-20240905
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.38,REQID:05485058-c782-40ac-ae75-d8398362b96b,IP:10,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:7
-X-CID-INFO: VERSION:1.1.38,REQID:05485058-c782-40ac-ae75-d8398362b96b,IP:10,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-3,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:7
-X-CID-META: VersionHash:82c5f88,CLOUDID:2bc65b23d8ae3ce43d96fa38e0a50cae,BulkI
-	D:2409051924244XIMVH4M,BulkQuantity:0,Recheck:0,SF:42|101|74|66|25|100|17|
-	19|102,TC:nil,Content:4|-5,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:
-	nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD
-X-UUID: 668bd4546b7911efa216b1d71e6e1362-20240905
-X-User: zhaomengmeng@kylinos.cn
-Received: from [192.168.109.86] [(123.53.36.118)] by mailgw.kylinos.cn
-	(envelope-from <zhaomengmeng@kylinos.cn>)
-	(Generic MTA with TLSv1.3 TLS_AES_128_GCM_SHA256 128/128)
-	with ESMTP id 7353903; Thu, 05 Sep 2024 19:24:22 +0800
-Message-ID: <471f1c8a-5db0-4bc7-aa75-5eaaf63815ab@kylinos.cn>
-Date: Thu, 5 Sep 2024 19:24:18 +0800
+	s=arc-20240116; t=1725537058; c=relaxed/simple;
+	bh=wIvm975lkI6zYizk3o+d70RN/0ouhHAZ7kxJBQSU1lY=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=siifgTSpz5h5SfJCZXL1uYhMjy9R5Wqy1TkZpGfyPLXjdkDi4BvL5DkkrGk7KCAnLVRdtWIHArRiemFQiqZHCfcEsSWGMnTrMENsb5r0lIVo/Op37BRbTt4pSdk7ZnvNix4PWZytf1P+lQgism3qbGXKJzBU263YKtoY59YKqCI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fpe8ufD2; arc=none smtp.client-ip=209.85.160.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f53.google.com with SMTP id 586e51a60fabf-277c861d9f6so410244fac.2;
+        Thu, 05 Sep 2024 04:50:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725537055; x=1726141855; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=eKXDBKqXxnvuGBRmPekTjD0zETdvpmLvKTHKmbd7YjI=;
+        b=fpe8ufD2JgaN5pO3Up5g9qH2MPRKOvcuCIricsmC/FFxOI7ZYyYkAIHtNSe+BEMpJN
+         SSm8/FO901teGvgJCWApfHUaxbQcA9fVNwi36lMJX69xrh/qcyNm5hkDQ9YbgvB7bg5q
+         VdlOSoumasuCbNn/xjtoxONFKE/lcWaDPVnlb5IQn3/Ht4dLi+iduPxqS0OKO4JtknvW
+         q6mq39jTkVv9BHnXPgmYi8n7f/8OrGj6cbnEdQcV631zeZ9On2p9HlEKS34dpmhWhN4P
+         RZBwnbFPravlF8HXm7YgOPF8PdqfjR3GbdkUpplwnTjalON/UVoBXBIQTUSReRITnfwp
+         sEjQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725537055; x=1726141855;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=eKXDBKqXxnvuGBRmPekTjD0zETdvpmLvKTHKmbd7YjI=;
+        b=F15UuTUE3FVHJxos4COU9I2cH8wccxx5VVQB5WfpXKp1YyZkXF4yt9I9lPc6dYUOrl
+         YAOJ5CWUrc3ImtZZJ8mNb99aZ4WTwUEY0mM4HbPXg7PZMBU/LQwQCXsKc2TgyULDRtwo
+         6IQjyN57D2U3+pbSTCpapNa5lenEHi+X9LndvxS8sJlEAiCFaxw0XOAl1YBGUMRS935Q
+         Uh+htJvtjH24DTXRHX7YqSPfo065eqLko4qJvdqwQNqc6Rf4JBi3U4szGelQBFILtDKC
+         cfeUOoRlSHn2pBgjQ1n29JRrchVcoK3PHkiKEPYv48uwY8c+cOiBy0nzagsxHqPkpDvl
+         afIw==
+X-Forwarded-Encrypted: i=1; AJvYcCU2Mv1FU76z7bPc2Y6iHhl4FMnVhm6kZJexcqd9g3wJyVLx+CDEmRYzFl+Jg4FeyQgbT3FnBllgsQ4TOIkS@vger.kernel.org, AJvYcCUEIc4hZJAEL/qPil+kDacDZfdDWN2emci4Ee9Y0nY0XTBbQ6Ns6mVX74xZydgYtdINF3iZHta9uHB6etPQsQ==@vger.kernel.org, AJvYcCVCtmq/DuMi4VAUpgFOujHlFyK8pb26BZkd04O/Psllmy60FsUnmYaIgRvvrRMxWMeLOUiuPoWm14jC@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqbvfmbEc0Mqekl7jxQD5lkhsDhs/OOsuvlaIGBLVwWnN6d7Vr
+	aw5PIKXs2q96qc294AjHVyE3xj1DVeKRW3uHFgJnM7E6R8dmDTnmtJs9Fg==
+X-Google-Smtp-Source: AGHT+IE3rwnK+RWahTYcsoWgBhuqjpTJynlW6DtaXhynzZ55bSr2PmL51H2kLKhzMqy8HY+tgEU4PQ==
+X-Received: by 2002:a05:6358:5927:b0:1ad:14ec:a002 with SMTP id e5c5f4694b2df-1b81180a790mr1068270355d.26.1725537055394;
+        Thu, 05 Sep 2024 04:50:55 -0700 (PDT)
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7d4fbd93559sm3202523a12.54.2024.09.05.04.50.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 05 Sep 2024 04:50:54 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: John Garry <john.g.garry@oracle.com>, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org
+Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>, Matthew Wilcox <willy@infradead.org>, "Darrick J . Wong" <djwong@kernel.org>, Luis Chamberlain <mcgrof@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RFC 0/9] ext4: Add direct-io atomic write support using fsawu
+In-Reply-To: <c6e22d5e-b8d1-44df-9e00-0a6b076e1804@oracle.com>
+Date: Thu, 05 Sep 2024 17:03:10 +0530
+Message-ID: <8734me2v49.fsf@gmail.com>
+References: <cover.1709356594.git.ritesh.list@gmail.com> <c6e22d5e-b8d1-44df-9e00-0a6b076e1804@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: syzbot+d6a7a43c85606b87babd@syzkaller.appspotmail.com
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-References: <000000000000f8878d061b2a75d0@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in ext4_fileattr_get
-From: Zhao Mengmeng <zhaomengmeng@kylinos.cn>
-In-Reply-To: <000000000000f8878d061b2a75d0@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-#syz fix: ext4: use memtostr_pad() for s_volume_name
+John Garry <john.g.garry@oracle.com> writes:
+
+> On 02/03/2024 07:41, Ritesh Harjani (IBM) wrote:
+>
+> Hi Ritesh,
+>
+>> Hello all,
+>> 
+>> This RFC series adds support for atomic writes to ext4 direct-io using
+>> filesystem atomic write unit. It's built on top of John's "block atomic
+>> write v5" series which adds RWF_ATOMIC flag interface to pwritev2() and enables
+>> atomic write support in underlying device driver and block layer.
+>
+> I am curious - do you have any plans to progress this work?
+>
+
+Yes John. I have resumed my work on the interfaces changes for
+direct-io atomic write for ext4 (hence all the queries on the other
+email). We do intend to get this going.
+
+Meanwhile Ojaswin has been working on extsize feature for ext4 (similar
+to XFS). It uses some of our previous mballoc order-0 allocation work,
+to support aligned allocations.
+The patch series is almost in it's final stages. He will be soon be
+posting an initial RFC design of the same (hopefully by next week).
+
+Thanks again for your help!
+
+-ritesh
 
