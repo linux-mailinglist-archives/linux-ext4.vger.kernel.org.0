@@ -1,120 +1,109 @@
-Return-Path: <linux-ext4+bounces-4079-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4080-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8123996F368
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 13:44:45 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F00196FC4E
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 21:47:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE7E8B246C9
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 11:44:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DB15A28B105
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 19:47:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 538841CBE8D;
-	Fri,  6 Sep 2024 11:44:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F2F61D54FC;
+	Fri,  6 Sep 2024 19:46:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Hw5+RPBx"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12321CB154;
-	Fri,  6 Sep 2024 11:44:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F941B85E5
+	for <linux-ext4@vger.kernel.org>; Fri,  6 Sep 2024 19:46:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725623076; cv=none; b=Cl53bsFUddDsDAq3tHdUuVUKJNG1oi7S3/y8UIDswmbRC/PQKJzrWwwnlOPhpU9l+f7vh+vljQF6dTSzR193DgGDG0k8/fun14USwElIKhVe8+I8Npkx7o1WItz3YSoXX+Jm45LSPxV0TPIk7YyTjCuD/ZrXYxowMDZ5sYmARZw=
+	t=1725652005; cv=none; b=OKMBwpA+8vqBRLw93qLxWp0VGc+3F4DD0VhQTskpuTwRarTCbPP8xqo1xOiyLytCm8XVhPm/A0V+59kMNm/tH7+lR9PAh8aeXMygnp5tp+OGqNVRh0e8fAjalHgwHZO9pT0O/u5Hdg1KaSaTjU1fQYoiqmbLi7BHeLXCilklu7M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725623076; c=relaxed/simple;
-	bh=pgHZ6pNns/zCb7OwBUYttF56SM01OMsasHc2ufiQzQ4=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=aTktoDtRfzhDHx/YnTimBhC5eC9za4BSwuwAjjjM2zy9cDB9hyFZiEAOJGh4SRKAlCA0tU+D6mvcXK4pWd6PeN9RNAi/kOsZYvIgcnkZNwPrjRHyNHdbP5EO8xh5i3vKe4T1P+gYHlGIPVk7UemdO2+FEuyxbCmKMK68BQFERt0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4X0ZBn4qnhz4f3kKD;
-	Fri,  6 Sep 2024 19:44:17 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 14DF71A058E;
-	Fri,  6 Sep 2024 19:44:28 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgAnXMga69pm74M6Ag--.57615S3;
-	Fri, 06 Sep 2024 19:44:27 +0800 (CST)
-Subject: Re: [PATCH -next] ext4: don't pass full mapping flags to
- ext4_es_insert_extent()
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240906061401.2980330-1-yi.zhang@huaweicloud.com>
- <20240906103445.pwdlkivrlqh3redb@quack3>
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-Message-ID: <742ccba0-6a27-7694-2381-37a70c137ac5@huaweicloud.com>
-Date: Fri, 6 Sep 2024 19:44:26 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:78.0) Gecko/20100101
- Thunderbird/78.12.0
+	s=arc-20240116; t=1725652005; c=relaxed/simple;
+	bh=p7mrfn/QHp0eAqiysSS2XUaeOwHodjXIVOU0u1cKLNo=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=cRWUWAO2CU8DPa8pyzuCTUlQEhsKnfKr+Jl6nSp8weOMHqyiBH7cwoRBGsv3BhM496Sms1W1rKqRJoMEgHxtysYw5XHzYAIBBY9gLnwmBXhz3hc/WTK3Sp1QN4GHU5UhUiYdUyLO/P6vqeKwIIj4uFX1i0WOD/rL00wAlBnplUw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Hw5+RPBx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 99417C4CEC7
+	for <linux-ext4@vger.kernel.org>; Fri,  6 Sep 2024 19:46:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725652004;
+	bh=p7mrfn/QHp0eAqiysSS2XUaeOwHodjXIVOU0u1cKLNo=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=Hw5+RPBxCkdK1APGARANI5NoHxmEWt99fu05s/k4yMc+sF/fK8b+R2WFyMCGVm6qZ
+	 ZH9VpF9T2nR68N8fs3r7EBMsAuJulwQ5/yBEfMHVtByIw/3EmzbEVO9h5nr97e26gk
+	 IijyrW+FTbGvB38DRltDVTnLLbIItpijRRIYaWXsLx/Xsw/5wm9TDAf7Hbs83fNi8w
+	 CQfYWvmiL6/fDeYschgp5QM8cF1+njkwucDgT1b5DEQHM9b9/wQ4+HyVCevN8PIcUm
+	 jkBIQZ1P8E85T/v1UAOXafg2KB6T16p8vo7onY7N9vCvfAls2AtQFEQpme1/Q3xlBC
+	 KG82EAlPF9Hmg==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 8F0D6C53BC4; Fri,  6 Sep 2024 19:46:44 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219166] occasional block layer hang when setting 'echo noop >
+ /sys/block/sda/queue/scheduler'
+Date: Fri, 06 Sep 2024 19:46:44 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: rjones@redhat.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-219166-13602-wlxrEbsfjL@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-219166-13602@https.bugzilla.kernel.org/>
+References: <bug-219166-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240906103445.pwdlkivrlqh3redb@quack3>
-Content-Type: text/plain; charset=utf-8
-Content-Language: en-US
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAnXMga69pm74M6Ag--.57615S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7tw15uw4DZw1DtF4xZw4UXFb_yoW8Jw4fpa
-	9rC3W8JF1rKa4xCFWxta17trW7Ka1UJ3y2vFykuw15ZFZ5Zr93Kr45G3WjgFyIkrWFyr1a
-	vFW8uwnxC3Wjg37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU92b4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7I2V7IY0VAS
-	07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4
-	IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1r
-	MI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJV
-	WUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j
-	6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYx
-	BIdaVFxhVjvjDU0xZFpf9x07UAwIDUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/9/6 18:34, Jan Kara wrote:
-> On Fri 06-09-24 14:14:01, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> When converting a delalloc extent in ext4_es_insert_extent(), since we
->> only want to pass the info of whether the quota has already been claimed
->> if the allocation is a direct allocation from ext4_map_create_blocks(),
->> there is no need to pass full mapping flags, so changes to just pass
->> whether the EXT4_GET_BLOCKS_DELALLOC_RESERVE bit is set.
->>
->> Suggested-by: Jan Kara <jack@suse.cz>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> 
-> Looks good. Feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
->> @@ -863,8 +863,8 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
->>  	if (EXT4_SB(inode->i_sb)->s_mount_state & EXT4_FC_REPLAY)
->>  		return;
->>  
->> -	es_debug("add [%u/%u) %llu %x %x to extent status tree of inode %lu\n",
->> -		 lblk, len, pblk, status, flags, inode->i_ino);
->> +	es_debug("add [%u/%u) %llu %x %d to extent status tree of inode %lu\n",
->> +		 lblk, len, pblk, status, delalloc_reserve_used, inode->i_ino);
-> 
-> Ah, I didn't know 'bool' gets automatically promoted to 'int' when passed
-> as variadic argument but it seems to be the case from what I've found. One
-> always learns :)
-> 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219166
 
-Yeah, I'm always learn too. ;)
+--- Comment #14 from Richard W.M. Jones (rjones@redhat.com) ---
+I think I have bisected this to:
 
-Thanks,
-Yi.
+commit af2814149883e2c1851866ea2afcd8eadc040f79
+Author: Christoph Hellwig <hch@lst.de>
+Date:   Mon Jun 17 08:04:38 2024 +0200
 
+    block: freeze the queue in queue_attr_store
+
+    queue_attr_store updates attributes used to control generating I/O, and
+    can cause malformed bios if changed with I/O in flight.  Freeze the que=
+ue
+    in common code instead of adding it to almost every attribute.
+
+    Signed-off-by: Christoph Hellwig <hch@lst.de>
+    Reviewed-by: Bart Van Assche <bvanassche@acm.org>
+    Reviewed-by: Damien Le Moal <dlemoal@kernel.org>
+    Reviewed-by: Hannes Reinecke <hare@suse.de>
+    Reviewed-by: Chaitanya Kulkarni <kch@nvidia.com>
+    Link: https://lore.kernel.org/r/20240617060532.127975-12-hch@lst.de
+    Signed-off-by: Jens Axboe <axboe@kernel.dk>
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
