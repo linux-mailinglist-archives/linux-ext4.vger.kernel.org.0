@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-4081-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4082-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E17396FCAD
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 22:28:33 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9288396FCCC
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 22:32:34 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 598A61C229AE
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 20:28:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEC2A1C20D8D
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Sep 2024 20:32:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C31061D79A1;
-	Fri,  6 Sep 2024 20:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E904F13C3F2;
+	Fri,  6 Sep 2024 20:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gpip6UGk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ILLRSGh1"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BCDA14883B
-	for <linux-ext4@vger.kernel.org>; Fri,  6 Sep 2024 20:28:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 719941B85DA
+	for <linux-ext4@vger.kernel.org>; Fri,  6 Sep 2024 20:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725654494; cv=none; b=uGtcDZZuR4H+AnXrvJmvDA9L9hO3U8Kmm5Xwmsju8sy60WsP4iO9iJ5NsQ0FfQqKq2H1kjaeYd0VqzPjXQggc3tqYBUjAjeiXu5vcQokhi603yXREaNWD8mGYlmdoMSlQ2/kVlN3iZfvfdmj6uK/dVn3iSBQvN93KOaNJGFHO9M=
+	t=1725654748; cv=none; b=h84u4UhHInZudFfz8kfxYBT8YzYHoPXa+CTVRa+dgG+oN/2xP9NV+cyxUnu7/rSdW1H8tgTszxcgD25thBa6DtaSzJ5lSrh2AxTCgCXv60uy2sreYdk7SyzbHKzmomeRb592XY+ns+3/N+vDdFnzcKveq4hgCBDgKt7QscDmjwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725654494; c=relaxed/simple;
-	bh=R7XtTmWDJQMoJfJhPL5FpF2ZpSR+rT4OZrPio/0y/r8=;
+	s=arc-20240116; t=1725654748; c=relaxed/simple;
+	bh=g6ErjVlTntOf0o6TReV+hH3VbCyRfb3HBaJXt+NCKhE=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=dXMxB/d1RzhRUNLo6grKduWcNSxV+tfyDIR5jZ2HvYo8ceI7l1Mc3BP11nK7NsJeca8ddkgWtS84h+1+scIswRMg93IK+t3pNQFw2uUn0OgHfPtnHMPY4v81IkB+EmPPrZYeZNhmRD0x04h78gggqHc/AaV8eiYOEC/efn0S8pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gpip6UGk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 23D63C4CEC4
-	for <linux-ext4@vger.kernel.org>; Fri,  6 Sep 2024 20:28:14 +0000 (UTC)
+	 Content-Type:MIME-Version; b=O1dwOjwBYE7XqOsBpxxcelty/8ixCOpo/8mRdfxbyRKrm55arzfrzPxciv2PGC5x1amkXlQyPy35PKp6OIA2jm2Zyk2l3t6xXPISufBq4Q066h4auk6ZyRiEhAuqQ99yryR1cTK2OB80G3jqpfwUbQnQq0q9voY3hKssmLGQirg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ILLRSGh1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1070FC4CEC7
+	for <linux-ext4@vger.kernel.org>; Fri,  6 Sep 2024 20:32:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1725654494;
-	bh=R7XtTmWDJQMoJfJhPL5FpF2ZpSR+rT4OZrPio/0y/r8=;
+	s=k20201202; t=1725654748;
+	bh=g6ErjVlTntOf0o6TReV+hH3VbCyRfb3HBaJXt+NCKhE=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=gpip6UGkieW1a4IvbMstmu1T0IbePmbxc/NgwR3ItPf3Q0wf/On6GqjQn+vM+bxH/
-	 5cZ9CMklQ5IuejhVFwxjub8+jB+xMzySLzoeoz5+RG+1Tr8mwFhGuSafmpuoHi9/Ln
-	 AtKsEV22A4lCGR62GBpSaRgT3N1n78IXPnjkTtHD85kGhSuUDScjYBcFBkKarJExAM
-	 Cp4J/T4yvMfxcfIhpdinqW8FszoTVjTmgB8nir4+pul3S1/qoBYpxynqcYSgxexQc3
-	 7diDsLVmMTR/XxseFcI0KwZC6DmI2MW7QXhAtwjMGgVPJ7Vbyaq8UX09fp7YNbtPex
-	 M8ZjC7SrY7yXg==
+	b=ILLRSGh1pE5SxypMgHS+6Xs4szGTDRAyeYKxIYewfzv9/9CY/G5jUSTca1gM++dtI
+	 9q/j+u351nWZeR/aHQWUbvcPDHe37Yd/UMRQqIX5NBSyAZVo0lDPnG88Y9Eko9UOYI
+	 QYcqU5IpXHs4vIj3vw5M2ReWYOc17ARTPzHUE8L5wEVaXf2a6d0G0d8Eik6w195Q+t
+	 NNkY7FbTxxamqAslpAAQTvLO9gQMBknp6eWFaHacv6rRdGawyo8xuql2J6qVfi27lA
+	 m7Nm8zqIJb8TvFy0zHRnqU9wr6D9msvzYHDNOh9uPfd+LHzGQ3KWB0pX9n6O+jXNHl
+	 gYr6/v6JC64Gg==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 1995AC53BC4; Fri,  6 Sep 2024 20:28:14 +0000 (UTC)
+	id 05081C53BBF; Fri,  6 Sep 2024 20:32:28 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 219166] occasional block layer hang when setting 'echo noop >
  /sys/block/sda/queue/scheduler'
-Date: Fri, 06 Sep 2024 20:28:13 +0000
+Date: Fri, 06 Sep 2024 20:32:27 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -62,8 +62,8 @@ X-Bugzilla-Resolution:
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: attachments.created
-Message-ID: <bug-219166-13602-KX4zZWeW9j@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-219166-13602-KtbKtHaE0L@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-219166-13602@https.bugzilla.kernel.org/>
 References: <bug-219166-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -79,10 +79,14 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D219166
 
---- Comment #15 from Richard W.M. Jones (rjones@redhat.com) ---
-Created attachment 306825
-  --> https://bugzilla.kernel.org/attachment.cgi?id=3D306825&action=3Dedit
-'foreach bt' in crash utility
+--- Comment #16 from Richard W.M. Jones (rjones@redhat.com) ---
+Reverting commit af2814149883e2c1851866ea2afcd8eadc040f79 on top of current=
+ git
+head (788220eee30d6) either fixes or hides the problem enough to fix my
+reproducer.
+
+The revert is not clean, but only 2 hunks fail and they were trivial to fix=
+ up.
 
 --=20
 You may reply to this email to add a comment.
