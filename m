@@ -1,167 +1,124 @@
-Return-Path: <linux-ext4+bounces-4090-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4091-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A460C97223E
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Sep 2024 21:00:40 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 953B8972345
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Sep 2024 22:09:15 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 00D4EB23370
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Sep 2024 19:00:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EFE47B23A1F
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Sep 2024 20:09:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC4B18952A;
-	Mon,  9 Sep 2024 19:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4194E18B47F;
+	Mon,  9 Sep 2024 20:08:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="b1vQMnmV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFB0A1F942
-	for <linux-ext4@vger.kernel.org>; Mon,  9 Sep 2024 19:00:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB33F18B471
+	for <linux-ext4@vger.kernel.org>; Mon,  9 Sep 2024 20:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725908430; cv=none; b=FAHdbce4DAlvozSKE49S4cTwc/nazoh8ViF7U27MmFyNfJSULMpJWbg+K4mXeS0ChtQOXA/f+ogMfV4w6vtgBVJcC3U/TzkoJNBo6G5/jbvHhVyXY3mcZnwkyaSU6VA4cPFnFevj0EeLqyuS8juFCd6NrydgNzLVCN30emxw3HY=
+	t=1725912515; cv=none; b=o7aoZXSgVRYJ6DBo5sKZu0mjo17g7LYR28pqQ/RJOKonYVAl+IESp5qdgiI5UBmjdr1lx9QtlCun6f3SzJ0GALM85ddWgg4NIABQhPxiHG8PEqTtrBwJ+IMU9pZsk9bWjk5XTonnMHKrI68T/4Vn5up67RlzTPR78VmUItDG18U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725908430; c=relaxed/simple;
-	bh=YBJ7N57PFghVozGSVnOMZ4czC9mduxg6tedfKugZ5us=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=mVUmAGE7OC/tS2PYvYyWp0MVt/Dppy/sR8IY4PubhKISawAvbliQKp8i8kHZqnssz3EWbNYfaODTonfVZ4abP+3tHxxcT7q+ZGiYw9BQR4U5N3w/NbcQomSA6hd+al2DOHyKHUSrBFBnra6AgHfq9w5Q+HpoU3awHUethnGainM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-82ce11bc50eso318012539f.0
-        for <linux-ext4@vger.kernel.org>; Mon, 09 Sep 2024 12:00:28 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1725908428; x=1726513228;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Y54PztHGwSAI8/Jf/tUurGKOciAkk0Ur88jNfvTGdGQ=;
-        b=sJHE6YbcXLAlvmIIzF/TMiWEDaP/kly01qebG3uIlM9d/8CF8akj5qMproFNtivh2+
-         884AO45OCbRf6PcFwDvMaxPXYinq42edGcWkxo3/SwY9Ou4UzdzMUCwi6euKau8hpSBw
-         S+Hcmq4mNqbHVkgE8yGNXME9D4grTSsaDg6tq3wblP/o8mh9wRJo762rsDsIDNEmsEni
-         CEQuGt6AjGZG0tcXX3OMmjIo8RR/t2z/jkpuBJbrDTSiU1mCiDEhlPUPEPT9xIYf9EQH
-         Yb5nwy560wNbzOWWozGsKJU+QtdzaDw6h4V2rKvvc47F6nfNqpWGbb+EuFRbz1ipWxId
-         86Mg==
-X-Forwarded-Encrypted: i=1; AJvYcCX7UMT+jGvvZ7BxmPSEaOHZxeUV7c8UEPgYfDV15gJUrdPPRjiI+5rfO6A26LH+gTRouJ98u/z5RWKa@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUHHj12OuRT3EHvqT0XLdBGeYoUxj9wBwYl4vwC7A5X6gah8Lj
-	hSA8nE/QN1ARq6Hhb7Zabn61pB6KAuXC9K8oT9CcTFWbMsFi5VqKOtwrumxmQMxycvv5Tn2M0dV
-	4am49v08mlVV5o2stG8YzEbZe+svubxREbdxfC12sv269paiqwyvOelo=
-X-Google-Smtp-Source: AGHT+IE8kTe40tat07PZm3BRhKLiWjktlMUi8aNQn0szQWIy17wOGlwMjSrwjR1+vtZWbjs30p9EfQ3QokaVYYg+CNHBNKPhI13l
+	s=arc-20240116; t=1725912515; c=relaxed/simple;
+	bh=34QsWh9f198UZvhJLxntH+beSYkXiM+Ormr5QFrS280=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fQG/AbOME9IaQ/1QftXDTJlZcRf8CUIAlaVIctX1XPMWqT8qlbmwsuOYw4dMIvrUtz255dIqOvvE95cnA4zmvLe2gAUNAE2x0MK4pL0tPYq7GgJq5+WxsYFwY5dh7lCBs6Tjmct1O5p6VTFae8PVtzwrDCMkcYFwy/BF3F2DF4w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=b1vQMnmV; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-108-26-156-33.bstnma.fios.verizon.net [108.26.156.33])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 489K8Mgn014483
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 9 Sep 2024 16:08:23 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1725912504; bh=5/IN3BhBJbhkdt6Vi9AwrynmKXLjKy3Liah1EEE8+4E=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=b1vQMnmVdXIUk9QGbYU5Zmvbw6hRcE3m1NhHQacHq++UlUiZ55fZp6m6VcbbEZA1U
+	 X7Goonfs+WoMWHXSkmAiyC3RQyIpEBQrPmGvYvi2Esjh2zlyEaG+tCKykAqOH4UEuM
+	 s1jyIhPi2rSznAuB7Yb8wHcIVeb4trozDfSEwvUwkZQ9lfVHPAhAmmVpxTBD7v5IZA
+	 W9SHSoSjv0St2exPmufciKRXY7Y50YipbHiZxFtgcZzA9K5Yv+i9zgxZtrPuffNvqI
+	 9o0gZCqf8NivuOrJi29Dw6+guhCEz7iceD1twc1a84kmR/wShG0xZNRDzh78OTJaYv
+	 6m4pUbTnexcxA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 783A815C19A9; Mon, 09 Sep 2024 16:08:22 -0400 (EDT)
+Date: Mon, 9 Sep 2024 16:08:22 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Greg KH <gregkh@linuxfoundation.org>
+Cc: cve@kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: CVE-2024-43898 is invalid?
+Message-ID: <20240909200822.GA1509922@mit.edu>
+References: <20240909153144.GA1510718@mit.edu>
+ <2024090919-eats-countable-1a0d@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:6209:b0:82b:c70f:5061 with SMTP id
- ca18e2360f4ac-82bc70f511emr565773739f.7.1725908428139; Mon, 09 Sep 2024
- 12:00:28 -0700 (PDT)
-Date: Mon, 09 Sep 2024 12:00:28 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c643440621b45e4e@google.com>
-Subject: [syzbot] [ext4?] KCSAN: data-race in redirty_tail_locked /
- vfs_fsync_range (2)
-From: syzbot <syzbot+a388a53633c9a4e9b22e@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <2024090919-eats-countable-1a0d@gregkh>
 
-Hello,
+On Mon, Sep 09, 2024 at 06:20:08PM +0200, Greg KH wrote:
+> 
+> "root privileges" are not something that "is this a vulnerability"
+> normally takes into account given that there are zillions of ways of
+> giving permissions to processes to do things that people do in crazy
+> systems, as you know :)
+> 
+> That being said, the commit message does not document root priviliges
+> being needed, also, it looks like the function is called on the "normal"
+> shutdown callback for the superblock, which I don't think is required to
+> have root permissions, does it?
 
-syzbot found the following issue on:
+It's fair that while umount(2) requires root privs, it's absolutely
+true that there are a number of ways that an unprivileged user might
+be able to request that the system unmount a file system on its
+behalf.  However, this particular failure involves a forcible shutdown
+(triggered via ext4_force_shutdown() and the FS_IOC_SHUTDOWN ioctl)
+without any regard to whether the file system is busy or not.  A
+"normal" superblock shutdown via umount(2) would never hit this
+scenario because the umount(2) would return EBUSY if there are any
+open file descriptors, and the syzkaller reproducer involves doing a
+lot of file system operations racing with the FS_IOC_SHUTDOWN ioctl.
 
-HEAD commit:    da3ea35007d0 Linux 6.11-rc7
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=172d743b980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1e7d02549be622b2
-dashboard link: https://syzkaller.appspot.com/bug?extid=a388a53633c9a4e9b22e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+The FS_IOC_SHUTDOWN ioctl is used for debugging and testing, and it's
+not something that will be triggered by some setuid program or some
+root daemon like udisks or udev.  This is why I had intentionally
+skipped adding a cc: stable@kernel.org for this particular patch.
 
-Unfortunately, I don't have any reproducer for this issue yet.
+It's fair to say that we didn't explicitly say that root was required;
+we can try to be a bit more explicit about whether something is
+legitimately a security fix or not.  At least in my mind, it was so
+obviously not that I didn't bother to say so, other than _not_ cc'ing
+stable, which is not necessarily an obvious statement since it could
+have been an oversight.  I'll try to be more explicit in the future.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/3cf4ae8a1204/disk-da3ea350.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/d8186bac98f7/vmlinux-da3ea350.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a1ab98f32196/bzImage-da3ea350.xz
+> But as a maintainer, it's up to you if you wish to reject a cve for your
+> subsystem/code, so if you really want it rejected, we'll be glad to do
+> so.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+a388a53633c9a4e9b22e@syzkaller.appspotmail.com
+There are some more borderline cases, such as people who enable their
+systems to automount USB thumb drives which users find scattered in a
+parking lot by a nation-state attacker.  (Note: both xfsprogs and
+e2fsprogs now ship with udev rules which disable this feature by
+default; that won't stop a distro product manager for thinking that
+user friendliness trumps security.)
 
-==================================================================
-BUG: KCSAN: data-race in redirty_tail_locked / vfs_fsync_range
+But in this case, this is so far outside the normal parameters that
+yes, let's reject this particular CVE since it will be a vulnerability
+for essentially no one.
 
-read-write to 0xffff88811317dce8 of 8 bytes by task 4275 on cpu 0:
- redirty_tail_locked+0x56/0x270 fs/fs-writeback.c:1346
- writeback_single_inode+0x1ea/0x4a0 fs/fs-writeback.c:1792
- sync_inode_metadata+0x5c/0x90 fs/fs-writeback.c:2842
- generic_buffers_fsync_noflush+0xe4/0x130 fs/buffer.c:610
- ext4_fsync_nojournal fs/ext4/fsync.c:88 [inline]
- ext4_sync_file+0x20b/0x6c0 fs/ext4/fsync.c:151
- vfs_fsync_range+0x122/0x140 fs/sync.c:188
- generic_write_sync include/linux/fs.h:2822 [inline]
- ext4_buffered_write_iter+0x338/0x380 fs/ext4/file.c:305
- ext4_file_write_iter+0x29f/0xe30
- iter_file_splice_write+0x5e6/0x970 fs/splice.c:743
- do_splice_from fs/splice.c:941 [inline]
- direct_splice_actor+0x16c/0x2c0 fs/splice.c:1164
- splice_direct_to_actor+0x305/0x670 fs/splice.c:1108
- do_splice_direct_actor fs/splice.c:1207 [inline]
- do_splice_direct+0xd7/0x150 fs/splice.c:1233
- do_sendfile+0x3ab/0x950 fs/read_write.c:1295
- __do_sys_sendfile64 fs/read_write.c:1362 [inline]
- __se_sys_sendfile64 fs/read_write.c:1348 [inline]
- __x64_sys_sendfile64+0x110/0x150 fs/read_write.c:1348
- x64_sys_call+0xed5/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:41
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
+Thanks,
 
-read to 0xffff88811317dce8 of 8 bytes by task 4277 on cpu 1:
- vfs_fsync_range+0xa6/0x140 fs/sync.c:186
- generic_write_sync include/linux/fs.h:2822 [inline]
- ext4_buffered_write_iter+0x338/0x380 fs/ext4/file.c:305
- ext4_file_write_iter+0x29f/0xe30
- iter_file_splice_write+0x5e6/0x970 fs/splice.c:743
- do_splice_from fs/splice.c:941 [inline]
- direct_splice_actor+0x16c/0x2c0 fs/splice.c:1164
- splice_direct_to_actor+0x305/0x670 fs/splice.c:1108
- do_splice_direct_actor fs/splice.c:1207 [inline]
- do_splice_direct+0xd7/0x150 fs/splice.c:1233
- do_sendfile+0x3ab/0x950 fs/read_write.c:1295
- __do_sys_sendfile64 fs/read_write.c:1362 [inline]
- __se_sys_sendfile64 fs/read_write.c:1348 [inline]
- __x64_sys_sendfile64+0x110/0x150 fs/read_write.c:1348
- x64_sys_call+0xed5/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:41
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xc9/0x1c0 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
-value changed: 0x0000000000000087 -> 0x0000000000000080
-
-Reported by Kernel Concurrency Sanitizer on:
-CPU: 1 UID: 0 PID: 4277 Comm: syz.2.232 Not tainted 6.11.0-rc7-syzkaller #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
-==================================================================
+						- Ted
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
