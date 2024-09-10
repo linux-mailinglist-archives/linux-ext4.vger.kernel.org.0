@@ -1,71 +1,64 @@
-Return-Path: <linux-ext4+bounces-4109-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4110-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C6BB9738D6
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 15:42:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 07FFD973909
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 15:48:05 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E8721C24A48
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 13:42:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A45E11F25A4E
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 13:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF4A192D70;
-	Tue, 10 Sep 2024 13:42:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32367193088;
+	Tue, 10 Sep 2024 13:47:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ql4vqC8b"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IEY2rbqH"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1178114F12C;
-	Tue, 10 Sep 2024 13:42:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CB76757EB;
+	Tue, 10 Sep 2024 13:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725975727; cv=none; b=VHhwkZCj+LcR+927F0xs69yt9kNVr6EQFKjzzCKJWTtgeC1uFw8raFSlQdReTya5lHvztIMuQ8Ck1ZGvTu6QvRYwWwGo0OZ1KDizrUctnc8eAnqCtc1xzb3vwGRWOjwK1m2WpJg1EeF1HptQe++T5Hrw/YLr0u/lA4Vufdrn/00=
+	t=1725976067; cv=none; b=GkBecppOz3MbcqDZ1usUSwxLKUjsngBcdlfJ9UN+NKmAUdyOPuTZ7bgepnmnVyEH/KBDPzihyM/suwwHLM5CBz3SRnJt/SVW3ZxYUPG7y0RIRKiQpmZ0VSsbsSa7mUN+/AixzwBlqDiK6lOFjIqVRtE80yWayPS39kYgByySnT0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725975727; c=relaxed/simple;
-	bh=T1DrTVHH1sfUlag/CA8DuPaKKivrIip5vD+w1SHJCO8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZQiCPiZs9ylcmzwcIVTktQHbIp7kVqInKEnoyewN/UXfLcp5j6qbcKvR5osSF141YyZN//8HiQwuLy7LvlVHl38sB+a0mZ0SKvL8l+dnAyQh3ISchFaog05N0yoiVIOy7tKokZFhJqbKw0YXTqXBR6Gzb+O907yEA8XfyYgk4S0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ql4vqC8b; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=wxzBgx3kqKVoI3jlEN02U0lcelhmIv1peZoDYksnKQE=; b=Ql4vqC8boH+fZrAUoC8Aa6Psgt
-	RErCIrXi9ls6VySEg6mIvd5hNzYoDFZSKEE6w4Arli+Aomfx2k3AURv9IZ3Kq1epkDAwAQjQKn9/i
-	bdIHlb6dv6AcFIp5giL3Z44FyGQFNieKtbiAFfOFmYChI7TokimX33nB17CcKexqNaagFgQnuYSUe
-	lW6RaJtU/ATEI1WyTW2IeJ6aPH9c/nH6dQWFaPAnTTAVoVCgam2fDn62Bq8/zTH+MXWY717GziaJv
-	iT+Smj0GKJzb/HC8YKyB5p9m9J/58ZrBG/Mh9dmVp4oeUm7NI6VzeLt0ZcigAvPv6y+dUCpJf672/
-	cPFt8iiQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1so17l-0000000BLwy-1gHR;
-	Tue, 10 Sep 2024 13:41:41 +0000
-Date: Tue, 10 Sep 2024 14:41:41 +0100
-From: Matthew Wilcox <willy@infradead.org>
+	s=arc-20240116; t=1725976067; c=relaxed/simple;
+	bh=5BIOwvLP7xQQalA/sz2+3hW69BzQPTxbRY8bNFFdbAI=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=LsA2VlMYGQmD56r9l+4ytCwowrQtiX6g9RHpQeVBAR12xGqRm+CtLGvxHIW5xpSZDW+ZZ1MwcGs8fzwlJAYjjauNDT3CQehEP8r8LrZ2nzzEpiHkmGVpaRIks/+ldyx2VrxZ2KsgXKTgyQvzzwPHQRad7NUDSLHfpueiZGEIUJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IEY2rbqH; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D511CC4CEC3;
+	Tue, 10 Sep 2024 13:47:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1725976067;
+	bh=5BIOwvLP7xQQalA/sz2+3hW69BzQPTxbRY8bNFFdbAI=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=IEY2rbqH3w3QWrZlffkEMhj/SAK8BlbPxQf4rRb1zSHKyK4xF+Srv+UDY+zHbUHzs
+	 JA0DvU5f0DbgBMr3Sb5NitOnO2l6OHERxru8WQxOi/fJE6CW+QLpPt6O5/ESc2+/r+
+	 nEyp+8CDZog+NSU2TE5LTInkxU2EuSK5CR0ndMZpCY+3IMEwxr53HALAeZLU8Bi7l/
+	 cUTwVYBmS/QHkMC1jDttI9VWJbTdhB+eeTr/YItiNqDBT0HATyT6n3eyy5pPwSbLn2
+	 iHAiH4D62eBGk+h2r6ea7QlTKFYhvpIXWUtNZ+ZEIM4X00o83BFiF+6ZPyxS5I2Qe6
+	 0pct/bThNgVEA==
+Date: Tue, 10 Sep 2024 08:47:45 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
 To: Alistair Popple <apopple@nvidia.com>
 Cc: dan.j.williams@intel.com, linux-mm@kvack.org, vishal.l.verma@intel.com,
 	dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
 	jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
 	will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
-	dave.hansen@linux.intel.com, ira.weiny@intel.com, djwong@kernel.org,
-	tytso@mit.edu, linmiaohe@huawei.com, david@redhat.com,
-	peterx@redhat.com, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev,
-	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com,
-	Jason Gunthorpe <jgg@nvidia.com>
-Subject: Re: [PATCH 04/12] mm: Allow compound zone device pages
-Message-ID: <ZuBMlUK-v24-9m3G@casper.infradead.org>
-References: <cover.9f0e45d52f5cff58807831b6b867084d0b14b61c.1725941415.git-series.apopple@nvidia.com>
- <c7026449473790e2844bb82012216c57047c7639.1725941415.git-series.apopple@nvidia.com>
- <Zt_PbIADa4baLEBw@casper.infradead.org>
- <87v7z4gfi7.fsf@nvdebian.thelocal>
+	dave.hansen@linux.intel.com, ira.weiny@intel.com,
+	willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
+	linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+	nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
+	david@fromorbit.com
+Subject: Re: [PATCH 02/12] pci/p2pdma: Don't initialise page refcount to one
+Message-ID: <20240910134745.GA577955@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -74,49 +67,43 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <87v7z4gfi7.fsf@nvdebian.thelocal>
+In-Reply-To: <4f8326d9d9e81f1cb893c2bd6f17878b138cf93d.1725941415.git-series.apopple@nvidia.com>
 
-On Tue, Sep 10, 2024 at 04:57:41PM +1000, Alistair Popple wrote:
-> 
-> Matthew Wilcox <willy@infradead.org> writes:
-> 
-> > On Tue, Sep 10, 2024 at 02:14:29PM +1000, Alistair Popple wrote:
-> >> @@ -337,6 +341,7 @@ struct folio {
-> >>  	/* private: */
-> >>  				};
-> >>  	/* public: */
-> >> +			struct dev_pagemap *pgmap;
-> >
-> > Shouldn't that be indented by one more tab stop?
-> >
-> > And for ease of reading, perhaps it should be placed either immediately
-> > before or after 'struct list_head lru;'?
-> >
-> >> +++ b/include/linux/mmzone.h
-> >> @@ -1134,6 +1134,12 @@ static inline bool is_zone_device_page(const struct page *page)
-> >>  	return page_zonenum(page) == ZONE_DEVICE;
-> >>  }
-> >>  
-> >> +static inline struct dev_pagemap *page_dev_pagemap(const struct page *page)
-> >> +{
-> >> +	WARN_ON(!is_zone_device_page(page));
-> >> +	return page_folio(page)->pgmap;
-> >> +}
-> >
-> > I haven't read to the end yet, but presumably we'll eventually want:
-> >
-> > static inline struct dev_pagemap *folio_dev_pagemap(const struct folio *folio)
-> > {
-> > 	WARN_ON(!folio_is_zone_device(folio))
-> > 	return folio->pgmap;
-> > }
-> >
-> > and since we'll want it eventually, maybe now is the time to add it,
-> > and make page_dev_pagemap() simply call it?
-> 
-> Sounds reasonable. I had open-coded folio->pgmap where it's needed
-> because at those points it's "obviously" a ZONE_DEVICE folio. Will add
-> it.
+In subject:
 
-Oh, if it's obvious then just do the dereference.
+  PCI/P2PDMA: ...
+
+would match previous history.
+
+On Tue, Sep 10, 2024 at 02:14:27PM +1000, Alistair Popple wrote:
+> The reference counts for ZONE_DEVICE private pages should be
+> initialised by the driver when the page is actually allocated by the
+> driver allocator, not when they are first created. This is currently
+> the case for MEMORY_DEVICE_PRIVATE and MEMORY_DEVICE_COHERENT pages
+> but not MEMORY_DEVICE_PCI_P2PDMA pages so fix that up.
+> 
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> ---
+>  drivers/pci/p2pdma.c |  6 ++++++
+>  mm/memremap.c        | 17 +++++++++++++----
+>  mm/mm_init.c         | 22 ++++++++++++++++++----
+>  3 files changed, 37 insertions(+), 8 deletions(-)
+> 
+> diff --git a/drivers/pci/p2pdma.c b/drivers/pci/p2pdma.c
+> index 4f47a13..210b9f4 100644
+> --- a/drivers/pci/p2pdma.c
+> +++ b/drivers/pci/p2pdma.c
+> @@ -129,6 +129,12 @@ static int p2pmem_alloc_mmap(struct file *filp, struct kobject *kobj,
+>  	}
+>  
+>  	/*
+> +	 * Initialise the refcount for the freshly allocated page. As we have
+> +	 * just allocated the page no one else should be using it.
+> +	 */
+> +	set_page_count(virt_to_page(kaddr), 1);
+
+No doubt the subject line is true in some overall context, but it does
+seem to say the opposite of what happens here.
+
+Bjorn
 
