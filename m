@@ -1,52 +1,119 @@
-Return-Path: <linux-ext4+bounces-4107-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4108-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 07278972A5D
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 09:16:13 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4FF19972FF6
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 11:56:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 391701C24180
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 07:16:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C86621F24BB7
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Sep 2024 09:56:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E4671E53A;
-	Tue, 10 Sep 2024 07:16:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B05D1891A0;
+	Tue, 10 Sep 2024 09:56:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="NFbCx1s+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YH3jbB1d"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94D8117BB3F
-	for <linux-ext4@vger.kernel.org>; Tue, 10 Sep 2024 07:16:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 861D614F12C;
+	Tue, 10 Sep 2024 09:56:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1725952567; cv=none; b=hkUtB/AmtKVXf6T3AxqqMYkuKML4iSUGkbqmo3jxpWtJwy6JukGech/vBwl2RiJ0retWM2YjWZyUfLMvMR6kryI4m97Qa5vU4QV7TzI/+ucMi+TfDGEqi6a7wJzCdXnjqTKsHzvck2eGBs+KQwLeYQ9z80/47PSmCSj+/Km81UE=
+	t=1725962176; cv=none; b=g3nuWIWhwvt8ALJSOCRiZN+qxR5aKDU4enM8Ho9IsTJwfY1AJLqW8WD9dYHNiw7M8JflkjPIPY2Mp1dq0X+yUvYjMZR6cQWN5NCKbGMv36yl2NJHi2gufs5CyjgSohQemPWcFBVpQ1VSIM9SOGRoHR6V5VbjWWwTY67Z3MGJpgM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1725952567; c=relaxed/simple;
-	bh=G0ZFg3s+ksaOwXSN/E2qWB+xx0gWbsIN07cDTRBTIac=;
+	s=arc-20240116; t=1725962176; c=relaxed/simple;
+	bh=PUrx8/GHZDMwC+M8a3MvdbNkJtPsdRYr+TPlEkBHbIc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jckAdrXg5xMBDkdYSCMR3TqkoV0lIR8X5LrX3vOTw+SK5NWWC2G43KTSSVCWdcwgz3dk4g8sVSdw/CB+09A3BZEqZ5Sr+OQPl8nrM7uXyQKfOWahbWAQXvjit1+KZY62L/atgdQT/rZghxXdmvFKDGAcxR9oYP3fK4WiVcnw4Ys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=NFbCx1s+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D309CC4CEC3;
-	Tue, 10 Sep 2024 07:16:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1725952567;
-	bh=G0ZFg3s+ksaOwXSN/E2qWB+xx0gWbsIN07cDTRBTIac=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NFbCx1s+TRlfhbdaexe9C3v2pts+Y1UVqPcg+alF9s+Mz4Y5wda5/XEPquAJaIAEz
-	 KqCsKIXP8hCyZ5Lbu45dozFQ3WpDzDcLMk7kWVxevi3l+cKP1ASWNjLboGEfoMNMbD
-	 mWjDgX5tUgnhFkaYwlgLXSxbDYz0AxqiBK8tE7W0=
-Date: Tue, 10 Sep 2024 09:16:04 +0200
-From: Greg KH <gregkh@linuxfoundation.org>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: cve@kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: CVE-2024-43898 is invalid?
-Message-ID: <2024091012-deputize-acquaint-fb62@gregkh>
-References: <20240909153144.GA1510718@mit.edu>
- <2024090919-eats-countable-1a0d@gregkh>
- <20240909200822.GA1509922@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MhmSiSk73CuFpDLY+rEFVkDUwJ9QxXOi6/yHd3kUi+n3W1al4/LNiUbK28RnUHwJJb2rZG0ERjASgga3r3HZpLiIAHkcbtHIKSXSn4R9hPOI6POVkwQWpJ0TqjSP+nmfMdV2i/LX34jKLKGBpRCQedTRO0OxylLw7dUZ5eHhH0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YH3jbB1d; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-6c354091616so31617356d6.0;
+        Tue, 10 Sep 2024 02:56:14 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1725962173; x=1726566973; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=roKfj6CBD2UQOUOtyA4gjf+WNvWYxpn/sCg2YOe/DwY=;
+        b=YH3jbB1ddph8tTa46+2JYd9vcppdIiK+R1NT+aILqC2A7RGApbWxp/5NScS7uUmcvL
+         Y01K9XfpN4TYVSzg7yQdvNvpNWlzcWK2cI1onyiv8wE2I9hRB827pyIW57+5FC9yQSQG
+         fysWoUFQFWOCWd1edDCv5C1qGu5vcLt5KSn0jMaaKtwIuFo1r+8Xt0HGxnSGlfQIjX5P
+         bvbcimYplZ1F2eswBjVzeB4MaDby6ec10kJJHtc4ReWJ5Bhs1SexYvSpdzzyKQEoVkZL
+         iO0h44hHp1wl8pIxEDYKOPEfXeE0pnhaE1KGuoFNKIr76F5zOl8lSfI34nPCikoGzBBM
+         yXrw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1725962173; x=1726566973;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=roKfj6CBD2UQOUOtyA4gjf+WNvWYxpn/sCg2YOe/DwY=;
+        b=Py8GrsPBOKi8Oy6w12Q06CiSZ9SiMd4FENrLcJ2rZ84BbAoyPvaqD4I/+hA9WoDUhz
+         y6igvLZXV/yrUwDB0qtoGtsdE1c82M0m6vkvl+FwK7l+twrg4UPSCqy+LePInFMj+BpO
+         0EIoQFuiki8KYYrL0Gwe5qqKjfqJZNTEg7xci3iM9LVM9HuRUHXsUs65klO9lzO0rSnI
+         tlRRuZL7h5jePgmRtNg85+EY42m17LmB+6pxONIvKaPq+FmoiG3PnGi7jEdxu5aDoMcW
+         7lYmiKFY1dTb5I5lRqNNifvUHRDiKppgYNx1KWSxVytaAqPeVDr76fpfrYWdVFd0x7cn
+         lKpA==
+X-Forwarded-Encrypted: i=1; AJvYcCVnSI+MpGt8Mx5kcwQXcXgggGFN1q2IGo5bcB+egrLj3CK2qVNreaj5Mgio871WuKxMIvdHvl2PQUQW@vger.kernel.org
+X-Gm-Message-State: AOJu0YyoDzCg2WXh0G1F431zlyjmbBc9HzN0rWBwBEin+Ant+qS/3IC6
+	uY5ZtEJDN0Mr0NJrTN3j7fiND/+uo00ZiEElE+AaHwFS658gDqOo
+X-Google-Smtp-Source: AGHT+IFbJb3T//+cq9Q4JRnEXAhbI68gYsqv2eUEJLtnL33G5JYViRQraVCJtfsTajEvEYStjv8YWw==
+X-Received: by 2002:a05:6214:3a81:b0:6bf:79e5:b129 with SMTP id 6a1803df08f44-6c52851ba0bmr221983566d6.49.1725962173272;
+        Tue, 10 Sep 2024 02:56:13 -0700 (PDT)
+Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c53477476fsm28732476d6.110.2024.09.10.02.56.12
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 10 Sep 2024 02:56:12 -0700 (PDT)
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfauth.phl.internal (Postfix) with ESMTP id B76C6120006F;
+	Tue, 10 Sep 2024 05:48:30 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-03.internal (MEProxy); Tue, 10 Sep 2024 05:48:30 -0400
+X-ME-Sender: <xms:7hXgZigQE13RCrtin2NzeqsOQYIVHZtxbQagokSiJib7BPK3_VU4hw>
+    <xme:7hXgZjDtd55yaijw3SQySl2MfmxYOl78vaXwlZ_j3dSLYt2uhdKWA_key8V0TU_6I
+    9ifMK0jurP_dntxCw>
+X-ME-Received: <xmr:7hXgZqF1yXdfdec7uS8wVbIIxOn73DrJu7g0Ps_Xoomto1k1SKpeQfR-T9-95g>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrudeiledgudelucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvden
+    ucfhrhhomhepuehoqhhunhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrd
+    gtohhmqeenucggtffrrghtthgvrhhnpefhtedvgfdtueekvdekieetieetjeeihedvteeh
+    uddujedvkedtkeefgedvvdehtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuve
+    hluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdo
+    mhgvshhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejke
+    ehheehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgr
+    mhgvpdhnsggprhgtphhtthhopeelpdhmohguvgepshhmthhpohhuthdprhgtphhtthhope
+    gsohhtthgrrgifvghsohhmvgeifeefsehgmhgrihhlrdgtohhmpdhrtghpthhtoheplhhi
+    nhhugidqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepph
+    gvthgvrhiisehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtohepmhhinhhgohesrhgv
+    ughhrghtrdgtohhmpdhrtghpthhtohepfihilhhlsehkvghrnhgvlhdrohhrghdprhgtph
+    htthhopehlohhnghhmrghnsehrvgguhhgrthdrtghomhdprhgtphhtthhopehlihhnuhig
+    qdgvgihtgeesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehshiiikhgrlh
+    hlvghrsehgohhoghhlvghgrhhouhhpshdrtghomhdprhgtphhtthhopegsohhquhhnsehf
+    ihigmhgvrdhnrghmvg
+X-ME-Proxy: <xmx:7hXgZrQnxVOPf-6ZuZRKazpQl5hoIFleQSFNtAxkJOFshO-Uuz9Vqw>
+    <xmx:7hXgZvxj0bqh3tWjD1qoRRxdflikccaelq_15V_dglmBYtxPAiWwmg>
+    <xmx:7hXgZp6WMuD1pBcQS_0TP77lWozgAvgZrsCwh1GoKdZx3ALkGSNBIQ>
+    <xmx:7hXgZsymITmjsd8oifQFFDatboPhBPaX5STNwLZtVfn1gljmrbjZwQ>
+    <xmx:7hXgZrgZ8EM-jxffltuFVI0Xi1iaubMXZnZL9vvHIiss2YMnMzj7oDqL>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 10 Sep 2024 05:48:30 -0400 (EDT)
+Date: Tue, 10 Sep 2024 02:47:26 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Ahmed Ehab <bottaawesome633@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@redhat.com>, Will Deacon <will@kernel.org>,
+	Waiman Long <longman@redhat.com>, linux-ext4@vger.kernel.org,
+	syzkaller@googlegroups.com
+Subject: Re: [PATCH v8 2/2] locking/lockdep: Test no new string literal is
+ created in lockdep_set_subclass()
+Message-ID: <ZuAVrkMQvk41PNKH@boqun-archlinux>
+References: <20240905011220.356973-1-bottaawesome633@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -55,64 +122,100 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240909200822.GA1509922@mit.edu>
+In-Reply-To: <20240905011220.356973-1-bottaawesome633@gmail.com>
 
-On Mon, Sep 09, 2024 at 04:08:22PM -0400, Theodore Ts'o wrote:
-> On Mon, Sep 09, 2024 at 06:20:08PM +0200, Greg KH wrote:
-> > 
-> > "root privileges" are not something that "is this a vulnerability"
-> > normally takes into account given that there are zillions of ways of
-> > giving permissions to processes to do things that people do in crazy
-> > systems, as you know :)
-> > 
-> > That being said, the commit message does not document root priviliges
-> > being needed, also, it looks like the function is called on the "normal"
-> > shutdown callback for the superblock, which I don't think is required to
-> > have root permissions, does it?
-> 
-> It's fair that while umount(2) requires root privs, it's absolutely
-> true that there are a number of ways that an unprivileged user might
-> be able to request that the system unmount a file system on its
-> behalf.  However, this particular failure involves a forcible shutdown
-> (triggered via ext4_force_shutdown() and the FS_IOC_SHUTDOWN ioctl)
-> without any regard to whether the file system is busy or not.  A
-> "normal" superblock shutdown via umount(2) would never hit this
-> scenario because the umount(2) would return EBUSY if there are any
-> open file descriptors, and the syzkaller reproducer involves doing a
-> lot of file system operations racing with the FS_IOC_SHUTDOWN ioctl.
-> 
-> The FS_IOC_SHUTDOWN ioctl is used for debugging and testing, and it's
-> not something that will be triggered by some setuid program or some
-> root daemon like udisks or udev.  This is why I had intentionally
-> skipped adding a cc: stable@kernel.org for this particular patch.
-> 
-> It's fair to say that we didn't explicitly say that root was required;
-> we can try to be a bit more explicit about whether something is
-> legitimately a security fix or not.  At least in my mind, it was so
-> obviously not that I didn't bother to say so, other than _not_ cc'ing
-> stable, which is not necessarily an obvious statement since it could
-> have been an oversight.  I'll try to be more explicit in the future.
+Hi Ahmed,
 
-You don't have to be more explicit, except maybe for things that "look"
-like they should be backported and are fixes needed but really should
-not be, like this one.
-
-> > But as a maintainer, it's up to you if you wish to reject a cve for your
-> > subsystem/code, so if you really want it rejected, we'll be glad to do
-> > so.
+On Thu, Sep 05, 2024 at 04:12:20AM +0300, Ahmed Ehab wrote:
+> Add a test case to ensure that no new name string literal will be
+> created in lockdep_set_subclass(), otherwise a warning will be triggered
+> in look_up_lock_class(). Add this to catch the problem in the future. 
 > 
-> There are some more borderline cases, such as people who enable their
-> systems to automount USB thumb drives which users find scattered in a
-> parking lot by a nation-state attacker.  (Note: both xfsprogs and
-> e2fsprogs now ship with udev rules which disable this feature by
-> default; that won't stop a distro product manager for thinking that
-> user friendliness trumps security.)
+
+This overall looks good to me, I'm going to take it and create a PR for
+tip in next release. However, please note a few things:
+
+* Since you only send one of the patch from your original series, you
+  should avoid use "2/2" in the title, because it could be confusing
+  whether there is "1/2" lost in sending. If you want to make sure
+  people aware that this is a continued work of the patch #2 in your
+  original series, you can put some description after the following
+  "---"
+
+* You need also to put changes between patch versions after "---" so
+  that people can know the context, for example, I have no idea why you
+  send a v8 after v7 and what's the delta here. Here is an example of
+  how to document the delta:
+
+  	https://lore.kernel.org/rust-for-linux/20240827-static-mutex-v2-1-17fc32b20332@google.com/
+
+Regards,
+Boqun
+
+> Signed-off-by: Ahmed Ehab <bottaawesome633@gmail.com>
+> ---
+>  lib/locking-selftest.c | 40 ++++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 40 insertions(+)
 > 
-> But in this case, this is so far outside the normal parameters that
-> yes, let's reject this particular CVE since it will be a vulnerability
-> for essentially no one.
-
-Now rejected, thanks!
-
-greg k-h
+> diff --git a/lib/locking-selftest.c b/lib/locking-selftest.c
+> index 6f6a5fc85b42..0783ee97c971 100644
+> --- a/lib/locking-selftest.c
+> +++ b/lib/locking-selftest.c
+> @@ -2710,6 +2710,44 @@ static void local_lock_3B(void)
+>  
+>  }
+>  
+> +#if CONFIG_DEBUG_LOCK_ALLOC
+> +static inline const char *rw_semaphore_lockdep_name(struct rw_semaphore *rwsem)
+> +{
+> +	return rwsem->dep_map.name;
+> +}
+> +#else
+> +static inline const char *rw_semaphore_lockdep_name(struct rw_semaphore *rwsem)
+> +{
+> +	return NULL;
+> +}
+> +#endif
+> +
+> +static void lock_class_subclass_X1(void)
+> +{
+> +	const char *name_before_setting_subclass = rw_semaphore_lockdep_name(&rwsem_X1);
+> +	const char *name_after_setting_subclass;
+> +
+> +	lockdep_set_subclass(&rwsem_X1, 1);
+> +	name_after_setting_subclass = rw_semaphore_lockdep_name(&rwsem_X1);
+> +	DEBUG_LOCKS_WARN_ON(name_before_setting_subclass != name_after_setting_subclass);
+> +}
+> +
+> +/*
+> + * after setting the subclass the lockdep_map.name changes
+> + * if we initialize a new string literal for the subclass
+> + * we will have a new name pointer
+> + */
+> +static void class_subclass_X1_name_test(void)
+> +{
+> +	printk("  --------------------------------------------------------------------------\n");
+> +	printk("  | class and subclass name test|\n");
+> +	printk("  ---------------------\n");
+> +
+> +	print_testname("lock class and subclass same name");
+> +	dotest(lock_class_subclass_X1, SUCCESS, LOCKTYPE_RWSEM);
+> +	pr_cont("\n");
+> +}
+> +
+>  static void local_lock_tests(void)
+>  {
+>  	printk("  --------------------------------------------------------------------------\n");
+> @@ -2920,6 +2958,8 @@ void locking_selftest(void)
+>  	dotest(hardirq_deadlock_softirq_not_deadlock, FAILURE, LOCKTYPE_SPECIAL);
+>  	pr_cont("\n");
+>  
+> +	class_subclass_X1_name_test();
+> +
+>  	if (unexpected_testcase_failures) {
+>  		printk("-----------------------------------------------------------------\n");
+>  		debug_locks = 0;
+> -- 
+> 2.46.0
+> 
 
