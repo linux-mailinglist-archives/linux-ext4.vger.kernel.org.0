@@ -1,116 +1,107 @@
-Return-Path: <linux-ext4+bounces-4135-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4136-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6ED7977DFC
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 12:50:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A4BE977E09
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 12:53:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABB91287C62
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 10:50:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 281AAB2697C
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 10:53:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F151D86C2;
-	Fri, 13 Sep 2024 10:49:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0276B1D86E0;
+	Fri, 13 Sep 2024 10:53:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p9KPY6aS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oN8wzPEi";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p9KPY6aS";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oN8wzPEi"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2LfT74wn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iRo2otEf";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2LfT74wn";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iRo2otEf"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6101D7E59;
-	Fri, 13 Sep 2024 10:49:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975001D67AB;
+	Fri, 13 Sep 2024 10:53:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726224586; cv=none; b=HIs67v/9PRfbnzB0uJ4AczHTjkC7uZQz/puG3HTwYXxxR8f/DXbNhuQ+G7EoMTNYRsvFR9zUHIyRoygr+oerA8rBQoz9XXjyVgxf/kwA1Kq+E40mpEWh9rPXPBTozEd+52OvzVPKKrRGE/U0S1TQuk5fHnTrh/GpSleL6TMb0Cs=
+	t=1726224809; cv=none; b=gFNLt8hLhhZXBJQZYEcVMEbKRjpCniJu74ZuIhGNRFDrXmZFycSrC1kaoi8oHsNkZZs/eGZU+b7Sqo3z3W4vwnVn4GBk2Ffk75NXWmwPo69Rmc1Gm3S9FZg7V31TVRavnJOBpbrDheZLOAhi1nb2fvZjkjRQmtWjZ6jeGPLPLbw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726224586; c=relaxed/simple;
-	bh=ZkHZVLwC5Jq9bc9R8e7GBcPmXfgzUvorRyEFlXYILTo=;
+	s=arc-20240116; t=1726224809; c=relaxed/simple;
+	bh=Uc9FxDNdoUWjc+hbZ9UaZylbEv2yZbdiKtk7vYetpkA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=l2C2s21EGz1eT578JUukYiEU2J/siz6uGuV1N6dm/zaHWZLK9r2FEherXe6Y+5vpC0Euy0cfwVPfAXzOMvGrokFDAnwSR+77dkhYFBA32fnuE4iRLFs/gMC1n+C9iPnBWBaP3wkd+xjW4kxY++WhEMcEiK3faW91jk6XfJwpxNc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p9KPY6aS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oN8wzPEi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p9KPY6aS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oN8wzPEi; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=LMDvRBPX+UIXFFssm9ckhPqbW3E9KvZOWX2PIJupu2Rs4pczCrN+LsfMWZidqCxyxt6XBNL/FKMP0qfXpdDeR806YzOngn6Yuv78+uVttXa8MlVfzN7Z0Pa9WkUak/ojTVQPmRvJOVBRYexWp+Oq2EqIB2Nl1tM6fKavNzubFfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2LfT74wn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iRo2otEf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2LfT74wn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iRo2otEf; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1A9E21FBCD;
-	Fri, 13 Sep 2024 10:49:43 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AF631219CA;
+	Fri, 13 Sep 2024 10:53:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726224583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1726224805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
-	b=p9KPY6aSI6z0IK2ueUPIU9f/rLTr6RPykMQR9H2Qsa1L30+3vqZ1ihNngFMrTfA4mKNjj8
-	KgnzKaHHSPGLvTrDWgrWSnd1wm4K5bT2e5KiR16cWGQHykqkKnVehbFGXVSZfo6dNUg1Hy
-	KAvTC3xQLtMK8/mue1M3KDXpwpIjhWw=
+	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
+	b=2LfT74wnCcxzbMz1AWJNwlvHu00UwXPd7bjx9IVWXfUKHtnNYl/62DOI6IkkL9/o+cQrCC
+	DSTX/abF2cLbpS9slYAo8+nxbFd1X7WANdeCATCJ25x8gzuSZA+5YcN6UIQ7RWC0+2i9eo
+	xl1x7/ANJYPp7G8GjzPEZOAnHiQMfqM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726224583;
+	s=susede2_ed25519; t=1726224805;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
-	b=oN8wzPEimHTR4soWWSZDCfr7t13ZKjCzeZVCKVHAbQf0fWTqORrsaWhNX7wVWBDdqQZgk9
-	Wgg198ov3v6of0CA==
-Authentication-Results: smtp-out2.suse.de;
+	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
+	b=iRo2otEfgTRtgHfPOYqkkBhtr1dZUZvo32uXzdFtly8mbefzmj0mICZGp0igN6ZTb9N9RX
+	Y2MolsUPOGjYh7Dw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726224583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1726224805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
-	b=p9KPY6aSI6z0IK2ueUPIU9f/rLTr6RPykMQR9H2Qsa1L30+3vqZ1ihNngFMrTfA4mKNjj8
-	KgnzKaHHSPGLvTrDWgrWSnd1wm4K5bT2e5KiR16cWGQHykqkKnVehbFGXVSZfo6dNUg1Hy
-	KAvTC3xQLtMK8/mue1M3KDXpwpIjhWw=
+	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
+	b=2LfT74wnCcxzbMz1AWJNwlvHu00UwXPd7bjx9IVWXfUKHtnNYl/62DOI6IkkL9/o+cQrCC
+	DSTX/abF2cLbpS9slYAo8+nxbFd1X7WANdeCATCJ25x8gzuSZA+5YcN6UIQ7RWC0+2i9eo
+	xl1x7/ANJYPp7G8GjzPEZOAnHiQMfqM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726224583;
+	s=susede2_ed25519; t=1726224805;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
-	b=oN8wzPEimHTR4soWWSZDCfr7t13ZKjCzeZVCKVHAbQf0fWTqORrsaWhNX7wVWBDdqQZgk9
-	Wgg198ov3v6of0CA==
+	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
+	b=iRo2otEfgTRtgHfPOYqkkBhtr1dZUZvo32uXzdFtly8mbefzmj0mICZGp0igN6ZTb9N9RX
+	Y2MolsUPOGjYh7Dw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 09D8013999;
-	Fri, 13 Sep 2024 10:49:43 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4EC413999;
+	Fri, 13 Sep 2024 10:53:25 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id pjdkAscY5GbTbAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 13 Sep 2024 10:49:43 +0000
+	id Eoc7KKUZ5GbtbQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 13 Sep 2024 10:53:25 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B6F1FA08EF; Fri, 13 Sep 2024 12:49:38 +0200 (CEST)
-Date: Fri, 13 Sep 2024 12:49:38 +0200
+	id 5CB9EA08EF; Fri, 13 Sep 2024 12:53:10 +0200 (CEST)
+Date: Fri, 13 Sep 2024 12:53:10 +0200
 From: Jan Kara <jack@suse.cz>
 To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
-	"zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
 	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	steve.kang@unisoc.com
-Subject: Re: [RFC PATCHv2 1/1] fs: ext4: Don't use CMA for buffer_head
-Message-ID: <20240913104938.onpgr3h6crtbmsmc@quack3>
-References: <20240903022902.GP9627@mit.edu>
- <CAGWkznEv+F1A878Nw0=di02DHyKxWCvK0B=93o1xjXK6nUyQ3Q@mail.gmail.com>
- <20240903120840.GD424729@mit.edu>
- <CAGWkznFu1GTB41Vx1_Ews=rNw-Pm-=ACxg=GjVdw46nrpVdO3g@mail.gmail.com>
- <20240904024445.GR9627@mit.edu>
- <CAGWkznFGDJsyMUhn5Y8DPmhba9h4GNkX_CaqEMev4z23xa-s6g@mail.gmail.com>
- <20240912084119.j3oqfikuavymctlm@quack3>
- <CAGWkznG7_=zjKZBO-sj=79F3a3tgZuXqCXbvddDDG2Atv5043g@mail.gmail.com>
- <20240912101608.c6wfkvhbaatiokaw@quack3>
- <CAGWkznGQkoJbUW7hkUK1+i4ww9ihtY2cUTZbC_jqwFq3HDqE4g@mail.gmail.com>
+	linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <steve.kang@unisoc.com>
+Subject: Re: [PATCHv3 1/1] fs: ext4: Don't use CMA for buffer_head
+Message-ID: <20240913105310.enqz47nmcn24ux45@quack3>
+References: <20240904075300.1148836-1-zhaoyang.huang@unisoc.com>
+ <CAGWkznF0LvqP59edcrs_wxpbUAnK6mZWY-ovE0CPBBXNysUUtg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -120,129 +111,123 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGWkznGQkoJbUW7hkUK1+i4ww9ihtY2cUTZbC_jqwFq3HDqE4g@mail.gmail.com>
+In-Reply-To: <CAGWkznF0LvqP59edcrs_wxpbUAnK6mZWY-ovE0CPBBXNysUUtg@mail.gmail.com>
 X-Spam-Score: -3.80
 X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.998];
+	NEURAL_HAM_LONG(-1.00)[-0.999];
 	MID_RHS_NOT_FQDN(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
 	FREEMAIL_TO(0.00)[gmail.com];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
 	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
 	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Fri 13-09-24 09:39:57, Zhaoyang Huang wrote:
-> On Thu, Sep 12, 2024 at 6:16 PM Jan Kara <jack@suse.cz> wrote:
+On Fri 13-09-24 10:02:40, Zhaoyang Huang wrote:
+> loop in jan kara
+> 
+> On Wed, Sep 4, 2024 at 3:54 PM zhaoyang.huang <zhaoyang.huang@unisoc.com> wrote:
 > >
-> > On Thu 12-09-24 17:10:44, Zhaoyang Huang wrote:
-> > > On Thu, Sep 12, 2024 at 4:41 PM Jan Kara <jack@suse.cz> wrote:
-> > > >
-> > > > On Wed 04-09-24 14:56:29, Zhaoyang Huang wrote:
-> > > > > On Wed, Sep 4, 2024 at 10:44 AM Theodore Ts'o <tytso@mit.edu> wrote:
-> > > > > > On Wed, Sep 04, 2024 at 08:49:10AM +0800, Zhaoyang Huang wrote:
-> > > > > > > >
-> > > > > > > > After all, using GFP_MOVEABLE memory seems to mean that the buffer
-> > > > > > > > cache might get thrashed a lot by having a lot of cached disk buffers
-> > > > > > > > getting ejected from memory to try to make room for some contiguous
-> > > > > > > > frame buffer memory, which means extra I/O overhead.  So what's the
-> > > > > > > > upside of using GFP_MOVEABLE for the buffer cache?
-> > > > > > >
-> > > > > > > To my understanding, NO. using GFP_MOVEABLE memory doesn't introduce
-> > > > > > > extra IO as they just be migrated to free pages instead of ejected
-> > > > > > > directly when they are the target memory area. In terms of reclaiming,
-> > > > > > > all migrate types of page blocks possess the same position.
-> > > > > >
-> > > > > > Where is that being done?  I don't see any evidence of this kind of
-> > > > > > migration in fs/buffer.c.
-> > > > > The journaled pages which carry jh->bh are treated as file pages
-> > > > > during isolation of a range of PFNs in the callstack below[1]. The bh
-> > > > > will be migrated via each aops's migrate_folio and performs what you
-> > > > > described below such as copy the content and reattach the bh to a new
-> > > > > page. In terms of the journal enabled ext4 partition, the inode is a
-> > > > > blockdev inode which applies buffer_migrate_folio_norefs as its
-> > > > > migrate_folio[2].
-> > > > >
-> > > > > [1]
-> > > > > cma_alloc/alloc_contig_range
-> > > > >     __alloc_contig_migrate_range
-> > > > >         migrate_pages
-> > > > >             migrate_folio_move
-> > > > >                 move_to_new_folio
-> > > > >
-> > > > > mapping->aops->migrate_folio(buffer_migrate_folio_norefs->__buffer_migrate_folio)
-> > > > >
-> > > > > [2]
-> > > > > static int __buffer_migrate_folio(struct address_space *mapping,
-> > > > >                 struct folio *dst, struct folio *src, enum migrate_mode mode,
-> > > > >                 bool check_refs)
-> > > > > {
-> > > > > ...
-> > > > >         if (check_refs) {
-> > > > >                 bool busy;
-> > > > >                 bool invalidated = false;
-> > > > >
-> > > > > recheck_buffers:
-> > > > >                 busy = false;
-> > > > >                 spin_lock(&mapping->i_private_lock);
-> > > > >                 bh = head;
-> > > > >                 do {
-> > > > >                         if (atomic_read(&bh->b_count)) {
-> > > > >           //My case failed here as bh is referred by a journal head.
-> > > > >                                 busy = true;
-> > > > >                                 break;
-> > > > >                         }
-> > > > >                         bh = bh->b_this_page;
-> > > > >                 } while (bh != head);
-> > > >
-> > > > Correct. Currently pages with journal heads attached cannot be migrated
-> > > > mostly out of pure caution that the generic code isn't sure what's
-> > > > happening with them. As I wrote in [1] we could make pages with jhs on
-> > > > checkpoint list only migratable as for them the buffer lock is enough to
-> > > > stop anybody from touching the bh data. Bhs which are part of a running /
-> > > > committing transaction are not realistically migratable but then these
-> > > > states are more shortlived so it shouldn't be a big problem.
-> > > By observing from our test case, the jh remains there for a long time
-> > > when journal->j_free is bigger than j_max_transaction_buffers which
-> > > failed cma_alloc. So you think this is rare or abnormal?
-> > >
-> > > [6] j_free & j_max_transaction_buffers
-> > > crash_arm64_v8.0.4++> struct
-> > > journal_t.j_free,j_max_transaction_buffers 0xffffff80e70f3000 -x
-> > >   j_free = 0x3f1,
-> > >   j_max_transaction_buffers = 0x100,
+> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 > >
-> > So jh can stay attached to the bh for a very long time (basically only
-> > memory pressure will evict it) and this is what blocks migration. But what
-> > I meant is that in fact, most of the time we can migrate bh with jh
-> > attached just fine. There are only relatively short moments (max 5s) where
-> > a buffer (jh) is part of a running or committing transaction and then we
-> > cannot really migrate.
-> Please correct me if I am wrong. According to __buffer_migrate_folio,
-> the bh can not be migrated as long as it has jh attached which could
-> remain until the next cp transaction is launched. In my case, the
-> jbd2' log space is big enough( j_free = 0x3f1 >
-> j_max_transaction_buffers = 0x100) to escape the launch.
+> > cma_alloc() keep failed in our system which thanks to a jh->bh->b_page
+> > can not be migrated out of CMA area[1] as the jh has one cp_transaction
+> > pending on it because of j_free > j_max_transaction_buffers[2][3][4][5][6].
+> > We temporarily solve this by launching jbd2_log_do_checkpoint forcefully
+> > somewhere. Since journal is common mechanism to all JFSs and
+> > cp_transaction has a little fewer opportunity to be launched, the
+> > cma_alloc() could be affected under the same scenario. This patch
+> > would like to have buffer_head of ext4 not use CMA pages when doing
+> > sb_getblk.
+> >
+> > [1]
+> > crash_arm64_v8.0.4++> kmem -p|grep ffffff808f0aa150(sb->s_bdev->bd_inode->i_mapping)
+> > fffffffe01a51c00  e9470000 ffffff808f0aa150        3  2 8000000008020 lru,private
+> > fffffffe03d189c0 174627000 ffffff808f0aa150        4  2 2004000000008020 lru,private
+> > fffffffe03d88e00 176238000 ffffff808f0aa150      3f9  2 2008000000008020 lru,private
+> > fffffffe03d88e40 176239000 ffffff808f0aa150        6  2 2008000000008020 lru,private
+> > fffffffe03d88e80 17623a000 ffffff808f0aa150        5  2 2008000000008020 lru,private
+> > fffffffe03d88ec0 17623b000 ffffff808f0aa150        1  2 2008000000008020 lru,private
+> > fffffffe03d88f00 17623c000 ffffff808f0aa150        0  2 2008000000008020 lru,private
+> > fffffffe040e6540 183995000 ffffff808f0aa150      3f4  2 2004000000008020 lru,private
+> >
+> > [2] page -> buffer_head
+> > crash_arm64_v8.0.4++> struct page.private fffffffe01a51c00 -x
+> >       private = 0xffffff802fca0c00
+> >
+> > [3] buffer_head -> journal_head
+> > crash_arm64_v8.0.4++> struct buffer_head.b_private 0xffffff802fca0c00
+> >   b_private = 0xffffff8041338e10,
+> >
+> > [4] journal_head -> b_cp_transaction
+> > crash_arm64_v8.0.4++> struct journal_head.b_cp_transaction 0xffffff8041338e10 -x
+> >   b_cp_transaction = 0xffffff80410f1900,
+> >
+> > [5] transaction_t -> journal
+> > crash_arm64_v8.0.4++> struct transaction_t.t_journal 0xffffff80410f1900 -x
+> >   t_journal = 0xffffff80e70f3000,
+> >
+> > [6] j_free & j_max_transaction_buffers
+> > crash_arm64_v8.0.4++> struct journal_t.j_free,j_max_transaction_buffers 0xffffff80e70f3000 -x
+> >   j_free = 0x3f1,
+> >   j_max_transaction_buffers = 0x100,
+> >
+> > Suggested-by: Theodore Ts'o <tytso@mit.edu>
+> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
-Currently yes. My proposal was to make bh migratable even with jh attached
-(which obviously needs some tweaks to __buffer_migrate_folio()).
+I think there are better fixes to the problem but as a quick stopgap
+solution I have no problem with this since this is trivial and influences
+only CMA users on ext4. So feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> > ---
+> > v3: switch to use getblk_unmoveable as suggested by Theodore Ts'o
+> > ---
+> > ---
+> >  fs/ext4/inode.c | 9 ++++++++-
+> >  1 file changed, 8 insertions(+), 1 deletion(-)
+> >
+> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> > index 941c1c0d5c6e..a0f48840c5c1 100644
+> > --- a/fs/ext4/inode.c
+> > +++ b/fs/ext4/inode.c
+> > @@ -869,7 +869,14 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+> >         if (nowait)
+> >                 return sb_find_get_block(inode->i_sb, map.m_pblk);
+> >
+> > -       bh = sb_getblk(inode->i_sb, map.m_pblk);
+> > +       /*
+> > +        * Since bh could introduce extra ref count such as referred by
+> > +        * journal_head etc. Try to avoid using __GFP_MOVABLE here
+> > +        * as it may fail the migration when journal_head remains.
+> > +        */
+> > +       bh = getblk_unmovable(inode->i_sb->s_bdev, map.m_pblk,
+> > +                               inode->i_sb->s_blocksize);
+> > +
+> >         if (unlikely(!bh))
+> >                 return ERR_PTR(-ENOMEM);
+> >         if (map.m_flags & EXT4_MAP_NEW) {
+> > --
+> > 2.25.1
+> >
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
