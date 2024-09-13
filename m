@@ -1,309 +1,249 @@
-Return-Path: <linux-ext4+bounces-4134-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4135-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44BA3977CE6
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 12:07:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E6ED7977DFC
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 12:50:09 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6EDDD1C228B2
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 10:07:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABB91287C62
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 10:50:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 888231D7E46;
-	Fri, 13 Sep 2024 10:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50F151D86C2;
+	Fri, 13 Sep 2024 10:49:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="WppxqUri";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="G6YiXexh"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p9KPY6aS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oN8wzPEi";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p9KPY6aS";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="oN8wzPEi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-00069f02.pphosted.com (mx0a-00069f02.pphosted.com [205.220.165.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C37021D6C47;
-	Fri, 13 Sep 2024 10:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.165.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726222029; cv=fail; b=TMO2PQPlAiSYOwcXy0i6jZvz3RB3BZU2MKRQz1cuL7sPJhQH6MaYb+ROKuCYDC0YtTFUCM9oYqwFhUGwbkqBtUU9CpGeuaa8hyVHkI3UZGkkNzKIucMTjGG9aA1ACOhjpBOYFpFbr9Cjo37iaIatxb5vgAVLwnZHIKcxxvxkPWc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726222029; c=relaxed/simple;
-	bh=svcyHmzHK6hsFOMOQM+HyR3N1AzWGTjynJVUKp9QXKk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=IXs1RPQysPRTedHOKAzMtzQpkqwt7Eg+o0VkUPL1Up5gNqALwltx6jyAA8YtP2IJuA5WrW97ot9NCyspEmqPeKZ/vXQtKucnSOHtObeKNC1ZbX5p/jnotscotiMx4Ac0WQm+la8u7RTusVakRWPJ0yAPnqjRUXSHOvtUGgeS6/Q=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=WppxqUri; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=G6YiXexh; arc=fail smtp.client-ip=205.220.165.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246617.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48D9YJ7D012278;
-	Fri, 13 Sep 2024 10:06:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=
-	message-id:date:subject:to:cc:references:from:in-reply-to
-	:content-type:content-transfer-encoding:mime-version; s=
-	corp-2023-11-20; bh=MH7esTSbBESGy3C6YSgKy361CiEKM4K4qfTtvJo7tXU=; b=
-	WppxqUri1tAGIVZ8i6gdnM0H2F0ecwndeb/M1R+KOssLYsjDp47v8weGOcFB9BDJ
-	ZhXMRUJOsS+vFqtuCUX/ZgNttGXtJUD80IWuCdwLzYHcfCtRVVrVUpD7a0ZQja/j
-	PPoHZuDZr2XdwRgFy4DKGCA6FJjR3vD16Uvmg9mJjfCGO/IB8hX3ZG4gl1AiS/Mw
-	ycZVEnJYUFpKvtKTzanfKEiOuVIoRZJzC+K4RR1cLidI7FHgW/DuwxQa/FPyd7nc
-	SRHYGBpGhUvE9+/bVbgxNqNWIGmmfR6x2cwioOdRLMyZA7dSX6WBX/4oaKkCvle0
-	0SjjTxN+6SVOg0o8h1GhGg==
-Received: from phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta03.appoci.oracle.com [138.1.37.129])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 41gfctn78j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 13 Sep 2024 10:06:57 +0000 (GMT)
-Received: from pps.filterd (phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (8.18.1.2/8.18.1.2) with ESMTP id 48D95E8Z040809;
-	Fri, 13 Sep 2024 10:06:57 GMT
-Received: from nam02-bn1-obe.outbound.protection.outlook.com (mail-bn1nam02lp2045.outbound.protection.outlook.com [104.47.51.45])
-	by phxpaimrmta03.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 41gd9e5762-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 13 Sep 2024 10:06:57 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=Em3Z4mFA7k1HzE6tXu7ZDE0Fg7n73Zp0Zll8UHwgT7+s4hN8y41J3CT8QDRAy/wXjcrYriXLsHRDjHc+T7MwFQbWkB5k+qYHrgvbUfxORfE3I+L62fIUed5Qc+bz+GE4LRulQo6/AqSd9u5NEfXJr5COXakd2XEo2jk1NqBygwUv6Plfw/cLnuqJCMTa9Go0+pejRR/f18ajok/yAprmvKutRt9UF+MT3Lld37i+qq35+J3J+MohQgePPV4ZUyCgfDVnTySw08mkdcoeiJG4TqJpp5KrFg59IKYG/tqyNteW5LGPSqPdzls6nhQlySg9ESRL5MXBW7iadsJQqkT3Dw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=MH7esTSbBESGy3C6YSgKy361CiEKM4K4qfTtvJo7tXU=;
- b=EcHmhhv4dyXVCHIC8E1Mb+6uZ32dJU2YYFubbkhpnVMVSLHGYoTU/GTni2WNr8sBtpL5dcK/4aOxra9Qaky2adnF1nneGqfsUP28Ny2ZmzS0/gC3vHc6QQioZiQ//f5hXEkVJxinNCZy4UJLk8ABOmtbsBN99n0AI07CbOSnjgbm/Fh8oAIBkzZSiejjRLhjn0xX/H+vXNmlL0xJgn1WJ6qMLTNKiUhO2YHc0wHIrixk0vnQGmLiUFLGRTSZIwXXQP6jkr2CCCrpTh/oTeE24MuYLO6pRgyLwj4YfYZggHPW0Hh8v5jtLJy2gou2k8P5GWK9ooIU9hOrJukWGrV+3A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=MH7esTSbBESGy3C6YSgKy361CiEKM4K4qfTtvJo7tXU=;
- b=G6YiXexhiC08PAbk+H07HvQhGdgEB0RqQ/AKz3HhANEHkaapJ3IJXKw7e++ezEDPeLM7/iLuv1cAeRJNf2hanDmTg19SCV+BFgPSLCbTFq1y+30ehjVqodAC/6583QZeTR1jc1woghi8xP6fjabGp5Tge9K/uD+AfIiy+i5LaoU=
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com (2603:10b6:5:212::20)
- by CH2PR10MB4375.namprd10.prod.outlook.com (2603:10b6:610:7d::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7962.16; Fri, 13 Sep
- 2024 10:06:54 +0000
-Received: from DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088]) by DM6PR10MB4313.namprd10.prod.outlook.com
- ([fe80::4f45:f4ab:121:e088%3]) with mapi id 15.20.7982.008; Fri, 13 Sep 2024
- 10:06:54 +0000
-Message-ID: <5831e24d-dd96-4bad-815f-b79da73f7634@oracle.com>
-Date: Fri, 13 Sep 2024 11:06:51 +0100
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC 0/5] ext4: Implement support for extsize hints
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
-        Theodore Ts'o <tytso@mit.edu>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-fsdevel@vger.kernel.org,
-        dchinner@redhat.com
-References: <cover.1726034272.git.ojaswin@linux.ibm.com>
-Content-Language: en-US
-From: John Garry <john.g.garry@oracle.com>
-Organization: Oracle Corporation
-In-Reply-To: <cover.1726034272.git.ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: LO4P265CA0213.GBRP265.PROD.OUTLOOK.COM
- (2603:10a6:600:33a::11) To DM6PR10MB4313.namprd10.prod.outlook.com
- (2603:10b6:5:212::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB6101D7E59;
+	Fri, 13 Sep 2024 10:49:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1726224586; cv=none; b=HIs67v/9PRfbnzB0uJ4AczHTjkC7uZQz/puG3HTwYXxxR8f/DXbNhuQ+G7EoMTNYRsvFR9zUHIyRoygr+oerA8rBQoz9XXjyVgxf/kwA1Kq+E40mpEWh9rPXPBTozEd+52OvzVPKKrRGE/U0S1TQuk5fHnTrh/GpSleL6TMb0Cs=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1726224586; c=relaxed/simple;
+	bh=ZkHZVLwC5Jq9bc9R8e7GBcPmXfgzUvorRyEFlXYILTo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l2C2s21EGz1eT578JUukYiEU2J/siz6uGuV1N6dm/zaHWZLK9r2FEherXe6Y+5vpC0Euy0cfwVPfAXzOMvGrokFDAnwSR+77dkhYFBA32fnuE4iRLFs/gMC1n+C9iPnBWBaP3wkd+xjW4kxY++WhEMcEiK3faW91jk6XfJwpxNc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p9KPY6aS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oN8wzPEi; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p9KPY6aS; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=oN8wzPEi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1A9E21FBCD;
+	Fri, 13 Sep 2024 10:49:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1726224583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
+	b=p9KPY6aSI6z0IK2ueUPIU9f/rLTr6RPykMQR9H2Qsa1L30+3vqZ1ihNngFMrTfA4mKNjj8
+	KgnzKaHHSPGLvTrDWgrWSnd1wm4K5bT2e5KiR16cWGQHykqkKnVehbFGXVSZfo6dNUg1Hy
+	KAvTC3xQLtMK8/mue1M3KDXpwpIjhWw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1726224583;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
+	b=oN8wzPEimHTR4soWWSZDCfr7t13ZKjCzeZVCKVHAbQf0fWTqORrsaWhNX7wVWBDdqQZgk9
+	Wgg198ov3v6of0CA==
+Authentication-Results: smtp-out2.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1726224583; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
+	b=p9KPY6aSI6z0IK2ueUPIU9f/rLTr6RPykMQR9H2Qsa1L30+3vqZ1ihNngFMrTfA4mKNjj8
+	KgnzKaHHSPGLvTrDWgrWSnd1wm4K5bT2e5KiR16cWGQHykqkKnVehbFGXVSZfo6dNUg1Hy
+	KAvTC3xQLtMK8/mue1M3KDXpwpIjhWw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1726224583;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=V5xQxmkk81smqexA5a5HgEMCfAJQT7J/HT9ukF4gDf8=;
+	b=oN8wzPEimHTR4soWWSZDCfr7t13ZKjCzeZVCKVHAbQf0fWTqORrsaWhNX7wVWBDdqQZgk9
+	Wgg198ov3v6of0CA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 09D8013999;
+	Fri, 13 Sep 2024 10:49:43 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id pjdkAscY5GbTbAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 13 Sep 2024 10:49:43 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id B6F1FA08EF; Fri, 13 Sep 2024 12:49:38 +0200 (CEST)
+Date: Fri, 13 Sep 2024 12:49:38 +0200
+From: Jan Kara <jack@suse.cz>
+To: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, Theodore Ts'o <tytso@mit.edu>,
+	"zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	steve.kang@unisoc.com
+Subject: Re: [RFC PATCHv2 1/1] fs: ext4: Don't use CMA for buffer_head
+Message-ID: <20240913104938.onpgr3h6crtbmsmc@quack3>
+References: <20240903022902.GP9627@mit.edu>
+ <CAGWkznEv+F1A878Nw0=di02DHyKxWCvK0B=93o1xjXK6nUyQ3Q@mail.gmail.com>
+ <20240903120840.GD424729@mit.edu>
+ <CAGWkznFu1GTB41Vx1_Ews=rNw-Pm-=ACxg=GjVdw46nrpVdO3g@mail.gmail.com>
+ <20240904024445.GR9627@mit.edu>
+ <CAGWkznFGDJsyMUhn5Y8DPmhba9h4GNkX_CaqEMev4z23xa-s6g@mail.gmail.com>
+ <20240912084119.j3oqfikuavymctlm@quack3>
+ <CAGWkznG7_=zjKZBO-sj=79F3a3tgZuXqCXbvddDDG2Atv5043g@mail.gmail.com>
+ <20240912101608.c6wfkvhbaatiokaw@quack3>
+ <CAGWkznGQkoJbUW7hkUK1+i4ww9ihtY2cUTZbC_jqwFq3HDqE4g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR10MB4313:EE_|CH2PR10MB4375:EE_
-X-MS-Office365-Filtering-Correlation-Id: a7d3b877-18cb-470c-64ed-08dcd3dbcb3c
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|376014|1800799024;
-X-Microsoft-Antispam-Message-Info:
-	=?utf-8?B?OXdtUXdvb3o3NUE0RmllME9teXVubFZJSC9nYmVweFpKSktRWjQyTXBZcDhr?=
- =?utf-8?B?czVBK0lQUmk1WjkrRHlJb3FRM0lFTS9TK01tSW1ybnJTeU5neWFhdVdZL0py?=
- =?utf-8?B?TlJkMklsd2U2VElSNDhmbk5mZ3c2S1UrQXJnUkluN01SYnhKMHltei9MekU3?=
- =?utf-8?B?SUFkNzFxVXZGLzkrcDRzdkRtd3pHTWRhVlc0U0lubUpGcUllRTFzek1Ec0Jx?=
- =?utf-8?B?ZTQ1enRSYk5GWHg5c3ZnYXRPcmJueU1YYTYzS0xHbTlTVG41eW5xZm56czAw?=
- =?utf-8?B?Mm9YV1ZaRXJBT2ErMC9BMndIOWJpZ2puRVJWMHhDb2tuOGRkdlFnOHF1TUhx?=
- =?utf-8?B?NEVhRzhZNDdSQW41cndQc3Q0bllTWEQ3ZUxSNGcvKzhJTXNwQXc4UXlwOFov?=
- =?utf-8?B?VlQ5OTgzVUwzYkpSWVNRR3BVcTRaNlRTWEFBcFlkWG9kZU43VnBtTkJobU1G?=
- =?utf-8?B?a0xyZkRRSFJ1ZlRyL2FiN1ZlMHl1TXRHZFZhTlFHMXJKdmxDQ0hZTkZZZG9L?=
- =?utf-8?B?YnNiY0p5dDRUQ1ZiSkZPQnJocFBMSE9jajZ6dkJ3RkRxamp2WXZtNWUwYWF3?=
- =?utf-8?B?VDZVVGJ6UGVJUmVQNms5RC93TG5GelU3Q1hCRVhWbzFDQmR6YVc1RXF3OVUr?=
- =?utf-8?B?bFl2VWZ1cWcvdE5mR3lzRWozaDdxaWVFa0htY2NUMDRLOFp1aGVzTUhhNS9s?=
- =?utf-8?B?bjZCVnNBUnZpUlIyTW5vMVNpUHFqTXFEbHhtOHdjc21rQzNFcXdaZmgweStC?=
- =?utf-8?B?SjZKS2ZsRzhVako3WkZSQ3Z6ZU9xRnZNYnRHUUNpSk1hTXp2U2dTc0MzSXhR?=
- =?utf-8?B?d2RUWHRZeDNwVk9LYnpGdE40elZHU3dBdkxvN29lM3dRV1Q3ckoySGNMQzla?=
- =?utf-8?B?QWFHSnA2bzI5NERNRlpXK3BqczRKVm1YRzhZRldTL0V0eEhpRUdzb21Nc2E3?=
- =?utf-8?B?alNqQzJhb2lQMEl5bXlmeFdKZzBzSlNvSWgrSzlJbVBKOGwwQnZsZllNSEtt?=
- =?utf-8?B?bzMyeFM5bGUrbjIvekJQWC90VzNxWnJGZTZON1RaSi8wMmcyNWx0Q0VHN1A2?=
- =?utf-8?B?OWllcXlyVm1Ubm16VWdBMmQvN25LNkJNSlIvS3FSOGxNQWl5emJmd05wRU5l?=
- =?utf-8?B?UW5Md0tDTXo1TlZ0OTY1R0pzUFdPNGEzKzQ2cXpTNGVBbldrQUJOSyt4Y2Rp?=
- =?utf-8?B?ZXRYQmN3dWxPYTJ4OW9SeE5TS3UwTTZGZXhsKzNpYlVaVWtLcFRTQ0xNTEc1?=
- =?utf-8?B?VFpkTlpIRy82MElicGJndlVtZ0Z1ZG5IZHIrVGF1cXdueHNBZTRXMm0wK1Fo?=
- =?utf-8?B?Y2l3YzU5K2c2TVpjNXNKMTJMZHc0dE4rOTdHcVh4aklraE9PdVg3akVpaStE?=
- =?utf-8?B?a2xwZktHWnZqQ3ZESEQvQVRYNnRiYXJ3bEZhN1RNbXZPN3haMUNISlkvVS9I?=
- =?utf-8?B?VWlMYW5MekFRSW9iZDRJTy9QOUxxaXhTTWxMTVdRV1hIVkpNME5Gci9xb2Ji?=
- =?utf-8?B?VFpnazRaTkVkTFROOElwalVkN0loVSsrb0JZL2dzSXlPdjd4T1VDbXd3R2tJ?=
- =?utf-8?B?ckJPWmFBNkZiMTBMNkpHdWx6aFVCNmh4Y1htY0h0VWtUS1E3Q3RKV0hnMFNS?=
- =?utf-8?B?WTZQbkxBbXg1aEtEVUlyamVtWWpWUmRCdExUV0J3ZDVvL0FxNUd5U3VSYjJs?=
- =?utf-8?B?a1V2OEU2R0hjT2hwYTVicnB3OTRDYzlLUVJHUkZZVis2d0pvT2Rsd3JhUjZp?=
- =?utf-8?B?NXN5L0x6MnFrMW0rTUZHN2xnMjFaK0ovUlBpbjdkd3BhS3pmdDYrU2diQ3c1?=
- =?utf-8?B?cytDbHlaNHRwZXNhbUludz09?=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR10MB4313.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(376014)(1800799024);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?NURXSDVFenB4dDdUQ0l0b3AzUUQrdTFtTkErRDJtSU04bDZmUFZLRC9rWGpU?=
- =?utf-8?B?ZmQ1ZTJET202dzVTelU0b3I2SW01eDFEaytOUUdwVUhWRWJHNTVHdzhTZFFh?=
- =?utf-8?B?RTc4Q210TmNYZDlqVGdzbkUvaytmSjc1RXNmTVZkZFVFU215UHhPMXMvZm9R?=
- =?utf-8?B?RHk5YTFGeEpZbjViVUJFZUovQnQySU4wYnZQR2JRajZRU0pJcUkwRFNmQzVt?=
- =?utf-8?B?UVhYV1dFN1VwS24zRC8wR2ZtYTAwRW84WDdxa3Q2UEVDbCtUWTU3RlBEOW04?=
- =?utf-8?B?VVAyUGJXVE8wTVExOUFYc20wRHJQN0wxMTY4ODQxZ3ljdUpOdEcvbU50VmhZ?=
- =?utf-8?B?aWpRdm9FaHJhRmE2b2p0d3FlZno5UFg4YmhvRC8yMDVUTEhqamxuQlhaYndL?=
- =?utf-8?B?aTNmNVp5dGg4RnZKUnpKM3l4TXFYaXdOM0VGclFuVzB3aFB3V1Rkc3RSRXR6?=
- =?utf-8?B?aExmMStLRjByeDUrTW9hZG9TVUFIZGdDamlvZjJRMTBRblhnRUZBNnRoL2VW?=
- =?utf-8?B?NHB6VWxqREpLSndkWWZuNEVtRTFoS3lBVjBSTVFaOWdsRjcyWmFubWdQWFhx?=
- =?utf-8?B?Q0JCaXNtMVR5T1AvMkR2QWFtVmhmY0ZhdWRaUzhwV1dyVzFBWGFzOXEvMTFR?=
- =?utf-8?B?QjNhbVNhaGpyUDhwRGhIemRKVGJ2UW45VmpsTnRSSGwxWm5vWE5mVEpkTSsw?=
- =?utf-8?B?ZmU5ZkRWbUwzNVdHMm84V003RUdKZkhXUkNvMWlNYVVmeUZiNTBLcDRqMzlH?=
- =?utf-8?B?S0tReUhCaWZRZFRqSWNjcG5sODhzc1dJZGVOcUdSbUZnTWZIckhUeU1Dcld4?=
- =?utf-8?B?RGNMWExHYTBWYmhmaTR3TjA5YjFEZXA1UWgrdExTMzU0QWYrdEUyL1o0SGVo?=
- =?utf-8?B?Yk5yTVhNcDdOTnNsa3Vma2FBbHZTbElzNTI4UjZDb2paWHNKb0lUYjQ0WFNW?=
- =?utf-8?B?Zzl3RjgyV2lyVGlvcW1hRWsxZUMrRUdhOVk5TE9yQW1sc0pibDdDL1RpTWJ1?=
- =?utf-8?B?c1VOVDAwYmMwQjlBcGxHOHJtU2NBM2hwT3B0OG9rL2pSVlBuMlF3L21mS3dI?=
- =?utf-8?B?NVkxdnNvRlRmK1J5MzZvNnNMNjNwZy8veEU2MG5ObWtxRXdSUS93TXdkK2Nn?=
- =?utf-8?B?MVJKQUNHRGpZNDdZWm56WldXNkFtYnU1bXNjQVQ2bkFNemppaGNSbS9HQk1t?=
- =?utf-8?B?c0o3dVVsc2dReXZoeCtDOFVKOW1TVlc1VzR3ZkhweFBsamp5WVMzeXNpNWpk?=
- =?utf-8?B?VWZkNHJNYUVKU0FkYXQ3eDRZYzJwYzRxbElibld4Z1RlSzBJTkJCUmp1a2xW?=
- =?utf-8?B?VEZ0L0lMUDNkQkk5Q2NQTmFVVEhCWGxjL004M0RMdzVJalNsOVVpeXJNTXp3?=
- =?utf-8?B?aUdTejNzYjNrMXNXMG83QTkrRk41dlc2bXlPenhHa0R5OTJ0dmdFZ2NzWUVw?=
- =?utf-8?B?VmZ0cCtZeG5HaUFLSm1HRDFpVGZyODVtQmk2OGZYNVJ4cEkyL3JmUGV5OFJv?=
- =?utf-8?B?bkxGQXBjQXQzRFpsWm0yVUlWUjlqRWxCam8yNVhFb3A0by8rMERkVCtJc3RT?=
- =?utf-8?B?L3RBL2l6cmtQLy9hYXkvRVA3cm9tQjhVQ1B4UEp5NGNMRCsvNDVqWU14Qmxo?=
- =?utf-8?B?Vm9jNGZnTmlTRXpYbDlyYnA3Q1l2UkpsdEt6ekg5aHFRdEtKUFpGK1p0S1Qy?=
- =?utf-8?B?T2g5UXBEN29SNURpYnZxSlp6a3FrVk9YRURlTXBCNm8xTm95akozbndMaUY5?=
- =?utf-8?B?UWwzMUc2bUxFSmJ4dUgrRHlnZXlubHAzakRaOU51QVIzaFJIY29Id012ZDFQ?=
- =?utf-8?B?QzdIMEN2QjhpTkRUNk5ndCt4NHJvOFZNRFhaeUp5UlBDSjB1WG1XM0s0Q0Fr?=
- =?utf-8?B?WkI0VmlqaFRYS0lGaUsvUzJoL0NCRFUxelpDV0YxaU9SczFRdko3cTN5TWt5?=
- =?utf-8?B?SldhUDErbkFSdW5paTFsMzVqSzlwVGVvZmNXSDJKRkFQQ0hrR2ZPVFRLN2tt?=
- =?utf-8?B?OEtyOEV5VzFLY3B0ZitRWm5rRmZUUzlUWnFzMDlXSmZoM2NYUEdsRmROQWhY?=
- =?utf-8?B?TmVVUU1tcXkwd3V5OCszTHNBSzVPT0RDZ2VCNWdUeTdESVFqMG04UE5MWHdy?=
- =?utf-8?Q?Zs878Kg4divnFGCpkRdBUxjsL?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
-	Lgf7myRypJK8cC08uoMVtnXaeuSjpMoJ5CAdvM5YoTFnD/sSyQ8fV0z1ZGxdDMOKXxx3/LZLPLW2lgasdPdrnCj53R1pRn9WtyAjiwDeRc9XNCJymRjDDzFyaeF2lzGeL9gZV8kTdwsOq3GJHc4irgeYDvL01/+mYOuHsPU+eTnSOLpV3F7mOb9QB8LkhH9F0C1rg9NCZ/hZ4e7Xd9oilRUwDsl76vvOWNnQmVncqntwUyDqiWvybZ+yySt4rQQrJWmcoWAHqAw9YHoUVk49U2yAN/O8aWw+AbnwTRz2zNnPj1iVM1hcFSueLKiusRadpY48WW4kTU0yl1SCFS6zLePZTPbeLMXbuZDAwQY0H5DU7W/A2JLqFYwmtMZzXfpaPY0goE6jz9kZ1YxnVe0I/RPn7YSVrKTeb0S4aRC2sQhuoeqIvNm05+RlVyY5vtIy2aEy+tV880kSNuSwr2bg6V4I2WwqKV+X9S1i+WtR1vxP6qVygXn8TEYLXl1txKuPO5KgCjTIA4YjBQk6zF8nk1s5RX98PsBWG70BfnopKqqjtsG08Xp6Xn1FjL0Q+8zF1v+pOkonmP5KP9rgDp2aEdfacYehTYeKqu3VzDsinrI=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: a7d3b877-18cb-470c-64ed-08dcd3dbcb3c
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR10MB4313.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 13 Sep 2024 10:06:54.3877
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 8yJAojVpxZd3NfeobdqEJkXGj287hsI30cVZ8gM1BkTIqsQf958fn20l26FjzblTYDqpuhT2X2TwMuCHLUw4XQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH2PR10MB4375
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-13_08,2024-09-13_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 suspectscore=0
- mlxlogscore=993 mlxscore=0 malwarescore=0 phishscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2408220000 definitions=main-2409130070
-X-Proofpoint-GUID: tRS8AKhRKE9uSe8qq8nXV-MkDACSfQrk
-X-Proofpoint-ORIG-GUID: tRS8AKhRKE9uSe8qq8nXV-MkDACSfQrk
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGWkznGQkoJbUW7hkUK1+i4ww9ihtY2cUTZbC_jqwFq3HDqE4g@mail.gmail.com>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-0.998];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[9];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email,imap1.dmz-prg2.suse.org:helo]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On 11/09/2024 10:01, Ojaswin Mujoo wrote:
-> This patchset implements extsize hint feature for ext4. Posting this RFC to get
-> some early review comments on the design and implementation bits. This feature
-> is similar to what we have in XFS too with some differences.
-> 
-> extsize on ext4 is a hint to mballoc (multi-block allocator) and extent
-> handling layer to do aligned allocations. We use allocation criteria 0
-> (CR_POWER2_ALIGNED) for doing aligned power-of-2 allocations. With extsize hint
-> we try to align the logical start (m_lblk) and length(m_len) of the allocation
-> to be extsize aligned. CR_POWER2_ALIGNED criteria in mballoc automatically make
-> sure that we get the aligned physical start (m_pblk) as well. So in this way
-> extsize can make sure that lblk, len and pblk all are aligned for the allocated
-> extent w.r.t extsize.
-> 
-> Note that extsize feature is just a hinting mechanism to ext4 multi-block
-> allocator. That means that if we are unable to get an aligned allocation for
-> some reason, than we drop this flag and continue with unaligned allocation to
-> serve the request. However when we will add atomic/untorn writes support, then
-> we will enforce the aligned allocation and can return -ENOSPC if aligned
-> allocation was not successful.
+On Fri 13-09-24 09:39:57, Zhaoyang Huang wrote:
+> On Thu, Sep 12, 2024 at 6:16 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Thu 12-09-24 17:10:44, Zhaoyang Huang wrote:
+> > > On Thu, Sep 12, 2024 at 4:41 PM Jan Kara <jack@suse.cz> wrote:
+> > > >
+> > > > On Wed 04-09-24 14:56:29, Zhaoyang Huang wrote:
+> > > > > On Wed, Sep 4, 2024 at 10:44 AM Theodore Ts'o <tytso@mit.edu> wrote:
+> > > > > > On Wed, Sep 04, 2024 at 08:49:10AM +0800, Zhaoyang Huang wrote:
+> > > > > > > >
+> > > > > > > > After all, using GFP_MOVEABLE memory seems to mean that the buffer
+> > > > > > > > cache might get thrashed a lot by having a lot of cached disk buffers
+> > > > > > > > getting ejected from memory to try to make room for some contiguous
+> > > > > > > > frame buffer memory, which means extra I/O overhead.  So what's the
+> > > > > > > > upside of using GFP_MOVEABLE for the buffer cache?
+> > > > > > >
+> > > > > > > To my understanding, NO. using GFP_MOVEABLE memory doesn't introduce
+> > > > > > > extra IO as they just be migrated to free pages instead of ejected
+> > > > > > > directly when they are the target memory area. In terms of reclaiming,
+> > > > > > > all migrate types of page blocks possess the same position.
+> > > > > >
+> > > > > > Where is that being done?  I don't see any evidence of this kind of
+> > > > > > migration in fs/buffer.c.
+> > > > > The journaled pages which carry jh->bh are treated as file pages
+> > > > > during isolation of a range of PFNs in the callstack below[1]. The bh
+> > > > > will be migrated via each aops's migrate_folio and performs what you
+> > > > > described below such as copy the content and reattach the bh to a new
+> > > > > page. In terms of the journal enabled ext4 partition, the inode is a
+> > > > > blockdev inode which applies buffer_migrate_folio_norefs as its
+> > > > > migrate_folio[2].
+> > > > >
+> > > > > [1]
+> > > > > cma_alloc/alloc_contig_range
+> > > > >     __alloc_contig_migrate_range
+> > > > >         migrate_pages
+> > > > >             migrate_folio_move
+> > > > >                 move_to_new_folio
+> > > > >
+> > > > > mapping->aops->migrate_folio(buffer_migrate_folio_norefs->__buffer_migrate_folio)
+> > > > >
+> > > > > [2]
+> > > > > static int __buffer_migrate_folio(struct address_space *mapping,
+> > > > >                 struct folio *dst, struct folio *src, enum migrate_mode mode,
+> > > > >                 bool check_refs)
+> > > > > {
+> > > > > ...
+> > > > >         if (check_refs) {
+> > > > >                 bool busy;
+> > > > >                 bool invalidated = false;
+> > > > >
+> > > > > recheck_buffers:
+> > > > >                 busy = false;
+> > > > >                 spin_lock(&mapping->i_private_lock);
+> > > > >                 bh = head;
+> > > > >                 do {
+> > > > >                         if (atomic_read(&bh->b_count)) {
+> > > > >           //My case failed here as bh is referred by a journal head.
+> > > > >                                 busy = true;
+> > > > >                                 break;
+> > > > >                         }
+> > > > >                         bh = bh->b_this_page;
+> > > > >                 } while (bh != head);
+> > > >
+> > > > Correct. Currently pages with journal heads attached cannot be migrated
+> > > > mostly out of pure caution that the generic code isn't sure what's
+> > > > happening with them. As I wrote in [1] we could make pages with jhs on
+> > > > checkpoint list only migratable as for them the buffer lock is enough to
+> > > > stop anybody from touching the bh data. Bhs which are part of a running /
+> > > > committing transaction are not realistically migratable but then these
+> > > > states are more shortlived so it shouldn't be a big problem.
+> > > By observing from our test case, the jh remains there for a long time
+> > > when journal->j_free is bigger than j_max_transaction_buffers which
+> > > failed cma_alloc. So you think this is rare or abnormal?
+> > >
+> > > [6] j_free & j_max_transaction_buffers
+> > > crash_arm64_v8.0.4++> struct
+> > > journal_t.j_free,j_max_transaction_buffers 0xffffff80e70f3000 -x
+> > >   j_free = 0x3f1,
+> > >   j_max_transaction_buffers = 0x100,
+> >
+> > So jh can stay attached to the bh for a very long time (basically only
+> > memory pressure will evict it) and this is what blocks migration. But what
+> > I meant is that in fact, most of the time we can migrate bh with jh
+> > attached just fine. There are only relatively short moments (max 5s) where
+> > a buffer (jh) is part of a running or committing transaction and then we
+> > cannot really migrate.
+> Please correct me if I am wrong. According to __buffer_migrate_folio,
+> the bh can not be migrated as long as it has jh attached which could
+> remain until the next cp transaction is launched. In my case, the
+> jbd2' log space is big enough( j_free = 0x3f1 >
+> j_max_transaction_buffers = 0x100) to escape the launch.
 
-A few questions/confirmations:
-- You have no intention of adding an equivalent of forcealign, right?
+Currently yes. My proposal was to make bh migratable even with jh attached
+(which obviously needs some tweaks to __buffer_migrate_folio()).
 
-- Would you also plan on using FS_IOC_FS(GET/SET)XATTR interface for 
-enabling atomic writes on a per-inode basis?
-
-- Can extsize be set at mkfs time?
-
-- Is there any userspace support for this series available?
-
-- how would/could extsize interact with bigalloc?
-
-> 
-> Comparison with XFS extsize feature -
-> =====================================
-> 1. extsize in XFS is a hint for aligning only the logical start and the lengh
->     of the allocation v/s extsize on ext4 make sure the physical start of the
->     extent gets aligned as well.
-
-note that forcealign with extsize aligns AG block also
-
-only for atomic writes do we enforce the AG block is aligned to physical 
-block
-
-> 
-> 2. eof allocation on XFS trims the blocks allocated beyond eof with extsize
->     hint. That means on XFS for eof allocations (with extsize hint) only logical
->     start gets aligned. However extsize hint in ext4 for eof allocation is not
->     supported in this version of the series.
-> 
-> 3. XFS allows extsize to be set on file with no extents but delayed data.
->     However, ext4 don't allow that for simplicity. The user is expected to set
->     it on a file before changing it's i_size.
-> 
-> 4. XFS allows non-power-of-2 values for extsize but ext4 does not, since we
->     primarily would like to support atomic writes with extsize.
-> 
-> 5. In ext4 we chose to store the extsize value in SYSTEM_XATTR rather than an
->     inode field as it was simple and most flexible, since there might be more
->     features like atomic/untorn writes coming in future.
-> 
-> 6. In buffered-io path XFS switches to non-delalloc allocations for extsize hint.
->     The same has been kept for EXT4 as well.
-> 
-> Some TODOs:
-> ===========
-> 1. EOF allocations support can be added and can be kept similar to XFS
-
-Note that EOF alignment for forcealign may change - it needs to be 
-discussed further.
-
-Thanks,
-John
-
-.
-> 
-> Rest of the design details can be found in the individual commit messages.
-> 
-> Thoughts and suggestions are welcome!
-> 
-> Ojaswin Mujoo (5):
->    ext4: add aligned allocation hint in mballoc
->    ext4: allow inode preallocation for aligned alloc
->    ext4: Support for extsize hint using FS_IOC_FS(GET/SET)XATTR
->    ext4: pass lblk and len explicitly to ext4_split_extent*()
->    ext4: Add extsize hint support
-> 
->   fs/ext4/ext4.h              |  12 +-
->   fs/ext4/ext4_jbd2.h         |  15 ++
->   fs/ext4/extents.c           | 224 ++++++++++++++----
->   fs/ext4/inode.c             | 442 +++++++++++++++++++++++++++++++++---
->   fs/ext4/ioctl.c             | 119 ++++++++++
->   fs/ext4/mballoc.c           | 126 ++++++++--
->   fs/ext4/super.c             |   1 +
->   include/trace/events/ext4.h |   2 +
->   8 files changed, 841 insertions(+), 100 deletions(-)
-> 
-
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
