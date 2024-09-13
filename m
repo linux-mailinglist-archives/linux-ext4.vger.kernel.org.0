@@ -1,234 +1,245 @@
-Return-Path: <linux-ext4+bounces-4136-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4138-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A4BE977E09
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 12:53:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0029E977EE1
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 13:52:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 281AAB2697C
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 10:53:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74FE21F22CFE
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 11:52:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0276B1D86E0;
-	Fri, 13 Sep 2024 10:53:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E3C1D88AA;
+	Fri, 13 Sep 2024 11:52:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2LfT74wn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iRo2otEf";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2LfT74wn";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="iRo2otEf"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CpbFr/zD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 975001D67AB;
-	Fri, 13 Sep 2024 10:53:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CE36BFB0;
+	Fri, 13 Sep 2024 11:52:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726224809; cv=none; b=gFNLt8hLhhZXBJQZYEcVMEbKRjpCniJu74ZuIhGNRFDrXmZFycSrC1kaoi8oHsNkZZs/eGZU+b7Sqo3z3W4vwnVn4GBk2Ffk75NXWmwPo69Rmc1Gm3S9FZg7V31TVRavnJOBpbrDheZLOAhi1nb2fvZjkjRQmtWjZ6jeGPLPLbw=
+	t=1726228328; cv=none; b=t0CIXWQ4wk66XFZ9LOnkru8p8Vl2KBS38d4seNOp8SztqNJJHzVnkXlb910IeMAT9/lzHi7tQ3+iK7E218xFgXFGRlNXTIEa+2n42UawqQzGCRD8l4Qxu03vl1evJu8Culv74tvmN65O7zZNw7O0M6zZ5zFoFpUmBoVTB57wwwM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726224809; c=relaxed/simple;
-	bh=Uc9FxDNdoUWjc+hbZ9UaZylbEv2yZbdiKtk7vYetpkA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=LMDvRBPX+UIXFFssm9ckhPqbW3E9KvZOWX2PIJupu2Rs4pczCrN+LsfMWZidqCxyxt6XBNL/FKMP0qfXpdDeR806YzOngn6Yuv78+uVttXa8MlVfzN7Z0Pa9WkUak/ojTVQPmRvJOVBRYexWp+Oq2EqIB2Nl1tM6fKavNzubFfA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2LfT74wn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iRo2otEf; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2LfT74wn; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=iRo2otEf; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AF631219CA;
-	Fri, 13 Sep 2024 10:53:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726224805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
-	b=2LfT74wnCcxzbMz1AWJNwlvHu00UwXPd7bjx9IVWXfUKHtnNYl/62DOI6IkkL9/o+cQrCC
-	DSTX/abF2cLbpS9slYAo8+nxbFd1X7WANdeCATCJ25x8gzuSZA+5YcN6UIQ7RWC0+2i9eo
-	xl1x7/ANJYPp7G8GjzPEZOAnHiQMfqM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726224805;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
-	b=iRo2otEfgTRtgHfPOYqkkBhtr1dZUZvo32uXzdFtly8mbefzmj0mICZGp0igN6ZTb9N9RX
-	Y2MolsUPOGjYh7Dw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726224805; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
-	b=2LfT74wnCcxzbMz1AWJNwlvHu00UwXPd7bjx9IVWXfUKHtnNYl/62DOI6IkkL9/o+cQrCC
-	DSTX/abF2cLbpS9slYAo8+nxbFd1X7WANdeCATCJ25x8gzuSZA+5YcN6UIQ7RWC0+2i9eo
-	xl1x7/ANJYPp7G8GjzPEZOAnHiQMfqM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726224805;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=olF/tjLVnkmEFHRD9cOhZmsPxNvhRvaywZFv/z2JUyc=;
-	b=iRo2otEfgTRtgHfPOYqkkBhtr1dZUZvo32uXzdFtly8mbefzmj0mICZGp0igN6ZTb9N9RX
-	Y2MolsUPOGjYh7Dw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A4EC413999;
-	Fri, 13 Sep 2024 10:53:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Eoc7KKUZ5GbtbQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 13 Sep 2024 10:53:25 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 5CB9EA08EF; Fri, 13 Sep 2024 12:53:10 +0200 (CEST)
-Date: Fri, 13 Sep 2024 12:53:10 +0200
-From: Jan Kara <jack@suse.cz>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	linux-ext4@vger.kernel.org, LKML <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <steve.kang@unisoc.com>
-Subject: Re: [PATCHv3 1/1] fs: ext4: Don't use CMA for buffer_head
-Message-ID: <20240913105310.enqz47nmcn24ux45@quack3>
-References: <20240904075300.1148836-1-zhaoyang.huang@unisoc.com>
- <CAGWkznF0LvqP59edcrs_wxpbUAnK6mZWY-ovE0CPBBXNysUUtg@mail.gmail.com>
+	s=arc-20240116; t=1726228328; c=relaxed/simple;
+	bh=pH0uD+7HBwOh5eTZMe03O5cArkFkAGPctGU8f8vBBhM=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=VFVo1xEsGCCXOUuqZQz5o0rJuaQeWhZN/UqqxpwFdktPIpF+ym4xkuYu61aFrwZtbhfVLwwJmC5e+KTIVxtECXVxpu//gmHw9Dw0Ebau3MDb95lcF/gYQaNGRPZ59LAG/Gd2nIX1ipcEoCxyii3r8xrC1/sP6y55THOi0OkRMVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CpbFr/zD; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-206bd1c6ccdso7087875ad.3;
+        Fri, 13 Sep 2024 04:52:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726228326; x=1726833126; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=Sob8ZyAlLc2TmYyT6x2UMmPapayvFYWFwxr8aqRvkfQ=;
+        b=CpbFr/zDBIqhFWW7Z69VbOnEDnRFe2+78fiqRSP2gv3kNWvCJOKvn29JTy8qzliru0
+         o2DoILRHqc13YdPT8i3Me1D4bEV4gEVT5z3cSPF5tLoYlbMOuDFFA+HUYY30fM6Rtfbt
+         B7F0vNkEE6/M0tzvXI4qckT2G7AiFiBMRCECbf8dLD4XRVM1Hu3OzTtWQi0UUq8Kabog
+         iaA2bv+GfcyvasNHN7JekbS4eW62p0KYHxz4487IMW2tUA+Yaz/aphS5t/fETlrkJKZw
+         03kHsCooce0CnwzOBpeoM9dWlABGsCW/MpPnvvB2wUBQtEE6sig5A0c27wl1flYuFDmx
+         KmQA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1726228326; x=1726833126;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Sob8ZyAlLc2TmYyT6x2UMmPapayvFYWFwxr8aqRvkfQ=;
+        b=W15odQXizajxhv8bPlFWyhZPCqs56jYGIm6pXj2He2kUwRdNB3UAASndsF83SzqGKz
+         i1jDv6doT4Az76AtE6OfSWiCnBpsjvazILHZRV7afFz6m93ARMf9LN5VaImoUSE9dDyz
+         hsETVEb2j0JYZbIqlAjv3q+YpLqreZQMS6X/LQoyTaziQ0q8jY2BGdhpr+MKi5pJS6Tc
+         kLnA1MuCEcLrupUx+DFSxLtA24KiMIQTdcp6/gHRAkC6afHTrBye9xUmTluCQ1NYfK4p
+         AKlXc2LTXjVTnESwTtb+iBTIbBix5ljg93ihW8qoz4koi2OtZX4rhevEraSBAYgUL6rJ
+         td7A==
+X-Forwarded-Encrypted: i=1; AJvYcCWC23InmBofxakQITIoO6qQs8pPmaKyHjFt54itosXpimbe4gHuHonogr+z9PDzwIxE8Rv5ndxZaf1b@vger.kernel.org, AJvYcCWnRCyvEON4HIDQZksJb4Wz2puw8PIqCeMXB01icXvPfAp4tyReg/Fr2bvCHBnPI6UN88PT3ttAW6FANRPaMQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzndiC/0p/M5mwYMQP7Hv7enYsdXdhboFAJlA+4be6m+aiJ7yEL
+	LpxFelwmt87ypvv3he7CwMxUgqvtqFhG2XbB3EWVihJocmAMn3m2
+X-Google-Smtp-Source: AGHT+IGwW7sNMJVsWGV4dapgZjjufbM3MBNUZH0nhhhQfOc2PmMt+rBVTvHvJd2K2ej4n0mMIetItQ==
+X-Received: by 2002:a17:903:2291:b0:207:14a3:602c with SMTP id d9443c01a7336-20781d5f60bmr36570615ad.19.1726228325722;
+        Fri, 13 Sep 2024 04:52:05 -0700 (PDT)
+Received: from dw-tp ([49.205.218.89])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2076af4739asm26977815ad.66.2024.09.13.04.52.02
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 13 Sep 2024 04:52:05 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: John Garry <john.g.garry@oracle.com>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, 
+Cc: linux-kernel@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>, linux-fsdevel@vger.kernel.org, dchinner@redhat.com, linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
+Subject: Re: [RFC 0/5] ext4: Implement support for extsize hints
+In-Reply-To: <5831e24d-dd96-4bad-815f-b79da73f7634@oracle.com>
+Date: Fri, 13 Sep 2024 16:24:52 +0530
+Message-ID: <87h6aj4ydf.fsf@gmail.com>
+References: <cover.1726034272.git.ojaswin@linux.ibm.com> <5831e24d-dd96-4bad-815f-b79da73f7634@oracle.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGWkznF0LvqP59edcrs_wxpbUAnK6mZWY-ovE0CPBBXNysUUtg@mail.gmail.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.999];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Fri 13-09-24 10:02:40, Zhaoyang Huang wrote:
-> loop in jan kara
-> 
-> On Wed, Sep 4, 2024 at 3:54 PM zhaoyang.huang <zhaoyang.huang@unisoc.com> wrote:
-> >
-> > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> >
-> > cma_alloc() keep failed in our system which thanks to a jh->bh->b_page
-> > can not be migrated out of CMA area[1] as the jh has one cp_transaction
-> > pending on it because of j_free > j_max_transaction_buffers[2][3][4][5][6].
-> > We temporarily solve this by launching jbd2_log_do_checkpoint forcefully
-> > somewhere. Since journal is common mechanism to all JFSs and
-> > cp_transaction has a little fewer opportunity to be launched, the
-> > cma_alloc() could be affected under the same scenario. This patch
-> > would like to have buffer_head of ext4 not use CMA pages when doing
-> > sb_getblk.
-> >
-> > [1]
-> > crash_arm64_v8.0.4++> kmem -p|grep ffffff808f0aa150(sb->s_bdev->bd_inode->i_mapping)
-> > fffffffe01a51c00  e9470000 ffffff808f0aa150        3  2 8000000008020 lru,private
-> > fffffffe03d189c0 174627000 ffffff808f0aa150        4  2 2004000000008020 lru,private
-> > fffffffe03d88e00 176238000 ffffff808f0aa150      3f9  2 2008000000008020 lru,private
-> > fffffffe03d88e40 176239000 ffffff808f0aa150        6  2 2008000000008020 lru,private
-> > fffffffe03d88e80 17623a000 ffffff808f0aa150        5  2 2008000000008020 lru,private
-> > fffffffe03d88ec0 17623b000 ffffff808f0aa150        1  2 2008000000008020 lru,private
-> > fffffffe03d88f00 17623c000 ffffff808f0aa150        0  2 2008000000008020 lru,private
-> > fffffffe040e6540 183995000 ffffff808f0aa150      3f4  2 2004000000008020 lru,private
-> >
-> > [2] page -> buffer_head
-> > crash_arm64_v8.0.4++> struct page.private fffffffe01a51c00 -x
-> >       private = 0xffffff802fca0c00
-> >
-> > [3] buffer_head -> journal_head
-> > crash_arm64_v8.0.4++> struct buffer_head.b_private 0xffffff802fca0c00
-> >   b_private = 0xffffff8041338e10,
-> >
-> > [4] journal_head -> b_cp_transaction
-> > crash_arm64_v8.0.4++> struct journal_head.b_cp_transaction 0xffffff8041338e10 -x
-> >   b_cp_transaction = 0xffffff80410f1900,
-> >
-> > [5] transaction_t -> journal
-> > crash_arm64_v8.0.4++> struct transaction_t.t_journal 0xffffff80410f1900 -x
-> >   t_journal = 0xffffff80e70f3000,
-> >
-> > [6] j_free & j_max_transaction_buffers
-> > crash_arm64_v8.0.4++> struct journal_t.j_free,j_max_transaction_buffers 0xffffff80e70f3000 -x
-> >   j_free = 0x3f1,
-> >   j_max_transaction_buffers = 0x100,
-> >
-> > Suggested-by: Theodore Ts'o <tytso@mit.edu>
-> > Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+John Garry <john.g.garry@oracle.com> writes:
 
-I think there are better fixes to the problem but as a quick stopgap
-solution I have no problem with this since this is trivial and influences
-only CMA users on ext4. So feel free to add:
+> On 11/09/2024 10:01, Ojaswin Mujoo wrote:
+>> This patchset implements extsize hint feature for ext4. Posting this RFC to get
+>> some early review comments on the design and implementation bits. This feature
+>> is similar to what we have in XFS too with some differences.
+>> 
+>> extsize on ext4 is a hint to mballoc (multi-block allocator) and extent
+>> handling layer to do aligned allocations. We use allocation criteria 0
+>> (CR_POWER2_ALIGNED) for doing aligned power-of-2 allocations. With extsize hint
+>> we try to align the logical start (m_lblk) and length(m_len) of the allocation
+>> to be extsize aligned. CR_POWER2_ALIGNED criteria in mballoc automatically make
+>> sure that we get the aligned physical start (m_pblk) as well. So in this way
+>> extsize can make sure that lblk, len and pblk all are aligned for the allocated
+>> extent w.r.t extsize.
+>> 
+>> Note that extsize feature is just a hinting mechanism to ext4 multi-block
+>> allocator. That means that if we are unable to get an aligned allocation for
+>> some reason, than we drop this flag and continue with unaligned allocation to
+>> serve the request. However when we will add atomic/untorn writes support, then
+>> we will enforce the aligned allocation and can return -ENOSPC if aligned
+>> allocation was not successful.
+>
+> A few questions/confirmations:
+> - You have no intention of adding an equivalent of forcealign, right?
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+extsize is just a hinting mechanism that too only for __allocation__
+path. But for atomic writes we do require some form of forcealign (like
+how we have in XFS). So we could either call this directly as atomic
+write feature or can may as well call this forcealign feature and make
+atomic writes depend upon it, like how XFS is doing it.
 
-								Honza
+I still haven't understood if there is/will be a user specifically for
+forcealign other than atomic writes.
 
-> > ---
-> > v3: switch to use getblk_unmoveable as suggested by Theodore Ts'o
-> > ---
-> > ---
-> >  fs/ext4/inode.c | 9 ++++++++-
-> >  1 file changed, 8 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> > index 941c1c0d5c6e..a0f48840c5c1 100644
-> > --- a/fs/ext4/inode.c
-> > +++ b/fs/ext4/inode.c
-> > @@ -869,7 +869,14 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
-> >         if (nowait)
-> >                 return sb_find_get_block(inode->i_sb, map.m_pblk);
-> >
-> > -       bh = sb_getblk(inode->i_sb, map.m_pblk);
-> > +       /*
-> > +        * Since bh could introduce extra ref count such as referred by
-> > +        * journal_head etc. Try to avoid using __GFP_MOVABLE here
-> > +        * as it may fail the migration when journal_head remains.
-> > +        */
-> > +       bh = getblk_unmovable(inode->i_sb->s_bdev, map.m_pblk,
-> > +                               inode->i_sb->s_blocksize);
-> > +
-> >         if (unlikely(!bh))
-> >                 return ERR_PTR(-ENOMEM);
-> >         if (map.m_flags & EXT4_MAP_NEW) {
-> > --
-> > 2.25.1
-> >
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Since you asked, I am more curious to know if there is some more context
+to your question?
+
+>
+> - Would you also plan on using FS_IOC_FS(GET/SET)XATTR interface for 
+> enabling atomic writes on a per-inode basis?
+
+Yes, that interface should indeed be kept same for EXT4 too.
+
+>
+> - Can extsize be set at mkfs time?
+
+Good point. For now in this series, extsize can only be set using the
+same ioctl on a per inode basis.
+
+IIUC, XFS supports doing both right. We can do this on a per-inode basis
+during ioctl or it also supports setting this during mkfs.xfs time.
+(maybe xfsprogs only allows setting this at mkfs time for rtvolumes for now)
+
+So if this is set during mkfs.xfs time and then by default all inodes will
+have this extsize attribute value set right?
+
+BTW, this brings me to another question that I had asked here too [1].
+1. For XFS, atomic writes can only be enabled with a fresh mkfs.xfs -d
+atomic-writes=1 right? 
+2. For atomic writes to be enabled, we need all 3 features to be
+enabled during mkfs.xfs time itself right?
+i.e. 
+"mkfs.xfs -i forcealign=1 -d extsize=16384 -d atomic-writes=1"
+
+[1]: https://lore.kernel.org/linux-xfs/20240817094800.776408-1-john.g.garry@oracle.com/
+
+>
+> - Is there any userspace support for this series available?
+
+Make sense to maybe provide a userspace support link too.
+For now, a quick hack would be to just allow setting extsize hint for
+other fileystems as well in xfs_io.
+
+diff --git a/io/open.c b/io/open.c
+index 15850b55..6407b7e8 100644
+--- a/io/open.c
++++ b/io/open.c
+@@ -980,7 +980,7 @@ open_init(void)
+        extsize_cmd.args = _("[-D | -R] [extsize]");
+        extsize_cmd.argmin = 0;
+        extsize_cmd.argmax = -1;
+-       extsize_cmd.flags = CMD_NOMAP_OK;
++       extsize_cmd.flags = CMD_NOMAP_OK | CMD_FOREIGN_OK;
+        extsize_cmd.oneline =
+                _("get/set preferred extent size (in bytes) for the open file");
+        extsize_cmd.help = extsize_help;
+
+<e.g>
+/dev/loop6 on /mnt1/test type ext4 (rw,relatime)
+
+root@qemu:~/xt/xfsprogs-dev# ./io/xfs_io -fc "extsize" /mnt1/test/f1
+[0] /mnt1/test/f1
+root@qemu:~/xt/xfsprogs-dev# ./io/xfs_io -c "extsize 16384" /mnt1/test/f1
+root@qemu:~/xt/xfsprogs-dev# ./io/xfs_io -c "extsize" /mnt1/test/f1
+[16384] /mnt1/test/f1
+
+
+>
+> - how would/could extsize interact with bigalloc?
+>
+
+As of now it is kept disabled with bigalloc.
+
++	if (sbi->s_cluster_ratio > 1) {
++		msg = "Can't use extsize hint with bigalloc";
++		err = -EINVAL;
++		goto error;
++	}
+
+
+>> 
+>> Comparison with XFS extsize feature -
+>> =====================================
+>> 1. extsize in XFS is a hint for aligning only the logical start and the lengh
+>>     of the allocation v/s extsize on ext4 make sure the physical start of the
+>>     extent gets aligned as well.
+>
+> note that forcealign with extsize aligns AG block also
+
+Can you expand that on a bit. You mean during mkfs.xfs time we ensure
+agblock boundaries are extsize aligned?
+
+>
+> only for atomic writes do we enforce the AG block is aligned to physical 
+> block
+>
+
+If you could expand that a bit please? You meant during mkfs.xfs
+time for atomic writes we ensure ag block start bounaries are extsize aligned?
+
+
+>> 
+>> 2. eof allocation on XFS trims the blocks allocated beyond eof with extsize
+>>     hint. That means on XFS for eof allocations (with extsize hint) only logical
+>>     start gets aligned. However extsize hint in ext4 for eof allocation is not
+>>     supported in this version of the series.
+>> 
+>> 3. XFS allows extsize to be set on file with no extents but delayed data.
+>>     However, ext4 don't allow that for simplicity. The user is expected to set
+>>     it on a file before changing it's i_size.
+>> 
+>> 4. XFS allows non-power-of-2 values for extsize but ext4 does not, since we
+>>     primarily would like to support atomic writes with extsize.
+>> 
+>> 5. In ext4 we chose to store the extsize value in SYSTEM_XATTR rather than an
+>>     inode field as it was simple and most flexible, since there might be more
+>>     features like atomic/untorn writes coming in future.
+>> 
+>> 6. In buffered-io path XFS switches to non-delalloc allocations for extsize hint.
+>>     The same has been kept for EXT4 as well.
+>> 
+>> Some TODOs:
+>> ===========
+>> 1. EOF allocations support can be added and can be kept similar to XFS
+>
+> Note that EOF alignment for forcealign may change - it needs to be 
+> discussed further.
+
+Sure, thanks for pointing that out.
+I guess you are referring to mainly the truncate related EOF alignment change
+required with forcealign for XFS.
+
+-ritesh
 
