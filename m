@@ -1,245 +1,133 @@
-Return-Path: <linux-ext4+bounces-4138-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4137-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0029E977EE1
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 13:52:14 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DD161977E20
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 13:01:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74FE21F22CFE
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 11:52:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 230FA1C21B47
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 11:01:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D3E3C1D88AA;
-	Fri, 13 Sep 2024 11:52:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0F2C1D7E36;
+	Fri, 13 Sep 2024 11:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CpbFr/zD"
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="3ZFnPrBn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0CE36BFB0;
-	Fri, 13 Sep 2024 11:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9523F3716D
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Sep 2024 11:01:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726228328; cv=none; b=t0CIXWQ4wk66XFZ9LOnkru8p8Vl2KBS38d4seNOp8SztqNJJHzVnkXlb910IeMAT9/lzHi7tQ3+iK7E218xFgXFGRlNXTIEa+2n42UawqQzGCRD8l4Qxu03vl1evJu8Culv74tvmN65O7zZNw7O0M6zZ5zFoFpUmBoVTB57wwwM=
+	t=1726225285; cv=none; b=l0Kewn7QAwo2y/3E8vArAPns+Mrw9vvdU6BDV1keReDYa+d0PnonAmT3yLx2kH+8Idl4wpQdai/DTSrlQnhWqUJN7mCiyezPYH7d/mD0ktpcI7N+CEPsaDw3Qd8Ejk1k0/w2Tva7FXW+aHx00anwct4ivWW51RiWtBikHmQZ9x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726228328; c=relaxed/simple;
-	bh=pH0uD+7HBwOh5eTZMe03O5cArkFkAGPctGU8f8vBBhM=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=VFVo1xEsGCCXOUuqZQz5o0rJuaQeWhZN/UqqxpwFdktPIpF+ym4xkuYu61aFrwZtbhfVLwwJmC5e+KTIVxtECXVxpu//gmHw9Dw0Ebau3MDb95lcF/gYQaNGRPZ59LAG/Gd2nIX1ipcEoCxyii3r8xrC1/sP6y55THOi0OkRMVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CpbFr/zD; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-206bd1c6ccdso7087875ad.3;
-        Fri, 13 Sep 2024 04:52:06 -0700 (PDT)
+	s=arc-20240116; t=1726225285; c=relaxed/simple;
+	bh=6cTHjuS7EBHBD4xtZqJfXECj5rtdnxI2Mext/1qxcOg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=lCOF59VRjd2Fj9UPOCFzgleqZU7e5MhcnWb0LkjVjOZxPlh2sUVHrGSTLNE3BWRDyCi9ppvsiy7rAWNkkbFu4r67h4IIH6pk8DG7ZBvsxC2CHLMzupom+lhp5q7FKEZVp1372h5vmvdRMNwWbMSUF5C89OgZqUVwAfQ1WtwPRrI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=3ZFnPrBn; arc=none smtp.client-ip=209.85.208.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5c243ef5237so320794a12.3
+        for <linux-ext4@vger.kernel.org>; Fri, 13 Sep 2024 04:01:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726228326; x=1726833126; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Sob8ZyAlLc2TmYyT6x2UMmPapayvFYWFwxr8aqRvkfQ=;
-        b=CpbFr/zDBIqhFWW7Z69VbOnEDnRFe2+78fiqRSP2gv3kNWvCJOKvn29JTy8qzliru0
-         o2DoILRHqc13YdPT8i3Me1D4bEV4gEVT5z3cSPF5tLoYlbMOuDFFA+HUYY30fM6Rtfbt
-         B7F0vNkEE6/M0tzvXI4qckT2G7AiFiBMRCECbf8dLD4XRVM1Hu3OzTtWQi0UUq8Kabog
-         iaA2bv+GfcyvasNHN7JekbS4eW62p0KYHxz4487IMW2tUA+Yaz/aphS5t/fETlrkJKZw
-         03kHsCooce0CnwzOBpeoM9dWlABGsCW/MpPnvvB2wUBQtEE6sig5A0c27wl1flYuFDmx
-         KmQA==
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1726225282; x=1726830082; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=b6x+FbPBr6LOLetSJiGWO7sMy2gp7jD6h7M3aIAswxc=;
+        b=3ZFnPrBnyanINfPLnYAtBudE5xd3tCt592o+CnE8XH9GZ4OXdCRiUUKtVbQTFknxwS
+         NkrvTKa2Lxm4GMWstXztXxECMLVUthnDC2tPxe6JCa87j/d4yhqQ8U4w8DDeRJTSj0BN
+         OeGYoiYYmaJ6Bt3y+tQ6WD6GjrG4hvMIC+Ba4fofDZtBY4Eq6bIOvZjElQntm1eabNa2
+         +gLX+mE6vwZoYHTtrtZokHRV+5QtFYwQkjROJgzUZNXIFRU0/muzcLl/gr+VDpgegEMd
+         FRuNPfpIr9E41gOZgjpbYXYgWuRjGhrtiHCWn2saEma+/cAAoxoH0EokIddKWVGt7YDf
+         p37A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726228326; x=1726833126;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Sob8ZyAlLc2TmYyT6x2UMmPapayvFYWFwxr8aqRvkfQ=;
-        b=W15odQXizajxhv8bPlFWyhZPCqs56jYGIm6pXj2He2kUwRdNB3UAASndsF83SzqGKz
-         i1jDv6doT4Az76AtE6OfSWiCnBpsjvazILHZRV7afFz6m93ARMf9LN5VaImoUSE9dDyz
-         hsETVEb2j0JYZbIqlAjv3q+YpLqreZQMS6X/LQoyTaziQ0q8jY2BGdhpr+MKi5pJS6Tc
-         kLnA1MuCEcLrupUx+DFSxLtA24KiMIQTdcp6/gHRAkC6afHTrBye9xUmTluCQ1NYfK4p
-         AKlXc2LTXjVTnESwTtb+iBTIbBix5ljg93ihW8qoz4koi2OtZX4rhevEraSBAYgUL6rJ
-         td7A==
-X-Forwarded-Encrypted: i=1; AJvYcCWC23InmBofxakQITIoO6qQs8pPmaKyHjFt54itosXpimbe4gHuHonogr+z9PDzwIxE8Rv5ndxZaf1b@vger.kernel.org, AJvYcCWnRCyvEON4HIDQZksJb4Wz2puw8PIqCeMXB01icXvPfAp4tyReg/Fr2bvCHBnPI6UN88PT3ttAW6FANRPaMQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzndiC/0p/M5mwYMQP7Hv7enYsdXdhboFAJlA+4be6m+aiJ7yEL
-	LpxFelwmt87ypvv3he7CwMxUgqvtqFhG2XbB3EWVihJocmAMn3m2
-X-Google-Smtp-Source: AGHT+IGwW7sNMJVsWGV4dapgZjjufbM3MBNUZH0nhhhQfOc2PmMt+rBVTvHvJd2K2ej4n0mMIetItQ==
-X-Received: by 2002:a17:903:2291:b0:207:14a3:602c with SMTP id d9443c01a7336-20781d5f60bmr36570615ad.19.1726228325722;
-        Fri, 13 Sep 2024 04:52:05 -0700 (PDT)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2076af4739asm26977815ad.66.2024.09.13.04.52.02
+        d=1e100.net; s=20230601; t=1726225282; x=1726830082;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=b6x+FbPBr6LOLetSJiGWO7sMy2gp7jD6h7M3aIAswxc=;
+        b=hBhft3OlgkyXkSAwAOpU/Oh5bY5uZtlJP4F5rYR5HGqnAXy6osWoc5Aeub586mWV1+
+         uVs15bEZl33OSU4KxJqtIST2NF3o60r2iTOb6ry5pW/NsyzsYatrbWa4BTFRrQBHQNnf
+         Vp4s6MtRC/wVugTBkgIRvaLHk9Gv35Zb4v9gyTTU+64QSEnNw/gDIGUP93g2dFJzlz+Y
+         W5K+ymlpM/hv2O3ArxQxMEKiQgvDR+Tp3Ow7kMZ9bEaiki2qENuyq23bPLE1KKlKj3M3
+         Ru48oCdY+2AvjONI0fP6e0OkNMoiYkMs7D9MBeCT3EzbxsHMeOPgsyF7cUK0POz1S68Q
+         V1XA==
+X-Gm-Message-State: AOJu0YyZ16Omf1LbHErjCBz4WwwCihlEEpKeHP3izjK24rZWCfvhf/D5
+	dx1SP04VnJwvhJlVbliAFIajDCRWQUIi3I3WroePDmC7+2HDuurDETGCNQSMI7Y=
+X-Google-Smtp-Source: AGHT+IGIsdWg7O3qlfv6WqCrKkIhGhaWd9vPtXUZRebQ9smyngb4xqLB6yJC4zM5VZ5puQwM7VOsnw==
+X-Received: by 2002:a05:6402:26c3:b0:5c4:bb1:6491 with SMTP id 4fb4d7f45d1cf-5c413e123b3mr1767817a12.3.1726225281653;
+        Fri, 13 Sep 2024 04:01:21 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-62-216-208-245.dynamic.mnet-online.de. [62.216.208.245])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5c3ebd51f84sm7459257a12.41.2024.09.13.04.01.20
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 13 Sep 2024 04:52:05 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, 
-Cc: linux-kernel@vger.kernel.org, "Darrick J . Wong" <djwong@kernel.org>, linux-fsdevel@vger.kernel.org, dchinner@redhat.com, linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>
-Subject: Re: [RFC 0/5] ext4: Implement support for extsize hints
-In-Reply-To: <5831e24d-dd96-4bad-815f-b79da73f7634@oracle.com>
-Date: Fri, 13 Sep 2024 16:24:52 +0530
-Message-ID: <87h6aj4ydf.fsf@gmail.com>
-References: <cover.1726034272.git.ojaswin@linux.ibm.com> <5831e24d-dd96-4bad-815f-b79da73f7634@oracle.com>
+        Fri, 13 Sep 2024 04:01:21 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	kees@kernel.org,
+	gustavoars@kernel.org
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] ext4: Annotate struct fname with __counted_by()
+Date: Fri, 13 Sep 2024 13:00:14 +0200
+Message-ID: <20240913110013.151331-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-John Garry <john.g.garry@oracle.com> writes:
+Add the __counted_by compiler attribute to the flexible array member
+name to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
+CONFIG_FORTIFY_SOURCE.
 
-> On 11/09/2024 10:01, Ojaswin Mujoo wrote:
->> This patchset implements extsize hint feature for ext4. Posting this RFC to get
->> some early review comments on the design and implementation bits. This feature
->> is similar to what we have in XFS too with some differences.
->> 
->> extsize on ext4 is a hint to mballoc (multi-block allocator) and extent
->> handling layer to do aligned allocations. We use allocation criteria 0
->> (CR_POWER2_ALIGNED) for doing aligned power-of-2 allocations. With extsize hint
->> we try to align the logical start (m_lblk) and length(m_len) of the allocation
->> to be extsize aligned. CR_POWER2_ALIGNED criteria in mballoc automatically make
->> sure that we get the aligned physical start (m_pblk) as well. So in this way
->> extsize can make sure that lblk, len and pblk all are aligned for the allocated
->> extent w.r.t extsize.
->> 
->> Note that extsize feature is just a hinting mechanism to ext4 multi-block
->> allocator. That means that if we are unable to get an aligned allocation for
->> some reason, than we drop this flag and continue with unaligned allocation to
->> serve the request. However when we will add atomic/untorn writes support, then
->> we will enforce the aligned allocation and can return -ENOSPC if aligned
->> allocation was not successful.
->
-> A few questions/confirmations:
-> - You have no intention of adding an equivalent of forcealign, right?
+Inline and use struct_size() to calculate the number of bytes to
+allocate for new_fn and remove the local variable len.
 
-extsize is just a hinting mechanism that too only for __allocation__
-path. But for atomic writes we do require some form of forcealign (like
-how we have in XFS). So we could either call this directly as atomic
-write feature or can may as well call this forcealign feature and make
-atomic writes depend upon it, like how XFS is doing it.
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ fs/ext4/dir.c | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-I still haven't understood if there is/will be a user specifically for
-forcealign other than atomic writes.
+diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+index ff4514e4626b..8e7df15bb971 100644
+--- a/fs/ext4/dir.c
++++ b/fs/ext4/dir.c
+@@ -408,7 +408,7 @@ struct fname {
+ 	__u32		inode;
+ 	__u8		name_len;
+ 	__u8		file_type;
+-	char		name[];
++	char		name[] __counted_by(name_len);
+ };
+ 
+ /*
+@@ -464,14 +464,13 @@ int ext4_htree_store_dirent(struct file *dir_file, __u32 hash,
+ 	struct rb_node **p, *parent = NULL;
+ 	struct fname *fname, *new_fn;
+ 	struct dir_private_info *info;
+-	int len;
+ 
+ 	info = dir_file->private_data;
+ 	p = &info->root.rb_node;
+ 
+ 	/* Create and allocate the fname structure */
+-	len = sizeof(struct fname) + ent_name->len + 1;
+-	new_fn = kzalloc(len, GFP_KERNEL);
++	new_fn = kzalloc(struct_size(new_fn, name, ent_name->len + 1),
++			 GFP_KERNEL);
+ 	if (!new_fn)
+ 		return -ENOMEM;
+ 	new_fn->hash = hash;
+-- 
+2.46.0
 
-Since you asked, I am more curious to know if there is some more context
-to your question?
-
->
-> - Would you also plan on using FS_IOC_FS(GET/SET)XATTR interface for 
-> enabling atomic writes on a per-inode basis?
-
-Yes, that interface should indeed be kept same for EXT4 too.
-
->
-> - Can extsize be set at mkfs time?
-
-Good point. For now in this series, extsize can only be set using the
-same ioctl on a per inode basis.
-
-IIUC, XFS supports doing both right. We can do this on a per-inode basis
-during ioctl or it also supports setting this during mkfs.xfs time.
-(maybe xfsprogs only allows setting this at mkfs time for rtvolumes for now)
-
-So if this is set during mkfs.xfs time and then by default all inodes will
-have this extsize attribute value set right?
-
-BTW, this brings me to another question that I had asked here too [1].
-1. For XFS, atomic writes can only be enabled with a fresh mkfs.xfs -d
-atomic-writes=1 right? 
-2. For atomic writes to be enabled, we need all 3 features to be
-enabled during mkfs.xfs time itself right?
-i.e. 
-"mkfs.xfs -i forcealign=1 -d extsize=16384 -d atomic-writes=1"
-
-[1]: https://lore.kernel.org/linux-xfs/20240817094800.776408-1-john.g.garry@oracle.com/
-
->
-> - Is there any userspace support for this series available?
-
-Make sense to maybe provide a userspace support link too.
-For now, a quick hack would be to just allow setting extsize hint for
-other fileystems as well in xfs_io.
-
-diff --git a/io/open.c b/io/open.c
-index 15850b55..6407b7e8 100644
---- a/io/open.c
-+++ b/io/open.c
-@@ -980,7 +980,7 @@ open_init(void)
-        extsize_cmd.args = _("[-D | -R] [extsize]");
-        extsize_cmd.argmin = 0;
-        extsize_cmd.argmax = -1;
--       extsize_cmd.flags = CMD_NOMAP_OK;
-+       extsize_cmd.flags = CMD_NOMAP_OK | CMD_FOREIGN_OK;
-        extsize_cmd.oneline =
-                _("get/set preferred extent size (in bytes) for the open file");
-        extsize_cmd.help = extsize_help;
-
-<e.g>
-/dev/loop6 on /mnt1/test type ext4 (rw,relatime)
-
-root@qemu:~/xt/xfsprogs-dev# ./io/xfs_io -fc "extsize" /mnt1/test/f1
-[0] /mnt1/test/f1
-root@qemu:~/xt/xfsprogs-dev# ./io/xfs_io -c "extsize 16384" /mnt1/test/f1
-root@qemu:~/xt/xfsprogs-dev# ./io/xfs_io -c "extsize" /mnt1/test/f1
-[16384] /mnt1/test/f1
-
-
->
-> - how would/could extsize interact with bigalloc?
->
-
-As of now it is kept disabled with bigalloc.
-
-+	if (sbi->s_cluster_ratio > 1) {
-+		msg = "Can't use extsize hint with bigalloc";
-+		err = -EINVAL;
-+		goto error;
-+	}
-
-
->> 
->> Comparison with XFS extsize feature -
->> =====================================
->> 1. extsize in XFS is a hint for aligning only the logical start and the lengh
->>     of the allocation v/s extsize on ext4 make sure the physical start of the
->>     extent gets aligned as well.
->
-> note that forcealign with extsize aligns AG block also
-
-Can you expand that on a bit. You mean during mkfs.xfs time we ensure
-agblock boundaries are extsize aligned?
-
->
-> only for atomic writes do we enforce the AG block is aligned to physical 
-> block
->
-
-If you could expand that a bit please? You meant during mkfs.xfs
-time for atomic writes we ensure ag block start bounaries are extsize aligned?
-
-
->> 
->> 2. eof allocation on XFS trims the blocks allocated beyond eof with extsize
->>     hint. That means on XFS for eof allocations (with extsize hint) only logical
->>     start gets aligned. However extsize hint in ext4 for eof allocation is not
->>     supported in this version of the series.
->> 
->> 3. XFS allows extsize to be set on file with no extents but delayed data.
->>     However, ext4 don't allow that for simplicity. The user is expected to set
->>     it on a file before changing it's i_size.
->> 
->> 4. XFS allows non-power-of-2 values for extsize but ext4 does not, since we
->>     primarily would like to support atomic writes with extsize.
->> 
->> 5. In ext4 we chose to store the extsize value in SYSTEM_XATTR rather than an
->>     inode field as it was simple and most flexible, since there might be more
->>     features like atomic/untorn writes coming in future.
->> 
->> 6. In buffered-io path XFS switches to non-delalloc allocations for extsize hint.
->>     The same has been kept for EXT4 as well.
->> 
->> Some TODOs:
->> ===========
->> 1. EOF allocations support can be added and can be kept similar to XFS
->
-> Note that EOF alignment for forcealign may change - it needs to be 
-> discussed further.
-
-Sure, thanks for pointing that out.
-I guess you are referring to mainly the truncate related EOF alignment change
-required with forcealign for XFS.
-
--ritesh
 
