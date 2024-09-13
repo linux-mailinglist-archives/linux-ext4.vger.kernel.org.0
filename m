@@ -1,318 +1,182 @@
-Return-Path: <linux-ext4+bounces-4131-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4132-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B228977676
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 03:40:21 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C2889776B5
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 04:03:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F9001C241E5
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 01:40:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47B46B23F09
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Sep 2024 02:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B58094C96;
-	Fri, 13 Sep 2024 01:40:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7EC631D27AD;
+	Fri, 13 Sep 2024 02:02:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fnur7UMb"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4MOevAp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+Received: from mail-lf1-f47.google.com (mail-lf1-f47.google.com [209.85.167.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3104A06;
-	Fri, 13 Sep 2024 01:40:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 197871C2325;
+	Fri, 13 Sep 2024 02:02:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726191614; cv=none; b=j2L1DAUrA9BzBQqMi7iJ9KbfynG33F195BfS870KdJ3tp6iQRBrmHD4HtjNGF4eeDoOvvEbPMZ6sVZMwkvoWiJ6mmoeQG7muV+juQbLOHt1iMCGnpIT4BVQsHKuyqc04WWLgOy3AIVWKLUW2vEe6a2XSHHIZQGrkSrkY7N168/Y=
+	t=1726192977; cv=none; b=keQC+AV6is1PZ+eq2ZW5nSO3BEWCThKufJn24JKGyRxwwQggOY3q9xD33yBjaXT9Xq1c2+SPA25Li+1EyJcWXiAhFeh5lQwQ/sK+EBmgZb5/hQzI6QbFgBi3yBoVjrCPvjuKeqUyGJEOhnOO9sDT0wCywlw+Xtqgs1i8b2LwqLM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726191614; c=relaxed/simple;
-	bh=G/XxhY/TCpiczKyWESI45YZIL71Lk4gvH65+2iIIhQc=;
+	s=arc-20240116; t=1726192977; c=relaxed/simple;
+	bh=4MThY4qvJ1Ab6BupHVMJxh9rEHrKqVI39dBQQzwYzlc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jqw8bsuql+4IsWLm7cygSEm+JNrP4ZoQWY2F+UK0nn8Lb6hLFW5L6aQwVl0Yp3/DOBP116U7vMz42bRPBL8q6ZYCosC94Bn8hAvF1Aewo/9G7VHW3VZm/RJIgFevwMrejeUDUTA8J6UXVY8H+Ro+mMFljaut3uZ0M00kE8G9b9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fnur7UMb; arc=none smtp.client-ip=209.85.167.41
+	 To:Cc:Content-Type; b=REwwZ/o+vFCGuMIUDPxI8Uxo3aDeNz09p+WcaIQ2/6e8chEnDl7H0H3Enxwj9ZWkvDa/EXsiTv339HKfMTkDqu2mt6Dvp/hc8p4WLUr5Kw2cd1Ko9QplMcevOcOZXT0CGb4IMQcg2OtmZwc1mwEl+DWJ/fx5I3HisbwhGZ5yr2o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4MOevAp; arc=none smtp.client-ip=209.85.167.47
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-53654d716d1so168192e87.2;
-        Thu, 12 Sep 2024 18:40:11 -0700 (PDT)
+Received: by mail-lf1-f47.google.com with SMTP id 2adb3069b0e04-53654d716d1so170039e87.2;
+        Thu, 12 Sep 2024 19:02:53 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726191610; x=1726796410; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1726192972; x=1726797772; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=E6kTfQ0+XLkI7HmD31e28csWkZCT9p5mVYXpNSQOTvw=;
-        b=fnur7UMbUQOajpOFnCrY3cwzUu8lAr26Yx8OLrOnMfVLAO6GBB1qetMvnOVJO2Dhdn
-         abkXrNiDyv0vZfJot962IKVeY1HcDDHbWICXQ02uVoc5DPtVeV4/V1w3GG0/MxLoDKgI
-         DsnpFUsXMP+PiGmReKmR+6K3pXlIpmqxvWqQZ8Y/r0CL3CK8SXQN63RlUc6CPkhmbZ9z
-         UwKHWyK+twAkgmZ0RsAb6ietLzbOHZAsZ+jfg/nXTMnkSdKYdCznjXnGdVGaYGG7Tw+R
-         b70AlTESCbmxLcTuAEUwHDisfp59nHAND4Qj8dWr55EdtYxpfYTj0JGCagxwzOs95zTp
-         qyUw==
+        bh=QY/gsuvkOGtdcCqciSaAEue2D/lSI91a7bbyTdP4bHg=;
+        b=I4MOevAp08QF5iLxLdlNhA2yKI3IENjQspbOIx8SuktxmOGWhmVGHqL+hQpgN3wSIt
+         9Wze6PpYAZ1OB2UUCOlRvB8LGRIMDra++DTnYBcEGRnz4q+DkA6WUHboWUpOg/qBwz9y
+         EbTXbzblaljw+brdfnF7UoG7/ET2eiBvXo9U/kwZLvilKgvx+GlfF6Aof1sjz5G9hQ4Z
+         HoNLNfJjLZBzGFUdlyzAc5wzyu0hDtgzAjyAKjcoxsTEn+uDnZuPS8QB7DgcA7TWHCYs
+         wP9D8odq2wzX8nsFavBNwEc1NPnGEQM/TBk6xDhe3CbQ1ojWEM1dEUnUQNjJNzuj0gFJ
+         cPfw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726191610; x=1726796410;
+        d=1e100.net; s=20230601; t=1726192972; x=1726797772;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=E6kTfQ0+XLkI7HmD31e28csWkZCT9p5mVYXpNSQOTvw=;
-        b=gUzkk1BH6u9lSdEOUg0qgPjDMDoP3yAmPo9q25bL+TGQRcymDEY/IL7uEXwKLKFLtT
-         rIBvKRDvwDU9NVKuJ99wRSqYnLToKj8bgtq1ZNofcgF9CbzVC8tQm5jirxUBPsHj1zeN
-         o4z2C8OF/anIsjzyglYLLet6Gkl/2kqPH0qGcgauzAbhNXjUNAg3JwjbMPHDoEunBSQI
-         BRcucpYrdTQdR+7mtoMhbxtIRyn9xBBXmA8aAq77eKmFZgzCy5Z0PoMZMg1TIqaxMrV/
-         27MRzzE4yY2Dy3txpnNT5pnSO1AOjLlJmyYmHaOeQd6LyjUzQwRyxwBIghGZWEVrXSXd
-         jo6g==
-X-Forwarded-Encrypted: i=1; AJvYcCW/pfhfcPvvP+MCo7S/q711cDBpoZQgZxmm2D0bCBujuPGeIBgSX0vKHv4v7gfYUTaVX/nsvb+dp83s@vger.kernel.org, AJvYcCXn/D417XdHuSNACXSh50KdAahAC+T6UdZh8VEDdM0jBjZ0qNYwubY5hzdJE895tlffE+jF8NISQPE/N3Jx6g==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy42U4KQUY5JFU4KkUXt0CsVpScBoxQncqlhdiI1BviVMfO4wGQ
-	A904M+MOWqZk46wEogvfhPoD7xPBthA0gh1RaPCPPfPmn26FZRdT8VvYaZHgYRI8tfGqU0H1n8y
-	QOxsahL/7Amxxmx+mHhkhRAIFpF4=
-X-Google-Smtp-Source: AGHT+IGIPXeLZsPRegh15drXSIzAoa0A07+T0e/6TztFcQe32ePtb3CR8mcVBmyi4G5BgZCPD+wrV31PR0AtBMiGhZI=
+        bh=QY/gsuvkOGtdcCqciSaAEue2D/lSI91a7bbyTdP4bHg=;
+        b=drvIXOY484oZyWkkvEcYrKpRwi2mqam1i2dwUrAbiGZatZp5Uj6tQsi3MBWUyRDBzt
+         fmVKy2b5IomLgCHG32sETcoHuaBVu80Qr1r/jdhMvROZqyqWucy1q/t5/3psW2mPgize
+         6rgpED924aOQUv3ddTaXKlXHzaOj2UbSITqfAIhAa8b2UK/LEIhz7CkacEgTR77NyxPl
+         rDlpE/3eqa6U/Z4eiAThZ1HUgjXwCeDtsUNSvABCBnf3g8UEZw+tEQR7kfKql+sqdHla
+         +q+tbzIVhWD2LPCedmpCJyfs40H5dTfaDZJ1tD1ZRHHJv89jZKIFB/cwWudCSehS0AhB
+         owOg==
+X-Forwarded-Encrypted: i=1; AJvYcCUTJqA74XIMowVDzaD1yOV7OYiPKT/KgnNQp/2HMTBeqTsZDQggltSPoyz25YU7lyqgkxzdTq8eHmpNxkp1@vger.kernel.org, AJvYcCUnVUj+S/7p8YR5+iCreirA0FHvag9qstNsxbRS+tO+ToWUDXbfQPrBkyQlHCvFiErCax6U/xzmVbwd@vger.kernel.org
+X-Gm-Message-State: AOJu0YwWG0k7ZU7E0Fo7B1RD5CZWcPeDgiHrO7Ejm092pXioqcnO5qcB
+	HSsyAz1V3iHwtSGmnu3NdyvNisfMvdAZnxaA4xJXjkicQbjXedDgz8vlbisGiTTjiQ+pzjLPIln
+	dHZjZh7ytoxzYo47jPMV7dLHDAx0=
+X-Google-Smtp-Source: AGHT+IGrJuDG02PCG4dEENnexjrncMmBCSoLaB2YMVJxFV1gKI9S8xqofKhSZ5zvkpp0iF7rb03Y0mYGa3ZFRO8vt9A=
 X-Received: by 2002:a2e:bc15:0:b0:2f4:f3e7:2a36 with SMTP id
- 38308e7fff4ca-2f787d9e80cmr7569011fa.3.1726191609329; Thu, 12 Sep 2024
- 18:40:09 -0700 (PDT)
+ 38308e7fff4ca-2f787d9e80cmr7624221fa.3.1726192971742; Thu, 12 Sep 2024
+ 19:02:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240823082237.713543-1-zhaoyang.huang@unisoc.com>
- <20240903022902.GP9627@mit.edu> <CAGWkznEv+F1A878Nw0=di02DHyKxWCvK0B=93o1xjXK6nUyQ3Q@mail.gmail.com>
- <20240903120840.GD424729@mit.edu> <CAGWkznFu1GTB41Vx1_Ews=rNw-Pm-=ACxg=GjVdw46nrpVdO3g@mail.gmail.com>
- <20240904024445.GR9627@mit.edu> <CAGWkznFGDJsyMUhn5Y8DPmhba9h4GNkX_CaqEMev4z23xa-s6g@mail.gmail.com>
- <20240912084119.j3oqfikuavymctlm@quack3> <CAGWkznG7_=zjKZBO-sj=79F3a3tgZuXqCXbvddDDG2Atv5043g@mail.gmail.com>
- <20240912101608.c6wfkvhbaatiokaw@quack3>
-In-Reply-To: <20240912101608.c6wfkvhbaatiokaw@quack3>
+References: <20240904075300.1148836-1-zhaoyang.huang@unisoc.com>
+In-Reply-To: <20240904075300.1148836-1-zhaoyang.huang@unisoc.com>
 From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Fri, 13 Sep 2024 09:39:57 +0800
-Message-ID: <CAGWkznGQkoJbUW7hkUK1+i4ww9ihtY2cUTZbC_jqwFq3HDqE4g@mail.gmail.com>
-Subject: Re: [RFC PATCHv2 1/1] fs: ext4: Don't use CMA for buffer_head
-To: Jan Kara <jack@suse.cz>
-Cc: "Theodore Ts'o" <tytso@mit.edu>, "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, 
-	Andreas Dilger <adilger.kernel@dilger.ca>, Baolin Wang <baolin.wang@linux.alibaba.com>, 
-	linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	steve.kang@unisoc.com
+Date: Fri, 13 Sep 2024 10:02:40 +0800
+Message-ID: <CAGWkznF0LvqP59edcrs_wxpbUAnK6mZWY-ovE0CPBBXNysUUtg@mail.gmail.com>
+Subject: Re: [PATCHv3 1/1] fs: ext4: Don't use CMA for buffer_head
+To: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>, Jan Kara <jack@suse.cz>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <steve.kang@unisoc.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Sep 12, 2024 at 6:16=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 12-09-24 17:10:44, Zhaoyang Huang wrote:
-> > On Thu, Sep 12, 2024 at 4:41=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > On Wed 04-09-24 14:56:29, Zhaoyang Huang wrote:
-> > > > On Wed, Sep 4, 2024 at 10:44=E2=80=AFAM Theodore Ts'o <tytso@mit.ed=
-u> wrote:
-> > > > > On Wed, Sep 04, 2024 at 08:49:10AM +0800, Zhaoyang Huang wrote:
-> > > > > > >
-> > > > > > > After all, using GFP_MOVEABLE memory seems to mean that the b=
-uffer
-> > > > > > > cache might get thrashed a lot by having a lot of cached disk=
- buffers
-> > > > > > > getting ejected from memory to try to make room for some cont=
-iguous
-> > > > > > > frame buffer memory, which means extra I/O overhead.  So what=
-'s the
-> > > > > > > upside of using GFP_MOVEABLE for the buffer cache?
-> > > > > >
-> > > > > > To my understanding, NO. using GFP_MOVEABLE memory doesn't intr=
-oduce
-> > > > > > extra IO as they just be migrated to free pages instead of ejec=
-ted
-> > > > > > directly when they are the target memory area. In terms of recl=
-aiming,
-> > > > > > all migrate types of page blocks possess the same position.
-> > > > >
-> > > > > Where is that being done?  I don't see any evidence of this kind =
-of
-> > > > > migration in fs/buffer.c.
-> > > > The journaled pages which carry jh->bh are treated as file pages
-> > > > during isolation of a range of PFNs in the callstack below[1]. The =
-bh
-> > > > will be migrated via each aops's migrate_folio and performs what yo=
-u
-> > > > described below such as copy the content and reattach the bh to a n=
-ew
-> > > > page. In terms of the journal enabled ext4 partition, the inode is =
-a
-> > > > blockdev inode which applies buffer_migrate_folio_norefs as its
-> > > > migrate_folio[2].
-> > > >
-> > > > [1]
-> > > > cma_alloc/alloc_contig_range
-> > > >     __alloc_contig_migrate_range
-> > > >         migrate_pages
-> > > >             migrate_folio_move
-> > > >                 move_to_new_folio
-> > > >
-> > > > mapping->aops->migrate_folio(buffer_migrate_folio_norefs->__buffer_=
-migrate_folio)
-> > > >
-> > > > [2]
-> > > > static int __buffer_migrate_folio(struct address_space *mapping,
-> > > >                 struct folio *dst, struct folio *src, enum migrate_=
-mode mode,
-> > > >                 bool check_refs)
-> > > > {
-> > > > ...
-> > > >         if (check_refs) {
-> > > >                 bool busy;
-> > > >                 bool invalidated =3D false;
-> > > >
-> > > > recheck_buffers:
-> > > >                 busy =3D false;
-> > > >                 spin_lock(&mapping->i_private_lock);
-> > > >                 bh =3D head;
-> > > >                 do {
-> > > >                         if (atomic_read(&bh->b_count)) {
-> > > >           //My case failed here as bh is referred by a journal head=
-.
-> > > >                                 busy =3D true;
-> > > >                                 break;
-> > > >                         }
-> > > >                         bh =3D bh->b_this_page;
-> > > >                 } while (bh !=3D head);
-> > >
-> > > Correct. Currently pages with journal heads attached cannot be migrat=
-ed
-> > > mostly out of pure caution that the generic code isn't sure what's
-> > > happening with them. As I wrote in [1] we could make pages with jhs o=
-n
-> > > checkpoint list only migratable as for them the buffer lock is enough=
- to
-> > > stop anybody from touching the bh data. Bhs which are part of a runni=
-ng /
-> > > committing transaction are not realistically migratable but then thes=
-e
-> > > states are more shortlived so it shouldn't be a big problem.
-> > By observing from our test case, the jh remains there for a long time
-> > when journal->j_free is bigger than j_max_transaction_buffers which
-> > failed cma_alloc. So you think this is rare or abnormal?
-> >
-> > [6] j_free & j_max_transaction_buffers
-> > crash_arm64_v8.0.4++> struct
-> > journal_t.j_free,j_max_transaction_buffers 0xffffff80e70f3000 -x
-> >   j_free =3D 0x3f1,
-> >   j_max_transaction_buffers =3D 0x100,
->
-> So jh can stay attached to the bh for a very long time (basically only
-> memory pressure will evict it) and this is what blocks migration. But wha=
-t
-> I meant is that in fact, most of the time we can migrate bh with jh
-> attached just fine. There are only relatively short moments (max 5s) wher=
-e
-> a buffer (jh) is part of a running or committing transaction and then we
-> cannot really migrate.
-Please correct me if I am wrong. According to __buffer_migrate_folio,
-the bh can not be migrated as long as it has jh attached which could
-remain until the next cp transaction is launched. In my case, the
-jbd2' log space is big enough( j_free =3D 0x3f1 >
-j_max_transaction_buffers =3D 0x100) to escape the launch.
+loop in jan kara
 
-static int __buffer_migrate_folio(struct address_space *mapping,
-                struct folio *dst, struct folio *src, enum migrate_mode mod=
-e,
-                bool check_refs)
-{
- ...
-recheck_buffers:
-                busy =3D false;
-                spin_lock(&mapping->i_private_lock);
-                bh =3D head;
-                do {
-                        if (atomic_read(&bh->b_count)) {
-//migrate will fail here as bh->jh attached
-                                busy =3D true;
-                                break;
-                        }
-                        bh =3D bh->b_this_page;
-                } while (bh !=3D head);
-
+On Wed, Sep 4, 2024 at 3:54=E2=80=AFPM zhaoyang.huang <zhaoyang.huang@uniso=
+c.com> wrote:
 >
-> > > > > > > Just curious, because in general I'm blessed by not having to=
- use CMA
-> > > > > > > in the first place (not having I/O devices too primitive so t=
-hey can't
-> > > > > > > do scatter-gather :-).  So I don't tend to use CMA, and obvio=
-usly I'm
-> > > > > > > missing some of the design considerations behind CMA.  I thou=
-ght in
-> > > > > > > general CMA tends to used in early boot to allocate things li=
-ke frame
-> > > > > > > buffers, and after that CMA doesn't tend to get used at all? =
- That's
-> > > > > > > clearly not the case for you, apparently?
-> > > > > >
-> > > > > > Yes. CMA is designed for contiguous physical memory and has bee=
-n used
-> > > > > > via cma_alloc during the whole lifetime especially on the syste=
-m
-> > > > > > without SMMU, such as DRM driver. In terms of MIGRATE_MOVABLE p=
-age
-> > > > > > blocks, they also could have compaction path retry for many tim=
-es
-> > > > > > which is common during high-order alloc_pages.
-> > > > >
-> > > > > But then what's the point of using CMA-eligible memory for the bu=
-ffer
-> > > > > cache, as opposed to just always using !__GFP_MOVEABLE for all bu=
-ffer
-> > > > > cache allocations?  After all, that's what is being proposed for
-> > > > > ext4's ext4_getblk().  What's the downside of avoiding the use of
-> > > > > CMA-eligible memory for ext4's buffer cache?  Why not do this for
-> > > > > *all* buffers in the buffer cache?
-> > > > Since migration which arised from alloc_pages or cma_alloc always
-> > > > happens, we need appropriate users over MOVABLE pages. AFAIU, buffe=
-r
-> > > > cache pages under regular files are the best candidate for migratio=
-n
-> > > > as we just need to modify page cache and PTE. Actually, all FSs app=
-ly
-> > > > GFP_MOVABLE on their regular files via the below functions.
-> > > >
-> > > > new_inode
-> > > >     alloc_inode
-> > > >         inode_init_always(struct super_block *sb, struct inode *ino=
-de)
-> > > >         {
-> > > >          ...
-> > > >             mapping_set_gfp_mask(mapping, GFP_HIGHUSER_MOVABLE);
-> > >
-> > > Here you speak about data page cache pages. Indeed they can be alloca=
-ted
-> > > from CMA area. But when Ted speaks about "buffer cache" he specifical=
-ly
-> > > means page cache of the block device inode and there I can see:
-> > >
-> > > struct block_device *bdev_alloc(struct gendisk *disk, u8 partno)
-> > > {
-> > > ...
-> > >         mapping_set_gfp_mask(&inode->i_data, GFP_USER);
-> > > ...
-> > > }
-> > >
-> > > so at this point I'm confused how come you can see block device pages=
- in
-> > > CMA area. Are you using data=3Djournal mode of ext4 in your setup by =
-any
-> > > chance? That would explain it but then that is a horrible idea as wel=
-l...
-> > The page of 'fffffffe01a51c00'[1] which has bh attached comes from
-> > creating bitmap_blk by ext4_getblk->sb_getblk within process[2] where
-> > the gfpmask has GFP_MOVABLE. IMO, GFP_USER is used for regular file
-> > pages under the super_block but not available for metadata, right?
+> From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 >
-> Ah, right, __getblk() overrides the GFP mode set in bdev's mapping_gfp_ma=
-sk
-> and sets __GFP_MOVABLE there. This behavior goes way back to 2007
-> (769848c03895b ("Add __GFP_MOVABLE for callers to flag allocations from
-> high memory that may be migrated")). So another clean and simple way to f=
-ix
-> this (as Ted suggests) would be to stop setting __GFP_MOVABLE in
-> __getblk(). For ext4 there would be no practical difference to current
-> situation where metadata pages are practically unmovable due to attached
-> jhs, other filesystems can set __GFP_MOVABLE in bdev's mapping_gfp_mask i=
-f
-> they care (but I don't think there are other big buffer cache users on
-> systems which need CMA).
+> cma_alloc() keep failed in our system which thanks to a jh->bh->b_page
+> can not be migrated out of CMA area[1] as the jh has one cp_transaction
+> pending on it because of j_free > j_max_transaction_buffers[2][3][4][5][6=
+].
+> We temporarily solve this by launching jbd2_log_do_checkpoint forcefully
+> somewhere. Since journal is common mechanism to all JFSs and
+> cp_transaction has a little fewer opportunity to be launched, the
+> cma_alloc() could be affected under the same scenario. This patch
+> would like to have buffer_head of ext4 not use CMA pages when doing
+> sb_getblk.
 >
->                                                                 Honza
+> [1]
+> crash_arm64_v8.0.4++> kmem -p|grep ffffff808f0aa150(sb->s_bdev->bd_inode-=
+>i_mapping)
+> fffffffe01a51c00  e9470000 ffffff808f0aa150        3  2 8000000008020 lru=
+,private
+> fffffffe03d189c0 174627000 ffffff808f0aa150        4  2 2004000000008020 =
+lru,private
+> fffffffe03d88e00 176238000 ffffff808f0aa150      3f9  2 2008000000008020 =
+lru,private
+> fffffffe03d88e40 176239000 ffffff808f0aa150        6  2 2008000000008020 =
+lru,private
+> fffffffe03d88e80 17623a000 ffffff808f0aa150        5  2 2008000000008020 =
+lru,private
+> fffffffe03d88ec0 17623b000 ffffff808f0aa150        1  2 2008000000008020 =
+lru,private
+> fffffffe03d88f00 17623c000 ffffff808f0aa150        0  2 2008000000008020 =
+lru,private
+> fffffffe040e6540 183995000 ffffff808f0aa150      3f4  2 2004000000008020 =
+lru,private
+>
+> [2] page -> buffer_head
+> crash_arm64_v8.0.4++> struct page.private fffffffe01a51c00 -x
+>       private =3D 0xffffff802fca0c00
+>
+> [3] buffer_head -> journal_head
+> crash_arm64_v8.0.4++> struct buffer_head.b_private 0xffffff802fca0c00
+>   b_private =3D 0xffffff8041338e10,
+>
+> [4] journal_head -> b_cp_transaction
+> crash_arm64_v8.0.4++> struct journal_head.b_cp_transaction 0xffffff804133=
+8e10 -x
+>   b_cp_transaction =3D 0xffffff80410f1900,
+>
+> [5] transaction_t -> journal
+> crash_arm64_v8.0.4++> struct transaction_t.t_journal 0xffffff80410f1900 -=
+x
+>   t_journal =3D 0xffffff80e70f3000,
+>
+> [6] j_free & j_max_transaction_buffers
+> crash_arm64_v8.0.4++> struct journal_t.j_free,j_max_transaction_buffers 0=
+xffffff80e70f3000 -x
+>   j_free =3D 0x3f1,
+>   j_max_transaction_buffers =3D 0x100,
+>
+> Suggested-by: Theodore Ts'o <tytso@mit.edu>
+> Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+> ---
+> v3: switch to use getblk_unmoveable as suggested by Theodore Ts'o
+> ---
+> ---
+>  fs/ext4/inode.c | 9 ++++++++-
+>  1 file changed, 8 insertions(+), 1 deletion(-)
+>
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 941c1c0d5c6e..a0f48840c5c1 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -869,7 +869,14 @@ struct buffer_head *ext4_getblk(handle_t *handle, st=
+ruct inode *inode,
+>         if (nowait)
+>                 return sb_find_get_block(inode->i_sb, map.m_pblk);
+>
+> -       bh =3D sb_getblk(inode->i_sb, map.m_pblk);
+> +       /*
+> +        * Since bh could introduce extra ref count such as referred by
+> +        * journal_head etc. Try to avoid using __GFP_MOVABLE here
+> +        * as it may fail the migration when journal_head remains.
+> +        */
+> +       bh =3D getblk_unmovable(inode->i_sb->s_bdev, map.m_pblk,
+> +                               inode->i_sb->s_blocksize);
+> +
+>         if (unlikely(!bh))
+>                 return ERR_PTR(-ENOMEM);
+>         if (map.m_flags & EXT4_MAP_NEW) {
 > --
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> 2.25.1
+>
 
