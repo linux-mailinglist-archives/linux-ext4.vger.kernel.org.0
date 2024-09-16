@@ -1,112 +1,116 @@
-Return-Path: <linux-ext4+bounces-4183-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4184-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5840C97A242
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 14:27:43 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C5B197A2F3
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 15:29:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8AB611C236E7
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 12:27:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3619B24F7E
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 13:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC67E15665C;
-	Mon, 16 Sep 2024 12:27:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57A6156C4B;
+	Mon, 16 Sep 2024 13:28:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vJruGBeU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8640149E0B
-	for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 12:27:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A832A156220
+	for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 13:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726489649; cv=none; b=KgAtK1Uj30OGDxwMMuSh0r+Hc/eShoCguWSBgFndiFsND+ZP2S12lag999Oz75YsvQIXFoBgR4PfmChSQxnGZMlZP74lypZgcgDzJ/7xDAFZ2PAho6jZZDkhktjval4VJ8t7B/+/8SzC+r1SRSaWVSKB/vccDIp2s5WUfcyLr9M=
+	t=1726493328; cv=none; b=SPab4TvMpgRrG2Q2PrSCSdyAhfJ94wkULd6O7DXP3OCgOHCn9C9/gbvUqMoWtRixQrAuvidHBVf2TvBlOj+MrsAbYNARLxZ3uMpxKMY+e7v2bd6+OtvZWOWlNh/iJ+bAWBNqjDqEsTxFk6PRNA/a8aSrnTI65AW5O6cUeQ4cUto=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726489649; c=relaxed/simple;
-	bh=WRdqu3dsOVSI0lNgiDnJrUv7eoGbmpzNFNQ11X99l3k=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=s+4tQ0Cx3KmyiOntQt1mrZIXE1mXqNDZwIXDRAO7AIPNHLUP/N29b4Ks1yJBUMDwHZO26PcMa9sEg3uJtXtPXcmscj3xAyvfUOlrlFnf+BzczfUYDp0x4x9zWErUAotPxegQ167VRW81BI7bUHj6HmJ5ghT86dAJmcu1WjzA7Cg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a08d4ada12so62444915ab.3
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 05:27:27 -0700 (PDT)
+	s=arc-20240116; t=1726493328; c=relaxed/simple;
+	bh=GPcvs/fhmU2oKwOCZ+3saQOItGhnAIyYGtqrRz2Ei3Y=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rX+zTi2W3DJFA73I6USwUF92LxsrN+XNG3L2p/op+/YxdmphwttWV/eTzTaAsxurV/Y53dXOTrBJbpOclILCupLFGR4tL6aTXrwxgQOX3zn2QHmAe/igHAPs2QqcnJv2kI6U/xa43+e5miLW9RGE7cP7Xh+2QzyTspBAMyA8IS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vJruGBeU; arc=none smtp.client-ip=209.85.208.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f7529203ddso48981111fa.0
+        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 06:28:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1726493325; x=1727098125; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=yuhlXIHiV1y6DrCHqiUoVd4G+jZthi/0Gn7DNqQTDJ8=;
+        b=vJruGBeUcpuCsLnVoeCFokDmgUmD2pEr+cLvY0I8L5rHWamqAmGR714l9ueaYB0I//
+         67r+fm09OMYqYC9ewWsdICJxVF6e+RDVvXlYtf+QTpqJjo6o0o2GxOpD9pK/w9h/qwzI
+         UA678t+7rsaPDn7BBThTCGiCSWEbvx4inkJe5dcz3fWp9Y3Vq9kvaVz3YZInzXjzehZy
+         +gPwRqx/JZMIsyMywB4bo1/kyRhiEhFBoscGtTVkbbcthOD9fK9h4Cu88t5zBbIOtwKp
+         nwJ+PYW26CU6OiU5CpFh2Az/F9zn5LRSoDmo5ZPFiL1wC5IfpqjmU7lu39eXhUcqMmZv
+         Z0WQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726489647; x=1727094447;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=LlTq1FKLOUJVjmvuCSRVVshFU5CeqzTXz/udGtr7rFg=;
-        b=a8CqeNxCjA2hFiThOiG+RkmbVCvF6T2F2x8Q3t9fZHy7PJ99FWaFXD8byXPoxcsFOv
-         d7DBNMEcuZfyDd0+Ptk2KXYF7VS16vobo8Fh2Zb4niASQXaSn+6tjakd9XaaQxRPOuoS
-         vonI7I+GOiwT1z+WU5982Z2MqEfZzUCSfEZ4zdvrqupVhQ4qyuXGyojwMZxntkwd3vHp
-         PaYKRCY5WvvA9NpDQdSNTntM8OZoeTi4UMwtIY9s9Q1dMQ4YPSePXSi5Qv4bX3ex1ylc
-         oxg9f2g1ehwM50GepAw7F4M2mdYkPk/U0FjpMLw23bE/6OO5nLLX06Pd/p51eUk4XZ3+
-         wDVw==
-X-Gm-Message-State: AOJu0YzH+bcULBJMYwzqyQ+I7Z6iUqY3tdBdvQcWSiTXlcyhAA/cOWBg
-	9eNyjrVj7PjWYk9CYmAFHYKAsjGx9KEwBBUtkLsuAafjswJjTHMW5jToq/d+rrmpDDs+NN9sbG7
-	A+U2S+bEGNZ69atIaAIBnEP1GcWtTuyovTM8snwnL9MBeeGzkqh1fCIY=
-X-Google-Smtp-Source: AGHT+IHLIwUx6pn339V3ltmZupk9Di8OEjQGeA8YFKo4dPTP2a30LofFmtnVOuEXCbghRY7krTwzh3YB08M+uu6lmBBxwACSaxhO
+        d=1e100.net; s=20230601; t=1726493325; x=1727098125;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=yuhlXIHiV1y6DrCHqiUoVd4G+jZthi/0Gn7DNqQTDJ8=;
+        b=FXsticMyXgNurxI+JpUqHc5nj0QtrE1QeavvYqxf3Ncfs6gSTTTfBex2APNUof+cMd
+         IuQFj3pMTxPY779RkURuIOff1y1CZ3OJdfSoh6I2COFwc6np8tAjkVE9asLgEPxvBa8l
+         c7ZGqi7Dsit1/HYSayO47+Mxq9v5NzT60ZraB/DvKuGyGrv9Amvmrbw7iu3TA0vOrVQ7
+         1XgR1XFYa6G3Mfn91wMjbKHdDuddCOLKo/U61TycTXzMwH9Uy1mAaNEhYHdnhlQRw+Ui
+         X2UVO4b8XJYIRdLaRvVvLd6oabmuie5IwV3mkWyGYDLTLmhwyqGPiuXGdQwPGbdYPK6u
+         hrAg==
+X-Forwarded-Encrypted: i=1; AJvYcCWMicXgphiK7ih6JcnNg3NHTopTPWBOojMs1Umm+yYtfpkH53VW8wgZdGGcsfG/IzVK1aXNk1S/d0XG@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz0G9+zIfYvUzxPIcgxVx557ruH4kCfbua4DCT7YlsqRGxwDDXW
+	EE59YZDzi4HHk7jdMHXDnkcmmh7xQf8ZcfNPvoZ78l8ztwJU3de8isTnw+kc/q8Su6dmfYmsb7X
+	j4hU0vHlm2s2rFssuNb3aXMlb9uoB/jVx5AbA
+X-Google-Smtp-Source: AGHT+IE2C3eS+spZ/KG4/n+8zkx1UVRoq/fSlzz3s0t36e0LvRq8KdjGj/md7/RrKELeF9E5xCn6e+M+QCIVq3r8OgI=
+X-Received: by 2002:a2e:a545:0:b0:2f3:aac3:c2a5 with SMTP id
+ 38308e7fff4ca-2f787d061d0mr49204681fa.17.1726493324366; Mon, 16 Sep 2024
+ 06:28:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:218c:b0:3a0:9050:702a with SMTP id
- e9e14a558f8ab-3a090507262mr75239965ab.17.1726489647183; Mon, 16 Sep 2024
- 05:27:27 -0700 (PDT)
-Date: Mon, 16 Sep 2024 05:27:27 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66e8242f.050a0220.252d9a.0001.GAE@google.com>
-Subject: [syzbot] Monthly ext4 report (Sep 2024)
-From: syzbot <syzbot+list9332a94148ef9d3caccb@syzkaller.appspotmail.com>
-To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
+References: <00000000000039fb2d05f3c7d0ed@google.com> <8e13233a-2eb6-6d92-e94f-b94db8b518ed@acm.org>
+In-Reply-To: <8e13233a-2eb6-6d92-e94f-b94db8b518ed@acm.org>
+From: Dmitry Vyukov <dvyukov@google.com>
+Date: Mon, 16 Sep 2024 15:28:33 +0200
+Message-ID: <CACT4Y+ZvEjpX8a9VW4tS1YSP8RE6xjb8C9ae6PcSa0rr-q+62g@mail.gmail.com>
+Subject: Re: [syzbot] [ext4?] INFO: task hung in ext4_evict_ea_inode
+To: Bart Van Assche <bvanassche@acm.org>
+Cc: syzbot <syzbot+38e6635a03c83c76297a@syzkaller.appspotmail.com>, 
+	adilger.kernel@dilger.ca, alim.akhtar@samsung.com, avri.altman@wdc.com, 
+	beanhuo@micron.com, hdanton@sina.com, jejb@linux.ibm.com, 
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-scsi@vger.kernel.org, martin.petersen@oracle.com, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
+	wsa+renesas@sang-engineering.com, syzkaller <syzkaller@googlegroups.com>
 Content-Type: text/plain; charset="UTF-8"
 
-Hello ext4 maintainers/developers,
+On Fri, 3 Feb 2023 at 19:11, Bart Van Assche <bvanassche@acm.org> wrote:
+>
+> On 2/3/23 00:53, syzbot wrote:
+> > syzbot has bisected this issue to:
+> >
+> > commit 82ede9c19839079e7953a47895729852a440080c
+> > Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
+> > Date:   Tue Jun 21 14:46:53 2022 +0000
+> >
+> >      scsi: ufs: core: Fix typos in error messages
+>
+> To the syzbot maintainers: I think this is a good example of a bisection
+> result that is wrong. It is unlikely that fixing typos in kernel
+> messages would affect whether or not the kernel hangs. Additionally, as
+> far as I know, the systems used by syzbot (Google Compute Engine virtual
+> machines) do trigger any code in the UFS driver.
 
-This is a 31-day syzbot report for the ext4 subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/ext4
+Hi Bart,
 
-During the period, 7 new issues were detected and 0 were fixed.
-In total, 38 issues are still open and 140 have been fixed so far.
+syzbot has logic to detect commits that don't affect builds.
+It hashes SHF_ALLOC vmlinux sections to check if the commit actually
+has any effect on the binary:
+https://github.com/google/syzkaller/blob/c673ca06b23cea94091ab496ef62c3513e434585/pkg/build/linux.go#L253-L286
 
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  11122   Yes   WARNING: locking bug in ext4_move_extents
-                   https://syzkaller.appspot.com/bug?extid=7f4a6f7f7051474e40ad
-<2>  1321    Yes   kernel BUG in ext4_do_writepages
-                   https://syzkaller.appspot.com/bug?extid=d1da16f03614058fdc48
-<3>  1251    Yes   INFO: task hung in sync_inodes_sb (5)
-                   https://syzkaller.appspot.com/bug?extid=30476ec1b6dc84471133
-<4>  807     Yes   WARNING: locking bug in __ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a537ff48a9cb940d314c
-<5>  768     Yes   WARNING: locking bug in ext4_ioctl
-                   https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
-<6>  489     No    INFO: task hung in sb_start_write
-                   https://syzkaller.appspot.com/bug?extid=fb3ada58a6c0a3208821
-<7>  459     No    INFO: task hung in ext4_stop_mmpd
-                   https://syzkaller.appspot.com/bug?extid=0dd5b81275fa083055d7
-<8>  342     Yes   INFO: task hung in jbd2_journal_commit_transaction (5)
-                   https://syzkaller.appspot.com/bug?extid=3071bdd0a9953bc0d177
-<9>  167     Yes   possible deadlock in ext4_xattr_inode_iget (3)
-                   https://syzkaller.appspot.com/bug?extid=ee72b9a7aad1e5a77c5c
-<10> 64      Yes   kernel BUG in ext4_write_inline_data_end (2)
-                   https://syzkaller.appspot.com/bug?extid=0c89d865531d053abb2d
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
-
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
+Bug CONFIG_UFS_FS is enabled on syzbot, it has some coverage for it,
+and strings affect the binary (can actually be the root cause for
+bugs). So I don't see what else can be done here automatically.
 
