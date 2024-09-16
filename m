@@ -1,139 +1,145 @@
-Return-Path: <linux-ext4+bounces-4177-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4178-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9367F979937
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2024 23:39:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD3A9799B9
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 03:01:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4D030280CB5
-	for <lists+linux-ext4@lfdr.de>; Sun, 15 Sep 2024 21:39:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 309BB1C22935
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 01:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36BC25FB9C;
-	Sun, 15 Sep 2024 21:39:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D14BBE6C;
+	Mon, 16 Sep 2024 01:01:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b="qp6c0uwN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cmL+WM2g"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-00364e01.pphosted.com (mx0a-00364e01.pphosted.com [148.163.135.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31849101EE
-	for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2024 21:39:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 970C9256D;
+	Mon, 16 Sep 2024 01:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726436363; cv=none; b=P8DZEC3Fn6r0EoXkvzpg0X/Yl8QYmnHCvX7YQkybImMRA+lZJMgHAr95pzE7hkoJlxbYZX5+pIZmEHtaK6dRfNYaFSicM/bWk6S0Iv+uvYzVEtcoL4prqrppL2Xz7T2Rko5F6a8U+11qW9hn2JUuA4Sscna4mDCq0vMYXUbWcvQ=
+	t=1726448489; cv=none; b=Yz+g5pMxahac/X813kLmJRDdHdRBLMKW/ebPFphE0SD6z1FGeMYl0ieTMZRCE4jtt8mTvRrdc/IDZknrmBUgmCoHDQ5pRoD1AkPg2l0n4N4ly4J6t8RIRVIrTW/CGruRnnIVd/Iy5S/kq/98SLUC945h93HuJc8O+bj95tFnr44=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726436363; c=relaxed/simple;
-	bh=o1XxbQfwSDUrRTuCvDG/WseWFlWhVKkDGgS7heZiW4k=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=HJH6D1rh3OxmJv+pNRuO21L6IMtGyFZgqNBlf+79FzerF3//JTGuMb/U0gSy222nuCaTLh938EWkwgBetWQE63Kg+2ui4MA2CmE0RIF7YmHWlY97xzZ77jPpuuk06tyO8Qd4J82qiRT0Yf/tOvW1Z/tAGZ2GxUX++HLh14kyOMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu; spf=pass smtp.mailfrom=columbia.edu; dkim=pass (2048-bit key) header.d=columbia.edu header.i=@columbia.edu header.b=qp6c0uwN; arc=none smtp.client-ip=148.163.135.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=columbia.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=columbia.edu
-Received: from pps.filterd (m0167069.ppops.net [127.0.0.1])
-	by mx0a-00364e01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48FEA7bx004647
-	for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2024 17:10:11 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=columbia.edu; h=cc :
- content-transfer-encoding : date : from : message-id : mime-version :
- subject : to; s=pps01; bh=XB2XYFipVU6h0mxDBwF8rDTB4Kwlpw74676rrEkJKZg=;
- b=qp6c0uwNa2M8A9HjfUCuRBmpxRU6SP1SYs0ezoJWUIu2yDVt+Wl3pbpoWZFyL7AdnxSM
- qUIwo3ozkHMN8KcLUYY4UtlG5LyS6Q+B0Fgfm7TzwQyrzZcQKJ6G04tQTNMOCtFW+33y
- iCkDheivIXlEbzgGVtG5tO4fDqCrtfBxb6G0XNV8YsKIcz5AMwFMEjCcfkLkEm8fJPsp
- yIC/zBi5R++0dq+mKCm0QAPgpLrICwqKTkEHvL/lIKkGBpKP6B0NbG3dhcDHyhKqh1At
- 4ZyjLym29j8uv5qjee4UF7uHTSqEH8T1/RS94EVJAo2PD1Kc9qb5j3839WzdZMLmXxHm HA== 
-Received: from mail-qv1-f69.google.com (mail-qv1-f69.google.com [209.85.219.69])
-	by mx0a-00364e01.pphosted.com (PPS) with ESMTPS id 41n3gpjh4h-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT)
-	for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2024 17:10:11 -0400
-Received: by mail-qv1-f69.google.com with SMTP id 6a1803df08f44-6c35b3a220aso116498476d6.0
-        for <linux-ext4@vger.kernel.org>; Sun, 15 Sep 2024 14:10:11 -0700 (PDT)
+	s=arc-20240116; t=1726448489; c=relaxed/simple;
+	bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FOP8JcKzVXqDJrdMzufjF9Y0dGi5t19iYu60anZG8fkv3aD1t5aqjJRry//UUmWYe9v8I7r4cAUWvhDbH/OK8HPGB/CZP4cYCANaxfqluIGbBCPYlMAZYI8liPiPybReVxZ/FeS2Xj2iK1gS7INmuCK3N2NhPVPS1lw034c4lS4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cmL+WM2g; arc=none smtp.client-ip=209.85.215.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7db12af2f31so3492658a12.1;
+        Sun, 15 Sep 2024 18:01:27 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1726448487; x=1727053287; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
+        b=cmL+WM2gDuP4O+bn690YwmFhQ0vXL4n+Be4FXT+6NrMbMwJNsOaHCVSbLsB5bVCFJx
+         BoykbxIOQC/tyxrPBwl5hd28pQ7453AMb7wKDMRvidhChCLiodiG/Q0BVIMXGtMskbP6
+         4P++jFgGMx4wUmT0eCHLQY484hbjkJsbk1ZnbzjhFaSNM0nmAd/4WWRWXEGdU7O8jNhO
+         gBL/Y+tMU5V1dE4gQ1NjG2kI677N7CTb6gI/q8LnACmUw+/50q4KXVpnT6nqfzeR0kyN
+         cD0yYIKFaxwn/ySnatFQtmYJzfl0ZMvI5mJe3ihqMZu3L2uioZkdPiF4tSh/ljuUrwIx
+         q2og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726434610; x=1727039410;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=XB2XYFipVU6h0mxDBwF8rDTB4Kwlpw74676rrEkJKZg=;
-        b=J44Cw0MDlDnIzh1J3O9YOFolutG1uCQ4c0aKfKiGxnfzXmhh/QoNmFa5gQlCgbE5Tl
-         sorX1Z6eTJWLo9/9bMEyEUKfVsmOrTcZbiAGFv7sBnGkp7S9P/TFjU1OpwuAIr0Gct97
-         ulIbC/g3ezRT23xBrjHwK6rhplnItmp6mOmyIgbp+drJL0rEp3yevP9CA1VUUT7ZbF1p
-         IyjpxqsPANER8a959W9nMUONp7Ar4+jkUtWamgAOD1Oq+R1bw22ruNyWQisd4TVT0I6P
-         mQTpOpUWvp/vSqAJqpA6Ui2M6U/1AQGk04tQdCn5NCMxBOP7M03fkgqSCgPCZiSZEX9E
-         V5UQ==
-X-Gm-Message-State: AOJu0YwB1UZKzS8rSSCVVEpmc7yHAVNC05oQDyFd9panfnEVJcNym9y4
-	7LkYhtxGrLALM3eHZhJ/8WkV3JZfKmUVB5UZbjQdlJuOOdgLlQHtpIUNtfw++Ln1iwNStC0RL6X
-	i9qgB7mi9ZmLZ+iAgH8LQNnybUU7/FPlDcEWsO8tqkJogMFEABVzpI5c=
-X-Received: by 2002:a05:6214:4199:b0:6c5:54e4:be44 with SMTP id 6a1803df08f44-6c573ac38fdmr215047236d6.8.1726434610046;
-        Sun, 15 Sep 2024 14:10:10 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHbC1EuwkzKvdclX7dcRz0f2R9+kmHy8rSLSfpPRmuPL7VqI7Vl9MWAFoTs8ITaEHiJGCHH/A==
-X-Received: by 2002:a05:6214:4199:b0:6c5:54e4:be44 with SMTP id 6a1803df08f44-6c573ac38fdmr215046946d6.8.1726434609651;
-        Sun, 15 Sep 2024 14:10:09 -0700 (PDT)
-Received: from ub.cs.columbia.edu (dhcp-20-245.cs.columbia.edu. [128.59.20.245])
-        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6c58c627cb2sm18369716d6.1.2024.09.15.14.10.09
+        d=1e100.net; s=20230601; t=1726448487; x=1727053287;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7D/C5zl6x2ll3AyrS76fk4gpdsq3I5CMMCG+mMI8Elo=;
+        b=hfW4uY9AHq2FrjNEzDvRlq8d3/HgJ3Rnv6JBCwYqaYZ+7+v5ojnLJkRGX0/A8gJ1Tl
+         D9SJuCpwJ/wzj+ZykfhyhZikww6ju9902U7NRu4b10RGG2qvH+me0TRbix7E4QlXDk3s
+         BXYU/gwtPLTvvIHs46gVnacrMEguPXiHjLz2gztt0ZePKIBMdMf/1llR7NTtKeYVTuyF
+         jwouKQs8mVPcn/65WODXRlC9wULPUQ9VKBI34VYiUMgQL+rn7LTLSx+4iuPSwxCzuGte
+         Ro+GjV6fCi0Od6HKUXXA+gw1CY2FYzDdzGMHeWsD7wSGaq+POWmUWLpAV6UaTZGRpIMJ
+         w1nw==
+X-Forwarded-Encrypted: i=1; AJvYcCU6gPr6GZiCCWvt87JPJZVop2HKVTWtmVfHW75j87HPwqWOE5Q/h1pObTZ/Yr29Buo05MyMLiLq3Yi5dw==@vger.kernel.org, AJvYcCV+ef29yjCDReIQSI1xZTFW2FLbDMTdERqTZe+N9+YV19U2tExX5UUudVu5TFOd0o59XCm/YQJHoIcEpg==@vger.kernel.org, AJvYcCV1KfMhFRPYeB5wR2w0hVRrYO9VuCVX4fz7Gte9MsQan4vgya3oDBTjCGcF8G5uX2x8ogZ3xtmULzgo1SSRq38Zx/QK@vger.kernel.org, AJvYcCWHfzt861yQB6PRHHjgspZWyNtMHHeSLOxEQHB+dJE70zlhLOP/0Gsqy/NFRHYUMG7yXMR7VFDAlxsM@vger.kernel.org, AJvYcCXUWmz5+px2CjpNev7KKw47RQ8WCx22TjafwAgk+eWFfUgalQcefImg5fefHP6jZbytlNcVC2aR4SRQ@vger.kernel.org, AJvYcCXUbzumcfbGFuHyCoQ8Ryt6l5sYnpUc54wX1SVTXcrM8tCSs6JcFb9vYVmpC6LIJ4ciRKa8Xf1E+IBJKqt+RQ==@vger.kernel.org, AJvYcCXbP1nbH+5Tuh6XuD2Tcnv1agPva2WVUpkrkE/xO2vZ9QHVnFL0F9aarFtoz5UbyY20LHFWWbvHOJJ5@vger.kernel.org, AJvYcCXcS83TFyAh+8dHwtvClGNdMmaYs53fi5jSd+2GuqwPk2TKk+AFoghdtmOWXUk59WXmY90IDUmgkPbdQiER@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxgf38IRsysiWk+NNSdQQB6MN94TiM5M+zWiK/dfv1ZAZP0EZdI
+	WGaTyYeu+27E7ua+8xEBkhDODMA33TixslZEhkOMudLyHKkIsSfz
+X-Google-Smtp-Source: AGHT+IHeKKZs+OQSLFWh2p0zJ8126QggRcFIs3Yl9qB6SRWRR42B+47A+pkLNPsEo9M1k9q1ghVFtw==
+X-Received: by 2002:a17:902:da84:b0:206:adc8:2dcb with SMTP id d9443c01a7336-2076e35b147mr249054285ad.25.1726448486481;
+        Sun, 15 Sep 2024 18:01:26 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-2079473d05dsm27143635ad.287.2024.09.15.18.01.25
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 15 Sep 2024 14:10:09 -0700 (PDT)
-From: Fanqi Yu <fanqi.yu@columbia.edu>
-To: tytso@mit.edu, adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        Fanqi Yu <fanqi.yu@columbia.edu>
-Subject: [PATCH] ext4: Prevent successful remount as r/w after filesystem abort
-Date: Sun, 15 Sep 2024 17:08:04 -0400
-Message-Id: <20240915210802.3835698-1-fanqi.yu@columbia.edu>
-X-Mailer: git-send-email 2.34.1
+        Sun, 15 Sep 2024 18:01:25 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id 8220D4A358AE; Mon, 16 Sep 2024 08:01:22 +0700 (WIB)
+Date: Mon, 16 Sep 2024 08:01:22 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+	linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v8 07/11] Documentation: add a new file documenting
+ multigrain timestamps
+Message-ID: <ZueDYmduQtlAnX_5@archie.me>
+References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
+ <20240914-mgtime-v8-7-5bd872330bed@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Proofpoint-ORIG-GUID: ucInPzfO3uMpnx_ZSRfhQ7GjHDDIXxY2
-X-Proofpoint-GUID: ucInPzfO3uMpnx_ZSRfhQ7GjHDDIXxY2
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1039,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-15_13,2024-09-13_02,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
- adultscore=0 lowpriorityscore=10 malwarescore=0 phishscore=0
- mlxlogscore=999 spamscore=0 impostorscore=0 bulkscore=10
- priorityscore=1501 mlxscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2408220000 definitions=main-2409150162
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="kwvsaHxP9Dj4QI8r"
+Content-Disposition: inline
+In-Reply-To: <20240914-mgtime-v8-7-5bd872330bed@kernel.org>
 
-While the order of writing to the shutdown and read-only flags has been
-enforced by a write memory barrier, the read side in remount does not
-have a pairing read barrier.
 
-In the event of a fs forced shutdown remounting as read-only,
-remounting it again as read-write can succeed when the flag reads are
-reordered such that sb_rdonly() returns true and
-ext4_forced_shutdown() returns false.
+--kwvsaHxP9Dj4QI8r
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Commit 4418e14112e3 ("ext4: Fix fsync error handling after filesystem
-abort") has added the other barriers related to these two flags but
-seems to have missed this one.
+On Sat, Sep 14, 2024 at 01:07:20PM -0400, Jeff Layton wrote:
+> +Multigrain timestamps aim to remedy this by selectively using fine-grain=
+ed
+> +timestamps when a file has had its timestamps queried recently, and the =
+current
+> +coarse-grained time does not cause a change.
 
-Signed-off-by: Fanqi Yu <fanqi.yu@columbia.edu>
----
- fs/ext4/super.c | 7 +++++++
- 1 file changed, 7 insertions(+)
+Do you mean using fine-grained timestamps when timestamps of a file has been
+recently queried/modified BUT its coarse-grained timestamps aren't changed?
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 044135796f2b..c5d3f8969dec 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -6542,6 +6542,13 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
- 	flush_work(&sbi->s_sb_upd_work);
- 
- 	if ((bool)(fc->sb_flags & SB_RDONLY) != sb_rdonly(sb)) {
-+
-+		/*
-+		 * Make sure we read the updated s_ext4_flags.
-+		 * Pairs with smp_wmb() in ext4_handle_error().
-+		 */
-+		smp_rmb();
-+
- 		if (ext4_forced_shutdown(sb)) {
- 			err = -EROFS;
- 			goto restore_opts;
--- 
-2.34.1
+Confused...
 
+--=20
+An old man doll... just what I always wanted! - Clara
+
+--kwvsaHxP9Dj4QI8r
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZueDXQAKCRD2uYlJVVFO
+o9i4AP0T1JkEX2kwhV2+holu89lH/60QVNXUO2Lay3YffP3/dQD9G4CUoLWZ82Xp
+x8Jx3+7J66rerRpl5waFiihhu7wbiQ0=
+=tXkm
+-----END PGP SIGNATURE-----
+
+--kwvsaHxP9Dj4QI8r--
 
