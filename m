@@ -1,116 +1,158 @@
-Return-Path: <linux-ext4+bounces-4184-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4185-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C5B197A2F3
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 15:29:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F14F97A2F8
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 15:30:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3619B24F7E
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 13:29:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9222B1C2242A
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Sep 2024 13:30:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C57A6156C4B;
-	Mon, 16 Sep 2024 13:28:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88A58156256;
+	Mon, 16 Sep 2024 13:30:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="vJruGBeU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="r+dmQThD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A832A156220
-	for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 13:28:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A14314F9E2
+	for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 13:30:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726493328; cv=none; b=SPab4TvMpgRrG2Q2PrSCSdyAhfJ94wkULd6O7DXP3OCgOHCn9C9/gbvUqMoWtRixQrAuvidHBVf2TvBlOj+MrsAbYNARLxZ3uMpxKMY+e7v2bd6+OtvZWOWlNh/iJ+bAWBNqjDqEsTxFk6PRNA/a8aSrnTI65AW5O6cUeQ4cUto=
+	t=1726493434; cv=none; b=n8THQM6NHvy6DprfQURq6sKg00VO/9Ptbjuz0+jWcIG8on4E6vcisSG8owwFEqMiMqIH21B41seYk3XJ9N0L9TybGUogk1+TqhnbqlP/BrtwftN6o7TkhmkfNS/G3RJCyoCduWs1YMSgk0nLAKBkgdOloOhfGIlnPQzxd3r7TpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726493328; c=relaxed/simple;
-	bh=GPcvs/fhmU2oKwOCZ+3saQOItGhnAIyYGtqrRz2Ei3Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rX+zTi2W3DJFA73I6USwUF92LxsrN+XNG3L2p/op+/YxdmphwttWV/eTzTaAsxurV/Y53dXOTrBJbpOclILCupLFGR4tL6aTXrwxgQOX3zn2QHmAe/igHAPs2QqcnJv2kI6U/xa43+e5miLW9RGE7cP7Xh+2QzyTspBAMyA8IS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=vJruGBeU; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2f7529203ddso48981111fa.0
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 06:28:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1726493325; x=1727098125; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=yuhlXIHiV1y6DrCHqiUoVd4G+jZthi/0Gn7DNqQTDJ8=;
-        b=vJruGBeUcpuCsLnVoeCFokDmgUmD2pEr+cLvY0I8L5rHWamqAmGR714l9ueaYB0I//
-         67r+fm09OMYqYC9ewWsdICJxVF6e+RDVvXlYtf+QTpqJjo6o0o2GxOpD9pK/w9h/qwzI
-         UA678t+7rsaPDn7BBThTCGiCSWEbvx4inkJe5dcz3fWp9Y3Vq9kvaVz3YZInzXjzehZy
-         +gPwRqx/JZMIsyMywB4bo1/kyRhiEhFBoscGtTVkbbcthOD9fK9h4Cu88t5zBbIOtwKp
-         nwJ+PYW26CU6OiU5CpFh2Az/F9zn5LRSoDmo5ZPFiL1wC5IfpqjmU7lu39eXhUcqMmZv
-         Z0WQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726493325; x=1727098125;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yuhlXIHiV1y6DrCHqiUoVd4G+jZthi/0Gn7DNqQTDJ8=;
-        b=FXsticMyXgNurxI+JpUqHc5nj0QtrE1QeavvYqxf3Ncfs6gSTTTfBex2APNUof+cMd
-         IuQFj3pMTxPY779RkURuIOff1y1CZ3OJdfSoh6I2COFwc6np8tAjkVE9asLgEPxvBa8l
-         c7ZGqi7Dsit1/HYSayO47+Mxq9v5NzT60ZraB/DvKuGyGrv9Amvmrbw7iu3TA0vOrVQ7
-         1XgR1XFYa6G3Mfn91wMjbKHdDuddCOLKo/U61TycTXzMwH9Uy1mAaNEhYHdnhlQRw+Ui
-         X2UVO4b8XJYIRdLaRvVvLd6oabmuie5IwV3mkWyGYDLTLmhwyqGPiuXGdQwPGbdYPK6u
-         hrAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWMicXgphiK7ih6JcnNg3NHTopTPWBOojMs1Umm+yYtfpkH53VW8wgZdGGcsfG/IzVK1aXNk1S/d0XG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz0G9+zIfYvUzxPIcgxVx557ruH4kCfbua4DCT7YlsqRGxwDDXW
-	EE59YZDzi4HHk7jdMHXDnkcmmh7xQf8ZcfNPvoZ78l8ztwJU3de8isTnw+kc/q8Su6dmfYmsb7X
-	j4hU0vHlm2s2rFssuNb3aXMlb9uoB/jVx5AbA
-X-Google-Smtp-Source: AGHT+IE2C3eS+spZ/KG4/n+8zkx1UVRoq/fSlzz3s0t36e0LvRq8KdjGj/md7/RrKELeF9E5xCn6e+M+QCIVq3r8OgI=
-X-Received: by 2002:a2e:a545:0:b0:2f3:aac3:c2a5 with SMTP id
- 38308e7fff4ca-2f787d061d0mr49204681fa.17.1726493324366; Mon, 16 Sep 2024
- 06:28:44 -0700 (PDT)
+	s=arc-20240116; t=1726493434; c=relaxed/simple;
+	bh=EESoMC3E/8uatUJ13uAO4KiOZLOYg5C+7BGNGKXNOWw=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=Oh42CL4LvJMCT+Qu/ICx2B9kN5PBS/YFOMHCUzeAhA2XUiAc4GIscF7EblDh1yQleck0cbyHgs/n+g98TLF73Wxhy2dUmWKvS5MFWBbdGDb146Ngs3V/jJ1YrlKVtzgYgFgqkxTseyGxdDOYlDjmmRUxAF0o/xZ76Q8BunzcV5U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=r+dmQThD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 79C19C4CEC7
+	for <linux-ext4@vger.kernel.org>; Mon, 16 Sep 2024 13:30:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1726493433;
+	bh=EESoMC3E/8uatUJ13uAO4KiOZLOYg5C+7BGNGKXNOWw=;
+	h=From:To:Subject:Date:From;
+	b=r+dmQThDpaie8gQ7WQAgOFXRmDeFxgYBl+M3MaCUFwWcO3vsP1BuMvAl+qFTtalsc
+	 2O/X/E6IiFcCkNRXOEy4QsYLoV6U7+2TBCHOcKZX0Xxz98sW5aq2RzV953Ao3I576u
+	 bk70vcGleouXBd1JBp9YGmTzkSUseYlpo8TPK3055RnFmC5rzDX59FW9hCDmZRsCP/
+	 lny8PpKaC8cfwsl6fC0AYr8X1dvdT3Bl0PYPGj2jugFzABGaW/l07DuzS8ji9JiBWp
+	 sm7W3gQlbHqm8vlA3yYlhU8jd/bgBOOzWxF7NHfUuJ/OoTISy+ZLwjAc92ShJiGAoK
+	 Q3NB0OR8D9zsw==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 65360C53BC4; Mon, 16 Sep 2024 13:30:33 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219283] New: kernel regression with ext4 and ea_inode mount
+ flags and exercising xattrs (between Linux 6.8 and 6.11)
+Date: Mon, 16 Sep 2024 13:30:32 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: colin.i.king@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
+ op_sys bug_status bug_severity priority component assigned_to reporter
+ cf_regression attachments.created
+Message-ID: <bug-219283-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <00000000000039fb2d05f3c7d0ed@google.com> <8e13233a-2eb6-6d92-e94f-b94db8b518ed@acm.org>
-In-Reply-To: <8e13233a-2eb6-6d92-e94f-b94db8b518ed@acm.org>
-From: Dmitry Vyukov <dvyukov@google.com>
-Date: Mon, 16 Sep 2024 15:28:33 +0200
-Message-ID: <CACT4Y+ZvEjpX8a9VW4tS1YSP8RE6xjb8C9ae6PcSa0rr-q+62g@mail.gmail.com>
-Subject: Re: [syzbot] [ext4?] INFO: task hung in ext4_evict_ea_inode
-To: Bart Van Assche <bvanassche@acm.org>
-Cc: syzbot <syzbot+38e6635a03c83c76297a@syzkaller.appspotmail.com>, 
-	adilger.kernel@dilger.ca, alim.akhtar@samsung.com, avri.altman@wdc.com, 
-	beanhuo@micron.com, hdanton@sina.com, jejb@linux.ibm.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-scsi@vger.kernel.org, martin.petersen@oracle.com, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
-	wsa+renesas@sang-engineering.com, syzkaller <syzkaller@googlegroups.com>
-Content-Type: text/plain; charset="UTF-8"
 
-On Fri, 3 Feb 2023 at 19:11, Bart Van Assche <bvanassche@acm.org> wrote:
->
-> On 2/3/23 00:53, syzbot wrote:
-> > syzbot has bisected this issue to:
-> >
-> > commit 82ede9c19839079e7953a47895729852a440080c
-> > Author: Wolfram Sang <wsa+renesas@sang-engineering.com>
-> > Date:   Tue Jun 21 14:46:53 2022 +0000
-> >
-> >      scsi: ufs: core: Fix typos in error messages
->
-> To the syzbot maintainers: I think this is a good example of a bisection
-> result that is wrong. It is unlikely that fixing typos in kernel
-> messages would affect whether or not the kernel hangs. Additionally, as
-> far as I know, the systems used by syzbot (Google Compute Engine virtual
-> machines) do trigger any code in the UFS driver.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219283
 
-Hi Bart,
+            Bug ID: 219283
+           Summary: kernel regression with ext4 and ea_inode mount flags
+                    and exercising xattrs (between Linux 6.8 and 6.11)
+           Product: File System
+           Version: 2.5
+          Hardware: All
+                OS: Linux
+            Status: NEW
+          Severity: normal
+          Priority: P3
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: colin.i.king@gmail.com
+        Regression: No
 
-syzbot has logic to detect commits that don't affect builds.
-It hashes SHF_ALLOC vmlinux sections to check if the commit actually
-has any effect on the binary:
-https://github.com/google/syzkaller/blob/c673ca06b23cea94091ab496ef62c3513e434585/pkg/build/linux.go#L253-L286
+Created attachment 306882
+  --> https://bugzilla.kernel.org/attachment.cgi?id=3D306882&action=3Dedit
+dmesg showing lockup
 
-Bug CONFIG_UFS_FS is enabled on syzbot, it has some coverage for it,
-and strings affect the binary (can actually be the root cause for
-bugs). So I don't see what else can be done here automatically.
+exercising xattr with stress-ng on ext4 when it's been created with ea_inode
+option causes a kernel hang.
+
+Kernel: 6.11.0-7, AMD64 virtual machine 8 thread virtual machine (important,
+must be multiple CPU threads to trigger the regression)
+20GB virtio drive on /dev/vdb, 1 partition /dev/vdb1
+
+sudo mkfs.ext4 /dev/vdb1 -O ea_inode
+sudo mount /dev/vdb1 /mnt
+
+git clone https://github.com/ColinIanKing/stress-ng
+cd stress-ng
+make clean; make -j $(nproc)
+
+sudo ./stress-ng --xattr 8 -t 120 --vmstat 1 --file-path /mnt
+
+..wait a couple of minutes, you will see that the number of running process=
+es
+is not 8 as expected (from the --vmstat output of stress-ng)
+
+cannot ^C stop stress-ng because of a kernel lockup, use another tty and ch=
+eck
+dmesg, I get the following:
+
+[ 247.028846] INFO: task jbd2/vdb1-8:1548 blocked for more than 122 seconds.
+[ 247.030830] Not tainted 6.11.0-7-generic #7-Ubuntu
+[ 247.032667] "echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables t=
+his
+message.
+[ 247.034170] task:jbd2/vdb1-8 state:D stack:0 pid:1548 tgid:1548 ppid:2
+flags:0x00004000
+[ 247.034176] Call Trace:
+[ 247.034178] <TASK>
+[ 247.034182] __schedule+0x277/0x6c0
+[ 247.034199] schedule+0x29/0xd0
+[ 247.034203] jbd2_journal_wait_updates+0x77/0xf0
+[ 247.034207] ? __pfx_autoremove_wake_function+0x10/0x10
+[ 247.034213] jbd2_journal_commit_transaction+0x290/0x1a10
+[ 247.034223] kjournald2+0xa8/0x250
+[ 247.034228] ? __pfx_autoremove_wake_function+0x10/0x10
+[ 247.034233] ? __pfx_kjournald2+0x10/0x10
+[ 247.034236] kthread+0xe1/0x110
+[ 247.034241] ? __pfx_kthread+0x10/0x10
+[ 247.034244] ret_from_fork+0x44/0x70
+[ 247.034247] ? __pfx_kthread+0x10/0x10
+[ 247.034251] ret_from_fork_asm+0x1a/0x30
+[ 247.034257] </TASK>
+
+NOTE: this works fine for Linux 6.8.0, so this looks like a regression for
+6.11.0
+
+Attached is the full kernel log.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
