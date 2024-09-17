@@ -1,101 +1,102 @@
-Return-Path: <linux-ext4+bounces-4195-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4198-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77BF697B02B
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2024 14:36:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1135297B532
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2024 23:29:50 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8E41B22D81
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2024 12:36:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 845291F23FFB
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2024 21:29:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DAF016D9BF;
-	Tue, 17 Sep 2024 12:36:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 870951922DA;
+	Tue, 17 Sep 2024 21:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DqdJ6zgz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="52RkqkDz";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="DqdJ6zgz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="52RkqkDz"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="otfEDEWv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qTbQNMke";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="otfEDEWv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qTbQNMke"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F6A2BAEB;
-	Tue, 17 Sep 2024 12:36:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 200DE192594;
+	Tue, 17 Sep 2024 21:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726576565; cv=none; b=AdyRnBcYWja898fRjLRa49JIz9ABdAlE1aLbdsZDYcWuy+ApwyC8zQ/ejHE5IAyqZ6PAbiOmbXK6/L5WSAJcbKCBkmV78aDaDAef3VG1Szp9Yke4YHRbtLuTnAWQatAPZV2ieri9etS7itaBixHIZGxfqbN6rwr1RqcNcRZ4ZCc=
+	t=1726608575; cv=none; b=rMjFUtq/PKMDif+xlLTTLN/O7ZdV4yCsNJYzrdeZCOl92Kwb7kWBtKqId6BCPt7WwE+2hFT6Vus5I7lh780ysg/z8TVzcDqnvNLt6YB8ZfzcEZn7p/9W/AR0aYkWvjBLBhHaBCqaq+h6NuKoXu27KwFxpm0UKek0vFBDtp3oe0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726576565; c=relaxed/simple;
-	bh=xZEdMZsIYhBlrL7+PAFPW+dXzMkzNkdmM+dkkt+2NO0=;
+	s=arc-20240116; t=1726608575; c=relaxed/simple;
+	bh=U80A2QgmdDQ+lbcvzOnxUMw7XU6PGpCO/xL5QwdtEOY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B+0TksnrG+fvavt1PBtKgXPnvlb60jA27l/bKIqQ+B+/QRHYqA2RZqOfhEqMAtTmS4XooGgfelfg0Emcmeq04s1JF0Xtlf+rV3XlFUEw3xgjgqEOoFt+6rA1dbf7TeAxEdP1j9iUtDH7EVR4zal/bEiu6TEJ2lKBAxJd9doX86c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DqdJ6zgz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=52RkqkDz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=DqdJ6zgz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=52RkqkDz; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=pk3eKGhUJcx8jt1btyxEpD1zIcKPadoznt8Q5jQSCFzZksjv+eLUlLTuE4BTl7uRTxNaPPhm6vdry+h1sOkSmS+gpLZVaaPqGX+mm997XglNZOUaCoczODEKGECOaafOGTqA5I9DXwrx2QQy8QvgGod5Hsv+nlhma9dM05U2anI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=otfEDEWv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qTbQNMke; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=otfEDEWv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qTbQNMke; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 2FE042005A;
-	Tue, 17 Sep 2024 12:36:01 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 3AE55201E0;
+	Tue, 17 Sep 2024 21:29:31 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726576561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1726608571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k0lB4qgIiJTwsTorinJVnENANKo2juI/k0mXnfHkVXw=;
-	b=DqdJ6zgzBEiNvtQIj+SCX7w1StZs6Dp2UVcQ40vyykU42N4bNOsrb7prO0r6HyzCnNUvMf
-	6uIrkWvEaywqXv5GuKq9X3RIR1eHEc2cM4fciNsWp17W5a/WNEqamM72qu/fJvg8WPYBa/
-	S6m/OSd6zEHSXkbFmOOvnMQIUReqb7c=
+	bh=qa95/ktdvyh9hNFNrsN46J5FSoqzSObFkyzebALZLcM=;
+	b=otfEDEWvvhCi2pkswdoDo14sv5SIBWEPuecLEzcqT2uZLkiFDeiGORK7bhaUDSgu0Py/q+
+	aNEN+wIy62cGLzNvx5LDO8vnZXs58yP7XW5AHAIW49MrMLfKy2m8IilsK0cxpK8NkcKniI
+	t5yDGKUSmovDgE0UyF5Ry5iJPHDHMos=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726576561;
+	s=susede2_ed25519; t=1726608571;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k0lB4qgIiJTwsTorinJVnENANKo2juI/k0mXnfHkVXw=;
-	b=52RkqkDzb8DyK5X6OBPUVuSmWgOO4vNZFDVNhiKsj3QPdmyjtf9FjO9EkJV7efLceTEy0i
-	D4rLa/TqxS//2RCg==
+	bh=qa95/ktdvyh9hNFNrsN46J5FSoqzSObFkyzebALZLcM=;
+	b=qTbQNMkeVFeVBbigZsOEJIvfqZbn8R5DnEdtUokLOFCXXX0l5lAMiYI63yYDAKDyGuE1YU
+	sx9b3H/K+pjtYyCA==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=DqdJ6zgz;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=52RkqkDz
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726576561; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1726608571; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k0lB4qgIiJTwsTorinJVnENANKo2juI/k0mXnfHkVXw=;
-	b=DqdJ6zgzBEiNvtQIj+SCX7w1StZs6Dp2UVcQ40vyykU42N4bNOsrb7prO0r6HyzCnNUvMf
-	6uIrkWvEaywqXv5GuKq9X3RIR1eHEc2cM4fciNsWp17W5a/WNEqamM72qu/fJvg8WPYBa/
-	S6m/OSd6zEHSXkbFmOOvnMQIUReqb7c=
+	bh=qa95/ktdvyh9hNFNrsN46J5FSoqzSObFkyzebALZLcM=;
+	b=otfEDEWvvhCi2pkswdoDo14sv5SIBWEPuecLEzcqT2uZLkiFDeiGORK7bhaUDSgu0Py/q+
+	aNEN+wIy62cGLzNvx5LDO8vnZXs58yP7XW5AHAIW49MrMLfKy2m8IilsK0cxpK8NkcKniI
+	t5yDGKUSmovDgE0UyF5Ry5iJPHDHMos=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726576561;
+	s=susede2_ed25519; t=1726608571;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=k0lB4qgIiJTwsTorinJVnENANKo2juI/k0mXnfHkVXw=;
-	b=52RkqkDzb8DyK5X6OBPUVuSmWgOO4vNZFDVNhiKsj3QPdmyjtf9FjO9EkJV7efLceTEy0i
-	D4rLa/TqxS//2RCg==
+	bh=qa95/ktdvyh9hNFNrsN46J5FSoqzSObFkyzebALZLcM=;
+	b=qTbQNMkeVFeVBbigZsOEJIvfqZbn8R5DnEdtUokLOFCXXX0l5lAMiYI63yYDAKDyGuE1YU
+	sx9b3H/K+pjtYyCA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1917613AB6;
-	Tue, 17 Sep 2024 12:36:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 27B7513AB6;
+	Tue, 17 Sep 2024 21:29:31 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 3uYXBrF36WZcHwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 17 Sep 2024 12:36:01 +0000
+	id 8TOrCbv06WaiMwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Tue, 17 Sep 2024 21:29:31 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 17BB9A086F; Tue, 17 Sep 2024 14:35:45 +0200 (CEST)
-Date: Tue, 17 Sep 2024 14:35:45 +0200
+	id 1E39EA0AC2; Tue, 17 Sep 2024 18:50:07 +0200 (CEST)
+Date: Tue, 17 Sep 2024 18:50:07 +0200
 From: Jan Kara <jack@suse.cz>
-To: Fanqi Yu <fanqi.yu@columbia.edu>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ext4: Prevent successful remount as r/w after filesystem
- abort
-Message-ID: <20240917123545.hmyj2ho4whpn2u67@quack3>
-References: <20240915210802.3835698-1-fanqi.yu@columbia.edu>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2 01/10] ext4: write out dirty data before dropping pages
+Message-ID: <20240917165007.j5dywaekvnirfffm@quack3>
+References: <20240904062925.716856-1-yi.zhang@huaweicloud.com>
+ <20240904062925.716856-2-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -104,91 +105,244 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240915210802.3835698-1-fanqi.yu@columbia.edu>
-X-Rspamd-Queue-Id: 2FE042005A
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+In-Reply-To: <20240904062925.716856-2-yi.zhang@huaweicloud.com>
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
+	TAGGED_RCPT(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DNSWL_BLOCKED(0.00)[2a07:de40:b281:104:10:150:64:97:from,2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Sun 15-09-24 17:08:04, Fanqi Yu wrote:
-> While the order of writing to the shutdown and read-only flags has been
-> enforced by a write memory barrier, the read side in remount does not
-> have a pairing read barrier.
+On Wed 04-09-24 14:29:16, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> In the event of a fs forced shutdown remounting as read-only,
-> remounting it again as read-write can succeed when the flag reads are
-> reordered such that sb_rdonly() returns true and
-> ext4_forced_shutdown() returns false.
+> Current zero range, punch hole and collapse range have a common
+> potential data loss problem. In general, ext4_zero_range(),
+> ext4_collapse_range() and ext4_punch_hold() will discard all page cache
+> of the operation range before converting the extents status. However,
+> the first two functions don't write back dirty data before discarding
+> page cache, and ext4_punch_hold() write back at the very beginning
+> without holding i_rwsem and mapping invalidate lock. Hence, if some bad
+> things (e.g. EIO or ENOMEM) happens just after dropping dirty page
+> cache, the operation will failed but the user's valid data in the dirty
+> page cache will be lost. Fix this by write all dirty data under i_rwsem
+> and mapping invalidate lock before discarding pages.
 > 
-> Commit 4418e14112e3 ("ext4: Fix fsync error handling after filesystem
-> abort") has added the other barriers related to these two flags but
-> seems to have missed this one.
-> 
-> Signed-off-by: Fanqi Yu <fanqi.yu@columbia.edu>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-Thanks for the patch but there's a changed queued in ext4 tree [1] which
-removes setting of SB_RDONLY flag in emergency remount because it has other
-problems as well. And after this change the memory ordering problem you
-speak about is not an issue anymore.
+I'm not sure this is the direction we want to go. When zeroing / collapsing
+/ punching writing out all the data we are going to remove seems suboptimal
+and we can spend significant time doing work that is mostly unnecessary.
+After all with truncate we also drop pagecache pages and the do on-disk
+modification which can fail.
+
+The case of EIO is in my opinion OK - when there are disk errors, we are
+going to loose data and e2fsck is needed. So protecting with writeout
+against possible damage is pointless. For ENOMEM I agree we should better
+preserve filesystem consistency. Is there some case where we would keep
+filesystem inconsistent on ENOMEM?
 
 								Honza
 
-[1] https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git/commit/?h=dev&id=d3476f3dad4ad68ae5f6b008ea6591d1520da5d8
-
 > ---
->  fs/ext4/super.c | 7 +++++++
->  1 file changed, 7 insertions(+)
+>  fs/ext4/extents.c | 77 +++++++++++++++++------------------------------
+>  fs/ext4/inode.c   | 19 +++++-------
+>  2 files changed, 36 insertions(+), 60 deletions(-)
 > 
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 044135796f2b..c5d3f8969dec 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -6542,6 +6542,13 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
->  	flush_work(&sbi->s_sb_upd_work);
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index e067f2dd0335..7d5edfa2e630 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4602,6 +4602,24 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  	if (ret)
+>  		goto out_mutex;
 >  
->  	if ((bool)(fc->sb_flags & SB_RDONLY) != sb_rdonly(sb)) {
+> +	/*
+> +	 * Prevent page faults from reinstantiating pages we have released
+> +	 * from page cache.
+> +	 */
+> +	filemap_invalidate_lock(mapping);
 > +
-> +		/*
-> +		 * Make sure we read the updated s_ext4_flags.
-> +		 * Pairs with smp_wmb() in ext4_handle_error().
-> +		 */
-> +		smp_rmb();
+> +	ret = ext4_break_layouts(inode);
+> +	if (ret)
+> +		goto out_invalidate_lock;
 > +
->  		if (ext4_forced_shutdown(sb)) {
->  			err = -EROFS;
->  			goto restore_opts;
+> +	/*
+> +	 * Write data that will be zeroed to preserve them when successfully
+> +	 * discarding page cache below but fail to convert extents.
+> +	 */
+> +	ret = filemap_write_and_wait_range(mapping, start, end - 1);
+> +	if (ret)
+> +		goto out_invalidate_lock;
+> +
+>  	/* Preallocate the range including the unaligned edges */
+>  	if (partial_begin || partial_end) {
+>  		ret = ext4_alloc_file_blocks(file,
+> @@ -4610,7 +4628,7 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  				 round_down(offset, 1 << blkbits)) >> blkbits,
+>  				new_size, flags);
+>  		if (ret)
+> -			goto out_mutex;
+> +			goto out_invalidate_lock;
+>  
+>  	}
+>  
+> @@ -4619,37 +4637,9 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  		flags |= (EXT4_GET_BLOCKS_CONVERT_UNWRITTEN |
+>  			  EXT4_EX_NOCACHE);
+>  
+> -		/*
+> -		 * Prevent page faults from reinstantiating pages we have
+> -		 * released from page cache.
+> -		 */
+> -		filemap_invalidate_lock(mapping);
+> -
+> -		ret = ext4_break_layouts(inode);
+> -		if (ret) {
+> -			filemap_invalidate_unlock(mapping);
+> -			goto out_mutex;
+> -		}
+> -
+>  		ret = ext4_update_disksize_before_punch(inode, offset, len);
+> -		if (ret) {
+> -			filemap_invalidate_unlock(mapping);
+> -			goto out_mutex;
+> -		}
+> -
+> -		/*
+> -		 * For journalled data we need to write (and checkpoint) pages
+> -		 * before discarding page cache to avoid inconsitent data on
+> -		 * disk in case of crash before zeroing trans is committed.
+> -		 */
+> -		if (ext4_should_journal_data(inode)) {
+> -			ret = filemap_write_and_wait_range(mapping, start,
+> -							   end - 1);
+> -			if (ret) {
+> -				filemap_invalidate_unlock(mapping);
+> -				goto out_mutex;
+> -			}
+> -		}
+> +		if (ret)
+> +			goto out_invalidate_lock;
+>  
+>  		/* Now release the pages and zero block aligned part of pages */
+>  		truncate_pagecache_range(inode, start, end - 1);
+> @@ -4657,12 +4647,11 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  
+>  		ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size,
+>  					     flags);
+> -		filemap_invalidate_unlock(mapping);
+>  		if (ret)
+> -			goto out_mutex;
+> +			goto out_invalidate_lock;
+>  	}
+>  	if (!partial_begin && !partial_end)
+> -		goto out_mutex;
+> +		goto out_invalidate_lock;
+>  
+>  	/*
+>  	 * In worst case we have to writeout two nonadjacent unwritten
+> @@ -4675,7 +4664,7 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  	if (IS_ERR(handle)) {
+>  		ret = PTR_ERR(handle);
+>  		ext4_std_error(inode->i_sb, ret);
+> -		goto out_mutex;
+> +		goto out_invalidate_lock;
+>  	}
+>  
+>  	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+> @@ -4694,6 +4683,8 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  
+>  out_handle:
+>  	ext4_journal_stop(handle);
+> +out_invalidate_lock:
+> +	filemap_invalidate_unlock(mapping);
+>  out_mutex:
+>  	inode_unlock(inode);
+>  	return ret;
+> @@ -5363,20 +5354,8 @@ static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
+>  	 * for page size > block size.
+>  	 */
+>  	ioffset = round_down(offset, PAGE_SIZE);
+> -	/*
+> -	 * Write tail of the last page before removed range since it will get
+> -	 * removed from the page cache below.
+> -	 */
+> -	ret = filemap_write_and_wait_range(mapping, ioffset, offset);
+> -	if (ret)
+> -		goto out_mmap;
+> -	/*
+> -	 * Write data that will be shifted to preserve them when discarding
+> -	 * page cache below. We are also protected from pages becoming dirty
+> -	 * by i_rwsem and invalidate_lock.
+> -	 */
+> -	ret = filemap_write_and_wait_range(mapping, offset + len,
+> -					   LLONG_MAX);
+> +	/* Write out all dirty pages */
+> +	ret = filemap_write_and_wait_range(mapping, ioffset, LLONG_MAX);
+>  	if (ret)
+>  		goto out_mmap;
+>  	truncate_pagecache(inode, ioffset);
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 941c1c0d5c6e..c3d7606a5315 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3957,17 +3957,6 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+>  
+>  	trace_ext4_punch_hole(inode, offset, length, 0);
+>  
+> -	/*
+> -	 * Write out all dirty pages to avoid race conditions
+> -	 * Then release them.
+> -	 */
+> -	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY)) {
+> -		ret = filemap_write_and_wait_range(mapping, offset,
+> -						   offset + length - 1);
+> -		if (ret)
+> -			return ret;
+> -	}
+> -
+>  	inode_lock(inode);
+>  
+>  	/* No need to punch hole beyond i_size */
+> @@ -4021,6 +4010,14 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+>  	if (ret)
+>  		goto out_dio;
+>  
+> +	/* Write out all dirty pages to avoid race conditions */
+> +	if (mapping_tagged(mapping, PAGECACHE_TAG_DIRTY)) {
+> +		ret = filemap_write_and_wait_range(mapping, offset,
+> +						   offset + length - 1);
+> +		if (ret)
+> +			goto out_dio;
+> +	}
+> +
+>  	first_block_offset = round_up(offset, sb->s_blocksize);
+>  	last_block_offset = round_down((offset + length), sb->s_blocksize) - 1;
+>  
 > -- 
-> 2.34.1
-> 
+> 2.39.2
 > 
 -- 
 Jan Kara <jack@suse.com>
