@@ -1,91 +1,139 @@
-Return-Path: <linux-ext4+bounces-4197-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4199-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24DF197B48B
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2024 22:18:32 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E046197B68D
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2024 03:28:53 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B59BB226BD
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Sep 2024 20:18:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 840411F24E84
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2024 01:28:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBD1C170A0B;
-	Tue, 17 Sep 2024 20:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mquXxnJu"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05E68467;
+	Wed, 18 Sep 2024 01:28:45 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FBF813777E
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2024 20:18:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A477D6FC5;
+	Wed, 18 Sep 2024 01:28:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726604303; cv=none; b=gylfbCzy4hh1LRCMpQMDyoEd2yhOFHTiyxYaqa6WoJscZo29gLlaJGpKDnrwsEM5nnXtJrUUITuPSvqAi/ZUpdEx2+7p8DwXcT5xnijaDJRIRuEo/Wv47u0OEVq55lbXSm1QFY/f4bN0R+TUQRYc0Y6qB08ELunbeO1ZneAQiLw=
+	t=1726622925; cv=none; b=fp9tMne4sMnxdMq99xLTu9csw1MZ2mRrZN4eU7iwHe/fPJyo4npvtpObnfDVQG8qnWfkdUqcJs7keqPuC0WrL6GnOEwrfSaJ3hnA4xz+1Sn0nw9R8RzMxjB1myFdoKC/hkb2MR+iYqbvdwv/BHCPvRgoZYEPWVZd+d82zSJD0ow=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726604303; c=relaxed/simple;
-	bh=M4rOkYlOGRlrv06CX/aozxe8CrNzl0i2ioln2WtELYQ=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=anljRWuAF6C11N14lD/OYH/IfUfNBEmvBbpgx4zHB1Gkb2OLPYXNfGAksKNTKdGC9vSxKTzuIBYSimW6/kqjuCMHJyJe4AYeEn3vMSw/I4ts5ZO8hw+5VItI/DOt21wqpCpAG/RwnZ9A14hj6fsYrr5q81xME+XRvTuPHIibMLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mquXxnJu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 053F6C4CECE
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Sep 2024 20:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726604303;
-	bh=M4rOkYlOGRlrv06CX/aozxe8CrNzl0i2ioln2WtELYQ=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=mquXxnJuYkq4Vkjqzx3wesufH9vB0epqXOVHQ5FL6BSS27F0Dtj2PN1O8pKR8k1XN
-	 yzhytFKFS9GY3ehdNedPJzeUf7CAeRfpv6d9RFUorYlcU9ZsFllAOdWSYDsEqda7mi
-	 l0z7dAPIAWQaPf727NVOq+c3vReQIyEB0vKXYUAHnSyxK4MEE6KyvxbvRsjQ7y5bhZ
-	 LJvuZdppXf12hbMMWb1yVS8i09e9n4eUXBumCXbZI2VEUj4hIWRUZJjhop+Sur5Zrs
-	 7BgdX5gMQiVFFp9hGj6xU3tS8T1bSi+sQBnZ7+eeZNc8sQMY3cc/Agf6X4wFP9zkzW
-	 sTgxXDso1nXpw==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id E8FEEC53BC4; Tue, 17 Sep 2024 20:18:22 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 219283] kernel regression with ext4 and ea_inode mount flags
- and exercising xattrs (between Linux 6.8 and 6.11)
-Date: Tue, 17 Sep 2024 20:18:22 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: normal
-X-Bugzilla-Who: colin.i.king@gmail.com
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-219283-13602-0ttVWRmeAn@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-219283-13602@https.bugzilla.kernel.org/>
-References: <bug-219283-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1726622925; c=relaxed/simple;
+	bh=h6uqLKA0bM7Qsdxx/tRPyXPx0R9jRJ9lBRgpxGwPhAk=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=TyeZ+lwTHhPxplcShpao/laOTcSxXpEtHi0/tFYIUbHjEh/iFtRFeeSBJRVkmnUtva3sBK5M2qEXpsscCzLLwy97m4Am4FFGA8vAe7wTSnr4H0kbTK1CzlBrVbT1qkxOuXWjDu0itKGvin86AUxnU+mgyYCW91RAd/oFfzm0r7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 48I1Qmi0082303;
+	Wed, 18 Sep 2024 09:26:48 +0800 (+08)
+	(envelope-from zhaoyang.huang@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4X7gm55Yjfz2QRv88;
+	Wed, 18 Sep 2024 09:19:17 +0800 (CST)
+Received: from bj03382pcu01.spreadtrum.com (10.0.73.40) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Wed, 18 Sep 2024 09:26:45 +0800
+From: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>
+To: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
+        Jan Kara <jack@suse.cz>, <linux-ext4@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Zhaoyang Huang <huangzhaoyang@gmail.com>, <steve.kang@unisoc.com>
+Subject: [Resend PATCHv3 1/1] fs: ext4: Don't use CMA for buffer_head
+Date: Wed, 18 Sep 2024 09:26:36 +0800
+Message-ID: <20240918012636.1320016-1-zhaoyang.huang@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS03.spreadtrum.com (10.0.1.207) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 48I1Qmi0082303
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D219283
+From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
 
---- Comment #8 from Colin Ian King (colin.i.king@gmail.com) ---
-And reverting 0a46ef234756dca04623b7591e8ebb3440622f0b on 6.10.10 makes the
-test run OK, without reverting it the kernel will hang.
+cma_alloc() keep failed in our system which thanks to a jh->bh->b_page
+can not be migrated out of CMA area[1] as the jh has one cp_transaction
+pending on it because of j_free > j_max_transaction_buffers[2][3][4][5][6].
+We temporarily solve this by launching jbd2_log_do_checkpoint forcefully
+somewhere. Since journal is common mechanism to all JFSs and
+cp_transaction has a little fewer opportunity to be launched, the
+cma_alloc() could be affected under the same scenario. This patch
+would like to have buffer_head of ext4 not use CMA pages when doing
+sb_getblk.
 
---=20
-You may reply to this email to add a comment.
+[1]
+crash_arm64_v8.0.4++> kmem -p|grep ffffff808f0aa150(sb->s_bdev->bd_inode->i_mapping)
+fffffffe01a51c00  e9470000 ffffff808f0aa150        3  2 8000000008020 lru,private
+fffffffe03d189c0 174627000 ffffff808f0aa150        4  2 2004000000008020 lru,private
+fffffffe03d88e00 176238000 ffffff808f0aa150      3f9  2 2008000000008020 lru,private
+fffffffe03d88e40 176239000 ffffff808f0aa150        6  2 2008000000008020 lru,private
+fffffffe03d88e80 17623a000 ffffff808f0aa150        5  2 2008000000008020 lru,private
+fffffffe03d88ec0 17623b000 ffffff808f0aa150        1  2 2008000000008020 lru,private
+fffffffe03d88f00 17623c000 ffffff808f0aa150        0  2 2008000000008020 lru,private
+fffffffe040e6540 183995000 ffffff808f0aa150      3f4  2 2004000000008020 lru,private
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
+[2] page -> buffer_head
+crash_arm64_v8.0.4++> struct page.private fffffffe01a51c00 -x
+      private = 0xffffff802fca0c00
+
+[3] buffer_head -> journal_head
+crash_arm64_v8.0.4++> struct buffer_head.b_private 0xffffff802fca0c00
+  b_private = 0xffffff8041338e10,
+
+[4] journal_head -> b_cp_transaction
+crash_arm64_v8.0.4++> struct journal_head.b_cp_transaction 0xffffff8041338e10 -x
+  b_cp_transaction = 0xffffff80410f1900,
+
+[5] transaction_t -> journal
+crash_arm64_v8.0.4++> struct transaction_t.t_journal 0xffffff80410f1900 -x
+  t_journal = 0xffffff80e70f3000,
+
+[6] j_free & j_max_transaction_buffers
+crash_arm64_v8.0.4++> struct journal_t.j_free,j_max_transaction_buffers 0xffffff80e70f3000 -x
+  j_free = 0x3f1,
+  j_max_transaction_buffers = 0x100,
+
+Suggested-by: Theodore Ts'o <tytso@mit.edu>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Signed-off-by: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
+---
+v3: switch to use getblk_unmoveable as suggested by Theodore Ts'o
+---
+---
+ fs/ext4/inode.c | 9 ++++++++-
+ 1 file changed, 8 insertions(+), 1 deletion(-)
+
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 941c1c0d5c6e..a0f48840c5c1 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -869,7 +869,14 @@ struct buffer_head *ext4_getblk(handle_t *handle, struct inode *inode,
+ 	if (nowait)
+ 		return sb_find_get_block(inode->i_sb, map.m_pblk);
+ 
+-	bh = sb_getblk(inode->i_sb, map.m_pblk);
++	/*
++	 * Since bh could introduce extra ref count such as referred by
++	 * journal_head etc. Try to avoid using __GFP_MOVABLE here
++	 * as it may fail the migration when journal_head remains.
++	 */
++	bh = getblk_unmovable(inode->i_sb->s_bdev, map.m_pblk,
++				inode->i_sb->s_blocksize);
++
+ 	if (unlikely(!bh))
+ 		return ERR_PTR(-ENOMEM);
+ 	if (map.m_flags & EXT4_MAP_NEW) {
+-- 
+2.25.1
+
 
