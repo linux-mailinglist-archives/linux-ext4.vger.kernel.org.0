@@ -1,53 +1,53 @@
-Return-Path: <linux-ext4+bounces-4213-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4214-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C90C97BEAF
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2024 17:35:56 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216F397BEFE
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2024 18:08:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DADE7283C94
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2024 15:35:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFA831F21A47
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Sep 2024 16:08:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 06054188A13;
-	Wed, 18 Sep 2024 15:35:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4383E8493;
+	Wed, 18 Sep 2024 16:08:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dqNrLYkB"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eGPLJksx"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BB7AD299
-	for <linux-ext4@vger.kernel.org>; Wed, 18 Sep 2024 15:35:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D91D71C8FBD
+	for <linux-ext4@vger.kernel.org>; Wed, 18 Sep 2024 16:08:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726673749; cv=none; b=BtqjVy3lzEhFaw5Eu8TeXQOKqlzgXTbitNRTyYQ2ByxdpLbIzhwuke97tE9V6LdcYwEYktFYYX98bZF23DSEe+XEud768y6sA6rL/OlbPnKCUaCzm07lIe10UMK2WQV+XHBmDbmV8/sCscw7Et6VpFY1VdZQgfWqYHMDc6Poyrk=
+	t=1726675713; cv=none; b=Jlwjjz+XiGB/KtGKvIT99qfTZwQX7hvChss2W7AvSlOIYAXhi40YuNZobxW/P70SbynAMQwy61dgmDe4yEnze8UhN1w6Y5nkxHbGsFw3pe40dZ4M4iGoV2jOr96hSCxZ/8Kf8Acke+Q5hEdv6/fp3MqbWpa+iq/9q0jPkMSFgBo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726673749; c=relaxed/simple;
-	bh=Nakw0qADUEp0H9iIlguTIjkA19gJqCAQ9xTbau8F95A=;
+	s=arc-20240116; t=1726675713; c=relaxed/simple;
+	bh=sXt01AExHRRHPZTg8kt7mzq2ofL0OU0voMTNNtfylZ8=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DAiojK4NxFWMP6gIIe7sl77pLPeQ9wvXe57O2J4iRabJBg8kEQC0a9QgC5qoZnwNW+FQQKeKcWCgHrQrATPhTaJu2y4zFa7Ih8PTVO0UAWy26wvG2zFklA24/Im9eVMc5TypYjBqMaOPsU9BUAihZtb+/P/kET9pkRo3+2tsdoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dqNrLYkB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 30579C4CEC2
-	for <linux-ext4@vger.kernel.org>; Wed, 18 Sep 2024 15:35:49 +0000 (UTC)
+	 Content-Type:MIME-Version; b=KeRd3/2QBiX0iAzdYWuUy7rQM/GKaHYbnAO21Iq1XFMEBnY+Myu6CWq2yaX1jy6quo1cb0H5pPHwi9RSdLejnOBYKbct5QgIe6e2xA9OlQFJ4JImCfKv6G2+ob5Nd+USE1ZNemzS23xGC/iowp9ockojCQsdplMv3EnwmvpU8KU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eGPLJksx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id A9E67C4CEC6
+	for <linux-ext4@vger.kernel.org>; Wed, 18 Sep 2024 16:08:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1726673749;
-	bh=Nakw0qADUEp0H9iIlguTIjkA19gJqCAQ9xTbau8F95A=;
+	s=k20201202; t=1726675713;
+	bh=sXt01AExHRRHPZTg8kt7mzq2ofL0OU0voMTNNtfylZ8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=dqNrLYkBt9Ztx5efNU5awFH+7FKAyPtmECDjsyFOFvrcy8iUicmGYH0XCKa3ABHkR
-	 5I2VbOXbqUp5Ky5Q91i2RVEfpBPZLBWRbUypddgnHkXZKexYX0k3bkCTGa+prh6w4C
-	 UKqcZda+HJ15O815sNl1qy21qwMpsUb6zuaueF8blbDymikx7MzUpYDeAoWO/v5uJx
-	 CKbDc61cMUfbxGmGn2M02ETk4eVluX39b//q4PpwX8mTB7L+0U56iXCnerU2VRM/re
-	 gbnNwLBg3HbRtD94U15S0jX/VvIQUSa4dff6JlgdeTtv1gLv74Ks0KmjotCJXCYKPa
-	 SrwJVB+bJS1cA==
+	b=eGPLJksx2wQMerhg6ZnvoF7j7Vu88sUU4cdb4dQAft1jxbDJmuFxZyKD6LTOZYtJJ
+	 Bt4m3HsBB0x3Lg58igvx/BrJgHv3/hiOzhMq6TNKJeJylW21nv1c6D5T5S471fqkzi
+	 3GYHMFirMchWopou5QVXimqPewaH2QwYmApWnUw0BwRMGQdgt168ta6VORSyXYZXnI
+	 8la+mDh7v51YE0Zq/rpQEBh+45mRxvKqmbSbuAsXxTbUhbARjCGnBu2GOuIox/VBvA
+	 GHSaDqgMPXBGvVU0twsCPO2CFCJDmnOuDoc14BRzrK7diMxCun/7Q282V/HLO3yz4k
+	 JZc1oDImHbXfw==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 225BBC53BB8; Wed, 18 Sep 2024 15:35:49 +0000 (UTC)
+	id 9B3D0C53BC3; Wed, 18 Sep 2024 16:08:33 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 219283] kernel regression with ext4 and ea_inode mount flags
  and exercising xattrs (between Linux 6.8 and 6.11)
-Date: Wed, 18 Sep 2024 15:35:48 +0000
+Date: Wed, 18 Sep 2024 16:08:33 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -63,7 +63,7 @@ X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
 X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-219283-13602-iwAPHIVw0u@https.bugzilla.kernel.org/>
+Message-ID: <bug-219283-13602-DlXoU1fag7@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-219283-13602@https.bugzilla.kernel.org/>
 References: <bug-219283-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -79,10 +79,42 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D219283
 
---- Comment #10 from Jan Kara (jack@suse.cz) ---
-Yeah, I'm already watching it because when you narrowed down the range to
-6.9-6.10 I started suspecting this commit :) I'll try to reproduce to debug
-what's going on.
+--- Comment #11 from Jan Kara (jack@suse.cz) ---
+I think I see the problem and AFAICT commit 0a46ef234756dca is just making =
+the
+latent deadlock easier to hit. The problem is shown by these two stacktraces
+from your dmesg:
+
+Task 1
+[  247.045575]  __wait_on_freeing_inode+0xba/0x140
+[  247.045584]  find_inode_fast+0xa4/0xe0
+[  247.045588]  iget_locked+0x71/0x200
+[  247.045597]  __ext4_iget+0x148/0x1080
+[  247.045615]  ext4_xattr_inode_cache_find+0xe2/0x220
+[  247.045621]  ext4_xattr_inode_lookup_create+0x122/0x240
+[  247.045626]  ext4_xattr_block_set+0xc2/0xeb0
+[  247.045633]  ext4_xattr_set_handle+0x4ba/0x650
+[  247.045641]  ext4_xattr_set+0x80/0x160
+
+Task 2
+[  247.043719]  mb_cache_entry_wait_unused+0x9a/0xd0
+[  247.043729]  ext4_evict_ea_inode+0x64/0xb0
+[  247.043733]  ext4_evict_inode+0x35c/0x6d0
+[  247.043739]  evict+0x108/0x2c0
+[  247.043745]  iput+0x14a/0x260
+[  247.043749]  ext4_xattr_ibody_set+0x175/0x1d0
+[  247.043754]  ext4_xattr_set_handle+0x297/0x650
+[  247.043762]  ext4_xattr_set+0x80/0x160
+
+These two tasks are deadlocked against each other. One has dropped the last
+reference to xattr inode and is trying to remove it from memory and waits f=
+or
+corresponding mbcache entry to get unused while another task is holding the
+mbcache entry reference and is waiting for inode to be evicted from memory.
+Commit 0a46ef234756dca removed synchronization on buffer lock for one of the
+hot paths and thus hitting this race is now much more likely.
+
+I just have to make up my mind how to best fix this ABBA deadlock.
 
 --=20
 You may reply to this email to add a comment.
