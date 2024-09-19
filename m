@@ -1,67 +1,71 @@
-Return-Path: <linux-ext4+bounces-4226-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4225-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47B8E97CC03
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 18:06:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 03A8D97CC02
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 18:06:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A2381C22D02
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 16:06:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B9A1D282BB2
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 16:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19B861A0701;
-	Thu, 19 Sep 2024 16:06:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3FC4A1A01CA;
+	Thu, 19 Sep 2024 16:06:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y0VtkBUC"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="B1YeWl7c"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 410151A00D4
-	for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2024 16:06:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342BD12E4A
+	for <linux-ext4@vger.kernel.org>; Thu, 19 Sep 2024 16:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726762001; cv=none; b=IZYF9WAha6ekUbKwzPrfZdz50BOZTKFvtEL3WSW/dN7yuUAJgzmRVXYj96rJ9J/OX1JBBvS7dZzxriUYSVJgoCddkrIAkU07dJtt4UZllaBIReYEGuFW9h1y6pn6q2CLtwp7TLbkplvRZAw/COgRtsRK7kV5UlQId/wkBxgegYM=
+	t=1726762000; cv=none; b=rB0YMmat8sh/5BCMUJsXSIJrWG08Aqgv14j6gVMfhrb7jOKBECKvQISSeSNfGnQu6WzhIKPWOK4zD3VjRR4k8HLBYF56ebFoGkIIsVoeu0wDUfKcBBWz5/KW70c+ciUoi2TrgkQTuXAzJ9sFBvogyjTgqBf5d0nlbYTtR0eJM5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726762001; c=relaxed/simple;
-	bh=9Qq+iN7PzMYtjCVjfoImaHrZ+BBncjDqQchaIziyS4Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=GyuNtRHLgGPc1tzAghawmznREifG/tYFdAFERAxUuslsc8uhbftuvquaJ+un8HoQi81PBlq2Z1zD0N8P8p3/RWlB1TI8DykES5B9ZkK6RFQkVn5Fe4NSkJI+SBzrwFolF+b+9FLvdonXJk8IH5Gx4FBPhvxDWajurtj7kahkl6k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y0VtkBUC; arc=none smtp.client-ip=170.10.133.124
+	s=arc-20240116; t=1726762000; c=relaxed/simple;
+	bh=XEM5F6kFyXLUxyf1vKeQmAjqgM1ZIZmRQvo3zZQoGGY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Oz6gYmm6dt99qze4V1F+pivjNimBBzSbqkDT1v2BmVLvf21nTpTVFFou1BvAhiXmTMOlT8/huOqj/n/YiqlDJbIPMNadYBnHBWYcRE/JNbXb+teiLwgX5dIDhq0qt/7NGlJDBRQfuRZVzvEbNohAWwbu1VKPrFzXy6p5WNB/zqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=B1YeWl7c; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1726761999;
+	s=mimecast20190719; t=1726761998;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=21rYFMXb31lvADICgRw9dmiluvbLAQsvS5HBqpSM0e4=;
-	b=Y0VtkBUCHRQIagrF1APRI8Dj/DsViFFIAhTUQ0k/9GhtDeze/6xEWghqTgdM0r7SBDheZU
-	ZLkXnvQmK7RJAxMbiTVodx3sF/R6GDZODveuyU7bLWhaFVCq4nB5uqFOJOLkzHkFwywyI0
-	ZiIqeWrDZymPMqPyxVsNcv8m2qexrGQ=
-Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+Iu9w4/pdlA/C4lnKYiprUYbbck6Hh3XVGFak1anZvk=;
+	b=B1YeWl7cU+EiWvvNpEYIns9nMkqpHp7FNXubUZnhsuJlwtfVxBM1AlY2SfLneFd2tQDdqk
+	4ZV/OClPcBvczrFCMZBvZ08kIIKBbkY05goGt+8JuRjKxsgk+5uX90yWeC/oIT3/P3hMiD
+	nLZa18HKiQh57aKtSPl1ha+A4Tjp224=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
  (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
  relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-464-U3qnpmrpMeKr523u27Cxxg-1; Thu,
- 19 Sep 2024 12:06:35 -0400
-X-MC-Unique: U3qnpmrpMeKr523u27Cxxg-1
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-336-FDbLKZuHMeKQ0c_FHjUlAQ-1; Thu,
+ 19 Sep 2024 12:06:36 -0400
+X-MC-Unique: FDbLKZuHMeKQ0c_FHjUlAQ-1
 Received: from mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (unknown [10.30.177.17])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E7A0B1955D47;
-	Thu, 19 Sep 2024 16:06:33 +0000 (UTC)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 1F69E1945118;
+	Thu, 19 Sep 2024 16:06:35 +0000 (UTC)
 Received: from bfoster.redhat.com (unknown [10.22.9.175])
-	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 0AF7019560A3;
-	Thu, 19 Sep 2024 16:06:32 +0000 (UTC)
+	by mx-prod-int-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id 3A0A019560A3;
+	Thu, 19 Sep 2024 16:06:34 +0000 (UTC)
 From: Brian Foster <bfoster@redhat.com>
 To: linux-ext4@vger.kernel.org,
 	linux-mm@kvack.org
 Cc: linux-fsdevel@vger.kernel.org,
 	willy@infradead.org
-Subject: [PATCH 0/2] ext4, mm: improve partial inode eof zeroing
-Date: Thu, 19 Sep 2024 12:07:39 -0400
-Message-ID: <20240919160741.208162-1-bfoster@redhat.com>
+Subject: [PATCH 1/2] ext4: partial zero eof block on unaligned inode size extension
+Date: Thu, 19 Sep 2024 12:07:40 -0400
+Message-ID: <20240919160741.208162-2-bfoster@redhat.com>
+In-Reply-To: <20240919160741.208162-1-bfoster@redhat.com>
+References: <20240919160741.208162-1-bfoster@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -72,55 +76,170 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.0 on 10.30.177.17
 
-Hi all,
+Using mapped writes, it's technically possible to expose stale
+post-eof data on a truncate up operation. Consider the following
+example:
 
-I've been poking around at testing zeroing behavior after a couple
-recent enhancements to iomap_zero_range() and fsx[1]. Running [1] on
-ext4 has uncovered a couple issues that I think share responsibility
-between the fs and pagecache.
+$ xfs_io -fc "pwrite 0 2k" -c "mmap 0 4k" -c "mwrite 2k 2k" \
+	-c "truncate 8k" -c "pread -v 2k 16" <file>
+...
+00000800:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
+...
 
-The details are in the commit logs, but patch 1 updates ext4 to do
-partial eof block zeroing in more cases and patch 2 tweaks
-pagecache_isize_extended() to do eof folio zeroing similar to as is done
-during writeback (i.e., ext4_bio_write_folio(),
-iomap_writepage_handle_eof(), etc.). These kind of overlap, but the fs
-changes handle the case of a block straddling eof (so we're writing to
-disk in that case) and the pagecache changes handle the case of a folio
-straddling eof that might be at least partially hole backed (i.e.
-sub-page block sizes, so we're just clearing pagecache).
+This shows that the post-eof data written via mwrite lands within
+EOF after a truncate up. While this is deliberate of the test case,
+behavior is somewhat unpredictable because writeback does post-eof
+zeroing, and writeback can occur at any time in the background. For
+example, an fsync inserted between the mwrite and truncate causes
+the subsequent read to instead return zeroes. This basically means
+that there is a race window in this situation between any subsequent
+extending operation and writeback that dictates whether post-eof
+data is exposed to the file or zeroed.
 
-Aside from general review, my biggest questions WRT patch 1 are 1.
-whether the journalling bits are handled correctly and 2. whether the
-verity case is handled correctly. I recall seeing verity checks around
-the code and I don't know enough about the feature to quite understand
-why. FWIW, I have run fstests against this using various combinations of
-block size and journalling modes without any regression so far. That
-includes enabling generic/363 [1] for ext4, which afaict is now possible
-with these two proposed changes.
+To prevent this problem, perform partial block zeroing as part of
+the various inode size extending operations that are susceptible to
+it. For truncate extension, zero around the original eof similar to
+how truncate down does partial zeroing of the new eof. For extension
+via writes and fallocate related operations, zero the newly exposed
+range of the file to cover any partial zeroing that must occur at
+the original and new eof blocks.
 
-WRT patch 2, I originally tested with unconditional zeroing and added
-the dirty check after. This still survives testing, but I'm having
-second thoughts on whether that is correct or introduces a small race
-window between writeback and an i_size update. I guess there's also a
-question of whether the fs or pagecache should be responsible for this,
-but given writeback and truncate_setsize() behavior this seemed fairly
-consistent to me.
-
-Thoughts, reviews, flames appreciated.
-
-Brian
-
-[1] https://lore.kernel.org/fstests/20240828181534.41054-1-bfoster@redhat.com/
-
-Brian Foster (2):
-  ext4: partial zero eof block on unaligned inode size extension
-  mm: zero range of eof folio exposed by inode size extension
-
+Signed-off-by: Brian Foster <bfoster@redhat.com>
+---
  fs/ext4/extents.c |  7 ++++++-
  fs/ext4/inode.c   | 51 +++++++++++++++++++++++++++++++++--------------
- mm/truncate.c     | 15 ++++++++++++++
- 3 files changed, 57 insertions(+), 16 deletions(-)
+ 2 files changed, 42 insertions(+), 16 deletions(-)
 
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index e067f2dd0335..d43a23abf148 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4457,7 +4457,7 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+ 	int depth = 0;
+ 	struct ext4_map_blocks map;
+ 	unsigned int credits;
+-	loff_t epos;
++	loff_t epos, old_size = i_size_read(inode);
+ 
+ 	BUG_ON(!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS));
+ 	map.m_lblk = offset;
+@@ -4516,6 +4516,11 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+ 			if (ext4_update_inode_size(inode, epos) & 0x1)
+ 				inode_set_mtime_to_ts(inode,
+ 						      inode_get_ctime(inode));
++			if (epos > old_size) {
++				pagecache_isize_extended(inode, old_size, epos);
++				ext4_zero_partial_blocks(handle, inode,
++						     old_size, epos - old_size);
++			}
+ 		}
+ 		ret2 = ext4_mark_inode_dirty(handle, inode);
+ 		ext4_update_inode_fsync_trans(handle, inode, 1);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 03374dc215d1..c8d5334cecca 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1327,8 +1327,10 @@ static int ext4_write_end(struct file *file,
+ 	folio_unlock(folio);
+ 	folio_put(folio);
+ 
+-	if (old_size < pos && !verity)
++	if (old_size < pos && !verity) {
+ 		pagecache_isize_extended(inode, old_size, pos);
++		ext4_zero_partial_blocks(handle, inode, old_size, pos - old_size);
++	}
+ 	/*
+ 	 * Don't mark the inode dirty under folio lock. First, it unnecessarily
+ 	 * makes the holding time of folio lock longer. Second, it forces lock
+@@ -1443,8 +1445,10 @@ static int ext4_journalled_write_end(struct file *file,
+ 	folio_unlock(folio);
+ 	folio_put(folio);
+ 
+-	if (old_size < pos && !verity)
++	if (old_size < pos && !verity) {
+ 		pagecache_isize_extended(inode, old_size, pos);
++		ext4_zero_partial_blocks(handle, inode, old_size, pos - old_size);
++	}
+ 
+ 	if (size_changed) {
+ 		ret2 = ext4_mark_inode_dirty(handle, inode);
+@@ -3015,7 +3019,8 @@ static int ext4_da_do_write_end(struct address_space *mapping,
+ 	struct inode *inode = mapping->host;
+ 	loff_t old_size = inode->i_size;
+ 	bool disksize_changed = false;
+-	loff_t new_i_size;
++	loff_t new_i_size, zero_len = 0;
++	handle_t *handle;
+ 
+ 	if (unlikely(!folio_buffers(folio))) {
+ 		folio_unlock(folio);
+@@ -3059,18 +3064,21 @@ static int ext4_da_do_write_end(struct address_space *mapping,
+ 	folio_unlock(folio);
+ 	folio_put(folio);
+ 
+-	if (old_size < pos)
++	if (pos > old_size) {
+ 		pagecache_isize_extended(inode, old_size, pos);
++		zero_len = pos - old_size;
++	}
+ 
+-	if (disksize_changed) {
+-		handle_t *handle;
++	if (!disksize_changed && !zero_len)
++		return copied;
+ 
+-		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
+-		if (IS_ERR(handle))
+-			return PTR_ERR(handle);
+-		ext4_mark_inode_dirty(handle, inode);
+-		ext4_journal_stop(handle);
+-	}
++	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
++	if (IS_ERR(handle))
++		return PTR_ERR(handle);
++	if (zero_len)
++		ext4_zero_partial_blocks(handle, inode, old_size, zero_len);
++	ext4_mark_inode_dirty(handle, inode);
++	ext4_journal_stop(handle);
+ 
+ 	return copied;
+ }
+@@ -5453,6 +5461,14 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 		}
+ 
+ 		if (attr->ia_size != inode->i_size) {
++			/* attach jbd2 jinode for EOF folio tail zeroing */
++			if (attr->ia_size & (inode->i_sb->s_blocksize - 1) ||
++			    oldsize & (inode->i_sb->s_blocksize - 1)) {
++				error = ext4_inode_attach_jinode(inode);
++				if (error)
++					goto err_out;
++			}
++
+ 			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
+ 			if (IS_ERR(handle)) {
+ 				error = PTR_ERR(handle);
+@@ -5463,12 +5479,17 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 				orphan = 1;
+ 			}
+ 			/*
+-			 * Update c/mtime on truncate up, ext4_truncate() will
+-			 * update c/mtime in shrink case below
++			 * Update c/mtime and tail zero the EOF folio on
++			 * truncate up. ext4_truncate() handles the shrink case
++			 * below.
+ 			 */
+-			if (!shrink)
++			if (!shrink) {
+ 				inode_set_mtime_to_ts(inode,
+ 						      inode_set_ctime_current(inode));
++				if (oldsize & (inode->i_sb->s_blocksize - 1))
++					ext4_block_truncate_page(handle,
++							inode->i_mapping, oldsize);
++			}
+ 
+ 			if (shrink)
+ 				ext4_fc_track_range(handle, inode,
 -- 
 2.45.0
 
