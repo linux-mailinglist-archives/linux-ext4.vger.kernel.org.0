@@ -1,103 +1,103 @@
-Return-Path: <linux-ext4+bounces-4231-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4232-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 33FBF97CED5
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 23:47:42 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 61F0C97CED7
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 23:48:04 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 593D61C216FF
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 21:47:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2328328398D
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Sep 2024 21:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8723F143894;
-	Thu, 19 Sep 2024 21:47:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 980B41CAA6;
+	Thu, 19 Sep 2024 21:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="K1MnR2pG";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="RgtQI6zp";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="bJV2z48B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="qq4S8d0J"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pyM7213R";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TuJ0abXy";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="pyM7213R";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="TuJ0abXy"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70071CAA6;
-	Thu, 19 Sep 2024 21:47:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 561BF13C9B3;
+	Thu, 19 Sep 2024 21:47:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726782455; cv=none; b=lujCpX3ZTUKmWDEOZjHPluB2Gfo9mQ7kMY59p/nKONnkeJFk+A92gnRKA9jvOkHwphNwpZSp4KvykIC40zICn5IjHD+BU6ucpUUckG0vGoIT9lYOHqZGn64hsmyGaeLAEf8JYyj5PuefIFzLdDrvKsdrByWrFEqgtoaWvidSNIs=
+	t=1726782477; cv=none; b=j4YLxj0YY8OxyuPeSgyCeA92cYq5IypzXxMmUK5nkpWS4HWOKAt53+YFLMU/r0SLWD7hTHqA6+ErS4hfxK9jwC+V83tQVvs2K3KlRqVHJ4ZXFJ8eDMtcJG7r0cE01Oek/oJqJRqCjkLRT6TgIThM0A9oXHx2zQ9tn4DuugNXO6E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726782455; c=relaxed/simple;
-	bh=OMbl4BXGmQyO9OIbhoNttq83hZs2fa6Xevvb9yJ9F5Q=;
+	s=arc-20240116; t=1726782477; c=relaxed/simple;
+	bh=etoAhCgNI60x/er/MXTdo9Yb0arJTRyAGibZGSnvn14=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PIq2IJjDOttKCZZ4en6fwIuodpqMcwXPs/+QBe+3lqKnKmKmkXiu7e25UqPuzd9eTJC2c3cPMVJ3AoX3t4uBa71X3Suqa6XJy2dblmrmzOEHRT6ijyhYswwM69kFQTCeBEVl8xgU7O+iRytIq/+vYQqo9j94c37u8scmRoge4nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=K1MnR2pG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=RgtQI6zp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=bJV2z48B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=qq4S8d0J; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=mpM2ihcvytsvA+jOHiOqTNeQ5xHOzCkDHR55QtsJ5UDwFpsF81BNKlSp6DbVRuW62LD5fAKvzYmHWCzaWm3KlX3cDp71Yhvo1F/YkBt7yuS1pKhoTLmlqVXEyVviAcGG60ppQ4itsT60+r2SwTesreZqlqAyEIJKKnUclkAcuzM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pyM7213R; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TuJ0abXy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=pyM7213R; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=TuJ0abXy; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id D135720A42;
-	Thu, 19 Sep 2024 21:47:30 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6E00320A3A;
+	Thu, 19 Sep 2024 21:47:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726782451; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1726782473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7ZCCU/gPfDXlHYe9op4I7AhE0PHClzJ8vhPX7WGahQs=;
-	b=K1MnR2pGw5YQBQzgvNhtrbKh7XJwdEYGUyxWIR6d0zSHOUIr3aChioy1mFzjkh+JSLhHKU
-	aym98kcq4PIeckKa8VkayOCg6PzMhiWy7HCkmGWpyvxUJ+IxsXOY24vWmbWIzVQ+1CRXJu
-	LcEWwiN1c5GJk8dOd6JIK4EdjGsYSFw=
+	bh=g/ehlhNKyDEB6JoO4vBUodODtTFkubik3GDp0EClnXk=;
+	b=pyM7213RNXi3oUDRa+BVEBu8jLi/L321o5I2uXdv/1k2YNnfl94BUReX/43NaijLCYsHCO
+	45lSsMCpE6ub3v/yPEk9khuzSmaLx3OjBCAK5e7szcBY89KzzKZPYu4jcPusyDxxeo4pZF
+	0tsQVO/uP+59xZ0MLF4GJdAhZr9RnGU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726782451;
+	s=susede2_ed25519; t=1726782473;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7ZCCU/gPfDXlHYe9op4I7AhE0PHClzJ8vhPX7WGahQs=;
-	b=RgtQI6zp/p0hdTno0Hi256HfHOcBqp4EJXX2yhyuxIWn7mz/GZrdSfGjFktMBiolo5H8nO
-	i1yGBKW8b8AKXbBQ==
+	bh=g/ehlhNKyDEB6JoO4vBUodODtTFkubik3GDp0EClnXk=;
+	b=TuJ0abXyw3CMh3ZGPHhxx1xstw+YQoYUdM0kcxsoXopuBvAZFJqx96qv0y4tvWgKNSazh1
+	TF8n73V88TwMnGDQ==
 Authentication-Results: smtp-out2.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1726782450; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1726782473; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7ZCCU/gPfDXlHYe9op4I7AhE0PHClzJ8vhPX7WGahQs=;
-	b=bJV2z48Bgf/Xe49pXLfgio0rFWjBi5XAy3jd28dyu+9y4V5tl8i8UQ8fxdZM+6Q8++xGKW
-	dyAM7a4/RxR7InbT1mmcusZUxXbtMVODJH6FKC9rDGC1fHOtvAVT0rfIYnvGzo4RmpJtxd
-	MyK9EM0M+awY0VYSM12kZHNMQjr1Id4=
+	bh=g/ehlhNKyDEB6JoO4vBUodODtTFkubik3GDp0EClnXk=;
+	b=pyM7213RNXi3oUDRa+BVEBu8jLi/L321o5I2uXdv/1k2YNnfl94BUReX/43NaijLCYsHCO
+	45lSsMCpE6ub3v/yPEk9khuzSmaLx3OjBCAK5e7szcBY89KzzKZPYu4jcPusyDxxeo4pZF
+	0tsQVO/uP+59xZ0MLF4GJdAhZr9RnGU=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1726782450;
+	s=susede2_ed25519; t=1726782473;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=7ZCCU/gPfDXlHYe9op4I7AhE0PHClzJ8vhPX7WGahQs=;
-	b=qq4S8d0J1tDEEU9ydG5K2NlBP89AMgX0PJdxawzEUK6LVe2gG1UkEWVctedV3t/RdvOv05
-	Mc273Sp+uxuRTXCg==
+	bh=g/ehlhNKyDEB6JoO4vBUodODtTFkubik3GDp0EClnXk=;
+	b=TuJ0abXyw3CMh3ZGPHhxx1xstw+YQoYUdM0kcxsoXopuBvAZFJqx96qv0y4tvWgKNSazh1
+	TF8n73V88TwMnGDQ==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C814413A1E;
-	Thu, 19 Sep 2024 21:47:30 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6330113A1E;
+	Thu, 19 Sep 2024 21:47:53 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 2YbUMPKb7GbYQgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 19 Sep 2024 21:47:30 +0000
+	id z5E1GAmc7Gb5QgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 19 Sep 2024 21:47:53 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7323DA08BD; Thu, 19 Sep 2024 23:47:30 +0200 (CEST)
-Date: Thu, 19 Sep 2024 23:47:30 +0200
+	id 31C9DA08BD; Thu, 19 Sep 2024 23:47:49 +0200 (CEST)
+Date: Thu, 19 Sep 2024 23:47:49 +0200
 From: Jan Kara <jack@suse.cz>
 To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
 Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
 	Jan Kara <jack@suse.cz>,
 	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
 	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 2/2] ext4: mark fc as ineligible using an handle in
- ext4_xattr_set()
-Message-ID: <20240919214730.gza4j3gkrn34tcyn@quack3>
+Subject: Re: [PATCH 1/2] ext4: use handle to mark fc as ineligible in
+ __track_dentry_update()
+Message-ID: <20240919214749.s2imkiffjfc5ziqe@quack3>
 References: <20240919093848.2330-1-luis.henriques@linux.dev>
- <20240919093848.2330-3-luis.henriques@linux.dev>
+ <20240919093848.2330-2-luis.henriques@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -106,7 +106,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240919093848.2330-3-luis.henriques@linux.dev>
+In-Reply-To: <20240919093848.2330-2-luis.henriques@linux.dev>
 X-Spam-Score: -3.80
 X-Spamd-Result: default: False [-3.80 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
@@ -133,58 +133,104 @@ X-Spamd-Result: default: False [-3.80 / 50.00];
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Thu 19-09-24 10:38:48, Luis Henriques (SUSE) wrote:
+On Thu 19-09-24 10:38:47, Luis Henriques (SUSE) wrote:
 > Calling ext4_fc_mark_ineligible() with a NULL handle is racy and may result
 > in a fast-commit being done before the filesystem is effectively marked as
-> ineligible.  This patch reduces the risk of this happening in function
-> ext4_xattr_set() by using an handle if one is available.
+> ineligible.  This patch fixes the calls to this function in
+> __track_dentry_update() by adding an extra parameter to the callback used in
+> ext4_fc_track_template().
 > 
 > Suggested-by: Jan Kara <jack@suse.cz>
 > Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
 
-One comment below:
+This looks good. Feel free to add:
 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 46ce2f21fef9..dbe4d11cd332 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -2554,11 +2554,15 @@ ext4_xattr_set(struct inode *inode, int name_index, const char *name,
->  	handle = ext4_journal_start(inode, EXT4_HT_XATTR, credits);
->  	if (IS_ERR(handle)) {
->  		error = PTR_ERR(handle);
-> +		ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_XATTR,
-> +					NULL);
-
-So when starting a transaction fails:
-
-a) We have a big problem, the journal is aborted so marking fs ineligible
-is moot.
-
-b) We don't set anything and bail with error to userspace so again marking
-fs as ineligible is pointless.
-
-So there's no need to do anything in this case.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
 
->  	} else {
->  		int error2;
->  
->  		error = ext4_xattr_set_handle(handle, inode, name_index, name,
->  					      value, value_len, flags);
-> +		ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_XATTR,
-> +					handle);
->  		error2 = ext4_journal_stop(handle);
->  		if (error == -ENOSPC &&
->  		    ext4_should_retry_alloc(sb, &retries))
-> @@ -2566,7 +2570,6 @@ ext4_xattr_set(struct inode *inode, int name_index, const char *name,
->  		if (error == 0)
->  			error = error2;
+> ---
+>  fs/ext4/fast_commit.c | 19 +++++++++++--------
+>  1 file changed, 11 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 3926a05eceee..c330efd771d1 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -372,7 +372,7 @@ void ext4_fc_mark_ineligible(struct super_block *sb, int reason, handle_t *handl
+>   */
+>  static int ext4_fc_track_template(
+>  	handle_t *handle, struct inode *inode,
+> -	int (*__fc_track_fn)(struct inode *, void *, bool),
+> +	int (*__fc_track_fn)(handle_t *handle, struct inode *, void *, bool),
+>  	void *args, int enqueue)
+>  {
+>  	bool update = false;
+> @@ -389,7 +389,7 @@ static int ext4_fc_track_template(
+>  		ext4_fc_reset_inode(inode);
+>  		ei->i_sync_tid = tid;
 >  	}
-> -	ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_XATTR, NULL);
+> -	ret = __fc_track_fn(inode, args, update);
+> +	ret = __fc_track_fn(handle, inode, args, update);
+>  	mutex_unlock(&ei->i_fc_lock);
 >  
->  	return error;
+>  	if (!enqueue)
+> @@ -413,7 +413,8 @@ struct __track_dentry_update_args {
+>  };
+>  
+>  /* __track_fn for directory entry updates. Called with ei->i_fc_lock. */
+> -static int __track_dentry_update(struct inode *inode, void *arg, bool update)
+> +static int __track_dentry_update(handle_t *handle, struct inode *inode,
+> +				 void *arg, bool update)
+>  {
+>  	struct ext4_fc_dentry_update *node;
+>  	struct ext4_inode_info *ei = EXT4_I(inode);
+> @@ -428,14 +429,14 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
+>  
+>  	if (IS_ENCRYPTED(dir)) {
+>  		ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_ENCRYPTED_FILENAME,
+> -					NULL);
+> +					handle);
+>  		mutex_lock(&ei->i_fc_lock);
+>  		return -EOPNOTSUPP;
+>  	}
+>  
+>  	node = kmem_cache_alloc(ext4_fc_dentry_cachep, GFP_NOFS);
+>  	if (!node) {
+> -		ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_NOMEM, NULL);
+> +		ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_NOMEM, handle);
+>  		mutex_lock(&ei->i_fc_lock);
+>  		return -ENOMEM;
+>  	}
+> @@ -447,7 +448,7 @@ static int __track_dentry_update(struct inode *inode, void *arg, bool update)
+>  		node->fcd_name.name = kmalloc(dentry->d_name.len, GFP_NOFS);
+>  		if (!node->fcd_name.name) {
+>  			kmem_cache_free(ext4_fc_dentry_cachep, node);
+> -			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_NOMEM, NULL);
+> +			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_NOMEM, handle);
+>  			mutex_lock(&ei->i_fc_lock);
+>  			return -ENOMEM;
+>  		}
+> @@ -569,7 +570,8 @@ void ext4_fc_track_create(handle_t *handle, struct dentry *dentry)
 >  }
+>  
+>  /* __track_fn for inode tracking */
+> -static int __track_inode(struct inode *inode, void *arg, bool update)
+> +static int __track_inode(handle_t *handle, struct inode *inode, void *arg,
+> +			 bool update)
+>  {
+>  	if (update)
+>  		return -EEXIST;
+> @@ -607,7 +609,8 @@ struct __track_range_args {
+>  };
+>  
+>  /* __track_fn for tracking data updates */
+> -static int __track_range(struct inode *inode, void *arg, bool update)
+> +static int __track_range(handle_t *handle, struct inode *inode, void *arg,
+> +			 bool update)
+>  {
+>  	struct ext4_inode_info *ei = EXT4_I(inode);
+>  	ext4_lblk_t oldstart;
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
