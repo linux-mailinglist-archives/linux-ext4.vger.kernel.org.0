@@ -1,236 +1,250 @@
-Return-Path: <linux-ext4+bounces-4237-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4238-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 92F0B97D734
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 17:00:54 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 46D4D97D740
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 17:05:25 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C56981C20B30
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 15:00:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97CABB248B8
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 15:05:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4FE6317B41F;
-	Fri, 20 Sep 2024 15:00:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3900C17C7C9;
+	Fri, 20 Sep 2024 15:05:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mS10Vzci"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="H7wSq9eK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 875CA1EA84;
-	Fri, 20 Sep 2024 15:00:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A53178CC5;
+	Fri, 20 Sep 2024 15:05:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726844447; cv=none; b=ULKoxFGJEVzy91YHIw5WgmuCuGtUL+fH5kW4hz/VKgeb1w8xV/U2VDaUMs1cnqJ8EuMzmaELPPH9FdMP1BkUFUG9Y/znujkz+iWwnQChJLJlNKTjL7c0RHIGOh3C+6gsdrd3sVY+o0mEz1WNVS1E7KbWEkZMqWLC3R0C5FkADW8=
+	t=1726844713; cv=none; b=Ntx+QeoN0SulnD22vbLkc5z0SFVIIglR0dN61gs8i9deHaUBcmMe2Fj1czHBQmMf5PO2CtTKzwAbHLUFCGtEyvhtEkhscjWTTXb7jAgcEyNMwYk2o1ubhONn6D6CLSWlGfqmcp/w7LujT8qANPdYzekLSSbpYvScpDSDlRZs1UQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726844447; c=relaxed/simple;
-	bh=0ASLXfSVwbMq6iMZVMyo10HW1dHGWEbdZFqwz6cyu9Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=aPXG0Gs+86BZR81xGZ7ti5YRM+jKLeq9UZTDHYKEDdlcrTb6TICSYc+mLcVKGE7VgsfqTRL8zgq5DH/W8CDPvcDnVtwiL7f0b4WQZOj1+qT1tZuceZFfX/c+wxqQS6w4aqKRjsxAAMQduzn+FfesJlkY8mmW1qMcvjL4a7WcLkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mS10Vzci; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-205909afad3so26652465ad.2;
-        Fri, 20 Sep 2024 08:00:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1726844445; x=1727449245; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=TvEkmf5URJ1aeSmER0MrZLqGQs3JKg0CwGkoOctEdws=;
-        b=mS10Vzci6mhSep3lai7Ku14nv15J4jRYU6cqDBbRJXX/Y4eV/tjPUbOO2kmIOIXp1l
-         CWvotrgDghzy8ucqlt61/X+GbAt2NKDecuRq/8JExXthyMupLC4qEDj9wtrsPjKMN0Du
-         GjH0lSQOxqzlv+Ofp/5+aYMtiLlbLm1lyUYaaNII61gDdzxOVKyAGeUQPCECC9h8ScaX
-         6vQBK9LYEKtWP3BDkiQjvhBhTd/rO8hHpiu/cjL44EW6w21vGKuqNGmtxcMB9vBWmUR8
-         RKQpcxzYWT0ZfDfAjonz6X6MvtM0OO3++xW6a+NFAGyLFtAOYI5PvsiY4uLvbNQNGZJO
-         AB/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1726844445; x=1727449245;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TvEkmf5URJ1aeSmER0MrZLqGQs3JKg0CwGkoOctEdws=;
-        b=gJGTEfUmToNpv7GQRrKyMy5m9cg73k6p+OzcyK0th/+EdWm1F6+3rJw6S8xRbIGFXw
-         Ql++ZjwORHIqARzbyiKtRG9CwTkxtA0f6oLnVQ4ZXxK+/lz/+rum2f4+Bh9X+/JuUxEk
-         LjolKFnI7s0v+afg+UD55o1+HUSszB4JkZOdD3BGQW9y3ETtIX6KwRD6dsJibltcB1PH
-         JXZNhhF4kMTAss8W+clGz3rBuEOQKzdI2Ffx00iH2cZ2CCBDSdsz2IkTdCN3hQqKLILa
-         LabqIIncEva73JLsX6U5Xz7uJnDgQxEg7Nl0F1hNfy8NKzNO1y+3ItCoUjY5c/lh7y7J
-         Zo0g==
-X-Forwarded-Encrypted: i=1; AJvYcCUguK2+Va6VWX6LnJsz5TGdTfX1X40nDKAu15DnldzQ8dL9YBhDJzhlxLg7eWGrTcCgUtQkap/K+/5+@vger.kernel.org, AJvYcCXSwB09AuUT/p8X8q2TyKZXeEMpSzXpyabaefoBWQVxHmR7BXOGAmdx+c98ADIZsP1NJ15Yw7YlCQRMZKYG@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzf2luJqFv6QWEvwWJY4byRlCeadKSPbsobaBItqGbPH77QbN99
-	NVyIyD8BtJGsw+HiC7nQPZF0hpBNBZJjzN9YCY7aPfec/MaPh+5hsATX+tAR
-X-Google-Smtp-Source: AGHT+IF/iz6QKaBigAHbbFuRIWDoJr/3bOq3rNTvobPeENpmYtCeopnab2S0vL0c1j4Md5OnTfBVEA==
-X-Received: by 2002:a17:902:d4ce:b0:206:b399:2f21 with SMTP id d9443c01a7336-208d840808dmr42159785ad.43.1726844423660;
-        Fri, 20 Sep 2024 08:00:23 -0700 (PDT)
-Received: from kernelexploit-virtual-machine.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-207946d15fesm96196865ad.162.2024.09.20.08.00.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Sep 2024 08:00:23 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: akpm@osdl.org,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH v2] ext4: prevent data-race that occur when read/write ext4_group_desc structure members
-Date: Sat, 21 Sep 2024 00:00:13 +0900
-Message-Id: <20240920150013.2447-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1726844713; c=relaxed/simple;
+	bh=hy0yaNATSBW6HFAtXgqFKMg6kFdVeMn/ISUMPkMHW0o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YQw4We6OrHVEEE9N+2MW7uKHG/aYPLsBzPLiuQjy0fqw6G2R/DsjOlrwHoayMev39c7pLhm6xBit+c4d6cqUYXV404ELO4Uh+3QN0d0j5DV1Kw1N3QpwErzsPPvsTtFtpS6v++/QMsrcM4oufO6zeUy3ldLGKUh44pEDzlaCXNw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=H7wSq9eK; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48K7IUTT018163;
+	Fri, 20 Sep 2024 15:04:57 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
+	:from:to:cc:subject:message-id:references:mime-version
+	:content-type:in-reply-to; s=pp1; bh=hBOva1nCLu1YkoUWtKFqjSHLjIa
+	NINMLna+tFGpx2f0=; b=H7wSq9eKqkh+DjNQ/hnG+ZmqOdR5uUBHBTqx8p1xgkE
+	cZ7OWBuVNDb5O0659GNDsEIshlJP9F3ygpbrU4txJKCrsAPFTeS3ihH/VgydKFBL
+	uLsDAe3ZqSxwWM8FM31cn4WOqGm91GDF9liYYL8zV4RbxlWaBM2V5JyDsDDyY7y/
+	9KJ5E17BMYS2xVOGwcLet2QRbnnCmDwYytuUdaH+7mT5Kxi7K6KNLa/D4FeDGfYD
+	qqHdhM/2HBI9lgwYyND6CmyKZP42YLVwI1CeKIx362oczPY8qG8zth9txmOq5zfa
+	KPhxHmEX5CbBsrJc3MqSrrsN9DcXndAdBDBN6t9jjnw==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41n3vpbyv9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Sep 2024 15:04:57 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 48KF4uGA007341;
+	Fri, 20 Sep 2024 15:04:56 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41n3vpbyv5-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Sep 2024 15:04:56 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48KBwFKp024672;
+	Fri, 20 Sep 2024 15:04:55 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 41nq1nfpf1-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 20 Sep 2024 15:04:55 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48KF4seS39649734
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 20 Sep 2024 15:04:54 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0AE8F20040;
+	Fri, 20 Sep 2024 15:04:54 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 5A13220043;
+	Fri, 20 Sep 2024 15:04:52 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.218.203])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 20 Sep 2024 15:04:52 +0000 (GMT)
+Date: Fri, 20 Sep 2024 20:34:49 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Dave Chinner <david@fromorbit.com>
+Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
+        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        "Darrick J . Wong" <djwong@kernel.org>, linux-fsdevel@vger.kernel.org,
+        John Garry <john.g.garry@oracle.com>, dchinner@redhat.com
+Subject: Re: [RFC 0/5] ext4: Implement support for extsize hints
+Message-ID: <Zu2PEXtKMAUN5CyV@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <cover.1726034272.git.ojaswin@linux.ibm.com>
+ <ZuqjU0KcCptQKrFs@dread.disaster.area>
+ <ZuvPDQ+S/u4FdNNU@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <Zuym5suTo/KYUAND@dread.disaster.area>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zuym5suTo/KYUAND@dread.disaster.area>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: IseEDR8wnXBf21xRi0Rc59LkXBRvuYAW
+X-Proofpoint-GUID: WjHLczP8o4B6uChnJtkS_OdA7-Ctz_Hf
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
+ definitions=2024-09-20_07,2024-09-19_01,2024-09-02_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
+ priorityscore=1501 phishscore=0 clxscore=1015 malwarescore=0 bulkscore=0
+ impostorscore=0 spamscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
+ definitions=main-2409200110
 
-Currently, data-race like [1] occur in fs/ext4/ialloc.c
+On Fri, Sep 20, 2024 at 08:34:14AM +1000, Dave Chinner wrote:
+> On Thu, Sep 19, 2024 at 12:43:17PM +0530, Ojaswin Mujoo wrote:
+> > On Wed, Sep 18, 2024 at 07:54:27PM +1000, Dave Chinner wrote:
+> > > On Wed, Sep 11, 2024 at 02:31:04PM +0530, Ojaswin Mujoo wrote:
+> > > Behaviour such as extent size hinting *should* be the same across
+> > > all filesystems that provide this functionality.  This makes using
+> > > extent size hints much easier for users, admins and application
+> > > developers. The last thing I want to hear is application devs tell
+> > > me at conferences that "we don't use extent size hints anymore
+> > > because ext4..."
+> > 
+> > Yes, makes sense :)  
+> > 
+> > Nothing to worry here tho as ext4 also treats the extsize value as a
+> > hint exactly like XFS. We have tried to keep the behavior as similar
+> > to XFS as possible for the exact reasons you mentioned. 
+> 
+> It is worth explicitly stating this (i.e. all the behaviours that
+> are the same) in the design documentation rather than just the
+> corner cases where it is different. It was certainly not clear how
+> failures were treated.
 
-find_group_other() and find_group_orlov() read multiple ext4_groups but
-do not protect them with locks, which causes data-race. I think it would
-be appropriate to add ext4_lock_group() at an appropriate location to solve
-this.
+Got it Dave, I did mention it in the actual commit 5/5 but I agree. I
+will update the cover letter to be more clear about the design in future
+revisions.
 
-[1]
+> 
+> > And yes, we do plan to add a forcealign (or similar) feature for ext4 as
+> > well for atomic writes which would change the hint to a mandate
+> 
+> Ok. That should be stated, too.
+> 
+> FWIW, it would be a good idea to document this all in the kernel
+> documentation itself, so there is a guideline for other filesystems
+> to implement the same behaviour. e.g. in
+> Documentation/filesystems/extent-size-hints.rst
 
-==================================================================
-BUG: KCSAN: data-race in ext4_free_inodes_count / ext4_free_inodes_set
+Okay makes sense, I can look into this as a next step.
 
-write to 0xffff88810404300e of 2 bytes by task 6254 on cpu 1:
- ext4_free_inodes_set+0x1f/0x80 fs/ext4/super.c:405
- __ext4_new_inode+0x15ca/0x2200 fs/ext4/ialloc.c:1216
- ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
- vfs_symlink+0xca/0x1d0 fs/namei.c:4615
- do_symlinkat+0xe3/0x340 fs/namei.c:4641
- __do_sys_symlinkat fs/namei.c:4657 [inline]
- __se_sys_symlinkat fs/namei.c:4654 [inline]
- __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
- x64_sys_call+0x1dda/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:267
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> 
+> > > > 2. eof allocation on XFS trims the blocks allocated beyond eof with extsize
+> > > >    hint. That means on XFS for eof allocations (with extsize hint) only logical
+> > > >    start gets aligned.
+> > > 
+> > > I'm not sure I understand what you are saying here. XFS does extsize
+> > > alignment of both the start and end of post-eof extents the same as
+> > > it does for extents within EOF. For example:
+> > > 
+> > > # xfs_io -fdc "truncate 0" -c "extsize 16k" -c "pwrite 0 4k" -c "bmap -vvp" foo
+> > > wrote 4096/4096 bytes at offset 0
+> > > 4 KiB, 1 ops; 0.0308 sec (129.815 KiB/sec and 32.4538 ops/sec)
+> > > foo:
+> > > EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET        TOTAL FLAGS
+> > >    0: [0..7]:          256504..256511    0 (256504..256511)     8 000000
+> > >    1: [8..31]:         256512..256535    0 (256512..256535)    24 010000
+> > >  FLAG Values:
+> > >     0100000 Shared extent
+> > >     0010000 Unwritten preallocated extent
+> > > 
+> > > There's a 4k written extent at 0, and a 12k unwritten extent
+> > > beyond EOF at 4k. I.e. we have an extent of 16kB as the hint
+> > > required that is correctly aligned beyond EOF.
+> > > 
+> > > If I then write another 4k at 20k (beyond both EOF and the unwritten
+> > > extent beyond EOF:
+> > > 
+> > > # xfs_io -fdc "truncate 0" -c "extsize 16k" -c "pwrite 0 4k" -c "pwrite 20k 4k" -c "bmap -vvp" foo
+> > > wrote 4096/4096 bytes at offset 0
+> > > 4 KiB, 1 ops; 0.0210 sec (190.195 KiB/sec and 47.5489 ops/sec)
+> > > wrote 4096/4096 bytes at offset 20480
+> > > 4 KiB, 1 ops; 0.0001 sec (21.701 MiB/sec and 5555.5556 ops/sec)
+> > > foo:
+> > >  EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET        TOTAL FLAGS
+> > >    0: [0..7]:          180000..180007    0 (180000..180007)     8 000000
+> > >    1: [8..39]:         180008..180039    0 (180008..180039)    32 010000
+> > >    2: [40..47]:        180040..180047    0 (180040..180047)     8 000000
+> > >    3: [48..63]:        180048..180063    0 (180048..180063)    16 010000
+> > >  FLAG Values:
+> > >     0100000 Shared extent
+> > >     0010000 Unwritten preallocated extent
+> > > 
+> > > You can see we did contiguous allocation of another 16kB at offset
+> > > 16kB, and then wrote to 20k for 4kB.. i.e. the new extent was
+> > > correctly aligned at both sides as the extsize hint says it should
+> > > be....
+> > 
+> > Sorry for the confusion Dave. What was meant is that XFS would indeed
+> > respect extsize hint for EOF allocations but if we close the file, since
+> > we trim the blocks past EOF upon close, we would only see that the
+> > lstart is aligned but the end would not.
+> 
+> Right, but that is desired behaviour, especially when extsize is
+> large.  i.e. when the file is closed it is an indication that the
+> file will not be written again, so we don't need to keep post-eof
+> blocks around for fragmentation prevention reasons.
+> 
+> Removing post-EOF extents on close prevents large extsize hints from
+> consuming lots of unused space on files that are never going to be
+> written to again(*).  That's user visible, and because it can cause
+> premature ENOSPC, users will report this excessive space usage
+> behaviour as a bug (and they are right).  Hence removing post-eof
+> extents on file close when extent size hints are in use comes under
+> the guise of Good Behaviour To Have.
+> 
+> (*) think about how much space is wasted if you clone a kernel git
+> tree under a 1MB extent size hint directory. All those tiny header
+> files now take up 1MB of space on disk....
+> 
+> Keep in mind that when the file is opened for write again, the
+> extent size hint still gets applied to the new extents.  If the
+> extending write starts beyond the EOF extsize range, then the new
+> extent after the hole at EOF will be fully extsize aligned, as
+> expected.
+> 
+> If the new write is exactly extending the file, then the new extents
+> will not be extsize aligned - the start will be at the EOF block,
+> and they will be extsize -length-.  IOWs, the extent size is
+> maintained, just the logical alignment is not exactly extsize
+> aligned. This could be considered a bug, but it's never been an
+> issue for anyone because, in XFS, physical extent alignment is
+> separate (and maintained regardless of logical alignment) for extent
+> size hint based allocations.
+> 
+> Adding force-align will prevent this behaviour from occurring, as
+> post-eof trimming will be done to extsize alignment, not to the EOF
+> block.  Hence open/close/open will not affect logical or physical
+> alignment of force-align extents (and hence won't affect atomic
+> writes).
 
-read to 0xffff88810404300e of 2 bytes by task 6257 on cpu 0:
- ext4_free_inodes_count+0x1c/0x80 fs/ext4/super.c:349
- find_group_other fs/ext4/ialloc.c:594 [inline]
- __ext4_new_inode+0x6ec/0x2200 fs/ext4/ialloc.c:1017
- ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
- vfs_symlink+0xca/0x1d0 fs/namei.c:4615
- do_symlinkat+0xe3/0x340 fs/namei.c:4641
- __do_sys_symlinkat fs/namei.c:4657 [inline]
- __se_sys_symlinkat fs/namei.c:4654 [inline]
- __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
- x64_sys_call+0x1dda/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:267
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+Thanks for the context, I will try to keep this behavior similar to XFS
+once we implement the EOF support for extsize hints in next revision.
 
-value changed: 0x185c -> 0x185b
-
-Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- fs/ext4/ialloc.c | 27 ++++++++++++++++++++++++---
- 1 file changed, 24 insertions(+), 3 deletions(-)
-
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 9dfd768ed9f8..5cae247ff21f 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -500,11 +500,14 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
- 		for (i = 0; i < flex_size; i++) {
- 			if (grp+i >= real_ngroups)
- 				break;
-+			ext4_lock_group(sb, grp+i);
- 			desc = ext4_get_group_desc(sb, grp+i, NULL);
- 			if (desc && ext4_free_inodes_count(sb, desc)) {
- 				*group = grp+i;
-+				ext4_unlock_group(sb, grp+i);
- 				return 0;
- 			}
-+			ext4_unlock_group(sb, grp+i);
- 		}
- 		goto fallback;
- 	}
-@@ -544,14 +547,17 @@ static int find_group_orlov(struct super_block *sb, struct inode *parent,
- 	parent_group = EXT4_I(parent)->i_block_group;
- 	for (i = 0; i < ngroups; i++) {
- 		grp = (parent_group + i) % ngroups;
-+		ext4_lock_group(sb, grp);
- 		desc = ext4_get_group_desc(sb, grp, NULL);
- 		if (desc) {
- 			grp_free = ext4_free_inodes_count(sb, desc);
- 			if (grp_free && grp_free >= avefreei) {
- 				*group = grp;
-+				ext4_unlock_group(sb, grp);
- 				return 0;
- 			}
- 		}
-+		ext4_unlock_group(sb, grp);
- 	}
- 
- 	if (avefreei) {
-@@ -590,11 +596,14 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
- 		if (last > ngroups)
- 			last = ngroups;
- 		for  (i = parent_group; i < last; i++) {
-+			ext4_lock_group(sb, i);
- 			desc = ext4_get_group_desc(sb, i, NULL);
- 			if (desc && ext4_free_inodes_count(sb, desc)) {
- 				*group = i;
-+				ext4_unlock_group(sb, i);
- 				return 0;
- 			}
-+			ext4_unlock_group(sb, i);
- 		}
- 		if (!retry && EXT4_I(parent)->i_last_alloc_group != ~0) {
- 			retry = 1;
-@@ -616,10 +625,14 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
- 	 * Try to place the inode in its parent directory
- 	 */
- 	*group = parent_group;
-+	ext4_lock_group(sb, *group);
- 	desc = ext4_get_group_desc(sb, *group, NULL);
- 	if (desc && ext4_free_inodes_count(sb, desc) &&
--	    ext4_free_group_clusters(sb, desc))
-+	    ext4_free_group_clusters(sb, desc)) {
-+		ext4_unlock_group(sb, *group);
- 		return 0;
-+	}
-+	ext4_unlock_group(sb, *group);
- 
- 	/*
- 	 * We're going to place this inode in a different blockgroup from its
-@@ -640,10 +653,14 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
- 		*group += i;
- 		if (*group >= ngroups)
- 			*group -= ngroups;
-+		ext4_lock_group(sb, *group);
- 		desc = ext4_get_group_desc(sb, *group, NULL);
- 		if (desc && ext4_free_inodes_count(sb, desc) &&
--		    ext4_free_group_clusters(sb, desc))
-+		    ext4_free_group_clusters(sb, desc)) {
-+			ext4_unlock_group(sb, *group);
- 			return 0;
-+		}
-+		ext4_unlock_group(sb, *group);
- 	}
- 
- 	/*
-@@ -654,9 +671,13 @@ static int find_group_other(struct super_block *sb, struct inode *parent,
- 	for (i = 0; i < ngroups; i++) {
- 		if (++*group >= ngroups)
- 			*group = 0;
-+		ext4_lock_group(sb, *group);
- 		desc = ext4_get_group_desc(sb, *group, NULL);
--		if (desc && ext4_free_inodes_count(sb, desc))
-+		if (desc && ext4_free_inodes_count(sb, desc)) {
-+			ext4_unlock_group(sb, *group);
- 			return 0;
-+		}
-+		ext4_unlock_group(sb, *group);
- 	}
- 
- 	return -1;
---
+Regards,
+Ojaswin
+> 
+> -Dave.
+> -- 
+> Dave Chinner
+> david@fromorbit.com
 
