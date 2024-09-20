@@ -1,92 +1,104 @@
-Return-Path: <linux-ext4+bounces-4238-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4239-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 46D4D97D740
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 17:05:25 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E53C97D805
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 18:04:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 97CABB248B8
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 15:05:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 51D291C230AF
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Sep 2024 16:04:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3900C17C7C9;
-	Fri, 20 Sep 2024 15:05:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CD9917D35C;
+	Fri, 20 Sep 2024 16:04:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="H7wSq9eK"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2KhzUCXF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+/UDBwsV";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2KhzUCXF";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="+/UDBwsV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4A53178CC5;
-	Fri, 20 Sep 2024 15:05:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 023C72AE69;
+	Fri, 20 Sep 2024 16:04:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1726844713; cv=none; b=Ntx+QeoN0SulnD22vbLkc5z0SFVIIglR0dN61gs8i9deHaUBcmMe2Fj1czHBQmMf5PO2CtTKzwAbHLUFCGtEyvhtEkhscjWTTXb7jAgcEyNMwYk2o1ubhONn6D6CLSWlGfqmcp/w7LujT8qANPdYzekLSSbpYvScpDSDlRZs1UQ=
+	t=1726848287; cv=none; b=Uvuk7xoxlCWzMf7onoP6cge3aX+b64ghs6TyesxOJyLVNsp9kYmFdE53p03xEpU3VxTpgNrYdvF5e/t+G6jfr49+l8jPtipT+JPFj1x8PwOOvfIuBI6H/6g7h2TiVtunmMYC2dxzGO9sHZ0pRaQjn7zTqbJ2hk4sSYpH9X+GICw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1726844713; c=relaxed/simple;
-	bh=hy0yaNATSBW6HFAtXgqFKMg6kFdVeMn/ISUMPkMHW0o=;
+	s=arc-20240116; t=1726848287; c=relaxed/simple;
+	bh=41r70M6F7uYaG+TOVb0WDC0Ir3ygU6zSKEeeSHHqIdU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YQw4We6OrHVEEE9N+2MW7uKHG/aYPLsBzPLiuQjy0fqw6G2R/DsjOlrwHoayMev39c7pLhm6xBit+c4d6cqUYXV404ELO4Uh+3QN0d0j5DV1Kw1N3QpwErzsPPvsTtFtpS6v++/QMsrcM4oufO6zeUy3ldLGKUh44pEDzlaCXNw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=H7wSq9eK; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48K7IUTT018163;
-	Fri, 20 Sep 2024 15:04:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
-	:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pp1; bh=hBOva1nCLu1YkoUWtKFqjSHLjIa
-	NINMLna+tFGpx2f0=; b=H7wSq9eKqkh+DjNQ/hnG+ZmqOdR5uUBHBTqx8p1xgkE
-	cZ7OWBuVNDb5O0659GNDsEIshlJP9F3ygpbrU4txJKCrsAPFTeS3ihH/VgydKFBL
-	uLsDAe3ZqSxwWM8FM31cn4WOqGm91GDF9liYYL8zV4RbxlWaBM2V5JyDsDDyY7y/
-	9KJ5E17BMYS2xVOGwcLet2QRbnnCmDwYytuUdaH+7mT5Kxi7K6KNLa/D4FeDGfYD
-	qqHdhM/2HBI9lgwYyND6CmyKZP42YLVwI1CeKIx362oczPY8qG8zth9txmOq5zfa
-	KPhxHmEX5CbBsrJc3MqSrrsN9DcXndAdBDBN6t9jjnw==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41n3vpbyv9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Sep 2024 15:04:57 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 48KF4uGA007341;
-	Fri, 20 Sep 2024 15:04:56 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41n3vpbyv5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Sep 2024 15:04:56 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48KBwFKp024672;
-	Fri, 20 Sep 2024 15:04:55 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 41nq1nfpf1-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Sep 2024 15:04:55 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48KF4seS39649734
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 20 Sep 2024 15:04:54 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0AE8F20040;
-	Fri, 20 Sep 2024 15:04:54 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5A13220043;
-	Fri, 20 Sep 2024 15:04:52 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.218.203])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 20 Sep 2024 15:04:52 +0000 (GMT)
-Date: Fri, 20 Sep 2024 20:34:49 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-ext4@vger.kernel.org, "Theodore Ts'o" <tytso@mit.edu>,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        "Darrick J . Wong" <djwong@kernel.org>, linux-fsdevel@vger.kernel.org,
-        John Garry <john.g.garry@oracle.com>, dchinner@redhat.com
-Subject: Re: [RFC 0/5] ext4: Implement support for extsize hints
-Message-ID: <Zu2PEXtKMAUN5CyV@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1726034272.git.ojaswin@linux.ibm.com>
- <ZuqjU0KcCptQKrFs@dread.disaster.area>
- <ZuvPDQ+S/u4FdNNU@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <Zuym5suTo/KYUAND@dread.disaster.area>
+	 Content-Type:Content-Disposition:In-Reply-To; b=DVwNnNPS0qGYZs4nw+uTR6ut4rE1TIFSytX/hJ28axVqyTukIsq/cqwb+7wjPWhnvRyOrfnOhGY6LjIunREkPNsaCmzIJbOa1uSdXMvjHhtrIaN6+/bikTfckz4PohvQ6jdFEza5OtNsoR/iozoozFm58bK11bAfUOqI8SRsMLk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2KhzUCXF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+/UDBwsV; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2KhzUCXF; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=+/UDBwsV; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 13C8433A3A;
+	Fri, 20 Sep 2024 16:04:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1726848283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J2NLc4e6fHj5AhD1jSBYYzMciBqQt2iDPqp7r4EEsPE=;
+	b=2KhzUCXFD0P5dRnXToJpvr8NSSgKNX/tuX6h+bUjN/wzKDpug5WSwQw1QDwygG/8udvedY
+	xV05XnB4zBXu8oA0j2E+KfHDjKIQ8Q6CZC8mr8OkQrcapiUOYWFSaA52S19XDn7RdVnn03
+	cJ33FewcF9yJ5BHmQLuahctuMGNurDw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1726848283;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J2NLc4e6fHj5AhD1jSBYYzMciBqQt2iDPqp7r4EEsPE=;
+	b=+/UDBwsVcxZa9DQB9FB9Ass7ekkPCV4frVguflR4P/9mQwCGO4UqJ85773cULudww+czHr
+	8Mpu9rIoAYeq4RAA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2KhzUCXF;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="+/UDBwsV"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1726848283; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J2NLc4e6fHj5AhD1jSBYYzMciBqQt2iDPqp7r4EEsPE=;
+	b=2KhzUCXFD0P5dRnXToJpvr8NSSgKNX/tuX6h+bUjN/wzKDpug5WSwQw1QDwygG/8udvedY
+	xV05XnB4zBXu8oA0j2E+KfHDjKIQ8Q6CZC8mr8OkQrcapiUOYWFSaA52S19XDn7RdVnn03
+	cJ33FewcF9yJ5BHmQLuahctuMGNurDw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1726848283;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=J2NLc4e6fHj5AhD1jSBYYzMciBqQt2iDPqp7r4EEsPE=;
+	b=+/UDBwsVcxZa9DQB9FB9Ass7ekkPCV4frVguflR4P/9mQwCGO4UqJ85773cULudww+czHr
+	8Mpu9rIoAYeq4RAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7AA4713AE1;
+	Fri, 20 Sep 2024 16:04:39 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id wFjpHRed7WYKaQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 20 Sep 2024 16:04:39 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1997FA08BD; Fri, 20 Sep 2024 18:04:05 +0200 (CEST)
+Date: Fri, 20 Sep 2024 18:04:05 +0200
+From: Jan Kara <jack@suse.cz>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, tytso@mit.edu,
+	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v2 02/10] ext4: don't explicit update times in
+ ext4_fallocate()
+Message-ID: <20240920160405.ntt6l6rxup24o56n@quack3>
+References: <20240904062925.716856-1-yi.zhang@huaweicloud.com>
+ <20240904062925.716856-3-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -95,156 +107,115 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <Zuym5suTo/KYUAND@dread.disaster.area>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: IseEDR8wnXBf21xRi0Rc59LkXBRvuYAW
-X-Proofpoint-GUID: WjHLczP8o4B6uChnJtkS_OdA7-Ctz_Hf
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-20_07,2024-09-19_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=999
- priorityscore=1501 phishscore=0 clxscore=1015 malwarescore=0 bulkscore=0
- impostorscore=0 spamscore=0 suspectscore=0 mlxscore=0 lowpriorityscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2408220000
- definitions=main-2409200110
+In-Reply-To: <20240904062925.716856-3-yi.zhang@huaweicloud.com>
+X-Rspamd-Queue-Id: 13C8433A3A
+X-Spam-Level: 
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_TLS_LAST(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,huawei.com];
+	RCPT_COUNT_SEVEN(0.00)[11];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -2.51
+X-Spam-Flag: NO
 
-On Fri, Sep 20, 2024 at 08:34:14AM +1000, Dave Chinner wrote:
-> On Thu, Sep 19, 2024 at 12:43:17PM +0530, Ojaswin Mujoo wrote:
-> > On Wed, Sep 18, 2024 at 07:54:27PM +1000, Dave Chinner wrote:
-> > > On Wed, Sep 11, 2024 at 02:31:04PM +0530, Ojaswin Mujoo wrote:
-> > > Behaviour such as extent size hinting *should* be the same across
-> > > all filesystems that provide this functionality.  This makes using
-> > > extent size hints much easier for users, admins and application
-> > > developers. The last thing I want to hear is application devs tell
-> > > me at conferences that "we don't use extent size hints anymore
-> > > because ext4..."
-> > 
-> > Yes, makes sense :)  
-> > 
-> > Nothing to worry here tho as ext4 also treats the extsize value as a
-> > hint exactly like XFS. We have tried to keep the behavior as similar
-> > to XFS as possible for the exact reasons you mentioned. 
+On Wed 04-09-24 14:29:17, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> It is worth explicitly stating this (i.e. all the behaviours that
-> are the same) in the design documentation rather than just the
-> corner cases where it is different. It was certainly not clear how
-> failures were treated.
+> After commit 'ad5cd4f4ee4d ("ext4: fix fallocate to use file_modified to
+> update permissions consistently"), we can update mtime and ctime
+> appropriately through file_modified() when doing zero range, collapse
+> rage, insert range and punch hole, hence there is no need to explicit
+> update times in those paths, just drop them.
+> 
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 
-Got it Dave, I did mention it in the actual commit 5/5 but I agree. I
-will update the cover letter to be more clear about the design in future
-revisions.
+Good point! Feel free to add:
 
-> 
-> > And yes, we do plan to add a forcealign (or similar) feature for ext4 as
-> > well for atomic writes which would change the hint to a mandate
-> 
-> Ok. That should be stated, too.
-> 
-> FWIW, it would be a good idea to document this all in the kernel
-> documentation itself, so there is a guideline for other filesystems
-> to implement the same behaviour. e.g. in
-> Documentation/filesystems/extent-size-hints.rst
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-Okay makes sense, I can look into this as a next step.
+								Honza
 
+> ---
+>  fs/ext4/extents.c | 4 ----
+>  fs/ext4/inode.c   | 1 -
+>  2 files changed, 5 deletions(-)
 > 
-> > > > 2. eof allocation on XFS trims the blocks allocated beyond eof with extsize
-> > > >    hint. That means on XFS for eof allocations (with extsize hint) only logical
-> > > >    start gets aligned.
-> > > 
-> > > I'm not sure I understand what you are saying here. XFS does extsize
-> > > alignment of both the start and end of post-eof extents the same as
-> > > it does for extents within EOF. For example:
-> > > 
-> > > # xfs_io -fdc "truncate 0" -c "extsize 16k" -c "pwrite 0 4k" -c "bmap -vvp" foo
-> > > wrote 4096/4096 bytes at offset 0
-> > > 4 KiB, 1 ops; 0.0308 sec (129.815 KiB/sec and 32.4538 ops/sec)
-> > > foo:
-> > > EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET        TOTAL FLAGS
-> > >    0: [0..7]:          256504..256511    0 (256504..256511)     8 000000
-> > >    1: [8..31]:         256512..256535    0 (256512..256535)    24 010000
-> > >  FLAG Values:
-> > >     0100000 Shared extent
-> > >     0010000 Unwritten preallocated extent
-> > > 
-> > > There's a 4k written extent at 0, and a 12k unwritten extent
-> > > beyond EOF at 4k. I.e. we have an extent of 16kB as the hint
-> > > required that is correctly aligned beyond EOF.
-> > > 
-> > > If I then write another 4k at 20k (beyond both EOF and the unwritten
-> > > extent beyond EOF:
-> > > 
-> > > # xfs_io -fdc "truncate 0" -c "extsize 16k" -c "pwrite 0 4k" -c "pwrite 20k 4k" -c "bmap -vvp" foo
-> > > wrote 4096/4096 bytes at offset 0
-> > > 4 KiB, 1 ops; 0.0210 sec (190.195 KiB/sec and 47.5489 ops/sec)
-> > > wrote 4096/4096 bytes at offset 20480
-> > > 4 KiB, 1 ops; 0.0001 sec (21.701 MiB/sec and 5555.5556 ops/sec)
-> > > foo:
-> > >  EXT: FILE-OFFSET      BLOCK-RANGE      AG AG-OFFSET        TOTAL FLAGS
-> > >    0: [0..7]:          180000..180007    0 (180000..180007)     8 000000
-> > >    1: [8..39]:         180008..180039    0 (180008..180039)    32 010000
-> > >    2: [40..47]:        180040..180047    0 (180040..180047)     8 000000
-> > >    3: [48..63]:        180048..180063    0 (180048..180063)    16 010000
-> > >  FLAG Values:
-> > >     0100000 Shared extent
-> > >     0010000 Unwritten preallocated extent
-> > > 
-> > > You can see we did contiguous allocation of another 16kB at offset
-> > > 16kB, and then wrote to 20k for 4kB.. i.e. the new extent was
-> > > correctly aligned at both sides as the extsize hint says it should
-> > > be....
-> > 
-> > Sorry for the confusion Dave. What was meant is that XFS would indeed
-> > respect extsize hint for EOF allocations but if we close the file, since
-> > we trim the blocks past EOF upon close, we would only see that the
-> > lstart is aligned but the end would not.
-> 
-> Right, but that is desired behaviour, especially when extsize is
-> large.  i.e. when the file is closed it is an indication that the
-> file will not be written again, so we don't need to keep post-eof
-> blocks around for fragmentation prevention reasons.
-> 
-> Removing post-EOF extents on close prevents large extsize hints from
-> consuming lots of unused space on files that are never going to be
-> written to again(*).  That's user visible, and because it can cause
-> premature ENOSPC, users will report this excessive space usage
-> behaviour as a bug (and they are right).  Hence removing post-eof
-> extents on file close when extent size hints are in use comes under
-> the guise of Good Behaviour To Have.
-> 
-> (*) think about how much space is wasted if you clone a kernel git
-> tree under a 1MB extent size hint directory. All those tiny header
-> files now take up 1MB of space on disk....
-> 
-> Keep in mind that when the file is opened for write again, the
-> extent size hint still gets applied to the new extents.  If the
-> extending write starts beyond the EOF extsize range, then the new
-> extent after the hole at EOF will be fully extsize aligned, as
-> expected.
-> 
-> If the new write is exactly extending the file, then the new extents
-> will not be extsize aligned - the start will be at the EOF block,
-> and they will be extsize -length-.  IOWs, the extent size is
-> maintained, just the logical alignment is not exactly extsize
-> aligned. This could be considered a bug, but it's never been an
-> issue for anyone because, in XFS, physical extent alignment is
-> separate (and maintained regardless of logical alignment) for extent
-> size hint based allocations.
-> 
-> Adding force-align will prevent this behaviour from occurring, as
-> post-eof trimming will be done to extsize alignment, not to the EOF
-> block.  Hence open/close/open will not affect logical or physical
-> alignment of force-align extents (and hence won't affect atomic
-> writes).
-
-Thanks for the context, I will try to keep this behavior similar to XFS
-once we implement the EOF support for extsize hints in next revision.
-
-Regards,
-Ojaswin
-> 
-> -Dave.
+> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+> index 7d5edfa2e630..19a9b14935b7 100644
+> --- a/fs/ext4/extents.c
+> +++ b/fs/ext4/extents.c
+> @@ -4643,7 +4643,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  
+>  		/* Now release the pages and zero block aligned part of pages */
+>  		truncate_pagecache_range(inode, start, end - 1);
+> -		inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+>  
+>  		ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size,
+>  					     flags);
+> @@ -4667,7 +4666,6 @@ static long ext4_zero_range(struct file *file, loff_t offset,
+>  		goto out_invalidate_lock;
+>  	}
+>  
+> -	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+>  	if (new_size)
+>  		ext4_update_inode_size(inode, new_size);
+>  	ret = ext4_mark_inode_dirty(handle, inode);
+> @@ -5393,7 +5391,6 @@ static int ext4_collapse_range(struct file *file, loff_t offset, loff_t len)
+>  	up_write(&EXT4_I(inode)->i_data_sem);
+>  	if (IS_SYNC(inode))
+>  		ext4_handle_sync(handle);
+> -	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+>  	ret = ext4_mark_inode_dirty(handle, inode);
+>  	ext4_update_inode_fsync_trans(handle, inode, 1);
+>  
+> @@ -5503,7 +5500,6 @@ static int ext4_insert_range(struct file *file, loff_t offset, loff_t len)
+>  	/* Expand file to avoid data loss if there is error while shifting */
+>  	inode->i_size += len;
+>  	EXT4_I(inode)->i_disksize += len;
+> -	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+>  	ret = ext4_mark_inode_dirty(handle, inode);
+>  	if (ret)
+>  		goto out_stop;
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index c3d7606a5315..8af25442d44d 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -4074,7 +4074,6 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+>  	if (IS_SYNC(inode))
+>  		ext4_handle_sync(handle);
+>  
+> -	inode_set_mtime_to_ts(inode, inode_set_ctime_current(inode));
+>  	ret2 = ext4_mark_inode_dirty(handle, inode);
+>  	if (unlikely(ret2))
+>  		ret = ret2;
 > -- 
-> Dave Chinner
-> david@fromorbit.com
+> 2.39.2
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
