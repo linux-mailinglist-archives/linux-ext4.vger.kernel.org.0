@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-4262-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4263-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC5F097E2EF
-	for <lists+linux-ext4@lfdr.de>; Sun, 22 Sep 2024 20:58:38 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D500497E2F0
+	for <lists+linux-ext4@lfdr.de>; Sun, 22 Sep 2024 20:59:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABEA8281219
-	for <lists+linux-ext4@lfdr.de>; Sun, 22 Sep 2024 18:58:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8AA151F2116B
+	for <lists+linux-ext4@lfdr.de>; Sun, 22 Sep 2024 18:59:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3344DA13;
-	Sun, 22 Sep 2024 18:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 895C245026;
+	Sun, 22 Sep 2024 18:59:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="f4O/Q0a/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FHsIM+xK"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F5CA49654
-	for <linux-ext4@vger.kernel.org>; Sun, 22 Sep 2024 18:58:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 298872CCAA
+	for <linux-ext4@vger.kernel.org>; Sun, 22 Sep 2024 18:59:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727031506; cv=none; b=aTWQYotGmVCq9t/HcKD2shoKkOSYTRoOKGvgNwn2aUyX5U/VYHO24Sw5wqJJwzG9oa1HTsgcUqCFnaOMTavRhjmnz6A8BMXk5enTQCENEMdVe7aGMWlnp69XnhZszJjlD29yn6/RADUPTmKozNLYu7x2AhT9zqBbbMg6UtVTyOE=
+	t=1727031574; cv=none; b=QdqSy63wpAhyYvKDk3ouOWb/kla5CTfIFdsyoev+uNjUvFHxhxqbKdwd42p0nBOqih6h2ZSC3Mb2+VY9yoB1JDTgbkGSxACWMg/fyKUtJV9zcYdC9xoEjPcNUwSPdXjjZRHCoWMjIhymYSm8tOpgwgX+GD/6nnTwD04olHPcVuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727031506; c=relaxed/simple;
-	bh=XuoCFYadU6V+VYoLBJQRMlqNrJ3QoQufiyHC4gslM+Y=;
+	s=arc-20240116; t=1727031574; c=relaxed/simple;
+	bh=RfS0RaeXBfnaGfazWVzJW7tM7lhjv8iL/57t5GT2kx8=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=iMHoFB7Nabm4tYhr1RqldOJHrA/NlmXnTAbjmkBhReKNBLkWCtBle2ouI7uLv9NtIUwANyo0/FJi624yhA8q3c8LNeywpFMlNpPQK+lUHGvdO5CPFFyCRt0cm/g49OCXm7YUi396IIcfASwwF6lg+u+6p4hGQDzXteU+ZxNXUkA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=f4O/Q0a/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id C6D2BC4CEC3
-	for <linux-ext4@vger.kernel.org>; Sun, 22 Sep 2024 18:58:25 +0000 (UTC)
+	 Content-Type:MIME-Version; b=PfaB3phb47qTH233kBIeaHVqHSnqA1FS53IyIv/KNl1ZVHx2y2v8rxwN4w2PMBPTarlrfqvNNg4jKi3qezZGxlGuU829zG9yMCkBO9JMGQ+tSNN9+wPmEtj3dpqG66zCStmPpGimBhLXxSw+wZqBl8W9Zw5DSDIrzAmvm3+2bBI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FHsIM+xK; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5D9FC4CECE
+	for <linux-ext4@vger.kernel.org>; Sun, 22 Sep 2024 18:59:33 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727031505;
-	bh=XuoCFYadU6V+VYoLBJQRMlqNrJ3QoQufiyHC4gslM+Y=;
+	s=k20201202; t=1727031573;
+	bh=RfS0RaeXBfnaGfazWVzJW7tM7lhjv8iL/57t5GT2kx8=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=f4O/Q0a/5joGAznw/5uTwOCEGYRdVuPZzBuNom/cAFEuEtymJOjz5N7XYEkNZwFfR
-	 1j0y7tWGap4rqmahi80VqnvhCBjN9QKEKHwNW2fKBnhUzL267XrIzA2xt9LLUrqmpz
-	 n/HBzaGQgNOHej09GEa4FFNzuc0CZedkvHna8aOymMSWZ5KkggEilif5nwjURnG5yO
-	 /e3QhxuxzI8NJV+vyomX0uxlHd5GsnS8xhi0+JRsVmfFHTf9fc8dxV/BZlhM0sc8+g
-	 iY/QpONs8EAWAjYOpgced0BlZmqg83EI9uOVxpWroa3yMM+BhM95aFFfqLWkTG1Anb
-	 0162TmfnNU/PQ==
+	b=FHsIM+xKzDK/UTT4BwDQJM59+i5j0AxVWnzZgMjG4AQZjsV1XdrTMWrwE4pHZJhRi
+	 AIRPTMwtDwVxRZzuS6tg9b9xrMSdv6kSc5xBTakGFrvuLDc9rr4AhEl2SgnNsHU07S
+	 WaSVqb23VTX+XphP1VwwJJxuxq2kNDf9lONuU2kXCUqwE775VVvo7nqpkQR2KZ1jgB
+	 oC2WKQo9YWnAbvkZSnlqZSLShuwayT+ilO1INhPR7Mpi7RGmfaSCEuuR0lKfiyezP6
+	 rj0Bg80zgH566jEowXK54l+uh/lz/IF8FWaY5lBpM9FLY8qIKlB6Fwwrd9MEP7mhmo
+	 udERnNm+1axbw==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id BCE69C53BBF; Sun, 22 Sep 2024 18:58:25 +0000 (UTC)
+	id B0B9FC53BBF; Sun, 22 Sep 2024 18:59:33 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 219300] ext4 corrupts data on a specific pendrive
-Date: Sun, 22 Sep 2024 18:58:25 +0000
+Date: Sun, 22 Sep 2024 18:59:33 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -61,8 +61,8 @@ X-Bugzilla-Resolution: INVALID
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: bug_status resolution
-Message-ID: <bug-219300-13602-UsHqyJUA0o@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: cc
+Message-ID: <bug-219300-13602-UiH24YZ5WS@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-219300-13602@https.bugzilla.kernel.org/>
 References: <bug-219300-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -82,25 +82,16 @@ Artem S. Tashkinov (aros@gmx.com) changed:
 
            What    |Removed                     |Added
 ----------------------------------------------------------------------------
-             Status|NEW                         |RESOLVED
-         Resolution|---                         |INVALID
+                 CC|                            |aros@gmx.com
 
---- Comment #1 from Artem S. Tashkinov (aros@gmx.com) ---
-> [11844.111565] Buffer I/O error on device sdb1, logical block 7533568=20
-> EXT4-fs (sdb1): I/O error while writing superblock=20
+--- Comment #2 from Artem S. Tashkinov (aros@gmx.com) ---
+Note that this operation will destroy all your data and in your case that w=
+ould
+be=20
 
-Typically, such errors indicate a storage failure, not a filesystem problem.
+`/dev/sdb`
 
-I strongly suspect your media is broken or damaged and should not be used to
-store important information.
-
-The easiest way to test it would be to use badblocks with a single pass, us=
-ing
-the `-w     Use write-mode test` option.
-
-The defaults for -b and -c are quite low, I'd suggest:
-
-sudo badblocks -b 4096 -c 1000 -w -s -v /dev/sdX
+Please triple check before running the command to avoid data loss.
 
 --=20
 You may reply to this email to add a comment.
