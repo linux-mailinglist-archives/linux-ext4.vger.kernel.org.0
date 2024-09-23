@@ -1,181 +1,132 @@
-Return-Path: <linux-ext4+bounces-4276-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4277-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3377897EA9F
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 13:24:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34E8D97EF35
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 18:25:06 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 82B34B21365
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 11:24:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCE801F222B3
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 16:25:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BB8FD198832;
-	Mon, 23 Sep 2024 11:24:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6229819E98E;
+	Mon, 23 Sep 2024 16:25:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="LfmRKmnq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="XMCNhzdL";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oAi6riAL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ufx7qkml"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pThkrRiC"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9495C944E;
-	Mon, 23 Sep 2024 11:24:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04D74C8C7
+	for <linux-ext4@vger.kernel.org>; Mon, 23 Sep 2024 16:24:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727090687; cv=none; b=mar9OKghAnVr3uCgvAXcmXGJjjJ4d824R+ibcF2bitJX0z9OekQUXpCTzgQfb+UiKDA07t+vJa408Wq05G5Lb3AnDKd9nLtJ8BuxlCnoe0B7dKrzUihMwBUzfJQzVVlPUT4/rSOpDLl47/ZtxIdjaKgXUsG2kZGydfxhrLhZXis=
+	t=1727108700; cv=none; b=SuiY4BuCmgRWfPr341m+pIrQi7BlMaPQe2JA9sKbgFTtYOcnJqfWeeRvsdD9qrsdKi6BV4U6ieE/a56JiWurvrbuM8/Zf8I4zGGuVfmFZAxNRyKrdJyL1XtgwlRmfn+j7MGN6+DN7MCavHDHBBlv6xjwnsBXgOQrgYFi9EKHHAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727090687; c=relaxed/simple;
-	bh=TDMHdTKfATd/dykqfdr8JyYigMdMf6pQbZ437Da5dCo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UoIVkO9MDjskTq9GhBtZ1fBdOZNTgGUCMaUBhWpTdKDJG7BfpDwjEr3pk7FXkISgjNIYx4OnfU/M3GSRUMjONRrx/xeXx/tnrt9xoCmfsF9KG9stq4qcp/DevozRzcDR9GXxh24AFfwbKo7fcoBot1RZ+QH5O2Jb41E6prhpk6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=LfmRKmnq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=XMCNhzdL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oAi6riAL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ufx7qkml; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 9BE2521EFF;
-	Mon, 23 Sep 2024 11:24:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727090683; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7/KdNH7ixd2/09AxnzQSLbxMpALLTS1WnI8+v7RLZc8=;
-	b=LfmRKmnqjjIdnOPmvvu4dKL873achQT+wvmcGOxNYdt8/Vn7by21hQQRPEzo2Pt8kIlPOa
-	Xd5zCGAx5Y3FCxF+UCxQH9VHQWAb8tAwuuFk2k/EtYmHHLqkMNNqJ2WQHHeyt7hdF57zal
-	sTdRhlEVxvjpB/4oRAyarHR0IQZl4g0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727090683;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7/KdNH7ixd2/09AxnzQSLbxMpALLTS1WnI8+v7RLZc8=;
-	b=XMCNhzdLdyVPOb5Rh6zPOfGAjZqpDNoU1RU5H2p62ErqP2zAlikZev/R95J9+bEFaNmsI6
-	uriKRuqMSY5s7bAA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727090682; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7/KdNH7ixd2/09AxnzQSLbxMpALLTS1WnI8+v7RLZc8=;
-	b=oAi6riALFaab8eKPk7cq6ZR2WHLl0JnJW7z6UaxNSjPsWRVI05k209AOBKShdRmihAgbXy
-	qYGuUdFYEkGsUKt20ziO8/IRbOD+jAny7W9Rj57wbi72rO1XhZOgjemd7xt/ZdtBMOUqoQ
-	nmttandoSJFm8A+xoujydudx7PXXdP4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727090682;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=7/KdNH7ixd2/09AxnzQSLbxMpALLTS1WnI8+v7RLZc8=;
-	b=Ufx7qkmlISh57+kAKK52RONXoU0sqac5vQlowIDOyzT3T2CaWA/iUshRUiEKrTDxB7dfv7
-	H5IuDSI2QUddRqDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8D9441347F;
-	Mon, 23 Sep 2024 11:24:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OeN+IvpP8WZnKAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 23 Sep 2024 11:24:42 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 487C0A0844; Mon, 23 Sep 2024 13:24:38 +0200 (CEST)
-Date: Mon, 23 Sep 2024 13:24:38 +0200
-From: Jan Kara <jack@suse.cz>
-To: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
-Cc: Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger@dilger.ca>,
-	Jan Kara <jack@suse.cz>,
-	Harshad Shirwadkar <harshadshirwadkar@gmail.com>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 2/2] ext4: mark fc as ineligible using an handle in
- ext4_xattr_set()
-Message-ID: <20240923112438.gjn33ztjtimly4eu@quack3>
-References: <20240923104909.18342-1-luis.henriques@linux.dev>
- <20240923104909.18342-3-luis.henriques@linux.dev>
+	s=arc-20240116; t=1727108700; c=relaxed/simple;
+	bh=VhXSyYBcRm9RTYtqmxyumhbNMns3F/euuHkqkV8HoCM=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=BShJ0ydSRxkGuBnUli5NhPmLlkJTa5+Bt+33ErlowVVfJueU+MdDrixNECVKu+LsKdiDepIl4ozwJcmU5gubzoMumpmlOKoMmJlzdxfPeZdsddD1i99Bn6qzglZkXlS87uOwmOYSjl8YWj5kFV8opXZR+ZeUqqz/35p6i9CcVIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pThkrRiC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 9BEF9C4CECD
+	for <linux-ext4@vger.kernel.org>; Mon, 23 Sep 2024 16:24:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727108699;
+	bh=VhXSyYBcRm9RTYtqmxyumhbNMns3F/euuHkqkV8HoCM=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=pThkrRiCZlww2geAc/DKCFD+UMQ/Lq6avpgPkE/K090ZrdPBw4I/4iSPo4RDWIpWg
+	 vGKu3dGjjDB5I1Q5Kq0ginDXD5wqNAzLP1OHMkoWJBgF8/lQbXpuw/8VZdQuupZyig
+	 JBbHoWfef9k0va1jfrJkNVeMdIF6/EEMuVA8cHiAIXuSaCHYx2hM42FSW4qRZ4VGxb
+	 0RTi5is8wgSNvYGnfzDaiTRy3GUJiPkf1Yn/QZ+yxgDH1XRbkoY8o/mc+SkM9b9XJo
+	 NFoHIdXD9ADwOQVOfZ3wDE5rk1Fe57P1TwBswDme9YB+oCr4cyCSBv+QgJRvTt5OZI
+	 d5kcJTTNtxc1Q==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 8CFDEC53BB8; Mon, 23 Sep 2024 16:24:59 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219300] ext4 corrupts data on a specific pendrive
+Date: Mon, 23 Sep 2024 16:24:59 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: changed
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: linuxnormaluser@proton.me
+X-Bugzilla-Status: RESOLVED
+X-Bugzilla-Resolution: INVALID
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-219300-13602-Js98UzFiYD@https.bugzilla.kernel.org/>
+In-Reply-To: <bug-219300-13602@https.bugzilla.kernel.org/>
+References: <bug-219300-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240923104909.18342-3-luis.henriques@linux.dev>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[mit.edu,dilger.ca,suse.cz,gmail.com,vger.kernel.org];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email,suse.cz:email,linux.dev:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
 
-On Mon 23-09-24 11:49:09, Luis Henriques (SUSE) wrote:
-> Calling ext4_fc_mark_ineligible() with a NULL handle is racy and may result
-> in a fast-commit being done before the filesystem is effectively marked as
-> ineligible.  This patch moves the call to this function so that an handle
-> can be used.  If a transaction fails to start, then there's not point in
-> trying to mark the filesystem as ineligible, and an error will eventually be
-> returned to user-space.
-> 
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219300
 
-Looks good. Feel free to add:
+--- Comment #7 from nxe9 (linuxnormaluser@proton.me) ---
+Thank you for your entries. My pendrive is not a Chinese fake and I think s=
+ize
+is not correct. At least that's what I think. Intenso is a German company,
+although the chips are probably imported from the Far East.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Back to the topic...
 
-								Honza
+I don't know much about file systems, so I'm relying on you. Is it likely t=
+hat
+the file systems are so different that a hardware bug is visible regularly =
+on
+one file system but is impossible to reproduce on the other? Besides, the f=
+act
+is that two pendrives of the same model have the problem, and other models,
+even from the same manufacturer, do not. If I could see the error on ntfs j=
+ust
+once, I wouldn't have a problem, but so far I haven't been able to reproduce
+the error on ntfs even once. Today I tested ntfs again with f3 and as usual=
+ no
+error. Apart from that I generated test data and filled the disk completely=
+. As
+usual, all fully consistent on ntfs.
 
-> ---
->  fs/ext4/xattr.c | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 46ce2f21fef9..aea9e3c405f1 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -2559,6 +2559,8 @@ ext4_xattr_set(struct inode *inode, int name_index, const char *name,
->  
->  		error = ext4_xattr_set_handle(handle, inode, name_index, name,
->  					      value, value_len, flags);
-> +		ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_XATTR,
-> +					handle);
->  		error2 = ext4_journal_stop(handle);
->  		if (error == -ENOSPC &&
->  		    ext4_should_retry_alloc(sb, &retries))
-> @@ -2566,7 +2568,6 @@ ext4_xattr_set(struct inode *inode, int name_index, const char *name,
->  		if (error == 0)
->  			error = error2;
->  	}
-> -	ext4_fc_mark_ineligible(inode->i_sb, EXT4_FC_REASON_XATTR, NULL);
->  
->  	return error;
->  }
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Freespace on ext4 according to f3write: Free space: 28.67 GB
+Freespace on ntfs according to f3write: Free space: 29.23 GB
+
+As you can see, I can write even more data to ntfs and it will not generate
+errors.
+
+I will summarize some points:
+- i/o errors in dmesg appear very rarely. During data corruption this error
+usually does not appear.
+- f3 tests on ext4 are negative only sometimes.
+- when copying my own files to ext4 I can generate data inconsistency very
+quickly.
+- badblocks doesn't show me any errors.
+- ntfs always works great
+
+Therefore, I am still interested in whether one file system can actually hi=
+de
+hardware defects (or is implemented in such a way that it is very difficult=
+ to
+reproduce) or maybe the other file system has some rare bug that will only
+become visible in the case of this hardware. For me it's not settled.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
