@@ -1,102 +1,103 @@
-Return-Path: <linux-ext4+bounces-4269-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4270-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 416DC97E76F
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 10:21:05 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86D4B97E78E
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 10:31:37 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E4146281873
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 08:21:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A92B81C2123F
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 08:31:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E18F19342A;
-	Mon, 23 Sep 2024 08:20:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B84421885B9;
+	Mon, 23 Sep 2024 08:31:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zvl3F49c";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FGY8kuZY";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="zvl3F49c";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FGY8kuZY"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="CINSBdFV";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Z/k9AWx2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mIc4erIH";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UlyPUC/p"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DFDC192D7E;
-	Mon, 23 Sep 2024 08:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B838B17C200;
+	Mon, 23 Sep 2024 08:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727079657; cv=none; b=pfNVrskN8spXCpPiEOAe98YCic6crIut3WMLvdLbiAikDVlwDx1AILvM5flhalUdTFNbAac7+JV74iYdcXBt1h7mrkcacCG2lJziYZ7L6Aa+t/iNa7QqjHh85l3jlRK3I3qt/ZHblAsbRsV1bs4nWeaf24TKhVz7UCLoNTWFqEc=
+	t=1727080290; cv=none; b=NIU4JOTLth1/+MsVyBJn26LjgYi54oE9ec5XHdlCXrdASy+MsfBJaVUYV9G+uCZZ8hzG8Jsez9cwK6XRZ/sihiImFAeKoEbBT4O2Pvq/RLdMcEOw/CECfzqKcY9J696RJcE9dAXoZUa74saQmZZJeW5kNNcf3n3aCpgkbhM2dSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727079657; c=relaxed/simple;
-	bh=GqHq2PDW3f8bGIaCfl0g+Yv3qTbUNV94rofgjMwHWj8=;
+	s=arc-20240116; t=1727080290; c=relaxed/simple;
+	bh=y04koVER5jdtM9RssDIGt07dzkNT1EZG2C6uSSWTuJU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BkHe+yiP28qynfY3fdB4qeg/3X4g3IVvG6UBwgxe5dVaeqbkp6f9MCCzU4gjnllemc2YtnVpd5BQEEmzvmHGYpnnZWnHcz6Xpjp3uev0nPdxqUlKqpHaY3KqCLSdEXiQzt9d8QhDTes8HRTFG9pmNP36dHVbZxloT+Is4YiM8vo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zvl3F49c; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FGY8kuZY; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=zvl3F49c; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FGY8kuZY; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=f64Gjhc8019LwG31qOjLAx0mdn1Wt2I1S3cKHif/MBglNc+jZN1VZcaRnulb8HwsUsr6ahyEbaHYZxwGYTVdg545bgFPMQToi5/OeFXk+BHtFFYbgCX92xcpHMgtyccq4xruWdOwxZ4ZbzTcp8+qWtTI5CITn9xRHzSu5wB7qXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=CINSBdFV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Z/k9AWx2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mIc4erIH; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UlyPUC/p; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 48E631F7A5;
-	Mon, 23 Sep 2024 08:20:53 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id EE1D321F09;
+	Mon, 23 Sep 2024 08:31:26 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727079653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727080287; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/KZpjNHDu94Ylr2t2PZPijpnyCtUTNnKe6nggAve46g=;
-	b=zvl3F49cGUAoQkFgorRSWCoGU4XdFTA0jXApEAAdb4nKhSp8NN7R4IQHH5H2LEjAHcgmKn
-	ysmCd15tupnWluc85DxpzEZJDpqnNHh+U6sb3BvHkDphAm/Za4bL13/UwaLw4cH3ZH1n62
-	5/5sYmhXNOtf6IH2oqxXur8JuWGKuro=
+	bh=8oc7jvt3sPPf0SDXj1RzXgyo45zLIrZkxN+5PnWl08w=;
+	b=CINSBdFVrSE0eyD4B8+o1ajmfAPOtu2WqtH2wUcnVBbVDC60qGEK7V9Y/4etp/q2xcDJ6l
+	d/JfFcn3X2QHvaq92kuUBY+0m6++7F1BvuuPyMQbSkCJAPTwAmKE4husu5CqpkQ8QaCV4P
+	vubbZHSYN1TWxItRnb0i6p6SzTp0q4M=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727079653;
+	s=susede2_ed25519; t=1727080287;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/KZpjNHDu94Ylr2t2PZPijpnyCtUTNnKe6nggAve46g=;
-	b=FGY8kuZYJkKL0PJM023q/LvRxjJSWiDWsvec6cWV7BeBaiw4unKNleXxfC+ODjPFczaXJu
-	Fg25vh6kNYqoZeDg==
-Authentication-Results: smtp-out2.suse.de;
+	bh=8oc7jvt3sPPf0SDXj1RzXgyo45zLIrZkxN+5PnWl08w=;
+	b=Z/k9AWx2sqgMajw44ebCn4kZwusYCg2s/Ca8VC3b2Qmfq+d8rasSR8b+3d9fLBqeOXE/jO
+	4vsr8KfAYzGhdYBw==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727079653; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727080286; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/KZpjNHDu94Ylr2t2PZPijpnyCtUTNnKe6nggAve46g=;
-	b=zvl3F49cGUAoQkFgorRSWCoGU4XdFTA0jXApEAAdb4nKhSp8NN7R4IQHH5H2LEjAHcgmKn
-	ysmCd15tupnWluc85DxpzEZJDpqnNHh+U6sb3BvHkDphAm/Za4bL13/UwaLw4cH3ZH1n62
-	5/5sYmhXNOtf6IH2oqxXur8JuWGKuro=
+	bh=8oc7jvt3sPPf0SDXj1RzXgyo45zLIrZkxN+5PnWl08w=;
+	b=mIc4erIHMdvC4meTaS05h/TUMvvKz0dB8quKb2aAhhce6mY/3yXy+/N+xQPG3DchAmYfeK
+	NZFQv5i75hgEgMlNrjjhlxNjNUNBQjj0Pl22P6TDJC/qjbH9N4iPTNd58SQMMUf6UW6Q3K
+	9xHWj5gfRiUt7uZ1cZrGSzv5Y2IMVBI=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727079653;
+	s=susede2_ed25519; t=1727080286;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=/KZpjNHDu94Ylr2t2PZPijpnyCtUTNnKe6nggAve46g=;
-	b=FGY8kuZYJkKL0PJM023q/LvRxjJSWiDWsvec6cWV7BeBaiw4unKNleXxfC+ODjPFczaXJu
-	Fg25vh6kNYqoZeDg==
+	bh=8oc7jvt3sPPf0SDXj1RzXgyo45zLIrZkxN+5PnWl08w=;
+	b=UlyPUC/p/L+Gh1aZg+jFA20bexIpJJ0BG3eidWnQDwSRCo1MmG39UOObBCwM60O0PlLDRX
+	v0oY+TJiOv2mpEAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 3C0C313A64;
-	Mon, 23 Sep 2024 08:20:53 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E2B3813A64;
+	Mon, 23 Sep 2024 08:31:26 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Hv62DuUk8Wa8bAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 23 Sep 2024 08:20:53 +0000
+	id MNpWN14n8Wb7bwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 23 Sep 2024 08:31:26 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id DCC00A0ABF; Mon, 23 Sep 2024 10:20:52 +0200 (CEST)
-Date: Mon, 23 Sep 2024 10:20:52 +0200
+	id 9D84FA0ABF; Mon, 23 Sep 2024 10:31:22 +0200 (CEST)
+Date: Mon, 23 Sep 2024 10:31:22 +0200
 From: Jan Kara <jack@suse.cz>
 To: Zhang Yi <yi.zhang@huaweicloud.com>
 Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
 	linux-kernel@vger.kernel.org, tytso@mit.edu,
 	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
 	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v2 08/10] ext4: factor out ext4_do_fallocate()
-Message-ID: <20240923082052.s7b7k23iybukujij@quack3>
+Subject: Re: [PATCH v2 09/10] ext4: factor out the common checking part of
+ all fallocate operations
+Message-ID: <20240923083122.amqnlzxj53beqtwj@quack3>
 References: <20240904062925.716856-1-yi.zhang@huaweicloud.com>
- <20240904062925.716856-9-yi.zhang@huaweicloud.com>
+ <20240904062925.716856-10-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -105,8 +106,8 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240904062925.716856-9-yi.zhang@huaweicloud.com>
-X-Spam-Score: -2.30
+In-Reply-To: <20240904062925.716856-10-yi.zhang@huaweicloud.com>
+X-Spam-Level: 
 X-Spamd-Result: default: False [-2.30 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
@@ -131,188 +132,64 @@ X-Spamd-Result: default: False [-2.30 / 50.00];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
 	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email]
+X-Spam-Score: -2.30
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Wed 04-09-24 14:29:23, Zhang Yi wrote:
+On Wed 04-09-24 14:29:24, Zhang Yi wrote:
 > From: Zhang Yi <yi.zhang@huawei.com>
 > 
-> Now the real job of normal fallocate are open code in ext4_fallocate(),
-> factor out a new helper ext4_do_fallocate() to do the real job, like
-> others functions (e.g. ext4_zero_range()) in ext4_fallocate() do, this
-> can make the code more clear, no functional changes.
+> Now the beginning of all the five functions in ext4_fallocate() (punch
+> hole, zero range, insert range, collapse range and normal fallocate) are
+> almost the same, they need to hold i_rwsem and check the validity of
+> input parameters, so move the holding of i_rwsem to ext4_fallocate()
+> and factor out a common helper to check the input parameters can make
+> the code more clear.
 > 
 > Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+...
+> +static int ext4_fallocate_check(struct inode *inode, int mode,
+> +				loff_t offset, loff_t len)
+> +{
+> +	/* Currently except punch_hole, just for extent based files. */
+> +	if (!(mode & FALLOC_FL_PUNCH_HOLE) &&
+> +	    !ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+> +		return -EOPNOTSUPP;
+> +
+> +	/*
+> +	 * Insert range and collapse range works only on fs cluster size
+> +	 * aligned regions.
+> +	 */
+> +	if (mode & (FALLOC_FL_INSERT_RANGE | FALLOC_FL_COLLAPSE_RANGE) &&
+> +	    !IS_ALIGNED(offset | len, EXT4_CLUSTER_SIZE(inode->i_sb)))
+> +		return -EINVAL;
+> +
+> +	if (mode & FALLOC_FL_INSERT_RANGE) {
+> +		/* Collapse range, offset must be less than i_size */
+> +		if (offset >= inode->i_size)
+> +			return -EINVAL;
+> +		/* Check whether the maximum file size would be exceeded */
+> +		if (len > inode->i_sb->s_maxbytes - inode->i_size)
+> +			return -EFBIG;
+> +	} else if (mode & FALLOC_FL_COLLAPSE_RANGE) {
+> +		/*
+> +		 * Insert range, there is no need to overlap collapse
+> +		 * range with EOF, in which case it is effectively a
+> +		 * truncate operation.
+> +		 */
+> +		if (offset + len >= inode->i_size)
+> +			return -EINVAL;
+> +	}
+> +
+> +	return 0;
+> +}
 
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
+I don't think this helps. If the code is really shared, then the
+factorization is good but here you have to do various checks what operation
+we perform and in that case I don't think it really helps readability to
+factor out checks into a common function.
 
 								Honza
 
-> ---
->  fs/ext4/extents.c | 125 ++++++++++++++++++++++------------------------
->  1 file changed, 60 insertions(+), 65 deletions(-)
-> 
-> diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-> index a6c24c229cb4..06b2c1190181 100644
-> --- a/fs/ext4/extents.c
-> +++ b/fs/ext4/extents.c
-> @@ -4662,6 +4662,58 @@ static long ext4_zero_range(struct file *file, loff_t offset,
->  	return ret;
->  }
->  
-> +static long ext4_do_fallocate(struct file *file, loff_t offset,
-> +			      loff_t len, int mode)
-> +{
-> +	struct inode *inode = file_inode(file);
-> +	loff_t end = offset + len;
-> +	loff_t new_size = 0;
-> +	ext4_lblk_t start_lblk, len_lblk;
-> +	int ret;
-> +
-> +	trace_ext4_fallocate_enter(inode, offset, len, mode);
-> +
-> +	start_lblk = offset >> inode->i_blkbits;
-> +	len_lblk = EXT4_MAX_BLOCKS(len, offset, inode->i_blkbits);
-> +
-> +	inode_lock(inode);
-> +
-> +	/* We only support preallocation for extent-based files only. */
-> +	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
-> +		ret = -EOPNOTSUPP;
-> +		goto out;
-> +	}
-> +
-> +	if (!(mode & FALLOC_FL_KEEP_SIZE) &&
-> +	    (end > inode->i_size || end > EXT4_I(inode)->i_disksize)) {
-> +		new_size = end;
-> +		ret = inode_newsize_ok(inode, new_size);
-> +		if (ret)
-> +			goto out;
-> +	}
-> +
-> +	/* Wait all existing dio workers, newcomers will block on i_rwsem */
-> +	inode_dio_wait(inode);
-> +
-> +	ret = file_modified(file);
-> +	if (ret)
-> +		goto out;
-> +
-> +	ret = ext4_alloc_file_blocks(file, start_lblk, len_lblk, new_size,
-> +				     EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT);
-> +	if (ret)
-> +		goto out;
-> +
-> +	if (file->f_flags & O_SYNC && EXT4_SB(inode->i_sb)->s_journal) {
-> +		ret = ext4_fc_commit(EXT4_SB(inode->i_sb)->s_journal,
-> +					EXT4_I(inode)->i_sync_tid);
-> +	}
-> +out:
-> +	inode_unlock(inode);
-> +	trace_ext4_fallocate_exit(inode, offset, len_lblk, ret);
-> +	return ret;
-> +}
-> +
->  /*
->   * preallocate space for a file. This implements ext4's fallocate file
->   * operation, which gets called from sys_fallocate system call.
-> @@ -4672,12 +4724,7 @@ static long ext4_zero_range(struct file *file, loff_t offset,
->  long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  {
->  	struct inode *inode = file_inode(file);
-> -	loff_t new_size = 0;
-> -	unsigned int max_blocks;
-> -	int ret = 0;
-> -	int flags;
-> -	ext4_lblk_t lblk;
-> -	unsigned int blkbits = inode->i_blkbits;
-> +	int ret;
->  
->  	/*
->  	 * Encrypted inodes can't handle collapse range or insert
-> @@ -4699,71 +4746,19 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
->  	ret = ext4_convert_inline_data(inode);
->  	inode_unlock(inode);
->  	if (ret)
-> -		goto exit;
-> +		return ret;
->  
-> -	if (mode & FALLOC_FL_PUNCH_HOLE) {
-> +	if (mode & FALLOC_FL_PUNCH_HOLE)
->  		ret = ext4_punch_hole(file, offset, len);
-> -		goto exit;
-> -	}
-> -
-> -	if (mode & FALLOC_FL_COLLAPSE_RANGE) {
-> +	else if (mode & FALLOC_FL_COLLAPSE_RANGE)
->  		ret = ext4_collapse_range(file, offset, len);
-> -		goto exit;
-> -	}
-> -
-> -	if (mode & FALLOC_FL_INSERT_RANGE) {
-> +	else if (mode & FALLOC_FL_INSERT_RANGE)
->  		ret = ext4_insert_range(file, offset, len);
-> -		goto exit;
-> -	}
-> -
-> -	if (mode & FALLOC_FL_ZERO_RANGE) {
-> +	else if (mode & FALLOC_FL_ZERO_RANGE)
->  		ret = ext4_zero_range(file, offset, len, mode);
-> -		goto exit;
-> -	}
-> -	trace_ext4_fallocate_enter(inode, offset, len, mode);
-> -	lblk = offset >> blkbits;
-> -
-> -	max_blocks = EXT4_MAX_BLOCKS(len, offset, blkbits);
-> -	flags = EXT4_GET_BLOCKS_CREATE_UNWRIT_EXT;
-> -
-> -	inode_lock(inode);
-> -
-> -	/*
-> -	 * We only support preallocation for extent-based files only
-> -	 */
-> -	if (!(ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))) {
-> -		ret = -EOPNOTSUPP;
-> -		goto out;
-> -	}
-> -
-> -	if (!(mode & FALLOC_FL_KEEP_SIZE) &&
-> -	    (offset + len > inode->i_size ||
-> -	     offset + len > EXT4_I(inode)->i_disksize)) {
-> -		new_size = offset + len;
-> -		ret = inode_newsize_ok(inode, new_size);
-> -		if (ret)
-> -			goto out;
-> -	}
-> -
-> -	/* Wait all existing dio workers, newcomers will block on i_rwsem */
-> -	inode_dio_wait(inode);
-> -
-> -	ret = file_modified(file);
-> -	if (ret)
-> -		goto out;
-> -
-> -	ret = ext4_alloc_file_blocks(file, lblk, max_blocks, new_size, flags);
-> -	if (ret)
-> -		goto out;
-> +	else
-> +		ret = ext4_do_fallocate(file, offset, len, mode);
->  
-> -	if (file->f_flags & O_SYNC && EXT4_SB(inode->i_sb)->s_journal) {
-> -		ret = ext4_fc_commit(EXT4_SB(inode->i_sb)->s_journal,
-> -					EXT4_I(inode)->i_sync_tid);
-> -	}
-> -out:
-> -	inode_unlock(inode);
-> -	trace_ext4_fallocate_exit(inode, offset, max_blocks, ret);
-> -exit:
->  	return ret;
->  }
->  
-> -- 
-> 2.39.2
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
