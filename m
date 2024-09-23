@@ -1,52 +1,52 @@
-Return-Path: <linux-ext4+bounces-4278-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4279-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3EF7897EF4A
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 18:30:23 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 609AF97F0DD
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 20:53:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 07AD5282359
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 16:30:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2BE1A28254B
+	for <lists+linux-ext4@lfdr.de>; Mon, 23 Sep 2024 18:53:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B1019F422;
-	Mon, 23 Sep 2024 16:30:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B31E2556F;
+	Mon, 23 Sep 2024 18:53:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h4/oGQk2"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IOWtMqn0"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05C3019F407
-	for <linux-ext4@vger.kernel.org>; Mon, 23 Sep 2024 16:30:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C928119F105
+	for <linux-ext4@vger.kernel.org>; Mon, 23 Sep 2024 18:53:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727109005; cv=none; b=qhzt84jk//O5hrjzDaJfamRtiDOFXX32RO/bZAUL7O+Tcr0WAITsXNUHORzBKcCWLqWyqYFoqycKFuZagL96z3j2yzVqrKXcP4rGXvCPXCX1oTsvgtFedrhStUafY9lHBWb0jmvNugt1YZfZibbAPG0fJfbSKhbFEojAYKDo6Mo=
+	t=1727117582; cv=none; b=AbKAxB9BiDkj6JN+xRzyRv4bRMinadf00NPIXqHzjSEh+7qN3RdWE+eIbDH//fhSRftCKXy+5r6NiWS2UGOWp5cwz1FqOupne1fVF0vGD6h3QqNF/IFcPWorBTicLnVlN83uKOGYWUfOrc/kwhwmsXPZGao9vrpGqd+4Lu3YUgo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727109005; c=relaxed/simple;
-	bh=BoFcgf4Uyi0BIDAU7jFoxF+YZAhhhRsum5pHmD4iXdE=;
+	s=arc-20240116; t=1727117582; c=relaxed/simple;
+	bh=UWo0KFXiNU5ATLWiqV8A/0tsDBXDk3W6mEVxZmY4v9c=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=e2BQmbXWcJh2v60H9YUNwYS9AbfsvtirPjIr/5D4gdgBVEGBg11peectd7XmWaGH2lZf3PVwbqVS3LI6kp2KA2jSd6cvLEu2CLUClFCJ8/16xs8OZ9Dqrj5ebEB/tdGWLLVTC8RBBfIZmhinmStRI5lPcCxhPUZJDbv6D/Y1JWI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h4/oGQk2; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 79A0EC4CECD
-	for <linux-ext4@vger.kernel.org>; Mon, 23 Sep 2024 16:30:04 +0000 (UTC)
+	 Content-Type:MIME-Version; b=O3i88csWaVtPJ5Z3Xpupgj+C1KY/8XvwkHtPaZHJQ4LbkhU+mZV87YFcgEzAttZOmyzxnxBdSwcIOyMG7EeOY7hFDjeJcwxMP2uSg/V8+Gs0O1jVdKqpgbVQoSjD4LulzIuKZYibnQGmh8UTTi/ykdyAoAuiPEb3YR302AUvQwM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IOWtMqn0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5C294C4CEC5
+	for <linux-ext4@vger.kernel.org>; Mon, 23 Sep 2024 18:53:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727109004;
-	bh=BoFcgf4Uyi0BIDAU7jFoxF+YZAhhhRsum5pHmD4iXdE=;
+	s=k20201202; t=1727117582;
+	bh=UWo0KFXiNU5ATLWiqV8A/0tsDBXDk3W6mEVxZmY4v9c=;
 	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=h4/oGQk2Wb/klOK1v1oDzORdJbkccoJSu8zBWbPKcLgxNnEMquYx8R4EmGWmFdrh+
-	 HsPM1n6AYIcLeDQh0wAmLclah/PrPytiKeXNEPnEoTaLumLiwpIdQ5LIE4SaCywh6Q
-	 7zREWqz+zmv/OTE/TVzVlsc0QDBXfTedCjMuzJi3hB3XkwKocfZNitCCSDEPJVuSlE
-	 0hn6EBuutt5asEFEeToBUxlu2TKT0F7xS9GDGDG4HVaxijyveqZ9F5L31BAsIo+tIE
-	 rxzpMFpcHBGF5mKWkGIZKM9VybIQDEOllTIuQQrbctsXccoUYPm2Au65+wCc7XMi51
-	 p+9KyXDK0qGKQ==
+	b=IOWtMqn0TckXHbqbHgV4/71pFEvlpkEBjMLMYsP82a+kXuOjIZ8OYQuvkPM57YGDL
+	 M0oz6cWuUYo0gB7cbcA78HH92WM7ZtDjsGo1OsqPZwbEcuIw+oIm12EzQ6E+zj2JZ1
+	 CIEJpKUVUC2ShVff4vOBRNQadRpywMhKYspBh166TdVatsMXIu+6zQE8SoWoVdUht3
+	 lQ9CWiHXddLXaGh65MX+DGUMTkrUF4XAOReH/ZeQ87/4npd28Te5FVhZH5YIYxrxB+
+	 40s43rvzKNs9fCZfZhu5dyT9ca48199SYWTmPOHq2q2ACHz5rWzahrPAL9AveMZxAe
+	 qBJSzUQGOQNpw==
 Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 56AD2C53BC3; Mon, 23 Sep 2024 16:30:04 +0000 (UTC)
+	id 44C38C53BC5; Mon, 23 Sep 2024 18:53:02 +0000 (UTC)
 From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
 Subject: [Bug 219300] ext4 corrupts data on a specific pendrive
-Date: Mon, 23 Sep 2024 16:30:03 +0000
+Date: Mon, 23 Sep 2024 18:53:02 +0000
 X-Bugzilla-Reason: None
 X-Bugzilla-Type: changed
 X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
@@ -55,14 +55,14 @@ X-Bugzilla-Component: ext4
 X-Bugzilla-Version: 2.5
 X-Bugzilla-Keywords: 
 X-Bugzilla-Severity: normal
-X-Bugzilla-Who: aros@gmx.com
+X-Bugzilla-Who: tytso@mit.edu
 X-Bugzilla-Status: RESOLVED
 X-Bugzilla-Resolution: INVALID
 X-Bugzilla-Priority: P3
 X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
 X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: cc
-Message-ID: <bug-219300-13602-2hpY48ykF3@https.bugzilla.kernel.org/>
+X-Bugzilla-Changed-Fields: 
+Message-ID: <bug-219300-13602-criS1vGnzz@https.bugzilla.kernel.org/>
 In-Reply-To: <bug-219300-13602@https.bugzilla.kernel.org/>
 References: <bug-219300-13602@https.bugzilla.kernel.org/>
 Content-Type: text/plain; charset="UTF-8"
@@ -78,30 +78,73 @@ MIME-Version: 1.0
 
 https://bugzilla.kernel.org/show_bug.cgi?id=3D219300
 
-Artem S. Tashkinov (aros@gmx.com) changed:
+--- Comment #9 from Theodore Tso (tytso@mit.edu) ---
+It's not at all surprising that flaky hardware might have issues that are o=
+nly
+exposed on different surprising.   Different file systems might have very
+different I/O patterns both in terms of spatially (what blocks get used) and
+temporal (how many I/O requests are issued in parallel, and how quickly) and
+from a I/O request type (e.g., how much if any CACHE FLUSH requests, how ma=
+ny
+if any FORCED UNIT ATTENTION -- FUA).
 
-           What    |Removed                     |Added
-----------------------------------------------------------------------------
-                 CC|aros@gmx.com                |
+One quick thing I'd suggest that you try is to experiment with file systems
+other than ext4 and ntfs.  For example, what happens if you use xfs or btrf=
+s or
+f2fs with your test programs?    If the hardware fails with xfs or btrfs, t=
+hen
+that would very likely put the finger of blame on the hardware being cr*p.
 
---- Comment #8 from Artem S. Tashkinov (aros@gmx.com) ---
-2 billion Android users use ext4 daily with zero issues.
+The other thing that you can try is to run tests on the raw hardware.   For
+example, something like this [1]to write random data to the disk, and then
+verify the output.   The block device must be able to handle having random =
+data
+written at high speeds, and when you read back the data, you must get the s=
+ame
+data written back.   Unreasonable, I know, but if the storage device fails =
+with
+random writes without a file system in the mix, it's going to be hopeless o=
+nce
+you add a file system.
 
-I/O errors must not appear EVER, I repeat a normally working mass storage
-device should NEVER produce a single one of them.
+[1] https://github.com/axboe/fio/blob/master/examples/basic-verify.fio
 
-In fact if I get a single IO error on any of my devices, it instantly gets
-wiped and thrown in the trash.
+I will note that large companies that buy millions of dollars of hardware,
+whether it's for data centers use at hyperscaler cloud companies like Amazo=
+n or
+Microsoft, or for Flash devices used in mobile devices such as Samsung,
+Motorola, Google Pixel devices, etc., will spend an awful lot of time
+qualifying the hardware to make sure it is high quality before they buy the=
+m.=20
+And they do this using raw tests to the block device, since this eliminates=
+ the
+excuse from the hardware company that "oh, this must be a file system bug".=
+=20=20=20
+If there are failures found when using storage tests against the raw block
+device, there is no place for the hardware vendor to hide.....
 
-You can tell a FS that certain blocks are bad but if you value your sanity =
-you
-should not be using such storage.
-
-Please ask your question on either:
-
-https://unix.stackexchange.com/questions or https://superuser.com/questions/
-
-It does not belong here.
+But in general, as Artem said, if there are any I/O failures at all, that's=
+ a
+huge red flagh.   That essentially *proves* that the hardware is dodgy.   Y=
+ou
+can have dodgy hardware without I/O errors, but if there are I/O errors rea=
+ding
+or writing to a valid block/sector number, then by definition the hardware =
+is
+the problem.   And in your case, the errors are "USB disconnect" and "unit =
+is
+off-line".   That should never, ever happen, and if it does, then there is a
+hardware problem.  It could be a cabling problem; it could be a problem with
+the SCSI/SATA/NVME/USB controller, etc., but the file system folks will tell
+you that if there are *any* such problems, resolve the hardware problem bef=
+ore
+you asking the file system people to debug the problem.    It's much like
+asking a civil egnineer to ask why the building might be design issues when
+it's built on top of quicksand.  Buildings assume that they are built on st=
+able
+ground.   If the ground is not stable, then chose a different building site=
+ or
+fix the ground first.
 
 --=20
 You may reply to this email to add a comment.
