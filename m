@@ -1,121 +1,137 @@
-Return-Path: <linux-ext4+bounces-4287-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4288-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E14A98443C
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2024 13:10:13 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B94BC9844F6
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2024 13:38:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4F45A1C230D3
-	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2024 11:10:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63EC4B23DC1
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Sep 2024 11:38:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53D6E1A4F12;
-	Tue, 24 Sep 2024 11:10:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F38E11A705A;
+	Tue, 24 Sep 2024 11:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="keTDrYxC"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CFE91A4E95;
-	Tue, 24 Sep 2024 11:10:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 978371A704A
+	for <linux-ext4@vger.kernel.org>; Tue, 24 Sep 2024 11:38:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727176205; cv=none; b=jg4ExqxQflxFfVl8ihhJGpqiZD8WSrFW2YcRfmSbg+nMqwxg/kLX7QWhf2hJXMhv/0hIWwQDw151s6oiTDmAzaeaGqFX3Y8JHh5N5JAE47PRg96+AYuYl4zDwfZjpt/aD7zTu/mM+v4pnV1p3IN4Cvn3/U6137ontiHosLZGNMU=
+	t=1727177919; cv=none; b=T6kUP41amAxG23rnkqg9c+RZ7Yr3glxt17MK6rCqiIBb6b571dtbpu/apBC9UupZBOAhK26r18noWvNl8f8s8uHIEluBt8JN+LqEPiJ40esRBaEh16CYIY5AANK7mEBrL+f0b6vh6b+qdLIv1Or1yvlkkFbsqYbakzgLgjJO5mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727176205; c=relaxed/simple;
-	bh=cpI6pGHmRebpNzkmkIEeAjGeKKQx/iNqWGbZ1h3E+KU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=M+vrZ7kJdzFCpObqt+FVwj/3xnK8jlJx7WK24AjctImtCk7S6ttW16jvxoP6osWS8V3uMr94NhRuG39Ppgczmn7KHnH7cdgD+I45lCiLpMmIESLpiJ/8olT0s3yBUzFBVzOplNxD/1EoPqnz7i+tBKcagubKCVh+ONbE4tA+3kI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XCcZV3vPPz4f3lCv;
-	Tue, 24 Sep 2024 19:09:38 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 6C5AC1A0359;
-	Tue, 24 Sep 2024 19:09:55 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgDHR8QBnvJm3RbeCA--.62308S3;
-	Tue, 24 Sep 2024 19:09:55 +0800 (CST)
-Message-ID: <d92d106b-3a85-4ca1-85da-7078ba63f95b@huaweicloud.com>
-Date: Tue, 24 Sep 2024 19:09:53 +0800
+	s=arc-20240116; t=1727177919; c=relaxed/simple;
+	bh=zeyehyqH9GWW9myxn6dvh+TR59U0273IGQQCFW/kdqQ=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=pSK0kyKBd12JNX0tX36z9aBk0cKoCHHYBoT6j3oa0MXnFQX9EUAOqiK4gMsoTJnuSYYG8vOazlFv7c7SANMZs7zvaamPahYoZDNgu1x9mLAx0MLVwm9lYNAZvV+6K0kPoZiIbjBnAaoB0EhDQxe0tIwVVIpHahMUFpLJzjMJPAo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=keTDrYxC; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 136F6C4CEC7
+	for <linux-ext4@vger.kernel.org>; Tue, 24 Sep 2024 11:38:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727177919;
+	bh=zeyehyqH9GWW9myxn6dvh+TR59U0273IGQQCFW/kdqQ=;
+	h=From:To:Subject:Date:From;
+	b=keTDrYxCEzBOXAXcxxx26VKPnb4UvDbiHwKOb/JCTcSVNZPH7arOc9K0q2BN+wugr
+	 hN7096tUN6VZp2DEcV32IqmoMPVBf19YBODrhcDV+RCyBRbrfRiYm2Fmu8xJjAqCKw
+	 48fSSs/eoj6LQ4emx1Y3nn83M2dDwnYNIBHd+/zC8SS7Q0Xy5jjOL5O2w3T+ptWxww
+	 GOlb7iZKCOq6cI8MPKVNauft6JED6J4pK0zcj6Bkf2TTH8D1D5JN7ZQsv2IJwASfyW
+	 UiKDC/bI+NMe/MDjur0EtGpV6+rrgv6yA/gEjlZvthsjvkyFESt1AI5VyYHoUvqmAK
+	 8bzWUIAql/xGQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 05A23C53BC3; Tue, 24 Sep 2024 11:38:39 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219306] New: ext4_truncate() is being called endlessly, all the
+ time
+Date: Tue, 24 Sep 2024 11:38:38 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: low
+X-Bugzilla-Who: linmaxi@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
+ op_sys bug_status bug_severity priority component assigned_to reporter
+ cf_regression
+Message-ID: <bug-219306-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 03/10] ext4: drop ext4_update_disksize_before_punch()
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ritesh.list@gmail.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
- yukuai3@huawei.com
-References: <20240904062925.716856-1-yi.zhang@huaweicloud.com>
- <20240904062925.716856-4-yi.zhang@huaweicloud.com>
- <20240920161351.ax3oidpt6w6bf3o4@quack3>
- <5de46c69-74f4-4955-a825-8c8970c0aa09@huaweicloud.com>
- <20240924101119.xzejk3a2rjmgqed7@quack3>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20240924101119.xzejk3a2rjmgqed7@quack3>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgDHR8QBnvJm3RbeCA--.62308S3
-X-Coremail-Antispam: 1UD129KBjvJXoWrKFyfJr43JFykGF4ftF45GFg_yoW8Jry3pF
-	WfKay8tF48K3y8Cr1Iq3WIvr18tw4Iyr48XryxXr17XrZY9Fy3Kr4IqryUKF95uw1vkr45
-	X3Wjga97Z3yjvaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r1j6r4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/9/24 18:11, Jan Kara wrote:
-> On Tue 24-09-24 15:43:22, Zhang Yi wrote:
->> On 2024/9/21 0:13, Jan Kara wrote:
->>> On Wed 04-09-24 14:29:18, Zhang Yi wrote:
->>>> From: Zhang Yi <yi.zhang@huawei.com>
->>>>
->>>> Since we always write back dirty data before zeroing range and punching
->>>> hole, the delalloc extended file's disksize of should be updated
->>>> properly when writing back pages, hence we don't need to update file's
->>>> disksize before discarding page cache in ext4_zero_range() and
->>>> ext4_punch_hole(), just drop ext4_update_disksize_before_punch().
->>>>
->>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->>>
->>> So when we don't write out before hole punching & company this needs to stay
->>> in some shape or form. 
->>>
->>
->> Thanks for taking time to review this series!
->>
->> I don't fully understand this comment, please let me confirm. Do you
->> suggested that we still don't write out all the data before punching /
->> zeroing / collapseing(i.e. drop patch 01), so we need to keep
->> ext4_update_disksize_before_punch()(i.e. also drop this patch), is
->> that right?
-> 
-> Yes, this is what I meant. Sorry for not being clear.
-> 
-> 								Honza
-> 
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219306
 
-OK, this looks fine to me. Let me revise this series.
+            Bug ID: 219306
+           Summary: ext4_truncate() is being called endlessly, all the
+                    time
+           Product: File System
+           Version: 2.5
+          Hardware: i386
+                OS: Linux
+            Status: NEW
+          Severity: low
+          Priority: P3
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: linmaxi@gmail.com
+        Regression: No
 
-Thanks,
-Yi.
+At file ./linux/fs/ext4/extents.c there is this function:=20
+int ext4_ext_truncate(handle_t *handle, struct inode *inode) {...}
+Which is being called all the time, from the moment the machine is booted.
 
+Steps to reproduce: To witness it, just inject a simple printk at the beggi=
+ning
+of the function and checkout dmesg.
+
+After some lookup, it turns out the inode that is being passed to the funct=
+ion
+is
+of the file: /var/log/journal/7c8e96117d45417e980f5fec3775d67f/system.journ=
+al.
+The calling function is ext4_setattr(...) in the file ./linux/fs/ext4/inode=
+.c.
+At that function we have the following code:
+
+                /*
+                 * Call ext4_truncate() even if i_size didn't change to
+                 * truncate possible preallocated blocks.
+                 */
+                if (attr->ia_size <=3D oldsize) {
+                        rc =3D ext4_truncate(inode);
+                        if (rc)
+                                error =3D rc;
+                }
+Looks like this function is being called on system.journal file but without
+actually having it's size changed. Although the comment appears to justify
+calling the function even when the size is unchanged, it is probably uninte=
+nded
+that the function will be ran at such a high frequency without doing anythi=
+ng.
+
+I'd like to ask for thoughts on this, and I'd be glad to fix it myself if
+possible.
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
