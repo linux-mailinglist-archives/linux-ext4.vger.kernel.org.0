@@ -1,195 +1,126 @@
-Return-Path: <linux-ext4+bounces-4321-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4322-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A3FE986585
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 19:19:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE76D986739
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 21:55:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2DDE2883C2
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 17:19:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6941D1F2666C
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 19:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0EF2E3BBE3;
-	Wed, 25 Sep 2024 17:19:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F08CB1474AF;
+	Wed, 25 Sep 2024 19:54:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2yc7n4in";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B2tP3VzQ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2yc7n4in";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="B2tP3VzQ"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="WZlV1OKt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mout.web.de (mout.web.de [212.227.17.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57BB81BC59
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Sep 2024 17:19:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C149C145B26;
+	Wed, 25 Sep 2024 19:54:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727284776; cv=none; b=hyuliU8loZ2KC2PCvdAWM489le/3GwbpREQEA0lN5PyhsKjGH8xog++PwQikZ+nFFGooxXsbYgPWJpuGP9DkcyVzOilleTwUfIkljbR58pgKSYH0PyNNmqNSp3Kgcrh2B/eb8WXxU/vouR2aErLeaepK8DcWKROtxjk/1kuoCQ0=
+	t=1727294077; cv=none; b=VkOPWqLbjYwyrqzCYlDbwPh9RAW9QHKTZAqKCRJnOEw0NuX16Brr15jFpT3CrU2GvEEBSyOKTeAmlhlkQ2WU85+uctNyTJs6oMVLPUWTykktf+mJbv70vDn1xZ5vug9GwEDg0uUXQ2AjMn5FhoJUXhPyXbx19qxE6885tNxqYhA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727284776; c=relaxed/simple;
-	bh=ryoE0l3Dbi93e3DsiIytuzvUJi4Da5CFtZYSnYtuFjE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QwVss6u2xOO7OzxW2L5bWYx/hxnp1apth9QT5eX1zUToqnj0rOws8LuxsMT9fXZLRwUILn5r9/KziVQ0d4UIYWZN6FwhbIzMAHIoVIsnfbWGAT8UImogbsDOUQFD2xGbRrpjott8emDLb9dvHVp94pH4NjEfEHqPLdFe4Ss9b+8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2yc7n4in; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B2tP3VzQ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2yc7n4in; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=B2tP3VzQ; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6A0AB1FD79;
-	Wed, 25 Sep 2024 17:19:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727284770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ak4SwAL7wQvQ8laMpiqLgn4tbUZoE6gSAbsX1OVGBTE=;
-	b=2yc7n4in2qSMZ/6/0ZgZ+TY9VOD1FPBpGyvwMIKSLWmiHtQdHjjJ1F4UrAuOVYIPnEwbW/
-	2frbsGqM9dGQ+Sz62imqK0Xw1fWaSR1JBS/X4vpp6MDjntfKFSZOi880VZEP6s0FcKJSFp
-	VSosqv5mctWyj72ggDUxfXwHJzPqsqs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727284770;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ak4SwAL7wQvQ8laMpiqLgn4tbUZoE6gSAbsX1OVGBTE=;
-	b=B2tP3VzQCMu/dB/PTCKAMf/4CSHMIxSTHejhDWg0cLCSD6j1iU1jSVRodD3drtuYr7XoBw
-	iKOIt9E9/UqPAiAQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2yc7n4in;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=B2tP3VzQ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727284770; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ak4SwAL7wQvQ8laMpiqLgn4tbUZoE6gSAbsX1OVGBTE=;
-	b=2yc7n4in2qSMZ/6/0ZgZ+TY9VOD1FPBpGyvwMIKSLWmiHtQdHjjJ1F4UrAuOVYIPnEwbW/
-	2frbsGqM9dGQ+Sz62imqK0Xw1fWaSR1JBS/X4vpp6MDjntfKFSZOi880VZEP6s0FcKJSFp
-	VSosqv5mctWyj72ggDUxfXwHJzPqsqs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727284770;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
-	bh=ak4SwAL7wQvQ8laMpiqLgn4tbUZoE6gSAbsX1OVGBTE=;
-	b=B2tP3VzQCMu/dB/PTCKAMf/4CSHMIxSTHejhDWg0cLCSD6j1iU1jSVRodD3drtuYr7XoBw
-	iKOIt9E9/UqPAiAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A44413793;
-	Wed, 25 Sep 2024 17:19:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id OU2zFSJG9GaTIgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 25 Sep 2024 17:19:30 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id DDCC4A0810; Wed, 25 Sep 2024 19:19:29 +0200 (CEST)
-From: Jan Kara <jack@suse.cz>
-To: Ted Tso <tytso@mit.edu>
-Cc: <linux-ext4@vger.kernel.org>,
-	Jan Kara <jack@suse.cz>
-Subject: [PATCH] resize2fs: Check number of group descriptors only if meta_bg is disabled
-Date: Wed, 25 Sep 2024 19:19:26 +0200
-Message-Id: <20240925171926.11354-1-jack@suse.cz>
-X-Mailer: git-send-email 2.35.3
+	s=arc-20240116; t=1727294077; c=relaxed/simple;
+	bh=MHYemQ4iLJxEt+SBHZ8DDhtdDBmysgd2m8HWLVTbcLk=;
+	h=Message-ID:Date:MIME-Version:To:Cc:From:Subject:Content-Type; b=nrRnRTBxZ83ZmJGp/mPeZ72lYSoKmqtlexdVw2cB2+htMWNDcJ31OJC3BFQJ3gywcH2k1LMgCyQfo1Toy0+KxWcZU8IhMqENgK5RLVoY+81qzRwd6YEjVW1EvS7Vc6hTayD2R9tQZooOZN7ZJ5EFn97nULLcV0Y/x13UIxm1xdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=WZlV1OKt; arc=none smtp.client-ip=212.227.17.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1727294064; x=1727898864; i=markus.elfring@web.de;
+	bh=oZFXgGZpN35Zb33XWrmn6Py5ABUqGOrhRxGCArCoPsQ=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:From:
+	 Subject:Content-Type:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=WZlV1OKt8vJe+eWHvXmXian3WVMAsLdis6oc6rAYeAgIWdG1xCuyf/SAQXqtr+s/
+	 F4iFc60CGfBiPHosuHxSLBDaLHDOGOGEprWdxfMmboMVoM5FPs0u8Hp5qeTghNMPY
+	 R+Nf2MkmArRMvOpV3DJ50ipKgzQmaNhdNcr4cbeNO4rUyAE77MhWz8wxaYaDR/ceu
+	 8/cEWChONkGNknDF6nHfzoYkTkxHehp2HG6nt1nZIsaBYjQlUA9ClogqPKQkBRQyM
+	 bLuYFYGZTThnJRGB2HMq4B5fmq/HmzJtZQkB80xGY+ikmLnRHnWPjJBs25c5NrpsV
+	 Rf9xT56OR6RACRguCg==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.84.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MRW6Z-1sWg9a3le1-00P9Iy; Wed, 25
+ Sep 2024 21:54:23 +0200
+Message-ID: <cf895072-43cf-412c-bced-8268498ad13e@web.de>
+Date: Wed, 25 Sep 2024 21:54:18 +0200
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2048; i=jack@suse.cz; h=from:subject; bh=ryoE0l3Dbi93e3DsiIytuzvUJi4Da5CFtZYSnYtuFjE=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBm9EYXvrGsWwc+ZDgM2pJFyTG4huornus+kexHD7Qw p+w3t4GJATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZvRGFwAKCRCcnaoHP2RA2QkdCA CMdgRTusH0EKq+wMeK6RgRecYInS1+mNw7AO6qi7sSfnGjONLgJLweoc0L+30D6o0fhtMzOvEfVUxT /xwh/nY7n6A/cw4lDq3MCQtIaAYl0fRFiqiZuUtVlbPbqLB+1dMKzMDYtemHy6uMEa4QxO6OXl7l+t aTiapSBUhtCfGBVuOpgMzQ/7kfmNB1+ej5rV4uq3WcALHBEwYhr17uhqMATVnKUfTtSvXsary2lHHR 3vR9Xio0IzSF4YOqZIkTjbT6m2mlmux5iw/Qtd1fTny3RKXOCk9LwLfrkjk+tm+pGZHyH3EglRrKCs 7n7FtgukR4dAkRHo9/904i1A2Kemp0
-X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
-Content-Transfer-Encoding: 8bit
-X-Rspamd-Queue-Id: 6A0AB1FD79
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	MID_CONTAINS_FROM(1.00)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	R_MISSING_CHARSET(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCPT_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -3.01
+User-Agent: Mozilla Thunderbird
+To: linux-ext4@vger.kernel.org, Andreas Dilger <adilger.kernel@dilger.ca>,
+ Jan Kara <jack@suse.cz>, Matthew Bobrowski <mbobrowski@mbobrowski.org>,
+ Ritesh Harjani <riteshh@linux.ibm.com>, Theodore Ts'o <tytso@mit.edu>
+Content-Language: en-GB
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel-janitors@vger.kernel.org
+From: Markus Elfring <Markus.Elfring@web.de>
+Subject: [PATCH] ext4: Call ext4_journal_stop(handle) only once in
+ ext4_dio_write_iter()
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:N+Rv56bpzb01vFl7kAaSa0ilOzgrnXCwdreS4Meu1k9Ls8DgELx
+ MRrsN3KmVbKDIU1FGMitIJoC6nM7t5Cdr3Xe3JT7EVTSwhqeTY/eIrQeRHM7IAHgfd0cQYG
+ raRYCIU8166o9UUv/CgiRSEd4ie0/wvJPMudeQFymHzQDQdxmxARo66K05VK4vPhKCXPJYH
+ kAQNXGMA/1iQSWYJFNCfA==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:kajW8eoXXRI=;WidS8QTOOMrNRr758M3ooy1P6F4
+ G2wZH3SQPlqT4Zh9CLES7uKaC9L2A+lOQA5qk8+ZVvIUUyowkYISsZE9ElJaJRt5pXJM3zB2m
+ ETcP2gOzySNsH0D4ej490l04gwHtLQDuz8RL8gQ6LVHqshEzVLvlQGdRoRO1q2QpQyA42CLr6
+ Jx0dwCDU7Hv8TvC8qZKTF9yXSx/ZJSLJTowF0aGsFQlrlAZ1sF/5hrtqyo9bkTXvWXmDJ/z9j
+ vm7eNtgrgfVI5wD02XN/FGiiAwszZIr4wGSpA26iY/5fA59qalsTZAZDQruC0ucdfdzc/ws1a
+ AH8hgETGYm4XYN4dmng3q3eZyOmdf1FMsn39LGO6nCafv2fWviUUkP5MVvGtZz8ux8zITjid9
+ AOO9yijvkwk+bEbqt5Bj8+0gkOdhqhejfvjITsVy7HOBGqtiC/6xPpRJR+pORFzrMudI4Of/7
+ Arn74bZOLYvprIgq156zOz/jjh7zBLkAaJT+tvfBrj9focTJvakUbUx/3GS36F3wRsvtPW+oD
+ pui4BX7rfw/rPjxLOuOsAJ3cI9Goik8DcyRlocERetQvGwI8PzTXIo0+kg+i7YVp1AOEVZg8y
+ 5cWxVhOO8TASr97fF/FfAAKYP1SLC47sMkeh3GFRhmSrlBNLgSHw+EW8gRQcprqpBrQENHlRO
+ jqrmFd83wv2pdU3P3wEiqcf1T/1Y2wWLpgSKWUGcE4C1keyo8twcAjppq6QevHMn5XlL6hnin
+ XHEkMeAQZg/c7h4hOePQ+Ymsvc7BFmBrisBIXQrQ/GvsAcS1C5Q898EFpiEleHL8AtbVqc60r
+ epB0pNSSbwdPI/a7sCbY1guA==
 
-When meta_bg feature is enabled, the total number of group descriptors
-is not really limiting the filesystem size. So there's no reason to
-check it in that case. This allows resize2fs to resize filesystems past
-256TB boundary similarly as the kernel can do it.
+From: Markus Elfring <elfring@users.sourceforge.net>
+Date: Wed, 25 Sep 2024 21:47:39 +0200
 
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- resize/main.c | 29 ++++++++++++++++-------------
- 1 file changed, 16 insertions(+), 13 deletions(-)
+An ext4_journal_stop(handle) call was immediately used after a return valu=
+e
+check for a ext4_orphan_add() call in this function implementation.
+Thus call such a function only once instead directly before the check.
 
-diff --git a/resize/main.c b/resize/main.c
-index f914c0507e97..08a4bbaf7c65 100644
---- a/resize/main.c
-+++ b/resize/main.c
-@@ -270,8 +270,6 @@ int main (int argc, char ** argv)
- 	long		sysval;
- 	int		len, mount_flags;
- 	char		*mtpt, *undo_file = NULL;
--	dgrp_t		new_group_desc_count;
--	unsigned long	new_desc_blocks;
- 
- #ifdef ENABLE_NLS
- 	setlocale(LC_MESSAGES, "");
-@@ -551,17 +549,22 @@ int main (int argc, char ** argv)
- 		new_size &= ~((blk64_t)(1ULL << fs->cluster_ratio_bits) - 1);
+This issue was transformed by using the Coccinelle software.
+
+Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
+=2D--
+ fs/ext4/file.c | 7 ++-----
+ 1 file changed, 2 insertions(+), 5 deletions(-)
+
+diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+index f14aed14b9cf..23005f1345a8 100644
+=2D-- a/fs/ext4/file.c
++++ b/fs/ext4/file.c
+@@ -564,12 +564,9 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb=
+, struct iov_iter *from)
+ 		}
+
+ 		ret =3D ext4_orphan_add(handle, inode);
+-		if (ret) {
+-			ext4_journal_stop(handle);
+-			goto out;
+-		}
+-
+ 		ext4_journal_stop(handle);
++		if (ret)
++			goto out;
  	}
- 
--	new_group_desc_count = ext2fs_div64_ceil(new_size -
--				fs->super->s_first_data_block,
--						 EXT2_BLOCKS_PER_GROUP(fs->super));
--	new_desc_blocks = ext2fs_div_ceil(new_group_desc_count,
--					  EXT2_DESC_PER_BLOCK(fs->super));
--	if ((new_desc_blocks + fs->super->s_first_data_block) >
--	    EXT2_BLOCKS_PER_GROUP(fs->super)) {
--		com_err(program_name, 0,
--			_("New size results in too many block group "
--			  "descriptors.\n"));
--		goto errout;
-+	if (!ext2fs_has_feature_meta_bg(fs->super)) {
-+		dgrp_t		new_group_desc_count;
-+		unsigned long	new_desc_blocks;
-+
-+		new_group_desc_count = ext2fs_div64_ceil(new_size -
-+					fs->super->s_first_data_block,
-+					EXT2_BLOCKS_PER_GROUP(fs->super));
-+		new_desc_blocks = ext2fs_div_ceil(new_group_desc_count,
-+					EXT2_DESC_PER_BLOCK(fs->super));
-+		if ((new_desc_blocks + fs->super->s_first_data_block) >
-+		    EXT2_BLOCKS_PER_GROUP(fs->super)) {
-+			com_err(program_name, 0,
-+				_("New size results in too many block group "
-+				  "descriptors.\n"));
-+			goto errout;
-+		}
- 	}
- 
- 	if (!force && new_size < min_size) {
--- 
-2.35.3
+
+ 	if (ilock_shared && !unwritten)
+=2D-
+2.46.1
 
 
