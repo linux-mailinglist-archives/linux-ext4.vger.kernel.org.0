@@ -1,62 +1,61 @@
-Return-Path: <linux-ext4+bounces-4306-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4307-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF95985BF7
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 14:36:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 297E1985E2E
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 15:29:49 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21DA91F26014
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 12:36:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D019128D3FA
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 13:29:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AB411CB50C;
-	Wed, 25 Sep 2024 11:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 827401B655F;
+	Wed, 25 Sep 2024 12:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rLxpQjPd"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Sp+Uzek3"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AAEC1CB500;
-	Wed, 25 Sep 2024 11:53:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A2CA1CD718;
+	Wed, 25 Sep 2024 12:09:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727265207; cv=none; b=IVEZAcwCz/+5blTKN9zxdiFgp6sx1TNByU9qUDY0/cSOZ1QRnrVcpHmQzVwNlIlUA9NvT0DZySgmrKfvCy8vSMqQhvlQFwGzunmICJcOycXWLCBO9Taw9dX63B8ETektX/YDPKoU62YR+3LgFOA1fhn+UETA4yC7bfvWC6OcCkM=
+	t=1727266144; cv=none; b=hku0xrGddHmnEfqL9qh50qGftAWIgMgWd6xJL2yXbmOQqEKEqYtrbj7HF9X2sy866sra+AasyzvyHI+PFvfvHiPRr8SiPsvfbbZk1WlI3VMANF6fs1YhoOFcFpWDsN6Y120ePfSyMBAckb7LydapprQBtQRUOhDwDHLCfAvrODY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727265207; c=relaxed/simple;
-	bh=v2mvxM65+HybBi/a2juuSaSOAdhlM+sU0raG1huyRQ0=;
+	s=arc-20240116; t=1727266144; c=relaxed/simple;
+	bh=qpYx8OjX7ycSGpl7GFmz/VnJk/uHyp/q0kLf2J/2q2w=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=e0DphX3R7VRs8iPz2rjC9MvXhQ5qDRXs7SIhrltFWckCvn5VSr/oIoPRBn5Ad/cOac/nSbM2LzMavxOFr6Bede5JO3oF396DdzwoxLk/+Np/rY5k+kYR6sTUtf1VoQX7w1xdbGhsAM1597GQ0AduRD7gXo6rEp4xMjI/QGqwPWU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rLxpQjPd; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00CABC4CECD;
-	Wed, 25 Sep 2024 11:53:25 +0000 (UTC)
+	 MIME-Version; b=ES+yVvfdjDBiy91+Ux1BlAUtvf0CZdv1eHr+PjeOy3sxt4mOY57Shp8Zl4N8gkHDtvriz3Wv707T6/2dXrEzlv1qg+/t3pvJH8/WduAWa2OQKlTqeO9rJl1G+Ff/wQG/Um8aHF+Ed1uZIQmcnT+lK8PEHdx/08+59ar9necgIsY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Sp+Uzek3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9980CC4CEC3;
+	Wed, 25 Sep 2024 12:09:01 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727265207;
-	bh=v2mvxM65+HybBi/a2juuSaSOAdhlM+sU0raG1huyRQ0=;
+	s=k20201202; t=1727266142;
+	bh=qpYx8OjX7ycSGpl7GFmz/VnJk/uHyp/q0kLf2J/2q2w=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rLxpQjPdjWtonO7twrxE/UWiovljgAI5JU1QQsPgO1psvaDP2gjxjTrJaYx2MOThl
-	 1Mp8j6tD8u55zsZZnRxdoIcyM/vHa1tKV+1jqh3gM9cLaLfPXmMB2bdFuxwpJY5nDl
-	 Gt3nj56eEERzNeioGk6nkH/HTi6Blts4IRLTuf3kWrfpBvcBXS7Qj5ocQPEenIIDmA
-	 Wke0tWtvWrZQWvxILAbKLwKzIHoI5DddqQFMcfjzWecGUjziLWXK7jUu6SZklgSZao
-	 nyG1cU0sXVzHTy42nalAi6yGsB3GNDhI48UTl0AxOkLDWyjHVxCWjzyLA03dmPQ7xk
-	 018TlWolj9vig==
+	b=Sp+Uzek33e4rkWC3HJAH6OUxbzrAfE7ATrPi/I/aUS6J4GPwMA/55kw5cIVmmwapf
+	 b22XXEXP4La3ivpbSuWMi2EI4nUTwuXPr5fnwfjbcLwqPr79nOk7tGI95Ii+xo4XLU
+	 DT1VIWM/maWgRZO91YFlSZIy9wmU2tEgVskMGeEDTGMksuEgg7P4qsGtZuYzkkAdq5
+	 bN+Yd0or/+cHjvkjVvIviuG+JMCFp2f8NMcgcjCj7e8j3dsh2dWyrKesR51LF/l2hy
+	 TDPiQ/lbN4kSL07K/Oea+SnGEXOrtrLx34HnfJbwKHsqPgqdr92DCiFdeGENs2a1JT
+	 gqIWdIfmrtiFw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Artem Sadovnikov <ancowi69@gmail.com>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	Mikhail Ukhin <mish.uxin2012@yandex.ru>,
+Cc: Jan Kara <jack@suse.cz>,
+	Christian Brauner <brauner@kernel.org>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 240/244] ext4: fix i_data_sem unlock order in ext4_ind_migrate()
-Date: Wed, 25 Sep 2024 07:27:41 -0400
-Message-ID: <20240925113641.1297102-240-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.10 188/197] ext4: don't set SB_RDONLY after filesystem errors
+Date: Wed, 25 Sep 2024 07:53:27 -0400
+Message-ID: <20240925115823.1303019-188-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240925113641.1297102-1-sashal@kernel.org>
-References: <20240925113641.1297102-1-sashal@kernel.org>
+In-Reply-To: <20240925115823.1303019-1-sashal@kernel.org>
+References: <20240925115823.1303019-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -65,56 +64,57 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11
+X-stable-base: Linux 6.10.11
 Content-Transfer-Encoding: 8bit
 
-From: Artem Sadovnikov <ancowi69@gmail.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit cc749e61c011c255d81b192a822db650c68b313f ]
+[ Upstream commit d3476f3dad4ad68ae5f6b008ea6591d1520da5d8 ]
 
-Fuzzing reports a possible deadlock in jbd2_log_wait_commit.
+When the filesystem is mounted with errors=remount-ro, we were setting
+SB_RDONLY flag to stop all filesystem modifications. We knew this misses
+proper locking (sb->s_umount) and does not go through proper filesystem
+remount procedure but it has been the way this worked since early ext2
+days and it was good enough for catastrophic situation damage
+mitigation. Recently, syzbot has found a way (see link) to trigger
+warnings in filesystem freezing because the code got confused by
+SB_RDONLY changing under its hands. Since these days we set
+EXT4_FLAGS_SHUTDOWN on the superblock which is enough to stop all
+filesystem modifications, modifying SB_RDONLY shouldn't be needed. So
+stop doing that.
 
-This issue is triggered when an EXT4_IOC_MIGRATE ioctl is set to require
-synchronous updates because the file descriptor is opened with O_SYNC.
-This can lead to the jbd2_journal_stop() function calling
-jbd2_might_wait_for_commit(), potentially causing a deadlock if the
-EXT4_IOC_MIGRATE call races with a write(2) system call.
-
-This problem only arises when CONFIG_PROVE_LOCKING is enabled. In this
-case, the jbd2_might_wait_for_commit macro locks jbd2_handle in the
-jbd2_journal_stop function while i_data_sem is locked. This triggers
-lockdep because the jbd2_journal_start function might also lock the same
-jbd2_handle simultaneously.
-
-Found by Linux Verification Center (linuxtesting.org) with syzkaller.
-
-Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Co-developed-by: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-Signed-off-by: Mikhail Ukhin <mish.uxin2012@yandex.ru>
-Signed-off-by: Artem Sadovnikov <ancowi69@gmail.com>
-Rule: add
-Link: https://lore.kernel.org/stable/20240404095000.5872-1-mish.uxin2012%40yandex.ru
-Link: https://patch.msgid.link/20240829152210.2754-1-ancowi69@gmail.com
+Link: https://lore.kernel.org/all/000000000000b90a8e061e21d12f@google.com
+Reported-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Christian Brauner <brauner@kernel.org>
+Link: https://patch.msgid.link/20240805201241.27286-1-jack@suse.cz
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/migrate.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ fs/ext4/super.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/migrate.c b/fs/ext4/migrate.c
-index d98ac2af8199f..a5e1492bbaaa5 100644
---- a/fs/ext4/migrate.c
-+++ b/fs/ext4/migrate.c
-@@ -663,8 +663,8 @@ int ext4_ind_migrate(struct inode *inode)
- 	if (unlikely(ret2 && !ret))
- 		ret = ret2;
- errout:
--	ext4_journal_stop(handle);
- 	up_write(&EXT4_I(inode)->i_data_sem);
-+	ext4_journal_stop(handle);
- out_unlock:
- 	ext4_writepages_up_write(inode->i_sb, alloc_ctx);
- 	return ret;
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index c682fb927b64b..307083e519034 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -735,11 +735,12 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
+ 
+ 	ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
+ 	/*
+-	 * Make sure updated value of ->s_mount_flags will be visible before
+-	 * ->s_flags update
++	 * EXT4_FLAGS_SHUTDOWN was set which stops all filesystem
++	 * modifications. We don't set SB_RDONLY because that requires
++	 * sb->s_umount semaphore and setting it without proper remount
++	 * procedure is confusing code such as freeze_super() leading to
++	 * deadlocks and other problems.
+ 	 */
+-	smp_wmb();
+-	sb->s_flags |= SB_RDONLY;
+ }
+ 
+ static void update_super_work(struct work_struct *work)
 -- 
 2.43.0
 
