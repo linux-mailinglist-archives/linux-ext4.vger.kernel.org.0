@@ -1,57 +1,59 @@
-Return-Path: <linux-ext4+bounces-4304-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4305-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BEB09985BF9
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 14:36:31 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7BD86985BF4
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 14:35:59 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EDA6B28B19
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 12:35:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A78BE1C2458B
+	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 12:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E5511A0727;
-	Wed, 25 Sep 2024 11:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BC811CB328;
+	Wed, 25 Sep 2024 11:53:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gc+Ce34g"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ji2TvqCF"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07C91A0724;
-	Wed, 25 Sep 2024 11:53:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEF9D1CB318;
+	Wed, 25 Sep 2024 11:53:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727265204; cv=none; b=nrTdr5Ay5k1+pCch5vZtIpe41MYzz3xD5Oh5ov6F78GbEQa4Q0260Zlph9cSFBTxIvr59wKvpeJ1/g6hM/K/nSrD6nlKPNFyr5jz34+faECmsLYf59AV6V1vNkThl3/lwlqg/RMzEWNSFXNb6YJOC8xwAVKUqelRZi/JDqJzwLA=
+	t=1727265205; cv=none; b=tIMtcaWYhfUqYbeJHpOfboB33e3/H6cTi059VmUhrKDrQW3V85fYnIqCBilvvkPv9pmljy9hucNuCdxKqQdHqoGVY/1v/yPKuS09561NpGogUfclwKXFVPN5Hb+svUQ63AqFfdZD96+2r9rN1zrS51vkCa4LtaF9ymRG7GtcXc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727265204; c=relaxed/simple;
-	bh=XwyOgJRgy0Nnfh7OKawvwusfPpqqQi2kT66fS1VCB1w=;
+	s=arc-20240116; t=1727265205; c=relaxed/simple;
+	bh=0dY/Rn2LCkVFNFRPdOEhLz+OBcsB+K2jKeSvCLpQWm0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=BEe4ONP6HeKlHEBQFau1iRZG4VFWxUHIfLS8Co+X2Y8zJP0egUou1xIOcx+c3Q+Nf2KVVNWQkevZ4UMnYlkoXUstcdfikBJaFh5QGhwqy8CiE9H1+PGFvCmatmBCV2Y2MvU6vzBwdilILjZxj6GXF+LOiRsw3Sad7gH8TcxqTLg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gc+Ce34g; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D0CF8C4CEC3;
-	Wed, 25 Sep 2024 11:53:22 +0000 (UTC)
+	 MIME-Version; b=tVSpPq7O6RGFF88h/YI505vLjj6rFZWtJXIJ5h0GjikoP9mI4mMIBPFMVEtBmnohyc1uU5OCFI4IfeNLqvcABajdZU106cgG5Ien6IEUUj3k8yF6TvScQQWkNxAZEPo7OU86/Uvleu3rmw7AfuRdBvQV6CtPl18RxLzyvgpG5LY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ji2TvqCF; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 546E6C4CEC7;
+	Wed, 25 Sep 2024 11:53:24 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727265203;
-	bh=XwyOgJRgy0Nnfh7OKawvwusfPpqqQi2kT66fS1VCB1w=;
+	s=k20201202; t=1727265205;
+	bh=0dY/Rn2LCkVFNFRPdOEhLz+OBcsB+K2jKeSvCLpQWm0=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=gc+Ce34gnuhSDixpFk6w3cCAuxr6V6eVUXID5ZZjDdPt48WPrPpCEUky5L3Sp7ncU
-	 Koz0xDwbHbm9pwG3fK/yo4R7WY1c9IaEPUnYWesaAosLsp310acUcbDqw3074L5XHH
-	 Kq+pcC0vJfPNEoKspawXerr/8IXHAvDOmbgYAqPk38oQWFmojxDY9+txpa1WZtKu6e
-	 DaCOq54O6zjBwrs8mFPRcIfOfnVl8sIk9LbPEeekmwOhwf23hqkCfZBxwHk7g4U6zB
-	 p01u3XA9bmNBv9FR4w6kmsJVPTVhoYdw9u63PRX+QwvtJiFeF9gK9Cmc3gKFzHoDOA
-	 vHM5PKpy+yQUQ==
+	b=Ji2TvqCFyZGcEjPAGjR1ZthsvV2hNHYxViQbVtLJdsWen78cHOwgqBJMDzw1vDx+4
+	 bafVzCOYg1BQBfGB8X0kMVqRQWCxT1wZ5st9VPQksHpnmtp5N873QPANYBJbQ12/mg
+	 GkZ/7kpmKT4NEln6F+fvlS/wIUHrr+QPsdhg4HFwrgkhZ5icIj2zdT08mhSfteOXnY
+	 zdMtkhc2wI/W2nuld/O/dDLFYxy6NVvi3ndVZJ+jw5IlswEfw3T7u86hIeE/ucfVyR
+	 Tv2/gQ1O5TFcgReaWyUrj6pNX0K5tbCygzzyUbHfVkaWFNnjHO4oM63AczN5uNtZvH
+	 TFqJKMgHaSpoQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
+Cc: Baokun Li <libaokun1@huawei.com>,
+	Jan Kara <jack@suse.cz>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 238/244] ext4: ext4_search_dir should return a proper error
-Date: Wed, 25 Sep 2024 07:27:39 -0400
-Message-ID: <20240925113641.1297102-238-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.11 239/244] ext4: avoid use-after-free in ext4_ext_show_leaf()
+Date: Wed, 25 Sep 2024 07:27:40 -0400
+Message-ID: <20240925113641.1297102-239-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240925113641.1297102-1-sashal@kernel.org>
 References: <20240925113641.1297102-1-sashal@kernel.org>
@@ -66,84 +68,92 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 6.11
 Content-Transfer-Encoding: 8bit
 
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+From: Baokun Li <libaokun1@huawei.com>
 
-[ Upstream commit cd69f8f9de280e331c9e6ff689ced0a688a9ce8f ]
+[ Upstream commit 4e2524ba2ca5f54bdbb9e5153bea00421ef653f5 ]
 
-ext4_search_dir currently returns -1 in case of a failure, while it returns
-0 when the name is not found. In such failure cases, it should return an
-error code instead.
+In ext4_find_extent(), path may be freed by error or be reallocated, so
+using a previously saved *ppath may have been freed and thus may trigger
+use-after-free, as follows:
 
-This becomes even more important when ext4_find_inline_entry returns an
-error code as well in the next commit.
+ext4_split_extent
+  path = *ppath;
+  ext4_split_extent_at(ppath)
+  path = ext4_find_extent(ppath)
+  ext4_split_extent_at(ppath)
+    // ext4_find_extent fails to free path
+    // but zeroout succeeds
+  ext4_ext_show_leaf(inode, path)
+    eh = path[depth].p_hdr
+    // path use-after-free !!!
 
--EFSCORRUPTED seems appropriate as such error code as these failures would
-be caused by unexpected record lengths and is in line with other instances
-of ext4_check_dir_entry failures.
+Similar to ext4_split_extent_at(), we use *ppath directly as an input to
+ext4_ext_show_leaf(). Fix a spelling error by the way.
 
-In the case of ext4_dx_find_entry, the current use of ERR_BAD_DX_DIR was
-left as is to reduce the risk of regressions.
+Same problem in ext4_ext_handle_unwritten_extents(). Since 'path' is only
+used in ext4_ext_show_leaf(), remove 'path' and use *ppath directly.
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Link: https://patch.msgid.link/20240821152324.3621860-2-cascardo@igalia.com
+This issue is triggered only when EXT_DEBUG is defined and therefore does
+not affect functionality.
+
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Reviewed-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Tested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Link: https://patch.msgid.link/20240822023545.1994557-5-libaokun@huaweicloud.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/ext4/extents.c | 9 ++++-----
+ 1 file changed, 4 insertions(+), 5 deletions(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 6a95713f9193b..8af437ac30511 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1482,7 +1482,7 @@ static bool ext4_match(struct inode *parent,
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index e067f2dd0335c..7954430f886d8 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -3287,7 +3287,7 @@ static int ext4_split_extent_at(handle_t *handle,
  }
  
  /*
-- * Returns 0 if not found, -1 on failure, and 1 on success
-+ * Returns 0 if not found, -EFSCORRUPTED on failure, and 1 on success
-  */
- int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		    struct inode *dir, struct ext4_filename *fname,
-@@ -1503,7 +1503,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 			 * a full check */
- 			if (ext4_check_dir_entry(dir, NULL, de, bh, search_buf,
- 						 buf_size, offset))
--				return -1;
-+				return -EFSCORRUPTED;
- 			*res_dir = de;
- 			return 1;
- 		}
-@@ -1511,7 +1511,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		de_len = ext4_rec_len_from_disk(de->rec_len,
- 						dir->i_sb->s_blocksize);
- 		if (de_len <= 0)
--			return -1;
-+			return -EFSCORRUPTED;
- 		offset += de_len;
- 		de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
+- * ext4_split_extents() splits an extent and mark extent which is covered
++ * ext4_split_extent() splits an extent and mark extent which is covered
+  * by @map as split_flags indicates
+  *
+  * It may result in splitting the extent into multiple extents (up to three)
+@@ -3363,7 +3363,7 @@ static int ext4_split_extent(handle_t *handle,
+ 			goto out;
  	}
-@@ -1663,8 +1663,10 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 			goto cleanup_and_exit;
- 		} else {
- 			brelse(bh);
--			if (i < 0)
-+			if (i < 0) {
-+				ret = ERR_PTR(i);
- 				goto cleanup_and_exit;
-+			}
- 		}
- 	next:
- 		if (++block >= nblocks)
-@@ -1758,7 +1760,7 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
- 		if (retval == 1)
- 			goto success;
- 		brelse(bh);
--		if (retval == -1) {
-+		if (retval < 0) {
- 			bh = ERR_PTR(ERR_BAD_DX_DIR);
- 			goto errout;
- 		}
+ 
+-	ext4_ext_show_leaf(inode, path);
++	ext4_ext_show_leaf(inode, *ppath);
+ out:
+ 	return err ? err : allocated;
+ }
+@@ -3828,14 +3828,13 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
+ 			struct ext4_ext_path **ppath, int flags,
+ 			unsigned int allocated, ext4_fsblk_t newblock)
+ {
+-	struct ext4_ext_path __maybe_unused *path = *ppath;
+ 	int ret = 0;
+ 	int err = 0;
+ 
+ 	ext_debug(inode, "logical block %llu, max_blocks %u, flags 0x%x, allocated %u\n",
+ 		  (unsigned long long)map->m_lblk, map->m_len, flags,
+ 		  allocated);
+-	ext4_ext_show_leaf(inode, path);
++	ext4_ext_show_leaf(inode, *ppath);
+ 
+ 	/*
+ 	 * When writing into unwritten space, we should not fail to
+@@ -3932,7 +3931,7 @@ ext4_ext_handle_unwritten_extents(handle_t *handle, struct inode *inode,
+ 	if (allocated > map->m_len)
+ 		allocated = map->m_len;
+ 	map->m_len = allocated;
+-	ext4_ext_show_leaf(inode, path);
++	ext4_ext_show_leaf(inode, *ppath);
+ out2:
+ 	return err ? err : allocated;
+ }
 -- 
 2.43.0
 
