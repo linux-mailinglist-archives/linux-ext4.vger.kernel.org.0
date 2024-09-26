@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-4330-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4331-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id F2BAB98701C
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 11:28:30 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E15B98706D
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 11:40:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9862E1F279E5
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 09:28:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 52FBE2822C4
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 09:40:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644661ABECE;
-	Thu, 26 Sep 2024 09:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 265581AB6E7;
+	Thu, 26 Sep 2024 09:40:20 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30F261AB6F2;
-	Thu, 26 Sep 2024 09:28:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22891192595;
+	Thu, 26 Sep 2024 09:40:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727342898; cv=none; b=PB43eQTwYyn0QFSca1k7Btj8iTlwLg8GqQEFrY//ui0J0ScVgbCSar9sU3RYpsjXPHfd0ENWF1lvlFHLlSRxws8TXu3A3c0sVp64hidu0H38dTKAAJmWRqHxnpYjc4Fcl77xIK1WebNgypM6rq+gjmyrg6OdI6bXU3RvdJxWaU8=
+	t=1727343619; cv=none; b=J5UGYjcpzvOi6hYGACqyzqEqcvxAzaYEkoEg12ljKq8yHL5pkOYuYUSJPBoITWDXy71jL7zngN6+WDAYFAN2ZWSgJuy450fn9t3LBOikfgLwG+mI45R5QLxwBC6imzjnuUgQWlIuAql4sKh8h4TKO175/hjBQBRC0geFHUuu/3Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727342898; c=relaxed/simple;
-	bh=EDht8aYisYAcI7n+B9DfXTXswUoogYDJgicgfThstww=;
+	s=arc-20240116; t=1727343619; c=relaxed/simple;
+	bh=j5iS1eZfSgz0dyYQCRuSlGIaWvz6i6/69lu2DSXDUcw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=hx0kWE8jXjAEjqdfOId3XGEYK7VRN8a4jwa9OJh/zFruf3OVIj1VMGpBaLppPM6LJNonFbcTYGi42V9mCBN5ZBYJ2QdQlEUwQhKae2vePkxoRZlmBn7haykAVrYZ7jw6uRjA1BKuNQFfT9mGk5yVNSQcbVWundiF1/KzyQtKegg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+	 In-Reply-To:Content-Type; b=NTRKwGeIEg+D4oN3iLPKQr3+hyCB4fdIz/6pms1oNyW63PfUDh2JUCXGxB1UN2HtnZ4QXDc0VwKZ8kyxHuqz8BMGtjeXV7ZPccxxsGH3h/LUBAvBPge2r7xuB3jDjCkgyrIWNUnITBOurZDFc0CBlPNBXJHs0OcwbsdPGR0nU3c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4XDpBs5d7Hz10McL;
-	Thu, 26 Sep 2024 17:26:45 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.88.163])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XDpTN3VJqz2QTth;
+	Thu, 26 Sep 2024 17:39:20 +0800 (CST)
 Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
-	by mail.maildlp.com (Postfix) with ESMTPS id 495EF1401F0;
-	Thu, 26 Sep 2024 17:28:12 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id DB7DB180019;
+	Thu, 26 Sep 2024 17:40:08 +0800 (CST)
 Received: from [127.0.0.1] (10.174.177.174) by dggpeml100021.china.huawei.com
  (7.185.36.148) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 26 Sep
- 2024 17:28:11 +0800
-Message-ID: <52f055eb-a828-45cd-a06d-ca2006321926@huawei.com>
-Date: Thu, 26 Sep 2024 17:28:11 +0800
+ 2024 17:40:08 +0800
+Message-ID: <4ce5c69c-fda7-4d5b-a09e-ea8bbca46a89@huawei.com>
+Date: Thu, 26 Sep 2024 17:40:07 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,82 +59,97 @@ CC: Jan Kara <jack@suse.cz>, <tytso@mit.edu>, <stable@vger.kernel.org>,
 References: <20240925143325.518508-1-aleksandr.mikhalitsyn@canonical.com>
  <20240925143325.518508-2-aleksandr.mikhalitsyn@canonical.com>
  <20240925155706.zad2euxxuq7h6uja@quack3>
- <142a28f9-5954-47f6-9c0c-26f7c142dbc1@huawei.com>
- <CAEivzxc-b-QDx8AEdHEwa06Q2TYgZZkw2PWQ+K_Lyf+oyTM1Zg@mail.gmail.com>
+ <CAEivzxfjnKq2fgCfYwhZukAO-ZfoUiC5n0Y5yaUpuz-y7kDf+g@mail.gmail.com>
+ <dcda93dd-f2ef-4419-ae73-7d3c55b5df8f@huawei.com>
+ <CAEivzxdnAt3WbVmMLpb+HCBSrwkX6vesMvK3onc+Zc9wzv1EtA@mail.gmail.com>
 Content-Language: en-US
 From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <CAEivzxc-b-QDx8AEdHEwa06Q2TYgZZkw2PWQ+K_Lyf+oyTM1Zg@mail.gmail.com>
+In-Reply-To: <CAEivzxdnAt3WbVmMLpb+HCBSrwkX6vesMvK3onc+Zc9wzv1EtA@mail.gmail.com>
 Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
  dggpeml100021.china.huawei.com (7.185.36.148)
 
-On 2024/9/26 17:16, Aleksandr Mikhalitsyn wrote:
-> On Thu, Sep 26, 2024 at 10:29 AM Baokun Li <libaokun1@huawei.com> wrote:
->> On 2024/9/25 23:57, Jan Kara wrote:
->>> On Wed 25-09-24 16:33:24, Alexander Mikhalitsyn wrote:
->>>> [   33.882936] EXT4-fs (dm-5): mounted filesystem 8aaf41b2-6ac0-4fa8-b92b-77d10e1d16ca r/w with ordered data mode. Quota mode: none.
->>>> [   33.888365] EXT4-fs (dm-5): resizing filesystem from 7168 to 786432 blocks
->>>> [   33.888740] ------------[ cut here ]------------
->>>> [   33.888742] kernel BUG at fs/ext4/resize.c:324!
->>> Ah, I was staring at this for a while before I understood what's going on
->>> (it would be great to explain this in the changelog BTW).  As far as I
->>> understand commit 665d3e0af4d3 ("ext4: reduce unnecessary memory allocation
->>> in alloc_flex_gd()") can actually make flex_gd->resize_bg larger than
->>> flexbg_size (for example when ogroup = flexbg_size, ngroup = 2*flexbg_size
->>> - 1) which then confuses things. I think that was not really intended and
->>> instead of fixing up ext4_alloc_group_tables() we should really change
->>> the logic in alloc_flex_gd() to make sure flex_gd->resize_bg never exceeds
->>> flexbg size. Baokun?
+On 2024/9/26 17:23, Aleksandr Mikhalitsyn wrote:
+> On Thu, Sep 26, 2024 at 10:50 AM Baokun Li <libaokun1@huawei.com> wrote:
+>> On 2024/9/26 0:17, Aleksandr Mikhalitsyn wrote:
+>>> On Wed, Sep 25, 2024 at 5:57 PM Jan Kara <jack@suse.cz> wrote:
+>>>> On Wed 25-09-24 16:33:24, Alexander Mikhalitsyn wrote:
+>>>>> [   33.882936] EXT4-fs (dm-5): mounted filesystem 8aaf41b2-6ac0-4fa8-b92b-77d10e1d16ca r/w with ordered data mode. Quota mode: none.
+>>>>> [   33.888365] EXT4-fs (dm-5): resizing filesystem from 7168 to 786432 blocks
+>>>>> [   33.888740] ------------[ cut here ]------------
+>>>>> [   33.888742] kernel BUG at fs/ext4/resize.c:324!
+>>>> Ah, I was staring at this for a while before I understood what's going on
+>>>> (it would be great to explain this in the changelog BTW).  As far as I
+>>>> understand commit 665d3e0af4d3 ("ext4: reduce unnecessary memory allocation
+>>>> in alloc_flex_gd()") can actually make flex_gd->resize_bg larger than
+>>>> flexbg_size (for example when ogroup = flexbg_size, ngroup = 2*flexbg_size
+>>>> - 1) which then confuses things. I think that was not really intended and
+>>> Hi Jan,
 >>>
->>>                                                                Honza
->> Hi Honza,
->>
->> Your analysis is absolutely correct. It's a bug!
->> Thank you for locating this issue！
->> An extra 1 should not be added when calculating resize_bg in
->> alloc_flex_gd().
->>
->>
->> Hi Aleksandr,
+>>> First of all, thanks for your reaction/review on this one ;-)
+>>>
+>>> You are absolutely right, have just checked with our reproducer and
+>>> this modification:
+>>>
+>>> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+>>> index e04eb08b9060..530a918f0cab 100644
+>>> --- a/fs/ext4/resize.c
+>>> +++ b/fs/ext4/resize.c
+>>> @@ -258,6 +258,8 @@ static struct ext4_new_flex_group_data
+>>> *alloc_flex_gd(unsigned int flexbg_size,
+>>>                   flex_gd->resize_bg = 1 << max(fls(last_group - o_group + 1),
+>>>                                                 fls(n_group - last_group));
+>>>
+>>> +       BUG_ON(flex_gd->resize_bg > flexbg_size);
+>>> +
+>>>           flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
+>>>                                           sizeof(struct ext4_new_group_data),
+>>>                                           GFP_NOFS);
+>>>
+>>> and yes, it crashes on this BUG_ON. So it looks like instead of making
+>>> flex_gd->resize_bg to be smaller
+>>> than flexbg_size in most cases we can actually have an opposite effect
+>>> here. I guess we really need to fix alloc_flex_gd() too.
+>>>
+>>>> instead of fixing up ext4_alloc_group_tables() we should really change
+>>>> the logic in alloc_flex_gd() to make sure flex_gd->resize_bg never exceeds
+>>>> flexbg size. Baokun?
+>>> At the same time, if I understand the code right, as we can have
+>>> flex_gd->resize_bg != flexbg_size after
+>>> 5d1935ac02ca5a ("ext4: avoid online resizing failures due to oversized
+>>> flex bg") and
+>>> 665d3e0af4d3 ("ext4: reduce unnecessary memory allocation in alloc_flex_gd()")
+>>> we should always refer to flex_gd->resize_bg value which means that
+>>> ext4_alloc_group_tables() fix is needed too.
+>>> Am I correct in my understanding?
+>> Hi Alex,
 > Hi Baokun,
 >
->> Could you help test if the following changes work?
-> I can confirm that this patch helps.
+>> These two are not exactly equivalent.
+>>
+>> The flex_gd->resize_bg is only used to determine how many block groups we
+>> allocate memory to, i.e., the maximum number of block groups per resize.
+>> And the flexbg_size is used to make some judgement on flexible block
+>> groups, for example, the BUG_ON triggered in the issue is to make sure
+>> src_group and last_group must be in the same flexible block group.
+> Huge thanks for explaining this!
 >
-> Tested-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+> Then I guess it's better if you send a patch with your fix.
+> Feel free to add my Tested-by tag.
+Okay, I'll send a patch later.
+>
+> Question to you and Jan. Do you guys think that it makes sense to try
+> to create a minimal reproducer for this problem without Incus/LXD involved?
+> (only e2fsprogs, lvm tools, etc)
+>
+> I guess this test can be put in the xfstests test suite, right?
 >
 > Kind regards,
 > Alex
+I think it makes sense, and it's good to have more use cases to look
+around some corners. If you have an idea, let it go.
 
-Thank you for the test!
+Regards, Baokun
 
-
-Cheers,
-Baokun
->>
->> Thanks,
->> Baokun
->>
->> ---
->>
->> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
->> index e04eb08b9060..1f01a7632149 100644
->> --- a/fs/ext4/resize.c
->> +++ b/fs/ext4/resize.c
->> @@ -253,10 +253,12 @@ static struct ext4_new_flex_group_data
->> *alloc_flex_gd(unsigned int flexbg_size,
->>           /* Avoid allocating large 'groups' array if not needed */
->>           last_group = o_group | (flex_gd->resize_bg - 1);
->>           if (n_group <= last_group)
->> -               flex_gd->resize_bg = 1 << fls(n_group - o_group + 1);
->> +               flex_gd->resize_bg = 1 << fls(n_group - o_group);
->>           else if (n_group - last_group < flex_gd->resize_bg)
->> -               flex_gd->resize_bg = 1 << max(fls(last_group - o_group + 1),
->> +               flex_gd->resize_bg = 1 << max(fls(last_group - o_group),
->>                                                 fls(n_group - last_group));
->>
->>           flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
->>                                           sizeof(struct ext4_new_group_data),
->>
 
