@@ -1,46 +1,97 @@
-Return-Path: <linux-ext4+bounces-4342-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4343-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 26CD99875BA
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 16:35:41 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6658987735
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 18:05:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DAE4928876D
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 14:35:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 316071F28014
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 16:05:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0067C14D70B;
-	Thu, 26 Sep 2024 14:35:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 81395158DCC;
+	Thu, 26 Sep 2024 16:05:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b="yyN/RClC";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Q3MdbX/b"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
+Received: from fhigh-a2-smtp.messagingengine.com (fhigh-a2-smtp.messagingengine.com [103.168.172.153])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BCC4914D703;
-	Thu, 26 Sep 2024 14:35:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B29C153BF7;
+	Thu, 26 Sep 2024 16:04:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.153
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727361310; cv=none; b=kLGeJvkKqQIK4BmCetCMjiwMGCa2rC1BxKbN3I8zT2UMkeNfBPIcCmYiDJjfTK+VOMn9WJWfO9TJQa73d+exbWAVJ0OZolTVRskSCkAxxAPLPYZn1aJNgIhGsi7nGHLBjIcD8iEB1VQ/KWr7fh/i9mhTpWuFvQJjb8bYzcCaqv0=
+	t=1727366700; cv=none; b=MQXofe4KSCdXQGTbr/aTrRkgW2NnlF0e1MlzSEkIg+EktJpxiFg7s/gWZTbcZKAfcXMlVroClx9W+lkUDPbHpsdNwLnwgbi0qPvITGo6rBCKsm8m1JctfnSIG07nhVQqPudx5Flcv+pcFNIv8DFjDarKbcHaehMpjDsI1kwrgvk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727361310; c=relaxed/simple;
-	bh=p5wbQk35AoSwQfh8OuKiZhP3/jLjrczCZQmoWXzavQs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=j9h5/gxhjrNR0DKggaZndC3o7xL6sum+vMfm3PF3B0Xn3vENsSGz8v7W0kcDgRnna8sE6dE6r5xnqfc/p/4KsA1DebuXh+pAkM+dsp8XZzxmW4nxSwY5gSnzR9C27UFw7stBejIF7EtLsfOnYjvHoSK/dXAK7WGt11RN9Qjm+HA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.163])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4XDx2f3XVXz1ymPg;
-	Thu, 26 Sep 2024 22:35:06 +0800 (CST)
-Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
-	by mail.maildlp.com (Postfix) with ESMTPS id 9AA58180019;
-	Thu, 26 Sep 2024 22:35:04 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.174) by dggpeml100021.china.huawei.com
- (7.185.36.148) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Thu, 26 Sep
- 2024 22:35:03 +0800
-Message-ID: <9aa773bd-44e8-4e4b-9628-dfbd3bd0a2af@huawei.com>
-Date: Thu, 26 Sep 2024 22:35:03 +0800
+	s=arc-20240116; t=1727366700; c=relaxed/simple;
+	bh=QCvQFLGrfa7YAftZaGsnPcD0VkWBB6dJL0K/Hvjw4Y0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IZpC2xjn0h+ITamFz72U9nZ+razuNAdixK5kbROeh2aS+Lqnv5h06C1lkJZKupcRN0yR5AdCfyIYMdpPToUzoNCnIAq99d53kqyV1lJ8SebCPYymtRzlVE+BSSYYePRLQJWDOM+XsWoPCTtfsqLpk7su+5B64n/xuOJoacZgmXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sandeen.net; spf=pass smtp.mailfrom=sandeen.net; dkim=pass (2048-bit key) header.d=sandeen.net header.i=@sandeen.net header.b=yyN/RClC; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Q3MdbX/b; arc=none smtp.client-ip=103.168.172.153
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sandeen.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sandeen.net
+Received: from phl-compute-01.internal (phl-compute-01.phl.internal [10.202.2.41])
+	by mailfhigh.phl.internal (Postfix) with ESMTP id A3A31114009C;
+	Thu, 26 Sep 2024 12:04:56 -0400 (EDT)
+Received: from phl-mailfrontend-01 ([10.202.2.162])
+  by phl-compute-01.internal (MEProxy); Thu, 26 Sep 2024 12:04:56 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sandeen.net; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1727366696;
+	 x=1727453096; bh=NhqsMyJ61DtUxWQkPeeP/RCG8R6ZkNS/ze/ekXTI2Qk=; b=
+	yyN/RClCa5sciCh8M9nns+i4Mh5UfIUAIVU04UmyVk16dgY1C1IEER+p5fAJEcQU
+	u8D72JGMNmdvzdC0ImH8NJjOxA8yLqv/ofUn6uQXLD6LjGHCf9KH/++Y8iuPcfP4
+	NQyA3sa42UtuDhcj8+0NWNTijCix8bQLd/0V5EDOgb1SK+89a2Kr/ugJPMYX48/z
+	RuWRIh1jrUQgWKgtSsIQB+O2gwCRqbUX+UWkAtMLG6xZ5sjHuKDgpKnbyIgqG24n
+	COwBLA09LWnoYeOP0qG9bWVL1NscTeoI3Wo3nYGiyNk2FCcoTt3lCwpw+hOuVD5/
+	JhJ3QmEv7mcDw5eGdrwsVQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1727366696; x=
+	1727453096; bh=NhqsMyJ61DtUxWQkPeeP/RCG8R6ZkNS/ze/ekXTI2Qk=; b=Q
+	3MdbX/b3dOhQVCWOa+GxM1BiVzs9wJusm8IbBvYnhAJIBRKbR+mvE7g3wVyxUNhI
+	ICDW25vmgKf2o2nT5dHsuUFvmicxqG7JeeuhexFjRPzumsp/0vEE5fpM0HLd4lo2
+	YZR7cNOdUgdWGti8uC4KQsXNl/qwfWsN/gq6spKdp78MVk5hnLETbkp6q3aTH22J
+	P0SwpEyOszRaSepkUDmL2Mj87eyQNOF7aT0bCqCb4PIo7KZgw240CMmMUqnvYmYt
+	a2/eoyxhZ7mxm4SCmRtQxiSNpbkNB2lQwGMT2f0cDRAYdZRXNoswlQNCpOBSgOni
+	55OwnsMD+x//ZvMyhSzvg==
+X-ME-Sender: <xms:J4b1ZuofDX-HjlQbB9Z32z7vn7mIi2XyXJk_3t-7PfFqiQtxHd1ZXg>
+    <xme:J4b1Zsru8ILoya_hKeXv5634X-7TY5XmIW-MRRkB66TxcRtVsWYMDlzNdoEl3O-Dx
+    M3brEGgtGVLKgdZo1c>
+X-ME-Received: <xmr:J4b1ZjOAt3zn6QUjTvTHW-dW7wMpx0Y7ZvXXLCjF8Hhns6d0oWCNFNis4N_FTngaVpTeO2N1dCALCNPX-qZSdiA>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeeftddrvddtjedgleekucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
+    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
+    htshculddquddttddmnecujfgurhepkfffgggfuffvvehfhfgjtgfgsehtkeertddtvdej
+    necuhfhrohhmpefgrhhitgcuufgrnhguvggvnhcuoehsrghnuggvvghnsehsrghnuggvvg
+    hnrdhnvghtqeenucggtffrrghtthgvrhhnpefgueevteekledtfeegleehudetleettdev
+    heduheeifeeuvdekveduudejudetgfenucevlhhushhtvghrufhiiigvpedtnecurfgrrh
+    grmhepmhgrihhlfhhrohhmpehsrghnuggvvghnsehsrghnuggvvghnrdhnvghtpdhnsggp
+    rhgtphhtthhopedufedpmhhouggvpehsmhhtphhouhhtpdhrtghpthhtoheplhhisggroh
+    hkuhhnudeshhhurgifvghirdgtohhmpdhrtghpthhtohepjhgrtghksehsuhhsvgdrtgii
+    pdhrtghpthhtoheprghlvghkshgrnhgurhdrmhhikhhhrghlihhtshihnhestggrnhhonh
+    hitggrlhdrtghomhdprhgtphhtthhopehthihtshhosehmihhtrdgvughupdhrtghpthht
+    ohepshhtrggslhgvsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheprgguih
+    hlghgvrhdrkhgvrhhnvghlseguihhlghgvrhdrtggrpdhrtghpthhtohepshhtghhrrggs
+    vghrsehsthhgrhgrsggvrhdrohhrghdprhgtphhtthhopegsrhgruhhnvghrsehkvghrnh
+    gvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdhkvghrnhgvlhesvhhgvghrrdhkvghr
+    nhgvlhdrohhrgh
+X-ME-Proxy: <xmx:J4b1Zt7TNqU6j-vZdUYKKrsXZqnhK0DHaDNJ3EGlyA0HbcZMuKEwxg>
+    <xmx:J4b1Zt5tnavG_t24riIFztWRYHYPI4cPhFmQ1jA21jfyUVAzMbEZ_Q>
+    <xmx:J4b1ZtjXS9AczPu4s_htMS6Fr3ZiytFo8QkZxdX417aFYeDqT2rGpQ>
+    <xmx:J4b1Zn6I9JE6WTjOQ0g7e4RyoMFznljpUurS4L-DsV6FM4sxH0HeCA>
+    <xmx:KIb1ZsIeMbwqZ1PPa0Pyl5hhaBVrjnP7fBt8YTxzt0aK-fZLPo1sCtRH>
+Feedback-ID: i2b59495a:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Thu,
+ 26 Sep 2024 12:04:54 -0400 (EDT)
+Message-ID: <ac29f2ba-7f77-4413-82b9-45f377f6c971@sandeen.net>
+Date: Thu, 26 Sep 2024 11:04:54 -0500
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -49,95 +100,98 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH 1/1] ext4: fix crash on BUG_ON in ext4_alloc_group_tables
-To: Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-CC: Jan Kara <jack@suse.cz>, <tytso@mit.edu>, <stable@vger.kernel.org>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, =?UTF-8?Q?St=C3=A9phane_Graber?=
-	<stgraber@stgraber.org>, Christian Brauner <brauner@kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-ext4@vger.kernel.org>, Wesley Hershberger
-	<wesley.hershberger@canonical.com>, Yang Erkun <yangerkun@huawei.com>
+To: Baokun Li <libaokun1@huawei.com>, Jan Kara <jack@suse.cz>,
+ Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: tytso@mit.edu, stable@vger.kernel.org,
+ Andreas Dilger <adilger.kernel@dilger.ca>,
+ =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@stgraber.org>,
+ Christian Brauner <brauner@kernel.org>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ Wesley Hershberger <wesley.hershberger@canonical.com>,
+ Yang Erkun <yangerkun@huawei.com>
 References: <20240925143325.518508-1-aleksandr.mikhalitsyn@canonical.com>
  <20240925143325.518508-2-aleksandr.mikhalitsyn@canonical.com>
  <20240925155706.zad2euxxuq7h6uja@quack3>
- <CAEivzxfjnKq2fgCfYwhZukAO-ZfoUiC5n0Y5yaUpuz-y7kDf+g@mail.gmail.com>
- <dcda93dd-f2ef-4419-ae73-7d3c55b5df8f@huawei.com>
- <CAEivzxdnAt3WbVmMLpb+HCBSrwkX6vesMvK3onc+Zc9wzv1EtA@mail.gmail.com>
- <4ce5c69c-fda7-4d5b-a09e-ea8bbca46a89@huawei.com>
- <CAEivzxekNfuGw_aK2yq91OpzJfhg_RDDWO2Onm6kZ-ioh3GaUg@mail.gmail.com>
- <941f8157-6515-40d3-98bd-ca1c659ef9e0@huawei.com>
- <CAEivzxcR+yy1HcZSXmRKOuAuGDnwr=EK_G5mRgk4oNxEPMH_=A@mail.gmail.com>
+ <142a28f9-5954-47f6-9c0c-26f7c142dbc1@huawei.com>
 Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <CAEivzxcR+yy1HcZSXmRKOuAuGDnwr=EK_G5mRgk4oNxEPMH_=A@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+From: Eric Sandeen <sandeen@sandeen.net>
+In-Reply-To: <142a28f9-5954-47f6-9c0c-26f7c142dbc1@huawei.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
- dggpeml100021.china.huawei.com (7.185.36.148)
 
-On 2024/9/26 22:19, Aleksandr Mikhalitsyn wrote:
-> On Thu, Sep 26, 2024 at 3:58 PM Baokun Li <libaokun1@huawei.com> wrote:
->> On 2024/9/26 19:32, Aleksandr Mikhalitsyn wrote:
->>>>> Question to you and Jan. Do you guys think that it makes sense to try
->>>>> to create a minimal reproducer for this problem without Incus/LXD involved?
->>>>> (only e2fsprogs, lvm tools, etc)
->>>>>
->>>>> I guess this test can be put in the xfstests test suite, right?
->>>>>
->>>>> Kind regards,
->>>>> Alex
->>>> I think it makes sense, and it's good to have more use cases to look
->>>> around some corners. If you have an idea, let it go.
->>> Minimal reproducer:
->>>
->>> mkdir -p /tmp/ext4_crash/mnt
->>> EXT4_CRASH_IMG="/tmp/ext4_crash/disk.img"
->>> rm -f $EXT4_CRASH_IMG
->>> truncate $EXT4_CRASH_IMG --size 25MiB
->>> EXT4_CRASH_DEV=$(losetup --find --nooverlap --direct-io=on --show
->>> $EXT4_CRASH_IMG)
->>> mkfs.ext4 -E nodiscard,lazy_itable_init=0,lazy_journal_init=0 $EXT4_CRASH_DEV
->>> mount $EXT4_CRASH_DEV /tmp/ext4_crash/mnt
->>> truncate $EXT4_CRASH_IMG --size 3GiB
->>> losetup -c $EXT4_CRASH_DEV
->>> resize2fs $EXT4_CRASH_DEV
->>>
->> Hi Alex,
+On 9/26/24 3:28 AM, Baokun Li wrote:
+> On 2024/9/25 23:57, Jan Kara wrote:
+>> On Wed 25-09-24 16:33:24, Alexander Mikhalitsyn wrote:
+>>> [   33.882936] EXT4-fs (dm-5): mounted filesystem 8aaf41b2-6ac0-4fa8-b92b-77d10e1d16ca r/w with ordered data mode. Quota mode: none.
+>>> [   33.888365] EXT4-fs (dm-5): resizing filesystem from 7168 to 786432 blocks
+>>> [   33.888740] ------------[ cut here ]------------
+>>> [   33.888742] kernel BUG at fs/ext4/resize.c:324!
+>> Ah, I was staring at this for a while before I understood what's going on
+>> (it would be great to explain this in the changelog BTW).  As far as I
+>> understand commit 665d3e0af4d3 ("ext4: reduce unnecessary memory allocation
+>> in alloc_flex_gd()") can actually make flex_gd->resize_bg larger than
+>> flexbg_size (for example when ogroup = flexbg_size, ngroup = 2*flexbg_size
+>> - 1) which then confuses things. I think that was not really intended and
+>> instead of fixing up ext4_alloc_group_tables() we should really change
+>> the logic in alloc_flex_gd() to make sure flex_gd->resize_bg never exceeds
+>> flexbg size. Baokun?
 >>
->> This replicator didn't replicate the issue in my VM, so I took a deeper
->> look. The reproduction of the problem requires the following:
-> That's weird. Have just tried once again and it reproduces the issue:
->
-> root@ubuntu:/home/ubuntu# mkdir -p /tmp/ext4_crash/mnt
-> EXT4_CRASH_IMG="/tmp/ext4_crash/disk.img"
-> rm -f $EXT4_CRASH_IMG
-> truncate $EXT4_CRASH_IMG --size 25MiB
-> EXT4_CRASH_DEV=$(losetup --find --nooverlap --direct-io=on --show
-> $EXT4_CRASH_IMG)
-> mkfs.ext4 -E nodiscard,lazy_itable_init=0,lazy_journal_init=0 $EXT4_CRASH_DEV
-> mount $EXT4_CRASH_DEV /tmp/ext4_crash/mnt
-> truncate $EXT4_CRASH_IMG --size 3GiB
-> losetup -c $EXT4_CRASH_DEV
-> resize2fs $EXT4_CRASH_DEV
-> mke2fs 1.47.0 (5-Feb-2023)
-> Creating filesystem with 6400 4k blocks and 6400 inodes
->
-> Allocating group tables: done
-> Writing inode tables: done
-> Creating journal (1024 blocks): done
-> Writing superblocks and filesystem accounting information: done
->
-> resize2fs 1.47.0 (5-Feb-2023)
-> Filesystem at /dev/loop4 is mounted on /tmp/ext4_crash/mnt; on-line
-> resizing required
-> old_desc_blocks = 1, new_desc_blocks = 1
-I can see why, on my side I mkfsed a 25M sized disk, and the ext4
-block size is 1024 by default, whereas on your side it's 4096.
-I set the block size to 4096 and it also reproduced the issue.
+>>                                 Honza
+> 
+> Hi Honza,
+> 
+> Your analysis is absolutely correct. It's a bug!
+> Thank you for locating this issue！
+> An extra 1 should not be added when calculating resize_bg in alloc_flex_gd().
+> 
+> 
+> Hi Aleksandr,
+> 
+> Could you help test if the following changes work?
+> 
 
-Thanks for your feedback!
+I just got an internal bug report for this as well, and I can also confirm that
+the patch fixes my testcase, thanks! Feel free to add:
 
+Tested-by: Eric Sandeen <sandeen@redhat.com>
 
-Cheers,
-Baokun
+I had been trying to debug this and it felt like an off by one but I didn't get
+to a solution in time. ;) 
+
+Can you explain what the 2 cases under
+
+/* Avoid allocating large 'groups' array if not needed */
+
+are doing? I *think* the first 'if' is trying not to over-allocate for the last
+batch of block groups that get added during a resize. What is the "else if" case
+doing?
+
+Thanks,
+-Eric
+
+> Thanks,
+> Baokun
+> 
+> ---
+> 
+> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+> index e04eb08b9060..1f01a7632149 100644
+> --- a/fs/ext4/resize.c
+> +++ b/fs/ext4/resize.c
+> @@ -253,10 +253,12 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size,
+>         /* Avoid allocating large 'groups' array if not needed */
+>         last_group = o_group | (flex_gd->resize_bg - 1);
+>         if (n_group <= last_group)
+> -               flex_gd->resize_bg = 1 << fls(n_group - o_group + 1);
+> +               flex_gd->resize_bg = 1 << fls(n_group - o_group);
+>         else if (n_group - last_group < flex_gd->resize_bg)
+> -               flex_gd->resize_bg = 1 << max(fls(last_group - o_group + 1),
+> +               flex_gd->resize_bg = 1 << max(fls(last_group - o_group),
+>                                               fls(n_group - last_group));
+> 
+>         flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
+>                                         sizeof(struct ext4_new_group_data),
+> 
+> 
 
 
