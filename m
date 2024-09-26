@@ -1,104 +1,111 @@
-Return-Path: <linux-ext4+bounces-4323-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4324-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 00FB8986935
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 00:31:32 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F1B8986B7D
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 05:45:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B53BF284384
-	for <lists+linux-ext4@lfdr.de>; Wed, 25 Sep 2024 22:31:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24FC51C217B5
+	for <lists+linux-ext4@lfdr.de>; Thu, 26 Sep 2024 03:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C3C0158205;
-	Wed, 25 Sep 2024 22:31:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XhjgXDtq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3C7F183CC4;
+	Thu, 26 Sep 2024 03:45:15 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1134BE56A
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Sep 2024 22:31:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51DE6175D47;
+	Thu, 26 Sep 2024 03:45:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727303466; cv=none; b=GhmsbBvIfRKBxl8ljZVBBwwzZk9D+lchGbf1EvZqzk7cHDB/38cySyI0ccuLM3RTb+vll18W5SycgQfOQBWbT7Ba3kaNVCybvH2RNNUUz9NiAfwUczKZY4XtOHNu6XqLt+agIgOAbFyRXDilP+sEvwoZEl37qlpm6DLGb6gYEHE=
+	t=1727322315; cv=none; b=i7tPOE9qo6YioXqjamInRW72VGIxjIsHy1LNWzcmJuLUCJRxF/oLW9qD2bpO/3CUTL0/g4q94jvbRg17ayxCdhJ07EH69tf5UEvKCQmPxJqihqvl6aFv6HrdhCdVmvx5fGY10GHhAeSTtXGZo47LRBioUwC/dW/B8KzbjNViuhY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727303466; c=relaxed/simple;
-	bh=//8ppKl6TWeLCnWdKRn7chUzwQEjAqvpOuqUNb1DNTI=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=rXaOHy290uqbzTOgg4lncpRpSFsh9e/mgCSBGZdFycF3mLZdD4dnjf43UBbexaiL1b11/O0q5WjVObG1giNG8MsrSoLVTLjKmW/jYWuJ7YGLWrrbURwXwr9dLs+kW9gAYuTG5p6nMCHznYAqbliKHqj7aHpyMrZlA5s8O8tim3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XhjgXDtq; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id A0952C4CECE
-	for <linux-ext4@vger.kernel.org>; Wed, 25 Sep 2024 22:31:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727303465;
-	bh=//8ppKl6TWeLCnWdKRn7chUzwQEjAqvpOuqUNb1DNTI=;
-	h=From:To:Subject:Date:In-Reply-To:References:From;
-	b=XhjgXDtqTBXVmMCyXmeHEWRDCvMNDaVqUuN5XmCxW0SL5IThD1QEkYNqduw6AIMNq
-	 /COyvkyS/cwWH33GKBicopybNY7sgyG4qpMdiccp+waof4FTvFuKfGsWCYbULnXrSj
-	 7dtFIHgFhNOGGJfXIVADvsjg8o4R/tX7K7syRxZm9G71SmKgtLuIOgb9R+txxiXNIK
-	 ukDdJ/dULWfV4NHDC0jJBG95PZ8zCS3UQBXsbIgmjQts14l+6zJgXfh2FqwZmrIFcN
-	 TeAYy0bGvBKDi3yHZLnYGfGqK/RJH56jegakKZi3r/k5YpYEHUAK4+wFNNwfCL79ko
-	 dVVzumBRehchQ==
-Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
-	id 92AE9C53BC3; Wed, 25 Sep 2024 22:31:05 +0000 (UTC)
-From: bugzilla-daemon@kernel.org
-To: linux-ext4@vger.kernel.org
-Subject: [Bug 219306] ext4_truncate() is being called endlessly, all the time
-Date: Wed, 25 Sep 2024 22:31:05 +0000
-X-Bugzilla-Reason: None
-X-Bugzilla-Type: changed
-X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Product: File System
-X-Bugzilla-Component: ext4
-X-Bugzilla-Version: 2.5
-X-Bugzilla-Keywords: 
-X-Bugzilla-Severity: low
-X-Bugzilla-Who: tytso@mit.edu
-X-Bugzilla-Status: NEW
-X-Bugzilla-Resolution: 
-X-Bugzilla-Priority: P3
-X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
-X-Bugzilla-Flags: 
-X-Bugzilla-Changed-Fields: 
-Message-ID: <bug-219306-13602-I7DZxac5vn@https.bugzilla.kernel.org/>
-In-Reply-To: <bug-219306-13602@https.bugzilla.kernel.org/>
-References: <bug-219306-13602@https.bugzilla.kernel.org/>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-Bugzilla-URL: https://bugzilla.kernel.org/
-Auto-Submitted: auto-generated
+	s=arc-20240116; t=1727322315; c=relaxed/simple;
+	bh=qz6oqaoHU+fyLcNZCRF12W4BQn20rRcxUh15w77YX74=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=CBUT+31Vjo+dcUH9dLCm10n1GdVtiHrebq7ijMlbND7xtlfcJRpwDtWmh7Fe1GCTWemVDAZIXKx7MBCHZxHqwLvI50boZUs6aknScXesFDJxTrD8Yt9xB5YHadV6K0r/jyZyzKqYN5vtFbFutRA2z3Bo49MA7W3oB07nBJ6SYgg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XDfXH1Sy2z1HK1B;
+	Thu, 26 Sep 2024 11:41:19 +0800 (CST)
+Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
+	by mail.maildlp.com (Postfix) with ESMTPS id 7252F1400D5;
+	Thu, 26 Sep 2024 11:45:10 +0800 (CST)
+Received: from [10.174.179.80] (10.174.179.80) by
+ kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Thu, 26 Sep 2024 11:45:09 +0800
+Message-ID: <c9819809-c159-400a-9031-7ecdff3092fc@huawei.com>
+Date: Thu, 26 Sep 2024 11:45:08 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: Call ext4_journal_stop(handle) only once in
+ ext4_dio_write_iter()
+To: Markus Elfring <Markus.Elfring@web.de>, <linux-ext4@vger.kernel.org>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>, Matthew
+ Bobrowski <mbobrowski@mbobrowski.org>, Ritesh Harjani
+	<riteshh@linux.ibm.com>, Theodore Ts'o <tytso@mit.edu>
+CC: LKML <linux-kernel@vger.kernel.org>, <kernel-janitors@vger.kernel.org>
+References: <cf895072-43cf-412c-bced-8268498ad13e@web.de>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huawei.com>
+In-Reply-To: <cf895072-43cf-412c-bced-8268498ad13e@web.de>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemf100017.china.huawei.com (7.202.181.16)
 
-https://bugzilla.kernel.org/show_bug.cgi?id=3D219306
+On 2024/9/26 3:54, Markus Elfring wrote:
+> From: Markus Elfring <elfring@users.sourceforge.net>
+> Date: Wed, 25 Sep 2024 21:47:39 +0200
+> 
+> An ext4_journal_stop(handle) call was immediately used after a return value
+> check for a ext4_orphan_add() call in this function implementation.
+> Thus call such a function only once instead directly before the check.
+> 
+> This issue was transformed by using the Coccinelle software.
+> 
+> Signed-off-by: Markus Elfring <elfring@users.sourceforge.net>
 
---- Comment #4 from Theodore Tso (tytso@mit.edu) ---
-"Won't be called most of the time" is rather understating the case.   The
-WARN_ON should never, *EVER* fire.  If it does we have a kernel bug, and if=
- the
-user has panic_on_warn set, the kernel will crash.
+Looks good to me.
 
-Also, please note that the WARN_ON would triggers when we have a inode-spec=
-ific
-inconsistency.   In the extremely unlikely case that the WARN_ON triggers, =
-the
-doom loop that you are worried about would only happen if (a) panic_on_warn=
- is
-disabled, and (b) the inconsistent data state happens to be the journald's =
-log
-file.  If the file system has millions of inodes, we're talking about a
-probability of one in millions, even if the kernel is buggy and triggers at
-all.
+Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
---=20
-You may reply to this email to add a comment.
+> ---
+>  fs/ext4/file.c | 7 ++-----
+>  1 file changed, 2 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index f14aed14b9cf..23005f1345a8 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -564,12 +564,9 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  		}
+> 
+>  		ret = ext4_orphan_add(handle, inode);
+> -		if (ret) {
+> -			ext4_journal_stop(handle);
+> -			goto out;
+> -		}
+> -
+>  		ext4_journal_stop(handle);
+> +		if (ret)
+> +			goto out;
+>  	}
+> 
+>  	if (ilock_shared && !unwritten)
+> --
+> 2.46.1
+> 
+> 
 
-You are receiving this mail because:
-You are watching the assignee of the bug.=
 
