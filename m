@@ -1,139 +1,204 @@
-Return-Path: <linux-ext4+bounces-4360-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4361-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2FB899884C1
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 14:31:03 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36F95988657
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 15:36:51 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F132B23161
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 12:31:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB60B1F21D70
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 13:36:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C4CA18C907;
-	Fri, 27 Sep 2024 12:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sGYFe9qA"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953AF18CBE5;
+	Fri, 27 Sep 2024 13:36:40 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4F3918BC1D;
-	Fri, 27 Sep 2024 12:30:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E24A2557A;
+	Fri, 27 Sep 2024 13:36:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727440228; cv=none; b=XVPug9M6MPzWVPiUlOCznRqengRME4Ica52MvwoN/7Hd3c2TmwCbo6iqdZf2g3aOmuLaWRkmyo2A02v0aSTjtWY5IC+N6XbMKSLjE9sFCXwYmHl+uuEQD1xUL0OO8etj/o+rVJHUwTI8tpGxDKu0Nl6MFnfjmGHVhL25qVRk8w4=
+	t=1727444200; cv=none; b=PkS0tjDYNAlbbh/X8WsSl4AR1JeoHmC6EqwR687PjQ6vfJkYtGSqj74nAlnnvVsU2gdilgGCqnUCYw8vqzTR6O06AC63QBhvR/Yc+ZOkZywqnEwL8SsLpTnH164wKXZ5kxgfIeIhyvSOaxlIk8MhZSc8z9l6XuJ8sn8Aku3UjY8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727440228; c=relaxed/simple;
-	bh=a3h2hbkd2SAJD+szjSc9cqtg5L0XsCkXzbVeCe0Gqd0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=a0Kt62lz6DzUXBe4if/ORe/PQ5j1hzqLNjIlZOcSv53xAfcCzlu+VeMvpR3Qp6IJzxyioER8oGtn3xR68fip2Df8S36N6a6kI5rgqsu9sHUWEMMJtsVLxkJZFsjyVe8Ezbs0IRBAX621mHNTZ4xwVsOMdx/Ya/KuOqeK1Yr/gbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sGYFe9qA; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 48R26XTD005581;
-	Fri, 27 Sep 2024 12:29:36 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date
-	:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pp1; bh=X3KPffXxGN0FIhLP5f2K/FrqF2R
-	GS6QdxDbR1ndTZX0=; b=sGYFe9qAb/CiVmT4JsSABkFSS1iewD180v/BmBSG1tx
-	aSMKrjKxF+MOqGzv+5hc9KigJpdY2e3K6eIumU1MNSsK3qB/HOnHeajJNqxzg/a5
-	MdnYFUPK5gKSRKskepU17H87XqAn+5YL0VPxKQU7A2/8wQTfMPFqEh9fu4+HSGgg
-	lSASwpn9GFduHZfSXDk5jxHMZTUVh0yFNcPcLflHvzF3qTGM2L/WTtKDL9z6BSWE
-	74VHjrADXjwIlBVQKNHGGRvOjcUWwj8MvY+3OE/BCW7a12s8ToSgpHIcGqPctGiw
-	kMyoDCNnxrSVlcxM+SqQMS8KkROb7e8ZQs1dJKXEh5Q==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41wkmnjgx6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 27 Sep 2024 12:29:35 +0000 (GMT)
-Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 48RCTYnK016144;
-	Fri, 27 Sep 2024 12:29:35 GMT
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 41wkmnjgx0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 27 Sep 2024 12:29:34 +0000 (GMT)
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 48RA8lXn008722;
-	Fri, 27 Sep 2024 12:29:33 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 41t8v1mxbj-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 27 Sep 2024 12:29:33 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 48RCTV7v15270396
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 27 Sep 2024 12:29:31 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3FFF520043;
-	Fri, 27 Sep 2024 12:29:31 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5867C20040;
-	Fri, 27 Sep 2024 12:29:29 +0000 (GMT)
-Received: from li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com (unknown [9.171.79.55])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 27 Sep 2024 12:29:29 +0000 (GMT)
-Date: Fri, 27 Sep 2024 14:29:27 +0200
-From: Alexander Gordeev <agordeev@linux.ibm.com>
-To: Alistair Popple <apopple@nvidia.com>
-Cc: dan.j.williams@intel.com, linux-mm@kvack.org, vishal.l.verma@intel.com,
-        dave.jiang@intel.com, logang@deltatee.com, bhelgaas@google.com,
-        jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com, will@kernel.org,
-        mpe@ellerman.id.au, npiggin@gmail.com, dave.hansen@linux.intel.com,
-        ira.weiny@intel.com, willy@infradead.org, djwong@kernel.org,
-        tytso@mit.edu, linmiaohe@huawei.com, david@redhat.com,
-        peterx@redhat.com, linux-doc@vger.kernel.org,
-        linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-        linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev,
-        linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
-Subject: Re: [PATCH 11/12] mm: Remove pXX_devmap callers
-Message-ID: <ZvalJ9O/SV9Riiws@li-008a6a4c-3549-11b2-a85c-c5cc2836eea2.ibm.com>
-References: <cover.9f0e45d52f5cff58807831b6b867084d0b14b61c.1725941415.git-series.apopple@nvidia.com>
- <4511465a4f8429f45e2ac70d2e65dc5e1df1eb47.1725941415.git-series.apopple@nvidia.com>
+	s=arc-20240116; t=1727444200; c=relaxed/simple;
+	bh=5A8etmnAU5wkjbE9afxfjFjhlVofqfZ0nleGHfKmEuw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=aPq+Ewj0R0QUUOIbikZaNwN8Bn8vplBhXLPBo4SbYLQ5GfBuiDlbqmldasgjPGhFsMVPMeOSwugFw9srIVnve5BC2fBMMGGXUgHIQcoGgHIR+xAQu0B/G3YmqzSLVUTCnGZ4KWlG5b4B9/0oyCmsz/2E/QTU0zEq1cGbfSN2REg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XFWhH1tLZz4f3l1v;
+	Fri, 27 Sep 2024 21:36:15 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 488C91A08FC;
+	Fri, 27 Sep 2024 21:36:32 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgAHPMjatPZm9X0BCg--.27083S4;
+	Fri, 27 Sep 2024 21:36:28 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun@huaweicloud.com,
+	Baokun Li <libaokun1@huawei.com>,
+	Wesley Hershberger <wesley.hershberger@canonical.com>,
+	=?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@stgraber.org>,
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Eric Sandeen <sandeen@redhat.com>,
+	stable@vger.kernel.org
+Subject: [PATCH v2] ext4: fix off by one issue in alloc_flex_gd()
+Date: Fri, 27 Sep 2024 21:33:29 +0800
+Message-Id: <20240927133329.1015041-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <4511465a4f8429f45e2ac70d2e65dc5e1df1eb47.1725941415.git-series.apopple@nvidia.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: oFQh9Q3qdgOsP-PvuakR2OvYRSStdcRF
-X-Proofpoint-ORIG-GUID: 9y1XQY94BFekLXDgIVhFUpi4XYvsL7VN
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.60.29
- definitions=2024-09-27_06,2024-09-27_01,2024-09-02_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 mlxlogscore=771
- priorityscore=1501 suspectscore=0 malwarescore=0 mlxscore=0
- impostorscore=0 bulkscore=0 spamscore=0 lowpriorityscore=0 phishscore=0
- clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2408220000 definitions=main-2409270086
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgAHPMjatPZm9X0BCg--.27083S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1fJw13ZF47tw13ur15Jwb_yoWrAF45pF
+	9xK3s3GryYgrW7Gr47G34qqF1rG3s7Ar12qrWxWw1xZF17ZF43Gr1xKrW8CFyUGFZ5Cr15
+	Jws0vFn0yrnrtaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9K14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26r4j6ryUM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwAKzVCY07xG64k0F24lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr4
+	1l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK
+	67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI
+	8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAv
+	wI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14
+	v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUO73vUUUUU
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgATBWb2bRwQYQABsF
 
-On Tue, Sep 10, 2024 at 02:14:36PM +1000, Alistair Popple wrote:
+From: Baokun Li <libaokun1@huawei.com>
 
-Hi Alistair,
+Wesley reported an issue:
 
-> diff --git a/arch/powerpc/mm/book3s64/pgtable.c b/arch/powerpc/mm/book3s64/pgtable.c
-> index 5a4a753..4537a29 100644
-> --- a/arch/powerpc/mm/book3s64/pgtable.c
-> +++ b/arch/powerpc/mm/book3s64/pgtable.c
-> @@ -193,7 +192,7 @@ pmd_t pmdp_huge_get_and_clear_full(struct vm_area_struct *vma,
->  	pmd_t pmd;
->  	VM_BUG_ON(addr & ~HPAGE_PMD_MASK);
->  	VM_BUG_ON((pmd_present(*pmdp) && !pmd_trans_huge(*pmdp) &&
-> -		   !pmd_devmap(*pmdp)) || !pmd_present(*pmdp));
-> +		   || !pmd_present(*pmdp));
+==================================================================
+EXT4-fs (dm-5): resizing filesystem from 7168 to 786432 blocks
+------------[ cut here ]------------
+kernel BUG at fs/ext4/resize.c:324!
+CPU: 9 UID: 0 PID: 3576 Comm: resize2fs Not tainted 6.11.0+ #27
+RIP: 0010:ext4_resize_fs+0x1212/0x12d0
+Call Trace:
+ __ext4_ioctl+0x4e0/0x1800
+ ext4_ioctl+0x12/0x20
+ __x64_sys_ioctl+0x99/0xd0
+ x64_sys_call+0x1206/0x20d0
+ do_syscall_64+0x72/0x110
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
+==================================================================
 
-That looks broken.
+While reviewing the patch, Honza found that when adjusting resize_bg in
+alloc_flex_gd(), it was possible for flex_gd->resize_bg to be bigger than
+flexbg_size.
 
->  	pmd = pmdp_huge_get_and_clear(vma->vm_mm, addr, pmdp);
->  	/*
->  	 * if it not a fullmm flush, then we can possibly end up converting
+The reproduction of the problem requires the following:
 
-Thanks!
+ o_group = flexbg_size * 2 * n;
+ o_size = (o_group + 1) * group_size;
+ n_group: [o_group + flexbg_size, o_group + flexbg_size * 2)
+ o_size = (n_group + 1) * group_size;
+
+Take n=0,flexbg_size=16 as an example:
+
+              last:15
+|o---------------|--------------n-|
+o_group:0    resize to      n_group:30
+
+The corresponding reproducer is:
+
+img=test.img
+truncate -s 600M $img
+mkfs.ext4 -F $img -b 1024 -G 16 8M
+dev=`losetup -f --show $img`
+mkdir -p /tmp/test
+mount $dev /tmp/test
+resize2fs $dev 248M
+
+Delete the problematic plus 1 to fix the issue, and add a WARN_ON_ONCE()
+to prevent the issue from happening again.
+
+Reported-by: Wesley Hershberger <wesley.hershberger@canonical.com>
+Closes: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2081231
+Reported-by: Stéphane Graber <stgraber@stgraber.org>
+Closes: https://lore.kernel.org/all/20240925143325.518508-1-aleksandr.mikhalitsyn@canonical.com/
+Tested-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Tested-by: Eric Sandeen <sandeen@redhat.com>
+Fixes: 665d3e0af4d3 ("ext4: reduce unnecessary memory allocation in alloc_flex_gd()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+Changes since v1:
+ * Add missing WARN_ON_ONCE().
+ * Correct the comment of alloc_flex_gd().
+
+ fs/ext4/resize.c | 18 ++++++++++--------
+ 1 file changed, 10 insertions(+), 8 deletions(-)
+
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index e04eb08b9060..a2704f064361 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -230,8 +230,8 @@ struct ext4_new_flex_group_data {
+ #define MAX_RESIZE_BG				16384
+ 
+ /*
+- * alloc_flex_gd() allocates a ext4_new_flex_group_data with size of
+- * @flexbg_size.
++ * alloc_flex_gd() allocates an ext4_new_flex_group_data that satisfies the
++ * resizing from @o_group to @n_group, its size is typically @flexbg_size.
+  *
+  * Returns NULL on failure otherwise address of the allocated structure.
+  */
+@@ -239,25 +239,27 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size,
+ 				ext4_group_t o_group, ext4_group_t n_group)
+ {
+ 	ext4_group_t last_group;
++	unsigned int max_resize_bg;
+ 	struct ext4_new_flex_group_data *flex_gd;
+ 
+ 	flex_gd = kmalloc(sizeof(*flex_gd), GFP_NOFS);
+ 	if (flex_gd == NULL)
+ 		goto out3;
+ 
+-	if (unlikely(flexbg_size > MAX_RESIZE_BG))
+-		flex_gd->resize_bg = MAX_RESIZE_BG;
+-	else
+-		flex_gd->resize_bg = flexbg_size;
++	max_resize_bg = umin(flexbg_size, MAX_RESIZE_BG);
++	flex_gd->resize_bg = max_resize_bg;
+ 
+ 	/* Avoid allocating large 'groups' array if not needed */
+ 	last_group = o_group | (flex_gd->resize_bg - 1);
+ 	if (n_group <= last_group)
+-		flex_gd->resize_bg = 1 << fls(n_group - o_group + 1);
++		flex_gd->resize_bg = 1 << fls(n_group - o_group);
+ 	else if (n_group - last_group < flex_gd->resize_bg)
+-		flex_gd->resize_bg = 1 << max(fls(last_group - o_group + 1),
++		flex_gd->resize_bg = 1 << max(fls(last_group - o_group),
+ 					      fls(n_group - last_group));
+ 
++	if (WARN_ON_ONCE(flex_gd->resize_bg > max_resize_bg))
++		flex_gd->resize_bg = max_resize_bg;
++
+ 	flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
+ 					sizeof(struct ext4_new_group_data),
+ 					GFP_NOFS);
+-- 
+2.39.2
+
 
