@@ -1,121 +1,131 @@
-Return-Path: <linux-ext4+bounces-4367-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4368-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B721F98926E
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 03:29:31 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 15EB998932E
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 08:03:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30D97B23CE4
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 01:29:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31A71F22DE9
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 06:03:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B2EBE4E;
-	Sun, 29 Sep 2024 01:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FEEAAD51;
+	Sun, 29 Sep 2024 06:03:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="F9lb2t0f"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 594D4B65C;
-	Sun, 29 Sep 2024 01:29:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1132E13A3E4
+	for <linux-ext4@vger.kernel.org>; Sun, 29 Sep 2024 06:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727573361; cv=none; b=LxIYBuS3kJzYBZjmuGvqX7KiNI8SKzmbSX2g4pWO+U1j6yCdMFtm0k9nACvigF7povhi3eDchlvA8myCq0C/thzhyJSt++/596AnJGrhBjLoMHs079ZUL7HGULIXmVZQJOmQyJjpgN3YQxmaStvdU5OrjWFIb8nUQkDy2GXt84k=
+	t=1727589793; cv=none; b=iBsNLuJwVq7vvDglvi7xIZrT9Xho+hkya8Rvga6PtIu8igBkgzgHkkIAitCU69Iyo30V3DVppUV2vzrhM2oVYtTZhJ9W+4B96ihiEcC+T1Ngr+g/rTEvmWP0k2iFKcMI/ujfNUszp1cRtTE4950xL6Io5yFfAVlxm5E+df/beEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727573361; c=relaxed/simple;
-	bh=ZQxcWdjFQ+Mn5MIS0vO1/UMUtpAiKVNnMUEPDQOTCow=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=SaR47aGriQ8NBkO0jVeAseNEqftofO5k+oAboXoWuQXmMY+RH5Ya5jjWqDy3ZjZyggN2Bh3wj1B8DR/mWsSptZy0MjPtrm3U2ehgwBcrfzI1WMie8eKExRczYpPrCtCW6e7Q3KwN91QqHSoL4VbNWID8eMIvYKh2779lswOlg5w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XGRSH3ggtz4f3jkd;
-	Sun, 29 Sep 2024 09:29:03 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id D81FD1A0359;
-	Sun, 29 Sep 2024 09:29:14 +0800 (CST)
-Received: from [10.174.177.174] (unknown [10.174.177.174])
-	by APP4 (Coremail) with SMTP id gCh0CgDH+sZkrfhmMpyPCg--.4259S3;
-	Sun, 29 Sep 2024 09:29:12 +0800 (CST)
-Message-ID: <330ed547-aeab-46d9-84b1-0d0dc0095943@huaweicloud.com>
-Date: Sun, 29 Sep 2024 09:29:08 +0800
+	s=arc-20240116; t=1727589793; c=relaxed/simple;
+	bh=+akFPa+8alj51MCfrHOvoYE8LLNbQjwGyJuPEMHWLnY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hAlMT1udDkHtzT/On5/uML5EnaLJmn3dMGpSKl+gslwsMIkuWMIIPa5s8U/D1FGI8dFl6Z6IN0mZbnydUk8b3uFeb7uKgm5Ao/2NQYF242Lwf1mEH7F5TALFllGZomDkCnGL3flb9Qwyn+kIMS6p8RZO+ViLU+DhtI88060Ifgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=F9lb2t0f; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from macsyma.thunk.org ([191.96.150.29])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 48T5xa0F003145
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 29 Sep 2024 01:59:37 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1727589579; bh=irslh8MsFcziIi7ImkqjnJQeDeABJM+Q2j1bZu9qw5Q=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=F9lb2t0f9NjX3BPjn6sGHLs9VIHknZUoi1KhvEaJOtho67SUD8rFrxfiHFKznp9+S
+	 eCajM9Fo0SdJuLBsT3cDKG/qWuY9FH/YuRXkTW0Q+McT37KKIyIM3y99vlgbpUc9AR
+	 pUZczo55ghh124GGJyyNY5jpzHkCn2kvNJeSVfQjicQCCmOqajnqaDnegEknvxd+1+
+	 tx7YlAyzawhZv4mHHPV1nM23Sp3OljZk1syml6ecHvIgWGJ3X95gcpC7H/43iBZ7Hx
+	 7fJtFtY/lj8JtED6GlIEuqqdDVhFgaugNG+qvp7s1U1bPLVXm4iMxaLWp0cZmgsuhb
+	 tNfxAH8ChHfgA==
+Received: by macsyma.thunk.org (Postfix, from userid 15806)
+	id 9B17A3402F3; Fri, 27 Sep 2024 08:50:19 -0700 (PDT)
+Date: Fri, 27 Sep 2024 08:50:19 -0700
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Max Brener <linmaxi@gmail.com>
+Cc: adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, brauner@kernel.org,
+        jack@suse.cz, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH] [PATCH] vfs/ext4: Fixed a potential problem related to
+ an infinite loop
+Message-ID: <20240927155019.GA365622@mit.edu>
+References: <20240926221103.24423-1-linmaxi@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] ext4: fix off by one issue in alloc_flex_gd()
-To: Eric Sandeen <sandeen@redhat.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
- yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>,
- Wesley Hershberger <wesley.hershberger@canonical.com>,
- =?UTF-8?Q?St=C3=A9phane_Graber?= <stgraber@stgraber.org>,
- Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
- stable@vger.kernel.org, Yang Erkun <yangerkun@huawei.com>
-References: <20240927133329.1015041-1-libaokun@huaweicloud.com>
- <fbe9ed47-b3cc-4c51-8d25-f44838327f89@redhat.com>
-Content-Language: en-US
-From: Baokun Li <libaokun@huaweicloud.com>
-In-Reply-To: <fbe9ed47-b3cc-4c51-8d25-f44838327f89@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgDH+sZkrfhmMpyPCg--.4259S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxJrWxtw1fKr1DGryrKrykZrb_yoW8GF1UpF
-	y3Ka15KFyqgw4xAr9xG3s29ry3XFW8C3WYqrWrX34UZFnrCrnxKr1Ig398WF1DZrnagryY
-	yFZagFyIk3srJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
-	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
-	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
-	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
-	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
-	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
-	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
-	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
-	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
-	DUUUUU=
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgABBWb3vpwm2gABsI
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240926221103.24423-1-linmaxi@gmail.com>
 
-On 2024/9/27 22:14, Eric Sandeen wrote:
-> On 9/27/24 8:33 AM, libaokun@huaweicloud.com wrote:
->> From: Baokun Li <libaokun1@huawei.com>
->>
-> ...
->
->> Delete the problematic plus 1 to fix the issue, and add a WARN_ON_ONCE()
->> to prevent the issue from happening again.
->>
->> Reported-by: Wesley Hershberger <wesley.hershberger@canonical.com>
->> Closes: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2081231
->> Reported-by: Stéphane Graber <stgraber@stgraber.org>
->> Closes: https://lore.kernel.org/all/20240925143325.518508-1-aleksandr.mikhalitsyn@canonical.com/
->> Tested-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
->> Tested-by: Eric Sandeen <sandeen@redhat.com>
-> The patch has changed a little since I tested, but it still passes my testcase
-> (as expected, no WARN ON etc) so looks good from that POV, thanks!
-> -Eric
+On Fri, Sep 27, 2024 at 01:11:03AM +0300, Max Brener wrote:
+> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=219306
+> 
+> This patch fixes a potential infinite journal-truncate-print
+> problem.  When systemd's journald is called, ftruncate syscall is
+> called. If anywhere down the call stack of ftruncate a printk of
+> some sort happens, it triggers journald again therefore an infinite
+> loop is established.
 
-Hi Eric,
+This isn't a good justification for this change; in general, whenever
+you have code paths which get triggered when a logging daemon is
+triggered, whether it's systemd-journald, or syslog, and this can
+cause this kind of infinite loop.  For example, suppose you are using
+remote logging (where a log message gets sent over the network via the
+remote syslog facility), and anything in the networking stack triggers
+a printk, that will also trigger an "infinite loop".  This falls in
+the "Doctor, doctor, it hurts when I do that --- so don't do that!"
 
-Thanks for testing it again!
+In this particular situation, journald is doing something silly/stupid
+which is whenver a message is logged, it is issuing a no-op ftruncate
+to the journald log file.  It's also worth noting that ext4's truncate
+path does *not* trigger a printk unless something really haw gone
+wrong (e.g., a WARN_ON when a kernel bug has happened and flags in the
+in-memory get erronously set, or the file system gets corrupted and
+this gets reported via ext4_error()).  The reporter discovered this by
+explicitly adding a printk in their privatea kernel sources, and in
+general, when you add random changes to the kernel, any unfortunate
+consequences are not something that upstream code can be expected to
+defend against.
 
-The core modification logic remains unchanged from before.
-Just added a max_resize_bg variable for exception fixing.
+For context, see: https://bugzilla.kernel.org/show_bug.cgi?id=219306
 
-It is necessary to ensure that flex_gd->resize_bg does not exceed the
-smaller of flexbg_size and MAX_RESIZE_BG before it is used. So we need
-to record max_resize_bg, warn on resize_bg adjustment logic exceptions,
-and use max_resize_bg to avoid subsequent resize complaints.
+We can justify an optimization here so that in the case of
+silly/stupid userspace programs which are constnatly calling
+truncate(2) which are no-ops, we can optimize ext4's handling of these
+silly/stupid programs.  The ext4_truncate() code path causes starting
+a journal handle, adding the inode to the orphan list, and then
+removing it at the end of the truncate.  In the case where sopme
+program calls truncate() in a tight loop, we can optimize the
+behaviour.  It's not a high priority optimization, but if given that
+we can't necessarily change silly/stupid userspace programmers, it can
+be something that we can do if the patch is too invasive.
+
+HOWEVER....
 
 
--- 
-With Best Regards,
-Baokun Li
+> To fix this issue:
+> Add  a new inode flag S_TRUNCATED which helps in stopping such an infinite loop by marking an in-memory inode as already truncated.
 
+Adding a generic VFS-level flag is not something that we can justify
+here.  The VFS maintainers would NACK such a change, and deservedly
+so.
+
+What I had in mind was to define a new EXT4 state flag, say,
+EXT4_STATE_TRUNCATED, and then test, set, and clear it using
+ext4_{test,set,clear}_inode_state().
+
+Cheers,
+
+					- Ted
 
