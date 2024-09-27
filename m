@@ -1,263 +1,167 @@
-Return-Path: <linux-ext4+bounces-4352-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4353-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 041F9987D2E
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 04:53:22 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D389987E86
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 08:39:41 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6AAC0B21EBF
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 02:53:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DFE1F1F21A10
+	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 06:39:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 564F116F0CA;
-	Fri, 27 Sep 2024 02:53:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="cLbR3Dvq"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1BC7A176FB6;
+	Fri, 27 Sep 2024 06:39:33 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17E0C79CD;
-	Fri, 27 Sep 2024 02:53:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.21
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727405585; cv=fail; b=XvHjbrkPqiI2aPhS9O7TZZ37xTB/4bQc4KMaEec21IiNEAJvDcXBf81SxlbDssNofGZuTjmp3XTzGfSc1wBVoXv/88fptP7Mr5AS1qopRy1JZFSo4cm0n/mGaKEQZOtALI/PmpJVcYTU//MFJsdSXIZJprnjI35jjBaeJNJdu5I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727405585; c=relaxed/simple;
-	bh=qGOS1MrL/swSC6XWR4TufzIhm6XvXabBfVjClsZjsjM=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=NENCSnl9x/Sff7fiwUEQDwpOhpJhwmEK4WZsgOz0pOm3IgY0sqM5xCW8g/F52e1mlwpIEGErOkLdRlmxFhbQSchiEXYiQ5HROqxYewgP4ejcPeRALSOlwiWyyhbHIBDz8vhjv3xhY3TFzs7uXYyXL6BAeEdeZdDPZKS4CTBnm6k=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=cLbR3Dvq; arc=fail smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1727405583; x=1758941583;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=qGOS1MrL/swSC6XWR4TufzIhm6XvXabBfVjClsZjsjM=;
-  b=cLbR3DvqjwqP2aOuWyLIEj6Dd0Oyx5T6rseeBwd/5Tcxc9ixGzxolsYS
-   BuoKuyxMrp7hUcHDdylTsv3daBDDmzVQKnA2Sr72UJJwPgAl08MghbIHl
-   HbL92KgMTDn1BFHwdZwIc4UhBhLL082Nh/rMeeDHqbpaIE+KxczXPI4Uy
-   Jg6ibPovRV/M9LExDHSS8PRIkImTjz9L6ameq7EhygbxVJo/tVX9Z+HxY
-   YnduuhcMly6aZbb2bPwEQ5lXMDuvGHWsaIyQfXNfEMAnfujUvnWKggyc/
-   x6GQ9cV0PXRl4A03XaSrYE8MmKvhTrumtKxI3w9611rVS2zYUvX19VlPe
-   A==;
-X-CSE-ConnectionGUID: xxFPp61EQw2nX6oTjYXOAg==
-X-CSE-MsgGUID: hJw348qFQMyVLOfUrT6ynw==
-X-IronPort-AV: E=McAfee;i="6700,10204,11207"; a="26485893"
-X-IronPort-AV: E=Sophos;i="6.11,157,1725346800"; 
-   d="scan'208";a="26485893"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 26 Sep 2024 19:53:02 -0700
-X-CSE-ConnectionGUID: slMudO9MQl2rOOMSbql1Rw==
-X-CSE-MsgGUID: WNwR/KYpQN6fsxhQrA1hLQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.11,157,1725346800"; 
-   d="scan'208";a="73175711"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 26 Sep 2024 19:53:02 -0700
-Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 26 Sep 2024 19:53:01 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39; Thu, 26 Sep 2024 19:53:00 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.39 via Frontend Transport; Thu, 26 Sep 2024 19:53:00 -0700
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (104.47.66.41) by
- edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.39; Thu, 26 Sep 2024 19:53:00 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=q4TUtatHDhVc/swesmuLTYUiqz8VAoapSco1xrOtPDWW17WSM9g5E/In9W4BqRXFRcArIaWuB4SvNvlsmkNFN1JmKhNJUD/KgWJXa4iiSRi43maArnksTm6CIWa3jyK2j2p4RpOldyJ2xjLx2wHHQm9bz8oyvO60yXA9fXCvvWi1H8gwT4pEVWfBg5ZGXHCKyyJKXi79nYCsMJCxtdX4Ujjr34m6K796JXL2lElWBi9cPUfTdDntXkID6Baxvkr5pttgMVvcBjClfjBzZzu3KGJrIrF+TKlnosxT/PvpUKzWC2PXqwN43eqZU07uZkGWm9mwAZ25d+1lINYCBHvmew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=cvfLx3n/QceWj6k7tIWf7K4MFu/ksbdFXoZSyMTCTpI=;
- b=oIfppxYfY/3ripzG9VeqhyA8JxUgmmBoWs3Y2Ptvu7Da9uE01QGuW6PtaHbxYHMk93wwX1pIIPeSz1b2wFH1gIqguIK6X85Ig20A6yVKLlAy8BUfHMlvmklShK7FGoVvJ3jgVEJoybaSU98VLy7lwDwdCVmqTcG0EhjN4eJrJGqT9PMbradAKA55tY37E2EafZd9TSFTgGyMp5xcRtncPRpa17iPPm3/BMNQyoc68e65pFDHDyL8aQ3RiXpHtcokBEMgTtCYbcCoIVTIO0tWcAeNqUNqFJ24pMhU4ZWIFDk1BKPEMJct3KZDFatZM6NODy+Q7/1Uc44GaFxz/cmkGg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by CYXPR11MB8755.namprd11.prod.outlook.com (2603:10b6:930:e3::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7982.27; Fri, 27 Sep
- 2024 02:52:58 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6b05:74cf:a304:ecd8%7]) with mapi id 15.20.7982.022; Fri, 27 Sep 2024
- 02:52:58 +0000
-Date: Thu, 26 Sep 2024 19:52:53 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: Dan Williams <dan.j.williams@intel.com>, Alistair Popple
-	<apopple@nvidia.com>, <linux-mm@kvack.org>
-CC: Alistair Popple <apopple@nvidia.com>, <vishal.l.verma@intel.com>,
-	<dave.jiang@intel.com>, <logang@deltatee.com>, <bhelgaas@google.com>,
-	<jack@suse.cz>, <jgg@ziepe.ca>, <catalin.marinas@arm.com>, <will@kernel.org>,
-	<mpe@ellerman.id.au>, <npiggin@gmail.com>, <dave.hansen@linux.intel.com>,
-	<ira.weiny@intel.com>, <willy@infradead.org>, <djwong@kernel.org>,
-	<tytso@mit.edu>, <linmiaohe@huawei.com>, <david@redhat.com>,
-	<peterx@redhat.com>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <nvdimm@lists.linux.dev>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-	<jhubbard@nvidia.com>, <hch@lst.de>, <david@fromorbit.com>
-Subject: Re: [PATCH 08/12] gup: Don't allow FOLL_LONGTERM pinning of FS DAX
- pages
-Message-ID: <66f61e05dcab1_964f22945d@dwillia2-xfh.jf.intel.com.notmuch>
-References: <cover.9f0e45d52f5cff58807831b6b867084d0b14b61c.1725941415.git-series.apopple@nvidia.com>
- <78b49fc7e0302be282b4fcbd3f71fa4ae38e2d5f.1725941415.git-series.apopple@nvidia.com>
- <66f3567f76762_2a7f29441@dwillia2-xfh.jf.intel.com.notmuch>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <66f3567f76762_2a7f29441@dwillia2-xfh.jf.intel.com.notmuch>
-X-ClientProxiedBy: MW4PR03CA0331.namprd03.prod.outlook.com
- (2603:10b6:303:dc::6) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39F98158557;
+	Fri, 27 Sep 2024 06:39:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1727419172; cv=none; b=Ux2Ctv4Nrr7VgD0HWxtElTdsT8Z3GGOzbZEDDHztx56+s3AbwN4X2Wt2Tj5So1CbzSaLHOzcoWl9BOgJ8rv7uCqZcX/S9liyOIENh319DC9LjuFG5fDrGPbi5xhuJWV9SPhK2PWrznMGzNHZBmzu5mbaTuGwbqEGsxmDT1zpaHk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1727419172; c=relaxed/simple;
+	bh=uiMMQvxopeaDfVxhERXqaMFelDtteEisin7Ss13WtfA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=Fr9oIEZIVuBwCOkEvTPJLoyP18sZcW3DW0OsDFBkwpkW7O9ECm98otN5jl+DlmoLileN5ocqE26vqPdpKCLmZook3xGe4w1XwgxglKhXHPAK4NVXLDVrs50AG1hyCznE3Oh2j3AAI8r+oMX8edeHPjMePulgsIS3q+iZfz9FdCs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XFLR06Y4Bz4f3jXP;
+	Fri, 27 Sep 2024 14:39:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 3A6F31A018D;
+	Fri, 27 Sep 2024 14:39:25 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgDHR8QWU_ZmwM_lCQ--.36079S4;
+	Fri, 27 Sep 2024 14:39:20 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun@huaweicloud.com,
+	Baokun Li <libaokun1@huawei.com>,
+	Wesley Hershberger <wesley.hershberger@canonical.com>,
+	=?UTF-8?q?St=C3=A9phane=20Graber?= <stgraber@stgraber.org>,
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Eric Sandeen <sandeen@redhat.com>,
+	stable@vger.kernel.org
+Subject: [PATCH] ext4: fix off by one issue in alloc_flex_gd()
+Date: Fri, 27 Sep 2024 14:36:20 +0800
+Message-Id: <20240927063620.2630898-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|CYXPR11MB8755:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9b1446ab-e254-43ab-dede-08dcde9f7e21
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|366016|1800799024|7416014|376014;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?fMfhJGyWTpnfhMEQSr+6abOVYQShWwq7nSWywvmzOScjnz0vdtrvIRk3UzYa?=
- =?us-ascii?Q?Pt9goIZGyOKvbxk+FwjjKVoZAXAUPDalwUzcbKcdcOXLKYItI4bJjJ8Q9I1f?=
- =?us-ascii?Q?PDb8V8PgVs2TVcn1x8G7MRd1SQ0f+1c4dtilN4a/Rx0+JcYfpgwFLVmAX3Q9?=
- =?us-ascii?Q?+bFzmbZIvhpfUTyc3NB4K1zssxcwQG8Ys5DFZobArjtX3fYDSiVA1c3ZCTWP?=
- =?us-ascii?Q?URaUU93UARntQudTaDCREzJ1MPSoi0oiy303eD2Y7uWMp4kQ0xTLgugU+fgw?=
- =?us-ascii?Q?k/pg/ifxAOljl/HmnbPf0h4I8QUKW8yPN/QklFg7FSRnUw4p+X8clx6ADGeB?=
- =?us-ascii?Q?87LEm/Fsr7phGW9IqOrBMDKn/Zy/ve7fLycI8Z5K1/klqD2MyhvqYO2A5zRl?=
- =?us-ascii?Q?7WqxOi1cI/n0qaWaH9IaXQzuqOjc/IST8FygpbFzmW+soHa/MTkAqRwAJHLi?=
- =?us-ascii?Q?69QMfzaFmB7fAor7F2d2HWGDS1t/qfV9KIoBpxy7svScu2QwgMuyyAgSOghP?=
- =?us-ascii?Q?kTlBFKysz/5n9s07xBxLnbaC4PpIxKwhJT+dKkMjGC3Rkd/r4HADUCITNT0F?=
- =?us-ascii?Q?pNJFHphAHWx42+1JRnffwAoz7bM/FXVU5KfdUkG5ctaPWMvXwznN8NZ5eg+V?=
- =?us-ascii?Q?eHVZrTBtYmVObKqak3n/Ck6HSrAm4+i9jiU2xjQ9k0/7h3MqJYiyeIBE/V5P?=
- =?us-ascii?Q?JVZwIR6bLFgpv3P2RXJmUPQd2w16BrJ9K7YiV3D5q1/s1SJk8JwvjW3ixv84?=
- =?us-ascii?Q?CXOfDOfn8pMwZZNJ5rHKQbX44h1JXUvVovbZxBwwUuzAf0VR6WUtlFNhIj54?=
- =?us-ascii?Q?xxpmrLPlP2B9zVUG9fQodgRXZFVsPv5FyCs4cvoUjgulj9ZF+WcVky7hZoFg?=
- =?us-ascii?Q?yOQCsTBRTRb+6IaA1P8bijKgPKHqvlx/e7GDHQ6rkZX8JccjMv+8DazcHGjm?=
- =?us-ascii?Q?THwieebQSjD4WnQjiYvSjYYlc6SSLgqK7YYp4RnVBylbCwHi3UmFJHBxK7cw?=
- =?us-ascii?Q?7suHGgGav9stCH29ZNNG+NQC9gqQKzB57n8e+C5egfawIRYhJlfclw63VUb4?=
- =?us-ascii?Q?CTzs+VJGISEnmaBXuma5mIpp8ORc3B3dc0FBMxrts5OM+CvAN1vqWjGnc7Oj?=
- =?us-ascii?Q?nz1fi2cHsRnHtBbN7UVXhTmx8r7GNdzgq2lc6xRcf4X68CXdN5HNnADzPUjG?=
- =?us-ascii?Q?CeS6SqkjeT3+8U3F4+fsUpt3d9CK1XDxNGRvWVuA3n2RQhjgoTedTVTDpKqI?=
- =?us-ascii?Q?4VVD4TukpBJ9Ah9xB9zNWY7JYdyYnGpH4F4xWeX2/e7YeYqxNU52Rrs4TLX/?=
- =?us-ascii?Q?KvI+PO7YywtWU5X2jrAdG1t+hnSHT413a6UudpWoFOmCLg=3D=3D?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(366016)(1800799024)(7416014)(376014);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ej4MD3XCmBr/V6T7CNvD+WueRnkgEp85lJgabYWWumRn7DsczSOkZKUyGsPe?=
- =?us-ascii?Q?8mQg97ok7cZhot5lz7LtUlq67Wc/yvONFcH/HMi669nHVBkLgjc+T5s1vnM9?=
- =?us-ascii?Q?dDEm8BdwpMgBfoBzy6J9XTeBHoRyBDt+8bWk2KlNmhOElQgQxTvE47GfP/HO?=
- =?us-ascii?Q?ta9fTeHF4Nb24yPHB97FUdTHODBFeGEu9MbH6/hSXK7dIcuXAs7HhnXpd59H?=
- =?us-ascii?Q?W/g3XAW6whadQ/IScirBlAjRqDJ7gPJVKnP99AvBnGNULYXWprlT5X1p485h?=
- =?us-ascii?Q?lmudvUiDveSfUddB5KKR8blGJing5A5KcQKikaZ6qcUtoSIPl6rEHBZTNW4L?=
- =?us-ascii?Q?Vljh9802DpK6ZaiwbJuk+up9ojJmSxF43ysqPf0YavU/XXiyYNBl7fk5jS5H?=
- =?us-ascii?Q?55AMu+lSIBb9sbc6KGeEs+Jf/vS5lKHBT/tHcF1sO/rldYhy1NGGtv2kgzNK?=
- =?us-ascii?Q?m2EF7TPATB2Rq8V2LVK4D7XsjL7iv2DCSdJNB79cxhZ4H1I7E8xQZHZCHU4Z?=
- =?us-ascii?Q?kqp+TLft0iRO+S6+cmQjrzDgRR4TU/qVoXch/ihdfRrxdEHNnmdFhfp6sVPF?=
- =?us-ascii?Q?dnzQrDKaDibYSDMB4Twe9UdkSI7misQff43JdsC9Gtw2xs76J4kTPFpRPNx3?=
- =?us-ascii?Q?/JH5v2xVTPkRuELi/EHmBPnHVBuWKCfkOKmhb6bHdZsfX6rM5KAY2RFxkTez?=
- =?us-ascii?Q?zZPPs4f1fHNHfLkyWRx1mSLzycImfUDwpNYW3/wdTiIwvBkXLlyQTBadGDCk?=
- =?us-ascii?Q?y3jwtHUwJbrvlGEFeY4gmf6ORUkkW7bYGMjd1cJQw+lgTfa3J9NSi7mF0wmw?=
- =?us-ascii?Q?f6nKCbnvIYb5CZc1o1fZpMCjV0pPgEO3WwrM+0FNTFA/Ix1QS7B8V+2IGfUf?=
- =?us-ascii?Q?PLH6iVzha8Ob0GTuj7F0oAfuze4swA+sFI1DIQn6QC0bWEBNfNcJVstoHUqM?=
- =?us-ascii?Q?oq29ezCLBRQCQqprRBBuruktUjsR2Fheny2pNmkDjoesQNt1IvUWdTzAq9Sl?=
- =?us-ascii?Q?HezqQ/jq86fshyDoudH1tvtDWaCnQo3zqTzRzWVKAVDdlBYXeFfVLxW0pWNh?=
- =?us-ascii?Q?TJsuzwEjJyY/gnw7/hcVMRmibhkGCrnk0TsRHBw2Yf6HNTVImho+GA2WiT7O?=
- =?us-ascii?Q?tdEESSZFtpvlvE3FgnMAzqmVN/lfu5/lmvB9wD/c/3+LyoyB1y61HtOBNUit?=
- =?us-ascii?Q?vuDxGjRC1IB5sIfJguDBkmTn4PaUPUNbj9aCtPmoCr6l+m0fxNRI3yufDgf3?=
- =?us-ascii?Q?hDHN1dkI2n3p/D7ohMqn+SZw5bV0MhFZhzEiHagUQCmQm6vylBoJbJWpQPxO?=
- =?us-ascii?Q?y2bggw/oXNIm78xJnIDu9EnFVauO5Jz1yz4+ClT5q8qIDFah8raEfqDE7AGQ?=
- =?us-ascii?Q?JyPpG7OyByBACQf3Zqzqu+kJol4YNYYQ8Mfj8IjjSaSp7aLQW00yLDdI4vrz?=
- =?us-ascii?Q?DVJTMeKc1OySW+oeTg1tIrYVQrOKJ8x25vrlhaIT9xbatXtmSkvB8YTiJTcO?=
- =?us-ascii?Q?sde2miBWdiIQGAXFqWkrHT5eAc5VDLnacDeWVgvxtzvLAnP9FgKu8QdTy6xk?=
- =?us-ascii?Q?SSPtSyMF7wvlJ0RQWOMg24bC2r3D/Fj1KXnc2b3kMZ2m8Wy5T81KuKJ+uook?=
- =?us-ascii?Q?mQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9b1446ab-e254-43ab-dede-08dcde9f7e21
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 27 Sep 2024 02:52:57.8121
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: gr6p3xsCYkprTwTeV24UWgPX4O1aDD/MQm7Uox2G/YUE5/bajQuJa0G3EQVw0ndDGfJjvyMN9s60+NPb5FVjgwCVGr70TQ05dHTlyc/jZlw=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR11MB8755
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgDHR8QWU_ZmwM_lCQ--.36079S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxAw1fJw13ZF47tw13ur15Jwb_yoW5Aw48pF
+	93Ka4xGryYgryUGr4UG34vgF18GrykJr17XrWxWw1xXF17ZFsrGr1xKry8CFyUCF95Cr15
+	JFs0vF1qyrnrJaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9E14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26ryj6F1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lw4CEc2x0rVAKj4xxMxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI4
+	8JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xv
+	wVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjx
+	v20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20E
+	Y4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267
+	AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7VUbknY7UUUUU==
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAgAPBWbv1ZsktAABse
 
-Dan Williams wrote:
-> Alistair Popple wrote:
-> > Longterm pinning of FS DAX pages should already be disallowed by
-> > various pXX_devmap checks. However a future change will cause these
-> > checks to be invalid for FS DAX pages so make
-> > folio_is_longterm_pinnable() return false for FS DAX pages.
-> > 
-> > Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> > ---
-> >  include/linux/memremap.h | 11 +++++++++++
-> >  include/linux/mm.h       |  4 ++++
-> >  2 files changed, 15 insertions(+)
-> > 
-> > diff --git a/include/linux/memremap.h b/include/linux/memremap.h
-> > index 14273e6..6a1406a 100644
-> > --- a/include/linux/memremap.h
-> > +++ b/include/linux/memremap.h
-> > @@ -187,6 +187,17 @@ static inline bool folio_is_device_coherent(const struct folio *folio)
-> >  	return is_device_coherent_page(&folio->page);
-> >  }
-> >  
-> > +static inline bool is_device_dax_page(const struct page *page)
-> > +{
-> > +	return is_zone_device_page(page) &&
-> > +		page_dev_pagemap(page)->type == MEMORY_DEVICE_FS_DAX;
-> > +}
-> > +
-> > +static inline bool folio_is_device_dax(const struct folio *folio)
-> > +{
-> > +	return is_device_dax_page(&folio->page);
-> > +}
-> > +
-> >  #ifdef CONFIG_ZONE_DEVICE
-> >  void zone_device_page_init(struct page *page);
-> >  void *memremap_pages(struct dev_pagemap *pgmap, int nid);
-> > diff --git a/include/linux/mm.h b/include/linux/mm.h
-> > index ae6d713..935e493 100644
-> > --- a/include/linux/mm.h
-> > +++ b/include/linux/mm.h
-> > @@ -1989,6 +1989,10 @@ static inline bool folio_is_longterm_pinnable(struct folio *folio)
-> >  	if (folio_is_device_coherent(folio))
-> >  		return false;
-> >  
-> > +	/* DAX must also always allow eviction. */
-> > +	if (folio_is_device_dax(folio))
-> 
-> Why is this called "folio_is_device_dax()" when the check is for fsdax?
-> 
-> I would expect:
-> 
-> if (folio_is_fsdax(folio))
-> 	return false;
-> 
-> ...and s/device_dax/fsdax/ for the rest of the helpers.
+From: Baokun Li <libaokun1@huawei.com>
 
-Specifically devdax is ok to allow longterm pinning since it is
-statically allocated. fsdax is the only ZONE_DEVICE mode where there is
-a higher-level allocator that does not support a 3rd party the block its
-operations indefinitely with a pin. So this needs to be explicit for
-that case.
+Wesley reported an issue:
+
+==================================================================
+EXT4-fs (dm-5): resizing filesystem from 7168 to 786432 blocks
+------------[ cut here ]------------
+kernel BUG at fs/ext4/resize.c:324!
+CPU: 9 UID: 0 PID: 3576 Comm: resize2fs Not tainted 6.11.0+ #27
+RIP: 0010:ext4_resize_fs+0x1212/0x12d0
+Call Trace:
+ __ext4_ioctl+0x4e0/0x1800
+ ext4_ioctl+0x12/0x20
+ __x64_sys_ioctl+0x99/0xd0
+ x64_sys_call+0x1206/0x20d0
+ do_syscall_64+0x72/0x110
+ entry_SYSCALL_64_after_hwframe+0x76/0x7e
+==================================================================
+
+While reviewing the patch, Honza found that when adjusting resize_bg in
+alloc_flex_gd(), it was possible for flex_gd->resize_bg to be bigger than
+flexbg_size.
+
+The reproduction of the problem requires the following:
+
+ o_group = flexbg_size * 2 * n;
+ o_size = (o_group + 1) * group_size;
+ n_group: [o_group + flexbg_size, o_group + flexbg_size * 2)
+ o_size = (n_group + 1) * group_size;
+
+Take n=0,flexbg_size=16 as an example:
+
+              last:15
+|o---------------|--------------n-|
+o_group:0    resize to      n_group:30
+
+The corresponding reproducer is:
+
+img=test.img
+truncate -s 600M $img
+mkfs.ext4 -F $img -b 1024 -G 16 8M
+dev=`losetup -f --show $img`
+mkdir -p /tmp/test
+mount $dev /tmp/test
+resize2fs $dev 248M
+
+Delete the problematic plus 1 to fix the issue, and add a WARN_ON_ONCE()
+to prevent the issue from happening again.
+
+Reported-by: Wesley Hershberger <wesley.hershberger@canonical.com>
+Closes: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2081231
+Reported-by: Stéphane Graber <stgraber@stgraber.org>
+Closes: https://lore.kernel.org/all/20240925143325.518508-1-aleksandr.mikhalitsyn@canonical.com/
+Tested-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Tested-by: Eric Sandeen <sandeen@redhat.com>
+Fixes: 665d3e0af4d3 ("ext4: reduce unnecessary memory allocation in alloc_flex_gd()")
+Cc: stable@vger.kernel.org
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/ext4/resize.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+index e04eb08b9060..397970121d43 100644
+--- a/fs/ext4/resize.c
++++ b/fs/ext4/resize.c
+@@ -253,9 +253,9 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size,
+ 	/* Avoid allocating large 'groups' array if not needed */
+ 	last_group = o_group | (flex_gd->resize_bg - 1);
+ 	if (n_group <= last_group)
+-		flex_gd->resize_bg = 1 << fls(n_group - o_group + 1);
++		flex_gd->resize_bg = 1 << fls(n_group - o_group);
+ 	else if (n_group - last_group < flex_gd->resize_bg)
+-		flex_gd->resize_bg = 1 << max(fls(last_group - o_group + 1),
++		flex_gd->resize_bg = 1 << max(fls(last_group - o_group),
+ 					      fls(n_group - last_group));
+ 
+ 	flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
+-- 
+2.46.0
+
 
