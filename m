@@ -1,134 +1,276 @@
-Return-Path: <linux-ext4+bounces-4365-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4366-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE488988AA6
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 20:59:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF1B6988E45
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 Sep 2024 09:43:39 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 01CF21C209BE
-	for <lists+linux-ext4@lfdr.de>; Fri, 27 Sep 2024 18:59:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E03C281E90
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 Sep 2024 07:43:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02E901C2304;
-	Fri, 27 Sep 2024 18:59:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D443119DFA2;
+	Sat, 28 Sep 2024 07:43:30 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 523B4176251
-	for <linux-ext4@vger.kernel.org>; Fri, 27 Sep 2024 18:59:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCC7819DF64
+	for <linux-ext4@vger.kernel.org>; Sat, 28 Sep 2024 07:43:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727463546; cv=none; b=nP7+hqJFL6BrI0/F7Iw9U5ERUsmuDka/EFuFhXSRGJNxeHNX3Ho1WTIhGxBLYsrvpuGpQv6UE7R0lTepLv18sxBZ7b4k9ft2CCHJy1mB9piWO/5NoKat4Z6VwopdSx7N75NDmJx+9hFVNo8wkpT6AlbkMXHeLGxtVhS0zxgmVhA=
+	t=1727509410; cv=none; b=LviqANfFT9G9MYYodh0+4JoYdJmWJAvU8M5R0xkcGjw/S/D6r2SnWEbl2LTpKrQOSCGO+aA076S1hKCjQqIoYtw0AJl6pon30nWHOOUYlGnDG9qW7c//qJeza/eZw2MchqWGpl9Wszqv96YiwpzKNNAvpJoF1my+1cpY/HfK0vo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727463546; c=relaxed/simple;
-	bh=ky0Qt5OUyJliJOveB+7uwkeqJHQ34/da2gDj0EVdVh8=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=lF72ZhY5rqNqeJ1pLtpfwcKEtHLsUzHDtA92IAx5FZY6R/NiUn2qxW1z6MjXjYLBkfyi9A5VpF/XU0cLY4P/jAMQJFVXjQJTcUuww1uboHD5rj6t2A89uHZh4tbGl0i8kQ2RlcurfSUwLEwzO44ekewyUYIHWQxJf9Dvm55lbFc=
+	s=arc-20240116; t=1727509410; c=relaxed/simple;
+	bh=Tkb88qVKUeBdJ42G5bZlcBOL2evQ60bmKznik7IOpmw=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=X+caNjiKDXZaHSVZ2s20R3DA4s/9xHWktnpObn5zRpIbM9Qe8vkAZ2OE4oTRIiyXpP7X2DCTdmM1tffAHM+VXynlqv3VLaS5izUGJgMHSiZRuB0qhMTJk2nc234e8mS2JRh1TmvCYBWIS6N05VqXfUsp8J7keXjyS7sZhQxwbrY=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a0ce8cf657so30632845ab.1
-        for <linux-ext4@vger.kernel.org>; Fri, 27 Sep 2024 11:59:05 -0700 (PDT)
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a3496b480dso14170335ab.2
+        for <linux-ext4@vger.kernel.org>; Sat, 28 Sep 2024 00:43:28 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727463544; x=1728068344;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3dTrhEW4JbtxGsv9/ziMsjoJhu8gsQrCpGygXIu/nBQ=;
-        b=WHxQuIw2rkGCX3Em2h2aaN//Tki2yQuOxjW2XyfOEpWYdtGAGCIB5VyDufJ7pRqW/b
-         ZtQy4hFwBRnENcRoe5tMMRjaSwA0Ac7jlDFQF3G59myN1wftoLbFCFSuKvbqJO+RsjFv
-         Qdw8q/taUDvPntTrf8bJil58tnAbspPKjEBJt/n33IIwJ2SCr+6XEq8yE6MBkfZokmje
-         CZsN6PPFKJPN0D4Sb4CgjjNOrHjWkCO8Q2q/OefX3E/ZkTf3UyeoGx+gOYDIzmxWwE5r
-         EQjEbiR/Re8TdA11i5V8QDUEJnGip+lZE08f07drBb6jjHcjK2cy0p2EvA2fxxcdf2LP
-         0Cwg==
-X-Forwarded-Encrypted: i=1; AJvYcCVPUMlV6aB+cD6k/emeRui7IW3zNGzgTRNr2CKDDooXWPLR5Nv6lpAaw1GKke+3WD1ZyP5hR7cCktmN@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz9Go2ky9W2K2BTAuGJKxyCgxGLIF3/ENbpUXU/O8U00qzQSVuz
-	9o6q/HwJ9dws4dW3vQXqE8w3D+cz57gA5lz5UJDRBcPuJiGstvFcsYxiWUka5gPk7+gDDB8GAiS
-	lNzvARUnhbgu4CJM2WvnIGGlpEulYev9u3yNKoamqiD0Bv8Pi4sSYMgQ=
-X-Google-Smtp-Source: AGHT+IFqa7yF6ECvwnlAxi3NdjJ+CnDzIfbmLXO7BSnSZm+8+qYvYSHemIaLjKJV7fVtke5qcGUD3IsXyAqMg5c4+lgltsFxaoGO
+        d=1e100.net; s=20230601; t=1727509408; x=1728114208;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hG+T+iEHIkMxk78v6Kd9mBWnMS1ZVclr8awfuHMXyDo=;
+        b=COvdWznWHbTBnQlgtds1QDybz3n7YHMXmjafmmKk1onRScXCQNhofeOr+s+XQlyy6K
+         Ek4R3YHcqsmVOj+4Dj7MTBxmTSI/bAyVMQHcLseBC5Iy0+wAczoOE6+0bIu4pcwV6wL7
+         qhBYim4emhdKlZUql+nVHcsb68daZwxdMleE393/SOXZKJ3EPvlpKoSL9IyyWEnP1/6y
+         4OEwCtKkCPgDGWalHkQC9/KpfMoOjmZAKenjgWaCnOnO3aBJs4K6R3e6Hdk4fTbbO3Pg
+         JVCsE52SWysEWrGSVt6ocJM8XtgB5yl9Tx+J4bVr/v49UcmnPYaswd1VIHprOPMcSRSz
+         PI9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVDtqgNErssG3qZOybNSAShdy5TuqPM+1eUey7CnRHi44CB48muqIAbXMMFKeGnLwD53l7LXV4c6+Wz@vger.kernel.org
+X-Gm-Message-State: AOJu0YxuAwvJxGKy8QMh+nRtxMrNT0y1HwOejGgtDw/nr0JqlLDCjK8+
+	muvE4irsXBfc0k4R14W6CGJSI6JAregtysAo/brTJtOiCr/b5cz8NyFcPa/+vaoLErIPLgh12uK
+	xdJeh+/IcO0kuS3MDHTHj6Dy1s+M9fKD4Jw+mgTDgWx8RaBbZx0twiQI=
+X-Google-Smtp-Source: AGHT+IFM1YWvUWRHXQWqE/Aadyx9q2Mwl55+UhMiIQs002s9HIo9pMzVcizKzN+EyQgJLG9zGOzbZLHfKBn/QzOiFDkCvBtLvZ8C
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:164b:b0:3a0:9ea3:8d79 with SMTP id
- e9e14a558f8ab-3a3451bbd54mr45858575ab.16.1727463544448; Fri, 27 Sep 2024
- 11:59:04 -0700 (PDT)
-Date: Fri, 27 Sep 2024 11:59:04 -0700
-In-Reply-To: <20240927165132.17289-1-rbrasga@uci.edu>
+X-Received: by 2002:a92:ca0c:0:b0:3a3:35f0:4c0c with SMTP id
+ e9e14a558f8ab-3a3451b070dmr41985425ab.18.1727509407940; Sat, 28 Sep 2024
+ 00:43:27 -0700 (PDT)
+Date: Sat, 28 Sep 2024 00:43:27 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66f70078.050a0220.46d20.0024.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING: locking bug in ext4_ioctl
-From: syzbot <syzbot+a3c8e9ac9f9d77240afd@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel-mentees@lists.linuxfoundation.org, linux-kernel@vger.kernel.org, 
-	rbrasga@uci.edu, skhan@linuxfoundation.org, syzkaller-bugs@googlegroups.com, 
-	tytso@mit.edu
+Message-ID: <66f7b39f.050a0220.46d20.0037.GAE@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in ext4_xattr_inode_lookup_create
+From: syzbot <syzbot+d91a6e2efb07bd3354e9@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, jun.nie@linaro.org, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-WARNING: locking bug in ext4_ioctl
+syzbot found the following issue on:
 
-loop0: detected capacity change from 0 to 512
-ext4 filesystem being mounted at /root/syzkaller-testdir500386566/syzkaller.6PgxEV/36/bus supports timestamps until 2038-01-19 (0x7fffffff)
-------------[ cut here ]------------
-Looking for class "&ei->i_data_sem" with key init_once.__key.799, but found a different class "&ei->i_data_sem" with the same key
-WARNING: CPU: 1 PID: 5815 at kernel/locking/lockdep.c:939 look_up_lock_class+0xdc/0x170 kernel/locking/lockdep.c:936
-Modules linked in:
-CPU: 1 UID: 0 PID: 5815 Comm: syz-executor.0 Not tainted 6.11.0-syzkaller-11673-geee280841e1c-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:look_up_lock_class+0xdc/0x170 kernel/locking/lockdep.c:936
-Code: 01 0f 85 8a 00 00 00 c6 05 b3 f8 46 04 01 90 49 8b 16 49 8b 76 18 48 8b 8b b8 00 00 00 48 c7 c7 60 ea ea 8b e8 75 2c bf f5 90 <0f> 0b 90 90 eb 61 90 e8 08 44 18 f9 e8 53 5e de f5 48 c7 c7 a0 e9
-RSP: 0018:ffffc900049ef4f0 EFLAGS: 00010046
-RAX: 3592bb3d4927ad00 RBX: ffffffff931c0730 RCX: ffff888027c18000
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-RBP: ffffc900049ef600 R08: ffffffff8155a9c2 R09: 1ffff1101722519a
-R10: dffffc0000000000 R11: ffffed101722519b R12: ffff888077aadbb0
-R13: ffff888077aadbb0 R14: ffff888077aadbb0 R15: ffffffff94d9f1c1
-FS:  00007f214c1256c0(0000) GS:ffff8880b9100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000002000e000 CR3: 0000000027aec000 CR4: 00000000003506f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+HEAD commit:    2b7275670032 Add linux-next specific files for 20240925
+git tree:       linux-next
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=12fdd627980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=441f6022e7a2db73
+dashboard link: https://syzkaller.appspot.com/bug?extid=d91a6e2efb07bd3354e9
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1771ca80580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=102e0907980000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/de8e955e430e/disk-2b727567.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/cdc30f0c4010/vmlinux-2b727567.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/5bce68c83e37/bzImage-2b727567.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/b35179829fb5/mount_0.gz
+
+The issue was bisected to:
+
+commit 1e9d62d252812575ded7c620d8fc67c32ff06c16
+Author: Jun Nie <jun.nie@linaro.org>
+Date:   Tue Jan 3 01:45:16 2023 +0000
+
+    ext4: optimize ea_inode block expansion
+
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=14edcaa9980000
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=16edcaa9980000
+console output: https://syzkaller.appspot.com/x/log.txt?x=12edcaa9980000
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+d91a6e2efb07bd3354e9@syzkaller.appspotmail.com
+Fixes: 1e9d62d25281 ("ext4: optimize ea_inode block expansion")
+
+EXT4-fs: Ignoring removed nomblk_io_submit option
+======================================================
+WARNING: possible circular locking dependency detected
+6.11.0-next-20240925-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor177/5387 is trying to acquire lock:
+ffff888071dd97c8 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:815 [inline]
+ffff888071dd97c8 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: ext4_xattr_inode_create fs/ext4/xattr.c:1514 [inline]
+ffff888071dd97c8 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}, at: ext4_xattr_inode_lookup_create+0x1a31/0x1f20 fs/ext4/xattr.c:1596
+
+but task is already holding lock:
+ffff888071ddc7e0 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_truncate+0x994/0x11c0 fs/ext4/inode.c:4180
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ei->i_data_sem/3){++++}-{3:3}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
+       down_write+0x99/0x220 kernel/locking/rwsem.c:1577
+       ext4_update_i_disksize fs/ext4/ext4.h:3398 [inline]
+       ext4_xattr_inode_write fs/ext4/xattr.c:1452 [inline]
+       ext4_xattr_inode_lookup_create+0x16b8/0x1f20 fs/ext4/xattr.c:1602
+       ext4_xattr_ibody_set+0x214/0x730 fs/ext4/xattr.c:2269
+       ext4_xattr_set_handle+0xba6/0x1580 fs/ext4/xattr.c:2446
+       ext4_xattr_set+0x241/0x3d0 fs/ext4/xattr.c:2560
+       __vfs_setxattr+0x468/0x4a0 fs/xattr.c:200
+       __vfs_setxattr_noperm+0x12e/0x660 fs/xattr.c:234
+       vfs_setxattr+0x221/0x430 fs/xattr.c:321
+       do_setxattr fs/xattr.c:629 [inline]
+       path_setxattr+0x37e/0x4d0 fs/xattr.c:658
+       __do_sys_setxattr fs/xattr.c:676 [inline]
+       __se_sys_setxattr fs/xattr.c:672 [inline]
+       __x64_sys_setxattr+0xbb/0xd0 fs/xattr.c:672
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+-> #0 (&ea_inode->i_rwsem#8/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3161 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+       validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
+       __lock_acquire+0x1384/0x2050 kernel/locking/lockdep.c:5202
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
+       down_write+0x99/0x220 kernel/locking/rwsem.c:1577
+       inode_lock include/linux/fs.h:815 [inline]
+       ext4_xattr_inode_create fs/ext4/xattr.c:1514 [inline]
+       ext4_xattr_inode_lookup_create+0x1a31/0x1f20 fs/ext4/xattr.c:1596
+       ext4_xattr_block_set+0x274/0x3980 fs/ext4/xattr.c:1916
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2669 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2744 [inline]
+       ext4_expand_extra_isize_ea+0x12d7/0x1cf0 fs/ext4/xattr.c:2836
+       __ext4_expand_extra_isize+0x2fb/0x3e0 fs/ext4/inode.c:5831
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5874 [inline]
+       __ext4_mark_inode_dirty+0x524/0x880 fs/ext4/inode.c:5952
+       ext4_ext_truncate+0x9f/0x2b0 fs/ext4/extents.c:4457
+       ext4_truncate+0xa1b/0x11c0 fs/ext4/inode.c:4185
+       ext4_evict_inode+0x90f/0xf50 fs/ext4/inode.c:263
+       evict+0x4e8/0x9b0 fs/inode.c:806
+       __dentry_kill+0x20d/0x630 fs/dcache.c:615
+       dput+0x19f/0x2b0 fs/dcache.c:857
+       do_renameat2+0xda1/0x13f0 fs/namei.c:5181
+       __do_sys_renameat2 fs/namei.c:5213 [inline]
+       __se_sys_renameat2 fs/namei.c:5210 [inline]
+       __x64_sys_renameat2+0xce/0xe0 fs/namei.c:5210
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem/3);
+                               lock(&ea_inode->i_rwsem#8/1);
+                               lock(&ei->i_data_sem/3);
+  lock(&ea_inode->i_rwsem#8/1);
+
+ *** DEADLOCK ***
+
+7 locks held by syz-executor177/5387:
+ #0: ffff88802da0e420 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
+ #1: ffff88802da0e730 (&type->s_vfs_rename_key){+.+.}-{3:3}, at: lock_rename fs/namei.c:3165 [inline]
+ #1: ffff88802da0e730 (&type->s_vfs_rename_key){+.+.}-{3:3}, at: do_renameat2+0x5cf/0x13f0 fs/namei.c:5114
+ #2: ffff88807755f0f0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
+ #2: ffff88807755f0f0 (&type->i_mutex_dir_key#3/1){+.+.}-{3:3}, at: lock_two_directories+0x145/0x220 fs/namei.c:3131
+ #3: ffff888071dd83f8 (&type->i_mutex_dir_key#3/5){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
+ #3: ffff888071dd83f8 (&type->i_mutex_dir_key#3/5){+.+.}-{3:3}, at: lock_two_directories+0x16f/0x220 fs/namei.c:3132
+ #4: ffff88802da0e610 (sb_internal){.+.+}-{0:0}, at: __sb_start_write include/linux/fs.h:1721 [inline]
+ #4: ffff88802da0e610 (sb_internal){.+.+}-{0:0}, at: sb_start_intwrite include/linux/fs.h:1904 [inline]
+ #4: ffff88802da0e610 (sb_internal){.+.+}-{0:0}, at: ext4_evict_inode+0x2f4/0xf50 fs/ext4/inode.c:217
+ #5: ffff888071ddc7e0 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_truncate+0x994/0x11c0 fs/ext4/inode.c:4180
+ #6: ffff888071ddc620 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:161 [inline]
+ #6: ffff888071ddc620 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5871 [inline]
+ #6: ffff888071ddc620 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x491/0x880 fs/ext4/inode.c:5952
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 5387 Comm: syz-executor177 Not tainted 6.11.0-next-20240925-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 08/06/2024
 Call Trace:
  <TASK>
- register_lock_class+0x102/0x980 kernel/locking/lockdep.c:1290
- __lock_acquire+0xf0/0x2050 kernel/locking/lockdep.c:5074
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5822
- down_write_nested+0xa2/0x220 kernel/locking/rwsem.c:1695
- swap_inode_boot_loader fs/ext4/ioctl.c:432 [inline]
- __ext4_ioctl fs/ext4/ioctl.c:1436 [inline]
- ext4_ioctl+0x4124/0x5590 fs/ext4/ioctl.c:1626
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:907 [inline]
- __se_sys_ioctl+0xf9/0x170 fs/ioctl.c:893
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_circular_bug+0x13a/0x1b0 kernel/locking/lockdep.c:2074
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2206
+ check_prev_add kernel/locking/lockdep.c:3161 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+ validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
+ __lock_acquire+0x1384/0x2050 kernel/locking/lockdep.c:5202
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
+ down_write+0x99/0x220 kernel/locking/rwsem.c:1577
+ inode_lock include/linux/fs.h:815 [inline]
+ ext4_xattr_inode_create fs/ext4/xattr.c:1514 [inline]
+ ext4_xattr_inode_lookup_create+0x1a31/0x1f20 fs/ext4/xattr.c:1596
+ ext4_xattr_block_set+0x274/0x3980 fs/ext4/xattr.c:1916
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2669 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2744 [inline]
+ ext4_expand_extra_isize_ea+0x12d7/0x1cf0 fs/ext4/xattr.c:2836
+ __ext4_expand_extra_isize+0x2fb/0x3e0 fs/ext4/inode.c:5831
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:5874 [inline]
+ __ext4_mark_inode_dirty+0x524/0x880 fs/ext4/inode.c:5952
+ ext4_ext_truncate+0x9f/0x2b0 fs/ext4/extents.c:4457
+ ext4_truncate+0xa1b/0x11c0 fs/ext4/inode.c:4185
+ ext4_evict_inode+0x90f/0xf50 fs/ext4/inode.c:263
+ evict+0x4e8/0x9b0 fs/inode.c:806
+ __dentry_kill+0x20d/0x630 fs/dcache.c:615
+ dput+0x19f/0x2b0 fs/dcache.c:857
+ do_renameat2+0xda1/0x13f0 fs/namei.c:5181
+ __do_sys_renameat2 fs/namei.c:5213 [inline]
+ __se_sys_renameat2 fs/namei.c:5210 [inline]
+ __x64_sys_renameat2+0xce/0xe0 fs/namei.c:5210
  do_syscall_x64 arch/x86/entry/common.c:52 [inline]
  do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
  entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f214b47dea9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f214c1250c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007f214b5abf80 RCX: 00007f214b47dea9
-RDX: 0000000000000000 RSI: 0000000000006611 RDI: 0000000000000004
-RBP: 00007f214b4ca4a4 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
-R13: 000000000000000b R14: 00007f214b5abf80 R15: 00007fff61b66448
+RIP: 0033:0x7f9326d33469
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffdce15cbc8 EFLAGS: 00000246 ORIG_RAX: 000000000000013c
+RAX: ffffffffffffffda RBX: 00007f9326d7c0a0 RCX: 00007f9326d33469
+RDX: 0000000000000005 RSI: 0000000020000080 RDI: 0000000000000006
+RBP: 0000000000000000 R08: 0000000000000000 R09: 00007ffdce15cc00
+R10: 00000000200000c0 R11: 0000000000000246 R12: 00007ffdce15cbec
+R13: 0000000000000031 R14: 431bde82d7b634db R15: 00007ffdce15cc20
  </TASK>
 
 
-Tested on:
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-commit:         eee28084 Merge tag 'mm-hotfixes-stable-2024-09-27-09-4..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=161cde27980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6e73c530afb43e82
-dashboard link: https://syzkaller.appspot.com/bug?extid=a3c8e9ac9f9d77240afd
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17082507980000
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
