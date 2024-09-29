@@ -1,131 +1,164 @@
-Return-Path: <linux-ext4+bounces-4368-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4369-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15EB998932E
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 08:03:31 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE56F989676
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 19:12:40 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B31A71F22DE9
-	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 06:03:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65650281190
+	for <lists+linux-ext4@lfdr.de>; Sun, 29 Sep 2024 17:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FEEAAD51;
-	Sun, 29 Sep 2024 06:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="F9lb2t0f"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D745917BED0;
+	Sun, 29 Sep 2024 17:12:34 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-io1-f71.google.com (mail-io1-f71.google.com [209.85.166.71])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1132E13A3E4
-	for <linux-ext4@vger.kernel.org>; Sun, 29 Sep 2024 06:03:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A5B154BED
+	for <linux-ext4@vger.kernel.org>; Sun, 29 Sep 2024 17:12:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.71
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727589793; cv=none; b=iBsNLuJwVq7vvDglvi7xIZrT9Xho+hkya8Rvga6PtIu8igBkgzgHkkIAitCU69Iyo30V3DVppUV2vzrhM2oVYtTZhJ9W+4B96ihiEcC+T1Ngr+g/rTEvmWP0k2iFKcMI/ujfNUszp1cRtTE4950xL6Io5yFfAVlxm5E+df/beEo=
+	t=1727629954; cv=none; b=cLJWSp0kpQMs7Zn8D1D4tGYtbOvubRiV9m3Y8Cfr3mtiK0vp+MbqIsXCQa1kFiLRemP343E/HEn4JTMup5bwqjHpTahWq/vmXGijTg03Vzri/IEK+awRegUOYe4CRVsXPXmyJHJ43K0CjSh0DuDim2zpAkfQ3Xxgk6/SMH98fxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727589793; c=relaxed/simple;
-	bh=+akFPa+8alj51MCfrHOvoYE8LLNbQjwGyJuPEMHWLnY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hAlMT1udDkHtzT/On5/uML5EnaLJmn3dMGpSKl+gslwsMIkuWMIIPa5s8U/D1FGI8dFl6Z6IN0mZbnydUk8b3uFeb7uKgm5Ao/2NQYF242Lwf1mEH7F5TALFllGZomDkCnGL3flb9Qwyn+kIMS6p8RZO+ViLU+DhtI88060Ifgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=F9lb2t0f; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from macsyma.thunk.org ([191.96.150.29])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 48T5xa0F003145
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 29 Sep 2024 01:59:37 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1727589579; bh=irslh8MsFcziIi7ImkqjnJQeDeABJM+Q2j1bZu9qw5Q=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=F9lb2t0f9NjX3BPjn6sGHLs9VIHknZUoi1KhvEaJOtho67SUD8rFrxfiHFKznp9+S
-	 eCajM9Fo0SdJuLBsT3cDKG/qWuY9FH/YuRXkTW0Q+McT37KKIyIM3y99vlgbpUc9AR
-	 pUZczo55ghh124GGJyyNY5jpzHkCn2kvNJeSVfQjicQCCmOqajnqaDnegEknvxd+1+
-	 tx7YlAyzawhZv4mHHPV1nM23Sp3OljZk1syml6ecHvIgWGJ3X95gcpC7H/43iBZ7Hx
-	 7fJtFtY/lj8JtED6GlIEuqqdDVhFgaugNG+qvp7s1U1bPLVXm4iMxaLWp0cZmgsuhb
-	 tNfxAH8ChHfgA==
-Received: by macsyma.thunk.org (Postfix, from userid 15806)
-	id 9B17A3402F3; Fri, 27 Sep 2024 08:50:19 -0700 (PDT)
-Date: Fri, 27 Sep 2024 08:50:19 -0700
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Max Brener <linmaxi@gmail.com>
-Cc: adilger.kernel@dilger.ca, viro@zeniv.linux.org.uk, brauner@kernel.org,
-        jack@suse.cz, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] [PATCH] vfs/ext4: Fixed a potential problem related to
- an infinite loop
-Message-ID: <20240927155019.GA365622@mit.edu>
-References: <20240926221103.24423-1-linmaxi@gmail.com>
+	s=arc-20240116; t=1727629954; c=relaxed/simple;
+	bh=EaXRUEmfB79k/Z0BeIOPUDzlzgGDwf/cukr9QkhFr/w=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=XkO0RYx2ylGi8AJbFzkFaAchB7gw/XgTXVgLKCJBjS5mmnGyTfHzD+Gfs+jDSmPAXvjPtYtaAafNB+B12yex7XP03gq3HOAcgyTl2s4AWpLxeilm+p9HG/T1Oxd8PLo2MwzQ8lClk/iPo60swUDBVxB554FXiO6QWT78G3E7geo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.71
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f71.google.com with SMTP id ca18e2360f4ac-82cda24c462so357425039f.0
+        for <linux-ext4@vger.kernel.org>; Sun, 29 Sep 2024 10:12:32 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727629952; x=1728234752;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=5oLiFtWq3lpVzqaTZ+/xin618Ir4btGMwE3p+GRGDS8=;
+        b=Y4lHCqW812eO7blYTAI9TJ9KrA/cAwGCMIhkE5I4fEW5WZH0fioEQq6e38IvMJlPih
+         HZx27erBx0zVu/NQeQt5bNN6hm5MH/7duiMsk0Y90iIuvb/kO5GaiVdE46GQuYoZ9wyC
+         4FesGhoDNEVqJc8Sy2wbetD71qNqHQH/uNysOk1jHt3FPRLDeXiPad/ndj8z0BhXwrln
+         kvSvN4MfUBObbzYw24aOELXJqDHGrDtNdGDBDS5otD3Y/LFiTGbNp87JwJWAatJakJM1
+         a1Fm9h0NE7wubU0++/cMM0/4whaw7VH3mX7Ab/wwXkehsykGjjVYmimzzL3SV6laKOxp
+         1WwA==
+X-Forwarded-Encrypted: i=1; AJvYcCVEvNj+jVwRIO0vGt9Z1uSQVDkrZuCD316BCZV4eH6MVuQbGhFi2Ry5QstOatX6us3YLvzxwXKPnMTY@vger.kernel.org
+X-Gm-Message-State: AOJu0Yw00IXqL+ILL2mz0L4re+PEgGCe/J1QzF5NYfFFbB/7NETKBjqS
+	BGFhRrDE7mXR19V8S0DsRCXTFYB0HOtRTjZhIozSI2I1ojR24YT4BIen+WsqmIq1Nek9d6xLGev
+	PfrkDarz2AbQWvDrdJ1QsLX5o0I3AhAEgqddnSsblPfxQT9VYNLptZI0=
+X-Google-Smtp-Source: AGHT+IHxgiVeJXHJ017W8Jzgtl1T+AZNKyPUUAUgljHC66OS0lsN4Nq4JhLIOFPVmVbbbE0ijf0zKcbfmIW266Zr3fWHC7K1k0HB
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240926221103.24423-1-linmaxi@gmail.com>
+X-Received: by 2002:a05:6e02:1d84:b0:3a2:74eb:91fa with SMTP id
+ e9e14a558f8ab-3a3451c1b12mr71194785ab.25.1727629952365; Sun, 29 Sep 2024
+ 10:12:32 -0700 (PDT)
+Date: Sun, 29 Sep 2024 10:12:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <66f98a80.050a0220.6bad9.0021.GAE@google.com>
+Subject: [syzbot] [ext4?] [ocfs2?] WARNING in jbd2_journal_update_sb_log_tail
+From: syzbot <syzbot+96ee12698391289383dd@syzkaller.appspotmail.com>
+To: jack@suse.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com, 
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, mark@fasheh.com, 
+	ocfs2-devel@lists.linux.dev, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Fri, Sep 27, 2024 at 01:11:03AM +0300, Max Brener wrote:
-> Closes: https://bugzilla.kernel.org/show_bug.cgi?id=219306
-> 
-> This patch fixes a potential infinite journal-truncate-print
-> problem.  When systemd's journald is called, ftruncate syscall is
-> called. If anywhere down the call stack of ftruncate a printk of
-> some sort happens, it triggers journald again therefore an infinite
-> loop is established.
+Hello,
 
-This isn't a good justification for this change; in general, whenever
-you have code paths which get triggered when a logging daemon is
-triggered, whether it's systemd-journald, or syslog, and this can
-cause this kind of infinite loop.  For example, suppose you are using
-remote logging (where a log message gets sent over the network via the
-remote syslog facility), and anything in the networking stack triggers
-a printk, that will also trigger an "infinite loop".  This falls in
-the "Doctor, doctor, it hurts when I do that --- so don't do that!"
+syzbot found the following issue on:
 
-In this particular situation, journald is doing something silly/stupid
-which is whenver a message is logged, it is issuing a no-op ftruncate
-to the journald log file.  It's also worth noting that ext4's truncate
-path does *not* trigger a printk unless something really haw gone
-wrong (e.g., a WARN_ON when a kernel bug has happened and flags in the
-in-memory get erronously set, or the file system gets corrupted and
-this gets reported via ext4_error()).  The reporter discovered this by
-explicitly adding a printk in their privatea kernel sources, and in
-general, when you add random changes to the kernel, any unfortunate
-consequences are not something that upstream code can be expected to
-defend against.
+HEAD commit:    684a64bf32b6 Merge tag 'nfs-for-6.12-1' of git://git.linux..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=138c0907980000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=bd75e1a00004094f
+dashboard link: https://syzkaller.appspot.com/bug?extid=96ee12698391289383dd
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13bea99f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=17d04aa9980000
 
-For context, see: https://bugzilla.kernel.org/show_bug.cgi?id=219306
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-684a64bf.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f05b4b08a420/vmlinux-684a64bf.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d59f9edaf3bc/bzImage-684a64bf.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/a82758cb7d80/mount_0.gz
 
-We can justify an optimization here so that in the case of
-silly/stupid userspace programs which are constnatly calling
-truncate(2) which are no-ops, we can optimize ext4's handling of these
-silly/stupid programs.  The ext4_truncate() code path causes starting
-a journal handle, adding the inode to the orphan list, and then
-removing it at the end of the truncate.  In the case where sopme
-program calls truncate() in a tight loop, we can optimize the
-behaviour.  It's not a high priority optimization, but if given that
-we can't necessarily change silly/stupid userspace programmers, it can
-be something that we can do if the patch is too invasive.
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+96ee12698391289383dd@syzkaller.appspotmail.com
 
-HOWEVER....
+(syz-executor214,5103,0):ocfs2_block_check_validate:402 ERROR: CRC32 failed: stored: 0xb3775c19, computed 0x2dd1c265. Applying ECC.
+JBD2: Ignoring recovery information on journal
+------------[ cut here ]------------
+WARNING: CPU: 0 PID: 5103 at fs/jbd2/journal.c:1887 jbd2_journal_update_sb_log_tail+0x2ba/0x360 fs/jbd2/journal.c:1887
+Modules linked in:
+CPU: 0 UID: 0 PID: 5103 Comm: syz-executor214 Not tainted 6.11.0-syzkaller-10547-g684a64bf32b6 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:jbd2_journal_update_sb_log_tail+0x2ba/0x360 fs/jbd2/journal.c:1887
+Code: 1c ff 41 80 3c 2c 00 74 08 4c 89 ff e8 9f 71 86 ff 41 80 27 f7 4c 89 f7 e8 f3 1c 56 09 31 ed e9 72 fe ff ff e8 47 c4 1c ff 90 <0f> 0b 90 41 80 3c 2c 00 75 d5 eb db 44 89 f1 80 e1 07 80 c1 03 38
+RSP: 0018:ffffc90000e46d70 EFLAGS: 00010293
+RAX: ffffffff8277f0f9 RBX: 0000000000000000 RCX: ffff8880002ba440
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: dffffc0000000000 R08: ffffffff8277f0c9 R09: fffff520001c8d9c
+R10: dffffc0000000000 R11: fffff520001c8d9c R12: 1ffff1100808bc00
+R13: ffff88803d2e301c R14: ffff88804045e0b0 R15: ffff88804045e000
+FS:  000055558c7ca380(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007fd277995ed8 CR3: 000000003fef2000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ journal_reset fs/jbd2/journal.c:1779 [inline]
+ jbd2_journal_load+0x708/0xbc0 fs/jbd2/journal.c:2109
+ ocfs2_journal_load+0xed/0x6d0 fs/ocfs2/journal.c:1143
+ ocfs2_check_volume fs/ocfs2/super.c:2421 [inline]
+ ocfs2_mount_volume+0xc12/0x1940 fs/ocfs2/super.c:1817
+ ocfs2_fill_super+0x475a/0x5750 fs/ocfs2/super.c:1084
+ mount_bdev+0x20a/0x2d0 fs/super.c:1679
+ legacy_get_tree+0xee/0x190 fs/fs_context.c:662
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+ do_mount fs/namespace.c:3847 [inline]
+ __do_sys_mount fs/namespace.c:4055 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4032
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7fb2af90112a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffe3f741ce8 EFLAGS: 00000282 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007ffe3f741d00 RCX: 00007fb2af90112a
+RDX: 0000000020004740 RSI: 0000000020004780 RDI: 00007ffe3f741d00
+RBP: 0000000000000004 R08: 00007ffe3f741d40 R09: 0000000000004701
+R10: 000000000100000a R11: 0000000000000282 R12: 000000000100000a
+R13: 00007ffe3f741d40 R14: 0000000000000003 R15: 0000000001000000
+ </TASK>
 
 
-> To fix this issue:
-> Add  a new inode flag S_TRUNCATED which helps in stopping such an infinite loop by marking an in-memory inode as already truncated.
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Adding a generic VFS-level flag is not something that we can justify
-here.  The VFS maintainers would NACK such a change, and deservedly
-so.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-What I had in mind was to define a new EXT4 state flag, say,
-EXT4_STATE_TRUNCATED, and then test, set, and clear it using
-ext4_{test,set,clear}_inode_state().
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Cheers,
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
-					- Ted
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
