@@ -1,45 +1,45 @@
-Return-Path: <linux-ext4+bounces-4377-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4378-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E230B989941
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 04:36:32 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8983989945
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 04:37:00 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 97D9D28269D
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 02:36:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8892D283D49
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 02:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1F631CABA;
-	Mon, 30 Sep 2024 02:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6E2B1CD2B;
+	Mon, 30 Sep 2024 02:36:52 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 270322904
-	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 02:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F52D2BB0D
+	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 02:36:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727663787; cv=none; b=jNMKdzoKVRny0N2hMGLUBfL51aR6zgZGVAbi1xRODbDtq/XVT/ev+HBBLjQc8aScL4ItCM78VcqKndocUU8jGvfgDTOzTcjnlwUeQs7bZHKlSu6sOjqQR/USSywOICJCt4R++4e1fbsxFY5Tk0n20EgABtTMnEhHvyKO5gbPcX4=
+	t=1727663812; cv=none; b=bvesPv3igIM001Xh4cCxUJZWK/Am2zxF0DnO1I+e5FdD3K1EA+HqxOyktcsiU6tD1gSljSIvqKH41h4vPBoQ7Srt0fjCBbqIdTzhmyuAH1X6u4r1EWz2YrGNC6tOFNsBIuUPv3vQrfcqLmFPMrAKZyDX1oHmaPkpU7ZfbnaZwJk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727663787; c=relaxed/simple;
-	bh=rPPI6NUx2y57E++RKEdWYxIW0912AlxXuOjjZ/aRJbk=;
+	s=arc-20240116; t=1727663812; c=relaxed/simple;
+	bh=r9gDBDJy268nL43rCNzKpy/1SVS6V4SwyX6IrgyNIuI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ATtYu2/QdL8AHTo3cyPdN9oRXZTdIm24m529GnUid0PmIxQySfucnQ2XsEmCVwjqdbME/80nMDoVRw3x7ghTk9gPrn9OQ0Boum8jGCTgHidLxSQTweOoTDU82XcjQaLp5+W8AUnGd0KjpFRjyVs91q1pHrKADyGOFfd4Dr+SdWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	 In-Reply-To:Content-Type; b=F0JvajRgTtIgoZePvgeLKHecxMyeBWbZ9SUJfO/MFDzJiqLHeqhMpNjDfVJ1hDqSkdDZQd9xXiZxvLi+HpdL4ihoZIpjdYRe4l1ZgkcbdBFVCBEpFLxXxGTMh5IefQ9Sd5qx2Ggp4Ipjk0sOHOWoQ3IZIZD4YSV5q5hch5rylRg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XH4v32ZcKz4f3jdb
-	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 10:35:59 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XH4vc62B7z4f3jjx
+	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 10:36:28 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id CEE1D1A058E
-	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 10:36:15 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 420811A08DC
+	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 10:36:40 +0800 (CST)
 Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgDH+8edDvpmCSDzCg--.55415S3;
-	Mon, 30 Sep 2024 10:36:15 +0800 (CST)
-Message-ID: <be4798a6-773e-44ae-b9ec-3a5198d8d390@huaweicloud.com>
-Date: Mon, 30 Sep 2024 10:36:13 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgDHR8S3DvpmGSfzCg--.9922S3;
+	Mon, 30 Sep 2024 10:36:40 +0800 (CST)
+Message-ID: <40a9797e-c139-4d40-973b-d8956d1c261b@huaweicloud.com>
+Date: Mon, 30 Sep 2024 10:36:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,41 +47,43 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/6] jbd2: remove redundant judgments for check v1
- checksum
+Subject: Re: [PATCH v2 2/6] jbd2: unified release of buffer_head in
+ do_one_pass()
 To: Ye Bin <yebin@huaweicloud.com>
 Cc: jack@suse.cz, zhangxiaoxu5@huawei.com, tytso@mit.edu,
  adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
 References: <20240930005942.626942-1-yebin@huaweicloud.com>
- <20240930005942.626942-2-yebin@huaweicloud.com>
+ <20240930005942.626942-3-yebin@huaweicloud.com>
 Content-Language: en-US
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20240930005942.626942-2-yebin@huaweicloud.com>
+In-Reply-To: <20240930005942.626942-3-yebin@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgDH+8edDvpmCSDzCg--.55415S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7XF1rWr17WFWDXr18ZF13Jwb_yoWfWFXEgw
-	40krZ5Z397XFn2va45Aw15Wr1a9rsxWr1rCwnFy34Y9a4UX34kXFWqq34DXryDWrZa9FW8
-	CrZruFW8tF93tjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbwAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7JwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lc7CjxVAaw2AFwI0_JF0_Jw1l42xK82IYc2Ij64vI
-	r41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8Gjc
-	xK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2Ix0
-	cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42xK8V
-	AvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E
-	14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UK2NtUUUUU=
+X-CM-TRANSID:gCh0CgDHR8S3DvpmGSfzCg--.9922S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxGrWkJrW5tFWrWw1Dur4UArb_yoWrtr45pw
+	s8G34UCFyqvr13tas7XFWDXrWjvF4jyFyUWF1q9wnay3y3trnrt34Iqr1ftFWUArWfZwn5
+	JF4rAF4qkw1rt37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyGb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxkF7I0En4kS14v26r126r1DMxAIw28IcxkI7VAK
+	I48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7
+	xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUAVWUtwCIc40Y0x0EwIxGrwCI42IY6xII
+	jxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw2
+	0EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x02
+	67AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IUbiF4tUUUUU==
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+
+
 
 On 2024/9/30 8:59, Ye Bin wrote:
 > From: Ye Bin <yebin10@huawei.com>
 > 
-> 'need_check_commit_time' is only used by v2/v3 checksum, so there isn't
-> need to add 'need_check_commit_time' judegement for v1 checksum logic.
+> Now buffer_head free is very fragmented in do_one_pass(), unified release
+> of buffer_head in do_one_pass()
 > 
 > Signed-off-by: Ye Bin <yebin10@huawei.com>
 > Reviewed-by: Jan Kara <jack@suse.cz>
@@ -91,20 +93,173 @@ Looks good to me.
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
 > ---
->  fs/jbd2/recovery.c | 1 -
->  1 file changed, 1 deletion(-)
+>  fs/jbd2/recovery.c | 34 +++++++++-------------------------
+>  1 file changed, 9 insertions(+), 25 deletions(-)
 > 
 > diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 667f67342c52..5efbca6a98c4 100644
+> index 5efbca6a98c4..0adf0cb31a03 100644
 > --- a/fs/jbd2/recovery.c
 > +++ b/fs/jbd2/recovery.c
-> @@ -619,7 +619,6 @@ static int do_one_pass(journal_t *journal,
->  			if (pass != PASS_REPLAY) {
->  				if (pass == PASS_SCAN &&
->  				    jbd2_has_feature_checksum(journal) &&
-> -				    !need_check_commit_time &&
+> @@ -493,7 +493,7 @@ static int do_one_pass(journal_t *journal,
+>  	int			err, success = 0;
+>  	journal_superblock_t *	sb;
+>  	journal_header_t *	tmp;
+> -	struct buffer_head *	bh;
+> +	struct buffer_head	*bh = NULL;
+>  	unsigned int		sequence;
+>  	int			blocktype;
+>  	int			tag_bytes = journal_tag_bytes(journal);
+> @@ -552,6 +552,8 @@ static int do_one_pass(journal_t *journal,
+>  		 * record. */
+>  
+>  		jbd2_debug(3, "JBD2: checking block %ld\n", next_log_block);
+> +		brelse(bh);
+> +		bh = NULL;
+>  		err = jread(&bh, journal, next_log_block);
+>  		if (err)
+>  			goto failed;
+> @@ -567,20 +569,16 @@ static int do_one_pass(journal_t *journal,
+>  
+>  		tmp = (journal_header_t *)bh->b_data;
+>  
+> -		if (tmp->h_magic != cpu_to_be32(JBD2_MAGIC_NUMBER)) {
+> -			brelse(bh);
+> +		if (tmp->h_magic != cpu_to_be32(JBD2_MAGIC_NUMBER))
+>  			break;
+> -		}
+>  
+>  		blocktype = be32_to_cpu(tmp->h_blocktype);
+>  		sequence = be32_to_cpu(tmp->h_sequence);
+>  		jbd2_debug(3, "Found magic %d, sequence %d\n",
+>  			  blocktype, sequence);
+>  
+> -		if (sequence != next_commit_ID) {
+> -			brelse(bh);
+> +		if (sequence != next_commit_ID)
+>  			break;
+> -		}
+>  
+>  		/* OK, we have a valid descriptor block which matches
+>  		 * all of the sequence number checks.  What are we going
+> @@ -603,7 +601,6 @@ static int do_one_pass(journal_t *journal,
+>  					pr_err("JBD2: Invalid checksum recovering block %lu in log\n",
+>  					       next_log_block);
+>  					err = -EFSBADCRC;
+> -					brelse(bh);
+>  					goto failed;
+>  				}
+>  				need_check_commit_time = true;
+> @@ -622,16 +619,12 @@ static int do_one_pass(journal_t *journal,
 >  				    !info->end_transaction) {
 >  					if (calc_chksums(journal, bh,
 >  							&next_log_block,
+> -							&crc32_sum)) {
+> -						put_bh(bh);
+> +							&crc32_sum))
+>  						break;
+> -					}
+> -					put_bh(bh);
+>  					continue;
+>  				}
+>  				next_log_block += count_tags(journal, bh);
+>  				wrap(journal, next_log_block);
+> -				put_bh(bh);
+>  				continue;
+>  			}
+>  
+> @@ -701,7 +694,6 @@ static int do_one_pass(journal_t *journal,
+>  						       "JBD2: Out of memory "
+>  						       "during recovery.\n");
+>  						err = -ENOMEM;
+> -						brelse(bh);
+>  						brelse(obh);
+>  						goto failed;
+>  					}
+> @@ -733,7 +725,6 @@ static int do_one_pass(journal_t *journal,
+>  					break;
+>  			}
+>  
+> -			brelse(bh);
+>  			continue;
+>  
+>  		case JBD2_COMMIT_BLOCK:
+> @@ -781,7 +772,6 @@ static int do_one_pass(journal_t *journal,
+>  					pr_err("JBD2: Invalid checksum found in transaction %u\n",
+>  					       next_commit_ID);
+>  					err = -EFSBADCRC;
+> -					brelse(bh);
+>  					goto failed;
+>  				}
+>  			ignore_crc_mismatch:
+> @@ -791,7 +781,6 @@ static int do_one_pass(journal_t *journal,
+>  				 */
+>  				jbd2_debug(1, "JBD2: Invalid checksum ignored in transaction %u, likely stale data\n",
+>  					  next_commit_ID);
+> -				brelse(bh);
+>  				goto done;
+>  			}
+>  
+> @@ -811,7 +800,6 @@ static int do_one_pass(journal_t *journal,
+>  				if (info->end_transaction) {
+>  					journal->j_failed_commit =
+>  						info->end_transaction;
+> -					brelse(bh);
+>  					break;
+>  				}
+>  
+> @@ -847,7 +835,6 @@ static int do_one_pass(journal_t *journal,
+>  				if (!jbd2_has_feature_async_commit(journal)) {
+>  					journal->j_failed_commit =
+>  						next_commit_ID;
+> -					brelse(bh);
+>  					break;
+>  				}
+>  			}
+> @@ -856,7 +843,6 @@ static int do_one_pass(journal_t *journal,
+>  				last_trans_commit_time = commit_time;
+>  				head_block = next_log_block;
+>  			}
+> -			brelse(bh);
+>  			next_commit_ID++;
+>  			continue;
+>  
+> @@ -875,14 +861,11 @@ static int do_one_pass(journal_t *journal,
+>  
+>  			/* If we aren't in the REVOKE pass, then we can
+>  			 * just skip over this block. */
+> -			if (pass != PASS_REVOKE) {
+> -				brelse(bh);
+> +			if (pass != PASS_REVOKE)
+>  				continue;
+> -			}
+>  
+>  			err = scan_revoke_records(journal, bh,
+>  						  next_commit_ID, info);
+> -			brelse(bh);
+>  			if (err)
+>  				goto failed;
+>  			continue;
+> @@ -890,12 +873,12 @@ static int do_one_pass(journal_t *journal,
+>  		default:
+>  			jbd2_debug(3, "Unrecognised magic %d, end of scan.\n",
+>  				  blocktype);
+> -			brelse(bh);
+>  			goto done;
+>  		}
+>  	}
+>  
+>   done:
+> +	brelse(bh);
+>  	/*
+>  	 * We broke out of the log scan loop: either we came to the
+>  	 * known end of the log or we found an unexpected block in the
+> @@ -931,6 +914,7 @@ static int do_one_pass(journal_t *journal,
+>  	return success;
+>  
+>   failed:
+> +	brelse(bh);
+>  	return err;
+>  }
+>  
 
 
