@@ -1,157 +1,144 @@
-Return-Path: <linux-ext4+bounces-4390-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4391-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B90998A0E8
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 13:36:38 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB28E98AC8D
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 21:13:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 10EA9284C60
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 11:36:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6642B2832AE
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 19:13:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A27918C354;
-	Mon, 30 Sep 2024 11:34:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66D74199951;
+	Mon, 30 Sep 2024 19:13:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="gJ/KxS1M";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="u6tZgxkK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A613421105;
-	Mon, 30 Sep 2024 11:34:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E44743AB0;
+	Mon, 30 Sep 2024 19:13:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727696078; cv=none; b=CFVxYrCAmm6hk1CSBokoEVcQFbKe1NJ1f8U5KrswNtLLRblRsETQv801/72Jw6NbrK7RB7QLT2R58LC/pNAG4MGJWKBVE6JPSpVr+wEC4eCc24EvWYCyygm4ITFfUw4NCIUBVte1GpyKe84W3EW0ujzBgb2GeREr4kORLXzmdAg=
+	t=1727723615; cv=none; b=DhY8X8jZFJ79/PkHWcCud7hJ42upeh6m65ZIgqTG7GMP2FI+STabxSsJv0yA01309+iEuUS/+V4pMWQDqNODlkq/0gokaF6FAYN4SZS8CLxmytbYH3c4Nu4t8u8nCNfux4znfsiVVHt4wd6yVeoF+u7Hm9n6LmlaaTKetqThXH8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727696078; c=relaxed/simple;
-	bh=Xn9o2rWvm8T1dQ0ilcHMlrx7BBuJC4X4KJT0qGs/51I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WZPb6k5PaCoxcinw88MlaqPBRZWjTTT28bfrzsod0PTDH/EshDU3wrH7qMmJ7k5OgZ3TSnsQs3uOWClvdG3XIE10tX69xVAmX/dfcjfpUtziN7VKQXl1bvCC7hyyLY6pih2tDIyO0o/LC8Eb6nCkd4DsGikwgFCUDvMmhJMOQUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id E582E21A36;
-	Mon, 30 Sep 2024 11:34:34 +0000 (UTC)
-Authentication-Results: smtp-out1.suse.de;
-	none
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D732A136CB;
-	Mon, 30 Sep 2024 11:34:34 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zJt8NMqM+mYbVgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 30 Sep 2024 11:34:34 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 6FF1CA0845; Mon, 30 Sep 2024 13:34:34 +0200 (CEST)
-Date: Mon, 30 Sep 2024 13:34:34 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jan Stancek <jstancek@redhat.com>
-Cc: Jan Kara <jack@suse.cz>, ltp@lists.linux.it, Ted Tso <tytso@mit.edu>,
-	linux-ext4@vger.kernel.org, Christian Brauner <brauner@kernel.org>,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] ext4: don't set SB_RDONLY after filesystem errors
-Message-ID: <20240930113434.hhkro4bofhvapwm7@quack3>
-References: <20240805201241.27286-1-jack@suse.cz>
- <Zvp6L+oFnfASaoHl@t14s>
+	s=arc-20240116; t=1727723615; c=relaxed/simple;
+	bh=g9wTua1j7Rm8PkyuL03HXWc8qMSqSE7FD3GXzmwZQGk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Nh9qPWPaSwUQWBXc3KKvJxDfWe3R/QZk/+RYh95ZohrejEf3wKqmeP9vaG7RoZq9R8Xn5T8pnsT8NuAK0bhupBoIzqFOvZDhK9CI11J4SPDkHvWSkqCNZ3lY8ABQ+3ABgtDwYt/tBoZy2OM6etH4oyzg5hw3lI2ROUxV7McZ268=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=gJ/KxS1M; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=u6tZgxkK; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1727723611;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fFBOud7anAZyztkYeQWuXr4vYsC9F6E8D/HPnn/0BOg=;
+	b=gJ/KxS1M9QBiD9jT7XM70vomQS8njPKEUEFPhzAr1j+v8H8tYnKZFu/E0imRNBPUn6wmQM
+	63zxh87CjWjrcX8XeQp2CuaTKNGKsl9Gh0gmWMrzQhGuH5yRH7VBCaPq27hRMG/rtKfC1J
+	NyA1NeSHi1DtWXEDZ1OBlegulrkgvwMNNFLReMPCu6H/lx5aE5d1Jyr+X1asET1BArubpi
+	MzfGQLeV0JIL5UnJsvkdHXulEKCZVIi5t4GHKmVkC0+Qi/oAG5rELQYrnQotOTXfqsMOE8
+	BRCV4t1BqGMBxTZeBO1nDDqTg11Iix2OEul8FtsHI0ok5j2ZOPlfZFTlS2xG8w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1727723611;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fFBOud7anAZyztkYeQWuXr4vYsC9F6E8D/HPnn/0BOg=;
+	b=u6tZgxkKVS2Jwn34typ3Qtq8h/7YSyYXitKctJvkyMHyOED4yEOoKXy+UnCqzMM3x56A1E
+	YX6g2x7VODFL8aBw==
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+ Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
+ <corbet@lwn.net>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J.
+ Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
+ <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Hugh Dickins
+ <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Chuck Lever
+ <chuck.lever@oracle.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-mm@kvack.org, Jeff Layton
+ <jlayton@kernel.org>
+Subject: Re: [PATCH v8 01/11] timekeeping: move multigrain timestamp floor
+ handling into timekeeper
+In-Reply-To: <20240914-mgtime-v8-1-5bd872330bed@kernel.org>
+References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
+ <20240914-mgtime-v8-1-5bd872330bed@kernel.org>
+Date: Mon, 30 Sep 2024 21:13:30 +0200
+Message-ID: <87bk050xb9.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zvp6L+oFnfASaoHl@t14s>
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Spamd-Result: default: False [-4.00 / 50.00];
-	REPLY(-4.00)[]
-X-Spam-Flag: NO
-X-Spam-Score: -4.00
-X-Rspamd-Queue-Id: E582E21A36
-X-Rspamd-Pre-Result: action=no action;
-	module=replies;
-	Message is reply to one we originated
-X-Rspamd-Action: no action
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Level: 
+Content-Type: text/plain
 
-On Mon 30-09-24 12:15:11, Jan Stancek wrote:
-> On Mon, Aug 05, 2024 at 10:12:41PM +0200, Jan Kara wrote:
-> > When the filesystem is mounted with errors=remount-ro, we were setting
-> > SB_RDONLY flag to stop all filesystem modifications. We knew this misses
-> > proper locking (sb->s_umount) and does not go through proper filesystem
-> > remount procedure but it has been the way this worked since early ext2
-> > days and it was good enough for catastrophic situation damage
-> > mitigation. Recently, syzbot has found a way (see link) to trigger
-> > warnings in filesystem freezing because the code got confused by
-> > SB_RDONLY changing under its hands. Since these days we set
-> > EXT4_FLAGS_SHUTDOWN on the superblock which is enough to stop all
-> > filesystem modifications, modifying SB_RDONLY shouldn't be needed. So
-> > stop doing that.
-> > 
-> > Link: https://lore.kernel.org/all/000000000000b90a8e061e21d12f@google.com
-> > Reported-by: Christian Brauner <brauner@kernel.org>
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> > ---
-> > fs/ext4/super.c | 9 +++++----
-> > 1 file changed, 5 insertions(+), 4 deletions(-)
-> > 
-> > Note that this patch introduces fstests failure with generic/459 test because
-> > it assumes that either freezing succeeds or 'ro' is among mount options. But
-> > we fail the freeze with EFSCORRUPTED. This needs fixing in the test but at this
-> > point I'm not sure how exactly.
-> > 
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index e72145c4ae5a..93c016b186c0 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -735,11 +735,12 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
-> > 
-> > 	ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
-> > 	/*
-> > -	 * Make sure updated value of ->s_mount_flags will be visible before
-> > -	 * ->s_flags update
-> > +	 * EXT4_FLAGS_SHUTDOWN was set which stops all filesystem
-> > +	 * modifications. We don't set SB_RDONLY because that requires
-> > +	 * sb->s_umount semaphore and setting it without proper remount
-> > +	 * procedure is confusing code such as freeze_super() leading to
-> > +	 * deadlocks and other problems.
-> > 	 */
-> > -	smp_wmb();
-> > -	sb->s_flags |= SB_RDONLY;
-> 
-> Hi,
-> 
-> shouldn't the SB_RDONLY still be set (in __ext4_remount()) for the case
-> when user triggers the abort with mount(.., "abort")? Because now we seem
-> to always hit the condition that returns EROFS to user-space.
+On Sat, Sep 14 2024 at 13:07, Jeff Layton wrote:
 
-Thanks for report! I agree returning EROFS from the mount although
-'aborting' succeeded is confusing and is mostly an unintended side effect
-that after aborting the fs further changes to mount state are forbidden but
-the testcase additionally wants to remount the fs read-only.
+> For multigrain timestamps, we must keep track of the latest timestamp
+> that has ever been handed out, and never hand out a coarse time below
+> that value.
 
-I don't think forcibly setting SB_RDONLY in this case is good because it
-would still bypass all VFS checks for read-only remount and thus possibly
-causing undesirable surprises (similar to those d3476f3dad4a ("ext4: don't
-set SB_RDONLY after filesystem errors") tried to fix). At this point I'm
-undecided whether __ext4_remount() should just return success after
-aborting the filesystem, ignoring all other mount options, or whether we
-should follow more the old behavior where we still reflect other mount
-options (mostly resulting in cleanup of lazy itable initialization thread,
-mmpd thread and similar).  I'm more leaning towards option 1) but I could
-be convinced otherwise. Ted, what do you think?
+How is that correct when the clock is off by an hour and then set back
+to the correct value? Then you'd get the same stale timestamp for an
+hour unless something invokes ktime_get_real_ts64_mg() which will set
+the "latest" timestamp back to a time before the previous one.
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> Add a static singleton atomic64_t into timekeeper.c that we can use to
+> keep track of the latest fine-grained time ever handed out. This is
+> tracked as a monotonic ktime_t value to ensure that it isn't affected by
+> clock jumps.
+
+That's just wishful thinking.
+
+ktime_get_real_ts64_mg(ts)
+   ts = Tmono_1 + offset_1;   // TReal_1
+   floor = Tmono_1;
+
+                                // newtime < TReal_1                                
+                                clock_settime(REALTIME, newtime);
+                                   xtime = newtime; // TReal_2
+                                   offset_2 = offset_1 + Treal_2 - TReal(now);
+                                   --> offset_2 < offset_1
+
+ktime_get_coarse_real_ts64_mg(ts)
+    ts = tk_xtime();       // TReal_2
+    offs = offset_2;
+
+    if (Tmono_1 + offset_2 > ts)
+       ts = Tmono_1 + offset_2; // Not taken
+
+So this returns T_Real_2 because
+
+    offset_2 < offset_1
+
+and therefore
+
+    Tmono_1 + offset_2 < TReal_2
+
+so the returned time will jump backwards vs. TReal_1 as it should
+because that's the actual time, no?
+
+So if that's the intended behaviour then the changelog is misleading at
+best.
+
+If the intention is to never return a value < TReal_1 then this does not
+work. You can make it work by using the Realtime timestamp as floor, but
+that'd be more than questionable vs. clock_settime() making the clock go
+backwards.
+
+Thanks,
+
+        tglx
 
