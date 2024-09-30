@@ -1,330 +1,127 @@
-Return-Path: <linux-ext4+bounces-4401-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4402-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0DFBB98AEBA
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 22:55:08 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7762098AF36
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 23:35:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2CD4283898
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 20:55:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA7FC1C22CA5
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 21:35:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB651A2540;
-	Mon, 30 Sep 2024 20:55:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5238118454E;
+	Mon, 30 Sep 2024 21:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="0NSLaR9E"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="YgR2fuSG";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OLBn3xaq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33ECB174EF0
-	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 20:54:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6C9EDE;
+	Mon, 30 Sep 2024 21:35:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727729701; cv=none; b=smuwcd16FZSaSCSo4QB+w5Q4S+x4kcNUkppz8TkH06wIE7RAGJZWxxraZe3TlZxcg/oOQBFWV5MsdCcnB0ZGtL0IoorPLXtfbvmnpi74FnuxinCpBtiWID34t7pwW2h1p+PB9HI6Igk92Crkrft9DuhC3ClQ+hfLwdmub0zI2W4=
+	t=1727732117; cv=none; b=naEh++21QmxFDDKo6Dfl0rDBnD3dCjZpaXQgR83FzX6sgU47Fz1pbAkTx3Dmkao9Y2lwFqS04ThIKwpv1B68+WmTcQy29LMYdyodBmfXys3sXzOS+YA3TItpqIBbZedCqYJhhTfpfAtwi75Uym5z99vO8BNFNfGtE3xB3GCVPvE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727729701; c=relaxed/simple;
-	bh=ZHxu4C8/w8jPFgEhcxKtkGhA8TVNZY6PlG+8GJjUOQw=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=mcqbPX5RGw8xg/pTArduueYO1gGjUUZyfzta1EHLzPrqS4zVZUJ3r/uVH+z+owJYUHgRYGYLRiypNQdz/oxT+GJZRUIZPs1DTzQn7VXpxEJoDm9AkytVd9HwSiVDGIpn8KoE4OymNXOzSXDoYL4wOLHklR3fl8W0u6oElnBrh2s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=0NSLaR9E; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7e6cbf6cd1dso3254839a12.3
-        for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 13:54:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1727729697; x=1728334497; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=+tgue5Rg11dHn4d+bT1qvKMjl0uHcOQJ3nuODcEVQvE=;
-        b=0NSLaR9EdP/pLAAkb+e0En1Vzjfng+pSBhQPDrppNh+7TsctgbKIOe1WokFJuORQ3p
-         OUPExz5NEITApqxVgkVp6vnY1IUL5Vt3QY0/EPVjOMTSqFANUT5AR536ni2ZL0A48fdN
-         mL7FKBsrFABmu7yd/VPeYgDb+9sEcRpnOSpSRNpQKWpAhdeIodGI9C545ZjPIagYgnVG
-         ExUx6q2oMA3iMmLLPbLuu6NeqrsGYWaPCASh5Igc0GhoinSt/yxRYtJ0JbIcqL2eTzC3
-         nBlYM9O1Wqf+NAMyqYuhjSOjZrHN8xGVCNvVxyqb43AhcowneyvEK+CtwIeXVonnir7O
-         0+EQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727729697; x=1728334497;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+tgue5Rg11dHn4d+bT1qvKMjl0uHcOQJ3nuODcEVQvE=;
-        b=R66DfjoQP5UIiT2yHUEG2X7fcxpQQK046RHEScZzF+YfhWqv5pVo/tCHr/OH+RVIRI
-         1fE3GQwsn0LFifQnQKKVVzFRjzc4PgV1VLhlHZSq2rl0NXNzZqs7TX/hSCyrP9W104OE
-         8o7OTkR5Libp3KRXJ7PF4DK2hSPyZ55pbc2zpX+wXBIkpGelE2392IMwlxz+eYuzeNEH
-         LKElu0+Dq9ghHGp8h/ZEmWRM1c01BERJ169jbCaqBoAB2GyFvZb+vDk0DJtu20JiLXFZ
-         rxT02jLs9WppkcZqAGTxXhcTfdwxpMtZ434CNMcVc1Scm1qtzhobpndJ1Ccad2wN+GCT
-         A36g==
-X-Forwarded-Encrypted: i=1; AJvYcCVbizbOGSIDMQ/CiMqoW/gNuM/nvcX3qce5rpcF4LckYQkq4Xy2Q7lTYjC0LYELf1dXu2czJymR5TxJ@vger.kernel.org
-X-Gm-Message-State: AOJu0YynhW2f8dkoU5u6Gl+kPkWp/KsJhFJo1EEE9ofJyuHfw/78i9iV
-	Az2E3cBfnFal4WCr1tnxaUD4WjPc7WNtsmMGvsv+ttr+yF0Be20aSB3kVw6L9gYLV8tmp6m+UJG
-	t
-X-Google-Smtp-Source: AGHT+IE/I1s/URvp6DKXYunpuaXhxZ2mqhIfPSDZs2QgKZmSyES5BJcxw1E57y8lLXz8ZVyTbctEfw==
-X-Received: by 2002:a05:6a21:3a87:b0:1d3:1d42:3f57 with SMTP id adf61e73a8af0-1d4fa7d1639mr16792263637.50.1727729697429;
-        Mon, 30 Sep 2024 13:54:57 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71b265181f9sm6659890b3a.133.2024.09.30.13.54.56
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Mon, 30 Sep 2024 13:54:56 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <C833DBDC-CBEE-4A98-A42E-E39CE2333037@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1727732117; c=relaxed/simple;
+	bh=dxuL2+8ZVHuUyZGDZyBs/XcF0TJ+A4SDCBg5GNm49/8=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=QoGacCURkZJ84TA7yV+AECPhkWqYMUcLtIoI8OjAlrnRLO8G2LgMQuDTiQ7jvBmSdyfF5pwSL4nIoEp0mjHLNeo5a2j2c4kNl+gxcpWsCg27c5ZqaxzjdgOUALM0kRN9/7KBNW+zADvEmZItFf8GZ7QEqNKtDI7Z25ExrKPnyE8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=YgR2fuSG; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OLBn3xaq; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1727732113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uVbdFg6I8fwu/3AqZyEvbGS1WvCMLB3EhLlpsNhR5nI=;
+	b=YgR2fuSGQ+1CC0G5H4MzE4t8olbAFU5BafUyaLxjF2QIjTs3UbzCwwk7QvMFHeeLW8vuY5
+	HIuz05kBaI+PAU5kDbE9O5ysw0ZigkKVd+8BT9ZePG9tf2kJcuF4pv35EhkZ99cPbhVZbC
+	GQ7Jjbx9vgE0Rcx85zIefGMO0cL2dvmr4gN0aD9m2NtQeKfb7b8TsCdFADjl1RJyD/x6T5
+	2c0wF9l6tXZjPe+9VRbHHcVyeREQUnQ1EWRZc+6eA8hsmw0RLjF4PEs0g0/Gf5TgScX/Mf
+	xmwiJC8MCArfDFIIe+35ZCXxip+JZBfa+y8nD1s/uIVBn02yxnXIdg3SaXmy3A==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1727732113;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=uVbdFg6I8fwu/3AqZyEvbGS1WvCMLB3EhLlpsNhR5nI=;
+	b=OLBn3xaqldkwQyCXLWWfC5gXBWhLeCEwb2syNUFGVZ4mPsvyd455m2aCZBRPk2SHmQTkzb
+	bQfsnyFmm/fDZ2Dg==
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+ Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
+ <corbet@lwn.net>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J.
+ Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
+ <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, Hugh Dickins
+ <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Chuck Lever
+ <chuck.lever@oracle.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-mm@kvack.org
+Subject: Re: [PATCH v8 01/11] timekeeping: move multigrain timestamp floor
+ handling into timekeeper
+In-Reply-To: <79a32ab9308d6e63e066aa17c5c2492b51b55850.camel@kernel.org>
+References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
+ <20240914-mgtime-v8-1-5bd872330bed@kernel.org> <87a5g79aag.ffs@tglx>
+ <874j6f99dg.ffs@tglx>
+ <b300fec8b6f611662195e0339f290d473a41607c.camel@kernel.org>
+ <878qv90x6w.ffs@tglx>
+ <4933075b1023f466edb516e86608e0938de28c1d.camel@kernel.org>
+ <87y138zyfu.ffs@tglx>
+ <79a32ab9308d6e63e066aa17c5c2492b51b55850.camel@kernel.org>
+Date: Mon, 30 Sep 2024 23:35:13 +0200
+Message-ID: <87plokzuy6.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v2] ext4: prevent data-race that occur when read/write
- ext4_group_desc structure members
-Date: Mon, 30 Sep 2024 14:54:54 -0600
-In-Reply-To: <20240920150013.2447-1-aha310510@gmail.com>
-Cc: Theodore Ts'o <tytso@mit.edu>,
- akpm@osdl.org,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-To: Jeongjun Park <aha310510@gmail.com>
-References: <20240920150013.2447-1-aha310510@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Type: text/plain
 
+On Mon, Sep 30 2024 at 16:53, Jeff Layton wrote:
+> On Mon, 2024-09-30 at 22:19 +0200, Thomas Gleixner wrote:
+>> On Mon, Sep 30 2024 at 15:37, Jeff Layton wrote:
+>> > If however, two threads have racing syscalls that overlap in time, then there                       
+>> > is no such guarantee, and the second file may appear to have been modified                          
+>> > before, after or at the same time as the first, regardless of which one was                         
+>> > submitted first.
+>> 
+>> That makes me ask a question. Are the timestamps always taken in thread
+>> (syscall) context or can they be taken in other contexts (worker,
+>> [soft]interrupt, etc.) too?
+>> 
+>
+> That's a good question.
+>
+> The main place we do this is inode_set_ctime_current(). That is mostly
+> called in the context of a syscall or similar sort of operation
+> (io_uring, nfsd RPC request, etc.).
+>
+> I certainly wouldn't rule out a workqueue job calling that function,
+> but this is something we do while dirtying an inode, and that's not
+> typically done in interrupt context.
 
---Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+The reason I'm asking is that if it's always syscall context,
+i.e. write() or io_uring()/RPC request etc., then you can avoid the
+whole global floor value dance and make it strictly per thread, which
+simplifies the exercise significantly.
 
-On Sep 20, 2024, at 9:00 AM, Jeongjun Park <aha310510@gmail.com> wrote:
->=20
-> Currently, data-race like [1] occur in fs/ext4/ialloc.c
->=20
-> find_group_other() and find_group_orlov() read multiple ext4_groups =
-but
-> do not protect them with locks, which causes data-race. I think it =
-would
-> be appropriate to add ext4_lock_group() at an appropriate location to =
-solve
-> this.
->=20
-> [1]
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KCSAN: data-race in ext4_free_inodes_count / ext4_free_inodes_set
->=20
-> write to 0xffff88810404300e of 2 bytes by task 6254 on cpu 1:
-> ext4_free_inodes_set+0x1f/0x80 fs/ext4/super.c:405
-> __ext4_new_inode+0x15ca/0x2200 fs/ext4/ialloc.c:1216
-> ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
-> vfs_symlink+0xca/0x1d0 fs/namei.c:4615
-> do_symlinkat+0xe3/0x340 fs/namei.c:4641
-> __do_sys_symlinkat fs/namei.c:4657 [inline]
-> __se_sys_symlinkat fs/namei.c:4654 [inline]
-> __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
-> x64_sys_call+0x1dda/0x2d60 =
-arch/x86/include/generated/asm/syscalls_64.h:267
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x76/0x7e
->=20
-> read to 0xffff88810404300e of 2 bytes by task 6257 on cpu 0:
-> ext4_free_inodes_count+0x1c/0x80 fs/ext4/super.c:349
-> find_group_other fs/ext4/ialloc.c:594 [inline]
-> __ext4_new_inode+0x6ec/0x2200 fs/ext4/ialloc.c:1017
-> ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
-> vfs_symlink+0xca/0x1d0 fs/namei.c:4615
-> do_symlinkat+0xe3/0x340 fs/namei.c:4641
-> __do_sys_symlinkat fs/namei.c:4657 [inline]
-> __se_sys_symlinkat fs/namei.c:4654 [inline]
-> __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
-> x64_sys_call+0x1dda/0x2d60 =
-arch/x86/include/generated/asm/syscalls_64.h:267
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x76/0x7e
->=20
-> value changed: 0x185c -> 0x185b
+But even if it's not syscall/thread context then the worker or io_uring
+state machine might just require to serialize against itself and not
+coordinate with something else. But what do I know.
 
-I see now after you sent this patch that all of these cases are for
-read-only access to the free inodes count, which doesn't really
-matter if the value is racy.  These values are only used in heuristics
-for block group selection, and if the value is wrong then creating a
-new subdirectory may be in a different group, but that doesn't make
-much difference.
+Thanks,
 
-It looks like the write side of all these accesses are already under
-ext4_group_lock(), so the code is actually correct and not in danger
-of two threads updating bg_free_inodes_count_lo/hi inconsistently.
-
-We probably *do not* want locking in the read case, as it will cause
-unnecessary lock contention scanning groups for subdirectory allocation.
-
-My suggestion at this point would be to go back to using READ_ONCE() and
-WRITE_ONCE() in ext4_free_inodes_count()/ext4_free_inodes_set() like in
-your original patch. but *only* for functions used by find_group_*(). We
-want to be warned by KASAN if any of the other fields are accessed =
-without
-a proper ext4_group_lock(), since READ_ONCE()/WRITE_ONCE() does not fix
-_lo/_hi tearing.
-
-It probably also makes sense to add comments to all of these functions
-that they should hold ext4_group_lock() for access/updates, *except*
-ext4_free_inodes_count() can be called to read the inode count without =
-it
-if the result does not need to be totally accurate.
-
-Cheers, Andreas
-
-> Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
-> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
-> ---
-> fs/ext4/ialloc.c | 27 ++++++++++++++++++++++++---
-> 1 file changed, 24 insertions(+), 3 deletions(-)
->=20
-> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-> index 9dfd768ed9f8..5cae247ff21f 100644
-> --- a/fs/ext4/ialloc.c
-> +++ b/fs/ext4/ialloc.c
-> @@ -500,11 +500,14 @@ static int find_group_orlov(struct super_block =
-*sb, struct inode *parent,
-> 		for (i =3D 0; i < flex_size; i++) {
-> 			if (grp+i >=3D real_ngroups)
-> 				break;
-> +			ext4_lock_group(sb, grp+i);
-> 			desc =3D ext4_get_group_desc(sb, grp+i, NULL);
-> 			if (desc && ext4_free_inodes_count(sb, desc)) {
-> 				*group =3D grp+i;
-> +				ext4_unlock_group(sb, grp+i);
-> 				return 0;
-> 			}
-> +			ext4_unlock_group(sb, grp+i);
-> 		}
-> 		goto fallback;
-> 	}
-> @@ -544,14 +547,17 @@ static int find_group_orlov(struct super_block =
-*sb, struct inode *parent,
-> 	parent_group =3D EXT4_I(parent)->i_block_group;
-> 	for (i =3D 0; i < ngroups; i++) {
-> 		grp =3D (parent_group + i) % ngroups;
-> +		ext4_lock_group(sb, grp);
-> 		desc =3D ext4_get_group_desc(sb, grp, NULL);
-> 		if (desc) {
-> 			grp_free =3D ext4_free_inodes_count(sb, desc);
-> 			if (grp_free && grp_free >=3D avefreei) {
-> 				*group =3D grp;
-> +				ext4_unlock_group(sb, grp);
-> 				return 0;
-> 			}
-> 		}
-> +		ext4_unlock_group(sb, grp);
-> 	}
->=20
-> 	if (avefreei) {
-> @@ -590,11 +596,14 @@ static int find_group_other(struct super_block =
-*sb, struct inode *parent,
-> 		if (last > ngroups)
-> 			last =3D ngroups;
-> 		for  (i =3D parent_group; i < last; i++) {
-> +			ext4_lock_group(sb, i);
-> 			desc =3D ext4_get_group_desc(sb, i, NULL);
-> 			if (desc && ext4_free_inodes_count(sb, desc)) {
-> 				*group =3D i;
-> +				ext4_unlock_group(sb, i);
-> 				return 0;
-> 			}
-> +			ext4_unlock_group(sb, i);
-> 		}
-> 		if (!retry && EXT4_I(parent)->i_last_alloc_group !=3D =
-~0) {
-> 			retry =3D 1;
-> @@ -616,10 +625,14 @@ static int find_group_other(struct super_block =
-*sb, struct inode *parent,
-> 	 * Try to place the inode in its parent directory
-> 	 */
-> 	*group =3D parent_group;
-> +	ext4_lock_group(sb, *group);
-> 	desc =3D ext4_get_group_desc(sb, *group, NULL);
-> 	if (desc && ext4_free_inodes_count(sb, desc) &&
-> -	    ext4_free_group_clusters(sb, desc))
-> +	    ext4_free_group_clusters(sb, desc)) {
-> +		ext4_unlock_group(sb, *group);
-> 		return 0;
-> +	}
-> +	ext4_unlock_group(sb, *group);
->=20
-> 	/*
-> 	 * We're going to place this inode in a different blockgroup =
-from its
-> @@ -640,10 +653,14 @@ static int find_group_other(struct super_block =
-*sb, struct inode *parent,
-> 		*group +=3D i;
-> 		if (*group >=3D ngroups)
-> 			*group -=3D ngroups;
-> +		ext4_lock_group(sb, *group);
-> 		desc =3D ext4_get_group_desc(sb, *group, NULL);
-> 		if (desc && ext4_free_inodes_count(sb, desc) &&
-> -		    ext4_free_group_clusters(sb, desc))
-> +		    ext4_free_group_clusters(sb, desc)) {
-> +			ext4_unlock_group(sb, *group);
-> 			return 0;
-> +		}
-> +		ext4_unlock_group(sb, *group);
-> 	}
->=20
-> 	/*
-> @@ -654,9 +671,13 @@ static int find_group_other(struct super_block =
-*sb, struct inode *parent,
-> 	for (i =3D 0; i < ngroups; i++) {
-> 		if (++*group >=3D ngroups)
-> 			*group =3D 0;
-> +		ext4_lock_group(sb, *group);
-> 		desc =3D ext4_get_group_desc(sb, *group, NULL);
-> -		if (desc && ext4_free_inodes_count(sb, desc))
-> +		if (desc && ext4_free_inodes_count(sb, desc)) {
-> +			ext4_unlock_group(sb, *group);
-> 			return 0;
-> +		}
-> +		ext4_unlock_group(sb, *group);
-> 	}
->=20
-> 	return -1;
-> --
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmb7EB4ACgkQcqXauRfM
-H+BW6Q//QAcANtiUgP6xjrr5Dx/8Tpv3LFfO5qgC7jJIu0S04302mPMSZGu0g6s0
-nAFWDpnO6tcQ9/tqUF5aPuaTfX+KxCJ14nJGlfy+IUeqSfjrNLkbIJzXSwQusPRj
-CxN0XuWQvfpi4kDov+g6JtFpWu4plDcLedr64fjlEbykgb4tAXxAMNrsEEfXHvPv
-8bg8pKHDtH2puwgxfJGI6tcRLUI80I/PrPSO0/GPBaUmNBKGnMVvEmQffX6ZWfJM
-/Zf6eMNzMn9oSCdlTfgi5XzvgAC1Q8PHZKnZqwWStPrVag9LzASIkJFE0zXifiBS
-d+ABku+/4/gv3y5a2GDAfEK29KEEzvX9GT5vMIQ4425wmcS2mqpVxLq4VxIQb52O
-QGOeRLnnaafc2oeiuhmEA7xxQLLcFc+VuwxSC/q1JKXcx2JSqAaLNuAZ2GDD5wcy
-gpaBsk8omXb6FXISYrBli1hk1Toyl6KBGlGRLgZ2TYr3vRN/xODtx1DcVAllx4vs
-ZLuw7EinzlnmKwYUy8PT92xkgioJ4a80ocHKjL5VTJSdbvTO1riFpuswR020v7+S
-+vfZvaPsCkY3ru220Bc4//PV3m4CGiLq9ABZRy0ZXBZtwKU6XXRtHMFwUUg1wp2s
-2IcIr8sJs5FwALnxU6Iu/fGLh/CkPouFhie6DI2XChxcplcZwKw=
-=4uax
------END PGP SIGNATURE-----
-
---Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357--
+        tglx
 
