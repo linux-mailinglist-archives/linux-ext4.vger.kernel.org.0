@@ -1,47 +1,47 @@
-Return-Path: <linux-ext4+bounces-4393-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4394-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E921598ACE9
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 21:28:50 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C1D198AD00
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 21:37:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0AC0C282836
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 19:28:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0D9B5282DF9
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 19:37:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF235199FCD;
-	Mon, 30 Sep 2024 19:27:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 362CE199EB0;
+	Mon, 30 Sep 2024 19:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AK0TAJUJ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kipEP3JE"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B8B192D91;
-	Mon, 30 Sep 2024 19:27:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A36A114F9D9;
+	Mon, 30 Sep 2024 19:37:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727724434; cv=none; b=K90MnHf0vFOgboOC4rMeoVkddNpWxid13MKEIdP2AsIUzoP6SNS/h1qIhZO8BeZaY4+CvL5u1ZKZ7yxb3ER00ijfbTDcBGXNEfM7UwzPq12Uk19Vp98/acxSr8oIwDRVJ24sTgMaw2sHbhS+XWu09IRnUBckFC9g5I9qgKthtIM=
+	t=1727725038; cv=none; b=V8wCYg6JiJcSP7ikjc8Iua/9Tp7YmM3HY0NKR/8x79VIHdBBFr7DKEMIjoIgEw8wyqu0MsjvUCFAXmb0HHjKtB07ZrrMc9+8VGpz/YRExHSnUppibGB6S17vPjmWBnb4w4iR2ZdWM5k4LvtCeJPBdKZptv0StkwTUgbkJ2o3++8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727724434; c=relaxed/simple;
-	bh=/5wXr1oh9gufFfSYG1R2hwOhkyVnx3BomvZ9/lVLzIo=;
+	s=arc-20240116; t=1727725038; c=relaxed/simple;
+	bh=AUTU96iyYXkfHgK0dTxI/fkVIV97CDq1YiK27OAFx6Y=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=eSfTvdvdGTfuhrVzTn/gQ6oiHfyX3h8XB+Alf+E9sponCIOa/3Zu+WvDjs8v548zqj9aHJNdL/AKjQSZcuBHu837M+C/sn+aSEvprC1kLaHW8fxnq5axCYTHos5e4bxQ3y0ZyG5GfBqq1hbFmGLtdQI353B7ZJ8ZVKEgGWHytKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AK0TAJUJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB838C4CED4;
-	Mon, 30 Sep 2024 19:27:10 +0000 (UTC)
+	 Content-Type:MIME-Version; b=qGI+3Wtw6fDj8nlu1UvALXqZJpVTmC0y05Bt6Jdh2zP1bpmhTrf0w8OufmEesba4ZOTx/P+uzh3bkEbZBTpLR31HeZv2g/MViF60YlfdrZ70v5ltKbSHzKdMvJ3qp3W7MkaaRYIxSgqmYBF1tzcsJwzVnQPGxXhzk187LLwW8sI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kipEP3JE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AEB25C4CEC7;
+	Mon, 30 Sep 2024 19:37:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727724433;
-	bh=/5wXr1oh9gufFfSYG1R2hwOhkyVnx3BomvZ9/lVLzIo=;
+	s=k20201202; t=1727725038;
+	bh=AUTU96iyYXkfHgK0dTxI/fkVIV97CDq1YiK27OAFx6Y=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=AK0TAJUJM3Xv49IK6XGCyH92xhnwOY2zorCgMuKqi+LttdoItINQPDXlkzdwHxTTF
-	 CLLSCLIMEFRGMUXv9UYBGiBlmrL8MbgXPcxfP5IDpuguKrlrFxv1SKZ1fzRn5zOEY5
-	 6UlP24HTWIqyztmoECd5Z9pVkRSUdK/gSGRoPtvtJeHiyOkMQtsXkugqw001yq2Hmo
-	 1rtFHzZfZta+4ulA1KQzQCfkRIylvZQdE2xUJb1YDXeCpGvZO0Uo6E0HeHQhS2Ilg2
-	 IYLG8kBdyBQuhxHl8oP28QoJIK5BNZqQD+D8GxQ/64pdwvtLjigDbEsUJ+bSr2L1/B
-	 uYtSEDnDhz2pQ==
-Message-ID: <753938ef8e46e9f3d9ea7d977537cd8f5a6533b2.camel@kernel.org>
+	b=kipEP3JEc3TcWuF4vydlPebTPQQ04LTIeRGzHif9UywdJDOTEIjWFIlbPXaCE6M71
+	 YDl/98QtodAXktgxMmV6vskAmIYSVofi8HDWkQtUQrV0QaI81TsTdGYASLh8TusI4z
+	 vUFCQF65pw1pIBb9RQA5pE++2wuls/BcVdVfgN3wz5DDPVuzgxepELmcLk8zKL4DtG
+	 FF5nUn+YK7yPzk0HQfM3L23JdXsJ54XMRHFop0DT1Mlvv0wWEi3vXWnUJEyRgDa4xo
+	 Kwzho+cGca4raHNlB0IGaXX9PYVpxKBAMMTVshtIn0reot+LkHvtZlJuKjPZ3Fn8X3
+	 hBNPmdfQVj5Qg==
+Message-ID: <4933075b1023f466edb516e86608e0938de28c1d.camel@kernel.org>
 Subject: Re: [PATCH v8 01/11] timekeeping: move multigrain timestamp floor
  handling into timekeeper
 From: Jeff Layton <jlayton@kernel.org>
@@ -61,10 +61,13 @@ Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org,
  linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
  linux-ext4@vger.kernel.org,  linux-btrfs@vger.kernel.org,
  linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Date: Mon, 30 Sep 2024 15:27:09 -0400
-In-Reply-To: <87bk050xb9.ffs@tglx>
+Date: Mon, 30 Sep 2024 15:37:14 -0400
+In-Reply-To: <878qv90x6w.ffs@tglx>
 References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
-	 <20240914-mgtime-v8-1-5bd872330bed@kernel.org> <87bk050xb9.ffs@tglx>
+	 <20240914-mgtime-v8-1-5bd872330bed@kernel.org> <87a5g79aag.ffs@tglx>
+	 <874j6f99dg.ffs@tglx>
+	 <b300fec8b6f611662195e0339f290d473a41607c.camel@kernel.org>
+	 <878qv90x6w.ffs@tglx>
 Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw
  n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv
@@ -149,80 +152,83 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Mon, 2024-09-30 at 21:13 +0200, Thomas Gleixner wrote:
-> On Sat, Sep 14 2024 at 13:07, Jeff Layton wrote:
+On Mon, 2024-09-30 at 21:16 +0200, Thomas Gleixner wrote:
+> On Mon, Sep 16 2024 at 06:57, Jeff Layton wrote:
+> > On Mon, 2024-09-16 at 12:32 +0200, Thomas Gleixner wrote:
+> > > > 'Something has changed' is a truly understandable technical
+> > > > explanation.
+> > >=20
+> > >      old =3D mg_floor
+> > >                                 mono =3D T1;
+> > >                                 mg_floor =3D mono
+> > > preemption
+> > >=20
+> > >      do {
+> > >         mono =3D T2;
+> > >      }
+> > >=20
+> > >      cmpxchg fails and the function returns a value based on T1
+> > >=20
+> > > No?
+> > >=20
+> > >=20
+> >=20
+> > Packing for LPC, so I can't respond to all of these just now, but I
+> > will later. You're correct, but either outcome is OK.
+> >=20
+> > The requirement is that we don't hand out any values that were below
+> > the floor at the time that the task entered the kernel. Since the time
+> > changed while the task was already inside the kernel, either T1 or T2
+> > would be valid timestamps.
 >=20
-> > For multigrain timestamps, we must keep track of the latest timestamp
-> > that has ever been handed out, and never hand out a coarse time below
-> > that value.
->=20
-> How is that correct when the clock is off by an hour and then set back
-> to the correct value? Then you'd get the same stale timestamp for an
-> hour unless something invokes ktime_get_real_ts64_mg() which will set
-> the "latest" timestamp back to a time before the previous one.
->
-> > Add a static singleton atomic64_t into timekeeper.c that we can use to
-> > keep track of the latest fine-grained time ever handed out. This is
-> > tracked as a monotonic ktime_t value to ensure that it isn't affected b=
-y
-> > clock jumps.
->=20
-> That's just wishful thinking.
->=20
-> ktime_get_real_ts64_mg(ts)
->    ts =3D Tmono_1 + offset_1;   // TReal_1
->    floor =3D Tmono_1;
->=20
->                                 // newtime < TReal_1                     =
-          =20
->                                 clock_settime(REALTIME, newtime);
->                                    xtime =3D newtime; // TReal_2
->                                    offset_2 =3D offset_1 + Treal_2 - TRea=
-l(now);
->                                    --> offset_2 < offset_1
->=20
-> ktime_get_coarse_real_ts64_mg(ts)
->     ts =3D tk_xtime();       // TReal_2
->     offs =3D offset_2;
->=20
->     if (Tmono_1 + offset_2 > ts)
->        ts =3D Tmono_1 + offset_2; // Not taken
->=20
-> So this returns T_Real_2 because
->=20
->     offset_2 < offset_1
->=20
-> and therefore
->=20
->     Tmono_1 + offset_2 < TReal_2
->=20
-> so the returned time will jump backwards vs. TReal_1 as it should
-> because that's the actual time, no?
->=20
-> So if that's the intended behaviour then the changelog is misleading at
-> best.
->=20
-> If the intention is to never return a value < TReal_1 then this does not
-> work. You can make it work by using the Realtime timestamp as floor, but
-> that'd be more than questionable vs. clock_settime() making the clock go
-> backwards.
+> That really needs to be documented. A similar scenario exists
+> vs. ktime_get_coarse_real_ts64_mg().
 >=20
 
-That is the intended behavior and I'll plan to fix the changelog to
-clarify this point:
+Yes.
 
-If someone jumps the realtime clock backward by a large value, then the
-realtime timestamp _can_ appear to go backward. This is a problem today
-even without this patchset.
+I have the following section in the multigrain-ts.rst file that gets
+added in patch 7 of this series. I'll also plan to add some extra
+wording about how backward realtime clock jumps can affect ordering:
 
-If two files get stamped and a realtime clock jump backward happens in
-between them, all bets are off as to which one will appear to have been
-modified first. I don't think that is something we can reasonably
-prevent, since we must stamp files according to the realtime clock.
+Inode Timestamp Ordering
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
 
-The main thing I'm trying to prevent is the timestamps being misordered
-in the absence of such a clock jump. Without tracking the floor as I am
-here, that's a possibility.
+In addition to providing info about changes to individual files, file      =
+                   =20
+timestamps also serve an important purpose in applications like "make". The=
+se                      =20
+programs measure timestamps in order to determine whether source files migh=
+t be                    =20
+newer than cached objects.                                                 =
+                        =20
+
+Userland applications like make can only determine ordering based on       =
+                        =20
+operational boundaries. For a syscall those are the syscall entry and exit =
+                        =20
+points. For io_uring or nfsd operations, that's the request submission and =
+                        =20
+response. In the case of concurrent operations, userland can make no       =
+                        =20
+determination about the order in which things will occur.
+
+For instance, if a single thread modifies one file, and then another file i=
+n                       =20
+sequence, the second file must show an equal or later mtime than the first.=
+ The                    =20
+same is true if two threads are issuing similar operations that do not over=
+lap                     =20
+in time.
+
+If however, two threads have racing syscalls that overlap in time, then the=
+re                      =20
+is no such guarantee, and the second file may appear to have been modified =
+                        =20
+before, after or at the same time as the first, regardless of which one was=
+                        =20
+submitted first.
+
 --=20
 Jeff Layton <jlayton@kernel.org>
 
