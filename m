@@ -1,224 +1,330 @@
-Return-Path: <linux-ext4+bounces-4400-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4401-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F6D198AEB5
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 22:53:20 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0DFBB98AEBA
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 22:55:08 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DA881F23EEE
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 20:53:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2CD4283898
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 20:55:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE56A1A2551;
-	Mon, 30 Sep 2024 20:53:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB651A2540;
+	Mon, 30 Sep 2024 20:55:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pbWigjOl"
+	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="0NSLaR9E"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46D95174EF0;
-	Mon, 30 Sep 2024 20:53:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33ECB174EF0
+	for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 20:54:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727729588; cv=none; b=p0EsnO6VMSXEwl//ZnudapDYM6viKtdPYlhgG4RlUCI3J+WFIq4hFJwxgmUnXieU90eRDoMDnZiVOzSv2G4WYsijIatMQlCXCsWzQgnDe9spsxLVVY4H4/Rw0eDQ5y70e2SNMso2LEUlz88nDDmiLQczCOXUiE6gCnc8b3unZMo=
+	t=1727729701; cv=none; b=smuwcd16FZSaSCSo4QB+w5Q4S+x4kcNUkppz8TkH06wIE7RAGJZWxxraZe3TlZxcg/oOQBFWV5MsdCcnB0ZGtL0IoorPLXtfbvmnpi74FnuxinCpBtiWID34t7pwW2h1p+PB9HI6Igk92Crkrft9DuhC3ClQ+hfLwdmub0zI2W4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727729588; c=relaxed/simple;
-	bh=vlbOwfejgzFyaPx+89o1KS6bbtm/N5DTnVSx2O4DToM=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=DvbbLfFFjw16ntlfRpB4zi36Z7ANvs8DIg5DQAOHhMnMJSy5UBQWJG8kfYwoTqzYQL/06EWVWnA1O06urelYyIp1nBoStfMMyL6a95hTplpOMaRJUelEU8r6UkrV7fvRwEj1b8r4g5pzu4GLa3EhaG9QrDTYKYp72UVPCorx1mA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pbWigjOl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D64BC4CEC7;
-	Mon, 30 Sep 2024 20:53:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727729587;
-	bh=vlbOwfejgzFyaPx+89o1KS6bbtm/N5DTnVSx2O4DToM=;
-	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=pbWigjOlhOy/R7X2peSZZsa09l/9riJ7oXPC7ttPSebGdV0/tdn6b6UTxvoYgR5NH
-	 SwkvYZVm6yvR5woy59UJ5u06uaKrM7oUVgTp3yhTHEV9U+942t3v90zOYjMgl2ittz
-	 6atbWTVO6oAjkM6KPYbz4p88SYg/Ap/Hbsm3CZBU9tILdBIeVdZhjZ9mV9cE51rW8y
-	 s92tFtqYV29HblqnxCP862JmzEHmS3x+MXj4nylSJKTnaZEOXtyZ6irzz6p1hUOK9e
-	 hCK8HyfqqhUrBLbXXqZUTChFM3UXfuiukl3uX5Fjul24tnDcfglbR0PSIoLcpV4lpP
-	 TqAVyeOnX4QwQ==
-Message-ID: <79a32ab9308d6e63e066aa17c5c2492b51b55850.camel@kernel.org>
-Subject: Re: [PATCH v8 01/11] timekeeping: move multigrain timestamp floor
- handling into timekeeper
-From: Jeff Layton <jlayton@kernel.org>
-To: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, 
- Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
- Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
- <corbet@lwn.net>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J.
- Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
- <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
- <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,  Hugh Dickins
- <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Chuck Lever
- <chuck.lever@oracle.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org, 
- linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
- linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
- linux-ext4@vger.kernel.org,  linux-btrfs@vger.kernel.org,
- linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Date: Mon, 30 Sep 2024 16:53:04 -0400
-In-Reply-To: <87y138zyfu.ffs@tglx>
-References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
-	 <20240914-mgtime-v8-1-5bd872330bed@kernel.org> <87a5g79aag.ffs@tglx>
-	 <874j6f99dg.ffs@tglx>
-	 <b300fec8b6f611662195e0339f290d473a41607c.camel@kernel.org>
-	 <878qv90x6w.ffs@tglx>
-	 <4933075b1023f466edb516e86608e0938de28c1d.camel@kernel.org>
-	 <87y138zyfu.ffs@tglx>
-Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
- keydata=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
- QZIQXVeAA+smfTT0tDrisj1U5x6ZB9b3nBg65kc=
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.52.4 (3.52.4-1.fc40) 
+	s=arc-20240116; t=1727729701; c=relaxed/simple;
+	bh=ZHxu4C8/w8jPFgEhcxKtkGhA8TVNZY6PlG+8GJjUOQw=;
+	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
+	 In-Reply-To:Cc:To:References; b=mcqbPX5RGw8xg/pTArduueYO1gGjUUZyfzta1EHLzPrqS4zVZUJ3r/uVH+z+owJYUHgRYGYLRiypNQdz/oxT+GJZRUIZPs1DTzQn7VXpxEJoDm9AkytVd9HwSiVDGIpn8KoE4OymNXOzSXDoYL4wOLHklR3fl8W0u6oElnBrh2s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=0NSLaR9E; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-7e6cbf6cd1dso3254839a12.3
+        for <linux-ext4@vger.kernel.org>; Mon, 30 Sep 2024 13:54:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1727729697; x=1728334497; darn=vger.kernel.org;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=+tgue5Rg11dHn4d+bT1qvKMjl0uHcOQJ3nuODcEVQvE=;
+        b=0NSLaR9EdP/pLAAkb+e0En1Vzjfng+pSBhQPDrppNh+7TsctgbKIOe1WokFJuORQ3p
+         OUPExz5NEITApqxVgkVp6vnY1IUL5Vt3QY0/EPVjOMTSqFANUT5AR536ni2ZL0A48fdN
+         mL7FKBsrFABmu7yd/VPeYgDb+9sEcRpnOSpSRNpQKWpAhdeIodGI9C545ZjPIagYgnVG
+         ExUx6q2oMA3iMmLLPbLuu6NeqrsGYWaPCASh5Igc0GhoinSt/yxRYtJ0JbIcqL2eTzC3
+         nBlYM9O1Wqf+NAMyqYuhjSOjZrHN8xGVCNvVxyqb43AhcowneyvEK+CtwIeXVonnir7O
+         0+EQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1727729697; x=1728334497;
+        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=+tgue5Rg11dHn4d+bT1qvKMjl0uHcOQJ3nuODcEVQvE=;
+        b=R66DfjoQP5UIiT2yHUEG2X7fcxpQQK046RHEScZzF+YfhWqv5pVo/tCHr/OH+RVIRI
+         1fE3GQwsn0LFifQnQKKVVzFRjzc4PgV1VLhlHZSq2rl0NXNzZqs7TX/hSCyrP9W104OE
+         8o7OTkR5Libp3KRXJ7PF4DK2hSPyZ55pbc2zpX+wXBIkpGelE2392IMwlxz+eYuzeNEH
+         LKElu0+Dq9ghHGp8h/ZEmWRM1c01BERJ169jbCaqBoAB2GyFvZb+vDk0DJtu20JiLXFZ
+         rxT02jLs9WppkcZqAGTxXhcTfdwxpMtZ434CNMcVc1Scm1qtzhobpndJ1Ccad2wN+GCT
+         A36g==
+X-Forwarded-Encrypted: i=1; AJvYcCVbizbOGSIDMQ/CiMqoW/gNuM/nvcX3qce5rpcF4LckYQkq4Xy2Q7lTYjC0LYELf1dXu2czJymR5TxJ@vger.kernel.org
+X-Gm-Message-State: AOJu0YynhW2f8dkoU5u6Gl+kPkWp/KsJhFJo1EEE9ofJyuHfw/78i9iV
+	Az2E3cBfnFal4WCr1tnxaUD4WjPc7WNtsmMGvsv+ttr+yF0Be20aSB3kVw6L9gYLV8tmp6m+UJG
+	t
+X-Google-Smtp-Source: AGHT+IE/I1s/URvp6DKXYunpuaXhxZ2mqhIfPSDZs2QgKZmSyES5BJcxw1E57y8lLXz8ZVyTbctEfw==
+X-Received: by 2002:a05:6a21:3a87:b0:1d3:1d42:3f57 with SMTP id adf61e73a8af0-1d4fa7d1639mr16792263637.50.1727729697429;
+        Mon, 30 Sep 2024 13:54:57 -0700 (PDT)
+Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-71b265181f9sm6659890b3a.133.2024.09.30.13.54.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Mon, 30 Sep 2024 13:54:56 -0700 (PDT)
+From: Andreas Dilger <adilger@dilger.ca>
+Message-Id: <C833DBDC-CBEE-4A98-A42E-E39CE2333037@dilger.ca>
+Content-Type: multipart/signed;
+ boundary="Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
+Subject: Re: [PATCH v2] ext4: prevent data-race that occur when read/write
+ ext4_group_desc structure members
+Date: Mon, 30 Sep 2024 14:54:54 -0600
+In-Reply-To: <20240920150013.2447-1-aha310510@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ akpm@osdl.org,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+To: Jeongjun Park <aha310510@gmail.com>
+References: <20240920150013.2447-1-aha310510@gmail.com>
+X-Mailer: Apple Mail (2.3273)
 
-On Mon, 2024-09-30 at 22:19 +0200, Thomas Gleixner wrote:
-> On Mon, Sep 30 2024 at 15:37, Jeff Layton wrote:
-> > On Mon, 2024-09-30 at 21:16 +0200, Thomas Gleixner wrote:
-> > I have the following section in the multigrain-ts.rst file that gets
-> > added in patch 7 of this series. I'll also plan to add some extra
-> > wording about how backward realtime clock jumps can affect ordering:
+
+--Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain;
+	charset=us-ascii
+
+On Sep 20, 2024, at 9:00 AM, Jeongjun Park <aha310510@gmail.com> wrote:
 >=20
-> Please also add comments into the code / interface.
+> Currently, data-race like [1] occur in fs/ext4/ialloc.c
 >=20
-
-Will do.
-
-> > Inode Timestamp Ordering
-> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D
-> >=20
-> > In addition to providing info about changes to individual files, file  =
-                       =20
-> > timestamps also serve an important purpose in applications like "make".=
- These                      =20
-> > programs measure timestamps in order to determine whether source files =
-might be                    =20
-> > newer than cached objects.                                             =
-                            =20
-> >=20
-> > Userland applications like make can only determine ordering based on   =
-                            =20
-> > operational boundaries. For a syscall those are the syscall entry and e=
-xit                         =20
-> > points. For io_uring or nfsd operations, that's the request submission =
-and                         =20
-> > response. In the case of concurrent operations, userland can make no   =
-                            =20
-> > determination about the order in which things will occur.
-> >=20
-> > For instance, if a single thread modifies one file, and then another fi=
-le in                       =20
-> > sequence, the second file must show an equal or later mtime than the fi=
-rst. The                    =20
-> > same is true if two threads are issuing similar operations that do not =
-overlap                     =20
-> > in time.
-> >=20
-> > If however, two threads have racing syscalls that overlap in time, then=
- there                      =20
-> > is no such guarantee, and the second file may appear to have been modif=
-ied                         =20
-> > before, after or at the same time as the first, regardless of which one=
- was                        =20
-> > submitted first.
+> find_group_other() and find_group_orlov() read multiple ext4_groups =
+but
+> do not protect them with locks, which causes data-race. I think it =
+would
+> be appropriate to add ext4_lock_group() at an appropriate location to =
+solve
+> this.
 >=20
-> That makes me ask a question. Are the timestamps always taken in thread
-> (syscall) context or can they be taken in other contexts (worker,
-> [soft]interrupt, etc.) too?
+> [1]
 >=20
+> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> BUG: KCSAN: data-race in ext4_free_inodes_count / ext4_free_inodes_set
+>=20
+> write to 0xffff88810404300e of 2 bytes by task 6254 on cpu 1:
+> ext4_free_inodes_set+0x1f/0x80 fs/ext4/super.c:405
+> __ext4_new_inode+0x15ca/0x2200 fs/ext4/ialloc.c:1216
+> ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
+> vfs_symlink+0xca/0x1d0 fs/namei.c:4615
+> do_symlinkat+0xe3/0x340 fs/namei.c:4641
+> __do_sys_symlinkat fs/namei.c:4657 [inline]
+> __se_sys_symlinkat fs/namei.c:4654 [inline]
+> __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
+> x64_sys_call+0x1dda/0x2d60 =
+arch/x86/include/generated/asm/syscalls_64.h:267
+> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
+> entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>=20
+> read to 0xffff88810404300e of 2 bytes by task 6257 on cpu 0:
+> ext4_free_inodes_count+0x1c/0x80 fs/ext4/super.c:349
+> find_group_other fs/ext4/ialloc.c:594 [inline]
+> __ext4_new_inode+0x6ec/0x2200 fs/ext4/ialloc.c:1017
+> ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
+> vfs_symlink+0xca/0x1d0 fs/namei.c:4615
+> do_symlinkat+0xe3/0x340 fs/namei.c:4641
+> __do_sys_symlinkat fs/namei.c:4657 [inline]
+> __se_sys_symlinkat fs/namei.c:4654 [inline]
+> __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
+> x64_sys_call+0x1dda/0x2d60 =
+arch/x86/include/generated/asm/syscalls_64.h:267
+> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
+> entry_SYSCALL_64_after_hwframe+0x76/0x7e
+>=20
+> value changed: 0x185c -> 0x185b
 
-That's a good question.
+I see now after you sent this patch that all of these cases are for
+read-only access to the free inodes count, which doesn't really
+matter if the value is racy.  These values are only used in heuristics
+for block group selection, and if the value is wrong then creating a
+new subdirectory may be in a different group, but that doesn't make
+much difference.
 
-The main place we do this is inode_set_ctime_current(). That is mostly
-called in the context of a syscall or similar sort of operation
-(io_uring, nfsd RPC request, etc.).
+It looks like the write side of all these accesses are already under
+ext4_group_lock(), so the code is actually correct and not in danger
+of two threads updating bg_free_inodes_count_lo/hi inconsistently.
 
-I certainly wouldn't rule out a workqueue job calling that function,
-but this is something we do while dirtying an inode, and that's not
-typically done in interrupt context.
---=20
-Jeff Layton <jlayton@kernel.org>
+We probably *do not* want locking in the read case, as it will cause
+unnecessary lock contention scanning groups for subdirectory allocation.
+
+My suggestion at this point would be to go back to using READ_ONCE() and
+WRITE_ONCE() in ext4_free_inodes_count()/ext4_free_inodes_set() like in
+your original patch. but *only* for functions used by find_group_*(). We
+want to be warned by KASAN if any of the other fields are accessed =
+without
+a proper ext4_group_lock(), since READ_ONCE()/WRITE_ONCE() does not fix
+_lo/_hi tearing.
+
+It probably also makes sense to add comments to all of these functions
+that they should hold ext4_group_lock() for access/updates, *except*
+ext4_free_inodes_count() can be called to read the inode count without =
+it
+if the result does not need to be totally accurate.
+
+Cheers, Andreas
+
+> Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
+> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
+> ---
+> fs/ext4/ialloc.c | 27 ++++++++++++++++++++++++---
+> 1 file changed, 24 insertions(+), 3 deletions(-)
+>=20
+> diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
+> index 9dfd768ed9f8..5cae247ff21f 100644
+> --- a/fs/ext4/ialloc.c
+> +++ b/fs/ext4/ialloc.c
+> @@ -500,11 +500,14 @@ static int find_group_orlov(struct super_block =
+*sb, struct inode *parent,
+> 		for (i =3D 0; i < flex_size; i++) {
+> 			if (grp+i >=3D real_ngroups)
+> 				break;
+> +			ext4_lock_group(sb, grp+i);
+> 			desc =3D ext4_get_group_desc(sb, grp+i, NULL);
+> 			if (desc && ext4_free_inodes_count(sb, desc)) {
+> 				*group =3D grp+i;
+> +				ext4_unlock_group(sb, grp+i);
+> 				return 0;
+> 			}
+> +			ext4_unlock_group(sb, grp+i);
+> 		}
+> 		goto fallback;
+> 	}
+> @@ -544,14 +547,17 @@ static int find_group_orlov(struct super_block =
+*sb, struct inode *parent,
+> 	parent_group =3D EXT4_I(parent)->i_block_group;
+> 	for (i =3D 0; i < ngroups; i++) {
+> 		grp =3D (parent_group + i) % ngroups;
+> +		ext4_lock_group(sb, grp);
+> 		desc =3D ext4_get_group_desc(sb, grp, NULL);
+> 		if (desc) {
+> 			grp_free =3D ext4_free_inodes_count(sb, desc);
+> 			if (grp_free && grp_free >=3D avefreei) {
+> 				*group =3D grp;
+> +				ext4_unlock_group(sb, grp);
+> 				return 0;
+> 			}
+> 		}
+> +		ext4_unlock_group(sb, grp);
+> 	}
+>=20
+> 	if (avefreei) {
+> @@ -590,11 +596,14 @@ static int find_group_other(struct super_block =
+*sb, struct inode *parent,
+> 		if (last > ngroups)
+> 			last =3D ngroups;
+> 		for  (i =3D parent_group; i < last; i++) {
+> +			ext4_lock_group(sb, i);
+> 			desc =3D ext4_get_group_desc(sb, i, NULL);
+> 			if (desc && ext4_free_inodes_count(sb, desc)) {
+> 				*group =3D i;
+> +				ext4_unlock_group(sb, i);
+> 				return 0;
+> 			}
+> +			ext4_unlock_group(sb, i);
+> 		}
+> 		if (!retry && EXT4_I(parent)->i_last_alloc_group !=3D =
+~0) {
+> 			retry =3D 1;
+> @@ -616,10 +625,14 @@ static int find_group_other(struct super_block =
+*sb, struct inode *parent,
+> 	 * Try to place the inode in its parent directory
+> 	 */
+> 	*group =3D parent_group;
+> +	ext4_lock_group(sb, *group);
+> 	desc =3D ext4_get_group_desc(sb, *group, NULL);
+> 	if (desc && ext4_free_inodes_count(sb, desc) &&
+> -	    ext4_free_group_clusters(sb, desc))
+> +	    ext4_free_group_clusters(sb, desc)) {
+> +		ext4_unlock_group(sb, *group);
+> 		return 0;
+> +	}
+> +	ext4_unlock_group(sb, *group);
+>=20
+> 	/*
+> 	 * We're going to place this inode in a different blockgroup =
+from its
+> @@ -640,10 +653,14 @@ static int find_group_other(struct super_block =
+*sb, struct inode *parent,
+> 		*group +=3D i;
+> 		if (*group >=3D ngroups)
+> 			*group -=3D ngroups;
+> +		ext4_lock_group(sb, *group);
+> 		desc =3D ext4_get_group_desc(sb, *group, NULL);
+> 		if (desc && ext4_free_inodes_count(sb, desc) &&
+> -		    ext4_free_group_clusters(sb, desc))
+> +		    ext4_free_group_clusters(sb, desc)) {
+> +			ext4_unlock_group(sb, *group);
+> 			return 0;
+> +		}
+> +		ext4_unlock_group(sb, *group);
+> 	}
+>=20
+> 	/*
+> @@ -654,9 +671,13 @@ static int find_group_other(struct super_block =
+*sb, struct inode *parent,
+> 	for (i =3D 0; i < ngroups; i++) {
+> 		if (++*group >=3D ngroups)
+> 			*group =3D 0;
+> +		ext4_lock_group(sb, *group);
+> 		desc =3D ext4_get_group_desc(sb, *group, NULL);
+> -		if (desc && ext4_free_inodes_count(sb, desc))
+> +		if (desc && ext4_free_inodes_count(sb, desc)) {
+> +			ext4_unlock_group(sb, *group);
+> 			return 0;
+> +		}
+> +		ext4_unlock_group(sb, *group);
+> 	}
+>=20
+> 	return -1;
+> --
+
+
+Cheers, Andreas
+
+
+
+
+
+
+--Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357
+Content-Transfer-Encoding: 7bit
+Content-Disposition: attachment;
+	filename=signature.asc
+Content-Type: application/pgp-signature;
+	name=signature.asc
+Content-Description: Message signed with OpenPGP
+
+-----BEGIN PGP SIGNATURE-----
+Comment: GPGTools - http://gpgtools.org
+
+iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmb7EB4ACgkQcqXauRfM
+H+BW6Q//QAcANtiUgP6xjrr5Dx/8Tpv3LFfO5qgC7jJIu0S04302mPMSZGu0g6s0
+nAFWDpnO6tcQ9/tqUF5aPuaTfX+KxCJ14nJGlfy+IUeqSfjrNLkbIJzXSwQusPRj
+CxN0XuWQvfpi4kDov+g6JtFpWu4plDcLedr64fjlEbykgb4tAXxAMNrsEEfXHvPv
+8bg8pKHDtH2puwgxfJGI6tcRLUI80I/PrPSO0/GPBaUmNBKGnMVvEmQffX6ZWfJM
+/Zf6eMNzMn9oSCdlTfgi5XzvgAC1Q8PHZKnZqwWStPrVag9LzASIkJFE0zXifiBS
+d+ABku+/4/gv3y5a2GDAfEK29KEEzvX9GT5vMIQ4425wmcS2mqpVxLq4VxIQb52O
+QGOeRLnnaafc2oeiuhmEA7xxQLLcFc+VuwxSC/q1JKXcx2JSqAaLNuAZ2GDD5wcy
+gpaBsk8omXb6FXISYrBli1hk1Toyl6KBGlGRLgZ2TYr3vRN/xODtx1DcVAllx4vs
+ZLuw7EinzlnmKwYUy8PT92xkgioJ4a80ocHKjL5VTJSdbvTO1riFpuswR020v7+S
++vfZvaPsCkY3ru220Bc4//PV3m4CGiLq9ABZRy0ZXBZtwKU6XXRtHMFwUUg1wp2s
+2IcIr8sJs5FwALnxU6Iu/fGLh/CkPouFhie6DI2XChxcplcZwKw=
+=4uax
+-----END PGP SIGNATURE-----
+
+--Apple-Mail=_E727C58E-19F8-4168-BC58-C6CCDC2A9357--
 
