@@ -1,206 +1,277 @@
-Return-Path: <linux-ext4+bounces-4385-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4386-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 425A1989EFC
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 11:59:52 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5C849989F07
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 12:00:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 05F36281D4C
-	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 09:59:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 80EDC1C2241E
+	for <lists+linux-ext4@lfdr.de>; Mon, 30 Sep 2024 10:00:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 018D1191F79;
-	Mon, 30 Sep 2024 09:56:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF0C1189F5C;
+	Mon, 30 Sep 2024 09:57:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gEClIPl/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gzfgXMXM";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gEClIPl/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="gzfgXMXM"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="H+uoTGau";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V185848S";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="H+uoTGau";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="V185848S"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A019190497;
-	Mon, 30 Sep 2024 09:56:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 18DF3188006;
+	Mon, 30 Sep 2024 09:57:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727690165; cv=none; b=fQuNbCjilR9nLbv808lBlDxQcmKaToF6eDPZL4dd+DVcgGprS0zggTKmD1tvaRu+wCwcpyt6sWyNnvTUopoYRWtwPSh/T3u95MXqHfrLL14z+mB122R31lAM68boDPGEAtq56+oIS8P6+HNTZg0amNSKn/V7S1At9DGHSo5pnng=
+	t=1727690261; cv=none; b=Rtdzd/DDPY00G6544XdMdnIgWN7drjuRNJZlEVGNocOqM9XDnMplLPMVe1qY0Sw2WRNTah1+lWeLRvZ2fwe5aAQZa3U/b0D9qjW6ArNwJ1FeSLCTeaKQhEEzta0a/U7R0pSt87+6Tink6AYiO6zS4NKbgXE54oTTMqG938UBb1s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727690165; c=relaxed/simple;
-	bh=gnBJBCW+qI7IoYGB45XZ495lYAcX04yoJWuiFKPsDtk=;
+	s=arc-20240116; t=1727690261; c=relaxed/simple;
+	bh=PxlkKXNt4FfW3kXiWThoZjEnjVEpmS3Ec8x/6iM/CQY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WXRSq/sqTaP3kvK3s2wq3bJCAdeSTxzTzTt5C7KJrj+1pKFa1ZNBNFQQcz0V430h8RVztFoEQ1XEErPislKlnHJoIP2nwYoDv0CTD7GI6XcqLdnmPOfvIKisjbgMfJIjyv1P4J4sICGMlbSF1lblbscRcI/YILHvopwzledw8g4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gEClIPl/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gzfgXMXM; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gEClIPl/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=gzfgXMXM; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=OQzXGS2C6Q2KVIku+0L290PntSbB+aDgpZNhj3r0wg3hbG+mVZSTyQdicNQ20NGbbCHWQWJdIoI2fyt1skHjfs3jobE8DEad/XNzYBu3ylfv0xocIOkdMqFPMcSHEqhdcyGHU3LWdfnGfnB78wFhjOzvYenZHyEnuhW1KiUrx0Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=H+uoTGau; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V185848S; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=H+uoTGau; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=V185848S; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AE67C21982;
-	Mon, 30 Sep 2024 09:56:01 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 2A3361F7FA;
+	Mon, 30 Sep 2024 09:57:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727690161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727690257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ecK9RWVhfnMj9sHyvPLPlMFBEWiyO29qs4MRNMFhoLk=;
-	b=gEClIPl/3teTHMDqvx31s+FiFLD7ZbAfrDv5Q6veLnnCiFXwulVkVhqlop+Amshfycb0qp
-	ApO5lWwRuyHnFx7HZJmDW/OwirznV84J+P4gfDQPCyUmh1M9iPMdLJJ7QKY5Kau2+BBpX4
-	U25JdXKkJY7f8VHDCU5btUgzsk4BE0Y=
+	bh=qIOuWAbizfXdcZdpjzcGy/FAWPITVnjDo6ImDR/caHI=;
+	b=H+uoTGauPC7dL94cP56C7KbODn5HgC91IWmEAppSLx8wt14g1WibocojWLkk3jh1+ySmiE
+	sCHpE1LYyYq4HQ8qqh9Th6sW2r5IQdmWf5TQ5li6Rb1egbTB/oF3kdAKqaqBzt7d03E8V/
+	Cbe5x4wvNYSn4UMZ1tqgGJMqP4bOn1E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727690161;
+	s=susede2_ed25519; t=1727690257;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ecK9RWVhfnMj9sHyvPLPlMFBEWiyO29qs4MRNMFhoLk=;
-	b=gzfgXMXM4rtacDzsUWiVjMbGLfTHl9joj/ANx0pI3RpQ/PAIvGeLJVfq6X05NEnCMzIdqQ
-	LeiegCiIP49wP1AA==
-Authentication-Results: smtp-out1.suse.de;
-	none
+	bh=qIOuWAbizfXdcZdpjzcGy/FAWPITVnjDo6ImDR/caHI=;
+	b=V185848SE/ppfD182NHTneVUsa6gsyijJehUqtr7S55klReQT5V0qZTRoT8pbQHIusios5
+	ihUeWNU322wWjiAw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=H+uoTGau;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=V185848S
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727690161; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1727690257; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ecK9RWVhfnMj9sHyvPLPlMFBEWiyO29qs4MRNMFhoLk=;
-	b=gEClIPl/3teTHMDqvx31s+FiFLD7ZbAfrDv5Q6veLnnCiFXwulVkVhqlop+Amshfycb0qp
-	ApO5lWwRuyHnFx7HZJmDW/OwirznV84J+P4gfDQPCyUmh1M9iPMdLJJ7QKY5Kau2+BBpX4
-	U25JdXKkJY7f8VHDCU5btUgzsk4BE0Y=
+	bh=qIOuWAbizfXdcZdpjzcGy/FAWPITVnjDo6ImDR/caHI=;
+	b=H+uoTGauPC7dL94cP56C7KbODn5HgC91IWmEAppSLx8wt14g1WibocojWLkk3jh1+ySmiE
+	sCHpE1LYyYq4HQ8qqh9Th6sW2r5IQdmWf5TQ5li6Rb1egbTB/oF3kdAKqaqBzt7d03E8V/
+	Cbe5x4wvNYSn4UMZ1tqgGJMqP4bOn1E=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727690161;
+	s=susede2_ed25519; t=1727690257;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ecK9RWVhfnMj9sHyvPLPlMFBEWiyO29qs4MRNMFhoLk=;
-	b=gzfgXMXM4rtacDzsUWiVjMbGLfTHl9joj/ANx0pI3RpQ/PAIvGeLJVfq6X05NEnCMzIdqQ
-	LeiegCiIP49wP1AA==
+	bh=qIOuWAbizfXdcZdpjzcGy/FAWPITVnjDo6ImDR/caHI=;
+	b=V185848SE/ppfD182NHTneVUsa6gsyijJehUqtr7S55klReQT5V0qZTRoT8pbQHIusios5
+	ihUeWNU322wWjiAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A2FF913A8B;
-	Mon, 30 Sep 2024 09:56:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1AE6813A8B;
+	Mon, 30 Sep 2024 09:57:37 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9sjQJ7F1+maMNwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 30 Sep 2024 09:56:01 +0000
+	id GjGJBhF2+mYfOAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 30 Sep 2024 09:57:37 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4E1B3A0845; Mon, 30 Sep 2024 11:56:01 +0200 (CEST)
-Date: Mon, 30 Sep 2024 11:56:01 +0200
+	id C60DBA0845; Mon, 30 Sep 2024 11:57:36 +0200 (CEST)
+Date: Mon, 30 Sep 2024 11:57:36 +0200
 From: Jan Kara <jack@suse.cz>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Max Brener <linmaxi@gmail.com>, adilger.kernel@dilger.ca,
-	viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH] [PATCH] vfs/ext4: Fixed a potential problem related to
- an infinite loop
-Message-ID: <20240930095601.x66iqw74bxffytgq@quack3>
-References: <20240926221103.24423-1-linmaxi@gmail.com>
- <20240927155019.GA365622@mit.edu>
+To: libaokun@huaweicloud.com
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+	jack@suse.cz, linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, Baokun Li <libaokun1@huawei.com>,
+	Wesley Hershberger <wesley.hershberger@canonical.com>,
+	=?utf-8?B?U3TDqXBoYW5l?= Graber <stgraber@stgraber.org>,
+	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	Eric Sandeen <sandeen@redhat.com>, stable@vger.kernel.org
+Subject: Re: [PATCH v2] ext4: fix off by one issue in alloc_flex_gd()
+Message-ID: <20240930095736.63jxu22xfnxrwvar@quack3>
+References: <20240927133329.1015041-1-libaokun@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <20240927155019.GA365622@mit.edu>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240927133329.1015041-1-libaokun@huaweicloud.com>
+X-Rspamd-Queue-Id: 2A3361F7FA
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
 	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,dilger.ca,zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org];
+	MISSING_XM_UA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim,suse.cz:email];
 	TO_DN_SOME(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
 X-Spam-Flag: NO
-X-Spam-Level: 
 
-On Fri 27-09-24 08:50:19, Theodore Ts'o wrote:
-> On Fri, Sep 27, 2024 at 01:11:03AM +0300, Max Brener wrote:
-> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=219306
-> > 
-> > This patch fixes a potential infinite journal-truncate-print
-> > problem.  When systemd's journald is called, ftruncate syscall is
-> > called. If anywhere down the call stack of ftruncate a printk of
-> > some sort happens, it triggers journald again therefore an infinite
-> > loop is established.
+On Fri 27-09-24 21:33:29, libaokun@huaweicloud.com wrote:
+> From: Baokun Li <libaokun1@huawei.com>
 > 
-> This isn't a good justification for this change; in general, whenever
-> you have code paths which get triggered when a logging daemon is
-> triggered, whether it's systemd-journald, or syslog, and this can
-> cause this kind of infinite loop.  For example, suppose you are using
-> remote logging (where a log message gets sent over the network via the
-> remote syslog facility), and anything in the networking stack triggers
-> a printk, that will also trigger an "infinite loop".  This falls in
-> the "Doctor, doctor, it hurts when I do that --- so don't do that!"
+> Wesley reported an issue:
 > 
-> In this particular situation, journald is doing something silly/stupid
-> which is whenver a message is logged, it is issuing a no-op ftruncate
-> to the journald log file.  It's also worth noting that ext4's truncate
-> path does *not* trigger a printk unless something really haw gone
-> wrong (e.g., a WARN_ON when a kernel bug has happened and flags in the
-> in-memory get erronously set, or the file system gets corrupted and
-> this gets reported via ext4_error()).  The reporter discovered this by
-> explicitly adding a printk in their privatea kernel sources, and in
-> general, when you add random changes to the kernel, any unfortunate
-> consequences are not something that upstream code can be expected to
-> defend against.
+> ==================================================================
+> EXT4-fs (dm-5): resizing filesystem from 7168 to 786432 blocks
+> ------------[ cut here ]------------
+> kernel BUG at fs/ext4/resize.c:324!
+> CPU: 9 UID: 0 PID: 3576 Comm: resize2fs Not tainted 6.11.0+ #27
+> RIP: 0010:ext4_resize_fs+0x1212/0x12d0
+> Call Trace:
+>  __ext4_ioctl+0x4e0/0x1800
+>  ext4_ioctl+0x12/0x20
+>  __x64_sys_ioctl+0x99/0xd0
+>  x64_sys_call+0x1206/0x20d0
+>  do_syscall_64+0x72/0x110
+>  entry_SYSCALL_64_after_hwframe+0x76/0x7e
+> ==================================================================
 > 
-> For context, see: https://bugzilla.kernel.org/show_bug.cgi?id=219306
+> While reviewing the patch, Honza found that when adjusting resize_bg in
+> alloc_flex_gd(), it was possible for flex_gd->resize_bg to be bigger than
+> flexbg_size.
+> 
+> The reproduction of the problem requires the following:
+> 
+>  o_group = flexbg_size * 2 * n;
+>  o_size = (o_group + 1) * group_size;
+>  n_group: [o_group + flexbg_size, o_group + flexbg_size * 2)
+>  o_size = (n_group + 1) * group_size;
+> 
+> Take n=0,flexbg_size=16 as an example:
+> 
+>               last:15
+> |o---------------|--------------n-|
+> o_group:0    resize to      n_group:30
+> 
+> The corresponding reproducer is:
+> 
+> img=test.img
+> truncate -s 600M $img
+> mkfs.ext4 -F $img -b 1024 -G 16 8M
+> dev=`losetup -f --show $img`
+> mkdir -p /tmp/test
+> mount $dev /tmp/test
+> resize2fs $dev 248M
+> 
+> Delete the problematic plus 1 to fix the issue, and add a WARN_ON_ONCE()
+> to prevent the issue from happening again.
+> 
+> Reported-by: Wesley Hershberger <wesley.hershberger@canonical.com>
+> Closes: https://bugs.launchpad.net/ubuntu/+source/linux/+bug/2081231
+> Reported-by: Stéphane Graber <stgraber@stgraber.org>
+> Closes: https://lore.kernel.org/all/20240925143325.518508-1-aleksandr.mikhalitsyn@canonical.com/
+> Tested-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+> Tested-by: Eric Sandeen <sandeen@redhat.com>
+> Fixes: 665d3e0af4d3 ("ext4: reduce unnecessary memory allocation in alloc_flex_gd()")
+> Cc: stable@vger.kernel.org
+> Signed-off-by: Baokun Li <libaokun1@huawei.com>
 
-Right, loops like these are not something we should be fixing in the
-kernel.
+Looks good. Feel free to add:
 
-> We can justify an optimization here so that in the case of
-> silly/stupid userspace programs which are constnatly calling
-> truncate(2) which are no-ops, we can optimize ext4's handling of these
-> silly/stupid programs.  The ext4_truncate() code path causes starting
-> a journal handle, adding the inode to the orphan list, and then
-> removing it at the end of the truncate.  In the case where sopme
-> program calls truncate() in a tight loop, we can optimize the
-> behaviour.  It's not a high priority optimization, but if given that
-> we can't necessarily change silly/stupid userspace programmers, it can
-> be something that we can do if the patch is too invasive.
-> 
-> HOWEVER....
-> 
-> 
-> > To fix this issue:
-> > Add  a new inode flag S_TRUNCATED which helps in stopping such an infinite loop by marking an in-memory inode as already truncated.
-> 
-> Adding a generic VFS-level flag is not something that we can justify
-> here.  The VFS maintainers would NACK such a change, and deservedly
-> so.
-> 
-> What I had in mind was to define a new EXT4 state flag, say,
-> EXT4_STATE_TRUNCATED, and then test, set, and clear it using
-> ext4_{test,set,clear}_inode_state().
-
-Agreed as well. I'll also note that keeping such flag uptodate is not as
-simple as it seems because there are various places that may be allocating
-blocks beyond EOF (for example extending writes) and that rely on
-ext4_truncate() removing them so one needs to be careful to capture all the
-places where the "truncated" state needs to be cleared.
+Reviewed-by: Jan Kara <jack@suse.cz>
 
 								Honza
+
+> ---
+> Changes since v1:
+>  * Add missing WARN_ON_ONCE().
+>  * Correct the comment of alloc_flex_gd().
+> 
+>  fs/ext4/resize.c | 18 ++++++++++--------
+>  1 file changed, 10 insertions(+), 8 deletions(-)
+> 
+> diff --git a/fs/ext4/resize.c b/fs/ext4/resize.c
+> index e04eb08b9060..a2704f064361 100644
+> --- a/fs/ext4/resize.c
+> +++ b/fs/ext4/resize.c
+> @@ -230,8 +230,8 @@ struct ext4_new_flex_group_data {
+>  #define MAX_RESIZE_BG				16384
+>  
+>  /*
+> - * alloc_flex_gd() allocates a ext4_new_flex_group_data with size of
+> - * @flexbg_size.
+> + * alloc_flex_gd() allocates an ext4_new_flex_group_data that satisfies the
+> + * resizing from @o_group to @n_group, its size is typically @flexbg_size.
+>   *
+>   * Returns NULL on failure otherwise address of the allocated structure.
+>   */
+> @@ -239,25 +239,27 @@ static struct ext4_new_flex_group_data *alloc_flex_gd(unsigned int flexbg_size,
+>  				ext4_group_t o_group, ext4_group_t n_group)
+>  {
+>  	ext4_group_t last_group;
+> +	unsigned int max_resize_bg;
+>  	struct ext4_new_flex_group_data *flex_gd;
+>  
+>  	flex_gd = kmalloc(sizeof(*flex_gd), GFP_NOFS);
+>  	if (flex_gd == NULL)
+>  		goto out3;
+>  
+> -	if (unlikely(flexbg_size > MAX_RESIZE_BG))
+> -		flex_gd->resize_bg = MAX_RESIZE_BG;
+> -	else
+> -		flex_gd->resize_bg = flexbg_size;
+> +	max_resize_bg = umin(flexbg_size, MAX_RESIZE_BG);
+> +	flex_gd->resize_bg = max_resize_bg;
+>  
+>  	/* Avoid allocating large 'groups' array if not needed */
+>  	last_group = o_group | (flex_gd->resize_bg - 1);
+>  	if (n_group <= last_group)
+> -		flex_gd->resize_bg = 1 << fls(n_group - o_group + 1);
+> +		flex_gd->resize_bg = 1 << fls(n_group - o_group);
+>  	else if (n_group - last_group < flex_gd->resize_bg)
+> -		flex_gd->resize_bg = 1 << max(fls(last_group - o_group + 1),
+> +		flex_gd->resize_bg = 1 << max(fls(last_group - o_group),
+>  					      fls(n_group - last_group));
+>  
+> +	if (WARN_ON_ONCE(flex_gd->resize_bg > max_resize_bg))
+> +		flex_gd->resize_bg = max_resize_bg;
+> +
+>  	flex_gd->groups = kmalloc_array(flex_gd->resize_bg,
+>  					sizeof(struct ext4_new_group_data),
+>  					GFP_NOFS);
+> -- 
+> 2.39.2
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
