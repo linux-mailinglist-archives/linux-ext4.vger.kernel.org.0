@@ -1,126 +1,131 @@
-Return-Path: <linux-ext4+bounces-4454-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4455-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63C1898E32C
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 20:55:11 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EE05D98E380
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 21:34:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0BA0E1F25EF9
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 18:55:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2BA9C1C2336D
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 19:34:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B28B22169B;
-	Wed,  2 Oct 2024 18:50:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D8D4215F4F;
+	Wed,  2 Oct 2024 19:34:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O6KA5467"
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="a8EAvpgz";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="5loLpHo6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EE8C221684;
-	Wed,  2 Oct 2024 18:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190CB130A47;
+	Wed,  2 Oct 2024 19:34:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727895027; cv=none; b=uiPw/6MmB2iykWj/0hdv3F7164dIFogyO62ipVW6BLCzehWgaIJz8Z7Jy260UAKFizLwRzxFZhhmlOyfaSdQDxwRJ3Hfz//j4IppN4aL8YWrrMZmwvALFejudvwfBOAJUjcWIHrwmUVjHTn8uBRVc8HrcX5JMxyQrEHxZOAMZdI=
+	t=1727897643; cv=none; b=Qo/o6hN92hZ2e3gWD5EoCv2/xSTbjjy6k5oigHSjmdCfrcXgIfa2cN6RcmY3EUjl02v+Kq3TEA+/UGFEtbvN3ls3HIZpSmE1NAF3CKaXQe2XM7M0GKZTPjcuk8Jaw/vepbdehxtguSs1CohjPbA8tERObwG1J4fM2q/V6cnQ+y8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727895027; c=relaxed/simple;
-	bh=XlC7YeycewlZi2a3r3W7IO7Qd7YSP47/MVJ/d8lrj20=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Jrq70AskMzB1JD6DO9XVEgImT3gbp4moyWOXDis+JgGjvjUPUfqZbVDItlZeTNcLy5pOU9BPMBPNFYcLxrXfytWzNUtjsDEbrj5veQAO7COGBDUmnz1btmN9+Y1jNrQckhl7Aa3Ex6KQE7yAXvOAzx0hVayy+Z6g69lL4rporZI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O6KA5467; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1DCDFC4CED6;
-	Wed,  2 Oct 2024 18:50:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727895025;
-	bh=XlC7YeycewlZi2a3r3W7IO7Qd7YSP47/MVJ/d8lrj20=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=O6KA5467Sbp5TN0nr9okSkPDnFzH6zjeE7j6psU2LHS76B0vrpzt9XXInhnHpKxj6
-	 IJs1st80UCkJwLsitlK7096E6X9jQZ7DAweZwN5sVJy+FC2ISbg1SbXK3VGPenYxEk
-	 U1IAgYoMVkepjPYtM/hR3yd7lJxl9NKfOImCUoaQR4qRm/5o/Tv+wRjtMzSXJXvoRk
-	 icvbBr7WDPMt13T6kpBcJ1IQsUsshFCn4l47xcRCfIkm/Pt+BUR0EEtuogKsRctilw
-	 Z7ryrSB373dkJA5xHGzMG+5E8MF7Q282D9nx7DfVsDLyUd396fvwKC8xgFkLfmt5Pi
-	 CNEBkjUV9IVeQ==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Wed, 02 Oct 2024 14:49:40 -0400
-Subject: [PATCH v9 12/12] tmpfs: add support for multigrain timestamps
+	s=arc-20240116; t=1727897643; c=relaxed/simple;
+	bh=Jyw9PArjwDuRHPVFMulEYiehjNmM50HB/9qcMkjnWVI=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=BrMXsNj+qDnhhHG1wtfpgMzlz72SemaL1P2AZzswAk9IBLZhOf6OiY3rxhezZG+I0LKDw8TgvLhZa3/Y3yk398SdAIzPpn80NOD8fOuI6TmgKhj1q5hDv2J25a4c/3ckxdhp+CWBJLrA5N8/lv7zmmA09EELVv6F9od7TxHNktI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=a8EAvpgz; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=5loLpHo6; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1727897639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XtvYQ0wp1n9mLzgBjKl0MvaObys0We+viPzRs64Jd9I=;
+	b=a8EAvpgzFsLCW/AlrRonjZXEMvQOpA87FmbSh5AI8gQcIXGUH6WxsZdbzWa+KKZ9ghfG3C
+	rjJ7daCVG39y2XEcTD54l0kTZuloeHUjNr8P1oT8gck1m7dccB/gf8MTOAt/E0sfZUoetM
+	3bPau8RswJzdj4TwGtEgrVMksf083ebi1PkFa/6/VgUi4ea+6MTJyTO+LcVXuCcUnq/Fsl
+	W3agP3XE5Eo7nH0gv7NdXO8kjZCjEDoWEvrPxu39jswpYmUguRNMFkdRQPdycSJ4V7t7NG
+	tZRhGyhYXu8+NfX7nBudvUI5TF/aLXJ2IBsI4eIng/sh3z7DLUhUaDt33xbT9w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1727897639;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=XtvYQ0wp1n9mLzgBjKl0MvaObys0We+viPzRs64Jd9I=;
+	b=5loLpHo6nw1uC3b/hFZ50bSgpoJqRSwTF45XEQYWDIka6DCc9oXrcFkzTwKDsmhykprcQ4
+	k7a5a4sFT/H5BhDw==
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+ Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
+ <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, Chandan Babu R
+ <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, Theodore
+ Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Chris
+ Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
+ <dsterba@suse.com>, Hugh Dickins <hughd@google.com>, Andrew Morton
+ <akpm@linux-foundation.org>, Chuck Lever <chuck.lever@oracle.com>, Vadim
+ Fedorenko <vadim.fedorenko@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+ linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+ linux-mm@kvack.org, Jeff Layton <jlayton@kernel.org>
+Subject: Re: [PATCH v9 07/12] timekeeping: add percpu counter for tracking
+ floor swap events
+In-Reply-To: <20241002-mgtime-v9-7-77e2baad57ac@kernel.org>
+References: <20241002-mgtime-v9-0-77e2baad57ac@kernel.org>
+ <20241002-mgtime-v9-7-77e2baad57ac@kernel.org>
+Date: Wed, 02 Oct 2024 21:33:59 +0200
+Message-ID: <87ed4ywb88.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20241002-mgtime-v9-12-77e2baad57ac@kernel.org>
-References: <20241002-mgtime-v9-0-77e2baad57ac@kernel.org>
-In-Reply-To: <20241002-mgtime-v9-0-77e2baad57ac@kernel.org>
-To: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
- Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Steven Rostedt <rostedt@goodmis.org>, 
- Masami Hiramatsu <mhiramat@kernel.org>, 
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
- Jonathan Corbet <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, 
- Chandan Babu R <chandan.babu@oracle.com>, 
- "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
- Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, 
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>, 
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
- Chuck Lever <chuck.lever@oracle.com>, 
- Vadim Fedorenko <vadim.fedorenko@linux.dev>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org, 
- linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org, 
- linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org, linux-mm@kvack.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.14.1
-X-Developer-Signature: v=1; a=openpgp-sha256; l=932; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=XlC7YeycewlZi2a3r3W7IO7Qd7YSP47/MVJ/d8lrj20=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBm/ZXN6h1nh3Jd6jDRqtordF48NCXbHTMIIvKYt
- k0JvUmUUnGJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZv2VzQAKCRAADmhBGVaC
- Feo8D/41p25TrFB0UfY7raME3RSw3V2+1l+VzsBd4T4VUALomAlvpx4rASZanyQ4quJ03pKkB6s
- rQ9nT3rVtZ+El2EmDy69MXcp8S4KT6MYsiE3NYuVD68oO/NzqNxYUJqM+iSlB7dOB9VONqcos/D
- uuLiZrD4b/K1jV8heLBwjcXK5mn0koIux75p1x/JCycT5gLRXS2ADRz0cntSbdRPheNG+QcWJtP
- kt1yBPc6JbSDnXd7F7W+ouC3SylDJfAntabc8Xi0Wns5/8XFWcLjMw0xCsW3dGwbIl8o0O8GEd1
- eSpRT0khfdmm2ovPwC9gPXrrQPRdD+ZeEB1o8iUUhQ4LZmc8DWRL5sQ8gDH30E0P748Z/x/QvL1
- dTNj80QaMOjeDyzEczN/3basPLVSn6FmAJMSHy04/Q48JvoMbBlLDfaNqlMSg8BT5WneKtii63O
- VYAAGC+sHZBu/sCKkSE49A4yZZ11DWlK5lD8zYO6BxmQMkhQ/X8weMwUFlZz5jwnFO6dZOtoFg1
- RwtHKlDJSUn37SiERYT+bS9JfPGzMDXPW4grx9yYoHTgw9K3MvbsLBlXqCNU5SkAH+HY8mkKr40
- MQom1aU4ONpgq+6oOFh1kuv+sb4AUhpUCpPaSDInyl1cNw2X4crJh9AJQR6ujOvMOCbLK9NjmRi
- F8V1mxt8ohQeGyw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain
 
-Enable multigrain timestamps, which should ensure that there is an
-apparent change to the timestamp whenever it has been written after
-being actively observed via getattr.
+On Wed, Oct 02 2024 at 14:49, Jeff Layton wrote:
+> ---
+>  fs/inode.c                         |  5 +++--
 
-tmpfs only requires the FS_MGTIME flag.
+Grmbl. I explicitely asked to split this into timekeeping and fs
+patches, no?
 
-Reviewed-by: Josef Bacik <josef@toxicpanda.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Tested-by: Randy Dunlap <rdunlap@infradead.org> # documentation bits
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- mm/shmem.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+That allows me to pick the timekeeping patches up myself and give
+Christian a stable tag to pull them from. That lets me deal with the
+conflicts with other timekeeping stuff which is coming up instead of
+having cross tree conflicts.
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 5a77acf6ac6a..5f17eaaa32e2 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -4804,7 +4804,7 @@ static struct file_system_type shmem_fs_type = {
- 	.parameters	= shmem_fs_parameters,
- #endif
- 	.kill_sb	= kill_litter_super,
--	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP,
-+	.fs_flags	= FS_USERNS_MOUNT | FS_ALLOW_IDMAP | FS_MGTIME,
- };
- 
- void __init shmem_init(void)
+> +unsigned long timekeeping_get_mg_floor_swaps(void)
+> +{
+> +	int i;
+> +	unsigned long sum = 0;
 
--- 
-2.46.2
+https://www.kernel.org/doc/html/latest/process/maintainer-tip.html#variable-declarations
 
+And please use 'cpu'
+
+> +
+> +	for_each_possible_cpu(i)
+> +		sum += per_cpu(timekeeping_mg_floor_swaps, i);
+
+This needs data_race(per_cpu.....) to tell KCSAN that this is
+intentionally racy.
+
+Your previous fs specific patch has the same issue.
+
+> +	return sum < 0 ? 0 : sum;
+
+Right, a sum of unsigned longs really needs to be checked for being negative.
+
+>  #ifdef CONFIG_DEBUG_FS
+> +DECLARE_PER_CPU(unsigned long, timekeeping_mg_floor_swaps);
+> +static inline void timekeeping_inc_mg_floor_swaps(void)
+
+Did you lose your newline key?. Can we please not glue this together for
+readability sake?
+
+Thanks,
+
+        tglx
 
