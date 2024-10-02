@@ -1,205 +1,104 @@
-Return-Path: <linux-ext4+bounces-4436-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4437-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E50598CFDD
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 11:14:30 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E4EE98D02E
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 11:32:55 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4E91289265
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 09:14:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BFAB71C21B8E
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 09:32:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09711198A10;
-	Wed,  2 Oct 2024 09:14:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B245194A4C;
+	Wed,  2 Oct 2024 09:32:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KVecqr+N";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vBYEfZoW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KVecqr+N";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vBYEfZoW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X7aNDuoq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8842519752C;
-	Wed,  2 Oct 2024 09:14:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 014FB84A52
+	for <linux-ext4@vger.kernel.org>; Wed,  2 Oct 2024 09:32:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727860455; cv=none; b=qnqavttWXH8ESa47458m1Ua9CtA+d9S7Mh7D2849lw9AxMno7VDeGJT5zpg0DlgafA2l6sJucAqZuhukicdAUB7e6y6IWlf5ZJIfPaUVSnKWD+1b+ACihmUWOn6c9KkwhSCN0BbFw0UfrX0U1i6XBNQTcqI/sA8+xjCDIuN3Vu8=
+	t=1727861571; cv=none; b=GPfWcqOJDGFPahtpGVcRSohdblCqOw3xKfhierFw4w4xM46NdE/7pYCYm4Yz7QFtmKKIgtYWLEH14oacy2m1goXzwQ4IbQWeE88QJfHsGSYS/RO5FuAsmDqNiXd6GG878SwYoyqTUPr2NXB+xfkCF0SXJoMIudkl6k36gTWAjHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727860455; c=relaxed/simple;
-	bh=CrBCKdgiMa08UPFj6MZxE0JaOv9NlkupQgNyP+8YPHE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cvQ1gwix5LEVonisx8PYPUjv6rX+6KHit2BKYMz0dSISxGuUA5r0rTqxe+n2XG0WrW9DzSwFIoN7kO2iRtiejUdc2O+O5TDo/FhGFlGnhLvpRmoWIutOu5EqLIdh5vpNFBRe3wMUVl2ODHAggbhVetOImaZWJalqizUiVoUTh7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KVecqr+N; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vBYEfZoW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KVecqr+N; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vBYEfZoW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3042721B70;
-	Wed,  2 Oct 2024 09:14:06 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727860446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
-	b=KVecqr+NBI1yiYx1BRcvKKnoyXIivh15+piF+YZyiWfrDIRo6SsuQJrxd8RL6jhFpnJG3g
-	bXyd/69TLuagh7zkintkdg6FnyOvc8kIouzsWt4Uad7lwiaHv6mwQM+0iwyXWjl4MXpXU1
-	4xUac63Ufy/zn/WHxi5yMhRCoLEzkNw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727860446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
-	b=vBYEfZoWDP05pmDCLOTbylMr+FqLkg7Ki23XcVZOBFd4msaAsoqBKQbkafeu2FG7KWktRV
-	3NqfRi0Nn6eFECAg==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1727860446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
-	b=KVecqr+NBI1yiYx1BRcvKKnoyXIivh15+piF+YZyiWfrDIRo6SsuQJrxd8RL6jhFpnJG3g
-	bXyd/69TLuagh7zkintkdg6FnyOvc8kIouzsWt4Uad7lwiaHv6mwQM+0iwyXWjl4MXpXU1
-	4xUac63Ufy/zn/WHxi5yMhRCoLEzkNw=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1727860446;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
-	b=vBYEfZoWDP05pmDCLOTbylMr+FqLkg7Ki23XcVZOBFd4msaAsoqBKQbkafeu2FG7KWktRV
-	3NqfRi0Nn6eFECAg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FA9613A6E;
-	Wed,  2 Oct 2024 09:14:06 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 4XuwB94O/WYUSwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 02 Oct 2024 09:14:06 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 8280EA08CB; Wed,  2 Oct 2024 11:14:05 +0200 (CEST)
-Date: Wed, 2 Oct 2024 11:14:05 +0200
-From: Jan Kara <jack@suse.cz>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Jan Kara <jack@suse.cz>, John Stultz <jstultz@google.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Randy Dunlap <rdunlap@infradead.org>,
-	Chandan Babu R <chandan.babu@oracle.com>,
-	"Darrick J. Wong" <djwong@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
-	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Chuck Lever <chuck.lever@oracle.com>,
-	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: Re: [PATCH v8 02/12] fs: add infrastructure for multigrain timestamps
-Message-ID: <20241002091405.7b2s4qvoaqrn3l4f@quack3>
-References: <20241001-mgtime-v8-0-903343d91bc3@kernel.org>
- <20241001-mgtime-v8-2-903343d91bc3@kernel.org>
- <20241001132027.ynzp4sahjek5umbb@quack3>
- <7761de29d15df87a29575de57554b56a91ae55a0.camel@kernel.org>
+	s=arc-20240116; t=1727861571; c=relaxed/simple;
+	bh=RJCS9/S4Ayw3wBeCyX7zMts1nTLJCVdYq66h2LW4jUw=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=EaI+3G21l7dmojOzSInEAa+bf2tdqGjPgNekhfzBepbNIzK9GNWOhLFxw1PGehoDhSEOpajLJuvl37fbEEhc4pyhjtOFU4a3RqYHeOxNmPZ4GdoLvBb3zrgAGVjlJmtS0epSqwUbQry2A5/z5rRBJRwu0kFc/8V61fDkYg39Bwk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X7aNDuoq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 926B7C4CECD
+	for <linux-ext4@vger.kernel.org>; Wed,  2 Oct 2024 09:32:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1727861570;
+	bh=RJCS9/S4Ayw3wBeCyX7zMts1nTLJCVdYq66h2LW4jUw=;
+	h=From:To:Subject:Date:From;
+	b=X7aNDuoqhD9j+nQJ/3IXkdsv8TXZmx8iQ3J9Pjgu1QWQ3t9bA2NBJ6a6hOIThjSxZ
+	 rHYz/EUFs+Wa/ICbDQq/eEImbmBswGmOqKB4TZ60U0J5pu1doWh3nU6k5qi1C6VfJ0
+	 +5y8MvLSzZG4fn8VfpgaizTzdngv3uk3eREd63Q/3uNRIQXN0NwGRs9Qzxullbpv3b
+	 vRk7t4Fi04Yhc/DFg7CBQNt4WkqH0QzJ1kQUHL8DXavS+B1C7GXwGNCvXMDzczuoxQ
+	 9vxHZ1K9IwJA4/34w/PDhxS52+yILYHmKUqVbGzzDClM8/IYv3UiayWcJ6/cugi6GF
+	 AcJ95aDgVxUyQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 85F81C53BC7; Wed,  2 Oct 2024 09:32:50 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
+To: linux-ext4@vger.kernel.org
+Subject: [Bug 219341] New: implement reflinks
+Date: Wed, 02 Oct 2024 09:32:50 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: rootkit85@yahoo.it
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
+ op_sys bug_status bug_severity priority component assigned_to reporter
+ cf_regression
+Message-ID: <bug-219341-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7761de29d15df87a29575de57554b56a91ae55a0.camel@kernel.org>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCPT_COUNT_TWELVE(0.00)[32];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	R_RATELIMIT(0.00)[to_ip_from(RLy4jt9zmnbk4oncb1qwahh5jo)];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	RCVD_TLS_LAST(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
 
-On Tue 01-10-24 09:34:18, Jeff Layton wrote:
-> On Tue, 2024-10-01 at 15:20 +0200, Jan Kara wrote:
-> > > diff --git a/fs/stat.c b/fs/stat.c
-> > > index 41e598376d7e..381926fb405f 100644
-> > > --- a/fs/stat.c
-> > > +++ b/fs/stat.c
-> > > @@ -26,6 +26,35 @@
-> > >  #include "internal.h"
-> > >  #include "mount.h"
-> > >  
-> > > +/**
-> > > + * fill_mg_cmtime - Fill in the mtime and ctime and flag ctime as QUERIED
-> > > + * @stat: where to store the resulting values
-> > > + * @request_mask: STATX_* values requested
-> > > + * @inode: inode from which to grab the c/mtime
-> > > + *
-> > > + * Given @inode, grab the ctime and mtime out if it and store the result
-> > 						 ^^ of
-> > 
-> > > + * in @stat. When fetching the value, flag it as QUERIED (if not already)
-> > > + * so the next write will record a distinct timestamp.
-> > > + */
-> > > +void fill_mg_cmtime(struct kstat *stat, u32 request_mask, struct inode *inode)
-> > > +{
-> > 
-> > Given how things worked out in the end, it seems this function doesn't need
-> > to handle mtime at all and we can move mtime handling back to shared generic
-> > code?
-> > 
-> 
-> I don't think we can. The mtime is effectively derived from the ctime.
-> 
-> If I query only the mtime, I think it's reasonable to expect that it
-> will change if there is another write, even if I don't query the ctime.
-> We won't get that unless we can also set the flag in the ctime when
-> only the mtime is requested.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219341
 
-Aha, right. I already forgot about this :). Can you please add to the
-comment the above explanation so that we remember next time somebody wants
-to "clean this up" like me ;)? Thanks!
+            Bug ID: 219341
+           Summary: implement reflinks
+           Product: File System
+           Version: 2.5
+          Hardware: All
+                OS: Linux
+            Status: NEW
+          Severity: normal
+          Priority: P3
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: rootkit85@yahoo.it
+        Regression: No
 
-Also feel free to add:
+Reflinks are now supported by XFS and BtrFS.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+Please implement reflinks in EXT4, to enable use of the FICLONE and
+FICLONERANGE ioctls
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
