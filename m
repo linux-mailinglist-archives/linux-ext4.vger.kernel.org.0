@@ -1,74 +1,79 @@
-Return-Path: <linux-ext4+bounces-4439-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4440-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 13B0A98D356
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 14:32:27 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A6CB98D37C
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 14:42:17 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8845F1F22EBC
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 12:32:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C3652838D5
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 12:42:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33A3D1CF5FC;
-	Wed,  2 Oct 2024 12:32:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D14D1D0427;
+	Wed,  2 Oct 2024 12:41:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NdGu3Jd4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uUsPMd5D"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F7D61D52B;
-	Wed,  2 Oct 2024 12:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F2E461CF5FB;
+	Wed,  2 Oct 2024 12:41:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727872331; cv=none; b=l/kR0O3+cWEjpTO0+WVX8Aq/AN226wtsDx8reosw12CLkkrOqMBAZSLiPwQLdN4nlHlM8reU2zTSTBqdUKM6EQFGw1A5uZnYlIp7tcjlPCAcJPhrFGYXU5w/37MGAhdfuBI7i/NY9PasCqkuqJWk0mboH0DGQxvA7/NzHnN1SJA=
+	t=1727872898; cv=none; b=RPJntls7GLKI6t+51l2DQ6irBtYYL7iSY6QLen0N3xlL0CyYfL+USBxDIZeMGPA753fmSHFFbBFMdXykgS/l0IkBsCRasbWx9Qm9iXjpBjtXL6uUrVsgNc9E1ncplBG77ZDyl0/pEC4dSNDHkdPNx+DOWa9nLps9PSNucpYSXk0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727872331; c=relaxed/simple;
-	bh=jmIb9N65xqSFFeC8jnNiRe8dTESQm2WuM/5MyQ3DkQA=;
+	s=arc-20240116; t=1727872898; c=relaxed/simple;
+	bh=rsPFbKpiXtzp1H3myI10Z6ZOCFH7i1QWjc4oSum17fs=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=k+XaULCmYBPzOts+XS+PcZSz1oxdqcSwH2fegB1ShAYIFFbaux6vNmwC/CJ84lH5M6wN8xDZvkGAEG8VOTtVkpX//P2A3LTQsFZG5DLl29YcpxLP6E60IVJs4InvjkCewMgZipQlRW4YQNUZrzhr/8RDfLdQFb7IiA/zfjjWneA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NdGu3Jd4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6F317C4CEC5;
-	Wed,  2 Oct 2024 12:32:08 +0000 (UTC)
+	 Content-Type:MIME-Version; b=mS59feWlyvSwyq7bEKOtriG2dwcDU6XoLVfpjf53ZQ5Cmz7xOe7nZ7JLmq7sFgEpLYb0OlsoKGFFPdkFYoSKwDo9UwgyFPpUK/tf6pW7fcdhdqC8YfaLY7njfIiGRKJX8SuMzpWDzLkeh4/Mdgs91+GyW/3GF2hcPo7ZcVj9MXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uUsPMd5D; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1FD79C4CEC5;
+	Wed,  2 Oct 2024 12:41:35 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1727872331;
-	bh=jmIb9N65xqSFFeC8jnNiRe8dTESQm2WuM/5MyQ3DkQA=;
+	s=k20201202; t=1727872897;
+	bh=rsPFbKpiXtzp1H3myI10Z6ZOCFH7i1QWjc4oSum17fs=;
 	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
-	b=NdGu3Jd4CehAiRCuWuGywxCEDjpx5uUh6m5hOto+57YTXq+EiWbk5V1LZuGzReMov
-	 Q6ozBycd3nXL4HHnveh4Tq/1zn2LaTvIeikFu2k905dGnFMGQGoVA8Da4ewmXcVH78
-	 zgkfCDZSmAttN+2fUKq4wRkGRV9KS/K3z+FDQpDndtjtswDoZGQecu/QtlG80Izkii
-	 wTu063eEm3/9HP2yhspBHMZohf+E6auZ3y+t2k6ujqpiuXSd4qNI/Wy6zvm4Rgfq0U
-	 lAv08jWvScGmlWaK69d7ba6k/zd7kX6Hjk+z21x4RuuUWSz/pA4Pr1oalvuf1hWl7O
-	 xUyQCXqWsOr0Q==
-Message-ID: <74edd943c8899218683d6e9c3e6929a168470748.camel@kernel.org>
-Subject: Re: [PATCH v8 02/12] fs: add infrastructure for multigrain
- timestamps
+	b=uUsPMd5DAJcObXgz3J7RuwYOJ5aQ/VM/X8j30UiD9e0dS8zc3rx9yMv+m6jawNrFU
+	 abqeiBCcQWsyuYwhrzFyLvjmkB5+7Wln4h/GddMHtPTiznXwAUxludoVy43TTKV5wy
+	 06/uhbE0wivgMh8PgauEiVLMS1OPjp7z6YS0gN/jr+kItrj/P6udkuyRN4xir9WL8m
+	 h9QLFKM6aNs2/OPC72rTGrx/QFQl4v2UcN/4CCYeeaH4QZSZt/QND/9Xw3Bs5dvgYT
+	 GzqQNrZM9H/HHO/j12SXQkZ8FQWD65uA+byHiyrcyRA16zGK7YJTzUGKSk82CDqFr0
+	 Tc1d4edlcQuPg==
+Message-ID: <53bd978054a2ebfef490c8816629a6d9c59ed199.camel@kernel.org>
+Subject: Re: [PATCH v8 01/11] timekeeping: move multigrain timestamp floor
+ handling into timekeeper
 From: Jeff Layton <jlayton@kernel.org>
-To: Jan Kara <jack@suse.cz>
-Cc: John Stultz <jstultz@google.com>, Thomas Gleixner <tglx@linutronix.de>, 
+To: Thomas Gleixner <tglx@linutronix.de>, John Stultz <jstultz@google.com>, 
  Stephen Boyd <sboyd@kernel.org>, Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Steven Rostedt
- <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>, Mathieu
- Desnoyers <mathieu.desnoyers@efficios.com>,  Jonathan Corbet
- <corbet@lwn.net>, Randy Dunlap <rdunlap@infradead.org>, Chandan Babu R
- <chandan.babu@oracle.com>, "Darrick J. Wong" <djwong@kernel.org>, Theodore
- Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, Chris
- Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>, David Sterba
- <dsterba@suse.com>,  Hugh Dickins <hughd@google.com>, Andrew Morton
- <akpm@linux-foundation.org>, Chuck Lever <chuck.lever@oracle.com>, Vadim
- Fedorenko <vadim.fedorenko@linux.dev>,  linux-kernel@vger.kernel.org,
- linux-fsdevel@vger.kernel.org,  linux-trace-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org,  linux-xfs@vger.kernel.org,
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, Steven
+ Rostedt <rostedt@goodmis.org>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Jonathan Corbet
+ <corbet@lwn.net>, Chandan Babu R <chandan.babu@oracle.com>, "Darrick J.
+ Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, Andreas Dilger
+ <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>, Josef Bacik
+ <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,  Hugh Dickins
+ <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, Chuck Lever
+ <chuck.lever@oracle.com>, Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: Randy Dunlap <rdunlap@infradead.org>, linux-kernel@vger.kernel.org, 
+ linux-fsdevel@vger.kernel.org, linux-trace-kernel@vger.kernel.org, 
+ linux-doc@vger.kernel.org, linux-xfs@vger.kernel.org,
  linux-ext4@vger.kernel.org,  linux-btrfs@vger.kernel.org,
  linux-nfs@vger.kernel.org, linux-mm@kvack.org
-Date: Wed, 02 Oct 2024 08:32:07 -0400
-In-Reply-To: <20241002091405.7b2s4qvoaqrn3l4f@quack3>
-References: <20241001-mgtime-v8-0-903343d91bc3@kernel.org>
-	 <20241001-mgtime-v8-2-903343d91bc3@kernel.org>
-	 <20241001132027.ynzp4sahjek5umbb@quack3>
-	 <7761de29d15df87a29575de57554b56a91ae55a0.camel@kernel.org>
-	 <20241002091405.7b2s4qvoaqrn3l4f@quack3>
+Date: Wed, 02 Oct 2024 08:41:34 -0400
+In-Reply-To: <8734lgyote.ffs@tglx>
+References: <20240914-mgtime-v8-0-5bd872330bed@kernel.org>
+	 <20240914-mgtime-v8-1-5bd872330bed@kernel.org> <87a5g79aag.ffs@tglx>
+	 <874j6f99dg.ffs@tglx>
+	 <b300fec8b6f611662195e0339f290d473a41607c.camel@kernel.org>
+	 <878qv90x6w.ffs@tglx>
+	 <4933075b1023f466edb516e86608e0938de28c1d.camel@kernel.org>
+	 <87y138zyfu.ffs@tglx>
+	 <79a32ab9308d6e63e066aa17c5c2492b51b55850.camel@kernel.org>
+	 <87plokzuy6.ffs@tglx>
+	 <4aa41dcb6f4be736355506dd500c4d255e008764.camel@kernel.org>
+	 <8734lgyote.ffs@tglx>
 Autocrypt: addr=jlayton@kernel.org; prefer-encrypt=mutual;
  keydata=mQINBE6V0TwBEADXhJg7s8wFDwBMEvn0qyhAnzFLTOCHooMZyx7XO7dAiIhDSi7G1NPxw
  n8jdFUQMCR/GlpozMFlSFiZXiObE7sef9rTtM68ukUyZM4pJ9l0KjQNgDJ6Fr342Htkjxu/kFV1Wv
@@ -153,64 +158,41 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 
-On Wed, 2024-10-02 at 11:14 +0200, Jan Kara wrote:
-> On Tue 01-10-24 09:34:18, Jeff Layton wrote:
-> > On Tue, 2024-10-01 at 15:20 +0200, Jan Kara wrote:
-> > > > diff --git a/fs/stat.c b/fs/stat.c
-> > > > index 41e598376d7e..381926fb405f 100644
-> > > > --- a/fs/stat.c
-> > > > +++ b/fs/stat.c
-> > > > @@ -26,6 +26,35 @@
-> > > >  #include "internal.h"
-> > > >  #include "mount.h"
-> > > > =20
-> > > > +/**
-> > > > + * fill_mg_cmtime - Fill in the mtime and ctime and flag ctime as =
-QUERIED
-> > > > + * @stat: where to store the resulting values
-> > > > + * @request_mask: STATX_* values requested
-> > > > + * @inode: inode from which to grab the c/mtime
-> > > > + *
-> > > > + * Given @inode, grab the ctime and mtime out if it and store the =
-result
-> > > 						 ^^ of
+On Tue, 2024-10-01 at 14:45 +0200, Thomas Gleixner wrote:
+> On Tue, Oct 01 2024 at 05:45, Jeff Layton wrote:
+> > On Mon, 2024-09-30 at 23:35 +0200, Thomas Gleixner wrote:
+> > > > I certainly wouldn't rule out a workqueue job calling that function=
+,
+> > > > but this is something we do while dirtying an inode, and that's not
+> > > > typically done in interrupt context.
 > > >=20
-> > > > + * in @stat. When fetching the value, flag it as QUERIED (if not a=
-lready)
-> > > > + * so the next write will record a distinct timestamp.
-> > > > + */
-> > > > +void fill_mg_cmtime(struct kstat *stat, u32 request_mask, struct i=
-node *inode)
-> > > > +{
-> > >=20
-> > > Given how things worked out in the end, it seems this function doesn'=
-t need
-> > > to handle mtime at all and we can move mtime handling back to shared =
-generic
-> > > code?
+> > > The reason I'm asking is that if it's always syscall context,
+> > > i.e. write() or io_uring()/RPC request etc., then you can avoid the
+> > > whole global floor value dance and make it strictly per thread, which
+> > > simplifies the exercise significantly.
 > > >=20
 > >=20
-> > I don't think we can. The mtime is effectively derived from the ctime.
+> > I'm not sure I follow what you're proposing here.
 > >=20
-> > If I query only the mtime, I think it's reasonable to expect that it
-> > will change if there is another write, even if I don't query the ctime.
-> > We won't get that unless we can also set the flag in the ctime when
-> > only the mtime is requested.
+> > Consider two threads doing writes serially to different files. IOW, the
+> > second thread enters the write() syscall after the first thread returns
+> > from its write(). In that situation, the second timestamp mustn't
+> > appear to be earlier than the first (assuming no backward clock jump,
+> > of course).
+> >=20
+> > How would we ensure that with only per-thread structures?
 >=20
-> Aha, right. I already forgot about this :). Can you please add to the
-> comment the above explanation so that we remember next time somebody want=
-s
-> to "clean this up" like me ;)? Thanks!
->=20
-> Also feel free to add:
->=20
-> Reviewed-by: Jan Kara <jack@suse.cz>
->=20
-> 								Honza
+> Bah. Right. Ignore my sleep deprived rambling.
 
-Done, and the revised version is in my tree.
+No worries. My one big takeaway from working on all of this is that
+anything dealing with clocks and time is just difficult to
+conceptualize.
 
-Thanks for the review!
+Could I trouble you for an Acked-by on this patch? I think this series
+should probably go in via Christian's tree, but I don't think he wants
+to merge it without an explicit ack from the timekeeping maintainers.
+
+Thanks again for the review!
 --=20
 Jeff Layton <jlayton@kernel.org>
 
