@@ -1,89 +1,205 @@
-Return-Path: <linux-ext4+bounces-4435-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4436-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB0FF98CD68
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 08:54:12 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E50598CFDD
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 11:14:30 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 631361F232A0
-	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 06:54:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4E91289265
+	for <lists+linux-ext4@lfdr.de>; Wed,  2 Oct 2024 09:14:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC27B132121;
-	Wed,  2 Oct 2024 06:54:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09711198A10;
+	Wed,  2 Oct 2024 09:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KVecqr+N";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vBYEfZoW";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="KVecqr+N";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="vBYEfZoW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618002F34
-	for <linux-ext4@vger.kernel.org>; Wed,  2 Oct 2024 06:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8842519752C;
+	Wed,  2 Oct 2024 09:14:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727852045; cv=none; b=Tg+e9e1dI3WrgjkADZyFfwHmy1iINH4K0U4NOkivH3XT89AjsHaBq45e64qiv78cJ/ITb4IQDcWohDcMmB27VQ5MmIGYhuE0zipZIInFVmR9SBvzwNW5tz3BlOMqr3RCl3SQALENTTKUeOWLYCxjWokzXzOIN6vY2GXoJ1Nke0E=
+	t=1727860455; cv=none; b=qnqavttWXH8ESa47458m1Ua9CtA+d9S7Mh7D2849lw9AxMno7VDeGJT5zpg0DlgafA2l6sJucAqZuhukicdAUB7e6y6IWlf5ZJIfPaUVSnKWD+1b+ACihmUWOn6c9KkwhSCN0BbFw0UfrX0U1i6XBNQTcqI/sA8+xjCDIuN3Vu8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727852045; c=relaxed/simple;
-	bh=qa3infaQCAo057F7Q3AM/+WiiB9MI1QyjSlvDB9tifc=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=mtKjMwpaBaaBtDGTuART307HVL5PI7HuzRvs0uvFEXlwRQ1l/aHmWrLrVDkUivCIw9BiR1FvpMot96ft1NlG1PfqdrkW/fFtRbpfXLs+vTWtCu6VsXgoMEwWtBMmmYxlelF2wEku/V40xvbQ3DL7Bvx8j5D+UNJInWZPhIz8ciQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a3496b480dso52399585ab.2
-        for <linux-ext4@vger.kernel.org>; Tue, 01 Oct 2024 23:54:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727852043; x=1728456843;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=OAo2yMDD2BRuUPOels5Mo7AQowaBqVEM1zOH2WU7XjU=;
-        b=vV1jWh+YReZJSgJ3uzeL0prnqeQcR5Ep2f0E1luz3J8Rt3dDa8kf6PkU9HPgg39xxd
-         MfMHbLJFnq55w8aD/vr+Ip1Y9CzsfbG9WSSO2EFYTbyrI8W/o4z31P/6yKOXXoFVvrLt
-         fHlwyIJviuV5TGAuSL+k6ICDe0S7qnaOFz7QumQT+/7H/wISFCJ2cP9C7iaTtuquyn4A
-         SfIgPVUsYZ9FHyqZ0xJRFjidJFiaBw+kSroprAJ3/owOLmYqQVwIS/50j8Z01FYE5kcm
-         nKQuehKqOIbnY7FkcGbVVXBWuUfTb12/C7ged/EvT9aT8qgY8QI7ZNAIDecKvWHaeqNc
-         X66g==
-X-Forwarded-Encrypted: i=1; AJvYcCU3hFXjvR1rTc081xjI687Ffb+r/MqIDzsAbfgbry3mOHqk3gJLbiLPOdKjtIcD527opX25wF3LvgHS@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWlTSqT6KnMtE7/8u0Arvr3U22L+X2ZPnyQoVrdHkp25sgpSU7
-	LZ/t9/wDTTTCqkEGPzekSzwy616vkADffyH7QIaOB3Tutq9swYbh8PI55z9/hO7u0JPgzZldyZU
-	BXpXefDcIjxXHqfNfeJv7m8FGmV2cSu5OuXgkRy/GoS1KXIqKCtlH7sw=
-X-Google-Smtp-Source: AGHT+IEwUKkE6qT/FibZWUQl1zRTmkwHlgJFklLjNT9xLfKilC7YHJEl8j+wfeA4u0VwKv6ta/zYGiNuYsQ0Ps2OIofME+lrVMEm
+	s=arc-20240116; t=1727860455; c=relaxed/simple;
+	bh=CrBCKdgiMa08UPFj6MZxE0JaOv9NlkupQgNyP+8YPHE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cvQ1gwix5LEVonisx8PYPUjv6rX+6KHit2BKYMz0dSISxGuUA5r0rTqxe+n2XG0WrW9DzSwFIoN7kO2iRtiejUdc2O+O5TDo/FhGFlGnhLvpRmoWIutOu5EqLIdh5vpNFBRe3wMUVl2ODHAggbhVetOImaZWJalqizUiVoUTh7Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KVecqr+N; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vBYEfZoW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=KVecqr+N; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=vBYEfZoW; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 3042721B70;
+	Wed,  2 Oct 2024 09:14:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727860446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
+	b=KVecqr+NBI1yiYx1BRcvKKnoyXIivh15+piF+YZyiWfrDIRo6SsuQJrxd8RL6jhFpnJG3g
+	bXyd/69TLuagh7zkintkdg6FnyOvc8kIouzsWt4Uad7lwiaHv6mwQM+0iwyXWjl4MXpXU1
+	4xUac63Ufy/zn/WHxi5yMhRCoLEzkNw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727860446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
+	b=vBYEfZoWDP05pmDCLOTbylMr+FqLkg7Ki23XcVZOBFd4msaAsoqBKQbkafeu2FG7KWktRV
+	3NqfRi0Nn6eFECAg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1727860446; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
+	b=KVecqr+NBI1yiYx1BRcvKKnoyXIivh15+piF+YZyiWfrDIRo6SsuQJrxd8RL6jhFpnJG3g
+	bXyd/69TLuagh7zkintkdg6FnyOvc8kIouzsWt4Uad7lwiaHv6mwQM+0iwyXWjl4MXpXU1
+	4xUac63Ufy/zn/WHxi5yMhRCoLEzkNw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1727860446;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=ciY4s211AtNsmLMEFppWW09ynC9Vd3xoRhyo0YMhjdc=;
+	b=vBYEfZoWDP05pmDCLOTbylMr+FqLkg7Ki23XcVZOBFd4msaAsoqBKQbkafeu2FG7KWktRV
+	3NqfRi0Nn6eFECAg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1FA9613A6E;
+	Wed,  2 Oct 2024 09:14:06 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 4XuwB94O/WYUSwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 02 Oct 2024 09:14:06 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 8280EA08CB; Wed,  2 Oct 2024 11:14:05 +0200 (CEST)
+Date: Wed, 2 Oct 2024 11:14:05 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Jan Kara <jack@suse.cz>, John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>,
+	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v8 02/12] fs: add infrastructure for multigrain timestamps
+Message-ID: <20241002091405.7b2s4qvoaqrn3l4f@quack3>
+References: <20241001-mgtime-v8-0-903343d91bc3@kernel.org>
+ <20241001-mgtime-v8-2-903343d91bc3@kernel.org>
+ <20241001132027.ynzp4sahjek5umbb@quack3>
+ <7761de29d15df87a29575de57554b56a91ae55a0.camel@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a6e:b0:3a0:ab71:ed38 with SMTP id
- e9e14a558f8ab-3a36592a7b6mr19288205ab.14.1727852043506; Tue, 01 Oct 2024
- 23:54:03 -0700 (PDT)
-Date: Tue, 01 Oct 2024 23:54:03 -0700
-In-Reply-To: <Zvzo1RC8scv-muur@fedora>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <66fcee0b.050a0220.f28ec.04f5.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] KASAN: out-of-bounds Read in ext4_xattr_set_entry
-From: syzbot <syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, ojaswin@linux.ibm.com, qianqiang.liu@163.com, 
-	syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7761de29d15df87a29575de57554b56a91ae55a0.camel@kernel.org>
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCPT_COUNT_TWELVE(0.00)[32];
+	ARC_NA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	R_RATELIMIT(0.00)[to_ip_from(RLy4jt9zmnbk4oncb1qwahh5jo)];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo]
+X-Spam-Score: -3.80
+X-Spam-Flag: NO
 
-Hello,
+On Tue 01-10-24 09:34:18, Jeff Layton wrote:
+> On Tue, 2024-10-01 at 15:20 +0200, Jan Kara wrote:
+> > > diff --git a/fs/stat.c b/fs/stat.c
+> > > index 41e598376d7e..381926fb405f 100644
+> > > --- a/fs/stat.c
+> > > +++ b/fs/stat.c
+> > > @@ -26,6 +26,35 @@
+> > >  #include "internal.h"
+> > >  #include "mount.h"
+> > >  
+> > > +/**
+> > > + * fill_mg_cmtime - Fill in the mtime and ctime and flag ctime as QUERIED
+> > > + * @stat: where to store the resulting values
+> > > + * @request_mask: STATX_* values requested
+> > > + * @inode: inode from which to grab the c/mtime
+> > > + *
+> > > + * Given @inode, grab the ctime and mtime out if it and store the result
+> > 						 ^^ of
+> > 
+> > > + * in @stat. When fetching the value, flag it as QUERIED (if not already)
+> > > + * so the next write will record a distinct timestamp.
+> > > + */
+> > > +void fill_mg_cmtime(struct kstat *stat, u32 request_mask, struct inode *inode)
+> > > +{
+> > 
+> > Given how things worked out in the end, it seems this function doesn't need
+> > to handle mtime at all and we can move mtime handling back to shared generic
+> > code?
+> > 
+> 
+> I don't think we can. The mtime is effectively derived from the ctime.
+> 
+> If I query only the mtime, I think it's reasonable to expect that it
+> will change if there is another write, even if I don't query the ctime.
+> We won't get that unless we can also set the flag in the ctime when
+> only the mtime is requested.
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Aha, right. I already forgot about this :). Can you please add to the
+comment the above explanation so that we remember next time somebody wants
+to "clean this up" like me ;)? Thanks!
 
-Reported-by: syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
-Tested-by: syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
+Also feel free to add:
 
-Tested on:
+Reviewed-by: Jan Kara <jack@suse.cz>
 
-commit:         e32cde8d Merge tag 'sched_ext-for-6.12-rc1-fixes-1' of..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=13657dd0580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=286b31f2cf1c36b5
-dashboard link: https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=122da580580000
-
-Note: testing is done by a robot and is best-effort only.
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
