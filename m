@@ -1,168 +1,143 @@
-Return-Path: <linux-ext4+bounces-4469-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4470-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC3FF98EFC4
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2024 14:55:10 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B33C598FCCC
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 06:49:45 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2811A1F21BD2
-	for <lists+linux-ext4@lfdr.de>; Thu,  3 Oct 2024 12:55:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 69FF71F236CC
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 04:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBE1199225;
-	Thu,  3 Oct 2024 12:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B349E57880;
+	Fri,  4 Oct 2024 04:49:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hxGpOvbU"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hVi6pqYK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6825F15539D;
-	Thu,  3 Oct 2024 12:54:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 021819475;
+	Fri,  4 Oct 2024 04:49:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1727960095; cv=none; b=mhWnlkccL+mcVZ22PDe3KVIN4MGivowdy3SCKIDq9iPSGZGQx1x3JIHqTF7WsodSmIsyWGNB6V9espboliqZE8ZOqYBdmdt8YO7BdjDyfagk2lm5JHV6Edc2XVwnN7uasrpzEPo1Srj7Ogib8mBzqO69agmqzpYErVGz3TUn6dQ=
+	t=1728017368; cv=none; b=QJqXhmXioBBS/Ij9ez1rK/DT9XPBR4z2Yo6Ougf5ONJ97BVXHgoudQxmX2/Aw3rGP7dBgLVjhNM7O8+v9jaoY4dX8FUbwy2rSMRxMTWMhulcXg0JgugMtebYbjlRfKp6Jm22LBHUUG6pEaroc2YEV9dyM1dvOcNqUfmC0SmsI1Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1727960095; c=relaxed/simple;
-	bh=KljAQHtSfrZelRNu/DeQx5LVY5cSuSW2WcANOdnrzUc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=TCtKyi9Qfsy/Ig5seDd8pWEtROtLbCWZydj9Hz2E9tDDNyyQ0k7WChyZ7WSJeluX4cfstjHbBo0U3JCn2g5LXBdmA94awIAMjcaxeolZw7tJ8EqYMPiDf6fnkwsKrtvz5opsidDPUgCFrJSsbjkVhz5aFv5DTTxumbiHrESWzeM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hxGpOvbU; arc=none smtp.client-ip=209.85.214.170
+	s=arc-20240116; t=1728017368; c=relaxed/simple;
+	bh=TUsrG1YURfFbI9ZQ5O9KwQkkpUD3OiESPgahQWq2Rus=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dQXOooEoqL21yRBaPHJ8i6qFu++3c+hZc0QA5OJydLIGGocFyAp5/HdU+lYmhg4MKa7BNvjfpZeSFpilEfsBWFmATkPAqMe/MAIHXfLk/a5rZxnBNil+VddPrhHBwUpPxbApR/I5RLPD7njcinx5EIecMHhDwnHesGhtGVTm+UE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hVi6pqYK; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-20b0b5cdb57so14280245ad.1;
-        Thu, 03 Oct 2024 05:54:54 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-20b64584fd4so16764895ad.1;
+        Thu, 03 Oct 2024 21:49:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1727960094; x=1728564894; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=LsC4l5sUrgtE5C3AhIFngE9xrlbDasfd0CJezQP/zPM=;
-        b=hxGpOvbUQf/tayGvBmdEgNENJXZMfND0qFUTb9WtKeIULuvfy9EzB/Bn+PCHeT6BIW
-         AujUhzskKNHJBVHpRXq5dDDiUOCCL8O/tHyxwBLeh+3moqOoVghUik2jiTaF2YPTSaRw
-         23AFP0WkJAlADVM18co0v5sGJVdhoAq2Phbo2OKruE53h3ilCg+oQTE7L1BiKu+7gaqN
-         uHWCe/z0Sw73x6OP+I3FTGWgCQgvUkT+6bKxbyryDr0KiWLma7jaLO4h8R30zSDCPyjN
-         c8ygi2i1hOadgHey6qVXvgRn77q7dXIPgErQ0ODRYYMjmFRO72e6fRyBaoPnedoXE9Eq
-         66VA==
+        d=gmail.com; s=20230601; t=1728017366; x=1728622166; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=TUsrG1YURfFbI9ZQ5O9KwQkkpUD3OiESPgahQWq2Rus=;
+        b=hVi6pqYKrn8dgM0eI9ixdE8WIexPLQwey+MXTfB7nkMehLW5N3wwatdfeCYP5P02+P
+         2aMcfARvvz6lnmj9H4QNS8Chz3SCOo/wpbpjaKnt67xRwmxyEBC3Uh+qL9jGRgcttizR
+         Y3obqhXJYcJtmHgppDwYb6UgiuyKEn5X7OuhkL6Jemp7p56srEJI9qiiwuoB7P4s81Zx
+         4Xfk9k9xx7B8gfvGyNaDO5sCPtOkqllD66J9SwR9p3xoqS9JFydoFzsnzeMV3+zy/TwC
+         HQ0+jUweQGQLIi8GVThtk9Mgkegm2Wndm0gsgyV0QfDwMDawVRGsoMhX+hwa4J7M8biJ
+         x1AQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1727960094; x=1728564894;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=LsC4l5sUrgtE5C3AhIFngE9xrlbDasfd0CJezQP/zPM=;
-        b=NdoSmOUSELL/F5FAIOIQ7rohNdEivx+fqeypkSZsWRNR1N3hQ3w10yonRZIwFa9La3
-         gkAp305+sMWe5omZBshBD0LTAvvJ/NkvBUmw5J/Tu/lJTSrmzbUztiV2Vb9tZ6KqjE2E
-         wMk3zgOl2E2/Q3ArX8D/lC226aJY4L+3ofcL0TKWar/7BMC1mBBJeqfNdT3fEyNYFXE7
-         ODTj21S8BZHO4ejLC11O7FhATDXUlgYPmHn6kajmb6zzh1QTTpy01ci6xgwKh/pEmKgs
-         9k8BXpayTpT4sL8fbHetd2CeYV7O9Cm/p0uPylYeUq8c6YUmWzVNJRyM0/Kuq8jn+8ne
-         QLtA==
-X-Forwarded-Encrypted: i=1; AJvYcCUQCyODv/1x/yx4V2zRTZs+Uv6umultSR5KToecaEYiCo5eySQEQFd34XKeH1Qj5uhaY2DmMceQhLhJZuZ6@vger.kernel.org, AJvYcCVlxyHAewJ6XiuvgFNtOWSu7o+jleaYjbRUltFPpzC+zfczfkbj8ik4gvKrZfmnP4rGwWqio4304uHG@vger.kernel.org, AJvYcCXD0o8uGnHd8iZlLkbEhWLWxmqN5sw1XOlxXVftuE7myxy62e6HUzKCh0debk1jPlVrPDJ3sBbY@vger.kernel.org
-X-Gm-Message-State: AOJu0YyWBNhuFXXU4fxTCY3nWJDkPRL4o3tQ/oa0mcLOUJ1KWexwtj2z
-	aHIbrfMj8bdX5NedOPyawHGGDytJC+VDqVDNu4EoOt+IV41aJC//
-X-Google-Smtp-Source: AGHT+IEVVMmS1YZ2exZ1znFQnn9/34PbEJhr5acgKukRACDsDk/3Nx413ukvQ2Vv4QCXPWtKG24YCA==
-X-Received: by 2002:a17:903:41ce:b0:206:9c9b:61bb with SMTP id d9443c01a7336-20be187334amr45591905ad.6.1727960093539;
-        Thu, 03 Oct 2024 05:54:53 -0700 (PDT)
-Received: from localhost.localdomain ([121.185.186.233])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20beefad240sm8324875ad.206.2024.10.03.05.54.51
+        d=1e100.net; s=20230601; t=1728017366; x=1728622166;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=TUsrG1YURfFbI9ZQ5O9KwQkkpUD3OiESPgahQWq2Rus=;
+        b=Uez4rjhsNmKsYoe/XaFg5wOnVucWeobAg6vKPA4F7oT0SCiuIO6JvRz/l/lF1FpvVN
+         +HqU7MoeRGpedZyghSTDfz8D/9UrZAnQJwZmPwB00knZMY8mbt2Z04RH0ICFdWkh7c82
+         XRyB3290xnQtSTENukEB+C1yu51eDxHKNcgSLYfb+Jq0Du0bhdWPOST3rwljGhfxv1um
+         aWnkmOs2J7btwWymgTGvnWn1hc1lFB4htCTABQd3mTAjiDqdkaJZ6wb+b4HZ50+qNqUt
+         ChHrU65wjXyUb6C9UHo2ao5XOehiyZmGIdT7sd6k3N7yRw64BQ+S4fkdzAOjWz2T0vll
+         Q1Bg==
+X-Forwarded-Encrypted: i=1; AJvYcCUE9Wo63qg9LZj4tgHdX9hTRtxJIIiYRmo1O3MQLP0Iqaoqb3c5m6kZYSKVBzUKFHgGx/DkS39rrbwF@vger.kernel.org, AJvYcCUO6FHwqC5n1RM1ObWoHF1jDCASQwObgBmxEKd5qUNpW4knWog6o+ILbUHBsnI7E1AT5X8Wf7lXwu/g4SbOAg==@vger.kernel.org, AJvYcCVJ/w4XsBf3ZYT4XO/1DJevRd02A//DnFnyQKwT5ApSIg6hxObHOlJRm4x+WOGrCbqkCokIcpUvNGF9hQ==@vger.kernel.org, AJvYcCVSB36FTaycSaEu8J8sAXgWHEPjodeUcSstg1neePtKwxZIJ1oxj077SUtUpJJl7lTDHZpfxymIUcv4@vger.kernel.org, AJvYcCX/AmP27C06Gn1XnE8fi1EJ3uGc1/p3E4ioPVh64bpYWIQuU/WyO4cYRW3ExQsdiCvhG3oQ2AKVbkWm@vger.kernel.org, AJvYcCXCAgarJlzAGjaaSpZ4eQYgEiJo+XufLAUWqej1/qz/QjzFxnBb8WIp/Vw5LzXBu6Q0eAW3i67JxyvJ6y7sfRv5ET5u@vger.kernel.org, AJvYcCXuSJ94SmW3oLDSqh4gEuVSZ6cpIMwNINwHrW0saYiWLOpYh56DNlcoeLdW0XJAR7i/DYF+261CeGn+OQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz7szFqV9+BoQphTwgaC/Agvqk6AH1gOSDsgquNsL8WDjZo5XDK
+	2on3CWckidUp6/2J0bwVQkcP+KBJZfZXoH4fXQ0rRaeEolu+HQTf
+X-Google-Smtp-Source: AGHT+IEOZ5VHabq4uat+pKHrLZtskvm5qkTvRMBGxvUt1yb7vzghAthcJh027s31hSLyjL6Ys/bM7A==
+X-Received: by 2002:a17:902:ec87:b0:20b:5046:356 with SMTP id d9443c01a7336-20bff04fad3mr14990785ad.36.1728017366009;
+        Thu, 03 Oct 2024 21:49:26 -0700 (PDT)
+Received: from archie.me ([103.124.138.155])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20beef8decasm16481015ad.142.2024.10.03.21.49.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 03 Oct 2024 05:54:53 -0700 (PDT)
-From: Jeongjun Park <aha310510@gmail.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: akpm@osdl.org,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org,
-	Jeongjun Park <aha310510@gmail.com>
-Subject: [PATCH v3] ext4: prevent data-race that occur when read/write ext4_group_desc structure members
-Date: Thu,  3 Oct 2024 21:53:37 +0900
-Message-Id: <20241003125337.47283-1-aha310510@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Thu, 03 Oct 2024 21:49:25 -0700 (PDT)
+Received: by archie.me (Postfix, from userid 1000)
+	id CE80345D328D; Fri, 04 Oct 2024 11:49:22 +0700 (WIB)
+Date: Fri, 4 Oct 2024 11:49:22 +0700
+From: Bagas Sanjaya <bagasdotme@gmail.com>
+To: Jeff Layton <jlayton@kernel.org>, John Stultz <jstultz@google.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Stephen Boyd <sboyd@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Chandan Babu R <chandan.babu@oracle.com>,
+	"Darrick J. Wong" <djwong@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Chuck Lever <chuck.lever@oracle.com>,
+	Vadim Fedorenko <vadim.fedorenko@linux.dev>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-nfs@vger.kernel.org,
+	linux-mm@kvack.org
+Subject: Re: [PATCH v9 08/12] Documentation: add a new file documenting
+ multigrain timestamps
+Message-ID: <Zv9z0qWAvTuS8zg7@archie.me>
+References: <20241002-mgtime-v9-0-77e2baad57ac@kernel.org>
+ <20241002-mgtime-v9-8-77e2baad57ac@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="OBP6+ccGLM5fNBOy"
+Content-Disposition: inline
+In-Reply-To: <20241002-mgtime-v9-8-77e2baad57ac@kernel.org>
 
-Currently, data-race like [1] occur in fs/ext4/ialloc.c
 
-find_group_other() and find_group_orlov() read *_lo, *_hi with 
-ext4_free_inodes_count without additional locking. This can cause data-race,
-but since the lock is held for most writes and free inodes value is generally
-not a problem even if it is incorrect, it is more appropriate to use 
-READ_ONCE()/WRITE_ONCE() than to add locking.
+--OBP6+ccGLM5fNBOy
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-[1]
+On Wed, Oct 02, 2024 at 02:49:36PM -0400, Jeff Layton wrote:
+> Add a high-level document that describes how multigrain timestamps work,
+> rationale for them, and some info about implementation and tradeoffs.
+>=20
 
-==================================================================
-BUG: KCSAN: data-race in ext4_free_inodes_count / ext4_free_inodes_set
+LGTM, thanks!
 
-write to 0xffff88810404300e of 2 bytes by task 6254 on cpu 1:
- ext4_free_inodes_set+0x1f/0x80 fs/ext4/super.c:405
- __ext4_new_inode+0x15ca/0x2200 fs/ext4/ialloc.c:1216
- ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
- vfs_symlink+0xca/0x1d0 fs/namei.c:4615
- do_symlinkat+0xe3/0x340 fs/namei.c:4641
- __do_sys_symlinkat fs/namei.c:4657 [inline]
- __se_sys_symlinkat fs/namei.c:4654 [inline]
- __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
- x64_sys_call+0x1dda/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:267
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
 
-read to 0xffff88810404300e of 2 bytes by task 6257 on cpu 0:
- ext4_free_inodes_count+0x1c/0x80 fs/ext4/super.c:349
- find_group_other fs/ext4/ialloc.c:594 [inline]
- __ext4_new_inode+0x6ec/0x2200 fs/ext4/ialloc.c:1017
- ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
- vfs_symlink+0xca/0x1d0 fs/namei.c:4615
- do_symlinkat+0xe3/0x340 fs/namei.c:4641
- __do_sys_symlinkat fs/namei.c:4657 [inline]
- __se_sys_symlinkat fs/namei.c:4654 [inline]
- __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
- x64_sys_call+0x1dda/0x2d60 arch/x86/include/generated/asm/syscalls_64.h:267
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x76/0x7e
+--=20
+An old man doll... just what I always wanted! - Clara
 
-value changed: 0x185c -> 0x185b
+--OBP6+ccGLM5fNBOy
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Cc: <stable@vger.kernel.org>
-Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
-Signed-off-by: Jeongjun Park <aha310510@gmail.com>
----
- fs/ext4/super.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 16a4ce704460..8337c4999f90 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -346,9 +346,9 @@ __u32 ext4_free_group_clusters(struct super_block *sb,
- __u32 ext4_free_inodes_count(struct super_block *sb,
- 			      struct ext4_group_desc *bg)
- {
--	return le16_to_cpu(bg->bg_free_inodes_count_lo) |
-+	return le16_to_cpu(READ_ONCE(bg->bg_free_inodes_count_lo)) |
- 		(EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT ?
--		 (__u32)le16_to_cpu(bg->bg_free_inodes_count_hi) << 16 : 0);
-+		 (__u32)le16_to_cpu(READ_ONCE(bg->bg_free_inodes_count_hi)) << 16 : 0);
- }
- 
- __u32 ext4_used_dirs_count(struct super_block *sb,
-@@ -402,9 +402,9 @@ void ext4_free_group_clusters_set(struct super_block *sb,
- void ext4_free_inodes_set(struct super_block *sb,
- 			  struct ext4_group_desc *bg, __u32 count)
- {
--	bg->bg_free_inodes_count_lo = cpu_to_le16((__u16)count);
-+	WRITE_ONCE(bg->bg_free_inodes_count_lo, cpu_to_le16((__u16)count));
- 	if (EXT4_DESC_SIZE(sb) >= EXT4_MIN_DESC_SIZE_64BIT)
--		bg->bg_free_inodes_count_hi = cpu_to_le16(count >> 16);
-+		WRITE_ONCE(bg->bg_free_inodes_count_hi, cpu_to_le16(count >> 16));
- }
- 
- void ext4_used_dirs_set(struct super_block *sb,
---
+iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZv9zzgAKCRD2uYlJVVFO
+o8z+AQDazz4grBaoJ/mtVu4UdxF3vdyAVG6PXKSWPFhB0JejcwD9E8qbXnSUInxR
+88neK7F3Iq9tS3rwTgLVOuOzET6WWAE=
+=TFot
+-----END PGP SIGNATURE-----
+
+--OBP6+ccGLM5fNBOy--
 
