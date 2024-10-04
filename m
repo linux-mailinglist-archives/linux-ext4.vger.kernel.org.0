@@ -1,57 +1,58 @@
-Return-Path: <linux-ext4+bounces-4498-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4499-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C1C1990E5C
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 21:33:09 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A088990E17
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 21:26:46 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 544B8B2F5DA
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 19:26:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E6B0284ADE
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 19:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E954E21A6F8;
-	Fri,  4 Oct 2024 18:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0862221CABF;
+	Fri,  4 Oct 2024 18:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bPwiCdss"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PPTpd6ir"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8768D1DE2D9;
-	Fri,  4 Oct 2024 18:29:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 911E021CAB1;
+	Fri,  4 Oct 2024 18:29:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728066550; cv=none; b=PeWeTPwCq9JNmmjRV/tqX7jeRBKGwrkmnmfldtrAWVqdpWEGgmzENHlzh9idswyE18pHg69+52DO1cfxNW9nTVM5Wlt6fGO7cQZmLhbFzPjps15JsxRhpOTZW470Kn0drwWx9wbXP5H4/VTG6FGcBQEnoh3YDKngawKLFxjdisI=
+	t=1728066551; cv=none; b=P96fTqI0zMFy4Jtw/82T+fIz9Xng9rFdWpHE6m2SJm7LGGo49epBiuUIZNMerbrCg6uZa3QgHkzmYUn189lsKyN0GuAiDxeY6UcgyYF7/wo/HhD9CSCzNDgtqRsThnB5rZ4V2QeQFZx0V+Og8UMyHcwaygOCULzVKF8sHR+RojY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728066550; c=relaxed/simple;
-	bh=+pmAN/xxixH3Lda4/PTI2pawJU3OX9izkBq8sBxqOeU=;
+	s=arc-20240116; t=1728066551; c=relaxed/simple;
+	bh=7KsdUYsx0mqG93eBQ1UwLX1plpEzS7CoypLGvF9n4OI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YtKQ8CH2Qn9W5eNsTz35cRs+KZ2l+nb1dLNNYvNKztyGc+dHg9SaA7oZSRFvZI6C58TL/koJXi4AEsrQZIP3ls2THmU5vNozzeD+0zTeoL9MYpHfy71gu55ojsrmD05ORnmBOh01o4D1X4Pkcg9VghWf7mhVmabYis7Jw9WWfcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bPwiCdss; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44BCEC4CEC6;
-	Fri,  4 Oct 2024 18:29:09 +0000 (UTC)
+	 MIME-Version; b=XiSryJh3e44ti1wm2bh54Far9rPhb2HA6aCX0T4jCfRVPmANnQp/imRu/sT+9JCRxmofuhKXwLtzrxpuLy5Zl/rUR1JvD3gpn4OVf/G61HSZng1y5pnDxLGxE505N59c/2k0S9I1zaP9hcPOFKN6mdLdfNm7VRTvK9Dr826qbQw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PPTpd6ir; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 89220C4CECC;
+	Fri,  4 Oct 2024 18:29:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728066550;
-	bh=+pmAN/xxixH3Lda4/PTI2pawJU3OX9izkBq8sBxqOeU=;
+	s=k20201202; t=1728066551;
+	bh=7KsdUYsx0mqG93eBQ1UwLX1plpEzS7CoypLGvF9n4OI=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bPwiCdssxb2vZjbH6jmgdfcgE+HWY0nY6YCAOSbopwblIt2rB6shiRUgpgtFtVjls
-	 sttmT+RmebD0vLqPWlVxlLzUP0okan3QCE1bcCdlrSXOU8fj1rawKScEA6lLZFzmM1
-	 QHenPEPj/usflrAYMa5tpB78N4lWmY+u/Z20/c/kDIuoFpDUdz3cCJ/4zptf4uh7hr
-	 XCKEWOrPkUSWcUmnTemCn9+3TGDHZ9Ijql9b9JuEpL4RYmzDsH9k+fI0bPPPWxE2O6
-	 nPa1tDqQWqJuw2wdMipXIIVYrXufjZUuGoyAUblwzoY13kolzzHRfPOV8u6WGF933+
-	 WxB/xeqDN+8rg==
+	b=PPTpd6ir6u9vc6PK+3JzOA94zCzxe1Ri+8XVlqLME8SqSi5IYn6GqZH3/m+At9pEK
+	 lEbHyHGXl6JFviMe+nJPn9+rAMqHavCHemeDBb/KXELpMmTrsjcXSKafpDNEISQSmj
+	 CD+++ockSgO6Ce1PE27Mc1mGnTDvn5aieJlnh++H4MhQFE7VMEzafpId7LMGn9EoCv
+	 QXgZ9Kz9jqIlkG573+Q1iTDwqxghnE42sBbVKZJqSpwlfqCxfswKUMGq9iKCBDEy6n
+	 8TOzv6RUDcoHNUc3W6VAGilcC841t2mKAjtM/8LwqfADFD6FVGq6sM6PRFdXQutW/I
+	 NKif6VRSAChyw==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
+Cc: Jan Kara <jack@suse.cz>,
+	Christian Brauner <brauner@kernel.org>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 5.15 08/31] ext4: ext4_search_dir should return a proper error
-Date: Fri,  4 Oct 2024 14:28:16 -0400
-Message-ID: <20241004182854.3674661-8-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 5.15 09/31] ext4: don't set SB_RDONLY after filesystem errors
+Date: Fri,  4 Oct 2024 14:28:17 -0400
+Message-ID: <20241004182854.3674661-9-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241004182854.3674661-1-sashal@kernel.org>
 References: <20241004182854.3674661-1-sashal@kernel.org>
@@ -66,84 +67,54 @@ X-Patchwork-Hint: Ignore
 X-stable-base: Linux 5.15.167
 Content-Transfer-Encoding: 8bit
 
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+From: Jan Kara <jack@suse.cz>
 
-[ Upstream commit cd69f8f9de280e331c9e6ff689ced0a688a9ce8f ]
+[ Upstream commit d3476f3dad4ad68ae5f6b008ea6591d1520da5d8 ]
 
-ext4_search_dir currently returns -1 in case of a failure, while it returns
-0 when the name is not found. In such failure cases, it should return an
-error code instead.
+When the filesystem is mounted with errors=remount-ro, we were setting
+SB_RDONLY flag to stop all filesystem modifications. We knew this misses
+proper locking (sb->s_umount) and does not go through proper filesystem
+remount procedure but it has been the way this worked since early ext2
+days and it was good enough for catastrophic situation damage
+mitigation. Recently, syzbot has found a way (see link) to trigger
+warnings in filesystem freezing because the code got confused by
+SB_RDONLY changing under its hands. Since these days we set
+EXT4_FLAGS_SHUTDOWN on the superblock which is enough to stop all
+filesystem modifications, modifying SB_RDONLY shouldn't be needed. So
+stop doing that.
 
-This becomes even more important when ext4_find_inline_entry returns an
-error code as well in the next commit.
-
--EFSCORRUPTED seems appropriate as such error code as these failures would
-be caused by unexpected record lengths and is in line with other instances
-of ext4_check_dir_entry failures.
-
-In the case of ext4_dx_find_entry, the current use of ERR_BAD_DX_DIR was
-left as is to reduce the risk of regressions.
-
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Link: https://patch.msgid.link/20240821152324.3621860-2-cascardo@igalia.com
+Link: https://lore.kernel.org/all/000000000000b90a8e061e21d12f@google.com
+Reported-by: Christian Brauner <brauner@kernel.org>
+Signed-off-by: Jan Kara <jack@suse.cz>
+Reviewed-by: Christian Brauner <brauner@kernel.org>
+Link: https://patch.msgid.link/20240805201241.27286-1-jack@suse.cz
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/ext4/super.c | 9 +++++----
+ 1 file changed, 5 insertions(+), 4 deletions(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index a80f2cdab3744..3fb3c5dfded70 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1526,7 +1526,7 @@ static bool ext4_match(struct inode *parent,
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b09b7a6b7a154..93eb26c162422 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -674,11 +674,12 @@ static void ext4_handle_error(struct super_block *sb, bool force_ro, int error,
+ 
+ 	ext4_msg(sb, KERN_CRIT, "Remounting filesystem read-only");
+ 	/*
+-	 * Make sure updated value of ->s_mount_flags will be visible before
+-	 * ->s_flags update
++	 * EXT4_FLAGS_SHUTDOWN was set which stops all filesystem
++	 * modifications. We don't set SB_RDONLY because that requires
++	 * sb->s_umount semaphore and setting it without proper remount
++	 * procedure is confusing code such as freeze_super() leading to
++	 * deadlocks and other problems.
+ 	 */
+-	smp_wmb();
+-	sb->s_flags |= SB_RDONLY;
  }
  
- /*
-- * Returns 0 if not found, -1 on failure, and 1 on success
-+ * Returns 0 if not found, -EFSCORRUPTED on failure, and 1 on success
-  */
- int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		    struct inode *dir, struct ext4_filename *fname,
-@@ -1547,7 +1547,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 			 * a full check */
- 			if (ext4_check_dir_entry(dir, NULL, de, bh, search_buf,
- 						 buf_size, offset))
--				return -1;
-+				return -EFSCORRUPTED;
- 			*res_dir = de;
- 			return 1;
- 		}
-@@ -1555,7 +1555,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		de_len = ext4_rec_len_from_disk(de->rec_len,
- 						dir->i_sb->s_blocksize);
- 		if (de_len <= 0)
--			return -1;
-+			return -EFSCORRUPTED;
- 		offset += de_len;
- 		de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
- 	}
-@@ -1707,8 +1707,10 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 			goto cleanup_and_exit;
- 		} else {
- 			brelse(bh);
--			if (i < 0)
-+			if (i < 0) {
-+				ret = ERR_PTR(i);
- 				goto cleanup_and_exit;
-+			}
- 		}
- 	next:
- 		if (++block >= nblocks)
-@@ -1803,7 +1805,7 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
- 		if (retval == 1)
- 			goto success;
- 		brelse(bh);
--		if (retval == -1) {
-+		if (retval < 0) {
- 			bh = ERR_PTR(ERR_BAD_DX_DIR);
- 			goto errout;
- 		}
+ static void flush_stashed_error_work(struct work_struct *work)
 -- 
 2.43.0
 
