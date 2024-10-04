@@ -1,57 +1,57 @@
-Return-Path: <linux-ext4+bounces-4509-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4510-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8072D990F0F
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 21:47:39 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 22276990F12
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 21:47:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B22431C228E0
-	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 19:47:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D81A7281B72
+	for <lists+linux-ext4@lfdr.de>; Fri,  4 Oct 2024 19:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 873E21E1C0A;
-	Fri,  4 Oct 2024 18:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C924422F8FE;
+	Fri,  4 Oct 2024 18:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VgBIBt96"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UfEQpx4Y"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234A522F276;
-	Fri,  4 Oct 2024 18:31:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634F322F8F1;
+	Fri,  4 Oct 2024 18:32:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728066719; cv=none; b=IpZy/U61zJTBxuMiotO3VjiXHP6oWOYSRkk5umH0fI4CaR6OexeHs5LmUnraVbMlGKkPkOd2CH7qugYqmAane0p15cRFCL0LLXydwyyTKj3r0cl38fc9QlJQIu+MHIUfugDN24hZPOfb1xHc783iW0gF+41SSBRj5HDRIOPzKCk=
+	t=1728066720; cv=none; b=hOPQ0e2XmYIAa1nhxKmBueJzLJnWLR+ckfdDJ/nlAtbC10FdG8SkPGfLqqfYOr1bE7KmpU4ENPoxVb7+pCnKS0VZMH9kOiBKz1z0n+b9GnnOPwUV2Jym4IRo3ztJ5riFC7kApUXBEavtwz48ByBmhkOgvFK5rkvhawzNWSibjdw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728066719; c=relaxed/simple;
-	bh=JfCfNyA1QXgico1DtpJL27YBJTBzAiIbh+kl2HmvZZQ=;
+	s=arc-20240116; t=1728066720; c=relaxed/simple;
+	bh=4kxQKLlLrCiPdaoQ3J/WHpLrnuj0Iq5pKA1U+lUw3Rk=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QHodIR3abRq3gY3xLgL55xKA2IKDdDAZdqM6udbDpqL2VNNh/JtmeNJsha6hDP2viqUIYN2zqAJArreSPRz1OISmcFmdv1Qytyplktq7j82HexSWXHMoAvgn0pA5L9NrtI5b4KefKj8HmTpLObzCdaTC2z+pRgtFKmKH6yelhlg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VgBIBt96; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2ED80C4CEC6;
-	Fri,  4 Oct 2024 18:31:58 +0000 (UTC)
+	 MIME-Version:Content-Type; b=YBtW7Yb/blphXScJD4p7ne7mU5f5+vO9S2r90DqK8vCaeUTPK4bMjSh8kU6MWAz458hHISf5TVHwI1vdCKZCJPGIuLXnokIa0HAkMP3+KF1DtfzF5eth7p/NCqVxQu58ok8UxHhP9O0YHkFZ2yJSQxGra90YHSdETNh3UjD4f0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UfEQpx4Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7506CC4CEC6;
+	Fri,  4 Oct 2024 18:31:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1728066719;
-	bh=JfCfNyA1QXgico1DtpJL27YBJTBzAiIbh+kl2HmvZZQ=;
+	s=k20201202; t=1728066720;
+	bh=4kxQKLlLrCiPdaoQ3J/WHpLrnuj0Iq5pKA1U+lUw3Rk=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VgBIBt96v1VVg46HVwY/RR1K3N38Q/tJO5Vj27YGCzFYK/xSb9TvUMac7JHMPojc0
-	 gkN5ZDOFNLF/yZ/MuSC14cZCEWWmWRFimXn/GA+H7CrI/Ns5G2Y7qz1fm3V/ETsomJ
-	 4RKvDP7FE7pxgSzMUWZDM2mPDJPlm7qk9vyhe4bs1tJdnwoBMtfnNoxOXA4RZlvn5p
-	 lRMwlQYoWERoPvmEnxdG58NtZSIy4bQvFGKk5hZb7MaTNXIZ4zdhVznF8Sfu2P4nb2
-	 McxHITdf9twMUXKV9gusNqyIZcGmIS/8OU6h9W14rAfB7cIGT3cXsYye/QQ983siyf
-	 YEjtkQZlDqsWw==
+	b=UfEQpx4Yw/1UcA/EEnRZlgaOL3Ce9zYmf33adAuYu397Z1ijMN97mkKL7qpapebA8
+	 zAKjxpUmzgO4g68Uy44uy8HGcyvFyya1OuYiARidxMYLaZNp+xVW+709FiAN1efXMA
+	 9zNTDQJzwu6Fzf0Xdkp6ABxlnrbbN3sULwae3EaoUg4Ye8QkXNyV4cZhZpIArKe/f3
+	 aSRERq8926PO+KhhZgfljAAL1yYQacLCpZ6ks7DJJSVC1yfEqfzj2TqrJ0bdVI1/cT
+	 9BCGQcztHHm9ZZmYabcDPbvqmYlxIqvFh82pz4f3dYIOSbygDxnJNWjYtlJwja0cxT
+	 nvKClJ5TSoNTQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
-Cc: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>,
+Cc: =?UTF-8?q?Wojciech=20G=C5=82adysz?= <wojciech.gladysz@infogain.com>,
 	Theodore Ts'o <tytso@mit.edu>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 4.19 05/16] ext4: ext4_search_dir should return a proper error
-Date: Fri,  4 Oct 2024 14:31:32 -0400
-Message-ID: <20241004183150.3676355-5-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 4.19 06/16] ext4: nested locking for xattr inode
+Date: Fri,  4 Oct 2024 14:31:33 -0400
+Message-ID: <20241004183150.3676355-6-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20241004183150.3676355-1-sashal@kernel.org>
 References: <20241004183150.3676355-1-sashal@kernel.org>
@@ -61,89 +61,190 @@ List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 X-stable: review
 X-Patchwork-Hint: Ignore
 X-stable-base: Linux 4.19.322
 Content-Transfer-Encoding: 8bit
 
-From: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
+From: Wojciech Gładysz <wojciech.gladysz@infogain.com>
 
-[ Upstream commit cd69f8f9de280e331c9e6ff689ced0a688a9ce8f ]
+[ Upstream commit d1bc560e9a9c78d0b2314692847fc8661e0aeb99 ]
 
-ext4_search_dir currently returns -1 in case of a failure, while it returns
-0 when the name is not found. In such failure cases, it should return an
-error code instead.
+Add nested locking with I_MUTEX_XATTR subclass to avoid lockdep warning
+while handling xattr inode on file open syscall at ext4_xattr_inode_iget.
 
-This becomes even more important when ext4_find_inline_entry returns an
-error code as well in the next commit.
+Backtrace
+EXT4-fs (loop0): Ignoring removed oldalloc option
+======================================================
+WARNING: possible circular locking dependency detected
+5.10.0-syzkaller #0 Not tainted
+------------------------------------------------------
+syz-executor543/2794 is trying to acquire lock:
+ffff8880215e1a48 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}, at: inode_lock include/linux/fs.h:782 [inline]
+ffff8880215e1a48 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}, at: ext4_xattr_inode_iget+0x42a/0x5c0 fs/ext4/xattr.c:425
 
--EFSCORRUPTED seems appropriate as such error code as these failures would
-be caused by unexpected record lengths and is in line with other instances
-of ext4_check_dir_entry failures.
+but task is already holding lock:
+ffff8880215e3278 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x136d/0x19c0 fs/ext4/inode.c:5559
 
-In the case of ext4_dx_find_entry, the current use of ERR_BAD_DX_DIR was
-left as is to reduce the risk of regressions.
+which lock already depends on the new lock.
 
-Signed-off-by: Thadeu Lima de Souza Cascardo <cascardo@igalia.com>
-Link: https://patch.msgid.link/20240821152324.3621860-2-cascardo@igalia.com
+the existing dependency chain (in reverse order) is:
+
+-> #1 (&ei->i_data_sem/3){++++}-{3:3}:
+       lock_acquire+0x197/0x480 kernel/locking/lockdep.c:5566
+       down_write+0x93/0x180 kernel/locking/rwsem.c:1564
+       ext4_update_i_disksize fs/ext4/ext4.h:3267 [inline]
+       ext4_xattr_inode_write fs/ext4/xattr.c:1390 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1538 [inline]
+       ext4_xattr_set_entry+0x331a/0x3d80 fs/ext4/xattr.c:1662
+       ext4_xattr_ibody_set+0x124/0x390 fs/ext4/xattr.c:2228
+       ext4_xattr_set_handle+0xc27/0x14e0 fs/ext4/xattr.c:2385
+       ext4_xattr_set+0x219/0x390 fs/ext4/xattr.c:2498
+       ext4_xattr_user_set+0xc9/0xf0 fs/ext4/xattr_user.c:40
+       __vfs_setxattr+0x404/0x450 fs/xattr.c:177
+       __vfs_setxattr_noperm+0x11d/0x4f0 fs/xattr.c:208
+       __vfs_setxattr_locked+0x1f9/0x210 fs/xattr.c:266
+       vfs_setxattr+0x112/0x2c0 fs/xattr.c:283
+       setxattr+0x1db/0x3e0 fs/xattr.c:548
+       path_setxattr+0x15a/0x240 fs/xattr.c:567
+       __do_sys_setxattr fs/xattr.c:582 [inline]
+       __se_sys_setxattr fs/xattr.c:578 [inline]
+       __x64_sys_setxattr+0xc5/0xe0 fs/xattr.c:578
+       do_syscall_64+0x6d/0xa0 arch/x86/entry/common.c:62
+       entry_SYSCALL_64_after_hwframe+0x61/0xcb
+
+-> #0 (&ea_inode->i_rwsem#7/1){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:2988 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3113 [inline]
+       validate_chain+0x1695/0x58f0 kernel/locking/lockdep.c:3729
+       __lock_acquire+0x12fd/0x20d0 kernel/locking/lockdep.c:4955
+       lock_acquire+0x197/0x480 kernel/locking/lockdep.c:5566
+       down_write+0x93/0x180 kernel/locking/rwsem.c:1564
+       inode_lock include/linux/fs.h:782 [inline]
+       ext4_xattr_inode_iget+0x42a/0x5c0 fs/ext4/xattr.c:425
+       ext4_xattr_inode_get+0x138/0x410 fs/ext4/xattr.c:485
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2580 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2682 [inline]
+       ext4_expand_extra_isize_ea+0xe70/0x1bb0 fs/ext4/xattr.c:2774
+       __ext4_expand_extra_isize+0x304/0x3f0 fs/ext4/inode.c:5898
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5941 [inline]
+       __ext4_mark_inode_dirty+0x591/0x810 fs/ext4/inode.c:6018
+       ext4_setattr+0x1400/0x19c0 fs/ext4/inode.c:5562
+       notify_change+0xbb6/0xe60 fs/attr.c:435
+       do_truncate+0x1de/0x2c0 fs/open.c:64
+       handle_truncate fs/namei.c:2970 [inline]
+       do_open fs/namei.c:3311 [inline]
+       path_openat+0x29f3/0x3290 fs/namei.c:3425
+       do_filp_open+0x20b/0x450 fs/namei.c:3452
+       do_sys_openat2+0x124/0x460 fs/open.c:1207
+       do_sys_open fs/open.c:1223 [inline]
+       __do_sys_open fs/open.c:1231 [inline]
+       __se_sys_open fs/open.c:1227 [inline]
+       __x64_sys_open+0x221/0x270 fs/open.c:1227
+       do_syscall_64+0x6d/0xa0 arch/x86/entry/common.c:62
+       entry_SYSCALL_64_after_hwframe+0x61/0xcb
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->i_data_sem/3);
+                               lock(&ea_inode->i_rwsem#7/1);
+                               lock(&ei->i_data_sem/3);
+  lock(&ea_inode->i_rwsem#7/1);
+
+ *** DEADLOCK ***
+
+5 locks held by syz-executor543/2794:
+ #0: ffff888026fbc448 (sb_writers#4){.+.+}-{0:0}, at: mnt_want_write+0x4a/0x2a0 fs/namespace.c:365
+ #1: ffff8880215e3488 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: inode_lock include/linux/fs.h:782 [inline]
+ #1: ffff8880215e3488 (&sb->s_type->i_mutex_key#7){++++}-{3:3}, at: do_truncate+0x1cf/0x2c0 fs/open.c:62
+ #2: ffff8880215e3310 (&ei->i_mmap_sem){++++}-{3:3}, at: ext4_setattr+0xec4/0x19c0 fs/ext4/inode.c:5519
+ #3: ffff8880215e3278 (&ei->i_data_sem/3){++++}-{3:3}, at: ext4_setattr+0x136d/0x19c0 fs/ext4/inode.c:5559
+ #4: ffff8880215e30c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
+ #4: ffff8880215e30c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5938 [inline]
+ #4: ffff8880215e30c8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4fb/0x810 fs/ext4/inode.c:6018
+
+stack backtrace:
+CPU: 1 PID: 2794 Comm: syz-executor543 Not tainted 5.10.0-syzkaller #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 03/27/2024
+Call Trace:
+ __dump_stack lib/dump_stack.c:77 [inline]
+ dump_stack+0x177/0x211 lib/dump_stack.c:118
+ print_circular_bug+0x146/0x1b0 kernel/locking/lockdep.c:2002
+ check_noncircular+0x2cc/0x390 kernel/locking/lockdep.c:2123
+ check_prev_add kernel/locking/lockdep.c:2988 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3113 [inline]
+ validate_chain+0x1695/0x58f0 kernel/locking/lockdep.c:3729
+ __lock_acquire+0x12fd/0x20d0 kernel/locking/lockdep.c:4955
+ lock_acquire+0x197/0x480 kernel/locking/lockdep.c:5566
+ down_write+0x93/0x180 kernel/locking/rwsem.c:1564
+ inode_lock include/linux/fs.h:782 [inline]
+ ext4_xattr_inode_iget+0x42a/0x5c0 fs/ext4/xattr.c:425
+ ext4_xattr_inode_get+0x138/0x410 fs/ext4/xattr.c:485
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2580 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2682 [inline]
+ ext4_expand_extra_isize_ea+0xe70/0x1bb0 fs/ext4/xattr.c:2774
+ __ext4_expand_extra_isize+0x304/0x3f0 fs/ext4/inode.c:5898
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:5941 [inline]
+ __ext4_mark_inode_dirty+0x591/0x810 fs/ext4/inode.c:6018
+ ext4_setattr+0x1400/0x19c0 fs/ext4/inode.c:5562
+ notify_change+0xbb6/0xe60 fs/attr.c:435
+ do_truncate+0x1de/0x2c0 fs/open.c:64
+ handle_truncate fs/namei.c:2970 [inline]
+ do_open fs/namei.c:3311 [inline]
+ path_openat+0x29f3/0x3290 fs/namei.c:3425
+ do_filp_open+0x20b/0x450 fs/namei.c:3452
+ do_sys_openat2+0x124/0x460 fs/open.c:1207
+ do_sys_open fs/open.c:1223 [inline]
+ __do_sys_open fs/open.c:1231 [inline]
+ __se_sys_open fs/open.c:1227 [inline]
+ __x64_sys_open+0x221/0x270 fs/open.c:1227
+ do_syscall_64+0x6d/0xa0 arch/x86/entry/common.c:62
+ entry_SYSCALL_64_after_hwframe+0x61/0xcb
+RIP: 0033:0x7f0cde4ea229
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 21 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007ffd81d1c978 EFLAGS: 00000246 ORIG_RAX: 0000000000000002
+RAX: ffffffffffffffda RBX: 0030656c69662f30 RCX: 00007f0cde4ea229
+RDX: 0000000000000089 RSI: 00000000000a0a00 RDI: 00000000200001c0
+RBP: 2f30656c69662f2e R08: 0000000000208000 R09: 0000000000208000
+R10: 0000000000000000 R11: 0000000000000246 R12: 00007ffd81d1c9c0
+R13: 00007ffd81d1ca00 R14: 0000000000080000 R15: 0000000000000003
+EXT4-fs error (device loop0): ext4_expand_extra_isize_ea:2730: inode #13: comm syz-executor543: corrupted in-inode xattr
+
+Signed-off-by: Wojciech Gładysz <wojciech.gladysz@infogain.com>
+Link: https://patch.msgid.link/20240801143827.19135-1-wojciech.gladysz@infogain.com
 Signed-off-by: Theodore Ts'o <tytso@mit.edu>
 Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/ext4/namei.c | 12 +++++++-----
- 1 file changed, 7 insertions(+), 5 deletions(-)
+ fs/ext4/xattr.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 8594feea2d932..d85be8255d790 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1334,7 +1334,7 @@ static inline bool ext4_match(const struct ext4_filename *fname,
- }
- 
- /*
-- * Returns 0 if not found, -1 on failure, and 1 on success
-+ * Returns 0 if not found, -EFSCORRUPTED on failure, and 1 on success
-  */
- int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		    struct inode *dir, struct ext4_filename *fname,
-@@ -1355,7 +1355,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 			 * a full check */
- 			if (ext4_check_dir_entry(dir, NULL, de, bh, search_buf,
- 						 buf_size, offset))
--				return -1;
-+				return -EFSCORRUPTED;
- 			*res_dir = de;
- 			return 1;
- 		}
-@@ -1363,7 +1363,7 @@ int ext4_search_dir(struct buffer_head *bh, char *search_buf, int buf_size,
- 		de_len = ext4_rec_len_from_disk(de->rec_len,
- 						dir->i_sb->s_blocksize);
- 		if (de_len <= 0)
--			return -1;
-+			return -EFSCORRUPTED;
- 		offset += de_len;
- 		de = (struct ext4_dir_entry_2 *) ((char *) de + de_len);
+diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+index e9299f769dbfe..4e8cd5dde186c 100644
+--- a/fs/ext4/xattr.c
++++ b/fs/ext4/xattr.c
+@@ -437,7 +437,7 @@ static int ext4_xattr_inode_iget(struct inode *parent, unsigned long ea_ino,
+ 		ext4_set_inode_state(inode, EXT4_STATE_LUSTRE_EA_INODE);
+ 		ext4_xattr_inode_set_ref(inode, 1);
+ 	} else {
+-		inode_lock(inode);
++		inode_lock_nested(inode, I_MUTEX_XATTR);
+ 		inode->i_flags |= S_NOQUOTA;
+ 		inode_unlock(inode);
  	}
-@@ -1514,8 +1514,10 @@ static struct buffer_head *__ext4_find_entry(struct inode *dir,
- 			goto cleanup_and_exit;
- 		} else {
- 			brelse(bh);
--			if (i < 0)
-+			if (i < 0) {
-+				ret = ERR_PTR(i);
- 				goto cleanup_and_exit;
-+			}
- 		}
- 	next:
- 		if (++block >= nblocks)
-@@ -1609,7 +1611,7 @@ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
- 		if (retval == 1)
- 			goto success;
- 		brelse(bh);
--		if (retval == -1) {
-+		if (retval < 0) {
- 			bh = ERR_PTR(ERR_BAD_DX_DIR);
- 			goto errout;
- 		}
+@@ -1053,7 +1053,7 @@ static int ext4_xattr_inode_update_ref(handle_t *handle, struct inode *ea_inode,
+ 	s64 ref_count;
+ 	int ret;
+ 
+-	inode_lock(ea_inode);
++	inode_lock_nested(ea_inode, I_MUTEX_XATTR);
+ 
+ 	ret = ext4_reserve_inode_write(handle, ea_inode, &iloc);
+ 	if (ret) {
 -- 
 2.43.0
 
