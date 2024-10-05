@@ -1,95 +1,225 @@
-Return-Path: <linux-ext4+bounces-4515-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4516-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7ED59913FC
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Oct 2024 04:42:33 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 89E7C9918BA
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Oct 2024 19:13:29 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80E3C284E87
-	for <lists+linux-ext4@lfdr.de>; Sat,  5 Oct 2024 02:42:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1846F1F220DE
+	for <lists+linux-ext4@lfdr.de>; Sat,  5 Oct 2024 17:13:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82E991B960;
-	Sat,  5 Oct 2024 02:42:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E04FE158A3C;
+	Sat,  5 Oct 2024 17:13:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="oO+0nMBe"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M+C01GyP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2834179A7
-	for <linux-ext4@vger.kernel.org>; Sat,  5 Oct 2024 02:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F30361B960
+	for <linux-ext4@vger.kernel.org>; Sat,  5 Oct 2024 17:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728096148; cv=none; b=XbytoLA0vea9dT1frfQ1NIJyinm6DHgk6s4LkDyzCTSDoiIIabBw4T/M8jBQAQGRBor8O+T4lLB4sRLbi/OYdGwuQvzwzPpJOeYEeiO7dzsrzWEISicAMvrmxTWH5Gt0KRreLhudG+aheUIbdWEKhj7cU9vYtfPaaOp5m7rYEiQ=
+	t=1728148403; cv=none; b=OlZ02FvkVV4t9pSxrh894gC2yc8pSsB7e2hOkg77y+58+xrPivi2sT1SQzVOwfxrhVB01xTdoWrhbJXfhNRLS/wpnTs98qCV3V2m6BS0QKXV5Ao6tLe8odKdGe5oS+GflNWOuQtksAaQA08mvBLYupAGbhSxO/PUdN+Y1h1i9tI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728096148; c=relaxed/simple;
-	bh=dSuKw3KgBtp4y2Nh4+iaxPe8SGV2r4DIQhHmXwzzgXk=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=dGX8aONIO0R3Zu/w3c0w4iq+YaPyN8LbgtKjOCeX35EvJ878pIE36Y6Dv0jJsnVgKDkYxyuEs3G5AAu+KEBQ+s1LVG0l5v1Kc3VuBqsUi131msbkZKAQ52PWqwxKUI6BwcVFNIrdxofSL4iYEc28cwReOMAojbqUjmhLPHXG38I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=oO+0nMBe; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-111-178.bstnma.fios.verizon.net [173.48.111.178])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4952gLeK024607
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 4 Oct 2024 22:42:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1728096143; bh=1KaDnjyQshquAFEggCflmVVbS3XL5i46DzD+xxadzNI=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=oO+0nMBe9Xt+zO0yFsTvHGVVCNd53gqdDHncW/msr5T1pJ1gNwzfC15PyPcRiOody
-	 2E4u+v5ux+yv7rgBpDjjD/Gx8TPlOR2AQ2/TN8ScrmwdqllcydUsROewv4kpDCycsZ
-	 oHfzyFoxhiZvKjK8ETPF0yVpE+HCFcnai+CBuCOtqnq5sJWqYDTVHBuLBHhsJ6Fx48
-	 xjp1l6dQBjIB57Xri6Uf9gmE3BmRST/n2xYR72hrpd0E3H8X/FMcfaOSUKMh39vdBQ
-	 +PYa2taSlLxuFVRZeGoVK1LDiR16a6e0Wkm6vDhoNrBE3+/9cXHAQmNsWUAWDBaIK2
-	 qQqnVYXCfw4Bg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 13F7C15C6668; Fri, 04 Oct 2024 22:42:21 -0400 (EDT)
-Date: Fri, 4 Oct 2024 22:42:21 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux Kernel Developers List <linux-kernel@vger.kernel.org>,
-        Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: [GIT PULL] ext4 bug fixes for 6.12-rc2
-Message-ID: <20241005024221.GA505880@mit.edu>
+	s=arc-20240116; t=1728148403; c=relaxed/simple;
+	bh=YbNHDjFt3KmZUBQcM28yEyfveZzJHZdl2lgSlsd1vuI=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=Arl96CXjXJmOb5bdRvtIDCoxu/ka5RxjdAnHvs0p2s0DICbrNCvce2oXqsVMJrQdPl8DY8ejgpLWfE9gMj8Gk4e6PRQigRq7xlPUF/wdWu3VD08JTtm6PSOZ8c8kuR4H6O0C/4Y43YRoBjN7BGLlkVqg33ljACp8djLQNxsZNGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M+C01GyP; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1728148402; x=1759684402;
+  h=date:from:to:cc:subject:message-id;
+  bh=YbNHDjFt3KmZUBQcM28yEyfveZzJHZdl2lgSlsd1vuI=;
+  b=M+C01GyPWNb0H9MzY6XGuFdU7BFumZDPj+zSePmJZEYUOrRns1fqTKXw
+   wvgAwLtuopU24pvwWmjTl4HJCDRl5wV9BRMD5RFg9rdZeigzNg6ArXFVj
+   llam9fNEh2l3OtPDzsCjE0QlhdPQb56TkkjzHeN26WGv/PWqHNEPh2e41
+   vzGkODPSQChot5HcZx9VKj3zlFykLAW2ITcvwatxokVcovk8IPqRgPlPp
+   J0wg3E1yu4d96Lug91ee1FtweYFAO4+HNS+4/xITpi3hc3JSl3zb5biQc
+   eq4T/4pd1/MDyHTW6kxLh9NZqsquVH86FCOXBaVyy2ofaJV0nQwFdbYST
+   g==;
+X-CSE-ConnectionGUID: neX38IpBRI2FD+XRhs7bNw==
+X-CSE-MsgGUID: V/RHLpW9Roirk9MuTsP0Aw==
+X-IronPort-AV: E=McAfee;i="6700,10204,11216"; a="27491986"
+X-IronPort-AV: E=Sophos;i="6.11,180,1725346800"; 
+   d="scan'208";a="27491986"
+Received: from orviesa003.jf.intel.com ([10.64.159.143])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 05 Oct 2024 10:13:21 -0700
+X-CSE-ConnectionGUID: dLwuR6YBQNaSUQ7aM6ELKg==
+X-CSE-MsgGUID: CwA0dsheRmyILr6g8XyYlg==
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.11,180,1725346800"; 
+   d="scan'208";a="79843578"
+Received: from lkp-server01.sh.intel.com (HELO a48cf1aa22e8) ([10.239.97.150])
+  by orviesa003.jf.intel.com with ESMTP; 05 Oct 2024 10:13:21 -0700
+Received: from kbuild by a48cf1aa22e8 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1sx8LG-0003Cc-0S;
+	Sat, 05 Oct 2024 17:13:18 +0000
+Date: Sun, 06 Oct 2024 01:12:54 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: linux-ext4@vger.kernel.org
+Subject: [tytso-ext4:dev] BUILD SUCCESS
+ 6121258c2b33ceac3d21f6a221452692c465df88
+Message-ID: <202410060140.YQrvvRGM-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
 
-The following changes since commit 9852d85ec9d492ebef56dc5f229416c925758edc:
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git dev
+branch HEAD: 6121258c2b33ceac3d21f6a221452692c465df88  ext4: fix off by one issue in alloc_flex_gd()
 
-  Linux 6.12-rc1 (2024-09-29 15:06:19 -0700)
+elapsed time: 1140m
 
-are available in the Git repository at:
+configs tested: 132
+configs skipped: 3
 
-  https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git tags/ext4_for_linus-5.12-rc2
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-for you to fetch changes up to 6121258c2b33ceac3d21f6a221452692c465df88:
+tested configs:
+alpha                             allnoconfig    gcc-14.1.0
+alpha                            allyesconfig    clang-20
+alpha                               defconfig    gcc-14.1.0
+arc                              allmodconfig    clang-20
+arc                               allnoconfig    gcc-14.1.0
+arc                              allyesconfig    clang-20
+arc                                 defconfig    gcc-14.1.0
+arm                              allmodconfig    clang-20
+arm                               allnoconfig    gcc-14.1.0
+arm                              allyesconfig    clang-20
+arm                                 defconfig    gcc-14.1.0
+arm64                            allmodconfig    clang-20
+arm64                             allnoconfig    gcc-14.1.0
+arm64                               defconfig    gcc-14.1.0
+csky                              allnoconfig    gcc-14.1.0
+csky                                defconfig    gcc-14.1.0
+hexagon                          allmodconfig    clang-20
+hexagon                           allnoconfig    gcc-14.1.0
+hexagon                          allyesconfig    clang-20
+hexagon                             defconfig    gcc-14.1.0
+i386                             allmodconfig    clang-18
+i386                              allnoconfig    clang-18
+i386                             allyesconfig    clang-18
+i386        buildonly-randconfig-001-20241005    clang-18
+i386        buildonly-randconfig-002-20241005    clang-18
+i386        buildonly-randconfig-003-20241005    clang-18
+i386        buildonly-randconfig-004-20241005    clang-18
+i386        buildonly-randconfig-005-20241005    clang-18
+i386        buildonly-randconfig-005-20241005    gcc-12
+i386        buildonly-randconfig-006-20241005    clang-18
+i386        buildonly-randconfig-006-20241005    gcc-12
+i386                                defconfig    clang-18
+i386                  randconfig-001-20241005    clang-18
+i386                  randconfig-001-20241005    gcc-11
+i386                  randconfig-002-20241005    clang-18
+i386                  randconfig-003-20241005    clang-18
+i386                  randconfig-003-20241005    gcc-12
+i386                  randconfig-004-20241005    clang-18
+i386                  randconfig-005-20241005    clang-18
+i386                  randconfig-006-20241005    clang-18
+i386                  randconfig-011-20241005    clang-18
+i386                  randconfig-011-20241005    gcc-12
+i386                  randconfig-012-20241005    clang-18
+i386                  randconfig-013-20241005    clang-18
+i386                  randconfig-014-20241005    clang-18
+i386                  randconfig-014-20241005    gcc-12
+i386                  randconfig-015-20241005    clang-18
+i386                  randconfig-015-20241005    gcc-12
+i386                  randconfig-016-20241005    clang-18
+i386                  randconfig-016-20241005    gcc-12
+loongarch                        allmodconfig    gcc-14.1.0
+loongarch                         allnoconfig    gcc-14.1.0
+loongarch                           defconfig    gcc-14.1.0
+m68k                             allmodconfig    gcc-14.1.0
+m68k                              allnoconfig    gcc-14.1.0
+m68k                             allyesconfig    gcc-14.1.0
+m68k                                defconfig    gcc-14.1.0
+microblaze                       allmodconfig    gcc-14.1.0
+microblaze                        allnoconfig    gcc-14.1.0
+microblaze                       allyesconfig    gcc-14.1.0
+microblaze                          defconfig    gcc-14.1.0
+mips                              allnoconfig    gcc-14.1.0
+nios2                             allnoconfig    gcc-14.1.0
+nios2                               defconfig    gcc-14.1.0
+openrisc                          allnoconfig    clang-20
+openrisc                          allnoconfig    gcc-14.1.0
+openrisc                         allyesconfig    gcc-14.1.0
+openrisc                            defconfig    gcc-12
+parisc                           allmodconfig    gcc-14.1.0
+parisc                            allnoconfig    clang-20
+parisc                            allnoconfig    gcc-14.1.0
+parisc                           allyesconfig    gcc-14.1.0
+parisc                              defconfig    gcc-12
+parisc64                            defconfig    gcc-14.1.0
+powerpc                          allmodconfig    gcc-14.1.0
+powerpc                           allnoconfig    clang-20
+powerpc                           allnoconfig    gcc-14.1.0
+powerpc                          allyesconfig    gcc-14.1.0
+riscv                            allmodconfig    gcc-14.1.0
+riscv                             allnoconfig    clang-20
+riscv                             allnoconfig    gcc-14.1.0
+riscv                            allyesconfig    gcc-14.1.0
+riscv                               defconfig    gcc-12
+s390                             allmodconfig    gcc-14.1.0
+s390                              allnoconfig    clang-20
+s390                             allyesconfig    gcc-14.1.0
+s390                                defconfig    gcc-12
+sh                               allmodconfig    gcc-14.1.0
+sh                                allnoconfig    gcc-14.1.0
+sh                               allyesconfig    gcc-14.1.0
+sh                                  defconfig    gcc-12
+sparc                            allmodconfig    gcc-14.1.0
+sparc64                             defconfig    gcc-12
+um                               allmodconfig    clang-20
+um                                allnoconfig    clang-17
+um                                allnoconfig    clang-20
+um                               allyesconfig    clang-20
+um                                  defconfig    gcc-12
+um                             i386_defconfig    gcc-12
+um                           x86_64_defconfig    gcc-12
+x86_64                            allnoconfig    clang-18
+x86_64                           allyesconfig    clang-18
+x86_64      buildonly-randconfig-001-20241005    gcc-12
+x86_64      buildonly-randconfig-002-20241005    gcc-12
+x86_64      buildonly-randconfig-003-20241005    gcc-12
+x86_64      buildonly-randconfig-004-20241005    gcc-12
+x86_64      buildonly-randconfig-005-20241005    gcc-12
+x86_64      buildonly-randconfig-006-20241005    gcc-12
+x86_64                              defconfig    clang-18
+x86_64                                  kexec    clang-18
+x86_64                                  kexec    gcc-12
+x86_64                randconfig-001-20241005    gcc-12
+x86_64                randconfig-002-20241005    gcc-12
+x86_64                randconfig-003-20241005    gcc-12
+x86_64                randconfig-004-20241005    gcc-12
+x86_64                randconfig-005-20241005    gcc-12
+x86_64                randconfig-006-20241005    gcc-12
+x86_64                randconfig-011-20241005    gcc-12
+x86_64                randconfig-012-20241005    gcc-12
+x86_64                randconfig-013-20241005    gcc-12
+x86_64                randconfig-014-20241005    gcc-12
+x86_64                randconfig-015-20241005    gcc-12
+x86_64                randconfig-016-20241005    gcc-12
+x86_64                randconfig-071-20241005    gcc-12
+x86_64                randconfig-072-20241005    gcc-12
+x86_64                randconfig-073-20241005    gcc-12
+x86_64                randconfig-074-20241005    gcc-12
+x86_64                randconfig-075-20241005    gcc-12
+x86_64                randconfig-076-20241005    gcc-12
+x86_64                               rhel-8.3    gcc-12
+x86_64                          rhel-8.3-rust    clang-18
+xtensa                            allnoconfig    gcc-14.1.0
 
-  ext4: fix off by one issue in alloc_flex_gd() (2024-10-04 17:36:28 -0400)
-
-----------------------------------------------------------------
-Fix some ext4 bug fixes and regressions relating to oneline resize and
-fast commits.
-
-----------------------------------------------------------------
-Baokun Li (1):
-      ext4: fix off by one issue in alloc_flex_gd()
-
-Luis Henriques (SUSE) (2):
-      ext4: use handle to mark fc as ineligible in __track_dentry_update()
-      ext4: mark fc as ineligible using an handle in ext4_xattr_set()
-
- fs/ext4/fast_commit.c | 19 +++++++++++--------
- fs/ext4/resize.c      | 18 ++++++++++--------
- fs/ext4/xattr.c       |  3 ++-
- 3 files changed, 23 insertions(+), 17 deletions(-)
+--
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
