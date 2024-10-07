@@ -1,137 +1,217 @@
-Return-Path: <linux-ext4+bounces-4523-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4524-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CDA4992CA4
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 15:08:09 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id ADF739932EE
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 18:18:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8AED1F23A9E
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 13:08:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C716A1C22819
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 16:18:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A64F1D358C;
-	Mon,  7 Oct 2024 13:08:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E753B1D9346;
+	Mon,  7 Oct 2024 16:18:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="giuipzxN"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Fa0n2R0Z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zF7KI0Kb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Fa0n2R0Z";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zF7KI0Kb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wr1-f48.google.com (mail-wr1-f48.google.com [209.85.221.48])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 294DA18C015
-	for <linux-ext4@vger.kernel.org>; Mon,  7 Oct 2024 13:08:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C26001D4152
+	for <linux-ext4@vger.kernel.org>; Mon,  7 Oct 2024 16:18:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728306483; cv=none; b=CbxQ9DYYJLYHCMf20EzLO5ws7Ydvfp4LzyyUws/6AFYXicmE3Mg5Uu0NdNgYsp3vpbABqSfyznlOw1Ox7SY8DoQtnA4/B4Cz8wkqlVGyQEe5Vb5qg4H9Pe6AZpHGokRlZChIGVdYX307rMhCA6S48oWnH7xUAj/vTb2k1loiRq8=
+	t=1728317913; cv=none; b=jWwwfR3KAkKoH413HRpqwxZyotcHcRcnQuGEhEo/LdCpDQmDopx6viRgYOruo3vxoF4OZbQBvlZcn9TLU8a6gA3cyIHsx64FrjtlCi66mXgdXIkypU6pHmDcC860WGhzcW9D/0xr6hXtZ+nux4L9jZHLhjnRP07el8p+NemrR18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728306483; c=relaxed/simple;
-	bh=KYZdCfC0G0TJf0tBV4UmKxSBuXIDsk+eUUerAygPEqA=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=aLlyfLn/jBqCoHvUa+NIg2NiRQToXIQNyySIgbyb66GYyUoqlYknlhPDAVXYy0BXaxRYQdTn6q1jzpvuFzaYcYUOyKEqbOY2j3vTIZVE/PtJfIQJn3LdJWOZM+Gr3D85SUbyh056aCBftnVs/GUf2UoTsybWLIOSkyLgEW5KW3I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=giuipzxN; arc=none smtp.client-ip=209.85.221.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wr1-f48.google.com with SMTP id ffacd0b85a97d-37ccbd93c48so326769f8f.2
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Oct 2024 06:08:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1728306480; x=1728911280; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=CnzLtnFN9tco4+Q7+k8LRZ84/ndqz1jYrt7A2OLgTL8=;
-        b=giuipzxNZ2QUJBrrDgDyuIRgXTX1m7/lHJASPXJvXG/NHGRSzrx0qnYAFoiomS0dop
-         njqZ7mtWHbP6Bcyzc5Bje3kPnHaoa/4KYHhYhoLuPDsD7g2vAyY18lElg0Guiw6/f5zn
-         F9nP8LfQIUrZUXBvdCRilFt+4JfnmNx6Zj19+EaKmK0XJ8SMojq1SfXl1PqZlWk6CJwp
-         g7wo3xOu1ppb+P2kG6qjHr7USlREUetmG/DPlolv9dQkPeezq7VWD61Bfhuyq7dAx1WT
-         h+fRPuTCELSSL2bXySB6DB+Z4RY64P9xGMH9DfzVGsEpI1y3Pwts8xaqBLmdU4q/lE6K
-         7ttw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728306480; x=1728911280;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=CnzLtnFN9tco4+Q7+k8LRZ84/ndqz1jYrt7A2OLgTL8=;
-        b=MJMsxk5icLG8GM9AYopDgqg0gmmx1zNwxrlgGJQqN/XO/u85yQj9f8kFIwNc24m1PU
-         wvwwqFma2JJTBu2Y49gDVFblum0YK/2gxoAOLq96wrtoAgT1UdBWvaTh212A8SGgga4v
-         yRdLH+TnZwZQkX6PUkH1XpaHpVdLOXhfrklzVglZifm7wbu39Vr+INbzYFlpakFQJbzt
-         Ggo8vG39MHaupN+KjQAqZ9TxGYmVlVVZp4qZmx1P6DNyFFtxfjNPpNVp3GdaXdub6Zgq
-         eXk44k6EzhCUGk9TkTdQABlaTD4xFv0gkfG3nMz1g5ULs0i9q5yVt+X94BzQ06DzWt0Q
-         e7bQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUWNEapbTTMzDGFbsFkX7N180T6dKIMOqCWtZuZB3/7pbbf7ClRubJEA0zgxB8+uyrY+rTwUUDKOOaY@vger.kernel.org
-X-Gm-Message-State: AOJu0YxICSu2CZ0E6FYqZDAKY1lrBsKR9UGZwE3S7DZc3JnFyF707S2K
-	5T7TpwXmYsKKfYQBe8+OCLcGSpJQx/n4bae7oWJSoQz1Tclc739DFRuYj8cWEFzxdXjERvbzX4M
-	O
-X-Google-Smtp-Source: AGHT+IFKomC1GoHgGz5NqJWTmdK3mKrk/2NM18HnZpDqf7JGIgfOX+Yoshy8dmLmPM10rEY56FpXrw==
-X-Received: by 2002:a05:6000:186c:b0:374:c800:dc3d with SMTP id ffacd0b85a97d-37d0e6f362fmr3112919f8f.1.1728306480338;
-        Mon, 07 Oct 2024 06:08:00 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-62-216-208-206.dynamic.mnet-online.de. [62.216.208.206])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-37d1695f113sm5679931f8f.80.2024.10.07.06.07.59
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 07 Oct 2024 06:07:59 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Kees Cook <kees@kernel.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>
-Cc: Thorsten Blum <thorsten.blum@toblux.com>,
-	Jan Kara <jack@suse.cz>,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: [RESEND PATCH] ext4: Annotate struct fname with __counted_by()
-Date: Mon,  7 Oct 2024 15:07:16 +0200
-Message-ID: <20241007130716.3442-1-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.46.2
+	s=arc-20240116; t=1728317913; c=relaxed/simple;
+	bh=UItaE0j2oHbZcS1dsd1eoqu1YCuLT0cVar47OPYdKhc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cY9X2NKQ3TWKzR54TkC22uqan5Kvz19NGsSfm94NPoLA72GMOWWVCfvTVIPuEMZ8AFpEBkrWlekFuKXyKdTfPjLzLz2FmOaH9XvlV8/rphtNn+AyfNWNQPSDW/QXtdnmIs6YJFPQ8RFhtHkvLZEP6n4URe2dRNCPa0sfoixbT34=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Fa0n2R0Z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zF7KI0Kb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Fa0n2R0Z; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zF7KI0Kb; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id AA94421B87;
+	Mon,  7 Oct 2024 16:18:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728317909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aCCnIA4pPdJb47KXlYuCQ73YmB9PSYtnaO/E5dCrBHE=;
+	b=Fa0n2R0ZbiUp4lak5S2L2aH1koFGzJq/sZltdxznrecWRttxUbm+mQAelTwPQnrArozHKD
+	lTAZQMZyXog9a7Q9QjDs+8NZqXZ28BrOIjfOn6MJ1P+pV8hJFXlrHQ/ure5qN3YFMhop5k
+	o1nuskyb5E8HsMru/RRTKvu7hefouE8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728317909;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aCCnIA4pPdJb47KXlYuCQ73YmB9PSYtnaO/E5dCrBHE=;
+	b=zF7KI0KbzK7mY48eefbh+s3RCGGPJN8FEV24Y6YAL/YHc5sc6GJROzCtjGu62MdD05SRsw
+	+OD1/m245F1JRuDA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Fa0n2R0Z;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=zF7KI0Kb
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1728317909; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aCCnIA4pPdJb47KXlYuCQ73YmB9PSYtnaO/E5dCrBHE=;
+	b=Fa0n2R0ZbiUp4lak5S2L2aH1koFGzJq/sZltdxznrecWRttxUbm+mQAelTwPQnrArozHKD
+	lTAZQMZyXog9a7Q9QjDs+8NZqXZ28BrOIjfOn6MJ1P+pV8hJFXlrHQ/ure5qN3YFMhop5k
+	o1nuskyb5E8HsMru/RRTKvu7hefouE8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1728317909;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aCCnIA4pPdJb47KXlYuCQ73YmB9PSYtnaO/E5dCrBHE=;
+	b=zF7KI0KbzK7mY48eefbh+s3RCGGPJN8FEV24Y6YAL/YHc5sc6GJROzCtjGu62MdD05SRsw
+	+OD1/m245F1JRuDA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99A7B13786;
+	Mon,  7 Oct 2024 16:18:29 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id i4d4JdUJBGfXIAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 07 Oct 2024 16:18:29 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1309DA07D0; Mon,  7 Oct 2024 18:18:25 +0200 (CEST)
+Date: Mon, 7 Oct 2024 18:18:25 +0200
+From: Jan Kara <jack@suse.cz>
+To: Jan Stancek <jstancek@redhat.com>
+Cc: Jan Kara <jack@suse.cz>, Ted Tso <tytso@mit.edu>,
+	linux-ext4@vger.kernel.org, Amir Goldstein <amir73il@gmail.com>
+Subject: Re: [PATCH] ext4: Avoid remount errors with 'abort' mount option
+Message-ID: <20241007161825.yh2d4464ef7ysbye@quack3>
+References: <20241004221556.19222-1-jack@suse.cz>
+ <CAASaF6wKeEkAWW6SQOur+R7EHwC7YVx_C+DTcQojhOfhUCLvaw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAASaF6wKeEkAWW6SQOur+R7EHwC7YVx_C+DTcQojhOfhUCLvaw@mail.gmail.com>
+X-Rspamd-Queue-Id: AA94421B87
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	MISSING_XM_UA(0.00)[];
+	FREEMAIL_CC(0.00)[suse.cz,mit.edu,vger.kernel.org,gmail.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-Add the __counted_by compiler attribute to the flexible array member
-name to improve access bounds-checking via CONFIG_UBSAN_BOUNDS and
-CONFIG_FORTIFY_SOURCE.
+On Mon 07-10-24 11:13:38, Jan Stancek wrote:
+> On Sat, Oct 5, 2024 at 12:16 AM Jan Kara <jack@suse.cz> wrote:
+> >
+> > When we remount filesystem with 'abort' mount option while changing
+> > other mount options as well (as is LTP test doing), we can return error
+> > from the system call after commit d3476f3dad4a ("ext4: don't set
+> > SB_RDONLY after filesystem errors") because the application of mount
+> > option changes detects shutdown filesystem and refuses to do anything.
+> > The behavior of application of other mount options in presence of
+> > 'abort' mount option is currently rather arbitary as some mount option
+> > changes are handled before 'abort' and some after it.
+> >
+> > Move aborting of the filesystem to the end of remount handling so all
+> > requested changes are properly applied before the filesystem is shutdown
+> > to have a reasonably consistent behavior.
+> >
+> > Fixes: d3476f3dad4a ("ext4: don't set SB_RDONLY after filesystem errors")
+> > Reported-by: Jan Stancek <jstancek@redhat.com>
+> > Link: https://lore.kernel.org/all/Zvp6L+oFnfASaoHl@t14s
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> 
+> In case the mount option isn't getting deprecated right away:
+> Tested-by: Jan Stancek <jstancek@redhat.com>
 
-Inline and use struct_size() to calculate the number of bytes to
-allocate for new_fn and remove the local variable len.
+Well, even if we decided to deprecate it, it would mean that now we'd just
+start warning about deprecation and it would get removed in an year or so.
+So fixing this still makes sense. Thanks for testing!
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
----
- fs/ext4/dir.c | 7 +++----
- 1 file changed, 3 insertions(+), 4 deletions(-)
-
-diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
-index ef6a3c8f3a9a..02d47a64e8d1 100644
---- a/fs/ext4/dir.c
-+++ b/fs/ext4/dir.c
-@@ -418,7 +418,7 @@ struct fname {
- 	__u32		inode;
- 	__u8		name_len;
- 	__u8		file_type;
--	char		name[];
-+	char		name[] __counted_by(name_len);
- };
- 
- /*
-@@ -471,14 +471,13 @@ int ext4_htree_store_dirent(struct file *dir_file, __u32 hash,
- 	struct rb_node **p, *parent = NULL;
- 	struct fname *fname, *new_fn;
- 	struct dir_private_info *info;
--	int len;
- 
- 	info = dir_file->private_data;
- 	p = &info->root.rb_node;
- 
- 	/* Create and allocate the fname structure */
--	len = sizeof(struct fname) + ent_name->len + 1;
--	new_fn = kzalloc(len, GFP_KERNEL);
-+	new_fn = kzalloc(struct_size(new_fn, name, ent_name->len + 1),
-+			 GFP_KERNEL);
- 	if (!new_fn)
- 		return -ENOMEM;
- 	new_fn->hash = hash;
+								Honza
+> > ---
+> >  fs/ext4/super.c | 11 ++++++++---
+> >  1 file changed, 8 insertions(+), 3 deletions(-)
+> >
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 16a4ce704460..4645f1629673 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -6518,9 +6518,6 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+> >                 goto restore_opts;
+> >         }
+> >
+> > -       if (test_opt2(sb, ABORT))
+> > -               ext4_abort(sb, ESHUTDOWN, "Abort forced by user");
+> > -
+> >         sb->s_flags = (sb->s_flags & ~SB_POSIXACL) |
+> >                 (test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
+> >
+> > @@ -6689,6 +6686,14 @@ static int __ext4_remount(struct fs_context *fc, struct super_block *sb)
+> >         if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
+> >                 ext4_stop_mmpd(sbi);
+> >
+> > +       /*
+> > +        * Handle aborting the filesystem as the last thing during remount to
+> > +        * avoid obsure errors during remount when some option changes fail to
+> > +        * apply due to shutdown filesystem.
+> > +        */
+> > +       if (test_opt2(sb, ABORT))
+> > +               ext4_abort(sb, ESHUTDOWN, "Abort forced by user");
+> > +
+> >         return 0;
+> >
+> >  restore_opts:
+> > --
+> > 2.35.3
+> >
+> 
 -- 
-2.46.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
