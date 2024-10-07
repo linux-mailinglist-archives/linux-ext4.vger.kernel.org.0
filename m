@@ -1,157 +1,109 @@
-Return-Path: <linux-ext4+bounces-4520-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4521-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3D0B39927DC
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 11:14:11 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 494F6992816
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 11:28:33 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 68E971C225C3
-	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 09:14:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EA1301F234E7
+	for <lists+linux-ext4@lfdr.de>; Mon,  7 Oct 2024 09:28:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 380D618D62A;
-	Mon,  7 Oct 2024 09:14:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98B9218E059;
+	Mon,  7 Oct 2024 09:28:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RNeYpzPn"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PGqSyBcb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+Received: from out-183.mta1.migadu.com (out-183.mta1.migadu.com [95.215.58.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8C2C18CC16
-	for <linux-ext4@vger.kernel.org>; Mon,  7 Oct 2024 09:14:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7C2E1741E0
+	for <linux-ext4@vger.kernel.org>; Mon,  7 Oct 2024 09:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728292445; cv=none; b=XtZu1yJblD9Cj23Xq83lhjhmBX4eMWBAgUZYPtcCwv6IBEVYRIuNOsBmZ2KgkpV5gudYcWa9tORI4rRmVUZaFyH6qEmAIKcfs/KsDJ8ECgQIwmZpZg+ANtirvLBhOzueGjO81EBp/4Y2QepGgonig1N38oWjLgpSE5mUGgYCEAc=
+	t=1728293307; cv=none; b=rwsGqICR1VJgodn+MwUeuf7cCC/kInYZcTaO6iFtpns8hbKSjDoMvI0z5zrK+7dX4i4FvpPWU+wwcD6g2s46KrzNbWzu8WUMSIrsl36tPkSJeR7PrNK+IohGAMMLo3SnVms92H8Z9Vcm/rRg2haUjMPfixS+QgM4uxc9DYcXeSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728292445; c=relaxed/simple;
-	bh=e9HlqrNlMM5v6Hkw73yTAbq0uXJFTKcoyI9lU9kNAk4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DiDQ1Cepmslj/h4/pAUbaMgavudAudgD8GdQJXS4eji80DICUpVSjDtdqqh/2fvZ+F/7RjMORdv+s3h0e60oI0fTRhbbXuypcvzZNinPc66hmGrTtTBFfEp8Q2NG+csUKMLENZEdbvtPGQh62lG3UluQO2P8c3Qn3YHmpofkw6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RNeYpzPn; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1728292442;
+	s=arc-20240116; t=1728293307; c=relaxed/simple;
+	bh=xwxOXNQDdG5K10egox0O/MdReACVFRWs4FU1c46jVcQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=F5JA4lDq4v0BzBAL4fj2PVaSi8NF5vUSAtN4BfBUFEMDA/HRJr2YBHGXBqHhYkJp4wkYwTXI+cyfKkN6xI92Z8tZcvdcR22gqnqL1ApDdpYaetay36JybMlxFp8BpNlprDBYst37YB5MRKdV4DVJejaIY7K3fPDvukQOpjkDnoM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PGqSyBcb; arc=none smtp.client-ip=95.215.58.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1728293297;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GU/jVwiA4Y25yIzEGT7Qy83c1BA1Z87gV3bIzZHtaW8=;
-	b=RNeYpzPn0tg/xSLcNvAvOuTcTqD2YcmrzyFmjBMcuNsgZadasNVGtRTzqHniqXhsddOmA/
-	+X+A4AVEeZ8WiGqAshElDBpKCHJTj81fHSA/Onw6xuYAFABHgyK+AvLHZXeMs+aFxvEoY8
-	FI4NaXCWXBB8iUn0S//heZQEY+830BY=
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com
- [209.85.161.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-218-luuhszupNfCDeF2Am6GRVQ-1; Mon, 07 Oct 2024 05:14:01 -0400
-X-MC-Unique: luuhszupNfCDeF2Am6GRVQ-1
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-5e1d13efe2dso1464524eaf.1
-        for <linux-ext4@vger.kernel.org>; Mon, 07 Oct 2024 02:14:01 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728292440; x=1728897240;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GU/jVwiA4Y25yIzEGT7Qy83c1BA1Z87gV3bIzZHtaW8=;
-        b=Ru3MNQr5UcGgX380uBkKPVcOTnSJzzpEoExsZPf0C2IWLxWp1kOuarWebSLW8vuXgb
-         EQSK2JF3qkVaagNmvbqCZEOCq3jdLWqUUDX/44Pf1jINoWvjMJIKrxxIG/zVlyg87w/r
-         HmDxaJs2ay919wsrMKtQjGXprDk0LRIjKGClH6lf27ddTiiuFBlkYsGjuv/qyoHb/rpS
-         5DtPS2dXE/puoRsAFNffWcMgsd+x6B9g/IPX2KWiUD6KkuV+JMP9OYHqNRx7EtG84dAh
-         LZ4gnWEND3LC+Sc0DbXwH+egtpj9HiNpmZ/+LBxj+qBdeXg2ZlzaZgS7rjAismTq65cF
-         aFyw==
-X-Forwarded-Encrypted: i=1; AJvYcCVA0MhtXPstCXXlickzVMuvg1tknTrmf7tacbaCz05E+oZR5PXNYKH+dXjv9tV+Splz+BLEtAJNVr3G@vger.kernel.org
-X-Gm-Message-State: AOJu0YyYddvZ4Eq8pAo3eXiryblShjthuWJkV32JtnrH6qv9rMK0/WoA
-	ErJ3wqX9Cy495pPI6EZQlnRO/dd7UY8is7fVYb7s0ZLCg35RZEyT1f6vhguBpHuGU5EHjuTWXIC
-	qOfY/cA/jl+CcT5wupoKkrCBD0b5/fZA2qj9cqJWnuZiaQTNay6LugNAQkp9C9F0XZd0XcLmquR
-	wvu7dEZJ9bx5bH1ok5xqI/A81SLWwjBY9MQoBtN7fG5g==
-X-Received: by 2002:a05:6820:a0c:b0:5e1:ea03:928f with SMTP id 006d021491bc7-5e7cc087effmr5196477eaf.7.1728292440545;
-        Mon, 07 Oct 2024 02:14:00 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEHA3Smm8UEhYWZjmLYnCPJgBkxvsCRxSMaLsg7FPmtfmr5Ti4To6AV1+4nKjE6r7bqsgPloC1dRx7YT1zV2EU=
-X-Received: by 2002:a05:6820:a0c:b0:5e1:ea03:928f with SMTP id
- 006d021491bc7-5e7cc087effmr5196470eaf.7.1728292440257; Mon, 07 Oct 2024
- 02:14:00 -0700 (PDT)
+	 to:to:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=KhBPqv0HMgy+V3l1ZeOmzP6ci5enJC1cEdRgXVzEEQo=;
+	b=PGqSyBcbcSeop5dUkizYp76JQC+QyTt/hStSIzoPgRqmpi7w8z9y9j/2Q1G543FMjoVd5c
+	nqYWiuu/vbe42gTDd41+kcLNoba0hlqYXKvD4uq7++SS4d5Fn1cIQ15MIuzLnkSfrWcO4p
+	A+nJMJ6zipMcNJc0KG/tAd2ugjfkRxM=
+From: Luis Henriques <luis.henriques@linux.dev>
+To: linux-ext4@vger.kernel.org
+Subject: Old inline-data bug with small block sizes
+Date: Mon, 07 Oct 2024 10:28:02 +0100
+Message-ID: <87h69oclel.fsf@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241004221556.19222-1-jack@suse.cz>
-In-Reply-To: <20241004221556.19222-1-jack@suse.cz>
-From: Jan Stancek <jstancek@redhat.com>
-Date: Mon, 7 Oct 2024 11:13:38 +0200
-Message-ID: <CAASaF6wKeEkAWW6SQOur+R7EHwC7YVx_C+DTcQojhOfhUCLvaw@mail.gmail.com>
-Subject: Re: [PATCH] ext4: Avoid remount errors with 'abort' mount option
-To: Jan Kara <jack@suse.cz>
-Cc: Ted Tso <tytso@mit.edu>, linux-ext4@vger.kernel.org, 
-	Amir Goldstein <amir73il@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
 Content-Transfer-Encoding: quoted-printable
+X-Migadu-Flow: FLOW_OUT
 
-On Sat, Oct 5, 2024 at 12:16=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
->
-> When we remount filesystem with 'abort' mount option while changing
-> other mount options as well (as is LTP test doing), we can return error
-> from the system call after commit d3476f3dad4a ("ext4: don't set
-> SB_RDONLY after filesystem errors") because the application of mount
-> option changes detects shutdown filesystem and refuses to do anything.
-> The behavior of application of other mount options in presence of
-> 'abort' mount option is currently rather arbitary as some mount option
-> changes are handled before 'abort' and some after it.
->
-> Move aborting of the filesystem to the end of remount handling so all
-> requested changes are properly applied before the filesystem is shutdown
-> to have a reasonably consistent behavior.
->
-> Fixes: d3476f3dad4a ("ext4: don't set SB_RDONLY after filesystem errors")
-> Reported-by: Jan Stancek <jstancek@redhat.com>
-> Link: https://lore.kernel.org/all/Zvp6L+oFnfASaoHl@t14s
-> Signed-off-by: Jan Kara <jack@suse.cz>
+Hi!
 
-In case the mount option isn't getting deprecated right away:
-Tested-by: Jan Stancek <jstancek@redhat.com>
+I have a local branch where, some time ago, I tried to fix an old
+inline_data bug[1].  The reproducer is easy to run, it just requires a
+filesystem with a small block size (I've used 1024).
 
+Looking at it again with fresh eyes I believe the bug could be easily
+fixed with the patch below.
 
-> ---
->  fs/ext4/super.c | 11 ++++++++---
->  1 file changed, 8 insertions(+), 3 deletions(-)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 16a4ce704460..4645f1629673 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -6518,9 +6518,6 @@ static int __ext4_remount(struct fs_context *fc, st=
-ruct super_block *sb)
->                 goto restore_opts;
->         }
->
-> -       if (test_opt2(sb, ABORT))
-> -               ext4_abort(sb, ESHUTDOWN, "Abort forced by user");
-> -
->         sb->s_flags =3D (sb->s_flags & ~SB_POSIXACL) |
->                 (test_opt(sb, POSIX_ACL) ? SB_POSIXACL : 0);
->
-> @@ -6689,6 +6686,14 @@ static int __ext4_remount(struct fs_context *fc, s=
-truct super_block *sb)
->         if (!ext4_has_feature_mmp(sb) || sb_rdonly(sb))
->                 ext4_stop_mmpd(sbi);
->
-> +       /*
-> +        * Handle aborting the filesystem as the last thing during remoun=
-t to
-> +        * avoid obsure errors during remount when some option changes fa=
-il to
-> +        * apply due to shutdown filesystem.
-> +        */
-> +       if (test_opt2(sb, ABORT))
-> +               ext4_abort(sb, ESHUTDOWN, "Abort forced by user");
-> +
->         return 0;
->
->  restore_opts:
-> --
-> 2.35.3
->
+My understanding is that, when we are doing a ->read_folio() and there's
+inlined data, that inlined data has to be in the first page.  However, if
+we get a different page (i.e. not the first one), then we are zero'ing it
+and marking it up-to-date.  And that doesn't sound right to me.
 
+The patch bellow fixes things by reverting back to do a regular read in
+those cases, because it's not inlined data.  Does it make sense?  Or am I
+missing something and not seeing the real bug here?
+
+[1] https://bugzilla.kernel.org/show_bug.cgi?id=3D200681
+
+Cheers,
+--=20
+Lu=C3=ADs
+
+diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+index 3536ca7e4fcc..ec96038dd75f 100644
+--- a/fs/ext4/inline.c
++++ b/fs/ext4/inline.c
+@@ -516,7 +516,8 @@ int ext4_readpage_inline(struct inode *inode, struct fo=
+lio *folio)
+ 	int ret =3D 0;
+=20
+ 	down_read(&EXT4_I(inode)->xattr_sem);
+-	if (!ext4_has_inline_data(inode)) {
++	if (!ext4_has_inline_data(inode) ||
++	    ((folio->index > 0) && !folio_test_uptodate(folio))) {
+ 		up_read(&EXT4_I(inode)->xattr_sem);
+ 		return -EAGAIN;
+ 	}
+@@ -527,10 +528,6 @@ int ext4_readpage_inline(struct inode *inode, struct f=
+olio *folio)
+ 	 */
+ 	if (!folio->index)
+ 		ret =3D ext4_read_inline_folio(inode, folio);
+-	else if (!folio_test_uptodate(folio)) {
+-		folio_zero_segment(folio, 0, folio_size(folio));
+-		folio_mark_uptodate(folio);
+-	}
+=20
+ 	up_read(&EXT4_I(inode)->xattr_sem);
+=20
 
