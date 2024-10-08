@@ -1,42 +1,42 @@
-Return-Path: <linux-ext4+bounces-4527-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4528-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1901A9947F8
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 14:03:38 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FFF3994888
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 14:14:27 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF6671F226AA
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 12:03:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 14C431F27B08
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 12:14:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D200F1D90A9;
-	Tue,  8 Oct 2024 12:03:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C32CE1DE4DC;
+	Tue,  8 Oct 2024 12:13:49 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA821D6DA3;
-	Tue,  8 Oct 2024 12:03:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AA291DE3C1;
+	Tue,  8 Oct 2024 12:13:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728389011; cv=none; b=YpeEo6xxBkZRemlT9xuqwsb83rd9TpqpFNI+TUzb0BF/zefp7epiYvn3UaZnb2otTe5MIvaxI0V+1nsDhI8nGmOjj3vZOCDK+epd0aHIWQw+MaPNJglLJGxghg2tOj9bnWWVfdrM2nWkCff4Z01HJjxVT4dDocC5X7q+GIoQHG4=
+	t=1728389629; cv=none; b=T7jT0FIAUa1pS3moGx/HWirEsdZX3c2644kzLwskGuvSVtsXfxc8resrps3d3W/EkXZFtOx5O5x6pDWQFqwwjby239IcFkgFuadLU2hqmSS/QEuxY6r853mcv6wbZcn5akE09tKFq8fmCSCLvhutY8kybdCxV0BwN532iuICoLs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728389011; c=relaxed/simple;
-	bh=rI920+A7PTwdpdexWvUgfSuMfU4/CAWs4q8b3iY0JqI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QE9JOTz8/YwSkn+G6keKN+3ZpeqzoxF7AyWfXmls76gSDkOIMw3iAmimSYQlL1Lk6vvuijxKyoj4JQZ5Ao32KmdH5VDJfsPAN9EpyGS2nvEgCuK3z85dxwflFdrjwxm/qdsJZMYk0DPV41CZZi/VJqpgZrSCyYcQrgXIAlIhnKA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	s=arc-20240116; t=1728389629; c=relaxed/simple;
+	bh=wEbV/QzaN2bQIxKJnfGzPG4juvL36fx0LANBaOI3IZw=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=DfU/jM89HwJN8M25lD7HfyeO4idVYwTJO1u+07SQNo+mdmeK9b1aXacQ6v64SgpWtpFFBJXb22/xdUCARKXZax212Eu/S9iZ3C39O6KqW7LJ/Ma+UTTcjrtuqGMHFY/Miwx0N4dZh8XT4EfV3OzVwdFPglvJtxImLXwylYbtAgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XNF5l43vFz4f3jsD;
-	Tue,  8 Oct 2024 20:03:07 +0800 (CST)
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XNFKk5SPvz4f3k6W;
+	Tue,  8 Oct 2024 20:13:30 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 5F0E41A08FC;
-	Tue,  8 Oct 2024 20:03:24 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 78B3F1A0568;
+	Tue,  8 Oct 2024 20:13:42 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.104.67])
-	by APP4 (Coremail) with SMTP id gCh0CgCHusaKHwVnvP0TDg--.64813S4;
-	Tue, 08 Oct 2024 20:03:24 +0800 (CST)
+	by APP4 (Coremail) with SMTP id gCh0CgDH+8fzIQVnSZoUDg--.44667S4;
+	Tue, 08 Oct 2024 20:13:41 +0800 (CST)
 From: libaokun@huaweicloud.com
 To: linux-ext4@vger.kernel.org
 Cc: tytso@mit.edu,
@@ -47,9 +47,9 @@ Cc: tytso@mit.edu,
 	yangerkun@huawei.com,
 	libaokun@huaweicloud.com,
 	Baokun Li <libaokun1@huawei.com>
-Subject: [PATCH] ext4: show the default enabled prefetch_block_bitmaps option
-Date: Tue,  8 Oct 2024 20:01:34 +0800
-Message-Id: <20241008120134.3758097-1-libaokun@huaweicloud.com>
+Subject: [PATCH] ext4: WARN if a full dir leaf block has only one dentry
+Date: Tue,  8 Oct 2024 20:11:52 +0800
+Message-Id: <20241008121152.3771906-1-libaokun@huaweicloud.com>
 X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -58,58 +58,82 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHusaKHwVnvP0TDg--.64813S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7GryxWr45ur4kKr45Zry7ZFb_yoWktFbEv3
-	yxGF48A3W3trsYkF18Cw4rXrWFkrn5A3W3JrsagryruFy5XayFqr4kA3yxuF15WFW5Ja4f
-	ArW3XF15WasaqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbs8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
-	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
-	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
-	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
-	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC0wCY
-	1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
-	C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
-	wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
-	v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2
-	jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
-	ZEXa7VUbknY7UUUUU==
-X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAKBWcDm4QuOQABsj
+X-CM-TRANSID:gCh0CgDH+8fzIQVnSZoUDg--.44667S4
+X-Coremail-Antispam: 1UD129KBjvJXoW7ZrykKr17KF43Aw4fCF4rKrg_yoW8ZFWfpF
+	4aqwn0yr42qFs09FnrCa4YvrnIk39xuF1DWrZxW34jvryqqr1SqFZrKr1FvF1rtrW8W3Z5
+	XF12gr90k3yIy3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvm14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lw4CEc2x0rVAKj4xx
+	MxkF7I0En4kS14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r
+	4UMI8I3I0E5I8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF
+	67AKxVWUtVW8ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2I
+	x0cI8IcVCY1x0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2
+	z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnU
+	UI43ZEXa7VU1oUDtUUUUU==
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAKBWcE7QQQOwAAsv
 
 From: Baokun Li <libaokun1@huawei.com>
 
-After commit 21175ca434c5 ("ext4: make prefetch_block_bitmaps default"),
-we enable 'prefetch_block_bitmaps' by default, but this is not shown in
-the '/proc/fs/ext4/sdx/options' procfs interface.
+The maximum length of a filename is 255 and the minimum block size is 1024,
+so it is always guaranteed that the number of entries is greater than or
+equal to 2 when do_split() is called. So unless ext4_dx_add_entry() and
+make_indexed_dir() or some other functions are buggy, 'split == 0' will
+not occur.
 
-This makes it impossible to distinguish whether the feature is enabled by
-default or not, so 'prefetch_block_bitmaps' is shown in the 'options'
-procfs interface when prefetch_block_bitmaps is enabled by default.
+Setting 'continued' to 0 in this case masks the problem that the file
+system has become corrupted, even though it prevents possible out-of-bounds
+access. Hence WARN_ON_ONCE() is used to check if 'split' is 0, and if it is
+then warns and returns an error to abort split.
 
-This makes it easy to notice changes to the default mount options between
-versions through the '/proc/fs/ext4/sdx/options' procfs interface.
-
+Suggested-by: Theodore Ts'o <tytso@mit.edu>
+Link: https://lore.kernel.org/r/20240823160518.GA424729@mit.edu
 Signed-off-by: Baokun Li <libaokun1@huawei.com>
 ---
- fs/ext4/super.c | 3 +++
- 1 file changed, 3 insertions(+)
+ fs/ext4/namei.c | 14 ++++++++++++--
+ 1 file changed, 12 insertions(+), 2 deletions(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index b77acba4a719..c88a47639e9c 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -3030,6 +3030,9 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
- 		SEQ_OPTS_PUTS("mb_optimize_scan=1");
- 	}
+diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
+index 790db7eac6c2..08d15cd2b594 100644
+--- a/fs/ext4/namei.c
++++ b/fs/ext4/namei.c
+@@ -2000,8 +2000,17 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+ 	else
+ 		split = count/2;
  
-+	if (!test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS))
-+		SEQ_OPTS_PUTS("prefetch_block_bitmaps");
++	if (WARN_ON_ONCE(split == 0)) {
++		/* Should never happen, but avoid out-of-bounds access below */
++		ext4_error_inode_block(dir, (*bh)->b_blocknr, 0,
++			"bad indexed directory? hash=%08x:%08x count=%d move=%u",
++			hinfo->hash, hinfo->minor_hash, count, move);
++		err = -EFSCORRUPTED;
++		goto out;
++	}
 +
- 	ext4_show_quota_options(seq, sb);
- 	return 0;
+ 	hash2 = map[split].hash;
+-	continued = split > 0 ? hash2 == map[split - 1].hash : 0;
++	continued = hash2 == map[split - 1].hash;
+ 	dxtrace(printk(KERN_INFO "Split block %lu at %x, %i/%i\n",
+ 			(unsigned long)dx_get_block(frame->at),
+ 					hash2, split, count-split));
+@@ -2043,10 +2052,11 @@ static struct ext4_dir_entry_2 *do_split(handle_t *handle, struct inode *dir,
+ 	return de;
+ 
+ journal_error:
++	ext4_std_error(dir->i_sb, err);
++out:
+ 	brelse(*bh);
+ 	brelse(bh2);
+ 	*bh = NULL;
+-	ext4_std_error(dir->i_sb, err);
+ 	return ERR_PTR(err);
  }
+ 
 -- 
-2.31.1
+2.46.1
 
 
