@@ -1,171 +1,115 @@
-Return-Path: <linux-ext4+bounces-4526-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4527-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5EAB99410D
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 10:19:58 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1901A9947F8
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 14:03:38 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F4991F29A96
-	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 08:19:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF6671F226AA
+	for <lists+linux-ext4@lfdr.de>; Tue,  8 Oct 2024 12:03:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED61E1714B6;
-	Tue,  8 Oct 2024 07:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D200F1D90A9;
+	Tue,  8 Oct 2024 12:03:31 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E1DC7DA76;
-	Tue,  8 Oct 2024 07:40:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CA821D6DA3;
+	Tue,  8 Oct 2024 12:03:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728373247; cv=none; b=Oju54G3z//sqnWXKfB7h9u/J5WrAGpD2e4OZnz04h82BSFg456w2+5SPNjFb5b1kiDDIcbpsClUWxuWmSd8GcP4mbnwb3sz5uwDJNMgFmT8G9N52vggNXP59UCCsAEVrWmQ44cmu01yFrXJmy73BvINAKWjbdf84sQRYPh2Cuz8=
+	t=1728389011; cv=none; b=YpeEo6xxBkZRemlT9xuqwsb83rd9TpqpFNI+TUzb0BF/zefp7epiYvn3UaZnb2otTe5MIvaxI0V+1nsDhI8nGmOjj3vZOCDK+epd0aHIWQw+MaPNJglLJGxghg2tOj9bnWWVfdrM2nWkCff4Z01HJjxVT4dDocC5X7q+GIoQHG4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728373247; c=relaxed/simple;
-	bh=Db/vKG35fxUql68zLBwIA3yZPDKUlp1kplZpcn1DRBs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kY2i9CQjQGoTMOh4DZIdXG9H05qJFp1IqQaJ8Tzyp4iwvLwTi0BzYhbo8pgAi34jxGdmtTWnvOiDJWOH3CpVWL9qanWDNq+uwWyiYv9EADcHx+TO1kk+sYVDsvXE24jmsiCPRi2YzK5KwfjRaXFkJ1avm3b95Zh8gfmS+UIIfEw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4XN7Fh6CyPz1j9FL;
-	Tue,  8 Oct 2024 15:39:36 +0800 (CST)
-Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
-	by mail.maildlp.com (Postfix) with ESMTPS id 7F75714013B;
-	Tue,  8 Oct 2024 15:40:40 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by dggpeml100021.china.huawei.com
- (7.185.36.148) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Tue, 8 Oct
- 2024 15:40:39 +0800
-Message-ID: <d62a25e9-04de-4309-98d1-22a4f9b5bb49@huawei.com>
-Date: Tue, 8 Oct 2024 15:40:39 +0800
+	s=arc-20240116; t=1728389011; c=relaxed/simple;
+	bh=rI920+A7PTwdpdexWvUgfSuMfU4/CAWs4q8b3iY0JqI=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QE9JOTz8/YwSkn+G6keKN+3ZpeqzoxF7AyWfXmls76gSDkOIMw3iAmimSYQlL1Lk6vvuijxKyoj4JQZ5Ao32KmdH5VDJfsPAN9EpyGS2nvEgCuK3z85dxwflFdrjwxm/qdsJZMYk0DPV41CZZi/VJqpgZrSCyYcQrgXIAlIhnKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4XNF5l43vFz4f3jsD;
+	Tue,  8 Oct 2024 20:03:07 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 5F0E41A08FC;
+	Tue,  8 Oct 2024 20:03:24 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCHusaKHwVnvP0TDg--.64813S4;
+	Tue, 08 Oct 2024 20:03:24 +0800 (CST)
+From: libaokun@huaweicloud.com
+To: linux-ext4@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	linux-kernel@vger.kernel.org,
+	yi.zhang@huawei.com,
+	yangerkun@huawei.com,
+	libaokun@huaweicloud.com,
+	Baokun Li <libaokun1@huawei.com>
+Subject: [PATCH] ext4: show the default enabled prefetch_block_bitmaps option
+Date: Tue,  8 Oct 2024 20:01:34 +0800
+Message-Id: <20241008120134.3758097-1-libaokun@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: fix out-of-bounds issue in ext4_xattr_set_entry
-To: Qianqiang Liu <qianqiang.liu@163.com>, <tytso@mit.edu>, Jan Kara
-	<jack@suse.cz>
-CC: <adilger.kernel@dilger.ca>, syzbot
-	<syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com>,
-	<linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<syzkaller-bugs@googlegroups.com>, Yang Erkun <yangerkun@huawei.com>
-References: <Zu+vI3EipxSsPOMe@thinkpad.lan>
- <66efba95.050a0220.3195df.008c.GAE@google.com>
- <Zu+8aQBJgMn7xVws@thinkpad.lan>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <Zu+8aQBJgMn7xVws@thinkpad.lan>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml100021.china.huawei.com (7.185.36.148)
+X-CM-TRANSID:gCh0CgCHusaKHwVnvP0TDg--.64813S4
+X-Coremail-Antispam: 1UD129KBjvdXoW7GryxWr45ur4kKr45Zry7ZFb_yoWktFbEv3
+	yxGF48A3W3trsYkF18Cw4rXrWFkrn5A3W3JrsagryruFy5XayFqr4kA3yxuF15WFW5Ja4f
+	ArW3XF15WasaqjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbs8FF20E14v26r4j6ryUM7CY07I20VC2zVCF04k26cxKx2IYs7xG
+	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
+	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Cr0_
+	Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s
+	0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xII
+	jxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr
+	1lF7xvr2IYc2Ij64vIr41lF7I21c0EjII2zVCS5cI20VAGYxC7M4kE6xkIj40Ew7xC0wCY
+	1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8Jw
+	C20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAF
+	wI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjx
+	v20xvEc7CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2
+	jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Jr0_GrUvcSsGvfC2KfnxnUUI43
+	ZEXa7VUbknY7UUUUU==
+X-CM-SenderInfo: 5olet0hnxqqx5xdzvxpfor3voofrz/1tbiAQAKBWcDm4QuOQABsj
 
-On 2024/9/22 14:42, Qianqiang Liu wrote:
-> syzbot has found an out-of-bounds issue in ext4_xattr_set_entry:
->
-> ==================================================================
-> BUG: KASAN: out-of-bounds in ext4_xattr_set_entry+0x8ce/0x1f60 fs/ext4/xattr.c:1781
-> Read of size 18446744073709551572 at addr ffff888036426850 by task syz-executor264/5095
->
-> CPU: 0 UID: 0 PID: 5095 Comm: syz-executor264 Not tainted 6.11.0-syzkaller-03917-ga940d9a43e62 #0
-> Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-> Call Trace:
->   <TASK>
->   __dump_stack lib/dump_stack.c:93 [inline]
->   dump_stack_lvl+0x241/0x360 lib/dump_stack.c:119
->   print_address_description mm/kasan/report.c:377 [inline]
->   print_report+0x169/0x550 mm/kasan/report.c:488
->   kasan_report+0x143/0x180 mm/kasan/report.c:601
->   kasan_check_range+0x282/0x290 mm/kasan/generic.c:189
->   __asan_memmove+0x29/0x70 mm/kasan/shadow.c:94
->   ext4_xattr_set_entry+0x8ce/0x1f60 fs/ext4/xattr.c:1781
-> [...]
-> ==================================================================
->
-> This issue is caused by a negative size in memmove.
-> We need to check for this.
->
-> Fixes: dec214d00e0d ("ext4: xattr inode deduplication")
-> Reported-by: syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
-> Closes: https://syzkaller.appspot.com/bug?extid=f792df426ff0f5ceb8d1
-> Tested-by: syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com
-> Signed-off-by: Qianqiang Liu <qianqiang.liu@163.com>
-> ---
->   fs/ext4/xattr.c | 9 ++++++++-
->   1 file changed, 8 insertions(+), 1 deletion(-)
->
-> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-> index 46ce2f21fef9..336badb46246 100644
-> --- a/fs/ext4/xattr.c
-> +++ b/fs/ext4/xattr.c
-> @@ -1776,7 +1776,14 @@ static int ext4_xattr_set_entry(struct ext4_xattr_info *i,
->   	} else if (s->not_found) {
->   		/* Insert new name. */
->   		size_t size = EXT4_XATTR_LEN(name_len);
-> -		size_t rest = (void *)last - (void *)here + sizeof(__u32);
-> +		size_t rest;
-> +
-> +		if (last < here) {
-> +			ret = -ENOSPC;
-> +			goto out;
-> +		} else {
-> +			rest = (void *)last - (void *)here + sizeof(__u32);
-> +		}
->   
->   		memmove((void *)here + size, here, rest);
->   		memset(here, 0, size);
-This change just passes syzbot's test cases without fixing the real
-problem.
+From: Baokun Li <libaokun1@huawei.com>
 
-The root cause of the problem is that the inode's xattr block is marked as
-free in the block bitmap, so that block is allocated to the ea inode
-resulting in the data in the xattr block being overwritten, and the last of
-the second lookups changing resulting in out-of-bounds access.
+After commit 21175ca434c5 ("ext4: make prefetch_block_bitmaps default"),
+we enable 'prefetch_block_bitmaps' by default, but this is not shown in
+the '/proc/fs/ext4/sdx/options' procfs interface.
 
-The stack that triggers the problem is as follows:
+This makes it impossible to distinguish whether the feature is enabled by
+default or not, so 'prefetch_block_bitmaps' is shown in the 'options'
+procfs interface when prefetch_block_bitmaps is enabled by default.
 
-// An inode with an xattr block of 33.
-__ext4_mark_inode_dirty
-  __ext4_expand_extra_isize
-   ext4_expand_extra_isize_ea
-    ext4_xattr_make_inode_space
-     // Move xattr from inode to block
-     ext4_xattr_move_to_block
-      // Find out if the xattr exists in the block
-      ext4_xattr_block_find
-       // If xattr does not exist, here == last
-       xattr_find_entry
-      // Add a new xattr to the block
-      ext4_xattr_block_set
-       |// xattr is too long, needs an ea inode
-       |ext4_xattr_inode_lookup_create
-       | ext4_xattr_inode_create
-       | ext4_xattr_inode_write
-       |  ext4_map_blocks
-       |   // xattr block 33 is assigned to the new ea inode
-       |  memcpy(bh->b_data, buf, csize)
-       |   // The value of xattr overwrites the data in the xattr block.
-       |ext4_xattr_set_entry
-        // Since the contents of the xattr block have changed,
-        // now here == last does not hold, so it is possible to
-        // have last < here and trigger an out-of-bounds access.
+This makes it easy to notice changes to the default mount options between
+versions through the '/proc/fs/ext4/sdx/options' procfs interface.
 
-So I think we should probably add a helper function ext4_mb_block_inuse()
-that checks if xattr block is free with the block bitmap in check_xattrs().
+Signed-off-by: Baokun Li <libaokun1@huawei.com>
+---
+ fs/ext4/super.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
-Or go one step further and add a mechanism like xfs Reverse-Mapping, which
-makes sure that allocated blocks do point to the target inode, which could
-replace the current block_validity, and could also be used in future online
-fscks.
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b77acba4a719..c88a47639e9c 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -3030,6 +3030,9 @@ static int _ext4_show_options(struct seq_file *seq, struct super_block *sb,
+ 		SEQ_OPTS_PUTS("mb_optimize_scan=1");
+ 	}
+ 
++	if (!test_opt(sb, NO_PREFETCH_BLOCK_BITMAPS))
++		SEQ_OPTS_PUTS("prefetch_block_bitmaps");
++
+ 	ext4_show_quota_options(seq, sb);
+ 	return 0;
+ }
+-- 
+2.31.1
 
-Ted, Honza, do you have any thoughts?
-
-Regards,
-Baokun
 
