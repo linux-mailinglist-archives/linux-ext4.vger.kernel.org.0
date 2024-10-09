@@ -1,144 +1,94 @@
-Return-Path: <linux-ext4+bounces-4535-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4536-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E0BFA995E1B
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2024 05:25:45 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 41E93996A11
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2024 14:32:20 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 27B3F1C20E62
-	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2024 03:25:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA70FB23041
+	for <lists+linux-ext4@lfdr.de>; Wed,  9 Oct 2024 12:32:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A88676C61;
-	Wed,  9 Oct 2024 03:25:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lgIYWErd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAC1419342A;
+	Wed,  9 Oct 2024 12:32:05 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f52.google.com (mail-pj1-f52.google.com [209.85.216.52])
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A2B2119
-	for <linux-ext4@vger.kernel.org>; Wed,  9 Oct 2024 03:25:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10C1191F89
+	for <linux-ext4@vger.kernel.org>; Wed,  9 Oct 2024 12:32:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728444339; cv=none; b=JouD9PBAgecLIMHYuGoMfKjwWjFG/RX614DlCtNJ6wdo63lq9fk6Mn5kRBbXE+L5o4hbw8utJOpg6U/TeqsPb3KSPqqJf+a4JGURkFARnB4rW6jlC1QmdlXAo0nESoNBuZQUucp/7G/2G8SZ2O+U7KAuIqmpbrDI1T6fl+V0q/4=
+	t=1728477125; cv=none; b=L0L7YHl4MyAznybR9ZC9SmzVlJVhi3VLadycK8+Pf22uHaBU66DwA+fP9v38B7Psg8+H2aiOnn7gUtOZN2OttrzzBigffeZ9FzFACQQtPp/uysvuu6RQoK5732XGw2L/BO7Gilm8LojEFlX1R0ec9geD/8zYKpNXUU4KZfpoY70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728444339; c=relaxed/simple;
-	bh=QNpgUAKbZBomkZ743wtK3P6+N8TjEZ57RreEos7jVqU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=mRcik5F8Cs9RzzZBYv6RkR89m0GEOx1PQGZPMrrI6TDb7nNyYhPvKX7moqE2ZY2qqNRzdZnbjV3V6CbalqG6B3+xdL4c9L5IxRgwe24FUw4L06EXfyl4ku69KQPkiimvnbeBTr7wHxTFZVSWmLkMh8U+u39V+0ZBMWnutxL4JYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lgIYWErd; arc=none smtp.client-ip=209.85.216.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f52.google.com with SMTP id 98e67ed59e1d1-2e29555a1b2so654355a91.3
-        for <linux-ext4@vger.kernel.org>; Tue, 08 Oct 2024 20:25:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1728444337; x=1729049137; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=NR64AS8nlZvaquaZ8xVty4YAU20ExyFyPkMeRFRwoUY=;
-        b=lgIYWErdN10SFCGHzJY2xU6FXr2YSKDn2J+x/yJu/C9/DkirbS9paHyOfTYCXXZ19u
-         03m2mtNu3T+xHPtGJOdorhxFZiFAkAXgDwDG1aFtViNjrBDbUvEXRhD0Ib18aqxEJauz
-         /QxvwlB0SFfaIbfHw5pvNmvV7RdZMlOzbOCMJgvi7NnaIxZ8fb5DIsQTBStkZc2bXB49
-         hXqCUMDmWRI/X9KGi0J17+n5tcOXUyUUuOYZTGh2VJ+Nhk5cmoYzMsILZTS0vos5P2Ea
-         D+mosvLVemB2GA8Ws8ya9ME5Vz3529Nm7tVz29EUI41FC6jpnp3mLMFbZeimK+S3kXMk
-         abyw==
+	s=arc-20240116; t=1728477125; c=relaxed/simple;
+	bh=lfXEWTajvrvkCCH7NIIw3Dpjl02gTiHWFvvJkaWjYc0=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=KCx906Gh9fEQAE8IkUjqHRifyJj+vy9hURq/UD7l1fqdhMlleqilyJ150Zeiag3esYHyBZteUJ9qHolhqWf/H4Xj4utoQ0J5VTDxI0BSxHsQTWmXez+VZkd9iREUd1MIaXD2v9bdff5t75G0s3tL9DPxZqjWLGTG2U1zv4DinzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a3479460f4so55756885ab.2
+        for <linux-ext4@vger.kernel.org>; Wed, 09 Oct 2024 05:32:03 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728444337; x=1729049137;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=NR64AS8nlZvaquaZ8xVty4YAU20ExyFyPkMeRFRwoUY=;
-        b=wzIHTUcr0P3SrS3qOsiN69GrG+xVSu5r72VDJ0+A/8JwfAu0uIx+UqIvk5UlOGCUW6
-         +7UBbF/MnF4PyaKywYN6fw8pB/S2hGWub/TUOXltu93xWao0UDlLjDggjOjYWA0YmMQZ
-         dK68Rt0iQ+ftJGjm8kjzwhIZtlvpVRNyEP+Qdj3xu35HKRmlUf5zSOpFSlZzVZsRcmL/
-         7RrZ+WGEvNyyEey1WZ1Ly+LZurWJaTUyL24jXNpbBUOOew0BTLJ8ccUwmLBUUCdBINNv
-         Yvjye2WVAuMzt/VTN+SAqGEuU6kUdeli2OOzg4ujAlRJQi0rWxVn/RYRMZqcDaEQagmq
-         mU2w==
-X-Gm-Message-State: AOJu0YzlIx//NRJprMMc5QTO95GTi1UYPMPCdLN5l6C+GhvU1d8uRFAS
-	KB4t2XYDrAIOIl5b4Viy8JwOdZlCwfjrSjYkDBV/DXUFMCrwYW275UOBog==
-X-Google-Smtp-Source: AGHT+IG8JpY4NdqO+9lTNq3KTTfjGq2bY/+dJp9Ix5EKy4PEYtrvaUk9rHu6yZ5rgCHYRao4tQBH5Q==
-X-Received: by 2002:a17:90b:3b86:b0:2cb:4e14:fd5d with SMTP id 98e67ed59e1d1-2e2a236b971mr1284196a91.17.1728444337464;
-        Tue, 08 Oct 2024 20:25:37 -0700 (PDT)
-Received: from debianLT.home.io (67-60-32-97.cpe.sparklight.net. [67.60.32.97])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e2a55fc8eesm406695a91.6.2024.10.08.20.25.36
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 08 Oct 2024 20:25:37 -0700 (PDT)
-From: Nicolas Bretz <bretznic@gmail.com>
-To: tytso@mit.edu
-Cc: linux-ext4@vger.kernel.org,
-	Nicolas Bretz <bretznic@gmail.com>
-Subject: [PATCH] ext4: inode: Delete braces for single statements
-Date: Tue,  8 Oct 2024 20:25:33 -0700
-Message-Id: <20241009032533.1992508-1-bretznic@gmail.com>
-X-Mailer: git-send-email 2.39.5
+        d=1e100.net; s=20230601; t=1728477123; x=1729081923;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/XEtDE41DijOlaDO108xIbZtcFN+7xIdjs3DBklT5+A=;
+        b=lsyu7WYQO1/HnCI5mLs4XZws9mQNIrUYHyOTdKYJPMFMv+nGw1iiBfVxUe1X2UH8l/
+         NgQO8r/8OaHSoBGGAawAuGnsqKZflIoSpPr8rjREiTLatqoNayQtbZDtxWlymQlHROfl
+         nGskgT5nBWj9bbbRypP1dQip2SxCvbxQNk3fbhHFav6rGsuF999Q1Z0VOHr7i6KRqiqr
+         BwBquWAfKkU0D7ncafepeA42frXx1jLtDL4dMQYmvG9NN2cF2twxI8pJREdmJC9OXNBG
+         4gLVVnjZSrBUtna58vtni2X+7U568Pt0eLrqpJ6QxgV9Afh0yUwBkoTropYQDDphrV3x
+         wM4Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWn6dphdp6Eq6MskjZToEsygMZRAno9MPyujK2zoqhH2OF0sVPIK/WZK7rJwVqslwP4etxFQ+5/EvQV@vger.kernel.org
+X-Gm-Message-State: AOJu0YxTJuaSsZEQe15egqRipPu0mZYU7YolcDWPxhZUyKijI29WLM+q
+	pbvvozBMSWIO8uvo+VEOxpSAZGzY8UVnaS0plCq31qKbna/1ElwrRZZYC3WmXjECfcP+dQKHqpf
+	oCOtLM7SEQF5nbPHmHFBUlWeZreY1DaPNnncQmgoNhFOuMrjcWB4eNWg=
+X-Google-Smtp-Source: AGHT+IFKLroh4TrPfI9wLSsRGzIh2g3eqt4u64q7LcQxlgGxukn09r3sqZ7xI16ZY2QabrRcR0rHh5PErHqjywTMtDD+eCwIu78h
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-Received: by 2002:a05:6e02:1548:b0:39f:51b8:5e05 with SMTP id
+ e9e14a558f8ab-3a397d106bcmr18298975ab.16.1728477122970; Wed, 09 Oct 2024
+ 05:32:02 -0700 (PDT)
+Date: Wed, 09 Oct 2024 05:32:02 -0700
+In-Reply-To: <66f98a80.050a0220.6bad9.0021.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <670677c2.050a0220.4029f.0000.GAE@google.com>
+Subject: Re: [syzbot] [ext4?] [ocfs2?] WARNING in jbd2_journal_update_sb_log_tail
+From: syzbot <syzbot+96ee12698391289383dd@syzkaller.appspotmail.com>
+To: jack@suse.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com, 
+	li.kai4@h3c.com, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	lizhi.xu@windriver.com, mark@fasheh.com, ocfs2-devel@lists.linux.dev, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-checkpatch.pl warnings - braces are not necessary
+syzbot has bisected this issue to:
 
-Signed-off-by: Nicolas Bretz <bretznic@gmail.com>
----
- fs/ext4/inode.c | 15 +++++++--------
- 1 file changed, 7 insertions(+), 8 deletions(-)
+commit a09decff5c32060639a685581c380f51b14e1fc2
+Author: Kai Li <li.kai4@h3c.com>
+Date:   Sat Jan 11 02:25:42 2020 +0000
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 03c2253005f0..fc0caeb69b17 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -440,11 +440,11 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
- 	 * could be converted.
- 	 */
- 	down_read(&EXT4_I(inode)->i_data_sem);
--	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) {
-+	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
- 		retval = ext4_ext_map_blocks(handle, inode, map, 0);
--	} else {
-+	else
- 		retval = ext4_ind_map_blocks(handle, inode, map, 0);
--	}
-+	
- 	up_read((&EXT4_I(inode)->i_data_sem));
- 
- 	/*
-@@ -453,7 +453,7 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
- 	 */
- 	if (es_map->m_lblk != map->m_lblk ||
- 	    es_map->m_flags != map->m_flags ||
--	    es_map->m_pblk != map->m_pblk) {
-+	    es_map->m_pblk != map->m_pblk)
- 		printk("ES cache assertion failed for inode: %lu "
- 		       "es_cached ex [%d/%d/%llu/%x] != "
- 		       "found ex [%d/%d/%llu/%x] retval %d flags %x\n",
-@@ -461,7 +461,6 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
- 		       es_map->m_pblk, es_map->m_flags, map->m_lblk,
- 		       map->m_len, map->m_pblk, map->m_flags,
- 		       retval, flags);
--	}
- }
- #endif /* ES_AGGRESSIVE_TEST */
- 
-@@ -547,11 +546,11 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
- 	 * file system block.
- 	 */
- 	down_read(&EXT4_I(inode)->i_data_sem);
--	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) {
-+	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
- 		retval = ext4_ext_map_blocks(handle, inode, map, 0);
--	} else {
-+	else
- 		retval = ext4_ind_map_blocks(handle, inode, map, 0);
--	}
-+	
- 	if (retval > 0) {
- 		unsigned int status;
- 
--- 
-2.39.5
+    jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal
 
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=166bd7d0580000
+start commit:   5b7c893ed5ed Merge tag 'ntfs3_for_6.12' of https://github...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=156bd7d0580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=116bd7d0580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=7a3fccdd0bb995
+dashboard link: https://syzkaller.appspot.com/bug?extid=96ee12698391289383dd
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15d0d7d0580000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14351f9f980000
+
+Reported-by: syzbot+96ee12698391289383dd@syzkaller.appspotmail.com
+Fixes: a09decff5c32 ("jbd2: clear JBD2_ABORT flag before journal_reset to update log tail info when load journal")
+
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
