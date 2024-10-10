@@ -1,210 +1,143 @@
-Return-Path: <linux-ext4+bounces-4540-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4541-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 75C0E99822C
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2024 11:29:42 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16A339987C7
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2024 15:35:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79B241C247E4
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2024 09:29:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD9E81F24116
+	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2024 13:35:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD47ABE6F;
-	Thu, 10 Oct 2024 09:29:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HqoR0CX/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EPM8xB/F";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="HqoR0CX/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="EPM8xB/F"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE9C1C9DE6;
+	Thu, 10 Oct 2024 13:35:46 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CC0E29AF;
-	Thu, 10 Oct 2024 09:29:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A8941BC9EE;
+	Thu, 10 Oct 2024 13:35:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728552571; cv=none; b=aOxr7/fvAeHdwM/lIkqwWZMk/BhHGPGJ/3AO2nEjZ7j9h/cD0CE9Qf4ozCR/Pt+s0f9dwIikPaRYUeM4FUztqIog31AhvusevEVMvRbxaU7B4bjbzCNrBpM7lsbrCo7Xsnp53w5XYumNpSlBQKbcnXqIKCF28E4SLvNTCcbBd/4=
+	t=1728567346; cv=none; b=CNVrdd62McBOM+KiSU/P6lGzGttQPmHeBODFVOX6iHqHooPtFhDtw7csNYCFbA3rwGSW3zW3A7fBQ/O0+GYWNuniTIia03RmAUU51+81qAWG6oZWA/H6jqb8VIDp0Zy+Gf36XdD7mwTJhf4p188LGsNqDhkALHmayVZkd+91/SQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728552571; c=relaxed/simple;
-	bh=Vafp+6xNToGewgmfw0ctcoQo3aBvxiSthYN15fmMkI8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HMA1OmTQpYj77A/DTBXpBfNB7dNhnf72Qex7pB1Iwzc+ccJ/Yana6e0IORCTx6B96WDjqyuXPFG2DnSGdNdR14QuM+NR/qnegQEud+HVpZ/71E5RGFpFFlGfSkN1l3mpVKWWujqSBVG9eXDj5c9tJ2Z0G+f1tBGx5tbNzMac7lM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HqoR0CX/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EPM8xB/F; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=HqoR0CX/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=EPM8xB/F; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 910391FE66;
-	Thu, 10 Oct 2024 09:29:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728552567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J1YsnS/ai3mHhkG2ip3Wq7ejBD/D+GDDlFRCn1oZ1Tk=;
-	b=HqoR0CX/ocYbfC1/4g8SN9oLBl7lrRH/EyvOAzYSw25ukNfe99mjSGmzX+9vfUgeFhlxtp
-	bPGESPvGqXJWjzKcbRaOaE3uV63dN5RPq9KFqz0DpPAvuXXtOqRL0zK59QQj+EUgFQ2zyn
-	e4bCsiMfks2QlmEDTazkVMoGYSSjliM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728552567;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J1YsnS/ai3mHhkG2ip3Wq7ejBD/D+GDDlFRCn1oZ1Tk=;
-	b=EPM8xB/FPO7klw6s/K6JZ4eidn5FSS27gZSj/AaamiUS+VdBMPPDp3in13hBx9EJXYrun2
-	ZV8rmlB0N7kwWGCg==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1728552567; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J1YsnS/ai3mHhkG2ip3Wq7ejBD/D+GDDlFRCn1oZ1Tk=;
-	b=HqoR0CX/ocYbfC1/4g8SN9oLBl7lrRH/EyvOAzYSw25ukNfe99mjSGmzX+9vfUgeFhlxtp
-	bPGESPvGqXJWjzKcbRaOaE3uV63dN5RPq9KFqz0DpPAvuXXtOqRL0zK59QQj+EUgFQ2zyn
-	e4bCsiMfks2QlmEDTazkVMoGYSSjliM=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1728552567;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=J1YsnS/ai3mHhkG2ip3Wq7ejBD/D+GDDlFRCn1oZ1Tk=;
-	b=EPM8xB/FPO7klw6s/K6JZ4eidn5FSS27gZSj/AaamiUS+VdBMPPDp3in13hBx9EJXYrun2
-	ZV8rmlB0N7kwWGCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8864B13A6E;
-	Thu, 10 Oct 2024 09:29:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9fBGIXeeB2cFBQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 10 Oct 2024 09:29:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 33131A08A2; Thu, 10 Oct 2024 11:29:23 +0200 (CEST)
-Date: Thu, 10 Oct 2024 11:29:23 +0200
-From: Jan Kara <jack@suse.cz>
-To: Baolin Liu <liubaolin12138@163.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-	zhangshida@kylinos.cn, longzhi@sangfor.com.cn,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Baolin Liu <liubaolin@kylinos.cn>
-Subject: Re: [PATCH v1] ext4: fix a assertion failure due to ungranted bh
- dirting
-Message-ID: <20241010092923.r53povuflevzhxrw@quack3>
-References: <20241010025855.2632516-1-liubaolin12138@163.com>
+	s=arc-20240116; t=1728567346; c=relaxed/simple;
+	bh=Efhrzb5QbMg8lfmuRIBsdj0eQQ/aZ8Jq26Wl5piij44=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=rFn6Vco9iYWMIbje4i0GNIUP5OfjFNv4Bte1juLNqHkH+e68s/pM2GwfiZxVONpAqUa2g0RlJj4kHxrH4d4UdmJGN59alAB8yHl411oBwwi1RPz7xbhDOFi7+w7+gndPlnlpzUCJOZ681POzYsXZ+EC+VwScQom+itcytDCkfic=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XPW3N5Wwtz4f3jt2;
+	Thu, 10 Oct 2024 21:35:28 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 8F47F1A07B6;
+	Thu, 10 Oct 2024 21:35:40 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgCXysYc2AdnDRnZDg--.21356S4;
+	Thu, 10 Oct 2024 21:35:38 +0800 (CST)
+From: Zhang Yi <yi.zhang@huawei.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ritesh.list@gmail.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com
+Subject: [PATCH v3 00/10] ext4: clean up and refactor fallocate
+Date: Thu, 10 Oct 2024 21:33:23 +0800
+Message-Id: <20241010133333.146793-1-yi.zhang@huawei.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241010025855.2632516-1-liubaolin12138@163.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.998];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[163.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[9];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[163.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCXysYc2AdnDRnZDg--.21356S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxGr4xZr1fWr15AFy3JFyxKrg_yoW5Gr1fpF
+	ZxW3WSqr1UW3sxCrn7Wa1xXF1rKw4rJay7JryIg34I9w4kuFyIqF4DtayF9FWxArW5JF1j
+	vr4jvw1Du3WDCaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUPFb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcxkI7VAKI48JM4x0aVACjI8F5VA0II8E6IAqYI8I648v4I1l
+	FIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr4
+	1l42xK82IY64kExVAvwVAq07x20xyl4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG
+	67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MI
+	IYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E
+	14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJV
+	W8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF0Pf
+	DUUUU
+Sender: yi.zhang@huaweicloud.com
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Thu 10-10-24 10:58:55, Baolin Liu wrote:
-> From: Baolin Liu <liubaolin@kylinos.cn>
-> 
-> Since the merge of commit 3910b513fcdf ("ext4: persist the new uptodate
-> buffers in ext4_journalled_zero_new_buffers"), a new assertion failure
-> occurred under a old kernel(ext3, data=journal, pagesize=64k) with
-> corresponding ported patches:
-...
-> which was caused by bh dirting without calling
-> do_journal_get_write_access().
-> 
-> In the loop for all bhs of a page in ext4_block_write_begin(),
-> when a err occurred, it will jump out of loop.
-> But that will leaves some bhs being processed and some not,
-> which will lead to the asserion failure in calling write_end_fn().
+Changes since v2:
+ - Add Patch 1 to address a newly discovered data loss issue that occurs
+   when using mmap to write after zeroing out a partial page on a
+   filesystem with the block size smaller than the page size.
+ - Do not write all data before punching hole, zeroing out and
+   collapsing range as Jan suggested, also drop current data writeback
+   in ext4_punch_hole().
+ - Since we don't write back all data in these 4 operations, we only
+   writeback data during inserting range,so do not factor out new
+   helpers in the last two patches, just move common components of
+   sub-operations into ext4_fallocate().
+ - Only keep Jan's review tag on patch 02 and 08, other patches contain
+   many code adaptations since v2, so please review them again.
+Changes since v1:
+ - Fix an using uninitialized variable problem in the error out path in
+   ext4_do_fallocate() in patch 08.
 
-Thanks for the patch but I don't understand one thing here: For
-ext4_journalled_zero_new_buffers() to call write_end_fn() the buffer must
-have buffer_new flag set. That flag can get set only by ext4_get_block()
-function when it succeeds in which case we also call
-do_journal_get_write_access(). So how is it possible that buffer_new was
-set on a buffer on which we didn't call do_journal_get_write_access()? This
-indicates there may be some deeper problem hidden. How exactly did you
-trigger this problem?
+v2: https://lore.kernel.org/linux-ext4/20240904062925.716856-1-yi.zhang@huaweicloud.com/
 
-								Honza
+Current ext4 fallocate code is mess with mode checking, locking, input
+parameter checking, position calculation, and having some stale code.
+Almost all five sub-operation share similar preparation steps, so it
+deserves a cleanup now.
 
-> 
-> To fixed that, get write access for the rest unprocessed bhs, just
-> as what write_end_fn do.
-> 
-> Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in ext4_journalled_zero_new_buffers")
-> Reported-and-tested-by: Zhi Long <longzhi@sangfor.com.cn>
-> Suggested-by: Shida Zhang <zhangshida@kylinos.cn>
-> Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
-> ---
->  fs/ext4/inode.c | 17 ++++++++++++++++-
->  1 file changed, 16 insertions(+), 1 deletion(-)
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 54bdd4884fe6..a72f951288e4 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -1102,9 +1102,24 @@ int ext4_block_write_begin(handle_t *handle, struct folio *folio,
->  			err = -EIO;
->  	}
->  	if (unlikely(err)) {
-> -		if (should_journal_data)
-> +		if (should_journal_data) {
-> +			if (bh != head || !block_start) {
-> +				do {
-> +					block_end = block_start + bh->b_size;
-> +
-> +					if (buffer_new(bh))
-> +						if (block_end > from && block_start < to)
-> +							do_journal_get_write_access(handle,
-> +										    inode, bh);
-> +
-> +					block_start = block_end;
-> +					bh = bh->b_this_page;
-> +				} while (bh != head);
-> +			}
-> +
->  			ext4_journalled_zero_new_buffers(handle, inode, folio,
->  							 from, to);
-> +		}
->  		else
->  			folio_zero_new_buffers(folio, from, to);
->  	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
-> -- 
-> 2.39.2
-> 
+This series tries to improve the code by refactoring all operations
+related to fallocate. It unifies variable naming, reduces unnecessary
+position calculations, and factors out common preparation components.
+
+The first patch addresses a potential data loss issue that occurs when
+using mmap to write after zeroing out partial blocks of a page on a
+filesystem where the block size is smaller than the page size.
+Subsequent patches focus on cleanup and refactoring, please see them for
+details. After this series, we will significantly reduce redundant code
+and enhance clarity compared to the previous version.
+
+Thanks,
+Yi.
+
+
+Zhang Yi (10):
+  ext4: remove writable userspace mappings before truncating page cache
+  ext4: don't explicit update times in ext4_fallocate()
+  ext4: don't write back data before punch hole in nojournal mode
+  ext4: refactor ext4_punch_hole()
+  ext4: refactor ext4_zero_range()
+  ext4: refactor ext4_collapse_range()
+  ext4: refactor ext4_insert_range()
+  ext4: factor out ext4_do_fallocate()
+  ext4: move out inode_lock into ext4_fallocate()
+  ext4: move out common parts into ext4_fallocate()
+
+ fs/ext4/ext4.h    |   2 +
+ fs/ext4/extents.c | 532 ++++++++++++++++++----------------------------
+ fs/ext4/inode.c   | 188 ++++++++--------
+ 3 files changed, 303 insertions(+), 419 deletions(-)
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+2.39.2
+
 
