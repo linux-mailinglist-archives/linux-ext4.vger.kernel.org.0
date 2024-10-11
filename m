@@ -1,234 +1,216 @@
-Return-Path: <linux-ext4+bounces-4563-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4564-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7418399943A
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2024 23:05:02 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB8E79997D8
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2024 02:32:16 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DD2D11F285B2
-	for <lists+linux-ext4@lfdr.de>; Thu, 10 Oct 2024 21:05:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F273528186D
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2024 00:32:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C4F1E2830;
-	Thu, 10 Oct 2024 21:04:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E65E16F27E;
+	Fri, 11 Oct 2024 00:20:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="mDjHOYt2"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="J71GMo7o"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2084.outbound.protection.outlook.com [40.107.223.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 535A31E2317
-	for <linux-ext4@vger.kernel.org>; Thu, 10 Oct 2024 21:04:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728594287; cv=none; b=i7W/ZA8Etjon/Fq6m5GtYV3Atl5VNKGkUAkEphAeVFDh9zCKcX/s9xvs8rtshnXQNaLrBlKDh+DfosmbrKqqZfz0ZfkS/nnAG5dWJzBuiIsDaaxOtX158/eYSoZPzAM4A4exStzxxLifKtqlPlAoZ4vOtFCeXB1btHLnDiTbsC4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728594287; c=relaxed/simple;
-	bh=+lwrhBbfCHbY15soZ8qQFvmU9QO27WFLZclr11V0zkY=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=bsUa/PsDj5sI3yKTB7XJv3lhiKciTKl5lw2v8KxpIEDoOf3/lITZAFB/8VwpvVXXKxVxENcZULKPitIHsGBEsC21yPjUwEZ15EFn8hst4mp6RZDNRfwc5hzK2OR5Y4ImS3E5838vVbxSgz2Sb+U9kcVStcjR3HqePq7HGAzjnRQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=mDjHOYt2; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20b8be13cb1so14953515ad.1
-        for <linux-ext4@vger.kernel.org>; Thu, 10 Oct 2024 14:04:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1728594284; x=1729199084; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=HOXAAWOUO42Iy9Fe066sbNSBqIXI7uWiqzyRC9lRxXQ=;
-        b=mDjHOYt2JZM9knW4TV72To8dGPF0BJRBKWJrTfG0z5EELcqPSAYvXEULd3l0dNBSBW
-         dqMPmPQtFfE+S4hZ8vYqomtht64WYGQcd5qwYI6QgFYE5t7ALlGMz1Sc+nsXWo3NJ/9E
-         Z6uwXipAZkJDlFVhDDdi9J00dRqo7z6zZStIIT00MTTGSe9DA0ub4s+lWzgdQcz5wAhM
-         qzp1TUy+wLmBg2bBNBGe3tsvmlYbZ0nU6hBNbifrm4/kwkuH7P7ksJPvpvh+MiL9/Msu
-         iWStkH/fX6BPaloxxJfY7281ZmEJ58Auv7mXiDig2M9+lcZhtPfDVlpDSPWzsON4BNnz
-         ncKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1728594284; x=1729199084;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=HOXAAWOUO42Iy9Fe066sbNSBqIXI7uWiqzyRC9lRxXQ=;
-        b=B6GJv+ALlVC5QaSIkDNu0LTuuS8zgXnaFyCK7v6FCRd8vwuwi+41N3IfjvDEl/q0ZR
-         cagKHYnHX+74eUDdXZpoULFsOtSNigJCVHgHHRJ2iGciHI0idy1dPxLIc9t62kQiR7vv
-         ituaZo8cv/0qCFhKPgmhLk+d/CdsQ3pp4warFSzDMyCJ0B4t2CDMloaj2f8kaK2JT7CG
-         9ddzemOhVaC8L53/dMhZZWfeMVaim4a5FSio5tFxGybdclBjRC9nu5hM5Naqe62+wQ7i
-         7de9iSPnlYOOG/RY0OCLyfNLU5KvbhFFdaU2MTzeihE/qMnaDxWT1gW5xZizd5utIZqc
-         24fg==
-X-Forwarded-Encrypted: i=1; AJvYcCX4zne9nRFUJiuLxnD45N46WJ2roRb8zpYOifvHprBTcirSHbfZCz/vDSahT3pxNFuj5wEEueqLNzAW@vger.kernel.org
-X-Gm-Message-State: AOJu0YwRx3FqChvlufzTJ0OFT48JxOxblBtDLJiRxujDnVXhWeuLQZLV
-	CFe+Q4fvS4PhbnLJZS2a5MDCjMQT94EbIJ27sL2zBWcVSbHR1dJG1PVyOpulmO4=
-X-Google-Smtp-Source: AGHT+IGfQSroh/1VmCw3y+pZWR9nNIoy24k2NTL449Btzyp91i/0YvQF2oSnGggy7CFITjsQGBa1ZA==
-X-Received: by 2002:a17:902:e549:b0:20b:6457:31db with SMTP id d9443c01a7336-20ca1466d0amr2991515ad.30.1728594284429;
-        Thu, 10 Oct 2024 14:04:44 -0700 (PDT)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-20c8bad99ecsm13406815ad.3.2024.10.10.14.04.43
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 10 Oct 2024 14:04:43 -0700 (PDT)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <198BCE25-4D30-409B-B7AA-5802E0D26621@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_D7F73B52-8651-4588-82F6-F30885017D58";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF172107;
+	Fri, 11 Oct 2024 00:20:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1728606004; cv=fail; b=mY+NxKidT3m8L+ktDzkyCEWrdqij4dA3bOZ5ddbkU55rDlX2vqbv83MjlNRmwP9MIwEJ2bfn5UelQ2eNjWkStprERi3wLwW0Y3AJxj3Hpvd3uXnuyqrw+iTz4OBprhoU/R5DD8U2iXxbUdrtpJNqPHDigsOcGvbedJiCThc9/qw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1728606004; c=relaxed/simple;
+	bh=QROi5C7c+iUQLmkJDrl8OFF4b8bYVoX9c8LtcF1abI4=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 Content-Type:MIME-Version; b=FFpAyDcPukLinczVF5mYwgdxrIShv8rW1VBXgqmKaRqvtlE5iKB6w/3ht8A16dETF3KRJUtAJVD5fbDwXshHqPaJTEb2gzTjYLHKjF2NyCWTSbK1bye6/LjL71C6ib6PDHB5k3odRy5F5zQxd9yiVePbp1/hn5DAEbnSat9xmjg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=J71GMo7o; arc=fail smtp.client-ip=40.107.223.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=dwBqXTSyZBkx5+kXv1LXj2edMfqG4bLPW6eIOdeAn/8y5EV9Cn3BngFwwP34vb1D2zkCd98cMdajQ8LUr2qfsJRSxe6fi/5K6bk1y/lBTdsNOS71z5Zwc5jzI5KLodYo6M/aB7Bi13fERmj8rFWB48wl6ejN2lx7y0TKC2klTqAx3eARwHJUnAy7oyB2czLYl+O9as2l/VPJNJYmGtAHzfHBNdesXICsVR5EjsS4tuFxZ0uFZF6LTUWVlvfKFQYjKW3sx4uYH6I7y4ueWydze4DLiedb4uiagohkJiAYUbAoyU/XHHkfVnfgsIotzSvgAN5qW18WlIIgISWTix+zOg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=X6Tzpq3BX8iqwYIQyHk+sqXAQoU6Nczpy+Lk/2ZDWB0=;
+ b=fNjIBlbEYtlK/HFhzNBKygdKQQ/JnV4ApIxQZVd6b2opd0swQicpxizFBlELOcCn9ilwPDQyDF8YrsOw/m2wemP/pigJk3e2JJ9fjtbRdso89u6esljkat5LJ0oWQvgs/ldBpQy2dr4gB5RlSzXooFgXo1fD4+pbkxR+/c7Kvmt84uxoC98NFBTPtEvuuFbZvpH8WMNJ6/VqdqNxPWKxfxLuc+S9IwYlDgAety0kaWTV34jGBfjoOHiHvzU5yxAzpVjFLcgF6BsELRSqqnYMhzgG0J32aCf1Mq6iGB0L93I+rAfMFhDvEL0aQEw5secRU4yaxxwvqf3v8za1x5xhoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=X6Tzpq3BX8iqwYIQyHk+sqXAQoU6Nczpy+Lk/2ZDWB0=;
+ b=J71GMo7oGe7Dm2viOQebnCWMFTJkglMJBoM6sy47LiYCujf+dLkJTv0Jh6yBmtkBENcL1ggQC3Lnq4rwG8W6Mn+23LbYm88gk+8qq4SDTKAOmVMtzznZpV77S8HSedQcVeRwsxufdY55SGNBEd4zeMXlZaWAY3Jvdjd3CJR0piRADOoJ3B/RYQXOIo8xeoPkdjWYPqtmp+YLxt3Xo1WyoIc88K0BfTw9jSppoeXCdNs5LvYa2hNlEAfCsr9k1NTxrPyMZxMWwcnWgtPi8q4QqgRqvs6cjT4ilIeMwoziz0zW8i7k+a5Hrv/YKGS0wTZqCa+cpALzWh6DMEPYzMB4Hw==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
+ SJ0PR12MB6829.namprd12.prod.outlook.com (2603:10b6:a03:47b::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.8048.16; Fri, 11 Oct 2024 00:19:59 +0000
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe]) by DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe%3]) with mapi id 15.20.8048.017; Fri, 11 Oct 2024
+ 00:19:59 +0000
+References: <cover.9f0e45d52f5cff58807831b6b867084d0b14b61c.1725941415.git-series.apopple@nvidia.com>
+ <4f8326d9d9e81f1cb893c2bd6f17878b138cf93d.1725941415.git-series.apopple@nvidia.com>
+ <66ef6c41eeb4f_10422294fb@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+User-agent: mu4e 1.10.8; emacs 29.1
+From: Alistair Popple <apopple@nvidia.com>
+To: Dan Williams <dan.j.williams@intel.com>
+Cc: linux-mm@kvack.org, vishal.l.verma@intel.com, dave.jiang@intel.com,
+ logang@deltatee.com, bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca,
+ catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
+ npiggin@gmail.com, dave.hansen@linux.intel.com, ira.weiny@intel.com,
+ willy@infradead.org, djwong@kernel.org, tytso@mit.edu,
+ linmiaohe@huawei.com, david@redhat.com, peterx@redhat.com,
+ linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org,
+ nvdimm@lists.linux.dev, linux-cxl@vger.kernel.org,
+ linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
+ david@fromorbit.com
+Subject: Re: [PATCH 02/12] pci/p2pdma: Don't initialise page refcount to one
+Date: Fri, 11 Oct 2024 11:17:20 +1100
+In-reply-to: <66ef6c41eeb4f_10422294fb@dwillia2-mobl3.amr.corp.intel.com.notmuch>
+Message-ID: <87y12vxzh1.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SY0PR01CA0009.ausprd01.prod.outlook.com
+ (2603:10c6:10:1bb::10) To DS0PR12MB7726.namprd12.prod.outlook.com
+ (2603:10b6:8:130::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH v3] ext4: prevent data-race that occur when read/write
- ext4_group_desc structure members
-Date: Thu, 10 Oct 2024 15:04:47 -0600
-In-Reply-To: <20241003125337.47283-1-aha310510@gmail.com>
-Cc: Theodore Ts'o <tytso@mit.edu>,
- akpm@osdl.org,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>,
- stable@vger.kernel.org
-To: Jeongjun Park <aha310510@gmail.com>
-References: <20241003125337.47283-1-aha310510@gmail.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|SJ0PR12MB6829:EE_
+X-MS-Office365-Filtering-Correlation-Id: 72b6c5b2-29a2-4966-f1f8-08dce98a7168
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?R4U4MBrkCQxSQYFRs+zA7ENWUBtRcRPjFwFeyqCQ9WgnOy4Uou7SR2jhooKV?=
+ =?us-ascii?Q?lSnrhV+F+aFM4qP7ZbTo3FpvI3Cucyg8TdNvBRGvKIX4QtfHUXPg36EE0ytd?=
+ =?us-ascii?Q?er5WZaSjVwXmH2ltLPkX907++ZSWd2b1PpZHmKpl0AlrtukcKxSmMpHwT00V?=
+ =?us-ascii?Q?UvR1kLo7PLOPwPwyySmYw/VAGB2GA8zR7LzEWuHWzc7JlLpBS9IpJEnsYf04?=
+ =?us-ascii?Q?2UBpPf/VEGZHFTqLOv+ewWy6LsiuPyo8mYnVtQ6IeZWQ2V4gXpXCfDJO6w/V?=
+ =?us-ascii?Q?YS10bgEH30W3TFucfh95xyjw/B0/zNgiBAB7vn8d0/9EyV0lk+1VFgWPMxWz?=
+ =?us-ascii?Q?juvoAZmUgHVtJu9DjF4xx6Q2FFE6otQ7Icz/ryKPVk0igICMuhxAq6ikHtLf?=
+ =?us-ascii?Q?fvfBTwWhhfpDcl1z5XKmLhUkjlsaOp5CSo5BDss7oPADnvnapFNuJqrO84Nu?=
+ =?us-ascii?Q?4PGPeQ9/TZ6gp/+rzKPDwiRYWiUATd9sQmxT1yFkP4Jz2q5XubhiOsQaPoKm?=
+ =?us-ascii?Q?LYMtcSND1Rdn7p34VGs0Yrr09++4H3kJNLnI0enTtE6oOkuYLvlzwGI+YgXH?=
+ =?us-ascii?Q?+/EyKezrhsrbxESHNaW/OGZ4azXcTAUWzG4lxQ2hl2MQQ86m++93ucam6A9D?=
+ =?us-ascii?Q?QODlG2YnX7hoTrTeYZ0d1jpto1nKg4IAGLIBI0du/zMnkRVwjtzpQ5l0J/gv?=
+ =?us-ascii?Q?WFfwUBggCz4zennAXbTxmHf5CSJoTQAGGDKrTdz0uldfl+e5a95vg/PjieYi?=
+ =?us-ascii?Q?66BGLyOUjkgrnIqOsfkanl1Mxr2P7ekOl9E4poFNwyB7uUPFL6vBqdTiku/W?=
+ =?us-ascii?Q?GlO22ZST7DbbMqESc4nnaS7uH4nauOWgHhJILhJr3WIdHmdHTv2NjfNtc5fw?=
+ =?us-ascii?Q?UUN3352N88roWioi7C6PAsnv2yiIGscD88gn+Z4R1XHgPpSx3dAuQE+RH8Pe?=
+ =?us-ascii?Q?L7LD0ePHDyVSN5RUNz+DOB1zVRnAdPie+/M5sp3xAJd6X/gbG0AZC79WTXH7?=
+ =?us-ascii?Q?nk6jAqXMbeCJyUiXKfQPDEv6BZalns/EvB/ZExaxVcxlBnBo5Ax+88gJQQ3+?=
+ =?us-ascii?Q?VLo79umyzLCWkniRDpcM8vx2c6quAII6jCQRsjx0NTeoTdmlB62WgC+8tjMC?=
+ =?us-ascii?Q?YhGs5DYGnyF/qOoRhqbhtQ9rsTdITOK7Puiv2pcb/y6v09iTmZOXrCy3PERz?=
+ =?us-ascii?Q?B0/OydtcmzEyLqZgTqkeofCW6NXyNMd0Nmz8qKwOeJteStaJ5BR0geuNYxma?=
+ =?us-ascii?Q?+tiYLzkikvoA1pBwFfMF5WaQKka9BvPUL7sG3NyOTg=3D=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?q2wy3b4iKOGtpFKs4kDyK0wIVUPs6JFNyevaXc2phxnt4+VQRYImpfOoEpnA?=
+ =?us-ascii?Q?BKm7X9YNCxUJ61Ajs/vtdnmyGspKNEXIa7Rd8EmD1epMKLDh4pVAzmZI9+5K?=
+ =?us-ascii?Q?p6iMl1k39m1t9LLCmZnN4+g+GQcMlC9Ty94IJFGjYZJHaRfOEdnxlRcA26q3?=
+ =?us-ascii?Q?6dnDptElHXdR3EaVFKjgvQcftJ3l65I8jLbvSvfa8X4kx789c5VdazWLAFki?=
+ =?us-ascii?Q?TfkbEGMmyQIu2kprN9ghFvHx0E7wiKcFT+qfVrX2M2ryOlOR2F7wYpFQ3Vs3?=
+ =?us-ascii?Q?43tY9w4932L4KwCrBU4iKXFauhsi88UZCJbEy/7phyIrE61hGWi40FyaNNjS?=
+ =?us-ascii?Q?bNo3VbQJ2dtD4tEIBviGvZWIgYV2J5F33t6EUPxTxCWmLFiTx/nrBTsmMEE4?=
+ =?us-ascii?Q?AfOsFLFonk4p91+DsAKYR1qqRDTOAOFfOscWKb7b+S7DECXI9l3Cce6/iiLS?=
+ =?us-ascii?Q?dTVfHWSA7qbpGs7boiEuQGj3ILzU+gJ4PHzzOQaP0Qagzdu3j6ZpJgXK8ZdZ?=
+ =?us-ascii?Q?FKjA7423vrmvcLynkz4Y5NaqtmiJ4O61SVAqQ7Q9hkmYZ/1aBahL9N8/Fsf2?=
+ =?us-ascii?Q?JTbZT+k7P98blP2J9ZwGxW6ahjhHgG8DvoOgiu0nrT50DIdTZlO/xdKR9dLK?=
+ =?us-ascii?Q?rLl2+54mZOcIfH56B5C6JvG2JXLI0YSaXpEiinzFAOCCEv4uCFul2RgHJ2Cg?=
+ =?us-ascii?Q?A/99vxuWXmi54UO8+BMGobEcBq9ShTrqG+IvH72x7UJKtz475xF+chmEpcgQ?=
+ =?us-ascii?Q?or0dH3A2/McYfFvmlEX8c2zR2n+eNZQLji7XLp+lYa+1JDjJlRkA4BK8J/ux?=
+ =?us-ascii?Q?Mk0IYmGPD797MlLzIMVXXGPwQyLokkXMFik3BOxL/Gto9FsRJqgRsHCvX7aU?=
+ =?us-ascii?Q?ceQWA94XnjgJRxtQnfDEMWopmyAK/44nX2NR7xJxhdbYlU/Ul8DZTEMW+rcp?=
+ =?us-ascii?Q?NSTjF+z8qzJ3pNEy0Is5OGfuEgNHx41D7mAbQGWMzqXNXOGorRjDZnXKwkn5?=
+ =?us-ascii?Q?kFsLh8sdKWOXCZDgIvCe457cq8g6IzHpAMJQyJO3XJ7WrVpikm3xg1isI3ok?=
+ =?us-ascii?Q?/af9d05vhcU8hh/BHyux7sgI317rBG1255NrSWyP2TXme3O1yXm+wb4V/v+N?=
+ =?us-ascii?Q?TRj8mrAF0tiIl4xQIfyCWcz5SCrVK1clbw42pPnRq44Adw2xqd2yy8HqC5rs?=
+ =?us-ascii?Q?qFKIR//agEixIhISTKxjbhDhvXNtPFUKqB+ZW2FMi9yYjyJIJTtVg7uVfm9U?=
+ =?us-ascii?Q?NKoWAXlRcMBW8ReAheqkKkngZiULOV3QpOsfpIyCnxDc84qRj+8kFiaM61ot?=
+ =?us-ascii?Q?s07QPC2hqAn310ZkmlQNnWvt/GTmMf5s3H9GSi32rUezh2WUYieL5G+7Zpx+?=
+ =?us-ascii?Q?WhwuJbvidKXGc9Rui/leyxP3HR0vcB/sAQQ8ZuFopdzwFjSTlWXYQYUVJJyB?=
+ =?us-ascii?Q?Ln67t0Llw4lMQKAytjPddrRWxs8jWjl2rjRYi7o7yGfnMuxqoVqzSbxbsZqK?=
+ =?us-ascii?Q?tcaKOVfIIPv2QFw1N/8r6yBlQDh/q1vSbzOHjGF7B/96DwwHBEA+BnlbanAE?=
+ =?us-ascii?Q?/tNAq7VVyDMMngswhPxChH80q8SUOCB5H/bY87Tg?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 72b6c5b2-29a2-4966-f1f8-08dce98a7168
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB7726.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 11 Oct 2024 00:19:59.8659
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9WhrJtz9uOMMwwnCviEbWkg5twU03Qq8sSW2288U7I6pyXZL6r7q9mMszfnZhYsEJbLLaBtIvzUPi1QQ7OHyaA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ0PR12MB6829
 
 
---Apple-Mail=_D7F73B52-8651-4588-82F6-F30885017D58
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Dan Williams <dan.j.williams@intel.com> writes:
 
-On Oct 3, 2024, at 6:53 AM, Jeongjun Park <aha310510@gmail.com> wrote:
->=20
-> Currently, data-race like [1] occur in fs/ext4/ialloc.c
->=20
-> find_group_other() and find_group_orlov() read *_lo, *_hi with
-> ext4_free_inodes_count without additional locking. This can cause =
-data-race,
-> but since the lock is held for most writes and free inodes value is =
-generally
-> not a problem even if it is incorrect, it is more appropriate to use
-> READ_ONCE()/WRITE_ONCE() than to add locking.
+> Alistair Popple wrote:
 
-Thanks for the updated patch.
+[...]
 
-Reviewed-by: Andreas Dilger <adilger@dilger.ca>
+>> diff --git a/mm/memremap.c b/mm/memremap.c
+>> index 40d4547..07bbe0e 100644
+>> --- a/mm/memremap.c
+>> +++ b/mm/memremap.c
+>> @@ -488,15 +488,24 @@ void free_zone_device_folio(struct folio *folio)
+>>  	folio->mapping = NULL;
+>>  	folio->page.pgmap->ops->page_free(folio_page(folio, 0));
+>>  
+>> -	if (folio->page.pgmap->type != MEMORY_DEVICE_PRIVATE &&
+>> -	    folio->page.pgmap->type != MEMORY_DEVICE_COHERENT)
+>> +	switch (folio->page.pgmap->type) {
+>> +	case MEMORY_DEVICE_PRIVATE:
+>> +	case MEMORY_DEVICE_COHERENT:
+>> +		put_dev_pagemap(folio->page.pgmap);
+>> +		break;
+>> +
+>> +	case MEMORY_DEVICE_FS_DAX:
+>> +	case MEMORY_DEVICE_GENERIC:
+>>  		/*
+>>  		 * Reset the refcount to 1 to prepare for handing out the page
+>>  		 * again.
+>>  		 */
+>>  		folio_set_count(folio, 1);
+>> -	else
+>> -		put_dev_pagemap(folio->page.pgmap);
+>> +		break;
+>> +
+>> +	case MEMORY_DEVICE_PCI_P2PDMA:
+>> +		break;
+>
+> A follow on cleanup is that either all implementations should be
+> put_dev_pagemap(), or none of them. Put the onus on the implementation
+> to track how many pages it has handed out in the implementation
+> allocator.
 
->=20
-> [1]
->=20
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> BUG: KCSAN: data-race in ext4_free_inodes_count / ext4_free_inodes_set
->=20
-> write to 0xffff88810404300e of 2 bytes by task 6254 on cpu 1:
-> ext4_free_inodes_set+0x1f/0x80 fs/ext4/super.c:405
-> __ext4_new_inode+0x15ca/0x2200 fs/ext4/ialloc.c:1216
-> ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
-> vfs_symlink+0xca/0x1d0 fs/namei.c:4615
-> do_symlinkat+0xe3/0x340 fs/namei.c:4641
-> __do_sys_symlinkat fs/namei.c:4657 [inline]
-> __se_sys_symlinkat fs/namei.c:4654 [inline]
-> __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
-> x64_sys_call+0x1dda/0x2d60 =
-arch/x86/include/generated/asm/syscalls_64.h:267
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x76/0x7e
->=20
-> read to 0xffff88810404300e of 2 bytes by task 6257 on cpu 0:
-> ext4_free_inodes_count+0x1c/0x80 fs/ext4/super.c:349
-> find_group_other fs/ext4/ialloc.c:594 [inline]
-> __ext4_new_inode+0x6ec/0x2200 fs/ext4/ialloc.c:1017
-> ext4_symlink+0x242/0x5a0 fs/ext4/namei.c:3391
-> vfs_symlink+0xca/0x1d0 fs/namei.c:4615
-> do_symlinkat+0xe3/0x340 fs/namei.c:4641
-> __do_sys_symlinkat fs/namei.c:4657 [inline]
-> __se_sys_symlinkat fs/namei.c:4654 [inline]
-> __x64_sys_symlinkat+0x5e/0x70 fs/namei.c:4654
-> x64_sys_call+0x1dda/0x2d60 =
-arch/x86/include/generated/asm/syscalls_64.h:267
-> do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-> do_syscall_64+0x54/0x120 arch/x86/entry/common.c:83
-> entry_SYSCALL_64_after_hwframe+0x76/0x7e
->=20
-> value changed: 0x185c -> 0x185b
->=20
-> Cc: <stable@vger.kernel.org>
-> Fixes: ac27a0ec112a ("[PATCH] ext4: initial copy of files from ext3")
-> Signed-off-by: Jeongjun Park <aha310510@gmail.com>
-> ---
-> fs/ext4/super.c | 8 ++++----
-> 1 file changed, 4 insertions(+), 4 deletions(-)
->=20
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 16a4ce704460..8337c4999f90 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -346,9 +346,9 @@ __u32 ext4_free_group_clusters(struct super_block =
-*sb,
-> __u32 ext4_free_inodes_count(struct super_block *sb,
-> 			      struct ext4_group_desc *bg)
-> {
-> -	return le16_to_cpu(bg->bg_free_inodes_count_lo) |
-> +	return le16_to_cpu(READ_ONCE(bg->bg_free_inodes_count_lo)) |
-> 		(EXT4_DESC_SIZE(sb) >=3D EXT4_MIN_DESC_SIZE_64BIT ?
-> -		 (__u32)le16_to_cpu(bg->bg_free_inodes_count_hi) << 16 : =
-0);
-> +		 =
-(__u32)le16_to_cpu(READ_ONCE(bg->bg_free_inodes_count_hi)) << 16 : 0);
-> }
->=20
-> __u32 ext4_used_dirs_count(struct super_block *sb,
-> @@ -402,9 +402,9 @@ void ext4_free_group_clusters_set(struct =
-super_block *sb,
-> void ext4_free_inodes_set(struct super_block *sb,
-> 			  struct ext4_group_desc *bg, __u32 count)
-> {
-> -	bg->bg_free_inodes_count_lo =3D cpu_to_le16((__u16)count);
-> +	WRITE_ONCE(bg->bg_free_inodes_count_lo, =
-cpu_to_le16((__u16)count));
-> 	if (EXT4_DESC_SIZE(sb) >=3D EXT4_MIN_DESC_SIZE_64BIT)
-> -		bg->bg_free_inodes_count_hi =3D cpu_to_le16(count >> =
-16);
-> +		WRITE_ONCE(bg->bg_free_inodes_count_hi, =
-cpu_to_le16(count >> 16));
-> }
->=20
-> void ext4_used_dirs_set(struct super_block *sb,
-> --
+Agreed. I've ignored the get/put_dev_pagemap() calls for this clean up
+but am planning to do a follow up to clean those up too, probably by
+removing them entirely as you suggest.
 
+[...]
 
-Cheers, Andreas
+> For this one:
+>
+> Reviewed-by: Dan Williams <dan.j.williams@intel.com>
 
-
-
-
-
-
---Apple-Mail=_D7F73B52-8651-4588-82F6-F30885017D58
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmcIQW8ACgkQcqXauRfM
-H+DDghAAoLVAiMC+T+w1FSCTI0cff6trG1fotAT5i3ow9mlKY5NpP5o6yZ5XsOsc
-xjzAYgqD3XTP+KdFzboSzeWB3R6UUjk/uvNzRz41xemzNWJhfPpW/M/lX+N0Jl0y
-STC72SHg0GreZd2eW4iuVljmGCRgPPVl8YFnb3r/dkSZ9aZClEZ0OoiimpyJOCpM
-rTFfXt/98MWMCgr8442iQ+Y2Tc9m2PzVDeo0cnFP94iCXZcX5oAHnf6VYK0E16ht
-LLN5sdJTDpb94/Gq1EtdUWlFU40VQZJOjMufd38rEnZXhHGR2qVq6BT7YHRSezHX
-NsUO4NepDyESsP6NdIrCoUeGKaAJRIymwzAbSHwQVR9VrFpzQJ4UCkQV/8d5/m8u
-oXuAvaTG8+35XYROR6jjBNMJKanPQXgo91Dl2uhZaPg5jA9ZX7fp0MlSI+SY4CyH
-YkfFBSNKOIqSEMzeak4JaOGCY/+nH3fSLN8kBOeAmDMMX/EJwmBRDAawo84qZ2hJ
-mCV6YJcnF+PBdhFLiYoo/6fYVjd/0Nz3TOegDKCeglLuUlDMp+g88+kwC0Q7WhA4
-atVSnkAu4jirjV11IDEr0Qe1Wf0gwevGH4z8PESrQrHP8SaLz5H4FERytfwqjF4C
-Z7cnbbSb9f3rQ5pBqpwPn+OIWy64nXVoO6L42MM+JE+pJRB4kNs=
-=wf4O
------END PGP SIGNATURE-----
-
---Apple-Mail=_D7F73B52-8651-4588-82F6-F30885017D58--
+Thanks.
 
