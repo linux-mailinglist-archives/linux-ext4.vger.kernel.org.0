@@ -1,166 +1,124 @@
-Return-Path: <linux-ext4+bounces-4567-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4568-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D59F999C7C
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2024 08:18:34 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D346999ECD
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2024 10:17:14 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E92A1285819
-	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2024 06:18:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CDDB81F23807
+	for <lists+linux-ext4@lfdr.de>; Fri, 11 Oct 2024 08:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6A401F9431;
-	Fri, 11 Oct 2024 06:18:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5B220ADC2;
+	Fri, 11 Oct 2024 08:17:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="mJm14Gq+"
+	dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b="Y8CCWLdA"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [117.135.210.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8CB4328B6;
-	Fri, 11 Oct 2024 06:18:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=117.135.210.4
+Received: from mister-muffin.de (mister-muffin.de [144.76.155.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B09A720A5C8
+	for <linux-ext4@vger.kernel.org>; Fri, 11 Oct 2024 08:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=144.76.155.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728627503; cv=none; b=Swqt3JcSpzKgrgdZQzeXJKWCF4Wp+zmVwPuoIbuKDJhHXw4XPcjiI82Y2RqOtLmaiGG5jjvcr5vX18Ul9IEDJERKHpTErTUiZjH3jjHRjr8bJrqtxB23Y79WnWHp05OakGYbLE81LrY+NJI6besxbmQkSW9Ns9ipT/BZQkw2iK8=
+	t=1728634629; cv=none; b=LrALIr7HrwEP3k4+r1Fq5VpmhXYYTKFSPtV0g9s2AG3wERTJuUC8Parznp+UFDYnXb1gZa1LcM+jaZGvn8sWZfv3lb/YOg8TLUyCe64VhVAwy+PzKagztkg6NEU2GgCaujsVYbBhLwYCKKxgR7q301irZ0Ver4Fq/LYrJ3rKqhk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728627503; c=relaxed/simple;
-	bh=eO3/CiHURI2AIuuoUgMs66MWLroRYMhaRhQD3hiw9CQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=KOxyA42T+VTSLtuCyJFHiHRQqO/CjgQcY5oIcj6xsmaq2e/YiC3HXZW3qzpiNtU4r0hBdanW9vpn5Q81k1lXvpXz18blkUJeAA5SySVRzjy0HiEPHGnpI1EebGVusvlSv5kTZ7gxTeK71K1LqY+XkZJhAt+F7RfyhGS68Fj1E4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=mJm14Gq+; arc=none smtp.client-ip=117.135.210.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-	Content-Type; bh=RpJz4KKgLgp+St5K7RZyZ9YL3L6T8JAC/gWa6Q+sU1o=;
-	b=mJm14Gq+alijs6afIQltJSEOdyyaxvQ8HQJwP9tNklbSBDGsiB64D1B6bnzj6t
-	r4U4ehrUpmnGYlDhRQPPuQ0bJKD2q3WQomzkCAjroeB6ZjGfoC8zV1OhwGmbGzR4
-	lsCJ7CbPqX7OXyBRFwRFcfvdx2AmDFEcoqyIyYjfCsXq4=
-Received: from [192.168.22.184] (unknown [223.70.253.255])
-	by gzga-smtp-mtada-g0-1 (Coremail) with SMTP id _____wDHr04awwhnriCrAQ--.44184S2;
-	Fri, 11 Oct 2024 14:18:03 +0800 (CST)
-Message-ID: <2635f3f9-86e1-4d09-ad40-4e02ac4447c5@163.com>
-Date: Fri, 11 Oct 2024 14:18:01 +0800
+	s=arc-20240116; t=1728634629; c=relaxed/simple;
+	bh=3CL1t07wiaWMz+nG3WT4pCxAlsVCLWyExS5DBigLxRI=;
+	h=Content-Type:MIME-Version:Content-Disposition:From:To:Subject:
+	 Date:Message-ID; b=P+pLKPBcXBxdfg2qGdfcS9kmw7w/DeMZ5mhXGCbl4Zy83bPO7p6CXgayTH6Sjl0F+jxK29Nt9KKgUVOrdn1ij4f8xEruI0sOjPe7t3dceZipE7n5y208MDKjkwApekd7qLQyhh7vrJEkLXJYbh8I94UrA60hUTS/B74WXBEIIJ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de; spf=pass smtp.mailfrom=mister-muffin.de; dkim=pass (1024-bit key) header.d=mister-muffin.de header.i=@mister-muffin.de header.b=Y8CCWLdA; arc=none smtp.client-ip=144.76.155.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=mister-muffin.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mister-muffin.de
+Received: from localhost (unknown [37.4.230.225])
+	by mister-muffin.de (Postfix) with ESMTPSA id 8693BBE
+	for <linux-ext4@vger.kernel.org>; Fri, 11 Oct 2024 10:10:45 +0200 (CEST)
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple; d=mister-muffin.de;
+	s=mail; t=1728634245;
+	bh=3CL1t07wiaWMz+nG3WT4pCxAlsVCLWyExS5DBigLxRI=;
+	h=From:To:Subject:Date:From;
+	b=Y8CCWLdAPnhRIGtoRTjxbwCpZFOy/JNAG5O5iTO9bV1aJknJpWJh2jx6kXPB3ZwK7
+	 Kac8h7HZZDUk5+Q0L8LOSzpdZXAs9be7ER28kJCR5TivEQX2IZ1byY9gp5ytaSKgWg
+	 yJWh5zzO1RW5QF1WBhqRZZIipYdFPo/LRAVnaTGY=
+Content-Type: multipart/signed; micalg="pgp-sha512"; protocol="application/pgp-signature"; boundary="===============4024423085673654895=="
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ext4: fix a assertion failure due to ungranted bh
- dirting
-To: Jan Kara <jack@suse.cz>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, zhangshida@kylinos.cn,
- longzhi@sangfor.com.cn, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, Baolin Liu <liubaolin@kylinos.cn>
-References: <20241010025855.2632516-1-liubaolin12138@163.com>
- <20241010092923.r53povuflevzhxrw@quack3>
-From: liubaolin <liubaolin12138@163.com>
-In-Reply-To: <20241010092923.r53povuflevzhxrw@quack3>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_____wDHr04awwhnriCrAQ--.44184S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxZFy3WFWDXFy7GFWftFy3XFb_yoWrCF43pr
-	W5K345KrWqgry29Fs2qF4fXFy0gw18GrW7GrWfKryFy3y5WFn2qryrtrn8AF1qyrZ3uwn5
-	Zr4UAF9Fk3Wjv37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07U3-BiUUUUU=
-X-CM-SenderInfo: xolxutxrol0iasrtmqqrwthudrp/1tbiLgR1ymcIwv0ClgAAsR
+Content-Disposition: inline
+From: Johannes Schauer Marin Rodrigues <josch@mister-muffin.de>
+To: linux-ext4@vger.kernel.org
+Subject: misc/create_inode_libarchive.c: also allow gnu.translator xattrs
+Date: Fri, 11 Oct 2024 10:10:44 +0200
+Message-ID: <172863424488.2407118.13900202892540655392@localhost>
+User-Agent: alot/0.10
 
-> Greetings，
-> This problem is reproduced by our customer using their own testing tool “run_bug”.
-> When I consulted with a client, the testing tool “run_bug” used a variety of background programs to benchmark 
-> (including memory pressure, cpu pressure, file cycle manipulation, fsstress Stress testing tool, postmark program，and so on).
-> The recurrence probability is relatively low.
-> 
-> In response to your query, in ext4_block_write_begin, the new state will be clear before get block, 
-> and the bh that failed get_block will not be set to new.
-> However, when the page size is greater than the block size, a page will contain multiple bh. 
-> bh->b_this_page is a circular list for managing all bh on the same page.
-> After get_block jumps out of the for loop, then bh->b_this_page is not processed by clear new in the for loop.
-> So after calling ext4_journalled_zero_new_buffers,
-> The ext4_journalled_zero_new_buffers function will determine all bh of the same page and call write_end_fn if they are in new state,
-> get_block returns err's bh->b_this_page and circular list other unhandled bh if the state was previously set to new.
-> Because bh not get access, the corresponding transaction is not placed in jh->b_transaction, resulting in a crash.
-> 
-> Therefore, the patch processing method I submit is to make unprocessed bh determines if it is in new state and get access.
-> There is another way to handle the remaining bh clear_buffer_new that is not processed.
-> I personally recommend get access this way, the impact is small. 
-> Please guide the two processing methods, which one do you recommend?
+--===============4024423085673654895==
+Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+
+Hello ext4 folks,
+
+in my recent patch to allow e2fsprogs to create filesystems from tarballs v=
+ia
+libarchive I restricted the allowed xattrs to "security.capability". My
+intention was probably to not allow any random xattr from the tarball onto =
+the
+filesystem.
+
+This now creates a problem as GNU Hurd started using xattrs to store Hurd
+translators in the "gnu.translator" extended attribute. With the following
+patch I'm able to create a bootable GNU Hurd filesystem from a tarball:
 
 
+--- a/misc/create_inode_libarchive.c
++++ b/misc/create_inode_libarchive.c
+@@ -442,7 +442,7 @@ static errcode_t set_inode_xattr_tar(ext
+ 	dl_archive_entry_xattr_reset(entry);
+ 	while (dl_archive_entry_xattr_next(entry, &name, &value, &value_size) =3D=
+=3D
+ 	       ARCHIVE_OK) {
+-		if (strcmp(name, "security.capability") !=3D 0)
++		if (strcmp(name, "security.capability") !=3D 0 && strcmp(name, "gnu.tran=
+slator"))
+ 			continue;
+=20
+ 		retval =3D ext2fs_xattr_set(handle, name, value, value_size);
 
-在 2024/10/10 17:29, Jan Kara 写道:
-> On Thu 10-10-24 10:58:55, Baolin Liu wrote:
->> From: Baolin Liu <liubaolin@kylinos.cn>
->>
->> Since the merge of commit 3910b513fcdf ("ext4: persist the new uptodate
->> buffers in ext4_journalled_zero_new_buffers"), a new assertion failure
->> occurred under a old kernel(ext3, data=journal, pagesize=64k) with
->> corresponding ported patches:
-> ...
->> which was caused by bh dirting without calling
->> do_journal_get_write_access().
->>
->> In the loop for all bhs of a page in ext4_block_write_begin(),
->> when a err occurred, it will jump out of loop.
->> But that will leaves some bhs being processed and some not,
->> which will lead to the asserion failure in calling write_end_fn().
-> 
-> Thanks for the patch but I don't understand one thing here: For
-> ext4_journalled_zero_new_buffers() to call write_end_fn() the buffer must
-> have buffer_new flag set. That flag can get set only by ext4_get_block()
-> function when it succeeds in which case we also call
-> do_journal_get_write_access(). So how is it possible that buffer_new was
-> set on a buffer on which we didn't call do_journal_get_write_access()? This
-> indicates there may be some deeper problem hidden. How exactly did you
-> trigger this problem?
-> 
-> 								Honza
-> 
->>
->> To fixed that, get write access for the rest unprocessed bhs, just
->> as what write_end_fn do.
->>
->> Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in ext4_journalled_zero_new_buffers")
->> Reported-and-tested-by: Zhi Long <longzhi@sangfor.com.cn>
->> Suggested-by: Shida Zhang <zhangshida@kylinos.cn>
->> Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
->> ---
->>   fs/ext4/inode.c | 17 ++++++++++++++++-
->>   1 file changed, 16 insertions(+), 1 deletion(-)
->>
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 54bdd4884fe6..a72f951288e4 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -1102,9 +1102,24 @@ int ext4_block_write_begin(handle_t *handle, struct folio *folio,
->>   			err = -EIO;
->>   	}
->>   	if (unlikely(err)) {
->> -		if (should_journal_data)
->> +		if (should_journal_data) {
->> +			if (bh != head || !block_start) {
->> +				do {
->> +					block_end = block_start + bh->b_size;
->> +
->> +					if (buffer_new(bh))
->> +						if (block_end > from && block_start < to)
->> +							do_journal_get_write_access(handle,
->> +										    inode, bh);
->> +
->> +					block_start = block_end;
->> +					bh = bh->b_this_page;
->> +				} while (bh != head);
->> +			}
->> +
->>   			ext4_journalled_zero_new_buffers(handle, inode, folio,
->>   							 from, to);
->> +		}
->>   		else
->>   			folio_zero_new_buffers(folio, from, to);
->>   	} else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
->> -- 
->> 2.39.2
->>
+Would that change be a good idea? I also submitted my patch as a pull reque=
+st
+to Ted's github repo here: https://github.com/tytso/e2fsprogs/pull/194
 
+Or would it be a better idea to drop the sanity check for extended attribute
+names? What do you think?
+
+Thanks!
+
+cheers, josch
+--===============4024423085673654895==
+MIME-Version: 1.0
+Content-Transfer-Encoding: 7bit
+Content-Description: signature
+Content-Type: application/pgp-signature; name="signature.asc"; charset="us-ascii"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEElFhU6KL81LF4wVq58sulx4+9g+EFAmcI3YQACgkQ8sulx4+9
+g+Eq+w//XJveIfv4nYHMrwchOuvJW2g1OlEMCvb1jdTIY48uXTrLCyikC6bri/WM
+P64tXoiWzTHbFXOrDHXRBQBoa+XiGuWKaKtxr5cDJOL40rECY/eHbuTd+kgFy0jM
+DlJFTcpH3suyBXqxugZAuTEkwiZYBad7gI44ofidpK4q68Xe71mAgnNt+ijGMPD2
+edeOeByQJEF9iZ/KKf6lc2nFNxwLxcjekLkW7tkdRhTlbUVd4nEuhqJWkOjsdRlw
+n2pXAaEICrBWIco9U7ixC0hnfeiow80QdTyNFvdH+N/AbdMiOzuf42GyS3YdquXn
+eoVw7mupaWknUC8xcou8EwcNoDrn4WfOeDOaZOQccsersXZz9E+VW3DEa+X4XHad
+SHmqlDuSatT5Zb7xpwOLJ5zcZ06yEaJcFKsnM20Ek2kuIRv8Us7uXazocYPx6Bn6
+vStENKOvOOpQU+xA0Xf+K9WWdDoXAi4s38GCb5YyQEX5Q6GCACx/vZajCslQbSmO
+BgP2yDhrxsDdBLvCL6Pv0t0pvzSsnNYe3uHWtI/KjWSxVuuarF1KpiRgd3YKRtMc
+TaIxRYXw+SwgRBQdi0dO9BMsmU7oo32XBavutWqSvG6cmnDeDNfc31O6IfyFxISl
+7bkRd9p4h1on9nBuHnopru64aH4Au1LNMIyuKjSp0RaoMYTMK2o=
+=5QTa
+-----END PGP SIGNATURE-----
+
+--===============4024423085673654895==--
 
