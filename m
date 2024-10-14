@@ -1,66 +1,77 @@
-Return-Path: <linux-ext4+bounces-4581-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4582-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83A8F99C7EC
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Oct 2024 13:01:40 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8445399CC56
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Oct 2024 16:08:57 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F1E641C23845
-	for <lists+linux-ext4@lfdr.de>; Mon, 14 Oct 2024 11:01:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B4D0D1C20A70
+	for <lists+linux-ext4@lfdr.de>; Mon, 14 Oct 2024 14:08:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94121A724C;
-	Mon, 14 Oct 2024 11:00:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B811B85DF;
+	Mon, 14 Oct 2024 14:07:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="X6EPQcLb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 407BD19D062;
-	Mon, 14 Oct 2024 10:59:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+Received: from mail-pj1-f41.google.com (mail-pj1-f41.google.com [209.85.216.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20C7F1AAE27
+	for <linux-ext4@vger.kernel.org>; Mon, 14 Oct 2024 14:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1728903601; cv=none; b=CVmTu8QbpgCf+ZoiFLfrg0QZzzp8cGHT0hUojEwJo0fqsyf0SJrkUwDEt7+/ZyTwlwvyel0vQpV2jUcYle9JMghNLHQrDgo+mqnAs+Yg264a77WeVmd684BWSf1KBvBMP5uRUrDy70Kq07an/y89InKEyOCt6x7WtvVF0++24xM=
+	t=1728914820; cv=none; b=rG/pJjPbGIUwG8azb6raLp2vZKyWUNpHXuHT0X9g0L/Y12Bayo6fJ3KPc6PPnORwUr5e+XlH5amNez2Oi7X0pWG3Lho4DiN9us3EQX7WQ9iS0dMOhffRCwtAsDyrhd/kJpujtBTJrwTejTFYD1zW5oAAXdHbuxmiWGlb3Z04I/U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1728903601; c=relaxed/simple;
-	bh=vfJwjToLALeeCjImxT2qgvgczni/pAelp8cETW25/gs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=jvEPLtDCCJQhB2htmy4MoT/s1Xq4Tc/y7w4fS2Cv0TZkZ/K9PgUR5pwS6RHkQrAzcabpei2U4COw8NIezvUVO2Jd6SHs5visMDLDVwdG8hUlG2CVwmk8P5xkQILU2jpWcNvW0O0aSfvR9M8nClSRvmbg6/3hGETiPq3hXLjhAMY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 432CD1684;
-	Mon, 14 Oct 2024 04:00:28 -0700 (PDT)
-Received: from e125769.cambridge.arm.com (e125769.cambridge.arm.com [10.1.196.27])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id D33E63F51B;
-	Mon, 14 Oct 2024 03:59:55 -0700 (PDT)
-From: Ryan Roberts <ryan.roberts@arm.com>
-To: "Theodore Ts'o" <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Anshuman Khandual <anshuman.khandual@arm.com>,
-	Ard Biesheuvel <ardb@kernel.org>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	David Hildenbrand <david@redhat.com>,
-	Greg Marsden <greg.marsden@oracle.com>,
-	Ivan Ivanov <ivan.ivanov@suse.com>,
-	Kalesh Singh <kaleshsingh@google.com>,
-	Marc Zyngier <maz@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Matthias Brugger <mbrugger@suse.com>,
-	Miroslav Benes <mbenes@suse.cz>,
-	Will Deacon <will@kernel.org>
-Cc: Ryan Roberts <ryan.roberts@arm.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org
-Subject: [RFC PATCH v1 10/57] fs/ext4: Remove PAGE_SIZE compile-time constant assumption
-Date: Mon, 14 Oct 2024 11:58:17 +0100
-Message-ID: <20241014105912.3207374-10-ryan.roberts@arm.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241014105912.3207374-1-ryan.roberts@arm.com>
-References: <20241014105514.3206191-1-ryan.roberts@arm.com>
- <20241014105912.3207374-1-ryan.roberts@arm.com>
+	s=arc-20240116; t=1728914820; c=relaxed/simple;
+	bh=GIKnbtw4OjDW9HBIpIyoV6sIvD+rqilVIhmp/nIyNOQ=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WnElTknTgk5zZQGS0FbpSCew9AMcmR7Gj0E2S0wHQm+UAtFy24ULvv1vgPDyiDGDx3WloY1k8h6IVyFUqxAVFklqI+n+qAF2pXkK6wTBxr+OiQ9aVw/kt7O8asD7vcw5UP/P/Fw451+x8//hlJzWCtQwcJcmm4DD5e0MWItTfZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=X6EPQcLb; arc=none smtp.client-ip=209.85.216.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f41.google.com with SMTP id 98e67ed59e1d1-2e2e050b1c3so2539697a91.0
+        for <linux-ext4@vger.kernel.org>; Mon, 14 Oct 2024 07:06:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1728914818; x=1729519618; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=4P3xkPM1jmi3GRwPuh1lej8JCImCz9xzR5FLPmVmk4c=;
+        b=X6EPQcLbXpxGeVajxCse3fAYazLcSC2gJq3Px//ErMA/b+gy2+8URkcZu8Zbo06jjq
+         B2qKIt1Dqmlq8mYPnvyoPkehk84A9xWyJt56/2+PLyNdLEHl0hFkBcfeNJChTSggpIa3
+         +bznaBhp9c52HDjZ4ggaf0Ot9E1selVUVAjNypALffzK3Rz+4/+wVNb8KhkvmK9SHV16
+         18ilx3npIGsbZAxuAZPJZf/LuFezmTaiYxIF7+pE+73900rzgjCCBKvVhTzjYNaak+ej
+         EB4Ur/2KHpFQQNe4aODXDN7islP3v1vvIUHiNcw/ALk1ULdy2blN8VuSYLDNCwES12fr
+         B1xA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1728914818; x=1729519618;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=4P3xkPM1jmi3GRwPuh1lej8JCImCz9xzR5FLPmVmk4c=;
+        b=LZdgLQCdoOnKWkjBK7awBdunCVBKx7yByILg8GU5OagFW1V9Xs2gJUH7TpKFs+ic4w
+         q7EyctCw2eNI7A6JdK0yoyuOnUJ347NcFx3MEM+oMQckI+YJkbVh4teEKLoJr0i81uGn
+         EAFsDct8eE5yBgWUyHQ6kj96qOkkHWVOZT2FQgJmOHXUSmP9zAEg/tF2u1eH39KT3N/2
+         wBfrWeI3FtItLBZle34FLwZ1n9puT1YQNQrYLrzWFh0mrVfySJrv7Ovpn5o8jVpVigM/
+         Xz7S5d83vd46AUZkVbhVXiCDt8yBDShuVkhXXaFHa7cq3BZq0xpYpzG8KgXL6TkBIkHz
+         Il4g==
+X-Gm-Message-State: AOJu0YwkOgupB4FXoM6PPXawP3qkL28k+lo31+Flq46mGG6uJ71UIe5L
+	Gf9k0I9OfPYOVKTZ2vBpBgd55Ch3rFI2ovN6HSPp46f9TEQ5kJa+
+X-Google-Smtp-Source: AGHT+IGzyg3+gvwiU74wK763goJL2aLixliL9Ng+wnvGaC0+AQkJP+WfB3kK0V+jhnIaVMkYTnT2Cg==
+X-Received: by 2002:a17:90a:b311:b0:2c9:36bf:ba6f with SMTP id 98e67ed59e1d1-2e2f0a488a0mr17956584a91.3.1728914818326;
+        Mon, 14 Oct 2024 07:06:58 -0700 (PDT)
+Received: from debianLT.home.io (67-60-32-97.cpe.sparklight.net. [67.60.32.97])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e2d5dd2b4esm8897419a91.9.2024.10.14.07.06.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 14 Oct 2024 07:06:58 -0700 (PDT)
+From: Nicolas Bretz <bretznic@gmail.com>
+To: tytso@mit.edu
+Cc: linux-ext4@vger.kernel.org,
+	Nicolas Bretz <bretznic@gmail.com>
+Subject: [PATCH v2] ext4: inode: Delete braces for single statements
+Date: Mon, 14 Oct 2024 07:06:54 -0700
+Message-Id: <20241014140654.69613-1-bretznic@gmail.com>
+X-Mailer: git-send-email 2.39.5
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -69,79 +80,67 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-To prepare for supporting boot-time page size selection, refactor code
-to remove assumptions about PAGE_SIZE being compile-time constant. Code
-intended to be equivalent when compile-time page size is active.
+checkpatch.pl warnings - braces are not necessary
 
-Convert CPP PAGE_SIZE conditionals to C if/else. For compile-time page
-size, the compiler will strip the dead part, and for boot-time page
-size, the condition will be evaluated at run time.
+Removed trailing whitespaces introduced in v1
 
-Signed-off-by: Ryan Roberts <ryan.roberts@arm.com>
+Signed-off-by: Nicolas Bretz <bretznic@gmail.com>
 ---
+ fs/ext4/inode.c | 15 +++++++--------
+ 1 file changed, 7 insertions(+), 8 deletions(-)
 
-***NOTE***
-Any confused maintainers may want to read the cover note here for context:
-https://lore.kernel.org/all/20241014105514.3206191-1-ryan.roberts@arm.com/
-
- fs/ext4/ext4.h | 36 ++++++++++++++++++------------------
- 1 file changed, 18 insertions(+), 18 deletions(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 08acd152261ed..1a6dbd925024a 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2415,31 +2415,31 @@ ext4_rec_len_from_disk(__le16 dlen, unsigned blocksize)
- {
- 	unsigned len = le16_to_cpu(dlen);
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 03c2253005f0..1c1c1ccc8a0c 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -440,11 +440,11 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
+ 	 * could be converted.
+ 	 */
+ 	down_read(&EXT4_I(inode)->i_data_sem);
+-	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) {
++	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		retval = ext4_ext_map_blocks(handle, inode, map, 0);
+-	} else {
++	else
+ 		retval = ext4_ind_map_blocks(handle, inode, map, 0);
+-	}
++
+ 	up_read((&EXT4_I(inode)->i_data_sem));
  
--#if (PAGE_SIZE >= 65536)
--	if (len == EXT4_MAX_REC_LEN || len == 0)
--		return blocksize;
--	return (len & 65532) | ((len & 3) << 16);
--#else
--	return len;
--#endif
-+	if (PAGE_SIZE >= 65536) {
-+		if (len == EXT4_MAX_REC_LEN || len == 0)
-+			return blocksize;
-+		return (len & 65532) | ((len & 3) << 16);
-+	} else {
-+		return len;
-+	}
+ 	/*
+@@ -453,7 +453,7 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
+ 	 */
+ 	if (es_map->m_lblk != map->m_lblk ||
+ 	    es_map->m_flags != map->m_flags ||
+-	    es_map->m_pblk != map->m_pblk) {
++	    es_map->m_pblk != map->m_pblk)
+ 		printk("ES cache assertion failed for inode: %lu "
+ 		       "es_cached ex [%d/%d/%llu/%x] != "
+ 		       "found ex [%d/%d/%llu/%x] retval %d flags %x\n",
+@@ -461,7 +461,6 @@ static void ext4_map_blocks_es_recheck(handle_t *handle,
+ 		       es_map->m_pblk, es_map->m_flags, map->m_lblk,
+ 		       map->m_len, map->m_pblk, map->m_flags,
+ 		       retval, flags);
+-	}
  }
+ #endif /* ES_AGGRESSIVE_TEST */
  
- static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned blocksize)
- {
- 	BUG_ON((len > blocksize) || (blocksize > (1 << 18)) || (len & 3));
--#if (PAGE_SIZE >= 65536)
--	if (len < 65536)
-+	if (PAGE_SIZE >= 65536) {
-+		if (len < 65536)
-+			return cpu_to_le16(len);
-+		if (len == blocksize) {
-+			if (blocksize == 65536)
-+				return cpu_to_le16(EXT4_MAX_REC_LEN);
-+			else
-+				return cpu_to_le16(0);
-+		}
-+		return cpu_to_le16((len & 65532) | ((len >> 16) & 3));
-+	} else {
- 		return cpu_to_le16(len);
--	if (len == blocksize) {
--		if (blocksize == 65536)
--			return cpu_to_le16(EXT4_MAX_REC_LEN);
--		else
--			return cpu_to_le16(0);
- 	}
--	return cpu_to_le16((len & 65532) | ((len >> 16) & 3));
--#else
--	return cpu_to_le16(len);
--#endif
- }
+@@ -547,11 +546,11 @@ int ext4_map_blocks(handle_t *handle, struct inode *inode,
+ 	 * file system block.
+ 	 */
+ 	down_read(&EXT4_I(inode)->i_data_sem);
+-	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS)) {
++	if (ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS))
+ 		retval = ext4_ext_map_blocks(handle, inode, map, 0);
+-	} else {
++	else
+ 		retval = ext4_ind_map_blocks(handle, inode, map, 0);
+-	}
++
+ 	if (retval > 0) {
+ 		unsigned int status;
  
- /*
 -- 
-2.43.0
+2.39.5
 
 
