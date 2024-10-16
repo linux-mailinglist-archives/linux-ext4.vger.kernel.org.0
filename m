@@ -1,45 +1,46 @@
-Return-Path: <linux-ext4+bounces-4590-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4591-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F15D99FF01
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2024 04:43:54 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CC6F9A0380
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2024 10:03:47 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E249C1F2211F
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2024 02:43:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33EED1F216D9
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2024 08:03:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51286175D20;
-	Wed, 16 Oct 2024 02:43:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="b8iCznUP"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 260081D2B35;
+	Wed, 16 Oct 2024 08:02:49 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DAB5478E;
-	Wed, 16 Oct 2024 02:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
+Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FD11D131B;
+	Wed, 16 Oct 2024 08:02:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729046615; cv=none; b=QFwbzwScApnMdo41m06iQUMzzheLXuw8GBIGLrR0iizkC0oI1txUzXH59Y1KXqU7xZk25/B1X6kLviDLk+z+Ean0bhjv8KecLFYgXPfI2WPFJr6kxBWegbBGHXY5I/xTRXV3LQMBJgT9cVpzchSugs5j2qimieKny8qKPqpYmjE=
+	t=1729065768; cv=none; b=OkYeJTg1d7mRexyc1AB6rxE4/688t0hJaCgQ2vOX+OIFzTO72/KqdmIBKRTO0blQC7pajX9+aZBD6mZIRHjV5wKrfSEoxDYYotXiR4sBaTV2QyUJ9BysSrCZt5iARu/yOl5M0Zrf94MylmgqDn98p18DCvEpGDtl3t6JnEksIZc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729046615; c=relaxed/simple;
-	bh=3O/yElZjGAIi3ticrFTy30NfAsaqd+yg6h+CQfmzt9A=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=h2M9vw6KRY7goMxSOAZc2I4TGtmlSRp83n5svUcyfhaIeRSYCEycjOhDZrzlleoX4fO3d6hDmigsUWVzjPzvtBpDLGFicUfzaRqt3ptQiQUC7WJlfvEzMp7FV8+3PXAC41du/orwulRLSRFT5TXt8YFViOnH+bdiD1jVVvU13Lo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=b8iCznUP; arc=none smtp.client-ip=220.197.31.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
-	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
-	Content-Type; bh=TfKVBfz07O451M9S6P2LRSSf7pBou61Po8+qv1LZHhQ=;
-	b=b8iCznUPyOB6UurV9LepQjv4sKE2TR9JXrZfh1UQDagyhkj0npxYIskB/9yuc7
-	wqmUeOdEO+REJxFwbHfyHHNA7Zc+m+hc5cJvSHAjM4Pd6Qoghz1PCpjtlS6VpXw/
-	GI3U8O3aNjfLpxjjgi0GpMa7Vq0p/G0z8m+flPqNgIhgI=
-Received: from [192.168.22.184] (unknown [223.70.253.255])
-	by gzsmtp3 (Coremail) with SMTP id sigvCgA35jAqKA9nECUZAg--.41697S2;
-	Wed, 16 Oct 2024 10:42:52 +0800 (CST)
-Message-ID: <bd41c24b-7325-4584-a965-392a32e32c74@163.com>
-Date: Wed, 16 Oct 2024 10:42:49 +0800
+	s=arc-20240116; t=1729065768; c=relaxed/simple;
+	bh=lYVoOhBmBv2Oe1O7WtpFdmC6UcsaAGmc/QEnV7hVXz0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=fabU0RhQfyQNF7w8BkEdxQuqOI0LQfjTrlysiW51VpU0z2HdHEJq7kq1AeAx8uQXZ5tYR8hfPvUBkACV5g9RJEb86vJp25ofErtyACAWFfJdkn99FpX+dsWOcenmw108dJT7C5uaOe8bc7QF+F0E6JZovsx4t2E9tfPUVEkC6Z8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.234])
+	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4XT3MC2Y9dz2DdVd;
+	Wed, 16 Oct 2024 16:01:27 +0800 (CST)
+Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
+	by mail.maildlp.com (Postfix) with ESMTPS id 629D6140391;
+	Wed, 16 Oct 2024 16:02:41 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by dggpeml100021.china.huawei.com
+ (7.185.36.148) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Wed, 16 Oct
+ 2024 16:02:40 +0800
+Message-ID: <3930aad6-174d-4422-944e-6c90a3ea065a@huawei.com>
+Date: Wed, 16 Oct 2024 16:02:40 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,217 +48,163 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1] ext4: fix a assertion failure due to ungranted bh
- dirting
-From: liubaolin <liubaolin12138@163.com>
+Subject: Re: [PATCH] ext4: fix out-of-bounds issue in ext4_xattr_set_entry
 To: Jan Kara <jack@suse.cz>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, zhangshida@kylinos.cn,
- longzhi@sangfor.com.cn, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, Baolin Liu <liubaolin@kylinos.cn>
-References: <20241010025855.2632516-1-liubaolin12138@163.com>
- <20241010092923.r53povuflevzhxrw@quack3>
- <2635f3f9-86e1-4d09-ad40-4e02ac4447c5@163.com>
-In-Reply-To: <2635f3f9-86e1-4d09-ad40-4e02ac4447c5@163.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+CC: Qianqiang Liu <qianqiang.liu@163.com>, <tytso@mit.edu>,
+	<adilger.kernel@dilger.ca>, syzbot
+	<syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com>,
+	<linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<syzkaller-bugs@googlegroups.com>, Yang Erkun <yangerkun@huawei.com>, Baokun
+ Li <libaokun1@huawei.com>
+References: <Zu+vI3EipxSsPOMe@thinkpad.lan>
+ <66efba95.050a0220.3195df.008c.GAE@google.com>
+ <Zu+8aQBJgMn7xVws@thinkpad.lan>
+ <d62a25e9-04de-4309-98d1-22a4f9b5bb49@huawei.com>
+ <20241009155028.u7jpzrw6txldt43j@quack3>
+ <05f9c7c2-655a-4f5b-be8e-93f511a954bd@huawei.com>
+ <20241014163120.hinbd5jc6mp4vev7@quack3>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20241014163120.hinbd5jc6mp4vev7@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:sigvCgA35jAqKA9nECUZAg--.41697S2
-X-Coremail-Antispam: 1Uf129KBjvJXoWxKr18CFW8Wr48Cr18tr1rCrg_yoWxKFy7pr
-	y5KFyrKrZFgFyj9an2qa1jqFyj9w1kKrWUGFWfGryjv398WFn2qFW8tr98AF4qyrZ3Ww18
-	Zr4UCr9I93WYv37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UsvttUUUUU=
-X-CM-SenderInfo: xolxutxrol0iasrtmqqrwthudrp/xtbBDhN6ymcPJDV2TQAAsv
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
+ dggpeml100021.china.huawei.com (7.185.36.148)
 
-> Greetings，
-> Regarding this issue, 
-> I was able to reproduce it quickly by injecting faults via module parameter passing in fsstest while testing simultaneously. 
-> And we tested that neither get access nor clear new would reproduce the issue after injecting faults. 
-> Could you please take a look at which approach, get access or clear new, is better? 
-> 
-> The fsstress testing and injection fault command are as follows:
-> fsstress_arm -d "/fsstress_dir2/" -l 102400 -n 100 -p 128 -r -S -s 10 -c 
-> watch -n 1 "echo  1  > /sys/module/ext4/parameters/inject_fault"
-> 
-> The injected fault test is modified as follows, 
-> where the module parameter inject_fault injects the fault, 
-> and the module parameter try_fix selects whether to handle the fault by getting access or clearing the new:
-> 
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index b231cd437..590f84391 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -50,6 +50,12 @@
->  
->  #define MPAGE_DA_EXTENT_TAIL 0x01
->  
-> +static int ext4_inject_fault __read_mostly;
-> +module_param_named(inject_fault, ext4_inject_fault, int, 0644);
-> +static int ext4_try_fix __read_mostly;
-> +module_param_named(try_fix, ext4_try_fix, int, 0644);
-> +
-> +
->  static void ext4_journalled_zero_new_buffers(handle_t *handle,
->  					     struct page *page,
->  					     unsigned int from, unsigned int to);
-> @@ -1065,6 +1071,12 @@ int ext4_block_write_begin(handle_t *handle, struct page *page, loff_t pos, unsi
->  			clear_buffer_new(bh);
->  		if (!buffer_mapped(bh)) {
->  			WARN_ON(bh->b_size != blocksize);
-> +			if (unlikely(ext4_inject_fault)) {
-> +				ext4_inject_fault = 0;
-> +				ext4_warning(inode->i_sb, "XXX inject fault get_block return -ENOSPC\n");
-> +				err = -ENOSPC;
-> +				break;
-> +			}
->  			err = get_block(inode, block, bh, 1);
->  			if (err)
->  				break;
-> @@ -1116,10 +1128,31 @@ int ext4_block_write_begin(handle_t *handle, struct page *page, loff_t pos, unsi
->  			err = -EIO;
->  	}
->  	if (unlikely(err))
-> -		if (should_journal_data)
-> +		if (should_journal_data) {
-> +			if(bh != head || !block_start) {
-> +				do {
-> +					block_end = block_start + bh->b_size;
-> +
-> +					if (buffer_new(bh))
-> +						if (block_end > from && block_start < to) {
-> +							if (ext4_try_fix == 1) {
-> +								ext4_warning(inode->i_sb, "XXX try fix 1\n");
-> +								do_journal_get_write_access(handle,
-> +											    bh);
-> +							} else if (ext4_try_fix == 2) {
-> +								ext4_warning(inode->i_sb, "XXX try fix 2\n");
-> +								clear_buffer_new(bh);
-> +							}
-> +						}
-> +
-> +					block_start = block_end;
-> +					bh = bh->b_this_page;
-> +				} while (bh != head);
-> +			}
-> +
->  			ext4_journalled_zero_new_buffers(handle, page, from,
->  							 to);
-> -		else
-> +		} else
->  			page_zero_new_buffers(page, from, to);
->  	else if (decrypt)
->  		err = fscrypt_decrypt_page(page->mapping->host, page,
+On 2024/10/15 0:31, Jan Kara wrote:
+> On Fri 11-10-24 10:18:04, Baokun Li wrote:
+>> On 2024/10/9 23:50, Jan Kara wrote:
+>>>> Or go one step further and add a mechanism like xfs Reverse-Mapping, which
+>>>> makes sure that allocated blocks do point to the target inode, which could
+>>>> replace the current block_validity, and could also be used in future online
+>>>> fscks.
+>>> Well, that is a rather big change. It requires significant on-disk format
+>>> change and also performance cost when to maintain. Furthermore for xattr
+>>> blocks which can be shared by many inodes it is not even clear how to
+>>> implement this... So I'm not sure we really want to do this either.
+>> Yes, there can be a lot of work involved.
+>>
+>>   * Perhaps we could create an rmap file to store the rmap tree to avoid
+>>     on-disk format changes.
+>>   * The performance impact of maintaining rmap really needs to be evaluated,
+>>     perhaps by writing a simple DEMO to test it.
+>>   * XFS supports shared blocks(A.K.A. reflink.), so even if the physical
+>>     blocks are the same, but the inodes are different or the logical blocks
+>>     are different, they will be recorded multiple times in the tree. So the
+>>     shared xattr block can be handled similarly.
+>>
+>> We have plans to support online fsck in the future, and implementing rmap
+>> is one of the steps. Perhaps one can wait until rmap is implemented to
+>> assess whether it is worth a strict check here.
+> Yes, we could implement something like this be as you wrote, it's going to
+> be a lot of work. We've briefly discussed this with Ted on ext4 call and we
+> came to a conclusion that this is a type of corruption ext4 may never
+> protect agaist. You simply should not mount arbitrarily corrupted
+> filesystems...
 
+Thank you for discussing this with Ted.
 
-在 2024/10/11 14:18, liubaolin 写道:
->> Greetings，
->> This problem is reproduced by our customer using their own testing 
->> tool “run_bug”.
->> When I consulted with a client, the testing tool “run_bug” used a 
->> variety of background programs to benchmark (including memory 
->> pressure, cpu pressure, file cycle manipulation, fsstress Stress 
->> testing tool, postmark program，and so on).
->> The recurrence probability is relatively low.
+This kind of problem is really tricky.
+
+>   But if you want to try, sure go ahead :)
+As server clusters get larger and larger, server maintenance becomes very
+difficult. Therefore, timely detection of problems (i.e. online scanning,
+similar to e2fsck -fn) and timely and non-stop fixing of problems (i.e.
+online fsck, similar to e2fsck -a) have always been the requirements of
+our customers. Thus online fsck has been on our TODO list, and it's really
+time to start doing it. 😀
+> One relatively easy solution to similar class of problems would be to store
+> the type of metadata buffer inside the buffer_head when we are verifying
+> checksum, clear the info when freeing the block in __ext4_forget(), and
+> fail with EFSCORRUPTED error when one type -> another type transition would
+> happen.
+This solution looks great. If we save checksum further, we can sense not
+only the change of block type, but also the change of block data.
+
+But now journal_head takes up bh->b_private, so to record information,
+we need to add new fields to buffer_head (e.g. b_info), or modify the logic
+of journal_head (e.g. make bh->b_private hold ext4_bufdata, and include the
+journal_head in ext4_bufdata. ocfs2 needs a similar adaptation).
+>> Implementing rmap may take some time, until then we can avoid the problem
+>> as much as possible by checking the magic and xattr block csum.
+>> Maybe something like this?
 >>
->> In response to your query, in ext4_block_write_begin, the new state 
->> will be clear before get block, and the bh that failed get_block will 
->> not be set to new.
->> However, when the page size is greater than the block size, a page 
->> will contain multiple bh. bh->b_this_page is a circular list for 
->> managing all bh on the same page.
->> After get_block jumps out of the for loop, then bh->b_this_page is not 
->> processed by clear new in the for loop.
->> So after calling ext4_journalled_zero_new_buffers,
->> The ext4_journalled_zero_new_buffers function will determine all bh of 
->> the same page and call write_end_fn if they are in new state,
->> get_block returns err's bh->b_this_page and circular list other 
->> unhandled bh if the state was previously set to new.
->> Because bh not get access, the corresponding transaction is not placed 
->> in jh->b_transaction, resulting in a crash.
+>> diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
+>> index 7647e9f6e190..cd3ae1e3371c 100644
+>> --- a/fs/ext4/xattr.c
+>> +++ b/fs/ext4/xattr.c
+>> @@ -1676,6 +1676,13 @@ static int ext4_xattr_set_entry(struct
+>> ext4_xattr_info *i,
+>>                  }
+>>          }
 >>
->> Therefore, the patch processing method I submit is to make unprocessed 
->> bh determines if it is in new state and get access.
->> There is another way to handle the remaining bh clear_buffer_new that 
->> is not processed.
->> I personally recommend get access this way, the impact is small. 
->> Please guide the two processing methods, which one do you recommend?
-> 
-> 
-> 
-> 在 2024/10/10 17:29, Jan Kara 写道:
->> On Thu 10-10-24 10:58:55, Baolin Liu wrote:
->>> From: Baolin Liu <liubaolin@kylinos.cn>
->>>
->>> Since the merge of commit 3910b513fcdf ("ext4: persist the new uptodate
->>> buffers in ext4_journalled_zero_new_buffers"), a new assertion failure
->>> occurred under a old kernel(ext3, data=journal, pagesize=64k) with
->>> corresponding ported patches:
->> ...
->>> which was caused by bh dirting without calling
->>> do_journal_get_write_access().
->>>
->>> In the loop for all bhs of a page in ext4_block_write_begin(),
->>> when a err occurred, it will jump out of loop.
->>> But that will leaves some bhs being processed and some not,
->>> which will lead to the asserion failure in calling write_end_fn().
+>> +       if (WARN_ON_ONCE(last < here)) {
+>> +               EXT4_ERROR_INODE(inode, "corrupted xattr entries in %s",
+>> +                                       is_block ? "block" : "ibody");
+>> +               ret = -EFSCORRUPTED;
+>> +               goto out;
+>> +       }
+>> +
+>>          /* Check whether we have enough space. */
+>>          if (i->value) {
+>>                  size_t free;
+>> @@ -1923,6 +1930,7 @@ ext4_xattr_block_set(handle_t *handle, struct inode
+>> *inode,
+>>          }
 >>
->> Thanks for the patch but I don't understand one thing here: For
->> ext4_journalled_zero_new_buffers() to call write_end_fn() the buffer must
->> have buffer_new flag set. That flag can get set only by ext4_get_block()
->> function when it succeeds in which case we also call
->> do_journal_get_write_access(). So how is it possible that buffer_new was
->> set on a buffer on which we didn't call do_journal_get_write_access()? 
->> This
->> indicates there may be some deeper problem hidden. How exactly did you
->> trigger this problem?
+>>          if (s->base) {
+>> +               struct ext4_xattr_header *hdr;
+>>                  int offset = (char *)s->here - bs->bh->b_data;
 >>
->>                                 Honza
+>>                  BUFFER_TRACE(bs->bh, "get_write_access");
+>> @@ -1932,6 +1940,16 @@ ext4_xattr_block_set(handle_t *handle, struct inode
+>> *inode,
+>>                          goto cleanup;
 >>
->>>
->>> To fixed that, get write access for the rest unprocessed bhs, just
->>> as what write_end_fn do.
->>>
->>> Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in 
->>> ext4_journalled_zero_new_buffers")
->>> Reported-and-tested-by: Zhi Long <longzhi@sangfor.com.cn>
->>> Suggested-by: Shida Zhang <zhangshida@kylinos.cn>
->>> Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
->>> ---
->>>   fs/ext4/inode.c | 17 ++++++++++++++++-
->>>   1 file changed, 16 insertions(+), 1 deletion(-)
->>>
->>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->>> index 54bdd4884fe6..a72f951288e4 100644
->>> --- a/fs/ext4/inode.c
->>> +++ b/fs/ext4/inode.c
->>> @@ -1102,9 +1102,24 @@ int ext4_block_write_begin(handle_t *handle, 
->>> struct folio *folio,
->>>               err = -EIO;
->>>       }
->>>       if (unlikely(err)) {
->>> -        if (should_journal_data)
->>> +        if (should_journal_data) {
->>> +            if (bh != head || !block_start) {
->>> +                do {
->>> +                    block_end = block_start + bh->b_size;
->>> +
->>> +                    if (buffer_new(bh))
->>> +                        if (block_end > from && block_start < to)
->>> +                            do_journal_get_write_access(handle,
->>> +                                            inode, bh);
->>> +
->>> +                    block_start = block_end;
->>> +                    bh = bh->b_this_page;
->>> +                } while (bh != head);
->>> +            }
->>> +
->>>               ext4_journalled_zero_new_buffers(handle, inode, folio,
->>>                                from, to);
->>> +        }
->>>           else
->>>               folio_zero_new_buffers(folio, from, to);
->>>       } else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
->>> -- 
->>> 2.39.2
->>>
-> 
+>>                  lock_buffer(bs->bh);
+>> +               hdr = header(s->base);
+>> +
+>> +               if (hdr->h_magic != cpu_to_le32(EXT4_XATTR_MAGIC) ||
+>> +                   (ext4_has_metadata_csum(inode->i_sb) &&
+>> +                    (ext4_xattr_block_csum(inode, bs->bh->b_blocknr, hdr)
+>> !=
+>> +                     hdr->h_checksum))) {
+>> +                       unlock_buffer(bs->bh);
+>> +                       error = -EFSCORRUPTED;
+>> +                       goto bad_block;
+>> +               }
+>>
+>>                  if (header(s->base)->h_refcount == cpu_to_le32(1)) {
+>>                          __u32 hash = le32_to_cpu(BHDR(bs->bh)->h_hash);
+> Hum, there are more places in xattr code that access a buffer that could
+> have been modified. So why do you add check into this place? Is it somehow
+> special?
+>
+> 								Honza
+
+The out-of-bounds access occurs here because the last dentry obtained
+in ext4_xattr_set_entry() is not the same as the last dentry obtained
+in ext4_xattr_block_find().
+
+When we modify an xattr, we always hold the inode lock, so the ibody
+case is not considered. Check_xattrs() is called to do a full check
+when looking up an xattr, so it's not necessary to consider that either.
+
+When inserting an xattr into an xattr block, there are three cases:
+
+  * xattr block is newly allocated, and the block is allocated only
+    after the entry is set in memory.
+  * xattr block is unshared, insert the new xattr directly.
+  * xattr block is shared, copy the xattr block and insert the new xattr.
+
+Only in the last two cases can a multiply claimed xattr block result in
+out-of-bounds access, so the buffer lock is held to verify that the data
+is correct.
+(It looks like kmemdup should be moved to the buffer lock here as well.🤔)
+
+Thanks again!
+
+Regards,
+Baokun
 
 
