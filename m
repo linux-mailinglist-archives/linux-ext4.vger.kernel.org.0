@@ -1,191 +1,263 @@
-Return-Path: <linux-ext4+bounces-4589-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4590-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2310499F5B1
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Oct 2024 20:36:57 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F15D99FF01
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2024 04:43:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CEA13280EB1
-	for <lists+linux-ext4@lfdr.de>; Tue, 15 Oct 2024 18:36:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E249C1F2211F
+	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2024 02:43:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC9972036F2;
-	Tue, 15 Oct 2024 18:35:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51286175D20;
+	Wed, 16 Oct 2024 02:43:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OYks4C3z";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="d2oXo14o";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="OYks4C3z";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="d2oXo14o"
+	dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b="b8iCznUP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F06492036E0;
-	Tue, 15 Oct 2024 18:35:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+Received: from m16.mail.163.com (m16.mail.163.com [220.197.31.4])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65DAB5478E;
+	Wed, 16 Oct 2024 02:43:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=220.197.31.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729017325; cv=none; b=HFU7HENySsU23COb2OOOx7/KAARYRg2c9CDaST66xzC6bklwVyfSZQkcTwgYU/VMHdjYbjHUxovgQKabB0sMLD3C5nTrAnXn49WIO+pzUS/ECGaGd5+ZIcyMXythM4nFdnnwQWLlh2kLHPm090h6dT9/ujclen3oHRmcanPYLWw=
+	t=1729046615; cv=none; b=QFwbzwScApnMdo41m06iQUMzzheLXuw8GBIGLrR0iizkC0oI1txUzXH59Y1KXqU7xZk25/B1X6kLviDLk+z+Ean0bhjv8KecLFYgXPfI2WPFJr6kxBWegbBGHXY5I/xTRXV3LQMBJgT9cVpzchSugs5j2qimieKny8qKPqpYmjE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729017325; c=relaxed/simple;
-	bh=sXBjcMEip2iMYc6Cb9tM3ec1NMU3XjJtMG0zksq4F8E=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=UPvT5jfIUITtoRiqYAMlRiN/egn/vlVHrtzCckUxqctTHYbnrCoSAy+LO2kQpgP4vV9miu1T3nnYEqXhrAHe6I/YsZV0hy/D5DI6rGTRuTn0elEl/pdb+1EUmeLGgETQb2MS5ePcvWoesRtGnXL4Hs+k0REWd3BL4YJD0Zy0vxI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OYks4C3z; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=d2oXo14o; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=OYks4C3z; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=d2oXo14o; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1CC5721B9B;
-	Tue, 15 Oct 2024 18:35:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1729017322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ZstxhVk9QOrcNizGJVVQwN2mCzQEZY3vaa7cVcnk/k=;
-	b=OYks4C3zNQfaTB0uJRa597TOaL1xPd5XsUl+zquiDOI2keIPIA9VPl6RcMRUE5tqXmdLD8
-	hKx+QhgkSbGqJoce02xRLEUwICxqRlq7xUN7uHRPrvCKgbE0u1gKCCOcqe+WWu9HRyaxVr
-	yxat4EWnlUyYQBgKmc2ik2G8QsDcADI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1729017322;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ZstxhVk9QOrcNizGJVVQwN2mCzQEZY3vaa7cVcnk/k=;
-	b=d2oXo14ovteimlXL6Ac5e5DJ+Di4YEbS/EkR5bQgMaxxV7+/gVFD4ffVwwISEs26y+Qz/b
-	ryOd5Kyr966hXdDA==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1729017322; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ZstxhVk9QOrcNizGJVVQwN2mCzQEZY3vaa7cVcnk/k=;
-	b=OYks4C3zNQfaTB0uJRa597TOaL1xPd5XsUl+zquiDOI2keIPIA9VPl6RcMRUE5tqXmdLD8
-	hKx+QhgkSbGqJoce02xRLEUwICxqRlq7xUN7uHRPrvCKgbE0u1gKCCOcqe+WWu9HRyaxVr
-	yxat4EWnlUyYQBgKmc2ik2G8QsDcADI=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1729017322;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1ZstxhVk9QOrcNizGJVVQwN2mCzQEZY3vaa7cVcnk/k=;
-	b=d2oXo14ovteimlXL6Ac5e5DJ+Di4YEbS/EkR5bQgMaxxV7+/gVFD4ffVwwISEs26y+Qz/b
-	ryOd5Kyr966hXdDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BFF8D13A53;
-	Tue, 15 Oct 2024 18:35:21 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id T6M/J+m1DmeoTQAAD6G6ig
-	(envelope-from <krisman@suse.de>); Tue, 15 Oct 2024 18:35:21 +0000
-From: Gabriel Krisman Bertazi <krisman@suse.de>
-To: =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@igalia.com>
-Cc: Gabriel Krisman Bertazi <krisman@kernel.org>,  Alexander Viro
- <viro@zeniv.linux.org.uk>,  Christian Brauner <brauner@kernel.org>,  Jan
- Kara <jack@suse.cz>,  Theodore Ts'o <tytso@mit.edu>,  Andreas Dilger
- <adilger.kernel@dilger.ca>,  Hugh Dickins <hughd@google.com>,  Andrew
- Morton <akpm@linux-foundation.org>,  Jonathan Corbet <corbet@lwn.net>,
-  smcv@collabora.com,  kernel-dev@igalia.com,
-  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org,
-  linux-ext4@vger.kernel.org,  linux-mm@kvack.org,
-  linux-doc@vger.kernel.org
-Subject: Re: [PATCH v6 07/10] tmpfs: Add casefold lookup support
-In-Reply-To: <20241010-tonyk-tmpfs-v6-7-79f0ae02e4c8@igalia.com>
- (=?utf-8?Q?=22Andr=C3=A9?=
-	Almeida"'s message of "Thu, 10 Oct 2024 16:39:42 -0300")
-References: <20241010-tonyk-tmpfs-v6-0-79f0ae02e4c8@igalia.com>
-	<20241010-tonyk-tmpfs-v6-7-79f0ae02e4c8@igalia.com>
-Date: Tue, 15 Oct 2024 14:35:20 -0400
-Message-ID: <87wmi9qknr.fsf@mailhost.krisman.be>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1729046615; c=relaxed/simple;
+	bh=3O/yElZjGAIi3ticrFTy30NfAsaqd+yg6h+CQfmzt9A=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=h2M9vw6KRY7goMxSOAZc2I4TGtmlSRp83n5svUcyfhaIeRSYCEycjOhDZrzlleoX4fO3d6hDmigsUWVzjPzvtBpDLGFicUfzaRqt3ptQiQUC7WJlfvEzMp7FV8+3PXAC41du/orwulRLSRFT5TXt8YFViOnH+bdiD1jVVvU13Lo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com; spf=pass smtp.mailfrom=163.com; dkim=pass (1024-bit key) header.d=163.com header.i=@163.com header.b=b8iCznUP; arc=none smtp.client-ip=220.197.31.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=163.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=163.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=163.com;
+	s=s110527; h=Message-ID:Date:MIME-Version:Subject:From:
+	Content-Type; bh=TfKVBfz07O451M9S6P2LRSSf7pBou61Po8+qv1LZHhQ=;
+	b=b8iCznUPyOB6UurV9LepQjv4sKE2TR9JXrZfh1UQDagyhkj0npxYIskB/9yuc7
+	wqmUeOdEO+REJxFwbHfyHHNA7Zc+m+hc5cJvSHAjM4Pd6Qoghz1PCpjtlS6VpXw/
+	GI3U8O3aNjfLpxjjgi0GpMa7Vq0p/G0z8m+flPqNgIhgI=
+Received: from [192.168.22.184] (unknown [223.70.253.255])
+	by gzsmtp3 (Coremail) with SMTP id sigvCgA35jAqKA9nECUZAg--.41697S2;
+	Wed, 16 Oct 2024 10:42:52 +0800 (CST)
+Message-ID: <bd41c24b-7325-4584-a965-392a32e32c74@163.com>
+Date: Wed, 16 Oct 2024 10:42:49 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-X-Spam-Score: -4.30
-X-Spamd-Result: default: False [-4.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	RCVD_TLS_ALL(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[17];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_COUNT_TWO(0.00)[2];
-	TO_DN_SOME(0.00)[]
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1] ext4: fix a assertion failure due to ungranted bh
+ dirting
+From: liubaolin <liubaolin12138@163.com>
+To: Jan Kara <jack@suse.cz>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, zhangshida@kylinos.cn,
+ longzhi@sangfor.com.cn, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Baolin Liu <liubaolin@kylinos.cn>
+References: <20241010025855.2632516-1-liubaolin12138@163.com>
+ <20241010092923.r53povuflevzhxrw@quack3>
+ <2635f3f9-86e1-4d09-ad40-4e02ac4447c5@163.com>
+In-Reply-To: <2635f3f9-86e1-4d09-ad40-4e02ac4447c5@163.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:sigvCgA35jAqKA9nECUZAg--.41697S2
+X-Coremail-Antispam: 1Uf129KBjvJXoWxKr18CFW8Wr48Cr18tr1rCrg_yoWxKFy7pr
+	y5KFyrKrZFgFyj9an2qa1jqFyj9w1kKrWUGFWfGryjv398WFn2qFW8tr98AF4qyrZ3Ww18
+	Zr4UCr9I93WYv37anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDUYxBIdaVFxhVjvjDU0xZFpf9x07UsvttUUUUU=
+X-CM-SenderInfo: xolxutxrol0iasrtmqqrwthudrp/xtbBDhN6ymcPJDV2TQAAsv
 
-Andr=C3=A9 Almeida <andrealmeid@igalia.com> writes:
-
-
-> @@ -4663,10 +4756,24 @@ static int shmem_fill_super(struct super_block *s=
-b, struct fs_context *fc)
->  	sb->s_export_op =3D &shmem_export_ops;
->  	sb->s_flags |=3D SB_NOSEC | SB_I_VERSION;
->=20=20
-> -	sb->s_d_op =3D &simple_dentry_operations;
-> +	if (!ctx->encoding && ctx->strict_encoding) {
-> +		pr_err("tmpfs: strict_encoding option without encoding is forbidden\n"=
-);
-> +		error =3D -EINVAL;
-> +		goto failed;
-> +	}
+> Greetings，
+> Regarding this issue, 
+> I was able to reproduce it quickly by injecting faults via module parameter passing in fsstest while testing simultaneously. 
+> And we tested that neither get access nor clear new would reproduce the issue after injecting faults. 
+> Could you please take a look at which approach, get access or clear new, is better? 
+> 
+> The fsstress testing and injection fault command are as follows:
+> fsstress_arm -d "/fsstress_dir2/" -l 102400 -n 100 -p 128 -r -S -s 10 -c 
+> watch -n 1 "echo  1  > /sys/module/ext4/parameters/inject_fault"
+> 
+> The injected fault test is modified as follows, 
+> where the module parameter inject_fault injects the fault, 
+> and the module parameter try_fix selects whether to handle the fault by getting access or clearing the new:
+> 
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index b231cd437..590f84391 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -50,6 +50,12 @@
+>  
+>  #define MPAGE_DA_EXTENT_TAIL 0x01
+>  
+> +static int ext4_inject_fault __read_mostly;
+> +module_param_named(inject_fault, ext4_inject_fault, int, 0644);
+> +static int ext4_try_fix __read_mostly;
+> +module_param_named(try_fix, ext4_try_fix, int, 0644);
 > +
-> +#if IS_ENABLED(CONFIG_UNICODE)
-> +	if (ctx->encoding) {
-> +		sb->s_encoding =3D ctx->encoding;
-> +		sb->s_d_op =3D &shmem_ci_dentry_ops;
-> +		if (ctx->strict_encoding)
-> +			sb->s_encoding_flags =3D SB_ENC_STRICT_MODE_FL;
-> +	}
-> +#endif
-
-Actually...
-
-The previous patch moved the dentry ops configuration for the !casefolded c=
-ase to this
-place, only for thsi patch to remove it.  Drop patch 6, instead?
-
 > +
->  #else
->  	sb->s_flags |=3D SB_NOUSER;
-> -#endif
-> +#endif /* CONFIG_TMPFS */
->  	sbinfo->max_blocks =3D ctx->blocks;
->  	sbinfo->max_inodes =3D ctx->inodes;
->  	sbinfo->free_ispace =3D sbinfo->max_inodes * BOGO_INODE_SIZE;
-> @@ -4940,6 +5047,8 @@ int shmem_init_fs_context(struct fs_context *fc)
->  	ctx->uid =3D current_fsuid();
->  	ctx->gid =3D current_fsgid();
->=20=20
-> +	ctx->encoding =3D NULL;
+>  static void ext4_journalled_zero_new_buffers(handle_t *handle,
+>  					     struct page *page,
+>  					     unsigned int from, unsigned int to);
+> @@ -1065,6 +1071,12 @@ int ext4_block_write_begin(handle_t *handle, struct page *page, loff_t pos, unsi
+>  			clear_buffer_new(bh);
+>  		if (!buffer_mapped(bh)) {
+>  			WARN_ON(bh->b_size != blocksize);
+> +			if (unlikely(ext4_inject_fault)) {
+> +				ext4_inject_fault = 0;
+> +				ext4_warning(inode->i_sb, "XXX inject fault get_block return -ENOSPC\n");
+> +				err = -ENOSPC;
+> +				break;
+> +			}
+>  			err = get_block(inode, block, bh, 1);
+>  			if (err)
+>  				break;
+> @@ -1116,10 +1128,31 @@ int ext4_block_write_begin(handle_t *handle, struct page *page, loff_t pos, unsi
+>  			err = -EIO;
+>  	}
+>  	if (unlikely(err))
+> -		if (should_journal_data)
+> +		if (should_journal_data) {
+> +			if(bh != head || !block_start) {
+> +				do {
+> +					block_end = block_start + bh->b_size;
 > +
->  	fc->fs_private =3D ctx;
->  	fc->ops =3D &shmem_fs_context_ops;
->  	return 0;
+> +					if (buffer_new(bh))
+> +						if (block_end > from && block_start < to) {
+> +							if (ext4_try_fix == 1) {
+> +								ext4_warning(inode->i_sb, "XXX try fix 1\n");
+> +								do_journal_get_write_access(handle,
+> +											    bh);
+> +							} else if (ext4_try_fix == 2) {
+> +								ext4_warning(inode->i_sb, "XXX try fix 2\n");
+> +								clear_buffer_new(bh);
+> +							}
+> +						}
+> +
+> +					block_start = block_end;
+> +					bh = bh->b_this_page;
+> +				} while (bh != head);
+> +			}
+> +
+>  			ext4_journalled_zero_new_buffers(handle, page, from,
+>  							 to);
+> -		else
+> +		} else
+>  			page_zero_new_buffers(page, from, to);
+>  	else if (decrypt)
+>  		err = fscrypt_decrypt_page(page->mapping->host, page,
 
---=20
-Gabriel Krisman Bertazi
+
+在 2024/10/11 14:18, liubaolin 写道:
+>> Greetings，
+>> This problem is reproduced by our customer using their own testing 
+>> tool “run_bug”.
+>> When I consulted with a client, the testing tool “run_bug” used a 
+>> variety of background programs to benchmark (including memory 
+>> pressure, cpu pressure, file cycle manipulation, fsstress Stress 
+>> testing tool, postmark program，and so on).
+>> The recurrence probability is relatively low.
+>>
+>> In response to your query, in ext4_block_write_begin, the new state 
+>> will be clear before get block, and the bh that failed get_block will 
+>> not be set to new.
+>> However, when the page size is greater than the block size, a page 
+>> will contain multiple bh. bh->b_this_page is a circular list for 
+>> managing all bh on the same page.
+>> After get_block jumps out of the for loop, then bh->b_this_page is not 
+>> processed by clear new in the for loop.
+>> So after calling ext4_journalled_zero_new_buffers,
+>> The ext4_journalled_zero_new_buffers function will determine all bh of 
+>> the same page and call write_end_fn if they are in new state,
+>> get_block returns err's bh->b_this_page and circular list other 
+>> unhandled bh if the state was previously set to new.
+>> Because bh not get access, the corresponding transaction is not placed 
+>> in jh->b_transaction, resulting in a crash.
+>>
+>> Therefore, the patch processing method I submit is to make unprocessed 
+>> bh determines if it is in new state and get access.
+>> There is another way to handle the remaining bh clear_buffer_new that 
+>> is not processed.
+>> I personally recommend get access this way, the impact is small. 
+>> Please guide the two processing methods, which one do you recommend?
+> 
+> 
+> 
+> 在 2024/10/10 17:29, Jan Kara 写道:
+>> On Thu 10-10-24 10:58:55, Baolin Liu wrote:
+>>> From: Baolin Liu <liubaolin@kylinos.cn>
+>>>
+>>> Since the merge of commit 3910b513fcdf ("ext4: persist the new uptodate
+>>> buffers in ext4_journalled_zero_new_buffers"), a new assertion failure
+>>> occurred under a old kernel(ext3, data=journal, pagesize=64k) with
+>>> corresponding ported patches:
+>> ...
+>>> which was caused by bh dirting without calling
+>>> do_journal_get_write_access().
+>>>
+>>> In the loop for all bhs of a page in ext4_block_write_begin(),
+>>> when a err occurred, it will jump out of loop.
+>>> But that will leaves some bhs being processed and some not,
+>>> which will lead to the asserion failure in calling write_end_fn().
+>>
+>> Thanks for the patch but I don't understand one thing here: For
+>> ext4_journalled_zero_new_buffers() to call write_end_fn() the buffer must
+>> have buffer_new flag set. That flag can get set only by ext4_get_block()
+>> function when it succeeds in which case we also call
+>> do_journal_get_write_access(). So how is it possible that buffer_new was
+>> set on a buffer on which we didn't call do_journal_get_write_access()? 
+>> This
+>> indicates there may be some deeper problem hidden. How exactly did you
+>> trigger this problem?
+>>
+>>                                 Honza
+>>
+>>>
+>>> To fixed that, get write access for the rest unprocessed bhs, just
+>>> as what write_end_fn do.
+>>>
+>>> Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in 
+>>> ext4_journalled_zero_new_buffers")
+>>> Reported-and-tested-by: Zhi Long <longzhi@sangfor.com.cn>
+>>> Suggested-by: Shida Zhang <zhangshida@kylinos.cn>
+>>> Signed-off-by: Baolin Liu <liubaolin@kylinos.cn>
+>>> ---
+>>>   fs/ext4/inode.c | 17 ++++++++++++++++-
+>>>   1 file changed, 16 insertions(+), 1 deletion(-)
+>>>
+>>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>>> index 54bdd4884fe6..a72f951288e4 100644
+>>> --- a/fs/ext4/inode.c
+>>> +++ b/fs/ext4/inode.c
+>>> @@ -1102,9 +1102,24 @@ int ext4_block_write_begin(handle_t *handle, 
+>>> struct folio *folio,
+>>>               err = -EIO;
+>>>       }
+>>>       if (unlikely(err)) {
+>>> -        if (should_journal_data)
+>>> +        if (should_journal_data) {
+>>> +            if (bh != head || !block_start) {
+>>> +                do {
+>>> +                    block_end = block_start + bh->b_size;
+>>> +
+>>> +                    if (buffer_new(bh))
+>>> +                        if (block_end > from && block_start < to)
+>>> +                            do_journal_get_write_access(handle,
+>>> +                                            inode, bh);
+>>> +
+>>> +                    block_start = block_end;
+>>> +                    bh = bh->b_this_page;
+>>> +                } while (bh != head);
+>>> +            }
+>>> +
+>>>               ext4_journalled_zero_new_buffers(handle, inode, folio,
+>>>                                from, to);
+>>> +        }
+>>>           else
+>>>               folio_zero_new_buffers(folio, from, to);
+>>>       } else if (fscrypt_inode_uses_fs_layer_crypto(inode)) {
+>>> -- 
+>>> 2.39.2
+>>>
+> 
+
 
