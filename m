@@ -1,142 +1,142 @@
-Return-Path: <linux-ext4+bounces-4596-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4597-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 007749A157E
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2024 00:01:33 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5222B9A1A15
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2024 07:18:31 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B99D928162C
-	for <lists+linux-ext4@lfdr.de>; Wed, 16 Oct 2024 22:01:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 00FB4281B38
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2024 05:18:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FEF01D356F;
-	Wed, 16 Oct 2024 22:00:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8470813A257;
+	Thu, 17 Oct 2024 05:18:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="S1ID1XUI"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Jmkb1pi8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFDF714EC47;
-	Wed, 16 Oct 2024 22:00:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3271D21E3C1
+	for <linux-ext4@vger.kernel.org>; Thu, 17 Oct 2024 05:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729116049; cv=none; b=agPyRkpQbnh0f1hAxfIHtf9H78j8Z9WRb1o/bwssx6FF+3J8kskBToJSQVC9fY45CrklGUK0eUf7LBk3QnJXHLu9n1RoWZB/uXIC17sevlsR93V3fdMvPU50T3qo6LqK04ESu6YrArLFSl2CjvC3JLqAi6dUr/wnBiEP7T8OZyM=
+	t=1729142307; cv=none; b=fF0W01jmVsnzUw5LbnBv4radDA4K113E9aBiUoEkVFVZzhNce+yOOXvW1npeZ50r6tempzs4l9hAobZ5sp/TdMAlLmD8A59WZPOr8WacpKpXAlT/hW2jRJ9gunqlCnEzi+kDUsxkQNQJb9qN6TR+kAY/iyeIdprKqAWRsWg/9kM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729116049; c=relaxed/simple;
-	bh=xwyCusH+SopIhC3oIPu4xYN2h6QDfJpgc3rvG/upU7k=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Z5FkFkMjGspcrQxn7LOSkfy33yJK1y9rUMPp51X88NmY5Y+uFkNU4PrBmTdBftWcunZqfeo/SdteqNQ2uNn31pk+zKr4UgGAphlQDgwe9j4h9n90oP5bIAtGyUOT9+MB5ec8lo//eTBlhp8rD0JGnyOyz8wUyvQwHj/x5cgl7rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=S1ID1XUI; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=x/5rC1xxa1L+8foNZ96vhDMYxXts5+xHlK0v36f7pTo=; b=S1ID1XUIpYRZxd95Lq9A6uoH8N
-	8IDRXXr9OBR+TBeJNazOHCmmP5yAu522EddTdoOekBTXwTX2aevD5aLUmdKdWVJoMkKh+2DTIoKpf
-	LysiBhB2jRJ9QwoPxRLuzpLqzgtWVCc2Y8RbvQG6xyoqxop0a1bVBNsxJcbnBX+SXcVxsxCfWqXrO
-	EOYKiVsqLkjIjklOuESs1Z9eiT3EXkWPuV8ElRSgBnkHybZgeJfzynqdaR1HcAM4AhQOCHD3iHZev
-	2f2L/IeQaBmoRao4h1dyPp4+y1OmWMAkajPsx/R+Anp4vFiLV3FzJhd+wL/cinLl3DwsT2vskX+vu
-	4XLAwGVg==;
-Received: from [179.118.186.49] (helo=[192.168.15.100])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1t1C3r-00BMoD-HR; Thu, 17 Oct 2024 00:00:07 +0200
-Message-ID: <a26db27a-85ca-46e4-9669-d885db2dd4ae@igalia.com>
-Date: Wed, 16 Oct 2024 18:59:58 -0300
+	s=arc-20240116; t=1729142307; c=relaxed/simple;
+	bh=qH5K5VZdbBkl/3KF8/roHKcsJHrbOfV8fjLUA8S/gps=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=uBX2Kakrw+JOcTydCqve8G102c9KrrUia/ThgFcEVi/O6IIcaOnRf7pW/yFkv0nNTnXT2In/kR91KJaJxhI1k9rTkDsmSiX2dZTnL0l2MkWZbMH8FwVxVf60t2ICKvT8U/NzOOGtP+eJ8IQyVd3+oqUXjVsbkJjYxezi1RQNy4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Jmkb1pi8; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-118-108.bstnma.fios.verizon.net [173.48.118.108])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 49H5IFNW006426
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 17 Oct 2024 01:18:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1729142297; bh=7KMlPHoJ0a6Hbnzq/npi6q3EyuB5a3mM3KyLP9OsRRE=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=Jmkb1pi8xLBxzhuyZjJYKaOkwAuVSD3MSIt49x9Ksklcuy3/Km9yW1clvo0D3ffSk
+	 yxVSkU3chtuz50f0cYfc7+c1QfjD+29at0hYs+MlouQWszlkADqxPXUZpYR0Rosia/
+	 UE710YDOCFDVII718aNQfOOX2Q/Q1ZvfYQv0ErVHDPU5q1HoHeYeMmA6aNUWqo68/m
+	 fYXhaR03/mgatfHno2HF2cZ14a7bhYOldqWNPV60s6FBXo2wp0JLMrIgHzvLlJVzA1
+	 UwlnpL7uFjptNuYOsSyux0+PCyaPxtONoTYpQl3cUtKrpDKfS5dsLy48bJnfasZEv4
+	 RXPoMOLtSqhOQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id C810015C02DB; Thu, 17 Oct 2024 01:18:15 -0400 (EDT)
+Date: Thu, 17 Oct 2024 01:18:15 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: fstests@vger.kernel.org, Ext4 Developers List <linux-ext4@vger.kernel.org>
+Subject: New {kvm,gce}-xfstests appliance released
+Message-ID: <20241017051815.GA3232770@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 01/10] libfs: Create the helper function
- generic_ci_validate_strict_name()
-To: Gabriel Krisman Bertazi <gabriel@krisman.be>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- Jonathan Corbet <corbet@lwn.net>, smcv@collabora.com, kernel-dev@igalia.com,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org
-References: <20241010-tonyk-tmpfs-v6-0-79f0ae02e4c8@igalia.com>
- <20241010-tonyk-tmpfs-v6-1-79f0ae02e4c8@igalia.com>
- <87bjzls6ff.fsf@mailhost.krisman.be>
-Content-Language: en-US
-From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-In-Reply-To: <87bjzls6ff.fsf@mailhost.krisman.be>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Em 15/10/2024 12:59, Gabriel Krisman Bertazi escreveu:
-> André Almeida <andrealmeid@igalia.com> writes:
-> 
->> +static inline bool generic_ci_validate_strict_name(struct inode *dir, struct qstr *name)
->> +{
->> +	if (!IS_CASEFOLDED(dir) || !sb_has_strict_encoding(dir->i_sb))
->> +		return true;
->> +
->> +	/*
->> +	 * A casefold dir must have a encoding set, unless the filesystem
->> +	 * is corrupted
->> +	 */
->> +	if (WARN_ON_ONCE(!dir->i_sb->s_encoding))
->> +		return true;
->> +
->> +	return utf8_validate(dir->i_sb->s_encoding, name);
-> 
-> There is something fishy here.  Concerningly, the fstests test doesn't
-> catch it.
-> 
-> utf8_validate is defined as:
-> 
->    int utf8_validate(const struct unicode_map *um, const struct qstr *str)
-> 
-> Which returns 0 on success and !0 on error. Thus, when casting to bool,
-> the return code should be negated.
-> 
-> But generic/556 doesn't fail. That's because we are over cautious, and
-> also check the string at the end of generic_ci_d_hash.  So we never
-> really reach utf8_validate in the tested case.
-> 
-> But if you comment the final if in generic_ci_d_hash, you'll see this
-> patchset regresses the fstests case generic/556 over ext4.
-> 
-> We really need the check in both places, though.  We don't want to rely
-> on the behavior of generic_ci_d_hash to block invalid filenames, as that
-> might change.
-> 
+I've pushed out a new version of the test-appliance used by
+kvm-xfstest and gce-xfstests.  The kvm-xfstests appliances can be
+found here:
 
-Thanks Krisman! Nice catch. I fixed this for the next version. Testing 
-with the modified generic_ci_d_hash(), I also realized that the 
-validation was in the wrong place and leaving an inode behind, this fixed:
+     https://kernel.org/pub/linux/kernel/people/tytso/kvm-xfstests
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index eb1ea1f3b37c..7bd7ca5777af 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -3624,13 +3624,13 @@ shmem_mknod(struct mnt_idmap *idmap, struct 
-inode *dir,
-         struct inode *inode;
-         int error;
+The gce-xfstests images can be found in the xfstests-cloud project in
+Google Compute Engine with the image name
+xfstests-{amd64,arm64}-202410151341.  Most people who request their
+gce-xfstests image from the xfstests-cloud project will get the latest
+version automatically.
 
-+       if (!generic_ci_validate_strict_name(dir, &dentry->d_name))
-+               return -EINVAL;
-+
-         inode = shmem_get_inode(idmap, dir->i_sb, dir, mode, dev, 
-VM_NORESERVE);
-         if (IS_ERR(inode))
-                 return PTR_ERR(inode);
+A new feature added since the last released appliance (a while ago),
+the Lightweight Test Manager (ltm) will resume a VM after it crashes
+or after it hangs, and will mark the test as being in state "error"
+(as opposed "failed").
 
--       if (!generic_ci_validate_strict_name(dir, &dentry->d_name))
--               return -EINVAL;
--
+In addition, if $2 USD for 24 VM hours (2.5 hours of wall clock time
+if run in parallel using ltm) when testing of all 12 of the ext4 file
+system configurations with "gce-xfstests -c ext4/all -g auto" is too
+rich for your blood, a new feature I've added to gce-xfstests is the
+optional use of GCE preemptible instances.  This will reduce the cost
+by 60-91% (depending on your geography and VM type), with the tradeoff
+that if the capacity of GCE zone you are using gets too busy by
+customers willing to pay full price (for example, during Black Friday
+and the Christmas shopping season more generally), the test VM will
+get aborted.  The ltm test manager will automatically attempt to
+restart the test VM (after a capped expoential backoff) and the
+xfstest will resume where it was preempted once low-cost cloud capcity
+becomes available again.
+
+The arm64 kvm-xfstests test appliance can also be used on MacOS, using
+the qemu built from MacPorts.  So for those people who want to run a
+quick test on their Macbook Air while on an airplane flight, without
+paying the double-virtualization penalty, this is now a possibility.  :-)
+
+
+BTW, I'm currently running:
+
+    gce-xfstests ltm -c ext4/all,xfs/all,btrfs/all,f2fs/all -g auto --repo https://kernel.googlesource.com/pub/scm/linux/kernel/git/next/linux-next --watch fs-next
+
+which runs daily test runs of the fs-next branch.  I've also started
+experimenting with:
+
+   gce-xfstests ltm -c ext4/all,xfs/all -g auto --repo stable-rc.git --watch linux-6.6.y
+   gce-xfstests ltm -c ext4/all,xfs/all -g auto --repo stable-rc.git --watch linux-6.1.y
+   etc.
+
+My plan is to try to make the daily reports available via e-mail to
+interested parties.  Let me know if this would interest you.
+
+
+For detailed information of the version of components used in the test
+appliance, please see:
+
+     https://kernel.org/pub/linux/kernel/people/tytso/kvm-xfstests/README
+
+Documentation and more information is available at:
+
+     https://thunk.org/gce-xfstests
+     https://github.com/tytso/xfstests-bld/blob/master/Documentation/00-index.md
+
+Cheers,
+
+					- Ted
+
+
+
+
+
+
+
+
+
+
+
 
 
