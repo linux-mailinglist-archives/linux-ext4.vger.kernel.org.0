@@ -1,140 +1,218 @@
-Return-Path: <linux-ext4+bounces-4601-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4603-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C9CF9A2A9C
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2024 19:19:12 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F28D9A2F7A
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2024 23:15:12 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6703EB21F6B
-	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2024 17:07:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AA272B2493B
+	for <lists+linux-ext4@lfdr.de>; Thu, 17 Oct 2024 21:15:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3548A1F4731;
-	Thu, 17 Oct 2024 16:58:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ADE22281D2;
+	Thu, 17 Oct 2024 21:14:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="ETMR5/qn"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B5301E0E1E
-	for <linux-ext4@vger.kernel.org>; Thu, 17 Oct 2024 16:58:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF64C1EE00E;
+	Thu, 17 Oct 2024 21:14:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729184323; cv=none; b=AiPXheh16cJGqC+0gc+4Rh+luyEPB6Ic81m4OfCPwPAne/9T8RFMU3CnjVsEgDMr+lHVixoaZ3qgr+IsnAz0w1xyvlZBqd5URRIT3xi7r8Rbe5JxzldwmfuwUGIiMb9ZE464BW6io5lfCiGfkLsUCkUcKQV5NhffcCW6UqOe+es=
+	t=1729199694; cv=none; b=ZurNlpmnijigb9vX7XC/0v0NPne6/BZkg0bGWuNzP+s8wpcNiv/8edVHlg4z1wTjQOyTlXkZAJcd/kwsXUjoJZVi6+mktrHXtGvHsrhPFpOX0akyQYdEPyyoaD6QlrgqU2X8rrIzTWizl8Fc4cQKc2uos9u967TJqS4hD9wAtLQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729184323; c=relaxed/simple;
-	bh=7YbQD8cLetHapQ6CCLa94g7znNsOotApkR1WM3YLPwY=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=g7nP3vWth/hiv+kKsaPS1oQOwMIxA37XCItdY70rSGzFLQ8ZiGr30bNwZfRweghQiBGnoIJYcyKYggMmvqknYqvZV5CSzVWaJdqOveSGtc+ZX3I0088EuYJiswvDEoCdvCBcGIZXrpE3lwFHWBMnmZepnsZIEjyiJrOhPYZVbDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a3b7129255so11503835ab.2
-        for <linux-ext4@vger.kernel.org>; Thu, 17 Oct 2024 09:58:38 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729184318; x=1729789118;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=79cjQdibWULjOwjWvjlqagFC4XgdZamxycxUsvwt0S0=;
-        b=tBRckSDMho7WCfwh/4rSyw9ds5Dl+o7mT/9gjR3PZapKweKJV7hnURqKXmOCtSG6m9
-         J/g6tfWTSIkeHVgPVcxb5WxTA6huqNpbuIXPb6a8GuyT9ImhaJL915mu4wkxStlt6PG+
-         mOpTVL4Hz8GMDroM2LAagbH0DtR5FDB5sFYhnPOR9pqFAxwbYP5RN9BHWde0CCvh5tGj
-         4DfSP8PQF3CY9pay9qmgUpAp1T62pS04iD5lE3MXYkox4rvPcTdFFqaqrTJaKdM2eVlD
-         I4omFICNyt+12itakSm2whfg9MJvk8vvSYWpMpbfHLmYd2Yy2ecMCaYLSwd/aem6WlSd
-         qjjg==
-X-Forwarded-Encrypted: i=1; AJvYcCXZ+NGpXJQ2eu1DfeZZJYW3/7KBt43pHC9V1Cjqw8aFlZDwD9bflf3tw9G9R7UPrahFbBZ6fNyUe3BH@vger.kernel.org
-X-Gm-Message-State: AOJu0YwKAlsBTkN/TTrCvl9VSnjo/Wv23qPnpRBL6Yy1X7T/9gSXHbbA
-	Sg5X0Fq/oo3oP+3F6bDJAv6fn7acp4cH991OxRbzeeI5fLcdbfUA6+PQgxDfJhHhSWBelPnPf3Z
-	kx86PnUYdiI2pf0wvdTtWiuM8haOTa2++b538XCqQLTfsyRK4eZ57ghM=
-X-Google-Smtp-Source: AGHT+IGpW0xuqa7ddvipdfnYt9Hb35BzdMnzmStx/8U/kihUTuPuTGpjwj/1jK4i627Q515+zIfU0LRvYCdEUADTUTJoDnwh4RCC
+	s=arc-20240116; t=1729199694; c=relaxed/simple;
+	bh=p/N23LP5i1z7dLgOE9M9+4pGEedaD4se0OEbeYe/gt8=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=KBaO0VkLTELDMU8QSlC1RB7ocA1fGBH5PbfP510XpKxJBhdSZfCqYICSiezilxbbsQ8hXkGTfapq9jjpXLbRmi5e2MSS9OeAtusdBlUqd5gJeHf/luRqEHpyZELYRA9BBzccVE51LzQVQBt2nzj4zkXM/uLsfBMvWuiWjVyJu/M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=ETMR5/qn; arc=none smtp.client-ip=178.60.130.6
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Cc:To:Content-Transfer-Encoding:Content-Type:MIME-Version:
+	Message-Id:Date:Subject:From:Sender:Reply-To:Content-ID:Content-Description:
+	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
+	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
+	List-Post:List-Owner:List-Archive;
+	bh=yFvxl4u+NrwsH3O0LylcV+g04T8CwH6ZqZznLnPwQMM=; b=ETMR5/qn2EaBzFFbY1yveMqK8Q
+	8gsXVkYI6j9dPZGqD4JB1BihEKrAiWxem9SlIdHxqjTVUpv29ZLuoEtYArbaD7nSYBZlUReJPQ5bY
+	d7y46CJNDnsTh++L7X9t3Bo9iW5TeahDjNYBVlnnRCzMnQ6ng1KIMx1u8xiQ0TihOLWaSoaU55jJX
+	WdEtbLNvcvB64HMQi/glH65pXcvG1BKk9Q1DGufAvKm5a1ZoImrmOXrCzrmUzY7ZurGeO5tE2dNeJ
+	VBY58GE5un1NGeLqWe9vB9J0Zd4J7GOApTj9L7rc3d6UT3qZO4JydU3o8HlpUjlkzGul83r/mFk7k
+	2aPvKI9Q==;
+Received: from [179.118.186.49] (helo=[192.168.15.100])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
+	id 1t1XpQ-00Bnlc-MA; Thu, 17 Oct 2024 23:14:40 +0200
+From: =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+Subject: [PATCH v7 0/9] tmpfs: Add case-insensitive support for tmpfs
+Date: Thu, 17 Oct 2024 18:14:10 -0300
+Message-Id: <20241017-tonyk-tmpfs-v7-0-a9c056f8391f@igalia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:17ce:b0:3a3:da4f:79f4 with SMTP id
- e9e14a558f8ab-3a3dc49fc9dmr74253015ab.2.1729184318273; Thu, 17 Oct 2024
- 09:58:38 -0700 (PDT)
-Date: Thu, 17 Oct 2024 09:58:38 -0700
-In-Reply-To: <000000000000eacb0205d7c7865e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6711423e.050a0220.a68d8.0013.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in ext4_write_inode (2)
-From: syzbot <syzbot+748cc361874fca7d33cc@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+X-B4-Tracking: v=1; b=H4sIACJ+EWcC/23MSwrDIBSF4a2EO65FreTRUfdRMhC9Jpc2MahIQ
+ 3DvtRl3+B843wERA2GEe3NAwEyR/FqjuzRgZr1OyMjWBsmlElxwlvy6v1haNheZswpFLwZxsxL
+ qYwvo6HNqz7H2TDH5sJ94bn/rfye3jLNucFwjl6hM/6BJv0lfjV9gLKV8AS/4StKnAAAA
+X-Change-ID: 20241010-tonyk-tmpfs-fd4e181913d2
+To: Gabriel Krisman Bertazi <krisman@kernel.org>, 
+ Alexander Viro <viro@zeniv.linux.org.uk>, 
+ Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
+ Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+ Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>, 
+ Jonathan Corbet <corbet@lwn.net>, smcv@collabora.com
+Cc: kernel-dev@igalia.com, linux-fsdevel@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+ linux-mm@kvack.org, linux-doc@vger.kernel.org, 
+ Gabriel Krisman Bertazi <krisman@suse.de>, 
+ =?utf-8?q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
+X-Mailer: b4 0.14.2
 
-syzbot has found a reproducer for the following issue on:
+Hi,
 
-HEAD commit:    c964ced77262 Merge tag 'for-linus' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1575f45f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cfbd94c114a3d407
-dashboard link: https://syzkaller.appspot.com/bug?extid=748cc361874fca7d33cc
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10561830580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=120c8240580000
+This patchset adds support for case-insensitive file names lookups in
+tmpfs. The main difference from other casefold filesystems is that tmpfs
+has no information on disk, just on RAM, so we can't use mkfs to create a
+case-insensitive tmpfs.  For this implementation, I opted to have a mount
+option for casefolding. The rest of the patchset follows a similar approach
+as ext4 and f2fs.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-c964ced7.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e937ef58569a/vmlinux-c964ced7.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f1df9880ca4b/bzImage-c964ced7.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/33caeecf49f6/mount_0.gz
+* Use case (from the original cover letter)
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+748cc361874fca7d33cc@syzkaller.appspotmail.com
+The use case for this feature is similar to the use case for ext4, to
+better support compatibility layers (like Wine), particularly in
+combination with sandboxing/container tools (like Flatpak). Those
+containerization tools can share a subset of the host filesystem with an
+application. In the container, the root directory and any parent
+directories required for a shared directory are on tmpfs, with the
+shared directories bind-mounted into the container's view of the
+filesystem.
 
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 74 at fs/ext4/inode.c:5195 ext4_write_inode+0x627/0x6f0 fs/ext4/inode.c:5195
-Modules linked in:
-CPU: 0 UID: 0 PID: 74 Comm: kswapd0 Not tainted 6.12.0-rc3-syzkaller-00087-gc964ced77262 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
-RIP: 0010:ext4_write_inode+0x627/0x6f0 fs/ext4/inode.c:5195
-Code: ff ff ff 4d 85 ff 74 12 e8 16 38 34 ff 4c 89 ff e8 0e 7d c2 ff e9 cf fd ff ff e8 04 38 34 ff e9 c5 fd ff ff e8 fa 37 34 ff 90 <0f> 0b 90 e9 b7 fd ff ff e8 ec 37 34 ff e9 76 fd ff ff 44 89 f1 80
-RSP: 0018:ffffc90000e46e20 EFLAGS: 00010293
-RAX: ffffffff8260af56 RBX: 0000000000000800 RCX: ffff88801eea2440
-RDX: 0000000000000000 RSI: 0000000000000800 RDI: 0000000000000000
-RBP: ffffc90000e46f20 R08: ffffffff8260a9f2 R09: 1ffffffff2039fcd
-R10: dffffc0000000000 R11: ffffffff8260a930 R12: 0000000000220840
-R13: 1ffff920001c8dc8 R14: 0000000000000000 R15: ffff88801eea2440
-FS:  0000000000000000(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007fbfc77f1af8 CR3: 000000000e734000 CR4: 0000000000352ef0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- write_inode fs/fs-writeback.c:1503 [inline]
- __writeback_single_inode+0x711/0x10d0 fs/fs-writeback.c:1723
- writeback_single_inode+0x1f3/0x660 fs/fs-writeback.c:1779
- write_inode_now+0x1dd/0x260 fs/fs-writeback.c:2829
- iput_final fs/inode.c:1864 [inline]
- iput+0x60d/0xa50 fs/inode.c:1903
- __dentry_kill+0x20d/0x630 fs/dcache.c:615
- shrink_kill+0xa9/0x2c0 fs/dcache.c:1060
- shrink_dentry_list+0x2c0/0x5b0 fs/dcache.c:1087
- prune_dcache_sb+0x10f/0x180 fs/dcache.c:1168
- super_cache_scan+0x34f/0x4b0 fs/super.c:221
- do_shrink_slab+0x701/0x1160 mm/shrinker.c:435
- shrink_slab+0x1093/0x14d0 mm/shrinker.c:662
- shrink_one+0x43b/0x850 mm/vmscan.c:4818
- shrink_many mm/vmscan.c:4879 [inline]
- lru_gen_shrink_node mm/vmscan.c:4957 [inline]
- shrink_node+0x3799/0x3de0 mm/vmscan.c:5937
- kswapd_shrink_node mm/vmscan.c:6765 [inline]
- balance_pgdat mm/vmscan.c:6957 [inline]
- kswapd+0x1ca3/0x3700 mm/vmscan.c:7226
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
+If the host filesystem is using case-insensitive directories, then the
+application can do lookups inside those directories in a
+case-insensitive way, without this needing to be implemented in
+user-space. However, if the host is only sharing a subset of a
+case-insensitive directory with the application, then the parent
+directories of the mount point will be part of the container's root
+tmpfs. When the application tries to do case-insensitive lookups of
+those parent directories on a case-sensitive tmpfs, the lookup will
+fail.
 
+For example, if /srv/games is a case-insensitive directory on the host,
+then applications will expect /srv/games/Steam/Half-Life and
+/srv/games/steam/half-life to be interchangeable; but if the
+container framework is only sharing /srv/games/Steam/Half-Life and
+/srv/games/Steam/Portal (and not the rest of /srv/games) with the
+container, with /srv, /srv/games and /srv/games/Steam as part of the
+container's tmpfs root, then making /srv/games a case-insensitive
+directory inside the container would be necessary to meet that
+expectation.
+
+* Testing
+
+I send a patch for xfstests to enable the casefold test (generic/556) for
+tmpfs.[1] The test succeed.
+
+You can test this patchset using:
+
+  sudo mount -t tmpfs -o casefold tmpfs mnt/
+
+And making a dir case-insensitive:
+
+  mkdir mnt/dir
+  chattr +F mnt/dir
+
+[1] https://lore.kernel.org/fstests/20240823173008.280917-1-andrealmeid@igalia.com/
+
+Changes in v7:
+ - Fixed generic_ci_validate_strict_name()
+ - Dropped patch "tmpfs: Always set simple_dentry_operations as dentry ops"
+ - Re-place generic_ci_validate_strict_name() before inode creation
+ v6: https://lore.kernel.org/r/20241010-tonyk-tmpfs-v6-0-79f0ae02e4c8@igalia.com
+
+Changes in v6:
+ - Fixed kernel bot warning 'shmem_ci_dentry_ops' defined but not used
+ v5: https://lore.kernel.org/lkml/20241002234444.398367-1-andrealmeid@igalia.com/
+
+Changes in v5:
+ - New patch "Always set simple_dentry_operations as dentry ops"
+ - "Squashed libfs: Check for casefold dirs on simple_lookup()" into "tmpfs: Add
+    casefold lookup support"
+ - Fail to mount if strict_encoding is used without encoding
+ - Inlined generic_ci_validate_strict_name()
+ - Added IS_ENABLED(UNICODE) guards to public generic_ci_ funcs
+ - Dropped .d_revalidate = fscrypt_d_revalidate, tmpfs doesn't support it
+ v4: https://lore.kernel.org/lkml/20240911144502.115260-1-andrealmeid@igalia.com/
+
+Changes in v4:
+ - Got rid of shmem_lookup() and changed simple_lookup() to cover casefold use
+   case
+ - Simplified shmem_parse_opt_casefold() and how it handle the lastest_version
+   option
+ - Simplified utf8_parse_version() to return the version in one variable instead
+   of three
+ - Rewrote part of the documentation patch
+ - Make sure that d_sb->s_d_op is set during mount time
+ - Moved `generic_ci_always_del_dentry_ops` to mm/shmem.c as `shmem_ci_dentry_ops`
+v3: https://lore.kernel.org/lkml/20240905190252.461639-1-andrealmeid@igalia.com/
+
+Changes in v3:
+ - Renamed utf8_check_strict_name() to generic_ci_validate_strict_name(), and
+ reworked the big if(...) to be more clear
+ - Expose the latest UTF-8 version in include/linux/unicode.h
+ - shmem_lookup() now sets d_ops
+ - reworked shmem_parse_opt_casefold()
+ - if `mount -o casefold` has no param, load latest UTF-8 version
+ - using (IS_ENABLED(CONFIG_UNICODE) && IS_CASEFOLDED(dir) when possible
+ - Fixed bug when adding a non-casefold flag in a non-empty dir
+v2: https://lore.kernel.org/lkml/20240902225511.757831-1-andrealmeid@igalia.com/
+
+Changes in v2:
+ - Found and fixed a bug in utf8_load()
+ - Created a helper for checking strict file names (Krisman)
+ - Merged patch 1/ and 3/ together (Krisman)
+ - Reworded the explanation about d_compare (Krisman)
+ - Removed bool casefold from shmem_sb_info (Krisman)
+ - Reworked d_add(dentry, NULL) to be called as d_add(dentry, inode) (Krisman)
+ - Moved utf8_parse_version to common unicode code
+ - Fixed some smatch/sparse warnings (kernel test bot/Dan Carpenter)
+v1: https://lore.kernel.org/linux-fsdevel/20240823173332.281211-1-andrealmeid@igalia.com/
 
 ---
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+André Almeida (9):
+      libfs: Create the helper function generic_ci_validate_strict_name()
+      ext4: Use generic_ci_validate_strict_name helper
+      unicode: Export latest available UTF-8 version number
+      unicode: Recreate utf8_parse_version()
+      libfs: Export generic_ci_ dentry functions
+      tmpfs: Add casefold lookup support
+      tmpfs: Add flag FS_CASEFOLD_FL support for tmpfs dirs
+      tmpfs: Expose filesystem features via sysfs
+      docs: tmpfs: Add casefold options
+
+ Documentation/filesystems/tmpfs.rst |  24 ++++
+ fs/ext4/namei.c                     |   5 +-
+ fs/libfs.c                          |  12 +-
+ fs/unicode/utf8-core.c              |  26 +++++
+ fs/unicode/utf8-selftest.c          |   3 -
+ include/linux/fs.h                  |  49 ++++++++
+ include/linux/shmem_fs.h            |   6 +-
+ include/linux/unicode.h             |   4 +
+ mm/shmem.c                          | 226 ++++++++++++++++++++++++++++++++++--
+ 9 files changed, 332 insertions(+), 23 deletions(-)
+---
+base-commit: 6efbea77b390604a7be7364583e19cd2d6a1291b
+change-id: 20241010-tonyk-tmpfs-fd4e181913d2
+
+Best regards,
+-- 
+André Almeida <andrealmeid@igalia.com>
+
 
