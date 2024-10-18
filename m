@@ -1,215 +1,92 @@
-Return-Path: <linux-ext4+bounces-4634-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4635-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E21E39A462B
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 20:45:58 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BACFB9A4710
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 21:37:48 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 52E01B23A58
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 18:45:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79CC528567D
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 19:37:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DE4F205E34;
-	Fri, 18 Oct 2024 18:45:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFEAC205AB6;
+	Fri, 18 Oct 2024 19:37:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tb8QNDbB"
+	dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b="l3oO1bZ0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from relay5-d.mail.gandi.net (relay5-d.mail.gandi.net [217.70.183.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 835FF205AA3;
-	Fri, 18 Oct 2024 18:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADF5373477;
+	Fri, 18 Oct 2024 19:37:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729277106; cv=none; b=IhxKmKAgea+SJzh7rQ5iGFcBwPa6+W54uzZBimWL7VpAq5rJ1zP+qwmZ98Wo11Xm+MnRuO42jsAqC3E7lPbcEMRDvgZy6h41E52qXkERAmO7AJ/yT4Tag2WAMlt7tWbi1cZLJR/GkK7cj5N1OXMg+wUkDZ2IpQmbFke91sBWf6k=
+	t=1729280261; cv=none; b=m93PLqokGpiiwF4hPaG+cetBS57dcV+O1Uga/39fJ2fFX3IlrznnDCC5SrO2gxbnFz/4Nn3Y6XztbeZBIZ10ENVh4qIewmo3QJpfT4bxhlEk/jnuRSUlQbTcF8m+gKBGNPwDqkl6oVT2ap2fs5M096hs6qEYHqU3DS8XDSVUbt4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729277106; c=relaxed/simple;
-	bh=CJqMmKGmlMC1ZgTSvCsZDhV/pMMcxUr0PbmDF9R/3J8=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=AtXgYBdH2gz0eSbBuS+FGeAvLWadoZ5k7cFdZiFFUge1YrCpAtgVsvjpxNWon0kkLUuPNxhJteqKWweg9asNLRRzUurw3gT2OeVsqNFvekS+OrzTEZQIcMpN6NoTSnTsrvJjKWvZf1D8/kAIIjqrRzqXi5SBJ8FCpaFJ9k3VGEE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tb8QNDbB; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0401DC4CED2;
-	Fri, 18 Oct 2024 18:45:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729277106;
-	bh=CJqMmKGmlMC1ZgTSvCsZDhV/pMMcxUr0PbmDF9R/3J8=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=Tb8QNDbBm1c5jVfWGHeTX79arz2h6WihIiGeGNIT1wKOvl2SnsoxQny2qbD9K1FS5
-	 97IPTYhanx0dVA/KlRGXyEAFlT3qZc5C3vmIG1rDfkSH2LyQaUiCnmtuIj6YD37F5h
-	 g4WCzHrK0wC5FDmW5iezMTH7eAeEg/CHLKAH4Qp9fiamrAYfzwxlebwnZvFSKbxHAk
-	 yiQDNBYnN+xJV0CVw+2R+YJrgal7feu2DQYXE0AETmCZ4+krXjiiwSrmpxVeK46w6g
-	 MrU3gjK5ZqSFodlQJ5Ej0BiLUESxaSHZ8BqiviYFBDcr65dFbbHe+Yxb9T66VX434g
-	 9ZMlF7J4BWWWg==
-From: Eric Biggers <ebiggers@kernel.org>
-To: dm-devel@lists.linux.dev
-Cc: linux-block@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-fscrypt@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	Md Sadre Alam <quic_mdalam@quicinc.com>,
-	Israel Rukshin <israelr@nvidia.com>,
-	Milan Broz <gmazyland@gmail.com>,
-	Mikulas Patocka <mpatocka@redhat.com>,
-	Adrian Vovk <adrianvovk@gmail.com>
-Subject: [RFC PATCH 4/4] ext4,f2fs: support metadata encryption via dm-default-key
-Date: Fri, 18 Oct 2024 11:43:39 -0700
-Message-ID: <20241018184339.66601-5-ebiggers@kernel.org>
-X-Mailer: git-send-email 2.47.0
-In-Reply-To: <20241018184339.66601-1-ebiggers@kernel.org>
-References: <20241018184339.66601-1-ebiggers@kernel.org>
+	s=arc-20240116; t=1729280261; c=relaxed/simple;
+	bh=/lrZfts5NbnRQtVSw9VtSm/CdSHLv/6Pba0zDxeHWh0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=WXD6GWQgw7l2Ay2ditJCIbsiSqQDCjZ1YAUeU+zea8gYRDYiCcYkK8dzc8NTf6hTTCGbxBlquxGNC9o7fbF2AFr4SGCThg3A+o/afk/yBaMZKBgqENkkOSitJV8om4XssEFeJs0f2c4nyl2Jsopw72O/mMwvpQ5X+TwmT9Nxjhs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=krisman.be; spf=pass smtp.mailfrom=krisman.be; dkim=pass (2048-bit key) header.d=krisman.be header.i=@krisman.be header.b=l3oO1bZ0; arc=none smtp.client-ip=217.70.183.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=krisman.be
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=krisman.be
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 754881C0003;
+	Fri, 18 Oct 2024 19:37:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=krisman.be; s=gm1;
+	t=1729280251;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/lrZfts5NbnRQtVSw9VtSm/CdSHLv/6Pba0zDxeHWh0=;
+	b=l3oO1bZ02YmVeOvsX5Y062C3xzO1MtwuKL2jAy+dAbONORGmFLJmZtzm2yWr2NXSGL9Fzl
+	BBnbpMK0KmXgTR+48symI+ey2aM+HD9Tx+p7rv3/XYd71YC18pv3ljpuE4l7jDYNvN0huH
+	1pjyYQq3JM8iU8OcgI4WGveJa4pJfRxOBjffBgnrTxG49Ac757WarENNQ+VgONWyPy5GZs
+	hToZkjbEeOJ97kX1rA/fxGthgFMOyZQ+CQrfs0UOqxfn0P80uAjCJ17UexrcsCkDwfBhQT
+	hWUd4iI8WGACyzZtk3A+nZF3cWMAPPkN9eaTT1rKPqCC2yzJFm2fM8/JH0wOFA==
+From: Gabriel Krisman Bertazi <gabriel@krisman.be>
+To: =?utf-8?Q?Andr=C3=A9?= Almeida <andrealmeid@igalia.com>
+Cc: Alexander Viro <viro@zeniv.linux.org.uk>,  Christian Brauner
+ <brauner@kernel.org>,  Jan Kara <jack@suse.cz>,  Theodore Ts'o
+ <tytso@mit.edu>,  Andreas Dilger <adilger.kernel@dilger.ca>,  Hugh Dickins
+ <hughd@google.com>,  Andrew Morton <akpm@linux-foundation.org>,  Jonathan
+ Corbet <corbet@lwn.net>,  smcv@collabora.com,  kernel-dev@igalia.com,
+  linux-fsdevel@vger.kernel.org,  linux-kernel@vger.kernel.org,
+  linux-ext4@vger.kernel.org,  linux-mm@kvack.org,
+  linux-doc@vger.kernel.org
+Subject: Re: [PATCH v7 1/9] libfs: Create the helper function
+ generic_ci_validate_strict_name()
+In-Reply-To: <20241017-tonyk-tmpfs-v7-1-a9c056f8391f@igalia.com>
+ (=?utf-8?Q?=22Andr=C3=A9?=
+	Almeida"'s message of "Thu, 17 Oct 2024 18:14:11 -0300")
+References: <20241017-tonyk-tmpfs-v7-0-a9c056f8391f@igalia.com>
+	<20241017-tonyk-tmpfs-v7-1-a9c056f8391f@igalia.com>
+Date: Fri, 18 Oct 2024 15:37:25 -0400
+Message-ID: <87zfn1yzgq.fsf@mailhost.krisman.be>
+User-Agent: Gnus/5.13 (Gnus v5.13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: gabriel@krisman.be
 
-From: Eric Biggers <ebiggers@google.com>
+Andr=C3=A9 Almeida <andrealmeid@igalia.com> writes:
 
-Set the bi_skip_dm_default_key flag on bios that are targeting the
-contents of an encrypted file and therefore should not be en/decrypted
-by dm-default-key.
+> Create a helper function for filesystems do the checks required for
+> casefold directories and strict encoding.
+>
+> Suggested-by: Gabriel Krisman Bertazi <krisman@suse.de>
+> Signed-off-by: Andr=C3=A9 Almeida <andrealmeid@igalia.com>
 
-Signed-off-by: Eric Biggers <ebiggers@google.com>
----
- fs/crypto/inline_crypt.c | 14 +++++++++++++-
- fs/f2fs/data.c           |  6 +++++-
- include/linux/fscrypt.h  | 14 ++++++++++++++
- 3 files changed, 32 insertions(+), 2 deletions(-)
 
-diff --git a/fs/crypto/inline_crypt.c b/fs/crypto/inline_crypt.c
-index 40de69860dcf9..b75c69c09500b 100644
---- a/fs/crypto/inline_crypt.c
-+++ b/fs/crypto/inline_crypt.c
-@@ -261,17 +261,22 @@ static void fscrypt_generate_dun(const struct fscrypt_inode_info *ci,
-  *
-  * Normally the bio should be newly allocated (i.e. no pages added yet), as
-  * otherwise fscrypt_mergeable_bio() won't work as intended.
-  *
-  * The encryption context will be freed automatically when the bio is freed.
-+ *
-+ * This function also handles setting bi_skip_dm_default_key when needed.
-  */
- void fscrypt_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
- 			       u64 first_lblk, gfp_t gfp_mask)
- {
- 	const struct fscrypt_inode_info *ci;
- 	u64 dun[BLK_CRYPTO_DUN_ARRAY_SIZE];
- 
-+	if (fscrypt_inode_should_skip_dm_default_key(inode))
-+		bio_set_skip_dm_default_key(bio);
-+
- 	if (!fscrypt_inode_uses_inline_crypto(inode))
- 		return;
- 	ci = inode->i_crypt_info;
- 
- 	fscrypt_generate_dun(ci, first_lblk, dun);
-@@ -342,20 +347,26 @@ EXPORT_SYMBOL_GPL(fscrypt_set_bio_crypt_ctx_bh);
-  *
-  * This function isn't required in cases where crypto-mergeability is ensured in
-  * another way, such as I/O targeting only a single file (and thus a single key)
-  * combined with fscrypt_limit_io_blocks() to ensure DUN contiguity.
-  *
-+ * This function also returns false if the next part of the I/O would need to
-+ * have a different value for the bi_skip_dm_default_key flag.
-+ *
-  * Return: true iff the I/O is mergeable
-  */
- bool fscrypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- 			   u64 next_lblk)
- {
- 	const struct bio_crypt_ctx *bc = bio->bi_crypt_context;
- 	u64 next_dun[BLK_CRYPTO_DUN_ARRAY_SIZE];
- 
- 	if (!!bc != fscrypt_inode_uses_inline_crypto(inode))
- 		return false;
-+	if (bio_should_skip_dm_default_key(bio) !=
-+	    fscrypt_inode_should_skip_dm_default_key(inode))
-+		return false;
- 	if (!bc)
- 		return true;
- 
- 	/*
- 	 * Comparing the key pointers is good enough, as all I/O for each key
-@@ -385,11 +396,12 @@ bool fscrypt_mergeable_bio_bh(struct bio *bio,
- {
- 	const struct inode *inode;
- 	u64 next_lblk;
- 
- 	if (!bh_get_inode_and_lblk_num(next_bh, &inode, &next_lblk))
--		return !bio->bi_crypt_context;
-+		return !bio->bi_crypt_context &&
-+		       !bio_should_skip_dm_default_key(bio);
- 
- 	return fscrypt_mergeable_bio(bio, inode, next_lblk);
- }
- EXPORT_SYMBOL_GPL(fscrypt_mergeable_bio_bh);
- 
-diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
-index 94f7b084f6016..a413508210994 100644
---- a/fs/f2fs/data.c
-+++ b/fs/f2fs/data.c
-@@ -484,10 +484,12 @@ static void f2fs_set_bio_crypt_ctx(struct bio *bio, const struct inode *inode,
- 	 * The f2fs garbage collector sets ->encrypted_page when it wants to
- 	 * read/write raw data without encryption.
- 	 */
- 	if (!fio || !fio->encrypted_page)
- 		fscrypt_set_bio_crypt_ctx(bio, inode, first_idx, gfp_mask);
-+	else if (fscrypt_inode_should_skip_dm_default_key(inode))
-+		bio_set_skip_dm_default_key(bio);
- }
- 
- static bool f2fs_crypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- 				     pgoff_t next_idx,
- 				     const struct f2fs_io_info *fio)
-@@ -495,11 +497,13 @@ static bool f2fs_crypt_mergeable_bio(struct bio *bio, const struct inode *inode,
- 	/*
- 	 * The f2fs garbage collector sets ->encrypted_page when it wants to
- 	 * read/write raw data without encryption.
- 	 */
- 	if (fio && fio->encrypted_page)
--		return !bio_has_crypt_ctx(bio);
-+		return !bio_has_crypt_ctx(bio) &&
-+			(bio_should_skip_dm_default_key(bio) ==
-+			 fscrypt_inode_should_skip_dm_default_key(inode));
- 
- 	return fscrypt_mergeable_bio(bio, inode, next_idx);
- }
- 
- void f2fs_submit_read_bio(struct f2fs_sb_info *sbi, struct bio *bio,
-diff --git a/include/linux/fscrypt.h b/include/linux/fscrypt.h
-index 772f822dc6b82..eac1917db79a9 100644
---- a/include/linux/fscrypt.h
-+++ b/include/linux/fscrypt.h
-@@ -890,10 +890,24 @@ static inline u64 fscrypt_limit_io_blocks(const struct inode *inode, u64 lblk,
- {
- 	return nr_blocks;
- }
- #endif /* !CONFIG_FS_ENCRYPTION_INLINE_CRYPT */
- 
-+#if IS_ENABLED(CONFIG_FS_ENCRYPTION) && IS_ENABLED(CONFIG_DM_DEFAULT_KEY)
-+static inline bool
-+fscrypt_inode_should_skip_dm_default_key(const struct inode *inode)
-+{
-+	return IS_ENCRYPTED(inode) && S_ISREG(inode->i_mode);
-+}
-+#else
-+static inline bool
-+fscrypt_inode_should_skip_dm_default_key(const struct inode *inode)
-+{
-+	return false;
-+}
-+#endif
-+
- /**
-  * fscrypt_inode_uses_inline_crypto() - test whether an inode uses inline
-  *					encryption
-  * @inode: an inode. If encrypted, its key must be set up.
-  *
--- 
-2.47.0
+Reviewed-by: Gabriel Krisman Bertazi <gabriel@krisman.be>
 
+
+--=20
+Gabriel Krisman Bertazi
 
