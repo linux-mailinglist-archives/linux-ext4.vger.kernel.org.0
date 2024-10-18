@@ -1,127 +1,179 @@
-Return-Path: <linux-ext4+bounces-4620-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4621-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 056689A3379
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 05:44:28 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DBADE9A39B4
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 11:16:23 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36D961C22863
-	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 03:44:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 979EF281AA3
+	for <lists+linux-ext4@lfdr.de>; Fri, 18 Oct 2024 09:16:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BB91157465;
-	Fri, 18 Oct 2024 03:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39BA190676;
+	Fri, 18 Oct 2024 09:14:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GJXk/kLo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ixAe/3pR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GJXk/kLo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ixAe/3pR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8130154C00;
-	Fri, 18 Oct 2024 03:44:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A97F1E3DC5
+	for <linux-ext4@vger.kernel.org>; Fri, 18 Oct 2024 09:14:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729223060; cv=none; b=or4HMJ4taBJuaQ+jDJnvNH6FapgvApMqvqjKAzF0DkXQGu6gu0smmgOALvxbrA2Rq6ZKykPSwpLw8+9nBiEMMbmtWB/K1EHbPl3PrN1TCNM1hzjnOQ4vffLn6oNH6/6N+17mrxshqZBmhkDVqwwgdyfoiZsRpMEx8cDU1ntzoWU=
+	t=1729242871; cv=none; b=qFniZwW+H8gnnWqlkYCq3ux0H3sMj73nNkuuHedZXDYR9mUdePF7QT/5+kahkpSnmfrfX10y2couo6ckBl5L7ftLzL10fgPERyOm0wi1UZ7jmH4qdxklnJuAMeFRqxy+M1+3SplMGnQamY84KBGQILO0TFl7xdwVIS4XFMZFlwY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729223060; c=relaxed/simple;
-	bh=QZkw0hyKmTRYADg2Zmk0ARqL53eXfipXjETL2xk2L9c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=VgP8AvlsC/9WncCUVC69fa2iTI59nkT/TfN1pOLhi2j4uKs4y1bOcmLXz6YHxl9p/BjUHXLA8qb9ZtdX1QgjGqg5vSkClGloXc3rBPWp+xX5Qlm5fvWb82AIxLMTwWBEfP8U9pEL2YiVxaIyxiEChUEcnD+qvmRONX5YuOQNerE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.105])
-	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4XV9XT5PmDzQrwM;
-	Fri, 18 Oct 2024 11:43:21 +0800 (CST)
-Received: from dggpeml100021.china.huawei.com (unknown [7.185.36.148])
-	by mail.maildlp.com (Postfix) with ESMTPS id 006361400D4;
-	Fri, 18 Oct 2024 11:44:08 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by dggpeml100021.china.huawei.com
- (7.185.36.148) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.39; Fri, 18 Oct
- 2024 11:44:07 +0800
-Message-ID: <f74591de-72ce-48aa-94eb-b38e4f74cc5f@huawei.com>
-Date: Fri, 18 Oct 2024 11:44:07 +0800
+	s=arc-20240116; t=1729242871; c=relaxed/simple;
+	bh=qTCjduvwJWJoN+FVvmJK2kPgDvA7kR93xr4uLbgz37g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=CSir+CHOfv3h8YRsW2vpfzt9jgj0LJ7i9o2cei3WoHgnKzNlub10jmIHkUrYossq7ROk9LI8IXbPjKm16aNT/Y7D1ZWgpbDpgAm+v5IT4kYwy+y6PxxZwQ1PsHnBOvA6ZI3LgsX3cR8R8s2oeD9QOFKCHuZxOpnM7vRsojkHRLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GJXk/kLo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ixAe/3pR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GJXk/kLo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ixAe/3pR; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 6EBBA1FDA2;
+	Fri, 18 Oct 2024 09:14:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729242862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8HtX5BmiqVcnJm6kkDA0ytdg81sW3Amjp7shqF/kT9E=;
+	b=GJXk/kLoqyspQfbzt06u1gkdAp8kBNga1FdJHX1scBE9xRjQvVg6fRxHI4ZRLxczQeWesM
+	/YfgWal6Rqt3HSBzbNGLL3VdsibEHN6dFMXF7scCHiAV9bN1PmtoTZAJW+4ztHhQpHqq44
+	Aq8QAp8ciFJN5lDprgIAYldvGrG2H3Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729242862;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8HtX5BmiqVcnJm6kkDA0ytdg81sW3Amjp7shqF/kT9E=;
+	b=ixAe/3pRDygjf662XhUiuPa4zfaGjhZ3ENXIZPwmxV3gdGD3f5gPRf1Yqti2X0vXRKZrmT
+	ce25cECS6zEv6vBA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="GJXk/kLo";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="ixAe/3pR"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1729242862; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8HtX5BmiqVcnJm6kkDA0ytdg81sW3Amjp7shqF/kT9E=;
+	b=GJXk/kLoqyspQfbzt06u1gkdAp8kBNga1FdJHX1scBE9xRjQvVg6fRxHI4ZRLxczQeWesM
+	/YfgWal6Rqt3HSBzbNGLL3VdsibEHN6dFMXF7scCHiAV9bN1PmtoTZAJW+4ztHhQpHqq44
+	Aq8QAp8ciFJN5lDprgIAYldvGrG2H3Y=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1729242862;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:  content-transfer-encoding:content-transfer-encoding;
+	bh=8HtX5BmiqVcnJm6kkDA0ytdg81sW3Amjp7shqF/kT9E=;
+	b=ixAe/3pRDygjf662XhUiuPa4zfaGjhZ3ENXIZPwmxV3gdGD3f5gPRf1Yqti2X0vXRKZrmT
+	ce25cECS6zEv6vBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 5A81513680;
+	Fri, 18 Oct 2024 09:14:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id H6MRFu4mEmeaVgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 18 Oct 2024 09:14:22 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 0869BA080A; Fri, 18 Oct 2024 11:14:22 +0200 (CEST)
+From: Jan Kara <jack@suse.cz>
+To: Ted Tso <tytso@mit.edu>
+Cc: <linux-ext4@vger.kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Baolin Liu <liubaolin12138@163.com>,
+	Zhi Long <longzhi@sangfor.com.cn>
+Subject: [PATCH] ext4: Make sure BH_New bit is cleared in ->write_end handler
+Date: Fri, 18 Oct 2024 11:14:15 +0200
+Message-Id: <20241018091415.31791-1-jack@suse.cz>
+X-Mailer: git-send-email 2.35.3
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] ext4: fix out-of-bounds issue in ext4_xattr_set_entry
-To: Theodore Ts'o <tytso@mit.edu>
-CC: Jan Kara <jack@suse.cz>, Qianqiang Liu <qianqiang.liu@163.com>,
-	<adilger.kernel@dilger.ca>, syzbot
-	<syzbot+f792df426ff0f5ceb8d1@syzkaller.appspotmail.com>,
-	<linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<syzkaller-bugs@googlegroups.com>, Yang Erkun <yangerkun@huawei.com>, Baokun
- Li <libaokun1@huawei.com>
-References: <Zu+vI3EipxSsPOMe@thinkpad.lan>
- <66efba95.050a0220.3195df.008c.GAE@google.com>
- <Zu+8aQBJgMn7xVws@thinkpad.lan>
- <d62a25e9-04de-4309-98d1-22a4f9b5bb49@huawei.com>
- <20241009155028.u7jpzrw6txldt43j@quack3>
- <05f9c7c2-655a-4f5b-be8e-93f511a954bd@huawei.com>
- <20241014163120.hinbd5jc6mp4vev7@quack3>
- <3930aad6-174d-4422-944e-6c90a3ea065a@huawei.com>
- <20241016204741.GA3204734@mit.edu>
- <811eb084-55d4-4725-9388-05a6e8f489d9@huawei.com>
- <20241017144731.GA3254556@mit.edu>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20241017144731.GA3254556@mit.edu>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
- dggpeml100021.china.huawei.com (7.185.36.148)
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1676; i=jack@suse.cz; h=from:subject; bh=qTCjduvwJWJoN+FVvmJK2kPgDvA7kR93xr4uLbgz37g=; b=owEBbQGS/pANAwAIAZydqgc/ZEDZAcsmYgBnEibXqO/um4nOMwqnHSY3Cn6Hfy5kBmM6myEdpvTG EnazJ66JATMEAAEIAB0WIQSrWdEr1p4yirVVKBycnaoHP2RA2QUCZxIm1wAKCRCcnaoHP2RA2fzCCA DSfJD5vzjFHf+wnu5JpBKhNNOd7xWDKuG082+4e2zxNfkVuGZA98AZO85CIwllvcaFeYVBXwuCTbh0 0I+WCJe2vass3IvtbaDqZoRjIjw3F/4Y4FhWTkwunSUX10OjhOyjPROF+FORLAwF/N01tg9iLqnMdD gxMIcZgnK0pjMj9HOaT6oxRp5USR8QDARosGobSGvYLKB2y+QLOG32Qxm3bMKK9Oak/FQqg9VVfYkU RlazgAZPWkK1GUPQrcgfO7UNi7rgyPYkjebnbWZ3dI33PAUSOP3wNI+FM9bZxmU4JOvbmQSUquwdVQ QoZpkdrTjDJ3rUVSw1weV95dqIC9ZV
+X-Developer-Key: i=jack@suse.cz; a=openpgp; fpr=93C6099A142276A28BBE35D815BC833443038D8C
+Content-Transfer-Encoding: 8bit
+X-Rspamd-Queue-Id: 6EBBA1FDA2
+X-Spam-Level: 
+X-Spamd-Result: default: False [-3.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	MID_CONTAINS_FROM(1.00)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	R_MISSING_CHARSET(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	ARC_NA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FREEMAIL_CC(0.00)[vger.kernel.org,suse.cz,163.com,sangfor.com.cn];
+	FREEMAIL_ENVRCPT(0.00)[163.com];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_TLS_LAST(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.cz:mid];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCPT_COUNT_FIVE(0.00)[5];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -3.01
+X-Spam-Flag: NO
 
-On 2024/10/17 22:47, Theodore Ts'o wrote:
-> On Thu, Oct 17, 2024 at 08:42:59PM +0800, Baokun Li wrote:
->> Indeed, our rough plan is to first implement isolation of abnormal file
->> system resources, so that the system can continue to run normally even
->> when there is an error; then implement online scanning, so that the
->> maintainer can see the health report at any time; and finally implement
->> the most difficult online repair.
-> We have some of this already; if a block group has obvious
-> inconsistencies --- for example, if there is an attempt to mark a
-> block or inode as free, but it's already marked as free as the
-> allocation bitmap, we can mark the block group as inconsistent, and
-> then avoid allocating from the block group.  That's easy because it's
-> the kind of inconsistency which can be detected locally.
-Yes, there is now block group level isolation. Our goal is to further
-reduce the scope of isolation to minimise the impact of isolation.
+Currently we clear BH_New bit in case of error and also in the standard
+ext4_write_end() handler (in block_commit_write()). However
+ext4_journalled_write_end() misses this clearing and thus we are leaving
+stale BH_New bits behind. Generally ext4_block_write_begin() clears
+these bits before any harm can be done but in case blocksize < pagesize
+and we hit some error when processing a page with these stale bits,
+we'll try to zero buffers with these stale BH_New bits and jbd2 will
+complain (as buffers were not prepared for writing in this transaction).
+Fix the problem by clearing BH_New bits in ext4_journalled_write_end()
+and WARN if ext4_block_write_begin() sees stale BH_New bits.
 
-The rough idea is to isolate resources where errors are reported,
-and throw errors when isolation is not possible. This may be a bit
-crude, but after implementing inline scanning we can achieve precise
-fine-grained isolation.
-> The problem comes with those inconsistencies which require a global
-> examination of the file system data structures.  For example, is the
-> refcount of an inode correct?  Or is a block claimed by more than one
-> inode?  The e2scrub approach requires creating a read-only snapshot
-> (which is why we need LVM) and then running e2fsck in userspace,
-> because it does a global examination of all file system data
-> structures.
-Indeed, consistency is a tricky issue, and we'll focus on that piece of
-logic.
->> We do need to establish the mapping of physical blocks to inodes and
->> inodes to parent dir. By tree managed by jbd2 do you mean updating
->> the tree when committing to journal? Or are updates to the tree
->> logged to journal?
-> When we allocate a block, we need to journal the changes to the
-> allocation bitmap.  If we are going to also update the reverse mapping
-> data structure, that needs to be journalled also, so that after a
-> crash, the data structures are consistent.
->
-> 						- Ted
->
-Of course, we have to make sure that the metadata modification and the tree
-update are in the same transaction, otherwise there is no guarantee that
-the metadata is consistent.
+Reported-by: Baolin Liu <liubaolin12138@163.com>
+Reported-by: Zhi Long <longzhi@sangfor.com.cn>
+Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in ext4_journalled_zero_new_buffers")
+Signed-off-by: Jan Kara <jack@suse.cz>
+---
+ fs/ext4/inode.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-Thank you for your input!
-
-Regards,
-Baokun
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 54bdd4884fe6..aa56af4a92ad 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -1049,7 +1049,7 @@ int ext4_block_write_begin(handle_t *handle, struct folio *folio,
+ 			}
+ 			continue;
+ 		}
+-		if (buffer_new(bh))
++		if (WARN_ON_ONCE(buffer_new(bh)))
+ 			clear_buffer_new(bh);
+ 		if (!buffer_mapped(bh)) {
+ 			WARN_ON(bh->b_size != blocksize);
+@@ -1265,6 +1265,7 @@ static int write_end_fn(handle_t *handle, struct inode *inode,
+ 	ret = ext4_dirty_journalled_data(handle, bh);
+ 	clear_buffer_meta(bh);
+ 	clear_buffer_prio(bh);
++	clear_buffer_new(bh);
+ 	return ret;
+ }
+ 
+-- 
+2.35.3
 
 
