@@ -1,184 +1,226 @@
-Return-Path: <linux-ext4+bounces-4662-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4663-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A74F9A6463
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 12:46:31 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 216209A6622
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 13:14:28 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B74E1C21E44
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 10:46:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B453B21E70
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 11:11:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E69511EABB1;
-	Mon, 21 Oct 2024 10:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E1A571E1A3F;
+	Mon, 21 Oct 2024 11:11:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="WL4D7lJN"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="DL0CM4li"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2994195FEC;
-	Mon, 21 Oct 2024 10:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D6261E47A1
+	for <linux-ext4@vger.kernel.org>; Mon, 21 Oct 2024 11:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729507234; cv=none; b=UbKxnbvgVsnVLVoEJfP83q+y4AePUB00Ha2bEWi3CgNYanD8g0ZVz5xZsQrf95llqmsCHb5a5yDBsGwUXZGKsq+ue7WcEQz3XacsNXRagcT/GA5h/J9llT6e4vQb6uPlKQ9FPZ2b54X2DbCZ56b5VN1CcyNHUomPhKn9Wy3LKaw=
+	t=1729509112; cv=none; b=BZzkRuJc524/1/9XGh/ZlXlf//FOyTsWQ5mFyekNXQkAAiuNQ2ldO/SEIcSJeXRPAK5gvXff96htzIUBUsL0GbCfPXyDPo0io8kIQdlj75ceI4rvfQLdt5SbwmUFDvdKkMENAx/nYGh6m72krW07Kag7XtqOuxjtFu6FQoB0BEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729507234; c=relaxed/simple;
-	bh=41f6oEtljvqz5Te0x1SNWi4SHNJw6n7wHUBSgCBwR3g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=CB6/4heloakgrVdG+7Sf1Hm4L928IJ+O90B2SFgKvEIPle/tPnAMB6s7cAUO2hv+zL21ZHsEnXWUXa8y95jqJqzjlxpK6WVFALRWl49WOIQ6clz0/p5EsyJdTYmbXo0nrLV7oczntzE+wYLUSqdFZRF822T2Y5Jawj0yMXCNFG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=WL4D7lJN; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 49L2KH3K032533;
-	Mon, 21 Oct 2024 10:40:13 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=92knE4jiltiV907EhRGLVYeamkXayI
-	7j0BwYX0ZH1JA=; b=WL4D7lJNas37Nzdhxi9rX+lx/0u/7ytK48q3TqjJR++gKt
-	r7ueMht7alDtgQ7pasPryEpqoYRd0OWJqyszZwZ+SpNOF2LJ1isSitDYhyMC/LAS
-	FwERDIOSqxtV94TGFg/XwPocGXOJNG9slT3/uBhOpxWpILgE6aPOyXK2xUh7rTpF
-	iZSfIsmznUv35ep6vlQ2EA5avKOIqsYrhOQyes8ee48qcQRT99bJpKxarFGhHfc/
-	Sf1AmAC4Lua0AKvgB9CPRIHyiQxUS0kOC4/Q4iiF3ywr7qQlDkQN+CyvM61jpuW4
-	hTkpnbK13JKGJKjwKEuAWROXZpMXdSctg6J3mWmA==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42c5hm8my5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Oct 2024 10:40:13 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 49L9CWB9018605;
-	Mon, 21 Oct 2024 10:40:12 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 42csaj5kvs-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 21 Oct 2024 10:40:12 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 49LAe94P24249044
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 21 Oct 2024 10:40:10 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 389B320043;
-	Mon, 21 Oct 2024 10:40:09 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7F0602004B;
-	Mon, 21 Oct 2024 10:40:08 +0000 (GMT)
-Received: from osiris (unknown [9.171.37.192])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 21 Oct 2024 10:40:08 +0000 (GMT)
-Date: Mon, 21 Oct 2024 12:40:07 +0200
-From: Heiko Carstens <hca@linux.ibm.com>
+	s=arc-20240116; t=1729509112; c=relaxed/simple;
+	bh=Si9uBiI7VNrAZ4+UyHCR60bAs5nFBYKN4ZOHMdTtrEo=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=katUQh4kx33jXDA32XfUIVhEzUeD//L9NTbT7wNCpymDl6z8Zzzc9MRHefx3f8F9GeYe7xmWjaetgzJNFbxC3T2Qjh+7YZ6oCyy267xA/OjF9JzUn4CCEgV4qoQlLNnVw1YW7eLLglkhfcibzfAgIyZ7wk7Nudk5UQ26JeOn0Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=DL0CM4li; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1729509109;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yVOOQRTDPP9EQyCM0BO2Vz41MIi/v/BOtRJeWq4CdzI=;
+	b=DL0CM4liGwNqHHFiiJx6GGQ6PVeHWGgGPh4lTn8V+d5bNeDYUHhCdDdFnvKKfq3Th4neuR
+	fMcJsn72LLNNbRJ/GqNgK8XNCaHQfMbeB+DyBkjTDuuAdzBPTKrZrq/J6Bv47SpNh4VfMF
+	O++ygtHnHWU4S3yCx49NcEmr/qjg+NE=
+Received: from mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-121-0Db2WKbVPky42uFBgGVOxg-1; Mon,
+ 21 Oct 2024 07:11:46 -0400
+X-MC-Unique: 0Db2WKbVPky42uFBgGVOxg-1
+Received: from mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.40])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E90361955EA7;
+	Mon, 21 Oct 2024 11:11:43 +0000 (UTC)
+Received: from [10.45.226.64] (unknown [10.45.226.64])
+	by mx-prod-int-04.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id B2A6019560AA;
+	Mon, 21 Oct 2024 11:11:40 +0000 (UTC)
+Date: Mon, 21 Oct 2024 13:11:36 +0200 (CEST)
+From: Mikulas Patocka <mpatocka@redhat.com>
 To: Eric Biggers <ebiggers@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-        linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
-        linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-        linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-        linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-        loongarch@lists.linux.dev, sparclinux@vger.kernel.org, x86@kernel.org,
-        Hendrik Brueckner <brueckner@linux.ibm.com>
-Subject: Re: [PATCH 07/15] s390/crc32: expose CRC32 functions through lib
-Message-ID: <20241021104007.6950-E-hca@linux.ibm.com>
-References: <20241021002935.325878-1-ebiggers@kernel.org>
- <20241021002935.325878-8-ebiggers@kernel.org>
+cc: dm-devel@lists.linux.dev, linux-block@vger.kernel.org, 
+    linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org, 
+    linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net, 
+    Md Sadre Alam <quic_mdalam@quicinc.com>, 
+    Israel Rukshin <israelr@nvidia.com>, Milan Broz <gmazyland@gmail.com>, 
+    Adrian Vovk <adrianvovk@gmail.com>
+Subject: Re: [RFC PATCH 2/4] block: add the bi_skip_dm_default_key flag
+In-Reply-To: <20241018184339.66601-3-ebiggers@kernel.org>
+Message-ID: <2caf648d-73cf-9436-2af4-ad530a966592@redhat.com>
+References: <20241018184339.66601-1-ebiggers@kernel.org> <20241018184339.66601-3-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241021002935.325878-8-ebiggers@kernel.org>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: f0A5vIL1iLbWasgVAUuToCuIbQMCR4iX
-X-Proofpoint-GUID: f0A5vIL1iLbWasgVAUuToCuIbQMCR4iX
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 spamscore=0 clxscore=1011
- phishscore=0 impostorscore=0 priorityscore=1501 lowpriorityscore=0
- bulkscore=0 mlxscore=0 adultscore=0 mlxlogscore=730 suspectscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2410210076
+Content-Type: text/plain; charset=US-ASCII
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.40
 
-On Sun, Oct 20, 2024 at 05:29:27PM -0700, Eric Biggers wrote:
+Hi
+
+What about using the REQ_META flag (it is set on metadata bios and cleared 
+on data bios), instead of adding a new flag with the same meaning?
+
+Mikulas
+
+
+On Fri, 18 Oct 2024, Eric Biggers wrote:
+
 > From: Eric Biggers <ebiggers@google.com>
 > 
-> Move the s390 CRC32 assembly code into the lib directory and wire it up
-> to the library interface.  This allows it to be used without going
-> through the crypto API.  It remains usable via the crypto API too via
-> the shash algorithms that use the library interface.  Thus all the
-> arch-specific "shash" code becomes unnecessary and is removed.
+> Add a flag bi_skip_dm_default_key to struct bio.  This flag indicates
+> that dm-default-key should not en/decrypt the bio, due to it targeting
+> the contents of an encrypted file.
 > 
-> Note: to see the diff from arch/s390/crypto/crc32-vx.c to
-> arch/s390/lib/crc32-glue.c, view this commit with 'git show -M10'.
+> When a bio is cloned, copy the bi_skip_dm_default_key flag.
 > 
 > Signed-off-by: Eric Biggers <ebiggers@google.com>
 > ---
->  arch/s390/Kconfig                      |   1 +
->  arch/s390/configs/debug_defconfig      |   1 -
->  arch/s390/configs/defconfig            |   1 -
->  arch/s390/crypto/Kconfig               |  12 -
->  arch/s390/crypto/Makefile              |   2 -
->  arch/s390/crypto/crc32-vx.c            | 306 -------------------------
->  arch/s390/lib/Makefile                 |   3 +
->  arch/s390/lib/crc32-glue.c             |  82 +++++++
->  arch/s390/{crypto => lib}/crc32-vx.h   |   0
->  arch/s390/{crypto => lib}/crc32be-vx.c |   0
->  arch/s390/{crypto => lib}/crc32le-vx.c |   0
->  11 files changed, 86 insertions(+), 322 deletions(-)
->  delete mode 100644 arch/s390/crypto/crc32-vx.c
->  create mode 100644 arch/s390/lib/crc32-glue.c
->  rename arch/s390/{crypto => lib}/crc32-vx.h (100%)
->  rename arch/s390/{crypto => lib}/crc32be-vx.c (100%)
->  rename arch/s390/{crypto => lib}/crc32le-vx.c (100%)
-
-...
-
-> -static int __init crc_vx_mod_init(void)
-> -{
-> -	return crypto_register_shashes(crc32_vx_algs,
-> -				       ARRAY_SIZE(crc32_vx_algs));
-> -}
-> -
-> -static void __exit crc_vx_mod_exit(void)
-> -{
-> -	crypto_unregister_shashes(crc32_vx_algs, ARRAY_SIZE(crc32_vx_algs));
-> -}
-> -
-> -module_cpu_feature_match(S390_CPU_FEATURE_VXRS, crc_vx_mod_init);
-
-What makes sure that all of the code is available automatically if the
-CPU supports the instructions like before? I can see that all CRC32
-related config options support also module build options.
-
-Before this patch, this module and hence the fast crc32 variants were
-loaded automatically when required CPU features were present.
-Right now I don't how this is happening with this series.
-
-> -MODULE_ALIAS_CRYPTO("crc32");
-> -MODULE_ALIAS_CRYPTO("crc32-vx");
-> -MODULE_ALIAS_CRYPTO("crc32c");
-> -MODULE_ALIAS_CRYPTO("crc32c-vx");
-
-...
-
-> +static int __init crc32_s390_init(void)
+>  block/bio.c                 |  3 +++
+>  block/blk-crypto-fallback.c |  2 ++
+>  include/linux/blk-crypto.h  | 36 ++++++++++++++++++++++++++++++++++++
+>  include/linux/blk_types.h   |  3 +++
+>  4 files changed, 44 insertions(+)
+> 
+> diff --git a/block/bio.c b/block/bio.c
+> index ac4d77c889322..5ff0b66e47a42 100644
+> --- a/block/bio.c
+> +++ b/block/bio.c
+> @@ -267,10 +267,13 @@ void bio_init(struct bio *bio, struct block_device *bdev, struct bio_vec *table,
+>  	bio->bi_iocost_cost = 0;
+>  #endif
+>  #endif
+>  #ifdef CONFIG_BLK_INLINE_ENCRYPTION
+>  	bio->bi_crypt_context = NULL;
+> +#if IS_ENABLED(CONFIG_DM_DEFAULT_KEY)
+> +	bio->bi_skip_dm_default_key = false;
+> +#endif
+>  #endif
+>  #ifdef CONFIG_BLK_DEV_INTEGRITY
+>  	bio->bi_integrity = NULL;
+>  #endif
+>  	bio->bi_vcnt = 0;
+> diff --git a/block/blk-crypto-fallback.c b/block/blk-crypto-fallback.c
+> index b1e7415f8439c..dd5f1edcc44b3 100644
+> --- a/block/blk-crypto-fallback.c
+> +++ b/block/blk-crypto-fallback.c
+> @@ -179,10 +179,12 @@ static struct bio *blk_crypto_fallback_clone_bio(struct bio *bio_src)
+>  	bio_for_each_segment(bv, bio_src, iter)
+>  		bio->bi_io_vec[bio->bi_vcnt++] = bv;
+>  
+>  	bio_clone_blkg_association(bio, bio_src);
+>  
+> +	bio_clone_skip_dm_default_key(bio, bio_src);
+> +
+>  	return bio;
+>  }
+>  
+>  static bool
+>  blk_crypto_fallback_alloc_cipher_req(struct blk_crypto_keyslot *slot,
+> diff --git a/include/linux/blk-crypto.h b/include/linux/blk-crypto.h
+> index 5e5822c18ee41..f1f3d546c53e5 100644
+> --- a/include/linux/blk-crypto.h
+> +++ b/include/linux/blk-crypto.h
+> @@ -110,10 +110,13 @@ static inline bool bio_has_crypt_ctx(struct bio *bio)
+>  	return false;
+>  }
+>  
+>  #endif /* CONFIG_BLK_INLINE_ENCRYPTION */
+>  
+> +static inline void bio_clone_skip_dm_default_key(struct bio *dst,
+> +						 const struct bio *src);
+> +
+>  int __bio_crypt_clone(struct bio *dst, struct bio *src, gfp_t gfp_mask);
+>  /**
+>   * bio_crypt_clone - clone bio encryption context
+>   * @dst: destination bio
+>   * @src: source bio
+> @@ -125,11 +128,44 @@ int __bio_crypt_clone(struct bio *dst, struct bio *src, gfp_t gfp_mask);
+>   *	   @gfp_mask doesn't include %__GFP_DIRECT_RECLAIM.
+>   */
+>  static inline int bio_crypt_clone(struct bio *dst, struct bio *src,
+>  				  gfp_t gfp_mask)
+>  {
+> +	bio_clone_skip_dm_default_key(dst, src);
+>  	if (bio_has_crypt_ctx(src))
+>  		return __bio_crypt_clone(dst, src, gfp_mask);
+>  	return 0;
+>  }
+>  
+> +#if IS_ENABLED(CONFIG_DM_DEFAULT_KEY)
+> +static inline void bio_set_skip_dm_default_key(struct bio *bio)
 > +{
-> +	if (cpu_have_feature(S390_CPU_FEATURE_VXRS))
-> +		static_branch_enable(&have_vxrs);
-> +	return 0;
+> +	bio->bi_skip_dm_default_key = true;
 > +}
-> +arch_initcall(crc32_s390_init);
+> +
+> +static inline bool bio_should_skip_dm_default_key(const struct bio *bio)
+> +{
+> +	return bio->bi_skip_dm_default_key;
+> +}
+> +
+> +static inline void bio_clone_skip_dm_default_key(struct bio *dst,
+> +						 const struct bio *src)
+> +{
+> +	dst->bi_skip_dm_default_key = src->bi_skip_dm_default_key;
+> +}
+> +#else /* CONFIG_DM_DEFAULT_KEY */
+> +static inline void bio_set_skip_dm_default_key(struct bio *bio)
+> +{
+> +}
+> +
+> +static inline bool bio_should_skip_dm_default_key(const struct bio *bio)
+> +{
+> +	return false;
+> +}
+> +
+> +static inline void bio_clone_skip_dm_default_key(struct bio *dst,
+> +						 const struct bio *src)
+> +{
+> +}
+> +#endif /* !CONFIG_DM_DEFAULT_KEY */
+> +
+>  #endif /* __LINUX_BLK_CRYPTO_H */
+> diff --git a/include/linux/blk_types.h b/include/linux/blk_types.h
+> index dce7615c35e7e..2ee6a7e570796 100644
+> --- a/include/linux/blk_types.h
+> +++ b/include/linux/blk_types.h
+> @@ -247,10 +247,13 @@ struct bio {
+>  #endif
+>  #endif
+>  
+>  #ifdef CONFIG_BLK_INLINE_ENCRYPTION
+>  	struct bio_crypt_ctx	*bi_crypt_context;
+> +#if IS_ENABLED(CONFIG_DM_DEFAULT_KEY)
+> +	bool			bi_skip_dm_default_key;
+> +#endif
+>  #endif
+>  
+>  #if defined(CONFIG_BLK_DEV_INTEGRITY)
+>  	struct bio_integrity_payload *bi_integrity; /* data integrity */
+>  #endif
+> -- 
+> 2.47.0
+> 
 
-I guess this should be changed to:
-
-module_cpu_feature_match(S390_CPU_FEATURE_VXRS, ...);
-
-Which would make at least the library functions available if cpu
-features are present. But this looks only like a partial solution of
-the above described problem.
-
-But maybe I'm missing something.
 
