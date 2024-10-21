@@ -1,61 +1,61 @@
-Return-Path: <linux-ext4+bounces-4678-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4679-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12E1C9A7179
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 19:56:51 +0200 (CEST)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEF6F9A72D5
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 21:03:24 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B76241F234D8
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 17:56:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 807002836D2
+	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 19:03:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0189E1F6674;
-	Mon, 21 Oct 2024 17:56:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF8EB1FBC98;
+	Mon, 21 Oct 2024 19:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sJQY/rj4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cp31ZgBx"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 570261CBEB6;
-	Mon, 21 Oct 2024 17:56:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B3B61CF7CC;
+	Mon, 21 Oct 2024 19:02:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729533402; cv=none; b=sBmZoDA2+kHz2LcDdrbct6YhDt/mvO0Ao5y1VXPMMQxP7/OFd5hl/sQLzUZCPkhmXgpCDHegd1+yIO3LQYzEtaF5hg9ySOH83GHph36NCjOZXsggWE2WpEFiV1NgXA9qjxWzhUQaCCLXKkp7PjJsGdwgFemRPW6lCpKewyNCNpo=
+	t=1729537372; cv=none; b=I7fQODzJsBUXxJ1+g8S275ImoW1MB+qopRGq0JYJDHiZ4Xzy/h/Hx7ngockjwWREmTPb6VoEfKmQ4wzJQtmFR6SbtH6rw980Ltfe7ihu/3eExbgfoc0sv2ACk5nKC9jlv6t8LFAF+PCQlZHI5hDiRTM2i8RKayUD2swb0k9Ub3I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729533402; c=relaxed/simple;
-	bh=iOp6UPk7kp6624trt50V9GCSl7TCmUx91AXnl52vexs=;
+	s=arc-20240116; t=1729537372; c=relaxed/simple;
+	bh=vsbnNtYOihL02PJdWlvwTbTMZpcopwhOkYgiKqHnc7g=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AyJL+OGZwtVdd0o9uu1OLks4L11/TH3IkqaNJ/QagCRCQPer47uMTTtxkS5zRdcryA0OnWTx4D3TrGBLmvWNtt/mvBMDFD4RqWntO67QMDSuLjIj3cKqnpK9pcDHmQTqegQp34/JwSFT7YrMhNn70sh2kyRSwCJ/eDw8NgEEUrY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sJQY/rj4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B2F2FC4CEC7;
-	Mon, 21 Oct 2024 17:56:41 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=VfUeCYr5Mf6IofeURq5HaoNsiulU1KZKH1ShibFm8zKE2806yLEIefNHnFtg/t3bXFAIQDN135tQb3e/1I+wRmEbWj1TfO/8JeNlGqpiXdfJGkeTG6i5/JaQUWTfyCAufMwwK1KRygfxRV8sBQerJmW+iq/uMS7sV4dhdSP1/vQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cp31ZgBx; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4B23C4CEC3;
+	Mon, 21 Oct 2024 19:02:51 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729533402;
-	bh=iOp6UPk7kp6624trt50V9GCSl7TCmUx91AXnl52vexs=;
+	s=k20201202; t=1729537372;
+	bh=vsbnNtYOihL02PJdWlvwTbTMZpcopwhOkYgiKqHnc7g=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=sJQY/rj4pTIO5uEWlo1heoszsTNmf9jrwjFBD0lIbKoaTFxHVpdjurFhvf6qbFqVx
-	 3p4d5v2zCCp/LbxdIlTGmC11dWGlMVeXXfBDk8A9Aml+/MAtk2IETKhnM8m6cKxkey
-	 BZF/dYUet13hmxhgQOUCWlo2mvzJlbvIRi1nLRTDg+g177wJbtfgI05mwIy3+AOG+C
-	 2RdO3YmkeY7RM1WJnyPqFT2fPe/8kLv+1aQd4pfj1zTvRhlxt250RD3qNZbbCGpcse
-	 fs5+AtO+kgnLwq3Dm+Zt8UDEsdLr8Tbrkjy5WAyah1cfbA8sbkBGsmyodZGLNuMspU
-	 cTEE/rSNQw61A==
-Date: Mon, 21 Oct 2024 17:56:40 +0000
+	b=Cp31ZgBxuboh+ucSekXdmlnI3mHdudXaS7XYFnpwXwWiqGdcRZEOzo8U5ia9IlgdU
+	 Q00gJVrAOakH0PUA/rFTlLRrwwoeKd2LfApKX8cA378JE5RRkvM3Uj95pHY15VikaY
+	 r5paDpIv0Fim2yM8OB1fhAKrxJEAQc9AZlrqczh6wssbWPGyPB0YDkQdjJ5KBJPmtm
+	 pGxANDmkvm2gPCXgM+hvzGe+I4ibtpNEyMcOgSkWiqVX/uupV1cgbdn5K38++K9Arn
+	 /JOZ+ibZYxQBNUHJlaib87bqllhOEmT5zeMwrM4TQtGLd2jnN6pPKmAsz1wlSgltmJ
+	 f1aPAjnqalVMQ==
+Date: Mon, 21 Oct 2024 19:02:49 +0000
 From: Eric Biggers <ebiggers@kernel.org>
-To: Heiko Carstens <hca@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+To: Mikulas Patocka <mpatocka@redhat.com>
+Cc: dm-devel@lists.linux.dev, linux-block@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-fscrypt@vger.kernel.org,
 	linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
-	linux-mips@vger.kernel.org, linux-riscv@lists.infradead.org,
-	linux-s390@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
-	loongarch@lists.linux.dev, sparclinux@vger.kernel.org,
-	x86@kernel.org, Hendrik Brueckner <brueckner@linux.ibm.com>
-Subject: Re: [PATCH 07/15] s390/crc32: expose CRC32 functions through lib
-Message-ID: <20241021175640.GA1370449@google.com>
-References: <20241021002935.325878-1-ebiggers@kernel.org>
- <20241021002935.325878-8-ebiggers@kernel.org>
- <20241021104007.6950-E-hca@linux.ibm.com>
+	Md Sadre Alam <quic_mdalam@quicinc.com>,
+	Israel Rukshin <israelr@nvidia.com>,
+	Milan Broz <gmazyland@gmail.com>,
+	Adrian Vovk <adrianvovk@gmail.com>
+Subject: Re: [RFC PATCH 2/4] block: add the bi_skip_dm_default_key flag
+Message-ID: <20241021190249.GA1395714@google.com>
+References: <20241018184339.66601-1-ebiggers@kernel.org>
+ <20241018184339.66601-3-ebiggers@kernel.org>
+ <2caf648d-73cf-9436-2af4-ad530a966592@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,48 +64,26 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241021104007.6950-E-hca@linux.ibm.com>
+In-Reply-To: <2caf648d-73cf-9436-2af4-ad530a966592@redhat.com>
 
-On Mon, Oct 21, 2024 at 12:40:07PM +0200, Heiko Carstens wrote:
-> What makes sure that all of the code is available automatically if the
-> CPU supports the instructions like before? I can see that all CRC32
-> related config options support also module build options.
+On Mon, Oct 21, 2024 at 01:11:36PM +0200, Mikulas Patocka wrote:
+> Hi
 > 
-> Before this patch, this module and hence the fast crc32 variants were
-> loaded automatically when required CPU features were present.
-> Right now I don't how this is happening with this series.
-
-There's just a direct symbol dependency now.  For example
-ext4.ko -> crc32-s390.ko [crc32c_le_arch] -> crc32.ko [crc32c_le_base].
-So, crc32-$arch.ko always gets loaded when there is a user of one of the CRC32
-library functions, provided that it was enabled in the kconfig.
-
-crc32-$arch then calls either the accelerated code or the base code depending on
-the CPU features.  On most architectures including s390, I made this use a
-static branch, so there is almost no overhead (much less overhead than the
-indirect call that was needed before).
-
-This is the same way that some of the crypto library code already works.
-
-> > +static int __init crc32_s390_init(void)
-> > +{
-> > +	if (cpu_have_feature(S390_CPU_FEATURE_VXRS))
-> > +		static_branch_enable(&have_vxrs);
-> > +	return 0;
-> > +}
-> > +arch_initcall(crc32_s390_init);
+> What about using the REQ_META flag (it is set on metadata bios and cleared 
+> on data bios), instead of adding a new flag with the same meaning?
 > 
-> I guess this should be changed to:
-> 
-> module_cpu_feature_match(S390_CPU_FEATURE_VXRS, ...);
-> 
-> Which would make at least the library functions available if cpu
-> features are present. But this looks only like a partial solution of
-> the above described problem.
-> 
-> But maybe I'm missing something.
+> Mikulas
 
-This is not needed, as per the above.
+REQ_META is a hint and is not used for all metadata.
+
+And while metadata is the main point, more precisely the goal is to encrypt
+every block that isn't already encrypted.  That means that the contents of files
+that are unencrypted at the filesystem layer are encrypted by dm-default-key
+too.  So technically it's more than just metadata.
+
+To avoid recurring "oops, we forgot to encrypt this" bugs, the right model is
+really an opt-out flag, not opt-in.  And especially not opt-in via something
+that is currently just a hint and is used as such.
 
 - Eric
 
