@@ -1,93 +1,98 @@
-Return-Path: <linux-ext4+bounces-4683-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4684-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A33C89A943D
-	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2024 01:37:20 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A96529A95AA
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2024 03:48:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 534E2B21551
-	for <lists+linux-ext4@lfdr.de>; Mon, 21 Oct 2024 23:37:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58A3C1F21C19
+	for <lists+linux-ext4@lfdr.de>; Tue, 22 Oct 2024 01:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 725A81FF61F;
-	Mon, 21 Oct 2024 23:37:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4A5D136345;
+	Tue, 22 Oct 2024 01:48:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="P2lTV3Hr"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7A831FF5E8
-	for <linux-ext4@vger.kernel.org>; Mon, 21 Oct 2024 23:37:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96D2985C47
+	for <linux-ext4@vger.kernel.org>; Tue, 22 Oct 2024 01:48:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729553826; cv=none; b=I7gwj4ePHQnE9v601NkVzdpVkRhIwyFHcJpkIYypW7QvVykALqlxvwG3mjBlTzR4k3hhpN/0V6wWIvEWQXzkWURe+r7x8iD1DLjg5X5NqqJci71GpO0joAwarBfq8QcPSzu6VIfFbDD4dzFg7SMxGNDCsrBMiFiTkLXyfVhp6bw=
+	t=1729561685; cv=none; b=mepi8iTH5UTOGOmtB6C2NOt0bMxlfGU2MmJOKwca18kWB3WV3BxVNlDbGMCbtw66H/7AurQKIc3io91IYHE6Nq1MPgOvO8C4U5hT8Hhm4SUfldSsELP50JQbi1aa5IWouJDG+DSVkohGz1xCA4T06L+V0aFv6PTvx+RY7DY6LKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729553826; c=relaxed/simple;
-	bh=NL1X+hft2ruIZIMQYmjK5ShYEQWaMI2P10qy48QjC4c=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=EyFrYMuX06RF3XuRZPz+bm4HPoDZn903kAU196E4GtNysFhtTnEN9awU8CSpHg1bHT/ggLIY3OjZJLN1jt0gmhWd/u7XiGFxQTkykHPgGEoIf5cVuu0dVJmCzCIsU1fA9dK7ItJBGNFjoiMeNwe47VcBCNDzqmt0SaaA8t2fGls=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3a3c27c72d5so44522415ab.2
-        for <linux-ext4@vger.kernel.org>; Mon, 21 Oct 2024 16:37:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729553824; x=1730158624;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=uVFqvyN4Q/iFEFo+V00ETjOsELtiq4FSU+8ti5coBUg=;
-        b=idplONZcX76RKHNBIHfd6WM/yIeuCXWdomQqBpJWAys8GWEJQxihD48FvJdrGOv6Vn
-         DOIXNwtbtoAP06cGHQLNxWJAq7wSmk1TI1A4GHlOQwxF2ltfHMFpaqIniVWfxwB2QN9N
-         z7lYNRdOVhJroRHkHL5MEaEJGjUZuiDtNTrVePlgEvUk4O6vopBZbGBh96GfqQyxoDMr
-         eJaElQcfswztppKEO+7bcE8XDSIj4uh22PPiIWULniq0CbtaV1lu5EEBEJUlGANIjegu
-         vIy9qsGci3EK6tPG297izWgGBcZo8mLqSbgoBkWKMqXZ+wO+P0Wc8joZh14cpNtwb5Pl
-         bMiQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUYTUFTkZf4OeqB7oYnu5WFoJa0PaIIy1btFZi7JF7Unq0jJ16LuiryZxDkAeZrbgW5YA6s1GKAcR/I@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8tVBU8FDzN2WM2YtADnfOTs0JoOkdalY6O/1THj0o0lf9AlvI
-	0o2fKGPNWGpnU0dStMJH0Bjnt+K/+ETQ3v3BpnGiwFl5WoZmvHNfDiEdmkWbPl8v0eHn/4BGQ0F
-	WFqeyFfEKZKzCosAA6dUrQ6XhTRmhWGd9tXQrNGxqFZp00oQ/iXh0MEI=
-X-Google-Smtp-Source: AGHT+IE0c0321kUM7kl4x3L7VjvrmYLXBEyNuBBR7zrzqRYflgEPoOW2FF3tQQVOY/6lcuFX5csUTbRz2Wr/gLiN3H39YtSA54tJ
+	s=arc-20240116; t=1729561685; c=relaxed/simple;
+	bh=HrLFNJXtSHB0n+GPoO3sxyglx2EYVkIV8xZB7FUQVL0=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=HcimLlyl5Zqf4wZkr/x/+D5v/lQWOojydmXguizY9dljUeLenynkJr0C5+Sew+wzJXSS15WCB9W1WMbp3lY5+ZXMsbL/UtVmAvgLLfPlL1+fhCgaC7/ysPKKj+BlDqAW5jQ1WE8Bnu+OEuGBk+ZYp/+px17mi+MOAwVwWlRbnyc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=P2lTV3Hr; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-115-113.bstnma.fios.verizon.net [173.48.115.113])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 49M1lgjY024273
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 21 Oct 2024 21:47:43 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1729561664; bh=OnXsjt0K+JUjAm/vOpRYkRCPD1Un2eei+2NpSJBVGzg=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=P2lTV3HrPvLYD2KT5KKZfE9lGezfir99az8b8Yyh34v4kyPTBaLHsEkDYpsQ7ZAyE
+	 +7hZzIAOOVEp20P3NEzRK54NaLcBkdWuXU87dW9qc2rz76waIigL0z1H9v62KIJzCY
+	 bNtqJLrMBpoGuBymb/WoJpBztFpcbmPPaT9iWTEnI1nmG/+yrUCtkFwNEkQZ444xvR
+	 xHh2lqPfOwVz7meB7xJxDYO60svz8Y2ObDidC8nItCiXzlkcD2BIYhVqClNzrSZ8Im
+	 X9SVQA2rDjbPkeHzxO0g3iyzmCigbo5Il9vUXEqx3W2OL/HHBpph+ox7nPQ/jz8vaB
+	 pKeB/XaZB0wjg==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 90C4315C02DB; Mon, 21 Oct 2024 21:47:42 -0400 (EDT)
+Date: Mon, 21 Oct 2024 21:47:42 -0400
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Linux Filesystem Development List <linux-fsdevel@vger.kernel.org>,
+        Ext4 Developers List <linux-ext4@vger.kernel.org>,
+        "Darrick J. Wong" <djwong@kernel.org>
+Subject: Is fsmap supposed to use open or closed intervals?
+Message-ID: <20241022014742.GA3570993@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d99:b0:3a0:9cd5:92f7 with SMTP id
- e9e14a558f8ab-3a3f409feb5mr98836145ab.17.1729553824034; Mon, 21 Oct 2024
- 16:37:04 -0700 (PDT)
-Date: Mon, 21 Oct 2024 16:37:04 -0700
-In-Reply-To: <000000000000690606061ce1fe7e@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6716e5a0.050a0220.10f4f4.00d2.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] INFO: task hung in ext4_stop_mmpd
-From: syzbot <syzbot+0dd5b81275fa083055d7@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, brauner@kernel.org, 
-	clang-built-linux@googlegroups.com, harshadshirwadkar@gmail.com, jack@suse.cz, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, nathan@kernel.org, 
-	ndesaulniers@google.com, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-syzbot suspects this issue was fixed by commit:
+I was debugging ext4's failure with the new test generic/365, which
+was testing the regressions fixed by commits 68415b349f3f ("xfs: Fix
+the owner setting issue for rmap query in xfs fsmap") and ca6448aed4f1
+("xfs: Fix missing interval for missing_owner in xfs fsmap").  It
+appears that ext4 has a similar bug, but then when I started looking
+at how XFS handles fsmap, it's a bit unclear whether the intervals
+queried are supposed to be open, closed, or half-open.
 
-commit d3476f3dad4ad68ae5f6b008ea6591d1520da5d8
-Author: Jan Kara <jack@suse.cz>
-Date:   Mon Aug 5 20:12:41 2024 +0000
+Looking at how 6.11-rc4's xfs handles fsmap, these two results seem to
+be a bit contradictory:
 
-    ext4: don't set SB_RDONLY after filesystem errors
+root@kvm-xfstests:~# xfs_io -i -c "fsmap -d 104 127" /vdd
+        0: 254:48 [104..126]: free space 23
 
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10d04640580000
-start commit:   4a39ac5b7d62 Merge tag 'random-6.12-rc1-for-linus' of git:..
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=dd14c10ec1b6af25
-dashboard link: https://syzkaller.appspot.com/bug?extid=0dd5b81275fa083055d7
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14fbd177980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=108ea607980000
+OK, so it looks like fsmap returns the half-open interval [104 127).
 
-If the result looks correct, please mark the issue as fixed by replying with:
+But then I tried this:
 
-#syz fix: ext4: don't set SB_RDONLY after filesystem errors
+root@kvm-xfstests:~# xfs_io -i -c "fsmap -d 104 128" /vdd
+        0: 254:48 [104..127]: free space 24
+        1: 254:48 [128..191]: inodes 64
 
-For information about bisection process see: https://goo.gl/tpsmEJ#bisection
+and the fact that this query returns the region between [128, 191] is
+surprising.
+
+Is this a bug?  Is it OK if we expand the interval and return more
+blocks than what the application program queried?
+
+Thanks,
+
+						- Ted
 
