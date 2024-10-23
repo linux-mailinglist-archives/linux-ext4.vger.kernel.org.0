@@ -1,221 +1,204 @@
-Return-Path: <linux-ext4+bounces-4724-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4725-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B0909ACBCB
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2024 16:00:27 +0200 (CEST)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1A8559AD86C
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2024 01:29:01 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9C4FC1C214B9
-	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2024 14:00:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 341ED1C21CEB
+	for <lists+linux-ext4@lfdr.de>; Wed, 23 Oct 2024 23:29:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0061AC884;
-	Wed, 23 Oct 2024 14:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 699331FF7D1;
+	Wed, 23 Oct 2024 23:28:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="otRh08XK"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="Em9A4sjS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2059.outbound.protection.outlook.com [40.107.223.59])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4C281AC448
-	for <linux-ext4@vger.kernel.org>; Wed, 23 Oct 2024 14:00:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729692022; cv=none; b=ALg2PzNDdrYRjbidCdRIxiUZU0wuqG8Y8yTMpy14SVI0dR7Pi7/Iek7mtNgHgcwmx9HaBg79SQCbk7cqyWrY5I1aWmheF4uDFo8Vzjpii3kB+Xkh0w1FnfMx+XvO+lG3MX+w+e2jKuTXKJNVB/qoJvUezDB7Fpw7USVGVHocCxM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729692022; c=relaxed/simple;
-	bh=vDbJrXTeijbukn2oNGZfEfxI7Qlyp/pZawxkxi8AVPs=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=u2UHiY4INsFq51wtysYW+Sid4U2Lpbu+i94+oZAYa258XVAfCaGQwauAzgSLDLNcrgXsQkS7vjcsNiO9pc3UAyRTbDX/+mM6gTqGepkpQEz2jsqimqSXTpkdGB7janqaMMgcCCmg7uN0lFL2+oVN6CwDZ9qwiav1gXoH1BtoaKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=otRh08XK; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-115-113.bstnma.fios.verizon.net [173.48.115.113])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 49NDxuL4002002
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 23 Oct 2024 09:59:58 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1729691999; bh=RA4vklHLPC468pd27Ps0R0fpFKUURRyn19YtTDDSnok=;
-	h=From:Subject:Date:Message-ID:MIME-Version;
-	b=otRh08XKSQdoHNLuf+0Sd8/DKlSdoQ+cKrBiopfLuCGigeeaGEoRjJOCZpvKzZBy0
-	 6FpzNO5hDkLDEt/S7iyKGvMXdlwMlK51aX/OA8L3bHsgGLI7DFmULQPoTeDCmQVbWG
-	 1sNXWTtx62fEo9+G6+pyl6WCJWtVZwio6+lVEn/U9eXTj+KsfmD5Gpsef7IPR/5PYd
-	 SYcv0clRzhM5Al0DZBL4HtWEQuiqP6NvT5AwaHCrW4ZUp85lDUxiCu1VIedoX3YxEy
-	 gFi17Dvt4G47coKc/NAMDbgPjmjd3HR1vSv8rgDt7helzrptoj1LgZBKUiFmwEFF6q
-	 3FQan0ya98CbQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 2533F15C02DB; Wed, 23 Oct 2024 09:59:56 -0400 (EDT)
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Ext4 Developers List <linux-ext4@vger.kernel.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, "Theodore Ts'o" <tytso@mit.edu>
-Subject: [PATCH] ext4: fix FS_IOC_GETFSMAP handling
-Date: Wed, 23 Oct 2024 09:59:49 -0400
-Message-ID: <20241023135949.3745142-1-tytso@mit.edu>
-X-Mailer: git-send-email 2.45.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B1291E4A4;
+	Wed, 23 Oct 2024 23:28:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.59
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1729726129; cv=fail; b=G6vCXYodCBiI5bxhdzsgJxY2XUCr4hm2g0tB6f7wZwxZ+i5V8wES08AWNi1wTSRa9OQ6uwnmLWcF63xFD+NDElU+8KlLEk6plx0b+u8w02nOcMcD7OXJ4+bbNKqK5U7ZhLjrcnHetorXSENctbI7myH6ShkPRzZPLWZTAWzSoTM=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1729726129; c=relaxed/simple;
+	bh=p6OomAUV9HGXoju92/zq+03mL5y+hWqPP5erT7ufx1A=;
+	h=References:From:To:Cc:Subject:Date:In-reply-to:Message-ID:
+	 Content-Type:MIME-Version; b=Hqh/UNDboRrUDN0PAVWeskA8xjdm+2aEUByO+vWuGQuyBuW8SJIVTK6pbi5NkKFOa5MOjJRpZ1vyTxRoSHyHWrntTqrAQDMHU8ICTqhvLF2c6E9zDk+w6w0LCHuMskCRKWoLwAfO20QdA2cUAuiuZavJDSW9glsJYp0FAUnaW+8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=Em9A4sjS; arc=fail smtp.client-ip=40.107.223.59
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=pqUUtI9lX9WPyb9wfUts1vOVXMd+7W5vMv+JrRs5n2WlrKcSuScAk/f8U8SEGGDZQ6oJ6iIo6TCn4Pgm75EgpEw+9tg5+d3WGoXsM3wdVJ+c2uDOI8uo+mHLSaQztxtJ192Nv/ZE4o2fhRpx2TX7F6aA+FEwkWlL62BekaiCcItwmX08Z8YCsy0vdQsPC+45ql058heoOhrNX8XxbtWBxJf/Lu+Vhbrh8rFkyoHu/6HbmAse8x2DCQ5+uZm7qItw3W5l+xCf2q2NO7azJ42P1TW6exYkhaRftaTGli1+TXSwbOvEHEwqgKIj3suqbnY5o/u+wa8lBtGwayiz/GF1rQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nohy9Hcljm57kXW2f2p0yj2WE3cNlsRCqRsNj3T7JbE=;
+ b=jV3ZhU34PhcN2F8YNRkc3QxEbn3aZP8vCdmFaFxUbYVlZ1QW5S6cbr8fKtUAgI3Getc0eYgdUMpmsnGFJTeqAL+t8t3zhj49yjFOvEHnJPTtU09iIOQkcPDN9RhluAEu2eFM/WGwde4g1E+Pf+SkKgnudW2ZBud1giW+Z+oDdH3wVK1Lk6aQ5NZTQi2n7TFOxWeOlYwYIeDuKzGQQ7pYA4a44xYtN1zugXOJBiRL9cjRU7AC5+2MgVCYJMFoXlsGV/1CsOizuGV+qQCuumpuJYoc1fvkwO25dO8EAOuuB3IcDKsQhKGJKkC3q5z72iBRdai2+aITHr6IWn60gVcYqg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nohy9Hcljm57kXW2f2p0yj2WE3cNlsRCqRsNj3T7JbE=;
+ b=Em9A4sjSPeDffxJHoVwQaLV4TB8TLQKfa9bkPERmcZaj1JAxCshGhdS1ob+kvBFb6zGuLi2byjt7Sesc5QYuSGQ3boSmNAZHjzuupDa2AUID/pJl3i/iJd4NN2zvNEibMGyRJuDmAfiXZ4T1jyXdb0h8wG6HVaflFIrxiuMdJzRt2GR86X2MJS4wtAQ0twO4oQrjvUyVP/zLqaDmdf/FkxRR5DQEyv2bqjoZGuW033Y6Ouhwim5UvUs7AjIiGg7UNAXIGbOrxODqYf/ycAhdsscUG3YiJPcVFEvJgyXVtHoiy83TOzXI3qy4578kQdaDrzGTz+uaxakX/TyVSg7Vag==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
+ IA0PR12MB7505.namprd12.prod.outlook.com (2603:10b6:208:443::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8093.19; Wed, 23 Oct
+ 2024 23:28:43 +0000
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe]) by DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe%3]) with mapi id 15.20.8069.027; Wed, 23 Oct 2024
+ 23:28:43 +0000
+References: <cover.9f0e45d52f5cff58807831b6b867084d0b14b61c.1725941415.git-series.apopple@nvidia.com>
+ <b63e8b07ceed8cf7b9cd07332132d6713853c777.1725941415.git-series.apopple@nvidia.com>
+ <66f61ce4da80_964f2294fb@dwillia2-xfh.jf.intel.com.notmuch>
+ <87bjznnp6v.fsf@nvdebian.thelocal>
+User-agent: mu4e 1.10.8; emacs 29.4
+From: Alistair Popple <apopple@nvidia.com>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: Dan Williams <dan.j.williams@intel.com>, linux-mm@kvack.org,
+ vishal.l.verma@intel.com, dave.jiang@intel.com, logang@deltatee.com,
+ bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
+ will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+ dave.hansen@linux.intel.com, ira.weiny@intel.com, willy@infradead.org,
+ djwong@kernel.org, tytso@mit.edu, linmiaohe@huawei.com, david@redhat.com,
+ peterx@redhat.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev,
+ linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+ jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
+Subject: Re: [PATCH 07/12] huge_memory: Allow mappings of PMD sized pages
+Date: Thu, 24 Oct 2024 10:14:18 +1100
+In-reply-to: <87bjznnp6v.fsf@nvdebian.thelocal>
+Message-ID: <875xpicsbd.fsf@nvdebian.thelocal>
+Content-Type: text/plain
+X-ClientProxiedBy: SY5P282CA0064.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:203::14) To DS0PR12MB7726.namprd12.prod.outlook.com
+ (2603:10b6:8:130::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|IA0PR12MB7505:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2a9e3bcb-56ce-46b3-4e8a-08dcf3ba6ec6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|376014|7416014|366016|1800799024;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?cM+8r+Sz5S2zwdbr1hMRQ57nsn52BCEPegtEaMPoMwmJ+lI+cClHLNVtRzKE?=
+ =?us-ascii?Q?USZLUe4ovT34V+KZMRRWE6WyTyUji0sOqpz7yawotkqGuZ3u0CxIZVANb0RX?=
+ =?us-ascii?Q?T0FVHNrWbMZ867Lem1LibgeiKZf8ii5ZMZU4PBFPq01SSQbFmEY3ggUs68lF?=
+ =?us-ascii?Q?JfqyNBHkr8L1ElK2w6XHhURJDOrQnoDFU64OkWOOeAT9XB6XsJKCKH1+Rk4L?=
+ =?us-ascii?Q?xyQYRYsxTx3MHkiIgY7dj701JT0kyoytBqBh1yUVOcWdT6AjdzUClKJyCHQ7?=
+ =?us-ascii?Q?q5n/T2i7XuYPNR7riUxn7ZAzvpsBQDP9gSgZZ7tvsLINa38fmDj3N+L1zFEt?=
+ =?us-ascii?Q?MGRxnc33jkHhQRH2WkhWv6ReCPcSnk7AfwV0AAvNpF+c4Og6LV6KYibimryT?=
+ =?us-ascii?Q?CVKXxhZaBoIw7DlzMsVDkp9JnOB/AUbIIPrqgSxzyggGQw7KqzhqCGwaqCvV?=
+ =?us-ascii?Q?AWF+HMzm4rM/DYWl5k+rhfoGmqo64R4ZrGO5VrCwjVDxuXcud0/xLgALvb0S?=
+ =?us-ascii?Q?kgLPVEwBahXHvzlDQPXphCNSvVwaTg6idE5GWidDxewt8eYTIcpdW8j8KwxO?=
+ =?us-ascii?Q?ebf9bs6Lc2360DWSZACTNPFP1NRa648V/0r0WIKTBZheTFB98mbCY+pjVuqK?=
+ =?us-ascii?Q?7vkkp5j5cnobSV7ZiDGXigYaIVLJizNaQ4fb7vp5oU8qyVGjetrIkbzzTLTw?=
+ =?us-ascii?Q?cLoEW2r8q6BVKDiaEJMxZWEce7AE+R2R1MfANiX5BKUhkq59+mJkibw7UUPV?=
+ =?us-ascii?Q?OHHigFQX6N19zG7HsJLeYHiEpUrzLmFcxylqN8HIlJZ+1293UB/2JvXXfYeK?=
+ =?us-ascii?Q?cGxxI1ZKBBk1Ny7uK6F1ju0BNEzgbLjItl7H+UoXvoCaFxvUxGxFEn85zEg8?=
+ =?us-ascii?Q?LRoreCfaHZLtlnHEWidcV/qafKjHgeWtvH++FZi0rViBcdDN27k4VX59jtMQ?=
+ =?us-ascii?Q?yvijHcXpREeJOYfJc+XaqtLT6JGyvfT8nicyD3lf0iGqJgLK6cIu8l2J8P2z?=
+ =?us-ascii?Q?te4pr1uy2Gp9/g2PoP2RPKEJBJQKBoM87lK9iazPofepLUe1JoAR0zv1V/ev?=
+ =?us-ascii?Q?lLEMCt7CdJrOlaMM07nWC9gydd4FQs+ejnNkqGOzE+FwZqPetyKTc3h3v2ZK?=
+ =?us-ascii?Q?ni0zTKDoqfav7Ap21Cqz+8IggdUJs8YYC1/z4TYwqMfkKM3s8v1yP2B1UYm/?=
+ =?us-ascii?Q?iWkUx/r1ICucEPSrKMc97h2Gs6Bxrm3Osgu8MOy1ss3WiX5sYuIRTj6oWNN8?=
+ =?us-ascii?Q?vA60ZdTPjwj2c4F9ABz1WP6AZca4ngqpbGpxpctDYNb5d+PHg6yFHulwffqJ?=
+ =?us-ascii?Q?b5c=3D?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(376014)(7416014)(366016)(1800799024);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?tZt5BTVLB+aLTqwK+Kd9eNXIW4zUWJ/2IlCRMWMBczL+wKz6yHwc+iHsstcA?=
+ =?us-ascii?Q?aNIdf7vLTYgiFMG19MBuoibzgg46KI84l2G+zHZNdaTzE1Ba0riE181O65TZ?=
+ =?us-ascii?Q?lnSswGDjfjQI/Sz/7vosPNyttAvPBuzZ+eC9+LLImHG3XjJOT8O4gxmsOQAz?=
+ =?us-ascii?Q?Cj/VzmDJiG/DNjf3+vNpnHz55d5ZeLjAY6KUT1qR2suZCFfAnIx5bAdvqdae?=
+ =?us-ascii?Q?insMOo3bi96lOlwEklicXxWODY0bDPQnw3NyaBsTi8za+M8gwL+dhqYF2UuL?=
+ =?us-ascii?Q?ziqKDlGeaJFqh8QDSqEdJjhhcDMfsCrax0Ha9QO+vXyYOdJZ9TGD6Z+4uP/N?=
+ =?us-ascii?Q?RbmPZ2oWGrBG/2iFrzYp4NZle2nzkNivtCi6P06RdxmDmm+5guLgQeatb006?=
+ =?us-ascii?Q?wLNvjLDczyUim66ytgI/uWcKFmzWAhIUGtNNv2Fh/WfhwuE3FuW4shlIKgqq?=
+ =?us-ascii?Q?SQyEhX1uBHhWut4Ik9+UF9VXivumBrHKzlGy1wuRv6VkTj1R2HV19tGLfPbR?=
+ =?us-ascii?Q?O6fZgnkvWp6v7feG1EsyrobzZGXPzaJhJRmogrVCnKtfLrbW7Xp6h7M2gznO?=
+ =?us-ascii?Q?hrPhhEnapgd6oCnoGcXzZKTeUiUXHfD/GTBIbvVYfukbHhCCuJGQZWTJrVCe?=
+ =?us-ascii?Q?ZW/MAFsT7MK8VooC0RqzB4myjzPDZFQnAtRz6mny27/BFLYRNmRzu1btQXJH?=
+ =?us-ascii?Q?tKMYF8vtgGlxXYSTnzNTL9fykKpoDmTU/NXu7EetBbl1YBeBuOTvtd9G9pg5?=
+ =?us-ascii?Q?JXNQPpfd54A19JuEjq50evXLixpZ/BKWy6we0rx6voD3a1ITpmasu5CFywaX?=
+ =?us-ascii?Q?5Z6oGxFMwlKA89Gi6ZRW37qzSc9iy75QbdleBNG1iM9b5JtGdi1Qryu5cQ6N?=
+ =?us-ascii?Q?uApAJ+eheldf1ncaB2VmQEYzIvXzwAkdrDAsYZEMB1ESzrI3tSClaeMkDun3?=
+ =?us-ascii?Q?ojhZnjEe1GmxU0nHwJfychPNjQGOkpwE2zxbji0SsJu60anKGO0EBivk0gJb?=
+ =?us-ascii?Q?AN+9C2JmtIb6+H26yEfMPVQjnlc2RbCc5gCT8V3mRJX5h+u0EIqc3Je2mD6a?=
+ =?us-ascii?Q?E4eGsTBI7VSuzhGJArJHzLTmPUh/VGUmK5nwaca+5D0czJgeVfUs4sky13up?=
+ =?us-ascii?Q?VSbEBant2vhHYH27LM9IolHUAcQ2JYXClougxQYQEXcxq9N9agrfrmNptM+b?=
+ =?us-ascii?Q?5+Y9i/RbgQM4a0pf5IT4dVpf+b4TjmvC864Sq3qoCK2PMrzQhaBrc7kr1bnp?=
+ =?us-ascii?Q?6eO9R/dMSO3uKx7KmbIi7f3zSLOpzQEBSVg22Mgj0a4JrbH6fpWeGKbhRAdn?=
+ =?us-ascii?Q?GC7AIOwMeaIC2EnFFou47q4vC43CovByM0gsD6nqriXAeaGpsgHx4szcYaQj?=
+ =?us-ascii?Q?IbPWflSV1Ve5KI8LEm9o6Iwltnozk9JBna9hc8Fy35dAJte0c+vmE0qnMVIL?=
+ =?us-ascii?Q?yosKLs3eoHXRq24XgR/0XFHqzQgVu4U80IeOw/M1/LS3LMUyV0TrEQHJI0G5?=
+ =?us-ascii?Q?LxIdkPa47aLQtz2wVnGD/E00rBsIgpf6Q6J8rU9quhl+g7q0Iv/LgDA3AyFZ?=
+ =?us-ascii?Q?pAh6/z3ad91WcXA7nv6fubKeft9POHJhqZa41cIy?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2a9e3bcb-56ce-46b3-4e8a-08dcf3ba6ec6
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB7726.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 23 Oct 2024 23:28:43.0141
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: vgMgMWbsG/XU/IVYPLmKKKYBP8l8vXjkp2AdO2bZgdz7XkZXkQC3xtDN5DBGm5UrbaBoxOYqSfuXHjtz7usTwA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB7505
 
-The original implementation ext4's FS_IOC_GETFSMAP handling only
-worked when the range of queried blocks included at least one free
-(unallocated) block range.  This is because how the metadata blocks
-were emitted was as a side effect of ext4_mballoc_query_range()
-calling ext4_getfsmap_datadev_helper(), and that function was only
-called when a free block range was identified.  As a result, this
-caused generic/365 to fail.
 
-Fix this by creating a new function ext4_getfsmap_meta_helper() which
-gets called so that blocks before the first free block range in a
-block group can get properly reported.
+Alistair Popple <apopple@nvidia.com> writes:
 
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
----
- fs/ext4/fsmap.c   | 54 ++++++++++++++++++++++++++++++++++++++++++++++-
- fs/ext4/mballoc.c | 18 ++++++++++++----
- fs/ext4/mballoc.h |  1 +
- 3 files changed, 68 insertions(+), 5 deletions(-)
+> Alistair Popple wrote:
+>> Dan Williams <dan.j.williams@intel.com> writes:
 
-diff --git a/fs/ext4/fsmap.c b/fs/ext4/fsmap.c
-index df853c4d3a8c..383c6edea6dd 100644
---- a/fs/ext4/fsmap.c
-+++ b/fs/ext4/fsmap.c
-@@ -185,6 +185,56 @@ static inline ext4_fsblk_t ext4_fsmap_next_pblk(struct ext4_fsmap *fmr)
- 	return fmr->fmr_physical + fmr->fmr_length;
- }
- 
-+static int ext4_getfsmap_meta_helper(struct super_block *sb,
-+				     ext4_group_t agno, ext4_grpblk_t start,
-+				     ext4_grpblk_t len, void *priv)
-+{
-+	struct ext4_getfsmap_info *info = priv;
-+	struct ext4_fsmap *p;
-+	struct ext4_fsmap *tmp;
-+	struct ext4_sb_info *sbi = EXT4_SB(sb);
-+	ext4_fsblk_t fsb, fs_start, fs_end;
-+	int error;
-+
-+	fs_start = fsb = (EXT4_C2B(sbi, start) +
-+			  ext4_group_first_block_no(sb, agno));
-+	fs_end = fs_start + EXT4_C2B(sbi, len);
-+
-+	/* Return relevant extents from the meta_list */
-+	list_for_each_entry_safe(p, tmp, &info->gfi_meta_list, fmr_list) {
-+		if (p->fmr_physical < info->gfi_next_fsblk) {
-+			list_del(&p->fmr_list);
-+			kfree(p);
-+			continue;
-+		}
-+		if (p->fmr_physical <= fs_start ||
-+		    p->fmr_physical + p->fmr_length <= fs_end) {
-+			/* Emit the retained free extent record if present */
-+			if (info->gfi_lastfree.fmr_owner) {
-+				error = ext4_getfsmap_helper(sb, info,
-+							&info->gfi_lastfree);
-+				if (error)
-+					return error;
-+				info->gfi_lastfree.fmr_owner = 0;
-+			}
-+			error = ext4_getfsmap_helper(sb, info, p);
-+			if (error)
-+				return error;
-+			fsb = p->fmr_physical + p->fmr_length;
-+			if (info->gfi_next_fsblk < fsb)
-+				info->gfi_next_fsblk = fsb;
-+			list_del(&p->fmr_list);
-+			kfree(p);
-+			continue;
-+		}
-+	}
-+	if (info->gfi_next_fsblk < fsb)
-+		info->gfi_next_fsblk = fsb;
-+
-+	return 0;
-+}
-+
-+
- /* Transform a blockgroup's free record into a fsmap */
- static int ext4_getfsmap_datadev_helper(struct super_block *sb,
- 					ext4_group_t agno, ext4_grpblk_t start,
-@@ -539,6 +589,7 @@ static int ext4_getfsmap_datadev(struct super_block *sb,
- 		error = ext4_mballoc_query_range(sb, info->gfi_agno,
- 				EXT4_B2C(sbi, info->gfi_low.fmr_physical),
- 				EXT4_B2C(sbi, info->gfi_high.fmr_physical),
-+				ext4_getfsmap_meta_helper,
- 				ext4_getfsmap_datadev_helper, info);
- 		if (error)
- 			goto err;
-@@ -560,7 +611,8 @@ static int ext4_getfsmap_datadev(struct super_block *sb,
- 
- 	/* Report any gaps at the end of the bg */
- 	info->gfi_last = true;
--	error = ext4_getfsmap_datadev_helper(sb, end_ag, last_cluster, 0, info);
-+	error = ext4_getfsmap_datadev_helper(sb, end_ag, last_cluster + 1,
-+					     0, info);
- 	if (error)
- 		goto err;
- 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index d73e38323879..92f49d7eb3c0 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -6999,13 +6999,14 @@ int
- ext4_mballoc_query_range(
- 	struct super_block		*sb,
- 	ext4_group_t			group,
--	ext4_grpblk_t			start,
-+	ext4_grpblk_t			first,
- 	ext4_grpblk_t			end,
-+	ext4_mballoc_query_range_fn	meta_formatter,
- 	ext4_mballoc_query_range_fn	formatter,
- 	void				*priv)
- {
- 	void				*bitmap;
--	ext4_grpblk_t			next;
-+	ext4_grpblk_t			start, next;
- 	struct ext4_buddy		e4b;
- 	int				error;
- 
-@@ -7016,10 +7017,19 @@ ext4_mballoc_query_range(
- 
- 	ext4_lock_group(sb, group);
- 
--	start = max(e4b.bd_info->bb_first_free, start);
-+	start = max(e4b.bd_info->bb_first_free, first);
- 	if (end >= EXT4_CLUSTERS_PER_GROUP(sb))
- 		end = EXT4_CLUSTERS_PER_GROUP(sb) - 1;
--
-+	if (meta_formatter && start != first) {
-+		if (start > end)
-+			start = end;
-+		ext4_unlock_group(sb, group);
-+		error = meta_formatter(sb, group, first, start - first,
-+				       priv);
-+		if (error)
-+			goto out_unload;
-+		ext4_lock_group(sb, group);
-+	}
- 	while (start <= end) {
- 		start = mb_find_next_zero_bit(bitmap, end + 1, start);
- 		if (start > end)
-diff --git a/fs/ext4/mballoc.h b/fs/ext4/mballoc.h
-index d8553f1498d3..f8280de3e882 100644
---- a/fs/ext4/mballoc.h
-+++ b/fs/ext4/mballoc.h
-@@ -259,6 +259,7 @@ ext4_mballoc_query_range(
- 	ext4_group_t			agno,
- 	ext4_grpblk_t			start,
- 	ext4_grpblk_t			end,
-+	ext4_mballoc_query_range_fn	meta_formatter,
- 	ext4_mballoc_query_range_fn	formatter,
- 	void				*priv);
- 
--- 
-2.45.2
+[...]
 
+>>> +
+>>> +	return VM_FAULT_NOPAGE;
+>>> +}
+>>> +EXPORT_SYMBOL_GPL(dax_insert_pfn_pmd);
+>>
+>> Like I mentioned before, lets make the exported function
+>> vmf_insert_folio() and move the pte, pmd, pud internal private / static
+>> details of the implementation. The "dax_" specific aspect of this was
+>> removed at the conversion of a dax_pfn to a folio.
+>
+> Ok, let me try that. Note that vmf_insert_pfn{_pmd|_pud} will have to
+> stick around though.
+
+Creating a single vmf_insert_folio() seems somewhat difficult because it
+needs to be called from multiple fault paths (either PTE, PMD or PUD
+fault) and do something different for each.
+
+Specifically the issue I ran into is that DAX does not downgrade PMD
+entries to PTE entries if they are backed by storage. So the PTE fault
+handler will get a PMD-sized DAX entry and therefore a PMD size folio.
+
+The way I tried implementing vmf_insert_folio() was to look at
+folio_order() to determine which internal implementation to call. But
+that doesn't work for a PTE fault, because there's no way to determine
+if we should PTE map a subpage or PMD map the entire folio.
+
+We could pass down some context as to what type of fault we're handling,
+or add it to the vmf struct, but that seems excessive given callers
+already know this and could just call a specific
+vmf_insert_page_{pte|pmd|pud}.
 
