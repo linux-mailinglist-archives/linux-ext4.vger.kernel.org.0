@@ -1,57 +1,56 @@
-Return-Path: <linux-ext4+bounces-4730-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4731-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 796229AEF31
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2024 20:08:46 +0200 (CEST)
+	by mail.lfdr.de (Postfix) with ESMTPS id 22B269AEF79
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2024 20:14:54 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 262B61F2297E
-	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2024 18:08:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A1BD1F224D3
+	for <lists+linux-ext4@lfdr.de>; Thu, 24 Oct 2024 18:14:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C0031FF7D9;
-	Thu, 24 Oct 2024 18:08:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E05CC1FF608;
+	Thu, 24 Oct 2024 18:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XqHJFl58"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Mv5r/t1K"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C61891FF608;
-	Thu, 24 Oct 2024 18:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B97B1AF0D3;
+	Thu, 24 Oct 2024 18:14:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729793319; cv=none; b=eutlZm0LN5FaTcCbIcuWv7HmDNv1Gha/u0UAyM2h+LAdKNPJso4EPYuClSF7aW1Fn8lpITPuF8bhtRtaNccNOQ8jDcxiTlEdlCXDVEkSPq5Fg5dgqQykY85c9yBH6bHfqDjRwM/0wQ+JPeCcE72w61XZuqEflZlMOooKqBtSUFU=
+	t=1729793685; cv=none; b=u5Yxpn+w0mtorEZGyTQvzzlM7R3ZPGy3MxT6vIv2IQW+oFl3bkqvtvILR2EFN/8Hlt3onCvgwO6ZDKZAncDPk366zlh4Iyz907KpqhnpS9pvkijzlvqtftu+GLWbhKq52dpZ1POdJsnY8JQgbC0z6zTwgwfZ4XnMuQFRD2u0yv4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729793319; c=relaxed/simple;
-	bh=LD6W6zG0bcPUMKmzYcnwI2UvbtysSNWYk2y4KzAFI4Q=;
+	s=arc-20240116; t=1729793685; c=relaxed/simple;
+	bh=l2ebjqlL1izAgzxeZmbTDuy7WZ4hyodYRV9PyRTs3RU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JJ4En3OySxoCy+ZM9zLqx83m11IJjWbD0sJapcBKV9zDQXSfsKfOE8n5y6yF21pOzu3hYhvBGaOTWDZUdGmhF3LVPh1MIEcPzE4Yu+rnbm3Wr61fOoRTUQMuO+TdDljBfpwFjsMEHNOdK+Nr5EXqpPaaiQaPbTZie2naJ5vdTSY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XqHJFl58; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EB1FC4CEC7;
-	Thu, 24 Oct 2024 18:08:39 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=PV8vzuZdWGdJaAE+3Pyh8tr+gc7YHWQ0LpxnspRA4HwN17Q7TsttYy4LeWZtVz//dr1IXJFDcaHoquIPf022iDld0ZAdOeulHrKHxWrhNw+7wjf9M3lWrJE57GY/NdGnfj+HJFWloNxoMXXkyILkzIRvgu7xf2DYtRXtRaaHzWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Mv5r/t1K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D9202C4CEC7;
+	Thu, 24 Oct 2024 18:14:44 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729793319;
-	bh=LD6W6zG0bcPUMKmzYcnwI2UvbtysSNWYk2y4KzAFI4Q=;
+	s=k20201202; t=1729793684;
+	bh=l2ebjqlL1izAgzxeZmbTDuy7WZ4hyodYRV9PyRTs3RU=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XqHJFl58Eibqfeam8kFCGV7m4QrFhu9sHZyme/KuGdNqGHl/8nqZAik8103ooFxxB
-	 2vJ2mY913tgsikumKmnRkxRbY7aRjKYUsIxd9EaNXeDA5ha8YY1Ar+B1jPWhTAihTx
-	 Xh7x3IMirNwEhBXIzg4oiunvyGysaz6ZvvMYCprLEX0VGHn4g1BV+s8gJBEltA/t5Q
-	 jFutfaLrQG6lPvq8uunBmjs2HnuTZoiDuphh7PYZH/9Hzy+cl0g719zlD+2yZajI1W
-	 QzHuFmyNQnqfs5Wmf/stbymIzFXUTitKvRgYWG1a1D+0lS0R9KMTei/poZi+behyCo
-	 5iFS2NlQc9tzA==
-Date: Thu, 24 Oct 2024 11:08:38 -0700
+	b=Mv5r/t1KYndSfRch6cL6chN4hEyyL3hzpwkz2bcA9l16Jz8UoSEDXzsZ4INrFevtO
+	 lH0C7nZsbilbb4r9kqiGKtAsbQ7iI6cv8CSLIidskZzSQCbICQEbY3+AiLK0PFfrKe
+	 oPSHs/SthU7sxhQhm6NDrmACWmsnefScJKvidMkkkXIwl99Q6EnKry6ShPxvl0DgDj
+	 ax9aRrbAA/YvrC4lSFu47gd+p4vbjBx4FqRRdYkDOYhf02X1ISK+gT8WX8QCtXPxP/
+	 Pr8N9Xb3k3zOdUf/8AXikjOlJxedcTke/chSihalXC1kN3ckxS7SgY+F/y/OTg07jf
+	 VTiQgxpgel/0Q==
+Date: Thu, 24 Oct 2024 11:14:44 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Nirjhar Roy <nirjhar@linux.ibm.com>
 Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
 	ojaswin@linux.ibm.com, zlang@kernel.org
-Subject: Re: [PATCH 1/2] common/xfs,xfs/207: Adding a common helper function
- to check xflag bits on a given file
-Message-ID: <20241024180838.GD2386201@frogsfrogsfrogs>
+Subject: Re: [PATCH 2/2] generic: Addition of new tests for extsize hints
+Message-ID: <20241024181444.GE2386201@frogsfrogsfrogs>
 References: <cover.1729624806.git.nirjhar@linux.ibm.com>
- <6ba7f682af7e0bc99a8baeccc0d7aa4e5062a433.1729624806.git.nirjhar@linux.ibm.com>
+ <5cac327a9ee44c42035d9702b3a146aebc95e28c.1729624806.git.nirjhar@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,95 +59,236 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <6ba7f682af7e0bc99a8baeccc0d7aa4e5062a433.1729624806.git.nirjhar@linux.ibm.com>
+In-Reply-To: <5cac327a9ee44c42035d9702b3a146aebc95e28c.1729624806.git.nirjhar@linux.ibm.com>
 
-On Wed, Oct 23, 2024 at 12:56:19AM +0530, Nirjhar Roy wrote:
-> This patch defines a common helper function to test whether any of
-> fsxattr xflags field is set or not. We will use this helper in the next
-> patch for checking extsize (e) flag.
+On Wed, Oct 23, 2024 at 12:56:20AM +0530, Nirjhar Roy wrote:
+> This commit adds new tests that checks the behaviour of xfs/ext4
+> filesystems when extsize hint is set on file with inode size as 0, non-empty
+> files with allocated and delalloc extents and so on.
+> Although currently this test is placed under tests/generic, it
+> only runs on xfs and there is an ongoing patch series[1] to enable
+> extsize hints for ext4 as well.
 > 
+> [1] https://lore.kernel.org/linux-ext4/cover.1726034272.git.ojaswin@linux.ibm.com/
+> 
+> Suggested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 > Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 > Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
 > ---
->  common/xfs    |  9 +++++++++
->  tests/xfs/207 | 14 +++-----------
->  2 files changed, 12 insertions(+), 11 deletions(-)
+>  tests/generic/365     | 156 ++++++++++++++++++++++++++++++++++++++++++
+>  tests/generic/365.out |  26 +++++++
+>  2 files changed, 182 insertions(+)
+>  create mode 100755 tests/generic/365
+>  create mode 100644 tests/generic/365.out
 > 
-> diff --git a/common/xfs b/common/xfs
-> index 62e3100e..7340ccbf 100644
-> --- a/common/xfs
-> +++ b/common/xfs
-> @@ -13,6 +13,15 @@ __generate_xfs_report_vars() {
->  	REPORT_ENV_LIST_OPT+=("TEST_XFS_REPAIR_REBUILD" "TEST_XFS_SCRUB_REBUILD")
->  }
->  
-> +# Check whether a fsxattr xflags character field is set on a given file.
-> +# e.g. fsxattr.xflags = 0x0 [--------------C-]
-> +# Returns 0 if passed flag character is set, otherwise returns 1
-> +_test_xfs_xflags_field()
+> diff --git a/tests/generic/365 b/tests/generic/365
+> new file mode 100755
+> index 00000000..85a7ce9a
+> --- /dev/null
+> +++ b/tests/generic/365
+> @@ -0,0 +1,156 @@
+> +#! /bin/bash
+> +# SPDX-License-Identifier: GPL-2.0
+> +# Copyright (c) 2024 Nirjhar Roy (nirjhar@linux.ibm.com).  All Rights Reserved.
+> +#
+> +# FS QA Test 365
+> +#
+> +# This test verifies that extent allocation hint setting works correctly on files with
+> +# no extents allocated and non-empty files which are truncated. It also checks that the
+> +# extent hints setting fails with non-empty file i.e, with any file with allocated
+> +# extents or delayed allocation. We also check if the extsize value and the
+> +# xflag bit actually got reflected after setting/re-setting the extsize value.
+> +
+> +. ./common/config
+> +. ./common/filter
+> +. ./common/preamble
+> +. ./common/xfs
+> +
+> +_begin_fstest ioctl quick
+> +
+> +_supported_fs xfs
+> +
+> +_fixed_by_kernel_commit XXXXXXXXXXXX \
+> +    "xfs: Check for delayed allocations before setting extsize",
+> +
+> +_require_scratch
+> +
+> +FILE_DATA_SIZE=1M
 
-Seeing as fsxattr got added to ext4 and others, this probably should be
-called _test_fsxattr_xflags() and live in common/rc.
+Do these tests work correctly with fsblock size of 64k?  Just curious
+since Pankaj just sent a series doing 1M -> 4M bumps to fix quota
+issues.
 
+> +filter_extsz()
 > +{
-> +    $XFS_IO_PROG -c "stat" "$1" | grep "fsxattr.xflags" | grep -q "\[.*$2.*\]" \
-> +        && return 0 || return 1
+> +    sed "s/$EXTSIZE/EXTSIZE/g"
+> +}
+> +
+> +setup()
+> +{
+> +    _scratch_mkfs >> "$seqres.full"  2>&1
+> +    _scratch_mount >> "$seqres.full" 2>&1
+> +    BLKSZ=`_get_block_size $SCRATCH_MNT`
+> +    EXTSIZE=$(( BLKSZ*2 ))
 
-No need for this bit, the grep -q will set the return value to 0 or 1
-and bash will leave that set for the caller.
-
---D
+Might want to check that there isn't an extsize/cowextsize set on the
+root directory due to mkfs options.
 
 > +}
 > +
->  _setup_large_xfs_fs()
->  {
->  	fs_size=$1
-> diff --git a/tests/xfs/207 b/tests/xfs/207
-> index bbe21307..adb925df 100755
-> --- a/tests/xfs/207
-> +++ b/tests/xfs/207
-> @@ -15,21 +15,13 @@ _begin_fstest auto quick clone fiemap
->  # Import common functions.
->  . ./common/filter
->  . ./common/reflink
-> +. ./common/xfs
->  
->  _require_scratch_reflink
->  _require_cp_reflink
->  _require_xfs_io_command "fiemap"
->  _require_xfs_io_command "cowextsize"
->  
-> -# Takes the fsxattr.xflags line,
-> -# i.e. fsxattr.xflags = 0x0 [--------------C-]
-> -# and tests whether a flag character is set
-> -test_xflag()
-> -{
-> -    local flg=$1
-> -    grep -q "\[.*${flg}.*\]" && echo "$flg flag set" || echo "$flg flag unset"
-> -}
-> -
->  echo "Format and mount"
->  _scratch_mkfs > $seqres.full 2>&1
->  _scratch_mount >> $seqres.full 2>&1
-> @@ -65,14 +57,14 @@ echo "Set cowextsize and check flag"
->  $XFS_IO_PROG -c "cowextsize 1048576" $testdir/file3 | _filter_scratch
->  _scratch_cycle_mount
->  
-> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
-> +_test_xfs_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
->  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->  
->  echo "Unset cowextsize and check flag"
->  $XFS_IO_PROG -c "cowextsize 0" $testdir/file3 | _filter_scratch
->  _scratch_cycle_mount
->  
-> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
-> +_test_xfs_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
->  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->  
->  status=0
+> +read_file_extsize()
+> +{
+> +    $XFS_IO_PROG -c "extsize" $1 | _filter_scratch | filter_extsz
+> +}
+> +
+> +check_extsz_and_xflag()
+> +{
+> +    local filename=$1
+> +    read_file_extsize $filename
+> +    _test_xfs_xflags_field $filename "e" && echo "e flag set" || echo "e flag unset"
+> +}
+> +
+> +check_extsz_xflag_across_remount()
+> +{
+> +    local filename=$1
+> +    _scratch_cycle_mount
+> +    check_extsz_and_xflag $filename
+> +}
+> +
+> +# Extsize flag should be cleared when extsize is reset, so this function
+> +# checks that this behavior is followed.
+> +reset_extsz_and_recheck_extsz_xflag()
+> +{
+> +    local filename=$1
+> +    echo "Re-setting extsize hint to 0"
+> +    $XFS_IO_PROG -c "extsize 0" $filename
+> +    check_extsz_xflag_across_remount $filename
+> +}
+> +
+> +check_extsz_xflag_before_and_after_reset()
+> +{
+> +    local filename=$1
+> +    check_extsz_xflag_across_remount $filename
+> +    reset_extsz_and_recheck_extsz_xflag $filename
+> +}
+> +
+> +test_empty_file()
+> +{
+> +    echo "TEST: Set extsize on empty file"
+> +    local filename=$1
+> +    $XFS_IO_PROG \
+> +        -c "open -f $filename" \
+> +        -c "extsize $EXTSIZE" \
+> +
+> +    check_extsz_xflag_before_and_after_reset $filename
+> +    echo
+> +}
+> +
+> +test_data_delayed()
+> +{
+> +    echo "TEST: Set extsize on non-empty file with delayed allocation"
+> +    local filename=$1
+> +    $XFS_IO_PROG \
+> +        -c "open -f $filename" \
+> +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
+> +        -c "extsize $EXTSIZE" | _filter_scratch
+> +
+> +    check_extsz_xflag_across_remount $filename
+> +    echo
+> +}
+> +
+> +test_data_allocated()
+> +{
+> +    echo "TEST: Set extsize on non-empty file with allocated extents"
+> +    local filename=$1
+> +    $XFS_IO_PROG \
+> +        -c "open -f $filename" \
+> +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
+> +        -c "extsize $EXTSIZE" | _filter_scratch
+> +
+> +    check_extsz_xflag_across_remount $filename
+> +    echo
+> +}
+> +
+> +test_truncate_allocated()
+> +{
+> +    echo "TEST: Set extsize after truncating a file with allocated extents"
+> +    local filename=$1
+> +    $XFS_IO_PROG \
+> +        -c "open -f $filename" \
+> +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
+> +        -c "truncate 0" \
+> +        -c "extsize $EXTSIZE" \
+> +
+> +    check_extsz_xflag_across_remount $filename
+> +    echo
+> +}
+> +
+> +test_truncate_delayed()
+> +{
+> +    echo "TEST: Set extsize after truncating a file with delayed allocation"
+> +    local filename=$1
+> +    $XFS_IO_PROG \
+> +        -c "open -f $filename" \
+> +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
+> +        -c "truncate 0" \
+> +        -c "extsize $EXTSIZE" \
+> +
+> +    check_extsz_xflag_across_remount $filename
+> +    echo
+> +}
+
+Does this work for filesystems that don't have delalloc?  Like fsdax
+filesystems?
+
+--D
+
+> +setup
+> +echo -e "EXTSIZE = $EXTSIZE BLOCKSIZE = $BLKSZ\n" >> "$seqres.full"
+> +
+> +NEW_FILE_NAME_PREFIX=$SCRATCH_MNT/new-file-
+> +
+> +test_empty_file "$NEW_FILE_NAME_PREFIX"00
+> +test_data_delayed "$NEW_FILE_NAME_PREFIX"01
+> +test_data_allocated "$NEW_FILE_NAME_PREFIX"02
+> +test_truncate_allocated "$NEW_FILE_NAME_PREFIX"03
+> +test_truncate_delayed "$NEW_FILE_NAME_PREFIX"04
+> +
+> +status=0
+> +exit
+> diff --git a/tests/generic/365.out b/tests/generic/365.out
+> new file mode 100644
+> index 00000000..38cd0885
+> --- /dev/null
+> +++ b/tests/generic/365.out
+> @@ -0,0 +1,26 @@
+> +QA output created by 365
+> +TEST: Set extsize on empty file
+> +[EXTSIZE] SCRATCH_MNT/new-file-00
+> +e flag set
+> +Re-setting extsize hint to 0
+> +[0] SCRATCH_MNT/new-file-00
+> +e flag unset
+> +
+> +TEST: Set extsize on non-empty file with delayed allocation
+> +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-01: Invalid argument
+> +[0] SCRATCH_MNT/new-file-01
+> +e flag unset
+> +
+> +TEST: Set extsize on non-empty file with allocated extents
+> +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-02: Invalid argument
+> +[0] SCRATCH_MNT/new-file-02
+> +e flag unset
+> +
+> +TEST: Set extsize after truncating a file with allocated extents
+> +[EXTSIZE] SCRATCH_MNT/new-file-03
+> +e flag set
+> +
+> +TEST: Set extsize after truncating a file with delayed allocation
+> +[EXTSIZE] SCRATCH_MNT/new-file-04
+> +e flag set
+> +
 > -- 
 > 2.43.5
 > 
