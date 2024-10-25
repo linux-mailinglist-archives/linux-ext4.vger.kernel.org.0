@@ -1,201 +1,134 @@
-Return-Path: <linux-ext4+bounces-4737-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4738-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 572F89AF7C1
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 04:57:09 +0200 (CEST)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 118709AF852
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 05:46:22 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB7EE1F22E2D
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 02:57:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6E30FB21B34
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 03:46:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD0DD18A920;
-	Fri, 25 Oct 2024 02:57:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8840218BC32;
+	Fri, 25 Oct 2024 03:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EIh3KcDu"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="homTtz1q"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f177.google.com (mail-pg1-f177.google.com [209.85.215.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A8EA18BB90
-	for <linux-ext4@vger.kernel.org>; Fri, 25 Oct 2024 02:57:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6838523B0;
+	Fri, 25 Oct 2024 03:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729825023; cv=none; b=Cyl2Tr7gP5ENGphBGw7L9L+2gCVqnHT3lKYDKxmRTIpcZ291aIXdhNbSoge9+zk1brmCOT8nT0a2Op+rC0PfEhtJMS3tXNmc11vDK0x+1Zt54QEoyroNzPXHi2Gmh1AoBV9dso63kJ3IBHmlvQJZxTGXLIaoL8haZ+PrZRZ1r9o=
+	t=1729827970; cv=none; b=LZtRUdnuWqlB68Ml22l2Y1HZy0i+Hxtk/Gmf0wE2Y0PLUECQ9sQRXJXDD9EYPy5J8jFEbQUv9GJfkETOCgmNKYX6EWFqoO41cUNP/o+vVuowbH5RPO7mWUcbRlIExqG36uQVuYfdp7ozF3F8o9g9Ct2kDHZz4v6E+Ja68zWJCks=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729825023; c=relaxed/simple;
-	bh=QkACfeFBx+I3qySlFSUTlZ/njQy6u+B98pXhxXYVm/o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y5p6PK5/OoRHvkx4oCaXC67ywf36jOfpsiZpdv+YB1mFDDqnwYo5lGE9qdj/Im3/Zm5r5Nfy4hBNlDSmSafFxklbZo753GswPXVcuFgJMmJ4EogkYlXuPq48az+YOx/FKwV2P2pyO5ulWt6r+8rt96uA1bJhc96aT8RlxbetgWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EIh3KcDu; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1729825020;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=8UHff/EyTmoZg0kmavC/tExlcMWqKizkzXldFqApwD0=;
-	b=EIh3KcDufY+caj7LDNPYtijdGcWc+a4drXetjpc25WyxJ2dYi0edABBj1jAsLZTTDDgYyW
-	tlqaTHDd9ITeiOis58s4zURekrEHryNedZQ0sr+zHCU0u065vwHL2I7ZrOyFMzDFssR6Jf
-	HCcfvAb2OVGV4T9r1iVQNGr/hdmH/Sk=
-Received: from mail-pj1-f72.google.com (mail-pj1-f72.google.com
- [209.85.216.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-113-nHxbFOdIPomaWvj5Qksy9g-1; Thu, 24 Oct 2024 22:56:58 -0400
-X-MC-Unique: nHxbFOdIPomaWvj5Qksy9g-1
-Received: by mail-pj1-f72.google.com with SMTP id 98e67ed59e1d1-2e2eb765285so1783241a91.1
-        for <linux-ext4@vger.kernel.org>; Thu, 24 Oct 2024 19:56:58 -0700 (PDT)
+	s=arc-20240116; t=1729827970; c=relaxed/simple;
+	bh=IpSDviff1S3+091J4xvIHrzHFLBNwc8q7usHNs+O0Lk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=a8eRz8re/OX1G+M/UMwUo9WlceXyrQJu3IZXIDrBK+UDk1obd3UmVWfdFY2SwvJVl+XyzK6c6olqBQAJJNjzA+FzKIH95u1UyX8OHhEyqM/7bbpiJ0osrSiBDopPjLP4Qid8GsWFFg8LioKDKGRjr8DRidbMFaq1YkfzzmTjcJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=homTtz1q; arc=none smtp.client-ip=209.85.215.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f177.google.com with SMTP id 41be03b00d2f7-7ea9739647bso1058974a12.0;
+        Thu, 24 Oct 2024 20:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1729827967; x=1730432767; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=s/Cmq2CEq+3uxXR5Vbe4rzkkmedKYgo3PQp1L/DKxjY=;
+        b=homTtz1qbGlY18BFDOGq43gsrffZERSDc0CEFxibTrmPJM8ml2+CtFVNQUrjXHvS05
+         8vV3//6ktAyevTvR2AtXWqY6RDzecUtOAUKfFCpRFtpy8HRmNiTsp2shmASXD17ZPEAS
+         SP4kEQZPrrBTUaM0tBzGLx9V2ni3zjrx/sh/N+s5j2hLpVT0X7z7CN8w3Fd3vsnqAVDt
+         8xHvInLIZBWAbUNSm/mHsS9P0cAB6uzkmOyjgZi8WqTqpmW0TevMw1JR4l11y4P1Asct
+         Z7D7L2+Q3dBBhLn7v5COTDeyyDX3nJE/ftWt5Tdn9OwfVY83iAX/9wqwY8odzha3iyWc
+         Jl3Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729825018; x=1730429818;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=8UHff/EyTmoZg0kmavC/tExlcMWqKizkzXldFqApwD0=;
-        b=xIh7OaXqHKKLauJdsR2UHJxG+leOVpspxmwAlUnlA1a/dsfRgbZiddGCsvgoZujxYN
-         1+XvTX+qhqN2B/aFgFt56hSJH15gvJQNRFjzLmcpbH08yXc7mtZYuLq5H775ZoqIT4Bd
-         wl3lPSF68eCgLst8dYL8e6OCft+sVfUoD5ai0XICDBt9CSyuPxbzcpEboFFUFlgciLD9
-         As7Q881XR/DR++d8hpAzkX1kBQmFMlJQugr6+4vw8Ys5RmOPiyKeS9Ft5rfDy40GFWeM
-         mx4sEcfCAx8fv+OApAj7TemJodJUKw6eNc236Uvx1gbgE9mD0I4yEHjAuW5X04TmSVQy
-         0znQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW8DMki19B6P7CPgnztq7LWnR+EAOh7/TCL/CYKPBTyE+HSXXtUes5J7efhAUP+kOIbmDpS22N7iCE6@vger.kernel.org
-X-Gm-Message-State: AOJu0YzfVLU2D+ag2tlq4KE3g4Gb1MFiLCsIreetL3Tv34qRJQZh9qR+
-	YDNhIIYikFaFtULecfupZ/d64FWC0eZscTLDPjt24+alKERM2dr2Kmvp4/VqGzLyQc8RuLuKBkN
-	F0uJgU5KuFedvIDSZWnwAMtuT/9FcYV8/IhNNx47y0ZAtvueixYQgZzpVatk=
-X-Received: by 2002:a17:90b:390c:b0:2e2:b204:90c8 with SMTP id 98e67ed59e1d1-2e76b704a80mr9052711a91.34.1729825017820;
-        Thu, 24 Oct 2024 19:56:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHPY7d8j4Tzb3Ou4jwwXiPijsWHHk7FnEJVWhatTWexAqRlAmd59sltTz+ydRVnn6fKczQ7GA==
-X-Received: by 2002:a17:90b:390c:b0:2e2:b204:90c8 with SMTP id 98e67ed59e1d1-2e76b704a80mr9052696a91.34.1729825017464;
-        Thu, 24 Oct 2024 19:56:57 -0700 (PDT)
-Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e77e59d826sm2256453a91.52.2024.10.24.19.56.54
+        d=1e100.net; s=20230601; t=1729827967; x=1730432767;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=s/Cmq2CEq+3uxXR5Vbe4rzkkmedKYgo3PQp1L/DKxjY=;
+        b=uz9PMWvLR0mSrrUWyj7eP1mec+D5CCmv5IsULsYogZqZd6W1AiljuGfLjOUtUw3RJG
+         Z68z9+eyANFt9wRJDvsZ0eFYDXcVvM7rfuGoMPqlaIjtnDBsHqlcJbkLbHaNh6N00RO8
+         A3kkQHamFxkGhWiZOEgvt8H2ikbvAWuqWPHF9AbJIc27RbOBnCSj2pBF/XLA06TO61jv
+         jGFJT8zsY1JqZBI06y1T3YFprXXh632U8XP26AK6fLcHk7dKs1pIm8adSUHwWDx0wfv5
+         MJI0/dYUz5RWmQSypwaNNCr58EOr8KY6nK7xDBGdzLkiVB+Rb9HRDt83UIhGEybrqHzb
+         It2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVncdXwp0nggoxqEeydawQPozWtYGZgrG6dXjp3Um1s7fj84zRlPE5l/FFPwgQrWNFJfjMPYY6k56U5VdqM@vger.kernel.org, AJvYcCW+jiBntODavN2O+t6LtPMdyth8QGgHPomM9dIfW2OOMCCPMjr7AAhPJeAqjUIpTZi4a0KISqn95WLU@vger.kernel.org, AJvYcCXvjQ9fLUDjg0F8rHRyeOh6I11KZtCh0K990wa3uea9cC3L/X9UfiedQC26Ggg0jwOfVEo00ywkm5bpjIPE@vger.kernel.org
+X-Gm-Message-State: AOJu0YzkogV/btVyXiHgtlCqhx8u/wbICUjz5cZ3bB4y7RaZVor8Fz5b
+	3e675nuyyXluYMPjvhck8woDcv3Jhya1v2ZnDHDbQjX+OcxipT7nTcDKNg==
+X-Google-Smtp-Source: AGHT+IGX0smSJ6X3tJWPAEU44ev3GBgQVSNg/eJRYX7tN2JSEy/lPJC2mpLw4jCaABJJ5/DxtFsMlA==
+X-Received: by 2002:a05:6a21:3a96:b0:1d9:3b81:cdd3 with SMTP id adf61e73a8af0-1d9898ff76fmr5252861637.1.1729827967180;
+        Thu, 24 Oct 2024 20:46:07 -0700 (PDT)
+Received: from dw-tp.ibmuc.com ([171.76.85.20])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e5df40265fsm3463176a91.0.2024.10.24.20.46.03
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 19:56:57 -0700 (PDT)
-Date: Fri, 25 Oct 2024 10:56:51 +0800
-From: Zorro Lang <zlang@redhat.com>
-To: Nirjhar Roy <nirjhar@linux.ibm.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
-Subject: Re: [PATCH 1/2] common/xfs,xfs/207: Adding a common helper function
- to check xflag bits on a given file
-Message-ID: <20241025025651.okneano7d324nl4e@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
-References: <cover.1729624806.git.nirjhar@linux.ibm.com>
- <6ba7f682af7e0bc99a8baeccc0d7aa4e5062a433.1729624806.git.nirjhar@linux.ibm.com>
+        Thu, 24 Oct 2024 20:46:06 -0700 (PDT)
+From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+To: linux-ext4@vger.kernel.org
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Jan Kara <jack@suse.cz>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	John Garry <john.g.garry@oracle.com>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Dave Chinner <david@fromorbit.com>,
+	linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Subject: [PATCH 0/6] ext4: Add atomic write support for DIO
+Date: Fri, 25 Oct 2024 09:15:49 +0530
+Message-ID: <cover.1729825985.git.ritesh.list@gmail.com>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <6ba7f682af7e0bc99a8baeccc0d7aa4e5062a433.1729624806.git.nirjhar@linux.ibm.com>
+Content-Transfer-Encoding: 8bit
 
-On Wed, Oct 23, 2024 at 12:56:19AM +0530, Nirjhar Roy wrote:
-> This patch defines a common helper function to test whether any of
-> fsxattr xflags field is set or not. We will use this helper in the next
-> patch for checking extsize (e) flag.
-> 
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
-> ---
->  common/xfs    |  9 +++++++++
->  tests/xfs/207 | 14 +++-----------
->  2 files changed, 12 insertions(+), 11 deletions(-)
-> 
-> diff --git a/common/xfs b/common/xfs
-> index 62e3100e..7340ccbf 100644
-> --- a/common/xfs
-> +++ b/common/xfs
-> @@ -13,6 +13,15 @@ __generate_xfs_report_vars() {
->  	REPORT_ENV_LIST_OPT+=("TEST_XFS_REPAIR_REBUILD" "TEST_XFS_SCRUB_REBUILD")
->  }
->  
-> +# Check whether a fsxattr xflags character field is set on a given file.
+This series adds the base feature support to enable atomic writes in
+direct-io path for ext4. We advertise the minimum and the maximum atomic
+write unit sizes via statx on a regular file.
 
-Better to explain the arguments, e.g.
+This series allows users to utilize atomic write support using -
+1. on bs < ps systems via - mkfs.ext4 -F -b 16384 /dev/sda
+2. on bs = ps systems via bigalloc - mkfs.ext4 -O bigalloc -F -b 4096 -C 65536 /dev/sda
 
-# Check whether a fsxattr xflags character ($2) field is set on a given file ($1).
+This can then be utilized using -
+	xfs_io -fdc "pwrite -V 1 -A -b16k 0 16k" /mnt/f1
 
-> +# e.g. fsxattr.xflags = 0x0 [--------------C-]
-> +# Returns 0 if passed flag character is set, otherwise returns 1
-> +_test_xfs_xflags_field()
-> +{
-> +    $XFS_IO_PROG -c "stat" "$1" | grep "fsxattr.xflags" | grep -q "\[.*$2.*\]" \
-> +        && return 0 || return 1
+This is built on top of John's DIO atomic write series for XFS [1].
+The VFS and block layer enablement for atomic writes were merged already.
 
-That's too complex. Those "return" aren't needed as Darrick metioned. About
-that two "grep", how about combine them, e.g.
+[1]: https://lore.kernel.org/linux-xfs/20241019125113.369994-1-john.g.garry@oracle.com/
 
-_test_xfs_xflags_field()
-{
-	grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat" "$1")
-}
+RFC -> PATCH:
+- Dropped RFC tag
+- Last RFC was posted a while ago but back then a lot of VFS and block layer
+  interfaces were still not merged. Those are now merged, thanks to John and
+  everyone else.
+- [RFC] - https://lore.kernel.org/linux-ext4/cover.1709356594.git.ritesh.list@gmail.com/
 
+Ritesh Harjani (IBM) (6):
+  ext4: Add statx support for atomic writes
+  ext4: Check for atomic writes support in write iter
+  ext4: Support setting FMODE_CAN_ATOMIC_WRITE
+  ext4: Warn if we ever fallback to buffered-io for DIO atomic writes
+  iomap: Lift blocksize restriction on atomic writes
+  ext4: Add atomic write support for bigalloc
 
+ fs/ext4/ext4.h       | 14 +++++++++++++-
+ fs/ext4/file.c       | 27 ++++++++++++++++++++++++++-
+ fs/ext4/inode.c      | 27 +++++++++++++++++++++++++++
+ fs/ext4/super.c      | 37 +++++++++++++++++++++++++++++++++++++
+ fs/iomap/direct-io.c |  2 +-
+ 5 files changed, 104 insertions(+), 3 deletions(-)
 
-> +}
-> +
->  _setup_large_xfs_fs()
->  {
->  	fs_size=$1
-> diff --git a/tests/xfs/207 b/tests/xfs/207
-> index bbe21307..adb925df 100755
-> --- a/tests/xfs/207
-> +++ b/tests/xfs/207
-> @@ -15,21 +15,13 @@ _begin_fstest auto quick clone fiemap
->  # Import common functions.
->  . ./common/filter
->  . ./common/reflink
-> +. ./common/xfs
-
-Is this really necessary? Will this test fail without this line?
-The common/$FSTYP file is imported automatically, if it's not, that a bug.
-
-Thanks,
-Zorro
-
->  
->  _require_scratch_reflink
->  _require_cp_reflink
->  _require_xfs_io_command "fiemap"
->  _require_xfs_io_command "cowextsize"
->  
-> -# Takes the fsxattr.xflags line,
-> -# i.e. fsxattr.xflags = 0x0 [--------------C-]
-> -# and tests whether a flag character is set
-> -test_xflag()
-> -{
-> -    local flg=$1
-> -    grep -q "\[.*${flg}.*\]" && echo "$flg flag set" || echo "$flg flag unset"
-> -}
-> -
->  echo "Format and mount"
->  _scratch_mkfs > $seqres.full 2>&1
->  _scratch_mount >> $seqres.full 2>&1
-> @@ -65,14 +57,14 @@ echo "Set cowextsize and check flag"
->  $XFS_IO_PROG -c "cowextsize 1048576" $testdir/file3 | _filter_scratch
->  _scratch_cycle_mount
->  
-> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
-> +_test_xfs_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
->  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->  
->  echo "Unset cowextsize and check flag"
->  $XFS_IO_PROG -c "cowextsize 0" $testdir/file3 | _filter_scratch
->  _scratch_cycle_mount
->  
-> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
-> +_test_xfs_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
->  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->  
->  status=0
-> -- 
-> 2.43.5
-> 
-> 
+--
+2.46.0
 
 
