@@ -1,185 +1,85 @@
-Return-Path: <linux-ext4+bounces-4744-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4745-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A5B99AF86A
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 05:48:15 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB2009AF87F
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 05:54:11 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19D5F283133
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 03:48:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 724631F21969
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 03:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A96AD1AF0D9;
-	Fri, 25 Oct 2024 03:46:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E7518C025;
+	Fri, 25 Oct 2024 03:54:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ChVnDbTf"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="aI0knvfU"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f171.google.com (mail-pf1-f171.google.com [209.85.210.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E5D1ACDF0;
-	Fri, 25 Oct 2024 03:46:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D9DC433BE
+	for <linux-ext4@vger.kernel.org>; Fri, 25 Oct 2024 03:54:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729827994; cv=none; b=WMt6PSKivEVZM8+kRIM7Pt6Gp7dhUU4qfKU1Qx5olTdVY/wDil37rmD7fnNJMhRzPgSG8cXe/lBtP5gdmLsPhKv4288rPlZokVwVojV5op7yCd5XiwWzYyivpe5o+sgUbUFwRs7twKSJV25yIh3vBO8uyzvmfMyqXM2rMd5alPs=
+	t=1729828445; cv=none; b=ZTPAw4624MAakNcWJk4wBu/BAwxJH1lGrvM46SeLn5lE6GmnB7URggXVj6uew+Rbw7HDrq9tmXUXIRlSiiwcnqkyHXdzYvSSN6c7or/4fra9rxqzbNMWGsVI0cUJuh0cJwC7lG+LEFzx2X/mu3KHSE3/VMxVeAv/756c/TygH2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729827994; c=relaxed/simple;
-	bh=+jbFavYt3S3M0UFG+Y++ADSwSWXABL573iBs3QaczNQ=;
+	s=arc-20240116; t=1729828445; c=relaxed/simple;
+	bh=7EuiUq5k5FlSKJagnmVyrw8rB8v2iHocmDKJ/4dobl8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=c1mCNfDLyXHfF6YuiTE/c/k1q77PtsloR6m1PUFGvqTM96xJtwUZh5zMWgp6yVVteWkTJ8NV/TX3DRp820DWGu4SxEHqPX53KIXiimJgK3wltzqWhl7xA2wI95QqkIng1ZcR4hz5ORu6c9NOZyvfEjDtmyPRDHKZq0zfteZqdqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ChVnDbTf; arc=none smtp.client-ip=209.85.210.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f171.google.com with SMTP id d2e1a72fcca58-71e953f4e7cso1142968b3a.3;
-        Thu, 24 Oct 2024 20:46:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1729827991; x=1730432791; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=SV8eyMIG0H3BsY07DI6PZhHnOjAhFRubne0dZ3+5bLE=;
-        b=ChVnDbTfmGIPomXH3WduPk/qUQCxYuqG95MP46kzW0xeIZGBInLZPiUZYxhcY6ci6z
-         4LwiExHtP43MM2jCfJNRgEIa2gvnF2wLi52FyaWwMJE5QUHGmRqpkC4s+HNdN8w/gPSJ
-         LCO3cEuR7boehgFJpa4NETpqB3NJkLb5R4PKzl9fbZz3NI5k8nfBNOeUaJV8g6D9E4Sh
-         TChcb6M5IDQbWxTKpskGcwrk40zjnGvKEw3IH1IxIUamScAQVpiQXojYefcmDzuaj+C7
-         JDwkzMjcudYXVS0k2u34stvLP+wYoe6dMNh8KAKRd1j5r4bD0QoRpRpmGmWsdLx2zLwh
-         fR6g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1729827991; x=1730432791;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SV8eyMIG0H3BsY07DI6PZhHnOjAhFRubne0dZ3+5bLE=;
-        b=NyPdox3RvDLGj4DYI9zdC+t2ue1SlVsW7ss3IYFyy+X9o+yJMgY+skQnoAE1poCTnZ
-         1ZZNFzJkOBLd5xmnY3ray4J02hw2XTmdwti3KJuUY6pS/yTj6vETjYqUSDg7qOPoIyzi
-         rdzmuBjgih9ccmt7R0Znb9adLuhxNcJpA/TH1AT++BbERo8pUVflj4zBiWXA2OU3vxMa
-         0uP9sT0dxbQbeC+qQmKe3B78TudArn0Yj2qTEQUq1pVqFutGjGDe0cIZ7+hfWFtNugHJ
-         ewQRJXy9AoVMD/SckJQ/1KEIva6xdLv+we7fgEhciWpzCJQRQfoolgrmgypwpZ9oNJ0A
-         6ByQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVV6MUPGo+wOdFGU8x7UBSa+vGpv8WVkifmaFIRA3/AkleXHQIbcgvaysFDX6VJioG4XKFrXMbIwGoA@vger.kernel.org, AJvYcCVetRgFO1FHpMm0iTS5XOV57TKBG5njWHQ0HNNGSEHQO1Y8I1LegiLVyhiXhZwNeZbHK8WAfR51sZ1wNVmy@vger.kernel.org, AJvYcCVwLSSbLcBdyZepaDT733kuUph/F4bHdaiyI8QEVCoYw8NPeVfQK56HOv2g1z4gqUf1g7r5NaUyjJVDOI6u@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywe2gwe2ACvMYREE+4iNVm1KnILwc5fGi9oZ8/fHo8NFLsfO7fF
-	zAVLRNeK6tZpxe0ApGRvljnYA28rLNnEFD1WZi9N5mXqQVvFosC1coep2g==
-X-Google-Smtp-Source: AGHT+IHNv3nj9RCbYdpMn4CGatYSbVnL4coPHNxRpjeEP5ig4aeDgBKitBPLznyv9qpb0xdXrjrzzg==
-X-Received: by 2002:a05:6a21:6801:b0:1d9:76a3:a208 with SMTP id adf61e73a8af0-1d978bd6201mr10915868637.47.1729827991027;
-        Thu, 24 Oct 2024 20:46:31 -0700 (PDT)
-Received: from dw-tp.ibmuc.com ([171.76.85.20])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e5df40265fsm3463176a91.0.2024.10.24.20.46.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 24 Oct 2024 20:46:30 -0700 (PDT)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.cz>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Dave Chinner <david@fromorbit.com>,
-	linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH 6/6] ext4: Add atomic write support for bigalloc
-Date: Fri, 25 Oct 2024 09:15:55 +0530
-Message-ID: <37baa9f4c6c2994df7383d8b719078a527e521b9.1729825985.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <cover.1729825985.git.ritesh.list@gmail.com>
-References: <cover.1729825985.git.ritesh.list@gmail.com>
+	 MIME-Version:Content-Type; b=EDJr5JHab0A2HZm6LjJ36pAxzOeJ1ob+UU21rWLQshnMDs4z8PR9LgyAbVLO2K4+8okkgGoBc46/p4vQ2rnt57NChxDHtFymi364FMnQGC8r4vquJwJtwOSiA04UIWzqgm8MYHtuFIcx1G7Oo3Zp/2G9mafOY6orYHIVj0c78/8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=aI0knvfU; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-115-113.bstnma.fios.verizon.net [173.48.115.113])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 49P3rvir027478
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 24 Oct 2024 23:53:59 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1729828440; bh=qaiYYma5NRcG8ZeNrHd001CeTFSSb9JE+1D5frVRGxA=;
+	h=From:Subject:Date:Message-ID:MIME-Version:Content-Type;
+	b=aI0knvfUYKu+L0O3YVCp+5T0YzLXsx14Tt+rtgaTdGyrG3BLFeOOF6auYkrdWeoEM
+	 vDi3kWg21jkHiSuW9oWZgkDM4WZK43riniBHqBryisjaJWhd/9cLSLNMY5cur7mY2U
+	 2w5wmCFomXlSqrzRgxzpShrRfL2tYXx2GFTPr8LNwqfh8tPbLsFx6rYaA6shv9aDO/
+	 6YkXVHELQkjqHSl8ANCcyI0hgOn64L7JyXwfGpGGKz0tuf0+FPwJdsQPM92b47sePl
+	 4qwd7X9phd8+PSf5+Ds840Su7zX+SmlkG5jzPs1gPJZa80KaAnO3qF9LY4zXRTmbES
+	 Wh4XAJLi/ligA==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id A2C8415C0329; Thu, 24 Oct 2024 23:53:57 -0400 (EDT)
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH] tests: write f_badjour_encrypted output to log
+Date: Thu, 24 Oct 2024 23:53:45 -0400
+Message-ID: <172982841322.4001088.5093484687711589094.b4-ty@mit.edu>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240605200408.55221-1-adilger@dilger.ca>
+References: <20240605200408.55221-1-adilger@dilger.ca>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
-EXT4 supports bigalloc feature which allows the FS to work in size of
-clusters (group of blocks) rather than individual blocks. This patch
-adds atomic write support for bigalloc so that systems with bs = ps can
-create FS using -
-    mkfs.ext4 -F -O bigalloc -b 4096 -C 16384 <dev>
 
-EXT4 can then adjust it's atomic write unit max value to cluster size.
-This can then support atomic write of size anywhere between
-[blocksize, clustersize].
+On Wed, 05 Jun 2024 14:03:52 -0600, Andreas Dilger wrote:
+> Write the mke2fs and debugfs output from f_badjour_encrypted/script
+> into a log file instead of stdout/stderr, so that it doesn't mess
+> up the "make check" output, and is available if this test ever fails.
+> 
+> 
 
-Note: bigalloc can support writes of the pattern [0 16k] followed by [0 8k].
-However, if there is a write pattern detected of type [0 8k] followed by
-[0 16k], then we return an error (-EINVAL). It is ok to return an error here
-to avoid splitting of atomic write request. This is ok because anyways
-atomic write requests has many constraints to follow for e.g. writes of
-form which does not follow natural alignment [4k, 12k] ([start, end]) can
-also return -EINVAL (check generic_atomic_write_valid()).
-Hence the current patch adds the base support needed to support
-atomic writes with bigalloc. This is helpful for systems with 4k
-pagesize to support atomic writes.
+Applied, thanks!
 
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- fs/ext4/inode.c | 13 +++++++++++++
- fs/ext4/super.c |  9 +++++++--
- 2 files changed, 20 insertions(+), 2 deletions(-)
+[1/1] tests: write f_badjour_encrypted output to log
+      commit: 5cf2c6b1df44e5ef145a5af8e6317ad87b190500
 
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 897c028d5bc9..2dee8514d2f8 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3423,6 +3423,19 @@ static int ext4_iomap_begin(struct inode *inode, loff_t offset, loff_t length,
- 	 */
- 	map.m_len = fscrypt_limit_io_blocks(inode, map.m_lblk, map.m_len);
- 
-+	/*
-+	 * [0 16k] followed by [0 8k] can work with bigalloc. However,
-+	 * For now we don't support atomic writes of the pattern
-+	 * [0 8k] followed by [0 16k] in case of bigalloc. This is because it
-+	 * can cause the atomic writes to split in the iomap layer.
-+	 * Atomic writes anyways has many constraints, so as a base support to
-+	 * enable atomic writes using bigalloc, it is ok to return an error for
-+	 * an unsupported write request.
-+	 */
-+	if (flags & IOMAP_ATOMIC) {
-+		if (map.m_len < (length >> blkbits))
-+			return -EINVAL;
-+	}
- 	ext4_set_iomap(inode, iomap, &map, offset, length, flags);
- 
- 	return 0;
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index f5c075aff060..eba16989ce36 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -4428,12 +4428,14 @@ static int ext4_handle_clustersize(struct super_block *sb)
- /*
-  * ext4_atomic_write_init: Initializes filesystem min & max atomic write units.
-  * @sb: super block
-- * TODO: Later add support for bigalloc
-  */
- static void ext4_atomic_write_init(struct super_block *sb)
- {
- 	struct ext4_sb_info *sbi = EXT4_SB(sb);
- 	struct block_device *bdev = sb->s_bdev;
-+	unsigned int blkbits = sb->s_blocksize_bits;
-+	unsigned int clustersize = sb->s_blocksize;
-+
- 
- 	if (!bdev_can_atomic_write(bdev))
- 		return;
-@@ -4441,9 +4443,12 @@ static void ext4_atomic_write_init(struct super_block *sb)
- 	if (!ext4_has_feature_extents(sb))
- 		return;
- 
-+	if (ext4_has_feature_bigalloc(sb))
-+		clustersize = 1U << (sbi->s_cluster_bits + blkbits);
-+
- 	sbi->fs_awu_min = max(sb->s_blocksize,
- 			      bdev_atomic_write_unit_min_bytes(bdev));
--	sbi->fs_awu_max = min(sb->s_blocksize,
-+	sbi->fs_awu_max = min(clustersize,
- 			      bdev_atomic_write_unit_max_bytes(bdev));
- 	if (sbi->fs_awu_min && sbi->fs_awu_max &&
- 			sbi->fs_awu_min <= sbi->fs_awu_max) {
+Best regards,
 -- 
-2.46.0
-
+Theodore Ts'o <tytso@mit.edu>
 
