@@ -1,247 +1,300 @@
-Return-Path: <linux-ext4+bounces-4785-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4786-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 851F79B0D4A
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 20:30:49 +0200 (CEST)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A15719B0E14
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 21:15:56 +0200 (CEST)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A95721C22686
-	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 18:30:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 21A361F24FB4
+	for <lists+linux-ext4@lfdr.de>; Fri, 25 Oct 2024 19:15:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 388331FDFA8;
-	Fri, 25 Oct 2024 18:29:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3F4320EA37;
+	Fri, 25 Oct 2024 19:15:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I90BXuWw"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Y0JN0wkw"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0EC818BC0E;
-	Fri, 25 Oct 2024 18:28:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2396F20C325;
+	Fri, 25 Oct 2024 19:15:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1729880939; cv=none; b=baTGtaiS5oMO148QJnLlwZkxbt5+4qnNTcqyAt04GOTcCQerTNNW8d7VRyWaCt8BQ2P9jODd9OUXZFOjqgjgDTtso/44w1W+BAV4TzJcbspi3jEptKHVcOagZsjao8RbAjCMvMoKRkbyJbE57yu49JC5mC5x7l+1QoR0QkgDM4I=
+	t=1729883744; cv=none; b=FxjkOsUrAKafsJ77mNNDSYAkDlBhH+lGalT/FFhstTx5FUffJDI5APas7SjAvFBAn3Tt8Oveu5BmsF5ndjYAZrxJnluAxgpMqpAZ62JaYXqMCsEERQMq/WVSnv1Lk6vUv9PvzTxMjJdDTLJ7mnFQHqCctpZBgvr6FamrzK7hlx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1729880939; c=relaxed/simple;
-	bh=4I5j/AD/SHyvVngXf3BZWdCJ3TDjPt4eufqTQIN4w4c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Pr8qFSjFOH+6IKfIqAxgWtehbwU/J61CVDHUJp5p240su5dNkV/UwkWUdRuO+nJJL5YXLOCKdgMLV9cue4VsqDs8CPuxjvSXgniw4lNBSMe7geaWoiVysm1U+sMGxfvAdnoYCKqkqbsQkgKc9bq7cBrEiQ2IT9KCcs9au6l1BEk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I90BXuWw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3D37EC4CEC3;
-	Fri, 25 Oct 2024 18:28:59 +0000 (UTC)
+	s=arc-20240116; t=1729883744; c=relaxed/simple;
+	bh=LZGDCp6OlDYJbJtHkdL+6H+pJYptArgs+2dHiDwITZc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RpatHL2cbHrAaSXrRSyAd8eETgft08xHyGiheuQqlLIVU67GkJ/+Pg0nPhvC+lIs7RWnTBKdm2LZWt6zE3/Y9ok0j6QDAlrgnwnfmYiWncGksQB+qWEg7HF3dFGb5VaeBMlNk/9R0WsYNVwrikN5U/3LDnqCj5/fQUjAJMxvZJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Y0JN0wkw; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 475E8C4CEC3;
+	Fri, 25 Oct 2024 19:15:42 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1729880939;
-	bh=4I5j/AD/SHyvVngXf3BZWdCJ3TDjPt4eufqTQIN4w4c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=I90BXuWwgNxNtrqopdGcOJ+EuLNWitTQHGhiZil9bY7xmT/9uQNuR6ZJ4KNv5Xzp0
-	 /fQsBOnlVCZoi3b+QS4DKsBoEMP6tENQtN8vTSEg6Wgxo8SV2NUPphpwvgdJLHsekv
-	 K2/gDtMnWqgNy+V7k/5Nzt5kF9AOXu+vivinHhFOpo+NEzADZ5KQ8WMZwpTg29fZT/
-	 U5VAiqJqeb1OarCTTXePvKQbCYy3n89QaviuyyvcXAy5Rf+xZGy/3UibgHAsXFHKUn
-	 4YDmc6i0qS7FmP/SEi5fBLpGe9WCoPnVcK1fm2gmzBRwGLw8KkswBAaKeaQCf97maS
-	 7OFN9PXJIF0aw==
-Date: Fri, 25 Oct 2024 11:28:58 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: John Garry <john.g.garry@oracle.com>, linux-ext4@vger.kernel.org,
-	Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-	Christoph Hellwig <hch@infradead.org>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/6] iomap: Lift blocksize restriction on atomic writes
-Message-ID: <20241025182858.GM2386201@frogsfrogsfrogs>
-References: <1efb8d6d-ba2e-499d-abc5-e4f9a1e54e89@oracle.com>
- <87zfmsmsvc.fsf@gmail.com>
- <fc6fddee-2707-4cca-b0b7-983c8dd17e16@oracle.com>
- <87v7xgmpwo.fsf@gmail.com>
- <7e322989-c6e0-424a-94bd-3ad6ce5ffee9@oracle.com>
- <87ttd0mnuo.fsf@gmail.com>
- <7aea00d4-3914-414d-a18f-586a303868c1@oracle.com>
- <87r084mkat.fsf@gmail.com>
- <509180f3-4cc1-4cc2-9d43-5a1e728fb718@oracle.com>
- <87plnomfsy.fsf@gmail.com>
+	s=k20201202; t=1729883743;
+	bh=LZGDCp6OlDYJbJtHkdL+6H+pJYptArgs+2dHiDwITZc=;
+	h=From:To:Cc:Subject:Date:From;
+	b=Y0JN0wkwmr6zmfPhz4zcMXdXSOIJbvpOQK3aM+nPrlr7L/tFCk8os9NBxtFpg4vn0
+	 dLFBc416VqXGWtM9r9ov1yFLzdJ7tDKGM3DTCm8C1XP9h3pn2R5oHv8i37yCEgNrJm
+	 jYd7oy404MvLPHIfNzBnLjpTzFYm0NWzCQkNZVQfFpxZEqMgh8fzPSDEFy8pzvFM8E
+	 4KZ9a1M2IYILzjlFTs/Xmryv9MzjfXWbQQ7IPSnK/QrKO0u1MI4GWcbTM+oT+2ekdq
+	 6x6BQv/pD0QnVl3anqQ1StDrNgn9Gl/i37yoAyrCsV09En0oO+DVPJWjdzHdFCLW5G
+	 IjXRhBohyIqoQ==
+From: Eric Biggers <ebiggers@kernel.org>
+To: linux-kernel@vger.kernel.org
+Cc: linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-crypto@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-mips@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: [PATCH v2 00/18] Wire up CRC32 library functions to arch-optimized code
+Date: Fri, 25 Oct 2024 12:14:36 -0700
+Message-ID: <20241025191454.72616-1-ebiggers@kernel.org>
+X-Mailer: git-send-email 2.47.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87plnomfsy.fsf@gmail.com>
+Content-Transfer-Encoding: 8bit
 
-On Fri, Oct 25, 2024 at 07:43:17PM +0530, Ritesh Harjani wrote:
-> John Garry <john.g.garry@oracle.com> writes:
-> 
-> > On 25/10/2024 13:36, Ritesh Harjani (IBM) wrote:
-> >>>> So user will anyway will have to be made aware of not to
-> >>>> attempt writes of fashion which can cause them such penalties.
-> >>>>
-> >>>> As patch-6 mentions this is a base support for bs = ps systems for
-> >>>> enabling atomic writes using bigalloc. For now we return -EINVAL when we
-> >>>> can't allocate a continuous user requested mapping which means it won't
-> >>>> support operations of types 8k followed by 16k.
-> >>>>
-> >>> That's my least-preferred option.
-> >>>
-> >>> I think better would be reject atomic writes that cover unwritten
-> >>> extents always - but that boat is about to sail...
-> >> That's what this patch does.
-> >
-> > Not really.
-> >
-> > Currently we have 2x iomap restrictions:
-> > a. mapping length must equal fs block size
-> > b. bio created must equal total write size
-> >
-> > This patch just says that the mapping length must equal total write size 
-> > (instead of a.). So quite similar to b.
-> >
-> >> For whatever reason if we couldn't allocate
-> >> a single contiguous region of requested size for atomic write, then we
-> >> reject the request always, isn't it. Or maybe I didn't understand your comment.
-> >
-> > As the simplest example, for an atomic write to an empty file, there 
-> > should only be a single mapping returned to iomap_dio_bio_iter() and 
-> > that would be of IOMAP_UNWRITTEN type. And we don't reject that.
-> >
-> 
-> Ok. Maybe this is what I am missing. Could you please help me understand
-> why should such writes be rejected? 
-> 
-> For e.g. 
-> If FS could allocate a single contiguous IOMAP_UNWRITTEN extent of
-> atomic write request size, that means - 
-> 1. FS will allocate an unwritten extent.
-> 2. will do writes (using submit_bio) to the unwritten extent. 
-> 3. will do unwritten to written conversion. 
-> 
-> It is ok if either of the above operations fail right? If (3) fails
-> then the region will still be marked unwritten that means it will read
-> zero (old contents). (2) can anyway fail and will not result into
-> partial writes. (1) will anyway not result into any write whatsoever.
-> 
-> So we can never have a situation where there is partial writes leading
-> to mix of old and new write contents right for such cases? Which is what the
-> requirement of atomic/untorn write also is?
-> 
-> Sorry am I missing something here?
+This patchset is also available in git via:
 
-I must be missing something; to perform an untorn write, two things must
-happen --
+    git fetch https://git.kernel.org/pub/scm/linux/kernel/git/ebiggers/linux.git crc32-lib-v2
 
-1. The kernel writes the data to the storage device, and the storage
-device either persists all of it, or throws back an error having
-persisted none of it.
+CRC32 is a family of common non-cryptographic integrity check algorithms
+that are fairly fast with a portable C implementation and become far
+faster still with the CRC32 or carryless multiplication instructions
+that most CPUs have.  9 architectures already have optimized code for at
+least some CRC32 variants; however, except for arm64 this optimized code
+was only accessible through the crypto API, not the library functions.
 
-2. If (1) completes successfully, all file mapping updates for the range
-written must be persisted, or an error is thrown back and none of them
-are persisted.
+This patchset fixes that so that the CRC32 library functions use the
+optimized code.  This allows users to just use the library instead of
+the crypto API.  This is much simpler and also improves performance due
+to eliminating the crypto API overhead including an indirect call.  Some
+examples of updating users are included at the end of the patchset.
 
-iomap doesn't have to know how the filesystem satisfies (2); it just has
-to create a single bio containing all data pages or it rejects the
-write.
+Note: crc32c() was a weird case.  It was a library function layered on
+top of the crypto API, which in turn is layered on top of the real
+library functions.  So while it was easy to use, it was still subject to
+the crypto API overhead.  This patchset provides CRC32C acceleration in
+the real library functions directly.
 
-Currently, it's an implementation detail that the XFS directio write
-ioend code processes the file mapping updates for the range written by
-walking every extent mapping for that range and issuing separate
-transactions for each mapping update.  There's nothing that can restart
-the walk if it is interrupted.  That's why XFS cannot support multi
-fsblock untorn writes to blocks with different status.
+The updated CRC32 library design is:
 
-As I've said before, the most general solution to this would be to add a
-new log intent item that would track the "update all mappings in this
-file range" operation so that recovery could restart the walk.  This is
-the most technically challenging, so we decided not to implement it
-until there is demand.
+- Each arch's CRC32 code (all variants) is in arch/$ARCH/lib/crc32*.
+  This adopts what arm64 and riscv already did.  Note, the crypto
+  directory is not used because CRC32 is not a cryptographic algorithm.
 
-Having set aside the idea of redesigning ioend, the second-most general
-solution is pre-zeroing unwritten extents and holes so that
-->iomap_begin implementations can present a single mapping to the bio
-constructor.  Technically if there's only one unwritten extent or hole
-or cow, xfs can actually satisfy (2) because it only creates one
-transaction.
+- Weak symbols are no longer used.  Instead there are crc32*_base() and
+  crc32*_arch(), and the appropriate ones are called based on the
+  kconfig.  This is similar to how the ChaCha20 library code works.
 
-This gets me to the third and much less general solution -- only allow
-untorn writes if we know that the ioend only ever has to run a single
-transaction.  That's why untorn writes are limited to a single fsblock
-for now -- it's a simple solution so that we can get our downstream
-customers to kick the tires and start on the next iteration instead of
-spending years on waterfalling.
+- Each arch's CRC32 code is enabled by default when CRC32 is enabled,
+  but it can now be disabled, controlled by the choice that previously
+  controlled the base implementation only.  It can also now be built as
+  a module if CRC32 is a module too, in which case it will be
+  automatically loaded via direct symbol dependency when appropriate.
 
-Did you notice that in all of these cases, the capabilities of the
-filesystem's ioend processing determines the restrictions on the number
-and type of mappings that ->iomap_begin can give to iomap?
+- Instead of lots of pointless glue code that wires up each CRC32
+  variant to the crypto API for each architecture, we now just rely on
+  the existing shash algorithms that use the library functions.
 
-Now that we have a second system trying to hook up to the iomap support,
-it's clear to me that the restrictions on mappings are specific to each
-filesystem.  Therefore, the iomap directio code should not impose
-restrictions on the mappings it receives unless they would prevent the
-creation of the single aligned bio.
+- As before, the library functions don't provide access to off-CPU
+  crypto accelerators.  But these appear to have very little, if any,
+  real-world relevance for CRC32 which is very fast on CPUs.
 
-Instead, xfs_direct_write_iomap_begin and ext4_iomap_begin should return
-EINVAL or something if they look at the file mappings and discover that
-they cannot perform the ioend without risking torn mapping updates.  In
-the long run, ->iomap_begin is where this iomap->len <= iter->len check
-really belongs, but hold that thought.
+Future work should apply a similar cleanup to crct10dif which is a
+variant of CRC16.
 
-For the multi fsblock case, the ->iomap_begin functions would have to
-check that only one metadata update would be necessary in the ioend.
-That's where things get murky, since ext4/xfs drop their mapping locks
-between calls to ->iomap_begin.  So you'd have to check all the mappings
-for unsupported mixed state every time.  Yuck.
+I tested all arches in QEMU using CONFIG_CRC32_SELFTEST and the crypto
+self-tests, except for mips which I couldn't figure out how to do.
 
-It might be less gross to retain the restriction that iomap accepts only
-one mapping for the entire file range, like Ritesh has here.  Users
-might be ok with us saying that you can't do a 16k atomic write to a
-region where you previously did an 8k write until you write the other
-8k, even if someone has to write zeroes.  Users might be ok with the
-kernel allowing multi-fsblock writes but only if the stars align.  But
-to learn the answers to those questions, we have to put /something/ in
-the hands of our users.
+This patchset has the following dependencies on recent patches, which
+hopefully will be merged soon through the appropriate trees:
 
-For now (because we're already at -rc5), let's have xfs/ext4's
-->write_iter implementations restrict atomic writes to a single fsblock,
-and get both merged into the kernel.  Let's defer the multi fsblock work
-to 6.14, though I think we could take this patch.
+- "crypto - move crypto_simd_disabled_for_test to lib"
+  (https://lore.kernel.org/linux-crypto/20241018235343.425758-1-ebiggers@kernel.org/)
+- "crypto: x86/crc32c - jump table elimination and other cleanups"
+  (https://lore.kernel.org/linux-crypto/20241014042447.50197-1-ebiggers@kernel.org/)
+- "arm64: Speed up CRC-32 using PMULL instructions"
+  (https://lore.kernel.org/linux-crypto/20241018075347.2821102-5-ardb+git@google.com/)
+- "crypto: Enable fuzz testing for arch code"
+  (https://lore.kernel.org/linux-crypto/20241016185722.400643-4-ardb+git@google.com/)
+- "crypto: mips/crc32 - fix the CRC32C implementation"
+  (https://lore.kernel.org/linux-crypto/20241020180258.8060-1-ebiggers@kernel.org/)
+- "bcachefs: Explicitly select CRYPTO from BCACHEFS_FS"
+  (https://lore.kernel.org/linux-bcachefs/20241023183521.3752681-1-ebiggers@kernel.org/)
 
-Does that sound cool?
+Everything can be retrieved from git using the command given earlier.
 
---D
+Since this patchset touches many areas, getting it merged may be
+difficult.  One option is a pull request with the whole patchset
+directly to Linus.  Another is to have at least patches 1-4 taken
+through the crypto tree in v6.13; then the arch patches can land
+separately afterwards, followed by the rest.
 
-> >> 
-> >> If others prefer - we can maybe add such a check (e.g. ext4_dio_atomic_write_checks())
-> >> for atomic writes in ext4_dio_write_checks(), similar to how we detect
-> >> overwrites case to decide whether we need a read v/s write semaphore.
-> >> So this can check if the user has a partially allocated extent for the
-> >> user requested region and if yes, we can return -EINVAL from
-> >> ext4_dio_write_iter() itself.
-> >  > > I think this maybe better option than waiting until ->iomap_begin().
-> >> This might also bring all atomic write constraints to be checked in one
-> >> place i.e. during ext4_file_write_iter() itself.
-> >
-> > Something like this can be done once we decide how atomic writing to 
-> > regions which cover mixed unwritten and written extents is to be handled.
-> 
-> Mixed extent regions (written + unwritten) is a different case all
-> together (which can lead to mix of old and new contents).
-> 
-> 
-> But here what I am suggesting is to add following constraint in case of
-> ext4 with bigalloc - 
-> 
-> "Writes to a region which already has partially allocated extent is not supported."
-> 
-> That means we will return -EINVAL if we detect above case in
-> ext4_file_write_iter() and sure we can document this behavior.
-> 
-> In retrospect, I am not sure why we cannot add a constraint for atomic
-> writes (e.g. for ext4 bigalloc) and reject such writes outright,
-> instead of silently incurring a performance penalty by zeroing out the
-> partial regions by allowing such write request.
-> 
-> -ritesh
-> 
+Changed in v2:
+  - Added a way to determine if the arch-optimized code is actually
+    being used at runtime, and used this to register the appropriate
+    shash algorithms with crypto API.
+  - Added a patch that converts iSCSI to use the library.
+  - Listed a bcachefs patch as a dependency.
+  - Added Ard's Reviewed-by.
+
+Eric Biggers (18):
+  lib/crc32: drop leading underscores from __crc32c_le_base
+  lib/crc32: improve support for arch-specific overrides
+  lib/crc32: expose whether the lib is really optimized at runtime
+  crypto: crc32 - don't unnecessarily register arch algorithms
+  arm/crc32: expose CRC32 functions through lib
+  loongarch/crc32: expose CRC32 functions through lib
+  mips/crc32: expose CRC32 functions through lib
+  powerpc/crc32: expose CRC32 functions through lib
+  s390/crc32: expose CRC32 functions through lib
+  sparc/crc32: expose CRC32 functions through lib
+  x86/crc32: update prototype for crc_pcl()
+  x86/crc32: update prototype for crc32_pclmul_le_16()
+  x86/crc32: expose CRC32 functions through lib
+  lib/crc32: make crc32c() go directly to lib
+  ext4: switch to using the crc32c library
+  jbd2: switch to using the crc32c library
+  f2fs: switch to using the crc32 library
+  scsi: target: iscsi: switch to using the crc32c library
+
+ arch/arm/Kconfig                              |   1 +
+ arch/arm/configs/milbeaut_m10v_defconfig      |   1 -
+ arch/arm/configs/multi_v7_defconfig           |   1 -
+ arch/arm/crypto/Kconfig                       |  14 -
+ arch/arm/crypto/Makefile                      |   2 -
+ arch/arm/crypto/crc32-ce-glue.c               | 247 ------------
+ arch/arm/lib/Makefile                         |   3 +
+ .../crc32-ce-core.S => lib/crc32-core.S}      |   0
+ arch/arm/lib/crc32-glue.c                     | 118 ++++++
+ arch/arm64/Kconfig                            |   1 +
+ arch/arm64/lib/Makefile                       |   3 +-
+ arch/arm64/lib/crc32-glue.c                   |  30 +-
+ arch/loongarch/Kconfig                        |   1 +
+ arch/loongarch/configs/loongson3_defconfig    |   1 -
+ arch/loongarch/crypto/Kconfig                 |   9 -
+ arch/loongarch/crypto/Makefile                |   2 -
+ arch/loongarch/crypto/crc32-loongarch.c       | 300 ---------------
+ arch/loongarch/lib/Makefile                   |   2 +
+ arch/loongarch/lib/crc32-loongarch.c          | 130 +++++++
+ arch/mips/Kconfig                             |   5 +-
+ arch/mips/configs/eyeq5_defconfig             |   1 -
+ arch/mips/configs/eyeq6_defconfig             |   1 -
+ arch/mips/configs/generic/32r6.config         |   2 -
+ arch/mips/configs/generic/64r6.config         |   1 -
+ arch/mips/crypto/Kconfig                      |   9 -
+ arch/mips/crypto/Makefile                     |   2 -
+ arch/mips/crypto/crc32-mips.c                 | 354 ------------------
+ arch/mips/lib/Makefile                        |   2 +
+ arch/mips/lib/crc32-mips.c                    | 187 +++++++++
+ arch/powerpc/Kconfig                          |   1 +
+ arch/powerpc/configs/powernv_defconfig        |   1 -
+ arch/powerpc/configs/ppc64_defconfig          |   1 -
+ arch/powerpc/crypto/Kconfig                   |  15 +-
+ arch/powerpc/crypto/Makefile                  |   2 -
+ arch/powerpc/crypto/crc32c-vpmsum_glue.c      | 173 ---------
+ arch/powerpc/crypto/crct10dif-vpmsum_asm.S    |   2 +-
+ arch/powerpc/lib/Makefile                     |   3 +
+ arch/powerpc/lib/crc32-glue.c                 |  86 +++++
+ .../{crypto => lib}/crc32-vpmsum_core.S       |   0
+ .../{crypto => lib}/crc32c-vpmsum_asm.S       |   0
+ arch/riscv/Kconfig                            |   1 +
+ arch/riscv/lib/Makefile                       |   3 +-
+ arch/riscv/lib/{crc32.c => crc32-riscv.c}     |  30 +-
+ arch/s390/Kconfig                             |   1 +
+ arch/s390/configs/debug_defconfig             |   1 -
+ arch/s390/configs/defconfig                   |   1 -
+ arch/s390/crypto/Kconfig                      |  12 -
+ arch/s390/crypto/Makefile                     |   2 -
+ arch/s390/crypto/crc32-vx.c                   | 306 ---------------
+ arch/s390/lib/Makefile                        |   3 +
+ arch/s390/lib/crc32-glue.c                    |  86 +++++
+ arch/s390/{crypto => lib}/crc32-vx.h          |   0
+ arch/s390/{crypto => lib}/crc32be-vx.c        |   0
+ arch/s390/{crypto => lib}/crc32le-vx.c        |   0
+ arch/sparc/Kconfig                            |   1 +
+ arch/sparc/crypto/Kconfig                     |  10 -
+ arch/sparc/crypto/Makefile                    |   4 -
+ arch/sparc/crypto/crc32c_glue.c               | 184 ---------
+ arch/sparc/lib/Makefile                       |   2 +
+ arch/sparc/lib/crc32_glue.c                   |  86 +++++
+ arch/sparc/{crypto => lib}/crc32c_asm.S       |   2 +-
+ arch/x86/Kconfig                              |   1 +
+ arch/x86/crypto/Kconfig                       |  22 --
+ arch/x86/crypto/Makefile                      |   7 -
+ arch/x86/crypto/crc32-pclmul_glue.c           | 202 ----------
+ arch/x86/crypto/crc32c-intel_glue.c           | 250 -------------
+ arch/x86/lib/Makefile                         |   4 +
+ arch/x86/lib/crc32-glue.c                     | 116 ++++++
+ .../crc32-pclmul_asm.S => lib/crc32-pclmul.S} |  19 +-
+ .../crc32c-3way.S}                            |  63 ++--
+ crypto/crc32_generic.c                        |   8 +-
+ crypto/crc32c_generic.c                       |  12 +-
+ drivers/target/iscsi/Kconfig                  |   3 +-
+ drivers/target/iscsi/iscsi_target.c           | 153 +++-----
+ drivers/target/iscsi/iscsi_target_login.c     |  50 ---
+ drivers/target/iscsi/iscsi_target_login.h     |   1 -
+ drivers/target/iscsi/iscsi_target_nego.c      |  21 +-
+ fs/ext4/Kconfig                               |   3 +-
+ fs/ext4/ext4.h                                |  25 +-
+ fs/ext4/super.c                               |  15 -
+ fs/f2fs/Kconfig                               |   3 +-
+ fs/f2fs/f2fs.h                                |  19 +-
+ fs/f2fs/super.c                               |  15 -
+ fs/jbd2/Kconfig                               |   2 -
+ fs/jbd2/journal.c                             |  25 +-
+ include/linux/crc32.h                         |  50 ++-
+ include/linux/crc32c.h                        |   7 +-
+ include/linux/jbd2.h                          |  31 +-
+ include/target/iscsi/iscsi_target_core.h      |   3 -
+ lib/Kconfig                                   |  80 ++--
+ lib/Makefile                                  |   1 -
+ lib/crc32.c                                   |  29 +-
+ lib/crc32test.c                               |   2 +-
+ lib/libcrc32c.c                               |  74 ----
+ 94 files changed, 1128 insertions(+), 2637 deletions(-)
+ delete mode 100644 arch/arm/crypto/crc32-ce-glue.c
+ rename arch/arm/{crypto/crc32-ce-core.S => lib/crc32-core.S} (100%)
+ create mode 100644 arch/arm/lib/crc32-glue.c
+ delete mode 100644 arch/loongarch/crypto/crc32-loongarch.c
+ create mode 100644 arch/loongarch/lib/crc32-loongarch.c
+ delete mode 100644 arch/mips/crypto/crc32-mips.c
+ create mode 100644 arch/mips/lib/crc32-mips.c
+ delete mode 100644 arch/powerpc/crypto/crc32c-vpmsum_glue.c
+ create mode 100644 arch/powerpc/lib/crc32-glue.c
+ rename arch/powerpc/{crypto => lib}/crc32-vpmsum_core.S (100%)
+ rename arch/powerpc/{crypto => lib}/crc32c-vpmsum_asm.S (100%)
+ rename arch/riscv/lib/{crc32.c => crc32-riscv.c} (90%)
+ delete mode 100644 arch/s390/crypto/crc32-vx.c
+ create mode 100644 arch/s390/lib/crc32-glue.c
+ rename arch/s390/{crypto => lib}/crc32-vx.h (100%)
+ rename arch/s390/{crypto => lib}/crc32be-vx.c (100%)
+ rename arch/s390/{crypto => lib}/crc32le-vx.c (100%)
+ delete mode 100644 arch/sparc/crypto/crc32c_glue.c
+ create mode 100644 arch/sparc/lib/crc32_glue.c
+ rename arch/sparc/{crypto => lib}/crc32c_asm.S (92%)
+ delete mode 100644 arch/x86/crypto/crc32-pclmul_glue.c
+ delete mode 100644 arch/x86/crypto/crc32c-intel_glue.c
+ create mode 100644 arch/x86/lib/crc32-glue.c
+ rename arch/x86/{crypto/crc32-pclmul_asm.S => lib/crc32-pclmul.S} (95%)
+ rename arch/x86/{crypto/crc32c-pcl-intel-asm_64.S => lib/crc32c-3way.S} (92%)
+ delete mode 100644 lib/libcrc32c.c
+
+-- 
+2.47.0
+
 
