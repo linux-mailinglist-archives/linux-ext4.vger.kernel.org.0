@@ -1,135 +1,135 @@
-Return-Path: <linux-ext4+bounces-4825-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4826-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C32139B1FAE
-	for <lists+linux-ext4@lfdr.de>; Sun, 27 Oct 2024 19:19:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3817D9B210D
+	for <lists+linux-ext4@lfdr.de>; Sun, 27 Oct 2024 23:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 82D8E281690
-	for <lists+linux-ext4@lfdr.de>; Sun, 27 Oct 2024 18:19:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D78221F21347
+	for <lists+linux-ext4@lfdr.de>; Sun, 27 Oct 2024 22:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4A2E18755F;
-	Sun, 27 Oct 2024 18:18:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF4117E900;
+	Sun, 27 Oct 2024 22:26:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fe02/s6E"
+	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="IjW6bUL0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+Received: from mail-pf1-f178.google.com (mail-pf1-f178.google.com [209.85.210.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD15175D4F;
-	Sun, 27 Oct 2024 18:18:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADB4C17BB38
+	for <linux-ext4@vger.kernel.org>; Sun, 27 Oct 2024 22:26:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730053083; cv=none; b=b126QtEfOAeXfsMhe9hX7ukoZzth01Rx7RV6VRiFmUHN7l3RQMlRYzMxr0yh3z5/wYK5K13HzZeYvUzzWmCP8DConvYa2m34MMlYOAzpTz9+kXuD9pfwaWndQAcrkWSZUAq5zNPMV4tePY/POAJQhvFs+/AnD2hw5ja77jReGMk=
+	t=1730067998; cv=none; b=VFkpj5gInl8XfWB4mF0Hdqpfq2FQlspriuZeyW4td5YEjip/6njXFe4r75znkyYhgnTgKk0btZerxeKJnWOu60CFCcpbJ1cQ1CPHc0XLrw3iaLPBmKzVbJDrFLMxYJ2DORLh53n/5F4DcwGiLpnfJbbfFXuCacAbnVIry+XRdOQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730053083; c=relaxed/simple;
-	bh=kzZEMQtGjT3xUvEAgHBfB/Plmy9itmDznejbLu1l7yo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VGUuerI4ovDzMal0G7468tJn1pYhPa8yI4O0jaV9crGjZtTbiU4UkpIZ5kl7MYVId2+S9GAeVr0M+WXDgMMEJLqsL1z2JlhBPlM3apIEJGjVL9GspRNisC8OGtwOHzBmj4lxLwkBdfCaMpQHTVaums3AD1u8nHruK4pdVjKG3pw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fe02/s6E; arc=none smtp.client-ip=209.85.214.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-207115e3056so29127435ad.2;
-        Sun, 27 Oct 2024 11:18:01 -0700 (PDT)
+	s=arc-20240116; t=1730067998; c=relaxed/simple;
+	bh=zMgjdlwzIGQ5AXpdeYA4WHxBtuo2laAJNVW4nG/kSKM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nplMw+hmj+o0kjuxp4xFXocV78Reyaz/a4rf1VTyIt0Od1nScPsLFihoH4teTmFP+i9PC6taqAMn6IE2UuBv6mVHLdRXNCC4kbY85qsMLNgZKAXs2Yb0bXl53XKzHKUQIXZ6Oq5aaIUSsTKgrButu/prT8HV5FiBmiTa8wo7gT8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=IjW6bUL0; arc=none smtp.client-ip=209.85.210.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
+Received: by mail-pf1-f178.google.com with SMTP id d2e1a72fcca58-71e5a1c9071so2740628b3a.0
+        for <linux-ext4@vger.kernel.org>; Sun, 27 Oct 2024 15:26:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730053080; x=1730657880; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NHyJQcVgH8e0oFFdgLIXEiGBIAl5grLOxXR97atkfWU=;
-        b=fe02/s6EK3Dhoqh6+i/38MfVtPrauywLohVUm7lxjHgdg5k0PKRrK3rqmZnu4Fmf/w
-         UDjF7tLKR5eHP2RbL0bhqueCHnFlc8JZJEIfoM+gXcSiZX96MQjqFg5UymE5dIV4qNVN
-         TihQ5D/sreHl/DQCVXl3TZLGLNxUNwpHIC1KJHAVNw/tCBP6GeQ5D965Dwg2GsA8rVaP
-         +wqwy48eUduxxqCRlkaMjbRsArS+MbQoybmR1RbgmjSzPU2FlxLtTEssL5yGZlYC8NDf
-         bFFGaBXtsI0MvuWVMVzFnIF/tlgdHmXGHrKw3Py5UQyeS8lTdbsjsJUe2fkHDrzocF5t
-         x94g==
+        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1730067996; x=1730672796; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D5KLTPWrKVlL1s8NH4uZYFz8Mrab34cutllMbEGsnf0=;
+        b=IjW6bUL0w0GP95A1OFoZtgJysmSK+I/YlutjD47ZGavOQkpRBMljk56UkLzQppNFLy
+         NSCS5b2oTnbc6focB85L/cPvTl8aWbQtup/EHtoyGyhjD/zU+6dMqvS5464cJZHEzfVT
+         YdPbiVD9GzQoN63AEALWVI7nWHv7JU5/rNGdW9t651c1gh5A9huuhP8Bnow3b6XaqagK
+         OCg3ubri/hR/BGRapJLMW4T4yuKwJZ0ZKXyxzB/gIo+rGlZUFz123qiTKq5Gsw14VPdj
+         I5d4U7tsa86RrwztM9D8lmbRwS7CKfuZPzzltx3ZCjo2CVahXpxWl6hWz5Ykzb7s4Q1Q
+         Dcaw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730053080; x=1730657880;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NHyJQcVgH8e0oFFdgLIXEiGBIAl5grLOxXR97atkfWU=;
-        b=Ua+CcUL7wtn+ynzz2JsAd/weN0NpLakXAmQH3QSOHmBWPueRgl+jcY/8IDPmj3Bgzq
-         QIpl0pTJUAuaFK25m28dUAXwZZir/L/s4tFrMaug5hNKkRG9lJhHsIUVcLyegtRaUwDE
-         BEGucmqsW+Fqkf8BelShYV9zAyTJlm8vUjc/WJYWyW7edeuBxEZQ2Hnix0bxy5yA3yQ7
-         FHJmV0y5KpOpGahHIyXoPgUQgveT3dBrRx3W5E7O3IFt1QvfiuToMoclhBo9EJfyAKUX
-         B804jgMvg/bExhAsz57rfi5I/UaM2tGQ5Mjs8AeGSdrnF53gKkK02JKi7ahcCBP340yM
-         JZ+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVOvSWlG1eDHIkVzKTU6pyZtX5rZ+prUcRkjiLkJ6YW5F95FCpRmdhqW3HU3Qfz9xgoTS62OP80T/QqkvDg@vger.kernel.org, AJvYcCW0/BAHdEKAn9vgFbzSePVikXFo4DY683rG/W9Q7nfCer3lGde7HHSfd6Bqx2G71cP12+9EbSWNKyMYulI3@vger.kernel.org, AJvYcCWfJ9zjK2/dZKuSVyoH6KrAebFrE23TAf2hEKCvzPrY/R+AQCdUt7R7m/r5vMX7W4uXSdzV/p7mS/Yb@vger.kernel.org
-X-Gm-Message-State: AOJu0YzCbU5JMUda6BhjXyOC8aTcGM4NHSdcKTMqszUgQYsIf6ym+mA/
-	Vq/h95630qWS+VmVYrvY5RjfhknTWFJnL0/07ppnSoJi0ktZ27e9g6sHIQ==
-X-Google-Smtp-Source: AGHT+IHlK1DQGgtyzFZ/u5B+HQUDv5dmC5qOpcScmo4peyuali8RqyvqysJpa6H37hq37KZO+0Zbnw==
-X-Received: by 2002:a17:903:2309:b0:20c:5e86:9b5e with SMTP id d9443c01a7336-210c687399amr73289195ad.3.1730053080009;
-        Sun, 27 Oct 2024 11:18:00 -0700 (PDT)
-Received: from dw-tp.ibmuc.com ([171.76.83.19])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7edc867d0c1sm4306492a12.33.2024.10.27.11.17.56
+        d=1e100.net; s=20230601; t=1730067996; x=1730672796;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D5KLTPWrKVlL1s8NH4uZYFz8Mrab34cutllMbEGsnf0=;
+        b=kDhUKQHv6Y0/J6hUf7+/kPW7x2m4nwg/aKCxyWxlTgM9z6PGVHOFLV6yaTmHixAm1A
+         H9OPQy7amZXQ8b348Lmf0poY+Llb1CLYqxTbJJBgmayeo8/DG+68hzhcEHEwHF7F80JI
+         zB10/mdFwSeODY9kCEeCu6OgW/78Kd91Rru0K7l7h/z8XR/cO+DDIN2q7xXUfwggJmyT
+         b3xeoRDIVYSsCXbglmLoxjqzGM/7I0tIXRPVdJoe3pfJvmAQ21UBMctvKqdbzQT09utU
+         lIk2WdC7kb4EnIZDrjpWoNXhFu5sxWIFnM4W+jwIAQcwdNtP1Ue+S+64llavFcjobm/z
+         x99w==
+X-Gm-Message-State: AOJu0YyqFU0HrKTbCBcmrAMtisisRD19LL4POPxwHHq7jJWI3uiSBzkw
+	aoSIfCEeU4Ey9mJ+LVyR+AUoGGiZgpdosw0kBLNLIcGLxWhMvfVEk3JwOYNDq7g=
+X-Google-Smtp-Source: AGHT+IEAKeexdRAG9F5wrcM3jmaPqrDjugV8ZVU3CGrquy532srSBlH8YaKtAz3ee9RU27iCMWii5w==
+X-Received: by 2002:a05:6a00:845:b0:71e:7674:4cf6 with SMTP id d2e1a72fcca58-72062f8335fmr9345518b3a.8.1730067995974;
+        Sun, 27 Oct 2024 15:26:35 -0700 (PDT)
+Received: from dread.disaster.area (pa49-186-86-168.pa.vic.optusnet.com.au. [49.186.86.168])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72057935dafsm4482206b3a.87.2024.10.27.15.26.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Oct 2024 11:17:59 -0700 (PDT)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.cz>,
-	"Darrick J . Wong" <djwong@kernel.org>,
+        Sun, 27 Oct 2024 15:26:35 -0700 (PDT)
+Received: from dave by dread.disaster.area with local (Exim 4.96)
+	(envelope-from <david@fromorbit.com>)
+	id 1t5BiR-006eji-2a;
+	Mon, 28 Oct 2024 09:26:31 +1100
+Date: Mon, 28 Oct 2024 09:26:31 +1100
+From: Dave Chinner <david@fromorbit.com>
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Jan Kara <jack@suse.cz>, "Darrick J . Wong" <djwong@kernel.org>,
 	Christoph Hellwig <hch@infradead.org>,
 	John Garry <john.g.garry@oracle.com>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Dave Chinner <david@fromorbit.com>,
-	linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH v2 4/4] ext4: Do not fallback to buffered-io for DIO atomic write
-Date: Sun, 27 Oct 2024 23:47:28 +0530
-Message-ID: <80da397c359adaf54b87999eff6a63b331cfbcfc.1729944406.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <cover.1729944406.git.ritesh.list@gmail.com>
-References: <cover.1729944406.git.ritesh.list@gmail.com>
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH 4/6] ext4: Warn if we ever fallback to buffered-io for
+ DIO atomic writes
+Message-ID: <Zx6+F4Cl1owSDspD@dread.disaster.area>
+References: <cover.1729825985.git.ritesh.list@gmail.com>
+ <7c4779f1f0c8ead30f660a2cfbdf4d7cc08e405a.1729825985.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c4779f1f0c8ead30f660a2cfbdf4d7cc08e405a.1729825985.git.ritesh.list@gmail.com>
 
-iomap can return -ENOTBLK if pagecache invalidation fails.
-Let's make sure if -ENOTBLK is ever returned for atomic
-writes than we fail the write request (-EIO) instead of
-fallback to buffered-io.
+On Fri, Oct 25, 2024 at 09:15:53AM +0530, Ritesh Harjani (IBM) wrote:
+> iomap will not return -ENOTBLK in case of dio atomic writes. But let's
+> also add a WARN_ON_ONCE and return -EIO as a safety net.
+> 
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> ---
+>  fs/ext4/file.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index f9516121a036..af6ebd0ac0d6 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -576,8 +576,16 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  		iomap_ops = &ext4_iomap_overwrite_ops;
+>  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
+>  			   dio_flags, NULL, 0);
+> -	if (ret == -ENOTBLK)
+> +	if (ret == -ENOTBLK) {
+>  		ret = 0;
+> +		/*
+> +		 * iomap will never return -ENOTBLK if write fails for atomic
+> +		 * write. But let's just add a safety net.
+> +		 */
+> +		if (WARN_ON_ONCE(iocb->ki_flags & IOCB_ATOMIC))
+> +			ret = -EIO;
+> +	}
 
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- fs/ext4/file.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+Why can't the iomap code return EIO in this case for IOCB_ATOMIC?
+That way we don't have to put this logic into every filesystem.
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 8116bd78910b..22d31b4fdff3 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -576,8 +576,18 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		iomap_ops = &ext4_iomap_overwrite_ops;
- 	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
- 			   dio_flags, NULL, 0);
--	if (ret == -ENOTBLK)
-+	if (ret == -ENOTBLK) {
- 		ret = 0;
-+		/*
-+		 * iomap can return -ENOTBLK if pagecache invalidation fails.
-+		 * Let's make sure if -ENOTBLK is ever returned for atomic
-+		 * writes than we fail the write request instead of fallback
-+		 * to buffered-io.
-+		 */
-+		if (iocb->ki_flags & IOCB_ATOMIC)
-+			ret = -EIO;
-+	}
-+
- 	if (extend) {
- 		/*
- 		 * We always perform extending DIO write synchronously so by
---
-2.46.0
+When/if we start supporting atomic writes for buffered IO, then it's
+worth pushing this out to filesystems, but right now it doesn't seem
+necessary...
 
+-Dave.
+-- 
+Dave Chinner
+david@fromorbit.com
 
