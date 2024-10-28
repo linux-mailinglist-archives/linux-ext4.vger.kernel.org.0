@@ -1,206 +1,119 @@
-Return-Path: <linux-ext4+bounces-4832-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4833-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 95AF09B2B83
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 10:27:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 943F89B3033
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 13:28:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 15A3A1F21C0E
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 09:27:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 58484281A24
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 12:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E0801D1F7E;
-	Mon, 28 Oct 2024 09:24:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF2EB1DA10E;
+	Mon, 28 Oct 2024 12:27:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HDENCYm7"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YOSHXXAD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA46F199247;
-	Mon, 28 Oct 2024 09:24:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 734771D934B;
+	Mon, 28 Oct 2024 12:27:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730107490; cv=none; b=VR0SsAHUVTpvHCOm7j8CgseRT/DtMJBB3cty4Buf+VxDgZgVU3RZPtS+OyIwSmbGm8+zmGXbmibDJGZx87GArmmU2hEGWKQ8y7nsQ1JkTfz2rdZ1Pkge2b4XNNvOz9y2YjQpAQsg0q1P4ofgd1FLkRlm0JXuExa1oQ8gYf/9UvU=
+	t=1730118453; cv=none; b=YVZqgiqRHxrfFRmIsXsAxSosTAHjjkF7ryAeH8qjtR90GAp3Ot+UXQ+Co1a7zYDy/PKiXBkW3r/mW11PNbOpjq/RPucVTm8mWklY0yn9/2O5FvSPYW48J7d0t7ucIzLVGiYOCP+F5aLRP+Lcq0MY4vFw/4GK13WMG97xvU7CC38=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730107490; c=relaxed/simple;
-	bh=ZV9RBcstAJev0uUdkdHZIT0ZH8NAfdvVV5j+xySTPjE=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=jCI/vll7YJGoUX16DwSg55uThAKDNgfY8SwhyXcF4u0PhKojpeVMG5f20yGgQVm6OoZcyO3ocHxdbyOicPwfJX7/rtrix8+Vtsl5XfvXRykNSv8lODT1Tv8+lGEnuJ6FJDbiXTzdqp11l2zBGh+YDKgkN8uvOf9PYpbDBeErH/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HDENCYm7; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-2e91403950dso260066a91.3;
-        Mon, 28 Oct 2024 02:24:48 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730107487; x=1730712287; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=4arsEPgLvopJkZ0EO0mxM7Hlfe/zqijt2s3+ooF9jok=;
-        b=HDENCYm7GUTAJeCzR+n8AtTTPRv6YXd6A5Ldhnjw4CAHFV1Anr507GvjIYfQRdBcc7
-         +1bgEyjIHVKS8jAcQ+RxrtVDchgpp+rSE/q3arXmWSvWvrZm+aHqEZ3Ut3YDaO14zQ2V
-         ZjxwGabFhXcpI9QXBeRozFzvxmuSA2FeWrnErULdTJE/xJiiNBERKl8szEYg6luTYnOh
-         yJgpi+gvbbupHzPFBE+EQOPbwwBnuVYoZzPKDfmDDEtVjbqhoKkl/OOEjETd+NtsAKCc
-         4M293fxM020vrDF8w74cDMpLBRXdKU3cXFK/gsrhOY766dYLROxfVyAo5/jStHNlIlV2
-         mCxg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730107487; x=1730712287;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=4arsEPgLvopJkZ0EO0mxM7Hlfe/zqijt2s3+ooF9jok=;
-        b=fTJ2ahn8geI7XfNQgUaBF7bIUGkLcc8xES8Q5CpnouD5XYyl/H6hCBTrMPETZ9eN9t
-         y5tqejCM5Yv6KUZHMpy3N0lqJgN+PJf0wGZcID5zchMLYgCMqLFip4plZEjU+D34OA3J
-         4xKUUX45dy4bmPjal7hZ1FNijOub2CU4JIACAx0yd/FE4hvNkNuBVctv4pa6+BJg8vYM
-         QqWl8izEoCXUMu6Rs6N/MfnL8VSyRxnC3YDB9obCUvxMwX2n+AVcke/o+KcPmX0mYc3V
-         rjcZomth2UF7ICqM2a2lexGNt36W2vsdPYuAE40qne8s2roSHAHkAd701BzlPIR6chCW
-         031Q==
-X-Forwarded-Encrypted: i=1; AJvYcCV+WuqtGd6GdwxK+LleTrQYUPvhEdk/C0G4Kt/CCurDzp4+y9UfqlDeTrdBveiEGrIMQwod0hVQzpv/YfV3@vger.kernel.org, AJvYcCWBrKwZerCHz/DS8QuhFiqm7q3o+fJMH01j0D33GVZaA0cvT7S1jvqpHss1V7YnuYzehpp4LKYLVlhi6cDj@vger.kernel.org, AJvYcCXirYG0pmjptVd3CR0jajgQMtvGk1sM2pNzjSdXFBY/4EwHX3iP7xQVnfBhz3SIJAQmi0DS4JoGJr47@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx0J1QMwt1Pb8iSWYaRWhUzoHTsn1hpY1S6K6H8V3Sx9+CQ/p8a
-	596H2/LpapomNVHYc8vjtJ8mgh/U0rYX4A7vA9RTgxzUnCtNR1I9ugDmZg==
-X-Google-Smtp-Source: AGHT+IGZUQenfUPUmlTWBuGMWDZvH08YhwJYtXJrfvnf1RSW0PPEJptrNxQI9FEs/ZPyMHG7tqeTbQ==
-X-Received: by 2002:a17:90a:e7cd:b0:2e2:c406:ec8d with SMTP id 98e67ed59e1d1-2e8f11b96admr10022723a91.31.1730107486942;
-        Mon, 28 Oct 2024 02:24:46 -0700 (PDT)
-Received: from dw-tp ([129.41.58.7])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e8e3771814sm6645564a91.52.2024.10.28.02.24.43
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 28 Oct 2024 02:24:46 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, "Darrick J . Wong" <djwong@kernel.org>, Christoph Hellwig <hch@infradead.org>, John Garry <john.g.garry@oracle.com>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 4/6] ext4: Warn if we ever fallback to buffered-io for DIO atomic writes
-In-Reply-To: <Zx8ga59h0JgU/YIC@dread.disaster.area>
-Date: Mon, 28 Oct 2024 14:13:54 +0530
-Message-ID: <87bjz4mxbp.fsf@gmail.com>
-References: <cover.1729825985.git.ritesh.list@gmail.com> <7c4779f1f0c8ead30f660a2cfbdf4d7cc08e405a.1729825985.git.ritesh.list@gmail.com> <Zx6+F4Cl1owSDspD@dread.disaster.area> <87iktdm3sf.fsf@gmail.com> <Zx8ga59h0JgU/YIC@dread.disaster.area>
+	s=arc-20240116; t=1730118453; c=relaxed/simple;
+	bh=dBjKbQ72OiI43nKphYScHzSn1tB9+kybe2uOdPkKmfk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=nSBmDG+2HdQmwQ2bppGfWOST9Iqy9hWtahu58E+ehTOUGHT3tRICJ4bWXOKz07enHV2oaqZoTfjG+E9hEPXZIOaAhOOVMGc0GZd9EN1jdRWDnNtD+8PSpUSEvRx+oyNPb4dkJs/udpzrQik0BiMoKskeXmidm9FTxA254zNv6Bg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YOSHXXAD; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F37D2C4CEC3;
+	Mon, 28 Oct 2024 12:27:26 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730118452;
+	bh=dBjKbQ72OiI43nKphYScHzSn1tB9+kybe2uOdPkKmfk=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=YOSHXXADjGIBHyQ2Iftg3bbghvOAJhq4EiqJMrhlWca7rTdICjxerGGqjybHz8Qbc
+	 1qq4wiHrRsAx7igB0qYo6Fqnnd4v2M9lfSoJiAEGsptqUmxJ3sPaIMsxPQFCXqFOFL
+	 G+8gnI756fFPrU5ye1iVoLnZitTPARuyPmAm5Zr5zW9eEIWd87YAkF5UWbkl8dzTD2
+	 Uyg1eVjUX/UcLLTT43Tpkx9dTMBwIE6R8L9X9vh1BDbi0Yg/K36rlQ2o1QGqS89eCT
+	 w666gTjX8lDiJQgsvbQmQAEqb5SeAZ7EXAbq3j/7n7enXbhgYmzw0IOiEXpI0DWbHu
+	 erUXacxTtG8bQ==
+From: Christian Brauner <brauner@kernel.org>
+To: "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	cgroups@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-fsdevel@vger.kernel.org,
+	mcgrof@kernel.org,
+	gost.dev@samsung.com,
+	linux-doc@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	Pankaj Raghav <p.raghav@samsung.com>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Chao Yu <chao@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	willy@infradead.org,
+	Josef Bacik <josef@toxicpanda.com>,
+	Johannes Weiner <hannes@cmpxchg.org>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	"Darrick J . Wong" <djwong@kernel.org>,
+	Zefan Li <lizefan.x@bytedance.com>,
+	Tejun Heo <tj@kernel.org>,
+	akpm@linux-foundation.org,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Jaegeuk Kim <jaegeuk@kernel.org>,
+	Jan Kara <jack@suse.cz>,
+	Chris Mason <clm@fb.com>,
+	David Sterba <dsterba@suse.com>
+Subject: Re: [PATCH] fs/writeback: convert wbc_account_cgroup_owner to take a folio
+Date: Mon, 28 Oct 2024 13:27:12 +0100
+Message-ID: <20241028-jazzclub-kulant-81ce918f186d@brauner>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20240926140121.203821-1-kernel@pankajraghav.com>
+References: <20240926140121.203821-1-kernel@pankajraghav.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1219; i=brauner@kernel.org; h=from:subject:message-id; bh=dBjKbQ72OiI43nKphYScHzSn1tB9+kybe2uOdPkKmfk=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaTLN2uu+DzdfEnhecaTkubfhQ409WjqduxOmMF7KdigI N+yyLeio5SFQYyLQVZMkcWh3SRcbjlPxWajTA2YOaxMIEMYuDgFYCI68xn+WZ87u07/2LedTZON LEs8muedMzWVfFfzOC1n1XFJ7/Ypcgz//bxEjzupHb2h6ccRwHzg3uLVWQlS/A75P0Ptmaw/fzr GBwA=
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-Dave Chinner <david@fromorbit.com> writes:
+On Thu, 26 Sep 2024 16:01:21 +0200, Pankaj Raghav (Samsung) wrote:
+> Most of the callers of wbc_account_cgroup_owner() are converting a folio
+> to page before calling the function. wbc_account_cgroup_owner() is
+> converting the page back to a folio to call mem_cgroup_css_from_folio().
+> 
+> Convert wbc_account_cgroup_owner() to take a folio instead of a page,
+> and convert all callers to pass a folio directly except f2fs.
+> 
+> [...]
 
-> On Mon, Oct 28, 2024 at 06:39:36AM +0530, Ritesh Harjani wrote:
->> 
->> Hi Dave, 
->> 
->> Dave Chinner <david@fromorbit.com> writes:
->> 
->> > On Fri, Oct 25, 2024 at 09:15:53AM +0530, Ritesh Harjani (IBM) wrote:
->> >> iomap will not return -ENOTBLK in case of dio atomic writes. But let's
->> >> also add a WARN_ON_ONCE and return -EIO as a safety net.
->> >> 
->> >> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->> >> ---
->> >>  fs/ext4/file.c | 10 +++++++++-
->> >>  1 file changed, 9 insertions(+), 1 deletion(-)
->> >> 
->> >> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
->> >> index f9516121a036..af6ebd0ac0d6 100644
->> >> --- a/fs/ext4/file.c
->> >> +++ b/fs/ext4/file.c
->> >> @@ -576,8 +576,16 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->> >>  		iomap_ops = &ext4_iomap_overwrite_ops;
->> >>  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
->> >>  			   dio_flags, NULL, 0);
->> >> -	if (ret == -ENOTBLK)
->> >> +	if (ret == -ENOTBLK) {
->> >>  		ret = 0;
->> >> +		/*
->> >> +		 * iomap will never return -ENOTBLK if write fails for atomic
->> >> +		 * write. But let's just add a safety net.
->> >> +		 */
->> >> +		if (WARN_ON_ONCE(iocb->ki_flags & IOCB_ATOMIC))
->> >> +			ret = -EIO;
->> >> +	}
->> >
->> > Why can't the iomap code return EIO in this case for IOCB_ATOMIC?
->> > That way we don't have to put this logic into every filesystem.
->> 
->> This was origially intended as a safety net hence the WARN_ON_ONCE.
->> Later Darrick pointed out that we still might have an unconverted
->> condition in iomap which can return ENOTBLK for DIO atomic writes (page
->> cache invalidation).
->
-> Yes. That's my point - iomap knows that it's an atomic write, it
-> knows that invalidation failed, and it knows that there is no such
-> thing as buffered atomic writes. So there is no possible fallback
-> here, and it should be returning EIO in the page cache invalidation
-> failure case and not ENOTBLK.
->
+Applied to the vfs.misc branch of the vfs/vfs.git tree.
+Patches in the vfs.misc branch should appear in linux-next soon.
 
-Sorry my bad. I think I might have looked into a different version of
-the code earlier. So the current patch from John already takes care of
-the condition where if the page cache invalidation fails we don't return
--ENOTBLK [1]
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
-[1]: https://lore.kernel.org/linux-xfs/Zxnp8bma2KrMDg5m@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com/T/#m3664bbe00287d98caa690bb04f51d0ef164f52b3
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
 
->> You pointed it right that it should be fixed in iomap. However do you
->> think filesystems can still keep this as safety net (maybe no need of
->> WARN_ON_ONCE).
->
-> I don't see any point in adding "impossible to hit" checks into
-> filesystems just in case some core infrastructure has a bug
-> introduced....
->
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
 
-So even though we have taken care of that case from page cache
-invalidation code, however it can still happen if iomap_iter()
-ever returns -ENOTBLK.  
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.misc
 
-e.g. 
-
-    blk_start_plug(&plug);
-	while ((ret = iomap_iter(&iomi, ops)) > 0) {
-		iomi.processed = iomap_dio_iter(&iomi, dio);
-
-		/*
-		 * We can only poll for single bio I/Os.
-		 */
-		iocb->ki_flags &= ~IOCB_HIPRI;
-	}
-
-	blk_finish_plug(&plug);
-
-	/*
-	 * We only report that we've read data up to i_size.
-	 * Revert iter to a state corresponding to that as some callers (such
-	 * as the splice code) rely on it.
-	 */
-	if (iov_iter_rw(iter) == READ && iomi.pos >= dio->i_size)
-		iov_iter_revert(iter, iomi.pos - dio->i_size);
-
-	if (ret == -EFAULT && dio->size && (dio_flags & IOMAP_DIO_PARTIAL)) {
-		if (!(iocb->ki_flags & IOCB_NOWAIT))
-			wait_for_completion = true;
-		ret = 0;
-	}
-
-	/* magic error code to fall back to buffered I/O */
-	if (ret == -ENOTBLK) {
-		wait_for_completion = true;
-		ret = 0;
-	}
-
-Reviewing the code paths there is a lot of ping pongs between core iomap
-and FS. So it's not just core iomap what we are talking about here.
-
-So I am still inclined towards having that check in place as a safety net. 
-However - let me take some time to review some of this code paths
-please. I wanted to send this email mainly to mention the point that
-page cache invalidation case is already taken care in iomap for atomic
-writes, so there is no bug there. 
-
-I will get back on rest of the cases after I have looked more closely at it.
-
-> -Dave.
->
-> -- 
-> Dave Chinner
-> david@fromorbit.com
-
-Thanks for the review!
--ritesh
-
+[1/1] fs/writeback: convert wbc_account_cgroup_owner to take a folio
+      https://git.kernel.org/vfs/vfs/c/30dac24e14b5
 
