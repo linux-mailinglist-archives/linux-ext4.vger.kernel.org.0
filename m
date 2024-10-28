@@ -1,135 +1,112 @@
-Return-Path: <linux-ext4+bounces-4827-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4828-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C3579B21DF
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 02:15:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 95F649B2210
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 02:48:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 142CB1F21228
-	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 01:15:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B45028172E
+	for <lists+linux-ext4@lfdr.de>; Mon, 28 Oct 2024 01:48:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42A9913D8B2;
-	Mon, 28 Oct 2024 01:14:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rq39yErg"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF7DF25745;
+	Mon, 28 Oct 2024 01:48:00 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22CB413C8E2;
-	Mon, 28 Oct 2024 01:14:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1094EEA8
+	for <linux-ext4@vger.kernel.org>; Mon, 28 Oct 2024 01:47:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730078097; cv=none; b=Pedo+zxMlWc3fif/kWAiEIfNVKpEPv9Pj9tg0zvv37JX8ujHYz/+4hGXkbhDfQqbT16UvD5sJWe+9z3Doocqm8J5M2PMSAxHV3UDsZ01R9fslI6VsNWWQuqyALB7At0hheUIlhtXvEzN+3lZF4n9NYpJu7eFU+11E9fa6L93X2U=
+	t=1730080080; cv=none; b=Cem0HD3CYOajKTVv3IRrXlosVgP5SkgoEUIzfoYJNKuXYZaDWDOFje70gu4KJFIOVw80kL+53A1LxJF377fCJN0r2WJ10juYYt3bPH8Po9A/3wo9ynNeT1H+uWXADAUhxK5rmZDqSDOc3kTTMBsjwEXelooHH4G+Nkxwh44nRXo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730078097; c=relaxed/simple;
-	bh=GTI6i0pThJZo81GUgdeUZUnuzLBh1utpF3tlZ9PMBBk=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=Ac7hUoDU9ryUvfWMMLnyCQCPt0faLiGBetLZUplktLOHWFCTJtSn1n93iv2ndbS5YbYwZPXg/TZwUo7ZkOeFeRs2UhoeHanIkCa/gAJlySi5quW0xRiRzQjHUFr0om0pSmxU1ECaX+mYIfN1Ci772zz80L9pxG4KjlfP73Sgj1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rq39yErg; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-20e6981ca77so39996595ad.2;
-        Sun, 27 Oct 2024 18:14:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730078095; x=1730682895; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=+qDYDK7YLyDPpDO5MLd5DHVRviFiGrPx0QghsTgPlL0=;
-        b=Rq39yErgS96SnzL6hI5BGpFa3wFlhTlcBgPAeagt8C7xgCjNYEG9cQBK2cCisHXx53
-         j+O57KIA5BE2/e7REBp2ImVyvjE6ElTmNsC+wAPcIjU+Ig3yoE/4db2gGVLeVNIXA3v7
-         3x572RPz1gk/yHVoDkN0i3IlhZx9bsoVXKVyve/1nqq8d8Rhuq9eInr/AG4m447lm7Fo
-         I63B3zWyV9T40ZCyjLoUNjPMkYYuLkKOGCtmSmn9vvHc99oKO392ZEcKQ9CW088C01hU
-         kYWx9UhZ6qeVp5B4DyifGCJzOViWqtDovkBS4nQ3uIuiRh1alHbOQ0CskE0WE9m3ddjY
-         d6pA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730078095; x=1730682895;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=+qDYDK7YLyDPpDO5MLd5DHVRviFiGrPx0QghsTgPlL0=;
-        b=Uxl+7joqfEWloIDBUoSf6z4K99AmkLvqfGQTrdVgR5XI3o5oH6cy8cu3yuNSGEK3sn
-         qaEuNETEHHh3pbZgI+8f9H9hBhxrQptV9+Dg8CDmYWu4eRx+oArV2BCtS0spQ4fLeN30
-         iBaMUYM33Tm6Tz+3sViWj+8FUAcnWc5q/TCufo9dura91WO8v8tjq1EFa1+XADWQaU4u
-         8iU6B7JMGZ1H36hW3ttbXfavM6rrK/yQLLVpgdXkCHz1WjykSivU2nmX9AzBufk0c7Xm
-         UGUzWe5qAj2gjozHtDM07/kLLsa4OvjLD26mOLPISZ8+DDgybd7fWr0zfSOgxvtbY10W
-         jeZg==
-X-Forwarded-Encrypted: i=1; AJvYcCUeFfnUw/RQGAqJdQyc2wognK3ikpO2hTt1gczFrdnmcHPZ6KPlGNaMYNrbmI3VPU0AlcPi8zPxra456xhe@vger.kernel.org, AJvYcCWnBLnru0O5hhatBAE5/c/rBP+ilp+ZS/BUfhXfpkBr8BnMQbdObBARVUcMxIe6oAr68OAlxShTdaLfJwIj@vger.kernel.org, AJvYcCXIBCcLM0EwvtgtyYl9wDxo/BeNW3HZbST1ASgjaEt6PDrSTvQeuff8pmEtHrwID6yjUaTMhjofMNM4@vger.kernel.org
-X-Gm-Message-State: AOJu0YxKhTMRaYv6dZi/b0KHKutDV/KcrZe8bbqYBnjVgdt2/HEODm+L
-	INr+8fTl8glprFWW8Np8LNLHceooTAPaqae90s7dIGYAUr28P0BfvKUWWw==
-X-Google-Smtp-Source: AGHT+IEIa1FGEG3VEnL+DXLN983cKV18Q6uhWAJQzSEwm6vWL2MM1AzDhwotPIvH6JEsdKUcMX8dEQ==
-X-Received: by 2002:a17:902:f54e:b0:20b:5439:f194 with SMTP id d9443c01a7336-210c6898707mr87541815ad.16.1730078093311;
-        Sun, 27 Oct 2024 18:14:53 -0700 (PDT)
-Received: from dw-tp ([171.76.83.19])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-210bc013462sm40900805ad.178.2024.10.27.18.14.49
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 27 Oct 2024 18:14:52 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, "Darrick J . Wong" <djwong@kernel.org>, Christoph Hellwig <hch@infradead.org>, John Garry <john.g.garry@oracle.com>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 4/6] ext4: Warn if we ever fallback to buffered-io for DIO atomic writes
-In-Reply-To: <Zx6+F4Cl1owSDspD@dread.disaster.area>
-Date: Mon, 28 Oct 2024 06:39:36 +0530
-Message-ID: <87iktdm3sf.fsf@gmail.com>
-References: <cover.1729825985.git.ritesh.list@gmail.com> <7c4779f1f0c8ead30f660a2cfbdf4d7cc08e405a.1729825985.git.ritesh.list@gmail.com> <Zx6+F4Cl1owSDspD@dread.disaster.area>
+	s=arc-20240116; t=1730080080; c=relaxed/simple;
+	bh=sSbqj9PaCWZYYxllSWsBshDvFlWydAEhCNTVLeMVSZw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=YjQET34JBK8qXqNhkmuctT89RiCfTKQX2Z4E9uxJJnNQtF/pVNvEZ1JxUG3OymsyKy6dunrGgMq1k1hRjgnlITusvJnlrnBB6tqu+O+CZQtb+qhEj7sacpCc45VeMHT/djktK/IDzi+nJl3k+f3ubwqN0xuDhnRY99+dRfvzMTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4XcGSg5ZZ6zyTQt;
+	Mon, 28 Oct 2024 09:46:11 +0800 (CST)
+Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
+	by mail.maildlp.com (Postfix) with ESMTPS id 4EF92180106;
+	Mon, 28 Oct 2024 09:47:48 +0800 (CST)
+Received: from [10.174.179.80] (10.174.179.80) by
+ kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1544.11; Mon, 28 Oct 2024 09:47:47 +0800
+Message-ID: <6bb74ccc-25e2-45c1-8a88-cfd093a194c7@huawei.com>
+Date: Mon, 28 Oct 2024 09:47:46 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] ext4: fix FS_IOC_GETFSMAP handling
+To: Theodore Ts'o <tytso@mit.edu>
+CC: "Darrick J. Wong" <djwong@kernel.org>, Ext4 Developers List
+	<linux-ext4@vger.kernel.org>
+References: <20241023135949.3745142-1-tytso@mit.edu>
+ <cf776ce1-596f-4b04-a79b-2fe7b5b83f6e@huawei.com>
+ <20241025154213.GD3307207@mit.edu>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huawei.com>
+In-Reply-To: <20241025154213.GD3307207@mit.edu>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
+ kwepemf100017.china.huawei.com (7.202.181.16)
 
+On 2024/10/25 23:42, Theodore Ts'o wrote:
+> On Fri, Oct 25, 2024 at 03:06:07PM +0800, Zhang Yi wrote:
+>>
+>> Now it seems to be able to handle all the necessary metadata in the
+>> query range here, can we remove the processing of info->gfi_meta_list
+>> in ext4_getfsmap_datadev_helper() as well?
+> 
+> Not without further code refactoring; we still need it if there are
+> metadata blocks in the middle of the block group.
 
-Hi Dave, 
+IIRC, at the moment, fixed metadata does not appear in the middle of
+the block group.
 
-Dave Chinner <david@fromorbit.com> writes:
+> My main emphasis
+> was keeping the code changes as simple so it would be easy to
+> backport, and so I didn't do further optimizations.
 
-> On Fri, Oct 25, 2024 at 09:15:53AM +0530, Ritesh Harjani (IBM) wrote:
->> iomap will not return -ENOTBLK in case of dio atomic writes. But let's
->> also add a WARN_ON_ONCE and return -EIO as a safety net.
->> 
->> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->> ---
->>  fs/ext4/file.c | 10 +++++++++-
->>  1 file changed, 9 insertions(+), 1 deletion(-)
->> 
->> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
->> index f9516121a036..af6ebd0ac0d6 100644
->> --- a/fs/ext4/file.c
->> +++ b/fs/ext4/file.c
->> @@ -576,8 +576,16 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
->>  		iomap_ops = &ext4_iomap_overwrite_ops;
->>  	ret = iomap_dio_rw(iocb, from, iomap_ops, &ext4_dio_write_ops,
->>  			   dio_flags, NULL, 0);
->> -	if (ret == -ENOTBLK)
->> +	if (ret == -ENOTBLK) {
->>  		ret = 0;
->> +		/*
->> +		 * iomap will never return -ENOTBLK if write fails for atomic
->> +		 * write. But let's just add a safety net.
->> +		 */
->> +		if (WARN_ON_ONCE(iocb->ki_flags & IOCB_ATOMIC))
->> +			ret = -EIO;
->> +	}
->
-> Why can't the iomap code return EIO in this case for IOCB_ATOMIC?
-> That way we don't have to put this logic into every filesystem.
+OK.
 
-This was origially intended as a safety net hence the WARN_ON_ONCE.
-Later Darrick pointed out that we still might have an unconverted
-condition in iomap which can return ENOTBLK for DIO atomic writes (page
-cache invalidation).
+> 
+> As a related observation, I'm not entirely sure the current set of
+> abstractions, where we pass exactly one set of helper/callback
+> functions down through multiple functions is the best match for ext4.
+> It should be possible to significantly simplify the call stack by
+> reworking the GETFSMAP support.
 
-You pointed it right that it should be fixed in iomap. However do you
-think filesystems can still keep this as safety net (maybe no need of
-WARN_ON_ONCE).
+Yeah, I have the same feeling too.
 
->
-> When/if we start supporting atomic writes for buffered IO, then it's
-> worth pushing this out to filesystems, but right now it doesn't seem
-> necessary...
->
-> -Dave.
-> -- 
-> Dave Chinner
-> david@fromorbit.com
+> 
+> On the other hand, the current, more complicated design might be
+> useful if at some point in the future, we were to add support for
+> reverse mapping for online fsck and/or if we add reflink support.
+> (See how Darrick implemented GETFSMAP for xfs.)
+> 
+
+Yes, the current GETFSMAP implementation on ext4 is incomplete and
+has many limitations. If we had reserved mapping, we could achieve
+more; for example, we could accurately query the inode to which a
+block belongs, and the query efficiency would improve. As Baokun
+mentioned earlier, we will take the time to look into the reverse
+mapping first to hope to support it and maybe online fsck in the
+future.
+
+Thanks,
+Yi.
+
 
