@@ -1,219 +1,179 @@
-Return-Path: <linux-ext4+bounces-4858-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4859-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2C1649B7417
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 06:18:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id A64C39B7A98
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 13:34:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D9111C21ABC
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 05:18:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C9A461C225CF
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 12:34:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B318A13C906;
-	Thu, 31 Oct 2024 05:18:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62F5919C567;
+	Thu, 31 Oct 2024 12:33:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMPyA8IP"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jeW7xaz/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jNzKKuBB";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jeW7xaz/";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jNzKKuBB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB40ECF;
-	Thu, 31 Oct 2024 05:18:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B292F86131;
+	Thu, 31 Oct 2024 12:33:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730351905; cv=none; b=AUoFKOdgFQ/A+jUzM7tO46OrwTCyCNjfFM1BmEhXJVgr2toXUCx0NbXCtqA3fOg7rOewP1CrVS2AfCgHBv1n0bCcXiHY6SU1xHmnr3rK+KNKT6zzbBE/+aLcOD7d45Fp8BwO1mOtSPjcCkEdQHaX6iGTRULptMKJuCqc4Ur280k=
+	t=1730378013; cv=none; b=clxeVBfan4hymqWeTJVBpSBPxptDPH8hE2l1o0NF45woMZyzWow7K6CMsPyLD4gowvRV7U1ARIDXZUGKBuRJ8Gk5KR/gzs0yWaKw35mkXPExdFkH0TGKnA76/xhM93rWhJGAlGl3X00I+DS+Ns1J4F3UpXYOcSijtsYVAhD2AvM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730351905; c=relaxed/simple;
-	bh=ZdinlePpULWqH7ET7gqNPsgQNIti4nJjHM5IQmdTsHc=;
+	s=arc-20240116; t=1730378013; c=relaxed/simple;
+	bh=MnojP16IxpHjSnfoX+d0TDnCx8JoGYUys4yTOn9wPFY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MOzJIwsqWx5jtlz+tCHy1GD7WWRUYIPFaUxqCpe6IGb8WiK4NL5YIWoWY6f2eSX7APD5CH6wYIjX5GeeSdr1ERZvNqlkEL8rvWrDFsUaUmjEwgKCOkvi6SCALR5WOnZ5L7/sV/lUiN90a7HIHMsIRkTPvE1jtrBI+C5olEiZbcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RMPyA8IP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA908C4CEC3;
-	Thu, 31 Oct 2024 05:18:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730351904;
-	bh=ZdinlePpULWqH7ET7gqNPsgQNIti4nJjHM5IQmdTsHc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RMPyA8IPs8hjUViyUytsVxUaPGHlFCtTrKLcDtYdmuB+dklu31+1IdQ0srWoh3czY
-	 TTYFxFQeuagV/ZYap92pUk4XqttXxDHEMC+m7BFRjryC3uXhDZCvROOcKRwqzMHh29
-	 NLhDLXADEfZlnsdXrHMtMyVH+tMGp/Y9g/vHR3u+tpbEohfO6YxdmRZK6a96mHPP8W
-	 qE9+mzTEyZnvaHqUxu3jmrX8pWtlqwS8UlaTvL/2kYGdCU8n1oCYeMuM4mnjEiI9dk
-	 9v5j9llQIUtKuMLuBUI9STsks/xS2kyGvRLRgfRbGSSxBaPUIfQiiPA41rNNJDUlvw
-	 I9s7GF6+Y7odg==
-Date: Wed, 30 Oct 2024 22:18:22 -0700
-From: Nathan Chancellor <nathan@kernel.org>
-To: =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
-Cc: Gabriel Krisman Bertazi <krisman@kernel.org>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Andreas Dilger <adilger.kernel@dilger.ca>,
-	Hugh Dickins <hughd@google.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Jonathan Corbet <corbet@lwn.net>, smcv@collabora.com,
-	kernel-dev@igalia.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-mm@kvack.org, linux-doc@vger.kernel.org,
-	Gabriel Krisman Bertazi <krisman@suse.de>, llvm@lists.linux.dev
-Subject: Re: [PATCH v8 8/9] tmpfs: Expose filesystem features via sysfs
-Message-ID: <20241031051822.GA2947788@thelio-3990X>
-References: <20241021-tonyk-tmpfs-v8-0-f443d5814194@igalia.com>
- <20241021-tonyk-tmpfs-v8-8-f443d5814194@igalia.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=msj8mZVNAKem0kdJJbgHb2xEvjgUq2vXft3SHwjmAnw5fRpsYSaCQfPeQsRmENcbUNzL+Se3ywaMQMsAQVa3O2vEfs5vHQIhS2TsL2Bd/HMFDPvKOtCse8C9DA/2yRY6kKKhQm43+Hvq7hzmlHpUczHIl+1ewdurj8m1AH5qeaw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jeW7xaz/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jNzKKuBB; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jeW7xaz/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jNzKKuBB; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id DBD2D1FE67;
+	Thu, 31 Oct 2024 12:33:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1730378008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOk+0L/qMfcG8d20k9kFjixmwqvkZmMJVp8V/fJ5zzA=;
+	b=jeW7xaz/rgZtYit2xGJ++8J9pF7F0wjOPeOy9QuUva0VsVIknDKFMqNIdXtPTixOx1mzA+
+	cJUxsXbCUp17DWS1xvVX/Bb0lqxZ/1ZnHev9TlHfVkHCoAosm69dFzbct0DQAAQDmy65j5
+	RZ+hOAb1qVNagwxkRmUnrdGwm5Zbgnk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1730378008;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOk+0L/qMfcG8d20k9kFjixmwqvkZmMJVp8V/fJ5zzA=;
+	b=jNzKKuBB4GMed8welJa3i2fHd26JCuutIqDCAvaJkDOUbBVWcr7hMKns6Grx1zV/wKB3S7
+	wBc0cFGHdevSa5DQ==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="jeW7xaz/";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jNzKKuBB
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1730378008; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOk+0L/qMfcG8d20k9kFjixmwqvkZmMJVp8V/fJ5zzA=;
+	b=jeW7xaz/rgZtYit2xGJ++8J9pF7F0wjOPeOy9QuUva0VsVIknDKFMqNIdXtPTixOx1mzA+
+	cJUxsXbCUp17DWS1xvVX/Bb0lqxZ/1ZnHev9TlHfVkHCoAosm69dFzbct0DQAAQDmy65j5
+	RZ+hOAb1qVNagwxkRmUnrdGwm5Zbgnk=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1730378008;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aOk+0L/qMfcG8d20k9kFjixmwqvkZmMJVp8V/fJ5zzA=;
+	b=jNzKKuBB4GMed8welJa3i2fHd26JCuutIqDCAvaJkDOUbBVWcr7hMKns6Grx1zV/wKB3S7
+	wBc0cFGHdevSa5DQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CD3DB13A53;
+	Thu, 31 Oct 2024 12:33:28 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id gckWMhh5I2eWZgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 31 Oct 2024 12:33:28 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 8BAABA086F; Thu, 31 Oct 2024 13:33:13 +0100 (CET)
+Date: Thu, 31 Oct 2024 13:33:13 +0100
+From: Jan Kara <jack@suse.cz>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] jbd2: Avoid dozens of
+ -Wflex-array-member-not-at-end warnings
+Message-ID: <20241031123313.dfcuttwzzs5f5i7a@quack3>
+References: <ZxvyavDjXDaV9cNg@kspp>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20241021-tonyk-tmpfs-v8-8-f443d5814194@igalia.com>
+In-Reply-To: <ZxvyavDjXDaV9cNg@kspp>
+X-Rspamd-Queue-Id: DBD2D1FE67
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Hi André,
-
-On Mon, Oct 21, 2024 at 01:37:24PM -0300, André Almeida wrote:
-> Expose filesystem features through sysfs, so userspace can query if
-> tmpfs support casefold.
+On Fri 25-10-24 13:32:58, Gustavo A. R. Silva wrote:
+> -Wflex-array-member-not-at-end was introduced in GCC-14, and we
+> are getting ready to enable it, globally.
 > 
-> This follows the same setup as defined by ext4 and f2fs to expose
-> casefold support to userspace.
+> Use the `DEFINE_RAW_FLEX()` helper for an on-stack definition of
+> a flexible structure (`struct shash_desc`) where the size of the
+> flexible-array member (`__ctx`) is known at compile-time, and
+> refactor the rest of the code, accordingly.
 > 
-> Signed-off-by: André Almeida <andrealmeid@igalia.com>
-> Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+> So, with this, fix 77 of the following warnings:
+> 
+> include/linux/jbd2.h:1800:35: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> 
+> Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
 > ---
->  mm/shmem.c | 37 +++++++++++++++++++++++++++++++++++++
->  1 file changed, 37 insertions(+)
+>  include/linux/jbd2.h | 13 +++++--------
+>  1 file changed, 5 insertions(+), 8 deletions(-)
 > 
-> diff --git a/mm/shmem.c b/mm/shmem.c
-> index ea01628e443423d82d44277e085b867ab9bf4b28..0739143d1419c732359d3a3c3457c3acb90c5b22 100644
-> --- a/mm/shmem.c
-> +++ b/mm/shmem.c
-> @@ -5546,3 +5546,40 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
->  	return page;
->  }
->  EXPORT_SYMBOL_GPL(shmem_read_mapping_page_gfp);
-> +
-> +#if defined(CONFIG_SYSFS) && defined(CONFIG_TMPFS)
-> +#if IS_ENABLED(CONFIG_UNICODE)
-> +static DEVICE_STRING_ATTR_RO(casefold, 0444, "supported");
-> +#endif
-> +
-> +static struct attribute *tmpfs_attributes[] = {
-> +#if IS_ENABLED(CONFIG_UNICODE)
-> +	&dev_attr_casefold.attr.attr,
-> +#endif
-> +	NULL
-> +};
-> +
-> +static const struct attribute_group tmpfs_attribute_group = {
-> +	.attrs = tmpfs_attributes,
-> +	.name = "features"
-> +};
-> +
-> +static struct kobject *tmpfs_kobj;
-> +
-> +static int __init tmpfs_sysfs_init(void)
-> +{
-> +	int ret;
-> +
-> +	tmpfs_kobj = kobject_create_and_add("tmpfs", fs_kobj);
-> +	if (!tmpfs_kobj)
-> +		return -ENOMEM;
-> +
-> +	ret = sysfs_create_group(tmpfs_kobj, &tmpfs_attribute_group);
-> +	if (ret)
-> +		kobject_put(tmpfs_kobj);
-> +
-> +	return ret;
-> +}
-> +
-> +fs_initcall(tmpfs_sysfs_init);
-> +#endif /* CONFIG_SYSFS && CONFIG_TMPFS */
-> 
-> -- 
-> 2.47.0
-> 
+> diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> index 8aef9bb6ad57..ce4560e62d3b 100644
+> --- a/include/linux/jbd2.h
+> +++ b/include/linux/jbd2.h
+> @@ -1796,22 +1796,19 @@ static inline unsigned long jbd2_log_space_left(journal_t *journal)
+>  static inline u32 jbd2_chksum(journal_t *journal, u32 crc,
+>  			      const void *address, unsigned int length)
+>  {
+> -	struct {
+> -		struct shash_desc shash;
+> -		char ctx[JBD_MAX_CHECKSUM_SIZE];
+> -	} desc;
+> +	DEFINE_RAW_FLEX(struct shash_desc, desc, __ctx, 1);
 
-This change as commit 5132f08bd332 ("tmpfs: Expose filesystem features
-via sysfs") in -next introduces a kCFI violation when accessing
-/sys/fs/tmpfs/features/casefold. An attribute group created with
-sysfs_create_group() has ->sysfs_ops() set to kobj_sysfs_ops, which has
-a ->show() value of kobj_attr_show(). When kobj_attr_show() goes to call
-the attribute's ->show() value after container_of(), there will be a
-type mismatch in the case of the casefold attr, as it was defined with a
-->show() value of device_show_string() but that does not match the type
-of ->show() in 'struct kobj_attribute'.
+Am I missing some magic here or the 1 above should be
+JBD_MAX_CHECKSUM_SIZE?
 
-I can easily reproduce this with the following commands:
-
-  $ printf 'CONFIG_%s=y\n' CFI_CLANG UNICODE >kernel/configs/repro.config
-
-  $ make -skj"$(nproc)" ARCH=arm64 LLVM=1 mrproper virtconfig repro.config Image.gz
-  ...
-
-  $ curl -LSs https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/arm64-rootfs.cpio.zst | zstd -d >rootfs.cpio
-
-  $ qemu-system-aarch64 \
-      -display none \
-      -nodefaults \
-      -cpu max,pauth-impdef=true \
-      -machine virt,gic-version=max,virtualization=true \
-      -append 'console=ttyAMA0 earlycon rdinit=/bin/sh' \
-      -kernel arch/arm64/boot/Image.gz \
-      -initrd rootfs.cpio \
-      -m 512m \
-      -serial mon:stdio
-  ...
-  # mount -t sysfs sys /sys
-  # cat /sys/fs/tmpfs/features/casefold
-  [   70.558496] CFI failure at kobj_attr_show+0x2c/0x4c (target: device_show_string+0x0/0x38; expected type: 0xc527b809)
-  [   70.560018] Internal error: Oops - CFI: 00000000f2008228 [#1] PREEMPT SMP
-  [   70.560647] Modules linked in:
-  [   70.561770] CPU: 0 UID: 0 PID: 46 Comm: cat Not tainted 6.12.0-rc4-00008-g5132f08bd332 #1
-  [   70.562429] Hardware name: linux,dummy-virt (DT)
-  [   70.562897] pstate: 21402009 (nzCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
-  [   70.563377] pc : kobj_attr_show+0x2c/0x4c
-  [   70.563674] lr : sysfs_kf_seq_show+0xb4/0x130
-  [   70.563987] sp : ffff80008043bac0
-  [   70.564236] x29: ffff80008043bac0 x28: 000000007ffff001 x27: 0000000000000000
-  [   70.564877] x26: 0000000001000000 x25: 000000007ffff001 x24: 0000000000000001
-  [   70.565339] x23: fff000000238a000 x22: ffff9fa31a3996f8 x21: fff00000023fc000
-  [   70.565806] x20: fff000000201df80 x19: fff000000238b000 x18: 0000000000000000
-  [   70.566273] x17: 00000000c527b809 x16: 00000000df43c25c x15: fff000001fef8200
-  [   70.566727] x14: 0000000000000000 x13: fff00000022450f0 x12: 0000000000001000
-  [   70.567177] x11: fff00000023fc000 x10: 0000000000000000 x9 : ffff9fa31a18fac4
-  [   70.567682] x8 : ffff9fa319badde4 x7 : 0000000000000000 x6 : 000000000000003f
-  [   70.568138] x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000004
-  [   70.568585] x2 : fff00000023fc000 x1 : ffff9fa31a881f90 x0 : fff000000201df80
-  [   70.569169] Call trace:
-  [   70.569389]  kobj_attr_show+0x2c/0x4c
-  [   70.569706]  sysfs_kf_seq_show+0xb4/0x130
-  [   70.570020]  kernfs_seq_show+0x44/0x54
-  [   70.570280]  seq_read_iter+0x14c/0x4b0
-  [   70.570543]  kernfs_fop_read_iter+0x60/0x198
-  [   70.570820]  copy_splice_read+0x1f0/0x2f4
-  [   70.571092]  splice_direct_to_actor+0xf4/0x2e0
-  [   70.571376]  do_splice_direct+0x68/0xb8
-  [   70.571626]  do_sendfile+0x1e8/0x488
-  [   70.571874]  __arm64_sys_sendfile64+0xe0/0x12c
-  [   70.572161]  invoke_syscall+0x58/0x114
-  [   70.572424]  el0_svc_common+0xa8/0xdc
-  [   70.572676]  do_el0_svc+0x1c/0x28
-  [   70.572910]  el0_svc+0x38/0x68
-  [   70.573132]  el0t_64_sync_handler+0x90/0xfc
-  [   70.573394]  el0t_64_sync+0x190/0x19
-  [   70.574001] Code: 72970131 72b8a4f1 6b11021f 54000040 (d4304500)
-  [   70.574635] ---[ end trace 0000000000000000 ]---
-
-I am not sure if there is a better API exists or if a local copy should
-be rolled but I think the current scheme is definitely wrong because
-there is no 'struct device' here.
-
-If there is any patch I can test or further information I can provide, I
-am more than happy to do so.
-
-Cheers,
-Nathan
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
