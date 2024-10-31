@@ -1,129 +1,200 @@
-Return-Path: <linux-ext4+bounces-4869-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4870-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768CA9B831A
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 20:12:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DB469B855D
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 22:32:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8FB341C22616
-	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 19:12:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D43E2821E7
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 21:32:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60C471CB31B;
-	Thu, 31 Oct 2024 19:12:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 962631BBBE0;
+	Thu, 31 Oct 2024 21:32:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="CO847FxM"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="auHzFIlM";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="f7NGle3m";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="rYFfcTwf";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jrgbgeoi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C255719D089;
-	Thu, 31 Oct 2024 19:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3823C1BD9C0;
+	Thu, 31 Oct 2024 21:32:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730401931; cv=none; b=Jf44UpFTWdoTL7LVgagz9rm0wa9MqFqRLerw55ywFXvZmMZ0WqOkVQwVVP3PJg/2kS4MOxVMR+hgldO7yx8MaaJWQg9eCRwfpgsxXRR4KXiHROuoJaym3IrqaycMJcOWdtkOujPI43Zwx421jR3MwfduwFhYerN86cTJCgZvk2Y=
+	t=1730410346; cv=none; b=ffMI+zprqwFClsRRX4NkGSM1i1I1mQjrZBdEQO8UIrX9unvI6p1AZUhy8EkklGMrRVeafPEiRhMphetjhB08ob/Q5XRJ6V/PFVmWIokhLid5ItNG7TTnqrov3N5NSLMwu3abFGZVJKWvhGqBb2djwhqQ2P0IOzMxjFCnheJiLUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730401931; c=relaxed/simple;
-	bh=2ZpWWwgTmjp68SUfsUHTWPgHi2hxjOIEwTbMNUcwUEM=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=s7Aw/B+tnaXsdYn5efkXorf1ttgt+wZ2751khd0zekxwmWlOvYj7AVobuY7Xpa7X/CQcISxgC2tP4DlAd57ITVgJzfs7fTABSkSqsGWcNSmT5Ufdf1P6E5x5amkIL2HZYE14OyNILGEQCJQ4NwVtN/UUEix0wdLaEXLUuczXgDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=CO847FxM; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:References:
-	Cc:To:From:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=+aMdUrek5lqvlZKodKKva4xJumBiFz9JBAG3043NKoA=; b=CO847FxMlLq3zPRRQ1yey0VkO/
-	n7wcRKBMqedbA68kbbGyCA/yTfr4oa8dmGiTLm07L2X8aUo74Z2Ri7nTciOBhRNw+4lPO15zr548k
-	F3MYeNSqHOy3wG5O9FODJoMeij0nFXfqwMDWFBy1psKRz9FG7C1CV2cJDgmlA/l/YyuBRmP9D41SE
-	YpuXV8qQJ5RRHPHPZzrF93L4GNIpeMth1R1DZLzHGrPU1S+qouQuVRS8eODyaM35Wp+8f89xQxFxA
-	QYAovVJ3JSk8nfqvSQvTNDMNj9LmMNQ0gYj9Ckya7vAK9AVgrkGanuzUcoFDGOPbguPlBIfnmjN3n
-	exCpwDkw==;
-Received: from [189.78.222.89] (helo=[192.168.15.100])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1t6aaB-00098s-KT; Thu, 31 Oct 2024 20:11:47 +0100
-Message-ID: <3386dc35-3ed1-4aab-abd2-42adfa25ddd9@igalia.com>
-Date: Thu, 31 Oct 2024 16:11:39 -0300
+	s=arc-20240116; t=1730410346; c=relaxed/simple;
+	bh=/egSEF3cW1GYdapaEMg5jUMLNz+guIauKH2if5vL+Vk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=dWqdhZBWTGOpEWtPNvM3hFYA+eFaA8hswcR/quRy4sLwr/g6l49PZW3nbeKZoucUUsLJCEqZyNN48hb6FQigrTYs+cOwh12gGWv8D9QLT0RsFNM+KImo3jj1LH7UcviEcchiRdIIUARQmGmgMZHhQ6Uw1jyIX04vqWC/3BdiuNU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=auHzFIlM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=f7NGle3m; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=rYFfcTwf; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jrgbgeoi; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1E8141FCDC;
+	Thu, 31 Oct 2024 21:32:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1730410338; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FEC/tdJvVo+qlKYuuOLLuuqD8W12rkbi1vX4sZpGjZA=;
+	b=auHzFIlMstXqqPIfZhA2yvR5gn2qhwFVte72+pXYlbkS0MRm1iiUZPwCQFmWCjuGt539WP
+	ukVGHlxSqXek2yiEohvQEheN3fn3jtW8ft01rTCo2oy37mHZuOSZmxEZEG9Q4SaiHlqHig
+	Er/q+Lx1K0ERksXyCo/QC0DZZqm/vRA=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1730410338;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FEC/tdJvVo+qlKYuuOLLuuqD8W12rkbi1vX4sZpGjZA=;
+	b=f7NGle3mj6zsoJE8/jPKwTXLADyzY6ggZdNVTRwamFqnNyI/xAvzvNXIJ349ryfVivzebp
+	6OF+MC+F16xmRxCA==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=rYFfcTwf;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Jrgbgeoi
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1730410337; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FEC/tdJvVo+qlKYuuOLLuuqD8W12rkbi1vX4sZpGjZA=;
+	b=rYFfcTwfAWoxgcZGBf4PrabW4YYi/cCVP6PseTTYOMq+TYIDlvq3Dnk81grulQVMZv3FAw
+	A3M9+WokGRqY6kSoUZgd0B1akDtNyb1ZCrhaPGfLszvfIw8AF6rUJgQkYmUy0vJ/KU5RqH
+	g4TaCa4tqwZPr+b5EBh7BI9RktB9Fuw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1730410337;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=FEC/tdJvVo+qlKYuuOLLuuqD8W12rkbi1vX4sZpGjZA=;
+	b=JrgbgeoiVtyaA3mqqV6JACcS277SraFEzmdyfPRhF4q/qXSLfoHDIQPUllfgg09mx9FHjB
+	0GsjD4+S/BNXsiDQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 13965136A5;
+	Thu, 31 Oct 2024 21:32:17 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id JGfDBGH3I2fzCAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 31 Oct 2024 21:32:17 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C529BA086F; Thu, 31 Oct 2024 22:32:08 +0100 (CET)
+Date: Thu, 31 Oct 2024 22:32:08 +0100
+From: Jan Kara <jack@suse.cz>
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
+Cc: Jan Kara <jack@suse.cz>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH][next] jbd2: Avoid dozens of
+ -Wflex-array-member-not-at-end warnings
+Message-ID: <20241031213208.gzr5jv2kg5eobjuo@quack3>
+References: <ZxvyavDjXDaV9cNg@kspp>
+ <20241031123313.dfcuttwzzs5f5i7a@quack3>
+ <fe0e9c86-fa44-425e-a955-aa9e401b6334@embeddedor.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 8/9] tmpfs: Expose filesystem features via sysfs
-From: =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Gabriel Krisman Bertazi <krisman@kernel.org>,
- Alexander Viro <viro@zeniv.linux.org.uk>,
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
- Theodore Ts'o <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>,
- Hugh Dickins <hughd@google.com>, Andrew Morton <akpm@linux-foundation.org>,
- Jonathan Corbet <corbet@lwn.net>, smcv@collabora.com, kernel-dev@igalia.com,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-mm@kvack.org, linux-doc@vger.kernel.org,
- Gabriel Krisman Bertazi <krisman@suse.de>, llvm@lists.linux.dev,
- linux-btrfs@vger.kernel.org, Chris Mason <clm@fb.com>
-References: <20241021-tonyk-tmpfs-v8-0-f443d5814194@igalia.com>
- <20241021-tonyk-tmpfs-v8-8-f443d5814194@igalia.com>
- <20241031051822.GA2947788@thelio-3990X>
- <c104f427-f9d9-498c-a719-ed6bf118226d@igalia.com>
-Content-Language: en-US
-In-Reply-To: <c104f427-f9d9-498c-a719-ed6bf118226d@igalia.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <fe0e9c86-fa44-425e-a955-aa9e401b6334@embeddedor.com>
+X-Rspamd-Queue-Id: 1E8141FCDC
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	ARC_NA(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_SEVEN(0.00)[8];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-Em 31/10/2024 14:31, André Almeida escreveu:
-> Hi Nathan,
+On Thu 31-10-24 09:54:36, Gustavo A. R. Silva wrote:
+> On 31/10/24 06:33, Jan Kara wrote:
+> > On Fri 25-10-24 13:32:58, Gustavo A. R. Silva wrote:
+> > > -Wflex-array-member-not-at-end was introduced in GCC-14, and we
+> > > are getting ready to enable it, globally.
+> > > 
+> > > Use the `DEFINE_RAW_FLEX()` helper for an on-stack definition of
+> > > a flexible structure (`struct shash_desc`) where the size of the
+> > > flexible-array member (`__ctx`) is known at compile-time, and
+> > > refactor the rest of the code, accordingly.
+> > > 
+> > > So, with this, fix 77 of the following warnings:
+> > > 
+> > > include/linux/jbd2.h:1800:35: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+> > > 
+> > > Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+> > > ---
+> > >   include/linux/jbd2.h | 13 +++++--------
+> > >   1 file changed, 5 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
+> > > index 8aef9bb6ad57..ce4560e62d3b 100644
+> > > --- a/include/linux/jbd2.h
+> > > +++ b/include/linux/jbd2.h
+> > > @@ -1796,22 +1796,19 @@ static inline unsigned long jbd2_log_space_left(journal_t *journal)
+> > >   static inline u32 jbd2_chksum(journal_t *journal, u32 crc,
+> > >   			      const void *address, unsigned int length)
+> > >   {
+> > > -	struct {
+> > > -		struct shash_desc shash;
+> > > -		char ctx[JBD_MAX_CHECKSUM_SIZE];
+> > > -	} desc;
+> > > +	DEFINE_RAW_FLEX(struct shash_desc, desc, __ctx, 1);
+> > 
+> > Am I missing some magic here or the 1 above should be
+> > JBD_MAX_CHECKSUM_SIZE?
 > 
-> Em 31/10/2024 02:18, Nathan Chancellor escreveu:
->> Hi André,
->>
+> This seems to be 32-bit code, and the element type of the flex-array
+> member `__ctx` is `void *`. Therefore, we have:
 
-[...]
+Why do you think the code is 32-bit? It is used regardless of the
+architecture...
 
->> If there is any patch I can test or further information I can provide, I
->> am more than happy to do so.
->>
+> `sizeof(ctx) == 4` when `char ctx[JBD_MAX_CHECKSUM_SIZE];`
+> 
+> To maintain the same size, we tell `DEFINE_RAW_FLEX()` to allocate `1`
+> element for the flex array, as in 32-bit `sizeof(void *) == 4`.
 
-I found the issue, was just the DEVICE_ macro that I wasn't supposed to 
-use inside of tmpfs, this diff solved the error for me, I will send a 
-proper patch in a moment:
+So I agree we end up allocating enough space on stack but it is pretty
+subtle and if JBD_MAX_CHECKSUM_SIZE definition changes, we have a problem.
+I think we need something like (JBD_MAX_CHECKSUM_SIZE + sizeof(*desc->__ctx)
+- 1) / sizeof(*desc->__ctx))?
 
--- >8 --
-
-diff --git a/mm/shmem.c b/mm/shmem.c
-index 971e6f1184a5..db52c34d5020 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -5551,12 +5551,21 @@ EXPORT_SYMBOL_GPL(shmem_read_mapping_page_gfp);
-
-  #if defined(CONFIG_SYSFS) && defined(CONFIG_TMPFS)
-  #if IS_ENABLED(CONFIG_UNICODE)
--static DEVICE_STRING_ATTR_RO(casefold, 0444, "supported");
-+static ssize_t casefold_show(struct kobject *kobj, struct 
-kobj_attribute *a,
-+                       char *buf)
-+{
-+               return sysfs_emit(buf, "supported\n");
-+}
-+static struct kobj_attribute tmpfs_attr_casefold = {
-+               .attr = { .name = "casefold", .mode = 0444 },
-+               .show = casefold_show,
-+               .store = NULL,
-+};
-  #endif
-
-  static struct attribute *tmpfs_attributes[] = {
-  #if IS_ENABLED(CONFIG_UNICODE)
--       &dev_attr_casefold.attr.attr,
-+       &tmpfs_attr_casefold.attr,
-  #endif
-         NULL
-  };
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
