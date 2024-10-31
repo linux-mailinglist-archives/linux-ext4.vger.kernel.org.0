@@ -1,162 +1,219 @@
-Return-Path: <linux-ext4+bounces-4857-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4858-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A5299B68AB
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2024 16:59:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C1649B7417
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 06:18:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4DF791C21C5B
-	for <lists+linux-ext4@lfdr.de>; Wed, 30 Oct 2024 15:59:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D9111C21ABC
+	for <lists+linux-ext4@lfdr.de>; Thu, 31 Oct 2024 05:18:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23284215C66;
-	Wed, 30 Oct 2024 15:58:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B318A13C906;
+	Thu, 31 Oct 2024 05:18:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jgFyGQfQ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RMPyA8IP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D37BF2144A9;
-	Wed, 30 Oct 2024 15:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DB40ECF;
+	Thu, 31 Oct 2024 05:18:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730303905; cv=none; b=grvpFR5Utd67y2zZQ7hGLDXVsBpotRHpz/X8sMuq/KXbE7elSeoobZdQn1C3/VbhY6NcGBDZwo1K0NLtjO/lFeDlWTz+2t/J9fVpXACwKO3NmAu79Gb2s421UERzaBqzKfLJmkUP+EvVHmlAz2QBRpKm6yPnO2Ch38iw4wXEqXw=
+	t=1730351905; cv=none; b=AUoFKOdgFQ/A+jUzM7tO46OrwTCyCNjfFM1BmEhXJVgr2toXUCx0NbXCtqA3fOg7rOewP1CrVS2AfCgHBv1n0bCcXiHY6SU1xHmnr3rK+KNKT6zzbBE/+aLcOD7d45Fp8BwO1mOtSPjcCkEdQHaX6iGTRULptMKJuCqc4Ur280k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730303905; c=relaxed/simple;
-	bh=LzN5+Qpd7fuL14+fAVQDSNU6E/uPPJd4jhyHUUHdrXE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=uHWh66QC85zZh5Qbt331lRrsKhhHgw6CtTdH8uEDf9fuUbpm7rDYGX/c9wR21ECSLIMvP3F7b2UZdpjxgcg+2/UADVhKtYFTJfP/4F9HbCptkFgvriat2qg/LtnabNI1syf9lwg6ozdqQN5XSUP3piv8uH0cOJ3bYgnpsDq7j/Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jgFyGQfQ; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7ea6a4f287bso31057a12.3;
-        Wed, 30 Oct 2024 08:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730303903; x=1730908703; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=pGqbYAHXK4Jd6LmiaTB3lDHwM2K50OqruyDt1hmpDOc=;
-        b=jgFyGQfQuNT3bYW3Rj1ew3UOSOKYaaVW9yBIyAH+FR1gDRZdyvMvj3i7pkRLqgmlbK
-         +odCCjVEdzhdTLNP3Ycl0jyZRyJe2NrOgI8L1b1m/u0Dq1R0YYxzlMwktkVpTQtCfutc
-         eaVHnu8EKvVGFrR4l2SyOLl0rnJDzTErMkJsJGpSi68mUb4iFfuGvunylR/HO9OiGSbk
-         hThFewh3iT3W7fHpKd30kQVsw53Vwj6GhKetTAv4hrwPm3BcFQwatVdWh15LfPppQ8O5
-         Wqf1IW93w3EijoGhl13ZT4NMtOY19GbtGopPGlNMoLtekoUsMCUzSw8fY4phbnGlqpml
-         2VHw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730303903; x=1730908703;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=pGqbYAHXK4Jd6LmiaTB3lDHwM2K50OqruyDt1hmpDOc=;
-        b=su7FjUi6MSnXcd+N2Hz9eLjiFKi376WH4RxRaAgNkpjim6GrrPcDPYvNrULl69mbWY
-         u1L+DsOc04bUcNVYwUhuBY8AkvPFgJMBxnsA9WZdjwvT7tdHJLXpXpg3lojqoYr69Nx0
-         68TPaVPXTtjtx4QAeuhlLc545Ma02UZWUYOhAKal1JHDkzdwx5bQacDMoDBwTJBAOmFb
-         LK/aEgllqkBGJQvuF3+mfOftPQ/4V4NYU4/yn7DZAkGEjxHLedy1NzRDZ57nfiBt/2py
-         FP3w+8esqT7DWuqnSvQzb1K2NLj/E8djv6uHHOZdSKa1j2K3zw2k4mkRDCXBoxZbk6NH
-         VawA==
-X-Forwarded-Encrypted: i=1; AJvYcCViTmr0ApLpfZvuwrXxYcBBBZPjdU3bA2vmtOmsVEwa8fwwmIwMm19tXufUdZ1oVN0528h1ryuy172basSj@vger.kernel.org, AJvYcCWIVN9hp6eXz9YYvHMO119/R7g83LiVZCKv5rLxs/v7RTCiZrCIFIHg1Y5LHlYENaWj4qPuq2Br791R@vger.kernel.org, AJvYcCXIxx5h4MQgToiK+xn2FgzcOtE5t/rnP8x/buhpjoZe5S5DpqKtao217Erq4ILNQjyuWRd4B9HUqrZejMaX@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywpa4NVrMWm8DWGpvqIDqlnzRq/RxmWKNkQLDmN++6NNvTDh0nu
-	ifJt6mp2hh1IApmfC/lVU//EW/37M+fYnDKz5MqaYV314yYGq3WD/CCQDA==
-X-Google-Smtp-Source: AGHT+IERpMAKdiB7Q+yEULyTmcaK7Y2OEMDYKNAg4w67ROuwPqoJMrUWG93TXtbM1zJgoABdgJmOjQ==
-X-Received: by 2002:a05:6a20:d528:b0:1d9:f95:9f97 with SMTP id adf61e73a8af0-1d9a83c22b1mr19163886637.16.1730303902714;
-        Wed, 30 Oct 2024 08:58:22 -0700 (PDT)
-Received: from dw-tp.ibmuc.com ([203.81.241.194])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-7edc89f2d5bsm9407519a12.57.2024.10.30.08.58.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 30 Oct 2024 08:58:22 -0700 (PDT)
-From: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-To: linux-ext4@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.cz>,
-	"Darrick J . Wong" <djwong@kernel.org>,
-	Christoph Hellwig <hch@infradead.org>,
-	John Garry <john.g.garry@oracle.com>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
-	Dave Chinner <david@fromorbit.com>,
-	linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	"Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
-Subject: [PATCH v3 4/4] ext4: Do not fallback to buffered-io for DIO atomic write
-Date: Wed, 30 Oct 2024 21:27:41 +0530
-Message-ID: <3c6f41ebed5ca2a669fb05ccc38e8530d0e3e220.1730286164.git.ritesh.list@gmail.com>
-X-Mailer: git-send-email 2.46.0
-In-Reply-To: <cover.1730286164.git.ritesh.list@gmail.com>
-References: <cover.1730286164.git.ritesh.list@gmail.com>
+	s=arc-20240116; t=1730351905; c=relaxed/simple;
+	bh=ZdinlePpULWqH7ET7gqNPsgQNIti4nJjHM5IQmdTsHc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MOzJIwsqWx5jtlz+tCHy1GD7WWRUYIPFaUxqCpe6IGb8WiK4NL5YIWoWY6f2eSX7APD5CH6wYIjX5GeeSdr1ERZvNqlkEL8rvWrDFsUaUmjEwgKCOkvi6SCALR5WOnZ5L7/sV/lUiN90a7HIHMsIRkTPvE1jtrBI+C5olEiZbcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RMPyA8IP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AA908C4CEC3;
+	Thu, 31 Oct 2024 05:18:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1730351904;
+	bh=ZdinlePpULWqH7ET7gqNPsgQNIti4nJjHM5IQmdTsHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RMPyA8IPs8hjUViyUytsVxUaPGHlFCtTrKLcDtYdmuB+dklu31+1IdQ0srWoh3czY
+	 TTYFxFQeuagV/ZYap92pUk4XqttXxDHEMC+m7BFRjryC3uXhDZCvROOcKRwqzMHh29
+	 NLhDLXADEfZlnsdXrHMtMyVH+tMGp/Y9g/vHR3u+tpbEohfO6YxdmRZK6a96mHPP8W
+	 qE9+mzTEyZnvaHqUxu3jmrX8pWtlqwS8UlaTvL/2kYGdCU8n1oCYeMuM4mnjEiI9dk
+	 9v5j9llQIUtKuMLuBUI9STsks/xS2kyGvRLRgfRbGSSxBaPUIfQiiPA41rNNJDUlvw
+	 I9s7GF6+Y7odg==
+Date: Wed, 30 Oct 2024 22:18:22 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: =?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>
+Cc: Gabriel Krisman Bertazi <krisman@kernel.org>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	Hugh Dickins <hughd@google.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Jonathan Corbet <corbet@lwn.net>, smcv@collabora.com,
+	kernel-dev@igalia.com, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-mm@kvack.org, linux-doc@vger.kernel.org,
+	Gabriel Krisman Bertazi <krisman@suse.de>, llvm@lists.linux.dev
+Subject: Re: [PATCH v8 8/9] tmpfs: Expose filesystem features via sysfs
+Message-ID: <20241031051822.GA2947788@thelio-3990X>
+References: <20241021-tonyk-tmpfs-v8-0-f443d5814194@igalia.com>
+ <20241021-tonyk-tmpfs-v8-8-f443d5814194@igalia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20241021-tonyk-tmpfs-v8-8-f443d5814194@igalia.com>
 
-atomic writes is currently only supported for single fsblock and only
-for direct-io. We should not return -ENOTBLK for atomic writes since we
-want the atomic write request to either complete fully or fail
-otherwise. We should not fallback to buffered-io in case of DIO atomic
-write requests.
-Let's also catch if this ever happens by adding some WARN_ON_ONCE before
-buffered-io handling for direct-io atomic writes.
+Hi André,
 
-More details of the discussion [1].
+On Mon, Oct 21, 2024 at 01:37:24PM -0300, André Almeida wrote:
+> Expose filesystem features through sysfs, so userspace can query if
+> tmpfs support casefold.
+> 
+> This follows the same setup as defined by ext4 and f2fs to expose
+> casefold support to userspace.
+> 
+> Signed-off-by: André Almeida <andrealmeid@igalia.com>
+> Reviewed-by: Gabriel Krisman Bertazi <krisman@suse.de>
+> ---
+>  mm/shmem.c | 37 +++++++++++++++++++++++++++++++++++++
+>  1 file changed, 37 insertions(+)
+> 
+> diff --git a/mm/shmem.c b/mm/shmem.c
+> index ea01628e443423d82d44277e085b867ab9bf4b28..0739143d1419c732359d3a3c3457c3acb90c5b22 100644
+> --- a/mm/shmem.c
+> +++ b/mm/shmem.c
+> @@ -5546,3 +5546,40 @@ struct page *shmem_read_mapping_page_gfp(struct address_space *mapping,
+>  	return page;
+>  }
+>  EXPORT_SYMBOL_GPL(shmem_read_mapping_page_gfp);
+> +
+> +#if defined(CONFIG_SYSFS) && defined(CONFIG_TMPFS)
+> +#if IS_ENABLED(CONFIG_UNICODE)
+> +static DEVICE_STRING_ATTR_RO(casefold, 0444, "supported");
+> +#endif
+> +
+> +static struct attribute *tmpfs_attributes[] = {
+> +#if IS_ENABLED(CONFIG_UNICODE)
+> +	&dev_attr_casefold.attr.attr,
+> +#endif
+> +	NULL
+> +};
+> +
+> +static const struct attribute_group tmpfs_attribute_group = {
+> +	.attrs = tmpfs_attributes,
+> +	.name = "features"
+> +};
+> +
+> +static struct kobject *tmpfs_kobj;
+> +
+> +static int __init tmpfs_sysfs_init(void)
+> +{
+> +	int ret;
+> +
+> +	tmpfs_kobj = kobject_create_and_add("tmpfs", fs_kobj);
+> +	if (!tmpfs_kobj)
+> +		return -ENOMEM;
+> +
+> +	ret = sysfs_create_group(tmpfs_kobj, &tmpfs_attribute_group);
+> +	if (ret)
+> +		kobject_put(tmpfs_kobj);
+> +
+> +	return ret;
+> +}
+> +
+> +fs_initcall(tmpfs_sysfs_init);
+> +#endif /* CONFIG_SYSFS && CONFIG_TMPFS */
+> 
+> -- 
+> 2.47.0
+> 
 
-[1]: https://lore.kernel.org/linux-xfs/cover.1729825985.git.ritesh.list@gmail.com/T/#m9dbecc11bed713ed0d7a486432c56b105b555f04
+This change as commit 5132f08bd332 ("tmpfs: Expose filesystem features
+via sysfs") in -next introduces a kCFI violation when accessing
+/sys/fs/tmpfs/features/casefold. An attribute group created with
+sysfs_create_group() has ->sysfs_ops() set to kobj_sysfs_ops, which has
+a ->show() value of kobj_attr_show(). When kobj_attr_show() goes to call
+the attribute's ->show() value after container_of(), there will be a
+type mismatch in the case of the casefold attr, as it was defined with a
+->show() value of device_show_string() but that does not match the type
+of ->show() in 'struct kobj_attribute'.
 
-Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
----
- fs/ext4/file.c  |  7 +++++++
- fs/ext4/inode.c | 14 +++++++++-----
- 2 files changed, 16 insertions(+), 5 deletions(-)
+I can easily reproduce this with the following commands:
 
-diff --git a/fs/ext4/file.c b/fs/ext4/file.c
-index 8116bd78910b..61787a37e9d4 100644
---- a/fs/ext4/file.c
-+++ b/fs/ext4/file.c
-@@ -599,6 +599,13 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
- 		ssize_t err;
- 		loff_t endbyte;
- 
-+		/*
-+		 * There is no support for atomic writes on buffered-io yet,
-+		 * we should never fallback to buffered-io for DIO atomic
-+		 * writes.
-+		 */
-+		WARN_ON_ONCE(iocb->ki_flags & IOCB_ATOMIC);
-+
- 		offset = iocb->ki_pos;
- 		err = ext4_buffered_write_iter(iocb, from);
- 		if (err < 0)
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index fcdee27b9aa2..26b3c84d7f64 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -3449,12 +3449,16 @@ static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
- {
- 	/*
- 	 * Check to see whether an error occurred while writing out the data to
--	 * the allocated blocks. If so, return the magic error code so that we
--	 * fallback to buffered I/O and attempt to complete the remainder of
--	 * the I/O. Any blocks that may have been allocated in preparation for
--	 * the direct I/O will be reused during buffered I/O.
-+	 * the allocated blocks. If so, return the magic error code for
-+	 * non-atomic write so that we fallback to buffered I/O and attempt to
-+	 * complete the remainder of the I/O.
-+	 * For atomic writes we will simply fail the I/O request if we coudn't
-+	 * write anything. For non-atomic writes, any blocks that may have been
-+	 * allocated in preparation for the direct I/O will be reused during
-+	 * buffered I/O.
- 	 */
--	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written == 0)
-+	if (!(flags & IOMAP_ATOMIC) && (flags & (IOMAP_WRITE | IOMAP_DIRECT))
-+			&& written == 0)
- 		return -ENOTBLK;
- 
- 	return 0;
--- 
-2.46.0
+  $ printf 'CONFIG_%s=y\n' CFI_CLANG UNICODE >kernel/configs/repro.config
 
+  $ make -skj"$(nproc)" ARCH=arm64 LLVM=1 mrproper virtconfig repro.config Image.gz
+  ...
+
+  $ curl -LSs https://github.com/ClangBuiltLinux/boot-utils/releases/download/20230707-182910/arm64-rootfs.cpio.zst | zstd -d >rootfs.cpio
+
+  $ qemu-system-aarch64 \
+      -display none \
+      -nodefaults \
+      -cpu max,pauth-impdef=true \
+      -machine virt,gic-version=max,virtualization=true \
+      -append 'console=ttyAMA0 earlycon rdinit=/bin/sh' \
+      -kernel arch/arm64/boot/Image.gz \
+      -initrd rootfs.cpio \
+      -m 512m \
+      -serial mon:stdio
+  ...
+  # mount -t sysfs sys /sys
+  # cat /sys/fs/tmpfs/features/casefold
+  [   70.558496] CFI failure at kobj_attr_show+0x2c/0x4c (target: device_show_string+0x0/0x38; expected type: 0xc527b809)
+  [   70.560018] Internal error: Oops - CFI: 00000000f2008228 [#1] PREEMPT SMP
+  [   70.560647] Modules linked in:
+  [   70.561770] CPU: 0 UID: 0 PID: 46 Comm: cat Not tainted 6.12.0-rc4-00008-g5132f08bd332 #1
+  [   70.562429] Hardware name: linux,dummy-virt (DT)
+  [   70.562897] pstate: 21402009 (nzCv daif +PAN -UAO -TCO +DIT -SSBS BTYPE=--)
+  [   70.563377] pc : kobj_attr_show+0x2c/0x4c
+  [   70.563674] lr : sysfs_kf_seq_show+0xb4/0x130
+  [   70.563987] sp : ffff80008043bac0
+  [   70.564236] x29: ffff80008043bac0 x28: 000000007ffff001 x27: 0000000000000000
+  [   70.564877] x26: 0000000001000000 x25: 000000007ffff001 x24: 0000000000000001
+  [   70.565339] x23: fff000000238a000 x22: ffff9fa31a3996f8 x21: fff00000023fc000
+  [   70.565806] x20: fff000000201df80 x19: fff000000238b000 x18: 0000000000000000
+  [   70.566273] x17: 00000000c527b809 x16: 00000000df43c25c x15: fff000001fef8200
+  [   70.566727] x14: 0000000000000000 x13: fff00000022450f0 x12: 0000000000001000
+  [   70.567177] x11: fff00000023fc000 x10: 0000000000000000 x9 : ffff9fa31a18fac4
+  [   70.567682] x8 : ffff9fa319badde4 x7 : 0000000000000000 x6 : 000000000000003f
+  [   70.568138] x5 : 0000000000000040 x4 : 0000000000000000 x3 : 0000000000000004
+  [   70.568585] x2 : fff00000023fc000 x1 : ffff9fa31a881f90 x0 : fff000000201df80
+  [   70.569169] Call trace:
+  [   70.569389]  kobj_attr_show+0x2c/0x4c
+  [   70.569706]  sysfs_kf_seq_show+0xb4/0x130
+  [   70.570020]  kernfs_seq_show+0x44/0x54
+  [   70.570280]  seq_read_iter+0x14c/0x4b0
+  [   70.570543]  kernfs_fop_read_iter+0x60/0x198
+  [   70.570820]  copy_splice_read+0x1f0/0x2f4
+  [   70.571092]  splice_direct_to_actor+0xf4/0x2e0
+  [   70.571376]  do_splice_direct+0x68/0xb8
+  [   70.571626]  do_sendfile+0x1e8/0x488
+  [   70.571874]  __arm64_sys_sendfile64+0xe0/0x12c
+  [   70.572161]  invoke_syscall+0x58/0x114
+  [   70.572424]  el0_svc_common+0xa8/0xdc
+  [   70.572676]  do_el0_svc+0x1c/0x28
+  [   70.572910]  el0_svc+0x38/0x68
+  [   70.573132]  el0t_64_sync_handler+0x90/0xfc
+  [   70.573394]  el0t_64_sync+0x190/0x19
+  [   70.574001] Code: 72970131 72b8a4f1 6b11021f 54000040 (d4304500)
+  [   70.574635] ---[ end trace 0000000000000000 ]---
+
+I am not sure if there is a better API exists or if a local copy should
+be rolled but I think the current scheme is definitely wrong because
+there is no 'struct device' here.
+
+If there is any patch I can test or further information I can provide, I
+am more than happy to do so.
+
+Cheers,
+Nathan
 
