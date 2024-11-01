@@ -1,136 +1,260 @@
-Return-Path: <linux-ext4+bounces-4878-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4879-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BA7B9B883C
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 02:18:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08EF59B898D
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 04:05:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5D0271C2151A
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 01:18:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7BE4D1F228B2
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 03:05:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD694436E;
-	Fri,  1 Nov 2024 01:18:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD1F213DB9F;
+	Fri,  1 Nov 2024 03:05:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YRO5gj/U"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E461125D5
-	for <linux-ext4@vger.kernel.org>; Fri,  1 Nov 2024 01:18:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 633174C79;
+	Fri,  1 Nov 2024 03:05:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730423907; cv=none; b=rIXug1O/4ctsk893LSv1t0fPKRUUe6RcEwBcpUifHvRr8NSf9FaTlOY7MG79PQk88ESL+dIScUseHGt4AYkEE+H0n56mxVC9/FUwV3g4o5yIXTd5jLS3+XPcmTHly2zI0mgp5R0jgnUqWpv+l+AGHqI2oAUY83Xubaf2loX9dyA=
+	t=1730430313; cv=none; b=RYVINlRrcTjns+KWJMn9gVs2fVHUxQ2WSGS6lrBIP/Wv9yVAC7zP4TeYX3KAfXcQC7luPGTJgbj7DFQgq466W44s0EUe5Egm04KyXZcQKQEtLsOR9E7QahIt0o855XGrPxVQQc10E3YFjjr035cTlX34aFuURu0zwEPh6j3FqBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730423907; c=relaxed/simple;
-	bh=PEfDXTPYz4GSXCQlBXUChqsEd3hsSlOQwANs8jdBo6w=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=YMc71vaeZEP5XGiw0GGMsi7YUVbqrn/tJfuxwaVMrTO6Zryll+Ru8kGimsfmR9M+XvswYhdbreovAO2Nfdw1nO0l6caUTClyJvC45/zWirRMDTZoTcN9eV0dUHF2/HFkA9EWtovoBQZZ/4PCziMJqlGQVq5j32CxkYmQenmJSSg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a3c90919a2so15635125ab.0
-        for <linux-ext4@vger.kernel.org>; Thu, 31 Oct 2024 18:18:21 -0700 (PDT)
+	s=arc-20240116; t=1730430313; c=relaxed/simple;
+	bh=UdhrT4YNWh+UcRqHvTV7LAj61T4pd/9NSbKBQjWqfuE=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=nj6dBjPfIlM3KEqsyAtMc1J+Q3LWMEghoG6yMCCtYOEYrs0giav+HitQy3ihotFqHYNxFPjeCz2KcLztzGjHrj0Izy+DaEDBwfH8oksG9vaNZnXvqXPYpbfRZFgMOgGzpgVL+BK9u8IF0cydCENd3FQkg4jdguP0eQ3TLfDKy6M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YRO5gj/U; arc=none smtp.client-ip=209.85.210.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-71e953f4e7cso1249090b3a.3;
+        Thu, 31 Oct 2024 20:05:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1730430310; x=1731035110; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=w45uyZKrLgmipuvMDWOUJMR9rU31osXEtfFA/wlaiOE=;
+        b=YRO5gj/Uww1eDSkNL6KAmtzFRQhm9LO2kxigB7mHiLAQ9WnnZ4XpdIVW5vjdDYQzbI
+         9Vgg7Jw7A9z9u7ilaGyKvsUhyqN0RVlPBzeLmLrRGeXtYiJUKxnY5ACmqKnNvgfn5UU6
+         eUugfJYa1DSAIQVTLPxyPR5PKO+uKcJJuOmYbVaQgfU41GbvzOxThj+oRyMSgeQclOK/
+         3+7Lsq8lOvQM91xJWprR6/tK+uBdWjLMS2GJPuzO+UT3R+bYHnmK0ywN6kMtR8XhdfcM
+         fGK3LTkNfhfuLD+iZEwLlgmMfcF9uMBxNkqmFzxbmEtOhJYgg7OZerp4fdwTYwoOSYXI
+         fp1w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730423900; x=1731028700;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
+        d=1e100.net; s=20230601; t=1730430310; x=1731035110;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Wwl7sozJ8hPrF17Op6Uo3CgwBAyeeQhamMLU82keVE=;
-        b=pEMpFtHV+j+mPAH7sXBpbtADvQ92QDNy1O3YuwgV9hfD8/qBR98mcIYoPBh4nOJwA+
-         MAh9PORojzIODiGcuo2AnsKm5mR9j8+aindHOcIN08DsWqBOdWRO4Mcy6K39o8qsvOtH
-         +ByMCcatTp9X7fy+vA/zw9k9fAmoBmL6c3nwHcSz9XAlEK3iN7oevCKdBYx4tkLrsuJ2
-         Q05QbP768CH2o9AJRyL6XKfTPrLMS54Zt++0ZxRAD+WJAaxwwjKUuxntuTHtbLyFfllf
-         YQVIbhfqQoaYTfUyrFlSkRR4KVFz5Iy4g0OBQixtRMo2/wqjrPEPNk/TfOlJcAGvZp/z
-         Z2Qg==
-X-Forwarded-Encrypted: i=1; AJvYcCX8WypvOAYKXqqGwX0ZJkGgc8x5DvPW065gKVKLUhpyiFngUcCY46gqS4EZlYsuOnDaiFooYxRwK/jO@vger.kernel.org
-X-Gm-Message-State: AOJu0YySWQ9Sh5ckfbcU7bVjq8Yb+knJReV6ZuwbLwnus0v5HyqWb1wg
-	isO90JSKFxgaIg3P1IiH2YGCbEY+jqnVd1v2h9ilCmjAa+vutwSLWS9fohY076wRGR3I35qE1wx
-	7SrpfJpmJ8Lq6dwNxIcnIL/sh2gorteKrjGfcfCvAflQ2mIdgCHDhrQg=
-X-Google-Smtp-Source: AGHT+IHHn3xPzT2fQIWLfASb6cJq39Sz6JSTeiH7NnohFH0vSjim0hmEeEwuEirM2GjR40ZTerOomoEuWaAemCvCj2v+Xtt0w/QY
+        bh=w45uyZKrLgmipuvMDWOUJMR9rU31osXEtfFA/wlaiOE=;
+        b=IOsBYw2xh6UUPqPsqWmc1vCC35FeCe90NOQnljvDysx2a2Mhgs5Z7aLkOOUpxuL7BU
+         IA1IvGXqD5HbSJcQEazR9ILy39/VlGrDyyc/NDlWIIO4GH4Lh88lUK3BrEJu/dejzUbD
+         3NRcKeP2OJrCyH++Cy1UvF4498dRvzSJLYr8mGjjd5MELijgVpvlqyyPJkv7QY57dx03
+         WxzjFnFxpxQ2/4s7V4YUsGrs3QdPrq34y2ussnEWJ9CcwWb6rkrr3h2O5QwBCh8jSYvB
+         gfzvoyvYgRRLSuIMaqAxOwMmd4fT8o910BSY+2Oot+w+or1pBgtzYdJrCc+Akotxdk2O
+         xZTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUs95md4WDLSiXcO+p5aNN2f86PZ3TenIQDNco+tesfOdmJn1kwrldbIwvvMWnVtQwNT/6FU/g3HlFDvMGV@vger.kernel.org, AJvYcCVWFGYNuGj+QYRATQ7zJ09OOco9sE6GEzC0FVPQwxogl5M/5PlN/rnAC4U+cvmYA82bbCNjr9REaVLr@vger.kernel.org, AJvYcCXlnZ/yaBQa3VEAEOwWNBX4go2ybODkR3q/u+SRjTfHnI5qzw2GXJO0o0My+5c8YZL8wQTOANx+G6uZ1qKG@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzz/tuwroR6pb2bM4dSZAI3Ho1xFmcF1BNNihg6+1i8z0Y8ppsS
+	g8gPLuv5IMu4tUK2+Jo5GLAURgmryBQsWHUQpJ1HKsjaBsGGqa+o/3MBqw==
+X-Google-Smtp-Source: AGHT+IFVEyhoWnM9QfiJ5pgVRvXz7o2l9Zpt5D8cTR8zEhpXHqSP5SAEl3x1l73lD1iv4NHbFLVIQQ==
+X-Received: by 2002:a05:6a20:b598:b0:1d7:c4a:1cc5 with SMTP id adf61e73a8af0-1dba538e6f3mr2611114637.28.1730430309639;
+        Thu, 31 Oct 2024 20:05:09 -0700 (PDT)
+Received: from dw-tp ([203.81.243.23])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-720bc2c5493sm1845243b3a.115.2024.10.31.20.05.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 31 Oct 2024 20:05:09 -0700 (PDT)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: "Darrick J. Wong" <djwong@kernel.org>, John Garry <john.g.garry@oracle.com>
+Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, John Garry <john.g.garry@oracle.com>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v3 1/4] ext4: Add statx support for atomic writes
+In-Reply-To: <20241031214204.GC21832@frogsfrogsfrogs>
+Date: Fri, 01 Nov 2024 08:00:35 +0530
+Message-ID: <875xp7znw4.fsf@gmail.com>
+References: <cover.1730286164.git.ritesh.list@gmail.com> <3338514d98370498d49ebc297a9b6d48a55282b8.1730286164.git.ritesh.list@gmail.com> <20241031214204.GC21832@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1b07:b0:3a5:e5cf:c5b6 with SMTP id
- e9e14a558f8ab-3a5e5cfc68bmr79893415ab.10.1730423900451; Thu, 31 Oct 2024
- 18:18:20 -0700 (PDT)
-Date: Thu, 31 Oct 2024 18:18:20 -0700
-In-Reply-To: <67237956.050a0220.35b515.015c.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67242c5c.050a0220.529b6.005d.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in ext4_iomap_begin (3)
-From: syzbot <syzbot+626aa13bf52efc3aa86e@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-
-syzbot has found a reproducer for the following issue on:
-
-HEAD commit:    0fc810ae3ae1 x86/uaccess: Avoid barrier_nospec() in 64-bit..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1684155f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=13742ac59dd3e298
-dashboard link: https://syzkaller.appspot.com/bug?extid=626aa13bf52efc3aa86e
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=178a32a7980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=16bc6630580000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ce34c79f0f6a/disk-0fc810ae.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/873282a313a5/vmlinux-0fc810ae.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/027f191557a6/bzImage-0fc810ae.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/40461e1b126f/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+626aa13bf52efc3aa86e@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-WARNING: CPU: 0 PID: 5823 at fs/ext4/inode.c:3389 ext4_iomap_begin+0xaa2/0xd30 fs/ext4/inode.c:3389
-Modules linked in:
-CPU: 0 UID: 0 PID: 5823 Comm: syz-executor562 Not tainted 6.12.0-rc5-syzkaller-00063-g0fc810ae3ae1 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:ext4_iomap_begin+0xaa2/0xd30 fs/ext4/inode.c:3389
-Code: 5d 41 5e 41 5f 5d c3 cc cc cc cc e8 48 f2 37 ff 49 be 00 00 00 00 00 fc ff df 48 8b 5c 24 48 e9 61 ff ff ff e8 2f f2 37 ff 90 <0f> 0b 90 41 bc de ff ff ff e9 87 f6 ff ff 89 d9 80 e1 07 38 c1 0f
-RSP: 0018:ffffc90003ee7560 EFLAGS: 00010293
-RAX: ffffffff825ce791 RBX: 0000000010000000 RCX: ffff888031505a00
-RDX: 0000000000000000 RSI: 00000000000000d4 RDI: 0000000000000000
-RBP: ffffc90003ee76d0 R08: ffffffff825cded8 R09: 1ffff1100f18b778
-R10: dffffc0000000000 R11: ffffed100f18b779 R12: 00000000000000d4
-R13: 1ffff1100f18b7dc R14: 000000000000000a R15: 0000000000000000
-FS:  00007f00ef14c6c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 0000000020000040 CR3: 0000000077f60000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- iomap_iter+0x691/0xf60 fs/iomap/iter.c:91
- __iomap_dio_rw+0xdea/0x2370 fs/iomap/direct-io.c:677
- iomap_dio_rw+0x46/0xa0 fs/iomap/direct-io.c:767
- ext4_dio_write_iter fs/ext4/file.c:577 [inline]
- ext4_file_write_iter+0x15f0/0x1a20 fs/ext4/file.c:696
- new_sync_write fs/read_write.c:590 [inline]
- vfs_write+0xaeb/0xd30 fs/read_write.c:683
- ksys_write+0x183/0x2b0 fs/read_write.c:736
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f00ef195cb9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 81 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f00ef14c168 EFLAGS: 00000246 ORIG_RAX: 0000000000000001
-RAX: ffffffffffffffda RBX: 00007f00ef21e608 RCX: 00007f00ef195cb9
-RDX: 0000000000001006 RSI: 0000000020006c00 RDI: 0000000000000004
-RBP: 00007f00ef21e600 R08: 00007f00ef14c6c0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f00ef21e60c
-R13: 0000000000000006 R14: 00007ffee8483890 R15: 00007ffee8483978
- </TASK>
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Hi John & Darrick,
+
+"Darrick J. Wong" <djwong@kernel.org> writes:
+
+> On Wed, Oct 30, 2024 at 09:27:38PM +0530, Ritesh Harjani (IBM) wrote:
+>> This patch adds base support for atomic writes via statx getattr.
+>> On bs < ps systems, we can create FS with say bs of 16k. That means
+>> both atomic write min and max unit can be set to 16k for supporting
+>> atomic writes.
+>> 
+>> Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>> ---
+>>  fs/ext4/ext4.h  |  9 +++++++++
+>>  fs/ext4/inode.c | 14 ++++++++++++++
+>>  fs/ext4/super.c | 31 +++++++++++++++++++++++++++++++
+>>  3 files changed, 54 insertions(+)
+>> 
+>> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+>> index 44b0d418143c..6ee49aaacd2b 100644
+>> --- a/fs/ext4/ext4.h
+>> +++ b/fs/ext4/ext4.h
+>> @@ -1729,6 +1729,10 @@ struct ext4_sb_info {
+>>  	 */
+>>  	struct work_struct s_sb_upd_work;
+>>  
+>> +	/* Atomic write unit values in bytes */
+>> +	unsigned int s_awu_min;
+>> +	unsigned int s_awu_max;
+>> +
+>>  	/* Ext4 fast commit sub transaction ID */
+>>  	atomic_t s_fc_subtid;
+>>  
+>> @@ -3855,6 +3859,11 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
+>>  	return buffer_uptodate(bh);
+>>  }
+>>  
+>> +static inline bool ext4_can_atomic_write(struct super_block *sb)
+>> +{
+>> +	return EXT4_SB(sb)->s_awu_min > 0;
+>
+> Huh, I was expecting you to stick to passing in the struct inode,
+> and then you end up with:
+>
+> static inline bool ext4_can_atomic_write(struct inode *inode)
+> {
+> 	return S_ISREG(inode->i_mode) &&
+> 	       EXT4_SB(inode->i_sb)->s_awu_min > 0);
+> }
+>
+
+Ok. John also had commented on the same thing before. 
+We may only need this, when ext4 get extsize hint support. But for now
+we mainly only need to check that EXT4 SB supports atomic write or not.
+i.e. s_awu_min should be greater than 0. 
+
+But sure I can make above suggested change to keep it consistent with XFS, along
+with below discussed change (Please have a look)...
+
+>> +}
+>> +
+>>  extern int ext4_block_write_begin(handle_t *handle, struct folio *folio,
+>>  				  loff_t pos, unsigned len,
+>>  				  get_block_t *get_block);
+>> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+>> index 54bdd4884fe6..fcdee27b9aa2 100644
+>> --- a/fs/ext4/inode.c
+>> +++ b/fs/ext4/inode.c
+>> @@ -5578,6 +5578,20 @@ int ext4_getattr(struct mnt_idmap *idmap, const struct path *path,
+>>  		}
+>>  	}
+>>  
+>> +	if (S_ISREG(inode->i_mode) && (request_mask & STATX_WRITE_ATOMIC)) {
+>
+> ...and then the callsites become:
+>
+> 	if (request_mask & STATX_WRITE_ATOMIC) {
+> 		unsigned int awu_min = 0, awu_max = 0;
+>
+> 		if (ext4_can_atomic_write(inode)) {
+> 			awu_min = sbi->s_awu_min;
+> 			awu_max = sbi->s_awu_max;
+> 		}
+>
+> 		generic_fill_statx_atomic_writes(stat, awu_min, awu_max);
+> 	}
+>
+> (I forget, is it bad if statx to a directory returns STATX_WRITE_ATOMIC
+> even with awu_{min,max} set to zero?)
+
+I mainly kept it consistent with XFS. But it's not a bad idea to do that. 
+That will help applications check for atomic write support on the root
+directory mount point rather than creating a regular file just for
+verification. Because of below result_mask, which we only set within generic_fill_statx_atomic_writes() 
+
+	stat->result_mask |= STATX_WRITE_ATOMIC;
+
+If we make this change to ext4, XFS will have to fix it too, to keep
+the behavior consistent for both.
+Shall I go ahead and make the change in v4 for EXT4?
+
+-ritesh
+
+>
+> Other than that nit, this looks good to me.
+>
+> --D
+>
+>> +		struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
+>> +		unsigned int awu_min, awu_max;
+>> +
+>> +		if (ext4_can_atomic_write(inode->i_sb)) {
+>> +			awu_min = sbi->s_awu_min;
+>> +			awu_max = sbi->s_awu_max;
+>> +		} else {
+>> +			awu_min = awu_max = 0;
+>> +		}
+>> +
+>> +		generic_fill_statx_atomic_writes(stat, awu_min, awu_max);
+>> +	}
+>> +
+>>  	flags = ei->i_flags & EXT4_FL_USER_VISIBLE;
+>>  	if (flags & EXT4_APPEND_FL)
+>>  		stat->attributes |= STATX_ATTR_APPEND;
+>> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+>> index 16a4ce704460..ebe1660bd840 100644
+>> --- a/fs/ext4/super.c
+>> +++ b/fs/ext4/super.c
+>> @@ -4425,6 +4425,36 @@ static int ext4_handle_clustersize(struct super_block *sb)
+>>  	return 0;
+>>  }
+>>  
+>> +/*
+>> + * ext4_atomic_write_init: Initializes filesystem min & max atomic write units.
+>> + * @sb: super block
+>> + * TODO: Later add support for bigalloc
+>> + */
+>> +static void ext4_atomic_write_init(struct super_block *sb)
+>> +{
+>> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>> +	struct block_device *bdev = sb->s_bdev;
+>> +
+>> +	if (!bdev_can_atomic_write(bdev))
+>> +		return;
+>> +
+>> +	if (!ext4_has_feature_extents(sb))
+>> +		return;
+>> +
+>> +	sbi->s_awu_min = max(sb->s_blocksize,
+>> +			      bdev_atomic_write_unit_min_bytes(bdev));
+>> +	sbi->s_awu_max = min(sb->s_blocksize,
+>> +			      bdev_atomic_write_unit_max_bytes(bdev));
+>> +	if (sbi->s_awu_min && sbi->s_awu_max &&
+>> +	    sbi->s_awu_min <= sbi->s_awu_max) {
+>> +		ext4_msg(sb, KERN_NOTICE, "Supports (experimental) DIO atomic writes awu_min: %u, awu_max: %u",
+>> +			 sbi->s_awu_min, sbi->s_awu_max);
+>> +	} else {
+>> +		sbi->s_awu_min = 0;
+>> +		sbi->s_awu_max = 0;
+>> +	}
+>> +}
+>> +
+>>  static void ext4_fast_commit_init(struct super_block *sb)
+>>  {
+>>  	struct ext4_sb_info *sbi = EXT4_SB(sb);
+>> @@ -5336,6 +5366,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+>>  
+>>  	spin_lock_init(&sbi->s_bdev_wb_lock);
+>>  
+>> +	ext4_atomic_write_init(sb);
+>>  	ext4_fast_commit_init(sb);
+>>  
+>>  	sb->s_root = NULL;
+>> -- 
+>> 2.46.0
+>> 
+>> 
 
