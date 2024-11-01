@@ -1,107 +1,107 @@
-Return-Path: <linux-ext4+bounces-4888-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4889-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B3C39B8EE2
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 11:16:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 971279B9009
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 12:14:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EDF5B283506
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 10:16:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B94951C2285B
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 11:14:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CBB1165F1D;
-	Fri,  1 Nov 2024 10:15:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4579F1991A8;
+	Fri,  1 Nov 2024 11:13:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xva2rPu2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="09BZYjYl";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xva2rPu2";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="09BZYjYl"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xb5Bjqcr";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="k5RVC1wO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="K5oSEMFB";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="UuNIMjbF"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ED2538FA3;
-	Fri,  1 Nov 2024 10:15:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4ADA718953D;
+	Fri,  1 Nov 2024 11:13:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730456117; cv=none; b=WI9wo5u/p8UGGkJglsKAtGLlXo1VBVTRvbK0+N0dM7Fa/Q0cjki0LzSSpVGDsK7jjlFj1QyrYyL/EO/k3Z+U77gtiQHVrAQ4zJVhwhYLj6QbChdGtfNUf6BoTch+hEPQs+TSEI67C6oIqNz1izi595V2JIjgOJgQFw0bwT3r1aA=
+	t=1730459637; cv=none; b=BiZ5V+1MEAEA3jmbOyDst82ha/7xObxxpX0x0n3YWFC40MpKcLRVYnNcWUzSZ/C4DdVKmbAcM79iS/9yrDGoRA1FxvV/3OLFOiZX3uIiaUtM2w1ylxqujT+ZZNPvT2Pa6ZijZMb2OlYfHRCZGh+wnt3o9OCmgGT0z7syUfDiDjc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730456117; c=relaxed/simple;
-	bh=789k37XnM9w3YEfp3eSkssvrySctPWu8LxI1RW4Zano=;
+	s=arc-20240116; t=1730459637; c=relaxed/simple;
+	bh=wofRbP/pMn87nKTukTcLzSwkzXDzjiYYay3B9CTczQg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=fAmzokAi7CXwyoE7nLiHBSp8z2gGscOv1qYAFtL2CAPITLAFowYht6Caw3d1AY7XAvzbzgXOGirBkpCJ0xR3IrAa3/ZxxWY9m2k39YIaLFYyc/ijpw8bEWrSgfCv/+cCivL5rwKat33gcrwUs/TkiT75g1uoJVrTo6/+FDeb2bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xva2rPu2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=09BZYjYl; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xva2rPu2; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=09BZYjYl; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=qfzC/L1YaRoWm0nbU91W0Bz+uyxN4BnnD6Qstb4WNK96+UiTFsa0BlauzhGLC4OX/e0tecVn6C98OOMwzcBsOlyGaP9VNOyNCWUthpoWqNISYODpZxHsI9K4TL9i1giR54DbzVu17bsPz4gS9R0xkPwODKNF+vNYvpbn4vscEvM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xb5Bjqcr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=k5RVC1wO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=K5oSEMFB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=UuNIMjbF; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 586A81FE97;
-	Fri,  1 Nov 2024 10:15:13 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0960E21E2F;
+	Fri,  1 Nov 2024 11:13:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1730456113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1730459633; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZR2Mt0wiEo2QIMD2PG/AzuDa+28IdGqUvSC2wnWG/2o=;
-	b=xva2rPu2u5AFmda+PZOqm3DQ/eIPbVAgEVHGfszHV+2y9f5qqxZTMR0yGWihxlIBXZ2W2j
-	YzSKQQJrf+aTpMOheq/gZntzUpQVcQ4JdEtWMaV3n2ygxejum4e1SW0nld2Ic31e8LJZAB
-	/Bnu9sivEpvMfhynCuXxo5qZF+sban0=
+	bh=DtT3u0Jge1FAxA07AdN4UGOFLn9EB0JG4DUFrAIuua8=;
+	b=xb5Bjqcr2eEQJ/x0W1fo4gRcHfea1/4F4em6Xt7l+ax7e2bUtaPGtnS+6ZFaBef97lEbGG
+	jN0cBvTNK80VA1G6v8uQI+DE6grOlt/S0afoGUV+TouLfcxvwZ4Q8e8T14IiRynT+rro4X
+	HfkBXiWnyZz/8AFT6HiRdFk6PoeTTGM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1730456113;
+	s=susede2_ed25519; t=1730459633;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZR2Mt0wiEo2QIMD2PG/AzuDa+28IdGqUvSC2wnWG/2o=;
-	b=09BZYjYlgRy6d5TsRJrOM9RV3ARLMkHiZdLRBXyZSrj6ts4+rYVJdquPOa+8Hl9eQSbnQ3
-	4omMNgZjS2SKFKBQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xva2rPu2;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=09BZYjYl
+	bh=DtT3u0Jge1FAxA07AdN4UGOFLn9EB0JG4DUFrAIuua8=;
+	b=k5RVC1wO6G+derlfstBOxTSpOs7DI6rtiakrkaMotBbwO3FfVpuQXNfagPRKdEwzksTbdn
+	8uo/BN3ZSxFfySAQ==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=K5oSEMFB;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=UuNIMjbF
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1730456113; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1730459632; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZR2Mt0wiEo2QIMD2PG/AzuDa+28IdGqUvSC2wnWG/2o=;
-	b=xva2rPu2u5AFmda+PZOqm3DQ/eIPbVAgEVHGfszHV+2y9f5qqxZTMR0yGWihxlIBXZ2W2j
-	YzSKQQJrf+aTpMOheq/gZntzUpQVcQ4JdEtWMaV3n2ygxejum4e1SW0nld2Ic31e8LJZAB
-	/Bnu9sivEpvMfhynCuXxo5qZF+sban0=
+	bh=DtT3u0Jge1FAxA07AdN4UGOFLn9EB0JG4DUFrAIuua8=;
+	b=K5oSEMFBOKBXvqSnmOUbRs50mEXwidlhVoaTtyKLAGpjqPbbfoXypcha2mepBKj7FZo5Vo
+	BvB0Ai0yV4OKPKDbj6vcta6XdWC1QDa3wdVGfCc3T0vIcjCWHpG+pbY+7EckPuowJi3SZ6
+	9ioq+ndxNjphyEHwjzoiXitZf1mfy+w=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1730456113;
+	s=susede2_ed25519; t=1730459632;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=ZR2Mt0wiEo2QIMD2PG/AzuDa+28IdGqUvSC2wnWG/2o=;
-	b=09BZYjYlgRy6d5TsRJrOM9RV3ARLMkHiZdLRBXyZSrj6ts4+rYVJdquPOa+8Hl9eQSbnQ3
-	4omMNgZjS2SKFKBQ==
+	bh=DtT3u0Jge1FAxA07AdN4UGOFLn9EB0JG4DUFrAIuua8=;
+	b=UuNIMjbF9xclxCvqWukvgTgsqM43sQ106ZLwPH/dyKLhH8RsTF+NOYuoOfdnWt1+olKt43
+	LwZj9K55VnPWEMAg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 4193C13722;
-	Fri,  1 Nov 2024 10:15:13 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id F1BFD136D9;
+	Fri,  1 Nov 2024 11:13:51 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id ler6DzGqJGe4SAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 01 Nov 2024 10:15:13 +0000
+	id AxX9Ou+3JGdgVwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 01 Nov 2024 11:13:51 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C6B43A0AF4; Fri,  1 Nov 2024 11:15:12 +0100 (CET)
-Date: Fri, 1 Nov 2024 11:15:12 +0100
+	id A8D0FA0AF4; Fri,  1 Nov 2024 12:13:36 +0100 (CET)
+Date: Fri, 1 Nov 2024 12:13:36 +0100
 From: Jan Kara <jack@suse.cz>
-To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-Cc: Jan Kara <jack@suse.cz>, "Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.com>,
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH][next] jbd2: Avoid dozens of
- -Wflex-array-member-not-at-end warnings
-Message-ID: <20241101101512.eee2nkaqgffsoxe3@quack3>
-References: <ZxvyavDjXDaV9cNg@kspp>
- <20241031123313.dfcuttwzzs5f5i7a@quack3>
- <fe0e9c86-fa44-425e-a955-aa9e401b6334@embeddedor.com>
- <20241031213208.gzr5jv2kg5eobjuo@quack3>
- <ca7be9f4-3f33-48ba-b61a-0a40ea1f17a6@embeddedor.com>
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>
+Cc: linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
+	Jan Kara <jack@suse.cz>, "Darrick J . Wong" <djwong@kernel.org>,
+	Christoph Hellwig <hch@infradead.org>,
+	John Garry <john.g.garry@oracle.com>,
+	Ojaswin Mujoo <ojaswin@linux.ibm.com>,
+	Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
+	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH v4 4/4] ext4: Do not fallback to buffered-io for DIO
+ atomic write
+Message-ID: <20241101111336.j34umexmaww4uyae@quack3>
+References: <cover.1730437365.git.ritesh.list@gmail.com>
+ <78fb5c40dde4847dc32af09e668a6f81fa251137.1730437365.git.ritesh.list@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -110,70 +110,139 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ca7be9f4-3f33-48ba-b61a-0a40ea1f17a6@embeddedor.com>
-X-Rspamd-Queue-Id: 586A81FE97
-X-Spam-Score: -4.01
+In-Reply-To: <78fb5c40dde4847dc32af09e668a6f81fa251137.1730437365.git.ritesh.list@gmail.com>
+X-Rspamd-Queue-Id: 0960E21E2F
+X-Spam-Score: -2.51
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+X-Spamd-Result: default: False [-2.51 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
-	ARC_NA(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	RCVD_COUNT_THREE(0.00)[3];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	RCVD_TLS_LAST(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+]
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	TAGGED_RCPT(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Thu 31-10-24 17:31:34, Gustavo A. R. Silva wrote:
-> On 31/10/24 15:32, Jan Kara wrote:
-> > 
-> > > `sizeof(ctx) == 4` when `char ctx[JBD_MAX_CHECKSUM_SIZE];`
-> > > 
-> > > To maintain the same size, we tell `DEFINE_RAW_FLEX()` to allocate `1`
-> > > element for the flex array, as in 32-bit `sizeof(void *) == 4`.
-> > 
-> > So I agree we end up allocating enough space on stack but it is pretty
-> > subtle and if JBD_MAX_CHECKSUM_SIZE definition changes, we have a problem.
-> > I think we need something like (JBD_MAX_CHECKSUM_SIZE + sizeof(*desc->__ctx)
-> > - 1) / sizeof(*desc->__ctx))?
+On Fri 01-11-24 12:20:54, Ritesh Harjani (IBM) wrote:
+> atomic writes is currently only supported for single fsblock and only
+> for direct-io. We should not return -ENOTBLK for atomic writes since we
+> want the atomic write request to either complete fully or fail
+> otherwise. Hence, we should never fallback to buffered-io in case of
+> DIO atomic write requests.
+> Let's also catch if this ever happens by adding some WARN_ON_ONCE before
+> buffered-io handling for direct-io atomic writes. More details of the
+> discussion [1].
 > 
-> I see. Well, in that case it'd be something more like:
+> While at it let's add an inline helper ext4_want_directio_fallback() which
+> simplifies the logic checks and inherently fixes condition on when to return
+> -ENOTBLK which otherwise was always returning true for any write or directio in
+> ext4_iomap_end(). It was ok since ext4 only supports direct-io via iomap.
 > 
-> -       struct {
-> -               struct shash_desc shash;
-> -               char ctx[JBD_MAX_CHECKSUM_SIZE];
-> -       } desc;
-> +       DEFINE_RAW_FLEX(struct shash_desc, desc, __ctx,
-> +                       (JBD_MAX_CHECKSUM_SIZE +
-> +                        sizeof(*((struct shash_desc *)0)->__ctx)) /
-> +                        sizeof(*((struct shash_desc *)0)->__ctx));
-> 
-> Notice that `desc` is created inside `DEFINE_RAW_FLEX()`
-  Right. Thanks for fixing this. The cleanest option then probably is:
+> [1]: https://lore.kernel.org/linux-xfs/cover.1729825985.git.ritesh.list@gmail.com/T/#m9dbecc11bed713ed0d7a486432c56b105b555f04
+> Suggested-by: Darrick J. Wong <djwong@kernel.org> # inline helper
+> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-	DEFINE_RAW_FLEX(struct shash_desc, desc, __ctx,
-		DIV_ROUND_UP(JBD_MAX_CHECKSUM_SIZE,
-			     sizeof(*((struct shash_desc *)0)->__ctx)))
+Looks good. Feel free to add:
 
-									Honza
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> ---
+>  fs/ext4/file.c  |  7 +++++++
+>  fs/ext4/inode.c | 27 ++++++++++++++++++++++-----
+>  2 files changed, 29 insertions(+), 5 deletions(-)
+> 
+> diff --git a/fs/ext4/file.c b/fs/ext4/file.c
+> index 96d936f5584b..a7de03e47db0 100644
+> --- a/fs/ext4/file.c
+> +++ b/fs/ext4/file.c
+> @@ -599,6 +599,13 @@ static ssize_t ext4_dio_write_iter(struct kiocb *iocb, struct iov_iter *from)
+>  		ssize_t err;
+>  		loff_t endbyte;
+> 
+> +		/*
+> +		 * There is no support for atomic writes on buffered-io yet,
+> +		 * we should never fallback to buffered-io for DIO atomic
+> +		 * writes.
+> +		 */
+> +		WARN_ON_ONCE(iocb->ki_flags & IOCB_ATOMIC);
+> +
+>  		offset = iocb->ki_pos;
+>  		err = ext4_buffered_write_iter(iocb, from);
+>  		if (err < 0)
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index 3e827cfa762e..5b9eeb74ce47 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -3444,17 +3444,34 @@ static int ext4_iomap_overwrite_begin(struct inode *inode, loff_t offset,
+>  	return ret;
+>  }
+> 
+> +static inline bool ext4_want_directio_fallback(unsigned flags, ssize_t written)
+> +{
+> +	/* must be a directio to fall back to buffered */
+> +	if ((flags & (IOMAP_WRITE | IOMAP_DIRECT)) !=
+> +		    (IOMAP_WRITE | IOMAP_DIRECT))
+> +		return false;
+> +
+> +	/* atomic writes are all-or-nothing */
+> +	if (flags & IOMAP_ATOMIC)
+> +		return false;
+> +
+> +	/* can only try again if we wrote nothing */
+> +	return written == 0;
+> +}
+> +
+>  static int ext4_iomap_end(struct inode *inode, loff_t offset, loff_t length,
+>  			  ssize_t written, unsigned flags, struct iomap *iomap)
+>  {
+>  	/*
+>  	 * Check to see whether an error occurred while writing out the data to
+> -	 * the allocated blocks. If so, return the magic error code so that we
+> -	 * fallback to buffered I/O and attempt to complete the remainder of
+> -	 * the I/O. Any blocks that may have been allocated in preparation for
+> -	 * the direct I/O will be reused during buffered I/O.
+> +	 * the allocated blocks. If so, return the magic error code for
+> +	 * non-atomic write so that we fallback to buffered I/O and attempt to
+> +	 * complete the remainder of the I/O.
+> +	 * For non-atomic writes, any blocks that may have been
+> +	 * allocated in preparation for the direct I/O will be reused during
+> +	 * buffered I/O. For atomic write, we never fallback to buffered-io.
+>  	 */
+> -	if (flags & (IOMAP_WRITE | IOMAP_DIRECT) && written == 0)
+> +	if (ext4_want_directio_fallback(flags, written))
+>  		return -ENOTBLK;
+> 
+>  	return 0;
+> --
+> 2.46.0
+> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
