@@ -1,238 +1,195 @@
-Return-Path: <linux-ext4+bounces-4896-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4897-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B4B99B9708
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 19:02:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E7089B98BD
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 20:35:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F4B71C21957
-	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 18:02:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1D4A4281936
+	for <lists+linux-ext4@lfdr.de>; Fri,  1 Nov 2024 19:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23C131CDFC5;
-	Fri,  1 Nov 2024 18:02:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAcbDBmd"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC19F1D0F49;
+	Fri,  1 Nov 2024 19:35:32 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C47D1C687;
-	Fri,  1 Nov 2024 18:02:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E54FF156880
+	for <linux-ext4@vger.kernel.org>; Fri,  1 Nov 2024 19:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730484156; cv=none; b=N0ZWn+rZNirn98rldCR2RmKHpvhJJ0k+8ikWE1dgeeTZlgXKPbBbrljbt7y3KtcADmBCI0KUigcaWxO1XPynE4/su6CEjJVDzT0hVRYpmHMYCO8aY/njGp82yOCuRbzhhXWrs6SE1zK7ZuQh6WGfLdsJIJV3MT7DvmKmcMCgh2g=
+	t=1730489732; cv=none; b=B4HXHkrfMqL5WtZkKEb85/7l5hi/yCrKyL3KJ44ds83Y/qIKs1WSSBPsVIRHHgWa/M5yncxrlem2q5te928JlBcfWih3M78lPZXqpertimYPNki8efBG/sCEj3970dg3YUxB4K40dshFf7fVM155pIWsbVxzvRl619qBHkY4cvs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730484156; c=relaxed/simple;
-	bh=FcFVMFA1lnGHpcm6MYuI23U8Olzx2/gJYOuGhGuBujg=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=qeIsy3ILRHGxx8eP49o1hsTjJp3Ygt+6EW6JuZL8saPQqt0Ri57OM3y/d9BTSSm9TeHppV6aOYwbVxT18lipszz5HeMJh/fyX1VGj7qPZcrJRHUeMZZwSUKFfaDo8mukdFvs1iPDfVYS1S+oUY/8/BEpeKCjnsxObH1wHOM3Hv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAcbDBmd; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-72097a5ca74so1989925b3a.3;
-        Fri, 01 Nov 2024 11:02:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1730484152; x=1731088952; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=LhpDgh5o6hmtsMchkNYiiOk/LDTq+HmIoaJTC5fXcFY=;
-        b=mAcbDBmdf4HUgklveXPMu/1CQHT5HBNBNmObdgx19Q0ii2j3oXzRKIsb6YKApvBwo8
-         pA0x9uAcPhoVGOKt5OWpkCsBHgTi45IdVrpYIcYFCcu8fi4uJdAIbiC6DZDJ66e8TuZZ
-         Ubf5p98ZHpsggyBfWE6xjBejzroI4Mnr2C7u9kn622vns50uGv9n5Gzs56ztNibly21R
-         I8HweMzLw2qJ8MfxX22erZGVNVEGSBnoJ9CcSHdbivj1yE0g7a8qrW1bMOLbPorvbMuO
-         0xoe3hF8azL5XbOH7kSekHTJ8QNPJtsagn5DymCHKAGBuUo4xN9/aJqHJIE5sY97p4Fz
-         Xv1w==
+	s=arc-20240116; t=1730489732; c=relaxed/simple;
+	bh=P5NjpOhW1w/eEvKGZGqUAC4prQu4vS1OH7oViAEO6fc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=N5/ptDqEEn08oa/D+sJu8hkXgkRoZtIbVHT82lWEOlOztr/8s8EySH2t43LhNvwiWT2Yk96J+xxBcdV8tsuJV8zXz0cp0GzHP4BatgeVOsbT5O/EAiiiV5dniTniO5HPdR0t8D9EdXERol4S0hjDJTrkvO6mtNK65MTltNKguYs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3a3b9c5bcd8so21058215ab.2
+        for <linux-ext4@vger.kernel.org>; Fri, 01 Nov 2024 12:35:30 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730484152; x=1731088952;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=LhpDgh5o6hmtsMchkNYiiOk/LDTq+HmIoaJTC5fXcFY=;
-        b=v+zf9Tb5SN05/cUzdgIq9C29KaRGUsSgFHVAEPRIg8Ypc7qdZblFEc4ZOanvpp8LuR
-         7Rp7tQCFKNRAurYQPJkmbJ5q/yMuLX2lOBAv8C99IkqaInIOcESc+L5s1n1u8w24rTuY
-         OYVy8EqTiIKSe5Yw053LlWaA81lgg3qMOqXPP4bKEwP3d+5NYtdM4VgMr2q3SOWmQ7Pt
-         NX61x65zYn2T077nWYQmUrPxyfHV5NVTx7gMyTBHwXWPh7q4TEmVi8g8B5g4WzFAaI4m
-         p43y8fMdXsJXj+6FLmgnKbV2aIPC9+EXTnd1NQ+daoF8XhJ2u4pGHQNYB7wujMWfCnVe
-         UHlg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMue5zw6GWNlUgxA/PeCzGJtUWRsOHChGXVjTSOm7Sp4kML/6gGz1hsrh9RVpE5x+prsUmh1dIT72E@vger.kernel.org, AJvYcCUUTyAZQ6PGEo9Sjnm9AwK0ASiuQvLfe82cekKXNJA+yrxWhJXUvS+r4Gd5bW2AVrpvx4UOcttRW3sc@vger.kernel.org, AJvYcCUYdW5ico8L6BOZzt9hxG+oIfO84rgjL39wGvBlRJu7vCTnzhLx1JSm1hW/1jfPFza9izWmDHB9eglvh/3u@vger.kernel.org, AJvYcCWgVbTIPb+24VqfQLiLmTDFFeWuw16XJKaF9V6/QKL0CrsZ/lI/dCCAFjdAjyTFAdb2useD9MDVoF9C0+8ISQ==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy4/kWfzm88X6hASJ5Etin/aQHJaclKRZ2higEr+hAzHEI57K4a
-	eu95jRAnFUF/KYW20jzu+Rl6BeDcxmHuqei/JvdZGbOIcYmjQIyx/qMpdw==
-X-Google-Smtp-Source: AGHT+IFeCheQNf3wLwjpAi3LuJrAXXy2xOlmbQhIyLvFCcJdSpkKSq4QUMJDDTpgDiiTt2cKk3vpbA==
-X-Received: by 2002:a05:6a21:9d83:b0:1d9:a785:6487 with SMTP id adf61e73a8af0-1dba5219700mr4891565637.1.1730484152449;
-        Fri, 01 Nov 2024 11:02:32 -0700 (PDT)
-Received: from dw-tp ([203.81.243.23])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-720bc1ea695sm2923603b3a.73.2024.11.01.11.02.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 01 Nov 2024 11:02:31 -0700 (PDT)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: John Garry <john.g.garry@oracle.com>, linux-ext4@vger.kernel.org
-Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, "Darrick J . Wong" <djwong@kernel.org>, Christoph Hellwig <hch@infradead.org>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH v4 1/4] ext4: Add statx support for atomic writes
-In-Reply-To: <4198772d-54c8-44b9-8e85-0ec089032514@oracle.com>
-Date: Fri, 01 Nov 2024 22:53:03 +0530
-Message-ID: <8734kazx54.fsf@gmail.com>
-References: <cover.1730437365.git.ritesh.list@gmail.com> <0517cef1682fc1f344343c494ac769b963f94199.1730437365.git.ritesh.list@gmail.com> <4198772d-54c8-44b9-8e85-0ec089032514@oracle.com>
+        d=1e100.net; s=20230601; t=1730489730; x=1731094530;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=u8lPGkX/utG/2/9kudO/gDT8XABATxXzqo3GFDswoXQ=;
+        b=BCijjgCyd5VPfkrPEKqn2SrEEJBVtBG0Fe7bpTtkYAPA49D04/XAM9RRsidY1eJ6LM
+         WXNEXoz+LUZjFLahM1uc5xA5Oe+s+zNbEk/QOznkDMvE5liTWFjMwDIWtikqGE0UIMXe
+         jyYKLHBHPfzdHdkA7QCP05nIrqXRayJe9luh6OQIwOYRU+CXE84zSELD0t11aZ8N0HAN
+         LpTa5fFA5ZZsJSc9tEgkp1s/Z5h94f8ugPSADRdrRClmhEYof9VnQNBWzI9lLuuBFAe7
+         cAVmNO9hGvqFyBx5FJq+qK+JMnBqBO7+DtY6TSnOr8vslHQDTRvHi8o+gtZyQI+kGnve
+         MiJQ==
+X-Gm-Message-State: AOJu0YyhEz5Ca3gG15bxYo/pJ+qB4yqGU38lfipRR6dkBcoEA0/u/85i
+	Re4TN7BBlVXqmJQWYqtQQnEMwq5xI9rx4hP/2lByZg0FrbyX1WssCihNlXcgS0F2z5iS2+EGH1z
+	uPSOmIY7aTw0zOFQ3g8DkgWfxlOQUkabXXH+JBuxy2PkoyQVeeNrl+xI=
+X-Google-Smtp-Source: AGHT+IHw+LrlwAqbJ6U84O21Bx/q5NNgr0Xzmcbw+SGTE4hharPM24LAWznN28NKOQk0iN2AhATamaPfyONNWfbQZuWHNHov9V2o
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-Received: by 2002:a92:8748:0:b0:3a5:e1f5:157c with SMTP id
+ e9e14a558f8ab-3a5e1f51a2dmr103901755ab.15.1730489730072; Fri, 01 Nov 2024
+ 12:35:30 -0700 (PDT)
+Date: Fri, 01 Nov 2024 12:35:30 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <67252d82.050a0220.35b515.0177.GAE@google.com>
+Subject: [syzbot] [ext4?] divide error in qnx6_mmi_fill_super
+From: syzbot <syzbot+6a0633f11d3fb88860bf@syzkaller.appspotmail.com>
+To: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-John Garry <john.g.garry@oracle.com> writes:
+Hello,
 
-> On 01/11/2024 06:50, Ritesh Harjani (IBM) wrote:
->> This patch adds base support for atomic writes via statx getattr.
->> On bs < ps systems, we can create FS with say bs of 16k. That means
->> both atomic write min and max unit can be set to 16k for supporting
->> atomic writes.
->> 
->> Co-developed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Signed-off-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->
-> Regardless of nitpicks:
->
-> Reviewed-by: John Garry <john.g.garry@oracle.com>
->
+syzbot found the following issue on:
 
-Thanks John for the review!
+HEAD commit:    819837584309 Linux 6.12-rc5
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=11653230580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=4aec7739e14231a7
+dashboard link: https://syzkaller.appspot.com/bug?extid=6a0633f11d3fb88860bf
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1617fe5f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1117fe5f980000
 
-Since as you too mentioned the remaining points are minor and not
-critical review comments, I will address them next time in the
-multi-fsblock variant. With all other aspects now finalized in this v4
-version, this looks ready to be picked up for the merge window. 
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7feb34a89c2a/non_bootable_disk-81983758.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/c67be4ca64cb/vmlinux-81983758.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/d6ab06862875/bzImage-81983758.xz
+mounted in repro #1: https://storage.googleapis.com/syzbot-assets/31f696da7624/mount_0.gz
+mounted in repro #2: https://storage.googleapis.com/syzbot-assets/1eae9e19d2c5/mount_1.gz
 
--ritesh
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+6a0633f11d3fb88860bf@syzkaller.appspotmail.com
 
->> ---
->>   fs/ext4/ext4.h  | 10 ++++++++++
->>   fs/ext4/inode.c | 12 ++++++++++++
->>   fs/ext4/super.c | 31 +++++++++++++++++++++++++++++++
->>   3 files changed, 53 insertions(+)
->> 
->> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
->> index 44b0d418143c..494d443e9fc9 100644
->> --- a/fs/ext4/ext4.h
->> +++ b/fs/ext4/ext4.h
->> @@ -1729,6 +1729,10 @@ struct ext4_sb_info {
->>   	 */
->>   	struct work_struct s_sb_upd_work;
->>   
->> +	/* Atomic write unit values in bytes */
->> +	unsigned int s_awu_min;
->> +	unsigned int s_awu_max;
->> +
->>   	/* Ext4 fast commit sub transaction ID */
->>   	atomic_t s_fc_subtid;
->>   
->> @@ -3855,6 +3859,12 @@ static inline int ext4_buffer_uptodate(struct buffer_head *bh)
->>   	return buffer_uptodate(bh);
->>   }
->>   
->> +static inline bool ext4_inode_can_atomic_write(struct inode *inode)
->> +{
->> +
->
-> nit: superfluous blank line
->
+loop0: detected capacity change from 0 to 128
+qnx6: unable to set blocksize
+loop0: detected capacity change from 0 to 128
+Oops: divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 0 UID: 0 PID: 5358 Comm: syz-executor346 Not tainted 6.12.0-rc5-syzkaller #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.3-debian-1.16.3-2~bpo12+1 04/01/2014
+RIP: 0010:qnx6_mmi_fill_super+0x20c/0x810 fs/qnx6/super_mmi.c:68
+Code: c4 28 4c 89 e0 48 c1 e8 03 0f b6 04 18 84 c0 0f 85 60 05 00 00 45 85 f6 41 8b 04 24 89 c6 0f ce 0f 44 f0 b8 00 10 00 00 31 d2 <f7> f6 41 89 c6 4c 89 ff e8 67 c0 87 01 89 c3 31 ff 89 c6 e8 4c 83
+RSP: 0018:ffffc9000ceb7ac8 EFLAGS: 00010246
+RAX: 0000000000001000 RBX: dffffc0000000000 RCX: ffff888000d80000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888048292034
+RBP: 0000000000000000 R08: ffffffff831258ff R09: ffffffff8c617e00
+R10: ffffffff8c617a00 R11: ffffffff8c617600 R12: ffff888048292028
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8880467de000
+FS:  00007f9aec9cb6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000055d713e729c8 CR3: 0000000000e4c000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ qnx6_fill_super+0x181/0x15a0 fs/qnx6/inode.c:321
+ get_tree_bdev+0x3f7/0x570 fs/super.c:1635
+ vfs_get_tree+0x90/0x2b0 fs/super.c:1800
+ do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+ do_mount fs/namespace.c:3847 [inline]
+ __do_sys_mount fs/namespace.c:4057 [inline]
+ __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f9aeca3746a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 5e 04 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9aec9cb038 EFLAGS: 00000286 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 0000000020009e00 RCX: 00007f9aeca3746a
+RDX: 0000000020009e00 RSI: 0000000020000080 RDI: 00007f9aec9cb090
+RBP: 00007f9aec9cb090 R08: 00007f9aec9cb0d0 R09: 002c73665f696d6d
+R10: 000000000020c800 R11: 0000000000000286 R12: 0000000020000080
+R13: 00007f9aec9cb0d0 R14: 0000000000009e0d R15: 0000000020000040
+ </TASK>
+Modules linked in:
+---[ end trace 0000000000000000 ]---
+RIP: 0010:qnx6_mmi_fill_super+0x20c/0x810 fs/qnx6/super_mmi.c:68
+Code: c4 28 4c 89 e0 48 c1 e8 03 0f b6 04 18 84 c0 0f 85 60 05 00 00 45 85 f6 41 8b 04 24 89 c6 0f ce 0f 44 f0 b8 00 10 00 00 31 d2 <f7> f6 41 89 c6 4c 89 ff e8 67 c0 87 01 89 c3 31 ff 89 c6 e8 4c 83
+RSP: 0018:ffffc9000ceb7ac8 EFLAGS: 00010246
+RAX: 0000000000001000 RBX: dffffc0000000000 RCX: ffff888000d80000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: ffff888048292034
+RBP: 0000000000000000 R08: ffffffff831258ff R09: ffffffff8c617e00
+R10: ffffffff8c617a00 R11: ffffffff8c617600 R12: ffff888048292028
+R13: 0000000000000000 R14: 0000000000000000 R15: ffff8880467de000
+FS:  00007f9aec9cb6c0(0000) GS:ffff88801fc00000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007f9ae443f000 CR3: 0000000000e4c000 CR4: 0000000000352ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+----------------
+Code disassembly (best guess), 1 bytes skipped:
+   0:	28 4c 89 e0          	sub    %cl,-0x20(%rcx,%rcx,4)
+   4:	48 c1 e8 03          	shr    $0x3,%rax
+   8:	0f b6 04 18          	movzbl (%rax,%rbx,1),%eax
+   c:	84 c0                	test   %al,%al
+   e:	0f 85 60 05 00 00    	jne    0x574
+  14:	45 85 f6             	test   %r14d,%r14d
+  17:	41 8b 04 24          	mov    (%r12),%eax
+  1b:	89 c6                	mov    %eax,%esi
+  1d:	0f ce                	bswap  %esi
+  1f:	0f 44 f0             	cmove  %eax,%esi
+  22:	b8 00 10 00 00       	mov    $0x1000,%eax
+  27:	31 d2                	xor    %edx,%edx
+* 29:	f7 f6                	div    %esi <-- trapping instruction
+  2b:	41 89 c6             	mov    %eax,%r14d
+  2e:	4c 89 ff             	mov    %r15,%rdi
+  31:	e8 67 c0 87 01       	call   0x187c09d
+  36:	89 c3                	mov    %eax,%ebx
+  38:	31 ff                	xor    %edi,%edi
+  3a:	89 c6                	mov    %eax,%esi
+  3c:	e8                   	.byte 0xe8
+  3d:	4c                   	rex.WR
+  3e:	83                   	.byte 0x83
 
-Sure.
 
->> +	return S_ISREG(inode->i_mode) && EXT4_SB(inode->i_sb)->s_awu_min > 0;
->
-> I am not sure if the S_ISREG() check is required. Other callers also do 
-> the check (like ext4_getattr() for when calling 
-> ext4_inode_can_atomic_write()) or don't need it (ext4_file_open()). I 
-> say ext4_file_open() doesn't need it as ext4_file_open() is only ever 
-> called for regular files, right?
->
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-Yes. However I believe we might end up using this from other places when
-we add support of extsize. So we might need S_ISREG check.
-But sure let me re-think on that during the multi-fsblock variant time.
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
->> +}
->> +
->>   extern int ext4_block_write_begin(handle_t *handle, struct folio *folio,
->>   				  loff_t pos, unsigned len,
->>   				  get_block_t *get_block);
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 54bdd4884fe6..3e827cfa762e 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -5578,6 +5578,18 @@ int ext4_getattr(struct mnt_idmap *idmap, const struct path *path,
->>   		}
->>   	}
->>   
->> +	if ((request_mask & STATX_WRITE_ATOMIC) && S_ISREG(inode->i_mode)) {
->
-> nit: maybe you could have factored out the S_ISREG() check with 
-> STATX_DIOALIGN
->
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-Sure.
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
 
->> +		struct ext4_sb_info *sbi = EXT4_SB(inode->i_sb);
->> +		unsigned int awu_min = 0, awu_max = 0;
->> +
->> +		if (ext4_inode_can_atomic_write(inode)) {
->> +			awu_min = sbi->s_awu_min;
->> +			awu_max = sbi->s_awu_max;
->> +		}
->> +
->> +		generic_fill_statx_atomic_writes(stat, awu_min, awu_max);
->> +	}
->> +
->>   	flags = ei->i_flags & EXT4_FL_USER_VISIBLE;
->>   	if (flags & EXT4_APPEND_FL)
->>   		stat->attributes |= STATX_ATTR_APPEND;
->> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
->> index 16a4ce704460..ebe1660bd840 100644
->> --- a/fs/ext4/super.c
->> +++ b/fs/ext4/super.c
->> @@ -4425,6 +4425,36 @@ static int ext4_handle_clustersize(struct super_block *sb)
->>   	return 0;
->>   }
->>   
->> +/*
->> + * ext4_atomic_write_init: Initializes filesystem min & max atomic write units.
->> + * @sb: super block
->> + * TODO: Later add support for bigalloc
->> + */
->> +static void ext4_atomic_write_init(struct super_block *sb)
->> +{
->> +	struct ext4_sb_info *sbi = EXT4_SB(sb);
->> +	struct block_device *bdev = sb->s_bdev;
->> +
->> +	if (!bdev_can_atomic_write(bdev))
->> +		return;
->> +
->> +	if (!ext4_has_feature_extents(sb))
->> +		return;
->> +
->> +	sbi->s_awu_min = max(sb->s_blocksize,
->> +			      bdev_atomic_write_unit_min_bytes(bdev));
->> +	sbi->s_awu_max = min(sb->s_blocksize,
->> +			      bdev_atomic_write_unit_max_bytes(bdev));
->> +	if (sbi->s_awu_min && sbi->s_awu_max &&
->> +	    sbi->s_awu_min <= sbi->s_awu_max) {
->> +		ext4_msg(sb, KERN_NOTICE, "Supports (experimental) DIO atomic writes awu_min: %u, awu_max: %u",
->> +			 sbi->s_awu_min, sbi->s_awu_max);
->> +	} else {
->> +		sbi->s_awu_min = 0;
->> +		sbi->s_awu_max = 0;
->> +	}
->> +}
->> +
->>   static void ext4_fast_commit_init(struct super_block *sb)
->>   {
->>   	struct ext4_sb_info *sbi = EXT4_SB(sb);
->> @@ -5336,6 +5366,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
->>   
->>   	spin_lock_init(&sbi->s_bdev_wb_lock);
->>   
->> +	ext4_atomic_write_init(sb);
->>   	ext4_fast_commit_init(sb);
->>   
->>   	sb->s_root = NULL;
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
