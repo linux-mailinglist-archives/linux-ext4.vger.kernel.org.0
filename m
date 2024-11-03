@@ -1,102 +1,111 @@
-Return-Path: <linux-ext4+bounces-4909-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4910-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E583F9BA2D8
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Nov 2024 23:58:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D884A9BA5AE
+	for <lists+linux-ext4@lfdr.de>; Sun,  3 Nov 2024 14:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E04A283337
-	for <lists+linux-ext4@lfdr.de>; Sat,  2 Nov 2024 22:58:09 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9CE55281BDD
+	for <lists+linux-ext4@lfdr.de>; Sun,  3 Nov 2024 13:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01D681AB6DD;
-	Sat,  2 Nov 2024 22:58:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A9F5175D45;
+	Sun,  3 Nov 2024 13:37:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="KLF8HuA2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtpbg154.qq.com (smtpbg154.qq.com [15.184.224.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39A4C16FF3B
-	for <linux-ext4@vger.kernel.org>; Sat,  2 Nov 2024 22:58:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87B1ABA42;
+	Sun,  3 Nov 2024 13:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=15.184.224.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730588285; cv=none; b=Rd/SZCZsuufF6YkdLfYvCHlsImL/WfSdjBs48EsKIWCiK9AL+kG5KFcsmcOg8vVtdRqa0GDUOpoPkMiXZJLpg25wTTbqpBmL0KeXMU3LA+RbGCSUE+dSI+zeHdqNcgbOgFBR9+v1CJHGc6yfS2zokKs2TTNMsPnc0+G69H5w4iY=
+	t=1730641042; cv=none; b=EuIFYB8XauCHhMeLtpHfMwAP23xSwT5dtmUQ/71YS43zeRabyUG9vW0C3Z1oWRlV9cwL3ZJlFH490gZF5/Hofte/8EjhsiicCbkzo0/oPFWB/AsMeUlg158Y8U6BjF5r2qlyuEmXyvUfLu+NMBy0flECPFUBJ+yD96d786kE+Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730588285; c=relaxed/simple;
-	bh=lQTJmVE2dpbn2916q3lXchAWyB180O9oib1aRjyR9Zk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=UwcUXDsaFdn4iWTu0scNWQAdh8u4x6LRV6yu+8f+9n+UwAgU96723VtXfTt1xtX6ak613bll8D5pZ+r7+fvXTxv2O4MEaZr7P8s6IRrrcuKlAD/yDGxEsGsHusPjirqqcpfTnCVVdYaSXgDi+2IE2Hquv2tRxKWsrGZCBxLuYq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a6c355b3f5so6868235ab.3
-        for <linux-ext4@vger.kernel.org>; Sat, 02 Nov 2024 15:58:04 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730588283; x=1731193083;
-        h=content-transfer-encoding:to:from:subject:message-id:in-reply-to
-         :date:mime-version:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3yBzUyljWebaGC+XnQZjALDFZL0q7JsGCGKAUh0yZEw=;
-        b=T1RzohqcAN1w1ssk+Z4LHZIQlpQ3m+bFBl9VRyUNKhoKwgiAfOC28nvJPOlpbn0mLv
-         4XzM6VykF5iTNrMksekbIS/9HqnuMFaD+35OhKNZNCHbEIPv+PRTUxsT+glEBN6RDLRB
-         sPdFduqVMULb9GLsgv412WtQGay28LaF86w61AOxCveyy1kNcEhwIaY4lBz5SsqjwtAt
-         YqIrJDF6vQmGX3uCGIx2cwyxZRG7dnYPOKztMNOMkCb6/0DmWP6LoSybjaUGV+YD/wl/
-         0ws2ut5J3hUFvkZYq/T28tZbEM87dnxT5LxtZrbV40ZDF2aMfqb/4GTd3f+2f8nzC25d
-         UDtw==
-X-Forwarded-Encrypted: i=1; AJvYcCUEFyn3wP8bMwsiHu06mFPCHEGPPbuzaM4LOg46t+gSIJ36VbvJq1keOgcwQbmyRnhUrXI7CCB801di@vger.kernel.org
-X-Gm-Message-State: AOJu0YwVTLEW3ngWlVvlWl0nWtpRLebtcoYIj0Vjz3WPE+CuqtQ4a5H3
-	9twB+ZcnI/ZXPtLA4MWBU+Qh9+rtdJFkK0X+sEqfyPUaFSn78UuJVL+nFPHLkxHomnxlWO2lgwn
-	Pvoqb8YI1dhfb2qvrQK8spD4dZemnWxhrjkAyo7EmKu8+dx1vQ0YrtfU=
-X-Google-Smtp-Source: AGHT+IHiBflm0OrHzRauDd2+Qk79yPQ2UsUXEsZO3NY2JhYxJXK8UlMJyJX29+TPwFZDLAECael9bu2Y9DD9M2ZTmExsyybtfnvw
+	s=arc-20240116; t=1730641042; c=relaxed/simple;
+	bh=0u2qY5VmW02QoZQQ8PVGB0RvEt+gYfighmeowfpBp9Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=akCh/hWE7sNeulbTWRNXrTD4fAyTA8PjhMOHh380Yhb3j0P1jsSibQDr1Hbj6zmQFpvF+3WwukBEwXkVsii5JkR/tSuif/+KGdAt518ZhDsgWTCXsmEFwu4qWKdmJS+eXIuNHpAofXFQIbi9zFiD6CLVHtdNEwEnHgS9fPpXv2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=KLF8HuA2; arc=none smtp.client-ip=15.184.224.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1730641022;
+	bh=0u2qY5VmW02QoZQQ8PVGB0RvEt+gYfighmeowfpBp9Q=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=KLF8HuA2XZZA8PyiFIvxZyWe/QyPFXt7v/I0izyxgFtQDYw727X9/PTsC+BZn74Y0
+	 mWRYJkxiA6zPS+DHh2CYqTkCl6rOZpFl9M65nsnUxXhTKvCMjUxLR4CJ4QUZsLa+Ci
+	 r1taA2f3NHlHgNNy0bmBr+6w+ezN9xazZzSxWx9w=
+X-QQ-mid: bizesmtpip2t1730641018t4vihmk
+X-QQ-Originating-IP: OJFfFUb+TagDtWAwy6uc0+sLCBe0njxsmdHE22f+THA=
+Received: from avenger-OMEN-by-HP-Gaming-Lapto ( [localhost])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Sun, 03 Nov 2024 21:36:56 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 16809586154877906677
+From: WangYuli <wangyuli@uniontech.com>
+To: ebiggers@kernel.org
+Cc: ardb@kernel.org,
+	linux-arch@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-crypto@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	linux-kernel@vger.kernel.org,
+	linux-mips@vger.kernel.org,
+	linux-riscv@lists.infradead.org,
+	linux-s390@vger.kernel.org,
+	linux-scsi@vger.kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	loongarch@lists.linux.dev,
+	kernel@xen0n.name,
+	chenhuacai@kernel.org,
+	xry111@xry111.site,
+	sparclinux@vger.kernel.org,
+	x86@kernel.org
+Subject: Re: [PATCH v2 06/18] loongarch/crc32: expose CRC32 functions through lib
+Date: Sun,  3 Nov 2024 21:36:55 +0800
+Message-ID: <DA8BCDFFEACDA1C6+20241103133655.217375-1-wangyuli@uniontech.com>
+X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20241025191454.72616-7-ebiggers@kernel.org>
+References: <20241025191454.72616-7-ebiggers@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cdac:0:b0:3a2:6cd7:3250 with SMTP id
- e9e14a558f8ab-3a4ed29dcdemr256947425ab.10.1730588283359; Sat, 02 Nov 2024
- 15:58:03 -0700 (PDT)
-Date: Sat, 02 Nov 2024 15:58:03 -0700
-In-Reply-To: <000000000000163e1406152c6877@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6726ae7b.050a0220.35b515.018a.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] possible deadlock in ext4_xattr_inode_iget (3)
-From: syzbot <syzbot+ee72b9a7aad1e5a77c5c@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, adilger@dilger.ca, eadavis@qq.com, 
-	hdanton@sina.com, linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu, 
-	wojciech.gladysz@infogain.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtpip:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-QQ-XMAILINFO: MAXRuxnbzssegXhSBUmiIE6Ni8PjKv5CHWWsGTJU0o95Ea/t2pd6wnqu
+	av3bthBKz45tsWOf6m/LRZbQSWTt7BcsFHtEyxKQKiMG/UONhlRAE+jREH3dkz5J2RCrn3L
+	EbNOGompESEmaKd/JRKrIWo8YjKuybwCcZoQbJlwZLKdyOeketSff2EOXVVi197Q11ABGJj
+	zCDVLr5RahkoLwstEJ+vqFDa14JyI0DM16D2s1izf/JZoWOsYMuhDx5NAlzWweFxdxW8iJN
+	VOIhEiUl/8dvJ/QXdQCUu2f5le0cqfUepm11FxRrjAo1Habnb4GSCzeWanGtE76dDAIzK89
+	OY8bTcZrACgJJyaasaaeXrLkuWqajEX5KrRt8689iMb4z0Qty1MYQEUokgx/tVBRJYO7ePL
+	dF2C2KFfnT1ZNm2JWJNccTgd/07en/sJl8LazlcZen1MBts3mA8V0YNF1Rdpkb4o/Y54qc3
+	j8jDPxQhsdG9y72GOs4QMaPR1/fVv59RW+Xm+4sfr1yn2ZoFUme8u5u3kez4CvZ8Bdh8sfJ
+	Y/dbxn8T25Lf8NWjJG2BvDKM8jSC7HAEJvGJKUItnpI8z7m5TEq2Y7PNear4vrh24uVr3dW
+	9YhZYMHCMT4Juxx8eaSJg7r5WfqgSqOg3ark4Q2lLXWELJ8XxcjmniURpSeuQL4xpMELCiJ
+	gDbVnykSObxsNor/pBnDXf3bK3KCNZFgxQNJtWkbgM5ScOyo73BbeExW6vzdv+8R9LELDiP
+	tpiVn3b02RS2f+C79pak5W9FN56GtXmwY0F1LA3+ewf2qDy53ROjE6xLkhVZmVsXzpW15YJ
+	9dPYVLJTZftDqtbbXCu4JW5OsrQUPJSiy8gE1wMdIolddx6iRYquGlS1V2EaWe6ofSQvdRu
+	R/ksWoSGNU/P1X87cIITRGob5HcXmjUmG5183YZTYAMUsBn4B9ub/nQ9dwH7swW9vZK4Pn6
+	sIAhRQ3rzG9Mxm+a6HLoaOYfkMD2LhuDprb8k4DagQ4WCLUiNRAJJjSPdh6CdSaZNOIda5s
+	B+fiPygXfSsV4idJTf
+X-QQ-XMRINFO: Mp0Kj//9VHAxr69bL5MkOOs=
+X-QQ-RECHKSPAM: 0
 
-syzbot suspects this issue was fixed by commit:
+Even though the narrower CRC instructions doesn't require GRLEN=64, they still *aren't* part of LA32 (LoongArch reference manual v1.10, Volume 1, Table 2-1).
+Link: https://lore.kernel.org/all/0a7d0a9e-c56e-4ee2-a83b-00164a450abe@xen0n.name/
 
-commit d1bc560e9a9c78d0b2314692847fc8661e0aeb99
-Author: Wojciech G=C5=82adysz <wojciech.gladysz@infogain.com>
-Date:   Thu Aug 1 14:38:27 2024 +0000
+Therefore, we could not directly add ARCH_HAS_CRC32 to config LOONGARCH.
 
-    ext4: nested locking for xattr inode
-
-bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=3D1245f55f9800=
-00
-start commit:   fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel.=
-.
-git tree:       upstream
-kernel config:  https://syzkaller.appspot.com/x/.config?x=3D1a07d5da4eb2158=
-6
-dashboard link: https://syzkaller.appspot.com/bug?extid=3Dee72b9a7aad1e5a77=
-c5c
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D12407f4518000=
-0
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D140d9db1180000
-
-If the result looks correct, please mark the issue as fixed by replying wit=
-h:
-
-#syz fix: ext4: nested locking for xattr inode
-
-For information about bisection process see: https://goo.gl/tpsmEJ#bisectio=
-n
+Thanks,
+--
+WangYuli
 
