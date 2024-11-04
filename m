@@ -1,195 +1,203 @@
-Return-Path: <linux-ext4+bounces-4931-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4932-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9FED9BAA93
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2024 02:52:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F4EA9BAADE
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2024 03:35:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A8CC02823A4
-	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2024 01:52:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F32E21F211F3
+	for <lists+linux-ext4@lfdr.de>; Mon,  4 Nov 2024 02:35:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3CFB41632C2;
-	Mon,  4 Nov 2024 01:52:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 321EE16190C;
+	Mon,  4 Nov 2024 02:34:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="WK2nQ19i"
+	dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b="I0gkvfMV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bg5.exmail.qq.com (bg5.exmail.qq.com [43.154.197.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 308823214
-	for <linux-ext4@vger.kernel.org>; Mon,  4 Nov 2024 01:52:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C35223A0;
+	Mon,  4 Nov 2024 02:34:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=43.154.197.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730685167; cv=none; b=tZOXhLFCR+MVDbCEdNm1DsKuod6UtuRbb7aBWTRYT494ANnrrEQHww2OwPbdeP0Xu1aYchfN1RTze5zkzSVB4jjDZZD9WiKueZ2DlQyfZa4LYUJEAsqFBBT7Wsz/Eomoyq/WvAxbeIucQwnKt+Ic298OKhtXUnTfumcW47GS2gY=
+	t=1730687692; cv=none; b=M5LHli9iHT2Yd5GIzdcJWz8YgExfnB6MEIUcYjZvbm1HA3L5xFrc7Mf3+sf1sedkLopWif/1PadgWABb4j4v64r+ektHvb1w+qm8fvcllx6Hdofhpm/PK5nAyrJe94zwiaxVjbN+8QIZbPPMGubqU1sUmKZOyIl4rZ4VYPEZPeM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730685167; c=relaxed/simple;
-	bh=4ER/EiUCkm4Hjda9LTk/1TdU9pkW80CjEHKAFrE8eD0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Hv4Q/4FKD6+Af+zV2UjaMue5IaxHDfw1V8JeFD7XHx+AWRaIt+SJZkcm+DRPjFPnPQfoWR0LUyZXxp6RcXQ8HtA5vSPaJQqhzi1AT7zzSmtTRtKz0mfCkbDsuOBaVRKueMFx1G1D1NEevJGNQKC3BJufdBHZzWgf9rtitL+IuRs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=WK2nQ19i; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-71e61b47c6cso3310603b3a.2
-        for <linux-ext4@vger.kernel.org>; Sun, 03 Nov 2024 17:52:45 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1730685165; x=1731289965; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D1gO7nE6k1d3RjOM7nVXHvrivHG7QQDb7RYI/vhsl1g=;
-        b=WK2nQ19iurnnXZh/H138SBIHp3WiDagYGsLzW8Q2WSuM2PMUzKJj/GfR7k0AYmeKos
-         hJn4GArnVZ4VEgxn7oZQy40khQpgPj7onWuH2Phl+7mmvdKuI37jBAHaDDPTsl5nb4Fz
-         GdHbpXvzmCUvx3GQVcjZo3x5ojFrvAMzfz2Em6whCBa4W+CZ7v3EERd5opZz2RKoBb81
-         EEqdAGGTVP1cqLjmU86d+PzgfVPvRq/9rGlVkHr9HWpW+8C1C42gfYNoimoMsqqagNqK
-         iplPld4ChHpTcexP21UpEfo0BTYpe48qtj5N0rWNKy8fNMtiD/pGzmffBubX3nfkTSod
-         NN4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1730685165; x=1731289965;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D1gO7nE6k1d3RjOM7nVXHvrivHG7QQDb7RYI/vhsl1g=;
-        b=BwUK2urDSQ8E83nrH3spwdLzYhupiBs16Zo7sXPpSs2owO98ZDNAi07O4rRMwsNdta
-         kNGmmMKRk2U+z5IXVD6YaqE1j7PuWppRvfRlfoBGxODYN5xTvrLqfi7WEtemyv1Nrlml
-         fPTXdLvL/iYAVtbidBgRQ6/+wjxAVDDKoOLDCn4XAdCo4Xvt0i4PoZuGbOheMBmLm14k
-         P8F0vugSuMjmDAg1gELNoN9SQdRohXQIaM/z0+XHKLEv9nTq2TWRQcjW1Y/qc9TN9ISC
-         Vz69s82rW/2yV+4zedJUjWw8v0RJLmBf0Vws75RguDavbaNL0bWSqkjpmLO3tUCJ8kky
-         iETA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaI1y9LVW+HyKxVndgA3blDbqPcLCX/mL6pCXML/eTuIJxpwTnShnNNm5uSI25sKVqUkJ4WMkDE7VG@vger.kernel.org
-X-Gm-Message-State: AOJu0YxqHtYcpgsDXe+agD2MSpx8CCVBg//87xpIRXcFrcvH3T1y+ZkD
-	DF8xJXlpDww9jbHUlEtECAEd2GBWB+sMJmtcU29IQhztJvDL8w7dILWY56LnyB0=
-X-Google-Smtp-Source: AGHT+IHU0t6TXjLqTaEyMJ+80xaQseYHEZhGQPcykH54yPn7f5EMEawKPcrdWfzxP/RT/N77cHYxWA==
-X-Received: by 2002:a05:6a20:d8b:b0:1cf:3d14:6921 with SMTP id adf61e73a8af0-1d9a84d168emr47042468637.35.1730685165442;
-        Sun, 03 Nov 2024 17:52:45 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-86-168.pa.vic.optusnet.com.au. [49.186.86.168])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-720bc318824sm6235825b3a.212.2024.11.03.17.52.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 03 Nov 2024 17:52:44 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1t7mGo-009qSI-0n;
-	Mon, 04 Nov 2024 12:52:42 +1100
-Date: Mon, 4 Nov 2024 12:52:42 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Ritesh Harjani <ritesh.list@gmail.com>, Theodore Ts'o <tytso@mit.edu>,
-	John Garry <john.g.garry@oracle.com>, linux-ext4@vger.kernel.org,
-	Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [PATCH 5/6] iomap: Lift blocksize restriction on atomic writes
-Message-ID: <Zygo6nqOJMoJxYrm@dread.disaster.area>
-References: <87v7xgmpwo.fsf@gmail.com>
- <7e322989-c6e0-424a-94bd-3ad6ce5ffee9@oracle.com>
- <87ttd0mnuo.fsf@gmail.com>
- <7aea00d4-3914-414d-a18f-586a303868c1@oracle.com>
- <87r084mkat.fsf@gmail.com>
- <509180f3-4cc1-4cc2-9d43-5a1e728fb718@oracle.com>
- <87plnomfsy.fsf@gmail.com>
- <20241025182858.GM2386201@frogsfrogsfrogs>
- <87jzdvmqfz.fsf@gmail.com>
- <20241031213640.GB21832@frogsfrogsfrogs>
+	s=arc-20240116; t=1730687692; c=relaxed/simple;
+	bh=LBnwjIu01qb3uMzu5oQLZ1sXef4WJoJ8ZJ5HXkRpTng=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GwJT/M97aBAplMtI2f+9zjc054wEKEciVaHp516glwRhXaZKSjwyHTnD35MCTM6w/CD+Dp3SrbvzvaEVjH6yH8J+dF5NhE+GYF+0DxgLgpjtoHV/m09s/CZQimWkY5EDaJOBgovhGvKDrhdBW8UVhVEWkbYEQmBWy25bvRDa3Oc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com; spf=pass smtp.mailfrom=uniontech.com; dkim=pass (1024-bit key) header.d=uniontech.com header.i=@uniontech.com header.b=I0gkvfMV; arc=none smtp.client-ip=43.154.197.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=uniontech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=uniontech.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=uniontech.com;
+	s=onoh2408; t=1730687664;
+	bh=LBnwjIu01qb3uMzu5oQLZ1sXef4WJoJ8ZJ5HXkRpTng=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=I0gkvfMVE/MguKNe6G+/LMNLVFqz7dkh0IDG0vDntK4CNMqCoz50Tqhzb3M0pX6yE
+	 GsMB3HypNccbL/ypubSF6JPJFS7ckgk4c83b82I4kXeEhlwYuJQ9JJSgbhKj4ZgSzt
+	 6AVc0wlL51Wy3m4xPQdNrps/E4wW0CWhuFCKwvFc=
+X-QQ-mid: bizesmtp90t1730687661tfnba8nb
+X-QQ-Originating-IP: zCt886bJnOZxcI98vSCU01cM2iwZOisAeH5BvJ3W5y4=
+Received: from [10.20.6.66] ( [61.183.83.60])
+	by bizesmtp.qq.com (ESMTP) with 
+	id ; Mon, 04 Nov 2024 10:34:18 +0800 (CST)
+X-QQ-SSF: 0000000000000000000000000000000
+X-QQ-GoodBg: 1
+X-BIZMAIL-ID: 13360692648225194716
+Message-ID: <E7AED86A89FD886F+263304da-0529-4b4c-9e23-ea2e5e3cef2c@uniontech.com>
+Date: Mon, 4 Nov 2024 10:34:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241031213640.GB21832@frogsfrogsfrogs>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 06/18] loongarch/crc32: expose CRC32 functions through
+ lib
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: ardb@kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, kernel@xen0n.name, chenhuacai@kernel.org,
+ xry111@xry111.site, sparclinux@vger.kernel.org, x86@kernel.org
+References: <20241025191454.72616-7-ebiggers@kernel.org>
+ <DA8BCDFFEACDA1C6+20241103133655.217375-1-wangyuli@uniontech.com>
+ <20241103135730.GA813@quark.localdomain>
+Content-Language: en-US
+From: WangYuli <wangyuli@uniontech.com>
+Autocrypt: addr=wangyuli@uniontech.com; keydata=
+ xjMEZoEsiBYJKwYBBAHaRw8BAQdAyDPzcbPnchbIhweThfNK1tg1imM+5kgDBJSKP+nX39DN
+ IVdhbmdZdWxpIDx3YW5neXVsaUB1bmlvbnRlY2guY29tPsKJBBMWCAAxFiEEa1GMzYeuKPkg
+ qDuvxdofMEb0C+4FAmaBLIgCGwMECwkIBwUVCAkKCwUWAgMBAAAKCRDF2h8wRvQL7g0UAQCH
+ 3mrGM0HzOaARhBeA/Q3AIVfhS010a0MZmPTRGVfPbwD/SrncJwwPAL4GiLPEC4XssV6FPUAY
+ 0rA68eNNI9cJLArOOARmgSyJEgorBgEEAZdVAQUBAQdA88W4CTLDD9fKwW9PB5yurCNdWNS7
+ VTL0dvPDofBTjFYDAQgHwngEGBYIACAWIQRrUYzNh64o+SCoO6/F2h8wRvQL7gUCZoEsiQIb
+ DAAKCRDF2h8wRvQL7sKvAP4mBvm7Zn1OUjFViwkma8IGRGosXAvMUFyOHVcl1RTgFQEAuJkU
+ o9ERi7qS/hbUdUgtitI89efbY0TVetgDsyeQiwU=
+In-Reply-To: <20241103135730.GA813@quark.localdomain>
+Content-Type: multipart/signed; micalg=pgp-sha256;
+ protocol="application/pgp-signature";
+ boundary="------------yPwlqMleUVPPs6iT7orBXJ4O"
+X-QQ-SENDSIZE: 520
+Feedback-ID: bizesmtp:uniontech.com:qybglogicsvrgz:qybglogicsvrgz8a-1
+X-QQ-XMAILINFO: NJaUjScZH2N7a7NYy0D7VCbmSeGLx0tfSNnPIdmY8W3aBXPu4v2xCqAQ
+	jZipcnxD3tMymurqF0dyyArNJuyEYQSYWIhvd96iVv5dFL/JF0L3ocxMejDQn0hVXvn8rN7
+	+5pU6R09CR0VbNJZj7AzjnMTMo/IIpSt3YCe2CX1NlOQkQcmwQQXkHcevimyhnxUOSQUdHL
+	KDGRfqEqhYc/aJw1IzAfSUY6+9VgcX4jmo1Gr96IJQ8s7y/ilbw0j8VCZ7H2DT1Pvs/tB4e
+	ekUk8RTcz7s5sFdfjcMG6/eGPUX+n2zQFjp5uI2SbotPCT9pVMPt7DLUhMl/DrXW6luFNXA
+	hI/Yg1WVu9C6bo6jmuP2Bl+rfMg6u9iTgCCD73u7Tz1WB+6GnQcg8J97laTWk4WjK5qRvr/
+	zJ9wwB3bobVwtQa2KnVsT3LjKTC6jhHst4XrMbQGc4u2teo1hd7/vsARb5JBJnr//+6Iki0
+	mSbMqqUWgGw7OjiPI5qr3ic6l8Qd8s1X1CAZ3Ofr91x0YP65DBzyJrg8/mzanypklNphKaC
+	OBLIU/VR++OOBh0kkh0EQiwP2SlOY3WNpLCxg4qFDCOJA6+9+BSvLdl8BPMt6BnDQ9Z3cIN
+	uCjdtyjJdFYP5AORvjbKztvSAWebeNc6U+m305g/Z5chllfo5uHqyeLmwBI3Xidwk3HeKqw
+	6bjDxcYzZ1t5Or8vxm8nR4DFuVBvQ7vF6Fbc3ntE2543J5IAazBKZs2NMOu2NYxksxUwSm9
+	BCtGt6xnGG7zuK7iGq6hYvucs3rL/vzGuSygtuKAkt+6qM1On+EYGAdkkJnilb6jz0WABkD
+	KlkHLhvGe3qqqgaj+vevFro+84ECKnrul3pSYpaZJVnIv9iYUvCmgfp6KHjtchYiHHxt888
+	rO5O7tzHkYIvY4kJVQbKNgurE2PxFlZA+WUKTOM0CogUmlA0WyANz5cvy7VsCORR600tW8i
+	vvGkSyDxDVXyqxkw9ebPRS1R2/bLzZsxXsj91/8rDh49CAjfhXSMlc4vT5WwS3Qv0MZUmLN
+	mTEMn4sR+hcykQiwEx4rmOnFY6qrqI4E0zlix+1w==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+X-QQ-RECHKSPAM: 0
 
-On Thu, Oct 31, 2024 at 02:36:40PM -0700, Darrick J. Wong wrote:
-> On Sat, Oct 26, 2024 at 10:05:44AM +0530, Ritesh Harjani wrote:
-> > > This gets me to the third and much less general solution -- only allow
-> > > untorn writes if we know that the ioend only ever has to run a single
-> > > transaction.  That's why untorn writes are limited to a single fsblock
-> > > for now -- it's a simple solution so that we can get our downstream
-> > > customers to kick the tires and start on the next iteration instead of
-> > > spending years on waterfalling.
-> > >
-> > > Did you notice that in all of these cases, the capabilities of the
-> > > filesystem's ioend processing determines the restrictions on the number
-> > > and type of mappings that ->iomap_begin can give to iomap?
-> > >
-> > > Now that we have a second system trying to hook up to the iomap support,
-> > > it's clear to me that the restrictions on mappings are specific to each
-> > > filesystem.  Therefore, the iomap directio code should not impose
-> > > restrictions on the mappings it receives unless they would prevent the
-> > > creation of the single aligned bio.
-> > >
-> > > Instead, xfs_direct_write_iomap_begin and ext4_iomap_begin should return
-> > > EINVAL or something if they look at the file mappings and discover that
-> > > they cannot perform the ioend without risking torn mapping updates.  In
-> > > the long run, ->iomap_begin is where this iomap->len <= iter->len check
-> > > really belongs, but hold that thought.
-> > >
-> > > For the multi fsblock case, the ->iomap_begin functions would have to
-> > > check that only one metadata update would be necessary in the ioend.
-> > > That's where things get murky, since ext4/xfs drop their mapping locks
-> > > between calls to ->iomap_begin.  So you'd have to check all the mappings
-> > > for unsupported mixed state every time.  Yuck.
-> > >
-> > 
-> > Thanks Darrick for taking time summarizing what all has been done
-> > and your thoughts here.
-> > 
-> > > It might be less gross to retain the restriction that iomap accepts only
-> > > one mapping for the entire file range, like Ritesh has here.
-> > 
-> > less gross :) sure. 
-> > 
-> > I would like to think of this as, being less restrictive (compared to
-> > only allowing a single fsblock) by adding a constraint on the atomic
-> > write I/O request i.e.  
-> > 
-> > "Atomic write I/O request to a region in a file is only allowed if that
-> > region has no partially allocated extents. Otherwise, the file system
-> > can fail the I/O operation by returning -EINVAL."
-> > 
-> > Essentially by adding this constraint to the I/O request, we are
-> > helping the user to prevent atomic writes from accidentally getting
-> > torned and also allowing multi-fsblock writes. So I still think that
-> > might be the right thing to do here or at least a better start. FS can
-> > later work on adding such support where we don't even need above
-> > such constraint on a given atomic write I/O request.
-> 
-> On today's ext4 call, Ted and Ritesh and I realized that there's a bit
-> more to it than this -- it's not possible to support untorn writes to a
-> mix of written/(cow,unwritten) mappings even if they all point to the
-> same physical space.  If the system fails after the storage device
-> commits the write but before any of the ioend processing is scheduled, a
-> subsequent read of the previously written blocks will produce the new
-> data, but reads to the other areas will produce the old contents (or
-> zeroes, or whatever).  That's a torn write.
+This is an OpenPGP/MIME signed message (RFC 4880 and 3156)
+--------------yPwlqMleUVPPs6iT7orBXJ4O
+Content-Type: multipart/mixed; boundary="------------cIiC60yt0DtrRFabfn26CCc3";
+ protected-headers="v1"
+From: WangYuli <wangyuli@uniontech.com>
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: ardb@kernel.org, linux-arch@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-crypto@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-kernel@vger.kernel.org, linux-mips@vger.kernel.org,
+ linux-riscv@lists.infradead.org, linux-s390@vger.kernel.org,
+ linux-scsi@vger.kernel.org, linuxppc-dev@lists.ozlabs.org,
+ loongarch@lists.linux.dev, kernel@xen0n.name, chenhuacai@kernel.org,
+ xry111@xry111.site, sparclinux@vger.kernel.org, x86@kernel.org
+Message-ID: <263304da-0529-4b4c-9e23-ea2e5e3cef2c@uniontech.com>
+Subject: Re: [PATCH v2 06/18] loongarch/crc32: expose CRC32 functions through
+ lib
+References: <20241025191454.72616-7-ebiggers@kernel.org>
+ <DA8BCDFFEACDA1C6+20241103133655.217375-1-wangyuli@uniontech.com>
+ <20241103135730.GA813@quark.localdomain>
+In-Reply-To: <20241103135730.GA813@quark.localdomain>
 
-I'm *really* surprised that people are only realising that IO
-completion processing for atomic writes *must be atomic*.
+--------------cIiC60yt0DtrRFabfn26CCc3
+Content-Type: multipart/mixed; boundary="------------YiihG54060SCpWIarDHBVU6V"
 
-This was the foundational constraint that the forced alignment
-proposal for XFS was intended to address. i.e. to prevent fs
-operations from violating atomic write IO constraints (e.g. punching
-sub-atomic write size holes in the file) so that the physical IO can
-be done without tearing and the IO completion processing that
-exposes the new data can be done atomically.
+--------------YiihG54060SCpWIarDHBVU6V
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: base64
 
-> Therefore, iomap ought to stick to requiring that ->iomap_begin returns
-> a single iomap to cover the entire file range for the untorn write.  For
-> an unwritten extent, the post-recovery read will see either zeroes or
-> the new contents; for a single-mapping COW it'll see old or new contents
-> but not both.
+DQpPbiAyMDI0LzExLzMgMjE6NTcsIEVyaWMgQmlnZ2VycyB3cm90ZToNCj4gT24gU3VuLCBO
+b3YgMDMsIDIwMjQgYXQgMDk6MzY6NTVQTSArMDgwMCwgV2FuZ1l1bGkgd3JvdGU6DQo+PiBF
+dmVuIHRob3VnaCB0aGUgbmFycm93ZXIgQ1JDIGluc3RydWN0aW9ucyBkb2Vzbid0IHJlcXVp
+cmUgR1JMRU49NjQsIHRoZXkgc3RpbGwgKmFyZW4ndCogcGFydCBvZiBMQTMyIChMb29uZ0Fy
+Y2ggcmVmZXJlbmNlIG1hbnVhbCB2MS4xMCwgVm9sdW1lIDEsIFRhYmxlIDItMSkuDQo+PiBM
+aW5rOiBodHRwczovL2xvcmUua2VybmVsLm9yZy9hbGwvMGE3ZDBhOWUtYzU2ZS00ZWUyLWE4
+M2ItMDAxNjRhNDUwYWJlQHhlbjBuLm5hbWUvDQo+Pg0KPj4gVGhlcmVmb3JlLCB3ZSBjb3Vs
+ZCBub3QgZGlyZWN0bHkgYWRkIEFSQ0hfSEFTX0NSQzMyIHRvIGNvbmZpZyBMT09OR0FSQ0gu
+DQo+Pg0KPiBUaGVyZSdzIHN0aWxsIGEgcnVudGltZSBDUFUgZmVhdHVyZSBjaGVjayBvZiBj
+cHVfaGFzKENQVV9GRUFUVVJFX0NSQzMyKS4NCj4gU2VlIGFyY2gvbG9vbmdhcmNoL2xpYi9j
+cmMzMi1sb29uZ2FyY2guYy4gIFNvIGl0J3MgdGhlIHNhbWUgYXMgYmVmb3JlLg0KPiBBUkNI
+X0hBU19DUkMzMiBqdXN0IG1lYW5zIHRoYXQgdGhlIGZpbGUgd2lsbCBiZSBjb21waWxlZC4N
+Cj4NCj4gSWYgeW91J3JlIHRyeWluZyB0byBzYXkgdGhhdCB5b3UgdGhpbmsgdGhpcyBmaWxl
+IHNob3VsZCBiZSBidWlsdCBvbmx5IHdoZW4NCj4gQ09ORklHXzY0QklUPXksIHRoZW4gdGhh
+dCB3b3VsZCBiZSBhbiBleGlzdGluZyBidWcgc2luY2UgdGhlIGV4aXN0aW5nIGZpbGUNCj4g
+YXJjaC9sb29uZ2FyY2gvY3J5cHRvL2NyYzMyLWxvb25nYXJjaC5jIHdhcyBidWlsdCBmb3Ig
+Ym90aCAzMi1iaXQgYW5kIDY0LWJpdC4NCj4gQnV0IGlmIHlvdSB0aGluayB0aGlzIGlzIGEg
+YnVnLCBJIGNhbiBmaXggdGhpcyB0b28uDQo+DQo+IC0gRXJpYw0KPg0KDQpBY3R1YWxseSwg
+bXkgb3JpZ2luYWxseSBtZWFuIGlzIHRoYXQgZGlyZWN0bHkgZGVjbGFyaW5nIExvb25nQXJj
+aCANCkFSQ0hfSEFTX0NSQzMyIHdpdGhvdXQgZGlzdGluZ3Vpc2hpbmcgYmV0d2VlbiAzMi1i
+aXQgYW5kIDY0LWJpdCBtaWdodCANCm1pc2xlYWQgdGhvc2UgcmVhZGluZyB0aGUgY29kZS4g
+QW5kIGl0J3Mgbm90IHJpZ29yb3VzLg0KSG93ZXZlciwgYWNjb3JkaW5nIHRvIEh1YWNhaSBD
+aGVuJ3MgcmVjZW50IHJlcGx5LCB0aGVyZSBhcmUgbWFueSBzaW1pbGFyIA0KaXNzdWVzIGFu
+ZCB0aGV5IHdvbid0IGNhdXNlIGJ1aWxkIGVycm9ycyBmb3Igbm93Lg0KTGluazogDQpodHRw
+czovL2xvcmUua2VybmVsLm9yZy9hbGwvQ0FBaFYtSDVLYVhCci1UZHBEYkp3Y3JfTDBfbWJT
+dz00SjMwdXdRMnhuMllEcz1IZzJRQG1haWwuZ21haWwuY29tLw0KU28sIHRoaXMgY2hhbmdl
+IHNob3VsZCBiZSBmaW5lIGZvciBub3cuDQoNClJldmlld2VkLWJ5OiBXYW5nWXVsaSA8d2Fu
+Z3l1bGlAdW5pb250ZWNoLmNvbT4NCg0KVGhhbmtzLA0KLS0gDQpXYW5nWXVsaQ0K
+--------------YiihG54060SCpWIarDHBVU6V
+Content-Type: application/pgp-keys; name="OpenPGP_0xC5DA1F3046F40BEE.asc"
+Content-Disposition: attachment; filename="OpenPGP_0xC5DA1F3046F40BEE.asc"
+Content-Description: OpenPGP public key
+Content-Transfer-Encoding: quoted-printable
 
-I'm pretty sure we enforced that in the XFS mapping implemention for
-atomic writes using forced alignment. i.e.  we have to return a
-correctly aligned, contiguous mapping to iomap or we have to return
--EINVAL to indicate atomic write mapping failed.
+-----BEGIN PGP PUBLIC KEY BLOCK-----
 
-Yes, we can check this in iomap, but it's really the filesystem that
-has to implement and enforce it...
+xjMEZoEsiBYJKwYBBAHaRw8BAQdAyDPzcbPnchbIhweThfNK1tg1imM+5kgDBJSK
+P+nX39DNIVdhbmdZdWxpIDx3YW5neXVsaUB1bmlvbnRlY2guY29tPsKJBBMWCAAx
+FiEEa1GMzYeuKPkgqDuvxdofMEb0C+4FAmaBLIgCGwMECwkIBwUVCAkKCwUWAgMB
+AAAKCRDF2h8wRvQL7g0UAQCH3mrGM0HzOaARhBeA/Q3AIVfhS010a0MZmPTRGVfP
+bwD/SrncJwwPAL4GiLPEC4XssV6FPUAY0rA68eNNI9cJLArOOARmgSyJEgorBgEE
+AZdVAQUBAQdA88W4CTLDD9fKwW9PB5yurCNdWNS7VTL0dvPDofBTjFYDAQgHwngE
+GBYIACAWIQRrUYzNh64o+SCoO6/F2h8wRvQL7gUCZoEsiQIbDAAKCRDF2h8wRvQL
+7sKvAP4mBvm7Zn1OUjFViwkma8IGRGosXAvMUFyOHVcl1RTgFQEAuJkUo9ERi7qS
+/hbUdUgtitI89efbY0TVetgDsyeQiwU=3D
+=3DBlkq
+-----END PGP PUBLIC KEY BLOCK-----
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+--------------YiihG54060SCpWIarDHBVU6V--
+
+--------------cIiC60yt0DtrRFabfn26CCc3--
+
+--------------yPwlqMleUVPPs6iT7orBXJ4O
+Content-Type: application/pgp-signature; name="OpenPGP_signature.asc"
+Content-Description: OpenPGP digital signature
+Content-Disposition: attachment; filename="OpenPGP_signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+wnsEABYIACMWIQRrUYzNh64o+SCoO6/F2h8wRvQL7gUCZygyqgUDAAAAAAAKCRDF2h8wRvQL7u9/
+AQCzme1hyYUbPe1s4tK4FtfJbQ1qS/eQ5ZNWEjUnEivrLwEA0UMghFUFO/92QNK3/a3a7O8QrCGS
+Ov5jILXFpAVfTgw=
+=fG9N
+-----END PGP SIGNATURE-----
+
+--------------yPwlqMleUVPPs6iT7orBXJ4O--
 
