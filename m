@@ -1,58 +1,55 @@
-Return-Path: <linux-ext4+bounces-4963-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4964-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4B229BCB7C
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2024 12:19:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037749BCC68
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2024 13:11:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 025621C228DC
-	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2024 11:19:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 34AF71C21C01
+	for <lists+linux-ext4@lfdr.de>; Tue,  5 Nov 2024 12:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69C981D4329;
-	Tue,  5 Nov 2024 11:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C347B1D5154;
+	Tue,  5 Nov 2024 12:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="g6yl9Oeb"
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="qkRcMpiX"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E36021D31B5;
-	Tue,  5 Nov 2024 11:19:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 357441D47C8;
+	Tue,  5 Nov 2024 12:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730805553; cv=none; b=ZWKNL1G66DpKobLBg+XCloB85x6c8nhFa10RzCGwqd3z4Y8d7zlY2vp8esfwnojr/m5hJ+GmVsq0v9Sn+K1vvBnRsfVK+YVWyIVk72j29QVoqVQ4yz77i9bEEEhnBAv4iMOjrcvWiGGJR2SC8yRdBUkMhFXf3ld8A7BAj1NrSy4=
+	t=1730808700; cv=none; b=E/XSsOin2NW2IAWFJC6m9dTQjQCkbgddWqClacKTiA5yMa/7Lp78KQFEjwC+nMcn19WI4XRxriTbdDPl8vOjh5ogjJLdyaNTrBp3SkbpJk42ZWGpKSBGJgHwi0oJLD8yDNbQDnKYwH79sIQkO2p/S8vpnfmAMyn3gKHT5/nntMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730805553; c=relaxed/simple;
-	bh=0P/4LXaYYS8+VaEJEHeR1hBpRu520J/avOVUHolKaq8=;
+	s=arc-20240116; t=1730808700; c=relaxed/simple;
+	bh=98CubrVy+i8NU65pnvMJZi4IglBj1qZqIkotOr9SbOA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PxRxqOOiWFGX/RaPeJHO0yo72Kxt7/lz37dMiKKJBd/I7BQKk7xh4Wx/Dl4WfL9lDEvfMHspz77c9Gws2DTKzQOQHznLcrct2gqFd/4u7RQrWc10a9codXcIfxmbIItHtCEGxyoyqWPgbILF7zkT1EvYjVSPu0/wjKDeTx0gKXA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=g6yl9Oeb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id EC7EFC4CECF;
-	Tue,  5 Nov 2024 11:19:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730805552;
-	bh=0P/4LXaYYS8+VaEJEHeR1hBpRu520J/avOVUHolKaq8=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=ouZY4uqp6iVQr+fAaZL038RnfXXvtEhZhQBAsMyKUzSthzdT7/ShY4ck0YWWHwcfy16Tj/1Ki5zYWSnpW/Vg5WPj7fo3G52VFpEQjQdd5H6JfNUHVhm1GL5lFzhEF1dopzprq6ydgGN8jAIu8goZqrNhf2hB6RpO7xWHkVjR2b4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=qkRcMpiX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6125EC4CECF;
+	Tue,  5 Nov 2024 12:11:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1730808699;
+	bh=98CubrVy+i8NU65pnvMJZi4IglBj1qZqIkotOr9SbOA=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=g6yl9OeblARBBnmH9SCJbpxLuUkCoFi8Nz6Qv0lVFiP/JJqeOQ92A8atAcOK4vg1x
-	 dsGofW0Cjw/mWaQpBrHEu0p8HlkpnmkXZfbtjjgRdYldMwlJWrWK81vPqIlXgNps4m
-	 8mLJZLGy0qcSGn+/sAcb6RDBE6ue8fWKQdnt8PnB9DLfKhYx6s6pnMKvtuCAYJUf4u
-	 Wo4Ho/HKsAfUmTEjAobvLh557kGGJoGOhKcK4yN39O24N0YZshp9ALWBx/Uh9aEvsQ
-	 BeCmrOdmFlnGReYZkDscsqwW0x8A79NgT8kG9MsYATfDNarijX61yDu7jatzKuOt3g
-	 H7iaEjgvmIo8Q==
-Date: Tue, 5 Nov 2024 12:19:05 +0100
-From: Carlos Maiolino <cem@kernel.org>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, 
-	John Garry <john.g.garry@oracle.com>, brauner@kernel.org, Catherine Hoang <catherine.hoang@oracle.com>, 
-	linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>, 
-	Christoph Hellwig <hch@infradead.org>, Ojaswin Mujoo <ojaswin@linux.ibm.com>, 
-	linux-block@vger.kernel.org, Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org, 
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [ANNOUNCE] work tree for untorn filesystem writes
-Message-ID: <fegazz7mxxhrpn456xek54vtpc7p4eec3pv37f2qznpeexyrvn@iubpqvjzl36k>
-References: <20241105004341.GO21836@frogsfrogsfrogs>
+	b=qkRcMpiX3kjgusZ87cmHYBJdeqP59j0IcPZGDftjTnLxtidJcZK3BTLlaPJSLw9mD
+	 qsQ1hJzwQJns6Eo53o/RKAV4kg4cWzECmYNw0im3v/4UoE9fcIQVXEQpG54DEezMQO
+	 BS8s+OJDOe/i64GzABlbRTebjo62OyggKIZ0lcSY=
+Date: Tue, 5 Nov 2024 13:11:22 +0100
+From: Greg KH <gregkh@linuxfoundation.org>
+To: Thorsten Blum <thorsten.blum@linux.dev>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>, Jan Kara <jack@suse.cz>,
+	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] ext4: Use struct_size() to improve
+ ext4_htree_store_dirent()
+Message-ID: <2024110510-hardening-turmoil-8032@gregkh>
+References: <20241105103353.11590-2-thorsten.blum@linux.dev>
+ <2024110539-frugality-glutton-58f0@gregkh>
+ <4F6CE3AC-0C34-46E5-BF67-95845DFC8449@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -61,36 +58,54 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241105004341.GO21836@frogsfrogsfrogs>
+In-Reply-To: <4F6CE3AC-0C34-46E5-BF67-95845DFC8449@linux.dev>
 
-On Mon, Nov 04, 2024 at 04:43:41PM -0800, Darrick J. Wong wrote:
-> Hi everyone,
+On Tue, Nov 05, 2024 at 12:06:42PM +0100, Thorsten Blum wrote:
+> On 5. Nov 2024, at 11:39, Greg KH wrote:
+> > On Tue, Nov 05, 2024 at 11:33:54AM +0100, Thorsten Blum wrote:
+> >> Inline and use struct_size() to calculate the number of bytes to
+> >> allocate for new_fn and remove the local variable len.
+> >> 
+> >> Reviewed-by: Jan Kara <jack@suse.cz>
+> >> Signed-off-by: Thorsten Blum <thorsten.blum@linux.dev>
+> >> ---
+> >> This change was originally part of another patch that was split into two
+> >> separate patches after feedback from Greg KH
+> >> - Link: https://lore.kernel.org/r/20241104234214.8094-2-thorsten.blum@linux.dev/
+> >> ---
+> >> fs/ext4/dir.c | 5 ++---
+> >> 1 file changed, 2 insertions(+), 3 deletions(-)
+> >> 
+> >> diff --git a/fs/ext4/dir.c b/fs/ext4/dir.c
+> >> index 233479647f1b..02d47a64e8d1 100644
+> >> --- a/fs/ext4/dir.c
+> >> +++ b/fs/ext4/dir.c
+> >> @@ -471,14 +471,13 @@ int ext4_htree_store_dirent(struct file *dir_file, __u32 hash,
+> >> struct rb_node **p, *parent = NULL;
+> >> struct fname *fname, *new_fn;
+> >> struct dir_private_info *info;
+> >> - int len;
+> >> 
+> >> info = dir_file->private_data;
+> >> p = &info->root.rb_node;
+> >> 
+> >> /* Create and allocate the fname structure */
+> >> - len = sizeof(struct fname) + ent_name->len + 1;
+> >> - new_fn = kzalloc(len, GFP_KERNEL);
+> >> + new_fn = kzalloc(struct_size(new_fn, name, ent_name->len + 1),
+> >> + GFP_KERNEL);
+> > 
+> > Does this actually matter and make the code any more robust or faster?
+> > 
+> > The original code here is easier to read and understand, why add
+> > complexity if it is not required?
 > 
-> Nobody else has stepped up to do this, so I've created a work branch for
-> the fs side of untorn writes:
-> https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/log/?h=fs-atomic_2024-11-04
-> 
-> Can you all check this to make sure that I merged it correctly?  And
-> maybe go test this on your storage hardware? :)
-> 
-> If all goes well then I think the next step is to ask brauner very
-> nicely if he'd consider adding this to the vfs trees for 6.13.  If not
-> then I guess we can submit it ourselves, though we probably ought to ask
-> rothwell to add the branch to for-next asap.
-> 
-> PS: We're now past -rc6 so please reply quickly so that this doesn't
-> slip yet another cycle.
-> 
-> Catherine: John's on vacation all week, could you please send me the
-> latest versions of the xfs_io pwrite-atomic patch and the fstest for it?
+> I find struct_size() to be more readable because it explicitly
+> communicates the relationship between the flexible array member name and
+> ent_name->len that the open-coded version doesn't. Plus, struct_size()
+> has some additional compile-time checks (e.g., __must_be_array()).
 
-I am kind confused here now. IIRC Jens pulled the first three patches from
-John's series into his tree, and John asked me to pull the other ones. I'm much
-happier to see a single person pulling the whole series instead of splitting it
-into different maintainers though.
+Ah, missed that, sure, that makes more sense, sorry for the noise.
 
-Giving how spread the series is, I'd say going through vfs tree would be the
-best place, but I'm not opposed to pull them myself.
-
-Carlos
+greg k-h
 
