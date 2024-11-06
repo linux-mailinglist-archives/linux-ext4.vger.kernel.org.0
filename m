@@ -1,128 +1,142 @@
-Return-Path: <linux-ext4+bounces-4975-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4976-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EAC79BE472
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2024 11:40:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64C619BEF7A
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2024 14:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0A7E1C2324B
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2024 10:40:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1C4141F239EB
+	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2024 13:52:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4029E1DE3A8;
-	Wed,  6 Nov 2024 10:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29A8B1E0DBD;
+	Wed,  6 Nov 2024 13:52:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DEogLUqi"
+	dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b="g2hBDhU6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from eggs.gnu.org (eggs.gnu.org [209.51.188.92])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C325D1D1753;
-	Wed,  6 Nov 2024 10:40:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9533189F5C;
+	Wed,  6 Nov 2024 13:52:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.51.188.92
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730889606; cv=none; b=R9sBY5/iMG6MW+NJJdJshqLXgm4lnjwGYXHcUqB7jrTE/DpZwWF+Py0ggAYto4696X1lycl/qVuvwSKmeKO4Bk0p+yu7Kb1mYVEeZNq3QPivLY/XANEYK61DmiXuTsWH1DO6uta6CU80/pbsAUVtwDCpP6YjADM+PGlYfiWTWkc=
+	t=1730901160; cv=none; b=Pet3GcN0uRuL9uu1enWMLyc3SA2MOlXgkG628XQxVUXZwdS7GABHyXBxZJS8c0cfVTFT6gJ7mES9TxFBfIjcOjnC5LY8+YMF6wARrNztM0kRJH/nFT28/8qGmfh7O6MhWa5JimW1UDf5ynKBzwuJdot/XjZq9m/HRvgxf3rs/fw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730889606; c=relaxed/simple;
-	bh=II1Cw9WyiI/NLZcAELD6NgMA0DFZpwlqXmvxCdhqAD0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ofBJcQBYfjPQIS2TsnAw8u2G2bxNIVzhQFhXJ/nQscB22Zl5NR0ooX9DF4utwknClf8y2l0Jtsw2HJfAubxwyaWjGCqWcYfKUlwxvq1nBc+xrGKJqZ9ddprCQgFNT6kJjqt8UmqDOuq6+ElInGwOXoWqCR/W6/LJuwsRG6V3ocY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DEogLUqi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98B67C4CECD;
-	Wed,  6 Nov 2024 10:40:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730889606;
-	bh=II1Cw9WyiI/NLZcAELD6NgMA0DFZpwlqXmvxCdhqAD0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=DEogLUqiMmuObMNMeSY8FcHdvgDogMK+QyjinwG/XNCnQ8SNYK4LRpLkaXxrfVwRm
-	 JM+RDFqx7L4ZhBnQ6Bj3w7vL6rRqVGzGGeulgi36v+cLzgO9AEUbPIP7+v7LVH6YZ7
-	 mGEAJ9fWWObcIAhHO7KCMtJfqSiBobCeUJz1lZzcwN9B4OEA55NK1I8GINTYrwaoz5
-	 6uOOzMREbwAt4umCxFlpEU4r3TQN0ZcuenROmPKcZBPUzdOHpFxzMegP4Ns2Szgfav
-	 WdQzvVjVMBItJlcgwYC6JB5MhK3TowyO93eJGL90932WnvqFXVbY5uhzDx2v/23Xb+
-	 ZFZ2E9786oFIg==
-Date: Wed, 6 Nov 2024 11:40:00 +0100
-From: Christian Brauner <brauner@kernel.org>
-To: Jens Axboe <axboe@kernel.dk>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>, 
-	Carlos Maiolino <cem@kernel.org>, "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, 
-	John Garry <john.g.garry@oracle.com>, Catherine Hoang <catherine.hoang@oracle.com>, 
-	linux-ext4@vger.kernel.org, Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>, 
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-block@vger.kernel.org, Dave Chinner <david@fromorbit.com>, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [ANNOUNCE] work tree for untorn filesystem writes
-Message-ID: <20241106-hupen-phosphor-f4e126535131@brauner>
-References: <20241105004341.GO21836@frogsfrogsfrogs>
- <fegazz7mxxhrpn456xek54vtpc7p4eec3pv37f2qznpeexyrvn@iubpqvjzl36k>
- <72515c41-4313-4287-97cc-040ec143b3c5@kernel.dk>
- <20241105150812.GA227621@mit.edu>
- <5557bb8e-0ab8-4346-907e-a6cfea1dabf8@kernel.dk>
- <20241105154044.GD2578692@frogsfrogsfrogs>
- <00618fda-985d-4d6b-ada1-2d93a5380492@kernel.dk>
+	s=arc-20240116; t=1730901160; c=relaxed/simple;
+	bh=GJYdckaeT8XFNWuJqGWFrQL3KCrqATkjDDoe4xVbAAc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=FJxP+aD9EWIV8Y2QktoTo3ocJGzbU/B2o9w0ECl1Vb4ap+uvQU7mHdHGkHJmo0mpxvnHuFhJJLESDLJa4WmmqDg+yEmalRcDt31ym0sku7rJk0stBg3zC/YAePtiDH7WFtjoJVp0QmQKKAt7QRdAohtIa+cB6Cx0aL0FjZAGctc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org; spf=pass smtp.mailfrom=gnu.org; dkim=pass (2048-bit key) header.d=gnu.org header.i=@gnu.org header.b=g2hBDhU6; arc=none smtp.client-ip=209.51.188.92
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gnu.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gnu.org
+Received: from fencepost.gnu.org ([2001:470:142:3::e])
+	by eggs.gnu.org with esmtps (TLS1.2:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.90_1)
+	(envelope-from <othacehe@gnu.org>)
+	id 1t8gSa-00085V-Cy; Wed, 06 Nov 2024 08:52:36 -0500
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=gnu.org;
+	s=fencepost-gnu-org; h=MIME-Version:Date:Subject:To:From:in-reply-to:
+	references; bh=EKH9KN2ClLyRbOUM9coteRTjG0WGp2kon9aSbZ+MVTk=; b=g2hBDhU6GgpZSf
+	kBX70j/Na4eE3lnomHlE517QOaKfMYPGjGCO/USCO6GhE5IP3ztyEv6CbEAT1FX2dK34Vl4pVV3wv
+	nBprdnIjEB3SoZoWLVZ1pbpq4ZvBYvCttDLLx/MbqF+KpJpkXPxwC17T0GVNYAPcuIPwqkMMJ6cRl
+	ICs/N6CEN/nFj9oHHFCDGlkddWU54kjTXaXMTIh73+6xy5g9wPCV6mBA5mZEkd4U0WM4scCLN5YI4
+	JOW6QUZn46E7tLeMprXfTq2ZM7s1AWOQGjFV4x9ztcxixT46SpVE20Y6meyc/bKcxaj71xk/LAPXU
+	a9U9CE21qQRzWBgenZgg==;
+From: Mathieu Othacehe <othacehe@gnu.org>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	lukas.skupinski@landisgyr.com,
+	anton.reding@landisgyr.com,
+	Mathieu Othacehe <othacehe@gnu.org>
+Subject: [PATCH 0/1] ext4: Prevent an infinite loop in the lazyinit thread.
+Date: Wed,  6 Nov 2024 14:47:40 +0100
+Message-ID: <20241106134741.26948-1-othacehe@gnu.org>
+X-Mailer: git-send-email 2.46.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <00618fda-985d-4d6b-ada1-2d93a5380492@kernel.dk>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Nov 05, 2024 at 08:54:40AM -0700, Jens Axboe wrote:
-> On 11/5/24 8:40 AM, Darrick J. Wong wrote:
-> > On Tue, Nov 05, 2024 at 08:11:52AM -0700, Jens Axboe wrote:
-> >> On 11/5/24 8:08 AM, Theodore Ts'o wrote:
-> >>> On Tue, Nov 05, 2024 at 05:52:05AM -0700, Jens Axboe wrote:
-> >>>>
-> >>>> Why is this so difficult to grasp? It's a pretty common method for
-> >>>> cross subsystem work - it avoids introducing conflicts when later
-> >>>> work goes into each subsystem, and freedom of either side to send a
-> >>>> PR before the other.
-> >>>>
-> >>>> So please don't start committing the patches again, it'll just cause
-> >>>> duplicate (and empty) commits in Linus's tree.
-> >>>
-> >>> Jens, what's going on is that in order to test untorn (aka "atomic"
-> >>> although that's a bit of a misnomer) writes, changes are needed in the
-> >>> block, vfs, and ext4 or xfs git trees.  So we are aware that you had
-> >>> taken the block-related patches into the block tree.  What Darrick has
-> >>> done is to apply the the vfs patches on top of the block commits, and
-> >>> then applied the ext4 and xfs patches on top of that.
-> >>
-> >> And what I'm saying is that is _wrong_. Darrick should be pulling the
-> >> branch that you cut from my email:
-> >>
-> >> for-6.13/block-atomic
-> >>
-> >> rather than re-applying patches. At least if the intent is to send that
-> >> branch to Linus. But even if it's just for testing, pretty silly to have
-> >> branches with duplicate commits out there when the originally applied
-> >> patches can just be pulled in.
-> > 
-> > I *did* start my branch at the end of your block-atomic branch.
-> > 
-> > Notice how the commits I added yesterday have a parent commitid of
-> > 1eadb157947163ca72ba8963b915fdc099ce6cca, which is the head of your
-> > for-6.13/block-atomic branch?
-> 
-> Ah that's my bad, I didn't see a merge commit, so assumed it was just
-> applied on top. Checking now, yeah it does look like it's done right!
-> Would've been nicer on top of current -rc and with a proper merge
-> commit, but that's really more of a style preference. Though -rc1 is
-> pretty early...
-> 
-> > But, it's my fault for not explicitly stating that I did that.  One of
-> > the lessons I apparently keep needing to learn is that senior developers
-> > here don't actually pull and examine the branches I link to in my emails
-> > before hitting Reply All to scold.  You obviously didn't.
-> 
-> I did click the link, in my defense it was on the phone this morning.
-> And this wasn't meant as a scolding, nor do I think my wording really
-> implies any scolding. My frustration was that I had explained this
-> previously, and this seemed like another time to do the exact same. So
-> my apologies if it came off like that, was not the intent.
+Hello,
 
-Fwiw, I pulled the branch that Darrick provided into vfs.untorn.writes
-and it all looks sane to me.
+Under the following conditions, the lazyinit thread can reschedule itself
+indefinitely without doing anything, consuming a large amount of the system
+resources:
+
+In the ext4_run_li_request function, a start_time timestamp is taken. Right
+before elr->lr_timeout is computed, in the same function, the system clock is
+updated in userspace, from the Unix Epoch to the current time. The
+elr->lr_timeout takes a large value. The elr->lr_next_sched is then set to a
+value far away in the future.
+
+/*
+ * Away from jiffies because of a time jump when computing
+ * elr->lr_timeout.
+ */
+elr->lr_next_sched = jiffies + elr->lr_timeout;
+
+Back, in the ext4_lazyinit_thread that called the ext4_run_li_request, the
+following condition can be false:
+
+// elr->lr_next_sched > next_wakeup
+if (time_before(elr->lr_next_sched, next_wakeup))
+        next_wakeup = elr->lr_next_sched;
+
+so that next_wakeup is not updated. Assuming that next_wakeup was not updated
+above and still has the MAX_JIFFY_OFFSET value, the following condition will
+be true:
+
+// next_wakeup == MAX_JIFFY_OFFSET
+if ((time_after_eq(cur, next_wakeup)) ||
+    (MAX_JIFFY_OFFSET == next_wakeup)) {
+	cond_resched();
+	continue;
+}
+
+causing us to process the li_request_list again. If we now have jiffies < 
+elr->lr_next_sched, as we have already elr->lr_next_sched > next_wakeup, we
+will just continue without updating next_wakeup,
+
+// jiffies < elr->lr_next_sched && elr->lr_next_sched > next_wakeup
+if (time_before(jiffies, elr->lr_next_sched)) {
+	if (time_before(elr->lr_next_sched, next_wakeup))
+		next_wakeup = elr->lr_next_sched;
+	continue;
+}
+
+and again, we will call cond_resched because next_wakeup is not updated, and
+we now have an infinite loop.
+
+This was put into evidence with the following values:
+
+jiffies = 4294938821
+elr->lr_next_sched = 1966790060
+next_wakeup = 1073741822 (MAX_JIFFY_OFFSET)
+
+on an armv7 (32 bits) system, without an RTC, while updating the system clock
+during the lazyinit thread is working.
+
+Fix that by using ktime_get_ns insted of ktime_get_real_ns and by using a
+boolean instead of MAX_JIFFY_OFFSET to determine whether the next_wakeup value
+has been set.
+
+Thanks,
+
+Mathieu
+
+Mathieu Othacehe (1):
+  ext4: Prevent an infinite loop in the lazyinit thread.
+
+ fs/ext4/super.c | 20 +++++++++++++-------
+ 1 file changed, 13 insertions(+), 7 deletions(-)
+
+-- 
+2.46.0
+
 
