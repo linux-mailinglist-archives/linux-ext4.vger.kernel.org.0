@@ -1,61 +1,61 @@
-Return-Path: <linux-ext4+bounces-4979-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-4980-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B4119BF306
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2024 17:16:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 599329BFD52
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Nov 2024 05:17:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13B1EB2521C
-	for <lists+linux-ext4@lfdr.de>; Wed,  6 Nov 2024 16:16:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18B3D283064
+	for <lists+linux-ext4@lfdr.de>; Thu,  7 Nov 2024 04:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C97C204F6A;
-	Wed,  6 Nov 2024 16:15:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E32413AA2A;
+	Thu,  7 Nov 2024 04:17:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IUsq4+fr"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="C3F4NzdW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0CBFE190075;
-	Wed,  6 Nov 2024 16:15:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 100F2DF59
+	for <linux-ext4@vger.kernel.org>; Thu,  7 Nov 2024 04:17:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1730909742; cv=none; b=NYeYpJK+ULEdePgXHvG8d9A4k3tGztEty6Q7DBQsP85n0LNVf4Lm5jE7NveBe689FI0eapr1gVpDYSQlWSv/1qs3L9/slUnLm9AFM33VHHhZfCcY0doYQlQ26W3YsSitlMSfsIuDiol2dmL7L957rxtumCFOr65gQbVtYodekJw=
+	t=1730953027; cv=none; b=ko2NeCvaukxZ7DRd5Lc3ITgSSTc7ZbcBGQPwflXnHWLNRLjbuILSPBy/oBt59AXp29SSM7q7FADTsmSIsSSgdWBO+JYnruv+c3UYvEUwYy0GYu0LMkJlyn9sWYry8fMolX3LY1t9UEwOs/CVu99/txujbTTibbx1f2OPRmj/7xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1730909742; c=relaxed/simple;
-	bh=17VRjsdzd47xFESl41GTeJh5UTraVVQjFsJBtlc+9wE=;
+	s=arc-20240116; t=1730953027; c=relaxed/simple;
+	bh=VnVyfp1RGxsxRJbCr7tMWbtY/M1dipjJWwcEwiTGWLs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cC1ubDOLK0kMdYQKPzWdpirLmHNjTytwunudJ1NUs0E8XTeOF4dqBKD8iXZkJJiy45T6RyNcPOuEBT93pYk2iue0zw/Q58bLcgIFe2YqASJVXbI82u4XVpyysgSgy0/Q2wR5oeKwf7kKIMQrs5yilgfdwgfncFRhOnF7Mjc/CyQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IUsq4+fr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DBC42C4CEC6;
-	Wed,  6 Nov 2024 16:15:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1730909741;
-	bh=17VRjsdzd47xFESl41GTeJh5UTraVVQjFsJBtlc+9wE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IUsq4+frJsYBp5OQPhW3XeBK/ACbbWa61SPYtNMrj6pDxNeU24RtUdcaIZmOKQveg
-	 71LZVH3udyt6foSZ1GiqbQfVDMseCJH+xQfEDj0iICj+2/RyLBqip65ew1J3GczXC4
-	 OnMmqMnYGPjMRpuezgGvTX7/TdMNv+A8xpFnyzWpTjkpxm3aZf9TsvVEMkqOneKXi6
-	 fSERs2h3WglAVV0X1RloDRRza8jHydoTN4ZJ1zt1MvaYbECTBL2WXcEvX/+KHDXXV8
-	 XxPt6i3wqj3sFsfQMbwziXgFCaG7VLXX/5udDbSunw7grWY6OuZsfvgEhrNQonGwAD
-	 q/BXzZ04dcxhg==
-Date: Wed, 6 Nov 2024 08:15:41 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Christian Brauner <brauner@kernel.org>
-Cc: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>,
-	John Garry <john.g.garry@oracle.com>,
-	Catherine Hoang <catherine.hoang@oracle.com>,
-	linux-ext4@vger.kernel.org, Theodore Ts'o <tytso@mit.edu>,
-	Jan Kara <jack@suse.cz>, Christoph Hellwig <hch@infradead.org>,
-	Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-block@vger.kernel.org,
-	Dave Chinner <david@fromorbit.com>, linux-kernel@vger.kernel.org,
-	linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org
-Subject: Re: [ANNOUNCE v2] work tree for untorn filesystem writes
-Message-ID: <20241106161541.GN2386201@frogsfrogsfrogs>
-References: <20241106005740.GM2386201@frogsfrogsfrogs>
- <20241106-zerkleinern-verzweifeln-7ec8173c56ad@brauner>
+	 Content-Type:Content-Disposition:In-Reply-To; b=KRlpoCpoCQfRNUG8Ji4p4HE9LT1VYKwGeFfPiXjYod29VPPsOKyKmBLSDd9NNniSO6xsAUuNX7JSbkkb2lcFoaYsdXvdOFJbTRLLiod4AcHfO1n5ifsgBSrgYcKanbThfqvO1H9L7hglb56QHk764LBvEzxk2QvVC7HK8HcFX4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=C3F4NzdW; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-224.bstnma.fios.verizon.net [173.48.82.224])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4A74GiTd029620
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 6 Nov 2024 23:16:45 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1730953006; bh=gh+kbXGdzpiF2v72qQUByKLVUWEwHA7/3i8u2N0Gce0=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=C3F4NzdWdaDZgpdnFoC8yq6nbx6R4ItZdxCpZGNU/7TQ4An+yYZiTIljxQZTrHSid
+	 3TwJe7IXlge7No5fgJpRiYPPUOeMBpeganm0afSP18NvbL7yt11hJ+LIAkKOYyqm12
+	 qwCeIaXA7hjHaYK/8rPA/+M/Ga+wTVKcZ3pGsAARTQLB4gMGlCpWPYeK+Z03rbnu27
+	 anRfT7tYf0uziVa3pOtyqGyE6iu9C8G0OJCAreGHVloka4eIeJEU+HDbETU44m098Y
+	 l3RoIfYdRH1zMYO00QAMulExCv/6iqslQfp5corBvKFrKQvwc0/khNiGFmvK3bPrzC
+	 S0+7BbzjGSJgw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 52A8B15C02FA; Wed, 06 Nov 2024 23:16:44 -0500 (EST)
+Date: Wed, 6 Nov 2024 23:16:44 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Li Zetao <lizetao1@huawei.com>
+Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH -next 0/3] ext4: Using scope-based resource management
+ function
+Message-ID: <20241107041644.GE172001@mit.edu>
+References: <20240823061824.3323522-1-lizetao1@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -64,36 +64,62 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241106-zerkleinern-verzweifeln-7ec8173c56ad@brauner>
+In-Reply-To: <20240823061824.3323522-1-lizetao1@huawei.com>
 
-On Wed, Nov 06, 2024 at 10:50:21AM +0100, Christian Brauner wrote:
-> On Tue, Nov 05, 2024 at 04:57:40PM -0800, Darrick J. Wong wrote:
-> > Hi everyone,
-> > 
-> > Here's a slightly updated working branch for the filesystem side of
-> > atomic write changes for 6.13:
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/djwong/xfs-linux.git/log/?h=fs-atomic_2024-11-05
-> > 
-> > This branch is, like yesterday's, based off of axboe's
-> > for-6.13/block-atomic branch:
-> > 
-> > https://git.kernel.org/pub/scm/linux/kernel/git/axboe/linux-block.git/log/?h=for-6.13/block-atomic
-> > 
-> > The only difference is that I added Ojaswin's Tested-by: tags to the end
-> > of the xfs series.  I have done basic testing with the shell script at
-> > the end of this email and am satisfied that it at least seems to do the
-> > (limited) things that I think we're targeting for 6.13.
-> > 
-> > Christian: Could you pull this fs-atomic branch into your vfs.git work
-> > for 6.13, please?
+On Fri, Aug 23, 2024 at 02:18:21PM +0800, Li Zetao wrote:
+> Hi all,
 > 
-> Of course!
+> This patch set is dedicated to using scope-based resource management
+> functions to replace the direct use of lock/unlock methods, so that
+> developers can focus more on using resources in a certain scope and
+> avoid overly focusing on resource leakage issues.
 > 
-> I did git pull fs-atomic_2024-11-05 from your tree. It should show up in
-> -next tomorrow.
+> At the same time, some functions can remove the controversial goto
+> label(eg: patch 3), which usually only releases resources and then
+> exits the function. After replacement, these functions can exit
+> directly without worrying about resources not being released.
+> 
+> This patch set has been tested by fsstress for a long time and no
+> problems were found.
 
-Yay, thank you!!
+Hmm, I'm torn.  I do like the simplification that these patches can
+offer.
 
---D
+The potential downsides/problems that are worrying me:
+
+1) The zero day test bot has flagged a number of warnings[1]
+
+[1] https://lore.kernel.org/r/202408290407.XQuWf1oH-lkp@intel.com
+
+2) The documentation for guard() and scoped_guard() is pretty sparse,
+    and the comments in include/linux/cleanup.h are positively
+    confusing.  There is a real need for a tutorial which explains how
+    they should be used in the Documentation directory, or maybe a
+    LWN.net article.  Still, after staring that the implementation, I
+    was able to figure it out, but I'm bit worried that people who
+    aren't familiar with this construt which appears to have laned in
+    August 2023, might find the code less readable.
+
+3)  Once this this lands, I could see potential problems when bug fixes
+    are backported to stable kernels older than 6.6, since this changes
+    how lock and unlock calls in the ext4 code.  So unless
+    include/linux/cleanup.h is backported to all of the LTS kernels, as
+    well as these ext4 patches, there is a ris that a future (possibly
+    security) bug fix will result in a missing unlock leading to
+    hilarity and/or sadness.
+
+    I'm reminded of the story of XFS changing the error return
+    semantics from errno to -errno, and resulting bugs when patches
+    were automatically backported to the stable kernels leading to
+    real problems, which is why XFS opted out of LTS backports.  This
+    patch series could have the same problem.... and I haven't been
+    able to recruit someone to be the ext4 stable kernel maintainers
+    who could monitor xfstests resullts with lockdep enabled to catch
+    potential problems.
+
+That being said, I do see the value of the change
+
+What do other ext4 developers think?
+
+						- Ted
 
