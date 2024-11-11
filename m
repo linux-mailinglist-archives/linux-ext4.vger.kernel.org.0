@@ -1,73 +1,72 @@
-Return-Path: <linux-ext4+bounces-5045-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5046-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6350F9C49FC
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 00:49:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E81C89C49FE
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 00:49:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F17421F23455
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 23:49:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ACD75284D4D
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 23:49:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21A81C1F13;
-	Mon, 11 Nov 2024 23:48:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7691C1C3F1B;
+	Mon, 11 Nov 2024 23:48:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="1XtdPxEX"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="WQNrJj/G"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+Received: from mail-pf1-f180.google.com (mail-pf1-f180.google.com [209.85.210.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC411BD032
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 23:48:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8567D1BF33F
+	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 23:48:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731368930; cv=none; b=SiSpTWy1u9P+Qk7NDTEJQaYIdHvkmYiigYR7k2fstnAOFcpZIBV2fZ6zKB1UL3+ARKh9L5lAHQaEXWUhsJzSL1zG/8RVPPasrQUdQkzIeqlPqSATBaPXf6S3fKIzB4MO7TO0/ehjOeqU+2oktK1Zc7WtiLi2yOTQ5WDi1ZuaZi4=
+	t=1731368932; cv=none; b=DLEIOPkSGMRgB0Nw5rYHzVmL40p05QZ+979z94zBmNunditXppDBVY1/2+iaAwjZ0RwhJCivOMBpwVCpzCNAeehnqZ8M0aOhXo8ARsTYAvW+2ZCD0mBcIk0G5vuOmID2mxaZiCDDineTHncVNAsysIB9ER5SQ+C7FRTfv4ggKEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731368930; c=relaxed/simple;
-	bh=8sfKwyActgC+UFgrCv8AbW1Vz+K4ykiNjF4V6I33E+c=;
+	s=arc-20240116; t=1731368932; c=relaxed/simple;
+	bh=wdE7j3SXsvf8mZ3WLeO9bDbqT1xBl9uoI5Ta1MifPnA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=nfqqlluMGWYMLY0pd8u2v2gVO3Nj2tp4hO9135wp1UigMBKyHCGspgBnCseNy8Pgx63QFHCEI+FhNeTzNTU+xn6bCxQyeMNQMdVsZl1h2f99u4jQ/v+IsDgpxvmFE7ped37hdzJXPnYgZi8N9JAPvH0EO1whVctddr9YnAHw3mE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=1XtdPxEX; arc=none smtp.client-ip=209.85.210.176
+	 MIME-Version; b=ZrqRvHr61ZgDMIpfHFhgByZxV7gOeyeTH1OeBp29O9xb4YkGszTuyOUDkhHYtPxXwBNj6ugzIz/coNuYwVlOYIwf+A6PHmFdpNeIwa05K8B2mw+dBjx6ZFGA2g/R7r8a/YCEWMOzIQvL/1ZZsbEz198jQX2dNJqBCro7TSUPZJA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=WQNrJj/G; arc=none smtp.client-ip=209.85.210.180
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-71e4c2e36daso3638432b3a.0
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:48:48 -0800 (PST)
+Received: by mail-pf1-f180.google.com with SMTP id d2e1a72fcca58-720e94d36c8so5156773b3a.1
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:48:50 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368928; x=1731973728; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368930; x=1731973730; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=QzX2IvmAROGBANn6HEgih/p/Joy2MXPhit7EzvqeXZU=;
-        b=1XtdPxEXJTmPsu32YnbH6YQeaTMAo+Ak38XEsETxOrV8Npg7jWx8/6GSBlZkGNTPgG
-         7DqJMZaJC1NtZLHip/no8SpalHLNny28xCpwp1BgXLGqth0JzVhKgbhw7YN9Bq3yTlQP
-         pyM8K/Yugg/Ii055VtI2mAnFh0JoCX97OdIUn3E1xfnnbPuIBwq6k2PHa2UN8l/EGHM1
-         VUjlmNAciQxi2SKh0TfDSzWVi9L0P8wt1zx/nduENXrEQfiE0AbHwwL2uP8/P+/pXmew
-         mOozAjra/akldPSVosyR+lmYBuC5GsqK6THkwaNA/mjw6477NUBP/WuuwINJclnK5aaU
-         0Z2w==
+        bh=G7YIma1TSdS4GVKncfhre22V8DGIHalzmKUoqzgwI0E=;
+        b=WQNrJj/G6/aAoHDvOTSaHAPL/lSazwCCTJ7q/uUf0pSMKY+ehGBWUDahZQHQpLnDS6
+         H1yNxaaRUpzjIT7CZrfu8s5tfNhRr6Bn5Me+uSbkX7suRGIpGAXfQdHQDOvIbNzHenM3
+         XXhM+mF1nYdDbXK+HnT0Kfhv3eHczegGCLnBDArv56n399YX0vdS/fPgxeBG/gwP6+NJ
+         eeUjji4l7C+BhQxKjIpKCY3hOkIM8UmpjO/2+Y3+ZhIcJCgc/nViVYpy6qlIfDPVzATd
+         asLPc8SUbP9pvLF+RYiAIUzBzUIHVB+wHIpS9CWj74VEX3ZLOlFN+ho/SfyWGoRUE2Fz
+         TFEw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731368928; x=1731973728;
+        d=1e100.net; s=20230601; t=1731368930; x=1731973730;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=QzX2IvmAROGBANn6HEgih/p/Joy2MXPhit7EzvqeXZU=;
-        b=UKUBRzhhTIM2sfSUE5LK9tbTcDnkV4121bJIus6a2N9V0oRPfZjPk7xekVYqaIA625
-         LA1+C95Yncb+H9QhFyL24J/xjm2e1idkePUey/KOlqGNMTT2zRHwa0NBHuIUhDqWbC5V
-         C600O1wmLNSp802qrVZvBqKpSUUM9bmMZtZIZcDwaE5gaJy2bpy+i6t4RNEWZu+CbyE/
-         T5lv3ZiMLggagUg2oT5EsbLCeua6ZaSp4BS1k8LF+UCoN3VzDYg0I1YvbCfqOZ/cqnto
-         vy7GOgXaepWqAm8d0wYgb3IVeAuBy4ImgYOItO8Oxl2vmBDmuvOFxyEM/dEQKEzuXByH
-         zQgQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVDotZ9vXGmU9sOijvmrFOuaH3OHnUfCziL0Y4bCrixUwHxwhi1ct+8NyKWsUV6rvGU8mAArFssVCPB@vger.kernel.org
-X-Gm-Message-State: AOJu0YxWk7iLshaBKDHcFv9mSqtjB7xUm3qoKRH6TdXMzhzXi5GLMv0X
-	cpiJLeYbpPxfTSS7C4e54CsBbJJQmudCaD8drY9PO1Qsw2TfRFF/ddUmBBt/Ci4ZVZaxjDL/i9D
-	QlUY=
-X-Google-Smtp-Source: AGHT+IFPjohwvXk7XeJJhxpW4zvvN4HHe41fbVtZtFFrzITrw1kyHBpDFfhvHRsSHEkN13Wz8BpfRA==
-X-Received: by 2002:a05:6a20:12ce:b0:1d9:15b2:83e with SMTP id adf61e73a8af0-1dc23322093mr23031517637.7.1731368928327;
-        Mon, 11 Nov 2024 15:48:48 -0800 (PST)
+        bh=G7YIma1TSdS4GVKncfhre22V8DGIHalzmKUoqzgwI0E=;
+        b=OCTtgTfyijoyHLu0hZWBPHEfAjpc5wfeJXuYjIQ3vvJC776fkJPhO//qboHG8Og023
+         s0TtHMP7YDPCQcVOuA7QL4wKYcxloaoNRl4YXTb+IEBT+aST7VRrKPnlOjTwrGWkidof
+         pSIr9DU/qkYEA3OLI0d2r+rV4p2HMuHiwV2SyQRh4GTxzZAmYucNSP31A8dqtNrwzSSA
+         d//3QhdqbAxWWjyQBhRkuJOaoPJSp9pH2zy9glMIPgfcubIH+kie+/sr70W95GGBErLC
+         iTKh8GCi98qAzjeYUQNo3jTUMSfJlDdtvXqNCu4X2PKJHlka4gaNAVIKYly312wXMEq3
+         FOIg==
+X-Forwarded-Encrypted: i=1; AJvYcCUv0LAiQ8mMIopqzk1GBaruLV/JhUYAp3j8J8/VHW1nj5xJDS9YFEx/XH7Zb3RxkXu9TwS9Fyr/2W3T@vger.kernel.org
+X-Gm-Message-State: AOJu0YyQSuexzPhOtPeg5c88ADR1RF7S9K+ivOwpBm/eops4VU/GQAi7
+	ZzAZMxYxvgOKex6Pdm2z/yA44CHPS5EYidUVAf7YwDpH7oLKJEDvJwJNe/70hVc=
+X-Google-Smtp-Source: AGHT+IFIT751yc6PWfScZ6t4wwtYiUFG2/DBhEvJ8IDhssjBxrF1+5xRFKTmZX93Ms0bG2KlEc/8GA==
+X-Received: by 2002:a05:6a00:1801:b0:71e:427e:e679 with SMTP id d2e1a72fcca58-7241223447dmr25540831b3a.4.1731368929963;
+        Mon, 11 Nov 2024 15:48:49 -0800 (PST)
 Received: from localhost.localdomain ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.48.46
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.48.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 15:48:47 -0800 (PST)
+        Mon, 11 Nov 2024 15:48:49 -0800 (PST)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-mm@kvack.org,
 	linux-fsdevel@vger.kernel.org
@@ -80,9 +79,9 @@ Cc: hannes@cmpxchg.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 01/16] mm/filemap: change filemap_create_folio() to take a struct kiocb
-Date: Mon, 11 Nov 2024 16:37:28 -0700
-Message-ID: <20241111234842.2024180-2-axboe@kernel.dk>
+Subject: [PATCH 02/16] mm/readahead: add folio allocation helper
+Date: Mon, 11 Nov 2024 16:37:29 -0700
+Message-ID: <20241111234842.2024180-3-axboe@kernel.dk>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241111234842.2024180-1-axboe@kernel.dk>
 References: <20241111234842.2024180-1-axboe@kernel.dk>
@@ -94,73 +93,72 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Rather than pass in both the file and position directly from the kiocb,
-just take a struct kiocb instead. While doing so, move the ki_flags
-checking into filemap_create_folio() as well. In preparation for actually
-needing the kiocb in the function.
+Just a wrapper around filemap_alloc_folio() for now, but add it in
+preparation for modifying the folio based on the 'ractl' being passed
+in.
 
 No functional changes in this patch.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- mm/filemap.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ mm/readahead.c | 16 +++++++++++-----
+ 1 file changed, 11 insertions(+), 5 deletions(-)
 
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 56fa431c52af..91974308e9bf 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -2460,15 +2460,17 @@ static int filemap_update_page(struct kiocb *iocb,
- 	return error;
+diff --git a/mm/readahead.c b/mm/readahead.c
+index 3dc6c7a128dd..003cfe79880d 100644
+--- a/mm/readahead.c
++++ b/mm/readahead.c
+@@ -188,6 +188,12 @@ static void read_pages(struct readahead_control *rac)
+ 	BUG_ON(readahead_count(rac));
  }
  
--static int filemap_create_folio(struct file *file,
--		struct address_space *mapping, loff_t pos,
--		struct folio_batch *fbatch)
-+static int filemap_create_folio(struct kiocb *iocb,
-+		struct address_space *mapping, struct folio_batch *fbatch)
- {
- 	struct folio *folio;
- 	int error;
- 	unsigned int min_order = mapping_min_folio_order(mapping);
- 	pgoff_t index;
- 
-+	if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_WAITQ))
-+		return -EAGAIN;
++static struct folio *ractl_alloc_folio(struct readahead_control *ractl,
++				       gfp_t gfp_mask, unsigned int order)
++{
++	return filemap_alloc_folio(gfp_mask, order);
++}
 +
- 	folio = filemap_alloc_folio(mapping_gfp_mask(mapping), min_order);
+ /**
+  * page_cache_ra_unbounded - Start unchecked readahead.
+  * @ractl: Readahead control.
+@@ -260,8 +266,8 @@ void page_cache_ra_unbounded(struct readahead_control *ractl,
+ 			continue;
+ 		}
+ 
+-		folio = filemap_alloc_folio(gfp_mask,
+-					    mapping_min_folio_order(mapping));
++		folio = ractl_alloc_folio(ractl, gfp_mask,
++					mapping_min_folio_order(mapping));
+ 		if (!folio)
+ 			break;
+ 
+@@ -431,7 +437,7 @@ static inline int ra_alloc_folio(struct readahead_control *ractl, pgoff_t index,
+ 		pgoff_t mark, unsigned int order, gfp_t gfp)
+ {
+ 	int err;
+-	struct folio *folio = filemap_alloc_folio(gfp, order);
++	struct folio *folio = ractl_alloc_folio(ractl, gfp, order);
+ 
  	if (!folio)
  		return -ENOMEM;
-@@ -2487,7 +2489,7 @@ static int filemap_create_folio(struct file *file,
- 	 * well to keep locking rules simple.
- 	 */
- 	filemap_invalidate_lock_shared(mapping);
--	index = (pos >> (PAGE_SHIFT + min_order)) << min_order;
-+	index = (iocb->ki_pos >> (PAGE_SHIFT + min_order)) << min_order;
- 	error = filemap_add_folio(mapping, folio, index,
- 			mapping_gfp_constraint(mapping, GFP_KERNEL));
- 	if (error == -EEXIST)
-@@ -2495,7 +2497,8 @@ static int filemap_create_folio(struct file *file,
- 	if (error)
- 		goto error;
+@@ -753,7 +759,7 @@ void readahead_expand(struct readahead_control *ractl,
+ 		if (folio && !xa_is_value(folio))
+ 			return; /* Folio apparently present */
  
--	error = filemap_read_folio(file, mapping->a_ops->read_folio, folio);
-+	error = filemap_read_folio(iocb->ki_filp, mapping->a_ops->read_folio,
-+					folio);
- 	if (error)
- 		goto error;
+-		folio = filemap_alloc_folio(gfp_mask, min_order);
++		folio = ractl_alloc_folio(ractl, gfp_mask, min_order);
+ 		if (!folio)
+ 			return;
  
-@@ -2551,9 +2554,7 @@ static int filemap_get_pages(struct kiocb *iocb, size_t count,
- 		filemap_get_read_batch(mapping, index, last_index - 1, fbatch);
- 	}
- 	if (!folio_batch_count(fbatch)) {
--		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_WAITQ))
--			return -EAGAIN;
--		err = filemap_create_folio(filp, mapping, iocb->ki_pos, fbatch);
-+		err = filemap_create_folio(iocb, mapping, fbatch);
- 		if (err == AOP_TRUNCATED_PAGE)
- 			goto retry;
- 		return err;
+@@ -782,7 +788,7 @@ void readahead_expand(struct readahead_control *ractl,
+ 		if (folio && !xa_is_value(folio))
+ 			return; /* Folio apparently present */
+ 
+-		folio = filemap_alloc_folio(gfp_mask, min_order);
++		folio = ractl_alloc_folio(ractl, gfp_mask, min_order);
+ 		if (!folio)
+ 			return;
+ 
 -- 
 2.45.2
 
