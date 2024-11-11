@@ -1,172 +1,143 @@
-Return-Path: <linux-ext4+bounces-5016-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5017-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9DEB39C41C3
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 16:21:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D72C9C41C4
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 16:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 000E5B2305D
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 15:21:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D7EDAB230B9
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 15:23:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7BDE12DD88;
-	Mon, 11 Nov 2024 15:21:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7546280034;
+	Mon, 11 Nov 2024 15:23:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="tSKeK+FZ"
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="kvB7jrdh"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E2D51BC58
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:21:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F072749625
+	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:23:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731338493; cv=none; b=or4CukdD/pQ0i4R5yt8Q43xUD7nWMNNY+RV4XiEgg5a/q6wG4Ij1e+tMwnekSr83EDXi4ixYqKmnq0p8a2QNrFvGEHszp/ezCf6joDp2Zz3++Cq/czJdMrTRiVnzl7cg4Tjh3DtR9t/thOaeBSxTyZF7f8sYuagJowxJTMnKZQk=
+	t=1731338598; cv=none; b=eUwjf5Dm/Z44QuuqZZdmXtj6B18LA4gGQ1aIWgEAAkyDl+GklYO6Pgg1ISmKbF4hwMGzx9bfR9TkM0dgJEy4KknFVWBCOh4UGXUPYMwKgiD98juuHFjILko6rnuvGjwfsgljCvxfm8rSiFkVOfcpPMjAWGKpyEINAHgt139Pbes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731338493; c=relaxed/simple;
-	bh=IIBE5r7JHTxOV7+82WCt+7FC5WUNqQra//neAiJO398=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=BRwFHv0PTwPdx+bkhnTPfBKUe5CuIS2mbf9rRJ6eYgOpt9FbVjjx2EADeOkXTVxBRRMzDGB4Xrz0FhP2Wx2Siz9Et/g5gB2bC4LNVdsgg0HTVIt74moqQXY3/EIGrdaQod3WjOj1GTnyVbKrVBy3h1HEBShq+Gh35xtbXFxunCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=tSKeK+FZ; arc=none smtp.client-ip=185.125.188.123
+	s=arc-20240116; t=1731338598; c=relaxed/simple;
+	bh=VmivZvdWo5vK0AEQoKT7CGGAfs/DlxatoWf68eA/sHA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kN4Pzw4Om00XEckEJWnlL8ij4s98+HIJTInU7EjO295TZklGy0P13kJS/1mUw5uGU5fs0qQVveXKy3yeg6MF6kKswp7vSBEPngUjqp6aB6sL4a6urjSVIMwWqmv/Bq7Zcpy1iogSfYVnah1FkQ8gCu48YzwOj9scAs8INtrjYbo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=kvB7jrdh; arc=none smtp.client-ip=185.125.188.122
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com [209.85.218.71])
+Received: from mail-oo1-f70.google.com (mail-oo1-f70.google.com [209.85.161.70])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 80A183F215
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:21:21 +0000 (UTC)
+	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id C4D283FA67
+	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:23:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1731338481;
-	bh=UxsVF8hSpJ29Z9qLUkQUCmyF9bhH0xObTONhJfT8CBw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version;
-	b=tSKeK+FZdCdF3F/O77H7mni9n4gzNQh6BlJSTfdXVwAgyP8dfJKXXS6F5g8+QUquX
-	 96hSzqglaPludZEG2rl7ugDKhZxoGsVAlXW85POAVYe0WLtJscH7y2IDwUpQz3FV/x
-	 sGyncOxnBfpm3GFlDvV6uofjlAriJUgAwyG3MdmYQetA1wTAZpYayS+/J+4uN84jRt
-	 35e3uImKB3DVsqtrkAZi4Go4MEs/HJ58QhothRLiqoPM0hZsD8CPlLXhe1buDgKrhN
-	 XHjO8Yg/Mrs0zLu4sC3BrFcCgK9laoOA263KK8lSbnxeTurLgSV17w8XBCv8iQVS50
-	 MvBnlKbF35RXA==
-Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a9a22a62e80so357126366b.1
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 07:21:21 -0800 (PST)
+	s=20210705; t=1731338586;
+	bh=Omjsq5eJGa5U/n+iV9tiE7ASNFekvkkDtDvd6eham/E=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=kvB7jrdhc3DePtYyLxk2lkvAmNb7fNGrw0u7J+e9ZMw88nnA9TfjLinkjgTwByPUe
+	 qxze5ItAcyEzqmlTrEFKorqZsuPjPtmd/gKCei5S2YGGtT08gkTZQgGMYyqDiTH9Yr
+	 EMdSlCjJK0/0NcKZ+bWi5Se21oPuxOn5HdM8lbvQxt2MjNoEy/eZTBZSpiOAC86Ebk
+	 dV0+pNG2vSKBuEsiT/WNcwgsCImCLfDM6cSB8lC3FiPCWChRAwU4hXkhLjD3LLEydh
+	 RMnx9O/ccAGlcAy8FARaqA0M9+L69YzUARHJe3aCcTiDBJjwxz3xaaoCQuo+Jld0wR
+	 qCAFxJRFzPBqQ==
+Received: by mail-oo1-f70.google.com with SMTP id 006d021491bc7-5eb7e223383so2351969eaf.0
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 07:23:06 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731338481; x=1731943281;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=UxsVF8hSpJ29Z9qLUkQUCmyF9bhH0xObTONhJfT8CBw=;
-        b=FIwgY2cXGlRzA+fYl9wxcfp7W7/DKCP9IUbrK6cat/EKpT6TFucR4IfdA0ssme5Gu2
-         Q9zSRPnPFye54SAQ97Cfsl6QUj+z5E1zP1s+SQKrV3CGCmJ5pN4zq34b24uIIylNcJIc
-         4RcaoYQHGrdn+LCdl2n7IBJaPUJ9WNytqBuyO315OpqCxTPe9iilr7L1ttMUuIeoudnC
-         VAnrwy4IPxKb/zOPNa3nGPe2kSCyNT+Pf1RJQHiwmjf0+VB/SCK5UOvrUoaaAuknZrPE
-         3qDd6tjTmxWxSU0YxkqIMITlPj70BcdQuZlTfRCa0mONXTdqqXRf4lRwmKFJSy6JVOA4
-         G+/A==
-X-Gm-Message-State: AOJu0Yy/mYAf1P93FR+bKcBRa4INxR9Eeo7XneLwtYzYru/eG7VYKl2u
-	sQ8Gq9HCj2XABTzAGPiA/YHuFYaV0WRBpZ1LaG470BzE8QnSl7+/RknibKkSxnCWpRlW7KuBdG3
-	YquUSUMTg4y+3228PdII6aQnyync134sOO3Wk8QouJhluFha9f/8H7Qh4XseMynSL83yC7+aR19
-	I=
-X-Received: by 2002:a17:907:9483:b0:a99:fe71:bd76 with SMTP id a640c23a62f3a-a9eeff44678mr1452424266b.34.1731338481006;
-        Mon, 11 Nov 2024 07:21:21 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGQQuKSVIyFlgrG9ZavwCUBdqj175JxVD/+sPLv0IoGvA4iD0GIZwCfNeviMBaHTbVNFQpWHA==
-X-Received: by 2002:a17:907:9483:b0:a99:fe71:bd76 with SMTP id a640c23a62f3a-a9eeff44678mr1452421366b.34.1731338480675;
-        Mon, 11 Nov 2024 07:21:20 -0800 (PST)
-Received: from amikhalitsyn.lan ([188.192.113.77])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0dedc3dsm600736566b.133.2024.11.11.07.21.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 07:21:20 -0800 (PST)
-From: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-To: fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	libaokun1@huawei.com,
-	jack@suse.cz,
-	tytso@mit.edu,
-	zlang@redhat.com,
-	Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Subject: [PATCH v2] ext4/032: add a new testcase in online resize tests
-Date: Mon, 11 Nov 2024 16:21:00 +0100
-Message-ID: <20241111152100.152924-1-aleksandr.mikhalitsyn@canonical.com>
-X-Mailer: git-send-email 2.43.0
+        d=1e100.net; s=20230601; t=1731338584; x=1731943384;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Omjsq5eJGa5U/n+iV9tiE7ASNFekvkkDtDvd6eham/E=;
+        b=aAyMIbX8HKGkzJDYEvDhLFUHBjKFXF172tXyjdd1e/HkJNPrYKCoGj01Towq7O8Uoz
+         /N8/EUWJel8V3532sIjnR7/7dUEcwu2uMpjmgQzm2rOwYjM5vmz2OJjNKxdRzc3Q68uL
+         pkSjIBAqtQp2klsgsUIt75DFr6OyiILTBpJc5xidA3XoBYd+bplPccfprqBijr0CvCEI
+         pOzwZ6+EkaGaz1ncu0HG6STwakobh9u5IIOqrJAEEUQXD80ZOlmCxkob4MtGdb/papcW
+         al9GHNlr4cUcdi5pkfpmEF40EmtB0ZzqVGu/5jH+jnpJO7/BV9dbVpQmocrTi8kQk8vl
+         +Nbw==
+X-Forwarded-Encrypted: i=1; AJvYcCUPZQfRdNXbrOSH6qNKjoSt6Z7USOoOfmDYJasjG2WTUKB3MhJZ8GBFWJCl3J0HanS+tMlI8kB4F+uI@vger.kernel.org
+X-Gm-Message-State: AOJu0Yyr9DQjkvct2lYyUoN1ZAPCBJxPcQrRKWHBYb6Q33j158MatIRV
+	J9IFOvMoD4rKWR/ZkftBHmyGiCO+/5pbtfUSgqVLB83z/hQFDti59equlzs18z6jWLmLV7jrF6Z
+	yxMrDx4QVR2mK8hjwFlgusQzZP+CD1kZw8w/E6bMyJfSJsRlcc2LdYU+o6vrK+rnQmGecgWAHGR
+	MdRIyAjHPIcSc+CUeMygtCOhR4hAY+7cDD0S+aiM3Aiv4zdyoAmA==
+X-Received: by 2002:a05:6218:280a:b0:1c3:89d4:e888 with SMTP id e5c5f4694b2df-1c641f40665mr502903955d.20.1731338584410;
+        Mon, 11 Nov 2024 07:23:04 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IFMkRBV5laH6F6F0zmH4P6+rP5S9yHqymVKsBl9DIaOzkZ3owfdUraaM4bxTBR8r5n6WezVG9MP8/x4XKLdGss=
+X-Received: by 2002:a05:6218:280a:b0:1c3:89d4:e888 with SMTP id
+ e5c5f4694b2df-1c641f40665mr502901155d.20.1731338584114; Mon, 11 Nov 2024
+ 07:23:04 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20241108134817.128078-1-aleksandr.mikhalitsyn@canonical.com> <20241109120156.lipr33ykp73lzsxb@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+In-Reply-To: <20241109120156.lipr33ykp73lzsxb@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+From: Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Date: Mon, 11 Nov 2024 16:22:53 +0100
+Message-ID: <CAEivzxe6f=g8SLNeMayjL8o_bhbmJb5spZPP7LVcbro4Em2VjA@mail.gmail.com>
+Subject: Re: [PATCH] ext4/032: add a new testcase in online resize tests
+To: Zorro Lang <zlang@redhat.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Add a new testcase for [1] commit in ext4 online resize testsuite.
+On Sat, Nov 9, 2024 at 1:02=E2=80=AFPM Zorro Lang <zlang@redhat.com> wrote:
+>
+> On Fri, Nov 08, 2024 at 02:48:17PM +0100, Alexander Mikhalitsyn wrote:
+> > Add a new testcase for [1] commit in ext4 online resize testsuite.
+> >
+> > Link: https://lore.kernel.org/linux-ext4/20240927133329.1015041-1-libao=
+kun@huaweicloud.com [1]
+> > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.c=
+om>
+> > ---
+> >  tests/ext4/032 | 4 ++++
+> >  1 file changed, 4 insertions(+)
+> >
+> > diff --git a/tests/ext4/032 b/tests/ext4/032
+> > index 6bc3b61b..77d592f4 100755
+> > --- a/tests/ext4/032
+> > +++ b/tests/ext4/032
+> > @@ -97,6 +97,10 @@ mkdir -p $IMG_MNT || _fail "cannot create loopback m=
+ount point"
+> >  # Check if online resizing with bigalloc is supported by the kernel
+> >  ext4_online_resize 4096 8192 1
+> >
+> > +_fixed_by_kernel_commit 6121258c2b33 \
+> > +     "ext4: fix off by one issue in alloc_flex_gd()"
+>
+> We generally mark this at the beginning of the test, not in the middle of=
+ test
+> running. Refer to ext4/058.
 
-Link: https://lore.kernel.org/linux-ext4/20240927133329.1015041-1-libaokun@huaweicloud.com [1]
-Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
----
- tests/ext4/032     |  6 ++++++
- tests/ext4/032.out | 18 ++++++++++++++++++
- 2 files changed, 24 insertions(+)
+Hi Zorro,
 
-diff --git a/tests/ext4/032 b/tests/ext4/032
-index 6bc3b61b..238ab178 100755
---- a/tests/ext4/032
-+++ b/tests/ext4/032
-@@ -10,6 +10,9 @@
- . ./common/preamble
- _begin_fstest auto quick ioctl resize
- 
-+_fixed_by_kernel_commit 6121258c2b33 \
-+	"ext4: fix off by one issue in alloc_flex_gd()"
-+
- BLK_SIZ=4096
- CLUSTER_SIZ=4096
- 
-@@ -136,6 +139,9 @@ for CLUSTER_SIZ in 4096 16384 65536; do
- 
- 	## Extending a 2/3rd block group to 1280 block groups.
- 	ext4_online_resize $(c2b 24576) $(c2b 41943040)
-+
-+	# tests for "ext4: fix off by one issue in alloc_flex_gd()"
-+	ext4_online_resize $(c2b 6400) $(c2b 786432)
- done
- 
- status=0
-diff --git a/tests/ext4/032.out b/tests/ext4/032.out
-index b372b014..d5d75c9e 100644
---- a/tests/ext4/032.out
-+++ b/tests/ext4/032.out
-@@ -60,6 +60,12 @@ QA output created by 032
- +++ resize fs to 41943040
- +++ umount fs
- +++ check fs
-++++ truncate image file to 786432
-++++ create fs on image file 6400
-++++ mount image file
-++++ resize fs to 786432
-++++ umount fs
-++++ check fs
- ++ set cluster size to 16384
- +++ truncate image file to 98304
- +++ create fs on image file 65536
-@@ -115,6 +121,12 @@ QA output created by 032
- +++ resize fs to 167772160
- +++ umount fs
- +++ check fs
-++++ truncate image file to 3145728
-++++ create fs on image file 25600
-++++ mount image file
-++++ resize fs to 3145728
-++++ umount fs
-++++ check fs
- ++ set cluster size to 65536
- +++ truncate image file to 393216
- +++ create fs on image file 262144
-@@ -170,3 +182,9 @@ QA output created by 032
- +++ resize fs to 671088640
- +++ umount fs
- +++ check fs
-++++ truncate image file to 12582912
-++++ create fs on image file 102400
-++++ mount image file
-++++ resize fs to 12582912
-++++ umount fs
-++++ check fs
--- 
-2.43.0
+have fixed it. Thanks!
 
+Kind regards,
+Alex
+
+>
+> Thanks,
+> Zorro
+>
+> > +ext4_online_resize $(c2b 6400) $(c2b 786432)
+> > +
+> >  ## We perform resizing to various multiples of block group sizes to
+> >  ## ensure that we cover maximum edge cases in the kernel code.
+> >  for CLUSTER_SIZ in 4096 16384 65536; do
+> > --
+> > 2.43.0
+> >
+> >
+>
 
