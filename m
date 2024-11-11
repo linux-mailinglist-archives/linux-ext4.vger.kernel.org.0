@@ -1,168 +1,275 @@
-Return-Path: <linux-ext4+bounces-5018-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5019-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCE5D9C41CA
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 16:25:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 020CF9C467C
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 21:19:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63A9A1F231E0
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 15:25:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 88D1F1F22965
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 20:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 544991A0730;
-	Mon, 11 Nov 2024 15:25:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 550A7199238;
+	Mon, 11 Nov 2024 20:19:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="tnfy6+zI"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="ZKw9jXk5"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-relay-internal-0.canonical.com (smtp-relay-internal-0.canonical.com [185.125.188.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-qv1-f45.google.com (mail-qv1-f45.google.com [209.85.219.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 315D419E99C
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:25:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.122
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB5081A76D5
+	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 20:19:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731338731; cv=none; b=bRVYIDoCTwQdNDsIIYLQT0wnCOB5GCyU6F9reklm2xQ3sJa2YF7QxO68oWzLdYOfyoJE7lSl+e8Vu11GZydyedIUDFjzoIzse6SkhiIOklXltwJUHWpm+9qfydLblF+f+/gwZye2gWCmcfBF7nh2WSACUgyqGeFPt6p118hePDo=
+	t=1731356350; cv=none; b=XXIKhftVQdI46Y71trxUMhUkQRh4ZGmp4WeSDPwt3ZHOZeI6bzGHVARjWQLD9cjA3TeXYDIBGJej8gvnoL6n/gGnpSuKMpwbOPogXBn8l8B3y7vyzn6xPFP2v0T3APRNGF3AzBlOWJ+JPKr97wiL10HkjwFdfEqcjIYa/cna0/o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731338731; c=relaxed/simple;
-	bh=w1gsGMSTeFmgKZVtoNHA/56CEZWWQergphRwkdjTmAU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=f5c9SeggIRh08M2ntskWCrYxrCr1035YjbivrNp58Wbv29cwA6v70e2ApRxVHnugpaUDZF2I8znFCvBpUvf0bvh5Yx7ggcexXFKK9HJ5Yv2XqY/rn3YilxiAbc360auYB8reWxUid3nNmW9BzxKuCNORD0VkPOjjgPjZai4HpxE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=tnfy6+zI; arc=none smtp.client-ip=185.125.188.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
-Received: from mail-oo1-f71.google.com (mail-oo1-f71.google.com [209.85.161.71])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-relay-internal-0.canonical.com (Postfix) with ESMTPS id 1AC9B40593
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:25:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
-	s=20210705; t=1731338727;
-	bh=QL3XjmSt0fXf6QyOofF2w0EPPa+BYfn/ilLlbtnEEYs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type;
-	b=tnfy6+zIPEiu3ZVYsN8y3SjSNyQwOvC/qh4ru0xiZmozxWZY6zrBXatuSc6dyTssC
-	 qp3ewDy+HRjuTlbO4dWmGo8/6okTtdWtONmr18OseJZtmquG8HDbVYEe+xIkImOJv8
-	 1WEvow5FUi6SATdDxreN2JH0DdUSEW0ushT7EWmpgk0gZ1b6RGveN0o4nTSkrzR6hd
-	 qWKEXBK6q7kqtAG0BIVbklPXSMMqLqCrotnxsBuretVkJ8wkhqMgZ8qO1QrdKKXC5M
-	 Fm+hgEi73Ed4YsDAHFPhAxjILvZwoJdskq3TtsBzC3y0BGTelUXVmxukU8vWIpQyPj
-	 lwAgDFDdZF6kQ==
-Received: by mail-oo1-f71.google.com with SMTP id 006d021491bc7-5eb6154407eso3843068eaf.1
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 07:25:27 -0800 (PST)
+	s=arc-20240116; t=1731356350; c=relaxed/simple;
+	bh=HdplNj7rOxScqTl4rk8oUMTEW83bkqjTMcamzHMWNso=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=gt+JzZA4sOeDZzDgY7RuW2pxayRw7p8VHXjAadirRen8GeOK0v1jDL5C7CBH1IVIGlY/8ueRUGjgj7AywYcglu+QnAxwcIUntiN6GiI/SNzl2eX+kmdltZxaI9b3wr96MDxGFRUSkeKrvFS8NGvZJ3y6IgJlCYdLtDHSxzt6jtA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=ZKw9jXk5; arc=none smtp.client-ip=209.85.219.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qv1-f45.google.com with SMTP id 6a1803df08f44-6cbe9e8bbb1so33550356d6.1
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 12:19:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731356347; x=1731961147; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=vZOzWH6oaRX5zBw6SWTo1BBrfJV7I9UbqRC6LQ/o1Dw=;
+        b=ZKw9jXk5FDjm0A3e5A5x49y0MfYvgXoyHF2/90kGnxomPU1LaWAkcZubPjS2rAwF9B
+         EgryBHD6ZsebWyKiUIR6jT/H+sqB4uWAthXrECqRay6nODZsywMK6LJtczVePmRag+oI
+         NtNgTJWYa56CDSn4rYbtAcojhL/EreWdoYDjSn2ftxCPsXCpzQCIRRQPf8/BMkw7mALg
+         SXmk7up3DvEjFHLwCYZL4okbiR1AF8A7cQ0fArRJh0hESL2Xayg6ZXaGeQDpdqVZTblh
+         tMbqhVjlcYwV4vDgDciP7GpPepeKW5hTQvx5tPppgjO4AEmqQbzj2YnbGEQ5rl6QJEnn
+         F6qg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731338725; x=1731943525;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=QL3XjmSt0fXf6QyOofF2w0EPPa+BYfn/ilLlbtnEEYs=;
-        b=p6l+ObuN/P6S7xCvFx/SOA7uhKcbLLkhYInnp4WTm49q0VMAWMlGqfA03T+seoUHFm
-         Ik7XEvmkSyQlErlSRD6GgflPfkHuidoj/HS0zoiY9RFMo5JRock2GhMac03YCTBRAUdb
-         m5usX3aMGfPeg3OTlZdigNjy0lH0JNPzx23vpg+GNu6DKsd9eS1oHZ8s8Mvgld54qE7h
-         ZqCHmeWgPLdfjxNaCgktw+V9jNrVjPwBFWI7pqLLRxpIg7boDYybgJG+D4eoVdhgwR30
-         McD5KTY6zR9MqEfmC3NXYUDeBb5E3Toz++diJWY6oZM/1EA8uzr3TgjBUqDFrjIDoImk
-         rqgg==
-X-Forwarded-Encrypted: i=1; AJvYcCVJxgrpRuLzD50gH4f8ObaPG7GSuZ5jQXr90HarX3keuFOuv5RwQNQ1+TduD9k7vZwVq2N6yc2AWUz+@vger.kernel.org
-X-Gm-Message-State: AOJu0YzqKsepp0rdFvjAxbu9qGoWji6LTgz6GZk8Xno8sBej7CB+Rh5Z
-	faSYDzuqryy6mv97u7rUGntWFNeEnx37Gh/Tq65eafxhhFKfLXZmcod8Sqq0e1jt80G5S9mi4o7
-	u+SnpHdC85d+6wR9QY9uY37ab+aLx9Ki3818ZIqWGgRV3xy5MIFkb4oNFtWOGtQfeg0yhdfNckr
-	IdvMCDhNqwjih6Jh1mJU7ZUHxERb3cUZh9ArcbTEPHrzz2Da97BA==
-X-Received: by 2002:a05:6359:4282:b0:1c3:8d57:ea8b with SMTP id e5c5f4694b2df-1c641f37808mr458433655d.16.1731338725235;
-        Mon, 11 Nov 2024 07:25:25 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IEcKQb7kbezzQqfsOGb2kZkBq0m0eTyj0NcM1dGKGpDevi56LPNvZMRrPtoU4GQWpUhNpPvPAwsKfVB4oqrHz8=
-X-Received: by 2002:a05:6359:4282:b0:1c3:8d57:ea8b with SMTP id
- e5c5f4694b2df-1c641f37808mr458431255d.16.1731338724944; Mon, 11 Nov 2024
- 07:25:24 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731356347; x=1731961147;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=vZOzWH6oaRX5zBw6SWTo1BBrfJV7I9UbqRC6LQ/o1Dw=;
+        b=g/De1U00OB889FCcakMx0tC3GkO5b4QbIO/qiWf9CFpstXYXkdXLA4ndPU2qOm9Bgd
+         Y47m4iXmRuf2hpooA600DxrzyjuOImzmxiac/tiLoK3mfQfXoTHxrbAVLEgQ3clctJg3
+         IX5WsiY4z0OPnJHawgEdQC5sgMixiNEfZ+qs6YQ/8owTF4Vyl6pPhOZ+4lKNNvcRAOP+
+         9UuTvQ7E0Ga8DJ62mTCQ2KL7H47SJIA1qp7Ele0/XsOr+lix+APQXrjDm2beehCFQ2cI
+         IMUlLa9IlzJRw3mfostdkPMYZ/tlzUkJFzT3saNQkSTMBF5T8WZ8wHhlFJSfhc+tVVzv
+         8W3g==
+X-Forwarded-Encrypted: i=1; AJvYcCUUMhJ2eR5wpYeSpS54CzcJMs8R878sGURg3Zcs97YlYnOiXB7hol83Yss4H7khYAX5gb1bz8vtpJLm@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx94qI/kME0BsvUp1obpDM9ShN57+aSwiBluY34OM4MwQoB7Sky
+	Vd+iTNaUl1PuJpimoD+GTTaRPuzXJlrubNH3sD6AbleXsZK4wgWbq+sEjmzenQ3a3P3rN7foCba
+	4
+X-Google-Smtp-Source: AGHT+IFacC1xPqIxXNxCPQqSe1nFqrjTge/tXsUCiXF5RzZu3TnzD62FWh15sejnpZsyvhuNw+LCaA==
+X-Received: by 2002:a05:6214:5f04:b0:6cb:eabb:13d3 with SMTP id 6a1803df08f44-6d39e19d7a4mr198971316d6.36.1731356346753;
+        Mon, 11 Nov 2024 12:19:06 -0800 (PST)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d3bf23cc01sm20137136d6.122.2024.11.11.12.19.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 11 Nov 2024 12:19:06 -0800 (PST)
+From: Josef Bacik <josef@toxicpanda.com>
+To: kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org,
+	jack@suse.cz,
+	amir73il@gmail.com,
+	brauner@kernel.org,
+	torvalds@linux-foundation.org,
+	linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH v6 00/17] fanotify: add pre-content hooks
+Date: Mon, 11 Nov 2024 15:17:49 -0500
+Message-ID: <cover.1731355931.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241108134817.128078-1-aleksandr.mikhalitsyn@canonical.com> <d137f247-97c0-4a42-b4ed-ae84ad8e727a@huawei.com>
-In-Reply-To: <d137f247-97c0-4a42-b4ed-ae84ad8e727a@huawei.com>
-From: Aleksandr Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
-Date: Mon, 11 Nov 2024 16:25:13 +0100
-Message-ID: <CAEivzxc-=zsDk_dy7LnTUNzHqVTqm5vW9_3TBaCRrnmZJTxu5g@mail.gmail.com>
-Subject: Re: [PATCH] ext4/032: add a new testcase in online resize tests
-To: Baokun Li <libaokun1@huawei.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org, jack@suse.cz, 
-	tytso@mit.edu, Yang Erkun <yangerkun@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
 
-On Sat, Nov 9, 2024 at 4:32=E2=80=AFAM Baokun Li <libaokun1@huawei.com> wro=
-te:
->
-> Hi Alexander,
->
-> Thanks for the patch.
->
-> On 2024/11/8 21:48, Alexander Mikhalitsyn wrote:
-> > Add a new testcase for [1] commit in ext4 online resize testsuite.
-> >
-> > Link: https://lore.kernel.org/linux-ext4/20240927133329.1015041-1-libao=
-kun@huaweicloud.com [1]
-> > Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.c=
-om>
-> > ---
-> >   tests/ext4/032 | 4 ++++
-> >   1 file changed, 4 insertions(+)
-> >
-> > diff --git a/tests/ext4/032 b/tests/ext4/032
-> > index 6bc3b61b..77d592f4 100755
-> > --- a/tests/ext4/032
-> > +++ b/tests/ext4/032
-> > @@ -97,6 +97,10 @@ mkdir -p $IMG_MNT || _fail "cannot create loopback m=
-ount point"
-> >   # Check if online resizing with bigalloc is supported by the kernel
-> >   ext4_online_resize 4096 8192 1
-> >
-> > +_fixed_by_kernel_commit 6121258c2b33 \
-> > +     "ext4: fix off by one issue in alloc_flex_gd()"
-> > +ext4_online_resize $(c2b 6400) $(c2b 786432)
-> > +
+v5: https://lore.kernel.org/linux-fsdevel/cover.1725481503.git.josef@toxicpanda.com/
+v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxicpanda.com/
+v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
+v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
+v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
 
-Hi Baokun,
+v5->v6:
+- Linus had problems with this and rejected Jan's PR
+  (https://lore.kernel.org/linux-fsdevel/20240923110348.tbwihs42dxxltabc@quack3/),
+  so I'm respinning this series to address his concerns.  Hopefully this is more
+  acceptable.
+- Change the page fault hooks to happen only in the case where we have to add a
+  page, not where there exists pages already.
+- Amir added a hook to truncate.
+- We made the flag per SB instead of per fstype, Amir wanted this because of
+  some potential issues with other file system specific work he's doing.
+- Dropped the bcachefs patch, there were some concerns that we were doing
+  something wrong, and it's not a huge deal to not have this feature for now.
+- Unfortunately the xfs write fault path still has to do the page fault hook
+  before we know if we have a page or not, this is because of the locking that's
+  done before we get to the part where we know if we have a page already or not,
+  so that's the path that is still the same from last iteration.
+- I've re-validated this series with btrfs, xfs, and ext4 to make sure I didn't
+  break anything.
 
-> I think this test would be better placed in the loop below. Then add some
-> comments describing the scenario being tested.
+v4->v5:
+- Cleaned up the various "I'll fix it on commit" notes that Jan made since I had
+  to respin the series anyway.
+- Renamed the filemap pagefault helper for fsnotify per Christians suggestion.
+- Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough sketch.
+- Added a patch to disable btrfs defrag on pre-content watched files.
+- Added a patch to turn on FS_ALLOW_HSM for all the file systems that I tested.
+- Added two fstests (which will be posted separately) to validate everything,
+  re-validated the series with btrfs, xfs, ext4, and bcachefs to make sure I
+  didn't break anything.
 
-Have done. Thanks!
+v3->v4:
+- Trying to send a final verson Friday at 5pm before you go on vacation is a
+  recipe for silly mistakes, fixed the xfs handling yet again, per Christoph's
+  review.
+- Reworked the file system helper so it's handling of fpin was a little less
+  silly, per Chinner's suggestion.
+- Updated the return values to not or in VM_FAULT_RETRY, as we have a comment
+  in filemap_fault that says if VM_FAULT_ERROR is set we won't have
+  VM_FAULT_RETRY set.
 
->
-> There are two current scenarios for off by one:
->   * The above test is to expand from the first block group of a flex_bg t=
-o
->     the next flex_bg;
->   * Another scenario is to expand from the first block group of a flex_bg
->     to the last block group of this flex_bg. For example,
->       `ext4_online_resize $(c2b 6400) $(c2b 524288)`
+v2->v3:
+- Fix the pagefault path to do MAY_ACCESS instead, updated the perm handler to
+  emit PRE_ACCESS in this case, so we can avoid the extraneous perm event as per
+  Amir's suggestion.
+- Reworked the exported helper so the per-filesystem changes are much smaller,
+  per Amir's suggestion.
+- Fixed the screwup for DAX writes per Chinner's suggestion.
+- Added Christian's reviewed-by's where appropriate.
 
-This test does not fail for me when I test without "ext4: fix off by
-one issue in alloc_flex_gd()" fix, so I decided not to take it.
+v1->v2:
+- reworked the page fault logic based on Jan's suggestion and turned it into a
+  helper.
+- Added 3 patches per-fs where we need to call the fsnotify helper from their
+  ->fault handlers.
+- Disabled readahead in the case that there's a pre-content watch in place.
+- Disabled huge faults when there's a pre-content watch in place (entirely
+  because it's untested, theoretically it should be straightforward to do).
+- Updated the command numbers.
+- Addressed the random spelling/grammer mistakes that Jan pointed out.
+- Addressed the other random nits from Jan.
 
->
-> In addition, we need to modify the tests/ext4/032.out or the use cases
-> will fail due to inconsistent output.
+--- Original email ---
 
-Of course, my bad, I forgot to add this file to the commit... stupid mistak=
-e.
+Hello,
 
-I have fixed it in v2:
-https://lore.kernel.org/fstests/20241111152100.152924-1-aleksandr.mikhalits=
-yn@canonical.com/T/#u
+These are the patches for the bare bones pre-content fanotify support.  The
+majority of this work is Amir's, my contribution to this has solely been around
+adding the page fault hooks, testing and validating everything.  I'm sending it
+because Amir is traveling a bunch, and I touched it last so I'm going to take
+all the hate and he can take all the credit.
 
-Kind regards,
-Alex
+There is a PoC that I've been using to validate this work, you can find the git
+repo here
 
->
->
-> Regards,
-> Baokun
-> >   ## We perform resizing to various multiples of block group sizes to
-> >   ## ensure that we cover maximum edge cases in the kernel code.
-> >   for CLUSTER_SIZ in 4096 16384 65536; do
->
->
+https://github.com/josefbacik/remote-fetch
+
+This consists of 3 different tools.
+
+1. populate.  This just creates all the stub files in the directory from the
+   source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
+   recursively create all of the stub files and directories.
+2. remote-fetch.  This is the actual PoC, you just point it at the source and
+   destination directory and then you can do whatever.  ./remote-fetch ~/linux
+   ~/hsm-linux.
+3. mmap-validate.  This was to validate the pagefault thing, this is likely what
+   will be turned into the selftest with remote-fetch.  It creates a file and
+   then you can validate the file matches the right pattern with both normal
+   reads and mmap.  Normally I do something like
+
+   ./mmap-validate create ~/src/foo
+   ./populate ~/src ~/dst
+   ./rmeote-fetch ~/src ~/dst
+   ./mmap-validate validate ~/dst/foo
+
+I did a bunch of testing, I also got some performance numbers.  I copied a
+kernel tree, and then did remote-fetch, and then make -j4
+
+Normal
+real    9m49.709s
+user    28m11.372s
+sys     4m57.304s
+
+HSM
+real    10m6.454s
+user    29m10.517s
+sys     5m2.617s
+
+So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
+to see the size
+
+[root@fedora ~]# du -hs /src/linux
+1.6G    /src/linux
+[root@fedora ~]# du -hs dst
+125M    dst
+
+This mirrors the sort of savings we've seen in production.
+
+Meta has had these patches (minus the page fault patch) deployed in production
+for almost a year with our own utility for doing on-demand package fetching.
+The savings from this has been pretty significant.
+
+The page-fault hooks are necessary for the last thing we need, which is
+on-demand range fetching of executables.  Some of our binaries are several gigs
+large, having the ability to remote fetch them on demand is a huge win for us
+not only with space savings, but with startup time of containers.
+
+There will be tests for this going into LTP once we're satisfied with the
+patches and they're on their way upstream.  Thanks,
+
+Josef
+
+Amir Goldstein (9):
+  fanotify: rename a misnamed constant
+  fanotify: reserve event bit of deprecated FAN_DIR_MODIFY
+  fsnotify: introduce pre-content permission events
+  fsnotify: pass optional file access range in pre-content event
+  fsnotify: generate pre-content permission event on open
+  fsnotify: generate pre-content permission event on truncate
+  fanotify: introduce FAN_PRE_ACCESS permission event
+  fanotify: report file range info with pre-content events
+  fanotify: allow to set errno in FAN_DENY permission response
+
+Josef Bacik (8):
+  fanotify: don't skip extra event info if no info_mode is set
+  fanotify: add a helper to check for pre content events
+  fanotify: disable readahead if we have pre-content watches
+  mm: don't allow huge faults for files with pre content watches
+  fsnotify: generate pre-content permission event on page fault
+  xfs: add pre-content fsnotify hook for write faults
+  btrfs: disable defrag on pre-content watched files
+  fs: enable pre-content events on supported file systems
+
+ fs/btrfs/ioctl.c                   |   9 +++
+ fs/btrfs/super.c                   |   5 +-
+ fs/ext4/super.c                    |   3 +
+ fs/namei.c                         |  10 ++-
+ fs/notify/fanotify/fanotify.c      |  33 ++++++--
+ fs/notify/fanotify/fanotify.h      |  15 ++++
+ fs/notify/fanotify/fanotify_user.c | 120 +++++++++++++++++++++++------
+ fs/notify/fsnotify.c               |  18 ++++-
+ fs/open.c                          |  31 +++++---
+ fs/xfs/xfs_file.c                  |   4 +
+ fs/xfs/xfs_super.c                 |   2 +-
+ include/linux/fanotify.h           |  19 +++--
+ include/linux/fs.h                 |   1 +
+ include/linux/fsnotify.h           |  73 ++++++++++++++++--
+ include/linux/fsnotify_backend.h   |  59 +++++++++++++-
+ include/linux/mm.h                 |   1 +
+ include/uapi/linux/fanotify.h      |  18 +++++
+ mm/filemap.c                       |  90 ++++++++++++++++++++++
+ mm/memory.c                        |  22 ++++++
+ mm/readahead.c                     |  13 ++++
+ security/selinux/hooks.c           |   3 +-
+ 21 files changed, 491 insertions(+), 58 deletions(-)
+
+-- 
+2.43.0
+
 
