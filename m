@@ -1,72 +1,72 @@
-Return-Path: <linux-ext4+bounces-5050-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5051-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3BE309C4A64
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 01:09:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 765219C4A15
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 00:52:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5415B2C23F
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 23:52:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D2C481F22507
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 23:52:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C5AA1BDA89;
-	Mon, 11 Nov 2024 23:48:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2CFF1CB50A;
+	Mon, 11 Nov 2024 23:49:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="R4aiaU9j"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Dfkh6fxG"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EBD451BD9EB
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 23:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0CB01CB50D
+	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 23:48:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731368938; cv=none; b=Yrfzp94sLXC/NwDj1CA0RltFKDDcdgzHgKtDpPIonX+AZzWGdhUD3fyuWrRGl0SIptfydxHXTuL1z5sc5blk0QyquTRh/e8l7FHlVjul7nRxaciuZjbqB6ZeNxErSo53mCFGC4uoq70V3wxBayU/cmUkuSHrRr+/khbO8fkQjSg=
+	t=1731368940; cv=none; b=T6jh9tKs8Ex37QMouEyUG5GqKwmFn8q+732WI3i5Ei2RZl9mjUq/+wypCaOfp2YSTqhMeYFbbRQmbJvS/DfX24BQ+ge39W8WcR80hZ9QvsjSR4Ih0hs1VFR/ISHxReYzyZaJtbgUO3tV68p64oOl2p52+LqwWBSceXFQNS6Rj8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731368938; c=relaxed/simple;
-	bh=9Ma4XXKwKrbfCmk8++0FMznuxKmPjzqiFxHZUZ9JUvs=;
+	s=arc-20240116; t=1731368940; c=relaxed/simple;
+	bh=QqsnT+PFB0stp1XOLxW6GR03t+Q+Rw9k/OtfDS+hMd8=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=p6WkUhzF/v5N/pEei0rFgvhZZMRvmiNLh0/U2oR8d0EUswOFD0Caj3I4EQAJsB5l0S5u/AQJMpkPPzqkOiffn4HAdbHsZwQJ3PB+FSonkG8stiBmVdPh1wLpUHlAhPqX6a1VSo0c58lq+ktLdlFJLqbkMkpnEQS8poh+EhjOsmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=R4aiaU9j; arc=none smtp.client-ip=209.85.210.182
+	 MIME-Version; b=mo5PlNAbpebFEjk90fUxV8H0IG+br7xmHG3VdPqEbT+zoNPxXe2BgpXT1XZAYUNaAcEPnzdGzOg62oMI2MH46/VQfCVU3Ies7X8m+I9prfi+hXmJxsMOon+0X/OaPdWOJZEMRSRxcrIw58kzxAw8LPeVDuGMbLfdhXtD7wPjw/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Dfkh6fxG; arc=none smtp.client-ip=209.85.210.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-7240d93fffdso4129833b3a.2
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:48:56 -0800 (PST)
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-720c2db824eso5462416b3a.0
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:48:58 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368936; x=1731973736; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368938; x=1731973738; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CL+fLnGK0BaMmMKm57rghb0D3nDN7TOwfaAxP5ktg80=;
-        b=R4aiaU9jMdoXAa5LmgNMxyvFc/Uw4BX0xojgO8xFzGRanykKRWYDUDxa5zSd2FP+da
-         2/d03PDDT7mnhyzNolWF8mXaubonK+n7vPkCmjhw5Q5nTBMgqWqKJpLSFITxoFofw7Km
-         5bkWpUBbRX0UnN4AcqdLVnOCqscDu88xVBX/kYbwyfpp+nGwVyp3DuORQwedYFsxuAxf
-         tJ76CARYeBEC+/KVXnkWi8pMKzdVicNjxFhmwbo6OPJgCa3gHhMLpQ87VKaS+rEuHMhB
-         lToEni2gTX8sH3PRBY2+gSwr/RdQhyxPOogh4+g1caIeORHHruxmpnlqR3kSbFAW5Coy
-         wRcw==
+        bh=BpaeGG8sCxZf4JRh/p7NGjZl2gbHvBRPjf0TUvSvRrE=;
+        b=Dfkh6fxGx/uVYKbNvNxD5qGeWmbLclfHCDK9vy3OBrUwLZL2sg8OzxsrvVQN3tncGO
+         rjLuKd6yYqW4TDr+a/0SShuTclv1PK3sSpdNs3L/dJ6+lL87HL0J97KXyfqEJ11xtPBA
+         phSh6vZnHaIK/dGPOR7k/sDn7xR35h10zXtTleG370oUEy5wiiSkp/x1coBRDl8HoMJd
+         JeWc86qXzqDxne+NxbeSvVGWGYV16n4UtbQa9ogJz1kMKlIub2awx+Vo9R2HL6JRFiYM
+         cYW6JBuCHn3SYOPcF0A0n/RQVEX4KjYKSjUjlEg8p8WpEP5eJ138+1Cr3lIeMLLAr1pe
+         VVbw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731368936; x=1731973736;
+        d=1e100.net; s=20230601; t=1731368938; x=1731973738;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CL+fLnGK0BaMmMKm57rghb0D3nDN7TOwfaAxP5ktg80=;
-        b=A4WGBKvnR80FPGBNbPkX6WMZvoGG+LbVp+nbZO1esN2t2pw8qM/a0paGalbhtMpwJs
-         S+4aT1+H4b5BsRPiOQelMq/ukrI6pO08hhS1IeL/qAVnYCYPOYW7v7QJPfBZkyQbWCaD
-         emss7vU9ERI2cfmUcKEL7Ca8KA/xYka0txfpcvBoCEFZ+IypaPDnQ1j7PG5VyVaVraJ5
-         EBglHd83rKwe0elHI/FP3q0ryLt8Sl/ATrY+GBs4FQm/qJhtNpLrdh1yaOzNVwC7XhaA
-         4nuAAymr6qIpiDHvCXYMQVm6qc3mI49pR7oBpAFiOe0JKbI9Eo2mj5zFxyx8rk+zzFqP
-         QYeg==
-X-Forwarded-Encrypted: i=1; AJvYcCVovkUBNHlk0Y848Guj6NxFRoUrYjAIPaQC5hGWjSpse8z0sRrMdbmlcP1O9QEDPlMi0aqhbZALSlSV@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlWkdUG9iOJ1FihsMRfq7+vJmPzcC8GAIXkK1tjD7K2zzCXLaV
-	J694Rf3ObE1aQ45lTuZym+IMpOX4hpm3Pt40TmmpguJi8IhEEAtbj1iajIZcj1s=
-X-Google-Smtp-Source: AGHT+IGkT/vleDHQ8M3Hw8Ha2+EPGBpXcHS4Q/PdXfOEbEN6KEGRSFgIDbBBEJ7VgYq4tyZ3FLhGBg==
-X-Received: by 2002:a05:6a00:3cd1:b0:71e:64fe:965f with SMTP id d2e1a72fcca58-72413350e9cmr19827356b3a.20.1731368936369;
-        Mon, 11 Nov 2024 15:48:56 -0800 (PST)
+        bh=BpaeGG8sCxZf4JRh/p7NGjZl2gbHvBRPjf0TUvSvRrE=;
+        b=wT3OMyciBrHmFpF0naBlRYbNYhpNEWJZNWctvyBCAviHS+yH21OT660yW4ySXNYdDW
+         taBJ+VOuTqFs7/97tz8sc8vlVRZg9Gjg8Soiq9NV/Kx/ExR+/HUzaHK4xUsLf34afidO
+         TY/1w5/4mQmzBhsCsfjMuv+d2DFCex+J52TdfwKKcdSebm51pcfbyr19Yn9npXXlFFvn
+         DF5YXVY1yey6tRCs4nMsHTMgdDCwxI3fI6usgfcQeDKEila5PRBUhMnOzcQVKPcZK8f3
+         QS9rjKGamm+XeQABmr29rKGN1O+Rk1LJc3H6yFq1SVvNYDEY6X0UN964OWZoWdc0iPdP
+         EowA==
+X-Forwarded-Encrypted: i=1; AJvYcCUWfnwiKdRmkaOtHPKa8v2PfyxiIcQ914QfTSvhyB96UR5mP3UFne/rkqYP4q9AXln8lB7Mja4g9HW2@vger.kernel.org
+X-Gm-Message-State: AOJu0YzuP/5VmOXBGGK7JxNyRhV8yfucSXBaBMnmnMWvIewcuWaLbkHq
+	JXWStiAW6iUijmoA5podO+PazFpfTGYncO9t8rIkN7F41043zN/LSvSFO3ahb5k=
+X-Google-Smtp-Source: AGHT+IGZeOeX13AG9u0SljALCGlqZd1HzXcprLCQtKHVA2LyzBnUVzw9lDFogBpMHW34whNWJjJhLg==
+X-Received: by 2002:a05:6a00:3a28:b0:71e:7846:8463 with SMTP id d2e1a72fcca58-7241334a3e2mr19790618b3a.19.1731368938117;
+        Mon, 11 Nov 2024 15:48:58 -0800 (PST)
 Received: from localhost.localdomain ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.48.55
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.48.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 15:48:55 -0800 (PST)
+        Mon, 11 Nov 2024 15:48:57 -0800 (PST)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-mm@kvack.org,
 	linux-fsdevel@vger.kernel.org
@@ -79,9 +79,9 @@ Cc: hannes@cmpxchg.org,
 	linux-ext4@vger.kernel.org,
 	linux-xfs@vger.kernel.org,
 	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 06/16] mm/truncate: add folio_unmap_invalidate() helper
-Date: Mon, 11 Nov 2024 16:37:33 -0700
-Message-ID: <20241111234842.2024180-7-axboe@kernel.dk>
+Subject: [PATCH 07/16] fs: add RWF_UNCACHED iocb and FOP_UNCACHED file_operations flag
+Date: Mon, 11 Nov 2024 16:37:34 -0700
+Message-ID: <20241111234842.2024180-8-axboe@kernel.dk>
 X-Mailer: git-send-email 2.45.2
 In-Reply-To: <20241111234842.2024180-1-axboe@kernel.dk>
 References: <20241111234842.2024180-1-axboe@kernel.dk>
@@ -93,97 +93,77 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Add a folio_unmap_invalidate() helper, which unmaps and invalidates a
-given folio. The caller must already have locked the folio. Use this
-new helper in invalidate_inode_pages2_range(), rather than duplicate
-the code there.
-
-In preparation for using this elsewhere as well, have it take a gfp_t
-mask rather than assume GFP_KERNEL is the right choice. This bubbles
-back to invalidate_complete_folio2() as well.
+If a file system supports uncached buffered IO, it may set FOP_UNCACHED
+and enable RWF_UNCACHED. If RWF_UNCACHED is attempted without the file
+system supporting it, it'll get errored with -EOPNOTSUPP.
 
 Signed-off-by: Jens Axboe <axboe@kernel.dk>
 ---
- include/linux/pagemap.h |  2 ++
- mm/truncate.c           | 33 ++++++++++++++++++++-------------
- 2 files changed, 22 insertions(+), 13 deletions(-)
+ include/linux/fs.h      | 10 +++++++++-
+ include/uapi/linux/fs.h |  6 +++++-
+ 2 files changed, 14 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/pagemap.h b/include/linux/pagemap.h
-index 8afacb7520d4..d55bf995bd9e 100644
---- a/include/linux/pagemap.h
-+++ b/include/linux/pagemap.h
-@@ -34,6 +34,8 @@ int kiocb_invalidate_pages(struct kiocb *iocb, size_t count);
- void kiocb_invalidate_post_direct_write(struct kiocb *iocb, size_t count);
- int filemap_invalidate_pages(struct address_space *mapping,
- 			     loff_t pos, loff_t end, bool nowait);
-+int folio_unmap_invalidate(struct address_space *mapping, struct folio *folio,
-+			   gfp_t gfp);
+diff --git a/include/linux/fs.h b/include/linux/fs.h
+index 3559446279c1..5abc53991cd0 100644
+--- a/include/linux/fs.h
++++ b/include/linux/fs.h
+@@ -320,6 +320,7 @@ struct readahead_control;
+ #define IOCB_NOWAIT		(__force int) RWF_NOWAIT
+ #define IOCB_APPEND		(__force int) RWF_APPEND
+ #define IOCB_ATOMIC		(__force int) RWF_ATOMIC
++#define IOCB_UNCACHED		(__force int) RWF_UNCACHED
  
- int write_inode_now(struct inode *, int sync);
- int filemap_fdatawrite(struct address_space *);
-diff --git a/mm/truncate.c b/mm/truncate.c
-index 0668cd340a46..5663c3f1d548 100644
---- a/mm/truncate.c
-+++ b/mm/truncate.c
-@@ -547,12 +547,12 @@ EXPORT_SYMBOL(invalidate_mapping_pages);
-  * sitting in the folio_add_lru() caches.
-  */
- static int invalidate_complete_folio2(struct address_space *mapping,
--					struct folio *folio)
-+				      struct folio *folio, gfp_t gfp_mask)
- {
- 	if (folio->mapping != mapping)
- 		return 0;
+ /* non-RWF related bits - start at 16 */
+ #define IOCB_EVENTFD		(1 << 16)
+@@ -354,7 +355,8 @@ struct readahead_control;
+ 	{ IOCB_SYNC,		"SYNC" }, \
+ 	{ IOCB_NOWAIT,		"NOWAIT" }, \
+ 	{ IOCB_APPEND,		"APPEND" }, \
+-	{ IOCB_ATOMIC,		"ATOMIC"}, \
++	{ IOCB_ATOMIC,		"ATOMIC" }, \
++	{ IOCB_UNCACHED,	"UNCACHED" }, \
+ 	{ IOCB_EVENTFD,		"EVENTFD"}, \
+ 	{ IOCB_DIRECT,		"DIRECT" }, \
+ 	{ IOCB_WRITE,		"WRITE" }, \
+@@ -2116,6 +2118,8 @@ struct file_operations {
+ #define FOP_HUGE_PAGES		((__force fop_flags_t)(1 << 4))
+ /* Treat loff_t as unsigned (e.g., /dev/mem) */
+ #define FOP_UNSIGNED_OFFSET	((__force fop_flags_t)(1 << 5))
++/* File system supports uncached read/write buffered IO */
++#define FOP_UNCACHED		((__force fop_flags_t)(1 << 6))
  
--	if (!filemap_release_folio(folio, GFP_KERNEL))
-+	if (!filemap_release_folio(folio, gfp_mask))
- 		return 0;
+ /* Wrap a directory iterator that needs exclusive inode access */
+ int wrap_directory_iterator(struct file *, struct dir_context *,
+@@ -3532,6 +3536,10 @@ static inline int kiocb_set_rw_flags(struct kiocb *ki, rwf_t flags,
+ 		if (!(ki->ki_filp->f_mode & FMODE_CAN_ATOMIC_WRITE))
+ 			return -EOPNOTSUPP;
+ 	}
++	if (flags & RWF_UNCACHED) {
++		if (!(ki->ki_filp->f_op->fop_flags & FOP_UNCACHED))
++			return -EOPNOTSUPP;
++	}
+ 	kiocb_flags |= (__force int) (flags & RWF_SUPPORTED);
+ 	if (flags & RWF_SYNC)
+ 		kiocb_flags |= IOCB_DSYNC;
+diff --git a/include/uapi/linux/fs.h b/include/uapi/linux/fs.h
+index 753971770733..dc77cd8ae1a3 100644
+--- a/include/uapi/linux/fs.h
++++ b/include/uapi/linux/fs.h
+@@ -332,9 +332,13 @@ typedef int __bitwise __kernel_rwf_t;
+ /* Atomic Write */
+ #define RWF_ATOMIC	((__force __kernel_rwf_t)0x00000040)
  
- 	spin_lock(&mapping->host->i_lock);
-@@ -584,6 +584,23 @@ static int folio_launder(struct address_space *mapping, struct folio *folio)
- 	return mapping->a_ops->launder_folio(folio);
- }
++/* buffered IO that drops the cache after reading or writing data */
++#define RWF_UNCACHED	((__force __kernel_rwf_t)0x00000080)
++
+ /* mask of flags supported by the kernel */
+ #define RWF_SUPPORTED	(RWF_HIPRI | RWF_DSYNC | RWF_SYNC | RWF_NOWAIT |\
+-			 RWF_APPEND | RWF_NOAPPEND | RWF_ATOMIC)
++			 RWF_APPEND | RWF_NOAPPEND | RWF_ATOMIC |\
++			 RWF_UNCACHED)
  
-+int folio_unmap_invalidate(struct address_space *mapping, struct folio *folio,
-+			   gfp_t gfp)
-+{
-+	int ret;
-+
-+	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
-+
-+	if (folio_mapped(folio))
-+		unmap_mapping_folio(folio);
-+	BUG_ON(folio_mapped(folio));
-+
-+	ret = folio_launder(mapping, folio);
-+	if (!ret && !invalidate_complete_folio2(mapping, folio, gfp))
-+		return -EBUSY;
-+	return ret;
-+}
-+
- /**
-  * invalidate_inode_pages2_range - remove range of pages from an address_space
-  * @mapping: the address_space
-@@ -641,18 +658,8 @@ int invalidate_inode_pages2_range(struct address_space *mapping,
- 				folio_unlock(folio);
- 				continue;
- 			}
--			VM_BUG_ON_FOLIO(!folio_contains(folio, indices[i]), folio);
- 			folio_wait_writeback(folio);
--
--			if (folio_mapped(folio))
--				unmap_mapping_folio(folio);
--			BUG_ON(folio_mapped(folio));
--
--			ret2 = folio_launder(mapping, folio);
--			if (ret2 == 0) {
--				if (!invalidate_complete_folio2(mapping, folio))
--					ret2 = -EBUSY;
--			}
-+			ret2 = folio_unmap_invalidate(mapping, folio, GFP_KERNEL);
- 			if (ret2 < 0)
- 				ret = ret2;
- 			folio_unlock(folio);
+ #define PROCFS_IOCTL_MAGIC 'f'
+ 
 -- 
 2.45.2
 
