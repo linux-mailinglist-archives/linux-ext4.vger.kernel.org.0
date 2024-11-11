@@ -1,70 +1,73 @@
-Return-Path: <linux-ext4+bounces-5044-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5045-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 55B439C49FB
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 00:49:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6350F9C49FC
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 00:49:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B51C61F23392
-	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 23:49:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F17421F23455
+	for <lists+linux-ext4@lfdr.de>; Mon, 11 Nov 2024 23:49:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2B6D1C1AB6;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E21A81C1F13;
 	Mon, 11 Nov 2024 23:48:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="o0SGqj8W"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="1XtdPxEX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f175.google.com (mail-pf1-f175.google.com [209.85.210.175])
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20F69198A38
-	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 23:48:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFC411BD032
+	for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 23:48:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731368930; cv=none; b=BkpCFJ+JqrnlKoeG7ZPiafSIPVOcALIPr0tgniVk96OzM3j0LYfH4Fm9PnF0wtjQtm/Y2zMnuFjQbhfJ9ReFwy6iRuU+IgZGy5qQEiUfn/yVHd8En05fH3k2d3iegHrigrdnzG1Hfw9Wu6+R3+rQsS9GATkdMoEJ+Jz2B6rIXUI=
+	t=1731368930; cv=none; b=SiSpTWy1u9P+Qk7NDTEJQaYIdHvkmYiigYR7k2fstnAOFcpZIBV2fZ6zKB1UL3+ARKh9L5lAHQaEXWUhsJzSL1zG/8RVPPasrQUdQkzIeqlPqSATBaPXf6S3fKIzB4MO7TO0/ehjOeqU+2oktK1Zc7WtiLi2yOTQ5WDi1ZuaZi4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1731368930; c=relaxed/simple;
-	bh=u6zv4laTdZIRcz/cff/UpCCD3gIWZPSpqigelGUNTIE=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MGpe1e6+g+Xl5rIuUhhVEJjpZA0Atdb2UNbqG+jAnMGVWMzqTcOmI3LtCp2U9y8AcWN+rP6bbVoqAuOZq1ESCrv0aa74h8Qu8cdGMAgWfUvlDrVbzUVNCk5XYlSAuvva9qJ6ZNckAU9xOk2R/7idmGQTcxRb10zcd81BO1NYfIY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=o0SGqj8W; arc=none smtp.client-ip=209.85.210.175
+	bh=8sfKwyActgC+UFgrCv8AbW1Vz+K4ykiNjF4V6I33E+c=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=nfqqlluMGWYMLY0pd8u2v2gVO3Nj2tp4hO9135wp1UigMBKyHCGspgBnCseNy8Pgx63QFHCEI+FhNeTzNTU+xn6bCxQyeMNQMdVsZl1h2f99u4jQ/v+IsDgpxvmFE7ped37hdzJXPnYgZi8N9JAPvH0EO1whVctddr9YnAHw3mE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=1XtdPxEX; arc=none smtp.client-ip=209.85.210.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f175.google.com with SMTP id d2e1a72fcca58-71e61b47c6cso4610735b3a.2
-        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:48:46 -0800 (PST)
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-71e4c2e36daso3638432b3a.0
+        for <linux-ext4@vger.kernel.org>; Mon, 11 Nov 2024 15:48:48 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368926; x=1731973726; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=YYLsiY4xLzV9Ev2HH0qyOPkbZaBIuVD6O14DicI00XQ=;
-        b=o0SGqj8WK1Xg1DUt8awt99G/RLCuINezweNZARfxHrwnMVwwv2r/YhaYQyn9OiGdDU
-         zLKJjguD14bOa93TJ9Ni2SA0o98OE2F9n8s31Kc49wTOQhkrNd2r+vdfPeYxJFxqPDe0
-         Tz1nNiH8FlQMI9TmAUQ2wDThcRph5st2ybZ6V/Fc+FNZWP6QTPwNUWXVYRDA6syz1F01
-         SRIS3/Qobl3o1SgvX3iigJcOkRtICYD9/AfIJ42kofx0WO7FPPp9FhLWRtJPh4jYqSCU
-         iiamSZKTKlya31yLJ52kBfoSPa6jgTSF639TSOvvW2WWEUd9mFA1weDRg98hWXFYWEqt
-         HU8A==
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731368928; x=1731973728; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=QzX2IvmAROGBANn6HEgih/p/Joy2MXPhit7EzvqeXZU=;
+        b=1XtdPxEXJTmPsu32YnbH6YQeaTMAo+Ak38XEsETxOrV8Npg7jWx8/6GSBlZkGNTPgG
+         7DqJMZaJC1NtZLHip/no8SpalHLNny28xCpwp1BgXLGqth0JzVhKgbhw7YN9Bq3yTlQP
+         pyM8K/Yugg/Ii055VtI2mAnFh0JoCX97OdIUn3E1xfnnbPuIBwq6k2PHa2UN8l/EGHM1
+         VUjlmNAciQxi2SKh0TfDSzWVi9L0P8wt1zx/nduENXrEQfiE0AbHwwL2uP8/P+/pXmew
+         mOozAjra/akldPSVosyR+lmYBuC5GsqK6THkwaNA/mjw6477NUBP/WuuwINJclnK5aaU
+         0Z2w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731368926; x=1731973726;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YYLsiY4xLzV9Ev2HH0qyOPkbZaBIuVD6O14DicI00XQ=;
-        b=HtgfqpiRpd8/89o2/8hiMrgsEI5HTaFonHb6oT2bdDOD08Ep6cAHaTG2QLAa0aqfG2
-         DahyybKiroUOCbTelGM4l/TuYwyJvMMcxpKSIlJt4ZK4pb7eIzazsMu/RDkK5Fy9Y4Ye
-         lDDEWIrYPCfaRp2w0tb19HXKh5wHuRtF++eb+rYMLQxF7CZb4PUZzkgheS9eI/PXva+Y
-         8MpO+/SQ7he7LiIHXpBLfEH9Z7zFlV3Jlcu7RuKNZgNgYDbhc/jgB2dG+OMCUe5XPNiT
-         i5FCO3znCOESfiSSlNMW292dW+WEq/ebbCljkfDwmShwP8qs1FEN1d7W9HpZmjRuoCiJ
-         z4hA==
-X-Forwarded-Encrypted: i=1; AJvYcCU0mv1GojyjzZOjq5gV3hUGPzaKIOtCfzf72m3PvesriOx32jSuJg26pvqrH+n4sDPxmXG77IXa/xuR@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz8qnWktt0N4WDDlYoSiQPDVbzf1iE0v+R+x1JG3UIoLqDHSq1N
-	uI+cfQBZt/fXtvyAlKDp4IDneoIcTylObjnNAdaBx54sdYycpfX7I+sMaptuPQA=
-X-Google-Smtp-Source: AGHT+IEOnqlyg7Q+iX7fiQJ8AI28/+0i7NkDDQxzm0hQvMnhJKygejIvPH0gTjJTu2JTP1X7D+h51g==
-X-Received: by 2002:a05:6a00:b4d:b0:71e:5150:61d6 with SMTP id d2e1a72fcca58-7241336888cmr19984342b3a.21.1731368926283;
-        Mon, 11 Nov 2024 15:48:46 -0800 (PST)
+        d=1e100.net; s=20230601; t=1731368928; x=1731973728;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=QzX2IvmAROGBANn6HEgih/p/Joy2MXPhit7EzvqeXZU=;
+        b=UKUBRzhhTIM2sfSUE5LK9tbTcDnkV4121bJIus6a2N9V0oRPfZjPk7xekVYqaIA625
+         LA1+C95Yncb+H9QhFyL24J/xjm2e1idkePUey/KOlqGNMTT2zRHwa0NBHuIUhDqWbC5V
+         C600O1wmLNSp802qrVZvBqKpSUUM9bmMZtZIZcDwaE5gaJy2bpy+i6t4RNEWZu+CbyE/
+         T5lv3ZiMLggagUg2oT5EsbLCeua6ZaSp4BS1k8LF+UCoN3VzDYg0I1YvbCfqOZ/cqnto
+         vy7GOgXaepWqAm8d0wYgb3IVeAuBy4ImgYOItO8Oxl2vmBDmuvOFxyEM/dEQKEzuXByH
+         zQgQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVDotZ9vXGmU9sOijvmrFOuaH3OHnUfCziL0Y4bCrixUwHxwhi1ct+8NyKWsUV6rvGU8mAArFssVCPB@vger.kernel.org
+X-Gm-Message-State: AOJu0YxWk7iLshaBKDHcFv9mSqtjB7xUm3qoKRH6TdXMzhzXi5GLMv0X
+	cpiJLeYbpPxfTSS7C4e54CsBbJJQmudCaD8drY9PO1Qsw2TfRFF/ddUmBBt/Ci4ZVZaxjDL/i9D
+	QlUY=
+X-Google-Smtp-Source: AGHT+IFPjohwvXk7XeJJhxpW4zvvN4HHe41fbVtZtFFrzITrw1kyHBpDFfhvHRsSHEkN13Wz8BpfRA==
+X-Received: by 2002:a05:6a20:12ce:b0:1d9:15b2:83e with SMTP id adf61e73a8af0-1dc23322093mr23031517637.7.1731368928327;
+        Mon, 11 Nov 2024 15:48:48 -0800 (PST)
 Received: from localhost.localdomain ([198.8.77.157])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.48.44
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724078a7ee9sm10046057b3a.64.2024.11.11.15.48.46
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 11 Nov 2024 15:48:45 -0800 (PST)
+        Mon, 11 Nov 2024 15:48:47 -0800 (PST)
 From: Jens Axboe <axboe@kernel.dk>
 To: linux-mm@kvack.org,
 	linux-fsdevel@vger.kernel.org
@@ -75,11 +78,14 @@ Cc: hannes@cmpxchg.org,
 	kirill@shutemov.name,
 	linux-btrfs@vger.kernel.org,
 	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org
-Subject: [PATCHSET v3 0/16] Uncached buffered IO
-Date: Mon, 11 Nov 2024 16:37:27 -0700
-Message-ID: <20241111234842.2024180-1-axboe@kernel.dk>
+	linux-xfs@vger.kernel.org,
+	Jens Axboe <axboe@kernel.dk>
+Subject: [PATCH 01/16] mm/filemap: change filemap_create_folio() to take a struct kiocb
+Date: Mon, 11 Nov 2024 16:37:28 -0700
+Message-ID: <20241111234842.2024180-2-axboe@kernel.dk>
 X-Mailer: git-send-email 2.45.2
+In-Reply-To: <20241111234842.2024180-1-axboe@kernel.dk>
+References: <20241111234842.2024180-1-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -88,130 +94,74 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Hi,
+Rather than pass in both the file and position directly from the kiocb,
+just take a struct kiocb instead. While doing so, move the ki_flags
+checking into filemap_create_folio() as well. In preparation for actually
+needing the kiocb in the function.
 
-(A bit of version confusion, but this follows v4 -> v2 -> v3, as v4 was
- a relic of the 5 year old version. Next will be v5 and we should be
- consistent again)
+No functional changes in this patch.
 
-5 years ago I posted patches adding support for RWF_UNCACHED, as a way
-to do buffered IO that isn't page cache persistent. The approach back
-then was to have private pages for IO, and then get rid of them once IO
-was done. But that then runs into all the issues that O_DIRECT has, in
-terms of synchronizing with the page cache.
+Signed-off-by: Jens Axboe <axboe@kernel.dk>
+---
+ mm/filemap.c | 17 +++++++++--------
+ 1 file changed, 9 insertions(+), 8 deletions(-)
 
-So here's a new approach to the same concent, but using the page cache
-as synchronization. That makes RWF_UNCACHED less special, in that it's
-just page cache IO, except it prunes the ranges once IO is completed.
-
-Why do this, you may ask? The tldr is that device speeds are only
-getting faster, while reclaim is not. Doing normal buffered IO can be
-very unpredictable, and suck up a lot of resources on the reclaim side.
-This leads people to use O_DIRECT as a work-around, which has its own
-set of restrictions in terms of size, offset, and length of IO. It's
-also inherently synchronous, and now you need async IO as well. While
-the latter isn't necessarily a big problem as we have good options
-available there, it also should not be a requirement when all you want
-to do is read or write some data without caching.
-
-Even on desktop type systems, a normal NVMe device can fill the entire
-page cache in seconds. On the big system I used for testing, there's a
-lot more RAM, but also a lot more devices. As can be seen in some of the
-results in the following patches, you can still fill RAM in seconds even
-when there's 1TB of it. Hence this problem isn't solely a "big
-hyperscaler system" issue, it's common across the board.
-
-Common for both reads and writes with RWF_UNCACHED is that they use the
-page cache for IO. Reads work just like a normal buffered read would,
-with the only exception being that the touched ranges will get pruned
-after data has been copied. For writes, the ranges will get writeback
-kicked off before the syscall returns, and then writeback completion
-will prune the range. Hence writes aren't synchronous, and it's easy to
-pipeline writes using RWF_UNCACHED. Folios that aren't instantiated by
-RWF_UNCACHED IO are left untouched. This means you that uncached IO
-will take advantage of the page cache for uptodate data, but not leave
-anything it instantiated/created in cache.
-
-File systems need to support this. The patches add support for the
-generic filemap helpers, and for iomap. Then ext4 and XFS are marked as
-supporting it. The last patch adds support for btrfs as well, lightly
-tested. The read side is already done by filemap, only the write side
-needs a bit of help. The amount of code here is really trivial, and the
-only reason the fs opt-in is necessary is to have an RWF_UNCACHED IO
-return -EOPNOTSUPP just in case the fs doesn't use either the generic
-paths or iomap. Adding "support" to other file systems should be
-trivial, most of the time just a one-liner adding FOP_UNCACHED to the
-fop_flags in the file_operations struct.
-
-Performance results are in patch 8 for reads and patch 10 for writes,
-with the tldr being that I see about a 65% improvement in performance
-for both, with fully predictable IO times. CPU reduction is substantial
-as well, with no kswapd activity at all for reclaim when using uncached
-IO.
-
-Using it from applications is trivial - just set RWF_UNCACHED for the
-read or write, using pwritev2(2) or preadv2(2). For io_uring, same
-thing, just set RWF_UNCACHED in sqe->rw_flags for a buffered read/write
-operation. And that's it.
-
-Patches 1..7 are just prep patches, and should have no functional
-changes at all. Patch 8 adds support for the filemap path for
-RWF_UNCACHED reads, patch 10 adds support for filemap RWF_UNCACHED
-writes, and patches 12..16 adds ext4, xfs/iomap, and btrfs support.
-
-I ran this through xfstests, and it found some of the issue listed as
-fixed below. This posted version passes the whole generic suite of
-xfstests. The xfstests patch is here:
-
-https://lore.kernel.org/linux-mm/3da73668-a954-47b9-b66d-bb2e719f5590@kernel.dk/
-
-And git tree for the patches is here:
-
-https://git.kernel.dk/cgit/linux/log/?h=buffered-uncached.6
-
-
- fs/btrfs/bio.c                 |   4 +-
- fs/btrfs/bio.h                 |   2 +
- fs/btrfs/extent_io.c           |   8 ++-
- fs/btrfs/file.c                |  10 +++-
- fs/ext4/ext4.h                 |   1 +
- fs/ext4/file.c                 |   2 +-
- fs/ext4/inline.c               |   7 ++-
- fs/ext4/inode.c                |  18 +++++-
- fs/ext4/page-io.c              |  28 +++++----
- fs/iomap/buffered-io.c         |  15 ++++-
- fs/xfs/xfs_aops.c              |   7 ++-
- fs/xfs/xfs_file.c              |   4 +-
- include/linux/fs.h             |  10 +++-
- include/linux/iomap.h          |   4 +-
- include/linux/page-flags.h     |   5 ++
- include/linux/pagemap.h        |  34 +++++++++++
- include/trace/events/mmflags.h |   3 +-
- include/uapi/linux/fs.h        |   6 +-
- mm/filemap.c                   | 101 ++++++++++++++++++++++++++++-----
- mm/readahead.c                 |  22 +++++--
- mm/swap.c                      |   2 +
- mm/truncate.c                  |  33 ++++++-----
- 22 files changed, 262 insertions(+), 64 deletions(-)
-
-Since v2
-- Add patch for btrfs to work on the write side, read side was already
-  covered by the generic filemap changes. Now btrfs is FOP_UNCACHED
-  enabled as well.
-- Add folio_unmap_invalidate() helper, and use that from both the core
-  code and the uncached handling.
-- Add filemap_uncached_read() helper to encapsulate the uncached
-  handling on the read side.
-- Enable handling of invalidation of mapped folios
-- Clear uncached in looked up folio, if FGP_UNCACHED isn't set. For this
-  case, there are competing non-uncached page cache users and the folio
-  should not get invalidated.
-- Various little tweaks or comments.
-- Ran fsstress with read/write uncached support, no issues seen
-- Fixup a commit message
-- Rebase on 6.12-rc7
-
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 56fa431c52af..91974308e9bf 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -2460,15 +2460,17 @@ static int filemap_update_page(struct kiocb *iocb,
+ 	return error;
+ }
+ 
+-static int filemap_create_folio(struct file *file,
+-		struct address_space *mapping, loff_t pos,
+-		struct folio_batch *fbatch)
++static int filemap_create_folio(struct kiocb *iocb,
++		struct address_space *mapping, struct folio_batch *fbatch)
+ {
+ 	struct folio *folio;
+ 	int error;
+ 	unsigned int min_order = mapping_min_folio_order(mapping);
+ 	pgoff_t index;
+ 
++	if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_WAITQ))
++		return -EAGAIN;
++
+ 	folio = filemap_alloc_folio(mapping_gfp_mask(mapping), min_order);
+ 	if (!folio)
+ 		return -ENOMEM;
+@@ -2487,7 +2489,7 @@ static int filemap_create_folio(struct file *file,
+ 	 * well to keep locking rules simple.
+ 	 */
+ 	filemap_invalidate_lock_shared(mapping);
+-	index = (pos >> (PAGE_SHIFT + min_order)) << min_order;
++	index = (iocb->ki_pos >> (PAGE_SHIFT + min_order)) << min_order;
+ 	error = filemap_add_folio(mapping, folio, index,
+ 			mapping_gfp_constraint(mapping, GFP_KERNEL));
+ 	if (error == -EEXIST)
+@@ -2495,7 +2497,8 @@ static int filemap_create_folio(struct file *file,
+ 	if (error)
+ 		goto error;
+ 
+-	error = filemap_read_folio(file, mapping->a_ops->read_folio, folio);
++	error = filemap_read_folio(iocb->ki_filp, mapping->a_ops->read_folio,
++					folio);
+ 	if (error)
+ 		goto error;
+ 
+@@ -2551,9 +2554,7 @@ static int filemap_get_pages(struct kiocb *iocb, size_t count,
+ 		filemap_get_read_batch(mapping, index, last_index - 1, fbatch);
+ 	}
+ 	if (!folio_batch_count(fbatch)) {
+-		if (iocb->ki_flags & (IOCB_NOWAIT | IOCB_WAITQ))
+-			return -EAGAIN;
+-		err = filemap_create_folio(filp, mapping, iocb->ki_pos, fbatch);
++		err = filemap_create_folio(iocb, mapping, fbatch);
+ 		if (err == AOP_TRUNCATED_PAGE)
+ 			goto retry;
+ 		return err;
 -- 
-Jens Axboe
+2.45.2
 
 
