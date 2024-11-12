@@ -1,131 +1,135 @@
-Return-Path: <linux-ext4+bounces-5108-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5111-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B62C9C5FC4
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 19:01:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67B419C6014
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 19:15:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D76591F257B0
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:01:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1D8F31F24F06
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 283C421A6E5;
-	Tue, 12 Nov 2024 17:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 392AC21833A;
+	Tue, 12 Nov 2024 18:14:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="j18VGQM3"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="G2QRstQb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5070C21A4B6
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 17:56:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32AF1216DF6
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 18:14:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731434217; cv=none; b=ecHlorMlRAgcv6NTf3M4GJ03CJIZuMxlIu9XC88SyvbMODeNdqmLjcXBU+wmrITY3PvXS3nA4I3tb08t25khgbTVaI262h2WSIpYM5pXB6Cjic/CLYuX8h6lgK3SzXdz6Y8mWCnDGc4mISQKUiJTsTRypEVeRiRNLjv5va40dsg=
+	t=1731435274; cv=none; b=Vz7/kduLJyESZ3Pf/56MtaAcTgW8KQVMoIxwlo8OUgkld1AECZgTJp59DicXE5S6I21tlm1+PpW9ebTRuypui+Alj1PJpd2qIvovSFJwUYBscBKMD60o/Nd5N/B5zjTrZvfZkbx3iC38eVpqYAqyi899JtfkkK9CexnHOr2UfeY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731434217; c=relaxed/simple;
-	bh=6I0DlDU7r6h299w7wCYMACFg3R+68ox0OBCaPPO6OWw=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Wag4PhlXMdD0y8CC4OfFEH9pLH5xAnFx+yq/P2zQQGSwyPov2zcyHE/1immqOtpZaf3LBXimbLRM9ZNBeSKjWxiFaHOQ3olpOfqt889eOahya0t2a+gqBV4VnL1aJ6yvMXSG6TaOmb7LWpoSxkWin58p7YH/lK4RL+pUyQaOwQs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=j18VGQM3; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-6ea85f7f445so59639187b3.0
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 09:56:56 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731434215; x=1732039015; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SVlCssk7TvFYg+mPz0+epJww2XrJywW98H8fNg6oZ9s=;
-        b=j18VGQM3VALd1FPSDSra8F/bETEhAgljXkXreIriBZwHMoZHqvsHqXh+DL/yfnASy2
-         tazeYr4+Rt+6PDTeAQgPJDHSlyiWYiHAM3WTgDP07GCIRCeUr8sONmYt+apS1ZPZ0oGi
-         3IKMK/QA8W32klu0VROVgGnI7jxko1c9dDY4fAGU+7TyiJQ8BNDJfcUGl4/WWqHSiM6b
-         IDmrMZSC9vJ/1ye5B4f6RwoRUh4x8p1QqDxZIzOHuGFqmVytD4Qd7HqDG3aqbH5JQ/y1
-         ag1CGDx1Ax2gxVHAYVR9iasn4GUpjuHUIH+FzApo9ydNwMmqNUYo6jyxKd5iZVisBRMz
-         lXvA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731434215; x=1732039015;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SVlCssk7TvFYg+mPz0+epJww2XrJywW98H8fNg6oZ9s=;
-        b=UjsNhL7SGTft84DyVp62VuTQdjgUGy/0Cb0P1Jy0bMlhkNvzKS1A31fZk7n97C5ymg
-         RAV1KNY8Ut4FqsCtwG1NQZfez4rm2VpM28OmuYOecfYKn4aIt0KBMoBTKAPvozMeZvcW
-         nGA4funpvWhGq6C7o6WL8PpvqTMWhxMgX2xclM1kHSAoo0WoPWRoYpp7+aGWnIbehPfy
-         rhxow/740SgXyQL3djp9CFBCHtj38tU4PiZswTemex41aJPR4UqqvtJ99ZFl/xrJVLiy
-         vc58hhxKoUQMVKVyWQytxEAuT5nwjdS9lm2pO9FVEyhCyJhtxDs34pd14nXmzBc72NqF
-         bdWw==
-X-Forwarded-Encrypted: i=1; AJvYcCWJ0w/xI6DvKm3ZZgexEusf6fYgWnj7q/BInNmBF25vJBUXXb8P7ccgENRjczjptNreaEC0AiKRmA5V@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx3big8dP3bq6TMs3DKuUzUoOERZQBZxrICK/6Sl/gMVd/SoqHv
-	tbsQQxE2CgX4EMrnrjeq3PateUnint142eKUVBtxwTJXLYCzW6uBECMgY3yVzvU=
-X-Google-Smtp-Source: AGHT+IHRWQQqMmmNmJOTp/8rWDSoFWHv3EcV7+6jsx99WLy4Go67YPaRFk01hHzbJnpPfWcpjoX+9Q==
-X-Received: by 2002:a05:690c:7448:b0:6dd:e837:3596 with SMTP id 00721157ae682-6eaddd9703amr170632707b3.14.1731434215357;
-        Tue, 12 Nov 2024 09:56:55 -0800 (PST)
-Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6eace8f0c5dsm26584767b3.41.2024.11.12.09.56.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2024 09:56:54 -0800 (PST)
-From: Josef Bacik <josef@toxicpanda.com>
-To: kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org,
-	jack@suse.cz,
-	amir73il@gmail.com,
-	brauner@kernel.org,
-	torvalds@linux-foundation.org,
-	linux-xfs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH v7 17/18] btrfs: disable defrag on pre-content watched files
-Date: Tue, 12 Nov 2024 12:55:32 -0500
-Message-ID: <6d9ff819edb6df5583844c26169dc6ddd471316d.1731433903.git.josef@toxicpanda.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <cover.1731433903.git.josef@toxicpanda.com>
-References: <cover.1731433903.git.josef@toxicpanda.com>
+	s=arc-20240116; t=1731435274; c=relaxed/simple;
+	bh=cTA/3qBaVbffUGaQQs3FfHcFcnnvR+nC1eIweZ0ALvc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Er5qSQGuZFdjLyIdKkGPHTOe5dGvnS/lE615BqOwkd7kPDlacpAtQAFv0ookRxssiJG5tpkIf2T4IOvh6orrfbTOERGXABYJs/OwpEGVJpd67fBZ6SDmXayIsMxj7j8U6zA7Vs/1WWwc3ApUs9P4iJAT2ieIhpMuljjAwC5P6fk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=G2QRstQb; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731435272;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=NmxhVs+P1hJWoZYSTyfdVSHjqXEZNLNo4iVdoO1zihw=;
+	b=G2QRstQbkKmfZI5SzmDs22aIIfRJB1+YNX7W1oJn7WircDEChDUlXxDsG7vQrsS5eULwys
+	BbkiM93TdnyFPrnoopRFUKwbG+PVpWkfuR4yeWw/C7CECv+ZibG1Z+bAJOls5KMl70b+67
+	U3NnKVtRz9FEsx0W3RxjtU4mvNftNJY=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-441-542WbpeqPuywkE7leFyq5g-1; Tue,
+ 12 Nov 2024 13:14:26 -0500
+X-MC-Unique: 542WbpeqPuywkE7leFyq5g-1
+X-Mimecast-MFC-AGG-ID: 542WbpeqPuywkE7leFyq5g
+Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 5F77419560B1;
+	Tue, 12 Nov 2024 18:14:17 +0000 (UTC)
+Received: from bfoster (unknown [10.22.80.120])
+	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id 238491956086;
+	Tue, 12 Nov 2024 18:14:14 +0000 (UTC)
+Date: Tue, 12 Nov 2024 13:15:47 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
+	clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
+	kirill@shutemov.name, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 13/16] iomap: make buffered writes work with RWF_UNCACHED
+Message-ID: <ZzObU9CkhKEcRgc5@bfoster>
+References: <20241111234842.2024180-1-axboe@kernel.dk>
+ <20241111234842.2024180-14-axboe@kernel.dk>
+ <ZzOEVwWpGEaq6wE7@bfoster>
+ <aeb58f3d-67b2-4df3-abc7-49a2e9bb8270@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <aeb58f3d-67b2-4df3-abc7-49a2e9bb8270@kernel.dk>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
 
-We queue up inodes to be defrag'ed asynchronously, which means we do not
-have their original file for readahead.  This means that the code to
-skip readahead on pre-content watched files will not run, and we could
-potentially read in empty pages.
+On Tue, Nov 12, 2024 at 10:16:10AM -0700, Jens Axboe wrote:
+> On 11/12/24 9:37 AM, Brian Foster wrote:
+> > On Mon, Nov 11, 2024 at 04:37:40PM -0700, Jens Axboe wrote:
+> >> Add iomap buffered write support for RWF_UNCACHED. If RWF_UNCACHED is
+> >> set for a write, mark the folios being written with drop_writeback. Then
+> > 
+> > s/drop_writeback/uncached/ ?
+> 
+> Ah indeed, guess that never got changed. Thanks, will fix that in the
+> commit message.
+> 
+> > BTW, this might be getting into wonky "don't care that much" territory,
+> > but something else to be aware of is that certain writes can potentially
+> > change pagecache state as a side effect outside of the actual buffered
+> > write itself.
+> > 
+> > For example, xfs calls iomap_zero_range() on write extension (i.e. pos >
+> > isize), which uses buffered writes and thus could populate a pagecache
+> > folio without setting it uncached, even if done on behalf of an uncached
+> > write.
+> > 
+> > I've only made a first pass and could be missing some details, but IIUC
+> > I _think_ this means something like writing out a stream of small,
+> > sparse and file extending uncached writes could actually end up behaving
+> > more like sync I/O. Again, not saying that's something we really care
+> > about, just raising it in case it's worth considering or documenting..
+> 
+> No that's useful info, I'm not really surprised that there would still
+> be cases where UNCACHED goes unnoticed. In other words, I'd be surprised
+> if the current patches for eg xfs/ext4 cover all the cases where new
+> folios are created and should be marked as UNCACHED of IOCB_UNCACHED is
+> set in the iocb.
+> 
+> I think those can be sorted out or documented as we move forward.
+> UNCACHED is really just a hint - the kernel should do its best to not
+> have permanent folios for this IO, but there are certainly cases where
+> it won't be honored if you're racing with regular buffered IO or mmap.
+> For the case above, sounds like we could cover that, however, and
+> probably should.
+> 
 
-Handle this corner case by disabling defrag on files that are currently
-being watched for pre-content events.
+Ok. I suppose you could plumb the iocb state through the zero range call
+as well, but given the description/semantics I wouldn't blame you if you
+wanted to leave that for a followon improvement. Thanks for the
+explanation.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
----
- fs/btrfs/ioctl.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+Brian
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index c9302d193187..1e5913f276be 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2635,6 +2635,15 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
- 			goto out;
- 		}
- 
-+		/*
-+		 * Don't allow defrag on pre-content watched files, as it could
-+		 * populate the page cache with 0's via readahead.
-+		 */
-+		if (fsnotify_file_has_pre_content_watches(file)) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
-+
- 		if (argp) {
- 			if (copy_from_user(&range, argp, sizeof(range))) {
- 				ret = -EFAULT;
--- 
-2.43.0
+> -- 
+> Jens Axboe
+> 
 
 
