@@ -1,104 +1,105 @@
-Return-Path: <linux-ext4+bounces-5072-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5073-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A39EE9C518F
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 10:12:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5360D9C5215
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 10:33:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 642ED282FF9
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 09:12:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1354728776D
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 09:33:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A6F420D504;
-	Tue, 12 Nov 2024 09:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC2DC20E021;
+	Tue, 12 Nov 2024 09:31:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="buAfCkEp";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XsDobdut"
+	dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b="xjBcNWO9";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="nlcp8EFB"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from fout-b2-smtp.messagingengine.com (fout-b2-smtp.messagingengine.com [202.12.124.145])
+Received: from fout-b3-smtp.messagingengine.com (fout-b3-smtp.messagingengine.com [202.12.124.146])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35E64209F4A;
-	Tue, 12 Nov 2024 09:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6935820DD7B;
+	Tue, 12 Nov 2024 09:31:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=202.12.124.146
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731402746; cv=none; b=oSplU/HCj0G425WPwwaurYye8CybOaeKHIuJ+5uTxvhJMasY3L2wKvLI3xcI5Is9anBtg6ZxxxOAx15+tMHGajx0lUUNeAq1TK5H3EWQ8QKRZssKye2XdPKlgCpa9KGY2ng88qJPkcG6esiP+mAQCCK9ZPcM9iazsmcm3YtWNbQ=
+	t=1731403919; cv=none; b=LkJ5ykhdxB2+F4rskPHNVD/P0ut5Ewj1za0uF2iUuP6WlID3LEZisMiM7YwyBN3j2WJgOAogl74p0MVLKveju1Cep+uFweGieW4LCGURflHxvCVoRv7SO2WJiHvB7MYFhTsv8nw++FGfegT1Z19vreapWaMFM3DCpmt/iQjnH5g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731402746; c=relaxed/simple;
-	bh=6JtaLLQ/v3VECtHaMsXqeUBPZz842Chv6jk9Tfb+EaY=;
+	s=arc-20240116; t=1731403919; c=relaxed/simple;
+	bh=Ebx2GMsXRC20bvaOcUXZ1jrU+HoF9xODvZsps2HiEA0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f9m4rroJNU9YLkw9UmkSGuXsRsA1+2y7SdbjqAtBm/NbZpuJQGWFySbOsICv5I9hiP6+f/2QkRqMdnKEEZ5+M2J/HNGOK5uZhkebHVXmXHVTDd/8ubGcw9Y/AzWYFbpKTagvO604HzE5sa4l6KmBZdO3rNeITh1lgkvDXv8je4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=buAfCkEp; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XsDobdut; arc=none smtp.client-ip=202.12.124.145
+	 Content-Type:Content-Disposition:In-Reply-To; b=hF8owf7BFktzEc/9ypqPI132Yvnf9JVhU4P6rVxBA2hj7tNh9sI7NLnZ7NeY2KQ/J/OXYbdXp2bHozeG/HZbbo1nUiJWPpM0xOztQVUF9Gk2FbPuG5K1gwDT0voUFKheo4Vf6aTeSTjfDiY7a/VKxUISYRQDKSq9ZYBqoZJo+QY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name; spf=pass smtp.mailfrom=shutemov.name; dkim=pass (2048-bit key) header.d=shutemov.name header.i=@shutemov.name header.b=xjBcNWO9; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=nlcp8EFB; arc=none smtp.client-ip=202.12.124.146
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=shutemov.name
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shutemov.name
-Received: from phl-compute-04.internal (phl-compute-04.phl.internal [10.202.2.44])
-	by mailfout.stl.internal (Postfix) with ESMTP id 286331140182;
-	Tue, 12 Nov 2024 04:12:23 -0500 (EST)
+Received: from phl-compute-03.internal (phl-compute-03.phl.internal [10.202.2.43])
+	by mailfout.stl.internal (Postfix) with ESMTP id 23AC211401E3;
+	Tue, 12 Nov 2024 04:31:56 -0500 (EST)
 Received: from phl-mailfrontend-02 ([10.202.2.163])
-  by phl-compute-04.internal (MEProxy); Tue, 12 Nov 2024 04:12:23 -0500
+  by phl-compute-03.internal (MEProxy); Tue, 12 Nov 2024 04:31:56 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=shutemov.name;
 	 h=cc:cc:content-type:content-type:date:date:from:from
 	:in-reply-to:in-reply-to:message-id:mime-version:references
-	:reply-to:subject:subject:to:to; s=fm2; t=1731402743; x=
-	1731489143; bh=LviMUWp4Is8Fy/dVsm0aEbYiR7YOyd/oz5oNPRf4lTg=; b=b
-	uAfCkEpImy5cjaoLEU5eFxh7p2wxjkFDdmQeReof5SL3TVEn6WausxBEwpiCioBo
-	9jLsc83YaFd6ouBNhr6dG2qtVHuHM9P83YnVoqwFX+M77bReKCHcCnhS5I9P60fV
-	bnSllq+u7p0s8XWiwQpIxFvr1BNFKnnSxZeUhEXsH2iFm53RTPm+AkZFu9ZAqJv6
-	F+8WJm0kjoPip4QRqHA9fNJ5jjV4r1QRNxQdwKXuUnwoVKx9AycrtbKrGB10lSqi
-	BGVWJFWm3dhJwQ2jpQC9MSuzvaS1d0NUqyhaNGwhvbv8hkcir6TQsyG01fP0FKXg
-	P5GeCF6IShcnpG9tOyX0g==
+	:reply-to:subject:subject:to:to; s=fm2; t=1731403915; x=
+	1731490315; bh=FNlD3yPiuWbAqLIV7df6vsprp48I6w6nBmNGvoAwP9I=; b=x
+	jBcNWO9IjhEwVG69snNMP2cVKfiSF+T/WgMRoXX9WM2UOkn4xBbFryL9MEIZOZmr
+	dSgQq2vyN9mGmE0uirM3PCswTym/cB0TwQcULav1Dt/ZLcc3/nkhG6oGx0HW9cPF
+	e9CnR1RPAjYbc9BTUdw5CcrRihrlfNHrJrSic4SOhjhzDjGhkn99J9mBw5Po5kMN
+	5s0IXX8uRR7+vcuBHR/+ksxX3/a8w5gjCKEvc9Wwq/8FMvIU334N4o3HA95A7DuQ
+	hPtRQO6Ayy+jYJk86DE+h8o3FNxmxcbmjEQVBOF/wRytPKYWk/gMGmuJ+6nHh18H
+	5Pi/wL4Hg+VT8vVc2cg0Q==
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
 	messagingengine.com; h=cc:cc:content-type:content-type:date:date
 	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
 	:message-id:mime-version:references:reply-to:subject:subject:to
 	:to:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm3; t=
-	1731402743; x=1731489143; bh=LviMUWp4Is8Fy/dVsm0aEbYiR7YOyd/oz5o
-	NPRf4lTg=; b=XsDobdutrRH1T1/TltivI79Y3Cb8DNBZBUZcxIIGJJWZaElkO4Y
-	FCcDgGwaQPZUanAndjuGtWBOXjJjRobSmBB2vUkVccr0woNlj3uEWKNqmUBx/CdC
-	E3cLbAPQ53KooZIhHEX/xZeBLDgbiJR/Tuq1oauzkvXAXhXpgZBUKQVKVAZ/9Kub
-	qdrzYGZV31kDUp4zEKITuDodbvF+QBMmlHlBxeXMn5b/QWJG5UEBIlBXqhobFLPI
-	VpXJGICsuF+J6IkaNCsvE/AcQzNOZPY2zRHUIy6soIugOElMdTH2eJ6k7mEzdOHl
-	t1kyF8v5OgvV0l9fOfdaR4OTv716fPGJQuA==
-X-ME-Sender: <xms:9hszZ9AXcvesEPT2Ac1yYleRPxob8aOMB3S6M58G-1oRTl1sWkvqZw>
-    <xme:9hszZ7gfr3hv9PsiOsH2LMFjqHSxgcSp4YaDnEPMxW8GeOPEubdrLiMP7APTcwkx0
-    j7d3fYcS7z5eZIx5m0>
-X-ME-Received: <xmr:9hszZ4kpEH7hl8qKrI1nRGP3bBT53kApJN2n7HjRvUo6j7_YZ-IBpI4YqRLLZp887jh-_Q>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudefgdduvdekucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdggtfgfnhhsuhgsshgtrhhisggvpdfu
-    rfetoffkrfgpnffqhgenuceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnh
-    htshculddquddttddmnecujfgurhepfffhvfevuffkfhggtggujgesthdtsfdttddtvden
-    ucfhrhhomhepfdfmihhrihhllhcutedrucfuhhhuthgvmhhovhdfuceokhhirhhilhhlse
-    hshhhuthgvmhhovhdrnhgrmhgvqeenucggtffrrghtthgvrhhnpeffvdevueetudfhhfff
-    veelhfetfeevveekleevjeduudevvdduvdelteduvefhkeenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehkihhrihhllhesshhhuhhtvghmohhv
-    rdhnrghmvgdpnhgspghrtghpthhtohepuddtpdhmohguvgepshhmthhpohhuthdprhgtph
-    htthhopegrgigsohgvsehkvghrnhgvlhdrughkpdhrtghpthhtoheplhhinhhugidqmhhm
-    sehkvhgrtghkrdhorhhgpdhrtghpthhtoheplhhinhhugidqfhhsuggvvhgvlhesvhhgvg
-    hrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehhrghnnhgvshestghmphigtghhghdr
-    ohhrghdprhgtphhtthhopegtlhhmsehmvghtrgdrtghomhdprhgtphhtthhopehlihhnuh
-    igqdhkvghrnhgvlhesvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopeifihhl
-    lhihsehinhhfrhgruggvrggurdhorhhgpdhrtghpthhtoheplhhinhhugidqsghtrhhfsh
-    esvhhgvghrrdhkvghrnhgvlhdrohhrghdprhgtphhtthhopehlihhnuhigqdgvgihtgees
-    vhhgvghrrdhkvghrnhgvlhdrohhrgh
-X-ME-Proxy: <xmx:9hszZ3wxYo-EonlUCaSna0xEvY9Ye-it7EF5_DeUkCfk-vTYmJbA-g>
-    <xmx:9hszZyQ-2Kf278mXEJiFImXvd0sRH-vBI_GlHrNCBIOd_xBb7YPqbA>
-    <xmx:9hszZ6Zp_cC09g1441JPyU_dulG9M_TVwhc7SlgbsLh91Mkw_TN7ig>
-    <xmx:9hszZzSxdqRUEs-SSCOGHa9YOoY3BM7n51A20v7kTETCDNpl5s7IcA>
-    <xmx:9xszZ3KhGoeFXQWiZqiR5dKy_gf-bAqGpjBDmvrCYSz0CEgR3yJVMfw2>
+	1731403915; x=1731490315; bh=FNlD3yPiuWbAqLIV7df6vsprp48I6w6nBmN
+	GvoAwP9I=; b=nlcp8EFBp3zKT6lrkjB1fbLOxMHHB8nQRmAPaInKCvSSbumtsur
+	GrjU7DBjELcgTStMHU3tgHquiS7xFPcNTsDuZuZvUA5l2nbwuMaEoYZzxVZbQKRN
+	Ay/rJnoFcTZ091nSErflIkpd67cj74epKCTmvMl4zX6xTz4MBTuXzjdonNFINvjI
+	UeVba9Y3PgxsFtCXDPICKg2z7+aaZRoaSBaC4sTvoUBSFhkH74zRX41p0OZeszey
+	IEsod7+bFCWmtM4S+HVLR771UzfXMpmNw5ctLLH5Xt51vROn/MC4VkGDag6lBu29
+	dmYzbWOHbbL5ssZwDD/53ebCLavyVgPTujw==
+X-ME-Sender: <xms:iyAzZ91xTfF_hYxgovCuiN6yTSDKfknMpfnQZatQnaiYw0-EPyOkrQ>
+    <xme:iyAzZ0El-Dedh0Hh-oKli7rD8aS1zsLRDurV_O8J43U1EgQFCzr0rVuWZ8erS0Qay
+    ZV2298N8rv7pTUiN3s>
+X-ME-Received: <xmr:iyAzZ96abHMMjsPOz3Hw9fGndyoDzBzjqjpNKXSd99o3oc-axUadHylKUchQqSt1-EbpNQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgeefuddrudeggddtvdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpggftfghnshhusghstghrihgsvgdpuffr
+    tefokffrpgfnqfghnecuuegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnth
+    hsucdlqddutddtmdenucfjughrpeffhffvvefukfhfgggtuggjsehttdfstddttddvnecu
+    hfhrohhmpedfmfhirhhilhhlucetrdcuufhhuhhtvghmohhvfdcuoehkihhrihhllhessh
+    hhuhhtvghmohhvrdhnrghmvgeqnecuggftrfgrthhtvghrnhepffdvveeuteduhffhffev
+    lefhteefveevkeelveejudduvedvuddvleetudevhfeknecuvehluhhsthgvrhfuihiivg
+    eptdenucfrrghrrghmpehmrghilhhfrhhomhepkhhirhhilhhlsehshhhuthgvmhhovhdr
+    nhgrmhgvpdhnsggprhgtphhtthhopedutddpmhhouggvpehsmhhtphhouhhtpdhrtghpth
+    htoheprgigsghovgeskhgvrhhnvghlrdgukhdprhgtphhtthhopehlihhnuhigqdhmmhes
+    khhvrggtkhdrohhrghdprhgtphhtthhopehlihhnuhigqdhfshguvghvvghlsehvghgvrh
+    drkhgvrhhnvghlrdhorhhgpdhrtghpthhtohephhgrnhhnvghssegtmhhpgigthhhgrdho
+    rhhgpdhrtghpthhtoheptghlmhesmhgvthgrrdgtohhmpdhrtghpthhtoheplhhinhhugi
+    dqkhgvrhhnvghlsehvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtohepfihilhhl
+    hiesihhnfhhrrgguvggrugdrohhrghdprhgtphhtthhopehlihhnuhigqdgsthhrfhhsse
+    hvghgvrhdrkhgvrhhnvghlrdhorhhgpdhrtghpthhtoheplhhinhhugidqvgigthegsehv
+    ghgvrhdrkhgvrhhnvghlrdhorhhg
+X-ME-Proxy: <xmx:iyAzZ63Q7EXiOk7JFUBF4NXVRXcrY7M9lUiAuOYgCFDX7e8xqTDEyQ>
+    <xmx:iyAzZwEMECv2sF_yk7YNAWFWD0uuCcmwAVQqxB7sE26U9nXMUKkLUA>
+    <xmx:iyAzZ7-ecDABuj_G5ZdJLL8xEv_IAN7O8x1TvLzD4NtaR6qTaPuZDw>
+    <xmx:iyAzZ9nCRDsZWKm0D_ybKmAfH8R60w6pphF4HYh144lDv9rCIoS8PA>
+    <xmx:iyAzZ4-gBXBjFkQyYDazj6Ch3P9CUI59NMJDadTHCveJ6rDIOOxTMVPd>
 Feedback-ID: ie3994620:Fastmail
 Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 12 Nov 2024 04:12:18 -0500 (EST)
-Date: Tue, 12 Nov 2024 11:12:15 +0200
+ 12 Nov 2024 04:31:51 -0500 (EST)
+Date: Tue, 12 Nov 2024 11:31:48 +0200
 From: "Kirill A. Shutemov" <kirill@shutemov.name>
 To: Jens Axboe <axboe@kernel.dk>
 Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org, 
 	clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org, 
 	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 03/16] mm: add PG_uncached page flag
-Message-ID: <lponnb7dxjx3htksbggjoasvby6sa2a4ayrkcykdnxvypwy4pp@ci2fnmcyrke7>
+Subject: Re: [PATCH 09/16] mm/filemap: drop uncached pages when writeback
+ completes
+Message-ID: <mxh6husr25uw6u7wgp4p3stqcsxh6uek2hjktfwof3z6ayzdjr@4t4s3deim7dd>
 References: <20241111234842.2024180-1-axboe@kernel.dk>
- <20241111234842.2024180-4-axboe@kernel.dk>
+ <20241111234842.2024180-10-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -107,20 +108,84 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241111234842.2024180-4-axboe@kernel.dk>
+In-Reply-To: <20241111234842.2024180-10-axboe@kernel.dk>
 
-On Mon, Nov 11, 2024 at 04:37:30PM -0700, Jens Axboe wrote:
-> Add a page flag that file IO can use to indicate that the IO being done
-> is uncached, as in it should not persist in the page cache after the IO
-> has been completed.
+On Mon, Nov 11, 2024 at 04:37:36PM -0700, Jens Axboe wrote:
+> If the folio is marked as uncached, drop pages when writeback completes.
+> Intended to be used with RWF_UNCACHED, to avoid needing sync writes for
+> uncached IO.
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> ---
+>  mm/filemap.c | 28 ++++++++++++++++++++++++++++
+>  1 file changed, 28 insertions(+)
+> 
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 3d0614ea5f59..40debe742abe 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -1600,6 +1600,27 @@ int folio_wait_private_2_killable(struct folio *folio)
+>  }
+>  EXPORT_SYMBOL(folio_wait_private_2_killable);
+>  
+> +/*
+> + * If folio was marked as uncached, then pages should be dropped when writeback
+> + * completes. Do that now. If we fail, it's likely because of a big folio -
+> + * just reset uncached for that case and latter completions should invalidate.
+> + */
+> +static void folio_end_uncached(struct folio *folio)
+> +{
+> +	/*
+> +	 * Hitting !in_task() should not happen off RWF_UNCACHED writeback, but
+> +	 * can happen if normal writeback just happens to find dirty folios
+> +	 * that were created as part of uncached writeback, and that writeback
+> +	 * would otherwise not need non-IRQ handling. Just skip the
+> +	 * invalidation in that case.
+> +	 */
+> +	if (in_task() && folio_trylock(folio)) {
+> +		if (folio->mapping)
+> +			folio_unmap_invalidate(folio->mapping, folio, 0);
+> +		folio_unlock(folio);
+> +	}
+> +}
+> +
+>  /**
+>   * folio_end_writeback - End writeback against a folio.
+>   * @folio: The folio.
+> @@ -1610,6 +1631,8 @@ EXPORT_SYMBOL(folio_wait_private_2_killable);
+>   */
+>  void folio_end_writeback(struct folio *folio)
+>  {
+> +	bool folio_uncached = false;
+> +
+>  	VM_BUG_ON_FOLIO(!folio_test_writeback(folio), folio);
+>  
+>  	/*
+> @@ -1631,9 +1654,14 @@ void folio_end_writeback(struct folio *folio)
+>  	 * reused before the folio_wake_bit().
+>  	 */
+>  	folio_get(folio);
+> +	if (folio_test_uncached(folio) && folio_test_clear_uncached(folio))
+> +		folio_uncached = true;
 
-I have not found a way to avoid using a new bit. I am unsure if we have
-enough bits on 32-bit systems with all possible features enabled.
+Hm? Maybe
 
-In the worst-case scenario, we may need to make the feature 64-bit only.
-I believe it should be acceptable as long as userspace is prepared for the
-possibility that RWF_UNCACHED may fail. It is not going to be supported by
-all filesystems anyway.
+	folio_uncached = folio_test_clear_uncached(folio);
+
+?
+
+>  	if (__folio_end_writeback(folio))
+>  		folio_wake_bit(folio, PG_writeback);
+>  	acct_reclaim_writeback(folio);
+> +
+> +	if (folio_uncached)
+> +		folio_end_uncached(folio);
+>  	folio_put(folio);
+>  }
+>  EXPORT_SYMBOL(folio_end_writeback);
+> -- 
+> 2.45.2
+> 
 
 -- 
   Kiryl Shutsemau / Kirill A. Shutemov
