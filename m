@@ -1,72 +1,72 @@
-Return-Path: <linux-ext4+bounces-5093-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5095-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C71249C5F9B
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:57:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C95A69C5FA0
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:58:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8C37D28627C
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 17:57:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80DB31F24065
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 17:58:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CF59216E1B;
-	Tue, 12 Nov 2024 17:56:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A8D821767C;
+	Tue, 12 Nov 2024 17:56:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="i7Azw3WC"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="jBB1u7L0"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D58C9215C5A
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 17:56:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C25216E07
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 17:56:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731434193; cv=none; b=F0i1YUc524EipDpz1ICuZB6/dcZDcpwFDXiOdNI6ZW2mN0iTLEsqsIKwHngjPRXPgZA7sPQSCEitSz52KlhFDoRYfDco9FZFS15DWUJyXc8U8WQp5UPSB545G7Va42T9D+rinI+1n/cNhQXRz+jao30OT8Bs2ViTFR+3gbZ6+Q0=
+	t=1731434197; cv=none; b=dLULtq5ejELTYod3eDOiewhFS6G4SwNfHKuwmlMnoF6iKEJJ0c4Oppo0SI77aD/otSk7A6JubA8ww7AMW/vXnT+l/VgIqtTt1VmpC5hakUUd3LavPlarE7Tc56P9OQVqBpOvgGIu6Pcc4lmw3cOxbX4jMutNdpRJQQNP6tCqXsA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731434193; c=relaxed/simple;
-	bh=+d0EqeW8oMHKy/4riewptbzn/hRXZWMS2t//Ji2Zv/g=;
+	s=arc-20240116; t=1731434197; c=relaxed/simple;
+	bh=S9iJZLC3kW1AcdAAZXs7jDb7QSsAWUdTUn2Xw7khTW0=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=UhIEXykA8o0jJOq+jCHljPXBVOe0DzJ51TbQM0F5NTSmH7sa5i5I5Fc18wvAsfTw1N6ORpyCUE3SqH5MmJxSJKFpuQ60mGzBWjmwNEGalxsKKAviIm4SiP+Z2zCufa0PiDaw4JNF7NX7+1PbMmB+24MEf/XakjELxQSCD5Ez4+k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=i7Azw3WC; arc=none smtp.client-ip=209.85.128.169
+	 MIME-Version; b=lqCCWIs1/i7NXm4+UjTtslROqsiK8by4AO1bpsdg7p5EAmLWBxF9+BBHM48RO9+SDu+eeARJ9qt1AfMHqGT0rAKnQI9ZjEWXDVihlE4lHaMk6j71V5FHuPL4wgMDLkh/ZlLZS04xZwbZu/r1EuWQ97qOecPL142qGtXTz8RV/Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=jBB1u7L0; arc=none smtp.client-ip=209.85.219.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-6e330b7752cso49001877b3.1
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 09:56:31 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e2918664a3fso3723276.0
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 09:56:35 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731434191; x=1732038991; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731434193; x=1732038993; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=DjBGMOunPJ0cAEWOCfFP2w1O3j7Clx8hp97a9eP3Qf4=;
-        b=i7Azw3WC+HU7A4DN01dEr5YosC/MFe8EBxtOTvC5WNPvKRubVMjs6b4rWUL9FN9XrJ
-         1nSdDJAHt4ePTSrFU42AzthFlVQD+ZuswWNAshTgjZqbj75lzoAH9XsLfXtJT94w1KAr
-         MdFB1xEjq+itaJzYzYzZcdsyrzIfBi4hha2fLiqidZ0XxMKOxv14nzvkSzuHLsjozPIF
-         nDXaEewLTfiH02zgPCmd+sekRe2htkWJt1mBA7My4z6l3SMdcVxTN42sEF9wd7guwxF4
-         x84u3QqdZ2lTg4SSgBMILBDkKP8vNpCFolZKe7MxihCWacbpaJfuFNfBl0UmcUYZTutH
-         +iiw==
+        bh=FLBk0eY4CldnJ4xEhkKNTvdMfXwQixnxnwnrlcZUems=;
+        b=jBB1u7L0m/LXhuHZy7gUl97BSCkPWmsm6cmMadOwA3Q9sCbO19IBQiwGfczMHlLYM/
+         pt/ZN9enORDmu5aGJ1uJA8I9EJ/1A+nta39bndgKZUIu6fPgWxX9nPHtGpFOWMJg6zOy
+         /HsJO4vPQidrvQ1UmCQq2uiUp6XuitdYzUK18G2NQ0gfFTCUomGcX7SJprfijVvF1GOl
+         6i1mkff/dasrrqrYcZYOlpkSQQhTAGANco3MyjxxqSchtOXAv0uV/HC/1KOdutlb+qAB
+         Vq3B2BquxBbiwtYALc8qUKvHbogG3TI56LC9kaERQ3vdjYYJDc3hTXhoyEKHhU1+q3NL
+         0orQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731434191; x=1732038991;
+        d=1e100.net; s=20230601; t=1731434193; x=1732038993;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=DjBGMOunPJ0cAEWOCfFP2w1O3j7Clx8hp97a9eP3Qf4=;
-        b=CYBlK5onewTSr7WfGpC6sHFSo/y/GM6VvUWIhEyXibRIVv7JYEvxZJXBUmY3c3JXJW
-         M3KNVHeb8PcU6vjQCcLoH9iKgDZRn5tYSx69ysnK+gX9UAKGWTyVcHLSXeZJFAicPsPG
-         QZyuPbzm/d8zUS0oPvzPqSY+qO80skvL+/pawRnG2M8DkrUA5OfY9NL8/tusYGz3Vum+
-         ZDvBbJwbl+XNJmWse1jn7mJOsWv1tTU7aJJQLBzKjB91lRu4pT2jHPTGs6ZeVmUZmPOX
-         3BVGe7cFUTQlFw/mEDs72Zz/G+RVZzUCvmF0GsTJEBShe7OtbbDYm3SeL2QAeQ2YPsb2
-         jzUg==
-X-Forwarded-Encrypted: i=1; AJvYcCXPsgHxe6uBsnKckpCY3b0qyv7sCbrifkDK9hpxT9On66FRan4fCxllwqWr4PV7k7gCXzKwkNmDThfb@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx/UEybqvLtQTVWIordIGiyPSr2q3THY9DxsS1j+SkVW/W5Eu0c
-	fAgXN6vdq5SdalVL4kF1r+92ONP5P7JRQV2IiymROe7otG6x5WRA9K3cN3j3LV8=
-X-Google-Smtp-Source: AGHT+IE9ja6LbFpT71HNVj209iZC1LoqOzL3KmMfD6EjJ8DsteP+p2eBET7rNbO75x+IVtTpW9hviQ==
-X-Received: by 2002:a05:690c:6902:b0:6ea:86ae:cbc with SMTP id 00721157ae682-6eade510509mr128158657b3.13.1731434190711;
-        Tue, 12 Nov 2024 09:56:30 -0800 (PST)
+        bh=FLBk0eY4CldnJ4xEhkKNTvdMfXwQixnxnwnrlcZUems=;
+        b=HWr5Yb6weju5pBXa5S23MQ+2MQjZj0Tlo0+hw8PSCOOOYLQvDvnZvRZ1fiJM7MxwG5
+         nW4MIe9uopctAAvrnPBUGitlAOsQuLPpxtOxFktaHwRVRf7LwZOMJ4byLm5w3A+oaXU0
+         56af7zy1CEyMyYfLLgZWplaDY2Lmf7RefsGDfwZ9cmCsFTmmTclcytJidkrIh/QIsIXq
+         O2ePEEOsZyh3wKE4RMU4R6KHJssPh+J6q1MIccbw7Jud97eGneEnSpU8+NkbwgFT0l7f
+         7m1x1oY4nizBcIvetMMclyRUlZqyklQG30xcAt4v6tcSf6U0qQMLDoEiexF7xR5YZ+1Q
+         Qh3Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV/kefAfC+ZaQpHyHdAQWmv27OyLFYS5aTt/iChfnzcScGUnGhz9mMDm49XoWus8AnZzJdI+8Za9BD0@vger.kernel.org
+X-Gm-Message-State: AOJu0YxSNL/k4xh/F9yyD1eoXMWeB3cU122689/5AdyViPLPosnu8xRx
+	7ygVVfIPQmXrnuluv4yfLYO6l00s5vJigojXo4CT0YRMDKa7pHSsIgr5OstQ1tA=
+X-Google-Smtp-Source: AGHT+IGq9atUwLu6yRfGGU3gZisyi+y0UAqwpKFwzP1csSwnkEjcF1T1CgCueeohLnBc8+4LN1Gtbg==
+X-Received: by 2002:a25:8481:0:b0:e29:2988:ecf0 with SMTP id 3f1490d57ef6-e337e102bdfmr14488297276.10.1731434192790;
+        Tue, 12 Nov 2024 09:56:32 -0800 (PST)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6eace8d520asm26537437b3.8.2024.11.12.09.56.29
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e336ee1526dsm2752624276.2.2024.11.12.09.56.31
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2024 09:56:30 -0800 (PST)
+        Tue, 12 Nov 2024 09:56:31 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -78,9 +78,9 @@ To: kernel-team@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH v7 02/18] fanotify: don't skip extra event info if no info_mode is set
-Date: Tue, 12 Nov 2024 12:55:17 -0500
-Message-ID: <ce1cc82322ae850a0b5f36e72b8eb78ad9969b7c.1731433903.git.josef@toxicpanda.com>
+Subject: [PATCH v7 03/18] fanotify: rename a misnamed constant
+Date: Tue, 12 Nov 2024 12:55:18 -0500
+Message-ID: <2142cdfd0bce931024cb715b6e178f3f5c49e797.1731433903.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1731433903.git.josef@toxicpanda.com>
 References: <cover.1731433903.git.josef@toxicpanda.com>
@@ -94,50 +94,53 @@ Content-Transfer-Encoding: 8bit
 
 From: Amir Goldstein <amir73il@gmail.com>
 
-Previously we would only include optional information if you requested
-it via an FAN_ flag at fanotify_init time (FAN_REPORT_FID for example).
-However this isn't necessary as the event length is encoded in the
-metadata, and if the user doesn't want to consume the information they
-don't have to.  With the PRE_ACCESS events we will always generate range
-information, so drop this check in order to allow this extra
-information to be exported without needing to have another flag.
+FANOTIFY_PIDFD_INFO_HDR_LEN is not the length of the header.
 
-Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+Signed-off-by: Amir Goldstein <amir73il@gmail.com>
 ---
- fs/notify/fanotify/fanotify_user.c | 13 ++++---------
- 1 file changed, 4 insertions(+), 9 deletions(-)
+ fs/notify/fanotify/fanotify_user.c | 10 +++++-----
+ 1 file changed, 5 insertions(+), 5 deletions(-)
 
 diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
-index 2d85c71717d6..8528c1bfee7d 100644
+index 8528c1bfee7d..9cc4a9ac1515 100644
 --- a/fs/notify/fanotify/fanotify_user.c
 +++ b/fs/notify/fanotify/fanotify_user.c
-@@ -159,9 +159,6 @@ static size_t fanotify_event_len(unsigned int info_mode,
- 	int fh_len;
- 	int dot_len = 0;
+@@ -118,7 +118,7 @@ struct kmem_cache *fanotify_perm_event_cachep __ro_after_init;
+ #define FANOTIFY_EVENT_ALIGN 4
+ #define FANOTIFY_FID_INFO_HDR_LEN \
+ 	(sizeof(struct fanotify_event_info_fid) + sizeof(struct file_handle))
+-#define FANOTIFY_PIDFD_INFO_HDR_LEN \
++#define FANOTIFY_PIDFD_INFO_LEN \
+ 	sizeof(struct fanotify_event_info_pidfd)
+ #define FANOTIFY_ERROR_INFO_LEN \
+ 	(sizeof(struct fanotify_event_info_error))
+@@ -173,14 +173,14 @@ static size_t fanotify_event_len(unsigned int info_mode,
+ 		dot_len = 1;
+ 	}
  
--	if (!info_mode)
--		return event_len;
+-	if (info_mode & FAN_REPORT_PIDFD)
+-		event_len += FANOTIFY_PIDFD_INFO_HDR_LEN;
 -
- 	if (fanotify_is_error_event(event->mask))
- 		event_len += FANOTIFY_ERROR_INFO_LEN;
+ 	if (fanotify_event_has_object_fh(event)) {
+ 		fh_len = fanotify_event_object_fh_len(event);
+ 		event_len += fanotify_fid_info_len(fh_len, dot_len);
+ 	}
  
-@@ -756,12 +753,10 @@ static ssize_t copy_event_to_user(struct fsnotify_group *group,
- 	buf += FAN_EVENT_METADATA_LEN;
- 	count -= FAN_EVENT_METADATA_LEN;
++	if (info_mode & FAN_REPORT_PIDFD)
++		event_len += FANOTIFY_PIDFD_INFO_LEN;
++
+ 	return event_len;
+ }
  
--	if (info_mode) {
--		ret = copy_info_records_to_user(event, info, info_mode, pidfd,
--						buf, count);
--		if (ret < 0)
--			goto out_close_fd;
--	}
-+	ret = copy_info_records_to_user(event, info, info_mode, pidfd,
-+					buf, count);
-+	if (ret < 0)
-+		goto out_close_fd;
+@@ -503,7 +503,7 @@ static int copy_pidfd_info_to_user(int pidfd,
+ 				   size_t count)
+ {
+ 	struct fanotify_event_info_pidfd info = { };
+-	size_t info_len = FANOTIFY_PIDFD_INFO_HDR_LEN;
++	size_t info_len = FANOTIFY_PIDFD_INFO_LEN;
  
- 	if (f)
- 		fd_install(fd, f);
+ 	if (WARN_ON_ONCE(info_len > count))
+ 		return -EFAULT;
 -- 
 2.43.0
 
