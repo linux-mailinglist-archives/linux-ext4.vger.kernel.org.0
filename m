@@ -1,156 +1,196 @@
-Return-Path: <linux-ext4+bounces-5085-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5087-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 468B09C5C30
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 16:44:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B7B39C5D6B
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 17:36:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F14D31F23561
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 15:44:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90DD1281BFA
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 16:36:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 80A0B2022D4;
-	Tue, 12 Nov 2024 15:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A52206971;
+	Tue, 12 Nov 2024 16:36:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IcSl+8h2"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EoTSedlM"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com [209.85.128.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7168220127A;
-	Tue, 12 Nov 2024 15:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 649D320696E
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 16:36:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731426267; cv=none; b=b3Haw8DHtbf6Php0mo+ZUNPpv8JkJQ78VJs4ifqy32wx++oEXY/nK6NRq/KqDJgzWnJorp7lYmD9+ft3RKCyir6jl57h//AU2IaDETUY/JNllFCBUGA8EWrQTDZ8bidTdtVuE91av+Z9i5b5uRs+MxQtiqSuaPAsrjoDzoN5Ssk=
+	t=1731429379; cv=none; b=h1YGafsceG8ei9aSUtf1L4PPdQugrYnmwUCaqSg23YHVBNXP2oZYKIQv1QivDK7rwuBFaNn9rpG9as7/2INiFBB2JS1t3hRP22yC4UFvJk02Ehg9G+Z3WNLJXo/x1quvJVzNgcJ6zNpGRxiMAVRklrHHUATCIEmELpe1Sr6hb0U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731426267; c=relaxed/simple;
-	bh=fS4J7yDzI39PL8ZoMu2IAbRx82SFhb6U/y0jz6ClThc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=dLPCjfgA3bviMRNJkQfgRSPb+yCFhu7I1+GjSMbhNnaVmndd101KZKIMzlJ0RHEOhkoGNK6swf23VwcJxgmLl9/dfodizv7nHuEqatrAtJzca/ba/LN/Tlr5ouJiujr6+y5Xvcsw0XqBCaemkIN472XBPBNqwLyYRHk7llQIUJc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IcSl+8h2; arc=none smtp.client-ip=209.85.128.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-43162cf1eaaso73519415e9.0;
-        Tue, 12 Nov 2024 07:44:25 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731426264; x=1732031064; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ETNP9yNkXTf1tz0U03wjmJSDsqqTZhQALvrSEprwsMI=;
-        b=IcSl+8h2U6nzlqpHyki4u68mQQcowXhrqkBVDzN/0udL7MWj4qeJ3HiuCVL9AXulKW
-         787zjW+ayklakDUY7AK54ZsxV+P9nYE1N7vacL1EiHq6LHcnyJBvDs7ON3EjLqv2aj9v
-         8jdxvN4clpcOSit3ooyopw8CuqnVHWGWyH335/scm9h1lqoLAlQQ1PeSO6BVJ5fmaaF+
-         SIzLc7sXbGi/SatoY0PK7jXoFJ0xwtC+ACo1qoIJcYVCthaa6z3ZBrOt4/LcEWHCo4hm
-         X9EheTme7m2IzIxyUZ7kQi6iUV9yJ+YV1dm3GaU7iDNG1yhWoZGfzOzgTSPsVCc1FJYY
-         tUPw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731426264; x=1732031064;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ETNP9yNkXTf1tz0U03wjmJSDsqqTZhQALvrSEprwsMI=;
-        b=BsVhx4RUsQTk3LXueUBrRTGeTo8dc8e/tRNw99yL7R/+wc3iobsP//+k3n+fNMQ4qd
-         B+UpPtZuFCqK9yZc8hzgsMMbv20QW0O3mzhkLc51vxh8jTZWvjJBVX7uQn2/XNjJUjb4
-         cuNnUEd7hT0By5+Eg2n8pwgjwjkIMNyFUkbjbFyFwU7rLvwAWL0sSkYCaq2FvT3Y86wq
-         Gmlx5f/C0LvJ1IQ2TBIJWLN3W9rrHcf1D29jYs7QAY+h72JylfytbqicwWouYPdxYk07
-         6GAO7N84u+wHW1UKoGKLpmg2z9t8tEZc8dbZ9jVtkki6qkI6G2vvcSASlFMF+4ML3MCR
-         p1+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCU2jX1z9t/GmanxndeeQSbgiSJp63MZQaLu85/MudHqA50Mx+3/luwtEGSPCkp30dMLbNW8i6YLc5op@vger.kernel.org, AJvYcCUbULUm84PZOBGtpNLbMgn809ZM/tANdAznSjwMk55WaI6yaPB8T8V27Z+IBIDfZgOksQAIUd5ANo+DN7/C@vger.kernel.org
-X-Gm-Message-State: AOJu0YxEZKTGyj5G1gRRAZrAQGDqqSOcvv7ex7J0NcHzWXUB0+nolYy3
-	P6cU7f3Zcc47tA+k9BkTsitwAWiPp6Xzp7LVWQ1iPflRADnvM4wh8G9GNbtEQo+AMm+FON0aZPV
-	OLUHxMh/jMr5bKjoqAmwpePn+frg=
-X-Google-Smtp-Source: AGHT+IE61eEBj4n6mhK0OCpunvztbqR9xM2DivLuqQVsFuGTsrkTKylWTl3i9wckZHzRDbO8a4R0t2xJPPlSIT/M268=
-X-Received: by 2002:a5d:47aa:0:b0:382:6d2:d86c with SMTP id
- ffacd0b85a97d-38206d2d8bcmr4284365f8f.37.1731426263576; Tue, 12 Nov 2024
- 07:44:23 -0800 (PST)
+	s=arc-20240116; t=1731429379; c=relaxed/simple;
+	bh=O8YWXr0yLvNtoKRSJ3Vixa5YPoUh9gJ0YaA225ooMQk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AxtxhqTv6Qf8XRqusYZSQw6Tvg6qszYksRME5JilewxsYZqBhN3LZy36CxQU1aoRQ+ujCrHJBk6jRG+hiLN2xP81RnB2tXpVkkG4x10356406uTDrdSNGE+fc6yOfgd+cGskxXw64YwxoxWq6LsnMuAc/QonBG5UGu1K1LBUe70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EoTSedlM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731429376;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Vshv/5C+8AN3xRIpFFRaIA6JN4+z8qS1tz/4w33plCw=;
+	b=EoTSedlM91WhLCTIsrp5AiZAgxTWtisEqsxXAe1Y7aDCPFXynMKQ0cy9F6S9vgJ7e2cAOY
+	UNYcwxm4nuQ1mjarCBayLJh6morsJ6MZQ6+v4I6E0FpZ4nXjkEtKxQj3CMScEnTz6a3G+v
+	UyU6iXsWJjbKjhocqmdEkwK7s2jesGs=
+Received: from mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com
+ (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
+ relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-169-2e90iJDzPXGIadG2_ei9PQ-1; Tue,
+ 12 Nov 2024 11:36:14 -0500
+X-MC-Unique: 2e90iJDzPXGIadG2_ei9PQ-1
+X-Mimecast-MFC-AGG-ID: 2e90iJDzPXGIadG2_ei9PQ
+Received: from mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.12])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx-prod-mc-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E7CEF19560B8;
+	Tue, 12 Nov 2024 16:36:12 +0000 (UTC)
+Received: from bfoster (unknown [10.22.80.120])
+	by mx-prod-int-03.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id CFDC819560A3;
+	Tue, 12 Nov 2024 16:36:10 +0000 (UTC)
+Date: Tue, 12 Nov 2024 11:37:43 -0500
+From: Brian Foster <bfoster@redhat.com>
+To: Jens Axboe <axboe@kernel.dk>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
+	clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
+	kirill@shutemov.name, linux-btrfs@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Subject: Re: [PATCH 13/16] iomap: make buffered writes work with RWF_UNCACHED
+Message-ID: <ZzOEVwWpGEaq6wE7@bfoster>
+References: <20241111234842.2024180-1-axboe@kernel.dk>
+ <20241111234842.2024180-14-axboe@kernel.dk>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241016111624.5229-1-linmaxi@gmail.com> <20241107050307.GA287288@mit.edu>
-In-Reply-To: <20241107050307.GA287288@mit.edu>
-From: Max Brener <linmaxi@gmail.com>
-Date: Tue, 12 Nov 2024 17:44:11 +0200
-Message-ID: <CAJcXncXSLsHah+7KvtEHK-Y0xD5K-b3yCSAFiYfibmmZnc4P1Q@mail.gmail.com>
-Subject: Re: [RESEND v2] ext4: Optimization of no-op ext4_truncate triggers
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241111234842.2024180-14-axboe@kernel.dk>
+X-Scanned-By: MIMEDefang 3.0 on 10.30.177.12
 
-=E2=80=AB=D7=91=D7=AA=D7=90=D7=A8=D7=99=D7=9A =D7=99=D7=95=D7=9D =D7=94=D7=
-=B3, 7 =D7=91=D7=A0=D7=95=D7=91=D7=B3 2024 =D7=91-7:03 =D7=9E=D7=90=D7=AA =
-=E2=80=AATheodore Ts'o=E2=80=AC=E2=80=8F <=E2=80=AAtytso@mit.edu=E2=80=AC=
-=E2=80=8F>:=E2=80=AC
->
-> On Wed, Oct 16, 2024 at 02:16:24PM +0300, Max Brener wrote:
-> > Closes: https://bugzilla.kernel.org/show_bug.cgi?id=3D219306
-> > v1: https://lore.kernel.org/lkml/20240926221103.24423-1-linmaxi@gmail.c=
-om/T/
-> >
-> > Changes from last version: Moved vfs-level changes to be ext4-level,
-> > and improved the description of the patch.
-> >
-> > This patch enables skipping no-op 'ext4_truncate' calls. Analyzing the =
-kernel
-> > with ftrace shows ext4_truncate is being sometimes called without makin=
-g any
-> > impact, and sometimes userspace programs might call ext4_truncate in ve=
-in. By
-> > detecting these calls and skipping them, cpu time is saved.
-> >
-> > I'll fix this by skipping ext4_truncate call in 'ext4_setattr' when the=
- file's size
-> > hasn't changed AND it hasn't been truncated since the last disk space p=
-reallocation.
-> > It is meant to consider the case when ext4_truncate is being called to =
-truncate
-> > preallocated blocks too. Notice that so far, the condition to triggerin=
-g
-> > ext4_truncate by the user was: if (attr->ia_size <=3D oldsize) which me=
-ans it is
-> > being triggered when attr->ia_size =3D=3D oldsize regardless of whether=
- there are
-> > preallocated blocks or not - if there are none, then the call is redund=
-ant.
-> >
-> > Steps:
-> > 1.Add a new inode state flag: EXT4_STATE_TRUNCATED
-> > 2.Clear the flag when ext4_fallocate is being called with FALLOC_FL_KEE=
-P_SIZE flag
-> > to enable using ext4_truncate again, to remove preallocated disk space =
-that may
-> > have resulted from this call.
-> > 3.Set EXT4_STATE_TRUNCATED when ext4_truncated is called successfully.
-> > 4.Don't skip ext4_truncate in ext4_setattr when the size of the file ha=
-s either been
-> > reduced OR stayed the same, but hasn't been truncated yet. This is in o=
-rder to allow
-> > truncating of preallocated blocks.
->
-> This patch is still not quite right.  See Jan's comment from [1]:
->
->    Agreed as well. I'll also note that keeping such flag uptodate is not =
-as
->    simple as it seems because there are various places that may be alloca=
-ting
->    blocks beyond EOF (for example extending writes) and that rely on
->    ext4_truncate() removing them so one needs to be careful to capture al=
-l the
->    places where the "truncated" state needs to be cleared.
->
-> [1] https://lore.kernel.org/all/20240930095601.x66iqw74bxffytgq@quack3/
->
->                                                 - Ted
+On Mon, Nov 11, 2024 at 04:37:40PM -0700, Jens Axboe wrote:
+> Add iomap buffered write support for RWF_UNCACHED. If RWF_UNCACHED is
+> set for a write, mark the folios being written with drop_writeback. Then
 
-Okay I understand now, I initially thought any preallocation is necessarily=
- done
-through a VFS interface. Now that I see preallocations are done at mballoc,
-what I can offer is to clear the TRUNCATED flag at ext4_mb_new_blocks().
-Would that be ok in your opinion?
+s/drop_writeback/uncached/ ?
+
+BTW, this might be getting into wonky "don't care that much" territory,
+but something else to be aware of is that certain writes can potentially
+change pagecache state as a side effect outside of the actual buffered
+write itself.
+
+For example, xfs calls iomap_zero_range() on write extension (i.e. pos >
+isize), which uses buffered writes and thus could populate a pagecache
+folio without setting it uncached, even if done on behalf of an uncached
+write.
+
+I've only made a first pass and could be missing some details, but IIUC
+I _think_ this means something like writing out a stream of small,
+sparse and file extending uncached writes could actually end up behaving
+more like sync I/O. Again, not saying that's something we really care
+about, just raising it in case it's worth considering or documenting..
+
+Brian
+
+> writeback completion will drop the pages. The write_iter handler simply
+> kicks off writeback for the pages, and writeback completion will take
+> care of the rest.
+> 
+> This still needs the user of the iomap buffered write helpers to call
+> iocb_uncached_write() upon successful issue of the writes.
+> 
+> Signed-off-by: Jens Axboe <axboe@kernel.dk>
+> ---
+>  fs/iomap/buffered-io.c | 15 +++++++++++++--
+>  include/linux/iomap.h  |  4 +++-
+>  2 files changed, 16 insertions(+), 3 deletions(-)
+> 
+> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
+> index ef0b68bccbb6..2f2a5db04a68 100644
+> --- a/fs/iomap/buffered-io.c
+> +++ b/fs/iomap/buffered-io.c
+> @@ -603,6 +603,8 @@ struct folio *iomap_get_folio(struct iomap_iter *iter, loff_t pos, size_t len)
+>  
+>  	if (iter->flags & IOMAP_NOWAIT)
+>  		fgp |= FGP_NOWAIT;
+> +	if (iter->flags & IOMAP_UNCACHED)
+> +		fgp |= FGP_UNCACHED;
+>  	fgp |= fgf_set_order(len);
+>  
+>  	return __filemap_get_folio(iter->inode->i_mapping, pos >> PAGE_SHIFT,
+> @@ -1023,8 +1025,9 @@ ssize_t
+>  iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+>  		const struct iomap_ops *ops, void *private)
+>  {
+> +	struct address_space *mapping = iocb->ki_filp->f_mapping;
+>  	struct iomap_iter iter = {
+> -		.inode		= iocb->ki_filp->f_mapping->host,
+> +		.inode		= mapping->host,
+>  		.pos		= iocb->ki_pos,
+>  		.len		= iov_iter_count(i),
+>  		.flags		= IOMAP_WRITE,
+> @@ -1034,9 +1037,14 @@ iomap_file_buffered_write(struct kiocb *iocb, struct iov_iter *i,
+>  
+>  	if (iocb->ki_flags & IOCB_NOWAIT)
+>  		iter.flags |= IOMAP_NOWAIT;
+> +	if (iocb->ki_flags & IOCB_UNCACHED)
+> +		iter.flags |= IOMAP_UNCACHED;
+>  
+> -	while ((ret = iomap_iter(&iter, ops)) > 0)
+> +	while ((ret = iomap_iter(&iter, ops)) > 0) {
+> +		if (iocb->ki_flags & IOCB_UNCACHED)
+> +			iter.iomap.flags |= IOMAP_F_UNCACHED;
+>  		iter.processed = iomap_write_iter(&iter, i);
+> +	}
+>  
+>  	if (unlikely(iter.pos == iocb->ki_pos))
+>  		return ret;
+> @@ -1770,6 +1778,9 @@ static int iomap_add_to_ioend(struct iomap_writepage_ctx *wpc,
+>  	size_t poff = offset_in_folio(folio, pos);
+>  	int error;
+>  
+> +	if (folio_test_uncached(folio))
+> +		wpc->iomap.flags |= IOMAP_F_UNCACHED;
+> +
+>  	if (!wpc->ioend || !iomap_can_add_to_ioend(wpc, pos)) {
+>  new_ioend:
+>  		error = iomap_submit_ioend(wpc, 0);
+> diff --git a/include/linux/iomap.h b/include/linux/iomap.h
+> index f61407e3b121..2efc72df19a2 100644
+> --- a/include/linux/iomap.h
+> +++ b/include/linux/iomap.h
+> @@ -64,6 +64,7 @@ struct vm_fault;
+>  #define IOMAP_F_BUFFER_HEAD	0
+>  #endif /* CONFIG_BUFFER_HEAD */
+>  #define IOMAP_F_XATTR		(1U << 5)
+> +#define IOMAP_F_UNCACHED	(1U << 6)
+>  
+>  /*
+>   * Flags set by the core iomap code during operations:
+> @@ -173,8 +174,9 @@ struct iomap_folio_ops {
+>  #define IOMAP_NOWAIT		(1 << 5) /* do not block */
+>  #define IOMAP_OVERWRITE_ONLY	(1 << 6) /* only pure overwrites allowed */
+>  #define IOMAP_UNSHARE		(1 << 7) /* unshare_file_range */
+> +#define IOMAP_UNCACHED		(1 << 8) /* uncached IO */
+>  #ifdef CONFIG_FS_DAX
+> -#define IOMAP_DAX		(1 << 8) /* DAX mapping */
+> +#define IOMAP_DAX		(1 << 9) /* DAX mapping */
+>  #else
+>  #define IOMAP_DAX		0
+>  #endif /* CONFIG_FS_DAX */
+> -- 
+> 2.45.2
+> 
+> 
+
 
