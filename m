@@ -1,84 +1,83 @@
-Return-Path: <linux-ext4+bounces-5118-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5119-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D517D9C645A
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 23:37:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0ACF39C64D8
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 00:06:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A481283A9D
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 22:37:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D8071F22196
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 23:06:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A71421A4A7;
-	Tue, 12 Nov 2024 22:37:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28F5321B449;
+	Tue, 12 Nov 2024 23:06:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Y3/S7KMm"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="W/68WnA6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-qt1-f173.google.com (mail-qt1-f173.google.com [209.85.160.173])
+Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC1721745E;
-	Tue, 12 Nov 2024 22:37:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B77521A71C;
+	Tue, 12 Nov 2024 23:06:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731451057; cv=none; b=WcLf241bycYHHyFZDdZ+zuo6LDALOR1Dl5Wn7ODUTAkf55lwi2OoeQyL0iKWVV/bKXen7oEDxTFSR3bF/sI7E/jjDy3MF8dVj64ch/mJmnYttZTyRJjywA6P+rB3AbD3j4ozgNUnezZ0Rqwjy/jgbDBbz+W33Yd+MKDv6DDg05Y=
+	t=1731452783; cv=none; b=IuM5u+RYkJ1PWYTB7s5pQxPG9j34mR8rkA2ekTJqgcZFiXnN6Dn+jvu/gPV9iiCu2M5mQitkaEWdxJ6QclrAKvy0kRdkvg4+k/InF51rYZMFPkIRiFigVJ0uyf+OUrx/w8CnOCmVhWHz0MS5RyBLQpJ6riscZYRWlfO8A2uaf5U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731451057; c=relaxed/simple;
-	bh=2Xgye9kLSVVbThxJiOuv4J9XrHzW3k7ZdKbuDsZUfQs=;
+	s=arc-20240116; t=1731452783; c=relaxed/simple;
+	bh=gfFVCHmb+HoisgZ2lNP7XW0mnRshgsLW/YkaWiNMF3o=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sPl2MeoBlXuQfg9jljcTgE9F/uWohrLsbNLxERkhBUHccHnaFf7UUcd7DlX/asn0y9BPqZev1F09PSiHjILgXzYIjzTySYf0FwY2Nb734TvdA9jjMAQVC/2FoK8PhxPhjlP56XfjITuVI775yb66CFGede9FMu/iNvgaGK+a6hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Y3/S7KMm; arc=none smtp.client-ip=209.85.160.173
+	 To:Cc:Content-Type; b=N9iqhfRdp7+U36crGN7x7/OQtWzad2K+wDoWyzmPEafc/r2JufQ1ivLd6Y43t3/NS4d6nIB74wJQ4VXtBspMTb+IqQfS+9b5/5E3aFx8ZFHA65S0Ds0A/alyMoNVJDo7qFD3FcyW6VWgiWcysxWFEpj+EvbYAK80oHPjhw9fklc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=W/68WnA6; arc=none smtp.client-ip=209.85.219.44
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qt1-f173.google.com with SMTP id d75a77b69052e-460ab1bc2aeso41740581cf.3;
-        Tue, 12 Nov 2024 14:37:35 -0800 (PST)
+Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-6cbf2fc28feso42720036d6.0;
+        Tue, 12 Nov 2024 15:06:20 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731451054; x=1732055854; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731452779; x=1732057579; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=JsJ4qi0tKyd0z6dgveSDFEC/C40H7WEHG7mL/4zFsfM=;
-        b=Y3/S7KMmcXifxWWFnm6pb4z91esJ78yDboGLiFHhkNaw1EyvP7PcKjmru5Bl+FPXWT
-         /muGP73W25PQQnar+CIZUz69poDWzfIvkCpe6EmIWw990djrFdOEiXM9unaGxKzRaXjD
-         i02Z+uSNgfk2oJQ/I2mm7rDannqPci00QTkSZlhFFdZyr72hSjcfNibYCYQ+Sa73ISZG
-         x6Ii0Ku/e8ZhFSqvXiz83Lwr/IV9r7rd48b85wyjpRersB0hyvSJ7CcNfv6Sk6Ny8IUh
-         Sb1JC6IPDyF/g6cJlhAfUrNBzLQD+HUatUC905R7w44JwZT2dtuAv34tgwcZwZEHxDJ6
-         SngA==
+        bh=SIr16uc11UiqTl1Sx8j59V2P8BYfKtJ63uAHahcToIA=;
+        b=W/68WnA6if+LbRWB3C07X58E+hXp8jf/6OZj/LTHG37SpmN75dn1vZN5M3fgQAXPSQ
+         EBD2Bk2+kMXMwF6TOH4nJ+tv6klGmblrwwsdyB6OC8zysc009oTd5gbxKB3G0QAERNj5
+         gMZj6XvF0CCr0lCCS8u3g+6MYxMkV8HFJldwAQKSboABkIwoe8ZW3hx0F/uMhevrOYb1
+         jxo9/TCjoJrnrPlTC/MFPJLqDbN6aDpcFgOGvJdP8Dz6NK/mvWAfcDNb5G1QYkNNtaO9
+         t3Yxj60jnMTnA5I4qOcIPTNr9Afd6aWa7I0kMw6EtC6YTUklPhKhyePeU7cqIjtc2I0l
+         1nRw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731451054; x=1732055854;
+        d=1e100.net; s=20230601; t=1731452779; x=1732057579;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JsJ4qi0tKyd0z6dgveSDFEC/C40H7WEHG7mL/4zFsfM=;
-        b=o9L4Bu1zD1C8sbgBAoONgDosWmJxsn6r7DABPY3g/zzyuUGloZc/KgCcRoZzKG0y15
-         00U/1ddXY5Ka4vzwtnEYYFhzJ+6BXElP//TnIR0D79VodOND8Vbplxy5hZqNJP+3Y3Wn
-         r1Y7iBw9tCWGnW1sHoycUG4ERadJ6+7EXZo5bkjAUqyqWyZ7i3YdHHDDBh02UCL/8gmE
-         oaUoJ3z/PpiuCO71Erz1KOOPPxMphsIpvBkjCBDM1nmNE8viV1aLDpbpH0DLoEz7IsMp
-         ScvNsAixlwdSf/I+nyw16KqZ2mRFi+yYSOaD2Uyq6wS+zFIE+b3JAD5QR2sMjB8qT+NV
-         ROag==
-X-Forwarded-Encrypted: i=1; AJvYcCU9Kd5q6aRIgGG78AsfbXpJRyKkkQV9l6uHiM9iRX8xj1h1w2kGkod4XWEb2Cz087SyDekiS8tm7jBL/Q==@vger.kernel.org, AJvYcCVEoGhCm6uzrwupYQ0IZ0U7l4/CSL9KHK4z6j7V6jCcHLapWbeoOZ5UZjTP6+IDbKhvI6CalUPHTqC0cIwB3w==@vger.kernel.org, AJvYcCWA6Lf8YLuGLXe3X5FIh6WkqUDnvc0gAIU4O76CfJ4ZXc+RThmq48NDwTDQt0J2SBiFrqy2WGH5o6kY@vger.kernel.org, AJvYcCX5mV5xrbfSXGgxmPvVUi6jbHKYXutTedothY/YPB50OphDFlKfHY7HckNvlEo5oEWHwG9+Hp1Y9NVpRA==@vger.kernel.org
-X-Gm-Message-State: AOJu0YwPVO2SlzO4MJ5rNUBy8R+FsZXVJIx+zxQjHulK9XekClQaJMcF
-	4ljbT0qL+KMBWv+n3OYiFUfwMCKxTdfVc1I0Ov+kVnpAGtKM2OVMqi348EwZIiclXVlTOBJGy86
-	OSRfwAK/yvAxROp2yKMrFqickFh2EjCt+NUU=
-X-Google-Smtp-Source: AGHT+IET/tFAIWy1NMuNPLTnj95HbAr/sGehV2uRf9hScSchtuK/dDofnhh+PiANipLY45hJp1UT5T5IJchyMZUuD0U=
-X-Received: by 2002:a05:622a:4c08:b0:45f:3b3:49e6 with SMTP id
- d75a77b69052e-463093ef010mr274250321cf.41.1731451054504; Tue, 12 Nov 2024
- 14:37:34 -0800 (PST)
+        bh=SIr16uc11UiqTl1Sx8j59V2P8BYfKtJ63uAHahcToIA=;
+        b=IodAK5Wbda85AyJ2sXG/RJgONVZdU+Lw3QSQWL+c5ryqWA/a6UqV6nby8bknDVpTWG
+         5DPPe0zPKFPQ1do+1NpzHW3nejwUCX7MrHBzeQug4jRBaCpYTxFNIp5yjNgrSJ05dVLW
+         raBRtdlk44/jNsI5yxh207qRIIj6VvmD0Oall1swJo5q+tMkjE0VxnFJ+z7RrCr1O23B
+         z1LtWq8dhT+ZiJTCQaKJ4Fc2TEY2qyw0gmhFWFF7AuF9fug9YZnU31pQk0+gMiMycctu
+         3SraH/+VmxCL/86EXRTa7tKwxGsTo26ZnwZbtg7PbyG18fKDYMvd72XPy/c/RmfjHFsa
+         4/dw==
+X-Forwarded-Encrypted: i=1; AJvYcCVUqWZpQfLlQhAVz698NB9iIPzR2Iz4xaKU5OhHqREhk7+sVD6d2TEUkN3GeMWEkmBa1Qa2PPnGVUrfMGGKsw==@vger.kernel.org, AJvYcCVa6GJeZWgqYEz6ZgTF2tD9VkZpkvIu3Jcg471Ig5AyT+q4+4kqRsf2spDurE0f96sWq46KLZ1tgTvcRg==@vger.kernel.org, AJvYcCWHkhD5N6quXRUE2JeUgyjDyCllwZsF+nd5Hw4WzHSuCPT0TZHLILjLxH5NoYuutz6l5lJ/wRCu7UrJ@vger.kernel.org, AJvYcCWPltaDMsONfUclI1a51cxN6MF2Y3yQXAjPtZu2nuYf9ie6okcDoIA9h5vm54Er5hccJ7Lu0EHHUMuzrQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx8tcCeIrd9IrtWHkXqVqFYcajPm9K6KdgUixCB1fHtp45/l4hE
+	7S73mUapUG7vehuBb8tdEdLXctoRjmasJGaggoenxDHpcchMHKrfnsaHlR/7e+xSnHMbsv5yxds
+	wnLkCLfxGbP2auzzC6jFeX1w2kbk=
+X-Google-Smtp-Source: AGHT+IHxu77JKYYa/Yi0IgqgbzYETuy6BNeSMuPucl1B8xYxyyUZE8YdamGYeRduzkpm8Frlb0wJ61eZe0uRDQXpVlo=
+X-Received: by 2002:a05:6214:3287:b0:6d1:74d4:4ba2 with SMTP id
+ 6a1803df08f44-6d39e15549cmr215580146d6.9.1731452779171; Tue, 12 Nov 2024
+ 15:06:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731433903.git.josef@toxicpanda.com> <8c8e9452d153a1918470cbe52a8eb6505c675911.1731433903.git.josef@toxicpanda.com>
- <CAHk-=wjFKgs-to95Op3p19Shy+EqW2ttSOwk2OadVN-e=eV73g@mail.gmail.com>
-In-Reply-To: <CAHk-=wjFKgs-to95Op3p19Shy+EqW2ttSOwk2OadVN-e=eV73g@mail.gmail.com>
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+In-Reply-To: <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Tue, 12 Nov 2024 23:37:23 +0100
-Message-ID: <CAOQ4uxjHXmYGH3wUO=w+tM+CiFWBjWvZEZZkSXA5FO8T+VP4mA@mail.gmail.com>
-Subject: Re: [PATCH v7 01/18] fsnotify: opt-in for permission events at
- file_open_perm() time
+Date: Wed, 13 Nov 2024 00:06:07 +0100
+Message-ID: <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
 To: Linus Torvalds <torvalds@linux-foundation.org>
 Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
 	jack@suse.cz, brauner@kernel.org, linux-xfs@vger.kernel.org, 
@@ -86,58 +85,109 @@ Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.k
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Nov 12, 2024 at 8:46=E2=80=AFPM Linus Torvalds
+On Tue, Nov 12, 2024 at 9:12=E2=80=AFPM Linus Torvalds
 <torvalds@linux-foundation.org> wrote:
 >
 > On Tue, 12 Nov 2024 at 09:56, Josef Bacik <josef@toxicpanda.com> wrote:
 > >
-> > @@ -119,14 +118,37 @@ static inline int fsnotify_file(struct file *file=
-, __u32 mask)
-> >          * handle creation / destruction events and not "real" file eve=
-nts.
-> >          */
-> >         if (file->f_mode & (FMODE_NONOTIFY | FMODE_PATH))
-> > +               return false;
+> >  #ifdef CONFIG_FANOTIFY_ACCESS_PERMISSIONS
+> > +static inline int fsnotify_pre_content(struct file *file)
+> > +{
+> > +       struct inode *inode =3D file_inode(file);
 > > +
-> > +       /* Permission events require that watches are set before FS_OPE=
-N_PERM */
-> > +       if (mask & ALL_FSNOTIFY_PERM_EVENTS & ~FS_OPEN_PERM &&
-> > +           !(file->f_mode & FMODE_NOTIFY_PERM))
-> > +               return false;
+> > +       /*
+> > +        * Pre-content events are only reported for regular files and d=
+irs
+> > +        * if there are any pre-content event watchers on this sb.
+> > +        */
+> > +       if ((!S_ISDIR(inode->i_mode) && !S_ISREG(inode->i_mode)) ||
+> > +           !(inode->i_sb->s_iflags & SB_I_ALLOW_HSM) ||
+> > +           !fsnotify_sb_has_priority_watchers(inode->i_sb,
+> > +                                              FSNOTIFY_PRIO_PRE_CONTEN=
+T))
+> > +               return 0;
+> > +
+> > +       return fsnotify_file(file, FS_PRE_ACCESS);
+> > +}
 >
-> This still all looks very strange.
+> Yeah, no.
 >
-> As far as I can tell, there is exactly one user of FS_OPEN_PERM in
-> 'mask', and that's fsnotify_open_perm(). Which is called in exactly
-> one place: security_file_open(), which is the wrong place to call it
-> anyway and is the only place where fsnotify is called from the
-> security layer.
+> None of this should check inode->i_sb->s_iflags at any point.
 >
-> In fact, that looks like an active bug: if you enable FSNOTIFY, but
-> you *don't* enable CONFIG_SECURITY, the whole fsnotify_open_perm()
-> will never be called at all.
+> The "is there a pre-content" thing should check one thing, and one
+> thing only: that "is this file watched" flag.
+> The whole indecipherable mess of inline functions that do random
+> things in <linux/fsnotify.h> needs to be cleaned up, not made even
+> more indecipherable.
 >
-> And I just verified that yes, you can very much generate such a config.
+> I'm NAKing this whole series until this is all sane and cleaned up,
+> and I don't want to see a new hacky version being sent out tomorrow
+> with just another layer of new hacks, with random new inline functions
+> that call other inline functions and have complex odd conditionals
+> that make no sense.
 >
+> Really. If the new hooks don't have that *SINGLE* bit test, they will
+> not get merged.
+>
+> And that *SINGLE* bit test had better not be hidden under multiple
+> layers of odd inline functions.
+>
+> You DO NOT get to use the same old broken complex function for the new
+> hooks that then mix these odd helpers.
+>
+> This whole "add another crazy inline function using another crazy
+> helper needs to STOP. Later on in the patch series you do
+>
+> +/*
+> + * fsnotify_truncate_perm - permission hook before file truncate
+> + */
+> +static inline int fsnotify_truncate_perm(const struct path *path,
+> loff_t length)
+> +{
+> +       return fsnotify_pre_content(path, &length, 0);
+> +}
+>
+> or things like this:
+>
+> +static inline bool fsnotify_file_has_pre_content_watches(struct file *fi=
+le)
+> +{
+> +       if (!(file->f_mode & FMODE_NOTIFY_PERM))
+> +               return false;
+> +
+> +       if (!(file_inode(file)->i_sb->s_iflags & SB_I_ALLOW_HSM))
+> +               return false;
+> +
+> +       return fsnotify_file_object_watched(file, FSNOTIFY_PRE_CONTENT_EV=
+ENTS);
+> +}
+>
+> and no, NONE of that should be tested at runtime.
+>
+> I repeat: you should have *ONE* inline function that basically does
+>
+>  static inline bool fsnotify_file_watched(struct file *file)
+>  {
+>         return file && unlikely(file->f_mode & FMODE_NOTIFY_PERM);
+>  }
+>
+> and absolutely nothing else. If that file is set, the file has
+> notification events, and you go to an out-of-line slow case. You don't
+> inline the unlikely cases after that.
+>
+> And you make sure that you only set that special bit on files and
+> filesystems that support it. You most definitely don't check for
+> SB_I_ALLOW_HSM kind of flags at runtime in critical code.
 
-See: 1cda52f1b461 fsnotify, lsm: Decouple fsnotify from lsm
-in linux-next. This patch set is based on the fs-next branch.
+I understand your point. It makes sense.
+But it requires using another FMODE_HSM flag,
+because FMODE_NOTIFY_PERM covers also the legacy
+FS_ACCESS_PERM event, which has different semantics
+that I consider broken, but it is what it is.
 
-> So the whole FS_OPEN_PERM thing looks like a special case, called from
-> a (broken) special place, and now polluting this "fsnotify_file()"
-> logic for no actual reason and making it all look unnecessarily messy.
->
-> I'd suggest that the whole fsnotify_open_perm() simply be moved to
-> where it *should* be - in the open path - and not make a bad and
-> broken attempt at hiding inside the security layer, and not use this
-> "fsnotify_file()" logic at all.
->
-> The open-time logic is different. It shouldn't even attempt - badly -
-> to look like it's the same thing as some regular file access.
->
-
-OK, we can move setting the FMODE_NOTIFY_PERM to the open path.
-I have considered that it may be better to unhide it, but wasn't sure.
+I am fine not optimizing out the legacy FS_ACCESS_PERM event
+and just making sure not to add new bad code, if that is what you prefer
+and I also am fine with using two FMODE_ flags if that is prefered.
 
 Thanks,
 Amir.
