@@ -1,92 +1,86 @@
-Return-Path: <linux-ext4+bounces-5075-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5076-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15F609C59D8
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 15:03:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 841399C5975
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 14:47:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60882B2EB91
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 13:36:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 155CB1F23473
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 13:47:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE61A14A4C3;
-	Tue, 12 Nov 2024 13:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EC141F940C;
+	Tue, 12 Nov 2024 13:46:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="TrJAdfMO"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="HDeYHWG6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 92F9E42AA4
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 13:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38B741F8927
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 13:46:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731418585; cv=none; b=udJ5FS5rySznKqS0Ad7ss/Dz9fIHIFcjx4dWmSF+pdJcfdO9YYIpGbx/xvMwFxTQNDPKoMBl7icc7Wi+bgUKD4MQ7l15joaMC69eD5mN3j69mSlC+HRlGURf+gndt4ZLiGecIuxNg7PelR3Qz+P4MIVE8i6EvYZPfl8iMWGeERU=
+	t=1731419185; cv=none; b=fDdlSX8Hg5XSQY2rKSY8qEC4jVtaUcbncUku5MSP8c77gRZYMzLbgGGm+X97schWxxnTga//Ojsju1fYXy99Ycq0Fo2qD0zNY2d4lXZgtCeHH21GINvIWasIqD2x11B3lmCdfDMtPEJ7XK7D+fdVEfnjh4XQgzCb84pXbzf1iH4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731418585; c=relaxed/simple;
-	bh=UYMynpzb2neHmOqjVl3+/I9ELWYwbSrCsGyBvOAQhe0=;
+	s=arc-20240116; t=1731419185; c=relaxed/simple;
+	bh=gQvy+VYOhlAhneYdMjO3fIAwASqfAM0e11A5GPQMUmY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OeD+I+7pkWUMIZNCnU1ju1ctxoB8s7L+Ls6yt64hfAoay3B4o8okjd2R/FasQp/SU9k0tFD14v7d4rIOsLqbR2LkAK8h5rhQK4d3ntodKhn3dqy2JrigTCiZSMmbOlES13ue5GTudTLid6pb1h4AmINhrYZqDGxogMmDENJrBVY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=TrJAdfMO; arc=none smtp.client-ip=209.85.215.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7eab7622b61so3826218a12.1
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 05:36:23 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1731418583; x=1732023383; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=t6Oh4OX2Jyzis83TRylUMhyFscGtnBD3LHLbc+6KIU8=;
-        b=TrJAdfMOlI9mBVmk6TvKipxIGwo9pyW6N3t/wyGzr1NOh0/DQLxDE4hg2G1Cg15cqD
-         yWx3T2CT12EtjUuPNvJJe6C/cyQ0U/V7RAcwLzq0x4dKfshuzyJZT8d1LK91p5cqjAVP
-         vcj1vWpwFIpanq9Z3QDvcMCRkk8RZgd9W9X5RFKFJmJDkB7d8u1YaDqkSgtrD+2uSSLd
-         2GSQwhjGB3WCGM3YgKsmhGRAd1apeL8robDH5UhRrojaq6SKklOrpbsMKXI+v6wtUX2V
-         gvGItBmpz0WRMxOn8xK9jMXKilXi8HVjsk21eNZxYfUfZ0wwaQ1Dciy+DCoSH9NbJNum
-         w4vA==
+	 Content-Type:Content-Disposition:In-Reply-To; b=CVJQvOXU65qdZt+fWKINxh6Mgi9S9qUEvQvr9RtM7IDkyvrYGMai7ccT4Qjp4ukLzcHpREmpUaOkiNyZpvnHDsMyfPR2SJgffNJHnfa/AYUSahW8wq7xww1BJyp1q0v2Xl4L7UFy1J4oHCN06SHW6LNl6tEOI2Dwh562CvFQa7o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=HDeYHWG6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1731419182;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=j2hrZaON2UE7YH0/syk7LfurGMUbOzJdYtyDIkouThw=;
+	b=HDeYHWG6o21/MPYQgJcUla55so2lcaU/9EksOpUSHm0LtO9coKPZGogp2+P7y1YideQ1zx
+	Njac5ceTqPOM4ReUcQULzT6hsPGzfkYS9IbHy5VCceLf/bYgnyBgHGPkoiMZmWJ6dlr6e+
+	cZsD202D4AYaQ0E21kI6Y/2YOWnyJZE=
+Received: from mail-pf1-f200.google.com (mail-pf1-f200.google.com
+ [209.85.210.200]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-261-U18T3QqTORmkVFvXTucTTg-1; Tue, 12 Nov 2024 08:46:20 -0500
+X-MC-Unique: U18T3QqTORmkVFvXTucTTg-1
+X-Mimecast-MFC-AGG-ID: U18T3QqTORmkVFvXTucTTg
+Received: by mail-pf1-f200.google.com with SMTP id d2e1a72fcca58-72094cd0435so6006153b3a.3
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 05:46:20 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731418583; x=1732023383;
+        d=1e100.net; s=20230601; t=1731419180; x=1732023980;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=t6Oh4OX2Jyzis83TRylUMhyFscGtnBD3LHLbc+6KIU8=;
-        b=lccxCjFpg5eD2gXR367jX2vMR16warBZgSWbA7oLhT1kqbCLcGM9yAorXAsLi51nc7
-         bnC4lZDAEU0PAB9xlMsWdGt0W5pNNPvTQQkX5mJhUHAOl4+T/TnLoYEAS8tiKYeRE0Lu
-         Y/whDRWB7DPXYoPSIwW1KANyhVncYppNRRFJlKXp3kk2uLEbrQ2+cA40rW+wky3QClR0
-         He/Dlm7dwShqiWHUm9adZTJ2oYLi8HSiaqlG43NnMycBRViUMwBZ55MKaWuWUlCtX5uZ
-         rY4xT5ERuMUxUWBmmqAJ9t7V3kiu2zsG47C2NZQFv+RTnLI2LaZxpbAexMpZv0aREL4o
-         EQjg==
-X-Forwarded-Encrypted: i=1; AJvYcCU4XMbYT2mL4w5vCTHwrzHk3nD5sA6CDoJYabiuyMY9dDNJGrxrW74a+TS5OSx86hSzF+iwNcHmxEs7@vger.kernel.org
-X-Gm-Message-State: AOJu0YyKX9pNEo/3GKp8+idZbavtChRhckyackBwKtZRAeT407SqD6YG
-	vOrM92ToyPQHgg0jRIxmvWa8v+3tV9MplASbxNRfHRi8fvopS1V82AGa0Pyc0EM=
-X-Google-Smtp-Source: AGHT+IFIqnnMyIxMivt2cPh+q7ifEJlIf3ezR4cfEqcYFyOgxpQyOhRuCX6EGtaMImreoqHFw37fdQ==
-X-Received: by 2002:a17:90b:5484:b0:2e2:bb32:73eb with SMTP id 98e67ed59e1d1-2e9b178ea9emr22376758a91.31.1731418582953;
-        Tue, 12 Nov 2024 05:36:22 -0800 (PST)
-Received: from dread.disaster.area (pa49-186-86-168.pa.vic.optusnet.com.au. [49.186.86.168])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2e9e8148d9dsm645777a91.2.2024.11.12.05.36.21
+        bh=j2hrZaON2UE7YH0/syk7LfurGMUbOzJdYtyDIkouThw=;
+        b=hrUb9ObdCAUFsKTq+aIygZL3xra9t951chBw6N3Y3iVQAoe0toASO6YcaTrS5wLcJe
+         CCWdzsHP4HwsSwu8yJf37DLkZCTes4GcSxk16vmhcxxL6nu8N3AXAQDm89zGgaljqByN
+         eLjw84l90ZuuASL6Vknb/0MdytuWoc6ibZSHsIm/I7tFsnCJd1PrGk9OuDljmKH19Wmt
+         QQAZ3MvpXFnVjHTwkNQJY0Vdq2U/YlYiswdW4ojAXPvAYYDqDqiiMXkPRmpTC2yFqF3D
+         btGyiQ25zyXWhDak9wXNdVxYaXAsM2mFJG5QfFLpOYTLGObXiXXu9KtDTUwZz76DsbHl
+         OwHg==
+X-Forwarded-Encrypted: i=1; AJvYcCWtpGc0KCx+2+rNRY1OvxC9zcLHIHxAJwDouavyrL6TP429+hgpPTvIgUmofZS+CkPDHo+cFkpsKwP8@vger.kernel.org
+X-Gm-Message-State: AOJu0YycHTThtf4eXvCpG3hrJZtnoMzVROXhFyCrn3BRqoXdErAsdS1F
+	oSSDzWumRvVz5q566Wx83e96k/fZ+DVi+ua/0+JmDHrejDmrhIxsT1L59NbfZtpgxKdZMY6cUh4
+	/p50KEyhf7K1yrjO7witlTQVHokgqFW+p9Z9SPrVj0F5Hrd1voB2BfLCXpm0=
+X-Received: by 2002:a05:6a00:23c4:b0:71e:55e2:2c54 with SMTP id d2e1a72fcca58-724132be6a7mr21039249b3a.12.1731419179782;
+        Tue, 12 Nov 2024 05:46:19 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHCcSiqT2dO8HHFhyHcEZCd3d3DkSw0Wz7NzZzhASXAFJHr0BuQ3n9OlbFBVBHRCq7Q2h72dw==
+X-Received: by 2002:a05:6a00:23c4:b0:71e:55e2:2c54 with SMTP id d2e1a72fcca58-724132be6a7mr21039215b3a.12.1731419179280;
+        Tue, 12 Nov 2024 05:46:19 -0800 (PST)
+Received: from dell-per750-06-vm-08.rhts.eng.pek2.redhat.com ([43.228.180.230])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72407860a2bsm11519464b3a.21.2024.11.12.05.46.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2024 05:36:22 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.96)
-	(envelope-from <david@fromorbit.com>)
-	id 1tAr46-00DelY-1w;
-	Wed, 13 Nov 2024 00:36:18 +1100
-Date: Wed, 13 Nov 2024 00:36:18 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Kirill A. Shutemov" <kirill@shutemov.name>
-Cc: Jens Axboe <axboe@kernel.dk>, linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org, clm@meta.com,
-	linux-kernel@vger.kernel.org, willy@infradead.org,
-	linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org
-Subject: Re: [PATCH 10/16] mm/filemap: make buffered writes work with
- RWF_UNCACHED
-Message-ID: <ZzNZ0iqx8EMlGVf0@dread.disaster.area>
-References: <20241111234842.2024180-1-axboe@kernel.dk>
- <20241111234842.2024180-11-axboe@kernel.dk>
- <ZzKn4OyHXq5r6eiI@dread.disaster.area>
- <0487b852-6e2b-4879-adf1-88ba75bdecc0@kernel.dk>
- <ZzMLmYNQFzw9Xywv@dread.disaster.area>
- <2sjhov4poma4o4efvwe2xk474iorxwvf4ifqa5oee74744ke2e@lipjana3f5ti>
+        Tue, 12 Nov 2024 05:46:18 -0800 (PST)
+Date: Tue, 12 Nov 2024 21:46:15 +0800
+From: Zorro Lang <zlang@redhat.com>
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	libaokun1@huawei.com, jack@suse.cz, tytso@mit.edu
+Subject: Re: [PATCH v2] ext4/032: add a new testcase in online resize tests
+Message-ID: <20241112134615.cumyngqffzc67h3n@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com>
+References: <20241111152100.152924-1-aleksandr.mikhalitsyn@canonical.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -95,181 +89,89 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <2sjhov4poma4o4efvwe2xk474iorxwvf4ifqa5oee74744ke2e@lipjana3f5ti>
+In-Reply-To: <20241111152100.152924-1-aleksandr.mikhalitsyn@canonical.com>
 
-On Tue, Nov 12, 2024 at 11:50:46AM +0200, Kirill A. Shutemov wrote:
-> On Tue, Nov 12, 2024 at 07:02:33PM +1100, Dave Chinner wrote:
-> > I think the post-IO invalidation that these IOs do is largely
-> > irrelevant to how the page cache processes the write. Indeed,
-> > from userspace, the functionality in this patchset would be
-> > implemented like this:
-> > 
-> > oneshot_data_write(fd, buf, len, off)
-> > {
-> > 	/* write into page cache */
-> > 	pwrite(fd, buf, len, off);
-> > 
-> > 	/* force the write through the page cache */
-> > 	sync_file_range(fd, off, len, SYNC_FILE_RANGE_WRITE | SYNC_FILE_RANGE_WAIT_AFTER);
-> > 
-> > 	/* Invalidate the single use data in the cache now it is on disk */
-> > 	posix_fadvise(fd, off, len, POSIX_FADV_DONTNEED);
-> > }
-> > 
-> > Allowing the application to control writeback and invalidation
-> > granularity is a much more flexible solution to the problem here;
-> > when IO is sequential, delayed allocation will be allowed to ensure
-> > large contiguous extents are created and that will greatly reduce
-> > file fragmentation on XFS, btrfs, bcachefs and ext4. For random
-> > writes, it'll submit async IOs in batches...
-> > 
-> > Given that io_uring already supports sync_file_range() and
-> > posix_fadvise(), I'm wondering why we need an new IO API to perform
-> > this specific write-through behaviour in a way that is less flexible
-> > than what applications can already implement through existing
-> > APIs....
+On Mon, Nov 11, 2024 at 04:21:00PM +0100, Alexander Mikhalitsyn wrote:
+> Add a new testcase for [1] commit in ext4 online resize testsuite.
 > 
-> Attaching the hint to the IO operation allows kernel to keep the data in
-> page cache if it is there for other reason. You cannot do it with a
-> separate syscall.
+> Link: https://lore.kernel.org/linux-ext4/20240927133329.1015041-1-libaokun@huaweicloud.com [1]
+> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+> ---
 
-Sure we can. FADV_NOREUSE is attached to the struct file - that's
-available to every IO that is done on that file. Hence we know
-before we start every IO on that file if we only need to preserve
-existing page cache or all data we access.
+This version looks good to me,
 
-Having a file marked like this doesn't affect any other application
-that is accessing the same inode. It just means that the specific
-fd opened by a specific process will not perturb the long term
-residency of the page cache on that inode.
+Reviewed-by: Zorro Lang <zlang@redhat.com>
 
-> Consider a scenario of a nightly backup of the data. The same data is in
-> cache because the actual workload needs it. You don't want backup task to
-> invalidate the data from cache. Your snippet would do that.
+>  tests/ext4/032     |  6 ++++++
+>  tests/ext4/032.out | 18 ++++++++++++++++++
+>  2 files changed, 24 insertions(+)
+> 
+> diff --git a/tests/ext4/032 b/tests/ext4/032
+> index 6bc3b61b..238ab178 100755
+> --- a/tests/ext4/032
+> +++ b/tests/ext4/032
+> @@ -10,6 +10,9 @@
+>  . ./common/preamble
+>  _begin_fstest auto quick ioctl resize
+>  
+> +_fixed_by_kernel_commit 6121258c2b33 \
+> +	"ext4: fix off by one issue in alloc_flex_gd()"
+> +
+>  BLK_SIZ=4096
+>  CLUSTER_SIZ=4096
+>  
+> @@ -136,6 +139,9 @@ for CLUSTER_SIZ in 4096 16384 65536; do
+>  
+>  	## Extending a 2/3rd block group to 1280 block groups.
+>  	ext4_online_resize $(c2b 24576) $(c2b 41943040)
+> +
+> +	# tests for "ext4: fix off by one issue in alloc_flex_gd()"
+> +	ext4_online_resize $(c2b 6400) $(c2b 786432)
+>  done
+>  
+>  status=0
+> diff --git a/tests/ext4/032.out b/tests/ext4/032.out
+> index b372b014..d5d75c9e 100644
+> --- a/tests/ext4/032.out
+> +++ b/tests/ext4/032.out
+> @@ -60,6 +60,12 @@ QA output created by 032
+>  +++ resize fs to 41943040
+>  +++ umount fs
+>  +++ check fs
+> ++++ truncate image file to 786432
+> ++++ create fs on image file 6400
+> ++++ mount image file
+> ++++ resize fs to 786432
+> ++++ umount fs
+> ++++ check fs
+>  ++ set cluster size to 16384
+>  +++ truncate image file to 98304
+>  +++ create fs on image file 65536
+> @@ -115,6 +121,12 @@ QA output created by 032
+>  +++ resize fs to 167772160
+>  +++ umount fs
+>  +++ check fs
+> ++++ truncate image file to 3145728
+> ++++ create fs on image file 25600
+> ++++ mount image file
+> ++++ resize fs to 3145728
+> ++++ umount fs
+> ++++ check fs
+>  ++ set cluster size to 65536
+>  +++ truncate image file to 393216
+>  +++ create fs on image file 262144
+> @@ -170,3 +182,9 @@ QA output created by 032
+>  +++ resize fs to 671088640
+>  +++ umount fs
+>  +++ check fs
+> ++++ truncate image file to 12582912
+> ++++ create fs on image file 102400
+> ++++ mount image file
+> ++++ resize fs to 12582912
+> ++++ umount fs
+> ++++ check fs
+> -- 
+> 2.43.0
+> 
 
-The code I presented was essentially just a demonstration of what
-"uncached IO" was doing. That it is actually cached IO, and that it
-can be done from userspace right now. Yes, it's not exactly the same
-cache invalidation semantics, but that's not the point.
-
-The point was that the existing APIs are *much more flexible* than
-this proposal, and we don't actually need new kernel functionality
-for applications to see the same benchmark results as Jens has
-presented. All they need to do is be modified to use existing APIs.
-
-The additional point to that end is that FADV_NOREUSE should be
-hooke dup to the conditional cache invalidation mechanism Jens added
-to the page cache IO paths. Then we have all the functionality of
-this patch set individually selectable by userspace applications
-without needing a new IO API to be rolled out. i.e. the snippet
-then bcomes:
-
-	/* don't cache after IO */
-	fadvise(fd, FADV_NORESUSE)
-	....
-	write(fd, buf, len, off);
-	/* write through */
-	sync_file_range(fd, off, len, SYNC_FILE_RANGE);
-
-Note how this doesn't need to block in sync_file_range() before
-doing the invalidation anymore? We've separated the cache control
-behaviour from the writeback behaviour. We can now do both write
-back and write through buffered writes that clean up the page cache
-after IO completion has occurred - write-through is not restricted
-to uncached writes, nor is the cache purge after writeback
-completion.
-
-IOWs, we can do:
-
-	/* don't cache after IO */
-	fadvise(fd, FADV_NORESUSE)
-	....
-	off = pos;
-	count = 4096;
-	while (off < pos + len) {
-		ret = write(fd, buf, count, off);
-		/* get more data and put it in buf */
-		off += ret;
-	}
-	/* write through */
-	sync_file_range(fd, pos, len, SYNC_FILE_RANGE);
-
-And now we only do one set of writeback on the file range, instead
-of one per IO. And we still get the page cache being released on
-writeback Io completion.
-
-This is a *much* better API for IO and page cache control. It is not
-constrained to individual IOs, so applications can allow the page
-cache to write-combine data from multiple syscalls into a single
-physical extent allocation and writeback IO.
-
-This is much more efficient for modern filesytsems - the "writeback
-per IO" model forces filesystms like XFS and ext4 to work like ext3
-did, and defeats buffered write IO optimisations like dealyed
-allocation. If we are going to do small "allocation and write IO"
-patterns, we may as well be using direct IO as it is optimised for
-that sort of behaviour.
-
-So let's conside the backup application example. IMO, backup
-applications  really don't want to use this new uncached IO
-mechanism for either reading or writing data.
-
-Backup programs do sequential data read IO as they walk the backup set -
-if they are doing buffered IO then we -really- want readahead to be
-active.
-
-However, uncached IO turns off readahead, which is the equivalent of
-the backup application doing:
-
-	fadvise(fd, FADV_RANDOM);
-	while (len > 0) {
-		ret = read(fd, buf, len, off);
-		fadvise(fd, FADV_DONTNEED, off, len);
-
-		/* do stuff with buf */
-
-		off += ret;
-		len -= ret;
-	}
-
-Sequential buffered read IO after setting FADV_RANDOM absolutely
-*sucks* from a performance perspective.
-
-This is when FADV_NOREUSE is useful. We can leave readahead turned
-on, and when we do the first read from the page cache after
-readahead completes, we can then apply the NOREUSE policy. i.e. if
-the data we are reading has not been accessed, then turf it after
-reading if NOREUSE is set. If the data was already resident in
-cache, then leave it there as per a normal read.
-
-IOWs, if we separate the cache control from the read IO itself,
-there is no need to turn off readahead to implement "drop cache
-on-read" semantics. We just need to know if the folio has been
-accessed or not to determine what to do with it.
-
-Let's also consider the backup data file - that is written
-sequentially.  It's going to be large and we don't know it's size
-ahead of time. If we are using buffered writes we want delayed
-allocation to optimise the file layout and hence writeback IO
-throughput.  We also want to drop the page cache when writeback
-eventually happens, but we really don't want writeback to happen on
-every write.
-
-IOWs, backup programs can take advantage of "drop cache when clean"
-semantics, but can't really take any significant advantage from
-per-IO write-through semantics. IOWs, backup applications really
-want per-file NOREUSE write semantics that are seperately controlled
-w.r.t. cache write-through behaviour.
-
-One of the points I tried to make was that the uncached IO proposal
-smashes multiple disparate semantics into a single per-IO control
-bit. The backup application example above shows exactly how that API
-isn't actually very good for the applications that could benefit
-from the functionality this patchset adds to the page cache to
-support that single control bit...
-
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
 
