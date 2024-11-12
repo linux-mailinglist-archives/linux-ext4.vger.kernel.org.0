@@ -1,72 +1,72 @@
-Return-Path: <linux-ext4+bounces-5106-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5109-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51A4E9C61F1
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 20:57:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFE269C638C
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 22:38:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBBA9BE14E0
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:00:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77063B802FA
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA03121A4A3;
-	Tue, 12 Nov 2024 17:56:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C47B621A6FF;
+	Tue, 12 Nov 2024 17:56:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="B8tf1Q0l"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="f332KYpY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
+Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FC90219C8D
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 17:56:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFE9321A6E3
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 17:56:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731434214; cv=none; b=AQQoZPQ/TnpP4K2NZeg1aD81oRDZzxooWhSYZAu39FXwQcmdQmXPHKuzi/HwJ6ERPJFY2CkvD1dTnzPkhbBrOrCjCruBHBBh6fHyK0mYD3aGiJpIHeNrrWxDYcVdpDBaLCOh3k9bMeFTXq3BfGf6Lwkd3YogHN83k2DtZq5uP2s=
+	t=1731434219; cv=none; b=SM/9yQ0Rs+XC4Nq6nObm+4CKv899DT45jZZ/QB8+TQZ5i74jovkWg+Ewoy9u3ainqULfpql8hwkyjKkIQwc50akwV9D3NjnCkJhjkalSzNJ5lqfeizz/zJhpxkGasOvIk2tKve1jeccbLImpqEbr8qyvOX7gDpeZKgdlscENqOE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731434214; c=relaxed/simple;
-	bh=32HChrQf54ppyFpL+uRbV0WQCoSZt7JFC7d0t8FH4FM=;
+	s=arc-20240116; t=1731434219; c=relaxed/simple;
+	bh=nFXm/L4ae8YekLwpIFurgFERbAtgq26xVgDJzO6g1yM=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=fVr8+7Za9ZW3binHz3LkFyunExbBweHAG64gkTLE35sd61ezh4vyVuRHWcRRSVlJ484wT+wVBFyXAHLkzDni/i/pzYCA38KKsxrQA2mV8AJK+rhbvoMArLvbE162sZMNKwmJYXn25unI+0Of8HVfvhIKuZHQot7FPYIdpvEX1Rg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=B8tf1Q0l; arc=none smtp.client-ip=209.85.128.174
+	 MIME-Version; b=UUnbf+kxst1LhlYbKHTkKeTjcpclEQuhXU7rR0qP0b+jfGCCpAILWnUQYnj/mKKKieHNWioTr4Ur1J6EcHd4WlkT2uq2q+IozwfAkvbx3YP/tsayq2y0A6yXorpc13ha2FGBongtp7gr+EIFI800TlL7feI5vi2sPHk2sBWZW4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=f332KYpY; arc=none smtp.client-ip=209.85.219.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-6e5b7cd1ef5so51433627b3.1
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 09:56:52 -0800 (PST)
+Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-e292926104bso5390426276.0
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 09:56:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731434212; x=1732039012; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731434217; x=1732039017; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=3KCTaRjNmkxmxaKf/dEMrgpxbgs8A3iRugI4cag6Bm4=;
-        b=B8tf1Q0l7Cn2olzOKvKEvlb0nDjyun1H6yBmktm8r+ZUdYyL7fXrHgPR86KS4qO5mX
-         xF92wdQNgjKiXZLTW4TQzwX1BQ/0py4K3gH1EnOCC+ZJr7FIUhjAaF5MoWCPmYmzdnA1
-         rKc+WgW33Co5PzS+FZBxurWXj7GktZtFJIGYzip83HhHVqWRgQicx16YvyTDAxl5rgNY
-         /FEXaDcYbaXdqKL9otaV5SLCikbQtz/2K+ylc0hnwjb2aCCz5IldEtrFDzBzyhuThQdY
-         9dJ1f//LtW90U9jDTbg1bYEqDGo1hoQrinq1o8vyCVLteMwh6Bzf8ZLK84KjX57zfLyY
-         m20g==
+        bh=Gek1GO8SPggpZ3MPgZMTTjA2lPqNZurY73wIWpdWbQQ=;
+        b=f332KYpYpBj1sNEzbQQiUwIsoXIXb740XNNn6oYti/tlb0A5yFHmlUM+Xz2fVgC3qb
+         G2cOovDqa0D+gIg+M1jcuXvddsZM8+q+9+7YiIEa5bfwu9SOlpcsK/SR8Mb1CPdbeqiv
+         oJvXFVWvnoxMLM+hbLDaDQoEOz/pKwJ0oLGAuAewzusuFzb7i5wvX1Bth1C7NzNjn2Ju
+         RvC0tKgwPSglViSeJe1lkf+Gnxz1a/+vM5yNW74bpV0OEhxcFom4VA6pbkQOig5ExYMI
+         IqRa0BafjNl5x7ificOp7pj/f5X8YnhKLAl+wMZ9X1M0LVFC9VSswIBCFh5/r31jqrwS
+         RwKQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731434212; x=1732039012;
+        d=1e100.net; s=20230601; t=1731434217; x=1732039017;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=3KCTaRjNmkxmxaKf/dEMrgpxbgs8A3iRugI4cag6Bm4=;
-        b=C/fCgJgSEoiqQOI1QwG1GdEBFoZXVU7TCP5DyjsRu6aTwIQ3U9iky2thKPOmrD/GN4
-         hQ8i31G/hZ4H7RCeq+2r8LpZrwaTpQ1sxaA+50S6rUTSzpR/k5T3Ei51Hp/dbMCrJ2/r
-         24WOKXfy4qpASPAq9nYT4bDwwJCvTLrNHNoD6MhYwRHPoFLc91hs3tmb4U/zNyghK8ic
-         wwsaFE1fulV7SKhIRQTTGVyHaYNnycvRIE8/BzIO4FlKZiuHcZA/FvqcFuCKhrHMt6Ly
-         8eQBZKv8ESdFc0L++eVcAcasvMF2RDMKoW/8oMlXLd5YXPDq4X4y987Wm+N1CWykpYos
-         VsOg==
-X-Forwarded-Encrypted: i=1; AJvYcCW4i+FQtQ6z8doRX/w2UzWgYFi4uC6l4PD5IqRvFxYXz8ipxKIzJoqIc/jDVvFexgq+tzTSTQl0PoAp@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw+mmzIhshTUrXqfd6cFUGuvXOsgXgedjAwmuV4njvPVaamNWt+
-	o/gOjB5lUw1cgavxetTRoNyunTFvjPa+o0x8K2W8xaxU063joHhq8nSa6kZx1pI=
-X-Google-Smtp-Source: AGHT+IFoXHSrvSv1nHXDianvdqh8AvWvvCdruw2IfTMCI7MfgJuOUf9jQwkCjXgIqLVtzlih0erFEw==
-X-Received: by 2002:a05:690c:700e:b0:6ea:8dad:c3cf with SMTP id 00721157ae682-6eadddbc58emr168920227b3.20.1731434212150;
-        Tue, 12 Nov 2024 09:56:52 -0800 (PST)
+        bh=Gek1GO8SPggpZ3MPgZMTTjA2lPqNZurY73wIWpdWbQQ=;
+        b=sq402yqeI62je833NAQsowMa7H7lW+PlzZaV1yjwt5bwNGfrmi/dxtvz7tRYeBY8OC
+         if0FyrSDx3W0HYoPQRFspHRnudCDqncUnezjtpofEptZP9ee1U/GVDrHUCFQaeVGvPco
+         8W2X+fJYHdIUWK6IFJAsg1PRLpMGhZD927yTiOo7k/FSEJf9TVDGyaV8SUf+ban6+1fb
+         fwAaMKXoCsh5Mp8AMsrx5mBvcdC59iic9Cn+0Nw7gHbM7Pcg2hQOCUT8q35ieaKDJ7Dh
+         oPdj+b6A7EHbMWh+W6EJtspd2XQXQN9x3ImXcgLljIzQ7VWRbOBwVzSLgD/RKwNayRFk
+         jLSA==
+X-Forwarded-Encrypted: i=1; AJvYcCXFyG+wTgsNQgp1gSAc2fDXg9rxlAFwAHX9r+A1ySNWe0yW7zJDVbBAJaQhNuJ52kzaAS7J+LCOxRXk@vger.kernel.org
+X-Gm-Message-State: AOJu0YxuV2A5IHVFbbB8Bu8GhO61k4AZ5JsArRS8ZFsUe21s3Ip8Ldvn
+	/3D8K+y5poOpIfUqqNadp9ZHyezT0zkJxCXATD0Gdj6+lHcsY711HtdkBTo6xXw=
+X-Google-Smtp-Source: AGHT+IEseNU1fU18+Eb5Xypvfn1vm8TMH1JcpZ3Hifh4Ob7CJlLkVA7fH8jLCYaFBtppEHVnywJ7Bw==
+X-Received: by 2002:a05:6902:1ac1:b0:e30:e59b:4a40 with SMTP id 3f1490d57ef6-e337f8822d4mr14895613276.28.1731434217050;
+        Tue, 12 Nov 2024 09:56:57 -0800 (PST)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6eaceb0cdc8sm26499817b3.65.2024.11.12.09.56.51
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e336f1ba498sm2747524276.46.2024.11.12.09.56.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 12 Nov 2024 09:56:51 -0800 (PST)
+        Tue, 12 Nov 2024 09:56:56 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -78,9 +78,9 @@ To: kernel-team@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH v7 15/18] fsnotify: generate pre-content permission event on page fault
-Date: Tue, 12 Nov 2024 12:55:30 -0500
-Message-ID: <8d223ba40c3ad28dcf9369bf16c3182baa925e59.1731433903.git.josef@toxicpanda.com>
+Subject: [PATCH v7 18/18] fs: enable pre-content events on supported file systems
+Date: Tue, 12 Nov 2024 12:55:33 -0500
+Message-ID: <476c173aa514c889cfb3d9a1dcf3bb333a223ef7.1731433903.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1731433903.git.josef@toxicpanda.com>
 References: <cover.1731433903.git.josef@toxicpanda.com>
@@ -92,137 +92,57 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on page fault depending
-on the faulting method.
-
-This pre-content event is meant to be used by hierarchical storage
-managers that want to fill in the file content on first read access.
-
-Export a simple helper that file systems that have their own ->fault()
-will use, and have a more complicated helper to be do fancy things with
-in filemap_fault.
+Now that all the code has been added for pre-content events, and the
+various file systems that need the page fault hooks for fsnotify have
+been updated, add SB_I_ALLOW_HSM to the supported file systems.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- include/linux/mm.h |  1 +
- mm/filemap.c       | 78 ++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 79 insertions(+)
+ fs/btrfs/super.c   | 2 +-
+ fs/ext4/super.c    | 3 +++
+ fs/xfs/xfs_super.c | 2 +-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/include/linux/mm.h b/include/linux/mm.h
-index 01c5e7a4489f..90155ef8599a 100644
---- a/include/linux/mm.h
-+++ b/include/linux/mm.h
-@@ -3406,6 +3406,7 @@ extern vm_fault_t filemap_fault(struct vm_fault *vmf);
- extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
- 		pgoff_t start_pgoff, pgoff_t end_pgoff);
- extern vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf);
-+extern vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf);
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 97a85d180b61..fe6ecc3f1cab 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -961,7 +961,7 @@ static int btrfs_fill_super(struct super_block *sb,
+ #endif
+ 	sb->s_xattr = btrfs_xattr_handlers;
+ 	sb->s_time_gran = 1;
+-	sb->s_iflags |= SB_I_CGROUPWB;
++	sb->s_iflags |= SB_I_CGROUPWB | SB_I_ALLOW_HSM;
  
- extern unsigned long stack_guard_gap;
- /* Generic expand stack which grows the stack according to GROWS{UP,DOWN} */
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 68ea596f6905..0bf7d645dec5 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -47,6 +47,7 @@
- #include <linux/splice.h>
- #include <linux/rcupdate_wait.h>
- #include <linux/sched/mm.h>
-+#include <linux/fsnotify.h>
- #include <asm/pgalloc.h>
- #include <asm/tlbflush.h>
- #include "internal.h"
-@@ -3289,6 +3290,52 @@ static vm_fault_t filemap_fault_recheck_pte_none(struct vm_fault *vmf)
- 	return ret;
- }
+ 	err = super_setup_bdi(sb);
+ 	if (err) {
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b3512d78b55c..13b9d67a4eec 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5306,6 +5306,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	/* i_version is always enabled now */
+ 	sb->s_flags |= SB_I_VERSION;
  
-+/**
-+ * filemap_fsnotify_fault - maybe emit a pre-content event.
-+ * @vmf:	struct vm_fault containing details of the fault.
-+ * @folio:	the folio we're faulting in.
-+ *
-+ * If we have a pre-content watch on this file we will emit an event for this
-+ * range.  If we return anything the fault caller should return immediately, we
-+ * will return VM_FAULT_RETRY if we had to emit an event, which will trigger the
-+ * fault again and then the fault handler will run the second time through.
-+ *
-+ * This is meant to be called with the folio that we will be filling in to make
-+ * sure the event is emitted for the correct range.
-+ *
-+ * Return: a bitwise-OR of %VM_FAULT_ codes, 0 if nothing happened.
-+ */
-+vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf)
-+{
-+	struct file *fpin = NULL;
-+	int mask = (vmf->flags & FAULT_FLAG_WRITE) ? MAY_WRITE : MAY_ACCESS;
-+	loff_t pos = vmf->pgoff >> PAGE_SHIFT;
-+	size_t count = PAGE_SIZE;
-+	vm_fault_t ret;
++	/* HSM events are allowed by default. */
++	sb->s_iflags |= SB_I_ALLOW_HSM;
 +
-+	/*
-+	 * We already did this and now we're retrying with everything locked,
-+	 * don't emit the event and continue.
-+	 */
-+	if (vmf->flags & FAULT_FLAG_TRIED)
-+		return 0;
-+
-+	/* No watches, we're done. */
-+	if (!fsnotify_file_has_pre_content_watches(vmf->vma->vm_file))
-+		return 0;
-+
-+	fpin = maybe_unlock_mmap_for_io(vmf, fpin);
-+	if (!fpin)
-+		return VM_FAULT_SIGBUS;
-+
-+	ret = fsnotify_file_area_perm(fpin, mask, &pos, count);
-+	fput(fpin);
-+	if (ret)
-+		return VM_FAULT_SIGBUS;
-+	return VM_FAULT_RETRY;
-+}
-+EXPORT_SYMBOL_GPL(filemap_fsnotify_fault);
-+
- /**
-  * filemap_fault - read in file data for page fault handling
-  * @vmf:	struct vm_fault containing details of the fault
-@@ -3392,6 +3439,37 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
- 	 * or because readahead was otherwise unable to retrieve it.
- 	 */
- 	if (unlikely(!folio_test_uptodate(folio))) {
-+		/*
-+		 * If this is a precontent file we have can now emit an event to
-+		 * try and populate the folio.
-+		 */
-+		if (!(vmf->flags & FAULT_FLAG_TRIED) &&
-+		    fsnotify_file_has_pre_content_watches(file)) {
-+			loff_t pos = folio_pos(folio);
-+			size_t count = folio_size(folio);
-+
-+			/* We're NOWAIT, we have to retry. */
-+			if (vmf->flags & FAULT_FLAG_RETRY_NOWAIT) {
-+				folio_unlock(folio);
-+				goto out_retry;
-+			}
-+
-+			if (mapping_locked)
-+				filemap_invalidate_unlock_shared(mapping);
-+			mapping_locked = false;
-+
-+			folio_unlock(folio);
-+			fpin = maybe_unlock_mmap_for_io(vmf, fpin);
-+			if (!fpin)
-+				goto out_retry;
-+
-+			error = fsnotify_file_area_perm(fpin, MAY_ACCESS, &pos,
-+							count);
-+			if (error)
-+				ret = VM_FAULT_SIGBUS;
-+			goto out_retry;
-+		}
-+
- 		/*
- 		 * If the invalidate lock is not held, the folio was in cache
- 		 * and uptodate and now it is not. Strange but possible since we
+ 	err = ext4_check_feature_compatibility(sb, es, silent);
+ 	if (err)
+ 		goto failed_mount;
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index fda75db739b1..2d1e9db8548d 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1713,7 +1713,7 @@ xfs_fs_fill_super(
+ 		sb->s_time_max = XFS_LEGACY_TIME_MAX;
+ 	}
+ 	trace_xfs_inode_timestamp_range(mp, sb->s_time_min, sb->s_time_max);
+-	sb->s_iflags |= SB_I_CGROUPWB;
++	sb->s_iflags |= SB_I_CGROUPWB | SB_I_ALLOW_HSM;
+ 
+ 	set_posix_acl_flag(sb);
+ 
 -- 
 2.43.0
 
