@@ -1,262 +1,263 @@
-Return-Path: <linux-ext4+bounces-5082-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5083-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14FD59C5AE4
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 15:51:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E8C5E9C5C4A
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 16:49:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C937F283F62
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 14:51:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 05EC2B3410E
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 15:24:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41691FF5F1;
-	Tue, 12 Nov 2024 14:51:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3047200BB5;
+	Tue, 12 Nov 2024 15:24:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="MMWaQqzU"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="MBfUNQXK"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ot1-f51.google.com (mail-ot1-f51.google.com [209.85.210.51])
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3885A1FF033
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 14:51:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87358200B8B
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 15:24:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731423086; cv=none; b=h+s1M9boN30F564YGNMBEq7xiAhQTndoeCivJsxOaGbMNk3rcT53DWkOoeZKBgIjfE/uxGK5mzX7zUaNDBp51iV+2LsDLq6d3JgYk+4fTgfiWPFTYNArsaZSugNDl2tj140SvKHUsh1k8f2mFGTeYH8dXKZ/DTRe8i4NkLHXSbM=
+	t=1731425060; cv=none; b=ZMSFpaNvfe6Ih9fX356j2n8sArChncmp8n+ofrD0UNSEoLAL+sTkJgntkwb4OOFvT2c492PzFHGJ8mDwYUZvWaH+X41isN5Jwm3R7DEE8xjf2bC2J8RDYh9GEZpMu8j7SwwnULmi0G38jpgNo9TfP5cjirT+nK0wJHE4vP3HwgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731423086; c=relaxed/simple;
-	bh=mqQhsAaxwWysPBIhvxpmHkNJDSNibPBlWN5Kv3bKH+U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=JLvdlpBLF0fhEIGy0LAh0y/QMSIlnjidNkEEkKTT33i6CAWX3b2xwW93aGvIHC9Ec8kFbrdYCQ4BN9du8oSJrjlv9/3NWpjEAQAUtxmFCD9urJrBRx4/IlEyTZx/uBEyscL99S3jBimO0P6lTMBVW2b2FLWq9O9NWWlB8I0VuUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=MMWaQqzU; arc=none smtp.client-ip=209.85.210.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-ot1-f51.google.com with SMTP id 46e09a7af769-71811707775so3114924a34.3
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 06:51:24 -0800 (PST)
+	s=arc-20240116; t=1731425060; c=relaxed/simple;
+	bh=Pw76qoxuEBmSQZkc5D1i8WJCwIAQTQoR8D52Af7iCGQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i4LFcZfNppCPVvRGsgw9NMifq/HHeLH11F0R3CGKHtRodt79aBP4oPeSd6szILxooosguR9eIUCFzw0ixLTQda4VjoKXqb1GdnWAUYyQgVSMq8RNOaixqHQwme7kKYybDiCnBraigcPeRaUdC/qvKYOu2McBzZl7OWYz2+zKBEU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=MBfUNQXK; arc=none smtp.client-ip=209.85.219.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-6cbe68f787dso37429846d6.2
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 07:24:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731423083; x=1732027883; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=gvE32TaYAXjgECParzeSgw6HkypztPHssnr8m+v8i78=;
-        b=MMWaQqzUDQDT1sfOfxiY65TAT9MMPmlRKLKvFdLPP9pl0T2umtwURHkpfFLHRNLmE9
-         7Io/SDzMfM+TIjkbKoYHts7giQXM3zhPvoh40kX35s+fR6leqO2JoxMskuIDVSQ9TT35
-         cYX1rXUdLYaBsw5hKJhFJPAnf7ZQXiA91bKRLYr5AhN5oWQd+MEetGjPyquQW+GlOMPu
-         xAQwUpy5NF/CwOvvWtipGB99muWOWB4/pLa4Z+O/YnjYf9fi1jq6jNHtARZ6pVfwCxfH
-         F5e2KmWCPHnQzFUZWHH5JR+8/yatUNWuKdmermCkmnUBCV+EMOkrfKrhhRhbNL/LD+07
-         G08A==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731425057; x=1732029857; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IYKvte0z2sS6p7AKJqybZy0XMGJi5wQZwdmuSoY937M=;
+        b=MBfUNQXKEQRIWECUw2OHC45gWLyya3jbvyC3cShyvxU7yKBbS/SgE+cY7zb3E084is
+         GrnfHfnzMwN0s/cG5W7EH/OBAxYdJoKgHm2cNBJ+LYZLImEnPIHx5Tjt2JX6ykoo8Ulu
+         VORo1CPD3vdxt8gQpy7htO0QuG7n85acUDItfYGwO+A2p3GjLNZjCUYXXik4VXNL1SQm
+         Y8j3voSb9yGP/wE1YJ5C5cIxLfu9c4rfJyGvBDMETh+CSTH82DGoCHWcHwE5bo1pvOpX
+         3NkMDCptn6m8ny5jQrdJjTTDnO3vlYRj+arc23v2ieKIjO2NWZqwEtM/pGUDZPQVsqAX
+         Kurw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731423083; x=1732027883;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=gvE32TaYAXjgECParzeSgw6HkypztPHssnr8m+v8i78=;
-        b=E4l3MKCWLt3kovPGIII0b+RvhU+YhMvOMKhBhxaP0YEHjRqpBJSevu9eUtPfu/a0/U
-         fV/heWtHTE4f7sI0qhePXVT56qXJZUuqqTLGmJQGP/9sZmnzWlwnyqVeGhgqtVUCg/Ap
-         Fw0Zwnlpr344JyBUpCSk1QU/SoVOH3Z3qxDTyu/HVl5dMOoaSUKLUvrowMaOD7d9mgXY
-         bw/rsYVOd6/LyoS5/+fh6BsGcozcohECqd+B22ktsCRP+oHmkYUERoEO+kudWb1/p8ov
-         n6eIELbTvilV6EwGUJmjbv7qpyRjInP93zOvH0AQeg8vlAa0dSFzxw+OH6kML/7TVeFl
-         bDeA==
-X-Forwarded-Encrypted: i=1; AJvYcCW5f0d/9ClfrdxYA9zSF2WEeMEkNVms02LjtSDjAxF2vleoApV8DR35pM6Ye14GAbnMbuTJva+UJ30M@vger.kernel.org
-X-Gm-Message-State: AOJu0YxlniLfw3aITDrGX2QOOgT2GMJds0V5RkTUX4vM3nd6KI8Fd99V
-	g6AaItpmKGYhJhi5W/sFAKZFbU7+avAqU2N0dgSS4h7gOo9v/qv1PsJ0ZBUn/9Eq0mqrJ01g3AL
-	sKOQ=
-X-Google-Smtp-Source: AGHT+IH7Ryn2K78a+7vMPHSR7u3Kh0PU/404i9EkCLLhxngvy6O/IjGB1rfvrkuz3xsVwrzASt/5mA==
-X-Received: by 2002:a05:6830:6d86:b0:710:f1cd:b237 with SMTP id 46e09a7af769-71a1c2860eemr14833704a34.20.1731423083214;
-        Tue, 12 Nov 2024 06:51:23 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 46e09a7af769-71a10833f05sm2722374a34.31.2024.11.12.06.51.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Nov 2024 06:51:22 -0800 (PST)
-Message-ID: <20b661ee-a7aa-4116-a0ec-96da9343af61@kernel.dk>
-Date: Tue, 12 Nov 2024 07:51:21 -0700
+        d=1e100.net; s=20230601; t=1731425057; x=1732029857;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IYKvte0z2sS6p7AKJqybZy0XMGJi5wQZwdmuSoY937M=;
+        b=m2iXZ4UCzC7C+V9yxKXNl9riBsipSAO0hTSMHVUgFK4GeECZnBT60+uqB0wCtRsojW
+         Y8fZFLIZ3Fy+Eff/HOH9vZbxBM4og2bL7w505Yk2u8OnupXUDo9pjZBZhzwA56suni0j
+         E6rX2M9DJc2mKzoX38zAMA1uxuHhYDi6eJ3S7ANcGzVQDz3HqRnlNpctnsrdxQ54qypt
+         gRJGguxPUgnY3EEt/026srUvPYhAhkMF5iAGeARMgOHKVnqMDJsOCZlAYF8Vbz2xL+KI
+         6SIl84tCh9TzdxbQTwUub8bCt4zPTdR37E0mye1//C/EhivXW4as3ZxuNipfnfVQh6Ol
+         5Otw==
+X-Forwarded-Encrypted: i=1; AJvYcCWcRF7Ul3gBP8Ya58zLM6gLriwdZ9YXAv8+dTAChvX03qrEXXlB/PrSushwMbzLyNO5okpyARq46lQu@vger.kernel.org
+X-Gm-Message-State: AOJu0YySy77zYi0EF9ZLU8Mws8rGPvj9G67SDI/Jb8bC5RML8hf6ruO5
+	oKPuGhcG0dLMn0yPhzwsVPoufhSsvfdHih4y7+hSvAUw6TNbeTAbQxvL4kLwqgA=
+X-Google-Smtp-Source: AGHT+IEREsT1IN/Jyb5jxnIeqB6aJ6hHi/Typq40PSivxK57muONB5alYpUuJkLlVhIRLIUqlqBUcw==
+X-Received: by 2002:a05:6214:53ca:b0:6cb:ef22:6274 with SMTP id 6a1803df08f44-6d39e10772emr228170466d6.3.1731425057185;
+        Tue, 12 Nov 2024 07:24:17 -0800 (PST)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 6a1803df08f44-6d39643b36asm71965466d6.75.2024.11.12.07.24.16
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 12 Nov 2024 07:24:16 -0800 (PST)
+Date: Tue, 12 Nov 2024 10:24:15 -0500
+From: Josef Bacik <josef@toxicpanda.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	amir73il@gmail.com, brauner@kernel.org, linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v6 06/17] fsnotify: generate pre-content permission event
+ on open
+Message-ID: <20241112152415.GA826972@perftesting>
+References: <cover.1731355931.git.josef@toxicpanda.com>
+ <b509ec78c045d67d4d7e31976eba4b708b238b66.1731355931.git.josef@toxicpanda.com>
+ <CAHk-=wh4BEjbfaO93hiZs3YXoNmV=YkWT4=OOhuxM3vD2S-1iA@mail.gmail.com>
+ <CAEzrpqdtSAoS+p4i0EzWFr0Nrpw1Q2hphatV7Sk4VM49=L3kGw@mail.gmail.com>
+ <CAHk-=wj8L=mtcRTi=NECHMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/16] mm/filemap: make buffered writes work with
- RWF_UNCACHED
-To: Dave Chinner <david@fromorbit.com>
-Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
- clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
- kirill@shutemov.name, linux-btrfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
-References: <20241111234842.2024180-1-axboe@kernel.dk>
- <20241111234842.2024180-11-axboe@kernel.dk>
- <ZzKn4OyHXq5r6eiI@dread.disaster.area>
- <0487b852-6e2b-4879-adf1-88ba75bdecc0@kernel.dk>
- <ZzMLmYNQFzw9Xywv@dread.disaster.area>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZzMLmYNQFzw9Xywv@dread.disaster.area>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wj8L=mtcRTi=NECHMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com>
 
-On 11/12/24 1:02 AM, Dave Chinner wrote:
-> On Mon, Nov 11, 2024 at 06:27:46PM -0700, Jens Axboe wrote:
->> On 11/11/24 5:57 PM, Dave Chinner wrote:
->>> On Mon, Nov 11, 2024 at 04:37:37PM -0700, Jens Axboe wrote:
->>>> If RWF_UNCACHED is set for a write, mark new folios being written with
->>>> uncached. This is done by passing in the fact that it's an uncached write
->>>> through the folio pointer. We can only get there when IOCB_UNCACHED was
->>>> allowed, which can only happen if the file system opts in. Opting in means
->>>> they need to check for the LSB in the folio pointer to know if it's an
->>>> uncached write or not. If it is, then FGP_UNCACHED should be used if
->>>> creating new folios is necessary.
->>>>
->>>> Uncached writes will drop any folios they create upon writeback
->>>> completion, but leave folios that may exist in that range alone. Since
->>>> ->write_begin() doesn't currently take any flags, and to avoid needing
->>>> to change the callback kernel wide, use the foliop being passed in to
->>>> ->write_begin() to signal if this is an uncached write or not. File
->>>> systems can then use that to mark newly created folios as uncached.
->>>>
->>>> Add a helper, generic_uncached_write(), that generic_file_write_iter()
->>>> calls upon successful completion of an uncached write.
->>>
->>> This doesn't implement an "uncached" write operation. This
->>> implements a cache write-through operation.
->>
->> It's uncached in the sense that the range gets pruned on writeback
->> completion.
+On Mon, Nov 11, 2024 at 03:22:06PM -0800, Linus Torvalds wrote:
+> On Mon, 11 Nov 2024 at 14:46, Josef Bacik <josef@toxicpanda.com> wrote:
+> >
+> > Did you see the patch that added the
+> > fsnotify_file_has_pre_content_watches() thing?
 > 
-> That's not the definition of "uncached". Direct IO is, by
-> definition, "uncached" because it bypasses the cache and is not
-> coherent with the contents of the cache.
+> No, because I had gotten to patch 6/11, and it added this open thing,
+> and there was no such thing in any of the patches before it.
+> 
+> It looks like you added FSNOTIFY_PRE_CONTENT_EVENTS in 11/17.
+> 
+> However, at no point does it look like you actually test it at open
+> time, so none of this seems to matter.
+> 
+> As far as I can see, even at the end of the series, you will call the
+> fsnotify hook at open time even if there are no content watches on the
+> file.
+> 
+> So apparently the fsnotify_file_has_pre_content_watches() is not
+> called when it should be, and when it *is* called, it's also doing
+> completely the wrong thing.
+> 
+> Look, for basic operations THAT DON'T CARE, you now added a function
+> call to fsnotify_file_has_pre_content_watches(), that function call
+> looks at inode->i_sb->s_iflags (doing two D$ accesses that shouldn't
+> be done!), and then after that looks at the i_fsnotify_mask.
+> 
+> THIS IS EXACTLY THE KIND OF GARBAGE I'M TALKING ABOUT.
+> 
+> This code has been written by somebody who NEVER EVER looked at
+> profiles. You're following chains of pointers when you never should.
+> 
+> Look, here's a very basic example of the kind of complete mis-design
+> I'm talking about:
+> 
+>  - we're doing a basic read() on a file that isn't being watched.
+> 
+>  - we want to maybe do read-ahead
+> 
+>  - the code does
+> 
+>         if (fsnotify_file_has_pre_content_watches(file))
+>                 return fpin;
+> 
+>    to say that "don't do read-ahead".
+> 
+> Fine, I understand the concept. But keep in mind that the common case
+> is presumably that there are no content watches.
+> 
+> And even ignoring the "common case" issue, that's the one you want to
+> OPTIMIZE for. That's the case that matters for performance, because
+> clearly if there are content watches, you're going to go into "Go
+> Slow" mode anyway and not do pre-fetching. So even if content watches
+> are common on some load, they are clearly not the case you should do
+> performance optimization for.
+> 
+> With me so far?
+> 
+> So if THAT is the case that matters, then dammit, we shouldn't be
+> calling a function at all.
+> 
+> And when calling the function, we shouldn't start out with this
+> completely broken logic:
+> 
+>         struct inode *inode = file_inode(file);
+>         __u32 mnt_mask = real_mount(file->f_path.mnt)->mnt_fsnotify_mask;
+> 
+>         if (!(inode->i_sb->s_iflags & SB_I_ALLOW_HSM))
+>                 return false;
+> 
+> that does random crap and looks up some "mount mask" and looks up the
+> superblock flags.
+> 
+> Why shouldn't we do this?
+> 
+> BECAUSE NONE OF THIS MATTERS IF THE FILE HASN'T EVEN BEEN MARKED FOR
+> CONTENT MATCHES!
+> 
+> See why I'm shouting? You're doing insane things, and you're doing
+> them for all the cases that DO NOT MATTER. You're doing all of this
+> for the common case that doesn't want to see that kind of mindless
+> overhead.
+> 
+> You literally check for the "do I even care" *last*, when you finally
+> do that fsnotify_object_watched() check that looks at the inode. But
+> by then you have already wasted all that time and effort, and
+> fsnotify_object_watched() is broken anyway, because it's stupidly
+> designed to require that mnt_mask that isn't needed if you have
+> properly marked each object individually.
+> 
+> So what *should* you have?
+> 
+> You should have had a per-file flag saying "Do I need to even call
+> this crud at all", and have it in a location where you don't need to
+> look at anything else.
+> 
+> And fsnotify already basically has that flag, except it's mis-designed
+> too. We have FMODE_NONOTIFY, which is the wrong way around (saying
+> "don't notify", when that should just be the *default*), and the
+> fsnotify layer uses it only to mark its own internal files so that it
+> doesn't get called recursively. So that flag that *looks* sane and is
+> in the right location is actually doing the wrong thing, because it's
+> dealing with a rare special case, not the important cases that
+> actually matter.
+> 
+> So all of this readahead logic - and all of the read and write hooks -
+> should be behind a simple "oh, this file doesn't have any notification
+> stuff, so don't bother calling any fsnotify functions".
+> 
+> So I think the pattern should be
+> 
+>     static inline bool fsnotify_file_has_pre_content_watches(struct file *file)
+>     {
+>         if (unlikely(file->f_mode & FMODE_NOTIFY))
+>                 return out_of_line_crud(file);
+>         return false;
+>     }
+> 
+> so that the *only* thing that gets inlined is "does this file have any
+> fsnotify stuff at all", and in the common case where that isn't true,
+> we don't call any fsnotify functions, and we don't start looking at
+> inodes or superblocks or anything pointless like that.
+> 
+> THAT is the kind of code sequence we should have for unlikely cases.
+> Not the "call fsnotify code to check for something unlikely". Not
+> "look at file_inode(file)->i_sb->s_iflags" until it's *required*.
+> 
+> Similarly, the actual open-time code SHOULD NEVER BE CALLED, because
+> it should have the same kind of simple logic based on some simple flag
+> either in the dentry or maybe in the inode. So that all those *normal*
+> dentries and inodes that don't have watches don't get the overhead of
+> calling into fsnotify code.
+> 
+> Because yes, I do see all those function calls, and all those
+> unnecessary indirect pointer accesses when I do profiles. And if I see
+> fsnotify in my profiles when I don't have any notifications enabled,
+> that really really *annoys* me.
+> 
 
-I grant you it's not the best word in the world to describe it, but it
-is uncached in the sense that it's not persistent in cache. It does very
-much use the page cache as the synchronization point, exactly to avoid
-the pitfalls of the giant mess that is O_DIRECT. But it's not persistent
-in cache, whereas write-through very much traditionally is. Hence I
-think uncached is a much better word than write-through, though as
-mentioned I'll be happy to take other suggestions. Write-through isn't
-it though, as the uncached concept is as much about reads as it is about
-writes.
+There are good suggestions here, and decent analysis, Amir has followed up with
+a patch that will improve things, and that's good.
 
-> This IO, however, is moving the data coherently through the cache
-> (both on read and write).  The cached folios are transient - i.e.
-> -temporarily resident- in the cache whilst the IO is in progress -
-> but this behaviour does not make it "uncached IO".
-> 
-> Calling it "uncached IO " is simply wrong from any direction I look
-> at it....
+But this was an entirely inappropriate way to communicate your point, even with
+people who have been here a while and are used to being yelled at.
 
-As mentioned, better words welcome :-)
+Throughout this email you have suggested that myself, Amir, and Jan have never
+looked at profiles.  You go so far as to suggest that we have no idea what we're
+doing and don't understand common case optimizations.  These are the sort of
+comments that are unhelpful and put most people on the defensive, and make them
+unwilling to listen to your suggestions and feedback.  These are the sort of
+comments that make people work very hard to exit this community.
 
->> For write-through, I'd consider that just the fact that it
->> gets kicked off once dirtied rather than wait for writeback to get
->> kicked at some point.
->>
->> So I'd say write-through is a subset of that.
-> 
-> I think the post-IO invalidation that these IOs do is largely
-> irrelevant to how the page cache processes the write. Indeed,
-> from userspace, the functionality in this patchset would be
-> implemented like this:
-> 
-> oneshot_data_write(fd, buf, len, off)
-> {
-> 	/* write into page cache */
-> 	pwrite(fd, buf, len, off);
-> 
-> 	/* force the write through the page cache */
-> 	sync_file_range(fd, off, len, SYNC_FILE_RANGE_WRITE | SYNC_FILE_RANGE_WAIT_AFTER);
-> 
-> 	/* Invalidate the single use data in the cache now it is on disk */
-> 	posix_fadvise(fd, off, len, POSIX_FADV_DONTNEED);
-> }
+Are you wrong?  No.  We all get tunnel vision, I know I was deeply focused on
+making the page fault case have as little impact as possible, but I definitely
+didn't consider the indirect access case.  I don't run with mitigations on, and
+frankly I am a file system person, I know if you're here we're going to do IO
+and that's going to be the bad part.  That's why we do code review, because
+we're all human and we all miss things.
 
-Right, you could do that, it'd obviously just be much slower as you lose
-the pipelining of the writes. This is the reason for the patch, after
-all.
+But being dressed down like this for missing a better way, because lets be
+honest what I did wasn't earth shatteringly bad, is not helpful.  It is actively
+harmful, and it makes me not want to work on this stuff anymore.
 
-> Allowing the application to control writeback and invalidation
-> granularity is a much more flexible solution to the problem here;
-> when IO is sequential, delayed allocation will be allowed to ensure
-> large contiguous extents are created and that will greatly reduce
-> file fragmentation on XFS, btrfs, bcachefs and ext4. For random
-> writes, it'll submit async IOs in batches...
-> 
-> Given that io_uring already supports sync_file_range() and
-> posix_fadvise(), I'm wondering why we need an new IO API to perform
-> this specific write-through behaviour in a way that is less flexible
-> than what applications can already implement through existing
-> APIs....
+We constantly have discussions about how do we bring in new people and how do we
+train up new maintainers, without looking at how do we keep maintainers and how
+do we keep developers.  If you're losing people like me, gaining new people is
+going to be an even taller order.  Thanks,
 
-Just to make it available generically, it's just a read/write flag after
-all. And yes, you can very much do this already with io_uring, just by
-linking the ops. But the way I see it, it's a generic solution to a
-generic problem.
-
->>> That also gives us a common place for adding cache write-through
->>> trigger logic (think writebehind trigger logic similar to readahead)
->>> and this is also a place where we could automatically tag mapping
->>> ranges for reclaim on writeback completion....
->>
->> I appreciate that you seemingly like the concept, but not that you are
->> also seemingly trying to commandeer this to be something else. Unless
->> you like the automatic reclaiming as well, it's not clear to me.
-> 
-> I'm not trying to commandeer anything.
-
-No? You're very much trying to steer it in a direction that you find
-better. There's a difference between making suggestions, or speaking
-like you are sitting on the ultimate truth.
-
-> Having thought about it more, I think this new API is unneccesary
-> for custom written applications to perform fine grained control of
-> page cache residency of one-shot data. We already have APIs that
-> allow applications to do exactly what this patchset is doing. rather
-> than choosing to modify whatever benchmark being used to use
-> existing APIs, a choice was made to modify both the applicaiton and
-> the kernel to implement a whole new API....
-> 
-> I think that was the -wrong choice-.
-> 
-> I think this partially because the kernel modifications are don't
-> really help further us towards the goal of transparent mode
-> switching in the page cache.
-> 
-> Read-through should be a mode that the readahead control activates,
-> not be something triggered by a special read() syscall flag. We
-> already have access patterns and fadvise modes guiding this.
-> Write-through should be controlled in a similar way.
-> 
-> And making the data being read and written behave as transient page
-> caceh objects should be done via an existing fadvise mode, too,
-> because the model you have implemented here exactly matches the 
-> definition of FADV_NOREUSE:
-> 
-> 	POSIX_FADV_NOREUSE
->               The specified data will be accessed only once.
-> 
-> Having a new per-IO flag that effectively collides existing
-> control functionality into a single inflexible API bit doesn't
-> really make a whole lot of sense to me.
-> 
-> IOWs, I'm not questioning whether we need rw-through modes and/or
-> IO-transient residency for page cache based IO - it's been on our
-> radar for a while. I'm more concerned that the chosen API in this
-> patchset is a poor one as it cannot replace any of the existing
-> controls we already have for these sorts of application directed
-> page cache manipulations...
-
-We'll just have to disagree, then. Per-file settings is fine for sync
-IO, for anything async per-io is the way to go. It's why we have things
-like RWF_NOWAIT as well, where O_NONBLOCK exists too. I'd argue that
-RWF_NOWAIT should always have been a thing, and O_NONBLOCK is a mistake.
-That's why RWF_UNCACHED exists. And yes, the FADV_NOREUSE was already
-discussed with Willy and Yu, and I already did a poc patch to just
-unconditionally set RWF_UNCACHED for FADV_NOREUSE enabled files. While
-it's not exactly the same concept, I think the overlap is large enough
-that it makes sense to do that. Especially since, historically,
-FADV_NOREUSE has been largely a no-op and even know it doesn't have well
-defined semantics.
-
--- 
-Jens Axboe
+Josef
 
