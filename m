@@ -1,202 +1,119 @@
-Return-Path: <linux-ext4+bounces-5077-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5078-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C08539C5A04
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 15:13:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9AE219C59EC
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 15:07:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 32DDAB3F8CA
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 13:56:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5FB11281BF3
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 14:07:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069B81FC7DB;
-	Tue, 12 Nov 2024 13:55:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919AF1FC7CB;
+	Tue, 12 Nov 2024 14:07:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ap/VuOj/";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="X7ZlUU4O";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="cpMNzLWX";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="BhEUIMbj"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="Q581Fl3C"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-oa1-f44.google.com (mail-oa1-f44.google.com [209.85.160.44])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B34141FBF7D;
-	Tue, 12 Nov 2024 13:55:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4B751FBF4A
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 14:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731419705; cv=none; b=SyXw7fp1FyUrqHJm42FsvUUUucVipRXV05+MzPmx1WMtC0k9UE1BEIcYlew0+uXpYJfFQ9vQR5QOEbeJYOopjPIozkmlawGsaYu32tylqpQ5W+tTF5W2194V6d2XfuO1eXHOl7PsDDibRChHLwnP+ZX7RKO5HdzJITbiQeDYru8=
+	t=1731420442; cv=none; b=iXrwd0qv71FULatunVvSeCyC+lSZvZw7VjVYMXy4KY7EH+PG7SB+aF4vT9lHa5tO97PeWbyoIIdBR6fagCgWhuZZsFAGBoiMFqjGQxAeE4gcJAY3RO7XEFvFttjm94+vVoetSq7LurRTOV6Msk/3HYlsUbMzTbGpTCDaHPHklzM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731419705; c=relaxed/simple;
-	bh=Xj8Q5LkHc5oaTyfRByOo/XwoC4md8gp+NrGybKyzbMQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KuvJZaJXvRknRabDk3ytgJ+xckTC/p1wL/cDotsnDYBA7fB1flt0lPg8knDDw8KdvTGkfBngqergjAymJEdeygtQUxM46LuOCgoLvr31QhahkwPEGWGpINF0qr5JXE7BNgDtGSJ5FLfFEAbNb6WSp1zd8MtpnVZa8LOh/vAWN6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ap/VuOj/; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=X7ZlUU4O; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=cpMNzLWX; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=BhEUIMbj; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id D38172128F;
-	Tue, 12 Nov 2024 13:55:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731419702; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GggHjq6mlfXdpXhy6vku+7SxFDasBwrmkZtO3QYAPpA=;
-	b=Ap/VuOj/uPqqu0YJCo/upxhvpT1gL65rnquNlS9fK9Oxw+ekiHvA5S7YFlk17/ISyH8r28
-	BmzB+RIY2r87L4UT6C8MCAdT1/IXUrqwdVf8UBdzMwHojzxmwNwaK7qpxGJ90/9ZIIU5qI
-	MDukUePOxM78VoAt7M7u43Fx82eobo0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731419702;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GggHjq6mlfXdpXhy6vku+7SxFDasBwrmkZtO3QYAPpA=;
-	b=X7ZlUU4O8aIis5H8gO1MMPYtKX4e99qPEvZZhgO0TbP+b3NnUo5tMjqNHySYa3O5SJFtFF
-	jB50zv3wLh8V6cAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731419701; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GggHjq6mlfXdpXhy6vku+7SxFDasBwrmkZtO3QYAPpA=;
-	b=cpMNzLWX7mSb5R3J+LFyZ7KuTODAbuhad69ifHlpyyzMrEe/aM+ayo7u/842jYPPtSSWi8
-	DGavQWBKqhvPHWc5V7rnDC1BvFQpfEeKbim10wrf4uzTLAX+m6g9lAuBvBugRG/JbW8Eef
-	+Lep4cyhpZlV3LsFRPkgRb4BADH7EXk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731419701;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GggHjq6mlfXdpXhy6vku+7SxFDasBwrmkZtO3QYAPpA=;
-	b=BhEUIMbjOckf909sxr4ypQWrcGmWwOTExK8ce3kk5E9zGpOa3SC4kc1T0ZBylBYcheq2um
-	Jl7OpQjrBZza5vDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C77BC13721;
-	Tue, 12 Nov 2024 13:55:01 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Jgi6MDVeM2dpcgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 12 Nov 2024 13:55:01 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 72D0DA08D0; Tue, 12 Nov 2024 14:54:57 +0100 (CET)
-Date: Tue, 12 Nov 2024 14:54:57 +0100
-From: Jan Kara <jack@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>,
-	Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
-	linux-fsdevel@vger.kernel.org, jack@suse.cz, brauner@kernel.org,
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v6 06/17] fsnotify: generate pre-content permission event
- on open
-Message-ID: <20241112135457.zxzhtoe537gapkmu@quack3>
-References: <cover.1731355931.git.josef@toxicpanda.com>
- <b509ec78c045d67d4d7e31976eba4b708b238b66.1731355931.git.josef@toxicpanda.com>
- <CAHk-=wh4BEjbfaO93hiZs3YXoNmV=YkWT4=OOhuxM3vD2S-1iA@mail.gmail.com>
- <CAEzrpqdtSAoS+p4i0EzWFr0Nrpw1Q2hphatV7Sk4VM49=L3kGw@mail.gmail.com>
- <CAHk-=wj8L=mtcRTi=NECHMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com>
- <CAOQ4uxgxtQhe_3mj5SwH9568xEFsxtNqexLfw9Wx_53LPmyD=Q@mail.gmail.com>
- <CAHk-=wgUV27XF8g23=aWNJecRbn8fCDDW2=10y9yJ122+d8JrA@mail.gmail.com>
- <CAOQ4uxh7aT+EvWYMa9v=SyRjfdh4Je_FmS0+TNqonHE5Z+_TPw@mail.gmail.com>
+	s=arc-20240116; t=1731420442; c=relaxed/simple;
+	bh=FgXKW6BhffGyYtDU5ECCxoHBzDo0QQz41DIfSkBu6LA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=EZlShHSi0n4ZVEI38LGSXEVN41oWWEaUibu+agCsZ6RbMYuR1WyTDN+nAJPEUsqLh/Ht+DjL8SAnaPvoab/LB2v12NSE75i2ykFn8lQ13HtWhx7mBB5/1mEYJum2O0oSlTG70/PHj1GM4TDzIV5hVkSWOXxEyBWtgEtEWn67NEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=Q581Fl3C; arc=none smtp.client-ip=209.85.160.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oa1-f44.google.com with SMTP id 586e51a60fabf-2951f3af3ceso2961497fac.1
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 06:07:19 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731420439; x=1732025239; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XBLxl8MQn90IOYFQNE2QB3bhcSqpZYc/78jBtkc8gSY=;
+        b=Q581Fl3C6vodl50RvVDAzxLsSqnREQ062qx27W8c6tI+slZqca+De3AkT7dWm1BQ42
+         A9Dkp6IgY1DybaEpM+zC+39rqWDkHMhG0lvxQsKCW2QAx/dcCtFMenMD9YJfPXOjiKV1
+         W6bXtttTHFoaJKLDzhAAFbGvf+jerD4xswuJA7uBjGowW9kdXMpZ8M3bC1SdX4osCE17
+         +BWo2ZI9CJNv0uV3UH8HfIawhGPa3q3r7kHt1RppgE31wUZtO3xg7KCtYZXMlWbZLYuy
+         /l4Kac1BdFCr5is15MBtMforzhVqOlT/3C3dmonSjkb+PdIQNT/FCsfgUhOtCWfOhH1m
+         aQvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731420439; x=1732025239;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XBLxl8MQn90IOYFQNE2QB3bhcSqpZYc/78jBtkc8gSY=;
+        b=GQ3s0dKSe1KmK+ox754A/0RhERosqGnmrWCs0kMhKqnekyAjPF4ZYQ54VtcbT06J2o
+         YUvOe6bnSqz+tSnCZGNoqcewDSb8bPO9Pd6ZyPQjr6UtWzetxDC/7rReakb8CVDO9v+t
+         rtVUzjYqdZbKJwisRAOPluLAB66W7uPu7mfycGkVOB94e96Fi8rRu5G9kvGTPswf4zgP
+         HbuoD9BHOp4gSPjnmNaX8Ei/6jr2UtRKi7COMiSmquK1C9a95qowu2nsYNmpuSA+OePm
+         GITT1vhu7SojZwqn467hXu1tw8/xfPMNLGu/DUjn807eOhmmMnNDphgt0TACj3zdLJFb
+         438g==
+X-Forwarded-Encrypted: i=1; AJvYcCWJc2pr+bfqxH5M6o3ZPVZb7mVYE66io+kKjlCUn2NHSrnsz/hk3Zk9BWhKi21a8jqcNHOp3lIGW3x5@vger.kernel.org
+X-Gm-Message-State: AOJu0YyMmCFXK3xRxjNjh3k7792/278NPYJSYLDspHfbt9cfcCaArdx3
+	6FrawqoQl2Gkltrf60MUWxfCMipNyOB5NSgQ0FuR53iMZsEHie8Si98Dr7R1xoc=
+X-Google-Smtp-Source: AGHT+IE6/Zulglee42EqR6pm4NxzY3D1VnQ/4OdFs+x6lB09KGsOVRrOZIf6id75vga3Werl3HOmGQ==
+X-Received: by 2002:a05:6871:7b09:b0:277:da52:777 with SMTP id 586e51a60fabf-295600acfa1mr13774116fac.11.1731420438736;
+        Tue, 12 Nov 2024 06:07:18 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-29546c92853sm3381006fac.18.2024.11.12.06.07.17
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 12 Nov 2024 06:07:18 -0800 (PST)
+Message-ID: <1671bb73-2e51-4ecc-b33d-d0b483348cda@kernel.dk>
+Date: Tue, 12 Nov 2024 07:07:16 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxh7aT+EvWYMa9v=SyRjfdh4Je_FmS0+TNqonHE5Z+_TPw@mail.gmail.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.998];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.996];
-	MIME_GOOD(-0.10)[text/plain];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_TO(0.00)[gmail.com];
-	ARC_NA(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RCPT_COUNT_SEVEN(0.00)[11];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 03/16] mm: add PG_uncached page flag
+To: "Kirill A. Shutemov" <kirill@shutemov.name>
+Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
+ clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
+ linux-btrfs@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-xfs@vger.kernel.org
+References: <20241111234842.2024180-1-axboe@kernel.dk>
+ <20241111234842.2024180-4-axboe@kernel.dk>
+ <lponnb7dxjx3htksbggjoasvby6sa2a4ayrkcykdnxvypwy4pp@ci2fnmcyrke7>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <lponnb7dxjx3htksbggjoasvby6sa2a4ayrkcykdnxvypwy4pp@ci2fnmcyrke7>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue 12-11-24 09:11:32, Amir Goldstein wrote:
-> On Tue, Nov 12, 2024 at 1:37 AM Linus Torvalds
-> <torvalds@linux-foundation.org> wrote:
-> > On Mon, 11 Nov 2024 at 16:00, Amir Goldstein <amir73il@gmail.com> wrote:
-> > >
-> > > I think that's a good idea for pre-content events, because it's fine
-> > > to say that if the sb/mount was not watched by a pre-content event listener
-> > > at the time of file open, then we do not care.
-> >
-> > Right.
-> >
-> > > The problem is that legacy inotify/fanotify watches can be added after
-> > > file is open, so that is allegedly why this optimization was not done for
-> > > fsnotify hooks in the past.
-> >
-> > So honestly, even if the legacy fsnotify hooks can't look at the file
-> > flag, they could damn well look at an inode flag.
+On 11/12/24 2:12 AM, Kirill A. Shutemov wrote:
+> On Mon, Nov 11, 2024 at 04:37:30PM -0700, Jens Axboe wrote:
+>> Add a page flag that file IO can use to indicate that the IO being done
+>> is uncached, as in it should not persist in the page cache after the IO
+>> has been completed.
 > 
-> Legacy fanotify has a mount watch (FAN_MARK_MOUNT),
-> which is the common way for Anti-malware to set watches on
-> filesystems, so I am not sure what you are saying.
-> 
-> > And I'm not even convinced that we couldn't fix them to just look at a
-> > file flag, and say "tough luck, somebody opened that file before you
-> > started watching, you don't get to see what they did".
-> 
-> That would specifically break tail -f (for inotify) and probably many other
-> tools, but as long as we also look at the inode flags (i_fsnotify_mask)
-> and the dentry flags (DCACHE_FSNOTIFY_PARENT_WATCHED),
-> then I think we may be able to get away with changing the semantics
-> for open files on a fanotify mount watch.
+> I have not found a way to avoid using a new bit. I am unsure if we have
+> enough bits on 32-bit systems with all possible features enabled.
 
-Yes, I agree we cannot afford to generate FS_MODIFY event only if the mark
-was placed after file open. There's too much stuff in userspace depending
-on this since this behavior dates back to inotify interface sometime in
-2010 or so.
+I think it should be OK, at least the kernel test bot reports build
+success on all the archs it tests, which has a lot of 32-bit archs. I
+have to say I didn't check on numbering and if the mm subsystem has a
+BUILD_BUG_ON() for bits exceeding the allowable value for unsigned long
+on the host, but I'm assuming it does?
 
-> Specifically, I would really like to eliminate completely the cost of
-> FAN_ACCESS_PERM event, which could be gated on file flag, because
-> this is only for security/Anti-malware and I don't think this event is
-> practically
-> useful and it sure does not need to guarantee permission events to mount
-> watchers on already open files.
+> In the worst-case scenario, we may need to make the feature 64-bit only.
+> I believe it should be acceptable as long as userspace is prepared for the
+> possibility that RWF_UNCACHED may fail. It is not going to be supported by
+> all filesystems anyway.
 
-For traditional fanotify permission events I agree generating them only if
-the mark was placed before open is likely fine but we'll have to try and
-see whether something breaks. For the new pre-content events I like the
-per-file flag as Linus suggested. That should indeed save us some cache
-misses in some fast paths.
+Right, I would not even see that as a big issue. 32-bit would just see
+-EOPNOTSUPP for any fs, even ones that support it on 64-bit archs.
 
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jens Axboe
 
