@@ -1,74 +1,74 @@
-Return-Path: <linux-ext4+bounces-5088-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5089-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CB9309C5E94
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id DA2749C5EA2
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 18:18:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 908D6282BBE
-	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 17:17:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A00D628312F
+	for <lists+linux-ext4@lfdr.de>; Tue, 12 Nov 2024 17:18:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE3EA215015;
-	Tue, 12 Nov 2024 17:13:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E70A212D16;
+	Tue, 12 Nov 2024 17:16:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="2hn4gktA"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="oAjCIijy"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+Received: from mail-oo1-f54.google.com (mail-oo1-f54.google.com [209.85.161.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AABC120DD66
-	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 17:13:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 493142123EF
+	for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 17:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731431597; cv=none; b=HsETLSO0FfKh3JVO5zhz5sPCsXnT8V7mOtvu/U7F+YWJ33qRFvwWaoBFmYkF4ItOBaChkxi1iJzMByOOVXlo7mCjwzQF/g5PfbW0ldWTYwmgmGRxXVdD4MG5Ji9IEUIiB0fl6ag1XNadYfztrqSopi1t2G3FiWqCz4i0aM/UCXQ=
+	t=1731431774; cv=none; b=jAdz8W62eBR4YPAyWwBBCKdcgejhsYYlV3cevhvLySYE4VwiSmGE1OouJBGxCD6Qo6CEXRvM9WVTXPkLj2HRxhPmhtRoLdcjPuApg9Sd47ph4B7TREVPIUILti6WsKFcuo3h1/X9A3KR4sGzK5iZeJ8mRGoVqhnWCzojK6kPG2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731431597; c=relaxed/simple;
-	bh=OaIUNL4wDulYBWCeL52yflc/neDWNsACf3HqYi4lxlw=;
+	s=arc-20240116; t=1731431774; c=relaxed/simple;
+	bh=WElPdD8LZYryTigGCKIJr1x7hPyk/0fp60+PcfErbm4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZXQMr7GLefgoxXDEdzuriviosZjvM7pqhY/5/2vaGatrnWyrLqDDeyyUz5r0aXlQe+0m/sPH7tRWIQW4TV3/bJBf4CLIpoGzrBjIRl1cpJSCF1Hmrcvj5C87g0m7vDgbT0CNcMiLJ9x4vi7Kmi4POt9GhSEuXRRWl37YnyD5kBw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=2hn4gktA; arc=none smtp.client-ip=209.85.167.169
+	 In-Reply-To:Content-Type; b=uPOWF35VD9RFUyWJTf/n55vcYL666+7r22XZ0dzclX1dhBU76YYb9fD+hmoWFa/Sh05BGybw6TXyE+Zb85o+wi1oeRe25PaKOd3DnvjSOPd4Vs2uYsJpmrRqgjN+zlY+bUv2E8bFm1eI83Qv3cXT72xQiakgsLP/eKYM0ipRz2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=oAjCIijy; arc=none smtp.client-ip=209.85.161.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3e5fb8a4e53so3342824b6e.1
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 09:13:15 -0800 (PST)
+Received: by mail-oo1-f54.google.com with SMTP id 006d021491bc7-5edf76cd843so2519375eaf.1
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 09:16:13 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731431595; x=1732036395; darn=vger.kernel.org;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731431772; x=1732036572; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=hhFc34QUIUtRmxEJib4/H+5a4T4gZgtNawOMUenBu5s=;
-        b=2hn4gktAu2bXg6QIK5HzUibtinBzYRFPoxDow1f3UmHelR9UGv5coMHakweqRMRIym
-         kp3Ga015gohmr3A+IxrgVH8dnCo2csTaFvWUMf81Ti2IrCbc/yMHzg5YN6HLaaj5a1X8
-         uznE2I9ayKEqXMbOkk4WKO+VkjGNDtd/OMJO64X6kiWttBuYwnCbBZ9F8g9YJRdr8Nz3
-         5yEy6F+lSNbK591sinNhYy6uUXmevNJLAvuMtADMuYMdCLGyeQBNsEua/OiHiT8VjBI0
-         BPdne/u4wIOZgLshPcZj9bHOYCn0Oj5an4xIpV3/yo0Yjz5h63XMyTXfGrRHxR5wUuaS
-         QIhg==
+        bh=tnwYJHTHAIT7NhrPIR59Xh9wM+nrsn1VWuRs7Z2BGss=;
+        b=oAjCIijytabdM5gECO8+BuZ4Jqs/uZmzyfwftew4kiT4b9OMzcSAhy5StU1kxXA+mY
+         paUUrFjsq1d7/6SqzetFMqv4FZzuwg+HBElvj6XQh1lvA46bghdn4HaN1mpRcms2Ri/o
+         zmVrHZwMh6q6EM12J2iIYAMU+Og0HAXrkHESC2ewc/Ll3xaXwqC4LqMmZ4tInelY+dPS
+         CfMicufONUT5KN9x0Vfvt5hu6oJt3MRDKBW/Od48G9daj4aTh2ZobRFsfyJhszxv+ZMw
+         mkiyXQVWvgtC/HLatTrB75Hra0UaKA3/9N3TDCmQzxUsmvagV0GfGPyrNGFS+jX/ceqi
+         DdBw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731431595; x=1732036395;
+        d=1e100.net; s=20230601; t=1731431772; x=1732036572;
         h=content-transfer-encoding:in-reply-to:from:content-language
          :references:cc:to:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hhFc34QUIUtRmxEJib4/H+5a4T4gZgtNawOMUenBu5s=;
-        b=JnTEQbYLOJ0+tIIc+hjd/lWTLFFbCWfN8/msFuquHtzfylghCSsXnodzc+4ReD5D+Q
-         8IgduiUQQiyz84u48M7VMymSIjUzDvliOp2k0cTZ7cRtlk64QRDRxW614ZrPWw8rlyAq
-         LAlouAcY2h93NNB4qd9VXt+MGSCfyEa03W77tacddJGIDbCVWTc9Bgbh1xn3ZM+hfTP/
-         CU5/ntXHSCN7qTxlaFAVIxhSzJuukPFDVJm2e3qgG/GSEK4qm6u6L6bJMbrIGpkOvgH2
-         Tkx4mgtEsSs/yASYVbdz0uw+Tvm7Nn5YsO6//bDN2UovOmDZydrYLcbJjc62Y7srza6u
-         V+ww==
-X-Forwarded-Encrypted: i=1; AJvYcCW7b59+eJz62XMhzogE1dbJYt1NnG/DjPEIfNO0/oJlEFurBmWhMMpJjMtq5pqpCjgLzmk4VcSnLUPB@vger.kernel.org
-X-Gm-Message-State: AOJu0YyZ8Fn0XA+uLHqGZMTiGbTwRoIepvZtqTjWqagmDhF3/UygTn2S
-	lrILLgkf3RJj2oMRnos9LQ8C1/f8SRlpVMsk2dLC+1zyXoV61aONFruk0vhFzNI=
-X-Google-Smtp-Source: AGHT+IH644V99dOVg147q96OR3GJtIRC7XpOTmFUI9LGtr4TxaaFP6x3xC1BuVau04Ao7iJOTmXH6w==
-X-Received: by 2002:a05:6808:10c9:b0:3e6:60dc:5aee with SMTP id 5614622812f47-3e794654540mr13513708b6e.3.1731431594747;
-        Tue, 12 Nov 2024 09:13:14 -0800 (PST)
+        bh=tnwYJHTHAIT7NhrPIR59Xh9wM+nrsn1VWuRs7Z2BGss=;
+        b=Zc+peZfeoVu1rrr7cZJpHMtlUeRH8BjDzElPqNorCJN8N+37P3rjoV2w5SpH3vF0N2
+         7vJM+e9gH4wGb74Aknn8qOqsjWw2tYYr99JITt1Y5IVxLqCvge+yKR6p4x0tUDe7aaYT
+         uA+34ULywDIgs0pOhm+E1nPHow8MIAH2zIvNfXml7TKpHt44FB0mhgqmWaZhw1CYroXm
+         MfCj9LbMzrp21x+5CvuIpRiqvGjkL8KrHwknDRmQ8sRIbF426UUaaU/jjI0cEb1vIDNn
+         fFOvcDk2FMIqzKANId+x8nMmgD56YRySXvp5oqjXDuiAITQGqi0knPhA/SJINSvMx95s
+         3+MQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW6Z1yySP/02G/qL61cnY883DUMRziwDBwmL/kN/DqF8ztjm7OyBF5d+uCeiiltK0JeTQ/DqQyy9F4A@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxkfca8Ow7wEdG4uapXIxogklXL00tQiETyIBnSPAyE1N2jDh0B
+	h5LjL1rNIUVgb6HSYoqzsBOgOZqG6sNNv+xjBkiRrkTaCwJzZjfOtN8DQXUX8EM=
+X-Google-Smtp-Source: AGHT+IG7wz2TGObI3XCZLc6czEW3NEVtcJxYLSH6bVzUApdp4Zu/FDc4eOSHYLi8nQ/yqwWNP9VyFg==
+X-Received: by 2002:a05:6820:4c85:b0:5eb:6c26:1ca0 with SMTP id 006d021491bc7-5ee57b9d3f9mr11631558eaf.1.1731431772373;
+        Tue, 12 Nov 2024 09:16:12 -0800 (PST)
 Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e78cca37c9sm2630818b6e.21.2024.11.12.09.13.13
+        by smtp.gmail.com with ESMTPSA id 46e09a7af769-71a1080fb77sm2816311a34.20.2024.11.12.09.16.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Nov 2024 09:13:14 -0800 (PST)
-Message-ID: <df2b9a81-3ebd-48fe-a205-2d4007fe73d1@kernel.dk>
-Date: Tue, 12 Nov 2024 10:13:12 -0700
+        Tue, 12 Nov 2024 09:16:11 -0800 (PST)
+Message-ID: <aeb58f3d-67b2-4df3-abc7-49a2e9bb8270@kernel.dk>
+Date: Tue, 12 Nov 2024 10:16:10 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -76,99 +76,58 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/16] ext4: add RWF_UNCACHED write support
+Subject: Re: [PATCH 13/16] iomap: make buffered writes work with RWF_UNCACHED
 To: Brian Foster <bfoster@redhat.com>
 Cc: linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, hannes@cmpxchg.org,
  clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
  kirill@shutemov.name, linux-btrfs@vger.kernel.org,
  linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
 References: <20241111234842.2024180-1-axboe@kernel.dk>
- <20241111234842.2024180-13-axboe@kernel.dk> <ZzOD_qV5tpv9nbw7@bfoster>
+ <20241111234842.2024180-14-axboe@kernel.dk> <ZzOEVwWpGEaq6wE7@bfoster>
 Content-Language: en-US
 From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <ZzOD_qV5tpv9nbw7@bfoster>
+In-Reply-To: <ZzOEVwWpGEaq6wE7@bfoster>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 11/12/24 9:36 AM, Brian Foster wrote:
-> On Mon, Nov 11, 2024 at 04:37:39PM -0700, Jens Axboe wrote:
->> IOCB_UNCACHED IO needs to prune writeback regions on IO completion,
->> and hence need the worker punt that ext4 also does for unwritten
->> extents. Add an io_end flag to manage that.
->>
->> If foliop is set to foliop_uncached in ext4_write_begin(), then set
->> FGP_UNCACHED so that __filemap_get_folio() will mark newly created
->> folios as uncached. That in turn will make writeback completion drop
->> these ranges from the page cache.
->>
->> Now that ext4 supports both uncached reads and writes, add the fop_flag
->> FOP_UNCACHED to enable it.
->>
->> Signed-off-by: Jens Axboe <axboe@kernel.dk>
->> ---
->>  fs/ext4/ext4.h    |  1 +
->>  fs/ext4/file.c    |  2 +-
->>  fs/ext4/inline.c  |  7 ++++++-
->>  fs/ext4/inode.c   | 18 ++++++++++++++++--
->>  fs/ext4/page-io.c | 28 ++++++++++++++++------------
->>  5 files changed, 40 insertions(+), 16 deletions(-)
->>
-> ...
->> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
->> index 54bdd4884fe6..afae3ab64c9e 100644
->> --- a/fs/ext4/inode.c
->> +++ b/fs/ext4/inode.c
->> @@ -1138,6 +1138,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
->>  	int ret, needed_blocks;
->>  	handle_t *handle;
->>  	int retries = 0;
->> +	fgf_t fgp_flags;
->>  	struct folio *folio;
->>  	pgoff_t index;
->>  	unsigned from, to;
->> @@ -1164,6 +1165,15 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
->>  			return 0;
->>  	}
->>  
->> +	/*
->> +	 * Set FGP_WRITEBEGIN, and FGP_UNCACHED if foliop contains
->> +	 * foliop_uncached. That's how generic_perform_write() informs us
->> +	 * that this is an uncached write.
->> +	 */
->> +	fgp_flags = FGP_WRITEBEGIN;
->> +	if (*foliop == foliop_uncached)
->> +		fgp_flags |= FGP_UNCACHED;
->> +
->>  	/*
->>  	 * __filemap_get_folio() can take a long time if the
->>  	 * system is thrashing due to memory pressure, or if the folio
->> @@ -1172,7 +1182,7 @@ static int ext4_write_begin(struct file *file, struct address_space *mapping,
->>  	 * the folio (if needed) without using GFP_NOFS.
->>  	 */
->>  retry_grab:
->> -	folio = __filemap_get_folio(mapping, index, FGP_WRITEBEGIN,
->> +	folio = __filemap_get_folio(mapping, index, fgp_flags,
->>  					mapping_gfp_mask(mapping));
->>  	if (IS_ERR(folio))
->>  		return PTR_ERR(folio);
+On 11/12/24 9:37 AM, Brian Foster wrote:
+> On Mon, Nov 11, 2024 at 04:37:40PM -0700, Jens Axboe wrote:
+>> Add iomap buffered write support for RWF_UNCACHED. If RWF_UNCACHED is
+>> set for a write, mark the folios being written with drop_writeback. Then
 > 
-> JFYI, I notice that ext4 cycles the folio lock here in this path and
-> thus follows up with a couple checks presumably to accommodate that. One
-> is whether i_mapping has changed, which I assume means uncached state
-> would have been handled/cleared externally somewhere..? I.e., if an
-> uncached folio is somehow truncated/freed without ever having been
-> written back?
-> 
-> The next is a folio_wait_stable() call "in case writeback began ..."
-> It's not immediately clear to me if that is possible here, but taking
-> that at face value, is it an issue if we were to create an uncached
-> folio, drop the folio lock, then have some other task dirty and
-> writeback the folio (due to a sync write or something), then have
-> writeback completion invalidate the folio before we relock it here?
+> s/drop_writeback/uncached/ ?
 
-I don't either of those are an issue. The UNCACHED flag will only be set
-on a newly created folio, it does not get inherited for folios that
-already exist.
+Ah indeed, guess that never got changed. Thanks, will fix that in the
+commit message.
+
+> BTW, this might be getting into wonky "don't care that much" territory,
+> but something else to be aware of is that certain writes can potentially
+> change pagecache state as a side effect outside of the actual buffered
+> write itself.
+> 
+> For example, xfs calls iomap_zero_range() on write extension (i.e. pos >
+> isize), which uses buffered writes and thus could populate a pagecache
+> folio without setting it uncached, even if done on behalf of an uncached
+> write.
+> 
+> I've only made a first pass and could be missing some details, but IIUC
+> I _think_ this means something like writing out a stream of small,
+> sparse and file extending uncached writes could actually end up behaving
+> more like sync I/O. Again, not saying that's something we really care
+> about, just raising it in case it's worth considering or documenting..
+
+No that's useful info, I'm not really surprised that there would still
+be cases where UNCACHED goes unnoticed. In other words, I'd be surprised
+if the current patches for eg xfs/ext4 cover all the cases where new
+folios are created and should be marked as UNCACHED of IOCB_UNCACHED is
+set in the iocb.
+
+I think those can be sorted out or documented as we move forward.
+UNCACHED is really just a hint - the kernel should do its best to not
+have permanent folios for this IO, but there are certainly cases where
+it won't be honored if you're racing with regular buffered IO or mmap.
+For the case above, sounds like we could cover that, however, and
+probably should.
 
 -- 
 Jens Axboe
