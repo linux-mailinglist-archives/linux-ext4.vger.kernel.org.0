@@ -1,367 +1,321 @@
-Return-Path: <linux-ext4+bounces-5135-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5136-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1943A9C748E
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 15:39:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 979159C7481
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 15:38:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3E1EB2722E
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 14:23:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27E3B1F28B96
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 14:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4003D52F76;
-	Wed, 13 Nov 2024 14:23:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78A572003B3;
+	Wed, 13 Nov 2024 14:36:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XydvH+7x"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from mail-qv1-f43.google.com (mail-qv1-f43.google.com [209.85.219.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC261136352
-	for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 14:23:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 477DD1FF7A4;
+	Wed, 13 Nov 2024 14:36:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731507802; cv=none; b=IkIY7Cbrw/NT3jJbLS7n6IFTeZLvDPs1yEMR9hb0aUTOudD2zIRuGU1VWVcvL/ELUWn/eDpgUu6oGK7M2WaOpTNx3IIBwF9DpKsNSo5AvNvSw1cWiokGTo5tnINf5TkSwMBV345amIbXT4Xjzn8PUvoM1B0xm9SzSw9tQWsP92Y=
+	t=1731508607; cv=none; b=uPdJWT9TliJux3Pg2OGFYGadVddaIlsvnNy4ecn7PwP6jqTb/vKuz+2kjJqnSBckN4eM7ZFDspeOg7exfkveXkGc2/UyIDJIMH2jY1+XO8w1DOg+fD3Bat6tPm4XNLQJaX5agSNHOcRU1z+PfnEEWfpVhlak4rsaGS1CxrXURuI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731507802; c=relaxed/simple;
-	bh=Eq15jDBgPqBFd0kudE1o98yNIVwkk+MZGi/PxCpGZzg=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=sIX+QNMqfo1MpTW3o6hKQ9qWaGr6N3JON/wWe1OmNvwk+SEmI3X1Zs2k0YymolQlGYTURWolaSdK+1q2M+DrKhp9EK3YQbZl9f6pF+C41aLX/pgYoG6l2ElzCCc2Jnn11c3hxUe12AAwHOoMFfZjvMDC8fxUw8qN9Ph1HV9rYsM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a4f2698c76so82830545ab.2
-        for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 06:23:19 -0800 (PST)
+	s=arc-20240116; t=1731508607; c=relaxed/simple;
+	bh=4ZOYAY9l9J0p+/pagouIG7S5TCj2naHI1ZJy9Dt8YLk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ep2eMU0WFd+MF6+EJGCEqs5uHi5zI1sZVIVNMlstxp7ZGlL7IVPIKh32GVCCCr7ukbkHBIqm3yWp7bMgMQjCrf4D5Nv20i6/aBb2eVK71nreb8hpfxPPSyIEjtY+fKrjX/e6AHgNApK8UD3sv0Pe6BL7y4p6HVvccf8Nw/i9+Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XydvH+7x; arc=none smtp.client-ip=209.85.219.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f43.google.com with SMTP id 6a1803df08f44-6cc1b20ce54so47718526d6.0;
+        Wed, 13 Nov 2024 06:36:45 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731508604; x=1732113404; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5TpO1rEDli92wfsqt+A461mrFCCbHcRm9Ir9kcXs4JU=;
+        b=XydvH+7xyHsDmu2URrGPRxYFtb/LrDn4o5vsr5PlpoG71TNinbSyczAgN8A2chjdiG
+         7Phje9nlfdnp6oTjW+XY7Iv6guQFViTX6cYMUxFjqSHaPsCaFLtU/LSF0TEtd7PCQRSd
+         iG3pDSW0SSF5wJzI+Rz9XTxaHbBxm05g5cJXUuQ1OMAfYqwX/AJspwxMO0pEY7jG3zDr
+         wkcJlRlrDW49Hp1aFXdIdKghASHl+UpBvHMRlsS2go0ICBAEJ7193nAd4NVGsTFGsYzA
+         yhnSzbe+zXtmPSduazYR0xNepKckAIpaisbz1kn3kJfuZjkwbNnJlMJUEq5gXPR3NyuC
+         mvMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731507799; x=1732112599;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=7unTAqHre4JVVGG6RaoB8jPlYK1uDTtb4sknNm+FhDA=;
-        b=CP5vGuFoIXK7nGx9ZKkA/GoropvdRC5gLwjQy/MxMsMbwcAkgnjxoJYdo3r9G4cglc
-         TtGHhDc4dzkE343Ew3mKSlUFb+JS5vU0uATOUgJw5ImDJDir+GdmDQTZYwX2iUZUd2MU
-         wXZWr7iUgBM/G7wCtj4YgZ9AJ4LScSx0enosiPrZ8OHgZz9fWLu8JI6u6eQKUEi6jAoF
-         5njBM1i5BVFSV3i70mXWEvaFVxBfNDcOR13K22Dxq5hJjBH7671d9C1j2hnCuA6lqkw4
-         0tPWgnT3b1PY3TA/vA3Nc1tjNVJsntBCXPsrtiA0Przr6sQkdxTOgTFMt6Av20jqYw0A
-         NQSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXUZN/yB3a3c+bwVpERjd1OFZrjW1WFSlKCQHIuNy77liro2kB7WXctWmkt9VUkg++FgoXDcnUN3INO@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeWldDVA0unmIJt08AqgoY4A3E3pHGn3YSpLiTGIP7E9W7JaEf
-	iHjxe5jxEou2qlNZ+IJJegJfjRKVtxg38xgfa656Iakf40mIzGx7ESxNZsUqfvJ3iFTvxoGVhXK
-	ldWjtcLP1jsJ1bNztmQDB+IgvSdnvCfEhYaz++IxxClQKwU7LSzg7mYo=
-X-Google-Smtp-Source: AGHT+IHyhq90/+5HBbm3XeFQ57RPHJKcZWQo/sHgHiI3k5DngEGlIZHGtSX99ujJP2S5olP8NSkamjHVZWuVS9QFj1Km/MsCyIWw
+        d=1e100.net; s=20230601; t=1731508604; x=1732113404;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5TpO1rEDli92wfsqt+A461mrFCCbHcRm9Ir9kcXs4JU=;
+        b=UbFqrtaKo80BBBIXB2bhvhdB7vHDjZwdziZzgCgRrjfcNf1uMN2Y9GiN7IBK2qk76l
+         U1gGVz+7SYHmEQ3Fjx52jbZCixWkL9frYv6ITnCP4RRJ76BcSsFVQkJoCTBnu9jDzX93
+         00H+V5ZFB5ZwPQJ214pBPLtTgqN7quPrOlEqbgAXZw/cU4ksffuhhRQwPbjq25ekmmMy
+         BYTSDTAJuiFz9ckkJ9o7W3Z5/dm5wp2eajocbmDdF1m6nRe39SLEJHj8n/fr2Lacidyb
+         ceW5l3mPFgNcbZ8e2lyNXu4Jg6aq3UIxhWPkl75VujPwIJAn+eDbg3IniAPoO0mvENcy
+         Jj/A==
+X-Forwarded-Encrypted: i=1; AJvYcCVNllex5CjnX4LL0+AN9k7KO4iI1VQpsrrv2uHCbnc1NZ1MACaDeA4RLNpJP7e7zd5hOY+4pzQRWt0szg==@vger.kernel.org, AJvYcCW2afoO0DNq/4VXpXzc0jjV1cjYOEunPNuxVx10H2lEyHF83oAo3QmeSHWRxjAherPn/C8pBl2j26jf2A==@vger.kernel.org, AJvYcCWoTYjrzMAwc/QLuH4Jier2eANN+5ysjvFLj2R3kS/WIAbWewT9YvXPDzQDgptyfoo81CA5epwgvhC11d5ZWQ==@vger.kernel.org, AJvYcCWxRkntwicpMMhN7Jv4877Gl+M7+yTjPW09BThuG1srbqrm1ChJ21+NcCpLvCgPdC+yudlKWib4ZvC0@vger.kernel.org
+X-Gm-Message-State: AOJu0YwA33UVzvMYzPAjcPpFutpsoXdGbma5EtW9X9k1Rnu8wmneo9Gt
+	EOSKUwaIkNXdqSiXeDIriHN+/WR65Lhq6xkoVDyaiGt3md1VuwyNokpmSdwo9b7HF82znUc7usq
+	V4UCtLynZ6NmDgEEg0/D3pAnGC/k=
+X-Google-Smtp-Source: AGHT+IHDM6yIlJ+rbWXJBsM1kdPByZi+pkkssJXLfoBLa9nCWP4173NtLKc4WYnD4Kt86lm779n87BvsYqF4dqhC3AQ=
+X-Received: by 2002:a05:6214:4589:b0:6d3:9359:26ef with SMTP id
+ 6a1803df08f44-6d39e0f6663mr268917446d6.6.1731508604035; Wed, 13 Nov 2024
+ 06:36:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:3f0e:b0:3a7:1b59:a06b with SMTP id
- e9e14a558f8ab-3a71b59a42dmr13442105ab.8.1731507799140; Wed, 13 Nov 2024
- 06:23:19 -0800 (PST)
-Date: Wed, 13 Nov 2024 06:23:19 -0800
-In-Reply-To: <671ae9ed.050a0220.2eb763.00cd.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6734b657.050a0220.2a2fcc.000e.GAE@google.com>
-Subject: Re: [syzbot] [kernfs?] [jfs?] INFO: task hung in do_rmdir (6)
-From: syzbot <syzbot+4128a26fb0f85ec9e76c@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, gregkh@linuxfoundation.org, 
-	jfs-discussion@lists.sourceforge.net, kent.overstreet@linux.dev, 
-	linux-bcachefs@vger.kernel.org, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
-	syzkaller-bugs@googlegroups.com, tj@kernel.org, tytso@mit.edu
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+ <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+ <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com>
+ <20241113001251.GF3387508@ZenIV> <CAHk-=wg02AubUBZ5DxLra7b5w2+hxawdipPqEHemg=Lf8b1TDA@mail.gmail.com>
+ <CAHk-=wgVzOQDNASK8tU3JoZHUgp7BMTmuo2Njmqh4NvEMYTrCw@mail.gmail.com>
+ <20241113011954.GG3387508@ZenIV> <20241113043003.GH3387508@ZenIV>
+In-Reply-To: <20241113043003.GH3387508@ZenIV>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 13 Nov 2024 15:36:33 +0100
+Message-ID: <CAOQ4uxj01mrrPQMyygdyDAGpyA=K=SPH88E2tpY5RuSsqG9iiA@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
+To: Al Viro <viro@zeniv.linux.org.uk>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josef Bacik <josef@toxicpanda.com>, 
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
+	brauner@kernel.org, linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-mm@kvack.org, linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-syzbot has found a reproducer for the following issue on:
+On Wed, Nov 13, 2024 at 5:30=E2=80=AFAM Al Viro <viro@zeniv.linux.org.uk> w=
+rote:
+>
+> On Wed, Nov 13, 2024 at 01:19:54AM +0000, Al Viro wrote:
+> > On Tue, Nov 12, 2024 at 04:38:42PM -0800, Linus Torvalds wrote:
+> > > Looking at that locking code in fadvise() just for the f_mode use doe=
+s
+> > > make me think this would be a really good cleanup.
+> > >
+> > > I note that our fcntl code seems buggy as-is, because while it does
+> > > use f_lock for assignments (good), it clearly does *not* use them for
+> > > reading.
+> > >
+> > > So it looks like you can actually read inconsistent values.
+> > >
+> > > I get the feeling that f_flags would want WRITE_ONCE/READ_ONCE in
+> > > _addition_ to the f_lock use it has.
+> >
+> > AFAICS, fasync logics is the fishy part - the rest should be sane.
+> >
+> > > The f_mode thing with fadvise() smells like the same bug. Just becaus=
+e
+> > > the modifications are serialized wrt each other doesn't mean that
+> > > readers are then automatically ok.
+> >
+> > Reads are also under ->f_lock in there, AFAICS...
+> >
+> > Another thing in the vicinity is ->f_mode modifications after the calls
+> > of anon_inode_getfile() in several callers - probably ought to switch
+> > those to anon_inode_getfile_fmode().  That had been discussed back in
+> > April when the function got merged, but "convert to using it" followup
+> > series hadn't materialized...
+>
+> While we are at it, there's is a couple of kludges I really hate -
+> mixing __FMODE_NONOTIFY and __FMODE_EXEC with O_... flags.
+>
+> E.g. for __FMODE_NONOTIFY all it takes is switching fanotify from
+> anon_inode_getfd() to anon_inode_getfile_fmode() and adding
+> a dentry_open_nonotify() to be used by fanotify on the other path.
+> That's it - no more weird shit in OPEN_FMODE(), etc.
+>
+> For __FMODE_EXEC it might get trickier (nfs is the main consumer),
+> but I seriously suspect that something like "have path_openat()
+> check op->acc_mode & MAY_EXEC and set FMODE_EXEC in ->f_mode
+> right after struct file allocation" would make a good starting
+> point; yes, it would affect uselib(2), but... I've no idea whether
+> it wouldn't be the right thing to do; would be hard to test.
+>
+> Anyway, untested __FMODE_NONOTIFY side of it:
+>
+> diff --git a/fs/fcntl.c b/fs/fcntl.c
+> index 22dd9dcce7ec..ebd1c82bfb6b 100644
+> --- a/fs/fcntl.c
+> +++ b/fs/fcntl.c
+> @@ -1161,10 +1161,10 @@ static int __init fcntl_init(void)
+>          * Exceptions: O_NONBLOCK is a two bit define on parisc; O_NDELAY
+>          * is defined as O_NONBLOCK on some platforms and not on others.
+>          */
+> -       BUILD_BUG_ON(21 - 1 /* for O_RDONLY being 0 */ !=3D
+> +       BUILD_BUG_ON(20 - 1 /* for O_RDONLY being 0 */ !=3D
+>                 HWEIGHT32(
+>                         (VALID_OPEN_FLAGS & ~(O_NONBLOCK | O_NDELAY)) |
+> -                       __FMODE_EXEC | __FMODE_NONOTIFY));
+> +                       __FMODE_EXEC));
+>
+>         fasync_cache =3D kmem_cache_create("fasync_cache",
+>                                          sizeof(struct fasync_struct), 0,
+> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fano=
+tify_user.c
+> index 9644bc72e457..43fbf29ef03a 100644
+> --- a/fs/notify/fanotify/fanotify_user.c
+> +++ b/fs/notify/fanotify/fanotify_user.c
+> @@ -101,8 +101,7 @@ static void __init fanotify_sysctls_init(void)
+>   *
+>   * Internal and external open flags are stored together in field f_flags=
+ of
+>   * struct file. Only external open flags shall be allowed in event_f_fla=
+gs.
+> - * Internal flags like FMODE_NONOTIFY, FMODE_EXEC, FMODE_NOCMTIME shall =
+be
+> - * excluded.
+> + * Internal flags like FMODE_EXEC shall be excluded.
+>   */
+>  #define        FANOTIFY_INIT_ALL_EVENT_F_BITS                          (=
+ \
+>                 O_ACCMODE       | O_APPEND      | O_NONBLOCK    | \
+> @@ -262,8 +261,8 @@ static int create_fd(struct fsnotify_group *group, co=
+nst struct path *path,
+>          * we need a new file handle for the userspace program so it can =
+read even if it was
+>          * originally opened O_WRONLY.
+>          */
+> -       new_file =3D dentry_open(path,
+> -                              group->fanotify_data.f_flags | __FMODE_NON=
+OTIFY,
+> +       new_file =3D dentry_open_nonotify(path,
+> +                              group->fanotify_data.f_flags,
 
-HEAD commit:    f1b785f4c787 Merge tag 'for_linus' of git://git.kernel.org..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=15c78130580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1503500c6f615d24
-dashboard link: https://syzkaller.appspot.com/bug?extid=4128a26fb0f85ec9e76c
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13c78130580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11f10b5f980000
+I would make this a bit more generic helper and the comment above
+is truly clueless:
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/0498fc027e02/disk-f1b785f4.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e7fc27a5ed75/vmlinux-f1b785f4.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/f8db925dbfe1/bzImage-f1b785f4.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/afc6d52853ca/mount_0.gz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+4128a26fb0f85ec9e76c@syzkaller.appspotmail.com
-
-INFO: task syz-executor120:5867 blocked for more than 143 seconds.
-      Not tainted 6.12.0-rc7-syzkaller-00042-gf1b785f4c787 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor120 state:D stack:29104 pid:5867  tgid:5850  ppid:5846   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5328 [inline]
- __schedule+0x17fa/0x4bd0 kernel/sched/core.c:6693
- __schedule_loop kernel/sched/core.c:6770 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6785
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6842
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:850 [inline]
- do_rmdir+0x263/0x580 fs/namei.c:4387
- __do_sys_unlinkat fs/namei.c:4575 [inline]
- __se_sys_unlinkat fs/namei.c:4569 [inline]
- __x64_sys_unlinkat+0xde/0xf0 fs/namei.c:4569
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5ab5ccabc9
-RSP: 002b:00007f5ab5c60228 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007f5ab5d5c6d8 RCX: 00007f5ab5ccabc9
-RDX: 0000000000000200 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f5ab5d5c6d0 R08: 00007ffee618ebd7 R09: 00007f5ab5c606c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5ab5d5c6dc
-R13: 00007f5ab5d1f0c0 R14: 0030656c69662f2e R15: 00007ffee618ebd8
- </TASK>
-INFO: task syz-executor120:5866 blocked for more than 144 seconds.
-      Not tainted 6.12.0-rc7-syzkaller-00042-gf1b785f4c787 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor120 state:D stack:29104 pid:5866  tgid:5851  ppid:5847   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5328 [inline]
- __schedule+0x17fa/0x4bd0 kernel/sched/core.c:6693
- __schedule_loop kernel/sched/core.c:6770 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6785
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6842
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:850 [inline]
- do_rmdir+0x263/0x580 fs/namei.c:4387
- __do_sys_unlinkat fs/namei.c:4575 [inline]
- __se_sys_unlinkat fs/namei.c:4569 [inline]
- __x64_sys_unlinkat+0xde/0xf0 fs/namei.c:4569
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5ab5ccabc9
-RSP: 002b:00007f5ab5c60228 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007f5ab5d5c6d8 RCX: 00007f5ab5ccabc9
-RDX: 0000000000000200 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f5ab5d5c6d0 R08: 00007ffee618ebd7 R09: 00007f5ab5c606c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5ab5d5c6dc
-R13: 00007f5ab5d1f0c0 R14: 0030656c69662f2e R15: 00007ffee618ebd8
- </TASK>
-INFO: task syz-executor120:5864 blocked for more than 145 seconds.
-      Not tainted 6.12.0-rc7-syzkaller-00042-gf1b785f4c787 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor120 state:D stack:28240 pid:5864  tgid:5852  ppid:5845   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5328 [inline]
- __schedule+0x17fa/0x4bd0 kernel/sched/core.c:6693
- __schedule_loop kernel/sched/core.c:6770 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6785
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6842
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:850 [inline]
- do_rmdir+0x263/0x580 fs/namei.c:4387
- __do_sys_unlinkat fs/namei.c:4575 [inline]
- __se_sys_unlinkat fs/namei.c:4569 [inline]
- __x64_sys_unlinkat+0xde/0xf0 fs/namei.c:4569
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5ab5ccabc9
-RSP: 002b:00007f5ab5c60228 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007f5ab5d5c6d8 RCX: 00007f5ab5ccabc9
-RDX: 0000000000000200 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f5ab5d5c6d0 R08: 00007ffee618ebd7 R09: 00007f5ab5c606c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5ab5d5c6dc
-R13: 00007f5ab5d1f0c0 R14: 0030656c69662f2e R15: 00007ffee618ebd8
- </TASK>
-INFO: task syz-executor120:5868 blocked for more than 145 seconds.
-      Not tainted 6.12.0-rc7-syzkaller-00042-gf1b785f4c787 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor120 state:D stack:29104 pid:5868  tgid:5853  ppid:5849   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5328 [inline]
- __schedule+0x17fa/0x4bd0 kernel/sched/core.c:6693
- __schedule_loop kernel/sched/core.c:6770 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6785
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6842
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:850 [inline]
- do_rmdir+0x263/0x580 fs/namei.c:4387
- __do_sys_unlinkat fs/namei.c:4575 [inline]
- __se_sys_unlinkat fs/namei.c:4569 [inline]
- __x64_sys_unlinkat+0xde/0xf0 fs/namei.c:4569
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5ab5ccabc9
-RSP: 002b:00007f5ab5c60228 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007f5ab5d5c6d8 RCX: 00007f5ab5ccabc9
-RDX: 0000000000000200 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f5ab5d5c6d0 R08: 00007ffee618ebd7 R09: 00007f5ab5c606c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5ab5d5c6dc
-R13: 00007f5ab5d1f0c0 R14: 0030656c69662f2e R15: 00007ffee618ebd8
- </TASK>
-INFO: task syz-executor120:5865 blocked for more than 146 seconds.
-      Not tainted 6.12.0-rc7-syzkaller-00042-gf1b785f4c787 #0
-"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
-task:syz-executor120 state:D stack:28088 pid:5865  tgid:5854  ppid:5848   flags:0x00004006
-Call Trace:
- <TASK>
- context_switch kernel/sched/core.c:5328 [inline]
- __schedule+0x17fa/0x4bd0 kernel/sched/core.c:6693
- __schedule_loop kernel/sched/core.c:6770 [inline]
- schedule+0x14b/0x320 kernel/sched/core.c:6785
- schedule_preempt_disabled+0x13/0x30 kernel/sched/core.c:6842
- rwsem_down_write_slowpath+0xeee/0x13b0 kernel/locking/rwsem.c:1176
- __down_write_common kernel/locking/rwsem.c:1304 [inline]
- __down_write kernel/locking/rwsem.c:1313 [inline]
- down_write_nested+0x1e0/0x220 kernel/locking/rwsem.c:1694
- inode_lock_nested include/linux/fs.h:850 [inline]
- do_rmdir+0x263/0x580 fs/namei.c:4387
- __do_sys_unlinkat fs/namei.c:4575 [inline]
- __se_sys_unlinkat fs/namei.c:4569 [inline]
- __x64_sys_unlinkat+0xde/0xf0 fs/namei.c:4569
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5ab5ccabc9
-RSP: 002b:00007f5ab5c60228 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007f5ab5d5c6d8 RCX: 00007f5ab5ccabc9
-RDX: 0000000000000200 RSI: 0000000020000100 RDI: 0000000000000003
-RBP: 00007f5ab5d5c6d0 R08: 00007ffee618ebd7 R09: 00007f5ab5c606c0
-R10: 0000000000000000 R11: 0000000000000246 R12: 00007f5ab5d5c6dc
-R13: 00007f5ab5d1f0c0 R14: 0030656c69662f2e R15: 00007ffee618ebd8
- </TASK>
-
-Showing all locks held in the system:
-1 lock held by khungtaskd/30:
- #0: ffffffff8e937da0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- #0: ffffffff8e937da0 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:849 [inline]
- #0: ffffffff8e937da0 (rcu_read_lock){....}-{1:2}, at: debug_show_all_locks+0x55/0x2a0 kernel/locking/lockdep.c:6720
-1 lock held by kswapd0/89:
-2 locks held by getty/5586:
- #0: ffff88803521a0a0 (&tty->ldisc_sem){++++}-{0:0}, at: tty_ldisc_ref_wait+0x25/0x70 drivers/tty/tty_ldisc.c:243
- #1: ffffc900032332f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x6a6/0x1e00 drivers/tty/n_tty.c:2211
-3 locks held by syz-executor120/5859:
-2 locks held by syz-executor120/5867:
- #0: ffff88807b4ee420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888071e4c6c0 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
- #1: ffff888071e4c6c0 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: do_rmdir+0x263/0x580 fs/namei.c:4387
-2 locks held by syz-executor120/5858:
-2 locks held by syz-executor120/5866:
- #0: ffff88807b0e2420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888071e4c180 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
- #1: ffff888071e4c180 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: do_rmdir+0x263/0x580 fs/namei.c:4387
-4 locks held by syz-executor120/5856:
-2 locks held by syz-executor120/5864:
- #0: ffff8880339e2420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888071e10180 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
- #1: ffff888071e10180 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: do_rmdir+0x263/0x580 fs/namei.c:4387
-2 locks held by syz-executor120/5860:
-2 locks held by syz-executor120/5868:
- #0: ffff8880339ce420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888071e10c00 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
- #1: ffff888071e10c00 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: do_rmdir+0x263/0x580 fs/namei.c:4387
-2 locks held by syz-executor120/5857:
-2 locks held by syz-executor120/5865:
- #0: ffff88807b61a420 (sb_writers#9){.+.+}-{0:0}, at: mnt_want_write+0x3f/0x90 fs/namespace.c:515
- #1: ffff888071e106c0 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: inode_lock_nested include/linux/fs.h:850 [inline]
- #1: ffff888071e106c0 (&type->i_mutex_dir_key#6/1){+.+.}-{3:3}, at: do_rmdir+0x263/0x580 fs/namei.c:4387
-
-=============================================
-
-NMI backtrace for cpu 0
-CPU: 0 UID: 0 PID: 30 Comm: khungtaskd Not tainted 6.12.0-rc7-syzkaller-00042-gf1b785f4c787 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- nmi_cpu_backtrace+0x49c/0x4d0 lib/nmi_backtrace.c:113
- nmi_trigger_cpumask_backtrace+0x198/0x320 lib/nmi_backtrace.c:62
- trigger_all_cpu_backtrace include/linux/nmi.h:162 [inline]
- check_hung_uninterruptible_tasks kernel/hung_task.c:223 [inline]
- watchdog+0xff4/0x1040 kernel/hung_task.c:379
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-Sending NMI from CPU 0 to CPUs 1:
-NMI backtrace for cpu 1
-CPU: 1 UID: 0 PID: 5859 Comm: syz-executor120 Not tainted 6.12.0-rc7-syzkaller-00042-gf1b785f4c787 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-RIP: 0010:check_wait_context kernel/locking/lockdep.c:4840 [inline]
-RIP: 0010:__lock_acquire+0x724/0x2050 kernel/locking/lockdep.c:5152
-Code: 84 db 40 0f b6 c5 0f b6 cb 0f 44 c8 89 4c 24 54 48 8b 44 24 38 0f b6 04 10 84 c0 0f 85 74 13 00 00 41 8b 6d 00 41 89 ec ff cd <0f> 88 a2 00 00 00 89 eb 83 fd 31 73 79 48 8d 04 9b 48 8d 5c c6 20
-RSP: 0018:ffffc90004077170 EFLAGS: 00000002
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: 0000000000000001
-RDX: dffffc0000000000 RSI: ffff8880305c0ae0 RDI: 000000000000000f
-RBP: 0000000000000002 R08: ffffffff94298807 R09: 1ffffffff2853100
-R10: dffffc0000000000 R11: fffffbfff2853101 R12: 0000000000000003
-R13: ffff8880305c0ad8 R14: 1ffff110060b816f R15: ffff8880305c0b78
-FS:  00007f5ab5c816c0(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00005611646182f8 CR3: 000000007437c000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5825
- rcu_lock_acquire include/linux/rcupdate.h:337 [inline]
- rcu_read_lock include/linux/rcupdate.h:849 [inline]
- page_ref_add_unless include/linux/page_ref.h:235 [inline]
- folio_ref_add_unless include/linux/page_ref.h:248 [inline]
- folio_try_get+0x3b/0x350 include/linux/page_ref.h:264
- filemap_get_entry+0x240/0x3b0 mm/filemap.c:1852
- __filemap_get_folio+0x71/0xbd0 mm/filemap.c:1887
- __find_get_block_slow fs/buffer.c:203 [inline]
- __find_get_block+0x28a/0x1150 fs/buffer.c:1404
- bdev_getblk+0x33/0x550 fs/buffer.c:1431
- __bread_gfp+0x86/0x400 fs/buffer.c:1491
- sb_bread include/linux/buffer_head.h:346 [inline]
- get_branch+0x2c3/0x6e0 fs/sysv/itree.c:102
- get_block+0x180/0x16d0 fs/sysv/itree.c:222
- block_read_full_folio+0x418/0xcd0 fs/buffer.c:2401
- filemap_read_folio+0x14b/0x630 mm/filemap.c:2367
- do_read_cache_folio+0x3f5/0x850 mm/filemap.c:3825
- read_mapping_folio include/linux/pagemap.h:1011 [inline]
- dir_get_folio fs/sysv/dir.c:64 [inline]
- sysv_readdir+0x193/0x540 fs/sysv/dir.c:93
- iterate_dir+0x571/0x800 fs/readdir.c:108
- __do_sys_getdents64 fs/readdir.c:407 [inline]
- __se_sys_getdents64+0x1d3/0x4a0 fs/readdir.c:392
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f5ab5ccabc9
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 b1 18 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007f5ab5c81228 EFLAGS: 00000246 ORIG_RAX: 00000000000000d9
-RAX: ffffffffffffffda RBX: 00007f5ab5d5c6c8 RCX: 00007f5ab5ccabc9
-RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000003
-RBP: 00007f5ab5d5c6c0 R08: 00007f5ab5c816c0 R09: 00007f5ab5c816c0
-R10: 00007f5ab5c816c0 R11: 0000000000000246 R12: 00007f5ab5d5c6cc
-R13: 00007f5ab5d1f0c0 R14: 0030656c69662f2e R15: 00007ffee618ebd8
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 1.655 msecs
+        /*
+-        * we need a new file handle for the userspace program so it
+can read even if it was
+-        * originally opened O_WRONLY.
++        * We provide an fd for the userspace program, so it could access t=
+he
++        * file without generating fanotify events itself.
+         */
+-       new_file =3D dentry_open(path,
+-                              group->fanotify_data.f_flags | __FMODE_NONOT=
+IFY,
+-                              current_cred());
++       new_file =3D dentry_open_fmode(path, group->fanotify_data.f_flags,
++                                    FMODE_NONOTIFY, current_cred());
 
 
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+
+>                                current_cred());
+>         if (IS_ERR(new_file)) {
+>                 /*
+> @@ -1404,6 +1403,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags,=
+ unsigned int, event_f_flags)
+>         unsigned int fid_mode =3D flags & FANOTIFY_FID_BITS;
+>         unsigned int class =3D flags & FANOTIFY_CLASS_BITS;
+>         unsigned int internal_flags =3D 0;
+> +       struct file *file;
+>
+>         pr_debug("%s: flags=3D%x event_f_flags=3D%x\n",
+>                  __func__, flags, event_f_flags);
+> @@ -1472,7 +1472,7 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flags,=
+ unsigned int, event_f_flags)
+>             (!(fid_mode & FAN_REPORT_NAME) || !(fid_mode & FAN_REPORT_FID=
+)))
+>                 return -EINVAL;
+>
+> -       f_flags =3D O_RDWR | __FMODE_NONOTIFY;
+> +       f_flags =3D O_RDWR;
+>         if (flags & FAN_CLOEXEC)
+>                 f_flags |=3D O_CLOEXEC;
+>         if (flags & FAN_NONBLOCK)
+> @@ -1550,10 +1550,18 @@ SYSCALL_DEFINE2(fanotify_init, unsigned int, flag=
+s, unsigned int, event_f_flags)
+>                         goto out_destroy_group;
+>         }
+>
+> -       fd =3D anon_inode_getfd("[fanotify]", &fanotify_fops, group, f_fl=
+ags);
+> +       fd =3D get_unused_fd_flags(flags);
+
+s/flags/f_flags
+
+>         if (fd < 0)
+>                 goto out_destroy_group;
+>
+> +       file =3D anon_inode_getfile_fmode("[fanotify]", &fanotify_fops, g=
+roup,
+> +                                       f_flags, FMODE_NONOTIFY);
+> +       if (IS_ERR(file)) {
+> +               fd =3D PTR_ERR(file);
+> +               put_unused_fd(fd);
+> +               goto out_destroy_group;
+> +       }
+> +       fd_install(fd, file);
+>         return fd;
+>
+>  out_destroy_group:
+> diff --git a/fs/open.c b/fs/open.c
+> index acaeb3e25c88..04cb581528ff 100644
+> --- a/fs/open.c
+> +++ b/fs/open.c
+> @@ -1118,6 +1118,23 @@ struct file *dentry_open(const struct path *path, =
+int flags,
+>  }
+>  EXPORT_SYMBOL(dentry_open);
+>
+> +struct file *dentry_open_nonotify(const struct path *path, int flags,
+> +                        const struct cred *cred)
+> +{
+> +       struct file *f =3D alloc_empty_file(flags, cred);
+> +       if (!IS_ERR(f)) {
+> +               int error;
+> +
+> +               f->f_mode |=3D FMODE_NONOTIFY;
+> +               error =3D vfs_open(path, f);
+> +               if (error) {
+> +                       fput(f);
+> +                       f =3D ERR_PTR(error);
+> +               }
+> +       }
+> +       return f;
+> +}
+> +
+>  /**
+>   * dentry_create - Create and open a file
+>   * @path: path to create
+> @@ -1215,7 +1232,7 @@ inline struct open_how build_open_how(int flags, um=
+ode_t mode)
+>  inline int build_open_flags(const struct open_how *how, struct open_flag=
+s *op)
+>  {
+>         u64 flags =3D how->flags;
+> -       u64 strip =3D __FMODE_NONOTIFY | O_CLOEXEC;
+> +       u64 strip =3D O_CLOEXEC;
+>         int lookup_flags =3D 0;
+>         int acc_mode =3D ACC_MODE(flags);
+>
+
+Get rid of another stale comment:
+
+        /*
+-        * Strip flags that either shouldn't be set by userspace like
+-        * FMODE_NONOTIFY or that aren't relevant in determining struct
+-        * open_flags like O_CLOEXEC.
++        * Strip flags that aren't relevant in determining struct open_flag=
+s.
+         */
+
+With these changed, you can add:
+
+Reviewed-by: Amir Goldstein <amir73il@gmail.com>
+
+With the f_flags typo fixed, this passed LTP sanity tests, but I am
+going to test the NONOTIFY functionally some more.
+
+Thanks,
+Amir.
 
