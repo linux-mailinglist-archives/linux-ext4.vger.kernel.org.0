@@ -1,137 +1,124 @@
-Return-Path: <linux-ext4+bounces-5125-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5126-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37C2C9C6635
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 01:46:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 321209C665A
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 01:58:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C267EB2E67E
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 00:39:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC457281A36
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 00:58:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D62C1DF71;
-	Wed, 13 Nov 2024 00:39:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C6651805E;
+	Wed, 13 Nov 2024 00:58:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="EoE+xZvU"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="WrAMPD0h"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84807AD5A
-	for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 00:39:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 30AB8BA20
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 00:58:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731458344; cv=none; b=gtbtqNElRpk5rX4z4BMDe/g5Se4Talt7XL/iKzreMaWTAE0b66DkrGXIX3plLJ1sZCxtw1twy4gCV/XHPiWmwhjJpILA636jnEbdCvqd95qBecNWxkSGkQhZDCK3r1ss4dZ9GrJveMzYxURuFk6ru/cMjRJMnHaow679PGz70Wk=
+	t=1731459511; cv=none; b=YHTzKyulaoLbaBSkSUNXCfhC3wIxcv7xLLStt0N9lxAnOf2dZ40JI87JibY0lqV7UJsA1EswAH2ff1O7ekr3H9gzK/jgXH+p+E7xdKogsQ+h0XcEcONrw9pSFizv7X9mlHwvMQXjo3zyUf5qfARpgNT0b9GxDcK7zTF5xMWgbyA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731458344; c=relaxed/simple;
-	bh=YpobwbtA2+vKxtJu8xZ2FUyLg/btakBlHfnLUEUx69o=;
+	s=arc-20240116; t=1731459511; c=relaxed/simple;
+	bh=n3j6hYJca3iK+8w4R60+GpDVT4tBx8PgHWEo86e/9FM=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=b5u00N6PUmVkoig6ZOHXBFPxi5TCViETnYeO3px/Mht8ocEhT6CyATK86a8Zkik0PjPMONkgH4gNU0zFE2suGoYCUIS38mAOfDdyPcOUuRy9NmX68QnsPyaKG6eDEy87gOkPPpX5a3VWedaTjLamKaOyyZZDxS4J3HyMWWlnvig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=EoE+xZvU; arc=none smtp.client-ip=209.85.208.48
+	 To:Cc:Content-Type; b=dL654xbiWwU7bGxfoFSEJSC1xyCRtfeBx9vQ4T2x2eqfKvFillNFLg6SrLEvm5KS1d2QnnvVr2nEPkxkhJWvBniWIKwiuoJooJTN8Ctf1v6AKdIkPiBnn342w3aspOGI55GAXWtGiIBIxv7/0EvAmnnPqd2UHpgm+y9hFN3ldV8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=WrAMPD0h; arc=none smtp.client-ip=209.85.218.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-5cec93719ccso8160625a12.2
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 16:39:02 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a9eb3794a04so910144766b.3
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 16:58:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1731458341; x=1732063141; darn=vger.kernel.org;
+        d=linux-foundation.org; s=google; t=1731459506; x=1732064306; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=HToIlSDY7cOn93fCLokqkKx9Z4UBbjM0FNxhpulJNm8=;
-        b=EoE+xZvU6EDOKXSvsLLNaZJ9RmD6Fffex02A4Q4C3xXlUTc4oliTxpO+AKHeBUY130
-         Od7ENT9349yuehtel68hjw6V06589TZmNnXGldpmdruBp02OUtC0GcAtx3KKQPc+XgOY
-         w/yuR6jLbQux+QGscVnFDgk7Swp6D9d4z3ZL0=
+        bh=5tJ813zBq+G2Ew0iXW8JEVhQMVvtnrBGzEzzKoVgMoc=;
+        b=WrAMPD0hBykJQg5vXL1ugr1Wt/FYOZNNQoH5TUoTzUZs90nZSTTil62NlehgKVoP1u
+         OUqCX1u/q9GGrE8+qVutYWvdZmZ8e4vt1YJfyrRGHxvRgU3SHzsSg626TwsYQKqWtg58
+         VZ5Fa6r/A24apSR/G5ihzY1GlQx9GqKL0laeg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731458341; x=1732063141;
+        d=1e100.net; s=20230601; t=1731459506; x=1732064306;
         h=cc:to:subject:message-id:date:from:in-reply-to:references
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=HToIlSDY7cOn93fCLokqkKx9Z4UBbjM0FNxhpulJNm8=;
-        b=TwYo8WlFZiFncrW6U43MmiS7Ha1zuy1VcHsCr11VhW95yvcF4VfA5GyLLQhDjcYd8c
-         RSP4gbxcw7nvuJCGIdNEYm6dZYMV3JgScEipPkuoWq3js7nUUS2JRVCRVLhbj/NhSxrT
-         HTFsjC418IEk0lIUuw0KbX9SNpKTTtrMLWwkGjtMWzEQeWbTXqzaCWp+HUdc/8nD0mLg
-         WY6ASRKxdKmd/QaKrQUshj0XRBsmpTL0a7Y9GzheWsx1maULujs0dphTkyu1+cocM6oX
-         EHYR7pXReoUMm7MCuC4uYh6bplLITW2cTELiLfEJeRpoDrVeB8oy9CZk1xsBjfhq/vvm
-         b3Gw==
-X-Forwarded-Encrypted: i=1; AJvYcCV/BxpBkm66udyGV+g57JSvtnMLtVmBM0tiA4JtTA37qL6Q+fShXA0jMzfK61B8kXpLwt8TTjRRBih0@vger.kernel.org
-X-Gm-Message-State: AOJu0YyLpAJZ91egtdMIJezEU8YUAyuoRqEhDuABbjh00KRNV8AMF46h
-	a1lOyS5iLt+NsJtZdJPpfINLD3MQUlWSpCYYALo+2DpMG0bp5oriYuVUAJi/1VkoziLxCoj8Aqo
-	06ER7XA==
-X-Google-Smtp-Source: AGHT+IGO7bvche1xKoGTjQ1wv/TqBpHHvfFgw9Ufvlc167YcgJ+s1Od4dt8VP/uc8L7rHTjTAaXk+w==
-X-Received: by 2002:a05:6402:50cf:b0:5ce:c9e0:aebc with SMTP id 4fb4d7f45d1cf-5cf4f33654bmr3595274a12.1.1731458340753;
-        Tue, 12 Nov 2024 16:39:00 -0800 (PST)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cf03c7c90dsm6817502a12.80.2024.11.12.16.38.58
+        bh=5tJ813zBq+G2Ew0iXW8JEVhQMVvtnrBGzEzzKoVgMoc=;
+        b=BSdSSLVtImC48Cp9Gh5gzgWl8VcL8K0lY7zDdbJtg9j3Z/jaWTydbMuxC4A3gQaJmu
+         9twl+reN2hzAFcA8kFqrq3Io3E2phs+nqtqRxKFYVL1tELh8Qe2AHlPNx5D9H+xTOle+
+         oRhsVU23Fh8nqbFuel05sLMPUl16nBzi7SuP6dpS5RSZuyQvDsUI2T+InpjRFheLwN2r
+         tjTDbU8syU/wAX1gUaUKntytM6mpmYu6byQi47f7icPvOZZ5DiqoETXTaH+5/SKWTFkG
+         xoPvxkRawyIK2usdiSxWczdbVu8G0X5wWwEHITWt6yHWE+NdBeq5sSVqLnIttTbGCU7h
+         q3DA==
+X-Forwarded-Encrypted: i=1; AJvYcCV3Mjaw5zrghhd896oOSseok3uQCkXRWYHPEwwkTqFnaghECO1oo1Bg77gl98WEYUC61W3zvhThZFce@vger.kernel.org
+X-Gm-Message-State: AOJu0YyjfbON70CmEyA1ZEqASaTDDiFrRI4Bp8Ri43nfCp4b+ZMRgbbx
+	4QTD6ScWCMiePiR5GU4xGIk6TFFV4aZ20ogG/5Wr/z0/LX5xDAz8Id6E25/X21pIgNWnbJfIwfY
+	HIzf0hw==
+X-Google-Smtp-Source: AGHT+IFyb8RDMlBpPUKyyJW3rfIwGVOK58A+uuamleZnsg74wGMjfWTkLg+9//GArUw8Wfg/oyzHFQ==
+X-Received: by 2002:a17:907:60d1:b0:a9f:508:5f5a with SMTP id a640c23a62f3a-aa1c57afceamr473975666b.40.1731459506212;
+        Tue, 12 Nov 2024 16:58:26 -0800 (PST)
+Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
+        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-a9ee0a46119sm786039966b.46.2024.11.12.16.58.22
         for <linux-ext4@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 12 Nov 2024 16:38:59 -0800 (PST)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a99f646ff1bso938835866b.2
-        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 16:38:58 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCWv0mUIetCW/an0RmKyCa4rOXNlNEpz3R6QpnEX0S0hjfdB9RVrnh9gWk9jbxJ+4z+fbZxX5gdMv5U0@vger.kernel.org
-X-Received: by 2002:a17:907:1b0e:b0:a9a:1792:f05 with SMTP id
- a640c23a62f3a-aa1b10a45a5mr487896766b.31.1731458338247; Tue, 12 Nov 2024
- 16:38:58 -0800 (PST)
+        Tue, 12 Nov 2024 16:58:23 -0800 (PST)
+Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a9ed49ec0f1so1063652366b.1
+        for <linux-ext4@vger.kernel.org>; Tue, 12 Nov 2024 16:58:22 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCWnqR/e+Q15NjEMWN5OgNG0wxoug8wISE1ZizNR+72To4WyqL/jbY9sAjCpmGzxwGMf05gOG+9x9ez5@vger.kernel.org
+X-Received: by 2002:a17:907:1c11:b0:a9e:b08e:3de1 with SMTP id
+ a640c23a62f3a-aa1b10a9779mr425956266b.36.1731459502310; Tue, 12 Nov 2024
+ 16:58:22 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
- <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
- <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
- <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com>
- <20241113001251.GF3387508@ZenIV> <CAHk-=wg02AubUBZ5DxLra7b5w2+hxawdipPqEHemg=Lf8b1TDA@mail.gmail.com>
-In-Reply-To: <CAHk-=wg02AubUBZ5DxLra7b5w2+hxawdipPqEHemg=Lf8b1TDA@mail.gmail.com>
+References: <cover.1731433903.git.josef@toxicpanda.com> <60a2309da948dc81e4c66b9e5fe3f1e2faa2010e.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wgNFNYinkWCUvT2UnH2E2K_qPexEPgrm-xgr68YXnEQ_g@mail.gmail.com> <CAOQ4uxgakk8pW39JkjL1Up-dGZtTDn06QAQvX8p0fVZksCzA9Q@mail.gmail.com>
+In-Reply-To: <CAOQ4uxgakk8pW39JkjL1Up-dGZtTDn06QAQvX8p0fVZksCzA9Q@mail.gmail.com>
 From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 12 Nov 2024 16:38:42 -0800
-X-Gmail-Original-Message-ID: <CAHk-=wgVzOQDNASK8tU3JoZHUgp7BMTmuo2Njmqh4NvEMYTrCw@mail.gmail.com>
-Message-ID: <CAHk-=wgVzOQDNASK8tU3JoZHUgp7BMTmuo2Njmqh4NvEMYTrCw@mail.gmail.com>
-Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
-To: Al Viro <viro@zeniv.linux.org.uk>
-Cc: Amir Goldstein <amir73il@gmail.com>, Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, 
-	linux-fsdevel@vger.kernel.org, jack@suse.cz, brauner@kernel.org, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
+Date: Tue, 12 Nov 2024 16:58:06 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wiMy72pfXi7SQZoth5tY9bkXaA+_4vpoY_tOhqAmowvBw@mail.gmail.com>
+Message-ID: <CAHk-=wiMy72pfXi7SQZoth5tY9bkXaA+_4vpoY_tOhqAmowvBw@mail.gmail.com>
+Subject: Re: [PATCH v7 07/18] fsnotify: generate pre-content permission event
+ on open
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	jack@suse.cz, brauner@kernel.org, linux-xfs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Tue, 12 Nov 2024 at 16:23, Linus Torvalds
-<torvalds@linux-foundation.org> wrote:
+On Tue, 12 Nov 2024 at 15:41, Amir Goldstein <amir73il@gmail.com> wrote:
 >
-> On Tue, 12 Nov 2024 at 16:12, Al Viro <viro@zeniv.linux.org.uk> wrote:
-> >
-> > Ugh...  Actually, I would rather mask that on fcntl side (and possibly
-> > moved FMODE_RANDOM/FMODE_NOREUSE over there as well).
-> >
-> > Would make for simpler rules for locking - ->f_mode would be never
-> > changed past open, ->f_flags would have all changes under ->f_lock.
->
-> Yeah, sounds sane.
->
-> That said, just looking at which bits are used in f_flags is a major
-> PITA. About half the definitions use octal, with the other half using
-> hex. Lovely.
->
-> So I'd rather not touch that mess until we have to.
+> You wrote it should be called "in the open path" - that is ambiguous.
+> pre-content hook must be called without sb_writers held, so current
+> (in linux-next) location of fsnotify_open_perm() is not good in case of
+> O_CREATE flag, so I am not sure where a good location is.
+> Easier is to drop this patch.
 
-Actually, maybe the locking and the octal/hex mess should be
-considered a reason to clean this all up early rather than ignore it.
+Dropping that patch obviously removes my objection.
 
-Looking at that locking code in fadvise() just for the f_mode use does
-make me think this would be a really good cleanup.
+But since none of the whole "return errors" is valid with a truncate
+or a new file creation anyway, isn't the whole thing kind of moot?
 
-I note that our fcntl code seems buggy as-is, because while it does
-use f_lock for assignments (good), it clearly does *not* use them for
-reading.
+I guess do_open() could do it, but only inside a
 
-So it looks like you can actually read inconsistent values.
+        if (!error && !do_truncate && !(file->f_mode & FMODE_CREATED))
+                error = fsnotify_opened_old(file);
 
-I get the feeling that f_flags would want WRITE_ONCE/READ_ONCE in
-_addition_ to the f_lock use it has.
+kind of thing. With a big comment about how this is a pre-read hook,
+and not relevant for a new file or a truncate event since then it's
+always empty anyway.
 
-The f_mode thing with fadvise() smells like the same bug. Just because
-the modifications are serialized wrt each other doesn't mean that
-readers are then automatically ok.
+But hey, if you don't absolutely need it in the first place, not
+having it is *MUCH* preferable.
 
-           Linus
+It sounds like the whole point was to catch reads - not opens. So then
+you should catch it at read() time, not at open() time.
+
+                Linus
 
