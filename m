@@ -1,411 +1,106 @@
-Return-Path: <linux-ext4+bounces-5137-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5138-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 273F99C7722
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 16:29:21 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E01689C79FE
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 18:33:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FA93B31E94
-	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 14:48:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F07B9B2DC57
+	for <lists+linux-ext4@lfdr.de>; Wed, 13 Nov 2024 16:58:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02ED738389;
-	Wed, 13 Nov 2024 14:47:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2E170829;
+	Wed, 13 Nov 2024 16:57:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="e144gidM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jBScefVv";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="e144gidM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="jBScefVv"
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="FmTQtQ2d"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 58DDC13A268
-	for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 14:47:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDE761E1A28
+	for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 16:57:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731509277; cv=none; b=GPKCtl1jeO/UX+qkcD+vLK0snbDuvvZ2VWQmoP2vKtejh3czxUVZ1/liP1uhERaU2tdm4GDvAu+ukSXMeXXbFpSwns1IrdFg32hiCxbug3T9RCaZFUOGRTItvW88GiociyeH6b/mL/jkbMlBCVucRKFtk4GowCIU3JiTGkGJsvU=
+	t=1731517076; cv=none; b=ON9isQWZB2iHyo1NjNQBuRmgveW4goLcJwFKM1y9F/or4RAMLm0N7p3kG+V71H0lssymxO+LEEz4cAPDc4hVxKfTpa3BURnUYcm4QQY1veqHIt62aaw5il0tKPMhkfW+r0BWj1Hc6425GVVqkfHjadjIQyV7luDtJt71bojYlMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731509277; c=relaxed/simple;
-	bh=K4/rgzPZqSycAWPLt++mnpxvyyajiDxL/SwIPaPcahI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sWU0CG5Kv+gQm9ftoPcXJbYjQitcQpwWhn0EsRctsl2wd7oSsxwjJU52leXoxGsff0zYF4fNFUt7+HvPPYF7jUBuFwMdtJL/QBSJG0o8uUhVSw4cUAe/Eo/dlwRFE4KwEEXIHotFKFaQAw52cPbJQNSBN4xFlYR3Zj9zIXKyIrU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=e144gidM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jBScefVv; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=e144gidM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=jBScefVv; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 7B2411F37C;
-	Wed, 13 Nov 2024 14:47:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731509273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tohMNwhRZSPet+P4+lXwFf49oeqbVMa19PP/PnZQV+c=;
-	b=e144gidM1AjZbLJwJ+2hnAKlQwMJDaw8OQPt79VYJSk/z+bUtOBNNrCfuxOFrH/SdqESC2
-	t4q/dEMaqgueSYdqe1YiDZ4ZNjH+KbcHwgs48Zg49QhpIBtDhrpeG1Iq1d1x72giwON4rS
-	7ZxVe6jotKx204g5qUKsY9/ImmrOpvY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731509273;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tohMNwhRZSPet+P4+lXwFf49oeqbVMa19PP/PnZQV+c=;
-	b=jBScefVvjl+NDsoocXqesX5NjnPqrvwWLhLnB/KMFFxHXFfcNnd4VJn9rO1jj1QC2BcRx4
-	VZ8kJ5IBf6U6b+BA==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=e144gidM;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=jBScefVv
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731509273; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tohMNwhRZSPet+P4+lXwFf49oeqbVMa19PP/PnZQV+c=;
-	b=e144gidM1AjZbLJwJ+2hnAKlQwMJDaw8OQPt79VYJSk/z+bUtOBNNrCfuxOFrH/SdqESC2
-	t4q/dEMaqgueSYdqe1YiDZ4ZNjH+KbcHwgs48Zg49QhpIBtDhrpeG1Iq1d1x72giwON4rS
-	7ZxVe6jotKx204g5qUKsY9/ImmrOpvY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731509273;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=tohMNwhRZSPet+P4+lXwFf49oeqbVMa19PP/PnZQV+c=;
-	b=jBScefVvjl+NDsoocXqesX5NjnPqrvwWLhLnB/KMFFxHXFfcNnd4VJn9rO1jj1QC2BcRx4
-	VZ8kJ5IBf6U6b+BA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6BC4213301;
-	Wed, 13 Nov 2024 14:47:53 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id zldHGhm8NGcnfgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 13 Nov 2024 14:47:53 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 0FBFCA08D0; Wed, 13 Nov 2024 15:47:53 +0100 (CET)
-Date: Wed, 13 Nov 2024 15:47:52 +0100
-From: Jan Kara <jack@suse.cz>
-To: Andreas Dilger <adilger@dilger.ca>
-Cc: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
-	Li Dongyang <dongyangli@ddn.com>, linux-ext4@vger.kernel.org,
-	Alex Zhuravlev <bzzz@whamcloud.com>
-Subject: Re: [PATCH V2] jbd2: use rhashtable for revoke records during replay
-Message-ID: <20241113144752.3hzcbrhvh4znrcf7@quack3>
-References: <20241105034428.578701-1-dongyangli@ddn.com>
- <20241108103358.ziocxsyapli2pexv@quack3>
- <20241108161118.GA42603@mit.edu>
- <11AF8D3C-411F-436C-AC8D-B1C057D02091@dilger.ca>
+	s=arc-20240116; t=1731517076; c=relaxed/simple;
+	bh=csPBoYSDByNBHf+k5gUPUX7+wR76Q1hEBFh0oJb/HtE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ebNFEV95MMXc0c3cPPAzc5beJLGG1+h5R0dgQ+SIhzpvDpTxjkmb3VuEi2vkO+Ua1HSYkuHqcuj+cRnHrqsCe+XLb3BgkFt6LstJOuxmaEcgsRPylFrL4unmrrbmkwbaT9L4W/LeGRHkI7jcvCKFCfBc//kOvtqRedofKM7Byzc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=FmTQtQ2d; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-539eb97f26aso7041682e87.2
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 08:57:54 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1731517073; x=1732121873; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=r6dKI9I0XiNa6P0LadyJEAqhNHGcRQ6Z3i6i70GfR1Y=;
+        b=FmTQtQ2dgrnqzr9HVw/sR/cB/YOW0jiIYjRjf6sLqy9OJYQeVtk7OrEfwyd2TSL4hp
+         KMs5C7PZM27N0xVMmT2JD8Gke+tK9qBvV7gWnZ8HlYJxrJz4lLARIThXUlZHQvqFvXDB
+         yGC2tfSOndzs5YCk2QtypBei9c+IxgF+aYHrs=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731517073; x=1732121873;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=r6dKI9I0XiNa6P0LadyJEAqhNHGcRQ6Z3i6i70GfR1Y=;
+        b=sii9GJzI3tzt+XjrRMijrPUfEvkoTbL+mS3cUKNAh6gqrByVJ86PSpZfnV97arB3J4
+         uiK7S10p3B6Prk2eHKeGlnpMU1TZquyhEdwD/O6iPcba8xVJuoDkd9ladMKTgv679Yzh
+         8iWwcbB8g8L76eHbbbj7uM3+KZHqV5WXJAz6Lj8zRXJJley4KFPLC5WQSugiRUmbX9sC
+         g8hFc8OyKyk8ti0uobs78hfC4tUp5ks3PU+BRFOI8cKnHK41CgHzwyeoGNdch+9EVVx3
+         trpTWiTZR1T2n++TrEZSxsTqe1npFq/l4TXtqFioPpi1o1d1W2/BrpqYEUoYwx9LSf2W
+         ZRhA==
+X-Forwarded-Encrypted: i=1; AJvYcCXDx2ImOLO4q1rfUFdtLss1wh7wGUN4sjTWCJuTVyT29KUwYnLLD+d2m2S2cJIAs3ioAdHa3uYdceiF@vger.kernel.org
+X-Gm-Message-State: AOJu0YzWPi4KkjV3EnOAm00y6qoICiIzAJ2l8w4LgeFwlBPOqvFs5lAI
+	ZZEVa+FRT2dDb/KJlZkEJbZLnZjrASLDNbeTWZIAWZS3dBWbnbPdluW89vdUASnPkT1ZUtB1U7J
+	CMTJ9xA==
+X-Google-Smtp-Source: AGHT+IH0RRSVYSHdzqRsS3jC+mFgUIcbG09ZSbg7g2kf77f2a/rn4tX+1pU6Yr2GY9rW+zyHE7U5TQ==
+X-Received: by 2002:a05:6512:3f10:b0:53d:a291:d785 with SMTP id 2adb3069b0e04-53da291d7dcmr1521475e87.41.1731517072645;
+        Wed, 13 Nov 2024 08:57:52 -0800 (PST)
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com. [209.85.218.53])
+        by smtp.gmail.com with ESMTPSA id 4fb4d7f45d1cf-5cf03c4ecc6sm7351089a12.69.2024.11.13.08.57.51
+        for <linux-ext4@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 13 Nov 2024 08:57:52 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a99f646ff1bso1052095366b.2
+        for <linux-ext4@vger.kernel.org>; Wed, 13 Nov 2024 08:57:51 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCUjjza6OzPn+AEau3C/HYzIUejyylui0Bnwi8yTAFv+AYUjiZYN5x5J5NlqWlGH7rgx845nltRbgQVm@vger.kernel.org
+X-Received: by 2002:a17:906:7308:b0:a9a:3718:6d6 with SMTP id
+ a640c23a62f3a-aa1c57ffee4mr725890666b.58.1731517070805; Wed, 13 Nov 2024
+ 08:57:50 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="gdczihxayn6t35kx"
-Content-Disposition: inline
-In-Reply-To: <11AF8D3C-411F-436C-AC8D-B1C057D02091@dilger.ca>
-X-Rspamd-Queue-Id: 7B2411F37C
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[multipart/mixed,text/plain,text/x-patch];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	FROM_HAS_DN(0.00)[];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+,1:+,2:+];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[6];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	HAS_ATTACHMENT(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+ <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+ <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com> <CAOQ4uxjob2qKk4MRqPeNtbhfdSfP0VO-R5VWw0txMCGLwJ-Z1g@mail.gmail.com>
+In-Reply-To: <CAOQ4uxjob2qKk4MRqPeNtbhfdSfP0VO-R5VWw0txMCGLwJ-Z1g@mail.gmail.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Wed, 13 Nov 2024 08:57:34 -0800
+X-Gmail-Original-Message-ID: <CAHk-=wigQ0ew96Yv29tJUrUKBZRC-x=fDjCTQ7gc4yPys2Ngrw@mail.gmail.com>
+Message-ID: <CAHk-=wigQ0ew96Yv29tJUrUKBZRC-x=fDjCTQ7gc4yPys2Ngrw@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	jack@suse.cz, brauner@kernel.org, linux-xfs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Tue, 12 Nov 2024 at 16:06, Amir Goldstein <amir73il@gmail.com> wrote:
+>
+> Maybe I could use just this one bit, but together with the existing
+> FMODE_NONOTIFY bit, I get 4 modes, which correspond to the
+> highest watching priority:
 
---gdczihxayn6t35kx
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+So you'd use two bits, but one of those would re-use the existing
+FMODE_NONOTIFY? That sounds perfectly fine to me.
 
-On Tue 12-11-24 11:44:11, Andreas Dilger wrote:
-> On Nov 8, 2024, at 9:11 AM, Theodore Ts'o <tytso@mit.edu> wrote:
-> > 
-> > On Fri, Nov 08, 2024 at 11:33:58AM +0100, Jan Kara wrote:
-> >>> 1048576 records - 95 seconds
-> >>> 2097152 records - 580 seconds
-> >> 
-> >> These are really high numbers of revoke records. Deleting couple GB of
-> >> metadata doesn't happen so easily. Are they from a real workload or just
-> >> a stress test?
-> > 
-> > For context, the background of this is that this has been an
-> > out-of-tree that's been around for a very long time, for use with
-> > Lustre servers where apparently, this very large number of revoke
-> > records is a real thing.
-> 
-> Yes, we've seen this in production if there was a crash after deleting
-> many millions of log records.  This causes remount to take potentially
-> several hours before completing (and this was made worse by HA causing
-> failovers due to mount being "stuck" doing the journal replay).
-
-Thanks for clarification!
-
-> >> If my interpretation is correct, then rhashtable is unnecessarily
-> >> huge hammer for this. Firstly, as the big hash is needed only during
-> >> replay, there's no concurrent access to the data
-> >> structure. Secondly, we just fill the data structure in the
-> >> PASS_REVOKE scan and then use it. Thirdly, we know the number of
-> >> elements we need to store in the table in advance (well, currently
-> >> we don't but it's trivial to modify PASS_SCAN to get that number).
-> >> 
-> >> So rather than playing with rhashtable, I'd modify PASS_SCAN to sum
-> >> up number of revoke records we're going to process and then prepare
-> >> a static hash of appropriate size for replay (we can just use the
-> >> standard hashing fs/jbd2/revoke.c uses, just with differently sized
-> >> hash table allocated for replay and point journal->j_revoke to
-> >> it). And once recovery completes jbd2_journal_clear_revoke() can
-> >> free the table and point journal->j_revoke back to the original
-> >> table. What do you think?
-> > 
-> > Hmm, that's a really nice idea; Andreas, what do you think?
-> 
-> Implementing code to manually count and resize the recovery hashtable
-> will also have its own complexity, including possible allocation size
-> limits for a huge hash table.  That could be worked around by kvmalloc(),
-> but IMHO this essentially starts "open coding" something rhashtable was
-> exactly designed to avoid.
-
-Well, I'd say the result is much simpler than rhashtable code since you
-don't need all that dynamic reallocation and complex locking. Attached is a
-patch that implements my suggestion. I'd say it is simpler than having two
-types of revoke block hashing depending on whether we are doing recovery or
-running the journal. I've tested it and it seems to work fine (including
-replay of a journal with sufficiently many revoke blocks) but I'm not sure
-I can do a meaningful performance testing (I cannot quite reproduce the
-slow replay times even when shutting down the filesystem after deleting
-1000000 directories). So can you please give it a spin?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
-
---gdczihxayn6t35kx
-Content-Type: text/x-patch; charset=us-ascii
-Content-Disposition: attachment;
-	filename="0001-jbd2-Avoid-long-replay-times-due-to-high-number-or-r.patch"
-
-From db87b1d2cac01bc8336b70a32616388e6ff9fa8f Mon Sep 17 00:00:00 2001
-From: Jan Kara <jack@suse.cz>
-Date: Wed, 13 Nov 2024 11:53:13 +0100
-Subject: [PATCH] jbd2: Avoid long replay times due to high number or revoke
- blocks
-
-Some users are reporting journal replay takes a long time when there is
-excessive number of revoke blocks in the journal. Reported times are
-like:
-
-1048576 records - 95 seconds
-2097152 records - 580 seconds
-
-The problem is that hash chains in the revoke table gets excessively
-long in these cases. Fix the problem by sizing the revoke table
-appropriately before the revoke pass.
-
-Signed-off-by: Jan Kara <jack@suse.cz>
----
- fs/jbd2/recovery.c   | 54 +++++++++++++++++++++++++++++++++++++-------
- fs/jbd2/revoke.c     |  8 +++----
- include/linux/jbd2.h |  2 ++
- 3 files changed, 52 insertions(+), 12 deletions(-)
-
-diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-index 667f67342c52..9845f72e456a 100644
---- a/fs/jbd2/recovery.c
-+++ b/fs/jbd2/recovery.c
-@@ -39,7 +39,7 @@ struct recovery_info
- 
- static int do_one_pass(journal_t *journal,
- 				struct recovery_info *info, enum passtype pass);
--static int scan_revoke_records(journal_t *, struct buffer_head *,
-+static int scan_revoke_records(journal_t *, enum passtype, struct buffer_head *,
- 				tid_t, struct recovery_info *);
- 
- #ifdef __KERNEL__
-@@ -327,6 +327,12 @@ int jbd2_journal_recover(journal_t *journal)
- 		  journal->j_transaction_sequence, journal->j_head);
- 
- 	jbd2_journal_clear_revoke(journal);
-+	/* Free revoke table allocated for replay */
-+	if (journal->j_revoke != journal->j_revoke_table[0] &&
-+	    journal->j_revoke != journal->j_revoke_table[1]) {
-+		jbd2_journal_destroy_revoke_table(journal->j_revoke);
-+		journal->j_revoke = journal->j_revoke_table[1];
-+	}
- 	err2 = sync_blockdev(journal->j_fs_dev);
- 	if (!err)
- 		err = err2;
-@@ -517,6 +523,31 @@ static int do_one_pass(journal_t *journal,
- 	first_commit_ID = next_commit_ID;
- 	if (pass == PASS_SCAN)
- 		info->start_transaction = first_commit_ID;
-+	else if (pass == PASS_REVOKE) {
-+		/*
-+		 * Would the default revoke table have too long hash chains
-+		 * during replay?
-+		 */
-+		if (info->nr_revokes > JOURNAL_REVOKE_DEFAULT_HASH * 16) {
-+			unsigned int hash_size;
-+
-+			/*
-+			 * Aim for average chain length of 8, limit at 1M
-+			 * entries to avoid problems with malicious
-+			 * filesystems.
-+			 */
-+			hash_size = min(roundup_pow_of_two(info->nr_revokes / 8),
-+					1U << 20);
-+			journal->j_revoke =
-+				jbd2_journal_init_revoke_table(hash_size);
-+			if (!journal->j_revoke) {
-+				printk(KERN_ERR
-+				       "JBD2: failed to allocate revoke table for replay with %u entries. "
-+				       "Journal replay may be slow.\n", hash_size);
-+				journal->j_revoke = journal->j_revoke_table[1];
-+			}
-+		}
-+	}
- 
- 	jbd2_debug(1, "Starting recovery pass %d\n", pass);
- 
-@@ -874,14 +905,16 @@ static int do_one_pass(journal_t *journal,
- 				need_check_commit_time = true;
- 			}
- 
--			/* If we aren't in the REVOKE pass, then we can
--			 * just skip over this block. */
--			if (pass != PASS_REVOKE) {
-+			/*
-+			 * If we aren't in the SCAN or REVOKE pass, then we can
-+			 * just skip over this block.
-+			 */
-+			if (pass != PASS_REVOKE && pass != PASS_SCAN) {
- 				brelse(bh);
- 				continue;
- 			}
- 
--			err = scan_revoke_records(journal, bh,
-+			err = scan_revoke_records(journal, pass, bh,
- 						  next_commit_ID, info);
- 			brelse(bh);
- 			if (err)
-@@ -937,8 +970,9 @@ static int do_one_pass(journal_t *journal,
- 
- /* Scan a revoke record, marking all blocks mentioned as revoked. */
- 
--static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
--			       tid_t sequence, struct recovery_info *info)
-+static int scan_revoke_records(journal_t *journal, enum passtype pass,
-+			       struct buffer_head *bh, tid_t sequence,
-+			       struct recovery_info *info)
- {
- 	jbd2_journal_revoke_header_t *header;
- 	int offset, max;
-@@ -959,6 +993,11 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
- 	if (jbd2_has_feature_64bit(journal))
- 		record_len = 8;
- 
-+	if (pass == PASS_SCAN) {
-+		info->nr_revokes += (max - offset) / record_len;
-+		return 0;
-+	}
-+
- 	while (offset + record_len <= max) {
- 		unsigned long long blocknr;
- 		int err;
-@@ -971,7 +1010,6 @@ static int scan_revoke_records(journal_t *journal, struct buffer_head *bh,
- 		err = jbd2_journal_set_revoke(journal, blocknr, sequence);
- 		if (err)
- 			return err;
--		++info->nr_revokes;
- 	}
- 	return 0;
- }
-diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
-index 4556e4689024..f4ac308e84c5 100644
---- a/fs/jbd2/revoke.c
-+++ b/fs/jbd2/revoke.c
-@@ -215,7 +215,7 @@ int __init jbd2_journal_init_revoke_table_cache(void)
- 	return 0;
- }
- 
--static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
-+struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
- {
- 	int shift = 0;
- 	int tmp = hash_size;
-@@ -231,7 +231,7 @@ static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
- 	table->hash_size = hash_size;
- 	table->hash_shift = shift;
- 	table->hash_table =
--		kmalloc_array(hash_size, sizeof(struct list_head), GFP_KERNEL);
-+		kvmalloc_array(hash_size, sizeof(struct list_head), GFP_KERNEL);
- 	if (!table->hash_table) {
- 		kmem_cache_free(jbd2_revoke_table_cache, table);
- 		table = NULL;
-@@ -245,7 +245,7 @@ static struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size)
- 	return table;
- }
- 
--static void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
-+void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
- {
- 	int i;
- 	struct list_head *hash_list;
-@@ -255,7 +255,7 @@ static void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table)
- 		J_ASSERT(list_empty(hash_list));
- 	}
- 
--	kfree(table->hash_table);
-+	kvfree(table->hash_table);
- 	kmem_cache_free(jbd2_revoke_table_cache, table);
- }
- 
-diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-index 8aef9bb6ad57..781615214d47 100644
---- a/include/linux/jbd2.h
-+++ b/include/linux/jbd2.h
-@@ -1634,6 +1634,8 @@ extern void	   jbd2_journal_destroy_revoke_record_cache(void);
- extern void	   jbd2_journal_destroy_revoke_table_cache(void);
- extern int __init jbd2_journal_init_revoke_record_cache(void);
- extern int __init jbd2_journal_init_revoke_table_cache(void);
-+struct jbd2_revoke_table_s *jbd2_journal_init_revoke_table(int hash_size);
-+void jbd2_journal_destroy_revoke_table(struct jbd2_revoke_table_s *table);
- 
- extern void	   jbd2_journal_destroy_revoke(journal_t *);
- extern int	   jbd2_journal_revoke (handle_t *, unsigned long long, struct buffer_head *);
--- 
-2.35.3
-
-
---gdczihxayn6t35kx--
+             Linus
 
