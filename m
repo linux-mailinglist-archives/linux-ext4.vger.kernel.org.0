@@ -1,180 +1,324 @@
-Return-Path: <linux-ext4+bounces-5163-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5182-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 063C09C8DE5
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 16:26:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC4DA9C911D
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 18:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B94D6286F48
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 15:26:26 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30FA4B3C79B
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 17:22:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9236D28E0F;
-	Thu, 14 Nov 2024 15:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44034189F39;
+	Thu, 14 Nov 2024 17:22:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jOwmGtrl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QKS5hQTO";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jOwmGtrl";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QKS5hQTO"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LJMRhPzX"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A8A13AD29
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Nov 2024 15:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2950F6F2F3;
+	Thu, 14 Nov 2024 17:22:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731597972; cv=none; b=hsJ054y5tj69RuqXImc5dkcLj/tQhVD9SfMBzfR9KTh9H4YfCWSOzOYWDC2AT1rVjHsVsmUGjbfk7OjS2ID722N4B3ByXQfWz42C+j963F4MAT2xnaMqBUIX85LI/fN7xMUXEzTVahMwewTeNBxLrTGvTdMuUm3TOlZ9qh4a83U=
+	t=1731604959; cv=none; b=Ln4wId8SV2jRdVSGB1NJD9345+s4g1VMgTNw8ncZ6Hd9xKIMfUp5ByfLOwByXsehG3e2f0tWhzz+OZBGqEYTznLWOrQS8++tQT5XlikyoiLhYp55W3yRRhEg8mgcYn/Lrmv7SOIMOMf82cyY41MSUeNvMJTXbDe0Ima5McQ8huY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731597972; c=relaxed/simple;
-	bh=pYg0ZEq7YZCEsjJ7S9H6welbOuiHD+tza1hO1fDPFIA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WMJJRfSBxSJGJ9lxG0O6L+NTmxQwQu0TosS9t7POXfxPr9GF2Tip2thlPeUH7HpUb7fRNJ57vibZ1ZriePfBPhWJAQxLKBN6sH8S8bK/x+R83LoPfwLWbApZ763Zm67SYIZ+t4EAjOlOdLNG5QsZX9JdEShFrhDAoaV3/IINWwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jOwmGtrl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QKS5hQTO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jOwmGtrl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QKS5hQTO; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 0769521134;
-	Thu, 14 Nov 2024 15:26:08 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731597968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
-	b=jOwmGtrlj3NceiVAmrWlc4lTrpNYLGoi1BdxPTsmfXQzXgerChboFKafZGYaGZHMJBj55N
-	IahBiLIoH1bI1DMAsYhL8mgzjB98iprxiUUm6fODKL2Un5SjdareB3m8/K89CDkIvturRi
-	Q2fF0/5l/1QOxwMTAl6Kazq14JTtaL8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731597968;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
-	b=QKS5hQTOBf9AHbwBn0m+lU4OKEISdGWrILiWbMyAQnjLofFXA3V7+iZpDloJuwE1lLxc7E
-	DfrPMU0Sn0i9x3Aw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731597968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
-	b=jOwmGtrlj3NceiVAmrWlc4lTrpNYLGoi1BdxPTsmfXQzXgerChboFKafZGYaGZHMJBj55N
-	IahBiLIoH1bI1DMAsYhL8mgzjB98iprxiUUm6fODKL2Un5SjdareB3m8/K89CDkIvturRi
-	Q2fF0/5l/1QOxwMTAl6Kazq14JTtaL8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731597968;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
-	b=QKS5hQTOBf9AHbwBn0m+lU4OKEISdGWrILiWbMyAQnjLofFXA3V7+iZpDloJuwE1lLxc7E
-	DfrPMU0Sn0i9x3Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF50B13794;
-	Thu, 14 Nov 2024 15:26:07 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id XulmOo8WNmdXCQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 14 Nov 2024 15:26:07 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A3604A0962; Thu, 14 Nov 2024 16:26:07 +0100 (CET)
-Date: Thu, 14 Nov 2024 16:26:07 +0100
-From: Jan Kara <jack@suse.cz>
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-	Baolin Liu <liubaolin@kylinos.cn>,
-	Zhi Long <longzhi@sangfor.com.cn>
-Subject: Re: [PATCH v3] ext4: Make sure BH_New bit is cleared in ->write_end
- handler
-Message-ID: <20241114152607.v3bdfpu2sgayztdr@quack3>
-References: <20241018145901.2086-1-jack@suse.cz>
- <20241113175550.GA462442@mit.edu>
+	s=arc-20240116; t=1731604959; c=relaxed/simple;
+	bh=coBv7kOMWr4FUkylnULciwEVU/uk2ko3fjjBkmaG4ic=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=KhGNKJKD73gkjk3jXloxEzay6N//7FvE4EeVb1cTXVdnzpvahDykgFncHaXDAUlkBA0sHF/MStkEA3sUFWgu+pOHdWqzznUMeV6qrg/K6I45IwpQRED5wCR4BsI9zomwXuFj1nwIVgxhF7tywnVQZNDGAiPNcDE/xZ/zC7T1dfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LJMRhPzX; arc=none smtp.client-ip=209.85.222.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-7b18da94ba9so72589185a.0;
+        Thu, 14 Nov 2024 09:22:37 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1731604957; x=1732209757; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OeFJjr3sAvxDHgXGKvBlBBH/HNXVr6YZMX5uUHaIfVg=;
+        b=LJMRhPzX4Z5H/E7IZAd45/5CNNvpFk1cfOJvSkUtyK2uPEzwDMY9QvGXNpPhmU/iWb
+         TyRszd7nj7Orv64xYzEi1NpwGG1NbbmhHguT42t32Td0yXdxBklYtWl+6TlM6s54RYfN
+         hRdkT6NEJrl4pck8VjtuG6vrYWJT702bOBuajgOaACd26cKMYwLOF+S79cvJJxUMOJ01
+         45OOWti4pQEHygzaVWXsQmTHccJ9T8XEc+6yfgkYF30RhT4EdvA0FIAaADhbghqiDsrf
+         r8rT1Eh3QMhq25/c9c5Us8F10Ip/azrzi2liyVlVEMUzuceno4dGUQdBn9I+HKOAVwUZ
+         Do/Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731604957; x=1732209757;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OeFJjr3sAvxDHgXGKvBlBBH/HNXVr6YZMX5uUHaIfVg=;
+        b=p3pcroDvtiIrKTg4unCugvnIuIl6IpWoLsX7WTJVJJY3dX7rKwBeYdNl8QOH88VeRz
+         cp6vW/vlqD2IP23F4rDEsLnGCLZ3TAJuRsiHHA/+uLEmI+Ikp2C3a9Fycf5bR5cuXj3B
+         MFQrwu7OU4MtWcizRpTiaGSMFSr8cegEHeB+fbpqMoYfv4IOR6SJarr21Nxc6nRh9uSo
+         ObqhiL4yyNQNajsnyFSgZ+jeE/VJdOYvvdGDUxz3dt96SEpy268y6IT4dRyCtsp1zrp3
+         nP8My1SjRIeye+UKeVU3p0LfWh/MeOONmAuzq6c2WIi+sdQHVlLXH8Uv0ygIJFHI1KwJ
+         F7/A==
+X-Forwarded-Encrypted: i=1; AJvYcCUo6BQ+FKpnR2DF+IND+bTcRqc32CY6PFV4UL9D+O/MNOatUH3YdgGJ5/IPvnOoxaHpyVWcsJyUctFy@vger.kernel.org, AJvYcCUzMghRXj9BhyFhHU7KF/bYsqfwlLtkE6TpB/YYpIO32hT8b86IgQDzAm3D5svFEfP7frk712lSp2t7X4bLng==@vger.kernel.org, AJvYcCWfZra3sszKrUF135SHzpXaufdGHbrb4UJI35mQKkbvEONHfE8cpC4gNFncU/F0P9HHC5regbwebsWvgA==@vger.kernel.org, AJvYcCXju8F9gT/0NpSoRBa+7M1jNVdszZwUjaJhqae3bstuK898sBvlu7gj+tYpEm8kR8HbY/vXvcqcuohSnA==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxyjgy9wj0+QwXL48kBl3xbt7Jz0CucaxJxMewdB2lzgQwOlNBN
+	KLYejlRm6xx2eJZjcfZdnc6jIzYqhlaCiM3jUWsEAhSsK25fkVCssInXaUfAjiP3KrpCEENEFd2
+	CIu/DY+eMq4Zrbsx22pE1HFqabTE=
+X-Google-Smtp-Source: AGHT+IGWy+vxnndz1151nIk1OoEYSziwAZ6Hll6nVis3K2RK0WbhxR9+FRkzy7ldvbq1Mbv1M4ojoumTX5Yaw3ABvqg=
+X-Received: by 2002:a05:620a:2894:b0:7a9:abdf:f517 with SMTP id
+ af79cd13be357-7b35a545fc5mr637868285a.25.1731604956930; Thu, 14 Nov 2024
+ 09:22:36 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241113175550.GA462442@mit.edu>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+ <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+ <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com>
+ <CAOQ4uxjob2qKk4MRqPeNtbhfdSfP0VO-R5VWw0txMCGLwJ-Z1g@mail.gmail.com>
+ <CAHk-=wigQ0ew96Yv29tJUrUKBZRC-x=fDjCTQ7gc4yPys2Ngrw@mail.gmail.com>
+ <CAOQ4uxjeWrJtcgsC0YEmjdMPBOOpfz=zQ9VuG=z-Sc6WYNJOjQ@mail.gmail.com> <20241114150127.clibtrycjd3ke5ld@quack3>
+In-Reply-To: <20241114150127.clibtrycjd3ke5ld@quack3>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 14 Nov 2024 18:22:25 +0100
+Message-ID: <CAOQ4uxgNoDUcgSjo=oK6QmzCuEdgauDs2H6WGbD=RuzkZX115Q@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
+To: Jan Kara <jack@suse.cz>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josef Bacik <josef@toxicpanda.com>, 
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, brauner@kernel.org, 
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
+	linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed 13-11-24 12:55:50, Theodore Ts'o wrote:
-> On Fri, Oct 18, 2024 at 04:59:01PM +0200, Jan Kara wrote:
-> > Currently we clear BH_New bit in case of error and also in the standard
-> > ext4_write_end() handler (in block_commit_write()). However
-> > ext4_journalled_write_end() misses this clearing and thus we are leaving
-> > stale BH_New bits behind. Generally ext4_block_write_begin() clears
-> > these bits before any harm can be done but in case blocksize < pagesize
-> > and we hit some error when processing a page with these stale bits,
-> > we'll try to zero buffers with these stale BH_New bits and jbd2 will
-> > complain (as buffers were not prepared for writing in this transaction).
-> > Fix the problem by clearing BH_New bits in ext4_journalled_write_end()
-> > and WARN if ext4_block_write_begin() sees stale BH_New bits.
-> > 
-> > Reported-and-tested-by: Baolin Liu <liubaolin@kylinos.cn>
-> > Reported-and-tested-by: Zhi Long <longzhi@sangfor.com.cn>
-> > Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in ext4_journalled_zero_new_buffers")
-> > Signed-off-by: Jan Kara <jack@suse.cz>
-> 
-> This patch is causing quite a lot of regressions:
-> 
-> ext4/adv: 569 tests, 36 failures, 61 skipped, 6510 seconds
->   Failures: ext4/307 generic/069 generic/079 generic/082 generic/130 
->     generic/131 generic/219 generic/230 generic/231 generic/232 
->     generic/233 generic/234 generic/235 generic/241 generic/244 
->     generic/270 generic/280 generic/355 generic/379 generic/381 
->     generic/382 generic/400 generic/422 generic/464 generic/566 
->     generic/571 generic/572 generic/587 generic/600 generic/601 
->     generic/681 generic/682 generic/691
-> 
-> This appears to be caused by inline data, so a quick reproducer for
-> bisection purposes was:
-> 
->    kvm-xfststs -c ext4/inline ext4/307
-> 
-> Attached below please find the warning which is triggering the
-> "_check_dmesg: something found in dmesg" test failure.
-> 
-> I suspect this should be fairly easy to fix, but I'm going to drop it
-> from my tree for now.
+On Thu, Nov 14, 2024 at 4:01=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+>
+> On Wed 13-11-24 19:49:31, Amir Goldstein wrote:
+> > From 7a2cd74654a53684d545b96c57c9091e420b3add Mon Sep 17 00:00:00 2001
+> > From: Amir Goldstein <amir73il@gmail.com>
+> > Date: Tue, 12 Nov 2024 13:46:08 +0100
+> > Subject: [PATCH] fsnotify: opt-in for permission events at file open ti=
+me
+> >
+> > Legacy inotify/fanotify listeners can add watches for events on inode,
+> > parent or mount and expect to get events (e.g. FS_MODIFY) on files that
+> > were already open at the time of setting up the watches.
+> >
+> > fanotify permission events are typically used by Anti-malware sofware,
+> > that is watching the entire mount and it is not common to have more tha=
+t
+> > one Anti-malware engine installed on a system.
+> >
+> > To reduce the overhead of the fsnotify_file_perm() hooks on every file
+> > access, relax the semantics of the legacy FAN_ACCESS_PERM event to gene=
+rate
+> > events only if there were *any* permission event listeners on the
+> > filesystem at the time that the file was opened.
+> >
+> > The new semantic is implemented by extending the FMODE_NONOTIFY bit int=
+o
+> > two FMODE_NONOTIFY_* bits, that are used to store a mode for which of t=
+he
+> > events types to report.
+> >
+> > This is going to apply to the new fanotify pre-content events in order
+> > to reduce the cost of the new pre-content event vfs hooks.
+> >
+> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > Link: https://lore.kernel.org/linux-fsdevel/CAHk-=3Dwj8L=3DmtcRTi=3DNEC=
+HMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com/
+> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+>
+> Couple of notes below.
+>
+> > diff --git a/fs/open.c b/fs/open.c
+> > index 226aca8c7909..194c2c8d8cd4 100644
+> > --- a/fs/open.c
+> > +++ b/fs/open.c
+> > @@ -901,7 +901,7 @@ static int do_dentry_open(struct file *f,
+> >       f->f_sb_err =3D file_sample_sb_err(f);
+> >
+> >       if (unlikely(f->f_flags & O_PATH)) {
+> > -             f->f_mode =3D FMODE_PATH | FMODE_OPENED;
+> > +             f->f_mode =3D FMODE_PATH | FMODE_OPENED | FMODE_NONOTIFY;
+> >               f->f_op =3D &empty_fops;
+> >               return 0;
+> >       }
+> > @@ -929,6 +929,12 @@ static int do_dentry_open(struct file *f,
+> >       if (error)
+> >               goto cleanup_all;
+> >
+> > +     /*
+> > +      * Set FMODE_NONOTIFY_* bits according to existing permission wat=
+ches.
+> > +      * If FMODE_NONOTIFY was already set for an fanotify fd, this doe=
+sn't
+> > +      * change anything.
+> > +      */
+> > +     f->f_mode |=3D fsnotify_file_mode(f);
+>
+> Maybe it would be obvious to do this like:
+>
+>         file_set_fsnotify_mode(f);
+>
+> Because currently this depends on the details of how exactly FMODE_NONOTI=
+FY
+> is encoded.
+>
 
-Yeah, sure. I didn't test with inline data so I didn't notice. I'll check
-what's going wrong and sorry for the annoyance.
+ok. makes sense.
 
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > index 70359dd669ff..dd583ce7dba8 100644
+> > --- a/include/linux/fs.h
+> > +++ b/include/linux/fs.h
+> > @@ -173,13 +173,14 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, lo=
+ff_t offset,
+> >
+> >  #define      FMODE_NOREUSE           ((__force fmode_t)(1 << 23))
+> >
+> > -/* FMODE_* bit 24 */
+> > -
+> >  /* File is embedded in backing_file object */
+> > -#define FMODE_BACKING                ((__force fmode_t)(1 << 25))
+> > +#define FMODE_BACKING                ((__force fmode_t)(1 << 24))
+> > +
+> > +/* File shouldn't generate fanotify pre-content events */
+> > +#define FMODE_NONOTIFY_HSM   ((__force fmode_t)(1 << 25))
+> >
+> > -/* File was opened by fanotify and shouldn't generate fanotify events =
+*/
+> > -#define FMODE_NONOTIFY               ((__force fmode_t)(1 << 26))
+> > +/* File shouldn't generate fanotify permission events */
+> > +#define FMODE_NONOTIFY_PERM  ((__force fmode_t)(1 << 26))
+> >
+> >  /* File is capable of returning -EAGAIN if I/O will block */
+> >  #define FMODE_NOWAIT         ((__force fmode_t)(1 << 27))
+> > @@ -190,6 +191,21 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, lof=
+f_t offset,
+> >  /* File does not contribute to nr_files count */
+> >  #define FMODE_NOACCOUNT              ((__force fmode_t)(1 << 29))
+> >
+> > +/*
+> > + * The two FMODE_NONOTIFY_ bits used together have a special meaning o=
+f
+> > + * not reporting any events at all including non-permission events.
+> > + * These are the possible values of FMODE_NOTIFY(f->f_mode) and their =
+meaning:
+> > + *
+> > + * FMODE_NONOTIFY_HSM - suppress only pre-content events.
+> > + * FMODE_NONOTIFY_PERM - suppress permission (incl. pre-content) event=
+s.
+> > + * FMODE_NONOTIFY - suppress all (incl. non-permission) events.
+> > + */
+> > +#define FMODE_NONOTIFY_MASK \
+> > +     (FMODE_NONOTIFY_HSM | FMODE_NONOTIFY_PERM)
+> > +#define FMODE_NONOTIFY FMODE_NONOTIFY_MASK
+> > +#define FMODE_NOTIFY(mode) \
+> > +     ((mode) & FMODE_NONOTIFY_MASK)
+>
+> This looks a bit error-prone to me (FMODE_NONOTIFY looks like another FMO=
+DE
+> flag but in fact it is not which is an invitation for subtle bugs) and th=
+e
+> tests below which are sometimes done as (FMODE_NOTIFY(mode) =3D=3D xxx) a=
+nd
+> sometimes as (file->f_mode & xxx) are inconsistent and confusing (unless =
+you
+> understand what's happening under the hood).
+>
+> So how about defining macros like FMODE_FSNOTIFY_NORMAL(),
+> FMODE_FSNOTIFY_CONTENT() and FMODE_FSNOTIFY_PRE_CONTENT() which evaluate =
+to
+> true if we should be sending normal/content/pre-content events to the fil=
+e.
+> With appropriate comments this should make things more obvious.
+>
+
+ok, maybe something like this:
+
+#define FMODE_FSNOTIFY_NONE(mode) \
+        (FMODE_FSNOTIFY(mode) =3D=3D FMODE_NONOTIFY)
+#define FMODE_FSNOTIFY_NORMAL(mode) \
+        (FMODE_FSNOTIFY(mode) =3D=3D FMODE_NONOTIFY_PERM)
+#define FMODE_FSNOTIFY_PERM(mode) \
+        (!((mode) & FMODE_NONOTIFY_PERM))
+#define FMODE_FSNOTIFY_HSM(mode) \
+        (FMODE_FSNOTIFY(mode) =3D=3D 0)
+
+At least keeping the double negatives contained in one place.
+
+And then we have these users in the final code:
+
+static inline bool fsnotify_file_has_pre_content_watches(struct file *file)
+{
+        return file && unlikely(FMODE_FSNOTIFY_HSM(file->f_mode));
+}
+
+static inline int fsnotify_open_perm(struct file *file)
+{
+        int ret;
+
+        if (likely(!FMODE_FSNOTIFY_PERM(file->f_mode)))
+                return 0;
+...
+
+static inline int fsnotify_file(struct file *file, __u32 mask)
+{
+        if (FMODE_FSNOTIFY_NONE(file->f_mode))
+                return 0;
+...
+
+BTW, I prefer using PERM,HSM instead of the FSNOTIFY_PRIO_
+names for brevity, but also because at the moment of this patch
+FMODE_NONOTIFY_PERM means "suppress permission events
+if there are no listeners with priority >=3D FSNOTIFY_PRIO_CONTENT
+at all on any objects of the filesystem".
+
+It does NOT mean that there ARE permission events watchers on the file's
+sb/mnt/inode or parent, but what the users of the flag care about really is
+whether the specific file is being watched for permission events.
+
+I was contemplating if we should add the following check at open time
+as following patches add for pre-content watchers also for
+permission watchers on the specific file:
+
+        /*
+         * Permission events is a super set of pre-content events, so if th=
+ere
+         * are no permission event watchers, there are also no pre-content =
+event
+         * watchers and this is implied from the single FMODE_NONOTIFY_PERM=
+ bit.
+         */
+        if (likely(!fsnotify_sb_has_priority_watchers(sb,
+                                                FSNOTIFY_PRIO_CONTENT)))
+                return FMODE_NONOTIFY_PERM;
+
++        /*
++         * There are content watchers in the filesystem, but are there
++         * permission event watchers on this specific file?
++         */
++        if (likely(!fsnotify_file_object_watched(file,
++                                                 ALL_FSNOTIFY_PERM_EVENTS)=
+))
++                return FMODE_NONOTIFY_PERM;
++
+
+I decided not to stretch the behavior change too much and also since
+Anti-malware permission watchers often watch all the mounts of a
+filesystem, there is probably little to gain from this extra check.
+But we can reconsider this in the future.
+
+WDYT?
+
+In any case, IMO the language of FMODE_FSNOTIFY_PERM() matches
+the meaning of the users better and makes the code easier to understand.
+
+FMODE_FSNOTIFY_HSM() is debatable, but at least it is short ;)
+
+Anyway, I will send v2 with your suggestions.
+
+Thanks,
+Amir.
 
