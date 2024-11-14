@@ -1,222 +1,180 @@
-Return-Path: <linux-ext4+bounces-5181-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5163-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1DD5C9C8E60
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 16:39:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 063C09C8DE5
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 16:26:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5F51CB315AA
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 15:38:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B94D6286F48
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 15:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E72FA1B5ED0;
-	Thu, 14 Nov 2024 15:28:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9236D28E0F;
+	Thu, 14 Nov 2024 15:26:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="ryPp7Zo/"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jOwmGtrl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QKS5hQTO";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="jOwmGtrl";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="QKS5hQTO"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oo1-f50.google.com (mail-oo1-f50.google.com [209.85.161.50])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDEB71B3946
-	for <linux-ext4@vger.kernel.org>; Thu, 14 Nov 2024 15:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A8A13AD29
+	for <linux-ext4@vger.kernel.org>; Thu, 14 Nov 2024 15:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731598109; cv=none; b=MpFGBHsEq95O3Fwddb7T7Fy3no9hDJE1LvKeQ4yjHhDK0+ffbpGwDaVRfHzePR42cZG5ServLFr3XDhvvxPYX0v4jZ2itgkhFl/FD91hmjoXawpKO63OTh5asoyMycRyq6OsfnsBIDVqMAdW5/d13dSlXJVVDHy3/kOIO3asLLk=
+	t=1731597972; cv=none; b=hsJ054y5tj69RuqXImc5dkcLj/tQhVD9SfMBzfR9KTh9H4YfCWSOzOYWDC2AT1rVjHsVsmUGjbfk7OjS2ID722N4B3ByXQfWz42C+j963F4MAT2xnaMqBUIX85LI/fN7xMUXEzTVahMwewTeNBxLrTGvTdMuUm3TOlZ9qh4a83U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731598109; c=relaxed/simple;
-	bh=KvrrsZd4o42w6FFEWFQ1mvoiCpBhCV2tMq6FGu3bD6I=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=ZSqokaDkCNLdEjx9bpwy/581be/NUzosVQAfWe5LubyFrP+sc+Xj/V5S5I+ZAFkaoMIxf+dJ1dO9C1dEzc6vDPenSr6VEO78jL9iZTocoumBphRyv72MdaWVQXT57SYbOy2VAka4z0Sdal8+CUJ12nfWLOlG03vxNPvj3Ji/wME=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=ryPp7Zo/; arc=none smtp.client-ip=209.85.161.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oo1-f50.google.com with SMTP id 006d021491bc7-5ebc0dbc566so315557eaf.3
-        for <linux-ext4@vger.kernel.org>; Thu, 14 Nov 2024 07:28:27 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731598107; x=1732202907; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=jsUz6pEpY+ox9az2F5q2xnny+koVz5fK77xTMpol5Tk=;
-        b=ryPp7Zo/FFxNM8nzscrCmwbmpbBbx3HBf2MkZTBwejmXhORSfWY2POIJp/oJbCIr82
-         XZcbAoorLW7+awt8LjNlVcKUFt3jjTlIhgnXQ1d9LrNPTFv7v6j34vob3JjxyObeceUx
-         jB7EjJE0ChVaIsXdSotebhjSYyNyCxhcHhlU9e3bgaBw0bzfjZ/AHs0aSRIcvsI31WV6
-         laM6ovcE4vCNzNS+kLK4+HI8UnYZN55+tSd085le9TNnKfZKjVgVuUJ7iLZyt89BvmXd
-         4SwEMBpWo0POPcqWo/OjRLDn9rCM4YU3NZHJBj/zjYbUHsKDAgZqw1NmyHyPPpBbgaZp
-         x8jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731598107; x=1732202907;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jsUz6pEpY+ox9az2F5q2xnny+koVz5fK77xTMpol5Tk=;
-        b=WeC74i4kmGiCnyQgQZv3Y0CgaOzkpk0Op5+NyHyXjnCElUcO0AdJ8ZHKT828CeKWBC
-         bpgECgABCuiJwvH3Tro3OklP3Qvtvf3VwAQcFLQwgF49Usd/MJIKzUb20QhUGe6hPors
-         nbhxczP9EQxrlFnncWNFLxA3CuXNSBv5q3q2ci57YtuB0UazcdF8NV5TiB/9c3wERmQt
-         vdtHJCEujE4bigLWYO5sSwM+C6XNCsSEXqr/2ARoGlx1kD1DdY2xzekA/OKv96CSZJG+
-         vQG39uidlwN0VzKKaNph/t8dmW98A7brnBPUDiEY4/K7jpVO5rmClCALPX3l4Ttt/D/L
-         abfg==
-X-Forwarded-Encrypted: i=1; AJvYcCV8GwJz2InZCUzFAZBdtz5RcRpaorQMsZRDMH4Rq5WCW+8/DlIovkSRVn1iKAXWE9dU4XryyZLdtjtt@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy9bRRuqI/5D77Tb8T4DzTX/hkZkYeU/LbhHrm9TO+8q/Fgsdkz
-	5j5kje6YnxjC9tk4NLLV9WCtsAnJaBFm+JhVvM8BC9uSInkT2O2+s3UVjKgyuUk=
-X-Google-Smtp-Source: AGHT+IFc1nzkbPZXQe4aKtw+LtP2VNQBWJFtVjU1qLyGyhTsHecVf/ilzi9Wv0164LJAdz5N+SGBoQ==
-X-Received: by 2002:a05:6820:1b08:b0:5ee:a5b:d172 with SMTP id 006d021491bc7-5ee57c530cdmr17735794eaf.5.1731598106027;
-        Thu, 14 Nov 2024 07:28:26 -0800 (PST)
-Received: from localhost.localdomain ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 006d021491bc7-5eea026eb41sm368250eaf.39.2024.11.14.07.28.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Thu, 14 Nov 2024 07:28:25 -0800 (PST)
-From: Jens Axboe <axboe@kernel.dk>
-To: linux-mm@kvack.org,
-	linux-fsdevel@vger.kernel.org
-Cc: hannes@cmpxchg.org,
-	clm@meta.com,
-	linux-kernel@vger.kernel.org,
-	willy@infradead.org,
-	kirill@shutemov.name,
-	linux-btrfs@vger.kernel.org,
-	linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	bfoster@redhat.com,
-	Jens Axboe <axboe@kernel.dk>
-Subject: [PATCH 17/17] btrfs: add support for uncached writes
-Date: Thu, 14 Nov 2024 08:25:21 -0700
-Message-ID: <20241114152743.2381672-19-axboe@kernel.dk>
-X-Mailer: git-send-email 2.45.2
-In-Reply-To: <20241114152743.2381672-2-axboe@kernel.dk>
-References: <20241114152743.2381672-2-axboe@kernel.dk>
+	s=arc-20240116; t=1731597972; c=relaxed/simple;
+	bh=pYg0ZEq7YZCEsjJ7S9H6welbOuiHD+tza1hO1fDPFIA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=WMJJRfSBxSJGJ9lxG0O6L+NTmxQwQu0TosS9t7POXfxPr9GF2Tip2thlPeUH7HpUb7fRNJ57vibZ1ZriePfBPhWJAQxLKBN6sH8S8bK/x+R83LoPfwLWbApZ763Zm67SYIZ+t4EAjOlOdLNG5QsZX9JdEShFrhDAoaV3/IINWwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jOwmGtrl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QKS5hQTO; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=jOwmGtrl; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=QKS5hQTO; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 0769521134;
+	Thu, 14 Nov 2024 15:26:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1731597968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
+	b=jOwmGtrlj3NceiVAmrWlc4lTrpNYLGoi1BdxPTsmfXQzXgerChboFKafZGYaGZHMJBj55N
+	IahBiLIoH1bI1DMAsYhL8mgzjB98iprxiUUm6fODKL2Un5SjdareB3m8/K89CDkIvturRi
+	Q2fF0/5l/1QOxwMTAl6Kazq14JTtaL8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1731597968;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
+	b=QKS5hQTOBf9AHbwBn0m+lU4OKEISdGWrILiWbMyAQnjLofFXA3V7+iZpDloJuwE1lLxc7E
+	DfrPMU0Sn0i9x3Aw==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1731597968; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
+	b=jOwmGtrlj3NceiVAmrWlc4lTrpNYLGoi1BdxPTsmfXQzXgerChboFKafZGYaGZHMJBj55N
+	IahBiLIoH1bI1DMAsYhL8mgzjB98iprxiUUm6fODKL2Un5SjdareB3m8/K89CDkIvturRi
+	Q2fF0/5l/1QOxwMTAl6Kazq14JTtaL8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1731597968;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=M9TQOyctTx3F+55/OuInl1ZLq7Wuycr0F4jqoyjW/Lg=;
+	b=QKS5hQTOBf9AHbwBn0m+lU4OKEISdGWrILiWbMyAQnjLofFXA3V7+iZpDloJuwE1lLxc7E
+	DfrPMU0Sn0i9x3Aw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id EF50B13794;
+	Thu, 14 Nov 2024 15:26:07 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XulmOo8WNmdXCQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 14 Nov 2024 15:26:07 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id A3604A0962; Thu, 14 Nov 2024 16:26:07 +0100 (CET)
+Date: Thu, 14 Nov 2024 16:26:07 +0100
+From: Jan Kara <jack@suse.cz>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
+	Baolin Liu <liubaolin@kylinos.cn>,
+	Zhi Long <longzhi@sangfor.com.cn>
+Subject: Re: [PATCH v3] ext4: Make sure BH_New bit is cleared in ->write_end
+ handler
+Message-ID: <20241114152607.v3bdfpu2sgayztdr@quack3>
+References: <20241018145901.2086-1-jack@suse.cz>
+ <20241113175550.GA462442@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241113175550.GA462442@mit.edu>
+X-Spam-Score: -3.80
+X-Spamd-Result: default: False [-3.80 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-0.999];
+	MIME_GOOD(-0.10)[text/plain];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ARC_NA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FROM_HAS_DN(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-The read side is already covered as btrfs uses the generic filemap
-helpers. For writes, just pass in FGP_UNCACHED if uncached IO is being
-done, then the folios created should be marked appropriately.
+On Wed 13-11-24 12:55:50, Theodore Ts'o wrote:
+> On Fri, Oct 18, 2024 at 04:59:01PM +0200, Jan Kara wrote:
+> > Currently we clear BH_New bit in case of error and also in the standard
+> > ext4_write_end() handler (in block_commit_write()). However
+> > ext4_journalled_write_end() misses this clearing and thus we are leaving
+> > stale BH_New bits behind. Generally ext4_block_write_begin() clears
+> > these bits before any harm can be done but in case blocksize < pagesize
+> > and we hit some error when processing a page with these stale bits,
+> > we'll try to zero buffers with these stale BH_New bits and jbd2 will
+> > complain (as buffers were not prepared for writing in this transaction).
+> > Fix the problem by clearing BH_New bits in ext4_journalled_write_end()
+> > and WARN if ext4_block_write_begin() sees stale BH_New bits.
+> > 
+> > Reported-and-tested-by: Baolin Liu <liubaolin@kylinos.cn>
+> > Reported-and-tested-by: Zhi Long <longzhi@sangfor.com.cn>
+> > Fixes: 3910b513fcdf ("ext4: persist the new uptodate buffers in ext4_journalled_zero_new_buffers")
+> > Signed-off-by: Jan Kara <jack@suse.cz>
+> 
+> This patch is causing quite a lot of regressions:
+> 
+> ext4/adv: 569 tests, 36 failures, 61 skipped, 6510 seconds
+>   Failures: ext4/307 generic/069 generic/079 generic/082 generic/130 
+>     generic/131 generic/219 generic/230 generic/231 generic/232 
+>     generic/233 generic/234 generic/235 generic/241 generic/244 
+>     generic/270 generic/280 generic/355 generic/379 generic/381 
+>     generic/382 generic/400 generic/422 generic/464 generic/566 
+>     generic/571 generic/572 generic/587 generic/600 generic/601 
+>     generic/681 generic/682 generic/691
+> 
+> This appears to be caused by inline data, so a quick reproducer for
+> bisection purposes was:
+> 
+>    kvm-xfststs -c ext4/inline ext4/307
+> 
+> Attached below please find the warning which is triggering the
+> "_check_dmesg: something found in dmesg" test failure.
+> 
+> I suspect this should be fairly easy to fix, but I'm going to drop it
+> from my tree for now.
 
-For IO completion, ensure that writing back folios that are uncached
-gets punted to one of the btrfs workers, as task context is needed for
-that. Add an 'uncached_io' member to struct btrfs_bio to manage that.
+Yeah, sure. I didn't test with inline data so I didn't notice. I'll check
+what's going wrong and sorry for the annoyance.
 
-With that, add FOP_UNCACHED to the btrfs file_operations fop_flags
-structure, enabling use of RWF_UNCACHED.
-
-Signed-off-by: Jens Axboe <axboe@kernel.dk>
----
- fs/btrfs/bio.c       | 4 ++--
- fs/btrfs/bio.h       | 2 ++
- fs/btrfs/extent_io.c | 8 +++++++-
- fs/btrfs/file.c      | 9 ++++++---
- 4 files changed, 17 insertions(+), 6 deletions(-)
-
-diff --git a/fs/btrfs/bio.c b/fs/btrfs/bio.c
-index 7e0f9600b80c..253e1a656934 100644
---- a/fs/btrfs/bio.c
-+++ b/fs/btrfs/bio.c
-@@ -334,7 +334,7 @@ static void btrfs_end_bio_work(struct work_struct *work)
- 	struct btrfs_bio *bbio = container_of(work, struct btrfs_bio, end_io_work);
- 
- 	/* Metadata reads are checked and repaired by the submitter. */
--	if (is_data_bbio(bbio))
-+	if (bio_op(&bbio->bio) == REQ_OP_READ && is_data_bbio(bbio))
- 		btrfs_check_read_bio(bbio, bbio->bio.bi_private);
- 	else
- 		btrfs_bio_end_io(bbio, bbio->bio.bi_status);
-@@ -351,7 +351,7 @@ static void btrfs_simple_end_io(struct bio *bio)
- 	if (bio->bi_status)
- 		btrfs_log_dev_io_error(bio, dev);
- 
--	if (bio_op(bio) == REQ_OP_READ) {
-+	if (bio_op(bio) == REQ_OP_READ || bbio->uncached_io) {
- 		INIT_WORK(&bbio->end_io_work, btrfs_end_bio_work);
- 		queue_work(btrfs_end_io_wq(fs_info, bio), &bbio->end_io_work);
- 	} else {
-diff --git a/fs/btrfs/bio.h b/fs/btrfs/bio.h
-index e2fe16074ad6..39b98326c98f 100644
---- a/fs/btrfs/bio.h
-+++ b/fs/btrfs/bio.h
-@@ -82,6 +82,8 @@ struct btrfs_bio {
- 	/* Save the first error status of split bio. */
- 	blk_status_t status;
- 
-+	bool uncached_io;
-+
- 	/*
- 	 * This member must come last, bio_alloc_bioset will allocate enough
- 	 * bytes for entire btrfs_bio but relies on bio being last.
-diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-index 872cca54cc6c..b97b21178ed7 100644
---- a/fs/btrfs/extent_io.c
-+++ b/fs/btrfs/extent_io.c
-@@ -760,8 +760,11 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
- 	ASSERT(bio_ctrl->end_io_func);
- 
- 	if (bio_ctrl->bbio &&
--	    !btrfs_bio_is_contig(bio_ctrl, folio, disk_bytenr, pg_offset))
-+	    !btrfs_bio_is_contig(bio_ctrl, folio, disk_bytenr, pg_offset)) {
-+		if (folio_test_uncached(folio))
-+			bio_ctrl->bbio->uncached_io = true;
- 		submit_one_bio(bio_ctrl);
-+	}
- 
- 	do {
- 		u32 len = size;
-@@ -779,6 +782,9 @@ static void submit_extent_folio(struct btrfs_bio_ctrl *bio_ctrl,
- 			len = bio_ctrl->len_to_oe_boundary;
- 		}
- 
-+		if (folio_test_uncached(folio))
-+			bio_ctrl->bbio->uncached_io = true;
-+
- 		if (!bio_add_folio(&bio_ctrl->bbio->bio, folio, len, pg_offset)) {
- 			/* bio full: move on to a new one */
- 			submit_one_bio(bio_ctrl);
-diff --git a/fs/btrfs/file.c b/fs/btrfs/file.c
-index 4fb521d91b06..cfee783f4c4d 100644
---- a/fs/btrfs/file.c
-+++ b/fs/btrfs/file.c
-@@ -919,7 +919,7 @@ static gfp_t get_prepare_gfp_flags(struct inode *inode, bool nowait)
- static noinline int prepare_pages(struct inode *inode, struct page **pages,
- 				  size_t num_pages, loff_t pos,
- 				  size_t write_bytes, bool force_uptodate,
--				  bool nowait)
-+				  bool nowait, bool uncached)
- {
- 	int i;
- 	unsigned long index = pos >> PAGE_SHIFT;
-@@ -928,6 +928,8 @@ static noinline int prepare_pages(struct inode *inode, struct page **pages,
- 	int ret = 0;
- 	int faili;
- 
-+	if (uncached)
-+		fgp_flags |= FGP_UNCACHED;
- 	for (i = 0; i < num_pages; i++) {
- again:
- 		pages[i] = pagecache_get_page(inode->i_mapping, index + i,
-@@ -1323,7 +1325,8 @@ ssize_t btrfs_buffered_write(struct kiocb *iocb, struct iov_iter *i)
- 		 * contents of pages from loop to loop
- 		 */
- 		ret = prepare_pages(inode, pages, num_pages,
--				    pos, write_bytes, force_page_uptodate, false);
-+				    pos, write_bytes, force_page_uptodate,
-+				    false, iocb->ki_flags & IOCB_UNCACHED);
- 		if (ret) {
- 			btrfs_delalloc_release_extents(BTRFS_I(inode),
- 						       reserve_bytes);
-@@ -3802,7 +3805,7 @@ const struct file_operations btrfs_file_operations = {
- 	.compat_ioctl	= btrfs_compat_ioctl,
- #endif
- 	.remap_file_range = btrfs_remap_file_range,
--	.fop_flags	= FOP_BUFFER_RASYNC | FOP_BUFFER_WASYNC,
-+	.fop_flags	= FOP_BUFFER_RASYNC | FOP_BUFFER_WASYNC | FOP_UNCACHED,
- };
- 
- int btrfs_fdatawrite_range(struct btrfs_inode *inode, loff_t start, loff_t end)
+									Honza
 -- 
-2.45.2
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
