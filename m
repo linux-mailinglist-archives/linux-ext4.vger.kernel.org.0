@@ -1,137 +1,144 @@
-Return-Path: <linux-ext4+bounces-5149-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5150-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 451D59C8187
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 04:45:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1ABE29C81B6
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 05:03:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B37451F22E6A
-	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 03:45:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D48E728056D
+	for <lists+linux-ext4@lfdr.de>; Thu, 14 Nov 2024 04:03:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B97D913D53D;
-	Thu, 14 Nov 2024 03:45:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=aliyun.com header.i=@aliyun.com header.b="TdVAcplK"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C897F1DFD82;
+	Thu, 14 Nov 2024 04:03:08 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from out30-76.freemail.mail.aliyun.com (out30-76.freemail.mail.aliyun.com [115.124.30.76])
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACF142AD21;
-	Thu, 14 Nov 2024 03:45:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17D8F154C0B;
+	Thu, 14 Nov 2024 04:03:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731555941; cv=none; b=jvFGr3bcwYEctUVycwBu8oZRmY+W4OrFw0V1h8gzctCdywoHIjc4IG1sJ1v+6bMG5ZyFDSGfoydCeYw28srvZFgndJJjW5FvD2gqC7D50w+EIZhnYFGA5rZVnpwyM5Fhwx7cfVbgbDhXeXK0+ioLn9m+3VfibplimMPCYjaOKug=
+	t=1731556988; cv=none; b=ZQLrCu/ccODH7r4ARSsFyTICsI5MkcTrsK2VkmyP0Tc+w46ULmyNO3di8fQE9LpaWW14l7zGvDd8zyE42G7BOzpqBasoJ5S/ALwk0yX2ZKQIsc7/3HS3VfvGHEwhbKCuIqSwGQKvOGWY8ihz2D8tsET/D0cciBuxuqMd3+gujU4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731555941; c=relaxed/simple;
-	bh=IdhrXyPf19VOojC9bGeoFlzKJXolp5iyT/19HGcP/m0=;
-	h=Date:From:To:Cc:Message-ID:Subject:MIME-Version:Content-Type; b=Px4FG5WmaFONu+T1FmnrWnMcUjSyHozowX89ookPWijYBhwOzYEOKpu7dGZbXQuzcyacqFTBe15zYTNp35VStIH6El3SjwKmNU70zhlYJIYAl93T9Rk2CqOGHmbEizANKzoW+F//jsPIrzU7aELiYXe+AX/oA9uAXqYpkzTKPLc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aliyun.com; spf=pass smtp.mailfrom=aliyun.com; dkim=pass (1024-bit key) header.d=aliyun.com header.i=@aliyun.com header.b=TdVAcplK; arc=none smtp.client-ip=115.124.30.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=aliyun.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=aliyun.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=aliyun.com; s=s1024;
-	t=1731555935; h=Date:From:To:Message-ID:Subject:MIME-Version:Content-Type;
-	bh=IdhrXyPf19VOojC9bGeoFlzKJXolp5iyT/19HGcP/m0=;
-	b=TdVAcplKGxLxbZ4c3udHiUnxOmtYXxZor9xjIq9v1QJV6XyGHB7U00OXKyRWrzcazZhRgcsmavL1ePQJhGQ++8d1nG0tlKlYd7CJVkRepGVLQFfk+F62OIG8AnP+sC0ptldqYo5FRnED2DvbVy16uXQQwjirUrFA1HJGp13APv0=
-X-Alimail-AntiSpam:AC=CONTINUE;BC=0.07431718|-1;CH=green;DM=|CONTINUE|false|;DS=CONTINUE|ham_alarm|0.045937-0.00108146-0.952982;FP=17767681518276724467|0|0|0|0|-1|-1|-1;HT=maildocker-contentspam033023153071;MF=shisiyuan@aliyun.com;NM=1;PH=DW;RN=4;RT=4;SR=0;TI=W4_0.2.3_21460848_1731555797897_o7001c61p;
-Received: from WS-web (shisiyuan@aliyun.com[W4_0.2.3_21460848_1731555797897_o7001c61p] cluster:ay36) at Thu, 14 Nov 2024 11:45:35 +0800
-Date: Thu, 14 Nov 2024 11:45:35 +0800
-From: "shisiyuan" <shisiyuan@aliyun.com>
-To: "tytso" <tytso@mit.edu>,
-  "adilger.kernel" <adilger.kernel@dilger.ca>
-Cc: "linux-ext4" <linux-ext4@vger.kernel.org>,
-  "linux-kernel" <linux-kernel@vger.kernel.org>
-Reply-To: "shisiyuan" <shisiyuan@aliyun.com>
-Message-ID: <88ccc36e-f511-4d35-9738-1c2ee6dab17c.shisiyuan@aliyun.com>
-Subject: =?UTF-8?B?W1BBVENIXSBleHQ0OiBhZGQgdW50cmltbWVkIGdyb3VwIGNvdW50IHN5c2ZzIGludGVyZmFj?=
-  =?UTF-8?B?ZQ==?=
-X-Mailer: [Alimail-Mailagent][W4_0.2.3][null][Chrome]
+	s=arc-20240116; t=1731556988; c=relaxed/simple;
+	bh=EDedrwmGEc4iJVB/qhKnd2nLZ/vBF8NU/WcC2meldYE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=uzgRfU9sugokbcHCixq+Gs0WZIdKZxE28r8d2rbTtMl3J5iiMWKby84IzUq1QB/4EifjO8FvfeBwg4ZEln8Du8XahRPf7eDM4xAq1zy9bOUNIl3EfXbeZyucYC3/p5kSRntnSgy9SoJ+FWnCAXqoe2w1vDRUk041hn9cV0RdqPo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4XpmfV58XPz10V8q;
+	Thu, 14 Nov 2024 12:01:06 +0800 (CST)
+Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
+	by mail.maildlp.com (Postfix) with ESMTPS id C205B140157;
+	Thu, 14 Nov 2024 12:03:01 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
+ (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Thu, 14 Nov
+ 2024 12:03:00 +0800
+Message-ID: <7bbc91b6-2a39-4dd8-86b5-4bdea9070f5e@huawei.com>
+Date: Thu, 14 Nov 2024 12:03:00 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-x-aliyun-im-through: {"version":"v1.0"}
-x-aliyun-mail-creator: W4_0.2.3_null_M3LTW96aWxsYS81LjAgKFdpbmRvd3MgTlQgMTAuMDsgV2luNjQ7IHg2NCkgQXBwbGVXZWJLaXQvNTM3LjM2IChLSFRNTCwgbGlrZSBHZWNrbykgQ2hyb21lLzEzMC4wLjAuMCBTYWZhcmkvNTM3LjM2vN
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: base64
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] ext4/032: add a new testcase in online resize tests
+To: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>,
+	<fstests@vger.kernel.org>
+CC: <linux-ext4@vger.kernel.org>, <jack@suse.cz>, <tytso@mit.edu>,
+	<zlang@redhat.com>, Yang Erkun <yangerkun@huawei.com>
+References: <20241111152100.152924-1-aleksandr.mikhalitsyn@canonical.com>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20241111152100.152924-1-aleksandr.mikhalitsyn@canonical.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
+ kwepemg500008.china.huawei.com (7.202.181.45)
 
-VGhpcyBpcyB1c2VkIGZvciB1c2Vyc3BhY2UgdG8gZGVjaWRlIHdoZXRoZXIKc3lzdGVtIHNob3Vs
-ZCBwZXJmb3JtIHRyaW1taW5nIGF0IGEgcHJvcGVyIHRpbWUuCgpTaWduZWQtb2ZmLWJ5OiBzaGlz
-aXl1YW4gPHNoaXNpeXVhbkBsaXhpYW5nLmNvbT4KLS0tCiBmcy9leHQ0L21iYWxsb2MuYyB8ICAy
-ICstCiBmcy9leHQ0L21iYWxsb2MuaCB8ICAzICsrKwogZnMvZXh0NC9zeXNmcy5jICAgfCAyOSAr
-KysrKysrKysrKysrKysrKysrKysrKysrKysrKwogMyBmaWxlcyBjaGFuZ2VkLCAzMyBpbnNlcnRp
-b25zKCspLCAxIGRlbGV0aW9uKC0pCgpkaWZmIC0tZ2l0IGEvZnMvZXh0NC9tYmFsbG9jLmMgYi9m
-cy9leHQ0L21iYWxsb2MuYwppbmRleCA5ZmM0YjYxNzcxMjkuLjBiOGM0OWI3NTM1ZSAxMDA2NDQK
-LS0tIGEvZnMvZXh0NC9tYmFsbG9jLmMKKysrIGIvZnMvZXh0NC9tYmFsbG9jLmMKQEAgLTE3Mjcs
-NyArMTcyNyw3IEBAIGV4dDRfbWJfbG9hZF9idWRkeV9nZnAoc3RydWN0IHN1cGVyX2Jsb2NrICpz
-YiwgZXh0NF9ncm91cF90IGdyb3VwLAogICAgICAgICByZXR1cm4gcmV0OwogfQoKLXN0YXRpYyBp
-bnQgZXh0NF9tYl9sb2FkX2J1ZGR5KHN0cnVjdCBzdXBlcl9ibG9jayAqc2IsIGV4dDRfZ3JvdXBf
-dCBncm91cCwKK2ludCBleHQ0X21iX2xvYWRfYnVkZHkoc3RydWN0IHN1cGVyX2Jsb2NrICpzYiwg
-ZXh0NF9ncm91cF90IGdyb3VwLAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgc3RydWN0
-IGV4dDRfYnVkZHkgKmU0YikKIHsKICAgICAgICAgcmV0dXJuIGV4dDRfbWJfbG9hZF9idWRkeV9n
-ZnAoc2IsIGdyb3VwLCBlNGIsIEdGUF9OT0ZTKTsKZGlmZiAtLWdpdCBhL2ZzL2V4dDQvbWJhbGxv
-Yy5oIGIvZnMvZXh0NC9tYmFsbG9jLmgKaW5kZXggZjgyODBkZTNlODgyLi45NTQ0YWJkY2Y3ZTQg
-MTAwNjQ0Ci0tLSBhL2ZzL2V4dDQvbWJhbGxvYy5oCisrKyBiL2ZzL2V4dDQvbWJhbGxvYy5oCkBA
-IC0yNDYsNiArMjQ2LDkgQEAgc3RhdGljIGlubGluZSBsb2ZmX3QgcGFfbG9naWNhbF9lbmQoc3Ry
-dWN0IGV4dDRfc2JfaW5mbyAqc2JpLAogICAgICAgICByZXR1cm4gKGxvZmZfdClwYS0+cGFfbHN0
-YXJ0ICsgRVhUNF9DMkIoc2JpLCBwYS0+cGFfbGVuKTsKIH0KCitpbnQgZXh0NF9tYl9sb2FkX2J1
-ZGR5KHN0cnVjdCBzdXBlcl9ibG9jayAqc2IsIGV4dDRfZ3JvdXBfdCBncm91cCwKKyAgICAgICAg
-ICAgICAgICAgICAgICAgIHN0cnVjdCBleHQ0X2J1ZGR5ICplNGIpOworCiB0eXBlZGVmIGludCAo
-KmV4dDRfbWJhbGxvY19xdWVyeV9yYW5nZV9mbikoCiAgICAgICAgIHN0cnVjdCBzdXBlcl9ibG9j
-ayAgICAgICAgICAgICAgICAqc2IsCiAgICAgICAgIGV4dDRfZ3JvdXBfdCAgICAgICAgICAgICAg
-ICAgICAgICAgIGFnbm8sCmRpZmYgLS1naXQgYS9mcy9leHQ0L3N5c2ZzLmMgYi9mcy9leHQ0L3N5
-c2ZzLmMKaW5kZXggZGRiNTQ2MDhjYTJlLi5lY2ZkNzk1MDVhNzkgMTAwNjQ0Ci0tLSBhL2ZzL2V4
-dDQvc3lzZnMuYworKysgYi9mcy9leHQ0L3N5c2ZzLmMKQEAgLTE3LDYgKzE3LDcgQEAKCiAjaW5j
-bHVkZSAiZXh0NC5oIgogI2luY2x1ZGUgImV4dDRfamJkMi5oIgorI2luY2x1ZGUgIm1iYWxsb2Mu
-aCIKCiB0eXBlZGVmIGVudW0gewogICAgICAgICBhdHRyX25vb3AsCkBAIC00MCw2ICs0MSw3IEBA
-IHR5cGVkZWYgZW51bSB7CiAgICAgICAgIGF0dHJfcG9pbnRlcl9zdHJpbmcsCiAgICAgICAgIGF0
-dHJfcG9pbnRlcl9hdG9taWMsCiAgICAgICAgIGF0dHJfam91cm5hbF90YXNrLAorICAgICAgICBh
-dHRyX3VudHJpbW1lZF9ncm91cHMsCiB9IGF0dHJfaWRfdDsKCiB0eXBlZGVmIGVudW0gewpAQCAt
-MTM4LDYgKzE0MCwyOSBAQCBzdGF0aWMgc3NpemVfdCBqb3VybmFsX3Rhc2tfc2hvdyhzdHJ1Y3Qg
-ZXh0NF9zYl9pbmZvICpzYmksIGNoYXIgKmJ1ZikKICAgICAgICAgICAgICAgICAgICAgICAgIHRh
-c2tfcGlkX3ZucihzYmktPnNfam91cm5hbC0+al90YXNrKSk7CiB9Cgorc3RhdGljIHNzaXplX3Qg
-dW50cmltbWVkX2dyb3Vwc19zaG93KHN0cnVjdCBleHQ0X3NiX2luZm8gKnNiaSwgY2hhciAqYnVm
-KQoreworICAgICAgICBzdHJ1Y3Qgc3VwZXJfYmxvY2sgKnNiID0gc2JpLT5zX3NiOworICAgICAg
-ICBleHQ0X2dyb3VwX3Qgbmdyb3VwcywgaTsKKyAgICAgICAgc3RydWN0IGV4dDRfYnVkZHkgZTRi
-OworICAgICAgICBpbnQgcmV0ID0gMCwgdW50cmltbWVkID0gMDsKKworICAgICAgICBuZ3JvdXBz
-ID0gZXh0NF9nZXRfZ3JvdXBzX2NvdW50KHNiKTsKKyAgICAgICAgZm9yIChpID0gMDsgaSA8IG5n
-cm91cHM7IGkrKykgeworICAgICAgICAgICAgICAgIHJldCA9IGV4dDRfbWJfbG9hZF9idWRkeShz
-YiwgaSwgJmU0Yik7CisgICAgICAgICAgICAgICAgaWYgKHJldCkgeworICAgICAgICAgICAgICAg
-ICAgICAgICAgZXh0NF93YXJuaW5nKHNiLCAiRXJyb3IgJWQgbG9hZGluZyBidWRkeSBpbmZvcm1h
-dGlvbiBmb3IgJXUiLAorICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIHJl
-dCwgaSk7CisgICAgICAgICAgICAgICAgICAgICAgICByZXR1cm4gc25wcmludGYoYnVmLCBQQUdF
-X1NJWkUsICJsb2FkIGVycm9yXG4iKTsKKyAgICAgICAgICAgICAgICB9CisgICAgICAgICAgICAg
-ICAgaWYgKCFFWFQ0X01CX0dSUF9XQVNfVFJJTU1FRChlNGIuYmRfaW5mbykpCisgICAgICAgICAg
-ICAgICAgICAgICAgICB1bnRyaW1tZWQrKzsKKyAgICAgICAgfQorCisgICAgICAgIHJldHVybiBz
-bnByaW50ZihidWYsIFBBR0VfU0laRSwgIiVkLyVkXG4iLAorICAgICAgICAgICAgICAgICAgICAg
-ICAgdW50cmltbWVkLCBuZ3JvdXBzKTsKK30KKwogI2RlZmluZSBFWFQ0X0FUVFIoX25hbWUsX21v
-ZGUsX2lkKSAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICBcCiBzdGF0aWMg
-c3RydWN0IGV4dDRfYXR0ciBleHQ0X2F0dHJfIyNfbmFtZSA9IHsgICAgICAgICAgICAgICAgICAg
-ICAgICAgICAgICAgIFwKICAgICAgICAgLmF0dHIgPSB7Lm5hbWUgPSBfX3N0cmluZ2lmeShfbmFt
-ZSksIC5tb2RlID0gX21vZGUgfSwgICAgICAgICAgICAgICAgXApAQCAtMjUxLDYgKzI3Niw3IEBA
-IEVYVDRfUk9fQVRUUl9FU19TVFJJTkcobGFzdF9lcnJvcl9mdW5jLCBzX2xhc3RfZXJyb3JfZnVu
-YywgMzIpOwogRVhUNF9BVFRSKGZpcnN0X2Vycm9yX3RpbWUsIDA0NDQsIGZpcnN0X2Vycm9yX3Rp
-bWUpOwogRVhUNF9BVFRSKGxhc3RfZXJyb3JfdGltZSwgMDQ0NCwgbGFzdF9lcnJvcl90aW1lKTsK
-IEVYVDRfQVRUUihqb3VybmFsX3Rhc2ssIDA0NDQsIGpvdXJuYWxfdGFzayk7CitFWFQ0X0FUVFIo
-dW50cmltbWVkX2dyb3VwcywgMDQ0NCwgdW50cmltbWVkX2dyb3Vwcyk7CiBFWFQ0X1JXX0FUVFJf
-U0JJX1VJKG1iX3ByZWZldGNoLCBzX21iX3ByZWZldGNoKTsKIEVYVDRfUldfQVRUUl9TQklfVUko
-bWJfcHJlZmV0Y2hfbGltaXQsIHNfbWJfcHJlZmV0Y2hfbGltaXQpOwogRVhUNF9SV19BVFRSX1NC
-SV9VTChsYXN0X3RyaW1fbWluYmxrcywgc19sYXN0X3RyaW1fbWluYmxrcyk7CkBAIC0yOTksNiAr
-MzI1LDcgQEAgc3RhdGljIHN0cnVjdCBhdHRyaWJ1dGUgKmV4dDRfYXR0cnNbXSA9IHsKICAgICAg
-ICAgQVRUUl9MSVNUKGZpcnN0X2Vycm9yX3RpbWUpLAogICAgICAgICBBVFRSX0xJU1QobGFzdF9l
-cnJvcl90aW1lKSwKICAgICAgICAgQVRUUl9MSVNUKGpvdXJuYWxfdGFzayksCisgICAgICAgIEFU
-VFJfTElTVCh1bnRyaW1tZWRfZ3JvdXBzKSwKICNpZmRlZiBDT05GSUdfRVhUNF9ERUJVRwogICAg
-ICAgICBBVFRSX0xJU1Qoc2ltdWxhdGVfZmFpbCksCiAjZW5kaWYKQEAgLTQzOSw2ICs0NjYsOCBA
-QCBzdGF0aWMgc3NpemVfdCBleHQ0X2F0dHJfc2hvdyhzdHJ1Y3Qga29iamVjdCAqa29iaiwKICAg
-ICAgICAgICAgICAgICByZXR1cm4gcHJpbnRfdHN0YW1wKGJ1Ziwgc2JpLT5zX2VzLCBzX2xhc3Rf
-ZXJyb3JfdGltZSk7CiAgICAgICAgIGNhc2UgYXR0cl9qb3VybmFsX3Rhc2s6CiAgICAgICAgICAg
-ICAgICAgcmV0dXJuIGpvdXJuYWxfdGFza19zaG93KHNiaSwgYnVmKTsKKyAgICAgICAgY2FzZSBh
-dHRyX3VudHJpbW1lZF9ncm91cHM6CisgICAgICAgICAgICAgICAgcmV0dXJuIHVudHJpbW1lZF9n
-cm91cHNfc2hvdyhzYmksIGJ1Zik7CiAgICAgICAgIGRlZmF1bHQ6CiAgICAgICAgICAgICAgICAg
-cmV0dXJuIGV4dDRfZ2VuZXJpY19hdHRyX3Nob3coYSwgc2JpLCBidWYpOwogICAgICAgICB9Ci0t
-IAoyLjM0LjE=
+On 2024/11/11 23:21, Alexander Mikhalitsyn wrote:
+> Add a new testcase for [1] commit in ext4 online resize testsuite.
+>
+> Link: https://lore.kernel.org/linux-ext4/20240927133329.1015041-1-libaokun@huaweicloud.com [1]
+> Signed-off-by: Alexander Mikhalitsyn <aleksandr.mikhalitsyn@canonical.com>
+Looks good, thanks for the patch!
+
+Reviewed-by: Baokun Li <libaokun1@huawei.com>
+> ---
+>   tests/ext4/032     |  6 ++++++
+>   tests/ext4/032.out | 18 ++++++++++++++++++
+>   2 files changed, 24 insertions(+)
+>
+> diff --git a/tests/ext4/032 b/tests/ext4/032
+> index 6bc3b61b..238ab178 100755
+> --- a/tests/ext4/032
+> +++ b/tests/ext4/032
+> @@ -10,6 +10,9 @@
+>   . ./common/preamble
+>   _begin_fstest auto quick ioctl resize
+>   
+> +_fixed_by_kernel_commit 6121258c2b33 \
+> +	"ext4: fix off by one issue in alloc_flex_gd()"
+> +
+>   BLK_SIZ=4096
+>   CLUSTER_SIZ=4096
+>   
+> @@ -136,6 +139,9 @@ for CLUSTER_SIZ in 4096 16384 65536; do
+>   
+>   	## Extending a 2/3rd block group to 1280 block groups.
+>   	ext4_online_resize $(c2b 24576) $(c2b 41943040)
+> +
+> +	# tests for "ext4: fix off by one issue in alloc_flex_gd()"
+> +	ext4_online_resize $(c2b 6400) $(c2b 786432)
+>   done
+>   
+>   status=0
+> diff --git a/tests/ext4/032.out b/tests/ext4/032.out
+> index b372b014..d5d75c9e 100644
+> --- a/tests/ext4/032.out
+> +++ b/tests/ext4/032.out
+> @@ -60,6 +60,12 @@ QA output created by 032
+>   +++ resize fs to 41943040
+>   +++ umount fs
+>   +++ check fs
+> ++++ truncate image file to 786432
+> ++++ create fs on image file 6400
+> ++++ mount image file
+> ++++ resize fs to 786432
+> ++++ umount fs
+> ++++ check fs
+>   ++ set cluster size to 16384
+>   +++ truncate image file to 98304
+>   +++ create fs on image file 65536
+> @@ -115,6 +121,12 @@ QA output created by 032
+>   +++ resize fs to 167772160
+>   +++ umount fs
+>   +++ check fs
+> ++++ truncate image file to 3145728
+> ++++ create fs on image file 25600
+> ++++ mount image file
+> ++++ resize fs to 3145728
+> ++++ umount fs
+> ++++ check fs
+>   ++ set cluster size to 65536
+>   +++ truncate image file to 393216
+>   +++ create fs on image file 262144
+> @@ -170,3 +182,9 @@ QA output created by 032
+>   +++ resize fs to 671088640
+>   +++ umount fs
+>   +++ check fs
+> ++++ truncate image file to 12582912
+> ++++ create fs on image file 102400
+> ++++ mount image file
+> ++++ resize fs to 12582912
+> ++++ umount fs
+> ++++ check fs
+
+
 
