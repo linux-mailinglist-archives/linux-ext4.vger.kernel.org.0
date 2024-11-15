@@ -1,72 +1,73 @@
-Return-Path: <linux-ext4+bounces-5213-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5215-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A8EE9CF0D6
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 16:59:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 52CB89CF23A
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 17:58:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 165C3B2B610
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 15:38:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5BF8FB36A83
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 15:39:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D1031F76BD;
-	Fri, 15 Nov 2024 15:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45051F8180;
+	Fri, 15 Nov 2024 15:32:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="L/iy3LQa"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="Psh593YT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 471B01F7094
-	for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 15:31:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86EE11D5AA7
+	for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 15:32:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731684719; cv=none; b=cVIcq3SnQVJt5iFtxAd4N3JP1qWq0gMJz/2Mv0cJu1lMGecNVAXbBOZofHJ9CJTaGYM+jJpTgJBk0t6itDFaEEl+8vphkOlMaKhYy3sbIMwOeVPlyjtv0uqZfDB3Kx7fdJdjr7VLdBWQli78J1XucluhcNW8ouAk5GuOr0VpA6Y=
+	t=1731684732; cv=none; b=QWbWea+3l5hqBKwz1ofgRL3RGRbqm2cfJTe4IQBe+XiiBW7x9aohiJY5dra6dvyhy0zQw8Fx4Z3iKPMI9VKrkw17rMhq/bl6S/Gwfu8+E9H+5MNHM98I8Nn6V28f/fbMZWjPRmjtmqPCaxnZZ4ObIDhqKHJx2xP9P39lhaAym3Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731684719; c=relaxed/simple;
-	bh=6I0DlDU7r6h299w7wCYMACFg3R+68ox0OBCaPPO6OWw=;
+	s=arc-20240116; t=1731684732; c=relaxed/simple;
+	bh=nFXm/L4ae8YekLwpIFurgFERbAtgq26xVgDJzO6g1yM=;
 	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=k5f1e74jvXCSm/8kCt6bFol8pVPCLAzG6R/Injxx+P4MHQfRonhi2PeAmYd/AEgoycqhBKNinYiYo3tMpzGhf4tz3jCn2Sks0lGlO6Lz383k5c5EfM+JNP4+zzjntjEOwiYHy5BESNesYSKzuvm78Acz4dXWPjRZzNZjOxSSvoE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=L/iy3LQa; arc=none smtp.client-ip=209.85.128.181
+	 MIME-Version; b=HLVxnHmZKb88DBE8WG3kwcslZ+3dhtStFwBSgm8xHDWhyEPYBUY9ta1zCVDiDjauSyTcqK1iGJNSizFzYVlKgryfzTpxYcbMil2nuQk+qkvm3loEG/gYyIJFRuwxCVJrx3qKeaTlBKuBgj4mfmZMv1xRgl/5Vw4QD4cKKAX+uY4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=Psh593YT; arc=none smtp.client-ip=209.85.215.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-6eb0c2dda3cso20778877b3.1
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 07:31:58 -0800 (PST)
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-7ea7e2ff5ceso1473967a12.2
+        for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 07:32:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731684717; x=1732289517; darn=vger.kernel.org;
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731684730; x=1732289530; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=SVlCssk7TvFYg+mPz0+epJww2XrJywW98H8fNg6oZ9s=;
-        b=L/iy3LQaJK51zfKZy836wWqkdRDua/qu5MWDwfT8I+E560K7SSexHUFmeDq26/zUrn
-         h3KOdqsG9twRzlUB4bV2Nq2HJynSF/gfw2d8JSFEQAK5/9W6UZhfou3tLH1og64avY/J
-         Al9XK1PhX/dtHA3RzLGasw9+49kqMcgj2JnPqB38Y6LkIe+lMiQN0PXvIr7yOdO8agL6
-         6STMChfP/Z54ueyAO40XQ+EIECZbAI8QivqPPmKrO+2+9PQus8SboVJ5LJjwauCVsou2
-         3x15CjQZiEa/h92ZZTZ0gwOxHvYIa37dpkfhLsrXitqxCpUoNwqZUx4okJMzBlTVDtAL
-         vA6A==
+        bh=Gek1GO8SPggpZ3MPgZMTTjA2lPqNZurY73wIWpdWbQQ=;
+        b=Psh593YTSEaCvm5mP0PDI/hHqJaWvavyydhQViMNpGJflzXuWq0u4oGWsRy8EGzYd0
+         usu99WzTon6qxQ2ppapBWXUMOlJqm4XFx8KWZjIS6KrJ1IfzI3b83HYIQUhjRM2v1vX0
+         GLQ3X+bDXp/SsgKlsjWUqLESyI0RZo/RSyu1FbEeuU9hGBbtIAlT2qANVI1za6fWa0CR
+         PWjCaJtxvmHnwezUoPTTRsd3Oui/cS/5+C3cpo4UosKtWZ47DUyt+BIZ5rx2W4d/SZFr
+         j7LdDrL+rIVC7UsSLkjWPUG4qUtjo9M1aQcQp6ZH+dhDdLUDhojxYGA3raZ/zwAIt0JS
+         cJgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731684717; x=1732289517;
+        d=1e100.net; s=20230601; t=1731684730; x=1732289530;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=SVlCssk7TvFYg+mPz0+epJww2XrJywW98H8fNg6oZ9s=;
-        b=Q7dqxekqIOQbeYypOhsxapF4vKu75r3Wgy3eMxUuS/fqVxTrCwwna1WnjCBMLWy8bd
-         WqoE/RTxS6Ax1k+zhM97EW1l1ovosEzxseNhYhRyV9I5/k+APtEke0IWlSj7ShhlHWVA
-         heYJZSjEw9e9wOEPaQNZLQrdooFR246wpZVytdqMfVC0mDwdfn7cz9UkwQ6F7b51nnvS
-         cdBbE5XBaCs13OXdFOYdkFk8kdC5ri8tsp4VDCJ57DT1PfYXaEXFUsGz87ZaJqjDn7nN
-         ivY1IFS2xKH6WoDdvfGuTWix+i+e5Zi5lN8tO8FIa/IBOv/BtuVzncrj5jPFRNtfKKgk
-         isAg==
-X-Forwarded-Encrypted: i=1; AJvYcCWzQ+ZN4p11PMCfHBS7boyUkDOasBueOqS04xxoMBIHxHteRZftn0z8X3h4hI8UsCrQSDECHkTkuNF5@vger.kernel.org
-X-Gm-Message-State: AOJu0Yy6Fq/7qCXtcgHcpVcdSolYtDi5XsLzjczSfYEB3cz3jgCo+5tB
-	OYnL3MxNUGFEJolUjJreLcJYxiz1QhM3eRf51+lpdIdVpfugP3BeMCOsUHoZ0yo=
-X-Google-Smtp-Source: AGHT+IHB7s7jP8NWV/O0FcTu86HRGJSs7P0wkOPC0j5cMuO18DrwRH2o+5qB1EsHLQ8UmBf4vwq9wQ==
-X-Received: by 2002:a05:690c:62c5:b0:6ea:8a23:7673 with SMTP id 00721157ae682-6ee55bbae6amr38804727b3.8.1731684717148;
-        Fri, 15 Nov 2024 07:31:57 -0800 (PST)
+        bh=Gek1GO8SPggpZ3MPgZMTTjA2lPqNZurY73wIWpdWbQQ=;
+        b=tU7a9ubKOPak4f6YNwqZCq8Owle0yuk2JGslxp943f/Cz58+ElqJxY8s0rQe43fMyv
+         OGvK886AipWyn8vTGCSB5RHBuHwFn0GaSeTH4MfZxN1xY/rHlBYgYe7c2A4XSk3OV9D3
+         UVEnMeUa4LLHV9ZYhQ7SVPOdnaYLbymuHUCj22dywJZpZlHMfDQnwJG5CsMLUrJhwW+n
+         tvf6N9sk7fWcmyi4/nVtglWJ3u6Hxq5Ce9j6igMreAIbleogIUiLm+9XExxkqP+kEwJK
+         HhqTZGOUuOI5AP4A6XYxT9SjqYljZEkE8XnIdt81KwG/ht0FELXyWXR4ymc2N97s5vOQ
+         4s1A==
+X-Forwarded-Encrypted: i=1; AJvYcCVcNfBZMjhScjsWeTO/lK5r+sBNpIkJ7rSI51GfYIX/eA4RdNL5lWoxPHogFKV0GAlE75mtwAexRJXY@vger.kernel.org
+X-Gm-Message-State: AOJu0YzQh3cnrPjOZfg9Yx70aZUn/SvNKxHO3tRUYzv/5OMGyg9NsyMt
+	OozQD6vsufi9ayvepZF9po7bEE3P9zIysYoiLtPwk+45U13VLZaJ7x1ojTlk30uqVMc3bT+rSOM
+	x
+X-Google-Smtp-Source: AGHT+IEUcKBXNGC+FquadsfHiR9BI4UoMJrmZkBZaObeXyKm9EGd5wreVNWR6wH/jakvp0EFNSF0lA==
+X-Received: by 2002:a05:6902:1209:b0:e30:c977:a360 with SMTP id 3f1490d57ef6-e38261291fdmr3157574276.5.1731684719039;
+        Fri, 15 Nov 2024 07:31:59 -0800 (PST)
 Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
-        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ee44075016sm7768367b3.63.2024.11.15.07.31.56
+        by smtp.gmail.com with ESMTPSA id 3f1490d57ef6-e384121a605sm296041276.52.2024.11.15.07.31.57
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 07:31:56 -0800 (PST)
+        Fri, 15 Nov 2024 07:31:58 -0800 (PST)
 From: Josef Bacik <josef@toxicpanda.com>
 To: kernel-team@fb.com,
 	linux-fsdevel@vger.kernel.org,
@@ -79,9 +80,9 @@ To: kernel-team@fb.com,
 	linux-btrfs@vger.kernel.org,
 	linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH v8 18/19] btrfs: disable defrag on pre-content watched files
-Date: Fri, 15 Nov 2024 10:30:31 -0500
-Message-ID: <4cc5bcea13db7904174353d08e85157356282a59.1731684329.git.josef@toxicpanda.com>
+Subject: [PATCH v8 19/19] fs: enable pre-content events on supported file systems
+Date: Fri, 15 Nov 2024 10:30:32 -0500
+Message-ID: <46960dcb2725fa0317895ed66a8409ba1c306a82.1731684329.git.josef@toxicpanda.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <cover.1731684329.git.josef@toxicpanda.com>
 References: <cover.1731684329.git.josef@toxicpanda.com>
@@ -93,39 +94,57 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-We queue up inodes to be defrag'ed asynchronously, which means we do not
-have their original file for readahead.  This means that the code to
-skip readahead on pre-content watched files will not run, and we could
-potentially read in empty pages.
-
-Handle this corner case by disabling defrag on files that are currently
-being watched for pre-content events.
+Now that all the code has been added for pre-content events, and the
+various file systems that need the page fault hooks for fsnotify have
+been updated, add SB_I_ALLOW_HSM to the supported file systems.
 
 Signed-off-by: Josef Bacik <josef@toxicpanda.com>
 ---
- fs/btrfs/ioctl.c | 9 +++++++++
- 1 file changed, 9 insertions(+)
+ fs/btrfs/super.c   | 2 +-
+ fs/ext4/super.c    | 3 +++
+ fs/xfs/xfs_super.c | 2 +-
+ 3 files changed, 5 insertions(+), 2 deletions(-)
 
-diff --git a/fs/btrfs/ioctl.c b/fs/btrfs/ioctl.c
-index c9302d193187..1e5913f276be 100644
---- a/fs/btrfs/ioctl.c
-+++ b/fs/btrfs/ioctl.c
-@@ -2635,6 +2635,15 @@ static int btrfs_ioctl_defrag(struct file *file, void __user *argp)
- 			goto out;
- 		}
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 97a85d180b61..fe6ecc3f1cab 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -961,7 +961,7 @@ static int btrfs_fill_super(struct super_block *sb,
+ #endif
+ 	sb->s_xattr = btrfs_xattr_handlers;
+ 	sb->s_time_gran = 1;
+-	sb->s_iflags |= SB_I_CGROUPWB;
++	sb->s_iflags |= SB_I_CGROUPWB | SB_I_ALLOW_HSM;
  
-+		/*
-+		 * Don't allow defrag on pre-content watched files, as it could
-+		 * populate the page cache with 0's via readahead.
-+		 */
-+		if (fsnotify_file_has_pre_content_watches(file)) {
-+			ret = -EINVAL;
-+			goto out;
-+		}
+ 	err = super_setup_bdi(sb);
+ 	if (err) {
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index b3512d78b55c..13b9d67a4eec 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5306,6 +5306,9 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	/* i_version is always enabled now */
+ 	sb->s_flags |= SB_I_VERSION;
+ 
++	/* HSM events are allowed by default. */
++	sb->s_iflags |= SB_I_ALLOW_HSM;
 +
- 		if (argp) {
- 			if (copy_from_user(&range, argp, sizeof(range))) {
- 				ret = -EFAULT;
+ 	err = ext4_check_feature_compatibility(sb, es, silent);
+ 	if (err)
+ 		goto failed_mount;
+diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+index fda75db739b1..2d1e9db8548d 100644
+--- a/fs/xfs/xfs_super.c
++++ b/fs/xfs/xfs_super.c
+@@ -1713,7 +1713,7 @@ xfs_fs_fill_super(
+ 		sb->s_time_max = XFS_LEGACY_TIME_MAX;
+ 	}
+ 	trace_xfs_inode_timestamp_range(mp, sb->s_time_min, sb->s_time_max);
+-	sb->s_iflags |= SB_I_CGROUPWB;
++	sb->s_iflags |= SB_I_CGROUPWB | SB_I_ALLOW_HSM;
+ 
+ 	set_posix_acl_flag(sb);
+ 
 -- 
 2.43.0
 
