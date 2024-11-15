@@ -1,262 +1,297 @@
-Return-Path: <linux-ext4+bounces-5195-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5196-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D36069CE9AA
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 16:07:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 70A789CF002
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 16:33:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 640411F24ABB
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 15:07:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EAD6F1F22B2D
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 15:33:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9691D516C;
-	Fri, 15 Nov 2024 15:07:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 31A151D63FE;
+	Fri, 15 Nov 2024 15:31:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="RROIqpK4"
+	dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b="VHE0vNg3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBDC1D45FB
-	for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 15:07:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C12C11D435C
+	for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 15:31:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731683226; cv=none; b=NA7Il3DzI7gmBNDirnf7XWV2xb4kwdWOTBL5tdC7nZyLX4M8dgapjviRINEgHRn4Zmqa6UHSYuXSCjykuysuhmFmYdJdVqikg93xsqeIuBIpkMHBM9tryb/63+FarmYoUoBni0wEdJSFQzyBz3Deydej3Kz/OLVqmZsrPIq0Gy4=
+	t=1731684684; cv=none; b=ETfwU3Vsi5DB87cwYxA7FiJpVZ5KkVwlOpou2TJsMQTyp5B/gfpBD4bp5SMjUYh3wIsWCfXITsOdKToLZ4mkSlrtSRApSrskUqAoeNEDSM1wyAe1Yp2CE5RqtYO4dlzGiXFA7mMQBBXF7YygcC+RPkfIcTMHDCE/g8IdwScOfyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731683226; c=relaxed/simple;
-	bh=JoueD5DdbEps7KANkoLAA34opKmVg057HSDEhnbmjsQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jZ5+y9qlicJ5DdfN034G6s6D5vrwL7fIrMlpSuYyIHEJcmLvfKWemsEzM2Qrv/XEtdXgxwBOBL7JI+a1xwDvOQAU0x3Q472+d5ewcjQ8uyEBx081RWEWVlU9W7p1+K4brMNkyGKs7T9rpA3R1Mv4vrP+k11t4u9n+M8xgjSpNNM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=RROIqpK4; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3e786167712so521141b6e.3
-        for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 07:07:02 -0800 (PST)
+	s=arc-20240116; t=1731684684; c=relaxed/simple;
+	bh=hp4usW8Ej11+8+PqZlhGZByHONHHqdNTmMAhepWwZC4=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version; b=cyzd0XdRrtpvxO2NtFV3McjbjXVyEqI7ICpXH0xyGp1qPwNKjzaDhywXHxC8Lhs3PIBtZDnWug7km/ky4VbPFE703t+JaGzKuK/0dKIZlaz8U4sC45hjgj+f4quSWnlZLM68E2hhxmY+gXGqK3i57SbehbW6YJJ9SLNqASBRsw0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com; spf=none smtp.mailfrom=toxicpanda.com; dkim=pass (2048-bit key) header.d=toxicpanda-com.20230601.gappssmtp.com header.i=@toxicpanda-com.20230601.gappssmtp.com header.b=VHE0vNg3; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toxicpanda.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toxicpanda.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-6ee4460fd7bso16245157b3.0
+        for <linux-ext4@vger.kernel.org>; Fri, 15 Nov 2024 07:31:22 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731683222; x=1732288022; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0gUCqtsVIcpTKxB887ynhni13OvvpCFWbJ2pT4TerOo=;
-        b=RROIqpK41XM1XxPaZU4J0Hh1Yfu3ibn1or6r1aMG1ocm37YpJkwMmjDUVOrpKMOjYk
-         MER/k9d6rkjtp7bLmd4cwudVjXvHPeJq/qrblXkwmgU/Z/5xf2VTv78OIoWS80MmhSAz
-         jfQ4AFY6jyQYIcAInv22ztdPjElN954+4NwSsAHlTrFvClQkaW5wSnqCaAQF2S8wiccM
-         gRZxvOaeK89c/vzRQF2fzw/UWZ3/Z6R8ersCSNkf3re7vMS2ye/2l0ThXdUGdBmD/lj3
-         JQy8KjuBf9h8CF1APS7HxMpp2l3M25kIwvC2wMspv11NMcrw9t0f9lF9hEYbwXjjZeeO
-         1Y4w==
+        d=toxicpanda-com.20230601.gappssmtp.com; s=20230601; t=1731684682; x=1732289482; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=VUtk4+vV369ZskHbswJIOBkvN0frqjKE2l/5ygvxLAI=;
+        b=VHE0vNg3j6b+b5EQ+4+I71Mh0M0knTrZycmHLOJsEHn6MKHXKOcFwZOJ70cZmKHxFA
+         YPFwyq6w8VYHNcVC73W6vkWujCjOAK9f5NADW37dwVeqAhU+PCT5aAhgyI0ay7zKDYxK
+         YtId3ROUzIiG2DBLDD78NF/SWWo3iDnC1CEN0GPCHsqnjbd0qgotYpEePRSDPZOvwblT
+         5DBZCjM8cmTNmB/L6/dxnhK2RMryCir4460aMG6dbgDsIlUh/pFbcxJX56iBJ67TCMoK
+         J2ztsAd2LDMGiYwWmIxiZ2vRMPaiIqn1Pfu1bRwKe0orUob5A4u1llWyUII7+o8BPuG2
+         fSrQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731683222; x=1732288022;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0gUCqtsVIcpTKxB887ynhni13OvvpCFWbJ2pT4TerOo=;
-        b=nbax+GD/lur67vlVDG+E7gU14Luoe9RTvK7K+lW8XKQu8Nk3S7nE/kVBuw+PA4SrC0
-         ZaZ+NBizxw3mdZVPjz9vMYlCcYdVzU97lagJ+8/TmbtP85gGV7kc7JMmsD/+WOq+tNtV
-         Y/0mzJq9/+feVTdbJiH8BJLA9hksDA37a1bdLLD4OUAARs2EIiI+1ZpY8Zl8Z8tUz8yb
-         R7rspEpoRflkitsklWFhA8GifAozuO5n9jTSLKUyg5inIgLHAma3QEviDLI094NgAJ5u
-         G7HW9p2GmfyMeVmBGlPvrH5R4+sWE2AJkA0vnDV/zyNIpgFjNLB7qY0pwPrS2cAJxGii
-         //ZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWr1z5jLaE+oYggLp+wq+9K4gC2O/FplBFwWvawMm84gizybeDWlk6MrCI8XQBnSCOimAbf3xJ+Ii0S@vger.kernel.org
-X-Gm-Message-State: AOJu0YyeMN3ptXlw8tEW0lJmo+7ogM+6RkwcE4VU56AxVScFaezjYxP1
-	TjbEwS+6nuwQKhZIJfqzhLCkq/VZcW7/H+aF8WNFQhavwVfpig+06xfDF6GGjMs=
-X-Google-Smtp-Source: AGHT+IESr8fzq2A6pN9+2NHIo06fx9RY7MS57VQq1z635m6xFAB4jhV9p9zb/JVkay2xsrjQDiNpqw==
-X-Received: by 2002:a05:6808:3096:b0:3e6:14a6:4288 with SMTP id 5614622812f47-3e7bc7c14a8mr3816872b6e.11.1731683221679;
-        Fri, 15 Nov 2024 07:07:01 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 5614622812f47-3e7bcd82ad7sm536427b6e.40.2024.11.15.07.07.00
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Nov 2024 07:07:00 -0800 (PST)
-Message-ID: <94116ae9-30a8-40fa-8ff0-0c51ee126c64@kernel.dk>
-Date: Fri, 15 Nov 2024 08:06:59 -0700
+        d=1e100.net; s=20230601; t=1731684682; x=1732289482;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=VUtk4+vV369ZskHbswJIOBkvN0frqjKE2l/5ygvxLAI=;
+        b=Wyg79pUkrSbFSH6/VJH3gDpVRj3ys7cUVfOpzHCo8fJP9WYgnBkHMdN+y3cNWf0arp
+         9qjMR+g4I+KE1xxaIE4vteZEcx9/Qtff34Ii8/UHKS2P3/97cnMn9EWvNrK4beC9oUJk
+         EUuGkga8/s5vcRfYJYQby8hFvRgxhXxiH6Rdk3opWemCaGVp8oQLx166W7tnG33NRLMb
+         mcgwm1P6c3O099dbxi/3nF/9VI4DHg6kdu9Q/EbctgTrc3FQqUmd//DNmjWLhKiNHv7U
+         SP2qPgu4N/XuTm92PP1fq4TP0F6ZtaxFP/HFL+YEKYDrKzX4o/XffmlYHb6D1zPIBXOq
+         Cr0Q==
+X-Forwarded-Encrypted: i=1; AJvYcCW441OJQrOJPL6P0YCu/mpwhw3LqcbaMOcIKAzWW5m3pOa6iUU/d/iivnfSZdReLJrsApmJRbjni29w@vger.kernel.org
+X-Gm-Message-State: AOJu0YxaOFIQR7QHAuMhDv3+keaL4nvFBEdVB5rWYr5N4kHdOwYEsPGA
+	HTylSfXqqFQhvvs/7PN/ENqM0huuIORkiPv9kEgC+m4U1USZyrLHUBkdRBMg5t4=
+X-Google-Smtp-Source: AGHT+IEtrgHfueknW4D9O6DxGEsrZzaExI8RD/i4XVu0Bk+G5X9g8sl2lzwD4VPcS/0dPBXA19z4iQ==
+X-Received: by 2002:a05:690c:3348:b0:6e3:16da:e74 with SMTP id 00721157ae682-6ee55a709a1mr39043347b3.16.1731684681590;
+        Fri, 15 Nov 2024 07:31:21 -0800 (PST)
+Received: from localhost (syn-076-182-020-124.res.spectrum.com. [76.182.20.124])
+        by smtp.gmail.com with ESMTPSA id 00721157ae682-6ee444477b5sm7768357b3.110.2024.11.15.07.31.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Nov 2024 07:31:21 -0800 (PST)
+From: Josef Bacik <josef@toxicpanda.com>
+To: kernel-team@fb.com,
+	linux-fsdevel@vger.kernel.org,
+	jack@suse.cz,
+	amir73il@gmail.com,
+	brauner@kernel.org,
+	torvalds@linux-foundation.org,
+	viro@zeniv.linux.org.uk,
+	linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH v8 00/19] fanotify: add pre-content hooks
+Date: Fri, 15 Nov 2024 10:30:13 -0500
+Message-ID: <cover.1731684329.git.josef@toxicpanda.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCHSET v5 0/17] Uncached buffered IO
-To: Julian Sun <sunjunchao2870@gmail.com>, linux-mm@kvack.org,
- linux-fsdevel@vger.kernel.org
-Cc: hannes@cmpxchg.org, clm@meta.com, linux-kernel@vger.kernel.org,
- willy@infradead.org, kirill@shutemov.name, linux-btrfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, bfoster@redhat.com
-References: <20241114152743.2381672-2-axboe@kernel.dk>
- <8b47ebabf12a531f2fa24a7671df5e569b82adb7.camel@gmail.com>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <8b47ebabf12a531f2fa24a7671df5e569b82adb7.camel@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 11/14/24 9:01 PM, Julian Sun wrote:
-> On Thu, 2024-11-14 at 08:25 -0700, Jens Axboe wrote:
->> Hi,
->>
->> 5 years ago I posted patches adding support for RWF_UNCACHED, as a way
->> to do buffered IO that isn't page cache persistent. The approach back
->> then was to have private pages for IO, and then get rid of them once IO
->> was done. But that then runs into all the issues that O_DIRECT has, in
->> terms of synchronizing with the page cache.
->>
->> So here's a new approach to the same concent, but using the page cache
->> as synchronization. That makes RWF_UNCACHED less special, in that it's
->> just page cache IO, except it prunes the ranges once IO is completed.
->>
->> Why do this, you may ask? The tldr is that device speeds are only
->> getting faster, while reclaim is not. Doing normal buffered IO can be
->> very unpredictable, and suck up a lot of resources on the reclaim side.
->> This leads people to use O_DIRECT as a work-around, which has its own
->> set of restrictions in terms of size, offset, and length of IO. It's
->> also inherently synchronous, and now you need async IO as well. While
->> the latter isn't necessarily a big problem as we have good options
->> available there, it also should not be a requirement when all you want
->> to do is read or write some data without caching.
->>
->> Even on desktop type systems, a normal NVMe device can fill the entire
->> page cache in seconds. On the big system I used for testing, there's a
->> lot more RAM, but also a lot more devices. As can be seen in some of the
->> results in the following patches, you can still fill RAM in seconds even
->> when there's 1TB of it. Hence this problem isn't solely a "big
->> hyperscaler system" issue, it's common across the board.
->>
->> Common for both reads and writes with RWF_UNCACHED is that they use the
->> page cache for IO. Reads work just like a normal buffered read would,
->> with the only exception being that the touched ranges will get pruned
->> after data has been copied. For writes, the ranges will get writeback
->> kicked off before the syscall returns, and then writeback completion
->> will prune the range. Hence writes aren't synchronous, and it's easy to
->> pipeline writes using RWF_UNCACHED. Folios that aren't instantiated by
->> RWF_UNCACHED IO are left untouched. This means you that uncached IO
->> will take advantage of the page cache for uptodate data, but not leave
->> anything it instantiated/created in cache.
->>
->> File systems need to support this. The patches add support for the
->> generic filemap helpers, and for iomap. Then ext4 and XFS are marked as
->> supporting it. The last patch adds support for btrfs as well, lightly
->> tested. The read side is already done by filemap, only the write side
->> needs a bit of help. The amount of code here is really trivial, and the
->> only reason the fs opt-in is necessary is to have an RWF_UNCACHED IO
->> return -EOPNOTSUPP just in case the fs doesn't use either the generic
->> paths or iomap. Adding "support" to other file systems should be
->> trivial, most of the time just a one-liner adding FOP_UNCACHED to the
->> fop_flags in the file_operations struct.
->>
->> Performance results are in patch 8 for reads and patch 10 for writes,
->> with the tldr being that I see about a 65% improvement in performance
->> for both, with fully predictable IO times. CPU reduction is substantial
->> as well, with no kswapd activity at all for reclaim when using uncached
->> IO.
->>
->> Using it from applications is trivial - just set RWF_UNCACHED for the
->> read or write, using pwritev2(2) or preadv2(2). For io_uring, same
->> thing, just set RWF_UNCACHED in sqe->rw_flags for a buffered read/write
->> operation. And that's it.
->>
->> Patches 1..7 are just prep patches, and should have no functional
->> changes at all. Patch 8 adds support for the filemap path for
->> RWF_UNCACHED reads, patch 10 adds support for filemap RWF_UNCACHED
->> writes, and patches 13..17 adds ext4, xfs/iomap, and btrfs support.
->>
->> Passes full xfstests and fsx overnight runs, no issues observed. That
->> includes the vm running the testing also using RWF_UNCACHED on the host.
->> I'll post fsstress and fsx patches for RWF_UNCACHED separately. As far
->> as I'm concerned, no further work needs doing here. Once we're into
->> the 6.13 merge window, I'll split up this series and aim to get it
->> landed that way. There are really 4 parts to this - generic mm bits,
->> ext4 bits, xfs bits, and btrfs bits.
->>
->> And git tree for the patches is here:
->>
->> https://git.kernel.dk/cgit/linux/log/?h=buffered-uncached.7
->>
->>  fs/btrfs/bio.c                 |   4 +-
->>  fs/btrfs/bio.h                 |   2 +
->>  fs/btrfs/extent_io.c           |   8 ++-
->>  fs/btrfs/file.c                |   9 ++-
->>  fs/ext4/ext4.h                 |   1 +
->>  fs/ext4/file.c                 |   2 +-
->>  fs/ext4/inline.c               |   7 +-
->>  fs/ext4/inode.c                |  18 +++++-
->>  fs/ext4/page-io.c              |  28 ++++----
->>  fs/iomap/buffered-io.c         |  15 ++++-
->>  fs/xfs/xfs_aops.c              |   7 +-
->>  fs/xfs/xfs_file.c              |   3 +-
->>  include/linux/fs.h             |  21 +++++-
->>  include/linux/iomap.h          |   8 ++-
->>  include/linux/page-flags.h     |   5 ++
->>  include/linux/pagemap.h        |  14 ++++
->>  include/trace/events/mmflags.h |   3 +-
->>  include/uapi/linux/fs.h        |   6 +-
->>  mm/filemap.c                   | 114 +++++++++++++++++++++++++++++----
->>  mm/readahead.c                 |  22 +++++--
->>  mm/swap.c                      |   2 +
->>  mm/truncate.c                  |  35 ++++++----
->>  22 files changed, 271 insertions(+), 63 deletions(-)
->>
->> Since v3
->> - Use foliop_is_uncached() in ext4 rather than do manual compares with
->>   foliop_uncached.
->> - Add filemap_fdatawrite_range_kick() helper and use that in
->>   generic_write_sync() to kick off uncached writeback, rather than need
->>   every fs adding a call to generic_uncached_write().
->> - Drop generic_uncached_write() helper, not needed anymore.
->> - Skip folio_unmap_invalidate() if the folio is dirty.
->> - Move IOMAP_F_UNCACHED to the internal iomap flags section, and add
->>   comment from Darrick to it as well.
->> - Only kick uncached writeback in generic_write_sync() if
->>   iocb_is_dsync() isn't true.
->> - Disable RWF_UNCACHED on dax mappings. They require more extensive
->>   invalidation, and as it isn't a likely use case, just disable it
->>   for now.
->> - Update a few commit messages
->>
-> 
-> Hi,
-> 
-> Hello, the simplicity and performance improvement of this patch series are
-> really impressive, and I have no comments on it. 
-> 
-> I'm just curious about its use cases?under which scenarios should it be
-> used, and under which scenarios should it be avoided? I noticed that the
-> backing device you used for testing can provide at least 92GB/s read
-> performance and 115GB/s write performance. Does this mean that the higher
-> the performance of the backing device, the more noticeable the
-> optimization? How does this patch series perform on low-speed devices?
+v7: https://lore.kernel.org/linux-fsdevel/cover.1731433903.git.josef@toxicpanda.com/
+v6: https://lore.kernel.org/linux-fsdevel/cover.1731355931.git.josef@toxicpanda.com/
+v5: https://lore.kernel.org/linux-fsdevel/cover.1725481503.git.josef@toxicpanda.com/
+v4: https://lore.kernel.org/linux-fsdevel/cover.1723670362.git.josef@toxicpanda.com/
+v3: https://lore.kernel.org/linux-fsdevel/cover.1723228772.git.josef@toxicpanda.com/
+v2: https://lore.kernel.org/linux-fsdevel/cover.1723144881.git.josef@toxicpanda.com/
+v1: https://lore.kernel.org/linux-fsdevel/cover.1721931241.git.josef@toxicpanda.com/
 
-It's really more about ratio of device speed to size of RAM. Yes the box
-I tested on has a lot of drives, but it also has a lot of memory. Hence
-the ratio to device speeds and memory size isn't that different from a
-normal desktop box with eg 32G of memory, and a flash drive that does
-6GB/sec. Obviously reclaim for that smaller box will not be as bad as
-the big one, but still.
+v7->v8:
+- A bunch of work from Amir to cleanup the fast path for the common case of no
+  watches, which cascades through the rest of th series to update the helpers
+  and the hooks to use the new helpers.
+- A patch from Al to get rid of the __FMODE_NONOTIFY flag and cleanup the usage
+  there, thanks Al!
 
-It's really two fold:
+v6->v7:
+- As per Linus's suggestion, Amir added the file flag FMODE_NOTIFY_PERM that
+  will be set at open time if the file has permission related watches (this is
+  the original malware style permission watches and the new precontent watches).
+  All of the VFS hooks and the page fault hooks use this flag to determine if
+  they should generate a notification to allow for a much cheaper check in the
+  common case.
 
-- You want to kick off writeback sooner rather than later. On devices
-  these days, it's pretty pointless to let a lot of dirty data build up
-  before starting to clean it. Uncached writeback starts when the copy
-  is done, rather than many seconds later when some writeback thread
-  decides the pressure is either too high, or it's been dirty too long.
+v5->v6:
+- Linus had problems with this and rejected Jan's PR
+  (https://lore.kernel.org/linux-fsdevel/20240923110348.tbwihs42dxxltabc@quack3/),
+  so I'm respinning this series to address his concerns.  Hopefully this is more
+  acceptable.
+- Change the page fault hooks to happen only in the case where we have to add a
+  page, not where there exists pages already.
+- Amir added a hook to truncate.
+- We made the flag per SB instead of per fstype, Amir wanted this because of
+  some potential issues with other file system specific work he's doing.
+- Dropped the bcachefs patch, there were some concerns that we were doing
+  something wrong, and it's not a huge deal to not have this feature for now.
+- Unfortunately the xfs write fault path still has to do the page fault hook
+  before we know if we have a page or not, this is because of the locking that's
+  done before we get to the part where we know if we have a page already or not,
+  so that's the path that is still the same from last iteration.
+- I've re-validated this series with btrfs, xfs, and ext4 to make sure I didn't
+  break anything.
 
-- Don't leave things in cache that aren't going to get reused, only to
-  get pruned later at the point where you need more memory for the cache
-  anyway.
+v4->v5:
+- Cleaned up the various "I'll fix it on commit" notes that Jan made since I had
+  to respin the series anyway.
+- Renamed the filemap pagefault helper for fsnotify per Christians suggestion.
+- Added a FS_ALLOW_HSM flag per Jan's comments, based on Amir's rough sketch.
+- Added a patch to disable btrfs defrag on pre-content watched files.
+- Added a patch to turn on FS_ALLOW_HSM for all the file systems that I tested.
+- Added two fstests (which will be posted separately) to validate everything,
+  re-validated the series with btrfs, xfs, ext4, and bcachefs to make sure I
+  didn't break anything.
 
-> My understanding is that the performance issue this patch is trying to
-> address originates from the page cache being filled up, causing the current
-> IO to wait for write-back or reclamation, correct? From this perspective,
-> it seems that this would be suitable for applications that issue a large
-> amount of IO in a short period of time, and it might not be dependent on
-> the speed of the backing device?
+v3->v4:
+- Trying to send a final verson Friday at 5pm before you go on vacation is a
+  recipe for silly mistakes, fixed the xfs handling yet again, per Christoph's
+  review.
+- Reworked the file system helper so it's handling of fpin was a little less
+  silly, per Chinner's suggestion.
+- Updated the return values to not or in VM_FAULT_RETRY, as we have a comment
+  in filemap_fault that says if VM_FAULT_ERROR is set we won't have
+  VM_FAULT_RETRY set.
 
-On the read side, if you're not going to be reusing the data you read,
-uncached is appropriate. Ditto on the write side, if you're just
-flushing out a bunch of data with limted reuse, may as well prune the
-cache regions as soon as the write is done, rather than let some kind of
-background activity do that when memory becomes scarce.
+v2->v3:
+- Fix the pagefault path to do MAY_ACCESS instead, updated the perm handler to
+  emit PRE_ACCESS in this case, so we can avoid the extraneous perm event as per
+  Amir's suggestion.
+- Reworked the exported helper so the per-filesystem changes are much smaller,
+  per Amir's suggestion.
+- Fixed the screwup for DAX writes per Chinner's suggestion.
+- Added Christian's reviewed-by's where appropriate.
+
+v1->v2:
+- reworked the page fault logic based on Jan's suggestion and turned it into a
+  helper.
+- Added 3 patches per-fs where we need to call the fsnotify helper from their
+  ->fault handlers.
+- Disabled readahead in the case that there's a pre-content watch in place.
+- Disabled huge faults when there's a pre-content watch in place (entirely
+  because it's untested, theoretically it should be straightforward to do).
+- Updated the command numbers.
+- Addressed the random spelling/grammer mistakes that Jan pointed out.
+- Addressed the other random nits from Jan.
+
+--- Original email ---
+
+Hello,
+
+These are the patches for the bare bones pre-content fanotify support.  The
+majority of this work is Amir's, my contribution to this has solely been around
+adding the page fault hooks, testing and validating everything.  I'm sending it
+because Amir is traveling a bunch, and I touched it last so I'm going to take
+all the hate and he can take all the credit.
+
+There is a PoC that I've been using to validate this work, you can find the git
+repo here
+
+https://github.com/josefbacik/remote-fetch
+
+This consists of 3 different tools.
+
+1. populate.  This just creates all the stub files in the directory from the
+   source directory.  Just run ./populate ~/linux ~/hsm-linux and it'll
+   recursively create all of the stub files and directories.
+2. remote-fetch.  This is the actual PoC, you just point it at the source and
+   destination directory and then you can do whatever.  ./remote-fetch ~/linux
+   ~/hsm-linux.
+3. mmap-validate.  This was to validate the pagefault thing, this is likely what
+   will be turned into the selftest with remote-fetch.  It creates a file and
+   then you can validate the file matches the right pattern with both normal
+   reads and mmap.  Normally I do something like
+
+   ./mmap-validate create ~/src/foo
+   ./populate ~/src ~/dst
+   ./rmeote-fetch ~/src ~/dst
+   ./mmap-validate validate ~/dst/foo
+
+I did a bunch of testing, I also got some performance numbers.  I copied a
+kernel tree, and then did remote-fetch, and then make -j4
+
+Normal
+real    9m49.709s
+user    28m11.372s
+sys     4m57.304s
+
+HSM
+real    10m6.454s
+user    29m10.517s
+sys     5m2.617s
+
+So ~17 seconds more to build with HSM.  I then did a make mrproper on both trees
+to see the size
+
+[root@fedora ~]# du -hs /src/linux
+1.6G    /src/linux
+[root@fedora ~]# du -hs dst
+125M    dst
+
+This mirrors the sort of savings we've seen in production.
+
+Meta has had these patches (minus the page fault patch) deployed in production
+for almost a year with our own utility for doing on-demand package fetching.
+The savings from this has been pretty significant.
+
+The page-fault hooks are necessary for the last thing we need, which is
+on-demand range fetching of executables.  Some of our binaries are several gigs
+large, having the ability to remote fetch them on demand is a huge win for us
+not only with space savings, but with startup time of containers.
+
+There will be tests for this going into LTP once we're satisfied with the
+patches and they're on their way upstream.  Thanks,
+
+Josef
+
+Al Viro (1):
+  fs: get rid of __FMODE_NONOTIFY kludge
+
+Amir Goldstein (12):
+  fsnotify: opt-in for permission events at file open time
+  fsnotify: add helper to check if file is actually being watched
+  fanotify: don't skip extra event info if no info_mode is set
+  fanotify: rename a misnamed constant
+  fanotify: reserve event bit of deprecated FAN_DIR_MODIFY
+  fsnotify: introduce pre-content permission events
+  fsnotify: pass optional file access range in pre-content event
+  fsnotify: generate pre-content permission event on truncate
+  fanotify: introduce FAN_PRE_ACCESS permission event
+  fanotify: report file range info with pre-content events
+  fanotify: allow to set errno in FAN_DENY permission response
+  fanotify: add a helper to check for pre content events
+
+Josef Bacik (6):
+  fanotify: disable readahead if we have pre-content watches
+  mm: don't allow huge faults for files with pre content watches
+  fsnotify: generate pre-content permission event on page fault
+  xfs: add pre-content fsnotify hook for write faults
+  btrfs: disable defrag on pre-content watched files
+  fs: enable pre-content events on supported file systems
+
+ fs/btrfs/ioctl.c                   |   9 ++
+ fs/btrfs/super.c                   |   2 +-
+ fs/ext4/super.c                    |   3 +
+ fs/fcntl.c                         |   4 +-
+ fs/notify/fanotify/fanotify.c      |  33 +++++--
+ fs/notify/fanotify/fanotify.h      |  15 +++
+ fs/notify/fanotify/fanotify_user.c | 145 +++++++++++++++++++++++------
+ fs/notify/fsnotify.c               |  56 +++++++++--
+ fs/open.c                          |  62 +++++++++---
+ fs/xfs/xfs_file.c                  |   4 +
+ fs/xfs/xfs_super.c                 |   2 +-
+ include/linux/fanotify.h           |  19 +++-
+ include/linux/fs.h                 |  42 +++++++--
+ include/linux/fsnotify.h           | 135 +++++++++++++++++++++++----
+ include/linux/fsnotify_backend.h   |  60 +++++++++++-
+ include/linux/mm.h                 |   1 +
+ include/uapi/asm-generic/fcntl.h   |   1 -
+ include/uapi/linux/fanotify.h      |  18 ++++
+ mm/filemap.c                       |  90 ++++++++++++++++++
+ mm/memory.c                        |  22 +++++
+ mm/readahead.c                     |  13 +++
+ security/selinux/hooks.c           |   3 +-
+ 22 files changed, 639 insertions(+), 100 deletions(-)
 
 -- 
-Jens Axboe
+2.43.0
+
 
