@@ -1,87 +1,90 @@
-Return-Path: <linux-ext4+bounces-5187-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5188-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3F6B9CD62B
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 05:17:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BB1C79CD62D
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 05:17:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 51D4A1F22750
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 04:17:05 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6934FB23DA7
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 04:17:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDF8316F851;
-	Fri, 15 Nov 2024 04:16:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77E816F851;
+	Fri, 15 Nov 2024 04:17:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="g1PIQslr"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="k7n7erk9"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8CD77346D;
-	Fri, 15 Nov 2024 04:16:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1E68E2E400;
+	Fri, 15 Nov 2024 04:17:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731644215; cv=none; b=hduYMA6DevUEk8t2B4v8OsCjXAhkarKSuMhiF4peJIoWIds17zjrGO3MRwZkQ7dZn2pYNuozRkK+SnC1r4hUGhEa114/kqtvSliso0vTOm7dzNBHgcZF7NuQ81Z1l6k/uZPkhBrWblcCIga6ceSNISqz89xeBJ5dfx83I8DXtTQ=
+	t=1731644253; cv=none; b=sNUsBB8AsRCjfj4rUC4pQ+W2rtLFcR7vEUq5122tcJG0MYpfD8p1gyNCToNlOpUWVSgm1/LaP2+ganZbdWakTEVlYV1BxO2f4uUUkVj5bgSDPnS0ppETvqyqLQhiyqARXNtmYZ1arj1BiwMzgkdIH5zPvETWnbFOmFPFSgOJffk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731644215; c=relaxed/simple;
-	bh=zUwUQ6296LnhvKe+0j91GW7QnWaEy76/ViYEQGVUE6o=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=TtYsmvrtER3yU+fB+p662eQHDIy97Z414j/NscKkJKbwyfnJIaVgjWBXW/P5jBAU8QwUXVWEaJu5q776Hvlr6MClv1op2PY7DG9glYYTjxfgnUGo0/U0Yq4WSqLrzn1ZMer5S6wHRAaSi9rSaAQWgtn+jpkI4WOf8nwf94lSjdU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=g1PIQslr; arc=none smtp.client-ip=148.163.158.5
+	s=arc-20240116; t=1731644253; c=relaxed/simple;
+	bh=KG0uAwTFr6G8ixxtD6WcCZ7OvypLh+bt2H/09xLcVos=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=ktkDM4diu5NVim5oFSHqSupkt4go6EqTP3cCYII1uyrRKK31UaEc5xteDvFIe/L0m1S6JwyYTMyH/rny53DXS03351MOVmXt6eYrXBXdZFINXanA/yGBXy4rLpPrxPMxGcysf2UkVssyeLuDRSfdKibEI1Iyevn9X3FZuv+eBwI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=k7n7erk9; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AF0lD8d022286;
-	Fri, 15 Nov 2024 04:16:50 GMT
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AF0jtx9022908;
+	Fri, 15 Nov 2024 04:17:22 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:date:from:message-id:mime-version
-	:subject:to; s=pp1; bh=XDMovU2AT3WfbmNft0fKfFIg/ZR2ouN8wYKRSdDX6
-	vo=; b=g1PIQslrs9eOn+p+hXWMvqq6G5au8fBF3nfJKRBSnQkhsdBB/XHO8A0HZ
-	QlFn55YxSocl+UxiAGjV2Dh15poFjI2iPWwsGJn+Ijo9hj5KNxqkGUpdb2PdOmgq
-	5K2jRvGPbvJv19hEY0/uUAIraTo2yzS70znoEMcAULZRwI/g3h0gCX+0EZ0YXh9P
-	ZD8MEksx5vDkEGx8SveLEvLIKiODEK3cz0dr5GprQ67DM+yebX7M5zc1xavQbdKE
-	xFxx2EHBCmp4qx7AK8RD9I7Y5sJw4mGTtpFXt8xZWpLaIS+vkzNLfdHRC+EuGJlO
-	EKSSimghI7bawAEFYtsddsxGxBXug==
+	:content-transfer-encoding:date:from:in-reply-to:message-id
+	:mime-version:references:subject:to; s=pp1; bh=iZlQeL1GosZT80pUL
+	teUIR4AMWSE5RN4ZHRpwAnlrmw=; b=k7n7erk9r168In703STupdWHeGNBbFUBR
+	fUCQ60ZteA3+ExZlaHPhpTRatIU+y8B7CQY11YEJ9B9PY+9bYFs61ANRB/nyTLQ2
+	AM7WBcebAix+Gj7ytXZ5K+WGfsDyvi4oVA9E+cuY35JJQT2jrtQdavtTjO4DHrvS
+	ZJoID6B8t23UkMfp8qU+fAOOhEA0Wly/vlzBXzocBGKzFpW32Mbuq7+b73hN6UzZ
+	GMusi9gVE3v1GB780vdEMgQP5NQ5RQsRg87jusHRdqKRoSqDaylupbmOm369pIyR
+	c6Og2s5Qw1eGiZ2hI29cPM+iYOTzjla4uNKrPg0FmXiLtLcE22VyQ==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42wt6w959f-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42wu2vs1y9-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Nov 2024 04:16:50 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AF4GnBk006517;
-	Fri, 15 Nov 2024 04:16:49 GMT
+	Fri, 15 Nov 2024 04:17:22 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AF4HLac019062;
+	Fri, 15 Nov 2024 04:17:21 GMT
 Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42wt6w959e-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42wu2vs1y4-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Nov 2024 04:16:49 +0000 (GMT)
+	Fri, 15 Nov 2024 04:17:21 +0000 (GMT)
 Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AF3ZDso029721;
-	Fri, 15 Nov 2024 04:16:49 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42tkjmp7fb-1
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AF36XwH029698;
+	Fri, 15 Nov 2024 04:17:20 GMT
+Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42tkjmp7j6-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Nov 2024 04:16:48 +0000
+	Fri, 15 Nov 2024 04:17:20 +0000
 Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AF4Gk4w55116176
+	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AF4HIGg52625888
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Nov 2024 04:16:46 GMT
+	Fri, 15 Nov 2024 04:17:18 GMT
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id CE35D20043;
-	Fri, 15 Nov 2024 04:16:46 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id 5ABBF20043;
+	Fri, 15 Nov 2024 04:17:18 +0000 (GMT)
 Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 68F8D20040;
-	Fri, 15 Nov 2024 04:16:45 +0000 (GMT)
+	by IMSVA (Postfix) with ESMTP id E540120040;
+	Fri, 15 Nov 2024 04:17:16 +0000 (GMT)
 Received: from li-5d80d4cc-2782-11b2-a85c-bed59fe4c9e5.ibm.com.com (unknown [9.124.220.5])
 	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 15 Nov 2024 04:16:45 +0000 (GMT)
+	Fri, 15 Nov 2024 04:17:16 +0000 (GMT)
 From: Nirjhar Roy <nirjhar@linux.ibm.com>
 To: fstests@vger.kernel.org
 Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
         ritesh.list@gmail.com, ojaswin@linux.ibm.com, djwong@kernel.org,
         zlang@kernel.org
-Subject: [PATCH v2 0/2] Addition of new tests for extsize hints
-Date: Fri, 15 Nov 2024 09:45:57 +0530
-Message-ID: <cover.1731597226.git.nirjhar@linux.ibm.com>
+Subject: [PATCH v2 1/2] common/rc,xfs/207: Adding a common helper function to check xflag bits on a given file
+Date: Fri, 15 Nov 2024 09:45:58 +0530
+Message-ID: <9a955f34cab443d3ed0fc07c17886d5e8a11ad80.1731597226.git.nirjhar@linux.ibm.com>
 X-Mailer: git-send-email 2.43.5
+In-Reply-To: <cover.1731597226.git.nirjhar@linux.ibm.com>
+References: <cover.1731597226.git.nirjhar@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,69 +93,84 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: zOTH0oAMtuIHhEopzcOMbuh5TLq1Hj7T
-X-Proofpoint-GUID: SdJJhn1pohiUH84k80-reJwawGnrZIBW
+X-Proofpoint-ORIG-GUID: AheU-gKSXo1NjaN92oHYGFKaN2V9ZzPE
+X-Proofpoint-GUID: FT2xfyqnuIkCW3iK2-8JcjTAKVFTOn_s
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- malwarescore=0 mlxscore=0 adultscore=0 bulkscore=0 priorityscore=1501
- mlxlogscore=999 lowpriorityscore=0 clxscore=1015 phishscore=0 spamscore=0
- suspectscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ spamscore=0 suspectscore=0 bulkscore=0 mlxlogscore=910 impostorscore=0
+ malwarescore=0 mlxscore=0 clxscore=1015 adultscore=0 phishscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2409260000 definitions=main-2411150032
 
-This test checks the behaviour of xfs/ext4 filesystems when extsize
-hint is set on files with inode size as 0, non-empty
-files with allocated and delalloc extents and so on. 
-This test set also tests one of the scenarios where setting extsize
-hints on files with delayed allocation (incorrectly) succeeds and there is 
-a recent patch series[1] that got merged[2] which fixes this.
+This patch defines a common helper function to test whether any of
+fsxattr xflags field is set or not. We will use this helper in the next
+patch for checking extsize (e) flag.
 
-Currently this test only runs in xfs but there is a patch series[3] in review 
-that adds support for the extsize hints for ext4 as well.
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
+---
+ common/rc     |  7 +++++++
+ tests/xfs/207 | 13 ++-----------
+ 2 files changed, 9 insertions(+), 11 deletions(-)
 
-I have tested it on ppc64le (with page size 64k) and x86_64 (with page size 4k).
-The block sizes I have tested with are 2k, 4k, 8k, 16k, 32k, 64k with extsize being 
-twice of the block size or 4 * block size(if the default extsize is 2*blocksize). 
-I have also tested with configurations where I added extszinherit mkfs option  
-on the root. I had to enable CONFIG_TRANSPARENT_HUGEPAGE to enable block size 
-greater than 4k on x86_64.
-
-Changes since [v1]
- - Making the definition of _test_xfs_xflags_field() more compact and renamed 
-   _test_xfs_xflags_field() to _test_fsx_xflags_field() since I moved it to common/rc.
- - Removed the explicit import of common/xfs from the test script.
- - Renamed the test file from generic/365 to generic/366 since generic/365 was taken.
- - Made the following functions in tests/generic/366 accept a second parameter (extsize)
-     a) check_extsz_xflag_across_remount()
-	 b) check_extsz_and_xflag()
-	 c) read_file_extsize()
-	 d) filter_extsz
-	 This will help filter out any extsize that the test wants. This is required because, this 
-	 version no longer assumes any particular fixed value of the default extsize.  
- - Removed the check for xflags in test_data_allocated() and test_data_delayed() test 
- - Added an extra line in output that denotes that we are checking that the extent size 
-   hasn't changed if the xfs_io command fails (xflags in test_data_allocated() and test_data_delayed() test)
- - Changing the new extsize to 4*blocksize if default extsize size is 2*blocksize
-
-[1] https://lore.kernel.org/all/20241015094509.678082-1-ojaswin@linux.ibm.com/
-[2] kernel commit - 2a492ff66673
-[3] https://lore.kernel.org/linux-ext4/cover.1726034272.git.ojaswin@linux.ibm.com/
-[v1] https://lore.kernel.org/all/cover.1729624806.git.nirjhar@linux.ibm.com/
-
-Nirjhar Roy (2):
-  common/rc,xfs/207: Adding a common helper function to check xflag bits
-    on a given file
-  generic: Addition of new tests for extsize hints
-
- common/rc             |   7 ++
- tests/generic/366     | 172 ++++++++++++++++++++++++++++++++++++++++++
- tests/generic/366.out |  26 +++++++
- tests/xfs/207         |  13 +---
- 4 files changed, 207 insertions(+), 11 deletions(-)
- create mode 100755 tests/generic/366
- create mode 100644 tests/generic/366.out
-
+diff --git a/common/rc b/common/rc
+index 2af26f23..fc18fc94 100644
+--- a/common/rc
++++ b/common/rc
+@@ -41,6 +41,13 @@ _md5_checksum()
+ 	md5sum $1 | cut -d ' ' -f1
+ }
+ 
++# Check whether a fsxattr xflags character ($2) field is set on a given file ($1).
++# e.g, fsxattr.xflags =  0x80000800 [----------e-----X]
++_test_fsx_xflags_field()
++{
++    grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat" "$1")
++}
++
+ # Write a byte into a range of a file
+ _pwrite_byte() {
+ 	local pattern="$1"
+diff --git a/tests/xfs/207 b/tests/xfs/207
+index bbe21307..4f6826f3 100755
+--- a/tests/xfs/207
++++ b/tests/xfs/207
+@@ -21,15 +21,6 @@ _require_cp_reflink
+ _require_xfs_io_command "fiemap"
+ _require_xfs_io_command "cowextsize"
+ 
+-# Takes the fsxattr.xflags line,
+-# i.e. fsxattr.xflags = 0x0 [--------------C-]
+-# and tests whether a flag character is set
+-test_xflag()
+-{
+-    local flg=$1
+-    grep -q "\[.*${flg}.*\]" && echo "$flg flag set" || echo "$flg flag unset"
+-}
+-
+ echo "Format and mount"
+ _scratch_mkfs > $seqres.full 2>&1
+ _scratch_mount >> $seqres.full 2>&1
+@@ -65,14 +56,14 @@ echo "Set cowextsize and check flag"
+ $XFS_IO_PROG -c "cowextsize 1048576" $testdir/file3 | _filter_scratch
+ _scratch_cycle_mount
+ 
+-$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
++_test_fsx_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
+ $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
+ 
+ echo "Unset cowextsize and check flag"
+ $XFS_IO_PROG -c "cowextsize 0" $testdir/file3 | _filter_scratch
+ _scratch_cycle_mount
+ 
+-$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
++_test_fsx_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
+ $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
+ 
+ status=0
 -- 
 2.43.5
 
