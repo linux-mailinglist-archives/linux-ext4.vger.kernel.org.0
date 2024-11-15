@@ -1,253 +1,151 @@
-Return-Path: <linux-ext4+bounces-5216-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5217-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C81C9CF0D8
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 17:00:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D4BD9CF206
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 17:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C51DB1F2467F
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 16:00:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 23C0329604B
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 16:48:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1C9B1D5148;
-	Fri, 15 Nov 2024 16:00:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0C61D5CF1;
+	Fri, 15 Nov 2024 16:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HqcHB7MM"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vs0OLyJk"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFE1F1D516F;
-	Fri, 15 Nov 2024 16:00:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D7713AA3E;
+	Fri, 15 Nov 2024 16:45:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731686410; cv=none; b=ePbC9iXNSyXXee+7QiOFdSDZLvVX/sOX/jTd/z8n+VESLJq9avj/3Ke+wYlJLj7u1J/a0jIJtQR2mYi6Gjd1gOgoHsw1fVlh2BPcOc02/tkE2J2mrtWWJDhcBxKMQufXhWI5wOAsYuPLeXcwlWkBLeSwvfaeKy1ZkSpFZPilCx8=
+	t=1731689150; cv=none; b=MphXg1+ympTE6grIm8EvyiG+CP6u5Ts499VZ0dLeurKVX16aBZbXzIailM29kY6ioaC6QSiBq076K8KhsCMULsNmz8J9OTihRof42SDrxVrygfoxYCxpe1V+SOBfiopxwrx8B90X4Pnjhw9xM45IZBI6/vPsaHQwSreMDoWKSUc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731686410; c=relaxed/simple;
-	bh=d60me//6fUCiJ+j+rB+jrDkVKTQSZE4GROltLuU3FXE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CqGZB5IAOK25VerNz5LyvbbyQZExgwZjyhcj56J50TdrvfcGumY6OwACftsAD8UezwPQ6njFWedIxt9tgrJX92j2RcrSu7MdFfrdj8s/xx2pL7n+zDaBTROgcK+44t/bhPBaLJXlgqNkg1VgbX3CXJAEPX18r6ZrC8QCIu/z3bo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HqcHB7MM; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a9e71401844so109497266b.3;
-        Fri, 15 Nov 2024 08:00:08 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731686407; x=1732291207; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mQTg092nV/nli9mWafZup54AbTt4EJwVfug160hVSro=;
-        b=HqcHB7MMuubNUwJgp9+sJ1lO4LkbpR8aFweZjvmAqbaPKIWtq/K7+EHqUif9kZJZUU
-         dISyJvWwMrAnPpDv7UGP4BPGpaRxVXjPBdS4yWeGPMHycvHXIWl0VlTb/6COlBWNTJv8
-         1DkBmr2HOLdAAfVOF+MP81eCGe9y0D3Y3gwpUgE/yKBEcDlMt8epVdXbrR0o/TF9I8sg
-         9u9x0HHPazeSbohq9O6hQlOWrN493GBP9hmqUy/fxDsnid/Jqc7oqb+ZhF5i6UoaNqxG
-         +qDulaGQr2icopt8mrr6qg/HccoqtxVmV+5QVrezrvX8g4BzpfN1r/xVsHD7SJy/knZz
-         0swg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731686407; x=1732291207;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mQTg092nV/nli9mWafZup54AbTt4EJwVfug160hVSro=;
-        b=Mqm/Mn37JkVjjbrPLLR6qrrXg9+wpUOjcVwlAM+CUlwGWaYDe9y6P58i5DUoVpmTiH
-         D5xlclb4xkHdc18z1A7NKCAbYVFJ4CKQLJRQA969odZXdy6hKzAjvlObZZkP+jhfmESo
-         ptOUa0ZQ1aGcIdZEqC6gOUqmezcv6S4dcP7L4Na4KIuM0luHbbNlmR+wuUwWn2aJuxue
-         9J9vl+AmiZsqxM30HskuU7u644WLs/fT0tf+37DsKzo2PAsVHtAZPmMwB3n22Fgo4MwE
-         4wp55vlOhDtP2EmAYbrv+UIOofB711HMDx8umVBfOidlww9f9bNMkLknW4Xb2TSoOUQs
-         dZgg==
-X-Forwarded-Encrypted: i=1; AJvYcCU+m1G3azFvihQbNezmIXPLzfrm/GdIlBogIA9q2pNt01akKbA0EVXuR1jYA6rHs0NhemfKIU6QEOeusUUj+g==@vger.kernel.org, AJvYcCVcOOuLlNsiKUmeGU7GeOzWv1E/izMgwWjx/2nvVFmDatZECQw+zSu4EZh/3TIE8fxKvuoYvqYVBwMAHA==@vger.kernel.org, AJvYcCWO8AMt6aefR8rwhLGC7dScYhF9Tjm32Boxyw1NhCjv7QnEIFB+34M1VYr8Z+AmAz6JuZxiK/ACHN0zHA==@vger.kernel.org, AJvYcCXnmP67/B2Q88Z9fZ7peeXiQdmsAXfgIByMYgIxHQN4s7/gztq1pl/TDlYvJjCrhiyRZTmrBMLcv53P@vger.kernel.org
-X-Gm-Message-State: AOJu0YwXS1CCf74hazd1Cg0Y9G8YE/cwakK++P6eNCkMAU26NYKZnXTU
-	ewasju18kZRChLMq/p+zJyssmSAyB5RVBGsrq02tn2OEpDbNH5o+G++GvB2kFIONL4JgtM9CH5M
-	geF0nHJp5XiPA/G8X+LAnFKwO93k=
-X-Google-Smtp-Source: AGHT+IFkc9XByZYF5KJMTd1KEIU44FpOQRgPj6OoU3IacaF+bG0JSx+iOQAZKu2HAAEQm873FjTeMetbhlknnkMZr0w=
-X-Received: by 2002:a17:907:6eaa:b0:a9a:1bb4:800c with SMTP id
- a640c23a62f3a-aa4833e9eb8mr266512266b.4.1731686406476; Fri, 15 Nov 2024
- 08:00:06 -0800 (PST)
+	s=arc-20240116; t=1731689150; c=relaxed/simple;
+	bh=e50cVx2A1nY7atCYkybhbwvEmsBPVxbZ0bVfDZ473Eo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZRt89tFEStcZyEqlNqK74oAFDf2ZSzGoB90SKbudVL0X2VD+1Oy/htRkiy3UJG7hMhWxPjvS+ZqYy2yIyp2DZBX37kVDPxKlf+UkeIEE4ZXGc4bMCX5ya0u3YB8gq+RCVB9L6sfWkwddBP9XNWXfyFuXwTrGXKPR1ZzDL4UNikA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vs0OLyJk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 72B05C4CECF;
+	Fri, 15 Nov 2024 16:45:49 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731689149;
+	bh=e50cVx2A1nY7atCYkybhbwvEmsBPVxbZ0bVfDZ473Eo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vs0OLyJkL3VnxERlBWiHfrvY7y6BfHg6UWNhFOq9mAJW0ycc1/2rqEFNmGJVNWYvE
+	 4SYE0kM9dN7s51b3oj+ztBuiYGXojHZXMRzKmVu5p3wYCKyLTLZwul5RIOpGMnyQt3
+	 S9SJRjww0HXH4k7Z/PbsntgTDRhMrdHg2lK5iKlRQwfg47P2ZpN2PVMYh4Yhs/Dq4u
+	 bE/c5CZIAHyxC7JMnex31BPzo/T6Zi1T6oebN6hi5XZyedtnyZpMbjn5wzJ1e3dKgF
+	 rJ/aiWujkjwuBemRqoq/qmVR6dNtbDW8igEaoS+UZVZ3UPuAMEk5DryQet/FXilRWd
+	 fof7KpmKQMVxw==
+Date: Fri, 15 Nov 2024 08:45:48 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Nirjhar Roy <nirjhar@linux.ibm.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, zlang@kernel.org
+Subject: Re: [PATCH v2 1/2] common/rc,xfs/207: Adding a common helper
+ function to check xflag bits on a given file
+Message-ID: <20241115164548.GE9425@frogsfrogsfrogs>
+References: <cover.1731597226.git.nirjhar@linux.ibm.com>
+ <9a955f34cab443d3ed0fc07c17886d5e8a11ad80.1731597226.git.nirjhar@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
-In-Reply-To: <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Fri, 15 Nov 2024 16:59:55 +0100
-Message-ID: <CAOQ4uxizf2+E+hq5MM0AGPzAw8Mct7Tzb+kxCURwqBfGVkiE7Q@mail.gmail.com>
-Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission event
-To: Josef Bacik <josef@toxicpanda.com>
-Cc: kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <9a955f34cab443d3ed0fc07c17886d5e8a11ad80.1731597226.git.nirjhar@linux.ibm.com>
 
-On Fri, Nov 15, 2024 at 4:31=E2=80=AFPM Josef Bacik <josef@toxicpanda.com> =
-wrote:
->
-> From: Amir Goldstein <amir73il@gmail.com>
->
-> Similar to FAN_ACCESS_PERM permission event, but it is only allowed with
-> class FAN_CLASS_PRE_CONTENT and only allowed on regular files and dirs.
->
-> Unlike FAN_ACCESS_PERM, it is safe to write to the file being accessed
-> in the context of the event handler.
->
-> This pre-content event is meant to be used by hierarchical storage
-> managers that want to fill the content of files on first read access.
->
-> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+On Fri, Nov 15, 2024 at 09:45:58AM +0530, Nirjhar Roy wrote:
+> This patch defines a common helper function to test whether any of
+> fsxattr xflags field is set or not. We will use this helper in the next
+> patch for checking extsize (e) flag.
+> 
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
 > ---
->  fs/notify/fanotify/fanotify.c      |  3 ++-
->  fs/notify/fanotify/fanotify_user.c | 22 +++++++++++++++++++---
->  include/linux/fanotify.h           | 14 ++++++++++----
->  include/uapi/linux/fanotify.h      |  2 ++
->  4 files changed, 33 insertions(+), 8 deletions(-)
->
-> diff --git a/fs/notify/fanotify/fanotify.c b/fs/notify/fanotify/fanotify.=
-c
-> index 2e6ba94ec405..da6c3c1c7edf 100644
-> --- a/fs/notify/fanotify/fanotify.c
-> +++ b/fs/notify/fanotify/fanotify.c
-> @@ -916,8 +916,9 @@ static int fanotify_handle_event(struct fsnotify_grou=
-p *group, u32 mask,
->         BUILD_BUG_ON(FAN_OPEN_EXEC_PERM !=3D FS_OPEN_EXEC_PERM);
->         BUILD_BUG_ON(FAN_FS_ERROR !=3D FS_ERROR);
->         BUILD_BUG_ON(FAN_RENAME !=3D FS_RENAME);
-> +       BUILD_BUG_ON(FAN_PRE_ACCESS !=3D FS_PRE_ACCESS);
->
-> -       BUILD_BUG_ON(HWEIGHT32(ALL_FANOTIFY_EVENT_BITS) !=3D 21);
-> +       BUILD_BUG_ON(HWEIGHT32(ALL_FANOTIFY_EVENT_BITS) !=3D 22);
->
->         mask =3D fanotify_group_event_mask(group, iter_info, &match_mask,
->                                          mask, data, data_type, dir);
-> diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fano=
-tify_user.c
-> index 456cc3e92c88..5ea447e9e5a8 100644
-> --- a/fs/notify/fanotify/fanotify_user.c
-> +++ b/fs/notify/fanotify/fanotify_user.c
-> @@ -1640,11 +1640,23 @@ static int fanotify_events_supported(struct fsnot=
-ify_group *group,
->                                      unsigned int flags)
->  {
->         unsigned int mark_type =3D flags & FANOTIFY_MARK_TYPE_BITS;
-> +       bool is_dir =3D d_is_dir(path->dentry);
->         /* Strict validation of events in non-dir inode mask with v5.17+ =
-APIs */
->         bool strict_dir_events =3D FAN_GROUP_FLAG(group, FAN_REPORT_TARGE=
-T_FID) ||
->                                  (mask & FAN_RENAME) ||
->                                  (flags & FAN_MARK_IGNORE);
->
-> +       /*
-> +        * Filesystems need to opt-into pre-content evnets (a.k.a HSM)
-> +        * and they are only supported on regular files and directories.
-> +        */
-> +       if (mask & FANOTIFY_PRE_CONTENT_EVENTS) {
-> +               if (!(path->mnt->mnt_sb->s_iflags & SB_I_ALLOW_HSM))
-> +                       return -EINVAL;
+>  common/rc     |  7 +++++++
+>  tests/xfs/207 | 13 ++-----------
+>  2 files changed, 9 insertions(+), 11 deletions(-)
+> 
+> diff --git a/common/rc b/common/rc
+> index 2af26f23..fc18fc94 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -41,6 +41,13 @@ _md5_checksum()
+>  	md5sum $1 | cut -d ' ' -f1
+>  }
+>  
+> +# Check whether a fsxattr xflags character ($2) field is set on a given file ($1).
+> +# e.g, fsxattr.xflags =  0x80000800 [----------e-----X]
+> +_test_fsx_xflags_field()
 
-You missed my latest push of this change.
-no worries, for final version want:
+How about we call this "_test_fsxattr_xflag" instead?
 
-                return -EOPNOTSUPP;
+fsx is already something else in fstests.
 
-> +               if (!is_dir && !d_is_reg(path->dentry))
-> +                       return -EINVAL;
-> +       }
+> +{
+> +    grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat" "$1")
+> +}
+
+Not sure why this lost the xfs_io | grep -q structure.  The return value
+of the whole expression will always be the return value of the last
+command in the pipeline.
+
+(Correct?  I hate bash...)
+
+--D
+
 > +
->         /*
->          * Some filesystems such as 'proc' acquire unusual locks when ope=
-ning
->          * files. For them fanotify permission events have high chances o=
-f
-> @@ -1677,7 +1689,7 @@ static int fanotify_events_supported(struct fsnotif=
-y_group *group,
->          * but because we always allowed it, error only when using new AP=
-Is.
->          */
->         if (strict_dir_events && mark_type =3D=3D FAN_MARK_INODE &&
-> -           !d_is_dir(path->dentry) && (mask & FANOTIFY_DIRONLY_EVENT_BIT=
-S))
-> +           !is_dir && (mask & FANOTIFY_DIRONLY_EVENT_BITS))
->                 return -ENOTDIR;
->
->         return 0;
-> @@ -1778,10 +1790,14 @@ static int do_fanotify_mark(int fanotify_fd, unsi=
-gned int flags, __u64 mask,
->                 return -EPERM;
->
->         /*
-> -        * Permission events require minimum priority FAN_CLASS_CONTENT.
-> +        * Permission events are not allowed for FAN_CLASS_NOTIF.
-> +        * Pre-content permission events are not allowed for FAN_CLASS_CO=
-NTENT.
->          */
->         if (mask & FANOTIFY_PERM_EVENTS &&
-> -           group->priority < FSNOTIFY_PRIO_CONTENT)
-> +           group->priority =3D=3D FSNOTIFY_PRIO_NORMAL)
-> +               return -EINVAL;
-> +       else if (mask & FANOTIFY_PRE_CONTENT_EVENTS &&
-> +                group->priority =3D=3D FSNOTIFY_PRIO_CONTENT)
->                 return -EINVAL;
->
->         if (mask & FAN_FS_ERROR &&
-> diff --git a/include/linux/fanotify.h b/include/linux/fanotify.h
-> index 89ff45bd6f01..c747af064d2c 100644
-> --- a/include/linux/fanotify.h
-> +++ b/include/linux/fanotify.h
-> @@ -89,6 +89,16 @@
->  #define FANOTIFY_DIRENT_EVENTS (FAN_MOVE | FAN_CREATE | FAN_DELETE | \
->                                  FAN_RENAME)
->
-> +/* Content events can be used to inspect file content */
-> +#define FANOTIFY_CONTENT_PERM_EVENTS (FAN_OPEN_PERM | FAN_OPEN_EXEC_PERM=
- | \
-> +                                     FAN_ACCESS_PERM)
-> +/* Pre-content events can be used to fill file content */
-> +#define FANOTIFY_PRE_CONTENT_EVENTS  (FAN_PRE_ACCESS)
-> +
-> +/* Events that require a permission response from user */
-> +#define FANOTIFY_PERM_EVENTS   (FANOTIFY_CONTENT_PERM_EVENTS | \
-> +                                FANOTIFY_PRE_CONTENT_EVENTS)
-> +
->  /* Events that can be reported with event->fd */
->  #define FANOTIFY_FD_EVENTS (FANOTIFY_PATH_EVENTS | FANOTIFY_PERM_EVENTS)
->
-> @@ -104,10 +114,6 @@
->                                  FANOTIFY_INODE_EVENTS | \
->                                  FANOTIFY_ERROR_EVENTS)
->
-> -/* Events that require a permission response from user */
-> -#define FANOTIFY_PERM_EVENTS   (FAN_OPEN_PERM | FAN_ACCESS_PERM | \
-> -                                FAN_OPEN_EXEC_PERM)
+>  # Write a byte into a range of a file
+>  _pwrite_byte() {
+>  	local pattern="$1"
+> diff --git a/tests/xfs/207 b/tests/xfs/207
+> index bbe21307..4f6826f3 100755
+> --- a/tests/xfs/207
+> +++ b/tests/xfs/207
+> @@ -21,15 +21,6 @@ _require_cp_reflink
+>  _require_xfs_io_command "fiemap"
+>  _require_xfs_io_command "cowextsize"
+>  
+> -# Takes the fsxattr.xflags line,
+> -# i.e. fsxattr.xflags = 0x0 [--------------C-]
+> -# and tests whether a flag character is set
+> -test_xflag()
+> -{
+> -    local flg=$1
+> -    grep -q "\[.*${flg}.*\]" && echo "$flg flag set" || echo "$flg flag unset"
+> -}
 > -
->  /* Extra flags that may be reported with event or control handling of ev=
-ents */
->  #define FANOTIFY_EVENT_FLAGS   (FAN_EVENT_ON_CHILD | FAN_ONDIR)
->
-> diff --git a/include/uapi/linux/fanotify.h b/include/uapi/linux/fanotify.=
-h
-> index 79072b6894f2..7596168c80eb 100644
-> --- a/include/uapi/linux/fanotify.h
-> +++ b/include/uapi/linux/fanotify.h
-> @@ -27,6 +27,8 @@
->  #define FAN_OPEN_EXEC_PERM     0x00040000      /* File open/exec in perm=
- check */
->  /* #define FAN_DIR_MODIFY      0x00080000 */   /* Deprecated (reserved) =
-*/
->
-> +#define FAN_PRE_ACCESS         0x00100000      /* Pre-content access hoo=
-k */
-> +
->  #define FAN_EVENT_ON_CHILD     0x08000000      /* Interested in child ev=
-ents */
->
->  #define FAN_RENAME             0x10000000      /* File was renamed */
-> --
-> 2.43.0
->
+>  echo "Format and mount"
+>  _scratch_mkfs > $seqres.full 2>&1
+>  _scratch_mount >> $seqres.full 2>&1
+> @@ -65,14 +56,14 @@ echo "Set cowextsize and check flag"
+>  $XFS_IO_PROG -c "cowextsize 1048576" $testdir/file3 | _filter_scratch
+>  _scratch_cycle_mount
+>  
+> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
+> +_test_fsx_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
+>  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
+>  
+>  echo "Unset cowextsize and check flag"
+>  $XFS_IO_PROG -c "cowextsize 0" $testdir/file3 | _filter_scratch
+>  _scratch_cycle_mount
+>  
+> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
+> +_test_fsx_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
+>  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
+>  
+>  status=0
+> -- 
+> 2.43.5
+> 
+> 
 
