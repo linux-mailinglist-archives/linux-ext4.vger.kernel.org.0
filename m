@@ -1,192 +1,158 @@
-Return-Path: <linux-ext4+bounces-5221-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5222-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B71EB9CF4BB
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 20:22:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D02CC9CF951
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 23:12:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1231E1F21B69
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 19:22:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 775A31F2384E
+	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 22:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C98C21D8E12;
-	Fri, 15 Nov 2024 19:22:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5421F9ABB;
+	Fri, 15 Nov 2024 21:52:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lyzmC4z5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+sZHJXZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
+Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12887136338;
-	Fri, 15 Nov 2024 19:22:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF391E630C;
+	Fri, 15 Nov 2024 21:52:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731698541; cv=none; b=N22bTra76/qHLIXkQHCYW8DCT6AIjaiZYda4WlLqvSjaMKCZoPVCqiqFF52AyG8kBoQhGd+EGY2XyNOzcxt63tB3DFq2kQUqPhe48zeR6ViMHUatixjyVyk8NGLrILL0UE/UDypwp0qEQujqkvgGjQtj6bokhDqqBoL3k6nsoIo=
+	t=1731707540; cv=none; b=IO6xVPJK/jXQNIFvZ1U+15qJjss4qcIEg2PPHM6OT0Dk4hKiAjF+LrPAeq/f5m4KLqBa+iOjam6/cVjZ5Q+Om7EXxBWx8jYGg3AVXXdgWVsRg1mGjxu1xJFoxYNbPPudFyIqd64nlqav05ICMJekXcTLALfaAE03Wr2LN0Y1+HY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731698541; c=relaxed/simple;
-	bh=6G/b9hH9hi6Fz4dpX+tA6gPVNzXiRv5ymi0Gbz/TQV8=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=q+IBvtT49jsFeLzTymOZNKRI5YZBU39gKaEBE0zadiFdNNdckvnGbxYmG6ID7aiTEPiqZy2+FIbEdXrDoc0TIampQShcLiMskWdYDM/hic9QQ7clFtddIiHhEOudL4GZiiRQ5f1T4B3AQ+gMmUZKwkEU3HGeXNNPgXJB0qFxV/I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lyzmC4z5; arc=none smtp.client-ip=209.85.210.182
+	s=arc-20240116; t=1731707540; c=relaxed/simple;
+	bh=sZFV0uP3WWeSSyCd835E6WVK+3+s+sPdBHOyjlWNkuQ=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=OSqRu4Ed6/avBAi7WvqNPyRwQV4w+wz1W4WLAtRu5Zg/7dAjc9hHC1ivCnQuQV6CZ7QEEHHZySDVilyLlaXPgaj2T+dTorLkIAKmjVZThXoH5cYL5R9BtzD42WaAW83CsEJs/9qbt+NXn8JXkU+OMaSqqCoCYtYqxuo+Xx0pwEc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q+sZHJXZ; arc=none smtp.client-ip=209.85.216.54
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-71e681bc315so1609932b3a.0;
-        Fri, 15 Nov 2024 11:22:18 -0800 (PST)
+Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2e91403950dso1758395a91.3;
+        Fri, 15 Nov 2024 13:52:18 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731698538; x=1732303338; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1731707538; x=1732312338; darn=vger.kernel.org;
         h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
          :cc:subject:date:message-id:reply-to;
-        bh=PWCWCSqM5EiVesBVWTWxOKB4YwhvqjcwiSWzB2JNFOA=;
-        b=lyzmC4z5WJifvCwsQzLrfypXjqA7UE8Ea1gTAzpcGl4JpKPOEGDBzuBP4bkh7LalD2
-         Y6uFbg9qDyrFkqH5XnQnLAgjDV/xq6/ypvrnifXp9N9TdlguqG4rwKQ86i2nmlGMM+6r
-         SINkjyLY0CadGMmPo0COMpd2HyeC/5eLgMKp33X5R728ETAemyv4ahUCp4Bij2dvEPVu
-         1BjGiEsTON+TAmrSjDOSrptViRUsBxAjKfcD3+PG7YAyc4bLlYNanbef/RxMJ8U/GiJz
-         ZeSDiOo5LzSGQz3lmOW/7Ur8tjJMXY8iOcndqGkui4rA3oeU3AmDoI0KFKY+pR8+XbiM
-         J3Ng==
+        bh=9q1mbAPAv0n/S09209YIRJnoM8UsP7wPs+sS6v3ZWZE=;
+        b=Q+sZHJXZ+8ap6DuDzRP+TwKvg44v8m04Pq0PTdwcWpGyA6CFsMFissZ76w3am+leK6
+         HklMgZQZCz6oOkVp2PPNyIooNHPi9+8cljo0r5x4arpTAsJWYJjtDMXXW5nNV9GySMaZ
+         IiqBnqTqLKRh5MKgEY+O6tbhnDIDIrr2nzf+s1BuyRmnvlB34Yu67Y7Hyy5M3P1yC4TQ
+         mIq/bSzi2dwIhiTvrJa6gyFRvDTBziAAM1zMAnfN1DQT1Y7pnJNZLeoHiZQWT9IWoooD
+         WyKlxTN5PyxsjwXi5CCJrdBUDTfxmWnTUmZKyt/jYurE9IQiwhfGmpCjgvOddELeknvF
+         4dYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731698538; x=1732303338;
+        d=1e100.net; s=20230601; t=1731707538; x=1732312338;
         h=references:message-id:date:in-reply-to:subject:cc:to:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PWCWCSqM5EiVesBVWTWxOKB4YwhvqjcwiSWzB2JNFOA=;
-        b=dFrDiM8CTpIQsKVe2aqcShTyFTV9s5HaITe6rd+5r5O1jy0uVK2b2qk5kjtgiT1ydA
-         RMcZsVWieLjME8cH6yUOta+2rgxKXa9osW4IDly3tuF6q/OdHhm5fX/BnlvJklX77yF7
-         tMwqQC5H2f+kX9XgsSb2MdNhX9q6TqQAfvGPoKlX3ZY9IhV/EehwwW0B2cdVIXZ5ynSJ
-         dc/IrjSDZy7Q2VgvjwHwHY4fRVJGDjG6hh7FZ0VFG4APm0RFVyrFSOURElLp6vjCy7KX
-         ZkMgS84mqqsn3nOCI1fYIFpd2u68s6H2DnJGEpGJUntfeg0ncpfMyds1q9DtOWf+aWRX
-         qZow==
-X-Forwarded-Encrypted: i=1; AJvYcCUD1Cr9t/LLe7EC3siZxZbqGf1zJzYskI8fctxljsR1efucxHo0KZGzBHCjF08A81meJEsZ8lyDAwP2@vger.kernel.org, AJvYcCXKX3JjZWwt4Mz+sYJDZgSFzo2442aJsw8wx+OX4db/XhGebjQoeQ1yZPMTwtcxOQ6BWIe4vc+XT/+M@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywy3m1NU8uJes90LcjEktzSKVWhALK1rlrtbS7jmjseYASlzXKV
-	eB3tzCkyiaWl5pEJ49qaPt1D7vAGSuEG9qts/kOfi4JyxtA9LOuT
-X-Google-Smtp-Source: AGHT+IHnYbp70vCjXAE1/wnpw+SRyg6rXoRi90BrRWmaSGz9zPISzMXiE28u63WSEsug06GyD4LFVg==
-X-Received: by 2002:a05:6a00:179e:b0:724:6c21:f0c with SMTP id d2e1a72fcca58-72475fbc463mr7267823b3a.4.1731698538247;
-        Fri, 15 Nov 2024 11:22:18 -0800 (PST)
+        bh=9q1mbAPAv0n/S09209YIRJnoM8UsP7wPs+sS6v3ZWZE=;
+        b=S7m2puc0uSXdPrhjMS3L0W7AL4tG2YmeSxfSHBMP0CxXw9Am4m6gaoxeC8dqK6avrW
+         pGmQidceLoGzh2rvS3/WTmS+a3vAoh3G+X+hcAZGyxBCuhV5+UG5oHH6TWSRfuEPguSO
+         2/fe2yf7cTARwqy+QE8sqG38bl7A7BVB+8cYVHvgOm9Ixhn0d8lwOHE7812JKuveHx6Y
+         iElJy8uChHGbnYoDBu1GOqBtos0nYa/8zH4dWfC3Z1I2SyDm3xQHZvyPV1si+Tvuu/31
+         vy+K7ozeVzAJ9UDGbN2M3QXJc9hPOQ0he/EXAQycmmHUYcF5Xb/8F8EHcg3mFI58igBH
+         Je6w==
+X-Forwarded-Encrypted: i=1; AJvYcCX7+9jvgdxagRsV78/oPzbSJR0n5diZ5dZz3iU9K24j2Mdv7pNu1UIfO31xMl22GAoapjZNkvm8QjCX@vger.kernel.org, AJvYcCXGxFKPNdXj0HzTXxBep8hHDU+j03fWZoCStzm8bi22AkB9jmIR34zG0kpZrh7WwBuUH+ulDMoATpKTMyY74A==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yxg/3UlgaVetO6GWrWnYuf4ngOOvvXJ9n3gsct+1T/vuMJ6i5uI
+	/aqEEa8biV1sCZaCHnl0HVEEBC9bDDfD+QlYWwFdyfPUgDLajtcx
+X-Google-Smtp-Source: AGHT+IGrN3dicLqeJXERe269SXL68ng6H2DR3PjmuT0t8IoX0XTxWnm/+wyXNQnXkMuNHwSIW76biw==
+X-Received: by 2002:a17:90b:4c52:b0:2e1:e19f:609b with SMTP id 98e67ed59e1d1-2ea1558acfcmr4962539a91.24.1731707537800;
+        Fri, 15 Nov 2024 13:52:17 -0800 (PST)
 Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724771c0ba2sm1775081b3a.128.2024.11.15.11.22.14
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea02481b6bsm3443935a91.8.2024.11.15.13.52.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 11:22:17 -0800 (PST)
+        Fri, 15 Nov 2024 13:52:17 -0800 (PST)
 From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: "Darrick J. Wong" <djwong@kernel.org>, Nirjhar Roy <nirjhar@linux.ibm.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, zlang@kernel.org
-Subject: Re: [PATCH v2 1/2] common/rc,xfs/207: Adding a common helper function to check xflag bits on a given file
-In-Reply-To: <20241115164548.GE9425@frogsfrogsfrogs>
-Date: Sat, 16 Nov 2024 00:36:26 +0530
-Message-ID: <87r07cco5p.fsf@gmail.com>
-References: <cover.1731597226.git.nirjhar@linux.ibm.com> <9a955f34cab443d3ed0fc07c17886d5e8a11ad80.1731597226.git.nirjhar@linux.ibm.com> <20241115164548.GE9425@frogsfrogsfrogs>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>
+Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, Disha Goel <disgoel@linux.ibm.com>
+Subject: Re: [PATCH 1/1] quota: flush quota_release_work upon quota writeback
+In-Reply-To: <20241115183449.2058590-2-ojaswin@linux.ibm.com>
+Date: Sat, 16 Nov 2024 02:20:26 +0530
+Message-ID: <87plmwcjcd.fsf@gmail.com>
+References: <20241115183449.2058590-1-ojaswin@linux.ibm.com> <20241115183449.2058590-2-ojaswin@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 
-"Darrick J. Wong" <djwong@kernel.org> writes:
+Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
 
-> On Fri, Nov 15, 2024 at 09:45:58AM +0530, Nirjhar Roy wrote:
->> This patch defines a common helper function to test whether any of
->> fsxattr xflags field is set or not. We will use this helper in the next
->> patch for checking extsize (e) flag.
->> 
->> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
->> ---
->>  common/rc     |  7 +++++++
->>  tests/xfs/207 | 13 ++-----------
->>  2 files changed, 9 insertions(+), 11 deletions(-)
->> 
->> diff --git a/common/rc b/common/rc
->> index 2af26f23..fc18fc94 100644
->> --- a/common/rc
->> +++ b/common/rc
->> @@ -41,6 +41,13 @@ _md5_checksum()
->>  	md5sum $1 | cut -d ' ' -f1
->>  }
->>  
->> +# Check whether a fsxattr xflags character ($2) field is set on a given file ($1).
->> +# e.g, fsxattr.xflags =  0x80000800 [----------e-----X]
->> +_test_fsx_xflags_field()
+> One of the paths quota writeback is called from is:
 >
-> How about we call this "_test_fsxattr_xflag" instead?
+> freeze_super()
+>   sync_filesystem()
+>     ext4_sync_fs()
+>       dquot_writeback_dquots()
 >
-> fsx is already something else in fstests.
+> Since we currently don't always flush the quota_release_work queue in
+> this path, we can end up with the following race:
 >
->> +{
->> +    grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat" "$1")
->> +}
+>  1. dquot are added to releasing_dquots list during regular operations.
+>  2. FS freeze starts, however, this does not flush the quota_release_work queue.
+>  3. Freeze completes.
+>  4. Kernel eventually tries to flush the workqueue while FS is frozen which
+>     hits a WARN_ON since transaction gets started during frozen state:
 >
-> Not sure why this lost the xfs_io | grep -q structure.  The return value
-> of the whole expression will always be the return value of the last
-> command in the pipeline.
+>   ext4_journal_check_start+0x28/0x110 [ext4] (unreliable)
+>   __ext4_journal_start_sb+0x64/0x1c0 [ext4]
+>   ext4_release_dquot+0x90/0x1d0 [ext4]
+>   quota_release_workfn+0x43c/0x4d0
 >
-
-I guess it was suggested here [1]
-
-[1]: https://lore.kernel.org/all/20241025025651.okneano7d324nl4e@dell-per750-06-vm-08.rhts.eng.pek2.redhat.com/
-
-root-> grep -q "hello" <(echo "hello world"); echo $?
-0
-
-The cmd is not using the unnamed pipes ("|") any more. It's spawning the
-process () which does echo "hello world" and creating a named pipe or
-say temporary FD <() which is being read by grep now. So we still will
-have the correct return value. Slightly inefficitent compared to unnamed
-pipes though I agree. 
-
-> (Correct?  I hate bash...)
+> Which is the following line:
 >
-
-root-> ls -la <(echo "hello world");
-lr-x------ 1 root root 64 Nov 16 00:42 /dev/fd/63 -> 'pipe:[74211850]'
-
-Did I make you hate it more? ;) 
-
-
--ritesh
-
-> --D
+>   WARN_ON(sb->s_writers.frozen == SB_FREEZE_COMPLETE);
 >
->> +
->>  # Write a byte into a range of a file
->>  _pwrite_byte() {
->>  	local pattern="$1"
->> diff --git a/tests/xfs/207 b/tests/xfs/207
->> index bbe21307..4f6826f3 100755
->> --- a/tests/xfs/207
->> +++ b/tests/xfs/207
->> @@ -21,15 +21,6 @@ _require_cp_reflink
->>  _require_xfs_io_command "fiemap"
->>  _require_xfs_io_command "cowextsize"
->>  
->> -# Takes the fsxattr.xflags line,
->> -# i.e. fsxattr.xflags = 0x0 [--------------C-]
->> -# and tests whether a flag character is set
->> -test_xflag()
->> -{
->> -    local flg=$1
->> -    grep -q "\[.*${flg}.*\]" && echo "$flg flag set" || echo "$flg flag unset"
->> -}
->> -
->>  echo "Format and mount"
->>  _scratch_mkfs > $seqres.full 2>&1
->>  _scratch_mount >> $seqres.full 2>&1
->> @@ -65,14 +56,14 @@ echo "Set cowextsize and check flag"
->>  $XFS_IO_PROG -c "cowextsize 1048576" $testdir/file3 | _filter_scratch
->>  _scratch_cycle_mount
->>  
->> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
->> +_test_fsx_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
->>  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->>  
->>  echo "Unset cowextsize and check flag"
->>  $XFS_IO_PROG -c "cowextsize 0" $testdir/file3 | _filter_scratch
->>  _scratch_cycle_mount
->>  
->> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
->> +_test_fsx_xflags_field "$testdir/file3" "C" && echo "C flag set" || echo "C flag unset"
->>  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->>  
->>  status=0
->> -- 
->> 2.43.5
->> 
->> 
+> Which ultimately results in generic/390 failing due to dmesg
+> noise. This was detected on powerpc machine 15 cores.
+>
+> To avoid this, make sure to flush the workqueue during
+> dquot_writeback_dquots() so we dont have any pending workitems after
+> freeze.
+
+Not just that, sync_filesystem can also be called from other places and
+quota_release_workfn() could write out and and release the dquot
+structures if such are found during processing of releasing_dquots list. 
+IIUC, this was earlier done in the same dqput() context but had races
+with dquot_mark_dquot_dirty(). Hence the final dqput() will now add the
+dquot structures to releasing_dquots list and will schedule a delayed
+workfn which will process the releasing_dquots list. 
+
+And so after the final dqput and before the release_workfn gets
+scheduled, if dquot gets marked as dirty or dquot_transfer gets called -
+then I am suspecting that it could lead to a dirty or an active dquot.
+
+Hence, flushing the delayed quota_release_work at the end of
+dquot_writeback_dquots() looks like the right thing to do IMO.
+
+But I can give another look as this part of the code is not that well
+known to me. 
+
+>
+> Reported-by: Disha Goel <disgoel@linux.ibm.com>
+> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> ---
+
+Maybe a fixes tag as well?
+
+>  fs/quota/dquot.c | 2 ++
+>  1 file changed, 2 insertions(+)
+>
+> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+> index 3dd8d6f27725..2782cfc8c302 100644
+> --- a/fs/quota/dquot.c
+> +++ b/fs/quota/dquot.c
+> @@ -729,6 +729,8 @@ int dquot_writeback_dquots(struct super_block *sb, int type)
+>  			sb->dq_op->write_info(sb, cnt);
+>  	dqstats_inc(DQST_SYNCS);
+>  
+> +	flush_delayed_work(&quota_release_work);
+> +
+>  	return ret;
+>  }
+>  EXPORT_SYMBOL(dquot_writeback_dquots);
+> -- 
+> 2.43.5
 
