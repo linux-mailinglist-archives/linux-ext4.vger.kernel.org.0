@@ -1,158 +1,260 @@
-Return-Path: <linux-ext4+bounces-5222-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5223-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D02CC9CF951
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 23:12:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7FEC29CFFF2
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Nov 2024 17:51:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 775A31F2384E
-	for <lists+linux-ext4@lfdr.de>; Fri, 15 Nov 2024 22:12:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39588284BBC
+	for <lists+linux-ext4@lfdr.de>; Sat, 16 Nov 2024 16:51:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D5421F9ABB;
-	Fri, 15 Nov 2024 21:52:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3F4557C9F;
+	Sat, 16 Nov 2024 16:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q+sZHJXZ"
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yU6jiluY"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
+Received: from mail-ua1-f48.google.com (mail-ua1-f48.google.com [209.85.222.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEF391E630C;
-	Fri, 15 Nov 2024 21:52:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA4217BB0F
+	for <linux-ext4@vger.kernel.org>; Sat, 16 Nov 2024 16:50:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731707540; cv=none; b=IO6xVPJK/jXQNIFvZ1U+15qJjss4qcIEg2PPHM6OT0Dk4hKiAjF+LrPAeq/f5m4KLqBa+iOjam6/cVjZ5Q+Om7EXxBWx8jYGg3AVXXdgWVsRg1mGjxu1xJFoxYNbPPudFyIqd64nlqav05ICMJekXcTLALfaAE03Wr2LN0Y1+HY=
+	t=1731775858; cv=none; b=A5mtfg/toqT2F+3GeEBzrXiLeMHFm2HK20mH0d7vAC5lGF5+sSePoEOuCcRw9nvIR3jGY8StuWufYsFKbqi6EUkKZ0lERAx1lpm2h+Wf5wRcZksQiLx/mZoBNyzM4ndMbUK4u9oZQWzj4TwESUrf4e0Mlap0avpgUGNQtJNqR5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731707540; c=relaxed/simple;
-	bh=sZFV0uP3WWeSSyCd835E6WVK+3+s+sPdBHOyjlWNkuQ=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=OSqRu4Ed6/avBAi7WvqNPyRwQV4w+wz1W4WLAtRu5Zg/7dAjc9hHC1ivCnQuQV6CZ7QEEHHZySDVilyLlaXPgaj2T+dTorLkIAKmjVZThXoH5cYL5R9BtzD42WaAW83CsEJs/9qbt+NXn8JXkU+OMaSqqCoCYtYqxuo+Xx0pwEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q+sZHJXZ; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-2e91403950dso1758395a91.3;
-        Fri, 15 Nov 2024 13:52:18 -0800 (PST)
+	s=arc-20240116; t=1731775858; c=relaxed/simple;
+	bh=JxVQRUmXu/GR6DOZL4O8huHliPPvYC5bjH4b+yDupQ0=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=amBudxJN0HqEjvGEnIK44Yvqc5mUTgxATMQpHJwsPZsE1/kHjRZvCT5uJWwnxD2hls00GfSRb9SYDdmAJfgXzEzYxB7mHBdJgWq2lGHJqs+4g/ZqewkewPbysQqxQfT1N3uAHTS+B+B1eEsPbKxSDsEg596lGiRDWtjl5zA934A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yU6jiluY; arc=none smtp.client-ip=209.85.222.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ua1-f48.google.com with SMTP id a1e0cc1a2514c-85054107836so189279241.3
+        for <linux-ext4@vger.kernel.org>; Sat, 16 Nov 2024 08:50:55 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1731707538; x=1732312338; darn=vger.kernel.org;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=9q1mbAPAv0n/S09209YIRJnoM8UsP7wPs+sS6v3ZWZE=;
-        b=Q+sZHJXZ+8ap6DuDzRP+TwKvg44v8m04Pq0PTdwcWpGyA6CFsMFissZ76w3am+leK6
-         HklMgZQZCz6oOkVp2PPNyIooNHPi9+8cljo0r5x4arpTAsJWYJjtDMXXW5nNV9GySMaZ
-         IiqBnqTqLKRh5MKgEY+O6tbhnDIDIrr2nzf+s1BuyRmnvlB34Yu67Y7Hyy5M3P1yC4TQ
-         mIq/bSzi2dwIhiTvrJa6gyFRvDTBziAAM1zMAnfN1DQT1Y7pnJNZLeoHiZQWT9IWoooD
-         WyKlxTN5PyxsjwXi5CCJrdBUDTfxmWnTUmZKyt/jYurE9IQiwhfGmpCjgvOddELeknvF
-         4dYA==
+        d=linaro.org; s=google; t=1731775854; x=1732380654; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=/AJbuq7ELapydlmshajvSeNG3RIacjhiudlwSv7Rgic=;
+        b=yU6jiluYkdj1tOLAT9wtUgvASi5XtQAitq7sYOzTj7/+AwR+YuPR13AhliKtJ+BTF9
+         VTDuBPHv6LWdAmwo56X0UY8RGOTg8DVOfzOePPXxXlvs0WdzoHWB/djYhzvtRDsIAC1C
+         vmBiYFSfWMut/LcCzMk9FOBahHc/Qsv/lOq3rsksii/GyvpFQ4BTBag0LQXh+MhL9l8Q
+         ul4TUpKTdaGvUoY+3lpt2OXjOF9jOm4SbNb/HupOPswWfFxqUbGDxa2KMm/IJVZeMN3M
+         GB0fEcNnmlocXe5ssvWvN2qf2q67yDhSINk5kpb54z8HRU96d6Nxlxk17Fg4oISbZ9iR
+         spaA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731707538; x=1732312338;
-        h=references:message-id:date:in-reply-to:subject:cc:to:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=9q1mbAPAv0n/S09209YIRJnoM8UsP7wPs+sS6v3ZWZE=;
-        b=S7m2puc0uSXdPrhjMS3L0W7AL4tG2YmeSxfSHBMP0CxXw9Am4m6gaoxeC8dqK6avrW
-         pGmQidceLoGzh2rvS3/WTmS+a3vAoh3G+X+hcAZGyxBCuhV5+UG5oHH6TWSRfuEPguSO
-         2/fe2yf7cTARwqy+QE8sqG38bl7A7BVB+8cYVHvgOm9Ixhn0d8lwOHE7812JKuveHx6Y
-         iElJy8uChHGbnYoDBu1GOqBtos0nYa/8zH4dWfC3Z1I2SyDm3xQHZvyPV1si+Tvuu/31
-         vy+K7ozeVzAJ9UDGbN2M3QXJc9hPOQ0he/EXAQycmmHUYcF5Xb/8F8EHcg3mFI58igBH
-         Je6w==
-X-Forwarded-Encrypted: i=1; AJvYcCX7+9jvgdxagRsV78/oPzbSJR0n5diZ5dZz3iU9K24j2Mdv7pNu1UIfO31xMl22GAoapjZNkvm8QjCX@vger.kernel.org, AJvYcCXGxFKPNdXj0HzTXxBep8hHDU+j03fWZoCStzm8bi22AkB9jmIR34zG0kpZrh7WwBuUH+ulDMoATpKTMyY74A==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxg/3UlgaVetO6GWrWnYuf4ngOOvvXJ9n3gsct+1T/vuMJ6i5uI
-	/aqEEa8biV1sCZaCHnl0HVEEBC9bDDfD+QlYWwFdyfPUgDLajtcx
-X-Google-Smtp-Source: AGHT+IGrN3dicLqeJXERe269SXL68ng6H2DR3PjmuT0t8IoX0XTxWnm/+wyXNQnXkMuNHwSIW76biw==
-X-Received: by 2002:a17:90b:4c52:b0:2e1:e19f:609b with SMTP id 98e67ed59e1d1-2ea1558acfcmr4962539a91.24.1731707537800;
-        Fri, 15 Nov 2024 13:52:17 -0800 (PST)
-Received: from dw-tp ([49.205.218.89])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ea02481b6bsm3443935a91.8.2024.11.15.13.52.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Nov 2024 13:52:17 -0800 (PST)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>
-Cc: linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, Disha Goel <disgoel@linux.ibm.com>
-Subject: Re: [PATCH 1/1] quota: flush quota_release_work upon quota writeback
-In-Reply-To: <20241115183449.2058590-2-ojaswin@linux.ibm.com>
-Date: Sat, 16 Nov 2024 02:20:26 +0530
-Message-ID: <87plmwcjcd.fsf@gmail.com>
-References: <20241115183449.2058590-1-ojaswin@linux.ibm.com> <20241115183449.2058590-2-ojaswin@linux.ibm.com>
+        d=1e100.net; s=20230601; t=1731775854; x=1732380654;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/AJbuq7ELapydlmshajvSeNG3RIacjhiudlwSv7Rgic=;
+        b=J2NLF1t+Zf3VTVffYk8Y2tqEkNAPXZOlxrXcS56PKo3MEiQpD/tTAeTQkB7XhRLRlv
+         5I4BJNz5AzM9+idccntyl1WrCs6GptlGO9HbhIj7ZRjPRMk4BfJ+ly901d9Rum7MKS4q
+         ua0ziAsrmWWqvB9TFEXqTwByZdb7j+NT7+K81MUm1Hi5z6JNrDa9hrNBNYCN1kYRvb9f
+         xKPMVFrxKSCAQnDs6VnZuIvE5fGgKp7EfeO7UQDowCq3dNTkDsf7wdA7aR/xA2sC4g4a
+         TFak2PIUU0iPrmY0t9FXBwK6A5hsQoMIvIK0nSC1DfxZnxceJxOexVgKThdAc7SynL4r
+         sZAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUdJv0jrvGeZnareqRI5Ke+5ywIHgOOVVAuhdu05WcCN/tn/vcHnAc6N0GgpX5/oqUZj9IBpXg9ehF3@vger.kernel.org
+X-Gm-Message-State: AOJu0YyzTt/4eZ68kc2L6zQibNbu4WAwglkjplmvb+SAHe2MrlzsV4Mp
+	RWMVbfi6Z8OkU5P5iaTDJmVHYxsQgi1qmrfJJFyqLjEpRemrFIEUm4wQ/9YpF5j8pBNdu8lkvRl
+	DjGNcIBontonQT5z2Uye/C85wfAW8RAhMadhcBw==
+X-Google-Smtp-Source: AGHT+IGxwi/IVhPflsdG08C7ZbvkGxsHxai4iTgnUdrVuVk07lklbn089q1LGPkXwyBIKlKfDffXfQwU/VQ3TdNFYOg=
+X-Received: by 2002:a05:6102:3f03:b0:4a3:db6a:dbbf with SMTP id
+ ada2fe7eead31-4ad62bffe1amr7191005137.14.1731775854568; Sat, 16 Nov 2024
+ 08:50:54 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+From: Naresh Kamboju <naresh.kamboju@linaro.org>
+Date: Sat, 16 Nov 2024 22:20:43 +0530
+Message-ID: <CA+G9fYvVAvEBbFzhQQ_UBf+PYMojtN1O4qHKXngu33AT8HqEnA@mail.gmail.com>
+Subject: ltp-syscalls/ioctl04: sysfs: cannot create duplicate filename '/kernel/slab/:a-0000176'
+To: open list <linux-kernel@vger.kernel.org>, linux-fsdevel@vger.kernel.org, 
+	linux-ext4 <linux-ext4@vger.kernel.org>, lkft-triage@lists.linaro.org, 
+	Linux Regressions <regressions@lists.linux.dev>
+Cc: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>, 
+	Arnd Bergmann <arnd@arndb.de>, Linus Torvalds <torvalds@linux-foundation.org>, 
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Sasha Levin <sashal@kernel.org>, 
+	Anders Roxell <anders.roxell@linaro.org>, Dan Carpenter <dan.carpenter@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
 
-Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
+The LTP syscalls ioctl04 and sequence test cases reported failures due
+to following
+reasons in the test log on the following environments on
+sashal/linus-next.git tree.
+ - qemu-x86_64
+ - qemu-x86_64-compat
+ - testing still in progress
 
-> One of the paths quota writeback is called from is:
->
-> freeze_super()
->   sync_filesystem()
->     ext4_sync_fs()
->       dquot_writeback_dquots()
->
-> Since we currently don't always flush the quota_release_work queue in
-> this path, we can end up with the following race:
->
->  1. dquot are added to releasing_dquots list during regular operations.
->  2. FS freeze starts, however, this does not flush the quota_release_work queue.
->  3. Freeze completes.
->  4. Kernel eventually tries to flush the workqueue while FS is frozen which
->     hits a WARN_ON since transaction gets started during frozen state:
->
->   ext4_journal_check_start+0x28/0x110 [ext4] (unreliable)
->   __ext4_journal_start_sb+0x64/0x1c0 [ext4]
->   ext4_release_dquot+0x90/0x1d0 [ext4]
->   quota_release_workfn+0x43c/0x4d0
->
-> Which is the following line:
->
->   WARN_ON(sb->s_writers.frozen == SB_FREEZE_COMPLETE);
->
-> Which ultimately results in generic/390 failing due to dmesg
-> noise. This was detected on powerpc machine 15 cores.
->
-> To avoid this, make sure to flush the workqueue during
-> dquot_writeback_dquots() so we dont have any pending workitems after
-> freeze.
+LTP test failed log:
+---------------
+<4>[   70.931891] sysfs: cannot create duplicate filename
+'/kernel/slab/:a-0000176'
+...
+<0>[   70.969266] EXT4-fs: no memory for groupinfo slab cache
+<3>[   70.970744] EXT4-fs (loop0): failed to initialize mballoc (-12)
+<3>[   70.977680] EXT4-fs (loop0): mount failed
+ioctl04.c:67: TFAIL: Mounting RO device RO failed: ENOMEM (12)
 
-Not just that, sync_filesystem can also be called from other places and
-quota_release_workfn() could write out and and release the dquot
-structures if such are found during processing of releasing_dquots list. 
-IIUC, this was earlier done in the same dqput() context but had races
-with dquot_mark_dquot_dirty(). Hence the final dqput() will now add the
-dquot structures to releasing_dquots list and will schedule a delayed
-workfn which will process the releasing_dquots list. 
+First seen on commit sha id c12cd257292c0c29463aa305967e64fc31a514d8.
+  Good: 7ff71d62bdc4828b0917c97eb6caebe5f4c07220
+  Bad:  c12cd257292c0c29463aa305967e64fc31a514d8
+  (not able to fetch these ^ commit ids now)
 
-And so after the final dqput and before the release_workfn gets
-scheduled, if dquot gets marked as dirty or dquot_transfer gets called -
-then I am suspecting that it could lead to a dirty or an active dquot.
+qemu-x86_64:
+  * ltp-syscalls/fanotify14
+  * ltp-syscalls/ioctl04
+  * etc..
 
-Hence, flushing the delayed quota_release_work at the end of
-dquot_writeback_dquots() looks like the right thing to do IMO.
+Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
 
-But I can give another look as this part of the code is not that well
-known to me. 
+Test log:
+---------
+tst_tmpdir.c:316: TINFO: Using /scratch/ltp-8XkJXJek4F/LTP_iocSaDyQw
+as tmpdir (ext2/ext3/ext4 filesystem)
+tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
+<6>[   70.394900] loop0: detected capacity change from 0 to 614400
+tst_test.c:1158: TINFO: Formatting /dev/loop0 with ext2 opts='' extra opts=''
+mke2fs 1.47.1 (20-May-2024)
+tst_test.c:1860: TINFO: LTP version: 20240930
+tst_test.c:1864: TINFO: Tested kernel: 6.12.0-rc7 #1 SMP
+PREEMPT_DYNAMIC @1731766491 x86_64
+tst_test.c:1703: TINFO: Timeout per run is 0h 02m 30s
+ioctl04.c:29: TPASS: BLKROGET returned 0
+<6>[   70.921794] EXT4-fs (loop0): mounting ext2 file system using the
+ext4 subsystem
+ioctl04.c:42: TPASS: BLKROGET returned 1
+ioctl04.c:53: TPASS: Mounting RO device RW failed: EACCES (13)
+<4>[   70.931891] sysfs: cannot create duplicate filename
+'/kernel/slab/:a-0000176'
+<4>[   70.932354] CPU: 0 UID: 0 PID: 992 Comm: ioctl04 Not tainted 6.12.0-rc7 #1
+<4>[   70.932936] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+<4>[   70.933433] Call Trace:
+<4>[   70.933894]  <TASK>
+<4>[   70.934161]  dump_stack_lvl+0x96/0xb0
+<4>[   70.934608]  dump_stack+0x14/0x20
+<4>[   70.934909]  sysfs_warn_dup+0x5f/0x80
+<4>[   70.935215]  sysfs_create_dir_ns+0xd0/0xf0
+<4>[   70.935521]  kobject_add_internal+0xa8/0x2e0
+<4>[   70.935944]  kobject_init_and_add+0x8c/0xd0
+<4>[   70.936265]  sysfs_slab_add+0x11a/0x1f0
+<4>[   70.936446]  do_kmem_cache_create+0x433/0x500
+<4>[   70.936622]  __kmem_cache_create_args+0x19c/0x250
+<4>[   70.936827]  ext4_mb_init+0x690/0x7e0
+<4>[   70.937180]  ext4_fill_super+0x1934/0x31e0
+<4>[   70.937547]  ? sb_set_blocksize+0x21/0x70
+<4>[   70.937911]  ? __pfx_ext4_fill_super+0x10/0x10
+<4>[   70.938346]  get_tree_bdev_flags+0x13c/0x1d0
+<4>[   70.938780]  get_tree_bdev+0x14/0x20
+<4>[   70.939118]  ext4_get_tree+0x19/0x20
+<4>[   70.939354]  vfs_get_tree+0x2e/0xe0
+<4>[   70.939717]  path_mount+0x309/0xb00
+<4>[   70.940025]  ? putname+0x5e/0x80
+<4>[   70.940183]  __x64_sys_mount+0x11d/0x160
+<4>[   70.940353]  x64_sys_call+0x1719/0x20b0
+<4>[   70.940516]  do_syscall_64+0xb2/0x1d0
+<4>[   70.940711]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+<4>[   70.941202] RIP: 0033:0x7f667d9dd4ea
+<4>[   70.941527] Code: 48 8b 0d 39 39 0d 00 f7 d8 64 89 01 48 83 c8
+ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00
+00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 06 39 0d 00 f7 d8 64
+89 01 48
+<4>[   70.942905] RSP: 002b:00007ffe22faecf8 EFLAGS: 00000246
+ORIG_RAX: 00000000000000a5
+<4>[   70.943283] RAX: ffffffffffffffda RBX: 00007f667d8d26c8 RCX:
+00007f667d9dd4ea
+<4>[   70.943788] RDX: 00007ffe22fb0e59 RSI: 000055e50098e60b RDI:
+000055e50099cca0
+<4>[   70.944248] RBP: 000055e50098e5d8 R08: 0000000000000000 R09:
+0000000000000000
+<4>[   70.944479] R10: 0000000000000001 R11: 0000000000000246 R12:
+00007ffe22faed0c
+<4>[   70.944704] R13: 000055e50098e60b R14: 0000000000000000 R15:
+0000000000000000
+<4>[   70.945086]  </TASK>
+<3>[   70.946069] kobject: kobject_add_internal failed for :a-0000176
+with -EEXIST, don't try to register things with the same name in the
+same directory.
+<3>[   70.948453] SLUB: Unable to add cache ext4_groupinfo_1k to sysfs
+<4>[   70.951178] __kmem_cache_create_args(ext4_groupinfo_1k) failed
+with error -22
+<4>[   70.952636] CPU: 0 UID: 0 PID: 992 Comm: ioctl04 Not tainted 6.12.0-rc7 #1
+<4>[   70.953183] Hardware name: QEMU Standard PC (Q35 + ICH9, 2009),
+BIOS 1.16.3-debian-1.16.3-2 04/01/2014
+<4>[   70.953975] Call Trace:
+<4>[   70.954215]  <TASK>
+<4>[   70.954460]  dump_stack_lvl+0x96/0xb0
+<4>[   70.954877]  dump_stack+0x14/0x20
+<4>[   70.955079]  __kmem_cache_create_args+0x7d/0x250
+<4>[   70.955331]  ext4_mb_init+0x690/0x7e0
+<4>[   70.955698]  ext4_fill_super+0x1934/0x31e0
+<4>[   70.956271]  ? sb_set_blocksize+0x21/0x70
+<4>[   70.958236]  ? __pfx_ext4_fill_super+0x10/0x10
+<4>[   70.958570]  get_tree_bdev_flags+0x13c/0x1d0
+<4>[   70.958812]  get_tree_bdev+0x14/0x20
+<4>[   70.958990]  ext4_get_tree+0x19/0x20
+<4>[   70.959752]  vfs_get_tree+0x2e/0xe0
+<4>[   70.960137]  path_mount+0x309/0xb00
+<4>[   70.960340]  ? putname+0x5e/0x80
+<4>[   70.960560]  __x64_sys_mount+0x11d/0x160
+<4>[   70.961572]  x64_sys_call+0x1719/0x20b0
+<4>[   70.961841]  do_syscall_64+0xb2/0x1d0
+<4>[   70.962060]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+<4>[   70.963017] RIP: 0033:0x7f667d9dd4ea
+<4>[   70.963229] Code: 48 8b 0d 39 39 0d 00 f7 d8 64 89 01 48 83 c8
+ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 44 00 00 49 89 ca b8 a5 00
+00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d 06 39 0d 00 f7 d8 64
+89 01 48
+<4>[   70.964889] RSP: 002b:00007ffe22faecf8 EFLAGS: 00000246
+ORIG_RAX: 00000000000000a5
+<4>[   70.965471] RAX: ffffffffffffffda RBX: 00007f667d8d26c8 RCX:
+00007f667d9dd4ea
+<4>[   70.965693] RDX: 00007ffe22fb0e59 RSI: 000055e50098e60b RDI:
+000055e50099cca0
+<4>[   70.965938] RBP: 000055e50098e5d8 R08: 0000000000000000 R09:
+0000000000000000
+<4>[   70.966152] R10: 0000000000000001 R11: 0000000000000246 R12:
+00007ffe22faed0c
+<4>[   70.966370] R13: 000055e50098e60b R14: 0000000000000000 R15:
+0000000000000000
+<4>[   70.966593]  </TASK>
+<0>[   70.969266] EXT4-fs: no memory for groupinfo slab cache
+<3>[   70.970744] EXT4-fs (loop0): failed to initialize mballoc (-12)
+<3>[   70.977680] EXT4-fs (loop0): mount failed
+ioctl04.c:67: TFAIL: Mounting RO device RO failed: ENOMEM (12)
 
->
-> Reported-by: Disha Goel <disgoel@linux.ibm.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> ---
+Summary:
+passed   3
+failed   1
 
-Maybe a fixes tag as well?
+Build image:
+-----------
+- https://qa-reports.linaro.org/lkft/sashal-linus-next/build/v6.11-15432-gac3274b9a6ec/testrun/25851045/suite/ltp-syscalls/test/ioctl04/log
+- https://qa-reports.linaro.org/lkft/sashal-linus-next/build/v6.11-15430-gc12cd257292c/testrun/25848631/suite/ltp-syscalls/test/ioctl04/history/
+- https://qa-reports.linaro.org/lkft/sashal-linus-next/build/v6.11-15432-gac3274b9a6ec/testrun/25851045/suite/ltp-syscalls/test/ioctl04/details/
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2ow28dxrEwN5dFu4vChS2wgU93J
 
->  fs/quota/dquot.c | 2 ++
->  1 file changed, 2 insertions(+)
->
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index 3dd8d6f27725..2782cfc8c302 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -729,6 +729,8 @@ int dquot_writeback_dquots(struct super_block *sb, int type)
->  			sb->dq_op->write_info(sb, cnt);
->  	dqstats_inc(DQST_SYNCS);
->  
-> +	flush_delayed_work(&quota_release_work);
-> +
->  	return ret;
->  }
->  EXPORT_SYMBOL(dquot_writeback_dquots);
-> -- 
-> 2.43.5
+Steps to reproduce:
+------------
+- https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2ow28dxrEwN5dFu4vChS2wgU93J/reproducer
+
+metadata:
+----
+  Linux version: 6.12.0-rc7
+  git repo: https://git.kernel.org/pub/scm/linux/kernel/git/sashal/linus-next.git
+  git sha: ac3274b9a6ec132398615faaa725c8fa23700219
+  kernel config:
+https://storage.tuxsuite.com/public/linaro/lkft/builds/2ow9ILyg8kMOGCJOc8VDIGOlz1h/config
+  build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2ow9ILyg8kMOGCJOc8VDIGOlz1h/
+  toolchain: gcc-13
+  config: gcc-13-lkftconfig
+  arch: x86_64 and testing is in progress for other architectures
+
+--
+Linaro LKFT
+https://lkft.linaro.org
 
