@@ -1,217 +1,124 @@
-Return-Path: <linux-ext4+bounces-5238-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5239-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14FA79D1194
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 14:15:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A0B79D13A0
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 15:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A62A1F22A89
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 13:15:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63EB1F2369D
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 14:50:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DE6F19994F;
-	Mon, 18 Nov 2024 13:15:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5731AA1DA;
+	Mon, 18 Nov 2024 14:50:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GaLXp7WB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9Lw7GPVd";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="GaLXp7WB";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9Lw7GPVd"
+	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k0Is1buZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2E8138B;
-	Mon, 18 Nov 2024 13:15:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B28B1A0B00
+	for <linux-ext4@vger.kernel.org>; Mon, 18 Nov 2024 14:50:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731935732; cv=none; b=X6vqrNiR4mvuT7o3HcM/Dj0RBI+aIOvviHws9vMvQitlDD0ZxtGQl251RVwUQnd2WKC0ucYzyYQb4Ab6Q1/mIGMDAlcxWxKVfOLmiz1Bv2CpiDu9OlRDW8acSMLbGnNjNJDngV1TmZ+W4cAatqXd7tR0vLMn7TXii7O2HPCQBdA=
+	t=1731941404; cv=none; b=LgUOKglcFT4z5jprQr+tl9UrkIJ5kcyIXlEYmq6cCmu9rLuA8QPb46eriJbSQMeRE4x20JwSnEBpmp/M4QX+VvNnHRX2AGDPnQs5/u2RFdSRFqlc4lcSo/X6qOK5mT92TLZhRElGjlt/WWgA2P2ASG9BVrCfQTt0uYxTz8apIQk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731935732; c=relaxed/simple;
-	bh=YWX9QEoETYmk/JhV97zqqwgnk5pqiw0XoZceR7bRg4o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gL5dK1I5UWPHcAuTRRbV6kSt6Lx9TKYckU87ooF5mFQrSwMeSHF1zFmDJ52jHHgzIKsxxmoAn0Ioi1aSJ+QThLa/gw73nPOiQW+IIqyE5WEFh7mDO/MMZZGZdEXfuN+sF1tytZGDvqDFgkLVP8TxACJmor+Aft32HIKC7714FCw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GaLXp7WB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9Lw7GPVd; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=GaLXp7WB; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9Lw7GPVd; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 199561F365;
-	Mon, 18 Nov 2024 13:15:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731935728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oH8dgWng2LISpFimH1eB2N3OKIE0Vyux0IaBFAiplag=;
-	b=GaLXp7WBXzHQYQT3YSR0sWzQCZauOFBvwDKHPx6kNYZjIigPq2YfW8XZY8resUI2eMUE5n
-	KAHMdlC2NjPRqC8xcOnV6cL2I1j8AROjvh2mLNwstF3GHpcm9eRFY0priu8fb6coiL5tK7
-	zPaTJ7VYmYaKl6JK8R9w5yHMKuARTj8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731935728;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oH8dgWng2LISpFimH1eB2N3OKIE0Vyux0IaBFAiplag=;
-	b=9Lw7GPVdKqBvWga7aBa3g+Vd00WdonaX5MjurA6Hu6ymPyWJXVb/APPwyeUBTusdoklRCp
-	X3D9piMsyyZmFsDQ==
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=GaLXp7WB;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9Lw7GPVd
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1731935728; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oH8dgWng2LISpFimH1eB2N3OKIE0Vyux0IaBFAiplag=;
-	b=GaLXp7WBXzHQYQT3YSR0sWzQCZauOFBvwDKHPx6kNYZjIigPq2YfW8XZY8resUI2eMUE5n
-	KAHMdlC2NjPRqC8xcOnV6cL2I1j8AROjvh2mLNwstF3GHpcm9eRFY0priu8fb6coiL5tK7
-	zPaTJ7VYmYaKl6JK8R9w5yHMKuARTj8=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1731935728;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=oH8dgWng2LISpFimH1eB2N3OKIE0Vyux0IaBFAiplag=;
-	b=9Lw7GPVdKqBvWga7aBa3g+Vd00WdonaX5MjurA6Hu6ymPyWJXVb/APPwyeUBTusdoklRCp
-	X3D9piMsyyZmFsDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0CF1A1376E;
-	Mon, 18 Nov 2024 13:15:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id 9vgmA/A9O2dsYQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 18 Nov 2024 13:15:28 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id B6AEAA0984; Mon, 18 Nov 2024 14:15:12 +0100 (CET)
-Date: Mon, 18 Nov 2024 14:15:12 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
-	Ritesh Harjani <ritesh.list@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Disha Goel <disgoel@linux.ibm.com>
-Subject: Re: [PATCH 1/1] quota: flush quota_release_work upon quota writeback
-Message-ID: <20241118131512.ku7g7bllelrtkdeo@quack3>
-References: <20241115183449.2058590-1-ojaswin@linux.ibm.com>
- <20241115183449.2058590-2-ojaswin@linux.ibm.com>
+	s=arc-20240116; t=1731941404; c=relaxed/simple;
+	bh=jabCupIh1FJFAKWSdaG7M5rrT0Y7L0LAPYbB0FE65Q0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GclXt8QFCYGdtR5njBuD4Zf3K3D1WH7ouKvDFg7L88fiuGV3jFd0TB20rdUocTw7XWidyzZegF27qpY75tyBOG2Bs45o9IFEwIEicy4f7B5r1UTvYAxPxWnELkB2SuOttuKGcd914TFjGLGSJmlYh3ixcLW9Ph0AwXgWXPmRCFc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k0Is1buZ; arc=none smtp.client-ip=209.85.160.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
+Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2968322f5feso380288fac.0
+        for <linux-ext4@vger.kernel.org>; Mon, 18 Nov 2024 06:50:01 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731941400; x=1732546200; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
+        b=k0Is1buZhEVRX8aA2YpNv8xH51kd3XdbQCdU6sjFm6apcmft7wlkZzhH7Mb9GK/+2G
+         1ych5iZYYRNoEgNf/GkM0axLJb9fKsMg61umrjWEmu90EW9mrMb1789SRAbRJEhfjo6y
+         Xmccgf3Vb9OQ5OYpKxWee2AxCS87/bX4pAKbglFrVIXGqo2Tj9/DNJukkN8cSrx9Vw6d
+         GL5P2MEa+d1yuxxcKeDri93rmq7rjaGcTCBL87Ks5NGABsRSD9DPWYcfdy6Uhy0xWtZ5
+         +SU85X3/ub2mgUOCY6QgZVRoxVXkkmtf+jTTNLtdabubJEcV5dBnSLlNhBBJk/jCdviS
+         RnQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1731941400; x=1732546200;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
+        b=r23IahZAk+t6Wl/jErjTGu8vDli1F68xqQCBZmZsFcNDKGpwtXYsWXDxJJ1GV9UJD/
+         XKrBjzgc0xTxRwFP+TElol8+Q5riHhnROLjpf0PeLBCBQ6M+c/c44IbUAuhlj9kbzLDs
+         BXFDL0GLWrRQzf6/JEUbf+OEpZ6SxDVtX9HAmRlUN3IROt95/DQ/o1UryXHhz1bSklNF
+         DDndu5YgeW1esb8c0jTmrtINjfAAcGsGnXo7K9PQhg45v0PJZb9dpOY/HMdA/k3tiZ+M
+         CNL0RsZtzp15NcPaLsH6p+NeDic/wlSLz/QMDJOY7H/l8yVAKyaxAStVpVVHTi7gI+ir
+         LUCA==
+X-Forwarded-Encrypted: i=1; AJvYcCUIFg5QHbPBB8o3cqSoaiJUMxz3Bk+6wvZEhdPnn7mUCPmmX1XDgSAbDbkBJObjIw3RmJpGkAois7KS@vger.kernel.org
+X-Gm-Message-State: AOJu0YyVw2vn1u3Hbwk0E58pJvGTMQE2jzjCwzT73nUkVHxeMGJq2AWo
+	BUefGIFo2Qukpw1QqYhN2KaaR0HHRAaShTK7qistYtL2juAqEpes0wGP6yv16gQ=
+X-Google-Smtp-Source: AGHT+IF4SYJY9kdWkwrKjlAiH5Z+Bn8SZkqEPmKpcyMndgMPRn4H9T8dbqU6Hyt3/gFfCCmMTdbpdA==
+X-Received: by 2002:a05:6870:ab0b:b0:287:1b05:297d with SMTP id 586e51a60fabf-2962e01ad0dmr10557378fac.33.1731941400385;
+        Mon, 18 Nov 2024 06:50:00 -0800 (PST)
+Received: from [192.168.1.116] ([96.43.243.2])
+        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-29651852c27sm2626597fac.2.2024.11.18.06.49.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Nov 2024 06:49:59 -0800 (PST)
+Message-ID: <c54063db-5f82-46d6-ba7b-5e4a0073ebf9@kernel.dk>
+Date: Mon, 18 Nov 2024 07:49:58 -0700
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241115183449.2058590-2-ojaswin@linux.ibm.com>
-X-Rspamd-Queue-Id: 199561F365
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	FREEMAIL_CC(0.00)[vger.kernel.org,suse.com,gmail.com,linux.ibm.com];
-	RCPT_COUNT_SEVEN(0.00)[7];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TAGGED_RCPT(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.cz:dkim,suse.com:email]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 10/17] mm/filemap: make buffered writes work with
+ RWF_UNCACHED
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hannes@cmpxchg.org,
+ clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
+ kirill@shutemov.name, linux-btrfs@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, bfoster@redhat.com,
+ Yang Erkun <yangerkun@huawei.com>
+References: <20241114152743.2381672-2-axboe@kernel.dk>
+ <20241114152743.2381672-12-axboe@kernel.dk>
+ <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
+Content-Language: en-US
+From: Jens Axboe <axboe@kernel.dk>
+In-Reply-To: <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Sat 16-11-24 00:04:49, Ojaswin Mujoo wrote:
-> One of the paths quota writeback is called from is:
+On 11/18/24 1:42 AM, Baokun Li wrote:
+>> diff --git a/include/linux/fs.h b/include/linux/fs.h
+>> index 45510d0b8de0..122ae821989f 100644
+>> --- a/include/linux/fs.h
+>> +++ b/include/linux/fs.h
+>> @@ -2877,6 +2877,11 @@ static inline ssize_t generic_write_sync(struct kiocb *iocb, ssize_t count)
+>>                   (iocb->ki_flags & IOCB_SYNC) ? 0 : 1);
+>>           if (ret)
+>>               return ret;
+>> +    } else if (iocb->ki_flags & IOCB_UNCACHED) {
+>> +        struct address_space *mapping = iocb->ki_filp->f_mapping;
+>> +
+>> +        filemap_fdatawrite_range_kick(mapping, iocb->ki_pos,
+>> +                          iocb->ki_pos + count);
+>>       }
+>>   
 > 
-> freeze_super()
->   sync_filesystem()
->     ext4_sync_fs()
->       dquot_writeback_dquots()
+> Hi Jens,
 > 
-> Since we currently don't always flush the quota_release_work queue in
-> this path, we can end up with the following race:
-> 
->  1. dquot are added to releasing_dquots list during regular operations.
->  2. FS freeze starts, however, this does not flush the quota_release_work queue.
->  3. Freeze completes.
->  4. Kernel eventually tries to flush the workqueue while FS is frozen which
->     hits a WARN_ON since transaction gets started during frozen state:
-> 
->   ext4_journal_check_start+0x28/0x110 [ext4] (unreliable)
->   __ext4_journal_start_sb+0x64/0x1c0 [ext4]
->   ext4_release_dquot+0x90/0x1d0 [ext4]
->   quota_release_workfn+0x43c/0x4d0
-> 
-> Which is the following line:
-> 
->   WARN_ON(sb->s_writers.frozen == SB_FREEZE_COMPLETE);
-> 
-> Which ultimately results in generic/390 failing due to dmesg
-> noise. This was detected on powerpc machine 15 cores.
-> 
-> To avoid this, make sure to flush the workqueue during
-> dquot_writeback_dquots() so we dont have any pending workitems after
-> freeze.
-> 
-> Reported-by: Disha Goel <disgoel@linux.ibm.com>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> The filemap_fdatawrite_range_kick() helper function is not added until
+> the next patch, so you should swap the order of patch 10 and patch 11.
 
-Thanks for debugging this!
+Ah thanks, not sure how I missed that. I'll swap them for the next
+posting, and also do a basic bisection test just to ensure I did't do
+more of those...
 
-> diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
-> index 3dd8d6f27725..2782cfc8c302 100644
-> --- a/fs/quota/dquot.c
-> +++ b/fs/quota/dquot.c
-> @@ -729,6 +729,8 @@ int dquot_writeback_dquots(struct super_block *sb, int type)
->  			sb->dq_op->write_info(sb, cnt);
->  	dqstats_inc(DQST_SYNCS);
->  
-> +	flush_delayed_work(&quota_release_work);
-> +
-
-I'd rather do this at the start of dquot_writeback_dquots(). Chances are
-this saves some retry loops in the dirty list iterations. That being said I
-don't think this is enough as I'm thinking about it. iput() can be called
-anytime while the filesystem is frozen (just freeze the filesystem and do
-echo 3 >/proc/sys/vm/drop_caches) which will consequently call dquot_drop()
--> dqput(). This should not be really freeing the dquot on-disk structure
-(the inode itself is still accounted there) but nevertheless it may end up
-dropping the last dquot in-memory reference and ext4_release_dquot() will
-call ext4_journal_start() and complain. So I think on top of this patch
-which makes sense on its own and deals with 99.9% of cases, we also need
-ext4 specific fix which uses sb_start_intwrite() to get freeze protection
-in ext4_release_dquot() (and in principle we always needed this, delayed
-dquot releasing does not influence this particular problem). Some care will
-be needed if the transaction is already started when ext4_release_dquot()
-is called - you can take inspiration in how ext4_evict_inode() handles
-this.
-
-								Honza
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jens Axboe
 
