@@ -1,124 +1,395 @@
-Return-Path: <linux-ext4+bounces-5239-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5240-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A0B79D13A0
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 15:50:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 227579D1540
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 17:22:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B63EB1F2369D
-	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 14:50:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A733A1F22CC4
+	for <lists+linux-ext4@lfdr.de>; Mon, 18 Nov 2024 16:22:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A5731AA1DA;
-	Mon, 18 Nov 2024 14:50:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B07F51BE87C;
+	Mon, 18 Nov 2024 16:22:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="k0Is1buZ"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tlfjx/2h"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-oa1-f41.google.com (mail-oa1-f41.google.com [209.85.160.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B28B1A0B00
-	for <linux-ext4@vger.kernel.org>; Mon, 18 Nov 2024 14:50:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4834022F19;
+	Mon, 18 Nov 2024 16:22:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731941404; cv=none; b=LgUOKglcFT4z5jprQr+tl9UrkIJ5kcyIXlEYmq6cCmu9rLuA8QPb46eriJbSQMeRE4x20JwSnEBpmp/M4QX+VvNnHRX2AGDPnQs5/u2RFdSRFqlc4lcSo/X6qOK5mT92TLZhRElGjlt/WWgA2P2ASG9BVrCfQTt0uYxTz8apIQk=
+	t=1731946930; cv=none; b=iUqUeCCDa/fCvmJK5sEcLj81nYd7Hcswz0O00aBy+UTIaKx+Uxdt2RDnk+DWKP8+ID36hANRrKuDEP6VpJqZ0dRTujy+2Wz4ppsVahMEXdrBuYx4crka38q1uZ0DZDmBeu+LQ48LF4QeCgwZpWK5M5CEO9D5IB9EdMo5PV8mjxc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731941404; c=relaxed/simple;
-	bh=jabCupIh1FJFAKWSdaG7M5rrT0Y7L0LAPYbB0FE65Q0=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=GclXt8QFCYGdtR5njBuD4Zf3K3D1WH7ouKvDFg7L88fiuGV3jFd0TB20rdUocTw7XWidyzZegF27qpY75tyBOG2Bs45o9IFEwIEicy4f7B5r1UTvYAxPxWnELkB2SuOttuKGcd914TFjGLGSJmlYh3ixcLW9Ph0AwXgWXPmRCFc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=k0Is1buZ; arc=none smtp.client-ip=209.85.160.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-oa1-f41.google.com with SMTP id 586e51a60fabf-2968322f5feso380288fac.0
-        for <linux-ext4@vger.kernel.org>; Mon, 18 Nov 2024 06:50:01 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1731941400; x=1732546200; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
-        b=k0Is1buZhEVRX8aA2YpNv8xH51kd3XdbQCdU6sjFm6apcmft7wlkZzhH7Mb9GK/+2G
-         1ych5iZYYRNoEgNf/GkM0axLJb9fKsMg61umrjWEmu90EW9mrMb1789SRAbRJEhfjo6y
-         Xmccgf3Vb9OQ5OYpKxWee2AxCS87/bX4pAKbglFrVIXGqo2Tj9/DNJukkN8cSrx9Vw6d
-         GL5P2MEa+d1yuxxcKeDri93rmq7rjaGcTCBL87Ks5NGABsRSD9DPWYcfdy6Uhy0xWtZ5
-         +SU85X3/ub2mgUOCY6QgZVRoxVXkkmtf+jTTNLtdabubJEcV5dBnSLlNhBBJk/jCdviS
-         RnQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1731941400; x=1732546200;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=64rV6XVBsSRZD9lz1azW3sqQ1KWaD6KRPC47/eG5qsA=;
-        b=r23IahZAk+t6Wl/jErjTGu8vDli1F68xqQCBZmZsFcNDKGpwtXYsWXDxJJ1GV9UJD/
-         XKrBjzgc0xTxRwFP+TElol8+Q5riHhnROLjpf0PeLBCBQ6M+c/c44IbUAuhlj9kbzLDs
-         BXFDL0GLWrRQzf6/JEUbf+OEpZ6SxDVtX9HAmRlUN3IROt95/DQ/o1UryXHhz1bSklNF
-         DDndu5YgeW1esb8c0jTmrtINjfAAcGsGnXo7K9PQhg45v0PJZb9dpOY/HMdA/k3tiZ+M
-         CNL0RsZtzp15NcPaLsH6p+NeDic/wlSLz/QMDJOY7H/l8yVAKyaxAStVpVVHTi7gI+ir
-         LUCA==
-X-Forwarded-Encrypted: i=1; AJvYcCUIFg5QHbPBB8o3cqSoaiJUMxz3Bk+6wvZEhdPnn7mUCPmmX1XDgSAbDbkBJObjIw3RmJpGkAois7KS@vger.kernel.org
-X-Gm-Message-State: AOJu0YyVw2vn1u3Hbwk0E58pJvGTMQE2jzjCwzT73nUkVHxeMGJq2AWo
-	BUefGIFo2Qukpw1QqYhN2KaaR0HHRAaShTK7qistYtL2juAqEpes0wGP6yv16gQ=
-X-Google-Smtp-Source: AGHT+IF4SYJY9kdWkwrKjlAiH5Z+Bn8SZkqEPmKpcyMndgMPRn4H9T8dbqU6Hyt3/gFfCCmMTdbpdA==
-X-Received: by 2002:a05:6870:ab0b:b0:287:1b05:297d with SMTP id 586e51a60fabf-2962e01ad0dmr10557378fac.33.1731941400385;
-        Mon, 18 Nov 2024 06:50:00 -0800 (PST)
-Received: from [192.168.1.116] ([96.43.243.2])
-        by smtp.gmail.com with ESMTPSA id 586e51a60fabf-29651852c27sm2626597fac.2.2024.11.18.06.49.59
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Nov 2024 06:49:59 -0800 (PST)
-Message-ID: <c54063db-5f82-46d6-ba7b-5e4a0073ebf9@kernel.dk>
-Date: Mon, 18 Nov 2024 07:49:58 -0700
+	s=arc-20240116; t=1731946930; c=relaxed/simple;
+	bh=YNsoVdDw3FxjfwVj914B4fYLVRFn48fpEiX+GY1HOXw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZR735GU755L6ApOiF54Lg9JYLwYTNYsHqLLW9IKFGpONrMuO/OPi/ag/+i/Je+enVC5hFtOlG1b6RxAmAqWNvWRJvP1Hxwv74Sd/2ZRCouCmOc/z9LKHM44NFueyX2CGpSfzKRUPwKJelLA5Xno1eLdcy61h1AAFSPx10/C6S5k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tlfjx/2h; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D6959C4CECC;
+	Mon, 18 Nov 2024 16:22:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1731946929;
+	bh=YNsoVdDw3FxjfwVj914B4fYLVRFn48fpEiX+GY1HOXw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=tlfjx/2hkz6OS5C2EKcxFlftNq5poUeKzxK8PqW3AJrnX40OQWvQw2Y0AdcOTa1h+
+	 0vWh22+BvODpr9KM5kpiGdJFzu7ir3aq3f6Lwl05IN05XGJJ9tLiZTMEwU78uUnS7m
+	 EYifk3BPxH1p/Al7scemokzvD+qa3Plmw/WxtNC3K7KYPMaWhM1MJVFJHqdnO8PYKE
+	 fdhNM2Ysc7lvigHDMUBfqsusd2FztOfZpIuJZosQgfniY+RLcOKmbKgwReAZU0ngtM
+	 NvvLOj8OL8bXWNu0a1i690Be7YrMJSWeopdj4mwyzR+lboCsbmqVXSJTeTC5cWf6Gd
+	 FZA6z6n5Wtb/Q==
+Date: Mon, 18 Nov 2024 08:22:09 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Nirjhar Roy <nirjhar@linux.ibm.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, zlang@kernel.org
+Subject: Re: [PATCH v2 2/2] generic: Addition of new tests for extsize hints
+Message-ID: <20241118162209.GH9425@frogsfrogsfrogs>
+References: <cover.1731597226.git.nirjhar@linux.ibm.com>
+ <373a7e378ba4a76067dc7da5835ac722248144f9.1731597226.git.nirjhar@linux.ibm.com>
+ <20241115165054.GF9425@frogsfrogsfrogs>
+ <c6ca5784-de55-43ec-ba6a-3afbf6b2aa53@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/17] mm/filemap: make buffered writes work with
- RWF_UNCACHED
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, hannes@cmpxchg.org,
- clm@meta.com, linux-kernel@vger.kernel.org, willy@infradead.org,
- kirill@shutemov.name, linux-btrfs@vger.kernel.org,
- linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, bfoster@redhat.com,
- Yang Erkun <yangerkun@huawei.com>
-References: <20241114152743.2381672-2-axboe@kernel.dk>
- <20241114152743.2381672-12-axboe@kernel.dk>
- <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <01fadf73-6b0f-44ff-9325-515fae37d968@huawei.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <c6ca5784-de55-43ec-ba6a-3afbf6b2aa53@linux.ibm.com>
 
-On 11/18/24 1:42 AM, Baokun Li wrote:
->> diff --git a/include/linux/fs.h b/include/linux/fs.h
->> index 45510d0b8de0..122ae821989f 100644
->> --- a/include/linux/fs.h
->> +++ b/include/linux/fs.h
->> @@ -2877,6 +2877,11 @@ static inline ssize_t generic_write_sync(struct kiocb *iocb, ssize_t count)
->>                   (iocb->ki_flags & IOCB_SYNC) ? 0 : 1);
->>           if (ret)
->>               return ret;
->> +    } else if (iocb->ki_flags & IOCB_UNCACHED) {
->> +        struct address_space *mapping = iocb->ki_filp->f_mapping;
->> +
->> +        filemap_fdatawrite_range_kick(mapping, iocb->ki_pos,
->> +                          iocb->ki_pos + count);
->>       }
->>   
+On Mon, Nov 18, 2024 at 02:54:06PM +0530, Nirjhar Roy wrote:
 > 
-> Hi Jens,
+> On 11/15/24 22:20, Darrick J. Wong wrote:
+> > On Fri, Nov 15, 2024 at 09:45:59AM +0530, Nirjhar Roy wrote:
+> > > This commit adds new tests that checks the behaviour of xfs/ext4
+> > > filesystems when extsize hint is set on file with inode size as 0, non-empty
+> > > files with allocated and delalloc extents and so on.
+> > > Although currently this test is placed under tests/generic, it
+> > > only runs on xfs and there is an ongoing patch series[1] to enable
+> > > extsize hints for ext4 as well.
+> > > 
+> > > [1] https://lore.kernel.org/linux-ext4/cover.1726034272.git.ojaswin@linux.ibm.com/
+> > > 
+> > > Reviewed-by Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> > > Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > > Suggested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > > Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
+> > > ---
+> > >   tests/generic/366     | 172 ++++++++++++++++++++++++++++++++++++++++++
+> > >   tests/generic/366.out |  26 +++++++
+> > >   2 files changed, 198 insertions(+)
+> > >   create mode 100755 tests/generic/366
+> > >   create mode 100644 tests/generic/366.out
+> > > 
+> > > diff --git a/tests/generic/366 b/tests/generic/366
+> > > new file mode 100755
+> > > index 00000000..7ff4e8e2
+> > > --- /dev/null
+> > > +++ b/tests/generic/366
+> > > @@ -0,0 +1,172 @@
+> > > +#! /bin/bash
+> > > +# SPDX-License-Identifier: GPL-2.0
+> > > +# Copyright (c) 2024 Nirjhar Roy (nirjhar@linux.ibm.com).  All Rights Reserved.
+> > > +#
+> > > +# FS QA Test 366
+> > > +#
+> > > +# This test verifies that extent allocation hint setting works correctly on files with
+> > > +# no extents allocated and non-empty files which are truncated. It also checks that the
+> > > +# extent hints setting fails with non-empty file i.e, with any file with allocated
+> > > +# extents or delayed allocation. We also check if the extsize value and the
+> > > +# xflag bit actually got reflected after setting/re-setting the extsize value.
+> > > +
+> > > +. ./common/config
+> > > +. ./common/filter
+> > > +. ./common/preamble
+> > > +
+> > > +_begin_fstest ioctl quick
+> > > +
+> > > +_supported_fs xfs
+> > Aren't you all adding extsize support for ext4?  I would've expected
+> > some kind of _require_extsize helper to _notrun on filesystems that
+> > don't support it.
+> Yes, this is a good idea. I will try to have something like this. Thank you.
+> > 
+> > > +
+> > > +_fixed_by_kernel_commit "2a492ff66673 \
+> > > +                        xfs: Check for delayed allocations before setting extsize"
+> > > +
+> > > +_require_scratch
+> > > +
+> > > +FILE_DATA_SIZE=1M
+> > > +
+> > > +get_default_extsize()
+> > > +{
+> > > +    if [ -z $1 ] || [ ! -d $1 ]; then
+> > > +        echo "Missing mount point argument for get_default_extsize"
+> > > +        exit 1
+> > > +    fi
+> > > +    $XFS_IO_PROG -c "extsize" "$1" | sed 's/^\[\([0-9]\+\)\].*/\1/'
+> > Doesn't this need to check for extszinherit on $SCRATCH_MNT?
 > 
-> The filemap_fdatawrite_range_kick() helper function is not added until
-> the next patch, so you should swap the order of patch 10 and patch 11.
+> The above function tries to get the default extsize set on a directory
+> ($SCRATCH_MNT for this test). Even if there is an extszinherit set or
+> extsize (with -d extsize=<size> [1]), the function will get the extsize (in
+> bytes) which is what the function intends to do. In case there is
+> no extszinherit or extsize set on the directory, it will return 0.  Does
+> this answer your question, or are you asking something else?
+> 
+> [1]
+> https://lore.kernel.org/all/20230929095342.2976587-7-john.g.garry@oracle.com/
 
-Ah thanks, not sure how I missed that. I'll swap them for the next
-posting, and also do a basic bisection test just to ensure I did't do
-more of those...
+Nah, I think I got confused there.  Disregard the question. :(
 
--- 
-Jens Axboe
+> > 
+> > > +}
+> > > +
+> > > +filter_extsz()
+> > > +{
+> > > +    sed "s/\[$1\]/\[EXTSIZE\]/g"
+> > > +}
+> > > +
+> > > +setup()
+> > > +{
+> > > +    _scratch_mkfs >> "$seqres.full"  2>&1
+> > > +    _scratch_mount >> "$seqres.full" 2>&1
+> > > +    BLKSZ=`_get_block_size $SCRATCH_MNT`
+> > > +    DEFAULT_EXTSIZE=`get_default_extsize $SCRATCH_MNT`
+> > > +    EXTSIZE=$(( BLKSZ*2 ))
+> > > +    # Making sure the new extsize is not the same as the default extsize
+> > Er... why?
+> The test behaves a bit differently when the new and old extsizes are equal
+> and the intention of this test is to check if the kernel behaves as expected
+> when we are trying to *change* the extsize. Two of the sub-tests
+> (test_data_delayed(), test_data_allocated()) test whether extsize settting
+> fails if there are allocated extents or delayed allocation. The failure
+> doesn't take place when the new and the default extsizes are equal, i.e,
+> when the extsize is not changing. If the default and the new extsize are
+> equal, the xfs_io command succeeds, which is not what we want the test to
+> do. So we are always ensuring that the new extsize is not equal to the
+> default extsize. Does this answer your question?
+
+Yep.  Can you add that ("Make sure the new extsize is not the same as
+the default extsize so that we can observe it changing") to the comment?
+
+> > > +    [[ "$DEFAULT_EXTSIZE" -eq "$EXTSIZE" ]] && EXTSIZE=$(( BLKSZ*4 ))
+> > > +}
+> > > +
+> > > +read_file_extsize()
+> > > +{
+> > > +    $XFS_IO_PROG -c "extsize" $1 | _filter_scratch | filter_extsz $2
+> > > +}
+> > > +
+> > > +check_extsz_and_xflag()
+> > > +{
+> > > +    local filename=$1
+> > > +    local extsize=$2
+> > > +    read_file_extsize $filename $extsize
+> > > +    _test_fsx_xflags_field $filename "e" && echo "e flag set" || echo "e flag unset"
+> > I almost asked in the last patch if the _test_fsxattr_flag function
+> > should be running xfs_io -c 'stat -v' so that you could grep for whole
+> > words instead of individual letters.
+> > 
+> > "extsize flag unset"
+> > 
+> > "cowextsize flag set"
+> > 
+> > is a bit easier to figure out what's going wrong.
+> > 
+> > The rest of the logic looks reasonable to me.
+> > 
+> > --D
+> 
+> Yes, that makes sense. So do you mean something like the following?
+> 
+> # Check whether a fsxattr xflags name ($2) field is set on a given file
+> ($1).
+> # e.g, fsxattr.xflags = 0x80000800 [extsize, has-xattr]
+> _test_fsxattr_flag_field()
+> {
+>     grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+> }
+> 
+> and the call sites can be like
+> 
+> _test_fsx_xflags_field $filename "extsize" && echo "e flag set" || echo "e
+> flag unset"
+> 
+> THE OTHER OPTION IS:
+> 
+> We can embed the "<flag name> flag set/unset" message, inside the
+> _test_fsx_xflags_field() function. Something like
+> 
+> _test_fsxattr_flag_field()
+> {
+>     grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+> && echo "$2 flag set" || echo "$2 flag unset"
+> }
+> 
+> Which one do you prefer?
+
+You might as well go for this second form since that's how all the
+callers behave.
+
+--D
+
+> > 
+> > > +}
+> > > +
+> > > +check_extsz_xflag_across_remount()
+> > > +{
+> > > +    local filename=$1
+> > > +    local extsize=$2
+> > > +    _scratch_cycle_mount
+> > > +    check_extsz_and_xflag $filename $extsize
+> > > +}
+> > > +
+> > > +# Extsize flag should be cleared when extsize is reset, so this function
+> > > +# checks that this behavior is followed.
+> > > +reset_extsz_and_recheck_extsz_xflag()
+> > > +{
+> > > +    local filename=$1
+> > > +    echo "Re-setting extsize hint to 0"
+> > > +    $XFS_IO_PROG -c "extsize 0" $filename
+> > > +    check_extsz_xflag_across_remount $filename "0"
+> > > +}
+> > > +
+> > > +check_extsz_xflag_before_and_after_reset()
+> > > +{
+> > > +    local filename=$1
+> > > +    local extsize=$2
+> > > +    check_extsz_xflag_across_remount $filename $extsize
+> > > +    reset_extsz_and_recheck_extsz_xflag $filename
+> > > +}
+> > > +
+> > > +test_empty_file()
+> > > +{
+> > > +    echo "TEST: Set extsize on empty file"
+> > > +    local filename=$1
+> > > +    $XFS_IO_PROG \
+> > > +        -c "open -f $filename" \
+> > > +        -c "extsize $EXTSIZE" \
+> > > +
+> > > +    check_extsz_xflag_before_and_after_reset $filename $EXTSIZE
+> > > +    echo
+> > > +}
+> > > +
+> > > +test_data_delayed()
+> > > +{
+> > > +    echo "TEST: Set extsize on non-empty file with delayed allocation"
+> > > +    local filename=$1
+> > > +    $XFS_IO_PROG \
+> > > +        -c "open -f $filename" \
+> > > +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
+> > > +        -c "extsize $EXTSIZE" | _filter_scratch
+> > > +
+> > > +    echo "test for default extsize setting if any"
+> > > +    read_file_extsize $filename $DEFAULT_EXTSIZE
+> > > +    echo
+> > > +}
+> > > +
+> > > +test_data_allocated()
+> > > +{
+> > > +    echo "TEST: Set extsize on non-empty file with allocated extents"
+> > > +    local filename=$1
+> > > +    $XFS_IO_PROG \
+> > > +        -c "open -f $filename" \
+> > > +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
+> > > +        -c "extsize $EXTSIZE" | _filter_scratch
+> > > +
+> > > +    echo "test for default extsize setting if any"
+> > > +    read_file_extsize $filename $DEFAULT_EXTSIZE
+> > > +    echo
+> > > +}
+> > > +
+> > > +test_truncate_allocated()
+> > > +{
+> > > +    echo "TEST: Set extsize after truncating a file with allocated extents"
+> > > +    local filename=$1
+> > > +    $XFS_IO_PROG \
+> > > +        -c "open -f $filename" \
+> > > +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
+> > > +        -c "truncate 0" \
+> > > +        -c "extsize $EXTSIZE" \
+> > > +
+> > > +    check_extsz_xflag_across_remount $filename $EXTSIZE
+> > > +    echo
+> > > +}
+> > > +
+> > > +test_truncate_delayed()
+> > > +{
+> > > +    echo "TEST: Set extsize after truncating a file with delayed allocation"
+> > > +    local filename=$1
+> > > +    $XFS_IO_PROG \
+> > > +        -c "open -f $filename" \
+> > > +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
+> > > +        -c "truncate 0" \
+> > > +        -c "extsize $EXTSIZE" \
+> > > +
+> > > +    check_extsz_xflag_across_remount $filename $EXTSIZE
+> > > +    echo
+> > > +}
+> > > +
+> > > +setup
+> > > +echo -e "EXTSIZE = $EXTSIZE DEFAULT_EXTSIZE = $DEFAULT_EXTSIZE BLOCKSIZE = $BLKSZ\n" >> "$seqres.full"
+> > > +
+> > > +NEW_FILE_NAME_PREFIX=$SCRATCH_MNT/new-file-
+> > > +
+> > > +test_empty_file "$NEW_FILE_NAME_PREFIX"00
+> > > +test_data_delayed "$NEW_FILE_NAME_PREFIX"01
+> > > +test_data_allocated "$NEW_FILE_NAME_PREFIX"02
+> > > +test_truncate_allocated "$NEW_FILE_NAME_PREFIX"03
+> > > +test_truncate_delayed "$NEW_FILE_NAME_PREFIX"04
+> > > +
+> > > +status=0
+> > > +exit
+> > > diff --git a/tests/generic/366.out b/tests/generic/366.out
+> > > new file mode 100644
+> > > index 00000000..cdd2f5fa
+> > > --- /dev/null
+> > > +++ b/tests/generic/366.out
+> > > @@ -0,0 +1,26 @@
+> > > +QA output created by 366
+> > > +TEST: Set extsize on empty file
+> > > +[EXTSIZE] SCRATCH_MNT/new-file-00
+> > > +e flag set
+> > > +Re-setting extsize hint to 0
+> > > +[EXTSIZE] SCRATCH_MNT/new-file-00
+> > > +e flag unset
+> > > +
+> > > +TEST: Set extsize on non-empty file with delayed allocation
+> > > +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-01: Invalid argument
+> > > +test for default extsize setting if any
+> > > +[EXTSIZE] SCRATCH_MNT/new-file-01
+> > > +
+> > > +TEST: Set extsize on non-empty file with allocated extents
+> > > +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-02: Invalid argument
+> > > +test for default extsize setting if any
+> > > +[EXTSIZE] SCRATCH_MNT/new-file-02
+> > > +
+> > > +TEST: Set extsize after truncating a file with allocated extents
+> > > +[EXTSIZE] SCRATCH_MNT/new-file-03
+> > > +e flag set
+> > > +
+> > > +TEST: Set extsize after truncating a file with delayed allocation
+> > > +[EXTSIZE] SCRATCH_MNT/new-file-04
+> > > +e flag set
+> > > +
+> > > -- 
+> > > 2.43.5
+> > > 
+> > > 
+> -- 
+> ---
+> Nirjhar Roy
+> Linux Kernel Developer
+> IBM, Bangalore
+> 
+> 
 
