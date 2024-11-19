@@ -1,112 +1,129 @@
-Return-Path: <linux-ext4+bounces-5258-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5259-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6340F9D2E50
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 19:48:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F6DC9D3095
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 23:37:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 294F4B2C98C
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 18:07:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 63FA728424B
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 22:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 856421D1F44;
-	Tue, 19 Nov 2024 18:07:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B20D51C57A5;
+	Tue, 19 Nov 2024 22:37:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UaiEF/uh"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z5nPWNJJ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67E821D0F63;
-	Tue, 19 Nov 2024 18:07:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDC814A60C;
+	Tue, 19 Nov 2024 22:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732039670; cv=none; b=IijXZ6sX82ArgihpZZOTE5/vCb8QUeACgPdQENldtf1QT+KzA46SE4pjFWZKxgzSDYhZqdlA0iXuzIpheTv7mowqlkAK5wl23xuA9+ehN0RzPSrZSKva3KhY14tMtrGViOHUlzmvnpGRnS82gucltkleq5enYMrNCbCs1NB89Wc=
+	t=1732055829; cv=none; b=Av91t4aJ6i7LALeUDCLFAE/L/mj6ejm1ss7hB6iK70XjcnpnsMBkTIrcMsJFnuBHMpMOR1Zkhg0SidWhiiQnyWi31SmkX/nIHmIZuKPGo0isdGNjnlBChIY2NDCU0R93D62+3433Dg5kjVbqiMdAsWjGNnuP1+nZcUBdQMpZoX0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732039670; c=relaxed/simple;
-	bh=oQF52UOBsgf58DOkdl1sz4LFstivHLwN3+CsZzhtXDg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SqO8crX/izYtRoJWeK+e0fgDPKNpzFjH4fo+JIPL1nu21VHvfJANkxt0HCGoOvsErOwQsLJIFEz0mzdvsuMYPcWEwQ+C8iG0NROmvveVyYt/fitkcVOO2KnAVqKE+uQFe/7bK8n5rvTeicPTyF6oNoyYLUGS2EQULEz5AOl1hao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UaiEF/uh; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2fb56cb61baso36756431fa.1;
-        Tue, 19 Nov 2024 10:07:48 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732039666; x=1732644466; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6q0Eekqr4PrHChR3kf477Bf+y3yz5ioREserDyGSgco=;
-        b=UaiEF/uhfMicRKP+N4IqWJZy4lDp4tKtBDQ06P+zUE5AVIVZ8dE4SJPnF8MlEbT4zT
-         rmVUFw/duwClvO22tL0kNaSxfpo7sb+ly40ZsMYSYh0Qz3H5DdECI0syNo8QE0MC5/in
-         9n6uqUXEFTsfFy/0s/9aZ2j/U4/Jwr81BjLFuqYGOIDQT3puh9ChorJNu07eFWaBBBIw
-         t5/WsFQYb6/FvO4UQBmLprvd3nJRmOKr83Ba1IN8Qd716kFJNxP36bFyGmCZQoWDxtlE
-         BO/sVC8GaZdXbXYC9/OCGNVohb9Y+qMdzbyovlQlZzgGhWepbJ492OyfoBIBkrX2NgE/
-         bdtw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732039666; x=1732644466;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6q0Eekqr4PrHChR3kf477Bf+y3yz5ioREserDyGSgco=;
-        b=S2CfzlTBW6ML41OkYX2z+K71uieNDByWTAPeKjazC8TNbdMr6CJQ48IRRt81WuOISr
-         CXPjxQpVGzGcBD31ddS6rhzvR3yALay72vdZJPhOiwbH7pXWeVq+XOX7DWf+c35K+IbT
-         YxIl5DN/B4tZYBK5lkZ1cA8MUCBU5ABCJn+LCXeTvWjz8PgVWsu2e3jnVytnU5XTQJ7E
-         +jr/35Gsoct9oq3I8RCQY/xN8zxJpsoPWKrpBPvdVGUqHYwXeSAaaC1NotRH7r2vHeDI
-         1/eMk9A7k5tm7sMJA/+OGsYRv9H8D4LjfzI68CNlyGG1UdzaLmquCxUohiEc25fmQ2el
-         I07Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVH/CGW7a71her8rkS0rnYd8yd2GQGG/Ydvp6XjbAWX0IdyRTj9qhbZTEnRPSpCsDKTrP9gNOsn+5NB@vger.kernel.org, AJvYcCVpiNJAuKkSa8b5pP9+sM28WWvvTcbtktUka0MZRZPAuTO/JBL7kRf64G9zkrT6gAK8EIBcS1W6dy8OiQ9Z@vger.kernel.org, AJvYcCXL5aXOg8GXIMNwRdYbB77z5RErzvmSFQtcac0O8UBcBNb2QP9PG10I+IiAUx7lFYG4idmkO2GFxqIzPbLm7A==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzMEJDWN0a2i7b9CiruyT+cLAbEk03XPtKVMutfXax9Ue9PVB10
-	KEq7VwsQEwney/9d3nd6VmEUnM8DOIhnta8hvHXY9C+1+impsUbwQ5ZsB2gZWkY7QOGwgrVKpY7
-	sQ8/Tkz+xrycdpcuM1itOq2TEej0=
-X-Google-Smtp-Source: AGHT+IHdqoConUqClj8wLIM0mBnQdxHrbtF0Di+KOTfg36XQ9fCzKrtjZchTS75uFzJMILm9d1Yqc4hTdgQdLeKqdac=
-X-Received: by 2002:a2e:b88e:0:b0:2fb:59dc:735a with SMTP id
- 38308e7fff4ca-2ff607494aemr69833731fa.41.1732039666148; Tue, 19 Nov 2024
- 10:07:46 -0800 (PST)
+	s=arc-20240116; t=1732055829; c=relaxed/simple;
+	bh=8SGBCu5mk0sL2logKWtPMFKSLOyMLJxNXDLYRrrVOxo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=J7/gQaKYUc+ise8nnaN35t3uEss1nTHfxJ9WBIw7zB1CWunIf9y6GpeWM5y/rPo68nPMg/MazfsYnanBN0flHxNSD+60qbE1Viu7tQOhSX+nj7I6fI/g35chx3caJlxSP+Hg7pbpW2OYh4kI+fAd9akphrSS9Gr9WWMNVQ4MO5E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z5nPWNJJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9F75C4CED2;
+	Tue, 19 Nov 2024 22:37:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732055829;
+	bh=8SGBCu5mk0sL2logKWtPMFKSLOyMLJxNXDLYRrrVOxo=;
+	h=Date:From:To:Cc:Subject:From;
+	b=Z5nPWNJJP2EiR6S7xDh0NcwybchT8cFiSuhaUyIjBOn36CH/XH1NAC/bK/I1mPj00
+	 H9B+VH2Lgio7SQUzOpCR7dpSrXjQZoxLslor7ecUGpzpviJVgC0oagjQza8D0eyGfb
+	 fZXLwhAa2/jrMTx3D8C/7le66vwx5+2SnrT83M2c01GFbd34Khj9Lbk1hk9iaiDM9G
+	 3LOJgHPmlBDdca9/gkaI2MyYhLamn/EJUcdnhJnq6OTLqiXIWG2PfigAr2PrgQ1NQ1
+	 izLaCvC0gP4kKcKxe2xxB4mlfaNZILAK9DXl1ayI6aFEnREUmJFo1plvEVIk2+8g0b
+	 ciscHBJ3qK+2g==
+Date: Tue, 19 Nov 2024 16:37:05 -0600
+From: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+To: Theodore Ts'o <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org,
+	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
+	linux-hardening@vger.kernel.org
+Subject: [PATCH][next] ext4: avoid dozens of -Wflex-array-member-not-at-end
+ warnings
+Message-ID: <Zz0TEX3GycUEmISN@kspp>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20241119094555.660666-1-mjguzik@gmail.com> <20241119175355.GB3484088@mit.edu>
-In-Reply-To: <20241119175355.GB3484088@mit.edu>
-From: Mateusz Guzik <mjguzik@gmail.com>
-Date: Tue, 19 Nov 2024 19:07:33 +0100
-Message-ID: <CAGudoHFnwtetYnypHWhS8sODnmcjnRy8VkR-YbV0MP9St3g89g@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] symlink length caching
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: brauner@kernel.org, viro@zeniv.linux.org.uk, jack@suse.cz, 
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, hughd@google.com, 
-	linux-ext4@vger.kernel.org, linux-mm@kvack.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue, Nov 19, 2024 at 6:53=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
-:
->
-> On Tue, Nov 19, 2024 at 10:45:52AM +0100, Mateusz Guzik wrote:
-> >
-> > On my v1 Jan remarked 1.5% is not a particularly high win questioning
-> > whether doing this makes sense. I noted the value is only this small
-> > because of other slowdowns.
->
-> Do you have a workload in mind which calls readlink() at sufficiently
-> high numbers such that this would be noticeable in
-> non-micro-benchmarks?  What motiviated you to do this work?
->
+-Wflex-array-member-not-at-end was introduced in GCC-14, and we
+are getting ready to enable it, globally.
 
-I'm just messing about here. Given the triviality of the patch I'm not
-sure where the objection is coming from. I can point a finger at
-changes made by other people for supposed perf gains which are
-virtually guaranteed to be invisible in isolation, just like this one.
+Use the `DEFINE_RAW_FLEX()` helper for an on-stack definition of
+a flexible structure (`struct shash_desc`) where the size of the
+flexible-array member (`__ctx`) is known at compile-time, and
+refactor the rest of the code, accordingly.
 
-Anyhow, I landed here from strlen -- the sucker is operating one byte
-at a time which I was looking to sort out, but then I noticed that one
-of the more commonly executing consumers does not even need to call
-it.
---=20
-Mateusz Guzik <mjguzik gmail.com>
+So, with these changes, fix 38 of the following warnings:
+
+fs/ext4/ext4.h:2471:35: warning: structure containing a flexible array member is not at the end of another structure [-Wflex-array-member-not-at-end]
+
+Signed-off-by: Gustavo A. R. Silva <gustavoars@kernel.org>
+---
+
+Worth mentioning is that this issue is pretty much the same as this
+other one:
+
+	https://git.kernel.org/linus/2bd9077b6261
+
+Thanks!
+
+ fs/ext4/ext4.h | 20 +++++++++++---------
+ 1 file changed, 11 insertions(+), 9 deletions(-)
+
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 74f2071189b2..edcbe189ff34 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -2460,22 +2460,24 @@ static inline __le16 ext4_rec_len_to_disk(unsigned len, unsigned blocksize)
+ #define DX_HASH_SIPHASH			6
+ #define DX_HASH_LAST 			DX_HASH_SIPHASH
+ 
++#define EXT4_MAX_CHECKSUM_SIZE	4
++
+ static inline u32 ext4_chksum(struct ext4_sb_info *sbi, u32 crc,
+ 			      const void *address, unsigned int length)
+ {
+-	struct {
+-		struct shash_desc shash;
+-		char ctx[4];
+-	} desc;
++	DEFINE_RAW_FLEX(struct shash_desc, desc, __ctx,
++		DIV_ROUND_UP(EXT4_MAX_CHECKSUM_SIZE,
++			     sizeof(*((struct shash_desc *)0)->__ctx)));
+ 
+-	BUG_ON(crypto_shash_descsize(sbi->s_chksum_driver)!=sizeof(desc.ctx));
++	BUG_ON(crypto_shash_descsize(sbi->s_chksum_driver) !=
++		EXT4_MAX_CHECKSUM_SIZE);
+ 
+-	desc.shash.tfm = sbi->s_chksum_driver;
+-	*(u32 *)desc.ctx = crc;
++	desc->tfm = sbi->s_chksum_driver;
++	*(u32 *)desc->__ctx = crc;
+ 
+-	BUG_ON(crypto_shash_update(&desc.shash, address, length));
++	BUG_ON(crypto_shash_update(desc, address, length));
+ 
+-	return *(u32 *)desc.ctx;
++	return *(u32 *)desc->__ctx;
+ }
+ 
+ #ifdef __KERNEL__
+-- 
+2.43.0
+
 
