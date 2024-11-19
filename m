@@ -1,323 +1,446 @@
-Return-Path: <linux-ext4+bounces-5249-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5250-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 922229D1E4B
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 03:31:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 28A249D1EB2
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 04:09:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E8AA2B23556
-	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 02:31:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F66DB237B0
+	for <lists+linux-ext4@lfdr.de>; Tue, 19 Nov 2024 03:09:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF4744642D;
-	Tue, 19 Nov 2024 02:31:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 511A4146000;
+	Tue, 19 Nov 2024 03:08:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jECky/lX"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="KdF0HW6w"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2ADE178C76
-	for <linux-ext4@vger.kernel.org>; Tue, 19 Nov 2024 02:31:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05A8D1448DF;
+	Tue, 19 Nov 2024 03:08:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1731983471; cv=none; b=fMSaAZyh6uJz8lu4qPSEUEla1x7uMdis9SWIBjDPAtthx0zftLfJlvlXNiH5bBjO4Uhj5XRLJPLoYdMjkVLy+BphRcSbCygygQWdx47xTsa4lZowqUBmRxxH/ki+4YR+uz3WpX9TWSafsnSwnux2DXhtO2+CpEyrbHGxRmUqlP8=
+	t=1731985718; cv=none; b=T4q6bnplfgnvZHnxPqNSt3JJ3MfdQ5p6V9BzjnCcA5pgKeHEMpBSHNMbFQHluPtacYpqnQ+Kj1Nmu5zk5exKrq4KA8ni5IoHNJ/mAf6S9diDKSP3eg2ByoThl1xKuFzVqRmm6Xi/CO0B6MDYMhRrehEfJcrNg+ZWiobNikya2GQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1731983471; c=relaxed/simple;
-	bh=309xJU2K2GgCY//RnPXuMplD+PMybYXgBVhj3tDiWzU=;
-	h=Date:From:To:Cc:Subject:Message-ID; b=fkQmRQBOyAOaF851mUdnmitG28feGuqOlIJp3nl1P/x/bsnE2huVJG6Hi4lTy/eR1ZcKdCGdf4C/Vav7wKWCH/x/y2sGgJ8fiRhy0QP8g26gZhsty9heTiVn1MY/jDYFnl8xEM8gUSNAD9OSZDq/72gcm7eGH+uzi7GqykLPvps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jECky/lX; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1731983470; x=1763519470;
-  h=date:from:to:cc:subject:message-id;
-  bh=309xJU2K2GgCY//RnPXuMplD+PMybYXgBVhj3tDiWzU=;
-  b=jECky/lX6f6NC4iocVwCwbR86OVlMp0nYUFn+OTMCADYy0amy6mgXwFE
-   t7pYSfLtRrM1troP9pIpYyd7WRyrpdHynCnMOPLKX0wPNpZGGqP7ZRIzV
-   9nBjMWkCQiDaziZ8saJ6wsGUT+9Sw0kcI5Qr2EJSKfwR9Uf8B9ih2MjEa
-   SdGKRemQ7hsnFDKtNL9nNiS7q9eYEEKhJL50RJycY/iaDdChMsb0poMnx
-   JKynCVC6Aj+mIN1YP2VTRu4FLSkKOHChWYjDoVcDtu+2K1Uc+Friy3YiN
-   W9k1ZS/5PruDSVWkVWCpdI1a8ZaS0+6gBZ/e4PHuq8lfM9+PgcM5QsJC4
-   A==;
-X-CSE-ConnectionGUID: VOm9ZCmjS2e3Wa+TUX3tVw==
-X-CSE-MsgGUID: HImBXh+8QYW09U+dgDValQ==
-X-IronPort-AV: E=McAfee;i="6700,10204,11260"; a="49399520"
-X-IronPort-AV: E=Sophos;i="6.12,165,1728975600"; 
-   d="scan'208";a="49399520"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Nov 2024 18:31:09 -0800
-X-CSE-ConnectionGUID: 52MynLGqTM2aAgEZ/riNDg==
-X-CSE-MsgGUID: U64k5V/xTXamqYhP4w2KZQ==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,165,1728975600"; 
-   d="scan'208";a="120275960"
-Received: from lkp-server02.sh.intel.com (HELO 2cc4542d09d4) ([10.239.97.151])
-  by orviesa002.jf.intel.com with ESMTP; 18 Nov 2024 18:31:07 -0800
-Received: from kbuild by 2cc4542d09d4 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1tDE1B-000027-14;
-	Tue, 19 Nov 2024 02:31:05 +0000
-Date: Tue, 19 Nov 2024 09:46:49 +0800
-From: kernel test robot <lkp@intel.com>
-To: "Theodore Ts'o" <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org
-Subject: [tytso-ext4:test] BUILD SUCCESS
- f2af46ce2a4985e30910574b4b61c96b331aefbb
-Message-ID: <202411190942.G5b8o6cR-lkp@intel.com>
-User-Agent: s-nail v14.9.24
+	s=arc-20240116; t=1731985718; c=relaxed/simple;
+	bh=8ZabNXsDrBcNUZppMyLQtzjqPk8FE9P4vx1WXOCnOrU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=QPbsYm0pUb+nStptT0xhcRsBUhsXFcEOBKYU4nyHEHI0FQnNKhYCahkxyR3qmkwxYilWaOZ51+lQSJOkcjUgu+/DBY5yrxL1ja6psVSZ3RwfusOgymX3fUj7wUx9hDMGcqx07sqelN3acTzE6CXsxKscOXXs5gVO8wWKnQEMfaE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=KdF0HW6w; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AILHgtd020645;
+	Tue, 19 Nov 2024 03:08:33 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=pBrpAm
+	UTaZywMOz9d3Lt2e1QrRuIusKbP6FYSjEZQKs=; b=KdF0HW6wB/+9ZcSv+7fP+9
+	DPma1wpUYNsXpMVt6q25r4DWb1V/Zv/QW0dDjIUn4FHElEzSH98GStv7jlLXZapJ
+	w2dFPrS71U6rz300tBS8Q/rFa+7i6rW2WkAdZrHd65L2dJtNc+qyqxzdX6ig3LRn
+	d8CvTj7V8JE4soPDdcUAqi26nVV5S8/oS/Fs6WyCSxygSPq5W3Xd0WX+ppe82xco
+	mX8dYfHZ2Ru2XoWdutlhN5zg4kOuEHqsUjtqXZ+qaLkUmbd3I8u5MQJUCr/E4Dml
+	W5N3zhot1/if9XHS6B0SF+HfewXyDomE4P59frnfEC9UH6vB5u80D9ZboZ5MY+pw
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42xyu1kbjp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Nov 2024 03:08:32 +0000 (GMT)
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AJ38WGv009930;
+	Tue, 19 Nov 2024 03:08:32 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42xyu1kbjj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Nov 2024 03:08:32 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AJ2FZLA000579;
+	Tue, 19 Nov 2024 03:08:30 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42y77ktt76-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Nov 2024 03:08:30 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AJ38SN353150132
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Nov 2024 03:08:28 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AF16520043;
+	Tue, 19 Nov 2024 03:08:28 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B060C20040;
+	Tue, 19 Nov 2024 03:08:26 +0000 (GMT)
+Received: from [9.39.28.249] (unknown [9.39.28.249])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Nov 2024 03:08:26 +0000 (GMT)
+Message-ID: <be99ea4a-d036-46b3-a16b-a9348487bcc4@linux.ibm.com>
+Date: Tue, 19 Nov 2024 08:38:25 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/2] generic: Addition of new tests for extsize hints
+Content-Language: en-US
+To: "Darrick J. Wong" <djwong@kernel.org>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+        linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+        ojaswin@linux.ibm.com, zlang@kernel.org
+References: <cover.1731597226.git.nirjhar@linux.ibm.com>
+ <373a7e378ba4a76067dc7da5835ac722248144f9.1731597226.git.nirjhar@linux.ibm.com>
+ <20241115165054.GF9425@frogsfrogsfrogs>
+ <c6ca5784-de55-43ec-ba6a-3afbf6b2aa53@linux.ibm.com>
+ <20241118162209.GH9425@frogsfrogsfrogs>
+From: Nirjhar Roy <nirjhar@linux.ibm.com>
+In-Reply-To: <20241118162209.GH9425@frogsfrogsfrogs>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: cKlEHHN_BTFKwDpWIODiiSCtgPXJf8yk
+X-Proofpoint-ORIG-GUID: y-6-mtQENC1lZgNc7xzDxIF8OXEc77k4
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0
+ lowpriorityscore=0 priorityscore=1501 suspectscore=0 impostorscore=0
+ bulkscore=0 spamscore=0 mlxlogscore=999 adultscore=0 mlxscore=0
+ clxscore=1015 phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411190024
 
-tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tytso/ext4.git test
-branch HEAD: f2af46ce2a4985e30910574b4b61c96b331aefbb  Merge branch 'dev' into test
 
-elapsed time: 723m
+On 11/18/24 21:52, Darrick J. Wong wrote:
+> On Mon, Nov 18, 2024 at 02:54:06PM +0530, Nirjhar Roy wrote:
+>> On 11/15/24 22:20, Darrick J. Wong wrote:
+>>> On Fri, Nov 15, 2024 at 09:45:59AM +0530, Nirjhar Roy wrote:
+>>>> This commit adds new tests that checks the behaviour of xfs/ext4
+>>>> filesystems when extsize hint is set on file with inode size as 0, non-empty
+>>>> files with allocated and delalloc extents and so on.
+>>>> Although currently this test is placed under tests/generic, it
+>>>> only runs on xfs and there is an ongoing patch series[1] to enable
+>>>> extsize hints for ext4 as well.
+>>>>
+>>>> [1] https://lore.kernel.org/linux-ext4/cover.1726034272.git.ojaswin@linux.ibm.com/
+>>>>
+>>>> Reviewed-by Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+>>>> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>>>> Suggested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>>>> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
+>>>> ---
+>>>>    tests/generic/366     | 172 ++++++++++++++++++++++++++++++++++++++++++
+>>>>    tests/generic/366.out |  26 +++++++
+>>>>    2 files changed, 198 insertions(+)
+>>>>    create mode 100755 tests/generic/366
+>>>>    create mode 100644 tests/generic/366.out
+>>>>
+>>>> diff --git a/tests/generic/366 b/tests/generic/366
+>>>> new file mode 100755
+>>>> index 00000000..7ff4e8e2
+>>>> --- /dev/null
+>>>> +++ b/tests/generic/366
+>>>> @@ -0,0 +1,172 @@
+>>>> +#! /bin/bash
+>>>> +# SPDX-License-Identifier: GPL-2.0
+>>>> +# Copyright (c) 2024 Nirjhar Roy (nirjhar@linux.ibm.com).  All Rights Reserved.
+>>>> +#
+>>>> +# FS QA Test 366
+>>>> +#
+>>>> +# This test verifies that extent allocation hint setting works correctly on files with
+>>>> +# no extents allocated and non-empty files which are truncated. It also checks that the
+>>>> +# extent hints setting fails with non-empty file i.e, with any file with allocated
+>>>> +# extents or delayed allocation. We also check if the extsize value and the
+>>>> +# xflag bit actually got reflected after setting/re-setting the extsize value.
+>>>> +
+>>>> +. ./common/config
+>>>> +. ./common/filter
+>>>> +. ./common/preamble
+>>>> +
+>>>> +_begin_fstest ioctl quick
+>>>> +
+>>>> +_supported_fs xfs
+>>> Aren't you all adding extsize support for ext4?  I would've expected
+>>> some kind of _require_extsize helper to _notrun on filesystems that
+>>> don't support it.
+>> Yes, this is a good idea. I will try to have something like this. Thank you.
+>>>> +
+>>>> +_fixed_by_kernel_commit "2a492ff66673 \
+>>>> +                        xfs: Check for delayed allocations before setting extsize"
+>>>> +
+>>>> +_require_scratch
+>>>> +
+>>>> +FILE_DATA_SIZE=1M
+>>>> +
+>>>> +get_default_extsize()
+>>>> +{
+>>>> +    if [ -z $1 ] || [ ! -d $1 ]; then
+>>>> +        echo "Missing mount point argument for get_default_extsize"
+>>>> +        exit 1
+>>>> +    fi
+>>>> +    $XFS_IO_PROG -c "extsize" "$1" | sed 's/^\[\([0-9]\+\)\].*/\1/'
+>>> Doesn't this need to check for extszinherit on $SCRATCH_MNT?
+>> The above function tries to get the default extsize set on a directory
+>> ($SCRATCH_MNT for this test). Even if there is an extszinherit set or
+>> extsize (with -d extsize=<size> [1]), the function will get the extsize (in
+>> bytes) which is what the function intends to do. In case there is
+>> no extszinherit or extsize set on the directory, it will return 0.  Does
+>> this answer your question, or are you asking something else?
+>>
+>> [1]
+>> https://lore.kernel.org/all/20230929095342.2976587-7-john.g.garry@oracle.com/
+> Nah, I think I got confused there.  Disregard the question. :(
+>
+>>>> +}
+>>>> +
+>>>> +filter_extsz()
+>>>> +{
+>>>> +    sed "s/\[$1\]/\[EXTSIZE\]/g"
+>>>> +}
+>>>> +
+>>>> +setup()
+>>>> +{
+>>>> +    _scratch_mkfs >> "$seqres.full"  2>&1
+>>>> +    _scratch_mount >> "$seqres.full" 2>&1
+>>>> +    BLKSZ=`_get_block_size $SCRATCH_MNT`
+>>>> +    DEFAULT_EXTSIZE=`get_default_extsize $SCRATCH_MNT`
+>>>> +    EXTSIZE=$(( BLKSZ*2 ))
+>>>> +    # Making sure the new extsize is not the same as the default extsize
+>>> Er... why?
+>> The test behaves a bit differently when the new and old extsizes are equal
+>> and the intention of this test is to check if the kernel behaves as expected
+>> when we are trying to *change* the extsize. Two of the sub-tests
+>> (test_data_delayed(), test_data_allocated()) test whether extsize settting
+>> fails if there are allocated extents or delayed allocation. The failure
+>> doesn't take place when the new and the default extsizes are equal, i.e,
+>> when the extsize is not changing. If the default and the new extsize are
+>> equal, the xfs_io command succeeds, which is not what we want the test to
+>> do. So we are always ensuring that the new extsize is not equal to the
+>> default extsize. Does this answer your question?
+> Yep.  Can you add that ("Make sure the new extsize is not the same as
+> the default extsize so that we can observe it changing") to the comment?
 
-configs tested: 230
-configs skipped: 9
+Yes. I can modify the comment to make it more clear.
 
-The following configs have been built successfully.
-More configs may be tested in the coming days.
+--NR
 
-tested configs:
-alpha                             allnoconfig    gcc-14.2.0
-alpha                            allyesconfig    clang-20
-alpha                            allyesconfig    gcc-14.2.0
-alpha                               defconfig    gcc-14.2.0
-arc                              allmodconfig    clang-20
-arc                               allnoconfig    gcc-14.2.0
-arc                              allyesconfig    clang-20
-arc                                 defconfig    gcc-14.2.0
-arc                        nsimosci_defconfig    clang-15
-arc                   randconfig-001-20241119    gcc-14.2.0
-arc                   randconfig-002-20241119    gcc-14.2.0
-arc                        vdk_hs38_defconfig    clang-20
-arc                    vdk_hs38_smp_defconfig    clang-20
-arm                              allmodconfig    clang-20
-arm                               allnoconfig    gcc-14.2.0
-arm                              allyesconfig    clang-20
-arm                        clps711x_defconfig    clang-15
-arm                                 defconfig    gcc-14.2.0
-arm                          ep93xx_defconfig    clang-20
-arm                            hisi_defconfig    clang-20
-arm                         lpc32xx_defconfig    clang-15
-arm                         nhk8815_defconfig    clang-20
-arm                             pxa_defconfig    clang-20
-arm                   randconfig-001-20241119    gcc-14.2.0
-arm                   randconfig-002-20241119    gcc-14.2.0
-arm                   randconfig-003-20241119    gcc-14.2.0
-arm                   randconfig-004-20241119    gcc-14.2.0
-arm                       spear13xx_defconfig    clang-20
-arm                        spear3xx_defconfig    clang-15
-arm64                            allmodconfig    clang-20
-arm64                             allnoconfig    gcc-14.2.0
-arm64                               defconfig    gcc-14.2.0
-arm64                 randconfig-001-20241119    gcc-14.2.0
-arm64                 randconfig-002-20241119    gcc-14.2.0
-arm64                 randconfig-003-20241119    gcc-14.2.0
-arm64                 randconfig-004-20241119    gcc-14.2.0
-csky                              allnoconfig    gcc-14.2.0
-csky                                defconfig    gcc-14.2.0
-csky                  randconfig-001-20241119    gcc-14.2.0
-csky                  randconfig-002-20241119    gcc-14.2.0
-hexagon                          allmodconfig    clang-20
-hexagon                           allnoconfig    gcc-14.2.0
-hexagon                          allyesconfig    clang-20
-hexagon                             defconfig    gcc-14.2.0
-hexagon               randconfig-001-20241119    gcc-14.2.0
-hexagon               randconfig-002-20241119    gcc-14.2.0
-i386                             alldefconfig    clang-20
-i386                             allmodconfig    clang-19
-i386                             allmodconfig    gcc-12
-i386                              allnoconfig    clang-19
-i386                              allnoconfig    gcc-12
-i386                             allyesconfig    clang-19
-i386                             allyesconfig    gcc-12
-i386        buildonly-randconfig-001-20241118    gcc-12
-i386        buildonly-randconfig-001-20241119    clang-19
-i386        buildonly-randconfig-002-20241118    gcc-12
-i386        buildonly-randconfig-002-20241119    clang-19
-i386        buildonly-randconfig-003-20241118    clang-19
-i386        buildonly-randconfig-003-20241119    clang-19
-i386        buildonly-randconfig-004-20241118    clang-19
-i386        buildonly-randconfig-004-20241119    clang-19
-i386        buildonly-randconfig-005-20241118    gcc-12
-i386        buildonly-randconfig-005-20241119    clang-19
-i386        buildonly-randconfig-006-20241118    gcc-12
-i386        buildonly-randconfig-006-20241119    clang-19
-i386                                defconfig    clang-19
-i386                  randconfig-001-20241118    gcc-12
-i386                  randconfig-001-20241119    clang-19
-i386                  randconfig-002-20241118    gcc-12
-i386                  randconfig-002-20241119    clang-19
-i386                  randconfig-003-20241118    gcc-12
-i386                  randconfig-003-20241119    clang-19
-i386                  randconfig-004-20241118    clang-19
-i386                  randconfig-004-20241119    clang-19
-i386                  randconfig-005-20241118    gcc-12
-i386                  randconfig-005-20241119    clang-19
-i386                  randconfig-006-20241118    gcc-12
-i386                  randconfig-006-20241119    clang-19
-i386                  randconfig-011-20241118    clang-19
-i386                  randconfig-011-20241119    clang-19
-i386                  randconfig-012-20241118    gcc-12
-i386                  randconfig-012-20241119    clang-19
-i386                  randconfig-013-20241118    gcc-12
-i386                  randconfig-013-20241119    clang-19
-i386                  randconfig-014-20241118    gcc-11
-i386                  randconfig-014-20241119    clang-19
-i386                  randconfig-015-20241118    clang-19
-i386                  randconfig-015-20241119    clang-19
-i386                  randconfig-016-20241118    gcc-12
-i386                  randconfig-016-20241119    clang-19
-loongarch                        allmodconfig    gcc-14.2.0
-loongarch                         allnoconfig    gcc-14.2.0
-loongarch                           defconfig    gcc-14.2.0
-loongarch             randconfig-001-20241119    gcc-14.2.0
-loongarch             randconfig-002-20241119    gcc-14.2.0
-m68k                             allmodconfig    gcc-14.2.0
-m68k                              allnoconfig    gcc-14.2.0
-m68k                             allyesconfig    gcc-14.2.0
-m68k                                defconfig    gcc-14.2.0
-m68k                          hp300_defconfig    clang-15
-m68k                       m5208evb_defconfig    clang-20
-m68k                       m5249evb_defconfig    clang-20
-m68k                       m5275evb_defconfig    clang-15
-m68k                        m5307c3_defconfig    clang-20
-m68k                            mac_defconfig    clang-20
-m68k                        mvme147_defconfig    clang-20
-m68k                            q40_defconfig    clang-20
-m68k                          sun3x_defconfig    clang-15
-m68k                           virt_defconfig    clang-15
-microblaze                       allmodconfig    gcc-14.2.0
-microblaze                        allnoconfig    gcc-14.2.0
-microblaze                       allyesconfig    gcc-14.2.0
-microblaze                          defconfig    gcc-14.2.0
-mips                              allnoconfig    gcc-14.2.0
-mips                      bmips_stb_defconfig    clang-20
-mips                           gcw0_defconfig    clang-15
-mips                       rbtx49xx_defconfig    clang-20
-mips                        vocore2_defconfig    clang-15
-nios2                             allnoconfig    gcc-14.2.0
-nios2                               defconfig    gcc-14.2.0
-nios2                 randconfig-001-20241119    gcc-14.2.0
-nios2                 randconfig-002-20241119    gcc-14.2.0
-openrisc                          allnoconfig    clang-20
-openrisc                          allnoconfig    gcc-14.2.0
-openrisc                         allyesconfig    gcc-14.2.0
-openrisc                            defconfig    gcc-12
-parisc                           allmodconfig    gcc-14.2.0
-parisc                            allnoconfig    clang-20
-parisc                            allnoconfig    gcc-14.2.0
-parisc                           allyesconfig    gcc-14.2.0
-parisc                              defconfig    gcc-12
-parisc                randconfig-001-20241119    gcc-14.2.0
-parisc                randconfig-002-20241119    gcc-14.2.0
-parisc64                            defconfig    gcc-14.2.0
-powerpc                    adder875_defconfig    clang-20
-powerpc                          allmodconfig    gcc-14.2.0
-powerpc                           allnoconfig    clang-20
-powerpc                           allnoconfig    gcc-14.2.0
-powerpc                          allyesconfig    gcc-14.2.0
-powerpc                       eiger_defconfig    clang-20
-powerpc                     ep8248e_defconfig    clang-15
-powerpc                     ep8248e_defconfig    clang-20
-powerpc                          g5_defconfig    clang-20
-powerpc                       holly_defconfig    clang-20
-powerpc                      mgcoge_defconfig    clang-15
-powerpc                 mpc836x_rdk_defconfig    clang-15
-powerpc                  mpc885_ads_defconfig    clang-20
-powerpc                     ppa8548_defconfig    clang-15
-powerpc               randconfig-001-20241119    gcc-14.2.0
-powerpc               randconfig-002-20241119    gcc-14.2.0
-powerpc               randconfig-003-20241119    gcc-14.2.0
-powerpc                      tqm8xx_defconfig    clang-20
-powerpc64             randconfig-001-20241119    gcc-14.2.0
-powerpc64             randconfig-002-20241119    gcc-14.2.0
-powerpc64             randconfig-003-20241119    gcc-14.2.0
-riscv                            allmodconfig    gcc-14.2.0
-riscv                             allnoconfig    clang-20
-riscv                             allnoconfig    gcc-14.2.0
-riscv                            allyesconfig    gcc-14.2.0
-riscv                               defconfig    gcc-12
-riscv             nommu_k210_sdcard_defconfig    clang-20
-riscv                 randconfig-001-20241119    gcc-14.2.0
-riscv                 randconfig-002-20241119    gcc-14.2.0
-s390                             allmodconfig    clang-20
-s390                             allmodconfig    gcc-14.2.0
-s390                              allnoconfig    clang-20
-s390                             allyesconfig    gcc-14.2.0
-s390                                defconfig    gcc-12
-s390                  randconfig-001-20241119    gcc-14.2.0
-s390                  randconfig-002-20241119    gcc-14.2.0
-sh                               allmodconfig    gcc-14.2.0
-sh                                allnoconfig    gcc-14.2.0
-sh                               allyesconfig    gcc-14.2.0
-sh                                  defconfig    gcc-12
-sh                             espt_defconfig    clang-20
-sh                 kfr2r09-romimage_defconfig    clang-20
-sh                    randconfig-001-20241119    gcc-14.2.0
-sh                    randconfig-002-20241119    gcc-14.2.0
-sh                           se7712_defconfig    clang-20
-sh                           se7724_defconfig    clang-15
-sh                        sh7763rdp_defconfig    clang-20
-sparc                            allmodconfig    gcc-14.2.0
-sparc64                             defconfig    gcc-12
-sparc64               randconfig-001-20241119    gcc-14.2.0
-sparc64               randconfig-002-20241119    gcc-14.2.0
-um                               allmodconfig    clang-20
-um                                allnoconfig    clang-17
-um                                allnoconfig    clang-20
-um                               allyesconfig    clang-20
-um                               allyesconfig    gcc-12
-um                                  defconfig    gcc-12
-um                             i386_defconfig    clang-15
-um                             i386_defconfig    gcc-12
-um                    randconfig-001-20241119    gcc-14.2.0
-um                    randconfig-002-20241119    gcc-14.2.0
-um                           x86_64_defconfig    gcc-12
-x86_64                            allnoconfig    clang-19
-x86_64                           allyesconfig    clang-19
-x86_64      buildonly-randconfig-001-20241119    gcc-12
-x86_64      buildonly-randconfig-002-20241119    gcc-12
-x86_64      buildonly-randconfig-003-20241119    gcc-12
-x86_64      buildonly-randconfig-004-20241119    gcc-12
-x86_64      buildonly-randconfig-005-20241119    gcc-12
-x86_64      buildonly-randconfig-006-20241119    gcc-12
-x86_64                              defconfig    clang-19
-x86_64                              defconfig    gcc-11
-x86_64                                  kexec    clang-19
-x86_64                randconfig-001-20241119    gcc-12
-x86_64                randconfig-002-20241119    gcc-12
-x86_64                randconfig-003-20241119    gcc-12
-x86_64                randconfig-004-20241119    gcc-12
-x86_64                randconfig-005-20241119    gcc-12
-x86_64                randconfig-006-20241119    gcc-12
-x86_64                randconfig-011-20241119    gcc-12
-x86_64                randconfig-012-20241119    gcc-12
-x86_64                randconfig-013-20241119    gcc-12
-x86_64                randconfig-014-20241119    gcc-12
-x86_64                randconfig-015-20241119    gcc-12
-x86_64                randconfig-016-20241119    gcc-12
-x86_64                randconfig-071-20241119    gcc-12
-x86_64                randconfig-072-20241119    gcc-12
-x86_64                randconfig-073-20241119    gcc-12
-x86_64                randconfig-074-20241119    gcc-12
-x86_64                randconfig-075-20241119    gcc-12
-x86_64                randconfig-076-20241119    gcc-12
-x86_64                               rhel-9.4    clang-19
-x86_64                               rhel-9.4    gcc-12
-xtensa                            allnoconfig    gcc-14.2.0
-xtensa                randconfig-001-20241119    gcc-14.2.0
-xtensa                randconfig-002-20241119    gcc-14.2.0
+>
+>>>> +    [[ "$DEFAULT_EXTSIZE" -eq "$EXTSIZE" ]] && EXTSIZE=$(( BLKSZ*4 ))
+>>>> +}
+>>>> +
+>>>> +read_file_extsize()
+>>>> +{
+>>>> +    $XFS_IO_PROG -c "extsize" $1 | _filter_scratch | filter_extsz $2
+>>>> +}
+>>>> +
+>>>> +check_extsz_and_xflag()
+>>>> +{
+>>>> +    local filename=$1
+>>>> +    local extsize=$2
+>>>> +    read_file_extsize $filename $extsize
+>>>> +    _test_fsx_xflags_field $filename "e" && echo "e flag set" || echo "e flag unset"
+>>> I almost asked in the last patch if the _test_fsxattr_flag function
+>>> should be running xfs_io -c 'stat -v' so that you could grep for whole
+>>> words instead of individual letters.
+>>>
+>>> "extsize flag unset"
+>>>
+>>> "cowextsize flag set"
+>>>
+>>> is a bit easier to figure out what's going wrong.
+>>>
+>>> The rest of the logic looks reasonable to me.
+>>>
+>>> --D
+>> Yes, that makes sense. So do you mean something like the following?
+>>
+>> # Check whether a fsxattr xflags name ($2) field is set on a given file
+>> ($1).
+>> # e.g, fsxattr.xflags = 0x80000800 [extsize, has-xattr]
+>> _test_fsxattr_flag_field()
+>> {
+>>      grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+>> }
+>>
+>> and the call sites can be like
+>>
+>> _test_fsx_xflags_field $filename "extsize" && echo "e flag set" || echo "e
+>> flag unset"
+>>
+>> THE OTHER OPTION IS:
+>>
+>> We can embed the "<flag name> flag set/unset" message, inside the
+>> _test_fsx_xflags_field() function. Something like
+>>
+>> _test_fsxattr_flag_field()
+>> {
+>>      grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+>> && echo "$2 flag set" || echo "$2 flag unset"
+>> }
+>>
+>> Which one do you prefer?
+> You might as well go for this second form since that's how all the
+> callers behave.
+>
+> --D
+>
+>>>> +}
+>>>> +
+>>>> +check_extsz_xflag_across_remount()
+>>>> +{
+>>>> +    local filename=$1
+>>>> +    local extsize=$2
+>>>> +    _scratch_cycle_mount
+>>>> +    check_extsz_and_xflag $filename $extsize
+>>>> +}
+>>>> +
+>>>> +# Extsize flag should be cleared when extsize is reset, so this function
+>>>> +# checks that this behavior is followed.
+>>>> +reset_extsz_and_recheck_extsz_xflag()
+>>>> +{
+>>>> +    local filename=$1
+>>>> +    echo "Re-setting extsize hint to 0"
+>>>> +    $XFS_IO_PROG -c "extsize 0" $filename
+>>>> +    check_extsz_xflag_across_remount $filename "0"
+>>>> +}
+>>>> +
+>>>> +check_extsz_xflag_before_and_after_reset()
+>>>> +{
+>>>> +    local filename=$1
+>>>> +    local extsize=$2
+>>>> +    check_extsz_xflag_across_remount $filename $extsize
+>>>> +    reset_extsz_and_recheck_extsz_xflag $filename
+>>>> +}
+>>>> +
+>>>> +test_empty_file()
+>>>> +{
+>>>> +    echo "TEST: Set extsize on empty file"
+>>>> +    local filename=$1
+>>>> +    $XFS_IO_PROG \
+>>>> +        -c "open -f $filename" \
+>>>> +        -c "extsize $EXTSIZE" \
+>>>> +
+>>>> +    check_extsz_xflag_before_and_after_reset $filename $EXTSIZE
+>>>> +    echo
+>>>> +}
+>>>> +
+>>>> +test_data_delayed()
+>>>> +{
+>>>> +    echo "TEST: Set extsize on non-empty file with delayed allocation"
+>>>> +    local filename=$1
+>>>> +    $XFS_IO_PROG \
+>>>> +        -c "open -f $filename" \
+>>>> +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
+>>>> +        -c "extsize $EXTSIZE" | _filter_scratch
+>>>> +
+>>>> +    echo "test for default extsize setting if any"
+>>>> +    read_file_extsize $filename $DEFAULT_EXTSIZE
+>>>> +    echo
+>>>> +}
+>>>> +
+>>>> +test_data_allocated()
+>>>> +{
+>>>> +    echo "TEST: Set extsize on non-empty file with allocated extents"
+>>>> +    local filename=$1
+>>>> +    $XFS_IO_PROG \
+>>>> +        -c "open -f $filename" \
+>>>> +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
+>>>> +        -c "extsize $EXTSIZE" | _filter_scratch
+>>>> +
+>>>> +    echo "test for default extsize setting if any"
+>>>> +    read_file_extsize $filename $DEFAULT_EXTSIZE
+>>>> +    echo
+>>>> +}
+>>>> +
+>>>> +test_truncate_allocated()
+>>>> +{
+>>>> +    echo "TEST: Set extsize after truncating a file with allocated extents"
+>>>> +    local filename=$1
+>>>> +    $XFS_IO_PROG \
+>>>> +        -c "open -f $filename" \
+>>>> +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
+>>>> +        -c "truncate 0" \
+>>>> +        -c "extsize $EXTSIZE" \
+>>>> +
+>>>> +    check_extsz_xflag_across_remount $filename $EXTSIZE
+>>>> +    echo
+>>>> +}
+>>>> +
+>>>> +test_truncate_delayed()
+>>>> +{
+>>>> +    echo "TEST: Set extsize after truncating a file with delayed allocation"
+>>>> +    local filename=$1
+>>>> +    $XFS_IO_PROG \
+>>>> +        -c "open -f $filename" \
+>>>> +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
+>>>> +        -c "truncate 0" \
+>>>> +        -c "extsize $EXTSIZE" \
+>>>> +
+>>>> +    check_extsz_xflag_across_remount $filename $EXTSIZE
+>>>> +    echo
+>>>> +}
+>>>> +
+>>>> +setup
+>>>> +echo -e "EXTSIZE = $EXTSIZE DEFAULT_EXTSIZE = $DEFAULT_EXTSIZE BLOCKSIZE = $BLKSZ\n" >> "$seqres.full"
+>>>> +
+>>>> +NEW_FILE_NAME_PREFIX=$SCRATCH_MNT/new-file-
+>>>> +
+>>>> +test_empty_file "$NEW_FILE_NAME_PREFIX"00
+>>>> +test_data_delayed "$NEW_FILE_NAME_PREFIX"01
+>>>> +test_data_allocated "$NEW_FILE_NAME_PREFIX"02
+>>>> +test_truncate_allocated "$NEW_FILE_NAME_PREFIX"03
+>>>> +test_truncate_delayed "$NEW_FILE_NAME_PREFIX"04
+>>>> +
+>>>> +status=0
+>>>> +exit
+>>>> diff --git a/tests/generic/366.out b/tests/generic/366.out
+>>>> new file mode 100644
+>>>> index 00000000..cdd2f5fa
+>>>> --- /dev/null
+>>>> +++ b/tests/generic/366.out
+>>>> @@ -0,0 +1,26 @@
+>>>> +QA output created by 366
+>>>> +TEST: Set extsize on empty file
+>>>> +[EXTSIZE] SCRATCH_MNT/new-file-00
+>>>> +e flag set
+>>>> +Re-setting extsize hint to 0
+>>>> +[EXTSIZE] SCRATCH_MNT/new-file-00
+>>>> +e flag unset
+>>>> +
+>>>> +TEST: Set extsize on non-empty file with delayed allocation
+>>>> +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-01: Invalid argument
+>>>> +test for default extsize setting if any
+>>>> +[EXTSIZE] SCRATCH_MNT/new-file-01
+>>>> +
+>>>> +TEST: Set extsize on non-empty file with allocated extents
+>>>> +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-02: Invalid argument
+>>>> +test for default extsize setting if any
+>>>> +[EXTSIZE] SCRATCH_MNT/new-file-02
+>>>> +
+>>>> +TEST: Set extsize after truncating a file with allocated extents
+>>>> +[EXTSIZE] SCRATCH_MNT/new-file-03
+>>>> +e flag set
+>>>> +
+>>>> +TEST: Set extsize after truncating a file with delayed allocation
+>>>> +[EXTSIZE] SCRATCH_MNT/new-file-04
+>>>> +e flag set
+>>>> +
+>>>> -- 
+>>>> 2.43.5
+>>>>
+>>>>
+>> -- 
+>> ---
+>> Nirjhar Roy
+>> Linux Kernel Developer
+>> IBM, Bangalore
+>>
+>>
+-- 
+---
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
 
---
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
