@@ -1,219 +1,225 @@
-Return-Path: <linux-ext4+bounces-5281-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5282-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 90B959D3FDB
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 17:16:42 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE4379D4053
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 17:42:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1A4B91F22ECE
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 16:16:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 585DD1F225D6
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 16:42:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2BDF014BF87;
-	Wed, 20 Nov 2024 16:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9075515535B;
+	Wed, 20 Nov 2024 16:42:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IisjzLSh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6R5ZHaJW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IisjzLSh";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="6R5ZHaJW"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Rn+IhqYI"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 194F713957C;
-	Wed, 20 Nov 2024 16:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 755BD13AA31;
+	Wed, 20 Nov 2024 16:42:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732119391; cv=none; b=H6n/83+GE7tmdIqmnutAW4uqV4cOgIATE/3XrCp3bjI6OhhO5G5yrJ6cOdD/3sNp99wVwGqbwsMcA3Vyl1HdkQ4INVKRKoXAfq3FCMjsRceSRARnQhhZBLoa/Z1H7rsUy8ui+rZQPeEqpkNNlqschJJXE2EedtbHHIRelZNavyA=
+	t=1732120953; cv=none; b=cqJyD6iVCUVFg10fr+5dEvCqHSjV9g06tPxDSLAgWuFxwTeCMZ3wilbZ87jLFJZQclcHgLg7c8Tt7sZJjCXHMMgWsPoqhzfCl1Lzhmu/hK5+gGLTdt05bwgi4zShe0dZ2EN6/jap2WF+J1GAOODHx5nJIthvz45CbJ8JKa330Ns=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732119391; c=relaxed/simple;
-	bh=2zJoHAyB8rvbnBz3xn6o2akF7IGLbhyjd5tgXI0WmMc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OdJqwuxjD3PEIeq30X8MwJHhQKhYe3h2HElN7xsffsMk/Q82mu40hY3TETo92VbOsU/n2Vwup1LlIwo88UFG4RwuVv2IApAAW/KwVJQBWw4+NRzJhlzIDZtSk3aO2ea6fJbdlhWLwlN0myFGIFucr8MhkUTYOlu0LBu/bn8SGVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IisjzLSh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6R5ZHaJW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IisjzLSh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=6R5ZHaJW; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 3BF2C219B3;
-	Wed, 20 Nov 2024 16:16:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732119388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=IisjzLShbwz7Pj1uEHoXXbbKY/Uieu+EWXzK2LpFMn4x55huJksMH4KvC7c+Np7thb9Xr1
-	fyflW0FGhu7K87I8XIMxRAcsmSwUZuQIfOZYJcuzS0Y8Duqb9zOTXRhBJpNGObZqt55a5v
-	moGTA+2Dl+1jTxPMDLtVPvKuuVxBBVs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732119388;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=6R5ZHaJWwGwfgTvxo4AQbJvD7X9Zi+P7MjsUD+TAY0+NTfvSIhPtg1ebrUKTKC/8WB/xup
-	sy6+m4iFeMkFt3CQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732119388; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=IisjzLShbwz7Pj1uEHoXXbbKY/Uieu+EWXzK2LpFMn4x55huJksMH4KvC7c+Np7thb9Xr1
-	fyflW0FGhu7K87I8XIMxRAcsmSwUZuQIfOZYJcuzS0Y8Duqb9zOTXRhBJpNGObZqt55a5v
-	moGTA+2Dl+1jTxPMDLtVPvKuuVxBBVs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732119388;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Wz13sx0cDR8noJSoNQ/P4iPjmJ9JKdZOk5KjfUWLOnk=;
-	b=6R5ZHaJWwGwfgTvxo4AQbJvD7X9Zi+P7MjsUD+TAY0+NTfvSIhPtg1ebrUKTKC/8WB/xup
-	sy6+m4iFeMkFt3CQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B0B1137CF;
-	Wed, 20 Nov 2024 16:16:28 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id WrvrCVwLPmdEUwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 20 Nov 2024 16:16:28 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id C9B38A08A2; Wed, 20 Nov 2024 17:16:23 +0100 (CET)
-Date: Wed, 20 Nov 2024 17:16:23 +0100
-From: Jan Kara <jack@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org, torvalds@linux-foundation.org,
-	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 09/19] fsnotify: generate pre-content permission event
- on truncate
-Message-ID: <20241120161623.brmiiggtwcvcre3u@quack3>
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <23af8201db6ac2efdea94f09ab067d81ba5de7a7.1731684329.git.josef@toxicpanda.com>
- <20241120152340.gu7edmtm2j3lmxoy@quack3>
- <CAOQ4uxiyAU7n4w-BMZx9gzL_DTeKMPkBOy9OZzZYEsqkMHWAGw@mail.gmail.com>
+	s=arc-20240116; t=1732120953; c=relaxed/simple;
+	bh=e6Qp6oBiUPlSxswotyKcOIKoPUzbc+hiUUbCKuI7KJQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Yj4BNbrtdixuKZKJMN9J9ripDDvkQC7lJAYNYvmDKq3liglJyecQpkzoUM8ViddC4q564yqnzPD3w6/bTw898fcqaDsozjFke2lym4Ep0pkAKVYsp4sRdnSF205lo+96BhZOlEEeiTzlho5NLTWyuMRCye/jV6W5AGO2RKntFts=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Rn+IhqYI; arc=none smtp.client-ip=209.85.218.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-aa20c733e92so790253566b.0;
+        Wed, 20 Nov 2024 08:42:31 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732120950; x=1732725750; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FcZ/qVRFrTrPsl9wheVLwLdCEZFphqCBC9fFa8ajopI=;
+        b=Rn+IhqYIelFUFS4Ba9qF2KaHYhSTlMazRmz2eDXyIF8HDyk+2i68a9a9Jms4TMmk88
+         XvmuaYoTh4eSINxAk90HQNpuJyeOm9dTqEq31991gVVDroMKZ8Xr05HNg/tPWiTxYhlv
+         p0TTLkgBVXscG9XfjpLrvAOKNCrJIo0FOtCXRlMSec7jIVGZKeBWcFG8AxRKyfrtMR1z
+         0bUDbA67qoeglVJLK2DVyUF0auIFV9arKEi0aAnJgEC37wa5zvATpIiaWUUiJZ8tcOnZ
+         2DT6y54FssCwPBjIaVjHSsF22AYMO9MzDVvnVupWNb4iszAX3wdaLOk8RUYtffo/P+1r
+         4rew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732120950; x=1732725750;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FcZ/qVRFrTrPsl9wheVLwLdCEZFphqCBC9fFa8ajopI=;
+        b=SAOX9tXveKUZQNBpo7lqbpvvRfVQz8PHvhx07VsJqjCv0JLYjw+ZshSrL2Vzmukn2M
+         8+OIb4mS0wGcJY9w31CO0RL43tf7GUsW5399QCDbLPM7sbrcqa+YV8AQ9fMJNzCaEs1R
+         c4O5IQQS/viB6LkB4XnSpRqux744Vh9JaT10+cqN4GMdNoGGDj1YJpzRYzZt/vB8pIzv
+         3NW6orJXg9GKudEkRMvTTAaU5Ex7NXnKBq/V/hqwjyEsJg5uIxRCJs8bxJjSgZl4il19
+         ld59qGi8oNzVaITThSFwcbtoioc3mA20oUICVROsp1R4fensG5/nEKKEB6QsfBygMhIN
+         eGYQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUCJrxx/UO8AarXyVeUrdEdXelSBtQw4UXXmXWyJHVCPNs7sf/MjllFQY0aBQsHak/82vh+hyBYvEGI2A==@vger.kernel.org, AJvYcCUKr1asp09UT8qC4sQrnzYsnzl37tGnjA0AJS8rL8wCeh5+e/zHNoxb3+dNYhk0I05IDjrhlO3bYeKu@vger.kernel.org, AJvYcCWKUmgVmUSZluqWuXefdQjW68HyOmaRD5JMLN8kyb1VMpYdK+LlTu9xeH5DtRfFhap0Rlu3XHNfle45UA==@vger.kernel.org, AJvYcCWuszp1pjgK7t8XCxE1yxwnazEQ+AAPrOoQTwsQCfi5hnQJ9lbXW2kHymIfDgLbHk5mreRvIQKw76iypto34Q==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzKcVJ9nNpnZhDor/VarQiUKGwWtCLizE56nRwkXDzE4WJZl2XN
+	T4w2wu8nT8IBcmyCisxWOc4HmSXeVtZIBO7bZk1RtphV0hoyXaaLPJikvH518ougGRnx3p17jwf
+	gQEW04Oh/pHhlFUPOfo7QEpB/3lw=
+X-Google-Smtp-Source: AGHT+IESXkPbNLJC+3RMgOX6j+HutEH0kyIIO5eXd31+9oHtDOGVK9zXOmSMvlelO3h+JPf71j6COjp4Ahjs7rPmPGw=
+X-Received: by 2002:a17:906:4793:b0:a99:fb56:39cc with SMTP id
+ a640c23a62f3a-aa4dd71e7famr354632666b.38.1732120949412; Wed, 20 Nov 2024
+ 08:42:29 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxiyAU7n4w-BMZx9gzL_DTeKMPkBOy9OZzZYEsqkMHWAGw@mail.gmail.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-0.998];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-0.998];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_DN_SOME(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+References: <cover.1731684329.git.josef@toxicpanda.com> <2ddcc9f8d1fde48d085318a6b5a889289d8871d8.1731684329.git.josef@toxicpanda.com>
+ <20241120160247.sdvonyxkpmf4wnt2@quack3>
+In-Reply-To: <20241120160247.sdvonyxkpmf4wnt2@quack3>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 20 Nov 2024 17:42:18 +0100
+Message-ID: <CAOQ4uxj4pwH2hfmNL0N=q8-rOF6d=-Z_yWLEwHQ671t1EvRn6A@mail.gmail.com>
+Subject: Re: [PATCH v8 03/19] fsnotify: add helper to check if file is
+ actually being watched
+To: Jan Kara <jack@suse.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
+	linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed 20-11-24 16:57:30, Amir Goldstein wrote:
-> On Wed, Nov 20, 2024 at 4:23 PM Jan Kara <jack@suse.cz> wrote:
+On Wed, Nov 20, 2024 at 5:02=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+>
+> On Fri 15-11-24 10:30:16, Josef Bacik wrote:
+> > From: Amir Goldstein <amir73il@gmail.com>
 > >
-> > On Fri 15-11-24 10:30:22, Josef Bacik wrote:
-> > > From: Amir Goldstein <amir73il@gmail.com>
-> > >
-> > > Generate FS_PRE_ACCESS event before truncate, without sb_writers held.
-> > >
-> > > Move the security hooks also before sb_start_write() to conform with
-> > > other security hooks (e.g. in write, fallocate).
-> > >
-> > > The event will have a range info of the page surrounding the new size
-> > > to provide an opportunity to fill the conetnt at the end of file before
-> > > truncating to non-page aligned size.
-> > >
-> > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> > So far, we set FMODE_NONOTIFY_ flags at open time if we know that there
+> > are no permission event watchers at all on the filesystem, but lack of
+> > FMODE_NONOTIFY_ flags does not mean that the file is actually watched.
 > >
-> > I was thinking about this. One small issue is that similarly as the
-> > filesystems may do RMW of tail page during truncate, they will do RMW of
-> > head & tail pages on hole punch or zero range so we should have some
-> > strategically sprinkled fsnotify_truncate_perm() calls there as well.
-> > That's easy enough to fix.
-> 
-> fallocate already has fsnotify_file_area_perm() hook.
-> What is missing?
-
-Sorry, I've missed that in the patch that was adding it.
-
-> > But there's another problem which I'm more worried about: If we have
-> > a file 64k large, user punches 12k..20k and then does read for 0..64k, then
-> > how does HSM daemon in userspace know what data to fill in? When we'll have
-> > modify pre-content event, daemon can watch it and since punch will send modify
-> > for 12k-20k, the daemon knows the local (empty) page cache is the source of
-> > truth. But without modify event this is just a recipe for data corruption
-> > AFAICT.
+> > To make the flags more accurate we add a helper that checks if the
+> > file's inode, mount, sb or parent are being watched for a set of events=
+.
 > >
-> > So it seems the current setting with access pre-content event has only chance
-> > to work reliably in read-only mode? So we should probably refuse writeable
-> > open if file is being watched for pre-content events and similarly refuse
-> > truncate?
-> 
-> I am confused. not sure I understand the problem.
-> 
-> In the events that you specific, punch hole WILL generate a FS_PRE_ACCESS
-> event for 12k-20k.
-> 
-> When HSM gets a FS_PRE_ACCESS event for 12k-20k it MUST fill the content
-> and keep to itself that 12k-20k is the source of truth from now on.
+> > This is going to be used for setting FMODE_NONOTIFY_HSM only when the
+> > specific file is actually watched for pre-content events.
+> >
+> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+>
+> I did some changes here as well. See below:
+>
+> > -/* Are there any inode/mount/sb objects that are interested in this ev=
+ent? */
+> > -static inline bool fsnotify_object_watched(struct inode *inode, __u32 =
+mnt_mask,
+> > -                                        __u32 mask)
+> > +/* Are there any inode/mount/sb objects that watch for these events? *=
+/
+> > +static inline __u32 fsnotify_object_watched(struct inode *inode, __u32=
+ mnt_mask,
+> > +                                         __u32 events_mask)
+> >  {
+> >       __u32 marks_mask =3D READ_ONCE(inode->i_fsnotify_mask) | mnt_mask=
+ |
+> >                          READ_ONCE(inode->i_sb->s_fsnotify_mask);
+> >
+> > -     return mask & marks_mask & ALL_FSNOTIFY_EVENTS;
+> > +     return events_mask & marks_mask;
+> >  }
+> >
+> > +/* Are there any inode/mount/sb/parent objects that watch for these ev=
+ents? */
+> > +__u32 fsnotify_file_object_watched(struct file *file, __u32 events_mas=
+k)
+> > +{
+> > +     struct dentry *dentry =3D file->f_path.dentry;
+> > +     struct dentry *parent;
+> > +     __u32 marks_mask, mnt_mask =3D
+> > +             READ_ONCE(real_mount(file->f_path.mnt)->mnt_fsnotify_mask=
+);
+> > +
+> > +     marks_mask =3D fsnotify_object_watched(d_inode(dentry), mnt_mask,
+> > +                                          events_mask);
+> > +
+> > +     if (likely(!(dentry->d_flags & DCACHE_FSNOTIFY_PARENT_WATCHED)))
+> > +             return marks_mask;
+> > +
+> > +     parent =3D dget_parent(dentry);
+> > +     marks_mask |=3D fsnotify_inode_watches_children(d_inode(parent));
+> > +     dput(parent);
+> > +
+> > +     return marks_mask & events_mask;
+> > +}
+> > +EXPORT_SYMBOL_GPL(fsnotify_file_object_watched);
+>
+> I find it confusing that fsnotify_object_watched() does not take parent
+> into account while fsnotify_file_object_watched() does. Furthermore the
+> naming doesn't very well reflect the fact we are actually returning a mas=
+k
+> of events. I've ended up dropping this helper (it's used in a single plac=
+e
+> anyway) and instead doing the same directly in file_set_fsnotify_mode().
+>
+> @@ -658,6 +660,27 @@ void file_set_fsnotify_mode(struct file *file)
+>                 file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+>                 return;
+>         }
+> +
+> +       /*
+> +        * OK, there are some pre-content watchers. Check if anybody can =
+be
+> +        * watching for pre-content events on *this* file.
+> +        */
+> +       mnt_mask =3D READ_ONCE(real_mount(file->f_path.mnt)->mnt_fsnotify=
+_mask);
+> +       if (likely(!(dentry->d_flags & DCACHE_FSNOTIFY_PARENT_WATCHED) &&
+> +           !fsnotify_object_watched(d_inode(dentry), mnt_mask,
+> +                                    FSNOTIFY_PRE_CONTENT_EVENTS))) {
+> +               file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+> +               return;
+> +       }
+> +
+> +       /* Even parent is not watching for pre-content events on this fil=
+e? */
+> +       parent =3D dget_parent(dentry);
+> +       p_mask =3D fsnotify_inode_watches_children(d_inode(parent));
+> +       dput(parent);
+> +       if (!(p_mask & FSNOTIFY_PRE_CONTENT_EVENTS)) {
+> +               file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+> +               return;
+> +       }
+>  }
+>
 
-Ah, right. I've got confused and didn't realize we'll be sending FS_PRE_ACCESS
-for 12k-20k. Thanks for clarification!
+Nice!
 
-> The extra FS_PRE_ACCESS event on 0..64k absolutely does not change that.
-> IOW, a FS_PRE_ACCESS event on 0..64k definitely does NOT mean that
-> HSM NEEDS to fill content in 0..64k, it just means that it MAY needs
-> to fill content
-> if it hasn't done that for a range before the event.
-> 
-> To reiterate this important point, it is HSM responsibility to maintain the
->  "content filled map" per file is its own way, under no circumstances it is
-> assumed that fiemap or page cache state has anything to do with the
-> "content filled map".
-> 
-> The *only* thing that HSM can assume if that if its "content filled map"
-> is empty for some range, then page cache is NOT yet populated in that
-> range and that also relies on how HSM and mount are being initialized
-> and exposed to users.
+Note that I had a "hidden motive" for future optimization when I changed
+return value of fsnotify_object_watched() to a mask -
 
-OK, understood and makes sense.
+I figured that while we are doing the checks above, we can check for the
+same price the mask ALL_FSNOTIFY_PERM_EVENTS
+then we get several answers for the same price:
+1. Is the specific file watched by HSM?
+2. Is the specific file watched by open permission events?
+3. Is the specific file watched by post-open FAN_ACCESS_PERM?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+If the answers are No, No, No, we get some extra optimization
+in the (uncommon) use case that there are permission event watchers
+on some random inodes in the filesystem.
+
+If the answers are Yes, Yes, No, or No, Yes, No we can return a special
+value from file_set_fsnotify_mode() to indicate that permission events
+are needed ONLY for fsnotify_open_perm() hook, but not thereafter.
+
+This would implement the semantic change of "respect FAN_ACCESS_PERM
+only if it existed at open time" that can save a lot of unneeded cycles in
+the very hot read/write path, for example, when watcher only cares about
+FAN_OPEN_EXEC_PERM.
+
+I wasn't sure that any of this was worth the effort at this time, but
+just in case
+this gives you ideas of other useful optimizations we can do with the
+object combined marks_mask if we get it for free.
+
+Thanks,
+Amir.
 
