@@ -1,130 +1,120 @@
-Return-Path: <linux-ext4+bounces-5283-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5284-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B8BB69D405D
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 17:44:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0D1DC9D42AC
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 20:48:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A5A1F21074
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 16:44:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B91571F22420
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 19:48:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7E2F157495;
-	Wed, 20 Nov 2024 16:44:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 816191BC9E9;
+	Wed, 20 Nov 2024 19:48:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="KDK50TSC"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FVVchycV"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA67A155C9E;
-	Wed, 20 Nov 2024 16:44:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B35F13C80D;
+	Wed, 20 Nov 2024 19:48:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732121051; cv=none; b=nkhA6qQCO4sDu4Lz975kORcK6i/y8v/v3BIFNst1GAZIbq6sLAw9jfHUlDvEr3E4FO/bIeGxerZlr+j7uDxSvSYq+3Hy8ZbErzoALp/ScizateGMiMDYEyxwcduItbD0EqcEAfDax7FBcQ5/y/siviqrUUU7H0ggcZIId0f7w6M=
+	t=1732132086; cv=none; b=SEut/mMMBJeTh8ehbMx9wOGAzEWzaQtfJOHhBjkqO0CAC/RYSNDeZW2IoYav1fpF/7BuUrQxELlSBkv+JZ3VZ/gCzZ+WjjDHAHuecEirTBpqd+Qwnu7z2j3dkSDXpX5kPGUNVHIowR0nWeiaBRCPAgTbcBJSnTx1VAa/SEVxroY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732121051; c=relaxed/simple;
-	bh=DpSstyBNXehAIdkVgYzcUY0JA+H/10s65svDrFNR7zA=;
+	s=arc-20240116; t=1732132086; c=relaxed/simple;
+	bh=0Lo/kZvQNQE+R2Vx1FWC1P/Kjp3Xt+Dk8cqzo4Z7ln8=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=uKhc/r5PgeN5ovZRGt/67TrP0/WFPeFQD5l5yhyiV9Tacv9RpyEMpBQlLyp7HgbaJ45vdZXjJr9sBSLFbvzd4f6uB2pRO9GIIBJUqNLaO5q5F51plu6ZbGouzEeKvHEWr9AxOSq9cD+4DhSWPd8PXMFscVjbSOTg80/+Yo635Ps=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=KDK50TSC; arc=none smtp.client-ip=209.85.218.53
+	 To:Cc:Content-Type; b=KlXS/uGaYuv+ZMQS+x+dvNaq7ll7N8s6ifTDrbtnRc7qaCD9ObVuNHCaXXFSuVCPIE38qyBTnOxw1WwoY4mw6Kk6D3MtIKomBorZptrj1JSnDNh6qkXpwnPPx2UlzfpsWMU6fGa1CWFePVH9ATjGFmcfGqTcs72Yzzk3Q0QHeNI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FVVchycV; arc=none smtp.client-ip=209.85.208.170
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a9f1d76dab1so1149779266b.0;
-        Wed, 20 Nov 2024 08:44:09 -0800 (PST)
+Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2fb587d0436so1679721fa.2;
+        Wed, 20 Nov 2024 11:48:04 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732121048; x=1732725848; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732132082; x=1732736882; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=rWVEODKI+88+Agjr2ZU2Q9hWiLJ3T/8rKLt5bQ4kjxA=;
-        b=KDK50TSCebJysaOiwXl2i/jfgKWdgn12d6lO9daOAgWJEHadPe7+bckkOFG2PreN67
-         hnUGIf0k7Le/JVDXrjtpxVi2jNl3Qu/HcngiWmr1nzIojLz/lxJgez37LLlcWNcoWMOW
-         LBKaPCTDu6AGEGrSfliG0FRpiu1D0yjxx9vdLLSlOsjCr2eK2ALZ9U9+kNj4c0KQHhg+
-         +Y2CLtEbWnvWproiKyfXyWwKsV6NSniTiXG5usLTJaMQhVW5qvFJixQQhdJkZ9Kt+O2r
-         udObIn1s+4ldwpTRCDO5KSCttPhIrTe9DmxPQdnCpzNjvc8pGk5JRS/iySBaIQeWyPiV
-         1gWg==
+        bh=0Lo/kZvQNQE+R2Vx1FWC1P/Kjp3Xt+Dk8cqzo4Z7ln8=;
+        b=FVVchycVszuMZEM2TF4ezHlGL3pukipQo60hdsBaor8AHwnrgWrPqyUpg2FHooD7VB
+         wX2mgpK2BhrpeC7JOmX88Lhmj8BtQ1tPKGTEude1tMkZo4lt34tlmfbmYXqrGClIFimC
+         bHiOzVfazYqTjXXTo5P1alIC9yRJ+BqEtLcsy3QrfQtUHAWqq3y845fLvDc5Jev0mTr5
+         G+TikZ5VMy62aScDV6CRFEW/9JuewTmuy9L2ZC7B/Sv7K7km7gDKKL54Cc3uREBNp4jP
+         gNhU7zS8pytP9eT92UpUSzeh5gX+8COjYKGs7O3eLGE0Uo60aojxuruVzDrMP4Z9IheH
+         N+bg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732121048; x=1732725848;
+        d=1e100.net; s=20230601; t=1732132082; x=1732736882;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=rWVEODKI+88+Agjr2ZU2Q9hWiLJ3T/8rKLt5bQ4kjxA=;
-        b=abzJ5BrHgs+s4S9zf/SIANU0iK6yXPOzmjjuEUeQl1K6HcnSERZp5nRsMOWbnLRFUu
-         T5aB60BLVpfUOQ1scofNa6xn3xaR+FbD5Q5QzOjJ76lqBE+pwQJSoouuVSi/6swOFsGc
-         2A/tiObVSsXedgNqWAO0kwqWEzdJH9J/A0XSzLuRl9nEfjUpqosqJMBiavXiUIUdTNir
-         1RS/6rJjd3GhEMriyC8eHFex5P5/Fj7evTEFbFP4OHuq3ZkBnBhWONMz7m2PYQVzAafg
-         TpbKCPVVxXtIkvsU3TphepvBOe/vBeWX5u3L/GDkc0akOfysPURIgU+SKi6NJ2rVojPx
-         xZUw==
-X-Forwarded-Encrypted: i=1; AJvYcCUBFgSZhZz4D6rjANww+gC9nMyVYfXj+0qsN3LYqOcSFMjjUm26fqMZibm8gGn1oEPGO5BY8ugOYd6oihj71Q==@vger.kernel.org, AJvYcCUGyYMwNhPUXVhQHy0527yPAudyBpp0nWS51Smu+dnaYInOHUFZyBdPMUdYvXng7ZX2lkbGjhkSvYXguw==@vger.kernel.org, AJvYcCUqDETnSZrnUOTEf6QXpMnUIngzAEucEQAFcZZBmZUgR57SwtP59GoHNCw4EvDYuL4kRNLPLUva3DLERw==@vger.kernel.org, AJvYcCVj+nUHhFdGiEJgw59tcHWcX0yppQEBqxliUqfnqE1O9va3cLXJtuGtLwIf/8bYIAB51Q+juV9Z+iEN@vger.kernel.org
-X-Gm-Message-State: AOJu0YxQ7nLtpH6iEWja+ywJV0c6DayEhIHWCLSQsMH2CBW7vwbUg+s9
-	Mv6nED1wubSWbwc6rXM7zsAi1FJTIu2sAWbYMoU8J1RpUCeCXxkbpVHeLKcUc0Ccb/tiTI7piRG
-	G2f3KCLNpXZSGd8AVidLcAc2N10QDzfNp
-X-Google-Smtp-Source: AGHT+IFRj2qVclJYRDudeqZEjpO92T0D0Sk7p9QgbbdfOz7d553nkrCjYZfuL1UJBGykslPgM/P8DEqHCvh1hl8Y+bU=
-X-Received: by 2002:a17:907:7287:b0:a9e:c446:c284 with SMTP id
- a640c23a62f3a-aa4dd761e13mr357796566b.55.1732121047806; Wed, 20 Nov 2024
- 08:44:07 -0800 (PST)
+        bh=0Lo/kZvQNQE+R2Vx1FWC1P/Kjp3Xt+Dk8cqzo4Z7ln8=;
+        b=AYT3dYe57eQlXOQ7O7N0pPGf6ObIUi5c0VGTsoNjRE7Z7u/7mTVGP3obt377XIbAMs
+         a4azh2J2dzCk7aaQ6Os1ebmWDeLMmUyDVFoyayG6jEnkU24sfw+DvZEH98PJqza4wX4e
+         /FH0YyMa1YpUoaH+mzhIYi0hKtjHJP9bPcojuV83MLKbiVMWOY+jxVm4uRjpiZCIH+nH
+         YbsvsJcLTfs4NyKT7Us0KPwOflmFvGBnJdYKbqLWLgdONeAZ/rpe+im/8G/ZaWQGRjHt
+         U7gnyGoQhpH7pT1lQ+K/KHgBWfRzcvn7nkV59DDqaByD5L6TZuA9hiAW68z1Xqtgd/D5
+         u42w==
+X-Forwarded-Encrypted: i=1; AJvYcCVzY3P2vaXBNrsNEZ8SKulgjLW3YW5mSFUALTywLTghoUgpgIUCngtUsPv5SmJ5h6ylOyiKpSQ3H0EYXXPM@vger.kernel.org, AJvYcCWAZyx9L9QwoF24D3F05lok7tGMhk/APRuJEwvOhyyEIriYwgvoEugASYmnq4uTUO2QaCW3kGJytQU4Nx/WgQ==@vger.kernel.org, AJvYcCX7HmiFdHgaQvqmzoTR6xMKZeNK1d3G2abrvVlQQoo7H1355eKUbTVpAXNbDvV3G3nSijKALjeVH9fQ@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy9MrPwP0/UibSp9rotcC/Ldkk825fDrHg61V5rWgN/8Y2ey/5N
+	aBAWBGkArloWdU7G/sPqSKzPIJZB+UXkbIKenoad2ZvfDGBb07smmCydYLMPWXosg17pbvdMFfW
+	Y4nKKmNgTl5o/5BN6yWflYJft2gDTEo61
+X-Google-Smtp-Source: AGHT+IGTfArAZ13mpiOO2SvdLo5EAkhf22bPd0jLhEBjn43o+OJhGiIsD49VHIWNLOW5OIe+ZoDj5eU36oniMb2Gv4A=
+X-Received: by 2002:a2e:a58c:0:b0:2fb:34dc:7beb with SMTP id
+ 38308e7fff4ca-2ff8dbcc0bemr23118331fa.12.1732132082284; Wed, 20 Nov 2024
+ 11:48:02 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <657f50e37d6d8f908c13f652129bcdd34ed7f4a9.1731684329.git.josef@toxicpanda.com>
- <20241120154448.onc2q5rsusfs4zsm@quack3>
-In-Reply-To: <20241120154448.onc2q5rsusfs4zsm@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 20 Nov 2024 17:43:56 +0100
-Message-ID: <CAOQ4uxjLraeWK78d69DRTpuAWWmaPSaHmi-15hW2KRLES6M4qQ@mail.gmail.com>
-Subject: Re: [PATCH v8 13/19] fanotify: add a helper to check for pre content events
-To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
+References: <20241119094555.660666-1-mjguzik@gmail.com> <20241120-werden-reptil-85a16457b708@brauner>
+ <CAGudoHGOC6to4_nJX9vhWV8HnF19U2xmmZY3Nc0ZbZnyTtGyxw@mail.gmail.com> <20241120-eisbahn-frost-824303fa16d9@brauner>
+In-Reply-To: <20241120-eisbahn-frost-824303fa16d9@brauner>
+From: Mateusz Guzik <mjguzik@gmail.com>
+Date: Wed, 20 Nov 2024 20:47:50 +0100
+Message-ID: <CAGudoHH-asEyPj7CUNF+ApVhRoG1C4tmQYuko1SLNQ0o-LXaaw@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] symlink length caching
+To: Christian Brauner <brauner@kernel.org>
+Cc: viro@zeniv.linux.org.uk, jack@suse.cz, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, hughd@google.com, linux-ext4@vger.kernel.org, 
+	tytso@mit.edu, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 20, 2024 at 4:44=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
+On Wed, Nov 20, 2024 at 12:13=E2=80=AFPM Christian Brauner <brauner@kernel.=
+org> wrote:
 >
-> On Fri 15-11-24 10:30:26, Josef Bacik wrote:
-> > From: Amir Goldstein <amir73il@gmail.com>
-> >
-> > We want to emit events during page fault, and calling into fanotify
-> > could be expensive, so add a helper to allow us to skip calling into
-> > fanotify from page fault.  This will also be used to disable readahead
-> > for content watched files which will be handled in a subsequent patch.
-> >
-> > Signed-off-by: Josef Bacik <josef@toxicpanda.com>
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> > ---
-> >  include/linux/fsnotify.h | 10 ++++++++++
-> >  1 file changed, 10 insertions(+)
-> >
-> > diff --git a/include/linux/fsnotify.h b/include/linux/fsnotify.h
-> > index 08893429a818..d5a0d8648000 100644
-> > --- a/include/linux/fsnotify.h
-> > +++ b/include/linux/fsnotify.h
-> > @@ -178,6 +178,11 @@ static inline void file_set_fsnotify_mode(struct f=
-ile *file)
-> >       }
-> >  }
-> >
-> > +static inline bool fsnotify_file_has_pre_content_watches(struct file *=
-file)
-> > +{
-> > +     return file && unlikely(FMODE_FSNOTIFY_HSM(file->f_mode));
-> > +}
-> > +
+> On Wed, Nov 20, 2024 at 11:42:33AM +0100, Mateusz Guzik wrote:
+> > Interestingly even __read_seqcount_begin (used *twice* in path_init())
+> > is missing one. I sent a patch to fix it long time ago but the
+> > recipient did not respond
 >
-> I was pondering about this and since we are trying to make these quick
-> checks more explicit, I'll probably drop this helper. Also the 'file &&'
-> part looks strange (I understand page_cache_[a]sync_ra() need it but I'd
-> rather handle it explicitely there).
+> I snatched it.
 
-Makes sense.
+Thanks.
 
-Thanks,
-Amir.
+But I have to say having *two* counters to check for each lookup is
+bothering me and making me wonder if they could be unified (or another
+counter added to cover for either of those?)? No clue about
+feasibility, is there a known showstopper?
+
+Both are defined like so:
+__cacheline_aligned_in_smp DEFINE_SEQLOCK(mount_lock);
+__cacheline_aligned_in_smp DEFINE_SEQLOCK(rename_lock);
+
+Suppose nothing can be done to only look at one counter on lookup.
+
+In that case how about combining the suckers into one cacheline at
+least? Sure, this will result in new bounces for threads modifying
+these, but this is relatively infrequent compared to how often lookups
+performed and with these slapped together there will be only one line
+spent on it, instead of two.
+
+Just RFC'ing it here.
+--=20
+Mateusz Guzik <mjguzik gmail.com>
 
