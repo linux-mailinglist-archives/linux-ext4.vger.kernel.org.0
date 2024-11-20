@@ -1,131 +1,125 @@
-Return-Path: <linux-ext4+bounces-5272-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5273-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80CEF9D3965
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 12:22:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EAE09D399C
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 12:37:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3E0DB28475E
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 11:22:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB690B23E6A
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 11:37:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EE7D1A725C;
-	Wed, 20 Nov 2024 11:20:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C98819F436;
+	Wed, 20 Nov 2024 11:37:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OuxapYRL"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4CLpfn8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B32951A265D;
-	Wed, 20 Nov 2024 11:20:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B60199E84;
+	Wed, 20 Nov 2024 11:37:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732101659; cv=none; b=AaPmTkVpV8kdRxZc29AUirzxKtqAg7T0zesnSppoIFpOPUvcCfbngniGLWqq0O3RBgCyyr8KYtA3cRHag6b5IHCnDYNRqsiz1OhODIHTGI7qxAeMMj7qXP5E3dU5CHWSgMEeGNn2WYxwhlhSf7eU+RG4rMjQeJoiK89ewBIyO7w=
+	t=1732102629; cv=none; b=Q+R+pwjLZKy61dfln1mAlcXO328Zh11VvLflW5bNUSHhoPX/cRCNUCo3f/WULN/9XY6QvAajtWyrQqmrRUKvteCzB+6xWF1lXHH74fm7fAYFyc5FhpU6OnJix07WosEfuC8vsDPrF8xSGD+ApdcCYb1ZlT5QcTWp4MAV1Atlleo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732101659; c=relaxed/simple;
-	bh=qsgrmeV4Yho3nXdO/d4sbWEH2Emf8JjJL73+zX9kfF4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=HJXLbS2JiUaOhDtS3ZEAjQFzZdGOU2oM5xkeRkoavVDu9EX2ibvHIBVgEp2tkwymVXQ/dVv1nWcyYQlrhkW6Zh1GmKuI0+TG9we2xjikoRAoYf2zcIDvTO4U5sk2U6jQ4lUc0eNPamrje08FnJBArB68tjlLAKlTSZ6Z5qlMkp4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OuxapYRL; arc=none smtp.client-ip=209.85.208.54
+	s=arc-20240116; t=1732102629; c=relaxed/simple;
+	bh=WXyTkhgO9PBh1mEZg0phtzXcE5QutKufLO4I2F//yo8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jJUpfaHAulu1aBD7eUsrbdbd4K6AFrGkr26esfNb12H4tXcfOUrBLyuBaiBllKnCfYuGCPN+3gcdrtUTOKGWop3dWsEqTXa0LRcBzaXcYZUaE9q9mQLi4SpRnfYbJrnHnd6OkNuIok9NDUMqazAhP5kvy95oVxmTPC3BcF14DhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4CLpfn8; arc=none smtp.client-ip=209.85.218.53
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-5cece886771so1480681a12.0;
-        Wed, 20 Nov 2024 03:20:57 -0800 (PST)
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-aa4cb5fcc06so331208266b.0;
+        Wed, 20 Nov 2024 03:37:06 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732101656; x=1732706456; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1732102625; x=1732707425; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kLyrUQbJ7DreZ+2eCL0QXJjGPutHdXgYXLv04PixPtY=;
-        b=OuxapYRLmv14Kgw/ANAObmnGQH7cSmBx5wpbJQcJToXjSnxuROfy64DKgsNuEcY3IR
-         dWAYPKCcoTjWR0bS0+XQq1lDPkOvQMRPuquYAwstrZ+lLPNbRby3yj+Q7qfCGjmlq+0q
-         liTJrUTvG4iRpbldBQpKvwXLUQ1iM/7vIJTY7J4uhU0HUsqbzyB4AqjGyTGADboyTjhc
-         vB7A8FXYetWOCix/QNJbw0ZLFhI2+su5QSI5CYjvn+LgJbB5hquNkmcUWqqzRZ4rVPoD
-         MjBNHGPT0LoraEwIn4BUK4CepDI3SRuCjU388VM3VawhomLmE5ejcNBNFMBfXlCIeX7D
-         B7Cg==
+        bh=OjBVxK9rXt0t3MRbp/9z40eDvzoHWwNmyXmndFIb6s0=;
+        b=I4CLpfn8a/EoYWZt2sVHzKRZohsqOVFGwNVUIwM3qZE4OuPXxU5HBO9IMMzR3CUaaX
+         z+6Zs24IUQNByA7J57vXqoVWN7F2PaKRyIfSRAwwzseg8T6gBSyalfpJGojEdlCap2ou
+         ptSc9EJoEe4bjz7vZISVh2SxdUF18/M/kO3xVNOdc3N/dG8rqeZL6bsps5BnuoC6VG0n
+         gA2hBcbvRPz2kvjpFdZstyiTM5XiQmNLhJAC87/jLnQcNLjEsobaEonbiVgdmHPKQgQa
+         AFzuR6Y2WmHF2n+l/8iGiLk0LB7VSeohVTnMq7pjWR5rFZWjMrO5DdfkHOy/gDp+F9Jj
+         NleQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732101656; x=1732706456;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1732102625; x=1732707425;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kLyrUQbJ7DreZ+2eCL0QXJjGPutHdXgYXLv04PixPtY=;
-        b=Wwc4qfXhlI+ynskTSn4okKZ8tOzi5KDkXRF7H9U0ClS3aIKuxfI3KE3brwOAEJJiMw
-         Wg6PvO+J96D+mWK7bddm+YcPeVRmm1kwIhJu+tmZDtdxMw06YKG2L7+wiws3ByaATJck
-         6ey051YQ75hASsDitGvCMvAV+jZQtFCcWppFhiVeN8gnvfA/lnzMhbDqs4xmik8V3LL/
-         cko5wNB4Gb3F55uDWy8yFqbJBsuOJqjx+sMLuyr0IUZmKtiN17ZL+30TAzH6Qjhg3Gmr
-         z4X6YAd41dvCKDdJhiNOXhEGk7n8oU0CBtj24HwlKXmUvHCxLj2AzKwaNrPattHomATQ
-         Ypig==
-X-Forwarded-Encrypted: i=1; AJvYcCUEV974YIHjfbf/JHA+PZeue7xmsshhS6qculM/8Vrhnnr7dEqa5VU7JbD/P+HZDOc3qzY3KxgxwesC51aYUg==@vger.kernel.org, AJvYcCVS1a6TQl3BjDe970sAAOo5ShSWitpX+SRJehF+j0HN6t8PQxuVLPSvuySqOIMccXzAwiJRIqef7Tkn@vger.kernel.org, AJvYcCXfocLeHbqK0d+tPNICDioXXoy3T+5fiZVephoIAsyNrVeFdRAKIpK2rJRyAuL8xKtOnDxuCilzFkYFXrft@vger.kernel.org
-X-Gm-Message-State: AOJu0YzUsiMNc+OkBkN9RGhb51pM2bWulG5efSgsJDYghqELbwzgzojX
-	CGCAqTygWikH57exCOY4ltdPkeyUPjy67AAJf3e/VABsEkJN8hx1
-X-Google-Smtp-Source: AGHT+IG7pW3Dxr7KS89kSKjBWsHbI31GbaM1tb6J62zSZ1xqBnHqjvWaYalwKIjlxD/g6vIF9K38rA==
-X-Received: by 2002:a05:6402:320c:b0:5cf:e218:9b08 with SMTP id 4fb4d7f45d1cf-5cfe218aad9mr5811934a12.15.1732101655755;
-        Wed, 20 Nov 2024 03:20:55 -0800 (PST)
-Received: from f.. (cst-prg-93-87.cust.vodafone.cz. [46.135.93.87])
-        by smtp.gmail.com with ESMTPSA id a640c23a62f3a-aa20df5690csm758559566b.75.2024.11.20.03.20.52
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Nov 2024 03:20:55 -0800 (PST)
-From: Mateusz Guzik <mjguzik@gmail.com>
-To: brauner@kernel.org
-Cc: viro@zeniv.linux.org.uk,
-	jack@suse.cz,
-	linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	hughd@google.com,
-	linux-ext4@vger.kernel.org,
-	tytso@mit.edu,
-	linux-mm@kvack.org,
-	Mateusz Guzik <mjguzik@gmail.com>
-Subject: [PATCH v3 3/3] tmpfs: use inode_set_cached_link()
-Date: Wed, 20 Nov 2024 12:20:36 +0100
-Message-ID: <20241120112037.822078-4-mjguzik@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241120112037.822078-1-mjguzik@gmail.com>
-References: <20241120112037.822078-1-mjguzik@gmail.com>
+        bh=OjBVxK9rXt0t3MRbp/9z40eDvzoHWwNmyXmndFIb6s0=;
+        b=SCznlAO20a/47cLyvtT/UvYUEFUiQWQRN77uUs33Wh4AGfjmQebThrJiYcfHlkxeFq
+         PrMqRGLWxTIl+LlO6rCSNzF4Z+QkYEWHeLjTejuIkhExKf3++zmvJldgSIFuq4Zgv5JB
+         2/EfvKv5IFdReIe3If7ObYQ8Y54Ui8rT3zYBxHvRgCTthCxzMhvzp/nvVVeFd0+2yk/e
+         0Lf4aBvLPOwnlVduU1dH3Q8+wGwPQloZmvghXnF3hdOMT9gCXcH/E6J36sMx90Mcxklx
+         DQS33DQj4xKdtOI7FMu4Q/BDB0N+oDuBgyrpz6MgSK7vcoJLcq94t6DpgfZ/hK6u2/yG
+         kGpw==
+X-Forwarded-Encrypted: i=1; AJvYcCUA6ew1aw4LETG0qViZjctLJWBjf3SadiP4rZddd5bfq5dE6qqbBaWwTmwTmz/AsWM+mmWAOWiONi/Vxw==@vger.kernel.org, AJvYcCVcqVLHTc40n42PzzffzSY7aUWodZgA2NtSL0G0sqvTgqQ/VHXsYljKVJu2Q3IHbmo7eUOTmTe6cOg7Qg==@vger.kernel.org, AJvYcCVlqBPKxxq2PGXCMZquiia3u0DtVuDhES/Dn5tKkL9EM4yH9S+R0sySSzZyVCPGq3pIsP9HBiCwV+l4@vger.kernel.org, AJvYcCXiylnulxHtYXgA+KeF7uTVnPhspX+xxRyYNpMRkixHM5DV9v2fO0AIQcm7iAZIaXkXN/T8G2hvOy4e/N4TNw==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzDnsZnC8fET01n7aeRnpYG0H9hYNKD8GThK9bF6qlAKDbR6r2I
+	TlzVp4YlVp3TuA+I4L1c1nCa6NMchUUdXgk1gJxvv0eNCPO/5uBjfssH9sYWNvN3oRDmZ7/j9Re
+	hd5H9eBRTKoJck9LqAFcFMzCWQE8=
+X-Google-Smtp-Source: AGHT+IHwjUZ/D0gPZk+CyMnQLtq/DsFFmkIX1MphMhWMqr5QE96IKENIsI2zKWWf445KGdU4ZCgAOjb0OqPbrvF1gaI=
+X-Received: by 2002:a17:907:7214:b0:a9a:b9d:bd93 with SMTP id
+ a640c23a62f3a-aa4dd52feb6mr214525666b.4.1732102625052; Wed, 20 Nov 2024
+ 03:37:05 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
+ <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
+ <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
+ <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com> <20241120-banditen-nimmersatt-e53c268d893a@brauner>
+In-Reply-To: <20241120-banditen-nimmersatt-e53c268d893a@brauner>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Wed, 20 Nov 2024 12:36:53 +0100
+Message-ID: <CAOQ4uxjwXbpCxo0CetBnWkEHQ-X1MjPS9J2siQfGCqDYNDhZPA@mail.gmail.com>
+Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
+To: Christian Brauner <brauner@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josef Bacik <josef@toxicpanda.com>, 
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
+	linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Mateusz Guzik <mjguzik@gmail.com>
----
- mm/shmem.c | 6 ++++--
- 1 file changed, 4 insertions(+), 2 deletions(-)
+On Wed, Nov 20, 2024 at 12:10=E2=80=AFPM Christian Brauner <brauner@kernel.=
+org> wrote:
+>
+> > But if anybody is really worried about running out of f_mode bits, we
+> > could almost certainly turn the existing
+> >
+> >         unsigned int f_flags;
+> >
+> > into a bitfield, and make it be something like
+> >
+> >         unsigned int f_flags:26, f_special:6;
+>
+> I just saw this now. Two points I would like to keep you to keep mind.
+>
+> I've already mentiond that I've freed up 5 fmode bits so it's not that
+> we're in immediate danger of running out. Especially since I added
+> f_ops_flags which contains all flags that are static, i.e., never change
+> and can simply live in the file operations struct and aren't that
+> performance sensitive.
+>
+> I shrunk struct file to three cachelines. And in fact, we have 8 bytes
+> to use left since I removed f_version. So it really wouldn't be a
+> problem to simply add a separate u32 f_special member into struct file
+> without growing it and still leaving a 4 byte hole if it ever comes to
+> that.
 
-diff --git a/mm/shmem.c b/mm/shmem.c
-index c7881e16f4be..135f38eb2ff1 100644
---- a/mm/shmem.c
-+++ b/mm/shmem.c
-@@ -3868,6 +3868,7 @@ static int shmem_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 	int len;
- 	struct inode *inode;
- 	struct folio *folio;
-+	char *link;
- 
- 	len = strlen(symname) + 1;
- 	if (len > PAGE_SIZE)
-@@ -3889,12 +3890,13 @@ static int shmem_symlink(struct mnt_idmap *idmap, struct inode *dir,
- 
- 	inode->i_size = len-1;
- 	if (len <= SHORT_SYMLINK_LEN) {
--		inode->i_link = kmemdup(symname, len, GFP_KERNEL);
--		if (!inode->i_link) {
-+		link = kmemdup(symname, len, GFP_KERNEL);
-+		if (!link) {
- 			error = -ENOMEM;
- 			goto out_remove_offset;
- 		}
- 		inode->i_op = &shmem_short_symlink_operations;
-+		inode_set_cached_link(inode, link, len - 1);
- 	} else {
- 		inode_nohighmem(inode);
- 		inode->i_mapping->a_ops = &shmem_aops;
--- 
-2.43.0
+That's good to know, but for the record, I ended up using just one
+extra f_mode bit for fsnotify [1].
 
+Thanks,
+Amir.
+
+[1] https://lore.kernel.org/linux-fsdevel/5ea5f8e283d1edb55aa79c35187bfe344=
+056af14.1731684329.git.josef@toxicpanda.com/
 
