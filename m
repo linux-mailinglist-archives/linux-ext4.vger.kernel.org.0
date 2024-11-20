@@ -1,125 +1,140 @@
-Return-Path: <linux-ext4+bounces-5273-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5274-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EAE09D399C
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 12:37:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7AC019D39EA
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 12:51:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DB690B23E6A
-	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 11:37:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1759B29D73
+	for <lists+linux-ext4@lfdr.de>; Wed, 20 Nov 2024 11:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C98819F436;
-	Wed, 20 Nov 2024 11:37:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34F331B5EB0;
+	Wed, 20 Nov 2024 11:48:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="I4CLpfn8"
+	dkim=permerror (0-bit key) header.d=sapience.com header.i=@sapience.com header.b="p+r+nVnF";
+	dkim=pass (2048-bit key) header.d=sapience.com header.i=@sapience.com header.b="GETYacWD"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from s1.sapience.com (s1.sapience.com [72.84.236.66])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39B60199E84;
-	Wed, 20 Nov 2024 11:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732102629; cv=none; b=Q+R+pwjLZKy61dfln1mAlcXO328Zh11VvLflW5bNUSHhoPX/cRCNUCo3f/WULN/9XY6QvAajtWyrQqmrRUKvteCzB+6xWF1lXHH74fm7fAYFyc5FhpU6OnJix07WosEfuC8vsDPrF8xSGD+ApdcCYb1ZlT5QcTWp4MAV1Atlleo=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732102629; c=relaxed/simple;
-	bh=WXyTkhgO9PBh1mEZg0phtzXcE5QutKufLO4I2F//yo8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jJUpfaHAulu1aBD7eUsrbdbd4K6AFrGkr26esfNb12H4tXcfOUrBLyuBaiBllKnCfYuGCPN+3gcdrtUTOKGWop3dWsEqTXa0LRcBzaXcYZUaE9q9mQLi4SpRnfYbJrnHnd6OkNuIok9NDUMqazAhP5kvy95oVxmTPC3BcF14DhE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=I4CLpfn8; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-aa4cb5fcc06so331208266b.0;
-        Wed, 20 Nov 2024 03:37:06 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732102625; x=1732707425; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OjBVxK9rXt0t3MRbp/9z40eDvzoHWwNmyXmndFIb6s0=;
-        b=I4CLpfn8a/EoYWZt2sVHzKRZohsqOVFGwNVUIwM3qZE4OuPXxU5HBO9IMMzR3CUaaX
-         z+6Zs24IUQNByA7J57vXqoVWN7F2PaKRyIfSRAwwzseg8T6gBSyalfpJGojEdlCap2ou
-         ptSc9EJoEe4bjz7vZISVh2SxdUF18/M/kO3xVNOdc3N/dG8rqeZL6bsps5BnuoC6VG0n
-         gA2hBcbvRPz2kvjpFdZstyiTM5XiQmNLhJAC87/jLnQcNLjEsobaEonbiVgdmHPKQgQa
-         AFzuR6Y2WmHF2n+l/8iGiLk0LB7VSeohVTnMq7pjWR5rFZWjMrO5DdfkHOy/gDp+F9Jj
-         NleQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732102625; x=1732707425;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OjBVxK9rXt0t3MRbp/9z40eDvzoHWwNmyXmndFIb6s0=;
-        b=SCznlAO20a/47cLyvtT/UvYUEFUiQWQRN77uUs33Wh4AGfjmQebThrJiYcfHlkxeFq
-         PrMqRGLWxTIl+LlO6rCSNzF4Z+QkYEWHeLjTejuIkhExKf3++zmvJldgSIFuq4Zgv5JB
-         2/EfvKv5IFdReIe3If7ObYQ8Y54Ui8rT3zYBxHvRgCTthCxzMhvzp/nvVVeFd0+2yk/e
-         0Lf4aBvLPOwnlVduU1dH3Q8+wGwPQloZmvghXnF3hdOMT9gCXcH/E6J36sMx90Mcxklx
-         DQS33DQj4xKdtOI7FMu4Q/BDB0N+oDuBgyrpz6MgSK7vcoJLcq94t6DpgfZ/hK6u2/yG
-         kGpw==
-X-Forwarded-Encrypted: i=1; AJvYcCUA6ew1aw4LETG0qViZjctLJWBjf3SadiP4rZddd5bfq5dE6qqbBaWwTmwTmz/AsWM+mmWAOWiONi/Vxw==@vger.kernel.org, AJvYcCVcqVLHTc40n42PzzffzSY7aUWodZgA2NtSL0G0sqvTgqQ/VHXsYljKVJu2Q3IHbmo7eUOTmTe6cOg7Qg==@vger.kernel.org, AJvYcCVlqBPKxxq2PGXCMZquiia3u0DtVuDhES/Dn5tKkL9EM4yH9S+R0sySSzZyVCPGq3pIsP9HBiCwV+l4@vger.kernel.org, AJvYcCXiylnulxHtYXgA+KeF7uTVnPhspX+xxRyYNpMRkixHM5DV9v2fO0AIQcm7iAZIaXkXN/T8G2hvOy4e/N4TNw==@vger.kernel.org
-X-Gm-Message-State: AOJu0YzDnsZnC8fET01n7aeRnpYG0H9hYNKD8GThK9bF6qlAKDbR6r2I
-	TlzVp4YlVp3TuA+I4L1c1nCa6NMchUUdXgk1gJxvv0eNCPO/5uBjfssH9sYWNvN3oRDmZ7/j9Re
-	hd5H9eBRTKoJck9LqAFcFMzCWQE8=
-X-Google-Smtp-Source: AGHT+IHwjUZ/D0gPZk+CyMnQLtq/DsFFmkIX1MphMhWMqr5QE96IKENIsI2zKWWf445KGdU4ZCgAOjb0OqPbrvF1gaI=
-X-Received: by 2002:a17:907:7214:b0:a9a:b9d:bd93 with SMTP id
- a640c23a62f3a-aa4dd52feb6mr214525666b.4.1732102625052; Wed, 20 Nov 2024
- 03:37:05 -0800 (PST)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 454C91AA790;
+	Wed, 20 Nov 2024 11:48:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=72.84.236.66
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1732103307; cv=fail; b=pSRiTJdR8EW7ZyRXL+6LwjBGeg+SUQN39kahiN7INlnJdaXMhGPk6VzP5S04y7EUywsPjAquYKzhS7lPwfFJeTjqbs1B7VlyAnUmoK8oXQDwUZ4X9KbXMkUvuqD7AE7QW/er6BGj1ZZEbvaY7sK6ro0u8Iej5TQF5bXYdhMg3qs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1732103307; c=relaxed/simple;
+	bh=kAQ20iHHLxfM3Ywx9tlQoAh5V0d0VALHNQd/Kux4B9g=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=Mi0II8YFwXMhXHxHRu1Z0InKptK1gUc+Xe5SVIda5Kpu747RNg2xhV3nJsEmin0tb27OwZ9rE9fd3OaWey/IjubuV+tDZFLgqCDjSs3buoTEWTijOCD4Gwwt0GUux7yg5/ZaKlR+NX34RgjfRLUa3EIlh0Km2Oo6tlp2zzgNGWc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sapience.com; spf=pass smtp.mailfrom=sapience.com; dkim=permerror (0-bit key) header.d=sapience.com header.i=@sapience.com header.b=p+r+nVnF; dkim=pass (2048-bit key) header.d=sapience.com header.i=@sapience.com header.b=GETYacWD; arc=fail smtp.client-ip=72.84.236.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sapience.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sapience.com
+Authentication-Results: dkim-srvy7; dkim=pass (Good ed25519-sha256 
+   signature) header.d=sapience.com header.i=@sapience.com 
+   header.a=ed25519-sha256; dkim=pass (Good 2048 bit rsa-sha256 signature) 
+   header.d=sapience.com header.i=@sapience.com header.a=rsa-sha256
+Received: from srv8.sapience.com (srv8.sapience.com [x.x.x.x])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
+	(No client certificate requested)
+	by s1.sapience.com (Postfix) with ESMTPS id 371EE4800BA;
+	Wed, 20 Nov 2024 06:48:25 -0500 (EST)
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-ed25519-220413; t=1732103305;
+ h=message-id : subject : from : to : cc : date : in-reply-to :
+ references : content-type : mime-version : from;
+ bh=kAQ20iHHLxfM3Ywx9tlQoAh5V0d0VALHNQd/Kux4B9g=;
+ b=p+r+nVnFlJwKFYjqOcDPQHGMydKzsWhV4KigpmpN6X6E48YN4x+9rdjU7S36LC7VSLJA+
+ 5BxoA2k/VZfPtGMAA==
+ARC-Seal: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412; t=1732103305;
+	cv=none; b=PUS7pDwp/PJc+JhM8Yj6yl8dhyoOVPtZobImghPFWnL1vv9cDXMoKCqR3q7XWMh659co9SHMAcG7ib79bVIstjUuoy8Jt931PGs5OUNgvdgP3fmw9XNJMiS4jHtP8zE3FmeVsjsYj1UI73AQ3ycFb3B7BuFK+1+LA48GrIygMQukLmWseFHLpIOER2K9bYsO7AeDRUQaBspvP1SI8MQ3b7FKy5CIX/CVcMDkKEIm5ypQVP89/XH9JYcDG3LjV4ijxZgKXql+cmuRt4qZ7LX9LJL/DIRLK0ehoXSln1DxemMjqwI3ss1l3HZVfUxhT5wAfGRs0v031P6fwAJZBXme2A==
+ARC-Message-Signature: i=1; a=rsa-sha256; d=sapience.com; s=arc6-rsa-220412;
+	t=1732103305; c=relaxed/simple;
+	bh=kAQ20iHHLxfM3Ywx9tlQoAh5V0d0VALHNQd/Kux4B9g=;
+	h=DKIM-Signature:DKIM-Signature:Message-ID:Subject:From:To:Cc:Date:
+	 In-Reply-To:References:Autocrypt:Content-Type:User-Agent:
+	 MIME-Version; b=YfCnMcgm/dv5ivzTP+aJt/w5NMgx3GQy2u8SHxoP0AYybLGM5kXYuZ9mIZr/56az6LYFGGxjx/0EJRc4jVrJPwK63+60rxW8pgl29t6oY0PPrdVLGfK8b+dohDcl6ggJNacwlmhsQ3us2k6wUw8o19qHwS8x2g0YJ3HIPk38cubUL4rtsPyb42y9me2VT04/CzRx4p+E6U2MzcRmUaqgdOcjgqF6E+/osAJi6KQaDEZLi+09PmZMgy+UME1qDRBtxyHX2m3CyjIhlKgOp+I6w2SJMj6Fyau8l0xxXo99SoRcilcdFclSh/1nQ+bYHheidncVgUGDn9SHVOqQ8Iyopw==
+ARC-Authentication-Results: i=1; arc-srv8.sapience.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sapience.com;
+ i=@sapience.com; q=dns/txt; s=dk-rsa-220413; t=1732103305;
+ h=message-id : subject : from : to : cc : date : in-reply-to :
+ references : content-type : mime-version : from;
+ bh=kAQ20iHHLxfM3Ywx9tlQoAh5V0d0VALHNQd/Kux4B9g=;
+ b=GETYacWDvFirwKIccC550c/RPtQx8Ht8vGWRVkJMmX6pKsGmn5b7Kc95F1UuDOvEgA6Bd
+ 1mbG2Mwoi57QoPCnsF5eLWPPytHfX2R50Q8GRkOpu6XwiAGq837hLk6l+yUrxHHxyNHhn+l
+ bGklYALsTQcZShB+wCon4OTtYeFYwzvZaWqJSi6UfAf9E7HegufESBqoSy52FtL2OionfSb
+ D8fVnKt+yu+xiHfcijkdkRQ3S3I6TAqxM/m6LtbD2uMcCkkHx+kJV0teCwEii9K67NbFwFW
+ 3IM4sDX0Fl5xe4q6SvjsP/n29zBDz1R0KFas6vJw0G3gC/y1g5N40POR2YqA==
+Received: from lap7.sapience.com (lap7w.sapience.com [x.x.x.x])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits))
+	(No client certificate requested)
+	by srv8.sapience.com (Postfix) with ESMTPS id 0F9B9280047;
+	Wed, 20 Nov 2024 06:48:25 -0500 (EST)
+Message-ID: <47f9d3cd5ebce7f043a41abba1a55658f23c6c83.camel@sapience.com>
+Subject: Re: md-raid 6.11.8 page fault oops - *bad memory* please ignore
+From: Genes Lists <lists@sapience.com>
+To: Yu Kuai <yukuai1@huaweicloud.com>, song@kernel.org, 
+	linux-raid@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu, 
+	adilger.kernel@dilger.ca
+Cc: linux@leemhuis.info, "yukuai (C)" <yukuai3@huawei.com>,
+ yi.zhang@huawei.com,  "libaokun (A)" <libaokun1@huawei.com>,
+ linux-ext4@vger.kernel.org
+Date: Wed, 20 Nov 2024 06:48:24 -0500
+In-Reply-To: <2a620925-1715-5fc6-86bb-783cf3cb6ebf@huaweicloud.com>
+References: <0b579808e848171fc64e04f0629e24735d034d32.camel@sapience.com>
+	 <34333c67f5490cda041bc0cbe4336b94271d5b49.camel@sapience.com>
+	 <2a620925-1715-5fc6-86bb-783cf3cb6ebf@huaweicloud.com>
+Autocrypt: addr=lists@sapience.com; prefer-encrypt=mutual;
+ keydata=mDMEXSY9GRYJKwYBBAHaRw8BAQdAwzFfmp+m0ldl2vgmbtPC/XN7/k5vscpADq3BmRy5R
+ 7y0LU1haWwgTGlzdHMgKEwwIDIwMTkwNzEwKSA8bGlzdHNAc2FwaWVuY2UuY29tPoiWBBMWCAA+Ah
+ sBBQsJCAcCBhUKCQgLAgQWAgMBAh4BAheAFiEE5YMoUxcbEgQOvOMKc+dlCv6PxQAFAmPJfooFCRl
+ vRHEACgkQc+dlCv6PxQAc/wEA/Dbmg91DOGXll0OW1GKaZQGQDl7fHibMOKRGC6X/emoA+wQR5FIz
+ BnV/PrXbao8LS/h0tSkeXgPsYxrzvfZInIAC
+Content-Type: multipart/signed; micalg="pgp-sha384";
+	protocol="application/pgp-signature"; boundary="=-0dd7lmti3aELo2rYVoDC"
+User-Agent: Evolution 3.54.1 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731433903.git.josef@toxicpanda.com> <141e2cc2dfac8b2f49c1c8d219dd7c20925b2cef.1731433903.git.josef@toxicpanda.com>
- <CAHk-=wjkBEch_Z9EMbup2bHtbtt7aoj-o5V6Nara+VxeUtckGw@mail.gmail.com>
- <CAOQ4uxiiFsu-cG89i_PA+kqUp8ycmewhuD9xJBgpuBy5AahG5Q@mail.gmail.com>
- <CAHk-=wijFZtUxsunOVN5G+FMBJ+8A-+p5TOURv2h=rbtO44egw@mail.gmail.com> <20241120-banditen-nimmersatt-e53c268d893a@brauner>
-In-Reply-To: <20241120-banditen-nimmersatt-e53c268d893a@brauner>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Wed, 20 Nov 2024 12:36:53 +0100
-Message-ID: <CAOQ4uxjwXbpCxo0CetBnWkEHQ-X1MjPS9J2siQfGCqDYNDhZPA@mail.gmail.com>
-Subject: Re: [PATCH v7 05/18] fsnotify: introduce pre-content permission events
-To: Christian Brauner <brauner@kernel.org>
-Cc: Linus Torvalds <torvalds@linux-foundation.org>, Josef Bacik <josef@toxicpanda.com>, 
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
+
+
+--=-0dd7lmti3aELo2rYVoDC
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Wed, Nov 20, 2024 at 12:10=E2=80=AFPM Christian Brauner <brauner@kernel.=
-org> wrote:
->
-> > But if anybody is really worried about running out of f_mode bits, we
-> > could almost certainly turn the existing
-> >
-> >         unsigned int f_flags;
-> >
-> > into a bitfield, and make it be something like
-> >
-> >         unsigned int f_flags:26, f_special:6;
->
-> I just saw this now. Two points I would like to keep you to keep mind.
->
-> I've already mentiond that I've freed up 5 fmode bits so it's not that
-> we're in immediate danger of running out. Especially since I added
-> f_ops_flags which contains all flags that are static, i.e., never change
-> and can simply live in the file operations struct and aren't that
-> performance sensitive.
->
-> I shrunk struct file to three cachelines. And in fact, we have 8 bytes
-> to use left since I removed f_version. So it really wouldn't be a
-> problem to simply add a separate u32 f_special member into struct file
-> without growing it and still leaving a 4 byte hole if it ever comes to
-> that.
+On Mon, 2024-11-18 at 09:14 +0800, Yu Kuai wrote:
+>=20
+Since there were 2 somewhat different crashes I got suspicious and ran
+memory test and found indeed that there is some bad memory on this
+machine.=C2=A0
 
-That's good to know, but for the record, I ended up using just one
-extra f_mode bit for fsnotify [1].
+My apologies - please do not spend any more time on this. After memory
+has been replaced I will report back if there are any further problems.
 
-Thanks,
-Amir.
+Again, my apologies.
 
-[1] https://lore.kernel.org/linux-fsdevel/5ea5f8e283d1edb55aa79c35187bfe344=
-056af14.1731684329.git.josef@toxicpanda.com/
+--=20
+Gene
+
+
+--=-0dd7lmti3aELo2rYVoDC
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYJAB0WIQRByXNdQO2KDRJ2iXo5BdB0L6Ze2wUCZz3MiAAKCRA5BdB0L6Ze
+200YAQDe75SdWeqPD34IGjoKIwEYGkr4SBopb7vjSAautwMHQAEArCISHLpXBkLy
+3rxv9m1B4aYnk3f/8aQbnxkP4aPJHQE=
+=rX4k
+-----END PGP SIGNATURE-----
+
+--=-0dd7lmti3aELo2rYVoDC--
 
