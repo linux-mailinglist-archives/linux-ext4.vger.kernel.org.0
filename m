@@ -1,220 +1,145 @@
-Return-Path: <linux-ext4+bounces-5335-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5336-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C8F79D50C9
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 17:36:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 085209D5185
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 18:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D47B81F233F7
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 16:36:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C2456282049
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 17:20:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F6311A0704;
-	Thu, 21 Nov 2024 16:36:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D99A119D881;
+	Thu, 21 Nov 2024 17:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="gV1e8WjL";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="c5L0hCOC";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="akyTH1yr";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="FdsfhEJ6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Cv8IiQRl"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4692158A33;
-	Thu, 21 Nov 2024 16:36:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BB0113E898;
+	Thu, 21 Nov 2024 17:20:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732206986; cv=none; b=rUfWsTlQ1qzCWcKy/9W7wTxWXhistkZuS6/0FLGoltLWgLPp1565+lZPTUC36LwmS0SkzHZNuqMwE94MSrJEKH3AmDCV3ysyHe8S+GTrjZ3yn70zPQi5lmfMwYltYjwaj5HwUOj7vV7hAro4G/ZoEMRnoMtekOhYQZ4pZtk0tJI=
+	t=1732209630; cv=none; b=H1fmPRybGfUBzDySZ9nFAHTE4okN3aPQv2wK36HKakvFP9mBpt+Vb9zSLLOjkAxGfuBiHYkP6W5pcJSevQaTZRjx2Cjq0Pnp1aZAIxMFqjRAatEEiLlsyCtJqH37AQzTI0VawBp/GisvZI13im2w9aGsDEIR5qf5ahEjdru9Ido=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732206986; c=relaxed/simple;
-	bh=r1npEq0ptwRK9KGqwxWMtfIk6dHrxnLfnNaiyIKgEKs=;
+	s=arc-20240116; t=1732209630; c=relaxed/simple;
+	bh=1N2gBzTdSNiyQl6TcEZxOCE5voh4npAXxSu72FyYolU=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hUqAFfiwff6NdCgOunKVNoJ+9sVuVekzgZ+uPT+sU/xzoFKO3kKrkKqqL5PSy87Pf0ajZ8XcG8Q8vu7PHVQjmSbpuzx2Z7BGMVxuueOJNkKNRVPAFsEVp0yNYL0/TXpSKHzdyAVIFZlLoDUYqt57PtbAhWlLErm2fpSuxXGKB68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=gV1e8WjL; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=c5L0hCOC; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=akyTH1yr; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=FdsfhEJ6; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DDAD521A1F;
-	Thu, 21 Nov 2024 16:36:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732206983; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owpYThB1H3Ar3OZ3shQAJEwqjDt1Pg/S0sw5HXZq9co=;
-	b=gV1e8WjLDrReA1TaAazvauUv8Rz3sgBIfrIq2XafYUXJYD+Se4EPBMJB2jqgmY8yOX6/JW
-	Yjd6u37CPz/2Q1Uiq1qcEDYPW1NT4bVzQcD3sZ1SNXq12tVIRNPPsRSJnJdI65ul080L0/
-	GCNAMOCYMIcjXUjY2p3wNoF5HhQ5PL0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732206983;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owpYThB1H3Ar3OZ3shQAJEwqjDt1Pg/S0sw5HXZq9co=;
-	b=c5L0hCOCVD+j/6pVnFCMS1fcdvvW5F0Xq+olEN0wdnh674K69Dm5nTr8H2L6GyMKhvPONA
-	A/zZHvCW4BztszAg==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=akyTH1yr;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=FdsfhEJ6
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732206982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owpYThB1H3Ar3OZ3shQAJEwqjDt1Pg/S0sw5HXZq9co=;
-	b=akyTH1yrjt4uURPAMj2Opr2QAlOEezzScxIKcbBlpEveqglKW+s0SvZfeKzZIGZDGd1ha3
-	5QniWYnxtGpq6y7mtxhgObnX5tfO8dSTFTy7HwhLOOCrT0KzoHbpAplk0TOt45T8RpTkbf
-	ZTWl3s5X+5Ma2W1UYLWvFTQdfqmTknE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732206982;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=owpYThB1H3Ar3OZ3shQAJEwqjDt1Pg/S0sw5HXZq9co=;
-	b=FdsfhEJ6AfFetOsQMF3Wm205FH1c6YuxDgs3g0gLrz9RTFrBxj46EZG7WNfzx8T/Tjc7PB
-	o/IDLVpHiCHd4lAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id CC924137CF;
-	Thu, 21 Nov 2024 16:36:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id MqTSMYZhP2d8YwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 21 Nov 2024 16:36:22 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 47071A08A2; Thu, 21 Nov 2024 17:36:18 +0100 (CET)
-Date: Thu, 21 Nov 2024 17:36:18 +0100
-From: Jan Kara <jack@suse.cz>
-To: Amir Goldstein <amir73il@gmail.com>
-Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
-	brauner@kernel.org, torvalds@linux-foundation.org,
-	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
-	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
-	linux-ext4@vger.kernel.org
-Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission
- event
-Message-ID: <20241121163618.ubz7zplrnh66aajw@quack3>
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
- <20241121104428.wtlrfhadcvipkjia@quack3>
- <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QFNTiLuZ/kvhLUPLAIs4INtu4+BhWymW25B+mgLawmO7hBABnrCC91fQ79X4s+sE7uTmqis3/h+I/Y6VwQk6Wk5Xy3/J+R9bngl61XQHUfUgPpjswTy+dMiSq+0XSmp6UElw6Jd15YR+ruQVUsM50rHB3+2cSPH/aYYIxvPcj8w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Cv8IiQRl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE28EC4CECC;
+	Thu, 21 Nov 2024 17:20:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732209629;
+	bh=1N2gBzTdSNiyQl6TcEZxOCE5voh4npAXxSu72FyYolU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Cv8IiQRlfDDpapdfbDXDoO1jaTNulLXV98WPGvrvah6C8SjqCxN1LPKcXpUCaM3Oz
+	 WflxnwLP7uFUP5xOVQWrb/lLGLRxl1AbLJBpU4jcW7GwnYblgT++gtluzCjKu5JcBm
+	 EEONr4E5IIASqeFseXxaLCKIWkGOOmDS0eF5RGNTPw2Rye3QrRMq3rGwERKDCs2qMd
+	 bEabmFGs+hazw02Gin7InRq1DJVe2P82nLsTGe3abqWAkEgvkt13s2szmzkbo9MOmt
+	 W/bXlMQ6E+A/PZG5sxjMa3tivqQnGMTLoSNXX1IFw7sE/OlB7YbXoRhLe136Yb2mu8
+	 Rpw1G7H6N8EuQ==
+Date: Thu, 21 Nov 2024 09:20:29 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Nirjhar Roy <nirjhar@linux.ibm.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, zlang@kernel.org
+Subject: Re: [PATCH v3 1/3] common/rc,xfs/207: Add a common helper function
+ to check xflag bits
+Message-ID: <20241121172029.GX9425@frogsfrogsfrogs>
+References: <cover.1732126365.git.nirjhar@linux.ibm.com>
+ <e3fe55386a702d34147612b2ce46698b6257e821.1732126365.git.nirjhar@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
-X-Rspamd-Queue-Id: DDAD521A1F
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MISSING_XM_UA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[12];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	DKIM_TRACE(0.00)[suse.cz:+]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
+In-Reply-To: <e3fe55386a702d34147612b2ce46698b6257e821.1732126365.git.nirjhar@linux.ibm.com>
 
-On Thu 21-11-24 15:18:36, Amir Goldstein wrote:
-> On Thu, Nov 21, 2024 at 11:44 AM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Fri 15-11-24 10:30:23, Josef Bacik wrote:
-> > > From: Amir Goldstein <amir73il@gmail.com>
-> > >
-> > > Similar to FAN_ACCESS_PERM permission event, but it is only allowed with
-> > > class FAN_CLASS_PRE_CONTENT and only allowed on regular files and dirs.
-> > >
-> > > Unlike FAN_ACCESS_PERM, it is safe to write to the file being accessed
-> > > in the context of the event handler.
-> > >
-> > > This pre-content event is meant to be used by hierarchical storage
-> > > managers that want to fill the content of files on first read access.
-> > >
-> > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> >
-> > Here I was wondering about one thing:
-> >
-> > > +     /*
-> > > +      * Filesystems need to opt-into pre-content evnets (a.k.a HSM)
-> > > +      * and they are only supported on regular files and directories.
-> > > +      */
-> > > +     if (mask & FANOTIFY_PRE_CONTENT_EVENTS) {
-> > > +             if (!(path->mnt->mnt_sb->s_iflags & SB_I_ALLOW_HSM))
-> > > +                     return -EINVAL;
-> > > +             if (!is_dir && !d_is_reg(path->dentry))
-> > > +                     return -EINVAL;
-> > > +     }
-> >
-> > AFAICS, currently no pre-content events are generated for directories. So
-> > perhaps we should refuse directories here as well for now? I'd like to
+On Thu, Nov 21, 2024 at 10:39:10AM +0530, Nirjhar Roy wrote:
+> This patch defines a common helper function to test whether any of
+> fsxattr xflags field is set or not. We will use this helper in
+> an upcoming patch for checking extsize (e) flag.
 > 
-> readdir() does emit PRE_ACCESS (without a range)
+> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
 
-Ah, right.
+Looks good to me now,
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
 
-> and also always emitted ACCESS_PERM.
+--D
 
-I know that and it's one of those mostly useless events AFAICT.
-
-> my POC is using that PRE_ACCESS to populate
-> directories on-demand, although the functionality is incomplete without the
-> "populate on lookup" event.
-
-Exactly. Without "populate on lookup" doing "populate on readdir" is ok for
-a demo but not really usable in practice because you can get spurious
-ENOENT from a lookup.
-
-> > avoid the mistake of original fanotify which had some events available on
-> > directories but they did nothing and then you have to ponder hard whether
-> > you're going to break userspace if you actually start emitting them...
+> ---
+>  common/rc     |  7 +++++++
+>  tests/xfs/207 | 15 ++++-----------
+>  2 files changed, 11 insertions(+), 11 deletions(-)
 > 
-> But in any case, the FAN_ONDIR built-in filter is applicable to PRE_ACCESS.
-
-Well, I'm not so concerned about filtering out uninteresting events. I'm
-more concerned about emitting the event now and figuring out later that we
-need to emit it in different places or with some other info when actual
-production users appear.
-
-But I've realized we must allow pre-content marks to be placed on dirs so
-that such marks can be placed on parents watching children. What we'd need
-to forbid is a combination of FAN_ONDIR and FAN_PRE_ACCESS, wouldn't we?
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> diff --git a/common/rc b/common/rc
+> index 2af26f23..cccc98f5 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -41,6 +41,13 @@ _md5_checksum()
+>  	md5sum $1 | cut -d ' ' -f1
+>  }
+>  
+> +# Check whether a fsxattr xflags name ($2) field is set on a given file ($1).
+> +# e.g, fsxattr.xflags =  0x80000800 [extsize, has-xattr]
+> +_test_fsxattr_xflag()
+> +{
+> +	grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+> +}
+> +
+>  # Write a byte into a range of a file
+>  _pwrite_byte() {
+>  	local pattern="$1"
+> diff --git a/tests/xfs/207 b/tests/xfs/207
+> index bbe21307..394e7e55 100755
+> --- a/tests/xfs/207
+> +++ b/tests/xfs/207
+> @@ -21,15 +21,6 @@ _require_cp_reflink
+>  _require_xfs_io_command "fiemap"
+>  _require_xfs_io_command "cowextsize"
+>  
+> -# Takes the fsxattr.xflags line,
+> -# i.e. fsxattr.xflags = 0x0 [--------------C-]
+> -# and tests whether a flag character is set
+> -test_xflag()
+> -{
+> -    local flg=$1
+> -    grep -q "\[.*${flg}.*\]" && echo "$flg flag set" || echo "$flg flag unset"
+> -}
+> -
+>  echo "Format and mount"
+>  _scratch_mkfs > $seqres.full 2>&1
+>  _scratch_mount >> $seqres.full 2>&1
+> @@ -65,14 +56,16 @@ echo "Set cowextsize and check flag"
+>  $XFS_IO_PROG -c "cowextsize 1048576" $testdir/file3 | _filter_scratch
+>  _scratch_cycle_mount
+>  
+> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
+> +_test_fsxattr_xflag "$testdir/file3" "cowextsize" && echo "C flag set" || \
+> +	echo "C flag unset"
+>  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
+>  
+>  echo "Unset cowextsize and check flag"
+>  $XFS_IO_PROG -c "cowextsize 0" $testdir/file3 | _filter_scratch
+>  _scratch_cycle_mount
+>  
+> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
+> +_test_fsxattr_xflag "$testdir/file3" "cowextsize" && echo "C flag set" || \
+> +	echo "C flag unset"
+>  $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
+>  
+>  status=0
+> -- 
+> 2.43.5
+> 
+> 
 
