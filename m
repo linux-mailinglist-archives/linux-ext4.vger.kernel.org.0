@@ -1,59 +1,61 @@
-Return-Path: <linux-ext4+bounces-5293-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5294-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BC8F9D4A2B
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 10:45:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 25A479D4A7B
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 11:09:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2CFEC28139E
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 09:45:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD104282E5B
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 10:09:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 893C31CDFD2;
-	Thu, 21 Nov 2024 09:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 96FBE1CD1FC;
+	Thu, 21 Nov 2024 10:09:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JvQbRRj4"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="s6D6U00/"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130331CB528;
-	Thu, 21 Nov 2024 09:45:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C6C1146D7F;
+	Thu, 21 Nov 2024 10:09:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732182328; cv=none; b=DjNR03pSLU9JNToNFxdgKMp0+7KrD/BcAUry/WsC8u+P/Oy5dGoraoV38AUafJjgBd12C+b0D1qnsuge7L6TaXVmh5GXdr5iypUaed2BoMQSUkAFhJDuNytXqpA18tS6M5FQ4iEzIKsBMAU/VYHsSKuaX6PnEtLuzR+BM6XXxQk=
+	t=1732183756; cv=none; b=NxWFlcyCGjlBzLxnBPljYsfZUGL0I4/lpM+jqP68mRGZMbc+6s1hxlifk0TCyguLiJ2P4lmr9XWdzFOuNbQTHbsrnAo4ZxY3lquaCly55kX1/OvqXNcmvr1weqtjPDfB7KSkSnQGTpn8aDRk9CVsg0+4lK3fuLpy39sY2XvSqTU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732182328; c=relaxed/simple;
-	bh=nR6Fy8BGli1AlLmlleeK5DC+YwdhxCJdaekFYFy9zek=;
+	s=arc-20240116; t=1732183756; c=relaxed/simple;
+	bh=1mgyLwuEWgM7IkL9LOzZSE9vNyll+TTDQVIGefuketk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jZriyM8DirJkrN2CCKITsr4zpsdauDthvsbpFvwz5PUqzgOGZ6cdVxt1GtYQwRt6uX5dzC4sCDIKa1+tOJx2XEGxvKBjeKwqfqCHIaVOS9/NB4s7Z89knGrIcK4Xk3mx7SooMtHUR5ShKPKIeF3xReIrJFWo2FxLa56S7uUK7CY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JvQbRRj4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE788C4CECC;
-	Thu, 21 Nov 2024 09:45:23 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZZoAgUVjmHP+Asb+m5nh7U0J5bJad0XLOOX+wt9qj5S5ATPft4tIFnFRCuhqxImAYI4T/Fss8/IHrywezgqrMuj6HlEBuVKwA9rKAr0/m6LW9HCpYcBDvbNMd0cW9nqZulkjRD5YFQNuKnKxDHCLbjJVVynkhY0AkvxfZ+c2lME=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=s6D6U00/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F3C73C4CECC;
+	Thu, 21 Nov 2024 10:09:12 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732182326;
-	bh=nR6Fy8BGli1AlLmlleeK5DC+YwdhxCJdaekFYFy9zek=;
+	s=k20201202; t=1732183755;
+	bh=1mgyLwuEWgM7IkL9LOzZSE9vNyll+TTDQVIGefuketk=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=JvQbRRj4sm/HAswLm+uEPJpFCHenM3QhEJpdW/zRcI2UtBZ7xvMagK560XlqTAZs6
-	 dwBJuxyD3zv0hZfM5Gfv1/rDiqxZjiIwzPe9upYWy5q3puSJlkr+zVXtY0HTQ03HL/
-	 vO9kHutmP/K0tAjySseSOeJuW9lkoKW2heaaBct7nGk/F9LGX0g0Js6vc3vNmlu+BB
-	 oPW8edpmXZUElFXTLG4qI6feF+rU5Ma9h3Ls+6tGVGS62b0HzNFZCuIS/X3f9bzo4P
-	 N0NW2nNRz4DAq3gguneCMkCe0sqmNB01G8CDSBezQX9CUDqlHmY2h0wtXBtiCIYtCT
-	 PhdRicjOZ55ng==
-Date: Thu, 21 Nov 2024 10:45:20 +0100
+	b=s6D6U00/BcdKO8qTkj4TTysr0/sF/2AYfHCq4BiYuB3xVTdO8RbJzqS6jdwHw+KQ1
+	 HvtFXHGOZ+Cb3s43eJt1Tppyn5mCgomLVY0EqeSIT2oHGVmkXu6FxTggcePoid7L+z
+	 m1TZE0Nxo2W3H6wpqoiKtel0VHFglzKU8hdsu1IR40V/8pSQoApQYwTkBdaSTaHazk
+	 AiVW5p5TYFZzLM4JjJMeaZmyXLICh/NiSOecyDv+g/+OI01hOMStN3bZ4Qu6m8vAby
+	 X52EHp9YWUDFhiD/AEmgAxZduzkTM7U1fiOzztOS1cRWHzc8B4bqYamSMZgGNL70hh
+	 mxBFxyxluomaA==
+Date: Thu, 21 Nov 2024 11:09:10 +0100
 From: Christian Brauner <brauner@kernel.org>
 To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, 
-	linux-fsdevel@vger.kernel.org, amir73il@gmail.com, torvalds@linux-foundation.org, 
-	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Cc: Amir Goldstein <amir73il@gmail.com>, 
+	Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org, 
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
 Subject: Re: [PATCH v8 02/19] fsnotify: opt-in for permission events at file
  open time
-Message-ID: <20241121-boxring-abhandeln-c2095863da2d@brauner>
+Message-ID: <20241121-satirisch-siehst-5cdabde2ff67@brauner>
 References: <cover.1731684329.git.josef@toxicpanda.com>
  <5ea5f8e283d1edb55aa79c35187bfe344056af14.1731684329.git.josef@toxicpanda.com>
  <20241120155309.lecjqqhohgcgyrkf@quack3>
+ <CAOQ4uxgjOZN_=BM3DuLLZ8Vzdh-q7NYKhMnF0p_NveYd=e7vdA@mail.gmail.com>
+ <20241121093918.d2ml5lrfcqwknffb@quack3>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -62,100 +64,15 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20241120155309.lecjqqhohgcgyrkf@quack3>
+In-Reply-To: <20241121093918.d2ml5lrfcqwknffb@quack3>
 
-On Wed, Nov 20, 2024 at 04:53:09PM +0100, Jan Kara wrote:
-> On Fri 15-11-24 10:30:15, Josef Bacik wrote:
-> > From: Amir Goldstein <amir73il@gmail.com>
-> > 
-> > Legacy inotify/fanotify listeners can add watches for events on inode,
-> > parent or mount and expect to get events (e.g. FS_MODIFY) on files that
-> > were already open at the time of setting up the watches.
-> > 
-> > fanotify permission events are typically used by Anti-malware sofware,
-> > that is watching the entire mount and it is not common to have more that
-> > one Anti-malware engine installed on a system.
-> > 
-> > To reduce the overhead of the fsnotify_file_perm() hooks on every file
-> > access, relax the semantics of the legacy FAN_ACCESS_PERM event to generate
-> > events only if there were *any* permission event listeners on the
-> > filesystem at the time that the file was opened.
-> > 
-> > The new semantic is implemented by extending the FMODE_NONOTIFY bit into
-> > two FMODE_NONOTIFY_* bits, that are used to store a mode for which of the
-> > events types to report.
-> > 
-> > This is going to apply to the new fanotify pre-content events in order
-> > to reduce the cost of the new pre-content event vfs hooks.
-> > 
-> > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
-> > Link: https://lore.kernel.org/linux-fsdevel/CAHk-=wj8L=mtcRTi=NECHMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com/
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> 
-> FWIW I've ended up somewhat massaging this patch (see below).
-> 
-> > diff --git a/include/linux/fs.h b/include/linux/fs.h
-> > index 23bd058576b1..8e5c783013d2 100644
-> > --- a/include/linux/fs.h
-> > +++ b/include/linux/fs.h
-> > @@ -173,13 +173,14 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
-> >  
-> >  #define	FMODE_NOREUSE		((__force fmode_t)(1 << 23))
-> >  
-> > -/* FMODE_* bit 24 */
-> > -
-> >  /* File is embedded in backing_file object */
-> > -#define FMODE_BACKING		((__force fmode_t)(1 << 25))
-> > +#define FMODE_BACKING		((__force fmode_t)(1 << 24))
-> >  
-> > -/* File was opened by fanotify and shouldn't generate fanotify events */
-> > -#define FMODE_NONOTIFY		((__force fmode_t)(1 << 26))
-> > +/* File shouldn't generate fanotify pre-content events */
-> > +#define FMODE_NONOTIFY_HSM	((__force fmode_t)(1 << 25))
-> > +
-> > +/* File shouldn't generate fanotify permission events */
-> > +#define FMODE_NONOTIFY_PERM	((__force fmode_t)(1 << 26))
-> 
-> Firstly, I've kept FMODE_NONOTIFY to stay a single bit instead of two bit
-> constant. I've seen too many bugs caused by people expecting the constant
-> has a single bit set when it actually had more in my life. So I've ended up
-> with:
-> 
-> +/*
-> + * Together with FMODE_NONOTIFY_PERM defines which fsnotify events shouldn't be
-> + * generated (see below)
-> + */
-> +#define FMODE_NONOTIFY         ((__force fmode_t)(1 << 25))
-> + 
-> +/*
-> + * Together with FMODE_NONOTIFY defines which fsnotify events shouldn't be
-> + * generated (see below)
-> + */
-> +#define FMODE_NONOTIFY_PERM    ((__force fmode_t)(1 << 26))
-> 
-> and
-> 
-> +/*
-> + * The two FMODE_NONOTIFY* define which fsnotify events should not be generated
-> + * for a file. These are the possible values of (f->f_mode &
-> + * FMODE_FSNOTIFY_MASK) and their meaning:
-> + *
-> + * FMODE_NONOTIFY - suppress all (incl. non-permission) events.
-> + * FMODE_NONOTIFY_PERM - suppress permission (incl. pre-content) events.
-> + * FMODE_NONOTIFY | FMODE_NONOTIFY_PERM - suppress only pre-content events.
-> + */
-> +#define FMODE_FSNOTIFY_MASK \
-> +       (FMODE_NONOTIFY | FMODE_NONOTIFY_PERM)
+> It is not that I object to "two bit constants". FMODE_FSNOTIFY_MASK is a
+> two-bit constant and a good one. But the name clearly suggests it is not a
+> single bit constant. When you have all FMODE_FOO and FMODE_BAR things
+> single bit except for FMODE_BAZ which is multi-bit, then this is IMHO a
+> recipe for problems and I rather prefer explicitely spelling the
+> combination out as FMODE_NONOTIFY | FMODE_NONOTIFY_PERM in the few places
+> that need this instead of hiding it behind some other name.
 
-This is fine by me. But I want to preemptively caution to please not
-spread the disease of further defines based on such multi-bit defines
-like fanotify does. I'm specifically worried about stuff like:
-
-#define ALL_FSNOTIFY_PERM_EVENTS (FS_OPEN_PERM | FS_ACCESS_PERM | \
-                                  FS_OPEN_EXEC_PERM)
-
-#define FS_EVENTS_POSS_ON_CHILD   (ALL_FSNOTIFY_PERM_EVENTS | \
-                                   FS_ACCESS | FS_MODIFY | FS_ATTRIB | \
-                                   FS_CLOSE_WRITE | FS_CLOSE_NOWRITE | \
-                                   FS_OPEN | FS_OPEN_EXEC)
+Very much agreed!
 
