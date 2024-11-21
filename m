@@ -1,136 +1,228 @@
-Return-Path: <linux-ext4+bounces-5332-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5333-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 789FE9D4E8B
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 15:19:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB6E19D5049
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 17:01:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39EC52843F5
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 14:19:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4F9431F2262C
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 16:01:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019A71D89F5;
-	Thu, 21 Nov 2024 14:18:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6246919E965;
+	Thu, 21 Nov 2024 16:01:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="C9b5+Yox"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iEVS99su"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA35F1D63FD;
-	Thu, 21 Nov 2024 14:18:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D860155CBF;
+	Thu, 21 Nov 2024 16:01:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732198731; cv=none; b=CJKYLG/w8g6AhOvkV6H3NbiEOeeHGeLViiGfqQwxRHmAE3OxK+APufrGyQ+/mFcQ7I3AI7HJTJNkMsBCUwgLxe366SWI71yrfxUmZB5ZwgJso+ePXf7Pucfe574h/63gKsiSDun4Zulu5qddlSCcFRjxlOrpjejy0igVEw7f9LU=
+	t=1732204890; cv=none; b=ALv1YjMpJCKxeU6OVH+ILQF18Yv2JQ4mCyhTSHF5kmrwvcF3uczfqOVYa1EQNN1A3EpuRHQ7vYsYWJHQ4Nup0PvxmJgUGwKtJr+m8UjsC/CmlSb9ZDY4x/lkT3lWeKYTbgmbvV0qIF3I3WTmtdUbLIaiDz1p3CgprLLNi0uwvss=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732198731; c=relaxed/simple;
-	bh=bNvc0py64DAf3/4lI8U9CHFwkfOTtYkeLHfMBzYWgL0=;
+	s=arc-20240116; t=1732204890; c=relaxed/simple;
+	bh=gF+y8oWfA2KuMu5p1cbT0vK/FJTgYlyMW30jF96xGPY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=laxbt52zaRamPTskvndM1cnoJkI5SpukVtTU4etGvmSrwPthSX8QNkagkpUNMaGO25/FPDc3OyOkMZGHtd7GeF/toI3+MZjobk1RUWPr3KxoXzmMY9Md0ONl07Drv+uhMTHpbGvV262+/m9UT2xX8i6guey+oLoDkLewGGVJJrc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=C9b5+Yox; arc=none smtp.client-ip=209.85.208.169
+	 To:Cc:Content-Type; b=nyMEVDeBpxrav7Q9Ll9iwWwSOPEmtCmpnhXUpMPbAJOa8ClshsDPMr09J+Jkom+X/KtA3IlvK7yC+AEVJwxrdcLLJzLJLFrcJ8pJ34g+14V6wv2NSHz8+tTYYUi/htTplFKJqP0JbkFxcXsGTEeeaA9U4XbDlN4YTZO+lfKGYBM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iEVS99su; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2fb51e00c05so17819901fa.0;
-        Thu, 21 Nov 2024 06:18:49 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a9ed49edd41so199067666b.0;
+        Thu, 21 Nov 2024 08:01:27 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732198728; x=1732803528; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1732204886; x=1732809686; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=pO8DokmCbNTYcYBfKWRaeP/dEwanubQ3Z/RPc3+IoOQ=;
-        b=C9b5+YoxQTsg22CtxdHmQ+C/UgBNpLrp4SWsE50vJkVtO7GH6k0/VL71mGSFjinVYO
-         nsvWfCUJEhpKB/god6w7lDyunqtQzJ0FT17WFq43nym4fLJJI/FNR5Qb3HtlIuYLCBo0
-         fLjIB+p8ogntOxbEhVxaV4W0n7dxpmC167o/CscEQsLwk0dAJbwHaRZ02VLrpfB1LHQG
-         8X2RecRpiMbq6XtbhmmEbguecXZXH0Y6qdvYgHrYXi8Fzj25zIz9JqAmrVrdvOX7y9wg
-         JgMlsZh4ZwewEEII2EbEffATIfTApSdbyPL9afwGvETPV05ZDeD71D+TUH4v5S8hwnMJ
-         LzVg==
+        bh=/D7HID2373t79vMCmeYvvZaFKSvpWPkH3dxYYPJQ+KQ=;
+        b=iEVS99suSqd7Kro+PQw8vzEC/b11EGXTfECNL1Rjf+OMxv5ur1pBOVi40elanIYKAe
+         mLdTe/GI6+bwrbkv8LpR0BjIkBfIkqCTU8Zx3vTjP5XFViqRJA6RqN/a0/1lND0zUKO7
+         fOHl7JUANOIHuluVH4LLrEKpYzamv1bimTD8q7+zQ6PXbSQOtb3h5nRCXemv+qpgxbvG
+         J9TNOVsx6CSLmabkiJrMoYaJ9AXTxscWEpkXcTOnjEULWfoZutOCB9X1Fwg2+liiyc1R
+         lVLh0Fs46KkMVECCp6beMBqrMaF7bsyRmnYDyZVcj6fBx8soqWlPjRRwKGwPUpW9AHFZ
+         WNpA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732198728; x=1732803528;
+        d=1e100.net; s=20230601; t=1732204886; x=1732809686;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=pO8DokmCbNTYcYBfKWRaeP/dEwanubQ3Z/RPc3+IoOQ=;
-        b=hIaeuUZCH0M4r5N5PxGDEmkUvAKdpwAU4lc/f7ZN8v/Bm0vmeR4yMygcmi2Veqt3sB
-         G+rw0Mf2UM6jEf0p3cVJf1yCPhXvk0qBxEOEq+IBXhzJHC0CcTxy0x4ee5Nscdm09YO2
-         gBOMBSMLDwOigdJgpDW0sHO+T61Z/IuUvgXF3dAVoJbvLfvOzkysnejDw6jr6lCj3ENE
-         /S40xf78ypL88oiJ8zBXEIfghblmlr6XkmR+owyrcv6DfuH5x+vjFEzCHraXZPbbxJt5
-         go14NGL7ntBBO2aaeDGH5DYwmX7P5NgH6yqUxx2f8gGM2vG5EVEFIsr8jsW4CJAAEeY3
-         onGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUVRDzeOXdIq3k1/ek6OA4xS/OvNrKx2pmY6axGo1rQlG6i5mROf5OyuEHK2M/hnLr4hTbEMyVjDZSN5w==@vger.kernel.org, AJvYcCUp53BwGoJ4WZC9YRWAOe9iXJlncIwf/eYolXIVOyda8CY3OR6dcQX8zyQsGfutAhFyGGf/9C7ZMQ2Y@vger.kernel.org, AJvYcCW3L+MkSiNS1mssbLbV9u516veyTB9A4aXFYSGK7jnOpQCLI6s6zeRuYn9zlf6noSf0qf5Cld9Bdh7YF/Cxrg==@vger.kernel.org, AJvYcCXzBD1nSm3gJoY5vbxG+ScBR9h7g9b9CYtn9hKt+IE6bGPvrkqqFeX8Tl2DmuqPn+SGyfhSMiNKHMwv3A==@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywbu/fLB1wDxhamDxujh5sRvf4mXNTgpsO+4+LLmEihrEPU75rW
-	dsqJcbJB5mfUBY6oFEOtPwSR1sar0f3NUOXLAh+McrJ/921k4p7facNXGe3/zCaDfytleeK6hrZ
-	8OVJcaO6wNgcCxmn1Jt+kkJriJjlYcclCP4I=
-X-Gm-Gg: ASbGnctnyCR0Ht11o8GcMSpkMUpevrJZvyI9bo7WuKJx2JPt2Nz8Hs/RpecoAQDfd+z
-	FLsQx85AtFE+Gb2kQk9OXQcsoro0oepg=
-X-Google-Smtp-Source: AGHT+IEE9uu1LLPFKTWP8pimZf7yZgaRdrUeWk2IUF2LLnQpNe7uZnVbznEcE/8soKYRUUWZb2SAtbqxpd+Sov4cXAQ=
-X-Received: by 2002:a05:651c:221b:b0:2fb:6362:284e with SMTP id
- 38308e7fff4ca-2ff8db165bdmr58987841fa.8.1732198727467; Thu, 21 Nov 2024
- 06:18:47 -0800 (PST)
+        bh=/D7HID2373t79vMCmeYvvZaFKSvpWPkH3dxYYPJQ+KQ=;
+        b=EB96QsjpZwrVGcUALAARQ4wDy9+C/Z2DOU9eBePgJZ5GatbSXMtQGUseWjGl+iIHQM
+         YyR7345klWx4PWYbdRNpX5I3GDxjeQ5Uw02ri2cJrk7b50t+BiXjHkZz9L8mFlU77dXr
+         1yxRMJfE+0/EyjRnlt93HGvIfShklLtBXJ5f8poGqbtIBmG84qt9U0U+GfyIZNHLxruH
+         OsXTDpUO+Q2sTL6drQh1qkrJn1MgVGoO4kAjrLbRxdaOAB2Vp29FxiRddTfY3JCcJhLD
+         x1tRy2D+q+N7o2TNj+jAtypK2dblLJ9HrTucMth44om/v4I7IaCwMya838HwqGAVSfK2
+         431Q==
+X-Forwarded-Encrypted: i=1; AJvYcCUQBWLXpdxTKku75uNggqAEmTlEYCyqcJiCb9JVzqJ6RIiXLFDvwDnJKoTxxpPJVm2IDpbj05x/YGQh/Q==@vger.kernel.org, AJvYcCUZ3iwK0EKIF+cf+2/CfUqyx/TxeZgUhXzk377O374QzCQXKT1Bi1GFglC8iSU8i4YNZjI8iPXK3/AL@vger.kernel.org, AJvYcCWppWT/DkTOd/JcB7ZS57C4wZCESzyTeFumQZ7SMfrOt4ltr9qXn/ba6fFmRLNbe5AC+Wcv8iu21AoH9g==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx1a4BEI+opn7wTANisW5uD2k+SrzTObVo/6gviPg8QAAdF9CkH
+	mbRzfx0Jk3LhWa1xgmIva/sg+Zec2VupX4I0/0qIv1pY8f6miXqAZqHcf4ubnwNbSdUpCGaI/DV
+	2LQl9CGVr7t37WnN2nhEALCICU/jMQ1PTNTE=
+X-Gm-Gg: ASbGncvjFDQ5hu/R2Lk1Wk9awzaaCp0cu0SNu9FDcD5xcekCYfd9S+MO36uuOFaXZuf
+	HU6uGw4pEwA6JIUrejTO7LINnDURoDXI=
+X-Google-Smtp-Source: AGHT+IHdxsoaDROzQG8qEj5x/K+j8d0Op0HAfKhZzlzLbAAPgZOVvmKuZZFzk9WC4mWx+/oxlwIOMbxa3djrhsRAlko=
+X-Received: by 2002:a17:907:9281:b0:aa1:f73b:be3d with SMTP id
+ a640c23a62f3a-aa4dd56aa50mr737837466b.27.1732204884517; Thu, 21 Nov 2024
+ 08:01:24 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
- <20241121104428.wtlrfhadcvipkjia@quack3>
-In-Reply-To: <20241121104428.wtlrfhadcvipkjia@quack3>
+References: <20241121112218.8249-1-jack@suse.cz> <20241121112218.8249-4-jack@suse.cz>
+In-Reply-To: <20241121112218.8249-4-jack@suse.cz>
 From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 21 Nov 2024 15:18:36 +0100
-Message-ID: <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
-Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission event
+Date: Thu, 21 Nov 2024 17:01:13 +0100
+Message-ID: <CAOQ4uxgJiiv2KrEkxwND9zpwYLakAMPX_UruGC_6Zrd5ep7duw@mail.gmail.com>
+Subject: Re: [PATCH 03/19] fsnotify: check if file is actually being watched
+ for pre-content events on open
 To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, Josef Bacik <josef@toxicpanda.com>, brauner@kernel.org, 
+	Linus Torvalds <torvalds@linux-foundation.org>, Al Viro <viro@zeniv.linux.org.uk>, 
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, 
+	linux-ext4@vger.kernel.org, linux-mm@kvack.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Thu, Nov 21, 2024 at 11:44=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
+On Thu, Nov 21, 2024 at 12:22=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
 >
-> On Fri 15-11-24 10:30:23, Josef Bacik wrote:
-> > From: Amir Goldstein <amir73il@gmail.com>
-> >
-> > Similar to FAN_ACCESS_PERM permission event, but it is only allowed wit=
-h
-> > class FAN_CLASS_PRE_CONTENT and only allowed on regular files and dirs.
-> >
-> > Unlike FAN_ACCESS_PERM, it is safe to write to the file being accessed
-> > in the context of the event handler.
-> >
-> > This pre-content event is meant to be used by hierarchical storage
-> > managers that want to fill the content of files on first read access.
-> >
-> > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> From: Amir Goldstein <amir73il@gmail.com>
 >
-> Here I was wondering about one thing:
+> So far, we set FMODE_NONOTIFY_ flags at open time if we know that there
+> are no permission event watchers at all on the filesystem, but lack of
+> FMODE_NONOTIFY_ flags does not mean that the file is actually watched.
 >
-> > +     /*
-> > +      * Filesystems need to opt-into pre-content evnets (a.k.a HSM)
-> > +      * and they are only supported on regular files and directories.
-> > +      */
-> > +     if (mask & FANOTIFY_PRE_CONTENT_EVENTS) {
-> > +             if (!(path->mnt->mnt_sb->s_iflags & SB_I_ALLOW_HSM))
-> > +                     return -EINVAL;
-> > +             if (!is_dir && !d_is_reg(path->dentry))
-> > +                     return -EINVAL;
-> > +     }
+> For pre-content events, it is possible to optimize things so that we
+> don't bother trying to send pre-content events if file was not watched
+> (through sb, mnt, parent or inode itself) on open. Set FMODE_NONOTIFY_
+> flags according to that.
 >
-> AFAICS, currently no pre-content events are generated for directories. So
-> perhaps we should refuse directories here as well for now? I'd like to
+> Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> Signed-off-by: Jan Kara <jack@suse.cz>
+> Link: https://patch.msgid.link/2ddcc9f8d1fde48d085318a6b5a889289d8871d8.1=
+731684329.git.josef@toxicpanda.com
+> ---
+>  fs/notify/fsnotify.c             | 27 +++++++++++++++++++++++++--
+>  include/linux/fsnotify_backend.h |  3 +++
+>  2 files changed, 28 insertions(+), 2 deletions(-)
+>
+> diff --git a/fs/notify/fsnotify.c b/fs/notify/fsnotify.c
+> index 569ec356e4ce..dd1dffd89fd6 100644
+> --- a/fs/notify/fsnotify.c
+> +++ b/fs/notify/fsnotify.c
+> @@ -193,7 +193,7 @@ static bool fsnotify_event_needs_parent(struct inode =
+*inode, __u32 mnt_mask,
+>         return mask & marks_mask;
+>  }
+>
+> -/* Are there any inode/mount/sb objects that are interested in this even=
+t? */
+> +/* Are there any inode/mount/sb objects that watch for these events? */
+>  static inline bool fsnotify_object_watched(struct inode *inode, __u32 mn=
+t_mask,
+>                                            __u32 mask)
+>  {
+> @@ -632,7 +632,9 @@ EXPORT_SYMBOL_GPL(fsnotify);
+>   */
+>  void file_set_fsnotify_mode(struct file *file)
+>  {
+> -       struct super_block *sb =3D file->f_path.dentry->d_sb;
+> +       struct dentry *dentry =3D file->f_path.dentry, *parent;
+> +       struct super_block *sb =3D dentry->d_sb;
+> +       __u32 mnt_mask, p_mask;
+>
+>         /* Is it a file opened by fanotify? */
+>         if (FMODE_FSNOTIFY_NONE(file->f_mode))
+> @@ -658,6 +660,27 @@ void file_set_fsnotify_mode(struct file *file)
+>                 file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+>                 return;
+>         }
 
-readdir() does emit PRE_ACCESS (without a range) and also always
-emitted ACCESS_PERM. my POC is using that PRE_ACCESS to populate
-directories on-demand, although the functionality is incomplete without the
-"populate on lookup" event.
+This was lost in translation:
 
-> avoid the mistake of original fanotify which had some events available on
-> directories but they did nothing and then you have to ponder hard whether
-> you're going to break userspace if you actually start emitting them...
+@@ -672,8 +672,10 @@ void file_set_fsnotify_mode(struct file *file)
+        /*
+         * If there are permission event watchers but no pre-content event
+         * watchers, set FMODE_NONOTIFY | FMODE_NONOTIFY_PERM to indicate t=
+hat.
++        * Pre-content events are only reported for regular files and dirs.
+         */
+-       if (likely(!fsnotify_sb_has_priority_watchers(sb,
++       if ((!d_is_dir(dentry) && !d_is_reg(dentry)) ||
++           likely(!fsnotify_sb_has_priority_watchers(sb,
+                                                FSNOTIFY_PRIO_PRE_CONTENT))=
+) {
+                file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+                return;
 
-But in any case, the FAN_ONDIR built-in filter is applicable to PRE_ACCESS.
+> +
+> +       /*
+> +        * OK, there are some pre-content watchers. Check if anybody can =
+be
+> +        * watching for pre-content events on *this* file.
+> +        */
+> +       mnt_mask =3D READ_ONCE(real_mount(file->f_path.mnt)->mnt_fsnotify=
+_mask);
+> +       if (likely(!(dentry->d_flags & DCACHE_FSNOTIFY_PARENT_WATCHED) &&
+> +           !fsnotify_object_watched(d_inode(dentry), mnt_mask,
+> +                                    FSNOTIFY_PRE_CONTENT_EVENTS))) {
+> +               file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+> +               return;
+> +       }
+> +
+> +       /* Even parent is not watching for pre-content events on this fil=
+e? */
+> +       parent =3D dget_parent(dentry);
+> +       p_mask =3D fsnotify_inode_watches_children(d_inode(parent));
+> +       dput(parent);
+> +       if (!(p_mask & FSNOTIFY_PRE_CONTENT_EVENTS)) {
+> +               file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+> +               return;
+> +       }
+
+inlining broke the logic and your branch fails the new PRE_ACCESS
+test cases of fanotify03 LTP test (now pushed to branch fan_hsm).
+
+Specifically in the test case that fails, parent is not watching and
+inode is watching pre-content and your code gets to the p_mask
+test and marks this file as no-pre-content watchers.
+
+This passes the test:
+
+@@ -684,17 +686,18 @@ void file_set_fsnotify_mode(struct file *file)
+         * watching for pre-content events on *this* file.
+         */
+        mnt_mask =3D READ_ONCE(real_mount(file->f_path.mnt)->mnt_fsnotify_m=
+ask);
+-       if (likely(!(dentry->d_flags & DCACHE_FSNOTIFY_PARENT_WATCHED) &&
+-           !fsnotify_object_watched(d_inode(dentry), mnt_mask,
+-                                    FSNOTIFY_PRE_CONTENT_EVENTS))) {
+-               file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
++       if (unlikely(fsnotify_object_watched(d_inode(dentry), mnt_mask,
++                                            FSNOTIFY_PRE_CONTENT_EVENTS)))=
+ {
+                return;
+        }
+
+        /* Even parent is not watching for pre-content events on this file?=
+ */
+-       parent =3D dget_parent(dentry);
+-       p_mask =3D fsnotify_inode_watches_children(d_inode(parent));
+-       dput(parent);
++       p_mask =3D 0;
++       if (unlikely(dentry->d_flags & DCACHE_FSNOTIFY_PARENT_WATCHED)) {
++               parent =3D dget_parent(dentry);
++               p_mask =3D fsnotify_inode_watches_children(d_inode(parent))=
+;
++               dput(parent);
++       }
+        if (!(p_mask & FSNOTIFY_PRE_CONTENT_EVENTS)) {
+                file->f_mode |=3D FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
+                return;
 
 Thanks,
 Amir.
