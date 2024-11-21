@@ -1,178 +1,190 @@
-Return-Path: <linux-ext4+bounces-5339-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5340-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 52D3E9D528F
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 19:31:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16AB39D5295
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 19:33:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC92FB25858
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 18:31:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 902701F2162F
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 18:33:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951721AAE1B;
-	Thu, 21 Nov 2024 18:31:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53A781AA1DB;
+	Thu, 21 Nov 2024 18:33:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F0yHcDlb"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="H1uTrkCR"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4AF6F06B;
-	Thu, 21 Nov 2024 18:31:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73DC8B67F;
+	Thu, 21 Nov 2024 18:33:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732213895; cv=none; b=p7O7J/CzbaA3ePPHsGz00v+KDIhg2N1G7GoG3IJ1kI7yoXGCxS/xgB9440gvG25UXuPMMefDW/SiT7iDuyH8Mb7Kw+AScry14W64QqGMzFG8SVMZVWVqfL+tCnVy63LutHbXLv59Tj38xQSN9w58Y6hcXSKgM6L+vs1BlStnzaQ=
+	t=1732214027; cv=none; b=Pd9ys4cOvUXkvDrpaaNVXjAo5Six46L2IiTXTKSKxbVXboXu9uKT1CiYek8calYnkZIDHLLAM0sEGX2dl0NBnhjATsYLeWZWQ98b9XpECySr2anOISgoEx6fYNyZm2n7kW65cOBsz616sBz0xFz46Ro9fFWfRyCa4YSGr4OA5Y4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732213895; c=relaxed/simple;
-	bh=qdbfLHjBwQXwAfjuDYTl015HlQfcIC0oOpXKyWa83GI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WktoHMRrNIuOAmjexzhuVXlnDxQj8j6DglS8Qwiez2rriVU6I5wWS//+ThKXIo+JXkPe49QjO6Cq3qvvroOOAuPqRwj59VGAG9KkZvincmaR4vpOkgQZzUzm4l3jk2fqUOoquqCBXVDMzAHf4DXMyF5XELbXG5NhSlcRZ5+xYrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F0yHcDlb; arc=none smtp.client-ip=209.85.208.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2fb5fa911aaso22746001fa.2;
-        Thu, 21 Nov 2024 10:31:33 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732213891; x=1732818691; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=q8sUkGeUy2sHCwOUXx/YOFYIvJypbi+uhVMOVlCFTao=;
-        b=F0yHcDlb422+aZSjUcx9eMUZB0mgRAbhoILJmlkHlHKrh6sh2j/aP01yCkKWZQ/sOe
-         WNMAUqiQXMsOeCgM3ngWcWcd9xZRC/uSZgAAaDEmDrpKE3+hXvaVmiBB3uV0C1nboPao
-         UyBAmX0FKgs9lgZmj7sTpA6s23bhpOzzmGVhXHeXcBMgkH8u+uK9RklhWLDMqDsX/CD/
-         WmazcvwbIFbmKfsr1hb8Y2dgZmA76ckGi+1p2GVIq7sJoe/J3r2YZP1foj+I5CUfq8ly
-         dMpiBtkX3V6o87kABWPBRXUYzhPTapHPnAgQPn98uFKa01Em/EeN5VS+aINu4yCabC52
-         7KQQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732213891; x=1732818691;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q8sUkGeUy2sHCwOUXx/YOFYIvJypbi+uhVMOVlCFTao=;
-        b=V83Edf4RujgOHWJz65bTPWB6t9zQhSzw9MsCiG3JambCIojgpKSbrf8jBesHHY/J1K
-         eMmL5VxVxFmUlBIngCD27/w3RW6RsWe4Nd7xLKeKmwF+ekwYRJd00ODP4iZURXTi0S89
-         tE6iIN5UAlMqqMzoMXfEgxrqZZF4wrQ1BNQJ8MOX9wN9SRphm/THvHgKDcDx3n6qnBgs
-         mBlyr/cg50oD12ruIoPKiS+b6HpQk3ouswt0VryJ3HUdHUii1s775FVkroPiIAXHHLDi
-         Rp2ifyNrDJa/1JX8zvBfdFuiKrRyu3EJfaIXbHquF/6Zb2iMImxa/Z9+shbjcrOv2not
-         WDgw==
-X-Forwarded-Encrypted: i=1; AJvYcCUG+8+BH/kgv6eAMD7jk+hdl6V/A4fYxp3n1+O83+O9q9EBNhPPQ+t7dXad/AdPCmYjOloeO7z4+nbnrw==@vger.kernel.org, AJvYcCWMdixVCwzIo8RvFtms+CKsqUd+N/Y2w0ITptzQrP3NiaWxvQAIKkLq9YOTCrGkdRVn8bAVSxCquqbFm37lGg==@vger.kernel.org, AJvYcCWWzmOf+fisE6DD2r50w2tW8leSSiovtAXZglabkpf1tiWlGCDyS5RF1jG0JoscqCGaG1RmPVRUuU9xrQ==@vger.kernel.org, AJvYcCXRB4srf9aSp9l+Gg+3dxwfxDoS9XHzVxduwEL/6puwhMrXeg77A3t7f2kMwJnt8WOLgvSUJ3VCTi4O@vger.kernel.org
-X-Gm-Message-State: AOJu0YwDt3K0LPfAgOA5I4ApOOYvlzOy5uIUYNK6I+mUE43xZtSwck1i
-	a/NX4Z1aACGbtbWMqi+8wjtm1FGT4zoc5HEt1Vu9pXKtYEdUlbGhQOnnB9kt5nGK8PHra/z5nVA
-	EKlIzLiROx3KBjxJE3NtzTEylahM=
-X-Gm-Gg: ASbGncs6si7rQ4EAWjscDolS9LQAJtiCKxHK2RC6/lwz+a4Mkjj3w14Z6kB4SDFHXYw
-	HpMsmvhqNd/tm6a/Y8Pl192npcFWOI0c=
-X-Google-Smtp-Source: AGHT+IEldLUO8T8htIjF2AQfaERgaC4UTkjSuef9nnywzNlaBFoQgol0xShwH40QKISC70XNYyKYcQsEtPoJAUUnBXU=
-X-Received: by 2002:a2e:be9e:0:b0:2ff:59dd:9242 with SMTP id
- 38308e7fff4ca-2ff8dcb1d15mr80129191fa.35.1732213891042; Thu, 21 Nov 2024
- 10:31:31 -0800 (PST)
+	s=arc-20240116; t=1732214027; c=relaxed/simple;
+	bh=AilhvwYoNac3zfe6kuXqE5PfFvcWyYngC9rXwaG+nfk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FCuFLJ3umI7TerIJWdK21JWFfa8XFFMv4hedV/lv1KiKiI9CYKNKh2/JMVBXfUMWDW2RSHZEd7FdR2x541RU03kAhIS6Yh1HabaNGDFwdYIi/HyjmvxdeQjw3i89Q+MrdP9r5oPeS9GsKVtK+VFgZHIEf1gem+k7k/C5Vnuc3bU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=H1uTrkCR; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AL9Iu7Z012436;
+	Thu, 21 Nov 2024 18:33:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=j6JY/o
+	NRQCuIhr+taNlVHFAQVdK0uFg7NljK8349KYM=; b=H1uTrkCR20R3yKBwZG3Y1Z
+	Ml1ZTqf79hlUF7XmOS6xkF04OIW7r7ocE+CBtMJy7ViUXGBumVSYVRGIOTswR8b5
+	lXxBqAF89Xn783sS2UjSIxLCDxgiI6WCciSrUu8UEZ/SzONe14GgCy5Lo1C2T6y5
+	SH8662T+eMGlVV7zsbrbk83ImbzRl2e7koo+rXMsLQsNX9yZ/27JyE+/Tf0lVO0e
+	OqmnLq+gSAoOunm6QyH9cD2ml71AZTfqb6quYVj84uhU+wi/sujd1kpZ2sv+9zwb
+	vShbh25bzAQRgN9ZGTrXwILbf6GyAUb27iF/VylLL+/s8wctlMn+uAYvn8pb9CzQ
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4313gstwkt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Nov 2024 18:33:36 +0000 (GMT)
+Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4ALIGpkx013783;
+	Thu, 21 Nov 2024 18:33:36 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4313gstwkp-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Nov 2024 18:33:36 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4ALH4qwB000591;
+	Thu, 21 Nov 2024 18:33:35 GMT
+Received: from smtprelay03.fra02v.mail.ibm.com ([9.218.2.224])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42y77msc67-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 21 Nov 2024 18:33:34 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay03.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4ALIXXLu53608746
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 21 Nov 2024 18:33:33 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 041BF20043;
+	Thu, 21 Nov 2024 18:33:33 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id A117920040;
+	Thu, 21 Nov 2024 18:33:31 +0000 (GMT)
+Received: from [9.124.219.125] (unknown [9.124.219.125])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Thu, 21 Nov 2024 18:33:30 +0000 (GMT)
+Message-ID: <52dce21e-9b34-4a3d-9f2c-86634cd10750@linux.ibm.com>
+Date: Fri, 22 Nov 2024 00:03:30 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
- <20241121104428.wtlrfhadcvipkjia@quack3> <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
- <20241121163618.ubz7zplrnh66aajw@quack3>
-In-Reply-To: <20241121163618.ubz7zplrnh66aajw@quack3>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 21 Nov 2024 19:31:20 +0100
-Message-ID: <CAOQ4uxhsEA2zj-a6H+==S+6G8nv+BQEJDoGjJeimX0yRhHso2w@mail.gmail.com>
-Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission event
-To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 2/3] common/rc: Add a new _require_scratch_extsize
+ helper function
+Content-Language: en-US
+To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
+References: <cover.1732126365.git.nirjhar@linux.ibm.com>
+ <4412cece5c3f2175fa076a3b29fe6d0bb4c43a6e.1732126365.git.nirjhar@linux.ibm.com>
+ <87plmp81km.fsf@gmail.com>
+From: Nirjhar Roy <nirjhar@linux.ibm.com>
+In-Reply-To: <87plmp81km.fsf@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: iaUInM7EjzT1AWGztfLarK27nxTr97-w
+X-Proofpoint-ORIG-GUID: zRWqT0NSR1cTUorB80TKVOOmJran-FEr
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ adultscore=0 mlxlogscore=999 mlxscore=0 malwarescore=0 spamscore=0
+ priorityscore=1501 phishscore=0 lowpriorityscore=0 bulkscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411210139
 
-On Thu, Nov 21, 2024 at 5:36=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
->
-> On Thu 21-11-24 15:18:36, Amir Goldstein wrote:
-> > On Thu, Nov 21, 2024 at 11:44=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
-> > >
-> > > On Fri 15-11-24 10:30:23, Josef Bacik wrote:
-> > > > From: Amir Goldstein <amir73il@gmail.com>
-> > > >
-> > > > Similar to FAN_ACCESS_PERM permission event, but it is only allowed=
- with
-> > > > class FAN_CLASS_PRE_CONTENT and only allowed on regular files and d=
-irs.
-> > > >
-> > > > Unlike FAN_ACCESS_PERM, it is safe to write to the file being acces=
-sed
-> > > > in the context of the event handler.
-> > > >
-> > > > This pre-content event is meant to be used by hierarchical storage
-> > > > managers that want to fill the content of files on first read acces=
-s.
-> > > >
-> > > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> > >
-> > > Here I was wondering about one thing:
-> > >
-> > > > +     /*
-> > > > +      * Filesystems need to opt-into pre-content evnets (a.k.a HSM=
-)
-> > > > +      * and they are only supported on regular files and directori=
-es.
-> > > > +      */
-> > > > +     if (mask & FANOTIFY_PRE_CONTENT_EVENTS) {
-> > > > +             if (!(path->mnt->mnt_sb->s_iflags & SB_I_ALLOW_HSM))
-> > > > +                     return -EINVAL;
-> > > > +             if (!is_dir && !d_is_reg(path->dentry))
-> > > > +                     return -EINVAL;
-> > > > +     }
-> > >
-> > > AFAICS, currently no pre-content events are generated for directories=
-. So
-> > > perhaps we should refuse directories here as well for now? I'd like t=
-o
-> >
-> > readdir() does emit PRE_ACCESS (without a range)
->
-> Ah, right.
->
-> > and also always emitted ACCESS_PERM.
->
-> I know that and it's one of those mostly useless events AFAICT.
->
-> > my POC is using that PRE_ACCESS to populate
-> > directories on-demand, although the functionality is incomplete without=
- the
-> > "populate on lookup" event.
->
-> Exactly. Without "populate on lookup" doing "populate on readdir" is ok f=
-or
-> a demo but not really usable in practice because you can get spurious
-> ENOENT from a lookup.
->
-> > > avoid the mistake of original fanotify which had some events availabl=
-e on
-> > > directories but they did nothing and then you have to ponder hard whe=
-ther
-> > > you're going to break userspace if you actually start emitting them..=
-.
-> >
-> > But in any case, the FAN_ONDIR built-in filter is applicable to PRE_ACC=
-ESS.
->
-> Well, I'm not so concerned about filtering out uninteresting events. I'm
-> more concerned about emitting the event now and figuring out later that w=
-e
-> need to emit it in different places or with some other info when actual
-> production users appear.
->
-> But I've realized we must allow pre-content marks to be placed on dirs so
-> that such marks can be placed on parents watching children. What we'd nee=
-d
-> to forbid is a combination of FAN_ONDIR and FAN_PRE_ACCESS, wouldn't we?
 
-Yes, I think that can work well for now.
+On 11/21/24 13:23, Ritesh Harjani (IBM) wrote:
+> Nirjhar Roy <nirjhar@linux.ibm.com> writes:
+>
+>> _require_scratch_extsize helper function will be used in the
+>> the next patch to make the test run only on filesystems with
+>> extsize support.
+>>
+>> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
+>> ---
+>>   common/rc | 17 +++++++++++++++++
+>>   1 file changed, 17 insertions(+)
+>>
+>> diff --git a/common/rc b/common/rc
+>> index cccc98f5..995979e9 100644
+>> --- a/common/rc
+>> +++ b/common/rc
+>> @@ -48,6 +48,23 @@ _test_fsxattr_xflag()
+>>   	grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+>>   }
+>>   
+>> +# This test requires extsize support on the  filesystem
+>> +_require_scratch_extsize()
+>> +{
+>> +	_require_scratch
+> _require_xfs_io_command "extsize"
+>
+> ^^^ Don't we need this too?
+Yes, good point. I will add this in the next revision.
+>
+>> +	_scratch_mkfs > /dev/null
+>> +	_scratch_mount
+>> +	local filename=$SCRATCH_MNT/$RANDOM
+>> +	local blksz=$(_get_block_size $SCRATCH_MNT)
+>> +	local extsz=$(( blksz*2 ))
+>> +	local res=$($XFS_IO_PROG -c "open -f $filename" -c "extsize $extsz" \
+>> +		-c "extsize")
+>> +	_scratch_unmount
+>> +	grep -q "\[$extsz\] $filename" <(echo $res) || \
+>> +		_notrun "this test requires extsize support on the filesystem"
+> Why grep when we can simply just check the return value of previous xfs_io command?
+No, I don't think we can rely on the return value of xfs_io. For ex, 
+let's look at the following set of commands which are ran on an ext4 system:
 
-Thanks,
-Amir.
+root@AMARPC: /mnt1/test$ xfs_io -V
+xfs_io version 5.13.0
+root@AMARPC: /mnt1/test$ touch new
+root@AMARPC: /mnt1/test$ xfs_io -c "extsize 8k"  new
+foreign file active, extsize command is for XFS filesystems only
+root@AMARPC: /mnt1/test$ echo "$?"
+0
+This incorrect return value might have been fixed in some later versions 
+of xfs_io but there are still versions where we can't solely rely on the 
+return value.
+>
+>> +}
+>> +
+>> +
+> ^^ Extra newline.
+
+Noted. I will fix this.
+
+--NR
+
+>
+>>   # Write a byte into a range of a file
+>>   _pwrite_byte() {
+>>   	local pattern="$1"
+>> -- 
+>> 2.43.5
+
+-- 
+---
+Nirjhar Roy
+Linux Kernel Developer
+IBM, Bangalore
+
 
