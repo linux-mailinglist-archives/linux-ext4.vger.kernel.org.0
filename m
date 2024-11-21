@@ -1,171 +1,296 @@
-Return-Path: <linux-ext4+bounces-5291-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5292-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AF669D4964
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 10:00:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 282299D4A1C
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 10:39:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 834291F21E13
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 09:00:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A20AE1F220E8
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 09:39:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F871CB334;
-	Thu, 21 Nov 2024 09:00:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8EB311CC88F;
+	Thu, 21 Nov 2024 09:39:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fyborDxb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ngieK/es";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="fyborDxb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ngieK/es"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA78C136358
-	for <linux-ext4@vger.kernel.org>; Thu, 21 Nov 2024 09:00:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 405CC126C05;
+	Thu, 21 Nov 2024 09:39:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732179630; cv=none; b=nUQ48ah55ogjHUeHdAeJAsfBcpDSDbbjOIMXr+Av3UCQdaKpZMyI9Y6ny6cSSoaTFtNaVtMp7mnzIwYhqomWssGGLgpO++mHtZC9/i3+iLddYiRZNUCNWcXjSiLRnS6UJByoYKkf3yP4H88VlWyJhBsnSuzicJNcxFfMk2nFjak=
+	t=1732181963; cv=none; b=m51oRYOoxiWagEwA6wH3h0BIbhCJkB5fczt+Jo8El0AOwKGpMfQOrVMjMqhkzw9lWJBJ6eHThQozQvxc/GL4I8bCf8pCkDryMNGFbJ8BMJy2MMmsxicTRJEsKmuqEhlFTBK9vrQbuwfLX/debHAYTub6H/Y19guoe9DVNpxaJxQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732179630; c=relaxed/simple;
-	bh=0pZ6FC72ApcrhdHAU8M2XWQ1KBmmDwfxkiijPW8do3k=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=Xo+/Gras+0IsWllUm2DVojjJ5QGKf0/fg5F6FLiBlQj0dFNwgV/OcSY97tnGS3bRhsoH7atod33YWGKuu6sZH15zwM6z1eBBPN4FEtQqRcinn8hcOSwuzjopfeYP3rw2ymjOs6H+tviHvAICDXeVtsJThq6p32bITrg5OMd+JBg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3a79088e7abso6475205ab.1
-        for <linux-ext4@vger.kernel.org>; Thu, 21 Nov 2024 01:00:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732179625; x=1732784425;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=mbo9m0XZMgb6dNGJZhRzeXwd435fnhHwFdxfyvcWvps=;
-        b=vxXIFwDn1G4lz5bvWtEberctWgFktn1s+oGjPjVbuYG/MD8C6UMZibRWHA/767xw8Q
-         XyxftDjQv9bdkx3aoPSnrhOKiqmAlzP9AAGBOfIU2UbhDrCFFWGKGAfwTTjO0+mbHLyW
-         OpU717CzyOIV8E4N+aY1LfIYUVuKy5FMawYRJnCE3qJnb+3ekdhQaZMd8pdklCLKDri5
-         BIlmpYkiJf0P17Rf/JsJ3HhoqhAIgnF8PUUYQDWEUVxUiBbuLp1gBIapzWKfQYI+I1O2
-         mXZjXVaN7LS2abIEeuhQQuaQGXDWuxCw8QvnxUbGdNM30aHHvT31eu42G7gR1X4WZRFh
-         iKrg==
-X-Forwarded-Encrypted: i=1; AJvYcCVe1jHUs9rcUOegc5dzY51DmScSKL9yyHQveO6heUjkF6Wmu65cLapCDYB/vZI3O0uiLFRLUUh3NwcB@vger.kernel.org
-X-Gm-Message-State: AOJu0YxxqQI2VJJeiIWB1vFTUh4nOwCtwB5IS1bNXqAfpHuXINoR7jmX
-	IuFAh0XE+C/8pQi0zikcv/T+gZxgMiVf7JTB6Qr/UYmntLKyNECtpdmv2f6ZEbKsWCQ/i2oodO/
-	nAAzsfOCmRJSTKvAjpUg0cfmC9Ol8sGZmZtCzBRm4OjSyGKUH0TJ9q8w=
-X-Google-Smtp-Source: AGHT+IG0LqqCpejA4AgoN4h+S717FRAooPXjzDZb+3DwtHxqa9Bq1iTTI0p1ivcdahrksK/khwBicxDPMev8CD5NgOvItu13d9vR
+	s=arc-20240116; t=1732181963; c=relaxed/simple;
+	bh=cNZsnsZB5O/BQPgmY0Q+EjFt17ILS5+vIQ5R2ceUhEQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mRyHYBtNqkbfu47TABXhgFVxCKv9ABHIshqb62Lo40Nkp0eeDpGkHI4LfXBejzhZeQDKyfZ5tVLdNeDb7lzTvGh8FeN1ckgVYY0PA8cOxxdGKir1kzD+oHoDuB4NKQyr7ZSWPruNDhBQi46yj5taZOvEIrtEmgmrU50OJgTgmJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fyborDxb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ngieK/es; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=fyborDxb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ngieK/es; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 4190F2124D;
+	Thu, 21 Nov 2024 09:39:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732181959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rN7zACpXhWBvmyhdQ9L7AJcccIoJA6vlCdi8480LQC0=;
+	b=fyborDxbGV5tOJEsgZOCdPTpEXPwLs66tKq/7XlYBvT+lfOhORmFAM9Gp0L9Rcfc07ZGtO
+	M3ahEd0zTbnol02LyixbnSz+aEeUU74bdiQBgK9SZ6opo5+v6Cbk7y9PHaY2Yyv7k/zygS
+	r/+fmMO6YcmaB0BZ4nVfbL81omS9NKw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732181959;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rN7zACpXhWBvmyhdQ9L7AJcccIoJA6vlCdi8480LQC0=;
+	b=ngieK/es157uCVvN4o0UKFZk5Uky2BzuJoAKbgaLqLG+1DDJlEU6UyIHIFwC8RN8yjRAAK
+	K1QEBo+WuebSeABg==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=fyborDxb;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="ngieK/es"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732181959; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rN7zACpXhWBvmyhdQ9L7AJcccIoJA6vlCdi8480LQC0=;
+	b=fyborDxbGV5tOJEsgZOCdPTpEXPwLs66tKq/7XlYBvT+lfOhORmFAM9Gp0L9Rcfc07ZGtO
+	M3ahEd0zTbnol02LyixbnSz+aEeUU74bdiQBgK9SZ6opo5+v6Cbk7y9PHaY2Yyv7k/zygS
+	r/+fmMO6YcmaB0BZ4nVfbL81omS9NKw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732181959;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rN7zACpXhWBvmyhdQ9L7AJcccIoJA6vlCdi8480LQC0=;
+	b=ngieK/es157uCVvN4o0UKFZk5Uky2BzuJoAKbgaLqLG+1DDJlEU6UyIHIFwC8RN8yjRAAK
+	K1QEBo+WuebSeABg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 2B6D213927;
+	Thu, 21 Nov 2024 09:39:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id hrlKCsf/PmcJXAAAD6G6ig
+	(envelope-from <jack@suse.cz>); Thu, 21 Nov 2024 09:39:19 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id C30E5A089E; Thu, 21 Nov 2024 10:39:18 +0100 (CET)
+Date: Thu, 21 Nov 2024 10:39:18 +0100
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, torvalds@linux-foundation.org,
+	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 02/19] fsnotify: opt-in for permission events at file
+ open time
+Message-ID: <20241121093918.d2ml5lrfcqwknffb@quack3>
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <5ea5f8e283d1edb55aa79c35187bfe344056af14.1731684329.git.josef@toxicpanda.com>
+ <20241120155309.lecjqqhohgcgyrkf@quack3>
+ <CAOQ4uxgjOZN_=BM3DuLLZ8Vzdh-q7NYKhMnF0p_NveYd=e7vdA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1fce:b0:3a7:9358:b286 with SMTP id
- e9e14a558f8ab-3a79358b407mr8135535ab.0.1732179624859; Thu, 21 Nov 2024
- 01:00:24 -0800 (PST)
-Date: Thu, 21 Nov 2024 01:00:24 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <673ef6a8.050a0220.3c9d61.016c.GAE@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in ext4_write_inline_data (2)
-From: syzbot <syzbot+fe2a25dae02a207717a0@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgjOZN_=BM3DuLLZ8Vzdh-q7NYKhMnF0p_NveYd=e7vdA@mail.gmail.com>
+X-Rspamd-Queue-Id: 4190F2124D
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	MISSING_XM_UA(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	TO_DN_SOME(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-Hello,
+On Wed 20-11-24 17:12:21, Amir Goldstein wrote:
+> On Wed, Nov 20, 2024 at 4:53 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Fri 15-11-24 10:30:15, Josef Bacik wrote:
+> > > From: Amir Goldstein <amir73il@gmail.com>
+> > >
+> > > Legacy inotify/fanotify listeners can add watches for events on inode,
+> > > parent or mount and expect to get events (e.g. FS_MODIFY) on files that
+> > > were already open at the time of setting up the watches.
+> > >
+> > > fanotify permission events are typically used by Anti-malware sofware,
+> > > that is watching the entire mount and it is not common to have more that
+> > > one Anti-malware engine installed on a system.
+> > >
+> > > To reduce the overhead of the fsnotify_file_perm() hooks on every file
+> > > access, relax the semantics of the legacy FAN_ACCESS_PERM event to generate
+> > > events only if there were *any* permission event listeners on the
+> > > filesystem at the time that the file was opened.
+> > >
+> > > The new semantic is implemented by extending the FMODE_NONOTIFY bit into
+> > > two FMODE_NONOTIFY_* bits, that are used to store a mode for which of the
+> > > events types to report.
+> > >
+> > > This is going to apply to the new fanotify pre-content events in order
+> > > to reduce the cost of the new pre-content event vfs hooks.
+> > >
+> > > Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> > > Link: https://lore.kernel.org/linux-fsdevel/CAHk-=wj8L=mtcRTi=NECHMGfZQgXOp_uix1YVh04fEmrKaMnXA@mail.gmail.com/
+> > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> >
+> > FWIW I've ended up somewhat massaging this patch (see below).
+> >
+> > > diff --git a/include/linux/fs.h b/include/linux/fs.h
+> > > index 23bd058576b1..8e5c783013d2 100644
+> > > --- a/include/linux/fs.h
+> > > +++ b/include/linux/fs.h
+> > > @@ -173,13 +173,14 @@ typedef int (dio_iodone_t)(struct kiocb *iocb, loff_t offset,
+> > >
+> > >  #define      FMODE_NOREUSE           ((__force fmode_t)(1 << 23))
+> > >
+> > > -/* FMODE_* bit 24 */
+> > > -
+> > >  /* File is embedded in backing_file object */
+> > > -#define FMODE_BACKING                ((__force fmode_t)(1 << 25))
+> > > +#define FMODE_BACKING                ((__force fmode_t)(1 << 24))
+> > >
+> > > -/* File was opened by fanotify and shouldn't generate fanotify events */
+> > > -#define FMODE_NONOTIFY               ((__force fmode_t)(1 << 26))
+> > > +/* File shouldn't generate fanotify pre-content events */
+> > > +#define FMODE_NONOTIFY_HSM   ((__force fmode_t)(1 << 25))
+> > > +
+> > > +/* File shouldn't generate fanotify permission events */
+> > > +#define FMODE_NONOTIFY_PERM  ((__force fmode_t)(1 << 26))
+> >
+> > Firstly, I've kept FMODE_NONOTIFY to stay a single bit instead of two bit
+> > constant. I've seen too many bugs caused by people expecting the constant
+> > has a single bit set when it actually had more in my life. So I've ended up
+> > with:
+> >
+> > +/*
+> > + * Together with FMODE_NONOTIFY_PERM defines which fsnotify events shouldn't be
+> > + * generated (see below)
+> > + */
+> > +#define FMODE_NONOTIFY         ((__force fmode_t)(1 << 25))
+> > +
+> > +/*
+> > + * Together with FMODE_NONOTIFY defines which fsnotify events shouldn't be
+> > + * generated (see below)
+> > + */
+> > +#define FMODE_NONOTIFY_PERM    ((__force fmode_t)(1 << 26))
+> >
+> > and
+> >
+> > +/*
+> > + * The two FMODE_NONOTIFY* define which fsnotify events should not be generated
+> > + * for a file. These are the possible values of (f->f_mode &
+> > + * FMODE_FSNOTIFY_MASK) and their meaning:
+> > + *
+> > + * FMODE_NONOTIFY - suppress all (incl. non-permission) events.
+> > + * FMODE_NONOTIFY_PERM - suppress permission (incl. pre-content) events.
+> > + * FMODE_NONOTIFY | FMODE_NONOTIFY_PERM - suppress only pre-content events.
+> > + */
+> > +#define FMODE_FSNOTIFY_MASK \
+> > +       (FMODE_NONOTIFY | FMODE_NONOTIFY_PERM)
+> > +
+> > +#define FMODE_FSNOTIFY_NONE(mode) \
+> > +       ((mode & FMODE_FSNOTIFY_MASK) == FMODE_NONOTIFY)
+> > +#define FMODE_FSNOTIFY_PERM(mode) \
+> > +       (!(mode & FMODE_NONOTIFY_PERM))
+> 
+> That looks incorrect -
+> It gives the wrong value for FMODE_NONOTIFY | FMODE_NONOTIFY_PERM
+> 
+> should be:
+> != FMODE_NONOTIFY_PERM &&
+> != FMODE_NONOTIFY
+> 
+> The simplicity of the single bit test is for permission events
+> is why I chose my model, but I understand your reasoning.
 
-syzbot found the following issue on:
+Ah, thanks for catching this! I've fixed this to:
 
-HEAD commit:    4a5df3796467 Merge tag 'mm-hotfixes-stable-2024-11-16-15-3..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=165adb5f980000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ca2f08f822652bd0
-dashboard link: https://syzkaller.appspot.com/bug?extid=fe2a25dae02a207717a0
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=118eb2c0580000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1395f130580000
++#define FMODE_FSNOTIFY_PERM(mode) \
++       ((mode & FMODE_FSNOTIFY_MASK) == 0 || \
++        (mode & FMODE_FSNOTIFY_MASK) == (FMODE_NONOTIFY | FMODE_NONOTIFY_PERM))
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/5912c1b48bcf/disk-4a5df379.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/e9bdeba257b7/vmlinux-4a5df379.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/567e5bf968eb/bzImage-4a5df379.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/94e36b599391/mount_0.gz
+It is not a single bit test so it ends up being:
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+fe2a25dae02a207717a0@syzkaller.appspotmail.com
+   0x0000000060180345 <+101>:	mov    0x20(%r12),%edx
+   0x000000006018034a <+106>:	and    $0x6000000,%edx
+   0x0000000060180350 <+112>:	je     0x6018035a <rw_verify_area+122>
+   0x0000000060180352 <+114>:	cmp    $0x6000000,%edx
+   0x0000000060180358 <+120>:	jne    0x6018032e <rw_verify_area+78>
 
-EXT4-fs (loop0): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: none.
-------------[ cut here ]------------
-kernel BUG at fs/ext4/inline.c:235!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN NOPTI
-CPU: 1 UID: 0 PID: 5838 Comm: syz-executor116 Not tainted 6.12.0-rc7-syzkaller-00212-g4a5df3796467 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 10/30/2024
-RIP: 0010:ext4_write_inline_data+0x36b/0x460 fs/ext4/inline.c:235
-Code: df 41 ff e8 f7 df 41 ff 45 8d 64 2c c4 b8 3c 00 00 00 29 e8 4c 63 f0 e9 c7 fe ff ff e8 de df 41 ff 90 0f 0b e8 d6 df 41 ff 90 <0f> 0b e8 8e b8 a2 ff e9 d6 fd ff ff 4c 89 ff e8 81 b8 a2 ff e9 71
-RSP: 0018:ffffc90003e078e0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888074c38c98 RCX: ffffffff824b9874
-RDX: ffff8880349bbc00 RSI: ffffffff824b9a7a RDI: 0000000000000006
-RBP: 0000010000000005 R08: 0000000000000006 R09: 0000010000000006
-R10: 000000000000003c R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc90003e07980 R14: 0000010000000006 R15: ffff888074c39242
-FS:  00005555714a8380(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 000000000066c7e0 CR3: 0000000077348000 CR4: 0000000000350ef0
-Call Trace:
- <TASK>
- ext4_write_inline_data_end+0x278/0xc50 fs/ext4/inline.c:774
- ext4_da_write_end+0x54e/0xd00 fs/ext4/inode.c:3065
- generic_perform_write+0x4e8/0x920 mm/filemap.c:4069
- ext4_buffered_write_iter+0x119/0x3c0 fs/ext4/file.c:299
- ext4_file_write_iter+0x861/0x19d0 fs/ext4/file.c:698
- new_sync_write fs/read_write.c:590 [inline]
- vfs_write+0x5b1/0x1150 fs/read_write.c:683
- ksys_pwrite64 fs/read_write.c:798 [inline]
- __do_sys_pwrite64 fs/read_write.c:808 [inline]
- __se_sys_pwrite64 fs/read_write.c:805 [inline]
- __x64_sys_pwrite64+0x200/0x260 fs/read_write.c:805
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xcd/0x250 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7f18e1c07679
-Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 61 17 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fff5a649ea8 EFLAGS: 00000246 ORIG_RAX: 0000000000000012
-RAX: ffffffffffffffda RBX: 00007fff5a64a078 RCX: 00007f18e1c07679
-RDX: 0000000000000001 RSI: 0000000020000300 RDI: 0000000000000004
-RBP: 00007f18e1c7b610 R08: 0000000000000000 R09: 00007fff5a64a078
-R10: 0000010000000005 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007fff5a64a068 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:ext4_write_inline_data+0x36b/0x460 fs/ext4/inline.c:235
-Code: df 41 ff e8 f7 df 41 ff 45 8d 64 2c c4 b8 3c 00 00 00 29 e8 4c 63 f0 e9 c7 fe ff ff e8 de df 41 ff 90 0f 0b e8 d6 df 41 ff 90 <0f> 0b e8 8e b8 a2 ff e9 d6 fd ff ff 4c 89 ff e8 81 b8 a2 ff e9 71
-RSP: 0018:ffffc90003e078e0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: ffff888074c38c98 RCX: ffffffff824b9874
-RDX: ffff8880349bbc00 RSI: ffffffff824b9a7a RDI: 0000000000000006
-RBP: 0000010000000005 R08: 0000000000000006 R09: 0000010000000006
-R10: 000000000000003c R11: 0000000000000000 R12: 0000000000000001
-R13: ffffc90003e07980 R14: 0000010000000006 R15: ffff888074c39242
-FS:  00005555714a8380(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f5524d17095 CR3: 0000000077348000 CR4: 0000000000350ef0
+But I guess that's not terrible either.
 
+> > +#define FMODE_FSNOTIFY_HSM(mode) \
+> > +       ((mode & FMODE_FSNOTIFY_MASK) == 0)
+> >
+> > Also I've moved file_set_fsnotify_mode() out of line into fsnotify.c. The
+> > function gets quite big and the call is not IMO so expensive to warrant
+> > inlining. Furthermore it saves exporting some fsnotify internals to modules
+> > (in later patches).
+> 
+> Sounds good.
+> Since you wanted to refrain from defining a two bit constant,
+> I wonder how you annotated for NONOTIFY_HSM case
+> 
+>    return FMODE_NONOTIFY | FMODE_NONOTIFY_PERM;
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+I'm not sure I understand. What do you mean by "annotated"?
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+It is not that I object to "two bit constants". FMODE_FSNOTIFY_MASK is a
+two-bit constant and a good one. But the name clearly suggests it is not a
+single bit constant. When you have all FMODE_FOO and FMODE_BAR things
+single bit except for FMODE_BAZ which is multi-bit, then this is IMHO a
+recipe for problems and I rather prefer explicitely spelling the
+combination out as FMODE_NONOTIFY | FMODE_NONOTIFY_PERM in the few places
+that need this instead of hiding it behind some other name.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
