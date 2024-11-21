@@ -1,205 +1,178 @@
-Return-Path: <linux-ext4+bounces-5338-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5339-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 575749D528D
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 19:31:17 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 52D3E9D528F
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 19:31:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 183F728109F
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 18:31:16 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BC92FB25858
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 18:31:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1BA21BBBC1;
-	Thu, 21 Nov 2024 18:31:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 951721AAE1B;
+	Thu, 21 Nov 2024 18:31:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="XhdOpiD5"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F0yHcDlb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lj1-f173.google.com (mail-lj1-f173.google.com [209.85.208.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3CA419EEC4;
-	Thu, 21 Nov 2024 18:31:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C4AF6F06B;
+	Thu, 21 Nov 2024 18:31:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732213869; cv=none; b=Co2XA60pNGVRMDq4E7Rus0Bdq34WS5K0A3so78hZIkxS6DIBMFXtkem2G96EIIuthyjQgojf2FBPtl4s8PhNzQxs80dZppPdhYxuA63Uo4FRye8mKj8Loi+L92LD5rAQuuGJhZ11zvkFWLaQJPC8P9pMBH8haehKpwGbc3YTU/4=
+	t=1732213895; cv=none; b=p7O7J/CzbaA3ePPHsGz00v+KDIhg2N1G7GoG3IJ1kI7yoXGCxS/xgB9440gvG25UXuPMMefDW/SiT7iDuyH8Mb7Kw+AScry14W64QqGMzFG8SVMZVWVqfL+tCnVy63LutHbXLv59Tj38xQSN9w58Y6hcXSKgM6L+vs1BlStnzaQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732213869; c=relaxed/simple;
-	bh=qioggrxnVgno/FO6LLhy5ZyuWSzXrSq8/0OlfYztgpc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=epmvbr0Hlt4If5/AZIOpo4n9iAKS+SYOufYTi4kIbLHEbcvt2le9GFQOAQkMzM2lii9SXhlqzNy7OG5M0A+hkHmSiVpbOuQw0F8HkKqfAMdKbmczIixyp/KabUbRxeone+JIppjOFOQ4ty4fokzBM+wzl5fBsBohDu/uA2YueoU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=XhdOpiD5; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AL8xXFJ027820;
-	Thu, 21 Nov 2024 18:31:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=W0lvMT
-	1s3YNC9kYeGKhAn6MY9ArUfENZ3jBkSGnLUKk=; b=XhdOpiD53wiC+ycfqI07wO
-	LMdNdSqEIT1MgIH7xdu8ntwZB3+G3mLufyL5fOO7Gc5yjqOnHjsU+dCMTgwliR+q
-	IXJ6B9ufNSWp+bpuQGacCOSTfS/lEZi8bhEfPNFUliwPpjwrXx8yxVsKQjwElpEX
-	0M4WJg5yK5BxJX+Zm1+W8DFemKw9Vd6Yy0dmAVBcTho7wEWH+YCGllRRPBrXok+4
-	K5NTUCxi+ajKUl7XFrmGqR4GyxwrnVZJRmQvFXfnY9zSHuBRCGlq3sLb4q40Qozk
-	QHvMJFJ62TJFGG/1ORjQzdsY0y6tudqza55UY6JbTg7yP+0pCfISHlBniyfG28jQ
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42xk21c7y2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Nov 2024 18:31:04 +0000 (GMT)
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4ALIR3Aa027631;
-	Thu, 21 Nov 2024 18:31:03 GMT
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 42xk21c7xy-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Nov 2024 18:31:03 +0000 (GMT)
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4ALFLf4a021833;
-	Thu, 21 Nov 2024 18:31:03 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 42y6qn1ad3-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 21 Nov 2024 18:31:02 +0000
-Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4ALIV1QA52429296
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 21 Nov 2024 18:31:01 GMT
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0150220040;
-	Thu, 21 Nov 2024 18:31:01 +0000 (GMT)
-Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 28FA12004B;
-	Thu, 21 Nov 2024 18:30:59 +0000 (GMT)
-Received: from [9.124.219.125] (unknown [9.124.219.125])
-	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Thu, 21 Nov 2024 18:30:58 +0000 (GMT)
-Message-ID: <8ad602fa-119c-4863-a3be-e778fefa0b1c@linux.ibm.com>
-Date: Fri, 22 Nov 2024 00:00:52 +0530
+	s=arc-20240116; t=1732213895; c=relaxed/simple;
+	bh=qdbfLHjBwQXwAfjuDYTl015HlQfcIC0oOpXKyWa83GI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WktoHMRrNIuOAmjexzhuVXlnDxQj8j6DglS8Qwiez2rriVU6I5wWS//+ThKXIo+JXkPe49QjO6Cq3qvvroOOAuPqRwj59VGAG9KkZvincmaR4vpOkgQZzUzm4l3jk2fqUOoquqCBXVDMzAHf4DXMyF5XELbXG5NhSlcRZ5+xYrg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F0yHcDlb; arc=none smtp.client-ip=209.85.208.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f173.google.com with SMTP id 38308e7fff4ca-2fb5fa911aaso22746001fa.2;
+        Thu, 21 Nov 2024 10:31:33 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732213891; x=1732818691; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=q8sUkGeUy2sHCwOUXx/YOFYIvJypbi+uhVMOVlCFTao=;
+        b=F0yHcDlb422+aZSjUcx9eMUZB0mgRAbhoILJmlkHlHKrh6sh2j/aP01yCkKWZQ/sOe
+         WNMAUqiQXMsOeCgM3ngWcWcd9xZRC/uSZgAAaDEmDrpKE3+hXvaVmiBB3uV0C1nboPao
+         UyBAmX0FKgs9lgZmj7sTpA6s23bhpOzzmGVhXHeXcBMgkH8u+uK9RklhWLDMqDsX/CD/
+         WmazcvwbIFbmKfsr1hb8Y2dgZmA76ckGi+1p2GVIq7sJoe/J3r2YZP1foj+I5CUfq8ly
+         dMpiBtkX3V6o87kABWPBRXUYzhPTapHPnAgQPn98uFKa01Em/EeN5VS+aINu4yCabC52
+         7KQQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732213891; x=1732818691;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=q8sUkGeUy2sHCwOUXx/YOFYIvJypbi+uhVMOVlCFTao=;
+        b=V83Edf4RujgOHWJz65bTPWB6t9zQhSzw9MsCiG3JambCIojgpKSbrf8jBesHHY/J1K
+         eMmL5VxVxFmUlBIngCD27/w3RW6RsWe4Nd7xLKeKmwF+ekwYRJd00ODP4iZURXTi0S89
+         tE6iIN5UAlMqqMzoMXfEgxrqZZF4wrQ1BNQJ8MOX9wN9SRphm/THvHgKDcDx3n6qnBgs
+         mBlyr/cg50oD12ruIoPKiS+b6HpQk3ouswt0VryJ3HUdHUii1s775FVkroPiIAXHHLDi
+         Rp2ifyNrDJa/1JX8zvBfdFuiKrRyu3EJfaIXbHquF/6Zb2iMImxa/Z9+shbjcrOv2not
+         WDgw==
+X-Forwarded-Encrypted: i=1; AJvYcCUG+8+BH/kgv6eAMD7jk+hdl6V/A4fYxp3n1+O83+O9q9EBNhPPQ+t7dXad/AdPCmYjOloeO7z4+nbnrw==@vger.kernel.org, AJvYcCWMdixVCwzIo8RvFtms+CKsqUd+N/Y2w0ITptzQrP3NiaWxvQAIKkLq9YOTCrGkdRVn8bAVSxCquqbFm37lGg==@vger.kernel.org, AJvYcCWWzmOf+fisE6DD2r50w2tW8leSSiovtAXZglabkpf1tiWlGCDyS5RF1jG0JoscqCGaG1RmPVRUuU9xrQ==@vger.kernel.org, AJvYcCXRB4srf9aSp9l+Gg+3dxwfxDoS9XHzVxduwEL/6puwhMrXeg77A3t7f2kMwJnt8WOLgvSUJ3VCTi4O@vger.kernel.org
+X-Gm-Message-State: AOJu0YwDt3K0LPfAgOA5I4ApOOYvlzOy5uIUYNK6I+mUE43xZtSwck1i
+	a/NX4Z1aACGbtbWMqi+8wjtm1FGT4zoc5HEt1Vu9pXKtYEdUlbGhQOnnB9kt5nGK8PHra/z5nVA
+	EKlIzLiROx3KBjxJE3NtzTEylahM=
+X-Gm-Gg: ASbGncs6si7rQ4EAWjscDolS9LQAJtiCKxHK2RC6/lwz+a4Mkjj3w14Z6kB4SDFHXYw
+	HpMsmvhqNd/tm6a/Y8Pl192npcFWOI0c=
+X-Google-Smtp-Source: AGHT+IEldLUO8T8htIjF2AQfaERgaC4UTkjSuef9nnywzNlaBFoQgol0xShwH40QKISC70XNYyKYcQsEtPoJAUUnBXU=
+X-Received: by 2002:a2e:be9e:0:b0:2ff:59dd:9242 with SMTP id
+ 38308e7fff4ca-2ff8dcb1d15mr80129191fa.35.1732213891042; Thu, 21 Nov 2024
+ 10:31:31 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 1/3] common/rc,xfs/207: Add a common helper function to
- check xflag bits
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-        ojaswin@linux.ibm.com, zlang@kernel.org
-References: <cover.1732126365.git.nirjhar@linux.ibm.com>
- <e3fe55386a702d34147612b2ce46698b6257e821.1732126365.git.nirjhar@linux.ibm.com>
- <20241121172029.GX9425@frogsfrogsfrogs>
-Content-Language: en-US
-From: Nirjhar Roy <nirjhar@linux.ibm.com>
-In-Reply-To: <20241121172029.GX9425@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: a23bRwkJPLmUScM1mYV9uQBnXp3XZ881
-X-Proofpoint-GUID: WbTKPbxPJxMTGVtGs6y-oPLx9d1R4E2q
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 phishscore=0
- mlxlogscore=914 lowpriorityscore=0 priorityscore=1501 suspectscore=0
- malwarescore=0 clxscore=1015 mlxscore=0 spamscore=0 adultscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2411210139
+References: <cover.1731684329.git.josef@toxicpanda.com> <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
+ <20241121104428.wtlrfhadcvipkjia@quack3> <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
+ <20241121163618.ubz7zplrnh66aajw@quack3>
+In-Reply-To: <20241121163618.ubz7zplrnh66aajw@quack3>
+From: Amir Goldstein <amir73il@gmail.com>
+Date: Thu, 21 Nov 2024 19:31:20 +0100
+Message-ID: <CAOQ4uxhsEA2zj-a6H+==S+6G8nv+BQEJDoGjJeimX0yRhHso2w@mail.gmail.com>
+Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission event
+To: Jan Kara <jack@suse.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
+	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
+	linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-
-On 11/21/24 22:50, Darrick J. Wong wrote:
-> On Thu, Nov 21, 2024 at 10:39:10AM +0530, Nirjhar Roy wrote:
->> This patch defines a common helper function to test whether any of
->> fsxattr xflags field is set or not. We will use this helper in
->> an upcoming patch for checking extsize (e) flag.
->>
->> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
-> Looks good to me now,
-> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+On Thu, Nov 21, 2024 at 5:36=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
 >
-> --D
-
-Thank you.
-
---NR
-
+> On Thu 21-11-24 15:18:36, Amir Goldstein wrote:
+> > On Thu, Nov 21, 2024 at 11:44=E2=80=AFAM Jan Kara <jack@suse.cz> wrote:
+> > >
+> > > On Fri 15-11-24 10:30:23, Josef Bacik wrote:
+> > > > From: Amir Goldstein <amir73il@gmail.com>
+> > > >
+> > > > Similar to FAN_ACCESS_PERM permission event, but it is only allowed=
+ with
+> > > > class FAN_CLASS_PRE_CONTENT and only allowed on regular files and d=
+irs.
+> > > >
+> > > > Unlike FAN_ACCESS_PERM, it is safe to write to the file being acces=
+sed
+> > > > in the context of the event handler.
+> > > >
+> > > > This pre-content event is meant to be used by hierarchical storage
+> > > > managers that want to fill the content of files on first read acces=
+s.
+> > > >
+> > > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
+> > >
+> > > Here I was wondering about one thing:
+> > >
+> > > > +     /*
+> > > > +      * Filesystems need to opt-into pre-content evnets (a.k.a HSM=
+)
+> > > > +      * and they are only supported on regular files and directori=
+es.
+> > > > +      */
+> > > > +     if (mask & FANOTIFY_PRE_CONTENT_EVENTS) {
+> > > > +             if (!(path->mnt->mnt_sb->s_iflags & SB_I_ALLOW_HSM))
+> > > > +                     return -EINVAL;
+> > > > +             if (!is_dir && !d_is_reg(path->dentry))
+> > > > +                     return -EINVAL;
+> > > > +     }
+> > >
+> > > AFAICS, currently no pre-content events are generated for directories=
+. So
+> > > perhaps we should refuse directories here as well for now? I'd like t=
+o
+> >
+> > readdir() does emit PRE_ACCESS (without a range)
 >
->> ---
->>   common/rc     |  7 +++++++
->>   tests/xfs/207 | 15 ++++-----------
->>   2 files changed, 11 insertions(+), 11 deletions(-)
->>
->> diff --git a/common/rc b/common/rc
->> index 2af26f23..cccc98f5 100644
->> --- a/common/rc
->> +++ b/common/rc
->> @@ -41,6 +41,13 @@ _md5_checksum()
->>   	md5sum $1 | cut -d ' ' -f1
->>   }
->>   
->> +# Check whether a fsxattr xflags name ($2) field is set on a given file ($1).
->> +# e.g, fsxattr.xflags =  0x80000800 [extsize, has-xattr]
->> +_test_fsxattr_xflag()
->> +{
->> +	grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
->> +}
->> +
->>   # Write a byte into a range of a file
->>   _pwrite_byte() {
->>   	local pattern="$1"
->> diff --git a/tests/xfs/207 b/tests/xfs/207
->> index bbe21307..394e7e55 100755
->> --- a/tests/xfs/207
->> +++ b/tests/xfs/207
->> @@ -21,15 +21,6 @@ _require_cp_reflink
->>   _require_xfs_io_command "fiemap"
->>   _require_xfs_io_command "cowextsize"
->>   
->> -# Takes the fsxattr.xflags line,
->> -# i.e. fsxattr.xflags = 0x0 [--------------C-]
->> -# and tests whether a flag character is set
->> -test_xflag()
->> -{
->> -    local flg=$1
->> -    grep -q "\[.*${flg}.*\]" && echo "$flg flag set" || echo "$flg flag unset"
->> -}
->> -
->>   echo "Format and mount"
->>   _scratch_mkfs > $seqres.full 2>&1
->>   _scratch_mount >> $seqres.full 2>&1
->> @@ -65,14 +56,16 @@ echo "Set cowextsize and check flag"
->>   $XFS_IO_PROG -c "cowextsize 1048576" $testdir/file3 | _filter_scratch
->>   _scratch_cycle_mount
->>   
->> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
->> +_test_fsxattr_xflag "$testdir/file3" "cowextsize" && echo "C flag set" || \
->> +	echo "C flag unset"
->>   $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->>   
->>   echo "Unset cowextsize and check flag"
->>   $XFS_IO_PROG -c "cowextsize 0" $testdir/file3 | _filter_scratch
->>   _scratch_cycle_mount
->>   
->> -$XFS_IO_PROG -c "stat" $testdir/file3 | grep 'fsxattr.xflags' | test_xflag "C"
->> +_test_fsxattr_xflag "$testdir/file3" "cowextsize" && echo "C flag set" || \
->> +	echo "C flag unset"
->>   $XFS_IO_PROG -c "cowextsize" $testdir/file3 | _filter_scratch
->>   
->>   status=0
->> -- 
->> 2.43.5
->>
->>
--- 
----
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+> Ah, right.
+>
+> > and also always emitted ACCESS_PERM.
+>
+> I know that and it's one of those mostly useless events AFAICT.
+>
+> > my POC is using that PRE_ACCESS to populate
+> > directories on-demand, although the functionality is incomplete without=
+ the
+> > "populate on lookup" event.
+>
+> Exactly. Without "populate on lookup" doing "populate on readdir" is ok f=
+or
+> a demo but not really usable in practice because you can get spurious
+> ENOENT from a lookup.
+>
+> > > avoid the mistake of original fanotify which had some events availabl=
+e on
+> > > directories but they did nothing and then you have to ponder hard whe=
+ther
+> > > you're going to break userspace if you actually start emitting them..=
+.
+> >
+> > But in any case, the FAN_ONDIR built-in filter is applicable to PRE_ACC=
+ESS.
+>
+> Well, I'm not so concerned about filtering out uninteresting events. I'm
+> more concerned about emitting the event now and figuring out later that w=
+e
+> need to emit it in different places or with some other info when actual
+> production users appear.
+>
+> But I've realized we must allow pre-content marks to be placed on dirs so
+> that such marks can be placed on parents watching children. What we'd nee=
+d
+> to forbid is a combination of FAN_ONDIR and FAN_PRE_ACCESS, wouldn't we?
 
+Yes, I think that can work well for now.
+
+Thanks,
+Amir.
 
