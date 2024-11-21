@@ -1,193 +1,152 @@
-Return-Path: <linux-ext4+bounces-5342-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5343-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F6D29D529E
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 19:38:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68A289D533A
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 20:05:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B33BCB26045
-	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 18:38:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 222081F20FB3
+	for <lists+linux-ext4@lfdr.de>; Thu, 21 Nov 2024 19:05:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2896B1BBBC1;
-	Thu, 21 Nov 2024 18:37:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2EA61D4323;
+	Thu, 21 Nov 2024 18:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="llHUo7XR"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TpoDArGg"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 130AF6F06B;
-	Thu, 21 Nov 2024 18:37:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA72E1CD1EE;
+	Thu, 21 Nov 2024 18:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732214278; cv=none; b=ikbV5fnCEFSbQQrkUhRpnedw3GLaX9NKr6/mdNoZ4+2JQYpf77DNWrHRgdVHdoyAFUxtLxtf6Mr6dnYTW3INnb3fylqPpjV+2ptUXLGNMA7N2mNZDbxTpg9Sgw38vagPTlS+j1BdZBZTxXTF+3lwjdU7gRZYuOd6fd3usfxkWo0=
+	t=1732215416; cv=none; b=J1i/kb0D+GpA7CoH5q0DDW4XH85zFddG/sN0Zqh46N3Ehvkm4mAKo5U45wcHbWHNwjCYoTbtQyhmniOCgo8UooBD9KLr59DX4oQm4nL787RWmVyg1BXVwlHyHEUPTmVqkUOz+3qjuUzYDXtrxY8GQzD0KpWFG2mo/HQ3q3yInBU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732214278; c=relaxed/simple;
-	bh=B/qr5jKGysPKImWjNbDNluNM2rS5nL4lHYsUmU1QBfI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sQiuWRaILmS7WEZq7uWwPUorp0mdAqo0SmZQxtk0WcG7aG7XhCLtdsLLnzispH2fwXRggJCGWZTpxLTHC0BAu3B6XiZeNlNvZgkGkToEVVg3YkdA1Rx9DPPSgd1maDG4DycOxKAFrObFjCa/6WnrFmlNs4fQF+zh/c/nwT4/QUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=llHUo7XR; arc=none smtp.client-ip=209.85.218.45
+	s=arc-20240116; t=1732215416; c=relaxed/simple;
+	bh=fdqgDVFUO3jqkK3S5ZKi3oxfBRiOYeXV3qcrZ4bkRAo=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
+	 MIME-version:Content-type; b=uIQYh2BM2dXVkpgbYYhBsplBdnI+rtY0k6LdbMMV5/hCZuYTQ1Q2N10ruF3A1zrE2XpzhJRY/nj37UHfebvY73eIKqsIZXjHwqDefvL26J2KM5Ii+6WwUjtbBSgBvViamI39WCQX9xVhfZF3h4VOWr82YWb/A71pqGdYf7sLGAM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TpoDArGg; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-aa4cb5fcc06so228343066b.0;
-        Thu, 21 Nov 2024 10:37:56 -0800 (PST)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-21288ce11d7so10234625ad.2;
+        Thu, 21 Nov 2024 10:56:54 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1732214275; x=1732819075; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=o7o6YG1r7Hvwm2rqRHDEPpPeTuZqrDtGk2bZdDwk4Qk=;
-        b=llHUo7XRpAVmNOkfPah5YdpT5F4wbY+8uPGSWeOhB4oJIdCVhw+LvGrUHOcI6jzk76
-         2udy2suuE+JlYzMMz801L9g0JFuvQsCkZLCWZNp+3g3pL8KEgqkiwBW8BfaUQhR9gEfn
-         DeWpSUrHqaNmkfbLzk+V2kF7PuaQXSS+kmC/oStauBw7f8dUZYqK7Xkantw2dZXl/OoE
-         if6/hcSirhsPQKKRvdzhWw+3DcI7byFxxNYlE4vuzVsT905QGz2Wcfwsb0i4iMGyQdVW
-         osPMb+v2qi7wn1NpoNYheLo6ZmLRWhuok+sOL4l0rOawnJd06/O1CwicbjJnhj8Z7lUK
-         K1Zg==
+        d=gmail.com; s=20230601; t=1732215414; x=1732820214; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:message-id:date
+         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=c/XMp4NQse7SQoayQYSdr/CkMRmm/AMXKkTgUK7QVDc=;
+        b=TpoDArGgs0zrHjrkCuS7sbGqqK57rqCpQt13j10KzZYxXb+mcc8V1xH8Oxy7tKLYIr
+         C6zNMZU43nsuUKG11dx4/3KWVHnWvId0Ldz55qA/oBpHHkGzOFVLVcrSZrVXD/+8vObT
+         /zDegYghwkw1gDLEWJmqO4GEit3VRweLzrUmeHY4l9vTJginEXL3EgTwl5b37j8OPc8r
+         N4llZJ75rWN6mjaSZx3xDtJx4V/j1CLDBrP5Z4stZCRejv0t1AKFAZH3PuPGQRR5MiOn
+         jGxlC2jM/uPp5rrC0D7FZw4JV34Xhwk99YvvOd4beAROACjKIm6tSqfHOBlZo/5JpSRC
+         DlyQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1732214275; x=1732819075;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1732215414; x=1732820214;
+        h=content-transfer-encoding:mime-version:references:message-id:date
+         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=o7o6YG1r7Hvwm2rqRHDEPpPeTuZqrDtGk2bZdDwk4Qk=;
-        b=uH5kZkjg2PgevuhrHLvgVmZ1nPT8wO9HufJ806hjSyivcjl/blUuSKM+UxCR0O56l8
-         wGG3MP4H+0w8O99uNbjgCRAg1nN6g1OJCPSBCupJ7t7dYECQ+89H8txpIWhAxmWOWgyL
-         TX4nCTJ5UjFpm/qjB6YOybGM+xnP17tn7i0Cuko5P7UDkIszt0Pgiur0ao/UwyalZy/y
-         /1BYUxO0iV9DzwRKuarOIv+jpQxa53+0xitjQYMDgTq77pQXRg/MBaxr7MkcUCLQj9Ed
-         igvR93onNZvBQsxKbnZdFxm6sPDz1S+w5nREhyXP/CmxQwKfvgVUVq6M7EWMoFL8DPPn
-         gaNA==
-X-Forwarded-Encrypted: i=1; AJvYcCUhCaScpeAHrMZt8wn9d0FrjOmCaH5D594vatQ7REswKY3BljY59QJGvPyfMXbhcaltLyQj9G9aL9IV0A==@vger.kernel.org, AJvYcCV6ZWB+vPuMJNw13vmeL4QobbAie35U7wDUmvEWnOumnkNoO4QCjXJJuNByBA0DFE7KYkGUg4ycqPMsIA==@vger.kernel.org, AJvYcCVBS+DvZLmFSul8qBvO+OE665/Eee9SezJTZkQbSzCH+yEsqvZ+T3LuCEr+Wba3D0pKXE1V/dXJ+RWU@vger.kernel.org, AJvYcCW5Lw2PcGYeD+dKayebUMYvVX0VnEyA3gC5N6txf66EVW8cuNs3mqHcKcH2q0Kf6c1wmwmeXIUaLeb/66MFyg==@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/GVZA2ZeVpePgFh3U/yMEpz8+rz9GTohY6LykIRxE6nbL7x3W
-	jv/+TdI1UzR5D+NZaDeupEAnL6LriKMUXzSvA5c/b4tV6XfPL2exiufRiW+EJeCeSTfrZn/Bsr0
-	RHUkKyP0RowdpLUhH9gEPGKRD5D4=
-X-Gm-Gg: ASbGncung/ExkCTfT73Zjlgqo+5B9KFPb6GI9yPwV+k4SlTPCo862RJp85mj5cqMDti
-	s8g2kPURqIjHpFcOGOxGCMO0F/iozEng=
-X-Google-Smtp-Source: AGHT+IEorAjckwDToOujNx0EuXDqrQ9VD8gBqiBM+3DSRRW1VXzYujlBwDfZLVLYJiWoKbQslITNjSKdF77KCW19lgQ=
-X-Received: by 2002:a17:907:3f9b:b0:a9a:a891:b43e with SMTP id
- a640c23a62f3a-aa509d0a2afmr21791666b.50.1732214274751; Thu, 21 Nov 2024
- 10:37:54 -0800 (PST)
+        bh=c/XMp4NQse7SQoayQYSdr/CkMRmm/AMXKkTgUK7QVDc=;
+        b=u18mwDNbAWmu3gF5Yr28zpnPXKxbGEUOP9IaWQdp5Vod2zBgCm34ofvx2SzWCw7M4N
+         BjgEbiWoIvCEmHrbBty9uMGwPAIJFlHe09GnF9iAJ/EDqwqXMy9FBi3+Bu0nxpZlIigA
+         Qg5746vt1AgOuRQNw0ytlXQ11Svb4oz4o/97CY5BGR+CYZD6iHHPp7jZ2/JB6WfEbZlL
+         mAM1Foit9EOCXngKeW0JpsTnmHrs1IvfnMx9GdKUH8cuuXXdKOBNwPl9zIPTvSNr/vV6
+         G4Rss5Xnaf2q7ZIl6/yPJYyIaVbYbJDWdqu2YEoY/N9LFqlEsCfShtpdu7U/bR26Cq/g
+         RAtg==
+X-Forwarded-Encrypted: i=1; AJvYcCUoyu4g0xgCmHB+kz1HZgROBJZD4uU9Weg19gW2EVRRycmRAXTCIcEvQ9AUQJoRGlsM8LBcRhjqrLf7@vger.kernel.org, AJvYcCV7QCJEOecuP7LTMEEbs/3usiz1Tnp3Y4ukvWt7bOmsOe/6HyRWGeXqOABYe7jI7sg6UoGwLLUu@vger.kernel.org
+X-Gm-Message-State: AOJu0YymviqGZzIFgMucWkfdAaHF2ZzTEb42dKg9mWVfRT0qCKAHVxpU
+	XntETGJW389atti62X4ZQlgIftyX3IQTiY2lrF+HyzzrHgLaY3YIFnGRQBg8
+X-Gm-Gg: ASbGncvaLyW3hQSINbx48TLGfUKBailro644wtHzfGqnlGAgBOPxAwukT0lJoMFgkkG
+	xemDqQXnVts/kzggAKec9TAjLW2nG6iNS1AwMtiYxXvVSxDmRH+ckFEyishJ004SrPTLXY3zwfd
+	iBEIz5tIqmVvCwe8VO0zbZ4YU2JA5Ejrtr8T4uhaUejecUkpuVWseDBqKj6ZDHpmBW5/2BKNBZx
+	xFNh4l7DBpXMuq2n/WKAXGO5ZgOW3eCNUscbe8PzcY=
+X-Google-Smtp-Source: AGHT+IGUlOjhDYMtft773rL5jurVlHY/VYMS8xLagffaj/hq+hcYvyB0o8qNGYP6FbCZRUx44/RURw==
+X-Received: by 2002:a17:90b:1d48:b0:2ea:98f1:c17b with SMTP id 98e67ed59e1d1-2eaca6c072emr9302091a91.5.1732215413925;
+        Thu, 21 Nov 2024 10:56:53 -0800 (PST)
+Received: from dw-tp ([171.76.85.142])
+        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2eb0d06299dsm55116a91.53.2024.11.21.10.56.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Thu, 21 Nov 2024 10:56:53 -0800 (PST)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: Nirjhar Roy <nirjhar@linux.ibm.com>, fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
+Subject: Re: [PATCH v3 2/3] common/rc: Add a new _require_scratch_extsize helper function
+In-Reply-To: <52dce21e-9b34-4a3d-9f2c-86634cd10750@linux.ibm.com>
+Date: Fri, 22 Nov 2024 00:22:41 +0530
+Message-ID: <871pz4xvuu.fsf@gmail.com>
+References: <cover.1732126365.git.nirjhar@linux.ibm.com> <4412cece5c3f2175fa076a3b29fe6d0bb4c43a6e.1732126365.git.nirjhar@linux.ibm.com> <87plmp81km.fsf@gmail.com> <52dce21e-9b34-4a3d-9f2c-86634cd10750@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <cover.1731684329.git.josef@toxicpanda.com> <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
- <20241121104428.wtlrfhadcvipkjia@quack3> <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
- <20241121163618.ubz7zplrnh66aajw@quack3> <CAOQ4uxhsEA2zj-a6H+==S+6G8nv+BQEJDoGjJeimX0yRhHso2w@mail.gmail.com>
-In-Reply-To: <CAOQ4uxhsEA2zj-a6H+==S+6G8nv+BQEJDoGjJeimX0yRhHso2w@mail.gmail.com>
-From: Amir Goldstein <amir73il@gmail.com>
-Date: Thu, 21 Nov 2024 19:37:43 +0100
-Message-ID: <CAOQ4uxgsjKwX7eoYcjU8SRWjRw39MNv=CMjjO1mQGr9Cd4iafQ@mail.gmail.com>
-Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission event
-To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com, linux-fsdevel@vger.kernel.org, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk, 
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org, 
-	linux-ext4@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-version: 1.0
+Content-type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Nov 21, 2024 at 7:31=E2=80=AFPM Amir Goldstein <amir73il@gmail.com>=
- wrote:
->
-> On Thu, Nov 21, 2024 at 5:36=E2=80=AFPM Jan Kara <jack@suse.cz> wrote:
-> >
-> > On Thu 21-11-24 15:18:36, Amir Goldstein wrote:
-> > > On Thu, Nov 21, 2024 at 11:44=E2=80=AFAM Jan Kara <jack@suse.cz> wrot=
-e:
-> > > >
-> > > > On Fri 15-11-24 10:30:23, Josef Bacik wrote:
-> > > > > From: Amir Goldstein <amir73il@gmail.com>
-> > > > >
-> > > > > Similar to FAN_ACCESS_PERM permission event, but it is only allow=
-ed with
-> > > > > class FAN_CLASS_PRE_CONTENT and only allowed on regular files and=
- dirs.
-> > > > >
-> > > > > Unlike FAN_ACCESS_PERM, it is safe to write to the file being acc=
-essed
-> > > > > in the context of the event handler.
-> > > > >
-> > > > > This pre-content event is meant to be used by hierarchical storag=
-e
-> > > > > managers that want to fill the content of files on first read acc=
-ess.
-> > > > >
-> > > > > Signed-off-by: Amir Goldstein <amir73il@gmail.com>
-> > > >
-> > > > Here I was wondering about one thing:
-> > > >
-> > > > > +     /*
-> > > > > +      * Filesystems need to opt-into pre-content evnets (a.k.a H=
-SM)
-> > > > > +      * and they are only supported on regular files and directo=
-ries.
-> > > > > +      */
-> > > > > +     if (mask & FANOTIFY_PRE_CONTENT_EVENTS) {
-> > > > > +             if (!(path->mnt->mnt_sb->s_iflags & SB_I_ALLOW_HSM)=
-)
-> > > > > +                     return -EINVAL;
-> > > > > +             if (!is_dir && !d_is_reg(path->dentry))
-> > > > > +                     return -EINVAL;
-> > > > > +     }
-> > > >
-> > > > AFAICS, currently no pre-content events are generated for directori=
-es. So
-> > > > perhaps we should refuse directories here as well for now? I'd like=
- to
-> > >
-> > > readdir() does emit PRE_ACCESS (without a range)
-> >
-> > Ah, right.
-> >
-> > > and also always emitted ACCESS_PERM.
-> >
-> > I know that and it's one of those mostly useless events AFAICT.
-> >
-> > > my POC is using that PRE_ACCESS to populate
-> > > directories on-demand, although the functionality is incomplete witho=
-ut the
-> > > "populate on lookup" event.
-> >
-> > Exactly. Without "populate on lookup" doing "populate on readdir" is ok=
- for
-> > a demo but not really usable in practice because you can get spurious
-> > ENOENT from a lookup.
-> >
-> > > > avoid the mistake of original fanotify which had some events availa=
-ble on
-> > > > directories but they did nothing and then you have to ponder hard w=
-hether
-> > > > you're going to break userspace if you actually start emitting them=
-...
-> > >
-> > > But in any case, the FAN_ONDIR built-in filter is applicable to PRE_A=
-CCESS.
-> >
-> > Well, I'm not so concerned about filtering out uninteresting events. I'=
-m
-> > more concerned about emitting the event now and figuring out later that=
- we
-> > need to emit it in different places or with some other info when actual
-> > production users appear.
-> >
-> > But I've realized we must allow pre-content marks to be placed on dirs =
-so
-> > that such marks can be placed on parents watching children. What we'd n=
-eed
-> > to forbid is a combination of FAN_ONDIR and FAN_PRE_ACCESS, wouldn't we=
-?
->
-> Yes, I think that can work well for now.
->
+Nirjhar Roy <nirjhar@linux.ibm.com> writes:
 
-Only it does not require only check at API time that both flags are not
-set, because FAN_ONDIR can be set earlier and then FAN_PRE_ACCESS
-can be added later and vice versa, so need to do this in
-fanotify_may_update_existing_mark() AFAICT.
+> On 11/21/24 13:23, Ritesh Harjani (IBM) wrote:
+>> Nirjhar Roy <nirjhar@linux.ibm.com> writes:
+>>
+>>> _require_scratch_extsize helper function will be used in the
+>>> the next patch to make the test run only on filesystems with
+>>> extsize support.
+>>>
+>>> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+>>> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
+>>> ---
+>>>   common/rc | 17 +++++++++++++++++
+>>>   1 file changed, 17 insertions(+)
+>>>
+>>> diff --git a/common/rc b/common/rc
+>>> index cccc98f5..995979e9 100644
+>>> --- a/common/rc
+>>> +++ b/common/rc
+>>> @@ -48,6 +48,23 @@ _test_fsxattr_xflag()
+>>>   	grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+>>>   }
+>>>   
+>>> +# This test requires extsize support on the  filesystem
+>>> +_require_scratch_extsize()
+>>> +{
+>>> +	_require_scratch
+>> _require_xfs_io_command "extsize"
+>>
+>> ^^^ Don't we need this too?
+> Yes, good point. I will add this in the next revision.
+>>
+>>> +	_scratch_mkfs > /dev/null
+>>> +	_scratch_mount
+>>> +	local filename=$SCRATCH_MNT/$RANDOM
+>>> +	local blksz=$(_get_block_size $SCRATCH_MNT)
+>>> +	local extsz=$(( blksz*2 ))
+>>> +	local res=$($XFS_IO_PROG -c "open -f $filename" -c "extsize $extsz" \
+>>> +		-c "extsize")
+>>> +	_scratch_unmount
+>>> +	grep -q "\[$extsz\] $filename" <(echo $res) || \
+>>> +		_notrun "this test requires extsize support on the filesystem"
+>> Why grep when we can simply just check the return value of previous xfs_io command?
+> No, I don't think we can rely on the return value of xfs_io. For ex, 
+> let's look at the following set of commands which are ran on an ext4 system:
+>
+> root@AMARPC: /mnt1/test$ xfs_io -V
+> xfs_io version 5.13.0
+> root@AMARPC: /mnt1/test$ touch new
+> root@AMARPC: /mnt1/test$ xfs_io -c "extsize 8k"  new
+> foreign file active, extsize command is for XFS filesystems only
+> root@AMARPC: /mnt1/test$ echo "$?"
+> 0
+> This incorrect return value might have been fixed in some later versions 
+> of xfs_io but there are still versions where we can't solely rely on the 
+> return value.
 
-Thanks,
-Amir.
+Ok. That's bad, we then have to rely on grep.
+Sure, thanks for checking and confirming that.
+
+-ritesh
 
