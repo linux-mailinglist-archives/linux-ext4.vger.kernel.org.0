@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-5387-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5388-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id F161F9D6E53
-	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 13:44:07 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20BFF9D6E89
+	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 13:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13C00161CD2
-	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 12:43:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 175A8161E15
+	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 12:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CB511B2192;
-	Sun, 24 Nov 2024 12:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4BD1CDA01;
+	Sun, 24 Nov 2024 12:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tazjR6S6"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XGeXciXj"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 152251B2188;
-	Sun, 24 Nov 2024 12:39:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8781C8FD7;
+	Sun, 24 Nov 2024 12:40:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732451993; cv=none; b=SYoUnBsrfsgXOcPESbQqUg/lmQFzaxauC0Mm/IQBXp84E2aThSJRoAU2K9oMlJsavvLyJc8Wi3SVvGDyuX9Z1rTbd9ys4asoq60colEJtvTXCjK4UptueXpIOWW6swo2V0ON+HwEievpciCEnSNWJfPlDRZNdh3KN8uaC/LFdlI=
+	t=1732452047; cv=none; b=C+zLtZs4T4VmYdGksDpuNIsVpi9+QW3ThKExyrUb9zbxjFk1dAySdjuuZD9A67ecUNBDU4QUPvxjAqouyq+YNYTyS8R6MkNqhV3xTSSQWC9U6bUBlZ6wHvT37nOKOzeK80GR1l+1wtGvDkpq5NZfX9y3JEGG42f4AbAjtwoLBVY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732451993; c=relaxed/simple;
-	bh=O6pyEqebRhGxepQOtkQ2gaMZjy/GN/sKSklbw1Udjc4=;
+	s=arc-20240116; t=1732452047; c=relaxed/simple;
+	bh=gRlotTQuQuNQ1VGeNNOsOld5oPweg1xGEC2VdmzXEtM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Lot8J1136INjPLEX/gdWlGA3CRgUPJ7qoOYl+KJk8dM69DUnOPMuNdHjYULlU5ALHKoNumyHwyuADs7I64XziPRbloPB61fxs8A4L6OtqNv6dP6bHrR8mnDZ1i6FU0keTDox9cCaGPp5qIIslvXf/sa8JAXGqe7N6dDpOV6X36I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tazjR6S6; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1E095C4CECC;
-	Sun, 24 Nov 2024 12:39:52 +0000 (UTC)
+	 MIME-Version; b=rbG8c+VOcigPoHE+r79nVbonRHd4Bps+2MRPAzbFHFDDfA7fBw5VxeDkjy/EEytA2M06ypAXUQNFjdmndghM/KdjIbOl85g5qGh+a1NzEgIX3O0PpoA6Oxn6hUsOYvXaK7P0runH+IVY1cnOmt6ZK+hci7tDZq2ZfFJFnJF1xZ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XGeXciXj; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE2B1C4CED1;
+	Sun, 24 Nov 2024 12:40:45 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732451993;
-	bh=O6pyEqebRhGxepQOtkQ2gaMZjy/GN/sKSklbw1Udjc4=;
+	s=k20201202; t=1732452046;
+	bh=gRlotTQuQuNQ1VGeNNOsOld5oPweg1xGEC2VdmzXEtM=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=tazjR6S6cWzN546Rs4JFIRUPtQU6w8jKXVkRgCdayq+EJzeC1uU+pYtUrbWiV/fXW
-	 ZlC6T8Yilw/WdNrEiAfOq8TNYRUw/MUFf8biFToki//h6/dN6f1kgDb8F31JTPKo33
-	 EB7TNd+4XBpHH2c4z1gkzspYNQzoEU6HiN43BF5qaXzMrU+iffv/ckJwby8GSgu4do
-	 G1Mtjq2Sy6n3EykcJajUR16A+yB+yjJLEc9K21sKDqTEdm0xja8KuYuXE7cxsDRL7v
-	 56OSe27d6WWXCvbMiM1QDshtfhyuGqg+nwhAIJeRWmY9ThK+WtqD6n3/SOhLx1cErz
-	 DX4ckq+kCyF2g==
+	b=XGeXciXjMhcXqpJ6+lSjvnwmN6Fn41+EhrvDHnWVOYc67yzc+smZM2jaj7T3HAGzM
+	 UOQROgWnV0anaT3WY7a/Cw3V1WtW/UeZ5SRAMsQWcQU+OnBpbnShVuOPU+p5sGGPxG
+	 VuS523GXTj17Qmuk3DSy6K5ExOLHJ9NyxBS2bTV4GQLdyV4tCXCIeXPR5wxJw4CQIc
+	 RPD1SXDI870UTHXIQqyziLixPHP7/HWly7ThgENs5GByE2J9WxD/TJo1tmTkQngWKz
+	 HMRc1onP6Gj154uwswsbTZRLXSjRRiiE296nGEEb52ATwDgu0nDuPLlh8elAa+voFn
+	 2QKgVN6hxXsfQ==
 From: Sasha Levin <sashal@kernel.org>
 To: linux-kernel@vger.kernel.org,
 	stable@vger.kernel.org
@@ -49,12 +49,12 @@ Cc: Brian Foster <bfoster@redhat.com>,
 	Sasha Levin <sashal@kernel.org>,
 	adilger.kernel@dilger.ca,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.12 19/19] ext4: partial zero eof block on unaligned inode size extension
-Date: Sun, 24 Nov 2024 07:38:54 -0500
-Message-ID: <20241124123912.3335344-19-sashal@kernel.org>
+Subject: [PATCH AUTOSEL 6.11 16/16] ext4: partial zero eof block on unaligned inode size extension
+Date: Sun, 24 Nov 2024 07:39:53 -0500
+Message-ID: <20241124124009.3336072-16-sashal@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124123912.3335344-1-sashal@kernel.org>
-References: <20241124123912.3335344-1-sashal@kernel.org>
+In-Reply-To: <20241124124009.3336072-1-sashal@kernel.org>
+References: <20241124124009.3336072-1-sashal@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,7 +63,7 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-stable: review
 X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.12.1
+X-stable-base: Linux 6.11.10
 Content-Transfer-Encoding: 8bit
 
 From: Brian Foster <bfoster@redhat.com>
@@ -108,10 +108,10 @@ Signed-off-by: Sasha Levin <sashal@kernel.org>
  2 files changed, 42 insertions(+), 16 deletions(-)
 
 diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index 34e25eee65219..20a0a5c0bfd93 100644
+index c64f7c1b1d908..b03081ab8beee 100644
 --- a/fs/ext4/extents.c
 +++ b/fs/ext4/extents.c
-@@ -4482,7 +4482,7 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+@@ -4478,7 +4478,7 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
  	int depth = 0;
  	struct ext4_map_blocks map;
  	unsigned int credits;
@@ -120,7 +120,7 @@ index 34e25eee65219..20a0a5c0bfd93 100644
  
  	BUG_ON(!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS));
  	map.m_lblk = offset;
-@@ -4541,6 +4541,11 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
+@@ -4537,6 +4537,11 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
  			if (ext4_update_inode_size(inode, epos) & 0x1)
  				inode_set_mtime_to_ts(inode,
  						      inode_get_ctime(inode));
@@ -133,10 +133,10 @@ index 34e25eee65219..20a0a5c0bfd93 100644
  		ret2 = ext4_mark_inode_dirty(handle, inode);
  		ext4_update_inode_fsync_trans(handle, inode, 1);
 diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index 54bdd4884fe67..f460418e2bdae 100644
+index a0fa5192db8ed..4a273d83187e8 100644
 --- a/fs/ext4/inode.c
 +++ b/fs/ext4/inode.c
-@@ -1307,8 +1307,10 @@ static int ext4_write_end(struct file *file,
+@@ -1328,8 +1328,10 @@ static int ext4_write_end(struct file *file,
  	folio_unlock(folio);
  	folio_put(folio);
  
@@ -148,7 +148,7 @@ index 54bdd4884fe67..f460418e2bdae 100644
  	/*
  	 * Don't mark the inode dirty under folio lock. First, it unnecessarily
  	 * makes the holding time of folio lock longer. Second, it forces lock
-@@ -1423,8 +1425,10 @@ static int ext4_journalled_write_end(struct file *file,
+@@ -1445,8 +1447,10 @@ static int ext4_journalled_write_end(struct file *file,
  	folio_unlock(folio);
  	folio_put(folio);
  
@@ -160,7 +160,7 @@ index 54bdd4884fe67..f460418e2bdae 100644
  
  	if (size_changed) {
  		ret2 = ext4_mark_inode_dirty(handle, inode);
-@@ -2985,7 +2989,8 @@ static int ext4_da_do_write_end(struct address_space *mapping,
+@@ -3017,7 +3021,8 @@ static int ext4_da_do_write_end(struct address_space *mapping,
  	struct inode *inode = mapping->host;
  	loff_t old_size = inode->i_size;
  	bool disksize_changed = false;
@@ -170,7 +170,7 @@ index 54bdd4884fe67..f460418e2bdae 100644
  
  	if (unlikely(!folio_buffers(folio))) {
  		folio_unlock(folio);
-@@ -3029,18 +3034,21 @@ static int ext4_da_do_write_end(struct address_space *mapping,
+@@ -3061,18 +3066,21 @@ static int ext4_da_do_write_end(struct address_space *mapping,
  	folio_unlock(folio);
  	folio_put(folio);
  
@@ -201,7 +201,7 @@ index 54bdd4884fe67..f460418e2bdae 100644
  
  	return copied;
  }
-@@ -5426,6 +5434,14 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+@@ -5459,6 +5467,14 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
  		}
  
  		if (attr->ia_size != inode->i_size) {
@@ -216,7 +216,7 @@ index 54bdd4884fe67..f460418e2bdae 100644
  			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
  			if (IS_ERR(handle)) {
  				error = PTR_ERR(handle);
-@@ -5436,12 +5452,17 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+@@ -5469,12 +5485,17 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
  				orphan = 1;
  			}
  			/*
