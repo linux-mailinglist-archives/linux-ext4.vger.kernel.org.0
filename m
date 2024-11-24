@@ -1,243 +1,273 @@
-Return-Path: <linux-ext4+bounces-5388-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5389-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 20BFF9D6E89
-	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 13:48:15 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 175A8161E15
-	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 12:47:03 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D4BD1CDA01;
-	Sun, 24 Nov 2024 12:40:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XGeXciXj"
-X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C982A9D70C1
+	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 14:39:19 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B8781C8FD7;
-	Sun, 24 Nov 2024 12:40:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A084282253
+	for <lists+linux-ext4@lfdr.de>; Sun, 24 Nov 2024 13:39:18 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DA6B18DF6E;
+	Sun, 24 Nov 2024 13:34:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="axu04URF"
+X-Original-To: linux-ext4@vger.kernel.org
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7099F18A6BC;
+	Sun, 24 Nov 2024 13:34:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732452047; cv=none; b=C+zLtZs4T4VmYdGksDpuNIsVpi9+QW3ThKExyrUb9zbxjFk1dAySdjuuZD9A67ecUNBDU4QUPvxjAqouyq+YNYTyS8R6MkNqhV3xTSSQWC9U6bUBlZ6wHvT37nOKOzeK80GR1l+1wtGvDkpq5NZfX9y3JEGG42f4AbAjtwoLBVY=
+	t=1732455259; cv=none; b=IyTcXnvGBhnJd7TlCinHzwzJAGWvyHX27grVwjnkLA1yn6yTyew3fp+6hNFERTvH6pxwj+fM8oYpAdQiFfCoD45VFV8On24EA5MofPOnzf/HWJj92tZuSdI2jFxwvLB1O32+L6jtC5UngXiwA0SVPg2HSuutPqWlyBPzaPWD9YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732452047; c=relaxed/simple;
-	bh=gRlotTQuQuNQ1VGeNNOsOld5oPweg1xGEC2VdmzXEtM=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=rbG8c+VOcigPoHE+r79nVbonRHd4Bps+2MRPAzbFHFDDfA7fBw5VxeDkjy/EEytA2M06ypAXUQNFjdmndghM/KdjIbOl85g5qGh+a1NzEgIX3O0PpoA6Oxn6hUsOYvXaK7P0runH+IVY1cnOmt6ZK+hci7tDZq2ZfFJFnJF1xZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XGeXciXj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE2B1C4CED1;
-	Sun, 24 Nov 2024 12:40:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1732452046;
-	bh=gRlotTQuQuNQ1VGeNNOsOld5oPweg1xGEC2VdmzXEtM=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=XGeXciXjMhcXqpJ6+lSjvnwmN6Fn41+EhrvDHnWVOYc67yzc+smZM2jaj7T3HAGzM
-	 UOQROgWnV0anaT3WY7a/Cw3V1WtW/UeZ5SRAMsQWcQU+OnBpbnShVuOPU+p5sGGPxG
-	 VuS523GXTj17Qmuk3DSy6K5ExOLHJ9NyxBS2bTV4GQLdyV4tCXCIeXPR5wxJw4CQIc
-	 RPD1SXDI870UTHXIQqyziLixPHP7/HWly7ThgENs5GByE2J9WxD/TJo1tmTkQngWKz
-	 HMRc1onP6Gj154uwswsbTZRLXSjRRiiE296nGEEb52ATwDgu0nDuPLlh8elAa+voFn
-	 2QKgVN6hxXsfQ==
-From: Sasha Levin <sashal@kernel.org>
-To: linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org
-Cc: Brian Foster <bfoster@redhat.com>,
-	Theodore Ts'o <tytso@mit.edu>,
-	Sasha Levin <sashal@kernel.org>,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org
-Subject: [PATCH AUTOSEL 6.11 16/16] ext4: partial zero eof block on unaligned inode size extension
-Date: Sun, 24 Nov 2024 07:39:53 -0500
-Message-ID: <20241124124009.3336072-16-sashal@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20241124124009.3336072-1-sashal@kernel.org>
-References: <20241124124009.3336072-1-sashal@kernel.org>
+	s=arc-20240116; t=1732455259; c=relaxed/simple;
+	bh=Uk6qoM3/bi3PrMVZDpuNfQE44d1ttBqWG2E468pnZ/E=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:Cc:From:
+	 In-Reply-To:Content-Type; b=cfbh0Sc0HF/osC9fWkzRZNzab1fhTeZnAkmQ6n+Otv4XIA/oCAo3R8QXoPmKQKO4cOJKFdx7sdRVugzIBIwOu1j+6VAU+Q+qUCoHfjRD8ewoCKK3aVuwYad7peaccE4hNCUjvUtp/yy5hi4ox6SMuO99CTXanZyBO7hGU4RlLpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=axu04URF; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-2126e293192so7039615ad.0;
+        Sun, 24 Nov 2024 05:34:17 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1732455257; x=1733060057; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:cc:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id:from
+         :to:cc:subject:date:message-id:reply-to;
+        bh=qtitWj7mwZUOuapDYi1rlQN8mBEo2KiG1ezv0q6gsEE=;
+        b=axu04URFhBpwR/Ea6AeSmDS8gwu7/uzyiYbLurQf9eCHnJGwc1lrHLryVF53eHvj0T
+         Qe4Mw1AF+DyfPQ/iJt/RnbXBHZV/vD2hceFnX9VEeYqehldovrGlwuI5CqvJxqOQRqgW
+         Ex9Bt8cmfQ8rydFLU6JM/4B/oVhrPFWc51xGTxrCbxzf5b5GpdGNuaQlUbCnL+OVjr93
+         YUXYdGxoKGW91ljazTcwVZZC9KE7xJHr0+csYMRFty84oSHWo7YTYekQr3NmiBpyJHDi
+         x5vMBg1aKop4TNyuAFDcxNNLUIY6gWWPq9yi0B5bPp7j1/f8YD88MXeu9dXdmmqRsClZ
+         yM8A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1732455257; x=1733060057;
+        h=content-transfer-encoding:in-reply-to:from:cc:content-language
+         :references:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=qtitWj7mwZUOuapDYi1rlQN8mBEo2KiG1ezv0q6gsEE=;
+        b=Q7bsBE/MmH+G9oEu7ZeovFPhry0X76W1eIHadFyJGNMD5nUOk1T6rQVVXhJWLYIfZk
+         8os1rATfHTYWVx2dDjqgIvawfFlJ1ikUXG25fEtAYI6Pq0edub8OVd89kB1UYBBC1baz
+         /HlS5n1yBxHGDMmP/CCAlu4JWnpkg52tKC2g60TogOZjAX+IJBFfk5/rsk15YI7b+MjZ
+         6cm8syA8n72O5C2x5IvJTBmhVcHYJLAFFBzkRsdNurCeAD9vaGaSX4jpDUP6FBlrMqq0
+         8P+LuT/DOlC/pHQ8/YB/xnivEfSH6vcBz3FRKIZHeKuc8Jy9+bXx2VYhtpHo5ZJXcAy1
+         Bdkw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqUFv8VaDe6IYeaO2F43oLhfZ4VrFVlC1/hqafrLOmJHCJL451rLahhIIqu+CSkwycxRpeMCbuT7k2eg==@vger.kernel.org, AJvYcCUw6Bt7T6Bz0KEDqWwvT/z3HtqwXYe0t+7u0yLaS9sZEkYSy4sP/FBKbuPiDGA+MTILZ3SUmrDp/Q4sYMzFGQ==@vger.kernel.org, AJvYcCVrursYBu2zs+8Xq8RqZiieblCyjuJ9S86+uDkIo92ItJ0o24eCY+dSZuImIDftgg1cwJRuCjPutWrE@vger.kernel.org, AJvYcCXk97jTnGzcvP8hohvl8a6g/kfUFMtovfTPjdiY1wMjd3eAr0nh/yGpHYzea4eDyifMMvwaSq6Q8Lp7KQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0YzGU6o+RjTW5PmTWn3c2EDr+jrmmg7yf/D3AIp4Yzl0TM8UKdDe
+	s8EJWaNMjp5pqRlIpkWFUEetTIX7d+GffowfJRoGLEkW8AuTT1y5
+X-Gm-Gg: ASbGncu9+4Ncxqj+r8otf815/jiPaqW7+TYQ4LXgluZ9kq7kuoaiZ2uHU3eKThUrien
+	FxNdLtZx7p37E1Kpz4EL75YRz3rII7m5OSCYkWi18thvCdSxOqfOu2yvI+QTiZjiAGWICRZPnxn
+	me0lSeBLCyf0oDnUz8y7fudxoPx7yjd3pfjCkW7q2Tsj6kHbkd/lZXi6zhXxYMaYhtBjWdCE9o2
+	czoE9M8BQYPvvfo5M7mzuc/s839WLcX6/HMrwcpzU2JhuHVoiBQUEeruGRxpQ==
+X-Google-Smtp-Source: AGHT+IHLvekYbaPwVuQbj7uVMH6+WJbm/aay5oOW+hS7R6I1jLZXbkDtIA8gi64je3notGAilm7kDw==
+X-Received: by 2002:a05:6a20:3d8d:b0:1dc:77fc:1cd1 with SMTP id adf61e73a8af0-1e09e4004cfmr5341156637.3.1732455256584;
+        Sun, 24 Nov 2024 05:34:16 -0800 (PST)
+Received: from [192.168.50.136] ([118.32.98.101])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-724ed55099asm3151173b3a.49.2024.11.24.05.34.04
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 24 Nov 2024 05:34:16 -0800 (PST)
+Message-ID: <489d941f-c4e8-4d1f-92ee-02074c713dd1@gmail.com>
+Date: Sun, 24 Nov 2024 22:34:02 +0900
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-stable: review
-X-Patchwork-Hint: Ignore
-X-stable-base: Linux 6.11.10
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v14 2/28] dept: Implement Dept(Dependency Tracker)
+To: Byungchul Park <byungchul@sk.com>
+References: <20240508094726.35754-3-byungchul@sk.com>
+Content-Language: en-US
+Cc: LKML <linux-kernel@vger.kernel.org>, kernel_team@skhynix.com,
+ torvalds@linux-foundation.org, damien.lemoal@opensource.wdc.com,
+ linux-ide@vger.kernel.org, adilger.kernel@dilger.ca,
+ linux-ext4@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
+ will@kernel.org, tglx@linutronix.de, rostedt@goodmis.org,
+ joel@joelfernandes.org, sashal@kernel.org, daniel.vetter@ffwll.ch,
+ duyuyang@gmail.com, johannes.berg@intel.com, tj@kernel.org, tytso@mit.edu,
+ willy@infradead.org, david@fromorbit.com, amir73il@gmail.com,
+ gregkh@linuxfoundation.org, kernel-team@lge.com, linux-mm@kvack.org,
+ akpm@linux-foundation.org, mhocko@kernel.org, minchan@kernel.org,
+ hannes@cmpxchg.org, vdavydov.dev@gmail.com, sj@kernel.org,
+ jglisse@redhat.com, dennis@kernel.org, cl@linux.com, penberg@kernel.org,
+ rientjes@google.com, vbabka@suse.cz, ngupta@vflare.org,
+ linux-block@vger.kernel.org, josef@toxicpanda.com,
+ linux-fsdevel@vger.kernel.org, jack@suse.cz, jlayton@kernel.org,
+ dan.j.williams@intel.com, hch@infradead.org, djwong@kernel.org,
+ dri-devel@lists.freedesktop.org, rodrigosiqueiramelo@gmail.com,
+ melissa.srw@gmail.com, hamohammed.sa@gmail.com, 42.hyeyoo@gmail.com,
+ chris.p.wilson@intel.com, gwan-gyeong.mun@intel.com,
+ max.byungchul.park@gmail.com, boqun.feng@gmail.com, longman@redhat.com,
+ hdanton@sina.com, her0gyugyu@gmail.com, Yeoreum Yun <yeoreum.yun@arm.com>
+From: Yunseong Kim <yskelg@gmail.com>
+In-Reply-To: <20240508094726.35754-3-byungchul@sk.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Brian Foster <bfoster@redhat.com>
+Hi Byungchul,
 
-[ Upstream commit c7fc0366c65628fd69bfc310affec4918199aae2 ]
+Thank you for the great feature. Currently, DEPT has a bug in the
+'dept_key_destroy()' function that must be fixed to ensure proper
+operation in the upstream Linux kernel.
 
-Using mapped writes, it's technically possible to expose stale
-post-eof data on a truncate up operation. Consider the following
-example:
+On 5/8/24 6:46 오후, Byungchul Park wrote:
+> CURRENT STATUS
+> --------------
+> Lockdep tracks acquisition order of locks in order to detect deadlock,
+> and IRQ and IRQ enable/disable state as well to take accident
+> acquisitions into account.
+> 
+> Lockdep should be turned off once it detects and reports a deadlock
+> since the data structure and algorithm are not reusable after detection
+> because of the complex design.
+> 
+> PROBLEM
+> -------
+> *Waits* and their *events* that never reach eventually cause deadlock.
+> However, Lockdep is only interested in lock acquisition order, forcing
+> to emulate lock acqusition even for just waits and events that have
+> nothing to do with real lock.
+> 
+> Even worse, no one likes Lockdep's false positive detection because that
+> prevents further one that might be more valuable. That's why all the
+> kernel developers are sensitive to Lockdep's false positive.
+> 
+> Besides those, by tracking acquisition order, it cannot correctly deal
+> with read lock and cross-event e.g. wait_for_completion()/complete() for
+> deadlock detection. Lockdep is no longer a good tool for that purpose.
+> 
+> SOLUTION
+> --------
+> Again, *waits* and their *events* that never reach eventually cause
+> deadlock. The new solution, Dept(DEPendency Tracker), focuses on waits
+> and events themselves. Dept tracks waits and events and report it if
+> any event would be never reachable.
+> 
+> Dept does:
+>    . Works with read lock in the right way.
+>    . Works with any wait and event e.i. cross-event.
+>    . Continue to work even after reporting multiple times.
+>    . Provides simple and intuitive APIs.
+>    . Does exactly what dependency checker should do.
+> 
+> Q & A
+> -----
+> Q. Is this the first try ever to address the problem?
+> A. No. Cross-release feature (b09be676e0ff2 locking/lockdep: Implement
+>    the 'crossrelease' feature) addressed it 2 years ago that was a
+>    Lockdep extension and merged but reverted shortly because:
+> 
+>    Cross-release started to report valuable hidden problems but started
+>    to give report false positive reports as well. For sure, no one
+>    likes Lockdep's false positive reports since it makes Lockdep stop,
+>    preventing reporting further real problems.
+> 
+> Q. Why not Dept was developed as an extension of Lockdep?
+> A. Lockdep definitely includes all the efforts great developers have
+>    made for a long time so as to be quite stable enough. But I had to
+>    design and implement newly because of the following:
+> 
+>    1) Lockdep was designed to track lock acquisition order. The APIs and
+>       implementation do not fit on wait-event model.
+>    2) Lockdep is turned off on detection including false positive. Which
+>       is terrible and prevents developing any extension for stronger
+>       detection.
+> 
+> Q. Do you intend to totally replace Lockdep?
+> A. No. Lockdep also checks if lock usage is correct. Of course, the
+>    dependency check routine should be replaced but the other functions
+>    should be still there.
+> 
+> Q. Do you mean the dependency check routine should be replaced right
+>    away?
+> A. No. I admit Lockdep is stable enough thanks to great efforts kernel
+>    developers have made. Lockdep and Dept, both should be in the kernel
+>    until Dept gets considered stable.
+> 
+> Q. Stronger detection capability would give more false positive report.
+>    Which was a big problem when cross-release was introduced. Is it ok
+>    with Dept?
+> A. It's ok. Dept allows multiple reporting thanks to simple and quite
+>    generalized design. Of course, false positive reports should be fixed
+>    anyway but it's no longer as a critical problem as it was.
+> 
+> Signed-off-by: Byungchul Park <byungchul@sk.com>
 
-$ xfs_io -fc "pwrite 0 2k" -c "mmap 0 4k" -c "mwrite 2k 2k" \
-	-c "truncate 8k" -c "pread -v 2k 16" <file>
-...
-00000800:  58 58 58 58 58 58 58 58 58 58 58 58 58 58 58 58  XXXXXXXXXXXXXXXX
-...
+If a module previously checked for dependencies by DEPT is loaded and
+then would be unloaded, a kernel panic shall occur when the kernel
+reuses the corresponding memory area for other purposes. This issue must
+be addressed as a priority to enable the use of DEPT. Testing this patch
+on the Ubuntu kernel confirms the problem.
 
-This shows that the post-eof data written via mwrite lands within
-EOF after a truncate up. While this is deliberate of the test case,
-behavior is somewhat unpredictable because writeback does post-eof
-zeroing, and writeback can occur at any time in the background. For
-example, an fsync inserted between the mwrite and truncate causes
-the subsequent read to instead return zeroes. This basically means
-that there is a race window in this situation between any subsequent
-extending operation and writeback that dictates whether post-eof
-data is exposed to the file or zeroed.
+> +void dept_key_destroy(struct dept_key *k)
+> +{
+> +	struct dept_task *dt = dept_task();
+> +	unsigned long flags;
+> +	int sub_id;
+> +
+> +	if (unlikely(!dept_working()))
+> +		return;
+> +
+> +	if (dt->recursive == 1 && dt->task_exit) {
+> +		/*
+> +		 * Need to allow to go ahead in this case where
+> +		 * ->recursive has been set to 1 by dept_off() in
+> +		 * dept_task_exit() and ->task_exit has been set to
+> +		 * true in dept_task_exit().
+> +		 */
+> +	} else if (dt->recursive) {
+> +		DEPT_STOP("Key destroying fails.\n");
+> +		return;
+> +	}
+> +
+> +	flags = dept_enter();
+> +
+> +	/*
+> +	 * dept_key_destroy() should not fail.
+> +	 *
+> +	 * FIXME: Should be fixed if dept_key_destroy() causes deadlock
+> +	 * with dept_lock().
+> +	 */
+> +	while (unlikely(!dept_lock()))
+> +		cpu_relax();
+> +
+> +	for (sub_id = 0; sub_id < DEPT_MAX_SUBCLASSES; sub_id++) {
+> +		struct dept_class *c;
+> +
+> +		c = lookup_class((unsigned long)k->base + sub_id);
+> +		if (!c)
+> +			continue;
+> +
+> +		hash_del_class(c);
+> +		disconnect_class(c);
+> +		list_del(&c->all_node);
+> +		invalidate_class(c);
+> +
+> +		/*
+> +		 * Actual deletion will happen on the rcu callback
+> +		 * that has been added in disconnect_class().
+> +		 */
+> +		del_class(c);
+> +	}
+> +
+> +	dept_unlock();
+> +	dept_exit(flags);
+> +
+> +	/*
+> +	 * Wait until even lockless hash_lookup_class() for the class
+> +	 * returns NULL.
+> +	 */
+> +	might_sleep();
+> +	synchronize_rcu();
+> +}
+> +EXPORT_SYMBOL_GPL(dept_key_destroy);
 
-To prevent this problem, perform partial block zeroing as part of
-the various inode size extending operations that are susceptible to
-it. For truncate extension, zero around the original eof similar to
-how truncate down does partial zeroing of the new eof. For extension
-via writes and fallocate related operations, zero the newly exposed
-range of the file to cover any partial zeroing that must occur at
-the original and new eof blocks.
-
-Signed-off-by: Brian Foster <bfoster@redhat.com>
-Link: https://patch.msgid.link/20240919160741.208162-2-bfoster@redhat.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Signed-off-by: Sasha Levin <sashal@kernel.org>
----
- fs/ext4/extents.c |  7 ++++++-
- fs/ext4/inode.c   | 51 +++++++++++++++++++++++++++++++++--------------
- 2 files changed, 42 insertions(+), 16 deletions(-)
-
-diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
-index c64f7c1b1d908..b03081ab8beee 100644
---- a/fs/ext4/extents.c
-+++ b/fs/ext4/extents.c
-@@ -4478,7 +4478,7 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 	int depth = 0;
- 	struct ext4_map_blocks map;
- 	unsigned int credits;
--	loff_t epos;
-+	loff_t epos, old_size = i_size_read(inode);
- 
- 	BUG_ON(!ext4_test_inode_flag(inode, EXT4_INODE_EXTENTS));
- 	map.m_lblk = offset;
-@@ -4537,6 +4537,11 @@ static int ext4_alloc_file_blocks(struct file *file, ext4_lblk_t offset,
- 			if (ext4_update_inode_size(inode, epos) & 0x1)
- 				inode_set_mtime_to_ts(inode,
- 						      inode_get_ctime(inode));
-+			if (epos > old_size) {
-+				pagecache_isize_extended(inode, old_size, epos);
-+				ext4_zero_partial_blocks(handle, inode,
-+						     old_size, epos - old_size);
-+			}
- 		}
- 		ret2 = ext4_mark_inode_dirty(handle, inode);
- 		ext4_update_inode_fsync_trans(handle, inode, 1);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index a0fa5192db8ed..4a273d83187e8 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -1328,8 +1328,10 @@ static int ext4_write_end(struct file *file,
- 	folio_unlock(folio);
- 	folio_put(folio);
- 
--	if (old_size < pos && !verity)
-+	if (old_size < pos && !verity) {
- 		pagecache_isize_extended(inode, old_size, pos);
-+		ext4_zero_partial_blocks(handle, inode, old_size, pos - old_size);
-+	}
- 	/*
- 	 * Don't mark the inode dirty under folio lock. First, it unnecessarily
- 	 * makes the holding time of folio lock longer. Second, it forces lock
-@@ -1445,8 +1447,10 @@ static int ext4_journalled_write_end(struct file *file,
- 	folio_unlock(folio);
- 	folio_put(folio);
- 
--	if (old_size < pos && !verity)
-+	if (old_size < pos && !verity) {
- 		pagecache_isize_extended(inode, old_size, pos);
-+		ext4_zero_partial_blocks(handle, inode, old_size, pos - old_size);
-+	}
- 
- 	if (size_changed) {
- 		ret2 = ext4_mark_inode_dirty(handle, inode);
-@@ -3017,7 +3021,8 @@ static int ext4_da_do_write_end(struct address_space *mapping,
- 	struct inode *inode = mapping->host;
- 	loff_t old_size = inode->i_size;
- 	bool disksize_changed = false;
--	loff_t new_i_size;
-+	loff_t new_i_size, zero_len = 0;
-+	handle_t *handle;
- 
- 	if (unlikely(!folio_buffers(folio))) {
- 		folio_unlock(folio);
-@@ -3061,18 +3066,21 @@ static int ext4_da_do_write_end(struct address_space *mapping,
- 	folio_unlock(folio);
- 	folio_put(folio);
- 
--	if (old_size < pos)
-+	if (pos > old_size) {
- 		pagecache_isize_extended(inode, old_size, pos);
-+		zero_len = pos - old_size;
-+	}
- 
--	if (disksize_changed) {
--		handle_t *handle;
-+	if (!disksize_changed && !zero_len)
-+		return copied;
- 
--		handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
--		if (IS_ERR(handle))
--			return PTR_ERR(handle);
--		ext4_mark_inode_dirty(handle, inode);
--		ext4_journal_stop(handle);
--	}
-+	handle = ext4_journal_start(inode, EXT4_HT_INODE, 2);
-+	if (IS_ERR(handle))
-+		return PTR_ERR(handle);
-+	if (zero_len)
-+		ext4_zero_partial_blocks(handle, inode, old_size, zero_len);
-+	ext4_mark_inode_dirty(handle, inode);
-+	ext4_journal_stop(handle);
- 
- 	return copied;
- }
-@@ -5459,6 +5467,14 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 		}
- 
- 		if (attr->ia_size != inode->i_size) {
-+			/* attach jbd2 jinode for EOF folio tail zeroing */
-+			if (attr->ia_size & (inode->i_sb->s_blocksize - 1) ||
-+			    oldsize & (inode->i_sb->s_blocksize - 1)) {
-+				error = ext4_inode_attach_jinode(inode);
-+				if (error)
-+					goto err_out;
-+			}
-+
- 			handle = ext4_journal_start(inode, EXT4_HT_INODE, 3);
- 			if (IS_ERR(handle)) {
- 				error = PTR_ERR(handle);
-@@ -5469,12 +5485,17 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
- 				orphan = 1;
- 			}
- 			/*
--			 * Update c/mtime on truncate up, ext4_truncate() will
--			 * update c/mtime in shrink case below
-+			 * Update c/mtime and tail zero the EOF folio on
-+			 * truncate up. ext4_truncate() handles the shrink case
-+			 * below.
- 			 */
--			if (!shrink)
-+			if (!shrink) {
- 				inode_set_mtime_to_ts(inode,
- 						      inode_set_ctime_current(inode));
-+				if (oldsize & (inode->i_sb->s_blocksize - 1))
-+					ext4_block_truncate_page(handle,
-+							inode->i_mapping, oldsize);
-+			}
- 
- 			if (shrink)
- 				ext4_fc_track_range(handle, inode,
--- 
-2.43.0
-
+Best regards,
+Yunseong Kim
 
