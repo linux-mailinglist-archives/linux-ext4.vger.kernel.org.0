@@ -1,197 +1,87 @@
-Return-Path: <linux-ext4+bounces-5405-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5406-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1E1329D84C2
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Nov 2024 12:48:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F32F9D8675
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Nov 2024 14:31:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D14BB28A570
-	for <lists+linux-ext4@lfdr.de>; Mon, 25 Nov 2024 11:48:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 78939B3061A
+	for <lists+linux-ext4@lfdr.de>; Mon, 25 Nov 2024 13:13:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CC721B3920;
-	Mon, 25 Nov 2024 11:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52B021AB500;
+	Mon, 25 Nov 2024 13:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HUnFiL7m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272EC1AB6FA;
-	Mon, 25 Nov 2024 11:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA38F1A76B5;
+	Mon, 25 Nov 2024 13:13:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732535197; cv=none; b=HFqT+inFc9IrIIy2jlD+rnG2XtMt0FTIvYQMj5Rj+fd7QqfQuw0GvbDkau1CQv9jAbeiOyahAJ81xHMHDg33wEXZaN8sZN57WpVLiHC6E02sEfJ8RsvV3r1K3fopaqzmYg2pPKhdKtJYduVWUD/ja2/Y4pK5p70ckONjPzFh9kk=
+	t=1732540401; cv=none; b=MdcVSWnwbPzN0MAohXdRbbtv+7vacbaz70E1mYXGFmpCcVwWF293a2JXAb2p5Qu0J2iWksaX+iE2szOspP2kquTOR7LY0U6ekdyHHyd7LXgn0HPbpoBHyxmUIDHt2UqsC12CUetQVH7TjutRvqc1FT1fI50Tswki1DbU0SSuWuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732535197; c=relaxed/simple;
-	bh=dAiakTdG/9VWPzXgKVuwrxfKHzNh/YjUe+NPumXjyLs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=VU1Wf3n+KEnGQ6qrKWca1gPfuI0XQICPkO6cBbSVlkixG7CRn7finsFnYUFrmuP8aEdrAQMEc3B5gpl/vRg/25ziFh9rBd3qOn80PAYTDq2p3jywek8xFqTKOJVPHcrPcdz+NAsahyNZHPBfHXSfB1D1kJ5eEZ6HfUIrqEGtzcw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4XxkSB1wkXz4f3kq5;
-	Mon, 25 Nov 2024 19:46:18 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id DF9621A0568;
-	Mon, 25 Nov 2024 19:46:31 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.112.188])
-	by APP4 (Coremail) with SMTP id gCh0CgCHY4eFY0RnNicrCw--.44046S13;
-	Mon, 25 Nov 2024 19:46:31 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	willy@infradead.org,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	brauner@kernel.org,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH RFC 9/9] ext4: enable large folio for regular file
-Date: Mon, 25 Nov 2024 19:44:19 +0800
-Message-ID: <20241125114419.903270-10-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
-In-Reply-To: <20241125114419.903270-1-yi.zhang@huaweicloud.com>
-References: <20241125114419.903270-1-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1732540401; c=relaxed/simple;
+	bh=zoe9keCgOz8TdgaZeY2U5FChsOFwHzQn4aQ2XQc2oMk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=HsjI1F4lU9xZNA7CT71MkjFklAH31Ft0/sxSBa6eGqJ1GhWWx5/rXM5GLVAAde8SXM3wonadqw86QhjGG5y7HMgsCgHXA+uLub8NJRwzryYpmReI7ceBv2HADGTNL61rHjNZLDNRgr8Oua4XvN6u3DazqzXL53EdycTsAbOzLpE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HUnFiL7m; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B3F59C4CECE;
+	Mon, 25 Nov 2024 13:13:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732540400;
+	bh=zoe9keCgOz8TdgaZeY2U5FChsOFwHzQn4aQ2XQc2oMk=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=HUnFiL7mAae91KuKIjZq38fKCFSJ/xeAJC0MKHSCYoLch7XSINlDDErAkmEKfKrBl
+	 7JuTksfjNvU+Dypx8p0EI/G2Fhzu9c8FHGOHjTRsxtkA6VLNB7Gy/Tskmtr9VySjLd
+	 1/BwilXjzpT7eWAlgRWDMQVe6RXh1uSt11U6NtohY5ZZvTxLsSbPatv3SQLMVqkMnR
+	 1GVIZ9VmtROba4i4EU1fuSctCl91TePgrrkXglv5+hmJlc3o//fcw0LB9Z5o8wnSYB
+	 zY4qKyBWauQxBjUch391Y/FMHbdTpfMlXB+FVYUOR6QUhRl2qKkos6e6S6MjIiLwlQ
+	 MF/4czrgX+pWA==
+From: =?utf-8?B?QmrDtnJuIFTDtnBlbA==?= <bjorn@kernel.org>
+To: Alistair Popple <apopple@nvidia.com>, dan.j.williams@intel.com,
+ linux-mm@kvack.org
+Cc: Alistair Popple <apopple@nvidia.com>, lina@asahilina.net,
+ zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
+ vishal.l.verma@intel.com, dave.jiang@intel.com, logang@deltatee.com,
+ bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca, catalin.marinas@arm.com,
+ will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com,
+ dave.hansen@linux.intel.com, ira.weiny@intel.com, willy@infradead.org,
+ djwong@kernel.org, tytso@mit.edu, linmiaohe@huawei.com, david@redhat.com,
+ peterx@redhat.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev,
+ linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+ jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com,
+ linux-riscv@lists.infradead.org
+Subject: Re: [PATCH v3 25/25] Revert "riscv: mm: Add support for ZONE_DEVICE"
+In-Reply-To: <f511de7cb9817e2e2fdd274ee842c228d699abea.1732239628.git-series.apopple@nvidia.com>
+References: <cover.e1ebdd6cab9bde0d232c1810deacf0bae25e6707.1732239628.git-series.apopple@nvidia.com>
+ <f511de7cb9817e2e2fdd274ee842c228d699abea.1732239628.git-series.apopple@nvidia.com>
+Date: Mon, 25 Nov 2024 14:13:17 +0100
+Message-ID: <878qt7zcb6.fsf@all.your.base.are.belong.to.us>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHY4eFY0RnNicrCw--.44046S13
-X-Coremail-Antispam: 1UD129KBjvJXoWxWrWUuFWrXFyrGrW5ZrWrZrb_yoWrAF18pF
-	WUGa4rGr4DZa4q9a1xtr4UZr1Yva4xGw4UGFZ3u39xX39rJ34IqF18tF1rAF45trWrWw4a
-	qF17Kr1UuanxCFDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUmS14x267AKxVWrJVCq3wAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2048vs2IY020E87I2jVAFwI0_JF0E3s1l82xGYI
-	kIc2x26xkF7I0E14v26ryj6s0DM28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8wA2
-	z4x0Y4vE2Ix0cI8IcVAFwI0_tr0E3s1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F
-	4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oVCq
-	3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0I7
-	IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r4U
-	M4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2
-	kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkE
-	bVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67
-	AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUCVW8JwCI
-	42IY6xIIjxv20xvEc7CjxVAFwI0_Gr1j6F4UJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF
-	4lIxAIcVC2z280aVAFwI0_Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8Jr0_Cr1UYxBI
-	daVFxhVjvjDU0xZFpf9x0JUWMKtUUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-From: Zhang Yi <yi.zhang@huawei.com>
+Alistair Popple <apopple@nvidia.com> writes:
 
-Besides fsverity, fscrypt, and data=journal mode, ext4 can support large
-folios for regular files. Let's enable this feature.
+> DEVMAP PTEs are no longer required to support ZONE_DEVICE so remove
+> them.
+>
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Suggested-by: Chunyan Zhang <zhang.lyra@gmail.com>
 
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
----
+Oh, we're getting the bit back! Thanks!
 
-The side effect of this patch is that we will no longer be able to
-change the active inode's journal flag through
-ext4_change_inode_journal_flag(). Since we always enable large folios
-for regular files, but we cannot enable large folios for journal data
-mode because it can easily exceed journal handle credits. If we want to
-enable journal data mode online for an active inode, we must first drop
-all of the inode's page cache and disable large folios before
-conversion. However, disabling large folios is currently not permitted
-on active inodes because it may not safe, which means we will lose the
-ability to convert to online journal mode after this patch.
-
-The data journal mode is not recommended and should probably be removed
-in the future, I suppose we don't want to find a way to support this
-mode, so can we just kill the online conversion now?
-
- fs/ext4/ext4.h      |  1 +
- fs/ext4/ext4_jbd2.c |  3 ++-
- fs/ext4/ialloc.c    |  3 +++
- fs/ext4/inode.c     | 19 +++++++++++++++++++
- 4 files changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-index 44b0d418143c..48de159a9508 100644
---- a/fs/ext4/ext4.h
-+++ b/fs/ext4/ext4.h
-@@ -2983,6 +2983,7 @@ int ext4_walk_page_buffers(handle_t *handle,
- 				     struct buffer_head *bh));
- int do_journal_get_write_access(handle_t *handle, struct inode *inode,
- 				struct buffer_head *bh);
-+bool ext4_should_enable_large_folio(struct inode *inode);
- #define FALL_BACK_TO_NONDELALLOC 1
- #define CONVERT_INLINE_DATA	 2
- 
-diff --git a/fs/ext4/ext4_jbd2.c b/fs/ext4/ext4_jbd2.c
-index da4a82456383..8fa0c9bad715 100644
---- a/fs/ext4/ext4_jbd2.c
-+++ b/fs/ext4/ext4_jbd2.c
-@@ -16,7 +16,8 @@ int ext4_inode_journal_mode(struct inode *inode)
- 	    ext4_test_inode_flag(inode, EXT4_INODE_EA_INODE) ||
- 	    test_opt(inode->i_sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA ||
- 	    (ext4_test_inode_flag(inode, EXT4_INODE_JOURNAL_DATA) &&
--	    !test_opt(inode->i_sb, DELALLOC))) {
-+	    !test_opt(inode->i_sb, DELALLOC) &&
-+	    !mapping_large_folio_support(inode->i_mapping))) {
- 		/* We do not support data journalling for encrypted data */
- 		if (S_ISREG(inode->i_mode) && IS_ENCRYPTED(inode))
- 			return EXT4_INODE_ORDERED_DATA_MODE;  /* ordered */
-diff --git a/fs/ext4/ialloc.c b/fs/ext4/ialloc.c
-index 7f1a5f90dbbd..cef7aee5ae02 100644
---- a/fs/ext4/ialloc.c
-+++ b/fs/ext4/ialloc.c
-@@ -1333,6 +1333,9 @@ struct inode *__ext4_new_inode(struct mnt_idmap *idmap,
- 		}
- 	}
- 
-+	if (ext4_should_enable_large_folio(inode))
-+		mapping_set_large_folios(inode->i_mapping);
-+
- 	ext4_update_inode_fsync_trans(handle, inode, 1);
- 
- 	err = ext4_mark_inode_dirty(handle, inode);
-diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-index c0179b07d753..8f9a16908503 100644
---- a/fs/ext4/inode.c
-+++ b/fs/ext4/inode.c
-@@ -4702,6 +4702,22 @@ static const char *check_igot_inode(struct inode *inode, ext4_iget_flags flags)
- 	return NULL;
- }
- 
-+bool ext4_should_enable_large_folio(struct inode *inode)
-+{
-+	struct super_block *sb = inode->i_sb;
-+
-+	if (!S_ISREG(inode->i_mode))
-+		return false;
-+	if (test_opt(sb, DATA_FLAGS) == EXT4_MOUNT_JOURNAL_DATA)
-+		return false;
-+	if (ext4_has_feature_verity(sb))
-+		return false;
-+	if (ext4_has_feature_encrypt(sb))
-+		return false;
-+
-+	return true;
-+}
-+
- struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 			  ext4_iget_flags flags, const char *function,
- 			  unsigned int line)
-@@ -4970,6 +4986,9 @@ struct inode *__ext4_iget(struct super_block *sb, unsigned long ino,
- 		inode->i_op = &ext4_file_inode_operations;
- 		inode->i_fop = &ext4_file_operations;
- 		ext4_set_aops(inode);
-+
-+		if (ext4_should_enable_large_folio(inode))
-+			mapping_set_large_folios(inode->i_mapping);
- 	} else if (S_ISDIR(inode->i_mode)) {
- 		inode->i_op = &ext4_dir_inode_operations;
- 		inode->i_fop = &ext4_dir_operations;
--- 
-2.46.1
-
+Reviewed-by: Bj=C3=B6rn T=C3=B6pel <bjorn@rivosinc.com>
 
