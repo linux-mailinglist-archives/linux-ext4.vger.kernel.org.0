@@ -1,132 +1,194 @@
-Return-Path: <linux-ext4+bounces-5431-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5432-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F0BB9DA1A5
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 06:11:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 304A99DA1F3
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 07:02:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06C471654B6
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 05:11:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58C521682F1
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 06:02:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1122A13CFAD;
-	Wed, 27 Nov 2024 05:11:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0422D1494C2;
+	Wed, 27 Nov 2024 06:02:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Qw6H4OIz"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tRcMe2OE"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42EAD481CD;
-	Wed, 27 Nov 2024 05:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF3F1494A8;
+	Wed, 27 Nov 2024 06:02:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732684299; cv=none; b=kCiIavRPg1YpHgd3h868cMlU0jbyphNEQPN1ZHCOATAwPd+YY/dLS6xl3DzZ5i3S25FQkLjdgnrIdvZ0TEsjvpJdj7KBngbQuP9f+yPTxiK+uHLbRMtUPgqGUc4i+7FUQVYN5HXkmLJcmrm6+oFinO6LADWiAAXranwWwc5qFN8=
+	t=1732687337; cv=none; b=VTWTTffTTJLz0OwIWqK9DFD0mrlpJvc9UFzHeKN9Qu3vmkuKnq9NjEsdqZoJka6WAj5bCx3riAS8TYgblvMN804mUBIOALwLgLyGDQ/2tPwtfXNFlCt4TRNqiGmTtNMkYGY/rO9wcrD8p67Ggend2jWin0ntBL7FSF9fsRtWC0c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732684299; c=relaxed/simple;
-	bh=qrkOGM6Gbh9TLjWT+u6nRVQT6FDAjux/1T3+M1VnVQQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oZEW3f913YpgG29cI3Kkfcs/xw3x2MCQtrlNvGJYJLqC05/zU7jyZnq2+FOGVHl3ioQ0wxadyJaHXGcqw3tvOHcZDYM0pepRIjSAe07YGgkmTcsaVtyY3BvMkojLUltyY/HaxbFi+xx2tA1ci2XPsf3hg+a8Z9m67HMrh7+4+jA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Qw6H4OIz; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1732687337; c=relaxed/simple;
+	bh=uQMGWqVTJqjQQWzVswtQz3zjEjLqDGeAktSQRm+f8Fc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jVIVD/VSRTIzTIWa+PmUrgRMT5x4PIk+MZuPctr5jECjoykI9NdDPYBHNLUg0lMik+O5Pgz4l49T2jO0OzHlsscM+IUvbYvcCrb6uBcZU2bffZmsWXgctAJ/JFJNFUQ/nL+5hXoZCY1ks5V0KLedtMWEShRBewOB2B74V55nSno=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tRcMe2OE; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR1hAE4021843;
-	Wed, 27 Nov 2024 05:11:36 GMT
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR1hSuX004613;
+	Wed, 27 Nov 2024 06:01:57 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=20te9S
-	TD66VlO9s+dcaD8xcDf8C5gZ+SkWqFR2Fyj0U=; b=Qw6H4OIzQp2LY1kxH1zPA1
-	L+QNFdIpoo2B88lk4fcXAjhxUhxNXFk69VBH9rrHEoBXaPafGvBqQ/rOJjPQ4eZL
-	NfCY2GnzkrFETl8kStYf4Q7sePaKaZkvcnj+XSNmH1banhJdcYNpssqnfEtu8Nrz
-	cfTMM4luXe3x88VgeZsVbX/aTihs65bRbE+5CIsshDeKHTDsOq7gxR1GxmMEs5rs
-	WUIf5TPfMlnwQ2l81wt2PouXKKVTKizN1HDx3XY4SaB2pm7Cp4Bs4EVt44AJrEer
-	b0hRxS3vlaeUSKYCm01+S8ZA10ZmvKVfMpAIy7Lr0p+o5Ti+DAghGYIGI6GLjeBQ
-	==
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=XJ6LzKjtN2bLHXbwSg28WI93OyPeUO
+	hhYjzJZY/BJHw=; b=tRcMe2OEolxS0cnhxne3kbAC7V7rxR6j1HExDEH0F7vCd6
+	R7K27YF7fso/SHRgdyFB5Vu749Z8JsfBtgZqfa/0VpOft6wj50VFyuJMEs5rmGz3
+	nj1pqDiioRv115bg3InPN04PgxgIB5aZ5OTJdt+502zzR5eMdBrzuQ0vRAmh1gqp
+	av5z68gfW+RzJYrYHQbEoHSv/7JEQ86z5cUSQnIYkW/9myvId0j2YNhHnnw6AXyH
+	5nakWEzGnZ6uvY+7LMRSkQPKuTm9BuUcB4qyHfWfoTEdI4HysehKhw6907oAq/2l
+	72oEUBa9WkEjAb4Qb1/qhQuZ8pPecLtoBPZmUY8g==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43389chyag-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4350rhqgjt-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 05:11:35 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AR53cSS021514;
-	Wed, 27 Nov 2024 05:11:35 GMT
+	Wed, 27 Nov 2024 06:01:56 +0000 (GMT)
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AR5ltSY031242;
+	Wed, 27 Nov 2024 06:01:56 GMT
 Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43389chyae-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4350rhqgjp-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 05:11:35 +0000 (GMT)
+	Wed, 27 Nov 2024 06:01:56 +0000 (GMT)
 Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR506m7024893;
-	Wed, 27 Nov 2024 05:11:34 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 433tvkjde8-1
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR5ARhC024910;
+	Wed, 27 Nov 2024 06:01:55 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 433tvkjraa-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 05:11:33 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AR5BWxv29688484
+	Wed, 27 Nov 2024 06:01:55 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AR61rso17891620
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Nov 2024 05:11:32 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E72352004B;
-	Wed, 27 Nov 2024 05:11:31 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A403820040;
-	Wed, 27 Nov 2024 05:11:30 +0000 (GMT)
-Received: from [9.39.20.219] (unknown [9.39.20.219])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 27 Nov 2024 05:11:30 +0000 (GMT)
-Message-ID: <53139dfe-2c2d-4488-8eba-dd30cfc1af93@linux.ibm.com>
-Date: Wed, 27 Nov 2024 10:41:29 +0530
+	Wed, 27 Nov 2024 06:01:53 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 84AB320040;
+	Wed, 27 Nov 2024 06:01:53 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 99F8B2004B;
+	Wed, 27 Nov 2024 06:01:51 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.39.21.251])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Wed, 27 Nov 2024 06:01:51 +0000 (GMT)
+Date: Wed, 27 Nov 2024 11:31:43 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Baokun Li <libaokun1@huawei.com>
+Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
+        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
+        Yang Erkun <yangerkun@huawei.com>
+Subject: Re: [PATCH v2 2/2] ext4: protect ext4_release_dquot against freezing
+Message-ID: <Z0a1x7yksOE4Jsha@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20241121123855.645335-1-ojaswin@linux.ibm.com>
+ <20241121123855.645335-3-ojaswin@linux.ibm.com>
+ <cc2fcc33-9024-4ce8-bd52-cdcd23f6b455@huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/3] common/rc: Add a new _require_scratch_extsize
- helper function
-Content-Language: en-US
-To: "Ritesh Harjani (IBM)" <ritesh.list@gmail.com>, fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
-References: <cover.1732681064.git.nirjhar@linux.ibm.com>
- <fbc317332fb3d76680f65eb0c697f8c16b958bc4.1732681064.git.nirjhar@linux.ibm.com>
- <87mshlgt93.fsf@gmail.com>
-From: Nirjhar Roy <nirjhar@linux.ibm.com>
-In-Reply-To: <87mshlgt93.fsf@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cc2fcc33-9024-4ce8-bd52-cdcd23f6b455@huawei.com>
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: F5aniYUEEf4XSovvkywpt94PyaTWVNQW
-X-Proofpoint-ORIG-GUID: Vd1gbArkoCvXFD6hudnQrl_pj5JWD3FC
+X-Proofpoint-GUID: cWYwE0OfKJvpEkLNsCzp0p6KH-lQBOae
+X-Proofpoint-ORIG-GUID: twrRtpAhTi5S9HXIl5QCrYnDCy4En_F8
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=639
- adultscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 clxscore=1015
- suspectscore=0 bulkscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
- definitions=main-2411270040
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
+ spamscore=0 impostorscore=0 mlxscore=0 suspectscore=0 malwarescore=0
+ adultscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411270048
 
+On Tue, Nov 26, 2024 at 10:49:14PM +0800, Baokun Li wrote:
+> On 2024/11/21 20:38, Ojaswin Mujoo wrote:
+> > Protect ext4_release_dquot against freezing so that we
+> > don't try to start a transaction when FS is frozen, leading
+> > to warnings.
+> > 
+> > Further, avoid taking the freeze protection if a transaction
+> > is already running so that we don't need end up in a deadlock
+> > as described in
+> > 
+> >    46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
+> > 
+> > Suggested-by: Jan Kara <jack@suse.cz>
+> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> > ---
+> >   fs/ext4/super.c | 17 +++++++++++++++++
+> >   1 file changed, 17 insertions(+)
+> > 
+> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+> > index 16a4ce704460..f7437a592359 100644
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -6887,12 +6887,25 @@ static int ext4_release_dquot(struct dquot *dquot)
+> >   {
+> >   	int ret, err;
+> >   	handle_t *handle;
+> > +	bool freeze_protected = false;
+> > +
+> > +	/*
+> > +	 * Trying to sb_start_intwrite() in a running transaction
+> > +	 * can result in a deadlock. Further, running transactions
+> > +	 * are already protected from freezing.
+> > +	 */
+> > +	if (!ext4_journal_current_handle()) {
+> > +		sb_start_intwrite(dquot->dq_sb);
+> > +		freeze_protected = true;
+> > +	}
+> >   	handle = ext4_journal_start(dquot_to_inode(dquot), EXT4_HT_QUOTA,
+> >   				    EXT4_QUOTA_DEL_BLOCKS(dquot->dq_sb));
+> >   	if (IS_ERR(handle)) {
+> >   		/* Release dquot anyway to avoid endless cycle in dqput() */
+> >   		dquot_release(dquot);
+> > +		if (freeze_protected)
+> > +			sb_end_intwrite(dquot->dq_sb);
+> >   		return PTR_ERR(handle);
+> >   	}
+> >   	ret = dquot_release(dquot);
+> > @@ -6903,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
+> The `git am` command looks for the following context code from line 6903
+> to apply the changes. But there are many functions in fs/ext4/super.c that
+> have similar code, such as ext4_write_dquot() and ext4_acquire_dquot().
 
-On 11/27/24 10:36, Ritesh Harjani (IBM) wrote:
-> Nirjhar Roy <nirjhar@linux.ibm.com> writes:
->
->> _require_scratch_extsize helper function will be used in the
->> the next patch to make the test run only on filesystems with
->> extsize support.
->>
-> Sure. Thanks for addressing the review comments.
-> The patch looks good to me. Please feel free to add -
->
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-Thank you.
+Oh that's strange, shouldn't it match the complete line like:
 
--- 
----
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+> > @@ -6903,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
 
+That should only have one occurence around line 6903? Or does it try to
+fuzzy match which ends up matching ext4_write_dquot etc?
+
+> 
+> So when the code before ext4_release_dquot() is added, the first matching
+> context found could be in ext4_write_dquot() or ext4_acquire_dquot().
+> >   	err = ext4_journal_stop(handle);
+> >   	if (!ret)
+> >   		ret = err;
+> > +
+> > +	if (freeze_protected)
+> > +		sb_end_intwrite(dquot->dq_sb);
+> > +
+> >   	return ret;
+> >   }
+> 
+> Thus this is actually a bug in `git am`, which can be avoided by increasing
+> the number of context lines with `git format-patch -U8 -1`.
+> 
+> Otherwise it looks good. Feel free to add:
+> 
+> Reviewed-by: Baokun Li <libaokun1@huawei.com>
+
+Thanks Baokun!
+
+Regards,
+ojaswin
+> 
 
