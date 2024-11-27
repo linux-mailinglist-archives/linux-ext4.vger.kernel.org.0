@@ -1,139 +1,114 @@
-Return-Path: <linux-ext4+bounces-5418-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5419-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 84DCC9D99EE
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Nov 2024 15:49:42 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEE059DA020
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 01:54:15 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A8AB0B2344F
-	for <lists+linux-ext4@lfdr.de>; Tue, 26 Nov 2024 14:49:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C09E8168E2A
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 00:54:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D362C1D5CDD;
-	Tue, 26 Nov 2024 14:49:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ACB1156CF;
+	Wed, 27 Nov 2024 00:54:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="twYjERU6"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FCF28F5;
-	Tue, 26 Nov 2024 14:49:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4AB14F90;
+	Wed, 27 Nov 2024 00:54:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732632568; cv=none; b=L7YwLZpfGmdvIxhSvuPBr4kPhqbx54GhYgN8piTGlqv87BbHZREti2L4ewLFl4EBo8o7r8qFxXDu5Tyo72kXcNqVEIYcsSHPvODQF444T9NectSOPeVdSCgBQ9DYKsKjGt8LmouPGmuy4ae1x6cWJLW+fHCwQklfEi8KSkA4Mr4=
+	t=1732668844; cv=none; b=TBuQ1SBqM9cSO4A0+mjaqzV9RF/OywN7GTulmisKRM7vbpm7XRmOotI/zS8OYzAnPeJ7HINF4PnUAbFZEdpXDpBrYWtrdtwlHp9BvQLL1lfYwyrVmOtPynq6fFICX0h60x633ADo8yOneduP49dc7KregAE4dXI+sh1Do23gOMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732632568; c=relaxed/simple;
-	bh=rOkU4urKTvq6d1TPmzqp6af5+SfUyHhLzdJ+qqUA7WA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=cKQizKQ97f//Ta1gZBrmMWmCx5/jclOvfq1HJmylMRUvoG8DNEHvDczs1mEtuQrYY54oZZRdhfn+CQX1v5iRET7zgL2eXQLAAJGiZVC7fZZ73dkY1SexTieT6X37hZlbL/Q9nykOXw4BpX/8blQwv/CDYpozuBiR6MoA81h5iS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4XyQQN2NW4z1T4gY;
-	Tue, 26 Nov 2024 22:47:08 +0800 (CST)
-Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
-	by mail.maildlp.com (Postfix) with ESMTPS id C1DE6140109;
-	Tue, 26 Nov 2024 22:49:15 +0800 (CST)
-Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
- (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Tue, 26 Nov
- 2024 22:49:14 +0800
-Message-ID: <cc2fcc33-9024-4ce8-bd52-cdcd23f6b455@huawei.com>
-Date: Tue, 26 Nov 2024 22:49:14 +0800
+	s=arc-20240116; t=1732668844; c=relaxed/simple;
+	bh=7J1IGdkpsJjzOqhOcq+Mx/GI7zhDkfFsMESoeATfORA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aDHHlt0ywqYroUeq0y+rymm2BbZAFm4JIMmGGRQpdw+LMBj/ocb/Zl1CGguCyY6fj+UQto7+mUYx1NOgi3j+z7049BVi2MQRvnfyoe5o+OGOmETZJ/k4H9c2ip8glhOuDx/Jf2WlW+ufScflflKZY42bZhz3PV4mpEq2dfT3+vM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=twYjERU6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42FBDC4CED2;
+	Wed, 27 Nov 2024 00:54:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1732668844;
+	bh=7J1IGdkpsJjzOqhOcq+Mx/GI7zhDkfFsMESoeATfORA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=twYjERU6v5zgziUNfQ3tCTs3r4VZUBFefVhLGPOfHW4+o8BdzGy6dkOy6bud6FNW8
+	 rSf54yvHeYdNHidCwUS7CubS61/b7mT5yJrMaGH/RKe4aUDiww8EY9he+bWKtwEWpL
+	 59bUH6f1EELQbJ+GPQFhEK4aZX5tt3oBBoQZCy0VI6i6yS+cQU1wWs8LtHYGODNXJS
+	 vvnrJivxHBg7GnDXCu7ezVllFpp0xOmYesoTu46KhbjnqkuECIhQO2MNV6gXU/7aYD
+	 NR5EVq6K5r647Bz8SVW1T7xBiO2sctIVhsC5dRgR9yWY+cbBBlzpQBlb2KWi75XlU0
+	 5ilkpR6apSO5w==
+Date: Tue, 26 Nov 2024 16:54:03 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Nirjhar Roy <nirjhar@linux.ibm.com>
+Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
+	ojaswin@linux.ibm.com, zlang@kernel.org
+Subject: Re: [PATCH v4 2/3] common/rc: Add a new _require_scratch_extsize
+ helper function
+Message-ID: <20241127005403.GS9438@frogsfrogsfrogs>
+References: <cover.1732599868.git.nirjhar@linux.ibm.com>
+ <3e0f7be0799a990e2f6856f884e527a92585bf56.1732599868.git.nirjhar@linux.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/2] ext4: protect ext4_release_dquot against freezing
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, <linux-ext4@vger.kernel.org>, Jan
- Kara <jack@suse.com>
-CC: Ritesh Harjani <ritesh.list@gmail.com>, <linux-kernel@vger.kernel.org>,
-	<linux-fsdevel@vger.kernel.org>, Jan Kara <jack@suse.cz>, Yang Erkun
-	<yangerkun@huawei.com>
-References: <20241121123855.645335-1-ojaswin@linux.ibm.com>
- <20241121123855.645335-3-ojaswin@linux.ibm.com>
-Content-Language: en-US
-From: Baokun Li <libaokun1@huawei.com>
-In-Reply-To: <20241121123855.645335-3-ojaswin@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
- kwepemg500008.china.huawei.com (7.202.181.45)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <3e0f7be0799a990e2f6856f884e527a92585bf56.1732599868.git.nirjhar@linux.ibm.com>
 
-On 2024/11/21 20:38, Ojaswin Mujoo wrote:
-> Protect ext4_release_dquot against freezing so that we
-> don't try to start a transaction when FS is frozen, leading
-> to warnings.
->
-> Further, avoid taking the freeze protection if a transaction
-> is already running so that we don't need end up in a deadlock
-> as described in
->
->    46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
->
-> Suggested-by: Jan Kara <jack@suse.cz>
-> Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+On Tue, Nov 26, 2024 at 11:24:07AM +0530, Nirjhar Roy wrote:
+> _require_scratch_extsize helper function will be used in the
+> the next patch to make the test run only on filesystems with
+> extsize support.
+> 
+> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
+
+Looks good to me now,
+Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+
+--D
+
 > ---
->   fs/ext4/super.c | 17 +++++++++++++++++
->   1 file changed, 17 insertions(+)
->
-> diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> index 16a4ce704460..f7437a592359 100644
-> --- a/fs/ext4/super.c
-> +++ b/fs/ext4/super.c
-> @@ -6887,12 +6887,25 @@ static int ext4_release_dquot(struct dquot *dquot)
->   {
->   	int ret, err;
->   	handle_t *handle;
-> +	bool freeze_protected = false;
+>  common/rc | 17 +++++++++++++++++
+>  1 file changed, 17 insertions(+)
+> 
+> diff --git a/common/rc b/common/rc
+> index f94bee5e..e6c6047d 100644
+> --- a/common/rc
+> +++ b/common/rc
+> @@ -48,6 +48,23 @@ _test_fsxattr_xflag()
+>  	grep -q "fsxattr.xflags.*\[.*$2.*\]" <($XFS_IO_PROG -c "stat -v" "$1")
+>  }
+>  
+> +# This test requires extsize support on the  filesystem
+> +_require_scratch_extsize()
+> +{
+> +	_require_scratch
+> +	_require_xfs_io_command "extsize"
+> +	_scratch_mkfs > /dev/null
+> +	_scratch_mount
+> +	local filename=$SCRATCH_MNT/$RANDOM
+> +	local blksz=$(_get_block_size $SCRATCH_MNT)
+> +	local extsz=$(( blksz*2 ))
+> +	local res=$($XFS_IO_PROG -c "open -f $filename" -c "extsize $extsz" \
+> +		-c "extsize")
+> +	_scratch_unmount
+> +	grep -q "\[$extsz\] $filename" <(echo $res) || \
+> +		_notrun "this test requires extsize support on the filesystem"
+> +}
 > +
-> +	/*
-> +	 * Trying to sb_start_intwrite() in a running transaction
-> +	 * can result in a deadlock. Further, running transactions
-> +	 * are already protected from freezing.
-> +	 */
-> +	if (!ext4_journal_current_handle()) {
-> +		sb_start_intwrite(dquot->dq_sb);
-> +		freeze_protected = true;
-> +	}
->   
->   	handle = ext4_journal_start(dquot_to_inode(dquot), EXT4_HT_QUOTA,
->   				    EXT4_QUOTA_DEL_BLOCKS(dquot->dq_sb));
->   	if (IS_ERR(handle)) {
->   		/* Release dquot anyway to avoid endless cycle in dqput() */
->   		dquot_release(dquot);
-> +		if (freeze_protected)
-> +			sb_end_intwrite(dquot->dq_sb);
->   		return PTR_ERR(handle);
->   	}
->   	ret = dquot_release(dquot);
-> @@ -6903,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
-The `git am` command looks for the following context code from line 6903
-to apply the changes. But there are many functions in fs/ext4/super.c that
-have similar code, such as ext4_write_dquot() and ext4_acquire_dquot().
-
-So when the code before ext4_release_dquot() is added, the first matching
-context found could be in ext4_write_dquot() or ext4_acquire_dquot().
->   	err = ext4_journal_stop(handle);
->   	if (!ret)
->   		ret = err;
-> +
-> +	if (freeze_protected)
-> +		sb_end_intwrite(dquot->dq_sb);
-> +
->   	return ret;
->   }
->   
-
-Thus this is actually a bug in `git am`, which can be avoided by increasing
-the number of context lines with `git format-patch -U8 -1`.
-
-Otherwise it looks good. Feel free to add:
-
-Reviewed-by: Baokun Li <libaokun1@huawei.com>
-
+>  # Write a byte into a range of a file
+>  _pwrite_byte() {
+>  	local pattern="$1"
+> -- 
+> 2.43.5
+> 
+> 
 
