@@ -1,376 +1,185 @@
-Return-Path: <linux-ext4+bounces-5425-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5426-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A26309DA164
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 05:11:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99EC29DA17D
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 05:28:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E56E7B23B06
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 04:11:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585D0284E90
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 04:28:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A41513AD32;
-	Wed, 27 Nov 2024 04:11:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9913813A89A;
+	Wed, 27 Nov 2024 04:28:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="Pw0lZMFK"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="ifeQe8xQ"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D7D5282FE;
-	Wed, 27 Nov 2024 04:11:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B2E1946B;
+	Wed, 27 Nov 2024 04:28:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732680696; cv=none; b=oAVHBQZA9JfVh3IgfKzIRi1Uo/oD2FFps8HrqrtsciytXiLMX2Qa7S4hBOeGI4eBbGUNNmg7ls20lVNIk1OmdkBywIvBCgPZWFZXSdB/TjkM6uGZKBVeW1N7BbrWfxHho9odDeLw2X8LEwgPBfUIEDnyLnZHlc4VTy/Xe9TJnfY=
+	t=1732681703; cv=none; b=BHtTS0Y3VprOQ2W7JSuFjU7U4CTHny/UEMU5WgTTrjVItmAGHB1gYkx4qpOD8Yr7HgfZyYfYrXUyJ8fyjfnXB3fVI82ySA/xVcwU7fos5ywNOTpFCAzRKvtQry3zvnnJkt03i6APb0k4TYj++Sd93khUSffjyidzMVcZx3XYXmw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732680696; c=relaxed/simple;
-	bh=LZT+pkmY2pkXt6SujsiVU1x7v3o6bdVelslBQ+pzhHw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DuBTa+ZBUmqEeOTuWv0KRK2YRpBLqI/Pi/pkfJ9nTOUlWJmcIR3gq2AFwJZTMrGHJHdBAQWFfEZPircWto3VY+Zwsom+pvE++ZK6d9N1Dk4nKX9p6yjotol+B5kUYzh99G1ZBuPGTY0JRxIzJsPkV/lIxrjjxVg6/3vLCVOU4WM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=Pw0lZMFK; arc=none smtp.client-ip=148.163.156.1
+	s=arc-20240116; t=1732681703; c=relaxed/simple;
+	bh=D0QOn/yFXXCPwLCA2XvhZ/MzB8REVgkkUs4EB2ofEEM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=dqWHFRbU45ioEJRZFzRjOqaLZK6QeL1w9C8WRRUrxStp4cXjPpLC/4yCY2zU1ix83092jyPWb7m8eX3MQCoTr5uUt+geSgzryfxq0TkbEFG/wgcjcUb33ih8oQdyX+hJtFlpAluDnz7j8Cne3t5fA7yNC7XjNsLWVLo9wJHfjA8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=ifeQe8xQ; arc=none smtp.client-ip=148.163.156.1
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR1hBB3021887;
-	Wed, 27 Nov 2024 04:11:30 GMT
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR1hNjt028731;
+	Wed, 27 Nov 2024 04:28:19 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=UahudH
-	W1u1x9UfKKDQ77e1JfFqmRi9tR1ybMhEFduB4=; b=Pw0lZMFKET5UwLLPdqVxHn
-	0acxPh2eKsp6i54qaRNvck9kXOiEvubOelBF03ZWs9Fo/hzE/I4xW5iZLM0AXK0t
-	hz8Wl4Zp26RvehG0Gc9F4p2XVEWOAuU+RtH9EGuL0ucptNkVdYF6F3wJ+1bpBe6L
-	2BmI6a6TcPzWeTodTmHmsYpwgzSIkKkXZESWJ2OgIPPzogTY7ZpTb1r2x58e8msf
-	GckMq46G2KPlRqs3q6Czi1rKd85F9il06pykTPl/Mi8jx/qEfBJ21icAI0LKqq3r
-	9NbmHMehARpdk9p3iVrwx2eixlBYthIyvYaOJCyFB5SHsyLVM3v3NfjJjTlyXvbQ
-	==
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=2LnoRW8+TX9Xdf8kBZl6GkWPco4DyYLsYO7zJrKWj
+	Hw=; b=ifeQe8xQCjaAW34Sy1/DI9z8plX+wT7RllItLr8PUa6qP/uZPFJchwWvk
+	R3ymdjwsQpACQVzISaR66kp2tr44WboIrVOrmzDKwuOUrhBTJ32AR+XoUeXXek7+
+	Zujx7EMWZY5j0iDRc+EURTKdf7yLcDFj9Y5gMB4TGJFKmSpnkkFZxPtOGcx9iG31
+	/BrFMpk9I6ZuPuogXj04zPW+WryOwS1bW4vcIpjQTG5i+iCPYTTRTTRSro4YFzhT
+	jGmhCtQsOMvXM2OA4bOw2rGxk1PMSMr0nMQ79UI0YNXP5LPwujShWewSeGN1l+NW
+	vbPmHAQTVIvNt4X249NFQVNP4WJHA==
 Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43389chrnp-1
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43387c1rhj-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 04:11:30 +0000 (GMT)
-Received: from m0360083.ppops.net (m0360083.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AR4AB9A014522;
-	Wed, 27 Nov 2024 04:11:29 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43389chrnn-1
+	Wed, 27 Nov 2024 04:28:18 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AR4Rsx6021027;
+	Wed, 27 Nov 2024 04:28:18 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43387c1rhe-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 04:11:29 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AQNPaU9008775;
-	Wed, 27 Nov 2024 04:11:28 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 433scrwtkg-1
+	Wed, 27 Nov 2024 04:28:18 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR3p7Ds000840;
+	Wed, 27 Nov 2024 04:28:17 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 433sryjhq6-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 04:11:28 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AR4BRQq33096386
+	Wed, 27 Nov 2024 04:28:16 +0000
+Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AR4SCmD34210324
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Nov 2024 04:11:27 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0058E20043;
-	Wed, 27 Nov 2024 04:11:27 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id ABC3A20040;
-	Wed, 27 Nov 2024 04:11:25 +0000 (GMT)
-Received: from [9.39.20.219] (unknown [9.39.20.219])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 27 Nov 2024 04:11:25 +0000 (GMT)
-Message-ID: <bf1006cf-9df8-4574-ba7d-2a6213e4190d@linux.ibm.com>
-Date: Wed, 27 Nov 2024 09:41:24 +0530
+	Wed, 27 Nov 2024 04:28:13 GMT
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id C42FD2004B;
+	Wed, 27 Nov 2024 04:28:12 +0000 (GMT)
+Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 32F3320043;
+	Wed, 27 Nov 2024 04:28:11 +0000 (GMT)
+Received: from li-5d80d4cc-2782-11b2-a85c-bed59fe4c9e5.ibm.com.com (unknown [9.39.20.219])
+	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Wed, 27 Nov 2024 04:28:11 +0000 (GMT)
+From: Nirjhar Roy <nirjhar@linux.ibm.com>
+To: fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+        ritesh.list@gmail.com, ojaswin@linux.ibm.com, djwong@kernel.org,
+        zlang@kernel.org, nirjhar@linux.ibm.com
+Subject: [PATCH v5 0/3] Addition of new tests for extsize hints
+Date: Wed, 27 Nov 2024 09:57:58 +0530
+Message-ID: <cover.1732681064.git.nirjhar@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/3] generic: Addition of new tests for extsize hints
-Content-Language: en-US
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-        ojaswin@linux.ibm.com, zlang@kernel.org
-References: <cover.1732599868.git.nirjhar@linux.ibm.com>
- <4b3bc104222cba372115d6e249da555f7fbe528b.1732599868.git.nirjhar@linux.ibm.com>
- <20241127005551.GT9438@frogsfrogsfrogs>
-From: Nirjhar Roy <nirjhar@linux.ibm.com>
-In-Reply-To: <20241127005551.GT9438@frogsfrogsfrogs>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: I5nI5l9QiMyTT7-NzX8l5p5eAbFKdkLL
-X-Proofpoint-ORIG-GUID: iqTjX6Et_fcK7UTtCqXQApxKjMe9zf-0
+X-Proofpoint-GUID: onG-3Tsj1EG2I0qX4zi5EzRaNkDGWc5_
+X-Proofpoint-ORIG-GUID: L2THMHMJo3DlaGRllwLwSBaWQvli3vRv
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 mlxlogscore=999
- adultscore=0 lowpriorityscore=0 impostorscore=0 spamscore=0 clxscore=1015
- suspectscore=0 bulkscore=0 priorityscore=1501 phishscore=0 malwarescore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2409260000
- definitions=main-2411270030
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 impostorscore=0 mlxscore=0 lowpriorityscore=0 phishscore=0
+ malwarescore=0 spamscore=0 suspectscore=0 adultscore=0 bulkscore=0
+ clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2409260000 definitions=main-2411270035
 
+This test checks the behaviour of xfs/ext4 filesystems when extsize
+hint is set on files with inode size as 0, non-empty
+files with allocated and delalloc extents and so on. 
+This test set also tests one of the scenarios where setting extsize
+hints on files with delayed allocation incorrectly succeeds and there is 
+a recent patch series[1] that got merged[2] which fixes this.
 
-On 11/27/24 06:25, Darrick J. Wong wrote:
-> On Tue, Nov 26, 2024 at 11:24:08AM +0530, Nirjhar Roy wrote:
->> This commit adds new tests that checks the behaviour of xfs/ext4
->> filesystems when extsize hint is set on file with inode size as 0,
->> non-empty files with allocated and delalloc extents and so on.
->> Although currently this test is placed under tests/generic, it
->> only runs on xfs and there is an ongoing patch series[1] to
->> enable extsize hints for ext4 as well.
->>
->> [1] https://lore.kernel.org/linux-ext4/cover.1726034272.git.ojaswin@linux.ibm.com/
->>
->> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
->> Reviewed-by Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Suggested-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
->> Signed-off-by: Nirjhar Roy <nirjhar@linux.ibm.com>
->> ---
->>   tests/generic/367     | 175 ++++++++++++++++++++++++++++++++++++++++++
->>   tests/generic/367.out |  26 +++++++
->>   2 files changed, 201 insertions(+)
->>   create mode 100755 tests/generic/367
->>   create mode 100644 tests/generic/367.out
->>
->> diff --git a/tests/generic/367 b/tests/generic/367
->> new file mode 100755
->> index 00000000..25d23f42
->> --- /dev/null
->> +++ b/tests/generic/367
->> @@ -0,0 +1,175 @@
->> +#! /bin/bash
->> +# SPDX-License-Identifier: GPL-2.0
->> +# Copyright (c) 2024 Nirjhar Roy (nirjhar@linux.ibm.com).  All Rights Reserved.
->> +#
->> +# FS QA Test 366
-> s/366/367/
->
-> ./tools/mvtest is your friend.
-Noted.
->
->> +#
->> +# This test verifies that extent allocation hint setting works correctly on
->> +# files with no extents allocated and non-empty files which are truncated.
->> +# It also checks that the  extent hints setting fails with non-empty file
->> +# i.e, with any file with allocated extents or delayed allocation. We also
->> +# check if the extsize value and the xflag bit actually got reflected after
->> +# setting/re-setting the extsize value.
->> +
->> +. ./common/config
->> +. ./common/filter
->> +. ./common/preamble
->> +
->> +_begin_fstest ioctl quick
->> +
->> +_fixed_by_kernel_commit "2a492ff66673 \
->> +                        xfs: Check for delayed allocations before setting \
->> +			extsize"
-> The commit id should be the second parameter and the subject line the
-> third parameter.
->
-> _fixed_by_kernel_commit 2a492ff66673 \
-> 	"xfs: Check for delayed allocations before setting extsize"
->
-> With those fixed,
-> Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
->
-> --D
-Noted.
->
->> +
->> +_require_scratch_extsize
->> +
->> +FILE_DATA_SIZE=1M
->> +
->> +get_default_extsize()
->> +{
->> +    if [ -z $1 ] || [ ! -d $1 ]; then
->> +        echo "Missing mount point argument for get_default_extsize"
->> +        exit 1
->> +    fi
->> +    $XFS_IO_PROG -c "extsize" "$1" | sed 's/^\[\([0-9]\+\)\].*/\1/'
->> +}
->> +
->> +filter_extsz()
->> +{
->> +    sed "s/\[$1\]/\[EXTSIZE\]/g"
->> +}
->> +
->> +setup()
->> +{
->> +    _scratch_mkfs >> "$seqres.full"  2>&1
->> +    _scratch_mount >> "$seqres.full" 2>&1
->> +    BLKSZ=`_get_block_size $SCRATCH_MNT`
->> +    DEFAULT_EXTSIZE=`get_default_extsize $SCRATCH_MNT`
->> +    EXTSIZE=$(( BLKSZ*2 ))
->> +    # Make sure the new extsize is not the same as the default
->> +    # extsize so that we can observe it changing
->> +    [[ "$DEFAULT_EXTSIZE" -eq "$EXTSIZE" ]] && EXTSIZE=$(( BLKSZ*4 ))
->> +}
->> +
->> +read_file_extsize()
->> +{
->> +    $XFS_IO_PROG -c "extsize" $1 | _filter_scratch | filter_extsz $2
->> +}
->> +
->> +check_extsz_and_xflag()
->> +{
->> +    local filename=$1
->> +    local extsize=$2
->> +    read_file_extsize $filename $extsize
->> +    _test_fsxattr_xflag $filename "extsize" && echo "e flag set" || \
->> +	    echo "e flag unset"
->> +}
->> +
->> +check_extsz_xflag_across_remount()
->> +{
->> +    local filename=$1
->> +    local extsize=$2
->> +    _scratch_cycle_mount
->> +    check_extsz_and_xflag $filename $extsize
->> +}
->> +
->> +# Extsize flag should be cleared when extsize is reset, so this function
->> +# checks that this behavior is followed.
->> +reset_extsz_and_recheck_extsz_xflag()
->> +{
->> +    local filename=$1
->> +    echo "Re-setting extsize hint to 0"
->> +    $XFS_IO_PROG -c "extsize 0" $filename
->> +    check_extsz_xflag_across_remount $filename "0"
->> +}
->> +
->> +check_extsz_xflag_before_and_after_reset()
->> +{
->> +    local filename=$1
->> +    local extsize=$2
->> +    check_extsz_xflag_across_remount $filename $extsize
->> +    reset_extsz_and_recheck_extsz_xflag $filename
->> +}
->> +
->> +test_empty_file()
->> +{
->> +    echo "TEST: Set extsize on empty file"
->> +    local filename=$1
->> +    $XFS_IO_PROG \
->> +        -c "open -f $filename" \
->> +        -c "extsize $EXTSIZE" \
->> +
->> +    check_extsz_xflag_before_and_after_reset $filename $EXTSIZE
->> +    echo
->> +}
->> +
->> +test_data_delayed()
->> +{
->> +    echo "TEST: Set extsize on non-empty file with delayed allocation"
->> +    local filename=$1
->> +    $XFS_IO_PROG \
->> +        -c "open -f $filename" \
->> +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
->> +        -c "extsize $EXTSIZE" | _filter_scratch
->> +
->> +    echo "test for default extsize setting if any"
->> +    read_file_extsize $filename $DEFAULT_EXTSIZE
->> +    echo
->> +}
->> +
->> +test_data_allocated()
->> +{
->> +    echo "TEST: Set extsize on non-empty file with allocated extents"
->> +    local filename=$1
->> +    $XFS_IO_PROG \
->> +        -c "open -f $filename" \
->> +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
->> +        -c "extsize $EXTSIZE" | _filter_scratch
->> +
->> +    echo "test for default extsize setting if any"
->> +    read_file_extsize $filename $DEFAULT_EXTSIZE
->> +    echo
->> +}
->> +
->> +test_truncate_allocated()
->> +{
->> +    echo "TEST: Set extsize after truncating a file with allocated extents"
->> +    local filename=$1
->> +    $XFS_IO_PROG \
->> +        -c "open -f $filename" \
->> +        -c "pwrite -qW  0 $FILE_DATA_SIZE" \
->> +        -c "truncate 0" \
->> +        -c "extsize $EXTSIZE" \
->> +
->> +    check_extsz_xflag_across_remount $filename $EXTSIZE
->> +    echo
->> +}
->> +
->> +test_truncate_delayed()
->> +{
->> +    echo "TEST: Set extsize after truncating a file with delayed allocation"
->> +    local filename=$1
->> +    $XFS_IO_PROG \
->> +        -c "open -f $filename" \
->> +        -c "pwrite -q  0 $FILE_DATA_SIZE" \
->> +        -c "truncate 0" \
->> +        -c "extsize $EXTSIZE" \
->> +
->> +    check_extsz_xflag_across_remount $filename $EXTSIZE
->> +    echo
->> +}
->> +
->> +setup
->> +echo -e "EXTSIZE = $EXTSIZE DEFAULT_EXTSIZE = $DEFAULT_EXTSIZE \
->> +	BLOCKSIZE = $BLKSZ\n" >> "$seqres.full"
->> +
->> +NEW_FILE_NAME_PREFIX=$SCRATCH_MNT/new-file-
->> +
->> +test_empty_file "$NEW_FILE_NAME_PREFIX"00
->> +test_data_delayed "$NEW_FILE_NAME_PREFIX"01
->> +test_data_allocated "$NEW_FILE_NAME_PREFIX"02
->> +test_truncate_allocated "$NEW_FILE_NAME_PREFIX"03
->> +test_truncate_delayed "$NEW_FILE_NAME_PREFIX"04
->> +
->> +status=0
->> +exit
->> diff --git a/tests/generic/367.out b/tests/generic/367.out
->> new file mode 100644
->> index 00000000..f94e8545
->> --- /dev/null
->> +++ b/tests/generic/367.out
->> @@ -0,0 +1,26 @@
->> +QA output created by 367
->> +TEST: Set extsize on empty file
->> +[EXTSIZE] SCRATCH_MNT/new-file-00
->> +e flag set
->> +Re-setting extsize hint to 0
->> +[EXTSIZE] SCRATCH_MNT/new-file-00
->> +e flag unset
->> +
->> +TEST: Set extsize on non-empty file with delayed allocation
->> +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-01: Invalid argument
->> +test for default extsize setting if any
->> +[EXTSIZE] SCRATCH_MNT/new-file-01
->> +
->> +TEST: Set extsize on non-empty file with allocated extents
->> +xfs_io: FS_IOC_FSSETXATTR SCRATCH_MNT/new-file-02: Invalid argument
->> +test for default extsize setting if any
->> +[EXTSIZE] SCRATCH_MNT/new-file-02
->> +
->> +TEST: Set extsize after truncating a file with allocated extents
->> +[EXTSIZE] SCRATCH_MNT/new-file-03
->> +e flag set
->> +
->> +TEST: Set extsize after truncating a file with delayed allocation
->> +[EXTSIZE] SCRATCH_MNT/new-file-04
->> +e flag set
->> +
->> -- 
->> 2.43.5
->>
->>
+Currently this test only runs in xfs but there is a patch series[3] in review 
+that adds support for the extsize hints for ext4 as well.
+
+I have tested it on ppc64le (with page size 64k) and x86_64 (with page size 4k).
+The block sizes I have tested with are 2k, 4k, 8k, 16k, 32k, 64k with extsize being 
+twice of the block size or 4 * block size(if the default extsize is 2 * blocksize). 
+I have also tested with configurations where I added extszinherit mkfs option  
+on the root. I had to enable CONFIG_TRANSPARENT_HUGEPAGE to enable block size 
+greater than 4k on x86_64.
+
+Changes since [v4]
+ - Added RBs from Darrick on Patch-2.
+ - Added RBs from Christoph on all the patches.
+ - Correcting test id in the comment section of the test added. 
+ - Correction in the parameter arrangement in _fixed_by_kernel_commit in the test added. 
+
+Changes since [v3]
+ - Added RBs from Darrick on Patch-1 & 3
+ - Added _require_xfs_io_command "extsize" in _require_scratch_extsize() in patch 2/3.
+ - Renamed tests/generic/366 to tests/generic/367 since the former is now taken.
+ - Removed an extra blank line in patch 2/3.
+
+Changes since [v2]
+ - Renamed _test_fsx_xflags_field() to _test_fsxattr_xflag().
+ - Changed the definition of _test_fsx_xflags_field (now renamed to _test_fsxattr_xflag)
+   to accept xflag names (like extsize, cowextsize) instead of single characters (like 'e') and 
+   modified the callers of this function accordingly (in xfs/207 and generic/366)
+ - Some changes in the comments in the setup() function of tests/generic/366.
+ - Added another helper function _require_scratch_extsize(). 
+ - Replaced the usage of _require_scratch() with _require_scratch_extsize() in tests/generic/366.
+ - Fixed some indentation issues in the test scripts(xfs/207, generic/366) and the commit messages.
+
+Changes since [v1]
+ - Making the definition of _test_xfs_xflags_field() more compact and renamed 
+   _test_xfs_xflags_field() to _test_fsx_xflags_field() since I moved it to common/rc.
+ - Removed the explicit import of common/xfs from the test script.
+ - Renamed the test file from generic/365 to generic/366 since generic/365 was taken.
+ - Made the following functions in tests/generic/366 accept a second parameter (extsize)
+     a) check_extsz_xflag_across_remount()
+	 b) check_extsz_and_xflag()
+	 c) read_file_extsize()
+	 d) filter_extsz
+	 This will help filter out any extsize that the test wants. This is required because, this 
+	 version no longer assumes any particular fixed value of the default extsize.  
+ - Removed the check for xflags in test_data_allocated() and test_data_delayed() test 
+ - Added an extra line in output that denotes that we are checking that the extent size 
+   hasn't changed if the xfs_io command fails (in test_data_allocated() and test_data_delayed() test).
+ - Changed the new extsize to 4*blocksize if default extsize size is 2*blocksize to make 
+   sure that the new extsize is not the same as the default extsize so that we can observe it changing.
+
+[1] https://lore.kernel.org/all/20241015094509.678082-1-ojaswin@linux.ibm.com/
+[2] kernel commit - 2a492ff66673
+[3] https://lore.kernel.org/linux-ext4/cover.1726034272.git.ojaswin@linux.ibm.com/
+[v1] https://lore.kernel.org/all/cover.1729624806.git.nirjhar@linux.ibm.com/
+[v2] https://lore.kernel.org/all/cover.1731597226.git.nirjhar@linux.ibm.com/
+[v3] https://lore.kernel.org/all/cover.1732126365.git.nirjhar@linux.ibm.com/
+[v4] https://lore.kernel.org/all/cover.1732599868.git.nirjhar@linux.ibm.com/
+
+Nirjhar Roy (3):
+  common/rc,xfs/207: Add a common helper function to check xflag bits
+  common/rc: Add a new _require_scratch_extsize helper function
+  generic: Addition of new tests for extsize hints
+
+ common/rc             |  24 ++++++
+ tests/generic/367     | 174 ++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/367.out |  26 +++++++
+ tests/xfs/207         |  15 +---
+ 4 files changed, 228 insertions(+), 11 deletions(-)
+ create mode 100755 tests/generic/367
+ create mode 100644 tests/generic/367.out
+
 -- 
----
-Nirjhar Roy
-Linux Kernel Developer
-IBM, Bangalore
+2.43.5
 
 
