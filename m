@@ -1,194 +1,285 @@
-Return-Path: <linux-ext4+bounces-5432-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5433-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 304A99DA1F3
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 07:02:34 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BBF49DA7A2
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 13:18:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58C521682F1
-	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 06:02:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE3E7163315
+	for <lists+linux-ext4@lfdr.de>; Wed, 27 Nov 2024 12:18:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0422D1494C2;
-	Wed, 27 Nov 2024 06:02:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54C071FA276;
+	Wed, 27 Nov 2024 12:18:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="tRcMe2OE"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mCi2BhMv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wCI1ikWb";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="mCi2BhMv";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="wCI1ikWb"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF3F1494A8;
-	Wed, 27 Nov 2024 06:02:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A6AE1F7572;
+	Wed, 27 Nov 2024 12:18:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732687337; cv=none; b=VTWTTffTTJLz0OwIWqK9DFD0mrlpJvc9UFzHeKN9Qu3vmkuKnq9NjEsdqZoJka6WAj5bCx3riAS8TYgblvMN804mUBIOALwLgLyGDQ/2tPwtfXNFlCt4TRNqiGmTtNMkYGY/rO9wcrD8p67Ggend2jWin0ntBL7FSF9fsRtWC0c=
+	t=1732709925; cv=none; b=jhJKdAonWjsgUynWSBPeARAIIoG46CO5qbliWVc+zKUTzYkV7DYopU+ckQirFQ/tXf1AB0Kr4rPoNjGbc4DAWCH0wwGGw8Sy7vkn6USwraOEwn9lwDeMFcykW8wTSo0+DhBApVpPBESiFN9wb2U5lg2BgrCfEoJmOI2HP2Gc+uA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732687337; c=relaxed/simple;
-	bh=uQMGWqVTJqjQQWzVswtQz3zjEjLqDGeAktSQRm+f8Fc=;
+	s=arc-20240116; t=1732709925; c=relaxed/simple;
+	bh=gozbWYdaj9nQ/UoSf374/nqTw4ql+KrHcMRvkHpj9AE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jVIVD/VSRTIzTIWa+PmUrgRMT5x4PIk+MZuPctr5jECjoykI9NdDPYBHNLUg0lMik+O5Pgz4l49T2jO0OzHlsscM+IUvbYvcCrb6uBcZU2bffZmsWXgctAJ/JFJNFUQ/nL+5hXoZCY1ks5V0KLedtMWEShRBewOB2B74V55nSno=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=tRcMe2OE; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR1hSuX004613;
-	Wed, 27 Nov 2024 06:01:57 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=XJ6LzKjtN2bLHXbwSg28WI93OyPeUO
-	hhYjzJZY/BJHw=; b=tRcMe2OEolxS0cnhxne3kbAC7V7rxR6j1HExDEH0F7vCd6
-	R7K27YF7fso/SHRgdyFB5Vu749Z8JsfBtgZqfa/0VpOft6wj50VFyuJMEs5rmGz3
-	nj1pqDiioRv115bg3InPN04PgxgIB5aZ5OTJdt+502zzR5eMdBrzuQ0vRAmh1gqp
-	av5z68gfW+RzJYrYHQbEoHSv/7JEQ86z5cUSQnIYkW/9myvId0j2YNhHnnw6AXyH
-	5nakWEzGnZ6uvY+7LMRSkQPKuTm9BuUcB4qyHfWfoTEdI4HysehKhw6907oAq/2l
-	72oEUBa9WkEjAb4Qb1/qhQuZ8pPecLtoBPZmUY8g==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4350rhqgjt-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 06:01:56 +0000 (GMT)
-Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AR5ltSY031242;
-	Wed, 27 Nov 2024 06:01:56 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 4350rhqgjp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 06:01:56 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AR5ARhC024910;
-	Wed, 27 Nov 2024 06:01:55 GMT
-Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 433tvkjraa-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 27 Nov 2024 06:01:55 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AR61rso17891620
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 27 Nov 2024 06:01:53 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 84AB320040;
-	Wed, 27 Nov 2024 06:01:53 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 99F8B2004B;
-	Wed, 27 Nov 2024 06:01:51 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.39.21.251])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Wed, 27 Nov 2024 06:01:51 +0000 (GMT)
-Date: Wed, 27 Nov 2024 11:31:43 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Yang Erkun <yangerkun@huawei.com>
-Subject: Re: [PATCH v2 2/2] ext4: protect ext4_release_dquot against freezing
-Message-ID: <Z0a1x7yksOE4Jsha@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20241121123855.645335-1-ojaswin@linux.ibm.com>
- <20241121123855.645335-3-ojaswin@linux.ibm.com>
- <cc2fcc33-9024-4ce8-bd52-cdcd23f6b455@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=Vr7WgnP4wDvY5vok9wWJbDP72lmQC+ID9zeyMa9AqdzRZKD3Hvi2g3bF6IU8pKwugrzrw7lx+xZtB5+oCPA7juNlQTlQNTOHQrhNevCPPL5tC6oaccwbPWHm9tDWCw02eicVRTln4CZ5jEVcORu5FcoHC0REHhndbro0K6akayo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mCi2BhMv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wCI1ikWb; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=mCi2BhMv; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=wCI1ikWb; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7E61B2117E;
+	Wed, 27 Nov 2024 12:18:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732709918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=voCgKDDA1xuyfqTQdPx+hNfd7T9ftf5pcBbgUJ2Qs28=;
+	b=mCi2BhMvAJAzz8O8+uS7sent3QV4AAsp+vgRWyJGES+nu6OsmV73Equpoz+1Zd+/Np/0wR
+	FmjKoEvxVjx7N6p7jlhRgJ0otSzalRCXPllKzKmg3tmpM4puZoL4SsH+zCD7D3xQpYmqax
+	4rhEqeyl0JteJEJOyUI5GKE98do9Noc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732709918;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=voCgKDDA1xuyfqTQdPx+hNfd7T9ftf5pcBbgUJ2Qs28=;
+	b=wCI1ikWb2w5i4KSIF5Wl4Y08yAWtFR7KmIDSbsN7CWfUgUwGnVLmfOSnebqnr6c98r6dET
+	l8xsXiRZri66RKBA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=mCi2BhMv;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=wCI1ikWb
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1732709918; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=voCgKDDA1xuyfqTQdPx+hNfd7T9ftf5pcBbgUJ2Qs28=;
+	b=mCi2BhMvAJAzz8O8+uS7sent3QV4AAsp+vgRWyJGES+nu6OsmV73Equpoz+1Zd+/Np/0wR
+	FmjKoEvxVjx7N6p7jlhRgJ0otSzalRCXPllKzKmg3tmpM4puZoL4SsH+zCD7D3xQpYmqax
+	4rhEqeyl0JteJEJOyUI5GKE98do9Noc=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1732709918;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=voCgKDDA1xuyfqTQdPx+hNfd7T9ftf5pcBbgUJ2Qs28=;
+	b=wCI1ikWb2w5i4KSIF5Wl4Y08yAWtFR7KmIDSbsN7CWfUgUwGnVLmfOSnebqnr6c98r6dET
+	l8xsXiRZri66RKBA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6123C139AA;
+	Wed, 27 Nov 2024 12:18:38 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id ZUiwFx4OR2fRbgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 27 Nov 2024 12:18:38 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 1249FA08D6; Wed, 27 Nov 2024 13:18:38 +0100 (CET)
+Date: Wed, 27 Nov 2024 13:18:38 +0100
+From: Jan Kara <jack@suse.cz>
+To: Amir Goldstein <amir73il@gmail.com>
+Cc: Jan Kara <jack@suse.cz>, Josef Bacik <josef@toxicpanda.com>,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org,
+	brauner@kernel.org, torvalds@linux-foundation.org,
+	viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
+	linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+	linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 10/19] fanotify: introduce FAN_PRE_ACCESS permission
+ event
+Message-ID: <20241127121838.3fmhjx26cfxcegro@quack3>
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <b80986f8d5b860acea2c9a73c0acd93587be5fe4.1731684329.git.josef@toxicpanda.com>
+ <20241121104428.wtlrfhadcvipkjia@quack3>
+ <CAOQ4uxhTiR8eHaf4q0_gLC62CWi9KdaQ05GSeqFkKFkXCH++PA@mail.gmail.com>
+ <20241121163618.ubz7zplrnh66aajw@quack3>
+ <CAOQ4uxhsEA2zj-a6H+==S+6G8nv+BQEJDoGjJeimX0yRhHso2w@mail.gmail.com>
+ <CAOQ4uxgsjKwX7eoYcjU8SRWjRw39MNv=CMjjO1mQGr9Cd4iafQ@mail.gmail.com>
+ <20241122124215.3k3udv5o6eys6ffy@quack3>
+ <CAOQ4uxgCU6fETZTMdyzQmfyE4oBF_xgqpBdVjP20K1Yp1BSDxQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <cc2fcc33-9024-4ce8-bd52-cdcd23f6b455@huawei.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: cWYwE0OfKJvpEkLNsCzp0p6KH-lQBOae
-X-Proofpoint-ORIG-GUID: twrRtpAhTi5S9HXIl5QCrYnDCy4En_F8
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 lowpriorityscore=0 mlxlogscore=999 bulkscore=0
- spamscore=0 impostorscore=0 mlxscore=0 suspectscore=0 malwarescore=0
- adultscore=0 clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2409260000 definitions=main-2411270048
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAOQ4uxgCU6fETZTMdyzQmfyE4oBF_xgqpBdVjP20K1Yp1BSDxQ@mail.gmail.com>
+X-Rspamd-Queue-Id: 7E61B2117E
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	FREEMAIL_TO(0.00)[gmail.com];
+	ARC_NA(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[12];
+	MIME_TRACE(0.00)[0:+];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	TO_DN_SOME(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo,suse.cz:email,suse.cz:dkim,suse.com:email]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue, Nov 26, 2024 at 10:49:14PM +0800, Baokun Li wrote:
-> On 2024/11/21 20:38, Ojaswin Mujoo wrote:
-> > Protect ext4_release_dquot against freezing so that we
-> > don't try to start a transaction when FS is frozen, leading
-> > to warnings.
-> > 
-> > Further, avoid taking the freeze protection if a transaction
-> > is already running so that we don't need end up in a deadlock
-> > as described in
-> > 
-> >    46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
-> > 
-> > Suggested-by: Jan Kara <jack@suse.cz>
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> >   fs/ext4/super.c | 17 +++++++++++++++++
-> >   1 file changed, 17 insertions(+)
-> > 
-> > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > index 16a4ce704460..f7437a592359 100644
-> > --- a/fs/ext4/super.c
-> > +++ b/fs/ext4/super.c
-> > @@ -6887,12 +6887,25 @@ static int ext4_release_dquot(struct dquot *dquot)
-> >   {
-> >   	int ret, err;
-> >   	handle_t *handle;
-> > +	bool freeze_protected = false;
+On Fri 22-11-24 14:51:23, Amir Goldstein wrote:
+> On Fri, Nov 22, 2024 at 1:42 PM Jan Kara <jack@suse.cz> wrote:
+> >
+> > On Thu 21-11-24 19:37:43, Amir Goldstein wrote:
+> > > On Thu, Nov 21, 2024 at 7:31 PM Amir Goldstein <amir73il@gmail.com> wrote:
+> > > > On Thu, Nov 21, 2024 at 5:36 PM Jan Kara <jack@suse.cz> wrote:
+> > > > > On Thu 21-11-24 15:18:36, Amir Goldstein wrote:
+> > > > > > On Thu, Nov 21, 2024 at 11:44 AM Jan Kara <jack@suse.cz> wrote:
+> > > > > > and also always emitted ACCESS_PERM.
+> > > > >
+> > > > > I know that and it's one of those mostly useless events AFAICT.
+> > > > >
+> > > > > > my POC is using that PRE_ACCESS to populate
+> > > > > > directories on-demand, although the functionality is incomplete without the
+> > > > > > "populate on lookup" event.
+> > > > >
+> > > > > Exactly. Without "populate on lookup" doing "populate on readdir" is ok for
+> > > > > a demo but not really usable in practice because you can get spurious
+> > > > > ENOENT from a lookup.
+> > > > >
+> > > > > > > avoid the mistake of original fanotify which had some events available on
+> > > > > > > directories but they did nothing and then you have to ponder hard whether
+> > > > > > > you're going to break userspace if you actually start emitting them...
+> > > > > >
+> > > > > > But in any case, the FAN_ONDIR built-in filter is applicable to PRE_ACCESS.
+> > > > >
+> > > > > Well, I'm not so concerned about filtering out uninteresting events. I'm
+> > > > > more concerned about emitting the event now and figuring out later that we
+> > > > > need to emit it in different places or with some other info when actual
+> > > > > production users appear.
+> > > > >
+> > > > > But I've realized we must allow pre-content marks to be placed on dirs so
+> > > > > that such marks can be placed on parents watching children. What we'd need
+> > > > > to forbid is a combination of FAN_ONDIR and FAN_PRE_ACCESS, wouldn't we?
+> > > >
+> > > > Yes, I think that can work well for now.
+> > > >
+> > >
+> > > Only it does not require only check at API time that both flags are not
+> > > set, because FAN_ONDIR can be set earlier and then FAN_PRE_ACCESS
+> > > can be added later and vice versa, so need to do this in
+> > > fanotify_may_update_existing_mark() AFAICT.
+> >
+> > I have now something like:
+> >
+> > @@ -1356,7 +1356,7 @@ static int fanotify_group_init_error_pool(struct fsnotify_group *group)
+> >  }
+> >
+> >  static int fanotify_may_update_existing_mark(struct fsnotify_mark *fsn_mark,
+> > -                                             unsigned int fan_flags)
+> > +                                            __u32 mask, unsigned int fan_flags)
+> >  {
+> >         /*
+> >          * Non evictable mark cannot be downgraded to evictable mark.
+> > @@ -1383,6 +1383,11 @@ static int fanotify_may_update_existing_mark(struct fsnotify_mark *fsn_mark,
+> >             fsn_mark->flags & FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY)
+> >                 return -EEXIST;
+> >
+> > +       /* For now pre-content events are not generated for directories */
+> > +       mask |= fsn_mark->mask;
+> > +       if (mask & FANOTIFY_PRE_CONTENT_EVENTS && mask & FAN_ONDIR)
+> > +               return -EEXIST;
 > > +
-> > +	/*
-> > +	 * Trying to sb_start_intwrite() in a running transaction
-> > +	 * can result in a deadlock. Further, running transactions
-> > +	 * are already protected from freezing.
-> > +	 */
-> > +	if (!ext4_journal_current_handle()) {
-> > +		sb_start_intwrite(dquot->dq_sb);
-> > +		freeze_protected = true;
-> > +	}
-> >   	handle = ext4_journal_start(dquot_to_inode(dquot), EXT4_HT_QUOTA,
-> >   				    EXT4_QUOTA_DEL_BLOCKS(dquot->dq_sb));
-> >   	if (IS_ERR(handle)) {
-> >   		/* Release dquot anyway to avoid endless cycle in dqput() */
-> >   		dquot_release(dquot);
-> > +		if (freeze_protected)
-> > +			sb_end_intwrite(dquot->dq_sb);
-> >   		return PTR_ERR(handle);
-> >   	}
-> >   	ret = dquot_release(dquot);
-> > @@ -6903,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
-> The `git am` command looks for the following context code from line 6903
-> to apply the changes. But there are many functions in fs/ext4/super.c that
-> have similar code, such as ext4_write_dquot() and ext4_acquire_dquot().
-
-Oh that's strange, shouldn't it match the complete line like:
-
-> > @@ -6903,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
-
-That should only have one occurence around line 6903? Or does it try to
-fuzzy match which ends up matching ext4_write_dquot etc?
-
 > 
-> So when the code before ext4_release_dquot() is added, the first matching
-> context found could be in ext4_write_dquot() or ext4_acquire_dquot().
-> >   	err = ext4_journal_stop(handle);
-> >   	if (!ret)
-> >   		ret = err;
-> > +
-> > +	if (freeze_protected)
-> > +		sb_end_intwrite(dquot->dq_sb);
-> > +
-> >   	return ret;
-> >   }
+> EEXIST is going to be confusing if there was never any mark.
+> Either return -EINVAL here or also check this condition on the added mask
+> itself before calling fanotify_add_mark() and return -EINVAL there.
 > 
-> Thus this is actually a bug in `git am`, which can be avoided by increasing
-> the number of context lines with `git format-patch -U8 -1`.
-> 
-> Otherwise it looks good. Feel free to add:
-> 
-> Reviewed-by: Baokun Li <libaokun1@huawei.com>
+> I prefer two distinct errors, but probably one is also good enough.
 
-Thanks Baokun!
+That's actually a good point. My previous change allowed setting
+FAN_PRE_ACCESS | FAN_ONDIR on a new mark because that doesn't get to
+fanotify_may_update_existing_mark(). So I now have:
 
-Regards,
-ojaswin
-> 
+diff --git a/fs/notify/fanotify/fanotify_user.c b/fs/notify/fanotify/fanotify_user.c
+index 0919ea735f4a..38a46865408e 100644
+--- a/fs/notify/fanotify/fanotify_user.c
++++ b/fs/notify/fanotify/fanotify_user.c
+@@ -1356,7 +1356,7 @@ static int fanotify_group_init_error_pool(struct fsnotify_group *group)
+ }
+ 
+ static int fanotify_may_update_existing_mark(struct fsnotify_mark *fsn_mark,
+-					      unsigned int fan_flags)
++					     __u32 mask, unsigned int fan_flags)
+ {
+ 	/*
+ 	 * Non evictable mark cannot be downgraded to evictable mark.
+@@ -1383,6 +1383,11 @@ static int fanotify_may_update_existing_mark(struct fsnotify_mark *fsn_mark,
+ 	    fsn_mark->flags & FSNOTIFY_MARK_FLAG_IGNORED_SURV_MODIFY)
+ 		return -EEXIST;
+ 
++	/* For now pre-content events are not generated for directories */
++	mask |= fsn_mark->mask;
++	if (mask & FANOTIFY_PRE_CONTENT_EVENTS && mask & FAN_ONDIR)
++		return -EEXIST;
++
+ 	return 0;
+ }
+ 
+@@ -1409,7 +1414,7 @@ static int fanotify_add_mark(struct fsnotify_group *group,
+ 	/*
+ 	 * Check if requested mark flags conflict with an existing mark flags.
+ 	 */
+-	ret = fanotify_may_update_existing_mark(fsn_mark, fan_flags);
++	ret = fanotify_may_update_existing_mark(fsn_mark, mask, fan_flags);
+ 	if (ret)
+ 		goto out;
+ 
+@@ -1905,6 +1910,10 @@ static int do_fanotify_mark(int fanotify_fd, unsigned int flags, __u64 mask,
+ 	if (mask & FAN_RENAME && !(fid_mode & FAN_REPORT_NAME))
+ 		goto fput_and_out;
+ 
++	/* Pre-content events are not currently generated for directories. */
++	if (mask & FANOTIFY_PRE_CONTENT_EVENTS && mask & FAN_ONDIR)
++		goto fput_and_out;
++
+ 	if (mark_cmd == FAN_MARK_FLUSH) {
+ 		ret = 0;
+ 		if (mark_type == FAN_MARK_MOUNT)
+-- 
+2.35.3
+
+								Honza
+
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
