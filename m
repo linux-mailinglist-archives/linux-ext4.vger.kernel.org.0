@@ -1,216 +1,172 @@
-Return-Path: <linux-ext4+bounces-5437-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5438-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D25E99DB70F
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Nov 2024 13:01:27 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9F04B9DC029
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2024 09:01:24 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A498162E15
-	for <lists+linux-ext4@lfdr.de>; Thu, 28 Nov 2024 12:01:24 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1696EB2210E
+	for <lists+linux-ext4@lfdr.de>; Fri, 29 Nov 2024 08:01:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C7B282D66;
-	Thu, 28 Nov 2024 12:01:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21B6158875;
+	Fri, 29 Nov 2024 08:00:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="U2uKo4hV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0KI9V9QJ";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="U2uKo4hV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="0KI9V9QJ"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="TcTPMSXZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB89613A24D;
-	Thu, 28 Nov 2024 12:01:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3A2B155A34;
+	Fri, 29 Nov 2024 08:00:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1732795281; cv=none; b=LwNKVgFpw5+ylHIzaEoGc4w//fzTsMTh2kpenkKYcFHm4L372Ev9TlQp7XHg+H6KvdOMSrtW+o49Qx0QmBQEdrgX330m3mj+6kbLJUafZ+krzZkHWQogfJxdQGpzoPuRgBra8Nqi31ZRolAhSaNvJI2AnQLxCURRUH2jisTlNQw=
+	t=1732867223; cv=none; b=ZCBjpVIPzu/9GLyrimTz9Qw0zx1hUIY44vfspS7dphzlQWpoxtcrHKdcsgDqlU23TlGVHksUEYCeym0wnGEVLlnqOvy83my0uSkjgrF40jkbDtV+C2dmI81pMPaMhLQGDz4Yl5F3iJCqH9mNweZmze5/ukKKZyIjB0fG507s3DE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1732795281; c=relaxed/simple;
-	bh=N9G7XbjWuzyy0ti9Dedks0gvfHXQo0FyDp1+rr4Sr0w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nE6LCliM05jZ+ePv9EdtspJo9IUhEhdNwoR4MTPDGRpVXuX063O/UxQkgpb4OrywIA/R74soF1KuJNRR2YLmg/y6LECDKzfrToOQECYtrWkDil2QQ8zm0rKMYCH+HsNbAyfQ/d3oCLSpJfsp0b3piCa1lUxiUzKp+avgyyBKP4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=U2uKo4hV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0KI9V9QJ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=U2uKo4hV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=0KI9V9QJ; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id AB3FC21184;
-	Thu, 28 Nov 2024 12:01:16 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732795276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QftfuheUNSN1biVSldepmhZTzTY8ZNax+YFipcKRWHw=;
-	b=U2uKo4hVSpWGyzJMkQK0qqK7BNxs7mF5ExlMwRlHDZ752Gr/vZxQZs5NEblorDP4ELp6X0
-	LkcPc9P9zkE3zFd+cze3ArAW/ASnaUuC7ad8TuqJZVvPOV0Ro9VL2Y2b+xggaQd65ytPQE
-	OdlQIlgJO9huugEsEmc4+VyynRTh4n4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732795276;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QftfuheUNSN1biVSldepmhZTzTY8ZNax+YFipcKRWHw=;
-	b=0KI9V9QJCzrQGb5gLrFYmWqXVY/8xG7R7fsUAlZ/h1RM5IXTucyqc0zDJgq4hs35Xft9f9
-	lxjKC4AoKIVCL6Bw==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=U2uKo4hV;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=0KI9V9QJ
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1732795276; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QftfuheUNSN1biVSldepmhZTzTY8ZNax+YFipcKRWHw=;
-	b=U2uKo4hVSpWGyzJMkQK0qqK7BNxs7mF5ExlMwRlHDZ752Gr/vZxQZs5NEblorDP4ELp6X0
-	LkcPc9P9zkE3zFd+cze3ArAW/ASnaUuC7ad8TuqJZVvPOV0Ro9VL2Y2b+xggaQd65ytPQE
-	OdlQIlgJO9huugEsEmc4+VyynRTh4n4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1732795276;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=QftfuheUNSN1biVSldepmhZTzTY8ZNax+YFipcKRWHw=;
-	b=0KI9V9QJCzrQGb5gLrFYmWqXVY/8xG7R7fsUAlZ/h1RM5IXTucyqc0zDJgq4hs35Xft9f9
-	lxjKC4AoKIVCL6Bw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 9EABF13974;
-	Thu, 28 Nov 2024 12:01:16 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id D8W6JoxbSGeMYgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Thu, 28 Nov 2024 12:01:16 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 567F8A075D; Thu, 28 Nov 2024 13:01:08 +0100 (CET)
-Date: Thu, 28 Nov 2024 13:01:08 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ritesh Harjani <ritesh.list@gmail.com>
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
-	Jan Kara <jack@suse.com>, linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>,
-	Jan Kara <jack@suse.cz>
-Subject: Re: [PATCH v2 2/2] ext4: protect ext4_release_dquot against freezing
-Message-ID: <20241128120108.4cv23l6rcspzmtun@quack3>
-References: <20241121123855.645335-1-ojaswin@linux.ibm.com>
- <20241121123855.645335-3-ojaswin@linux.ibm.com>
- <87serc2bu5.fsf@gmail.com>
+	s=arc-20240116; t=1732867223; c=relaxed/simple;
+	bh=EE0j3OFGnsz1j02CT8+neqmdL9qlDUKuUexQuyzC11Y=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=l3oRttdx3pkmQxRRxJRAyPg3smEgppIkz1iLxgfbm7C1SeU67Ot3SRfUCS8wbSoKJi6cKZx/VDtghAEqmIHm+WqnCNcsRoVWYAd02VwiYqjHTDeZRkHQ7JTgMCD4FWjcIyvmDAeT/uUkRD9nJ0pjdV0UzN74vPadRwEQqWmsr98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=TcTPMSXZ; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4AT4vZZx001985;
+	Fri, 29 Nov 2024 08:00:14 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:content-type:date:from:in-reply-to
+	:message-id:mime-version:references:subject:to; s=pp1; bh=Qa5MTM
+	AN2Yo7nyBT06WXmdKxAMClxXhx/xz6OBXf3Eg=; b=TcTPMSXZR/owpFN9jiek9D
+	VPwwQg0sf+z6NV2MXLssV/P2jqdmt4HHAKgWtCwT2AGe3sh04lRlgzdqRUF19dSf
+	ERZw7jxMnRKGcq7EBZI4v5Tt75xAs6/AU1ikq9LCpiTFB/Va6X4lpZCCMxBoc2Kf
+	wiVQElUUXOysUTlwFYeYVF1lXWUAuFaRJ1QOpTIkjZi/V5QzZrQ/52JWj6Lbuxbf
+	GziBSed9KUUHQnzLOK6lQWZJvvBCQsmFrFTM6BE8cuyvUekkGoVmCcLWnM6iseiu
+	tg2mFQKd6yaw0h6vNHlktc1e8qsJKdjnfoPlHENumKFLfJaOr+GG47Wq1jDuHQ4A
+	==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 436tbec0m4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Nov 2024 08:00:13 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4AT7ubTm021316;
+	Fri, 29 Nov 2024 08:00:13 GMT
+Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 436tbec0ky-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Nov 2024 08:00:13 +0000 (GMT)
+Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4AT73SxB009796;
+	Fri, 29 Nov 2024 08:00:11 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43672fjvt4-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 29 Nov 2024 08:00:11 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4AT809mJ65405420
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 29 Nov 2024 08:00:09 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B7D9320106;
+	Fri, 29 Nov 2024 08:00:09 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 7F6A220103;
+	Fri, 29 Nov 2024 08:00:06 +0000 (GMT)
+Received: from [9.61.255.2] (unknown [9.61.255.2])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 29 Nov 2024 08:00:06 +0000 (GMT)
+Message-ID: <e5702c85-9e69-4d53-9518-faf037dedad7@linux.ibm.com>
+Date: Fri, 29 Nov 2024 13:30:04 +0530
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87serc2bu5.fsf@gmail.com>
-X-Rspamd-Queue-Id: AB3FC21184
-X-Spam-Score: -2.51
-X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.51 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-0.999];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_SEVEN(0.00)[8];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spam-Level: 
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] quota: flush quota_release_work upon quota
+ writeback
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
+        Jan Kara <jack@suse.com>
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org, Baokun Li <libaokun1@huawei.com>
+References: <20241121123855.645335-1-ojaswin@linux.ibm.com>
+ <20241121123855.645335-2-ojaswin@linux.ibm.com>
+Content-Language: en-GB
+From: Disha Goel <disgoel@linux.ibm.com>
+In-Reply-To: <20241121123855.645335-2-ojaswin@linux.ibm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: ajlh7paxQCYScBl7QPZ0BvrJahxtsVJv
+X-Proofpoint-ORIG-GUID: FyJAM0YoJt2WaNUMoU-q8LKSyfVdAxJk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ lowpriorityscore=0 phishscore=0 spamscore=0 impostorscore=0 malwarescore=0
+ bulkscore=0 mlxlogscore=999 clxscore=1011 mlxscore=0 suspectscore=0
+ priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2411290064
 
-On Thu 28-11-24 10:28:58, Ritesh Harjani wrote:
-> Ojaswin Mujoo <ojaswin@linux.ibm.com> writes:
-> 
-> > Protect ext4_release_dquot against freezing so that we
-> > don't try to start a transaction when FS is frozen, leading
-> > to warnings.
-> >
-> > Further, avoid taking the freeze protection if a transaction
-> > is already running so that we don't need end up in a deadlock
-> > as described in
-> >
-> >   46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
-> >
-> > Suggested-by: Jan Kara <jack@suse.cz>
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> 
-> Sorry for being late on this. Ideally, shouldn't it be the
-> responsibility of higher level FS (ext4) to make sure that
-> FS never freezes while there is pending work for releasing dquot
-> structures and that it should also prevent any context where such dquot 
-> structures gets added for release/delayed release. 
-> 
-> e.g. this is what FS takes care during freeze path i.e.
->   freeze_super() -> sync_fs -> ext4_sync_fs()-> dquot_writeback_dquots() -> flush_delayed_work() (now fixed)
-> 
-> Now coming to iput() case which Jan mentioned [1] which could still
-> be called after FS have frozen. As I see we have a protection from FS
-> freeze in the ext4_evict_path() right? So ideally we should never see
+On 21/11/24 6:08 pm, Ojaswin Mujoo wrote:
 
-We don't if we go through:
+One of the paths quota writeback is called from is:
 
-ext4_evict_inode()
-  if (inode->i_nlink) {
-    truncate_inode_pages_final(&inode->i_data);
-    goto no_delete;
-  }
-no_delete:
-  ext4_clear_inode(inode)
-    ...
-    dquot_drop()
+freeze_super()
+   sync_filesystem()
+     ext4_sync_fs()
+       dquot_writeback_dquots()
 
-> dquot_drop() w/o fs freeze protection. And say, if the FS freezing immediately
-> happened after we scheduled this delayed work (but before the work gets
-> scheduled), then that will be taken care in the freeze_super() chain,
-> where we will flush all the delayed work no? - which is what Patch-1 is
-> fixing.
-> 
-> (There still might be an error handling path in ext4_evict_inode() ->
-> ext4_clear_inode() which we don't freeze protect. I still need to take a
-> closer look at that though).
+Since we currently don't always flush the quota_release_work queue in
+this path, we can end up with the following race:
 
-It isn't error handling. It is a standard inode eviction path if the inode
-isn't being deleted.
+  1. dquot are added to releasing_dquots list during regular operations.
+  2. FS Freeze starts, however, this does not flush the quota_release_work queue.
+  3. Freeze completes.
+  4. Kernel eventually tries to flush the workqueue while FS is frozen which
+     hits a WARN_ON since transaction gets started during frozen state:
 
-> So.. isn't this patch trying to hide the problem where FS failed to
-> freeze protect some code path?
+   ext4_journal_check_start+0x28/0x110 [ext4] (unreliable)
+   __ext4_journal_start_sb+0x64/0x1c0 [ext4]
+   ext4_release_dquot+0x90/0x1d0 [ext4]
+   quota_release_workfn+0x43c/0x4d0
 
-Well, it is kind of self-inflicted damage of ext4_dquot_release() because
-it starts a transaction even if there will be nothing to do. We could add
-checks to ext4_dquot_release() to start a transaction only if dquot
-structure will need to be deleted but that's a layering violation because
-it would have to make assumptions about how quota format code is going to
-behave.
+Which is the following line:
 
-							Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+   WARN_ON(sb->s_writers.frozen == SB_FREEZE_COMPLETE);
+
+Which ultimately results in generic/390 failing due to dmesg
+noise. This was detected on powerpc machine 15 cores.
+
+To avoid this, make sure to flush the workqueue during
+dquot_writeback_dquots() so we dont have any pending workitems after
+freeze.
+
+Reported-by: Disha Goel <disgoel@linux.ibm.com>
+Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+
+Thanks for the fix patch Ojaswin.
+I have tested the patch on powerpc machine, and it fixes the generic/390 test failure.
+
+Tested-by: Disha Goel <disgoel@linux.ibm.com>
+
+---
+  fs/quota/dquot.c | 2 ++
+  1 file changed, 2 insertions(+)
+
+diff --git a/fs/quota/dquot.c b/fs/quota/dquot.c
+index 3dd8d6f27725..f9578918cfb2 100644
+--- a/fs/quota/dquot.c
++++ b/fs/quota/dquot.c
+@@ -688,6 +688,8 @@ int dquot_writeback_dquots(struct super_block *sb, int type)
+  
+  	WARN_ON_ONCE(!rwsem_is_locked(&sb->s_umount));
+  
++	flush_delayed_work(&quota_release_work);
++
+  	for (cnt = 0; cnt < MAXQUOTAS; cnt++) {
+  		if (type != -1 && cnt != type)
+  			continue;
+
 
