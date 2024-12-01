@@ -1,134 +1,97 @@
-Return-Path: <linux-ext4+bounces-5443-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5444-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 40DA29DF390
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Nov 2024 23:43:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E8DE9DF76D
+	for <lists+linux-ext4@lfdr.de>; Mon,  2 Dec 2024 00:16:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E9D51281584
-	for <lists+linux-ext4@lfdr.de>; Sat, 30 Nov 2024 22:43:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7AC72815D5
+	for <lists+linux-ext4@lfdr.de>; Sun,  1 Dec 2024 23:16:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA3B1AAE34;
-	Sat, 30 Nov 2024 22:43:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Icx7zvLe"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC6D61D90C9;
+	Sun,  1 Dec 2024 23:16:05 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f200.google.com (mail-il1-f200.google.com [209.85.166.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43C6E19307D
-	for <linux-ext4@vger.kernel.org>; Sat, 30 Nov 2024 22:42:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3996833F6
+	for <linux-ext4@vger.kernel.org>; Sun,  1 Dec 2024 23:16:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733006582; cv=none; b=jljPD2MMTeEI1+cYi2NTzNbBF+40MTlRxMMAIEG878LetBdIMrHA4Ygge5/SBlUpQ8gsHuBWdq3Hn/J2MVYjhK7TFW9MDrjO9niibsKbUlSaF9jvMeRNPofWBWUhs+KhzoguUmwaB90I2j05dZcBagd8wmNRvb1jDGfvSnTjv0o=
+	t=1733094965; cv=none; b=FMo3OrZNjvDkHFu1W9BVihfn2N6Ztz/pIfYBITBZ+4KH2JzrCkTpCSzVht4ODU7bZUQ1uIrDqQHWm57FaNYJ+vkgj0zi+Xz74xF2PabebBSG5vmAB6VnNyJRpz0TT0CFNcSAGPA/8tDCbsLMHK9a+aPK6XuMpU/C+9tDoM1VNe0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733006582; c=relaxed/simple;
-	bh=Dzx07YiM0kiSUl/v347ethXqAc91eSOf/n2obmCG1uY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MIrgb0BkfrQ9rK+1Q1MIgaY9VI822Q8L6ByWTdLck8q7se/da2h4+6jjLQtNP4mQZ0XM1X4dZAsQiHjh7YUNOJB7p4xzzWfvTmJJSHvaPOK32z8o9wv0l+K2vKcAUwHnylgf9n+ktClwMpOy6zTn8M9f7gKYNnOHqHmDy4/cOO8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Icx7zvLe; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-113-132.bstnma.fios.verizon.net [173.48.113.132])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4AUMgkhH017167
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sat, 30 Nov 2024 17:42:47 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1733006568; bh=URFmkBQwt8UZCMCPsKxHz7x8XLLiyw9jPOomafdVnFU=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Icx7zvLeB/jhfLZ7/DR978Dh5upUdgrW7u/gl09S64vySdqD5kFAyo9SFpkSgdlWY
-	 ayqIxnOqPyyVtNOvK7Y2JFOcvxFZO5VLNV3PQMmXLte4NZJvwmlHCPbVnQ8y9HI7KU
-	 NxkoxcBUGSeki9vH/9pcfPYpAuYIdkAF/wgTMsogSy/c2F0B1tIEOh32NAT4E4FAK+
-	 cvcpFEJNe6xEpDntnPEzzIdwC5f4Rf/LTgCzzd6u0VXh6mukDuSuRomRxVz5Rut/Uc
-	 NBou3rjd2ZcHHFaOUt3aW9tuORx5AMoorruuSsLO8nHuJ8H4c2Tzw5VFjzZtWxKvct
-	 Gml6qbKTpIksQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 93D7815C035D; Sat, 30 Nov 2024 17:42:46 -0500 (EST)
-Date: Sat, 30 Nov 2024 17:42:46 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Ext4 Developers List <linux-ext4@vger.kernel.org>
-Subject: Re: Release candidate for e2fsprogs 1.47.2 is available
-Message-ID: <20241130224246.GB1745339@mit.edu>
-References: <20241130013429.GA812025@mit.edu>
- <20241130203607.GC9417@frogsfrogsfrogs>
+	s=arc-20240116; t=1733094965; c=relaxed/simple;
+	bh=DlLc6fUy24DJf1H/uIzTLvM87WU1gYL83V5YpszStak=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=bfN+eJFk7iWCedKb5oy/CR/JgJkDq65hFVBm2EFZt137Ct4SEtdJwnSKvFoeNfyZ6SJtYjXLR5iXWlIzsAT3WbweRE1YPRGRVplv6y8Z7fgqoG4PADr2KChA3MoOekwLxKEnNZL0udvmPGbhivNE4SLeTnLSm+IXrtn+oC/2HQE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f200.google.com with SMTP id e9e14a558f8ab-3a77fad574cso31824545ab.2
+        for <linux-ext4@vger.kernel.org>; Sun, 01 Dec 2024 15:16:04 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733094963; x=1733699763;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=AspwrmyTLMd5jO7A9zmo1ZUVU6ElmhegbW1Cadgdee4=;
+        b=VDGf1fTW0VnKlVUzQAAIJadNuyepKvGLoM4q6uKpfghf8Xjsk/BUCBt8wXEUDGpgrH
+         /gyBSj7LwMXZRenNafvWTl/1CXfOtiC6xknaj3I5xZXYgEPVQt47J+hNiT/qGvgwHQVK
+         e8vYUGLUEQMweTHIJINNYh+LbwAsjiCft7ET4tAp5DZjZT7rR2Rie78sMOeoKtDU0O5B
+         T2cyCsF00ehXalF2ZA15klN1xQcBWjFfu7JsiB9x5a1x16QR/HJV4XdRcdOI3/aXoUB3
+         KyFkyROITF/sDI1TDExm5qdXr2XYFpM4o/Ikef5z/3CtF0JR33mArR14EC6OG0Jk/ei8
+         SU9g==
+X-Forwarded-Encrypted: i=1; AJvYcCUGuX/s8wJeADMPIQ3MEEElWxZtr/LuMrhx5fmS7LbgC6ECuKghXns1o9x/6FJhNu/lS4VjDKPFcjR7@vger.kernel.org
+X-Gm-Message-State: AOJu0YwFyW0e8YhphGlvzzb9WcYfdRFG7IlZ8xGRC8KRosdpEIAgRKfK
+	JzdV9/yEMIeWhqHcaQv+Y5IHRqVuKNL/S9FFDEapsSczMguoGQG+to2kbhFfjRIBImvxZCkaFnY
+	kSUMPm3yvOg5bckVgMr1Z8bbaJU19+rHi8vF6ZOiLH9BWwOd9Rak5rSw=
+X-Google-Smtp-Source: AGHT+IFdgO7VWoz1ICpvTp5NAPXlQj63DADp03XqbbCbV544dMEp769mRn76SvfLryXTJQSSxg1mJgMJMm+gMq0Zuy0YCzkdOexU
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241130203607.GC9417@frogsfrogsfrogs>
+X-Received: by 2002:a05:6e02:190c:b0:3a7:6a98:3fdf with SMTP id
+ e9e14a558f8ab-3a7c5580ea4mr196802765ab.14.1733094963538; Sun, 01 Dec 2024
+ 15:16:03 -0800 (PST)
+Date: Sun, 01 Dec 2024 15:16:03 -0800
+In-Reply-To: <673913ac.050a0220.e8d8d.016b.GAE@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <674cee33.050a0220.48a03.0019.GAE@google.com>
+Subject: Re: [syzbot] [batman?] [mm?] [ext4?] INFO: rcu detected stall in rescuer_thread
+From: syzbot <syzbot+76e180c757e9d589a79d@syzkaller.appspotmail.com>
+To: a@unstable.cc, b.a.t.m.a.n@lists.open-mesh.org, davem@davemloft.net, 
+	edumazet@google.com, gregkh@linuxfoundation.org, horms@kernel.org, 
+	kuba@kernel.org, linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, mareklindner@neomailbox.ch, netdev@vger.kernel.org, 
+	oneukum@suse.com, pabeni@redhat.com, rafael@kernel.org, 
+	stern@rowland.harvard.edu, sven@narfation.org, sw@simonwunderlich.de, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On Sat, Nov 30, 2024 at 12:36:07PM -0800, Darrick J. Wong wrote:
-> > A known issue is that f_clear_orphan_file is failing on s390x,
-> > powerpc, and ppc64 which is why Debian packages haven't been built on
-> > those architectures:
-> > 
-> >     https://buildd.debian.org/status/package.php?p=e2fsprogs
-> 
-> IOWs, the big endian architectures.
-> 
-> Hmmm, why does ext2fs_do_orphan_file_block_csum claim to return a __u32
-> yet the actual return statement returns an __le32:
-> 
-> 	return ext2fs_cpu_to_le32(crc);
+syzbot has bisected this issue to:
 
-Yeah, I noticed this when I was taking look a bit earlier.  The
-fundamental problem is indeed that ext2fs_orphan_file_block_csum() is
-returning an on-disk checksum, and on little endian systems, this
-confusion is harmless, but it's a problem on big endian systems.  It
-doesn't help that in the e2fsprogs's headers, we have:
+commit b3e40fc85735b787ce65909619fcd173107113c2
+Author: Oliver Neukum <oneukum@suse.com>
+Date:   Thu May 2 11:51:40 2024 +0000
 
+    USB: usb_parse_endpoint: ignore reserved bits
 
-struct ext4_orphan_block_tail {
-	__u32 ob_magic;
-	__u32 ob_checksum;
-};
+bisection log:  https://syzkaller.appspot.com/x/bisect.txt?x=10553d30580000
+start commit:   cfaaa7d010d1 Merge tag 'net-6.12-rc8' of git://git.kernel...
+git tree:       upstream
+final oops:     https://syzkaller.appspot.com/x/report.txt?x=12553d30580000
+console output: https://syzkaller.appspot.com/x/log.txt?x=14553d30580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=d2aeec8c0b2e420c
+dashboard link: https://syzkaller.appspot.com/bug?extid=76e180c757e9d589a79d
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14486b5f980000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=112182e8580000
 
-... but in the kernel'sheader files we have:
+Reported-by: syzbot+76e180c757e9d589a79d@syzkaller.appspotmail.com
+Fixes: b3e40fc85735 ("USB: usb_parse_endpoint: ignore reserved bits")
 
-struct ext4_orphan_block_tail {
-	__le32 ob_magic;
-	__le32 ob_checksum;
-};
-
-... and although e2fsprogs had been set up to use sparse as a static
-code checker some number of years ago, no one has used it in a while,
-and right now compiling with make C=1 generates a huge amount of
-noise.  (For example, sparse is now warning about unused functions
-which are delcared "static inline" in header files, and short of just
-squeching all unusedFunction warnings, there doesn't seem to be an
-obvious way to get it to shut up about inline functions.
-
-So to fix things on big endian systems, we'll need to clean up the
-ambiguities.  The simplest way to fix things is just to do this:
-
-(sid_ppc64-dchroot)tytso@perotto:~/e2fsprogs/e2fsprogs$ git diff
-diff --git a/lib/ext2fs/orphan.c b/lib/ext2fs/orphan.c
-index 913eb9a0..14b83b74 100644
---- a/lib/ext2fs/orphan.c
-+++ b/lib/ext2fs/orphan.c
-@@ -271,5 +271,5 @@ int ext2fs_orphan_file_block_csum_verify(ext2_filsys fs, ext2_ino_t ino,
-        if (retval)
-                return 0;
-        tail = ext2fs_orphan_block_tail(fs, buf);
--       return ext2fs_le32_to_cpu(tail->ob_checksum) == crc;
-+       return tail->ob_checksum == crc;
- }
-
-But it's not clear this is the cleanest way to fix things.  I tend to
-agree with your suggestion as probably the better one, and that we
-should be making things explicit with the use of __le32 annotations.
-
-I should also try to see what needs to be done to make using "make
-C=1" more useful....
-
-					- Ted
+For information about bisection process see: https://goo.gl/tpsmEJ#bisection
 
