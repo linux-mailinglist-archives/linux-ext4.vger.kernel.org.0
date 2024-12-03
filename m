@@ -1,125 +1,133 @@
-Return-Path: <linux-ext4+bounces-5469-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5470-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 296B29E1395
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2024 07:53:26 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B63ED9E142C
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2024 08:30:36 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9C777B23551
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2024 06:53:23 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFC95166AB6
+	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2024 07:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6980A188926;
-	Tue,  3 Dec 2024 06:53:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB1851BCA1B;
+	Tue,  3 Dec 2024 07:24:42 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E077126C13;
-	Tue,  3 Dec 2024 06:53:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0B7B18B494;
+	Tue,  3 Dec 2024 07:24:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733208797; cv=none; b=HWCGRkOKWxecpkz9zbzTv28F/xvHnYMdDyn3KqK8J81U3C/DA1OSaqW/FMIqtKs8W6LCTdoh6HHVQ+sdmSaYP07fjtegla5bM0ozTHhNXzIDOSoApi6vtgpEeVksMRkq5KmPemqE7DGH626f0Mdof/Hi6LDRLXqD6DNDBp0524E=
+	t=1733210682; cv=none; b=FNjwy6YFx3yqIGqdTSWy+rsPtkfbQ7/mmLP2Slyx+byMbUynkX6VEB10oPqJKV3+4sVEMgD7Ew5kfYcur8AV5ZHXDUM4f9yx1DxY75UsYAEY4cGAdovQAtw1BXDCq66F6HMqZ5q8No+Oy0piF2KP5Vysll/FQKngO5dOhf6sE8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733208797; c=relaxed/simple;
-	bh=SVR6ceyuva1gKBEJ2DGGfb0ng5PiG04dXwLjRpLuvDI=;
-	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=Fg7ODL+QjRadWMuigvpJy3BLB5PSDMkiadQJz5CEi3gklLEyaaVP1vUWsBuwGoLPue8yPPeeDGrkAm7eSKe/SkCfNXtiAhIVwAcjvIglAFIXlKih+Kei0IxAq5BOZmeAsVeQZkUY+0PtAGpMjx/USn92aBpVb5vpn9UIIIjLQYg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+	s=arc-20240116; t=1733210682; c=relaxed/simple;
+	bh=wZDhPDXNvUjoFpCisQxrnEojAHLpQWqiRYE+KJYhNYE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VXUD5FqkVYoME4Jc436SyIapFGXnodx3mFdADuiKKnEbG7L3NyX7X+8e68u5y4Eu0XS0M5/uU1i5EzVQiABp3/jn0s9t0s/bd7/myb6ExP1Mc7dW+qcpZELdDcejxmHORBr0CauIwJL6jQyXaUpPc8vaOVFMCGbRBjFBYkehr+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Y2WYs5StCz4f3jR1;
-	Tue,  3 Dec 2024 14:52:49 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.112])
-	by mail.maildlp.com (Postfix) with ESMTP id B61661A0568;
-	Tue,  3 Dec 2024 14:53:08 +0800 (CST)
-Received: from [10.174.178.129] (unknown [10.174.178.129])
-	by APP1 (Coremail) with SMTP id cCh0CgD3n7HTqk5nXGnBDQ--.6246S2;
-	Tue, 03 Dec 2024 14:53:08 +0800 (CST)
-Subject: Re: [PATCH 2/2] jbd2: flush filesystem device before updating tail
- sequence
-To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-References: <20241203014407.805916-1-yi.zhang@huaweicloud.com>
- <20241203014407.805916-3-yi.zhang@huaweicloud.com>
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-Message-ID: <ca1c680f-f3f4-40b5-13af-f8ee49d99dae@huaweicloud.com>
-Date: Tue, 3 Dec 2024 14:53:07 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
- Thunderbird/60.5.0
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y2XG01Xs4z4f3lVb;
+	Tue,  3 Dec 2024 15:24:08 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 2A8031A0359;
+	Tue,  3 Dec 2024 15:24:28 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgCHY4cqsk5ne0saDg--.52485S3;
+	Tue, 03 Dec 2024 15:24:27 +0800 (CST)
+Message-ID: <ab380b0c-9a9b-4f16-a427-7fef8a2ef212@huaweicloud.com>
+Date: Tue, 3 Dec 2024 15:24:26 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20241203014407.805916-3-yi.zhang@huaweicloud.com>
-Content-Type: text/plain; charset=gbk
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] jbd2: flush filesystem device before updating tail
+ sequence
+To: Kemeng Shi <shikemeng@huaweicloud.com>, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
+ chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
+References: <20241203014407.805916-1-yi.zhang@huaweicloud.com>
+ <20241203014407.805916-3-yi.zhang@huaweicloud.com>
+ <ca1c680f-f3f4-40b5-13af-f8ee49d99dae@huaweicloud.com>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <ca1c680f-f3f4-40b5-13af-f8ee49d99dae@huaweicloud.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:cCh0CgD3n7HTqk5nXGnBDQ--.6246S2
-X-Coremail-Antispam: 1UD129KBjvJXoW7WF18Xw4ktry8Gw4xCw17Jrb_yoW8Ar1DpF
-	yUA3W2yrWkCF4UCFn7XF4xXFWIqFWvyFykWFykuF93Wa1DJwn3KrW3t34agr1qyr1F9w4r
-	Xr10gFyqg34jkaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9Ib4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7Mxk0xIA0c2IE
-	e2xFo4CEbIxvr21lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4I
-	kC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWU
-	WwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr
-	0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWU
-	JVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJb
-	IYCTnIWIevJa73UjIFyTuYvjxUOBMKDUUUU
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+X-CM-TRANSID:gCh0CgCHY4cqsk5ne0saDg--.52485S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7uF13Zr47Gw4DWw47Aw43Jrb_yoW8Zw45pF
+	y8Ca4jyrWkZF4UCFn7tF48XFW7XFWqya48WFyDCrnagw4qqwn3KFW3trySgr1jyr1F9w48
+	Xr4Iqa4qg34jyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUvK14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4U
+	JVW0owA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628vn2kI
+	c2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbV
+	WUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF
+	67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42
+	IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF
+	0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxh
+	VjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
+On 2024/12/3 14:53, Kemeng Shi wrote:
+> 
+> 
+> on 12/3/2024 9:44 AM, Zhang Yi wrote:
+>> From: Zhang Yi <yi.zhang@huawei.com>
+>>
+>> When committing transaction in jbd2_journal_commit_transaction(), the
+>> disk caches for the filesystem device should be flushed before updating
+>> the journal tail sequence. However, this step is missed if the journal
+>> is not located on the filesystem device. As a result, the filesystem may
+>> become inconsistent following a power failure or system crash. Fix it by
+>> ensuring that the filesystem device is flushed appropriately.
+>>
+>> Fixes: 3339578f0578 ("jbd2: cleanup journal tail after transaction commit")
+>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>> ---
+>>  fs/jbd2/commit.c | 4 ++--
+>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>
+>> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+>> index 4305a1ac808a..f95cf272a1b5 100644
+>> --- a/fs/jbd2/commit.c
+>> +++ b/fs/jbd2/commit.c
+>> @@ -776,9 +776,9 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+>>  	/*
+>>  	 * If the journal is not located on the file system device,
+>>  	 * then we must flush the file system device before we issue
+>> -	 * the commit record
+>> +	 * the commit record and update the journal tail sequence.
+>>  	 */
+>> -	if (commit_transaction->t_need_data_flush &&
+>> +	if ((commit_transaction->t_need_data_flush || update_tail) &&
+>>  	    (journal->j_fs_dev != journal->j_dev) &&
+>>  	    (journal->j_flags & JBD2_BARRIER))
+>>  		blkdev_issue_flush(journal->j_fs_dev);
+>>
+> In journal_submit_commit_record(), we will submit commit block with REQ_PREFLUSH
+> which is supposed to ensure disk cache is flushed before writing commit block.
+> So I think the current code is fine.
+> Please correct me if I miss anything.
+> 
 
-
-on 12/3/2024 9:44 AM, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
-> 
-> When committing transaction in jbd2_journal_commit_transaction(), the
-> disk caches for the filesystem device should be flushed before updating
-> the journal tail sequence. However, this step is missed if the journal
-> is not located on the filesystem device. As a result, the filesystem may
-> become inconsistent following a power failure or system crash. Fix it by
-> ensuring that the filesystem device is flushed appropriately.
-> 
-> Fixes: 3339578f0578 ("jbd2: cleanup journal tail after transaction commit")
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> ---
->  fs/jbd2/commit.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
-> index 4305a1ac808a..f95cf272a1b5 100644
-> --- a/fs/jbd2/commit.c
-> +++ b/fs/jbd2/commit.c
-> @@ -776,9 +776,9 @@ void jbd2_journal_commit_transaction(journal_t *journal)
->  	/*
->  	 * If the journal is not located on the file system device,
->  	 * then we must flush the file system device before we issue
-> -	 * the commit record
-> +	 * the commit record and update the journal tail sequence.
->  	 */
-> -	if (commit_transaction->t_need_data_flush &&
-> +	if ((commit_transaction->t_need_data_flush || update_tail) &&
->  	    (journal->j_fs_dev != journal->j_dev) &&
->  	    (journal->j_flags & JBD2_BARRIER))
->  		blkdev_issue_flush(journal->j_fs_dev);
-> 
-In journal_submit_commit_record(), we will submit commit block with REQ_PREFLUSH
-which is supposed to ensure disk cache is flushed before writing commit block.
-So I think the current code is fine.
-Please correct me if I miss anything.
+The commit I/O with REQ_PREFLUSH only flushes 'journal->j_dev', not
+'journal->j_fs_dev'. We need to flush journal->j_fs_dev to ensure that all
+written metadata has been persisted to the filesystem disk, Until then, we
+cannot update the tail sequence.
 
 Thanks,
-Kemeng
+Yi.
 
 
