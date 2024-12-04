@@ -1,106 +1,104 @@
-Return-Path: <linux-ext4+bounces-5487-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5488-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A7D799E3A27
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2024 13:42:38 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A19679E3AB5
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2024 14:00:18 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 761B4167B53
-	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2024 12:42:35 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3AC0C28357A
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2024 13:00:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C64631B4F24;
-	Wed,  4 Dec 2024 12:42:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49FB01BBBF7;
+	Wed,  4 Dec 2024 12:56:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="k+DknTTz";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7A0CIIJp";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PZxhj7+w";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="xZgndtK8"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vHvPgaq+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OYHpGnkc";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="vHvPgaq+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OYHpGnkc"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 782C01AA1DF;
-	Wed,  4 Dec 2024 12:42:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43BC42C181;
+	Wed,  4 Dec 2024 12:56:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733316151; cv=none; b=fPo+jaqUja/j5izpEeq/EzqBxFmAxlCGYu8kZP2lfn10pY4RON+zJ45GxW+hdajrFROwCnQ9CwVBGKMhrm6y3lNxcLoXARDd1mm6W0+XpqPsfzjTZgxj+7c53QNMllzfkRwx5jHjYQoRMPvtIUmVGfXDj8qXN/3CrS5Gmp+b6vY=
+	t=1733317004; cv=none; b=nOGy0CAy6rSlO4pe646GKdSOByafUtQj3exnG0JqRNvJI6NYJWB12G76fi0YqYq1mgU/g0wnNMbgvLwAmIC5uhh8Rf70f/dUQ4c3eIvzeKLgfATs9J83CLRQSuVJlxMqshbORX4tLWnaUkJQJr0xNn3VeG6lioS0fO1dyseqt84=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733316151; c=relaxed/simple;
-	bh=LYBJwVUXpOaEEyMNfJ4n9WMpNehDHZThlwaTV5210wA=;
+	s=arc-20240116; t=1733317004; c=relaxed/simple;
+	bh=bg1XKp8J4Yi8n+Xpa4k72gV+en8sJbkXKwjLRQ0Icow=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AL03Ivnlc6vsD5yItdC7PfkbXUB7KtvPDiFlO4SIKY0xFlMWd8lFyrkoXMxW3FGZGThH9m2ffXJrO/q+UVZxn0+iklI+nNku6TAdmUsO6fA/UD2EpvwMTgMEdSMyTedc634me9XmGlUvSf230KYHlHnlLLptEIiZh+L6O1FD4NA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=k+DknTTz; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7A0CIIJp; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PZxhj7+w; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=xZgndtK8; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=hLN23luVYYVfNVE8LaEZ0JxurbSclpzgG5kynXF2ONzk+lJ1aGY96i3iUMXyv92wgBmCQvyAxOyaNaPdGcZFwUHWpZZuizExtgHDASJf2kuIKq6gIPI/I/KARk424bgKIRyTioNf+Jqy3NDr6YWxgdaev+cWRfqFKSrlrRdXvPU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vHvPgaq+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OYHpGnkc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=vHvPgaq+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OYHpGnkc; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E04521F365;
-	Wed,  4 Dec 2024 12:42:21 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 633131F365;
+	Wed,  4 Dec 2024 12:56:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733316142; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733317000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kftMZSeF24IaWBZLj8nw9t8dG+WWN+bQMGIcgfZY+2Q=;
-	b=k+DknTTzHoZFasX5fqFtAYqYyRJXn2G1xVZKCROZZW+q+236hpYC8VMysfgRvJYUvFI65z
-	sGm0ffMXziAH70O6yKSkCL8JnU7j/xwbAYVdzZJbW59jJvdXLtB1mhw/fRNuN5S0a9GYor
-	7g0RImu/mAaG1WUIHBUF69XHgiM4duA=
+	bh=I4UBslpBMR/mIOrrjL3exyxu/5ND2e7QWSXkL/mOFrM=;
+	b=vHvPgaq+hYQZtFjGrY6V+1OloVYXAj3iy0aLKQUTYQvUeDRaGd4iwWFwY/68xlLtrFwALP
+	vGbEsr7eSFG8fOB449uPii2y6uRPyeIXFortPBuQX4Xidza7aUQAwE/XgFfIZECkqQu0ub
+	Q7lvoN7hFnfxAT9rokQgNlV8hM/kpwM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733316142;
+	s=susede2_ed25519; t=1733317000;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kftMZSeF24IaWBZLj8nw9t8dG+WWN+bQMGIcgfZY+2Q=;
-	b=7A0CIIJp3zXDOgMXJIODQVfyN4i3xYPtNxdD/+O1wSx1J/i+sCWl3Q8GH3TT4A8CsrKOZd
-	A1yFtvxmObsTQtBw==
+	bh=I4UBslpBMR/mIOrrjL3exyxu/5ND2e7QWSXkL/mOFrM=;
+	b=OYHpGnkcqCeZMUjvKBMda16cgH2cXkNkAk4Lax6eIlr/QaG7uFzZB5lSRdOL2nIPTXf4be
+	FuVpcSynFQ9zFgAA==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=PZxhj7+w;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=xZgndtK8
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=vHvPgaq+;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=OYHpGnkc
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733316141; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733317000; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kftMZSeF24IaWBZLj8nw9t8dG+WWN+bQMGIcgfZY+2Q=;
-	b=PZxhj7+w2AMHFzzVwXU+nIfb2mVQs6Xp+AXflCLDHZd19TUK4o9i7vFTvg+s+K8Dlu/spr
-	0ssaF30qtxBu2QJPGql9PFcV7wbr0+3xfbGND953XmhnEEwNqEcotz6ymXEjuvk7HZsr24
-	PrxRNtRs+8qat5eI7sLQUHOkYd2IS1k=
+	bh=I4UBslpBMR/mIOrrjL3exyxu/5ND2e7QWSXkL/mOFrM=;
+	b=vHvPgaq+hYQZtFjGrY6V+1OloVYXAj3iy0aLKQUTYQvUeDRaGd4iwWFwY/68xlLtrFwALP
+	vGbEsr7eSFG8fOB449uPii2y6uRPyeIXFortPBuQX4Xidza7aUQAwE/XgFfIZECkqQu0ub
+	Q7lvoN7hFnfxAT9rokQgNlV8hM/kpwM=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733316141;
+	s=susede2_ed25519; t=1733317000;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=kftMZSeF24IaWBZLj8nw9t8dG+WWN+bQMGIcgfZY+2Q=;
-	b=xZgndtK8EZm6Vv+Gb67JcJk5C6KPMxgeW7tCbTbZpi5chNrCDUakKtz2e9f65Jii+Ciapf
-	4GmBbaLPFSdniNAQ==
+	bh=I4UBslpBMR/mIOrrjL3exyxu/5ND2e7QWSXkL/mOFrM=;
+	b=OYHpGnkcqCeZMUjvKBMda16cgH2cXkNkAk4Lax6eIlr/QaG7uFzZB5lSRdOL2nIPTXf4be
+	FuVpcSynFQ9zFgAA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4CAA1396E;
-	Wed,  4 Dec 2024 12:42:21 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 571DA139C2;
+	Wed,  4 Dec 2024 12:56:40 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id odADMC1OUGcoKwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 04 Dec 2024 12:42:21 +0000
+	id hEQ7FYhRUGeVLwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 04 Dec 2024 12:56:40 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7B509A0918; Wed,  4 Dec 2024 13:42:21 +0100 (CET)
-Date: Wed, 4 Dec 2024 13:42:21 +0100
+	id 09319A0918; Wed,  4 Dec 2024 13:56:32 +0100 (CET)
+Date: Wed, 4 Dec 2024 13:56:31 +0100
 From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, tytso@mit.edu,
-	adilger.kernel@dilger.ca, jack@suse.cz, ritesh.list@gmail.com,
-	hch@infradead.org, djwong@kernel.org, david@fromorbit.com,
-	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH 12/27] ext4: introduce seq counter for the extent status
- entry
-Message-ID: <20241204124221.aix7qxjl2n4ya3b7@quack3>
-References: <20241022111059.2566137-1-yi.zhang@huaweicloud.com>
- <20241022111059.2566137-13-yi.zhang@huaweicloud.com>
+To: Christian Brauner <brauner@kernel.org>
+Cc: linux-ext4@vger.kernel.org, Zhang Yi <yi.zhang@huaweicloud.com>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: Re: [PATCH 0/2] jbd2: two straightforward fixes
+Message-ID: <20241204125631.au6ggazqdnq5xey2@quack3>
+References: <20241203014407.805916-1-yi.zhang@huaweicloud.com>
+ <20241204-landen-umwirbt-06fd455b45d2@brauner>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -109,13 +107,12 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241022111059.2566137-13-yi.zhang@huaweicloud.com>
-X-Rspamd-Queue-Id: E04521F365
-X-Spam-Score: -2.51
+In-Reply-To: <20241204-landen-umwirbt-06fd455b45d2@brauner>
+X-Rspamd-Queue-Id: 633131F365
+X-Spam-Score: -4.01
 X-Rspamd-Action: no action
-X-Spamd-Result: default: False [-2.51 / 50.00];
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -123,100 +120,45 @@ X-Spamd-Result: default: False [-2.51 / 50.00];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	ARC_NA(0.00)[];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RCPT_COUNT_TWELVE(0.00)[16];
+	RCVD_COUNT_THREE(0.00)[3];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	FROM_EQ_ENVFROM(0.00)[];
+	ARC_NA(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[12];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com,infradead.org,kernel.org,fromorbit.com,google.com,huawei.com];
 	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[]
 X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Tue 22-10-24 19:10:43, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+On Wed 04-12-24 12:00:55, Christian Brauner wrote:
+> On Tue, 03 Dec 2024 09:44:05 +0800, Zhang Yi wrote:
+> > From: Zhang Yi <yi.zhang@huawei.com>
+> > 
+> > Zhang Yi (2):
+> >   jbd2: increase IO priority for writing revoke records
+> >   jbd2: flush filesystem device before updating tail sequence
+> > 
+> > fs/jbd2/commit.c | 4 ++--
+> >  fs/jbd2/revoke.c | 2 +-
+> >  2 files changed, 3 insertions(+), 3 deletions(-)
+> > 
+> > [...]
 > 
-> In the iomap_write_iter(), the iomap buffered write frame does not hold
-> any locks between querying the inode extent mapping info and performing
-> page cache writes. As a result, the extent mapping can be changed due to
-> concurrent I/O in flight. Similarly, in the iomap_writepage_map(), the
-> write-back process faces a similar problem: concurrent changes can
-> invalidate the extent mapping before the I/O is submitted.
-> 
-> Therefore, both of these processes must recheck the mapping info after
-> acquiring the folio lock. To address this, similar to XFS, we propose
-> introducing an extent sequence number to serve as a validity cookie for
-> the extent. We will increment this number whenever the extent status
-> tree changes, thereby preparing for the buffered write iomap conversion.
-> Besides, it also changes the trace code style to make checkpatch.pl
-> happy.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+> Patches in the vfs.fixes branch should appear in linux-next soon.
 
-Overall using some sequence counter makes sense.
-
-> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
-> index c786691dabd3..bea4f87db502 100644
-> --- a/fs/ext4/extents_status.c
-> +++ b/fs/ext4/extents_status.c
-> @@ -204,6 +204,13 @@ static inline ext4_lblk_t ext4_es_end(struct extent_status *es)
->  	return es->es_lblk + es->es_len - 1;
->  }
->  
-> +static inline void ext4_es_inc_seq(struct inode *inode)
-> +{
-> +	struct ext4_inode_info *ei = EXT4_I(inode);
-> +
-> +	WRITE_ONCE(ei->i_es_seq, READ_ONCE(ei->i_es_seq) + 1);
-> +}
-
-This looks potentially dangerous because we can loose i_es_seq updates this
-way. Like
-
-CPU1					CPU2
-x = READ_ONCE(ei->i_es_seq)
-					x = READ_ONCE(ei->i_es_seq)
-					WRITE_ONCE(ei->i_es_seq, x + 1)
-					...
-					potentially many times
-WRITE_ONCE(ei->i_es_seq, x + 1)
-  -> the counter goes back leading to possibly false equality checks
-
-I think you'll need to use atomic_t and appropriate functions here.
-
-> @@ -872,6 +879,7 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
->  	BUG_ON(end < lblk);
->  	WARN_ON_ONCE(status & EXTENT_STATUS_DELAYED);
->  
-> +	ext4_es_inc_seq(inode);
-
-I'm somewhat wondering: Are extent status tree modifications the right
-place to advance the sequence counter? The counter needs to advance
-whenever the mapping information changes. This means that we'd be
-needlessly advancing the counter (and thus possibly forcing retries) when
-we are just adding new information from ordinary extent tree into cache.
-Also someone can be doing extent tree manipulations without touching extent
-status tree (if the information was already pruned from there). So I think
-needs some very good documentation what are the expectations from the
-sequence counter and explanations why they are satisfied so that we don't
-break this in the future.
+Traditionally, Ted takes jbd2 patches through his tree. For these two
+patches, chances for conflicts or unexpected effects are pretty low so I
+don't really care but I wanted to point that out :)
 
 								Honza
- 
 
 -- 
 Jan Kara <jack@suse.com>
