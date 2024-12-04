@@ -1,370 +1,184 @@
-Return-Path: <linux-ext4+bounces-5474-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5475-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 227579E2912
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2024 18:24:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CE1D59E362C
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2024 10:07:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8FD5CB365B2
-	for <lists+linux-ext4@lfdr.de>; Tue,  3 Dec 2024 16:29:40 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8F55CB2C4CC
+	for <lists+linux-ext4@lfdr.de>; Wed,  4 Dec 2024 09:02:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A66D1F8AD2;
-	Tue,  3 Dec 2024 16:29:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7AF111917C7;
+	Wed,  4 Dec 2024 09:02:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Oxjk/ujv"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-io1-f80.google.com (mail-io1-f80.google.com [209.85.166.80])
+Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BA2718BC1D
-	for <linux-ext4@vger.kernel.org>; Tue,  3 Dec 2024 16:29:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.80
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1556819068E;
+	Wed,  4 Dec 2024 09:02:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733243375; cv=none; b=Q4xS/dHWZY53oxY76mOV1vsuUTucCt8tOmXjAbHnWh9v520nQwayNMOp6k7DuEib8yDzVaZxmx7NgUm0YVo0wYGzjIkvdeOy1ANAlCUeQNVGHxSNc2zYtLh/BShZW1bmSHRAfsuBxEFxzIfNQFr7Sv4YX8PWZPH2t+4IuUw8rMo=
+	t=1733302955; cv=none; b=CBKYslOcI/SFuT5XxIjxdpb61IBJxIuZzoG8hgTwEaZJRACOIS3WsWIwsdCwBKpXhDrb2Mw3E1HUWC/GE64JByVeEPlnzHiB6SGXQEjuGI4NGxMUMX1Yf7LmnXEM2YHBVbETiE53W1kMMP8L2ZgVNl2rvAYHGIoouZ4uO4sWU94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733243375; c=relaxed/simple;
-	bh=aqpEsbIo0rtx5QAb5eOycGypuf9+vNjdd5oeRV0EtMs=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=o/SIm9H8vBqGKAQF4E6Ex8Xy5b2UiYTnWIshPPYkMOQBZWjHeK6d+o5jLGksVNGPtVz2DymeWCiENtuPJXyJoCihnYjFQhAZQaROlwnhcEV9qDPGQqoxKiDdgYaXryjmbgm1Q+xfZAjZIuIX+5Wy+5f/e5fHFH5rULUFTvPL1xM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.80
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f80.google.com with SMTP id ca18e2360f4ac-83e5dd390bfso506280639f.1
-        for <linux-ext4@vger.kernel.org>; Tue, 03 Dec 2024 08:29:32 -0800 (PST)
+	s=arc-20240116; t=1733302955; c=relaxed/simple;
+	bh=8RmifYdzdZy0clOcnFMeiV2uzq1tXJOgoEnRmiFptXQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UQs5uYEKyfe3RMZqKnA9k89CP9awItzSNBjS+fmc2WjxaKjaJWL5RwbUCp9HqBjz00FEQ4fFzZ9StkLDRUBfccemI9+bbJYcaQv1E2wx7AJLI9AYPAw5u1yks2GnAgohg1uEJ7AVBlDH8u7/tqDScZZC8ZFVmvwLmIefghsBads=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Oxjk/ujv; arc=none smtp.client-ip=209.85.128.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-434a7ee3d60so3412345e9.1;
+        Wed, 04 Dec 2024 01:02:32 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733302951; x=1733907751; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=j/DGtO9+27cwfmhQKMhcolvJLEg37XkgAaNptn6u3uc=;
+        b=Oxjk/ujvnQ89stkBg05sQgGcX3Fc3lfaWl7+8rZha1U1bUHpUlcBs9f6z972v9SBrV
+         sfNWgXJnbeQ4iwBLNzNgJ6Hp9VxCWX6NP2H6hJT1sWfj7+tQAv8ZX3agysAY1mIHBpY0
+         n+Ud6YIWMN5Df4b1b9804YcVad2KmBNR4h5R0JWhSaBFNrfNaWhGwUziz+Nnh6Ef0etT
+         0Xm7aJvXMdQVxcduvf7w4N+mwju0pAZZ+F3NVGUhP7k65jpqhdLgiECW97OB9/paEHXc
+         6AI/vHELiXcx+YX3Fxww4CYyeqiidHiNW36m5RiSn+XcF9FlyuPgZBR5Xg4MNPZH/EI+
+         8QTQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733243372; x=1733848172;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=v9cxxLT1b5n4AT9vFKdOSi982tMwZ4scg59Pv/cXQQ8=;
-        b=glLULKxz27xOhjSwHfP+1J0g7+YdTJj+872GxySpdHInPxBUG1K03SVK5QURanYmHq
-         uvxJ/ChFz3930hHbuSeP0ToJoIHl8dxyQ5UYKKKJNHIHIDVg5Q3eePzHrasX1XBW3vkN
-         xEJXpfjRm00F7fUZufe0eR8QDBV5X1le1vYhPOMoQsjcAMkWc5+9FUW0ASnsJ4A2eVbi
-         I3HCMCAb5cHSi4iwPqhypCAca1Gz4QBR/xqxWHhrVh8Se/zG4li1munadkjfUIbWVFkr
-         0JS5O+DG6z0G9XKz4IsJdUjY7l+zDV/90gHc33E4Z07g1QG92ftG1yuGQEuyuqsMekJT
-         ILwQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUpJ8sQIlEIzEp3TZriFAkfKR/JbXlrqBk3cXCDZdnOeSBUL1R/B85946GhbcTgiHbc/WH4YG0L4SIA@vger.kernel.org
-X-Gm-Message-State: AOJu0YwBPwucSj/tOL9lSkNFq1WM1b2OoblW+on87HYZl2QGfYKeA8IM
-	9NiN8MXWK66bIW8ReV3dXoKrwCIJPXEs9fUDUdp9eWOfJKn6gMeePgr/Sl7Wf2mUtx9P7oAkFOg
-	UwS4bTJecE8diXdsyVvItOZXdaApZ+pP6x0al2z8ktyu4vj8qwFsvzkw=
-X-Google-Smtp-Source: AGHT+IHMu3HBghlPBmWf0RV50i6N9z/+jTwIhAgrzlXfIvbQOlK/YKxUVW8Gq3BxOto0dmBVMqE9vMb+NmBHjDtgOEyVGU0G1qHo
+        d=1e100.net; s=20230601; t=1733302951; x=1733907751;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j/DGtO9+27cwfmhQKMhcolvJLEg37XkgAaNptn6u3uc=;
+        b=eujdBn1pdX6zXZGnWt0a02mwY6i69bHQ4QOqk4b1MKeSqJB/MO9Z5FO6m+EnVuNWIa
+         0i0m3NT9syRb4NlWrwIsw8NNfk1f814Brb7hzi5Mo+0JKIQo6LvOA566SI7zNFi5Z3LJ
+         IJqv/8dsiwvC4mQDEnhjru7A3AWThz33AZ2xP7akXIsnd2NLLzJLRhs1Cnx7Umq3O9fd
+         ZgS7Kl+fePWJ+WXAm/p3DQMMpf/Kg3/yk22QZzjeIzEdRE6YY3UxmhG8GbiqP23fUdkr
+         OJHa5zAWnV8YEcqcyEOleM/obMtTBHrYNYRkLPYgJQ6C8PRgTABbCKJQzeinM/PjpB2J
+         4WOA==
+X-Forwarded-Encrypted: i=1; AJvYcCVqoY7/u8KHgErWCed4qatUC/+NyeAHMLewMaKCAOV/Z2tc+haFD/rXJ3wkc9fnWXkKutFqRGIAMFPKIjME@vger.kernel.org, AJvYcCWzDI4L68EDf8nduXijqVggf+420VVps6VcH+o31O8NgwxKQenWt+G+wji0C4gB/1/SEyhqLy9Ejryp@vger.kernel.org
+X-Gm-Message-State: AOJu0YweidrvixLTRc5K7CB5nBDevJRT13aN4ug/4tM7D8GEKd0lW1T2
+	rJbnNl1RbrT6On7MUuNGgzCenTeEKUWWWeeUf/dKM5tMsWrLhiCk
+X-Gm-Gg: ASbGnct52LKgQw8MQMwJkxLI33BiFJZneGlLYLvg2EaFOV4IAD2aEdVi82Hs1AGxQhl
+	lQmW7p2xGdtb90ORNfG/ZXcSoempdlc0Vqq1lWhK6GGmNh8qFlIoM3CVQJ+cX7st//59AhuNSSp
+	hM2WWmeKAdy/1xeKaAxNuyTAE6jjr1U9oixIddjHT4ebQweosgr9pyEEq9nLrhrNMjQJJs91hsl
+	TJ+9aGIGw/xKbroBQ5XyB3fMm+wmsVbOiCpDlW0gC94n944
+X-Google-Smtp-Source: AGHT+IHOZyan41T29GhI3L/+7yODIM3OobyZIQ9f0WdfdWkg06i4pMAX6Beavn05s3mVIrNze+wU2A==
+X-Received: by 2002:a05:600c:3589:b0:431:15f1:421d with SMTP id 5b1f17b1804b1-434afc44774mr215133165e9.16.1733302951069;
+        Wed, 04 Dec 2024 01:02:31 -0800 (PST)
+Received: from Max.. ([176.13.144.22])
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-385ccd80435sm17436742f8f.100.2024.12.04.01.02.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 04 Dec 2024 01:02:30 -0800 (PST)
+From: Max Brener <linmaxi@gmail.com>
+To: tytso@mit.edu
+Cc: adilger.kernel@dilger.ca,
+	linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Max Brener <linmaxi@gmail.com>
+Subject: [PATCH v3] ext4: Optimization of no-op ext4_truncate triggers
+Date: Wed,  4 Dec 2024 11:02:25 +0200
+Message-ID: <20241204090225.721618-1-linmaxi@gmail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:c548:0:b0:3a7:e8df:3fcb with SMTP id
- e9e14a558f8ab-3a7f9d6dc27mr24948675ab.7.1733243372343; Tue, 03 Dec 2024
- 08:29:32 -0800 (PST)
-Date: Tue, 03 Dec 2024 08:29:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <674f31ec.050a0220.48a03.003e.GAE@google.com>
-Subject: [syzbot] [ext4?] possible deadlock in ext4_map_blocks (2)
-From: syzbot <syzbot+c39928fd177c28b5fa1f@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+Closes: https://bugzilla.kernel.org/show_bug.cgi?id=219306
+v2: https://lore.kernel.org/lkml/20241001082459.14580-1-linmaxi@gmail.com/T/
+OR
+	https://patchwork.ozlabs.org/project/linux-ext4/patch/20241016111624.5229-1-linmaxi@gmail.com/
 
-syzbot found the following issue on:
-
-HEAD commit:    0e287d31b62b Merge tag 'rtc-6.13' of git://git.kernel.org/..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=179f05e8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=7903df3280dd39ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=c39928fd177c28b5fa1f
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/555649be4570/disk-0e287d31.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/612b3b44653e/vmlinux-0e287d31.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/9cdc015d8348/bzImage-0e287d31.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c39928fd177c28b5fa1f@syzkaller.appspotmail.com
-
-======================================================
-WARNING: possible circular locking dependency detected
-6.12.0-syzkaller-11930-g0e287d31b62b #0 Not tainted
-------------------------------------------------------
-kworker/0:4/5894 is trying to acquire lock:
-ffff888048f4dbb0 (&ei->i_data_sem){++++}-{4:4}, at: ext4_map_blocks+0x3be/0x1990 fs/ext4/inode.c:665
-
-but task is already holding lock:
-ffff888048f4dec0 (mapping.invalidate_lock){++++}-{4:4}, at: filemap_invalidate_lock_shared include/linux/fs.h:873 [inline]
-ffff888048f4dec0 (mapping.invalidate_lock){++++}-{4:4}, at: page_cache_ra_unbounded+0x143/0x8c0 mm/readahead.c:226
-
-which lock already depends on the new lock.
-
-
-the existing dependency chain (in reverse order) is:
-
--> #6 (mapping.invalidate_lock){++++}-{4:4}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1524
-       filemap_invalidate_lock_shared include/linux/fs.h:873 [inline]
-       filemap_fault+0x6e8/0x1950 mm/filemap.c:3332
-       __do_fault+0x137/0x460 mm/memory.c:4907
-       do_read_fault mm/memory.c:5322 [inline]
-       do_fault mm/memory.c:5456 [inline]
-       do_pte_missing mm/memory.c:3979 [inline]
-       handle_pte_fault+0x335a/0x68a0 mm/memory.c:5801
-       __handle_mm_fault mm/memory.c:5944 [inline]
-       handle_mm_fault+0x1106/0x1bb0 mm/memory.c:6112
-       faultin_page mm/gup.c:1187 [inline]
-       __get_user_pages+0x1c82/0x49e0 mm/gup.c:1485
-       populate_vma_page_range+0x264/0x330 mm/gup.c:1923
-       __mm_populate+0x27a/0x460 mm/gup.c:2026
-       mm_populate include/linux/mm.h:3386 [inline]
-       __do_sys_mlockall mm/mlock.c:769 [inline]
-       __se_sys_mlockall+0x3e3/0x4d0 mm/mlock.c:745
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #5 (&mm->mmap_lock){++++}-{4:4}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-       __might_fault+0xc6/0x120 mm/memory.c:6751
-       _inline_copy_from_user include/linux/uaccess.h:162 [inline]
-       _copy_from_user+0x2a/0xc0 lib/usercopy.c:18
-       copy_from_user include/linux/uaccess.h:212 [inline]
-       __blk_trace_setup kernel/trace/blktrace.c:626 [inline]
-       blk_trace_setup+0xd2/0x1e0 kernel/trace/blktrace.c:648
-       sg_ioctl_common drivers/scsi/sg.c:1114 [inline]
-       sg_ioctl+0xa46/0x2e80 drivers/scsi/sg.c:1156
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:906 [inline]
-       __se_sys_ioctl+0xf7/0x170 fs/ioctl.c:892
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #4 (&q->debugfs_mutex){+.+.}-{4:4}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
-       __mutex_lock+0x1ac/0xee0 kernel/locking/mutex.c:735
-       blk_mq_init_sched+0x3fa/0x830 block/blk-mq-sched.c:473
-       elevator_init_mq+0x20e/0x320 block/elevator.c:610
-       add_disk_fwnode+0x10d/0xf80 block/genhd.c:413
-       sd_probe+0xba6/0x1100 drivers/scsi/sd.c:4024
-       really_probe+0x2ba/0xad0 drivers/base/dd.c:658
-       __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:800
-       driver_probe_device+0x50/0x430 drivers/base/dd.c:830
-       __device_attach_driver+0x2d6/0x530 drivers/base/dd.c:958
-       bus_for_each_drv+0x250/0x2e0 drivers/base/bus.c:459
-       __device_attach_async_helper+0x22d/0x300 drivers/base/dd.c:987
-       async_run_entry_fn+0xaa/0x420 kernel/async.c:129
-       process_one_work kernel/workqueue.c:3229 [inline]
-       process_scheduled_works+0xa68/0x1840 kernel/workqueue.c:3310
-       worker_thread+0x870/0xd30 kernel/workqueue.c:3391
-       kthread+0x2f2/0x390 kernel/kthread.c:389
-       ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
--> #3 (&q->q_usage_counter(queue)#50){++++}-{0:0}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-       blk_queue_enter+0xe1/0x600 block/blk-core.c:328
-       blk_mq_alloc_request+0x4fa/0xaa0 block/blk-mq.c:652
-       scsi_alloc_request drivers/scsi/scsi_lib.c:1222 [inline]
-       scsi_execute_cmd+0x177/0x1090 drivers/scsi/scsi_lib.c:304
-       read_capacity_16+0x2b4/0x1450 drivers/scsi/sd.c:2655
-       sd_read_capacity drivers/scsi/sd.c:2824 [inline]
-       sd_revalidate_disk+0x1013/0xbce0 drivers/scsi/sd.c:3734
-       sd_probe+0x9fa/0x1100 drivers/scsi/sd.c:4010
-       really_probe+0x2ba/0xad0 drivers/base/dd.c:658
-       __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:800
-       driver_probe_device+0x50/0x430 drivers/base/dd.c:830
-       __device_attach_driver+0x2d6/0x530 drivers/base/dd.c:958
-       bus_for_each_drv+0x250/0x2e0 drivers/base/bus.c:459
-       __device_attach_async_helper+0x22d/0x300 drivers/base/dd.c:987
-       async_run_entry_fn+0xaa/0x420 kernel/async.c:129
-       process_one_work kernel/workqueue.c:3229 [inline]
-       process_scheduled_works+0xa68/0x1840 kernel/workqueue.c:3310
-       worker_thread+0x870/0xd30 kernel/workqueue.c:3391
-       kthread+0x2f2/0x390 kernel/kthread.c:389
-       ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
--> #2 (&q->limits_lock){+.+.}-{4:4}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
-       __mutex_lock+0x1ac/0xee0 kernel/locking/mutex.c:735
-       queue_limits_start_update include/linux/blkdev.h:945 [inline]
-       loop_reconfigure_limits+0x283/0x9e0 drivers/block/loop.c:1003
-       loop_set_block_size drivers/block/loop.c:1473 [inline]
-       lo_simple_ioctl drivers/block/loop.c:1496 [inline]
-       lo_ioctl+0x1351/0x1f50 drivers/block/loop.c:1559
-       blkdev_ioctl+0x57f/0x6a0 block/ioctl.c:693
-       vfs_ioctl fs/ioctl.c:51 [inline]
-       __do_sys_ioctl fs/ioctl.c:906 [inline]
-       __se_sys_ioctl+0xf7/0x170 fs/ioctl.c:892
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #1 (&q->q_usage_counter(io)#23){++++}-{0:0}:
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-       bio_queue_enter block/blk.h:75 [inline]
-       blk_mq_submit_bio+0x1536/0x2390 block/blk-mq.c:3092
-       __submit_bio+0x2c6/0x560 block/blk-core.c:629
-       __submit_bio_noacct_mq block/blk-core.c:710 [inline]
-       submit_bio_noacct_nocheck+0x4d3/0xe30 block/blk-core.c:739
-       ext4_read_block_bitmap_nowait+0x7c5/0xa80 fs/ext4/balloc.c:551
-       ext4_mb_prefetch+0x240/0x380 fs/ext4/mballoc.c:2749
-       ext4_mb_regular_allocator+0xb44/0x3bb0 fs/ext4/mballoc.c:2898
-       ext4_mb_new_blocks+0x10a8/0x4e00 fs/ext4/mballoc.c:6217
-       ext4_alloc_branch fs/ext4/indirect.c:340 [inline]
-       ext4_ind_map_blocks+0x108c/0x29e0 fs/ext4/indirect.c:635
-       ext4_map_create_blocks fs/ext4/inode.c:518 [inline]
-       ext4_map_blocks+0x85d/0x1990 fs/ext4/inode.c:702
-       ext4_getblk+0x1fa/0x880 fs/ext4/inode.c:849
-       ext4_bread+0x2e/0x180 fs/ext4/inode.c:912
-       ext4_append+0x327/0x5c0 fs/ext4/namei.c:83
-       ext4_add_entry+0xa03/0xfa0 fs/ext4/namei.c:2469
-       ext4_mkdir+0x554/0xcf0 fs/ext4/namei.c:3039
-       vfs_mkdir+0x2fb/0x4f0 fs/namei.c:4311
-       do_mkdirat+0x264/0x3a0 fs/namei.c:4334
-       __do_sys_mkdirat fs/namei.c:4349 [inline]
-       __se_sys_mkdirat fs/namei.c:4347 [inline]
-       __x64_sys_mkdirat+0x87/0xa0 fs/namei.c:4347
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x77/0x7f
-
--> #0 (&ei->i_data_sem){++++}-{4:4}:
-       check_prev_add kernel/locking/lockdep.c:3161 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3280 [inline]
-       validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
-       __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5226
-       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
-       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1524
-       ext4_map_blocks+0x3be/0x1990 fs/ext4/inode.c:665
-       ext4_mpage_readpages+0xad1/0x1ea0 fs/ext4/readpage.c:289
-       read_pages+0x178/0x830 mm/readahead.c:160
-       page_cache_ra_unbounded+0x797/0x8c0 mm/readahead.c:295
-       page_cache_sync_readahead include/linux/pagemap.h:1397 [inline]
-       filemap_get_pages+0x621/0x2540 mm/filemap.c:2546
-       filemap_read+0x45c/0xf50 mm/filemap.c:2646
-       __kernel_read+0x515/0x9d0 fs/read_write.c:523
-       integrity_kernel_read+0xb0/0x100 security/integrity/iint.c:28
-       ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:480 [inline]
-       ima_calc_file_shash security/integrity/ima/ima_crypto.c:511 [inline]
-       ima_calc_file_hash+0xae6/0x1b30 security/integrity/ima/ima_crypto.c:568
-       ima_collect_measurement+0x520/0xb10 security/integrity/ima/ima_api.c:293
-       process_measurement+0x1351/0x1fb0 security/integrity/ima/ima_main.c:372
-       ima_file_check+0xd9/0x120 security/integrity/ima/ima_main.c:572
-       security_file_post_open+0xb9/0x280 security/security.c:3121
-       do_open fs/namei.c:3830 [inline]
-       path_openat+0x2ccd/0x3590 fs/namei.c:3987
-       do_file_open_root+0x3a7/0x720 fs/namei.c:4039
-       file_open_root+0x247/0x2a0 fs/open.c:1382
-       kernel_read_file_from_path_initns+0x146/0x220 fs/kernel_read_file.c:163
-       fw_get_filesystem_firmware drivers/base/firmware_loader/main.c:549 [inline]
-       _request_firmware+0x975/0x13b0 drivers/base/firmware_loader/main.c:916
-       request_firmware_work_func+0x12a/0x280 drivers/base/firmware_loader/main.c:1194
-       process_one_work kernel/workqueue.c:3229 [inline]
-       process_scheduled_works+0xa68/0x1840 kernel/workqueue.c:3310
-       worker_thread+0x870/0xd30 kernel/workqueue.c:3391
-       kthread+0x2f2/0x390 kernel/kthread.c:389
-       ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
-
-other info that might help us debug this:
-
-Chain exists of:
-  &ei->i_data_sem --> &mm->mmap_lock --> mapping.invalidate_lock
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  rlock(mapping.invalidate_lock);
-                               lock(&mm->mmap_lock);
-                               lock(mapping.invalidate_lock);
-  rlock(&ei->i_data_sem);
-
- *** DEADLOCK ***
-
-4 locks held by kworker/0:4/5894:
- #0: ffff88801ac78948 ((wq_completion)events){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3204 [inline]
- #0: ffff88801ac78948 ((wq_completion)events){+.+.}-{0:0}, at: process_scheduled_works+0x93b/0x1840 kernel/workqueue.c:3310
- #1: ffffc900044c7d00 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_one_work kernel/workqueue.c:3205 [inline]
- #1: ffffc900044c7d00 ((work_completion)(&fw_work->work)){+.+.}-{0:0}, at: process_scheduled_works+0x976/0x1840 kernel/workqueue.c:3310
- #2: ffff88802fd759f8 (&ima_iint_mutex_key[depth]){+.+.}-{4:4}, at: process_measurement+0x7a6/0x1fb0 security/integrity/ima/ima_main.c:269
- #3: ffff888048f4dec0 (mapping.invalidate_lock){++++}-{4:4}, at: filemap_invalidate_lock_shared include/linux/fs.h:873 [inline]
- #3: ffff888048f4dec0 (mapping.invalidate_lock){++++}-{4:4}, at: page_cache_ra_unbounded+0x143/0x8c0 mm/readahead.c:226
-
-stack backtrace:
-CPU: 0 UID: 0 PID: 5894 Comm: kworker/0:4 Not tainted 6.12.0-syzkaller-11930-g0e287d31b62b #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-Workqueue: events request_firmware_work_func
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:94 [inline]
- dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
- print_circular_bug+0x13a/0x1b0 kernel/locking/lockdep.c:2074
- check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2206
- check_prev_add kernel/locking/lockdep.c:3161 [inline]
- check_prevs_add kernel/locking/lockdep.c:3280 [inline]
- validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
- __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5226
- lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
- down_read+0xb1/0xa40 kernel/locking/rwsem.c:1524
- ext4_map_blocks+0x3be/0x1990 fs/ext4/inode.c:665
- ext4_mpage_readpages+0xad1/0x1ea0 fs/ext4/readpage.c:289
- read_pages+0x178/0x830 mm/readahead.c:160
- page_cache_ra_unbounded+0x797/0x8c0 mm/readahead.c:295
- page_cache_sync_readahead include/linux/pagemap.h:1397 [inline]
- filemap_get_pages+0x621/0x2540 mm/filemap.c:2546
- filemap_read+0x45c/0xf50 mm/filemap.c:2646
- __kernel_read+0x515/0x9d0 fs/read_write.c:523
- integrity_kernel_read+0xb0/0x100 security/integrity/iint.c:28
- ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:480 [inline]
- ima_calc_file_shash security/integrity/ima/ima_crypto.c:511 [inline]
- ima_calc_file_hash+0xae6/0x1b30 security/integrity/ima/ima_crypto.c:568
- ima_collect_measurement+0x520/0xb10 security/integrity/ima/ima_api.c:293
- process_measurement+0x1351/0x1fb0 security/integrity/ima/ima_main.c:372
- ima_file_check+0xd9/0x120 security/integrity/ima/ima_main.c:572
- security_file_post_open+0xb9/0x280 security/security.c:3121
- do_open fs/namei.c:3830 [inline]
- path_openat+0x2ccd/0x3590 fs/namei.c:3987
- do_file_open_root+0x3a7/0x720 fs/namei.c:4039
- file_open_root+0x247/0x2a0 fs/open.c:1382
- kernel_read_file_from_path_initns+0x146/0x220 fs/kernel_read_file.c:163
- fw_get_filesystem_firmware drivers/base/firmware_loader/main.c:549 [inline]
- _request_firmware+0x975/0x13b0 drivers/base/firmware_loader/main.c:916
- request_firmware_work_func+0x12a/0x280 drivers/base/firmware_loader/main.c:1194
- process_one_work kernel/workqueue.c:3229 [inline]
- process_scheduled_works+0xa68/0x1840 kernel/workqueue.c:3310
- worker_thread+0x870/0xd30 kernel/workqueue.c:3391
- kthread+0x2f2/0x390 kernel/kthread.c:389
- ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
-usb 3-1: ath9k_htc: Transferred FW: ath9k_htc/htc_9271-1.4.0.fw, size: 51008
+Fix from last version:
+Clear the EXT4_STATE_TRUNCATED flag at ext4_mb_new_blocks() in order to
+make sure that every attempt to allocate new blocks, will result in resetting
+the 'truncated' state of the inode.
+Why is this needed? We want the ability to truncate preallocated blocks of an inode
+by using ext4_truncate(). However, when ftruncate is called from the vfs, the call
+is blocked (at ext4_setattr()) when used on already-truncated inodes. We want that
+call to be blocked only if the truncate call is redundant (meanning there is
+nothing there to truncate).
 
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ fs/ext4/ext4.h    | 1 +
+ fs/ext4/extents.c | 5 +++++
+ fs/ext4/inode.c   | 6 +++++-
+ fs/ext4/mballoc.c | 5 +++++
+ 4 files changed, 16 insertions(+), 1 deletion(-)
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+index 44b0d418143c..032e51f2a92b 100644
+--- a/fs/ext4/ext4.h
++++ b/fs/ext4/ext4.h
+@@ -1915,6 +1915,7 @@ enum {
+ 	EXT4_STATE_VERITY_IN_PROGRESS,	/* building fs-verity Merkle tree */
+ 	EXT4_STATE_FC_COMMITTING,	/* Fast commit ongoing */
+ 	EXT4_STATE_ORPHAN_FILE,		/* Inode orphaned in orphan file */
++	EXT4_STATE_TRUNCATED, 		/* Inode is truncated */
+ };
+ 
+ #define EXT4_INODE_BIT_FNS(name, field, offset)				\
+diff --git a/fs/ext4/extents.c b/fs/ext4/extents.c
+index 34e25eee6521..531fa0f2ccd3 100644
+--- a/fs/ext4/extents.c
++++ b/fs/ext4/extents.c
+@@ -4782,6 +4782,11 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
+ 		ret = ext4_zero_range(file, offset, len, mode);
+ 		goto exit;
+ 	}
++
++	if (mode & FALLOC_FL_KEEP_SIZE) {
++		ext4_clear_inode_state(inode, EXT4_STATE_TRUNCATED);
++	}
++
+ 	trace_ext4_fallocate_enter(inode, offset, len, mode);
+ 	lblk = offset >> blkbits;
+ 
+diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+index 54bdd4884fe6..cbdad3253920 100644
+--- a/fs/ext4/inode.c
++++ b/fs/ext4/inode.c
+@@ -4193,6 +4193,8 @@ int ext4_truncate(struct inode *inode)
+ 	if (IS_SYNC(inode))
+ 		ext4_handle_sync(handle);
+ 
++	ext4_set_inode_state(inode, EXT4_STATE_TRUNCATED);
++
+ out_stop:
+ 	/*
+ 	 * If this was a simple ftruncate() and the file will remain alive,
+@@ -5492,7 +5494,9 @@ int ext4_setattr(struct mnt_idmap *idmap, struct dentry *dentry,
+ 		 * Call ext4_truncate() even if i_size didn't change to
+ 		 * truncate possible preallocated blocks.
+ 		 */
+-		if (attr->ia_size <= oldsize) {
++		if (attr->ia_size < oldsize ||
++			(attr->ia_size == oldsize &&
++			!ext4_test_inode_state(inode, EXT4_STATE_TRUNCATED))) {
+ 			rc = ext4_truncate(inode);
+ 			if (rc)
+ 				error = rc;
+diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+index d73e38323879..4f0dbd53b3df 100644
+--- a/fs/ext4/mballoc.c
++++ b/fs/ext4/mballoc.c
+@@ -6149,6 +6149,11 @@ ext4_fsblk_t ext4_mb_new_blocks(handle_t *handle,
+ 	sb = ar->inode->i_sb;
+ 	sbi = EXT4_SB(sb);
+ 
++	/* Once there is an attempt to allocate new blocks,
++	 * the inode is no longer considered truncated.
++	 */
++	ext4_clear_inode_state(ar->inode, EXT4_STATE_TRUNCATED);
++
+ 	trace_ext4_request_blocks(ar);
+ 	if (sbi->s_mount_state & EXT4_FC_REPLAY)
+ 		return ext4_mb_new_blocks_simple(ar, errp);
+-- 
+2.43.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
