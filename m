@@ -1,58 +1,61 @@
-Return-Path: <linux-ext4+bounces-5497-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5498-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB8E09E6D25
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 12:18:06 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 12E999E7111
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 15:51:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3F1C1282C93
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 11:18:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AA873283603
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 14:51:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A0120010E;
-	Fri,  6 Dec 2024 11:16:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 901601547E7;
+	Fri,  6 Dec 2024 14:51:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="g/3dOn88"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 690221FCD1D;
-	Fri,  6 Dec 2024 11:16:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 27F0632C8B;
+	Fri,  6 Dec 2024 14:51:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733483774; cv=none; b=bXo3hv5N3oOvBkjpOKsimk9ZJUcV0s5+god4L9v8+kWsNT22YHEy/2P1Ape8twPi0a9EZeBvCSd4AQR1Ni1UHnorwSm8HvgcjFGraAc/Helz2Cl1v1dKDqfAz0n0STvBh29oyyK1g9Wbq+QHG6ldnZKfUdpLjmYnBzyYGX62pvk=
+	t=1733496675; cv=none; b=QTxSzgBOnuwJ8pleSGi0eRikHnf90j8NXuvxP+x6fAsbYcS4e96WzM6pdlooa0e4pKTUOxxkUORj8sDtZozw+rnwhAHBDvoQHf0qRgVjiNCQhS3ikTd8Yh8Q1ipFVfPx7h1rehI/LbDlsNOyU16H43sl6OjFM3YepQm9XcNGedc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733483774; c=relaxed/simple;
-	bh=iPF1dj3x0BDkShjWp5qNspvK+7h0fULDyUhS353q+i0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LTna3OZf272CqgcISRWr1scSIh+MfL5I9K6Q7iZqTh4sPIDL1IbafPqSs8PNwaOnrCBs/K6DfeXDldu8+yMAQx/IdVtLcU48LXFmWeSNkEzgOLaUPg+3HwS6mo001VyjsMnX5fTkcRpAYXilhkAOgVEcU6KoZSEKMHMwj9CYBaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4Y4TFw3mLfz4f3jdK;
-	Fri,  6 Dec 2024 19:15:48 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 943351A0197;
-	Fri,  6 Dec 2024 19:16:07 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.112.188])
-	by APP4 (Coremail) with SMTP id gCh0CgCHYobu3FJnzUVKDw--.25327S4;
-	Fri, 06 Dec 2024 19:16:07 +0800 (CST)
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-To: linux-ext4@vger.kernel.org
-Cc: linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	jack@suse.cz,
-	yi.zhang@huawei.com,
-	yi.zhang@huaweicloud.com,
-	chengzhihao1@huawei.com,
-	yukuai3@huawei.com,
-	yangerkun@huawei.com
-Subject: [PATCH] jbd2: add a missing data flush during file and fs synchronization
-Date: Fri,  6 Dec 2024 19:13:27 +0800
-Message-ID: <20241206111327.4171337-1-yi.zhang@huaweicloud.com>
-X-Mailer: git-send-email 2.46.1
+	s=arc-20240116; t=1733496675; c=relaxed/simple;
+	bh=13eSWcU4Nk/MMZfNkZzUcGKVyak+9ExtY9iKBuNzmRI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=I9f4Xu1zaEJLjvKbUvz2nfRzoRqZt4IdHw4JruRrZ2q+CD1SWK91SRRkujAdXoPzMCrO76zXVzkEi7/5i36Un101TZu/ZvNxfOlKshFc95r/attZiW91S93uvM2TVTfoS6uvPdB6jEYTng90X02dUnaFXXkj1Tg2vJdTzfG7lJM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=g/3dOn88; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 599F4C4CED1;
+	Fri,  6 Dec 2024 14:51:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1733496674;
+	bh=13eSWcU4Nk/MMZfNkZzUcGKVyak+9ExtY9iKBuNzmRI=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=g/3dOn88knoSEaiA7evhFbn3vU5dQd0hJYSMY7Mpiicwi1EA/1UiQ63nto56SCMsp
+	 npuIocTuSSE80apiMhCuTT2cXRK5v1g72f9YiVtjD98lz3CPxmDbP5KvDLUJ7JpzVh
+	 vpdYfKj7y2oC0u86rb67LvsSbUAxnqd8s3VWMA50=
+From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+To: stable@vger.kernel.org
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	patches@lists.linux.dev,
+	Theodore Tso <tytso@mit.edu>,
+	Andreas Dilger <adilger.kernel@dilger.ca>,
+	linux-ext4@vger.kernel.org,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Sasha Levin <sashal@kernel.org>
+Subject: [PATCH 6.6 071/676] ext4: remove calls to to set/clear the folio error flag
+Date: Fri,  6 Dec 2024 15:28:10 +0100
+Message-ID: <20241206143656.132429280@linuxfoundation.org>
+X-Mailer: git-send-email 2.47.1
+In-Reply-To: <20241206143653.344873888@linuxfoundation.org>
+References: <20241206143653.344873888@linuxfoundation.org>
+User-Agent: quilt/0.67
+X-stable: review
+X-Patchwork-Hint: ignore
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -60,82 +63,83 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:gCh0CgCHYobu3FJnzUVKDw--.25327S4
-X-Coremail-Antispam: 1UD129KBjvJXoW7Ww1ruryrWF4kArW3KrWUCFg_yoW8KFW8pr
-	W8Ca1YkFWqvFy2yr18XFs7JFWFvF4jyayUWrWv9Fn8tw45Xw1IkrWftryaya4qyFs5Ww45
-	XryUCw1DW34qk3DanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
-	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
-	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
-	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
-	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
-	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
-	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
-	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
-	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
-	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
-	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
-	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
-	VFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-From: Zhang Yi <yi.zhang@huawei.com>
+6.6-stable review patch.  If anyone has any objections, please let me know.
 
-When the filesystem performs file or filesystem synchronization (e.g.,
-ext4_sync_file()), it queries the journal to determine whether to flush
-the file device through jbd2_trans_will_send_data_barrier(). If the
-target transaction has not started committing, it assumes that the
-journal will submit the flush command, allowing the filesystem to bypass
-a redundant flush command. However, this assumption is not always valid.
-If the journal is not located on the filesystem device, the journal
-commit thread will not submit the flush command unless the variable
-->t_need_data_flush is set to 1. Consequently, the flush may be missed,
-and data may be lost following a power failure or system crash, even if
-the synchronization appears to succeed.
+------------------
 
-Unfortunately, we cannot determine with certainty whether the target
-transaction will flush to the filesystem device before it commits.
-However, if it has not started committing, it must be the running
-transaction. Therefore, fix it by always set its t_need_data_flush to 1,
-ensuring that the committing thread will flush the filesystem device.
+From: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Fixes: bbd2be369107 ("jbd2: Add function jbd2_trans_will_send_data_barrier()")
-Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+[ Upstream commit ea4fd933ab4310822e244af28d22ff63785dea0e ]
+
+Nobody checks this flag on ext4 folios, stop setting and clearing it.
+
+Cc: Theodore Ts'o <tytso@mit.edu>
+Cc: Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org
+Signed-off-by: Matthew Wilcox (Oracle) <willy@infradead.org>
+Link: https://lore.kernel.org/r/20240420025029.2166544-11-willy@infradead.org
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Stable-dep-of: 2f3d93e210b9 ("ext4: fix race in buffer_head read fault injection")
+Signed-off-by: Sasha Levin <sashal@kernel.org>
 ---
- fs/jbd2/journal.c | 12 +++++++++++-
- 1 file changed, 11 insertions(+), 1 deletion(-)
+ fs/ext4/move_extent.c | 4 +---
+ fs/ext4/page-io.c     | 3 ---
+ fs/ext4/readpage.c    | 1 -
+ 3 files changed, 1 insertion(+), 7 deletions(-)
 
-diff --git a/fs/jbd2/journal.c b/fs/jbd2/journal.c
-index 97f487c3d8fc..37632ae18a4e 100644
---- a/fs/jbd2/journal.c
-+++ b/fs/jbd2/journal.c
-@@ -609,7 +609,7 @@ int jbd2_journal_start_commit(journal_t *journal, tid_t *ptid)
- int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid)
- {
- 	int ret = 0;
--	transaction_t *commit_trans;
-+	transaction_t *commit_trans, *running_trans;
+diff --git a/fs/ext4/move_extent.c b/fs/ext4/move_extent.c
+index 0bfd5ff103aa4..a3aa85795d4a1 100644
+--- a/fs/ext4/move_extent.c
++++ b/fs/ext4/move_extent.c
+@@ -200,10 +200,8 @@ mext_page_mkuptodate(struct folio *folio, unsigned from, unsigned to)
+ 			continue;
+ 		if (!buffer_mapped(bh)) {
+ 			err = ext4_get_block(inode, block, bh, 0);
+-			if (err) {
+-				folio_set_error(folio);
++			if (err)
+ 				return err;
+-			}
+ 			if (!buffer_mapped(bh)) {
+ 				folio_zero_range(folio, block_start, blocksize);
+ 				set_buffer_uptodate(bh);
+diff --git a/fs/ext4/page-io.c b/fs/ext4/page-io.c
+index dfdd7e5cf0389..7ab4f5a9bf5b8 100644
+--- a/fs/ext4/page-io.c
++++ b/fs/ext4/page-io.c
+@@ -117,7 +117,6 @@ static void ext4_finish_bio(struct bio *bio)
  
- 	if (!(journal->j_flags & JBD2_BARRIER))
- 		return 0;
-@@ -619,6 +619,16 @@ int jbd2_trans_will_send_data_barrier(journal_t *journal, tid_t tid)
- 		goto out;
- 	commit_trans = journal->j_committing_transaction;
- 	if (!commit_trans || commit_trans->t_tid != tid) {
-+		running_trans = journal->j_running_transaction;
-+		/*
-+		 * The query transaction hasn't started committing,
-+		 * it must still be running.
-+		 */
-+		if (WARN_ON_ONCE(!running_trans ||
-+				 running_trans->t_tid != tid))
-+			goto out;
-+
-+		running_trans->t_need_data_flush = 1;
- 		ret = 1;
- 		goto out;
- 	}
+ 		if (bio->bi_status) {
+ 			int err = blk_status_to_errno(bio->bi_status);
+-			folio_set_error(folio);
+ 			mapping_set_error(folio->mapping, err);
+ 		}
+ 		bh = head = folio_buffers(folio);
+@@ -441,8 +440,6 @@ int ext4_bio_write_folio(struct ext4_io_submit *io, struct folio *folio,
+ 	BUG_ON(!folio_test_locked(folio));
+ 	BUG_ON(folio_test_writeback(folio));
+ 
+-	folio_clear_error(folio);
+-
+ 	/*
+ 	 * Comments copied from block_write_full_page:
+ 	 *
+diff --git a/fs/ext4/readpage.c b/fs/ext4/readpage.c
+index 3e7d160f543f0..8cb83e7b699bd 100644
+--- a/fs/ext4/readpage.c
++++ b/fs/ext4/readpage.c
+@@ -296,7 +296,6 @@ int ext4_mpage_readpages(struct inode *inode,
+ 
+ 				if (ext4_map_blocks(NULL, inode, &map, 0) < 0) {
+ 				set_error_page:
+-					folio_set_error(folio);
+ 					folio_zero_segment(folio, 0,
+ 							  folio_size(folio));
+ 					folio_unlock(folio);
 -- 
-2.46.1
+2.43.0
+
+
 
 
