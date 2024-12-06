@@ -1,92 +1,92 @@
-Return-Path: <linux-ext4+bounces-5501-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5502-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 875BB9E74E7
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 16:52:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B5B349E75CF
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 17:23:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1F48B1886AE9
-	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 15:52:05 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 737AF16AEC8
+	for <lists+linux-ext4@lfdr.de>; Fri,  6 Dec 2024 16:21:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9484C207641;
-	Fri,  6 Dec 2024 15:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03FB320E71E;
+	Fri,  6 Dec 2024 16:21:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PZpMZQhq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mGXsG7K5";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="PZpMZQhq";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mGXsG7K5"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gdin9ueQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PHEDuXuL";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Gdin9ueQ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="PHEDuXuL"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 769B062171;
-	Fri,  6 Dec 2024 15:51:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFDBD20E33F;
+	Fri,  6 Dec 2024 16:21:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733500318; cv=none; b=mqXh3/IfPFnCfXVWFC8Lg2O9VUjc0HhqNv57lW9D6kXr0frxucBTZEWR/1nw5ZmuWuqDkjQ0AJXHxGeUIk8SXwxVwDRTAS1A99U9Qul/MEV5+hH1NORId+KgsZXcOQ+e9qJLLFsGjSGObjfiLQyk9XL1kCi/g57UFbC/SNM4DSU=
+	t=1733502075; cv=none; b=Cdzgu5WkVOIPS+mbwQNP2fIWRICHFi6jJgbqTdKYoLldLP3EeobhboXcjvAG/J1xQOl/6d4LWPM+ToguWZYtfkQKX5MA443xngeczQk4NGw9EqAwWwIsbsgjZr3puQ9sYhcwnSRzKgfHx4C7fMiKfbe51vJ8FPYY++O22Ae1bNI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733500318; c=relaxed/simple;
-	bh=wCTL2ZjpQRRY6WMst98GL6ldhXJSLL8p6Tx1prpotTU=;
+	s=arc-20240116; t=1733502075; c=relaxed/simple;
+	bh=ac4pgcLjtxPRBQcq/XNT/VonCW8Bc+VLmRkWv+2y7C0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XmBp3UMvmzsNyKAYqjLCeMCfKYmsyICazyESYNF4i9NzfUpVYhTac207ICo24SLm4z5zpp74MEQ1t/U7vAJLPCdKr0T6gcKTjzUOuyY2YumzzowxgQaRJAvp9gYmg0gzjnW2L9pEfwupp3Nj/3zjTalWiBxDMPHFvXJteI/G4Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PZpMZQhq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mGXsG7K5; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=PZpMZQhq; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mGXsG7K5; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=VQhX4NI0PB72Clzu4XK7qS6BWY2NlldH0r6e1dXGIM49OTQbgK/Iqcdz/Qpc07e44gy6ZUHL41xh3mgP/NTjLpe5ZUpCvfcGaNGJyyfn+h5tsUQuQ9UkI/wh1D2QI6yRXTtOV3GU7IF0E40TCy+p5QYNwHaBWkYF+3wjeY1qDpg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gdin9ueQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PHEDuXuL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Gdin9ueQ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=PHEDuXuL; arc=none smtp.client-ip=195.135.223.130
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 9DDBE1F37E;
-	Fri,  6 Dec 2024 15:51:54 +0000 (UTC)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id C740721151;
+	Fri,  6 Dec 2024 16:21:11 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733500314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733502071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nt/SdeMd1iRB5c5Rd6Y7lq44iHK7kKqPbjOk3YA3ZQ4=;
-	b=PZpMZQhqTR7kjmiBhrDltOQnk8ZkHqTw76XJ+Xm8euzfI/yYFnGkbsP/hVRg60XpqlaR0G
-	Nf372g6LN/Pl7yCXIhn1nVQMvY9CjcmgB12vl/HF/qvLcD0xXYeWzcV+KQZhAxv3fnK5cs
-	3D5QxDXkDI2z4Fph457UCWXARcDxhAk=
+	bh=S3hzM6cCpaVd6QqTH/MfEYNophFjHylvkgtDiG7Kv2s=;
+	b=Gdin9ueQ6Ip3/+5Yi0YrcbzUjHk0tA6o/FTam9lpBH8wdOJvXUxR3XKOsy1rLmjMAkd34G
+	6lm1xiGXABUg44MpHB4A6NKmCHUCrX5dnOg2ij2h3tMiP7FiV0wpgDQCgjgxddQTNIeM4K
+	e+57pxbz5yS0SkDLJmCZRExcdIUkzF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733500314;
+	s=susede2_ed25519; t=1733502071;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nt/SdeMd1iRB5c5Rd6Y7lq44iHK7kKqPbjOk3YA3ZQ4=;
-	b=mGXsG7K5TuH3+WMnmgzR3qGdDoZmo6Zdx/zTCG44OR6aUYiQTpQ6asiW5R+NK1hdqkD0hj
-	CjWIsVuhwYpb+6Cw==
-Authentication-Results: smtp-out2.suse.de;
+	bh=S3hzM6cCpaVd6QqTH/MfEYNophFjHylvkgtDiG7Kv2s=;
+	b=PHEDuXuL2rODIjvYMfk/az+g55ImIx/wQ7m445IrxyrOgEVV+99IHx0BGQsFnji21jRIIt
+	ZLWgWxvt6WxXBxDA==
+Authentication-Results: smtp-out1.suse.de;
 	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733500314; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733502071; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nt/SdeMd1iRB5c5Rd6Y7lq44iHK7kKqPbjOk3YA3ZQ4=;
-	b=PZpMZQhqTR7kjmiBhrDltOQnk8ZkHqTw76XJ+Xm8euzfI/yYFnGkbsP/hVRg60XpqlaR0G
-	Nf372g6LN/Pl7yCXIhn1nVQMvY9CjcmgB12vl/HF/qvLcD0xXYeWzcV+KQZhAxv3fnK5cs
-	3D5QxDXkDI2z4Fph457UCWXARcDxhAk=
+	bh=S3hzM6cCpaVd6QqTH/MfEYNophFjHylvkgtDiG7Kv2s=;
+	b=Gdin9ueQ6Ip3/+5Yi0YrcbzUjHk0tA6o/FTam9lpBH8wdOJvXUxR3XKOsy1rLmjMAkd34G
+	6lm1xiGXABUg44MpHB4A6NKmCHUCrX5dnOg2ij2h3tMiP7FiV0wpgDQCgjgxddQTNIeM4K
+	e+57pxbz5yS0SkDLJmCZRExcdIUkzF4=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733500314;
+	s=susede2_ed25519; t=1733502071;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=nt/SdeMd1iRB5c5Rd6Y7lq44iHK7kKqPbjOk3YA3ZQ4=;
-	b=mGXsG7K5TuH3+WMnmgzR3qGdDoZmo6Zdx/zTCG44OR6aUYiQTpQ6asiW5R+NK1hdqkD0hj
-	CjWIsVuhwYpb+6Cw==
+	bh=S3hzM6cCpaVd6QqTH/MfEYNophFjHylvkgtDiG7Kv2s=;
+	b=PHEDuXuL2rODIjvYMfk/az+g55ImIx/wQ7m445IrxyrOgEVV+99IHx0BGQsFnji21jRIIt
+	ZLWgWxvt6WxXBxDA==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 8BBF613647;
-	Fri,  6 Dec 2024 15:51:54 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A46B8138A7;
+	Fri,  6 Dec 2024 16:21:11 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Y90ZIpodU2ceAwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 06 Dec 2024 15:51:54 +0000
+	id H7keKHckU2eICwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Fri, 06 Dec 2024 16:21:11 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 3BEF1A08CD; Fri,  6 Dec 2024 16:51:46 +0100 (CET)
-Date: Fri, 6 Dec 2024 16:51:46 +0100
+	id 79EB7A08CD; Fri,  6 Dec 2024 17:21:02 +0100 (CET)
+Date: Fri, 6 Dec 2024 17:21:02 +0100
 From: Jan Kara <jack@suse.cz>
 To: Zhang Yi <yi.zhang@huaweicloud.com>
 Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
@@ -95,12 +95,13 @@ Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
 	hch@infradead.org, djwong@kernel.org, david@fromorbit.com,
 	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
 	yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH 09/27] ext4: move out inode_lock into ext4_fallocate()
-Message-ID: <20241206155146.wmc2flrony62d524@quack3>
+Subject: Re: [PATCH 12/27] ext4: introduce seq counter for the extent status
+ entry
+Message-ID: <20241206162102.w4hw35ims5sdf4ik@quack3>
 References: <20241022111059.2566137-1-yi.zhang@huaweicloud.com>
- <20241022111059.2566137-10-yi.zhang@huaweicloud.com>
- <20241204120527.jus6ymhsddxhlqjz@quack3>
- <792da260-656c-4e05-9d06-90580927bc20@huaweicloud.com>
+ <20241022111059.2566137-13-yi.zhang@huaweicloud.com>
+ <20241204124221.aix7qxjl2n4ya3b7@quack3>
+ <c831732e-38c5-4a82-ab30-de17cff29584@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -109,10 +110,10 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <792da260-656c-4e05-9d06-90580927bc20@huaweicloud.com>
+In-Reply-To: <c831732e-38c5-4a82-ab30-de17cff29584@huaweicloud.com>
 X-Spam-Score: -2.30
 X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
+	BAYES_HAM(-3.00)[100.00%];
 	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
@@ -134,58 +135,128 @@ X-Spamd-Result: default: False [-2.30 / 50.00];
 	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
 	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
+	DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,imap1.dmz-prg2.suse.org:helo,suse.com:email]
 X-Spam-Flag: NO
 X-Spam-Level: 
 
-On Fri 06-12-24 16:13:14, Zhang Yi wrote:
-> On 2024/12/4 20:05, Jan Kara wrote:
-> > On Tue 22-10-24 19:10:40, Zhang Yi wrote:
+On Fri 06-12-24 16:55:01, Zhang Yi wrote:
+> On 2024/12/4 20:42, Jan Kara wrote:
+> > On Tue 22-10-24 19:10:43, Zhang Yi wrote:
 > >> From: Zhang Yi <yi.zhang@huawei.com>
 > >>
-> >> Currently, all five sub-functions of ext4_fallocate() acquire the
-> >> inode's i_rwsem at the beginning and release it before exiting. This
-> >> process can be simplified by factoring out the management of i_rwsem
-> >> into the ext4_fallocate() function.
+> >> In the iomap_write_iter(), the iomap buffered write frame does not hold
+> >> any locks between querying the inode extent mapping info and performing
+> >> page cache writes. As a result, the extent mapping can be changed due to
+> >> concurrent I/O in flight. Similarly, in the iomap_writepage_map(), the
+> >> write-back process faces a similar problem: concurrent changes can
+> >> invalidate the extent mapping before the I/O is submitted.
+> >>
+> >> Therefore, both of these processes must recheck the mapping info after
+> >> acquiring the folio lock. To address this, similar to XFS, we propose
+> >> introducing an extent sequence number to serve as a validity cookie for
+> >> the extent. We will increment this number whenever the extent status
+> >> tree changes, thereby preparing for the buffered write iomap conversion.
+> >> Besides, it also changes the trace code style to make checkpatch.pl
+> >> happy.
 > >>
 > >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 > > 
-> > Ah, nice. Feel free to add:
+> > Overall using some sequence counter makes sense.
 > > 
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > 
-> > and please ignore my comments about renaming 'out' labels :).
-> > 
-> > 								Honza
-> > 
-> 
-> ...
-> 
-> >> @@ -4774,9 +4765,8 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>  
-> >>  	inode_lock(inode);
-> >>  	ret = ext4_convert_inline_data(inode);
-> >> -	inode_unlock(inode);
-> >>  	if (ret)
-> >> -		return ret;
-> >> +		goto out;
-> >>  
-> >>  	if (mode & FALLOC_FL_PUNCH_HOLE)
-> >>  		ret = ext4_punch_hole(file, offset, len);
-> >> @@ -4788,7 +4778,8 @@ long ext4_fallocate(struct file *file, int mode, loff_t offset, loff_t len)
-> >>  		ret = ext4_zero_range(file, offset, len, mode);
-> >>  	else
-> >>  		ret = ext4_do_fallocate(file, offset, len, mode);
-> >> -
-> >> +out:
-> >> +	inode_unlock(inode);
-> >>  	return ret;
+> >> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+> >> index c786691dabd3..bea4f87db502 100644
+> >> --- a/fs/ext4/extents_status.c
+> >> +++ b/fs/ext4/extents_status.c
+> >> @@ -204,6 +204,13 @@ static inline ext4_lblk_t ext4_es_end(struct extent_status *es)
+> >>  	return es->es_lblk + es->es_len - 1;
 > >>  }
 > >>  
+> >> +static inline void ext4_es_inc_seq(struct inode *inode)
+> >> +{
+> >> +	struct ext4_inode_info *ei = EXT4_I(inode);
+> >> +
+> >> +	WRITE_ONCE(ei->i_es_seq, READ_ONCE(ei->i_es_seq) + 1);
+> >> +}
+> > 
+> > This looks potentially dangerous because we can loose i_es_seq updates this
+> > way. Like
+> > 
+> > CPU1					CPU2
+> > x = READ_ONCE(ei->i_es_seq)
+> > 					x = READ_ONCE(ei->i_es_seq)
+> > 					WRITE_ONCE(ei->i_es_seq, x + 1)
+> > 					...
+> > 					potentially many times
+> > WRITE_ONCE(ei->i_es_seq, x + 1)
+> >   -> the counter goes back leading to possibly false equality checks
+> > 
 > 
-> I guess you may want to suggest rename this out to out_inode_lock as well.
+> In my current implementation, I don't think this race condition can
+> happen since all ext4_es_inc_seq() invocations are under
+> EXT4_I(inode)->i_es_lock. So I think it works fine now, or was I
+> missed something?
 
-Right. This one should better be out_inode_lock.
+Hum, as far as I've checked, at least the place in ext4_es_insert_extent()
+where you call ext4_es_inc_seq() doesn't hold i_es_lock (yet). If you meant
+to protect the updates by i_es_lock, then move the call sites and please
+add a comment about it. Also it should be enough to do:
+
+WRITE_ONCE(ei->i_es_seq, ei->i_es_seq + 1);
+
+since we cannot be really racing with other writers.
+
+> > I think you'll need to use atomic_t and appropriate functions here.
+> > 
+> >> @@ -872,6 +879,7 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
+> >>  	BUG_ON(end < lblk);
+> >>  	WARN_ON_ONCE(status & EXTENT_STATUS_DELAYED);
+> >>  
+> >> +	ext4_es_inc_seq(inode);
+> > 
+> > I'm somewhat wondering: Are extent status tree modifications the right
+> > place to advance the sequence counter? The counter needs to advance
+> > whenever the mapping information changes. This means that we'd be
+> > needlessly advancing the counter (and thus possibly forcing retries) when
+> > we are just adding new information from ordinary extent tree into cache.
+> > Also someone can be doing extent tree manipulations without touching extent
+> > status tree (if the information was already pruned from there). 
+> 
+> Sorry, I don't quite understand here. IIUC, we can't modify the extent
+> tree without also touching extent status tree; otherwise, the extent
+> status tree will become stale, potentially leading to undesirable and
+> unexpected outcomes later on, as the extent lookup paths rely on and
+> always trust the status tree. If this situation happens, would it be
+> considered a bug? Additionally, I have checked the code but didn't find
+> any concrete cases where this could happen. Was I overlooked something?
+
+What I'm worried about is that this seems a bit fragile because e.g. in
+ext4_collapse_range() we do:
+
+ext4_es_remove_extent(inode, start, EXT_MAX_BLOCKS - start)
+<now go and manipulate the extent tree>
+
+So if somebody managed to sneak in between ext4_es_remove_extent() and
+the extent tree manipulation, he could get a block mapping which is shortly
+after invalidated by the extent tree changes. And as I'm checking now,
+writeback code *can* sneak in there because during extent tree
+manipulations we call ext4_datasem_ensure_credits() which can drop
+i_data_sem to restart a transaction.
+
+Now we do writeout & invalidate page cache before we start to do these
+extent tree dances so I don't see how this could lead to *actual* use
+after free issues but it makes me somewhat nervous. So that's why I'd like
+to have some clear rules from which it is obvious that the counter makes
+sure we do not use stale mappings.
+
+> > So I think
+> > needs some very good documentation what are the expectations from the
+> > sequence counter and explanations why they are satisfied so that we don't
+> > break this in the future.
+> 
+> Yeah, it's a good suggestion, where do you suggest putting this
+> documentation, how about in the front of extents_status.c?
+
+I think at the function incrementing the counter would be fine.
 
 								Honza
 -- 
