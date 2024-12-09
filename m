@@ -1,163 +1,145 @@
-Return-Path: <linux-ext4+bounces-5518-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5519-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 289B09E9546
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 13:59:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7EBDF9E9587
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 14:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0047B1882BAD
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 12:59:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6B5071887D43
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 13:03:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2291ACED5;
-	Mon,  9 Dec 2024 12:54:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB21A22B8D0;
+	Mon,  9 Dec 2024 12:56:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="Kfoh5wVP"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BvmOrd4t"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.17.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-lf1-f42.google.com (mail-lf1-f42.google.com [209.85.167.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C72922F3A5;
-	Mon,  9 Dec 2024 12:54:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0E6922A1FD;
+	Mon,  9 Dec 2024 12:56:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733748889; cv=none; b=qpsHrz2jIdGMH3eR6iPVaWN7nOU5Q/v0KyB3XLtNk2x7bIQuUTSDI257Wo6wZ/AFg9uZZcEXmlh0+EHAQ6w7adbMrjFmelCTgEs3PLJVmbwKi4YSfmlfOrSL7Z4fyXyV2mLWduKgr5dK7cHKTXF3Ei8CJJC/GJzzm7rX9PtSQeQ=
+	t=1733749014; cv=none; b=MwyMcD9jpATpaYcR1MHXh0L/b2bNXCBK0S88MWAaAQ/f1z5rnFROYxTWV1A4Wo1b40+3uae7ReTh8BAJmJ5lJ/07gRdjH8PT0+zGOtFQPXEqCotbMxdzoiAEOEHbuHrSirDMlacDtHsq3gNmiLg6bs+vU20wdxF3nqJgX2WIvOY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733748889; c=relaxed/simple;
-	bh=mmp+z6vZClvYN4IUfa9MoRA7iDd0lamwTH4vyhOCrWo=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=hV5LYMl3ojPUuCX3U703vaSs/bSDpWTD7yAQ7ZDw+McZQYR8FIunLrLTGBy/En258EOWMsJA4Ak12QW/BFQfWBJF5+xiXQZ86gjfV/JZZnn7ISXKJDs6rZGwnRkdWsu2ZeM7rc2Zh6QJmrzWCRYCY5bk2DfM1+H65jOsSnTWd3g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=Kfoh5wVP; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1733748839; x=1734353639; i=spasswolf@web.de;
-	bh=EAY4q6z526O4TaeuoHU1dkNEk9o9mZuPKG7V1nAVNJ4=;
-	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
-	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
-	 content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=Kfoh5wVPf2HaxSlR0zhNthgA+cnzi1FjvP6BIcRsvPWwGJj7bc+Ph941RUlpzWpz
-	 6VEdjAfZfGz/DW8K5nKy5prdnr0lXl67RUKmRvJ8Iq42zaaU/dfhvD8995JJ4tI0I
-	 GK6SEmpqL3U4R11XTanzSZZinupMTyE5jOERiUkUL4er/hQDFUWN2L6+lm29NZ9K/
-	 rfmLxRgqRztr1cvDVH6xFKN/TL6JsQGtMPezT62AqT/l/40nEbnYTN+BZYsLCLSdb
-	 uex60sWhoO1XbqLOCetgQFab4fKAVEALNpEWwkCuQ8nz4QGFXPuZt/dMbN3AdczdN
-	 XfoC+DGotGRiL+6itQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.0.101] ([84.119.92.193]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1N4N9I-1tj9A91Y5m-011Z1G; Mon, 09
- Dec 2024 13:53:59 +0100
-Message-ID: <63df45984a1a7fe5998861abd3210b781662d7f9.camel@web.de>
-Subject: Re: commit 0790303ec869 leads to cpu stall without
- CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
-From: Bert Karwatzki <spasswolf@web.de>
-To: Jan Kara <jack@suse.cz>
-Cc: Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org, 
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, amir73il@gmail.com, 
-	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
- 	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
- linux-mm@kvack.org, 	linux-ext4@vger.kernel.org, spasswolf@web.de
-Date: Mon, 09 Dec 2024 13:53:57 +0100
-In-Reply-To: <20241209122648.dpptugrol4p6ikmm@quack3>
-References: <20241208152520.3559-1-spasswolf@web.de>
-	 <20241209121104.j6zttbqod3sh3qhr@quack3>
-	 <20241209122648.dpptugrol4p6ikmm@quack3>
-Content-Type: text/plain; charset="UTF-8"
-User-Agent: Evolution 3.54.2-1 
+	s=arc-20240116; t=1733749014; c=relaxed/simple;
+	bh=TtR0POClH3vMSwJTdTsZxGxPIISz20iuULTCYIwCcHQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=G7fg6Brcn87imEG/juQt60iBE4ZFUyIASnDTwwX5+6008Dc5yS/weO8/r0tiBAZ9ClFc1lUFW/Z5HmiJLCMQi47jIb4XRtAf1qbDnHmntxdCv2W1GHrcgA4Yx/kiy5VU2sORSsUHAbBzKZeVVLPeEE1yNRUAHtxNacFTFtqm0dc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BvmOrd4t; arc=none smtp.client-ip=209.85.167.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f42.google.com with SMTP id 2adb3069b0e04-5401c37d8afso1231284e87.1;
+        Mon, 09 Dec 2024 04:56:52 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1733749011; x=1734353811; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PWVCxbrTVnf61GHy50t1nIO1WdXwoF1UvHG9EnxG6sQ=;
+        b=BvmOrd4tn94NBIiacvmdNL+8Sda/3tUfBhnncSVQb6kqLHsJqe912hjVxkPtyFTxct
+         yrHGOERY1o4MqO1vX6MW+rrGE/2jfKGtdWNz5O9liMSP1lSN82gr9dZKwPLbMzyFIYPW
+         lFCLf1kEb6x9D0H685KIbLvg40O/WXKi1kjvzbeUj4IzaQN2dKEl4B8ecImRjBVuQ3zu
+         ACJyKnz50WKD97/mfnDjrsdq+9jlipu6hzI3lDl3KxeCD5gn8nYvVrXtQcTYhlPtkQFd
+         i4s/5jP7j2JkvaJ3zptabh6AdBzF7G3LfoyvJl1a90Hdsrfj9wq//E8lxu0uv21sFopq
+         G6/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733749011; x=1734353811;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PWVCxbrTVnf61GHy50t1nIO1WdXwoF1UvHG9EnxG6sQ=;
+        b=Um70u0XR895kdIvTuuJ3xA6aEkE+O9ihAfmSghi35POa4kC0Uls/HaufEGY++jQ3Ra
+         e5kae83Ob0DKI1SEBaZlUF7hP6Dr6Iumu/4sVBcisiyICPJzyyf9knpv+4EynXj8BEUU
+         d1TwPdfuAgwxiUJmyd6W6/DWiIl3U4A/JMW7gEi5JLDeVVBd7fzeCkCo9gFFQ6RMudxj
+         tMvqd+DltBiPQaY8ie25reRxk3+Wm2OsB0270Xz7/HywtnAPKgury9zA8SQHyKX2ZOgT
+         V2DobCjNJer8iZ0TKns9/5GsngvHX1TKcUvmwRCEUsoR36xCcl8BN0gnGWTMCMXfVo8w
+         uwuw==
+X-Forwarded-Encrypted: i=1; AJvYcCUU1FY+gGrOgYLWHmjaiq9ZYLTB+jXa5/wuiiXtVTEoPW6M+zpcI6KwFn6w/CpxPJdaO0AyUSaNjqlefhwwvw==@vger.kernel.org, AJvYcCV3Tn29fgowzQ/+g/Gz+B7BiJZA8C9/IUlSI9JLoxJnNuREr3PaqsKoMsVExjGg5mAc85CUqm3GaTQX@vger.kernel.org, AJvYcCWo43VDPMyk+vIS8THEaWZhw+R3ZcbxpaiBy8jIUdeteQb1LUwJlV5zlSs1WZr8Xj6RIonSzQbRfZq0sQ==@vger.kernel.org, AJvYcCXwTCRECwhvg3kVH3c8wqGpkZtylsW/VxXSGvn4nEHndYowFDt4qnYIl/wuF4CGneMB7gzjL+r7QOPuxQ==@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx7iNkR/ozcfbdagGA1ibDrhS82IPh+3OcYIXx+SADGpDM2IYzX
+	uSrikofMP+W8IxnvFNVvZXHOs0d+JAsMa+LfExAEiXE/p/hk+imnqiOG4A==
+X-Gm-Gg: ASbGnctKaHloPyimjrS0ujjshpXLA9hLrEenF1nAYpLc1HPfL9y//ppH2uIeD9YMPJa
+	CYVtWLwYXM7txnaP+oE9xzHW1y8Av/ILi+2dcfoO04KfptmsfoOZIenc5VmrQHNsf08Z7Zg42MW
+	9rywr9FX77Gvr8gvep6pE3InXy2H1e7HAeQdV5MvqNl2j+QprzWwT5R3bFz7FTIS2dEAawThQhr
+	NMEAjrgQAIPNk1i8UuIjbZyxN6NSTnHwucYVb7CDjRP6W3kS0DP6vdZX7hOk5lb/vewKwM4UIro
+	QojTqKkLltPpKpBY
+X-Google-Smtp-Source: AGHT+IGJP+qDi++rMu9YDBxju5NqTXgzk9eSdqcEvXa9AgotuNX4C1hJ3WINefmjNBbADlez0VnW4A==
+X-Received: by 2002:a05:6512:3b0d:b0:53e:335b:4348 with SMTP id 2adb3069b0e04-54024113004mr128559e87.40.1733749010712;
+        Mon, 09 Dec 2024 04:56:50 -0800 (PST)
+Received: from ?IPV6:2001:6b0:1:1041:f9b4:5409:8dcc:9750? ([2001:6b0:1:1041:f9b4:5409:8dcc:9750])
+        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-53e6b4c051esm732384e87.70.2024.12.09.04.56.48
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 09 Dec 2024 04:56:49 -0800 (PST)
+Message-ID: <604c3501-f134-4a6e-ad41-ace84c2fd902@gmail.com>
+Date: Mon, 9 Dec 2024 13:56:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:0PZnYBU0gg6jmMJSy7XFdM1bYFCaWir11pnGSd+0qH1foI/b0t1
- GDeIAizz3oLKWi9wKNQxaEKI2kayoXbER7RErF9XDIK5irM8+Ya2jrAIr+FSHNTBXyjHO85
- 0XI5NzerNjKfxkeDZbFkS3Gq4ooOZmbxFvqOyCoNgX8SykBXo3bDINc7zMw5R19vKSw8cI+
- tWItanavbpwWrfHDmz6yA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:h6vS82zGca0=;9iPQBgOpwE7+yvBx1nowykpFDhs
- sL3hd/ksImdUynxocZWcMTayMV+gWBm/4Di2lz+QErGwinZtBSN8NZ7RDi4LWmDy/GfJmTtVJ
- 539P1Oo2A3Tp+WNTjsZN/a5eE7lVnLOpSpYO6kfPR4V0wNKw3hE7UpDnOe8tVhcNFNw+mTO1g
- 2TKSg8eikeuGTeu6Ll4JehOdb0ugnJ8QN0jEE9HUjungrHfR7AaNDdmlLJR7vkmvmycSQZI4G
- nz1hHEJYRhlASziFYxV+g2XaNVlpE7VvvTS6y2XG4IzRyFxVOeKGJCfvQ664eP4bdr+Ppt/7E
- jguPYfsGn1rewvID6F/X2+bJ0lAQAySpa2F+yL/E3f0+LwrSxNPCDy7PKIZjTTvXN9EnQie6p
- OEND5v0C9gYpHGlua25BSK3zATJv+9uHAY/w6JBhS7osoYf6uAyDjKsyevhVJiO3iV9Aehk/c
- wK5uI4dXzhesyQIQyIdX1aaLQupY9NwpJP4K6xNHnNlPzchW1NDaeZDVo0RtRhU1XTg4as8lx
- 20MseOhPoDHGKDsxuCWALftJtpBgRLzY2iHS+/QfM0t7CoDhgOW5GT0ImgguQ/MwDgFHCQtEX
- /Z5zYbtDvC3y00wbcrI5uySwwFceiD0yn76grj9/jVSV5v99BtXizARSPaGtdeWXsgdkks40G
- +r9plqbq4ojzNteeOexaI4M1BGPkux3wJObW5nigGk3Q1hnDIumQyL6rSFI1LruB4Ay8/9Yny
- 1A7rVbNuVvmg4eM6FqHKC2aPzCel7sdE2duo4GEYlOuI4xZpQgcYPz9qzv6OQ1y7+TDRcdRsB
- QIu5MzKP9xJG/I04DGrIOrjYWlMXUCcY42JvL5eZGOsBpqOVTISJvX+GQH6TgNvs0fCs84DUi
- SzXQR0ArNPU0Jbe8PAh4NvIqXM6JDOMnEUYJjcb9+eMhi6sBfdD3itJGokQWi3LaZY6/eaHNT
- tiK42jl5RgIpajRSdaZoEdwyQeF7AsBfBQPSByzT02Jk2/Ja45qiMe1i11FiNNioJ3wHjlz4m
- +sNXoOK200618nsA8KvvgE0iCJH6/AAf6U6v6an9hzuVZwWA6IV9yOt60TXS6P9HGbxPKjXEE
- 5u4TFy2YU=
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
+ on page fault
+To: Jan Kara <jack@suse.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, kernel-team@fb.com,
+ linux-fsdevel@vger.kernel.org, amir73il@gmail.com, brauner@kernel.org,
+ torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
+ linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org, linux-mm@kvack.org,
+ linux-ext4@vger.kernel.org, sraithal@amd.com
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
+ <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
+ <20241209123137.o6bzwr35kumi2ksv@quack3>
+Content-Language: en-US, sv-SE
+From: Klara Modin <klarasmodin@gmail.com>
+In-Reply-To: <20241209123137.o6bzwr35kumi2ksv@quack3>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Am Montag, dem 09.12.2024 um 13:26 +0100 schrieb Jan Kara:
-> On Mon 09-12-24 13:11:04, Jan Kara wrote:
-> > > Then I took a closer look at the function called in the problematic =
-code
-> > > and noticed that fsnotify_file_area_perm(), is a NOOP when
-> > > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is not set (which was the case in=
- my
-> > > .config). This also explains why this was not found before, as
-> > > distributional .config file have this option enabled.  Setting the o=
-ption
-> > > to y solves the issue, too
-> >
-> > Well, I agree with you on all the points but the real question is, how=
- come
-> > the test FMODE_FSNOTIFY_HSM(file->f_mode) was true on our kernel when =
-you
-> > clearly don't run HSM software, even more so with
-> > CONFIG_FANOTIFY_ACCESS_PERMISSIONS disabled. That's the real cause of =
-this
-> > problem. Something fishy is going on here... checking...
-> >
-> > Ah, because I've botched out file_set_fsnotify_mode() in case
-> > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is disabled. This should fix the
-> > problem:
-> >
-> > index 1a9ef8f6784d..778a88fcfddc 100644
-> > --- a/include/linux/fsnotify.h
-> > +++ b/include/linux/fsnotify.h
-> > @@ -215,6 +215,7 @@ static inline int fsnotify_open_perm(struct file *=
-file)
-> >  #else
-> >  static inline void file_set_fsnotify_mode(struct file *file)
-> >  {
-> > +       file->f_mode |=3D FMODE_NONOTIFY_PERM;
-> >  }
-> >
-> > I'm going to test this with CONFIG_FANOTIFY_ACCESS_PERMISSIONS disable=
-d and
-> > push out a fixed version. Thanks again for the report and analysis!
->
-> So this was not enough, What we need is:
-> index 1a9ef8f6784d..778a88fcfddc 100644
-> --- a/include/linux/fsnotify.h
-> +++ b/include/linux/fsnotify.h
-> @@ -215,6 +215,10 @@ static inline int fsnotify_open_perm(struct file *f=
-ile)
->  #else
->  static inline void file_set_fsnotify_mode(struct file *file)
->  {
-> +	/* Is it a file opened by fanotify? */
-> +	if (FMODE_FSNOTIFY_NONE(file->f_mode))
-> +		return;
-> +	file->f_mode |=3D FMODE_NONOTIFY_PERM;
->  }
->
-> This passes testing for me so I've pushed it out and the next linux-next
-> build should have this fix.
->
+Hi,
+
+On 2024-12-09 13:31, Jan Kara wrote:
+> Hello!
+> 
+> On Sun 08-12-24 17:58:42, Klara Modin wrote:
+>> On 2024-11-15 16:30, Josef Bacik wrote:
+>>> FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on page fault depending
+>>> on the faulting method.
+>>>
+>>> This pre-content event is meant to be used by hierarchical storage
+>>> managers that want to fill in the file content on first read access.
+>>>
+>>> Export a simple helper that file systems that have their own ->fault()
+>>> will use, and have a more complicated helper to be do fancy things with
+>>> in filemap_fault.
+>>>
+>>
+>> This patch (0790303ec869d0fd658a548551972b51ced7390c in next-20241206)
+>> interacts poorly with some programs which hang and are stuck at 100 % sys
+>> cpu usage (examples of programs are logrotate and atop with root
+>> privileges).
+>>
+>> I also retested the new version on Jan Kara's for_next branch and it behaves
+>> the same way.
+> 
+> Thanks for report! What is your kernel config please? I've just fixed a
+> bug reported by [1] which manifested in the same way with
+> CONFIG_FANOTIFY_ACCESS_PERMISSIONS=n.
+> 
+> Can you perhaps test with my for_next branch I've just pushed out? Thanks!
+> 
 > 								Honza
 
-I had "mixed success" with your first fix, out of 4 boots I got 2 hangs, b=
-ut the
-new version seems to work fine (4 boots, zero hangs).
+My config was attached, but yes, I have 
+CONFIG_FANOTIFY_ACCESS_PERMISSIONS=n. I tried the tip by Srikanth Aithal 
+to enable it and that resolved the issue.
 
-Bert Karwatzki
+Your new for_next branch resolved the 
+CONFIG_FANOTIFY_ACCESS_PERMISSIONS=n case for me.
+
+Thanks,
+Klara Modin
 
