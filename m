@@ -1,259 +1,401 @@
-Return-Path: <linux-ext4+bounces-5512-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5513-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4522A9E8D79
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 09:32:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852129E90C5
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 11:46:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 370C1161804
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 08:32:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A106E1881F02
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 10:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3FA821516B;
-	Mon,  9 Dec 2024 08:32:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 45AE9216E3E;
+	Mon,  9 Dec 2024 10:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="pgTi4D4m"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2057.outbound.protection.outlook.com [40.107.102.57])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB5F212CDAE;
-	Mon,  9 Dec 2024 08:32:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733733171; cv=none; b=AHayFVwGUFRFLMHhMIBBbZVn8AzVkWJniUubao16h1i/MvtoMij22PTSvj+V5pjXyTWBwh5/MQzP6gzURuVvrgpsC9h4A/vg2TS8Ogkb32wLX85z4hpI5XxH/b9mcWxsOqQmyJyrj4HcHtsSUW+/BCYYUXfxOwy121+nPI37sDA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733733171; c=relaxed/simple;
-	bh=VUUC3f3CJjdejIJiTZlLnStIkUpffnYCpassVttA12s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=os/cVX6NvvbEVt/huybMbDLu+1Qj3rbzMi4ipHICJc+G1axIVfd1/r2QbEcyI+KK8nO+K4xyCcDQJpxB0W99XulsochhUa1eGnW/fYsBG9uH2nP2E7GEgARkt2TDHvr+4iAkkeE4jqNenlLQkkgZvIUJdqwYYEp0rHh5HcVTFAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y6FTz3vwZz4f3lft;
-	Mon,  9 Dec 2024 16:32:23 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id B57CE1A0568;
-	Mon,  9 Dec 2024 16:32:43 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgCXc4cpq1ZnvytgEA--.16063S3;
-	Mon, 09 Dec 2024 16:32:43 +0800 (CST)
-Message-ID: <5049c794-9a92-462c-a455-2bdf94cdebef@huaweicloud.com>
-Date: Mon, 9 Dec 2024 16:32:41 +0800
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9D881DA23;
+	Mon,  9 Dec 2024 10:45:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.57
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1733741146; cv=fail; b=UsTrLVmufKX0g99FYEpK4dBh0uS6MrYXKDhbvrjd18PZS7ylG+VnkAq16XNwQzzzVvg/B/9wSyXookyzDIp3I7N621Dl0NS4breAgNEuWrX7PSZ/PE8Tmt2+h5XjV8wcafWWus6ZFVX227SGvOJ1+dv6ulUPzGd8W/3ScMaei8Y=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1733741146; c=relaxed/simple;
+	bh=oNhucx2A87Pi/GC8FWpSEtw9T4VXBfrK24r38I1cK18=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=QAStBHWKuyk1HIx7+orKErhpmbHX0l1mt+boir6pn+/tr3td/eFshLzBpPPfeB3Hr8eZSXweSnjQEYpZOgg+ax6y9ilKCGG0IhvR9wf3JPjneI5D+4+zVk4vspP6u6F1WIPKOog/NjiifJ3sEpVOcnTUu+GH5/vRnZ8tivtRlic=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=pgTi4D4m; arc=fail smtp.client-ip=40.107.102.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=b5aMsVBz+ny84/yqlwdzOLo4ksOP82cJt1KTFMNhAlkeh/WkGuJJjL2bAtCsrtNrgQmkcVQVjlS97UeBPehzRFTAKLWi2NM54j89OMnegjijVKgKLoL2gEKLh6iz9s54fQpGA7VEmRT6zdXsIxRSh8IsM9atDLQcSLkOxfN4CF4UqVaDmw6Mbjao+MrzVbb+s6Em+gKDhXbgvppzgwihO2R774VYOAa8OGSseMWHqHW0JNMW7pBccs0o37Olog//QAQTLD0HVulUfGUrPckpbsD9CBFH9dxFSmHDvXsG3elebz7qE6qDFGzj7+z43VINpJDoPia4SHc0BUOIuBYMnw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=/YUO+VAK1Uh3niZMaADrsZNOPDOJkUA176z4pu6miXs=;
+ b=JmFdZlY4bu0TVQI6UweuBlahJTEivYNpEBkeho0dxzsRWSdGKy4ELuy9EEjagoBHHmR/rBUlEB4f9QY00fGCd71MIAJRuW4Qudky9TTzOKaeJ+AHBtC53ZbDl8iiG9aYUftpMSJGn0AqN7itJNqYCm9Bgrw26ThH8BtwdPTAbbERBNyyCSRLYkvsPDgLGqP9T9kHiE03B9DtHYmTljpG2P7J4+IhDjIInB0gk6YFFB3CFVmHCiE0ZLr1jkxZgPNfv4Ep2VMXOshXR55BYe7p4+8ZQTbseO491UO4g1iVK3hZi8oC6SWCDpHLnVDnMBUY0l8rrlxRUkjGpsvIWY++qg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=/YUO+VAK1Uh3niZMaADrsZNOPDOJkUA176z4pu6miXs=;
+ b=pgTi4D4mfHGVIDF2V3MTmjG2vGcalJ0Rz7ULHqKnArpFJs8Od2t4V8bslki5Mcp4d2JGBgI/CDl3L93IuXzn/+vcignVShZ/BGXd/yFXT3tdnwZS8F+Mb8G0ofKLAiuw3hhL2R60v84NJnsOSHwOPU2HPRyEb5l+2tKoXIK6qRA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from IA1PR12MB6460.namprd12.prod.outlook.com (2603:10b6:208:3a8::13)
+ by PH0PR12MB8824.namprd12.prod.outlook.com (2603:10b6:510:26f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8207.16; Mon, 9 Dec
+ 2024 10:45:42 +0000
+Received: from IA1PR12MB6460.namprd12.prod.outlook.com
+ ([fe80::c819:8fc0:6563:aadf]) by IA1PR12MB6460.namprd12.prod.outlook.com
+ ([fe80::c819:8fc0:6563:aadf%4]) with mapi id 15.20.8207.017; Mon, 9 Dec 2024
+ 10:45:42 +0000
+Message-ID: <e9f65f75-7f0c-423f-9fd4-b29dd006852b@amd.com>
+Date: Mon, 9 Dec 2024 16:15:32 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
+ on page fault
+To: Klara Modin <klarasmodin@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
+ kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+ amir73il@gmail.com, brauner@kernel.org, torvalds@linux-foundation.org,
+ viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
+ linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org,
+ Linux-Next Mailing List <linux-next@vger.kernel.org>
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
+ <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
+Content-Language: en-US
+From: "Aithal, Srikanth" <sraithal@amd.com>
+In-Reply-To: <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: PN2PR01CA0043.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:22::18) To IA1PR12MB6460.namprd12.prod.outlook.com
+ (2603:10b6:208:3a8::13)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/27] ext4: introduce seq counter for the extent status
- entry
-To: Jan Kara <jack@suse.cz>
-Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
- david@fromorbit.com, zokeefe@google.com, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
-References: <20241022111059.2566137-1-yi.zhang@huaweicloud.com>
- <20241022111059.2566137-13-yi.zhang@huaweicloud.com>
- <20241204124221.aix7qxjl2n4ya3b7@quack3>
- <c831732e-38c5-4a82-ab30-de17cff29584@huaweicloud.com>
- <20241206162102.w4hw35ims5sdf4ik@quack3>
-Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20241206162102.w4hw35ims5sdf4ik@quack3>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgCXc4cpq1ZnvytgEA--.16063S3
-X-Coremail-Antispam: 1UD129KBjvJXoWxtrW8tFyxJry5CFy3JFWfAFb_yoW3WryxpF
-	ZIkF1DKF4DJ340kryIq3W7XFyrK34rGrW7GFnIgr10y3Z8WFyS9F1Ykayj9F18ur4vqw4j
-	vF48K347WayYvFJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Cr0_Gr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: IA1PR12MB6460:EE_|PH0PR12MB8824:EE_
+X-MS-Office365-Filtering-Correlation-Id: c4ee9b1d-2f2e-4414-0b83-08dd183ea070
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam:
+	BCL:0;ARA:13230040|7416014|376014|366016|1800799024|921020;
+X-Microsoft-Antispam-Message-Info:
+	=?utf-8?B?K2lMSmFLS2ZrUkRMY2lxOFFldTFiM2lwWkxieHV0R0I4ZzBZTzlCNitPTWlk?=
+ =?utf-8?B?T3BXNTdETkFkb0h6YU9zOHlLZWhKMVBRMFpDdkcyaGgzZXZUcDNHVGV1UmlR?=
+ =?utf-8?B?dkppcGlFdlhRUWw5ZUxQdlY3NlB1SmxrSXgwTU5aVlYvclQ5UStiUDc2dDBi?=
+ =?utf-8?B?bzhvY01tZnQ4ZE1Kbkhid25sL09IU1pSVEdGNENySVRaL2srRHF1RDF0QzNT?=
+ =?utf-8?B?STRxMzFIOW05Y3kzWGIzeXNRbTRkRjg0am84MnRPS2ZYVk12dmhNWDFQRDRF?=
+ =?utf-8?B?MlpqQk5KcDYybXlsU0I3MjZPZzlzc0ZZbzIxWlJRWVNydnZDTmMvU0FaM0tP?=
+ =?utf-8?B?TmtnM0VPRUd2bTcvMFl0b0drV3hQY2h2RVVPUm1nNWpmVW5vd1IybXVXaWFo?=
+ =?utf-8?B?RHZ5QTJkNzZlR1RPazlNUmNjdjJWUU1YbjJNL293c2pZZEIzeE1aZlUzMTNV?=
+ =?utf-8?B?blJYSlptR2Q3TkF6TVd3cDlZYUEweUcrTHM1bEJkdEdxUW9iSVF4YndvQmdo?=
+ =?utf-8?B?SXFMOGplUTdDaUJBVzNQa2lKd2JEbitWL1Fad1B0K2lYais2M1BXd2NSbmlu?=
+ =?utf-8?B?Q25VbS81aDVQejRBOVE0TWdjOFdzd1V1aEd0WkQvcmF4Q21kbnN3QTNpM3lL?=
+ =?utf-8?B?eVpDWGN1SmZOTGpyQjYzY0ZhTGg2NWkxUGlnblpFZFNzVk5IZFAwS0xPSWMv?=
+ =?utf-8?B?VDRJbFJGMm9mYTd1eTBHZlppYkNXWEdpS1N3ZTJGUHJ3dHhGMkk1U0RISnUy?=
+ =?utf-8?B?WGgxMmRMTXZaN0ljSEg1WENQY0ZrR3d6M2d6VW1EU0YvQUdCbEJVVm5BTGh3?=
+ =?utf-8?B?dEx3bFNJa1h5aWczY25YZGs4RG5zVXBFODJISlhjRXhJQjJJUkxGbVZBNzBz?=
+ =?utf-8?B?R3BxRjBnYndQZ3ROVE5aMFFiVzNDRUh5WjFZcG0vZ1N3OGROZ0lnWC9EVm5X?=
+ =?utf-8?B?bmFEYXFndHhvVXU3NlJPYjdMTFA4TlJibFlIVUF1MVU0S2s4c1N3bDFQODNL?=
+ =?utf-8?B?SGFmNjhSV2F1dXk4L1hyT2l2NlZBbW9NQm1POFFYd3h6b2lrVGduQTdmVVRl?=
+ =?utf-8?B?cEpycWxRSGNZaG1TZkN3TWdMYWxzUVljK3g0QXZEN2pXTk56WENEREdLajJz?=
+ =?utf-8?B?QUY3cVIyUWFZUzhkZmpoZ3E4QkorWC9kNVRVM1E2NCt4UFdnZVdMNG5ST0tY?=
+ =?utf-8?B?emNSUVNZUUxXaTRoMFhmMXRRcm1ncFRVSi9QNnpNNUx6OFQ4WkhzRlh5R05o?=
+ =?utf-8?B?ekhXRHl5R2Y4Q29NQ29WNk9tTGRzR3ZtMENlS1VLY1pOaG5lcWdMbGRvTE5y?=
+ =?utf-8?B?eFhaR01aNXdlNFFjTGN4RFVTcVdYL2hzanpWMFlMelcwdGM5T1NBQUxWZTNu?=
+ =?utf-8?B?aUhXdzhCeFZzNHYvcGt1dWxjTDBsaTRrd2RGRUhhUnNDVnpXSHQxclllcUh2?=
+ =?utf-8?B?OElJR1hMb25yV0tJY2IxZmdrMXUySGhEMmNKYWNObU9yV0JFNGw4SkZZNXFP?=
+ =?utf-8?B?bWE2N0JvL3pnZ0JBMWpGS0YvRGVtQ1p5TXQrSXZvQTFNcEQ4ZnhnT0xqK05Y?=
+ =?utf-8?B?bjgxN3A0Y0JEK3dqNERoYlZ4b2Y2c0UxZUxjbGdDWlZDTThXTWpXbEdIZVU2?=
+ =?utf-8?B?SEJsUHcxcGlVVVl6ZVFFN09CYTk0dGt6bHhVYk5RbXBNNmk5T3NwRmwzc0dV?=
+ =?utf-8?B?YzFwZENBcmRjallqSk5jZFdYNkpDelE1SEdsdWdvVnhhbVBEOXpYWXFLUGhp?=
+ =?utf-8?B?Zm9PWlBYbWxWckw1WFgzZGZnRmNhbHQzZnppekNHQ2JKdVZEbXNOQ2JLZk9D?=
+ =?utf-8?B?NWltcjFkWW1YYSt1UWRWalR6SGFRSjBwbXN0VDROQWF0SXNZdnJHVGxBWmE0?=
+ =?utf-8?B?Qk5zTjJrWTZObXlsaVlRSDdHNjB1UGFwRHZWTG1SOFk0bHc9PQ==?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR12MB6460.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(376014)(366016)(1800799024)(921020);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?aHd2Yml6YlQ1N2YydEdUZ2QwQmlTL2ZZcXRrbHlDejVRRmt0OXNXRWkyMzVZ?=
+ =?utf-8?B?bFQrM2lvR2ZRQ2tyaVV5amROWmx3V3lleW0yMEo4MHpucmNTZk5iWmNDMkp5?=
+ =?utf-8?B?NGpGQWJOYml1U0kyMzAvVVNhaWZ2RVpqREo5QU4zWVFJRStYZHVaL0liZmNa?=
+ =?utf-8?B?d3ljRmo1QmhTdmVhNVVsOS9GTlp5N09rN3o2eXRTQndvRDduc1lINlZkVWdO?=
+ =?utf-8?B?cHBsMU05d0M1UHlqLzNTcVJKczNCcjcwZm80dTc5a3F0eGE0dE1iWmxKV3Fp?=
+ =?utf-8?B?eG1rQ2FIYTJKWmdNSHp4T2JVSWRLSHY2Z0ZWMVRWU29NeFRSaVpWYXNySGsy?=
+ =?utf-8?B?YjJ4UzBMQzA5VWlPQ09Jb1dydEMrRFJSRFcvSEhXTzFING1uaWVmRzhpM1dL?=
+ =?utf-8?B?NVlSOXZ3VG9CVUpOSThidXdnTUUwRWJKOUwzdnBRWHU2UGNwOXZVS0MrZjZ3?=
+ =?utf-8?B?NUZhK2xBaUxobG0xQmJyUlhGTEJkNkdET0djU2FqR1F4cDFqVmFUVEtFcFRE?=
+ =?utf-8?B?RENKSEVKVGg4U0R0MVZsK1hJNHZGREwwVmhrdkRWNExKNSthSzk3eXZFNmhX?=
+ =?utf-8?B?U1I0S1RYZWFkQlpkclhrOGl5UWRPS0VLVFhVZGhXMEFmVjlQa3FxRzcwRlo2?=
+ =?utf-8?B?WXJFbzM2bUdtL21VZVRmMTlIUWR0WnAxSlFoZ016Ym91cEdqeDMreDVGWkkr?=
+ =?utf-8?B?NlpnWGpRZFcyUGFsdHI4SzUxc01yeWNpMFNiOWE2Qjd4RjZZaWJsbzg1Q1Vp?=
+ =?utf-8?B?UWNNUUpSR0plOTdkOE5BTlVlSkF0QVY2Z0pzZUZTVm5Ga3dndlFPVnFLMnda?=
+ =?utf-8?B?ak85ZXRXOG5oTE1RRXlWVFlFOWhUeFFUMlFNcU9RVmRVbk0yUkloSlJaV1NU?=
+ =?utf-8?B?NGJuOUdJc2JpRG83bFR4RzlMNkU1dnRuOTBiU2JVMWQ0MmNGVEM0clJER01l?=
+ =?utf-8?B?QkRlZDhDWko0UlI3UUxqQXZPOFZQNVJPY0g2OTZwcGdpUk42ODZ4Mzk4a2lr?=
+ =?utf-8?B?ODk5anBhTkRNakNYTjZQM2RvazRBNTU5NTRFVTRlcHpEamlXYVBwcFNHSXN0?=
+ =?utf-8?B?eGFCd05tQndBeE5PeVlTRUp6OU5vdzg5UjFjaExjYVhGNEFVUm1NOHFqRks5?=
+ =?utf-8?B?N0VGTnFGZDJlbW1QaUFCQURudEprM2hmSTlHd3MvWHNvWENMVm5hOUZ0MDNV?=
+ =?utf-8?B?L01aWnBMUDRVbFZmWUNvYkdZNWJOcmg4WXhnTDhVeUp6SE9Wems4UW9FaG1y?=
+ =?utf-8?B?b0JQR1NsM0lxT0lKUkhpNTlua1E5bEdyaElCMEJPeTJqOVpYMlRNQXNHL1E5?=
+ =?utf-8?B?NjVuc05Pb295MXBrNEVCZlpoRm0vaEtJWk01bGxkRXJPdjZheFR0UXpYLzFB?=
+ =?utf-8?B?cHpXNE1JK002OEpHVXhJQnpBSWc3czhBdXlRRC95NWN1dnlhWGpyZmRXck9D?=
+ =?utf-8?B?aUtybG1mbE13a1RJTnVlWTFMMXpJRDM3NTgybHMyb1NmUUVJZnRmMDhwUVEx?=
+ =?utf-8?B?NUFIVm9jTU9oQ3hrM255SFlMaGZ6N1kyb1JhNU9MdlZUMVNvWFpUVXRPWGF6?=
+ =?utf-8?B?RVRDd3dxaG1mZ2twRXRaSVJTNTN2blpzbnFRVW8yZ0tGVjhVS0kzc3ZHOXhl?=
+ =?utf-8?B?eC9aSEVGMi92QzRhSHJTQUt1YSt2eWdoWFRYMWhVNHcyS0d6Q05JVWJkc3ZD?=
+ =?utf-8?B?cE5vMWpWTVVYeTluNlRZbEFKMS82TnZaaCtNMzdsdVRycTVDd1BiM2dwYlBs?=
+ =?utf-8?B?QW8yVmVqMDh4RFowN3M4anBwamxYZUNoWURtSWw2TUFiR1BXSVRBUFd5MWh0?=
+ =?utf-8?B?ejZZQjZzdzZFOVh1UGZJVWdScitEOGdFL2Z0Uzh4RUxXY3dXUlIvN2YvbkFH?=
+ =?utf-8?B?V1NuMHZHSFRRYkNBdXd2OXF2ejVHcFB5Z2J6Y0FrTjdmVE1tZlhwSUJ1SDVz?=
+ =?utf-8?B?YTVIeVg3bzNSYlpDRzN6UG5UNGhqaFUva1FpNjl5TnJKbjBBaTZZdk9MWU92?=
+ =?utf-8?B?SVMwc2dWTXV4VmJHMmtsK0ZMRjlUNXhlZTZOTWgyc0NsSVRwblNFMUxxZ0c5?=
+ =?utf-8?B?VEhIT21FY1N5UXhWb0Q1RXB5U05qR2dYYW4wOXk3bDljSUJzM1A3bmlyeHQy?=
+ =?utf-8?Q?igsD7GjUK6y/H5ZsT3+WWeDZV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c4ee9b1d-2f2e-4414-0b83-08dd183ea070
+X-MS-Exchange-CrossTenant-AuthSource: IA1PR12MB6460.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 09 Dec 2024 10:45:42.0390
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: o712VDPP3Hsx1X+gbrj1NNifDIQ5VszfWboBUNKQU/0qwpI6OwuIIxyQbdIB6qP8w6UhTly1gNiFba0/mNZyoQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8824
 
-On 2024/12/7 0:21, Jan Kara wrote:
-> On Fri 06-12-24 16:55:01, Zhang Yi wrote:
->> On 2024/12/4 20:42, Jan Kara wrote:
->>> On Tue 22-10-24 19:10:43, Zhang Yi wrote:
->>>> From: Zhang Yi <yi.zhang@huawei.com>
->>>>
->>>> In the iomap_write_iter(), the iomap buffered write frame does not hold
->>>> any locks between querying the inode extent mapping info and performing
->>>> page cache writes. As a result, the extent mapping can be changed due to
->>>> concurrent I/O in flight. Similarly, in the iomap_writepage_map(), the
->>>> write-back process faces a similar problem: concurrent changes can
->>>> invalidate the extent mapping before the I/O is submitted.
->>>>
->>>> Therefore, both of these processes must recheck the mapping info after
->>>> acquiring the folio lock. To address this, similar to XFS, we propose
->>>> introducing an extent sequence number to serve as a validity cookie for
->>>> the extent. We will increment this number whenever the extent status
->>>> tree changes, thereby preparing for the buffered write iomap conversion.
->>>> Besides, it also changes the trace code style to make checkpatch.pl
->>>> happy.
->>>>
->>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
->>>
->>> Overall using some sequence counter makes sense.
->>>
->>>> diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
->>>> index c786691dabd3..bea4f87db502 100644
->>>> --- a/fs/ext4/extents_status.c
->>>> +++ b/fs/ext4/extents_status.c
->>>> @@ -204,6 +204,13 @@ static inline ext4_lblk_t ext4_es_end(struct extent_status *es)
->>>>  	return es->es_lblk + es->es_len - 1;
->>>>  }
->>>>  
->>>> +static inline void ext4_es_inc_seq(struct inode *inode)
->>>> +{
->>>> +	struct ext4_inode_info *ei = EXT4_I(inode);
->>>> +
->>>> +	WRITE_ONCE(ei->i_es_seq, READ_ONCE(ei->i_es_seq) + 1);
->>>> +}
->>>
->>> This looks potentially dangerous because we can loose i_es_seq updates this
->>> way. Like
->>>
->>> CPU1					CPU2
->>> x = READ_ONCE(ei->i_es_seq)
->>> 					x = READ_ONCE(ei->i_es_seq)
->>> 					WRITE_ONCE(ei->i_es_seq, x + 1)
->>> 					...
->>> 					potentially many times
->>> WRITE_ONCE(ei->i_es_seq, x + 1)
->>>   -> the counter goes back leading to possibly false equality checks
->>>
+On 12/8/2024 10:28 PM, Klara Modin wrote:
+> Hi,
+> 
+> On 2024-11-15 16:30, Josef Bacik wrote:
+>> FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on page fault depending
+>> on the faulting method.
 >>
->> In my current implementation, I don't think this race condition can
->> happen since all ext4_es_inc_seq() invocations are under
->> EXT4_I(inode)->i_es_lock. So I think it works fine now, or was I
->> missed something?
-> 
-> Hum, as far as I've checked, at least the place in ext4_es_insert_extent()
-> where you call ext4_es_inc_seq() doesn't hold i_es_lock (yet). If you meant
-> to protect the updates by i_es_lock, then move the call sites and please
-> add a comment about it. Also it should be enough to do:
-> 
-> WRITE_ONCE(ei->i_es_seq, ei->i_es_seq + 1);
-> 
-> since we cannot be really racing with other writers.
-
-Oh, sorry, I mentioned the wrong lock. What I intended to say is
-i_data_sem.
-
-Currently, all instances where we update the extent status tree will
-hold i_data_sem in write mode, preventing any race conditions in these
-scenarios. However, we may hold i_data_sem in read mode while loading
-a new entry from the extent tree (e.g., ext4_map_query_blocks()). In
-these cases, a race condition could occur, but it doesn't modify the
-extents, and the new loading range should not be related to the
-mapping range we obtained (If it covers with the range we have, it
-must first remove the old extents entry, which is protected by
-i_data_sem, ensuring that i_es_seq increases by at least one).
-Therefore, it should not use stale mapping and trigger any real issues.
-
-However, after thinking about it again, I agree with you that this
-approach is subtle, fragile and make us hard to understand, now I think
-we should move it into i_es_lock.
-
-> 
->>> I think you'll need to use atomic_t and appropriate functions here.
->>>
->>>> @@ -872,6 +879,7 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
->>>>  	BUG_ON(end < lblk);
->>>>  	WARN_ON_ONCE(status & EXTENT_STATUS_DELAYED);
->>>>  
->>>> +	ext4_es_inc_seq(inode);
->>>
->>> I'm somewhat wondering: Are extent status tree modifications the right
->>> place to advance the sequence counter? The counter needs to advance
->>> whenever the mapping information changes. This means that we'd be
->>> needlessly advancing the counter (and thus possibly forcing retries) when
->>> we are just adding new information from ordinary extent tree into cache.
->>> Also someone can be doing extent tree manipulations without touching extent
->>> status tree (if the information was already pruned from there). 
+>> This pre-content event is meant to be used by hierarchical storage
+>> managers that want to fill in the file content on first read access.
 >>
->> Sorry, I don't quite understand here. IIUC, we can't modify the extent
->> tree without also touching extent status tree; otherwise, the extent
->> status tree will become stale, potentially leading to undesirable and
->> unexpected outcomes later on, as the extent lookup paths rely on and
->> always trust the status tree. If this situation happens, would it be
->> considered a bug? Additionally, I have checked the code but didn't find
->> any concrete cases where this could happen. Was I overlooked something?
-> 
-> What I'm worried about is that this seems a bit fragile because e.g. in
-> ext4_collapse_range() we do:
-> 
-> ext4_es_remove_extent(inode, start, EXT_MAX_BLOCKS - start)
-> <now go and manipulate the extent tree>
-> 
-> So if somebody managed to sneak in between ext4_es_remove_extent() and
-> the extent tree manipulation, he could get a block mapping which is shortly
-> after invalidated by the extent tree changes. And as I'm checking now,
-> writeback code *can* sneak in there because during extent tree
-> manipulations we call ext4_datasem_ensure_credits() which can drop
-> i_data_sem to restart a transaction.
-> 
-> Now we do writeout & invalidate page cache before we start to do these
-> extent tree dances so I don't see how this could lead to *actual* use
-> after free issues but it makes me somewhat nervous. So that's why I'd like
-> to have some clear rules from which it is obvious that the counter makes
-> sure we do not use stale mappings.
-
-Yes, I see. I think the rule should be as follows:
-
-First, when the iomap infrastructure is creating or querying file
-mapping information, we must ensure that the mapping information
-always passes through the extent status tree, which means
-ext4_map_blocks(), ext4_map_query_blocks(), and
-ext4_map_create_blocks() should cache the extent status entries that
-we intend to use.
-
-Second, when updating the extent tree, we must hold the i_data_sem in
-write mode and update the extent status tree atomically. Additionally,
-if we cannot update the extent tree while holding a single i_data_sem,
-we should first remove all related extent status entries within the
-specified range, then manipulate the extent tree, ensuring that the
-extent status entries are always up-to-date if they exist (as
-ext4_collapse_range() does).
-
-Finally, if we want to manipulate the extent tree without caching, we
-should also remove the extent status entries first.
-
-In summary, ensure that the extent status tree and the extent tree are
-consistent under one i_data_sem. If we can't, remove the extent status
-entry before manipulating the extent tree.
-
-Do you agree?
-
-> 
->>> So I think
->>> needs some very good documentation what are the expectations from the
->>> sequence counter and explanations why they are satisfied so that we don't
->>> break this in the future.
+>> Export a simple helper that file systems that have their own ->fault()
+>> will use, and have a more complicated helper to be do fancy things with
+>> in filemap_fault.
 >>
->> Yeah, it's a good suggestion, where do you suggest putting this
->> documentation, how about in the front of extents_status.c?
 > 
-> I think at the function incrementing the counter would be fine.
+> This patch (0790303ec869d0fd658a548551972b51ced7390c in next-20241206) 
+> interacts poorly with some programs which hang and are stuck at 100 % 
+> sys cpu usage (examples of programs are logrotate and atop with root 
+> privileges).
 > 
+> I also retested the new version on Jan Kara's for_next branch and it 
+> behaves the same way.
 
-Sure, thanks for pointing this out.
+ From linux-next20241206 onward we started hitting issues where KVM 
+guests running kernel > next20241206 on AMD platforms fails to shutdown, 
+hangs forever with below errors:
 
-Thanks,
-Yi.
+[  OK  ] Reached target Late Shutdown Services.
+[  OK  ] Finished System Power Off.
+[  OK  ] Reached target System Power Off.
+[  128.946271] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Connection refused
+[  198.945362] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+[  298.945402] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+[  378.945345] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+[  488.945402] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+[  558.945904] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+[  632.945409] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+[  738.945403] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+[  848.945342] systemd-journald[93]: Failed to send WATCHDOG=1 
+notification message: Transport endpoint is not connected
+..
+..
+
+Bisecting the issue pointed to this patch.
+
+commit 0790303ec869d0fd658a548551972b51ced7390c
+Author: Josef Bacik <josef@toxicpanda.com>
+Date: Fri Nov 15 10:30:29 2024 -0500
+
+fsnotify: generate pre-content permission event on page fault
+
+Same issue exists with todays linux-next build as well.
+
+Adding below configs in the guest_config fixes the shutdown hang issue:
+
+CONFIG_FANOTIFY=y
+CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+
+Regards,
+Srikanth Aithal
+> 
+>> Signed-off-by: Josef Bacik <josef@toxicpanda.com>
+>> ---
+>>  include/linux/mm.h |  1 +
+>>  mm/filemap.c       | 78 ++++++++++++++++++++++++++++++++++++++++++++++
+>>  2 files changed, 79 insertions(+)
+>>
+>> diff --git a/include/linux/mm.h b/include/linux/mm.h
+>> index 01c5e7a4489f..90155ef8599a 100644
+>> --- a/include/linux/mm.h
+>> +++ b/include/linux/mm.h
+>> @@ -3406,6 +3406,7 @@ extern vm_fault_t filemap_fault(struct vm_fault 
+>> *vmf);
+>>  extern vm_fault_t filemap_map_pages(struct vm_fault *vmf,
+>>          pgoff_t start_pgoff, pgoff_t end_pgoff);
+>>  extern vm_fault_t filemap_page_mkwrite(struct vm_fault *vmf);
+>> +extern vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf);
+>>
+>>  extern unsigned long stack_guard_gap;
+>>  /* Generic expand stack which grows the stack according to 
+>> GROWS{UP,DOWN} */
+>> diff --git a/mm/filemap.c b/mm/filemap.c
+>> index 68ea596f6905..0bf7d645dec5 100644
+>> --- a/mm/filemap.c
+>> +++ b/mm/filemap.c
+>> @@ -47,6 +47,7 @@
+>>  #include <linux/splice.h>
+>>  #include <linux/rcupdate_wait.h>
+>>  #include <linux/sched/mm.h>
+>> +#include <linux/fsnotify.h>
+>>  #include <asm/pgalloc.h>
+>>  #include <asm/tlbflush.h>
+>>  #include "internal.h"
+>> @@ -3289,6 +3290,52 @@ static vm_fault_t 
+>> filemap_fault_recheck_pte_none(struct vm_fault *vmf)
+>>      return ret;
+>>  }
+>>
+>> +/**
+>> + * filemap_fsnotify_fault - maybe emit a pre-content event.
+>> + * @vmf:    struct vm_fault containing details of the fault.
+>> + * @folio:    the folio we're faulting in.
+>> + *
+>> + * If we have a pre-content watch on this file we will emit an event 
+>> for this
+>> + * range.  If we return anything the fault caller should return 
+>> immediately, we
+>> + * will return VM_FAULT_RETRY if we had to emit an event, which will 
+>> trigger the
+>> + * fault again and then the fault handler will run the second time 
+>> through.
+>> + *
+>> + * This is meant to be called with the folio that we will be filling 
+>> in to make
+>> + * sure the event is emitted for the correct range.
+>> + *
+>> + * Return: a bitwise-OR of %VM_FAULT_ codes, 0 if nothing happened.
+>> + */
+>> +vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf)
+> 
+> The parameters mentioned above do not seem to match with the function.
+> 
+>> +{
+>> +    struct file *fpin = NULL;
+>> +    int mask = (vmf->flags & FAULT_FLAG_WRITE) ? MAY_WRITE : MAY_ACCESS;
+>> +    loff_t pos = vmf->pgoff >> PAGE_SHIFT;
+>> +    size_t count = PAGE_SIZE;
+>> +    vm_fault_t ret;
+>> +
+>> +    /*
+>> +     * We already did this and now we're retrying with everything 
+>> locked,
+>> +     * don't emit the event and continue.
+>> +     */
+>> +    if (vmf->flags & FAULT_FLAG_TRIED)
+>> +        return 0;
+>> +
+>> +    /* No watches, we're done. */
+>> +    if (!fsnotify_file_has_pre_content_watches(vmf->vma->vm_file))
+>> +        return 0;
+>> +
+>> +    fpin = maybe_unlock_mmap_for_io(vmf, fpin);
+>> +    if (!fpin)
+>> +        return VM_FAULT_SIGBUS;
+>> +
+>> +    ret = fsnotify_file_area_perm(fpin, mask, &pos, count);
+>> +    fput(fpin);
+>> +    if (ret)
+>> +        return VM_FAULT_SIGBUS;
+>> +    return VM_FAULT_RETRY;
+>> +}
+>> +EXPORT_SYMBOL_GPL(filemap_fsnotify_fault);
+>> +
+>>  /**
+>>   * filemap_fault - read in file data for page fault handling
+>>   * @vmf:    struct vm_fault containing details of the fault
+> 
+> 
+> 
+>> @@ -3392,6 +3439,37 @@ vm_fault_t filemap_fault(struct vm_fault *vmf)
+>>       * or because readahead was otherwise unable to retrieve it.
+>>       */
+>>      if (unlikely(!folio_test_uptodate(folio))) {
+>> +        /*
+>> +         * If this is a precontent file we have can now emit an event to
+>> +         * try and populate the folio.
+>> +         */
+>> +        if (!(vmf->flags & FAULT_FLAG_TRIED) &&
+>> +            fsnotify_file_has_pre_content_watches(file)) {
+>> +            loff_t pos = folio_pos(folio);
+>> +            size_t count = folio_size(folio);
+>> +
+>> +            /* We're NOWAIT, we have to retry. */
+>> +            if (vmf->flags & FAULT_FLAG_RETRY_NOWAIT) {
+>> +                folio_unlock(folio);
+>> +                goto out_retry;
+>> +            }
+>> +
+>> +            if (mapping_locked)
+>> +                filemap_invalidate_unlock_shared(mapping);
+>> +            mapping_locked = false;
+>> +
+>> +            folio_unlock(folio);
+>> +            fpin = maybe_unlock_mmap_for_io(vmf, fpin);
+> 
+> When I look at it with GDB it seems to get here, but then always jumps 
+> to out_retry, which keeps happening when it reenters, and never seems to 
+> progress beyond from what I could tell.
+> 
+> For logrotate, strace stops at "mmap(NULL, 909, PROT_READ, MAP_PRIVATE| 
+> MAP_POPULATE, 3, 0".
+> For atop, strace stops at "mlockall(MCL_CURRENT|MCL_FUTURE".
+> 
+> If I remove this entire patch snippet everything seems to be normal.
+> 
+>> +            if (!fpin)
+>> +                goto out_retry;
+>> +
+>> +            error = fsnotify_file_area_perm(fpin, MAY_ACCESS, &pos,
+>> +                            count);
+>> +            if (error)
+>> +                ret = VM_FAULT_SIGBUS;
+>> +            goto out_retry;
+>> +        }
+>> +
+>>          /*
+>>           * If the invalidate lock is not held, the folio was in cache
+>>           * and uptodate and now it is not. Strange but possible since we
+> 
+> Please let me know if there's anything else you need.
+> 
+> Regards,
+> Klara Modin
 
 
