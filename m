@@ -1,178 +1,163 @@
-Return-Path: <linux-ext4+bounces-5517-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5518-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94DA19E9451
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 13:36:46 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 289B09E9546
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 13:59:48 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0047B1882BAD
+	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 12:59:47 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B2291ACED5;
+	Mon,  9 Dec 2024 12:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b="Kfoh5wVP"
+X-Original-To: linux-ext4@vger.kernel.org
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 273D6283A1C
-	for <lists+linux-ext4@lfdr.de>; Mon,  9 Dec 2024 12:36:45 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F84222F3B8;
-	Mon,  9 Dec 2024 12:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oC0LAQkN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mLAsF/WF";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oC0LAQkN";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="mLAsF/WF"
-X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F5C322F3AB;
-	Mon,  9 Dec 2024 12:34:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C72922F3A5;
+	Mon,  9 Dec 2024 12:54:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733747654; cv=none; b=UVqj+bhnlsnMPIbNuFlD4zdxgbPvc8ph50iCFbg6i7nUvpqRDHIujkO/ImO30c+KvuehLgjNnTrDJD8WfKgQEfpV5IZhCXSdVQlXFbP8bqyU4Pvsb0bUsUdI7yPfzVXXhTO0IuRXz2xb9WA61McxAJ3s/N6UW7CBbLTgf7Sm/RQ=
+	t=1733748889; cv=none; b=qpsHrz2jIdGMH3eR6iPVaWN7nOU5Q/v0KyB3XLtNk2x7bIQuUTSDI257Wo6wZ/AFg9uZZcEXmlh0+EHAQ6w7adbMrjFmelCTgEs3PLJVmbwKi4YSfmlfOrSL7Z4fyXyV2mLWduKgr5dK7cHKTXF3Ei8CJJC/GJzzm7rX9PtSQeQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733747654; c=relaxed/simple;
-	bh=1F9vG7EuviCbqG0VhQROX4GQPE0EnbitMrPyGmiN5bY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lASMm8+aXPpIV38/lc9pImoQDsI+3Ig2QRAg/drluNQRZgFrQ+s+GO44PeXhxSiCo7HURGCaE3YVdkw4e9A3AnLFJowNKD7ACtQlPTWg1qsILGQ6d0QT36I18j5Q1wGJj9UUbpF/LiVC7WLCOteB5Opd9a6xrza+G1+a1JjuFCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oC0LAQkN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mLAsF/WF; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oC0LAQkN; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=mLAsF/WF; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 6CA0B1F750;
-	Mon,  9 Dec 2024 12:34:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733747650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yKoMGTX0WH9xW3MOYPJ5M3HH8tgbjYOUEmDPYl8gkcc=;
-	b=oC0LAQkNcKA8FIXw+Nt4BP+7vVCXwQ32sRJ+1zf5O0uCg5SYNcwLpaC3S7WX2VkKk/7m9h
-	qvDt/jPLPgSUbYbDslwQHD+Ga2HFU53eq1TG31K+L8W8TPmCDi81wmhnUbadJNVkhBYPk8
-	BoFK5qR5dPtYV407P1XXs3FXIV6kPxQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733747650;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yKoMGTX0WH9xW3MOYPJ5M3HH8tgbjYOUEmDPYl8gkcc=;
-	b=mLAsF/WF628ILUGDb0pOPpJ4u5cl/a3XQJkH6wYIFkqdA1dpK5nUsx+e0Y3+SIbKd+AP06
-	PH+7JMKjGWzBz3Aw==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733747650; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yKoMGTX0WH9xW3MOYPJ5M3HH8tgbjYOUEmDPYl8gkcc=;
-	b=oC0LAQkNcKA8FIXw+Nt4BP+7vVCXwQ32sRJ+1zf5O0uCg5SYNcwLpaC3S7WX2VkKk/7m9h
-	qvDt/jPLPgSUbYbDslwQHD+Ga2HFU53eq1TG31K+L8W8TPmCDi81wmhnUbadJNVkhBYPk8
-	BoFK5qR5dPtYV407P1XXs3FXIV6kPxQ=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733747650;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yKoMGTX0WH9xW3MOYPJ5M3HH8tgbjYOUEmDPYl8gkcc=;
-	b=mLAsF/WF628ILUGDb0pOPpJ4u5cl/a3XQJkH6wYIFkqdA1dpK5nUsx+e0Y3+SIbKd+AP06
-	PH+7JMKjGWzBz3Aw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 600F2138A5;
-	Mon,  9 Dec 2024 12:34:10 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id foVlF8LjVmcPWwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 09 Dec 2024 12:34:10 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id E859CA0B0C; Mon,  9 Dec 2024 13:34:05 +0100 (CET)
-Date: Mon, 9 Dec 2024 13:34:05 +0100
-From: Jan Kara <jack@suse.cz>
-To: "Aithal, Srikanth" <sraithal@amd.com>
-Cc: Klara Modin <klarasmodin@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
-	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
-	amir73il@gmail.com, brauner@kernel.org,
-	torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
-	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
-	linux-mm@kvack.org, linux-ext4@vger.kernel.org,
-	Linux-Next Mailing List <linux-next@vger.kernel.org>
-Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
- on page fault
-Message-ID: <20241209123405.n7rwqtblqgy5p3bw@quack3>
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
- <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
- <e9f65f75-7f0c-423f-9fd4-b29dd006852b@amd.com>
+	s=arc-20240116; t=1733748889; c=relaxed/simple;
+	bh=mmp+z6vZClvYN4IUfa9MoRA7iDd0lamwTH4vyhOCrWo=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=hV5LYMl3ojPUuCX3U703vaSs/bSDpWTD7yAQ7ZDw+McZQYR8FIunLrLTGBy/En258EOWMsJA4Ak12QW/BFQfWBJF5+xiXQZ86gjfV/JZZnn7ISXKJDs6rZGwnRkdWsu2ZeM7rc2Zh6QJmrzWCRYCY5bk2DfM1+H65jOsSnTWd3g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=spasswolf@web.de header.b=Kfoh5wVP; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1733748839; x=1734353639; i=spasswolf@web.de;
+	bh=EAY4q6z526O4TaeuoHU1dkNEk9o9mZuPKG7V1nAVNJ4=;
+	h=X-UI-Sender-Class:Message-ID:Subject:From:To:Cc:Date:In-Reply-To:
+	 References:Content-Type:MIME-Version:Content-Transfer-Encoding:cc:
+	 content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=Kfoh5wVPf2HaxSlR0zhNthgA+cnzi1FjvP6BIcRsvPWwGJj7bc+Ph941RUlpzWpz
+	 6VEdjAfZfGz/DW8K5nKy5prdnr0lXl67RUKmRvJ8Iq42zaaU/dfhvD8995JJ4tI0I
+	 GK6SEmpqL3U4R11XTanzSZZinupMTyE5jOERiUkUL4er/hQDFUWN2L6+lm29NZ9K/
+	 rfmLxRgqRztr1cvDVH6xFKN/TL6JsQGtMPezT62AqT/l/40nEbnYTN+BZYsLCLSdb
+	 uex60sWhoO1XbqLOCetgQFab4fKAVEALNpEWwkCuQ8nz4QGFXPuZt/dMbN3AdczdN
+	 XfoC+DGotGRiL+6itQ==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.0.101] ([84.119.92.193]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1N4N9I-1tj9A91Y5m-011Z1G; Mon, 09
+ Dec 2024 13:53:59 +0100
+Message-ID: <63df45984a1a7fe5998861abd3210b781662d7f9.camel@web.de>
+Subject: Re: commit 0790303ec869 leads to cpu stall without
+ CONFIG_FANOTIFY_ACCESS_PERMISSIONS=y
+From: Bert Karwatzki <spasswolf@web.de>
+To: Jan Kara <jack@suse.cz>
+Cc: Josef Bacik <josef@toxicpanda.com>, linux-kernel@vger.kernel.org, 
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, amir73il@gmail.com, 
+	brauner@kernel.org, torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
+ 	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+ linux-mm@kvack.org, 	linux-ext4@vger.kernel.org, spasswolf@web.de
+Date: Mon, 09 Dec 2024 13:53:57 +0100
+In-Reply-To: <20241209122648.dpptugrol4p6ikmm@quack3>
+References: <20241208152520.3559-1-spasswolf@web.de>
+	 <20241209121104.j6zttbqod3sh3qhr@quack3>
+	 <20241209122648.dpptugrol4p6ikmm@quack3>
+Content-Type: text/plain; charset="UTF-8"
+User-Agent: Evolution 3.54.2-1 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <e9f65f75-7f0c-423f-9fd4-b29dd006852b@amd.com>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[15];
-	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_HAS_DN(0.00)[];
-	FREEMAIL_CC(0.00)[gmail.com,toxicpanda.com,fb.com,vger.kernel.org,suse.cz,kernel.org,linux-foundation.org,zeniv.linux.org.uk,kvack.org];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Score: -3.80
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:0PZnYBU0gg6jmMJSy7XFdM1bYFCaWir11pnGSd+0qH1foI/b0t1
+ GDeIAizz3oLKWi9wKNQxaEKI2kayoXbER7RErF9XDIK5irM8+Ya2jrAIr+FSHNTBXyjHO85
+ 0XI5NzerNjKfxkeDZbFkS3Gq4ooOZmbxFvqOyCoNgX8SykBXo3bDINc7zMw5R19vKSw8cI+
+ tWItanavbpwWrfHDmz6yA==
 X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:h6vS82zGca0=;9iPQBgOpwE7+yvBx1nowykpFDhs
+ sL3hd/ksImdUynxocZWcMTayMV+gWBm/4Di2lz+QErGwinZtBSN8NZ7RDi4LWmDy/GfJmTtVJ
+ 539P1Oo2A3Tp+WNTjsZN/a5eE7lVnLOpSpYO6kfPR4V0wNKw3hE7UpDnOe8tVhcNFNw+mTO1g
+ 2TKSg8eikeuGTeu6Ll4JehOdb0ugnJ8QN0jEE9HUjungrHfR7AaNDdmlLJR7vkmvmycSQZI4G
+ nz1hHEJYRhlASziFYxV+g2XaNVlpE7VvvTS6y2XG4IzRyFxVOeKGJCfvQ664eP4bdr+Ppt/7E
+ jguPYfsGn1rewvID6F/X2+bJ0lAQAySpa2F+yL/E3f0+LwrSxNPCDy7PKIZjTTvXN9EnQie6p
+ OEND5v0C9gYpHGlua25BSK3zATJv+9uHAY/w6JBhS7osoYf6uAyDjKsyevhVJiO3iV9Aehk/c
+ wK5uI4dXzhesyQIQyIdX1aaLQupY9NwpJP4K6xNHnNlPzchW1NDaeZDVo0RtRhU1XTg4as8lx
+ 20MseOhPoDHGKDsxuCWALftJtpBgRLzY2iHS+/QfM0t7CoDhgOW5GT0ImgguQ/MwDgFHCQtEX
+ /Z5zYbtDvC3y00wbcrI5uySwwFceiD0yn76grj9/jVSV5v99BtXizARSPaGtdeWXsgdkks40G
+ +r9plqbq4ojzNteeOexaI4M1BGPkux3wJObW5nigGk3Q1hnDIumQyL6rSFI1LruB4Ay8/9Yny
+ 1A7rVbNuVvmg4eM6FqHKC2aPzCel7sdE2duo4GEYlOuI4xZpQgcYPz9qzv6OQ1y7+TDRcdRsB
+ QIu5MzKP9xJG/I04DGrIOrjYWlMXUCcY42JvL5eZGOsBpqOVTISJvX+GQH6TgNvs0fCs84DUi
+ SzXQR0ArNPU0Jbe8PAh4NvIqXM6JDOMnEUYJjcb9+eMhi6sBfdD3itJGokQWi3LaZY6/eaHNT
+ tiK42jl5RgIpajRSdaZoEdwyQeF7AsBfBQPSByzT02Jk2/Ja45qiMe1i11FiNNioJ3wHjlz4m
+ +sNXoOK200618nsA8KvvgE0iCJH6/AAf6U6v6an9hzuVZwWA6IV9yOt60TXS6P9HGbxPKjXEE
+ 5u4TFy2YU=
 
-On Mon 09-12-24 16:15:32, Aithal, Srikanth wrote:
-> On 12/8/2024 10:28 PM, Klara Modin wrote:
-> > Hi,
-> > 
-> > On 2024-11-15 16:30, Josef Bacik wrote:
-> > > FS_PRE_ACCESS or FS_PRE_MODIFY will be generated on page fault depending
-> > > on the faulting method.
-> > > 
-> > > This pre-content event is meant to be used by hierarchical storage
-> > > managers that want to fill in the file content on first read access.
-> > > 
-> > > Export a simple helper that file systems that have their own ->fault()
-> > > will use, and have a more complicated helper to be do fancy things with
-> > > in filemap_fault.
-> > > 
-> > 
-> > This patch (0790303ec869d0fd658a548551972b51ced7390c in next-20241206)
-> > interacts poorly with some programs which hang and are stuck at 100 %
-> > sys cpu usage (examples of programs are logrotate and atop with root
-> > privileges).
-> > 
-> > I also retested the new version on Jan Kara's for_next branch and it
-> > behaves the same way.
-> 
-> From linux-next20241206 onward we started hitting issues where KVM guests
-> running kernel > next20241206 on AMD platforms fails to shutdown, hangs
-> forever with below errors:
+Am Montag, dem 09.12.2024 um 13:26 +0100 schrieb Jan Kara:
+> On Mon 09-12-24 13:11:04, Jan Kara wrote:
+> > > Then I took a closer look at the function called in the problematic =
+code
+> > > and noticed that fsnotify_file_area_perm(), is a NOOP when
+> > > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is not set (which was the case in=
+ my
+> > > .config). This also explains why this was not found before, as
+> > > distributional .config file have this option enabled.  Setting the o=
+ption
+> > > to y solves the issue, too
+> >
+> > Well, I agree with you on all the points but the real question is, how=
+ come
+> > the test FMODE_FSNOTIFY_HSM(file->f_mode) was true on our kernel when =
+you
+> > clearly don't run HSM software, even more so with
+> > CONFIG_FANOTIFY_ACCESS_PERMISSIONS disabled. That's the real cause of =
+this
+> > problem. Something fishy is going on here... checking...
+> >
+> > Ah, because I've botched out file_set_fsnotify_mode() in case
+> > CONFIG_FANOTIFY_ACCESS_PERMISSIONS is disabled. This should fix the
+> > problem:
+> >
+> > index 1a9ef8f6784d..778a88fcfddc 100644
+> > --- a/include/linux/fsnotify.h
+> > +++ b/include/linux/fsnotify.h
+> > @@ -215,6 +215,7 @@ static inline int fsnotify_open_perm(struct file *=
+file)
+> >  #else
+> >  static inline void file_set_fsnotify_mode(struct file *file)
+> >  {
+> > +       file->f_mode |=3D FMODE_NONOTIFY_PERM;
+> >  }
+> >
+> > I'm going to test this with CONFIG_FANOTIFY_ACCESS_PERMISSIONS disable=
+d and
+> > push out a fixed version. Thanks again for the report and analysis!
+>
+> So this was not enough, What we need is:
+> index 1a9ef8f6784d..778a88fcfddc 100644
+> --- a/include/linux/fsnotify.h
+> +++ b/include/linux/fsnotify.h
+> @@ -215,6 +215,10 @@ static inline int fsnotify_open_perm(struct file *f=
+ile)
+>  #else
+>  static inline void file_set_fsnotify_mode(struct file *file)
+>  {
+> +	/* Is it a file opened by fanotify? */
+> +	if (FMODE_FSNOTIFY_NONE(file->f_mode))
+> +		return;
+> +	file->f_mode |=3D FMODE_NONOTIFY_PERM;
+>  }
+>
+> This passes testing for me so I've pushed it out and the next linux-next
+> build should have this fix.
+>
+> 								Honza
 
-Thanks for report! This was discussed in [1] and I've just pushed out a
-branch which has this bug fixed.
+I had "mixed success" with your first fix, out of 4 boots I got 2 hangs, b=
+ut the
+new version seems to work fine (4 boots, zero hangs).
 
-[1] https://lore.kernel.org/all/20241208152520.3559-1-spasswolf@web.de
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Bert Karwatzki
 
