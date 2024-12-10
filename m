@@ -1,109 +1,61 @@
-Return-Path: <linux-ext4+bounces-5537-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5538-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC7339EB159
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 13:57:39 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF8949EB18C
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 14:03:00 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CAC4D188C7D0
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 12:57:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 34BF6288E7B
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 13:02:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 611E31A76DD;
-	Tue, 10 Dec 2024 12:57:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC0081BCA0A;
+	Tue, 10 Dec 2024 13:00:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2QVtu7hV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4nu0I9RD";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2QVtu7hV";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="4nu0I9RD"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="GqmFIYnt"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20E1178F44;
-	Tue, 10 Dec 2024 12:57:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4BD91B6D08
+	for <linux-ext4@vger.kernel.org>; Tue, 10 Dec 2024 13:00:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733835451; cv=none; b=Vj/XZQ6SjP47F186PcNOW/NoCdo9KHI4A7GQKM5GCBNfI2y0Daesv29wZVLxg99T1agM2LPArR3rV//5AyPSbF+HtOuK/zS/5rtHE3BXn2K6+IxxeMyl7ysgmfxWEGLVR/7DcD7l03INdEKa/VF+BPE7qzmmbDIIPDrBHD+Pqws=
+	t=1733835657; cv=none; b=NJ0T0PFRe4PPRqpE5XL0piovWa17lWs3HEwBHOIeEtr+rC/G153iR7Nwy/Hf3rAz8IJR3cl9WaSYdr7Hy7NGJRszOqNW1cldJCqv80J8tMC+HTSg18fsjCUncS8dCRSBAz9G3TkzbjvXXbkD4MLfOctuVDUb7tStRuxOWNJ18/8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733835451; c=relaxed/simple;
-	bh=ocwfZQ5ezf0xmQIgzqU7lqN4U6UtASJKJd95I+DSHXk=;
+	s=arc-20240116; t=1733835657; c=relaxed/simple;
+	bh=uBUbcgnLax/TXHUTyY7I7MvxNn4KyXa755W8StzgjS0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lG4HHorBzTKMr6sdDQkj1Lp0YywPe9C4b23aIcdvVOcZ6U7f9cZTHYJyLTzYa4Xn1BqzuH+raCVk1niO3WlxP/d3SoWxgUvBvCeMiC9HD+WosvcWGpfTFoBKWb2XeXl6FITDpjDtH3kGOqpCWbewaUAmIXNiXZj4EhmHNfTr7Zs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2QVtu7hV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4nu0I9RD; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2QVtu7hV; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=4nu0I9RD; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 1892421119;
-	Tue, 10 Dec 2024 12:57:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733835447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mnal0SBhkd6JU8ilF9O1Ssfq+H0ZBcS4AqNzGmDWo6o=;
-	b=2QVtu7hVJj+3f66YnAp8D4UMGUE4Y0vMnY/78+0dIWenTbn/mL6UndwPUyLl+VkCRnuNdS
-	4tTjQTn5gO3eJ/QA9KV1zeKFCQBApbL3+tdQP+MtISgE2JHuH1bn0lIST8hd4QhMCLfxK6
-	h7wy5iQV4NuiI9ROr0IFgDFw/89W9ms=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733835447;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mnal0SBhkd6JU8ilF9O1Ssfq+H0ZBcS4AqNzGmDWo6o=;
-	b=4nu0I9RDvnW8eEA+9h+vWO4uhHGi6ha1uzeTjuu0ibUhvYw+U+FOX9ySNNRj2JcjnQ/S3z
-	lL+68LGx9firXYAw==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733835447; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mnal0SBhkd6JU8ilF9O1Ssfq+H0ZBcS4AqNzGmDWo6o=;
-	b=2QVtu7hVJj+3f66YnAp8D4UMGUE4Y0vMnY/78+0dIWenTbn/mL6UndwPUyLl+VkCRnuNdS
-	4tTjQTn5gO3eJ/QA9KV1zeKFCQBApbL3+tdQP+MtISgE2JHuH1bn0lIST8hd4QhMCLfxK6
-	h7wy5iQV4NuiI9ROr0IFgDFw/89W9ms=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733835447;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Mnal0SBhkd6JU8ilF9O1Ssfq+H0ZBcS4AqNzGmDWo6o=;
-	b=4nu0I9RDvnW8eEA+9h+vWO4uhHGi6ha1uzeTjuu0ibUhvYw+U+FOX9ySNNRj2JcjnQ/S3z
-	lL+68LGx9firXYAw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0A587138D2;
-	Tue, 10 Dec 2024 12:57:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id rGR+Arc6WGctdgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 10 Dec 2024 12:57:27 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id A701CA0B0D; Tue, 10 Dec 2024 13:57:26 +0100 (CET)
-Date: Tue, 10 Dec 2024 13:57:26 +0100
-From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-	hch@infradead.org, djwong@kernel.org, david@fromorbit.com,
-	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH 12/27] ext4: introduce seq counter for the extent status
- entry
-Message-ID: <20241210125726.gzcx6mpuecifqdwe@quack3>
-References: <20241022111059.2566137-1-yi.zhang@huaweicloud.com>
- <20241022111059.2566137-13-yi.zhang@huaweicloud.com>
- <20241204124221.aix7qxjl2n4ya3b7@quack3>
- <c831732e-38c5-4a82-ab30-de17cff29584@huaweicloud.com>
- <20241206162102.w4hw35ims5sdf4ik@quack3>
- <5049c794-9a92-462c-a455-2bdf94cdebef@huaweicloud.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=CVmioGrzEz5Bq8M6iBVffl3BaNXmN8N3PySNUV3GPvSN7pZYQq57rHAGDeaSFzgmX2YG4d7DMxwpYkxSgxbDbKnJXYMCI+d/RTX+8GdWlja7yxRGuhJC3Qy8wPU0uAIMtOTX2B1aaTz4Cs/aDJZojmdBIG9/hWXWNc9wiwOSSB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=GqmFIYnt; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-3.bstnma.fios.verizon.net [173.48.102.3])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4BAD0XSM027840
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 10 Dec 2024 08:00:34 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1733835635; bh=DHUmL1lsFJiVd97upOLWdbOsV6YNVAKHpoQhEyaESdg=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=GqmFIYnteg1gx7XCN28TwEIsKVKkfnGq1G0uRE1rTjL2jXMnbgjd+XA7FGDX7iPHj
+	 omGF7hJpjgvNYOw9QxIO1JlzYynCTvrnXi0zVIBXeN6mFCbhxNyBPzdi1O2gW+iyhG
+	 27QSMNk6qTQi8FXz/wRHp9DKYSR1tPeK8uZUwKbR13E2pvBenVi+gt8j4GrCWBxkmc
+	 ar8e8G2/NVl0buRy2dCaZbj9Il/9iXqhCnUPcnq1fQaAQZjBIVC4yASJw0Qhcd3D7j
+	 RNCCUDTV9dkJMdlB7nzh88gNRqBXB4RafnZmOt56Df9WJWsYckS/QhwYSV08k2pM4M
+	 8S7aERKmQ8d3g==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 2AEC515C6796; Tue, 10 Dec 2024 08:00:33 -0500 (EST)
+Date: Tue, 10 Dec 2024 08:00:33 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Zorro Lang <zlang@kernel.org>, Brian Foster <bfoster@redhat.com>,
+        fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: remove _supported_fs
+Message-ID: <20241210130033.GA1839653@mit.edu>
+References: <20241210065900.1235379-1-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -112,135 +64,37 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5049c794-9a92-462c-a455-2bdf94cdebef@huaweicloud.com>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_COUNT_THREE(0.00)[3];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	RCVD_TLS_LAST(0.00)[];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	TO_DN_SOME(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	TAGGED_RCPT(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,infradead.org,kernel.org,fromorbit.com,google.com,huawei.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,imap1.dmz-prg2.suse.org:helo]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <20241210065900.1235379-1-hch@lst.de>
 
-On Mon 09-12-24 16:32:41, Zhang Yi wrote:
-> On 2024/12/7 0:21, Jan Kara wrote:
-> >>> I think you'll need to use atomic_t and appropriate functions here.
-> >>>
-> >>>> @@ -872,6 +879,7 @@ void ext4_es_insert_extent(struct inode *inode, ext4_lblk_t lblk,
-> >>>>  	BUG_ON(end < lblk);
-> >>>>  	WARN_ON_ONCE(status & EXTENT_STATUS_DELAYED);
-> >>>>  
-> >>>> +	ext4_es_inc_seq(inode);
-> >>>
-> >>> I'm somewhat wondering: Are extent status tree modifications the right
-> >>> place to advance the sequence counter? The counter needs to advance
-> >>> whenever the mapping information changes. This means that we'd be
-> >>> needlessly advancing the counter (and thus possibly forcing retries) when
-> >>> we are just adding new information from ordinary extent tree into cache.
-> >>> Also someone can be doing extent tree manipulations without touching extent
-> >>> status tree (if the information was already pruned from there). 
-> >>
-> >> Sorry, I don't quite understand here. IIUC, we can't modify the extent
-> >> tree without also touching extent status tree; otherwise, the extent
-> >> status tree will become stale, potentially leading to undesirable and
-> >> unexpected outcomes later on, as the extent lookup paths rely on and
-> >> always trust the status tree. If this situation happens, would it be
-> >> considered a bug? Additionally, I have checked the code but didn't find
-> >> any concrete cases where this could happen. Was I overlooked something?
-> > 
-> > What I'm worried about is that this seems a bit fragile because e.g. in
-> > ext4_collapse_range() we do:
-> > 
-> > ext4_es_remove_extent(inode, start, EXT_MAX_BLOCKS - start)
-> > <now go and manipulate the extent tree>
-> > 
-> > So if somebody managed to sneak in between ext4_es_remove_extent() and
-> > the extent tree manipulation, he could get a block mapping which is shortly
-> > after invalidated by the extent tree changes. And as I'm checking now,
-> > writeback code *can* sneak in there because during extent tree
-> > manipulations we call ext4_datasem_ensure_credits() which can drop
-> > i_data_sem to restart a transaction.
-> > 
-> > Now we do writeout & invalidate page cache before we start to do these
-> > extent tree dances so I don't see how this could lead to *actual* use
-> > after free issues but it makes me somewhat nervous. So that's why I'd like
-> > to have some clear rules from which it is obvious that the counter makes
-> > sure we do not use stale mappings.
+On Tue, Dec 10, 2024 at 07:58:24AM +0100, Christoph Hellwig wrote:
+> this series removes the remaining _supported_fs calls and replaces them
+> with a new _exclude_fs call.
 > 
-> Yes, I see. I think the rule should be as follows:
+> The first patch removes a _supported_fs for a relatively new test from
+> Brian that fails on other file systems.  We should still run it so that
+> people have a chance to fix the corruption, so I think this make sense.
 > 
-> First, when the iomap infrastructure is creating or querying file
-> mapping information, we must ensure that the mapping information
-> always passes through the extent status tree, which means
-> ext4_map_blocks(), ext4_map_query_blocks(), and
-> ext4_map_create_blocks() should cache the extent status entries that
-> we intend to use.
+> Then the ext4 directory is split so that the shared extN tests have their
+> own directory, and then it finally does the switch over now that now many
+> _supported_fs calls are left.
 
-OK, this currently holds. There's just one snag that during fastcommit
-replay ext4_es_insert_extent() doesn't do anything. I don't think there's
-any race possible during that stage but it's another case to think about.
+Hmm, instead of doing this (would require hard-coding support for ext2
+and ext3 file systems needing to use ext-common), why not just have
+special-case code which causes ext2 and ext3 file systems to include
+the ext4 group, and then we'll have _exclude_fs declaractions as
+needed for ext2 and ext3?
 
-> Second, when updating the extent tree, we must hold the i_data_sem in
-> write mode and update the extent status tree atomically.
+After all, ext3 has been removed except for the very oldest LTS
+kernels (and I dount anyone is actually testing ext3 using xfstests
+these days), and ext2 is not used by most distributions (they use
+CONFIG_EXT4_USE_EXT2) and the reason why we've kept it around is that
+it's a realtively simple file system that still uses the more modern,
+non-legacy vfs/mm interfaces.
 
-Fine.
+So it might not be worth it to move a bunch of tests and creating a
+new (somewhat ugly) group, ext4-common, IMO.
 
-> Additionally,
-> if we cannot update the extent tree while holding a single i_data_sem,
-> we should first remove all related extent status entries within the
-> specified range, then manipulate the extent tree, ensuring that the
-> extent status entries are always up-to-date if they exist (as
-> ext4_collapse_range() does).
+Cheers,
 
-In this case, I think we need to provide more details. In particular I
-would require that in all such cases we must:
-a) hold i_rwsem exclusively and hold invalidate_lock exclusively ->
-   provides exclusion against page faults, reads, writes
-b) evict all page cache in the affected range -> should stop writeback -
-   *but* currently there's one case which could be problematic. Assume we
-   do punch hole 0..N and the page at N+1 is dirty. Punch hole does all of
-   the above and starts removing blocks, needs to restart transaction so it
-   drops i_data_sem. Writeback starts for page N+1, needs to load extent
-   block into memory, ext4_cache_extents() now loads back some extents
-   covering range 0..N into extent status tree. So the only protection
-   against using freed blocks is that nobody should be mapping anything in
-   the range 0..N because we hold those locks & have evicted page cache.
-
-So I think we need to also document, that anybody mapping blocks needs to
-hold i_rwsem or invalidate_lock or a page lock, ideally asserting that in
-ext4_map_blocks() to catch cases we missed. Asserting for page lock will
-not be really doable but luckily only page writeback needs that so that can
-get some extemption from the assert.
-
-> Finally, if we want to manipulate the extent tree without caching, we
-> should also remove the extent status entries first.
-
-Based on the above, I don't think this is really needed. We only must make
-sure that after all extent tree updates are done and before we release
-invalidate_lock, all extents from extent status tree in the modified range
-must be evicted / replaced to match reality.
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+						- Ted
 
