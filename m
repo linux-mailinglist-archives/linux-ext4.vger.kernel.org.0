@@ -1,60 +1,58 @@
-Return-Path: <linux-ext4+bounces-5527-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5530-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702D79EA5FB
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 03:48:46 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B184C9EA92C
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 07:59:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 19D2E161FF0
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 02:48:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B929B162DE1
+	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 06:59:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 95EFB1CF5CE;
-	Tue, 10 Dec 2024 02:48:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72C9D22CBD9;
+	Tue, 10 Dec 2024 06:59:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b="tueO/suz"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="A5C+WndL"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from zeniv.linux.org.uk (zeniv.linux.org.uk [62.89.141.173])
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71CD21AAA2F;
-	Tue, 10 Dec 2024 02:48:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=62.89.141.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73D403594F;
+	Tue, 10 Dec 2024 06:59:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733798912; cv=none; b=gVPgCorLbvFDUeyLpVWGeVvXzclSesawJLomSV2walUczE2z+yx18M+RDaFmrh+Tf3AYGez+bty5CnPALYJoCjykp1+6tvGKUZpjckqgardQ/E9MqNdQAFQCMlLMrS9y0515i2icbcL1af7cOhFyAqq3u20TJ4EGV3ZBqymx6K0=
+	t=1733813946; cv=none; b=GO6jaFhRnbp7AheN8hZn9mhM8MhOib+GmcK9H55Y9XLONwUFjwCB5047YDpMR0JIxJA9jt1tA+9x1aSlwIEuKqr3LbJnbZrB8dAKinwWkSMp1pVn9cjOBVQ6hZwzymWdz3UbuwEQ9w9umoLrTXia0X50wgDUKqSxQLYu0EvUArk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733798912; c=relaxed/simple;
-	bh=0bTdncsjoAki6Q/sVnT/88MBbvQ8ijphl7e3axc+dWs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=mSR3KErjHvFORtkWI4t2IyzWOxsMyb6f4mTvx0pzobgHpZ8Z0cPzTitk0CHdR1ZW8A3j47Empx2ZyhJBra0+VPPHQ9iDg3XY2fSlft+SGbkx2i3KGa8M3ATpA2WoNScrepdS2mKKbXi5Tl8UrToL4gW+wkjtgZ4I52KEdXL1WtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk; spf=none smtp.mailfrom=ftp.linux.org.uk; dkim=pass (2048-bit key) header.d=linux.org.uk header.i=@linux.org.uk header.b=tueO/suz; arc=none smtp.client-ip=62.89.141.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zeniv.linux.org.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ftp.linux.org.uk
+	s=arc-20240116; t=1733813946; c=relaxed/simple;
+	bh=i9z2lh+moRXBzIVmTTGeiEmlUXU/YfBTYTBIb/tId9k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X7Dxsl2E4gZccYOx7MM7s3wFiwtElliyMxfs3aMb6yxMtmDaXsNMeR4L6ZYYyHizI4rrprmz7hrSgy0dyLuNtlzU6QrtAZXEgwXAhbevVaiV5dMnvgZEjFeTaj41QojDF0LwXlSRe22dBy5+qQW+gxZkZkI4C0OmF5mDPpcyBRY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=A5C+WndL; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lst.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=linux.org.uk; s=zeniv-20220401; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=OwzwWqtJRF9uqXKKqFbXfz7VMk0w6bXSQMfi/uIOrkE=; b=tueO/suzUI+HmPTrqVP3ZkOVGK
-	Mp3+rjcadl8/tIIOF5RpRJQbs9qvlMMkoYCfCm3St2unYJqJfuSv+3bAw38PUrb5cfXpoJLfKmm0x
-	l5wpupxiitLvCb7NLnNbwgeD9J8H/VebCYnawoTlCQ76tnCQdV2S/pPhwRvdBSnKS7LCF+Sy4oLl8
-	OZILac96n0d4lNRagN5XScX7/YPX5caZvA4LWavzsStE3WFX+wGaIa2u5H9za4oVq4Yx+DfVGzLoU
-	WhHMQhPlPSkmf8qFaC5hgE2+CqIFOTpTIJ6RhGED4AEecrBXpziHsIkXiY0TB5ajfPvxRE1rBuqxw
-	UIY2J3OQ==;
-Received: from viro by zeniv.linux.org.uk with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tKqIV-00000006lS4-3tac;
-	Tue, 10 Dec 2024 02:48:27 +0000
-From: Al Viro <viro@zeniv.linux.org.uk>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: linux-fsdevel@vger.kernel.org,
+	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=grzCkfShT30aunxd0D2eh0Tfcjifv6SZ+epoyRYk1no=; b=A5C+WndLMSpCvW5ywLu9n3mFJU
+	ZBgX92Qq0oU5b+7J0itxBqysGQhkcT5LoDFoYw4W1qP2/bMyoOeH06lIPSoaAkqUddPT8MsOFUc6G
+	ff9Qd1fB9GVhHVKt+D44x4g4BMx3tHd4s4TsW0OFmnKZDVOWl4m2CEsX1j7SM4RNK8i6nFgDSQSfg
+	ooVLoMffuvVK/onlpT0ehBhk+xv7HY5rqdJ6z9uuVRMOJ4CKUbsgcYWffjLwevVwSMhnAOp5/LRKH
+	r14xOi2wncdaCO1PZ+T+hq8TRcVfk94/d2KyPO3H6hja5UQhtxlCcif1PUcMBXuvI9YKvaJPj7Lze
+	F+LVw3Lg==;
+Received: from 2a02-8389-2341-5b80-e2a6-542f-4e27-82ec.cable.dynamic.v6.surfer.at ([2a02:8389:2341:5b80:e2a6:542f:4e27:82ec] helo=localhost)
+	by bombadil.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
+	id 1tKuD1-0000000AUca-1OH5;
+	Tue, 10 Dec 2024 06:59:03 +0000
+From: Christoph Hellwig <hch@lst.de>
+To: Zorro Lang <zlang@kernel.org>
+Cc: Brian Foster <bfoster@redhat.com>,
+	fstests@vger.kernel.org,
 	linux-ext4@vger.kernel.org
-Subject: [PATCH 5/5] ext4 fast_commit: make use of name_snapshot primitives
-Date: Tue, 10 Dec 2024 02:48:27 +0000
-Message-ID: <20241210024827.1612355-5-viro@zeniv.linux.org.uk>
-X-Mailer: git-send-email 2.47.1
-In-Reply-To: <20241210024827.1612355-1-viro@zeniv.linux.org.uk>
-References: <20241210024523.GD3387508@ZenIV>
- <20241210024827.1612355-1-viro@zeniv.linux.org.uk>
+Subject: remove _supported_fs
+Date: Tue, 10 Dec 2024 07:58:24 +0100
+Message-ID: <20241210065900.1235379-1-hch@lst.de>
+X-Mailer: git-send-email 2.45.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -62,100 +60,18 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Sender: Al Viro <viro@ftp.linux.org.uk>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-... rather than open-coding them (and doing pointless work with extra
-allocations, etc. for long names).
+Hi all,
 
-Signed-off-by: Al Viro <viro@zeniv.linux.org.uk>
----
- fs/ext4/fast_commit.c | 29 +++++------------------------
- fs/ext4/fast_commit.h |  3 +--
- 2 files changed, 6 insertions(+), 26 deletions(-)
+this series removes the remaining _supported_fs calls and replaces them
+with a new _exclude_fs call.
 
-diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-index 26c4fc37edcf..da4263a14a20 100644
---- a/fs/ext4/fast_commit.c
-+++ b/fs/ext4/fast_commit.c
-@@ -322,9 +322,7 @@ void ext4_fc_del(struct inode *inode)
- 	WARN_ON(!list_empty(&ei->i_fc_dilist));
- 	spin_unlock(&sbi->s_fc_lock);
- 
--	if (fc_dentry->fcd_name.name &&
--		fc_dentry->fcd_name.len > DNAME_INLINE_LEN)
--		kfree(fc_dentry->fcd_name.name);
-+	release_dentry_name_snapshot(&fc_dentry->fcd_name);
- 	kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
- 
- 	return;
-@@ -449,22 +447,7 @@ static int __track_dentry_update(handle_t *handle, struct inode *inode,
- 	node->fcd_op = dentry_update->op;
- 	node->fcd_parent = dir->i_ino;
- 	node->fcd_ino = inode->i_ino;
--	if (dentry->d_name.len > DNAME_INLINE_LEN) {
--		node->fcd_name.name = kmalloc(dentry->d_name.len, GFP_NOFS);
--		if (!node->fcd_name.name) {
--			kmem_cache_free(ext4_fc_dentry_cachep, node);
--			ext4_fc_mark_ineligible(sb, EXT4_FC_REASON_NOMEM, handle);
--			mutex_lock(&ei->i_fc_lock);
--			return -ENOMEM;
--		}
--		memcpy((u8 *)node->fcd_name.name, dentry->d_name.name,
--			dentry->d_name.len);
--	} else {
--		memcpy(node->fcd_iname, dentry->d_name.name,
--			dentry->d_name.len);
--		node->fcd_name.name = node->fcd_iname;
--	}
--	node->fcd_name.len = dentry->d_name.len;
-+	take_dentry_name_snapshot(&node->fcd_name, dentry);
- 	INIT_LIST_HEAD(&node->fcd_dilist);
- 	spin_lock(&sbi->s_fc_lock);
- 	if (sbi->s_journal->j_flags & JBD2_FULL_COMMIT_ONGOING ||
-@@ -832,7 +815,7 @@ static bool ext4_fc_add_dentry_tlv(struct super_block *sb, u32 *crc,
- {
- 	struct ext4_fc_dentry_info fcd;
- 	struct ext4_fc_tl tl;
--	int dlen = fc_dentry->fcd_name.len;
-+	int dlen = fc_dentry->fcd_name.name.len;
- 	u8 *dst = ext4_fc_reserve_space(sb,
- 			EXT4_FC_TAG_BASE_LEN + sizeof(fcd) + dlen, crc);
- 
-@@ -847,7 +830,7 @@ static bool ext4_fc_add_dentry_tlv(struct super_block *sb, u32 *crc,
- 	dst += EXT4_FC_TAG_BASE_LEN;
- 	memcpy(dst, &fcd, sizeof(fcd));
- 	dst += sizeof(fcd);
--	memcpy(dst, fc_dentry->fcd_name.name, dlen);
-+	memcpy(dst, fc_dentry->fcd_name.name.name, dlen);
- 
- 	return true;
- }
-@@ -1328,9 +1311,7 @@ static void ext4_fc_cleanup(journal_t *journal, int full, tid_t tid)
- 		list_del_init(&fc_dentry->fcd_dilist);
- 		spin_unlock(&sbi->s_fc_lock);
- 
--		if (fc_dentry->fcd_name.name &&
--			fc_dentry->fcd_name.len > DNAME_INLINE_LEN)
--			kfree(fc_dentry->fcd_name.name);
-+		release_dentry_name_snapshot(&fc_dentry->fcd_name);
- 		kmem_cache_free(ext4_fc_dentry_cachep, fc_dentry);
- 		spin_lock(&sbi->s_fc_lock);
- 	}
-diff --git a/fs/ext4/fast_commit.h b/fs/ext4/fast_commit.h
-index 2fadb2c4780c..3bd534e4dbbf 100644
---- a/fs/ext4/fast_commit.h
-+++ b/fs/ext4/fast_commit.h
-@@ -109,8 +109,7 @@ struct ext4_fc_dentry_update {
- 	int fcd_op;		/* Type of update create / unlink / link */
- 	int fcd_parent;		/* Parent inode number */
- 	int fcd_ino;		/* Inode number */
--	struct qstr fcd_name;	/* Dirent name */
--	unsigned char fcd_iname[DNAME_INLINE_LEN];	/* Dirent name string */
-+	struct name_snapshot fcd_name;	/* Dirent name */
- 	struct list_head fcd_list;
- 	struct list_head fcd_dilist;
- };
--- 
-2.39.5
+The first patch removes a _supported_fs for a relatively new test from
+Brian that fails on other file systems.  We should still run it so that
+people have a chance to fix the corruption, so I think this make sense.
 
+Then the ext4 directory is split so that the shared extN tests have their
+own directory, and then it finally does the switch over now that now many
+_supported_fs calls are left.
 
