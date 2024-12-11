@@ -1,104 +1,150 @@
-Return-Path: <linux-ext4+bounces-5543-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5544-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 86B849EBBA4
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 22:12:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECA389EC30C
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 04:15:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB15A284E3F
-	for <lists+linux-ext4@lfdr.de>; Tue, 10 Dec 2024 21:12:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E84F5281182
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 03:15:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDA26230273;
-	Tue, 10 Dec 2024 21:12:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Ks6wF4WD"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E4CF20B204;
+	Wed, 11 Dec 2024 03:15:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+Received: from mx0a-0064b401.pphosted.com (mx0a-0064b401.pphosted.com [205.220.166.238])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D55A153BF6;
-	Tue, 10 Dec 2024 21:12:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F29420968B;
+	Wed, 11 Dec 2024 03:15:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.166.238
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733865135; cv=none; b=nwGJJ7xiqZYddqyGlqeOB7LfdguCv9K4fF8BkOWl4sJdVC6N6OgqmeHVCWv8U0am7rR0p0OiwZjQzViNFSAuSN8ZQEPumze8x2FhHV8DWUY98JC7UDooibD9FzE9GGBJHRCFh8Gf7KLjJQ+QSVdvPqj2kxWKQ3SUlXmZhjlQZbk=
+	t=1733886927; cv=none; b=XhQxVfyiE6Jva8P/BaEF62SpHPN2pCPygBuKjy+X3quw7PyI+h0bbMYyaCacnroc6M7tr31gjvhaeeHAuhjl/dWmidaFk2Q8yitU1kQEHFS7V3mp+BrzUgoHr4ehVlzoVmsxHJSk/zG2Z0AWQLCQGa8G9pbf3IQkHulv96GSsho=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733865135; c=relaxed/simple;
-	bh=dyZtB26aExN1AXnqAq5HefDzn3mHyrfChTdtCAd/lK4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=d/Qr01vo7zcxIbPiyRH3cqIDOroCYbGGZ4kxxEeJOL0oR5ZhIdvzsYwG0oOchextjqEuQIsENS54SQO5GrkNVUZ9L2qTfWooTkPpI1ul3syt/T8uPIylCfdNZKdDWsT5k4P0zn5I4qn+OjjEP+n4ZgN1/PpnG5+bvkuYEwj+uoc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Ks6wF4WD; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Content-Transfer-Encoding:Content-Type
-	:In-Reply-To:From:References:To:Subject:MIME-Version:Date:Message-ID:Sender:
-	Reply-To:Cc:Content-ID:Content-Description;
-	bh=pWl+DoLp0B19v+ccbH7KTwZvEdcgO1RiPrIKqvG36yw=; b=Ks6wF4WDIa88ZrBviT77i64QEP
-	z0/eIDYnsI/5C9SnKcBLOIaEsQptBDTNSppYZBTHejy7xYSX3Ko/R/9Rdyyog2GMaAXjJKFi1ih3t
-	Bx1OW6DQKGu5atLQyau93Jk8XFWygjeYMJ1jd3nT3qvQOAAf//2ylD4vCJZkBGQqQiqHE5sXCBDCt
-	9MWkT609GGtB8kgRbGx6eg4MEQLvimXloVYVdwAsW1NwRrUj0pFc8P/MKty0M/tafxIC5ZXt3/6Bp
-	9KgR+NKrouP6tI8wSUpeEvw+fYF+R1lmH79NgQ3hO/jr6r5G6PXKSJsGhQy+ZYOB/6/eKtdsD8P/q
-	kx7tzKdg==;
-Received: from [50.53.2.24] (helo=[192.168.254.17])
-	by desiato.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tL7WZ-00000003jG4-3hSc;
-	Tue, 10 Dec 2024 21:12:08 +0000
-Message-ID: <391b9d5f-ec3a-4c90-8345-5dab929917f7@infradead.org>
-Date: Tue, 10 Dec 2024 13:12:01 -0800
+	s=arc-20240116; t=1733886927; c=relaxed/simple;
+	bh=Cd+uhU8R6CFXhSMCzJ4EXSsUSmsT+tIYm39p00Pibq8=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=Dxf6KBN5Kap+2CEotsOd61u7jsAab4YPTy7mU30CCGj001LtgTdGtJED06BgDe9DzcasAblzlmMUXesju6QDp5b7xHzLKxYHIGXBNfXvR/YeIXSmxkBVVlOelbbGgKfq0Eg5kNvsPNAtB5nmF0EcWOd5mx/utIKgFMFVjvjopGg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com; spf=pass smtp.mailfrom=windriver.com; arc=none smtp.client-ip=205.220.166.238
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=windriver.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=windriver.com
+Received: from pps.filterd (m0250810.ppops.net [127.0.0.1])
+	by mx0a-0064b401.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BAJDj9x019530;
+	Tue, 10 Dec 2024 19:15:19 -0800
+Received: from ala-exchng01.corp.ad.wrs.com (ala-exchng01.wrs.com [147.11.82.252])
+	by mx0a-0064b401.pphosted.com (PPS) with ESMTPS id 43cx1u3q15-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES128-GCM-SHA256 bits=128 verify=NOT);
+	Tue, 10 Dec 2024 19:15:19 -0800 (PST)
+Received: from ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) by
+ ala-exchng01.corp.ad.wrs.com (147.11.82.252) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.43; Tue, 10 Dec 2024 19:15:18 -0800
+Received: from pek-lpg-core1.wrs.com (147.11.136.210) by
+ ALA-EXCHNG02.corp.ad.wrs.com (147.11.82.254) with Microsoft SMTP Server id
+ 15.1.2507.43 via Frontend Transport; Tue, 10 Dec 2024 19:15:16 -0800
+From: <jianqi.ren.cn@windriver.com>
+To: <gregkh@linuxfoundation.org>, <jianqi.ren.cn@windriver.com>
+CC: <stable@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+        <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH 6.1.y] ext4: fix access to uninitialised lock in fc replay path
+Date: Wed, 11 Dec 2024 12:13:10 +0800
+Message-ID: <20241211041310.3383060-1-jianqi.ren.cn@windriver.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
- on page fault
-To: Klara Modin <klarasmodin@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
- kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
- amir73il@gmail.com, brauner@kernel.org, torvalds@linux-foundation.org,
- viro@zeniv.linux.org.uk, linux-xfs@vger.kernel.org,
- linux-btrfs@vger.kernel.org, linux-mm@kvack.org, linux-ext4@vger.kernel.org
-References: <cover.1731684329.git.josef@toxicpanda.com>
- <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
- <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
-Content-Language: en-US
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
-Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-Authority-Analysis: v=2.4 cv=H/shw/Yi c=1 sm=1 tr=0 ts=675903c7 cx=c_pps a=/ZJR302f846pc/tyiSlYyQ==:117 a=/ZJR302f846pc/tyiSlYyQ==:17 a=RZcAm9yDv7YA:10 a=bC-a23v3AAAA:8 a=ID6ng7r3AAAA:8 a=VwQbUJbxAAAA:8 a=t7CeM3EgAAAA:8 a=bqYokX-Xi819JKuFumAA:9
+ a=-FEs8UIgK8oA:10 a=FO4_E8m0qiDe52t0p3_H:22 a=AkheI1RvQwOzcTXhi5f4:22 a=FdTzh2GWekK77mhwV6Dw:22
+X-Proofpoint-ORIG-GUID: 70mT5rX1fwzF_WAvm8TRhuomE1W5fydG
+X-Proofpoint-GUID: 70mT5rX1fwzF_WAvm8TRhuomE1W5fydG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1057,Hydra:6.0.680,FMLib:17.12.68.34
+ definitions=2024-12-11_02,2024-12-10_01,2024-11-22_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
+ phishscore=0 mlxlogscore=706 suspectscore=0 spamscore=0 clxscore=1011
+ impostorscore=0 adultscore=0 priorityscore=1501 malwarescore=0 bulkscore=0
+ mlxscore=0 classifier=spam authscore=0 adjust=0 reason=mlx scancount=1
+ engine=8.21.0-2411120000 definitions=main-2412110023
 
+From: "Luis Henriques (SUSE)" <luis.henriques@linux.dev>
 
+[ commit 23dfdb56581ad92a9967bcd720c8c23356af74c1 upstream ]
 
-On 12/8/24 8:58 AM, Klara Modin wrote:
->> +/**
->> + * filemap_fsnotify_fault - maybe emit a pre-content event.
->> + * @vmf:    struct vm_fault containing details of the fault.
->> + * @folio:    the folio we're faulting in.
->> + *
->> + * If we have a pre-content watch on this file we will emit an event for this
->> + * range.  If we return anything the fault caller should return immediately, we
->> + * will return VM_FAULT_RETRY if we had to emit an event, which will trigger the
->> + * fault again and then the fault handler will run the second time through.
->> + *
->> + * This is meant to be called with the folio that we will be filling in to make
->> + * sure the event is emitted for the correct range.
->> + *
->> + * Return: a bitwise-OR of %VM_FAULT_ codes, 0 if nothing happened.
->> + */
->> +vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf)
-> 
-> The parameters mentioned above do not seem to match with the function.
+The following kernel trace can be triggered with fstest generic/629 when
+executed against a filesystem with fast-commit feature enabled:
 
+INFO: trying to register non-static key.
+The code is fine but needs lockdep annotation, or maybe
+you didn't initialize this object before use?
+turning off the locking correctness validator.
+CPU: 0 PID: 866 Comm: mount Not tainted 6.10.0+ #11
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS rel-1.16.2-3-gd478f380-prebuilt.qemu.org 04/01/2014
+Call Trace:
+ <TASK>
+ dump_stack_lvl+0x66/0x90
+ register_lock_class+0x759/0x7d0
+ __lock_acquire+0x85/0x2630
+ ? __find_get_block+0xb4/0x380
+ lock_acquire+0xd1/0x2d0
+ ? __ext4_journal_get_write_access+0xd5/0x160
+ _raw_spin_lock+0x33/0x40
+ ? __ext4_journal_get_write_access+0xd5/0x160
+ __ext4_journal_get_write_access+0xd5/0x160
+ ext4_reserve_inode_write+0x61/0xb0
+ __ext4_mark_inode_dirty+0x79/0x270
+ ? ext4_ext_replay_set_iblocks+0x2f8/0x450
+ ext4_ext_replay_set_iblocks+0x330/0x450
+ ext4_fc_replay+0x14c8/0x1540
+ ? jread+0x88/0x2e0
+ ? rcu_is_watching+0x11/0x40
+ do_one_pass+0x447/0xd00
+ jbd2_journal_recover+0x139/0x1b0
+ jbd2_journal_load+0x96/0x390
+ ext4_load_and_init_journal+0x253/0xd40
+ ext4_fill_super+0x2cc6/0x3180
+...
 
-which causes a warning:
+In the replay path there's an attempt to lock sbi->s_bdev_wb_lock in
+function ext4_check_bdev_write_error().  Unfortunately, at this point this
+spinlock has not been initialized yet.  Moving it's initialization to an
+earlier point in __ext4_fill_super() fixes this splat.
 
-mm/filemap.c:3289: warning: Excess function parameter 'folio' description in 'filemap_fsnotify_fault'
+Signed-off-by: Luis Henriques (SUSE) <luis.henriques@linux.dev>
+Link: https://patch.msgid.link/20240718094356.7863-1-luis.henriques@linux.dev
+Signed-off-by: Theodore Ts'o <tytso@mit.edu>
+Cc: stable@kernel.org
+Signed-off-by: Jianqi Ren <jianqi.ren.cn@windriver.com>
+---
+ fs/ext4/super.c | 3 ++-
+ 1 file changed, 2 insertions(+), 1 deletion(-)
 
-
+diff --git a/fs/ext4/super.c b/fs/ext4/super.c
+index 987d49e18dbe..65e6e532cfb9 100644
+--- a/fs/ext4/super.c
++++ b/fs/ext4/super.c
+@@ -5276,6 +5276,8 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	INIT_LIST_HEAD(&sbi->s_orphan); /* unlinked but open files */
+ 	mutex_init(&sbi->s_orphan_lock);
+ 
++	spin_lock_init(&sbi->s_bdev_wb_lock);
++
+ 	ext4_fast_commit_init(sb);
+ 
+ 	sb->s_root = NULL;
+@@ -5526,7 +5528,6 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+ 	 * Save the original bdev mapping's wb_err value which could be
+ 	 * used to detect the metadata async write error.
+ 	 */
+-	spin_lock_init(&sbi->s_bdev_wb_lock);
+ 	errseq_check_and_advance(&sb->s_bdev->bd_inode->i_mapping->wb_err,
+ 				 &sbi->s_bdev_wb_err);
+ 	sb->s_bdev->bd_super = sb;
 -- 
-~Randy
+2.25.1
 
 
