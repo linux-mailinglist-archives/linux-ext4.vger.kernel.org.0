@@ -1,644 +1,399 @@
-Return-Path: <linux-ext4+bounces-5564-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5565-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 35B229ED63E
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 20:17:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E053B9ED68A
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 20:32:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DB8E816A308
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 19:16:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 73114164F0F
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 19:32:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 055FB229662;
-	Wed, 11 Dec 2024 19:01:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VvG4BVvL"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 519371C5F0E;
+	Wed, 11 Dec 2024 19:32:27 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7557229661
-	for <linux-ext4@vger.kernel.org>; Wed, 11 Dec 2024 19:01:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 234FA1C461F
+	for <linux-ext4@vger.kernel.org>; Wed, 11 Dec 2024 19:32:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733943683; cv=none; b=VeR27v8ee4LN0IO+IQnUSaV/fX+EMmMWCuRGufTLZv9Fgqj5EE2scLqWBjM1ppRImbe8jKIqMJDqrLNkR3+E7I+Fz3WIOf0sIeNcUhEP6SEbp/PkMKb9/AmMzWhk6VCHI/8a7NjmM11xFloxwSHOVISwYMqTLC8ICyc8kGs8fZo=
+	t=1733945547; cv=none; b=Th911JTijUt5xQzOJIUzZ0yFCX5SiyKUeD6j06yD02ztA5RiWocUAnte7yy95VewYuapsWSVA0yr/caZLKx4mDo6eh9Iy1bjeY3CpHPQGrt/UA7tthLBoOF+Alo1GvBEUmg2Egit7uRF9+RU9y9PCChYIYgHqTvvRT00iFmI+Q4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733943683; c=relaxed/simple;
-	bh=sU6nw2TX3ZuYPnwNN/FNna7INDB6bCLj1Edz5vZuymw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UNSRjKfj5z1ywqeOZzpcYjdmYzn/1xmKS2q2MFFmtsOaa870bBX+1n1PjC5W+Z3w/rQk2PBV5d5f+jH7M6WKrAVAhlEx2iEe611sNU8hVs9aQiv3XeiFyLbN+8NzUBM3IRo8NQFhf/iT8ThlPxa7yfsKmUZ7CcyeZqo9jcU1+ak=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VvG4BVvL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1733943678;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=H7vfTmebS3smKlvNhzJ7uix2tkA9AcxQ9QaKg57pOYQ=;
-	b=VvG4BVvLFuFJ5/pl1OqvoA5h2GfakQnQlyWjP7WDCvBHgsHBDPehH9DMvV6RatqE0AJeVe
-	/HBcgVcKLuwW4+LMJRZmNbOIE1lzBOxMbQG1nkj3QrIyUC0qPp8AutDJ9DphGB6J8y88p8
-	uS/4/5HasH3DMCuwrospwZvBobGOkyI=
-Received: from mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com
- (ec2-54-186-198-63.us-west-2.compute.amazonaws.com [54.186.198.63]) by
- relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-450-IAZHMYdNPBmXAgVQCjr7lw-1; Wed,
- 11 Dec 2024 14:01:16 -0500
-X-MC-Unique: IAZHMYdNPBmXAgVQCjr7lw-1
-X-Mimecast-MFC-AGG-ID: IAZHMYdNPBmXAgVQCjr7lw
-Received: from mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com [10.30.177.15])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mx-prod-mc-05.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTPS id E64091955EB1;
-	Wed, 11 Dec 2024 19:01:14 +0000 (UTC)
-Received: from localhost (unknown [10.2.17.10])
-	by mx-prod-int-02.mail-002.prod.us-west-2.aws.redhat.com (Postfix) with ESMTP id A0031195608A;
-	Wed, 11 Dec 2024 19:01:12 +0000 (UTC)
-Date: Wed, 11 Dec 2024 07:42:40 -0500
-From: Stefan Hajnoczi <stefanha@redhat.com>
-To: Jason Wang <jasowang@redhat.com>
-Cc: David Woodhouse <dwmw2@infradead.org>,
-	"x86@kernel.org" <x86@kernel.org>, hpa <hpa@zytor.com>,
-	dyoung <dyoung@redhat.com>, kexec <kexec@lists.infradead.org>,
-	linux-ext4 <linux-ext4@vger.kernel.org>,
-	"Michael S. Tsirkin" <mst@redhat.com>,
-	Stefano Garzarella <sgarzare@redhat.com>,
-	eperezma <eperezma@redhat.com>, Paolo Bonzini <bonzini@redhat.com>,
-	ming.lei@redhat.com
-Subject: Re: Lockdep warnings on kexec (virtio_blk, hrtimers)
-Message-ID: <20241211124240.GA310916@fedora>
-References: <1f631458c180c975c238d4d33d333f9fa9a4d2a3.camel@infradead.org>
- <CACGkMEtOdYorGPdSjxC1Lb1LJtZ+ZqHam3agHJ6JdpS-tE1qAQ@mail.gmail.com>
+	s=arc-20240116; t=1733945547; c=relaxed/simple;
+	bh=MLOpFEkMqJPTMdPwgkXHfNs4scYOke/34vAeQSpYcnU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=NTuFAlOkl+C6BFqMYdrfe0ngV0VQLiS5of+8TNfMiDS+afkM4hd/49a+cE0VL0SCbq9w/K7KM1ihqSiXR4nPyq1hr1YtHs6Xw1SqfhmIDahnNiUsC6GUahlKrtQLY/LTHd2BXz790elb5XADAueYBtdKggY4YWXgK7yLLTOcpXM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3a9c9b37244so87925125ab.1
+        for <linux-ext4@vger.kernel.org>; Wed, 11 Dec 2024 11:32:24 -0800 (PST)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1733945544; x=1734550344;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Kw/EOlaA93fNaAcnO0z8scl2FgQLUBYpUGoEP7c+QLI=;
+        b=sCu3wCzkq3TbZiNyd0BEfh7dpAeUNe/HpojqA4xCvbb4NsWnOArBVvA0RDf8OPRfZE
+         /NMKBHT/RjJWWQh8oBJo8DEK/oo7kRamDx3yWkvuXgztdR3EIqVdr2z4oeN7aybp7j4C
+         qwy/ZufdY1midfIbUUb/8qMpZe1RlhkXR7QXE+7Tto6AGiPnVd0Igd+eE23B4uEoUjX0
+         Ov1KSdIvwSu2aFHISVa9YYao02fIci5gyJt+zn19n5aMaE+O3kfBPICf4lUei6aPdhVx
+         8p2Q7p98GH9j4GtngU6UOY7N9FH2B5gl9Sk7rQfdDxCEkEjvGY/u+o7/nvi4NFQMzRtG
+         ulxg==
+X-Forwarded-Encrypted: i=1; AJvYcCWwsRHVu9h5ACIhiJqOQIfp2HLp2rjpdlZXkHHYiO8G0JLO0rQsKIxY8Rjq3xRNMzEFfbg8hqtSfcet@vger.kernel.org
+X-Gm-Message-State: AOJu0YwcL+mNEwAeED8jQ689yWboDzSKxrXUg7R//01ALxSpBjWZPEfE
+	rk/hhmysfjvDGDu49naqTbaUb4BO4zOJ0pnCbnuF1mVT+JzOl0OS3Z7YORkwNCnOqbyg45fa/Ls
+	MSkmxga2uY4AV2nou65uVYDj4J7uMk9xIbDsXardtkSecgRhR/cRo3R0=
+X-Google-Smtp-Source: AGHT+IE8m2cdqZO51l0fg6B13AWIQTdewGOedhy+jOnUFW+PaGfR/fUUYQHsHp67Bd82zwpyKf1U0fNIwIn2vKBYW81pg0TvQpxp
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="DQOQnx0NXFZYiys9"
-Content-Disposition: inline
-In-Reply-To: <CACGkMEtOdYorGPdSjxC1Lb1LJtZ+ZqHam3agHJ6JdpS-tE1qAQ@mail.gmail.com>
-X-Scanned-By: MIMEDefang 3.0 on 10.30.177.15
+X-Received: by 2002:a05:6e02:13a7:b0:3a7:dfe4:bd33 with SMTP id
+ e9e14a558f8ab-3ac4830790dmr8657945ab.6.1733945543513; Wed, 11 Dec 2024
+ 11:32:23 -0800 (PST)
+Date: Wed, 11 Dec 2024 11:32:23 -0800
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <6759e8c7.050a0220.17f54a.0042.GAE@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in ext4_da_get_block_prep (2)
+From: syzbot <syzbot+cbcad0f3b7646f8653ee@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
+
+Hello,
+
+syzbot found the following issue on:
+
+HEAD commit:    b5f217084ab3 Merge tag 'bpf-fixes' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=164170f8580000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=1362a5aee630ff34
+dashboard link: https://syzkaller.appspot.com/bug?extid=cbcad0f3b7646f8653ee
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/4000132d9d47/disk-b5f21708.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/85cadac2b6fb/vmlinux-b5f21708.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/0321667f4cf4/bzImage-b5f21708.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+cbcad0f3b7646f8653ee@syzkaller.appspotmail.com
+
+loop4: detected capacity change from 0 to 2048
+EXT4-fs (loop4): mounted filesystem 00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: none.
+======================================================
+WARNING: possible circular locking dependency detected
+6.13.0-rc1-syzkaller-00316-gb5f217084ab3 #0 Not tainted
+------------------------------------------------------
+syz.4.1456/13188 is trying to acquire lock:
+ffff888040d89658 (&ei->i_data_sem){++++}-{4:4}, at: ext4_da_map_blocks fs/ext4/inode.c:1799 [inline]
+ffff888040d89658 (&ei->i_data_sem){++++}-{4:4}, at: ext4_da_get_block_prep+0x428/0x1900 fs/ext4/inode.c:1873
+
+but task is already holding lock:
+ffff888040d89498 (&ei->xattr_sem){++++}-{4:4}, at: ext4_da_convert_inline_data_to_extent fs/ext4/inline.c:846 [inline]
+ffff888040d89498 (&ei->xattr_sem){++++}-{4:4}, at: ext4_da_write_inline_data_begin+0x2d3/0x1090 fs/ext4/inline.c:921
+
+which lock already depends on the new lock.
 
 
---DQOQnx0NXFZYiys9
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+the existing dependency chain (in reverse order) is:
 
-On Tue, Dec 10, 2024 at 09:56:43AM +0800, Jason Wang wrote:
-> Adding more virtio-blk people here.
+-> #7 (&ei->xattr_sem){++++}-{4:4}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1524
+       ext4_readpage_inline+0x36/0x6b0 fs/ext4/inline.c:518
+       ext4_read_folio+0x174/0x340 fs/ext4/inode.c:3185
+       filemap_read_folio+0x14d/0x630 mm/filemap.c:2366
+       filemap_create_folio mm/filemap.c:2497 [inline]
+       filemap_get_pages+0x100a/0x2540 mm/filemap.c:2555
+       filemap_read+0x45c/0xf50 mm/filemap.c:2646
+       __kernel_read+0x515/0x9d0 fs/read_write.c:523
+       integrity_kernel_read+0xb0/0x100 security/integrity/iint.c:28
+       ima_calc_file_hash_tfm security/integrity/ima/ima_crypto.c:480 [inline]
+       ima_calc_file_shash security/integrity/ima/ima_crypto.c:511 [inline]
+       ima_calc_file_hash+0xae6/0x1b30 security/integrity/ima/ima_crypto.c:568
+       ima_collect_measurement+0x520/0xb10 security/integrity/ima/ima_api.c:293
+       process_measurement+0x1351/0x1fb0 security/integrity/ima/ima_main.c:372
+       ima_file_check+0xd9/0x120 security/integrity/ima/ima_main.c:572
+       security_file_post_open+0xb9/0x280 security/security.c:3121
+       do_open fs/namei.c:3830 [inline]
+       path_openat+0x2ccd/0x3590 fs/namei.c:3987
+       do_filp_open+0x27f/0x4e0 fs/namei.c:4014
+       do_sys_openat2+0x13e/0x1d0 fs/open.c:1402
+       do_sys_open fs/open.c:1417 [inline]
+       __do_sys_openat fs/open.c:1433 [inline]
+       __se_sys_openat fs/open.c:1428 [inline]
+       __x64_sys_openat+0x247/0x2a0 fs/open.c:1428
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-Please try Ming Lei's recent fix in Jens' tree:
+-> #6 (mapping.invalidate_lock){++++}-{4:4}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1524
+       filemap_invalidate_lock_shared include/linux/fs.h:873 [inline]
+       page_cache_ra_unbounded+0x143/0x8c0 mm/readahead.c:226
+       do_async_mmap_readahead mm/filemap.c:3231 [inline]
+       filemap_fault+0x82a/0x1950 mm/filemap.c:3330
+       __do_fault+0x137/0x460 mm/memory.c:4907
+       do_read_fault mm/memory.c:5322 [inline]
+       do_fault mm/memory.c:5456 [inline]
+       do_pte_missing mm/memory.c:3979 [inline]
+       handle_pte_fault+0x335a/0x68a0 mm/memory.c:5801
+       __handle_mm_fault mm/memory.c:5944 [inline]
+       handle_mm_fault+0x1106/0x1bb0 mm/memory.c:6112
+       faultin_page mm/gup.c:1187 [inline]
+       __get_user_pages+0x1c82/0x49e0 mm/gup.c:1485
+       __get_user_pages_locked mm/gup.c:1751 [inline]
+       get_dump_page+0x155/0x2f0 mm/gup.c:2269
+       dump_user_range+0x14d/0x970 fs/coredump.c:943
+       elf_core_dump+0x3e9f/0x4790 fs/binfmt_elf.c:2129
+       do_coredump+0x229d/0x3100 fs/coredump.c:758
+       get_signal+0x140b/0x1750 kernel/signal.c:3002
+       arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:337
+       exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
+       exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
+       irqentry_exit_to_user_mode+0x7e/0x250 kernel/entry/common.c:231
+       exc_page_fault+0x590/0x8b0 arch/x86/mm/fault.c:1542
+       asm_exc_page_fault+0x26/0x30 arch/x86/include/asm/idtentry.h:623
 
-  virtio-blk: don't keep queue frozen during system suspend
-  commit: 7678abee0867e6b7fb89aa40f6e9f575f755fb37
+-> #5 (&mm->mmap_lock){++++}-{4:4}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       __might_fault+0xc6/0x120 mm/memory.c:6751
+       _inline_copy_from_user include/linux/uaccess.h:162 [inline]
+       _copy_from_user+0x2a/0xc0 lib/usercopy.c:18
+       copy_from_user include/linux/uaccess.h:212 [inline]
+       __blk_trace_setup kernel/trace/blktrace.c:626 [inline]
+       blk_trace_ioctl+0x1ad/0x9a0 kernel/trace/blktrace.c:740
+       blkdev_ioctl+0x40c/0x6a0 block/ioctl.c:682
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:906 [inline]
+       __se_sys_ioctl+0xf7/0x170 fs/ioctl.c:892
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-https://git.kernel.dk/cgit/linux/commit/?h=3Dblock-6.13&id=3D7678abee0867e6=
-b7fb89aa40f6e9f575f755fb37
+-> #4 (&q->debugfs_mutex){+.+.}-{4:4}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+       __mutex_lock+0x1ac/0xee0 kernel/locking/mutex.c:735
+       blk_mq_init_sched+0x3fa/0x830 block/blk-mq-sched.c:473
+       elevator_init_mq+0x20e/0x320 block/elevator.c:610
+       add_disk_fwnode+0x10d/0xf80 block/genhd.c:413
+       sd_probe+0xba6/0x1100 drivers/scsi/sd.c:4024
+       really_probe+0x2ba/0xad0 drivers/base/dd.c:658
+       __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:800
+       driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+       __device_attach_driver+0x2d6/0x530 drivers/base/dd.c:958
+       bus_for_each_drv+0x250/0x2e0 drivers/base/bus.c:459
+       __device_attach_async_helper+0x22d/0x300 drivers/base/dd.c:987
+       async_run_entry_fn+0xaa/0x420 kernel/async.c:129
+       process_one_work kernel/workqueue.c:3229 [inline]
+       process_scheduled_works+0xa68/0x1840 kernel/workqueue.c:3310
+       worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+       kthread+0x2f2/0x390 kernel/kthread.c:389
+       ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
-Stefan
+-> #3 (&q->q_usage_counter(queue)#50){++++}-{0:0}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       blk_queue_enter+0xe1/0x600 block/blk-core.c:328
+       blk_mq_alloc_request+0x4fa/0xaa0 block/blk-mq.c:651
+       scsi_alloc_request drivers/scsi/scsi_lib.c:1222 [inline]
+       scsi_execute_cmd+0x177/0x1090 drivers/scsi/scsi_lib.c:304
+       read_capacity_16+0x2b4/0x1450 drivers/scsi/sd.c:2655
+       sd_read_capacity drivers/scsi/sd.c:2824 [inline]
+       sd_revalidate_disk+0x1013/0xbce0 drivers/scsi/sd.c:3734
+       sd_probe+0x9fa/0x1100 drivers/scsi/sd.c:4010
+       really_probe+0x2ba/0xad0 drivers/base/dd.c:658
+       __driver_probe_device+0x1a2/0x390 drivers/base/dd.c:800
+       driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+       __device_attach_driver+0x2d6/0x530 drivers/base/dd.c:958
+       bus_for_each_drv+0x250/0x2e0 drivers/base/bus.c:459
+       __device_attach_async_helper+0x22d/0x300 drivers/base/dd.c:987
+       async_run_entry_fn+0xaa/0x420 kernel/async.c:129
+       process_one_work kernel/workqueue.c:3229 [inline]
+       process_scheduled_works+0xa68/0x1840 kernel/workqueue.c:3310
+       worker_thread+0x870/0xd30 kernel/workqueue.c:3391
+       kthread+0x2f2/0x390 kernel/kthread.c:389
+       ret_from_fork+0x4d/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
 
->=20
-> On Mon, Dec 9, 2024 at 10:49=E2=80=AFPM David Woodhouse <dwmw2@infradead.=
-org> wrote:
-> >
-> > Using the test case in https://git.kernel.org/torvalds/c/07fa619f2a40c
-> > I see sporadic lockdep warnings.
-> >
-> > This warning on the way into kexec seems to happen every time:
-> >
-> > [   67.416890] Freezing user space processes
-> > [   67.419277] Freezing user space processes completed (elapsed 0.001 s=
-econds)
-> > [   67.420754] OOM killer disabled.
-> > [   67.433337] BUG: workqueue leaked atomic, lock or RCU: kworker/u8:7[=
-558]
-> > [   67.433337]      preempt=3D0x00000000 lock=3D0->2 RCU=3D0->0 workfn=
-=3Dasync_run_entry_fn
-> > [   67.436941] 2 locks held by kworker/u8:7/558:
-> > [   67.437912]  #0: ffff893982fdb858 (&q->q_usage_counter(io)){++++}-{0=
-:0}, at: virtblk_freeze+0x28/0x70
-> > [   67.439980]  #1: ffff893982fdb890 (&q->q_usage_counter(queue)){++++}=
--{0:0}, at: virtblk_freeze+0x28/0x70
-> > [   67.441783] CPU: 0 UID: 0 PID: 558 Comm: kworker/u8:7 Not tainted 6.=
-13.0-rc1+ #2032
-> > [   67.442462] Disabling non-boot CPUs ...
-> > [   67.443101] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-> > [   67.443106] Workqueue: async async_run_entry_fn
-> > [   67.443114] Call Trace:
-> > [   67.443117]  <TASK>
-> > [   67.443123]  dump_stack_lvl+0x84/0xd0
-> > [   67.447325]  process_one_work.cold+0x6d/0xc8
-> > [   67.447991]  ? __pfx_async_run_entry_fn+0x10/0x10
-> > [   67.448644]  ? process_one_work+0x24a/0x590
-> > [   67.449226]  worker_thread+0x1c3/0x3b0
-> > [   67.449757]  ? __pfx_worker_thread+0x10/0x10
-> > [   67.450345]  kthread+0xd5/0x100
-> > [   67.450822]  ? __pfx_kthread+0x10/0x10
-> > [   67.451320]  ret_from_fork+0x34/0x50
-> > [   67.451775]  ? __pfx_kthread+0x10/0x10
-> > [   67.452239]  ret_from_fork_asm+0x1a/0x30
-> > [   67.452747]  </TASK>
-> > [   67.471104] smpboot: CPU 1 is now offline
-> >
-> >
-> >
-> > This one happens only occasionally (1 in 20 or so):
-> >
-> > B[   67.487529] ------------[ cut here ]------------
-> > [   67.488018] Interrupts enabled after irqrouter_resume+0x0/0x50
-> > [   67.488684] WARNING: CPU: 0 PID: 571 at drivers/base/syscore.c:103 s=
-yscore_resume+0x18a/0x220
-> > [   67.489571] Modules linked in:
-> > [   67.489920] CPU: 0 UID: 0 PID: 571 Comm: loadret Not tainted 6.13.0-=
-rc1+ #2032
-> > [   67.490692] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-> > [   67.491856] RIP: 0010:syscore_resume+0x18a/0x220
-> > [   67.492347] Code: 00 e9 21 ff ff ff 80 3d 62 d0 d3 01 00 0f 85 03 ff=
- ff ff 48 8b 73 18 48 c7 c7 06 f6 e9 8d c6 05 4a d0 d3 01 01 e8 16 56 46 ff=
- <0f> 0b e9 e5 fe ff ff e8 ea e9 54 ff 84 c0 0f 85 fb fe ff ff 80 3d
-> > [   67.494253] RSP: 0018:ffffaca540773a08 EFLAGS: 00010286
-> > [   67.494816] RAX: 0000000000000000 RBX: ffffffff8e9918c0 RCX: 0000000=
-000000027
-> > [   67.495560] RDX: ffff8939fdc21a88 RSI: 0000000000000001 RDI: ffff893=
-9fdc21a80
-> > [   67.496324] RBP: 0000000000037e0c R08: 0000000000000000 R09: 0000000=
-000000000
-> > [   67.497052] R10: 0000000000000001 R11: ffffffff8e782fd8 R12: ffffaca=
-540773a38
-> > [   67.497788] R13: ffffffff8e68ebe0 R14: 00000000fee1dead R15: 0000000=
-000000000
-> > [   67.498504] FS:  00007f9ae771f540(0000) GS:ffff8939fdc00000(0000) kn=
-lGS:0000000000000000
-> > [   67.499320] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   67.499930] CR2: 0000559aeea00b70 CR3: 0000000007a5e001 CR4: 0000000=
-000170ef0
-> > [   67.500650] Call Trace:
-> > [   67.500913]  <TASK>
-> > [   67.501147]  ? __warn.cold+0xb7/0x151
-> > [   67.501535]  ? syscore_resume+0x18a/0x220
-> > [   67.501963]  ? report_bug+0xff/0x140
-> > [   67.502331]  ? console_unlock+0x9d/0x150
-> > [   67.502757]  ? handle_bug+0x58/0x90
-> > [   67.503128]  ? exc_invalid_op+0x17/0x70
-> > [   67.503529]  ? asm_exc_invalid_op+0x1a/0x20
-> > [   67.503975]  ? syscore_resume+0x18a/0x220
-> > [   67.504390]  ? syscore_resume+0x18a/0x220
-> > [   67.504814]  kernel_kexec+0xf6/0x180
-> > [   67.505190]  __do_sys_reboot+0x206/0x250
-> > [   67.505653]  do_syscall_64+0x95/0x180
-> > [   67.506037]  ? __lock_acquire+0x45f/0x25c0
-> > [   67.506451]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.506974]  ? smp_call_function_many_cond+0x11c/0x790
-> > [   67.507503]  ? lock_acquire+0xd0/0x310
-> > [   67.507896]  ? free_unref_page+0x22b/0x6a0
-> > [   67.508316]  ? find_held_lock+0x2b/0x80
-> > [   67.508725]  ? free_unref_page+0x510/0x6a0
-> > [   67.509157]  ? do_raw_spin_unlock+0x4d/0xb0
-> > [   67.509592]  ? _raw_spin_unlock+0x23/0x40
-> > [   67.510006]  ? free_unref_page+0x510/0x6a0
-> > [   67.510428]  ? arch_kexec_pre_free_pages+0x1a/0x40
-> > [   67.510938]  ? do_kexec_load+0x11d/0x340
-> > [   67.511343]  ? kfree+0xdb/0x3a0
-> > [   67.511697]  ? __x64_sys_kexec_load+0xa9/0xe0
-> > [   67.512149]  ? kfree+0xdb/0x3a0
-> > [   67.512485]  ? do_kexec_load+0x11d/0x340
-> > [   67.512912]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.513430]  ? syscall_exit_to_user_mode+0x97/0x290
-> > [   67.513935]  ? do_syscall_64+0xa1/0x180
-> > [   67.514333]  ? find_held_lock+0x2b/0x80
-> > [   67.514736]  ? do_user_addr_fault+0x59f/0x8a0
-> > [   67.515193]  ? do_user_addr_fault+0x5a9/0x8a0
-> > [   67.515655]  ? trace_hardirqs_off+0x4b/0xc0
-> > [   67.516102]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.516625]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [   67.517138] RIP: 0033:0x7f9ae765115d
-> > [   67.517515] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa=
- 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05=
- <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb 5c 0c 00 f7 d8 64 89 01 48
-> > [   67.519312] RSP: 002b:00007ffd17db0ad8 EFLAGS: 00000246 ORIG_RAX: 00=
-000000000000a9
-> > [   67.520057] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f9=
-ae765115d
-> > [   67.520760] RDX: 0000000045584543 RSI: 0000000028121969 RDI: 0000000=
-0fee1dead
-> > [   67.521454] RBP: 00007ffd17db0b20 R08: 0000004d00000000 R09: 0000004=
-d00000000
-> > [   67.522172] R10: 00007f9ae7745f30 R11: 0000000000000246 R12: 0000000=
-000401070
-> > [   67.522881] R13: 00007ffd17db0c00 R14: 0000000000000000 R15: 0000000=
-000000000
-> > [   67.523593]  </TASK>
-> > [   67.523832] irq event stamp: 15605
-> > [   67.524181] hardirqs last  enabled at (15613): [<ffffffff8c281b8e>] =
-__up_console_sem+0x7e/0x90
-> > [   67.525034] hardirqs last disabled at (15620): [<ffffffff8c281b73>] =
-__up_console_sem+0x63/0x90
-> > [   67.525935] softirqs last  enabled at (14732): [<ffffffff8c1c6c12>] =
-__irq_exit_rcu+0xe2/0x100
-> > [   67.526780] softirqs last disabled at (14717): [<ffffffff8c1c6c12>] =
-__irq_exit_rcu+0xe2/0x100
-> > [   67.527616] ---[ end trace 0000000000000000 ]---
-> > [   67.530225] ------------[ cut here ]------------
-> > [   67.530760] WARNING: CPU: 0 PID: 571 at kernel/time/hrtimer.c:995 hr=
-timers_resume_local+0x29/0x40
-> > [   67.531654] Modules linked in:
-> > [   67.531982] CPU: 0 UID: 0 PID: 571 Comm: loadret Tainted: G        W=
-          6.13.0-rc1+ #2032
-> > [   67.532862] Tainted: [W]=3DWARN
-> > [   67.533185] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-> > [   67.534313] RIP: 0010:hrtimers_resume_local+0x29/0x40
-> > [   67.534833] Code: 90 66 0f 1f 00 0f 1f 44 00 00 8b 05 c5 57 81 02 85=
- c0 74 18 65 8b 05 0e 8c d4 73 85 c0 75 0d 65 8b 05 c7 88 d4 73 85 c0 74 02=
- <0f> 0b 31 ff e9 de ee ff ff 66 66 2e 0f 1f 84 00 00 00 00 00 0f 1f
-> > [   67.536771] RSP: 0018:ffffaca5407739a0 EFLAGS: 00010202
-> > [   67.537296] RAX: 0000000000000001 RBX: 0000000fcd31f08b RCX: 0000000=
-0000006e0
-> > [   67.538000] RDX: 0000000000000029 RSI: 00000000007f56f4 RDI: 0000000=
-0000006e0
-> > [   67.538706] RBP: ffffaca5407739f8 R08: 0000000000000001 R09: 0000000=
-000000000
-> > [   67.539406] R10: 0000000000000001 R11: ffffffff9018d188 R12: 0000000=
-000000202
-> > [   67.540104] R13: ffffffff8e666ca0 R14: 00000000fee1dead R15: 0000000=
-000000000
-> > [   67.540840] FS:  00007f9ae771f540(0000) GS:ffff8939fdc00000(0000) kn=
-lGS:0000000000000000
-> > [   67.541638] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-> > [   67.542218] CR2: 0000559aeea00b70 CR3: 0000000007a5e001 CR4: 0000000=
-000170ef0
-> > [   67.542915] Call Trace:
-> > [   67.543185]  <TASK>
-> > [   67.543413]  ? __warn.cold+0xb7/0x151
-> > [   67.543804]  ? hrtimers_resume_local+0x29/0x40
-> > [   67.544269]  ? report_bug+0xff/0x140
-> > [   67.544646]  ? handle_bug+0x58/0x90
-> > [   67.544999]  ? exc_invalid_op+0x17/0x70
-> > [   67.545396]  ? asm_exc_invalid_op+0x1a/0x20
-> > [   67.545862]  ? hrtimers_resume_local+0x29/0x40
-> > [   67.546318]  timekeeping_resume+0x148/0x190
-> > [   67.546743]  syscore_resume+0x67/0x220
-> > [   67.547132]  kernel_kexec+0xf6/0x180
-> > [   67.547491]  __do_sys_reboot+0x206/0x250
-> > [   67.547902]  do_syscall_64+0x95/0x180
-> > [   67.548285]  ? __lock_acquire+0x45f/0x25c0
-> > [   67.548714]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.549255]  ? smp_call_function_many_cond+0x11c/0x790
-> > [   67.549783]  ? lock_acquire+0xd0/0x310
-> > [   67.550176]  ? free_unref_page+0x22b/0x6a0
-> > [   67.550594]  ? find_held_lock+0x2b/0x80
-> > [   67.550973]  ? free_unref_page+0x510/0x6a0
-> > [   67.551409]  ? do_raw_spin_unlock+0x4d/0xb0
-> > [   67.551849]  ? _raw_spin_unlock+0x23/0x40
-> > [   67.552263]  ? free_unref_page+0x510/0x6a0
-> > [   67.552682]  ? arch_kexec_pre_free_pages+0x1a/0x40
-> > [   67.553169]  ? do_kexec_load+0x11d/0x340
-> > [   67.553553]  ? kfree+0xdb/0x3a0
-> > [   67.553895]  ? __x64_sys_kexec_load+0xa9/0xe0
-> > [   67.554345]  ? kfree+0xdb/0x3a0
-> > [   67.554678]  ? do_kexec_load+0x11d/0x340
-> > [   67.555073]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.555581]  ? syscall_exit_to_user_mode+0x97/0x290
-> > [   67.556121]  ? do_syscall_64+0xa1/0x180
-> > [   67.556506]  ? find_held_lock+0x2b/0x80
-> > [   67.556898]  ? do_user_addr_fault+0x59f/0x8a0
-> > [   67.557347]  ? do_user_addr_fault+0x5a9/0x8a0
-> > [   67.557795]  ? trace_hardirqs_off+0x4b/0xc0
-> > [   67.558221]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.558721]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [   67.559230] RIP: 0033:0x7f9ae765115d
-> > [   67.559625] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa=
- 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05=
- <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb 5c 0c 00 f7 d8 64 89 01 48
-> > [   67.561378] RSP: 002b:00007ffd17db0ad8 EFLAGS: 00000246 ORIG_RAX: 00=
-000000000000a9
-> > [   67.562124] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f9=
-ae765115d
-> > [   67.562815] RDX: 0000000045584543 RSI: 0000000028121969 RDI: 0000000=
-0fee1dead
-> > [   67.563507] RBP: 00007ffd17db0b20 R08: 0000004d00000000 R09: 0000004=
-d00000000
-> > [   67.564223] R10: 00007f9ae7745f30 R11: 0000000000000246 R12: 0000000=
-000401070
-> > [   67.564912] R13: 00007ffd17db0c00 R14: 0000000000000000 R15: 0000000=
-000000000
-> > [   67.565614]  </TASK>
-> > [   67.565847] irq event stamp: 16351
-> > [   67.566214] hardirqs last  enabled at (16361): [<ffffffff8c281b8e>] =
-__up_console_sem+0x7e/0x90
-> > [   67.567039] hardirqs last disabled at (16368): [<ffffffff8c281b73>] =
-__up_console_sem+0x63/0x90
-> > [   67.567867] softirqs last  enabled at (16260): [<ffffffff8c1c6c12>] =
-__irq_exit_rcu+0xe2/0x100
-> > [   67.568702] softirqs last disabled at (16245): [<ffffffff8c1c6c12>] =
-__irq_exit_rcu+0xe2/0x100
-> > [   67.569516] ---[ end trace 0000000000000000 ]---
-> > [   67.569981]
-> > [   67.570150] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > [   67.570561] WARNING: inconsistent lock state
-> > [   67.570982] 6.13.0-rc1+ #2032 Tainted: G        W
-> > [   67.571501] --------------------------------
-> > [   67.571922] inconsistent {IN-HARDIRQ-W} -> {HARDIRQ-ON-W} usage.
-> > [   67.572490] loadret/571 [HC0[0]:SC0[0]:HE1:SE1] takes:
-> > [   67.572984] ffff8939fdc267d8 (hrtimer_bases.lock){?.-.}-{2:2}, at: r=
-etrigger_next_event+0x38/0xd0
-> > [   67.573831] {IN-HARDIRQ-W} state was registered at:
-> > [   67.574299]   lock_acquire+0xd0/0x310
-> > [   67.574670]   _raw_spin_lock_irqsave+0x48/0x70
-> > [   67.575102]   hrtimer_run_queues+0x4d/0x150
-> > [   67.575504]   update_process_times+0x34/0xf0
-> > [   67.575926]   tick_periodic+0x29/0xe0
-> > [   67.576287]   tick_handle_periodic+0x24/0x70
-> > [   67.576715]   timer_interrupt+0x18/0x30
-> > [   67.577093]   __handle_irq_event_percpu+0x87/0x260
-> > [   67.577573]   handle_irq_event+0x38/0x90
-> > [   67.577970]   handle_level_irq+0x8e/0x160
-> > [   67.578350]   __common_interrupt+0x5c/0x120
-> > [   67.578763]   common_interrupt+0x80/0xa0
-> > [   67.579144]   asm_common_interrupt+0x26/0x40
-> > [   67.579558]   __x86_return_thunk+0x0/0x10
-> > [   67.579951]   _raw_spin_unlock_irqrestore+0x45/0x70
-> > [   67.580418]   __setup_irq+0x34d/0x6a0
-> > [   67.580787]   request_threaded_irq+0x115/0x1b0
-> > [   67.581214]   hpet_time_init+0x31/0x50
-> > [   67.581577]   x86_late_time_init+0x1b/0x40
-> > [   67.581975]   start_kernel+0x998/0xa40
-> > [   67.582336]   x86_64_start_reservations+0x24/0x30
-> > [   67.582792]   x86_64_start_kernel+0xed/0xf0
-> > [   67.583187]   common_startup_64+0x13e/0x141
-> > [   67.583603] irq event stamp: 16407
-> > [   67.583934] hardirqs last  enabled at (16407): [<ffffffff8c281b8e>] =
-__up_console_sem+0x7e/0x90
-> > [   67.584742] hardirqs last disabled at (16406): [<ffffffff8c281b73>] =
-__up_console_sem+0x63/0x90
-> > [   67.585537] softirqs last  enabled at (16260): [<ffffffff8c1c6c12>] =
-__irq_exit_rcu+0xe2/0x100
-> > [   67.586338] softirqs last disabled at (16245): [<ffffffff8c1c6c12>] =
-__irq_exit_rcu+0xe2/0x100
-> > [   67.587143]
-> > [   67.587143] other info that might help us debug this:
-> > [   67.587759]  Possible unsafe locking scenario:
-> > [   67.587759]
-> > [   67.588319]        CPU0
-> > [   67.588564]        ----
-> > [   67.588822]   lock(hrtimer_bases.lock);
-> > [   67.589192]   <Interrupt>
-> > [   67.589451]     lock(hrtimer_bases.lock);
-> > [   67.589843]
-> > [   67.589843]  *** DEADLOCK ***
-> > [   67.589843]
-> > [   67.590400] 1 lock held by loadret/571:
-> > [   67.590775]  #0: ffffffff8e6902c8 (system_transition_mutex){+.+.}-{4=
-:4}, at: __do_sys_reboot+0xc5/0x250
-> > [   67.591655]
-> > [   67.591655] stack backtrace:
-> > [   67.592073] CPU: 0 UID: 0 PID: 571 Comm: loadret Tainted: G        W=
-          6.13.0-rc1+ #2032
-> > [   67.592883] Tainted: [W]=3DWARN
-> > [   67.593176] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-> > [   67.594234] Call Trace:
-> > [   67.594480]  <TASK>
-> > [   67.594707]  dump_stack_lvl+0x84/0xd0
-> > [   67.595067]  print_usage_bug.part.0+0x257/0x340
-> > [   67.595505]  mark_lock+0x735/0x960
-> > [   67.595849]  ? vprintk_emit+0x111/0x460
-> > [   67.596221]  ? hrtimers_resume_local+0x29/0x40
-> > [   67.596666]  ? _printk+0x6c/0x90
-> > [   67.596986]  __lock_acquire+0x7ee/0x25c0
-> > [   67.597367]  ? __warn.cold+0x7f/0x151
-> > [   67.597728]  ? hrtimers_resume_local+0x29/0x40
-> > [   67.598160]  ? nbcon_get_cpu_emergency_nesting+0xa/0x30
-> > [   67.598671]  ? nbcon_cpu_emergency_exit+0xe/0x40
-> > [   67.599115]  ? report_bug+0xff/0x140
-> > [   67.599462]  lock_acquire+0xd0/0x310
-> > [   67.599815]  ? retrigger_next_event+0x38/0xd0
-> > [   67.600234]  _raw_spin_lock+0x30/0x40
-> > [   67.600603]  ? retrigger_next_event+0x38/0xd0
-> > [   67.601025]  retrigger_next_event+0x38/0xd0
-> > [   67.601425]  timekeeping_resume+0x148/0x190
-> > [   67.601832]  syscore_resume+0x67/0x220
-> > [   67.602193]  kernel_kexec+0xf6/0x180
-> > [   67.602542]  __do_sys_reboot+0x206/0x250
-> > [   67.602934]  do_syscall_64+0x95/0x180
-> > [   67.603292]  ? __lock_acquire+0x45f/0x25c0
-> > [   67.603706]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.604188]  ? smp_call_function_many_cond+0x11c/0x790
-> > [   67.604684]  ? lock_acquire+0xd0/0x310
-> > [   67.605049]  ? free_unref_page+0x22b/0x6a0
-> > [   67.605444]  ? find_held_lock+0x2b/0x80
-> > [   67.605820]  ? free_unref_page+0x510/0x6a0
-> > [   67.606209]  ? do_raw_spin_unlock+0x4d/0xb0
-> > [   67.606621]  ? _raw_spin_unlock+0x23/0x40
-> > [   67.607008]  ? free_unref_page+0x510/0x6a0
-> > [   67.607406]  ? arch_kexec_pre_free_pages+0x1a/0x40
-> > [   67.607873]  ? do_kexec_load+0x11d/0x340
-> > [   67.608251]  ? kfree+0xdb/0x3a0
-> > [   67.608565]  ? __x64_sys_kexec_load+0xa9/0xe0
-> > [   67.608999]  ? kfree+0xdb/0x3a0
-> > [   67.609314]  ? do_kexec_load+0x11d/0x340
-> > [   67.609699]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.610179]  ? syscall_exit_to_user_mode+0x97/0x290
-> > [   67.610654]  ? do_syscall_64+0xa1/0x180
-> > [   67.611027]  ? find_held_lock+0x2b/0x80
-> > [   67.611399]  ? do_user_addr_fault+0x59f/0x8a0
-> > [   67.611839]  ? do_user_addr_fault+0x5a9/0x8a0
-> > [   67.612265]  ? trace_hardirqs_off+0x4b/0xc0
-> > [   67.612662]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
-> > [   67.613147]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [   67.613639] RIP: 0033:0x7f9ae765115d
-> > [   67.613988] Code: 00 c3 66 2e 0f 1f 84 00 00 00 00 00 90 f3 0f 1e fa=
- 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05=
- <48> 3d 01 f0 ff ff 73 01 c3 48 8b 0d fb 5c 0c 00 f7 d8 64 89 01 48
-> > [   67.615719] RSP: 002b:00007ffd17db0ad8 EFLAGS: 00000246 ORIG_RAX: 00=
-000000000000a9
-> > [   67.616429] RAX: ffffffffffffffda RBX: 0000000000000000 RCX: 00007f9=
-ae765115d
-> > [   67.617098] RDX: 0000000045584543 RSI: 0000000028121969 RDI: 0000000=
-0fee1dead
-> > [   67.617770] RBP: 00007ffd17db0b20 R08: 0000004d00000000 R09: 0000004=
-d00000000
-> > [   67.618440] R10: 00007f9ae7745f30 R11: 0000000000000246 R12: 0000000=
-000401070
-> > [   67.619120] R13: 00007ffd17db0c00 R14: 0000000000000000 R15: 0000000=
-000000000
-> > [   67.619803]  </TASK>
-> > [   67.620127] Enabling non-boot CPUs ...
-> >
-> >
-> > I also saw this one *between* attempts, presumably caused by the virtbl=
-k_freeze() one:
-> >
-> > [   23.699450]
-> > [   23.699826] =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> > [   23.701054] WARNING: possible circular locking dependency detected
-> > [   23.702409] 6.13.0-rc1+ #2032 Not tainted
-> > [   23.703148] ------------------------------------------------------
-> > [   23.704248] kworker/u8:4/76 is trying to acquire lock:
-> > [   23.705177] ffff892c811a2d48 ((wq_completion)ext4-rsv-conversion){+.=
-+.}-{0:0}, at: process_one_work+0x51d/0x590
-> > [   23.706899]
-> > [   23.706899] but task is already holding lock:
-> > [   23.707829] ffff892c82fb5430 (&q->q_usage_counter(io)){++++}-{0:0}, =
-at: virtblk_freeze+0x28/0x70
-> > [   23.709152]
-> > [   23.709152] which lock already depends on the new lock.
-> > [   23.709152]
-> > [   23.710309]
-> > [   23.710309] the existing dependency chain (in reverse order) is:
-> > [   23.711374]
-> > [   23.711374] -> #3 (&q->q_usage_counter(io)){++++}-{0:0}:
-> > [   23.712380]        blk_mq_submit_bio+0x90d/0xb00
-> > [   23.713006]        __submit_bio+0x10d/0x1f0
-> > [   23.713559]        submit_bio_noacct_nocheck+0x324/0x420
-> > [   23.714266]        ext4_bio_write_folio+0x1fc/0x750
-> > [   23.714851]        mpage_submit_folio+0x8d/0xb0
-> > [   23.715409]        mpage_process_page_bufs+0xd0/0x1b0
-> > [   23.716024]        mpage_prepare_extent_to_map+0x1d0/0x510
-> > [   23.716669]        ext4_do_writepages+0x4ec/0xee0
-> > [   23.717246]        ext4_writepages+0xe0/0x280
-> > [   23.717772]        do_writepages+0xeb/0x290
-> > [   23.718264]        filemap_fdatawrite_wbc+0x4f/0x70
-> > [   23.718830]        __filemap_fdatawrite_range+0x60/0x90
-> > [   23.719440]        file_write_and_wait_range+0x47/0xb0
-> > [   23.720049]        ext4_sync_file+0xac/0x3e0
-> > [   23.720548]        do_fsync+0x39/0x70
-> > [   23.720995]        __x64_sys_fsync+0x13/0x20
-> > [   23.721481]        do_syscall_64+0x95/0x180
-> > [   23.721943]        entry_SYSCALL_64_after_hwframe+0x76/0x7e
-> > [   23.722522]
-> > [   23.722522] -> #2 (jbd2_handle){++++}-{0:0}:
-> > [   23.723139]        start_this_handle+0x193/0x540
-> > [   23.723634]        jbd2_journal_start_reserved+0x54/0x1e0
-> > [   23.724210]        __ext4_journal_start_reserved+0x7a/0x170
-> > [   23.724756]        ext4_convert_unwritten_io_end_vec+0x2b/0xe0
-> > [   23.725304]        ext4_end_io_rsv_work+0x102/0x1d0
-> > [   23.725798]        process_one_work+0x21f/0x590
-> > [   23.726255]        worker_thread+0x1c3/0x3b0
-> > [   23.726690]        kthread+0xd5/0x100
-> > [   23.727072]        ret_from_fork+0x34/0x50
-> > [   23.727481]        ret_from_fork_asm+0x1a/0x30
-> > [   23.727939]
-> > [   23.727939] -> #1 ((work_completion)(&ei->i_rsv_conversion_work)){+.=
-+.}-{0:0}:
-> > [   23.728788]        process_one_work+0x1f4/0x590
-> > [   23.729267]        worker_thread+0x1c3/0x3b0
-> > [   23.729715]        kthread+0xd5/0x100
-> > [   23.730100]        ret_from_fork+0x34/0x50
-> > [   23.730502]        ret_from_fork_asm+0x1a/0x30
-> > [   23.730944]
-> > [   23.730944] -> #0 ((wq_completion)ext4-rsv-conversion){+.+.}-{0:0}:
-> > [   23.731688]        __lock_acquire+0x14ba/0x25c0
-> > [   23.732142]        lock_acquire+0xd0/0x310
-> > [   23.732550]        process_one_work+0x52e/0x590
-> > [   23.732995]        worker_thread+0x1c3/0x3b0
-> > [   23.733424]        kthread+0xd5/0x100
-> > [   23.733783]        ret_from_fork+0x34/0x50
-> > [   23.734191]        ret_from_fork_asm+0x1a/0x30
-> > [   23.734632]
-> > [   23.734632] other info that might help us debug this:
-> > [   23.734632]
-> > [   23.735409] Chain exists of:
-> > [   23.735409]   (wq_completion)ext4-rsv-conversion --> jbd2_handle -->=
- &q->q_usage_counter(io)
-> > [   23.735409]
-> > [   23.736630]  Possible unsafe locking scenario:
-> > [   23.736630]
-> > [   23.737214]        CPU0                    CPU1
-> > [   23.737662]        ----                    ----
-> > [   23.738124]   lock(&q->q_usage_counter(io));
-> > [   23.738539]                                lock(jbd2_handle);
-> > [   23.739112]                                lock(&q->q_usage_counter(=
-io));
-> > [   23.739770]   lock((wq_completion)ext4-rsv-conversion);
-> > [   23.740296]
-> > [   23.740296]  *** DEADLOCK ***
-> > [   23.740296]
-> > [   23.740850] 2 locks held by kworker/u8:4/76:
-> > [   23.741284]  #0: ffff892c82fb5430 (&q->q_usage_counter(io)){++++}-{0=
-:0}, at: virtblk_freeze+0x28/0x70
-> > [   23.742172]  #1: ffff892c82fb5468 (&q->q_usage_counter(queue)){++++}=
--{0:0}, at: virtblk_freeze+0x28/0x70
-> > [   23.743083]
-> > [   23.743083] stack backtrace:
-> > [   23.743514] CPU: 0 UID: 0 PID: 76 Comm: kworker/u8:4 Not tainted 6.1=
-3.0-rc1+ #2032
-> > [   23.744259] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-> > [   23.745355] Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
-> > [   23.745947] Call Trace:
-> > [   23.746207]  <TASK>
-> > [   23.746428]  dump_stack_lvl+0x84/0xd0
-> > [   23.746807]  print_circular_bug.cold+0x178/0x1be
-> > [   23.747280]  check_noncircular+0x148/0x160
-> > [   23.747694]  __lock_acquire+0x14ba/0x25c0
-> > [   23.748114]  lock_acquire+0xd0/0x310
-> > [   23.748480]  ? process_one_work+0x51d/0x590
-> > [   23.748906]  ? mark_held_locks+0x40/0x70
-> > [   23.749303]  process_one_work+0x52e/0x590
-> > [   23.749705]  ? process_one_work+0x51d/0x590
-> > [   23.750136]  worker_thread+0x1c3/0x3b0
-> > [   23.750503]  ? __pfx_worker_thread+0x10/0x10
-> > [   23.750923]  kthread+0xd5/0x100
-> > [   23.751235]  ? __pfx_kthread+0x10/0x10
-> > [   23.751601]  ret_from_fork+0x34/0x50
-> > [   23.751968]  ? __pfx_kthread+0x10/0x10
-> > [   23.752334]  ret_from_fork_asm+0x1a/0x30
-> > [   23.752721]  </TASK>
-> > [   23.753031] BUG: workqueue leaked atomic, lock or RCU: kworker/u8:4[=
-76]
-> > [   23.753031]      preempt=3D0x00000000 lock=3D2->0 RCU=3D0->0 workfn=
-=3Dext4_end_io_rsv_work
-> > [   23.754419] INFO: lockdep is turned off.
-> > [   23.754814] CPU: 0 UID: 0 PID: 76 Comm: kworker/u8:4 Not tainted 6.1=
-3.0-rc1+ #2032
-> > [   23.755537] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), B=
-IOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-> > [   23.756621] Workqueue: ext4-rsv-conversion ext4_end_io_rsv_work
-> > [   23.757214] Call Trace:
-> > [   23.757464]  <TASK>
-> > [   23.757682]  dump_stack_lvl+0x84/0xd0
-> > [   23.758060]  process_one_work.cold+0x6d/0xc8
-> > [   23.758481]  ? __pfx_ext4_end_io_rsv_work+0x10/0x10
-> > [   23.758946]  ? process_one_work+0x24a/0x590
-> > [   23.759339]  worker_thread+0x1c3/0x3b0
-> > [   23.759706]  ? __pfx_worker_thread+0x10/0x10
-> > [   23.760276]  kthread+0xd5/0x100
-> > [   23.760581]  ? __pfx_kthread+0x10/0x10
-> > [   23.760956]  ret_from_fork+0x34/0x50
-> > [   23.761306]  ? __pfx_kthread+0x10/0x10
-> > [   23.761669]  ret_from_fork_asm+0x1a/0x30
-> > [   23.762064]  </TASK>
-> >
-> >
-> >
->=20
+-> #2 (&q->limits_lock){+.+.}-{4:4}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       __mutex_lock_common kernel/locking/mutex.c:585 [inline]
+       __mutex_lock+0x1ac/0xee0 kernel/locking/mutex.c:735
+       queue_limits_start_update include/linux/blkdev.h:949 [inline]
+       loop_reconfigure_limits+0x43f/0x900 drivers/block/loop.c:998
+       loop_set_block_size drivers/block/loop.c:1473 [inline]
+       lo_simple_ioctl drivers/block/loop.c:1496 [inline]
+       lo_ioctl+0x1351/0x1f50 drivers/block/loop.c:1559
+       blkdev_ioctl+0x57f/0x6a0 block/ioctl.c:693
+       vfs_ioctl fs/ioctl.c:51 [inline]
+       __do_sys_ioctl fs/ioctl.c:906 [inline]
+       __se_sys_ioctl+0xf7/0x170 fs/ioctl.c:892
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
---DQOQnx0NXFZYiys9
-Content-Type: application/pgp-signature; name="signature.asc"
+-> #1 (&q->q_usage_counter(io)#24){++++}-{0:0}:
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       bio_queue_enter block/blk.h:75 [inline]
+       blk_mq_submit_bio+0x1536/0x2390 block/blk-mq.c:3091
+       __submit_bio+0x2c6/0x560 block/blk-core.c:629
+       __submit_bio_noacct_mq block/blk-core.c:710 [inline]
+       submit_bio_noacct_nocheck+0x4d3/0xe30 block/blk-core.c:739
+       ext4_read_block_bitmap_nowait+0x7c5/0xa80 fs/ext4/balloc.c:551
+       ext4_mb_init_cache+0x484/0x1670 fs/ext4/mballoc.c:1337
+       ext4_mb_init_group+0x324/0x6f0 fs/ext4/mballoc.c:1543
+       ext4_mb_load_buddy_gfp+0xd83/0x1490 fs/ext4/mballoc.c:1613
+       ext4_mb_clear_bb fs/ext4/mballoc.c:6451 [inline]
+       ext4_free_blocks+0xc9c/0x2240 fs/ext4/mballoc.c:6652
+       ext4_remove_blocks fs/ext4/extents.c:2547 [inline]
+       ext4_ext_rm_leaf fs/ext4/extents.c:2712 [inline]
+       ext4_ext_remove_space+0x240f/0x4e00 fs/ext4/extents.c:2961
+       ext4_ext_truncate+0x159/0x2b0 fs/ext4/extents.c:4466
+       ext4_truncate+0xa1b/0x11c0 fs/ext4/inode.c:4217
+       ext4_process_orphan+0x1aa/0x2d0 fs/ext4/orphan.c:339
+       ext4_orphan_cleanup+0xb77/0x13d0 fs/ext4/orphan.c:474
+       __ext4_fill_super fs/ext4/super.c:5610 [inline]
+       ext4_fill_super+0x64dc/0x6e60 fs/ext4/super.c:5733
+       get_tree_bdev_flags+0x48e/0x5c0 fs/super.c:1636
+       vfs_get_tree+0x92/0x2b0 fs/super.c:1814
+       do_new_mount+0x2be/0xb40 fs/namespace.c:3507
+       do_mount fs/namespace.c:3847 [inline]
+       __do_sys_mount fs/namespace.c:4057 [inline]
+       __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
------BEGIN PGP SIGNATURE-----
+-> #0 (&ei->i_data_sem){++++}-{4:4}:
+       check_prev_add kernel/locking/lockdep.c:3161 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+       validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
+       __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5226
+       lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+       down_read+0xb1/0xa40 kernel/locking/rwsem.c:1524
+       ext4_da_map_blocks fs/ext4/inode.c:1799 [inline]
+       ext4_da_get_block_prep+0x428/0x1900 fs/ext4/inode.c:1873
+       ext4_block_write_begin+0x55c/0x1980 fs/ext4/inode.c:1063
+       ext4_da_convert_inline_data_to_extent fs/ext4/inline.c:860 [inline]
+       ext4_da_write_inline_data_begin+0x545/0x1090 fs/ext4/inline.c:921
+       ext4_da_write_begin+0x4fe/0xa60 fs/ext4/inode.c:2932
+       generic_perform_write+0x346/0x6d0 mm/filemap.c:4055
+       ext4_buffered_write_iter+0xc5/0x350 fs/ext4/file.c:299
+       ext4_file_write_iter+0x892/0x1c50
+       do_iter_readv_writev+0x602/0x880
+       vfs_writev+0x376/0xba0 fs/read_write.c:1050
+       do_pwritev fs/read_write.c:1146 [inline]
+       __do_sys_pwritev2 fs/read_write.c:1204 [inline]
+       __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-iQEzBAEBCAAdFiEEhpWov9P5fNqsNXdanKSrs4Grc8gFAmdZiMAACgkQnKSrs4Gr
-c8h1CAgArJGaxnXahBLDFNuuXbVkLmCqoxiSmb+ia8t5+gjFPG6exzfDdfdueIpq
-4OaXT4yQYmWPIoQUT5vMD9UzM1m9iYd97gOR49XPlpipKw3zEUaK5+VEp4Dar4j6
-TbXvJFDEBL1SY65ST3+g5Savg91F0dOamrByQHoL1vaT7ndM+c3MQit9rhJ0vWzU
-lXa5rjjJibnCth6QGEkHJ43rMGYLzCO+tLwdceqMtm4NiuY/BCkunUX8POuiLfkl
-lzusYn6YY0R/9YvypIB0LIPKllHsRsPx3j4gOu3WsRTvaRJK9E6VQVg4fl4MRllT
-vc60+QNwhznilmNg7+f4o8nyZCQgVA==
-=Mm3e
------END PGP SIGNATURE-----
+other info that might help us debug this:
 
---DQOQnx0NXFZYiys9--
+Chain exists of:
+  &ei->i_data_sem --> mapping.invalidate_lock --> &ei->xattr_sem
 
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  rlock(&ei->xattr_sem);
+                               lock(mapping.invalidate_lock);
+                               lock(&ei->xattr_sem);
+  rlock(&ei->i_data_sem);
+
+ *** DEADLOCK ***
+
+3 locks held by syz.4.1456/13188:
+ #0: ffff888024e38420 (sb_writers#4){.+.+}-{0:0}, at: file_start_write include/linux/fs.h:2964 [inline]
+ #0: ffff888024e38420 (sb_writers#4){.+.+}-{0:0}, at: vfs_writev+0x2d1/0xba0 fs/read_write.c:1048
+ #1: ffff888040d897c8 (&sb->s_type->i_mutex_key#8){++++}-{4:4}, at: inode_lock include/linux/fs.h:818 [inline]
+ #1: ffff888040d897c8 (&sb->s_type->i_mutex_key#8){++++}-{4:4}, at: ext4_buffered_write_iter+0x96/0x350 fs/ext4/file.c:294
+ #2: ffff888040d89498 (&ei->xattr_sem){++++}-{4:4}, at: ext4_da_convert_inline_data_to_extent fs/ext4/inline.c:846 [inline]
+ #2: ffff888040d89498 (&ei->xattr_sem){++++}-{4:4}, at: ext4_da_write_inline_data_begin+0x2d3/0x1090 fs/ext4/inline.c:921
+
+stack backtrace:
+CPU: 0 UID: 0 PID: 13188 Comm: syz.4.1456 Not tainted 6.13.0-rc1-syzkaller-00316-gb5f217084ab3 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:94 [inline]
+ dump_stack_lvl+0x241/0x360 lib/dump_stack.c:120
+ print_circular_bug+0x13a/0x1b0 kernel/locking/lockdep.c:2074
+ check_noncircular+0x36a/0x4a0 kernel/locking/lockdep.c:2206
+ check_prev_add kernel/locking/lockdep.c:3161 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3280 [inline]
+ validate_chain+0x18ef/0x5920 kernel/locking/lockdep.c:3904
+ __lock_acquire+0x1397/0x2100 kernel/locking/lockdep.c:5226
+ lock_acquire+0x1ed/0x550 kernel/locking/lockdep.c:5849
+ down_read+0xb1/0xa40 kernel/locking/rwsem.c:1524
+ ext4_da_map_blocks fs/ext4/inode.c:1799 [inline]
+ ext4_da_get_block_prep+0x428/0x1900 fs/ext4/inode.c:1873
+ ext4_block_write_begin+0x55c/0x1980 fs/ext4/inode.c:1063
+ ext4_da_convert_inline_data_to_extent fs/ext4/inline.c:860 [inline]
+ ext4_da_write_inline_data_begin+0x545/0x1090 fs/ext4/inline.c:921
+ ext4_da_write_begin+0x4fe/0xa60 fs/ext4/inode.c:2932
+ generic_perform_write+0x346/0x6d0 mm/filemap.c:4055
+ ext4_buffered_write_iter+0xc5/0x350 fs/ext4/file.c:299
+ ext4_file_write_iter+0x892/0x1c50
+ do_iter_readv_writev+0x602/0x880
+ vfs_writev+0x376/0xba0 fs/read_write.c:1050
+ do_pwritev fs/read_write.c:1146 [inline]
+ __do_sys_pwritev2 fs/read_write.c:1204 [inline]
+ __se_sys_pwritev2+0x196/0x2b0 fs/read_write.c:1195
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x77/0x7f
+RIP: 0033:0x7f71caf7fed9
+Code: ff ff c3 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f71cbdcb058 EFLAGS: 00000246 ORIG_RAX: 0000000000000148
+RAX: ffffffffffffffda RBX: 00007f71cb145fa0 RCX: 00007f71caf7fed9
+RDX: 0000000000000001 RSI: 0000000020000100 RDI: 0000000000000009
+RBP: 00007f71caff3cc8 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000005412 R11: 0000000000000246 R12: 0000000000000000
+R13: 0000000000000000 R14: 00007f71cb145fa0 R15: 00007ffee86e1f88
+ </TASK>
+EXT4-fs (loop4): Delayed block allocation failed for inode 15 at logical offset 10 with max blocks 23 with error 28
+EXT4-fs (loop4): This should not happen!! Data will be lost
+
+EXT4-fs (loop4): Total free blocks count 0
+EXT4-fs (loop4): Free/Dirty block details
+EXT4-fs (loop4): free_blocks=66060288
+EXT4-fs (loop4): dirty_blocks=48
+EXT4-fs (loop4): Block reservation details
+EXT4-fs (loop4): i_reserved_data_blocks=3
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
