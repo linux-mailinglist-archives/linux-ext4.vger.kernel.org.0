@@ -1,226 +1,182 @@
-Return-Path: <linux-ext4+bounces-5559-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5560-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B6AA99ED0A1
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 17:01:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA0B19ED1C6
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 17:30:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8BF8616697C
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 16:01:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B04D18876F5
+	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 16:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCDC81D798E;
-	Wed, 11 Dec 2024 16:00:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8FBE1DE2A9;
+	Wed, 11 Dec 2024 16:30:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Nl3IYdP9";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7YEGTHuy";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2JoZmzDk";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="9tNWk36n"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SfTs3FVh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E/WlTmkR";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="SfTs3FVh";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E/WlTmkR"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C94224633F;
-	Wed, 11 Dec 2024 16:00:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE02C1DD88D;
+	Wed, 11 Dec 2024 16:30:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733932857; cv=none; b=DZX+zszmRBxx/7T8LT1+Nca+897HzMzJW0DzgvyPNigrj38MvQC2xRL99gKlXz+tRCRLhkuW3f0tXKfWbEd7xML+kRD9n/GfNbmOvHElvgfBAYoZKcju5+ZQFCypAvhB1awHwVHf/nQ2kGyix1TinkcPlu8p5XKKLHoujylKxKQ=
+	t=1733934610; cv=none; b=fkca95WQNeHvtbce/Dp7qopHRXr+l4L7Z/xh2QKe8zUI7iux2zSYCjQC0vkJfHGFa+MtaATGYC7OFV1keYHBYytKFI40pmlThLXV5RZkb/hcH8auLTfa4mpOQ3j0YXvkyygWmvqhDTgCz/Hjq/Riw+QJY1W+Lu75l74NjiNMRuw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733932857; c=relaxed/simple;
-	bh=8GHXoD+9xfEHdR94tL0AaSvEhf64ATMm3fcNzSQfgNc=;
+	s=arc-20240116; t=1733934610; c=relaxed/simple;
+	bh=ugD1/9RfvopYK+t6OBJAj2qhfWD1ah5i/AWvmW/o8tk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=N9gWLQCttlE4y/3gJGQ2kEd/JYcm/s6fuOB8NRGVSJ1SpIFHG88KNUxF5eQwZXqrEPgPTY5+NEHSSiJYiTOBg6Nla29+g+7DbkN/SgodvwYlGuMxqrYYpImjqU7Dizk+AGi6Ef8X9qQrWVcSGTB/E+9bGEOy4orZIgB3zdJS6Yc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Nl3IYdP9; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7YEGTHuy; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2JoZmzDk; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=9tNWk36n; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=YS1j4Di3PGRIHg3ZyPLnIS1hmWikzab0izFnTM5ndfCrAeFHkjh7i5n4N9Djk07FpxSbv5S5KD0E00qp0xxbowCZx6pDqVS03Yd4X8IGGDnrGBac8YC/Q7qZU1d4b/P86bNNuJi09yIP0eoMfeeDMkOh+W/G4oMW18IgYCrC5nA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SfTs3FVh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E/WlTmkR; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=SfTs3FVh; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E/WlTmkR; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id CBAA61F38C;
-	Wed, 11 Dec 2024 16:00:47 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id C30FA1F74B;
+	Wed, 11 Dec 2024 16:30:06 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733932848; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733934606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Khi9hf2cpTmd/YUgYCLnJo8tGx85omoRBEcei6rvcdg=;
-	b=Nl3IYdP9RH6yO7gsl3EvV5Xux+bZHvEWymRk3yqKYG+u3+InWS377Qlv8eaH+lRvo0CFUe
-	2C0iPHvibERsY2gGF6xc81Z7yr+fKYERaHhK8Kh5Kysl+MRLz//lrVkX6HqxN/Jkrs1qY/
-	ra3rP8PdcvzKgB38ZIo4u/eqazL40zc=
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=SfTs3FVh+l0sYUrKpZENXj63N+SojRDtvsiUbjl3KO1N9JmCEVfxE0YrbLrxyB8VT1/3FF
+	wxFI3FBtTdkzF8qY6kqhVA7ve+LKUFqSaETTtVUd4aG1l0jGEdmkjVUqUdg3geI6eS82yy
+	Yx9YEqI9WAiWqbPEw4Qndf1Om4l65ic=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733932848;
+	s=susede2_ed25519; t=1733934606;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Khi9hf2cpTmd/YUgYCLnJo8tGx85omoRBEcei6rvcdg=;
-	b=7YEGTHuy0dvcJkwZwuFM2Y/yaxoyrkaut5Zb34OSo/I8ISr+Picx5J06V3+L1jcNU81/MH
-	JDxolbdWjoNahoCA==
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=E/WlTmkRIUkUF9Qq1A+G3/+Pekx2KQvgk/b/FSP2OL2X80rDqU2jF+m27J6+LP9IcUZBoO
+	WQokHPkDiqcsn6Dg==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=2JoZmzDk;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=9tNWk36n
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=SfTs3FVh;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="E/WlTmkR"
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1733932847; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1733934606; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Khi9hf2cpTmd/YUgYCLnJo8tGx85omoRBEcei6rvcdg=;
-	b=2JoZmzDkBHRCPtAEqiPSLJoTtCdgUcdLQZxrraYeru61eDc9sSd0aUIA0oBp2+XFGBnKTi
-	RbCcu9av9ii4kZtPZjpOPx9a6TSaDiWbSzUc99CXvMvmLe/sG8xXtqFrtlQbBo4M2sDhPf
-	gsFo24ZRihFmv5LAxm9q0STBaEvjeUc=
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=SfTs3FVh+l0sYUrKpZENXj63N+SojRDtvsiUbjl3KO1N9JmCEVfxE0YrbLrxyB8VT1/3FF
+	wxFI3FBtTdkzF8qY6kqhVA7ve+LKUFqSaETTtVUd4aG1l0jGEdmkjVUqUdg3geI6eS82yy
+	Yx9YEqI9WAiWqbPEw4Qndf1Om4l65ic=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1733932847;
+	s=susede2_ed25519; t=1733934606;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Khi9hf2cpTmd/YUgYCLnJo8tGx85omoRBEcei6rvcdg=;
-	b=9tNWk36nVHykbG0fvWU6HAL8UYvL8CgnsuxUZNWBSLXHYc/vCHX9diovtkshoZc+MCOSIY
-	PrOwGToC9SBDEnAw==
+	bh=3twRuAkYpHgCNmk1tjJ/d+LtY2uXM1gPNvHwK+vKo5g=;
+	b=E/WlTmkRIUkUF9Qq1A+G3/+Pekx2KQvgk/b/FSP2OL2X80rDqU2jF+m27J6+LP9IcUZBoO
+	WQokHPkDiqcsn6Dg==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id BC61D13983;
-	Wed, 11 Dec 2024 16:00:47 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B41151344A;
+	Wed, 11 Dec 2024 16:30:06 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EVf8LS+3WWfJTgAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 11 Dec 2024 16:00:47 +0000
+	id VQjwKw6+WWfKVwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 11 Dec 2024 16:30:06 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 44E6EA0894; Wed, 11 Dec 2024 17:00:47 +0100 (CET)
-Date: Wed, 11 Dec 2024 17:00:47 +0100
+	id 60CDAA0894; Wed, 11 Dec 2024 17:30:06 +0100 (CET)
+Date: Wed, 11 Dec 2024 17:30:06 +0100
 From: Jan Kara <jack@suse.cz>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: Jan Kara <jack@suse.cz>, linux-ext4@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
-	tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-	hch@infradead.org, djwong@kernel.org, david@fromorbit.com,
-	zokeefe@google.com, yi.zhang@huawei.com, chengzhihao1@huawei.com,
-	yukuai3@huawei.com, yangerkun@huawei.com
-Subject: Re: [PATCH 12/27] ext4: introduce seq counter for the extent status
- entry
-Message-ID: <20241211160047.qnxvodmbzngo3jtr@quack3>
-References: <20241022111059.2566137-1-yi.zhang@huaweicloud.com>
- <20241022111059.2566137-13-yi.zhang@huaweicloud.com>
- <20241204124221.aix7qxjl2n4ya3b7@quack3>
- <c831732e-38c5-4a82-ab30-de17cff29584@huaweicloud.com>
- <20241206162102.w4hw35ims5sdf4ik@quack3>
- <5049c794-9a92-462c-a455-2bdf94cdebef@huaweicloud.com>
- <20241210125726.gzcx6mpuecifqdwe@quack3>
- <95c631d7-84da-412b-b7dc-f4785739f41a@huaweicloud.com>
+To: Randy Dunlap <rdunlap@infradead.org>
+Cc: Klara Modin <klarasmodin@gmail.com>, Josef Bacik <josef@toxicpanda.com>,
+	kernel-team@fb.com, linux-fsdevel@vger.kernel.org, jack@suse.cz,
+	amir73il@gmail.com, brauner@kernel.org,
+	torvalds@linux-foundation.org, viro@zeniv.linux.org.uk,
+	linux-xfs@vger.kernel.org, linux-btrfs@vger.kernel.org,
+	linux-mm@kvack.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH v8 16/19] fsnotify: generate pre-content permission event
+ on page fault
+Message-ID: <20241211163006.2r2mxe7vddzgk7ka@quack3>
+References: <cover.1731684329.git.josef@toxicpanda.com>
+ <aa56c50ce81b1fd18d7f5d71dd2dfced5eba9687.1731684329.git.josef@toxicpanda.com>
+ <5d0cd660-251c-423a-8828-5b836a5130f9@gmail.com>
+ <391b9d5f-ec3a-4c90-8345-5dab929917f7@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
-In-Reply-To: <95c631d7-84da-412b-b7dc-f4785739f41a@huaweicloud.com>
-X-Rspamd-Queue-Id: CBAA61F38C
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <391b9d5f-ec3a-4c90-8345-5dab929917f7@infradead.org>
+X-Rspamd-Queue-Id: C30FA1F74B
 X-Spam-Level: 
-X-Spamd-Result: default: False [-2.51 / 50.00];
+X-Spamd-Result: default: False [-4.01 / 50.00];
 	BAYES_HAM(-3.00)[100.00%];
-	SUSPICIOUS_RECIPS(1.50)[];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
 	MX_GOOD(-0.01)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	MISSING_XM_UA(0.00)[];
 	ARC_NA(0.00)[];
-	RCPT_COUNT_TWELVE(0.00)[16];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCPT_COUNT_TWELVE(0.00)[14];
 	MIME_TRACE(0.00)[0:+];
-	RCVD_COUNT_THREE(0.00)[3];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
 	FREEMAIL_ENVRCPT(0.00)[gmail.com];
 	TO_DN_SOME(0.00)[];
-	TAGGED_RCPT(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
 	FROM_HAS_DN(0.00)[];
+	FREEMAIL_CC(0.00)[gmail.com,toxicpanda.com,fb.com,vger.kernel.org,suse.cz,kernel.org,linux-foundation.org,zeniv.linux.org.uk,kvack.org];
+	RCVD_COUNT_THREE(0.00)[3];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email];
+	RCVD_TLS_LAST(0.00)[];
 	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	FREEMAIL_CC(0.00)[suse.cz,vger.kernel.org,mit.edu,dilger.ca,gmail.com,infradead.org,kernel.org,fromorbit.com,google.com,huawei.com];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim]
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DKIM_TRACE(0.00)[suse.cz:+]
 X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
 X-Rspamd-Action: no action
-X-Spam-Score: -2.51
+X-Spam-Score: -4.01
 X-Spam-Flag: NO
 
-On Wed 11-12-24 15:59:51, Zhang Yi wrote:
-> On 2024/12/10 20:57, Jan Kara wrote:
-> > On Mon 09-12-24 16:32:41, Zhang Yi wrote:
-> > b) evict all page cache in the affected range -> should stop writeback -
-> >    *but* currently there's one case which could be problematic. Assume we
-> >    do punch hole 0..N and the page at N+1 is dirty. Punch hole does all of
-> >    the above and starts removing blocks, needs to restart transaction so it
-> >    drops i_data_sem. Writeback starts for page N+1, needs to load extent
-> >    block into memory, ext4_cache_extents() now loads back some extents
-> >    covering range 0..N into extent status tree. 
-> 
-> This completely confuses me. Do you mention the case below,
-> 
-> There are many extent entries in the page range 0..N+1, for example,
-> 
->    0                                  N N+1
->    |                                  |/
->   [www][wwwwww][wwwwwwww]...[wwwww][wwww]...
->                 |      |
->                 N-a    N-b
-> 
-> Punch hole is removing each extent entries from N..0
-> (ext4_ext_remove_space() removes blocks from end to start), and could
-> drop i_data_sem just after manipulating(removing) the extent entry
-> [N-a,N-b], At the same time, a concurrent writeback start write back
-> page N+1 since the writeback only hold page lock, doesn't hold i_rwsem
-> and invalidate_lock. It may load back the extents 0..N-a into the
-> extent status tree again while finding extent that contains N+1?
-
-Yes, because when we load extents from extent tree, we insert all extents
-from the leaf of the extent tree into extent status tree. That's what
-ext4_cache_extents() call does.
-
-> Finally it may left some stale extent status entries after punch hole
-> is done?
-
-Yes, there may be stale extents in the extent status tree when
-ext4_ext_remove_space() returns. But punch hole in particular then does:
-
-ext4_es_insert_extent(inode, first_block, hole_len, ~0,
-                                      EXTENT_STATUS_HOLE, 0);
-
-which overwrites these stale extents with appropriate information.
-
-> If my understanding is correct, isn't that a problem that exists now?
-> I mean without this patch series.
-
-Yes, the situation isn't really related to your patches. But with your
-patches we are starting to rely even more on extent status tree vs extent
-tree consistecy. So I wanted to spell out this situation to verify new
-problem isn't introduced and so that we create rules that handle this
-situation well.
-
-> >    So the only protection
-> >    against using freed blocks is that nobody should be mapping anything in
-> >    the range 0..N because we hold those locks & have evicted page cache.
+On Tue 10-12-24 13:12:01, Randy Dunlap wrote:
+> On 12/8/24 8:58 AM, Klara Modin wrote:
+> >> +/**
+> >> + * filemap_fsnotify_fault - maybe emit a pre-content event.
+> >> + * @vmf:    struct vm_fault containing details of the fault.
+> >> + * @folio:    the folio we're faulting in.
+> >> + *
+> >> + * If we have a pre-content watch on this file we will emit an event for this
+> >> + * range.  If we return anything the fault caller should return immediately, we
+> >> + * will return VM_FAULT_RETRY if we had to emit an event, which will trigger the
+> >> + * fault again and then the fault handler will run the second time through.
+> >> + *
+> >> + * This is meant to be called with the folio that we will be filling in to make
+> >> + * sure the event is emitted for the correct range.
+> >> + *
+> >> + * Return: a bitwise-OR of %VM_FAULT_ codes, 0 if nothing happened.
+> >> + */
+> >> +vm_fault_t filemap_fsnotify_fault(struct vm_fault *vmf)
 > > 
-> > So I think we need to also document, that anybody mapping blocks needs to
-> > hold i_rwsem or invalidate_lock or a page lock, ideally asserting that in
-> > ext4_map_blocks() to catch cases we missed. Asserting for page lock will
-> > not be really doable but luckily only page writeback needs that so that can
-> > get some extemption from the assert.
+> > The parameters mentioned above do not seem to match with the function.
 > 
-> In the case above, it seems that merely holding a page lock is
-> insufficient?
+> 
+> which causes a warning:
+> 
+> mm/filemap.c:3289: warning: Excess function parameter 'folio' description in 'filemap_fsnotify_fault'
 
-Well, holding page lock(s) for the range you are operating on is enough to
-make sure there cannot be parallel operations on that range like truncate,
-punch hole or similar, because they always remove the page cache before
-starting their work and because they hold invalidate_lock, new pages cannot
-be created while they are working.
+Thanks, fixed up!
 
 								Honza
 -- 
