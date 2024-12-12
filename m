@@ -1,112 +1,120 @@
-Return-Path: <linux-ext4+bounces-5596-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5597-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F9919EFA5F
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 19:08:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 852AB9EFAE4
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 19:29:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D7846173124
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 18:05:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFD6B188752E
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 18:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B25CA2288CD;
-	Thu, 12 Dec 2024 18:05:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 46F09222D45;
+	Thu, 12 Dec 2024 18:28:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="bz84LmJq";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="0jmImqkd"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Qg0hTqLi"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pg1-f169.google.com (mail-pg1-f169.google.com [209.85.215.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5763B22652F
-	for <linux-ext4@vger.kernel.org>; Thu, 12 Dec 2024 18:04:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842D61547F5;
+	Thu, 12 Dec 2024 18:28:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734026701; cv=none; b=uqG7qJEnFDWt1z9aT6lapdmhX30Tsr9ncBV9EdAmCeYoc+ZsobcbC0sPMQOm/RKlR3E5FIfoNeGRHguv6GpWyVrMuij1m+UBgmuIDrFd7CvcTCh99c7vg/uNKQ8iIbai2jko5P1pOYzQgkZ5VxIo/vjHiIjqT+3LaY/kX9PuPYI=
+	t=1734028138; cv=none; b=Yy+16BclE3p6jcJ5123wSdxJzazbnSA8c0A3rMEp3BNlFUf83cBZo3G58vDj0MQuz4x7oqkb6fPN2vDGGfeUzbh8v4cCqmkL6xCQDPu5GmO77nig5+TGtLtV/Yx90mBpEqZH1bB/SRpBWBuNT8qxpPEtqKvnHLA/0XVzTnrrROk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734026701; c=relaxed/simple;
-	bh=XM71HR3EjHGFNU+Y2prJ2jmIgXdxVISB7k1BuzKXkIE=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Gxhxj1Z0XgpgXN2TwN4I4a/srFpdO62usfpsVambRuUrxrs7mfOISxUwgQeuxBjIHp1HU4NNO1u+kCeAea7nsMhK1ZIOXa4ICBG+YR94lrrGsYauDFfzuWFI4eqWfPSjZhlA1NhbbZgGZG3WIZNE8R5fUicIr+aTIf27x6Yj0tA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=bz84LmJq; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=0jmImqkd; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-From: Thomas Gleixner <tglx@linutronix.de>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1734026696;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MYtUHevlD/VAi+BQIN1FQyz5FRV7Cxz6CcOV50CYjns=;
-	b=bz84LmJqy0WgbpnPlL12Drayp6PdZXeOncH6+aJH2AW42ofiLIn/UzpiXx4qGBIwS/AZyQ
-	LkpBXXvQWOpEOgqd85tAHfovIGCU9RebgtYAFsU7fbMztPpNXZuVtRl8P4uyJwa5hKpzGO
-	z1h85VE0r+kIiQnpBMWTR4md5nuRJnX5x37mApezuilkulLSa/7yPwolcApBhPerqz3itw
-	VMUlnKb6CiIqBdJRRWP8o4o4wNXssc7/T5sm8kIKheRH4llMqU38gj/yZmNf7fKChwHjJ1
-	ycLLECfO7/5k8AYYRO+S7CC0yYwtpprF1zpH0SGHcZt+lFFYwfrozit8iJXTxA==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1734026696;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=MYtUHevlD/VAi+BQIN1FQyz5FRV7Cxz6CcOV50CYjns=;
-	b=0jmImqkd7LLBEP58eu5FTlq0fFjlEsg1GOKACUNYIB6YPdezn/M4GCfFsykGaMZcltMDVy
-	PAQLG/AAmnATNfAQ==
-To: David Woodhouse <dwmw2@infradead.org>, Stefan Hajnoczi
- <stefanha@redhat.com>, Jason Wang <jasowang@redhat.com>
-Cc: "x86@kernel.org" <x86@kernel.org>, hpa <hpa@zytor.com>, dyoung
- <dyoung@redhat.com>, kexec <kexec@lists.infradead.org>, linux-ext4
- <linux-ext4@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>,
- Stefano Garzarella <sgarzare@redhat.com>, eperezma <eperezma@redhat.com>,
- Paolo Bonzini <bonzini@redhat.com>, ming.lei@redhat.com, Petr Mladek
- <pmladek@suse.com>, John Ogness <jogness@linutronix.de>, Peter Zijlstra
- <peterz@infradead.org>
-Subject: Re: Lockdep warnings on kexec (virtio_blk, hrtimers)
-In-Reply-To: <10f5d22150b548ec271e0a847ba2eb91139e6f61.camel@infradead.org>
-References: <1f631458c180c975c238d4d33d333f9fa9a4d2a3.camel@infradead.org>
- <CACGkMEtOdYorGPdSjxC1Lb1LJtZ+ZqHam3agHJ6JdpS-tE1qAQ@mail.gmail.com>
- <20241211124240.GA310916@fedora>
- <7717fe2ac0ce5f0a2c43fdab8b11f4483d54a2a4.camel@infradead.org>
- <87ldwl9g93.ffs@tglx>
- <10f5d22150b548ec271e0a847ba2eb91139e6f61.camel@infradead.org>
-Date: Thu, 12 Dec 2024 19:04:55 +0100
-Message-ID: <87a5d0aibc.ffs@tglx>
+	s=arc-20240116; t=1734028138; c=relaxed/simple;
+	bh=KuZi5uOGUo7WkDSMczDqEF1ggsJGATM0BMmMUjUwwyw=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Content-Type; b=Koot2d2Ot3q9BOGCM6/PrFNQhZ+VBpsuOTquvlNQS+tfY+NytkHhM1MiuwZ2Y+tyeLDWu/kkgetvU6FiWP+F7r8Tx7Z+fBDeMM1CbytmVtQEGRICy21CTHjH7/revyGPKv+wO+LfDK91+h2Pvs73FgcxaJqBh01FsOQeTlR6SFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Qg0hTqLi; arc=none smtp.client-ip=209.85.215.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f169.google.com with SMTP id 41be03b00d2f7-7fd35b301bdso831357a12.2;
+        Thu, 12 Dec 2024 10:28:57 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734028136; x=1734632936; darn=vger.kernel.org;
+        h=to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=KuZi5uOGUo7WkDSMczDqEF1ggsJGATM0BMmMUjUwwyw=;
+        b=Qg0hTqLikHDkGbbg40BmICGkWYsidcdxvwrruUb9hCpT1w5IwTzzPJNZlYeWGxOs64
+         wSm3D+WZZdgpl8dNxhNG/MNtjficSRrYNorebzx2qxSfGePFYIHV1ojylzf9FAi97bu1
+         BsYJFSQ2A/ikXasm95CX47css0TO3gmlXRrrs8Os/+MmQ0tIx3/1xvK0EHqnYbiYadj5
+         f4Tg9KOI3z8Dv5qIaN2eSEsv2jcvEXXutnc5s8kC6haiMgetqpx8BfRTV0PBcmDvsdaE
+         lhjHFO7BlovVRf8ZinJ0Cn+dclSeOjrvi4+KgNxFxsMS5wMwfsM8mUFQC1/nAKJwklau
+         oeFg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734028136; x=1734632936;
+        h=to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=KuZi5uOGUo7WkDSMczDqEF1ggsJGATM0BMmMUjUwwyw=;
+        b=ELI62oFwy2vHGipX97tdr/bCnxpX677if7OzwWspAH0P01yYiKP8fbbzAlN2Z//YPv
+         l6e6v3g27gstMOyzwUAkk+EHbnCR+G0fcg8DVi5gvEl8lTLW4unJQDJpmZLp5GMmE+Az
+         tDFlzUPGMmPE8bja61K2s9jpiJhlUMQit4lLM+mw9xwesu++Fek2KXqJaR7OON3r1r13
+         BRe0K2b1bMp7aXqH41MBhf7lY4Gu1NoSvgCoT512n9V332iKaAdFjt0g+rZ4H9FZ1y+7
+         ORvROMRD5mlG7JRm8PKNOCiXyGZyorNTDlyYyvEfsZWWc35cYne5/xUNRmHlcwV+uUpn
+         ZRzw==
+X-Forwarded-Encrypted: i=1; AJvYcCUFsX5Ov2RGwbPTFof5DLeAqjHByHOfPsaXHXh3T2YvnoW7i+cV6+kgpVyAQq3cMmUQ8WtqYYOjaqOel1M=@vger.kernel.org, AJvYcCXtZvxcghyk8a659WLLFmNlUK37kEPjg9fWYFLYCQvwuod4lRSoX/4z5o0NVEyZ55kx4pKEuXkG@vger.kernel.org
+X-Gm-Message-State: AOJu0YzLzCeLfD9L1Q/oCPMahY0R+BI7B1jHRcwTiL9Umkd4rWZP/GLE
+	UxvdAcdo4o4wNEAANUO7u6G1QUciFZE53XvHKGBQeAb1R1p3QvHmXDETaKvdz+wuEFkeWG7nE0B
+	BpvBCUfBugnfK+LQo6FThUUnScI7yt5c41GPQSg==
+X-Gm-Gg: ASbGncvJyewo1oTjwYVvTEWYVN0kVkOqEJh/SMTSnwE+At3+DM8QvLNV1utryaaqBek
+	Kq26//HmAW0Wbpjm4niSt8+yX+so7unDZDMVsEQ==
+X-Google-Smtp-Source: AGHT+IEZvkWt55ItNFxmCGiDc0Fwp4AOUwVuF9GHmlJwzHDmGUHGrK9VebUoiZtmrbAvKaxJmI6WdL+rbTHn0Lq69cI=
+X-Received: by 2002:a17:90b:4ace:b0:2ea:498d:809f with SMTP id
+ 98e67ed59e1d1-2f12802cf23mr10521820a91.26.1734028136317; Thu, 12 Dec 2024
+ 10:28:56 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+From: Nikolai Zhubr <zhubr.2@gmail.com>
+Date: Thu, 12 Dec 2024 21:31:05 +0300
+Message-ID: <CALQo8TpjoV8JtuYDH_nBU5i4e-iuCQ1-NORAE8uobpDD_yYBTA@mail.gmail.com>
+Subject: ext4 damage suspected in between 5.15.167 - 5.15.170
+To: linux-ext4@vger.kernel.org, stable@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, jack@suse.cz, Nikolai Zhubr <zhubr.2@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Dec 12 2024 at 13:46, David Woodhouse wrote:
-> On Thu, 2024-12-12 at 14:34 +0100, Thomas Gleixner wrote:
->> 
->> David, can you retest with the debug patch below? That should pin-point
->> the real culprit.
->
-> B[    1.545489] ------------[ cut here ]------------
-> [    1.546338] DEBUG_LOCKS_WARN_ON(suspend_syscore_active)
-> [    1.546375] WARNING: CPU: 0 PID: 18 at kernel/locking/lockdep.c:4471 lockdep_hardirqs_on+0x13a/0x140
+Hi,
 
-Now this starts to be completely mysterious:
+This is to report that after jumping from generic kernel 5.15.167 to
+5.15.170 I apparently observe ext4 damage.
 
-> [    1.571399]  finish_task_switch.isra.0+0xc4/0x2d0
-> [    1.572062]  __schedule+0x50a/0x1a10
+After some few days of regular daily use of 5.15.170, one morning my
+ext4 partition refused to mount complaining about corrupted system
+area (-117).
+There were no unusual events preceding this. The device in question is
+a laptop with healthy battery, also connected to AC permanently.
+The laptop is privately owned by me, in daily use at home, so I am
+100% aware of everything happening with it.
+The filesystem in question lives on md raid1 with very assymmetric
+members (ssd+hdd) so one would not possibly expect that in the event
+of emergency cpu halt or some other abnormal stop while filesystem was
+actively writing data, raid members could stay in perfect sync.
+After the incident, I've run raid1 check multiple times and run
+memtest multiple times from different boot media and certainly
+consulted startctl.
+Nothing. No issues whatsoever except for this spontaneous ext4 damage.
 
-How on earth did this end up in schedule() on the rcu_gp_kthread between
-syscore_suspend() and syscore_resume()?
+Looking at git log for ext4 changes between 5.15.167 and 5.15.170
+shows a few commits. All landed in 5.15.168.
+Interestingly, one of them is a comeback of the (in)famous
+91562895f803 "properly sync file size update after O_SYNC ..." which
+caused some blowup 1 year ago due to "subtle interaction".
+I've no idea if 91562895f803 is related to damage this time or not,
+but most definitely it looks like some problem was introduced between
+5.15.167 and 5.15.170 anyway.
+And because there are apparently 0 commits to ext4 in 5.15 since
+5.15.168 at the moment, I thought I'd report.
 
-> [    1.575896]  rcu_gp_fqs_loop+0x10b/0x5b0
-> [    1.576455]  ? _raw_spin_unlock_irq+0x28/0x50
-> [    1.577072]  rcu_gp_kthread+0xf8/0x1b0
-> [    1.577621]  kthread+0xd5/0x100
-> [    1.578066]  ? __pfx_kthread+0x10/0x10
+Please CC me if you want me to see your reply and/or need more info
+(I'm not subscribed to the normal flow).
 
-I tried to reproduce, but failed. Do you have a simple reproducer
-recipe?
 
-Thanks,
+Take care,
 
-        tglx
+Nick
 
