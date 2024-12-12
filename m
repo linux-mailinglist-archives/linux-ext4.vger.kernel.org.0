@@ -1,61 +1,63 @@
-Return-Path: <linux-ext4+bounces-5572-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5573-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D6C8E9EDE9E
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 05:49:12 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 05E89166088
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 04:49:08 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49193166308;
-	Thu, 12 Dec 2024 04:49:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="A0XU1H+j"
-X-Original-To: linux-ext4@vger.kernel.org
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B3C629EDEFB
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 06:38:02 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACC6B195;
-	Thu, 12 Dec 2024 04:49:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EC8BF283CF9
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 05:37:59 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E59516FF4E;
+	Thu, 12 Dec 2024 05:37:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="bSIRTOBG"
+X-Original-To: linux-ext4@vger.kernel.org
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2899C1632D3
+	for <linux-ext4@vger.kernel.org>; Thu, 12 Dec 2024 05:37:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733978944; cv=none; b=LEjbKR09HPirqNymPuJaA3naZh2iKvZzrdYx3RmjWxhL8GKmaIG0PrRHq6CTmfMdicSI2aoY6J/wlTbH9QOIOR5cyFPLgfa7e8hykfedBZswswbrs70Y8xjG2GeZ3j/TrrZv09id3i3sh6Pc65tUALxbtle5XLcJGLzXntKxFH8=
+	t=1733981876; cv=none; b=OF/34KE6BHTUJ2RfZ2UgK0SuuaUO3CdaqCO/wW93jsVcWCfCQplAwyVA9fjvakl8se8reyIf7s3rANNdGytwBFFHszt27OaBxFQnuaRRTt6pYsCdNGf+xq10kc6YFU7ldvUlDqI5Qo3owBEgrG+dGLmnmQvTx708fR6lhOo2pPg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733978944; c=relaxed/simple;
-	bh=/mGFOstPW/8O12NZTAry1P1DtwGW00o6ENEllI05cB8=;
+	s=arc-20240116; t=1733981876; c=relaxed/simple;
+	bh=Q39Mrur689JYVEMGO5/GiBx/SpdZLP027ya2Y5McG1k=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=f+CyaoVP6gQwIkqoEGcrPkwkXnDFa0ucdj0dHJWMqWflJqyZErUK6G/cCNY9ripBzdF63raykgGI8a8zng0tNoy6q0Olrbyg9snp4IiU42md0ceRpYBGwq15BA0bYNctJQ3qf+TsGpuJvsoRCTpNaUFexXY7qcfcTPXGVL5OXws=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=A0XU1H+j; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=UDfUCvGJZUh5a5QRBeL0Xq8pTitiUzpBZKT6xPZM7Qs=; b=A0XU1H+jpSMbY0mLRmY3PfHalf
-	Au1ZiEEr5gGIKCN4sDxJLj6u+8norkRUWPJ4acUvudSW9qfQ5PxJdXHDo5P60NXOZEof+9tskgARD
-	2IafdwxtFh+4meLv0AiZCsjT5DiY4i3deelB8rkaK5lUcEocPaASsnFD++j5aA85hsiXybGsKwxin
-	bFNyWIkKB+U8WT63DkXNbMcJN564nXvVhDkXLN9KtRNf9yVDT3rF3dzZujTFpDpiu/YPefb5zhP8d
-	o9PK0k+Hvt07oBlO20pWWIy9EAC0evp2bqtYdB3v4p3B0GmzDC/Iwj+Obsx4Kgm+EzOQMxmyVcIXJ
-	/YowukzA==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
-	id 1tLb8G-0000000Gv0w-1FAl;
-	Thu, 12 Dec 2024 04:49:00 +0000
-Date: Wed, 11 Dec 2024 20:49:00 -0800
-From: Christoph Hellwig <hch@infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=MM/wxX2GbzWIvrakJtL8qiL7z3zcr17FPIUuLzXgKG7O064RmZXytETK/45gHRWytZWc7YuB5odCcEaKGKwHBDqFXOCvgkVVKEy+X3TBwTZZM0TPGCgnre8eyGKAhvSSPZziB4D6tTrcH5K+I+pU3kwzXDP9o3DluXvs3SiJXWA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=bSIRTOBG; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-102-3.bstnma.fios.verizon.net [173.48.102.3])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4BC5bd1k029739
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 12 Dec 2024 00:37:40 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1733981863; bh=6yul3k8VrHuDp5kOnM04awhRjfFN4A+g/yc8izL3+5A=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=bSIRTOBG+dGzDRt4rgkhDIs9gcgaTa5B4sFE/1Ml6Q+4SSlaCsX3vvpNQT33AeZgo
+	 gvh44ZHhzA6bflcychg80d68KXRwvIR3ST2ZWxAgHjf4povnGVvKO/W87bXHTcSkdF
+	 j7agBtILOKvXEkW9y2VX/JnN6fMgnxbllta0dhQbhfAGcfxgjv+wxkZa2BQUtUnelv
+	 Cnrf3muz1rDY/x5GZ9Fq+GQ4ybynCq7VkjXIEzKi6sBe9pfiKoCYX7LmhuuWnKAAPn
+	 B/X8sF81veHI9LkNwxHBuUfLYUZ0QiY69Fh9LvWPM+eX916N3bQ/h6/z6xBYY8eFLw
+	 Dj2Rif0wfCgFQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 25FB915C028A; Thu, 12 Dec 2024 00:37:39 -0500 (EST)
+Date: Thu, 12 Dec 2024 00:37:39 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
 To: Sergey Senozhatsky <senozhatsky@chromium.org>
-Cc: Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@infradead.org>,
-	Jens Axboe <axboe@kernel.dk>,
-	caiqingfu <baicaiaichibaicai@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-ext4@vger.kernel.org, linux-block@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org
+Cc: Christoph Hellwig <hch@infradead.org>, Jens Axboe <axboe@kernel.dk>,
+        caiqingfu <baicaiaichibaicai@gmail.com>,
+        Andrew Morton <akpm@linux-foundation.org>, linux-ext4@vger.kernel.org,
+        linux-block@vger.kernel.org, linux-fsdevel@vger.kernel.org
 Subject: Re: [bugzilla:219548] the kernel crashes when storing an EXT4 file
  system in a ZRAM device
-Message-ID: <Z1prPME6G1OeEO4I@infradead.org>
+Message-ID: <20241212053739.GC1265540@mit.edu>
 References: <20241212035826.GH2091455@google.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -66,7 +68,6 @@ MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <20241212035826.GH2091455@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
 On Thu, Dec 12, 2024 at 12:58:26PM +0900, Sergey Senozhatsky wrote:
 > Hi,
@@ -77,7 +78,42 @@ On Thu, Dec 12, 2024 at 12:58:26PM +0900, Sergey Senozhatsky wrote:
 > the zram device.  zram compresses every page written to it, so if
 > the page content can be modified concurrently with zram's compression
 > then we can't really use zram with ext4.
+> 
+> Can you take a look please?
+> 
+> [1] https://bugzilla.kernel.org/show_bug.cgi?id=219548
+> [2] https://lore.kernel.org/linux-kernel/20241129115735.136033-1-baicaiaichibaicai@gmail.com
 
-This smells like ext4 doesn't respect BDI_CAP_STABLE_WRITES somewhere.
+The link in [2] is a bit busted, since the message in question wasn't
+cc'ed to LKML, but rather to mm-commits.  But dropping "/linux-kernel"
+allows the link to work, and what's interesting is this message from
+that thread:
+
+https://lore.kernel.org/all/20241202060632.139067-1-baicaiaichibaicai@gmail.com/
+
+The blocks which are getting modified while a write is in flight are
+ext4 metadata blocks, which are in the buffer cache.  Ext4 is
+modifying those blocks via bh->b_data, and ext4 isn't issuing the
+write; those are happenig via the buffer cache's writeback functions.
+
+Hmmm.... was the user using an ext4 file system with the journal
+disabled, by any chance?  If ext4 is using the journal (which is the
+common case), metadata blocks only get modified via jbd2 journal
+functions, and a blocks only get modified when they are part of a jbd2
+transaction --- and while the transaction is active, the buffer cache
+writeback is disabled.  It's only after the transaction is committed
+that are dirty blocks associated with that transaction are allowed to
+be written back.  So I *think* the only way we could run into problems
+is ext4's jbd2 journalling is disabled.
+
+More generally, any file system which uses the buffer cache, and
+doesn't use jbd2 to control when writeback happens, I think is going
+to be at risk with a block device which requires stable writes.  The
+only way to fix this, really, is to have the buffer cache code copy
+the data to a bounce buffer, and then issue the write from the bounce
+buffer.
+
+						- Ted
+
 
 
