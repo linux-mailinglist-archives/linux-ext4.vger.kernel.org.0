@@ -1,160 +1,175 @@
-Return-Path: <linux-ext4+bounces-5567-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5568-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D59719EDA34
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 23:40:43 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED7FD9EDDAD
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 03:32:23 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7734E167DC4
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 02:32:20 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B649313B288;
+	Thu, 12 Dec 2024 02:32:16 +0000 (UTC)
+X-Original-To: linux-ext4@vger.kernel.org
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 51963283871
-	for <lists+linux-ext4@lfdr.de>; Wed, 11 Dec 2024 22:40:42 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3A0020E6E6;
-	Wed, 11 Dec 2024 22:33:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b="j/ejm0YH"
-X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f47.google.com (mail-pj1-f47.google.com [209.85.216.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CB5A1F2360
-	for <linux-ext4@vger.kernel.org>; Wed, 11 Dec 2024 22:33:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A50118643;
+	Thu, 12 Dec 2024 02:32:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733956416; cv=none; b=Dlgaotr9vWBdRtgRsH5a/KikvUBQ71UHI4EXNU8AiP/xNBfQCRQKUIvkcrKBH1t9W7Cr5JR7FIabheYNkJhqe3DhgXi4z0zSAec4A72lZsjCl+8fvre4FExp1H17n+LpyR6Hn/uMav+cQn1OifDS1PR/uEfuot1M5VvWsabaYkg=
+	t=1733970736; cv=none; b=u9Psjav3wJZg5zbkIDw5koqb27lvnaenG0NM0AaxxvWxnQZS2mimDYxOyBqd0hxr/6i3isyE46qBAqpaBPRuiuDXlKDxZ5x27x5L24mWlvd0ukJcodEAKg/Md6uZUJQKkXWioJkq629KpWbrGN2UMMh5AuENzl2FyRcCiloZ7fs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733956416; c=relaxed/simple;
-	bh=VOGzIGGSxqcC7jyFVRhHAo+5MH48iBCMJkB64VO7HdA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YS56IJill4oVZsrdavx2ZeHPzpdriCZ2bxoT1JWZny0JSYkEG6DPafFmJ03TaDVLwhzVDi3k4gDgnX/te3LFY6qESi0eRzktL8wt5PGCnI6XmE3VgoPFQOtZSABx32+r1u73Uv6DKei2tW9sdKG+9yn4kbesfxpCr/osNMwS0pQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com; spf=pass smtp.mailfrom=fromorbit.com; dkim=pass (2048-bit key) header.d=fromorbit-com.20230601.gappssmtp.com header.i=@fromorbit-com.20230601.gappssmtp.com header.b=j/ejm0YH; arc=none smtp.client-ip=209.85.216.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fromorbit.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fromorbit.com
-Received: by mail-pj1-f47.google.com with SMTP id 98e67ed59e1d1-2ef748105deso4234257a91.1
-        for <linux-ext4@vger.kernel.org>; Wed, 11 Dec 2024 14:33:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=fromorbit-com.20230601.gappssmtp.com; s=20230601; t=1733956414; x=1734561214; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=ngWPL7F+k5wxiISlgKbwW4fjhxxXTEP4BljwhbzST3s=;
-        b=j/ejm0YH6vC3JTn6aSaULZwKVb89iCsaOgno1knpGPttaxzaexerLkwhwtTgTAYe3i
-         6Q2kT/jo7vdHRRcLmk+qxinVMGJWI/wgVjkal81UtOU3esAlKVxiJ12O1QhU1uWvvI8X
-         ZSxrcig/cUDx+ROYR1l0ciOET5DvuSjfDeuONsH1i0wqXUmYDuhm/KUq3Uh5iBa/a/rC
-         Up0NzYZQezfMvegZ6nMR4LICpIUHTEBLpt6+bS47f98Ush3v5BkEHaPPlZSMSOOExoo5
-         8dnh69STWKdciRv4FW8E2707xhq9LVyjTJLasZ7EUpFsj0J6eGhtGRoKO2RIsoebYdg/
-         NMNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1733956414; x=1734561214;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ngWPL7F+k5wxiISlgKbwW4fjhxxXTEP4BljwhbzST3s=;
-        b=jmaU8izIgM7DvCOT8ikl3Rlhhv1STQPEvzl1V8OeacIASbSWMFw1VYHTn62rumuwTZ
-         LaP703NDR23+DmAktVwsSv0xLWk2J8ROxb5Dwy5K2xb16GqibyeNRW6JA88q+8RG+6a4
-         HfWItHQ7ihKQWOoRGsONScKOgiH+FyuOGZZwDZs/CCahzObqrD5JLcPwEJg65Y0LiRC1
-         tp6WVGWn7LYIwqnRYCQB/3TBMiWsi6gKWSOI2Te9wR66jyxsRSKyFxARS37SVX5Po4CW
-         C3AqWKvVuVxc5WWDX4AkV3F91Dcn3x5vabdvSizt8wBAMCn3JHqK5pfDoiITqn599uFW
-         gnbg==
-X-Forwarded-Encrypted: i=1; AJvYcCXtVfFFqccklSdRQkBDbu/ytiJ4PPu6VnfwJYtW7bDnbeYqFtaTq0j9jxPsB80HzHMTX8g0t6RGMrS5@vger.kernel.org
-X-Gm-Message-State: AOJu0YypTq5YLICgAZJJiWBv1dp3HlRr3vkoJ9UK58e7B+tIGYyEuU4Z
-	dGS77xVtYZz0QPw0q9+ilI0h/jL2nZyT6MJxg2kQL4Yf88puJZwAwj2e4Yo3MD0=
-X-Gm-Gg: ASbGncvCcSSqWzIhVnZlCY6KBBBB9sXAObajhKjUVXpqmPXSAXDTTRaN3XM7PQU4sUZ
-	CSSitmqpzz7y4zsLD+mDwVY75vNk+nyLOqGivZv1uII6WcsH4zRCjMx4lPXcffW+Mt4ZGPgQ7pr
-	OqSWgUHoycytSL1hm89mqFcd/EqdC9F0W/4bCwQemPUxbOrGuB1s+C30+AcdMfy8f80U655SEWr
-	CzNUr3Vv83jbf5FJA+mEfWOAWsYkAalyNVuYQKKdTWDaxkzHYHUcj1721k9aUxTtJ3IFwe6EyDd
-	l2bYaIFMKbR2944wyCyP3zCCR7M=
-X-Google-Smtp-Source: AGHT+IEVKuZamiHIkIRgt4sKWSN/CxUsh7q1Rtn5YMJ8loDhLinrZmWvhpreTWA49/k9SjEkFUp/vQ==
-X-Received: by 2002:a17:90b:358b:b0:2ee:c457:bf83 with SMTP id 98e67ed59e1d1-2f1392b7518mr2309164a91.19.1733956413993;
-        Wed, 11 Dec 2024 14:33:33 -0800 (PST)
-Received: from dread.disaster.area (pa49-195-9-235.pa.nsw.optusnet.com.au. [49.195.9.235])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2ef45ff77b9sm12072842a91.36.2024.12.11.14.33.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 11 Dec 2024 14:33:33 -0800 (PST)
-Received: from dave by dread.disaster.area with local (Exim 4.98)
-	(envelope-from <david@fromorbit.com>)
-	id 1tLVGr-00000009ZKP-40OP;
-	Thu, 12 Dec 2024 09:33:29 +1100
-Date: Thu, 12 Dec 2024 09:33:29 +1100
-From: Dave Chinner <david@fromorbit.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: Ojaswin Mujoo <ojaswin@linux.ibm.com>, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, Ritesh Harjani <ritesh.list@gmail.com>,
-	linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	Andrey Albershteyn <aalbersh@kernel.org>,
-	John Garry <john.g.garry@oracle.com>
-Subject: Re: [RFC 2/3] xfs_io: Add ext4 support to show FS_IOC_FSGETXATTR
- details
-Message-ID: <Z1oTOUCui9vTgNoM@dread.disaster.area>
-References: <cover.1733902742.git.ojaswin@linux.ibm.com>
- <3b4b9f091519d2b2085888d296888179da3bdb73.1733902742.git.ojaswin@linux.ibm.com>
- <20241211181706.GB6678@frogsfrogsfrogs>
+	s=arc-20240116; t=1733970736; c=relaxed/simple;
+	bh=rKZ/KG4T+fTKfGekYUiXkO22lNRzWENVTAxOndLl3F0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oQDXQX4Is5iUnFGUyK0UKvS3LwJj/TLKtb15HIwkNKcl5AM1w29yBG9jvH3DWZ6ebSROK1BBlWN73UykYWQWrmrSizfamPEspYyTGeBYdT73IB4OyrSjDHRJGjf56qsOPGWR2NhV81ZguX/sI7qiWeToR1NjzW2j191XtUz+Ugs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y7xLR1Q6lz4f3kvh;
+	Thu, 12 Dec 2024 10:31:43 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 7A1E81A0568;
+	Thu, 12 Dec 2024 10:32:03 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgCXvoIhS1pnt2NnEQ--.26851S3;
+	Thu, 12 Dec 2024 10:32:03 +0800 (CST)
+Message-ID: <dc719f19-9839-4fa7-b9f8-5dfcdde92c45@huaweicloud.com>
+Date: Thu, 12 Dec 2024 10:32:01 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211181706.GB6678@frogsfrogsfrogs>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/27] ext4: introduce seq counter for the extent status
+ entry
+To: Jan Kara <jack@suse.cz>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+ ritesh.list@gmail.com, hch@infradead.org, djwong@kernel.org,
+ david@fromorbit.com, zokeefe@google.com, yi.zhang@huawei.com,
+ chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
+References: <20241022111059.2566137-1-yi.zhang@huaweicloud.com>
+ <20241022111059.2566137-13-yi.zhang@huaweicloud.com>
+ <20241204124221.aix7qxjl2n4ya3b7@quack3>
+ <c831732e-38c5-4a82-ab30-de17cff29584@huaweicloud.com>
+ <20241206162102.w4hw35ims5sdf4ik@quack3>
+ <5049c794-9a92-462c-a455-2bdf94cdebef@huaweicloud.com>
+ <20241210125726.gzcx6mpuecifqdwe@quack3>
+ <95c631d7-84da-412b-b7dc-f4785739f41a@huaweicloud.com>
+ <20241211160047.qnxvodmbzngo3jtr@quack3>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20241211160047.qnxvodmbzngo3jtr@quack3>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgCXvoIhS1pnt2NnEQ--.26851S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCw17ZF48WF45GrykZw1kZrb_yoW5Kw17pF
+	W3CF4akan5t348Xr9rtwn7XF15Gw4UJF47JFy3GF17AF1DWFySqFWjya1jkFy8WFsaqF42
+	vFWjq34kA398AaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkEb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr0_Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
+	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
+	DUUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Wed, Dec 11, 2024 at 10:17:06AM -0800, Darrick J. Wong wrote:
-> On Wed, Dec 11, 2024 at 01:24:03PM +0530, Ojaswin Mujoo wrote:
-> > Currently with stat we only show FS_IOC_FSGETXATTR details
-> > if the filesystem is XFS. With extsize support also coming
-> > to ext4 make sure to show these details when -c "stat" or "statx"
-> > is used.
-> > 
-> > No functional changes for filesystems other than ext4.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> >  io/stat.c | 38 +++++++++++++++++++++-----------------
-> >  1 file changed, 21 insertions(+), 17 deletions(-)
-> > 
-> > diff --git a/io/stat.c b/io/stat.c
-> > index 326f2822e276..d06c2186cde4 100644
-> > --- a/io/stat.c
-> > +++ b/io/stat.c
-> > @@ -97,14 +97,14 @@ print_file_info(void)
-> >  		file->flags & IO_TMPFILE ? _(",tmpfile") : "");
-> >  }
-> >  
-> > -static void
-> > -print_xfs_info(int verbose)
-> > +static void print_extended_info(int verbose)
-> >  {
-> > -	struct dioattr	dio;
-> > -	struct fsxattr	fsx, fsxa;
-> > +	struct dioattr dio;
-> > +	struct fsxattr fsx, fsxa;
-> > +	bool is_xfs_fd = platform_test_xfs_fd(file->fd);
-> >  
-> > -	if ((xfsctl(file->name, file->fd, FS_IOC_FSGETXATTR, &fsx)) < 0 ||
-> > -	    (xfsctl(file->name, file->fd, XFS_IOC_FSGETXATTRA, &fsxa)) < 0) {
-> > +	if ((ioctl(file->fd, FS_IOC_FSGETXATTR, &fsx)) < 0 ||
-> > +		(is_xfs_fd && (xfsctl(file->name, file->fd, XFS_IOC_FSGETXATTRA, &fsxa) < 0))) {
+On 2024/12/12 0:00, Jan Kara wrote:
+> On Wed 11-12-24 15:59:51, Zhang Yi wrote:
+>> On 2024/12/10 20:57, Jan Kara wrote:
+>>> On Mon 09-12-24 16:32:41, Zhang Yi wrote:
+>>> b) evict all page cache in the affected range -> should stop writeback -
+>>>    *but* currently there's one case which could be problematic. Assume we
+>>>    do punch hole 0..N and the page at N+1 is dirty. Punch hole does all of
+>>>    the above and starts removing blocks, needs to restart transaction so it
+>>>    drops i_data_sem. Writeback starts for page N+1, needs to load extent
+>>>    block into memory, ext4_cache_extents() now loads back some extents
+>>>    covering range 0..N into extent status tree. 
+>>
+>> This completely confuses me. Do you mention the case below,
+>>
+>> There are many extent entries in the page range 0..N+1, for example,
+>>
+>>    0                                  N N+1
+>>    |                                  |/
+>>   [www][wwwwww][wwwwwwww]...[wwwww][wwww]...
+>>                 |      |
+>>                 N-a    N-b
+>>
+>> Punch hole is removing each extent entries from N..0
+>> (ext4_ext_remove_space() removes blocks from end to start), and could
+>> drop i_data_sem just after manipulating(removing) the extent entry
+>> [N-a,N-b], At the same time, a concurrent writeback start write back
+>> page N+1 since the writeback only hold page lock, doesn't hold i_rwsem
+>> and invalidate_lock. It may load back the extents 0..N-a into the
+>> extent status tree again while finding extent that contains N+1?
 > 
-> Urgh... perhaps we should call FS_IOC_FSGETXATTR and if it returns zero
-> print whatever is returned, no matter what filesystem we think is
-> feeding us information?
-
-Yes, please. FS_IOC_FSGETXATTR has been generic functionality for
-some time, we should treat it the same way for all filesystems.
-
-> e.g.
+> Yes, because when we load extents from extent tree, we insert all extents
+> from the leaf of the extent tree into extent status tree. That's what
+> ext4_cache_extents() call does.
 > 
-> 	if (ioctl(file->fd, FS_IOC_FSGETXATTR, &fsx)) < 0) {
-> 		if (is_xfs_fd || (errno != EOPNOTSUPP &&
-> 				  errno != ENOTTY))
-> 			perror("FS_IOC_GETXATTR");
+>> Finally it may left some stale extent status entries after punch hole
+>> is done?
+> 
+> Yes, there may be stale extents in the extent status tree when
+> ext4_ext_remove_space() returns. But punch hole in particular then does:
+> 
+> ext4_es_insert_extent(inode, first_block, hole_len, ~0,
+>                                       EXTENT_STATUS_HOLE, 0);
+> 
+> which overwrites these stale extents with appropriate information.
+> 
 
-Why do we even need "is_xfs_fd" there? XFS will never give a
-EOPNOTSUPP or ENOTTY error to this or the FS_IOC_GETXATTRA ioctl...
+Yes, that's correct! I missed this insert yesterday. It looks fine now,
+as it holds the i_rwsem and invalidate_lock, and has evicted the page
+cache in this case. Thanks a lot for your detail explanation. I will
+add these document in my next iteration.
 
--Dave.
--- 
-Dave Chinner
-david@fromorbit.com
+Thanks!
+Yi.
+
+>> If my understanding is correct, isn't that a problem that exists now?
+>> I mean without this patch series.
+> 
+> Yes, the situation isn't really related to your patches. But with your
+> patches we are starting to rely even more on extent status tree vs extent
+> tree consistecy. So I wanted to spell out this situation to verify new
+> problem isn't introduced and so that we create rules that handle this
+> situation well.
+> 
+>>>    So the only protection
+>>>    against using freed blocks is that nobody should be mapping anything in
+>>>    the range 0..N because we hold those locks & have evicted page cache.
+>>>
+>>> So I think we need to also document, that anybody mapping blocks needs to
+>>> hold i_rwsem or invalidate_lock or a page lock, ideally asserting that in
+>>> ext4_map_blocks() to catch cases we missed. Asserting for page lock will
+>>> not be really doable but luckily only page writeback needs that so that can
+>>> get some extemption from the assert.
+>>
+>> In the case above, it seems that merely holding a page lock is
+>> insufficient?
+> 
+> Well, holding page lock(s) for the range you are operating on is enough to
+> make sure there cannot be parallel operations on that range like truncate,
+> punch hole or similar, because they always remove the page cache before
+> starting their work and because they hold invalidate_lock, new pages cannot
+> be created while they are working.
+> 
+> 								Honza
+
 
