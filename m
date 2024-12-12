@@ -1,211 +1,1227 @@
-Return-Path: <linux-ext4+bounces-5578-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5579-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9865A9EDF9B
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 07:54:07 +0100 (CET)
-Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
-	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9E3661886B65
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 06:54:05 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 644FA204C29;
-	Thu, 12 Dec 2024 06:53:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="S65DYspz"
-X-Original-To: linux-ext4@vger.kernel.org
-Received: from fanzine2.igalia.com (fanzine.igalia.com [178.60.130.6])
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FFE29EE04B
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 08:33:43 +0100 (CET)
+Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EFED204F79;
-	Thu, 12 Dec 2024 06:53:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=178.60.130.6
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B34728300B
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 07:33:36 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C9A11C5CBD;
+	Thu, 12 Dec 2024 07:33:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="HqIT2iu1"
+X-Original-To: linux-ext4@vger.kernel.org
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 97307175D39
+	for <linux-ext4@vger.kernel.org>; Thu, 12 Dec 2024 07:33:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1733986438; cv=none; b=upUGVjBg1Rdq+vJI50Wo1leNgMx/GqzPCf+8dmwFw6pGT6cPPd4T6BzSrOBtgOXvojqxWOe5sjWWjc6YgHIWE9vhjhbH+/+m3vvqbSaGSYohw8kVtUKu9z/MGBexHQC93EW7bLfAIXhmL17zu36WGaXNKuiKc5nw6ttJI0nbCpg=
+	t=1733988812; cv=none; b=egJCjRZc43C5ZtAo1xaX5Re13J4VtIytTRt1mhTMHpi3yXI6dFtE93A2nWRyXGKaIMGwDHwbQjkdxu0bS4YD4MZ8jkS2xsTUIXfSWk+vDiu4AtCD5zjqEmwRrrIbmBaCAk06wyp3b/NFBGP3FmYwF77Im+BszuKoF1a30DfDAvA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1733986438; c=relaxed/simple;
-	bh=TgwlJ77/RgvziKkQYGCOzJ2NsDawQEyHVPARch2KBkE=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Z4E4PiCMPKQemtOLnHTC1D7C6Sj3Ihr0k8I7qDiqbQOyuY1NP1eD2JqFDCQEupZWt2shGlrYWv60JemGqvaXZZnebDC+sijF98wdsJRltuOgqDvdZtu7LiFhJ+Kwe8nlTLuSbxuRoUCajdLUvwK14z5hLlYg8fj/nqW8aaGO56E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=S65DYspz; arc=none smtp.client-ip=178.60.130.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:MIME-Version:Message-Id:Date:Subject:
-	Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:Content-Description:
-	Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:
-	In-Reply-To:References:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=5uwvWVdVBwvRd8AQEyf2pjt0urpVyCGtmkA54KS4q2I=; b=S65DYspzDl0dqFsewebT1bxZ+/
-	woVQtorG+E/1SH8UPXdWRUFD2JY4rtLOb95CQPNJ/1I7cLHrZO1CURr0IPaczK0uwB2KB4Mzz5nOu
-	XM30mn8ZP4eEBM7QGMMzjcfw08t1VhIBg7JlIhp5WxrtDS4TN6zhaUUhO+EAfhMtqh/xeMU9tspVo
-	CT7FK36o6lEIw1uH8xnge+hkp791y/XPOQKgPT1AO30MP6ASQhSRxdnpJGbfCLgn4VO5T9/SLUYCl
-	QVv9WrL9WLjjDXRQPcADF1F7BsCBiFg7v5LGoKdJzE6OSvkYo00X2e6ceYrjasg53OK1vZ1GXh/A8
-	kxeDQdZg==;
-Received: from [128.185.11.26] (helo=localhost.localdomain)
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_256_GCM:256) (Exim)
-	id 1tLd4x-002AJe-5H; Thu, 12 Dec 2024 07:53:43 +0100
-From: Bhupesh <bhupesh@igalia.com>
+	s=arc-20240116; t=1733988812; c=relaxed/simple;
+	bh=ObO8gno7kdWjA5DbWB8DCzIUXXrrcSyuK0AdNOB0agk=;
+	h=From:To:Subject:Date:Message-ID:Content-Type:MIME-Version; b=XqC4mwMXwQZ4TmIql/gvJEtE3NzSltxfilW02ltPM9udJyh12dN2zbU6QXUiKmtVal14rljeEL0xiekIuZWNdNJi1c+9cGfSr6oN+9BIFsod8tYna9qho+luVAzwqx/m9Y1iql1RI7frL2xNnYrNOMhVuEB7tGmgG01t5IUgKRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=HqIT2iu1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 1F03FC4CED3
+	for <linux-ext4@vger.kernel.org>; Thu, 12 Dec 2024 07:33:32 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1733988812;
+	bh=ObO8gno7kdWjA5DbWB8DCzIUXXrrcSyuK0AdNOB0agk=;
+	h=From:To:Subject:Date:From;
+	b=HqIT2iu1qgfX3xSss1wEla1VJrSUvtCTewMkGaw8fTRViD1pJr6K3kdlxsNpuQynQ
+	 zWW0A4QtqnMzwvoIz3Eq2Xq+BKWn+oPD3PLGlavwR/uEObZZngbH0/axDC2cmod9ty
+	 j4uzKtRxg3LWC0Mgbfa1IL4JqkG3M4u7abXb/UWvwYiRJP2us2nLabBRYtw+U7xXUV
+	 4x9O2OslqCm6eOemT9gTx3isnXaJK6UWrCCiU/5klR8DpDSVahQDsqWMR34oTqZfrf
+	 wccSpdfP6jC4VXd9Ttb+hKJzbp1rH/5K3sRYaCdZUjdx+dU80nVflRi1/fgCA5TQfC
+	 BF1hn0IU/AVmQ==
+Received: by aws-us-west-2-korg-bugzilla-1.web.codeaurora.org (Postfix, from userid 48)
+	id 0264FC41612; Thu, 12 Dec 2024 07:33:31 +0000 (UTC)
+From: bugzilla-daemon@kernel.org
 To: linux-ext4@vger.kernel.org
-Cc: bhupesh@igalia.com,
-	tytso@mit.edu,
-	kernel-dev@igalia.com,
-	linux-kernel@vger.kernel.org,
-	revest@google.com,
-	adilger.kernel@dilger.ca,
-	cascardo@igalia.com,
-	syzbot+b244bda78289b00204ed@syzkaller.appspotmail.com
-Subject: [PATCH 1/1] fs/ext4/xattr: Check for 'xattr_sem' inside 'ext4_xattr_delete_inode'
-Date: Thu, 12 Dec 2024 12:23:31 +0530
-Message-Id: <20241212065331.113465-1-bhupesh@igalia.com>
-X-Mailer: git-send-email 2.38.1
+Subject: [Bug 219595] New: Warning at fs/inode.c:1277
+Date: Thu, 12 Dec 2024 07:33:29 +0000
+X-Bugzilla-Reason: None
+X-Bugzilla-Type: new
+X-Bugzilla-Watch-Reason: AssignedTo fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Product: File System
+X-Bugzilla-Component: ext4
+X-Bugzilla-Version: 2.5
+X-Bugzilla-Keywords: 
+X-Bugzilla-Severity: normal
+X-Bugzilla-Who: 0599jiangyc@gmail.com
+X-Bugzilla-Status: NEW
+X-Bugzilla-Resolution: 
+X-Bugzilla-Priority: P3
+X-Bugzilla-Assigned-To: fs_ext4@kernel-bugs.osdl.org
+X-Bugzilla-Flags: 
+X-Bugzilla-Changed-Fields: bug_id short_desc product version rep_platform
+ op_sys bug_status bug_severity priority component assigned_to reporter
+ cf_regression
+Message-ID: <bug-219595-13602@https.bugzilla.kernel.org/>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-Bugzilla-URL: https://bugzilla.kernel.org/
+Auto-Submitted: auto-generated
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Once we are inside the 'ext4_xattr_delete_inode' function and trying
-to delete the inode, the 'xattr_sem' should be unlocked.
+https://bugzilla.kernel.org/show_bug.cgi?id=3D219595
 
-We need trylock here to avoid false-positive warning from lockdep
-about reclaim circular dependency.
+            Bug ID: 219595
+           Summary: Warning at fs/inode.c:1277
+           Product: File System
+           Version: 2.5
+          Hardware: All
+                OS: Linux
+            Status: NEW
+          Severity: normal
+          Priority: P3
+         Component: ext4
+          Assignee: fs_ext4@kernel-bugs.osdl.org
+          Reporter: 0599jiangyc@gmail.com
+        Regression: No
 
-This fixes the following KASAN reported issue:
+PoC:
+```
+// autogenerated by syzkaller (https://github.com/google/syzkaller)
 
-==================================================================
-BUG: KASAN: slab-use-after-free in ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
-Read of size 4 at addr ffff888012c120c4 by task repro/2065
+#define _GNU_SOURCE
 
-CPU: 1 UID: 0 PID: 2065 Comm: repro Not tainted 6.13.0-rc2+ #11
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS rel-1.16.3-0-ga6ed6b701f0a-prebuilt.qemu.org 04/01/2014
-Call Trace:
- <TASK>
- dump_stack_lvl+0x1fd/0x300
- ? tcp_gro_dev_warn+0x260/0x260
- ? _printk+0xc0/0x100
- ? read_lock_is_recursive+0x10/0x10
- ? irq_work_queue+0x72/0xf0
- ? __virt_addr_valid+0x17b/0x4b0
- print_address_description+0x78/0x390
- print_report+0x107/0x1f0
- ? __virt_addr_valid+0x17b/0x4b0
- ? __virt_addr_valid+0x3ff/0x4b0
- ? __phys_addr+0xb5/0x160
- ? ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- kasan_report+0xcc/0x100
- ? ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- ext4_xattr_inode_dec_ref_all+0xb8c/0xe90
- ? ext4_xattr_delete_inode+0xd30/0xd30
- ? __ext4_journal_ensure_credits+0x5f0/0x5f0
- ? __ext4_journal_ensure_credits+0x2b/0x5f0
- ? inode_update_timestamps+0x410/0x410
- ext4_xattr_delete_inode+0xb64/0xd30
- ? ext4_truncate+0xb70/0xdc0
- ? ext4_expand_extra_isize_ea+0x1d20/0x1d20
- ? __ext4_mark_inode_dirty+0x670/0x670
- ? ext4_journal_check_start+0x16f/0x240
- ? ext4_inode_is_fast_symlink+0x2f2/0x3a0
- ext4_evict_inode+0xc8c/0xff0
- ? ext4_inode_is_fast_symlink+0x3a0/0x3a0
- ? do_raw_spin_unlock+0x53/0x8a0
- ? ext4_inode_is_fast_symlink+0x3a0/0x3a0
- evict+0x4ac/0x950
- ? proc_nr_inodes+0x310/0x310
- ? trace_ext4_drop_inode+0xa2/0x220
- ? _raw_spin_unlock+0x1a/0x30
- ? iput+0x4cb/0x7e0
- do_unlinkat+0x495/0x7c0
- ? try_break_deleg+0x120/0x120
- ? 0xffffffff81000000
- ? __check_object_size+0x15a/0x210
- ? strncpy_from_user+0x13e/0x250
- ? getname_flags+0x1dc/0x530
- __x64_sys_unlinkat+0xc8/0xf0
- do_syscall_64+0x65/0x110
- entry_SYSCALL_64_after_hwframe+0x67/0x6f
-RIP: 0033:0x434ffd
-Code: 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 00 f3 0f 1e fa 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 8
-RSP: 002b:00007ffc50fa7b28 EFLAGS: 00000246 ORIG_RAX: 0000000000000107
-RAX: ffffffffffffffda RBX: 00007ffc50fa7e18 RCX: 0000000000434ffd
-RDX: 0000000000000000 RSI: 0000000020000240 RDI: 0000000000000005
-RBP: 00007ffc50fa7be0 R08: 0000000000000000 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffc50fa7e08 R14: 00000000004bbf30 R15: 0000000000000001
- </TASK>
+#include <endian.h>
+#include <errno.h>
+#include <fcntl.h>
+#include <setjmp.h>
+#include <stdarg.h>
+#include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <sys/ioctl.h>
+#include <sys/mman.h>
+#include <sys/mount.h>
+#include <sys/stat.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
+#include <unistd.h>
 
-The buggy address belongs to the object at ffff888012c12000
- which belongs to the cache filp of size 360
-The buggy address is located 196 bytes inside of
- freed 360-byte region [ffff888012c12000, ffff888012c12168)
+#include <linux/loop.h>
 
-The buggy address belongs to the physical page:
-page: refcount:1 mapcount:0 mapping:0000000000000000 index:0x0 pfn:0x12c12
-head: order:1 mapcount:0 entire_mapcount:0 nr_pages_mapped:0 pincount:0
-flags: 0x40(head|node=0|zone=0)
-page_type: f5(slab)
-raw: 0000000000000040 ffff888000ad7640 ffffea0000497a00 dead000000000004
-raw: 0000000000000000 0000000000100010 00000001f5000000 0000000000000000
-head: 0000000000000040 ffff888000ad7640 ffffea0000497a00 dead000000000004
-head: 0000000000000000 0000000000100010 00000001f5000000 0000000000000000
-head: 0000000000000001 ffffea00004b0481 ffffffffffffffff 0000000000000000
-head: 0000000000000002 0000000000000000 00000000ffffffff 0000000000000000
-page dumped because: kasan: bad access detected
+#ifndef __NR_io_uring_setup
+#define __NR_io_uring_setup 425
+#endif
+#ifndef __NR_memfd_create
+#define __NR_memfd_create 319
+#endif
 
-Memory state around the buggy address:
- ffff888012c11f80: 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
- ffff888012c12000: fa fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
->ffff888012c12080: fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb fb
-                                           ^
- ffff888012c12100: fb fb fb fb fb fb fb fb fb fb fb fb fb fc fc fc
- ffff888012c12180: fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc fc
-==================================================================
+static unsigned long long procid;
 
-Reported-by: syzbot+b244bda78289b00204ed@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=b244bda78289b00204ed
-Signed-off-by: Bhupesh <bhupesh@igalia.com>
----
- fs/ext4/xattr.c | 16 +++++++++++++++-
- 1 file changed, 15 insertions(+), 1 deletion(-)
+static bool write_file(const char* file, const char* what, ...)
+{
+  char buf[1024];
+  va_list args;
+  va_start(args, what);
+  vsnprintf(buf, sizeof(buf), what, args);
+  va_end(args);
+  buf[sizeof(buf) - 1] =3D 0;
+  int len =3D strlen(buf);
+  int fd =3D open(file, O_WRONLY | O_CLOEXEC);
+  if (fd =3D=3D -1)
+    return false;
+  if (write(fd, buf, len) !=3D len) {
+    int err =3D errno;
+    close(fd);
+    errno =3D err;
+    return false;
+  }
+  close(fd);
+  return true;
+}
 
-diff --git a/fs/ext4/xattr.c b/fs/ext4/xattr.c
-index 7647e9f6e190..e1d29aa76165 100644
---- a/fs/ext4/xattr.c
-+++ b/fs/ext4/xattr.c
-@@ -2926,7 +2926,20 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
- 	struct ext4_iloc iloc = { .bh = NULL };
- 	struct ext4_xattr_entry *entry;
- 	struct inode *ea_inode;
--	int error;
-+	int error = 0;
-+
-+	/*
-+	 * We are the only ones holding inode reference. The xattr_sem should
-+	 * better be unlocked! We could as well just not acquire xattr_sem at
-+	 * all but this makes the code more futureproof. OTOH we need trylock
-+	 * here to avoid false-positive warning from lockdep about reclaim
-+	 * circular dependency.
-+	 */
-+	if (WARN_ON_ONCE(!down_write_trylock(&EXT4_I(inode)->xattr_sem)))
-+		return error;
-+
-+	if (!EXT4_I(inode)->i_file_acl)
-+		goto cleanup;
- 
- 	error = ext4_journal_ensure_credits(handle, extra_credits,
- 			ext4_free_metadata_revoke_credits(inode->i_sb, 1));
-@@ -3015,6 +3028,7 @@ int ext4_xattr_delete_inode(handle_t *handle, struct inode *inode,
- cleanup:
- 	brelse(iloc.bh);
- 	brelse(bh);
-+	up_write(&EXT4_I(inode)->xattr_sem);
- 	return error;
- }
- 
--- 
-2.38.1
+#define SIZEOF_IO_URING_SQE 64
+#define SIZEOF_IO_URING_CQE 16
+#define SQ_HEAD_OFFSET 0
+#define SQ_TAIL_OFFSET 64
+#define SQ_RING_MASK_OFFSET 256
+#define SQ_RING_ENTRIES_OFFSET 264
+#define SQ_FLAGS_OFFSET 276
+#define SQ_DROPPED_OFFSET 272
+#define CQ_HEAD_OFFSET 128
+#define CQ_TAIL_OFFSET 192
+#define CQ_RING_MASK_OFFSET 260
+#define CQ_RING_ENTRIES_OFFSET 268
+#define CQ_RING_OVERFLOW_OFFSET 284
+#define CQ_FLAGS_OFFSET 280
+#define CQ_CQES_OFFSET 320
 
+struct io_sqring_offsets {
+  uint32_t head;
+  uint32_t tail;
+  uint32_t ring_mask;
+  uint32_t ring_entries;
+  uint32_t flags;
+  uint32_t dropped;
+  uint32_t array;
+  uint32_t resv1;
+  uint64_t resv2;
+};
+
+struct io_cqring_offsets {
+  uint32_t head;
+  uint32_t tail;
+  uint32_t ring_mask;
+  uint32_t ring_entries;
+  uint32_t overflow;
+  uint32_t cqes;
+  uint64_t resv[2];
+};
+
+struct io_uring_params {
+  uint32_t sq_entries;
+  uint32_t cq_entries;
+  uint32_t flags;
+  uint32_t sq_thread_cpu;
+  uint32_t sq_thread_idle;
+  uint32_t features;
+  uint32_t resv[4];
+  struct io_sqring_offsets sq_off;
+  struct io_cqring_offsets cq_off;
+};
+
+#define IORING_OFF_SQ_RING 0
+#define IORING_OFF_SQES 0x10000000ULL
+#define IORING_SETUP_SQE128 (1U << 10)
+#define IORING_SETUP_CQE32 (1U << 11)
+
+static long syz_io_uring_setup(volatile long a0, volatile long a1,
+                               volatile long a2, volatile long a3)
+{
+  uint32_t entries =3D (uint32_t)a0;
+  struct io_uring_params* setup_params =3D (struct io_uring_params*)a1;
+  void** ring_ptr_out =3D (void**)a2;
+  void** sqes_ptr_out =3D (void**)a3;
+  setup_params->flags &=3D ~(IORING_SETUP_CQE32 | IORING_SETUP_SQE128);
+  uint32_t fd_io_uring =3D syscall(__NR_io_uring_setup, entries, setup_para=
+ms);
+  uint32_t sq_ring_sz =3D
+      setup_params->sq_off.array + setup_params->sq_entries * sizeof(uint32=
+_t);
+  uint32_t cq_ring_sz =3D setup_params->cq_off.cqes +
+                        setup_params->cq_entries * SIZEOF_IO_URING_CQE;
+  uint32_t ring_sz =3D sq_ring_sz > cq_ring_sz ? sq_ring_sz : cq_ring_sz;
+  *ring_ptr_out =3D
+      mmap(0, ring_sz, PROT_READ | PROT_WRITE, MAP_SHARED | MAP_POPULATE,
+           fd_io_uring, IORING_OFF_SQ_RING);
+  uint32_t sqes_sz =3D setup_params->sq_entries * SIZEOF_IO_URING_SQE;
+  *sqes_ptr_out =3D mmap(0, sqes_sz, PROT_READ | PROT_WRITE,
+                       MAP_SHARED | MAP_POPULATE, fd_io_uring,
+IORING_OFF_SQES);
+  uint32_t* array =3D
+      (uint32_t*)((uintptr_t)*ring_ptr_out + setup_params->sq_off.array);
+  for (uint32_t index =3D 0; index < entries; index++)
+    array[index] =3D index;
+  return fd_io_uring;
+}
+
+//% This code is derived from puff.{c,h}, found in the zlib development. The
+//% original files come with the following copyright notice:
+
+//% Copyright (C) 2002-2013 Mark Adler, all rights reserved
+//% version 2.3, 21 Jan 2013
+//% This software is provided 'as-is', without any express or implied
+//% warranty.  In no event will the author be held liable for any damages
+//% arising from the use of this software.
+//% Permission is granted to anyone to use this software for any purpose,
+//% including commercial applications, and to alter it and redistribute it
+//% freely, subject to the following restrictions:
+//% 1. The origin of this software must not be misrepresented; you must not
+//%    claim that you wrote the original software. If you use this software
+//%    in a product, an acknowledgment in the product documentation would be
+//%    appreciated but is not required.
+//% 2. Altered source versions must be plainly marked as such, and must not=
+ be
+//%    misrepresented as being the original software.
+//% 3. This notice may not be removed or altered from any source distributi=
+on.
+//% Mark Adler    madler@alumni.caltech.edu
+
+//% BEGIN CODE DERIVED FROM puff.{c,h}
+
+#define MAXBITS 15
+#define MAXLCODES 286
+#define MAXDCODES 30
+#define MAXCODES (MAXLCODES + MAXDCODES)
+#define FIXLCODES 288
+
+struct puff_state {
+  unsigned char* out;
+  unsigned long outlen;
+  unsigned long outcnt;
+  const unsigned char* in;
+  unsigned long inlen;
+  unsigned long incnt;
+  int bitbuf;
+  int bitcnt;
+  jmp_buf env;
+};
+static int puff_bits(struct puff_state* s, int need)
+{
+  long val =3D s->bitbuf;
+  while (s->bitcnt < need) {
+    if (s->incnt =3D=3D s->inlen)
+      longjmp(s->env, 1);
+    val |=3D (long)(s->in[s->incnt++]) << s->bitcnt;
+    s->bitcnt +=3D 8;
+  }
+  s->bitbuf =3D (int)(val >> need);
+  s->bitcnt -=3D need;
+  return (int)(val & ((1L << need) - 1));
+}
+static int puff_stored(struct puff_state* s)
+{
+  s->bitbuf =3D 0;
+  s->bitcnt =3D 0;
+  if (s->incnt + 4 > s->inlen)
+    return 2;
+  unsigned len =3D s->in[s->incnt++];
+  len |=3D s->in[s->incnt++] << 8;
+  if (s->in[s->incnt++] !=3D (~len & 0xff) ||
+      s->in[s->incnt++] !=3D ((~len >> 8) & 0xff))
+    return -2;
+  if (s->incnt + len > s->inlen)
+    return 2;
+  if (s->outcnt + len > s->outlen)
+    return 1;
+  for (; len--; s->outcnt++, s->incnt++) {
+    if (s->in[s->incnt])
+      s->out[s->outcnt] =3D s->in[s->incnt];
+  }
+  return 0;
+}
+struct puff_huffman {
+  short* count;
+  short* symbol;
+};
+static int puff_decode(struct puff_state* s, const struct puff_huffman* h)
+{
+  int first =3D 0;
+  int index =3D 0;
+  int bitbuf =3D s->bitbuf;
+  int left =3D s->bitcnt;
+  int code =3D first =3D index =3D 0;
+  int len =3D 1;
+  short* next =3D h->count + 1;
+  while (1) {
+    while (left--) {
+      code |=3D bitbuf & 1;
+      bitbuf >>=3D 1;
+      int count =3D *next++;
+      if (code - count < first) {
+        s->bitbuf =3D bitbuf;
+        s->bitcnt =3D (s->bitcnt - len) & 7;
+        return h->symbol[index + (code - first)];
+      }
+      index +=3D count;
+      first +=3D count;
+      first <<=3D 1;
+      code <<=3D 1;
+      len++;
+    }
+    left =3D (MAXBITS + 1) - len;
+    if (left =3D=3D 0)
+      break;
+    if (s->incnt =3D=3D s->inlen)
+      longjmp(s->env, 1);
+    bitbuf =3D s->in[s->incnt++];
+    if (left > 8)
+      left =3D 8;
+  }
+  return -10;
+}
+static int puff_construct(struct puff_huffman* h, const short* length, int =
+n)
+{
+  int len;
+  for (len =3D 0; len <=3D MAXBITS; len++)
+    h->count[len] =3D 0;
+  int symbol;
+  for (symbol =3D 0; symbol < n; symbol++)
+    (h->count[length[symbol]])++;
+  if (h->count[0] =3D=3D n)
+    return 0;
+  int left =3D 1;
+  for (len =3D 1; len <=3D MAXBITS; len++) {
+    left <<=3D 1;
+    left -=3D h->count[len];
+    if (left < 0)
+      return left;
+  }
+  short offs[MAXBITS + 1];
+  offs[1] =3D 0;
+  for (len =3D 1; len < MAXBITS; len++)
+    offs[len + 1] =3D offs[len] + h->count[len];
+  for (symbol =3D 0; symbol < n; symbol++)
+    if (length[symbol] !=3D 0)
+      h->symbol[offs[length[symbol]]++] =3D symbol;
+  return left;
+}
+static int puff_codes(struct puff_state* s, const struct puff_huffman* lenc=
+ode,
+                      const struct puff_huffman* distcode)
+{
+  static const short lens[29] =3D {3,  4,  5,  6,   7,   8,   9,   10,  11,=
+ 13,
+                                 15, 17, 19, 23,  27,  31,  35,  43,  51, 5=
+9,
+                                 67, 83, 99, 115, 131, 163, 195, 227, 258};
+  static const short lext[29] =3D {0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 2, 2=
+, 2,
+                                 2, 3, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 0};
+  static const short dists[30] =3D {
+      1,    2,    3,    4,    5,    7,    9,    13,    17,    25,
+      33,   49,   65,   97,   129,  193,  257,  385,   513,   769,
+      1025, 1537, 2049, 3073, 4097, 6145, 8193, 12289, 16385, 24577};
+  static const short dext[30] =3D {0, 0, 0,  0,  1,  1,  2,  2,  3,  3,
+                                 4, 4, 5,  5,  6,  6,  7,  7,  8,  8,
+                                 9, 9, 10, 10, 11, 11, 12, 12, 13, 13};
+  int symbol;
+  do {
+    symbol =3D puff_decode(s, lencode);
+    if (symbol < 0)
+      return symbol;
+    if (symbol < 256) {
+      if (s->outcnt =3D=3D s->outlen)
+        return 1;
+      if (symbol)
+        s->out[s->outcnt] =3D symbol;
+      s->outcnt++;
+    } else if (symbol > 256) {
+      symbol -=3D 257;
+      if (symbol >=3D 29)
+        return -10;
+      int len =3D lens[symbol] + puff_bits(s, lext[symbol]);
+      symbol =3D puff_decode(s, distcode);
+      if (symbol < 0)
+        return symbol;
+      unsigned dist =3D dists[symbol] + puff_bits(s, dext[symbol]);
+      if (dist > s->outcnt)
+        return -11;
+      if (s->outcnt + len > s->outlen)
+        return 1;
+      while (len--) {
+        if (dist <=3D s->outcnt && s->out[s->outcnt - dist])
+          s->out[s->outcnt] =3D s->out[s->outcnt - dist];
+        s->outcnt++;
+      }
+    }
+  } while (symbol !=3D 256);
+  return 0;
+}
+static int puff_fixed(struct puff_state* s)
+{
+  static int virgin =3D 1;
+  static short lencnt[MAXBITS + 1], lensym[FIXLCODES];
+  static short distcnt[MAXBITS + 1], distsym[MAXDCODES];
+  static struct puff_huffman lencode, distcode;
+  if (virgin) {
+    lencode.count =3D lencnt;
+    lencode.symbol =3D lensym;
+    distcode.count =3D distcnt;
+    distcode.symbol =3D distsym;
+    short lengths[FIXLCODES];
+    int symbol;
+    for (symbol =3D 0; symbol < 144; symbol++)
+      lengths[symbol] =3D 8;
+    for (; symbol < 256; symbol++)
+      lengths[symbol] =3D 9;
+    for (; symbol < 280; symbol++)
+      lengths[symbol] =3D 7;
+    for (; symbol < FIXLCODES; symbol++)
+      lengths[symbol] =3D 8;
+    puff_construct(&lencode, lengths, FIXLCODES);
+    for (symbol =3D 0; symbol < MAXDCODES; symbol++)
+      lengths[symbol] =3D 5;
+    puff_construct(&distcode, lengths, MAXDCODES);
+    virgin =3D 0;
+  }
+  return puff_codes(s, &lencode, &distcode);
+}
+static int puff_dynamic(struct puff_state* s)
+{
+  static const short order[19] =3D {16, 17, 18, 0, 8,  7, 9,  6, 10, 5,
+                                  11, 4,  12, 3, 13, 2, 14, 1, 15};
+  int nlen =3D puff_bits(s, 5) + 257;
+  int ndist =3D puff_bits(s, 5) + 1;
+  int ncode =3D puff_bits(s, 4) + 4;
+  if (nlen > MAXLCODES || ndist > MAXDCODES)
+    return -3;
+  short lengths[MAXCODES];
+  int index;
+  for (index =3D 0; index < ncode; index++)
+    lengths[order[index]] =3D puff_bits(s, 3);
+  for (; index < 19; index++)
+    lengths[order[index]] =3D 0;
+  short lencnt[MAXBITS + 1], lensym[MAXLCODES];
+  struct puff_huffman lencode =3D {lencnt, lensym};
+  int err =3D puff_construct(&lencode, lengths, 19);
+  if (err !=3D 0)
+    return -4;
+  index =3D 0;
+  while (index < nlen + ndist) {
+    int symbol;
+    int len;
+    symbol =3D puff_decode(s, &lencode);
+    if (symbol < 0)
+      return symbol;
+    if (symbol < 16)
+      lengths[index++] =3D symbol;
+    else {
+      len =3D 0;
+      if (symbol =3D=3D 16) {
+        if (index =3D=3D 0)
+          return -5;
+        len =3D lengths[index - 1];
+        symbol =3D 3 + puff_bits(s, 2);
+      } else if (symbol =3D=3D 17)
+        symbol =3D 3 + puff_bits(s, 3);
+      else
+        symbol =3D 11 + puff_bits(s, 7);
+      if (index + symbol > nlen + ndist)
+        return -6;
+      while (symbol--)
+        lengths[index++] =3D len;
+    }
+  }
+  if (lengths[256] =3D=3D 0)
+    return -9;
+  err =3D puff_construct(&lencode, lengths, nlen);
+  if (err && (err < 0 || nlen !=3D lencode.count[0] + lencode.count[1]))
+    return -7;
+  short distcnt[MAXBITS + 1], distsym[MAXDCODES];
+  struct puff_huffman distcode =3D {distcnt, distsym};
+  err =3D puff_construct(&distcode, lengths + nlen, ndist);
+  if (err && (err < 0 || ndist !=3D distcode.count[0] + distcode.count[1]))
+    return -8;
+  return puff_codes(s, &lencode, &distcode);
+}
+static int puff(unsigned char* dest, unsigned long* destlen,
+                const unsigned char* source, unsigned long sourcelen)
+{
+  struct puff_state s =3D {
+      .out =3D dest,
+      .outlen =3D *destlen,
+      .outcnt =3D 0,
+      .in =3D source,
+      .inlen =3D sourcelen,
+      .incnt =3D 0,
+      .bitbuf =3D 0,
+      .bitcnt =3D 0,
+  };
+  int err;
+  if (setjmp(s.env) !=3D 0)
+    err =3D 2;
+  else {
+    int last;
+    do {
+      last =3D puff_bits(&s, 1);
+      int type =3D puff_bits(&s, 2);
+      err =3D type =3D=3D 0 ? puff_stored(&s)
+                      : (type =3D=3D 1 ? puff_fixed(&s)
+                                   : (type =3D=3D 2 ? puff_dynamic(&s) : -1=
+));
+      if (err !=3D 0)
+        break;
+    } while (!last);
+  }
+  *destlen =3D s.outcnt;
+  return err;
+}
+
+//% END CODE DERIVED FROM puff.{c,h}
+
+#define ZLIB_HEADER_WIDTH 2
+
+static int puff_zlib_to_file(const unsigned char* source,
+                             unsigned long sourcelen, int dest_fd)
+{
+  if (sourcelen < ZLIB_HEADER_WIDTH)
+    return 0;
+  source +=3D ZLIB_HEADER_WIDTH;
+  sourcelen -=3D ZLIB_HEADER_WIDTH;
+  const unsigned long max_destlen =3D 132 << 20;
+  void* ret =3D mmap(0, max_destlen, PROT_WRITE | PROT_READ,
+                   MAP_PRIVATE | MAP_ANON, -1, 0);
+  if (ret =3D=3D MAP_FAILED)
+    return -1;
+  unsigned char* dest =3D (unsigned char*)ret;
+  unsigned long destlen =3D max_destlen;
+  int err =3D puff(dest, &destlen, source, sourcelen);
+  if (err) {
+    munmap(dest, max_destlen);
+    errno =3D -err;
+    return -1;
+  }
+  if (write(dest_fd, dest, destlen) !=3D (ssize_t)destlen) {
+    munmap(dest, max_destlen);
+    return -1;
+  }
+  return munmap(dest, max_destlen);
+}
+
+static int setup_loop_device(unsigned char* data, unsigned long size,
+                             const char* loopname, int* loopfd_p)
+{
+  int err =3D 0, loopfd =3D -1;
+  int memfd =3D syscall(__NR_memfd_create, "syzkaller", 0);
+  if (memfd =3D=3D -1) {
+    err =3D errno;
+    goto error;
+  }
+  if (puff_zlib_to_file(data, size, memfd)) {
+    err =3D errno;
+    goto error_close_memfd;
+  }
+  loopfd =3D open(loopname, O_RDWR);
+  if (loopfd =3D=3D -1) {
+    err =3D errno;
+    goto error_close_memfd;
+  }
+  if (ioctl(loopfd, LOOP_SET_FD, memfd)) {
+    if (errno !=3D EBUSY) {
+      err =3D errno;
+      goto error_close_loop;
+    }
+    ioctl(loopfd, LOOP_CLR_FD, 0);
+    usleep(1000);
+    if (ioctl(loopfd, LOOP_SET_FD, memfd)) {
+      err =3D errno;
+      goto error_close_loop;
+    }
+  }
+  close(memfd);
+  *loopfd_p =3D loopfd;
+  return 0;
+
+error_close_loop:
+  close(loopfd);
+error_close_memfd:
+  close(memfd);
+error:
+  errno =3D err;
+  return -1;
+}
+
+static void reset_loop_device(const char* loopname)
+{
+  int loopfd =3D open(loopname, O_RDWR);
+  if (loopfd =3D=3D -1) {
+    return;
+  }
+  if (ioctl(loopfd, LOOP_CLR_FD, 0)) {
+  }
+  close(loopfd);
+}
+
+static long syz_mount_image(volatile long fsarg, volatile long dir,
+                            volatile long flags, volatile long optsarg,
+                            volatile long change_dir,
+                            volatile unsigned long size, volatile long imag=
+e)
+{
+  unsigned char* data =3D (unsigned char*)image;
+  int res =3D -1, err =3D 0, need_loop_device =3D !!size;
+  char* mount_opts =3D (char*)optsarg;
+  char* target =3D (char*)dir;
+  char* fs =3D (char*)fsarg;
+  char* source =3D NULL;
+  char loopname[64];
+  if (need_loop_device) {
+    int loopfd;
+    memset(loopname, 0, sizeof(loopname));
+    snprintf(loopname, sizeof(loopname), "/dev/loop%llu", procid);
+    if (setup_loop_device(data, size, loopname, &loopfd) =3D=3D -1)
+      return -1;
+    close(loopfd);
+    source =3D loopname;
+  }
+  mkdir(target, 0777);
+  char opts[256];
+  memset(opts, 0, sizeof(opts));
+  if (strlen(mount_opts) > (sizeof(opts) - 32)) {
+  }
+  strncpy(opts, mount_opts, sizeof(opts) - 32);
+  if (strcmp(fs, "iso9660") =3D=3D 0) {
+    flags |=3D MS_RDONLY;
+  } else if (strncmp(fs, "ext", 3) =3D=3D 0) {
+    bool has_remount_ro =3D false;
+    char* remount_ro_start =3D strstr(opts, "errors=3Dremount-ro");
+    if (remount_ro_start !=3D NULL) {
+      char after =3D *(remount_ro_start + strlen("errors=3Dremount-ro"));
+      char before =3D remount_ro_start =3D=3D opts ? '\0' : *(remount_ro_st=
+art - 1);
+      has_remount_ro =3D ((before =3D=3D '\0' || before =3D=3D ',') &&
+                        (after =3D=3D '\0' || after =3D=3D ','));
+    }
+    if (strstr(opts, "errors=3Dpanic") || !has_remount_ro)
+      strcat(opts, ",errors=3Dcontinue");
+  } else if (strcmp(fs, "xfs") =3D=3D 0) {
+    strcat(opts, ",nouuid");
+  }
+  res =3D mount(source, target, fs, flags, opts);
+  if (res =3D=3D -1) {
+    err =3D errno;
+    goto error_clear_loop;
+  }
+  res =3D open(target, O_RDONLY | O_DIRECTORY);
+  if (res =3D=3D -1) {
+    err =3D errno;
+    goto error_clear_loop;
+  }
+  if (change_dir) {
+    res =3D chdir(target);
+    if (res =3D=3D -1) {
+      err =3D errno;
+    }
+  }
+
+error_clear_loop:
+  if (need_loop_device)
+    reset_loop_device(loopname);
+  errno =3D err;
+  return res;
+}
+
+static int inject_fault(int nth)
+{
+  int fd;
+  fd =3D open("/proc/thread-self/fail-nth", O_RDWR);
+  if (fd =3D=3D -1)
+    exit(1);
+  char buf[16];
+  sprintf(buf, "%d", nth);
+  if (write(fd, buf, strlen(buf)) !=3D (ssize_t)strlen(buf))
+    exit(1);
+  return fd;
+}
+
+static const char* setup_fault()
+{
+  int fd =3D open("/proc/self/make-it-fail", O_WRONLY);
+  if (fd =3D=3D -1)
+    return "CONFIG_FAULT_INJECTION is not enabled";
+  close(fd);
+  fd =3D open("/proc/thread-self/fail-nth", O_WRONLY);
+  if (fd =3D=3D -1)
+    return "kernel does not have systematic fault injection support";
+  close(fd);
+  static struct {
+    const char* file;
+    const char* val;
+    bool fatal;
+  } files[] =3D {
+      {"/sys/kernel/debug/failslab/ignore-gfp-wait", "N", true},
+      {"/sys/kernel/debug/fail_futex/ignore-private", "N", false},
+      {"/sys/kernel/debug/fail_page_alloc/ignore-gfp-highmem", "N", false},
+      {"/sys/kernel/debug/fail_page_alloc/ignore-gfp-wait", "N", false},
+      {"/sys/kernel/debug/fail_page_alloc/min-order", "0", false},
+  };
+  unsigned i;
+  for (i =3D 0; i < sizeof(files) / sizeof(files[0]); i++) {
+    if (!write_file(files[i].file, files[i].val)) {
+      if (files[i].fatal)
+        return "failed to write fault injection file";
+    }
+  }
+  return NULL;
+}
+
+uint64_t r[2] =3D {0xffffffffffffffff, 0xffffffffffffffff};
+
+int main(void)
+{
+  syscall(__NR_mmap, /*addr=3D*/0x1ffff000ul, /*len=3D*/0x1000ul, /*prot=3D=
+*/0ul,
+          /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=3D*/=
+-1,
+          /*offset=3D*/0ul);
+  syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0x1000000ul,
+          /*prot=3DPROT_WRITE|PROT_READ|PROT_EXEC*/ 7ul,
+          /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=3D*/=
+-1,
+          /*offset=3D*/0ul);
+  syscall(__NR_mmap, /*addr=3D*/0x21000000ul, /*len=3D*/0x1000ul, /*prot=3D=
+*/0ul,
+          /*flags=3DMAP_FIXED|MAP_ANONYMOUS|MAP_PRIVATE*/ 0x32ul, /*fd=3D*/=
+-1,
+          /*offset=3D*/0ul);
+  const char* reason;
+  (void)reason;
+  if ((reason =3D setup_fault()))
+    printf("the reproducer may not work as expected: fault injection setup "
+           "failed: %s\n",
+           reason);
+  intptr_t res =3D 0;
+  if (write(1, "executing program\n", sizeof("executing program\n") - 1)) {
+  }
+  memcpy((void*)0x20000080, "ext3\000", 5);
+  memcpy((void*)0x20000480, "./file0\000", 8);
+  memcpy((void*)0x20000140, "jqfmt=3Dvfsold", 12);
+  *(uint8_t*)0x2000014c =3D 0x2c;
+  memcpy((void*)0x2000014d, "resgid", 6);
+  *(uint8_t*)0x20000153 =3D 0x3d;
+  sprintf((char*)0x20000154, "0x%016llx", (long long)0xee00);
+  *(uint8_t*)0x20000166 =3D 0x2c;
+  memcpy((void*)0x20000167, "bh", 2);
+  *(uint8_t*)0x20000169 =3D 0x2c;
+  memcpy((void*)0x2000016a, "noload", 6);
+  *(uint8_t*)0x20000170 =3D 0x2c;
+  memcpy((void*)0x20000171, "data_err=3Dignore", 15);
+  *(uint8_t*)0x20000180 =3D 0x2c;
+  memcpy((void*)0x20000181, "usrjquota=3D", 10);
+  *(uint8_t*)0x2000018b =3D 0x2c;
+  *(uint8_t*)0x2000018c =3D 0;
+  memcpy(
+      (void*)0x200004c0,
+=20=20=20=20=20
+"\x78\x9c\xec\xdc\xcb\x6f\x1b\x45\x18\x00\xf0\x6f\xed\x24\x7d\x93\x50\xca"
+=20=20=20=20=20
+"\xa3\xa5\x85\x40\x41\x44\x3c\x92\x26\x7d\xd0\x03\x17\x10\x48\x1c\x40\x42"
+=20=20=20=20=20
+"\x82\x43\x11\xa7\x90\xa4\x55\xa8\xdb\xa0\x26\x48\xb4\x8a\x20\x70\x08\x47"
+=20=20=20=20=20
+"\x54\x89\x3b\xe2\x88\xc4\x5f\xc0\x09\x2e\x08\x38\x21\x71\x85\x3b\xaa\x54"
+=20=20=20=20=20
+"\xa1\x5c\x5a\x38\x19\xad\xbd\x9b\xba\x89\x9d\xc6\x89\x53\x97\xec\xef\x27"
+=20=20=20=20=20
+"\x6d\x3b\xe3\x1d\x6b\xe6\xdb\xdd\xb1\x67\x67\xbc\x09\xa0\xb0\x06\xd3\x7f"
+=20=20=20=20=20
+"\x92\x88\xbd\x11\xf1\x47\x44\xf4\xd7\xb3\xb7\x17\x18\xac\xff\x77\x73\x69"
+=20=20=20=20=20
+"\x7e\xe2\x9f\xa5\xf9\x89\x24\xaa\xd5\xb7\xff\x4e\x6a\xe5\x6e\x2c\xcd\x4f"
+=20=20=20=20=20
+"\xe4\x45\xf3\xf7\xed\xa9\x67\xaa\xd5\x2c\xbf\xa3\x49\xbd\x8b\xef\x45\x8c"
+=20=20=20=20=20
+"\x57\x2a\x53\x97\xb2\xfc\xc8\xdc\x85\x0f\x47\x66\x2f\x5f\x79\x61\xfa\xc2"
+=20=20=20=20=20
+"\xf8\xb9\xa9\x73\x53\x17\xc7\x4e\x9f\x3e\x71\xfc\x48\xdf\xa9\xb1\x93\x1d"
+=20=20=20=20=20
+"\x89\x33\x8d\xeb\xc6\xa1\x4f\x66\x0e\x1f\x7c\xfd\xdd\xab\x6f\x4e\x9c\xb9"
+=20=20=20=20=20
+"\xfa\xfe\x2f\xdf\xa5\xed\xdd\x9b\xed\x6f\x8c\xa3\x53\x06\xeb\x47\xb7\xa9"
+=20=20=20=20=20
+"\xa7\x3b\x5d\x59\x97\xed\x6b\x48\x27\x3d\x5d\x6c\x08\x6d\x29\x47\x44\x7a"
+=20=20=20=20=20
+"\xba\x7a\x6b\xfd\xbf\x3f\xca\xb1\x6b\x79\x5f\x7f\xbc\xf6\x79\x57\x1b\x07"
+=20=20=20=20=20
+"\x6c\xa9\x6a\xb5\x5a\x6d\xf6\xfd\x9c\x59\xa8\x02\xdb\x58\x12\xdd\x6e\x01"
+=20=20=20=20=20
+"\xd0\x1d\xf9\x17\x7d\x7a\xff\x9b\x6f\x77\x69\xe8\x71\x4f\xb8\xfe\x72\xfd"
+=20=20=20=20=20
+"\x06\x28\x8d\xfb\x66\xb6\xd5\xf7\xf4\x44\x29\x2b\xd3\xbb\xe2\xfe\xb6\x93"
+=20=20=20=20=20
+"\x06\x23\xe2\xcc\xc2\xbf\x5f\xa7\x5b\x6c\xd1\x3c\x04\x00\x40\xa3\x1f\xd2"
+=20=20=20=20=20
+"\xf1\xcf\xf3\xcd\xc6\x7f\xa5\x78\xa8\xa1\xdc\x7d\xd9\x1a\xca\x40\x44\xdc"
+=20=20=20=20=20
+"\x1f\x11\xfb\x23\xe2\x81\x88\x38\x10\x11\x0f\x46\xd4\xca\x3e\x1c\x11\x8f"
+=20=20=20=20=20
+"\xb4\x59\xff\xca\x15\x92\xd5\xe3\x9f\xd2\xb5\x0d\x05\xb6\x4e\xe9\xf8\xef"
+=20=20=20=20=20
+"\xa5\x6c\x6d\xeb\xf6\xf1\x5f\x3e\xfa\x8b\x81\x72\x96\xdb\x57\x8b\xbf\x37"
+=20=20=20=20=20
+"\x39\x3b\x5d\x99\x3a\x96\x1d\x93\xa1\xe8\xdd\x91\xe6\x47\xd7\xa8\xe3\xc7"
+=20=20=20=20=20
+"\x57\x7f\xff\xb2\xd5\xbe\xc6\xf1\x5f\xba\xa5\xf5\xe7\x63\xc1\xac\x1d\xd7"
+=20=20=20=20=20
+"\x7a\x56\x4c\xd0\x4d\x8e\xcf\x8d\x6f\x26\xe6\x46\xd7\x3f\x8b\x38\xd4\xd3"
+=20=20=20=20=20
+"\x2c\xfe\x24\xf2\x65\x9c\x24\x22\x0e\x46\xc4\xa1\x0d\xd6\x31\xfd\xec\xb7"
+=20=20=20=20=20
+"\x87\x5b\xed\xbb\x73\xfc\x6b\xe8\xc0\x3a\x53\xf5\x9b\x88\x67\xea\xe7\x7f"
+=20=20=20=20=20
+"\x21\x56\xc4\x9f\x4b\x5a\xae\x4f\x8e\xbe\x78\x6a\xec\xe4\xc8\xce\xa8\x4c"
+=20=20=20=20=20
+"\x1d\x1b\xc9\xaf\x8a\xd5\x7e\xfd\x6d\xf1\xad\x56\xf5\x6f\x2a\xfe\x0e\x48"
+=20=20=20=20=20
+"\xcf\xff\xee\xa6\xd7\xff\x72\xfc\x03\xc9\xce\x88\xd9\xcb\x57\xce\xd7\xd6"
+=20=20=20=20=20
+"\x6b\x67\xdb\xaf\x63\xf1\xcf\x2f\x5a\xde\xd3\x6c\xf4\xfa\xef\x4b\xde\xa9"
+=20=20=20=20=20
+"\xa5\xfb\xb2\xd7\x3e\x1e\x9f\x9b\xbb\x34\x1a\xd1\x97\xbc\xb1\xfa\xf5\xb1"
+=20=20=20=20=20
+"\x5b\xef\xcd\xf3\x79\xf9\x34\xfe\xa1\xa3\xcd\xfb\xff\xfe\xb8\x75\x24\x1e"
+=20=20=20=20=20
+"\x8d\x88\xf4\x22\x3e\x12\x11\x8f\x45\xc4\xe3\x59\xdb\x9f\x88\x88\x27\x23"
+=20=20=20=20=20
+"\xe2\xe8\x1a\xf1\xff\xfc\xca\x53\x1f\xb4\x1f\xff\x1a\xb3\xf2\x1d\x94\xc6"
+=20=20=20=20=20
+"\x3f\x79\xa7\xf3\x1f\x8d\xe7\xbf\xfd\x44\xf9\xfc\x4f\xdf\xb7\x1f\x7f\x2e"
+=20=20=20=20=20
+"\x3d\xff\x27\x6a\xa9\xa1\xec\x95\xf5\x7c\xfe\xad\xb7\x81\x9b\x39\x76\x00"
+=20=20=20=20=20
+"\x00\x00\xf0\x7f\x51\xaa\xfd\x06\x3e\x29\x0d\x2f\xa7\x4b\xa5\xe1\xe1\xfa"
+=20=20=20=20=20
+"\x6f\xf8\x0f\xc4\xee\x52\x65\x66\x76\xee\xb9\xb3\x33\x1f\x5d\x9c\xac\xff"
+=20=20=20=20=20
+"\x56\x7e\x20\x7a\x4b\xf9\x4c\x57\x7f\xc3\x7c\xe8\x68\x36\x37\x9c\xe7\xc7"
+=20=20=20=20=20
+"\x56\xe4\x8f\x67\xf3\xc6\x5f\x95\x77\xd5\xf2\xc3\x13\x33\x95\xc9\x6e\x07"
+=20=20=20=20=20
+"\x0f\x05\xb7\xa7\x45\xff\x4f\xfd\x55\xee\x76\xeb\x80\x2d\xe7\x79\x2d\x28"
+=20=20=20=20=20
+"\x2e\xfd\x1f\x8a\x4b\xff\x87\xe2\xd2\xff\xa1\xb8\xf4\x7f\x28\xae\x66\xfd"
+=20=20=20=20=20
+"\xff\xd3\x2e\xb4\x03\xb8\xfb\x7c\xff\x43\x71\xe9\xff\x50\x5c\xfa\x3f\x14"
+=20=20=20=20=20
+"\x97\xfe\x0f\x85\xd4\xf2\xd9\xf8\xd2\xa6\x1e\xf9\x97\xd8\xf6\x89\x28\xdd"
+=20=20=20=20=20
+"\x13\xcd\xd8\xfe\x89\x9e\x75\xff\x31\x8b\x0d\x26\x76\x34\xdd\xd5\xed\x4f"
+=20=20=20=20=20
+"\x26\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00"
+=20=20=20=20=20
+"\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x80\xce\xf8\x2f\x00\x00"
+      "\xff\xff\x70\x88\xe4\x87",
+      1086);
+  syz_mount_image(
+      /*fs=3D*/0x20000080, /*dir=3D*/0x20000480,
+=20=20=20=20=20
+/*flags=3DMS_I_VERSION|MS_SLAVE|MS_PRIVATE|MS_POSIXACL|MS_RELATIME|MS_NOSUI=
+D|0xc0400004*/
+      0xc0ed0006, /*opts=3D*/0x20000140, /*chdir=3D*/0xfe, /*size=3D*/0x43e,
+      /*img=3D*/0x200004c0);
+  memcpy((void*)0x20000340, "./bus\000", 6);
+  res =3D syscall(__NR_creat, /*file=3D*/0x20000340ul, /*mode=3D*/0ul);
+  if (res !=3D -1)
+    r[0] =3D res;
+  memcpy((void*)0x20001280, "/dev/loop", 9);
+  *(uint8_t*)0x20001289 =3D 0x30;
+  *(uint8_t*)0x2000128a =3D 0;
+  memcpy((void*)0x20000000, "./bus\000", 6);
+  syscall(__NR_mount, /*src=3D*/0x20001280ul, /*dst=3D*/0x20000000ul, /*typ=
+e=3D*/0ul,
+          /*flags=3DMS_BIND*/ 0x1000ul, /*data=3D*/0ul);
+  memcpy((void*)0x20000080, "./bus\000", 6);
+  res =3D syscall(__NR_open, /*file=3D*/0x20000080ul,
+                /*flags=3DO_SYNC|O_NOCTTY|O_DIRECT|O_CLOEXEC|O_RDWR*/ 0x185=
+102ul,
+                /*mode=3D*/0ul);
+  if (res !=3D -1)
+    r[1] =3D res;
+  syscall(__NR_mmap, /*addr=3D*/0x20000000ul, /*len=3D*/0xb36000ul,
+          /*prot=3DPROT_WRITE*/ 2ul,
+          /*flags=3DMAP_STACK|MAP_POPULATE|MAP_FIXED|MAP_SHARED*/ 0x28011ul,
+          /*fd=3D*/r[1], /*offset=3D*/0ul);
+  *(uint64_t*)0x20000900 =3D 0x200001c0;
+  *(uint64_t*)0x200001c0 =3D 0;
+  *(uint32_t*)0x200001c8 =3D 0;
+  *(uint32_t*)0x200001cc =3D 0;
+  *(uint16_t*)0x200001d0 =3D 0;
+  *(uint16_t*)0x200001d2 =3D 0;
+  *(uint32_t*)0x200001d4 =3D -1;
+  *(uint64_t*)0x200001d8 =3D 0x200012c0;
+  memcpy(
+      (void*)0x200012c0,
+=20=20=20=20=20
+"\xe4\xe3\x1b\x1b\x51\x29\xdd\xae\x0b\xef\x73\xd1\x99\x36\x95\xf3\x21\xc5"
+=20=20=20=20=20
+"\x8e\x75\x7c\x45\xec\x11\xef\x95\x1b\xc6\x24\x06\xc2\xe9\xc9\x2d\xac\x5a"
+=20=20=20=20=20
+"\x3d\xb3\x3e\xf0\x16\x3b\xcd\x24\xf2\x92\xe3\xee\xaa\x51\x68\xa2\x54\x3f"
+=20=20=20=20=20
+"\x08\x68\x01\x91\x4b\xc0\xc6\x8e\x74\x87\xb0\xa5\x25\xd0\x3b\x25\xbf\xeb"
+=20=20=20=20=20
+"\xdd\x6d\xf5\x1c\xc0\x14\x7f\x2a\xb0\xcf\x6b\xfa\x4c\x41\x06\x53\x49\x10"
+=20=20=20=20=20
+"\xa0\xce\x0d\xaa\x53\xfb\xc1\x94\xe4\xc2\xc9\x8e\xe1\x13\xdf\x84\x99\x95"
+=20=20=20=20=20
+"\x3d\x53\xd8\x47\x42\x5c\x06\x4e\xe2\x7c\xb0\xb9\xb6\xa3\x5c\x92\x4b\xae"
+=20=20=20=20=20
+"\x75\x37\x3c\xd2\xed\xb6\x3c\x1f\x41\xcd\x1e\x19\x34\x0f\xab\x19\xe0\xeb"
+=20=20=20=20=20
+"\xb8\x8a\x0a\x0a\xc6\x4c\x28\x54\xd0\xff\xf4\xd6\x77\xb8\x6e\x5b\x0a\x38"
+=20=20=20=20=20
+"\x26\x8c\x41\x87\x7c\xc7\xef\x25\xcc\x31\x98\x98\xef\x10\x6c\x12\x54\xdd"
+=20=20=20=20=20
+"\x34\xda\x07\x7a\x58\xd4\xab\x71\x75\xf8\x53\xb5\x4c\xee\xfe\x42\xe4\x07"
+=20=20=20=20=20
+"\xa5\xe4\x9a\xe9\x2c\x29\x43\xa3\xb0\x30\x97\xa8\xbc\x26\x0c\x5a\x6a\x8c"
+=20=20=20=20=20
+"\x86\xc6\xe3\xc6\x89\xbb\xe0\xe0\x9a\x4e\x6a\x70\x59\x70\xb9\xba\x03\x55"
+=20=20=20=20=20
+"\x83\x64\xf8\x4e\xad\x50\x8e\x90\xf1\xc8\x2d\xd4\x39\x53\xb9\xf7\xb8\x65"
+=20=20=20=20=20
+"\x79\x60\xf6\xc5\xb0\x6f\x3b\xd1\xaf\xe5\x3f\xb5\xa1\x28\xe1\x13\x9a\x09"
+=20=20=20=20=20
+"\xee\x78\xb1\x0b\x6d\x60\x0d\xdf\x1e\xd4\x64\x33\x06\x88\xc7\x63\xf4\x4b"
+=20=20=20=20=20
+"\x30\xce\x90\x38\x5e\x6f\x56\x35\xcf\x28\x01\x3b\x67\x23\xa4\x0d\xf8\x4d"
+=20=20=20=20=20
+"\xd8\x4e\x13\xa0\x50\x0f\x72\x50\x5a\xc0\x2c\x19\x2f\x26\x7d\xd7\x4a\x4a"
+=20=20=20=20=20
+"\x63\x40\x6a\xbc\x3c\x0b\x0f\xe6\x1c\x32\xee\xc0\x41\x02\xcb\x3b\x2c\xd9"
+=20=20=20=20=20
+"\x51\x45\xa1\xc1\xd7\x7a\x99\x3d\x48\xd5\xb8\x71\x57\x8f\x72\x78\xb3\xaf"
+=20=20=20=20=20
+"\x42\x72\xc1\x5c\x55\x01\x4d\x99\xd5\xb2\xf4\x73\xb9\xb5\x1b\xc8\x9c\xb9"
+=20=20=20=20=20
+"\xd2\x9b\xea\x24\x2e\xda\xb0\x80\x84\x9a\x95\xed\xdf\x81\x4d\xba\x1c\xc6"
+=20=20=20=20=20
+"\x3f\x1e\xd2\xd9\x5d\x52\xb8\x8c\x65\x2d\xf5\xaa\xfd\x2e\x6d\x52\xe3\x34"
+=20=20=20=20=20
+"\x63\x2f\xdd\xd5\x0d\xa4\x1f\x76\x66\xff\xed\xde\x3b\xd3\x5d\x41\x5d\x08"
+=20=20=20=20=20
+"\xd3\xd5\xd3\x0e\x16\x04\xd7\xf6\x65\xac\x5f\x6d\x34\x76\x20\xa8\xe1\xae"
+=20=20=20=20=20
+"\xe1\x66\x24\x90\x50\xa0\x91\x2f\x93\x28\x38\xa1\x6a\x42\x54\x9b\x98\x27"
+=20=20=20=20=20
+"\xf4\xa5\x68\xeb\x26\x47\x16\xe0\x94\x55\xde\x73\x1c\x04\x77\xe7\x17\x1c"
+=20=20=20=20=20
+"\xe2\xb5\x83\x5d\x9b\x82\x70\x57\x82\x07\x17\xb1\x97\x04\x66\x2e\xad\x7a"
+=20=20=20=20=20
+"\x1a\xc1\x16\xef\x1d\xe5\x99\x18\x5b\x92\x49\xdf\x5b\x59\x01\x12\xdd\x4b"
+=20=20=20=20=20
+"\xfd\xd1\xaa\xe5\x0f\x4e\x6e\x2e\x5d\x7d\x6a\x68\x79\x47\x40\xc3\x19\xfb"
+=20=20=20=20=20
+"\xe9\x27\x6f\x73\x42\xf6\xca\xa4\xf4\xdf\x05\x5a\xf8\xc9\x22\x9e\x76\xef"
+=20=20=20=20=20
+"\x68\xe1\x2c\x9e\x24\xf7\x87\xcb\x1a\x05\xfc\x1b\xd7\x2c\xc6\xcb\x8f\x44"
+=20=20=20=20=20
+"\x6f\xdd\x9b\x2e\x0b\x5c\x02\x09\x04\x7c\x1d\xdb\x2e\x28\x15\x42\xb4\x60"
+=20=20=20=20=20
+"\x52\xd9\xce\xe9\x7b\xbf\x9f\x0e\x08\x4f\x14\x20\x90\xd3\xa3\x5c\x1e\x1c"
+=20=20=20=20=20
+"\x65\x0a\x87\x5d\x35\x15\x92\x70\xb0\x2e\x30\x6a\x9b\x47\xe6\xd3\xd4\x5e"
+=20=20=20=20=20
+"\x8a\xa2\x45\x5e\x38\xe6\x62\x17\xea\x16\xc6\x81\x0d\x32\x26\xf8\xa5\x31"
+=20=20=20=20=20
+"\x03\x69\xdd\xc4\x2e\xcd\x13\xd8\x2c\x18\x23\xd9\xd9\x9e\x55\xe1\x12\x99"
+=20=20=20=20=20
+"\x7b\xe2\x55\xb3\xa6\x82\x7f\x83\x23\xf4\xb1\x25\x19\xd2\x17\xf3\x4b\x2e"
+=20=20=20=20=20
+"\x67\x62\x5f\x13\xff\x48\xd0\x5a\xe6\x25\xc9\xb0\x0f\x8e\xac\x49\x7d\xb0"
+=20=20=20=20=20
+"\x3c\x1e\x9d\xb8\x98\x9c\x9d\xf8\x17\xb7\x7a\xfe\x41\x9c\xc0\x0d\xbd\x63"
+=20=20=20=20=20
+"\x04\xe8\xfc\xc4\xe2\xd5\x49\x06\x43\xee\xc2\xde\xd7\xad\xd8\xa7\x14\x42"
+=20=20=20=20=20
+"\x52\xd5\x46\x35\x72\x87\x04\x5b\x56\xc2\xfa\x74\x41\x96\xfe\x27\x0e\x3e"
+=20=20=20=20=20
+"\x34\x3f\x70\xb3\xb4\x78\x33\x12\x3b\xdf\xb3\x8c\x3f\x3d\x3e\xd9\x8c\xe2"
+=20=20=20=20=20
+"\xf5\x9d\xa0\xe7\xf2\xae\x88\x0d\xf6\x05\x2a\xaf\x6f\x7d\xba\x63\xd3\x5a"
+=20=20=20=20=20
+"\xe6\x89\xbc\x72\xc9\xfe\x9a\x5c\x3d\x6d\x70\x42\x84\x10\x4d\x13\x30\x6c"
+=20=20=20=20=20
+"\xed\x5d\x9f\x99\x58\x06\x1c\xfe\x1d\xd7\xff\x5f\x6b\x8b\x20\xdb\x90\xab"
+=20=20=20=20=20
+"\x59\x56\xcf\x02\x2f\x97\x0e\x7d\x68\x40\x85\x1e\x5b\x7f\x7f\xd0\x7b\x73"
+=20=20=20=20=20
+"\x1b\x1e\xd4\x61\xa5\xc9\x03\x44\xaf\xbb\x00\xbc\xe1\x96\x3c\x24\xee\xc6"
+=20=20=20=20=20
+"\xb2\xf0\x32\x02\xbf\x0e\x9f\x1c\xe8\x81\x21\xa2\x58\x02\x99\x42\xde\x11"
+=20=20=20=20=20
+"\xbc\x2c\xfb\x84\xde\xeb\x90\x3b\x9d\x5a\xd4\xa5\x7a\x61\x38\x2c\x7f\x44"
+=20=20=20=20=20
+"\x42\x2b\x94\x59\xcb\x46\x99\xa0\x09\x07\x24\xe3\x64\x9f\xcf\x20\xd2\x76"
+=20=20=20=20=20
+"\x08\x17\x82\x5e\x2a\x0a\xde\x5d\xf3\x90\xaf\x76\x63\x86\x19\x44\x5a\x91"
+=20=20=20=20=20
+"\xed\x21\x80\x98\x15\x43\x74\xe7\x85\x4a\xbf\x50\xcd\x03\x6a\xba\x93\xee"
+=20=20=20=20=20
+"\x6d\xe5\x6c\xaf\x38\x17\x84\x56\xd7\x43\xd2\x9a\xd5\x0c\x22\xd1\xea\x01"
+=20=20=20=20=20
+"\x4b\xca\x4a\x12\xd1\x92\x2b\x51\x52\xb8\xc0\xb4\x70\x4d\x9a\x2c\xc1\xee"
+=20=20=20=20=20
+"\xe8\x6e\xe4\x89\x83\x92\xb2\xc1\x56\x97\xc1\x5f\xb5\x01\xfd\xaa\x87\x36"
+=20=20=20=20=20
+"\xfa\xcd\xce\xb7\x02\x3c\xdf\x70\xb5\x72\xad\x39\xf7\x5d\xa4\x1e\x6c\x0b"
+=20=20=20=20=20
+"\xcc\x2d\xb5\x9a\x3e\x5e\x92\xf0\x4b\x90\x54\x98\xe7\x86\x61\x12\x4c\x54"
+=20=20=20=20=20
+"\xde\x63\xd9\x5b\x4a\xff\x54\x27\x24\xa9\xb5\xd7\xb3\x0c\x16\x94\x0d\x0b"
+=20=20=20=20=20
+"\x03\x64\x8a\x7a\xb1\xf4\x14\x34\x40\xee\xf8\xd5\x94\x64\xe8\xed\xfb\x74"
+=20=20=20=20=20
+"\x5b\x47\x4d\x82\xb2\x7d\x0c\x75\x0b\x93\xe6\x34\xf3\xe1\x14\xef\xe8\xbb"
+=20=20=20=20=20
+"\x5d\x01\x03\xdb\x5e\xe7\xb4\xc7\x9c\x74\xac\x16\xbb\xa0\xdf\x71\x6e\x9d"
+=20=20=20=20=20
+"\xb5\x14\x8c\x77\xb0\x1e\x41\x01\x22\x04\x56\x8d\x07\xfe\x8e\x8c\x7c\x4c"
+=20=20=20=20=20
+"\x73\x5c\xf5\x0f\x6e\x9c\x6a\x38\x55\xdf\xe0\x02\x7d\x0a\xca\xc8\x75\xdb"
+=20=20=20=20=20
+"\x38\xa8\xb6\xb1\x0b\x00\xde\xd7\xb4\xb2\xd9\x13\x49\x3c\x86\xa7\xff\x5c"
+=20=20=20=20=20
+"\x24\x07\x0f\x5d\x30\x90\x75\xa3\x73\x5f\x6c\x99\x4b\x94\xc1\x00\xcd\xdb"
+=20=20=20=20=20
+"\x7c\xd5\x80\x0c\x93\x9f\x39\x58\x32\xf4\x9f\xa8\xf1\x02\x50\x32\x70\x95"
+=20=20=20=20=20
+"\x04\xfa\x9f\xf5\x71\x94\xb8\xa5\x17\x18\x43\xa4\x67\x24\x5b\x54\x60\x9f"
+=20=20=20=20=20
+"\xd0\x26\x5f\x1e\x13\x9d\x1a\xd3\x5e\x6b\x2a\xac\xa2\x5c\x3d\x1a\x6a\x5b"
+=20=20=20=20=20
+"\xb8\x4d\x19\x36\xe1\x10\x93\xde\xc4\x51\x4a\xf7\xea\xc3\x1e\x4e\x12\xc8"
+=20=20=20=20=20
+"\xf9\xd4\xc7\x14\x87\x08\x62\x5d\x30\x07\xa3\x68\x30\x3c\x42\x0a\xb4\xa3"
+=20=20=20=20=20
+"\x2c\x06\xba\x1e\xc1\x80\xdd\x1c\x0e\xf7\x64\x01\xa1\x14\x9b\x56\x71\xa3"
+=20=20=20=20=20
+"\x66\x3d\x66\xb3\x52\x7f\x4a\x4e\xec\x3e\x39\xc8\x40\x90\xb7\x85\x3e\xfa"
+=20=20=20=20=20
+"\xaf\xea\x4c\xf5\x1b\x54\x59\x8b\x9c\x15\x34\xe2\x0d\xba\xc0\xb0\xd1\xf9"
+      "\x6a\x57\x11\x47\x53\x4c\x58\x89\xa2\xed\xdc\x54\x30\x4a",
+      1346);
+  *(uint64_t*)0x200001e0 =3D 0x542;
+  *(uint64_t*)0x200001e8 =3D 0;
+  *(uint64_t*)0x200001f0 =3D 0;
+  *(uint32_t*)0x200001f8 =3D 0;
+  *(uint32_t*)0x200001fc =3D -1;
+  syscall(__NR_io_submit, /*ctx=3D*/0ul, /*nr=3D*/1ul, /*iocbpp=3D*/0x20000=
+900ul);
+  syscall(__NR_ioctl, /*fd=3D*/r[0], /*cmd=3D*/0x6611, /*arg=3D*/0ul);
+  *(uint32_t*)0x20000004 =3D 0;
+  *(uint32_t*)0x20000008 =3D 0;
+  *(uint32_t*)0x2000000c =3D 0;
+  *(uint32_t*)0x20000010 =3D 0;
+  *(uint32_t*)0x20000018 =3D -1;
+  memset((void*)0x2000001c, 0, 12);
+  syz_io_uring_setup(/*entries=3D*/0x6928, /*params=3D*/0x20000000,
+                     /*ring_ptr=3D*/0x20ff0000, /*sqes_ptr=3D*/0x20ffb000);
+  *(uint32_t*)0x20000004 =3D 0;
+  *(uint32_t*)0x20000008 =3D 0;
+  *(uint32_t*)0x2000000c =3D 0;
+  *(uint32_t*)0x20000010 =3D 0;
+  *(uint32_t*)0x20000018 =3D -1;
+  memset((void*)0x2000001c, 0, 12);
+  inject_fault(34);
+  syz_io_uring_setup(/*entries=3D*/0x2e, /*params=3D*/0x20000000,
+                     /*ring_ptr=3D*/0x20ff8000, /*sqes_ptr=3D*/0x20ff7000);
+  return 0;
+}
+```
+
+
+[  133.784678] loop0: detected capacity change from 0 to 512
+[  133.787379] EXT4-fs: Ignoring removed bh option
+[  133.787605] EXT4-fs (loop0): mounting ext3 file system using the ext4
+subsystem
+[  133.788280] EXT4-fs (loop0): 1 truncate cleaned up
+[  133.788502] EXT4-fs (loop0): mounted filesystem
+00000000-0000-0000-0000-000000000000 r/w without journal. Quota mode: none.
+[  133.789171] ------------[ cut here ]------------
+[  133.789313] WARNING: CPU: 1 PID: 317 at fs/inode.c:1277
+lock_two_nondirectories+0xb8/0xe0
+[  133.789552] Modules linked in:
+[  133.789646] CPU: 1 UID: 0 PID: 317 Comm: fused402987 Not tainted
+6.13.0-rc2-00448-g8a3a22f4bd79 #2
+[  133.789899] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.13.0-1ubuntu1.1 04/01/2014
+[  133.790163] RIP: 0010:lock_two_nondirectories+0xb8/0xe0
+[  133.790315] Code: cc cc cc 48 85 ed 74 13 48 89 d8 48 89 eb 48 89 c5 eb =
+d3
+48 85 ed 74 e4 48 89 eb 48 8d bb 98 00 00 00 5b 5d e9 e9 5f 83 02 90 <0f> 0=
+b 90
+eb b2 90 0f 0b 90 48 85 db 0f 85 7b ff ff ff eb da e8 df
+[  133.790835] RSP: 0018:ffff888113a5fc28 EFLAGS: 00010246
+[  133.790991] RAX: 0000000000004000 RBX: ffff888119f12d50 RCX:
+1ffff110233e25bc
+[  133.791195] RDX: 1ffff110233e25aa RSI: ffff888119f12d50 RDI:
+ffff888119f12868
+[  133.791398] RBP: ffff888119f12868 R08: 00000000ffffffff R09:
+ffffffffadb93a20
+[  133.791600] R10: 0000000000000000 R11: ffff8881107bb000 R12:
+ffff88811265c200
+[  133.791801] R13: 1ffff1102274bf94 R14: ffff888119f12868 R15:
+ffff88810fa47de0
+[  133.792011] FS:  000000002161d880(0000) GS:ffff8881f7280000(0000)
+knlGS:0000000000000000
+[  133.792237] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  133.792409] CR2: 0000000000000000 CR3: 0000000102380000 CR4:
+00000000000006f0
+[  133.792621] Call Trace:
+[  133.792697]  <TASK>
+[  133.792765]  ? __warn+0xcc/0x260
+[  133.792867]  ? lock_two_nondirectories+0xb8/0xe0
+[  133.793032]  ? report_bug+0x30e/0x370
+[  133.793141]  ? handle_bug+0x54/0xa0
+[  133.793242]  ? exc_invalid_op+0x18/0x50
+[  133.793353]  ? asm_exc_invalid_op+0x1a/0x20
+[  133.793483]  ? lock_two_nondirectories+0xb8/0xe0
+[  133.793624]  __ext4_ioctl+0x10db/0x3c90
+[  133.793743]  ? search_extable+0x75/0xa0
+[  133.793861]  ? __pfx_search_extable+0x10/0x10
+[  133.794020]  ? __pfx___ext4_ioctl+0x10/0x10
+[  133.794149]  ? fixup_exception+0x721/0x970
+[  133.794275]  ? __pfx_do_vfs_ioctl+0x10/0x10
+[  133.794405]  ? kernelmode_fixup_or_oops.isra.0+0x4e/0x90
+[  133.794567]  ? exc_page_fault+0x5e/0xc0
+[  133.794687]  ? ioctl_has_perm.constprop.0+0x2c6/0x490
+[  133.794840]  ? __pfx_ioctl_has_perm.constprop.0+0x10/0x10
+[  133.795028]  ? __get_user_nocheck_8+0x20/0x20
+[  133.795162]  ? lookup_ioctx+0x40/0x260
+[  133.795278]  ? __pfx___x64_sys_io_submit+0x10/0x10
+[  133.795425]  ? __x64_sys_ioctl+0x131/0x190
+[  133.795550]  ? __pfx_ext4_ioctl+0x10/0x10
+[  133.795673]  __x64_sys_ioctl+0x131/0x190
+[  133.795812]  do_syscall_64+0xaa/0x1b0
+[  133.795953]  entry_SYSCALL_64_after_hwframe+0x77/0x7f
+[  133.796115] RIP: 0033:0x45846d
+[  133.796218] Code: c3 e8 57 2c 00 00 0f 1f 80 00 00 00 00 f3 0f 1e fa 48 =
+89
+f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3=
+d 01
+f0 ff ff 73 01 c3 48 c7 c1 c0 ff ff ff f7 d8 64 89 01 48
+[  133.796765] RSP: 002b:00007fff55439b58 EFLAGS: 00000286 ORIG_RAX:
+0000000000000010
+[  133.797014] RAX: ffffffffffffffda RBX: 0000000000400530 RCX:
+000000000045846d
+[  133.797229] RDX: 0000000000000000 RSI: 0000000000006611 RDI:
+0000000000000004
+[  133.797432] RBP: 00007fff55439b70 R08: 000000000049c0a0 R09:
+000000000049c0a0
+[  133.797637] R10: 00000000200012f0 R11: 0000000000000286 R12:
+0000000000404e80
+[  133.797840] R13: 0000000000000000 R14: 00000000004c8018 R15:
+0000000000000000
+[  133.798066]  </TASK>
+[  133.798133] ---[ end trace 0000000000000000 ]---
+
+--=20
+You may reply to this email to add a comment.
+
+You are receiving this mail because:
+You are watching the assignee of the bug.=
 
