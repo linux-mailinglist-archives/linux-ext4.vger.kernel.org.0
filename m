@@ -1,183 +1,143 @@
-Return-Path: <linux-ext4+bounces-5586-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5587-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0A28A9EE649
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 13:07:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 87B5C9EE6D2
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 13:34:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D44FD168F17
-	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 12:05:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E5D1165D08
+	for <lists+linux-ext4@lfdr.de>; Thu, 12 Dec 2024 12:34:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA96B212B0B;
-	Thu, 12 Dec 2024 12:05:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fYOOdp9y"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFAFD213243;
+	Thu, 12 Dec 2024 12:34:18 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB788210F5E;
-	Thu, 12 Dec 2024 12:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 90D25211493;
+	Thu, 12 Dec 2024 12:34:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734005117; cv=none; b=jhGmb2AB7t9aIGnIIibyA3BjRtWD04/ZltFenRvv57WTJrGkBdDNFxgb76wpL5MmaC9mObb7URO7mo0kKNsMILztIJG+WbBRTY1WG5GGsGOsChZfRjKnjKYnmDuH9qN80Yw1JUuw+9oFaop1JmcPf/c+hBUWPQMKfLoz1JM5BAY=
+	t=1734006858; cv=none; b=gvIe1MK0iEqx46V+hRsPLSIyy4/shqTWBPUUz5I8zGLt8g6KohIcNVSDdwieLOqiD/wNk1STDxQNdgbLHbPa2gUMqtj5fi/URSJtnuMMSTxXqTw3IGJeKihw6F/2GBeOA3RldXNcC5GeBdN7UCKH6cSSFyvc3vCreMGWhPfrvEw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734005117; c=relaxed/simple;
-	bh=dczLnZD9ji8Trn9VosWQYezAvBkKMhVWPVVwWcNhnZE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=D51Vgu6A4ACHNJwnuGYILlTYRpDr6Vt+fYrA77dF7k9RCEELR2V8wIYJvU5hFet9eupTZv7aC9V8ftkOre/4K8sqwdIefEdsFqyNBJxPPWwv6xoKqiHOxBr3+J5BQx1LbkhtejoxMKAEFCqPzVT0e/zVGYiqPeow0GiPKOpTLKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fYOOdp9y; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BC7HOWv012053;
-	Thu, 12 Dec 2024 12:05:11 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=2a3k1mkd0XcuQRayXOuU+WcpNVU7Q/
-	sxbzZYUDe0PV8=; b=fYOOdp9yuiOKakr7DVaDTJGGKj1r2LlGVTzdPHZy7lc3GL
-	k4F9y0sdCU94hbvGAvTLZo1bOG4l0eBbtIHC3DZnaPz7OQvtmNxhem/5zbYyFEZt
-	531SN8vtBjcWLFdsKqIYCQgRXVzr3egaxMxDf3c6uSre4sCoLsdWYy1TgJyYfeBQ
-	lxWWPeSFIleHkwOaLGarEgxMKuNCLPPEI632SBKMK32G0SH3znW8RWkSKeWXDC+h
-	HblqSjg3fZRrdWB2XWq2TRc6EGWnUzvI7Ty/ekXKNX91Hq2eVKLqB1absHy3lb3Q
-	R8mWgOlcxWD0K+Qxcg99i6PyTvWTuCz1UZhHW6MQ==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43ce3942g0-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Dec 2024 12:05:11 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4BCC4sIs001959;
-	Thu, 12 Dec 2024 12:05:11 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43ce3942fw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Dec 2024 12:05:10 +0000 (GMT)
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BCBVfcd017421;
-	Thu, 12 Dec 2024 12:05:10 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 43d3d1yv9n-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Thu, 12 Dec 2024 12:05:09 +0000
-Received: from smtpav05.fra02v.mail.ibm.com (smtpav05.fra02v.mail.ibm.com [10.20.54.104])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BCC58vG64291274
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Thu, 12 Dec 2024 12:05:08 GMT
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4201620040;
-	Thu, 12 Dec 2024 12:05:08 +0000 (GMT)
-Received: from smtpav05.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AF7DE2004B;
-	Thu, 12 Dec 2024 12:05:06 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav05.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Thu, 12 Dec 2024 12:05:06 +0000 (GMT)
-Date: Thu, 12 Dec 2024 17:35:04 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: "Darrick J. Wong" <djwong@kernel.org>
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org,
-        Andrey Albershteyn <aalbersh@kernel.org>,
-        John Garry <john.g.garry@oracle.com>
-Subject: Re: [RFC 1/3] include/linux.h: Factor out generic
- platform_test_fs_fd() helper
-Message-ID: <Z1rRcFbDR4IbjyVl@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <cover.1733902742.git.ojaswin@linux.ibm.com>
- <5996d6854a16852daca5977063af6f2af2f0f4ca.1733902742.git.ojaswin@linux.ibm.com>
- <20241211180902.GA6678@frogsfrogsfrogs>
+	s=arc-20240116; t=1734006858; c=relaxed/simple;
+	bh=kuGc7LUr4NoH6Qx7IXS8GWBwCDQd5WS+8hnrdDTH1fs=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=H4Ni7aLhl4yWFIhKKlhoTm/BhlDngZUUWm3qZTV9T3zzwfMR5sa856/hl6KLbofj2YRZorrkvskBIwpyD8UBraP40lssyWT31T2mz+CEelZCYmLY/A8rp20Tj4zg0FyE1KIVc7s1vH30bnpe+SfI2N4+rwAEJyGJHyAU7uytm8g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4Y8Bj93ZYJz4f3lDh;
+	Thu, 12 Dec 2024 20:33:49 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id C770B1A0359;
+	Thu, 12 Dec 2024 20:34:09 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP4 (Coremail) with SMTP id gCh0CgDHoYVB2FpnoESPEQ--.40606S2;
+	Thu, 12 Dec 2024 20:34:09 +0800 (CST)
+Subject: Re: [PATCH 2/2] jbd2: flush filesystem device before updating tail
+ sequence
+To: Zhang Yi <yi.zhang@huaweicloud.com>, linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz, yi.zhang@huawei.com,
+ chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com
+References: <20241203014407.805916-1-yi.zhang@huaweicloud.com>
+ <20241203014407.805916-3-yi.zhang@huaweicloud.com>
+ <ca1c680f-f3f4-40b5-13af-f8ee49d99dae@huaweicloud.com>
+ <ab380b0c-9a9b-4f16-a427-7fef8a2ef212@huaweicloud.com>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <027261aa-9d57-861a-fd78-0acd2d7836ec@huaweicloud.com>
+Date: Thu, 12 Dec 2024 20:34:08 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20241211180902.GA6678@frogsfrogsfrogs>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: FN5KEreYSzSgbTaaoJ1nGUk6XxbA0WAO
-X-Proofpoint-ORIG-GUID: TKdWiGCsZquPg3lnTsMpmCa3OJxrf8_L
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 suspectscore=0
- spamscore=0 clxscore=1015 priorityscore=1501 lowpriorityscore=0
- impostorscore=0 bulkscore=0 mlxscore=0 malwarescore=0 mlxlogscore=831
- phishscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412120086
+In-Reply-To: <ab380b0c-9a9b-4f16-a427-7fef8a2ef212@huaweicloud.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgDHoYVB2FpnoESPEQ--.40606S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Kr4fGrWfKw48JFyxXry8Grg_yoW8tF4fpF
+	y8Ca4jkrWkZF4UCFn7tF4kXFW2qrWqyFyUWFyDurnagw4qqwn3KFW7trySgF1qyr1S9w48
+	Xr1Igas2g34jyaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUBF14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2Y2ka
+	0xkIwI1lc7I2V7IY0VAS07AlzVAYIcxG8wCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x
+	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
+	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcV
+	C0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
+	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
+	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUZYFZUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-On Wed, Dec 11, 2024 at 10:09:02AM -0800, Darrick J. Wong wrote:
-> On Wed, Dec 11, 2024 at 01:24:02PM +0530, Ojaswin Mujoo wrote:
-> > Factor our the generic code to detect the FS type out of
-> > platform_test_fs_fd(). This can then be used to detect different file
-> > systems types based on magic number.
-> > 
-> > Also, add a helper to detect if the fd is from an ext4 filesystem.
-> > 
-> > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > ---
-> >  include/linux.h | 25 +++++++++++++++++--------
-> >  1 file changed, 17 insertions(+), 8 deletions(-)
-> > 
-> > diff --git a/include/linux.h b/include/linux.h
-> > index e9eb7bfb26a1..52c64014c57f 100644
-> > --- a/include/linux.h
-> > +++ b/include/linux.h
-> > @@ -43,13 +43,7 @@ static __inline__ int xfsctl(const char *path, int fd, int cmd, void *p)
-> >  	return ioctl(fd, cmd, p);
-> >  }
-> >  
-> > -/*
-> > - * platform_test_xfs_*() implies that xfsctl will succeed on the file;
-> > - * on Linux, at least, special files don't get xfs file ops,
-> > - * so return 0 for those
-> > - */
-> > -
-> > -static __inline__ int platform_test_xfs_fd(int fd)
-> > +static __inline__ int platform_test_fs_fd(int fd, long type)
-> >  {
-> >  	struct statfs statfsbuf;
-> >  	struct stat statbuf;
-> > @@ -60,7 +54,22 @@ static __inline__ int platform_test_xfs_fd(int fd)
-> >  		return 0;
-> >  	if (!S_ISREG(statbuf.st_mode) && !S_ISDIR(statbuf.st_mode))
-> >  		return 0;
-> > -	return (statfsbuf.f_type == 0x58465342);	/* XFSB */
-> > +	return (statfsbuf.f_type == type);
-> > +}
-> > +
-> > +/*
-> > + * platform_test_xfs_*() implies that xfsctl will succeed on the file;
-> > + * on Linux, at least, special files don't get xfs file ops,
-> > + * so return 0 for those
-> > + */
-> > +static __inline__ int platform_test_xfs_fd(int fd)
-> > +{
-> > +	return platform_test_fs_fd(fd, 0x58465342); /* XFSB */
-> > +}
-> > +
-> > +static __inline__ int platform_test_ext4_fd(int fd)
-> > +{
-> > +	return platform_test_fs_fd(fd, 0xef53); /* EXT4 magic number */
+
+
+on 12/3/2024 3:24 PM, Zhang Yi wrote:
+> On 2024/12/3 14:53, Kemeng Shi wrote:
+>>
+>>
+>> on 12/3/2024 9:44 AM, Zhang Yi wrote:
+>>> From: Zhang Yi <yi.zhang@huawei.com>
+>>>
+>>> When committing transaction in jbd2_journal_commit_transaction(), the
+>>> disk caches for the filesystem device should be flushed before updating
+>>> the journal tail sequence. However, this step is missed if the journal
+>>> is not located on the filesystem device. As a result, the filesystem may
+>>> become inconsistent following a power failure or system crash. Fix it by
+>>> ensuring that the filesystem device is flushed appropriately.
+>>>
+>>> Fixes: 3339578f0578 ("jbd2: cleanup journal tail after transaction commit")
+>>> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+>>> ---
+>>>  fs/jbd2/commit.c | 4 ++--
+>>>  1 file changed, 2 insertions(+), 2 deletions(-)
+>>>
+>>> diff --git a/fs/jbd2/commit.c b/fs/jbd2/commit.c
+>>> index 4305a1ac808a..f95cf272a1b5 100644
+>>> --- a/fs/jbd2/commit.c
+>>> +++ b/fs/jbd2/commit.c
+>>> @@ -776,9 +776,9 @@ void jbd2_journal_commit_transaction(journal_t *journal)
+>>>  	/*
+>>>  	 * If the journal is not located on the file system device,
+>>>  	 * then we must flush the file system device before we issue
+>>> -	 * the commit record
+>>> +	 * the commit record and update the journal tail sequence.
+>>>  	 */
+>>> -	if (commit_transaction->t_need_data_flush &&
+>>> +	if ((commit_transaction->t_need_data_flush || update_tail) &&
+>>>  	    (journal->j_fs_dev != journal->j_dev) &&
+>>>  	    (journal->j_flags & JBD2_BARRIER))
+>>>  		blkdev_issue_flush(journal->j_fs_dev);
+>>>
+>> In journal_submit_commit_record(), we will submit commit block with REQ_PREFLUSH
+>> which is supposed to ensure disk cache is flushed before writing commit block.
+>> So I think the current code is fine.
+>> Please correct me if I miss anything.
+>>
 > 
-> Should this be pulling EXT4_SUPER_MAGIC from linux/magic.h?
+> The commit I/O with REQ_PREFLUSH only flushes 'journal->j_dev', not
+> 'journal->j_fs_dev'. We need to flush journal->j_fs_dev to ensure that all
+> written metadata has been persisted to the filesystem disk, Until then, we
+> cannot update the tail sequence.
+My bad...
+Look good to me. Feel free to add:
 
-Oh right, thanks for pointing out. I'll use that for the magic numbers.
-
-Thanks,
-ojaswin
-
+Reviewed-by: Kemeng Shi <shikemeng@huaweicloud.com>
 > 
-> --D
+> Thanks,
+> Yi.
 > 
-> >  }
-> >  
-> >  static __inline__ int platform_test_xfs_path(const char *path)
-> > -- 
-> > 2.43.5
-> > 
-> > 
+> 
+
 
