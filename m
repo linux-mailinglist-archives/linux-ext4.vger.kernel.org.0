@@ -1,56 +1,56 @@
-Return-Path: <linux-ext4+bounces-5631-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5632-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F18D79F13AD
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 18:32:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EB0779F144B
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 18:48:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5A9BC188CF44
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 17:32:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6663A188D339
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 17:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25EF61B87E8;
-	Fri, 13 Dec 2024 17:32:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B32E18452C;
+	Fri, 13 Dec 2024 17:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lzD1SE58"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vD+x9xI4"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BBF57632
-	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 17:32:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DB85632
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 17:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734111150; cv=none; b=q3ez5OaQ/riSRGQyqIwrV9wH+juSbsWj1xEpQRHois0o7lXpiGv/IQSa6PnNJ5UGzzRYOWfn75ndtRt06oJ5uG47s4hmsphGIyMyjMCcOeqmKBVcq0fY0Fza2BnB1GSMIRacy0xhs1ziDFNeTgX3UJ641Ft3hWD7VWqOmgwaDUI=
+	t=1734112134; cv=none; b=jzFUBDo37LSW3oDvPa3S8USMqV2qr81XnrdniqYMW7jOXbJdd83iqM4Un2QEGnWsbm3X90oDPd0faGz7l8qKrRR6Uu0qB209KTA7rEJJMl4M6NAni8FWUuNdviJWZ1z9stK1RDq3WGFIM7yJTEM3z2LBByxjVnBSJjIIjI0YYco=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734111150; c=relaxed/simple;
-	bh=CF08WCO9YuKQC0mJOaDTgK7Du1Q7g3g6IhdZFvpLNno=;
+	s=arc-20240116; t=1734112134; c=relaxed/simple;
+	bh=M7b7tnarEwfwtqSCYix3bezpHJTuYsFwpxXq61WSVIc=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=M1B6U86crnFt8M/IIRM2J6+D2SsfNMuR2viR4YeVCIn23HIY20aB3QH7mnOyYztm/q+JNUrDl2f1/hTFbsdzUijPlnj8uReYCUxemBPJewKtYhF2EYzsCHDAzhJ7E5qsWUagq1ZhNZnB2NQ8RErrxBE42aOsZgI6yMpWwu03oFE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lzD1SE58; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 49D81C4CEDD
-	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 17:32:30 +0000 (UTC)
+	 To:Cc:Content-Type; b=RlGJ/omeTJ4v7dDL3Jv1NQ8N17DcVleuFJSy+7th/kqrTwfSoetlVZ9bmvf4lbmYX628pUTLk7l8FlgP4SC4ifkzhjayP7FblbTmthAuADK+pcVWmniFTR9x4tjEUVoAcdEHXru8tHV/9nrM9SLjRysl+Gmoi1iE+YrC9Thlpcg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vD+x9xI4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 02527C4CED6
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 17:48:53 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734111150;
-	bh=CF08WCO9YuKQC0mJOaDTgK7Du1Q7g3g6IhdZFvpLNno=;
+	s=k20201202; t=1734112134;
+	bh=M7b7tnarEwfwtqSCYix3bezpHJTuYsFwpxXq61WSVIc=;
 	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=lzD1SE58v5Nq1phH9HPogH7xmQLl/dCGklMKO3/58GDI0MvboFYcgBFi98kO2Nli4
-	 Wfo7RRfmxb/GP//4cYGOXGqG8ZPuA4dvwq+s33Arf3naJwvH/jdPa2to92PUe8PJRd
-	 zAq8sz9uLiEg9APQN7FwHPrQlbsI4bT/abS5egdugOmhNE7nCWx4oMle2vOYq8UHLx
-	 uobSz9H1dzmhzqIJpS+Ran9mccZ0rFgK/hnxmlm/VU1rGpIlbdosJkfm3x3JZEDsng
-	 bQqWnm61RGqPrTU0nXxnsKBp1JLx/AFKneEMvkEjuSj+YVSImKJM0ugXQh7B+hwOJb
-	 hzzsHLF1Nw8mw==
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3e63e5c0c50so975479b6e.0
-        for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 09:32:30 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCXqe69YI+FsFK7bGW32snLb3WO9vUQAthBr90kcSa4OrWnIbAxeudbbUwFNDqdpXMDjdB8mLvNozRov@vger.kernel.org
-X-Gm-Message-State: AOJu0Yyjl6iQQzs1MzRTbIulquPDs+z/v3Qz03vIPu/yCrEXrAAR+KrD
-	/9syWuZ1S7PZnYWBZQHP6i2lzuyoFhrGqANYDLQrntBUTh6V8chLaBRf1RheK1k5A8gpCclcrYE
-	4CApUBgRTx1+oTn0r3muNxoYHfX0=
-X-Google-Smtp-Source: AGHT+IGiXZt+WBiBE09BAmIkicVAdGZ3SDRVxvwU9UwpvBHBwlc8M1ZEhUTEOrlND9qAksD/X38mvCXH2Lr/v3RQBGk=
-X-Received: by 2002:a05:6808:152c:b0:3e5:f7c1:757b with SMTP id
- 5614622812f47-3eb94ecaccfmr4706039b6e.9.1734111149525; Fri, 13 Dec 2024
- 09:32:29 -0800 (PST)
+	b=vD+x9xI498336CXrIcipnGQtwPWE+Y8PtGBEoTA4qYZc1sEDVdhDhdeSVu2dH+7yh
+	 POqVBPztBXeOs4yRsK8rgFr3HYOR0g3kt1+eyQb8ywyYTIStULKzhCAXJ9H5Y1izUw
+	 8xfHxQDqeTm4KbpOE9lD2L+2qZTwrntOhIa3gHDt200F8v4O51jeFPlwHPweUdZwG6
+	 00NXDJObSjW7SBHUmyHZC1ajrqKr2X9V6rLVsnLtjzsVBY306nlOty1OOzuo6voagU
+	 udltc6zFfe3IkbfSKN37PDbXu4nWQgaVDNOD2oSwvhlzWC+2Xk1o8URkeHG5gXl4hC
+	 DAtcpCJXfXE2A==
+Received: by mail-oi1-f182.google.com with SMTP id 5614622812f47-3eba7784112so424236b6e.2
+        for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 09:48:53 -0800 (PST)
+X-Forwarded-Encrypted: i=1; AJvYcCXFD+J3NqtQy2+pn1D4BD08aHwrdqA0qf4PDaf5gV08GepoiIcEKQIqnmRaTNaeR3rDuKjpCsQAPDVL@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy+UohhzZxbc/2idUHwhotJNzSn2/deXhr+Ke9nBF3Oap3FMjq9
+	KeoQlw3GDaVFtitSEdGdWhSWvB6Iec6ZLdcFumGnPrNQLtyRfzlLC6k+TtlQtAeq8Vc/fHIUpJk
+	yENKjHToi6ouIgNUFWDvjp+EVeB0=
+X-Google-Smtp-Source: AGHT+IESFvKvWgj0dsEUDhhOZwimz3mooi2zlVcwYeEqdYKyZ7y1bibxTfBmH+X1npm8QzPhPSM3ze32YUu1NO+yIWo=
+X-Received: by 2002:a05:6808:f01:b0:3eb:3b6e:a74b with SMTP id
+ 5614622812f47-3eba686b29dmr1982583b6e.17.1734112133232; Fri, 13 Dec 2024
+ 09:48:53 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -63,15 +63,15 @@ References: <87ldwl9g93.ffs@tglx> <10f5d22150b548ec271e0a847ba2eb91139e6f61.came
  <adf6981fcfd3b23d0a293404879598e8fcf072f6.camel@infradead.org>
  <871pybamoc.ffs@tglx> <Z1wV9SsaVe3torbO@fedora> <87y10j95v7.ffs@tglx>
  <Z1wfF6NJRZh1jROz@fedora> <87pllv90ow.ffs@tglx> <1a7c126f3ab8ae75e755d01a6bf9bc06730dd239.camel@infradead.org>
- <87msgz8qes.ffs@tglx>
-In-Reply-To: <87msgz8qes.ffs@tglx>
+ <87msgz8qes.ffs@tglx> <52850c8dbeb7c30d5bca007998f7ffd9a9b18d0f.camel@infradead.org>
+In-Reply-To: <52850c8dbeb7c30d5bca007998f7ffd9a9b18d0f.camel@infradead.org>
 From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Fri, 13 Dec 2024 18:32:18 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0i3zg1ee9p7vc0xEN4cEyCoO-d9OOyV_m65=f251tnxXQ@mail.gmail.com>
-Message-ID: <CAJZ5v0i3zg1ee9p7vc0xEN4cEyCoO-d9OOyV_m65=f251tnxXQ@mail.gmail.com>
+Date: Fri, 13 Dec 2024 18:48:42 +0100
+X-Gmail-Original-Message-ID: <CAJZ5v0hbWxKaVPM+sKqxj=bes1OqOEgFLXyWuzYUR9EHjHVf3A@mail.gmail.com>
+Message-ID: <CAJZ5v0hbWxKaVPM+sKqxj=bes1OqOEgFLXyWuzYUR9EHjHVf3A@mail.gmail.com>
 Subject: Re: Lockdep warnings on kexec (virtio_blk, hrtimers)
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: David Woodhouse <dwmw2@infradead.org>, Ming Lei <ming.lei@redhat.com>, 
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ming Lei <ming.lei@redhat.com>, 
 	Stefan Hajnoczi <stefanha@redhat.com>, Jason Wang <jasowang@redhat.com>, 
 	"x86@kernel.org" <x86@kernel.org>, hpa <hpa@zytor.com>, dyoung <dyoung@redhat.com>, 
 	kexec <kexec@lists.infradead.org>, linux-ext4 <linux-ext4@vger.kernel.org>, 
@@ -82,58 +82,68 @@ Cc: David Woodhouse <dwmw2@infradead.org>, Ming Lei <ming.lei@redhat.com>,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, Dec 13, 2024 at 6:05=E2=80=AFPM Thomas Gleixner <tglx@linutronix.de=
-> wrote:
+On Fri, Dec 13, 2024 at 6:17=E2=80=AFPM David Woodhouse <dwmw2@infradead.or=
+g> wrote:
 >
-> On Fri, Dec 13 2024 at 14:07, David Woodhouse wrote:
-> > On Fri, 2024-12-13 at 14:23 +0100, Thomas Gleixner wrote:
-> >> That's only true for the case where the new kernel takes over.
-> >>
-> >> In the case KEXEC_JUMP=3Dn and kexec_image->preserve_context =3D=3D tr=
-ue, then
-> >> it is supposed to align with suspend/resume and if you look at the cod=
-e
-> >> then it actually mimics suspend/resume in the most dilettanteish way.
+> On Fri, 2024-12-13 at 18:05 +0100, Thomas Gleixner wrote:
 > >
-> > Did you mean KEXEC_JUMP=3Dy there?
->
-> Yes, of course.
->
-> > I spent a while the other week trying to understand the case where
-> > CONFIG_KEXEC_JUMP=3Dn and kexec_image->preserve_context=3Dtrue, and cam=
-e to
-> > the conclusion that it was a mirage. Userspace can't *actually* set the
-> > KEXEC_PRESERVE_CONTEXT bit when setting up the image, if KEXEC_JUMP=3Dn=
-.
+> > > Agreed. The hacky proof of concept I posted earlier invoking
+> > > machine_kexec() instead of suspend_ops->enter() works fine. I'll look
+> > > at cleaning it up and making it not invoke all the ACPI hooks for
+> > > *actual* suspend to RAM, etc.
 > >
-> > The whole of the code path for that case is dead code. It's confusing
-> > because as discussed elsewhere, we don't just #ifdef out the whole of
-> > that dead code path, but only the bits which don't actually *compile*
-> > (like references to restore_processor_state() etc.).
+> > Something like the below? It survived an hour of loop testing.
 >
-> Yes, I had to stare at it quite a while. :)
+> If I read that correctly, it's still invoking the standard platform
+> (e.g. ACPI) hooks for suspend-to-RAM, when it probably shouldn't?
 >
-> >> It's a patently bad idea to clobber the kernel with kexec jump "fixes"
-> >> instead of using the well tested and established suspend/resume
-> >> machinery.
-> >>
-> >> All it takes is to:
-> >>
-> >>     1) disable the wakeup logic
-> >>
-> >>     2) provide a mechanism to invoke machine_kexec() instead of the
-> >>        actual suspend mechanism.
-> >>
-> >> No?
-> >
-> > Agreed. The hacky proof of concept I posted earlier invoking
-> > machine_kexec() instead of suspend_ops->enter() works fine. I'll look
-> > at cleaning it up and making it not invoke all the ACPI hooks for
-> > *actual* suspend to RAM, etc.
+> I suspect it wants its *own* set of platform_suspend_ops, which are
+> mostly empty apart from the ->enter() ?
 >
-> Something like the below? It survived an hour of loop testing.
+> I started looking at that, but now my eyes are currently bleeding after
+> seeing the existing platform_suspend_ops vs. platform_s2idle_ops
+> structures, which are kind of similar but not the same. And the set of
+> helper functions which invoke one or the other, from the barely
+> tolerable platform_resume_end()...
+>
+> static void platform_resume_end(suspend_state_t state)
+> {
+>         if (state =3D=3D PM_SUSPEND_TO_IDLE && s2idle_ops && s2idle_ops->=
+end)
+>                 s2idle_ops->end();
+>         else if (suspend_ops && suspend_ops->end)
+>                 suspend_ops->end();
+> }
+>
+> ... to the extra-special platform_resume_noirq() which is similar
+> except that it needs three *different* names (_resume_noirq vs.
+> restore_early vs. wake):
+>
+> static void platform_resume_noirq(suspend_state_t state)
+> {
+>         if (state =3D=3D PM_SUSPEND_TO_IDLE) {
+>                 if (s2idle_ops && s2idle_ops->restore_early)
+>                         s2idle_ops->restore_early();
+>         } else if (suspend_ops->wake) {
+>                 suspend_ops->wake();
+>         }
+> }
+>
+>
+> I wonder if we end up wanting a *third* set there, for the kjump_ops?
 
-I think that this KEXEC_JUMP thing can be dropped entirely and forgotten.
+No, no.
 
-I'm not aware of anyone actually using it.
+The "vision" behind kexec jump was to use it for implementing
+hibernation, but that never happened.
+
+It doesn't actually need any platform ops at all because everything it
+does is to jump from one kernel to another, both residing in memory at
+this point.  No firmware is involved.
+
+> Except can we unify the structure definitions and then just *use* the
+> appropriate one of the three, which is either passed down or selected
+> using the 'state'?
+
+That can be done I suppose, but it won't help much in the kexec jump case.
 
