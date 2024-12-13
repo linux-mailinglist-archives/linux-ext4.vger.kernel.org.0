@@ -1,100 +1,63 @@
-Return-Path: <linux-ext4+bounces-5627-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5628-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D6F99F109D
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 16:15:33 +0100 (CET)
-Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D245E9F11D0
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 17:12:51 +0100 (CET)
+Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
+	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E1E8D169E77
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 16:12:48 +0000 (UTC)
+Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5BBEC1E3768;
+	Fri, 13 Dec 2024 16:12:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="QwYuToV9"
+X-Original-To: linux-ext4@vger.kernel.org
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C25F8280CB6
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 15:15:31 +0000 (UTC)
-Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E6B281E105B;
-	Fri, 13 Dec 2024 15:15:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FpdNvYY+";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JhcsaGxW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1nBX+Lw8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Zg16zDzY"
-X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EAED51DF98D
-	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 15:15:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07402F24
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 16:12:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734102927; cv=none; b=pC5ycQfp45nWlvYJgX0LIwpypWpE8c1hJYRyViiCkLsH4mhW2wPboBn5UzXoJeZMAzclHYxTVL8NA5oxE1IBmECnGR7tLgwlZm25RxbpHAvXF1FTSg69/BTV2wyuWEbtenybTGjBXGdxh+ZwQL3RRt9pmFP/W40ODkUCe5ebyuA=
+	t=1734106367; cv=none; b=UDOQO9FEWLLnx/REcOXwB9vf2+A1YkW57iw0NG+ib3ARcPWjvu7FuSA3OvFJ+5biJmXHwPMheZuF9RarBWvWZ3XVO2IkOnjya5VR/gTrD+fUHa5IW9B9jKLLrH2h/aRSszGRttu7vabGQJjeWv21Q1aq8MXXjiyDW7sI5MG+c7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734102927; c=relaxed/simple;
-	bh=B+7CPsgqN4Hm1zY44Q1ZsKUlZPQuPtdXDGEkUBptvUU=;
+	s=arc-20240116; t=1734106367; c=relaxed/simple;
+	bh=IHKLIwvxCSKRMPWKFaJUk7AjboZXq91gsVNwCF5CDZs=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hrSn3Qeyfcnqww9HWYMekw8gVd6zvroOL97NaeKbhJeefX4ny0ZzDLkwpYNKLsBm+ndcsNknAt/4mzaqIYibCBvUUHeXwo2TPanAM7d3VOpKNqyUPWFz8sqjlO5Q1dhSsoW68YYZKwwEKk/BUXhQZIsAlLRwoEi/rfUnG9a0ADM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FpdNvYY+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JhcsaGxW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1nBX+Lw8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Zg16zDzY; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id E533D1F74C;
-	Fri, 13 Dec 2024 15:15:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734102924; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gsq/qNV7dNxKRROVHIBZS26++zIY/Cuf4HX8clJr68M=;
-	b=FpdNvYY+8lKAxt7BoYQxLvuNJQft18ZurlWotlkTOjaSVehnfmq26L2K1wJeIYHw4Q3dkb
-	J0VZ4KsLTCiC9MBwvmAbflt2/u2ZFKyyuNIAYDP8Vgsrlm7TTbh5ehfIXZ5nJqOHAFzceR
-	BaL9SL1JbGsEX16oyT0cVEyE/ISicI4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734102924;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gsq/qNV7dNxKRROVHIBZS26++zIY/Cuf4HX8clJr68M=;
-	b=JhcsaGxWtEcY0VriIV/RQ/hbHOwgpfS5TV5T6wZUHfnzkj0nDuxaZ6EjL7/XqHt5raJj4k
-	U8WuihZwvQr996BQ==
-Authentication-Results: smtp-out2.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734102923; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gsq/qNV7dNxKRROVHIBZS26++zIY/Cuf4HX8clJr68M=;
-	b=1nBX+Lw87BiD2Fhiu5PAIGmZB0XjHtP7oqjrof7DZVV0hZiSDR/mcPnbOoQ3wQ9+cY+yJV
-	FYJvHs9Bb/ublWr9hosHM+YZbG2Zy5Glwsxx6XeXE2MT97GQOFIY2VFwZ2zpqGbbPnxihu
-	M88JkeS33/oFgiSS7D+aWC7OwpZa6cA=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734102923;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Gsq/qNV7dNxKRROVHIBZS26++zIY/Cuf4HX8clJr68M=;
-	b=Zg16zDzY5Vab+K36XewTatZmCc7Q16h7OA4TkB+0VNasAx40pAdKHX5tbNkKU1/wiD6EUU
-	E+83XNiK+2992PCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id DAD8813927;
-	Fri, 13 Dec 2024 15:15:23 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id bfFnNYtPXGcpMQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Fri, 13 Dec 2024 15:15:23 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 97B6AA0B0E; Fri, 13 Dec 2024 16:15:19 +0100 (CET)
-Date: Fri, 13 Dec 2024 16:15:19 +0100
-From: Jan Kara <jack@suse.cz>
-To: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
-	harshads@google.com
-Subject: Re: [PATCH v7 6/9] ext4: update code documentation
-Message-ID: <20241213151519.ieotjpd2w6zw6mpn@quack3>
-References: <20240818040356.241684-1-harshadshirwadkar@gmail.com>
- <20240818040356.241684-8-harshadshirwadkar@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PzMkcmVm1LZvu5HRFXwcM0iW02J7U0bSy9YufYlGhWSTA1p9x52nIX2h/QofRs7VbPjl5HDlp4j89V+zJG/Xt/d0rQ3SgM/KG80vQoVFki2KmQ22ra9l62SkNp3jm92lbz/solCpxTunUptkpdBihtU+Wx1FLvcUMWHypSfFWwQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=QwYuToV9; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-226.bstnma.fios.verizon.net [173.48.82.226])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 4BDGCVS9018707
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 13 Dec 2024 11:12:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1734106353; bh=NEm0SCpvUjxoOqFN4Z2pKV8E53Q/3QgqD/lByRVqljs=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=QwYuToV9Zry4EUJjCJeedYQ8xK2r9j9vTNL+W3mHqgjsObrooX6ET0VFALC16B7s5
+	 8nvfXMomy6JYmOnQchFQ/0Kg3IjIxDRCCjiXH7z+ZQD3V4aD3UnEo9stWurUuFxhOp
+	 2mwuTsxzcRsWgP09sZmW2tfrttsHTNB1b93HdPeHBWSAEECClCiZ084847aIB2ICmh
+	 f40pljDaUD/msPetbyNmKXQFNaJxR6GYXlGXbLI5TeoN0A5tpNj4FZ6ixcjU2Fq3tN
+	 Phm78XKLO51vVl2YKOrtZ9jI0uXBdh6cWOBV2v8NIQt1Slc6eke1T99PRGi6lToYso
+	 yiyuzgNzpv3fw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id D208D15C2045; Fri, 13 Dec 2024 11:12:30 -0500 (EST)
+Date: Fri, 13 Dec 2024 11:12:30 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Nikolai Zhubr <zhubr.2@gmail.com>
+Cc: linux-ext4@vger.kernel.org, stable@vger.kernel.org,
+        linux-kernel@vger.kernel.org, jack@suse.cz
+Subject: Re: ext4 damage suspected in between 5.15.167 - 5.15.170
+Message-ID: <20241213161230.GF1265540@mit.edu>
+References: <CALQo8TpjoV8JtuYDH_nBU5i4e-iuCQ1-NORAE8uobpDD_yYBTA@mail.gmail.com>
+ <20241212191603.GA2158320@mit.edu>
+ <79af4b93-63a1-da4c-2793-8843c60068f5@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -103,49 +66,139 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240818040356.241684-8-harshadshirwadkar@gmail.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-0.998];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	FREEMAIL_TO(0.00)[gmail.com];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
-X-Spam-Flag: NO
-X-Spam-Level: 
+In-Reply-To: <79af4b93-63a1-da4c-2793-8843c60068f5@gmail.com>
 
-On Sun 18-08-24 04:03:53, Harshad Shirwadkar wrote:
-> This patch updates code documentation to reflect the commit path changes
-> made in this series.
+On Fri, Dec 13, 2024 at 01:49:59PM +0300, Nikolai Zhubr wrote:
 > 
-> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
-> Reviewed-by: Jan Kara <jack@suse.cz>
+> Not going to argue, but it'd seem if 5.15 is totally out of interest
+> already, why keep patching it? And as long as it keeps receiving patches,
+> supposedly they are backported and applied to stabilize, not damage it? Ok,
+> nevermind :-)
 
-Just noticed one thing:
+The Long-Term Stable (LTS) kernels are maintained by the LTS team.  A
+description of how it works can be found here[1].
 
->   * All the inode updates must call ext4_fc_start_update() before starting an
->   * update. If such an ongoing update is present, fast commit waits for it to
+[1] https://docs.kernel.org/process/2.Process.html#the-big-picture
 
-This paragraph is outdated as well. Can you please fix it? Thanks!
+Subsystems can tag patches sent to the development head by adding "Cc:
+stable@kernel.org" to the commit description.  However, they are not
+obligated to do that, so there is an auxillary system which uses AI to
+intuit which patches might be a bug fix.  There is also automated
+systems that try to automatically figure out which patches might be
+prerequites that are needed.  This system is very automated, and after
+the LTS team uses their automated scripts to generate the LTS kernel,
+it gets published as an release candidate for 48 hours before it gets
+pushed out.
 
-									Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Kernel developers are not obligated to support LTS kernels.  The fact
+that they tag commits as "you might want to consider it for
+backporting" might be all they do; and in some cases, not even that.
+Most kernel maintainers don't even bother testing the LTS candidate
+releases.  (I only started adding automated tests earlier this year to
+test the LTS release candidates.)
+
+The primary use for LTS kernels are for companies that really don't
+want to update to newer kernels, and have kernel teams who can provide
+support for the LTS kernels and their customers.  So if Amazon,
+Google, and some Android manufacturers want to keep using 5.15, or
+6.1, or 6.6, it's provided as a starting point to make life easier for
+them, especially in terms of geting security bugs backported.
+
+If the kernel teams for thecompanies which use the LTS kernels find
+problems, they can let the LTS team know if there is some regression,
+or they can manually backport some patch that couldn't be handled by
+the automated scripts.  But it's all on a best-efforts basis.
+
+For hobbists and indeed most kernels, what I generally recommend is
+that they switch to the latest LTS kernel once a year.  So for
+example, the last LTS kernel released in 2023 was 6.6.  It looks very
+much like the last kerel released in 2024 will be 6.12, so that will
+likely be the next LTS kernel.  In general, there is more attention
+paid to the newer LTS kernels, and although *technically* there are
+LTS kernels going back to 5.4, pretty much no one pays attention to
+them other than the companies stubbornly hanging on because they don't
+have the engineering bandwidth to go to a newer kernel, despite the
+fact that many security bug fixes never make it all the way back to
+those ancient kernels.
+
+> Yes. That is why I spent 2 days for solely testing hardware, booting from
+> separate media, stressing everything, and making plenty of copies. As I
+> mentioned in my initial post, this had revealed no hardware issues. And I'm
+> enjoying md raid-1 since around 2003 already (Not on this device though). I
+> can post all my "smart" values as is, but I can assure they are perfectly
+> fine for both raid-1 members. I encounter faulty hdds elsewhere routinely so
+> its not something unseen too.
+
+Note that some hardware errors can be caused by one-off errors, such
+as cosmic rays causing a bit-flip in memory DIMM.  If that happens,
+RAID won't save you, since the error was introduced before an updated
+block group descriptor (for example) gets written.  ECC will help;
+unfortunately, most consumer grade systems don't use ECC.  (And by the
+way, the are systems used in hyperscaler cloud companies which look
+for CPU-level failures, which can start with silent bit flips leading
+to crashes or rep-invariant failures, and correlating them with
+specific CPU cores.  For example, see[2].)
+
+[2] https://research.google/pubs/detection-and-prevention-of-silent-data-corruption-in-an-exabyte-scale-database-system/
+
+> This is a fsck run on a standalone copy taken before repair (after
+> successful raid re-check):
+> 
+> #fsck.ext4 -fn /dev/sdb1
+> ext2fs_check_desc: Corrupt group descriptor: bad block for block bitmap
+> fsck.ext4: Group descriptors look bad... trying backup blocks...
+
+What this means is that the block group descriptor has for one of
+ext4's block groups has the location for its block allcation bitmap to
+be a invalid value.  For example, if one of the high bits in the block
+allcation gets flipped, the block number will be wildly out of range,
+and so it's something that can be noticed very quickly at mount time.
+This is a lucky failure, because (a) it can get detected right away,
+and (b) it can be very easily fixed by consulting one of the backup
+copies of the block group descriptors.  This is what happened in this
+case, and rest of fsck transcript is consitent with that.
+
+The location of block allocation bitmaps never gets changed, so this
+sort of thing only happens due to hardware-induced corruption.
+
+Looking at the dumpe2fs output, it looks like it was created
+relatively recently (July 2024) but it doesn't have the metadata
+checksum feature enabled, which has been enabled for quite a long
+time.  I'm going to guess that this means that you're using a fairly
+old version version of e2fsprogs (it was enabled by default in
+e2fsprogs 1.43, released in May 2016[3]).
+
+[3] https://e2fsprogs.sourceforge.net/e2fsprogs-release.html#1.43
+
+You got lucky because it block allocation bitmap location was
+corrupted to an obviously invalid value.  But if it had been a
+low-order bit that had gotten flipped this could have lead to data
+corruption before the data and metadata corruption became obvious
+enough that ext4 would flag it.  Metadata checksums would catch that
+kind of error much more quickly --- and is an example of how RAID
+arrays shouldn't be treated as a magic bullet.
+
+> > Did you check for any changes to the md/dm code, or the block layer?
+> 
+> No. Generally, it could be just anything, therefore I see no point even
+> starting without good background knowledge. That is why I'm trying to draw
+> attention of those who are more aware instead. :-)
+
+The problem is that there are millions and millions of Linux users.
+If everyone were do that, it just wouldn't scale.  For companies who
+don't want to bother with upgrading to newer versions of software,
+that's why they pay the big bucks to companies like Red Hat or SuSE or
+Canonical.  Or if you are a platinum level customer for Amazon or
+Google, you can use Amazon Linux or Google's Container-Optimized OS,
+and the cloud company's tech support teams will help you out.  :-)
+
+Otherwise, I strongly encourage you to learn, and to take
+responsibility for the health of your own system.  And ideally, you
+can also use that knowledge to help other users out, which is the only
+way the free-as-in-beer ecosystem can flurish; by having everybody
+helping each other.  Who knows, maybe you could even get a job doing
+it for a living.  :-) :-) :-)
+
+Cheers,
+
 
