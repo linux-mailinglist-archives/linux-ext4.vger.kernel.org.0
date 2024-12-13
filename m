@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-5611-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5612-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA029F07EA
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 10:31:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 257B89F0849
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 10:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8CC68188A2AA
-	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 09:31:27 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66A58188C64D
+	for <lists+linux-ext4@lfdr.de>; Fri, 13 Dec 2024 09:43:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59571AD418;
-	Fri, 13 Dec 2024 09:31:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CAC01B21BE;
+	Fri, 13 Dec 2024 09:43:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="nO5qCSVd"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="NhcQCVKb"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5CBE364D6
-	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 09:31:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 749DC18FDDF
+	for <linux-ext4@vger.kernel.org>; Fri, 13 Dec 2024 09:43:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734082281; cv=none; b=pWjUuyqblzDMyMQCwjzJgajfyPw06N9Ff+h6o00GGUhU3ScQOgeXPaAAlD46y3Yg/Rmvvwtuvlv7uRKO3ubeWA/FvImPnrGW7je1aX6jgvZbiQyh1zCZX8hW37Z24Pcaq1NyFf/DHwHq4EUJR5rKv6bPG3TIBR+l3oTkHaz0GDE=
+	t=1734082994; cv=none; b=ct/pcxbSVhDfBBuphsdMhmKpqtUm6Z+l7uEem+AOWqG5YBpuqTUpYv/i2ehZWN/WVjU5QKjrWQMTaukyLKTiN9S2CazXhuxufkSkA13A+ZlD1+p/j8RDG0EBurIfXTMG0KSW1JJ7/PAr1w2zc14EcyzBcc8Xy4Svw6xWKGVvY+c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734082281; c=relaxed/simple;
-	bh=sD58cz8YJdt/RsTPh0sQNzNUodzYstmf/pG9ECMsvJg=;
+	s=arc-20240116; t=1734082994; c=relaxed/simple;
+	bh=+trxd1tu9+KJv4JBKmb9OhRXVfgZZ0+rbf0A86dfboE=;
 	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=BZz4d8QdUNhqeZVA/2mLHK7jokHXmprdQDCVbdTHuDDFuLNf12B25hDeLuS8ZDbP7taw7ORHKHIX3SOymzWRCsGllQsldvu9mpg9eK6kpWAGzpQ5xTk9FHWsU/SL06AMdvMOmV2MxyGpUJnSpITwd8PPDS7HJW/hkOmUimlS4E4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=nO5qCSVd; arc=none smtp.client-ip=90.155.50.34
+	 Content-Type:MIME-Version; b=WCcVNLHuiumIx7XvrdHHgaeoPgs+o5I2Bbm+nEz0JjxmMVpYCO3df9JQxw5rjBS+fWLLzr5dxU5PzST4QypUxrpJvI2PyjDFsFUkOLf6oKaJB8r2Ol+zjK352pr1Mt6qrTfJdGYT0BMpwwP/Im0c0qVXxUTcL1q9SiWNgdi4q0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=NhcQCVKb; arc=none smtp.client-ip=90.155.50.34
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
 Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
 	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
 	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=5Yt8vkxgcNYSCSMQD8sHeGSrvB09OexcomYaf9PsOXg=; b=nO5qCSVd7DK49os6k1ce4rqflv
-	BTIRHbs/y624HsLTsnBrTIJnx5hDTSXiYLYko4Z9aesO3BwAVLI6N0V6jVud6H5hJX4w1JG9mjstb
-	97eGijE5nh5WEDBS9oJPRN8WuNmzh/3JgSaX/YfBYzoyyjeyVqrIPHdK/85gtgtMSVshXWEwO4gkQ
-	EKDlIso0f9BPZyjx3fjBcmXRy4lmZmPHynaVBwbrAZIWsL/a1iMm4ArQgM/WTSRh7QOmDxBTFkDZq
-	GMB7E7I3N2UJ5vKlLzniHknXEJzaPdrK6GzkB7zPiadw4PvngiYS7+Hz0onTSTclA1jDQh4KaXzwO
-	JpwJwhRA==;
+	bh=CUqYjnXsMN+oSPtTmZi3DhK7LyH+5WwKibaStVAMcSw=; b=NhcQCVKbrDGh6dycp4YLpRHurH
+	EwLnJjjBIajRTdfvAgP9YSMMpVxfZQDZQs47G42dfW5h3oPGpoSnR8maIapKZL5T4qzBXvJKSgwSB
+	pTdQ5v23sdArFgDfjQMBn2Vza0hANhxW5Nj5tb7XeUVgHyec1EV/73VJYQW/YzoeM4i53toffZZZi
+	OJBJHmiEdIIELE1tIRB/ny45IiFUI7CUnjgoVAZ77bHLTSywQaG7p/L3kimqf7i5yvPaekwNQgxmu
+	UhVQWeYJiaBVLUPGWFvyKCQ0BQlaPjldX+U9FjXBa9sQrOs6DM4kcbOHMxm25YAlOn7avnABOFBTn
+	xvTEjIRQ==;
 Received: from 54-240-197-239.amazon.com ([54.240.197.239] helo=u09cd745991455d.ant.amazon.com)
 	by casper.infradead.org with esmtpsa (Exim 4.98 #2 (Red Hat Linux))
-	id 1tM20u-0000000Bsp2-28Wt;
-	Fri, 13 Dec 2024 09:31:12 +0000
-Message-ID: <9c4b189656a0a773227a11568171903989130bb7.camel@infradead.org>
+	id 1tM2CS-0000000BwqF-2E5C;
+	Fri, 13 Dec 2024 09:43:09 +0000
+Message-ID: <adf6981fcfd3b23d0a293404879598e8fcf072f6.camel@infradead.org>
 Subject: Re: Lockdep warnings on kexec (virtio_blk, hrtimers)
 From: David Woodhouse <dwmw2@infradead.org>
 To: Thomas Gleixner <tglx@linutronix.de>, Stefan Hajnoczi
@@ -57,8 +57,8 @@ Cc: "x86@kernel.org" <x86@kernel.org>, hpa <hpa@zytor.com>, dyoung
  Paolo Bonzini <bonzini@redhat.com>,  ming.lei@redhat.com, Petr Mladek
  <pmladek@suse.com>, John Ogness <jogness@linutronix.de>, Peter Zijlstra
  <peterz@infradead.org>
-Date: Fri, 13 Dec 2024 09:31:11 +0000
-In-Reply-To: <874j38a16p.ffs@tglx>
+Date: Fri, 13 Dec 2024 09:43:07 +0000
+In-Reply-To: <9c4b189656a0a773227a11568171903989130bb7.camel@infradead.org>
 References: <1f631458c180c975c238d4d33d333f9fa9a4d2a3.camel@infradead.org>
 	 <CACGkMEtOdYorGPdSjxC1Lb1LJtZ+ZqHam3agHJ6JdpS-tE1qAQ@mail.gmail.com>
 	 <20241211124240.GA310916@fedora>
@@ -68,8 +68,9 @@ References: <1f631458c180c975c238d4d33d333f9fa9a4d2a3.camel@infradead.org>
 	 <87a5d0aibc.ffs@tglx>
 	 <dd06cd643ee7fa0be08ac3082cff443b8bfbfb58.camel@infradead.org>
 	 <874j38a16p.ffs@tglx>
+	 <9c4b189656a0a773227a11568171903989130bb7.camel@infradead.org>
 Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-1uJmaDHLw7yA+QPcwn6V"
+	boundary="=-/ZPcwx7owdc+dW7sB28c"
 User-Agent: Evolution 3.52.3-0ubuntu1 
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
@@ -80,110 +81,51 @@ MIME-Version: 1.0
 X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
 
---=-1uJmaDHLw7yA+QPcwn6V
+--=-/ZPcwx7owdc+dW7sB28c
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Fri, 2024-12-13 at 01:14 +0100, Thomas Gleixner wrote:
+On Fri, 2024-12-13 at 09:31 +0000, David Woodhouse wrote:
 >=20
-> With that applied the problem goes away, but after a lot of repetitions
-> of the reproducer in a tight loop the whole machinery stops dead:
+> (gdb) p sysrq_handle_showstate('t')
 >=20
-> [=C2=A0=C2=A0 29.913179] Disabling non-boot CPUs ...
-> [=C2=A0=C2=A0 29.930328] smpboot: CPU 1 is now offline
-> [=C2=A0=C2=A0 29.930593] crash hp: kexec_trylock() failed, kdump image ma=
-y be inaccurate
-> B[=C2=A0=C2=A0 29.940588] Enabling non-boot CPUs ...
-> [=C2=A0=C2=A0 29.940856] crash hp: kexec_trylock() failed, kdump image ma=
-y be inaccurate
-> [=C2=A0=C2=A0 29.941242] smpboot: Booting Node 0 Processor 1 APIC 0x1
-> [=C2=A0=C2=A0 29.942654] CPU1 is up
-> [=C2=A0=C2=A0 29.945856] virtio_blk virtio1: 2/0/0 default/read/poll queu=
-es
-> [=C2=A0=C2=A0 29.948556] OOM killer enabled.
-> [=C2=A0=C2=A0 29.948750] Restarting tasks ... done.
-> Success
-> [=C2=A0=C2=A0 29.960044] Freezing user space processes
-> [=C2=A0=C2=A0 29.961447] Freezing user space processes completed (elapsed=
- 0.001 seconds)
-> [=C2=A0=C2=A0 29.961861] OOM killer disabled.
-> [=C2=A0=C2=A0 30.102485] ata2: found unknown device (class 0)
-> [=C2=A0=C2=A0 30.107387] Disabling non-boot CPUs ...
->=20
-> That happens without 'no_console_suspend' on the command line as
-> well, but that's for tomorrow ...
+> That didn't work. Maybe if I'd actually had no_console_suspend on this
+> boot. Will try again.
 
-I think I saw that lockup once last night too. This morning I did not
-see it after hundreds of invocations on my kexec-debug tree (based on
-tip/x86/boot which is 6.13-rc1).
+With your fix I get the same thing (both CPUs in idle thread). And with
+no_console_suspend on the command line, 'p sysrq_handle_showstate('t')'
+does work...
 
-I switched to master (231825b2e1 still) and saw it after a few
-attempts.
-
-[   34.250006] Freezing user space processes
-[   34.251930] Freezing user space processes completed (elapsed 0.001 secon=
-ds)
-[   34.252730] OOM killer disabled.
-[   34.253141] printk: Suspending console(s) (use no_console_suspend to deb=
-ug)
-
-(gdb) t a a bt
-
-Thread 2 (Thread 1.2 (CPU#1 [halted ])):
-#0  0xffffffff8235886f in pv_native_safe_halt () at arch/x86/kernel/paravir=
-t.c:127
-#1  0xffffffff8235b699 in arch_safe_halt () at ./arch/x86/include/asm/parav=
-irt.h:175
-#2  default_idle () at arch/x86/kernel/process.c:742
-#3  0xffffffff8235bb0a in default_idle_call () at kernel/sched/idle.c:117
-#4  0xffffffff81243195 in cpuidle_idle_call () at kernel/sched/idle.c:185
-#5  do_idle () at kernel/sched/idle.c:325
-#6  0xffffffff812434b9 in cpu_startup_entry (state=3Dstate@entry=3DCPUHP_AP=
-_ONLINE_IDLE) at kernel/sched/idle.c:423
-#7  0xffffffff8115b572 in start_secondary (unused=3D<optimized out>) at arc=
-h/x86/kernel/smpboot.c:314
-#8  0xffffffff8110a38d in secondary_startup_64 () at arch/x86/kernel/head_6=
-4.S:414
-#9  0x0000000000000000 in ?? ()
-
-Thread 1 (Thread 1.1 (CPU#0 [halted ])):
-#0  0xffffffff8235886f in pv_native_safe_halt () at arch/x86/kernel/paravir=
-t.c:127
-#1  0xffffffff8235b699 in arch_safe_halt () at ./arch/x86/include/asm/parav=
-irt.h:175
-#2  default_idle () at arch/x86/kernel/process.c:742
-#3  0xffffffff8235bb0a in default_idle_call () at kernel/sched/idle.c:117
-#4  0xffffffff81243195 in cpuidle_idle_call () at kernel/sched/idle.c:185
-#5  do_idle () at kernel/sched/idle.c:325
-#6  0xffffffff812434b9 in cpu_startup_entry (state=3Dstate@entry=3DCPUHP_ON=
-LINE) at kernel/sched/idle.c:423
-#7  0xffffffff8235c9c7 in rest_init () at init/main.c:747
-#8  0xffffffff8419a694 in start_kernel () at init/main.c:1102
-#9  0xffffffff841ac6a4 in x86_64_start_reservations (real_mode_data=3Dreal_=
-mode_data@entry=3D0x147b0 <exception_stacks+34736> <error: Cannot access me=
-mory at address 0x147b0>) at arch/x86/kernel/head64.c:507
-#10 0xffffffff841ac7fd in x86_64_start_kernel (real_mode_data=3D0x147b0 <ex=
-ception_stacks+34736> <error: Cannot access memory at address 0x147b0>) at =
-arch/x86/kernel/head64.c:488
-#11 0xffffffff8110a38d in secondary_startup_64 () at arch/x86/kernel/head_6=
-4.S:414
-#12 0x0000000000000000 in ?? ()
-(gdb)=20
+[  113.462898] task:loadret         state:D stack:0     pid:707   tgid:707 =
+  ppid:531    flags:0x00004002
+[  113.463615] Call Trace:
+[  113.463841]  <TASK>
+[  113.464029]  __schedule+0x502/0x1a10
+[  113.464331]  ? find_held_lock+0x2b/0x80
+[  113.464661]  ? schedule+0xea/0x140
+[  113.464961]  schedule+0x3a/0x140
+[  113.465234]  schedule_timeout+0xcc/0x110
+[  113.465580]  __wait_for_common+0x91/0x1c0
+[  113.465923]  ? __pfx_schedule_timeout+0x10/0x10
+[  113.466304]  cpuhp_kick_ap_work+0x13e/0x390
+[  113.466657]  _cpu_down+0xd4/0x370
+[  113.466936]  freeze_secondary_cpus.cold+0x3f/0xd4
+[  113.467326]  kernel_kexec+0xa2/0x1a0
+[  113.467634]  __do_sys_reboot+0x206/0x250
+[  113.467974]  do_syscall_64+0x95/0x180
+[  113.468266]  ? kfree+0xdb/0x3a0
+[  113.468542]  ? __x64_sys_kexec_load+0xa9/0xe0
+[  113.468906]  ? kfree+0xdb/0x3a0
+[  113.469177]  ? do_kexec_load+0x120/0x340
+[  113.469525]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
+[  113.469940]  ? syscall_exit_to_user_mode+0x97/0x290
+[  113.470338]  ? do_syscall_64+0xa1/0x180
+[  113.470667]  ? trace_hardirqs_off+0x4b/0xc0
+[  113.471021]  ? lockdep_hardirqs_on_prepare+0xdb/0x190
+[  113.471414]  entry_SYSCALL_64_after_hwframe+0x76/0x7e
 
 
-But I haven't ingested your fix yet, maybe so I can't be entirely
-surprised if CPU0 scheduled away and ended up in the idle thread?=20
-
-If I were cleverer I'd remember how to make gdb give me a backtrace for
-the process which is actually in the kexec sys_reboot() system call,
-instead of the boring idle thread.
-
-(gdb) p sysrq_handle_showstate('t')
-
-That didn't work. Maybe if I'd actually had no_console_suspend on this
-boot. Will try again.
-
---=-1uJmaDHLw7yA+QPcwn6V
+--=-/ZPcwx7owdc+dW7sB28c
 Content-Type: application/pkcs7-signature; name="smime.p7s"
 Content-Disposition: attachment; filename="smime.p7s"
 Content-Transfer-Encoding: base64
@@ -275,25 +217,25 @@ IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
 dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
 NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
 xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQxMjEzMDkzMTExWjAvBgkqhkiG9w0BCQQxIgQgPcqmAxBP
-PrDT4KkhfvPgbIIJe7A2u4Cws+tHB2WZV2Ewgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
+DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQxMjEzMDk0MzA3WjAvBgkqhkiG9w0BCQQxIgQggUTcSglY
+Arii8IAb7ufs82emxNnRZD/eyw+AXeAlbsQwgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
 BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
 A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
 dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
 DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
 MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
 Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAfDkKjebw7R5AaWQhrpTlcG51P4Low21z1
-lNWvfD3R1QepCWCbhBMkzrtagWLqs/wxtF4HpPCO/J9vHq1/B62WnNrMCZY6IRQVsHsk4zFsn2wQ
-BQ0OH06KOZASIlWqkQueMPBx51WCC8QRR3PbtiRAQu3TYDf+zGuQrICxG1h5f7nfyrhat4FWi89o
-JUOIDWSsctoAwRkx5MVqwo1ch0jbEMOifQ8Te214BOwSxUH3DQXBHWxt4Xpe20qsWSx/6w12+ZR5
-KPyISX6y7GgR3N041nY+a4BFeee1y8elQpd3zxuL2YiuDEOdoKwAT7bnahPquslAtT0SNeo16fxn
-kee8692X7n5GQafV8tnuYBv14OK+DA1/bMG8hBGIGrGvn2+Q5jwzVuUtRhvXiSR+M96LwRR+PSqU
-zEMJvHcQtbCe91ZNBIewcbZm4otsj+6UzmGQluku854rUdMig3BMK6qD8vrgGr0KBLPD9UQob8MN
-6Rl48Gf9YqdeRQzjoBgPL237PooJi5iVchOVKMyRYSp4Fe5fOUQPQ6Tse3hG89n8h0hyGUY9FhSA
-onKnTPeJKC9Oow9U/Y57j/bygMHZDP4lW+TZBNfaEAQfXY8gUVIxvX3sq28MrmeRdhmNqZ00047+
-8i3Y4uftLJF7pV1LhylCX5Lrh+evJmQWpXkJ1FbujQAAAAAAAA==
+lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgAItzt+wQiAUQQ5dycOJAe4+xFPdRRXU+9c
+gdKHKXMXzNlWrc9Q18MuEQH91CLnp3N0OaCQ0Cwq24ckBZZmFalrMYNHERIRnQRO3p8UyALbQfiy
+yngwSVNA1YhwEc0X0Q8hzUSA+e3RfZbnBaEkhhK6UdvK61PXSitq5AcOl/KYuUUGXfxCRk5lLR93
+BEQOK3QwDG81s+S30YF+KvwOIhVEOT2losCyk3PV7weZ/tZvOYXAhg0QEt4jFYxSvj33b407+ENW
+zq/En3cTINPAvpXxKGwOpCXk9uS//1woSFOGoquI0dLQvYMn4NZhLOivL1N1x9OVieTddlxjBQdF
+uxcM4vYbRUEo3rcDLMirPqRERw+A1eFoSrNpSIHc+lfpar1b2hEDWTFWUdn6TsOZqTg1LnUyAjPb
+NRfHqedZPl36sfq0FgmovsqiZnaJLUPEz4wfllqoqiP6L9WInO5+fH2NcOaa3tBvLi8XEINtySdr
+LvNkymtnTS+SXmT0/4ZFrD+raozukj1SLrd6tt0kmV4erjX3izObLdR7Qdnaeux37blq4Dho51Zh
+TiXL8SlUFD8uP49KT12wTvT1ZSnoZmSRIAfWhhsPDydVDrII1bL76r0fDN/jdNrbKwS1KuH4dT58
+1ge0Km6YV5B2F0A7ZEbKTj/CJMxHzJDU9vLULlLBdgAAAAAAAA==
 
 
---=-1uJmaDHLw7yA+QPcwn6V--
+--=-/ZPcwx7owdc+dW7sB28c--
 
