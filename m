@@ -1,162 +1,136 @@
-Return-Path: <linux-ext4+bounces-5643-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5644-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 648689F20A4
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Dec 2024 20:56:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29AFF9F22E0
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Dec 2024 10:17:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8E7721887C46
-	for <lists+linux-ext4@lfdr.de>; Sat, 14 Dec 2024 19:56:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BD43018866F0
+	for <lists+linux-ext4@lfdr.de>; Sun, 15 Dec 2024 09:17:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6FC01AF0C6;
-	Sat, 14 Dec 2024 19:56:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3888014884D;
+	Sun, 15 Dec 2024 09:17:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZnS1YUX5"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fTCF8Pfw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FC2B19D07C;
-	Sat, 14 Dec 2024 19:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52F6B28FD;
+	Sun, 15 Dec 2024 09:17:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734206173; cv=none; b=rxaYL4DLwnzUVOdhOv4iZtfW5Fls04F3A8T9SlDaVNO1Rf4WpCbYkX42vwsKaxXanz3vgjwndjHIPj1iv9ZQi+60QOEgwSGaqNPKsx9u1ZhoNLImZQ4vmTMjVltGK5WGfupGzak1O7G5zgOe7HMDjkouYyKU0MCo36tAkS5gGHw=
+	t=1734254260; cv=none; b=KJthDSfPPfnqQ+u/vWJzm/g8dQEMN+4RjCl34gC3aTJQX0z9odykx0WmxV8I9BgqR894Xcq+x8fpeaV2F3qsgYRFYHt4wEAAWMFS4hPBL8mnMbpBFMKNPdbRHefdwQShVpVbCkFAEL6KuT/B1GjwubhPELGFaq5UhePUf8VfkRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734206173; c=relaxed/simple;
-	bh=2/PC+Vj7HoKTgLvvtazGZWIYrZFD+gplw0Wi3F0H3GY=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=pQtMkhNN1Upufv+bzJnbJMLapGyS2+MOyyqGO0OaqGw/CM87X26L9XvOb5E3+eW1kiI2MFEviPv5azu4myuDQZsQwcdjrqAvBZYz+Ve6P/dvYPqZ0G4tIjmZMRCAlp/eYm5xCqac1dRWyOuFxFSqbDKF7XzcsOJaAyvcrGndONY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZnS1YUX5; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-54024ecc33dso3107798e87.0;
-        Sat, 14 Dec 2024 11:56:11 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734206169; x=1734810969; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Z4moWdmb49UZDL++57SdlyR9ZwMXMyBGAAH7KseBthQ=;
-        b=ZnS1YUX5XK6d0Jw7OcWPO3yjzGX01BYkAl842EiA3mQkXl/OSZ9CCA6Vl0ZegZnkIF
-         RY6dZEOPDnZoiOgPnGufgOQzmfWXXmTZKIaj/EY8mKZRl1tqQ6udossfXsVzWr3Zcogu
-         wRjf6h8LXuvcp4OOTLuRWcpSGz0qWsCvOOKxqEeQ/jITr89AKXYSDrsNko9lsAr/L0Rn
-         ROBKF8Pzp9pIIB1XJ+PLFu1CaaBAjUMU8g5EXXFf65O1Efiopf1b1WTR08W6tLDJaWyx
-         B63bcmtzIvtOq1ROQZFmKAvaba+9PSeQRNMI96nUrEVtAzYFg4yVkqlcDj59XcG62B/V
-         yZNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734206169; x=1734810969;
-        h=content-transfer-encoding:in-reply-to:content-language:references
-         :cc:to:subject:from:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Z4moWdmb49UZDL++57SdlyR9ZwMXMyBGAAH7KseBthQ=;
-        b=PhE8G4erDJOGOZLAJbJcJ+cgwDeGwliBAUMieFwFqBt4w0J2feuXSyXZB+VLfWf20a
-         a1t++L965qW+rKhcb1F6c/Vqg5FbrDIsMhO41qNlTkjhjvAkNHutrWxym8aaFLuodHup
-         120ManeLec5plDNfPbJQPtRZXsbt9oPNqFr5STLGhdZmDaX1PIIQviOfTyNp73RFOneY
-         5X6OBV+CFcFSLv7V5zcqntbbHW9hBJFh7ERXcIRHnYzYPk3Lkc8o0ZIhOA1q+TQLbAIq
-         hVqsXJUaoG265LSvA8CeJRLF59zpx0xMyoyYJzmWuXJQhnZqYxH7vdT0AfpMntJESQce
-         Wu8w==
-X-Forwarded-Encrypted: i=1; AJvYcCU36GH+i+/Whx/s6UnmXgyknB6A9HUtn6XKlxFiquFi+nVwJKQKAzHd0gnfybEKo9jt+7Rqn9rle5FEDbo=@vger.kernel.org, AJvYcCWwvTH67HR5WkqldfLBA3he9nTuNmI/gGEGLyDg1t6/x7WKV9rfAdjtcV547p40GTGMx7T1JvMv@vger.kernel.org
-X-Gm-Message-State: AOJu0YygxKhExF8wnPrx1nmsolXOBm1HuiZBVyzYgipsQsmOa3f/vl3q
-	FH/Lq9CSbljFXtn6TyFbI0ZBVFaQEWw16qkY7jGwiziuyQ3Awkkp7oPang==
-X-Gm-Gg: ASbGncuAV7ApbCHfxz7SPTho8EK6I229CGMvQ0hoV16Fa11AyTJ1pvlFcpYxENXZlyX
-	8sLeQfAAAkmLqVqmOiQa8tZdE7OMM5JMlQevbDTjiOSy6n4L5YmB9e2N1B+B38vHl/cwZHBoLl6
-	7QBYZUg6DnmxTvekH7he0URnEUTNVhU4zEo8UJUc0FGNPNleqTWuxJiLkFARgjH67GqYB1p4H3J
-	vC0UmRTscJOXwuRzsWu2sDDKwhQmtmientvh8M0t+1eWcYbL41EphGLwp4=
-X-Google-Smtp-Source: AGHT+IF+V898aa8es++yx4jtxALz/gz5NZVNHRd80/3Ve/PFi0SUagDRAnW8ou4IejHJpmg34vVMoA==
-X-Received: by 2002:a05:6512:3189:b0:53f:8c46:42bc with SMTP id 2adb3069b0e04-5408fac7b0fmr2135432e87.2.1734206169262;
-        Sat, 14 Dec 2024 11:56:09 -0800 (PST)
-Received: from [192.168.0.91] ([188.242.176.155])
-        by smtp.gmail.com with ESMTPSA id 2adb3069b0e04-54120c2bd77sm298258e87.282.2024.12.14.11.56.05
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 14 Dec 2024 11:56:07 -0800 (PST)
-Message-ID: <ce9055d7-7301-0abe-3609-3a4e2e7b1e5e@gmail.com>
-Date: Sat, 14 Dec 2024 22:58:24 +0300
+	s=arc-20240116; t=1734254260; c=relaxed/simple;
+	bh=vwCXCO2YYl3Pt63xOWt0aCMdjbhNLBkp8wKREKWxyQ4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EXdorSAXjS8gmivaox1C8xytZ37zRt995j38XWjOjjWaFU4RBh5t28GtI2N6jD44OyFqxl93wLpehNaJi7vM4OedH0dOSpfO8xfDz66J316vk00pOeVyTUd0pUttFK2K1MFfydoyk+bzy2Ujesswc8z7O5OZBf5wFlzYNxddo6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fTCF8Pfw; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353729.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BF6RLKE026544;
+	Sun, 15 Dec 2024 09:17:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-transfer-encoding:date:from:message-id:mime-version
+	:subject:to; s=pp1; bh=ThmvBUaTspOQsZ0KTIGquZqDgRpM9heEsSI9xvVwE
+	yQ=; b=fTCF8Pfw59zmdXpG02Vp9OXEUk8YNQYeFP52mK0unp1OtjPfiYVAvILB+
+	GHa70z1WrGSV1aXE/KmVqSQTlZfUSPVNk/8u5NwCqdVqGB3WFZdMjkWRYLt2/urS
+	mTNULnqAlWvyemmhHI/xHFt0IAMQN724ABYd5AS0k+ByIyWVV/3e3yeetN7G8e5R
+	J4I4onWs3bV35n2oQE2qqB5YkLGp8wKi/rBDyH8Qdu7PMK15bhzYZBhf1mjH+K9N
+	anKzJNuuswASCZC3W7qg0Cncy1tJWfXiDJxIJWeD4SDtsbhJukVXvQ4KNQpLrpKb
+	e7/STXV/fuBnZE/7cI18PQXUzdcvQ==
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43hm5gsc5e-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 15 Dec 2024 09:17:29 +0000 (GMT)
+Received: from m0353729.ppops.net (m0353729.ppops.net [127.0.0.1])
+	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4BF9HTiT017632;
+	Sun, 15 Dec 2024 09:17:29 GMT
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43hm5gsc58-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 15 Dec 2024 09:17:29 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BF607iA014323;
+	Sun, 15 Dec 2024 09:17:28 GMT
+Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43hmqxsdha-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Sun, 15 Dec 2024 09:17:28 +0000
+Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
+	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BF9HQJL57344394
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Sun, 15 Dec 2024 09:17:26 GMT
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2697B20043;
+	Sun, 15 Dec 2024 09:17:26 +0000 (GMT)
+Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8D74420040;
+	Sun, 15 Dec 2024 09:17:24 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com.com (unknown [9.124.213.165])
+	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Sun, 15 Dec 2024 09:17:24 +0000 (GMT)
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org
+Cc: Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
+        linux-fsdevel@vger.kernel.org,
+        Andrey Albershteyn <aalbersh@kernel.org>,
+        "Darrick J . Wong" <djwong@kernel.org>,
+        John Garry <john.g.garry@oracle.com>
+Subject: [PATCH 0/3] xfs_io: enable extsize and stat -v support for ext4
+Date: Sun, 15 Dec 2024 14:47:14 +0530
+Message-ID: <cover.1734253505.git.ojaswin@linux.ibm.com>
+X-Mailer: git-send-email 2.43.5
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla/5.0 (X11; Linux x86_64; rv:91.0) Gecko/20100101
- Thunderbird/91.8.0
-From: Nikolai Zhubr <zhubr.2@gmail.com>
-Subject: Re: ext4 damage suspected in between 5.15.167 - 5.15.170
-To: Theodore Ts'o <tytso@mit.edu>
-Cc: linux-ext4@vger.kernel.org, stable@vger.kernel.org,
- linux-kernel@vger.kernel.org, jack@suse.cz
-References: <CALQo8TpjoV8JtuYDH_nBU5i4e-iuCQ1-NORAE8uobpDD_yYBTA@mail.gmail.com>
- <20241212191603.GA2158320@mit.edu>
- <79af4b93-63a1-da4c-2793-8843c60068f5@gmail.com>
- <20241213161230.GF1265540@mit.edu>
-Content-Language: en-US
-In-Reply-To: <20241213161230.GF1265540@mit.edu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: xxKxMehP1PyUIHXcIRimfOTQIbs281Yt
+X-Proofpoint-GUID: 6cK84czwamzl8yinaMDcEueSjkoQL2Ty
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 impostorscore=0
+ bulkscore=0 lowpriorityscore=0 mlxlogscore=667 spamscore=0 phishscore=0
+ clxscore=1015 suspectscore=0 priorityscore=1501 malwarescore=0
+ adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412150076
 
-Hi Ted,
+Changes since rfc [1]
 
-On 12/13/24 19:12, Theodore Ts'o wrote:
-> stable@kernel.org" to the commit description.  However, they are not
-> obligated to do that, so there is an auxillary system which uses AI to
-> intuit which patches might be a bug fix.  There is also automated
-> systems that try to automatically figure out which patches might be
+ * Patch 1: Don't add ext4 specific checks
+ * Patch 2: Rather than adding a check for ext4, allow FS_IOC_GETXATTR
+   to be called by any FS that supports it.
 
-Oh, so meanwhile it got even worse than I used to imagine :-) Thanks for 
-pointing out.
+[1]
+https://lore.kernel.org/linux-ext4/cover.1733902742.git.ojaswin@linux.ibm.com/T/#t
 
-> Note that some hardware errors can be caused by one-off errors, such
-> as cosmic rays causing a bit-flip in memory DIMM.  If that happens,
-> RAID won't save you, since the error was introduced before an updated
+** Original Cover **
 
-Certainly cosmic rays is a possibility, but based on previous episodes 
-I'd still rather bet on a more usual "subtle interaction" problem, 
-either exact same or some similar to [1].
-I even tried to run an existing test for this particular case as 
-described in [2] but it is not too user-friendly and somehow exits 
-abnormally without actually doing any interesting work. I'll get back to 
-it later when I have some time.
+With ext4 extsize hints support being worked on, enable extsize 
+command to be run on FSes other than xfs so ext4 can utilize it.
+Also extend stat -v to perform FS_IOC_FSGETXATTR ioctl on ext4.
 
-[1] https://lore.kernel.org/stable/20231205122122.dfhhoaswsfscuhc3@quack3/
-[2] https://lwn.net/Articles/954364/
+No funtional changes are intended for XFS.
 
-> The location of block allocation bitmaps never gets changed, so this
-> sort of thing only happens due to hardware-induced corruption.
+Ojaswin Mujoo (3):
+  include/linux.h: use linux/magic.h to get XFS_SUPER_MAGIC
+  xfs_io: allow foreign FSes to show FS_IOC_FSGETXATTR details
+  xfs_io: add extsize command support
 
-Well, unless e.g. some modified sectors start being flushed to random 
-wrong offsets, like in [1] above, or something similar.
+ include/linux.h |  3 ++-
+ io/open.c       |  2 +-
+ io/stat.c       | 63 ++++++++++++++++++++++++++++---------------------
+ 3 files changed, 39 insertions(+), 29 deletions(-)
 
-> Looking at the dumpe2fs output, it looks like it was created
-> relatively recently (July 2024) but it doesn't have the metadata
-> checksum feature enabled, which has been enabled for quite a long
+-- 
+2.43.5
 
-Yes. That was intentional - for better compatibility with even more 
-ancient stuff. Maybe time has come to reconsider the approach though.
-
-> You got lucky because it block allocation bitmap location was
-> corrupted to an obviously invalid value.  But if it had been a
-
-Absolutely. I was really amazed when I realized that :-)
-It saved me days or even weeks of unnecessary verification work.
-
-> Otherwise, I strongly encourage you to learn, and to take
-> responsibility for the health of your own system.  And ideally, you
-> can also use that knowledge to help other users out, which is the only
-> way the free-as-in-beer ecosystem can flurish; by having everybody
-
-True. Generally I try to follow that, as much as appears possible.
-It is sad a direct communication end-user-to-developer for solving 
-issues is becoming increasingly problematic here.
-Anyway, thank you for friendly speech, useful hints and good references!
-
-Regards,
-
-Nick
-
-> helping each other.  Who knows, maybe you could even get a job doing
-> it for a living.  :-) :-) :-)
-> 
-> Cheers,
-> 
 
