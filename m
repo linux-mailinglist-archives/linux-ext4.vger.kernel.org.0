@@ -1,205 +1,281 @@
-Return-Path: <linux-ext4+bounces-5663-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5664-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6AF019F2CA3
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 10:12:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CA9E9F2E48
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 11:40:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 325BC1889BC4
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 09:12:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F2C1884E9B
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 10:40:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3854201018;
-	Mon, 16 Dec 2024 09:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB8520370D;
+	Mon, 16 Dec 2024 10:40:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="sWXuGo9n"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="e/a+lroJ";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OdqWHOz2";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UxoJgw/s";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d4LrfBte"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA9FD200138;
-	Mon, 16 Dec 2024 09:12:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B2E200BB9
+	for <linux-ext4@vger.kernel.org>; Mon, 16 Dec 2024 10:40:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734340341; cv=none; b=DS4XxTQuZx0VthjvngC0CYXF8kZsm7UIi8ziF9uJr7qDOeRuL7TbZ4NAjG9EdaMZBs43Hj2bdZPj14HlDVIL+NspvA2R6tA2AyT3HwPFADJcScFgCQUjbj4N4+TzWhfOLYMBda/W1u1fnXhzx6FWuHvR79b1WIvwouyGxf2SfVw=
+	t=1734345607; cv=none; b=A1HXgz/A6QTgi6+2zwSmVGwu1kSsnZtlCsUDRdzYBfgPfaMB8wk7Gkd5RpEqO6Qsz2oNRiRphBr4Om9p/VhbRFdRorqOe8Xyhfo6sV56A3Aqh/bXvn76ei9Cbrh5cixqlolx9r7lMaToBOwpqGyf060xjYJTQXraH9tuKcOZfsQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734340341; c=relaxed/simple;
-	bh=gyU529X3Uy75HoTyX5bwhVIWDJ8mguiUzuWJhjfiui4=;
+	s=arc-20240116; t=1734345607; c=relaxed/simple;
+	bh=b9kprH94+TCHnNWd5WrV6ylowdznqo+tNdXQhPddGZY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=SC6VNEy2Fk9seFfAFovoNOUTBxG/MONAfWJAJWMYEbC78Oa46WLKYNkRxMV8lCf5/aY+uOkl91tllpLaxFOfVwOwlP4iiTcQ0OqkicjtcIklWsJk13adj3p6CeiLCYyULKFSsa9geADd6m4CN7Xn0yOV8ABhHO6UTlkoW2Y/+BU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=sWXuGo9n; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BG3qt5X020245;
-	Mon, 16 Dec 2024 09:12:02 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-transfer-encoding:content-type:date:from:in-reply-to
-	:message-id:mime-version:references:subject:to; s=pp1; bh=f+5xFk
-	CVO/8sTzd0VPmLfZ/gpvg6SLZUQZxvY7UWd4Y=; b=sWXuGo9nspF8K5fOKTWccJ
-	RL/3AdX1A0tRj+igS3lrj/Obr6ltOPeAEVfN+Uc8aiYB/CsYCumpPQ4D1MzQDERW
-	USxc8OSnRViPqXlpz0nn0kbCMNu4phHxWo4tz/kWlu/9I0eQ0UiSM3qv+qkaeu6C
-	8Wgxut2bTdxvDFw//pxVMtCXhjHe8zqe+fYMH840daMdr8ZGlY5fzmOuW/lowlWw
-	0TiDX4wuaaB1DYBb4Ok1w+ralFwEWLojdlZMHJHwkCVGjA7NShLMcQsn6OlLSnLP
-	S7HFnXFC8gLDpSf9iqi7f/MT0z5UqJDjnzirjhBaW1VBXk75AEMwRISwi83GeDsQ
-	==
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43jcpgs98p-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 16 Dec 2024 09:12:02 +0000 (GMT)
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.18.0.8/8.18.0.8) with ESMTP id 4BG99ihK027165;
-	Mon, 16 Dec 2024 09:12:01 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43jcpgs98j-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 16 Dec 2024 09:12:01 +0000 (GMT)
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BG5FODs024047;
-	Mon, 16 Dec 2024 09:12:00 GMT
-Received: from smtprelay01.fra02v.mail.ibm.com ([9.218.2.227])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43hnuk54cd-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 16 Dec 2024 09:12:00 +0000
-Received: from smtpav07.fra02v.mail.ibm.com (smtpav07.fra02v.mail.ibm.com [10.20.54.106])
-	by smtprelay01.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BG9BweI56885552
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 16 Dec 2024 09:11:58 GMT
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 637462004D;
-	Mon, 16 Dec 2024 09:11:58 +0000 (GMT)
-Received: from smtpav07.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F071220040;
-	Mon, 16 Dec 2024 09:11:56 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.215.36])
-	by smtpav07.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Mon, 16 Dec 2024 09:11:56 +0000 (GMT)
-Date: Mon, 16 Dec 2024 14:41:54 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Baokun Li <libaokun1@huawei.com>
-Cc: linux-ext4@vger.kernel.org, Jan Kara <jack@suse.com>,
-        Ritesh Harjani <ritesh.list@gmail.com>, linux-kernel@vger.kernel.org,
-        linux-fsdevel@vger.kernel.org, Jan Kara <jack@suse.cz>,
-        Yang Erkun <yangerkun@huawei.com>
-Subject: Re: [PATCH v2 2/2] ext4: protect ext4_release_dquot against freezing
-Message-ID: <Z1/u2jIpSjAxOB6r@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20241121123855.645335-1-ojaswin@linux.ibm.com>
- <20241121123855.645335-3-ojaswin@linux.ibm.com>
- <cc2fcc33-9024-4ce8-bd52-cdcd23f6b455@huawei.com>
- <Z0a1x7yksOE4Jsha@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <8885691f-b977-409f-90f8-b24c41a49de0@huawei.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qLAFzLB5PeMql3m24dvoNtz5Wjo1SHAkMUK7l7cAP0EWBQIGBy5VwFtNbD+I8K4m42ygSCkrd10JwEp6Jn5JyJ/NQHC+5pKZhTZThgHp0Z/kq34pdgsHTADO0L3w/nMatWtbCb+Zu4KbXwrmGXJX55NWZ0S7HbXoQBgWJ0wFZUY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=e/a+lroJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OdqWHOz2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UxoJgw/s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d4LrfBte; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 77ADF1F449;
+	Mon, 16 Dec 2024 10:40:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734345602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
+	b=e/a+lroJYpP+o+4EUzm8ILeTLMAolSl7RvE8t3ugZ51HRsqrr8L2ctQYkyNGPyq/kZ5y8N
+	PX1RUzca9ywJ7aCLc9DW85SP+3qH9vwpbfu0Ggm+D35Ij2Jkfj7aUkKG0hPph8164vlTwh
+	/BBDmmJWWl/mIVhAZFhcIhfjMeVVJrg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734345602;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
+	b=OdqWHOz2Wg5axW2NHb+mHKxof+G3DXFOdqzepzcHaM2DS0KBC+PcZ3yPyaU7Qra4W3RTaM
+	TRp+wGNPcGB2e+Dw==
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="UxoJgw/s";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=d4LrfBte
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734345601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
+	b=UxoJgw/sNkGsdCEEHMYaQurHJFqh+LMmFlh8ZFcLyNpeVxYUnUCeIpYY0uQLm4DwGqwhcX
+	7DZyP+iuQEbFBZDVnVYmHkriVgTLkkvQjpqsv8MRgRqvbLmMkfbv4T06RFcdtAuyOEq+ch
+	nqRB3EHRQCJjHoPCmNRivn8GJQqJVl8=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734345601;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
+	b=d4LrfBteIjk5yamuuM4CUV46pCkFUeiz5BWml5MDWMeqZDKQtysilmFk6qcS97vfrheK4T
+	pWKdqW3zqZjritDw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6BDA6137CF;
+	Mon, 16 Dec 2024 10:40:01 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id Yf1ZGoEDYGciJwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 16 Dec 2024 10:40:01 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 02ECEA08E1; Mon, 16 Dec 2024 11:40:00 +0100 (CET)
+Date: Mon, 16 Dec 2024 11:40:00 +0100
+From: Jan Kara <jack@suse.cz>
+To: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
+Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
+	harshads@google.com
+Subject: Re: [PATCH v7 8/9] ext4: make fast commit ineligible on
+ ext4_reserve_inode_write failure
+Message-ID: <20241216104000.cpzbeksxo6abawjj@quack3>
+References: <20240818040356.241684-1-harshadshirwadkar@gmail.com>
+ <20240818040356.241684-10-harshadshirwadkar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <8885691f-b977-409f-90f8-b24c41a49de0@huawei.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5Mu_ixrgx-Xw0m2ui7O2MqOTtaQAv0xJ
-X-Proofpoint-ORIG-GUID: ZnURpHL64P98UmdBDfFD5H4oms75qr9X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 suspectscore=0 clxscore=1015
- mlxscore=0 phishscore=0 impostorscore=0 adultscore=0 lowpriorityscore=0
- spamscore=0 mlxlogscore=999 malwarescore=0 priorityscore=1501 bulkscore=0
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2411120000
- definitions=main-2412160074
+In-Reply-To: <20240818040356.241684-10-harshadshirwadkar@gmail.com>
+X-Rspamd-Queue-Id: 77ADF1F449
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-On Tue, Dec 03, 2024 at 04:29:31PM +0800, Baokun Li wrote:
-> On 2024/11/27 14:01, Ojaswin Mujoo wrote:
-> > On Tue, Nov 26, 2024 at 10:49:14PM +0800, Baokun Li wrote:
-> > > On 2024/11/21 20:38, Ojaswin Mujoo wrote:
-> > > > Protect ext4_release_dquot against freezing so that we
-> > > > don't try to start a transaction when FS is frozen, leading
-> > > > to warnings.
-> > > > 
-> > > > Further, avoid taking the freeze protection if a transaction
-> > > > is already running so that we don't need end up in a deadlock
-> > > > as described in
-> > > > 
-> > > >     46e294efc355 ext4: fix deadlock with fs freezing and EA inodes
-> > > > 
-> > > > Suggested-by: Jan Kara <jack@suse.cz>
-> > > > Signed-off-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > > > ---
-> > > >    fs/ext4/super.c | 17 +++++++++++++++++
-> > > >    1 file changed, 17 insertions(+)
-> > > > 
-> > > > diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-> > > > index 16a4ce704460..f7437a592359 100644
-> > > > --- a/fs/ext4/super.c
-> > > > +++ b/fs/ext4/super.c
-> > > > @@ -6887,12 +6887,25 @@ static int ext4_release_dquot(struct dquot *dquot)
-> > > >    {
-> > > >    	int ret, err;
-> > > >    	handle_t *handle;
-> > > > +	bool freeze_protected = false;
-> > > > +
-> > > > +	/*
-> > > > +	 * Trying to sb_start_intwrite() in a running transaction
-> > > > +	 * can result in a deadlock. Further, running transactions
-> > > > +	 * are already protected from freezing.
-> > > > +	 */
-> > > > +	if (!ext4_journal_current_handle()) {
-> > > > +		sb_start_intwrite(dquot->dq_sb);
-> > > > +		freeze_protected = true;
-> > > > +	}
-> > > >    	handle = ext4_journal_start(dquot_to_inode(dquot), EXT4_HT_QUOTA,
-> > > >    				    EXT4_QUOTA_DEL_BLOCKS(dquot->dq_sb));
-> > > >    	if (IS_ERR(handle)) {
-> > > >    		/* Release dquot anyway to avoid endless cycle in dqput() */
-> > > >    		dquot_release(dquot);
-> > > > +		if (freeze_protected)
-> > > > +			sb_end_intwrite(dquot->dq_sb);
-> > > >    		return PTR_ERR(handle);
-> > > >    	}
-> > > >    	ret = dquot_release(dquot);
-> > > > @@ -6903,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
-> > > The `git am` command looks for the following context code from line 6903
-> > > to apply the changes. But there are many functions in fs/ext4/super.c that
-> > > have similar code, such as ext4_write_dquot() and ext4_acquire_dquot().
-> > Oh that's strange, shouldn't it match the complete line like:
-> A rough look at the `git am` source code looks like it only focuses on
-> line numbers between two ‘@@’.
+On Sun 18-08-24 04:03:55, Harshad Shirwadkar wrote:
+> Fast commit by default makes every inode on which
+> ext4_reserve_inode_write() is called. Thus, if that function
+> fails for some reason, make the next fast commit ineligible.
 > 
-> am_run
->  run_apply
->   apply_all_patches
->    apply_patch
->     parse_chunk
->      find_header
->       parse_fragment_header
->     check_patch_list
->      check_patch
->       apply_data
->        load_preimage
->        apply_fragments
->         apply_one_fragment
->          find_pos
->           match_fragment
-> > > > @@ -6903,6 +6916,10 @@ static int ext4_release_dquot(struct dquot *dquot)
-> > That should only have one occurence around line 6903? Or does it try to
-> > fuzzy match which ends up matching ext4_write_dquot etc?
-> In find_pos(), start from line 6903, compare the hash value of each line
-> of code line by line in forward direction, if it can't match, then match
-> the hash value of each line of code line by line in reverse direction from
-> line 6903. Fuzzy matching is used if some whitespace characters should be
-> ignored.
+> Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-Ahh okay thanks for looking into this Baokun, pretty interesting since
-I've never looked at git code :)
+I think this is a bit pointless. If ext4_reserve_inode_write() fails, we
+have a data corruption problems, journal has aborted or similar. Thus I
+think data consistency of fsync is kind of the least problem we are having
+:). That being said just completely turning of fastcommit as soon as we hit
+some filesystem error (in __ext4_std_error() when we don't decide to panic
+system / shutdown the filesystem) makes sense to me as a kind of "let's
+limit possible damage" measure.
 
-Regards,
-ojaswin
+								Honza
+
+> ---
+>  fs/ext4/fast_commit.c       |  1 +
+>  fs/ext4/fast_commit.h       |  1 +
+>  fs/ext4/inode.c             | 29 ++++++++++++++++++-----------
+>  include/trace/events/ext4.h |  7 +++++--
+>  4 files changed, 25 insertions(+), 13 deletions(-)
 > 
+> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
+> index 2fc43b1e2..7525450f1 100644
+> --- a/fs/ext4/fast_commit.c
+> +++ b/fs/ext4/fast_commit.c
+> @@ -2282,6 +2282,7 @@ static const char * const fc_ineligible_reasons[] = {
+>  	[EXT4_FC_REASON_FALLOC_RANGE] = "Falloc range op",
+>  	[EXT4_FC_REASON_INODE_JOURNAL_DATA] = "Data journalling",
+>  	[EXT4_FC_REASON_ENCRYPTED_FILENAME] = "Encrypted filename",
+> +	[EXT4_FC_REASON_INODE_RSV_WRITE_FAIL] = "Inode reserve write failure"
+>  };
+>  
+>  int ext4_fc_info_show(struct seq_file *seq, void *v)
+> diff --git a/fs/ext4/fast_commit.h b/fs/ext4/fast_commit.h
+> index 2fadb2c47..f7f85c3dd 100644
+> --- a/fs/ext4/fast_commit.h
+> +++ b/fs/ext4/fast_commit.h
+> @@ -97,6 +97,7 @@ enum {
+>  	EXT4_FC_REASON_FALLOC_RANGE,
+>  	EXT4_FC_REASON_INODE_JOURNAL_DATA,
+>  	EXT4_FC_REASON_ENCRYPTED_FILENAME,
+> +	EXT4_FC_REASON_INODE_RSV_WRITE_FAIL,
+>  	EXT4_FC_REASON_MAX
+>  };
+>  
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index c82eba178..5a187902b 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -5798,20 +5798,27 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
+>  {
+>  	int err;
+>  
+> -	if (unlikely(ext4_forced_shutdown(inode->i_sb)))
+> -		return -EIO;
+> +	if (unlikely(ext4_forced_shutdown(inode->i_sb))) {
+> +		err = -EIO;
+> +		goto out;
+> +	}
+>  
+>  	err = ext4_get_inode_loc(inode, iloc);
+> -	if (!err) {
+> -		BUFFER_TRACE(iloc->bh, "get_write_access");
+> -		err = ext4_journal_get_write_access(handle, inode->i_sb,
+> -						    iloc->bh, EXT4_JTR_NONE);
+> -		if (err) {
+> -			brelse(iloc->bh);
+> -			iloc->bh = NULL;
+> -		}
+> -		ext4_fc_track_inode(handle, inode);
+> +	if (err)
+> +		goto out;
+> +
+> +	BUFFER_TRACE(iloc->bh, "get_write_access");
+> +	err = ext4_journal_get_write_access(handle, inode->i_sb,
+> +						iloc->bh, EXT4_JTR_NONE);
+> +	if (err) {
+> +		brelse(iloc->bh);
+> +		iloc->bh = NULL;
+>  	}
+> +	ext4_fc_track_inode(handle, inode);
+> +out:
+> +	if (err)
+> +		ext4_fc_mark_ineligible(inode->i_sb,
+> +			EXT4_FC_REASON_INODE_RSV_WRITE_FAIL, handle);
+>  	ext4_std_error(inode->i_sb, err);
+>  	return err;
+>  }
+> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
+> index cc5e9b7b2..8bab4febd 100644
+> --- a/include/trace/events/ext4.h
+> +++ b/include/trace/events/ext4.h
+> @@ -105,6 +105,7 @@ TRACE_DEFINE_ENUM(EXT4_FC_REASON_RENAME_DIR);
+>  TRACE_DEFINE_ENUM(EXT4_FC_REASON_FALLOC_RANGE);
+>  TRACE_DEFINE_ENUM(EXT4_FC_REASON_INODE_JOURNAL_DATA);
+>  TRACE_DEFINE_ENUM(EXT4_FC_REASON_ENCRYPTED_FILENAME);
+> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_INODE_RSV_WRITE_FAIL);
+>  TRACE_DEFINE_ENUM(EXT4_FC_REASON_MAX);
+>  
+>  #define show_fc_reason(reason)						\
+> @@ -118,7 +119,8 @@ TRACE_DEFINE_ENUM(EXT4_FC_REASON_MAX);
+>  		{ EXT4_FC_REASON_RENAME_DIR,	"RENAME_DIR"},		\
+>  		{ EXT4_FC_REASON_FALLOC_RANGE,	"FALLOC_RANGE"},	\
+>  		{ EXT4_FC_REASON_INODE_JOURNAL_DATA,	"INODE_JOURNAL_DATA"}, \
+> -		{ EXT4_FC_REASON_ENCRYPTED_FILENAME,	"ENCRYPTED_FILENAME"})
+> +		{ EXT4_FC_REASON_ENCRYPTED_FILENAME,	"ENCRYPTED_FILENAME"}, \
+> +		{ EXT4_FC_REASON_INODE_RSV_WRITE_FAIL,	"INODE_RSV_WRITE_FAIL"})
+>  
+>  TRACE_DEFINE_ENUM(CR_POWER2_ALIGNED);
+>  TRACE_DEFINE_ENUM(CR_GOAL_LEN_FAST);
+> @@ -2809,7 +2811,7 @@ TRACE_EVENT(ext4_fc_stats,
+>  	),
+>  
+>  	TP_printk("dev %d,%d fc ineligible reasons:\n"
+> -		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u"
+> +		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u"
+>  		  "num_commits:%lu, ineligible: %lu, numblks: %lu",
+>  		  MAJOR(__entry->dev), MINOR(__entry->dev),
+>  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_XATTR),
+> @@ -2822,6 +2824,7 @@ TRACE_EVENT(ext4_fc_stats,
+>  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_FALLOC_RANGE),
+>  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_JOURNAL_DATA),
+>  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_ENCRYPTED_FILENAME),
+> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_RSV_WRITE_FAIL),
+>  		  __entry->fc_commits, __entry->fc_ineligible_commits,
+>  		  __entry->fc_numblks)
+>  );
+> -- 
+> 2.46.0.184.g6999bdac58-goog
 > 
-> Regards,
-> Baokun
-> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
