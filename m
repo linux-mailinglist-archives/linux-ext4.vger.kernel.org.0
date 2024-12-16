@@ -1,130 +1,197 @@
-Return-Path: <linux-ext4+bounces-5666-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5667-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8CC7C9F3043
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 13:14:49 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4E0889F3108
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 13:59:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827D316498D
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 12:14:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7F20716706B
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 12:59:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C5B20459B;
-	Mon, 16 Dec 2024 12:14:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2D4F204F88;
+	Mon, 16 Dec 2024 12:59:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQj3weIs"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ys8z1gFK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ztIhWAOZ";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Ys8z1gFK";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ztIhWAOZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C09C538FA6
-	for <linux-ext4@vger.kernel.org>; Mon, 16 Dec 2024 12:14:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E9631E4B2;
+	Mon, 16 Dec 2024 12:59:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734351281; cv=none; b=PDnJhuqRlkLRkikQiN7i9x7DacaWg7JavEsnaT7a4jhP/GZAx8xQhesH419xGX122o3PEq5TQwOWXHXjrLjUrWnPwY4/jP00MwqcGl8ByXAimkgdE6pOz68dxcc+ncomgSri2Ieaekvauyu/zqPcTCR4kFN2c8TBHM22CRj+q8o=
+	t=1734353986; cv=none; b=KCZGaEbT7TdSu4yLgCjXvVUQ0GpZZtHB7zNe2Ra4P7lSapXFX43FyRx+aj+GD/G11SKoXI/wPWqOkBP6lQGedbsnnTz7w/3aqcqh1B1wIHJ63k9FO5LElQ9ppBLtiI7P1V0G8gLUO30ZRLHGljRk8mRXHJx7ABR7QMUl/G8i1Ws=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734351281; c=relaxed/simple;
-	bh=I8BRA+E+7sIy/PeX8Wl+oBzLMGuM9Kf3XA5Fd7iH730=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=suzvdDHPsWw/sqA+UhjMPTbDDTS9gkcjH8YD3v5BXKXv39lTVUWpbSeDXB5Qkkj52kuhARYRZTu3EiD3vKRMm2TGU3gzEXXbvxXAzZxtFT1e5uoL7BMNt9uxb5IQQDw0sSxCBaRy4oK3pik3FpQiEYY0jiEbwmCyd3mbPPIILpc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQj3weIs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5F918C4CED0
-	for <linux-ext4@vger.kernel.org>; Mon, 16 Dec 2024 12:14:41 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1734351281;
-	bh=I8BRA+E+7sIy/PeX8Wl+oBzLMGuM9Kf3XA5Fd7iH730=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=YQj3weIs3D0RsxFOU/sVgtLeEdSz667AUOEk+xDN2Rt5+CQ5obHd+6BZ+BI3Oqi5d
-	 F8dUx6PBKhU/nCkpczkCgMi88tJl12LYcJd7/6YK1nXFETpZI2qb+nvOS60oawk04W
-	 mNnpl4RtDPzZk+eKGgcdblBDtdHhywW59U4SA45xT62imOuhCDcHjHxXUTh8Q0oTSW
-	 0JpM2fdGooco3+Y41nNqTbKB9emnqa6AW37N4ayDXEOtKwpSro0ffBzpA9mqH/WRyX
-	 Leb6xYOctNK1ONLf9zc5rBWUlfsdWz3xUASV+3QzIitrmI6nzMvopeLLE9bGUufQU0
-	 dDUgf9CwcX8YQ==
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3eb6b16f1a0so1302620b6e.3
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Dec 2024 04:14:41 -0800 (PST)
-X-Forwarded-Encrypted: i=1; AJvYcCUJVRCqDSmvUdf0+Xfqdakm3/JIMQTassRvlo7sOefzP+DAi3ex+p5NysdsGifgC50CAMPTLwvuPWs2@vger.kernel.org
-X-Gm-Message-State: AOJu0YxleJs3ej7oj5LhUETTysBUg6I+GzStP849plxQ5uwNr/dmQ0rU
-	rKe+d2dfAoyyfQZnofX0SYlv6X3R1skCn/L/P+zvmo6L/1UwMwabyu+PSdW9Dxm1cZZzF7pxLdr
-	q3U6EjlC5HQjx8+XcCyRZRCxs3uc=
-X-Google-Smtp-Source: AGHT+IEhIKzcP+ystGs9qCnC3kW6RLBVF8CarVw7viRsnLYJ5LXOeqEfGVxJYtIBVsNYGyJ3I71rnEn8fd++4R7Silg=
-X-Received: by 2002:a05:6808:201a:b0:3e8:1ed7:e6cf with SMTP id
- 5614622812f47-3eba67fec07mr6100991b6e.7.1734351280709; Mon, 16 Dec 2024
- 04:14:40 -0800 (PST)
+	s=arc-20240116; t=1734353986; c=relaxed/simple;
+	bh=RUVKc6L+uUfWMTE0IFmH0FPnVyl/zUUqsu6vxUK33Ok=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fIP6NIZVu0jnHILE418HSvfR9Ny6OD6qlx5CGZLQVyrYuPq5wOAzAbDf493lleqSS/Uxs8k54MJUTGfF9rbNjEGJGLhHPRARfZD/Q8qDY92MHrMGtmKX172daf1Ls9RPIhzS5C62m3yVZySA4rev1HHT7VdYKtnnVos8JjiD5T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ys8z1gFK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ztIhWAOZ; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Ys8z1gFK; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ztIhWAOZ; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 5F43A21114;
+	Mon, 16 Dec 2024 12:59:42 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734353982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JB5RmYamRlU7T6WnviEORO25jJqAtZFfrSqR55m0b40=;
+	b=Ys8z1gFKzYTNgMfyEH2QVNzPDmmKywnWBf2QxHHVzTHR6pzjhgHrK5iwISJFcOzl9hbtOe
+	j10R8VaMm4Ba95VrltqcOEk7YuW9Pj9zR6X64EgrXOgICyUjT0IXqrIy9P6mgv5mb9xGdH
+	DsUs14Vqncn8YUhJYrt+OkycRHtxZCI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734353982;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JB5RmYamRlU7T6WnviEORO25jJqAtZFfrSqR55m0b40=;
+	b=ztIhWAOZ/0QtotkKi58nhzD6KikdhcTxarr9LJhLo9qxWfp2OusHXnpkD0iq6xG/JTeLPV
+	vvveLEDB0PlO8qCg==
+Authentication-Results: smtp-out1.suse.de;
+	none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734353982; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JB5RmYamRlU7T6WnviEORO25jJqAtZFfrSqR55m0b40=;
+	b=Ys8z1gFKzYTNgMfyEH2QVNzPDmmKywnWBf2QxHHVzTHR6pzjhgHrK5iwISJFcOzl9hbtOe
+	j10R8VaMm4Ba95VrltqcOEk7YuW9Pj9zR6X64EgrXOgICyUjT0IXqrIy9P6mgv5mb9xGdH
+	DsUs14Vqncn8YUhJYrt+OkycRHtxZCI=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734353982;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=JB5RmYamRlU7T6WnviEORO25jJqAtZFfrSqR55m0b40=;
+	b=ztIhWAOZ/0QtotkKi58nhzD6KikdhcTxarr9LJhLo9qxWfp2OusHXnpkD0iq6xG/JTeLPV
+	vvveLEDB0PlO8qCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 51736137CF;
+	Mon, 16 Dec 2024 12:59:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AgHeEz4kYGeqUwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 16 Dec 2024 12:59:42 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id EB810A09D9; Mon, 16 Dec 2024 13:59:41 +0100 (CET)
+Date: Mon, 16 Dec 2024 13:59:41 +0100
+From: Jan Kara <jack@suse.cz>
+To: Nikolai Zhubr <zhubr.2@gmail.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, linux-ext4@vger.kernel.org,
+	stable@vger.kernel.org, linux-kernel@vger.kernel.org, jack@suse.cz
+Subject: Re: ext4 damage suspected in between 5.15.167 - 5.15.170
+Message-ID: <20241216125941.pr2eufott5pmqyyh@quack3>
+References: <CALQo8TpjoV8JtuYDH_nBU5i4e-iuCQ1-NORAE8uobpDD_yYBTA@mail.gmail.com>
+ <20241212191603.GA2158320@mit.edu>
+ <79af4b93-63a1-da4c-2793-8843c60068f5@gmail.com>
+ <20241213161230.GF1265540@mit.edu>
+ <ce9055d7-7301-0abe-3609-3a4e2e7b1e5e@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <87ldwl9g93.ffs@tglx> <10f5d22150b548ec271e0a847ba2eb91139e6f61.camel@infradead.org>
- <87a5d0aibc.ffs@tglx> <dd06cd643ee7fa0be08ac3082cff443b8bfbfb58.camel@infradead.org>
- <874j38a16p.ffs@tglx> <9c4b189656a0a773227a11568171903989130bb7.camel@infradead.org>
- <adf6981fcfd3b23d0a293404879598e8fcf072f6.camel@infradead.org>
- <871pybamoc.ffs@tglx> <Z1wV9SsaVe3torbO@fedora> <87y10j95v7.ffs@tglx>
- <Z1wfF6NJRZh1jROz@fedora> <87pllv90ow.ffs@tglx> <1a7c126f3ab8ae75e755d01a6bf9bc06730dd239.camel@infradead.org>
- <87msgz8qes.ffs@tglx> <CAJZ5v0i3zg1ee9p7vc0xEN4cEyCoO-d9OOyV_m65=f251tnxXQ@mail.gmail.com>
- <CAJZ5v0hBUgOB4QhhwjusRcP+jksWFL-upR5En58g9RD5+n70JA@mail.gmail.com>
- <73E84E2B-001B-48D6-9BB4-B104D43F8FBF@infradead.org> <febd10dae881f29fa8236f3e2d6ad77a8f094d72.camel@infradead.org>
-In-Reply-To: <febd10dae881f29fa8236f3e2d6ad77a8f094d72.camel@infradead.org>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 16 Dec 2024 13:14:25 +0100
-X-Gmail-Original-Message-ID: <CAJZ5v0jcOCffvfB3558eJxv39aMog1BtiJ1PQG0v-sJAPuV6JQ@mail.gmail.com>
-Message-ID: <CAJZ5v0jcOCffvfB3558eJxv39aMog1BtiJ1PQG0v-sJAPuV6JQ@mail.gmail.com>
-Subject: Re: Lockdep warnings on kexec (virtio_blk, hrtimers)
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	Ming Lei <ming.lei@redhat.com>, Stefan Hajnoczi <stefanha@redhat.com>, 
-	Jason Wang <jasowang@redhat.com>, "x86@kernel.org" <x86@kernel.org>, hpa <hpa@zytor.com>, 
-	dyoung <dyoung@redhat.com>, kexec <kexec@lists.infradead.org>, 
-	linux-ext4 <linux-ext4@vger.kernel.org>, "Michael S. Tsirkin" <mst@redhat.com>, 
-	Stefano Garzarella <sgarzare@redhat.com>, eperezma <eperezma@redhat.com>, 
-	Paolo Bonzini <bonzini@redhat.com>, Petr Mladek <pmladek@suse.com>, 
-	John Ogness <jogness@linutronix.de>, Peter Zijlstra <peterz@infradead.org>, 
-	Jens Axboe <axboe@kernel.dk>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ce9055d7-7301-0abe-3609-3a4e2e7b1e5e@gmail.com>
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	BAYES_HAM(-3.00)[100.00%];
+	SUSPICIOUS_RECIPS(1.50)[];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	TAGGED_RCPT(0.00)[];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	TO_DN_SOME(0.00)[];
+	FREEMAIL_TO(0.00)[gmail.com];
+	FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	RCPT_COUNT_FIVE(0.00)[6];
+	FROM_EQ_ENVFROM(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_LAST(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,suse.com:email]
+X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Sat, Dec 14, 2024 at 10:57=E2=80=AFAM David Woodhouse <dwmw2@infradead.o=
-rg> wrote:
->
-> On Fri, 2024-12-13 at 20:16 +0000, David Woodhouse wrote:
-> >
-> > > As discussed with Dave over IRC, the current implementation isn't
-> > > actually that bad.  It might use PMSG_THAW instead of PMSG_RESTORE in
-> > > kernel_kexec(), but other than this it reflects the code flow around
-> > > the jump from the restore kernel to the image one during resume from
-> > > hibernation.
-> > >
-> > > This means that hibernation and kexec jump could be unified somewhat.
-> >
-> > Fair enough. I'm happy to do whatever cleanups or consolidation make
-> > sense, if we have a consensus.
-> >
-> > There remains the question of why the blk-mq thing explodes on the
-> > way down for both kjump and, apparently, even the plain kexec case.
->
-> In case it's of any use, here's a test case I put together recently for
-> kexec stress testing.
->
->  http://david.woodhou.se/kexec.initramfs
->
-> It's just an initrd I boot in qemu with '-initrd kexec.initramfs' and
-> it builds a copy of itself, then kexecs back into the same kernel with
-> the same initrd. You'll need to drop your own bzImage into it.
->
-> It was designed to run without a block device, but to trigger the
-> blk-mq thing or the one at
-> https://lore.kernel.org/linux-scsi/F991D40F7D096653+20241203211857.0291ab=
-1b@john-PC/
+Hi Nikolai!
 
-Which BTW includes some quite convincing analysis of what's going on.
+On Sat 14-12-24 22:58:24, Nikolai Zhubr wrote:
+> On 12/13/24 19:12, Theodore Ts'o wrote:
+> > Note that some hardware errors can be caused by one-off errors, such
+> > as cosmic rays causing a bit-flip in memory DIMM.  If that happens,
+> > RAID won't save you, since the error was introduced before an updated
+> 
+> Certainly cosmic rays is a possibility, but based on previous episodes I'd
+> still rather bet on a more usual "subtle interaction" problem, either exact
+> same or some similar to [1].
+> I even tried to run an existing test for this particular case as described
+> in [2] but it is not too user-friendly and somehow exits abnormally without
+> actually doing any interesting work. I'll get back to it later when I have
+> some time.
+> 
+> [1] https://lore.kernel.org/stable/20231205122122.dfhhoaswsfscuhc3@quack3/
+> [2] https://lwn.net/Articles/954364/
+> 
+> > The location of block allocation bitmaps never gets changed, so this
+> > sort of thing only happens due to hardware-induced corruption.
+> 
+> Well, unless e.g. some modified sectors start being flushed to random wrong
+> offsets, like in [1] above, or something similar.
 
-> we'd probably need to actually mount something and maybe do some disk
-> I/O.
+Note that above bug led to writing file data to another position in that
+file. As such it cannot really lead to metadata corruption. Corrupting data
+in a file is relatively frequent event (given the wide variety of
+manipulations we do with file data). OTOH I've never seen corrupting
+metadata like this (in particular because ext4 has additional sanity checks
+that newly allocated blocks don't overlap with critical fs metadata). In
+theory, there could be software bug leading to writing sector to a wrong
+position but frankly, in all the cases I've investigated so far such bugs
+ended up being HW related.
 
-If I'm not mistaken, this should be also reproducible by echoing
-"core" into /sys/power/pm_test and running "echo disk >
-/sys/power/state" in a loop after that, unless the ksys_sync()
-triggered by hibernate() makes it extremely unlikely.
+> > Otherwise, I strongly encourage you to learn, and to take
+> > responsibility for the health of your own system.  And ideally, you
+> > can also use that knowledge to help other users out, which is the only
+> > way the free-as-in-beer ecosystem can flurish; by having everybody
+> 
+> True. Generally I try to follow that, as much as appears possible.
+> It is sad a direct communication end-user-to-developer for solving issues is
+> becoming increasingly problematic here.
+
+On one hand I understand you, on the other hand back in the good old days
+(and I remember those as well ;) you wouldn't get much help when running
+over three years old kernel either. And I understand you're running a stable
+kernel that gets at least some updates but that's meant more for companies
+that build their products on top of that and have teams available for
+debugging issues. For an enduser I find some distribution kernels (Debian,
+Ubuntu, openSUSE, Fedora) more suitable as they get much more scrutiny
+before being released than -stable and also people there are more willing
+to look at issues with older kernels (that are still supported by the
+distro).
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
