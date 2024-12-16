@@ -1,102 +1,101 @@
-Return-Path: <linux-ext4+bounces-5664-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5665-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4CA9E9F2E48
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 11:40:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E76809F2E82
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 11:50:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C3F2C1884E9B
-	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 10:40:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24921165125
+	for <lists+linux-ext4@lfdr.de>; Mon, 16 Dec 2024 10:50:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CDB8520370D;
-	Mon, 16 Dec 2024 10:40:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AAA1D203D5A;
+	Mon, 16 Dec 2024 10:50:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="e/a+lroJ";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="OdqWHOz2";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="UxoJgw/s";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="d4LrfBte"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xa7EHcCo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3nnr5iGr";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="xa7EHcCo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3nnr5iGr"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 81B2E200BB9
-	for <linux-ext4@vger.kernel.org>; Mon, 16 Dec 2024 10:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94DA72AF03
+	for <linux-ext4@vger.kernel.org>; Mon, 16 Dec 2024 10:50:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734345607; cv=none; b=A1HXgz/A6QTgi6+2zwSmVGwu1kSsnZtlCsUDRdzYBfgPfaMB8wk7Gkd5RpEqO6Qsz2oNRiRphBr4Om9p/VhbRFdRorqOe8Xyhfo6sV56A3Aqh/bXvn76ei9Cbrh5cixqlolx9r7lMaToBOwpqGyf060xjYJTQXraH9tuKcOZfsQ=
+	t=1734346240; cv=none; b=QuY9OjMznfgNqcMxkoXRYguW0N+CVHP/ptZzGVnZqV5FboDxIeq1+itZQSrpAHYYnrev9yJX3zcE1FndmjcnLZpsq9Lzafz0p+En4cZc1N+vIPGK38PDGPXMrOBWrMNpnX8oqJHLsPqLVNiWRNPXmDvYGHtKkkFVihAxolU89Jw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734345607; c=relaxed/simple;
-	bh=b9kprH94+TCHnNWd5WrV6ylowdznqo+tNdXQhPddGZY=;
+	s=arc-20240116; t=1734346240; c=relaxed/simple;
+	bh=sioGirDSkOOJ0iim4jpOOg8GYE8IErI4JzkH6ktbrpY=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qLAFzLB5PeMql3m24dvoNtz5Wjo1SHAkMUK7l7cAP0EWBQIGBy5VwFtNbD+I8K4m42ygSCkrd10JwEp6Jn5JyJ/NQHC+5pKZhTZThgHp0Z/kq34pdgsHTADO0L3w/nMatWtbCb+Zu4KbXwrmGXJX55NWZ0S7HbXoQBgWJ0wFZUY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=e/a+lroJ; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=OdqWHOz2; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=UxoJgw/s; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=d4LrfBte; arc=none smtp.client-ip=195.135.223.131
+	 Content-Type:Content-Disposition:In-Reply-To; b=K4zrKmv+EYxep6Z7U1RZZNmbik1qqqxmfYM17YDfehSBNzEOtNy/4KCyEK4uxHHn8rtN5AO9JtE/Y9z6fQmoZ0o+OTbLkBZiMcZSwcY6HaB/yBGB8b4b4QdHyacqucZXqzMHS9a/JL1GHJE6pLHFC1EB3bCVS7xgCRqImRbP2AM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xa7EHcCo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3nnr5iGr; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=xa7EHcCo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3nnr5iGr; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
 Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 77ADF1F449;
-	Mon, 16 Dec 2024 10:40:01 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id B86951F787;
+	Mon, 16 Dec 2024 10:50:36 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734345602; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1734346236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
-	b=e/a+lroJYpP+o+4EUzm8ILeTLMAolSl7RvE8t3ugZ51HRsqrr8L2ctQYkyNGPyq/kZ5y8N
-	PX1RUzca9ywJ7aCLc9DW85SP+3qH9vwpbfu0Ggm+D35Ij2Jkfj7aUkKG0hPph8164vlTwh
-	/BBDmmJWWl/mIVhAZFhcIhfjMeVVJrg=
+	bh=tpUHxGjGeZlEkKh9NHmid9SxJ+qNZ0mOIZfltd6zlr8=;
+	b=xa7EHcCop5JVTYNU87Px+nl5WQlPHusUatNWKgoDtI8ujHbq5sRQ/2QYSb03iXHI+nK9c9
+	yrFJ29QhIZfWCnA28wWk/4Tbry/vkIkEpoKidN/NjE7L7mK9rD2EDSq/ukbDcoA1WZ13pu
+	8AE2uEZbtikTxeXDQNxRu1RJLsIGwZE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734345602;
+	s=susede2_ed25519; t=1734346236;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
-	b=OdqWHOz2Wg5axW2NHb+mHKxof+G3DXFOdqzepzcHaM2DS0KBC+PcZ3yPyaU7Qra4W3RTaM
-	TRp+wGNPcGB2e+Dw==
+	bh=tpUHxGjGeZlEkKh9NHmid9SxJ+qNZ0mOIZfltd6zlr8=;
+	b=3nnr5iGr8XMpNBCAmnCBAflSlVzQzr+zQzy5Mq1VEaPddtevRpRw1OAmaETnxjlzd9HgDt
+	S1U3sCy2U5ODjkAw==
 Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="UxoJgw/s";
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=d4LrfBte
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=xa7EHcCo;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=3nnr5iGr
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734345601; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	t=1734346236; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
-	b=UxoJgw/sNkGsdCEEHMYaQurHJFqh+LMmFlh8ZFcLyNpeVxYUnUCeIpYY0uQLm4DwGqwhcX
-	7DZyP+iuQEbFBZDVnVYmHkriVgTLkkvQjpqsv8MRgRqvbLmMkfbv4T06RFcdtAuyOEq+ch
-	nqRB3EHRQCJjHoPCmNRivn8GJQqJVl8=
+	bh=tpUHxGjGeZlEkKh9NHmid9SxJ+qNZ0mOIZfltd6zlr8=;
+	b=xa7EHcCop5JVTYNU87Px+nl5WQlPHusUatNWKgoDtI8ujHbq5sRQ/2QYSb03iXHI+nK9c9
+	yrFJ29QhIZfWCnA28wWk/4Tbry/vkIkEpoKidN/NjE7L7mK9rD2EDSq/ukbDcoA1WZ13pu
+	8AE2uEZbtikTxeXDQNxRu1RJLsIGwZE=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734345601;
+	s=susede2_ed25519; t=1734346236;
 	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
 	 mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=dfnXPC8lxrc08acTSjRAZyRhfLPgJ7C54h4TUtxkdeM=;
-	b=d4LrfBteIjk5yamuuM4CUV46pCkFUeiz5BWml5MDWMeqZDKQtysilmFk6qcS97vfrheK4T
-	pWKdqW3zqZjritDw==
+	bh=tpUHxGjGeZlEkKh9NHmid9SxJ+qNZ0mOIZfltd6zlr8=;
+	b=3nnr5iGr8XMpNBCAmnCBAflSlVzQzr+zQzy5Mq1VEaPddtevRpRw1OAmaETnxjlzd9HgDt
+	S1U3sCy2U5ODjkAw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6BDA6137CF;
-	Mon, 16 Dec 2024 10:40:01 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id ACEF9137CF;
+	Mon, 16 Dec 2024 10:50:36 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id Yf1ZGoEDYGciJwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 16 Dec 2024 10:40:01 +0000
+	id y9YyKvwFYGeDKgAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 16 Dec 2024 10:50:36 +0000
 Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 02ECEA08E1; Mon, 16 Dec 2024 11:40:00 +0100 (CET)
-Date: Mon, 16 Dec 2024 11:40:00 +0100
+	id 5E000A08E1; Mon, 16 Dec 2024 11:50:28 +0100 (CET)
+Date: Mon, 16 Dec 2024 11:50:28 +0100
 From: Jan Kara <jack@suse.cz>
 To: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, jack@suse.cz,
 	harshads@google.com
-Subject: Re: [PATCH v7 8/9] ext4: make fast commit ineligible on
- ext4_reserve_inode_write failure
-Message-ID: <20241216104000.cpzbeksxo6abawjj@quack3>
+Subject: Re: [PATCH v7 9/9] ext4: hold s_fc_lock while during fast commit
+Message-ID: <20241216105028.nb32aqzig2wmm4md@quack3>
 References: <20240818040356.241684-1-harshadshirwadkar@gmail.com>
- <20240818040356.241684-10-harshadshirwadkar@gmail.com>
+ <20240818040356.241684-11-harshadshirwadkar@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -105,11 +104,12 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240818040356.241684-10-harshadshirwadkar@gmail.com>
-X-Rspamd-Queue-Id: 77ADF1F449
-X-Spam-Level: 
+In-Reply-To: <20240818040356.241684-11-harshadshirwadkar@gmail.com>
+X-Rspamd-Queue-Id: B86951F787
+X-Spam-Score: -4.01
+X-Rspamd-Action: no action
 X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
+	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
 	MID_RHS_NOT_FQDN(0.50)[];
 	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
@@ -136,145 +136,67 @@ X-Spamd-Result: default: False [-4.01 / 50.00];
 	MISSING_XM_UA(0.00)[];
 	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
 	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns,suse.com:email,suse.cz:dkim]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:email,suse.cz:dkim,suse.com:email,imap1.dmz-prg2.suse.org:rdns,imap1.dmz-prg2.suse.org:helo]
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Sun 18-08-24 04:03:55, Harshad Shirwadkar wrote:
-> Fast commit by default makes every inode on which
-> ext4_reserve_inode_write() is called. Thus, if that function
-> fails for some reason, make the next fast commit ineligible.
+On Sun 18-08-24 04:03:56, Harshad Shirwadkar wrote:
+> Leaving s_fc_lock in between during commit in ext4_fc_perform_commit()
+> function leaves room for subtle concurrency bugs where ext4_fc_del() may
+> delete an inode from the fast commit list, leaving list in an inconsistent
+> state. Also, this patch converts s_fc_lock to mutex type so that it can be
+> held when kmem_cache_* functions are called.
 > 
 > Signed-off-by: Harshad Shirwadkar <harshadshirwadkar@gmail.com>
 
-I think this is a bit pointless. If ext4_reserve_inode_write() fails, we
-have a data corruption problems, journal has aborted or similar. Thus I
-think data consistency of fsync is kind of the least problem we are having
-:). That being said just completely turning of fastcommit as soon as we hit
-some filesystem error (in __ext4_std_error() when we don't decide to panic
-system / shutdown the filesystem) makes sense to me as a kind of "let's
-limit possible damage" measure.
+This would be easier to review if you split the patch into two - one for
+mindless conversion of a spinlock into a mutex and another one for the
+change when the lock is held which can have non-trivial effects.
+
+Otherwise the patch looks good, just one nit below. With that fixed feel
+free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+> @@ -1010,26 +1011,22 @@ __releases(&sbi->s_fc_lock)
+^^ the sparse annotation with __acquires, __releases needs updating as
+well
+
+>  	list_for_each_entry_safe(fc_dentry, fc_dentry_n,
+>  				 &sbi->s_fc_dentry_q[FC_Q_MAIN], fcd_list) {
+>  		if (fc_dentry->fcd_op != EXT4_FC_TAG_CREAT) {
+> -			spin_unlock(&sbi->s_fc_lock);
+> -			if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry)) {
+> -				ret = -ENOSPC;
+> -				goto lock_and_exit;
+> -			}
+> -			spin_lock(&sbi->s_fc_lock);
+> +			if (!ext4_fc_add_dentry_tlv(sb, crc, fc_dentry))
+> +				return -ENOSPC;
+>  			continue;
+>  		}
+>  		/*
+>  		 * With fcd_dilist we need not loop in sbi->s_fc_q to get the
+> -		 * corresponding inode pointer
+> +		 * corresponding inode. Also, the corresponding inode could have been
+> +		 * deleted, in which case, we don't need to do anything.
+>  		 */
+> -		WARN_ON(list_empty(&fc_dentry->fcd_dilist));
+> +		if (list_empty(&fc_dentry->fcd_dilist))
+> +			continue;
+>  		ei = list_first_entry(&fc_dentry->fcd_dilist,
+>  				struct ext4_inode_info, i_fc_dilist);
+>  		inode = &ei->vfs_inode;
+>  		WARN_ON(inode->i_ino != fc_dentry->fcd_ino);
+>  
+> -		spin_unlock(&sbi->s_fc_lock);
+> -
+>  		/*
+>  		 * We first write the inode and then the create dirent. This
+>  		 * allows the recovery code to create an unnamed inode first
 
 								Honza
-
-> ---
->  fs/ext4/fast_commit.c       |  1 +
->  fs/ext4/fast_commit.h       |  1 +
->  fs/ext4/inode.c             | 29 ++++++++++++++++++-----------
->  include/trace/events/ext4.h |  7 +++++--
->  4 files changed, 25 insertions(+), 13 deletions(-)
-> 
-> diff --git a/fs/ext4/fast_commit.c b/fs/ext4/fast_commit.c
-> index 2fc43b1e2..7525450f1 100644
-> --- a/fs/ext4/fast_commit.c
-> +++ b/fs/ext4/fast_commit.c
-> @@ -2282,6 +2282,7 @@ static const char * const fc_ineligible_reasons[] = {
->  	[EXT4_FC_REASON_FALLOC_RANGE] = "Falloc range op",
->  	[EXT4_FC_REASON_INODE_JOURNAL_DATA] = "Data journalling",
->  	[EXT4_FC_REASON_ENCRYPTED_FILENAME] = "Encrypted filename",
-> +	[EXT4_FC_REASON_INODE_RSV_WRITE_FAIL] = "Inode reserve write failure"
->  };
->  
->  int ext4_fc_info_show(struct seq_file *seq, void *v)
-> diff --git a/fs/ext4/fast_commit.h b/fs/ext4/fast_commit.h
-> index 2fadb2c47..f7f85c3dd 100644
-> --- a/fs/ext4/fast_commit.h
-> +++ b/fs/ext4/fast_commit.h
-> @@ -97,6 +97,7 @@ enum {
->  	EXT4_FC_REASON_FALLOC_RANGE,
->  	EXT4_FC_REASON_INODE_JOURNAL_DATA,
->  	EXT4_FC_REASON_ENCRYPTED_FILENAME,
-> +	EXT4_FC_REASON_INODE_RSV_WRITE_FAIL,
->  	EXT4_FC_REASON_MAX
->  };
->  
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index c82eba178..5a187902b 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -5798,20 +5798,27 @@ ext4_reserve_inode_write(handle_t *handle, struct inode *inode,
->  {
->  	int err;
->  
-> -	if (unlikely(ext4_forced_shutdown(inode->i_sb)))
-> -		return -EIO;
-> +	if (unlikely(ext4_forced_shutdown(inode->i_sb))) {
-> +		err = -EIO;
-> +		goto out;
-> +	}
->  
->  	err = ext4_get_inode_loc(inode, iloc);
-> -	if (!err) {
-> -		BUFFER_TRACE(iloc->bh, "get_write_access");
-> -		err = ext4_journal_get_write_access(handle, inode->i_sb,
-> -						    iloc->bh, EXT4_JTR_NONE);
-> -		if (err) {
-> -			brelse(iloc->bh);
-> -			iloc->bh = NULL;
-> -		}
-> -		ext4_fc_track_inode(handle, inode);
-> +	if (err)
-> +		goto out;
-> +
-> +	BUFFER_TRACE(iloc->bh, "get_write_access");
-> +	err = ext4_journal_get_write_access(handle, inode->i_sb,
-> +						iloc->bh, EXT4_JTR_NONE);
-> +	if (err) {
-> +		brelse(iloc->bh);
-> +		iloc->bh = NULL;
->  	}
-> +	ext4_fc_track_inode(handle, inode);
-> +out:
-> +	if (err)
-> +		ext4_fc_mark_ineligible(inode->i_sb,
-> +			EXT4_FC_REASON_INODE_RSV_WRITE_FAIL, handle);
->  	ext4_std_error(inode->i_sb, err);
->  	return err;
->  }
-> diff --git a/include/trace/events/ext4.h b/include/trace/events/ext4.h
-> index cc5e9b7b2..8bab4febd 100644
-> --- a/include/trace/events/ext4.h
-> +++ b/include/trace/events/ext4.h
-> @@ -105,6 +105,7 @@ TRACE_DEFINE_ENUM(EXT4_FC_REASON_RENAME_DIR);
->  TRACE_DEFINE_ENUM(EXT4_FC_REASON_FALLOC_RANGE);
->  TRACE_DEFINE_ENUM(EXT4_FC_REASON_INODE_JOURNAL_DATA);
->  TRACE_DEFINE_ENUM(EXT4_FC_REASON_ENCRYPTED_FILENAME);
-> +TRACE_DEFINE_ENUM(EXT4_FC_REASON_INODE_RSV_WRITE_FAIL);
->  TRACE_DEFINE_ENUM(EXT4_FC_REASON_MAX);
->  
->  #define show_fc_reason(reason)						\
-> @@ -118,7 +119,8 @@ TRACE_DEFINE_ENUM(EXT4_FC_REASON_MAX);
->  		{ EXT4_FC_REASON_RENAME_DIR,	"RENAME_DIR"},		\
->  		{ EXT4_FC_REASON_FALLOC_RANGE,	"FALLOC_RANGE"},	\
->  		{ EXT4_FC_REASON_INODE_JOURNAL_DATA,	"INODE_JOURNAL_DATA"}, \
-> -		{ EXT4_FC_REASON_ENCRYPTED_FILENAME,	"ENCRYPTED_FILENAME"})
-> +		{ EXT4_FC_REASON_ENCRYPTED_FILENAME,	"ENCRYPTED_FILENAME"}, \
-> +		{ EXT4_FC_REASON_INODE_RSV_WRITE_FAIL,	"INODE_RSV_WRITE_FAIL"})
->  
->  TRACE_DEFINE_ENUM(CR_POWER2_ALIGNED);
->  TRACE_DEFINE_ENUM(CR_GOAL_LEN_FAST);
-> @@ -2809,7 +2811,7 @@ TRACE_EVENT(ext4_fc_stats,
->  	),
->  
->  	TP_printk("dev %d,%d fc ineligible reasons:\n"
-> -		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u"
-> +		  "%s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u, %s:%u"
->  		  "num_commits:%lu, ineligible: %lu, numblks: %lu",
->  		  MAJOR(__entry->dev), MINOR(__entry->dev),
->  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_XATTR),
-> @@ -2822,6 +2824,7 @@ TRACE_EVENT(ext4_fc_stats,
->  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_FALLOC_RANGE),
->  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_JOURNAL_DATA),
->  		  FC_REASON_NAME_STAT(EXT4_FC_REASON_ENCRYPTED_FILENAME),
-> +		  FC_REASON_NAME_STAT(EXT4_FC_REASON_INODE_RSV_WRITE_FAIL),
->  		  __entry->fc_commits, __entry->fc_ineligible_commits,
->  		  __entry->fc_numblks)
->  );
-> -- 
-> 2.46.0.184.g6999bdac58-goog
-> 
 -- 
 Jan Kara <jack@suse.com>
 SUSE Labs, CR
