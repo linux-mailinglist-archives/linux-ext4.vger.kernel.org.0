@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-5721-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5722-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 980E09F598E
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 23:31:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 27BCB9F5998
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 23:33:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F9BE1890126
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 22:31:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EB216B030
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 22:33:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 797AF1D31AE;
-	Tue, 17 Dec 2024 22:31:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 99F761DF996;
+	Tue, 17 Dec 2024 22:33:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UACIaBk3"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="M9r+psXA"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD891D7986
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 22:31:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA564EEB2
+	for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 22:33:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734474694; cv=none; b=Pqo3F63aoWPrIRDYHEzHfIIoA1BKzu6YdrYdysXk/8mmrAmRUVhjXiGmOj6hp+bhgg9JNd1cICh1zfXYAwHoT3NBHO4m/MFwSCE4Guo05DbJxAyoLaATS5CSQ9ItfRtjl5soYndojJ9pfYwggE1DLrFEv/Ko1FwDQxYcoHGf3ew=
+	t=1734474798; cv=none; b=HTtj5kXyjuzzgL75aL1OP1356AlyuHa11QX9t4YvdLtqSdkNDykgxijA2ttqe57WSaWe22Nc9KsKCzEN5ZPHL7nz+DF+57YqdcO/VKSF2Mn/RuLeKjbHjnMkAt2QOIv0H8WHySf8C7b2IEENx+Ts15dWZwjD3SqQRnKs+ZjAvoI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734474694; c=relaxed/simple;
-	bh=JZPV+Rdue6qaDY10NWyx4+0EHsb8/mQ53pzmV8r9o9U=;
+	s=arc-20240116; t=1734474798; c=relaxed/simple;
+	bh=MBDsfeVpZYYIxL21t6Nf1RWI9Ay/NC4iydLktnvMq5o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=UedYlosjastLKquX+DNSkzRxnT2H6WVhOcoGRO7MJs+c8aijmtMK8hb6GJ9k4m5A1fgmoXVONIekfaa79AN0a7KjQa4Zp/zcpU+vfX6IZYR6Vfg25MFAalB4hsdwCJ8pczkQM86oFNEbrpMT5/iwZxSclW/cK+jwom1ZGn4L1Es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UACIaBk3; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=en0wH3MLrHCguEYk1urViIPTHoq/0cDH1kK9ci4ELe1EOzxQmH9zQmkXVPcXraEsGCkAKRhD/kGsGNlg1A6Jo8X8o5CZX8jkMMTxBHGGilD94fsQCz3wglAM/ZKYrbKZ8OBRvR6IQN/6EkzpSv58aqpa3Tz8I0DQEBSXu1enbGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=M9r+psXA; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1734474691;
+	s=mimecast20190719; t=1734474794;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=XiLljyALg1fM2VreFU+kaDTSYWKU4UrG1GGEjFwMl+I=;
-	b=UACIaBk3OlQj7nEfEXJRjPQm3gsXG64lPOxSqMOIp+xWIecRZsHPti69McsgugfXGx/dOM
-	L1q2p+JXmqJP6Mv+bgFaVIFhPmIGgVS18V8jfOrp0EGsBTSmb8il81qctMCNGpeSF9H1+h
-	3f0s8EK8yEd9TpNjjevMICO9uRGawEc=
+	bh=oasFH9YS/5nOK6GsM6YHhbVvy+xnvzjUtw4Gpik0lY0=;
+	b=M9r+psXAW9Vn1tW0jD44KqM4BshPlvEpkEiuvrIC5uqoFVpUf2bZgidDEaCK+igjZ9TcLP
+	GcZxIIWRmrMYSUs9tAna3WcfCYXidVUy+hMJ+EzceTA+vQG0sVgT723viK2nEIge6HCLed
+	dKvbKMgwPgP1T2d4qalBvye3JusLCQQ=
 Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
  [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-447-rOUoLTJ8Pga1y87NnPEv3g-1; Tue, 17 Dec 2024 17:31:30 -0500
-X-MC-Unique: rOUoLTJ8Pga1y87NnPEv3g-1
-X-Mimecast-MFC-AGG-ID: rOUoLTJ8Pga1y87NnPEv3g
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-43626224274so27043565e9.0
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 14:31:30 -0800 (PST)
+ us-mta-437-tPMQqEzcNfmh6_fF0MYEPA-1; Tue, 17 Dec 2024 17:33:13 -0500
+X-MC-Unique: tPMQqEzcNfmh6_fF0MYEPA-1
+X-Mimecast-MFC-AGG-ID: tPMQqEzcNfmh6_fF0MYEPA
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4359eb032c9so29100035e9.2
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 14:33:13 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734474689; x=1735079489;
+        d=1e100.net; s=20230601; t=1734474792; x=1735079592;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=XiLljyALg1fM2VreFU+kaDTSYWKU4UrG1GGEjFwMl+I=;
-        b=gvamsfNoFw4N43g7h2v+/H0kUZtbDhRxoeRfMVJ3OFLDBRgqYNYIxcoE/u9+hqzMQn
-         0kAo38Mr8i6Yf9uwOGaX/c3g8EzaKoY4EHw5ZKNYAOijIovSsAP3/Oz9PbAImklsor84
-         1//2w/GykFIJARPAwP3qyGrel1agwFI5rBJiYGQ09v+Y0doW1CPFvFnzbxxgeDEK/miP
-         Jr7KkxEnRlUmi8UNgnvvLeYQQDiHtafdS38z3QleR5+CYyx4o+TxNeqaA2ugwzSrSJ0y
-         frw8ISyZQi97htZNa7j2wcU2Sid0/VrinRQTrMsoKDg80pimVi/fKVhNNKklqZcX8fpL
-         4zqw==
-X-Forwarded-Encrypted: i=1; AJvYcCXh+yyn2iUYRwYEYo5YYRlvmVMdIG3SOupPFWMqftxHWzbOk0NCvcJh0i7f3X5YKbT96z1Fdj9kJM9V@vger.kernel.org
-X-Gm-Message-State: AOJu0YwnaG+8YlB81/KyCK1sd566K7sfTL0rjMY6edV4HNJ6rrdUxo6L
-	50mreOgu3uz5+bu5FGpkPCOC8eq9YQLiUt6RgGJNDkbkYiV0qMlZgel90DqKdDZOFSdqomcsgO0
-	4ThrlmOrr8r3F9BfRcfzXVKN8rUF00ptYXKpMWNrpBfMFl+j67Pzdmxu1sF0=
-X-Gm-Gg: ASbGncsy9M9taes1lw+biRR9nV2kb2XRVcj6JN6G9PVVHN41Dim6npcxoCpTvP9Ark6
-	XjdswabHB0fCISjbQpwBiuhLAmrx0guC9VcxXmMoFIww82MXCtG/aN1xOnSVdS7nxfAM9W4/npi
-	/xCUp1h4ETBi62nuXIys0K8aXpKoNEEtosctE16z8dXVke3cFjqlkhr+JA+8x2pMH1W2do8tUY0
-	Np14WCT2iUj0ojdLLj2rt4GyaQi7vuvyi3Q99/deEnMlI1phFL5jhyniDM0XNrJOuyCKBKaU+UP
-	LtKLdNHPm2PxhbTYeMqkR46+Pp+f4ajelkcGVAxUzTb8dX7GySJ24sPok9psUsqftjW/IuKFkvb
-	OgX7zSHAi
-X-Received: by 2002:a05:600c:5103:b0:434:ff9d:a3a1 with SMTP id 5b1f17b1804b1-436553445f5mr3532875e9.2.1734474689199;
-        Tue, 17 Dec 2024 14:31:29 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IGMpkNWSDjSv+iIYkeduZssHVTB6HwkoYhZzex1R7it6KzpFTUsFNkIA9cgdJx8YijN/SwZMQ==
-X-Received: by 2002:a05:600c:5103:b0:434:ff9d:a3a1 with SMTP id 5b1f17b1804b1-436553445f5mr3532555e9.2.1734474688806;
-        Tue, 17 Dec 2024 14:31:28 -0800 (PST)
+        bh=oasFH9YS/5nOK6GsM6YHhbVvy+xnvzjUtw4Gpik0lY0=;
+        b=nr/PXv/Z7kMPfmI/k76zjgdCVHeLlLOOOGSW0wWSLGS+SIanEDMWHF0CBdRG3g6Kcn
+         6Wv/wvqY9SHpmOIICnyX82PavcCfp3iu4xXiSMBUypqc8kwgOR7lIhgyTbx7DAeHCjiR
+         kJBNYoL0YMOqWTF877+Fl7RrYpzUZj23iBK0t4+J3NGvqT4SQo1LKgneJyCEsh7zgZj0
+         vyJwd0B3z1l9IqAh98y1YfJLCB1jdIuADVRmehA3P9LovxDzFb/dNOlFdxB81MvnLanM
+         ztazWfeACCVl4xNlyY+YsJn7uhzoGcdsFSw4688EwF7ILrmNY+adwb37QWaelxCZGOE/
+         l9Sw==
+X-Forwarded-Encrypted: i=1; AJvYcCXVu+ruUp3Q1benSxw0zbaV1pFQLjICxNKvDZTyQgqYeIMrpAaNp3LeCnfHJGFEmYoKgFulwF9UC1H3@vger.kernel.org
+X-Gm-Message-State: AOJu0Yzyx7ZI+hGjDrpP5Sas+pj9ognIR9y2857OHeuhBO4gJuPne5Eg
+	8/rtQEgUr2boEPNLdd03ySwcUQaVL6P5NfrqaIZVj09AeoJbCf/svh7Fk7ak24Xkm56IEdPNBD0
+	szrkEgikFSmKPsobcYg7Sdx9MYwy28FFZpvONH6769dtlj3Qa8kE5vfdxs1M=
+X-Gm-Gg: ASbGncsxr54FAToPil7i2sxNdv4EGlO+9/Cw2CmQuXb2O4bC5cEc1ofkOjjkq01SfcJ
+	k3Vmf2UNvWW258ZoVD459grKuOwq8bXJTlIu2UuOZfmuBiB5SCFgUx+dUrG2TjHwkoqDmkSOf4+
+	JQMRw3X6wVQKF/MGwtXLRYYAPZ7g36uM8bTRFRMkfmNU0aH2rSKdMhiWcQ3b8fwh/5UvZRDioOX
+	CffYQSA0aZMkjftVrbAt1Y/K35mo1QYOBxuDWNnX2SOyrnFQcxcW96sbbP8TlWCDfdb39hsaR49
+	j1vwW5Jr3skh/5tt2bfDGQiuMYM825es/hoPyWP7uAI734G8bjo/O2ELRJxlomsqscwBE9ruO7A
+	ld8pvj6DC
+X-Received: by 2002:a05:600c:4448:b0:434:a90b:94fe with SMTP id 5b1f17b1804b1-4365535b4e6mr4138055e9.10.1734474792405;
+        Tue, 17 Dec 2024 14:33:12 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IHu5Rpx/75DKHPvdCspqV2eTg6oVqu83uuIMN0kGm64YISiw1ESXOe+JcsaDrCGOH1qe5B+Gg==
+X-Received: by 2002:a05:600c:4448:b0:434:a90b:94fe with SMTP id 5b1f17b1804b1-4365535b4e6mr4137665e9.10.1734474792038;
+        Tue, 17 Dec 2024 14:33:12 -0800 (PST)
 Received: from ?IPV6:2003:cb:c73b:5600:c716:d8e0:609d:ae92? (p200300cbc73b5600c716d8e0609dae92.dip0.t-ipconnect.de. [2003:cb:c73b:5600:c716:d8e0:609d:ae92])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-388c801208csm12474132f8f.1.2024.12.17.14.31.25
+        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43656b1a195sm190205e9.36.2024.12.17.14.33.09
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Dec 2024 14:31:27 -0800 (PST)
-Message-ID: <c7bd9b00-6920-4dc0-8e2e-36c16ef7ad5a@redhat.com>
-Date: Tue, 17 Dec 2024 23:31:25 +0100
+        Tue, 17 Dec 2024 14:33:10 -0800 (PST)
+Message-ID: <e7f9433e-bd4b-4284-990b-9ea074064f0a@redhat.com>
+Date: Tue, 17 Dec 2024 23:33:09 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,7 +90,8 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 19/25] proc/task_mmu: Ignore ZONE_DEVICE pages
+Subject: Re: [PATCH v4 18/25] gup: Don't allow FOLL_LONGTERM pinning of FS DAX
+ pages
 To: Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
  dan.j.williams@intel.com, linux-mm@kvack.org
 Cc: lina@asahilina.net, zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
@@ -106,7 +107,7 @@ Cc: lina@asahilina.net, zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
  linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
  david@fromorbit.com
 References: <cover.18cbcff3638c6aacc051c44533ebc6c002bf2bd9.1734407924.git-series.apopple@nvidia.com>
- <f3ebda542373feb70ed3e5d83b276a2e8347609f.1734407924.git-series.apopple@nvidia.com>
+ <f315b61169d0671301e4a793ecbb1a6c46b69bef.1734407924.git-series.apopple@nvidia.com>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -154,43 +155,43 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <f3ebda542373feb70ed3e5d83b276a2e8347609f.1734407924.git-series.apopple@nvidia.com>
+In-Reply-To: <f315b61169d0671301e4a793ecbb1a6c46b69bef.1734407924.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 17.12.24 06:13, Alistair Popple wrote:
-> The procfs mmu files such as smaps currently ignore device dax and fs
-> dax pages because these pages are considered special. To maintain
-> existing behaviour once these pages are treated as normal pages and
-> returned from vm_normal_page() add tests to explicitly skip them.
+> Longterm pinning of FS DAX pages should already be disallowed by
+> various pXX_devmap checks. However a future change will cause these
+> checks to be invalid for FS DAX pages so make
+> folio_is_longterm_pinnable() return false for FS DAX pages.
+
+Nit: I'd consistently use "mm/gup:" as prefix for GUP-related patches. 
+(similarly, mm/huge_memory and mm/rmap in the other patches)
+
 > 
 > Signed-off-by: Alistair Popple <apopple@nvidia.com>
+> Reviewed-by: John Hubbard <jhubbard@nvidia.com>
 > ---
->   fs/proc/task_mmu.c | 18 ++++++++++++++----
->   1 file changed, 14 insertions(+), 4 deletions(-)
+>   include/linux/mm.h | 4 ++++
+>   1 file changed, 4 insertions(+)
 > 
-> diff --git a/fs/proc/task_mmu.c b/fs/proc/task_mmu.c
-> index 38a5a3e..c9b227a 100644
-> --- a/fs/proc/task_mmu.c
-> +++ b/fs/proc/task_mmu.c
-> @@ -801,6 +801,8 @@ static void smaps_pte_entry(pte_t *pte, unsigned long addr,
+> diff --git a/include/linux/mm.h b/include/linux/mm.h
+> index f267b06..01edca9 100644
+> --- a/include/linux/mm.h
+> +++ b/include/linux/mm.h
+> @@ -2078,6 +2078,10 @@ static inline bool folio_is_longterm_pinnable(struct folio *folio)
+>   	if (folio_is_device_coherent(folio))
+>   		return false;
 >   
->   	if (pte_present(ptent)) {
->   		page = vm_normal_page(vma, addr, ptent);
-> +		if (page && (is_device_dax_page(page) || is_fsdax_page(page)))
+> +	/* DAX must also always allow eviction. */
+> +	if (folio_is_fsdax(folio))
+> +		return false;
+> +
+>   	/* Otherwise, non-movable zone folios can be pinned. */
+>   	return !folio_is_zone_movable(folio);
+>   
 
-This "is_device_dax_page(page) || is_fsdax_page(page)" is a common theme 
-here, likely we should have a special helper?
-
-
-But, don't we actually want to include them in the smaps output now? I 
-think we want.
-
-The rmap code will indicate these pages in /proc/meminfo, per-node info, 
-in the memcg ... as "Mapped:" etc.
-
-So likely we just want to also indicate them here, or is there any 
-downsides we know of?
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
