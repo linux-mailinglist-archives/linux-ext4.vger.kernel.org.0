@@ -1,45 +1,45 @@
-Return-Path: <linux-ext4+bounces-5710-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5711-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC7A49F44C4
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 08:06:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 97D979F453C
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 08:38:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F77E188C885
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 07:06:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6245D1888D06
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 07:38:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F5F81D89EC;
-	Tue, 17 Dec 2024 07:05:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A41511C8FA8;
+	Tue, 17 Dec 2024 07:38:48 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E5DB615533F;
-	Tue, 17 Dec 2024 07:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5BCD250276;
+	Tue, 17 Dec 2024 07:38:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734419150; cv=none; b=lMkYClPbFu1FHJlpOlSw2Bd7FfttK8SDZjedjZc0UWGZTKH2pg8HIsDz5QLTFk7FWhfyCTLjU2pJj+4GlrthmZ2jxdMz0+23+hgHbZAI1VMcmjPLoT8lEC/2H2x5VKDtyKTlYLK5Sh21z6LBhqvGPBtrY5NxMQFC4Nzk/vW83R0=
+	t=1734421128; cv=none; b=IU42zuW+HNQVbWOz0yCMK5cm6pjjwg8mbRuHCCdZMhWHPOT+5Fhid4MdbvFXHTyHOqtCdvx6KaIoRXTkJObmlZshpS3/8Wjire7N+gXzJyY27R+l6gqGtjlA2lWkKyGu+oIuKPwX0ANzH3XgsLlb5z+E2lVWZWEBAd5ifKq2wHM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734419150; c=relaxed/simple;
-	bh=DSs6MKQtGfOSJuKLJlMPfak8E7lUmXpUpwQz3wouyfY=;
+	s=arc-20240116; t=1734421128; c=relaxed/simple;
+	bh=dZXfiaEqrBcd9nj6W/pzU+FSLgaznwKBVxJr5HWva7U=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=asp4FEcDummDxpKg1V3uRQ0faKccTl7vO4F9N3JOv0pWEd8NTjfaqa4bZPJHtLxVNLAlMMjuKMzd3CpIlpdkTpHy0JdHS+NN61AWjDjzVp7Tz7QWUhLhhltgJMkNDYm3LagFw+myflOcQKNtBRUM+yVDxQZ9aAoMsbWZPGCDndw=
+	 In-Reply-To:Content-Type; b=AsY8Ypw0p57QH1YmPa1FSB/6urPHizoSSd2r9I1vBgA8/7+M7nPUgXtdRb52p4LVhvcm0AN80ezsrUZM3WVLiWj98r8b1qzx6wSL0DUbkk0KBLLnxq3Y1GXUeq5TKyU8zxsmq669To216GbYMa5kaey+bXD036RkMhhvOapE1zA=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YC79t5S0Sz4f3lDN;
-	Tue, 17 Dec 2024 15:05:22 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YC7w33BDSz4f3jqb;
+	Tue, 17 Dec 2024 15:38:27 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 413B81A07B6;
-	Tue, 17 Dec 2024 15:05:43 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id D734B1A0568;
+	Tue, 17 Dec 2024 15:38:41 +0800 (CST)
 Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgAXP4PFImFnxpBaEw--.52699S3;
-	Tue, 17 Dec 2024 15:05:43 +0800 (CST)
-Message-ID: <9630a73c-2f68-4284-97ad-f1e34a2abbdf@huaweicloud.com>
-Date: Tue, 17 Dec 2024 15:05:41 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgA3XoKAKmFnLsxcEw--.50920S3;
+	Tue, 17 Dec 2024 15:38:41 +0800 (CST)
+Message-ID: <b222e406-5f17-47f5-8671-c913452615af@huaweicloud.com>
+Date: Tue, 17 Dec 2024 15:38:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -49,49 +49,40 @@ MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v4 01/10] ext4: remove writable userspace mappings before
  truncating page cache
-To: Jan Kara <jack@suse.cz>
+To: Matthew Wilcox <willy@infradead.org>
 Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
  linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
- yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
- yangerkun@huawei.com
+ jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+ yukuai3@huawei.com, yangerkun@huawei.com
 References: <20241216013915.3392419-1-yi.zhang@huaweicloud.com>
  <20241216013915.3392419-2-yi.zhang@huaweicloud.com>
- <20241216150028.xq4qlr7xqjce34ey@quack3>
+ <Z2BD_JLfuZ9VVwhQ@casper.infradead.org>
 Content-Language: en-US
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20241216150028.xq4qlr7xqjce34ey@quack3>
+In-Reply-To: <Z2BD_JLfuZ9VVwhQ@casper.infradead.org>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAXP4PFImFnxpBaEw--.52699S3
-X-Coremail-Antispam: 1UD129KBjvJXoW7Kry7Gr4fJF1kXF4DJF4DXFb_yoW8Kw1rpr
-	y7Ga43CrW8Ca13C3WIva4kA34ftwnrZFW7Jry5Kr1jvryrJF17tF1jqw18uw4jgr10yr48
-	Zr4UAry7tw15ZaUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
-	9KBjDU0xBIdaVrnRJUUUvjb4IE77IF4wAFF20E14v26r4j6ryUM7CY07I20VC2zVCF04k2
-	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
-	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
-	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
-	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
-	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
-	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
-	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
-	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVWUtVW8
-	ZwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
-	0267AKxVWUJVW8JwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
-	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVWUJVW8JbIYCTnIWIevJa73UjIFyTuYvjxUF1
-	v3UUUUU
+X-CM-TRANSID:gCh0CgA3XoKAKmFnLsxcEw--.50920S3
+X-Coremail-Antispam: 1UD129KBjvdXoWrZrWkCr45AryfCF4UKFWrAFb_yoWDCrX_JF
+	1jvFZ7WrW7Aay0kr4qvw4Utr4DK3WSvw1UJrykXry7Jr4qyw1DAF4DAr1xGryrJw47JrW3
+	Cr17Xr1DGry2gjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbx8YFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
+	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
+	67AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxV
+	AFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2
+	j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7x
+	kEbVWUJVW8JwACjcxG0xvEwIxGrwACI402YVCY1x02628vn2kIc2xKxwCY1x0262kKe7AK
+	xVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F4
+	0E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_Jw0_GFyl
+	IxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxV
+	AFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j
+	6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07UAwI
+	DUUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On 2024/12/16 23:00, Jan Kara wrote:
-> On Mon 16-12-24 09:39:06, Zhang Yi wrote:
->> From: Zhang Yi <yi.zhang@huawei.com>
->>
->> When zeroing a range of folios on the filesystem which block size is
->> less than the page size, the file's mapped blocks within one page will
->> be marked as unwritten, we should remove writable userspace mappings to
->> ensure that ext4_page_mkwrite() can be called during subsequent write
->> access to these partial folios. Otherwise, data written by subsequent
->> mmap writes may not be saved to disk.
->>
+On 2024/12/16 23:15, Matthew Wilcox wrote:
+> On Mon, Dec 16, 2024 at 09:39:06AM +0800, Zhang Yi wrote:
 >>  $mkfs.ext4 -b 1024 /dev/vdb
 >>  $mount /dev/vdb /mnt
 >>  $xfs_io -t -f -c "pwrite -S 0x58 0 4096" -c "mmap -rw 0 4096" \
@@ -112,33 +103,14 @@ On 2024/12/16 23:00, Jan Kara wrote:
 >>  000800 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00 00
 >>  *
 >>  001000
->>
->> Fix this by introducing ext4_truncate_page_cache_block_range() to remove
->> writable userspace mappings when truncating a partial folio range.
->> Additionally, move the journal data mode-specific handlers and
->> truncate_pagecache_range() into this function, allowing it to serve as a
->> common helper that correctly manages the page cache in preparation for
->> block range manipulations.
->>
->> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
 > 
-> I like the patch. Feel free to add:
-> 
-> Reviewed-by: Jan Kara <jack@suse.cz>
-> 
-> Just one thing occured to me when thinking about this: It seems like a
-> nasty catch that truncate_inode_pages_range() does not writeprotect these
-> partial pages because practically any filesystem supporting blocksize <
-> pagesize and doing anything non-trivial in ->page_mkwrite handler will need
-> this. So ultimately I think we might want to fix this in generic code but
-> ext4 solution is fine for now.
-> 
+> Can you add this to fstests please so we can be sure other filesystems
+> don't have the same problem?
 
-Yes, I agree with you. I've checked XFS, Btrfs, and Bcachefs. Currently,
-XFS and Btrfs choose to perform writeback before truncating partial
-folios, so they do not require this at the moment. However, it appears
-that Bcachefs also does a similar approach in __bch2_truncate_folio().
-So I think do this in generic code should be better too.
+Sure, I captured this issue by generic/567 while refactoring punch
+hole operation on ext4. The generic/567 only performs a partial punch
+hole test but does not include a partial zero range test, so we
+did not capture this issue. I will expand this test and add this case.
 
 Thanks,
 Yi.
