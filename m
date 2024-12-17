@@ -1,134 +1,101 @@
-Return-Path: <linux-ext4+bounces-5677-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5678-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4AEA59F40F3
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 03:43:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 137E99F4182
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 05:06:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 02C781883BF4
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 02:43:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C660D1889D39
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 04:06:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A532A142E77;
-	Tue, 17 Dec 2024 02:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E3A146590;
+	Tue, 17 Dec 2024 04:05:54 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10DE18035
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 02:43:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6C151411EB;
+	Tue, 17 Dec 2024 04:05:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734403410; cv=none; b=YGp9TfqHebT8iY8FPxtiQu2VudPValRsyNuTkLSBH01ej+jPVGR1vMKS+svIKUNm+JmARvrido0qPdAmzIEVvu6jy2/zoiIj0NRvy/BTPv6Hs1jVHtPSqi7AL+bMe9EAhW3R1AWBKeAAlQfDDc1Bo3RxySBzHUMj4fT23BHVIME=
+	t=1734408353; cv=none; b=eJOMiTc4lt4wJIOORWh6Yr9lPH6G/no9q1uyGFfRYUs5Ug0qPFLaIeIjCoEdQh4atcu9tXydqHpAbuBSpgmtCFigzz/xTuMXFxotoY8xKP0v965m+hYrXRibJv58HzYUNpmdD4wTEk8exxEwJR+KHYIRFR77oOsrzDfhmIgJkLE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734403410; c=relaxed/simple;
-	bh=7b/i0/7v3zR/h77CHsxN38gG0BNtlu6Lk8HiPRWujtQ=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=TgZZ/5qGM1o4P0yJ9uaH0xk0yMKbaH5LqXvSNjlNxsVFiR/ZusbbMTogPEAR8Kwi/6E1VOEaR2OD+Cr0WRguK3uf8aAbwSudIVrMaRP9qBynw/a+PktoqopH5xETYsSfVIpmk9wyewXjaKfgCHjd/X20y4qgWEX7fjgkhSufbiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3ae31bb8ee3so94364605ab.3
-        for <linux-ext4@vger.kernel.org>; Mon, 16 Dec 2024 18:43:28 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734403408; x=1735008208;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=qu1MMB+hoYgMdweo0Qa2QY0CoK/Gp8J8v++ER42Ayzc=;
-        b=qDGlbx9QVKy9qizOT9DqxsngvKY/rYOF2BF2XIaAk2zzANQqDxNN0/pUEIHGKpK422
-         tgT8+8c5jSAMqC9Sej8uhu+AHIg+/URhd+SkMr77seE9LyoL+kVgvtyR6hdZdHVLCqtQ
-         e8JrwsOMkj5q9liFIG+YUcuE36fKEjNHAwvSMJXe0DaynzmrYnxgjiDeNtYpjC2/Pkl5
-         sHHdmK9sToYqIRVFSFiLiVfTGtELo6l338wzMbozbylzMoBslv2bXCWnFD//5bJ2TVMl
-         qhPJ0JMY7Uz3f0ysf35Ylc3EhWmN/Y4FLSHuZRBh7aKqgQ6Y2eIfnwh21iTsdqle47QL
-         5pTg==
-X-Forwarded-Encrypted: i=1; AJvYcCUMbJSmhI9318m13McN2Um+NjUBCO1R9ZTxD1lwsrBbf9Xb/8xkShqLVhCvigS3CY4SNXsG6nt7foYr@vger.kernel.org
-X-Gm-Message-State: AOJu0YyUF49wuvbEUJ3lAzG6jtfsJFMhhuzguOZpt7PbNBVTerdzzLb8
-	tkCpCcRUy3GXg95o0W161m74DJ3y85b3wFjPNR8NzkL5ATDw9YriXgBvJ+rc0KxBTY7JTyr3hzh
-	sK5JX2SjG4LG13e5PmSr1VSa4l7oIrlSX+X+Cbz903rSrv26nWO1DimA=
-X-Google-Smtp-Source: AGHT+IFtjrQQ+hRh8O6mpSspPY3JErwmwS3IEJlSfKzbzz8iOWvTDcaDKEZKStGI4uMesYJ+JqV942VL0i+uEBBtCCzkwc7StTDG
+	s=arc-20240116; t=1734408353; c=relaxed/simple;
+	bh=QFo1x7gHDC8cT6BkmFc8xKrT4+1fX6TaiVANO3bhp9M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=ZtsPmUHnqkkVPaP1R7ZxAEv3g8uXNLKSLtffyonjz5xDYnI9kOz0jpfWMDEQjX3KypCnxAd1RO3RYM+sItl6B3HUeGsqTIrg2GnVGaJuRocYshIDDI6bFCfiP/KXUDs+Y652mxh31kBJ4v3XxvMCNx6jfDuNKPPNhkv5XOMQEr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YC3BH384Fz4f3lWD;
+	Tue, 17 Dec 2024 12:05:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id E59731A058E;
+	Tue, 17 Dec 2024 12:05:47 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.124.27])
+	by APP3 (Coremail) with SMTP id _Ch0CgB3VsOb+GBnwxC_Eg--.2804S2;
+	Tue, 17 Dec 2024 12:05:47 +0800 (CST)
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+To: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.com
+Cc: dennis.lamerice@gmail.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Subject: [PATCH 0/3] Minor cleanups to ext4 and jbd2
+Date: Tue, 17 Dec 2024 20:03:53 +0800
+Message-Id: <20241217120356.1399443-1-shikemeng@huaweicloud.com>
+X-Mailer: git-send-email 2.30.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1a07:b0:3a7:1f72:ad3c with SMTP id
- e9e14a558f8ab-3aff0961e22mr162128285ab.19.1734403406120; Mon, 16 Dec 2024
- 18:43:26 -0800 (PST)
-Date: Mon, 16 Dec 2024 18:43:26 -0800
-In-Reply-To: <6741d52e.050a0220.1cc393.0010.GAE@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6760e54e.050a0220.37aaf.0143.GAE@google.com>
-Subject: Re: [syzbot] [ext4?] WARNING in __find_get_block (2)
-From: syzbot <syzbot+3c9f079f8fb1d7d331be@syzkaller.appspotmail.com>
-To: hirofumi@mail.parknet.co.jp, jack@suse.com, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:_Ch0CgB3VsOb+GBnwxC_Eg--.2804S2
+X-Coremail-Antispam: 1UD129KBjvdXoWrZr4fJF45Xr4UCr4DKry5XFb_yoWxCFX_AF
+	WxtF98CrW3XF18GF129w18tF15ZrZ7Wrn0v3Z3tw48Ar1aqFs8Zw1DCrs3ur1UWr95ur15
+	t3WUXrykJFn7WjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
+	9fnUUIcSsGvfJTRUUUbxAYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
+	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl8c
+	AvFVAK0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW5JVW7
+	JwA2z4x0Y4vE2Ix0cI8IcVCY1x0267AKxVWxJVW8Jr1l84ACjcxK6I8E87Iv67AKxVW0oV
+	Cq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG
+	8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_JrI_JrylYx0Ex4A2js
+	IE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCY1x0262kK
+	e7AKxVWUAVWUtwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c
+	02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_
+	Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7
+	CjxVAFwI0_Jr0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v2
+	6r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07
+	j4ksgUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-syzbot has found a reproducer for the following issue on:
+Patch 1 remove unused ext4 journal callback
+patch 2 remove transaction->t_private_list which is only used by ext4
+journal callback
+Patch 3 remove unneeded forward declaration of
+ext4_destroy_lazyinit_thread().
 
-HEAD commit:    f44d154d6e3d Merge tag 'soc-fixes-6.13' of git://git.kerne..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=14d627e8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=1234f097ee657d8b
-dashboard link: https://syzkaller.appspot.com/bug?extid=3c9f079f8fb1d7d331be
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=15e302df980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=1265b4f8580000
+More details can be found in respective patches. Thanks.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/a0fb07264d5d/disk-f44d154d.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/adf6a39fbd67/vmlinux-f44d154d.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/d07b6ebb722e/bzImage-f44d154d.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/2fe321e2e902/mount_0.gz
+Kemeng Shi (3):
+  ext4: remove unused ext4 journal callback
+  jbd2: remove unused transaction->t_private_list
+  ext4: remove unneeded forward declaration
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+3c9f079f8fb1d7d331be@syzkaller.appspotmail.com
+ Documentation/filesystems/journalling.rst |  2 -
+ fs/ext4/ext4_jbd2.h                       | 84 -----------------------
+ fs/ext4/super.c                           | 15 ----
+ fs/jbd2/transaction.c                     |  1 -
+ include/linux/jbd2.h                      |  6 --
+ 5 files changed, 108 deletions(-)
 
-------------[ cut here ]------------
-VFS: brelse: Trying to free free buffer
-WARNING: CPU: 1 PID: 5156 at fs/buffer.c:1229 __brelse fs/buffer.c:1229 [inline]
-WARNING: CPU: 1 PID: 5156 at fs/buffer.c:1229 brelse include/linux/buffer_head.h:324 [inline]
-WARNING: CPU: 1 PID: 5156 at fs/buffer.c:1229 bh_lru_install fs/buffer.c:1346 [inline]
-WARNING: CPU: 1 PID: 5156 at fs/buffer.c:1229 __find_get_block+0x109d/0x1150 fs/buffer.c:1400
-Modules linked in:
-CPU: 1 UID: 0 PID: 5156 Comm: jbd2/sda1-8 Not tainted 6.13.0-rc3-syzkaller-00017-gf44d154d6e3d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 11/25/2024
-RIP: 0010:__brelse fs/buffer.c:1229 [inline]
-RIP: 0010:brelse include/linux/buffer_head.h:324 [inline]
-RIP: 0010:bh_lru_install fs/buffer.c:1346 [inline]
-RIP: 0010:__find_get_block+0x109d/0x1150 fs/buffer.c:1400
-Code: c7 3c 9a e8 d5 60 dc ff e9 1b f7 ff ff e8 5b 83 78 ff e9 87 f7 ff ff e8 51 83 78 ff 90 48 c7 c7 20 ee 18 8c e8 74 26 39 ff 90 <0f> 0b 90 90 e9 6b f7 ff ff e8 35 83 78 ff 48 c7 c7 40 c8 a8 8e 4c
-RSP: 0018:ffffc9001048f440 EFLAGS: 00010246
-RAX: 8c4056f058b05800 RBX: 0000000000000000 RCX: ffff888035151e00
-RDX: 0000000000000000 RSI: 0000000000000001 RDI: 0000000000000000
-RBP: ffffc9001048f570 R08: ffffffff81601962 R09: fffffbfff1cfa210
-R10: dffffc0000000000 R11: fffffbfff1cfa210 R12: ffff88807a001828
-R13: ffff8880b87398b0 R14: ffff88807f336910 R15: ffff88807f335a58
-FS:  0000000000000000(0000) GS:ffff8880b8700000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f1a9566c130 CR3: 000000006602e000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- __getblk_slow fs/buffer.c:1127 [inline]
- bdev_getblk+0x189/0x670 fs/buffer.c:1431
- __getblk include/linux/buffer_head.h:380 [inline]
- jbd2_journal_get_descriptor_buffer+0x1c3/0x4e0 fs/jbd2/journal.c:968
- journal_submit_commit_record+0x11e/0xa90 fs/jbd2/commit.c:129
- jbd2_journal_commit_transaction+0x3c10/0x6560 fs/jbd2/commit.c:877
- kjournald2+0x41c/0x7b0 fs/jbd2/journal.c:201
- kthread+0x2f0/0x390 kernel/kthread.c:389
- ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:244
- </TASK>
+-- 
+2.30.0
 
-
----
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
 
