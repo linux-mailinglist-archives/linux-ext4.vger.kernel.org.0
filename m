@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-5719-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5720-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F45F9F597F
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 23:27:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D910A9F5986
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 23:28:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B0FC9169E65
-	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 22:27:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C8FAC7A3E56
+	for <lists+linux-ext4@lfdr.de>; Tue, 17 Dec 2024 22:28:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9623F1F9F60;
-	Tue, 17 Dec 2024 22:27:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7D161F8F10;
+	Tue, 17 Dec 2024 22:28:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="AIt9gr5v"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="OD2mQyA1"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 701821D9A63
-	for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 22:27:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C08671F867A
+	for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 22:28:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734474443; cv=none; b=oFyYuFD2ayLSCang6hMRn7AzdGX3P5EvfpVRZyLGD/ypCtaNSRTouK74hpTdGJcBryBuk8gRFpVMUM+38tYUQqj+CQiprnqD1j1kvjqMMxAsBmsbemzWgNVnNdsaCUV86G1wmsStlF33QHyQxNXRZ8GpEiMUksY+cdO4NWqZVHs=
+	t=1734474496; cv=none; b=V3pYgkn55YVThiHie1W/74mTtI2iv8f6HqHit3K4sKytCpfpXFypiw2tZT1OrebBj33FjprTOsiNrXZ3OMip1Hy8DgG/ozElL/uV8QMIX4NIaWBbBD0cmEHB7PNDhRKKt28TyP15i0bNWheQFLFbGMWpMvb0ODZa+/Oy3a9aNbo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734474443; c=relaxed/simple;
-	bh=06H2slDRygKzCmfmRsSPr7vcLYgfuymJUB01BSzf1yg=;
+	s=arc-20240116; t=1734474496; c=relaxed/simple;
+	bh=jrbdn2YwOSpYB6F7z51EZinxAGpXPm4mKSFgixxQ4a4=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mHmuoIkc+vchhlnPI9af3eN4DbxFjRCIcio+RfnnreS4t41lQK1BOMdiLaqUl51aNriz5lIjaxy7IH3k2U3gbemg4oplzxbHpyBZQDLEzNfXqYO9qulzRrY65EW8huvZQ5GARM78pSaETHBpOMOdtPrTb7METTSvmZNbVc+q3k8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=AIt9gr5v; arc=none smtp.client-ip=170.10.129.124
+	 In-Reply-To:Content-Type; b=kKLvsy8cUjnj4CkGneBs+oH/GXjN6MEa4VBgTgz5/PRN5OMbYWW+QVWVBPSBhv9JEisyumxwMdSBDu96Ngyki/qipyWtzpcpalnmTpBc87Sxe89jlk35RpyekdmcBmnSmM3bnLlNz+9WMqToCX5s8xEPrnZcl/TSYa4LpABmNPE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=OD2mQyA1; arc=none smtp.client-ip=170.10.129.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1734474440;
+	s=mimecast20190719; t=1734474493;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=4/O76bQ9DP7a5739+a84uc4ET8V42KerklZL0T+JTZM=;
-	b=AIt9gr5vCwXoB+yFGFqtQPZo4jsLV0RKFfV6eG22j3nVMSMpaIiQ+zjCPtXM8ytOe/bV9X
-	wK5MysxToXluTOLQyZGUhIn3T6vc+gXuaagqk8UXyimSgcs8X7dfudWgMsg6pW+dVS7APu
-	52yi+l8lVQDwu8SqGS6Z6jZJ8OsfBVU=
-Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
- [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=SuUiDwN6JN9Q+rjTOZSr/qEq0VeE7EPwHe1HzzH1/V8=;
+	b=OD2mQyA1DaVM3ExrHxU1/KSAV/gcN7DYqnUXDpfD8DXu/iqCVFKR/hhdGKtUUiDsPdNz8E
+	g+KNOtCF+NGC97uOnBaPQ7wzw6HgHreryZgibI97diiTDRd88JI45pzrEQPFhD6N8kOD6j
+	+XhnPH7M9QjenDLLElF5oXT66q7TVwk=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-593-UVfvOFKqOYGrC1LXsOtA3Q-1; Tue, 17 Dec 2024 17:27:19 -0500
-X-MC-Unique: UVfvOFKqOYGrC1LXsOtA3Q-1
-X-Mimecast-MFC-AGG-ID: UVfvOFKqOYGrC1LXsOtA3Q
-Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-4361f371908so17818245e9.0
-        for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 14:27:18 -0800 (PST)
+ us-mta-367-ToMIuz5ZOtWOF-L9KAUkyQ-1; Tue, 17 Dec 2024 17:28:12 -0500
+X-MC-Unique: ToMIuz5ZOtWOF-L9KAUkyQ-1
+X-Mimecast-MFC-AGG-ID: ToMIuz5ZOtWOF-L9KAUkyQ
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-385dcadffebso2743268f8f.0
+        for <linux-ext4@vger.kernel.org>; Tue, 17 Dec 2024 14:28:11 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734474438; x=1735079238;
+        d=1e100.net; s=20230601; t=1734474491; x=1735079291;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=4/O76bQ9DP7a5739+a84uc4ET8V42KerklZL0T+JTZM=;
-        b=NhB2Yd0oWBt2svLRRPnjV7nPSP/Wtu+ZpPpH6Gr8dNelxfb5Jjp2vadlBAFGqNIMMV
-         1MG9ORHt6aLhw/ifmb6xL9RISWcNh9kYGwzeNNC0s1Qi3vOp+ep8FFVKg4J/mK695W88
-         Ocu7jo5xhQgG42hMCZQPsvF9xXnv2ZD32KZMaso3BRDuOuOlxOseHYKZ3c6cll6CK0sX
-         DDgZGQodUPVRAPKI49BNCJ+7AJC0AoPuGuKTbA/Xgy7/GNf5/vImga0aN/D7UFnjkjG/
-         MqgazvxByHbOD+u+ZQxDd9k5SQMyWRVZGYxsJVECERK5cS7ZoqySk5F6HhVamPYNllA6
-         JLAA==
-X-Forwarded-Encrypted: i=1; AJvYcCU/FhjINof4Yf8HMircLgQULrWyxARezeNkdEiLm68XqgboTcK/3mXcedkRvuZutjQVxNDercMFO64M@vger.kernel.org
-X-Gm-Message-State: AOJu0YzVsYTAg7BVMek0GzZjx6+86rATsllnJ+Mo/DO8Wh2MNHEmSg1C
-	/is57BD0CARWNhuJ49xVK9Bdiz2szUUq/CxVobNxeY8YIDgcq2P9S2OrmTI4Rmd75mt8Twl4zC+
-	wMAYUvpQJbH5NQgZVJW7yvLeKa4UpAcNpzp6MSltYvfvNKitrqLJr0zTNx2k=
-X-Gm-Gg: ASbGncsLy4B/ZsKmat5H8/ZB37zQmKdMjBWATQXssAcPXvcWKqfrUIe/gItV1lGXIgx
-	PZWUm+rwqfysfESRToz3n/owbsnX+5/kuWPoF5qRAVU/rhPDZpjGkpMAjJV/kzFXbGw8ncfpKnu
-	6Fg0gACivfnWcIcW7NB7gHErlhf/L0P7EzP/aPJLQuRX2H4J87AB6sUlUd9shLVEaRgqhQwupYF
-	7o4Rxo0sB/m31XhkoIXlaG7BXpXve0iXJfD7v2kPoYXAULR7XOIPAjmSpxMA9o5qnMaAeWQay2a
-	uxhU84qjS8PpYpQucFY4/m4MHJfskTERZIRk5wJKLihO7qX9Y4IG1qzRjbfsLtZpbv6AipaYPOA
-	HFv+XJlPy
-X-Received: by 2002:a05:6000:1867:b0:385:fd07:85f4 with SMTP id ffacd0b85a97d-388e4d64711mr382476f8f.31.1734474437972;
-        Tue, 17 Dec 2024 14:27:17 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IHXkMWceKB4Pft4A5vtCS2fSCh+immbhibtyL2+AscRjp+IT+w8chlwsiKadTxAFDThwCk24Q==
-X-Received: by 2002:a05:6000:1867:b0:385:fd07:85f4 with SMTP id ffacd0b85a97d-388e4d64711mr382442f8f.31.1734474437093;
-        Tue, 17 Dec 2024 14:27:17 -0800 (PST)
+        bh=SuUiDwN6JN9Q+rjTOZSr/qEq0VeE7EPwHe1HzzH1/V8=;
+        b=qwtMGQ2g2sr/ZELetjAQCkH5JPYEgWIRaKPpqdT6gIlE5EuJwIxgv0hGgMBdeYOox5
+         PyS31N4Tmmy2FmisDH3to9G8VlqdZ9+c5fp6DOQiHPyxrf/2/3pMstY13yN/i6iZWnJ3
+         UzysO4AoOlj7t1QHd6iIB1KnPpwy87JTXjd2s8McekN0oDb97aFqcRBydl3i0UlYHT6V
+         KO+nBUilX4QoXFdvlaSo0V0GcPCa+W4huWQFsg5s2IUjxOWkG+hbXm4+Sq1cmA6N3SvZ
+         xlQ4MWHFL0HqG0FZnRUI9mEIEyfJAHpmVbS++8yUue3iPUBvXUU/dH2Ul4lRg1LDvszU
+         0rwg==
+X-Forwarded-Encrypted: i=1; AJvYcCX5BHjExMbQ2tFS1h/Kx/BHvPPtC/vNwNg0IVV60ia/mytxEW5T+klz0NRY9yh65w6WRbh1ehLx7Z8P@vger.kernel.org
+X-Gm-Message-State: AOJu0YyrSser5d953sN2TT2m0TCkFhaFoJ6WaqP10VsSh4gV0j9N1N6F
+	YkeHN+vadBWqrPyUxbJPPFa3T2Qo6x/+iMKBM9USGUmqJRh9laYVb5FQYPeBc2kzpFHsCRFf3ox
+	ZiLH6ay9+ufp4s4Bt7+adkF3wgFuGBeP5P1+RC0k69oyxwVdQH659gk1FR3I=
+X-Gm-Gg: ASbGncuCTgtJUSshNz9J4WnSvJGk8Ygfq+gxmZ5a8yZ9szp91Ks9D5dhF7gaZzHVUKu
+	mTu9086QiFqEyaV6FIzDoImGXgQ0WZbtkDT3gD6K60SK+0clgMwzzCFPe0ajCK+cVPSNmWJRqNn
+	cC0pOr5HG0Bsi8n0TvByhxoennFaliDwBK1UL+GwdWin85xeLWPSHt66Tn+TpttnlY9rGKEIEWH
+	J4pis5piXbGFZqPKPSOrAVkdT0NIWLVbi2h17TqvTXOvxUwUZJZk1wkzerocDLU4SueaDREH4A5
+	0U6SUUqcRcTSeT7ErikmFcAP6GB79TU70K+pipVXH5yJ64gLcmEEqOerLZuydRkEJO+95eThTvB
+	Fc9aC6ZDY
+X-Received: by 2002:a05:6000:4a06:b0:388:c7c2:5bdb with SMTP id ffacd0b85a97d-388e4d6bc86mr490238f8f.2.1734474490935;
+        Tue, 17 Dec 2024 14:28:10 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IEvTFVi7q0TnTvpbrbppzv+CwZ1GXbtoatrg/I2tIqfy/l4JTDnozGATbxCSGEYBCYXlyagPA==
+X-Received: by 2002:a05:6000:4a06:b0:388:c7c2:5bdb with SMTP id ffacd0b85a97d-388e4d6bc86mr490194f8f.2.1734474490540;
+        Tue, 17 Dec 2024 14:28:10 -0800 (PST)
 Received: from ?IPV6:2003:cb:c73b:5600:c716:d8e0:609d:ae92? (p200300cbc73b5600c716d8e0609dae92.dip0.t-ipconnect.de. [2003:cb:c73b:5600:c716:d8e0:609d:ae92])
-        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-388c8060905sm12357212f8f.99.2024.12.17.14.27.14
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-388c801af46sm12218432f8f.61.2024.12.17.14.28.07
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 17 Dec 2024 14:27:15 -0800 (PST)
-Message-ID: <4b5768b7-96e0-4864-9dbe-88fd1f0e87b8@redhat.com>
-Date: Tue, 17 Dec 2024 23:27:13 +0100
+        Tue, 17 Dec 2024 14:28:09 -0800 (PST)
+Message-ID: <b5111052-4bc2-481c-8510-c1b86c70bf30@redhat.com>
+Date: Tue, 17 Dec 2024 23:28:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,7 +90,7 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 14/25] rmap: Add support for PUD sized mappings to rmap
+Subject: Re: [PATCH v4 20/25] mm/mlock: Skip ZONE_DEVICE PMDs during mlock
 To: Alistair Popple <apopple@nvidia.com>, akpm@linux-foundation.org,
  dan.j.williams@intel.com, linux-mm@kvack.org
 Cc: lina@asahilina.net, zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
@@ -106,7 +106,7 @@ Cc: lina@asahilina.net, zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
  linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
  david@fromorbit.com
 References: <cover.18cbcff3638c6aacc051c44533ebc6c002bf2bd9.1734407924.git-series.apopple@nvidia.com>
- <7f739c9e9f0a25cafb76a482e31e632c8f72102e.1734407924.git-series.apopple@nvidia.com>
+ <e1fe10474fc06aaf24b17fcd916efffcc8c13f78.1734407924.git-series.apopple@nvidia.com>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -154,146 +154,35 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <7f739c9e9f0a25cafb76a482e31e632c8f72102e.1734407924.git-series.apopple@nvidia.com>
+In-Reply-To: <e1fe10474fc06aaf24b17fcd916efffcc8c13f78.1734407924.git-series.apopple@nvidia.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-On 17.12.24 06:12, Alistair Popple wrote:
-> The rmap doesn't currently support adding a PUD mapping of a
-> folio. This patch adds support for entire PUD mappings of folios,
-> primarily to allow for more standard refcounting of device DAX
-> folios. Currently DAX is the only user of this and it doesn't require
-> support for partially mapped PUD-sized folios so we don't support for
-> that for now.
+On 17.12.24 06:13, Alistair Popple wrote:
+> At present mlock skips ptes mapping ZONE_DEVICE pages. A future change
+> to remove pmd_devmap will allow pmd_trans_huge_lock() to return
+> ZONE_DEVICE folios so make sure we continue to skip those.
 > 
 > Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> 
 > ---
+>   mm/mlock.c | 2 ++
+>   1 file changed, 2 insertions(+)
 > 
-> David - Thanks for your previous comments, I'm less familiar with the
-> rmap code so I would appreciate you taking another look. In particular
-> I haven't added a stat for PUD mapped folios as it seemed like
-> overkill for just the device DAX case but let me know if you think
-> otherwise.
-> 
-> Changes for v4:
-> 
->   - New for v4, split out rmap changes as suggested by David.
-> ---
->   include/linux/rmap.h | 15 ++++++++++++-
->   mm/rmap.c            | 56 +++++++++++++++++++++++++++++++++++++++++++++-
->   2 files changed, 71 insertions(+)
-> 
-> diff --git a/include/linux/rmap.h b/include/linux/rmap.h
-> index 683a040..7043914 100644
-> --- a/include/linux/rmap.h
-> +++ b/include/linux/rmap.h
-> @@ -192,6 +192,7 @@ typedef int __bitwise rmap_t;
->   enum rmap_level {
->   	RMAP_LEVEL_PTE = 0,
->   	RMAP_LEVEL_PMD,
-> +	RMAP_LEVEL_PUD,
->   };
->   
->   static inline void __folio_rmap_sanity_checks(const struct folio *folio,
-> @@ -228,6 +229,14 @@ static inline void __folio_rmap_sanity_checks(const struct folio *folio,
->   		VM_WARN_ON_FOLIO(folio_nr_pages(folio) != HPAGE_PMD_NR, folio);
->   		VM_WARN_ON_FOLIO(nr_pages != HPAGE_PMD_NR, folio);
->   		break;
-> +	case RMAP_LEVEL_PUD:
-> +		/*
-> +		 * Assume that we are creating * a single "entire" mapping of the
-> +		 * folio.
-> +		 */
-> +		VM_WARN_ON_FOLIO(folio_nr_pages(folio) != HPAGE_PUD_NR, folio);
-> +		VM_WARN_ON_FOLIO(nr_pages != HPAGE_PUD_NR, folio);
-> +		break;
->   	default:
->   		VM_WARN_ON_ONCE(true);
->   	}
-> @@ -251,12 +260,16 @@ void folio_add_file_rmap_ptes(struct folio *, struct page *, int nr_pages,
->   	folio_add_file_rmap_ptes(folio, page, 1, vma)
->   void folio_add_file_rmap_pmd(struct folio *, struct page *,
->   		struct vm_area_struct *);
-> +void folio_add_file_rmap_pud(struct folio *, struct page *,
-> +		struct vm_area_struct *);
->   void folio_remove_rmap_ptes(struct folio *, struct page *, int nr_pages,
->   		struct vm_area_struct *);
->   #define folio_remove_rmap_pte(folio, page, vma) \
->   	folio_remove_rmap_ptes(folio, page, 1, vma)
->   void folio_remove_rmap_pmd(struct folio *, struct page *,
->   		struct vm_area_struct *);
-> +void folio_remove_rmap_pud(struct folio *, struct page *,
-> +		struct vm_area_struct *);
->   
->   void hugetlb_add_anon_rmap(struct folio *, struct vm_area_struct *,
->   		unsigned long address, rmap_t flags);
-> @@ -341,6 +354,7 @@ static __always_inline void __folio_dup_file_rmap(struct folio *folio,
->   		atomic_add(orig_nr_pages, &folio->_large_mapcount);
->   		break;
->   	case RMAP_LEVEL_PMD:
-> +	case RMAP_LEVEL_PUD:
->   		atomic_inc(&folio->_entire_mapcount);
->   		atomic_inc(&folio->_large_mapcount);
->   		break;
-> @@ -437,6 +451,7 @@ static __always_inline int __folio_try_dup_anon_rmap(struct folio *folio,
->   		atomic_add(orig_nr_pages, &folio->_large_mapcount);
->   		break;
->   	case RMAP_LEVEL_PMD:
-> +	case RMAP_LEVEL_PUD:
->   		if (PageAnonExclusive(page)) {
->   			if (unlikely(maybe_pinned))
->   				return -EBUSY;
-> diff --git a/mm/rmap.c b/mm/rmap.c
-> index c6c4d4e..39d0439 100644
-> --- a/mm/rmap.c
-> +++ b/mm/rmap.c
-> @@ -1203,6 +1203,11 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
->   		}
->   		atomic_inc(&folio->_large_mapcount);
->   		break;
-> +	case RMAP_LEVEL_PUD:
-> +		/* We only support entire mappings of PUD sized folios in rmap */
-> +		atomic_inc(&folio->_entire_mapcount);
-> +		atomic_inc(&folio->_large_mapcount);
-> +		break;
+> diff --git a/mm/mlock.c b/mm/mlock.c
+> index cde076f..3cb72b5 100644
+> --- a/mm/mlock.c
+> +++ b/mm/mlock.c
+> @@ -368,6 +368,8 @@ static int mlock_pte_range(pmd_t *pmd, unsigned long addr,
+>   		if (is_huge_zero_pmd(*pmd))
+>   			goto out;
+>   		folio = pmd_folio(*pmd);
+> +		if (folio_is_zone_device(folio))
+> +			goto out;
+>   		if (vma->vm_flags & VM_LOCKED)
+>   			mlock_folio(folio);
+>   		else
 
-
-This way you don't account the pages at all as mapped, whereby PTE-mapping it
-would? And IIRC, these PUD-sized pages can be either mapped using PTEs or
-using a single PUD.
-
-I suspect what you want is to
-
-diff --git a/mm/rmap.c b/mm/rmap.c
-index c6c4d4ea29a7e..1477028d3a176 100644
---- a/mm/rmap.c
-+++ b/mm/rmap.c
-@@ -1187,12 +1187,19 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
-                 atomic_add(orig_nr_pages, &folio->_large_mapcount);
-                 break;
-         case RMAP_LEVEL_PMD:
-+       case RMAP_LEVEL_PUD:
-                 first = atomic_inc_and_test(&folio->_entire_mapcount);
-                 if (first) {
-                         nr = atomic_add_return_relaxed(ENTIRELY_MAPPED, mapped);
-                         if (likely(nr < ENTIRELY_MAPPED + ENTIRELY_MAPPED)) {
--                               *nr_pmdmapped = folio_nr_pages(folio);
--                               nr = *nr_pmdmapped - (nr & FOLIO_PAGES_MAPPED);
-+                               nr_pages = folio_nr_pages(folio);
-+                               /*
-+                                * We only track PMD mappings of PMD-sized
-+                                * folios separately.
-+                                */
-+                               if (level == RMAP_LEVEL_PMD)
-+                                       *nr_pmdmapped = nr_pages;
-+                               nr = nr_pages - (nr & FOLIO_PAGES_MAPPED);
-                                 /* Raced ahead of a remove and another add? */
-                                 if (unlikely(nr < 0))
-                                         nr = 0;
-
-Similar on the removal path.
-
+Acked-by: David Hildenbrand <david@redhat.com>
 
 -- 
 Cheers,
