@@ -1,420 +1,182 @@
-Return-Path: <linux-ext4+bounces-5749-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5750-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A278E9F6A75
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 16:53:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64B819F6AA4
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 17:00:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DE9DD17234D
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 15:53:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E647C7A6934
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 15:59:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E37801F37DB;
-	Wed, 18 Dec 2024 15:52:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8E91F2396;
+	Wed, 18 Dec 2024 15:59:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="EdVSEo9D"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YIiyuT+B";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JNBpqo5H";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FyerPoDP";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7Zz/hbAW"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5521C5CDA
-	for <linux-ext4@vger.kernel.org>; Wed, 18 Dec 2024 15:52:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E283F1591EA;
+	Wed, 18 Dec 2024 15:59:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734537161; cv=none; b=qd8ZwnHEdyWMRWQu6E1gBRNG5mAxAAblnKm4EmoYTFA3irmeA4b6nxZNgyWbpzHVhLYq5hWfn14HTGYjuwj7qwzv9Jn6TXr1ZgBC0qtmniQ/o8fGyCuPDan0sJZgrcK9oE9pqT96WqS7GA8tQW7CdiXT+HYWlIHZN+lyMzEGYfM=
+	t=1734537592; cv=none; b=nY+MT07yjxgDhKasXiwzAkp3pYVYwrBvPuT2E8PszpPb9JKzzV+L2iWhnIsb8xYKhe3kA1CFGs1WDEFweh91F5GvrnD6K0qoahH/h11tkjA/c6EdzIJ/8eprOQJ5QTpULgOmuLEMgKqnazhAV69jyDx26RCXj0iHpIBWSzC+lDI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734537161; c=relaxed/simple;
-	bh=1lAT8qp/+Rdh7825kEw7Lj3mMcsKCYIezxClX04lsMQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=UizIsWFR6I8VjPcyOpdeOwoDcGHVhdDNh51PiEk04DXknrrmssXWW5wTp4aWFWDgxxY7SOJ7gco56qNuE5E7z79cOpPS0AoE3K/Mtiwu2iUnn45+CaGkIE16wIvYV/UpWb96JpmRmVSywe3GyfHmt1nydBQ9tQ/ZPguQrDivVOw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=EdVSEo9D; arc=none smtp.client-ip=209.85.217.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4afdf300d07so3812934137.3
-        for <linux-ext4@vger.kernel.org>; Wed, 18 Dec 2024 07:52:39 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1734537158; x=1735141958; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=zNNARdkolyQOxa2f90S1wGhpiBoUI31DNUhJvKXWUpM=;
-        b=EdVSEo9DPUQHUile62mX6+Huyqpnq8p5zTefjZ0Rom7J0Spfv0QlR9ztzx94Z9em5M
-         cHQp5Uen19afweFT8XqouodIgajLPuNneJCE9dkhnubeRA2bWw2TkBOHAxTBLAYpZ1jP
-         0QLd3tN/Z7CPHKfiqL6dahd8Epp4TKWQfkCZ7GAeNzKyg/MLYrHU6VFtQxygbFRM6KS4
-         g2SeGaB6Ti9buOyhxEiHLVm5r/Lf3wH+mCKmTqk7j6B9yDHgxouBV0lNzTE1Nt12Lc0L
-         CZJzJ99cXyQJfdK5m/auxR80R7Urtn/+nF7+qMvC9P6F4P3xxMWATQFPDMkL/zJaLSbu
-         ZoNw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734537158; x=1735141958;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zNNARdkolyQOxa2f90S1wGhpiBoUI31DNUhJvKXWUpM=;
-        b=Rg4o5AIakdjd1fpA852nY5SZFowftphScI+BBozRJgKnSbAer7DjWp4pN8z5xc3JHO
-         0OBlXhorL/0fNVDFz4a/YTJUups/77LOqmX6+PD5RQ4WrodpXxpmGLaPy2ZRQRO8Msce
-         0eElA/FlfRCCQE+h9tAGllfb7lshtvv41mMZbvlgTzc8S5FSjlar7FUIzfMNCVZhsjhT
-         n+JcGvg+cljl2x/7/tu8EGxZr1IX2qEzVBgpTCJpaF9pnrka7HLw28m8FDbvX+WRyChF
-         t2B6Sy4CXx8AOhN1HZ0B8AJmDlu3D0NJw1U/sT5QewaeLV7qNyzk2Nh3uORljgybPwrR
-         PeVQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWd2ofRw5jgRTPDcGI6o56jUjcCKluvKWvGIgKSeemQQQw9++7Qb1k4VYpPAIL+09GGPIFtw1C26e6T@vger.kernel.org
-X-Gm-Message-State: AOJu0Yxo6xqR+Za0BETgOKj1DoJx012Rf8HyDW3hTmHMMm+ZCkHTUgCB
-	kvCdWqdsUQ6Ry1U1xP4hcDCDS5kiW446ILszKdv8DAuJZbq44GC3nZeRJV4tFl1ooBLtiZQWQC6
-	TpSw3Fne1r844cqhhOTjN24lkVoC2fvXDkHXQjw==
-X-Gm-Gg: ASbGncvDD0jOXo9khOZeIom7BOMiBggPA95F2ni2GrVhe6RD7SxWObhxM8RbtxStwPi
-	7YMZSgw6s3ZCtzN73Kg29Tm3MqPtoF8BF5zjUIR0=
-X-Google-Smtp-Source: AGHT+IHRQWOyHGUOnEgScUkvQ/qQDNmbj8Zd81eUKKGlkp4unG8aFtqlJFZiQzzeFmt0zeX235y2vXHn8B9eGSnaGIE=
-X-Received: by 2002:a05:6102:15a0:b0:4b2:ad82:133a with SMTP id
- ada2fe7eead31-4b2ae8abef9mr2834868137.25.1734537158126; Wed, 18 Dec 2024
- 07:52:38 -0800 (PST)
+	s=arc-20240116; t=1734537592; c=relaxed/simple;
+	bh=xqRCZi47ssybpFZmQ9iD4OT8RCvrCkNnYwDuOCAbG/o=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=g9XF8im3MCIGVIr0RVCA7wPrXNlVm4nVVvrGXKoYEaR/J+AqoYrzWr9u4lVbKWHTzFnRh4DL31LgzoI5hNbJOjf2mTS08ylSK0J1VzFtQdt8PwGUnjSJ1oMwmV/sUY30VENVHB9Zcf6Qzgti1o+AQ2vBrIY6M+NHkrmAQDvjqZw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YIiyuT+B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JNBpqo5H; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FyerPoDP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7Zz/hbAW; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id DD1FA21153;
+	Wed, 18 Dec 2024 15:59:47 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734537588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
+	b=YIiyuT+BhTqzkJFTEg+SlyRZ7Id2/MEIK6MjlhT9/zFJqV54DL+kogUXW0Qh0BPP70aqZ3
+	Zuk0BdJJ+1hDsNSwZbhorSjc3KzuU6j18olt5DJIUkJJ+BWBlFEGFG0Yvfa+jiWFrR4vcH
+	rdlG+5jMQoRir1FvxqArG00U374iqSQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734537588;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
+	b=JNBpqo5HCmp8zvrobhiDZTsm840xyacIVp9odDxVXiqDCAxjP1xFoCl3MJykzvwlt/BhBo
+	LnOmDGowrBa1RTBA==
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FyerPoDP;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="7Zz/hbAW"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1734537587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
+	b=FyerPoDPwaLY0i9qG9FM5AGH5aqTakFZowQp+cdC5MVRS7ZDeSaug8yqzNm4lYcmRXbdzN
+	5LEc/ze83D6/yMskW8x7/G18h83PTqTr9s3IEIZ3MwxatrZX4J9TLrWNzlt766aRJTzgLk
+	TOEQZtThz2hWZEbSDiETHY3BowCrXLs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1734537587;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
+	b=7Zz/hbAW/4Sok4prx9FCx5QzFWePX+UIOchUpo+yqpKHZDut8ET8kyTFPragOQRwpkDT3F
+	c+bZLOgudF6s+xCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D2E70137CF;
+	Wed, 18 Dec 2024 15:59:47 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id EXt1M3PxYmdYQQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 18 Dec 2024 15:59:47 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 7A3C4A0435; Wed, 18 Dec 2024 16:59:47 +0100 (CET)
+Date: Wed, 18 Dec 2024 16:59:47 +0100
+From: Jan Kara <jack@suse.cz>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Zorro Lang <zlang@kernel.org>, Brian Foster <bfoster@redhat.com>,
+	fstests@vger.kernel.org, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/4] ext-common: create a new test directory for ext*
+ common tests
+Message-ID: <20241218155947.ocbq6hjdzaud6ioj@quack3>
+References: <20241210065900.1235379-1-hch@lst.de>
+ <20241210065900.1235379-4-hch@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
-In-Reply-To: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Wed, 18 Dec 2024 21:22:26 +0530
-Message-ID: <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
-Subject: Re: qemu-arm64: CONFIG_ARM64_64K_PAGES=y kernel crash on qemu-arm64
- with Linux next-20241210 and above
-To: qemu-devel@nongnu.org, open list <linux-kernel@vger.kernel.org>, 
-	Linux Regressions <regressions@lists.linux.dev>, linux-ext4 <linux-ext4@vger.kernel.org>, 
-	lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>, 
-	Linux btrfs <linux-btrfs@vger.kernel.org>
-Cc: =?UTF-8?B?QWxleCBCZW5uw6ll?= <alex.bennee@linaro.org>, 
-	Anders Roxell <anders.roxell@linaro.org>, Arnd Bergmann <arnd@arndb.de>, 
-	Dan Carpenter <dan.carpenter@linaro.org>, Qu Wenruo <wqu@suse.com>, David Sterba <dsterba@suse.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20241210065900.1235379-4-hch@lst.de>
+X-Rspamd-Queue-Id: DD1FA21153
+X-Spam-Level: 
+X-Spamd-Result: default: False [-4.01 / 50.00];
+	BAYES_HAM(-3.00)[99.99%];
+	NEURAL_HAM_LONG(-1.00)[-1.000];
+	MID_RHS_NOT_FQDN(0.50)[];
+	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	NEURAL_HAM_SHORT(-0.20)[-1.000];
+	MIME_GOOD(-0.10)[text/plain];
+	MX_GOOD(-0.01)[];
+	FROM_HAS_DN(0.00)[];
+	RCVD_COUNT_THREE(0.00)[3];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	MIME_TRACE(0.00)[0:+];
+	ARC_NA(0.00)[];
+	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	TO_DN_SOME(0.00)[];
+	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	RCVD_TLS_LAST(0.00)[];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	FROM_EQ_ENVFROM(0.00)[];
+	RCPT_COUNT_FIVE(0.00)[5];
+	RCVD_VIA_SMTP_AUTH(0.00)[];
+	MISSING_XM_UA(0.00)[];
+	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
+	DKIM_TRACE(0.00)[suse.cz:+];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Rspamd-Action: no action
+X-Spam-Score: -4.01
+X-Spam-Flag: NO
 
-On Wed, 18 Dec 2024 at 17:33, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
->
-> The following kernel crash noticed on qemu-arm64 while running the
-> Linux next-20241210 tag (to next-20241218) kernel built with
->  - CONFIG_ARM64_64K_PAGES=y
->  - CONFIG_ARM64_16K_PAGES=y
-> and running LTP smoke tests.
->
-> First seen on Linux next-20241210.
->   Good: next-20241209
->   Bad:  next-20241210 and next-20241218
->
-> qemu-arm64: 9.1.2
->
-> Anyone noticed this ?
->
+On Tue 10-12-24 07:58:27, Christoph Hellwig wrote:
+> Split the tests shared with ext2 and ext3 from the ext4 directory.
+> This makes ext4 a normal file system specific directory and cuts down
+> the number of _supported_fs calls to a little more than a handful
+> for tests that can't run on ext2.
+> 
+> Signed-off-by: Christoph Hellwig <hch@lst.de>
 
-Anders bisected this reported regression and found,
-# first bad commit:
-  [9c1d66793b6faa00106ae4c866359578bfc012d2]
-  btrfs: validate system chunk array at btrfs_validate_super()
+So I went through all ext4 tests and I think:
+  ext4/004 should work for all ext? types -> move to ext_common
 
+  ext4/006 should work for all ext? types -> move to ext_common
+  ext4/007 should work for all ext? types -> move to ext_common
+  ext4/008 should work for all ext? types -> move to ext_common
+  ext4/009 should work for all ext? types -> move to ext_common
+  ext4/010 should work for all ext? types -> move to ext_common
+  ext4/011 should work for all ext? types -> move to ext_common
+  ext4/012 should work for all ext? types -> move to ext_common
+  ext4/013 should work for all ext? types -> move to ext_common
+  ext4/014 should work for all ext? types -> move to ext_common
+  ext4/016 should work for all ext? types -> move to ext_common
+    - but I've now noticed that the last ten call _scratch_mkfs_ext4
+      instead of _scratch_mkfs so that would need fixing up. So maybe leave
+      it as is for now
+  ext4/017 should work for all ext3 & ext4 types -> move to ext_common
+    - similar caveat with _scratch_mkfs_ext4
+  ext4/018 should work for all ext? types -> move to ext_common
+  ext4/019 should work for all ext? types -> move to ext_common
+    - similar caveat with _scratch_mkfs_ext4
 
-> Test log:
-> ---------
-> tst_test.c:1799: TINFO: === Testing on btrfs ===
-> tst_test.c:1158: TINFO: Formatting /dev/loop0 with btrfs opts='' extra opts=''
-> <6>[   71.880167] BTRFS: device fsid
-> d492b571-012c-40a9-b8e1-efc97408d3bc devid 1 transid 6 /dev/loop0
-> (7:0) scanned by chdir01 (476)
-> tst_test.c:1170: TINFO: Mounting /dev/loop0 to
-> /tmp/LTP_chdJeywxF/mntpoint fstyp=btrfs flags=0
-> <6>[   71.960245] BTRFS info (device loop0): first mount of filesystem
-> d492b571-012c-40a9-b8e1-efc97408d3bc
-> <6>[   71.970667] BTRFS info (device loop0): using crc32c
-> (crc32c-arm64) checksum algorithm
-> <2>[   71.993486] BTRFS critical (device loop0): corrupt superblock
-> syschunk array: chunk_start=22020096, invalid chunk sectorsize, have
-> 65536 expect 4096
-> <3>[   71.995802] BTRFS error (device loop0): superblock contains fatal errors
-> <3>[   72.014538] BTRFS error (device loop0): open_ctree failed: -22
-> tst_test.c:1170: TBROK: mount(/dev/loop0, mntpoint, btrfs, 0, (nil))
-> failed: EINVAL (22)
->
-> Summary:
-> passed   48
-> failed   0
-> broken   1
-> skipped  0
-> warnings 0
->
-> Duration: 7.002s
->
->
-> ===== symlink01 =====
-> command: symlink01
-> <12>[   72.494428] /usr/local/bin/kirk[253]: starting test symlink01 (symlink01)
-> symlink01    0  TINFO  :  Using /tmp/LTP_symmsYXet as tmpdir (tmpfs filesystem)
-> symlink01    1  TPASS  :  Creation of symbolic link file to no object file is ok
-> symlink01    2  TPASS  :  Creation of symbolic link file to no object file is ok
-> symlink01    3  TPASS  :  Creation of symbolic link file and object
-> file via symbolic link is ok
-> symlink01    4  TPASS  :  Creating an existing symbolic link file
-> error is caught
-> symlink01    5  TPASS  :  Creating a symbolic link which exceeds
-> maximum pathname error is caught
->
-> Summary:
-> passed    5
-> failed    0
-> broken    0
-> skipped   0
-> warnings  0
->
-> Duration: 0.052s
->
->
-> ===== stat04 =====
-> command: stat04
-> <12>[   72.966706] /usr/local/bin/kirk[253]: starting test stat04 (stat04)
-> tst_buffers.c:57: TINFO: Test is using guarded buffers
-> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_staEABwgV as tmpdir (tmpfs filesystem)
-> <6>[   73.447708] loop0: detected capacity change from 0 to 614400
-> tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
-> tst_test.c:1860: TINFO: LTP version: 20240930
-> tst_test.c:1864: TINFO: Tested kernel: 6.13.0-rc3-next-20241218 #1 SMP
-> PREEMPT @1734498806 aarch64
-> tst_test.c:1703: TINFO: Timeout per run is 0h 05m 24s
-> stat04.c:60: TINFO: Formatting /dev/loop0 with ext2 opts='-b 4096' extra opts=''
-> mke2fs 1.47.1 (20-May-2024)
-> <3>[   73.859753] operation not supported error, dev loop0, sector
-> 614272 op 0x9:(WRITE_ZEROES) flags 0x10000800 phys_seg 0 prio class 0
-> stat04.c:61: TINFO: Mounting /dev/loop0 to /tmp/LTP_staEABwgV/mntpoint
-> fstyp=ext2 flags=0
-> <6>[   73.939263] EXT4-fs (loop0): mounting ext2 file system using the
-> ext4 subsystem
-> <1>[   73.946378] Unable to handle kernel paging request at virtual
-> address a8fff00000c0c224
-> <1>[   73.947878] Mem abort info:
-> <1>[   73.949153]   ESR = 0x0000000096000005
-> <1>[   73.959105]   EC = 0x25: DABT (current EL), IL = 32 bits
-> <1>[   73.960031]   SET = 0, FnV = 0
-> <1>[   73.960349]   EA = 0, S1PTW = 0
-> <1>[   73.960638]   FSC = 0x05: level 1 translation fault
-> <1>[   73.961005] Data abort info:
-> <1>[   73.961293]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-> <1>[   73.963739]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> <1>[   73.964980]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> <1>[   73.967132] [a8fff00000c0c224] address between user and kernel
-> address ranges
-> <0>[   73.968923] Internal error: Oops: 0000000096000005 [#1] PREEMPT SMP
-> <4>[   73.970516] Modules linked in: btrfs blake2b_generic xor
-> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
-> sha512_arm64 fuse drm backlight ip_tables x_tables
-> <4>[   73.974237] CPU: 1 UID: 0 PID: 529 Comm: stat04 Not tainted
-> 6.13.0-rc3-next-20241218 #1
-> <4>[   73.975359] Hardware name: linux,dummy-virt (DT)
-> <4>[   73.977170] pstate: 62402009 (nZCv daif +PAN -UAO +TCO -DIT
-> -SSBS BTYPE=--)
-> <4>[ 73.978295] pc : __kmalloc_node_noprof (mm/slub.c:492
-> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
-> mm/slub.c:4293 mm/slub.c:4300)
-> <4>[ 73.980200] lr : alloc_cpumask_var_node (lib/cpumask.c:62 (discriminator 2))
-> <4>[   73.981466] sp : ffff80008258f950
-> <4>[   73.982228] x29: ffff80008258f970 x28: ffffa93389398000 x27:
-> 0000000000000001
-> <4>[   73.983875] x26: fffffc1fc0303080 x25: 00000000ffffffff x24:
-> a8fff00000c0c224
-> <4>[   73.985649] x23: 0000000000000cc0 x22: ffffa93387f51d0c x21:
-> 00000000ffffffff
-> <4>[   73.986188] x20: fff00000c0010400 x19: 0000000000000008 x18:
-> 0000000000000000
-> <4>[   73.988686] x17: fff056cd748b0000 x16: ffff800080020000 x15:
-> 0000000000000000
-> <4>[   73.990276] x14: 0000000000002a66 x13: 0000000000004000 x12:
-> 0000000000000001
-> <4>[   73.992401] x11: 0000000000000002 x10: 0000000000004001 x9 :
-> ffffa93387f51d0c
-> <4>[   73.993108] x8 : fff00000c2c99240 x7 : 0000000000000001 x6 :
-> 0000000000000001
-> <4>[   73.993886] x5 : fff00000c4879800 x4 : 0000000000000000 x3 :
-> 000000000033a401
-> <4>[   73.995550] x2 : 0000000000000000 x1 : a8fff00000c0c224 x0 :
-> fff00000c0010400
-> <4>[   73.997017] Call trace:
-> <4>[ 73.998266] __kmalloc_node_noprof+0x100/0x4a0 P
-> <4>[ 73.999716] alloc_cpumask_var_node (lib/cpumask.c:62 (discriminator 2))
-> <4>[ 74.000942] alloc_workqueue_attrs (kernel/workqueue.c:4624
-> (discriminator 1))
-> <4>[ 74.001327] apply_wqattrs_prepare (kernel/workqueue.c:5263)
-> <4>[ 74.003095] apply_workqueue_attrs_locked (kernel/workqueue.c:5351)
-> <4>[ 74.003855] alloc_workqueue (kernel/workqueue.c:5722
-> (discriminator 1) kernel/workqueue.c:5772 (discriminator 1))
-> <4>[ 74.005398] ext4_fill_super (fs/ext4/super.c:5484 fs/ext4/super.c:5722)
-> <4>[ 74.006132] get_tree_bdev_flags (fs/super.c:1636)
-> <4>[ 74.007624] get_tree_bdev (fs/super.c:1660)
-> <4>[ 74.008664] ext4_get_tree (fs/ext4/super.c:5755)
-> <4>[ 74.009423] vfs_get_tree (fs/super.c:1814)
-> <4>[ 74.009703] path_mount (fs/namespace.c:3556 fs/namespace.c:3883)
-> <4>[ 74.010608] __arm64_sys_mount (fs/namespace.c:3896
-> fs/namespace.c:4107 fs/namespace.c:4084 fs/namespace.c:4084)
-> <4>[ 74.011527] invoke_syscall.constprop.0
-> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
-> <4>[ 74.012798] do_el0_svc (include/linux/thread_info.h:135
-> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
-> arch/arm64/kernel/syscall.c:151 (discriminator 2))
-> <4>[ 74.014042] el0_svc (arch/arm64/include/asm/irqflags.h:82
-> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
-> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
-> <4>[ 74.014942] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:763)
-> <4>[ 74.015917] el0t_64_sync (arch/arm64/kernel/entry.S:600)
-> <0>[ 74.017042] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
-> All code
-> ========
->    0: 12800019 mov w25, #0xffffffff            // #-1
->    4: b9402a82 ldr w2, [x20, #40]
->    8: aa1803e1 mov x1, x24
->    c: aa1403e0 mov x0, x20
->   10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
->
-> Code starting with the faulting instruction
-> ===========================================
->    0: f8626b1a ldr x26, [x24, x2]
-> <4>[   74.019014] ---[ end trace 0000000000000000 ]---
-> tst_test.c:1763: TBROK: Test killed by SIGSEGV!
->
-> Summary:
-> passed   0
-> failed   0
-> broken   1
-> skipped  0
-> warnings 0
-> tst_device.c:269: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for too long
-> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
-> Tainted kernel: ['kernel died recently, i.e. there was an OOPS or BUG'][0m
-> Restarting SUT: host
->
-> ===== df01_sh =====
-> command: df01.sh
-> <12>[   76.370093] /usr/local/bin/kirk[253]: starting test df01_sh (df01.sh)
-> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
-> <1>[   76.603065] Unable to handle kernel paging request at virtual
-> address a8fff00000c0c224
-> <1>[   76.603922] Mem abort info:
-> <1>[   76.604197]   ESR = 0x0000000096000005
-> <1>[   76.604638]   EC = 0x25: DABT (current EL), IL = 32 bits
-> <1>[   76.605128]   SET = 0, FnV = 0
-> <1>[   76.606996]   EA = 0, S1PTW = 0
-> <1>[   76.607274]   FSC = 0x05: level 1 translation fault
-> <1>[   76.607611] Data abort info:
-> <1>[   76.607897]   ISV = 0, ISS = 0x00000005, ISS2 = 0x00000000
-> <1>[   76.609765]   CM = 0, WnR = 0, TnD = 0, TagAccess = 0
-> <1>[   76.610958]   GCS = 0, Overlay = 0, DirtyBit = 0, Xs = 0
-> <1>[   76.611652] [a8fff00000c0c224] address between user and kernel
-> address ranges
-> <0>[   76.612130] Internal error: Oops: 0000000096000005 [#2] PREEMPT SMP
-> <4>[   76.613305] Modules linked in: btrfs blake2b_generic xor
-> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
-> sha512_arm64 fuse drm backlight ip_tables x_tables
-> <4>[   76.617688] CPU: 1 UID: 0 PID: 553 Comm: df01.sh Tainted: G
-> D            6.13.0-rc3-next-20241218 #1
-> <4>[   76.620869] Tainted: [D]=DIE
-> <4>[   76.621184] Hardware name: linux,dummy-virt (DT)
-> <4>[   76.622671] pstate: 63402009 (nZCv daif +PAN -UAO +TCO +DIT
-> -SSBS BTYPE=--)
-> <4>[ 76.623693] pc : __kmalloc_node_noprof (mm/slub.c:492
-> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
-> mm/slub.c:4293 mm/slub.c:4300)
-> <4>[ 76.624180] lr : __vmalloc_node_range_noprof
-> (include/linux/slab.h:922 mm/vmalloc.c:3647 mm/vmalloc.c:3846)
-> <4>[   76.625290] sp : ffff80008258fa90
-> <4>[   76.626275] x29: ffff80008258fab0 x28: fff00000c2c98e80 x27:
-> fff00000c48fd100
-> <4>[   76.626966] x26: fffffc1fc0303080 x25: 00000000ffffffff x24:
-> a8fff00000c0c224
-> <4>[   76.627599] x23: 0000000000000dc0 x22: ffffa93386d87390 x21:
-> 00000000ffffffff
-> <4>[   76.628603] x20: fff00000c0010400 x19: 0000000000000008 x18:
-> 0000000000000000
-> <4>[   76.629618] x17: 0000000000000000 x16: ffff800082180000 x15:
-> ffff800080000000
-> <4>[   76.630999] x14: fff00000c00203f0 x13: 00000ffff8000821 x12:
-> 0000000000000000
-> <4>[   76.632089] x11: 0000000000000000 x10: 0000000000000000 x9 :
-> ffffa93386d87390
-> <4>[   76.634293] x8 : ffff80008258f908 x7 : fff00000c2c98e80 x6 :
-> 0000000000010000
-> <4>[   76.634816] x5 : ffffa93389379000 x4 : 0000000000000000 x3 :
-> 000000000033b801
-> <4>[   76.636355] x2 : 0000000000000000 x1 : a8fff00000c0c224 x0 :
-> fff00000c0010400
-> <4>[   76.638309] Call trace:
-> <4>[ 76.639031] __kmalloc_node_noprof+0x100/0x4a0 P
-> <4>[ 76.640890] __vmalloc_node_range_noprof (include/linux/slab.h:922
-> mm/vmalloc.c:3647 mm/vmalloc.c:3846)
-> <4>[ 76.641267] copy_process (kernel/fork.c:314 (discriminator 1)
-> kernel/fork.c:1061 (discriminator 1) kernel/fork.c:2176 (discriminator
-> 1))
-> <4>[ 76.641795] kernel_clone (kernel/fork.c:2758)
-> <4>[ 76.643003] __do_sys_clone (kernel/fork.c:2902)
-> <4>[ 76.644078] __arm64_sys_clone (kernel/fork.c:2869)
-> <4>[ 76.645306] invoke_syscall.constprop.0
-> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
-> <4>[ 76.646337] do_el0_svc (include/linux/thread_info.h:135
-> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
-> arch/arm64/kernel/syscall.c:151 (discriminator 2))
-> <4>[ 76.646974] el0_svc (arch/arm64/include/asm/irqflags.h:82
-> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
-> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
-> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
-> <4>[ 76.647709] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:763)
-> <4>[ 76.649032] el0t_64_sync (arch/arm64/kernel/entry.S:600)
-> <0>[ 76.649724] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
->
-> <trim>
->
-> All code
-> ========
->    0: 12800019 mov w25, #0xffffffff            // #-1
->    4: b9402a82 ldr w2, [x20, #40]
->    8: aa1803e1 mov x1, x24
->    c: aa1403e0 mov x0, x20
->   10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
->
-> Code starting with the faulting instruction
-> ===========================================
->    0: f8626b1a ldr x26, [x24, x2]
->  <4>[   79.647693] ---[ end trace 0000000000000000 ]---
->  <0>[   79.649260] Kernel panic - not syncing: Attempted to kill init!
-> exitcode=0x0000000b
->  <2>[   79.650229] SMP: stopping secondary CPUs
->  <0>[   79.651558] Kernel Offset: 0x293306a00000 from 0xffff800080000000
->  <0>[   79.652015] PHYS_OFFSET: 0x40000000
->  <0>[   79.652461] CPU features: 0x000,000000d0,60bef2d8,cb7e7f3f
->  <0>[   79.653039] Memory Limit: none
->  <0>[   79.653854] ---[ end Kernel panic - not syncing: Attempted to
-> kill init! exitcode=0x0000000b ]---
->
->
-> Links:
-> -------
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241218/testrun/26396709/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/history/
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241212/testrun/26277241/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/log
->  - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2qNMDhPFtR8j185QSvZMn989u84
->  - https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJteQLGCw7MnMtUwzkD/
->  - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20241211/testrun/26266202/suite/log-parser-test/test/panic-multiline-kernel-panic-not-syncing-attempted-to-kill-init-exitcode/details/
->
->
-> metadata:
-> ----
->   git describe: next-20241210..next-20241218
->   git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux-next.git
->   kernel config:
-> https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJteQLGCw7MnMtUwzkD/config
->   build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJteQLGCw7MnMtUwzkD/
->   toolchain: gcc-13
->   config: CONFIG_ARM64_64K_PAGES=y, CONFIG_ARM64_16K_PAGES=y
->   arch: arm64
->   qemu: qemu-arm64 version 9.1.2
->
+  ext4/022 should work for ext3 & ext4 -> move to ext_common
+  ext4/023 should work for all ext? types -> move to ext_common
 
---
-Linaro LKFT
-https://lkft.linaro.org
+  ext4/044 should work for all ext? types -> move to ext_common
+
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
