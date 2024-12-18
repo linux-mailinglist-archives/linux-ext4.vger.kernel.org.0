@@ -1,505 +1,249 @@
-Return-Path: <linux-ext4+bounces-5752-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5753-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CF4B19F6EB4
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 21:08:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F3EE59F7046
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 23:49:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8B1641891CAE
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 20:08:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44B6E1687B3
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 22:49:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E671FC0F2;
-	Wed, 18 Dec 2024 20:08:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 740881FC7F8;
+	Wed, 18 Dec 2024 22:49:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b="d3kOFPu5"
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="gNsbdzz2"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2041.outbound.protection.outlook.com [40.107.100.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15ECE15530B;
-	Wed, 18 Dec 2024 20:08:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734552497; cv=none; b=NS4Mpe8AZjEBMqTMXQlXLa4/5F3vi7UxRJzjrRQhH/YF2vLiAYbWiXUD6R+szOYbhVHXzl12z4VghnH55mv3zk7hzyUI0IZxllIDbdgnaUEu52nYmhuvnUZa6XqYkVrKFSgZJAS8xpww65pwSp0MbMA3D59q5p6NP+6wWDc36bY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734552497; c=relaxed/simple;
-	bh=W6kw58QqM49zW3xGF5zrW6y1nlSLM0YfG5QPQe1TTAE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=E+WVs8sj4h9Wsb/O+t2WccyGDur63xzEJ3iWTRTaXUrqs3e2UOfSAwyUUPoFxXgKRs4kgKE7Yg9PPYMgJEEl3Vul7an6tQvopXnrdVurG571lY4vRIFP+gPqf+mAHn6XPlcm+/0YERPsyaAHQ33ywPm7zHvGENA0DZeA96+7k68=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com; spf=pass smtp.mailfrom=gmx.com; dkim=pass (2048-bit key) header.d=gmx.com header.i=quwenruo.btrfs@gmx.com header.b=d3kOFPu5; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.com;
-	s=s31663417; t=1734552478; x=1735157278; i=quwenruo.btrfs@gmx.com;
-	bh=gUnBG/i2F39aL0akHI7/X1bMH41G5hvoZ0PVEd3+wrs=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:Subject:To:Cc:
-	 References:From:In-Reply-To:Content-Type:
-	 Content-Transfer-Encoding:cc:content-transfer-encoding:
-	 content-type:date:from:message-id:mime-version:reply-to:subject:
-	 to;
-	b=d3kOFPu5y7Sfq0lZhEcmnn398/NQrfVQv5kcOsHfRXVUGVaakq81lvf0r8MHgcYl
-	 SZhFf4vQm9fkAOfp8kWQzalqmQB9w/AMJDU1glqBRYeJiXO8Qscel4IYltPYvUnRq
-	 G0wjmrJ5l3mJJvcksOdlEM9ubHsmkvvx9nDjGhbyJs8ibzLZWPvMuOQ8WHRnjudVW
-	 guJX/WOX6UjX0GzGQzd4TszFn04lUnE+GOo8f/Ij8ZQlMO5EZjFQlRrvbw+XRl9+A
-	 wfJPXXCJ6AaF1ubU3xMdyrADzgLzHuuGLW72pML6KFXINGHQLKMfK9B6njyT2hmvn
-	 CCl373eWoZiM1q+0+w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [172.16.0.191] ([159.196.52.54]) by mail.gmx.net (mrgmx104
- [212.227.17.174]) with ESMTPSA (Nemesis) id 1MjS54-1tq91b2CEc-00jadX; Wed, 18
- Dec 2024 21:07:58 +0100
-Message-ID: <ac1e1168-d3af-43c5-9df7-4ef5a1dbd698@gmx.com>
-Date: Thu, 19 Dec 2024 06:37:50 +1030
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B90E1991B8;
+	Wed, 18 Dec 2024 22:49:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.41
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1734562167; cv=fail; b=Tnvtze5YwBMEj7+V6K6p/TyQ2s7hxUoLYrHyOIbA1L26SJhdQBlJmOWSh6ZJ6cj0iC8lpaEIH4i74XqcNRLnP2TvHVG+3plI2C+s/zm4XJfMVy9TKwQLp2a0ge9DU1hgImTqvhTT95LcQCYLLky+IwlZmJLB5es5nnyqUE3rX/I=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1734562167; c=relaxed/simple;
+	bh=BdfA+wy5rz5oRvBNKV1BxgocN3tcjENT+7PwkYMoF9Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=evDYAMP+2bzeKLgp+EnODeFDK08lh68+WpE2obXteIIAK87NIqbLQ73Rd7ORfIt/9TmUCmIh9yyFb8pDkHr8dFsKQSUe3mgdyH9aQUrutU1vP27jutWNvtjDPGnUUWhTuJpUh/cOgsVwYWIZ6A76Iyp8w1LHiHK/e6uMfZkZyow=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=gNsbdzz2; arc=fail smtp.client-ip=40.107.100.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=KTaoBnevIeEQXIPNew7PdOZ9o4Lpc/4b0jNKqqh1YnKklPvbeyfAUtLYzMAD3dh2ViEzwbt9EqJbK7277070RlKrpryFlNls+u9x+kDIrPLLCU9meVGpA75gc+4RbkdnSkGk61n78SNooWZKmUQTpIay6Ke1yqx9vQ1X05r4F6W8NyaQJL1AtevTRrB+WcRE1rMMma//4ofWuNOfcjYkx/AONsv49+w8pOMWpGuXekUq7BZzLNdItxd5u93BrzK+lrzRDywnsQSmrBKdnSDHwiZ+7XxElFub0aysTFlY1mzfy5WWhUVJhmyPNSIe5GDsocBZg2/1aggSOKcg/8Bu2g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=TntSzvEXUOWNPMNazJTCwbyu4pJDZYd6/Mf4IwJ2Mww=;
+ b=m5Fdl/46PNjC343rMURUjpa3LylhYv5YHhtEW3S84FK59ZIewOCbyBJdzzqBHl7Q0PnV/cs7DTlA+DTfqYZfe6rrUB6uOomjJP6teS0fJxbRIseOwoV+qoAQZV+HfttLx7cKcV7PQIG390V07GyvWDy/09SOQJh6IwDs3cZonKpbTnHH6IX5MtAPkMIYbud6zP0N+I42cZrN1qvBm7juXiU8poC40jPFeBHqVgvdQeArWLjdJ90a5+M/BM+SbAstYCUhGkoCNKubDBOIQQHA0+GB8yjVmUPgzI19eqx6AzUy/Vhh+2M+RHJCc0t602obhDYGbp+EW/ktnBhE8KJjNg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=TntSzvEXUOWNPMNazJTCwbyu4pJDZYd6/Mf4IwJ2Mww=;
+ b=gNsbdzz24S4QoLQvEefNRhDgnVMIOId6tqFVXi+pUIqmAeYR9tyDBOI+LTEwu20UE/dWcDW6mQGYE5dmkPD/3MpWUZNj+xA7NO+XMsbn/G1MPw3QkxB4E9SJgixjGoQDglqfPFyMGrdb2HljPV/9S4SWmUCQTE+SptVAYdk7zy1UcgGMQa+Zem3z9X0FPDHElC88cfpDjnUXUp6wGIChkS6adqoMBA+EiuyUJyl7PtosDMMLt/imWCHManL+WVh+hev+oI8oMYYUCEqMBb88sXkRxQ3tnJ9SxDUeA8JEIFP6dLeXA36bSs1f1ndokY6ZOQLv4CzCxqPyw9DI0I03tA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
+ MN0PR12MB6104.namprd12.prod.outlook.com (2603:10b6:208:3c8::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8251.21; Wed, 18 Dec
+ 2024 22:49:22 +0000
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe]) by DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe%4]) with mapi id 15.20.8272.005; Wed, 18 Dec 2024
+ 22:49:22 +0000
+Date: Thu, 19 Dec 2024 09:49:18 +1100
+From: Alistair Popple <apopple@nvidia.com>
+To: David Hildenbrand <david@redhat.com>
+Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, 
+	linux-mm@kvack.org, lina@asahilina.net, zhang.lyra@gmail.com, 
+	gerald.schaefer@linux.ibm.com, vishal.l.verma@intel.com, dave.jiang@intel.com, 
+	logang@deltatee.com, bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca, 
+	catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au, npiggin@gmail.com, 
+	dave.hansen@linux.intel.com, ira.weiny@intel.com, willy@infradead.org, djwong@kernel.org, 
+	tytso@mit.edu, linmiaohe@huawei.com, peterx@redhat.com, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev, 
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org, 
+	linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com
+Subject: Re: [PATCH v4 10/25] mm/mm_init: Move p2pdma page refcount
+ initialisation to p2pdma
+Message-ID: <bk6cmiubwvor6gevit3wgl4k66xxpfcv6swmfrtvxnjnuojqkx@yow3pmyuxozw>
+References: <cover.18cbcff3638c6aacc051c44533ebc6c002bf2bd9.1734407924.git-series.apopple@nvidia.com>
+ <aaa23e6f315a2d9b30a422c3769100cdfa42e85a.1734407924.git-series.apopple@nvidia.com>
+ <359a1cf2-c5b0-4682-ba3c-980d77c4cfdb@redhat.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <359a1cf2-c5b0-4682-ba3c-980d77c4cfdb@redhat.com>
+X-ClientProxiedBy: SYCP282CA0012.AUSP282.PROD.OUTLOOK.COM
+ (2603:10c6:10:80::24) To DS0PR12MB7726.namprd12.prod.outlook.com
+ (2603:10b6:8:130::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: qemu-arm64: CONFIG_ARM64_64K_PAGES=y kernel crash on qemu-arm64
- with Linux next-20241210 and above
-To: Naresh Kamboju <naresh.kamboju@linaro.org>, qemu-devel@nongnu.org,
- open list <linux-kernel@vger.kernel.org>,
- Linux Regressions <regressions@lists.linux.dev>,
- linux-ext4 <linux-ext4@vger.kernel.org>, lkft-triage@lists.linaro.org,
- linux-mm <linux-mm@kvack.org>, Linux btrfs <linux-btrfs@vger.kernel.org>
-Cc: =?UTF-8?Q?Alex_Benn=C3=A9e?= <alex.bennee@linaro.org>,
- Anders Roxell <anders.roxell@linaro.org>, Arnd Bergmann <arnd@arndb.de>,
- Dan Carpenter <dan.carpenter@linaro.org>, Qu Wenruo <wqu@suse.com>,
- David Sterba <dsterba@suse.com>
-References: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
- <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
-Content-Language: en-US
-From: Qu Wenruo <quwenruo.btrfs@gmx.com>
-Autocrypt: addr=quwenruo.btrfs@gmx.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNIlF1IFdlbnJ1byA8cXV3ZW5ydW8uYnRyZnNAZ214LmNvbT7CwJQEEwEIAD4CGwMFCwkI
- BwIGFQgJCgsCBBYCAwECHgECF4AWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1YAUJEP5a
- sQAKCRDCPZHzoSX+qF+mB/9gXu9C3BV0omDZBDWevJHxpWpOwQ8DxZEbk9b9LcrQlWdhFhyn
- xi+l5lRziV9ZGyYXp7N35a9t7GQJndMCFUWYoEa+1NCuxDs6bslfrCaGEGG/+wd6oIPb85xo
- naxnQ+SQtYLUFbU77WkUPaaIU8hH2BAfn9ZSDX9lIxheQE8ZYGGmo4wYpnN7/hSXALD7+oun
- tZljjGNT1o+/B8WVZtw/YZuCuHgZeaFdhcV2jsz7+iGb+LsqzHuznrXqbyUQgQT9kn8ZYFNW
- 7tf+LNxXuwedzRag4fxtR+5GVvJ41Oh/eygp8VqiMAtnFYaSlb9sjia1Mh+m+OBFeuXjgGlG
- VvQFzsBNBFnVga8BCACqU+th4Esy/c8BnvliFAjAfpzhI1wH76FD1MJPmAhA3DnX5JDORcga
- CbPEwhLj1xlwTgpeT+QfDmGJ5B5BlrrQFZVE1fChEjiJvyiSAO4yQPkrPVYTI7Xj34FnscPj
- /IrRUUka68MlHxPtFnAHr25VIuOS41lmYKYNwPNLRz9Ik6DmeTG3WJO2BQRNvXA0pXrJH1fN
- GSsRb+pKEKHKtL1803x71zQxCwLh+zLP1iXHVM5j8gX9zqupigQR/Cel2XPS44zWcDW8r7B0
- q1eW4Jrv0x19p4P923voqn+joIAostyNTUjCeSrUdKth9jcdlam9X2DziA/DHDFfS5eq4fEv
- ABEBAAHCwHwEGAEIACYCGwwWIQQt33LlpaVbqJ2qQuHCPZHzoSX+qAUCZxF1gQUJEP5a0gAK
- CRDCPZHzoSX+qHGpB/kB8A7M7KGL5qzat+jBRoLwB0Y3Zax0QWuANVdZM3eJDlKJKJ4HKzjo
- B2Pcn4JXL2apSan2uJftaMbNQbwotvabLXkE7cPpnppnBq7iovmBw++/d8zQjLQLWInQ5kNq
- Vmi36kmq8o5c0f97QVjMryHlmSlEZ2Wwc1kURAe4lsRG2dNeAd4CAqmTw0cMIrR6R/Dpt3ma
- +8oGXJOmwWuDFKNV4G2XLKcghqrtcRf2zAGNogg3KulCykHHripG3kPKsb7fYVcSQtlt5R6v
- HZStaZBzw4PcDiaAF3pPDBd+0fIKS6BlpeNRSFG94RYrt84Qw77JWDOAZsyNfEIEE0J6LSR/
-In-Reply-To: <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:zTMN64998KADLlz9cChlVMRGQDoHHhi+fCgtdtynJeYS/dtdSfj
- 8NpMKs8SfmxEebvk3nltYsNxyWU8fvtoCHv3mXlL77DmJJolGdd0pETkTupB7pDlU1k2GHO
- kBk0rT1xvift8buO04QMKgeD334sPwvTXJx1RrAgUoRTcspx2wA+nGrPiTM64Ag2HTS1hU1
- MAS+1F6QqyBsCpRgnWDKA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:hX3W2OCyHRw=;jZM3rhSKUxEA1seHmoIacHUuIi/
- PZh4f3LVNKlKkm58hziRF7iQV+3sfuK+ncieTWfoxP67XaFG70y1Vb/A/vnGA2ZUWv6IExRPs
- oHVglr1e0RCXtFn/IHDjcXRRPPxPhHXd279cQaVKUUVO4y4/hhYYNJu0g2i7fpKjEzeZvA5J8
- GEf/A8oZEot5jR2dSEBQbprz19NyWj4JTrWvs+rbPT4H8gl3OvV2xeEJP2ZLkxwjyLwq2hcU6
- saznFZl+ohJyH/Ly/0SXht3AHcGwbLX5dpMOrsc/RkQUTC1AZoQEe0w4/HHbj+g3WTgkimMZi
- jpbeOWna34tlf5i7oPo+8ccmkCShVbNHvO8RaejX4QJocWxj9CNPsUI6BdbuVNROfs8bD+OBZ
- arFGDaHFnKoFZ2rnSsZDN8HNl8EfIeM64kE2E9tGinZ2TV47ySUl3+GcBGLBrr/A6maj37csx
- UWepxtRFh2t4uffrez8sE13KJpclwjb5r5qT/niYZ0ePaOrvEtYkI57jipraq8i1Ntp82il48
- hziwDSzV/DKMqfT4FUQmuynB3NC7ydrjiLnQKLl/jOuijL7YK2sbIVs/mPF8iQThMjU8/+oVJ
- xN+22qHyREwxUCvQ44aLVhN3jze9ggxYNov5GySWO339CKuH3e0c9k2XQw67YlKA7Vexchfa8
- kbjnz2XuDejxpVKUEuMinyUqdmAWWNzCpWlg1kqxcpjCfXu/uGPuw0gJ9Bn+OsV9fLaXUZsr1
- T9UbAw4h/cqeI12tVwSxl64LyfEtTkCTQr+zgR4OHNef6wF4O07Kd4eruBImS53B6qRmKSCzt
- /xdNo1Gi32riJ7fEcYN5Ek1TWf7rLZuZpW5W2o55IBhtPEEa+wp/Ak/orYi9aaPzE/zitcZga
- 05iSVCWHHDwzbfiWvECnPG0lZH+qes3dFS5tCFW6BEumSYxdRl9ChsN2I1JvnlrlmCQOzGGd/
- K7z33ZizvIF+UILBHc3wtk+UqfK0OYcuWoq5dRyfO57k+hgDRlQWMew5EYk6phlZcyQPKvtuL
- qrzuWPz/WKgTYVwk4S1v4nh+/Pk4OKlWEeZWMSGuk6PNk3nkp2JtnQAHPzB0BqfkKHWY4MUHM
- K0cui0IG8dhoR+kwUosyw2NHjwEkf8
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|MN0PR12MB6104:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ffe71dd-2e6b-4a63-8217-08dd1fb636b6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|366016|376014;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?24+F253LJRoTpK1A6lcedv6/9pmEcPT8TDXNaNl25l9WxqsD1LEYgH1yMv3w?=
+ =?us-ascii?Q?0u7EfBG8l0/e4t6MhOiiMtYrdctGmqNaTxXFYrmjMmhX+ZI34VuCH7dN3vrN?=
+ =?us-ascii?Q?DHyqEBOTIfHOCFrbd3/wCNF1BU9fDFJ3EVGZgIWNIT1+vcf+Dz+KF5QNSvlz?=
+ =?us-ascii?Q?UASvWP21cYYUnpjs6QYL6G2Gn56I8GcVNdivoCZ7zj30TpSdh+191XPNkcb+?=
+ =?us-ascii?Q?UOeYBC05jNTPocrpZ4VdUUcqCiDr3KYyYn1CRoSDPtuRreyBKnk9d6SE2u3/?=
+ =?us-ascii?Q?Y0sa4jk1TWiTDL2dlDYialOHIGhyvR0McmtVizoj0Sfb1jnRwhGb5hsW2bXs?=
+ =?us-ascii?Q?XtMks8Sb8rGHBcltxVzR6dNhwRe9U5ziE+Xdm7F291faNJicH2739wzuSNPP?=
+ =?us-ascii?Q?woDwnYFBgZ9PKgMPoNqCm3ddVVkst8xbNZxxVbookmKUW7oRwjm9VNqWNjBB?=
+ =?us-ascii?Q?J8yMdxyMKMM9hVdXMZZhUJLNt0nA1Dvh8iA5HmPvHRPC/GQF+WGhhupeQccm?=
+ =?us-ascii?Q?c5k43UPvyI0Ns63uxew6T9+fIZm8L+OVq6sUlcaRpX34MHruTjxxL57Z+I3Q?=
+ =?us-ascii?Q?DgvTY5QrEbbGGWo4u+keZ3M5mgWH3TZNI5knhiuBzc815kYu0ovy07EzbQ9F?=
+ =?us-ascii?Q?hBLQm0ZNIQsa3cpx58NUZ+9gMF3JX13IhEtoAdtMVkhcYCLqasgzlRuEqFFR?=
+ =?us-ascii?Q?QcCywwLAK+OgbHB4rEVqx7hrjY+R/Ti0GlwxZQcvXFiFLUB0O+6IJZKGGu33?=
+ =?us-ascii?Q?DT3jSma8J3QIeAal0yi6XgTVs3+4PJ81B/B/qjtmIsQ9hznjMp5z4azUSzkD?=
+ =?us-ascii?Q?VbODzFfz27pp7XbU5x8a9lmq0lIhP+MknHJNTnHRk6Q1xbF8yo9qPzn8oS68?=
+ =?us-ascii?Q?7t9KBTpRTdv3t9R3Nz9VlPyU3aUoRWwyRUzyFvKY3M36h2G6lpI77QQv5g20?=
+ =?us-ascii?Q?p7Hr/NE575LXbueC2AE8nJytEHtRzE97wCXez3DQ1aPZWMKbod0+9sehiEKy?=
+ =?us-ascii?Q?xqAN0NQTOZhHZuXLhBBRBEsSQ1j7ggrYrLNgmq7hxV60Tq1kNJoKXcxodZKv?=
+ =?us-ascii?Q?tQ2uPp7Yg+6inWobaPpNFbefiBfFX7E5YH/vjdPkD9I/pQ9LM1wu74Bm0YGx?=
+ =?us-ascii?Q?F/lC+ABGrhbmPcwbSyhipGQVbiVNOT7CpIRjfPGAhJGi6kY5+bgKw3s0agBB?=
+ =?us-ascii?Q?WA/g9IiM0qP9I8gcGSy6YBZ4ECGvA3MbXP4oxS88WbXQXhyVJh7gyl9lIsR0?=
+ =?us-ascii?Q?tmHTB1WN5vjuWkghKAksq9864TOq3+OtcyfKejQfxwJoa77f12M9wQBts2pN?=
+ =?us-ascii?Q?H2j0Jq16vngHLc3g3y1a567a3ky1Mi9YIlcdd96siuAggykkdo9aYFL7TjTO?=
+ =?us-ascii?Q?hQXzCvcd5TCkatInJssfJW4kjh70?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?pjd+PGywJ+ddECp/LwLw3g+eeM9HA/SHgMPrKLJYq2KgG2OM6ds3Hodstfo7?=
+ =?us-ascii?Q?QutO7+yzJ3heAm55UnkIHuPzKEPu/lDr744wOXjKQh9sonDXGGxb5BHdqGop?=
+ =?us-ascii?Q?0Mdm45gehoHwudFUqaquUgl+kBXxfb3qDHnVM/lnBynJhZJ+i3rt7HBUUNAA?=
+ =?us-ascii?Q?IB0wZEPrZb83bTgJ1DAO8NkaOoexCcpLSfozS6KBP7ZQzfHXXzddtmGdr0tw?=
+ =?us-ascii?Q?9HelC96E9M+CyhE2C/VKU/jtmtyj6oJrISD3mCAQE/m3NNm/wMyBB/EG6shU?=
+ =?us-ascii?Q?pI6HdVOO9+1xgQlQk7OOGl9F1GWUCf/SGjwyIXkMdwWmXtGyT0NsbIiLjC2D?=
+ =?us-ascii?Q?IWh4Qez0w0mYZuK4wJvlUlEfnfMijpIsePIcZELQEwUdPScLnF/rIoBO/Avg?=
+ =?us-ascii?Q?sqYEWN13HpeJ74WMBWIAsynhBEqoEYgqRUS8fKcaF9Ek0ZSJHza3WCPfwOxW?=
+ =?us-ascii?Q?84TY+V3dhG6uSnkI59WuMv99+vcCvUk8fQTQWtqNbImI5mSl6Xtu1bOwgmVb?=
+ =?us-ascii?Q?IhcfhbesnpoviGnWdQzGrIIkBz88FUIrR+nBOwr9edjWlVC/elNzHI6xYYXi?=
+ =?us-ascii?Q?YFF4vhbSXm6biEb0pKM8NHkkUsIJQYVPcbNeiwT0ju2TvsK0+CIQcJWvGFix?=
+ =?us-ascii?Q?KT7dEpQ+fTxowI0Fap0NWz1H4y1WTkYz78xtmf75BUKxvxzBg2Xhp/PT/RJw?=
+ =?us-ascii?Q?hxoz1C3L5Dsnx1CQBP1pgDmE91c9ALyi9FyTEKzzDHShslVbcJQFrwSTY/Xs?=
+ =?us-ascii?Q?cWFhs8NRwnmo5QpTtZzwl4oL2MqVTtf4drVRsEAsP+/7G8IwXSmcI7feLKb+?=
+ =?us-ascii?Q?Wn2rrtD5861lKmtzGxZvWuA/dFxL5ko0IyjQ76uBYE71iNbP4MXVml+iti0i?=
+ =?us-ascii?Q?8Ey4FQWPrCcYGw2Oijq7K+821oN+GFvwODodYdCK2dYeZ1icuUyTdd/TxZKc?=
+ =?us-ascii?Q?4btR0oG8/lSXGf8mtNBY0pZOmCXUctEIjiLTbvkAWwa4+5sZGUnEOa18rlO8?=
+ =?us-ascii?Q?CwwtA+U2xcyLJ90P6lRo4iqEj7/oUu1q36ANNCAs76as1wOkDAjIMLjwU3Bz?=
+ =?us-ascii?Q?BxZkhu3knWPTxUIVCfpO6oZHRCiXxCxrkaAUsjS00GymLCJbPbLgLXGtDaZG?=
+ =?us-ascii?Q?jjXSnuBg107LZkqQhJJYwNVU77WANDbPFFkEeRfzdXMCQ7YLE8gjH/RxekTH?=
+ =?us-ascii?Q?NhYoYqRg5yI1Udeo7iIZr3HoYN5jOSInmduiLjdR54vf9yrNOUQsIjPpziJ2?=
+ =?us-ascii?Q?Cf7LzPTC+gDhEs+08OBF9Hpqztyp9hD1cldZR76RUxC2LBwvz8mc1SlguFmP?=
+ =?us-ascii?Q?QWGAfRHxLuCh/cYvhn4twgh25HROjRK4KmWU7SEfxcLrDqhP+4a3QyMSaBfW?=
+ =?us-ascii?Q?omNKgt0HWE6PhkWv1oh+yrfJgQa7UKeFWalol08ZO7C/HbxIHy01ykFZ0u4j?=
+ =?us-ascii?Q?R0GTy+UXwYsCsti+Z9WUaTbRMMKlXOWbpKCuikdLpBZ5hU2LL9Nf324GZ1Fb?=
+ =?us-ascii?Q?4nG0CodxAl0bDcFIwUGFQauUOA9C3kDITM3zZiylGD3rWzjWZaSQvk4N09ja?=
+ =?us-ascii?Q?wYx5Y5Te4s7ofBiHOFe41/PHNPhj8FsqyTitFy+U?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ffe71dd-2e6b-4a63-8217-08dd1fb636b6
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB7726.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Dec 2024 22:49:22.2172
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: HnBgmtDOTFmkC8UbZNf0fDHwQiJrSv/48IoakA7KAgtiPSSV2Et0ctS1OGWOtAOA31MYvJFtG2GKdelwVzjxLg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6104
 
+On Tue, Dec 17, 2024 at 11:14:42PM +0100, David Hildenbrand wrote:
+> On 17.12.24 06:12, Alistair Popple wrote:
+> > Currently ZONE_DEVICE page reference counts are initialised by core
+> > memory management code in __init_zone_device_page() as part of the
+> > memremap() call which driver modules make to obtain ZONE_DEVICE
+> > pages. This initialises page refcounts to 1 before returning them to
+> > the driver.
+> > 
+> > This was presumably done because it drivers had a reference of sorts
+> > on the page. It also ensured the page could always be mapped with
+> > vm_insert_page() for example and would never get freed (ie. have a
+> > zero refcount), freeing drivers of manipulating page reference counts.
+> 
+> It probably dates back to copying that code from other zone-init code where
+> we
+> (a) Treat all available-at-boot memory as allocated before we release it to
+> the buddy
+> (b) Treat all hotplugged memory as allocated until we release it to the
+> buddy
+ 
+Argh, thanks for the background.
 
+> As a side note, I'm working on converting (b) -- PageOffline pages -- to
+> have a refcount of 0 ("frozen").
 
-=E5=9C=A8 2024/12/19 02:22, Naresh Kamboju =E5=86=99=E9=81=93:
-> On Wed, 18 Dec 2024 at 17:33, Naresh Kamboju <naresh.kamboju@linaro.org>=
- wrote:
->>
->> The following kernel crash noticed on qemu-arm64 while running the
->> Linux next-20241210 tag (to next-20241218) kernel built with
->>   - CONFIG_ARM64_64K_PAGES=3Dy
->>   - CONFIG_ARM64_16K_PAGES=3Dy
->> and running LTP smoke tests.
->>
->> First seen on Linux next-20241210.
->>    Good: next-20241209
->>    Bad:  next-20241210 and next-20241218
->>
->> qemu-arm64: 9.1.2
->>
->> Anyone noticed this ?
->>
->
-> Anders bisected this reported regression and found,
-> # first bad commit:
->    [9c1d66793b6faa00106ae4c866359578bfc012d2]
->    btrfs: validate system chunk array at btrfs_validate_super()
+[...]
 
-Weird, I run daily fstests with 64K page sized aarch64 VM.
+> > diff --git a/mm/mm_init.c b/mm/mm_init.c
+> > index 24b68b4..f021e63 100644
+> > --- a/mm/mm_init.c
+> > +++ b/mm/mm_init.c
+> > @@ -1017,12 +1017,26 @@ static void __ref __init_zone_device_page(struct page *page, unsigned long pfn,
+> >   	}
+> >   	/*
+> > -	 * ZONE_DEVICE pages are released directly to the driver page allocator
+> > -	 * which will set the page count to 1 when allocating the page.
+> > +	 * ZONE_DEVICE pages other than MEMORY_TYPE_GENERIC and
+> > +	 * MEMORY_TYPE_FS_DAX pages are released directly to the driver page
+> > +	 * allocator which will set the page count to 1 when allocating the
+> > +	 * page.
+> > +	 *
+> > +	 * MEMORY_TYPE_GENERIC and MEMORY_TYPE_FS_DAX pages automatically have
+> > +	 * their refcount reset to one whenever they are freed (ie. after
+> > +	 * their refcount drops to 0).
+> >   	 */
+> > -	if (pgmap->type == MEMORY_DEVICE_PRIVATE ||
+> > -	    pgmap->type == MEMORY_DEVICE_COHERENT)
+> > +	switch (pgmap->type) {
+> > +	case MEMORY_DEVICE_PRIVATE:
+> > +	case MEMORY_DEVICE_COHERENT:
+> > +	case MEMORY_DEVICE_PCI_P2PDMA:
+> >   		set_page_count(page, 0);
+> > +		break;
+> > +
+> > +	case MEMORY_DEVICE_FS_DAX:
+> > +	case MEMORY_DEVICE_GENERIC:
+> > +		break;
+> > +	}
+> >   }
+> >   /*
+> 
+> 
+> But that's a bit weird: we call __init_single_page()->init_page_count() to
+> initialize it to 1, to then set it back to 0.
+> 
+> 
+> Maybe we can just pass to __init_single_page() the refcount we want to have
+> directly? Can be a patch on top of course.
 
-But never hit a crash on this.
+Once the dust settles on this series we won't need the pgmap->type check at
+all because all ZONE_DEVICE pages will get an initial count of 0. I have some
+follow up clean-ups for after this series is applied (particularly with regards
+to pgmap refcounts), so if it's ok I'd rather do this as a follow-up.
 
-And the original crash call trace only points back to ext4, not btrfs.
-
-Mind to test it with KASAN enabled?
-
-Thanks,
-Qu
->
->
->> Test log:
->> ---------
->> tst_test.c:1799: TINFO: =3D=3D=3D Testing on btrfs =3D=3D=3D
->> tst_test.c:1158: TINFO: Formatting /dev/loop0 with btrfs opts=3D'' extr=
-a opts=3D''
->> <6>[   71.880167] BTRFS: device fsid
->> d492b571-012c-40a9-b8e1-efc97408d3bc devid 1 transid 6 /dev/loop0
->> (7:0) scanned by chdir01 (476)
->> tst_test.c:1170: TINFO: Mounting /dev/loop0 to
->> /tmp/LTP_chdJeywxF/mntpoint fstyp=3Dbtrfs flags=3D0
->> <6>[   71.960245] BTRFS info (device loop0): first mount of filesystem
->> d492b571-012c-40a9-b8e1-efc97408d3bc
->> <6>[   71.970667] BTRFS info (device loop0): using crc32c
->> (crc32c-arm64) checksum algorithm
->> <2>[   71.993486] BTRFS critical (device loop0): corrupt superblock
->> syschunk array: chunk_start=3D22020096, invalid chunk sectorsize, have
->> 65536 expect 4096
->> <3>[   71.995802] BTRFS error (device loop0): superblock contains fatal=
- errors
->> <3>[   72.014538] BTRFS error (device loop0): open_ctree failed: -22
->> tst_test.c:1170: TBROK: mount(/dev/loop0, mntpoint, btrfs, 0, (nil))
->> failed: EINVAL (22)
->>
->> Summary:
->> passed   48
->> failed   0
->> broken   1
->> skipped  0
->> warnings 0
->>
->> Duration: 7.002s
->>
->>
->> =3D=3D=3D=3D=3D symlink01 =3D=3D=3D=3D=3D
->> command: symlink01
->> <12>[   72.494428] /usr/local/bin/kirk[253]: starting test symlink01 (s=
-ymlink01)
->> symlink01    0  TINFO  :  Using /tmp/LTP_symmsYXet as tmpdir (tmpfs fil=
-esystem)
->> symlink01    1  TPASS  :  Creation of symbolic link file to no object f=
-ile is ok
->> symlink01    2  TPASS  :  Creation of symbolic link file to no object f=
-ile is ok
->> symlink01    3  TPASS  :  Creation of symbolic link file and object
->> file via symbolic link is ok
->> symlink01    4  TPASS  :  Creating an existing symbolic link file
->> error is caught
->> symlink01    5  TPASS  :  Creating a symbolic link which exceeds
->> maximum pathname error is caught
->>
->> Summary:
->> passed    5
->> failed    0
->> broken    0
->> skipped   0
->> warnings  0
->>
->> Duration: 0.052s
->>
->>
->> =3D=3D=3D=3D=3D stat04 =3D=3D=3D=3D=3D
->> command: stat04
->> <12>[   72.966706] /usr/local/bin/kirk[253]: starting test stat04 (stat=
-04)
->> tst_buffers.c:57: TINFO: Test is using guarded buffers
->> tst_tmpdir.c:316: TINFO: Using /tmp/LTP_staEABwgV as tmpdir (tmpfs file=
-system)
->> <6>[   73.447708] loop0: detected capacity change from 0 to 614400
->> tst_device.c:96: TINFO: Found free device 0 '/dev/loop0'
->> tst_test.c:1860: TINFO: LTP version: 20240930
->> tst_test.c:1864: TINFO: Tested kernel: 6.13.0-rc3-next-20241218 #1 SMP
->> PREEMPT @1734498806 aarch64
->> tst_test.c:1703: TINFO: Timeout per run is 0h 05m 24s
->> stat04.c:60: TINFO: Formatting /dev/loop0 with ext2 opts=3D'-b 4096' ex=
-tra opts=3D''
->> mke2fs 1.47.1 (20-May-2024)
->> <3>[   73.859753] operation not supported error, dev loop0, sector
->> 614272 op 0x9:(WRITE_ZEROES) flags 0x10000800 phys_seg 0 prio class 0
->> stat04.c:61: TINFO: Mounting /dev/loop0 to /tmp/LTP_staEABwgV/mntpoint
->> fstyp=3Dext2 flags=3D0
->> <6>[   73.939263] EXT4-fs (loop0): mounting ext2 file system using the
->> ext4 subsystem
->> <1>[   73.946378] Unable to handle kernel paging request at virtual
->> address a8fff00000c0c224
->> <1>[   73.947878] Mem abort info:
->> <1>[   73.949153]   ESR =3D 0x0000000096000005
->> <1>[   73.959105]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->> <1>[   73.960031]   SET =3D 0, FnV =3D 0
->> <1>[   73.960349]   EA =3D 0, S1PTW =3D 0
->> <1>[   73.960638]   FSC =3D 0x05: level 1 translation fault
->> <1>[   73.961005] Data abort info:
->> <1>[   73.961293]   ISV =3D 0, ISS =3D 0x00000005, ISS2 =3D 0x00000000
->> <1>[   73.963739]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
->> <1>[   73.964980]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
->> <1>[   73.967132] [a8fff00000c0c224] address between user and kernel
->> address ranges
->> <0>[   73.968923] Internal error: Oops: 0000000096000005 [#1] PREEMPT S=
-MP
->> <4>[   73.970516] Modules linked in: btrfs blake2b_generic xor
->> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
->> sha512_arm64 fuse drm backlight ip_tables x_tables
->> <4>[   73.974237] CPU: 1 UID: 0 PID: 529 Comm: stat04 Not tainted
->> 6.13.0-rc3-next-20241218 #1
->> <4>[   73.975359] Hardware name: linux,dummy-virt (DT)
->> <4>[   73.977170] pstate: 62402009 (nZCv daif +PAN -UAO +TCO -DIT
->> -SSBS BTYPE=3D--)
->> <4>[ 73.978295] pc : __kmalloc_node_noprof (mm/slub.c:492
->> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
->> mm/slub.c:4293 mm/slub.c:4300)
->> <4>[ 73.980200] lr : alloc_cpumask_var_node (lib/cpumask.c:62 (discrimi=
-nator 2))
->> <4>[   73.981466] sp : ffff80008258f950
->> <4>[   73.982228] x29: ffff80008258f970 x28: ffffa93389398000 x27:
->> 0000000000000001
->> <4>[   73.983875] x26: fffffc1fc0303080 x25: 00000000ffffffff x24:
->> a8fff00000c0c224
->> <4>[   73.985649] x23: 0000000000000cc0 x22: ffffa93387f51d0c x21:
->> 00000000ffffffff
->> <4>[   73.986188] x20: fff00000c0010400 x19: 0000000000000008 x18:
->> 0000000000000000
->> <4>[   73.988686] x17: fff056cd748b0000 x16: ffff800080020000 x15:
->> 0000000000000000
->> <4>[   73.990276] x14: 0000000000002a66 x13: 0000000000004000 x12:
->> 0000000000000001
->> <4>[   73.992401] x11: 0000000000000002 x10: 0000000000004001 x9 :
->> ffffa93387f51d0c
->> <4>[   73.993108] x8 : fff00000c2c99240 x7 : 0000000000000001 x6 :
->> 0000000000000001
->> <4>[   73.993886] x5 : fff00000c4879800 x4 : 0000000000000000 x3 :
->> 000000000033a401
->> <4>[   73.995550] x2 : 0000000000000000 x1 : a8fff00000c0c224 x0 :
->> fff00000c0010400
->> <4>[   73.997017] Call trace:
->> <4>[ 73.998266] __kmalloc_node_noprof+0x100/0x4a0 P
->> <4>[ 73.999716] alloc_cpumask_var_node (lib/cpumask.c:62 (discriminator=
- 2))
->> <4>[ 74.000942] alloc_workqueue_attrs (kernel/workqueue.c:4624
->> (discriminator 1))
->> <4>[ 74.001327] apply_wqattrs_prepare (kernel/workqueue.c:5263)
->> <4>[ 74.003095] apply_workqueue_attrs_locked (kernel/workqueue.c:5351)
->> <4>[ 74.003855] alloc_workqueue (kernel/workqueue.c:5722
->> (discriminator 1) kernel/workqueue.c:5772 (discriminator 1))
->> <4>[ 74.005398] ext4_fill_super (fs/ext4/super.c:5484 fs/ext4/super.c:5=
-722)
->> <4>[ 74.006132] get_tree_bdev_flags (fs/super.c:1636)
->> <4>[ 74.007624] get_tree_bdev (fs/super.c:1660)
->> <4>[ 74.008664] ext4_get_tree (fs/ext4/super.c:5755)
->> <4>[ 74.009423] vfs_get_tree (fs/super.c:1814)
->> <4>[ 74.009703] path_mount (fs/namespace.c:3556 fs/namespace.c:3883)
->> <4>[ 74.010608] __arm64_sys_mount (fs/namespace.c:3896
->> fs/namespace.c:4107 fs/namespace.c:4084 fs/namespace.c:4084)
->> <4>[ 74.011527] invoke_syscall.constprop.0
->> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
->> <4>[ 74.012798] do_el0_svc (include/linux/thread_info.h:135
->> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
->> arch/arm64/kernel/syscall.c:151 (discriminator 2))
->> <4>[ 74.014042] el0_svc (arch/arm64/include/asm/irqflags.h:82
->> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
->> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
->> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
->> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
->> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
->> <4>[ 74.014942] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:=
-763)
->> <4>[ 74.015917] el0t_64_sync (arch/arm64/kernel/entry.S:600)
->> <0>[ 74.017042] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
->> All code
->> =3D=3D=3D=3D=3D=3D=3D=3D
->>     0: 12800019 mov w25, #0xffffffff            // #-1
->>     4: b9402a82 ldr w2, [x20, #40]
->>     8: aa1803e1 mov x1, x24
->>     c: aa1403e0 mov x0, x20
->>    10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
->>
->> Code starting with the faulting instruction
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>     0: f8626b1a ldr x26, [x24, x2]
->> <4>[   74.019014] ---[ end trace 0000000000000000 ]---
->> tst_test.c:1763: TBROK: Test killed by SIGSEGV!
->>
->> Summary:
->> passed   0
->> failed   0
->> broken   1
->> skipped  0
->> warnings 0
->> tst_device.c:269: TWARN: ioctl(/dev/loop0, LOOP_CLR_FD, 0) no ENXIO for=
- too long
->> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
->> Tainted kernel: ['kernel died recently, i.e. there was an OOPS or BUG']=
-[0m
->> Restarting SUT: host
->>
->> =3D=3D=3D=3D=3D df01_sh =3D=3D=3D=3D=3D
->> command: df01.sh
->> <12>[   76.370093] /usr/local/bin/kirk[253]: starting test df01_sh (df0=
-1.sh)
->> Tainted kernel: kernel died recently, i.e. there was an OOPS or BUG[0m
->> <1>[   76.603065] Unable to handle kernel paging request at virtual
->> address a8fff00000c0c224
->> <1>[   76.603922] Mem abort info:
->> <1>[   76.604197]   ESR =3D 0x0000000096000005
->> <1>[   76.604638]   EC =3D 0x25: DABT (current EL), IL =3D 32 bits
->> <1>[   76.605128]   SET =3D 0, FnV =3D 0
->> <1>[   76.606996]   EA =3D 0, S1PTW =3D 0
->> <1>[   76.607274]   FSC =3D 0x05: level 1 translation fault
->> <1>[   76.607611] Data abort info:
->> <1>[   76.607897]   ISV =3D 0, ISS =3D 0x00000005, ISS2 =3D 0x00000000
->> <1>[   76.609765]   CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
->> <1>[   76.610958]   GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
->> <1>[   76.611652] [a8fff00000c0c224] address between user and kernel
->> address ranges
->> <0>[   76.612130] Internal error: Oops: 0000000096000005 [#2] PREEMPT S=
-MP
->> <4>[   76.613305] Modules linked in: btrfs blake2b_generic xor
->> xor_neon raid6_pq zstd_compress sm3_ce sm3 sha3_ce sha512_ce
->> sha512_arm64 fuse drm backlight ip_tables x_tables
->> <4>[   76.617688] CPU: 1 UID: 0 PID: 553 Comm: df01.sh Tainted: G
->> D            6.13.0-rc3-next-20241218 #1
->> <4>[   76.620869] Tainted: [D]=3DDIE
->> <4>[   76.621184] Hardware name: linux,dummy-virt (DT)
->> <4>[   76.622671] pstate: 63402009 (nZCv daif +PAN -UAO +TCO +DIT
->> -SSBS BTYPE=3D--)
->> <4>[ 76.623693] pc : __kmalloc_node_noprof (mm/slub.c:492
->> mm/slub.c:505 mm/slub.c:532 mm/slub.c:3993 mm/slub.c:4152
->> mm/slub.c:4293 mm/slub.c:4300)
->> <4>[ 76.624180] lr : __vmalloc_node_range_noprof
->> (include/linux/slab.h:922 mm/vmalloc.c:3647 mm/vmalloc.c:3846)
->> <4>[   76.625290] sp : ffff80008258fa90
->> <4>[   76.626275] x29: ffff80008258fab0 x28: fff00000c2c98e80 x27:
->> fff00000c48fd100
->> <4>[   76.626966] x26: fffffc1fc0303080 x25: 00000000ffffffff x24:
->> a8fff00000c0c224
->> <4>[   76.627599] x23: 0000000000000dc0 x22: ffffa93386d87390 x21:
->> 00000000ffffffff
->> <4>[   76.628603] x20: fff00000c0010400 x19: 0000000000000008 x18:
->> 0000000000000000
->> <4>[   76.629618] x17: 0000000000000000 x16: ffff800082180000 x15:
->> ffff800080000000
->> <4>[   76.630999] x14: fff00000c00203f0 x13: 00000ffff8000821 x12:
->> 0000000000000000
->> <4>[   76.632089] x11: 0000000000000000 x10: 0000000000000000 x9 :
->> ffffa93386d87390
->> <4>[   76.634293] x8 : ffff80008258f908 x7 : fff00000c2c98e80 x6 :
->> 0000000000010000
->> <4>[   76.634816] x5 : ffffa93389379000 x4 : 0000000000000000 x3 :
->> 000000000033b801
->> <4>[   76.636355] x2 : 0000000000000000 x1 : a8fff00000c0c224 x0 :
->> fff00000c0010400
->> <4>[   76.638309] Call trace:
->> <4>[ 76.639031] __kmalloc_node_noprof+0x100/0x4a0 P
->> <4>[ 76.640890] __vmalloc_node_range_noprof (include/linux/slab.h:922
->> mm/vmalloc.c:3647 mm/vmalloc.c:3846)
->> <4>[ 76.641267] copy_process (kernel/fork.c:314 (discriminator 1)
->> kernel/fork.c:1061 (discriminator 1) kernel/fork.c:2176 (discriminator
->> 1))
->> <4>[ 76.641795] kernel_clone (kernel/fork.c:2758)
->> <4>[ 76.643003] __do_sys_clone (kernel/fork.c:2902)
->> <4>[ 76.644078] __arm64_sys_clone (kernel/fork.c:2869)
->> <4>[ 76.645306] invoke_syscall.constprop.0
->> (arch/arm64/include/asm/syscall.h:61 arch/arm64/kernel/syscall.c:54)
->> <4>[ 76.646337] do_el0_svc (include/linux/thread_info.h:135
->> (discriminator 2) arch/arm64/kernel/syscall.c:140 (discriminator 2)
->> arch/arm64/kernel/syscall.c:151 (discriminator 2))
->> <4>[ 76.646974] el0_svc (arch/arm64/include/asm/irqflags.h:82
->> (discriminator 1) arch/arm64/include/asm/irqflags.h:123 (discriminator
->> 1) arch/arm64/include/asm/irqflags.h:136 (discriminator 1)
->> arch/arm64/kernel/entry-common.c:165 (discriminator 1)
->> arch/arm64/kernel/entry-common.c:178 (discriminator 1)
->> arch/arm64/kernel/entry-common.c:745 (discriminator 1))
->> <4>[ 76.647709] el0t_64_sync_handler (arch/arm64/kernel/entry-common.c:=
-763)
->> <4>[ 76.649032] el0t_64_sync (arch/arm64/kernel/entry.S:600)
->> <0>[ 76.649724] Code: 12800019 b9402a82 aa1803e1 aa1403e0 (f8626b1a)
->>
->> <trim>
->>
->> All code
->> =3D=3D=3D=3D=3D=3D=3D=3D
->>     0: 12800019 mov w25, #0xffffffff            // #-1
->>     4: b9402a82 ldr w2, [x20, #40]
->>     8: aa1803e1 mov x1, x24
->>     c: aa1403e0 mov x0, x20
->>    10:* f8626b1a ldr x26, [x24, x2] <-- trapping instruction
->>
->> Code starting with the faulting instruction
->> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
-=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
->>     0: f8626b1a ldr x26, [x24, x2]
->>   <4>[   79.647693] ---[ end trace 0000000000000000 ]---
->>   <0>[   79.649260] Kernel panic - not syncing: Attempted to kill init!
->> exitcode=3D0x0000000b
->>   <2>[   79.650229] SMP: stopping secondary CPUs
->>   <0>[   79.651558] Kernel Offset: 0x293306a00000 from 0xffff8000800000=
-00
->>   <0>[   79.652015] PHYS_OFFSET: 0x40000000
->>   <0>[   79.652461] CPU features: 0x000,000000d0,60bef2d8,cb7e7f3f
->>   <0>[   79.653039] Memory Limit: none
->>   <0>[   79.653854] ---[ end Kernel panic - not syncing: Attempted to
->> kill init! exitcode=3D0x0000000b ]---
->>
->>
->> Links:
->> -------
->>   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-202=
-41218/testrun/26396709/suite/log-parser-test/test/panic-multiline-kernel-p=
-anic-not-syncing-attempted-to-kill-init-exitcode/history/
->>   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-202=
-41212/testrun/26277241/suite/log-parser-test/test/panic-multiline-kernel-p=
-anic-not-syncing-attempted-to-kill-init-exitcode/log
->>   - https://tuxapi.tuxsuite.com/v1/groups/linaro/projects/lkft/tests/2q=
-NMDhPFtR8j185QSvZMn989u84
->>   - https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJte=
-QLGCw7MnMtUwzkD/
->>   - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-202=
-41211/testrun/26266202/suite/log-parser-test/test/panic-multiline-kernel-p=
-anic-not-syncing-attempted-to-kill-init-exitcode/details/
->>
->>
->> metadata:
->> ----
->>    git describe: next-20241210..next-20241218
->>    git repo: https://git.kernel.org/pub/scm/linux/kernel/git/next/linux=
--next.git
->>    kernel config:
->> https://storage.tuxsuite.com/public/linaro/lkft/builds/2qNMCQazNJteQLGC=
-w7MnMtUwzkD/config
->>    build url: https://storage.tuxsuite.com/public/linaro/lkft/builds/2q=
-NMCQazNJteQLGCw7MnMtUwzkD/
->>    toolchain: gcc-13
->>    config: CONFIG_ARM64_64K_PAGES=3Dy, CONFIG_ARM64_16K_PAGES=3Dy
->>    arch: arm64
->>    qemu: qemu-arm64 version 9.1.2
->>
->
-> --
-> Linaro LKFT
-> https://lkft.linaro.org
->
-
+> Apart from that
+> 
+> Acked-by: David Hildenbrand <david@redhat.com>
+> 
+> -- 
+> Cheers,
+> 
+> David / dhildenb
+> 
 
