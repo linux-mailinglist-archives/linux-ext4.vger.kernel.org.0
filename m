@@ -1,102 +1,110 @@
-Return-Path: <linux-ext4+bounces-5750-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5751-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64B819F6AA4
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 17:00:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 55AD99F6CBE
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 18:57:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E647C7A6934
-	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 15:59:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF0B61889E1A
+	for <lists+linux-ext4@lfdr.de>; Wed, 18 Dec 2024 17:57:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8E91F2396;
-	Wed, 18 Dec 2024 15:59:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34AC31FA8E7;
+	Wed, 18 Dec 2024 17:57:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="YIiyuT+B";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="JNBpqo5H";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="FyerPoDP";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="7Zz/hbAW"
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="IO77DBBm";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="HOAdHZ33";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="nB1BKta+";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="P9IEKNc3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E283F1591EA;
-	Wed, 18 Dec 2024 15:59:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 17AB31FA270;
+	Wed, 18 Dec 2024 17:57:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734537592; cv=none; b=nY+MT07yjxgDhKasXiwzAkp3pYVYwrBvPuT2E8PszpPb9JKzzV+L2iWhnIsb8xYKhe3kA1CFGs1WDEFweh91F5GvrnD6K0qoahH/h11tkjA/c6EdzIJ/8eprOQJ5QTpULgOmuLEMgKqnazhAV69jyDx26RCXj0iHpIBWSzC+lDI=
+	t=1734544642; cv=none; b=t5L9rtLs+T4R2MiMsmPUf04Oeb6GHhQXbHW+zvGfYK6UNDrEPbqO90Q6ZRTgPphw2Vaf8Sp4Z1IrGB5FqTSgRa0C58TcY4b7kioUrxAa4EPDVZZJeJo78P20zkSctlIkT6uf3hAkH4gVUvSVME55+bP7i2Qe4AViWK6CdAkn08g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734537592; c=relaxed/simple;
-	bh=xqRCZi47ssybpFZmQ9iD4OT8RCvrCkNnYwDuOCAbG/o=;
+	s=arc-20240116; t=1734544642; c=relaxed/simple;
+	bh=dZ+oMhl/6klOgFGKC1TlP6cXwmL7PaSbcK0Ao/KrHzc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=g9XF8im3MCIGVIr0RVCA7wPrXNlVm4nVVvrGXKoYEaR/J+AqoYrzWr9u4lVbKWHTzFnRh4DL31LgzoI5hNbJOjf2mTS08ylSK0J1VzFtQdt8PwGUnjSJ1oMwmV/sUY30VENVHB9Zcf6Qzgti1o+AQ2vBrIY6M+NHkrmAQDvjqZw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=YIiyuT+B; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=JNBpqo5H; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=FyerPoDP; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=7Zz/hbAW; arc=none smtp.client-ip=195.135.223.130
+	 Content-Type:Content-Disposition:In-Reply-To; b=M9FdZwdoYGMIs5FvtkYOkErzKmUO0b7m2xryeHSS8bPSutNRoBiY95DLMhun0zskZ15vGUu6Xy3xJkYroDOXmRFR/CvHWZmNmi6Q2gZUjFA2dhhsAmmkaKY4JV3iwU2VFtnT8acrn2+cew9ghqWtiA8NenfduHNDs0G5keGpgso=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=IO77DBBm; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=HOAdHZ33; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=nB1BKta+; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=P9IEKNc3; arc=none smtp.client-ip=195.135.223.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id DD1FA21153;
-	Wed, 18 Dec 2024 15:59:47 +0000 (UTC)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 69D3F1F396;
+	Wed, 18 Dec 2024 17:57:18 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734537588; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	t=1734544639;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
-	b=YIiyuT+BhTqzkJFTEg+SlyRZ7Id2/MEIK6MjlhT9/zFJqV54DL+kogUXW0Qh0BPP70aqZ3
-	Zuk0BdJJ+1hDsNSwZbhorSjc3KzuU6j18olt5DJIUkJJ+BWBlFEGFG0Yvfa+jiWFrR4vcH
-	rdlG+5jMQoRir1FvxqArG00U374iqSQ=
+	bh=vyqu7+5hM/O675sj05pWPBOwQ7+qTbm8DFtagxH8B5Q=;
+	b=IO77DBBmmo5IO25PJrBaW1lyPFyCmVO8hLEPKALr12BYpfqkYO/bb3vgdMywsPBXup+xBP
+	FJLnDqac5cvPRZX4/MEL8vT5n51dlT8En9MGRZ17P+ITF34jzEpJ1qjTNyrlyd+QatfYF1
+	K1vqsXLNAa5VaP25DnSEQOVuBbX3UH0=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734537588;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=susede2_ed25519; t=1734544639;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
-	b=JNBpqo5HCmp8zvrobhiDZTsm840xyacIVp9odDxVXiqDCAxjP1xFoCl3MJykzvwlt/BhBo
-	LnOmDGowrBa1RTBA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=FyerPoDP;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b="7Zz/hbAW"
+	bh=vyqu7+5hM/O675sj05pWPBOwQ7+qTbm8DFtagxH8B5Q=;
+	b=HOAdHZ33gN4tFOuq97/OBFU7nh4aGK0FWIMyPlAAfa4KRFs8PB4Gs7sgZN6ccOmhUTtfOz
+	66iKvb1mJbGUceCw==
+Authentication-Results: smtp-out2.suse.de;
+	none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1734537587; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	t=1734544638;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
-	b=FyerPoDPwaLY0i9qG9FM5AGH5aqTakFZowQp+cdC5MVRS7ZDeSaug8yqzNm4lYcmRXbdzN
-	5LEc/ze83D6/yMskW8x7/G18h83PTqTr9s3IEIZ3MwxatrZX4J9TLrWNzlt766aRJTzgLk
-	TOEQZtThz2hWZEbSDiETHY3BowCrXLs=
+	bh=vyqu7+5hM/O675sj05pWPBOwQ7+qTbm8DFtagxH8B5Q=;
+	b=nB1BKta+MmBC9c0Kpsz50liSlps+HsuojVZC0wflIhcBOXENIN0L/Oejmg0NzoeyFe9b1L
+	iubN0btzwaaHrtJQNK+PM5wib5PXgOpsSagwv7R6ZpupWea6dR+CjuWtoCo5NL8k+lyvQI
+	1qPESaLcXU2nHwf8vO1tSkmC6flNVf8=
 DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1734537587;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
+	s=susede2_ed25519; t=1734544638;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=736W051uo2m2PQ7K3wbgdieBkT9c+WicYFLODup6hqc=;
-	b=7Zz/hbAW/4Sok4prx9FCx5QzFWePX+UIOchUpo+yqpKHZDut8ET8kyTFPragOQRwpkDT3F
-	c+bZLOgudF6s+xCw==
+	bh=vyqu7+5hM/O675sj05pWPBOwQ7+qTbm8DFtagxH8B5Q=;
+	b=P9IEKNc38XOWAd9vPBDvgmOteNTo+CrsYoclclFQc9IPKjDX/l7EZyaF0+APk1SH+/UQR2
+	I0LDEo23Ur7WD8Bw==
 Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
 	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id D2E70137CF;
-	Wed, 18 Dec 2024 15:59:47 +0000 (UTC)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 479AC137CF;
+	Wed, 18 Dec 2024 17:57:18 +0000 (UTC)
 Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
 	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id EXt1M3PxYmdYQQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Wed, 18 Dec 2024 15:59:47 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 7A3C4A0435; Wed, 18 Dec 2024 16:59:47 +0100 (CET)
-Date: Wed, 18 Dec 2024 16:59:47 +0100
-From: Jan Kara <jack@suse.cz>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Zorro Lang <zlang@kernel.org>, Brian Foster <bfoster@redhat.com>,
-	fstests@vger.kernel.org, linux-ext4@vger.kernel.org
-Subject: Re: [PATCH 3/4] ext-common: create a new test directory for ext*
- common tests
-Message-ID: <20241218155947.ocbq6hjdzaud6ioj@quack3>
-References: <20241210065900.1235379-1-hch@lst.de>
- <20241210065900.1235379-4-hch@lst.de>
+	id hXXuEP4MY2e/ZAAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Wed, 18 Dec 2024 17:57:18 +0000
+Date: Wed, 18 Dec 2024 18:57:16 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Naresh Kamboju <naresh.kamboju@linaro.org>
+Cc: qemu-devel@nongnu.org, open list <linux-kernel@vger.kernel.org>,
+	Linux Regressions <regressions@lists.linux.dev>,
+	linux-ext4 <linux-ext4@vger.kernel.org>,
+	lkft-triage@lists.linaro.org, linux-mm <linux-mm@kvack.org>,
+	Linux btrfs <linux-btrfs@vger.kernel.org>,
+	Alex =?iso-8859-1?Q?Benn=E9e?= <alex.bennee@linaro.org>,
+	Anders Roxell <anders.roxell@linaro.org>,
+	Arnd Bergmann <arnd@arndb.de>,
+	Dan Carpenter <dan.carpenter@linaro.org>, Qu Wenruo <wqu@suse.com>,
+	David Sterba <dsterba@suse.com>
+Subject: Re: qemu-arm64: CONFIG_ARM64_64K_PAGES=y kernel crash on qemu-arm64
+ with Linux next-20241210 and above
+Message-ID: <20241218175716.GD31418@twin.jikos.cz>
+Reply-To: dsterba@suse.cz
+References: <CA+G9fYvf0YQw4EY4gsHdQ1gCtSgQLPYo8RGnkbo=_XnAe7ORhw@mail.gmail.com>
+ <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -105,78 +113,55 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241210065900.1235379-4-hch@lst.de>
-X-Rspamd-Queue-Id: DD1FA21153
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
+In-Reply-To: <CA+G9fYv7_fMKOxA8DB8aUnsDjQ9TX8OQtHVRcRQkFGqdD0vjNQ@mail.gmail.com>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -4.00
+X-Spamd-Result: default: False [-4.00 / 50.00];
 	BAYES_HAM(-3.00)[99.99%];
 	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	HAS_REPLYTO(0.30)[dsterba@suse.cz];
 	NEURAL_HAM_SHORT(-0.20)[-1.000];
 	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	FROM_HAS_DN(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	MIME_TRACE(0.00)[0:+];
-	ARC_NA(0.00)[];
-	SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	TO_DN_SOME(0.00)[];
 	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	RCVD_TLS_LAST(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	ARC_NA(0.00)[];
+	FROM_HAS_DN(0.00)[];
+	RCPT_COUNT_TWELVE(0.00)[14];
+	MIME_TRACE(0.00)[0:+];
+	TO_DN_SOME(0.00)[];
+	FUZZY_BLOCKED(0.00)[rspamd.com];
+	RCVD_TLS_ALL(0.00)[];
+	REPLYTO_DOM_NEQ_TO_DOM(0.00)[];
 	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
+	TO_MATCH_ENVRCPT_ALL(0.00)[];
+	REPLYTO_ADDR_EQ_FROM(0.00)[];
 	RCVD_VIA_SMTP_AUTH(0.00)[];
-	MISSING_XM_UA(0.00)[];
-	ASN(0.00)[asn:25478, ipnet:::/0, country:RU];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:dkim,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
+	RCVD_COUNT_TWO(0.00)[2];
+	DBL_BLOCKED_OPENRESOLVER(0.00)[linaro.org:email]
 X-Spam-Flag: NO
+X-Spam-Level: 
 
-On Tue 10-12-24 07:58:27, Christoph Hellwig wrote:
-> Split the tests shared with ext2 and ext3 from the ext4 directory.
-> This makes ext4 a normal file system specific directory and cuts down
-> the number of _supported_fs calls to a little more than a handful
-> for tests that can't run on ext2.
+On Wed, Dec 18, 2024 at 09:22:26PM +0530, Naresh Kamboju wrote:
+> On Wed, 18 Dec 2024 at 17:33, Naresh Kamboju <naresh.kamboju@linaro.org> wrote:
+> >
+> > The following kernel crash noticed on qemu-arm64 while running the
+> > Linux next-20241210 tag (to next-20241218) kernel built with
+> >  - CONFIG_ARM64_64K_PAGES=y
+> >  - CONFIG_ARM64_16K_PAGES=y
+> > and running LTP smoke tests.
+> >
+> > First seen on Linux next-20241210.
+> >   Good: next-20241209
+> >   Bad:  next-20241210 and next-20241218
+> >
+> > qemu-arm64: 9.1.2
+> >
+> > Anyone noticed this ?
+> >
 > 
-> Signed-off-by: Christoph Hellwig <hch@lst.de>
+> Anders bisected this reported regression and found,
+> # first bad commit:
+>   [9c1d66793b6faa00106ae4c866359578bfc012d2]
+>   btrfs: validate system chunk array at btrfs_validate_super()
 
-So I went through all ext4 tests and I think:
-  ext4/004 should work for all ext? types -> move to ext_common
-
-  ext4/006 should work for all ext? types -> move to ext_common
-  ext4/007 should work for all ext? types -> move to ext_common
-  ext4/008 should work for all ext? types -> move to ext_common
-  ext4/009 should work for all ext? types -> move to ext_common
-  ext4/010 should work for all ext? types -> move to ext_common
-  ext4/011 should work for all ext? types -> move to ext_common
-  ext4/012 should work for all ext? types -> move to ext_common
-  ext4/013 should work for all ext? types -> move to ext_common
-  ext4/014 should work for all ext? types -> move to ext_common
-  ext4/016 should work for all ext? types -> move to ext_common
-    - but I've now noticed that the last ten call _scratch_mkfs_ext4
-      instead of _scratch_mkfs so that would need fixing up. So maybe leave
-      it as is for now
-  ext4/017 should work for all ext3 & ext4 types -> move to ext_common
-    - similar caveat with _scratch_mkfs_ext4
-  ext4/018 should work for all ext? types -> move to ext_common
-  ext4/019 should work for all ext? types -> move to ext_common
-    - similar caveat with _scratch_mkfs_ext4
-
-  ext4/022 should work for ext3 & ext4 -> move to ext_common
-  ext4/023 should work for all ext? types -> move to ext_common
-
-  ext4/044 should work for all ext? types -> move to ext_common
-
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Thanks, I'll drop the patch from linux-next for now.
 
