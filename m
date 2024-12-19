@@ -1,104 +1,177 @@
-Return-Path: <linux-ext4+bounces-5757-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5764-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14E3C9F7312
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 04:02:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74B39F7525
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 08:12:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F198C1893222
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 03:02:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF98816C984
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 07:12:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DF7986358;
-	Thu, 19 Dec 2024 03:02:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D43E2165EF;
+	Thu, 19 Dec 2024 07:12:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="q/fT32+k"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 539B267A0D;
-	Thu, 19 Dec 2024 03:02:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 963C61C69D;
+	Thu, 19 Dec 2024 07:12:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734577349; cv=none; b=XSTys6EXYNeu+MS+V/rni9TI1HonQoyFAoLWAIFjcR2fRdoUSVpmtx2ST6Oqd193IfvlA6qjc6v1N6OoluI1y6Liq9bFl0qC0aEskDzbWxa9GsyaUxGkcAC4SRp299Xu+ciCbNnMJ56IbAtZK1LLczOY+fIAnlPoieEYKHmh+zM=
+	t=1734592325; cv=none; b=EXs1M9Cvp5gVKXDWjkmdF38llgSHcjtg/CasJCRnDyfuD+VGSsUV3Xl/Fsr5/t1aWzZmEw5UkbUcDO7WNgV4fUEebzf2tRerMPo7ZHJl8ivx6FZUlhM/pF62E+XyV0qsnoyN8SZSNbQco9TC+faJxH+dAxLTQLlyTaM5n5hOv9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734577349; c=relaxed/simple;
-	bh=vz/EyrA1zAvl4TvtFV1uyrhlBtXhbu1yV2u2FzRGu+4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MQeJPKmova77l/zks5Mw8qU8fRzP8RD+xFWqKDXHIg6HU/72GflsmxoTi3Hp/pPevguwQHy82R1in+KoPWprwjsxjf7/Kvd2ahBKy+KBtABfTSr7+I7GSd8SNpPFEjpk5aTfTIfCEL/4SDFid+J7S0GMFNZ4sUmXnPRex1vjpxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YDFhD4jv4z4f3kFN;
-	Thu, 19 Dec 2024 11:02:04 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 2D52B1A018C;
-	Thu, 19 Dec 2024 11:02:24 +0800 (CST)
-Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP3 (Coremail) with SMTP id _Ch0CgDHpMG9jGNnctd0Ew--.54838S8;
-	Thu, 19 Dec 2024 11:02:24 +0800 (CST)
-From: Kemeng Shi <shikemeng@huaweicloud.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca
-Cc: linux-ext4@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 6/6] ext4: calculate rec_len of ".." with correct name length 2
-Date: Thu, 19 Dec 2024 19:00:27 +0800
-Message-Id: <20241219110027.1440876-7-shikemeng@huaweicloud.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
-References: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1734592325; c=relaxed/simple;
+	bh=Pbtvh/owiGIl0gW0ermBY2O+ChQ7U1BaNa/SBSGdask=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j0Ibza/g9K1bofEFUiLgBag7OgQu2oK1Myjwjzn+JYBRNr4rbwL5SSwFbGAoUSqOoTo2zgi84acb/TE6bs0k2eXohE1w3WJHcNtfCAuewHaKnAIi61X5Ehi5A+HfFyU4ymZPxxHnOxyWXfy5RLNY988+3bsSk9eq2gINia81GrU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=q/fT32+k; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BINaugt031716;
+	Thu, 19 Dec 2024 07:11:39 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
+	:content-type:date:from:in-reply-to:message-id:mime-version
+	:references:subject:to; s=pp1; bh=6vZq0dFqtHjiffSaLTaQTfmX6Tz6CJ
+	RTFTY5trTrpJA=; b=q/fT32+k3oDuzwW1Yk+SJsY6+dXBcEqudbd3YTXsmePZG/
+	FwBY6AAaLbvqOWg+/jP5C6BMWClt+CcRtaPSetV12b6ftNMrZZcDfLb5HVjncimQ
+	F4BPHvEb6Q+BoELzXLpCGGEmMMa0QZ+IEiJLK9IkdCTPUhwdWQrtV91rKSxzBFBK
+	4lOrZwdfkX8zDI1nCFAeoCGmyDUIWCw+4f7eEmt5KB7+jb+RgV3EwrYo4VjfT9+P
+	fWcPM3PjjdAscGyniObc39rkfJG47uMlI10SkrSZGgIPESHRYhMeHkYpqtZiQwsS
+	6WiFuERUEuEqX7C+BgIQi+Qs8IOYo3OycJbA8Few==
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43m87a1ey0-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 19 Dec 2024 07:11:39 +0000 (GMT)
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BJ5XMxV011252;
+	Thu, 19 Dec 2024 07:11:38 GMT
+Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 43hpjkbq31-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Thu, 19 Dec 2024 07:11:38 +0000
+Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
+	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BJ7Bbev38142326
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Thu, 19 Dec 2024 07:11:37 GMT
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F369D20040;
+	Thu, 19 Dec 2024 07:11:36 +0000 (GMT)
+Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B055220049;
+	Thu, 19 Dec 2024 07:11:34 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.124.218.178])
+	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Thu, 19 Dec 2024 07:11:34 +0000 (GMT)
+Date: Thu, 19 Dec 2024 12:41:31 +0530
+From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-ext4@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+        linux-kernel@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca,
+        jack@suse.cz, yi.zhang@huawei.com, chengzhihao1@huawei.com,
+        yukuai3@huawei.com, yangerkun@huawei.com
+Subject: Re: [PATCH v4 04/10] ext4: refactor ext4_punch_hole()
+Message-ID: <Z2PHI7ks4hr7pEoM@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+References: <20241216013915.3392419-1-yi.zhang@huaweicloud.com>
+ <20241216013915.3392419-5-yi.zhang@huaweicloud.com>
+ <Z2KhPcxh9ESbD5l5@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+ <221b151d-12c7-4e98-afc4-d248aa3637ba@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgDHpMG9jGNnctd0Ew--.54838S8
-X-Coremail-Antispam: 1UD129KBjvdXoWrKFWUXry3KryUXF45ZF13Arb_yoWfWwc_Ca
-	yDAFnrXFW3A34xK345ArWYq3Z0gan5Cw1DZF95GFyvgFn0vFy5Aan8ZrsIy342gry5tr98
-	Cw10qrn0qrW3ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbS8YFVCjjxCrM7AC8VAFwI0_Wr0E3s1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
-	xGYIkIc2x26280x7IE14v26r126s0DM28IrcIa0xkI8VCY1x0267AKxVW5JVCq3wA2ocxC
-	64kIII0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM2
-	8EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq
-	3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8w
-	Aqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE
-	14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x
-	0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E
-	7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcV
-	C0I7IYx2IY67AKxVWUCVW8JwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF
-	04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7
-	CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07jstxDUUUUU=
-X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <221b151d-12c7-4e98-afc4-d248aa3637ba@huaweicloud.com>
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: ckarNY-z97g8DM6eMvjplrSFXmoSNtca
+X-Proofpoint-GUID: ckarNY-z97g8DM6eMvjplrSFXmoSNtca
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
+ definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0 phishscore=0
+ spamscore=0 mlxscore=0 mlxlogscore=999 priorityscore=1501 clxscore=1015
+ bulkscore=0 suspectscore=0 lowpriorityscore=0 impostorscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2411120000 definitions=main-2412190054
 
-The rec_len of directory ".." should be ext4_dir_rec_len(2, NULL) instead
-of ext4_dir_rec_len(1, NULL). Although ext4_dir_rec_len return the same
-number either with name_len 1 or name_len 2, it's better use the right
-name_len to make code more intuitive.
+On Wed, Dec 18, 2024 at 09:13:46PM +0800, Zhang Yi wrote:
+> On 2024/12/18 18:17, Ojaswin Mujoo wrote:
+> > On Mon, Dec 16, 2024 at 09:39:09AM +0800, Zhang Yi wrote:
+> >> From: Zhang Yi <yi.zhang@huawei.com>
+> >>
+> >> The current implementation of ext4_punch_hole() contains complex
+> >> position calculations and stale error tags. To improve the code's
+> >> clarity and maintainability, it is essential to clean up the code and
+> >> improve its readability, this can be achieved by: a) simplifying and
+> >> renaming variables; b) eliminating unnecessary position calculations;
+> >> c) writing back all data in data=journal mode, and drop page cache from
+> >> the original offset to the end, rather than using aligned blocks,
+> >> d) renaming the stale error tags.
+> >>
+> >> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> >> ---
+> >>  fs/ext4/ext4.h  |   2 +
+> >>  fs/ext4/inode.c | 119 +++++++++++++++++++++---------------------------
+> >>  2 files changed, 55 insertions(+), 66 deletions(-)
+> >>
+> >> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
+> >> index 8843929b46ce..8be06d5f5b43 100644
+> >> --- a/fs/ext4/ext4.h
+> >> +++ b/fs/ext4/ext4.h
+> >> @@ -367,6 +367,8 @@ struct ext4_io_submit {
+> >>  #define EXT4_MAX_BLOCKS(size, offset, blkbits) \
+> >>  	((EXT4_BLOCK_ALIGN(size + offset, blkbits) >> blkbits) - (offset >> \
+> >>  								  blkbits))
+> >> +#define EXT4_B_TO_LBLK(inode, offset) \
+> >> +	(round_up((offset), i_blocksize(inode)) >> (inode)->i_blkbits)
+> >>  
+> >>  /* Translate a block number to a cluster number */
+> >>  #define EXT4_B2C(sbi, blk)	((blk) >> (sbi)->s_cluster_bits)
+> >> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> >> index a5ba2b71d508..7720d3700b27 100644
+> >> --- a/fs/ext4/inode.c
+> >> +++ b/fs/ext4/inode.c
+> [..]
+> >> @@ -4069,22 +4060,16 @@ int ext4_punch_hole(struct file *file, loff_t offset, loff_t length)
+> >>  
+> >>  	ret = ext4_break_layouts(inode);
+> >>  	if (ret)
+> >> -		goto out_dio;
+> >> +		goto out_invalidate_lock;
+> >>  
+> >> -	first_block_offset = round_up(offset, sb->s_blocksize);
+> >> -	last_block_offset = round_down((offset + length), sb->s_blocksize) - 1;
+> >> +	ret = ext4_update_disksize_before_punch(inode, offset, length);
+> > 
+> > Hey Zhang,
+> > 
+> > The changes look good to me, just one question, why are we doing
+> > disksize update unconditionally now and not only when the range 
+> > spans a complete block or more.
+> > 
+> 
+> I want to simplify the code. We only need to update the disksize when
+> the end of the punching or zeroing range is >= the EOF and i_disksize
+> is less than i_size. ext4_update_disksize_before_punch() has already
+> performed this check and has ruled out most cases. Therefore, I
+> believe that calling it unconditionally will not incur significant
+> costs.
 
-Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
----
- fs/ext4/namei.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Okay sure, feel free to add:
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index aee1858e6482..24cdeb2aa0d5 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -2925,7 +2925,7 @@ struct ext4_dir_entry_2 *ext4_init_dot_dotdot(struct inode *inode,
- 	de->name_len = 2;
- 	if (!dotdot_real_len)
- 		de->rec_len = ext4_rec_len_to_disk(blocksize -
--					(csum_size + ext4_dir_rec_len(1, NULL)),
-+					(csum_size + ext4_dir_rec_len(2, NULL)),
- 					blocksize);
- 	else
- 		de->rec_len = ext4_rec_len_to_disk(
--- 
-2.30.0
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
+Regards,
+ojaswin
+> 
+> Thanks,
+> Yi.
+> 
 
