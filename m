@@ -1,51 +1,51 @@
-Return-Path: <linux-ext4+bounces-5758-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5759-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30A3A9F7311
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 04:02:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC59D9F7313
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 04:02:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B03D318931BF
-	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 03:02:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 21D6916B419
+	for <lists+linux-ext4@lfdr.de>; Thu, 19 Dec 2024 03:02:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7E286347;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91E4013959D;
 	Thu, 19 Dec 2024 03:02:29 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DED611EA90;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2031350285;
 	Thu, 19 Dec 2024 03:02:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734577349; cv=none; b=YqJERDgwhrNhJxOjkbsQbLAGFG+N8/FBYXxZGIOOZerI+tDNHBSHnSLxl3Fuv0uPzAehkx71bb8nM7I+5+PB4oNZl+Qld4aGALJ7/2Ucpp06U8ldiaImxuIe2mFtsqvJ0Qs0k/GLe/gfpghf54waUoAWLvVzUs+TiJIOOqpL5Jw=
+	t=1734577349; cv=none; b=p3f1OXP00HlwoksrzX6e0gdDG4JUFECLNCRm+S3PWc5Opl9qeQ0k+vM2DXXrYxo7Gnsa0GDg3wTm/1DbmJUPfV+d6PGFo49RUhCEP0xw1iVLFjfYHWoLLfuj02jhTbnZipw2LOwcU79Wbie7inz6V5iTrlSLT9sByph0MtfSg7I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1734577349; c=relaxed/simple;
-	bh=nOrJFcJYLVFcmoUVY4GVB8jgP1zQjtf7+BZ3PWqOcDQ=;
+	bh=4NF5PJEuPc3gpNPNtaQ2hIGJ9bYr0mNJNEskpB2NmmU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=WhiPAFh64azXt0Za5J1bfhJOtdOwKbvq1r32TtexAqiqfgePr39JqrOYZNS/PLIyvYrdWJ88RJfFJ22SW85FNy89WTtFa5ATk1eQSXJ/w4zmsNPi9fEmGAaWe5+46S3zTzdjS9QGGX5nxo3QPq5od4d4T5f1YwERL1fRDO17VgM=
+	 MIME-Version; b=qzuP5ZfL/WPJBYepeZi4pAVeLV+99z7RfvdwLt/cLaMqPh+VjK+kjh0tCgctwl8/VG8DGUjS91rBWB1UJQdMYdIIaO6v96c8sEQ/eFy/Fw8pEGwNrkHawwPDOeqYw6EeTmLczST/VAWEOnOe5rECJOtKhDylWcePy9MwOZKb5fk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.93.142])
-	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YDFhC4TvJz4f3kFQ;
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YDFhC66DRz4f3kFT;
 	Thu, 19 Dec 2024 11:02:03 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.252])
-	by mail.maildlp.com (Postfix) with ESMTP id 28D9E1A07B6;
+	by mail.maildlp.com (Postfix) with ESMTP id 617041A0196;
 	Thu, 19 Dec 2024 11:02:23 +0800 (CST)
 Received: from huaweicloud.com (unknown [10.175.124.27])
-	by APP3 (Coremail) with SMTP id _Ch0CgDHpMG9jGNnctd0Ew--.54838S4;
+	by APP3 (Coremail) with SMTP id _Ch0CgDHpMG9jGNnctd0Ew--.54838S5;
 	Thu, 19 Dec 2024 11:02:23 +0800 (CST)
 From: Kemeng Shi <shikemeng@huaweicloud.com>
 To: tytso@mit.edu,
 	adilger.kernel@dilger.ca
 Cc: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 2/6] ext4: remove unneeded bits mask in dx_get_block()
-Date: Thu, 19 Dec 2024 19:00:23 +0800
-Message-Id: <20241219110027.1440876-3-shikemeng@huaweicloud.com>
+Subject: [PATCH 3/6] ext4: remove unneeded forward declaration in namei.c
+Date: Thu, 19 Dec 2024 19:00:24 +0800
+Message-Id: <20241219110027.1440876-4-shikemeng@huaweicloud.com>
 X-Mailer: git-send-email 2.30.0
 In-Reply-To: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
 References: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
@@ -56,54 +56,73 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:_Ch0CgDHpMG9jGNnctd0Ew--.54838S4
-X-Coremail-Antispam: 1UD129KBjvdXoW7XFyfGrWrur15Aw13Gr1DGFg_yoWfKFbEya
-	yDAr4xWF4fZ3ZakF1YyrW7trn5KF4F9F1UZa4fXryfZFn8JayfAw1DZrn8Z34DWa93Xa45
-	CrnYvryUCr13ujkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbfxYFVCjjxCrM7AC8VAFwI0_Gr0_Xr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l87I20VAvwVAaII0Ic2I_JFv_Gryl82
-	xGYIkIc2x26280x7IE14v26r15M28IrcIa0xkI8VCY1x0267AKxVWUCVW8JwA2ocxC64kI
-	II0Yj41l84x0c7CEw4AK67xGY2AK021l84ACjcxK6xIIjxv20xvE14v26w1j6s0DM28EF7
-	xvwVC0I7IYx2IY6xkF7I0E14v26r4UJVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2
-	z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4
-	xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v2
-	6r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8JwACjcxG0xvY0x0EwIxGrwCF04k20xvY0x0EwI
-	xGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480
-	Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij64vIr41lIxAIcVC0I7
-	IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k2
-	6cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxV
-	AFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x07j-BMNUUUUU=
+X-CM-TRANSID:_Ch0CgDHpMG9jGNnctd0Ew--.54838S5
+X-Coremail-Antispam: 1UD129KBjvJXoW7uryUKFW3XFy8JF43Jw47urg_yoW8tF1xpF
+	4rJ3W5Kr48XF1DuFW8Zw48Aw1a9w1vgr9rJrZrG34FkFy2qr12q3ZrJr4xZFyrtry8WF12
+	yFs8Kry5Ca18WrJanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUB0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M280x2IEY4vEnII2IxkI6r1a6r45M2
+	8IrcIa0xkI8VA2jI8067AKxVWUWwA2048vs2IY020Ec7CjxVAFwI0_Gr0_Xr1l8cAvFVAK
+	0II2c7xJM28CjxkF64kEwVA0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVWDJVCq3wA2z4
+	x0Y4vE2Ix0cI8IcVCY1x0267AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l
+	84ACjcxK6I8E87Iv6xkF7I0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I
+	8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AK
+	xVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2Ij64
+	vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8G
+	jcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE2I
+	x0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK
+	8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I
+	0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxU3G-eDUUUU
 X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
-As high four bits of block in dx_entry is not used by any feature for now,
-we can remove unneeded bits mask in dx_get_block() and add it back when
-it's really needed.
+Remove unneeded forward declaration in namei.c
 
 Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 ---
- fs/ext4/namei.c | 7 +------
- 1 file changed, 1 insertion(+), 6 deletions(-)
+ fs/ext4/namei.c | 30 ------------------------------
+ 1 file changed, 30 deletions(-)
 
 diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index adec145b6f7d..8ff840ef4730 100644
+index 8ff840ef4730..33670cebdedc 100644
 --- a/fs/ext4/namei.c
 +++ b/fs/ext4/namei.c
-@@ -561,14 +561,9 @@ ext4_next_entry(struct ext4_dir_entry_2 *p, unsigned long blocksize)
- 		ext4_rec_len_from_disk(p->rec_len, blocksize));
- }
+@@ -291,36 +291,6 @@ struct dx_tail {
+ 	__le32 dt_checksum;	/* crc32c(uuid+inum+dirblock) */
+ };
  
--/*
-- * Future: use high four bits of block for coalesce-on-delete flags
-- * Mask them off for now.
-- */
--
- static inline ext4_lblk_t dx_get_block(struct dx_entry *entry)
- {
--	return le32_to_cpu(entry->block) & 0x0fffffff;
-+	return le32_to_cpu(entry->block);
- }
- 
- static inline void dx_set_block(struct dx_entry *entry, ext4_lblk_t value)
+-static inline ext4_lblk_t dx_get_block(struct dx_entry *entry);
+-static void dx_set_block(struct dx_entry *entry, ext4_lblk_t value);
+-static inline unsigned dx_get_hash(struct dx_entry *entry);
+-static void dx_set_hash(struct dx_entry *entry, unsigned value);
+-static unsigned dx_get_count(struct dx_entry *entries);
+-static unsigned dx_get_limit(struct dx_entry *entries);
+-static void dx_set_count(struct dx_entry *entries, unsigned value);
+-static void dx_set_limit(struct dx_entry *entries, unsigned value);
+-static unsigned dx_root_limit(struct inode *dir, unsigned infosize);
+-static unsigned dx_node_limit(struct inode *dir);
+-static struct dx_frame *dx_probe(struct ext4_filename *fname,
+-				 struct inode *dir,
+-				 struct dx_hash_info *hinfo,
+-				 struct dx_frame *frame);
+-static void dx_release(struct dx_frame *frames);
+-static int dx_make_map(struct inode *dir, struct buffer_head *bh,
+-		       struct dx_hash_info *hinfo,
+-		       struct dx_map_entry *map_tail);
+-static void dx_sort_map(struct dx_map_entry *map, unsigned count);
+-static struct ext4_dir_entry_2 *dx_move_dirents(struct inode *dir, char *from,
+-					char *to, struct dx_map_entry *offsets,
+-					int count, unsigned int blocksize);
+-static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
+-						unsigned int blocksize);
+-static void dx_insert_block(struct dx_frame *frame,
+-					u32 hash, ext4_lblk_t block);
+-static int ext4_htree_next_block(struct inode *dir, __u32 hash,
+-				 struct dx_frame *frame,
+-				 struct dx_frame *frames,
+-				 __u32 *start_hash);
+ static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
+ 		struct ext4_filename *fname,
+ 		struct ext4_dir_entry_2 **res_dir);
 -- 
 2.30.0
 
