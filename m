@@ -1,125 +1,111 @@
-Return-Path: <linux-ext4+bounces-5811-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5812-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3ADAB9F92AB
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 13:57:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AFE49F92FE
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 14:21:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 263611894AF0
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 12:57:31 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D2991884755
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 13:21:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 309972153EB;
-	Fri, 20 Dec 2024 12:57:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA9B2156E7;
+	Fri, 20 Dec 2024 13:20:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="qS2BXURP"
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ebRmYwPQ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+Received: from mout.web.de (mout.web.de [212.227.15.4])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 342427D07D;
-	Fri, 20 Dec 2024 12:57:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F3021518E;
+	Fri, 20 Dec 2024 13:20:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734699441; cv=none; b=OAluqOx2yjYxe+PgCzS/JUvqgDjlDDqKQFPs7+a7v2nlvuA91W+efBPo0As4Lxyh/NiHG5Tpu/r4g265Iz7iD/q4ZMnsN6FUnOGXTDXmoelnh0U9BFrZtSW/r/3uzZ5LBx7z30waDI1hhTjnSsRgL5OlOO5ZVin/Fja/rlPlyC8=
+	t=1734700857; cv=none; b=GksKEl/JsHm8Iox6YKldVOFUXGqU/ufBDH72fx/Acq0OAJdaL125SblbVy+Mfp8+98lmAHCwb//+TiRD1UieftnCYWaik4HA8hSFMzkvazY3MdQn6tTz2DRroT+pK0l5SaQOkY8nYQNLI7EFHDrGO6lasM6Z8OrUkMsFrVwCoV0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734699441; c=relaxed/simple;
-	bh=pq5xFQ2rikFlj6VWB4rFE7yTbhIKNHi8X8yaYcPgliA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=s2PcY4ctYR7IJcesTmUWg/thXwM9Pw1T/kq1cpCfulvx3nEBJwFQkQR6RHCg+xCX8h3h6IYVJo2GLPLq4oNYAOtQZ1Mi0GebtkN/KeJAHKuYfivwnCF22qYZJOjAhOknGOWelEnWVmNoC8i7Gguo6WA5QM1DNYDwKpmoHQvb00c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=qS2BXURP; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BK862nN014698;
-	Fri, 20 Dec 2024 12:57:12 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
-	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=VSBcXaWO85KAZva7jE7PC5YCARy4mF
-	th8qFqnmCkpfk=; b=qS2BXURPov8jqxZZBXy2sp2o9lqaziPDAHbCpMnnVV8CTg
-	dsnpUq4DsVMRyDMedF/xy8SDOr6mahZoE4mNYwLsRZ/k35FCg6YMsK8yNcKb4pfU
-	hUWXT/jCsX/DqeQXuk9UxMXiMsVW+JVb70SqcnDoqn63oBRak8RBYgjhf47Pwr6E
-	xhxSeoU8RbCEEdHEnVpaDoZomsypGh7fX+/xqBJl0iVI36m4b894wt4DxWe03ZE4
-	c2SMreqUFKeg7BGOCzU9Y2bnYKDcraO+eiztpwGGdqp22/5vnzOAE4k+YnIpgXHM
-	ESW7VDYLyUjO7Tn9Xp3d3NpAx7x2A3+7HrflahSQ==
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43n4s2s7pk-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Dec 2024 12:57:12 +0000 (GMT)
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BKAZmwU011267;
-	Fri, 20 Dec 2024 12:57:11 GMT
-Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 43hpjkhx8f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Dec 2024 12:57:11 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BKCv9G455378302
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 20 Dec 2024 12:57:09 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 96B3820040;
-	Fri, 20 Dec 2024 12:57:09 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 8B4F420043;
-	Fri, 20 Dec 2024 12:57:08 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.39.23.188])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 20 Dec 2024 12:57:08 +0000 (GMT)
-Date: Fri, 20 Dec 2024 18:27:05 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 1/6] ext4: add missing brelse for bh2 in ext4_dx_add_entry
-Message-ID: <Z2Vpa7JgPijraPQB@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
- <20241219110027.1440876-2-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1734700857; c=relaxed/simple;
+	bh=G8cc1wy+lildK6gwPcCwoLFCCo7QTN1GhR8RtkgX16E=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=KIJ19lXk5iqm6jhbyUdoji5z/mxgze43zMekVqr2fI6Yn9vPUzk+dZT8ld/qXd6oiI55yy8w2xAF96FHXkyvkFo7wsRfaLMSubdUP+yu3nbAGwBykPTtV4PObtcy7/A36lbf01kR8cFKzjDMkrwCn1JDdFLbviDpvGS+6Y7aeWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ebRmYwPQ; arc=none smtp.client-ip=212.227.15.4
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1734700542; x=1735305342; i=markus.elfring@web.de;
+	bh=DTDJjcI8PHu9bE0TH8c8cUwf31WQRGWOCjhYKu9MI3k=;
+	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
+	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
+	 cc:content-transfer-encoding:content-type:date:from:message-id:
+	 mime-version:reply-to:subject:to;
+	b=ebRmYwPQwGRTrw2lP1OZdeMWWpdDZ+7n2OLMuxxBCDjT35fCLiJD1UxRl8bOtwcl
+	 moE/z5P/ff8e8cCn5ELg8XznslNB+VeWjolzphkW0l0ro14n9+zV7yVTalLssTsfa
+	 F0+vjMfPmdR1TLkQ/aegF9toUulbI02XK2DJ2XgbN1HZZoIOjPaTdbmSBwc2mHrum
+	 zoFKnFXEYYICqZ9Cz2i3++JANwcow9Dip6u+GHhxFw71E4E0hdtEqf5r1aY1CaK6i
+	 06de3g6zSpY8MAMrAfVeeU4Dg38lMJcY1JOiIoRDjt0IQMWL/TdIMk+7ydAOxDxAz
+	 5we2Emg6EU7gzCH8uA==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.93.21]) by smtp.web.de (mrweb006
+ [213.165.67.108]) with ESMTPSA (Nemesis) id 1MuVKI-1tgqQW0ejy-00yswz; Fri, 20
+ Dec 2024 14:15:42 +0100
+Message-ID: <2474b3df-1e58-49f5-a3b3-6cfd6e57372d@web.de>
+Date: Fri, 20 Dec 2024 14:15:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+User-Agent: Mozilla Thunderbird
+To: Kemeng Shi <shikemeng@huaweicloud.com>, linux-ext4@vger.kernel.org,
+ Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>
+Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
+References: <20241219110027.1440876-2-shikemeng@huaweicloud.com>
+Subject: Re: [PATCH 1/6] ext4: add missing brelse for bh2 in ext4_dx_add_entry
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
 In-Reply-To: <20241219110027.1440876-2-shikemeng@huaweicloud.com>
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: wIuCvUONxIki20e4t-TazbPOLkuEitTU
-X-Proofpoint-GUID: wIuCvUONxIki20e4t-TazbPOLkuEitTU
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
- definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- impostorscore=0 priorityscore=1501 mlxscore=0 suspectscore=0
- lowpriorityscore=0 spamscore=0 clxscore=1015 mlxlogscore=969 bulkscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2411120000 definitions=main-2412200103
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:m//qz9ER2Hv6X4f8txHKIOL2VEGoizb68T3ERf4lqMKmt2vEab3
+ nXhei9FkdVR9B4+YpJKag4QOLoL2vWJd9wJ1Qurdpfcvmll46+I71MMinLDwsLBNjwVaaKb
+ HElV3f+JlRiZGA4CTbid+cIWObuUhMGnHqn0p8nEZ1QuOukhogM9XR9xFcDpJMtH4xHSmd1
+ F1YrfTYzN5405JjHza7Wg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:TY5T+rrZS40=;Ky00ImIJc14l1X2NV/qRHLMCHji
+ GMfOHTw19o51ALQgN26XME+MgECc5ov9VWeM3x8Ei3DwL31l5CyPBq0OkbUQIZCFARmXiNLBR
+ avWW1Xj0U8+KVeNmd3C3tH2EfoufFZuU7vmhHr3fI5nXloTXXc5ziDUIAgav4C58IJlO0a6Rb
+ KGT9pKuI2kW/PgcAVCgHaeGRBWm/9PmztfnQfPTbsQ12fAJ0ToNY4BzyKi7fpo2lUSe4npZc/
+ 0w1FxwMpOP47qV2/FJu1p79gH2mNU/Pb/zWCj66/+cOpjz2zXPvI7JKJsi9oEm05PK5tdPkvY
+ +jivkeXajKR0omTfy7cyh5SSSjVLYHsa+IFoijJHLgYxYsfCDLTktvLcdnhi7bsEgJXWF9vcX
+ Ggles9UzpghgOiSx1MjgX1pPG4P7EYC6TJPqlsbVFjVldyOsAQKYLYVUE1UKGkKedPpXZ6tfP
+ USMZUlBAa2myqv6vDSyvDD3UFrnfnD5u7XgBrK+wlotYQJyPlFNQq8LUuzmTlYtA8Rw/1Sl6E
+ vP1rSm5nuE6LLQD0SnWVAZbSDpWAFV99R6mc/2bD3F/EQINcJJ9JcQvGilko7wkA0OcCrzVmu
+ MDW1wF+ePhQ+ABxJY5zmnVxDfJRkuOnWntOZXNLtc5euIxO1VDKeCDpRJu0JPBQBBge3xV9U1
+ HUsfDM+QRXRsmN8R2rm3HxjFCUlee/lYLddQciChLjO8uJkgGfxwlvq0BEvdyhVMt+pp+/yn+
+ hmNsWJxnBSA+/aO/OC0pYvtYDwznHyax0lV2ertK4EolqHEf30IM8uEW9fgFTweZ5ZQBTFXR1
+ bpV9Jro7XMqViMJ7Vfolw6QT+qBh5xXY2kgsvDjMefskyL1rPLCOhhKr4QjXUjcQZojQdaab4
+ OPwpKDg+Z4vbRwXsLvK8fXMT1GS5dV7IMK96SEpsSXxixJqtr6GmIEf0J453dUU4euN7sbcqE
+ W0AtuJ3uiM0nD6dAxoiD5hXA56F5fMVO35LASAfP7TGPtIzM3AJ3iRz5YoIq6S56QQu9vW9pI
+ mpvId9kgaTyBLrkgUEsgNm6GO9yMwbrF9t0cx9ugdNcg0ozugFi3SeJp4WGELvaQXB7pI0NmF
+ ub9Ed+keY=
 
-On Thu, Dec 19, 2024 at 07:00:22PM +0800, Kemeng Shi wrote:
 > Add missing brelse for bh2 in ext4_dx_add_entry.
 
-Looks good, feel free to add:
+* I propose to append parentheses to function names.
 
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+* How do you think about to add any tags (like =E2=80=9CFixes=E2=80=9D and=
+ =E2=80=9CCc=E2=80=9D) accordingly?
+  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
+Documentation/process/submitting-patches.rst?h=3Dv6.13-rc3#n145
 
-Regards,
-ojaswin
 
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
->  fs/ext4/namei.c | 16 ++++++++++++----
->  1 file changed, 12 insertions(+), 4 deletions(-)
-> 
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 1012781ae9b4..adec145b6f7d 100644
-> --- a/fs/ext4/namei.c
+=E2=80=A6
 > +++ b/fs/ext4/namei.c
-> @@ -2580,8 +2580,10 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
+> @@ -2580,8 +2580,10 @@ static int ext4_dx_add_entry(handle_t *handle, st=
+ruct ext4_filename *fname,
 >  		BUFFER_TRACE(frame->bh, "get_write_access");
->  		err = ext4_journal_get_write_access(handle, sb, frame->bh,
+>  		err =3D ext4_journal_get_write_access(handle, sb, frame->bh,
 >  						    EXT4_JTR_NONE);
 > -		if (err)
 > +		if (err) {
@@ -127,45 +113,12 @@ ojaswin
 >  			goto journal_error;
 > +		}
 >  		if (!add_level) {
->  			unsigned icount1 = icount/2, icount2 = icount - icount1;
->  			unsigned hash2 = dx_get_hash(entries + icount1);
-> @@ -2592,8 +2594,10 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
->  			err = ext4_journal_get_write_access(handle, sb,
->  							    (frame - 1)->bh,
->  							    EXT4_JTR_NONE);
-> -			if (err)
-> +			if (err) {
-> +				brelse(bh2);
->  				goto journal_error;
-> +			}
->  
->  			memcpy((char *) entries2, (char *) (entries + icount1),
->  			       icount2 * sizeof(struct dx_entry));
-> @@ -2612,8 +2616,10 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
->  			dxtrace(dx_show_index("node",
->  			       ((struct dx_node *) bh2->b_data)->entries));
->  			err = ext4_handle_dirty_dx_node(handle, dir, bh2);
-> -			if (err)
-> +			if (err) {
-> +				brelse(bh2);
->  				goto journal_error;
-> +			}
->  			brelse (bh2);
->  			err = ext4_handle_dirty_dx_node(handle, dir,
->  						   (frame - 1)->bh);
-> @@ -2638,8 +2644,10 @@ static int ext4_dx_add_entry(handle_t *handle, struct ext4_filename *fname,
->  				       "Creating %d level index...\n",
->  				       dxroot->info.indirect_levels));
->  			err = ext4_handle_dirty_dx_node(handle, dir, frame->bh);
-> -			if (err)
-> +			if (err) {
-> +				brelse(bh2);
->  				goto journal_error;
-> +			}
->  			err = ext4_handle_dirty_dx_node(handle, dir, bh2);
->  			brelse(bh2);
->  			restart = 1;
-> -- 
-> 2.30.0
-> 
+=E2=80=A6
+
+I suggest to add another jump target instead so that a bit of exception ha=
+ndling
+can be better reused at the end of this function implementation.
+
+Regards,
+Markus
 
