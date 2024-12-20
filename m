@@ -1,76 +1,76 @@
-Return-Path: <linux-ext4+bounces-5816-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5817-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0D239F9530
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 16:17:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6C5B19F9533
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 16:17:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B5EE57A2631
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 15:17:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 774AD16CCAE
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 15:17:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5013E218EA6;
-	Fri, 20 Dec 2024 15:17:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC4382165EF;
+	Fri, 20 Dec 2024 15:17:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kBWVae72"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TnhiGxn3"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pg1-f182.google.com (mail-pg1-f182.google.com [209.85.215.182])
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4ACC218E87;
-	Fri, 20 Dec 2024 15:17:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290ED5588F;
+	Fri, 20 Dec 2024 15:17:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734707825; cv=none; b=HqjttSiMBN0subtFcOX/uS9SuZNL+Z1B6VU0o+DaIU6JYh4j6TzuUMUjcHj1rtDFy1VtZjgEB8qPyzo6aNeBsb9o+sWeUYVH9nRnMGNTBuFipHIKnadJG+3kEZmhEyUKq3io1Qvs+T7xV+3/6W95/56mN/3UKdkAwMfkgXwvTG4=
+	t=1734707832; cv=none; b=Wew04HWCBEaf2HJJd3Sx04LNfTUYdJjZSsbB8pBIkwhOHQZ4ik5QDYt4/dEcHoty5pMe79xomyE2SATTkYXnUN76t12U3SPa9LaO3kL4VyRsJe1hLoVngJB1etxI0TH+s8cn9h0moyJ7jMddkNmqWrY0kdDI7j6dmFMtg10Vfq0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734707825; c=relaxed/simple;
-	bh=LFGPybYm2V3jVyeVbkh7idpIzCoDSXd9+gy/Nu7TZ5U=;
+	s=arc-20240116; t=1734707832; c=relaxed/simple;
+	bh=RQ3opgir1PEFzPmZf2rLrAHVbdRVZYzBf2fOeqLLhUY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R7uC0zvvmYZzQHhfcMRiwUoFDn1mS575iMVCRl5RgMqB50OE7f+N17JR7b4qIjpYN0Rdd3u316QZFSBufEMaxIlCNNOorJuTYgtYGr09dO7RuT5uVfYcyIBk5wHlVrfxlIntLxtAs0W7t7eaKyAF9Y/veWwAERPzBUxvJ3A95is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kBWVae72; arc=none smtp.client-ip=209.85.215.182
+	 MIME-Version; b=Jn8gZVT7a35cRbF8qP9YNP+U5sazphwKJQPcGzOdiv0qZ8H5UuYpnW2CjKxtx2MOMhjc1ROGsnwtEQSvZ+j/Ay6oWg5ylThyPA5aIJMiLKeo1ommecxmtfB+xfQu/EectnHs2juOUaI+aQCso1fJ5kLCbeyTR1CbDJo8PI4tgjg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TnhiGxn3; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f182.google.com with SMTP id 41be03b00d2f7-7fd2ff40782so1843941a12.2;
-        Fri, 20 Dec 2024 07:17:03 -0800 (PST)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-216395e151bso13772125ad.0;
+        Fri, 20 Dec 2024 07:17:10 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1734707822; x=1735312622; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1734707830; x=1735312630; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WFfluVbnn8slxhL1v/+StR1z4j1VEm6SfObplg+iF7k=;
-        b=kBWVae72yoeFbXAXF5PE3Wd3fLF/z9hGwuUN7AQUYtY//stPPZnzEfaMdUp1aJJQa2
-         Zil51cdHdpWx0m3XJl6eFZmU5EDc2TVWQ+Zg8k/XVG67m7ohjqCGa/nbUSfFEyihslqX
-         i26zEv4cb67dTGxA0TzJUBZaUEqgKYl5OgZcOaq6+nRBhrbVmLvqFU2n25jgDKn+J2kA
-         +QeIvbpx80jPaskQHUmDzitAyTEFVi2dpJ1FJX+EBIivwIDVbSAK2jUNDPqUDTqHLoHM
-         yzgpLzb9hWLIjJgHiP/qQTPYmy7WZXO7Cceb6q1nZxWH5rSEdtZ9EiG/TojDEJosWRPW
-         /jVA==
+        bh=nZHfdAZCZo7YK46Du/lwICXtoFhzm0RAbRFQCRrRc/w=;
+        b=TnhiGxn3cpu+x0GwgLQu58GdeernUc1Vw07MdxcDjtE1T+5waKN2pD40NwiZ4fz5Gd
+         3w3d/8wP4WVAxeSAkfArgTLJeFgQOHYuMr858DppPc4vtw3O7ja5Qy+s97Os5kc6JdV/
+         3u7w7CAx+DkwRHdkhFK2gIRIOtiJbCKBgb6X9M7W6Z198QdJeax+eLw76pFcJ3u0fK5K
+         Sb2V8W+MwfxNb1Gt3Llxk7tcmFWA1F++0+aLPKY+c9lTClDTauD5Y8HIc6VI/9TP/f/p
+         qDNkUmJP/35tGXlJX0ch/8b8/ArBMOL4WVCDulGyb2B7kidWyHkrf3nr7BWSMibc3dDm
+         lVZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734707822; x=1735312622;
+        d=1e100.net; s=20230601; t=1734707830; x=1735312630;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=WFfluVbnn8slxhL1v/+StR1z4j1VEm6SfObplg+iF7k=;
-        b=RDFeIDpqkuSIHwnldpFCIvo4Wi5kqwPZxUt4dkwBMoiKiNYhsCpsrJH1+B9wmxY53N
-         K7nRRbNo8JHLASwm9pjIW+Wao2Kp0+Ux5q8kdpfc8iOMUmaT6fazLos2OgVwgMjqVytY
-         n9/2DLcGtrCVwL6XoWRYncafn4iE3y2/UVW8jTbV77W8y7ahMzG5IYpdRtSmc+7ptD4+
-         GE5g/YG1bBZL87gRS4YmSFSEPlGKTwzG7lWZ6zU9e2jf6CoOs3gSYG3q34DWw64qZh1H
-         0E+uKzkAa75InxtYltqMWgdCpd36yWVmib2srdkdGCmGicRWq7cH17EGRqCslWZQF7gS
-         bPPQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXIw9mD99sH815AYwjTxSeF1GZ2IWJKFBk3rHrmyKfVE51XlLSqEskBc9kbt7aDcBNgW6tBHsFxMEcCj0o=@vger.kernel.org
-X-Gm-Message-State: AOJu0Ywqr7mGV6e5A/eCau73QyPGnxnwUy6Lv6Ce3neibo8zHMjJh7cF
-	4VUAUo6bW4ZeDJS2aRvUbDHPKD/a7IIP3h4GCebmUVbXZZuI6mmU9fsDOwZj1CW7Mg==
-X-Gm-Gg: ASbGncs8qB/IVKvmnZYFPui7h2tJ0697+i8O+ToGn8m4fUvkBMhbtq+flb5Z9egr6Su
-	+ec/EI+nyKyNegNQhNt3NQnOSn4FoM+7m1sHJdBP2wX9zoG629t+31lNLqgjBCj2jd0w9wxDVVD
-	CXdlvvdkqdggMg/mPvIH9R0IfWWwVBzF/oB1GtV+/pBxLWsi/VWLRxgfKNP3p3F+h1sznqU7PZb
-	sg4ghU2pke5ORK0R23JKqupD2tAoRUn8gtDN5+MOA/MU+In+Z0Qavgg/fIGFeA=
-X-Google-Smtp-Source: AGHT+IGPULePwkBQH6mX8VmDYU2yUgQe5sktbXvvxha31OhPt7KEoe08vUQzk8U4NlKS3Vfhet5Rgg==
-X-Received: by 2002:a05:6a20:c70a:b0:1e0:cc4a:caab with SMTP id adf61e73a8af0-1e5e048151dmr5446050637.19.1734707822554;
-        Fri, 20 Dec 2024 07:17:02 -0800 (PST)
+        bh=nZHfdAZCZo7YK46Du/lwICXtoFhzm0RAbRFQCRrRc/w=;
+        b=XeXRDdjbcCgRfB0S7Yi+gAR2x08ReJtauXNw5RcjkLdTXkgpQ+CvxHssNTmpewNcMl
+         vFUgt2GgEKne25/1mfLs3IBqzsGhTqhPsH7NiVeHoDw6cFCASKn0IjcvYgufautXHTas
+         pED04keRFQXg8o3jdKp4CVyVvFoy1+KpZF1+S/0hcTIkpSl2jj1bCqsrLXtschvYY+KR
+         J4tPzMTNCfxFaYLNHunvKoRs2lpBd6wv1dGxlE6tur3V9+Nw+KZSsQ7GUhd0wWi2Bk9V
+         pN8ECdu53jx0kGVrNi3zl5VZhQk//w2WtHnLFd8S22WfCkRL7dsj3lu0qffOKl4chbDE
+         Ezfw==
+X-Forwarded-Encrypted: i=1; AJvYcCWSjPUqIwfgnRqd2NTiBAV1kg+r0QirQA3MqPe9pjUy3eVebwV3LikNXnihKIC3RcjKYGmTvegKoMrRT6s=@vger.kernel.org
+X-Gm-Message-State: AOJu0YxoN7CmpGHlnF6160aVlyJa+ojros5A+iX9uGi9HYce6tZwv4Ot
+	GxkqrWj0NvAeb4yDfToZZhEJ9cekMqHIm7SlKr/G2khIuJC9699ImEIVjnOUNaV8kA==
+X-Gm-Gg: ASbGncsKBKzaazlO3EpNHn+3pr0OJbY/15Qz5e5MCkXQo891RNulHKG7ZHfvitolbY5
+	JnUUUkDmDOsBHaIE5Rt28RgTkWpr8cuYAYhsvS0exyQlgS9YMUpzg9al63jzSMpO8LNL60K+XlY
+	GOHOKhjTxK4eVYyiM1lL4rVYEDfaVFCfmxtvbsnnLBBTjtOGSh1zPX4fDUYENdMukr8BGpj980o
+	/PM3H5iCtWYQrrEX7ymSyS3OKVr6fYkFuzD/slgYzUm9znlAEK3FkrbklV8u/c=
+X-Google-Smtp-Source: AGHT+IFO44EiAM+QNUCjz1t/r+eXLqqfQaDheZzbbvGTUKBSIvH8vGw9UsNqe197/anSXmbX6B8QWQ==
+X-Received: by 2002:a17:902:da8f:b0:215:98e7:9b1 with SMTP id d9443c01a7336-219e6ca6e4amr43688205ad.5.1734707829995;
+        Fri, 20 Dec 2024 07:17:09 -0800 (PST)
 Received: from localhost ([240e:404:6e10:2b36:20a1:a4d1:f531:7695])
-        by smtp.gmail.com with ESMTPSA id 41be03b00d2f7-842dc7ed721sm2975654a12.67.2024.12.20.07.17.01
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc9d9468sm29470625ad.120.2024.12.20.07.17.08
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 20 Dec 2024 07:17:02 -0800 (PST)
+        Fri, 20 Dec 2024 07:17:09 -0800 (PST)
 From: Julian Sun <sunjunchao2870@gmail.com>
 To: linux-ext4@vger.kernel.org,
 	linux-kernel@vger.kernel.org
@@ -80,9 +80,9 @@ Cc: tytso@mit.edu,
 	boyu.mt@taobao.com,
 	tm@tao.ma,
 	Julian Sun <sunjunchao2870@gmail.com>
-Subject: [PATCH 1/7] ext4: Modify ei->i_flags before calling ext4_mark_iloc_dirty()
-Date: Fri, 20 Dec 2024 23:16:19 +0800
-Message-Id: <20241220151625.19769-2-sunjunchao2870@gmail.com>
+Subject: [PATCH 2/7] ext4: Remove a redundant return statement
+Date: Fri, 20 Dec 2024 23:16:20 +0800
+Message-Id: <20241220151625.19769-3-sunjunchao2870@gmail.com>
 X-Mailer: git-send-email 2.39.2
 In-Reply-To: <20241220151625.19769-1-sunjunchao2870@gmail.com>
 References: <20241220151625.19769-1-sunjunchao2870@gmail.com>
@@ -94,32 +94,26 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Modify ei->i_flags before calling ext4_mark_iloc_dirty() so that
-the modifications to ei->i_flags can be reflected in the raw_inode
-during the call to ext4_mark_iloc_dirty()->ext4_do_update_inode()
+Remove a redundant return statements in the
+ext4_es_remove_extent() function.
 
 Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
 ---
- fs/ext4/inline.c | 3 +--
- 1 file changed, 1 insertion(+), 2 deletions(-)
+ fs/ext4/extents_status.c | 1 -
+ 1 file changed, 1 deletion(-)
 
-diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-index 3536ca7e4fcc..d479495d03aa 100644
---- a/fs/ext4/inline.c
-+++ b/fs/ext4/inline.c
-@@ -465,11 +465,10 @@ static int ext4_destroy_inline_data_nolock(handle_t *handle,
- 	ext4_clear_inode_flag(inode, EXT4_INODE_INLINE_DATA);
+diff --git a/fs/ext4/extents_status.c b/fs/ext4/extents_status.c
+index c786691dabd3..c56fb682a27e 100644
+--- a/fs/ext4/extents_status.c
++++ b/fs/ext4/extents_status.c
+@@ -1551,7 +1551,6 @@ void ext4_es_remove_extent(struct inode *inode, ext4_lblk_t lblk,
  
- 	get_bh(is.iloc.bh);
--	error = ext4_mark_iloc_dirty(handle, inode, &is.iloc);
--
- 	EXT4_I(inode)->i_inline_off = 0;
- 	EXT4_I(inode)->i_inline_size = 0;
- 	ext4_clear_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA);
-+	error = ext4_mark_iloc_dirty(handle, inode, &is.iloc);
- out:
- 	brelse(is.iloc.bh);
- 	if (error == -ENODATA)
+ 	ext4_es_print_tree(inode);
+ 	ext4_da_release_space(inode, reserved);
+-	return;
+ }
+ 
+ static int __es_shrink(struct ext4_sb_info *sbi, int nr_to_scan,
 -- 
 2.39.5
 
