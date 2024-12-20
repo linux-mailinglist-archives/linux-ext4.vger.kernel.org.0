@@ -1,55 +1,46 @@
-Return-Path: <linux-ext4+bounces-5812-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5813-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AFE49F92FE
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 14:21:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECC9A9F9365
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 14:40:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4D2991884755
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 13:21:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D3FCA18871A8
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 13:40:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAA9B2156E7;
-	Fri, 20 Dec 2024 13:20:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="ebRmYwPQ"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72F922156E6;
+	Fri, 20 Dec 2024 13:39:53 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.4])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F3021518E;
-	Fri, 20 Dec 2024 13:20:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.4
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C2131C5F08;
+	Fri, 20 Dec 2024 13:39:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734700857; cv=none; b=GksKEl/JsHm8Iox6YKldVOFUXGqU/ufBDH72fx/Acq0OAJdaL125SblbVy+Mfp8+98lmAHCwb//+TiRD1UieftnCYWaik4HA8hSFMzkvazY3MdQn6tTz2DRroT+pK0l5SaQOkY8nYQNLI7EFHDrGO6lasM6Z8OrUkMsFrVwCoV0=
+	t=1734701993; cv=none; b=qQ/EpSpADvdh0VKLnGmUefQxPfOApFfsa38NGifTYUwS5mHA25gZxJjV2otjYTg2iGvk5D8TrYePbmJmoQaYQoUD3FyD+snYg01iecyD18VXmjpKAmKlcQDNf/3awsjP60Lez8olcSPStRW2ivAKfcdIC+fhaZ4/4QzarWAlXUw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734700857; c=relaxed/simple;
-	bh=G8cc1wy+lildK6gwPcCwoLFCCo7QTN1GhR8RtkgX16E=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=KIJ19lXk5iqm6jhbyUdoji5z/mxgze43zMekVqr2fI6Yn9vPUzk+dZT8ld/qXd6oiI55yy8w2xAF96FHXkyvkFo7wsRfaLMSubdUP+yu3nbAGwBykPTtV4PObtcy7/A36lbf01kR8cFKzjDMkrwCn1JDdFLbviDpvGS+6Y7aeWc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=ebRmYwPQ; arc=none smtp.client-ip=212.227.15.4
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1734700542; x=1735305342; i=markus.elfring@web.de;
-	bh=DTDJjcI8PHu9bE0TH8c8cUwf31WQRGWOCjhYKu9MI3k=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=ebRmYwPQwGRTrw2lP1OZdeMWWpdDZ+7n2OLMuxxBCDjT35fCLiJD1UxRl8bOtwcl
-	 moE/z5P/ff8e8cCn5ELg8XznslNB+VeWjolzphkW0l0ro14n9+zV7yVTalLssTsfa
-	 F0+vjMfPmdR1TLkQ/aegF9toUulbI02XK2DJ2XgbN1HZZoIOjPaTdbmSBwc2mHrum
-	 zoFKnFXEYYICqZ9Cz2i3++JANwcow9Dip6u+GHhxFw71E4E0hdtEqf5r1aY1CaK6i
-	 06de3g6zSpY8MAMrAfVeeU4Dg38lMJcY1JOiIoRDjt0IQMWL/TdIMk+7ydAOxDxAz
-	 5we2Emg6EU7gzCH8uA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.93.21]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MuVKI-1tgqQW0ejy-00yswz; Fri, 20
- Dec 2024 14:15:42 +0100
-Message-ID: <2474b3df-1e58-49f5-a3b3-6cfd6e57372d@web.de>
-Date: Fri, 20 Dec 2024 14:15:40 +0100
+	s=arc-20240116; t=1734701993; c=relaxed/simple;
+	bh=6VhAjpgvaUBoS2n35I+RYl7VIkSGgbbtfErmoeSeBZs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=FfYBvhZ29FDnfW8tPEXWsOMnoIntAa+iTnY3Tm/Dlf0xUZehY0PNymmbB0rWMKoANeOTkc47Ycut+avOp4zVeNJ/Nju0FiMPU/45n9dbU5nBZcOFaE59aVNYBjKDzLp77tTwJPSJpCTRLwkneu+kN+x8iaXfjrUO/ipHdI+MRGc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4YF7lG08kQzRjvY;
+	Fri, 20 Dec 2024 21:37:46 +0800 (CST)
+Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
+	by mail.maildlp.com (Postfix) with ESMTPS id E66FA180104;
+	Fri, 20 Dec 2024 21:39:40 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
+ (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Fri, 20 Dec
+ 2024 21:39:40 +0800
+Message-ID: <47a46888-064f-4c7d-a554-30ba49c45bab@huawei.com>
+Date: Fri, 20 Dec 2024 21:39:39 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -57,68 +48,101 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-To: Kemeng Shi <shikemeng@huaweicloud.com>, linux-ext4@vger.kernel.org,
- Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20241219110027.1440876-2-shikemeng@huaweicloud.com>
-Subject: Re: [PATCH 1/6] ext4: add missing brelse for bh2 in ext4_dx_add_entry
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20241219110027.1440876-2-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:m//qz9ER2Hv6X4f8txHKIOL2VEGoizb68T3ERf4lqMKmt2vEab3
- nXhei9FkdVR9B4+YpJKag4QOLoL2vWJd9wJ1Qurdpfcvmll46+I71MMinLDwsLBNjwVaaKb
- HElV3f+JlRiZGA4CTbid+cIWObuUhMGnHqn0p8nEZ1QuOukhogM9XR9xFcDpJMtH4xHSmd1
- F1YrfTYzN5405JjHza7Wg==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:TY5T+rrZS40=;Ky00ImIJc14l1X2NV/qRHLMCHji
- GMfOHTw19o51ALQgN26XME+MgECc5ov9VWeM3x8Ei3DwL31l5CyPBq0OkbUQIZCFARmXiNLBR
- avWW1Xj0U8+KVeNmd3C3tH2EfoufFZuU7vmhHr3fI5nXloTXXc5ziDUIAgav4C58IJlO0a6Rb
- KGT9pKuI2kW/PgcAVCgHaeGRBWm/9PmztfnQfPTbsQ12fAJ0ToNY4BzyKi7fpo2lUSe4npZc/
- 0w1FxwMpOP47qV2/FJu1p79gH2mNU/Pb/zWCj66/+cOpjz2zXPvI7JKJsi9oEm05PK5tdPkvY
- +jivkeXajKR0omTfy7cyh5SSSjVLYHsa+IFoijJHLgYxYsfCDLTktvLcdnhi7bsEgJXWF9vcX
- Ggles9UzpghgOiSx1MjgX1pPG4P7EYC6TJPqlsbVFjVldyOsAQKYLYVUE1UKGkKedPpXZ6tfP
- USMZUlBAa2myqv6vDSyvDD3UFrnfnD5u7XgBrK+wlotYQJyPlFNQq8LUuzmTlYtA8Rw/1Sl6E
- vP1rSm5nuE6LLQD0SnWVAZbSDpWAFV99R6mc/2bD3F/EQINcJJ9JcQvGilko7wkA0OcCrzVmu
- MDW1wF+ePhQ+ABxJY5zmnVxDfJRkuOnWntOZXNLtc5euIxO1VDKeCDpRJu0JPBQBBge3xV9U1
- HUsfDM+QRXRsmN8R2rm3HxjFCUlee/lYLddQciChLjO8uJkgGfxwlvq0BEvdyhVMt+pp+/yn+
- hmNsWJxnBSA+/aO/OC0pYvtYDwznHyax0lV2ertK4EolqHEf30IM8uEW9fgFTweZ5ZQBTFXR1
- bpV9Jro7XMqViMJ7Vfolw6QT+qBh5xXY2kgsvDjMefskyL1rPLCOhhKr4QjXUjcQZojQdaab4
- OPwpKDg+Z4vbRwXsLvK8fXMT1GS5dV7IMK96SEpsSXxixJqtr6GmIEf0J453dUU4euN7sbcqE
- W0AtuJ3uiM0nD6dAxoiD5hXA56F5fMVO35LASAfP7TGPtIzM3AJ3iRz5YoIq6S56QQu9vW9pI
- mpvId9kgaTyBLrkgUEsgNm6GO9yMwbrF9t0cx9ugdNcg0ozugFi3SeJp4WGELvaQXB7pI0NmF
- ub9Ed+keY=
+Subject: Re: [PATCH 3/5] ext4: abort journal on data writeback failure if in
+ data_err=abort mode
+To: Jan Kara <jack@suse.cz>
+CC: <linux-ext4@vger.kernel.org>, <tytso@mit.edu>, <adilger.kernel@dilger.ca>,
+	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
+	<yangerkun@huawei.com>, <libaokun@huaweicloud.com>
+References: <20241220060757.1781418-1-libaokun@huaweicloud.com>
+ <20241220060757.1781418-4-libaokun@huaweicloud.com>
+ <20241220103617.xkqmwkmk5inlq3dz@quack3>
+Content-Language: en-US
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20241220103617.xkqmwkmk5inlq3dz@quack3>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+ kwepemg500008.china.huawei.com (7.202.181.45)
 
-> Add missing brelse for bh2 in ext4_dx_add_entry.
+On 2024/12/20 18:36, Jan Kara wrote:
+> On Fri 20-12-24 14:07:55, libaokun@huaweicloud.com wrote:
+>> From: Baokun Li <libaokun1@huawei.com>
+>>
+>> If we mount an ext4 fs with data_err=abort option, it should abort on
+>> file data write error. But if the extent is unwritten, we won't add a
+>> JI_WAIT_DATA bit to the inode, so jbd2 won't wait for the inode's data
+>> to be written back and check the inode mapping for errors. The data
+>> writeback failures are not sensed unless the log is watched or fsync
+>> is called.
+>>
+>> Therefore, when data_err=abort is enabled, the journal is aborted when
+>> an I/O error is detected in ext4_end_io_end() to make users who are
+>> concerned about the contents of the file happy.
+>>
+>> Signed-off-by: Baokun Li <libaokun1@huawei.com>
+Hi Honza,
 
-* I propose to append parentheses to function names.
+Thank you for your review and feedback!
+> I'm not opposed to this change but I think we should better define the
+> expectations around data_err=abort.
+Totally agree, the definition of this option is a bit vague right now.
+It's semantics have changed implicitly with iterations of the version.
 
-* How do you think about to add any tags (like =E2=80=9CFixes=E2=80=9D and=
- =E2=80=9CCc=E2=80=9D) accordingly?
-  https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/=
-Documentation/process/submitting-patches.rst?h=3Dv6.13-rc3#n145
+Originally in v2.6.28-rc1 commit 5bf5683a33f3 (“ext4: add an option to
+control error handling on file data”) introduced “data_err=abort”, the
+implementation of this mount option relies on JBD2_ABORT_ON_ SYNCDATA_ERR,
+and this flag takes effect when the journal_finish_inode_data_buffers()
+function returns an error. At this point in ext4_write_end(), in ordered
+mode, we add the inode to the ordered data list, whether it is an append
+write or an overwrite write. Therefore all write failures in ordered mode
+will abort the journal. This is also the semantics in the documentation
+- “Abort the journal if an error occurs in a file data buffer in ordered
+mode.”.
+
+Until commit 06bd3c36a733 (“ext4: fix data exposure after a crash”) in
+v4.7-rc1, in order to avoid stale data, we will only add inodes to the
+ordered data list when attaching freshly allocated blocks to inode
+using a written extent. Since then, only written write (aka dioread_lock)
+failures in ordered mode will abort the journal, and “data_err=abort” in
+unwritten mode will no longer take effect.
+
+There are more historical changes to the relevant logic, so please
+correct me if I'm missing something.
+> For example the dependency on
+> data=ordered is kind of strange and the current semantics of data_err=abort
+> are hard to understand for admins (since they are mostly implementation
+> defined). For example if IO error happens on data overwrites, the
+> filesystem will not be aborted because we don't bother tracking such data
+> as ordered (for performance reasons). Since you've apparently talked to people
+> using this option: What are their expectations about the option?
+>
+> 								Honza
+As was the original intent of introducing "data_err=abort", users who
+use this option are concerned about corruption of critical data spreading
+silently, that is, they are concerned that the data actually read does
+not match the data written.
+
+But as you said, we don't track overwrite writes for performance reasons.
+But compared to the poor performance of journal_data and the risk of the
+drop cache exposing stale, not being able to sense data errors on overwrite
+writes is acceptable.
+
+After enabling ‘data_err=abort’ in dioread_nolock mode, after drop_cache
+or remount, the user will not see the unexpected all-zero data in the
+unwritten area, but rather the earlier consistent data, and the data in
+the file is trustworthy, at the cost of some trailing data.
+
+On the other hand, adding a new written extents and converting an
+unwritten extents to written both expose the data to the user, so the user
+is concerned about whether the data is correct at that point.
+
+In general, I think we can update the semantics of “data_err=abort” to,
+“Abort the journal if the file fails to write back data on extended writes
+in ORDERED mode”. Do you have any thoughts on this?
 
 
-=E2=80=A6
-> +++ b/fs/ext4/namei.c
-> @@ -2580,8 +2580,10 @@ static int ext4_dx_add_entry(handle_t *handle, st=
-ruct ext4_filename *fname,
->  		BUFFER_TRACE(frame->bh, "get_write_access");
->  		err =3D ext4_journal_get_write_access(handle, sb, frame->bh,
->  						    EXT4_JTR_NONE);
-> -		if (err)
-> +		if (err) {
-> +			brelse(bh2);
->  			goto journal_error;
-> +		}
->  		if (!add_level) {
-=E2=80=A6
+Thanks,
+Baokun
 
-I suggest to add another jump target instead so that a bit of exception ha=
-ndling
-can be better reused at the end of this function implementation.
-
-Regards,
-Markus
 
