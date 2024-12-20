@@ -1,81 +1,81 @@
-Return-Path: <linux-ext4+bounces-5809-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5810-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F1B99F9291
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 13:51:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C7CB29F92A2
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 13:56:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2D00F7A4531
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 12:51:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B1D6E1894D48
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 12:56:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12CB72153D0;
-	Fri, 20 Dec 2024 12:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 343852153EB;
+	Fri, 20 Dec 2024 12:55:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="VsJo9doD"
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="He4zcA3b"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 311FB7D07D;
-	Fri, 20 Dec 2024 12:51:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61482211A3D;
+	Fri, 20 Dec 2024 12:55:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734699104; cv=none; b=qc2Whsgfyt6VdsWKGxhQqnuD5xtxECFg6E4kVvHdT4vZI5ioUxx/p7qtWf0oHSMhgNTS9PNLWfYUxsdjEbRiUkbic2jQ5ev3pO0iwhTK0YVPS2AgS5TIL2Fh/KTXqWrimyEvKj9A1i9Ee0giyMPhowrutNxlTOx0qntx/tMLB1Y=
+	t=1734699358; cv=none; b=MjdvPai3rMJM7uJqc4/ufa6UqiVVS3lgz09NOtrLkmMBWl9QlR/Gkc00EQAKG+f5c89/V298Fbb6qYMXhqhV+pndzxrELrUJ596S7h/2c7IKveqZU/Pa3sLDhn5LNaSPEOOXXQzfvFfXLzWdv4vntJawO8OplL+pJC+Zm6LCtEk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734699104; c=relaxed/simple;
-	bh=TAL8rxAfmUPcwdquOpkF7Tpnt9iv2jf9wb4y6WxODA0=;
+	s=arc-20240116; t=1734699358; c=relaxed/simple;
+	bh=f4ESyd2iAEPNSxCH5hE0DLwkQIST2D56WkjlcJA73AQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q0oqPX2hzCM5WN0AcZrrv4ThpsidVq74FiFuiZ+xdLmemjze5oHaK8pUMNTmWcQrV4AurCznhOrssn0cmsnqy5xB0G4lOEg8cqTuvp2FqCUeT58CnrmkAUjbO/PqK3VJdIKzP0mHwxbFWWPK5A2kACsZyvU4aF/a9v2TA14NxIQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=VsJo9doD; arc=none smtp.client-ip=148.163.156.1
+	 Content-Type:Content-Disposition:In-Reply-To; b=qrcTCNL1Rh6LTAOKIhqyh9uKooNQhijpwecsJRNyh0gJ2UHl5DwpNmTqijZanzEvsUh7e0ykDdmK7khRe/HjnU/nfr1e9iyo8eIgTlqAybb4Sw/n6YJgVUgKvTBIVaLOmf+2xeFDO1m/NfY6yaXrogtfcd9Z8Y/77UvgRGObIsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=He4zcA3b; arc=none smtp.client-ip=148.163.158.5
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360083.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BK3qHFV010580;
-	Fri, 20 Dec 2024 12:51:29 GMT
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.18.1.2/8.18.1.2) with ESMTP id 4BJNbV4L010782;
+	Fri, 20 Dec 2024 12:55:50 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=cc
 	:content-type:date:from:in-reply-to:message-id:mime-version
-	:references:subject:to; s=pp1; bh=AcHOW2X+zn98cM8KxML64DfejNzOGZ
-	Yd6rs/E69gnJY=; b=VsJo9doDy8BUcq969OhMVjXdxI/6V6C5N7EiAkn7wQOSH9
-	odaLReyi5DHSDaXeSwSJK83WNwMqRkCiNI2ly0ox8Txg8oR/xMuoNm/PAQ9XNqUa
-	g/WknFyGFqJIPTRGxUFVI1yiF37SdJOGO0gFYwSmZsyroShRWnWt48ScI0BPIlfP
-	OPv05PIeyvBDTMjw1XoMiU8gG8fmvyCnjQFy/3cLOSiQxABhC7Zz4ckeDQ2blajr
-	GfCYIiQ6SorHO6c5R6SAeperaRAg7NlHpAPatowLoYzWg6ZM8Tikqxj5A/2bcXxF
-	puGh8LR2Nu7B3umUp605b6yPQjpJJQHw7L+HCsUg==
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43n12bt73x-1
+	:references:subject:to; s=pp1; bh=cW45KTZZyEcKFqjC7FVWPJgVQKkOaU
+	v7LIzMb6QRRYQ=; b=He4zcA3bWXlswNutPvEZoKKuBiSDBxCbHWUvgOIgbsiKsY
+	5P99rBpBC8SGBVT+BxCKd08ENI6sX2ppqt6j0QzKnPoqMykTiJXYtpLFi8689RWj
+	nLh/w/59B+/yJQkJiN7jw7//FqwfPPHCiVGJkECtQdiyz1Cx5eMj1Va0qnzLa5yM
+	0GUCSUvXumW+ci3OgLYRNmu2xyv0zW6JyA0GsB5gT+ZwB/fINSFIOMR3rsulXDij
+	TGBgTbWxSM/sCBNg4UVzYv4w2rgsH417Haae7p3GrMW+Dtd1cWlLlgTHFQyV16zo
+	KTLOl9W/euDm8W6eFPNdbu2b4HJPTgOQ/ebM/sIA==
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 43mwaajub1-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Dec 2024 12:51:29 +0000 (GMT)
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BKCbVaT029312;
-	Fri, 20 Dec 2024 12:51:28 GMT
-Received: from smtprelay07.fra02v.mail.ibm.com ([9.218.2.229])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 43hmbt2cgm-1
+	Fri, 20 Dec 2024 12:55:49 +0000 (GMT)
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.18.1.2/8.18.1.2) with ESMTP id 4BK9CMVw014350;
+	Fri, 20 Dec 2024 12:55:49 GMT
+Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 43hmqyjauq-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 20 Dec 2024 12:51:28 +0000
-Received: from smtpav01.fra02v.mail.ibm.com (smtpav01.fra02v.mail.ibm.com [10.20.54.100])
-	by smtprelay07.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BKCpQcQ64750032
+	Fri, 20 Dec 2024 12:55:49 +0000
+Received: from smtpav02.fra02v.mail.ibm.com (smtpav02.fra02v.mail.ibm.com [10.20.54.101])
+	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 4BKCtkq818809194
 	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 20 Dec 2024 12:51:26 GMT
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id BB85620043;
-	Fri, 20 Dec 2024 12:51:26 +0000 (GMT)
-Received: from smtpav01.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AB38F20040;
-	Fri, 20 Dec 2024 12:51:25 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.39.21.221])
-	by smtpav01.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Fri, 20 Dec 2024 12:51:25 +0000 (GMT)
-Date: Fri, 20 Dec 2024 18:21:23 +0530
+	Fri, 20 Dec 2024 12:55:46 GMT
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 00E9820043;
+	Fri, 20 Dec 2024 12:55:46 +0000 (GMT)
+Received: from smtpav02.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E86D020040;
+	Fri, 20 Dec 2024 12:55:44 +0000 (GMT)
+Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.39.23.188])
+	by smtpav02.fra02v.mail.ibm.com (Postfix) with ESMTPS;
+	Fri, 20 Dec 2024 12:55:44 +0000 (GMT)
+Date: Fri, 20 Dec 2024 18:25:42 +0530
 From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 To: Kemeng Shi <shikemeng@huaweicloud.com>
 Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
         linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/6] ext4: remove unneeded check in get_dx_countlimit
-Message-ID: <Z2VoSwYw+sFTzMx0@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+Subject: Re: [PATCH 3/6] ext4: remove unneeded forward declaration in namei.c
+Message-ID: <Z2VpLu6ay0wW8uNK@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 References: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
- <20241219110027.1440876-5-shikemeng@huaweicloud.com>
+ <20241219110027.1440876-4-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -84,51 +84,76 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20241219110027.1440876-5-shikemeng@huaweicloud.com>
+In-Reply-To: <20241219110027.1440876-4-shikemeng@huaweicloud.com>
 X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5sOq7FSAAAYr2evAibgShE4PW2hZseuu
-X-Proofpoint-ORIG-GUID: 5sOq7FSAAAYr2evAibgShE4PW2hZseuu
+X-Proofpoint-ORIG-GUID: yxNLyaJoyewBeQL2CIm4tegq5YdNkUQB
+X-Proofpoint-GUID: yxNLyaJoyewBeQL2CIm4tegq5YdNkUQB
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.293,Aquarius:18.0.1051,Hydra:6.0.680,FMLib:17.12.62.30
  definitions=2024-10-15_01,2024-10-11_01,2024-09-30_01
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0
- suspectscore=0 malwarescore=0 clxscore=1011 adultscore=0 mlxscore=0
- phishscore=0 spamscore=0 priorityscore=1501 mlxlogscore=696 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 malwarescore=0
+ bulkscore=0 mlxscore=0 priorityscore=1501 suspectscore=0
+ lowpriorityscore=0 adultscore=0 impostorscore=0 mlxlogscore=999
+ phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2411120000 definitions=main-2412200103
 
-On Thu, Dec 19, 2024 at 07:00:25PM +0800, Kemeng Shi wrote:
-> The "offset" is always non-NULL, remove unneeded NULL check of "offset".
+On Thu, Dec 19, 2024 at 07:00:24PM +0800, Kemeng Shi wrote:
+> Remove unneeded forward declaration in namei.c
 > 
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Hi Kemeng,
+Looks good, feel free to add:
 
-I know the current callers don't pass NULL but I think we should still
-keep the check around just in case, to avoid NULL dereferences in
-future. I don't think there's any harm in keeping it
+Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
 
 Regards,
 ojaswin
 
 > ---
->  fs/ext4/namei.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
+>  fs/ext4/namei.c | 30 ------------------------------
+>  1 file changed, 30 deletions(-)
 > 
 > diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index 33670cebdedc..07a1bb570deb 100644
+> index 8ff840ef4730..33670cebdedc 100644
 > --- a/fs/ext4/namei.c
 > +++ b/fs/ext4/namei.c
-> @@ -434,8 +434,7 @@ static struct dx_countlimit *get_dx_countlimit(struct inode *inode,
->  	} else
->  		return NULL;
+> @@ -291,36 +291,6 @@ struct dx_tail {
+>  	__le32 dt_checksum;	/* crc32c(uuid+inum+dirblock) */
+>  };
 >  
-> -	if (offset)
-> -		*offset = count_offset;
-> +	*offset = count_offset;
->  	return (struct dx_countlimit *)(((void *)dirent) + count_offset);
->  }
->  
+> -static inline ext4_lblk_t dx_get_block(struct dx_entry *entry);
+> -static void dx_set_block(struct dx_entry *entry, ext4_lblk_t value);
+> -static inline unsigned dx_get_hash(struct dx_entry *entry);
+> -static void dx_set_hash(struct dx_entry *entry, unsigned value);
+> -static unsigned dx_get_count(struct dx_entry *entries);
+> -static unsigned dx_get_limit(struct dx_entry *entries);
+> -static void dx_set_count(struct dx_entry *entries, unsigned value);
+> -static void dx_set_limit(struct dx_entry *entries, unsigned value);
+> -static unsigned dx_root_limit(struct inode *dir, unsigned infosize);
+> -static unsigned dx_node_limit(struct inode *dir);
+> -static struct dx_frame *dx_probe(struct ext4_filename *fname,
+> -				 struct inode *dir,
+> -				 struct dx_hash_info *hinfo,
+> -				 struct dx_frame *frame);
+> -static void dx_release(struct dx_frame *frames);
+> -static int dx_make_map(struct inode *dir, struct buffer_head *bh,
+> -		       struct dx_hash_info *hinfo,
+> -		       struct dx_map_entry *map_tail);
+> -static void dx_sort_map(struct dx_map_entry *map, unsigned count);
+> -static struct ext4_dir_entry_2 *dx_move_dirents(struct inode *dir, char *from,
+> -					char *to, struct dx_map_entry *offsets,
+> -					int count, unsigned int blocksize);
+> -static struct ext4_dir_entry_2 *dx_pack_dirents(struct inode *dir, char *base,
+> -						unsigned int blocksize);
+> -static void dx_insert_block(struct dx_frame *frame,
+> -					u32 hash, ext4_lblk_t block);
+> -static int ext4_htree_next_block(struct inode *dir, __u32 hash,
+> -				 struct dx_frame *frame,
+> -				 struct dx_frame *frames,
+> -				 __u32 *start_hash);
+>  static struct buffer_head * ext4_dx_find_entry(struct inode *dir,
+>  		struct ext4_filename *fname,
+>  		struct ext4_dir_entry_2 **res_dir);
 > -- 
 > 2.30.0
 > 
