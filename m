@@ -1,88 +1,88 @@
-Return-Path: <linux-ext4+bounces-5823-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5824-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id E93F59F9983
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 19:29:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98C309F99AD
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 19:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 48659169E5B
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 18:29:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4E9C6189BFD4
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 18:31:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0152121D58C;
-	Fri, 20 Dec 2024 18:29:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20BE022069E;
+	Fri, 20 Dec 2024 18:31:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="PF/Vjwab"
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cs6fXOuv"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 114D921D591
-	for <linux-ext4@vger.kernel.org>; Fri, 20 Dec 2024 18:29:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB9DA21D01B
+	for <linux-ext4@vger.kernel.org>; Fri, 20 Dec 2024 18:31:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734719367; cv=none; b=QBF1U3xiWoNB5XT4Z9X2RwPwTnEP80fDRo9R0rk8r7fYsKeieegxXJ7wd3WOX1clI6NW6ICUJm728X3/mSCRD8H7JmOCHsrq7D9+azZX3xR1IQqx1K/PtccbKbcgRpbXPkQc4xTGVDbzmzQ8ql3+4yfPi+wLkXeGQR125MM9mCI=
+	t=1734719471; cv=none; b=RNclohKMwWoZ5Ql8b/dM42opw0MSEJlQgglAdsRAlGQZ0bdem82ll6PfNds8PIz29hBOKFzkshau8BvZC15CSKk5dnYE2eaHVlDOXObcLcP1NSsoD6x+0VafRkM42WRy1atRlMVjabecL6BvLt7uTpx/aaK5lQspII2cYt/mGO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734719367; c=relaxed/simple;
-	bh=Q6SF3tekiNZltEf69RdSkr40RY1p4SR17YuXy/ZBfwU=;
+	s=arc-20240116; t=1734719471; c=relaxed/simple;
+	bh=5zqe6KTdOvbJhjCS4/7P40LvEhqzzNyD4usnj91BBp8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BB3fh92lRLNgo/4qLXLYCXaTMuOgnZ4lmTZ+78Em/VD0Oy4zdjDHcmmYTuF/WFb8BLMciHo0mF8BAGxf6Z5P7qaIodRJj5QvdlOWG9+YCdnqgdPmE8lIp3HmM+LU/OQFndvbblSKRqVr5dqubWdEERxuBcg59jWWuqJr/n8Ir+Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=PF/Vjwab; arc=none smtp.client-ip=170.10.133.124
+	 In-Reply-To:Content-Type; b=oTnYu2bfLxgq2A8r6tMns+MBjDQ9X28jVFznaCbkjiJGURzCuJTG+4/AStx1rwrJcICZp/oagdgO5nq0PpbVc7Xdq72IfGoJioXASo3fR55pj6jSIm/LNq8x4iJCkpt/e8ZV7YcXkyz+LEKNGbSjVzRWXntxhyM/g7pV2ym597o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cs6fXOuv; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1734719365;
+	s=mimecast20190719; t=1734719469;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=ShuO3TfEMw80wDehD7G0N/FfiqkQn0QjW6tjkfqEvXA=;
-	b=PF/VjwabwE497xwinJz7HQIYphlW37QUqsbgJJd7jT4z4p3aoY3B7Eur3BEzFqk/h5rDb6
-	kiBfBC/S17fIWTpvfSFm8LLPrkGe+u7rQXKwh/Ej18aISIHR8vblzz2MzizInIPxXNKSGz
-	GYcI9SpM7zpvAhfw8cLhkcGw71vZdhA=
+	bh=PN5EVM1NmukZNXj0qpicok/RL7e9UE7DI/QNZtLqqyY=;
+	b=cs6fXOuvYnWgkWHBWBr9Whv0Cs7tIqlZ5E2iP6COl5gxSISoRlLEoD7AZTOPb/0lMLNuoD
+	wkllkZFdcKYGst0BOaWvwuG8hcYJPqmxd+pBKl0wGVA9m1wYmEaz3SU0JtHxffxwIqL/Q2
+	I8hgTmAaTv3f6DN9urYEoL+nHxIQDjo=
 Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
  [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-416-JC5znA9kN7e3xSuX0bW8_A-1; Fri, 20 Dec 2024 13:29:23 -0500
-X-MC-Unique: JC5znA9kN7e3xSuX0bW8_A-1
-X-Mimecast-MFC-AGG-ID: JC5znA9kN7e3xSuX0bW8_A
-Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-38639b4f19cso1558185f8f.0
-        for <linux-ext4@vger.kernel.org>; Fri, 20 Dec 2024 10:29:23 -0800 (PST)
+ us-mta-112-8K_kK9hoOMmoPRE_m3iwXQ-1; Fri, 20 Dec 2024 13:31:07 -0500
+X-MC-Unique: 8K_kK9hoOMmoPRE_m3iwXQ-1
+X-Mimecast-MFC-AGG-ID: 8K_kK9hoOMmoPRE_m3iwXQ
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-385df115288so1153423f8f.2
+        for <linux-ext4@vger.kernel.org>; Fri, 20 Dec 2024 10:31:07 -0800 (PST)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734719362; x=1735324162;
+        d=1e100.net; s=20230601; t=1734719466; x=1735324266;
         h=content-transfer-encoding:in-reply-to:organization:autocrypt
          :content-language:from:references:cc:to:subject:user-agent
          :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=ShuO3TfEMw80wDehD7G0N/FfiqkQn0QjW6tjkfqEvXA=;
-        b=FhflFWAsBuQA1vRiFYpsoHK5lBd+nMOoT66XEY2WQi7h4ynV9Gq0RJEpoepy/vpNAQ
-         bwJ1J3idri3xvBDfdQNc4dN2wTM8SJzDoA3KI4cXhHAuYuw8lcjNmdhIGScLATmhLUj2
-         sk108E2f4gVULLxto5mhcPD9MTKh4zjnNg5py2VvaKcJSVfSG/G1jxMY5gaZfjPv/nCk
-         0fmUuFnjon7WncC4F89Mu776zJUPbeTZafDBvE8Ql/W2huuLTt19/6NrRcc5Fj7342Lr
-         a5wEWnHnVavQHlkyZctQlRMIhZXskszFZbdhOZBT3moBOyiF5570l5okdpXHKgUXQdT9
-         fJKw==
-X-Forwarded-Encrypted: i=1; AJvYcCVBURFRo1dCdx9nIlC+t5HeAgwDItw1KDysEMHvdNDN9wh5J4C45SXml4UHBAQi/xcFztwjBSg5IiUV@vger.kernel.org
-X-Gm-Message-State: AOJu0YxVUjXeQbiWT3Utk/klId/ho1rGr4u7+ivPUTqkwz7f2X6R5pVY
-	Woi0FPzfcsHAoAs13hubBzX/r5Tb6PPL3RuamgYXvgxSqIw3L4eI4Qiy36qyircFmUVoPXXw0PU
-	NrRdUDGkfS9z6lwccbdDuQJpJJXuyG5Or4l3Xkn7D1eNvbG4RfceOv+iUzjs=
-X-Gm-Gg: ASbGncsx0lOdgl9ZxaLYGPPc43fWVbLkdzKnQzCMKCdr0185dLgDcIpVK0bocRKRCP3
-	gnVns4V20KvAHJHRqZKH1wAUadhnldA0Un3drI/d012ipSsSzN4kyCq/nnY9JK3F2Ssm8roTIOe
-	hUrlF23yro0defx8JqAx9l4lX6EKUzSa2OvBFtv5bVJebDKjJO+MSBUcQSAEDHIENjRzpCrR4EH
-	ZqITH1Ph6LgbcmDSh+tw82aqIeezhzk+7YEEo5ou71VkEqtpYy7bo+Di3S9GHWNxuxktNWpkuyR
-	rG3hPyICF/xQIRt5z/YOdHotxCR5vNAQrKlsJly1kznsVXtpn4Egr98JdDUewb/n1UsiH2ye8cq
-	S/hVKHY9Y
-X-Received: by 2002:a05:6000:18a9:b0:386:3835:9fff with SMTP id ffacd0b85a97d-38a22406d43mr4852370f8f.59.1734719362362;
-        Fri, 20 Dec 2024 10:29:22 -0800 (PST)
-X-Google-Smtp-Source: AGHT+IG4GC48OmfJNltY6Ek7vleCwhpqJySNAWqKHGuZFUvMe2tCVDpmaDR4IIQ/DXZtWNsmnqadZA==
-X-Received: by 2002:a05:6000:18a9:b0:386:3835:9fff with SMTP id ffacd0b85a97d-38a22406d43mr4852317f8f.59.1734719361985;
-        Fri, 20 Dec 2024 10:29:21 -0800 (PST)
+        bh=PN5EVM1NmukZNXj0qpicok/RL7e9UE7DI/QNZtLqqyY=;
+        b=vtCAo9ADiA0xft+EBGbrVp5wPBzJfzt0ay4AWxp/dkFso/ljiCG5j9jrkeNjZWhlk0
+         GNzh059LEmf3qRcRyIXM23j+GQtcJVqUtTIromq7qeITHJ41buCTAKE9HN5P/p6dvADN
+         Sm+HtNzB95yvq4ywK4QVlEUEU/tPyHuIKauig0F7y/Ur9EPb/DlR7MtFd0JutaY2nPGq
+         BojPjAf8Pm1OqAfkkkewpXkPePo4HvyGHMxUlnIhP/DxtqF89nvksIncNhA44oNa2Nb3
+         lKR81XE5/eV67s4hzNVzjzvfTwR6i0Gur6sfYcBQMX4ECDABK0NJ0jfIufmmktE2YDQ2
+         6CCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCW/fO+1NXS1Kxp8TjIWntJ+TQWYGJYY6V275cjBmIuBxZLvK1hgsuIlHC6+qPppBaEraK858DopgH3M@vger.kernel.org
+X-Gm-Message-State: AOJu0YwMFqVNw8c0nyrhnzy3h+4ZjMSyZRIh6JWyh/2ejCU0hBfvMuhe
+	phLugRCLlG+dazTbS4xuK8LdKpK/lhZbqoZV3s6pbJsafndi1CthkEd00rJyb7fTsxSDu7m29cz
+	w1Oum3yrslt5hvgdp6t/7I/fRigsjlxRLHACrJysuRWCupldc7kFjHsWQ8g0=
+X-Gm-Gg: ASbGncvtVN8POYZ/HZ9bR0mH02IC42aB88pF5bLZ743ahAudN4z8ltImvR/ZE4a6MoJ
+	kZu3NowLLMYHPTva/d7wUyqVojbH/uT2YVxIv2SjXdzefHPnsGb+iBLSYnKO1ek2FBO9xUpks6g
+	Ci+P/7NeCZN4NBoxi28pEpEV4/YvlrQxTUKggxBRJeVblqyToXLzMy+tbsAD5UgfznJVvGPMId3
+	WdghkvF9RYoqW6n1dBki6zzhTnbAjWTOWt53H0hv9pY0rFGlfFjWDRPX/nUNo0WvVWG0VWT0jCj
+	DUOcEjXP1sShJlbPO4rLsz7bOxmuE6hoSDEVh22nmJmZIY7LOn6YvRxlqhEfjwFbIMqVIwl2IzJ
+	8GRvu94Yz
+X-Received: by 2002:a5d:64c2:0:b0:386:366d:5d0b with SMTP id ffacd0b85a97d-38a22408e8amr3824115f8f.55.1734719466291;
+        Fri, 20 Dec 2024 10:31:06 -0800 (PST)
+X-Google-Smtp-Source: AGHT+IElxiFyJ9qIUioQdUCoDL6NC0K4joEuaDrLW1M/n6klr2NWFr2HJs9ZJNS8OQoynugK8eIYkQ==
+X-Received: by 2002:a5d:64c2:0:b0:386:366d:5d0b with SMTP id ffacd0b85a97d-38a22408e8amr3824083f8f.55.1734719465905;
+        Fri, 20 Dec 2024 10:31:05 -0800 (PST)
 Received: from ?IPV6:2003:cb:c708:9d00:edd9:835b:4bfb:2ce3? (p200300cbc7089d00edd9835b4bfb2ce3.dip0.t-ipconnect.de. [2003:cb:c708:9d00:edd9:835b:4bfb:2ce3])
-        by smtp.gmail.com with ESMTPSA id 5b1f17b1804b1-43656b441bbsm85576885e9.40.2024.12.20.10.29.18
+        by smtp.gmail.com with ESMTPSA id ffacd0b85a97d-38a1c829348sm4641303f8f.22.2024.12.20.10.31.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 20 Dec 2024 10:29:20 -0800 (PST)
-Message-ID: <4446a9c9-613b-4303-9a06-686fb10af363@redhat.com>
-Date: Fri, 20 Dec 2024 19:29:18 +0100
+        Fri, 20 Dec 2024 10:31:05 -0800 (PST)
+Message-ID: <107dacce-87dc-457b-a2e1-e5a4699d66af@redhat.com>
+Date: Fri, 20 Dec 2024 19:31:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -90,8 +90,7 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 10/25] mm/mm_init: Move p2pdma page refcount
- initialisation to p2pdma
+Subject: Re: [PATCH v4 14/25] rmap: Add support for PUD sized mappings to rmap
 To: Alistair Popple <apopple@nvidia.com>
 Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, linux-mm@kvack.org,
  lina@asahilina.net, zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
@@ -107,9 +106,9 @@ Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, linux-mm@kvack.org,
  linux-xfs@vger.kernel.org, jhubbard@nvidia.com, hch@lst.de,
  david@fromorbit.com
 References: <cover.18cbcff3638c6aacc051c44533ebc6c002bf2bd9.1734407924.git-series.apopple@nvidia.com>
- <aaa23e6f315a2d9b30a422c3769100cdfa42e85a.1734407924.git-series.apopple@nvidia.com>
- <359a1cf2-c5b0-4682-ba3c-980d77c4cfdb@redhat.com>
- <bk6cmiubwvor6gevit3wgl4k66xxpfcv6swmfrtvxnjnuojqkx@yow3pmyuxozw>
+ <7f739c9e9f0a25cafb76a482e31e632c8f72102e.1734407924.git-series.apopple@nvidia.com>
+ <4b5768b7-96e0-4864-9dbe-88fd1f0e87b8@redhat.com>
+ <volhyxjxlbsflldgs36ghzartel2tu625ubz3kfed2gdwrsamt@cpfsfhdpc4rp>
 From: David Hildenbrand <david@redhat.com>
 Content-Language: en-US
 Autocrypt: addr=david@redhat.com; keydata=
@@ -157,27 +156,44 @@ Autocrypt: addr=david@redhat.com; keydata=
  jPrnvUsUUsjRoRNJjKKA/REq+sAnhkNPPZ/NNMjaZ5b8Tovi8C0tmxiCHaQYqj7G2rgnT0kt
  WNyWQQ==
 Organization: Red Hat
-In-Reply-To: <bk6cmiubwvor6gevit3wgl4k66xxpfcv6swmfrtvxnjnuojqkx@yow3pmyuxozw>
+In-Reply-To: <volhyxjxlbsflldgs36ghzartel2tu625ubz3kfed2gdwrsamt@cpfsfhdpc4rp>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-
+>>>    				return -EBUSY;
+>>> diff --git a/mm/rmap.c b/mm/rmap.c
+>>> index c6c4d4e..39d0439 100644
+>>> --- a/mm/rmap.c
+>>> +++ b/mm/rmap.c
+>>> @@ -1203,6 +1203,11 @@ static __always_inline unsigned int __folio_add_rmap(struct folio *folio,
+>>>    		}
+>>>    		atomic_inc(&folio->_large_mapcount);
+>>>    		break;
+>>> +	case RMAP_LEVEL_PUD:
+>>> +		/* We only support entire mappings of PUD sized folios in rmap */
+>>> +		atomic_inc(&folio->_entire_mapcount);
+>>> +		atomic_inc(&folio->_large_mapcount);
+>>> +		break;
 >>
 >>
->> But that's a bit weird: we call __init_single_page()->init_page_count() to
->> initialize it to 1, to then set it back to 0.
->>
->>
->> Maybe we can just pass to __init_single_page() the refcount we want to have
->> directly? Can be a patch on top of course.
+>> This way you don't account the pages at all as mapped, whereby PTE-mapping it
+>> would? And IIRC, these PUD-sized pages can be either mapped using PTEs or
+>> using a single PUD.
 > 
-> Once the dust settles on this series we won't need the pgmap->type check at
-> all because all ZONE_DEVICE pages will get an initial count of 0. I have some
-> follow up clean-ups for after this series is applied (particularly with regards
-> to pgmap refcounts), so if it's ok I'd rather do this as a follow-up.
+> Oh good point. I was thinking that because we don't account PUD mappings today
+> that it would be fine to ignore them. But of course this series means we start
+> accounting them if mapped with PTEs so agree we should be consistent.
+>   
+>> I suspect what you want is to
+> 
+> Yes, I think so. Thanks for the hint. I will be out over the Christmas break but
+> will do a respin to incorporate this before then.
 
-Sure. For ordinary memory hotplug I'll also convert it to start with 
-refcount=0 soonish, so there we're also simply pass 0 to __init_single_page.
+I'll be on PTO starting ... well now. But I'll try to give the other 
+parts a quick peek if anything urgent jumps at me. (bad habit of reading 
+mails while on PTO ...)
+
+In any case, happy holidays to you!
 
 -- 
 Cheers,
