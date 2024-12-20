@@ -1,109 +1,171 @@
-Return-Path: <linux-ext4+bounces-5814-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5815-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 702989F93E7
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 15:05:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 10F089F952F
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 16:17:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C15861642B2
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 14:05:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7974516562F
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 15:17:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB29A215F7C;
-	Fri, 20 Dec 2024 14:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90951215F73;
+	Fri, 20 Dec 2024 15:16:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="Ud5HoFfx"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cD+ifSsS"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mout.web.de (mout.web.de [212.227.15.3])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD6641C5488;
-	Fri, 20 Dec 2024 14:05:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.3
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BDEB72C182;
+	Fri, 20 Dec 2024 15:16:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734703547; cv=none; b=F5wnBSooCNAMKudC2+dd2uSfx1UQDOX7SRU4aRahURMMnCJUjBCvc2HSgTM4rqHVOrqb5//HA6RPzlurab+O8bknw7MsYfxsREaWqjdwRrOFfgZAbMg3bsoYd4++cCQtP7EtRtoBCbCh9TJcolVNqhFxsLADmdJX6524n6/ankc=
+	t=1734707817; cv=none; b=EIAl7XwyEVHKaDCQnTXO3ZL2Q3F37It/EDYQbNIMv3UCWUA8syCtXbLsBX0P7D1HubLuL2hXYxPWX1bpIZ/STKR7WREGZCyseQlM9lRFhk1NkvgdizO1Ap/moS0bXJpTtB69efQWfH5XWOSS8mBXBKpTgA1rGleP+WadTWuItIk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734703547; c=relaxed/simple;
-	bh=jfytMxGv1PAIKtPfDsLLZQPTpAwUMupv7OWy5Gw6pes=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=BVV2Jb1YT+YcpqGc7yG7i7ceF8/ktfw5N9VOapLFeTc4EweJiRGWgxy7SXN8UKKfnvJgADLpD1k2/JYSJhgr3K14PdxEGggI0ZfSec9LY59HhaCwv5kxnwCw95/8DUVHMhkh4142gq/juXgSScXOJ+JYe15dmIosHtF+XxBEcl0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=Ud5HoFfx; arc=none smtp.client-ip=212.227.15.3
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1734703541; x=1735308341; i=markus.elfring@web.de;
-	bh=jfytMxGv1PAIKtPfDsLLZQPTpAwUMupv7OWy5Gw6pes=;
-	h=X-UI-Sender-Class:Message-ID:Date:MIME-Version:To:Cc:References:
-	 Subject:From:In-Reply-To:Content-Type:Content-Transfer-Encoding:
-	 cc:content-transfer-encoding:content-type:date:from:message-id:
-	 mime-version:reply-to:subject:to;
-	b=Ud5HoFfx5ojFU7+0uRxj3vlGr2D1xDEtCX0cINx9Y8uwv54s1Atvqv2Swk+3iyt/
-	 E/s7O59FWUz6xLsfWY9u1eaKBx/W/A7HpSJSLTUL14cTRzXziTb2aHc7JHZj5xR9r
-	 1ud01DRNSktZg8tkfePBP2ciLJPg3mCzWlO0sHl9QbdBYy8qxgdHMBuPMrhu03DsA
-	 7QmqrvrYG8jqpmWRNbPKz9f0jBpapRiE2BRH7zVUtmzI1yVUyL9mGLe+RYxmPw+V6
-	 lia9IDG707GXVWX92ILpXhnsE7AvbWsSocV6m1CjZ8iyB3YJvNoyBokARLGfm5UX3
-	 tHy1mL7Kb9iDME1/jQ==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.93.21]) by smtp.web.de (mrweb006
- [213.165.67.108]) with ESMTPSA (Nemesis) id 1MzkOL-1tkPXv2VpB-00umOo; Fri, 20
- Dec 2024 14:52:42 +0100
-Message-ID: <0fee3433-1255-42ab-80c6-63a1d9f9d47b@web.de>
-Date: Fri, 20 Dec 2024 14:52:39 +0100
+	s=arc-20240116; t=1734707817; c=relaxed/simple;
+	bh=POPUBkX4xwSzrQpC06P4GACynQvxpDIBpcEUhsEcefc=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=eTo9LR3LvguG/iZr3e/q5fKMxXkKvwE2eX9b7YhG5JpFMEvQaiJEGB5Y86zU5FXC6trodQXCIydCl6XnWW+XFI0BHJ0jlJIvOcvDoRTqi78RiTC/yfzGLvjeMtXIEqYpgbrX+nT3ich64ioJqeRpw5dU4+kb9eZGDTJyNNIZHG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cD+ifSsS; arc=none smtp.client-ip=209.85.210.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-7292a83264eso1852107b3a.0;
+        Fri, 20 Dec 2024 07:16:55 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1734707814; x=1735312614; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=QC3DAK3l36+AtgcbFOAiS4zO7nJeQkEF3UjeqiDNK38=;
+        b=cD+ifSsSSpbX1Gs1/gRveET1tgyMpssUR8DWmrsI0KDrkCfV9+hyVRQMWynqTtnmsx
+         H6WZEKb8ALlQdaMiSbitf0N4aglgW2HpoIflIc14Yrdyd3FATqPEVKDc7LAFFmoo8iIT
+         YPIXRG5FAUMopcCvMPZQ3WfcM4bS8JIxJKJog8b1JCrFMwWqb/IT1mEwertjIFPf7nF2
+         zUBQxYjYDCsX9z3aPebdm5zuHIjmtJ18IYGN1WXWGOO/QPCjiEKAnCeNPstKndN48V4d
+         Vvy6KZZ5W2cDgGgZZz5iHtzVpjqnoSvmYIAPMYYXMN4WJv9K1ICr222AYjQzf5DX0YAC
+         zvtw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1734707814; x=1735312614;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QC3DAK3l36+AtgcbFOAiS4zO7nJeQkEF3UjeqiDNK38=;
+        b=Bs8UVttvlfQgEh5UOf9AQMTlQ7KGflD+fjw2UD/Nbj5qPs1sGoU9HRPKO2LHTSPrMd
+         kiQ8a7c0JvxYRHyIERw58FravDXcKy/NP4rT+25/z/TOU4GPza/oiYsmC57McHc8k/8U
+         2d6nbWW3OO1nIu33Mxg0jl7UKEL57v0a5ID6vXuRQi75l9H6yox58z9myeIDDGz87SHU
+         MIoGKvW655zuhCBUqywig8LqsIP55CKe2btiTSwcThsn+AU62TgLfHFCgOXgIGIwdUyC
+         qlyq+dh+5/3LlfKaYJWJ/lyJ5wJukFOMjWf4/MrWCxHly0CwCIcmzPXz5Zrv1bQrDlkr
+         JeBQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUcswxK4cgcGNmM3O8EZdygbRqt1liysaIINmNh43ssBOg9LIrkyLVUFJcG27YIBMQ49h4xoibfxI7xgoA=@vger.kernel.org
+X-Gm-Message-State: AOJu0YwuoQ9VY+pDfHfaYORu2gI5SC8C6deNDTyLxGQwPeKr+w6kaYTN
+	9SJiqZ2KpHXiryLYR0/vn9CiHzp5m+7aeZzPIrkfTsgxZeQuc8H///74bvLKS4M=
+X-Gm-Gg: ASbGnctAcNvU6nnRqDGAPTtulqf5+Sn6Zdo3zt6IJCvHvhNKcszPdGgnCirbfn/+A+r
+	a9HEFuz9zyA6cgboToVZnXiex0TCIMyl1LH9taxTEEkqV5OHS809xnTqHuN6+mHjoavCTQYb4Kw
+	+mY2C/9zLpcouRrqLZHbpfgneTrS3MLPDjf43LtLS1o82rX82X9ud7/tKZSdboGTfM/cKJ1+I0g
+	qlyfDqSm2hFJiSG5B5hU0G29oZBGxk/NbAbohcHZ4KZET6l5UDjqNiS6Et6
+X-Google-Smtp-Source: AGHT+IFoetFvzCf/Dfm7CcTReUGKLEJ+3RAPOmwNlHsYOQfMTKHquSO1br5OW2OYafZpQLPQvzXhUA==
+X-Received: by 2002:a05:6a21:670b:b0:1e3:e77d:1431 with SMTP id adf61e73a8af0-1e5e04a3035mr6109727637.23.1734707814158;
+        Fri, 20 Dec 2024 07:16:54 -0800 (PST)
+Received: from localhost ([36.112.204.124])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72aad8fd610sm3207307b3a.136.2024.12.20.07.16.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 20 Dec 2024 07:16:53 -0800 (PST)
+From: Julian Sun <sunjunchao2870@gmail.com>
+To: linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	boyu.mt@taobao.com,
+	tm@tao.ma,
+	Julian Sun <sunjunchao2870@gmail.com>
+Subject: [PATCH 0/7] ext4: Convert truncated extent data to inline data.
+Date: Fri, 20 Dec 2024 23:16:18 +0800
+Message-Id: <20241220151625.19769-1-sunjunchao2870@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Kemeng Shi <shikemeng@huaweicloud.com>, linux-ext4@vger.kernel.org,
- Andreas Dilger <adilger.kernel@dilger.ca>, Theodore Ts'o <tytso@mit.edu>
-Cc: linux-kernel@vger.kernel.org, kernel-janitors@vger.kernel.org
-References: <20241219110027.1440876-7-shikemeng@huaweicloud.com>
-Subject: Re: [PATCH 6/6] ext4: calculate rec_len of ".." with correct name
- length 2
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20241219110027.1440876-7-shikemeng@huaweicloud.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:DYIm1Dw7lEe2k7Zf+ChtIdDozHe+WwbVz4izqK0WNvUYVn0WBnx
- uMzWOO1uNoQzMgK3fyPs+m4Fu6ZxFFK1VqIdzbefSFkEOhNLv6r4J0/riS314XhNEfUaXhb
- QFVdmVihimyCltQTyhHQ/ZPpsiIZcKnWM7wjo1Q2HdIZiV4EoYUcBgsccNohOy3svLlsEtM
- +nq88vBR+Psg6Zey7JHSA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:a1s76uV4b2A=;N5066Of29qVLpHt8s6HeCZTC7id
- NUo3sQBvk1MQ1pYB8AnozihrzfQWedbIG2jSHDiXZhLFn6YAXEcFHoqufNCsgVUOOEixUYlxe
- TQnPEBSZFDHWKPX4gS5JBrRZOHUsTdEczijCuv2LU3CKgGBGVzwHDcRIWc+hmv4uerQLCuhIw
- 3G56DkSg0HVDZHPxPE8C2hx4HHMPn/pxXUzO0w+pADAXb/PQgnTEnDOk63WnS4r6Pjk5JXHUf
- Di5mFE6Jx107wP+Ry7/ss8FU7uG44HtWFAt/Kgiq8f0KADBzpxEHXUdqOt8TF/K9vzBAVgk1/
- AkKbdk1ioom65MUMCDWiHmvuhxfhkn1RDquvt8PPua+WjLhqkROEBTL2j5TJzPwmUR1svXVh9
- A1q/KXoV0QEM8rwvReBVC31u5N59jWcFu1P/wf9oGBoQo7ctFpPq0Wrz7sNqLt+cFQ1hBbZsB
- xhz9VIkujw+W+oORyQCPTem+4Elj3dQNGyJVHvB8lcuaZKw1D4tOvD1W1cJghroN/dmqVfYl9
- P1c6y9H4SoMKw31Nc6KRfpcML5dfU+TqWAuPGPJfWYVKDR+4S92rNgFJpVpIu6tqpA2sFiTeC
- Iq0/YPGSdeX1VCa/mfX0l/g481q9UHr9ZXXqTQfTSEatWVMjRYFJPEW5t36BSNEeMEcvMZg3h
- qmH5ToOq+c8efgK/rkkiiTn62jYm9UMkSfEWgr++HkJGVXbawcOVMH4YVo95S4qLxT4YFoGhR
- C3HLtiYhTNhSQr9oAvX/m8qmnhh9l9toCtEWHbbMucehpsm7yFsZHXSh9tCEpJ3Kc2wZ1jk2N
- q18/ZxELONs3fZ3yJ8V4SDx+8zlziaNmRhPHUur37gMkLyrcfRHDL9BedCrWccRkBI8piG8NT
- a4WF9K4FZxZRE2z/5UbckLpteEFp1aNOVe8xB+66K7k7ZPL16fK2udHDupPAeglbLY8XB+aSw
- dBe20mlrUAdJdXCvHfup8DKwguKQnEnEmftk3PswNdXM7ST8teopFI1Su4x8tOjq7M7zFwGC4
- gby7lENmkpHoJ9U6o1xp3HG29D33fxiCGP+/ebncW+FsDrRqbZmhCq2xyl09pTDuYcRWdLrlq
- nHJx8o7ao=
+Content-Transfer-Encoding: 8bit
 
-> The rec_len of directory ".." should be ext4_dir_rec_len(2, NULL) instea=
-d
-> of ext4_dir_rec_len(1, NULL). Although ext4_dir_rec_len return the same
-> number either with name_len 1 or name_len 2, it's better use the right
-> name_len to make code more intuitive.
+Ext4 provides the feature of storing data inline and automatically 
+converts it to extent data when appropriate. However, files stored 
+as extents cannot be converted back to inline data after truncation, 
+even if the file size allows for inline data storage. 
+This patch set implements the feature to store large truncated files 
+as inline data when suitable, improving disk utilization. 
+Patches 1-3 include some cleanups and fixes. 
+Patches 4-6 refactor the functions responsible for writing inline data, 
+consolidating their logic for better code organization.
+Patch 7 implements the feature of storing truncated files as inline data 
+on the next write operation. 
 
-Do you try to point a correctness issue out here?
+Below is a comparison of results before and after applying the patch set. 
 
-How do you think about to add any tags (like =E2=80=9CFixes=E2=80=9D and =
-=E2=80=9CCc=E2=80=9D) accordingly?
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/submitting-patches.rst?h=3Dv6.13-rc3#n145
+Before:
+root@q:linux# dd if=/dev/urandom bs=1M count=10 of=/mnt/ext4/test
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.0770325 s, 136 MB/s
+root@q:linux# filefrag -v /mnt/ext4/test
+Filesystem type is: ef53
+File size of /mnt/ext4/test is 10485760 (2560 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..    2559:          0..         0:      0:             last,unknown_loc,delalloc,eof
+/mnt/ext4/test: 1 extent found
+root@q:linux# echo a > /mnt/ext4/test
+root@q:linux# filefrag -v /mnt/ext4/test
+Filesystem type is: ef53
+File size of /mnt/ext4/test is 2 (1 block of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..       0:      34304..     34304:      1:             last,eof
+/mnt/ext4/test: 1 extent found
 
-Regards,
-Markus
+After:
+root@q:linux# dd if=/dev/urandom bs=1M count=10 of=/mnt/ext4/test
+10+0 records in
+10+0 records out
+10485760 bytes (10 MB, 10 MiB) copied, 0.0883107 s, 119 MB/s
+root@q:linux# filefrag -v /mnt/ext4/test
+Filesystem type is: ef53
+File size of /mnt/ext4/test is 10485760 (2560 blocks of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..    2559:      38912..     41471:   2560:             last,unknown_loc,delalloc,eof
+/mnt/ext4/test: 1 extent found
+root@q:linux# echo a > /mnt/ext4/test
+root@q:linux# filefrag -v /mnt/ext4/test
+Filesystem type is: ef53
+Filesystem cylinder groups approximately 78
+File size of /mnt/ext4/test is 2 (1 block of 4096 bytes)
+ ext:     logical_offset:        physical_offset: length:   expected: flags:
+   0:        0..       1:    4340520..   4340521:      2:             last,not_aligned,inline,eof
+/mnt/ext4/test: 1 extent found
+
+Using filefrag, we can see that after applying this patch,
+large truncated files also utilize the inline data feature.
+This patch set has been tested with xfstests' check -g and has not 
+introduced any additional failures.
+
+
+
+Julian Sun (7):
+  ext4: Modify ei->i_flags before calling ext4_mark_iloc_dirty()
+  ext4: Remove a redundant return statement
+  ext4: Don't set EXT4_STATE_MAY_INLINE_DATA for ea inodes
+  ext4: Introduce a new helper function ext4_generic_write_inline_data()
+  ext4: Refactor out ext4_da_write_inline_data_begin()
+  ext4: Refactor out ext4_try_to_write_inline_data()
+  ext4: Store truncated large files as inline data.
+
+ fs/ext4/extents_status.c |   1 -
+ fs/ext4/ialloc.c         |   2 +-
+ fs/ext4/inline.c         | 205 ++++++++++++++++-----------------------
+ fs/ext4/inode.c          |   5 +
+ 4 files changed, 91 insertions(+), 122 deletions(-)
+
+-- 
+2.39.5
+
 
