@@ -1,198 +1,163 @@
-Return-Path: <linux-ext4+bounces-5783-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5785-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D9609F8931
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 02:10:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FCBB9F8938
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 02:20:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AAEF016DCD6
-	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 01:10:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 06DD516DD0B
+	for <lists+linux-ext4@lfdr.de>; Fri, 20 Dec 2024 01:20:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 927614C85;
-	Fri, 20 Dec 2024 01:10:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b="IRBvezM2"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 43B5718EAB;
+	Fri, 20 Dec 2024 01:20:15 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEA6017C2
-	for <linux-ext4@vger.kernel.org>; Fri, 20 Dec 2024 01:10:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C89EC134AB;
+	Fri, 20 Dec 2024 01:20:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734657035; cv=none; b=pWeMOEXSxbimGxXodpkxjAFnsxh4XMFUcKeRybSVXyGaYasgdY1HALCD8D4HvJvuwCeqB24z/yiDyF0p7s57FST4hSgJeQksCO4iF/NCrG94Ip5BcqnafKa03/P/G8hx2arUNbEQlY4F7CSPJflEqxlwHXCIkDVlhlQqg8FdV3I=
+	t=1734657615; cv=none; b=AFcaVEzT40dhdIq+7ghS3tATX+noEfXTSzQwUFFFE4e+wRpjJOHif0JSMZrx16oqwaBgra2hJlZuiEfwCgH9TA9AQRXWuwQnLXPqYjA8n+0GB6a2ieOQjL1gqA4lwAeaIqlVYHAMbLhibix7nG0XNqtHpctvgvC8Y4qWBGHRLz8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734657035; c=relaxed/simple;
-	bh=Tu0BuqL4uD9NrNYdm/FDBS/IoRLzaEb5d9URQkQoE3M=;
-	h=From:Message-Id:Content-Type:Mime-Version:Subject:Date:
-	 In-Reply-To:Cc:To:References; b=k1JzZxYKgC9ZNVTvPL0h304eyEMkHUv8RPUnptbm8DiHtPh2dPiq5joXsbv6I5N426gAQKa6HYMWgW9xUyR4FuboXuoZOmZiwjJcM4x0c1V1bJZ4WJWxXHA7+S0aYak01dq63c00BL0Rv3ublb+MPP2CdWq+3ClUaxa0Ofa9xb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca; spf=pass smtp.mailfrom=dilger.ca; dkim=pass (2048-bit key) header.d=dilger-ca.20230601.gappssmtp.com header.i=@dilger-ca.20230601.gappssmtp.com header.b=IRBvezM2; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dilger.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dilger.ca
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-21661be2c2dso11348715ad.1
-        for <linux-ext4@vger.kernel.org>; Thu, 19 Dec 2024 17:10:31 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=dilger-ca.20230601.gappssmtp.com; s=20230601; t=1734657031; x=1735261831; darn=vger.kernel.org;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:from:to:cc:subject:date:message-id:reply-to;
-        bh=i4U1yqDN9/bOslq1ZT5mqBJ4NyD0/LWhufm3YYVCRYM=;
-        b=IRBvezM2969OJnKkPGIMsh5KJrxhovK1pPTGLeiopUMbDjS07Szqo92yMdXf0ctl28
-         2wtlpsNdC6yQq+md1PlfdkjvX9UWwWQ8Oz/B079zg99GYKJs+2q+MewYvQTwIAkihhIt
-         ejLZrfOeRuJqA806HAHT4Sn2f2hAxhwxF21jY1/X7ggTm4yLDCmEMa6HpNLU+GbML8Lz
-         0Bk3gFoVWwXh9VFZrr5RY13WBfgC2NWYzH1lEd/dHK3J1+VtzfIwHpI2bMnECbgawTVp
-         vNC6l1yVVlNDSZQZCoyGFctcoEpOWvTPCO9bLwCppZxPr3OGr+QoBTVvGGyBAM2BLitE
-         ecKQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734657031; x=1735261831;
-        h=references:to:cc:in-reply-to:date:subject:mime-version:message-id
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=i4U1yqDN9/bOslq1ZT5mqBJ4NyD0/LWhufm3YYVCRYM=;
-        b=bNEU2DpYzF9aNO/pwCi7eqUC4xe+V6SNQCapa27UbFRXyUgHONN6h0uZh/5FiK0FCB
-         WWIBE+Bl7jL44qOt1k1bFtamkMeRfNcEJieHfcPJHs/nYn0KqjaIXnv1Pdh5dkklITw+
-         km7pbnO8JNSBk3xLecWLzm/2tL5IafUhf69YXuBNSpyUrd10eUf//rZ4kxT1MO7HQy6D
-         IF7EzwiGTRWRy7UyCkxE9ZpCKcNTKtgRe+3LFYDiYE0OUHjMFOMhYj/Kj1WhcpYTYQDe
-         PQDrW3guVWDSe3/q8BjkI55DMEqPyIt/FhbGuTS0flfNKWP2E2jvs/kO+wy9WvMVe7jl
-         F5kg==
-X-Forwarded-Encrypted: i=1; AJvYcCX4cMrfcAyNNpf52PMAf0CSxMLQPpMSZ32BNROOPAxkz6g05NU3NpxT0uCUM1mLDUeDlBPPtdJgf4NY@vger.kernel.org
-X-Gm-Message-State: AOJu0YxyOUoZWxvuLlNHSSdPZes9D5gUtrGmlsyYvZwrzWgfDFKWVbmm
-	GoCBAbYJtt/aXZ2BplgaxmLVjJP2I60g/hEO0sSBHoLhUMfjRKYz/z/pw+/RyjI=
-X-Gm-Gg: ASbGnctzN+S99lrb2mBi6LrYR/Qjg38SdxOQt0a9PoAq8zlSIpnLR5fxbuaHg5CqFgs
-	YME3d2lkLO36gA6F4fSgYVCMvqDRSF38+I6xS3ybIaE+YgE8oVGo55PEd3ECWCZzRuEzG+OybeW
-	1+2KrFqulB6ywLHHlNuU6skFC9TH2RVp3IHL8fU2/lFARwPKV7u/bVIeLOfLfYrEKYmzDA2LmLz
-	bhFfNTPDIqm21BGqHOr3HD+L3/NIdok/Q5NreOrGxHuRxhuDPF4vjf5623EvpswB/AG5lP4tK5C
-	GpwmSmrc1tBrVny1xJiiIAwqxL3Q6Q==
-X-Google-Smtp-Source: AGHT+IH0PETUbD0pVxxjARtBP3LTXsBcRQZ3wLgsiAei0+x9QVnILHeCdjIAE7RBRfY0SN7Q4RWcrQ==
-X-Received: by 2002:a17:902:c948:b0:216:2a36:5b2e with SMTP id d9443c01a7336-219e6ec0a15mr11192045ad.32.1734657031130;
-        Thu, 19 Dec 2024 17:10:31 -0800 (PST)
-Received: from cabot.adilger.int (S01068c763f81ca4b.cg.shawcable.net. [70.77.200.158])
-        by smtp.gmail.com with ESMTPSA id d9443c01a7336-219dc962d0asm18567895ad.53.2024.12.19.17.10.29
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Thu, 19 Dec 2024 17:10:30 -0800 (PST)
-From: Andreas Dilger <adilger@dilger.ca>
-Message-Id: <8554AB6E-55CA-4F61-BE34-1260555785D1@dilger.ca>
-Content-Type: multipart/signed;
- boundary="Apple-Mail=_5BB9CF6E-164D-44F6-B024-3A896C99C2C6";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+	s=arc-20240116; t=1734657615; c=relaxed/simple;
+	bh=h5NQM28jRDHud7VIG1UY11jBG6FFv5sCJAg7ojhkqkQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=peu3tnBZAKzXLJ4pAWm32mp22A815hiqIfpCvlh3U0T0yN1wgGCOi2VJR1wRmJP4VXDX5YoZkvGOy6F86KtBCxTIRxRJ2rWZqnQoJ0Wl5u5vwyu1yDNqSkr3IRCc+X5rQk7Qdet/FKPOPMdjb9MgZhsyx8UwqgHNTtkiZR5TOP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YDqMl69sNz4f3kvP;
+	Fri, 20 Dec 2024 09:19:47 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 74D771A018D;
+	Fri, 20 Dec 2024 09:20:08 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.112.188])
+	by APP4 (Coremail) with SMTP id gCh0CgCnzoI6xmRnETtfFA--.47090S4;
+	Fri, 20 Dec 2024 09:20:08 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-ext4@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	tytso@mit.edu,
+	adilger.kernel@dilger.ca,
+	jack@suse.cz,
+	ojaswin@linux.ibm.com,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [PATCH v5 00/10] ext4: clean up and refactor fallocate
+Date: Fri, 20 Dec 2024 09:16:27 +0800
+Message-ID: <20241220011637.1157197-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.46.1
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 10.3 \(3273\))
-Subject: Re: [PATCH 2/6] ext4: remove unneeded bits mask in dx_get_block()
-Date: Thu, 19 Dec 2024 18:10:24 -0700
-In-Reply-To: <20241219110027.1440876-3-shikemeng@huaweicloud.com>
-Cc: Theodore Ts'o <tytso@mit.edu>,
- Ext4 Developers List <linux-ext4@vger.kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-References: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
- <20241219110027.1440876-3-shikemeng@huaweicloud.com>
-X-Mailer: Apple Mail (2.3273)
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+X-CM-TRANSID:gCh0CgCnzoI6xmRnETtfFA--.47090S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxZF4Duw48Zr43GrWxtw15XFb_yoW5KFyrpF
+	W3WF45Xr47WwnrCws7ua1xXF1rK3WrJFW7JryIgw1xur4kuFy2vFsFga109FZrArWrGFy2
+	vF4jyF1ku3WUAaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9014x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcxkI7VAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwACI402YVCY1x02628v
+	n2kIc2xKxwCY1x0262kKe7AKxVWUtVW8ZwCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7x
+	kEbVWUJVW8JwC20s026c02F40E14v26r1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E
+	67AF67kF1VAFwI0_Jw0_GFylIxkGc2Ij64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCw
+	CI42IY6xIIjxv20xvEc7CjxVAFwI0_Gr0_Cr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1x
+	MIIF0xvEx4A2jsIE14v26r1j6r4UMIIF0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIda
+	VFxhVjvjDU0xZFpf9x0JUd-B_UUUUU=
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+
+From: Zhang Yi <yi.zhang@huawei.com>
+
+Changes since v4:
+ - In patch 1, call ext4_truncate_folio() only if truncating range is
+   PAGE_SIZE unaligned, and rename the variable start_boundary to
+   page_boundary.
+Changes since v3:
+ - In patch 1, rename ext4_truncate_folios_range() and move journalled
+   mode specified handles and truncate_pagecache_range() into this
+   helper.
+ - In patch 3, switch to use ext4_truncate_page_cache_block_range().
+ - In patch 4, use IS_ALIGNED macro to check offset alignments and
+   introduce EXT4_B_TO_LBLK to do the lblk conversion.
+ - In patch 5, keep the first ext4_alloc_file_blocks() call before
+   truncating pagecache.
+ - In patch 9, rename 'out' label to 'out_inode_lock'.
+Changes since v2:
+ - Add Patch 1 to address a newly discovered data loss issue that occurs
+   when using mmap to write after zeroing out a partial page on a
+   filesystem with the block size smaller than the page size.
+ - Do not write all data before punching hole, zeroing out and
+   collapsing range as Jan suggested, also drop current data writeback
+   in ext4_punch_hole().
+ - Since we don't write back all data in these 4 operations, we only
+   writeback data during inserting range,so do not factor out new
+   helpers in the last two patches, just move common components of
+   sub-operations into ext4_fallocate().
+ - Only keep Jan's review tag on patch 2 and 8, other patches contain
+   many code adaptations, so please review them again.
+Changes since v1:
+ - Fix an using uninitialized variable problem in the error out path in
+   ext4_do_fallocate() in patch 08.
+
+v4: https://lore.kernel.org/linux-ext4/20241216013915.3392419-1-yi.zhang@huaweicloud.com/
+v3: https://lore.kernel.org/linux-ext4/20241022111059.2566137-1-yi.zhang@huaweicloud.com/
+    https://lore.kernel.org/linux-ext4/20241010133333.146793-1-yi.zhang@huawei.com/
+v2: https://lore.kernel.org/linux-ext4/20240904062925.716856-1-yi.zhang@huaweicloud.com/
+
+Thanks,
+Yi.
+
+Original Info:
+
+Current ext4 fallocate code is mess with mode checking, locking, input
+parameter checking, position calculation, and having some stale code.
+Almost all five sub-operation share similar preparation steps, so it
+deserves a cleanup now.
+
+This series tries to improve the code by refactoring all operations
+related to fallocate. It unifies variable naming, reduces unnecessary
+position calculations, and factors out common preparation components.
+
+The first patch addresses a potential data loss issue that occurs when
+using mmap to write after zeroing out partial blocks of a page on a
+filesystem where the block size is smaller than the page size.
+Subsequent patches focus on cleanup and refactoring, please see them for
+details. After this series, we will significantly reduce redundant code
+and enhance clarity compared to the previous version.
 
 
---Apple-Mail=_5BB9CF6E-164D-44F6-B024-3A896C99C2C6
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain;
-	charset=us-ascii
+Zhang Yi (10):
+  ext4: remove writable userspace mappings before truncating page cache
+  ext4: don't explicit update times in ext4_fallocate()
+  ext4: don't write back data before punch hole in nojournal mode
+  ext4: refactor ext4_punch_hole()
+  ext4: refactor ext4_zero_range()
+  ext4: refactor ext4_collapse_range()
+  ext4: refactor ext4_insert_range()
+  ext4: factor out ext4_do_fallocate()
+  ext4: move out inode_lock into ext4_fallocate()
+  ext4: move out common parts into ext4_fallocate()
 
-On Dec 19, 2024, at 4:00 AM, Kemeng Shi <shikemeng@huaweicloud.com> =
-wrote:
->=20
-> As high four bits of block in dx_entry is not used by any feature for =
-now, we can remove unneeded bits mask in dx_get_block() and add it back
-> when it's really needed.
+ fs/ext4/ext4.h    |   4 +
+ fs/ext4/extents.c | 527 +++++++++++++++++-----------------------------
+ fs/ext4/inode.c   | 205 ++++++++++--------
+ 3 files changed, 313 insertions(+), 423 deletions(-)
 
-Actually, the opposite is true.  This mask protects the *CURRENT* code
-from any future use for these bits, so removing it now means that they
-could never be used in the future, since the block number would be
-taken as all 32 bits instead of only the bottom 28 bits.  I don't think
-we are in any danger of having a 16TB single directory any time soon.
+-- 
+2.46.1
 
-However, the top bits were intended to store a "fullness" for the index
-blocks, to optimize online directory shrinking without having to scan
-each of the blocks for how many entries are currently in the block.
-This would allow the dirent removal to easily see "this block and the
-previous/next block are only 1/3 full and could be merged".
-
-See the following thread for a prototype patch and discussion on this:
-=
-https://patchwork.ozlabs.org/project/linux-ext4/patch/20190821182740.97127=
--1-harshadshirwadkar@gmail.com/
-
-I think removing this mask has a negative effect on future usefulness,
-and virtually no benefit to the code today, so I would object to landing
-it.
-
-Cheers, Andreas
-
->=20
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-> ---
-> fs/ext4/namei.c | 7 +------
-> 1 file changed, 1 insertion(+), 6 deletions(-)
->=20
-> diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-> index adec145b6f7d..8ff840ef4730 100644
-> --- a/fs/ext4/namei.c
-> +++ b/fs/ext4/namei.c
-> @@ -561,14 +561,9 @@ ext4_next_entry(struct ext4_dir_entry_2 *p, =
-unsigned long blocksize)
-> 		ext4_rec_len_from_disk(p->rec_len, blocksize));
-> }
->=20
-> -/*
-> - * Future: use high four bits of block for coalesce-on-delete flags
-> - * Mask them off for now.
-> - */
-> -
-> static inline ext4_lblk_t dx_get_block(struct dx_entry *entry)
-> {
-> -	return le32_to_cpu(entry->block) & 0x0fffffff;
-> +	return le32_to_cpu(entry->block);
-> }
->=20
-> static inline void dx_set_block(struct dx_entry *entry, ext4_lblk_t =
-value)
-> --
-> 2.30.0
->=20
-
-
-Cheers, Andreas
-
-
-
-
-
-
---Apple-Mail=_5BB9CF6E-164D-44F6-B024-3A896C99C2C6
-Content-Transfer-Encoding: 7bit
-Content-Disposition: attachment;
-	filename=signature.asc
-Content-Type: application/pgp-signature;
-	name=signature.asc
-Content-Description: Message signed with OpenPGP
-
------BEGIN PGP SIGNATURE-----
-Comment: GPGTools - http://gpgtools.org
-
-iQIzBAEBCAAdFiEEDb73u6ZejP5ZMprvcqXauRfMH+AFAmdkxAEACgkQcqXauRfM
-H+AgGxAAi0K/XllJmNW954pdEgxe+D3UBeew1w/X0TGQhPYVLGdtEwoFrZ5McUsB
-X0raYGX607bghCuHkEiSye/Ft0YXGwkMw7YjwI7vjXX0BrO/x/0TChcQ4Csw7Idu
-LoOEWS+EV+BR1Mnx6737w2vdkzLGUR/qKnGurMl6j+UZKzHbfR0WRvPl9V3BrBxe
-bXELaiDC5oQuJbS35e9y0JwwXw0V5gjDCIchFzKK6x4SxraguPGzHTU+X96KIYgn
-TzUuWOY9KjJwKRLiO4SXQ3qANl4jB7yVoynVRwt5OHYHWoZOhBvvGEkhaE6zeME4
-HtuRgZU5elCppI/GeDeQDBOAcTYwkTbV+3px8MAJzeGR6vOJwy57CbolqvUI61Nc
-M5yVZfmpKT7T48KhvZOHsnWwR5pMEgDoeGaznmbZdQtagx+g+jIFNY1UzzR8aGNJ
-DfJEd/XThUmzSoixvkADTviTAjNLgYtkrl6qCWTN0HkUTyaitcv3JbclQsTlibXx
-PQQ2ONbrDweacFcsCBJPJA0zr38qt30CcrwTzV7lAenmGnjQi5ow8iTV4l4vHyWU
-D0aHsvLzrk8atILRYoSF7fiQCaIsfxHTGOntuRKwuqJF3pJlZoabUVBbRIr4Cfhx
-AFceu7hqz6hkCTjs5xbTUasRJetoWxpy+Vo1Imd5tqh3nQfCNfY=
-=3zJ8
------END PGP SIGNATURE-----
-
---Apple-Mail=_5BB9CF6E-164D-44F6-B024-3A896C99C2C6--
 
