@@ -1,165 +1,118 @@
-Return-Path: <linux-ext4+bounces-5839-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5840-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1C2E09FB50A
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2024 21:16:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEBF49FBD17
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2024 13:10:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 986F31668AA
-	for <lists+linux-ext4@lfdr.de>; Mon, 23 Dec 2024 20:16:02 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 400D77A1CDD
+	for <lists+linux-ext4@lfdr.de>; Tue, 24 Dec 2024 12:10:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD2AE1CD1E1;
-	Mon, 23 Dec 2024 20:14:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E05A1B85E2;
+	Tue, 24 Dec 2024 12:10:00 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f208.google.com (mail-il1-f208.google.com [209.85.166.208])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E39891C245C
-	for <linux-ext4@vger.kernel.org>; Mon, 23 Dec 2024 20:14:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.208
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8109418EFDE;
+	Tue, 24 Dec 2024 12:09:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1734984874; cv=none; b=myp1od42Dg5q/7OmTdRZxpFCdhCo8JnxhoZ0bRitlPbDobOLS1jVVxFkYEc/giSxBCNAR3j6zoSkp5IcGpLUoSwkL674Ir5xXWPn618toFYOwcl+kRVBOtxYI7XFESynNAfwyFVuiewUOY+NCw+q5L+CdvOH1tRXxsshgxLTrNU=
+	t=1735042199; cv=none; b=JGYugOPamOrVDSBoeXf6sKNvMV9K2yscmjoO/rGAOGZ4EjIFch1s3ieWWUG6vE4KPHQo5tSQ22yDJ6L6N+zD7w6tKKvbv3A+vCsMCpyyFlkyGklAqASckVDRrDulXXGkq7e/Ir1tPwhP6JRTZCD4CVU+x4pNusBe8oRC+PM0m58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1734984874; c=relaxed/simple;
-	bh=4TMlf9ybfgXCNe6z+GIF3irRgwfzaGF9/FiumtNJSxM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ZG4eUIIKrbe+BN5gS4OvuQX3slDSmRUnzyKAj2ekGGUR13VbKVMjANmXDr+8OAilPhl+vtlVfCOguZm+F9we/K5uHDwCURcRirpjNJ/lAbE61o99pIs6sX589P4Fvaiih2k587HL9v0gOCgTl10cgxwM2TYVbKLSyyhqMttppvI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.208
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f208.google.com with SMTP id e9e14a558f8ab-3a9d3e48637so42503145ab.1
-        for <linux-ext4@vger.kernel.org>; Mon, 23 Dec 2024 12:14:32 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1734984872; x=1735589672;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kZdTVYkFNLiHjKlol1WY7WpZhuv2ntj5b87hD0YQ4i4=;
-        b=oYaLyw8BkrYV+P7/x+wKX9ovV/D+EDqufYvmx1n62aNPm0vwDphD0ch9iq/A1PWScx
-         Uyt3eB/oMiLujX4l8lT5V1i0pUYAdVLYGsl16jaV0h+dVKJMHXH89TBxvkie43E2eRwO
-         FB0xzu9mgIunYwUiztPgOiK3hZUwRy0vjdbkXdpKDMIPK57eVpCcTc6nFMgUdMZKKlzo
-         B492awx8gEJrxY2RKX1vUytIZNdwGf6sm8EyR56GyAxaztnb+yQ/b4YFTEzWEvDZ5MQk
-         hLyrPQkwg8WKBbz881C2Q6FuRxY74/u1estccOc/2FEeGD7j/FatTuYCuFWU4eb34S8P
-         vzGw==
-X-Forwarded-Encrypted: i=1; AJvYcCU2pq4EHzI58i/Tr3VS221MRaKRaRdJ/5guIvSxLL+jCXvQN+KUJ6hH4qiCvYrjYDAkrVq9jPr7/vWq@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzr8CxqtLIrLmnoIY5WDrXcCk5vya7mUhHY9avzEOhQltZOGKKx
-	EX1mgWRgogBc8Ri9vPXa9dkqV3/m8isNor3tspUVu0rWBQDEdkqC1CwXNEl/OZ0MpNnfW0TA1HE
-	dnnt4DUOo3h31L17Z4l1nDN69PwJZ9TdrKOjjNuHZlkjXOBSewJVOZ/w=
-X-Google-Smtp-Source: AGHT+IH4IiJt8IRV/5DC7atvlzds0FYAYVIdCS4s4bs/jgqB4smutllWWS+Ia8viwwqzoeMry+CU7t9Y5A3UXAPchhhXmipVawFi
+	s=arc-20240116; t=1735042199; c=relaxed/simple;
+	bh=7D58hYa0h8sL+saoMjiDqfk9qQfDO5m/pvjQ2gDIM7A=;
+	h=Subject:To:Cc:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=lo7jn4hYPD9GrctHa8qUkZPMQi4wqaXeUSj9MSiTIN7qcqvns77SD5KNqktd4bWDN8KJruxsmLv3kmFfxKJS2BHt9j3kwi7WzN2Gx1OnHCEA7MtOMCz6z3wDRXQBv9kqdtKKAPFBp6XQaRDvC7FbH3y2stVyn+Zs/NHJz0VuxO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.93.142])
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YHYbW2GWJz4f3jcv;
+	Tue, 24 Dec 2024 20:09:27 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.252])
+	by mail.maildlp.com (Postfix) with ESMTP id 02D691A018D;
+	Tue, 24 Dec 2024 20:09:47 +0800 (CST)
+Received: from [10.174.178.129] (unknown [10.174.178.129])
+	by APP3 (Coremail) with SMTP id _Ch0CgA3ysaHpGpneq9mFQ--.25243S2;
+	Tue, 24 Dec 2024 20:09:44 +0800 (CST)
+Subject: Re: [PATCH 2/6] ext4: remove unneeded bits mask in dx_get_block()
+To: Andreas Dilger <adilger@dilger.ca>
+Cc: Theodore Ts'o <tytso@mit.edu>,
+ Ext4 Developers List <linux-ext4@vger.kernel.org>,
+ LKML <linux-kernel@vger.kernel.org>
+References: <20241219110027.1440876-1-shikemeng@huaweicloud.com>
+ <20241219110027.1440876-3-shikemeng@huaweicloud.com>
+ <8554AB6E-55CA-4F61-BE34-1260555785D1@dilger.ca>
+From: Kemeng Shi <shikemeng@huaweicloud.com>
+Message-ID: <e575a8e9-5a90-6fc7-62eb-ee3f433bc687@huaweicloud.com>
+Date: Tue, 24 Dec 2024 20:09:43 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:60.0) Gecko/20100101
+ Thunderbird/60.5.0
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:198e:b0:3ab:a274:d68 with SMTP id
- e9e14a558f8ab-3c2d2567418mr112485965ab.8.1734984872139; Mon, 23 Dec 2024
- 12:14:32 -0800 (PST)
-Date: Mon, 23 Dec 2024 12:14:32 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <6769c4a8.050a0220.226966.0042.GAE@google.com>
-Subject: [syzbot] [ext4?] kernel BUG in deactivate_slab (2)
-From: syzbot <syzbot+ccda44e9a0f765fd9706@syzkaller.appspotmail.com>
-To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com, tytso@mit.edu
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    2e7aff49b5da Merge branches 'for-next/core' and 'for-next/..
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=1129f7e8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=696fb014d05da3a3
-dashboard link: https://syzkaller.appspot.com/bug?extid=ccda44e9a0f765fd9706
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/ef408f67fde3/disk-2e7aff49.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/414ac17a20dc/vmlinux-2e7aff49.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/a93415d2a7e7/Image-2e7aff49.gz.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+ccda44e9a0f765fd9706@syzkaller.appspotmail.com
-
-------------[ cut here ]------------
-kernel BUG at mm/slub.c:3071!
-Internal error: Oops - BUG: 00000000f2000800 [#1] PREEMPT SMP
-Modules linked in:
-CPU: 1 UID: 0 PID: 10301 Comm: syz.8.517 Not tainted 6.13.0-rc2-syzkaller-g2e7aff49b5da #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-pstate: 00400005 (nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : deactivate_slab+0x2cc/0x36c mm/slub.c:3103
-lr : ___slab_alloc+0x3c8/0xf4c mm/slub.c:3740
-sp : ffff80009d7f7370
-x29: ffff80009d7f7370 x28: 0000000000000000 x27: ffff8000810d3d04
-x26: 0000000000000000 x25: 0080170003ffff00 x24: 0000000000000001
-x23: 0000000000000000 x22: 0000000000000000 x21: ffff0000d71c1640
-x20: ffff0000c898cd80 x19: fffffdffc36df305 x18: ffff0000d8a02240
-x17: ffff800123d64000 x16: ffff800080460e20 x15: 0000000000000001
-x14: 1ffff00011f300ca x13: ffff80009d7f8000 x12: 0000000000000003
-x11: 0000000000080000 x10: 0000000000000003 x9 : 0000000000000000
-x8 : ffff0000d71c1640 x7 : ffff800080b4ee7c x6 : 0000000000000000
-x5 : 0000000000000001 x4 : 0000000000000001 x3 : 01f5000000000000
-x2 : 0080170003ffff00 x1 : fffffdffc36df305 x0 : ffff0000d71c1640
-Call trace:
- add_partial mm/slub.c:3103 [inline] (P)
- deactivate_slab+0x2cc/0x36c mm/slub.c:3097 (P)
- ___slab_alloc+0x3c8/0xf4c mm/slub.c:3740 (L)
- ___slab_alloc+0x3c8/0xf4c mm/slub.c:3740
- __slab_alloc+0x74/0xd0 mm/slub.c:3905
- __slab_alloc_node mm/slub.c:3980 [inline]
- slab_alloc_node mm/slub.c:4141 [inline]
- kmem_cache_alloc_noprof+0x300/0x410 mm/slub.c:4160
- ext4_mb_add_groupinfo+0x5d8/0xdf4 fs/ext4/mballoc.c:3356
- ext4_mb_init_backend fs/ext4/mballoc.c:3435 [inline]
- ext4_mb_init+0x107c/0x2014 fs/ext4/mballoc.c:3733
- __ext4_fill_super fs/ext4/super.c:5559 [inline]
- ext4_fill_super+0x4b50/0x57d0 fs/ext4/super.c:5733
- get_tree_bdev_flags+0x38c/0x494 fs/super.c:1636
- get_tree_bdev+0x2c/0x3c fs/super.c:1659
- ext4_get_tree+0x28/0x38 fs/ext4/super.c:5765
- vfs_get_tree+0x90/0x28c fs/super.c:1814
- do_new_mount+0x278/0x900 fs/namespace.c:3507
- path_mount+0x590/0xe04 fs/namespace.c:3834
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4057 [inline]
- __se_sys_mount fs/namespace.c:4034 [inline]
- __arm64_sys_mount+0x4d4/0x5ac fs/namespace.c:4034
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:744
- el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:762
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-Code: d50323bf d65f03c0 d4210000 17ffffc0 (d4210000) 
----[ end trace 0000000000000000 ]---
+In-Reply-To: <8554AB6E-55CA-4F61-BE34-1260555785D1@dilger.ca>
+Content-Type: text/plain; charset=windows-1252
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:_Ch0CgA3ysaHpGpneq9mFQ--.25243S2
+X-Coremail-Antispam: 1UD129KBjvJXoW7Ary8ZF1rAF17KF48Kw1kuFg_yoW8AF13pa
+	1rKanxKr4DGrZakas7GwsFvw4Yvw4rZFsxJrn8Cry7uFWUGF1fZF1Uta1Yva47Gr4xKFyj
+	qF42grykC3W5Za7anT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUyCb4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JMxk0xIA0c2IEe2xFo4CEbIxvr21l42xK82IYc2Ij
+	64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x
+	8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAKI48JMIIF0xvE
+	2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE42
+	xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF
+	7I0E14v26r1j6r4UYxBIdaVFxhVjvjDU0xZFpf9x07UE-erUUUUU=
+X-CM-SenderInfo: 5vklyvpphqwq5kxd4v5lfo033gof0z/
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+on 12/20/2024 9:10 AM, Andreas Dilger wrote:
+> On Dec 19, 2024, at 4:00 AM, Kemeng Shi <shikemeng@huaweicloud.com> wrote:
+>>
+>> As high four bits of block in dx_entry is not used by any feature for now, we can remove unneeded bits mask in dx_get_block() and add it back
+>> when it's really needed.
+> 
+> Actually, the opposite is true.  This mask protects the *CURRENT* code
+> from any future use for these bits, so removing it now means that they
+> could never be used in the future, since the block number would be
+> taken as all 32 bits instead of only the bottom 28 bits.  I don't think
+> we are in any danger of having a 16TB single directory any time soon.
+> 
+> However, the top bits were intended to store a "fullness" for the index
+> blocks, to optimize online directory shrinking without having to scan
+> each of the blocks for how many entries are currently in the block.
+> This would allow the dirent removal to easily see "this block and the
+> previous/next block are only 1/3 full and could be merged".
+> 
+> See the following thread for a prototype patch and discussion on this:
+> https://patchwork.ozlabs.org/project/linux-ext4/patch/20190821182740.97127-1-harshadshirwadkar@gmail.com/
+> 
+> I think removing this mask has a negative effect on future usefulness,
+> and virtually no benefit to the code today, so I would object to landing
+> it.
+Sure, it makes sense to reserve bit for future use if it will likely be
+used. But I wonder would it be better to catch using high four bits in
+in ext4_append() in which case we could forbit using high four bits in
+time rather than lost dir when reserved bits are really used in future.
+This also reduce cpu cost as dx_get_block() is used likely more frequent
+than ext4_append().
+Just a thought.
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Thanks,
+Kemeng
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
