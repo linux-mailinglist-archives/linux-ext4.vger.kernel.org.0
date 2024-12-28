@@ -1,48 +1,61 @@
-Return-Path: <linux-ext4+bounces-5853-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5855-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B92799FC9F3
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2024 10:33:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EA7E9FD8C5
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 Dec 2024 02:50:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CDEB1883003
-	for <lists+linux-ext4@lfdr.de>; Thu, 26 Dec 2024 09:33:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C622F16314E
+	for <lists+linux-ext4@lfdr.de>; Sat, 28 Dec 2024 01:50:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05ACA170A1A;
-	Thu, 26 Dec 2024 09:33:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7B22B4206B;
+	Sat, 28 Dec 2024 01:49:58 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mx01.omp.ru (mx01.omp.ru [90.154.21.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-SHA384 (256/256 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83AB714F108;
-	Thu, 26 Dec 2024 09:33:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.154.21.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 267BC3B1A1;
+	Sat, 28 Dec 2024 01:49:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735205604; cv=none; b=sublEnnWhE/xAyMgSX5BZk193QGo/ws5dsi005gNyb0wo+3115kRh/mN1n+jmZEi0S8+llwBf0x1IWvMnqwodRkyZjeOV+PV36q1sBdX4XtPGJ089aHfVyx+0R6PFeIBybBR7IBjdNXaSA5BHbwzNlQzCYCS+FwdjmTO985nWWc=
+	t=1735350598; cv=none; b=mTqhmv0D4YwBO2Rx1zBHb3Mgi1IrbGqlGpKf3OrZ2kzI0GGBd4E+rR5OccEpmkK4KblztdiGrS21+63T+LL8VyPU+Cs7tOoO8N7NvR08f3yI/AWoXUhjSRFNioMtz42bI7AdNqIs9A+as4Ot2YabdktsDSPHsKIf4/UZzCSRFd0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735205604; c=relaxed/simple;
-	bh=YxAIiIMg+sYXQfGh7GZCY1RhHn7isSVWy/WvrkyhWdE=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=f+kaPjmVZO/4YYuBVdMS3UYS7+w4oyP/uGhphbtGTWzF11OplsvhAlBBMysEswte+4SYFJE00GdQ/wf98SJpV/a723YdY1mjw7v56CCx3amr9KGxG0BkJ55getWGLIvznIKUGZUclnu9rgwZL4eMO2lfwSzdAnvwNEXVICmx4RA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru; spf=pass smtp.mailfrom=omp.ru; arc=none smtp.client-ip=90.154.21.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=omp.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=omp.ru
-Received: from localhost.localdomain (188.234.32.57) by msexch01.omp.ru
- (10.188.4.12) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_CBC_SHA384) id 15.2.1258.12; Thu, 26 Dec
- 2024 12:33:13 +0300
-From: d.privalov <d.privalov@omp.ru>
-To: Theodore Ts'o <tytso@mit.edu>
-CC: Andreas Dilger <adilger.kernel@dilger.ca>, <linux-ext4@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>, Xiaxi Shen
-	<shenxiaxi26@gmail.com>,
-	<syzbot+59e0101c430934bc9a36@syzkaller.appspotmail.com>, <stable@kernel.org>,
-	Dmitriy Privalov <d.privalov@omp.ru>
-Subject: [PATCH 5.10/5.15 1/1] ext4: fix timer use-after-free on failed mount
-Date: Thu, 26 Dec 2024 12:32:56 +0300
-Message-ID: <20241226093256.44361-1-d.privalov@omp.ru>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1735350598; c=relaxed/simple;
+	bh=AXtyMcZWGbCzPMx2LykKFVxauMONIkwojzl4bJy5xK0=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Zd+0nh1wlniPF5SZBcDk0WFaR8tKz4PEQBI71IRpHCylITzcdu+6DerPHqZcAODJBsl5fr2958s25puVozw023fJUc7tEvvoC/3uJIeUlCalJKZXVAO2ZdSHHzjuhlxva5n5WFgq7T1HjHi3zcA8Ld98e0feoIGKd10h0vyHSPY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.216])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YKlfG026Wz4f3lfJ;
+	Sat, 28 Dec 2024 09:49:26 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id DEA161A0196;
+	Sat, 28 Dec 2024 09:49:46 +0800 (CST)
+Received: from huaweicloud.com (unknown [10.175.104.67])
+	by APP4 (Coremail) with SMTP id gCh0CgB3U4cuWW9nXPNWFw--.42357S4;
+	Sat, 28 Dec 2024 09:49:44 +0800 (CST)
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+To: linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	viro@zeniv.linux.org.uk,
+	brauner@kernel.org,
+	jack@suse.cz,
+	tytso@mit.edu,
+	djwong@kernel.org,
+	adilger.kernel@dilger.ca,
+	yi.zhang@huawei.com,
+	yi.zhang@huaweicloud.com,
+	chengzhihao1@huawei.com,
+	yukuai3@huawei.com,
+	yangerkun@huawei.com
+Subject: [RFC PATCH 0/2] fallocate: introduce FALLOC_FL_FORCE_ZERO flag
+Date: Sat, 28 Dec 2024 09:45:20 +0800
+Message-Id: <20241228014522.2395187-1-yi.zhang@huaweicloud.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -50,91 +63,281 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: msexch01.omp.ru (10.188.4.12) To msexch01.omp.ru
- (10.188.4.12)
-X-KSE-ServerInfo: msexch01.omp.ru, 9
-X-KSE-AntiSpam-Interceptor-Info: scan successful
-X-KSE-AntiSpam-Version: 6.1.1, Database issued on: 12/26/2024 08:49:16
-X-KSE-AntiSpam-Status: KAS_STATUS_NOT_DETECTED
-X-KSE-AntiSpam-Method: none
-X-KSE-AntiSpam-Rate: 19
-X-KSE-AntiSpam-Info: Lua profiles 190069 [Dec 26 2024]
-X-KSE-AntiSpam-Info: Version: 6.1.1.7
-X-KSE-AntiSpam-Info: Envelope from: d.privalov@omp.ru
-X-KSE-AntiSpam-Info: LuaCore: 49 0.3.49
- 28b3b64a43732373258a371bd1554adb2caa23cb
-X-KSE-AntiSpam-Info: {rep_avail}
-X-KSE-AntiSpam-Info: {Tracking_uf_ne_domains}
-X-KSE-AntiSpam-Info: {Tracking_from_domain_doesnt_match_to}
-X-KSE-AntiSpam-Info: {SMTP from is not routable}
-X-KSE-AntiSpam-Info: {Found in DNSBL: 188.234.32.57 in (user)
- b.barracudacentral.org}
-X-KSE-AntiSpam-Info:
-	syzkaller.appspot.com:7.1.1,5.0.1;patch.msgid.link:7.1.1;127.0.0.199:7.1.2;omp.ru:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1
-X-KSE-AntiSpam-Info: FromAlignment: s
-X-KSE-AntiSpam-Info: ApMailHostAddress: 188.234.32.57
-X-KSE-AntiSpam-Info: {DNS response errors}
-X-KSE-AntiSpam-Info: Rate: 19
-X-KSE-AntiSpam-Info: Status: not_detected
-X-KSE-AntiSpam-Info: Method: none
-X-KSE-AntiSpam-Info: Auth:dmarc=temperror header.from=omp.ru;spf=temperror
- smtp.mailfrom=omp.ru;dkim=none
-X-KSE-Antiphishing-Info: Clean
-X-KSE-Antiphishing-ScanningType: Heuristic
-X-KSE-Antiphishing-Method: None
-X-KSE-Antiphishing-Bases: 12/26/2024 08:52:00
-X-KSE-Antivirus-Interceptor-Info: scan successful
-X-KSE-Antivirus-Info: Clean, bases: 12/26/2024 7:26:00 AM
-X-KSE-Attachment-Filter-Triggered-Rules: Clean
-X-KSE-Attachment-Filter-Triggered-Filters: Clean
-X-KSE-BulkMessagesFiltering-Scan-Result: InTheLimit
+X-CM-TRANSID:gCh0CgB3U4cuWW9nXPNWFw--.42357S4
+X-Coremail-Antispam: 1UD129KBjvJXoWxuw17tr1xAr4kGFyDGw17Wrg_yoWfXryxpa
+	yjgr1UK340qryfC3s3Ca1vgr1rXws5Gr45Gr42v34UZas8WF1fKa1qgw1FqayxZFWfGF1U
+	Xw43try3uF12vaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUU9Y14x267AKxVW8JVW5JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26r4U
+	JVWxJr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_Gc
+	CE3s1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E
+	2Ix0cI8IcVAFwI0_Jrv_JF1lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJV
+	W8JwACjcxG0xvY0x0EwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lFIxGxcIEc7CjxVA2
+	Y2ka0xkIwI1lc7CjxVAaw2AFwI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x
+	0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2
+	zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF
+	4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWU
+	CwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCT
+	nIWIevJa73UjIFyTuYvjfUoWlkDUUUU
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-From: Xiaxi Shen <shenxiaxi26@gmail.com>
+From: Zhang Yi <yi.zhang@huawei.com>
 
-commit 0ce160c5bdb67081a62293028dc85758a8efb22a upstream.
+Currently, we can use the fallocate command to quickly create a
+pre-allocated file. However, on most filesystems, such as ext4 and XFS,
+fallocate create pre-allocation blocks in an unwritten state, and the
+FALLOC_FL_ZERO_RANGE flag also behaves similarly. The extent state must
+be converted to a written state when the user writes data into this
+range later, which can trigger numerous metadata changes and consequent
+journal I/O. This may leads to significant write amplification and
+performance degradation in synchronous write mode. Therefore, we need a
+method to create a pre-allocated file with written extents. At the
+monent, the only method available is to create an empty file and write
+zero data into it (for example, using 'dd' with a large block size).
+However, this method is slow and consumes a considerable amount of disk
+bandwidth, we must pre-allocate files in advance but cannot add
+pre-allocated files while user business services are running.
 
-Syzbot has found an ODEBUG bug in ext4_fill_super
+Fortunately, with the development and more and more widely used of
+flash-based storage devices, we can efficiently write zeros to SSDs
+using the WRITE_ZERO command. If SCSI SSDs support the UMMAP bit or NVMe
+SSDs support the DEAC bit[1], the WRITE_ZERO command does not write
+actual data to the device, instead, NVMe converts the zeroed range to a
+deallocated state, which works fast and consumes almost no disk write
+bandwidth. Consequently, this feature can provide us with a faster
+method for creating pre-allocated files with written extents and zeroed
+data.
 
-The del_timer_sync function cancels the s_err_report timer,
-which reminds about filesystem errors daily. We should
-guarantee the timer is no longer active before kfree(sbi).
+This series aims to implement this by introducing a new flag
+FALLOC_FL_FORCE_ZERO into the fallocate, and providing a brief
+demonstration on ext4(note: this is based on my ext4 fallocate refactor
+series[2] which hasn't been merged yet), which will be used for further
+test and discussion. This flag serves as a supported flag for
+FALLOC_FL_ZERO_RANGE, it enforce the file system to issue zeros and
+allocate written extents during the FALLOC_FL_FORCE_ZERO operation. If
+the underlying storage supports WRITE_ZERO, the zero range operation
+can be accelerated, if not, it defaults to write zero data, similar to
+a direct write.
 
-When filesystem mounting fails, the flow goes to failed_mount3,
-where an error occurs when ext4_stop_mmpd is called, causing
-a read I/O failure. This triggers the ext4_handle_error function
-that ultimately re-arms the timer,
-leaving the s_err_report timer active before kfree(sbi) is called.
+I've modified xfs_io and fallocate tool in util-linux[3], and tested
+performance with this series on ext4 filesystem on my machine with an
+Intel Xeon Gold 6248R CPU, a 7TB KCD61LUL7T68 NVMe SSD which supports
+WRITE_ZERO with the Deallocated state and the DEAC bit.
 
-Fix the issue by canceling 
-the s_err_report timer after calling ext4_stop_mmpd.
+0. Ensure the NVMe device supports WRITE_ZERO command.
 
-Signed-off-by: Xiaxi Shen <shenxiaxi26@gmail.com>
-Reported-and-tested-by: syzbot+59e0101c430934bc9a36@syzkaller.appspotmail.com
-Closes: https://syzkaller.appspot.com/bug?extid=59e0101c430934bc9a36
-Link: https://patch.msgid.link/20240715043336.98097-1-shenxiaxi26@gmail.com
-Signed-off-by: Theodore Ts'o <tytso@mit.edu>
-Cc: stable@kernel.org
-Signed-off-by: Dmitriy Privalov <d.privalov@omp.ru>
+ $ cat /sys/block/nvme5n1/queue/write_zeroes_max_bytes
+   8388608
+ $ nvme id-ns -H /dev/nvme5n1 | grep -i -A 3 "dlfeat"
+   dlfeat  : 25
+   [4:4] : 0x1   Guard Field of Deallocated Logical Blocks is set to CRC
+                 of The Value Read
+   [3:3] : 0x1   Deallocate Bit in the Write Zeroes Command is Supported
+   [2:0] : 0x1   Bytes Read From a Deallocated Logical Block and its
+                 Metadata are 0x00
+
+1. Compare 'dd' and fallocate with force zero range, the zero range is
+   significantly faster than 'dd'.
+
+ a) Create a 1GB zeroed file.
+  $ dd if=/dev/zero of=foo bs=2M count=512 oflag=direct
+    512+0 records in
+    512+0 records out
+    1073741824 bytes (1.1 GB, 1.0 GiB) copied, 0.504496 s, 2.1 GB/s
+
+  $ time fallocate -Z -l 1G bar  # -Z is a new option to do actual zero
+    real    0m0.171s
+    user    0m0.001s
+    sys     0m0.003s
+
+ b) Create a 10GB zeroed file.
+  $ dd if=/dev/zero of=foo bs=2M count=5120 oflag=direct  
+    5120+0 records in
+    5120+0 records out
+    10737418240 bytes (11 GB, 10 GiB) copied, 5.04009 s, 2.1 GB/s
+
+  $ time fallocate -Z -l 10G bar
+    real    0m1.724s
+    user    0m0.000s
+    sys     0m0.024s
+
+2. Run fio overwrite and fallocate with force zero range simultaneously,
+   fallocate has little impact on write bandwidth and only slightly
+   affects write latency.
+
+ a) Test bandwidth costs.
+  $ fio -directory=/test -direct=1 -iodepth=10 -fsync=0 -rw=write \
+        -numjobs=10 -bs=2M -ioengine=libaio -size=20G -runtime=20 \
+        -fallocate=none -overwrite=1 -group_reportin -name=bw_test
+
+   Without background zero range:
+    bw (MiB/s): min= 2068, max= 2280, per=100.00%, avg=2186.40
+
+   With background zero range:
+    bw (MiB/s): min= 2056, max= 2308, per=100.00%, avg=2186.20
+
+ b) Test write latency costs.
+  $ fio -filename=/test/foo -direct=1 -iodepth=1 -fsync=0 -rw=write \
+        -numjobs=1 -bs=4k -ioengine=psync -size=5G -runtime=20 \
+        -fallocate=none -overwrite=1 -group_reportin -name=lat_test
+
+   Without background zero range:
+   lat (nsec): min=9269, max=71635, avg=9840.65
+
+   With a background zero range:
+   lat (usec): min=9, max=982, avg=11.03
+
+3. Compare overwriting in a pre-allocated unwritten file and a written
+   file in O_DSYNC mode. Write to a file with written extents is much
+   faster.
+
+  # First mkfs and create a test file according to below three cases,
+  # and then run fio.
+
+  $ fio -filename=/test/foo -direct=1 -iodepth=1 -fdatasync=1 \
+        -rw=write -numjobs=1 -bs=4k -ioengine=psync -size=5G \
+        -runtime=20 -fallocate=none -group_reportin -name=test
+
+   unwritten file:                 IOPS=20.1k, BW=78.7MiB/s
+   unwritten file + fast_commit:   IOPS=42.9k, BW=167MiB/s
+   written file:                   IOPS=98.8k, BW=386MiB/s
+
+Any comments are welcome.
+
+Thanks,
+Yi.
+
 ---
- fs/ext4/super.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/fs/ext4/super.c b/fs/ext4/super.c
-index 9d7800d66200..522a5d85fbf5 100644
---- a/fs/ext4/super.c
-+++ b/fs/ext4/super.c
-@@ -5185,8 +5185,8 @@ static int ext4_fill_super(struct super_block *sb, void *data, int silent)
- failed_mount3a:
- 	ext4_es_unregister_shrinker(sbi);
- failed_mount3:
--	del_timer_sync(&sbi->s_err_report);
- 	ext4_stop_mmpd(sbi);
-+	del_timer_sync(&sbi->s_err_report);
- failed_mount2:
- 	rcu_read_lock();
- 	group_desc = rcu_dereference(sbi->s_group_desc);
+[1] https://nvmexpress.org/specifications/
+    NVM Command Set Specification, section 3.2.8
+[2] https://lore.kernel.org/linux-ext4/20241220011637.1157197-1-yi.zhang@huaweicloud.com/
+[3] Here is a simple support of xfs_io and fallocate tool in util-linux.
+    Feel free to give it a try.
+
+1. xfs_io
+
+diff --git a/io/prealloc.c b/io/prealloc.c
+index 8e968c9f..66ae63d6 100644
+--- a/io/prealloc.c
++++ b/io/prealloc.c
+@@ -30,6 +30,10 @@
+ #define FALLOC_FL_UNSHARE_RANGE 0x40
+ #endif
+ 
++#ifndef FALLOC_FL_FORCE_ZERO
++#define FALLOC_FL_FORCE_ZERO 0x80
++#endif
++
+ static cmdinfo_t allocsp_cmd;
+ static cmdinfo_t freesp_cmd;
+ static cmdinfo_t resvsp_cmd;
+@@ -324,16 +328,20 @@ fzero_f(
+ 	int		mode = FALLOC_FL_ZERO_RANGE;
+ 	int		c;
+ 
+-	while ((c = getopt(argc, argv, "k")) != EOF) {
++	while ((c = getopt(argc, argv, "kz")) != EOF) {
+ 		switch (c) {
+ 		case 'k':
+ 			mode |= FALLOC_FL_KEEP_SIZE;
+ 			break;
++		case 'z':
++			mode |= FALLOC_FL_FORCE_ZERO;
++			break;
+ 		default:
+ 			command_usage(&fzero_cmd);
+ 		}
+ 	}
+-        if (optind != argc - 2)
++	if (optind != argc - 2 ||
++	    ((mode & FALLOC_FL_KEEP_SIZE) && (mode & FALLOC_FL_FORCE_ZERO)))
+                 return command_usage(&fzero_cmd);
+ 
+ 	if (!offset_length(argv[optind], argv[optind + 1], &segment))
+@@ -475,7 +483,7 @@ prealloc_init(void)
+ 	fzero_cmd.argmin = 2;
+ 	fzero_cmd.argmax = 3;
+ 	fzero_cmd.flags = CMD_NOMAP_OK | CMD_FOREIGN_OK;
+-	fzero_cmd.args = _("[-k] off len");
++	fzero_cmd.args = _("[-k | -z ] off len");
+ 	fzero_cmd.oneline =
+ 	_("zeroes space and eliminates holes by preallocating");
+ 	add_command(&fzero_cmd);
+
+2. util-linux
+
+diff --git a/sys-utils/fallocate.c b/sys-utils/fallocate.c
+index ac7c687f2..55627ce4b 100644
+--- a/sys-utils/fallocate.c
++++ b/sys-utils/fallocate.c
+@@ -66,6 +66,10 @@
+ # define FALLOC_FL_INSERT_RANGE		0x20
+ #endif
+ 
++#ifndef FALLOC_FL_FORCE_ZERO
++# define FALLOC_FL_FORCE_ZERO		0x80
++#endif
++
+ #include "nls.h"
+ #include "strutils.h"
+ #include "c.h"
+@@ -305,6 +309,7 @@ int main(int argc, char **argv)
+ 	    { "dig-holes",      no_argument,       NULL, 'd' },
+ 	    { "insert-range",   no_argument,       NULL, 'i' },
+ 	    { "zero-range",     no_argument,       NULL, 'z' },
++	    { "force-zero",     no_argument,       NULL, 'Z' },
+ 	    { "offset",         required_argument, NULL, 'o' },
+ 	    { "length",         required_argument, NULL, 'l' },
+ 	    { "posix",          no_argument,       NULL, 'x' },
+@@ -313,9 +318,10 @@ int main(int argc, char **argv)
+ 	};
+ 
+ 	static const ul_excl_t excl[] = {	/* rows and cols in ASCII order */
+-		{ 'c', 'd', 'p', 'z' },
++		{ 'c', 'd', 'p', 'z', 'Z' },
+ 		{ 'c', 'n' },
+-		{ 'x', 'c', 'd', 'i', 'n', 'p', 'z'},
++		{ 'Z', 'n' },
++		{ 'x', 'c', 'd', 'i', 'n', 'p', 'z', 'Z'},
+ 		{ 0 }
+ 	};
+ 	int excl_st[ARRAY_SIZE(excl)] = UL_EXCL_STATUS_INIT;
+@@ -325,7 +331,7 @@ int main(int argc, char **argv)
+ 	textdomain(PACKAGE);
+ 	close_stdout_atexit();
+ 
+-	while ((c = getopt_long(argc, argv, "hvVncpdizxl:o:", longopts, NULL))
++	while ((c = getopt_long(argc, argv, "hvVncpdizZxl:o:", longopts, NULL))
+ 			!= -1) {
+ 
+ 		err_exclusive_options(c, longopts, excl, excl_st);
+@@ -355,6 +361,9 @@ int main(int argc, char **argv)
+ 		case 'z':
+ 			mode |= FALLOC_FL_ZERO_RANGE;
+ 			break;
++		case 'Z':
++			mode |= FALLOC_FL_ZERO_RANGE | FALLOC_FL_FORCE_ZERO;
++			break;
+ 		case 'x':
+ #ifdef HAVE_POSIX_FALLOCATE
+ 			posix = 1;
+
+
+
+Zhang Yi (2):
+  fs: introduce FALLOC_FL_FORCE_ZERO to fallocate
+  ext4: add FALLOC_FL_FORCE_ZERO support
+
+ fs/ext4/extents.c           | 42 +++++++++++++++++++++++++++++++------
+ fs/open.c                   | 14 ++++++++++---
+ include/linux/falloc.h      |  5 ++++-
+ include/trace/events/ext4.h |  3 ++-
+ include/uapi/linux/falloc.h | 12 +++++++++++
+ 5 files changed, 65 insertions(+), 11 deletions(-)
+
 -- 
-2.34.1
+2.39.2
 
 
