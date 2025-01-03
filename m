@@ -1,184 +1,163 @@
-Return-Path: <linux-ext4+bounces-5866-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5867-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 81715A00339
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 04:46:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EF594A00500
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 08:32:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0C587A0F78
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 03:46:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B1A33A3E46
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 07:31:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8241B0424;
-	Fri,  3 Jan 2025 03:46:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3381CB31D;
+	Fri,  3 Jan 2025 07:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vbh5XeDN"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f206.google.com (mail-il1-f206.google.com [209.85.166.206])
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C42C38DC0
-	for <linux-ext4@vger.kernel.org>; Fri,  3 Jan 2025 03:46:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.206
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA2C157A67;
+	Fri,  3 Jan 2025 07:31:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735875991; cv=none; b=FybLHwbYxHZa6s5zXPWP40xec7hOV0rZsYaUx0i3pkMnD6gYbtjqnl6j1HvGeCenHqVMpx32PpN7sQ7voNIrWvF+c3/Q97G0D3XnBKDhPTmPfoswiYZ+BXpV+a0It/QmZ8JZUJoxAeY9j4eViOGwwEI+thxbUbTeh44KZm5mPAM=
+	t=1735889485; cv=none; b=kkUWPCpPB1M5xqpM796Lk5B4sPESJejN8ie4XT0w3SSgmr1l2YKnmzAXjhQ2GhRJ0lv1/WsqC3fB8THwQo6cwEPaIXt3SyqRjAsNXuzN32N0By6v8TDlUK7aoR18T12PKRrA+fQcq2+7YACqMfD1Yp0UN3wx2/CDK0XenuDbORk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735875991; c=relaxed/simple;
-	bh=wn6kC7k1Vd7wPHfJIiTn0wVmttTnoS0+hiSnYMVhn94=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ilGFgJknK0QfA0yzt/v1AiTvCcrjusAybvAHP+evYF3WJ6CN2QFiWe7QpEzjscJI5CJtsoa6AukolNuRTAVFtuY0+lOXVW0rp2l30V2pmSrJlkHMu8xph75wdJeViMm2mEU9A0s5sQZOwg54fbbMLqOwfFvEMVftU3GZZ9csHkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.206
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f206.google.com with SMTP id e9e14a558f8ab-3a817be161bso114873185ab.1
-        for <linux-ext4@vger.kernel.org>; Thu, 02 Jan 2025 19:46:29 -0800 (PST)
+	s=arc-20240116; t=1735889485; c=relaxed/simple;
+	bh=GOd2yJSG7EAgV7JqP/Lfz2ha42gAWZAaYr26OZeCYSM=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=jakWgglK0A/yYXpBTdLhnDAiM+CvODUTTJw68fl6Ctx+oqCAsP+bkeSTS3hwMbax4cKS6qvE1InTVoxWMfx7dMTx/z+uRIbLyG4j0JFWQvRk2h6Y20UmbRgeVfigaYra7RWA1mP5xkEW5wjFn8O9qeN3xGiY98L40iwmeA01WTM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vbh5XeDN; arc=none smtp.client-ip=209.85.218.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-aaeef97ff02so1324590566b.1;
+        Thu, 02 Jan 2025 23:31:21 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1735889480; x=1736494280; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=GOd2yJSG7EAgV7JqP/Lfz2ha42gAWZAaYr26OZeCYSM=;
+        b=Vbh5XeDN6dlvBeyQpJZsIsc6N2Zd8x2VlJk5pYRMnuccYYdhXQpW5nHP3LCokDkLpB
+         GPzdxfBDf19ZY5zmGq//NWYp52EiMrrXXXZ/J+lYmlb3NZPuAIn1/VRA36Bxhb2t8HsL
+         pjf342h/+BZpBf9l1CLrLG4O0zAhWXeS+rGALwFK+n3w57/tvROdQ7NRm5r6nerUtURb
+         DNznAZsXms/OuUjut9YbNLNTFCgztC5GrYg+3TnrDxdO2y2OWlKOB/QGISoGjNfrKoyp
+         +bPL3U+poQHnsbf6KkxR6OIbnFP57iF1eWHLngqCCmHphs0aFiX6Inrn8wa0NOE9vsac
+         2n5g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735875988; x=1736480788;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+        d=1e100.net; s=20230601; t=1735889480; x=1736494280;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=tpVGg86uB4JHEkmHi9hYvbi1qxC3jfJ5oXO/BizC0Sc=;
-        b=ier476CfDBBUoJjdxZdix8pGlNn9+Rc1ZVD9OZBkYPuSDxnZqJwVPzP7qpIXPTZhxT
-         xl9eDnPmIbeDuGpVy7FFZCvtJNhAZSC4J6ceRgTH2oWev5MiDkMDej5gcp+y9meV+a0p
-         mpRgq1vqIKUFs8lEQRuIf1jY+T9hnll3GeJ1dUj277kWM5QbeuLRtG04PKuIn19ppiWD
-         00V9VPrm2jY0N6hmO7iIsSpGvUBhoma8cebNJKDp8hW41/h0JjWgK5AANbCYKEtQTyWi
-         PYWWcvJyOs1PqUciovWWPoQti5vjaJCGUAY+IrRTYp9iPezEL5JNdYpqp+UgEM4KAmi9
-         +w6g==
-X-Forwarded-Encrypted: i=1; AJvYcCW6/8yw1MquVBR7MAyLQHKa8+E7Ca01nq6v7+55Nk8xStzg8OZOJVZN4hhTggMNFuwv7OC2FI3ZVXko@vger.kernel.org
-X-Gm-Message-State: AOJu0YzpcIddnIUlaBKTHTP3SBhSWs+g5um9+hZdOYZgGnJBGe6JJg+U
-	J5ER8N++UyT8o+DEMlTu3aiQI2hG/TB3s3JYHsrEhkTQfkBrvnSimGtEqlwAHU7xYdqu8yoea5l
-	P4MKavHcbL5wlTIOtSPpBFWPffC1ffWlPaS7LygvtDRI2jV+B/xXUIUg=
-X-Google-Smtp-Source: AGHT+IFAIoNFLqMYbWnezEWZYJwmilYrl3u4L0EkW34OaMqYwTUqMS+L+f9yDwpQdm9sqP9jOhGCTp4fJyusCdUEq4VZJIidsvab
+        bh=GOd2yJSG7EAgV7JqP/Lfz2ha42gAWZAaYr26OZeCYSM=;
+        b=V04064H+94iaDVXkfhgJzKLWdrTDNec3g+8U54JvwPeJfgkeNQwQz4/mxlHCHO08Fz
+         D9fmn+7B+8nVk/3Jsn6IxCU+uIQg84+aSgN4t4s7dIR8jXNCF8wamu8GyQR5oRI+bzfE
+         tRpqV4xpIuM3ot8xi9tFZAemjIu2/8dJiIN8k+1jXL2WeTV5i3tRLwbpEZSENH3/hhpQ
+         i7CbD4KnbDoIfC+95b2lGSGTWcHnqkqBxWasQZiEIIq7VzFzd88ppVB6PWk6ruZco43J
+         wRkaGTplplVrSqwkM+TtIn93mfBzw0JLe1OKS07xkWmGNo3HiEu0katTgrkASuI/yRqr
+         Exlw==
+X-Forwarded-Encrypted: i=1; AJvYcCWHjrgkk4W4uWbmLMQIs7mar906Ankkh7P4o43w4O3tDUJNC5UXmncERYn+h2javPqkom41eu+ULgaFfMM=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz/OvthTuaIhpiwNKiErPz0c1bBWTUCkxEiqcws/s+9HsVq9M3y
+	7WLa7Hsun6E7yVh6F6NVqQ2dJ2AZCPB6ZjSJ9/Iy1i4ePeYWH04K/u2HPNIOyGh+SodFk1r9HlV
+	A4DIetRm0Od/JdCTxOryRcdn1Wa9XhCDu
+X-Gm-Gg: ASbGncsMusn7IcNBl1UmOR/tdo6ToXVlsXQrjE8Xw6fVP/vSLKshtg+MR2cM2WgN7Ac
+	rNcVQWacOGCOrgnrPOV6+DciiWLEQnkBJWIIDBuo=
+X-Google-Smtp-Source: AGHT+IHp+eorGXIO0qzqgnPX7zaA92A95C3fj/UsCgg1/FPWZMowPimsEAOGKrX4qg8MR0G7ky5b9ZozqBkskgTBaPs=
+X-Received: by 2002:a17:907:6ea7:b0:aa6:8a1b:8b84 with SMTP id
+ a640c23a62f3a-aac345f5b92mr4990312666b.57.1735889479611; Thu, 02 Jan 2025
+ 23:31:19 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d1a:b0:3a7:e069:95e0 with SMTP id
- e9e14a558f8ab-3c2fe53a7d5mr335486195ab.1.1735875988320; Thu, 02 Jan 2025
- 19:46:28 -0800 (PST)
-Date: Thu, 02 Jan 2025 19:46:28 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67775d94.050a0220.178762.003a.GAE@google.com>
-Subject: [syzbot] [ext4?] [ocfs2?] WARNING in __jbd2_log_wait_for_space
-From: syzbot <syzbot+04ae2c9e709a347f1a81@syzkaller.appspotmail.com>
-To: jack@suse.com, jlbec@evilplan.org, joseph.qi@linux.alibaba.com, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, mark@fasheh.com, 
-	ocfs2-devel@lists.linux.dev, syzkaller-bugs@googlegroups.com, tytso@mit.edu
+From: cheung wall <zzqq0103.hey@gmail.com>
+Date: Fri, 3 Jan 2025 15:31:01 +0800
+Message-ID: <CAKHoSAsWa2fNFUTSy=vmFFWeAMiYgdtTuZX5OP2xtVu5WQhd3Q@mail.gmail.com>
+Subject: "kernel BUG corrupted in ext4_writepages" in Linux kernel version 6.13.0-rc2
+To: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
+Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
-syzbot found the following issue on:
+I am writing to report a potential vulnerability identified in the
+Linux Kernel version 6.13.0-rc2. This issue was discovered using our
+custom vulnerability discovery tool.
 
-HEAD commit:    573067a5a685 Merge branch 'for-next/core' into for-kernelci
-git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
-console output: https://syzkaller.appspot.com/x/log.txt?x=120daaf8580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=cd7202b56d469648
-dashboard link: https://syzkaller.appspot.com/bug?extid=04ae2c9e709a347f1a81
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: arm64
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=124126df980000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=14652ac4580000
+HEAD commit: fac04efc5c793dccbd07e2d59af9f90b7fc0dca4 (tag: v6.13-rc2)
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/9d3b5c855aa0/disk-573067a5.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/0c06fc1ead83/vmlinux-573067a5.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/3390e59b9e4b/Image-573067a5.gz.xz
-mounted in repro: https://storage.googleapis.com/syzbot-assets/8351bb578424/mount_0.gz
+Affected File: fs/ext4/inode.c
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+04ae2c9e709a347f1a81@syzkaller.appspotmail.com
+File: fs/ext4/inode.c
 
-__jbd2_log_wait_for_space: needed 5461 blocks and only had 1246 space available
-__jbd2_log_wait_for_space: no way to get more journal space in loop0-75
-------------[ cut here ]------------
-WARNING: CPU: 1 PID: 6419 at fs/jbd2/checkpoint.c:115 __jbd2_log_wait_for_space+0x400/0x5cc fs/jbd2/checkpoint.c:116
-Modules linked in:
-CPU: 1 UID: 0 PID: 6419 Comm: syz-executor202 Not tainted 6.13.0-rc3-syzkaller-g573067a5a685 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-pstate: 60400005 (nZCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
-pc : __jbd2_log_wait_for_space+0x400/0x5cc fs/jbd2/checkpoint.c:116
-lr : __jbd2_log_wait_for_space+0x3f8/0x5cc fs/jbd2/checkpoint.c:112
-sp : ffff8000a2506fe0
-x29: ffff8000a25070e0 x28: 0000000000000000 x27: dfff800000000000
-x26: ffff0000c5fc00b0 x25: ffff0000c5fc0190 x24: 0000000000000000
-x23: ffff0000c5fc0690 x22: 0000000000001555 x21: ffff80008ef538c1
-x20: 00000000000004de x19: ffff0000c5fc0000 x18: 0000000000000008
-x17: 6c206e6920656361 x16: ffff800083275834 x15: 0000000000000001
-x14: 1fffe00036700aea x13: 0000000000000000 x12: 0000000000000000
-x11: 0000000000000001 x10: 0000000000ff0100 x9 : b8bdcb2c5f900500
-x8 : b8bdcb2c5f900500 x7 : 0000000000000001 x6 : 0000000000000001
-x5 : ffff8000a2506738 x4 : ffff80008fa8f840 x3 : ffff80008073f2fc
-x2 : 0000000000000001 x1 : 00000000fffffffb x0 : ffff0000c5fc0000
-Call trace:
- __jbd2_log_wait_for_space+0x400/0x5cc fs/jbd2/checkpoint.c:116 (P)
- add_transaction_credits+0x868/0xbec fs/jbd2/transaction.c:283
- start_this_handle+0x574/0x11c4 fs/jbd2/transaction.c:407
- jbd2__journal_start+0x298/0x544 fs/jbd2/transaction.c:505
- jbd2_journal_start+0x3c/0x4c fs/jbd2/transaction.c:544
- ocfs2_start_trans+0x3d0/0x71c fs/ocfs2/journal.c:352
- ocfs2_shutdown_local_alloc+0x1d8/0x8d8 fs/ocfs2/localalloc.c:417
- ocfs2_dismount_volume+0x1f4/0x920 fs/ocfs2/super.c:1877
- ocfs2_put_super+0xec/0x368 fs/ocfs2/super.c:1608
- generic_shutdown_super+0x12c/0x2bc fs/super.c:642
- kill_block_super+0x44/0x90 fs/super.c:1710
- deactivate_locked_super+0xc4/0x12c fs/super.c:473
- deactivate_super+0xe0/0x100 fs/super.c:506
- cleanup_mnt+0x34c/0x3dc fs/namespace.c:1373
- __cleanup_mnt+0x20/0x30 fs/namespace.c:1380
- task_work_run+0x230/0x2e0 kernel/task_work.c:239
- exit_task_work include/linux/task_work.h:43 [inline]
- do_exit+0x4ec/0x1ad0 kernel/exit.c:938
- do_group_exit+0x194/0x22c kernel/exit.c:1087
- __do_sys_exit_group kernel/exit.c:1098 [inline]
- __se_sys_exit_group kernel/exit.c:1096 [inline]
- pid_child_should_wake+0x0/0x1dc kernel/exit.c:1096
- __invoke_syscall arch/arm64/kernel/syscall.c:35 [inline]
- invoke_syscall+0x98/0x2b8 arch/arm64/kernel/syscall.c:49
- el0_svc_common+0x130/0x23c arch/arm64/kernel/syscall.c:132
- do_el0_svc+0x48/0x58 arch/arm64/kernel/syscall.c:151
- el0_svc+0x54/0x168 arch/arm64/kernel/entry-common.c:744
- el0t_64_sync_handler+0x84/0x108 arch/arm64/kernel/entry-common.c:762
- el0t_64_sync+0x198/0x19c arch/arm64/kernel/entry.S:600
-irq event stamp: 66566
-hardirqs last  enabled at (66565): [<ffff8000804aab50>] __up_console_sem kernel/printk/printk.c:344 [inline]
-hardirqs last  enabled at (66565): [<ffff8000804aab50>] __console_unlock+0x70/0xc4 kernel/printk/printk.c:2869
-hardirqs last disabled at (66566): [<ffff80008b69c83c>] el1_dbg+0x24/0x80 arch/arm64/kernel/entry-common.c:488
-softirqs last  enabled at (64790): [<ffff800080129934>] local_bh_enable+0x10/0x34 include/linux/bottom_half.h:32
-softirqs last disabled at (64788): [<ffff800080129900>] local_bh_disable+0x10/0x34 include/linux/bottom_half.h:19
----[ end trace 0000000000000000 ]---
-Aborting journal on device loop0-75.
-(syz-executor202,6419,1):ocfs2_start_trans:357 ERROR: status = -30
-OCFS2: abort (device loop0): handle_t *ocfs2_start_trans(struct ocfs2_super *, int): Detected aborted journal
-On-disk corruption discovered. Please run fsck.ocfs2 once the filesystem is unmounted.
-OCFS2: File system is now read-only.
-(syz-executor202,6419,1):ocfs2_shutdown_local_alloc:419 ERROR: status = -30
-(syz-executor202,6419,1):ocfs2_journal_shutdown:1085 ERROR: status = -5
-ocfs2: Unmounting device (7,0) on (node local)
+Function: ext4_writepages
 
+Detailed Call Stack:
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+------------[ cut here begin]------------
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+kernel BUG at fs/ext4/inode.c:2732!
+invalid opcode: 0000 [#1] SMP KASAN NOPTI
+CPU: 2 PID: 9 Comm: kworker/u8:0 Not tainted 5.15.169 #1
+Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS
+1.16.3-debian-1.16.3-2 04/01/2014
+Workqueue: writeback wb_workfn (flush-7:5)
+RIP: 0010:ext4_writepages+0x2832/0x32f0 fs/ext4/inode.c:2732
+Code: d1 ff e9 cd e6 ff ff e8 6c c0 a2 ff 0f 0b 8b 84 24 bc 00 00 00
+4c 8b 74 24 38 31 db 89 44 24 18 e9 5b fa ff ff e8 4e c0 a2 ff <0f> 0b
+e8 47 c0 a2 ff 0f b6 ac 24 0b 01 00 00 89 5c 24 18 e9 2a ea
+RSP: 0018:ffff8881009773f0 EFLAGS: 00010293
+RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff819f9669
+RDX: ffff888100968000 RSI: ffffffff819faf02 RDI: 0000000000000007
+RBP: ffff888007c458a0 R08: 0000000000000000 R09: ffff888007c458a7
+R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
+R13: ffff888101d08000 R14: ffff888007c45af0 R15: 00000000000000bc
+FS: 0000000000000000(0000) GS:ffff88811af00000(0000) knlGS:0000000000000000
+CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 00007ffca25eaff8 CR3: 0000000021b40000 CR4: 0000000000350ee0
+9pnet: p9_fd_create_tcp (13248): problem connecting socket to 127.0.0.1
+Call Trace:
+<TASK>
+do_writepages+0x22a/0x770 mm/page-writeback.c:2386
+__writeback_single_inode+0x10a/0xae0 fs/fs-writeback.c:1647
+writeback_sb_inodes+0x566/0xfd0 fs/fs-writeback.c:1930
+wb_writeback+0x281/0x920 fs/fs-writeback.c:2104
+wb_do_writeback fs/fs-writeback.c:2247 [inline]
+wb_workfn+0x1a4/0xeb0 fs/fs-writeback.c:2288
+process_one_work+0xa3d/0x15a0 kernel/workqueue.c:2310
+worker_thread+0x62e/0x1330 kernel/workqueue.c:2457
+kthread+0x3c3/0x4a0 kernel/kthread.c:334
+ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:287
+</TASK>
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+------------[ cut here end]------------
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Root Cause:
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
+The crash is triggered by a kernel bug within the Ext4 filesystem's
+inode handling, specifically at line 2732 in fs/ext4/inode.c. The
+ext4_writepages function attempts to execute an invalid opcode
+(0x0000), which is indicative of corrupted or uninitialized code. This
+invalid opcode likely results from memory corruption or improper
+handling of inode structures during the writeback process. The
+KernelAddressSANitizer (KASAN) has detected a null pointer dereference
+in the range [0x40-0x47], suggesting that a critical pointer within
+the Ext4 inode or related structures was either not properly
+initialized or was corrupted before the write operation. The issue
+manifests during the writeback workqueue (wb_workfn), where the kernel
+attempts to flush inodes to disk. Additionally, the presence of a
+message related to 9pnet: p9_fd_create_tcp indicates potential
+interactions with network filesystem operations, which might
+exacerbate or contribute to the memory corruption. Consequently, when
+the Ext4 subsystem tries to process these corrupted inodes, it
+executes invalid instructions, leading to a kernel panic and system
+crash. This highlights a serious flaw in the Ext4 writeback mechanism,
+potentially caused by concurrent operations, faulty memory management,
+or bugs in related filesystem interactions.
 
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
+Thank you for your time and attention.
 
-If you want to undo deduplication, reply with:
-#syz undup
+Best regards
+
+Wall
 
