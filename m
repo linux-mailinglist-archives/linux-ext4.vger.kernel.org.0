@@ -1,130 +1,159 @@
-Return-Path: <linux-ext4+bounces-5885-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5886-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6CDB9A00BBB
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 16:56:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 83C66A01119
+	for <lists+linux-ext4@lfdr.de>; Sat,  4 Jan 2025 00:48:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA5791884CFA
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 15:56:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56D5B3A4764
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 23:48:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94F11FA8E9;
-	Fri,  3 Jan 2025 15:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 074231BEF73;
+	Fri,  3 Jan 2025 23:48:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="Dyf+W8Rg"
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ZjNIaXLw"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-vk1-f178.google.com (mail-vk1-f178.google.com [209.85.221.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACB081FA27C
-	for <linux-ext4@vger.kernel.org>; Fri,  3 Jan 2025 15:56:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D7976192D6A
+	for <linux-ext4@vger.kernel.org>; Fri,  3 Jan 2025 23:48:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735919791; cv=none; b=Bse4Zaqf6q4HjQnAXTfutWWkIZKiH/xaelBcW1xxARgFZX4qAyfbWCV8Oab5rn32x4h7jpogunGXZcc61oP/skpGcBHvcG3iPSQAT50ojXbQCPffcxHG67GKRLkivH+2RJFM8p50jCC5vJ1tmrzRFBXODqVUuyQDonv/Y98DN9o=
+	t=1735948089; cv=none; b=Oqmxd6J/v+IFloM8SiPxgMlXC8jDiKhXQ/zdIjHndYDcko8YC2fgG/ZQAoaI/DEIifhD8ObhKJvlDFDW5XNqiIFVXW+8MqZ8OirVwfUN8RU6d39D76xQ7x27WqY878cBhDSL+Mu5W57kW4rA3zSDs92EyzkaiESv6Dmw3EJET70=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735919791; c=relaxed/simple;
-	bh=r0+x8oxV4BM9H7bMcWQfG09+gWSKRSbs49MsCxervZ4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=TTRbfJTWoEjP6DMD5y9QCgH6ne9S85LkfnAyrcHBDi4kJ2wvo+idOMon3epCg3MuhWePMLWIIzS33JItdAcs9Isr8Ux9lBUtg0A+VeMKJNPMnmPXLKIMZqkmCtBQ5jMUbcd/7Q9I3Xx99qC9IT1kwAA+jJAbt+ODgiBVrjfPb/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=Dyf+W8Rg; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-117-149.bstnma.fios.verizon.net [173.48.117.149])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 503Fs6kn025324
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 3 Jan 2025 10:54:07 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1735919649; bh=gmFo+jASjnj0KYMIoZp5J7FWX3jrWJsWaGvpfid9J2w=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=Dyf+W8Rg2VrT2f58IzoUmTroQEQWBN6ifglHCog1KYcV6ulJf7IpIWU5e06ARk1T4
-	 NZGjF9rFs1JEOSoc8aB9ICKCRusoFbBXFZO3wLFDPoTjrnjMYdhKXTlzDIMs8Wv2Ak
-	 eAARWuduoMKFZmk6eX+cjVn1VPD2D7TSZc/6bh0vATR4B5QFKhXY5uBpePaNUS5xEJ
-	 bTfkywLXE2lndw8lS3vQBAaPoYh8ANLdVs5sxGSELJ+uuT2eaDrDa3p6bT/Zs30kLb
-	 6DZygeOVoM39zpCkeK0SSLOtXAeEc0CN4WttEMje2xaiJTq178TIfa7toYiOw1NDKr
-	 VS2mxpdKQj4MA==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 7A3E715C0113; Fri, 03 Jan 2025 10:54:06 -0500 (EST)
-Date: Fri, 3 Jan 2025 10:54:06 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: Jan Kara <jack@suse.cz>
-Cc: Baokun Li <libaokun1@huawei.com>,
-        "linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>,
-        Christian Brauner <brauner@kernel.org>, sunyongjian1@huawei.com,
-        Yang Erkun <yangerkun@huawei.com>, linux-fsdevel@vger.kernel.org,
-        linux-xfs@vger.kernel.org
-Subject: Re: [BUG REPORT] ext4: =?utf-8?B?4oCcZXJy?=
- =?utf-8?Q?ors=3Dremount-ro=E2=80=9D_has_become_=E2=80=9Cerrors=3Dshutdown?=
- =?utf-8?B?4oCdPw==?=
-Message-ID: <20250103155406.GC1284777@mit.edu>
-References: <22d652f6-cb3c-43f5-b2fe-0a4bb6516a04@huawei.com>
- <z52ea53du2k66du24ju4yetqm72e6pvtcbwkrjf4oomw2feffq@355vymdndrxn>
- <17108cad-efa8-46b4-a320-70d7b696f75b@huawei.com>
- <umpsdxhd2dz6kgdttpm27tigrb3ytvpf3y3v73ugavgh4b5cuj@dnacioqwq4qq>
- <20250103153517.GB1284777@mit.edu>
+	s=arc-20240116; t=1735948089; c=relaxed/simple;
+	bh=QUcQq2Xy2XP3yy21dwr7x0mNc3p1b004Pvm56helC1A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=eANlyrIcak5KtiC0NNNEkzW9dH8KymOUnkm9BhyR1tnhnqj9TBJ6lLmHJrbZ4iqyHgmGnIrjkxj8rI4vjCKkdDPbabOVyy+Q10OIxcO5s8hw0jH6T9+oUTQb9SjCMyyaElLTrLkO6n3B5mjY83X7TdKgVQ8+XwvONgVkiY68uLQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ZjNIaXLw; arc=none smtp.client-ip=209.85.221.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-vk1-f178.google.com with SMTP id 71dfb90a1353d-518957b0533so4107985e0c.1
+        for <linux-ext4@vger.kernel.org>; Fri, 03 Jan 2025 15:48:07 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1735948087; x=1736552887; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=tA1LFsYrRFbGWaUD2vlAFi1tXnlB/fIarDiiv3QVltg=;
+        b=ZjNIaXLwu6JtUQmMTYsf85HggfGrSHJERrVQvYp0pgT/mfGDm+eER3KnKAQVWHDY3N
+         GOJdJ1C6gxan3R6X7pwLYxSaQ691T4c4txGhHjGgdUc6d9HPQ6N3VIp6nfZdJ0Qbthuz
+         mrlbAxyS//n3PD8NKLpr+3gIKSitjN3qX1+0I=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1735948087; x=1736552887;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=tA1LFsYrRFbGWaUD2vlAFi1tXnlB/fIarDiiv3QVltg=;
+        b=MHcfpGILUmOXVY4jZjH6n3sIhJb2a+YsUvGMJ/vNNYb5jGmRd0hhQDvHuEuVnyFZKq
+         EJoxyFVHgRIMPYsfasMnvhqClSr4Ji0QzIdQlvOm5GxjP7oetDT4ctqT/J9QwIto7RKC
+         bXwOIALgRioeQY7JNf36XfpBMrCB2pJD1jN7OVFCYb0XlUzZVFMJbxBgj/1crRedy1NA
+         ikwh/rc8CFKHn8FEh0H7lY7rXHUOaKXoXy8gLsT9vxn7gNb8+A79qkyWrSxUoddSEaVT
+         +lIE0cfnx5ANuusInTAxlnc2HH9fKcj1lPGw0qZfANyf4LuLhdR+2ILRtSiKKRuWxBZm
+         MRlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWcxLyRY7QL40nbBc+1qsQpkfh+EtHLM2S+2iWP8gg8G379sHR2sDfYtvte9KktnKUlf3jtaix69+6H@vger.kernel.org
+X-Gm-Message-State: AOJu0YzqvNHHrwL+vwQNXstKdLRTJ4usuOOgr+dKRrJxm2liieQ+Do4w
+	tkg6G+M9HFeaSo2wSAiLRjYAjog4uuqkxpIe59gIjlkPpwqmI28WaxtVDMNZN4pTl5TlYD8cxnt
+	9mux+5m9EtobRFB1XJ9teq8qn7rxAn6GawNim
+X-Gm-Gg: ASbGnctENMM8u2LnxeZ24GO0vfW8JpuQLLCuDq3+K+r7MgyhQmLflCi3tIf4uywxeKc
+	rOM4fhbXe1Raz1qwgh8xfflLb/N6n5Ii44RMbDadRbiAUXClWiC/TaJp7S9kglFxZl8bkLaY=
+X-Google-Smtp-Source: AGHT+IHD0UTaqPazUvZQMUd0XD0x0A0esjy51GuiaxFlInvIFXdpwukStBlKvELQxN8qlRCp0mgTP0cpqX4rgX4nq1s=
+X-Received: by 2002:a05:6102:3f0f:b0:4b2:adfb:4f91 with SMTP id
+ ada2fe7eead31-4b2cc45b62bmr38922182137.21.1735948086816; Fri, 03 Jan 2025
+ 15:48:06 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250103153517.GB1284777@mit.edu>
+References: <20240830185921.2690798-1-gwendal@chromium.org>
+ <20240912091558.jbmwtnvfxrymjch2@quack3> <20241025025355.GR3204734@mit.edu>
+In-Reply-To: <20241025025355.GR3204734@mit.edu>
+From: Gwendal Grignou <gwendal@chromium.org>
+Date: Fri, 3 Jan 2025 15:47:55 -0800
+Message-ID: <CAPUE2usUprLQboD74x+_137fVmsYVmFULdqKSXG9wM79dXLE-Q@mail.gmail.com>
+Subject: Re: [PATCH] tune2fs: do not update quota when not needed
+To: "Theodore Ts'o" <tytso@mit.edu>
+Cc: Jan Kara <jack@suse.cz>, uekawa@chromium.org, linux-ext4@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Jan 03, 2025 at 10:35:17AM -0500, Theodore Ts'o wrote:
-> I don't see how setting the shutdown flag causes reads to fail.  That
-> was true in an early version of the ext4 patch which implemented
-> shutdown support, but one of the XFS developers (I don't remember if
-> it was Dave or Cristoph) objected because XFS did not cause the
-> read_pages function to fail.  Are you seeing this with an upstream
-> kernel, or with a patched kernel?  The upstream kernel does *not* have
-> the check in ext4_readpages() or ext4_read_folio() (post folio
-> conversion).
+On Thu, Oct 24, 2024 at 7:53=E2=80=AFPM Theodore Ts'o <tytso@mit.edu> wrote=
+:
+>
+> On Thu, Sep 12, 2024 at 11:15:58AM +0200, Jan Kara wrote:
+> > On Fri 30-08-24 11:59:21, Gwendal Grignou wrote:
+> > > Enabling quota is expensive: All inodes in the filesystem are scanned=
+.
+> > > Only do it when the requested quota configuration does not match the
+> > > existing configuration.
+> > >
+> > > Test:
+> > > Add a tiny patch to print out when core of function
+> > > handle_quota_options() is triggered.
+> > > Issue commands:
+> > > truncate -s 1G unused ; mkfs.ext4 unused
+> > >
+> > > | commands                                                | trigger |=
+ comments
+> > > +---------------------------------------------------------+---------+=
+---------
+> > > | tune2fs -Qusrquota,grpquota -Qprjquota -O quota unused  | Y       |
+> > >                   Quota not set at formatting.
+> > > | tune2fs -Qusrquota,grpquota -Qprjquota -O quota unused  | N       |
+> > >                   Already set just above
+> > > | tune2fs -Qusrquota,grpquota -Q^prjquota -O quota unused | Y       |
+> > >                   Disabling a quota option always force a deep look.
+>
+> I'm not sure why disabling a quota should always "force a deep look"?
+> What was your thinking behind this change?
+To execute the same code path, in particular, when we disable
+`prjquota`, ext2fs_clear_feature_project() is always called, even when
+the quota inodes were already removed.
 
-OK, that's weird.  Testing on 6.13-rc4, I don't see the problem simulating an ext4 error:
+Rereading the code, that seems unnecessary, so Jan's solution is indeed bet=
+ter.
 
-root@kvm-xfstests:~# mke2fs -t ext4 -Fq /dev/vdc
-/dev/vdc contains a ext4 file system
-	last mounted on /vdc on Fri Jan  3 10:38:21 2025
-root@kvm-xfstests:~# mount -t ext4 -o errors=continue /dev/vdc /vdc
-[   24.780982] EXT4-fs (vdc): mounted filesystem f8595206-fe57-486c-80dd-48b03d41ebdb r/w with ordered data mode. Quota mode: none.
-root@kvm-xfstests:~# cp /etc/motd /vdc/motd
-root@kvm-xfstests:~# echo testing > /sys/fs/ext4/vdc/trigger_fs_error 
-[   42.943141] EXT4-fs error (device vdc): trigger_test_error:129: comm bash: testing
-root@kvm-xfstests:~# cat /vdc/motd 
-
-The programs included with the Debian GNU/Linux system are free software;
-the exact distribution terms for each program are described in the
-individual files in /usr/share/doc/*/copyright.
-
-Debian GNU/Linux comes with ABSOLUTELY NO WARRANTY, to the extent
-permitted by applicable law.
-root@kvm-xfstests:~# 
+Sending a V2 shortly.
 
 
-HOWEVER, testing with shutdown ioctl, both ext4 and xfs are failing with EIO:
-
-root@kvm-xfstests:~# mount /dev/vdc /vdc
-[    7.969168] XFS (vdc): Mounting V5 Filesystem 7834ea96-eab0-46c5-9b18-c8f054fa9cf4
-[    7.978539] XFS (vdc): Ending clean mount
-root@kvm-xfstests:~# cp /etc/motd /vdc
-root@kvm-xfstests:~# /root/xfstests/src/godown -v /vdc
-Opening "/vdc"
-Calling XFS_IOC_GOINGDOWN
-[   29.354609] XFS (vdc): User initiated shutdown received.
-[   29.356123] XFS (vdc): Log I/O Error (0x6) detected at xfs_fs_goingdown+0x55/0xb0 (fs/xfs/xfs_fsops.c:452).  Shutting down filesystem.
-[   29.357092] XFS (vdc): Please unmount the filesystem and rectify the problem(s)
-root@kvm-xfstests:~# cat /vdc/motd
-cat: /vdc/motd: Input/output error
-root@kvm-xfstests:~#
-
-So I take back what I said earlier, but I am a bit confused why it
-worked after simulating an file system error using "echo testing >
-/sys/fs/ext4/vdc/trigger_fs_error".
-
-						- Ted
+Gwendal.
+>
+> > Why don't you do it like:
+> >
+> >       for (qtype =3D 0 ;qtype < MAXQUOTAS; qtype++) {
+> >               if (quota_enable[qtype] =3D=3D QOPT_ENABLE &&
+> >                    *quota_sb_inump(fs->super, qtype) =3D=3D 0) {
+> >                       /* Need to enable this quota type. */
+> >                       break;
+> >               }
+> >               if (quota_enable[qtype] =3D=3D QOPT_DISABLE &&
+> >                   *quota_sb_inump(fs->super, qtype)) {
+> >                       /* Need to disable this quota type. */
+> >                       break;
+> >               }
+> >       }
+> >       if (qtype =3D=3D MAXQUOTAS) {
+> >               /* Nothing to do. */
+> >               return 0;
+> >       }
+>
+> I like Jan's suggestion here, and this could easily just be done at
+> the beginning of handle_quota_options(), replacing what's currently
+> there:
+>
+>         for (qtype =3D 0 ; qtype < MAXQUOTAS; qtype++)
+>                 if (quota_enable[qtype] !=3D 0)
+>                         break;
+>         if (qtype =3D=3D MAXQUOTAS)
+>                 /* Nothing to do. */
+>                 return 0;
+>
+> It results in simpler and cleaner code, I think....
+>
+>                                           - Ted
 
