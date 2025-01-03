@@ -1,69 +1,69 @@
-Return-Path: <linux-ext4+bounces-5867-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5868-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EF594A00500
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 08:32:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16084A00528
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 08:37:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6B1A33A3E46
-	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 07:31:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2FC2F1884051
+	for <lists+linux-ext4@lfdr.de>; Fri,  3 Jan 2025 07:37:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F3381CB31D;
-	Fri,  3 Jan 2025 07:31:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCEA91C1F10;
+	Fri,  3 Jan 2025 07:37:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Vbh5XeDN"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TRL6Uti8"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CA2C157A67;
-	Fri,  3 Jan 2025 07:31:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 842951C36;
+	Fri,  3 Jan 2025 07:37:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1735889485; cv=none; b=kkUWPCpPB1M5xqpM796Lk5B4sPESJejN8ie4XT0w3SSgmr1l2YKnmzAXjhQ2GhRJ0lv1/WsqC3fB8THwQo6cwEPaIXt3SyqRjAsNXuzN32N0By6v8TDlUK7aoR18T12PKRrA+fQcq2+7YACqMfD1Yp0UN3wx2/CDK0XenuDbORk=
+	t=1735889868; cv=none; b=bpMs+zgQ9wtux6Vd0FRTVk6YQtN/bQrQ0xJcyA9MNly4wddrcAwPSbQPj9HR3Y46Jq7ZM82vZap1sSxrJzMFxAIxSme1c1P16gaZ5ZNQqYiTwlddtllrj1Dc/Gl4eMGfI1DfrDh7oJpaXGm1JRgT9ODhAdTCFXMaNNcxwRsMgKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1735889485; c=relaxed/simple;
-	bh=GOd2yJSG7EAgV7JqP/Lfz2ha42gAWZAaYr26OZeCYSM=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=jakWgglK0A/yYXpBTdLhnDAiM+CvODUTTJw68fl6Ctx+oqCAsP+bkeSTS3hwMbax4cKS6qvE1InTVoxWMfx7dMTx/z+uRIbLyG4j0JFWQvRk2h6Y20UmbRgeVfigaYra7RWA1mP5xkEW5wjFn8O9qeN3xGiY98L40iwmeA01WTM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Vbh5XeDN; arc=none smtp.client-ip=209.85.218.43
+	s=arc-20240116; t=1735889868; c=relaxed/simple;
+	bh=NDokplUOLSNRDCWRR0GNOYLE0BfDAYwk0z5ilhtQ+pA=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=dnNDOEtUiQUG+82wBqGZyTwnY66aTTJGwzLwRHCZUZcFnO1hWvct6SRIVktAxbRz0AovulyawSUp9zyV9SIbQNUqxmn6lhL9ZBzv378lpjsvOO7hKxKQByz7ogBcLx5QRtHMzg2cRFKegxP0/acDSSwy5AIPt8tKJ+UImtiBrN0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TRL6Uti8; arc=none smtp.client-ip=209.85.218.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-aaeef97ff02so1324590566b.1;
-        Thu, 02 Jan 2025 23:31:21 -0800 (PST)
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-aa692211331so2277811266b.1;
+        Thu, 02 Jan 2025 23:37:46 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1735889480; x=1736494280; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1735889865; x=1736494665; darn=vger.kernel.org;
         h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=GOd2yJSG7EAgV7JqP/Lfz2ha42gAWZAaYr26OZeCYSM=;
-        b=Vbh5XeDN6dlvBeyQpJZsIsc6N2Zd8x2VlJk5pYRMnuccYYdhXQpW5nHP3LCokDkLpB
-         GPzdxfBDf19ZY5zmGq//NWYp52EiMrrXXXZ/J+lYmlb3NZPuAIn1/VRA36Bxhb2t8HsL
-         pjf342h/+BZpBf9l1CLrLG4O0zAhWXeS+rGALwFK+n3w57/tvROdQ7NRm5r6nerUtURb
-         DNznAZsXms/OuUjut9YbNLNTFCgztC5GrYg+3TnrDxdO2y2OWlKOB/QGISoGjNfrKoyp
-         +bPL3U+poQHnsbf6KkxR6OIbnFP57iF1eWHLngqCCmHphs0aFiX6Inrn8wa0NOE9vsac
-         2n5g==
+        bh=NDokplUOLSNRDCWRR0GNOYLE0BfDAYwk0z5ilhtQ+pA=;
+        b=TRL6Uti8NU/s2+gOdTTrGRbDTP2evw35fIXFc0iHwc067lqqAyE8sAcNcL4CToSdCo
+         mVnacLXEV8QHslPYPuGMXbvCiBxbwwzGlf9xZJsiwfc9Xk2OJ/hjHTt2/b45oGFP0JQu
+         d0LE8TswdlQakTAoDqHmK8XLle1Ig9LhLeZwfUDIw/PqsaBF+aM0j0Pz3U0M3+fVj4rA
+         EeaYbrHpok/3uJXVZKaQvEcJjTVxGEo6hooQXx3E3HxWCS7ZqznNuh32qPErbWKIlWHJ
+         K0GYjNS70DdyZoWvwMFyVc5LzQEONq1AwBHPUMS/K6tdo9HFAr+h1CfSO6oRKb2Naf8a
+         NuJQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1735889480; x=1736494280;
+        d=1e100.net; s=20230601; t=1735889865; x=1736494665;
         h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=GOd2yJSG7EAgV7JqP/Lfz2ha42gAWZAaYr26OZeCYSM=;
-        b=V04064H+94iaDVXkfhgJzKLWdrTDNec3g+8U54JvwPeJfgkeNQwQz4/mxlHCHO08Fz
-         D9fmn+7B+8nVk/3Jsn6IxCU+uIQg84+aSgN4t4s7dIR8jXNCF8wamu8GyQR5oRI+bzfE
-         tRpqV4xpIuM3ot8xi9tFZAemjIu2/8dJiIN8k+1jXL2WeTV5i3tRLwbpEZSENH3/hhpQ
-         i7CbD4KnbDoIfC+95b2lGSGTWcHnqkqBxWasQZiEIIq7VzFzd88ppVB6PWk6ruZco43J
-         wRkaGTplplVrSqwkM+TtIn93mfBzw0JLe1OKS07xkWmGNo3HiEu0katTgrkASuI/yRqr
-         Exlw==
-X-Forwarded-Encrypted: i=1; AJvYcCWHjrgkk4W4uWbmLMQIs7mar906Ankkh7P4o43w4O3tDUJNC5UXmncERYn+h2javPqkom41eu+ULgaFfMM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yz/OvthTuaIhpiwNKiErPz0c1bBWTUCkxEiqcws/s+9HsVq9M3y
-	7WLa7Hsun6E7yVh6F6NVqQ2dJ2AZCPB6ZjSJ9/Iy1i4ePeYWH04K/u2HPNIOyGh+SodFk1r9HlV
-	A4DIetRm0Od/JdCTxOryRcdn1Wa9XhCDu
-X-Gm-Gg: ASbGncsMusn7IcNBl1UmOR/tdo6ToXVlsXQrjE8Xw6fVP/vSLKshtg+MR2cM2WgN7Ac
-	rNcVQWacOGCOrgnrPOV6+DciiWLEQnkBJWIIDBuo=
-X-Google-Smtp-Source: AGHT+IHp+eorGXIO0qzqgnPX7zaA92A95C3fj/UsCgg1/FPWZMowPimsEAOGKrX4qg8MR0G7ky5b9ZozqBkskgTBaPs=
-X-Received: by 2002:a17:907:6ea7:b0:aa6:8a1b:8b84 with SMTP id
- a640c23a62f3a-aac345f5b92mr4990312666b.57.1735889479611; Thu, 02 Jan 2025
- 23:31:19 -0800 (PST)
+        bh=NDokplUOLSNRDCWRR0GNOYLE0BfDAYwk0z5ilhtQ+pA=;
+        b=chOT7Ax5aSdQlrHQTrkCD/nE071N5Nn++pz2ZmcyqqKY/x2FmDWpDGvHSaP6rd4lMB
+         9roCxoCER7BKJIUZtb/FuVZKHiqrFGBl8dxhrDz9Ope3glLyWRk9/bmAERYhwk2rJKy4
+         GPZ/bxN6dxCHjdTLy6mXK/zlxobAYbINDL2ulX2RHOHW2mhVVViljUIJhhNKppR+wmpI
+         ejFUPbZeTCM9U6AW5o8Qwl70m03gUEvqR3N53XLBO+vp4TjVUbincv5TqNTH2tr91ynf
+         U4d+cSuEOfWgU8sEh0QnBKFL6AOpPM/OFYH3YSMySJoDz0VXfkCb/PMpJjDuOHWFv0yd
+         oVLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWaaZ1QNDEH2j14o1Sk74ReZQFTmrJjvd/gja0N3YYyd9sWaI0yJ5km03CybTrO5e04HIH4l9p2En10Wb8=@vger.kernel.org
+X-Gm-Message-State: AOJu0YyyizNabsPwi67pvuVjHasjrd18auikbP+Kzj5YT88CgR2QUqBH
+	jOcTG3OrOq3Zzr43neC52DsVD7Ufe9EZDhp2r4o5As50RKShb316awwpAAJEnhbFiPkDP7Txxg/
+	/IHMLOZqz3s/tuneUpUvq+UDq53E=
+X-Gm-Gg: ASbGncuPMSwrik74Hb9AU191QXRHdsojo7dU5nAQGUOd0qRSYKidCo0bedNedcp8cCP
+	BLzx8UjxD+tE3bFP/OfxVkCmFEP36WUmZNakKfrU=
+X-Google-Smtp-Source: AGHT+IFdt37p9Ama9/792KYFUhh8w+0Nh5mpIgJupROAiP+XRDXj0AUrbUhkGGD598EIlC6asAatEtTDvloj+zmJZms=
+X-Received: by 2002:a17:907:704:b0:aa6:489e:5848 with SMTP id
+ a640c23a62f3a-aac34695112mr4093534366b.25.1735889864604; Thu, 02 Jan 2025
+ 23:37:44 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -71,9 +71,9 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 From: cheung wall <zzqq0103.hey@gmail.com>
-Date: Fri, 3 Jan 2025 15:31:01 +0800
-Message-ID: <CAKHoSAsWa2fNFUTSy=vmFFWeAMiYgdtTuZX5OP2xtVu5WQhd3Q@mail.gmail.com>
-Subject: "kernel BUG corrupted in ext4_writepages" in Linux kernel version 6.13.0-rc2
+Date: Fri, 3 Jan 2025 15:37:31 +0800
+Message-ID: <CAKHoSAviexD6O+QuaNya4xsqaW6URLFWee7vgTGOiJO8x1mkJw@mail.gmail.com>
+Subject: "possible deadlock in corrupted" in Linux kernel version 5.15.169
 To: "Theodore Ts'o" <tytso@mit.edu>, Andreas Dilger <adilger.kernel@dilger.ca>
 Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
@@ -81,79 +81,117 @@ Content-Type: text/plain; charset="UTF-8"
 Hello,
 
 I am writing to report a potential vulnerability identified in the
-Linux Kernel version 6.13.0-rc2. This issue was discovered using our
+Linux Kernel version 5.15.169. This issue was discovered using our
 custom vulnerability discovery tool.
-
-HEAD commit: fac04efc5c793dccbd07e2d59af9f90b7fc0dca4 (tag: v6.13-rc2)
 
 Affected File: fs/ext4/inode.c
 
 File: fs/ext4/inode.c
 
-Function: ext4_writepages
+Function: ext4_map_blocks
 
 Detailed Call Stack:
 
 ------------[ cut here begin]------------
 
-kernel BUG at fs/ext4/inode.c:2732!
-invalid opcode: 0000 [#1] SMP KASAN NOPTI
-CPU: 2 PID: 9 Comm: kworker/u8:0 Not tainted 5.15.169 #1
-Hardware name: QEMU Ubuntu 24.04 PC (i440FX + PIIX, 1996), BIOS
-1.16.3-debian-1.16.3-2 04/01/2014
-Workqueue: writeback wb_workfn (flush-7:5)
-RIP: 0010:ext4_writepages+0x2832/0x32f0 fs/ext4/inode.c:2732
-Code: d1 ff e9 cd e6 ff ff e8 6c c0 a2 ff 0f 0b 8b 84 24 bc 00 00 00
-4c 8b 74 24 38 31 db 89 44 24 18 e9 5b fa ff ff e8 4e c0 a2 ff <0f> 0b
-e8 47 c0 a2 ff 0f b6 ac 24 0b 01 00 00 89 5c 24 18 e9 2a ea
-RSP: 0018:ffff8881009773f0 EFLAGS: 00010293
-RAX: 0000000000000000 RBX: 0000000000000001 RCX: ffffffff819f9669
-RDX: ffff888100968000 RSI: ffffffff819faf02 RDI: 0000000000000007
-RBP: ffff888007c458a0 R08: 0000000000000000 R09: ffff888007c458a7
-R10: 0000000000000000 R11: 0000000000000001 R12: 0000000000000001
-R13: ffff888101d08000 R14: ffff888007c45af0 R15: 00000000000000bc
-FS: 0000000000000000(0000) GS:ffff88811af00000(0000) knlGS:0000000000000000
-CS: 0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007ffca25eaff8 CR3: 0000000021b40000 CR4: 0000000000350ee0
-9pnet: p9_fd_create_tcp (13248): problem connecting socket to 127.0.0.1
+WARNING: possible circular locking dependency detected
+------------------------------------------------------
+the task is trying to acquire lock:
+ffff888018a76428 (&dquot->dq_lock){+.+.}-{3:3}, at:
+dquot_commit+0x4d/0x4c0 fs/quota/dquot.c:507
+
+but other task is already holding lock:
+ffff88800833a9b8 (&ei->i_data_sem/2){++++}-{3:3}, at:
+ext4_map_blocks+0x686/0x1870 fs/ext4/inode.c:665
+
+which lock already depends on the new lock.
+
 Call Trace:
 <TASK>
-do_writepages+0x22a/0x770 mm/page-writeback.c:2386
-__writeback_single_inode+0x10a/0xae0 fs/fs-writeback.c:1647
-writeback_sb_inodes+0x566/0xfd0 fs/fs-writeback.c:1930
-wb_writeback+0x281/0x920 fs/fs-writeback.c:2104
-wb_do_writeback fs/fs-writeback.c:2247 [inline]
-wb_workfn+0x1a4/0xeb0 fs/fs-writeback.c:2288
-process_one_work+0xa3d/0x15a0 kernel/workqueue.c:2310
-worker_thread+0x62e/0x1330 kernel/workqueue.c:2457
-kthread+0x3c3/0x4a0 kernel/kthread.c:334
-ret_from_fork+0x22/0x30 arch/x86/entry/entry_64.S:287
-</TASK>
+__dump_stack lib/dump_stack.c:88 [inline]
+dump_stack_lvl+0x8b/0xb3 lib/dump_stack.c:106
+check_noncircular+0x263/0x2e0 kernel/locking/lockdep.c:2133
+check_prev_add kernel/locking/lockdep.c:3053 [inline]
+check_prevs_add kernel/locking/lockdep.c:3172 [inline]
+validate_chain kernel/locking/lockdep.c:3788 [inline]
+__lock_acquire+0x2b72/0x6070 kernel/locking/lockdep.c:5012
+lock_acquire kernel/locking/lockdep.c:5623 [inline]
+lock_acquire+0x194/0x470 kernel/locking/lockdep.c:5588
+__mutex_lock_common kernel/locking/mutex.c:596 [inline]
+__mutex_lock+0x135/0x12c0 kernel/locking/mutex.c:729
+dquot_commit+0x4d/0x4c0 fs/quota/dquot.c:507
+ext4_write_dquot+0x254/0x3f0 fs/ext4/super.c:6173
+ext4_mark_dquot_dirty fs/ext4/super.c:6233 [inline]
+ext4_mark_dquot_dirty+0x111/0x1b0 fs/ext4/super.c:6227
+mark_dquot_dirty fs/quota/dquot.c:372 [inline]
+mark_all_dquot_dirty fs/quota/dquot.c:412 [inline]
+__dquot_free_space+0x829/0xbd0 fs/quota/dquot.c:1940
+dquot_free_space_nodirty include/linux/quotaops.h:376 [inline]
+dquot_free_space include/linux/quotaops.h:381 [inline]
+dquot_free_block include/linux/quotaops.h:392 [inline]
+ext4_mb_clear_bb fs/ext4/mballoc.c:6156 [inline]
+ext4_free_blocks+0x1cc1/0x2200 fs/ext4/mballoc.c:6286
+ext4_remove_blocks fs/ext4/extents.c:2523 [inline]
+ext4_ext_rm_leaf fs/ext4/extents.c:2689 [inline]
+ext4_ext_remove_space+0x1e96/0x3ce0 fs/ext4/extents.c:2937
+ext4_ext_truncate+0x1ea/0x250 fs/ext4/extents.c:4471
+ext4_truncate+0xc37/0x1160 fs/ext4/inode.c:4249
+ext4_evict_inode+0xac2/0x1a50 fs/ext4/inode.c:289
+evict+0x32c/0x820 fs/inode.c:622
+iput_final fs/inode.c:1744 [inline]
+iput.part.0+0x4b6/0x6d0 fs/inode.c:1770
+iput+0x58/0x70 fs/inode.c:1760
+ext4_orphan_cleanup+0x565/0xf80 fs/ext4/orphan.c:474
+ext4_fill_super+0x8bb5/0xc920 fs/ext4/super.c:4975
+mount_bdev+0x336/0x400 fs/super.c:1400
+legacy_get_tree+0x106/0x220 fs/fs_context.c:611
+vfs_get_tree+0x8e/0x300 fs/super.c:1530
+do_new_mount fs/namespace.c:3012 [inline]
+path_mount+0x138a/0x1ff0 fs/namespace.c:3342
+do_mount fs/namespace.c:3355 [inline]
+__do_sys_mount fs/namespace.c:3563 [inline]
+__se_sys_mount fs/namespace.c:3540 [inline]
+__x64_sys_mount+0x282/0x300 fs/namespace.c:3540
+do_syscall_x64 arch/x86/entry/common.c:50 [inline]
+do_syscall_64+0x33/0x80 arch/x86/entry/common.c:80
+entry_SYSCALL_64_after_hwframe+0x6c/0xd6
+RIP: 0033:0x7fe399de916a
+Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f
+1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d
+01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007fe3989b4e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
+RAX: ffffffffffffffda RBX: 00007fe3989b4ef0 RCX: 00007fe399de916a
+RDX: 0000000020000040 RSI: 0000000020000500 RDI: 00007fe3989b4eb0
+RBP: 0000000020000040 R08: 00007fe3989b4ef0 R09: 0000000000004500
+R10: 0000000000004500 R11: 0000000000000246 R12: 0000000020000500
+R13: 00007fe3989b4eb0 R14: 00000000000004b4 R15: 000000000000002c
 
 ------------[ cut here end]------------
 
 Root Cause:
 
-The crash is triggered by a kernel bug within the Ext4 filesystem's
-inode handling, specifically at line 2732 in fs/ext4/inode.c. The
-ext4_writepages function attempts to execute an invalid opcode
-(0x0000), which is indicative of corrupted or uninitialized code. This
-invalid opcode likely results from memory corruption or improper
-handling of inode structures during the writeback process. The
-KernelAddressSANitizer (KASAN) has detected a null pointer dereference
-in the range [0x40-0x47], suggesting that a critical pointer within
-the Ext4 inode or related structures was either not properly
-initialized or was corrupted before the write operation. The issue
-manifests during the writeback workqueue (wb_workfn), where the kernel
-attempts to flush inodes to disk. Additionally, the presence of a
-message related to 9pnet: p9_fd_create_tcp indicates potential
-interactions with network filesystem operations, which might
-exacerbate or contribute to the memory corruption. Consequently, when
-the Ext4 subsystem tries to process these corrupted inodes, it
-executes invalid instructions, leading to a kernel panic and system
-crash. This highlights a serious flaw in the Ext4 writeback mechanism,
-potentially caused by concurrent operations, faulty memory management,
-or bugs in related filesystem interactions.
+The crash is caused by a potential circular locking dependency
+detected within the Linux kernel's Ext4 filesystem during quota
+management operations. Specifically, the task is attempting to acquire
+the dq_lock (&dquot->dq_lock) in the dquot_commit function
+(fs/quota/dquot.c:507) while another task already holds the i_data_sem
+lock (&ei->i_data_sem) in the ext4_map_blocks function
+(fs/ext4/inode.c:665). This situation creates a circular dependency
+where each lock is waiting for the other to be released, which can
+lead to a deadlock. The call trace reveals that the issue arises
+during the writeback process (wb_workfn) when the filesystem is trying
+to commit quota information (dquot_commit) while simultaneously
+handling inode data (ext4_map_blocks). The Kernel Lock Validator
+(lockdep) has flagged this as a possible circular dependency because
+the existing lock (i_data_sem) already depends on the new lock
+(dq_lock), violating the expected lock acquisition order. This
+improper lock ordering within the Ext4 quota handling and inode
+management paths indicates a flaw in the synchronization mechanisms,
+potentially caused by concurrent operations or incorrect lock
+hierarchy implementation. As a result, the kernel emits a warning to
+prevent a deadlock scenario, highlighting the need for revising the
+locking strategy to ensure that locks are acquired in a consistent and
+non-circular manner.
 
 Thank you for your time and attention.
 
