@@ -1,100 +1,63 @@
-Return-Path: <linux-ext4+bounces-5894-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5895-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id CE71BA022B4
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jan 2025 11:10:31 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 477D8A02447
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jan 2025 12:28:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 29CCC1884799
-	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jan 2025 10:10:34 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE0E61885625
+	for <lists+linux-ext4@lfdr.de>; Mon,  6 Jan 2025 11:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9D711D63D7;
-	Mon,  6 Jan 2025 10:10:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BDFF1DC04C;
+	Mon,  6 Jan 2025 11:27:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yQGJO2Ij";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Eu+0U08a";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yQGJO2Ij";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Eu+0U08a"
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="C5WVTdcZ"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B3A812F59C
-	for <linux-ext4@vger.kernel.org>; Mon,  6 Jan 2025 10:10:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99F861D7E47;
+	Mon,  6 Jan 2025 11:27:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736158226; cv=none; b=oKFlkpfKRZ7b7CJvsBVOyovnqdf780m70tuHyxUaAlTZNfCO0V4hJ6H9gnPKq6R7aVH/mNUm4KvAq88GSVD+pfVQbkphdwiSAbtvrsWaQmxfV4DLDWyGg/HY4jXJU6ZC7TWRbxEXH+rV08EgEpJTY6PB2Yqhqw4zhDAqvjdcppo=
+	t=1736162874; cv=none; b=oRM3U2L7/pl4vxJo9nxYgLTL90eguj/OnNWb8kT3qiIllpS2AZN7RejvnTEtpsFIxxEdzwRsJdbSLVMMR0NFfPbvyXqzmTDHKnpE/4OGou0TRVvOsrezh/3qO2yW1TsfeTuHTJMSEhz39aXjrKogQ/FD1EGD3FQQznPlS75/Ruw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736158226; c=relaxed/simple;
-	bh=vpIKrHMaxSmOMUH0wMbgr028E+Xu8G/MlzHo6zbsBo4=;
+	s=arc-20240116; t=1736162874; c=relaxed/simple;
+	bh=l04Sn1dfSlQGCURV9x7QruuY//X+d0MieVxpN6+yUE8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ti9jLq/Ik+ib7MWCioOvdvXufiu2FcAV90EedntcKcqqbpeghNQpVu2pAwtETYQJizqb7YQOKEmC/eHiYkrjrdHDrDElTwP9lzDFP0dDaaskzTjRpyZ+5lvHqtp30IMPHzD89Yq5ffqoD39hUVu/v0B9OJV2YVmUpBkyheAsKGg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yQGJO2Ij; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Eu+0U08a; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yQGJO2Ij; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Eu+0U08a; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (unknown [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id A6D0321108;
-	Mon,  6 Jan 2025 10:10:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736158222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PV3Xb69/qYL+1g3Ze9qA41pPnevsepWG6i2hsJNTZm0=;
-	b=yQGJO2IjbGBcB3FPYBnMhVIkTxRycig0vA5WGFnx1M1q3Lj/f3o+OYp/WkjanTg3Iz5E8j
-	dDUV8sq2TySw4uUMT+SrHOBi/+4hVKtbSADZYLp9aOuVFngCLw3F08Hw4O+3mhG++oVhbk
-	ZelAaTvVz2KNGh0kcUvQlzOUkGcbkRk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736158222;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PV3Xb69/qYL+1g3Ze9qA41pPnevsepWG6i2hsJNTZm0=;
-	b=Eu+0U08aqg0jNv3wgzHIyd76f9ZLq034qTOhSiceBIaNbNhuL5lxcXt+udQFwsGyWLwfY6
-	hKleFd9kKTV0stAQ==
-Authentication-Results: smtp-out1.suse.de;
-	none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736158222; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PV3Xb69/qYL+1g3Ze9qA41pPnevsepWG6i2hsJNTZm0=;
-	b=yQGJO2IjbGBcB3FPYBnMhVIkTxRycig0vA5WGFnx1M1q3Lj/f3o+OYp/WkjanTg3Iz5E8j
-	dDUV8sq2TySw4uUMT+SrHOBi/+4hVKtbSADZYLp9aOuVFngCLw3F08Hw4O+3mhG++oVhbk
-	ZelAaTvVz2KNGh0kcUvQlzOUkGcbkRk=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736158222;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=PV3Xb69/qYL+1g3Ze9qA41pPnevsepWG6i2hsJNTZm0=;
-	b=Eu+0U08aqg0jNv3wgzHIyd76f9ZLq034qTOhSiceBIaNbNhuL5lxcXt+udQFwsGyWLwfY6
-	hKleFd9kKTV0stAQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 99CFF137DA;
-	Mon,  6 Jan 2025 10:10:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id KnWEJQ6se2dUegAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 06 Jan 2025 10:10:22 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 4A857A089C; Mon,  6 Jan 2025 11:10:18 +0100 (CET)
-Date: Mon, 6 Jan 2025 11:10:18 +0100
-From: Jan Kara <jack@suse.cz>
-To: Gwendal Grignou <gwendal@chromium.org>
-Cc: jack@suse.cz, linux-ext4@vger.kernel.org, tytso@mit.edu, 
-	uekawa@chromium.org
-Subject: Re: [PATCH v2] tune2fs: do not update quota when not needed
-Message-ID: <2hdmxzu3ckem3pbnf7lp7rr3twme2coqvwbnymwmmmkodzjnpf@o2q2ermvex5f>
-References: <20240912091558.jbmwtnvfxrymjch2@quack3>
- <20250103235042.4029197-1-gwendal@chromium.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=dol24l/ns9A7IjzG1OrduF9Jkr2c7ZThbKS63CZdxYX7Ym/kZvFtC7oudSIbhvX5w0AfRzAZj5O6D/r6BZ3kHQ7zZziOWY9vYJoXbPqD+VdE4YU515CrjHgj/fH5qGV4hq3z9zIjWHUA/KAnm9vZa7qzUknM3cC7+0kzCw9XbqM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=C5WVTdcZ; arc=none smtp.client-ip=198.137.202.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
+	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=vDW6gnYA7VPDj+2tAOrKHd0KqqAcw1BLmo2EgHZGMDA=; b=C5WVTdcZe0co06gSEJ9iaPDcmT
+	384Kc53WCiaItAxPvAZ7vtbEtJsr/n1nopl/+LlEcg0H+YytRWHRIlk/NqZYyQYBue2zMlMSBs1kX
+	qIx4TEK82js1TlN0QGav/c76C0y0XIqy5jBet2FOiXFyxYyTPQasPOqLs5lkKcPhlt/1z3Wszh+Lg
+	CRPjKic0U4JNk8C1JE/wyTAdIhf416qeBm44wr9Zute4HANUIiMFpkfFS7YrHltpC8ftc2KeR/Mn2
+	FxuLyUyz7fA8L3zjRkURrpAdmYYqXh7pufI8OAu+BZhMmtJYSGM4NkFs4sui2PH3AVhvDE18+7GeT
+	4no0BvbQ==;
+Received: from hch by bombadil.infradead.org with local (Exim 4.98 #2 (Red Hat Linux))
+	id 1tUlGy-000000012gx-1B3f;
+	Mon, 06 Jan 2025 11:27:52 +0000
+Date: Mon, 6 Jan 2025 03:27:52 -0800
+From: Christoph Hellwig <hch@infradead.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+	linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk,
+	brauner@kernel.org, jack@suse.cz, tytso@mit.edu, djwong@kernel.org,
+	adilger.kernel@dilger.ca, yi.zhang@huawei.com,
+	chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com,
+	Sai Chaitanya Mitta <mittachaitu@gmail.com>,
+	linux-xfs@vger.kernel.org
+Subject: Re: [RFC PATCH 1/2] fs: introduce FALLOC_FL_FORCE_ZERO to fallocate
+Message-ID: <Z3u-OCX86j-q7JXo@infradead.org>
+References: <20241228014522.2395187-1-yi.zhang@huaweicloud.com>
+ <20241228014522.2395187-2-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -103,120 +66,34 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250103235042.4029197-1-gwendal@chromium.org>
-X-Spam-Level: 
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	BAYES_HAM(-3.00)[99.99%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	ARC_NA(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	MISSING_XM_UA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	RCVD_COUNT_THREE(0.00)[3];
-	FROM_HAS_DN(0.00)[];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FROM_EQ_ENVFROM(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	RCVD_TLS_LAST(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email,suse.cz:email]
-X-Spam-Score: -3.80
-X-Spam-Flag: NO
+In-Reply-To: <20241228014522.2395187-2-yi.zhang@huaweicloud.com>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
 
-On Fri 03-01-25 15:50:42, Gwendal Grignou wrote:
-> Enabling quota is expensive: All inodes in the filesystem are scanned.
-> Only do it when the requested quota configuration does not match the
-> existing configuration.
-> 
-> Test:
-> Add a tiny patch to print out when core of function
-> handle_quota_options() is triggered.
-> Issue commands:
-> truncate -s 1G unused ; mkfs.ext4 unused
-> 
-> | commands                                                | trigger |
-> comments
-> +---------------------------------------------------------+---------+---------
-> | tune2fs -Qusrquota,grpquota -Qprjquota -O quota unused  | Y       |
->                   Quota not set at formatting.
-> | tune2fs -Qusrquota,grpquota -Qprjquota -O quota unused  | N       |
->                   Already set just above
-> | tune2fs -Qusrquota,grpquota -Q^prjquota -O quota unused | Y       |
->                   Disabling a quota
-> | tune2fs -Qusrquota,grpquota -Q^prjquota -O quota unused | N       |
->                   No change from previous line.
-> | tune2fs -Qusrquota,grpquota -O quota unused             | N       |
->                   No change from previous line.
-> | tune2fs -Qusrquota,^grpquota -O quota unused            | Y       |
->                   Disabling a quota
-> | tune2fs -Qusrquota -O quota unused                      | N       |
->                   No change from previous line.
-> | tune2fs -O ^quota unused                                | Y       |
->                   Remove quota
-> | tune2fs -O quota unused                                 | Y       |
->                   Re-enable quota, default values
->                   (-Qusrquota,grpquota) used.
-> | tune2fs -O quota -Qusrquota unused                      | N       |
->                   Already set just above
-> 
-> Signed-off-by: Gwendal Grignou <gwendal@chromium.org>
+There's a feature request for something similar on the xfs list, so
+I guess people are asking for it.
 
-Looks good to me. Feel free to add:
+That being said this really should not be a modifier but a separate
+operation, as the logic is very different from FALLOC_FL_ZERO_RANGE,
+similar to how plain prealloc, hole punch and zero range are different
+operations despite all of them resulting in reads of zeroes from the
+range.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+That will also make it more clear that for files or file systems that
+require out place writes this operation should fail instead of doing
+pointless multiple writes.
 
-								Honza
+Also please write a man page update clearly specifying the semantics,
+especially if this should work or not if there is no write zeroes
+offload in the hardware, or if that offload actually writes physical
+zeroes to the media or not.
 
-> 
-> ---
-> Changes in v2:
-> Logic has been simplified, based on jack@suse.cz feedback.
-> 
->  misc/tune2fs.c | 18 +++++++++++++++++-
->  1 file changed, 17 insertions(+), 1 deletion(-)
-> 
-> diff --git a/misc/tune2fs.c b/misc/tune2fs.c
-> index 2548a766..3db57632 100644
-> --- a/misc/tune2fs.c
-> +++ b/misc/tune2fs.c
-> @@ -1799,11 +1799,27 @@ static int handle_quota_options(ext2_filsys fs)
->  		return 1;
->  	}
->  
-> +	for (qtype = 0; qtype < MAXQUOTAS; qtype++) {
-> +		if (quota_enable[qtype] == QOPT_ENABLE &&
-> +		    *quota_sb_inump(fs->super, qtype) == 0) {
-> +			/* Some work needed to match the configuration. */
-> +			break;
-> +		}
-> +		if (quota_enable[qtype] == QOPT_DISABLE &&
-> +		    *quota_sb_inump(fs->super, qtype)) {
-> +			/* Some work needed to match the configuration. */
-> +			break;
-> +		}
-> +	}
-> +	if (qtype == MAXQUOTAS) {
-> +		/* Nothing to do. */
-> +		return 0;
-> +	}
-> +
->  	for (qtype = 0; qtype < MAXQUOTAS; qtype++) {
->  		if (quota_enable[qtype] == QOPT_ENABLE)
->  			qtype_bits |= 1 << qtype;
->  	}
-> -
->  	retval = quota_init_context(&qctx, fs, qtype_bits);
->  	if (retval) {
->  		com_err(program_name, retval,
-> -- 
-> 2.47.1.613.gc27f4b7a9f-goog
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Btw, someone really should clean up the ext4 fallocate code to use
+helper adnd do the
+
+	switch (mode & FALLOC_FL_MODE_MASK) {
+	}
+
+and then use helpers for each mode whih will make these things a lot
+more obvious.
+
 
