@@ -1,319 +1,157 @@
-Return-Path: <linux-ext4+bounces-5955-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5956-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9312CA03D15
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 11:56:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1EDEA03D92
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 12:25:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0083B1886481
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 10:56:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F3BD116549C
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 11:25:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBDF1DE4F1;
-	Tue,  7 Jan 2025 10:55:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1IODkVCM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zw9s8kQc";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="1IODkVCM";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="zw9s8kQc"
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B7611F2361;
+	Tue,  7 Jan 2025 11:23:04 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8EE1DACA7
-	for <linux-ext4@vger.kernel.org>; Tue,  7 Jan 2025 10:55:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 301121EC013;
+	Tue,  7 Jan 2025 11:22:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736247310; cv=none; b=efzmHDwf5RG+y1+PVyR6SRq5nM4PCfijkUWmKCd6ZumGF7YqT6OKPpsC4B05NjenCItw974OQD9ynFdIefKtmGvnHCRwcaok71hMdBhmsvrfrSeugQ+2N3dSWQ0GLvPDNJA5K3i6eV5TfcfPZgjVefaT+S5NK5owrApxWO9a66M=
+	t=1736248983; cv=none; b=OkJiKPDi2ISn2+549fR5F4gP6fFpuqzrFM1xC19JsBf64yrZFgSx+YTRsPpAqcjQKU7JpV5hqjeFAPJBq/mziAJcRU6f/LAqtF3/TVUUHvncfFnRVXFnqnjq9E37J3A8J+VYsuc3EX1LbrHUyf/ifVK/uvXZOvy8kyfikTH42hM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736247310; c=relaxed/simple;
-	bh=x4O75UOEa+b4wZiIMsrPHEy2SwbmNC+1F9clEFbaRQ0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NAdFNZlRFDqTNOyA+XEARxQxTHlOrf+Xn/RG1Bir1tsa/BBtHWFdgI5MXvWSt3gg1gGtnZ8e1RZSG16jx2tkvGeAffzyFM4UHFs5WSagexEcsYBKWn3bgFeghOeDxG+agpLb4C84jZn/qS8HK8zVhJ6e6CAvfd+rnqwfX7sylM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1IODkVCM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zw9s8kQc; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=1IODkVCM; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=zw9s8kQc; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 24F9721157;
-	Tue,  7 Jan 2025 10:55:03 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736247303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UsgS8B/0UfMHcMLcrSysf+RmqOq7WXc/jLTf40BgdL0=;
-	b=1IODkVCM4VdwldA+qdsvhQH9HcSaUAQafY53qA3pbuEy6j3ZMf1JM6P4xGx73xDUGP1pLL
-	CvpQoLdt9eY1MnMONLW7nm5fahUbYzKDUeUN2NHMnhooof+9ttUVsmafQLYl9EkP5bwUt6
-	thqhLOzZ5W6OKdlRQOo8CPxlUbLogYU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736247303;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UsgS8B/0UfMHcMLcrSysf+RmqOq7WXc/jLTf40BgdL0=;
-	b=zw9s8kQc6R22VR3EfIat7CrPPRM/m8pwGhLG4lPD3PwWVxCedtUimtrMsiR7pkAelUmeFN
-	l7uInnoW64YxNqDA==
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=1IODkVCM;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=zw9s8kQc
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1736247303; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UsgS8B/0UfMHcMLcrSysf+RmqOq7WXc/jLTf40BgdL0=;
-	b=1IODkVCM4VdwldA+qdsvhQH9HcSaUAQafY53qA3pbuEy6j3ZMf1JM6P4xGx73xDUGP1pLL
-	CvpQoLdt9eY1MnMONLW7nm5fahUbYzKDUeUN2NHMnhooof+9ttUVsmafQLYl9EkP5bwUt6
-	thqhLOzZ5W6OKdlRQOo8CPxlUbLogYU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1736247303;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UsgS8B/0UfMHcMLcrSysf+RmqOq7WXc/jLTf40BgdL0=;
-	b=zw9s8kQc6R22VR3EfIat7CrPPRM/m8pwGhLG4lPD3PwWVxCedtUimtrMsiR7pkAelUmeFN
-	l7uInnoW64YxNqDA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 17D3813763;
-	Tue,  7 Jan 2025 10:55:03 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id dhbPBQcIfWcGbwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Tue, 07 Jan 2025 10:55:03 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id BD122A09E0; Tue,  7 Jan 2025 11:54:58 +0100 (CET)
-Date: Tue, 7 Jan 2025 11:54:58 +0100
-From: Jan Kara <jack@suse.cz>
-To: Julian Sun <sunjunchao2870@gmail.com>
-Cc: linux-ext4@vger.kernel.org, tytso@mit.edu, adilger.kernel@dilger.ca, 
-	jack@suse.cz
-Subject: Re: [PATCH v2 4/5] ext4: Replace ext4_da_write_inline_data_begin()
- with ext4_generic_write_inline_data().
-Message-ID: <xgojnbtlup4oubcgkpkwtcoga4cpicqfrxo2oybldfswi3bdg6@avth2jykicg7>
-References: <20250107044702.1836852-1-sunjunchao2870@gmail.com>
- <20250107045710.1837756-1-sunjunchao2870@gmail.com>
+	s=arc-20240116; t=1736248983; c=relaxed/simple;
+	bh=n/Px38k0FTwpHO1WE6onLWdX94BYQFfzAitPJXOsIBU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qQC9MmHiD2HXPk/gxo8dCNERxns3nOaiGZxVcy2Dex++xzPFcIhZUcRZ3kipiG1tSfPczP/dFJXXUEDl0QroXxG2DFKHu3//57/a68DeHbRy6qmbq8slTjXFz69RO4vtDVMF/cN/+n5fvE2MMl4fc9qlL1/4Xym18htVqhD+SKI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=none smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=huaweicloud.com
+Received: from mail.maildlp.com (unknown [172.19.163.235])
+	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YS7v23Xvqz4f3jqL;
+	Tue,  7 Jan 2025 19:22:38 +0800 (CST)
+Received: from mail02.huawei.com (unknown [10.116.40.128])
+	by mail.maildlp.com (Postfix) with ESMTP id 728F81A094E;
+	Tue,  7 Jan 2025 19:22:53 +0800 (CST)
+Received: from [10.174.179.80] (unknown [10.174.179.80])
+	by APP4 (Coremail) with SMTP id gCh0CgB321+LDn1nJtUoAQ--.45317S3;
+	Tue, 07 Jan 2025 19:22:53 +0800 (CST)
+Message-ID: <d8e93ca9-6c68-436d-8d8b-5320ab0f803a@huaweicloud.com>
+Date: Tue, 7 Jan 2025 19:22:50 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20250107045710.1837756-1-sunjunchao2870@gmail.com>
-X-Rspamd-Queue-Id: 24F9721157
-X-Spam-Level: 
-X-Spamd-Result: default: False [-4.01 / 50.00];
-	BAYES_HAM(-3.00)[100.00%];
-	NEURAL_HAM_LONG(-1.00)[-1.000];
-	MID_RHS_NOT_FQDN(0.50)[];
-	R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	NEURAL_HAM_SHORT(-0.20)[-1.000];
-	MIME_GOOD(-0.10)[text/plain];
-	MX_GOOD(-0.01)[];
-	URIBL_BLOCKED(0.00)[iloc.bh:url,suse.com:email,suse.cz:dkim,suse.cz:email,imap1.dmz-prg2.suse.org:helo,imap1.dmz-prg2.suse.org:rdns];
-	RCVD_COUNT_THREE(0.00)[3];
-	ARC_NA(0.00)[];
-	TO_DN_SOME(0.00)[];
-	MIME_TRACE(0.00)[0:+];
-	FREEMAIL_TO(0.00)[gmail.com];
-	FUZZY_BLOCKED(0.00)[rspamd.com];
-	DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	RCVD_TLS_LAST(0.00)[];
-	FROM_EQ_ENVFROM(0.00)[];
-	FROM_HAS_DN(0.00)[];
-	RCPT_COUNT_FIVE(0.00)[5];
-	RCVD_VIA_SMTP_AUTH(0.00)[];
-	DKIM_TRACE(0.00)[suse.cz:+];
-	MISSING_XM_UA(0.00)[];
-	TO_MATCH_ENVRCPT_ALL(0.00)[];
-	DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email]
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Rspamd-Action: no action
-X-Spam-Score: -4.01
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 1/2] fs: introduce FALLOC_FL_FORCE_ZERO to fallocate
+To: Theodore Ts'o <tytso@mit.edu>, Christoph Hellwig <hch@infradead.org>
+Cc: linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, djwong@kernel.org, adilger.kernel@dilger.ca,
+ yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com,
+ yangerkun@huawei.com, Sai Chaitanya Mitta <mittachaitu@gmail.com>,
+ linux-xfs@vger.kernel.org
+References: <20241228014522.2395187-1-yi.zhang@huaweicloud.com>
+ <20241228014522.2395187-2-yi.zhang@huaweicloud.com>
+ <Z3u-OCX86j-q7JXo@infradead.org> <20250106161732.GG1284777@mit.edu>
+Content-Language: en-US
+From: Zhang Yi <yi.zhang@huaweicloud.com>
+In-Reply-To: <20250106161732.GG1284777@mit.edu>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-CM-TRANSID:gCh0CgB321+LDn1nJtUoAQ--.45317S3
+X-Coremail-Antispam: 1UD129KBjvJXoWxCr43Gw1Utr4UArWktryDAwb_yoWrJF4rpa
+	y8WFs2ka95Kr1xGwn7Z3yDCF4rCwsYy3y3GFyYgrW2yr98WF1Ikr4fKF1YkFyxXrn3Xa4j
+	qr4Y9ry3C3Z8ZaDanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUv0b4IE77IF4wAFF20E14v26ryj6rWUM7CY07I20VC2zVCF04k2
+	6cxKx2IYs7xG6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4
+	vEj48ve4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Ar0_tr1l84ACjcxK6xIIjxv20xvEc7Cj
+	xVAFwI0_Gr1j6F4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x
+	0267AKxVW0oVCq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG
+	6I80ewAv7VC0I7IYx2IY67AKxVWUJVWUGwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFV
+	Cjc4AY6r1j6r4UM4x0Y48IcVAKI48JM4IIrI8v6xkF7I0E8cxan2IY04v7MxkF7I0En4kS
+	14v26r1q6r43MxAIw28IcxkI7VAKI48JMxC20s026xCaFVCjc4AY6r1j6r4UMI8I3I0E5I
+	8CrVAFwI0_Jr0_Jr4lx2IqxVCjr7xvwVAFwI0_JrI_JrWlx4CE17CEb7AF67AKxVW8ZVWr
+	XwCIc40Y0x0EwIxGrwCI42IY6xIIjxv20xvE14v26r1j6r1xMIIF0xvE2Ix0cI8IcVCY1x
+	0267AKxVW8JVWxJwCI42IY6xAIw20EY4v20xvaj40_Jr0_JF4lIxAIcVC2z280aVAFwI0_
+	Jr0_Gr1lIxAIcVC2z280aVCY1x0267AKxVW8JVW8JrUvcSsGvfC2KfnxnUUI43ZEXa7IU1
+	aFAJUUUUU==
+X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
-On Tue 07-01-25 12:57:10, Julian Sun wrote:
-> Replace the call to ext4_da_write_inline_data_begin() with
-> ext4_generic_write_inline_data(), and delete the 
-> ext4_da_write_inline_data_begin().
+On 2025/1/7 0:17, Theodore Ts'o wrote:
+> On Mon, Jan 06, 2025 at 03:27:52AM -0800, Christoph Hellwig wrote:
+>> There's a feature request for something similar on the xfs list, so
+>> I guess people are asking for it.
 > 
-> Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
-
-Looks good. Feel free to add:
-
-Reviewed-by: Jan Kara <jack@suse.cz>
-
-								Honza
-
-> ---
->  fs/ext4/ext4.h   | 10 ++---
->  fs/ext4/inline.c | 98 +++++-------------------------------------------
->  fs/ext4/inode.c  |  4 +-
->  3 files changed, 16 insertions(+), 96 deletions(-)
+> Yeah, I have folks asking for this on the ext4 side as well.
 > 
-> diff --git a/fs/ext4/ext4.h b/fs/ext4/ext4.h
-> index 44b0d418143c..78dd3408ff39 100644
-> --- a/fs/ext4/ext4.h
-> +++ b/fs/ext4/ext4.h
-> @@ -3569,11 +3569,11 @@ extern int ext4_try_to_write_inline_data(struct address_space *mapping,
->  					 struct folio **foliop);
->  int ext4_write_inline_data_end(struct inode *inode, loff_t pos, unsigned len,
->  			       unsigned copied, struct folio *folio);
-> -extern int ext4_da_write_inline_data_begin(struct address_space *mapping,
-> -					   struct inode *inode,
-> -					   loff_t pos, unsigned len,
-> -					   struct folio **foliop,
-> -					   void **fsdata);
-> +extern int ext4_generic_write_inline_data(struct address_space *mapping,
-> +					  struct inode *inode,
-> +					  loff_t pos, unsigned len,
-> +					  struct folio **foliop,
-> +					  void **fsdata, bool da);
->  extern int ext4_try_add_inline_entry(handle_t *handle,
->  				     struct ext4_filename *fname,
->  				     struct inode *dir, struct inode *inode);
-> diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
-> index 3e103e003afb..58d8fcfbecba 100644
-> --- a/fs/ext4/inline.c
-> +++ b/fs/ext4/inline.c
-> @@ -657,7 +657,15 @@ static int ext4_convert_inline_data_to_extent(struct address_space *mapping,
->  	return ret;
->  }
->  
-> -static int ext4_generic_write_inline_data(struct address_space *mapping,
-> +/*
-> + * Prepare the write for the inline data.
-> + * If the data can be written into the inode, we just read
-> + * the page and make it uptodate, and start the journal.
-> + * Otherwise read the page, makes it dirty so that it can be
-> + * handle in writepages(the i_disksize update is left to the
-> + * normal ext4_da_write_end).
-> + */
-> +int ext4_generic_write_inline_data(struct address_space *mapping,
->  					  struct inode *inode,
->  					  loff_t pos, unsigned len,
->  					  struct folio **foliop,
-> @@ -967,94 +975,6 @@ static int ext4_da_convert_inline_data_to_extent(struct address_space *mapping,
->  	return ret;
->  }
->  
-> -/*
-> - * Prepare the write for the inline data.
-> - * If the data can be written into the inode, we just read
-> - * the page and make it uptodate, and start the journal.
-> - * Otherwise read the page, makes it dirty so that it can be
-> - * handle in writepages(the i_disksize update is left to the
-> - * normal ext4_da_write_end).
-> - */
-> -int ext4_da_write_inline_data_begin(struct address_space *mapping,
-> -				    struct inode *inode,
-> -				    loff_t pos, unsigned len,
-> -				    struct folio **foliop,
-> -				    void **fsdata)
-> -{
-> -	int ret;
-> -	handle_t *handle;
-> -	struct folio *folio;
-> -	struct ext4_iloc iloc;
-> -	int retries = 0;
-> -
-> -	ret = ext4_get_inode_loc(inode, &iloc);
-> -	if (ret)
-> -		return ret;
-> -
-> -retry_journal:
-> -	handle = ext4_journal_start(inode, EXT4_HT_INODE, 1);
-> -	if (IS_ERR(handle)) {
-> -		ret = PTR_ERR(handle);
-> -		goto out;
-> -	}
-> -
-> -	ret = ext4_prepare_inline_data(handle, inode, pos + len);
-> -	if (ret && ret != -ENOSPC)
-> -		goto out_journal;
-> -
-> -	if (ret == -ENOSPC) {
-> -		ext4_journal_stop(handle);
-> -		ret = ext4_da_convert_inline_data_to_extent(mapping,
-> -							    inode,
-> -							    fsdata);
-> -		if (ret == -ENOSPC &&
-> -		    ext4_should_retry_alloc(inode->i_sb, &retries))
-> -			goto retry_journal;
-> -		goto out;
-> -	}
-> -
-> -	/*
-> -	 * We cannot recurse into the filesystem as the transaction
-> -	 * is already started.
-> -	 */
-> -	folio = __filemap_get_folio(mapping, 0, FGP_WRITEBEGIN | FGP_NOFS,
-> -					mapping_gfp_mask(mapping));
-> -	if (IS_ERR(folio)) {
-> -		ret = PTR_ERR(folio);
-> -		goto out_journal;
-> -	}
-> -
-> -	down_read(&EXT4_I(inode)->xattr_sem);
-> -	if (!ext4_has_inline_data(inode)) {
-> -		ret = 0;
-> -		goto out_release_page;
-> -	}
-> -
-> -	if (!folio_test_uptodate(folio)) {
-> -		ret = ext4_read_inline_folio(inode, folio);
-> -		if (ret < 0)
-> -			goto out_release_page;
-> -	}
-> -	ret = ext4_journal_get_write_access(handle, inode->i_sb, iloc.bh,
-> -					    EXT4_JTR_NONE);
-> -	if (ret)
-> -		goto out_release_page;
-> -
-> -	up_read(&EXT4_I(inode)->xattr_sem);
-> -	*foliop = folio;
-> -	brelse(iloc.bh);
-> -	return 1;
-> -out_release_page:
-> -	up_read(&EXT4_I(inode)->xattr_sem);
-> -	folio_unlock(folio);
-> -	folio_put(folio);
-> -out_journal:
-> -	ext4_journal_stop(handle);
-> -out:
-> -	brelse(iloc.bh);
-> -	return ret;
-> -}
-> -
->  #ifdef INLINE_DIR_DEBUG
->  void ext4_show_inline_dir(struct inode *dir, struct buffer_head *bh,
->  			  void *inline_start, int inline_size)
-> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
-> index 54bdd4884fe6..24a3b0ff4c8a 100644
-> --- a/fs/ext4/inode.c
-> +++ b/fs/ext4/inode.c
-> @@ -2918,8 +2918,8 @@ static int ext4_da_write_begin(struct file *file, struct address_space *mapping,
->  	trace_ext4_da_write_begin(inode, pos, len);
->  
->  	if (ext4_test_inode_state(inode, EXT4_STATE_MAY_INLINE_DATA)) {
-> -		ret = ext4_da_write_inline_data_begin(mapping, inode, pos, len,
-> -						      foliop, fsdata);
-> +		ret = ext4_generic_write_inline_data(mapping, inode, pos, len,
-> +						     foliop, fsdata, true);
->  		if (ret < 0)
->  			return ret;
->  		if (ret == 1)
-> -- 
-> 2.39.5
+> The one caution that I've given to them is that there is no guarantee
+> what the performance will be for WRITE SAME or equivalent operations,
+> since the standards documents state that performance is out of scope
+> for the document.  So in some cases, WRITE SAME might be fast (if for
+> example it is just adjusing FTL metadata on an SSD, or some similar
+> thing on cloud-emulated block devices such as Google's Persistent Desk
+> or Amazon's Elastic Block Device --- what Darrick has called "software
+> defined storage" for the cloud), but in other hardware deployments,
+> WRITE SAME might be as slow as writing zeros to an HDD.
 > 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> This is technically not the kernel's problem, since we can also use
+> the same mealy-mouth "performance is out of scope and not the kernel's
+> concern", but that just transfers the problem to the application
+> programmers.  I could imagine some kind of tunable which we can make
+> the block device pretend that it really doesn't support using WRITE
+> SAME if the performance characteristics are such that it's a Bad Idea
+> to use it, so that there's a single tunable knob that the system
+> adminstrator can reach for as opposed to have different ways for
+> PostgresQL, MySQL, Oracle Enterprise Database, etc have for
+> configuring whether or not to disable WRITE SAME, but that's not
+> something we need to decide right away.
+
+Yes, I completely agree with you. At this time, it is not possible to
+determine whether a disk supports fast write zeros only by checking if
+the disk supports the write_zero command. Especially for some HDDs,
+which should submit actual zeros to the disk even if they claim to
+support the write_zero command, but that is very slow.
+
+Therefore, I propose that we add a new feature flag, such as
+BLK_FEAT_FAST_WRITE_ZERO, to queue->limits.features. This flag should
+be set by each disk driver if the attached disk supports fast write
+zeros. For instance, the NVMe SSD driver should set this flag if the
+given namespace supports NVME_NS_DEAC. Additionally, we can add an
+entry in sysfs that allows the user to enable and disable this feature
+manually when the driver don't know the whether the disk supports it
+or not for some corner cases.
+
+> 
+>> That being said this really should not be a modifier but a separate
+>> operation, as the logic is very different from FALLOC_FL_ZERO_RANGE,
+>> similar to how plain prealloc, hole punch and zero range are different
+>> operations despite all of them resulting in reads of zeroes from the
+>> range.
+> 
+> Yes.  And we might decide that it should be done using some kind of
+> ioctl, such as BLKDISCARD, as opposed to a new fallocate operation,
+> since it really isn't a filesystem metadata operation, just as
+> BLKDISARD isn't.  The other side of the argument is that ioctls are
+> ugly, and maybe all new such operations should be plumbed through via
+> fallocate as opposed to adding a new ioctl.  I don't have strong
+> feelings on this, although I *do* belive that whatever interface we
+> use, whether it be fallocate or ioctl, it should be supported by block
+> devices and files in a file system, to make life easier for those
+> databases that want to support running on a raw block device (for
+> full-page advertisements on the back cover of the Businessweek
+> magazine) or on files (which is how 99.9% of all real-world users
+> actually run enterprise databases.  :-)
+> 
+
+For this part, I still think it would be better to use fallocate.
+
+Thanks,
+Yi.
+
+
 
