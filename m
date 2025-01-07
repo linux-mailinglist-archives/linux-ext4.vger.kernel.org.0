@@ -1,72 +1,72 @@
-Return-Path: <linux-ext4+bounces-5916-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5917-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F378A03598
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 03:57:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5E1A0359A
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 03:59:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D65763A288F
-	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 02:57:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3B4BA1882D36
+	for <lists+linux-ext4@lfdr.de>; Tue,  7 Jan 2025 02:59:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F4321607B7;
-	Tue,  7 Jan 2025 02:57:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DB8157493;
+	Tue,  7 Jan 2025 02:59:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="A73KpEFe"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZY3VKnTp"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-lf1-f48.google.com (mail-lf1-f48.google.com [209.85.167.48])
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 348D213C8E8;
-	Tue,  7 Jan 2025 02:57:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89C0A80BFF;
+	Tue,  7 Jan 2025 02:58:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736218650; cv=none; b=ihELvkqnEBO1WTRiwtYJhJDpbFmMbMxbbif3DezX7LeVINzZpGCqKlUZ5Osrl88RO2ZGkzGkLt2uty8NEnuFGzJ4fQRfjygXUA7Bk+w4K2+ZWMPlg/aPGBZ17YyzEca65AZALWTMY7wFH3fNDh31zWN/MjGuJBfmeBchSJoBoqY=
+	t=1736218740; cv=none; b=ZTVGaB8ojWhip0azgUdPJlO5IzeYuUxuLd3Wu8cnX71r0T63jTBMIaCQZaInrZXqfWzwlp3WcICHj7rTNgHm218h4fMKHUC3SB63spxWRxm2pJzspYCJOo2KhjCPQ2KIOUGxSzfWrwW5n0/hmVt1xupeyq5BpXsqx01qc/6qCls=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736218650; c=relaxed/simple;
-	bh=ey2xJUbegzP5XFOgI2ebj32HSd/MvVcsda/TiT3Io14=;
+	s=arc-20240116; t=1736218740; c=relaxed/simple;
+	bh=n1RKbzoazEKN4eksbruwN5SvAmk64p2S7bwKiqRsLAk=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IqLvTXKDtJ33OxGLH0oZuHyhT6/O8vQoCBixJvaN0JBs2PFwiwIY0gSvUiYYXI5pIZH3hJJ4bIPNzyeS9ICG5mwCkJH/Wleqa3HyQE5vBctFoDQxc0okNZwrem6km8WM1Y0sL0H77/YAu9P79rTeVuhiJu2zi6AjXMhk0czMPdg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=A73KpEFe; arc=none smtp.client-ip=209.85.167.48
+	 To:Cc:Content-Type; b=rCgTepKeF8uQ++nKLjHb6GlE/da/RJ6tm+WaPPlODmtfkAxPUlDbz0aKe5lRY+zNUP6h2esxav5tEImbUB6TDGk2wXLiPtXziNkxYdbE93qi6UI+ZkgPbyb9p+eOwTg7opmGR0T5/EIy553+0X9vlZ5ILE1X8mQ9Q2BuSv3NDb0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZY3VKnTp; arc=none smtp.client-ip=209.85.167.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f48.google.com with SMTP id 2adb3069b0e04-5401c68b89eso18235720e87.0;
-        Mon, 06 Jan 2025 18:57:20 -0800 (PST)
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-53e3c47434eso15414650e87.3;
+        Mon, 06 Jan 2025 18:58:57 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736218637; x=1736823437; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1736218736; x=1736823536; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8cU2txk/xzWx1vnDy1ZK/Q6VrEQD5zSHT/3VeaSRbyI=;
-        b=A73KpEFeQ+iDf6xvUr8zODRgTywDUFpt+5l5gdy1K7hOWwMyEELvyp3jOQdzt0sOuY
-         j9UqVgrJGXj47vSKuYYKRKnA4nZP2lQp3so6w2BUfAWe77nPJJaqer1AG0nZfcdF15Nb
-         pWMoP36pvEab/Roh5+SS9ITVWr9gnvg5FxGd1DqhNSBhyamNl1ninI8xBjGOXj5efeth
-         HT5H3+o/TkFogTY8gXLF2k7QGHUfxaHSeZwqvZRtT8Q7R374DnwgSGy3l0/UnmmlV6QZ
-         z8I2ridpYvMgkDqn+WJLIQwXsCg1NsoGnsDtCspTbGLYD2smuO7X8IkRD14gOLWjcuYN
-         IjHg==
+        bh=EVSfD6vM1ybjTDnVinRiIhCJrEnyGL1+g9grDnmo22k=;
+        b=ZY3VKnTpQJZ8ZqSS3SPPk+noePc6uEpZK35mTXnaXCDUNNb/Y49x3gx6SJG6POOa51
+         eba0QV9OQ36xUM/Uibra2nJ5fZLU9eEKge+jyrsLGDmAmcU4CY6BedSyMkkvdu1OiJrU
+         TnsHxF45SPeBbgIhk+mUexdlURZrHX8XelhLjfwayyUkpUZ5Tp1yaby1YhrqJaHZIcoB
+         ZqgfHyqVdWrHlrRKqqrVh6SPTLFmFti+I1qyRkkMszYvgfaaSLkZADl3Yu9AvAZ0GpTP
+         Rp6HUL0Gz4FxFFXoFq9aiih72Zh03pQyui/lPpBIXic7bSoe93uGyfO7fDoLxCW6KFXh
+         zVUA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736218637; x=1736823437;
+        d=1e100.net; s=20230601; t=1736218736; x=1736823536;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8cU2txk/xzWx1vnDy1ZK/Q6VrEQD5zSHT/3VeaSRbyI=;
-        b=l2pdBq0LJ2LbNzyRtn5slqTTN8hX1KDIZBgSYpESIMhHl9X86P6A8esU2Cpk13aYkL
-         v6v2OkGQ7T2DmndBSvdG/QtcRCAWROso6lipLG1DRkYhkYdEyF3IKR/pR3u1SUoKIHfU
-         5vvfzmJmHZfNbULl9cC0qBzmj48VHnZxbI7PPQ+O6iqMCcbSoJG2ponXa7neZZPWgw+J
-         NlWz1zOOshRZp8Ze8WSiwbbXsvAOA1SPR6/WkGNTeTb4H8EzQ0xiKsXZMJXkVghuI4au
-         YE1fSwIpfgms/4qWXZoX3IawEA4H51ebRx+36ZYYGboOBH3ARp87icUyU0IitnVNahVR
-         IC4g==
-X-Forwarded-Encrypted: i=1; AJvYcCVMmvSaMxA1Xpc5VTbMw566ho0ScV9A0a06cJey0bpaAOYLgpYI62voH3VjdozZMfz4AA0KUZcu0hv7XXM=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yzh1hoG0jRTr4E3JGNU9ImpKqaGECVvcjC6G6iqFwEZFS745uQp
-	pjs42g/TQiguV15PzCAt5324hxfSI6YnlXknVTF0EallBl5C3W34cPa+vcPO+2kU684aoLbx5Qv
-	tP7fdXznaC8VQN31MUHxNSBmYAXw=
-X-Gm-Gg: ASbGncviKmBO1TP7lzvWKq9YPmzfvRrULH9WHdSD77tB+qiK2GjZaUesXRHS3520nMJ
-	RJHtYYFkN6cIzUsXrpqCODxzhEle6rJT1BzIFHpo=
-X-Google-Smtp-Source: AGHT+IEFBEz+c7TDXCp24ALG6uaQNmeGJsM/X0cvKlFaCXaoZgAiLvz/NFlCk3iiIAWV2nB36xWlDZApyBc6lFxcPDo=
-X-Received: by 2002:a05:6512:e92:b0:540:2abf:7016 with SMTP id
- 2adb3069b0e04-5427e981c89mr353881e87.17.1736218636902; Mon, 06 Jan 2025
- 18:57:16 -0800 (PST)
+        bh=EVSfD6vM1ybjTDnVinRiIhCJrEnyGL1+g9grDnmo22k=;
+        b=VBi9841wa1scxDJ/dFbecOdgWN99PUTeNPswhr3XAoE9NmNUbgQqL3DCO4aF46Trjz
+         r4fD2YkaH/vQGYL+XoOsc2JHcf0TXzJDb9nNDtVkXzCzUDWyj1dd35+Bvm2GVdmVsNcA
+         oRzHLlzu6qvm4UtwztmkEBADAvV4up0Wtqmty3c4LLbi4k0I9SWMAHme0dqF0a/IBTzl
+         cRlEkMzuT6xSc7J3Jqejtp0miJTQFYqiOq21MKCpZ2ndGRfFFW57rhQmqIhkVosYMUfo
+         m4kNIjUSXinCJ2nqW8NB8WB3oA76x+pJ45FV1MRnU/na1m7KQ58urhCHnTSGaR5G5DGJ
+         xYFg==
+X-Forwarded-Encrypted: i=1; AJvYcCWIp25Qv3F6aJv/32qQS6pU2GD/meB5HXhp8fb/mgWuFwJbyifq0zdQS4lxDEw+kEf9ruUIaHbdjd/o188=@vger.kernel.org
+X-Gm-Message-State: AOJu0Yx5yDr5hoBL+9GhyNq0lNwxkEidNTTS22NZ7ZQ40t4W2R/pkQR3
+	ta5RRXrBlg0Dt/aJ3RsHER8+8K06JSJr4J1f8tGGl9KwaiGU2WPl4V2E1PSnYkAPxDuIim33aeN
+	9ifXAFS9utQ0cRK+tVDnN05q3cseJq4NaAec=
+X-Gm-Gg: ASbGncu/tLr7jCNaidb+lH5W9AHbcHLker8VUGAhgZIkG+tXrHhSdLjyYaPdueSQFeN
+	Itmu9N9dbbcDnZA8tOXpuigUtTIXXnKM0o8XDdrk=
+X-Google-Smtp-Source: AGHT+IH8sSHUq6RjrVgZcQ5AIVkNUki8cpIRKuVXIRZs6Fe+Qh3YgNakR+bsfquRILa58/h9UsGo5mYz3+Qe4Q5uEOk=
+X-Received: by 2002:a05:6512:3ba4:b0:53e:3a43:9245 with SMTP id
+ 2adb3069b0e04-542295404f9mr18469075e87.28.1736218735393; Mon, 06 Jan 2025
+ 18:58:55 -0800 (PST)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -74,13 +74,13 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20241220151625.19769-1-sunjunchao2870@gmail.com>
- <20241220151625.19769-5-sunjunchao2870@gmail.com> <b7nmpjvncdcywd6d3xxoobo3nvoj53gpm5jrjjummuega55qsf@lso74twq6fyz>
-In-Reply-To: <b7nmpjvncdcywd6d3xxoobo3nvoj53gpm5jrjjummuega55qsf@lso74twq6fyz>
+ <20241220151625.19769-6-sunjunchao2870@gmail.com> <dwlsyn3d3fji327ocf6mg3p74lfxxqoxlmhffti5lw4bop4ihr@sseuzwi7dhkd>
+In-Reply-To: <dwlsyn3d3fji327ocf6mg3p74lfxxqoxlmhffti5lw4bop4ihr@sseuzwi7dhkd>
 From: Julian Sun <sunjunchao2870@gmail.com>
-Date: Tue, 7 Jan 2025 10:57:05 +0800
-X-Gm-Features: AbW1kvZJLUG1w-lG8tBSAlgfz84a1X2MJB837uquUo17JM2_Ntx_j0t9fzIOnAk
-Message-ID: <CAHB1NahrqxSXXCy-BMpTk8+3ZwrAZgWs1Ev5AtcQe3L2Mf+bSg@mail.gmail.com>
-Subject: Re: [PATCH 4/7] ext4: Introduce a new helper function ext4_generic_write_inline_data()
+Date: Tue, 7 Jan 2025 10:58:44 +0800
+X-Gm-Features: AbW1kvYZkuLNg_NvOgokIvYYK0QR0ESSZ2E5HtUujJ0t5CJIBjeRzTO6RtP50V0
+Message-ID: <CAHB1NahE1K--Ym_hUxW7yzXcrbTQjjXDNV9MViNsRf8c=JqiZA@mail.gmail.com>
+Subject: Re: [PATCH 5/7] ext4: Refactor out ext4_da_write_inline_data_begin()
 To: Jan Kara <jack@suse.cz>
 Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu, 
 	adilger.kernel@dilger.ca, boyu.mt@taobao.com, tm@tao.ma
@@ -88,44 +88,117 @@ Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
 Jan Kara <jack@suse.cz> =E4=BA=8E2025=E5=B9=B41=E6=9C=886=E6=97=A5=E5=91=A8=
-=E4=B8=80 23:35=E5=86=99=E9=81=93=EF=BC=9A
+=E4=B8=80 23:39=E5=86=99=E9=81=93=EF=BC=9A
 >
-> On Fri 20-12-24 23:16:22, Julian Sun wrote:
-> > A new function, ext4_generic_write_inline_data(), is introduced
-> > to provide a generic implementation of the common logic found in
-> > ext4_da_write_inline_data_begin() and ext4_try_to_write_inline_data().
-> >
-> > This function will be utilized in the subsequent two patches.
+> On Fri 20-12-24 23:16:23, Julian Sun wrote:
+> > Refactor ext4_da_write_inline_data_begin() to simplify its
+> > implementation by directly invoking ext4_generic_write_inline_data().
 > >
 > > Signed-off-by: Julian Sun <sunjunchao2870@gmail.com>
+> > ---
+> >  fs/ext4/inline.c | 74 ++----------------------------------------------
+> >  1 file changed, 2 insertions(+), 72 deletions(-)
+> >
+> > diff --git a/fs/ext4/inline.c b/fs/ext4/inline.c
+> > index 7eaa578e1021..5dd91524b2ca 100644
+> > --- a/fs/ext4/inline.c
+> > +++ b/fs/ext4/inline.c
+> > @@ -979,78 +979,8 @@ int ext4_da_write_inline_data_begin(struct address=
+_space *mapping,
+> >                                   struct folio **foliop,
+> >                                   void **fsdata)
+> >  {
 >
-> Looks good, just one style nit below. Feel free to add:
->
-> Reviewed-by: Jan Kara <jack@suse.cz>
->
-> ...
-> > +     *foliop =3D folio;
-> > +     up_read(&EXT4_I(inode)->xattr_sem);
-> > +     brelse(iloc.bh);
-> > +     return 1;
->
-> Here I'd suggest empty line for better readability.
+> Since there's a single caller of this function, I guess there's no point
+> for this wrapper now. Just call ext4_generic_write_inline_data() directly
+> from the call site. Otherwise the patch looks good.
 
-I will fix it in the next version. thanks!
->
-> > +out_release_folio:
-> > +     up_read(&EXT4_I(inode)->xattr_sem);
-> > +     folio_unlock(folio);
-> > +     folio_put(folio);
-> > +out_stop_journal:
-> > +     ext4_journal_stop(handle);
-> > +out_release_bh:
-> > +     brelse(iloc.bh);
-> > +     return ret;
-> > +}
-> > +
+Reasonable. I will fix it in the next version. Thanks!
 >
 >                                                                 Honza
+>
+> > -     int ret;
+> > -     handle_t *handle;
+> > -     struct folio *folio;
+> > -     struct ext4_iloc iloc;
+> > -     int retries =3D 0;
+> > -
+> > -     ret =3D ext4_get_inode_loc(inode, &iloc);
+> > -     if (ret)
+> > -             return ret;
+> > -
+> > -retry_journal:
+> > -     handle =3D ext4_journal_start(inode, EXT4_HT_INODE, 1);
+> > -     if (IS_ERR(handle)) {
+> > -             ret =3D PTR_ERR(handle);
+> > -             goto out;
+> > -     }
+> > -
+> > -     ret =3D ext4_prepare_inline_data(handle, inode, pos + len);
+> > -     if (ret && ret !=3D -ENOSPC)
+> > -             goto out_journal;
+> > -
+> > -     if (ret =3D=3D -ENOSPC) {
+> > -             ext4_journal_stop(handle);
+> > -             ret =3D ext4_da_convert_inline_data_to_extent(mapping,
+> > -                                                         inode,
+> > -                                                         fsdata);
+> > -             if (ret =3D=3D -ENOSPC &&
+> > -                 ext4_should_retry_alloc(inode->i_sb, &retries))
+> > -                     goto retry_journal;
+> > -             goto out;
+> > -     }
+> > -
+> > -     /*
+> > -      * We cannot recurse into the filesystem as the transaction
+> > -      * is already started.
+> > -      */
+> > -     folio =3D __filemap_get_folio(mapping, 0, FGP_WRITEBEGIN | FGP_NO=
+FS,
+> > -                                     mapping_gfp_mask(mapping));
+> > -     if (IS_ERR(folio)) {
+> > -             ret =3D PTR_ERR(folio);
+> > -             goto out_journal;
+> > -     }
+> > -
+> > -     down_read(&EXT4_I(inode)->xattr_sem);
+> > -     if (!ext4_has_inline_data(inode)) {
+> > -             ret =3D 0;
+> > -             goto out_release_page;
+> > -     }
+> > -
+> > -     if (!folio_test_uptodate(folio)) {
+> > -             ret =3D ext4_read_inline_folio(inode, folio);
+> > -             if (ret < 0)
+> > -                     goto out_release_page;
+> > -     }
+> > -     ret =3D ext4_journal_get_write_access(handle, inode->i_sb, iloc.b=
+h,
+> > -                                         EXT4_JTR_NONE);
+> > -     if (ret)
+> > -             goto out_release_page;
+> > -
+> > -     up_read(&EXT4_I(inode)->xattr_sem);
+> > -     *foliop =3D folio;
+> > -     brelse(iloc.bh);
+> > -     return 1;
+> > -out_release_page:
+> > -     up_read(&EXT4_I(inode)->xattr_sem);
+> > -     folio_unlock(folio);
+> > -     folio_put(folio);
+> > -out_journal:
+> > -     ext4_journal_stop(handle);
+> > -out:
+> > -     brelse(iloc.bh);
+> > -     return ret;
+> > +     return ext4_generic_write_inline_data(mapping, inode, pos, len,
+> > +                                           foliop, fsdata, true);
+> >  }
+> >
+> >  #ifdef INLINE_DIR_DEBUG
+> > --
+> > 2.39.5
+> >
 > --
 > Jan Kara <jack@suse.com>
 > SUSE Labs, CR
