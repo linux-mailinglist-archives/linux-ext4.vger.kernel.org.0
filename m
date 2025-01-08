@@ -1,45 +1,45 @@
-Return-Path: <linux-ext4+bounces-5971-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5972-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 51140A050EB
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 03:40:14 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 235A1A050F5
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 03:43:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AAF733A3962
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 02:40:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7D90B3A932A
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 02:43:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB8541632D9;
-	Wed,  8 Jan 2025 02:40:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77B2C1632C8;
+	Wed,  8 Jan 2025 02:43:29 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from dggsgout12.his.huawei.com (dggsgout12.his.huawei.com [45.249.212.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E41F7E765;
-	Wed,  8 Jan 2025 02:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4CA1158D96;
+	Wed,  8 Jan 2025 02:43:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736304006; cv=none; b=uRni9R1gh7BmI6g7xdA3B+wGW2B8KpKHco0w1rH+OEYErTh21+NeYiN3Zc4hb9XXqIUFKwNRmqMlU48M9CvapahYfZmxONTBXX/41QstZ7poE2A9sdxx6g4drx8QLqmLq2RTDT+4Mnt2aGWhPvKuDpXU81rm6iq3MNYSfXKLlD4=
+	t=1736304209; cv=none; b=D0s6F7mPCHaNfeDdcl08dS0ZAzZ/45EzOa0xcgOQAr0aJIAd/+6s0Y54Y7p3McSBArfU/N5Sj+1cyLDMkv1SU86zjztJH6BUJ51L6oB+1CD9m0/qsUT+YUJnfI6p5EyWKwmaPMqfIBPwYoWAYxELlUIDxnBNjfWjewtyZiHe0o4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736304006; c=relaxed/simple;
-	bh=yg+ggpZ1KU5czquyD/GfrSz/ZqL43lcJBNVsVc3Jyec=;
+	s=arc-20240116; t=1736304209; c=relaxed/simple;
+	bh=JQNO338dPpNXR5LpcQ7V5U5nv5QItZcpdY5r5KZB4O8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lQVexMjjerueVU/YxQVI2VB0M/YCYu+qn+cenEJQsXYMQn7aO2TKeYYDx22aYHJr+uCxwg1roL2L4dH9kdSwggtyDEP7mVyF85mwDhoFHr9jl5EboPmTAy5ilBNDesKT3o2QGWbV+Ndka+iTL3ztcgRCoFJC27/FzxVoIlrje7Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
+	 In-Reply-To:Content-Type; b=r+NkZjweRDS2LJvcwRZLAhGxglTokJVB5xxC4u8CTTBDyy8Afrok3TH25hytFCBOZSLx770Bj9Zoe8051QkuhQOfkE0q5ndagu0fAUzKZA2z68gGeMih0zmNy8kNsJ5lAGwR8NHUHZBeusMjpYv6ngqvPw7NmOvqg8ECBdSxHdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.56
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
 Received: from mail.maildlp.com (unknown [172.19.163.235])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YSXF06yqkz4f3lfH;
-	Wed,  8 Jan 2025 10:39:32 +0800 (CST)
+	by dggsgout12.his.huawei.com (SkyGuard) with ESMTP id 4YSXK2690pz4f3jsH;
+	Wed,  8 Jan 2025 10:43:02 +0800 (CST)
 Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 55D801A0E37;
-	Wed,  8 Jan 2025 10:39:54 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTP id 08FAC1A0932;
+	Wed,  8 Jan 2025 10:43:23 +0800 (CST)
 Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgAXe1945X1nwYlkAQ--.53473S3;
-	Wed, 08 Jan 2025 10:39:54 +0800 (CST)
-Message-ID: <5f302532-82fc-42af-b650-bd729be08fa2@huaweicloud.com>
-Date: Wed, 8 Jan 2025 10:39:52 +0800
+	by APP4 (Coremail) with SMTP id gCh0CgAni19K5n1ndMNkAQ--.53636S3;
+	Wed, 08 Jan 2025 10:43:22 +0800 (CST)
+Message-ID: <35533fd7-2e74-4551-8d2e-c89e688d055b@huaweicloud.com>
+Date: Wed, 8 Jan 2025 10:43:22 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,37 +47,38 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/6] jbd2: remove unused h_jdata flag of handle
+Subject: Re: [PATCH 2/6] jbd2: remove unused return value of
+ jbd2_journal_cancel_revoke
 To: Kemeng Shi <shikemeng@huaweicloud.com>
 Cc: linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, tytso@mit.edu,
  jack@suse.com
 References: <20241224202707.1530558-1-shikemeng@huaweicloud.com>
- <20241224202707.1530558-2-shikemeng@huaweicloud.com>
+ <20241224202707.1530558-3-shikemeng@huaweicloud.com>
 Content-Language: en-US
 From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <20241224202707.1530558-2-shikemeng@huaweicloud.com>
+In-Reply-To: <20241224202707.1530558-3-shikemeng@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgAXe1945X1nwYlkAQ--.53473S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7Gr1kJr13Kr4kZw1xJFWrKrg_yoWDtwb_Aw
-	4vyr4kWr4xZFn3ZF12kFsrAF43GFW8Jr18WF1Fqr4v9ryDZayrGwn7tFZ8XFW7Wan7Ar43
-	WF1kWrWxKwnI9jkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbc8FF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2IYs7xG
-	6rWj6s0DM7CIcVAFz4kK6r1j6r18M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48ve4kI8w
-	A2z4x0Y4vE2Ix0cI8IcVAFwI0_Xr0_Ar1l84ACjcxK6xIIjxv20xvEc7CjxVAFwI0_Gr0_
-	Cr1l84ACjcxK6I8E87Iv67AKxVW0oVCq3wA2z4x0Y4vEx4A2jsIEc7CjxVAFwI0_GcCE3s
-	1le2I262IYc4CY6c8Ij28IcVAaY2xG8wAqx4xG64xvF2IEw4CE5I8CrVC2j2WlYx0E2Ix0
-	cI8IcVAFwI0_Jr0_Jr4lYx0Ex4A2jsIE14v26r1j6r4UMcvjeVCFs4IE7xkEbVWUJVW8Jw
-	ACjcxG0xvEwIxGrwACjI8F5VA0II8E6IAqYI8I648v4I1lc7CjxVAaw2AFwI0_JF0_Jw1l
-	42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJV
-	WUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r126r1DMIIYrxkI7VAK
-	I48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r
-	4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWUJVW8JwCI42IY
-	6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjfUehL0UUUUU
+X-CM-TRANSID:gCh0CgAni19K5n1ndMNkAQ--.53636S3
+X-Coremail-Antispam: 1UD129KBjvJXoW7KFWftw45Cr4fXw45Jw43Jrb_yoW8tFy7pF
+	98C34rCrWvkryj9F1DWa1UJFW7Xr97C3yjgFWq93srKw4IgF97tr4UGr1jqFyYqFZFga15
+	Zr4UG395Cw4jgFUanT9S1TB71UUUUU7qnTZGkaVYY2UrUUUUjbIjqfuFe4nvWSU5nxnvy2
+	9KBjDU0xBIdaVrnRJUUUkv14x267AKxVWUJVW8JwAFc2x0x2IEx4CE42xK8VAvwI8IcIk0
+	rVWrJVCq3wAFIxvE14AKwVWUJVWUGwA2ocxC64kIII0Yj41l84x0c7CEw4AK67xGY2AK02
+	1l84ACjcxK6xIIjxv20xvE14v26F1j6w1UM28EF7xvwVC0I7IYx2IY6xkF7I0E14v26F4j
+	6r4UJwA2z4x0Y4vEx4A2jsIE14v26rxl6s0DM28EF7xvwVC2z280aVCY1x0267AKxVW0oV
+	Cq3wAS0I0E0xvYzxvE52x082IY62kv0487Mc02F40EFcxC0VAKzVAqx4xG6I80ewAv7VC0
+	I7IYx2IY67AKxVWUGVWUXwAv7VC2z280aVAFwI0_Jr0_Gr1lOx8S6xCaFVCjc4AY6r1j6r
+	4UM4x0Y48IcVAKI48JM4x0x7Aq67IIx4CEVc8vx2IErcIFxwCY1x0262kKe7AKxVWUAVWU
+	twCF04k20xvY0x0EwIxGrwCFx2IqxVCFs4IE7xkEbVWUJVW8JwC20s026c02F40E14v26r
+	1j6r18MI8I3I0E7480Y4vE14v26r106r1rMI8E67AF67kF1VAFwI0_JF0_Jw1lIxkGc2Ij
+	64vIr41lIxAIcVC0I7IYx2IY67AKxVWUJVWUCwCI42IY6xIIjxv20xvEc7CjxVAFwI0_Jr
+	0_Gr1lIxAIcVCF04k26cxKx2IYs7xG6r1j6r1xMIIF0xvEx4A2jsIE14v26r1j6r4UMIIF
+	0xvEx4A2jsIEc7CjxVAFwI0_Gr0_Gr1UYxBIdaVFxhVjvjDU0xZFpf9x0JUBmhwUUUUU=
 X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
 
 On 2024/12/25 4:27, Kemeng Shi wrote:
-> Flag h_jdata is not used, just remove it.
+> Remove unused return value of jbd2_journal_cancel_revoke.
 > 
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
@@ -86,28 +87,56 @@ Looks good to me.
 Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
 
 > ---
->  include/linux/jbd2.h | 2 --
->  1 file changed, 2 deletions(-)
+>  fs/jbd2/revoke.c     | 5 +----
+>  include/linux/jbd2.h | 2 +-
+>  2 files changed, 2 insertions(+), 5 deletions(-)
 > 
+> diff --git a/fs/jbd2/revoke.c b/fs/jbd2/revoke.c
+> index 4556e4689024..af0208ed3619 100644
+> --- a/fs/jbd2/revoke.c
+> +++ b/fs/jbd2/revoke.c
+> @@ -420,12 +420,11 @@ int jbd2_journal_revoke(handle_t *handle, unsigned long long blocknr,
+>   * do not trust the Revoked bit on buffers unless RevokeValid is also
+>   * set.
+>   */
+> -int jbd2_journal_cancel_revoke(handle_t *handle, struct journal_head *jh)
+> +void jbd2_journal_cancel_revoke(handle_t *handle, struct journal_head *jh)
+>  {
+>  	struct jbd2_revoke_record_s *record;
+>  	journal_t *journal = handle->h_transaction->t_journal;
+>  	int need_cancel;
+> -	int did_revoke = 0;	/* akpm: debug */
+>  	struct buffer_head *bh = jh2bh(jh);
+>  
+>  	jbd2_debug(4, "journal_head %p, cancelling revoke\n", jh);
+> @@ -450,7 +449,6 @@ int jbd2_journal_cancel_revoke(handle_t *handle, struct journal_head *jh)
+>  			list_del(&record->hash);
+>  			spin_unlock(&journal->j_revoke_lock);
+>  			kmem_cache_free(jbd2_revoke_record_cache, record);
+> -			did_revoke = 1;
+>  		}
+>  	}
+>  
+> @@ -473,7 +471,6 @@ int jbd2_journal_cancel_revoke(handle_t *handle, struct journal_head *jh)
+>  			__brelse(bh2);
+>  		}
+>  	}
+> -	return did_revoke;
+>  }
+>  
+>  /*
 > diff --git a/include/linux/jbd2.h b/include/linux/jbd2.h
-> index 50f7ea8714bf..c7fdb2b1b9a6 100644
+> index c7fdb2b1b9a6..e2d1426d3e06 100644
 > --- a/include/linux/jbd2.h
 > +++ b/include/linux/jbd2.h
-> @@ -459,7 +459,6 @@ struct jbd2_revoke_table_s;
->   * @h_ref: Reference count on this handle.
->   * @h_err: Field for caller's use to track errors through large fs operations.
->   * @h_sync: Flag for sync-on-close.
-> - * @h_jdata: Flag to force data journaling.
->   * @h_reserved: Flag for handle for reserved credits.
->   * @h_aborted: Flag indicating fatal error on handle.
->   * @h_type: For handle statistics.
-> @@ -491,7 +490,6 @@ struct jbd2_journal_handle
+> @@ -1635,7 +1635,7 @@ extern int __init jbd2_journal_init_revoke_table_cache(void);
 >  
->  	/* Flags [no locking] */
->  	unsigned int	h_sync:		1;
-> -	unsigned int	h_jdata:	1;
->  	unsigned int	h_reserved:	1;
->  	unsigned int	h_aborted:	1;
->  	unsigned int	h_type:		8;
+>  extern void	   jbd2_journal_destroy_revoke(journal_t *);
+>  extern int	   jbd2_journal_revoke (handle_t *, unsigned long long, struct buffer_head *);
+> -extern int	   jbd2_journal_cancel_revoke(handle_t *, struct journal_head *);
+> +extern void	   jbd2_journal_cancel_revoke(handle_t *, struct journal_head *);
+>  extern void	   jbd2_journal_write_revoke_records(transaction_t *transaction,
+>  						     struct list_head *log_bufs);
+>  
 
 
