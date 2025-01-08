@@ -1,45 +1,46 @@
-Return-Path: <linux-ext4+bounces-5969-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5970-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17A9CA04EC9
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 02:21:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D889FA05030
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 03:11:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ACDB51888183
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 01:21:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EE9D1886866
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 02:11:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 860A178F38;
-	Wed,  8 Jan 2025 01:20:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 521A91A256B;
+	Wed,  8 Jan 2025 02:08:37 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from dggsgout11.his.huawei.com (dggsgout11.his.huawei.com [45.249.212.51])
+Received: from szxga08-in.huawei.com (szxga08-in.huawei.com [45.249.212.255])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2DA778F24;
-	Wed,  8 Jan 2025 01:20:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 190271A23B9;
+	Wed,  8 Jan 2025 02:08:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.255
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736299239; cv=none; b=FXYVrIARrd/1rNGyn44airrAKC1vqrVhLB9QkN4T15ZTmTcATQlLK0SrezVFBG2SPZDT5ML/a0YkNCvjcCXpuKew4q3lFUSd1b/8ogiyGyUpNO95XsdfHTacggOYXG/WhAc0kXNRSulxov3klK1LEhqB8HpZumSK84eZDIkWSmk=
+	t=1736302116; cv=none; b=nf8U4mG584fipYOeBWTHjznS+4kfuCDE1eS1yNjDpakgDT1wccwpEgrsoL8SF1aENshS7NckAmdoUb4OFA6oDLUXE4PlG6DzGWodVgdj1OFlW+0yaaFrhZXK3ySRuKugl8zWmY3QLTl1wVuQyZrpfI2o0yb4JhmqJmVorlzDBQg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736299239; c=relaxed/simple;
-	bh=IzOOzUG7AoU1E7QXJeIgLSgU3omWwrBeAwxDhmLwfRE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=IdTGQSGMc6OrgRqg7MuGV47Dw6wxwxVZ/Aff9gU+gH9ryUhrrJtfCBTO7Qe0bPvLYTOvWoii2h3jyK/gNylNnfpaqQFFC7noi9DQGphae1Q06y1x0lS4qN1pWEYWGXHLlyPfNdKDJQakZWC7UHhmjBqDiyWQQTfxbzrkMyh6jzY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com; spf=pass smtp.mailfrom=huaweicloud.com; arc=none smtp.client-ip=45.249.212.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=huaweicloud.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huaweicloud.com
-Received: from mail.maildlp.com (unknown [172.19.163.216])
-	by dggsgout11.his.huawei.com (SkyGuard) with ESMTP id 4YSVTR5J55z4f3lfJ;
-	Wed,  8 Jan 2025 09:20:11 +0800 (CST)
-Received: from mail02.huawei.com (unknown [10.116.40.128])
-	by mail.maildlp.com (Postfix) with ESMTP id 174F61A092F;
-	Wed,  8 Jan 2025 09:20:33 +0800 (CST)
-Received: from [10.174.179.80] (unknown [10.174.179.80])
-	by APP4 (Coremail) with SMTP id gCh0CgBHrGDe0n1nC4RfAQ--.53048S3;
-	Wed, 08 Jan 2025 09:20:32 +0800 (CST)
-Message-ID: <f26a21c9-2520-4deb-98f5-385adc92a934@huaweicloud.com>
-Date: Wed, 8 Jan 2025 09:20:30 +0800
+	s=arc-20240116; t=1736302116; c=relaxed/simple;
+	bh=yV8w28YSWeQK0MzXYTeq8sehGEQp5FF3e60syr5ihrY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=ceRlqpdfkK8btWirgaIq88Mm9OuJ/R8vtAUtvZSYdXekX8nRltkjJO66BbLIF9hdEezyCjEXIqaisIsBrHq89a4ErnHvw1p/r8yF8M7BEVocHd7f1LI7xTyqeYCfwRx8zbZJ3vZ/yvQghPQ33+zTlUJAb8yKJQ0p+NbfT5xNeyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.255
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.88.194])
+	by szxga08-in.huawei.com (SkyGuard) with ESMTP id 4YSWSx2ZXCz1W3j0;
+	Wed,  8 Jan 2025 10:04:49 +0800 (CST)
+Received: from kwepemg500008.china.huawei.com (unknown [7.202.181.45])
+	by mail.maildlp.com (Postfix) with ESMTPS id AA6951402D0;
+	Wed,  8 Jan 2025 10:08:30 +0800 (CST)
+Received: from [127.0.0.1] (10.174.177.71) by kwepemg500008.china.huawei.com
+ (7.202.181.45) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1544.11; Wed, 8 Jan
+ 2025 10:08:29 +0800
+Message-ID: <05106b71-5119-4b69-9b2f-523e60c31965@huawei.com>
+Date: Wed, 8 Jan 2025 10:08:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -47,70 +48,112 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 1/2] fs: introduce FALLOC_FL_FORCE_ZERO to fallocate
-To: Christoph Hellwig <hch@infradead.org>
-Cc: "Darrick J. Wong" <djwong@kernel.org>, Theodore Ts'o <tytso@mit.edu>,
- linux-fsdevel@vger.kernel.org, linux-ext4@vger.kernel.org,
- linux-kernel@vger.kernel.org, viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, adilger.kernel@dilger.ca, yi.zhang@huawei.com,
- chengzhihao1@huawei.com, yukuai3@huawei.com, yangerkun@huawei.com,
- Sai Chaitanya Mitta <mittachaitu@gmail.com>, linux-xfs@vger.kernel.org
-References: <20241228014522.2395187-1-yi.zhang@huaweicloud.com>
- <20241228014522.2395187-2-yi.zhang@huaweicloud.com>
- <Z3u-OCX86j-q7JXo@infradead.org> <20250106161732.GG1284777@mit.edu>
- <Z3wEhXakqrW4i3UC@infradead.org> <20250106173133.GB6174@frogsfrogsfrogs>
- <b964a57a-0237-4cbd-9aae-457527a44440@huaweicloud.com>
- <Z31Za6Ma97QPHp1W@infradead.org>
+Subject: =?UTF-8?B?UmU6IFtCVUcgUkVQT1JUXSBleHQ0OiDigJxlcnJvcnM9cmVtb3VudC1y?=
+ =?UTF-8?B?b+KAnSBoYXMgYmVjb21lIOKAnGVycm9ycz1zaHV0ZG93buKAnT8=?=
+To: "Darrick J. Wong" <djwong@kernel.org>
+CC: Theodore Ts'o <tytso@mit.edu>, Jan Kara <jack@suse.cz>,
+	"linux-ext4@vger.kernel.org" <linux-ext4@vger.kernel.org>, Christian Brauner
+	<brauner@kernel.org>, <sunyongjian1@huawei.com>, Yang Erkun
+	<yangerkun@huawei.com>, <linux-fsdevel@vger.kernel.org>,
+	<linux-xfs@vger.kernel.org>, Baokun Li <libaokun1@huawei.com>
+References: <22d652f6-cb3c-43f5-b2fe-0a4bb6516a04@huawei.com>
+ <z52ea53du2k66du24ju4yetqm72e6pvtcbwkrjf4oomw2feffq@355vymdndrxn>
+ <17108cad-efa8-46b4-a320-70d7b696f75b@huawei.com>
+ <umpsdxhd2dz6kgdttpm27tigrb3ytvpf3y3v73ugavgh4b5cuj@dnacioqwq4qq>
+ <20250103153517.GB1284777@mit.edu> <20250103155406.GC1284777@mit.edu>
+ <5eb2ad64-c6ea-45f8-9ba1-7de5c68d59aa@huawei.com>
+ <20250106234956.GM6174@frogsfrogsfrogs>
+ <0acc1709-1349-4dbb-ba3e-ae786c4b5b53@huawei.com>
+ <20250107070820.GJ6174@frogsfrogsfrogs>
 Content-Language: en-US
-From: Zhang Yi <yi.zhang@huaweicloud.com>
-In-Reply-To: <Z31Za6Ma97QPHp1W@infradead.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-CM-TRANSID:gCh0CgBHrGDe0n1nC4RfAQ--.53048S3
-X-Coremail-Antispam: 1UD129KBjvdXoW7JrykAF47uF1UCr47tr43Jrb_yoWDWrgE93
-	9Iqr4kAw1qqF97Aa1ayFZ8XrWxW3srGayUJry5Jw1fZF9xJa9xuF95Wr4S9F4xZF4jkr9I
-	9FsxXr4DG3WakjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8Yxn0WfASr-VFAUDa7-sFnT
-	9fnUUIcSsGvfJTRUUUbxxYFVCjjxCrM7AC8VAFwI0_Xr0_Wr1l1xkIjI8I6I8E6xAIw20E
-	Y4v20xvaj40_Wr0E3s1l1IIY67AEw4v_Jr0_Jr4l8cAvFVAK0II2c7xJM28CjxkF64kEwV
-	A0rcxSw2x7M28EF7xvwVC0I7IYx2IY67AKxVW7JVWDJwA2z4x0Y4vE2Ix0cI8IcVCY1x02
-	67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVAFwI0_GcCE3s1l84ACjcxK6I8E87Iv6xkF7I
-	0E14v26rxl6s0DM2AIxVAIcxkEcVAq07x20xvEncxIr21l5I8CrVACY4xI64kE6c02F40E
-	x7xfMcIj6xIIjxv20xvE14v26r1j6r18McIj6I8E87Iv67AKxVWUJVW8JwAm72CE4IkC6x
-	0Yz7v_Jr0_Gr1lF7xvr2IY64vIr41lFIxGxcIEc7CjxVA2Y2ka0xkIwI1lc7CjxVAaw2AF
-	wI0_Jw0_GFyl42xK82IYc2Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4
-	xG67AKxVWUJVWUGwC20s026x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r4a6rW5
-	MIIYrxkI7VAKI48JMIIF0xvE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I
-	0E14v26r4j6F4UMIIF0xvE42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVWU
-	JVW8JwCI42IY6I8E87Iv6xkF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUFk
-	u4UUUUU
-X-CM-SenderInfo: d1lo6xhdqjqx5xdzvxpfor3voofrz/
+From: Baokun Li <libaokun1@huawei.com>
+In-Reply-To: <20250107070820.GJ6174@frogsfrogsfrogs>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemg500008.china.huawei.com (7.202.181.45)
 
-On 2025/1/8 0:42, Christoph Hellwig wrote:
-> On Tue, Jan 07, 2025 at 10:05:47PM +0800, Zhang Yi wrote:
->> Sorry. the "pure overwrites" and "always-cow files" makes me confused,
->> this is mainly used to create a new written file range, but also could
->> be used to zero out an existing range, why you mentioned it exists to
->> facilitate pure overwrites?
-> 
-> If you're fine with writes to your file causing block allocations you
-> can already use the hole punch or preallocate fallocate modes.  No
-> need to actually send a command to the device.
-> 
-
-Okay, I misunderstood your point earlier. This is indeed prepared for
-subsequent overwrites. Thanks a lot for explaining.
-
-Thanks,
-Yi.
-
+On 2025/1/7 15:08, Darrick J. Wong wrote:
+> On Tue, Jan 07, 2025 at 10:01:32AM +0800, Baokun Li wrote:
+>> On 2025/1/7 7:49, Darrick J. Wong wrote:
+>>> On Sat, Jan 04, 2025 at 10:41:28AM +0800, Baokun Li wrote:
+>>>> Hi Ted,
+>>>>
+>>>> On 2025/1/3 23:54, Theodore Ts'o wrote:
+>>>>> On Fri, Jan 03, 2025 at 10:35:17AM -0500, Theodore Ts'o wrote:
+>>>>>> I don't see how setting the shutdown flag causes reads to fail.  That
+>>>>>> was true in an early version of the ext4 patch which implemented
+>>>>>> shutdown support, but one of the XFS developers (I don't remember if
+>>>>>> it was Dave or Cristoph) objected because XFS did not cause the
+>>>>>> read_pages function to fail.  Are you seeing this with an upstream
+>>>>>> kernel, or with a patched kernel?  The upstream kernel does *not* have
+>>>>>> the check in ext4_readpages() or ext4_read_folio() (post folio
+>>>>>> conversion).
+>>>>> OK, that's weird.  Testing on 6.13-rc4, I don't see the problem simulating an ext4 error:
+>>>>>
+>>>>> root@kvm-xfstests:~# mke2fs -t ext4 -Fq /dev/vdc
+>>>>> /dev/vdc contains a ext4 file system
+>>>>> 	last mounted on /vdc on Fri Jan  3 10:38:21 2025
+>>>>> root@kvm-xfstests:~# mount -t ext4 -o errors=continue /dev/vdc /vdc
+>>>> We are discussing "errors=remount-ro," as the title states, not the
+>>>> continue mode. The key code leading to the behavior change is as follows,
+>>>> therefore the continue mode is not affected.
+>>> Hmm.  On the one hand, XFS has generally returned EIO (or ESHUTDOWN in a
+>>> couple of specialty cases) when the fs has been shut down.
+>> Indeed, this is the intended behavior during shutdown.
+>>> OTOH XFS also doesn't have errors=remount-ro; it just dies, which I
+>>> think has been its behavior for a long time.
+>> Yes. As an aside, is there any way for xfs to determine if -EIO is
+>> originating from a hardware error or if the filesystem has been shutdown?
+> XFS knows the difference, but nothing above it does.
+Okay.
+>> Or would you consider it useful to have the mount command display
+>> "shutdown" when the file system is being shut down?
+> Trouble is, will mount get confused and try to pass ",shutdown" as part
+> of a remount operation?
+The ",shutdown" string is only displayed by show_options when specific
+flags are set; it's not actually parsed by remount. Unless the sysadmin
+sees it in the mount command output and then mounts with this option.
+> I suppose the fs is dead so what does it
+> matter...
+Since XFS is typically already shut down when it returns EIO, this prompt
+may not be important for xfs. However, it's not as straightforward to
+distinguish between EIO and shutdown for file systems that support a
+continue mode or allow some operations even after shutdown.
+>>> To me, it doesn't sound unreasonable for ext* to allow reads after a
+>>> shutdown when errors=remount-ro since it's always had that behavior.
+>> Yes, a previous bug fix inadvertently changed the behavior of
+>> errors=remount-ro,
+>> and the patch to correct this is coming.
 >>
->> For the "always-cow files", do you mean reflinked files? Could you
->> please give more details?
-> 
-> reflinked files will require out of place writes for shared blocks.
-> As will anything on device mapper snapshots.  Or any file on
-> file systems that write out of place (btrfs, f2fs, nilfs2, the
-> upcoming zoned xfs mode).
-> 
+>> Additionally, ext4 now allows directory reads even after shutdown, is this
+>> expected behavior?
+> There's no formal specification for what shutdown means, so ... it's not
+> unexpected.  XFS doesn't allow that.
+Okay.
+>>> Bonus Q: do you want an errors=fail variant to shut things down fast?
+>>>
+>>> --D
+>> In my opinion, I have not yet seen a scenario where the file system needs
+>> to be shut down after an error occurs. Therefore, using errors=remount-ro
+>> to prevent modifications after an error is sufficient. Of course, if
+>> customers have such needs, implementing this mode is also very simple.
+> IO errors, sure.  Metadata errors?  No, we want to stop the world
+> immediately, either so the sysadmin can go run xfs_repair, or the clod
+> manager can just kill the node and deploy another.
+>
+> --D
+
+The remount-ro mode generally only becomes read-only when metadata errors
+occur，too. I think if users have no need to read after an error, there is
+basically no difference between read-only and shutdown. In fact,
+errors=remount-ro does more; it allows users to back up some potentially
+lost data after an error and then exit gracefully. However, reading
+corrupted metadata does have some risks, for which we have done a lot of
+work.
+
+
+Regards,
+Baokun
 
 
