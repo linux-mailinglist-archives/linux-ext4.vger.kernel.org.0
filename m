@@ -1,46 +1,46 @@
-Return-Path: <linux-ext4+bounces-5973-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5974-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7933DA050F9
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 03:46:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 282CDA05179
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 04:13:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84E4B7A1F28
-	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 02:46:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 604DC1888C89
+	for <lists+linux-ext4@lfdr.de>; Wed,  8 Jan 2025 03:13:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24A911632D9;
-	Wed,  8 Jan 2025 02:46:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B59AA199EAF;
+	Wed,  8 Jan 2025 03:13:11 +0000 (UTC)
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+Received: from szxga03-in.huawei.com (szxga03-in.huawei.com [45.249.212.189])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B743E2594B9;
-	Wed,  8 Jan 2025 02:46:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CAE6189905;
+	Wed,  8 Jan 2025 03:13:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.189
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736304372; cv=none; b=XkbFS7hJ1SpW3nv0FDbqlIptsskSFzLvI141rU45+kdi9byzwfcHXColDg9yKR8LWtATX9FW1z5Ks9v+yilgXdLUn5lx8hfH8ZIIxpZ51PShoUGP/dLClrfTthp0P3TOOFEliR6Ak4n0C9uv9vfHt+/OebUnDO6RsKiQSTMpjx0=
+	t=1736305991; cv=none; b=b0yQuNT3fhce1Ws9cntdXmbE/hDhrFZRXo+wvyp7oweu8Io++lVIbQ2MWDwybZcdHNIs2V0tjWzFXsg1qnzZUFvqQV/NY7pWXfCu5LcZ4YGOcXvJpnycOReXW0FkpPdM70r8hH0hzhekcAEDgY8MgyLDHmBK9wxhTN6Am7JscVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736304372; c=relaxed/simple;
-	bh=4QLVpUvIo78RGWWlydmvjB7MKHaJnEr2+s94lopxKgY=;
+	s=arc-20240116; t=1736305991; c=relaxed/simple;
+	bh=kBey9aA+pYD3dzXs6+3rV4EWdOR1RGyrvenUBfQaRVM=;
 	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=YgqReBvMhDuwHtIAO5TZS8EKcRuunZIhAQABeide/aZyf3RL5zrSSo2jjxS8enzemUyT/+XXKtC/Hso1LRMTTCeiGB6NRS53YkvsCJ+xauVeGzUpCVD4s1XqRkUsshjLrHj+HUS5Fo0WQ6sDfmtCps2oLX2GcepfjlcZiigYTn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
+	 In-Reply-To:Content-Type; b=itvP7RmNmcU+A71/94cAf3SEV8N4hZt1ikjFkpB0zD0m8dBN01H8YMDDIIgE66t0ANs4WieLGSPuVn9cUr/Pg741xoNJUmv3+cZ+sNGRQ1bq9Pv4/XZd0XUTCSB8c6hZV+opkuAdWZObreDgrgxfPn/ADLDd48KpPIQqThcO6eo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.189
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.234])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4YSXK54zVMz2Djyk;
-	Wed,  8 Jan 2025 10:43:05 +0800 (CST)
+Received: from mail.maildlp.com (unknown [172.19.162.254])
+	by szxga03-in.huawei.com (SkyGuard) with ESMTP id 4YSXx04Y19zRkl6;
+	Wed,  8 Jan 2025 11:10:44 +0800 (CST)
 Received: from kwepemf100017.china.huawei.com (unknown [7.202.181.16])
-	by mail.maildlp.com (Postfix) with ESMTPS id A72F81400CB;
-	Wed,  8 Jan 2025 10:46:06 +0800 (CST)
+	by mail.maildlp.com (Postfix) with ESMTPS id 90AB418010B;
+	Wed,  8 Jan 2025 11:12:59 +0800 (CST)
 Received: from [10.174.179.80] (10.174.179.80) by
  kwepemf100017.china.huawei.com (7.202.181.16) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1544.11; Wed, 8 Jan 2025 10:46:05 +0800
-Message-ID: <ed2fa122-4907-4463-a38c-3544ffd00440@huawei.com>
-Date: Wed, 8 Jan 2025 10:46:05 +0800
+ 15.2.1544.11; Wed, 8 Jan 2025 11:12:58 +0800
+Message-ID: <1e9d3fa3-7951-4d26-a63a-d16927cb4a78@huawei.com>
+Date: Wed, 8 Jan 2025 11:12:58 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -48,81 +48,50 @@ List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] jbd2: remove unused return value of do_readahead
+Subject: Re: [PATCH 4/6] jbd2: remove stale comment of update_t_max_wait
 To: Kemeng Shi <shikemeng@huaweicloud.com>
 CC: <linux-ext4@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
 	<tytso@mit.edu>, <jack@suse.com>
 References: <20241224202707.1530558-1-shikemeng@huaweicloud.com>
- <20241224202707.1530558-4-shikemeng@huaweicloud.com>
+ <20241224202707.1530558-5-shikemeng@huaweicloud.com>
 Content-Language: en-US
 From: Zhang Yi <yi.zhang@huawei.com>
-In-Reply-To: <20241224202707.1530558-4-shikemeng@huaweicloud.com>
+In-Reply-To: <20241224202707.1530558-5-shikemeng@huaweicloud.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: dggems704-chm.china.huawei.com (10.3.19.181) To
+X-ClientProxiedBy: dggems701-chm.china.huawei.com (10.3.19.178) To
  kwepemf100017.china.huawei.com (7.202.181.16)
 
 On 2024/12/25 4:27, Kemeng Shi wrote:
-> Remove unused return value of do_readahead.
+> Commit 2d44292058828 "jbd2: remove CONFIG_JBD2_DEBUG to update t_max_wait"
+> removed jbd2_journal_enable_debug, just remove stale comment about
+> jbd2_journal_enable_debug.
 > 
 > Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
-
-Looks good to me.
-
-Reviewed-by: Zhang Yi <yi.zhang@huawei.com>
-
 > ---
->  fs/jbd2/recovery.c | 11 +++--------
->  1 file changed, 3 insertions(+), 8 deletions(-)
+>  fs/jbd2/transaction.c | 1 -
+>  1 file changed, 1 deletion(-)
 > 
-> diff --git a/fs/jbd2/recovery.c b/fs/jbd2/recovery.c
-> index 9192be7c19d8..a671f8ee7dd2 100644
-> --- a/fs/jbd2/recovery.c
-> +++ b/fs/jbd2/recovery.c
-> @@ -65,9 +65,8 @@ static void journal_brelse_array(struct buffer_head *b[], int n)
+> diff --git a/fs/jbd2/transaction.c b/fs/jbd2/transaction.c
+> index 66513c18ca29..e00b87635512 100644
+> --- a/fs/jbd2/transaction.c
+> +++ b/fs/jbd2/transaction.c
+> @@ -119,7 +119,6 @@ static void jbd2_get_transaction(journal_t *journal,
+>   * t_max_wait is carefully updated here with use of atomic compare exchange.
+>   * Note that there could be multiplre threads trying to do this simultaneously
+>   * hence using cmpxchg to avoid any use of locks in this case.
+> - * With this t_max_wait can be updated w/o enabling jbd2_journal_enable_debug.
 >   */
->  
->  #define MAXBUF 8
-> -static int do_readahead(journal_t *journal, unsigned int start)
-> +static void do_readahead(journal_t *journal, unsigned int start)
->  {
-> -	int err;
->  	unsigned int max, nbufs, next;
->  	unsigned long long blocknr;
->  	struct buffer_head *bh;
-> @@ -85,7 +84,7 @@ static int do_readahead(journal_t *journal, unsigned int start)
->  	nbufs = 0;
->  
->  	for (next = start; next < max; next++) {
-> -		err = jbd2_journal_bmap(journal, next, &blocknr);
-> +		int err = jbd2_journal_bmap(journal, next, &blocknr);
->  
->  		if (err) {
->  			printk(KERN_ERR "JBD2: bad block at offset %u\n",
-> @@ -94,10 +93,8 @@ static int do_readahead(journal_t *journal, unsigned int start)
->  		}
->  
->  		bh = __getblk(journal->j_dev, blocknr, journal->j_blocksize);
-> -		if (!bh) {
-> -			err = -ENOMEM;
-> +		if (!bh)
->  			goto failed;
-> -		}
->  
->  		if (!buffer_uptodate(bh) && !buffer_locked(bh)) {
->  			bufs[nbufs++] = bh;
-> @@ -112,12 +109,10 @@ static int do_readahead(journal_t *journal, unsigned int start)
->  
->  	if (nbufs)
->  		bh_readahead_batch(nbufs, bufs, 0);
-> -	err = 0;
->  
->  failed:
->  	if (nbufs)
->  		journal_brelse_array(bufs, nbufs);
-> -	return err;
->  }
->  
->  #endif /* __KERNEL__ */
+>  static inline void update_t_max_wait(transaction_t *transaction,
+>  				     unsigned long ts)
 
+Hi, Kemeng,
+
+It seems that the first sentence in this comment should be removed
+together, as it also appears staled.
+
+  "Update transaction's maximum wait time, if debugging is enabled."
+
+Thanks,
+Yi.
 
