@@ -1,47 +1,47 @@
-Return-Path: <linux-ext4+bounces-6037-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6038-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B092A097BB
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 17:44:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB037A097D3
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 17:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB4C83A97CA
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 16:44:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C8A1E168064
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 16:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCD4213232;
-	Fri, 10 Jan 2025 16:44:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B96FF213252;
+	Fri, 10 Jan 2025 16:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O5UR+WQT"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="vHRV9nyq"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F8720E714;
-	Fri, 10 Jan 2025 16:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B862212D6E;
+	Fri, 10 Jan 2025 16:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736527479; cv=none; b=QLC0oO1gY10bgwW8wJ/iRg9kCqNDddB9ReY6EnuedEnCg6gG4mo1gOz6IhKBkX2h8rgxb5p4onEhZiFjH7LhuiuWhPVTKHfUmXFVwhh4LpEz0Xu1WJ69w5tS2hV8LhmnLyxan8T5ik063AeG7/NO0PGLEw24pEmgUadAhay572c=
+	t=1736527820; cv=none; b=twWnm8Lnncn/A+U9sdzu6hvJbPq3nNscWOejhMOfdZ/sLTAJDq3dwyIDqfOgLcrJECyh35+i1jg+GRVKT0l6eq1U5ExF6Dqk2NJu/g65eWOqc9MXduHGJUP3ZyN/9szTmimjSz806XHc39jN+5xUWITk8CvDARYUEascx9IHpXc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736527479; c=relaxed/simple;
-	bh=C4CeHm6Or5VLGEzPlFMQwU1Lqi8VzWhjclCv/3py67E=;
+	s=arc-20240116; t=1736527820; c=relaxed/simple;
+	bh=5VSUGSu9BR1n/nKzKdICXzahPQ4soShf72WzqIUuGnE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JeTyoKJckcn1j18SB8FF/HRCUSvYcf8IHnEp/V/J0ocEKu2JNfvBxGu8ktPLWULWbt7r2p8pb0uPDbeQOOtoOpygLSpcSBkbL34NPo+8/Qwj47ikpjySUxtm6Qy8iFjWu2X5IAkHiV+KmodNK2A9eOBxZpQtFq7Bp9nqkzDZJpM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O5UR+WQT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADD1CC4CED6;
-	Fri, 10 Jan 2025 16:44:38 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=XHIJ1kXmEGtbA7sbhO9Fsv8tCeUPB0UE8Kwj8p/4NKuge2fOJiGUPVsVKy6jJFiI9PXOmaHP+d/RPbiFZWOu8tnSD55T06JhHuoYcL50TJPODhAN9bnxT9FtcW6Wmhj4fE4mFgg4LEe4X1zqGH/lYvDTyGvVq++NPfkB66zv0k4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=vHRV9nyq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 09E81C4CED6;
+	Fri, 10 Jan 2025 16:50:20 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736527478;
-	bh=C4CeHm6Or5VLGEzPlFMQwU1Lqi8VzWhjclCv/3py67E=;
+	s=k20201202; t=1736527820;
+	bh=5VSUGSu9BR1n/nKzKdICXzahPQ4soShf72WzqIUuGnE=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=O5UR+WQTuOopW+m3Pi1zmwj3sDf93V+XjOFJYBM1RzPO3sDZ1K+ormfip92T4e79w
-	 U7XfSgY+NLYzXu3FSqu6NPO6Duv551jmp1bCI/QrpFZEE2pZI1sr9JEOmCb6BY1OnU
-	 ygd6hC3MnYQ2N+RhjQSfldq11cHroGlaZKiItHVNmIb3DkLT0NVgh6huf2W9+DLo9X
-	 YeINgKpATzcjR+uCpeX3HIxD3GxiQDjsZM7pKUDW6Vf7Go2Sgai6ua3WPKo0H4Ox5B
-	 AqV/p/rvC1rT0uQQGOw0QzXTSq+PszsSgUN9oJlsXQxouGCrMbf3PP8PksxH6qiYUq
-	 YoNvaeUovuyGw==
-Date: Fri, 10 Jan 2025 08:44:38 -0800
+	b=vHRV9nyqpL+Ro7f3yAiw9q++PTaPDuF/ivKV9lmJ4Ukmz/yQRbrjnqsoGlttY/XBE
+	 Hq9zsm1IRvDBUJnmkp4CMx5ZoJwmszsP87Mt6ywM6PqXIwvlKTF6CPT/tknjZuZk7j
+	 w8Vnd87saIzejPxlLTyqpOGOqOhVoMYtwGiWX5Qe3IUJCaT066yCqLUUrgRR5rdbMj
+	 ty7WZb3SdAG0Y0EjvRRAXWvRACRC9iMC0RVfZTAL3YY9+yQVa2QyyJhQn6G9vgxX4P
+	 CiyXkEafzE/5RH7p1+fdiZxkwvvPC6ygb5InHSPPT0iJ2/hXirT2MXnGJ0/qT2Axab
+	 jaN+omHLMWPwQ==
+Date: Fri, 10 Jan 2025 08:50:19 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
 To: Alistair Popple <apopple@nvidia.com>
 Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, linux-mm@kvack.org,
@@ -59,11 +59,11 @@ Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, linux-mm@kvack.org,
 	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
 	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com,
 	chenhuacai@kernel.org, kernel@xen0n.name, loongarch@lists.linux.dev
-Subject: Re: [PATCH v6 05/26] fs/dax: Create a common implementation to break
- DAX layouts
-Message-ID: <20250110164438.GJ6156@frogsfrogsfrogs>
+Subject: Re: [PATCH v6 07/26] fs/dax: Ensure all pages are idle prior to
+ filesystem unmount
+Message-ID: <20250110165019.GK6156@frogsfrogsfrogs>
 References: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
- <79936ac15c917f4004397027f648d4fc9c092424.1736488799.git-series.apopple@nvidia.com>
+ <704662ae360abeb777ed00efc6f8f232a79ae4ff.1736488799.git-series.apopple@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -72,265 +72,230 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <79936ac15c917f4004397027f648d4fc9c092424.1736488799.git-series.apopple@nvidia.com>
+In-Reply-To: <704662ae360abeb777ed00efc6f8f232a79ae4ff.1736488799.git-series.apopple@nvidia.com>
 
-On Fri, Jan 10, 2025 at 05:00:33PM +1100, Alistair Popple wrote:
-> Prior to freeing a block file systems supporting FS DAX must check
-> that the associated pages are both unmapped from user-space and not
-> undergoing DMA or other access from eg. get_user_pages(). This is
-> achieved by unmapping the file range and scanning the FS DAX
-> page-cache to see if any pages within the mapping have an elevated
-> refcount.
+On Fri, Jan 10, 2025 at 05:00:35PM +1100, Alistair Popple wrote:
+> File systems call dax_break_mapping() prior to reallocating file
+> system blocks to ensure the page is not undergoing any DMA or other
+> accesses. Generally this is needed when a file is truncated to ensure
+> that if a block is reallocated nothing is writing to it. However
+> filesystems currently don't call this when an FS DAX inode is evicted.
 > 
-> This is done using two functions - dax_layout_busy_page_range() which
-> returns a page to wait for the refcount to become idle on. Rather than
-> open-code this introduce a common implementation to both unmap and
-> wait for the page to become idle.
+> This can cause problems when the file system is unmounted as a page
+> can continue to be under going DMA or other remote access after
+> unmount. This means if the file system is remounted any truncate or
+> other operation which requires the underlying file system block to be
+> freed will not wait for the remote access to complete. Therefore a
+> busy block may be reallocated to a new file leading to corruption.
 > 
 > Signed-off-by: Alistair Popple <apopple@nvidia.com>
-
-So now that Dan Carpenter has complained, I guess I should look at
-this...
-
+> 
 > ---
 > 
 > Changes for v5:
 > 
->  - Don't wait for idle pages on non-DAX mappings
-> 
-> Changes for v4:
-> 
->  - Fixed some build breakage due to missing symbol exports reported by
->    John Hubbard (thanks!).
+>  - Don't wait for pages to be idle in non-DAX mappings
 > ---
->  fs/dax.c            | 33 +++++++++++++++++++++++++++++++++
->  fs/ext4/inode.c     | 10 +---------
->  fs/fuse/dax.c       | 27 +++------------------------
->  fs/xfs/xfs_inode.c  | 23 +++++------------------
->  fs/xfs/xfs_inode.h  |  2 +-
->  include/linux/dax.h | 21 +++++++++++++++++++++
->  mm/madvise.c        |  8 ++++----
->  7 files changed, 68 insertions(+), 56 deletions(-)
+>  fs/dax.c            | 29 +++++++++++++++++++++++++++++
+>  fs/ext4/inode.c     | 32 ++++++++++++++------------------
+>  fs/xfs/xfs_inode.c  |  9 +++++++++
+>  fs/xfs/xfs_inode.h  |  1 +
+>  fs/xfs/xfs_super.c  | 18 ++++++++++++++++++
+>  include/linux/dax.h |  2 ++
+>  6 files changed, 73 insertions(+), 18 deletions(-)
 > 
 > diff --git a/fs/dax.c b/fs/dax.c
-> index d010c10..9c3bd07 100644
+> index 7008a73..4e49cc4 100644
 > --- a/fs/dax.c
 > +++ b/fs/dax.c
-> @@ -845,6 +845,39 @@ int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index)
->  	return ret;
+> @@ -883,6 +883,14 @@ static int wait_page_idle(struct page *page,
+>  				TASK_INTERRUPTIBLE, 0, 0, cb(inode));
 >  }
 >  
-> +static int wait_page_idle(struct page *page,
-> +			void (cb)(struct inode *),
-> +			struct inode *inode)
+> +static void wait_page_idle_uninterruptible(struct page *page,
+> +					void (cb)(struct inode *),
+> +					struct inode *inode)
 > +{
-> +	return ___wait_var_event(page, page_ref_count(page) == 1,
-> +				TASK_INTERRUPTIBLE, 0, 0, cb(inode));
+> +	___wait_var_event(page, page_ref_count(page) == 1,
+> +			TASK_UNINTERRUPTIBLE, 0, 0, cb(inode));
 > +}
 > +
-> +/*
-> + * Unmaps the inode and waits for any DMA to complete prior to deleting the
-> + * DAX mapping entries for the range.
-> + */
-> +int dax_break_mapping(struct inode *inode, loff_t start, loff_t end,
-> +		void (cb)(struct inode *))
+>  /*
+>   * Unmaps the inode and waits for any DMA to complete prior to deleting the
+>   * DAX mapping entries for the range.
+> @@ -911,6 +919,27 @@ int dax_break_mapping(struct inode *inode, loff_t start, loff_t end,
+>  }
+>  EXPORT_SYMBOL_GPL(dax_break_mapping);
+>  
+> +void dax_break_mapping_uninterruptible(struct inode *inode,
+> +				void (cb)(struct inode *))
 > +{
 > +	struct page *page;
-> +	int error;
 > +
 > +	if (!dax_mapping(inode->i_mapping))
-> +		return 0;
+> +		return;
 > +
 > +	do {
-> +		page = dax_layout_busy_page_range(inode->i_mapping, start, end);
+> +		page = dax_layout_busy_page_range(inode->i_mapping, 0,
+> +						LLONG_MAX);
 > +		if (!page)
 > +			break;
 > +
-> +		error = wait_page_idle(page, cb, inode);
-> +	} while (error == 0);
-
-You didn't initialize error to 0, so it could be any value.  What if
-dax_layout_busy_page_range returns null the first time through the loop?
-
+> +		wait_page_idle_uninterruptible(page, cb, inode);
+> +	} while (true);
 > +
-> +	return error;
+> +	dax_delete_mapping_range(inode->i_mapping, 0, LLONG_MAX);
 > +}
-> +EXPORT_SYMBOL_GPL(dax_break_mapping);
+> +EXPORT_SYMBOL_GPL(dax_break_mapping_uninterruptible);
 > +
 >  /*
 >   * Invalidate DAX entry if it is clean.
 >   */
-
-<I'm no expert, skipping to xfs>
-
+> diff --git a/fs/ext4/inode.c b/fs/ext4/inode.c
+> index ee8e83f..fa35161 100644
+> --- a/fs/ext4/inode.c
+> +++ b/fs/ext4/inode.c
+> @@ -163,6 +163,18 @@ int ext4_inode_is_fast_symlink(struct inode *inode)
+>  	       (inode->i_size < EXT4_N_BLOCKS * 4);
+>  }
+>  
+> +static void ext4_wait_dax_page(struct inode *inode)
+> +{
+> +	filemap_invalidate_unlock(inode->i_mapping);
+> +	schedule();
+> +	filemap_invalidate_lock(inode->i_mapping);
+> +}
+> +
+> +int ext4_break_layouts(struct inode *inode)
+> +{
+> +	return dax_break_mapping_inode(inode, ext4_wait_dax_page);
+> +}
+> +
+>  /*
+>   * Called at the last iput() if i_nlink is zero.
+>   */
+> @@ -181,6 +193,8 @@ void ext4_evict_inode(struct inode *inode)
+>  
+>  	trace_ext4_evict_inode(inode);
+>  
+> +	dax_break_mapping_uninterruptible(inode, ext4_wait_dax_page);
+> +
+>  	if (EXT4_I(inode)->i_flags & EXT4_EA_INODE_FL)
+>  		ext4_evict_ea_inode(inode);
+>  	if (inode->i_nlink) {
+> @@ -3902,24 +3916,6 @@ int ext4_update_disksize_before_punch(struct inode *inode, loff_t offset,
+>  	return ret;
+>  }
+>  
+> -static void ext4_wait_dax_page(struct inode *inode)
+> -{
+> -	filemap_invalidate_unlock(inode->i_mapping);
+> -	schedule();
+> -	filemap_invalidate_lock(inode->i_mapping);
+> -}
+> -
+> -int ext4_break_layouts(struct inode *inode)
+> -{
+> -	struct page *page;
+> -	int error;
+> -
+> -	if (WARN_ON_ONCE(!rwsem_is_locked(&inode->i_mapping->invalidate_lock)))
+> -		return -EINVAL;
+> -
+> -	return dax_break_mapping_inode(inode, ext4_wait_dax_page);
+> -}
+> -
+>  /*
+>   * ext4_punch_hole: punches a hole in a file by releasing the blocks
+>   * associated with the given offset and length
 > diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
-> index 42ea203..295730a 100644
+> index 4410b42..c7ec5ab 100644
 > --- a/fs/xfs/xfs_inode.c
 > +++ b/fs/xfs/xfs_inode.c
-> @@ -2715,21 +2715,17 @@ xfs_mmaplock_two_inodes_and_break_dax_layout(
->  	struct xfs_inode	*ip2)
->  {
->  	int			error;
-> -	bool			retry;
->  	struct page		*page;
->  
->  	if (ip1->i_ino > ip2->i_ino)
->  		swap(ip1, ip2);
->  
->  again:
-> -	retry = false;
->  	/* Lock the first inode */
->  	xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
-> -	error = xfs_break_dax_layouts(VFS_I(ip1), &retry);
-> -	if (error || retry) {
-> +	error = xfs_break_dax_layouts(VFS_I(ip1));
-> +	if (error) {
->  		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
-> -		if (error == 0 && retry)
-> -			goto again;
-
-Hmm, so the retry loop has moved into xfs_break_dax_layouts, which means
-that we no longer cycle the MMAPLOCK.  Why was the lock cycling
-unnecessary?
-
->  		return error;
->  	}
->  
-> @@ -2988,19 +2984,11 @@ xfs_wait_dax_page(
->  
->  int
->  xfs_break_dax_layouts(
-> -	struct inode		*inode,
-> -	bool			*retry)
-> +	struct inode		*inode)
->  {
-> -	struct page		*page;
-> -
->  	xfs_assert_ilocked(XFS_I(inode), XFS_MMAPLOCK_EXCL);
->  
-> -	page = dax_layout_busy_page(inode->i_mapping);
-> -	if (!page)
-> -		return 0;
-> -
-> -	*retry = true;
-> -	return dax_wait_page_idle(page, xfs_wait_dax_page, inode);
-> +	return dax_break_mapping_inode(inode, xfs_wait_dax_page);
+> @@ -2997,6 +2997,15 @@ xfs_break_dax_layouts(
+>  	return dax_break_mapping_inode(inode, xfs_wait_dax_page);
 >  }
 >  
+> +void
+> +xfs_break_dax_layouts_uninterruptible(
+> +	struct inode		*inode)
+> +{
+> +	xfs_assert_ilocked(XFS_I(inode), XFS_MMAPLOCK_EXCL);
+> +
+> +	dax_break_mapping_uninterruptible(inode, xfs_wait_dax_page);
+> +}
+> +
 >  int
-> @@ -3018,8 +3006,7 @@ xfs_break_layouts(
->  		retry = false;
->  		switch (reason) {
->  		case BREAK_UNMAP:
-> -			error = xfs_break_dax_layouts(inode, &retry);
-> -			if (error || retry)
-> +			if (xfs_break_dax_layouts(inode))
-
-dax_break_mapping can return -ERESTARTSYS, right?  So doesn't this need
-to be:
-			error = xfs_break_dax_layouts(inode);
-			if (error)
-				break;
-
-Hm?
-
---D
-
->  				break;
->  			fallthrough;
->  		case BREAK_WRITE:
+>  xfs_break_layouts(
+>  	struct inode		*inode,
 > diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
-> index 1648dc5..c4f03f6 100644
+> index c4f03f6..613797a 100644
 > --- a/fs/xfs/xfs_inode.h
 > +++ b/fs/xfs/xfs_inode.h
-> @@ -593,7 +593,7 @@ xfs_itruncate_extents(
->  	return xfs_itruncate_extents_flags(tpp, ip, whichfork, new_size, 0);
+> @@ -594,6 +594,7 @@ xfs_itruncate_extents(
 >  }
 >  
-> -int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
-> +int	xfs_break_dax_layouts(struct inode *inode);
+>  int	xfs_break_dax_layouts(struct inode *inode);
+> +void xfs_break_dax_layouts_uninterruptible(struct inode *inode);
 >  int	xfs_break_layouts(struct inode *inode, uint *iolock,
 >  		enum layout_break_reason reason);
 >  
+> diff --git a/fs/xfs/xfs_super.c b/fs/xfs/xfs_super.c
+> index 8524b9d..73ec060 100644
+> --- a/fs/xfs/xfs_super.c
+> +++ b/fs/xfs/xfs_super.c
+> @@ -751,6 +751,23 @@ xfs_fs_drop_inode(
+>  	return generic_drop_inode(inode);
+>  }
+>  
+> +STATIC void
+> +xfs_fs_evict_inode(
+> +	struct inode		*inode)
+> +{
+> +	struct xfs_inode	*ip = XFS_I(inode);
+> +	uint			iolock = XFS_IOLOCK_EXCL | XFS_MMAPLOCK_EXCL;
+> +
+> +	if (IS_DAX(inode)) {
+> +		xfs_ilock(ip, iolock);
+> +		xfs_break_dax_layouts_uninterruptible(inode);
+> +		xfs_iunlock(ip, iolock);
+
+If we're evicting the inode, why is it necessary to take i_rwsem and the
+mmap invalidation lock?  Shouldn't the evicting thread be the only one
+with access to this inode?
+
+--D
+
+> +	}
+> +
+> +	truncate_inode_pages_final(&inode->i_data);
+> +	clear_inode(inode);
+> +}
+> +
+>  static void
+>  xfs_mount_free(
+>  	struct xfs_mount	*mp)
+> @@ -1189,6 +1206,7 @@ static const struct super_operations xfs_super_operations = {
+>  	.destroy_inode		= xfs_fs_destroy_inode,
+>  	.dirty_inode		= xfs_fs_dirty_inode,
+>  	.drop_inode		= xfs_fs_drop_inode,
+> +	.evict_inode		= xfs_fs_evict_inode,
+>  	.put_super		= xfs_fs_put_super,
+>  	.sync_fs		= xfs_fs_sync_fs,
+>  	.freeze_fs		= xfs_fs_freeze,
 > diff --git a/include/linux/dax.h b/include/linux/dax.h
-> index 9b1ce98..f6583d3 100644
+> index ef9e02c..7c3773f 100644
 > --- a/include/linux/dax.h
 > +++ b/include/linux/dax.h
-> @@ -228,6 +228,20 @@ static inline void dax_read_unlock(int id)
+> @@ -274,6 +274,8 @@ static inline int __must_check dax_break_mapping_inode(struct inode *inode,
 >  {
+>  	return dax_break_mapping(inode, 0, LLONG_MAX, cb);
 >  }
->  #endif /* CONFIG_DAX */
-> +
-> +#if !IS_ENABLED(CONFIG_FS_DAX)
-> +static inline int __must_check dax_break_mapping(struct inode *inode,
-> +			    loff_t start, loff_t end, void (cb)(struct inode *))
-> +{
-> +	return 0;
-> +}
-> +
-> +static inline void dax_break_mapping_uninterruptible(struct inode *inode,
-> +						void (cb)(struct inode *))
-> +{
-> +}
-> +#endif
-> +
->  bool dax_alive(struct dax_device *dax_dev);
->  void *dax_get_private(struct dax_device *dax_dev);
->  long dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff, long nr_pages,
-> @@ -251,6 +265,13 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
->  int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index);
->  int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
->  				      pgoff_t index);
-> +int __must_check dax_break_mapping(struct inode *inode, loff_t start,
-> +				loff_t end, void (cb)(struct inode *));
-> +static inline int __must_check dax_break_mapping_inode(struct inode *inode,
-> +						void (cb)(struct inode *))
-> +{
-> +	return dax_break_mapping(inode, 0, LLONG_MAX, cb);
-> +}
+> +void dax_break_mapping_uninterruptible(struct inode *inode,
+> +				void (cb)(struct inode *));
 >  int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
 >  				  struct inode *dest, loff_t destoff,
 >  				  loff_t len, bool *is_same,
-> diff --git a/mm/madvise.c b/mm/madvise.c
-> index 49f3a75..1f4c99e 100644
-> --- a/mm/madvise.c
-> +++ b/mm/madvise.c
-> @@ -1063,7 +1063,7 @@ static int guard_install_pud_entry(pud_t *pud, unsigned long addr,
->  	pud_t pudval = pudp_get(pud);
->  
->  	/* If huge return >0 so we abort the operation + zap. */
-> -	return pud_trans_huge(pudval) || pud_devmap(pudval);
-> +	return pud_trans_huge(pudval);
->  }
->  
->  static int guard_install_pmd_entry(pmd_t *pmd, unsigned long addr,
-> @@ -1072,7 +1072,7 @@ static int guard_install_pmd_entry(pmd_t *pmd, unsigned long addr,
->  	pmd_t pmdval = pmdp_get(pmd);
->  
->  	/* If huge return >0 so we abort the operation + zap. */
-> -	return pmd_trans_huge(pmdval) || pmd_devmap(pmdval);
-> +	return pmd_trans_huge(pmdval);
->  }
->  
->  static int guard_install_pte_entry(pte_t *pte, unsigned long addr,
-> @@ -1183,7 +1183,7 @@ static int guard_remove_pud_entry(pud_t *pud, unsigned long addr,
->  	pud_t pudval = pudp_get(pud);
->  
->  	/* If huge, cannot have guard pages present, so no-op - skip. */
-> -	if (pud_trans_huge(pudval) || pud_devmap(pudval))
-> +	if (pud_trans_huge(pudval))
->  		walk->action = ACTION_CONTINUE;
->  
->  	return 0;
-> @@ -1195,7 +1195,7 @@ static int guard_remove_pmd_entry(pmd_t *pmd, unsigned long addr,
->  	pmd_t pmdval = pmdp_get(pmd);
->  
->  	/* If huge, cannot have guard pages present, so no-op - skip. */
-> -	if (pmd_trans_huge(pmdval) || pmd_devmap(pmdval))
-> +	if (pmd_trans_huge(pmdval))
->  		walk->action = ACTION_CONTINUE;
->  
->  	return 0;
 > -- 
 > git-series 0.9.1
 > 
