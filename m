@@ -1,63 +1,69 @@
-Return-Path: <linux-ext4+bounces-6036-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6037-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 381ACA097A7
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 17:39:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4B092A097BB
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 17:44:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4E1D83AAA6E
-	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 16:39:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB4C83A97CA
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 16:44:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F45C212F86;
-	Fri, 10 Jan 2025 16:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBCD4213232;
+	Fri, 10 Jan 2025 16:44:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="dZ7k25Mp"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O5UR+WQT"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3322A205AAE
-	for <linux-ext4@vger.kernel.org>; Fri, 10 Jan 2025 16:39:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43F8720E714;
+	Fri, 10 Jan 2025 16:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736527156; cv=none; b=XUiVDwZwqtNWJEE3opDVl5pzUNhKFotwCTC1NlXZYutP1MdiaVlS1rwUzZhUgFhvgAgAS1Zkl+HgogKhOKbGBUz+jBO15Ap/epo5pYSduou3bUG5rLJpwI6QqI89N0GddVp8Rj3T+ENVlgMI7BrRjJ+X1h5EdueGgQs9cbtlugI=
+	t=1736527479; cv=none; b=QLC0oO1gY10bgwW8wJ/iRg9kCqNDddB9ReY6EnuedEnCg6gG4mo1gOz6IhKBkX2h8rgxb5p4onEhZiFjH7LhuiuWhPVTKHfUmXFVwhh4LpEz0Xu1WJ69w5tS2hV8LhmnLyxan8T5ik063AeG7/NO0PGLEw24pEmgUadAhay572c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736527156; c=relaxed/simple;
-	bh=TwZqzwu17hBRkWg5st+982oE0D5RXalZbub+dt2JLSs=;
+	s=arc-20240116; t=1736527479; c=relaxed/simple;
+	bh=C4CeHm6Or5VLGEzPlFMQwU1Lqi8VzWhjclCv/3py67E=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kMX/zamTu5Jdy+4QzHTpy2F/BTzCr5yn9VruFsofTU7ZUR4wyOeD3RNgDQc7MHGW83f/VmR6Z47oUw8X9F07ZSRuvUG28o4ejW0uji9J+x2RJU2Kt67q9UplSssgl2ikSHSgYzNshL6Fhvj5zPEr4a7QlCVaraxQDsGWuFs12fw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=dZ7k25Mp; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-114-113.bstnma.fios.verizon.net [173.48.114.113])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50AGcxj2009956
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 10 Jan 2025 11:39:00 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1736527141; bh=GBsvQRzNc4mpMIFiRQGhygjegaZHYY26FpHh0OrMdhs=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=dZ7k25MpwPto4bycwNqFwE6UE9o4Dp+1ttsdxlHB+/MtnI8u09SDtnbDs9Ct1SsNv
-	 H6Ad2t2VkONlFXdE3V00CiqArqfAutoZ3CcvRDeIzdvqWryw/9sFfKnK7zMSEdR4YM
-	 uQUZMOh/nonNyTmSlcVX/j/I1syse6BxNYyG6r70zVrUm/z9/cpdKkQAteGpL9t6re
-	 OcC1t1oxArs+BTAKPf6crwOj9aP6uMcyhhX/i36sUc8bC/2E+DEeME0XBDtIaKKspu
-	 8wUwKewb5vHV48iU/jVbnr52KiqdirfJHpD/FUorfO5/5Wel7R809vwOcYkaoDJ6uQ
-	 Q0cxPWgF+ormQ==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 481A915C0147; Fri, 10 Jan 2025 11:38:59 -0500 (EST)
-Date: Fri, 10 Jan 2025 11:38:59 -0500
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-        linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-        ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
-Subject: Re: [RFC 4/5] check,common/config: Add support for central fsconfig
-Message-ID: <20250110163859.GB1514771@mit.edu>
-References: <cover.1736496620.git.nirjhar.roy.lists@gmail.com>
- <9a6764237b900f40e563d8dee2853f1430245b74.1736496620.git.nirjhar.roy.lists@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JeTyoKJckcn1j18SB8FF/HRCUSvYcf8IHnEp/V/J0ocEKu2JNfvBxGu8ktPLWULWbt7r2p8pb0uPDbeQOOtoOpygLSpcSBkbL34NPo+8/Qwj47ikpjySUxtm6Qy8iFjWu2X5IAkHiV+KmodNK2A9eOBxZpQtFq7Bp9nqkzDZJpM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O5UR+WQT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id ADD1CC4CED6;
+	Fri, 10 Jan 2025 16:44:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1736527478;
+	bh=C4CeHm6Or5VLGEzPlFMQwU1Lqi8VzWhjclCv/3py67E=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=O5UR+WQTuOopW+m3Pi1zmwj3sDf93V+XjOFJYBM1RzPO3sDZ1K+ormfip92T4e79w
+	 U7XfSgY+NLYzXu3FSqu6NPO6Duv551jmp1bCI/QrpFZEE2pZI1sr9JEOmCb6BY1OnU
+	 ygd6hC3MnYQ2N+RhjQSfldq11cHroGlaZKiItHVNmIb3DkLT0NVgh6huf2W9+DLo9X
+	 YeINgKpATzcjR+uCpeX3HIxD3GxiQDjsZM7pKUDW6Vf7Go2Sgai6ua3WPKo0H4Ox5B
+	 AqV/p/rvC1rT0uQQGOw0QzXTSq+PszsSgUN9oJlsXQxouGCrMbf3PP8PksxH6qiYUq
+	 YoNvaeUovuyGw==
+Date: Fri, 10 Jan 2025 08:44:38 -0800
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Alistair Popple <apopple@nvidia.com>
+Cc: akpm@linux-foundation.org, dan.j.williams@intel.com, linux-mm@kvack.org,
+	alison.schofield@intel.com, lina@asahilina.net,
+	zhang.lyra@gmail.com, gerald.schaefer@linux.ibm.com,
+	vishal.l.verma@intel.com, dave.jiang@intel.com, logang@deltatee.com,
+	bhelgaas@google.com, jack@suse.cz, jgg@ziepe.ca,
+	catalin.marinas@arm.com, will@kernel.org, mpe@ellerman.id.au,
+	npiggin@gmail.com, dave.hansen@linux.intel.com, ira.weiny@intel.com,
+	willy@infradead.org, tytso@mit.edu, linmiaohe@huawei.com,
+	david@redhat.com, peterx@redhat.com, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org, nvdimm@lists.linux.dev,
+	linux-cxl@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org,
+	jhubbard@nvidia.com, hch@lst.de, david@fromorbit.com,
+	chenhuacai@kernel.org, kernel@xen0n.name, loongarch@lists.linux.dev
+Subject: Re: [PATCH v6 05/26] fs/dax: Create a common implementation to break
+ DAX layouts
+Message-ID: <20250110164438.GJ6156@frogsfrogsfrogs>
+References: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
+ <79936ac15c917f4004397027f648d4fc9c092424.1736488799.git-series.apopple@nvidia.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -66,103 +72,266 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <9a6764237b900f40e563d8dee2853f1430245b74.1736496620.git.nirjhar.roy.lists@gmail.com>
+In-Reply-To: <79936ac15c917f4004397027f648d4fc9c092424.1736488799.git-series.apopple@nvidia.com>
 
-On Fri, Jan 10, 2025 at 09:10:28AM +0000, Nirjhar Roy (IBM) wrote:
-> This adds support to pick and use any existing FS config from
-> configs/<fstype>/<config>. e.g.
+On Fri, Jan 10, 2025 at 05:00:33PM +1100, Alistair Popple wrote:
+> Prior to freeing a block file systems supporting FS DAX must check
+> that the associated pages are both unmapped from user-space and not
+> undergoing DMA or other access from eg. get_user_pages(). This is
+> achieved by unmapping the file range and scanning the FS DAX
+> page-cache to see if any pages within the mapping have an elevated
+> refcount.
 > 
-> configs/xfs/1k
-> configs/xfs/4k
-> configs/ext4/4k
-> configs/ext4/64k
+> This is done using two functions - dax_layout_busy_page_range() which
+> returns a page to wait for the refcount to become idle on. Rather than
+> open-code this introduce a common implementation to both unmap and
+> wait for the page to become idle.
 > 
-> This should help us maintain and test different fs test
-> configurations from a central place. We also hope that
-> this will be useful for both developers and testers to
-> look into what is being actively maintained and tested
-> by FS Maintainers.
+> Signed-off-by: Alistair Popple <apopple@nvidia.com>
 
-I haven't been using the current in-place configs in kvm-xfstests and
-gce-xfstests because there are number of things that my setup can
-support that xfstests native config doesn't support (and becuase my
-system predates the FS config setup).  I don't mind just using my own
-custom setup, but if we can keep feature parity, perhaps someday I can
-switch over to xfstests's system.  This might also make it easier for
-people to more easily test using the same setup as the FS maintainers,
-regardless of which test running infrastructure they are using.
+So now that Dan Carpenter has complained, I guess I should look at
+this...
 
-A) A way of specifying the minimum device size needed for the TEST and
-      SCRATCH device.  Using a smaller file system size reduces test
-      run time, and if you are paying for cloud test infrastructure,
-      the size of the Google Persistent Disk or Amazon Elastic Block
-      Storage has a direct impact on the cost per test, which in turn
-      impacts how many tests we can afford to run.  But for certain
-      test configurations, such as using a larger block size, or using
-      bigalloc, a larger test device size might be needed in order for
-      tests to be able to run correctly.
+> ---
+> 
+> Changes for v5:
+> 
+>  - Don't wait for idle pages on non-DAX mappings
+> 
+> Changes for v4:
+> 
+>  - Fixed some build breakage due to missing symbol exports reported by
+>    John Hubbard (thanks!).
+> ---
+>  fs/dax.c            | 33 +++++++++++++++++++++++++++++++++
+>  fs/ext4/inode.c     | 10 +---------
+>  fs/fuse/dax.c       | 27 +++------------------------
+>  fs/xfs/xfs_inode.c  | 23 +++++------------------
+>  fs/xfs/xfs_inode.h  |  2 +-
+>  include/linux/dax.h | 21 +++++++++++++++++++++
+>  mm/madvise.c        |  8 ++++----
+>  7 files changed, 68 insertions(+), 56 deletions(-)
+> 
+> diff --git a/fs/dax.c b/fs/dax.c
+> index d010c10..9c3bd07 100644
+> --- a/fs/dax.c
+> +++ b/fs/dax.c
+> @@ -845,6 +845,39 @@ int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index)
+>  	return ret;
+>  }
+>  
+> +static int wait_page_idle(struct page *page,
+> +			void (cb)(struct inode *),
+> +			struct inode *inode)
+> +{
+> +	return ___wait_var_event(page, page_ref_count(page) == 1,
+> +				TASK_INTERRUPTIBLE, 0, 0, cb(inode));
+> +}
+> +
+> +/*
+> + * Unmaps the inode and waits for any DMA to complete prior to deleting the
+> + * DAX mapping entries for the range.
+> + */
+> +int dax_break_mapping(struct inode *inode, loff_t start, loff_t end,
+> +		void (cb)(struct inode *))
+> +{
+> +	struct page *page;
+> +	int error;
+> +
+> +	if (!dax_mapping(inode->i_mapping))
+> +		return 0;
+> +
+> +	do {
+> +		page = dax_layout_busy_page_range(inode->i_mapping, start, end);
+> +		if (!page)
+> +			break;
+> +
+> +		error = wait_page_idle(page, cb, inode);
+> +	} while (error == 0);
 
-B) A way of specifying test exclusions, both at a global level, or on
-	a per-fs, or on a per-configuration basis.  It should also be
-	possible to specify the kernel version being tested, and so
-	that certain test exclusions might only be done when testing
-	LTS kernels (for example):
+You didn't initialize error to 0, so it could be any value.  What if
+dax_layout_busy_page_range returns null the first time through the loop?
 
-#if LINUX_VERSION_CODE < KERNEL_VERSION(6,6,30)
-// This test failure is fixed by commit 631426ba1d45q ("mm/madvise:
-// make MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY properly"),
-// which first landed in v6.9, and was backported to 6.6.30 as commit
-// 631426ba1d45.  Unfortunately, it's too involved to backport it and its
-// dependencies to the 6.1 or earlier LTS kernels
-generic/743
-#endif
+> +
+> +	return error;
+> +}
+> +EXPORT_SYMBOL_GPL(dax_break_mapping);
+> +
+>  /*
+>   * Invalidate DAX entry if it is clean.
+>   */
 
-C) A way to run shell functions to do setups for testing things like
-	overlayfs, or nfs (where I may be starting separate VM's for
-	the NFS server, or needing to find the IP address for the NFS
-	server running the appropriate kernel under test, which either
-	been the same as the kernel under test, or which might be some
-	standard server version, such as a RHEL or SLES kernel), as
-	part of the setup and teardown of a particular test
-	configuration.
+<I'm no expert, skipping to xfs>
 
-D) I also have a really nice scheme for specifying a mkfs
-	configuration for testing LTS kernels, since I use the same
-	test appliance for testing upstream and LTS/product kernels,
-	and the latest mkfs.xfs will produce a file system image that
-	isn't supported by a 5.15 LTS kernel.  Product teams might
-	also want to run tests using the mkfs configuration for that
-	era kernel, even if a 6.1 kernel can support a file system
-	created using the latest version of xfsprogs or e2fsprogs.
+> diff --git a/fs/xfs/xfs_inode.c b/fs/xfs/xfs_inode.c
+> index 42ea203..295730a 100644
+> --- a/fs/xfs/xfs_inode.c
+> +++ b/fs/xfs/xfs_inode.c
+> @@ -2715,21 +2715,17 @@ xfs_mmaplock_two_inodes_and_break_dax_layout(
+>  	struct xfs_inode	*ip2)
+>  {
+>  	int			error;
+> -	bool			retry;
+>  	struct page		*page;
+>  
+>  	if (ip1->i_ino > ip2->i_ino)
+>  		swap(ip1, ip2);
+>  
+>  again:
+> -	retry = false;
+>  	/* Lock the first inode */
+>  	xfs_ilock(ip1, XFS_MMAPLOCK_EXCL);
+> -	error = xfs_break_dax_layouts(VFS_I(ip1), &retry);
+> -	if (error || retry) {
+> +	error = xfs_break_dax_layouts(VFS_I(ip1));
+> +	if (error) {
+>  		xfs_iunlock(ip1, XFS_MMAPLOCK_EXCL);
+> -		if (error == 0 && retry)
+> -			goto again;
 
-	Doing this is a bit non-trivial due to a misfeature of how
-	mkfs.xfs works, but I have a workaround that some might find
-	useful here:
+Hmm, so the retry loop has moved into xfs_break_dax_layouts, which means
+that we no longer cycle the MMAPLOCK.  Why was the lock cycling
+unnecessary?
 
-   https://github.com/tytso/xfstests-bld/commit/f62433b74146e6ecacdeace306828c6c7510c4a6
+>  		return error;
+>  	}
+>  
+> @@ -2988,19 +2984,11 @@ xfs_wait_dax_page(
+>  
+>  int
+>  xfs_break_dax_layouts(
+> -	struct inode		*inode,
+> -	bool			*retry)
+> +	struct inode		*inode)
+>  {
+> -	struct page		*page;
+> -
+>  	xfs_assert_ilocked(XFS_I(inode), XFS_MMAPLOCK_EXCL);
+>  
+> -	page = dax_layout_busy_page(inode->i_mapping);
+> -	if (!page)
+> -		return 0;
+> -
+> -	*retry = true;
+> -	return dax_wait_page_idle(page, xfs_wait_dax_page, inode);
+> +	return dax_break_mapping_inode(inode, xfs_wait_dax_page);
+>  }
+>  
+>  int
+> @@ -3018,8 +3006,7 @@ xfs_break_layouts(
+>  		retry = false;
+>  		switch (reason) {
+>  		case BREAK_UNMAP:
+> -			error = xfs_break_dax_layouts(inode, &retry);
+> -			if (error || retry)
+> +			if (xfs_break_dax_layouts(inode))
 
-	Note that this might also be useful for xfstests, where
-	specific xfstests scripts have to handle cases where mkfs.xfs
-	might unexpectedly fail due to an unfortunate combination
-	between the test-specific _scratch_mkfs options, and the
-	global MKFS_OPTIONS.  This never happens with ext4, due to how
-	mkfs.ext4 handles conflicting command-line options, but it
-	*is* a problem with mkfs.xfs.  If you think merging an 150
-	line shell script library is easier than trying to get
-	consensus from within the xfs community, here's a technical
-	workaround to what might be charitably described as a
-	disagreement between the xfs architects and the needs of the
-	testing community.  :-)
+dax_break_mapping can return -ERESTARTSYS, right?  So doesn't this need
+to be:
+			error = xfs_break_dax_layouts(inode);
+			if (error)
+				break;
 
-If we're going to have critical mass, maybe this is something that's
-worth discussing at the upcoming LSF/MM?  As I said, I'm happy having
-this be an exclusive feature in gce-xfstests and kvm-xfstests, but
-perhaps it would make sense to uplevel some of this feature into
-xfstests so that more people can take advantage of it, and to make it
-easier for us to share test configs across test teams and upstream
-developers?
+Hm?
 
-Cheers,
+--D
 
-						- Ted
+>  				break;
+>  			fallthrough;
+>  		case BREAK_WRITE:
+> diff --git a/fs/xfs/xfs_inode.h b/fs/xfs/xfs_inode.h
+> index 1648dc5..c4f03f6 100644
+> --- a/fs/xfs/xfs_inode.h
+> +++ b/fs/xfs/xfs_inode.h
+> @@ -593,7 +593,7 @@ xfs_itruncate_extents(
+>  	return xfs_itruncate_extents_flags(tpp, ip, whichfork, new_size, 0);
+>  }
+>  
+> -int	xfs_break_dax_layouts(struct inode *inode, bool *retry);
+> +int	xfs_break_dax_layouts(struct inode *inode);
+>  int	xfs_break_layouts(struct inode *inode, uint *iolock,
+>  		enum layout_break_reason reason);
+>  
+> diff --git a/include/linux/dax.h b/include/linux/dax.h
+> index 9b1ce98..f6583d3 100644
+> --- a/include/linux/dax.h
+> +++ b/include/linux/dax.h
+> @@ -228,6 +228,20 @@ static inline void dax_read_unlock(int id)
+>  {
+>  }
+>  #endif /* CONFIG_DAX */
+> +
+> +#if !IS_ENABLED(CONFIG_FS_DAX)
+> +static inline int __must_check dax_break_mapping(struct inode *inode,
+> +			    loff_t start, loff_t end, void (cb)(struct inode *))
+> +{
+> +	return 0;
+> +}
+> +
+> +static inline void dax_break_mapping_uninterruptible(struct inode *inode,
+> +						void (cb)(struct inode *))
+> +{
+> +}
+> +#endif
+> +
+>  bool dax_alive(struct dax_device *dax_dev);
+>  void *dax_get_private(struct dax_device *dax_dev);
+>  long dax_direct_access(struct dax_device *dax_dev, pgoff_t pgoff, long nr_pages,
+> @@ -251,6 +265,13 @@ vm_fault_t dax_finish_sync_fault(struct vm_fault *vmf,
+>  int dax_delete_mapping_entry(struct address_space *mapping, pgoff_t index);
+>  int dax_invalidate_mapping_entry_sync(struct address_space *mapping,
+>  				      pgoff_t index);
+> +int __must_check dax_break_mapping(struct inode *inode, loff_t start,
+> +				loff_t end, void (cb)(struct inode *));
+> +static inline int __must_check dax_break_mapping_inode(struct inode *inode,
+> +						void (cb)(struct inode *))
+> +{
+> +	return dax_break_mapping(inode, 0, LLONG_MAX, cb);
+> +}
+>  int dax_dedupe_file_range_compare(struct inode *src, loff_t srcoff,
+>  				  struct inode *dest, loff_t destoff,
+>  				  loff_t len, bool *is_same,
+> diff --git a/mm/madvise.c b/mm/madvise.c
+> index 49f3a75..1f4c99e 100644
+> --- a/mm/madvise.c
+> +++ b/mm/madvise.c
+> @@ -1063,7 +1063,7 @@ static int guard_install_pud_entry(pud_t *pud, unsigned long addr,
+>  	pud_t pudval = pudp_get(pud);
+>  
+>  	/* If huge return >0 so we abort the operation + zap. */
+> -	return pud_trans_huge(pudval) || pud_devmap(pudval);
+> +	return pud_trans_huge(pudval);
+>  }
+>  
+>  static int guard_install_pmd_entry(pmd_t *pmd, unsigned long addr,
+> @@ -1072,7 +1072,7 @@ static int guard_install_pmd_entry(pmd_t *pmd, unsigned long addr,
+>  	pmd_t pmdval = pmdp_get(pmd);
+>  
+>  	/* If huge return >0 so we abort the operation + zap. */
+> -	return pmd_trans_huge(pmdval) || pmd_devmap(pmdval);
+> +	return pmd_trans_huge(pmdval);
+>  }
+>  
+>  static int guard_install_pte_entry(pte_t *pte, unsigned long addr,
+> @@ -1183,7 +1183,7 @@ static int guard_remove_pud_entry(pud_t *pud, unsigned long addr,
+>  	pud_t pudval = pudp_get(pud);
+>  
+>  	/* If huge, cannot have guard pages present, so no-op - skip. */
+> -	if (pud_trans_huge(pudval) || pud_devmap(pudval))
+> +	if (pud_trans_huge(pudval))
+>  		walk->action = ACTION_CONTINUE;
+>  
+>  	return 0;
+> @@ -1195,7 +1195,7 @@ static int guard_remove_pmd_entry(pmd_t *pmd, unsigned long addr,
+>  	pmd_t pmdval = pmdp_get(pmd);
+>  
+>  	/* If huge, cannot have guard pages present, so no-op - skip. */
+> -	if (pmd_trans_huge(pmdval) || pmd_devmap(pmdval))
+> +	if (pmd_trans_huge(pmdval))
+>  		walk->action = ACTION_CONTINUE;
+>  
+>  	return 0;
+> -- 
+> git-series 0.9.1
+> 
 
