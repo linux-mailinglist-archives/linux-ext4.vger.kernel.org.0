@@ -1,197 +1,420 @@
-Return-Path: <linux-ext4+bounces-5997-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-5998-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5773CA0802D
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jan 2025 19:50:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C7EDA08725
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 07:01:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E89CD188AFA7
-	for <lists+linux-ext4@lfdr.de>; Thu,  9 Jan 2025 18:50:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A4010188AFB7
+	for <lists+linux-ext4@lfdr.de>; Fri, 10 Jan 2025 06:01:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED58F1AA1CC;
-	Thu,  9 Jan 2025 18:50:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E17C2066FD;
+	Fri, 10 Jan 2025 06:01:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="N431crZq"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-il1-f205.google.com (mail-il1-f205.google.com [209.85.166.205])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04on2049.outbound.protection.outlook.com [40.107.100.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EB3C8BA2D
-	for <linux-ext4@vger.kernel.org>; Thu,  9 Jan 2025 18:50:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.205
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736448628; cv=none; b=tqhnaTvf9g/hZD1pmgS546SPlUh5d3W+IAnq5n2IgBaXmLc+pBUNGGtsWswg90seCZ4MVoikhiL6XwXrOMFEup/flzKcNTx519cht8E5vrpcUxxN4mS0FtgQKwa5r5hqDXVYCJF4CqZfrO8uvZ3q88mwJx9LLrwb6R7tCqLcCqQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736448628; c=relaxed/simple;
-	bh=H4CZjOmYC0NCec9umLKhSOFtV8cwSdEMnaok6rz7QWY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=R0G6UEq23SfCAwTgg6m6ihr2x+CQA3wgLNx1uY0mCq6FnMwi+MEakMFUOH7I3tBpTZlvLNW0WsrKE7EmpERCjP/Zawp27M1K8bR7T7GBQ7yXPGAx6f33vVA1TOAoovZLBgTHTIPq3icK+bME9GPVckNSuBRUfhO01oUNZi1EewU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.205
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f205.google.com with SMTP id e9e14a558f8ab-3a9d3e48637so10300015ab.1
-        for <linux-ext4@vger.kernel.org>; Thu, 09 Jan 2025 10:50:25 -0800 (PST)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736448625; x=1737053425;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=THYoIrGbXFYQttYPv4IJLSufIMQMNQ+423rhjxYwkV8=;
-        b=nQDEnNKRjZOMLYURi7rE761InxiohrZi+MNlJcyCae+4d00I7hVkXY+caWmOUHZan7
-         ZyYtiT3VDA/GqpGZmDz0wUGNNt1TPXFIO3ppYSPQWakldLsxoXJoYEXHb90Y030VaSWp
-         oKy96GCez6UhZ0bwLe/kQHZmEuLAFV8zfYIDpMGc5xkc6dGyXxshGOatPtTejD1XSVUD
-         AV4lo5rduQx77BbIvxS4/eNYL3uh3AznE4hNXtpv0SSFVzoGdIS3Upl0ezTSAtKbfRqY
-         qqGesZQY+fq0SClBrb2iCqiMnzva3ft+fYivCIBOhiIkQuYk6g8WhiBmVNgVI2f7blsf
-         M25Q==
-X-Forwarded-Encrypted: i=1; AJvYcCVfZXpN7ZxHcsMzHW7s8SZe/4s6PWnkhVS7Zrk2WPxDJercaLEkrKTE4HyGFhEVAA5Z54XVeI/dlaAr@vger.kernel.org
-X-Gm-Message-State: AOJu0YxadnUQPJUNrb7dmumPDr/x+qrIHFfxJ/78D2qQS1hDJxoah0Wk
-	hgmfHrRQes+xDkf2CEyKP9vECOZwwJtcyjfhpOdWCzkSnVJLZksvDsYgzEibFhxkYv0dQhO1elA
-	2tpDmLmp3Qooit+Yi4hLMXaI5TqwSSpcJ/DZbpBNFjMTGdgI5T0Sv9bQ=
-X-Google-Smtp-Source: AGHT+IG/azm/OO33COTH/MEAo0RdCfHPpAZlNgKdXxjIsa/+yeH1um3lJpzaQofHUUWxZ47B38A4e9hntmQgP5Pg0WF6opMEY6HW
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2648E1AB6C8;
+	Fri, 10 Jan 2025 06:01:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.100.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736488883; cv=fail; b=MGyWPR+5mCTdMY5WiF5VObgqEwLueRQOaXUbpt9JyriL49dFj4hDQG9Sf8KMCDRGPvxTTXMavczY1b0hsURM5KpqtN6fmNV6G4X2YsPM2hqZlDF8MRxl6xS+GukYloTj8/05OS7nCH93LDVfqUrJR8a0W8uCHTWWEVoROAwR8Co=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736488883; c=relaxed/simple;
+	bh=iBEJMQGCBWTQisMeMLBm0jp4CfdSHYCL8TMgjVAUyxg=;
+	h=From:To:Cc:Subject:Date:Message-ID:Content-Type:MIME-Version; b=fGAglYMDi73QqtiHx16i1GHi6ER78s2AeSgyXmqQAwlqFSlJIj2e3j4fDBJ2ZxwYvCUWfmBX2pcYGR1c0Z9Bqp35l3B/5NfJot/PbIwaxHlKQVol/lVJOU1Ltf5o54/6IeRKBMGeN5e8AFQK+dQzrwd20I/UM6QXM/TOZ/h+kbs=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=N431crZq; arc=fail smtp.client-ip=40.107.100.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
+ b=UdRqWGWwrvs8cnCPShh3PCHVIYgPCYqkJi72C8OfAyQJ5gyAR6zFOn3csg/1tylUv4ZIDnvTTPZWh2xH+BgNIC35FngUOgUHXJtbprYtzGLtmxCrLqlkiyeHvzs+E89PVUwWQdCkIZcLlN229nzDRQzVUB+MIhlYGQj37sphZ/ldUuPlOmtya7kPelK34hb9a+fX9w5fjaIXHX5/czqp+OiWY+HwtTgvxm5cQLgTErazPEmzduD2YXyhM+nYmT1fT06hgwBPaZ/XKDvzM70LhXpEkyIzluREFluo1UkgPii2AAQIpgXE6LBN6MZ9QEWJYDd55ojZRQTuOfusBFC0UQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector10001;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=O+ETWHCw+kESvn8e/BiAqQ/rHRY+W9sQ0yNvEdshxTY=;
+ b=Ta30VdLBH5b4KskN6BV4h3R+c4d4uH7U6l6JZz/9k2eMZ8fVQNtYkA0JGf9a9A5OqH4ES3PdAyPn4iJRR+9nD0TqENJyEfMow4TNKgZvJyZ27VlU3o/FAh2lC77P0Bdct40zVp59JADRamyy59TLQBEMDmEpZFszOaAI0qbdq+G3BVe50izLYN0EFYsnIm9DQRPELwwxUo+Ohu1oVnCpWvtkPlpApDxGd4HO3K53nZDvr849YWo0j7zZJZo7uSDSin4ZRPK22j7zCX/YQ3EIHvWLAPQj1ltd0a7Zqarzlmsjvu15d1DLNjByiJZEdt/3LjdbmTw04+7DBb1rmxcAiA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=O+ETWHCw+kESvn8e/BiAqQ/rHRY+W9sQ0yNvEdshxTY=;
+ b=N431crZqsg6jiaAQiMqLe5LXSQBl18/kVEcyVKNBG0kqrW02gBrCuNFHCL3Yu1cncEhLklFvIfFrJDjNNq7hkhqNnAQo1gTl6lWZthhceGWjz9EFL60Td+qig2VHuEksYo3uFrY3jZUiVQdl80WIX1UItJ+S6w6j+bsp3+/2uw4hGwITJkYS1xCoxo71HsY/FY+ZGgfvEOXpaUssJVZF4gp8wJp5imdqdiav6T5Vt3Ffs9NBZSlsXo19Vs57Jnjesz7njjoBW8yyYkYvNkifsxPx37OnzgsVhykZTyUYW2nf3LXTaGmhHTP2hPBWe92EPrpvWrvLrv0kQZzoBJ6Wvg==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com (2603:10b6:8:130::6) by
+ BY5PR12MB4132.namprd12.prod.outlook.com (2603:10b6:a03:209::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.10; Fri, 10 Jan
+ 2025 06:01:18 +0000
+Received: from DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe]) by DS0PR12MB7726.namprd12.prod.outlook.com
+ ([fe80::953f:2f80:90c5:67fe%7]) with mapi id 15.20.8335.011; Fri, 10 Jan 2025
+ 06:01:18 +0000
+From: Alistair Popple <apopple@nvidia.com>
+To: akpm@linux-foundation.org,
+	dan.j.williams@intel.com,
+	linux-mm@kvack.org
+Cc: alison.schofield@intel.com,
+	Alistair Popple <apopple@nvidia.com>,
+	lina@asahilina.net,
+	zhang.lyra@gmail.com,
+	gerald.schaefer@linux.ibm.com,
+	vishal.l.verma@intel.com,
+	dave.jiang@intel.com,
+	logang@deltatee.com,
+	bhelgaas@google.com,
+	jack@suse.cz,
+	jgg@ziepe.ca,
+	catalin.marinas@arm.com,
+	will@kernel.org,
+	mpe@ellerman.id.au,
+	npiggin@gmail.com,
+	dave.hansen@linux.intel.com,
+	ira.weiny@intel.com,
+	willy@infradead.org,
+	djwong@kernel.org,
+	tytso@mit.edu,
+	linmiaohe@huawei.com,
+	david@redhat.com,
+	peterx@redhat.com,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linuxppc-dev@lists.ozlabs.org,
+	nvdimm@lists.linux.dev,
+	linux-cxl@vger.kernel.org,
+	linux-fsdevel@vger.kernel.org,
+	linux-ext4@vger.kernel.org,
+	linux-xfs@vger.kernel.org,
+	jhubbard@nvidia.com,
+	hch@lst.de,
+	david@fromorbit.com,
+	chenhuacai@kernel.org,
+	kernel@xen0n.name,
+	loongarch@lists.linux.dev
+Subject: [PATCH v6 00/26] fs/dax: Fix ZONE_DEVICE page reference counts
+Date: Fri, 10 Jan 2025 17:00:28 +1100
+Message-ID: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
+X-Mailer: git-send-email 2.45.2
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SY2PR01CA0023.ausprd01.prod.outlook.com
+ (2603:10c6:1:14::35) To DS0PR12MB7726.namprd12.prod.outlook.com
+ (2603:10b6:8:130::6)
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1524:b0:3a7:764c:42fc with SMTP id
- e9e14a558f8ab-3ce3aa761famr61729735ab.21.1736448625031; Thu, 09 Jan 2025
- 10:50:25 -0800 (PST)
-Date: Thu, 09 Jan 2025 10:50:25 -0800
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <67801a71.050a0220.25a300.01cb.GAE@google.com>
-Subject: [syzbot] [ext4?] [udf?] [block?] kernel BUG in set_blocksize (2)
-From: syzbot <syzbot+c6e047750c7e8603508b@syzkaller.appspotmail.com>
-To: axboe@kernel.dk, jack@suse.com, linux-block@vger.kernel.org, 
-	linux-ext4@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS0PR12MB7726:EE_|BY5PR12MB4132:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4ace6797-add2-4fc4-e082-08dd313c32f0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;ARA:13230040|1800799024|376014|7416014|366016;
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?CBLVPcOYaYEJYbkSQ3VUQvJrJ9fKa8kjwxNV1uTtYlVNzP9gktOtNkN2H8ts?=
+ =?us-ascii?Q?imUjkql6eKDdMXMEhwQracQRgsoN/ShOMP8g3FZ3otx0PyS/m3SR/tgOxDKh?=
+ =?us-ascii?Q?v6ZaQ0YLXjoom8FaTlxqGl1rusZ701CnEKPwueK0CCrC6uSwSWFT87/miP9R?=
+ =?us-ascii?Q?zKGdG+fY8FXhsLqQNgHwX8iNdwk2vpADhjhIhrcUEh/wZZHUmINJt5JODmgP?=
+ =?us-ascii?Q?CDrDNuY1l7+oArLqndDanJ9+xDZpl8tN1zXmVDRbGRnXsmwR36g6oLZKqFwa?=
+ =?us-ascii?Q?QdaaOfksBhAeiWDj3gmjktKQlH+j4CjkcCqUUv//UEsAA3OqwUgoTTniNNF6?=
+ =?us-ascii?Q?ixr5aBCubxLYkXknx+cItoeCNQl0u0Jmy7p5p9puf2dmr/PJ8HVtlWlc5WmB?=
+ =?us-ascii?Q?AfEWRXgQ9Z/QmCXqhzY5X4UwG2hOvw8bJEJr/06r0L1JurFp02okvnzUJiZj?=
+ =?us-ascii?Q?MQbwKC9kvMK4zBETKfNNxQmtz87Wzi0eb0wjLHlygy4D9mi04pb8mDE/RDlX?=
+ =?us-ascii?Q?DUorsKR5XVkU3Zjr5XOz4ymsf5OIRQo0xeRWbNYGj/z9S8m7QGBPebGtrYJ5?=
+ =?us-ascii?Q?WoIk5fchzhpYP1j5J6cdo05HhvKcDSj3hKqV1lZQJvEPNmGz8KP+x8YjZod7?=
+ =?us-ascii?Q?iDx7nWXk+8k6wSdg1DAn0P7rolU6yiJug94SSsM+ITMukkKuNPAO8dY0bRjb?=
+ =?us-ascii?Q?VZXLpY5dkFRJofOEbqFyp669Oo9SJk6/JEF++F207joJA2Vt57tkV2WirFY9?=
+ =?us-ascii?Q?cV8sV6fpQeYnyIoxLYt+DLHw3Fkun2NZCJ6KN9Ith2Aty+vl1FeQUod+x3t3?=
+ =?us-ascii?Q?MGHv+9l9fnsHN6WIsUMu79OY/D+IIGako64ExC7F9WIrUwvoarg2dEHP+o0E?=
+ =?us-ascii?Q?PVxYpp2nyTDi4DRTsQWoEMrwHkJhIrdNCXV3fMDnlSQxANc9Ou9oJCjo3SCQ?=
+ =?us-ascii?Q?cgATuVsmtUftcyRx/iRsL8maODL67MolObJ7M2NI6BW0smjTh6szxZe9RDik?=
+ =?us-ascii?Q?DHnsD8592vfp0lDSCWQZg4BakyQX/RFg6b8TVOuhD5EUK+0ZA8by1SKN8h5d?=
+ =?us-ascii?Q?tA/jEnumKJ5c5PkqxbnrpsfdzB82EMKa5vVqPeRwwysq5uj25+gc9MJvsrSp?=
+ =?us-ascii?Q?KwqJfDbpv4FNi1+CjSyWCOWv4V/N6til+VzIE3+6YA+rfu/qlQ52gQG/yPkh?=
+ =?us-ascii?Q?FGzIxfSDbO2rJucIC3qoW+q1EsyzI6L9NEhNuUld7laP7VDt0SIXx+fFH+pq?=
+ =?us-ascii?Q?OGhNinNyxt2LMS0MmAOgiN8vv7qUiUwruEiQw4LNhwmH1f+kKzUqF2LkP2PP?=
+ =?us-ascii?Q?x47rcqzvSbtaAgQYnStEifmNfdFDYeJJUA84FfwOA7jYsDdahJi+nF/WFvJn?=
+ =?us-ascii?Q?vgQkuNpg/l31SPTHRZJWccyq1kDt?=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR12MB7726.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(1800799024)(376014)(7416014)(366016);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?mzhGNZPsBssJ33djBOUuaZE5rcN4fffcLxJj+73YFogJ+/mnRZZRo1AKAZ0u?=
+ =?us-ascii?Q?sIzz+CO+74OTqdjWEQh6/Y0pCi8V3WYn4Xnvl77MmBDIuzaUawAKFzG0u1Qg?=
+ =?us-ascii?Q?aBb7NIQC5JkUsXBKW/K5/7Uw28LWVYnidAJ/ot0WqRnPpHa3AztrXq/hgI1n?=
+ =?us-ascii?Q?aqWHhCiiFSj0LEvSbiCdhNngrzdRhxtd+w3mCtdILYLrOlCC5BRGS9YZyhuH?=
+ =?us-ascii?Q?5fbSxLYlo1MOrbsCk8djpYjEU9qZB2CkB5xqDUsJkzxl/ZWyUVoVh0QTzGH2?=
+ =?us-ascii?Q?TEs+Edewie9rDL9OJZzjmBTbwzBLMsTOZtOuI6rEuIw09N8pvXBeMqJ/WYFi?=
+ =?us-ascii?Q?X+1oumlvhBXp8vqgPGu6JLTmxzKq+6DAy/Z4zx7tXnnU27dibpTxziPml9io?=
+ =?us-ascii?Q?dRZUSB0x35Ih9fm4uVFqgonKkjLfsMwvs6WZSfUlFITSjlvaOxBHLXax2gxM?=
+ =?us-ascii?Q?HBmQKb2y/yqGAgCIbi3DDgFD87J2WVWYG4aIo3tSYTtjC8sP2ZZMS0Q1QVwT?=
+ =?us-ascii?Q?ZmcBVFgpZU3ESIIKGWnhe61SbVONSkGM3PsXnUmT1sQrMOcrrxlhO32D/cOo?=
+ =?us-ascii?Q?O/9kSEtcXM0NL7Z3Q/0AXbjHJkumWg5PWfGXNvB/zgK8wjAaM3n3eUDq6Xwg?=
+ =?us-ascii?Q?rn1POGGx4bAsVI6ROEwXrbRcw4NXpNL5LE4tfDqVOJaGRFtBm9k9uitgHa5p?=
+ =?us-ascii?Q?8cwwK1UtdBxbyeG6KangMm3b4weRnwsu4Gc/p0rISR20WxGaqbgkO536x7F1?=
+ =?us-ascii?Q?KslM7egv/8nwXg9YUf1Mz8ozktuFMUErmGSd0Yub0o7XpG4UVf0hHufUole9?=
+ =?us-ascii?Q?NOWR0QZ1lC/1QKlgLVsTWBR+Y0p1++97oiEXzO3/8eL3o3s+ECYYmJBrUo2r?=
+ =?us-ascii?Q?bLUSeqDZZd/We1fs+vS3yZQppSxlS+jUsKNmPLgPlSTjlr3PlNJYUO2zbFl2?=
+ =?us-ascii?Q?Qn+c2BCjb4AP5jCn2njuBM4qM9XPFMH+QQCrCxrVk5pAu0S3HsbyW/gvDILO?=
+ =?us-ascii?Q?p6zVA6MCZAMy8epLxGwKAYvXNmUVSZarNFOxukpIqeklZMGnlSCsIcNIeViq?=
+ =?us-ascii?Q?5OrZG6FJ1Lshi1q8ANcUhaJelsZBcs6wPq2EkvxYbnxGftnUaYcZNt5uMzVq?=
+ =?us-ascii?Q?Bw7XK3tMdLjmcKjyQrTo4MaA6aejSHzXNC6SP6TYWvmaa/MQygH2X97xWeOx?=
+ =?us-ascii?Q?HqkXCNS9EksTkdtyAD7n1bTMBefThRnt3MCESIy2GxUJxObLNPdcvRTcGXoL?=
+ =?us-ascii?Q?IJmPV66EWkoDPBNknOoUWxQFTpkqhDmO510LDR662Dpj4nSzL8V61dy5R69a?=
+ =?us-ascii?Q?qE3dUiFeiIv576Uaa9IcVNyoVUWuSIMxkHB0ZEN4hayGd9G580BnEofsr/bL?=
+ =?us-ascii?Q?GP/xZQVgOyO5EHzy6dMWz50J2qDv5u3zFut8CM4HLKlb3eEATxIXobdpvAKl?=
+ =?us-ascii?Q?AvN7J4M+OHEYMn5jMphBwejij2z5YVDhs7pXsL8Vkat0e9Fo4vcedBwUppz4?=
+ =?us-ascii?Q?lzEFXAH8IPlFJrlAKhEfsv+M5zRXI/oR5kTL4sS1bvoJMlP5FbWAn+oU3eRY?=
+ =?us-ascii?Q?+Uc7lQHxyJc1j56FCdOGpC7PEWY5avLMDpWl73Cw?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4ace6797-add2-4fc4-e082-08dd313c32f0
+X-MS-Exchange-CrossTenant-AuthSource: DS0PR12MB7726.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 10 Jan 2025 06:01:18.0876
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: BYS11yP6/10kv6WUcPTb1COot2sZGnOIrJplwswS9h0J58vCizjgazUak9mxBbjfbIyb/y/O5tLYClx+JTKqxw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BY5PR12MB4132
 
-Hello,
+Main updates since v5:
 
-syzbot found the following issue on:
+ - Reworked patch 1 based on Dan's feedback.
 
-HEAD commit:    ab75170520d4 Merge tag 'linux-watchdog-6.13-rc6' of git://..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=1178d418580000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=ba7cde9482d6bb6
-dashboard link: https://syzkaller.appspot.com/bug?extid=c6e047750c7e8603508b
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=11556edf980000
+ - Fixed build issues on PPC and when CONFIG_PGTABLE_HAS_HUGE_LEAVES
+   is no defined.
 
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/205ade41622a/disk-ab751705.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/39aa1b893dfc/vmlinux-ab751705.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/c741f4e4b082/bzImage-ab751705.xz
-mounted in repro #1: https://storage.googleapis.com/syzbot-assets/512e46aed82f/mount_0.gz
-mounted in repro #2: https://storage.googleapis.com/syzbot-assets/1952d0d2f4a4/mount_3.gz
-mounted in repro #3: https://storage.googleapis.com/syzbot-assets/dc175c44b2d4/mount_7.gz
+ - Minor comment formatting and documentation fixes.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+c6e047750c7e8603508b@syzkaller.appspotmail.com
+ - Remove PTE_DEVMAP definitions from Loongarch which were added since
+   this series was initially written.
 
- folios_put_refs+0x76c/0x860 mm/swap.c:962
- free_pages_and_swap_cache+0x2ea/0x690 mm/swap_state.c:332
- __tlb_batch_free_encoded_pages mm/mmu_gather.c:136 [inline]
- tlb_batch_pages_flush mm/mmu_gather.c:149 [inline]
- tlb_flush_mmu_free mm/mmu_gather.c:366 [inline]
- tlb_flush_mmu+0x3a3/0x680 mm/mmu_gather.c:373
- tlb_finish_mmu+0xd4/0x200 mm/mmu_gather.c:465
- exit_mmap+0x496/0xc20 mm/mmap.c:1681
- __mmput+0x115/0x3b0 kernel/fork.c:1348
- exit_mm+0x220/0x310 kernel/exit.c:570
- do_exit+0x9ad/0x28e0 kernel/exit.c:925
- do_group_exit+0x207/0x2c0 kernel/exit.c:1087
- get_signal+0x16b2/0x1750 kernel/signal.c:3017
- arch_do_signal_or_restart+0x96/0x860 arch/x86/kernel/signal.c:337
- exit_to_user_mode_loop kernel/entry/common.c:111 [inline]
- exit_to_user_mode_prepare include/linux/entry-common.h:329 [inline]
- __syscall_exit_to_user_mode_work kernel/entry/common.c:207 [inline]
- syscall_exit_to_user_mode+0xce/0x340 kernel/entry/common.c:218
- do_syscall_64+0x100/0x230 arch/x86/entry/common.c:89
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-------------[ cut here ]------------
-kernel BUG at mm/filemap.c:2114!
-Oops: invalid opcode: 0000 [#1] PREEMPT SMP KASAN PTI
-CPU: 0 UID: 0 PID: 7712 Comm: syz.3.780 Not tainted 6.13.0-rc5-syzkaller-00163-gab75170520d4 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 09/13/2024
-RIP: 0010:find_lock_entries+0xb8a/0xbb0 mm/filemap.c:2113
-Code: 30 c7 ff 4c 89 ff 48 c7 c6 e0 aa 13 8c e8 5e a8 0e 00 90 0f 0b e8 26 30 c7 ff 4c 89 ff 48 c7 c6 c0 a4 13 8c e8 47 a8 0e 00 90 <0f> 0b e8 0f 30 c7 ff 4c 89 ff 48 c7 c6 a0 ad 13 8c e8 30 a8 0e 00
-RSP: 0018:ffffc9000c6f73c0 EFLAGS: 00010246
-RAX: dd31507b3d2b8c00 RBX: ffffc9000c6f7840 RCX: ffffc9000c6f6f03
-RDX: 0000000000000002 RSI: ffffffff8c0aaae0 RDI: ffffffff8c5edd60
-RBP: ffffc9000c6f7510 R08: ffffffff901856b7 R09: 1ffffffff2030ad6
-R10: dffffc0000000000 R11: fffffbfff2030ad7 R12: 0000000000000080
-R13: 0000000000000001 R14: ffffea0000d32180 R15: ffffea0000d32180
-FS:  00007fce2da676c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f78b6e0f000 CR3: 0000000077012000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
-Call Trace:
- <TASK>
- truncate_inode_pages_range+0x23b/0x10e0 mm/truncate.c:322
- kill_bdev block/bdev.c:91 [inline]
- set_blocksize+0x2f1/0x360 block/bdev.c:172
- sb_set_blocksize+0x47/0xf0 block/bdev.c:181
- udf_load_vrs+0xe6/0x1130 fs/udf/super.c:1998
- udf_fill_super+0x5eb/0x1ed0 fs/udf/super.c:2192
- get_tree_bdev_flags+0x48c/0x5c0 fs/super.c:1636
- vfs_get_tree+0x90/0x2b0 fs/super.c:1814
- do_new_mount+0x2be/0xb40 fs/namespace.c:3507
- do_mount fs/namespace.c:3847 [inline]
- __do_sys_mount fs/namespace.c:4057 [inline]
- __se_sys_mount+0x2d6/0x3c0 fs/namespace.c:4034
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xf3/0x230 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x77/0x7f
-RIP: 0033:0x7fce2cb874ca
-Code: d8 64 89 02 48 c7 c0 ff ff ff ff eb a6 e8 de 1a 00 00 66 2e 0f 1f 84 00 00 00 00 00 0f 1f 40 00 49 89 ca b8 a5 00 00 00 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 a8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007fce2da66e68 EFLAGS: 00000246 ORIG_RAX: 00000000000000a5
-RAX: ffffffffffffffda RBX: 00007fce2da66ef0 RCX: 00007fce2cb874ca
-RDX: 0000000020000c40 RSI: 0000000020000c80 RDI: 00007fce2da66eb0
-RBP: 0000000020000c40 R08: 00007fce2da66ef0 R09: 0000000000000000
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000020000c80
-R13: 00007fce2da66eb0 R14: 0000000000000c40 R15: 000000002000b240
- </TASK>
-Modules linked in:
----[ end trace 0000000000000000 ]---
-RIP: 0010:find_lock_entries+0xb8a/0xbb0 mm/filemap.c:2113
-Code: 30 c7 ff 4c 89 ff 48 c7 c6 e0 aa 13 8c e8 5e a8 0e 00 90 0f 0b e8 26 30 c7 ff 4c 89 ff 48 c7 c6 c0 a4 13 8c e8 47 a8 0e 00 90 <0f> 0b e8 0f 30 c7 ff 4c 89 ff 48 c7 c6 a0 ad 13 8c e8 30 a8 0e 00
-RSP: 0018:ffffc9000c6f73c0 EFLAGS: 00010246
-RAX: dd31507b3d2b8c00 RBX: ffffc9000c6f7840 RCX: ffffc9000c6f6f03
-RDX: 0000000000000002 RSI: ffffffff8c0aaae0 RDI: ffffffff8c5edd60
-RBP: ffffc9000c6f7510 R08: ffffffff901856b7 R09: 1ffffffff2030ad6
-R10: dffffc0000000000 R11: fffffbfff2030ad7 R12: 0000000000000080
-R13: 0000000000000001 R14: ffffea0000d32180 R15: ffffea0000d32180
-FS:  00007fce2da676c0(0000) GS:ffff8880b8600000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f78b6e0f000 CR3: 0000000077012000 CR4: 00000000003526f0
-DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
-DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Main updates since v4:
 
+ - Removed most of the devdax/fsdax checks in fs/proc/task_mmu.c. This
+   means smaps/pagemap may contain DAX pages.
+
+ - Fixed rmap accounting of PUD mapped pages.
+
+ - Minor code clean-ups.
+
+Main updates since v3:
+
+ - Rebased onto next-20241216. The rebase wasn't too difficult, but in
+   the interests of getting this out sooner for Andrew to look at as
+   requested by him I have yet to extensively build/run test this
+   version of the series.
+
+ - Fixed a bunch of build breakages reported by John Hubbard and the
+   kernel test robot due to various combinations of CONFIG options.
+
+ - Split the rmap changes into a separate patch as suggested by David H.
+
+ - Reworded the description for the P2PDMA change.
+
+Main updates since v2:
+
+ - Rename the DAX specific dax_insert_XXX functions to vmf_insert_XXX
+   and have them pass the vmf struct.
+
+ - Separate out the device DAX changes.
+
+ - Restore the page share mapping counting and associated warnings.
+
+ - Rework truncate to require file-systems to have previously called
+   dax_break_layout() to remove the address space mapping for a
+   page. This found several bugs which are fixed by the first half of
+   the series. The motivation for this was initially to allow the FS
+   DAX page-cache mappings to hold a reference on the page.
+
+   However that turned out to be a dead-end (see the comments on patch
+   21), but it found several bugs and I think overall it is an
+   improvement so I have left it here.
+
+Device and FS DAX pages have always maintained their own page
+reference counts without following the normal rules for page reference
+counting. In particular pages are considered free when the refcount
+hits one rather than zero and refcounts are not added when mapping the
+page.
+
+Tracking this requires special PTE bits (PTE_DEVMAP) and a secondary
+mechanism for allowing GUP to hold references on the page (see
+get_dev_pagemap). However there doesn't seem to be any reason why FS
+DAX pages need their own reference counting scheme.
+
+By treating the refcounts on these pages the same way as normal pages
+we can remove a lot of special checks. In particular pXd_trans_huge()
+becomes the same as pXd_leaf(), although I haven't made that change
+here. It also frees up a valuable SW define PTE bit on architectures
+that have devmap PTE bits defined.
+
+It also almost certainly allows further clean-up of the devmap managed
+functions, but I have left that as a future improvment. It also
+enables support for compound ZONE_DEVICE pages which is one of my
+primary motivators for doing this work.
+
+Signed-off-by: Alistair Popple <apopple@nvidia.com>
+Tested-by: Alison Schofield <alison.schofield@intel.com>
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Cc: lina@asahilina.net
+Cc: zhang.lyra@gmail.com
+Cc: gerald.schaefer@linux.ibm.com
+Cc: dan.j.williams@intel.com
+Cc: vishal.l.verma@intel.com
+Cc: dave.jiang@intel.com
+Cc: logang@deltatee.com
+Cc: bhelgaas@google.com
+Cc: jack@suse.cz
+Cc: jgg@ziepe.ca
+Cc: catalin.marinas@arm.com
+Cc: will@kernel.org
+Cc: mpe@ellerman.id.au
+Cc: npiggin@gmail.com
+Cc: dave.hansen@linux.intel.com
+Cc: ira.weiny@intel.com
+Cc: willy@infradead.org
+Cc: djwong@kernel.org
+Cc: tytso@mit.edu
+Cc: linmiaohe@huawei.com
+Cc: david@redhat.com
+Cc: peterx@redhat.com
+Cc: linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linuxppc-dev@lists.ozlabs.org
+Cc: nvdimm@lists.linux.dev
+Cc: linux-cxl@vger.kernel.org
+Cc: linux-fsdevel@vger.kernel.org
+Cc: linux-mm@kvack.org
+Cc: linux-ext4@vger.kernel.org
+Cc: linux-xfs@vger.kernel.org
+Cc: jhubbard@nvidia.com
+Cc: hch@lst.de
+Cc: david@fromorbit.com
+Cc: chenhuacai@kernel.org
+Cc: kernel@xen0n.name
+Cc: loongarch@lists.linux.dev
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+Alistair Popple (26):
+  fuse: Fix dax truncate/punch_hole fault path
+  fs/dax: Return unmapped busy pages from dax_layout_busy_page_range()
+  fs/dax: Don't skip locked entries when scanning entries
+  fs/dax: Refactor wait for dax idle page
+  fs/dax: Create a common implementation to break DAX layouts
+  fs/dax: Always remove DAX page-cache entries when breaking layouts
+  fs/dax: Ensure all pages are idle prior to filesystem unmount
+  fs/dax: Remove PAGE_MAPPING_DAX_SHARED mapping flag
+  mm/gup: Remove redundant check for PCI P2PDMA page
+  mm/mm_init: Move p2pdma page refcount initialisation to p2pdma
+  mm: Allow compound zone device pages
+  mm/memory: Enhance insert_page_into_pte_locked() to create writable mappings
+  mm/memory: Add vmf_insert_page_mkwrite()
+  rmap: Add support for PUD sized mappings to rmap
+  huge_memory: Add vmf_insert_folio_pud()
+  huge_memory: Add vmf_insert_folio_pmd()
+  memremap: Add is_devdax_page() and is_fsdax_page() helpers
+  mm/gup: Don't allow FOLL_LONGTERM pinning of FS DAX pages
+  proc/task_mmu: Mark devdax and fsdax pages as always unpinned
+  mm/mlock: Skip ZONE_DEVICE PMDs during mlock
+  fs/dax: Properly refcount fs dax pages
+  device/dax: Properly refcount device dax pages when mapping
+  mm: Remove pXX_devmap callers
+  mm: Remove devmap related functions and page table bits
+  Revert "riscv: mm: Add support for ZONE_DEVICE"
+  Revert "LoongArch: Add ARCH_HAS_PTE_DEVMAP support"
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+ Documentation/mm/arch_pgtable_helpers.rst     |   6 +-
+ arch/arm64/Kconfig                            |   1 +-
+ arch/arm64/include/asm/pgtable-prot.h         |   1 +-
+ arch/arm64/include/asm/pgtable.h              |  24 +-
+ arch/loongarch/Kconfig                        |   1 +-
+ arch/loongarch/include/asm/pgtable-bits.h     |   6 +-
+ arch/loongarch/include/asm/pgtable.h          |  19 +-
+ arch/powerpc/Kconfig                          |   1 +-
+ arch/powerpc/include/asm/book3s/64/hash-4k.h  |   6 +-
+ arch/powerpc/include/asm/book3s/64/hash-64k.h |   7 +-
+ arch/powerpc/include/asm/book3s/64/pgtable.h  |  53 +---
+ arch/powerpc/include/asm/book3s/64/radix.h    |  14 +-
+ arch/powerpc/mm/book3s64/hash_hugepage.c      |   2 +-
+ arch/powerpc/mm/book3s64/hash_pgtable.c       |   3 +-
+ arch/powerpc/mm/book3s64/hugetlbpage.c        |   2 +-
+ arch/powerpc/mm/book3s64/pgtable.c            |  10 +-
+ arch/powerpc/mm/book3s64/radix_pgtable.c      |   5 +-
+ arch/powerpc/mm/pgtable.c                     |   2 +-
+ arch/riscv/Kconfig                            |   1 +-
+ arch/riscv/include/asm/pgtable-64.h           |  20 +-
+ arch/riscv/include/asm/pgtable-bits.h         |   1 +-
+ arch/riscv/include/asm/pgtable.h              |  17 +-
+ arch/x86/Kconfig                              |   1 +-
+ arch/x86/include/asm/pgtable.h                |  51 +---
+ arch/x86/include/asm/pgtable_types.h          |   5 +-
+ drivers/dax/device.c                          |  15 +-
+ drivers/gpu/drm/nouveau/nouveau_dmem.c        |   3 +-
+ drivers/nvdimm/pmem.c                         |   4 +-
+ drivers/pci/p2pdma.c                          |  19 +-
+ fs/dax.c                                      | 363 ++++++++++++++-----
+ fs/ext4/inode.c                               |  43 +--
+ fs/fuse/dax.c                                 |  30 +--
+ fs/fuse/dir.c                                 |   2 +-
+ fs/fuse/file.c                                |   4 +-
+ fs/fuse/virtio_fs.c                           |   3 +-
+ fs/proc/task_mmu.c                            |   2 +-
+ fs/userfaultfd.c                              |   2 +-
+ fs/xfs/xfs_inode.c                            |  40 +-
+ fs/xfs/xfs_inode.h                            |   3 +-
+ fs/xfs/xfs_super.c                            |  18 +-
+ include/linux/dax.h                           |  37 ++-
+ include/linux/huge_mm.h                       |  12 +-
+ include/linux/memremap.h                      |  28 +-
+ include/linux/migrate.h                       |   4 +-
+ include/linux/mm.h                            |  40 +--
+ include/linux/mm_types.h                      |  16 +-
+ include/linux/mmzone.h                        |  12 +-
+ include/linux/page-flags.h                    |   6 +-
+ include/linux/pfn_t.h                         |  20 +-
+ include/linux/pgtable.h                       |  21 +-
+ include/linux/rmap.h                          |  15 +-
+ lib/test_hmm.c                                |   3 +-
+ mm/Kconfig                                    |   4 +-
+ mm/debug_vm_pgtable.c                         |  59 +---
+ mm/gup.c                                      | 176 +---------
+ mm/hmm.c                                      |  12 +-
+ mm/huge_memory.c                              | 220 +++++++-----
+ mm/internal.h                                 |   2 +-
+ mm/khugepaged.c                               |   2 +-
+ mm/madvise.c                                  |   8 +-
+ mm/mapping_dirty_helpers.c                    |   4 +-
+ mm/memory-failure.c                           |   6 +-
+ mm/memory.c                                   | 118 ++++--
+ mm/memremap.c                                 |  59 +--
+ mm/migrate_device.c                           |   9 +-
+ mm/mlock.c                                    |   2 +-
+ mm/mm_init.c                                  |  23 +-
+ mm/mprotect.c                                 |   2 +-
+ mm/mremap.c                                   |   5 +-
+ mm/page_vma_mapped.c                          |   5 +-
+ mm/pagewalk.c                                 |  14 +-
+ mm/pgtable-generic.c                          |   7 +-
+ mm/rmap.c                                     |  67 +++-
+ mm/swap.c                                     |   2 +-
+ mm/truncate.c                                 |  16 +-
+ mm/userfaultfd.c                              |   5 +-
+ mm/vmscan.c                                   |   5 +-
+ 77 files changed, 895 insertions(+), 961 deletions(-)
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
+base-commit: e25c8d66f6786300b680866c0e0139981273feba
+-- 
+git-series 0.9.1
 
