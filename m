@@ -1,149 +1,156 @@
-Return-Path: <linux-ext4+bounces-6045-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6046-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AFC03A0AA67
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Jan 2025 16:22:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DAF9A0ABB1
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Jan 2025 20:48:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 695053A72BF
-	for <lists+linux-ext4@lfdr.de>; Sun, 12 Jan 2025 15:22:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 79AEB165B40
+	for <lists+linux-ext4@lfdr.de>; Sun, 12 Jan 2025 19:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13BB81BBBD7;
-	Sun, 12 Jan 2025 15:22:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D28D91C1F15;
+	Sun, 12 Jan 2025 19:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kiSvvtP+"
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FAW3DkCd"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D3422F56;
-	Sun, 12 Jan 2025 15:22:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23BA42CAB;
+	Sun, 12 Jan 2025 19:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736695359; cv=none; b=Kk4CyfZAUppyK5AesQIUBg6nOg1azVGm0aFfCpXbcXP9pMo97ciD3JKrirqK/cXZQfJnTN2YXWspLTkgoTZYZN17QgdFtMt7MRM9wrqHw/Lu68Ulfqlb06GDCKBdjfbCWdjicbZrui007b5nVOLa2w7TMlNy5lWtTzcRUY833Hc=
+	t=1736711281; cv=none; b=eTnX+u68wr6yx/xadrfZm9gscDdvvuY6uv3oRQ5KierIF7EQ0C4hmw6Dsi35VPELLzwUmgbX42W2NJ2TvvrTj8m8Rcu6SOTxqBsXUR2jNSe/q1l/qv1nKYT5pNC1xW6PB/spK8NTuctP4j6SVid93IUuk8InJA6Pm9n9+ZP+FvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736695359; c=relaxed/simple;
-	bh=2dW5q24W7TooPZd6yq5Efwjqv7J31keA3ztLRgCuz/Y=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=tzlFw4dpJ3MHEY/upvBHddrzpaVJXcORH60G1TmxsqEcAjcnR4QFcZVb5oarSeVOp96jL0P1VolyLAYJ0SpU6koRnlt4FNDOratuC/246zP9fqb1xLYEY1VHIzdo7WEHhV1AkQ7bUTqGO3+KKdbOUqVU2Ba+197muuMs9jVwndU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kiSvvtP+; arc=none smtp.client-ip=209.85.214.173
+	s=arc-20240116; t=1736711281; c=relaxed/simple;
+	bh=aUQFksT7SugV/H0FdFicU63wK0fuHZ0b42IYikLMGrE=;
+	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References; b=owbuVsGaIMf1O2NWKPd9yOMmdxtjMWVNUfCJeGkILSR70KI4AuYyUizbs2QOH9KL8UQGNVeL/YFXj8Nb8W3Zgb5RUcIk4L+P6bjApXVDBTCWPUmdR8jEsfo7ncXKEjc/D/agsVgVxF4Qh4rAVQV1T6GZ++GQsbg+MpBASSCrpVg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FAW3DkCd; arc=none smtp.client-ip=209.85.214.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-21669fd5c7cso60329935ad.3;
-        Sun, 12 Jan 2025 07:22:38 -0800 (PST)
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-219f8263ae0so57091335ad.0;
+        Sun, 12 Jan 2025 11:47:59 -0800 (PST)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736695357; x=1737300157; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=445wBSZuG83p0w1DWBwIqxRgcg600gxv2iYJqDxp5Ew=;
-        b=kiSvvtP+B8iOk4Iw83v+l5tIiBFnpusmMMlJydxS8SqYCLBtY5/vCgZRzBHW5xfKyz
-         3JQNwoBLtoCQKxw2z0sO8FIjWqp4oIz8z0HAQtIOnigvD4hSShqRj4JVkCuns3h/uZ+Q
-         7sJFppX3QSWZvWDEbl3nDGebbPNAI2aYc/4L2UI3Jg8NKy+aJMhYmkdX0wwBw6EQ3d/k
-         DihQ3CuG0S1XECRZFJfTpWpI2obIjB/YWnz3F3YBxq2vLro88f2RO91ak7+1ZGOoRbkQ
-         Z8ygDJowjZzkDhyaknT3eSOqs74M8IbF4l/KItL04qx9XrXpn3r74xL+SU7AjXJnA0is
-         +ChA==
+        d=gmail.com; s=20230601; t=1736711279; x=1737316079; darn=vger.kernel.org;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=e0zq4j8AZK04xz38pt4eI3IFrNwO5oCsXkbchpKMzho=;
+        b=FAW3DkCdKedYSujd1A4IC2s61Zfv2Y6WDLIKNZgVDSZ7OLiRv5yBxvleuCpHv3M6Fq
+         lfcRpLUCb95VThmBIYFK5iFD+xoqrt7BdacEUJDjE0+nNA5SiaCjVWMdxUz4vnlDD0Ev
+         ztU36zXGcJLtYhPMr2xefcoYoauYzU2exLI+mSP+2uug3FZ2ob3LuHX9Pg1P5E/O3gHj
+         hmaqDI7JMyv5CfeN9/2UWgE7qI4fTKU4H/PVg60Sn8cwia4xycwbTiC2X86R5NKjwNMm
+         hl2X3+4ABLsS88KfzieYkECwvpf4LEAQ1J/uFGIjs4H2sJlTOiELrein7KD4zhOSFyz/
+         6Ltw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736695357; x=1737300157;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=445wBSZuG83p0w1DWBwIqxRgcg600gxv2iYJqDxp5Ew=;
-        b=GCqAie7TeE+mF9Pv70hU3dolMgOJnjrjAI8KiXW7iTnMhBfID2UiUEWOdRgpRBhv2U
-         8syXQWYYf8J7OKqJO94TBp/f+nUghUc8wxLyjRCfAQ1hlQv4VUnOape53+1GxiouOk5+
-         0YNf2IIT7lmZDHEZsg2/3JCy13gv9zYdvBiKMONgCFc58AgO67rhgjZrnPE4wrAT5ahv
-         1ZN4WTp8stg/H2zeyJV6ptSaERx9eKx/EtV9QbMbWueCjo340dpU2QaJrpEmSGKHHNt8
-         09KbgZGlXDiRb2DtunmPjIgcUj/bHBmVIY5nqd3BseuHM7AWhkCVvC/VHojXO1dWEs65
-         dOLw==
-X-Forwarded-Encrypted: i=1; AJvYcCWnT3Uj0uNxWcstzq9wjrYsjad4HDU2PmD75VljNmxsBro+gAyQEdE6jJ8sSuGRRMDPl8YR+AVcieQ=@vger.kernel.org
-X-Gm-Message-State: AOJu0Yx2hg9PCcJFUCW1CItzCTaHnQLMGbJAi2CpYfDltqIPhmniazLH
-	IcH7R6r+puRWf8IDVp4e57pi6q7dIoK3Sg11nwe2Zp/iEZ4T+1l3pLmMYufm
-X-Gm-Gg: ASbGncsmtxLULZScJ1W5a7tTqS2GTqCV+o5fb5cde52eXHCIMldHT92RG/pjTHbqcLx
-	/+O9FHEdlmuGtw3+rIpYFeDCZr43W7UbdgA3lFcycM2l2zvCs8YxtGRP9lJKc6nSmBEM5GD2OMY
-	f3M3W+Epv0Y5RN34yhItOTISlOr6ExEEKGvaV/8n57KsTh/1c8g2/RqFyupvQRYp2u3Bqc3HsSY
-	G7XqcPYP4WnByO4l/oerlIudSmIME1w4LSt5ITMwZiRkI+/A+P+U2AS9iUw
-X-Google-Smtp-Source: AGHT+IFaY9RwP2VIpVjJKDK0iS5qDQj8NxgTtOyIkMG7uxV54pcBVZEcpI/Mo9qaMx9XUHU1eIViOQ==
-X-Received: by 2002:a17:90b:534b:b0:2ee:9d57:243 with SMTP id 98e67ed59e1d1-2f548e9a473mr23446631a91.1.1736695357311;
-        Sun, 12 Jan 2025 07:22:37 -0800 (PST)
-Received: from citest-1.. ([49.205.38.219])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f54a2ad279sm8564608a91.25.2025.01.12.07.22.34
+        d=1e100.net; s=20230601; t=1736711279; x=1737316079;
+        h=references:message-id:date:in-reply-to:subject:cc:to:from
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=e0zq4j8AZK04xz38pt4eI3IFrNwO5oCsXkbchpKMzho=;
+        b=W7oHeMToQZij9aI+73MOXnRlXSMkOwTtZBLozosZbcTmnzYJgAuQduAXtWmr90J2B5
+         DxD6rCc0jWLrFby9gVcOaGJLG9YqJ/U5zeTx3Q1h0XEnohhbeSvcl75IjtqpOEJncHFW
+         C7N1XkEUlwtnp3LXTK59U1/9Rn6gbsgaBrLSpGYXjXI2OrhIQnlDMxDukIEa3vbuUg6j
+         lvWJOJcSu370jbF8zrWsBA1vOYfaWZ2AV/Pn+qMt1/o//PXAKO9y4/zq0kcrxYPWxcPt
+         fVWzRYjjfqPeeca2YXlM5LGmHSRaBy5732JBIiNPO+5lzjTJABmBStSqRx9lUF1KI/Sv
+         g45Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWI3G1mCaAQRALMvsu43UhQsU9f/vihf080nxycYxSqDuVVXIv8RGqV+gc5d72ejDU0+IeHpkmz@vger.kernel.org, AJvYcCWrs0z1B1k7Xp68LKjSxFsT2/OCHxuyqVMfloU1ug9L/txbua/tDUQUWKZ3fVCGoSRWbkM2Bie4BdIM@vger.kernel.org
+X-Gm-Message-State: AOJu0Yy0OCNn8qozz/HBjEHV/iEiJOOO8oMjoOr6eqFh9BdcteRo4dsd
+	5al+yFmDuPvY3vrjNz3xqNAWpScb/U6zvJ4Sg4clT3rYNkRoGp0k
+X-Gm-Gg: ASbGncvWeZqYVYFhznxiSy+yMKFBBAMhHntGp2Uzo3rQLXqzFNkMWZ3JFs/r0p1g9fM
+	FyHjeXYXWLyHN50STKhH4xikaQKqMkxFX+keXOyoseMtl7Obi5+AoryXpyW/cvL2+TEQizUQxQe
+	14dXsHkJrRsiA641NlG4Rrn1/mIYQFN1uk2dReTizLHi+7cpLKl2LyZCjcMQ4p0DybKh3/r29eK
+	9UKHojzCPWylYbhdX8VyGWnVdIMnNfBW/UHBjLruZMziUZx
+X-Google-Smtp-Source: AGHT+IG/UFr+MKl0GMussw8Ee7UX5NBbLECYJCbyEFMpeidItwV1LeNov0LPn1GKL4LuZI64m2iLCQ==
+X-Received: by 2002:a05:6a21:6da0:b0:1e8:becc:5771 with SMTP id adf61e73a8af0-1e8becc5859mr12780997637.30.1736711279419;
+        Sun, 12 Jan 2025 11:47:59 -0800 (PST)
+Received: from dw-tp ([171.76.81.42])
+        by smtp.gmail.com with ESMTPSA id d2e1a72fcca58-72d40658bb4sm4604671b3a.86.2025.01.12.11.47.56
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 12 Jan 2025 07:22:36 -0800 (PST)
-From: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-To: fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org,
-	ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com,
-	djwong@kernel.org,
-	zlang@kernel.org,
-	nirjhar.roy.lists@gmail.com
-Subject: [PATCH] check: Fix fs specfic imports when $FSTYPE!=$OLD_FSTYPE
-Date: Sun, 12 Jan 2025 15:21:51 +0000
-Message-Id: <f49a72d9ee4cfb621c7f3516dc388b4c80457115.1736695253.git.nirjhar.roy.lists@gmail.com>
-X-Mailer: git-send-email 2.34.1
+        Sun, 12 Jan 2025 11:47:58 -0800 (PST)
+From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
+To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
+Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org, nirjhar.roy.lists@gmail.com
+Subject: Re: [PATCH] check: Fix fs specfic imports when $FSTYPE!=$OLD_FSTYPE
+In-Reply-To: <f49a72d9ee4cfb621c7f3516dc388b4c80457115.1736695253.git.nirjhar.roy.lists@gmail.com>
+Date: Mon, 13 Jan 2025 01:11:22 +0530
+Message-ID: <87jzazvmzh.fsf@gmail.com>
+References: <f49a72d9ee4cfb621c7f3516dc388b4c80457115.1736695253.git.nirjhar.roy.lists@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
 
-Bug Description:
+"Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
 
-_test_mount function is failing with the following error:
-./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
-check: failed to mount /dev/loop0 on /mnt1/test
+> Bug Description:
+>
+> _test_mount function is failing with the following error:
+> ./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
+> check: failed to mount /dev/loop0 on /mnt1/test
+>
+> when the second section in local.config file is xfs and the first section
+> is non-xfs.
+>
+> It can be easily reproduced with the following local.config file
+>
+> [s2]
+> export FSTYP=ext4
+> export TEST_DEV=/dev/loop0
+> export TEST_DIR=/mnt1/test
+> export SCRATCH_DEV=/dev/loop1
+> export SCRATCH_MNT=/mnt1/scratch
+>
+> [s1]
+> export FSTYP=xfs
+> export TEST_DEV=/dev/loop0
+> export TEST_DIR=/mnt1/test
+> export SCRATCH_DEV=/dev/loop1
+> export SCRATCH_MNT=/mnt1/scratch
+>
+> ./check selftest/001
+>
+> Root cause:
+> When _test_mount() is executed for the second section, the FSTYPE has
+> already changed but the new fs specific common/$FSTYP has not yet
+> been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
+> the test run fails.
+>
+> Fix:
+> call _source_specific_fs $FSTYP at the correct call site of  _test_mount()
+>
 
-when the second section in local.config file is xfs and the first section
-is non-xfs.
+You should add the Fixes: tag too. Based on your description I guess
+this should be the tag?
 
-It can be easily reproduced with the following local.config file
+Fixes: 1a49022fab9b4 ("fstests: always use fail-at-unmount semantics for XFS")
 
-[s2]
-export FSTYP=ext4
-export TEST_DEV=/dev/loop0
-export TEST_DIR=/mnt1/test
-export SCRATCH_DEV=/dev/loop1
-export SCRATCH_MNT=/mnt1/scratch
+I agree with today the problem was in _test_mount(), tomorrow it could
+be _test_mkfs, hence we could source the new FSTYP config file before
+calling _test_mkfs().
 
-[s1]
-export FSTYP=xfs
-export TEST_DEV=/dev/loop0
-export TEST_DIR=/mnt1/test
-export SCRATCH_DEV=/dev/loop1
-export SCRATCH_MNT=/mnt1/scratch
+With the fixes tag added, please feel free to add:
 
-./check selftest/001
+Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
 
-Root cause:
-When _test_mount() is executed for the second section, the FSTYPE has
-already changed but the new fs specific common/$FSTYP has not yet
-been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
-the test run fails.
-
-Fix:
-call _source_specific_fs $FSTYP at the correct call site of  _test_mount()
-
-Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
----
- check | 1 +
- 1 file changed, 1 insertion(+)
-
-diff --git a/check b/check
-index 607d2456..8cdbb68f 100755
---- a/check
-+++ b/check
-@@ -776,6 +776,7 @@ function run_section()
- 	if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
- 		echo "RECREATING    -- $FSTYP on $TEST_DEV"
- 		_test_unmount 2> /dev/null
-+		[[ "$OLD_FSTYP" != "$FSTYP" ]] && _source_specific_fs $FSTYP
- 		if ! _test_mkfs >$tmp.err 2>&1
- 		then
- 			echo "our local _test_mkfs routine ..."
--- 
-2.34.1
-
+> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
+> ---
+>  check | 1 +
+>  1 file changed, 1 insertion(+)
+>
+> diff --git a/check b/check
+> index 607d2456..8cdbb68f 100755
+> --- a/check
+> +++ b/check
+> @@ -776,6 +776,7 @@ function run_section()
+>  	if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
+>  		echo "RECREATING    -- $FSTYP on $TEST_DEV"
+>  		_test_unmount 2> /dev/null
+> +		[[ "$OLD_FSTYP" != "$FSTYP" ]] && _source_specific_fs $FSTYP
+>  		if ! _test_mkfs >$tmp.err 2>&1
+>  		then
+>  			echo "our local _test_mkfs routine ..."
+> -- 
+> 2.34.1
 
