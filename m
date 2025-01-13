@@ -1,204 +1,114 @@
-Return-Path: <linux-ext4+bounces-6062-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6063-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 59401A0BCA4
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 16:52:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C3E1FA0BD9D
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 17:34:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 084F01885990
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 15:52:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 610BB7A11BE
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 16:33:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC60420AF64;
-	Mon, 13 Jan 2025 15:52:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7680B14D6EB;
+	Mon, 13 Jan 2025 16:33:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ELPKPY6c"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="hP01Wf0Q"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mail-pj1-f45.google.com (mail-pj1-f45.google.com [209.85.216.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B19D25760;
-	Mon, 13 Jan 2025 15:52:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 451D614A4D1
+	for <linux-ext4@vger.kernel.org>; Mon, 13 Jan 2025 16:33:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736783556; cv=none; b=cZRC6FpA+712235IEc7qiaFc7WTGWrQ/7ELql3Kg63JMj8tlwYhfX4LriRp5Zsd9kZMBwaWBow8NJvf2W9JMJOFqYFuGGbep1IBjMNJIWIK7WzahPb+93/6WFjwKk2rREpiPHYThm+b9f95N8gKDgQrWjB/sRgaYuuj24YG9Pk8=
+	t=1736786037; cv=none; b=Kqlwn9j27lB+POYjHh6hhoHqzTCizClqZSAxlW/lHOiOMWYpu1HQFl7yx74AEEsKGyNYWvZZnIbWHMRhzm5J2a5Lvyn1/sfLsZlP9QwkJA2OVTRioNVcMI15/MO/tGI7TX3Jyi1N5+WsSHP0dGJkPW31eCOsCsD1MwnD3QjZf6s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736783556; c=relaxed/simple;
-	bh=KQGBGhXeAKerB/ZmQg6V+0zu677PPyFeiNo7a0yTUyo=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-version:Content-type; b=qoLxjKEu+qH4TEpqn3OfUK8kd9wbB+LW6iNt8mKeAeIFMiZk3989iH9XYF422F5/TJK8Up88/KLIYcPROVA3v3dN1mevqxFpqtmxJhLoisxmZ+adym5jYyrPETL8pF2Nlv19h2Uqy2sTG7LExsfrA0caUTZ6wxvQ+0AOA+7nSwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ELPKPY6c; arc=none smtp.client-ip=209.85.216.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f45.google.com with SMTP id 98e67ed59e1d1-2ef714374c0so6693238a91.0;
-        Mon, 13 Jan 2025 07:52:34 -0800 (PST)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1736783554; x=1737388354; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:message-id:date
-         :in-reply-to:subject:cc:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=q1y/odhV1Y5lkits40FYXBT8gxSpQl7u3UnS0bDayd4=;
-        b=ELPKPY6cPh4hwRcRP620Sl3pFaKXhh97lRUjxzjs+CxUvdiAtSei7SaqTH9DCqYMGa
-         h08pkWpnyZF7BVxTYtc38U7zRdBMOsPDoEYCIlAof2Vd1F9DUSuecmhVIdU2MeXkQTtc
-         j1+jeXFwqK0VHLXO+706YDZ7Bq+hWmKIzPEf1a/RsAy/A+eEzWkQs6r4KNxubqWZtmeA
-         4fDDD9N9ypsnEQUtoZZgJ4fhbmjvMON5zRRSmC9qOch3/TQq/Y8/WmthyllYMC1l2WDB
-         Ag9hzCzMiGeZ21/jXN3HUOWMBrnF5pbImSA28DA5MRsDJNIwAuC0hJavXXHA1Piy8Vtf
-         5ixQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1736783554; x=1737388354;
-        h=content-transfer-encoding:mime-version:references:message-id:date
-         :in-reply-to:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=q1y/odhV1Y5lkits40FYXBT8gxSpQl7u3UnS0bDayd4=;
-        b=naZBrmn1uTIplA5a3cKyCGKRLXgKCpqDJvWrrg/So7h6rwHSju75AKx0xAlojZsKNN
-         2nobr5GXu4a3PiR8a0wcjwRwU0Z3FGIiYvLzix+KkoWIQ6sA4ZG077zSe+/drKuPLdNS
-         0xDCBhGJvok9Gue/FXkoMvn8tY5Fkdw7W/IqiJB2bqXiiftvW+uHMUfxL3T1dpJV0LHH
-         l7TOjIZ3aT3n3Favdb8OlGBbAz2B9CPGqMXl0nIGgMFbcxVbaiUu4SfdrWOgRmUImIxm
-         /heuCgSbvuFHZ3BzvDhFj8DcppAN9rHYoclyoS69mHFBAzjDoWEbbHpEgX4Z3t3dQJ30
-         a2Aw==
-X-Forwarded-Encrypted: i=1; AJvYcCUEOPnsoFrX1Ol6ITEkvaoV9uaG+hvjXzv3w9Pfb4wNUgGWsRzuLCYRnrerChVPomozoi3tSbYi@vger.kernel.org, AJvYcCULPtjFuYBOedpdiPwEKeaHGZr37H7HkrZdM6+PWHPsdxIb5UyQrcKFIA61sPFZ0YU1cSqxCEuDISYW@vger.kernel.org
-X-Gm-Message-State: AOJu0Yw3SuyMrkWluJWPAElce8VhOdqF+TO+XPk7FZRc2kJOhJUi94JQ
-	Jw+NVugqJ6ZIDoc+dwTqBeeOBcAB/DqcebRLAcCC78Jueh0ynHaw
-X-Gm-Gg: ASbGncvqi6P8orVz4vn6DeA4q5sqNISx6LZQGYNRDzm0o5nd5ttWZqaB+alt2gdP5qp
-	uqDx4VUSbADbRN7iUIawY2zsEvCaXicPmK/80meWvMiCsFIBsi5UusEey3TyLz8XU3qjBLbLdaS
-	jGb18PH5iDXQTs5pok6gN1UxEfTV1+ERt5vYLF0TgkEXXvC592OaMjiO5CC7sqj+kvMLa4u4rU/
-	axp9IJHri5PxHApvgfCuJL+52haw17ydktOkXaKcN7n5mEM
-X-Google-Smtp-Source: AGHT+IGW8l3L8k3osuE/8UXobQu34qaX1xn0uWWszgfA0WkU3z5kQmcC4M1bch7vpBmQqHIbM1nkYA==
-X-Received: by 2002:a17:90b:3b4f:b0:2f2:a974:fc11 with SMTP id 98e67ed59e1d1-2f554603e39mr25755060a91.17.1736783552681;
-        Mon, 13 Jan 2025 07:52:32 -0800 (PST)
-Received: from dw-tp ([171.76.81.42])
-        by smtp.gmail.com with ESMTPSA id 98e67ed59e1d1-2f54a2ad2basm10214702a91.24.2025.01.13.07.52.29
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 13 Jan 2025 07:52:31 -0800 (PST)
-From: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>, fstests@vger.kernel.org
-Cc: linux-ext4@vger.kernel.org, linux-xfs@vger.kernel.org, ojaswin@linux.ibm.com, djwong@kernel.org, zlang@kernel.org
-Subject: Re: [PATCH] check: Fix fs specfic imports when $FSTYPE!=$OLD_FSTYPE
-In-Reply-To: <1efecce4-f051-40fc-8851-e9f9c057e844@gmail.com>
-Date: Mon, 13 Jan 2025 21:09:37 +0530
-Message-ID: <87frlmvi2u.fsf@gmail.com>
-References: <f49a72d9ee4cfb621c7f3516dc388b4c80457115.1736695253.git.nirjhar.roy.lists@gmail.com> <87jzazvmzh.fsf@gmail.com> <1efecce4-f051-40fc-8851-e9f9c057e844@gmail.com>
+	s=arc-20240116; t=1736786037; c=relaxed/simple;
+	bh=fyfq+Uk+JhG9qNOlSTq8aLDXQT50J66awaFP2qmC3gE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=SAb2YkJvagF+aqDOykWFvrGorpnqabcmmk8fAolqrX65FwTPFlVZ1Tkx6xVDih9DW2w2TEFAQGXLGVu4jZXEo2psjbNmJo8qAX5vjkgo61K9c8wmpQyskBEzaaKLdsFla+VgvIbIsOWGJUD88ABtkiUbiOUD5K9K817q6iF5ePs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=hP01Wf0Q; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-229.bstnma.fios.verizon.net [173.48.82.229])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50DGXjHw030862
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 Jan 2025 11:33:46 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1736786027; bh=GU65J1WFOJvw+8cxzb+Rq4/WgkmvYJ7WXDoAmgXXQis=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=hP01Wf0Q2mVSvZsPNsWNb1+waDrFngDEhSwQ39ZhG0YrtniFXCMZy2GCOfX2TVKHD
+	 ZYtVedYuY6JRNjc9KVH3cEvE1u6was7zOfXzDtcK6ftx2YdojLVJ4GDFPQTj9iK3sR
+	 XyskXB8v4Jce/3M/wENXz4ZB0mMqjgK3uU6xVC+nNWa4UtrVFm/sTIzbnTOyWW089T
+	 uuFpc9GnMNZnW++Ylk0POCg71iRodinw/12ZFPOt1b/yFy7zNwSUdkanQaQdzq0IJZ
+	 FOy/wbStajNOJ6sAKF2D1xB5ECkanlHzY8tDjWWhJGDainBDvyTJ0U9CWPxSDjBBp6
+	 1dOuppZSHlpGQ==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id C10B215C0135; Mon, 13 Jan 2025 11:33:45 -0500 (EST)
+Date: Mon, 13 Jan 2025 11:33:45 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: Catalin Patulea <cronos586@gmail.com>
+Cc: linux-ext4@vger.kernel.org, Kazuya Mio <k-mio@sx.jp.nec.com>
+Subject: Re: e2fsck max blocks for huge non-extent file
+Message-ID: <20250113163345.GO1284777@mit.edu>
+References: <CAE2LqHL6uY=Sq2+aVtW-Lkbu9mvjFkaNqLaDA8Bkpmvx9AjHBg@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
-MIME-version: 1.0
-Content-type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAE2LqHL6uY=Sq2+aVtW-Lkbu9mvjFkaNqLaDA8Bkpmvx9AjHBg@mail.gmail.com>
 
-"Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
+On Mon, Jan 13, 2025 at 12:49:19AM -0500, Catalin Patulea wrote:
+> 
+> I have an ext3 filesystem on which I manually enabled huge_file
+> (files >2 TB) using tune2fs; then created a 3 TB file (backup image
+> of another disk).  Now, I am running e2fsck and it reports errors:
 
-> On 1/13/25 01:11, Ritesh Harjani (IBM) wrote:
->> "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com> writes:
->>
->>> Bug Description:
->>>
->>> _test_mount function is failing with the following error:
->>> ./common/rc: line 4716: _xfs_prepare_for_eio_shutdown: command not found
+Hmm, it looks like this has been broken for a while.  I've done a
+quick look, and it appears this has been the case since e2fsprogs
+1.28 and this commit:
 
-Please notice the error that you are seeing here ^^^ 
+commit da307041e75bdf3b24c1eb43132a4f9d8a1b3844
+Author: Theodore Ts'o <tytso@mit.edu>
+Date:   Tue May 21 21:19:14 2002 -0400
 
->>> check: failed to mount /dev/loop0 on /mnt1/test
->>>
->>> when the second section in local.config file is xfs and the first section
->>> is non-xfs.
->>>
->>> It can be easily reproduced with the following local.config file
->>>
->>> [s2]
->>> export FSTYP=ext4
->>> export TEST_DEV=/dev/loop0
->>> export TEST_DIR=/mnt1/test
->>> export SCRATCH_DEV=/dev/loop1
->>> export SCRATCH_MNT=/mnt1/scratch
->>>
->>> [s1]
->>> export FSTYP=xfs
->>> export TEST_DEV=/dev/loop0
->>> export TEST_DIR=/mnt1/test
->>> export SCRATCH_DEV=/dev/loop1
->>> export SCRATCH_MNT=/mnt1/scratch
->>>
->>> ./check selftest/001
->>>
->>> Root cause:
->>> When _test_mount() is executed for the second section, the FSTYPE has
->>> already changed but the new fs specific common/$FSTYP has not yet
->>> been done. Hence _xfs_prepare_for_eio_shutdown() is not found and
->>> the test run fails.
->>>
->>> Fix:
->>> call _source_specific_fs $FSTYP at the correct call site of  _test_mount()
->> You should add the Fixes: tag too. Based on your description I guess
->> this should be the tag?
->>
->> Fixes: 1a49022fab9b4 ("fstests: always use fail-at-unmount semantics for XFS")
+    Check for inodes which are too big (either too many blocks, or
+    would cause i_size to be too big), and offer to truncate the inode.
+    Remove old bogus i_size checks.
+    
+    Add test case which tests e2fsck's handling of large sparse files.
+    Older e2fsck with the old(er) bogus i_size checks didn't handle
+    this correctly.
 
-Please look into the above commit. The above patch introduced function
-"_prepare_for_eio_shutdown()" in _test_mount(), which is what we are
-getting the error for (for XFS i.e. _xfs_prepare_for_eio_shutdown()
-command not found). Right? 
+I think no one noticed since trying to support files this large on a
+non-extent file is so inefficient and painful that in practice anyone
+trying to use files this large would be using ext4, and not a really
+ancient ext3 file system.
 
-Ok, why don't revert the above commit and see if the revert fixes the
-issue for you. 
+The fix might be as simple as this, but I haven't had a chance to test
+it and do appropriate regression tests....
 
-https://www.kernel.org/doc/html/v4.10/process/submitting-patches.html#using-reported-by-tested-by-reviewed-by-suggested-by-and-fixes
+diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+index eb73922d3..e460a75f4 100644
+--- a/e2fsck/pass1.c
++++ b/e2fsck/pass1.c
+@@ -3842,7 +3842,7 @@ static int process_block(ext2_filsys fs,
+ 		problem = PR_1_TOOBIG_DIR;
+ 	if (p->is_dir && p->num_blocks + 1 >= p->max_blocks)
+ 		problem = PR_1_TOOBIG_DIR;
+-	if (p->is_reg && p->num_blocks + 1 >= p->max_blocks)
++	if (p->is_reg && p->num_blocks + 1 >= 1U << 31)
+ 		problem = PR_1_TOOBIG_REG;
+ 	if (!p->is_dir && !p->is_reg && blockcnt > 0)
+ 		problem = PR_1_TOOBIG_SYMLINK;
 
--ritesh
 
->
-> Shouldn't this be the following?
->
-> commit f8e4f532f18d7517430d9849bfc042305d7f7f4d (HEAD)
-> Author: Lukas Czerner <lczerner@redhat.com>
-> Date:   Fri Apr 4 17:18:15 2014 +1100
->
->      check: Allow to recreate TEST_DEV
->
->      Add config option RECREATE_TEST_DEV to allow to recreate file system on
->      the TEST_DEV device. Permitted values are true and false.
->
->      If RECREATE_TEST_DEV is set to true the TEST_DEV device will be
->      unmounted and FSTYP file system will be created on it. Afterwards it
->      will be mounted to TEST_DIR again with the default, or specified mount
->      options.
->
->      Also recreate the file system if FSTYP differs from the previous
->      section.
->
->>
->> I agree with today the problem was in _test_mount(), tomorrow it could
->> be _test_mkfs, hence we could source the new FSTYP config file before
->> calling _test_mkfs().
->>
->> With the fixes tag added, please feel free to add:
->>
->> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
->>
->>> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
->>> ---
->>>   check | 1 +
->>>   1 file changed, 1 insertion(+)
->>>
->>> diff --git a/check b/check
->>> index 607d2456..8cdbb68f 100755
->>> --- a/check
->>> +++ b/check
->>> @@ -776,6 +776,7 @@ function run_section()
->>>   	if $RECREATE_TEST_DEV || [ "$OLD_FSTYP" != "$FSTYP" ]; then
->>>   		echo "RECREATING    -- $FSTYP on $TEST_DEV"
->>>   		_test_unmount 2> /dev/null
->>> +		[[ "$OLD_FSTYP" != "$FSTYP" ]] && _source_specific_fs $FSTYP
->>>   		if ! _test_mkfs >$tmp.err 2>&1
->>>   		then
->>>   			echo "our local _test_mkfs routine ..."
->>> -- 
->>> 2.34.1
->
-> -- 
-> Nirjhar Roy
-> Linux Kernel Developer
-> IBM, Bangalore
+						- Ted
 
