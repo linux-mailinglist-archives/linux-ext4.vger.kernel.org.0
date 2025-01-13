@@ -1,55 +1,63 @@
-Return-Path: <linux-ext4+bounces-6066-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6067-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F15DA0C023
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 19:39:54 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4868EA0C15C
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 20:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D44937A3C06
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 18:39:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E172165A89
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 19:26:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922011FA8F6;
-	Mon, 13 Jan 2025 18:35:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 724D91C5D7E;
+	Mon, 13 Jan 2025 19:26:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aAg+b+qN"
+	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="H9ol8YiP"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343F318871F
-	for <linux-ext4@vger.kernel.org>; Mon, 13 Jan 2025 18:35:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A47F1B21BC
+	for <linux-ext4@vger.kernel.org>; Mon, 13 Jan 2025 19:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736793318; cv=none; b=dDjyFHyBXqzmjnhzm5WoSd5fdJwN4Ykw/nGpve4uNudblmMQkzib9f5stAIQTuNVoe/FgYFfepFRQSQlB9aEenva+cjQ2s+J2vceWpwYibpwqVgz4hp6OBG6HT964NvJ5CEG1mv/+cCgBnpnq3gGrIf6MGuovgoMpE8YeMTl2VQ=
+	t=1736796378; cv=none; b=gDJsY3BLVqfTPJlSAkxqcIgQndpJf82SLMPtCQ3Am38KSZAjfCkG4QWSH+Oi86BFgNs6ujDMaipBu2ryp2XD+emUrX7zrL5cFYjArY1JU+mHHHqhOWfSapYsAn1hSapi/4ss9i9JXujkNja6/q4SfpaheRCVA1AulLwvizjsnjo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736793318; c=relaxed/simple;
-	bh=uV7Q2p9e11PNJeE2XEKDLPYWp15q+2oV/4NRhCQm0RQ=;
+	s=arc-20240116; t=1736796378; c=relaxed/simple;
+	bh=gjtCWMVAcVEY3Ig8XqpeaoQtCHDhgj+pHuAUZvZEoGg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AYKwxcPKMjuZibLvZudddy8CDXcnFcXg8Gmkobghwv0eyYmT8m18B5KbUysHk0yv6h9ZHqC9uVb2Esf5rVnbD9qu/XI4SWdKTNVD3ucOdXFOJCbGIYoJra71MEUebo8YjZJ3Gy/gGhdiBuPeTfn0oZZaDrOY7ifXOdl7o9zBElQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aAg+b+qN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0912C4CEE1;
-	Mon, 13 Jan 2025 18:35:17 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736793317;
-	bh=uV7Q2p9e11PNJeE2XEKDLPYWp15q+2oV/4NRhCQm0RQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=aAg+b+qNZV1SLbrChPl7QCtgXzj7Dxou0Mpue8RH/CDAqxdsYczxxqiv4YMO0sEuN
-	 T6eg1GYLMvaJTEnZFRtOc4xu+HR6ufSpISjxSRWKFUX0p90x2S9/toyei2KwLHD8WY
-	 01d1fVo8LPOvZpjrxzBX7IUDDC6HJo2XLQ2NJrgUnuETeJA9knYwVfpRrGGFf9PYXQ
-	 2fLec3fwSUYI5Y6zYpIXNV3CHrLld4wcQdVgRc2rJvzv/vJv1YjzZ/PdEh9d9qdnqh
-	 TvLjz8BQMVytB4u/JtikPTXmWuHDdSnLC8G07rhKaXWtGkOjHQ/kaEfRP4ndyFGiHM
-	 hsznU9j7iA/2g==
-Date: Mon, 13 Jan 2025 10:35:17 -0800
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Theodore Ts'o <tytso@mit.edu>
+	 Content-Type:Content-Disposition:In-Reply-To; b=t1AI0IKvryxshSXa63HW0+/6NYe4W3B+HSjSj7/psmyoRpNmpe1wN6QXgnSloLpTZbZirHlcfxpY0M7Orel56GM7oZiUCiR1eKC4PAOvr2KmgtY0DD+f42+Kb45dtEiM93KW0k0isqJDITo8ehKh+/1o8RHs/Iyh1cSYxcaNiJE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=H9ol8YiP; arc=none smtp.client-ip=18.9.28.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
+Received: from cwcc.thunk.org (pool-173-48-82-229.bstnma.fios.verizon.net [173.48.82.229])
+	(authenticated bits=0)
+        (User authenticated as tytso@ATHENA.MIT.EDU)
+	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 50DJQ332031488
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 13 Jan 2025 14:26:04 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
+	t=1736796365; bh=eAwchZwZGUQHq6Kb1GScy92lPymhMMz6ghymT3RjY94=;
+	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
+	b=H9ol8YiPU0ZzEDMKWDxtq4RsduJqGDBW1+2yZXIgbkOAZ/xnoDt1cMvkSxhW8qVAi
+	 zDp5SAk144dYkAo1PKGNoYizW4opsUbt0LsPscXGEYgw6GSYerHjqeaoRhsAd0jbpO
+	 JIeRD7yVujcb20iBLUlylVMkjbc6byU3SIy0riLBAi5A+q1qwZc8Yop6MTcZGkfIKS
+	 Pgf0CS/RhCQFDmL8NPyOiBOmgJE+YO/NdKdSyYyxTK55vVd/HMn0g3kSFu0ro9YVky
+	 j69r2llG54SGCMUxcrYui73Y6HIA8Snqjz9rBHubYVS1Q60WNMpYcfts0GRj/60LAF
+	 5DV9VwS6qfzvw==
+Received: by cwcc.thunk.org (Postfix, from userid 15806)
+	id 4593615C0135; Mon, 13 Jan 2025 14:26:03 -0500 (EST)
+Date: Mon, 13 Jan 2025 14:26:03 -0500
+From: "Theodore Ts'o" <tytso@mit.edu>
+To: "Darrick J. Wong" <djwong@kernel.org>
 Cc: Catalin Patulea <cronos586@gmail.com>, linux-ext4@vger.kernel.org,
-	Kazuya Mio <k-mio@sx.jp.nec.com>
+        Kazuya Mio <k-mio@sx.jp.nec.com>
 Subject: Re: e2fsck max blocks for huge non-extent file
-Message-ID: <20250113183517.GC6152@frogsfrogsfrogs>
+Message-ID: <20250113192603.GA1950906@mit.edu>
 References: <CAE2LqHL6uY=Sq2+aVtW-Lkbu9mvjFkaNqLaDA8Bkpmvx9AjHBg@mail.gmail.com>
  <20250113163345.GO1284777@mit.edu>
+ <20250113183517.GC6152@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -58,70 +66,37 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20250113163345.GO1284777@mit.edu>
+In-Reply-To: <20250113183517.GC6152@frogsfrogsfrogs>
 
-On Mon, Jan 13, 2025 at 11:33:45AM -0500, Theodore Ts'o wrote:
-> On Mon, Jan 13, 2025 at 12:49:19AM -0500, Catalin Patulea wrote:
-> > 
-> > I have an ext3 filesystem on which I manually enabled huge_file
-> > (files >2 TB) using tune2fs; then created a 3 TB file (backup image
-> > of another disk).  Now, I am running e2fsck and it reports errors:
+On Mon, Jan 13, 2025 at 10:35:17AM -0800, Darrick J. Wong wrote:
 > 
-> Hmm, it looks like this has been broken for a while.  I've done a
-> quick look, and it appears this has been the case since e2fsprogs
-> 1.28 and this commit:
+> Hmm -- num_blocks is ... the number of "extent records", right?  And on
+> a !extents file, each block mapped by an {in,}direct block counts as a
+> separate "extent record", right?
 > 
-> commit da307041e75bdf3b24c1eb43132a4f9d8a1b3844
-> Author: Theodore Ts'o <tytso@mit.edu>
-> Date:   Tue May 21 21:19:14 2002 -0400
+> In that case, I think (1U<<31) isn't quite right, because the very large
+> file could have an ACL block, or (shudder) a "hurd translator block".
+> So that's (1U<<31) + 2 for !extents files.
 > 
->     Check for inodes which are too big (either too many blocks, or
->     would cause i_size to be too big), and offer to truncate the inode.
->     Remove old bogus i_size checks.
->     
->     Add test case which tests e2fsck's handling of large sparse files.
->     Older e2fsck with the old(er) bogus i_size checks didn't handle
->     this correctly.
-> 
-> I think no one noticed since trying to support files this large on a
-> non-extent file is so inefficient and painful that in practice anyone
-> trying to use files this large would be using ext4, and not a really
-> ancient ext3 file system.
-> 
-> The fix might be as simple as this, but I haven't had a chance to test
-> it and do appropriate regression tests....
-> 
-> diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
-> index eb73922d3..e460a75f4 100644
-> --- a/e2fsck/pass1.c
-> +++ b/e2fsck/pass1.c
-> @@ -3842,7 +3842,7 @@ static int process_block(ext2_filsys fs,
->  		problem = PR_1_TOOBIG_DIR;
->  	if (p->is_dir && p->num_blocks + 1 >= p->max_blocks)
->  		problem = PR_1_TOOBIG_DIR;
-> -	if (p->is_reg && p->num_blocks + 1 >= p->max_blocks)
-> +	if (p->is_reg && p->num_blocks + 1 >= 1U << 31)
+> For extents files, shouldn't this be (1U<<48) + 2?  Since you /could/
+> create a horrifingly large extent tree with a hojillion little
+> fragments, right?  Even if it took a million years to create such a
+> monster? :)
 
-Hmm -- num_blocks is ... the number of "extent records", right?  And on
-a !extents file, each block mapped by an {in,}direct block counts as a
-separate "extent record", right?
+The code paths in question are only used for indirect mapped files.
+The logic for handling extent-mapped files is check_blocks_extents()
+in modern versions of e2fsprogs, which is why Catalin was only seeing
+this for an ext3 file systems that had huge_file enabled.
 
-In that case, I think (1U<<31) isn't quite right, because the very large
-file could have an ACL block, or (shudder) a "hurd translator block".
-So that's (1U<<31) + 2 for !extents files.
+You're right though that we shouldn't be using num_blocks at all for
+testing for regular files or directory files that are too big, since
+num_blocks include blocks for extended attribute blocks, the
+ind/dind/tind blocks, etc.  We do care about num_blocks being too big
+for the !huge_file case since for !huge_file file systems i_blocks is
+denominated in 512 byte units, and is only 32-bits wide.  So in that
+case, we *do* care about the size of the file including metadata
+blocks being no more than 2TiB.
 
-For extents files, shouldn't this be (1U<<48) + 2?  Since you /could/
-create a horrifingly large extent tree with a hojillion little
-fragments, right?  Even if it took a million years to create such a
-monster? :)
+						- Ted
 
---D
-
->  		problem = PR_1_TOOBIG_REG;
->  	if (!p->is_dir && !p->is_reg && blockcnt > 0)
->  		problem = PR_1_TOOBIG_SYMLINK;
-> 
-> 
-> 						- Ted
-> 
 
