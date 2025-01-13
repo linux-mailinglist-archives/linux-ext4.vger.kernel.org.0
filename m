@@ -1,56 +1,55 @@
-Return-Path: <linux-ext4+bounces-6065-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6066-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2931A0BDE7
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 17:46:46 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F15DA0C023
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 19:39:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CFEB516987C
-	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 16:46:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D44937A3C06
+	for <lists+linux-ext4@lfdr.de>; Mon, 13 Jan 2025 18:39:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF89124023A;
-	Mon, 13 Jan 2025 16:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 922011FA8F6;
+	Mon, 13 Jan 2025 18:35:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="psIre6d+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aAg+b+qN"
 X-Original-To: linux-ext4@vger.kernel.org
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89D431C5D77;
-	Mon, 13 Jan 2025 16:46:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343F318871F
+	for <linux-ext4@vger.kernel.org>; Mon, 13 Jan 2025 18:35:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736786800; cv=none; b=FnBZd8RWBXQTcF5C+LVARp5IeaeNlsen2ZFBn0KY+4ygEn+ghqxWn7yTITb6CG7D4rd+TQ1fbs6bJ5NrcV7PO+gm71OoqJ/X1glrS6JhMs/bC1ydVfAFF34l94I7W3h9nEiTZzwgyfDfmBpPYZbkX7MGuNzuAvs7J1FHS+TG50Q=
+	t=1736793318; cv=none; b=dDjyFHyBXqzmjnhzm5WoSd5fdJwN4Ykw/nGpve4uNudblmMQkzib9f5stAIQTuNVoe/FgYFfepFRQSQlB9aEenva+cjQ2s+J2vceWpwYibpwqVgz4hp6OBG6HT964NvJ5CEG1mv/+cCgBnpnq3gGrIf6MGuovgoMpE8YeMTl2VQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736786800; c=relaxed/simple;
-	bh=C9lMucOWh0XimSzmt2LW/VyG4a2Sh5b0vKWYIvIsKcc=;
+	s=arc-20240116; t=1736793318; c=relaxed/simple;
+	bh=uV7Q2p9e11PNJeE2XEKDLPYWp15q+2oV/4NRhCQm0RQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E2Y8wgSsz+Gko03jhzavTQN9khGjaO699yfKcfeUNNighpb7ZxkDlckSXlQ90eMy5Zwc0aPGa55zHwlyRQ2W9k31VbCnMas1gGroyb7iCTEQEEHopY4VeWeNbd+ZFLUsNp1BpxVavtqz/nly9czhXnXb+fRVGJuNNqlR3kikfRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=psIre6d+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16EACC4CED6;
-	Mon, 13 Jan 2025 16:46:40 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=AYKwxcPKMjuZibLvZudddy8CDXcnFcXg8Gmkobghwv0eyYmT8m18B5KbUysHk0yv6h9ZHqC9uVb2Esf5rVnbD9qu/XI4SWdKTNVD3ucOdXFOJCbGIYoJra71MEUebo8YjZJ3Gy/gGhdiBuPeTfn0oZZaDrOY7ifXOdl7o9zBElQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aAg+b+qN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B0912C4CEE1;
+	Mon, 13 Jan 2025 18:35:17 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1736786800;
-	bh=C9lMucOWh0XimSzmt2LW/VyG4a2Sh5b0vKWYIvIsKcc=;
+	s=k20201202; t=1736793317;
+	bh=uV7Q2p9e11PNJeE2XEKDLPYWp15q+2oV/4NRhCQm0RQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=psIre6d+DRxw9yWUOuZ5hYpJXVXOURaqzHKBWvp9anosxTzPvfTZ88jAHAUyeCvFa
-	 6+eVt3sF0/F4s/1MWOyKEbnvCcf6snqHIVUQO1uvuJMN8gq1nbvjXnjiawN9ezVuWg
-	 C/AuDfMHUkoSWZ3qnDeT2m55yIq4g75mdFhCg5Gl9PubWuujA1nKETkiFUIZ3ko/UJ
-	 IYOJBIHHoVutccBKExo4nRnAdAs2jzkqMXOns97xpvG5ojZp4HXRrXy9RlMlgPl/km
-	 YzHEC+ISW2nzvgSEl90ObcUZGh6/C0AEBT8yc/VNmzdfofNIXdHlvkXSMZ11QEcVNH
-	 xkxtaorJJXkNg==
-Date: Mon, 13 Jan 2025 08:46:39 -0800
+	b=aAg+b+qNZV1SLbrChPl7QCtgXzj7Dxou0Mpue8RH/CDAqxdsYczxxqiv4YMO0sEuN
+	 T6eg1GYLMvaJTEnZFRtOc4xu+HR6ufSpISjxSRWKFUX0p90x2S9/toyei2KwLHD8WY
+	 01d1fVo8LPOvZpjrxzBX7IUDDC6HJo2XLQ2NJrgUnuETeJA9knYwVfpRrGGFf9PYXQ
+	 2fLec3fwSUYI5Y6zYpIXNV3CHrLld4wcQdVgRc2rJvzv/vJv1YjzZ/PdEh9d9qdnqh
+	 TvLjz8BQMVytB4u/JtikPTXmWuHDdSnLC8G07rhKaXWtGkOjHQ/kaEfRP4ndyFGiHM
+	 hsznU9j7iA/2g==
+Date: Mon, 13 Jan 2025 10:35:17 -0800
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: "Nirjhar Roy (IBM)" <nirjhar.roy.lists@gmail.com>
-Cc: fstests@vger.kernel.org, linux-ext4@vger.kernel.org,
-	linux-xfs@vger.kernel.org, ritesh.list@gmail.com,
-	ojaswin@linux.ibm.com, zlang@kernel.org
-Subject: Re: [RFC 1/5] tests/selftest: Add a new pseudo flaky test.
-Message-ID: <20250113164639.GG1251194@frogsfrogsfrogs>
-References: <cover.1736496620.git.nirjhar.roy.lists@gmail.com>
- <03ba6c154c9e2cf3d68131b3af2ca12b96663d25.1736496620.git.nirjhar.roy.lists@gmail.com>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: Catalin Patulea <cronos586@gmail.com>, linux-ext4@vger.kernel.org,
+	Kazuya Mio <k-mio@sx.jp.nec.com>
+Subject: Re: e2fsck max blocks for huge non-extent file
+Message-ID: <20250113183517.GC6152@frogsfrogsfrogs>
+References: <CAE2LqHL6uY=Sq2+aVtW-Lkbu9mvjFkaNqLaDA8Bkpmvx9AjHBg@mail.gmail.com>
+ <20250113163345.GO1284777@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
@@ -59,67 +58,70 @@ List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <03ba6c154c9e2cf3d68131b3af2ca12b96663d25.1736496620.git.nirjhar.roy.lists@gmail.com>
+In-Reply-To: <20250113163345.GO1284777@mit.edu>
 
-On Fri, Jan 10, 2025 at 09:10:25AM +0000, Nirjhar Roy (IBM) wrote:
-> This test is to simulate the behavior of a flaky test. This will be required
-> when we will make some modifications to the pass/fail metric calculation of
-> the test infrastructure where we will need a test with non-zero pass
-> and non-zero failure rate.
+On Mon, Jan 13, 2025 at 11:33:45AM -0500, Theodore Ts'o wrote:
+> On Mon, Jan 13, 2025 at 12:49:19AM -0500, Catalin Patulea wrote:
+> > 
+> > I have an ext3 filesystem on which I manually enabled huge_file
+> > (files >2 TB) using tune2fs; then created a 3 TB file (backup image
+> > of another disk).  Now, I am running e2fsck and it reports errors:
 > 
-> Reviewed-by: Ritesh Harjani (IBM) <ritesh.list@gmail.com>
-> Signed-off-by: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> ---
->  tests/selftest/007     | 21 +++++++++++++++++++++
->  tests/selftest/007.out |  2 ++
->  2 files changed, 23 insertions(+)
->  create mode 100755 tests/selftest/007
->  create mode 100644 tests/selftest/007.out
+> Hmm, it looks like this has been broken for a while.  I've done a
+> quick look, and it appears this has been the case since e2fsprogs
+> 1.28 and this commit:
 > 
-> diff --git a/tests/selftest/007 b/tests/selftest/007
-> new file mode 100755
-> index 00000000..f100ec5f
-> --- /dev/null
-> +++ b/tests/selftest/007
-> @@ -0,0 +1,21 @@
-> +#! /bin/bash
-> +# SPDX-License-Identifier: GPL-2.0
-> +# Copyright (c) 2024 IBM Corporation.  All Rights Reserved.
-> +# Author: Nirjhar Roy (IBM) <nirjhar.roy.lists@gmail.com>
-> +#
-> +# FS QA Test 007
-> +#
-> +# This test is to simulate the behavior of a flakey test.
-> +#
-> +
-> +. ./common/preamble
-> +_begin_fstest selftest
-> +
-> +if (($RANDOM % 2)); then
-> +    echo "Silence is golden"
-> +else
-> +    echo "Silence is flakey"
+> commit da307041e75bdf3b24c1eb43132a4f9d8a1b3844
+> Author: Theodore Ts'o <tytso@mit.edu>
+> Date:   Tue May 21 21:19:14 2002 -0400
+> 
+>     Check for inodes which are too big (either too many blocks, or
+>     would cause i_size to be too big), and offer to truncate the inode.
+>     Remove old bogus i_size checks.
+>     
+>     Add test case which tests e2fsck's handling of large sparse files.
+>     Older e2fsck with the old(er) bogus i_size checks didn't handle
+>     this correctly.
+> 
+> I think no one noticed since trying to support files this large on a
+> non-extent file is so inefficient and painful that in practice anyone
+> trying to use files this large would be using ext4, and not a really
+> ancient ext3 file system.
+> 
+> The fix might be as simple as this, but I haven't had a chance to test
+> it and do appropriate regression tests....
+> 
+> diff --git a/e2fsck/pass1.c b/e2fsck/pass1.c
+> index eb73922d3..e460a75f4 100644
+> --- a/e2fsck/pass1.c
+> +++ b/e2fsck/pass1.c
+> @@ -3842,7 +3842,7 @@ static int process_block(ext2_filsys fs,
+>  		problem = PR_1_TOOBIG_DIR;
+>  	if (p->is_dir && p->num_blocks + 1 >= p->max_blocks)
+>  		problem = PR_1_TOOBIG_DIR;
+> -	if (p->is_reg && p->num_blocks + 1 >= p->max_blocks)
+> +	if (p->is_reg && p->num_blocks + 1 >= 1U << 31)
 
-Oh is it now? ;)
+Hmm -- num_blocks is ... the number of "extent records", right?  And on
+a !extents file, each block mapped by an {in,}direct block counts as a
+separate "extent record", right?
 
-Reviewed-by: "Darrick J. Wong" <djwong@kernel.org>
+In that case, I think (1U<<31) isn't quite right, because the very large
+file could have an ACL block, or (shudder) a "hurd translator block".
+So that's (1U<<31) + 2 for !extents files.
+
+For extents files, shouldn't this be (1U<<48) + 2?  Since you /could/
+create a horrifingly large extent tree with a hojillion little
+fragments, right?  Even if it took a million years to create such a
+monster? :)
 
 --D
 
-> +fi
-> +
-> +status=0
-> +exit
-> diff --git a/tests/selftest/007.out b/tests/selftest/007.out
-> new file mode 100644
-> index 00000000..fd3590e6
-> --- /dev/null
-> +++ b/tests/selftest/007.out
-> @@ -0,0 +1,2 @@
-> +QA output created by 007
-> +Silence is golden
-> -- 
-> 2.34.1
+>  		problem = PR_1_TOOBIG_REG;
+>  	if (!p->is_dir && !p->is_reg && blockcnt > 0)
+>  		problem = PR_1_TOOBIG_SYMLINK;
 > 
+> 
+> 						- Ted
 > 
 
