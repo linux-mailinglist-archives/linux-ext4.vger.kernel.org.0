@@ -1,263 +1,193 @@
-Return-Path: <linux-ext4+bounces-6084-lists+linux-ext4=lfdr.de@vger.kernel.org>
+Return-Path: <linux-ext4+bounces-6085-lists+linux-ext4=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-ext4@lfdr.de
 Delivered-To: lists+linux-ext4@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2333CA100C0
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2025 07:13:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F23A4A100D0
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2025 07:25:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (relay.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-ECDSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27D251888345
-	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2025 06:13:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E85EC1888A05
+	for <lists+linux-ext4@lfdr.de>; Tue, 14 Jan 2025 06:25:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C84012343B5;
-	Tue, 14 Jan 2025 06:12:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1DC6233556;
+	Tue, 14 Jan 2025 06:25:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nlRiEkJG"
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="F0b0Fb1t"
 X-Original-To: linux-ext4@vger.kernel.org
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3380A24022E;
-	Tue, 14 Jan 2025 06:12:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.15
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1736835174; cv=fail; b=pjWA1w28CszFWmZgqNoOZkTX3IlFbR2jGmso3wV3zHGW9CLvYyOUp/W7O0cmg+JdO7nWBJQXsCuVId63iJJi2/O+Xh3/+NFA/NN6aL175skBpwOF/NamHfkwxwhWf6CU5QvFjr7nGqeLt8J4IScIzSAAam7nVW/wCQ89ufKIJU0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1736835174; c=relaxed/simple;
-	bh=KEmS1Z299WnqpeOIPpWE9WpBQm5aeOU7PZ93d/CzbY4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=e2GH7FjXwogun4LUvNFA/GqAtmmm2LjwulY8cqw+UOVeg9ggOzOuxm0g4lq5kK6Jk+kMOGbSIXM2uGQcui/gDDsPodJj8zQTQUH+yKw/MGAL5EoS4pFSVQbEDEoVLoRAdbBlUSekeAff8spG3CbwEkzZlqIoXZzlm4i8ZD7tpLo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nlRiEkJG; arc=fail smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1736835172; x=1768371172;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=KEmS1Z299WnqpeOIPpWE9WpBQm5aeOU7PZ93d/CzbY4=;
-  b=nlRiEkJGgZi/gmiqN0NKS28MSCNT0CdOn+C9KFX0B+WiuNipzmUoc9tL
-   YebU91fqOEpPwD8FpdbfW6UP2EX/OpQHuhM63ARF+nLsAmBXc7emI3BUQ
-   5yi4Fwihxq8/UuAY5SWT3DvbFqQ+P3WmZkHW2vl5GZO/L3dvAAcutqJxy
-   iPBSHj0Xt8S35y1w1+hxP9fZPmlniaswqtnHs6cKTiPtD2MaRgoqXi3p2
-   tMya820lc/nEIwnGJS8NR0peRfmUmvsEcvGzthx0BpIcDXkoSjqUsOKtS
-   waPQsLgLZuP+hQoyWGKMJYV4tpe2XNwqH4QYiE3d678Fmpr3rq1u+aqft
-   g==;
-X-CSE-ConnectionGUID: 8eXvamEtQ9Oleq7jeJqdOg==
-X-CSE-MsgGUID: Kk1G+pOXSASCAeQVhk7J5w==
-X-IronPort-AV: E=McAfee;i="6700,10204,11314"; a="40796906"
-X-IronPort-AV: E=Sophos;i="6.12,313,1728975600"; 
-   d="scan'208";a="40796906"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 13 Jan 2025 22:12:50 -0800
-X-CSE-ConnectionGUID: O8SaAUFXTs2y/LLUMLcaiQ==
-X-CSE-MsgGUID: bdo4BKOQQVCWJjYvwrPZfA==
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.12,224,1728975600"; 
-   d="scan'208";a="105589580"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa008.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 13 Jan 2025 22:12:49 -0800
-Received: from orsmsx601.amr.corp.intel.com (10.22.229.14) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44; Mon, 13 Jan 2025 22:12:48 -0800
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.44 via Frontend Transport; Mon, 13 Jan 2025 22:12:48 -0800
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (104.47.73.171)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.44; Mon, 13 Jan 2025 22:12:48 -0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector10001; d=microsoft.com; cv=none;
- b=FgT5bD1n1UqxcJ1crFhf5RZfepsuq+Z4jyzvG40Pg0wundq6iZ93H0g5AkF7LIKlt5U1o2eWEGMphyE3SXL1Zl6yQgvCC+HiWguZxM5bwU6aT4h74tAds34s6fi2G41sAfyrSii8mpOi91eP3RqCB4WUX0RQl0dzuUNArkn1omfIgev2HCCh0a5bpnzsqsJaMyshjHnymtrl3ut7UivW/SOfetER7TXAnGVjEvn/RAm+S2mhnELrCmO0+RtarkYn7AgWpgWCWTVPj9qaadFpcFAeskaDl3Be2zgJYtePVGWmRXIqRUhehSjZg6ZY0/OaJU15HFr4eXoNYgJrdWMIoQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector10001;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=idlcfja3DeNfVAR7I+buYIPJo1gL4lVASBdfhSZYaqc=;
- b=aEOK8SdTx7pRoJsRpQznzSTSAt1xOK3Ua3Whi+y/XDMIIpMkrGeXqCTk4IL90Zj0Njwsu30ZFteJOnWi/RIcApP6vpqcVtw3b1muEJ9zsUzRF0xPoip/1Ybb7QQC+jsXBwoGObAkpw1RPK1Ckw1m06YG1+rnzzqqvGpbZO21uhmiKOVYbOxf+mEHYegu3PP8L4GxDAbmP+CnozNAdZhOWyE+5tjMiSgKN/SNvEna+fJOviwJiVkr7t7ijJjIT4u+zIPkbqTXzKn8eGQrAL3LlhNQbmwPvdNR8XoofD6+bgM0az1Uijymxa0+sap07ZZgofZJ+W1Ix0kQpAqivvQ4xg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by DM6PR11MB4676.namprd11.prod.outlook.com (2603:10b6:5:2a7::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.8335.18; Tue, 14 Jan
- 2025 06:12:46 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6b05:74cf:a304:ecd8]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::6b05:74cf:a304:ecd8%5]) with mapi id 15.20.8335.011; Tue, 14 Jan 2025
- 06:12:46 +0000
-Date: Mon, 13 Jan 2025 22:12:41 -0800
-From: Dan Williams <dan.j.williams@intel.com>
-To: Alistair Popple <apopple@nvidia.com>, <akpm@linux-foundation.org>,
-	<dan.j.williams@intel.com>, <linux-mm@kvack.org>
-CC: <alison.schofield@intel.com>, Alistair Popple <apopple@nvidia.com>,
-	<lina@asahilina.net>, <zhang.lyra@gmail.com>,
-	<gerald.schaefer@linux.ibm.com>, <vishal.l.verma@intel.com>,
-	<dave.jiang@intel.com>, <logang@deltatee.com>, <bhelgaas@google.com>,
-	<jack@suse.cz>, <jgg@ziepe.ca>, <catalin.marinas@arm.com>, <will@kernel.org>,
-	<mpe@ellerman.id.au>, <npiggin@gmail.com>, <dave.hansen@linux.intel.com>,
-	<ira.weiny@intel.com>, <willy@infradead.org>, <djwong@kernel.org>,
-	<tytso@mit.edu>, <linmiaohe@huawei.com>, <david@redhat.com>,
-	<peterx@redhat.com>, <linux-doc@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linuxppc-dev@lists.ozlabs.org>, <nvdimm@lists.linux.dev>,
-	<linux-cxl@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<linux-ext4@vger.kernel.org>, <linux-xfs@vger.kernel.org>,
-	<jhubbard@nvidia.com>, <hch@lst.de>, <david@fromorbit.com>,
-	<chenhuacai@kernel.org>, <kernel@xen0n.name>, <loongarch@lists.linux.dev>
-Subject: Re: [PATCH v6 22/26] device/dax: Properly refcount device dax pages
- when mapping
-Message-ID: <67860059b200b_20fa294b5@dwillia2-xfh.jf.intel.com.notmuch>
-References: <cover.11189864684e31260d1408779fac9db80122047b.1736488799.git-series.apopple@nvidia.com>
- <7d5416ad49341207e5f3c48d5b9c4b7af5fd9ac6.1736488799.git-series.apopple@nvidia.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <7d5416ad49341207e5f3c48d5b9c4b7af5fd9ac6.1736488799.git-series.apopple@nvidia.com>
-X-ClientProxiedBy: MW4PR04CA0293.namprd04.prod.outlook.com
- (2603:10b6:303:89::28) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F4F322F11
+	for <linux-ext4@vger.kernel.org>; Tue, 14 Jan 2025 06:25:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1736835930; cv=none; b=hTS+MQdpqXs6uuRDq7023tFM91ndLbs05/XswAh4fESyDPh8uxHnsuX2oCo0+FTC2sYMk+RZgvqdoJL97py4gnAhw/1MzVeau6NiLfidjxPpoyCGRnve7c9moN4NcmAWoJr0DNnyuFH4qJHvX0lmw+PlSSCXWcUCnmIwIchGcBo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1736835930; c=relaxed/simple;
+	bh=YHTZsofczZciM2ldx8u0jApBGwSPKeL/VawoG+8D4Pw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BaT/ANVP7KzCqqLqd1d0kepWZR0kIXplA7ztKOVlCCrgRANJpStPF0mn5HqiTsrfXxH4G/V89Gb2AUWxOtCrhEeu7vuyig265ZvBPv+nagk/ABx7ak0Rk4IEBPiVtbtQFXhFQiaHbGgenf1tYYCMvoFQoofnL1a6YxGxz/+vjkM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=F0b0Fb1t; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5d0bf4ec53fso879844a12.0
+        for <linux-ext4@vger.kernel.org>; Mon, 13 Jan 2025 22:25:28 -0800 (PST)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1736835926; x=1737440726; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=WG68zHpgXN0JEeAnT6d8e+4V4GunA7gzOhdUvu4l6bU=;
+        b=F0b0Fb1tDYj/Y6hTatZjTEPm5M98RSihZg6dZHy7QD9NHY4ik5UiKeiPmlMStFCKM8
+         WGlOHJOmUvgajV3wK1lx8wCUyiyv0e1D8tm01w8zX1k55mK5irI7MiYhCzS4RtFkgoTT
+         df8M/LKWPSIz2DQbtc+sT5+KTshwsimOQjj61seqQY7f+ncUXW6fEA7IzxL56qP89d9G
+         qDZTIcVoI1cqK/g+izrRobdOOUcwcQnU+5zcsQfQ7GxiTPtbusw8SkstM2eRAQ2ZBjnC
+         duMcJtrmZvl78edqhYfvyfI2q/ba+9Vb6UBaa+YtcmnognVLhwDDOEkoZnY47g1grNXC
+         CMbA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1736835926; x=1737440726;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=WG68zHpgXN0JEeAnT6d8e+4V4GunA7gzOhdUvu4l6bU=;
+        b=rPPYg9AbzhyEsPCeLQwlWs77QfUvHniAml4w9Hj15RdFE2tKF51X29QTNjMllQKJQg
+         zl/c0bCjadsynxZbKvioeuXcwHFcrQBi6NC85kv+nyvtUuvhiw4ekg8Uz7WT1MvaB3Ds
+         p4ENvXK1kVVRKep2aviopMHBn9qG7lGgZXL2tBHAUM9BZ6hhrL1GZguHx66Fz/E79FoC
+         gedVdNKSDXdIJ4nP6hNvVkP3wx5/6vMT1C5qhoVZNfwWJG1/fbSQZsVzC1DJZi1PptpB
+         KpgTPhhqV/Jrn6pIw5L76MrzB/YNvIY93nlWebOiaKTzLb3+2P7Sqi/NGfe6eZY7AZMI
+         Fpzw==
+X-Forwarded-Encrypted: i=1; AJvYcCU9q3x/d1wVwC3CqE160PsPi8iVGLdSeSkSUa1/pVpPvVTfXaclu0vLRtm6Zi4NKdMG1JaQtoTglM5d@vger.kernel.org
+X-Gm-Message-State: AOJu0Yz+qOre22Tb4j5ILOlK7G5E/h+JjeyenkfXfXyGG3xKEhGx55oP
+	z5Rpmr6m1CW9jPpaEDJJyF018B8zOJ5IrjGxQzrUwkAGX0anit7bjmtL3+Ucv+8=
+X-Gm-Gg: ASbGncuQei3yeO6WIqaNTQxjA+debTIgyP6nSZlOJTzj5n4Yf2KNaUma7U2Rkb6ZXPn
+	FeBqHjSKoIKdKKvckAgiA6Hy3QJIR++qZjo4o2h2xgUqcDkbr2O2iXGLrEakDmzUfZZ14TcLFq0
+	wy5igzRbXgBfWgLmbPEAz0EhAPX+5VGaF4xms49GgoWsp7Vrph8KgFMmTKlbfc3+mg8h+vaE6kK
+	WzEkeywL5rPDjeuN6XfmsYP7fdmeK22qv0O4UjcZvI4UjL+KVNmyzDv/lTn
+X-Google-Smtp-Source: AGHT+IGmy8xIOYJXQcPObq4m2Cx6vmu6xHGtv84+U2bEN4z54Im+X4nF9QMlaXFY1yA4XzhFd18Shw==
+X-Received: by 2002:a17:907:7203:b0:aab:fcbb:da37 with SMTP id a640c23a62f3a-ab2ab6cbb84mr866865466b.11.1736835926558;
+        Mon, 13 Jan 2025 22:25:26 -0800 (PST)
+Received: from [10.202.32.28] ([202.127.77.110])
+        by smtp.gmail.com with ESMTPSA id d9443c01a7336-21a9f10df62sm62491835ad.21.2025.01.13.22.25.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 13 Jan 2025 22:25:25 -0800 (PST)
+Message-ID: <24f378c8-7a27-47b8-bd79-dba4a2e92f6d@suse.com>
+Date: Tue, 14 Jan 2025 14:25:21 +0800
 Precedence: bulk
 X-Mailing-List: linux-ext4@vger.kernel.org
 List-Id: <linux-ext4.vger.kernel.org>
 List-Subscribe: <mailto:linux-ext4+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-ext4+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DM6PR11MB4676:EE_
-X-MS-Office365-Filtering-Correlation-Id: 397e2004-ec33-4c2d-de14-08dd346276c7
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;ARA:13230040|7416014|1800799024|366016|376014|7053199007;
-X-Microsoft-Antispam-Message-Info: =?us-ascii?Q?Ubb35cZFd008eQgbGeHXSwfQx2l9LkE/CzVZ8CXu454g+Z5BkyHj/65VRDN2?=
- =?us-ascii?Q?L3PtsoTtxjijOzIOazA3a6ssovV7mwdiVCWbh6/k1fnO+ucg91JZ/pPeyIv8?=
- =?us-ascii?Q?w5sFRKcgXwCaha26KWhJOxS40xF49OWL908eROXkvwFVVauHaIZQDZYulfwo?=
- =?us-ascii?Q?rhGX7EvS0i1x45wnhtGz8+tph4NWFqHvXpcaijoDnj/0UD6srRhGWi4O4h+g?=
- =?us-ascii?Q?hDqEmvdvY+nrqCC3FvXrB/Fi06cguda9in57OJJOcoGPVWcvt98MzJTiietg?=
- =?us-ascii?Q?sx7kyT9x7nyort90KMAaMgz5uBtSirbRRfI6XesDT0hPKXmxVaWWeORMw6Jt?=
- =?us-ascii?Q?KaIZdXqJAG63MIZVoymryXK862YxkJ6SQCthJOmAVimHksT+qPkRLfZktXKS?=
- =?us-ascii?Q?LXgIUpIE+Occ4UhrpvW1yVOzLJyS9KsjiWhUkxoKhx/aCsK/mhGWST8rDV36?=
- =?us-ascii?Q?Eh5Uhu1CNOp7RIt7Jz61OAf9ENMhoByLzEECwqwqaCYSa+K7ckSQ07/jdzmB?=
- =?us-ascii?Q?1tlQg/k7x2Fx3TNbFgxkk9q/LI7/6ag2u6V0bz4iIWdguAnsYy1kptTpuSLS?=
- =?us-ascii?Q?cEiBgLmejkyhhpjJLtm5/Afn9M1NAJZpttIGC2W/A9S9v87511rlNjvkvIQs?=
- =?us-ascii?Q?db60ov83/T/FLNDMPOcrL+iuzbEJHf7xmMyjjGcfGyrmDZT6HD2kory6Vs/3?=
- =?us-ascii?Q?6P9mV+fX4Nh69/jMB9dX1J0JIPIWMP21DjjaBFBBxRTMDtC+6DarfzoSdlak?=
- =?us-ascii?Q?dVDVuL5p5SebMFhnAAOt2UmOX/wleO/G+roi9Yy2HKXT7kaezfexGpebz13i?=
- =?us-ascii?Q?UBe0ZHDZQ17vGiBmvu6vGhZgkh8Y6Y2CY2lYaYguS6p+c9PaJ0YFwMjbDWxz?=
- =?us-ascii?Q?TWIc7GQqYydnXyzyJsp3yKzyBfcueSSN5/PEQfTAxCgorhPVCwIyoLi+TO20?=
- =?us-ascii?Q?1Xn5cNPry+baM+CJTIktA5Ay2x0nY/I7HMyYcKvve4tuj4lE0YyU6t/fIZjt?=
- =?us-ascii?Q?YrBihU5YUm1kEN7SEiu/BfeNv/+IvsIx/TMYPw+XB9E9jV9A3LsKDzfwOvGd?=
- =?us-ascii?Q?Ms1PZV517DZTpBe8528iMoC9MNqa2cju+yTkJTkXmP+8r3rwugN9rsAkcLiK?=
- =?us-ascii?Q?+nesaPhkZr+UWAKUm8zuFg+lySjsL1GLv8OIacHPagRAmpjyTn11vgepQ/rV?=
- =?us-ascii?Q?V6Mabn7xf9Lirt13o3YofB/ep0M5YGetPJbMrWpO9y/nQ6ouXgB4x6IcQJrt?=
- =?us-ascii?Q?ixm9AfQOyeygA5nZH+if3rdBuGF6L16FOhLCy8sa7uSjlYrsRAOMNg8hhmJN?=
- =?us-ascii?Q?Zx914pckRTZ842j7JnLBcjTyidVo3gI/gVlmfv96nNQwr/XT2+8D4G10o25C?=
- =?us-ascii?Q?LnoQ2EXp8hgB9P9Kl/J5G2/kSDO8?=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230040)(7416014)(1800799024)(366016)(376014)(7053199007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?PN15taGIPKxDFj7EX00hMk5j3tlidozrXVnPi8zaSbhD4w736AthXkiMcmcn?=
- =?us-ascii?Q?upksF/7/R1kSCmTQ4B9+S7AOFdXR5wO2BiQ2KWhmfJpMEKvogXiAcZja956l?=
- =?us-ascii?Q?LduF98oPasMfu4Zau8mEJIvosNTKTgp0DwWlyctgkdAd12JOse+IM8qs4t7J?=
- =?us-ascii?Q?DsSiDR+K/NLY2Q+JKlivpdyrgFDMGOtpniy3+hw5gn/nXKqf+y4xaMDEwKkk?=
- =?us-ascii?Q?Pzhg5sRmFOzdLxe2vh1k+kn8GvjDB5i7RwbGEwMoih69yDwN7hNfabyOhf7Q?=
- =?us-ascii?Q?K/kHwgcspd9Alx7pchtZA3n6X1LMpSeiRYJrUY+O7HK2wcR9B+NMjQFD9UNj?=
- =?us-ascii?Q?w20GG+qtkOfUnMvaSkam6N6/GwvLZclR057r5Z7xHCsPviemfU3Nzu98faZ3?=
- =?us-ascii?Q?X7efoz3YvdS6ecsgZcXFA6Zjtgix8azldEoTOZ7JrADbbgtRXb+o8GC4/Y/o?=
- =?us-ascii?Q?ApQs6gB0yhRwdpxD67pWyHs6to03pILPbv6bny1ARFr8qMX7bep0RKqpvp6w?=
- =?us-ascii?Q?QE9rDo2arFZy879HdU8x4NhdK2HO8d10LvfjQBgsZYnKgdRJ7MZ51/os1pgk?=
- =?us-ascii?Q?C096NUdaavbyBK4/TJWNnWT0Kn45Totu5IBm8P/NDe1T/6RSlJ/Sj/lIpaZH?=
- =?us-ascii?Q?K7v3poo0mXGwbROEOGmVwWLxi4V7ZTchF+kPq34qtGkX6EqAHZExuS2lJ4di?=
- =?us-ascii?Q?eMwEpWWydQmJlKN6dUx+mG4Svmz17hhDPOgWmNud/RuQyf8YlagkwGzC21fq?=
- =?us-ascii?Q?+f0ZEo2BIasMjpwWGUe7wHWa4BwhO6J4S6t2enA7sZABJzSRjvblVJ1hYoUn?=
- =?us-ascii?Q?7yYfQVmqqtBcp0p8U6pXdOrUgy2jubF4ntmYB0MH42LmCTWGk2XMXoAqcXq3?=
- =?us-ascii?Q?Ufq2iKozxT8BNdPcSRIGMd1Kq+WtHSwdUR3hauDXxuo6hQHapt0uvYywtos1?=
- =?us-ascii?Q?7ZXMBrvN7kh0H6wQ4S0/dGSxrhdU1f4X5rIZjL2Jk4cE3h14RozlKJf9uaTJ?=
- =?us-ascii?Q?CiXtAPFd1YtHUAd7QFM0LKeYth/jItvvphC7sVZB3iI8S9RsyS9q3CFGr2Yr?=
- =?us-ascii?Q?zIClGjBjb3ocFewoHcUdZ9YoMbwVtLNWxqVEW/8jssJrxscKM+b0CJ2xl/r1?=
- =?us-ascii?Q?T+iTHnFi5mgCr1lWQ1OBjuUSi0iis1bpY+/3Sg6t4u0q2gCxyT6AJqDNb9ZG?=
- =?us-ascii?Q?ea54+ZACTfQEiBSqUTImIy4zzXBe8ijXwjAWX5pVRL0uKCMkt6ieN/9MtFlO?=
- =?us-ascii?Q?4guLwbu8LWY7m/rRIwm1DQnKgZmhKjU5r8QEjJKUoZNWsacC7eMnQolMBhqj?=
- =?us-ascii?Q?myAwn/N3Pdeg8aZQ9ifL4K/RLwjFEvaLppqv4stDzPP7FTls+Sj14DYvJ5E9?=
- =?us-ascii?Q?Cva+fEH9KY9M8t1BCQ0B4rHiMkMmfVzmS11tAsOhp21dgYYShhzj6GlgSyMK?=
- =?us-ascii?Q?q8SgUANCIPL0aTW20jM7AhaMnD5VpFRoO/1kXFNVOnkGmo3z+9nnqd/UrEiY?=
- =?us-ascii?Q?EJFLMTEbIpOMxCxGQJvAK4e8+gaZkV61OlKbNLrXvs+/rPHKz7COE8s3hAkH?=
- =?us-ascii?Q?ztJbJL7A65LWL8lgLllFtPLCIwCROkBHFTtEZoR0oK3DOYoDX9mycOALGaR5?=
- =?us-ascii?Q?OQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 397e2004-ec33-4c2d-de14-08dd346276c7
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 14 Jan 2025 06:12:46.2175
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 3BCs1YqIUcRnYVk9zwnblXXOdzusAg8xya7tbVu6H2k6HuEP5VbFPqYftN2iSPgiTG5UkMKi355MHPOOgbAay7x+699o7jt3mU1lsO2Sm4Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4676
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: WARNING in jbd2_journal_update_sb_log_tail
+To: Jan Kara <jack@suse.cz>, Liebes Wang <wanghaichi0403@gmail.com>
+Cc: tytso@mit.edu, jack@suse.com, linux-ext4@vger.kernel.org,
+ linux-kernel@vger.kernel.org, syzkaller@googlegroups.com,
+ Joseph Qi <joseph.qi@linux.alibaba.com>, ocfs2-devel@lists.linux.dev
+References: <CADCV8sq0E9_tmBbedYdUJyD4=yyjSngp2ZGVR2VfZfD0Q1nUFQ@mail.gmail.com>
+ <mzypseklhk6colsb5fh42ya74x43z5mmkzdjdyluesx6hb744a@hycbebanf7mv>
+Content-Language: en-US
+From: Heming Zhao <heming.zhao@suse.com>
+In-Reply-To: <mzypseklhk6colsb5fh42ya74x43z5mmkzdjdyluesx6hb744a@hycbebanf7mv>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Alistair Popple wrote:
-> Device DAX pages are currently not reference counted when mapped,
-> instead relying on the devmap PTE bit to ensure mapping code will not
-> get/put references. This requires special handling in various page
-> table walkers, particularly GUP, to manage references on the
-> underlying pgmap to ensure the pages remain valid.
+Hi Jan,
+
+On 1/6/25 23:14, Jan Kara wrote:
+> On Tue 31-12-24 13:53:23, Liebes Wang wrote:
+>> Dear Linux maintainers and reviewers:
+>>
+>> We are reporting a Linux kernel bug titled **WARNING in
+>> jbd2_journal_update_sb_log_tail**, discovered using a modified version of
+>> Syzkaller.
 > 
-> However there is no reason these pages can't be refcounted properly at
-> map time. Doning so eliminates the need for the devmap PTE bit,
-> freeing up a precious PTE bit. It also simplifies GUP as it no longer
-> needs to manage the special pgmap references and can instead just
-> treat the pages normally as defined by vm_normal_page().
+> Very likely this is actually some issue with ocfs2 since the only thing the
+> reproducer seems to be doing is that it is mounting ocfs2 image. Joseph,
+> can you have a look please?
 > 
-> Signed-off-by: Alistair Popple <apopple@nvidia.com>
-> ---
->  drivers/dax/device.c | 15 +++++++++------
->  mm/memremap.c        | 13 ++++++-------
->  2 files changed, 15 insertions(+), 13 deletions(-)
+> 								Honza
+
+The root cause appears to be that the jbd2 bypass recovery logic
+is incorrect.
+
+ From the console log [1]:
+  [   70.568684][ T5316] JBD2: Ignoring recovery information on journal
+
+The above output indicates that ocfs2 is calling jbd2_journal_wipe()
+to clean up jbd2. (IIUC), Therefore, the subsequent jbd2 initialization
+flow should not perform any recovery tasks.
+
+However, in this crash issue, after calling jbd2_journal_wipe(),
+jbd2_journal_load() still attempts to perform a recovery, which triggers
+a WARN_ON().
+
+On the other hand, the jbd2 code logic is correct, ocfs2 should call
+ocfs2_journal_wipe() with the parameter 'write=1' to address this issue.
+
+code flow:
+ocfs2_mount_volume
+  ocfs2_check_volume
+  + ocfs2_journal_init => jbd2_journal_init_inode
+  + ocfs2_journal_wipe => jbd2_journal_wipe (input write is 0)
+  + ocfs2_journal_load => jbd2_journal_load => do recovery job => WARN_ON()
+
+[1]: 2024/01/12 06:56 log
+https://syzkaller.appspot.com/text?tag=CrashLog&x=106f2bc4580000
+
+Thanks,
+Heming
+
 > 
-> diff --git a/drivers/dax/device.c b/drivers/dax/device.c
-> index 6d74e62..fd22dbf 100644
-> --- a/drivers/dax/device.c
-> +++ b/drivers/dax/device.c
-> @@ -126,11 +126,12 @@ static vm_fault_t __dev_dax_pte_fault(struct dev_dax *dev_dax,
->  		return VM_FAULT_SIGBUS;
->  	}
->  
-> -	pfn = phys_to_pfn_t(phys, PFN_DEV|PFN_MAP);
-> +	pfn = phys_to_pfn_t(phys, 0);
->  
->  	dax_set_mapping(vmf, pfn, fault_size);
->  
-> -	return vmf_insert_mixed(vmf->vma, vmf->address, pfn);
-> +	return vmf_insert_page_mkwrite(vmf, pfn_t_to_page(pfn),
-> +					vmf->flags & FAULT_FLAG_WRITE);
->  }
->  
->  static vm_fault_t __dev_dax_pmd_fault(struct dev_dax *dev_dax,
-> @@ -169,11 +170,12 @@ static vm_fault_t __dev_dax_pmd_fault(struct dev_dax *dev_dax,
->  		return VM_FAULT_SIGBUS;
->  	}
->  
-> -	pfn = phys_to_pfn_t(phys, PFN_DEV|PFN_MAP);
-> +	pfn = phys_to_pfn_t(phys, 0);
->  
->  	dax_set_mapping(vmf, pfn, fault_size);
->  
-> -	return vmf_insert_pfn_pmd(vmf, pfn, vmf->flags & FAULT_FLAG_WRITE);
-> +	return vmf_insert_folio_pmd(vmf, page_folio(pfn_t_to_page(pfn)),
-> +				vmf->flags & FAULT_FLAG_WRITE);
+>> Linux version: v6.12-rc6:59b723cd2adbac2a34fc8e12c74ae26ae45bf230 (crash is
+>> also reproduced in the latest kernel version)
+>> The test case and kernel config is in attach.
+>>
+>> The warning report is (The full report is attached):
+>>
+>> WARNING: CPU: 0 PID: 6139 at fs/jbd2/journal.c:1887
+>> jbd2_journal_update_sb_log_tail+0x32d/0x3b0 fs/jbd2/journal.c:1887
+>> Modules linked in:
+>> CPU: 0 UID: 0 PID: 6139 Comm: syz.7.135 Not tainted 6.12.0-rc6 #1
+>> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+>> 1.13.0-1ubuntu1.1 04/01/2014
+>> RIP: 0010:jbd2_journal_update_sb_log_tail+0x32d/0x3b0 fs/jbd2/journal.c:1887
+>> Code: fe ff ff e8 05 0e a7 ff e9 f4 fd ff ff e8 eb 0e a7 ff e9 16 ff ff ff
+>> 4c 89 ef e8 de 0e a7 ff e9 d5 fe ff ff e8 94 ec 54 ff 90 <0f> 0b 90 eb 88
+>> 41 bc fb ff ff ff e9 13 ff ff ff e8 7e ec 54 ff be
+>> RSP: 0018:ff1100013b6ff818 EFLAGS: 00010246
+>> RAX: 0000000000040000 RBX: 0000000000000000 RCX: ffa00000034b3000
+>> RDX: 0000000000040000 RSI: ffffffff81fd15ec RDI: 0000000000000005
+>> RBP: ff110001405ce000 R08: 0000000000000001 R09: ffe21c00276dfef5
+>> R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000000000
+>> R13: ff11000107e3a018 R14: ff11000107e3a000 R15: ff110001405ce0b0
+>> FS:  00007ff345cd5700(0000) GS:ff110004ca800000(0000) knlGS:0000000000000000
+>> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+>> CR2: 00007ff3470375c0 CR3: 0000000117544001 CR4: 0000000000771ef0
+>> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+>> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+>> PKRU: 80000000
+>> Call Trace:
+>>   <TASK>
+>>   journal_reset fs/jbd2/journal.c:1779 [inline]
+>>   jbd2_journal_load fs/jbd2/journal.c:2109 [inline]
+>>   jbd2_journal_load+0x93e/0xcf0 fs/jbd2/journal.c:2074
+>>   ocfs2_journal_load+0xbe/0x5e0 fs/ocfs2/journal.c:1143
+>>   ocfs2_check_volume fs/ocfs2/super.c:2421 [inline]
+>>   ocfs2_mount_volume fs/ocfs2/super.c:1817 [inline]
+>>   ocfs2_fill_super+0x19f1/0x4170 fs/ocfs2/super.c:1084
+>>   mount_bdev+0x1e6/0x2d0 fs/super.c:1693
+>>   legacy_get_tree+0x107/0x220 fs/fs_context.c:662
+>>   vfs_get_tree+0x94/0x380 fs/super.c:1814
+>>   do_new_mount fs/namespace.c:3507 [inline]
+>>   path_mount+0x6b2/0x1eb0 fs/namespace.c:3834
+>>   do_mount fs/namespace.c:3847 [inline]
+>>   __do_sys_mount fs/namespace.c:4057 [inline]
+>>   __se_sys_mount fs/namespace.c:4034 [inline]
+>>   __x64_sys_mount+0x283/0x300 fs/namespace.c:4034
+>>   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+>>   do_syscall_64+0xc1/0x1d0 arch/x86/entry/common.c:83
+>>   entry_SYSCALL_64_after_hwframe+0x77/0x7f
 
-This looks suspect without initializing the compound page metadata.
-
-This might be getting compound pages by default with
-CONFIG_ARCH_WANT_OPTIMIZE_DAX_VMEMMAP. The device-dax unit tests are ok
-so far, but that is not super comforting until I can think about this a
-bit more... but not tonight.
-
-Might as well fix up device-dax refcounts in this series too, but I
-won't ask you to do that, will send you something to include.
 
